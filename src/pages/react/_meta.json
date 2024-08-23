@@ -1,0 +1,26 @@
+{
+  "index": {
+    "title": "Home",
+    "theme": {
+      "breadcrumb": true,
+      "footer": true,
+      "sidebar": true,
+      "toc": true,
+      "pagination": true,
+      "typesetting": "article",
+      "search": false
+    }
+  },
+  "blog": {
+    "title": "Blogs",
+    "theme": {
+      "breadcrumb": true,
+      "footer": true,
+      "sidebar": true,
+      "toc": true,
+      "pagination": true,
+      "typesetting": "article",
+      "search": false
+    }
+  }
+}

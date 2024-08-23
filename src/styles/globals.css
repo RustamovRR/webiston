@@ -2,32 +2,206 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+body {
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.home-content p {
+  margin-top: 1.5em;
+  line-height: 1.75em;
+}
+
+.home-content a {
+  --tw-ring-color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50%/0.3);
+  --tw-text-opacity: 1;
+  text-underline-position: under;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50% / var(--tw-text-opacity));
+}
+
+figcaption {
+  font-size: 0.85rem;
+  line-height: 1.5rem;
+  display: block;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+code.text-\[\.9em\] {
+  font-size: 14px;
+}
+
+@media screen and (max-width: 1200px) {
+  .home-content .hide-medium {
+    display: none;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@media screen and (max-width: 720px) {
+  .home-content p {
+    font-size: 0.9rem;
+  }
+  .home-content .hide-small {
+    display: none;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Main container */
+.background-pattern {
+  position: relative;
+  width: 100%;
+  height: 10vh;
+  overflow: hidden;
+}
+
+/* General styles for dashed vertical lines */
+.background-pattern::before,
+.background-pattern::after,
+.background-pattern .vertical-line-1,
+.background-pattern .vertical-line-2,
+.background-pattern .vertical-line-3,
+.background-pattern .vertical-line-4 {
+  content: '';
+  position: absolute;
+  width: 1px; /* Line thickness */
+  margin-top: 15% ;
+  height: 80%;
+  border-left: 1px dashed rgba(255, 255, 255, 0.3); /* Dashed line */
+  opacity: 0;
+  animation: slideInVertical 2s forwards cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Vertical lines - top to bottom */
+.background-pattern::before {
+  left: 10%;
+  top: -100%;
+  animation-delay: 0.5s;
+}
+
+.background-pattern::after {
+  left: 35%;
+  top: -100%;
+  animation-delay: 1s;
+}
+
+.background-pattern .vertical-line-1 {
+  left: 60%;
+  top: -100%;
+  animation-delay: 1.5s;
+}
+
+.background-pattern .vertical-line-2 {
+  left: 85%;
+  top: -100%;
+  animation-delay: 2s;
+}
+
+/* Vertical lines - bottom to top */
+.background-pattern .vertical-line-3 {
+  left: 10%;
+  bottom: -100%;
+  animation-delay: 0.5s;
+}
+
+.background-pattern .vertical-line-4 {
+  left: 35%;
+  bottom: -100%;
+  animation-delay: 1s;
+}
+
+.background-pattern .vertical-line-5 {
+  left: 60%;
+  bottom: -100%;
+  animation-delay: 1.5s;
+}
+
+.background-pattern .vertical-line-6 {
+  left: 85%;
+  bottom: -100%;
+  animation-delay: 2s;
+}
+
+/* Keyframe animation for vertical lines */
+@keyframes slideInVertical {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0.3;
+  }
+}
+
+/* General styles for dashed horizontal lines */
+.background-pattern .horizontal-line-1,
+.background-pattern .horizontal-line-2,
+.background-pattern .horizontal-line-3,
+.background-pattern .horizontal-line-4 {
+  position: absolute;
+  height: 1px; /* Line thickness */
+  margin-left: 20%;
+  width: 85%;
+  border-top: 1px dashed rgba(255, 255, 255, 0.3); /* Dashed line */
+  opacity: 0;
+  animation: slideInHorizontal 2s forwards cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Horizontal lines - left to right */
+.background-pattern .horizontal-line-1 {
+  top: 25%;
+  left: -100%;
+  animation-delay: 0.5s;
+}
+
+.background-pattern .horizontal-line-2 {
+  top: 50%;
+  left: -100%;
+  animation-delay: 1s;
+}
+
+.background-pattern .horizontal-line-3 {
+  top: 75%;
+  left: -100%;
+  animation-delay: 1.5s;
+}
+
+/* Horizontal lines - right to left */
+.background-pattern .horizontal-line-4 {
+  bottom: 25%;
+  right: -100%;
+  animation-delay: 0.5s;
+}
+
+.background-pattern .horizontal-line-5 {
+  bottom: 50%;
+  right: -100%;
+  animation-delay: 1s;
+}
+
+.background-pattern .horizontal-line-6 {
+  bottom: 75%;
+  right: -100%;
+  animation-delay: 1.5s;
+}
+
+/* Keyframe animation for horizontal lines */
+@keyframes slideInHorizontal {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0.3;
   }
 }
