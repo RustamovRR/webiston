@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
 import { cn } from '@/lib'
 import Link, { LinkProps } from 'next/link'
 
@@ -7,11 +7,15 @@ interface IProps extends Omit<LinkProps, 'href'> {
   description: string
   href?: string
   className?: string
+  disabled?: boolean
 }
 
-const Card: FC<IProps> = ({ title, description, href, className, ...props }) => {
+const Card: FC<IProps> = ({ title, description, href, className, disabled, ...props }) => {
   const classNames = cn(
-    'relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-[rgba(255,255,255,0.17)] hover:bg-[#ffffff05]',
+    'relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-[rgba(255,255,255,0.17)] hover:bg-[#ffffff05] select-none',
+    {
+      'pointer-events-none opacity-50': disabled,
+    },
     className,
   )
 

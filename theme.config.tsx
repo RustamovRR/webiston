@@ -89,6 +89,9 @@ const config: DocsThemeConfig = {
     defaultMenuCollapseLevel: 1,
     toggleButton: true,
   },
+  search: {
+    placeholder: 'Dokumentatsiyadan qidirish...',
+  },
   footer: {
     text: (
       <div className="flex w-full flex-col items-center sm:items-start">
