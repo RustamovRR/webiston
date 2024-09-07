@@ -1,3 +1,5 @@
 {
-  "world-before-react": "Reactdan oldingi davr"
+  "world-before-react": "Reactdan oldingi davr",
+  "jquery": "jQuery",
+  "backbone": "Backbone"
 }
