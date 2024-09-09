@@ -1,7 +1,7 @@
 import { Callout } from 'nextra/components'
 
-# Veb-ilovalar yaratishdagi muammolar
-React paydo bo‘lishidan oldin, biz veb-ilovalar yaratishda katta muammolarga duch kelardik. Ilovalarimizni qanday qilib tezkor va darhol javob beradigan qilib yaratish bilan birga, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlashini ham ta’minlashimiz kerak edi. Masalan, oddiygina button bosilish holatini ko‘rib chiqaylik: foydalanuvchi buttonni bosganda, biz foydalanuvchi interfeysini(UI) shu button bosilganligini aks ettirish uchun yangilamoqchimiz. Buning uchun kamida to‘rtta holatni hisobga olishimiz kerak:
+## Veb-dasturlar yaratishdagi muammolar
+React paydo bo‘lishidan oldin, biz veb-dasturlar yaratishda katta muammolarga duch kelardik. Ilovalarimizni qanday qilib tezkor va darhol javob beradigan qilib yaratish bilan birga, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlashini ham ta’minlashimiz kerak edi. Masalan, oddiygina button bosilish holatini ko‘rib chiqaylik: foydalanuvchi buttonni bosganda, biz foydalanuvchi interfeysini(UI) shu button bosilganligini aks ettirish uchun yangilamoqchimiz. Buning uchun kamida to‘rtta holatni hisobga olishimiz kerak:
 
 ### Bosilish holatlari
 - **Bosishdan oldingi holat**: Button o‘zining dastlabki holatida va hali bosilmagan.
@@ -45,7 +45,7 @@ likeButton.addEventListener("click", () => {
 });
 ```
 
-Endi bizda event listener mavjud, shuning uchun button bosilganda biror amalni bajara olamiz. Masalan, button bosilganda uning matnini "Liked" deb yangilashni xohlaymiz. Buni buttonning matn tarkibini yangilash orqali amalga oshirishimiz mumkin:
+Endi bizda event listener mavjud, shuning uchun button bosilganda biror amalni bajara olamiz. Masalan, button bosilganda uning matnini "Liked" deb yangilashni xohlaymiz. Buni button’ning matn tarkibini yangilash orqali amalga oshirishimiz mumkin:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -60,7 +60,7 @@ Ajoyib! Endi bizda "*Like*" deb nomlangan button bor, va uni bosganda, matni "Li
 <button id="likeButton" data-liked="false">Like</button>
 ```
 
-Endi bizda ushbu atribut mavjud bo'lganidan so'ng, button bosilgan yoki bosilmaganligini kuzatib borishimiz mumkin. Buttonning matnini ushbu atribut qiymatiga asoslanib yangilaymiz:
+Endi bizda ushbu atribut mavjud bo'lganidan so'ng, button bosilgan yoki bosilmaganligini kuzatib borishimiz mumkin. Button’ning matnini ushbu atribut qiymatiga asoslanib yangilaymiz:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -70,7 +70,7 @@ likeButton.addEventListener("click", () => {
 });
 ```
 
-Shoshmang, lekin biz faqat buttonning `textContent`ini o‘zgartiryapmiz, xolos! Biz aslida "*Liked*" holatini ma'lumotlar bazasida(database) saqlamayapmiz. Buni qilish uchun odatda tarmoq(network) orqali muloqot qilishimiz kerak edi, masalan:
+Shoshmang, lekin biz faqat button’ning `textContent`ini o‘zgartiryapmiz, xolos! Biz aslida "*Liked*" holatini ma'lumotlar bazasida(database) saqlamayapmiz. Buni qilish uchun odatda tarmoq(network) orqali muloqot qilishimiz kerak edi, masalan:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -125,12 +125,12 @@ likeButton.addEventListener("click", () => {
 ```
 
 ### Xatolarni boshqarish
-Hozirgi kunda biz tarmoq orqali muloqot qilayapmiz, lekin agar tarmoq so‘rovi muvaffaqiyatsiz(fail) bo‘lsa nima bo‘ladi? Bunday holda, buttonning matnini muvaffaqiyatsizlikni aks ettirish uchun yangilashimiz kerak bo‘ladi. Buni amalga oshirish uchun buttonga `data-failed` atributini qo‘shishimiz mumkin:
+Hozirgi kunda biz tarmoq orqali muloqot qilayapmiz, lekin agar tarmoq so‘rovi muvaffaqiyatsiz(fail) bo‘lsa nima bo‘ladi? Bunday holda, button’ning matnini muvaffaqiyatsizlikni aks ettirish uchun yangilashimiz kerak bo‘ladi. Buni amalga oshirish uchun buttonga `data-failed` atributini qo‘shishimiz mumkin:
 ```js copy
 <button id="likeButton" data-liked="false" data-failed="false">Like</button>
 ```
 
-Endi biz buttonning matnini ushbu atribut qiymatiga asoslanib yangilashimiz mumkin:
+Endi biz button’ning matnini ushbu atribut qiymatiga asoslanib yangilashimiz mumkin:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -212,9 +212,9 @@ React bizga ushbu muammolarning ba'zilarini hal qilishda yordam beradi, lekin ul
 
 Bundan tashqari, React foydalanuvchi interfeysining holatini to‘liq nazorat qilish orqali buni ancha barqaror qiladi va shu holatga asoslanib render qiladi. Bu holat brauzer tomonidan boshqariladigan holat bilan tubdan farq qiladi, chunki brauzer holati boshqa kliyent tomondan(client-side) ishlaydigan skriptlar, brauzer kengaytmalari, qurilma cheklovlari va boshqa ko'plab omillar kabi bir qator omillar tufayli juda ishonchsiz bo'lishi mumkin.
 
-Bizning "*Like*" button misolimiz juda sodda, lekin boshlash uchun yaxshi misol. Hozircha, JavaScript yordamida buttonni interaktiv qilish qanday amalga oshirilishini ko'rdik, lekin bu jarayonni *yaxshiroq* bajarmoqchi bo'lsak, bu qo'lda bajaradigan juda ko'p ishni talab qiladi: buttonni brauzerda topishimiz, event listener qo'shishimiz, buttonning matnini yangilashimiz va turli xil murakkab holatlarni hisobga olishimiz kerak. Bu juda ko'p ish, va bu osonlikcha kengaytiriladigan narsa emas. Agar sahifada ko'plab buttonlar bo'lsa-chi? Agar bu ko'plab buttonlar interaktiv bo'lishi kerak bo'lsa-chi? Agar ko‘p buttonlar interaktiv bo‘lishi kerak bo‘lsa va biz eventlarga javoban foydalanuvchi interfeysini yangilashimiz kerak bo‘lsa-chi? Bu holda biz ***event delegation*** (yoki event bubling) ishlatsak bo'ladimi va yuqoriroqdagi `document`ga event listenerni qo'shishimiz(attach) kerakmi? Yoki har bir buttonga event listenerlarni qo'shishimiz kerakmi?
+Bizning "*Like*" button misolimiz juda sodda, lekin boshlash uchun yaxshi misol. Hozircha, JavaScript yordamida buttonni interaktiv qilish qanday amalga oshirilishini ko'rdik, lekin bu jarayonni *yaxshiroq* bajarmoqchi bo'lsak, bu qo'lda bajaradigan juda ko'p ishni talab qiladi: buttonni brauzerda topishimiz, event listener qo'shishimiz, button’ning matnini yangilashimiz va turli xil murakkab holatlarni hisobga olishimiz kerak. Bu juda ko'p ish, va bu osonlikcha kengaytiriladigan narsa emas. Agar sahifada ko'plab buttonlar bo'lsa-chi? Agar bu ko'plab buttonlar interaktiv bo'lishi kerak bo'lsa-chi? Agar ko‘p buttonlar interaktiv bo‘lishi kerak bo‘lsa va biz eventlarga javoban foydalanuvchi interfeysini yangilashimiz kerak bo‘lsa-chi? Bu holda biz ***event delegation*** (yoki event bubling) ishlatsak bo'ladimi va yuqoriroqdagi `document`ga event listenerni qo'shishimiz(attach) kerakmi? Yoki har bir buttonga event listenerlarni qo'shishimiz kerakmi?
 
-Avvalroq atganimizdek, biz quyidagi bayonot haqida yetarlicha tushunchaga ega bo'lishimiz kerak: brauzerlar veb-sahifalarni render qiladi. Veb-sahifalar HTML dokumentlari bo‘lib, ularga CSS tomonidan stillar beriladi va JavaScript yordamida interaktiv qilinadi. Bu bir necha o'nlab yillar davomida ajoyib ishladi va hali ham ishlaydi, lekin zamonaviy veb-ilovalarni yaratish, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlatish uchun sezilarli darajada abstraksiyaga ehtiyoj bor. Afsuski, biz ko'rib chiqqan "*Like*" button misoliga asoslanib aytganda, bizga bu jarayonda yordam kerak bo'ladi.
+Avvalroq atganimizdek, biz quyidagi bayonot haqida yetarlicha tushunchaga ega bo'lishimiz kerak: brauzerlar veb-sahifalarni render qiladi. Veb-sahifalar HTML dokumentlari bo‘lib, ularga CSS tomonidan stillar beriladi va JavaScript yordamida interaktiv qilinadi. Bu bir necha o'nlab yillar davomida ajoyib ishladi va hali ham ishlaydi, lekin zamonaviy veb-dasturlarni yaratish, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlatish uchun sezilarli darajada abstraksiyaga ehtiyoj bor. Afsuski, biz ko'rib chiqqan "*Like*" button misoliga asoslanib aytganda, bizga bu jarayonda yordam kerak bo'ladi.
 
 
 ## Murakkabroq misol: Ro'yxat elementlari
@@ -258,7 +258,7 @@ Hozirgina biz muhokama qilganimizdek, holatlarni boshqarish mexanizmisiz yangila
 })();
 ```
 
-Ushbu kod qismini iloji boricha avvalgi veb-ilovalarga o'xshatib yozdik. Buni vaqt o'tishi bilan kengaytirish nimaga olib keladi? Asosan, vaqt o'tishi bilan bunday dasturlarni kengaytirish juda ko'p muammolarni keltirib chiqaradi, bu ularni quyidagicha qiladi:
+Ushbu kod qismini iloji boricha avvalgi veb-dasturlarga o'xshatib yozdik. Buni vaqt o'tishi bilan kengaytirish nimaga olib keladi? Asosan, vaqt o'tishi bilan bunday dasturlarni kengaytirish juda ko'p muammolarni keltirib chiqaradi, bu ularni quyidagicha qiladi:
 1. **Xatolarga moyil**: "*addForm*"ning `onsubmit` atributi sahifadagi boshqa kliyent tomonidagi JavaScript tomonidan osonlik bilan qayta yozilishi mumkin. Buning o‘rniga `addEventListener` dan foydalanishimiz mumkin, lekin bu ko‘proq savollarni keltirib chiqaradi:
 - `removeEventListener` bilan qachon va qayerda tozalashimiz kerak?
 - Agar bunda e'tiborliroq va ehtiyotkor bo‘lmasak, vaqt o‘tishi bilan juda ko‘p event listenerlar yig‘ilib qoladimi?
@@ -274,7 +274,7 @@ Ushbu kod qismini iloji boricha avvalgi veb-ilovalarga o'xshatib yozdik. Buni va
 Bizning ma'lumot manbalarimiz JavaScript va HTML o'rtasida aralashgan bo'lib, bu ularni ishonchsiz qiladi. Bizga yagona ma'lumot manbasi ko'proq foyda keltiradi. Bundan tashqari, kliyent tomonidagi JavaScript elementlarni DOMdan qo'shish va olib tashlashni doimiy ravishda amalga oshiradi. Agar biz ushbu o'ziga xos elementlarning mavjudligiga tayanadigan bo'lsak, UI yangilanayotganda, ilovamizning ishonchli ishlashiga hech qanday kafolatlar yo'q. Bu holda, bizning ilovamiz "*side effectlar*" bilan to'lgan bo'lib, uning muvaffaqiyati yoki muvaffaqiyatsiz bo'lishi foydalanuvchi muammosiga bog'liq. React buni funksional dasturlashdan ilhomlangan modelni targ'ib qilish orqali hal qildi, bu yerda "*side effectlar"* ataylab belgilangan va izolyatsiya qilingan.
 
 3. **Samarasiz**:  *renderListItems* elementlarni ekranga ketma-ket joylashtiradi. DOMning har bir o'zgarishi hisoblash nuqtai nazaridan qimmatga tushishi mumkin, ayniqsa, layout shift va reflowga duch kelganimizda. Biz begona sayyorada (noma'lum hisoblash quvvatiga ega muhitda) bo'lganimiz uchun, bu katta ro'yxatlar holatida ishlash nuqtai nazaridan xavfli bo'lishi mumkin.
-Eslatib o'tamiz, bizning keng miqyosli veb-ilovamiz butun dunyo bo'ylab millionlab foydalanuvchilar, jumladan, oxirgi va eng so'nggi Apple M3 Max protsessorlaridan foydalanish imkoni bo'lmagan jamiyatdan, past quvvatli qurilmalarga ega foydalanuvchilar tomonidan ishlatilishi uchun mo'ljallangan. Ushbu holatda, alohida ro'yxat elementlarini ketma-ket yangilash o'rniga, ushbu amallarni qandaydir tarzda guruhlash va ularning barchasini bir vaqtning o'zida DOMga qo'llash maqsadga muvofiq bo'lishi mumkin. Lekin, ehtimol biz injenerlar sifatida buni qilishimizning hojati yo'q, chunki brauzerlar oxir-oqibat DOMni tez yangilanish bilan ishlash usullarini yangilab, biz uchun bu narsalarni avtomatik ravishda to'plab yangilashi(batch update) mumkin.
+Eslatib o'tamiz, bizning keng miqyosli veb-dasturimiz butun dunyo bo'ylab millionlab foydalanuvchilar, jumladan, oxirgi va eng so'nggi Apple M3 Max protsessorlaridan foydalanish imkoni bo'lmagan jamiyatdan, past quvvatli qurilmalarga ega foydalanuvchilar tomonidan ishlatilishi uchun mo'ljallangan. Ushbu holatda, alohida ro'yxat elementlarini ketma-ket yangilash o'rniga, ushbu amallarni qandaydir tarzda guruhlash va ularning barchasini bir vaqtning o'zida DOMga qo'llash maqsadga muvofiq bo'lishi mumkin. Lekin, ehtimol biz injenerlar sifatida buni qilishimizning hojati yo'q, chunki brauzerlar oxir-oqibat DOMni tez yangilanish bilan ishlash usullarini yangilab, biz uchun bu narsalarni avtomatik ravishda to'plab yangilashi(batch update) mumkin.
 
 
 ### React va boshqa yechimlar

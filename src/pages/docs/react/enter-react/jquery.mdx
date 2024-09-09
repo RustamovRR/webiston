@@ -1,3 +1,4 @@
+## jQuery’ning yechim bo'lishi
 Keling, veb texnologiyalaridagi ba'zi muammolarni React paydo bo'lishidan oldin qanday hal qilinganligini ko'rib chiqaylik va nega React muhimligini tushunamiz. Biz dastlab jQuery bilan boshlaymiz va oldingi *Like* button misolimizni qayta ko'rib chiqamiz.
 
 Qisqacha eslatma, bu yerda biz brauzerdagi *Like* buttonni interaktiv qilishni xohlaymiz:
@@ -45,8 +46,8 @@ test("LikeButton", () => {
 ```
 Bu yerda yagona muammo shundaki, `$('#likeButton')` testing environmentda null qiymat qaytaradi, chunki bu haqiqiy brauzer emas. Ushbu kodni test qilish uchun brauzer muhitini sun'iy ravishda yaratish kerak bo'ladi, bu esa juda ko'p mehnat talab qiladi. Bu jQuery bilan bog'liq keng tarqalgan muammo: uni test qilish qiyin, chunki  u qo'shadigan xatti-harakatlarni izolyatsiyalab, ajratib olish qiyin. jQuery, shuningdek, brauzer muhiti bilan kuchli bog'liq bo'lib, brauzer foydalanuvchi interfeysiga egalik qilsa-da, jQuery shunchaki mehmon hisoblanadi. Bu "bir tomonlama ma'lumot oqimi"(one-way data flow) paradigmasidan og'ish jQuery va o'sha davr uchun keng tarqalgan muammolardan biri edi.
 
-### jQueryning ommaviyligini yo'qotish sabablari
-Oxir-oqibat, veb-texnologiyalar rivojlanishi bilan jQuery o'z ommaviyligini yo'qota boshladi, chunki kuchliroq va kengaytiriladigan yechimlar zarur bo'lib qoldi. jQuery hali ham ko'plab production dasturlarida qo'llanilsa-da, zamonaviy veb-ilovalarni yaratishda endi asosiy yechim emas. Mana jQueryning mashhurligi pasayishiga sabab bo'lgan ba'zi omillar:
+### jQuery’ning ommaviyligini yo'qotish sabablari
+Oxir-oqibat, veb-texnologiyalar rivojlanishi bilan jQuery o'z ommaviyligini yo'qota boshladi, chunki kuchliroq va kengaytiriladigan yechimlar zarur bo'lib qoldi. jQuery hali ham ko'plab production dasturlarida qo'llanilsa-da, zamonaviy veb-dasturlarni yaratishda endi asosiy yechim emas. Mana jQuery’ning mashhurligi pasayishiga sabab bo'lgan ba'zi omillar:
 
 #### Yuklama va tezlik
 jQueryga bo'lgan muhim tanqidlardan biri uning hajmi edi. jQuery kutubxonasini to'liq integratsiya qilish veb-loyihalarga qo'shimcha yuk keltiradi, bu esa ayniqsa tez yuklanishni maqsad qilgan saytlar uchun ortiqcha yuklama bo'lishi mumkin. Bugungi mobil internet davrida, ko'plab foydalanuvchilar sekin yoki cheklangan ma'lumot ulanishiga ega bo'lishi mumkin, shuning uchun har bir kilobayt muhimdir. jQuery kutubxonasini to'liq qo'shilishi mobil foydalanuvchilar uchun saytning ishlashiga salbiy ta'sir ko'rsatishi mumkin.
@@ -56,13 +57,13 @@ React paydo bo'lishidan oldin, jQuery va Mootools kabi kutubxonalar uchun konfig
 #### Zamonaviy brauzerlar bilan ziddiyat
 jQuery birinchi paydo bo'lganida, u turli brauzerlar o'rtasidagi noaniqliklarni bartaraf etishda va elementlarni tanlash va o'zgartirishda dasturchilarga yagona yo'lni taqdim etishda katta yordam bergan. Veb rivojlanib borgan sari brauzerlar ham rivojlandi. jQuery bo'lishini zarur qilgan ko'plab imkoniyatlar, masalan, DOM manipulatsiyasi yoki ma'lumot olish uchun tarmoqqa yo'naltirilgan(network-oriented) funksiyalar, hozirda zamonaviy brauzerlarni o'zi tomonidan qo'llab-quvvatlanmoqda. Bugungi veb ishlab chiqishda jQuerydan foydalanish ortiqcha, keraksiz murakkablik qo'shishi mumkin.
 
-Masalan, `document.querySelector` jQueryning ichki `$` selector APIsini osonlik bilan almashtiradi.
+Masalan, `document.querySelector` jQuery’ning ichki `$` selector APIsini osonlik bilan almashtiradi.
 
 #### Ishlash samaradorligi
-jQuery ko'plab vazifalarni soddalashtirsa-da, bu ko'pincha ishlash samaradorligini pasaytirishi hisobiga amalga oshadi. Zamonaviy brauzerlarda JavaScriptning o'zini tabiiy metodlari(Native runtime-level JavaScript) har bir yangilanishi bilan yaxshilanib takomillashadi va shu sababli ba'zi hollarda jQuerydan ko'ra tezroq ishlashi mumkin. Kichik loyihalarda bu farq sezilmasligi mumkin, lekin yirik va murakkab veb dasturlarda bu murakkabliklar to'planib, sezilarli darajada ishlash samaradorligini susayishiga yoki javob berish tezligining pasayishiga olib kelishi mumkin.
+jQuery ko'plab vazifalarni soddalashtirsa-da, bu ko'pincha ishlash samaradorligini pasaytirishi hisobiga amalga oshadi. Zamonaviy brauzerlarda JavaScript’ning o'zini tabiiy metodlari(Native runtime-level JavaScript) har bir yangilanishi bilan yaxshilanib takomillashadi va shu sababli ba'zi hollarda jQuerydan ko'ra tezroq ishlashi mumkin. Kichik loyihalarda bu farq sezilmasligi mumkin, lekin yirik va murakkab veb-dasturlarda bu murakkabliklar to'planib, sezilarli darajada ishlash samaradorligini susayishiga yoki javob berish tezligining pasayishiga olib kelishi mumkin.
 
-Yuqoridagi sabablar tufayli, jQuery veb evolyutsiyasida muhim rol o'ynagan va dasturchilar duch kelishi mumkin bo'lgan ko'plab muammolarni soddalashtirgan bo'lsa-da, zamonaviy veb dunyosida jQueryga endi kamroq ish tushyapti. Dasturchi sifatida biz jQueryning ijobiy va salbiy tomonlarini solishtirib ko'rishimiz kerak, ayniqsa, zamonaviy veb loyihalar kontekstida.
+Yuqoridagi sabablar tufayli, jQuery veb evolyutsiyasida muhim rol o'ynagan va dasturchilar duch kelishi mumkin bo'lgan ko'plab muammolarni soddalashtirgan bo'lsa-da, zamonaviy veb dunyosida jQueryga endi kamroq ish tushyapti. Dasturchi sifatida biz jQuery’ning ijobiy va salbiy tomonlarini solishtirib ko'rishimiz kerak, ayniqsa, zamonaviy veb loyihalar kontekstida.
 
-### jQueryning inqilobiy roli
-jQueryning kamchiliklariga qaramay, u o'sha paytda DOM bilan ishlashda haqiqiy inqilob bo'lgan. Bu shunday darajaga chiqdiki, boshqa kutubxonalar ham jQueryni qo'llab, lekin unga ko'proq prgonoz qilishlik va qayta foydalanishlik imkoniyatlarini qo'shgan holda paydo bo'la boshladi. Bunday kutubxonalardan biri Backbone edi, bu kutubxona React bugungi kunda hal qilayotgan muammolarni o'z vaqtida hal qilishga harakat qilgan. Keling, bunga yanada batafsil kirishamiz.
+### jQuery’ning inqilobiy roli
+jQuery’ning kamchiliklariga qaramay, u o'sha paytda DOM bilan ishlashda haqiqiy inqilob bo'lgan. Bu shunday darajaga chiqdiki, boshqa kutubxonalar ham jQueryni qo'llab, lekin unga ko'proq prgonoz qilishlik va qayta foydalanishlik imkoniyatlarini qo'shgan holda paydo bo'la boshladi. Bunday kutubxonalardan biri Backbone edi, bu kutubxona React bugungi kunda hal qilayotgan muammolarni o'z vaqtida hal qilishga harakat qilgan. Keling, bunga yanada batafsil kirishamiz.
 

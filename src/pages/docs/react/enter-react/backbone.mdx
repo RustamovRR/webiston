@@ -1,0 +1,129 @@
+## Backbone’ning rivojlanishi
+Backbone, 2010-yillar boshida ishlab chiqilgan bo‘lib, React paydo bo‘lishidan avval veb-dasturlarda uchraydigan bir qancha muammolarga yechim edi: brauzer va JavaScript o‘rtasidagi uyg'unlik yo'qligi holati, kodni qayta ishlatish, testlash imkoniyati va boshqalar. Bu juda sodda va samarali yechim bo‘lib, “model” va “view” yaratish imkonini beradigan kutubxona edi. Backbone o‘zining MVC (Model-View-Controller) design pattern(dizayn namunasi) bo‘yicha yondashuvini yaratdi (rasmga qarang). Keling, bu patternni yaxshiroq tushunish uchun MVC haqida qisqacha to‘xtalib o‘taylik.
+
+![Hello](/mvc-pattern.png)
+
+
+### MVC pattern
+MVC patterni bu dasturiy ta’minotni uchta o'zaro bog‘langan komponentga bo‘lish orqali ichki ma’lumotlar ko‘rinishini foydalanuvchiga qanday ko‘rsatilishi yoki undan qabul qilinishidan ajratishni ta’minlaydi. Bu uchta komponent quyidagilardir:
+
+- **Model**: *Model* dasturdagi ma’lumotlar va biznes logikalari uchun mas’ul bo‘ladi. U *View* va *Controller* haqida hech narsa bilmaydi, ya’ni biznes logikasi foydalanuvchi interfeysidan to‘liq izolyatsiyalangan bo‘ladi.
+
+- **View**: *View* foydalanuvchi interfeysini ifodalaydi. U *Model*dan olingan ma’lumotlarni foydalanuvchiga ko‘rsatadi va foydalanuvchi buyruqlarini *Controller*ga yuboradi. *View* passivdir, ya’ni u *Model*dan ma’lumot kelishini kutadi va ma’lumotni o‘zi qabul(fetch) qilmaydi yoki saqlamaydi. Bundan tashqari, foydalanuvchi bilan o‘zaro ta’sirni mustaqil boshqarmaydi, bu vazifani *Controller*ga topshiradi.
+
+- **Controller**: *Controller* *Model* va *View* o‘rtasidagi interfeys rolini o‘ynaydi. U *View*dan kelgan foydalanuvchi kiritgan ma'lumotlarini qayta ishlaydi (masalan, *Model*ni yangilaydi) va natijani *Viewg*a qaytaradi. *Controller* *Model*ni *View*dan ajratib, tizimning arxitekturasini ko'proq moslashuvchan qiladi.
+
+MVC pattern’ining asosiy afzalligi — bu vazifalarni ajratish bo‘lib, biznes logikasi, foydalanuvchi interfeysi va foydalanuvchi kiritgan ma'lumotlarini turli kod qismlariga ajratish imkoniyatini beradi. Bu nafaqat dasturni modulli qiladi, balki uni osonroq boshqarish, kengaytirish va test qilish imkonini beradi. Ushbu pattern veb-dasturlarda keng qo'llaniladi, Django, Ruby on Rails va ASP.NET MVC kabi ko'plab freymvorklar bu patternni qo'llab-quvvatlaydi.
+
+MVC patterni ko‘p yillar davomida dasturiy ta’minot dizaynida muhim rol o‘ynab kelgan, xususan, veb-dasturlashda. Biroq, veb-dasturlar rivojlanib borgan sari va foydalanuvchilarning interaktiv va dinamik interfeyslarga bo‘lgan talablari oshgani sayin, an’anaviy *MVC*’ning ba'zi cheklovlari yuzaga chiqa boshladi. Quyida *MVC*’ning ba'zi kamchiliklari va React ularni qanday hal qilishini ko‘rib chiqamiz:
+
+#### Murakkab interaktivlik va state management
+An’anaviy MVC arxitekturasi ko‘p interaktiv elementlarga ega murakkab foydalanuvchi interfeyslarini boshqarishda qiyinchiliklarga duch keladi. Dastur kengaygan sari holat o‘zgarishlarini boshqarish va ularning interfeysning turli qismlariga ta’siri murakkablashib boradi. *Controller*lar soni ortishi mumkin va ba'zida ular boshqa *controller*lar bilan mos kelmasligi yoki *controller*lar noto‘g‘ri *view*larni boshqarishi mumkin. Shu bilan birga, MVC komponentlari o‘rtasidagi ajratish proyekt kodida aniq ifodalanmagan bo‘lishi mumkin.
+
+React, o‘zining komponentlarga asoslangan arxitekturasi va virtual DOM bilan, holat o‘zgarishlarini boshqarishni va ular interfeysga qanday ta’sir qilishini soddalashtiradi. React bu jarayonni soddalashtirib, UI komponentlarini funksiyalarga o'xshash kabi qiladi: ular input(props)ni qabul qiladi va inputga asoslangan holda output(elementlar)ni qaytaradi. Bu mental model MVC patternni sezilarli darajada soddalashtiradi, chunki JavaScriptda funksiyalar keng qo‘llaniladi va ular MVC kabi tashqi mental modellarga qaraganda osonroq tushuniladi.
+
+#### Ikki tomonlama ma’lumot oqimi
+Ba'zi MVC freymvorklari ikki tomonlama ma’lumot oqimi(two-way data binding)ni qo‘llaydi, bu esa ehtiyotsizlik bilan boshqarilsa, kutilmagan "side effectlar"ga olib kelishi mumkin, ya'ni ba’zan *view* model bilan mos kelmay qolishi yoki aksincha bo‘lishi mumkin. Bundan tashqari, ikki tomonlama ma’lumot oqimida ma’lumotlarga egalik qilish masalasi ko‘pincha aniq javobga ega bo‘lmaydi va vazifalar ajratilishi noaniq bo‘lib qoladi. Bu ayniqsa qiziq, chunki MVC qo‘llaniladigan loyihalarda vazifalarni to‘g‘ri ajratishni to‘liq tushungan jamoalar uchun juda samarali model bo‘lib qolsa-da, bu qoidalar tezkor development va jadal o'sish jarayonida kamdan-kam hollarda to‘liq qo‘llaniladi. Natijada, MVC’ning eng katta kuchli tomonlaridan biri bo‘lgan vazifalarni ajratish, qo‘llashdagi sustkashlik tufayli zaif tomoniga aylanishi mumkin.
+
+React esa ikki tomonlama ma’lumot oqimiga qarama-qarshi bo‘lgan bir tomonlama ma’lumot oqimi(unidirectional data flow) patternini qo‘llaydi, bu esa ma’lumot oqimini tartibga solish va bir yo‘nalishda harakatlanishini ta’minlashga kuchli ahamiyat beradi. Ushbu yondashuv foydalanuvchi interfeysini yangilashni oldindan prognoz qilishni osonlashtiradi, vazifalarni aniqroq ajratish imkonini beradi va natijada jadal o‘sayotgan dasturiy jamoalar uchun samarali bo‘ladi.
+
+#### Qattiq bog‘liqlik
+Ba'zi MVC arxitekturalarida *Model*, *View*, va *Controller* komponentlari bir-biriga qattiq bog‘liq bo‘lib(tight coupling) qolishi mumkin. Bu esa birini o‘zgartirish yoki qayta ishlashda boshqalarga ta’sir qilishni qiyinlashtiradi. React esa o‘zining komponentga asoslangan modeli orqali modulli va ajratilgan yondashuvni rag'batlantiradi. Bu yondashuv UI komponentlariga yaqin bog‘liqliklarni joylashtirishni qo‘llab-quvvatlaydi va bu orqali dasturni kengaytirish va qayta ishlashni osonlashtiradi.
+
+React esa, ikki tomonlama ma’lumot oqimiga qarama-qarshi bo‘lgan bir tomonlama ma’lumot oqimi (unidirectional data flow)ni qo‘llab-quvvatlaydi. Bu ma’lumot oqimi interfeys yangilanishlarini aniqroq qiladi, vazifalarni ajratishni osonlashtiradi va jadal rivojlanayotgan dasturiy jamoalar uchun samarali yechim yaratadi.
+
+
+### Backboneda "Like" button misoli
+Endi oldingi "Like" button misolimizni Backbone yordamida ko'rib chiqamiz:
+``` js copy
+const LikeButton = Backbone.View.extend({
+  tagName: "button",
+  attributes: {
+    type: "button",
+  },
+  events: {
+    click: "onClick",
+  },
+  initialize() {
+    this.model.on("change", this.render, this);
+  },
+  render() {
+    this.$el.text(this.model.get("liked") ? "Liked" : "Like");
+    return this;
+  },
+  onClick() {
+    fetch("/like", {
+      method: "POST",
+      body: JSON.stringify({ liked: !this.model.get("liked") }),
+    })
+    .then(() => {
+      this.model.set("liked", !this.model.get("liked"));
+    })
+    .catch(() => {
+      this.model.set("failed", true);
+    })
+    .finally(() => {
+      this.model.set("pending", false);
+    });
+  },
+});
+```
+Diqqat qilinsa, bu yerda `LikeButton` `Backbone.View`dan meros oladi va unda render metodi mavjud, bu esa `this`ni qaytaradi. Reactda ham shunga o'xshash render metodini ko'ramiz, lekin bu haqida keyinroq gaplashamiz. Bu yerda yana bir narsani ta'kidlash joizki, Backbone aslida render metodining haqiqiy amalga oshirilishini o'z ichiga olmaydi. Buning o'rniga, siz DOMni qo'lda o'zgartirishingiz yoki Handlebars kabi namuna sistemasidan foydalanishingiz kerak edi.
+
+Backbone dasturchilarga obyektlarda logikani joylashtirish imkonini beruvchi zanjirli APIni ochib berdi. Oldingi misol bilan solishtirsak, Backbone yordamida interaktiv button yaratish va foydalanuvchi interfeysi(UI)ni eventlarga javoban yangilash ancha qulay bo'lganini ko'ramiz.
+
+Shuningdek, Backbone logikani birlashtirib, bu jarayonni ancha strukturalashgan holga keltiradi. Bundan tashqari, Backbone yordamida ushbu buttonni izolyatsiyalangan holda test qilish osonlashadi, chunki biz `LikeButton` namunasini yaratib, uning `render` metodini chaqirib test qilishimiz mumkin.
+
+Ushbu komponentni quyidagicha test qilishimiz mumkin:
+``` js copy
+test("LikeButton dastlabki holati", () => {
+  const likeButton = new LikeButton({
+    model: new Backbone.Model({
+      liked: false, // Dastlabki holat, "unlike" holatda
+    }),
+  });
+  likeButton.render(); // Dastlabki holatni aks ettirish uchun render chaqiriladi
+  // Matnning dastlabki holatga mos kelishini tekshirish
+  expect(likeButton.el.textContent).toBe("Like"); 
+});
+```
+
+Biz hatto button’ning holati o'zgarganidan keyingi harakatini, masalan, bosish eventi holatida ham test qilishimiz mumkin:
+``` js copy
+test("LikeButton", async () => {
+  // Promiseni boshqarish uchun funksiya async deb belgilandi
+  const likeButton = new LikeButton({
+    model: new Backbone.Model({
+      liked: false,
+    }),
+  });
+  expect(likeButton.render().el.textContent).toBe("Like");
+
+  // HTTP so'rovining amalga oshirilishini oldini olish uchun fetchni mock qilamiz
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve({ liked: true }),
+    })
+  );
+
+  // onClick metodining async amallari tugallanganini ta'minlash uchun uni kutamiz
+  await likeButton.onClick();
+  expect(likeButton.render().el.textContent).toBe("Liked");
+
+  // Kerak bo'lsa, fetch’ni asl holatiga qaytarish mumkin
+  global.fetch.mockRestore();
+});
+```
+
+Shu sababdan Backbone o'z vaqtida juda mashhur yechim bo'lgan. Muqobil yechim esa ko'p kod yozishni talab qilgan, bu kodni test qilish ham qiyin bo'lgan va uning kutilganidek ishlashiga hech qanday kafolat bo'lmagan. Shu bois Backbone bu masalaga juda kutilgan va mos yechim bo'lgan. Mashhurligining dastavvalida o'zining soddaligi va moslashuvchanligi bilan mashhur bo'lgan bo'lsa-da, u ham ba'zi tanqidlardan xoli emas edi. Mana Backbone.js bilan bog'liq ba'zi salbiy jihatlar:
+
+- **Boilerplate va uzun kod**: Backbone.js ko'pincha ko'p miqdorda qayta-qayta takrorlanadigan(boilerplate) kod yozishni talab qiladi. Oddiy ilovalar uchun bu muammo bo'lmasligi mumkin, lekin ilova kattalashgan sari boilerplate kod ham ortadi, bu esa ortiqcha va qiyin boshqariladigan kodga olib keladi.
+
+- **Two-way data binding’ni yo'qligi**: Ba'zi zamondoshlaridan farqli ravishda, Backbone.js ichki ikki tomonlama ma’lumot oqimi(two-way data binding)ni taklif qilmaydi. Bu shuni anglatadiki, agar ma'lumot o'zgarsa, DOM avtomatik ravishda yangilanmaydi va aksincha. Dasturchilar bunday funksionallikni qo'shish uchun ko'pincha maxsus kod yozishlari yoki plaginlardan foydalanishlari kerak.
+
+- **Eventlarga asoslangan arxitektura**: Modeldagi ma'lumotlarning yangilanishi butun ilova bo'ylab ko'plab eventlarni qo'zg'atishi mumkin. Bu eventlar zanjiri boshqarilmas holga kelishi mumkin va ma'lumotning bir qismi o'zgarganda bu butun ilovaga qanday ta'sir qilishini aniqlash, debug qilish va maintain qilish qiyin bo'lishi mumkin. Ushbu muammolarni hal qilish uchun dasturchilar ko'pincha ehtiyotkorlik bilan event boshqaruv amaliyotlarini qo'llashlari kerak bo'lgan.
+
+- **Kompozitsiyaning yetishmasligi**: Backbone.js ichma-ich "view"larni osonlikcha joylashtirish uchun o'zini tayyor funksiyalariga ega emas, bu esa murakkab foydalanuvchi interfeyslarini yaratishni qiyinlashtiradi. React esa, aksincha, "children props" yordamida komponentlarni osongina joylashtirishni ta'minlaydi, bu esa murakkab UI ierarxiyalarini yaratishni osonlashtiradi. Marionette.js, Backbone’ning kengaytmasi, ushbu kompozitsiya muammolarining ba'zilarini hal qilishga uringan, lekin u React’ning komponent modeli kabi integratsiyalashgan yechimni ta'minlamaydi.
+
+Zero, Backbone.js o'ziga xos muammolarga ega bo'lsa ham, hech qanday tool yoki freymvork mukammal emasligini unutmaslik kerak. Eng yaxshi tanlov ko'pincha loyihani ehtiyojlariga va jamoaning afzalliklariga bog'liq. Shuningdek, veb-dasturlash tool’lari kuchli jamoaga tayanishi kerakligini ta'kidlash joiz, afsuski, Backbone.js so'nggi yillarda, ayniqsa React paydo bo'lishi bilan, ommaviyligini yo'qotdi. Ayrimlar hatto React uni "o'ldirdi" deb aytishadi, lekin bu masala bo'yicha yakuniy hukmni keyinga qoldiramiz.
+
