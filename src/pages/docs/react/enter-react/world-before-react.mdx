@@ -45,7 +45,7 @@ likeButton.addEventListener("click", () => {
 });
 ```
 
-Endi bizda event listener mavjud, shuning uchun button bosilganda biror amalni bajara olamiz. Masalan, button bosilganda uning matnini "Liked" deb yangilashni xohlaymiz. Buni button’ning matn tarkibini yangilash orqali amalga oshirishimiz mumkin:
+Endi bizda event listener mavjud, shuning uchun button bosilganda biror amalni bajara olamiz. Masalan, button bosilganda uning matnini "Liked" deb yangilashni xohlaymiz. Buni buttonning matn tarkibini yangilash orqali amalga oshirishimiz mumkin:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -60,7 +60,7 @@ Ajoyib! Endi bizda "*Like*" deb nomlangan button bor, va uni bosganda, matni "Li
 <button id="likeButton" data-liked="false">Like</button>
 ```
 
-Endi bizda ushbu atribut mavjud bo'lganidan so'ng, button bosilgan yoki bosilmaganligini kuzatib borishimiz mumkin. Button’ning matnini ushbu atribut qiymatiga asoslanib yangilaymiz:
+Endi bizda ushbu atribut mavjud bo'lganidan so'ng, button bosilgan yoki bosilmaganligini kuzatib borishimiz mumkin. Buttonning matnini ushbu atribut qiymatiga asoslanib yangilaymiz:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -70,7 +70,7 @@ likeButton.addEventListener("click", () => {
 });
 ```
 
-Shoshmang, lekin biz faqat button’ning `textContent`ini o‘zgartiryapmiz, xolos! Biz aslida "*Liked*" holatini ma'lumotlar bazasida(database) saqlamayapmiz. Buni qilish uchun odatda tarmoq(network) orqali muloqot qilishimiz kerak edi, masalan:
+Shoshmang, lekin biz faqat buttonning `textContent`ini o‘zgartiryapmiz, xolos! Biz aslida "*Liked*" holatini ma'lumotlar bazasida(database) saqlamayapmiz. Buni qilish uchun odatda tarmoq(network) orqali muloqot qilishimiz kerak edi, masalan:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -125,12 +125,12 @@ likeButton.addEventListener("click", () => {
 ```
 
 ### Xatolarni boshqarish
-Hozirgi kunda biz tarmoq orqali muloqot qilayapmiz, lekin agar tarmoq so‘rovi muvaffaqiyatsiz(fail) bo‘lsa nima bo‘ladi? Bunday holda, button’ning matnini muvaffaqiyatsizlikni aks ettirish uchun yangilashimiz kerak bo‘ladi. Buni amalga oshirish uchun buttonga `data-failed` atributini qo‘shishimiz mumkin:
+Hozirgi kunda biz tarmoq orqali muloqot qilayapmiz, lekin agar tarmoq so‘rovi muvaffaqiyatsiz(fail) bo‘lsa nima bo‘ladi? Bunday holda, buttonning matnini muvaffaqiyatsizlikni aks ettirish uchun yangilashimiz kerak bo‘ladi. Buni amalga oshirish uchun buttonga `data-failed` atributini qo‘shishimiz mumkin:
 ```js copy
 <button id="likeButton" data-liked="false" data-failed="false">Like</button>
 ```
 
-Endi biz button’ning matnini ushbu atribut qiymatiga asoslanib yangilashimiz mumkin:
+Endi biz buttonning matnini ushbu atribut qiymatiga asoslanib yangilashimiz mumkin:
 ```js copy
 const likeButton = document.getElementById("likeButton");
 likeButton.addEventListener("click", () => {
@@ -212,7 +212,7 @@ React bizga ushbu muammolarning ba'zilarini hal qilishda yordam beradi, lekin ul
 
 Bundan tashqari, React foydalanuvchi interfeysining holatini to‘liq nazorat qilish orqali buni ancha barqaror qiladi va shu holatga asoslanib render qiladi. Bu holat brauzer tomonidan boshqariladigan holat bilan tubdan farq qiladi, chunki brauzer holati boshqa kliyent tomondan(client-side) ishlaydigan skriptlar, brauzer kengaytmalari, qurilma cheklovlari va boshqa ko'plab omillar kabi bir qator omillar tufayli juda ishonchsiz bo'lishi mumkin.
 
-Bizning "*Like*" button misolimiz juda sodda, lekin boshlash uchun yaxshi misol. Hozircha, JavaScript yordamida buttonni interaktiv qilish qanday amalga oshirilishini ko'rdik, lekin bu jarayonni *yaxshiroq* bajarmoqchi bo'lsak, bu qo'lda bajaradigan juda ko'p ishni talab qiladi: buttonni brauzerda topishimiz, event listener qo'shishimiz, button’ning matnini yangilashimiz va turli xil murakkab holatlarni hisobga olishimiz kerak. Bu juda ko'p ish, va bu osonlikcha kengaytiriladigan narsa emas. Agar sahifada ko'plab buttonlar bo'lsa-chi? Agar bu ko'plab buttonlar interaktiv bo'lishi kerak bo'lsa-chi? Agar ko‘p buttonlar interaktiv bo‘lishi kerak bo‘lsa va biz eventlarga javoban foydalanuvchi interfeysini yangilashimiz kerak bo‘lsa-chi? Bu holda biz ***event delegation*** (yoki event bubling) ishlatsak bo'ladimi va yuqoriroqdagi `document`ga event listenerni qo'shishimiz(attach) kerakmi? Yoki har bir buttonga event listenerlarni qo'shishimiz kerakmi?
+Bizning "*Like*" button misolimiz juda sodda, lekin boshlash uchun yaxshi misol. Hozircha, JavaScript yordamida buttonni interaktiv qilish qanday amalga oshirilishini ko'rdik, lekin bu jarayonni *yaxshiroq* bajarmoqchi bo'lsak, bu qo'lda bajaradigan juda ko'p ishni talab qiladi: buttonni brauzerda topishimiz, event listener qo'shishimiz, buttonning matnini yangilashimiz va turli xil murakkab holatlarni hisobga olishimiz kerak. Bu juda ko'p ish, va bu osonlikcha kengaytiriladigan narsa emas. Agar sahifada ko'plab buttonlar bo'lsa-chi? Agar bu ko'plab buttonlar interaktiv bo'lishi kerak bo'lsa-chi? Agar ko‘p buttonlar interaktiv bo‘lishi kerak bo‘lsa va biz eventlarga javoban foydalanuvchi interfeysini yangilashimiz kerak bo‘lsa-chi? Bu holda biz ***event delegation*** (yoki event bubling) ishlatsak bo'ladimi va yuqoriroqdagi `document`ga event listenerni qo'shishimiz(attach) kerakmi? Yoki har bir buttonga event listenerlarni qo'shishimiz kerakmi?
 
 Avvalroq atganimizdek, biz quyidagi bayonot haqida yetarlicha tushunchaga ega bo'lishimiz kerak: brauzerlar veb-sahifalarni render qiladi. Veb-sahifalar HTML dokumentlari bo‘lib, ularga CSS tomonidan stillar beriladi va JavaScript yordamida interaktiv qilinadi. Bu bir necha o'nlab yillar davomida ajoyib ishladi va hali ham ishlaydi, lekin zamonaviy veb-dasturlarni yaratish, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlatish uchun sezilarli darajada abstraksiyaga ehtiyoj bor. Afsuski, biz ko'rib chiqqan "*Like*" button misoliga asoslanib aytganda, bizga bu jarayonda yordam kerak bo'ladi.
 
