@@ -1,0 +1,121 @@
+## Angularning rivojlanishi
+AngularJS 2010-yilda Google tomonidan ishlab chiqilgan bo'lib, veb-ishlab chiqish sohasiga katta ta'sir ko'rsatgan dastlabki JavaScript freymvorklaridan biri edi. Bu freymvork avvalgi kutubxonalar va freymvorklardan keskin farq qildi, bir qator innovatsion funksiyalarni o'z ichiga oldi va bu funksiyalar keyinchalik React kabi boshqa kutubxonalar va freymvorklarda ham o'z aksini topdi. Keling, AngularJS bilan boshqa kutubxonalarni batafsil solishtirib, uning muhim funksiyalariga nazar tashlab, React uchun qanday yo'l ochilganini tushunaylik.
+
+
+### Ikki tomonlama ma'lumot bog'lash(Two-way data binding)
+AngularJS’ning asosiy xususiyatlaridan biri ikki tomonlama ma'lumot bog'lash edi, bu UI va dasturdagi ma'lumotlar o'rtasidagi o'zaro ta'sirni ancha osonlashtirdi. Agar model (asosiy ma'lumotlar) o'zgarsa, view (UI) avtomatik ravishda yangilanadi va aksincha. Bu jQuery kabi kutubxonalardan keskin farq qildi, chunki jQueryda dasturchilar DOM (Document Object Model) ni qo'lda boshqarib, foydalanuvchi kiritgan ma'lumotlarni saqlashlari kerak edi.
+
+Quyida ikki tomonlama ma'lumot bog'lash muhim rol o'ynagan oddiy AngularJS dastur kodi ko'rsatilgan:
+``` html copy
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  </head>
+  <body ng-app="">
+    <p>Ism: <input type="text" ng-model="name" /></p>
+    <p ng-if="name">Salom, {{name}}!</p>
+  </body>
+</html>
+```
+
+Ushbu kodda, `ng-model` direktivasi input maydonining qiymatini `name` o'zgaruvchisiga bog'laydi. Siz input maydoniga yozganingizda, `name` modeli yangilanadi va interfeys — bu holda `"Salom, {{name}}!"` — real vaqtda yangilanadi.
+
+
+### Modulli arxitektura
+AngularJS modulli arxitekturani joriy qildi, bu dasturchilarga dastur komponentlarini mantiqiy tomondan ajratishga imkon berdi. Har bir modul alohida funksiyani o'z ichiga olib, mustaqil ravishda ishlab chiqilishi, test qilinishi va qo'llab-quvvatlanishi mumkin edi. Ba'zilar buni Reactning komponentlar modeliga turtki bo'lgan deb atashadi, lekin bu biroz bahsli masala.
+
+Mana oddiy misol:
+``` js copy
+var app = angular.module("myApp", [
+  "ngRoute",
+  "appRoutes",
+  "userCtrl",
+  "userService",
+]);
+
+var userCtrl = angular.module("userCtrl", []);
+userCtrl.controller("UserController", function ($scope) {
+  $scope.message = "UserControllerdan salom";
+});
+
+var userService = angular.module("userService", []);
+userService.factory("User", function ($http) {
+  //...
+});
+```
+
+Yuqoridagi misolda `myApp` moduli bir nechta boshqa modullarga bog'liq: `ngRoute`, `appRoutes`, `userCtrl`, va `userService`. Ushbu Har bir bog'liq bo'lgan modul o'zining alohida JavaScript faylida bo'lishi mumkin va asosiy `myApp` modulidan mustaqil ravishda ishlab chiqilishi mumkin. Bu tushuncha jQuery va Backbone.js kabi kutubxonalardan sezilarli darajada farq qildi, chunki ularda bunday "modul" tushunchasi mavjud emas edi.
+
+Biz bu bog'liq bo'lgan modullar(`appRoutes`, `userCtrl` va boshqalar)ni asosiy `app` moduliga kiritamiz va Angularda mashhur bo'lgan  "dependency injection"(bog'liqlikni kiritish) patternini qo'llaymiz. Shuni ta'kidlash kerakki, bu pattern JavaScript modullari standartlashtirilishidan oldin keng tarqalgan edi. Keyinchalik `import` va `export` operatorlari tezda asosiy darajaga chiqdi. Bu bog'liqliklarni React komponentlari bilan solishtirish uchun, dependency injection haqida bir oz mulohaza yuritamiz.
+
+
+### Dependency Injection (Bog'liqlikni kiritish)
+Dependency injection (DI) — bu dizayn pattern bo'lib, unda obyekt o'z bog'liqliklarini o'zi yaratmasdan qabul qiladi. AngularJS ushbu patternni o'z core dasturiga, ya'ni asosiy dasturiga, kiritgan va bu boshqa JavaScript kutubxonalarida keng tarqalgan xususiyat emas edi. Bu modullar va komponentlarni yaratish va boshqarish usullariga katta ta'sir ko'rsatdi, ular modullik va qayta foydalanish darajasini yuqori ravishda oshirdi.
+
+Quyida DI-ning AngularJS’da qanday ishlashiga misol keltirilgan:
+``` js copy
+var app = angular.module("myApp", []);
+app.controller("myController", function ($scope, myService) {
+  $scope.greeting = myService.sayHello();
+});
+
+app.factory("myService", function () {
+  return {
+    sayHello: function () {
+      return "Salom, Dunyo!";
+    },
+  };
+});
+```
+
+Bu misolda `myService` — bu DI orqali `myController` ga kiritiladigan servisdir. Kontroller servisni qanday yaratishni bilishi shart emas, u shunchaki servisni bog'liqlik sifatida belgilaydi va Angular uni yaratish va kiritish bilan shug'ullanadi. Bu bog'liqliklarni boshqarishni osonlashtiradi, komponentlarni testlashni va qayta foydalanuvchanligini oshiradi.
+
+
+### Backbone.js va Knockout.js bilan taqqoslash
+AngularJS taqdim etilgan davrda ikkala Backbone.js va Knockout.js ham mashhur kutubxonalar edi. Har ikkala kutubxona o'z kuchli tomonlariga ega bo'lgan bo'lsa-da, ularda AngularJS’da bo'lgan ba'zi xususiyatlardan mahrum edi.
+
+Masalan, Backbone.js dasturchilarga kodlarini boshqarishda ko'proq erkinlik berar edi va AngularJS singari qat'iy qoidalariga ega emasdi. Bu erkinlik kuchli tomon bo'lishi bilan birga, zaif tomon ham edi: bu ko'proq moslashtirish imkoniyatini berdi, lekin ko'proq ortiqcha(boilerplate) kod talab qilardi. AngularJS esa ikki tomonlama ma'lumot bog'lash va DI (bog'liqlikni kiritish) funksiyalari bilan ancha strukturalashgan edi. Ushbu qat'iy qoidalar dasturchilarning tezroq ishlashiga olib keldi, biz buni hozirda Next.js, Remix kabi zamonaviy freymvorklarda ham kuzatamiz. Bu jihatdan AngularJS o'z davridan ancha oldinda edi.
+
+Backbone.js, shuningdek, DOM o'zgarishlarini boshqarishda to'g'ridan-to'g'ri yechim taklif qilmagan va ko'pincha bu vazifani dasturchilarning o'ziga qoldirgan. AngularJS esa DOM o'zgarishlarini ikki tomonlama bog'lash orqali boshqardi, bu esa katta afzallik edi.
+
+Knockout.jsda fokus asosan ma'lumot bog'lashga qaratilgan edi va AngularJS’da mavjud bo'lgan DI va modulli arxitektura kabi boshqa kuchli vositalarga ega emas edi. AngularJS, to'liq funksional freymvork sifatida, bir sahifali ilova(SPA)larni yaratish uchun kengroq yechimlarni taklif qildi. AngularJS o'z rivojlanishini to'xtatgan bo'lsa-da, uning keyingi variantlari, ya'ni Angular, xuddi shunday, lekin yanada rivojlangan funksiyalarni taqdim etdi va keng miqyosli ilovalar uchun mukammal tanlovdir.
+
+
+### AngularJS’ning kamchiliklari
+AngularJS (1.x) taqdim etilgan paytda veb-ishlab chiqish amaliyotlarida katta qadamni amalga oshirgan edi. Biroq, veb-ishlab chiqish sohasining tez rivojlanishi natijasida AngularJS’ning ba'zi jihatlari uning zaif tomonlari sifatida ko'rila boshladi. Quyida ba'zi muhim kamchiliklar keltirilgan:
+
+##### Ishlash samaradorligi(Performance)
+AngularJS katta miqyosli dasturlarda, ayniqsa murakkab ma'lumot bog'lashlarda, ish faoliyati bilan bog'liq muammolarga duch keldi. AngularJSning asosiy xususiyati bo'lgan o'zgarishlarni aniqlash(digest cycle) katta ilovalarda yangilanishlarni sekinlashishiga va foydalanuvchi interfeysida kechikishlarga olib kelishi mumkin edi. Ikki tomonlama ma'lumot bog'lash innovatsion va ko'plab holatlarda foydali bo'lsa-da, bu ham ishlash samaradorligi muammolariga sabab bo'ldi.
+
+##### Murakkablik
+AngularJS ko'plab yangi tushunchalarni joriy qildi, jumladan, direktivalar, kontrollerlar, servislar, bog'liqlikni kiritish (DI), fabrika(factory)lar va boshqalar. Bu funksiyalar AngularJS’ni kuchli qilgan bo'lsa-da, ularni o'rganish murakkab va yangi dasturchilar uchun qiyin bo'ldi. Masalan, "bu fabrika bo'lishi kerakmi yoki servismi?" degan savol ko'plab dasturchi jamoalarni adashtirib qo'ydi.
+
+##### Angular 2+ ga o'tish muammolari
+Angular 2 e'lon qilinganda, bunda oldingi versiyalar bilan, ya'ni AngularJS 1.x bilan, o'zaro moslik yo'q edi va kodni Dart yoki TypeScriptda qayta yozishni talab qildi. Bu esa dasturchilarga katta miqdordagi kodlarini qayta yozishga majbur qildi va bu katta to'siq sifatida qaraldi. Angular 2+ ning joriy etilishi Angular hamjamiyatini bo'lib yubordi va tushunmovchiliklar keltirib chiqardi, bu esa React paydo bo'lishiga yo'l ochdi.
+
+
+##### Templatelarda murakkab sintaksis
+AngularJS template(shablon) atributlarida murakkab JavaScript ifodalari, masalan, `on-click="$ctrl.some.deeply.nested.field = 123"` kabi ifodalarni ishlatishga ruxsat berishi muammo edi, chunki bu UI va biznes logikani birgalikda aralashtirib yuborardi. Bu yondashuv kodni qo'llab-quvvatlashni qiyinlashtirdi, chunki bir-biriga bog'langan kodlarni tushunish va boshqarish murakkab bo'lib qoldi
+
+Bundan tashqari, debugging ham qiyinlashdi, chunki templatelar murakkab logikani boshqarish uchun yaratilmagan edi. Template ichidagi bunday ifodalar tufayli yuzaga keladigan xatolarni aniqlash va tuzatish oson emasdi. Shu bilan birga, bunday amaliyotlar dasturiy ta'minotni loyihalashning "vazifalarni ajratish" prinsipiga zid edi. Bu prinsip dasturiy ta'minotning turli jihatlarini alohida boshqarishni talab qiladi, bu esa kod sifati va boshqariluvchanligini yaxshilaydi.
+
+Nazariy jihatdan, template biror yangilanishni amalga oshirish uchun kontroller metodini chaqirishi kerak edi, lekin bunday amaliyotni cheklovchi narsa yo'q edi.
+
+
+##### Tip xavfsizligining yo'qligi
+AngularJS templatelari statik tiplarni tekshiruvchi vositalar, masalan, TypeScript bilan ishlamasdi. Bu dasturlash jarayonida xatolarni oldindan aniqlashni qiyinlashtiradi. Bu katta miqyosli dasturlar uchun muhim kamchilik edi, chunki bunday dasturlarda tip xavfsizligi boshqaruvchanlik va kengaytiriluvchanlik uchun juda muhimdir.
+
+
+##### `$scope` modelining chalkashligi
+AngularJS’dagi `$scope` obyekti ko'pincha chalkashlikka olib kelar edi, chunki u ma'lumotlarni bog'lash va turli kontekstlarda o'zini qanday tutishiga javobgar edi. U view va kontroller o'rtasidagi bog'lanish rolini bajargan bo'lsa-da, uning xatti-harakati har doim intuitiv yoki bashorat qilinadigan emas edi.
+
+Bu, ayniqsa, yangi foydalanuvchilar uchun murakkabliklarga olib keldi, chunki bular model va view o'rtasidagi ma'lumotlar sinxronizatsiyasini tushunishda qiyinchilik tug'dirardi. Bundan tashqari, `$scope` ichki kontrollerlarda parent-skope’dan meros olishi mumkin edi, bu esa ma'lum bir `$scope` xususiyati qayerda belgilanganini yoki o'zgartirilganini kuzatishni qiyinlashtirgan.
+
+Ushbu meros olish kutilmagan side effectlarga olib kelishi mumkin edi, ayniqsa, ichki skoplar ota va bola skoplarining o'zaro ta'siridan noxush natijalar tug'ilganda. Skoplar iyerarxiyasi tushunchasi va uning asosidagi prototip meros olish, JavaScriptda mavjud bo'lgan ko'proq an'anaviy leksik skoplash qoidalari bilan mos kelmas edi, bu esa yana bir o'rganish murakkabligini qo'shgan edi.
+
+Misol uchun, Reactda holat(state) kerakli komponent bilan bir joyda saqlanadi va bu muammoni butunlay bartaraf etadi.
+
+
+##### Cheklangan ishlab chiqish vositalari
+AngularJS debugging va ishlash samaradorligini profillash(performance profiling) uchun keng imkoniyatlarni taqdim etuvchi vositalarni taklif qilmadi. Ayniqsa, React DevTools bilan taqqoslaganda, masalan, Replay.io kabi vositalar React ilovalari uchun vaqt bo'ylab debugging imkoniyatlarini kengaytiruvchi imkoniyatlarni taqdim etadi.
