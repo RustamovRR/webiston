@@ -34,6 +34,19 @@ code.text-\[\.9em\] {
   font-size: 14px;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+}
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
 @media screen and (max-width: 1200px) {
   .home-content .hide-medium {
     display: none;
