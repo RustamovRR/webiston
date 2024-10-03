@@ -15,7 +15,7 @@ const config: DocsThemeConfig = {
       }
     }
   },
-  logo: '',
+  // logo: '',
   head: function useHead() {
     const { title } = useConfig()
     const { route } = useRouter()
@@ -60,6 +60,7 @@ const config: DocsThemeConfig = {
     },
     defaultMenuCollapseLevel: 1,
     toggleButton: true,
+    autoCollapse: false,
   },
   search: {
     placeholder: 'Dokumentatsiyadan qidirish...',

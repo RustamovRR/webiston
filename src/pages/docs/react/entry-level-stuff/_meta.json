@@ -3,5 +3,6 @@
   "jquery": "jQuery",
   "backbone": "Backbone",
   "knockout": "Knockout",
-  "angular": "Angular"
+  "angular": "Angular",
+  "enter-react": "Reactga kirish"
 }
