@@ -1,0 +1,53 @@
+## Flux Arxitekturasi
+Flux — bu Facebook (hozirgi Meta) tomonidan ommalashtirilgan, klient tomonidagi veb-ilovalarni yaratish uchun mo'ljallangan arxitekturaviy dizayn pattern (rasmga qarang). U ilova ichidagi ma'lumotlar oqimini oldindan bashorat qilinadigan qilish uchun bir tomonlama ma'lumot oqimini ta'minlaydi.
+
+![Flux architecture image](/flux-architecture.png)
+
+Flux arxitekturasining asosiy tushunchalari quyidagilardan iborat:
+
+#### Actions (Amallar)
+Actions — bu yangi ma'lumotlarni va ularni aniqlovchi type xususiyatini o'z ichiga olgan oddiy obyektlar. Ular tizimga kiruvchi tashqi va ichki signallarni ifodalaydi, masalan, foydalanuvchi bilan o'zaro ta'sirni, server javoblari va form input’lari. Action’lar markaziy Dispatcher orqali turli Store’larga uzatiladi:
+``` js copy
+// Action obyekti misoli
+{
+  type: 'ADD_TODO',
+  text: 'Flux Arxitekturasini o'rganish'
+}
+```
+
+#### Dispatcher (Dispetcher)
+Dispatcher — bu Flux arxitekturasining markaziy qismi. U action’larni qabul qiladi va ularni ilovadagi ro'yxatdan o'tgan store’ga uzatadi. U qayta chaqirish funksiyalari (callbacks) ro'yxatini boshqaradi va har bir store o'zini va o'zining callback funksiyasini dispetcher’ga ro'yxatdan o'tkazadi. Action jo'natilganda, u barcha ro'yxatdan o'tgan callback’larga yuboriladi:
+``` js copy
+// Action ni dispetcherlash misoli
+Dispatcher.dispatch(action);
+```
+
+#### Stores (Saqlovchilar)
+Store’lar ilovaning holati va logikasini saqlaydi. Ular MVC arxitekturasidagi modellarga biroz o'xshaydi, lekin ko'plab obyektlarning holatini boshqaradi. Store'lar dispetcher bilan ro'yxatdan o'tadi va action’larni qayta ishlash uchun callback funksiyalarini taqdim etadi. Store’ning holati yangilanganda, u o'zgarish sodir bo'lganini bildirish uchun views’ga change eventini tarqatadi:
+``` js copy
+// Store misoli
+class TodoStore extends EventEmitter {
+  constructor() {
+    super();
+    this.todos = [];
+  }
+
+  handleActions(action) {
+    switch (action.type) {
+      case "ADD_TODO":
+        this.todos.push(action.text);
+        this.emit("change");
+        break;
+      default:
+        // hech qanday amal bajarilmaydi
+    }
+  }
+}
+```
+
+#### Views (Ko'rinishlar)
+Views — bu React komponentlari. Ular store’dan keladigan o'zgarish hodisalarini tinglaydi va ularga bog'liq bo'lgan ma'lumotlar o'zgarganda o'zlarini yangilaydi. Shuningdek, ular tizim holatini yangilash uchun yangi action’lar yaratishi mumkin, shu tariqa ma'lumotlarning bir tomonlama aylanishini shakllantiradi.
+
+Flux arxitekturasi tizim bo'ylab bir tomonlama ma'lumot oqimini rag'batlantiradi, bu esa vaqt o'tishi bilan o'zgarishlarni kuzatishni osonlashtiradi. Ushbu oldindan bashorat qilinishlik xususiyati keyinchalik kodni yanada optimallashtirish uchun kompilyatorlar uchun asos bo'lib xizmat qilishi mumkin, masalan, React Forget bilan (bu haqida keyinroq batafsil gaplashamiz).
+
+
