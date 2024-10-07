@@ -51,3 +51,12 @@ Views — bu React komponentlari. Ular store’dan keladigan o'zgarish hodisalar
 Flux arxitekturasi tizim bo'ylab bir tomonlama ma'lumot oqimini rag'batlantiradi, bu esa vaqt o'tishi bilan o'zgarishlarni kuzatishni osonlashtiradi. Ushbu oldindan bashorat qilinishlik xususiyati keyinchalik kodni yanada optimallashtirish uchun kompilyatorlar uchun asos bo'lib xizmat qilishi mumkin, masalan, React Forget bilan (bu haqida keyinroq batafsil gaplashamiz).
 
 
+### Flux arxitekturasi afzalliklari
+Flux arxitekturasi veb-ilovalardagi murakkablikni boshqarish va ularni oson saqlashni ta'minlashda turli xil foydali jihatlar keltiradi. Quyida ba'zi muhim afzalliklari keltirilgan:
+- **Ma'lumotlarning markaziy boshqaruvi (Single source of truth)**: Flux ilovaning holatini bir markaziy boshqaruvda saqlashni ta'kidlaydi, bu store’larda saqlanadi. Ushbu markazlashtirilgan holat boshqaruvi ilovaning xatti-harakatini oldindan bashorat qilish mumkin va bu tushunishni osonlashtiradi. Bu ko'p, o'zaro bir-biriga bog'liq bo'lgan markazlashtirilgan manbalar bilan bog'liq muammolarni bartaraf etadi, chunki bu xatoliklar va ilovada o'zaro mos kelmaydigan holatga olib kelishi mumkin.
+
+- **Testlanuvchanlik**: Flux’ning aniq strukturalari va oldindan bashorat qilinadigan ma'lumotlar oqimi ilovani juda testlanuvchan qiladi. Tizimning turli qismlari (masalan, actionlar, dispetcher, store’lar va view’lar) orasidagi vazifalarni ajratish har bir qismni alohida unit testlashni osonlashtiradi. Bundan tashqari, ma'lumotlar oqimi bir tomonlama bo'lganda va holat ma'lum, oldindan bashorat qilish mumkin bo'lgan joylarda saqlanganda, test yozish ancha oson bo'ladi.
+
+- **Vazifalarni ajratish (Separation of concerns, SoC)**: Flux, yuqorida aytilganidek, tizimning turli qismlarining vazifalarini aniq ajratib qo'yadi. Ushbu ajratish tizimni yanada modulli, saqlashni va tushunishni oson qiladi. Har bir qism aniq belgilangan vazifaga ega va bir tomonlama ma'lumotlar oqimi bu qismlar qanday o'zaro aloqada bo'lishini aniq ko'rsatib beradi.
+
+Flux arxitekturasi mustahkam, kengaytiriladigan va oson saqlanadigan veb-ilovalar qurish uchun ishonchli poydevor taqdim etadi. Uning bir tomonlama ma'lumotlar oqimi, markaziy boshqaruvi va vazifalarning ajratilishiga urg‘u berishi, ilovalarni ishlab chiqish, testlash va xatolarni aniqlashni ancha osonlashtiradi.
