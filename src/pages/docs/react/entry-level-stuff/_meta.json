@@ -1,9 +1,10 @@
 {
-  "world-before-react": "Reactdan oldingi davr",
+  "world-before-react": "React’dan oldingi davr",
   "jquery": "jQuery",
   "backbone": "Backbone",
   "knockout": "Knockout",
   "angular": "Angular",
-  "enter-react": "Reactga kirish",
-  "react-value-proposition": "Reactning qiymat taklifi"
+  "enter-react": "React’ga kirish",
+  "react-value-proposition": "React’ning qiymat taklifi",
+  "releasing-react": "React’ning ommaga chiqishi"
 }
