@@ -4,5 +4,6 @@
   "backbone": "Backbone",
   "knockout": "Knockout",
   "angular": "Angular",
-  "enter-react": "Reactga kirish"
+  "enter-react": "Reactga kirish",
+  "react-value-proposition": "Reactning qiymat taklifi"
 }
