@@ -1,0 +1,15 @@
+’
+framework - freymvork
+open source - ochiq manbali
+Separation of concerns - vazifalarni ajratish
+Single source of truth - Ma'lumotlarning markaziy boshqaruvi
+status quo - o'sha paytdagi standard
+curly braces - jingalak qavslar
+maintain - davom ettirish
+community - hamjamiyat
+under the hood - ichki ishlash mexanizmi
+string - satr
+alternative - muqobil
+engine - dvijok
+bundle - to'plam paketi
+syntax sugar - sodda sintaksis

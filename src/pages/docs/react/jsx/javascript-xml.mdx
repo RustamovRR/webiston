@@ -1,0 +1,103 @@
+## JSX - bu JavaScript XML(mi)?
+Agar siz veb-dunyosida uzoq vaqtdan beri bo'lsangiz, **AJAX** atamasini eslashingiz mumkin. AJAX (*Asynchronous JavaScript and XML*) 2000-yillarda interaktiv veb-sahifalarni yaratish uchun ishlatilgan texnologiyalarning yangi atamasi edi. Ushbu texnologiyalar yordamida sahifa holati o'zgarganda butun sahifani qayta yuklash o'rniga, sahifa asinxron tarzda yangilanardi.
+
+`XMLHttpRequest` kabi vositalar yordamida brauzerda asinxron (ya'ni, bloklanmaydigan) HTTP (HyperText Transfer Protocol) so'rovi yuborilar edi. Ushbu so'rovning javobi odatda XML formatida bo'lar edi. Bugungi kunda biz ko'proq JSON (JavaScript Object Notation) formatida javob olamiz, shuning uchun `fetch` metodi `XMLHttpRequest`dan ustun keldi, chunki `XMLHttpRequest`da XML so'zi bor.
+
+### JSX’ning ishlatilishi
+JSX — bu JavaScript uchun sintaksis kengaytmasi bo'lib, dasturchilarga JavaScript kodining ichida HTML’ga o'xshash kod yozish imkonini beradi. Dastlab Meta (avvalgi Facebook) tomonidan React bilan birga ishlatish uchun ishlab chiqilgan, ammo keyinchalik boshqa kutubxonalar va freymvorklar ham uni qabul qila boshladi. JSX o'zi alohida til emas, aksincha kompilyator yoki transpilyator yordamida oddiy JavaScript kodiga aylantiriladigan sintaksis kengaytmasi hisoblanadi. JSX kodini kompilyatsiya qilganda, u oddiy JavaScript kodiga aylanadi. Bu jarayonga keyinroq batafsil to'xtalamiz.
+
+JSX sintaksisi HTMLga o'xshash bo'lsa-da, ayrim farqlar mavjud. Masalan, JSXda HTMLga o'xshash kod ichida JavaScript ifodalarini `{}` jingalak qavslar yordamida joylashtirish mumkin. Bundan tashqari, JSX atributlari *camelCase* formatida yoziladi, HTML’da esa atributlar kichik harflarda yoziladi: masalan, HTML’da `onclick` JSX’da esa `onClick` bo'ladi. HTML elementlari kichik harflarda yoziladi, JSX’dagi komponentlar esa katta harflarda boshlanadi: masalan, `div` bu HTML elementi, lekin `Div` esa React komponentidir.
+
+Bundan tashqari, React ilovalarini JSX’siz yaratish ham mumkin, lekin kodni o'qish, tushunish va uni davom ettirish qiyinlashadi. Shunga qaramay, agar xohlasangiz, JSX’siz ham yozish mumkin. Keling, JSX bilan yozilgan va JSX’siz yozilgan React komponentlarini ko'rib chiqamiz.
+
+Bu yerda JSX bilan ishlatilinishiga misol:
+``` js copy
+const MyComponent = () => (
+  <section id="list">
+    <h1>Ushbu ro'yxat!</h1>
+    <p>Ushbu ro'yxat juda ajoyib va unda ajoyib narsalar bor!</p>
+    <ul>
+      {amazingThings.map((t) => (
+        <li key={t.id}>{t.label}</li>
+      ))}
+    </ul>
+  </section>
+);
+```
+
+Bu esa JSX’siz ishlatilinishiga misol:
+``` js copy
+const MyComponent = () =>
+  React.createElement(
+    "section",
+    { id: "list" },
+    React.createElement("h1", {}, "Ushbu ro'yxat!"),
+    React.createElement(
+      "p",
+      {},
+      "Ushbu ro'yxat juda ajoyib va unda ajoyib narsalar bor!"
+    ),
+    React.createElement(
+      "ul",
+      {},
+      amazingThings.map((t) =>
+        React.createElement("li", { key: t.id }, t.label)
+      )
+    )
+  );
+```
+
+Tushunarli bo'lishi uchun, biz bu yerda yuqoridagi JSX transformatsiyasini ishlatdik, ya'ni JSX kodni qanday qilib oddiy JavaScript’ga aylantirishini ko'rsatish uchun eski usulda yozdik. Ushbu transformatsiya jarayonlarini keyinroq batafsilroq o'rganamiz, lekin hozirgi paytda A sintaksisni B sintaksisga o'zgartirish jarayonini transformatsiya deb atashimizni bilib oling.
+
+Bugungi kunda React 17 versiyasida joriy qilingan yangi JSX transformatsiyasi bilan, u xuddi shu ishni bajarish uchun ba'zi maxsus funksiyalarni avtomatik ravishda import qiladi. JSX’siz yozilgan kodni hozirgi zamonaviy transformatsiya yordamida quyidagicha ifodalash mumkin:
+Bu esa JSX’siz ishlatilinishiga misol:
+``` js copy
+import { jsx as _jsx } from "react/jsx-runtime";
+import { jsxs as _jsxs } from "react/jsx-runtime";
+
+const MyComponent = () =>
+  _jsxs("section", {
+    id: "list",
+    children: [
+      _jsx("h1", {
+         children: "Ushbu ro'yxat!" 
+         }),
+      _jsx("p", { 
+        children: "Ushbu ro'yxat juda ajoyib va unda ajoyib narsalar bor!" 
+        }),
+      _jsxs("ul", {
+        children: amazingThings.map((t) =>
+          _jsx("li", { children: t.label }, t.id)
+        ),
+      }),
+    ],
+  });
+```
+
+Bu holda ham JSX va JSX’siz yozilgan kodlarning farqini ko'ryapsizmi? JSX bilan yozilgan birinchi misol ancha tushunarli va o'qish oson, JSX’siz yozilgan kod esa murakkabroq va ancha uzun bo'lib ketadi. JSX yordamida yozilgan kod o'qilishi osonroq va uni davom ettirish qulayroq. Keling, bu usullarning afzallik va kamchiliklarini ko'rib chiqamiz.
+
+
+#### JSX’ning afzalliklari
+Veb dasturlashda JSX foydalanishning bir necha afzalliklari mavjud:
+
+-  **O'qish va yozish qulayligi**: HTML bilan tanish bo'lgan dasturchilar JSX sintaksisini o'qish va yozish ancha oson.
+-  **Yaxshilangan xavfsizlik**: JSX kodi xavfsiz JavaScript kodiga kompilyatsiya qilinadi, bu esa HTML satrlarida xavfli belgilar sanaladigan belgilardan tozalaydi (masalan `<` va `>` dan). Bu belgilar yangi elementlar yaratishi mumkin, ammo bu jarayonda bunday HTML satrlari ushbu belgilar o'rniga shunchaki kichikroq(less-than) va kattaroq(greater-than) belgilarga almashtiriladi. Bu jarayon sanitizatsiya deb ataladi.
+-  **Kuchli tiplash**: JSX kuchli tiplash imkoniyatini beradi, bu esa xatolarni sodir bo'lishidan oldin aniqlashga yordam beradi. JSX’ni TypeScript bilan ifodalash mumkin, ammo TypeScript’dan foydalanilmasa ham, JSDoc-style’dagi sharhlar va `propTypes`dan foydalanish orqali yaxshilangan tip xavfsizligidan foydalanish mumkin.
+-  **Komponentga asoslangan arxitekturani rag'batlantirish**: JSX komponentga asoslangan arxitekturani rag'batlantiradi, bu esa kodni yanada modulli va uni davom ettirishni qulaylashtiradi.
+-  **Keng qo'llanilish**: JSX React hamjamiyati tomonidan keng qo'llaniladi va boshqa kutubxonalar va freymvorklar tomonidan ham qo'llab-quvvatlanadi.
+
+#### JSXning kamchiliklari
+JSX’dan foydalanishning ba'zi kamchiliklari ham mavjud:
+
+-  **O'rganish qiyinchiligi**: JSX bilan tanish bo'lmagan dasturchilarga uni o'rganish qiyinroq bo'lishi mumkin.
+-  **Qo'shimcha vositalarni talab qiladi**: JSX kodi oddiy JavaScript kodiga kompilyatsiya qilinishi kerak, bu esa rivojlantirish jarayoniga qo'shimcha bosqich qo'shadi. Masalan, Vue.js kabi boshqa muqobillar oddiygina `<script>` tegini sahifaga qo'shish orqali brauzerda darhol ishlay oladi.
+-  **Vazifalarning aralashib ketishi**: Ba'zi dasturchilar JSX HTML’ga o'xshash kodni JavaScript bilan birlashtirgani uchun HTML va JavaScript vazifalari aralashib ketishini aytishadi, bu esa ifoda etishni va logikani ajratishni qiyinlashtirishi mumkin.
+-  **JavaScript bilan to'liq mos kelmaslik**: JSX inline ifodalarni qo'llab-quvvatlaydi, lekin inline bloklarni emas. Ya'ni, JSX elementlari daraxti ichida biz inline ifodalarni qo'sha olamiz, lekin `if` yoki `switch` bloklarini emas. Bu JSX bilan endigina ishlay boshlagan dasturchilar uchun tushunish biroz murakkabroq bo'lishi mumkin.
+
+
+#### JSX’ning ommalashishi va keng qo'llanilishi
+JSX’ning kamchiliklariga qaramasdan, u veb-dasturchilar, ayniqsa React bilan ishlayotganlar orasida mashhur tanlovga aylandi. JSX komponentlar yaratish va foydalanuvchi interfeyslarini qurishning kuchli va moslashuvchan usulini taklif qiladi. Bundan tashqari, JSX katta va faol hamjamiyat tomonidan qo'llab-quvvatlanadi. JSX faqat Reactda ishlatilish bilan cheklanib qolmay, Vue.js, Solid, Qwik va boshqa kutubxonalar va freymvorklar tomonidan ham qabul qilindi. Bu JSX’ning faqat React va veb-ekotizimi bilan bog'liq emasligini va kelajakda uning ommalashishi davom etishini ko'rsatadi. JSX hatto iOS’da SwiftUI kabi boshqa tizimlarga ham o'z ta'sirini o'tkazmoqda.
+
+Umuman olganda, JSX kuchli va moslashuvchan vosita bo'lib, dinamik va responsiv foydalanuvchi interfeyslarini yaratishda yordam beradi. JSX bir maqsadda yaratilgan: React komponentlari uchun kodni yozish, ifodalash va davom ettirishni oddiylashtirish va shu bilan birga takrorlash, hisoblash va inline bajarish imkoniyatlarini saqlab qolish.
+
+JSX brauzerda ishlashidan oldin oddiy JavaScriptga aylanadi. Bu qanday amalga oshadi? Endi bu jarayonni chuqurroq ko'rib chiqamiz!

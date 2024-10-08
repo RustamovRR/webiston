@@ -1,0 +1,129 @@
+
+## JSX’ning ichki ishlash mexanizmi (under the hood)
+Qanday qilib biror dasturlash tilining kengaytmasini yaratish mumkin? Ular qanday ishlaydi? Bu savollarga javob berish uchun dasturlash tillari haqida biroz tushunishimiz kerak bo'ladi. Ayniqsa, quyidagi kod qanday qilib 3 ni chiqarishini tushunib olishimiz zarur:
+``` js copy
+const a = 1;
+let b = 2;
+console.log(a + b);
+```
+
+Bu oddiy misolni tushunish JSXni yaxshiroq anglashimizga yordam beradi, bu esa o'z navbatida Reactni yaxshiroq tushunishga va React bilan ishlashdagi qobiliyatimizni oshirishga olib keladi.
+
+JSX’ni yaxshiroq tushunish orqali React’ning ichki ishlash mexanizmini va undan qanday samarali foydalanishni yaxshiroq bilib olamiz.
+
+
+### Kod qanday ishlaydi?
+Oldingi kod misoli faqatgina matn edi. Bu qanday qilib kompyuter tomonidan tushunilib, bajariladi? Buni tushunish uchun, kod shunchaki oddiy `RegExp` (regular expression) orqali o'qilmaydi. Tajribada shunday bir marta dasturlash tilini shu usulda yaratishga harakat qilingan va bu muvaffaqiyatsiz bo'lgan, chunki regex’lar to'g'ri ishlashini ta'minlash qiyin, ular o'qish va tushunish uchun ham murakkab, va texnik muammolar tufayli uni davom ettirish qiyin bo'ladi. Misol sifatida, quyidagi regex haqiqiy email manzilini tanib olish uchun ishlatiladi. Bir qarashda, uning nima uchun ishlatilayotganini bilish deyarli imkonsiz:
+``` reg copy
+\[(?:[a-z0-9!#\$%&'\*\+-/=\?\^_`{\|}~]+(?:\.[a-z0-9!#\$%&'\*\+-/=\?\^_`{\|}~]+)\
+*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0
+e-\x7f])\*")@(?:(?:[a-z0-9](?:[a-z0-9-]\*?[a-z0-9])?\.)\*?[a-z0-9](?:[a-z0-9-]\*
+?[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4]
+[0-9]|[01]?[0-9][0-9]?|[a-z0-9-]\*?[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\
+x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])\+)\])\]
+```
+
+Biroq, bu regex to'liq ham emas, chunki uning to'liq versiyasi hatto bir sahifaga sig'masligi mumkin! Shuning uchun, regex o'rniga, kod kompilyator deb nomlangan dastur yordamida o'qiladi. Kompilyator yuqori darajadagi dasturlash tilida yozilgan manba kodni sintaksis daraxtiga (masalan, JavaScript obyektiga o'xshash daraxt ma'lumotlar strukturasiga) aylantiradi va bu maxsus qoidalarga binoan amalga oshiriladi.
+
+Kod kompilyatsiyasi bir necha bosqichlarni o'z ichiga oladi: leksik tahlil(lexical analysis), sintaksisni tahlil qilish(parsing), semantik tahlil(semantic analysis), optimizatsiya va kodni yaratish. Keling, ushbu qadamlarning har birini batafsilroq ko'rib chiqamiz va zamonaviy dasturiy ta'minotni ishlab chiqish asnosida kompilyatorlarning rolini muhokama qilamiz.
+
+Kompilyator JavaScriptda uchta asosiy bosqichdan iborat jarayon orqali ishlaydi: *tokenizatsiya*, *tahlil qilish(parsing)* va *kod yaratish*. Keling, har bir bosqichni batafsil ko'rib chiqamiz:
+
+
+#### Tokenizatsiya (Tokenization)
+Asosan, belgilardan iborat satrni mazmunli tokenlarga ajratish. Agar tokenlar holatga ega bo'lsa (stateful) va har bir token ota-ona yoki bolalar haqida holat saqlasa, bunday tokenlash ***lexer*** deb ataladi. Bu muhokamamiz maqsadlari uchun zarur bo'lgan soddalashtirishdir: lexing asosan holatga ega tokenlashdir.
+
+Lexer’lar tokenlarni aniqlash uchun ba'zan muntazam ifodalar yoki shunga o'xshash narsalardan foydalanadigan *lexer qoidalari*ga ega bo'ladi. Ular o'zlarining dasturlash tilini ifodalovchi matn satrida o'zgaruvchi nomlari, obyekt kalitlari va qiymatlari va boshqa muhim tokenlarni aniqlash uchun qo'llaniladi. Lexer keyin bu kalit so'zlarni amalga oshirilishiga qarab, ma'lum bir toifa bo'yicha xaritalaydi. Masalan, `const` 0 ga, `let` 1 ga, `function` 2 ga va hokazo.
+
+Satr tokenlangan yoki lexed bo'lgandan so'ng, biz keyingi bosqichga o'tamiz, ya'ni tahlil qilish.
+
+#### Tahlil qilish (Parsing)
+Bu jarayon tokenlarni olib, ularni sintaksis daraxtiga aylantirish jarayonidir. Sintaksis daraxti kod tuzilishini ifodalovchi ma'lumotlar tuzilmasidir. Masalan, oldin ko'rib chiqqan kodimiz satrlari sintaksis daraxti sifatida quyidagicha ifodalanishi mumkin:
+``` js copy
+{
+  type: "Program",
+  body: [
+    {
+      type: "VariableDeclaration",
+      declarations: [
+        {
+          type: "VariableDeclarator",
+          id: {
+            type: "Identifier",
+            name: "a"
+          },
+          init: {
+            type: "Literal",
+            value: 1,
+            raw: "1"
+          }
+        }
+      ],
+      kind: "const"
+    },
+    {
+      type: "VariableDeclaration",
+      declarations: [
+        {
+          type: "VariableDeclarator",
+          id: {
+            type: "Identifier",
+            name: "b"
+          },
+          init: {
+            type: "Literal",
+            value: 2,
+            raw: "2"
+          }
+        }
+      ],
+      kind: "let"
+    },
+    {
+      type: "ExpressionStatement",
+      expression: {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          name: "console"
+        },
+        arguments: [
+          {
+            type: "BinaryExpression",
+            left: {
+              type: "Identifier",
+              name: "a"
+            },
+            right: {
+              type: "Identifier",
+              name: "b"
+            },
+            operator: "+"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Parser’ning yordamida satr JSON obyekti bo'lib qoladi. Dasturchilar sifatida, biz bunday ma'lumotlar tuzilmasiga ega bo'lganda, qiziqarli narsalarni amalga oshirishimiz mumkin. Dasturlash tillari dvijoklari ushbu ma'lumotlar tuzilmalardan foydalanib, uchinchi bosqichda kodni yaratish qilish jarayonini tugatadi.
+
+#### Kodni yaratish (code generation)
+Bu yerda kompilyator abstrakt sintaksis daraxtidan (AST) mashina kodini ishlab chiqaradi. Bu AST’dagi kodni kompyuter protsessorida to'g'ridan-to'g'ri bajarilishi mumkin bo'lgan ko'rsatmalar to'plamiga aylantirishni o'z ichiga oladi. Natijada, mashina kodi JavaScript dvijogi tomonidan bajariladi. Umuman olganda, AST’ni mashina kodiga aylantirish jarayoni murakkab bo'lib, ko'plab turli bosqichlarni o'z ichiga oladi. Biroq, zamonaviy kompilyatorlar juda murakkab bo'lib, keng ko'lamdagi hardware arxitekturalarida samarali ishlaydigan yuqori darajada optimallashtirilgan kod ishlab chiqarishi mumkin.
+
+
+### Kompilyator turlari 
+Kompilyatorlar bir necha xil bo'lib, har biri turli xususiyatlar va foydalanish holatlariga ega. Eng ko'p tarqalgan kompilyator turlari quyidagilardir:
+-  **Native kompilyatorlar (Native compilers)**: Ushbu kompilyatorlar maqsad qilingan platformaning protsessorida to'g'ridan-to'g'ri bajarilishi mumkin bo'lgan mashina kodini ishlab chiqaradi. Native kompilyatorlar odatda mustaqil ilovalar yoki tizim darajasidagi dasturlar yaratish uchun ishlatiladi.
+-  **Cross kompilyatorlar (Cross-compilers)**: Ushbu kompilyatorlar, kompilyator ishlayotgan platformadan farq qiluvchi platforma uchun mashina kodini ishlab chiqaradi. Cross kompilyatorlar odatda o'rnatilgan tizimlarni rivojlantirishda yoki ixtisoslashtirilgan hardware’larni maqsad qilganda ishlatiladi.
+-  **JIT (Just-in-Time) kompilyatorlar**: Ushbu kompilyatorlar kodni bajarilish vaqti(runtime)da mashina kodiga aylantiradi, undan oldindan emas. JIT kompilyatorlari, masalan, Java virtual mashinasida keng qo'llaniladi va an'anaviy tarjima qiladigan(interpreter) kompilyatorlarga nisbatan sezilarli darajada samaradorlik afzalliklarini taklif qiladi.
+-  **Tarjima qiladigan kompilyatorlar (Interpreters)**: Ushbu dasturlar manba kodini bevosita bajaradi, kompilyatsiyani talab qilmasdan. Interpreter’lar odatda kompilyatorlardan sekinroq bo'ladi, lekin kengroq moslashuvchanlik va foydalanish qulayligini taklif qiladi.
+
+JavaScript kodini samarali bajarish uchun zamonaviy muhitlar, shu jumladan veb brauzerlari, ko'pincha JIT kompilyatorlaridan foydalanadi. Ushbu tizimlarda, JavaScript manba kodi avval bir oraliqdagi ifodaga, masalan, bayt kodiga aylantirilishi mumkin. Keyin JIT kompilyatori dastur bajarilayotgan paytda, ushbu bayt kodini mashina kodiga dinamik ravishda aylantiradi.
+
+Bu ***on-the-fly*** kompilyatsiyasi, dvijokka real vaqt ma'lumotlari, masalan, o'zgaruvchilar turlari va tez-tez bajariladigan kod yo'llari asosida optimallashtirish imkonini beradi. Ba'zi dvijoklar, bajarilayotgan kod segmentlari uchun tezkor, optimallashtirilmagan kompilyatsiyadan boshlanadigan bir necha bosqichli kompilyatsiyani qo'llaydi. Ushbu dinamik yondashuv JavaScript dvijoklariga keng doiradagi ilovalar uchun ajoyib samaradorlikni ta'minlash imkonini beradi.
+
+Runtime’lar odatda dvijoklar bilan interfeysni ta'minlaydi, o'z muhitlariga mos kontekstual yordamchilar va xususiyatlarni taqdim etadi. Eng mashhur JavaScript runtime’laridan biri, shubhasiz, Google Chrome kabi umumiy veb brauzerdir: u dvijok bilan interfeysni ta'minlaydigan Chromium dasturiy ta'minotini o'z ichiga oladi. Shuningdek, server tomonda *v8* dvijogidan foydalanadigan Node.js runtime’ni ishlatamiz. Siz hozirgi paytda qaysi yana boshqa dvijok va runtime’larni bilasiz?
+
+Runtime JavaScript dvijoklariga kontekstni beradi, masalan, brauzer runtime bilan birga keladigan `window` obyekti va `document` obyekti. Agar siz avval brauzerlar va Node.js bilan ishlagan bo'lsangiz, Node.js'ning o'zida global `window` obyekti yo'qligini bilgan bo'lishingiz mumkin. Chunki bu boshqa runtime bo'lib, shuning uchun boshqa kontekstni taqdim etadi. Cloudflare ***Workers*** deb nomlangan shunga o'xshash runtime’ni yaratdi, bu JavaScriptni global distributsiya qilingan mashinalarda, ya'ni edge serverlarda bajarish uchun javobgardir. Bun va Deno esa yanada ko'proq muqobil runtime’lardir — ammo biz bu jarayonni chetlab o'tmoqdamiz. Bularning barchasi JSX bilan qanday bog'liq?
