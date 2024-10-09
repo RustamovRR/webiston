@@ -1,4 +1,6 @@
 ’
+state - state
+event - event
 framework - freymvork
 open source - ochiq manbali
 Separation of concerns - vazifalarni ajratish
@@ -15,5 +17,10 @@ bundle - to'plam paketi
 syntax sugar - sodda sintaksis
 runtime - kodni bajarilish vaqti
 reconcilation - moslashtirish
-expensive - ko'p resurs talab qilish
+expensive - ko'p(qo'shimcha) resurs talab qilish
 batch update - to'plab yangilash
+unique - takrorlanmas
+advanced - ilg'or
+scalable - kengayish, kengayuvchan
+reusable components - qayta ishlatiladigan komponentlar
+performance - ishlash samaradorligi
