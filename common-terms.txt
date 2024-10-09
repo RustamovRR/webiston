@@ -13,3 +13,7 @@ alternative - muqobil
 engine - dvijok
 bundle - to'plam paketi
 syntax sugar - sodda sintaksis
+runtime - kodni bajarilish vaqti
+reconcilation - moslashtirish
+expensive - ko'p resurs talab qilish
+batch update - to'plab yangilash

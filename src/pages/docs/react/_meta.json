@@ -1,4 +1,5 @@
 {
   "entry-level-stuff": "React asoslari",
-  "jsx": "JSX"
+  "jsx": "JSX",
+  "virtual-dom": "Virtual DOM"
 }

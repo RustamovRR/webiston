@@ -1,0 +1,19 @@
+## Virtual DOM’ga kirish
+
+Virtual DOM, xuddi DOM kabi, JavaScript obyekti sifatida modellashtirilgan HTML dokumentidir: bu "Document Object Model" (DOM) atamasining to'g'ridan-to'g'ri ma’nosi ham shudir. DOM’ning o'zi brauzerning kodni bajarilish vaqti(runtime)da ishlatiladigan dokument modelidir. Virtual DOM esa ushbu modelning yengil vaznili nusxasi(lightweight) bo'lib, muhim farqi shundaki, real DOM `Node` obyektlaridan tashkil topgan bo'lsa, virtual DOM oddiy JavaScript obyektlaridan tashkil topadi va ular DOM’ni tavsiflash uchun xizmat qiladi. Bu yondashuv veb dasturchilarga foydalanuvchi interfeyslarini yanada samarali va tezkor tarzda yaratishga yordam beradi, bu bobda buni batafsil ko'rib chiqamiz.
+
+React’da, biz interfeysda biror o'zgarish bo'lishligini kiritganimizda, masalan, `setState` yoki boshqa bir mexanizm orqali, avval virtual DOM yangilanadi, so'ngra real DOM virtual DOM`dagi o'zgarishlarga mos ravishda yangilanadi. Ushbu jarayon ***reconciliation*** (moslashtirish) deb ataladi, bu haqida ham keyingi bobda batafsil o'rganamiz.
+
+Avval virtual DOM’ni yangilashning sababi shundaki, real DOM’ni yangilash biroz sekin va ko'p resurs talab qilishi mumkin. Keyingi qismda buni batafsil ko'rib chiqamiz, lekin qisqacha aytganda, real DOM’da har safar o'zgarish qilganimizda, brauzer sahifa tartibini qayta hisoblashga, ekranni qayta chizishga va boshqa vaqt talab qiluvchi jarayonlarni bajarishga majbur bo'ladi.
+
+Masalan, biror elementning `offsetWidth` qiymatini o'qish hatto qayta hisoblashni (reflow) ishga tushirishi mumkin, bu brauzerning dokumentning butun yoki qisman tartibini qayta hisoblash jarayonidir, bu esa ishlash samaradorligiga salbiy ta'sir ko'rsatishi mumkin:
+``` js copy
+const btn = document.getElementById("myButton");
+const width = btn.offsetWidth; // Bu qayta hisoblashni keltirib chiqarishi mumkin
+```
+
+Boshqa tomondan, virtual DOM’ni yangilash juda tez bo'ladi, chunki u haqiqiy sahifa tartibida hech qanday o'zgarish qilmaydi. Buning o'rniga, bu oddiy JavaScript obyekti bo'lib, uni turli algoritmik yondashuvlar orqali tez va samarali tarzda boshqarish mumkin, bu esa JavaScript dvijogining ishlash samaradorligini oshirishga yordam beradi va uni brauzerlar va boshqa muhitlarda ishlashdan xalos etadi va buni mustaqil qiladi.
+
+Virtual DOM’ga o'zgartirishlar kiritilganda, React eski va yangi versiyalari o'rtasidagi farqlarni aniqlash uchun ***diffing algoritmidan*** foydalanadi. Bu algoritm real DOM’ni yangilash uchun kerak bo'lgan minimal o'zgarishlar to'plamini aniqlaydi va bu o'zgarishlar optimallashtirilgan va to'plab yangilash(batch updating)lar orqali amalga oshiriladi, shu tariqa ishlash samaradorligi oshiriladi.
+
+Ushbu bobda biz virtual DOM va real DOM o'rtasidagi farqlarni, real DOM’ning kamchiliklarini va virtual DOM’ning foydalanuvchi interfeyslarini yaxshiroq yaratishga qanday yordam berishini o'rganamiz. Shuningdek, React virtual DOM’ni ishlashini qanday amalga oshirgani va samarali yangilanishlar uchun qanday algoritmlar ishlatilishini ko'rib chiqamiz.
