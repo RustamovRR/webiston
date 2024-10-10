@@ -1,0 +1,213 @@
+## Real DOM’ning ayrim kamchiliklari
+Real DOM'ning bir nechta kamchiliklari bor, bu esa yuqori samarador veb-ilovani yaratishni qiyinlashtirishi mumkin. Bu kamchiliklardan ba'zilari samaradorlik muammolari, brauzerlararo o'zaro moslik va xavfsizlik zaifliklarini o'z ichiga oladi, bu erda DOM’ni to'g'ridan-to'g'ri o'zgartirish, cross-site scripting (XSS) zaifliklarini keltirib chiqarishi mumkin.
+
+### Ishlash samaradorligi (Performance)
+Real DOM bilan bog'liq eng katta muammolardan biri uning ishlash samaradorligidir. DOM’da o'zgarish yuz berganda, masalan, element qo'shish yoki olib tashlash, yoki elementning matni yoki atributlarini o'zgartirishda, brauzer layout(maket)ni qayta hisoblash va o'zgargan qismlarni qayta chizish kerak bo'ladi. Bu jarayon katta va murakkab veb-sahifalar uchun sekin va resurslarni ko'p iste'mol qiluvchan bo'lishi mumkin.
+
+Oldin aytib o'tilganidek, DOM elementining `offsetWidth` xususiyatini o'qish oddiy operatsiya kabi ko'rinishi mumkin, lekin aslida brauzer tomonidan layout'ni qimmatli bo'lgan qayta hisoblashga olib kelishi mumkin. Buning sababi, `offsetWidth` hisoblangan xususiyat(computed property) bo'lib, u element va uning avlodlarining layout'iga bog'liq bo'ladi, bu esa brauzerga aniq qiymatni qaytarishdan oldin layout ma'lumotlari yangilanmaganligini ta'minlash zaruriyatini tug'diradi.
+
+Eng yomon holatda, `offsetWidth` xususiyatini o'qish Big O notatsiyasida (O(n)) sifatida baholanadi. Buning sababi, bu xususiyatga kirish brauzerda reflow jarayonini keltirib chiqarishi mumkin, bu esa sahifadagi bir nechta elementlar uchun layout pozitsiyalarini qayta hisoblashni o'z ichiga oladi. Bu kontekstda (n) reflow tomonidan ta'sir qilingan va o'zgartirilgan DOM elementlarining sonini anglatadi. Bevosita xususiyatga kirish tez bo'lsa-da, reflow kabi bog'langan side effect’lar sahifadagi elementlar soni bilan operatsiyaning ko'payishiga olib kelishi mumkin.
+
+Agar siz `offsetWidth` kabi layout xususiyatlariga kirish orqali keltirilishi mumkin bo'lgan reflow’dan qochmoqchi bo'lsangiz, biz operatsiyani samaraliroq qilish uchun ma'lum usullarni qo'llashimiz mumkin. Bu yerda, `getBoundingClientRect()` usulidan foydalanish bir yondashuv bo'lib, bu layout o'qishni va yozishni to'plashi mumkin:
+``` js copy
+// Layout xususiyatlarini yanada samaraliroq o'qish
+function getOffsetWidthWithoutTriggeringReflow(element) {
+    let width;
+
+    // O'qish operatsiyalarini birlashtirish
+    const rect = element.getBoundingClientRect();
+    width = rect.width;
+
+    // ... boshqa o'qish operatsiyalari
+
+    // Agar bor bo'lsa, bu yerda ba'zi yozish operatsiyalari
+
+    return width;
+}
+const element = document.querySelector(".myElement");
+const width = getOffsetWidthWithoutTriggeringReflow(element);
+console.log(width);
+```
+
+`getBoundingClientRect()` dan foydalangan holda, biz bir martada bir nechta layout xususiyatlarini olishimiz mumkin, bu esa bir nechta reflow’larni keltirib chiqarish ehtimolligini kamaytiradi. Qo'shimcha ravishda, o'qish va yozish operatsiyalarini alohida to'plab, birlashtirish orqali, biz ***layout thrashing***(layout’ni ortiqcha keraksiz qayta hisoblash va chizib chiqish)ni minimallashtirishimiz mumkin, bu esa tez-tez takrorlanuvchi aralash layout xususiyatlarini o'qish va yozishdan kelib chiqadigan muhim bo'lmagan qayta hisoblashlarni anglatadi (rasmga qarang). Bu thrashing veb-sahifaning samaradorligini sezilarli darajada pasaytirishi mumkin, foydalanuvchi tajribasi(UX)ni sustlashuviga mumkin. Layout xususiyatlariga strategik kirish va operatsiyalarimizni birlashtirish orqali, biz veb-sahifalarimizni silliq(smooth) va moslashuvchan(responsive) qilishimiz mumkin.
+
+![Layout thrashing image](/layout-thrashing.png)
+
+
+#### Reflow muammolari va `getBoundingClientRect()`
+Biroq, `getBoundingClientRect()` ham, agar kutilayotgan layout o'zgarishlari bo'lsa, reflow’ni keltirib chiqarishi mumkin. Bu yerda samaradorlikning kaliti brauzerga layout’ni qayta hisoblashga majburlashlar sonini minimallashtirishdir va qachonki buni amalga oshirsangiz, kerakli ma'lumotni bir marta olishga harakat qilishingiz kerak.
+
+React bularning barchasini biz uchun virtual DOM orqali real DOM operatsiyalari o'rtasidagi o'rta qatlam sifatida ishlatadi.
+
+Quyidagi misolni ko'rib chiqaylik, bu yerda oddiy HTML dokumenti va bitta `div` elementi mavjud:
+``` html copy
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>offsetWidth namunasini o'qish</title>
+        <style>
+            #my-div {
+                width: 100px;
+                height: 100px;
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="my-div"></div>
+        <script>
+            var div = document.getElementById("my-div");
+            console.log(div.offsetWidth);
+        </script>
+    </body>
+</html>
+```
+
+Ushbu dokumentni brauzerda yuklaganimizda va dasturchi konsolini ochganimizda, `div` elementining `offsetWidth` xususiyati konsolga yozilganini ko'rishimiz mumkin. Biroq, biz ko'rmaydigan narsa, brauzerning `offsetWidth` qiymatini hisoblash uchun bajargan ishlaridir.
+
+Bu jarayonni tushunish uchun, biz dasturchi vositalari(developer tools)dagi "Performance panel"idan foydalangan holda brauzerning faoliyatlarining vaqt jadvalini yozib olishimiz mumkin. Buni amalga oshirganda, brauzer dokumentni yuklab va chizib chiqish jarayonida bir necha layout va ularni chizish operatsiyalarini bajarayotganini ko'rishimiz mumkin. Xususan, biz kodda `offsetWidth`ni o'qish bilan bog'liq ikkita layout operatsiyasini ko'rishimiz mumkin.
+
+Har bir layout operatsiyasini yakunlash uchun bir muncha vaqt talab etiladi (bu holatda, taxminan 2 ms),
+garchi ular faqat xususiyatning qiymatini o'qish o'qiyotgan bo'lsa ham. Buning sababi, brauzer o'zining layout ma'lumotlarini yangilanishini ta'minlashi kerak, shunda u to'g'ri qiymatni qaytarishi mumkin, bu esa dokumentning to'liq layout’ini bajarishni talab qiladi.
+
+Garchi 2 millisekund ko'p narsa bo'lib ko'rinmasa-da, bu vaqt dokument kengayganda katta sonlarga aylanadi.
+
+Umuman olganda, biz `offsetWidth` kabi layout’ga bog'liq xususiyatlarni ishlatayotganda ehtiyot bo'lishimiz kerak, chunki ular kutilmagan ishlash samaradorligi muammolarini keltirib chiqarishi mumkin. Agar biz bunday xususiyatlarning qiymatini bir necha marta o'qib va ishlatishimiz kerak bo'lsa, biz kerakli bo'lmagan layout qayta hisoblashlarini chaqirishni oldini olish uchun qiymatni o'zgaruvchida saqlashni o'ylab ko'rishimiz kerak. Buning o'rniga, biz `requestAnimationFrame` API’sidan foydalanib, xususiyatni o'qishni keyingi animatsiya freymiga kechiktirishimiz mumkin, bu paytda brauzer zarur layout hisob-kitoblarini amalga oshirib olgan bo'ladi.
+
+Real DOM bilan bog'liq tasodifiy uchrashi mumkin bo'lgan ishlash samaradorligi muammolarini yanada yaxshiroq tushunish uchun, keling, bir nechta misollarni ko'rib chiqaylik. Quyidagi HTML dokumentini ko'rib chiqamiz:
+``` html copy
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Namuna</title> 
+    </head>
+    <body>
+        <ul id="list">
+            <li>Element 1</li>
+            <li>Element 2</li>
+            <li>Element 3</li>
+        </ul>
+    </body>
+</html>
+```
+
+Faraz qilaylik, biz JavaScript yordamida ro'yxatga yangi element qo'shmoqchimiz. Biz quyidagi kodni yozishimiz mumkin:
+``` js copy
+const list = document.getElementById("list");
+const newItem = document.createElement("li");
+newItem.textContent = "Element 4";
+list.appendChild(newItem);
+```
+
+Biz bu yerda `querySelector` o'rniga `getElementById` dan foydalanayotganimizga e'tibor bering, chunki:
+- Biz ID’ni bilamiz
+- Biz ishlash samaradorligi muammolarini bilamiz
+
+Keling, davom etamiz.
+
+Ushbu kod list ID'ga ega `ul` elementini tanlaydi, yangi `li` elementini yaratadi, uning kontenti `"Element 4"` ga o'zgaradi va uni ro'yxatga qo'shadi. Bu kodni ishga tushirganimizda, brauzer yangi elementni ko'rsatish uchun layout’ni qayta hisoblaydi, uni qayta chizib chiqadi va sahifaning o'zgargan qismlarini yangilashi kerak.
+
+Bu jarayon katta ro'yxatlar uchun sekin va ko'p resurs talab qilishi mumkin. Masalan, agar bizda 1,000 ta elementdan iborat ro'yxat bo'lsa va biz ro'yxat oxiriga yangi element qo'shmoqchi bo'lsak, biz quyidagi kodni yozishimiz mumkin:
+``` js copy
+const list = document.getElementById("list");
+const newItem = document.createElement("li");
+newItem.textContent = "Element 1001";
+list.appendChild(newItem);
+```
+
+Ushbu kodni ishga tushirganda, brauzer layout’ni qayta hisoblaydi, uni qayta chizib chiqadi va butun ro'yxatni yangilaydi, atigi bittagina element qo'shilgan bo'lsa ham. Bu sekin ishlaydigan qurilmalarda yoki katta ro'yxatlarda ko'p vaqt va resurslarni talab qilishi mumkin.
+
+Ushbu muammoni yanada yaxshiroq tushuntirish uchun quyidagi misolni ko'rib chiqamiz:
+``` html copy
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Namuna</title> 
+        <style>
+            #list li {
+                background-color: #f5f5f5;
+            }
+            .highlight {
+                background-color: yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <ul id="list">
+            <li>Element 1</li>
+            <li>Element 2</li>
+            <li>Element 3</li>
+        </ul>
+        <button onclick="highlight()">Element 2 ni ajratish</button>
+        <script>
+            function highlight() {
+                const item = document.querySelector("#list li:nth-child(2)");
+                item.classList.add("highlight");
+            }
+        </script>
+    </body>
+</html>
+```
+
+Bu misolda, bizda uchta elementdan iborat ro'yxat va bosilganda ikkinchi elementni ajratib ko'rsatuvchi tugma mavjud. Tugma bosilganda, brauzer layout’ni qayta hisoblash va butun ro'yxatni qayta chizib chiqib, yangi elementni ko'rsatish uchun dizaynni yangilashi kerak, garchi faqatgina bitta element o'zgargan bo'lsa ham. Bu foydalanuvchilar uchun sezilarli kechikish yoki ularni hafsalasini pir qiladigan turli miltillash(flicker)lar keltirib chiqarishi mumkin.
+
+Umuman olganda, real DOM’ning ishlash muammolari biz uchun muhim qiyinchiliklarni tug'dirishi mumkin, ayniqsa, katta va murakkab veb sahifalar bilan ishlashda. Ushbu muammolarni bartaraf etish uchun ba'zi texnikalar mavjud, masalan, selektorlarni optimallashtirish, event delegation’lardan foydalanish, DOM operatsiyalarini o'qish va yozishni to'plab yangilash yoki CSS animatsiyalaridan foydalanish, lekin ularni amalga oshirish murakkab va qiyin bo'lishi mumkin.
+
+Natijada, ko'pchiligimiz ushbu muammolarni hal qilish uchun virtual DOM’ga murojaat qilamiz. Virtual DOM bizdan real DOM’ning murakkabliklarini abstraksiya qilib, ya'ni bizdan yashirib, UI’ni yanada samarali va tezkor yaratish imkonini beradi.
+
+Ammo, bir necha millisekundni tejab qolish muhimmi? Protsessor yoki CPU samaradorligi har qanday ilovaning ishlash samaradorligiga katta ta'sir ko'rsatadi. Bugungi raqamli davrda foydalanuvchilar tez va moslashuvchan veb-saytlarni kutadilar, shuning uchun biz, veb dasturchilar sifatida, CPU samaradorligini birinchi o'ringa qo'yishimiz zarur. Bu haqida ko'proq qiziqqanlar bo'lsa, Google’ning veb-ishlab chiqish blogida chop etilgan [Milliseconds make millions](https://web.dev/case-studies/milliseconds-make-millions) maqolasini o'qib chiqishlari mumkin.
+
+To'g'ridan-to'g'ri DOM manipulyatsiyasi, bu reflow (layout’ni qayta hisoblash) va repaint (sahifani qayta chizish) jarayonlariga sabab bo'lishi, bu esa CPU foydalanishini va ishlov berish vaqtini oshirishi mumkin, natijada foydalanuvchilar uchun qimmatli bo'lgan kechikishlar va hatto ilovalarning ishlamay qolishiga olib kelishi mumkin. Bu, ayniqsa, kuchsiz qurilmalarda, masalan, smartfonlar yoki planshetlarda muammoli bo'lishi mumkin, chunki bunday qurilmalar cheklangan ishlov berish quvvatiga va xotiraga ega bo'lishi mumkin. Dunyoning ko'plab qismlarida foydalanuvchilar eski yoki kam qobiliyatli qurilmalarda veb-ilovalarimizga kirishlari mumkin, bu esa muammoni yanada kuchaytirishi mumkin.
+
+CPU samaradorligini birinchi o'ringa qo'yish orqali biz keng turdagi qurilmalarda, ularning ishlov berish quvvatidan yoki xotirasidan qat'iy nazar, foydalanuvchilarga kirish mumkin bo'lgan ilovalarni yaratishimiz mumkin. Bu esa faollikni oshishiga, yuqori konversiya darajalari va oxir-oqibatda, muvaffaqiyatli onlayn bo'lishlikka olib kelishi mumkin.
+
+Reactning virtual DOM’i CPU ishlashi tomonidan ancha samarador bo'lgan veb-ilovalarni qurishga imkon berdi; uning samarali renderlash algoritmlaridan foydalanish ishlov berish vaqtlarini minimallashtirishga va umumiy samaradorlikni oshirishga yordam beradi.
+
+
+### Brauzerlararo o'zaro mutanosiblik
+Real DOM bilan mavjud yana bir muammo brauzerlararo o'zaro mutanosiblikdir. Turli brauzerlar dokumentlarni turlicha modellashtiradi, bu esa veb ilovalarda nomutanosibliklar va xatolarga olib kelishi mumkin. Bu muammo React ommaga taqdim qilinganda juda keng tarqalgan edi, hozir esa ancha kam uchraydi. Biroq, bu muammo dasturchilarga turli brauzerlar va platformalar o'rtasida muammosiz ishlaydigan veb ilovalarni yaratishni qiyinlashtirdi.
+
+Brauzerlararo o'zaro mutanosiblik bilan bog'liq asosiy muammolardan biri shundaki, ayrim DOM elementlari va atributlari barcha brauzerlarda bir xilda qo'llab-quvvatlanmasligi mumkin. Natijada, biz maqsad qilgan barcha platformalarda ilovalarning va uning funksiyalarini to'g'ri ishlashini ta'minlash uchun qo'shimcha vaqt va kuch sarflashimiz kerak edi.
+
+#### React’ning SyntheticEvent’i
+Bu muammo React tomonidan o'zining sintetik event tizimi yordamida bartaraf etiladi. `SyntheticEvent` — bu brauzerlarning native event’larini o'rab olgan bir qoplama bo'lib, turli brauzerlar o'rtasida bir xillikni ta'minlash uchun mo'ljallangan. U brauzerlar o'rtasidagi nomutanosibliklarni quyidagi mexanizmlar yordamida hal qiladi:
+
+##### Birlashtirilgan interfeys
+Sof(Vanilla) JavaScript’da brauzer event’larini boshqarish nomutanosibliklar tufayli murakkab bo'lishi mumkin. Masalan, event xususiyatlariga kirish brauzerlarga qarab farq qilishi mumkin. Ba'zilari `event.target`dan, boshqalari esa `event.srcElement`dan foydalanishi mumkin. `SyntheticEvent` bu turli-xilliklarni abstraksiyalaydi, event’lar bilan o'zaro mutanosiblikni ta'minlash bir xil usulni taqdim etadi va dasturchilarni brauzerga moslab kod yozish majburiyatidan ozod etadi:
+``` js copy
+// React’dan oldin dasturchilar brauzerga mos xususiyatlar bor-yo'qligini tekshirishgan
+const targetElement = event.target || event.srcElement;
+
+// React’da esa, `SyntheticEvent` tufayli, bu bir xildir
+function handleClick(event) {
+    const target = event.target;
+    // ... qolgan kod
+}
+```
+
+Brauzerlarning native event’larini `SyntheticEvent` o'z qobig'iga o'rab uni tizimlashtirgani uchun, React dasturchilarni native brauzer event tizimlaridagi ko'plab noaniqliklar va o'ziga xos xususiyatlardan himoya qiladi.
+
+##### Event delegation
+Event listener’larni to'g'ridan-to'g'ri elementlarga qo'shish o'rniga, React event’larni ildiz darajasi(root level)da tinglaydi. Bu yondashuv eski brauzerlarda ba'zi eventlar ma'lum elementlarda mavjud bo'lmasligi bilan bog'liq muammolarni osonlik bilan chetlab o'tadi.
+
+##### Cross-funksional yaxshilanishlar
+Native brauzer event’larida turli input elementlarida ba'zi event’larni qanday boshqarish borasida nomuvofiqliklar mavjud. E'tiborga molik misol - `onChange` voqeasi:
+
+**Oddiy JavaScript’da, `onChange` event’ining xatti-harakati input turlariga qarab farq qiladi:**
+    - `<input type="text">` uchun, ba'zi brauzerlarda `onChange` event’i, qiymat o'zgarganidan so'ng darhol emas, balki input maydoni fokusni yo'qotganida, ishga tushishi mumkin.
+    - `<select>` uchun, bu har safar biron bir `option` tanlanganda ishga tushishi mumkin, hatto bu oldingi `option` bilan bir xil bo'lsa ham.
+    - Boshqa holatlarda, ayniqsa eski brauzerlarda, `onChange` event’i ma'lum bir `form` elementlarida barcha foydalanuvchilar bilan o'zaro ta'sirlarida ishonchli ishlamasligi mumkin.
+
+**React’ning `SyntheticEvent` tizimi `onChange` event’ining ushbu input elementlari bo'yicha xatti-harakatini normallashtiradi. React’da:**
+    - Matn kiritish uchun `onChange` event’i (`<input type="text">`) har bir bosish bilan doimiy ravishda ishga tushadi, bu real vaqtda fikr-mulohazalar(feedback) beradi.
+    - `<select>` uchun, yangi `option` tanlanganda ishonchli ravishda ishga tushadi.
+    - React, shuningdek, boshqa form elementlarida `onChange` event’ining muvofiqligini ta'minlaydi.
+
+Bunday qilish orqali, React dasturchilarni ushbu native event bilan bog'liq nomutanosibliklar bilan shug'ullanishdan ozod qiladi, va bular bilan tashvishlanmasdan, diqqat-e'tiboringizni dasturni yozishga qaratish imkonini beradi.
+
+##### Native event’larga kirish
+Agar dasturchilar original brauzer event’ini olishlari kerak bo'lsa, buni `event.nativeEvent` orqali olishlar mumkin, bu esa abstraksiyaning foydalaridan voz kechmasdan moslashuvchanlikni ta'minlaydi
+
+Aslida, `SyntheticEvent` barqaror event tizimlarini taqdim etadi, native brauzer event’laridagi xususiyatlar va turli-xilliklarni bartaraf etadi. Bu React’ning virtual DOM’dan foydalanishining alohida bir usuli bo'lib, UI’ni ishlab chiqishda qulayliklar taqdim etadi.
+
+Hozirgacha biz DOM bilan to'g'ridan-to'g'ri ishlashning samaradorlikka ta'sir qiladigan muammolari va brauzerlararo o'zaro mutanosibliklar muammolarini qanday keltirib chiqarishi haqida muhokama qildik. Endi, ushbu muammolarni yanada samarali tarzda hal qilish usulini ko'rib chiqamiz - bu dokument bo'laklari(document fragments)dan foydalanish, bu React’ning virtual DOM’ini tushunish uchun mahalliy tayanch sifatida qaralishi mumkin.

@@ -1,6 +1,8 @@
 ’
+button - tugma
 state - state
 event - event
+layout - layout
 framework - freymvork
 open source - ochiq manbali
 Separation of concerns - vazifalarni ajratish
@@ -24,3 +26,6 @@ advanced - ilg'or
 scalable - kengayish, kengayuvchan
 reusable components - qayta ishlatiladigan komponentlar
 performance - ishlash samaradorligi
+flicker - miltillash
+responsive - moslashuvchan
+Cross-browser compatibility - Brauzerlararo o'zaro mutanosiblik
