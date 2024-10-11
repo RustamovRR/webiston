@@ -1,0 +1,34 @@
+## Dokument fragmentlari (Document Fragments)
+
+Ko'rib o'tganimizdek, DOM bilan bevosita ishlash ko'p o'zgarishlar kiritilganida resursni ko'p talab qiladi. DOM yangilanganda, brauzer qayta layout’ni hisoblash, UI’ni qayta chizish va ko'rinishni yangilash kabi jarayonlarni bajarishi mumkin, bu esa ilovaning sekinlashishiga olib kelishi mumkin. Dokument fragmentlari bu yerda yordamga keladi.
+
+***Dokument fragmenti*** - bu DOM tugunlarini o'z ichiga oluvchi yengil vaznli konteynerdir. Bu asosiy DOM’ga ta'sir qilmasdan, bir nechta o'zgarishlar kiritish uchun vaqtinchalik joy sifatida xizmat qiladi. Ishni tugatgach, dokument fragmentini DOM’ga qo'shishingiz mumkin, natijada faqat bitta reflow va qayta chizish sodir bo'ladi. Dokument fragmentlari shu tarzda React’ning virtual DOM’iga juda o'xshashdir.
+
+Dokument fragmentlari o'zgarishlarni to'plab yangilash imkonini beruvchi yengil vaznli konteyner bo'lib, ular samaradorlik tomonidan bir nechta afzalliklarni taqdim etadi:
+- **To'plab yangilanishlar (Batched updates)**: Ayni vaqtda ishlab turgan DOM’ga bir nechta alohida yangilanishlar kiritish o'rniga, barcha o'zgarishlarni dokument fragmentida birlashtirish mumkin. Bu o'zgarishlar sonidan qat'iy nazar, faqat bitta reflow va qayta chizish amalga oshiriladi.
+- **Xotira samaradorligi (Memory efficiency)**: Tugun(Node)lar dokument fragmentiga qo'shilganda, ular hozirgi ota-ona elementlaridan o'chirib yuboriladi. Bu, ayniqsa, dokumentning katta qismlarini qayta tartiblashda xotira sarfini optimallashtirishga yordam beradi.
+- **Ortiqcha rendering’dan qochish (No redundant rendering)**: Dokument fragmenti ayni paytdagi aktiv dokument daraxtining bir qismi bo'lmaganligi sababli, undagi o'zgarishlar aktiv dokumentga ta'sir qilmaydi, va stillar va skriptlar dokument fragmenti real DOM’ga qo'shilmaguncha qo'llanilmaydi. Bu esa ortiqcha stillarni qayta hisoblashlar va skript bajarilishlaridan qochish imkonini beradi.
+
+Keling, bir nechta ro'yxat elementlarini bir ro'yxatga qo'shish kerak bo'lgan holatni ko'rib chiqamiz:
+``` js copy
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i + 1}`;
+  fragment.appendChild(li);
+}
+document.getElementById("myList").appendChild(fragment);
+```
+
+Bu misolda 100 ta ro'yxat elementi birinchi navbatda dokument fragmentiga qo'shiladi. Faqat barcha elementlar qo'shilgandan keyingina, fragment asosiy ro'yxatga qo'shiladi. Bu aktiv(live) DOM’ga 100 ta alohida yangilanish o'rniga bitta yangilanishni keltirib chiqaradi.
+
+Shu tariqa, dokument fragmentlari DOM bilan samarali ishlash uchun bir nechta o'zgarishlarni birlashtirishga imkon beradi va bu bilan ko'p vaqt talab qiladigan qayta tartiblanishlar (reflow) va qayta chizishlar (repaint) sonini kamaytiradi. Veb-ilovalarning optimal samaradorligini ko'zlagan dasturchilar uchun dokument fragmentlarini ishlatish yanada silliqroq o'zaro ta'sirlar va tezroq render bo'lishni ta'minlaydi.
+
+Reactning virtual DOM’i dokument fragmenti konsepsiyasining ilg'or talqiniga o'xshaydi. Mana, qisqacha bog'lanish:
+- **To'plab yangilanishlar (Batched updates)**: Dokument fragmentlari kabi, React ham bir nechta o'zgarishlarni birlashtiradi. Har bir state yoki props o'zgarishida bevosita DOM’ni o'zgartirish o'rniga, React o'zgarishlarni avval virtual DOM’ga to'playdi.
+- **Samarali farqlar (Efficient diffs)**: React so'ngra joriy virtual DOM va real DOM o'rtasidagi farqlarni ("diffs") aniqlaydi. Bu "diffing" jarayoni, dokument fragmentlari DOM manipulyatsiyalarini kamaytirgani kabi, faqat zarur o'zgarishlar amalga oshirilishini ta'minlaydi.
+- **Yagona render (Single render)**: Farqlar aniqlangandan so'ng, React real DOM’ni yagona to'plamga yig'ib yangilash orqali o'zgartiradi, bu to'liq to'ldirilgan dokument fragmentini bittada qo'shish holatiga o'xshaydi. Bu qimmatli reflow’lar va qayta chizishlarni minimallashtiradi.
+
+Xulosa qilib aytganda, dokument fragmentlari DOM’ni yangilashdan oldin o'zgarishlarni guruhlash va optimallashtirishning bir usulini taqdim etsa, React’ning virtual DOM’iga bu jarayonni yanada takomillashtirib, butun ilovaning UI qismi bo'ylab o'zgarishlarni to'plab bittada yangilaydi. Shunday qilib, maksimal samaradorlikka erishiladi. Bundan tashqari, React ushbu jarayonni odatdagi dasturchilar uchun texnik tafsilot sifatida yashirib, ilovani yaratishda diqqatni boshqa narsalarga qaratishga imkon beradi.
+
+Endi virtual DOM qanday ishlashini batafsilroq ko'rib chiqamiz.
