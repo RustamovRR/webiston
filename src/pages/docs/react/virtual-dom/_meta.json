@@ -2,5 +2,6 @@
   "intro-virtual-dom": "Virtual DOM’ga kirish",
   "real-dom": "Real DOM",
   "pitfalls-of-real-dom": "Real DOM’ning kamchiliklari",
-  "document-fragments": "Dokument fragmentlari"
+  "document-fragments": "Dokument fragmentlari",
+  "how-virtual-dom-works": "Virtual DOM qanday ishlaydi"
 }
