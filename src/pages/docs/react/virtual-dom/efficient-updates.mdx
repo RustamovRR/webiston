@@ -1,0 +1,58 @@
+## Samarador yangilanishlar
+
+React komponentining state yoki props’lari o'zgarganda, React yangilangan foydalanuvchi interfeysini ifodalovchi yangi React elementlar daraxtini yaratadi. Bu yangi daraxt keyingi yangilanishlarni amalga oshirish uchun zarur bo'lgan minimal o'zgarishlarni aniqlash maqsadida oldingi daraxt bilan solishtiriladi. Bu jarayon "diffing algorithm"i yordamida amalga oshiriladi.
+
+Diffing algoritmi yangi React elementlar daraxtini oldingi daraxt bilan taqqoslaydi va ular orasidagi farqlarni aniqlaydi. Bu rekursiv solishtirish hisoblanadi. Agar tugun o'zgargan bo'lsa, React real DOM’dagi mos tugunni yangilaydi. Agar tugun qo'shilgan yoki o'chirilgan bo'lsa, React real DOM’ga yangi tugunni qo'shadi yoki uni o'chiradi.
+
+Diffing jarayoni daraxtdagi qaysi qismlar o'zgarganligini aniqlash uchun yangi daraxtni eski daraxt bilan tugun bo'yicha solishtirishni o'z ichiga oladi.
+
+React’ning diffing algoritmi juda optimallashtirilgan bo'lib, real DOM’da amalga oshirilishi kerak bo'lgan o'zgarishlar sonini minimal darajada saqlashni maqsad qiladi. Algoritm quyidagicha ishlaydi:
+- Agar ikkita daraxtning ildiz darajasidagi tugunlari farq qilsa, React butun daraxtni yangisiga almashtiradi.
+- Agar ildiz darajasidagi tugunlar bir xil bo'lsa, React o'zgargan bo'lsa, tugunning atributlarini yangilaydi.
+- Agar tugunning farzandlari boshqacha bo'lsa, React faqat o'zgargan farzandlarni yangilaydi. React butun ichki daraxtlarni qayta yaratmaydi, faqat o'zgargan tugunlarni yangilaydi.
+- Agar tugunning farzandlari bir xil, lekin ularning tartibi o'zgargan bo'lsa, React real DOM’dagi tugunlarni qayta yaratmasdan tartibni o'zgartiradi.
+- Agar tugun daraxtdan olib tashlangan bo'lsa, React uni real DOM’dan olib tashlaydi.
+- Agar daraxtga yangi tugun qo'shilgan bo'lsa, React uni real DOM’ga qo'shadi.
+- Agar tugunning turi o'zgargan bo'lsa (masalan, `div`dan `span`ga), React eski tugunni olib tashlaydi va yangi turdagi tugunni yaratadi.
+- Agar tugunning `key` props’i mavjud bo'lsa, React uni tugunni almashtirish kerakmi yoki yo'qligini bilish uchun ishlatadi. Bu komponentlarning holatini qayta sozlash kerak bo'lganda foydali bo'lishi mumkin.
+
+React’ning diff algoritmi juda samarali bo'lib, real DOM’ni tez va minimal o'zgarishlar bilan yangilash imkonini beradi. Bu React ilovalarini ishlash samaradorligini yaxshilaydi va murakkab, dinamik foydalanuvchi interfeyslarini yaratishni osonlashtiradi.
+
+
+### Keraksiz qayta render(re-render) qilishlar
+React’ning diffing algoritmi real DOM’ni samarali yangilashda o'zgarishlarni minimallashtirish orqali muhim rol o'ynaydi. Ammo dasturchilar duch kelishi mumkin bo'lgan umumiy muammo mavjud: keraksiz qayta render qilishlar.
+
+Bu React’ning ishlash usuli: agar komponent state o'zgarsa, React komponentni va uning barcha avlodlarini qayta render qiladi. Qayta render qilish deganda, React har bir funksional komponentni rekursiv ravishda chaqirib, ularning har biriga props’larini argument sifatida o'tkazadi. React ota komponentning state yoki props’lari o'zgarganda uning farzandlarini ham chetlab o'tmaydi va barcha funksional komponentlarni qayta chaqiradi. Buning sababi shundaki, React qaysi komponentlar o'zgargan komponentning holatiga bog'liq ekanligini bilmaydi, shuning uchun foydalanuvchi interfeysi bir xil bo'lishini ta'minlash uchun ularning barchasini qayta render qilish kerak bo'ladi.
+
+Bu katta va murakkab foydalanuvchi interfeyslari bilan ishlaganda sezilarli samaradorlik muammolarini keltirib chiqarishi mumkin. Masalan, quyidagi kodda `ParentComponent`ning state o'zgarganida `ChildComponent` har safar qayta render qilinadi, hatto `ChildComponent`ga uzatilayotgan props o'zgarmagan bo'lsa ham:
+``` js copy
+import React, { useState } from "react";
+
+const ChildComponent = ({ message }) => {
+    return <div>{message}</div>;
+};
+
+const ParentComponent = () => {
+    const [count, setCount] = useState(0);
+
+    return (
+        <div>
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+            <ChildComponent message="Bu statik xabar" />
+        </div>
+    );
+};
+
+export default ParentComponent;
+```
+
+Ushbu misolda:
+- `ParentComponent`da `count` nomli state o'zgaruvchisi mavjud bo'lib, har safar button bosilganda qiymati oshiriladi
+- `ChildComponent` esa `message` deb nomlangan statik prop’ni qabul qiladi. Bu prop o'zgarmagani uchun, ideal holatda, `ParentComponent`ning state’i o'zgarganda `ChildComponent` qayta render qilinmasligi kerak edi.
+- Ammo, React’ning standart xatti-harakati tufayli, `ParentComponent` qayta render qilinganda, `ChildComponent` ham qayta render bo'ladi, ya'ni har safar state o'zgarganda.
+- Bu samarasiz, chunki `ChildComponent` `ParentComponent`dagi `count` holatiga bog'liq emas
+- `ChildComponent`ning props va state’i o'zgarmaganligi sababli, qayta renderlash keraksiz edi: ehtimol, u avvalgi natijani qaytargan bo'lar edi, shuning uchun bu behuda harakat bo'ldi.
+
+Bu masala, ayniqsa, katta ilovalarda optimallashtirishni talab qiladi, chunki ko'plab komponentlar keraksiz ravishda qayta render qilinishi mumkin, bu esa ishlash samaradorligi muammolariga olib kelishi mumkin. Ushbu masalani hal qilish komponentlar orasidagi qayta render qilishlarni boshqarish, komponentlar ierarxiyasidagi yuqori darajadagi state yoki props o'zgarishlari natijasida ortiqcha qayta renderlarni oldini olish orqali amalga oshiriladi. Komponentlarni to'g'ri strukturalash va React’ning optimallashtirish vositalari, masalan, `memo` va `useMemo` kabi xususiyatlardan oqilona foydalanish orqali dasturchilar qayta render qilishlarni yaxshiroq boshqarishlari va ilovalarning yuqori ishlash samaradorligini saqlab qolishlari mumkin.
+
+Bu mavzuni 5-bobda batafsilroq ko'rib chiqamiz.

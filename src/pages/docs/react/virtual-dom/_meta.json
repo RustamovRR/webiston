@@ -4,5 +4,6 @@
   "pitfalls-of-real-dom": "Real DOM’ning kamchiliklari",
   "document-fragments": "Dokument fragmentlari",
   "how-virtual-dom-works": "Virtual DOM qanday ishlaydi",
-  "virtual-dom-vs-real-dom": "Virtual DOM vs Real DOM"
+  "virtual-dom-vs-real-dom": "Virtual DOM vs Real DOM",
+  "efficient-updates": "Samarador yangilanishlar"
 }
