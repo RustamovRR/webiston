@@ -18,7 +18,7 @@ engine - dvijok
 bundle - to'plam paketi
 syntax sugar - sodda sintaksis
 runtime - kodni bajarilish vaqti
-reconcilation - moslashtirish
+reconciliation - moslashtirish
 expensive - ko'p(qo'shimcha) resurs talab qilish
 batch update - to'plab yangilash
 unique - takrorlanmas

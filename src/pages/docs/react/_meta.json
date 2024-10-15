@@ -1,5 +1,6 @@
 {
   "entry-level-stuff": "React asoslari",
   "jsx": "JSX",
-  "virtual-dom": "Virtual DOM"
+  "virtual-dom": "Virtual DOM",
+  "inside-reconciliation": "Reconciliation’ning ichki ishlashi"
 }
