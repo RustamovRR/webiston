@@ -1,0 +1,7 @@
+## Fiber Reconciler
+
+Fiber reconciler’i “Fiber” deb nomlanuvchi boshqa ma'lumotlar strukturasidan foydalanadi, bu reconciler uchun bir ish birligi(unit)ni ifodalaydi. Fiber’lar biz [3-bobda](/docs/react/virtual-dom) ko'rib chiqqan React elementlaridan yaratiladi, asosiy farq shundaki, stateful va uzoq muddatli, React elementlari esa qisqa muddatli va stateless’dir.
+
+Redux maintainer’i va taniqli React eksperti Mark Erikson Fiber’larni “belgilangan biror vaqt nuqtasida haqiqiy komponent daraxtini ifodalaydigan React’ning ichki ma'lumotlar strukturasidir" deb ta'riflaydi. Darhaqiqat, bu Fiber’lar haqida yaxshi fikrdir va buni Mark uchun o'z vaqtida aytib o'tgan, chunki u Replay bilan React ilovalarini vaqt sayohati bo'ylab debug qilish bo'yicha to'liq ishlaydi: bu ilovaning holatini qayta ko'rib chiqish va takrorlash imkonini beruvchi vosita. Agar hali ko'rmagan bo'lsangiz, [Replay.io](https://www.replay.io/) saytigaga kirib ko'rishingiz mumkin.
+
+VDOM elementlar daraxti bo'lganidek, React reconciler Fiber daraxtidan foydalanadi, nomidan ko'rinib turganidek, bu VDOM asosida bevosita modellashtirilgan Fiber’lar daraxtidir.
