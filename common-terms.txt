@@ -27,5 +27,5 @@ scalable - kengayish, kengayuvchan
 reusable components - qayta ishlatiladigan komponentlar
 performance - ishlash samaradorligi
 flicker - miltillash
-responsive - moslashuvchan
+responsive - moslashuvchan, javob beruvchan
 Cross-browser compatibility - Brauzerlararo o'zaro mutanosiblik
