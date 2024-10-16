@@ -3,5 +3,6 @@
   "batching-updates": "Batching updates",
   "stack-reconciler": "Stack reconciler",
   "fiber-reconciler": "Fiber reconciler",
-  "fiber-ma'lumotlar-strukturasi": "Fiber ma'lumotlar strukturasi"
+  "fiber-ma'lumotlar-strukturasi": "Fiber ma'lumotlar strukturasi",
+  "double-buffering": "Double buffering"
 }
