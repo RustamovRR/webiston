@@ -1,0 +1,131 @@
+## Fiber reconciliation
+
+Fiber reconciliation ikki bosqichda amalga oshiriladi: renderlash bosqichi va commit bosqichi. Ushbu ikki bosqichli yondashuv (rasmda ko'rsatilgan) React’ga, DOM’ga qo'shilishdan va foydalanuvchilarga yangi holatni ko'rsatishdan oldin har qanday vaqtda bekor qilinishi mumkin bo'lgan renderlash ishini bajarish imkonini beradi: bu renderlashni to'xtatiluvchan qiladi. Tafsilotlarni biroz ko'proq tushuntirish uchun, renderlashni to'xtatiluvchan qilib his qilishga sabab bo'luvchi omil bu React rejalashtiruvchisi(scheduler) tomonidan har 5 msda bajarishni asosiy thread(main thread)ga qaytarishning g'ayrioddiy yondashuvi bo'lib, bu hatto 120 fps (kadr/sekund) tezlikdagi qurilmalarda ham bitta kadrlashdan kichikroqdir.
+
+![Fiber reconciler’da reconciliation oqimi](/reconciliation-flow.png)
+
+Biz 7-bobda React’ning parallel xususiyatlarini o'rganayotganda scheduler’ning tafsilotlariga chuqurroq kiramiz. Ammo hozircha, reconciliation’ning ushbu bosqichlarini ko'rib chiqamiz.
+
+
+### Render bosqichi
+Render bosqichi joriy daraxtda state o'zgarishi voqeasi sodir bo'lganda boshlanadi. React o'zgarishlarni almashinuvchi daraxtda, ekrandan tashqarida, har bir Fiber’ni rekursiv ravishda bosqichma-bosqich ko'rib chiqish va yangilanishlar kutilayotganligini bildiruvchi bayroqlarni o'rnatish orqali amalga oshiradi (pastdagi rasmga qarang). Yuqorida aytib o'tilganidek, bu jarayon React ichida `beginWork` deb nomlangan funksiyada sodir bo'ladi.
+
+![Render bosqichining chaqiruv tartibi](/render-phase.png)
+
+#### `beginWork` 
+`beginWork` almashinuvchi daraxtdagi Fiber tugunlarida ular yangilanishi kerak yoki yo'qligini bildiruvchi bayroqlarni o'rnatish uchun javobgar. Bu bir nechta bayroqlarni o'rnatadi va keyin navbatdagi Fiber tugunga o'tib, daraxtning oxiriga yetguncha shu ishni davom ettiradi. Bu tugagandan so'ng, Fiber tugunlarida `completeWork` chaqirila boshlanadi va yuqoriga qarab harakat qilinadi.
+
+`beginWork` funksiyasining ko'rinishi quyidagicha:
+``` ts copy
+function beginWork(
+  current: Fiber | null,
+  workInProgress: Fiber,
+  renderLanes: Lanes
+): Fiber | null;
+```
+
+`completeWork` haqida keyinroq batafsil ma'lumot beriladi. Hozircha, `beginWork` funksiyasini ko'rib chiqamiz. Uning ko'rinishida quyidagi argumentlar mavjud:
+
+##### `current`
+Joriy daraxtdagi hali tugallanmagan bo'lgan tugunga mos keladigan Fiber tuguniga havola. Bu daraxtning avvalgi va yangi versiyasi o'rtasida qanday o'zgarishlar bo'lganligini aniqlash va nimalarni yangilash kerakligini belgilash uchun ishlatiladi. Bu hech qachon o'zgartirilmaydi va faqat taqqoslash uchun ishlatiladi
+
+##### `workInProgress`
+Hali tugallanmagan yangilanayotgan Fiber tuguni. Bu tugun yangilangan taqdirda "ifloslangan" deb belgilanadi va funksiya tomonidan qaytariladi.
+
+##### `renderLanes`
+Render lanes — bu React’ning Fiber reconciler’ida yangi tushuncha bo'lib, eski `renderExpirationTime`ni o'rnini egallaydi. Bu eski `renderExpirationTime` tushunchasiga nisbatan biroz murakkabroq, ammo React’ga yangilanishlarni yaxshiroq ustuvorlashtirish va yangilanish jarayonini samaraliroq qilish imkonini beradi. `renderExpirationTime` eskirganligi sababli, biz bu bobda `renderLanes`ga e'tibor qaratamiz.
+
+Render lanes asosan yangilanishlar ishlov berilayotgan "lane(yo'l)lar"ni ifodalovchi bitmask’dir. *Lane’lar* yangilanishlarni ularning ustuvorligi va boshqa omillar asosida tasniflashning bir usulidir. React komponentida o'zgarish amalga oshirilganda, bu o'zgarish uning ustuvorligi va boshqa xususiyatlariga qarab bir *lane’ga* tayinlanadi. O'zgarishning ustuvorligi yuqori bo'lsa unga yuqori yo'l, ya'ni *lane*, beriladi.
+
+Yangilanishlar to'g'ri tartibda ishlanishini ta'minlash uchun `renderLanes` qiymati `beginWork` funksiyasiga uzatiladi. Yuqori ustuvorlikka ega yo'llarga tayinlangan yangilanishlar, past ustuvorlikka ega yo'llarga tayinlangan yangilanishlardan avval ishlov beriladi. Bu, foydalanuvchi o'zaro ta'sir yoki foydalanish imkoniyati qulayligi(accessibility) kabi yuqori ustuvorlikdagi yangilanishlarning iloji boricha tezroq ishlov berilishini ta'minlaydi.
+
+Yangilanishlarni ustuvorlashtirishdan tashqari, `renderLanes` React’ga raqobatni, ya'ni parallellikni, yaxshiroq boshqarishga ham yordam beradi. React uzun davom etadigan yangilanishlarni kichik, boshqarish oson bo'lgan bo'laklarga ajratish uchun "vaqtni bo'lish"(time slicing) deb ataladigan texnikadan foydalanadi. `renderLanes` bu jarayonda muhim rol o'ynaydi, chunki bu React’ga qaysi yangilanishlar birinchi bo'lib ishlov berilishi kerakligini va qaysi yangilanishlar keyinroqqa kechiktirilishi mumkinligini aniqlash imkonini beradi.
+
+Render bosqichi tugagach, `getLanesToRetrySynchronouslyOnError` funksiyasi render bosqichida qachondir kechiktirilgan yangilanishlar yaratilganligini aniqlash uchun chaqiriladi. Agar kechiktirilgan yangilanishlar bo'lsa, `updateComponent` funksiyasi yangi ish siklini boshlaydi, `beginWork` va `getNextLanes`dan foydalanib, yangilanishlarni ishlov berish va ularni yo'llariga ko'ra ustuvorlashtirish uchun.
+
+Biz *"Render Lane"*’lar haqida kelgusi bobda yanada chuqurroq o'rganamiz. Hozircha, Fiber reconciler oqimini davom ettiraylik.
+
+#### `completeWork`
+`completeWork` funksiyasi hali tugallanmagan bo'lgan Fiber tuguniga yangilanishlarni qo'llaydi va ilovaning yangilangan holatini ifodalovchi yangi real DOM daraxtini yaratadi. Ushbu daraxt brauzer ko'rinishidan tashqarida, DOM bilan bog'lanmagan holda quriladi.
+
+Agar asosiy muhit brauzer bo'lsa, bu `document.createElement` yoki `newElement.appendChild` kabi ishlarni bajarishni anglatadi. Yodda tuting, ushbu elementlar daraxti hali brauzerdagi dokument bilan bog'lanmagan: React shunchaki UI’ning navbatdagi versiyasini ekran tashqarisida yaratmoqda. Bu ishni ekran tashqarisida bajarish uni to'xtatiluvchan qiladi: React hisoblayotgan navbatdagi holat hali ekranga chizilmagan, shuning uchun yuqori ustuvorlikka ega yangilanish rejalashtirilsa, uni bekor qilish mumkin. Bu Fiber reconciler’ning asosiy maqsadi.
+
+`completeWork` funksiyasining ko'rinishi quyidagicha:
+``` ts copy
+function completeWork(
+  current: Fiber | null,
+  workInProgress: Fiber,
+  renderLanes: Lanes
+): Fiber | null;
+```
+
+Bu yerda, `beginWork` bilan bir xil ko'rinish mavjud.
+
+`completeWork` funksiyasi `beginWork` funksiyasiga yaqin bo'lib, `beginWork` Fiber tugunidagi “yangilanish kerakmi” holati haqida bayroqlarni o'rnatish uchun javobgar bo'lsa, `completeWork` yangi daraxtni yaratib, uni asosiy host muhitga kiritish uchun javobgardir. `completeWork` yuqori darajaga yetib, yangi DOM daraxtini yaratgandan so'ng, “render bosqichi tugallandi” deb aytiladi. Endi React commit bosqichiga o'tadi.
+
+
+### Commit bosqichi
+*Commit bosqichi* (rasmga qarang) haqiqiy DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlar bilan yangilash uchun javobgardir. *Commit bosqichi* davomida yangi virtual DOM daraxti asosiy host muhitga kiritiladi va hali tugallanmagan daraxt joriy daraxt bilan almashtiriladi. Shu bosqichda barcha effektlar ham bajariladi. *Ccommit bosqichi* ikki qismga bo'linadi: mutatsiya bosqichi va layout bosqichi.
+
+![FiberRootNode bilan commit bosqichi](/commit-phase.png)
+
+
+#### Mutatsiya bosqichi (mutation phase)
+Mutatsiya bosqichi — bu commit bosqichining birinchi qismi bo'lib, virtual DOM’ga kiritilgan o'zgarishlarni haqiqiy DOM’ga yangilash uchun javobgardir. Ushbu bosqichda React yangilanishlar kerakligini aniqlaydi va `commitMutationEffects` deb nomlangan maxsus funksiyani chaqiradi. Bu funksiya render bosqichida muqobil daraxtdagi Fiber tugunlariga kiritilgan o'zgarishlarni haqiqiy DOM’ga qo'llaydi.
+
+Bu yerda, `commitMutationEffects` qanday amalga oshirilishi mumkinligini to'liq psevdokod misolida ko'rsatamiz:
+``` ts copy
+function commitMutationEffects(Fiber) {
+  switch (Fiber.tag) {
+    case HostComponent: {
+      // DOM tugunini yangi props va/yoki children bilan yangilash
+      break;
+    }
+    case HostText: {
+      // DOM tugunining tekst kontentini yangilash
+      break;
+    }
+    case ClassComponent: {
+      // Lifecycle metodlari, masalan, componentDidMount va componentDidUpdate chaqiriladi
+      break;
+    }
+    // ... boshqa turdagi tugunlar uchun holatlar
+  }
+}
+```
+
+Mutatsiya bosqichi davomida React shuningdek, `commitUnmount` va `commitDeletion` kabi maxsus funksiyalarni ham chaqiradi, bu funksiyalar DOM’dan endi kerak bo'lmagan tugun(node)larni olib tashlash uchun ishlatiladi.
+
+
+#### Layout bosqichi (layout phase)
+Layout bosqichi — commit bosqichining ikkinchi qismi bo'lib, DOM’dagi yangilangan tugunlarning yangi layout’ini hisoblash uchun mas'uldir. Ushbu bosqichda React `commitLayoutEffects` deb nomlangan maxsus funksiyani chaqiradi. Bu funksiya DOM’dagi yangilangan tugunlarning yangi layout’larini hisoblab chiqadi.
+
+`commitMutationEffects` kabi, `commitLayoutEffects` ham turli tugunlar yangilanishiga qarab har xil funksiyalarni chaqiradigan katta switch operatoriga ega.
+
+Layout bosqichi yakunlangandan so'ng, React haqiqiy DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlarga mos ravishda muvaffaqiyatli yangilaydi.
+
+Commit bosqichini ikki qismga — mutatsiya va layout’larga ajratish orqali React DOM’ga yangilanishlarni samarali tarzda qo'llaydi. Reconciler’dagi boshqa asosiy funksiyalar bilan hamkorlikda ishlash orqali commit bosqichi React ilovalari murakkablashib, katta miqdordagi ma'lumotlarni qayta ishlashiga qaramay, tez, javob beruvchan va ishonchli bo'lishini ta'minlaydi.
+
+
+#### Effektlar (effects)
+React’ning reconciliation jarayonining commit bosqichida side effect’lar o'ziga xos tartibda, effektning turiga qarab bajariladi. Commit bosqichida sodir bo'lishi mumkin bo'lgan bir nechta effektlar mavjud:
+ - **Joylashtirish effektlari (Placement effects)**: Bu effektlar yangi komponent DOM’ga qo'shilganda yuz beradi. Masalan, agar forma ichiga yangi button qo'shilsa, button’ni DOM’ga qo'shish uchun ushbu joylashtirish effekti sodir bo'ladi.
+ - **Yangilash effektlari (Update effects)**: Bu effektlar komponent yangi props yoki state bilan yangilanganda yuz beradi. Masalan, agar button’ning teksti o'zgarsa, tekstni DOM’da yangilash uchun yangilash effekti sodir bo'ladi.
+ - **O'chirish effektlari (Deletion effects)**: Bu effektlar komponent DOM’dan o'chirilganda yuz beradi. Masalan, agar forma ichidagi button olib tashlansa, button’ni DOM’dan olib tashlash uchun o'chirish effekti sodir bo'ladi.
+ - **Layout effektlari (Layout effects)**: Bu effektlar brauzer ekranga chizish imkoniyatiga ega bo'lmasdan oldin sodir bo'ladi va sahifaning layout’ini yangilash uchun ishlatiladi. Layout effektlari funksional komponentlarda `useLayoutEffect` hook’i va klass komponentlarda `componentDidUpdate` lifecycle metodi orqali boshqariladi.
+
+ Commit bosqichidagi ushbu effektlardan farqli o'laroq, passiv effektlar — bu foydalanuvchi tomonidan belgilanadigan effektlar bo'lib, brauzer ekranga chizish imkoniyatiga ega bo'lgandan keyin bajariladi. Passiv effektlar `useEffect` hook'i orqali boshqariladi.
+
+Passiv effektlar sahifaning dastlabki chizilishiga muhim bo'lmagan harakatlarni amalga oshirish uchun foydalidir, masalan, API’dan ma'lumot olish yoki analitika kuzatuvini amalga oshirish. Passiv effektlar render bosqichida bajarilmagani sababli, foydalanuvchi interfeysini dasturchi istagan holatga olib kelish uchun minimal yangilanishlar to'plamini hisoblash vaqtiga ta'sir qilmaydi.
+
+
+### Hamma narsani ekranga chiqarish
+React ikkita daraxtdan biriga ishora qiluvchi `FiberRootNode` deb nomlangan yuqori darajadagi tugunni boshqaradi: bu `current` yoki `workInProgress` daraxtlari bo'lishi mumkin. `FiberRootNode` — reconciliation jarayonining commit bosqichini boshqarish uchun javob beradigan muhim ma'lumot strukturasi hisoblanadi.
+
+Virtual DOM’ga o'zgarishlar kiritilganda, React `workInProgress` daraxtini yangilaydi, lekin `current` daraxtini o'zgarishsiz qoldiradi. Bu React’ga virtual DOM’ni render qilish va yangilashni davom ettirish imkonini beradi, shu bilan birga dastur holatining hozirgi versiyasini saqlaydi.
+
+Render jarayoni tugagach, React `commitRoot` deb nomlangan funksiyani chaqiradi, bu funksiya `workInProgress` daraxtida amalga oshirilgan o'zgarishlarni haqiqiy DOM’ga kiritish uchun javobgardir. `commitRoot` funksiyasi `FiberRootNode` ko'rsatkich ishorasi(pointer)ni joriy daraxtdan `workInProgress` daraxtiga o'zgartiradi, natijada `workInProgress` daraxti yangi joriy daraxt bo'lib qoladi.
+
+Shundan so'ng, kelajakdagi barcha yangilanishlar yangi joriy daraxtga asoslanadi. Bu jarayon dastur holatining izchil qolishini va o'zgarishlarning to'g'ri va samarali tarzda qo'llanilishini ta'minlaydi.
+
+Bularning barchasi brauzerda deyarli darhol sodir bo'lgandek tuyuladi. Bu — reconciliation jarayonining natijasidir.

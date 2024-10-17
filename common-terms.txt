@@ -32,3 +32,4 @@ Cross-browser compatibility - Brauzerlararo o'zaro mutanosiblik
 core - negizi
 dirty - ifloslangan
 artifact - artifact
+accessibility - foydalanish imkoniyati qulayligi

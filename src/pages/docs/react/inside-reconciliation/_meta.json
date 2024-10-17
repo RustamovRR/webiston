@@ -4,5 +4,6 @@
   "stack-reconciler": "Stack reconciler",
   "fiber-reconciler": "Fiber reconciler",
   "fiber-ma'lumotlar-strukturasi": "Fiber ma'lumotlar strukturasi",
-  "double-buffering": "Double buffering"
+  "double-buffering": "Double buffering",
+  "fiber-reconciliation": "Fiber reconciliation"
 }
