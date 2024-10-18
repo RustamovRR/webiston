@@ -33,3 +33,5 @@ core - negizi
 dirty - ifloslangan
 artifact - artifact
 accessibility - foydalanish imkoniyati qulayligi
+shallow comparison - yuzaki taqqoslash
+dependency - bog'liqlik
