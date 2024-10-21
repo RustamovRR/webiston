@@ -1,0 +1,169 @@
+## Bu Qoida emas, Yo'riqnoma!
+
+`React.memo` funksiyasi React’ning reconciler’iga komponentning props’lari o'zgarmasa, qayta render qilinishini xohlamasligimizni bildirish uchun mo'ljallangan. Bu faqatgina React uchun maslahat bo'lib xizmat qiladi, lekin oxir-oqibatda React nima qilishni o'zi hal qiladi. `React.memo`ning yagona maqsadi ota komponentdan kelib chiqadigan qayta render qilinishlarni oldini olishga yordam berishdir. Biroq, bu komponent hech qachon qayta render qilinmasligini kafolatlamaydi.
+
+Ilk boblarimizda aytilganidek, React foydalanuvchi interfeysimizning deklarativ abstraksiyasi sifatida mo'ljallangan: biz qanday natija olishni xohlayotganimizni tasvirlaymiz, va React bu natijaga qanday erishishni o'zi aniqlaydi. `React.memo` ham ushbu jarayonning bir qismi hisoblanadi.
+
+`React.memo` doimiy ravishda qayta render qilinmasligini kafolatlamaydi, chunki React memoization qilingan komponentni qayta render qilishga turli sabablarga ko'ra qaror qilishi mumkin, masalan, komponentlar daraxtidagi o'zgarishlar yoki ilovaning global state’dagi o'zgarishlar tufayli.
+
+Keling, React manbasining kodidagi ba'zi kod qismlariga nazar tashlab ko'raylik, bu orqali yaxshiroq tushunish mumkin bo'ladi.
+
+Avvalo, `React.memo` ning bajarilishini ko'rib chiqamiz:
+``` js copy
+function memo(type, compare) {
+  return {
+    $$typeof: REACT_MEMO_TYPE,
+    type,
+    compare: compare === undefined ? null : compare,
+  };
+}
+```
+
+Ushbu bajarilishda, `React.memo` memoized qilingan komponentni ifodalovchi yangi obyektni qaytaradi. Obyektning `$$typeof` xususiyati uni memoized komponent sifatida aniqlaydi, `type` xususiyati esa asl komponentga havola qiladi, va `compare` xususiyati esa memoization qilish uchun taqqoslash funksiyasini belgilaydi.
+
+
+### React.memo’ning reconciler ichida ishlatilinishi
+`React.memo` reconciler ichida qanday ishlashini ko'rib chiqamiz:
+``` js copy
+function updateMemoComponent(
+  current: Fiber | null,
+  workInProgress: Fiber,
+  Component: any,
+  nextProps: any,
+  renderLanes: Lanes
+): null | Fiber {
+  if (current === null) {
+    const type = Component.type;
+    if (
+      isSimpleFunctionComponent(type) &&
+      Component.compare === null &&
+      // SimpleMemoComponent kod yo'li(codepath)da tashqi props’lar aniqlanmaydi.
+      Component.defaultProps === undefined
+    ) {
+      let resolvedType = type;
+      if (__DEV__) {
+        resolvedType = resolveFunctionForHotReloading(type);
+      }
+      // Agar bu oddiy funksiya komponenti bo'lsa va default props bo'lmasa,
+      // va faqat default yuzaki taqqoslash mavjud bo'lsa, uni
+      // tez yo'ldan yangilanishga ruxsat berish uchun SimpleMemoComponent’ga ko'taramiz.
+      workInProgress.tag = SimpleMemoComponent;
+      workInProgress.type = resolvedType;
+
+      if (__DEV__) {
+        validateFunctionComponentInDev(workInProgress, type);
+      }
+
+      return updateSimpleMemoComponent(
+        current,
+        workInProgress,
+        resolvedType,
+        nextProps,
+        renderLanes
+      );
+    }
+
+    if (__DEV__) {
+      const innerPropTypes = type.propTypes;
+      if (innerPropTypes) {
+        // Ichki memo komponent props’lari createElement’da ayni vaqtda tekshirilmaydi.
+        // Biz uni u yerga ko'chirishimiz mumkin, lekin lazy kod yo'li uchun hali ham kerak bo'ladi.
+        checkPropTypes(
+          innerPropTypes,
+          nextProps, // Hal qilingan props
+          "prop",
+          getComponentNameFromType(type)
+        );
+      }
+
+      if (Component.defaultProps !== undefined) {
+        const componentName = getComponentNameFromType(type) || "Unknown";
+        if (!didWarnAboutDefaultPropsOnFunctionComponent[componentName]) {
+          console.error(
+            "%s: defaultProps uchun qo'llab-quvvatlash keyingi chiqarilishlarda komponentlardan olib tashlanadi. " +
+            "Buning o'rniga JavaScript default parametrlaridan foydalaning.",
+            componentName
+          );
+          didWarnAboutDefaultPropsOnFunctionComponent[componentName] = true;
+        }
+      }
+    }
+
+    const child = createFiberFromTypeAndProps(
+      Component.type,
+      null,
+      nextProps,
+      null,
+      workInProgress,
+      workInProgress.mode,
+      renderLanes
+    );
+    child.ref = workInProgress.ref;
+    child.return = workInProgress;
+    workInProgress.child = child;
+    return child;
+  }
+
+  if (__DEV__) {
+    const type = Component.type;
+    const innerPropTypes = type.propTypes;
+    if (innerPropTypes) {
+      // Ichki memo komponent propslari createElement'da ayni vaqtda tekshirilmaydi.
+      // Biz uni u yerga ko'chirishimiz mumkin, lekin lazy kod yo'li uchun hali ham kerak bo'ladi.
+      checkPropTypes(
+        innerPropTypes,
+        nextProps, // Hal qilingan props
+        "prop",
+        getComponentNameFromType(type)
+      );
+    }
+  }
+  // Bu har doim bitta bolaning o'zi bo'ladi.
+  const currentChild = ((current.child: any): Fiber);
+  const hasScheduledUpdateOrContext = checkScheduledUpdateOrContext(
+    current,
+    renderLanes
+  )
+
+  if (!hasScheduledUpdateOrContext) {
+    // Bu hal qilingan defaultProps bilan bo'lgan props’lar bo'ladi,
+    // current.memoizedProps esa hal qilinmaganlar bo'ladi.
+    const prevProps = currentChild.memoizedProps;
+    // Yuzaki taqqoslashga default qilish.
+    let compare = Component.compare;
+    compare = compare !== null ? compare : shallowEqual;
+    if (compare(prevProps, nextProps) && current.ref === workInProgress.ref) {
+      return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
+    }
+  }
+  // React DevTools ushbu bayroqni o'qiydi.
+  workInProgress.flags |= PerformedWork;
+  const newChild = createWorkInProgress(currentChild, nextProps);
+  newChild.ref = workInProgress.ref;
+  newChild.return = workInProgress;
+  workInProgress.child = newChild;
+  return newChild;
+}
+```
+
+1. **Dastlabki tekshiruv**: `updateMemoComponent` funksiyasi bir nechta parametrlarni qabul qiladi, jumladan, joriy(current) va hali tugallanmagan(work-in-progress) Fiber’lar, komponent, yangi props va render lanes (bu yangilanishlarning ustuvorligi va vaqtini belgilaydi). Dastlabki tekshiruv `(if (current === null))` komponentning dastlabki render bo'layotganini aniqlaydi. Agar `current` qiymati `null` bo'lsa, demak, komponent birinchi marta yuklanmoqda.
+2. **Tur va tezkor yo'l(fast path)ni optimallashtirish**: Keyin komponent oddiy funksiya komponenti ekanligi va tezkor yo'ldan yangilanish uchun yaroqliligini tekshiradi, `Component.compare` va `Component.defaultProps`lar tekshirish orqali. Agar ushbu shartlar bajarilsa, work-in-progress Fiber’ning tegini `SimpleMemoComponent`ga o'rnatadi, bu komponent turini soddalashtirish va samaraliroq yangilanish imkonini beradi.
+3. **Ishlab chiqish rejimi(development mode)da tekshiruvlar**: Ishlab chiqish rejimida `(__DEV__)`, funksiya qo'shimcha tekshiruvlarni amalga oshiradi, masalan, prop turlarini tasdiqlash va eskirgan xususiyatlar (masalan, funksiya komponentlaridagi `defaultProps`) haqida ogohlantirish.
+4. **Yangi Fiber yaratish**: Agar bu dastlabki render’da bo'lsa, `createFiberFromTypeAndProps` yordamida yangi Fiber yaratiladi. Bu Fiber React renderer uchun bir ish birligi(unit)ni ifodalaydi. U havolalarni sozlaydi va bolani (yangi Fiber) qaytaradi.
+5. **Mavjud Fiber’ni yangilash**: Agar komponent yangilanayotgan bo'lsa `(current !== null)`, u *development mode*’dagi kabi tekshiruvlarni amalga oshiradi. Keyin eski props’ni yangi props bilan yuzaki taqqoslash `(shallowEqual)` yoki berilgan maxsus taqqoslash funksiyasidan foydalanib yangilanish kerakligini tekshiradi.
+6. **Yangilashdan chiqish**: Agar props’lar teng bo'lsa va ref o'zgarmagan bo'lsa, `bailoutOnAlreadyFinishedWork` yordamida yangilashdan chiqib ketishi mumkin, ya'ni ushbu komponent uchun qo'shimcha render ishlari talab qilinmaydi.
+7. **Work-in-progress Fiber’ni yangilash**: Agar yangilanish kerak bo'lsa, funksiya work-in-progress Fiber’ni `PerformedWork` bayrog'i bilan belgilaydi va joriy bola’ning asosida yangi work-in-progress bola Fiber yaratadi, lekin yangi props bilan.
+
+
+Xulosa qilib aytganda, ushbu funksiya memoizatsiyalangan komponentni (`React.memo` bilan o'ralgan komponent), uning ishlash samaradorligini optimallashtirish uchun yangilash kerakmi yoki yangilanishni o'tkazib yuborsa bo'ladimi, shuni aniqlaydi. U dastlabki render va keyingi yangilanishlarni boshqaradi hamda yangi Fiber yaratish yoki mavjudini yangilashga qarab turli operatsiyalarni bajaradi.
+
+Mana bu yerda, ushbu funksiyadagi qaysi qismlar `React.memo` komponentining qayta render qilinish yoki qilinmasligi shartlarini qanday belgilashi haqida:
+- **Avvalgi render yo'q (birinchi marta yuklanish(mount))**: Agar `current === null` bo'lsa, komponent birinchi marta yuklanayotgan bo'ladi va shu sababli render qilishdan o'tib ketib bo'lmaydi. Yangi Fiber yaratiladi va render qilish uchun qaytariladi.
+- **Oddiy funksiya komponentini optimallashtirish**: Agar komponent oddiy funksiya komponenti bo'lsa (default props’larsiz va maxsus taqqoslash funksiyasiz), React uni `SimpleMemoComponent`ga optimallashtiradi. Bu React’ga yangilanishlar uchun tezkor yo'ldan foydalanishga imkon beradi, chunki u komponent faqat props’larga bog'liq ekanligi va yuzaki taqqoslash (shallow comparison) uni yangilash kerakmi yoki yo'qligini aniqlash uchun yetarli ekanligini taxmin qilishi mumkin.
+- **Taqqoslash funksiyasi**: Agar oldingi render mavjud bo'lsa, komponent faqat taqqoslash funksiyasi `false` qiymat qaytargan taqdirda yangilanadi. Ushbu taqqoslash funksiyasi, agar berilgan bo'lsa, maxsus bo'lishi mumkin yoki aks holda yuzaki tenglikni tekshiruvchi `(shallowEqual)` bo'lishi mumkin. Agar taqqoslash funksiyasi yangi props’larni avvalgilari bilan bir xil deb aniqlasa va `ref` o'zgarmagan bo'lsa, komponent qayta render qilinmaydi va funksiya render jarayonidan chiqib ketadi.
+- **Default props va prop turlarini development’da tekshirish**: Development rejimida `(__DEV__)`, `defaultProps` va `propTypes` uchun tekshiruvlar mavjud. Development rejimida `defaultProps` ishlatilishi ogohlantirish beradi, chunki React’ning kelgusi versiyalarida funksional komponentlarda `defaultProps`dan foydalanish tavsiya qilinmaydi. Prop turlari esa tasdiqlash maqsadida tekshiriladi.
+- **Yangilanishdan chiqish shartlari**: Agar hech qanday rejalashtirilgan yangilanish yoki context o'zgarishi bo'lmasa (`hasScheduledUpdateOrContext` qiymati `false` bo'lsa), taqqoslash funksiyasi eski va yangi props’larni teng deb aniqlasa va `ref` o'zgarmagan bo'lsa, funksiya `bailoutOnAlreadyFinishedWork` natijasini qaytaradi va qayta render qilishni samarali tarzda o'tkazib yuboradi. 
+Ammo, agar rejalashtirilgan context yangilanishlari bo'lsa, komponent qayta render qilinadi — hatto uning props’lari o'zgarmagan bo'lsa ham, chunki context yangilanishlari komponent props’lari doirasidan tashqarida hisoblanadi. State o'zgarishlari, context o'zgarishlari va rejalashtirilgan yangilanishlar ham qayta render qilinishiga olib kelishi mumkin.
+- **Bajarilgan ish bayrog'i**: Agar yangilanish zarur bo'lsa, `workInProgress` Fiber’da `PerformedWork` bayrog'i o'rnatiladi, bu esa ushbu Fiber joriy render davomida ishni bajarganligini ko'rsatadi.
+
+Shunday qilib, `React.memo` komponentlari faqat eski va yangi props orasidagi taqqoslash (berilgan maxsus taqqoslash funksiyasi yoki default yuzaki taqqoslash yordamida) props’larni teng deb belgilasa va state yoki context o'zgarishlari sababli rejalashtirilgan yangilanishlar bo'lmasa, qayta render qilinmaydi. Agar props’lar boshqacha, ya'ni o'zgargan, deb aniqlansa yoki state yoki context o'zgarishlari mavjud bo'lsa, komponent qayta render qilinadi.
