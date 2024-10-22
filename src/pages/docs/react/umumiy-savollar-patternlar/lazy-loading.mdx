@@ -1,0 +1,129 @@
+## Lazy loading (kechiktirilgan yuklanish)
+
+Bizning ilovalarimiz o'sib borishi bilan, ko'plab JavaScript kodlari to'planadi. Foydalanuvchilar keyin ushbu katta JavaScript to'plamlarini yuklab olishadi — ba'zida bu to'plamlar megabaytlarda ikki xonali raqamlarga yetadi — lekin ular faqat kichik bir qismidan foydalanishadi. Bu muammo bo'ladi, chunki bu foydalanuvchilarimizning dastlabki yuklash vaqtini sekinlashtiradi, shuningdek, keyingi sahifalarni yuklashni ham sekinlashtiradi, chunki ular butun to'plamni qayta yuklab olishga majbur bo'lishadi, ayniqsa biz bu to'plamlarni yetkazib beruvchi serverlarga kirish imkoniga ega bo'lmaganimizda va zaruriy keshlash sarlavhalarini qo'sholmaganimizda.
+
+### JavaScript’ning ortiqcha yuklanishi
+Juda ko'p JavaScript yetkazib berishning asosiy muammolaridan biri shundaki, bu sahifa yuklash vaqtini sekinlashtirishi mumkin. JavaScript fayllari odatda boshqa veb-resurslarga, masalan, HTML va CSS’ga qaraganda kattaroq bo'ladi va ularni bajarish uchun ko'proq qayta ishlash vaqti talab etiladi. Bu ayniqsa sekin internet aloqasi yoki eski qurilmalarda uzoqroq sahifa yuklash vaqtiga olib kelishi mumkin.
+
+Masalan, quyidagi kod parchasini ko'rib chiqaylik, u sahifa yuklash vaqtida katta JavaScript faylini yuklaydi:
+``` html copy
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mening veb-saytim</title>
+    <script src="https://example.com/large.js"></script>
+</head>
+<body>
+    <!-- Sahifa kontenti bu yerda -->
+</body>
+</html>
+```
+
+Bu misolda, *large.js* fayli sahifaning `<head>` qismida yuklanadi, ya;ni u sahifadagi boshqa barcha kontentlardan oldin bajariladi. Bu sekin sahifa yuklash vaqtlariga olib kelishi mumkin, ayniqsa sekin internet aloqasi yoki eski qurilmalarda. Ushbu muammoni hal qilishning keng tarqalgan yechimi JavaScript fayllarini `async` atributidan foydalanib asinxron yuklashdir:
+
+``` html copy
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mening veb-saytim</title>
+    <script async src="https://example.com/large.js"></script>
+</head>
+<body>
+    <!-- Sahifa kontenti bu yerda -->
+</body>
+</html>
+
+```
+
+Bu misolda, *large.js* fayli `async` atributi yordamida asinxron ravishda yuklanadi. Bu, fayl sahifadagi boshqa resurslar bilan parallel yuklanishi mumkinligini bildiradi, bu esa sahifa yuklash vaqtlarini yaxshilashi mumkin.
+
+### Ma'lumotlar sarfi
+JavaScript’ni juda ko'p yetkazib berishning yana bir muammosi shundaki, bu ma'lumotlar sarfini oshirishi mumkin. JavaScript to'plamlari odatda boshqa veb-resurslarga qaraganda kattaroq bo'ladi, shuning uchun tarmoq orqali ko'proq ma'lumot uzatilishini talab qiladi. Bu cheklangan limitlarga ega foydalanuvchilar yoki sekin internet aloqasiga ega bo'lganlar uchun qimmatbaho va sekin sahifa yuklash vaqtlariga olib kelishi mumkin.
+
+Ushbu muammolarni yengillatish uchun uchun foydalanuvchilarga yetkaziladigan JavaScript miqdorini kamaytirish uchun bir nechta yondashuvlar qo'llashimiz mumkin. Yondashuvlardan biri kodni ajratish (code splitting) orqali ma'lum sahifa yoki funksiya uchun kerak bo'lgan JavaScript’ni yuklashdir. Bu faqat kerakli kodni yuklash orqali sahifa yuklash vaqtlarini va ma'lumotlar sarfini kamaytirishga yordam beradi.
+
+Masalan, quyidagi kod parchasini ko'rib chiqaylik, u kodni ajratish orqali faqat kerakli JavaScript’ni yuklaydi:
+``` js copy
+import("./large.js").then((module) => {
+    // Bu yerda modulli koddan foydalaning
+});
+```
+
+Bu misolda, `import` funksiyasi asinxron ravishda *large.js* faylini faqat kerak bo'lganda yuklaydi. Bu sahifa yuklash vaqtlarini va ma'lumotlar sarfini kamaytirishga yordam beradi.
+
+Yana bir yondashuv bu kechiktirib yuklash orqali kerak bo'lmagan JavaScript’ni sahifa yuklangandan keyin yuklashni kechiktirishdir. Bu sahifa yuklash vaqtlarini va ma'lumotlar sarfini kamaytirishga yordam beradi, chunki kerak bo'lmagan kod faqat kerak bo'lganda yuklanadi.
+
+Masalan, quyidagi kod parchasida kerak bo'lmagan JavaScript kechiktirib yuklanadi:
+``` html copy
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mening veb-saytim</title>
+</head>
+<body>
+    <!-- Sahifa kontenti bu yerda -->
+    <button id="load-more">Ko'proq yuklash</button>
+    <script>
+        document.getElementById("load-more").addEventListener("click", () => {
+            import("./non-critical.js").then((module) => {
+                // Bu yerda modulli koddan foydalaning
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+Bu misolda, `import` funksiyasi kerak bo'lmagan *non-critical.js* faylini “Ko'proq yuklash” tugmasi bosilgandan keyin asinxron ravishda yuklaydi. Bu sahifa yuklash vaqtlarini va ma'lumotlar sarfini kamaytirishga yordam beradi.
+
+Yaxshiyamki, React bizga bu jarayonni yanada osonlashtiradigan yechimni taqdim etadi: `React.lazy` va `Suspense` yordamida kechiktirib yuklash. Keling, bular qanday qilib bizning ilovamizning ishlash samaradorligini yaxshilashga yordam berishini ko'rib chiqamiz.
+
+
+### Kechiktirib yuklash (lazy loading)
+**Lazy loading** — bu komponentni faqat kerak bo'lganda yuklash texnikasi, masalan, oldingi misoldagi dinamik import yordamida. Bu texnika katta ilovalar uchun foydali bo'lib, ko'plab komponentlar dastlabki yuklashda zarur bo'lmasa qo'llaniladi. Misol uchun, agar bizda katta ilova bo'lib, unda boshqa sahifalarga havolalar bo'lgan ro'yxatni o'z ichiga olgan yig'iladigan sidebar bo'lsa, dastlabki yuklashda ushbu sidebar’ni yuklamaslikni istashimiz mumkin, agar u dastlabki yuklashda yig'ilgan bo'lsa. Buning o'rniga, foydalanuvchi sidebar’ni ochganida uni yuklaymiz.
+
+Quyidagi kod namunasi orqali buni ko'rib chiqaylik:
+``` js copy
+import Sidebar from "./Sidebar"; // 22MB import qilinadi
+const MyComponent = ({ initialSidebarState }) => {
+    const [showSidebar, setShowSidebar] = useState(initialSidebarState);
+
+    return (
+        <div>
+            <button onClick={() => setShowSidebar(!showSidebar)}>
+                Sidebarni almashtirish
+            </button>
+            {showSidebar && <Sidebar />}
+        </div>
+    );
+};
+```
+
+Bu misolda, `<Sidebar />` — bu 22 MB JavaScript kodi. Bu juda katta JavaScript kodi bo'lib, yuklab olish, tahlil qilish va bajarish uchun ko'p vaqt talab etiladi. Dastlabki yuklashda sidebar yig'ilgan bo'lsa, uni yuklash shart emas. Buning o'rniga, biz `React.lazy` funksiyasidan foydalanib, komponentni faqat `showSidebar` qiymati `true` bo'lganda kechiktirib yuklaymiz, ya'ni faqat kerak bo'lsa:
+``` js copy
+import { lazy, Suspense } from "react";
+import FakeSidebarShell from "./FakeSidebarShell"; // 1kB import qilinadi
+
+const Sidebar = lazy(() => import("./Sidebar"));
+
+const MyComponent = ({ initialSidebarState }) => {
+    const [showSidebar, setShowSidebar] = useState(initialSidebarState);
+
+    return (
+        <div>
+            <button onClick={() => setShowSidebar(!showSidebar)}>
+                sidebarni almashtirish
+            </button>
+            <Suspense fallback={<FakeSidebarShell />}>
+                {showSidebar && <Sidebar />}
+            </Suspense>
+        </div>
+    );
+};
+```
+
+Bu yerda `./Sidebar` faylini statik import qilishning o'rniga, biz uni dinamik ravishda import qilamiz, ya'ni `lazy` funksiyasiga modulli import qilinadigan funksiyani qaytaruvchi vadani (promise) uzatamiz. Dinamik import promise qaytaradi, chunki modul darhol mavjud bo'lmasligi mumkin, uni dastlab serverdan yuklash kerak bo'ladi. `React.lazy` funksiyasi import’ni ishga tushiradi, lekin asosiy komponent (bu yerda `Sidebar`) ekranga chiqarilmaguncha chaqirilmaydi. Shunday qilib, biz `<Sidebar />` komponentini yuklashdan oldin 22 MB sidebar’ni ilovaga qo'shib yubormaslik imkoniyatiga ega bo'lamiz.
+
+Yana bir yangi import’ni payqagan bo'lishingiz mumkin: `Suspense`. Biz `Suspense`ni daraxt ichidagi komponentni o'rab olish uchun ishlatamiz. `Suspense` — bu komponent, bizga promise yechimini kutayotgan paytda (o'qish: sidebar yuklanayotgan paytda) oraliq komponent(fallback)ni ko'rsatishga imkon beradi. Kodda biz yuklanayotgan og'ir sidebar’ni yengilroq versiyasi bilan almashtirganmiz. Bu usul foydalanuvchiga sidebar yuklanayotganda darhol javob berishni ta’minlash uchun ajoyib usul.
+
+Endi foydalanuvchi tugmani bosib sidebarni almashtirganida, ular "skelet UI"ni ko'radi va panel yuklanib, ekranga chiqarilguncha o'z o'rnini egallashi mumkin.
