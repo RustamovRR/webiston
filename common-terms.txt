@@ -35,3 +35,4 @@ artifact - artifact
 accessibility - foydalanish imkoniyati qulayligi
 shallow comparison - yuzaki taqqoslash
 dependency - bog'liqlik
+event delegation - event delegation
