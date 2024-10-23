@@ -5,5 +5,7 @@
   "memoization-with-useMemo": "useMemo bilan memoizatsiya",
   "usememo-considered-harmful": "useMemo’dan to'g'ri foydalanish",
   "forget-about-all-this": "Bularni barchasini 'Unuting'",
-  "lazy-loading": "Lazy loading"
+  "lazy-loading": "Lazy loading",
+  "greater-control-ui-with-suspense": "Suspense bilan kengroq UI nazorati",
+  "usestate-vs-usereducer": "useState va useReducer"
 }
