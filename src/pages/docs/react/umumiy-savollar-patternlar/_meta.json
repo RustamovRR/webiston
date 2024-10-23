@@ -7,5 +7,6 @@
   "forget-about-all-this": "Bularni barchasini 'Unuting'",
   "lazy-loading": "Lazy loading",
   "greater-control-ui-with-suspense": "Suspense bilan kengroq UI nazorati",
-  "usestate-vs-usereducer": "useState va useReducer"
+  "usestate-vs-usereducer": "useState va useReducer",
+  "immer-and-ergonomics": "Immer va ergonomika"
 }
