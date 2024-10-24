@@ -1,5 +1,6 @@
 {
   "presentational-container-components": "Prezentatsiyaviy/Konteyner komponentlar",
   "high-order-component": "High-order komponent",
-  "render-props": "Props’ni render qilish"
+  "render-props": "Props’ni render qilish",
+  "control-props": "Boshqariladigan props’lar"
 }
