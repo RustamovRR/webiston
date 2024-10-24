@@ -38,3 +38,4 @@ shallow comparison - yuzaki taqqoslash
 dependency - bog'liqlik
 event delegation - event delegation
 lazy loading - kechiktirilgan yuklanish
+cross-cutting concern - o'zaro bog'liq muammo
