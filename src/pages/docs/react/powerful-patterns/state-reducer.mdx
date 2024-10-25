@@ -1,0 +1,69 @@
+## State reducer
+
+State reducer pattern’i React’da Kent C. Dodds (@kentcdodds) tomonidan ixtiro qilingan va mashhur qilingan. U React bo'yicha eng taniqli va tajribali muhandislar va o'qituvchilar qatoriga kiradi hamda bu sohada dunyo miqyosida tan olingan mutaxassisdir. Ushbu pattern moslashuvchan va sozlanadigan komponentlar yaratishning kuchli usulini taqdim etadi. Bu tushunchani real hayotdagi misol bilan ko'rsatib beramiz: tugmachani yoqish/o'chirish komponenti. Ushbu misol asosiy tugmachani yoqish/o'chirish komponentini qanday qilib yanada kengaytirish mumkinligini va uning state logikasini sozlash uchun foydalanuvchilarga imkoniyat berishni namoyish etadi. Masalan, komponentni haftaning ayrim kunlarida ba'zi biznes sabablari tufayli o'chirib qo'yish.
+
+Dastlab, biz `useReducer` hook’idan foydalanib, asosiy tugmachani yoqish/o'chirish komponentini yaratamiz. Komponent o'z holatini saqlaydi va tugma yoqilgan `(On)` yoki o'chirilgan `(Off)` holatda ekanligini belgilaydi. Dastlabki state `false` qilib o'rnatiladi, bu esa `Off` holatini anglatadi:
+``` js copy
+import React, { useReducer } from "react";
+
+function toggleReducer(state, action) {
+    switch (action.type) {
+        case "TOGGLE":
+            return { on: !state.on };
+        default:
+            throw new Error(`Noma'lum amal turi: ${action.type}`);
+    }
+}
+
+function Toggle() {
+    const [state, dispatch] = useReducer(toggleReducer, { on: false });
+
+    return (
+        <button onClick={() => dispatch({ type: "TOGGLE" })}>
+            {state.on ? "Yoqilgan" : "O'chirilgan"}
+        </button>
+    );
+}
+```
+
+*State reducer* pattern’ini amalga oshirish uchun `Toggle` komponentini `stateReducer` nomli prop’ni qabul qilish uchun o'zgartiramiz. Ushbu prop komponentning ichki state logikasini sozlash yoki kengaytirish imkonini beradi. Komponentning `internalDispatch` funksiyasi ichki reducer logikasini `stateReducer` props’i orqali taqdim etilgan tashqi reducer bilan birlashtiradi:
+``` js copy
+function Toggle({ stateReducer }) {
+    const [state, dispatch] = useReducer(
+        (state, action) => {
+            const nextState = toggleReducer(state, action);
+            return stateReducer(state, { ...action, changes: nextState });
+        },
+        { on: false }
+    );
+
+    return (
+        <button onClick={() => dispatch({ type: "TOGGLE" })}>
+            {state.on ? "Yoqilgan" : "O'chirilgan"}
+        </button>
+    );
+}
+
+Toggle.defaultProps = {
+    stateReducer: (state, action) => state, // Default reducer hech qanday alohida narsa bajarmaydi
+};
+```
+
+Bu kod qismi orqali `stateReducer` prop komponentning ichki state logikasini sozlash uchun ishlatilishini ko'rishimiz mumkin. `stateReducer` funksiyasi hozirgi state va action obyekti bilan chaqiriladi, ammo biz action’ga qo'shimcha sifatida metadata sifatida `changes` xususiyatini qo'shamiz. Bu `changes` xususiyati komponentning ichki reducer tomonidan hisoblangan keyingi state’ini o'z ichiga oladi. Bu tashqi reducer’ga komponentning keyingi state’ini ko'rish va unga asoslangan qarorlar qabul qilish imkonini beradi.
+
+Endi ushbu pattern asosida `Toggle` komponentini moshlashtirilgan xatti-harakatlar bilan qanday ishlatish mumkinligini ko'rib chiqamiz. Quyidagi misolda `App` komponenti `Toggle`dan foydalanadi va moslashtirilgan `stateReducer`ni taqdim etadi. Ushbu reducer’da chorshanba kuni tugmani o'chirib qo'yishni taqiqlovchi mantiq mavjud, chunki ushbu ilovaning joylashuvida chorshanba "umumiy o'chirish mumkin bo'lmagan kun" hisoblanadi. Bu state reducer pattern’ining komponentni o'zgartirmasdan turib, uning xatti-harakatlarini moslashuvchan tarzda o'zgartirish imkonini qanday taqdim etishini ko'rsatadi:
+``` js copy
+function App() {
+    const customReducer = (state, action) => {
+        // Moslashtirilgan logika: chorshanba kuni o'chirib qo'yishni oldini olish
+        if (new Date().getDay() === 3 && !action.changes.on) {
+            return state;
+        }
+        return action.changes;
+    };
+
+    return <Toggle stateReducer={customReducer} />;
+}
+```
+
+Ushbu misol bilan biz *state reducer* pattern’ining komponentlarni yuqori darajada moslashuvchan va qayta foydalanish imkoniyatiga ega qilish kuchini ko'ramiz. Komponentning ichki state boshqaruvi bilan tashqi logikani integratsiya qilish orqali biz keng ko'lamdagi xatti-harakatlar va foydalanish holatlarini qamrab olishimiz mumkin, bu esa komponentning foydaliligini va ko'p qirraligini oshiradi.
