@@ -5,5 +5,6 @@
   "control-props": "Boshqariladigan props’lar",
   "props-collections": "Props to'plamlari",
   "compound-components": "Birlashgan komponentlar",
-  "state-reducer": "State reducer"
+  "state-reducer": "State reducer",
+  "recap": "Xulosa"
 }
