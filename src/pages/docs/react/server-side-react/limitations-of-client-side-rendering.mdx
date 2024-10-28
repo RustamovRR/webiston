@@ -1,0 +1,154 @@
+import { Callout } from 'nextra/components'
+
+## Klient tomonda render qilishning cheklovlari
+
+2013-yilda ochiq manba dastur sifatida chiqarilgandan beri React yordamida foydalanuvchi interfeyslarini yaratish davom etmoqda. Natijada, ushbu yondashuv bilan bog'liq bir qator cheklovlar paydo bo'ldi. Bu cheklovlar vaqt o'tishi bilan ko'proq ishlarni server tomoniga ko'chirishga olib keldi.
+
+
+### SEO (Qidiruv tizimlari uchun optimallashtirish)
+klient tomonida render qilishning asosiy cheklovlaridan biri, qidiruv tizimi botlari kontentni to'g'ri indekslashi mumkin emas, chunki ularning ba'zilari JavaScriptni bajarishmaydi yoki bajaradiganlari ham biz kutgandek ishlamaydi.
+
+Qidiruv tizimi botlarining turli xil yondashuvlarini hisobga olib, ularning qanday ishlashi ko'pchilik omma uchun aniq bo'lmaganligi tufayli, *faqat klient* tomonida render qilish orqali yaratilgan veb-sayt yoki ilova qamrovi biroz noma'lum bo'lib qoladi.
+
+2015-yilda [Search Engine Land](https://searchengineland.com/tested-googlebot-crawls-javascript-heres-learned-220157) nashrida chop etilgan maqola qidiruv tizimlarining turli xil tajribalar yordamida *faqat klient* tomonida yaratilgan ilovalar bilan qanday ishlashini sinab ko'rishni maqsad qilgan edi. Maqolada quyidagilar aytilgan:
+<Callout type="info">
+Biz bir qator sinovlar o'tkazdik va Google turli xil yondashuvlar bilan JavaScript’ni bajarish va indekslash imkoniyatiga ega ekanligini tekshirdik. Shuningdek, Google butun sahifani ko'rsatish va DOM’ni o'qish orqali dinamik yaratilgan kontentni indekslashi mumkinligini tasdiqladik.
+</Callout>
+
+Bu maqola bo'yicha Google va Bing *faqat klient* tomonidagi (client-only) veb-saytlarni indekslashga yetarli darajada rivojlanganligi aniqlanadi, lekin bu aslida keng va noma'lum texnologiyalar okeanidagi bir tadqiqotning natijasi hisoblanadi.
+
+Shunday qilib, zamonaviy qidiruv tizimlari bilan *faqat klient* tomonidagi ilovalar yaxshi ishlashi mumkin bo'lsa-da, server tomonida bo'lmaganligi tufayli biroz xavf bor. An'anaviy veb-ilovalarda, foydalanuvchi yoki qidiruv tizimi boti sahifani olish uchun so'rov yuborganda, server sahifaning HTML kodini ishlab chiqaradi va uni qaytaradi. HTML’da barcha tarkib, havolalar va ma'lumotlar mavjud bo'lib, bu qidiruv tizimi botlariga sahifani o'qish va indekslashni osonlashtiradi, chunki sahifaning barcha mazmuni shunchaki matndan, ya'ni markup’dan iborat bo'ladi.
+
+Biroq, React kabi kutubxona yoki freymvork yordamida yaratilgan klient tomonida render qilinadigan ilovada, server deyarli bo'sh HTML faylni qaytaradi, uning yagona vazifasi o'sha serverda yoki boshqa muqobil serverda joylashgan JavaScript faylini yuklashdan iborat. JavaScript fayli keyin yuklanadi va brauzerda bajariladi, bu esa sahifa tarkibini dinamik ravishda ko'rsatadi. Ushbu yondashuv tabiiy ilovalarnikiga o'xshash silliq foydalanuvchi tajribasini taqdim etadi, lekin qidiruv tizimlari uchun optimallashtirish (SEO) va ishlash samaradorligi(performance) borasida bir kamchiligi bor: biz birinchi so'rovda odamlar uchun foydali bo'lgan hech qanday narsani yuklamaymiz, balki sahifa yuklanishi bilan darhol butun saytni ishga tushiradigan JavaScript faylini yuklash uchun boshqa so'rov yuborishimiz kerak bo'ladi. Bu "tarmoq sharsharasi"(network waterfall) deb ataladi.
+
+Shunday qilib, *faqat klient* tomonida render qilishning yana bir kamchiligi ishlash samaradorligidir. Endi bu haqda gaplashamiz.
+
+
+### Ishlash samaradorligi (Performance)
+Klient tomonida render qilinadigan ilovalar ayniqsa sekin tarmoqlar yoki kuchsiz qurilmalarda ishlash muammolariga duch kelishi mumkin. JavaScript’ni yuklash, tahlil qilish va bajarish kerak bo'lgani uchun, kontentni render qilishda sezilarli kechikishlar yuzaga kelishi mumkin. Bu "interaktivlik vaqti" juda muhim ko'rsatkich bo'lib, u foydalanuvchi ishtiroki va sahifani samaradorlik ko'rsatkichi(bounce rates)ga bevosita ta'sir qiladi (foydalanuvchilar sahifani tark etish tezligiga o'xshaydi). Foydalanuvchilar sahifa yuklanishi uchun uzoq vaqt talab qilsa, sahifani tark etishlari mumkin va bu xatti-harakat sahifaning SEO reytingiga ham salbiy ta'sir qilishi mumkin.
+
+Bundan tashqari, agar qurilma kam quvvatli bo'lib, minimal protsessor imkoniyatlariga ega bo'lsa, faqat klient tomonida render qilish yomon foydalanuvchi tajribasini keltirib chiqaradi. Buning sababi, qurilma JavaScript’ni tezda bajarish uchun yetarli hisoblash quvvatiga ega bo'lmasligi mumkin, bu esa ilovaning sekin va javobsiz bo'lishiga olib keladi. Agar biz ushbu JavaScript’ni serverda bajarsak va klientga minimal ma'lumot yoki markup’ni yuborsak, kam quvvatli qurilmalar ko'p ish qilishi shart emas va shu sababli foydalanuvchi tajribasi yaxshilanadi.
+
+Keng miqyosda, klient tomonida render qilinadigan ilovalarda SEO va ishlash bilan bog'liq muammolar veb standartlari va eng yaxshi amaliyotlarga rioya qilishning ahamiyatini ko'rsatadi. Shuningdek, kontentni yuqori samarali va foydalanish imkoniyati qulay bo'lgan tarzda yetkazib berish uchun server tomonida render qilish yoki statik saytlar yaratish kabi ishonchli muqobillarning zarurligini ta'kidlaydi, ayniqsa kontentga boy saytlar yoki ilovalar uchun.
+
+
+#### Progressiv yaxshilanish tamoyili
+Progressiv yaxshilanish tamoyili asosiy kontent va funksionallikni barcha brauzerlarga yetkazishni nazarda tutadi, ilg'or xususiyatlar esa yaxshilanish sifatida ko'rib chiqiladi. Tarkibning asosiy qismini server tomonida render qilish orqali barcha foydalanuvchilar va qidiruv tizimlari JavaScript bajarilishidan qat'i nazar, asosiy kontent va funksiyaga kirish imkoniyatiga ega bo'lishini ta'minlagan bo'lasiz. Keyin, klient tomonidagi JavaScript interaktivlikni qo'shish, boyroq animatsiyalar va boshqa ilg'or funksiyalarni qo'shib foydalanuvchi tajribasini yaxshilaydi, bu brauzerlar va qurilmalar bunga tayyor bo'lganda amalga oshiriladi.
+
+Barcha tajribani faqat klient tomonidagi JavaScriptga bog'lash hech qanday ma'noga ega emas, chunki bu vebning asl dizayni emas. JavaScript’ning roli veb sahifani yaxshilashdan iborat, veb sahifani o'zi bo'lish emas.
+
+Keling, ushbu misolni ko'rib chiqaylik:
+``` js copy
+import React, { useEffect, useState } from "react";
+
+const Home = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.example.com/data")
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
+  return (
+    <div>
+      {data.map((item) => (
+        <div key={item.id}>{item.title}</div>
+      ))}
+    </div>
+  );
+};
+
+export default Home;
+```
+
+Yuqoridagi misolda biz API orqali ma'lumotlarni klient tomonida olib kelib, ularni render qilmoqdamiz. Bu klient tomonida ekanligini `useEffect` hook’idan foydalanayotganimizdan bilamiz, chunki `useEffect` hooki faqat brauzerda (klientda) bajariladi. Ma'lumotlar `useState` hook’ida saqlanadi va sahifa yuklangandan so'ng ma'lumotlar API orqali olinadi.
+
+
+#### Klient tomonida render qilishning jiddiy cheklovlari
+Bu uslubning jiddiy cheklovlaridan biri shundaki, ba'zi qidiruv tizimi botlari ushbu kontentni ko'ra olmasligi mumkin, agar biz server tomonida render qilishni amalga oshirmasak. Bunday holatda, ular bo'sh ekran yoki vaqtinchalik muqobil xabarini ko'rishi mumkin, bu esa saytdagi SEO natijalarini yomonlashtirishi mumkin.
+
+Yana bir keng tarqalgan muammo — tarmoq sharsharalari (network waterfalls). Bu holatda dastlabki sahifa yuklanishi brauzer tomonidan yuklanishi, tahlil qilinishi va bajarilishi kerak bo'lgan JavaScript miqdori bilan bloklanadi. Tarmoq ulanishi cheklangan resurs bo'lgan holatlarda, bu veb-sayt yoki ilovani sezilarli vaqt davomida to'liq javobsiz holga keltirishi mumkin.
+
+Yuqoridagi misolda biz tashqi API (https://api.example.com/data) orqali ma'lumotlarni olish uchun so'rov yubormoqdamiz. Ushbu so'rov dastlabki JavaScript paketimiz yuklanib, tahlil qilinib, bajarilgandan so'ng amalga oshiriladi va bu faqat dastlabki HTML yuklangandan keyin sodir bo'ladi. Bu tarmoq sharsharasiga olib keladi va samaradorlik past bo'ladi.
+
+Agar biz buni tasavvur qilmoqchi bo'lsak, shunday ko'rinishda bo'lardi:
+![Ma'lumotni olish so'rovi](/data-fetch-request.png)
+
+
+#### Server tomonida render qilish orqali yaxshiroq natijaga erishish
+Server-tomonli renderlash bilan biz yaxshiroq natijaga erishishimiz va foydalanuvchilarga darhol foydali mazmundagi kontentni ko'rish imkonini berishimiz mumkin, diagrammani quyidagicha o'zgartirgan holda.
+
+*HTML’ni yuklash (to'liq foydalanuvchi interfeysi, ma'lumot serverda olingan holda)*
+
+Darhaqiqat, dastlabki yuklanishda foydalanuvchi uchun foydali bo'lgan ma'lumotlar mavjud, chunki biz ma'lumotlarni oldindan olib, komponentni serverda render qilganmiz. Bu yerda hech qanday tarmoq sharsharasi yo'q va foydalanuvchi barcha kerakli ma'lumotlarni darhol oladi. Bu server-tomonli renderlashning foydali jihatidir.
+
+
+#### React 18 Versiyasi va Yuklama Hajmlari
+React 18 versiyasidan boshlab, React va React DOM paketlarining hajmi mos ravishda 6.4 kB va 130.2 kB ni tashkil qiladi. Ushbu hajmlar matn yozilgan paytdagi eng yangi versiya uchun berilgan bo'lib, siz hozirda foydalanayotgan React versiyasi va konfiguratsiyasiga qarab o'zgarishi mumkin. Bu shuni anglatadiki, ishlab chiqarish (production) muhitida ham foydalanuvchilar faqat React uchun (ya'ni, React + React DOM) taxminan 136 kB JavaScript yuklab olishlari kerak bo'ladi, undan keyin esa ilovaning qolgan kodini yuklash, tahlil qilish va bajarish jarayoni boshlanadi. Bu, ayniqsa, sekin ishlaydigan qurilmalar va tarmoqlarda dastlabki sahifa yuklanishini sekinlashtirishi va potensial ravishda foydalanuvchilarning noroziligiga olib kelishi mumkin.
+
+Bundan tashqari, faqat klient tomonda ishlaydigan ilovalarda React DOM’ga ega bo'lmaguncha foydalanuvchi interfeysi bo'lmaydi. Shuning uchun, foydalanuvchilar avval React va React DOM’ning yuklanishini kutishga majbur bo'lishadi.
+
+
+#### Server Tomonida Render Qilishning Afzalligi
+Bundan farqli ravishda, serverda render qilingan ilova dastlabki JavaScript yuklanishidan oldin foydalanuvchiga tayyorlangan HTML kodni yuboradi, bu esa foydalanuvchilarga birinchi navbatda foydali kontentni darhol ko'rish imkonini beradi. Keyin esa kerakli JavaScript dastlabki sahifa yuklanishidan keyin yuklanadi, va bu jarayon "hidratsiya" deb nomlanadi. Bunga keyingi bo'limlarda to'xtalamiz.
+
+Dastlab tayyorlangan HTML’ni oqim shaklida yuborish va keyin JavaScript yordamida DOM’ni hidratsiya qilish foydalanuvchilarga ilova bilan tezroq muloqot qilish imkonini beradi, natijada yaxshiroq foydalanuvchi tajribasi yuzaga keladi: ilova darhol foydalanuvchiga tayyor bo'ladi, ular esa har qanday qo'shimcha narsalarni yuklab olishni kutishlariga hojat qolmaydi — ular kerak yoki kerak emasligidan qat'i nazar.
+
+
+### Xavfsizlik (Security)
+Faqat klient tomonda render qilish, ayniqsa, nozik ma'lumotlar bilan ishlaganda xavfsizlik muammolariga olib kelishi mumkin. Buning sababi shundaki, ilovaning barcha kodi klientning brauzeriga yuklanadi va bu esa uni xakerlik hujumlariga, masalan, cross-site request forgery(CSRF)’ga nisbatan zaif qiladi.
+
+CSRF haqida juda chuqur kirishmasdan, unga qarshi kurashishning keng tarqalgan usuli - foydalanuvchilarga veb-sayt yoki veb-ilovalarni taqdim etadigan server ustidan nazoratga ega bo'lishdir. Agar biz ushbu serverni nazorat qilsak, biz serverdan ishonchli manba sifatida klientga mos anti-CSRF tokenlarini yuborishimiz mumkin, so'ngra klient bu tokenlarni forma yoki shunga o'xshash usulda serverga qaytaradi, bu esa so'rovning to'g'ri klientdan kelayotganini tasdiqlash imkonini beradi. Bu CSRF’ga qarshi kurashishning keng tarqalgan usullaridan biridir.
+
+Agar biz nazorat qiladigan statik sayt serveridan faqat klient tomonda ishlaydigan ilovalarga xizmat ko'rsatish texnik jihatdan mumkin bo'lsa-da va shu yo'l bilan CSRF’ga qarshi choralar ko'rsak, bu hali ham veb-saytni taqdim etishning eng yaxshi usuli emas, chunki biz ilgari muhokama qilgan boshqa kamchiliklar mavjud. Agar biz serverni nazorat qilsak, unda nega  server tomonida render qilish(SSR)ni qo'shmasligimiz kerak?
+
+Oxir-oqibat, biz shuni aytmoqchimiz:
+- Agar biz server tomonga kirish imkoniga ega bo'lmasak, lekin jamoada faqat `git push` klient tomoni kodini qo'llab-quvvatlaydigan joyda ishlasak va kodimiz qayergadur joylanadigan bo'lsa, bu yerda o'ziga xos CSRF xavflari mavjud.
+- Agar biz server tomonga kirish imkoniga ega bo'lsak va agar bizning veb-saytimiz yoki veb-ilovamiz hali ham faqat klient tomonda bo'lsa, CSRF’ga qarshi juda yaxshi choralar ko'rishimiz mumkin va buni atrofidagi xavflar yo'qoladi.
+- Agar biz server tomonga kirish imkoniga ega bo'lsak va agar bizning veb-saytimiz yoki veb-ilovamiz hali ham faqat klient tomonda bo'lsa, bu uchun server tomonida render qilishni qo'shish uchun kuchli dalil mavjud, chunki biz serverga kirish imkoniga egamiz, bu esa SEO va ishlash bo'yicha boshqa foydalarini taqdim etadi.
+
+Keling, amaliy misolni ko'rib chiqaylik:
+``` js copy
+import React, { useState } from "react";
+
+const Account = () => {
+    const [balance, setBalance] = useState(100);
+
+    const handleWithdrawal = async (amount) => {
+        // Ushbu so'rov pulni yechish uchun serverga borishini faraz qiling
+        const response = await fetch("/withdraw", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ amount }),
+        });
+
+        if (response.ok) {
+            const updatedBalance = await response.json();
+            setBalance(updatedBalance);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Hisob Balansi: {balance}</h1>
+            <button onClick={() => handleWithdrawal(10)}>$10 yechish</button>
+            <button onClick={() => handleWithdrawal(50)}>$50 yechish</button>
+            <button onClick={() => handleWithdrawal(100)}>$100 yechish</button>
+        </div>
+    );
+};
+
+export default Account;
+```
+
+Ushbu kodda `handleWithdrawal` funksiyasi pulni yechish uchun faraziy server tomonidagi `/withdraw` manzilga `POST` so'rov yuboradi. Agar ushbu manzil so'rovning kelish manzilini to'g'ri tekshirmasa va hech qanday anti-CSRF tokenini talab qilmasa, CSRF xavfi paydo bo'lishi mumkin.
+
+Hujumkor yomon niyatli veb-sahifa yaratishi mumkin, bu sahifa foydalanuvchini tugmachani bosishga undaydi, bu tugma foydalanuvchining nomidan `/withdraw` havolasiga `POST` so'rov yuboradi, bu esa foydalanuvchining hisobidan ruxsatsiz pul yechishlarga olib kelishi mumkin. Buning sababi shundaki, brauzer avtomatik ravishda so'rovda cookie-fayllarni qo'shadi, ularni server foydalanuvchini autentifikatsiya qilish uchun ishlatadi. Agar server so'rovning kelish manzilini tekshirmasa, u so'rovni qayta ishlashga va mablag'larni hujumkorning hisobiga o'tkazishga aldanishi mumkin.
+
+Agar ushbu komponent klient tomonda render qilinsa, bu CSRF hujumlariga nisbatan zaif bo'lishi mumkin, chunki server va klient o'rtasida umumiy maxfiy yoki shart yo'q. Boshqacha aytganda, klient va server bir-birini tanimaydi. Bu esa hujumkorga mablag'larni o'g'irlash yoki ilovaning ma'lumotlarini manipulyatsiya qilish imkonini beradi.
+
+Agar biz serverda render qilishdan foydalansak, ushbu xavfsizlik muammolarini hal qilishimiz mumkin bo'lardi. Buning uchun server tomonidan maxsus maxfiy token yaratilgan holda komponentni serverda render qilamiz, so'ngra maxfiy tokenni o'z ichiga olgan HTML’ni klientga yuboramiz. Klient esa ushbu tokenni yana ushbu serverga qaytaradi, bu esa xavfsiz ikki tomonlama shartnoma o'rnatadi. Bu serverga so'rovning oldindan avtorizatsiya qilingan to'g'ri klientdann kelayotganini tasdiqlashga imkon beradi va noma'lum, ehtimoliy yomon niyatli hujumkorni oldini oladi.

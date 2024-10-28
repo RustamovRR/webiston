@@ -40,3 +40,6 @@ event delegation - event delegation
 lazy loading - kechiktirilgan yuklanish
 cross-cutting concern - o'zaro bog'liq muammo
 custom - moslashtirilgan
+fallback - vaqtinchalik muqobil
+hydration - hidratsiya
+sensitive data - nozik ma'lumotlar

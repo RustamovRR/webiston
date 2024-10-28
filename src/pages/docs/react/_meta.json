@@ -4,5 +4,6 @@
   "virtual-dom": "Virtual DOM",
   "inside-reconciliation": "Reconciliation’ning ichki ishlashi",
   "common-questions": "Keng tarqalgan savollar va javoblar",
-  "powerful-patterns": "Kuchli pattern’lar"
+  "powerful-patterns": "Kuchli pattern’lar",
+  "server-side-react": "Server tomonda React"
 }
