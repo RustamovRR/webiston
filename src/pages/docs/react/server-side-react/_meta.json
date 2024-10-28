@@ -1,4 +1,5 @@
 {
   "limitations-of-client-side-rendering": "Klient tomonda render qilishning cheklovlari",
-  "rise-of-server-rendering": "Server renderlashning yuksalishi"
+  "rise-of-server-rendering": "Server renderlashning yuksalishi",
+  "hydration": "Hidratsiya"
 }

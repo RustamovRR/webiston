@@ -1,0 +1,34 @@
+## Hidratsiya (Hydration)
+
+Hidratsiya — bu serverda yaratilgan va klientga yuborilgan statik HTML’ga voqea tinglovchilarini va boshqa JavaScript funksiyalarini biriktirish jarayonini ifodalovchi atama. Hidratsiyaning maqsadi, server tomonidan render qilingan ilovaning brauzerda yuklangandan so'ng to'liq interaktiv holatga o'tishini ta'minlashdir, bu foydalanuvchilarga tez va silliq tajriba taqdim etadi.
+
+
+#### React ilovasida hidratsiya jarayoni
+React ilovasida hidratsiya jarayoni klient serverdan render qilingan React ilovasini yuklagandan so'ng boshlanadi. Keyin quyidagi qadamlar sodir bo'ladi:
+- **Klient to'plam paketini yuklash**: Brauzer statik HTML’ni render qilayotganda, u ilovaning kodini o'z ichiga olgan JavaScript to'plam paketini ham yuklaydi va tahlil qiladi. Ushbu paket React komponentlarini va ilovaning funksionalligi uchun zarur bo'lgan boshqa kodlarni o'z ichiga oladi.
+- **Voqea tinglovchilarini biriktirish**: JavaScript to'plam paketi yuklanganidan so'ng, React statik HTMLni “hidratsiya” qiladi, DOM elementlariga voqea tinglovchilarini va boshqa dinamik funksiyalarni biriktirish orqali. Bu odatda `react-dom`dan `hydrateRoot` funktsiyasi yordamida amalga oshiriladi, bu esa ildiz React komponenti va DOM konteynerini argument sifatida oladi. Hidratsiya asosan statik HTML’ni to'liq interaktiv React ilovasiga aylantiradi.
+
+
+#### Hidratsiya jarayonida muhim nuqta
+Hidratsiya jarayoni tugagandan so'ng, ilova to'liq interaktiv holatga keladi va foydalanuvchining interaktivlik kiritishlariga javob bera oladi, ma'lumotlarni olib kelishi va kerak bo'lganda DOMn’i yangilashi mumkin.
+
+Hidratsiya davomida React statik HTML’dagi DOM elementlarining strukturasini JSX orqali aniqlangan React komponentlarining strukturasi bilan moslashtiradi. React komponentlari tomonidan yaratilgan struktura, statik HTML strukturasi bilan mos kelishi juda muhimdir. Agar mos kelmasa, React voqea tinglovchilarini to'g'ri biriktirish imkoniyatiga ega bo'lmaydi va qaysi React elementi qaysi DOM elementiga to'g'ri kelishini bilmaydi, bu esa ilovaning kutilganidek ishlamasligiga olib keladi.
+
+Server tomonda renderlash va hidratsiyani birlashtirib, dasturchilar tez yuklanadigan va silliq, interaktiv foydalanuvchi tajribasini taqdim etadigan veb-ilovalarni yaratishlari mumkin.
+
+
+### Hidratsiya Salbiy Ta'siri
+Hidratsiya server tomonidan render qilingan HTML’ni interaktiv qilishning yaxshi usuli bo'lsa-da, ba'zilar hidratsiyani keraksiz darajada sekin deb tanqid qiladilar, ko'pincha qayta tiklanishni ustun muqobil sifatida keltiradilar (rasmga qarang). Keling, bu masalani biroz o'rganamiz.
+![Hidratsiya](/hydration.png)
+
+Hidratsiya jarayonida biz React ilovasini serverda render qilamiz va keyin render qilingan natijani klientga jo'natamiz. Biroq, bu vaqt davomida hech narsa interaktiv emas. Bu nuqtadan boshlab, brauzerimiz klient to'plam paketini yuklashi, voqea tinglovchilarini biriktirishi va samarali ravishda klientni “qayta render” qilishi kerak. Bu ko'p ish va ba'zida foydalanuvchi uchun kontent paydo bo'lgan vaqti bilan foydalanuvchi saytdan foydalanish imkoniyati o'rtasida kechikish yuzaga kelishi mumkin.
+
+
+### Qayta tiklanuvchanlik (Resumability)
+Boshqa tomondan, qayta tiklanish biroz boshqacha ishlaydi (rasmga qarang).
+![Qayta tiklanish](/resumability.png)
+
+*Qayta tiklanuvchanlik* bilan, butun ilova serverda render qilinadi va brauzerga oqim(stream) tarzida jo'natiladi. Dastlabki markup bilan birga, barcha interaktiv xatti-harakatlar ham seriyalangan holda klientga yuboriladi. Klient, shu tariqa, interaktiv bo'lish uchun zarur bo'lgan barcha ma'lumotlarga ega bo'ladi va shu bilan server qoldirgan joydan davom etishi mumkin. U hidratsiya qilishi (ya'ni, voqea tinglovchilarini biriktirishi va sahifani klient tomonida render qilishi) shart emas, aksincha server bergan ma'lumotlarni deserializatsiya qilib, mos ravishda javob berishi mumkin. Hidratsiya bosqichini o'tkazib yuborish interaktivlik uchun sarflanadigan vaqtni (TTI) tezlashtirishi va foydalanuvchi tajribasini yaxshilashi mumkin.
+
+
+Qayta tiklanishning o'lchovli afzalliklari bor, ammo muhandislik jamoasi buni amalga oshirish murakkabligi foydasiga arziydimi yoki yo'qligini savolga tutadi. Haqiqatan ham, bu hidratsiyadan ko'ra murakkabroq yondashuvdir va afzalliklari xarajatlarni oqlaydimi yoki yo'qmi hali aniq emas: ha, interaktivlikka o'tish vaqti bir necha millisekundga tezlashadi, lekin qayta tiklanishni amalga oshirish murakkabligiga arziydimi? Bu savol hali ham React jamoasida qizg'in muhokamada.
