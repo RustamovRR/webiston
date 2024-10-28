@@ -1,0 +1,16 @@
+## Server renderlashning yuksalishi
+
+Ushbu sabablarga ko'ra, server tomonda render qilish veb-ilovalarining samaradorligi va foydalanuvchi tajribasini yaxshilash uchun nisbatan afzal usul sifatida paydo bo'ldi. Server render qilish bilan ilovalar tezlik va foydalanish imkoniyati qulayligi uchun optimallashtirilishi mumkin, bu esa tezroq yuklanish vaqtlariga, yaxshiroq SEO’ga va foydalanuvchi jalb etishining oshishiga olib keladi.
+
+
+### Server render qilishning foydalari
+Server render qilishning foydalarini yanada chuqurroq ko'rib chiqaylik. Ushbu foydalar klient tomondan render qilishning cheklovlarini yanada yaxshiroq tushunishimiz bilan darhol aniq bo'lishi kerak:
+
+- **Birinchi muhim chizish uchun vaqt tezroq**: Server dastlabki HTML markup’ini render qilib, uni klientga yuborishi mumkin, bu esa darhol ko'rsatilishi mumkin. Bu klient tomonda render qilish bilan taqqoslaganda, klient ilova render qilinishidan oldin JavaScript yuklanishi, tahlil qilinishi va bajarilishi uchun kutishi kerak, .
+- **Server render qilish veb-ilovalarining foydalanish imkoniyati qulayligini yaxshilaydi**: Sekin internet aloqalari yoki kuchsiz qurilmalar bilan foydalanuvchilar to'liq render qilingan HTML olishsa, yaxshiroq tajribaga ega bo'lishlari mumkin, klient tomonida JavaScript’ni yuklash va sahifani render qilishni kutish o'rniga.
+- **Server render qilish veb-ilovalarining SEO’sini yaxshilaydi**: Qidiruv tizimlari robotlari saytingizni indekslaganda, ular to'liq render qilingan HTMLni ko'rishlari mumkin, bu esa ularning mazmuni va strukturasini tushunishini osonlashtiradi.
+- **Server render qilish veb-ilovalarining xavfsizligini ham yaxshilaydi**: Asosiy kontentni server tomonda render qilish orqali, barcha foydalanuvchilar va qidiruv tizimlariga fundamental kontent va funksiyalarga kirish imkonini berasiz, JavaScript bajarilishidan qat'iy nazar. Shundan so'ng, klient tomoni JavaScript foydalanuvchi tajribasini yaxshilab, interaktivlik, boy animatsiyalar va boshqa ilg'or funksiyalarni qo'shishi mumkin.
+
+
+### Statik HTML’ning cheklovlari
+Biroq, server tomonidan render qilingan HTML statikdir va interaktivlikni yo'qotadi, chunki dastlab hech qanday JavaScript yuklanmaydi. U event listenerlar yoki boshqa dinamik funksiyalarni o'z ichiga olmaydi. Foydalanuvchi o'zaro ta'sir va boshqa dinamik funksiyalarni yoqish uchun, statik HTML hidratsiya qilinishi kerak. Keyingi mavzuda hidratsiya atamasini yaxshiroq tushunamiz.
