@@ -1,0 +1,25 @@
+## Qaysi API’ni qachon ishlatish kerak
+
+`renderToString` ideal yechim emas, chunki u sinxron ishlaydi. Bu bir qancha sabablarga ko'ra muammoli:
+
+
+#### Tarmoq kirish-chiqish (I/O) asinxron bo'ladi
+Biz bajaradigan har qanday ma'lumotni olish operatsiyalari ma'lumotlar bazasidan, veb xizmatidan, fayl tizimidan va hokazolardan ma'lumot olishga bog'liq. Bu operatsiyalar ko'pincha asinxron tarzda amalga oshiriladi: ya'ni ular aniq diskret vaqt nuqtalarida boshlanib, yakunlanadi, bir vaqtning o'zida emas. `renderToString` sinxron ishlagani sababli, u asinxron so'rovlarning tugashini kutolmaydi va darhol brauzerga satrni jo'natadi. Bu server yakunlay olmasligini va klient dastlabki qobiqni ma'lumot yuklanishidan oldin olishini anglatadi, va ideal holatda server hidratsiyani tugatgan joydan boshlab ishlashni davom ettiradi. Bu tarmoq sharsharalari orqali ishlash muammolarini keltirib chiqaradi.
+
+
+#### Serverlar bir nechta klientlarga xizmat ko'rsatadi
+Agar `renderToString` chaqiradigan server satrga aylantirish bilan band bo'lsa va 30 ta klient unga yangi so'rov yuborsa, bu yangi klientlar server hozirgi ishini tugatishini kutishlariga to'g'ri keladi. `renderToString` sinxron ishlagani sababli, u tugagunga qadar bloklanadi. Serverlar va klientlar o'rtasidagi birdan ko'pga munosabatda bloklanish, klientlar kerak bo'lgandan ko'ra uzoqroq kutishlarini anglatadi.
+
+
+### Yangi, oqimga asoslangan asinxron yondashuvlar
+Yangi API’lar bo'lgan `renderToPipeableStream` va `renderToReadableStream` ushbu ikkala muammoni hal qiladi. `renderToReadableStream` brauzer uchun mos keladi, `renderToPipeableStream` esa server muhiti uchun. Shunday qilib, agar "serverda ishlatish uchun eng yaxshi API qaysi?" degan savol tug'iladigan bo'lsa, javob foydalanish muhitiga bo'gliq holda `renderToPipeableStream` yoki `renderToReadableStream` bo'ladi.
+
+Shuni aytish kerakki, `renderTo*Stream` API’lari hozirda ustunroq ko'rinayotgan bo'lsa-da, hozirgi paytda ushbu API’lar atrofida "to'liq foydalanuvchi hikoyasi" mavjud emas. Hozir mavjud bo'lgan ko'plab uchinchi tomon kutubxonalari ular bilan ishlamaydi, ayniqsa ma'lumot olish yoki CSS kutubxonalari bilan bog'liq holda. Chunki ular serverda to'liq ishga tushirilgan bir martalik "to'liq ishlov berishni" talab qiladi, so'ngra ma'lumotlarni yaratadi va keyin o'sha ma'lumot bilan dasturni qayta ishlab, oqimdan foydalana boshlaydi. Ular dastur serverda hali to'liq yuklanmagan, ammo brauzerda qisman hidratsiya qilinishi kerak bo'lgan holatlarni qo'llab-quvvatlamaydi.
+
+
+### React’dagi API’larning cheklanishi
+Bu React’dagi muammo: hozirgi yozish paytida React 18 versiyasida uchinchi tomon ma'lumotlarini oqim yoki qisman hidratsiyaga yordam beruvchi API’lar mavjud emas. React jamoasi yaqinda `react-dom`ga `prefetchDNS`, `preconnect`, `preload` kabi yangi API’lar qo'shdi, ammo ular faqat React 19 versiyasi bilan taqdim etiladi. Ushbu API’lar mavjud bo'lsa ham, `renderToPipeableStream`ni ishlatish imkoniyatini oshirish uchun hali ham bir nechta muhim API’lar yetishmaydi.
+
+Hozirgi vaqtda `renderToPipeableStream`dan foydalanishning yagona haqiqiy imkoniyati - bu birinchi navbatda `renderToPipeableStream`ni chaqirishdan oldin barcha kerakli ma'lumotlarni oldindan yuklash (yoki CSS kutubxonasi holatida, `renderToString` bilan ko'rsatilishi kerak bo'lgan barcha class’larni "oldindan yozib olish" uchun to'liq dasturni taqdim etish) bo'ladi. Bu esa asosan uning `renderToString` ustidan ustunliklarini yo'q qiladi va uni yana sinxron APIga aylantiradi.
+
+Barcha jihatlarni hisobga olgan holda, bular murakkab mavzular bo'lib, loyihangizga va foydalanish holatlariga qarab qaysi API’larni ishlatishni aniqlash uchun ehtiyotkorlik bilan rejalashtirishni talab qiladi. Shunday qilib, javob yana "bu vaziyatga bog'liq" yoki "faqat biron bir freymvorkdan foydalanish" va kengroq jamoatchilikka qaror qilishni topshirish bo'lishi mumkin.
