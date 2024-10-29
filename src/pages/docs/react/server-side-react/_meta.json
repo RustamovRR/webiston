@@ -8,5 +8,6 @@
   "renderToPipeableStream": "renderToPipeableStream API",
   "renderToReadableStream": "renderToReadableStream API",
   "when-to-use-what": "Qaysi API’ni qachon ishlatish kerak",
-  "don't-roll-your-own": "O'zingiz yaratishga urinmang"
+  "don't-roll-your-own": "O'zingiz yaratishga urinmang",
+  "recap": "Xulosa"
 }
