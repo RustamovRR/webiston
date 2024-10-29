@@ -4,5 +4,6 @@
   "hydration": "Hidratsiya",
   "creating-server-rendering": "Server rendering yaratish",
   "server-rendering-apis-in-react": "React’da server renderlash API’lari",
-  "renderToString": "renderToString API"
+  "renderToString": "renderToString API",
+  "renderToPipeableStream": "renderToPipeableStream API"
 }
