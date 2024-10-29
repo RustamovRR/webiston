@@ -1,0 +1,15 @@
+import { Callout } from 'nextra/components'
+
+## React’ning concurrent(bir vaqtda bajariladigan) rejimi
+
+Oldingi bobda biz React yordamida server tomoni render qilish olamiga chuqur sho'ng'idik. Ilovalarimizning ishlash tezligini va foydalanuvchi tajribasini yaxshilash uchun server tomoni render qilishning qanchalik muhimligini, ayniqsa zamonaviy veb-ishlab chiqish kontekstida o'rgandik. `renderToString` va `renderToPipeableStream` kabi turli server tomoni render qilish API’larini o'rganib chiqdik hamda ularning foydalanish holatlari va afzalliklarini muhokama qildik. Shuningdek, server tomoni render qilishni joriy qilishdagi qiyinchiliklarga to'xtaldik va bu jarayonning murakkabliklarini hal qilishda Next.js va Remix kabi mavjud dasturiy ta'minotlarga tayangan ma'qul ekanligini ko'rsatdik.
+
+Hidratsia tushunchasini va uning serverda yaratilgan HTML kodini klient tomoni React komponentlari bilan bog'lab, muammosiz foydalanuvchi tajribasini yaratishdagi ahamiyatini ko'rib chiqdik. Bundan tashqari, bir nechta klient ulanishlarini boshqarishda paydo bo'ladigan xavfsizlik muammolari va qiyinchiliklarni muhokama qildik hamda bu muammolarni samarali hal qilish uchun freymvorklardan foydalanish zarurligini ta'kidladik.
+
+Endi biz concurrent React (bir vaqtning o'zida ishlaydigan React) mavzusiga o'tib, ilgari o'rgangan bilimlarimizni yanada kengaytiramiz. Fiber reconciler haqida bilib olamiz va React’ning bir vaqtning o'zida bajariladigan imkoniyatlari, shuningdek, yangilanishlar va render qilishni qanday samarali boshqarishi haqida tushuncha hosil qilamiz. Rejalashtirish, yangilanishlarni kechiktirish va renderlanish liniyalari kabi mavzularni o'rganish orqali React’ning asosiy arxitekturasi orqali yaratilgan ishlash optimallashtirishlaridan xabardor bo'lamiz.
+
+<Callout type="info">
+Shuni yana bir bor ta'kidlash joizki, Fiber o'zi va biz muhokama qilayotgan barcha narsalar React’ning kelajakda o'zgarishi mumkin bo'lgan amalga oshirish tafsilotlaridir. React’dan samarali foydalanish uchun ushbu bilimlar shart emas, ammo asosiy mexanizmlarni o'rganish React qanday ishlashini yaxshiroq tushunishingizga va undan samarali foydalanishingizga yordam beradi hamda sizni umuman muhandis sifatida bilimdonroq qiladi.
+</Callout>
+
+Shunday qilib, bilimlarimizni kengaytirishda davom etib, yuqori samaradorlikka ega ilovalarni yaratish uchun React imkoniyatlaridan foydalanishning yangi usullarini o'rganish maqsadida concurrent React olamiga qiziqarli sayohatni boshlaymiz.
