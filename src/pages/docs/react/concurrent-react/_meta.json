@@ -1,3 +1,5 @@
 {
-  "problem-with-synchronous-rendering": "Sinxron renderlash muammosi"
+  "problem-with-synchronous-rendering": "Sinxron renderlash muammosi",
+  "revisiting-fiber": "Fiber’ga qayta tashrif",
+  "scheduling-and-deferring-updates": "Yangilanishlarni rejalashtirish va kechiktirish"
 }
