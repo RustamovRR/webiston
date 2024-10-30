@@ -4,5 +4,6 @@
   "scheduling-and-deferring-updates": "Yangilanishlarni rejalashtirish va kechiktirish",
   "scheduler": "Scheduler",
   "render-lanes": "Render qatorlari",
-  "useTransition": "useTransition"
+  "useTransition": "useTransition",
+  "useDeferredValue": "useDeferredValue"
 }
