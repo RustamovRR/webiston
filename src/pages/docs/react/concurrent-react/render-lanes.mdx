@@ -1,0 +1,72 @@
+import { Callout } from 'nextra/components'
+
+## Render qatorlari (Render Lanes)
+
+Render qatorlari React'ning rejalashtirish tizimining muhim qismidir, bu tizim samarali render qilish va vazifalarning ustuvorligini ta'minlaydi. Qator - bu bir ustuvorlik darajasini ifodalovchi ish birligi bo'lib, u React tomonidan renderlash sikli davomida ishlov berilishi mumkin. Render qatorlari tushunchasi React 18 versiyasida joriy etildi, bu avvalgi muddati tugash vaqtlari bilan ishlov berish mexanizmini almashtirdi. Keling, render qatorlarini, ularning ishlashini va bit maskalari sifatida ifodalangan asosiy tuzilmasini batafsil ko'rib chiqamiz.
+
+<Callout type="info">
+Yana bir bor ta'kidlaymiz, bu React’ning istalgan vaqtda o'zgarishi mumkin bo'lgan ichki dasturiy tafsilotlari hisoblanadi. Bu yerda asosiy maqsad asosiy mexanizmni tushunish bo'lib, bu bizning kundalik injiniring ishimizda yordam beradi va React qanday ishlashini tushunishga yordam beradi hamda undan samarali foydalanishimizni ta'minlaydi. Tafsilotlarga qadalib qolmaslik va aksincha, mexanizm va uning haqiqiy dunyodagi qo'llanilish imkoniyatlariga e'tibor qaratish foydaliroq bo'ladi.
+</Callout>
+
+Birinchidan, render qatori bu React tomonidan renderlash jarayonida amalga oshirilishi kerak bo'lgan yangilanishlarni tartibga solish va ustuvorlik qilish uchun ishlatiladigan yengil abstraksiyadir.
+
+Masalan, `setState` funksiyasi chaqirilganda, ushbu yangilanish qator(lane)ga qo'shiladi. Turli ustuvorlik darajalarini yangilanishlarning kontekstiga qarab tushunishimiz mumkin:
+- Agar `setState` click ishlovchisida chaqirilsa, u Sync (eng yuqori ustuvorlik) qatoriga qo'yiladi va mikrotask navbatiga rejalashtiriladi.
+- Agar `setState` useTransition hook’idan keladigan `startTransition` funksiyasi ichida chaqirilsa, u transition (quyi ustuvorlik) qatoriga qo'yiladi va mikrotask navbatida rejalashtiriladi.
+
+Har bir qator o'ziga xos ustuvorlik darajasiga ega bo'lib, yuqori ustuvorlikka ega qatorlar past ustuvorlikdagi qatorlardan oldin ishlanadi. React'dagi ba'zi qatorlarga misollar:
+- `SyncHydrationLane`: Foydalanuvchilar hidratsiya paytida React ilovasida biror narsani bosganida, ya'ni click qilganida, click hodisasi ushbu qatorga joylanadi.
+- `SyncLane`: Foydalanuvchilar React ilovasida bosganda, click hodisasi ushbu qatorga joylanadi.
+- `InputContinuousHydrationLane`: Hover hodisalari, skroll hodisalari va hidratsiya davomida boshqa davomiy hodisalar ushbu qatorga joylanadi.
+- `InputContinuousLane`: Avvalgi bilan bir xil, lekin React ilovasi hidratsiya qilinganidan keyin.
+- `DefaultLane`: Tarmoqdan olingan yangilanishlar, `setTimeout` kabi taymerlar va ustuvorlik aniqlanmagan dastlabki render ushbu qatorga joylanadi.
+- `TransitionHydrationLane`: hidratsiya davomida `startTransition`dan har qanday transition’lar ushbu qatorga joylanadi.
+- `TransitionLanes` (1–15): hidratsiyadan keyin `startTransition` dan har qanday transition’lar ushbu qatorlarga joylanadi.
+- `RetryLanes` (1–4): Har qanday Suspense qayta urinishlari ushbu qatorlarga joylanadi.
+
+E'tibor bering, bu qatorlar yozish paytidagi React’ning ichki tuzilmasini ifodalaydi va o'zgarishi ham mumkin. Bizning asosiy maqsadimiz - React qanday ishlashini tushunish uchun mexanizmni tushunishdir, shuning uchun qatorlarning aniq nomlari muhim emas. Muhim tomoni - React bu tushunchani qanday qo'llaydi va uni o'z ishimizda qanday qo'llashimiz mumkinligini tushunishdir.
+
+
+### Render qatorlari qanday ishlaydi
+React qachonki bir komponent yangilansa yoki render daraxtiga yangi komponent qo'shilsa, yangilanishga ustuvorligiga qarab qator (lane) belgilaydi, bu esa avval aytib o'tilgan qatorlar asosida amalga oshiriladi. Ustuvorlik yangilanish turiga (masalan, foydalanuvchi interaktivligi, ma'lumot olish yoki orqa fondagi vazifalar) va boshqa omillarga, masalan, komponentning ko'rinishiga qarab belgilanadi.
+
+React keyinchalik yangilanishlarni rejalashtirish va ustuvorlik qilish uchun render qatorlaridan quyidagi tartibda foydalanadi:
+1. **Yangilanishlarni yig'ish**: React so'nggi renderlashdan buyon rejalashtirilgan barcha yangilanishlarni yig'adi va ularni ustuvorligiga qarab tegishli qatorlarga belgilaydi.
+2. **Qatorlarni qayta ishlash**: React yangilanishlarni o'z qatorlarida ustuvorlik bo'yicha qayta ishlaydi, bu jarayon eng yuqori ustuvorlikdagi qator bilan boshlanadi. Bir xil qatorda joylashgan yangilanishlar bir marotabada guruhlanib qayta ishlanadi.
+3. **Commit bosqichi**: Barcha yangilanishlar qayta ishlangandan so'ng, React commit bosqichiga kiradi, bu bosqichda o'zgarishlar DOM’ga qo'llaniladi, effektlar ishlatiladi va boshqa yakuniy vazifalar bajariladi.
+4. **Takrorlash**: Har bir render uchun jarayon takrorlanadi, bu esa yangilanishlarning har doim ustuvorlik tartibida qayta ishlanishini va yuqori ustuvorlikdagi yangilanishlarning pastroq ustuvorlikdagi yangilanishlar tomonidan to'sib qo'yilmasligini ta'minlaydi.
+
+React yangilanishlarni bu ustuvorliklarga qarab tegishli qatorlarga belgilash bilan o'zi shug'ullanadi, bu esa ilovaning samarali ishlashini qo'lda aralashuvsiz ta'minlaydi.
+
+
+#### Yangilanishlarning ustuvorligini belgilash
+Yangilanish chaqirilganda, React quyidagi bosqichlarni amalga oshiradi, ustuvorlikni belgilaydi va uni to'g'ri qatorda joylashtiradi:
+1. **Yangilanish kontekstini aniqlash**: React yangilanish chaqirilgan kontekstni baholaydi. Bu kontekst foydalanuvchi interaktivligi, state yoki props o'zgarishlari natijasida sodir bo'lgan ichki yangilanish yoki server javobiga asoslangan yangilanish bo'lishi mumkin. Kontekst yangilanishning ustuvorligini belgilashda muhim rol o'ynaydi.
+2. **Kontekst asosida ustuvorlikni baholash**: Kontekstga asoslanib, React yangilanishning ustuvorligini baholaydi. Masalan, agar yangilanish foydalanuvchi kiritishidan kelib chiqsa, u yuqori ustuvorlikka ega bo'lishi mumkin, aksincha, noaniq orqa fon jarayonidan kelib chiqqan yangilanish past ustuvorlikka ega bo'lishi mumkin. Biz allaqachon turli ustuvorlik darajalari haqida batafsil muhokama qildik, shuning uchun bu yerda qo'shimcha batafsil ma'lumot bermaymiz.
+3. **Har qanday ustuvorlikni bekor qilishni tekshirish**: Ba'zi hollarda, dasturchilar yangilanishning ustuvorligini aniq belgilashlari mumkin, bu React’ning `useTransition` yoki `useDeferredValue` hook’lari orqali amalga oshiriladi. Agar bunday ustuvorlikni bekor qilish mavjud bo'lsa, React baholangan ustuvorlikni hisobga olishdan ko'ra berilgan ustuvorlikni ko'rib chiqadi.
+3. **Yangilanishni to'g'ri qatorda joylashtirish**: Ustuvorlik belgilanganidan so'ng, React yangilanishni tegishli qatorda joylashtiradi. Bu jarayon biz ko'rgan bitmask yordamida amalga oshiriladi, bu esa React'ga bir nechta qatorlar bilan samarali ishlash imkonini beradi va yangilanishlarni to'g'ri guruhlash va qayta ishlashni ta'minlaydi.
+
+Ushbu jarayon davomida React yangilanishlar sodir bo'layotgan kontekst va ichki heuristikalariga tayangan holda ustuvorliklar haqida ma'lumotli qarorlar qabul qiladi. Ushbu dinamik ustuvorlik va qatorlarni belgilash React’ga tezkorlik va samaradorlikni muvozanatlash imkonini beradi, dasturchilardan qo'lda aralashuv talab qilmasdan ilovalarning samarali ishlashini ta'minlaydi.
+
+Keling, React qanday qilib yangilanishlarni o'z qatorlari bo'yicha qayta ishlashini ko'rib chiqaylik.
+
+
+### Qatorlarni qayta ishlash
+Yangilanishlar o'z qatorlariga tayinlangandan so'ng, React ularni ustuvorlik tartibida qayta ishlaydi. Bizning chat ilovamiz misolida, React yangilanishlarni quyidagi tartibda qayta ishlaydi:
+- `ImmediatePriority`: Xabar kiritish uchun yangilanishlarni tezda qayta ishlash, foydalanuvchining ilovada o'zaro aloqada bo'lishini ta'minlaydi.
+- `UserBlockingPriority`: Foydalanuvchilarga real vaqt feedback berish uchun yozish ko'rsatkichi bo'yicha yangilanishlarni qayta ishlash.
+- `NormalPriority`: Yangilanishlarni xabarlar ro'yxatiga, yangi xabarlar va yangilanishlarni normal tezlikda ko'rsatish.
+
+Yangilanishlarni ustuvorlik tartibida qayta ishlash orqali React ilovaning eng muhim qismlari, hatto og'ir yuklama ostida ham, tezkor bo'lib qolishini ta'minlaydi.
+
+
+### Commit bosqichi
+Barcha yangilanishlarni o'z qatorlarida qayta ishlaganidan so'ng, React commit bosqichiga o'tadi, bu yerda o'zgarishlarni DOM’ga qo'llaydi, effektlarni ishga tushiradi va boshqa yakuniy vazifalarni bajaradi. Bizning chat ilovamiz misolida, bu xabar kiritish qiymatini yangilash, yozish ko'rsatkichi ko'rsatish yoki yashirish va yangi xabarlarni xabarlar ro'yxatiga qo'shishni o'z ichiga olishi mumkin. Keyin React keyingi render sikliga o'tadi, yangilanishlarni to'plab, qatorlarni qayta ishlash va o'zgarishlarni amalga oshirish jarayonini takrorlaydi.
+
+Biroq, bu jarayon bu yerdagi tushuntirishlarimizdan ko'ra ancha murakkabdir: *entanglement*, ya'ni "chigallik", kabi tushunchalar mavjud, bu ikki qatorning birgalikda qayta ishlanishi kerakligini aniqlaydi, va *rebasing*, ya'ni "qayta asoslash", kabi qo'shimcha tushunchalar mavjud bo'lib, yangilanish oldin qayta ishlangan yangilanishlar ustiga qayta asoslanishi kerakligini belgilaydi. Qayta asoslash, masalan, agar bir transition tayinlanishi tugallanmasidan oldin, sinxron yangilanish bilan to'xtatilsa, ikkalasini birgalikda ishga tushirish kerak bo'lganda foydali bo'ladi.
+
+Bundan tashqari, *flushing effects*, ya'ni "tozalanadigan effect", tushunchalari haqida ham ko'p gapirish mumkin. Masalan, agar sinxron yangilanish bo'lsa, React ta'minlangan sinxron yangilanishlar o'rtasida holatning izchilligini ta'minlash uchun yangilanishdan oldin/yoki keyin effektlarni flush(tozalash) qilishi mumkin.
+
+Natijada, bu React’ning asl maqsadi va haqiqatda "sahna ortida" yashirin qiymat mavjud: u yangilanish muammolarini, ularning ustuvorligini va tartibini boshqarish vazifasini bajaradi, biz esa ilovalarimizga e'tibor berishda davom etamiz.
+
+Muhim bir nuqtani qayd etish kerakki, React ustuvorliklarni baholashda yaxshi bo'lsa-da, har doim mukammal emas. Dasturchi sifatida, siz ba'zida standart ustuvorliklarni bekor qilishingiz kerak bo'lib qolishi mumkin, buni hozirgacha tilga olingan API’lardan foydalanib: `useTransition` va `useDeferredValue` orqali ilovangizning ishlashini va javobgarligini yanada to'g'ri sozlash uchun. Keling, bu API’larni yanada batafsil ko'rib chiqamiz.
