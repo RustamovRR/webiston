@@ -3,5 +3,6 @@
   "revisiting-fiber": "Fiber’ga qayta tashrif",
   "scheduling-and-deferring-updates": "Yangilanishlarni rejalashtirish va kechiktirish",
   "scheduler": "Scheduler",
-  "render-lanes": "Render qatorlari"
+  "render-lanes": "Render qatorlari",
+  "useTransition": "useTransition"
 }
