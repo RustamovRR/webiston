@@ -7,5 +7,6 @@
   "useTransition": "useTransition",
   "useDeferredValue": "useDeferredValue",
   "problems-with-concurrent-rendering": "Concurrent renderingdagi muammolar",
-  "useSyncExternalStore": "useSyncExternalStore"
+  "useSyncExternalStore": "useSyncExternalStore",
+  "recap": "Xulosa"
 }
