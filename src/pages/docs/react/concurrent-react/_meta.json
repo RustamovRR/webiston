@@ -6,5 +6,6 @@
   "render-lanes": "Render qatorlari",
   "useTransition": "useTransition",
   "useDeferredValue": "useDeferredValue",
-  "problems-with-concurrent-rendering": "Concurrent renderingdagi muammolar"
+  "problems-with-concurrent-rendering": "Concurrent renderingdagi muammolar",
+  "useSyncExternalStore": "useSyncExternalStore"
 }
