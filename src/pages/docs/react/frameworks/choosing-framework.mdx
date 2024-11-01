@@ -1,0 +1,102 @@
+## Freymvork tanlash
+
+Loyihangiz uchun qaysi React freymvorkidan foydalanishni tanlash qiyin bo'lishi mumkin, chunki har bir freymvork o'ziga xos funksiyalar, afzalliklar va kamchiliklarni taqdim etadi. Ushbu bo'limda mashhur React freymvorklarini dasturchilar uchun jozibador qiladigan omillarni ko'rib chiqamiz va o'rganish murakkabligi, moslashuvchanlik, va samaradorlik kabi tanlovingizga ta'sir qilishi mumkin bo'lgan omillarni muhokama qilamiz. Bu orqali loyihangiz uchun eng mos freymvorkni tanlashda yo'nalish topishingiz mumkin.
+
+E'tibor qilish lozimki, bir freymvork boshqasidan yaxshiroq yoki yomonroq deb bo'lmaydi. Har bir freymvork o'z kuchli va zaif tomonlariga ega, va loyihangiz uchun eng yaxshi tanlov sizning maxsus talab va afzalliklaringizga bog'liq bo'ladi.
+
+
+### Loyihangiz talablarini tushunish
+Har bir freymvorkni ko'rib chiqishdan oldin, loyihangizning aniq ehtiyojlarini tushunish muhimdir. Mana, e'tibor qilishingiz kerak bo'lgan bir nechta muhim savollar:
+- Loyihangiz qamrovi qanday? Bu kichik shaxsiy loyiha, bir nechta funksiyalarga ega o'rta kattalikdagi dastur yoki keng qamrovli, murakkab dasturmi?
+- Loyihangizga qanday asosiy funksiyalar va imkoniyatlarni kiritishni xohlaysiz?
+- Serverda render qilish (SSR), statik sayt yaratish (SSG) yoki ikkisining kombinatsiyasi kerakmi?
+- SEO samaradorligi uchun kontentga boy sayt, masalan, blog yoki elektron tijorat sayti yaratmoqdamisiz?
+- Loyihangizda real vaqt ma'lumotlari yoki juda dinamik kontent muhim rol o'ynaydimi?
+- Qurilish jarayonida moslashtirish va boshqaruv imkoniyatlari qanchalik muhim?
+- Dasturning ishlash tezligi va samaradorligi qanchalik ahamiyatli?
+- React va umumiy veb-dasturlash tushunchalari bo'yicha qanchalik tajribaga egasiz?
+- Maqsadli foydalanuvchilaringiz kimlar? Tez internetga ega ofis xodimlarimi yoki turli xil qurilmalar va internet tezliklariga ega umumiy jamoatmi?
+
+Ushbu savollarga javob berish sizga freymvorkdan nimani kutayotganingiz haqida aniqroq tasavvur beradi.
+
+
+### Next.js
+Keling, yuqoridagi parametrlarni Next.js nuqtai nazaridan o'rganamiz
+
+#### O'rganish murakkabligi
+Next.js o'z ichida React’ning eng so'nggi imkoniyatlarini qo'llaydi va ko'pincha React’ning yangi eksperimental versiyalarini ham ishlatadi. Bu Next.js’ni dolzarb texnologiyaga ega qilish bilan birga o'rganishni bir oz qiyinlashtirishi mumkin. Biroq, Next.js jamoasi freymvork uchun keng qamrovli hujjatlar va turli xususiyatlarga oid aniq yo'riqnomalar taqdim etib, tezda boshlashga yordam beradi.
+
+#### Moslashuvchanlik
+Next.js statik va serverda render qilinadigan kontent o'rtasida moslashuvchanlikni ta'minlash uchun yaratilgan. Shuningdek, to'liq klient tomoni (client-side) ilovalarini qo'llab-quvvatlaydi, lekin bu uning asosiy maqsadi emas. Next.js ko'plab plaginlar va integratsiyalarni o'z ichiga olgan boy ekotizimni taqdim etadi, bu esa rivojlanish jarayonini sezilarli darajada tezlashtirishi mumkin.
+
+#### Ishlash samaradorligi
+Next.js samaradorlikka ustuvor ahamiyat beradi, ayniqsa statik generatsiya va serverda render qilish, shuningdek, keshlash orqali. Next.js hozirgi vaqtda to'rtta alohida maqsadga mo'ljallangan kesh tizimi bilan birga keladi, bu esa turli foydalanish holatlari uchun eng yaxshi samaradorlikni ta'minlashga qaratilgan. Ammo, bu samaradorlik klient/server chegaralaridagi qaror qabul qilishda murakkablikni keltirib chiqarishi mumkin.
+
+Bundan tashqari, Next.js ishlab chiqilgan Vercel kompaniyasida React jamoasi a'zolari ham ishlaydi, bu esa Next.js va React o'rtasidagi juda yaqin aloqada rivojlanish jarayonini bildiradi.
+
+
+### Remix
+Next.js bilan taqqoslaganda, Remix yangi kirib kelgan freymvork bo'lib, taxminan 10 yil avval React Router yaratuvchilari tomonidan yaratilgan. Remix vebning asosiy tamoyillariga asoslangan bo'lib, kamroq farazlar bilan ko'p moslashuvchanlikni taqdim etadi:
+
+#### O'rganish murakkabligi
+Remix’ni o'rganish Next.js’ga nisbata biroz osonroq bo'lishi mumkin, chunki u vebning asosiy tamoyillariga ko'proq tayanadi va Reactni server komponentlariga qaratilgan yangicha yondashuvdan oldingi usulda ishlatadi.
+
+#### Intuitivlik
+Remix ko'pincha platformaning asosiy imkoniyatlarini ko'rsatishga imkon beradi. Bu yondashuvning ikki tomonlama ta'siri bor: bir tomondan bu intuitiv va tanish ko'rinadi, boshqa tomondan esa ba'zida boshqa freymvorklardagi kabi “mo'jizaviy” yechimlar yo'qligi sababli biroz noqulay bo'lishi mumkin.
+
+#### Ishlash samaradorligi
+Remix’ning routing va ma'lumot yuklash bo'yicha noyob yondashuvi uni samarali va tezkor qiladi. Ma'lumotlarni olish routing’ga bog'liq bo'lib, faqat kerakli routing uchun kerakli ma'lumotlar olinadi, bu esa umumiy ma'lumot hajmini kamaytiradi. Shuningdek, Remix’da optimistik UI yangilanishlari va bosqichma-bosqich yaxshilanish strategiyalari foydalanuvchi tajribasini oshiradi.
+
+
+### Trade-off’lar
+Freymvork tanlash o'zining trade-off’larisiz bo'lmaydi va bularning asosiy qismi qulaylik va boshqaruv o'rtasidagi tanlovni qamrab oladi. Freymvorklar ko'p narsalarni odatiy qilib o'zgartirib, bizning dasturlarimiz bo'yicha ko'plab qarorlarni qabul qilish jarayonini soddalashtiradi. Misol uchun, freymvorklar odatda quyidagi savollarga javob beradi:
+- Routing’ni qanday amalga oshiramiz?
+- Statik fayllarni qayerga qo'yamiz?
+- Server tomonida render qilishimiz kerakmi?
+- Ma'lumotlarni qayerda olishimiz kerak?
+
+Freymvorklar bu mavzularga va boshqa ko'plab mavzularga javob bergani sababli, bu biz — dasturchilardan nazoratni olib qo'yadi. Evaziga, dasturimizning asosiy jihatlariga, masalan, biznes logikaga e'tibor qaratish imkonini beradigan qulaylikka ega bo'lamiz.
+
+Ko'pgina trade-off’lar qulaylik va boshqaruv o'rtasidagi tanlov bilan bog'liq.
+
+#### To'g'ri freymvork tanlash
+To'g'ri freymvorkni tanlash loyihangiz ehtiyojlari va shaxsiy afzalliklarga bog'liq:
+- Agar fullstack bilan ishlash imkoniyatini beruvchi va bir oz moslashuvchan freymvork kerak bo'lsa, Next.js siz uchun qulayroq bo'lishi mumkin, chunki u statik, server tarafidagi yoki faqat klient tomonli dastur yaratishga imkon beradi.
+- Agar veb tamoyillariga kuchli rioya qilgan holda server-based va asta-sekin yaxshilangan yondashuvni xohlasangiz, Remix eng yaxshi tanlov bo'lishi mumkin.
+
+Ikkala holatda ham, biror kichik loyiha yoki dasturingizning bir qismi uchun ularni sinab ko'rish yaxshi g'oya bo'ladi. Shu orqali ularning qanday ishlashini va qaysi biri bilan ishlash qulayroq ekanini yaxshiroq tushunasiz.
+
+
+### Dasturchilar tajribasi
+Ikkala freymvork ham yuqori darajadagi dasturchilar tajribasini taklif qiladi, ular mahsuldorlik va foydalanish qulayligiga e'tibor qaratadi. Ularning har ikkisi dasturchilarni sifatli dasturlar yaratishga yordam beruvchi boy funksiyalar va vositalar to'plamini taqdim etadi, bu bo'limda ilgari ko'rib o'tganimizdek.
+
+#### Qurilish tezligi
+Loyihaning murakkabligi va hajmi oshgani sayin, qurilish tezligi ham muhim ahamiyat kasb etadi. Next.js va Remix qurilish vaqtini yaxshilash uchun bir qator optimallashtirishlarni amalga oshirgan.
+
+Next.js odatiy holatda statik generatsiyani qo'llaydi, ya’ni sahifalar qurilish vaqtida oldindan render qilinadi. Bu sahifalarning tezroq yuklanishiga olib kelishi mumkin, lekin ayni paytda ko'p sonli sahifalarga ega saytlar uchun qurilish vaqtini uzaytirishi ham mumkin.
+
+Bu muammoni hal qilish uchun, Next.js Incremental Static Regeneration(ISR)’ni joriy etdi. Bu funksiya dasturchilarga sahifalarni to'liq qayta qurishsiz yangilash imkonini beradi. ISR katta, dinamik saytlarda qurilish vaqtini sezilarli darajada yaxshilashi mumkin.
+
+Remix esa qurilish tezligi bo'yicha o'ziga xos yondashuvga ega. U server-avval arxitekturasini tanlagan, ya'ni sahifalar server tomonidan talabga binoan render qilinadi va HTML klientga yuboriladi.
+
+
+### Ish vaqti(runtime) samaradorligi
+Ikkala Next.js va Remix ham ish faoliyatini ko'zda tutgan holda ishlab chiqilgan va tez, javob beruvchi ilovalarni taqdim etish uchun bir qator optimallashtirishlar taklif etadi.
+
+Next.js bir necha tayyor ish faoliyatini optimallashtirishlarni o'z ichiga oladi. U avtomatik kod bo'lishini qo'llab-quvvatlaydi, bu har bir sahifa uchun zarur bo'lgan kodning faqat kerakli qismini yuklanishini ta'minlaydi. Shuningdek, u rasm yuklanishini yaxshilash uchun ichki Image komponentiga ega.
+
+Next.js’dagi gibrid SSG/SSR modeli dasturchilarga har bir sahifa uchun eng optimal ma'lumotlarni yuklash strategiyasini tanlash imkonini beradi, bu esa ish faoliyatini va yangilanishni muvozanatlashtiradi. Yangilangan ma'lumotlar talab qilinmaydigan sahifalar qurilish vaqtida oldindan render qilinadi, bu esa sahifalarning tezroq yuklanishiga olib keladi. Yangilangan ma'lumotlar talab qilinadigan sahifalar uchun esa server tomonidan renderlash yoki ISR ishlatilishi mumkin.
+
+Next.js shuningdek, ma'lumotlar talablari bo'lmagan sahifalar uchun avtomatik statik optimizatsiyani taqdim etadi, bu esa sahifalarning statik HTML fayllari sifatida taqdim etilishini ta'minlaydi va ilk baytga qadar vaqtni (TTFB) tezlashtiradi.
+
+Nihoyat, Next.js mumkin bo'lganda React Server Component’laridan to'liq foydalanadi, bu esa klientga kamroq JavaScript jo'natishga imkon beradi va sahifalarning tezroq yuklanishiga va boshqa yuklarga olib keladi.
+
+Remix ish faoliyatiga biroz boshqacha yondashuvni tanlaydi. U sahifalarni oldindan render qilish o'rniga, serverdan renderlashni tanlaydi va faqat klientga zarur bo'lgan HTML’ni uzatadi. Bu dinamik kontent uchun TTFB’ni tezlashtirishi mumkin.
+
+#### Remix’ning kesh strategiyasi
+Remixning muhim xususiyatlaridan biri uning kuchli kesh strategiyasidir. U brauzerning native fetch va kesh API’laridan foydalanadi, bu esa dasturchilarga turli resurslar uchun kesh strategiyalarini belgilash imkonini beradi. Bu esa sahifalarning tezroq yuklanishiga va mustahkamroq ilovaga olib keladi.
+
+#### Next.js va Remix
+Ikkala Next.js va Remix ham katta hajmdagi, murakkab loyihalar uchun jozibador afzalliklarni taklif etadi. Ular har ikkalasi ham dasturchilar tajribasi, qurilish ish faoliyati va ish faoliyati bo'yicha yuqori natijalarga erishadilar. Agar siz kengaytirilgan resurslar va plaginlarga ega yetuk ekotizimni, gibrid SSG/SSR modelini va ISR kabi innovatsion xususiyatlarni afzal ko'rsangiz, Next.js yaxshiroq tanlov bo'lishi mumkin. Aksincha, agar siz serverdan render qilishga, darhol joylashuvlarga, brauzer platformasi xususiyatlariga (fetch va kesh API’lar) va Suspense hamda Server Component’lar kabi ilg'or React konseptlariga katta e'tibor qaratishni afzal ko'rsangiz, Remix sizga mos kelishi mumkin.
+
+Sizning aniq loyihangizga eng mos keluvchi framework, oxir-oqibat, jamoangizning tajribasiga, loyiha talablariga va ma'lum arxitektura pattern’lariga bo'lgan afzalliklaringizga bog'liq bo'ladi. Tanlovdan qat'i nazar, Next.js va Remix ikkalasi ham yuqori sifatli va ish faoliyatiga ega React ilovalarini yaratish uchun mustahkam asosdir.
