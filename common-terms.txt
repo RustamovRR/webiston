@@ -43,3 +43,4 @@ custom - moslashtirilgan
 fallback - vaqtinchalik muqobil
 hydration - hidratsiya
 sensitive data - nozik ma'lumotlar
+routing- routing
