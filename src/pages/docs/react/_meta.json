@@ -7,5 +7,6 @@
   "powerful-patterns": "Kuchli pattern’lar",
   "server-side-react": "Server tomonda React",
   "concurrent-react": "React Concurrent",
-  "frameworks": "Freymvorklar"
+  "frameworks": "Freymvorklar",
+  "react-server-components": "React server komponentlari"
 }
