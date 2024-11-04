@@ -2,5 +2,6 @@
   "server-komponentlar-ishlashi": "Server komponentlar ishlashi",
   "server-rendering": "Serverda render qilinishi",
   "under-the-hood": "Chuqurroq nazar",
-  "serialization": "Seriyalash"
+  "serialization": "Seriyalash",
+  "navigation": "Navigatsiya"
 }

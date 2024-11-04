@@ -1,0 +1,118 @@
+## Navigatsiya
+
+Agar bizning RSC-larga imkon beruvchi dasturimizda quyidagi kabi bir havola bo'lsa:
+``` html copy
+<a href="/blog">Blog</a>
+```
+
+Ushbu havolaga bosilganda, bu butun sahifa navigatsiyasini amalga oshiradi, bu esa brauzerga serverga so'rov yuborishiga olib keladi, server esa sahifani render qilib, uni brauzerga qaytaradi. Bu usul PHP davrida ishlatilgan va bu jarayonda bir oz noqulaylik va sekinlik hissi paydo bo'ladi. Biz yaxshirog'ini qilishimiz mumkin: RSC’lar yordamida biz oson navigatsiyani amalga oshira olamiz, bu holda state route’lar o'zgarishi o'rtasida saqlanadi.
+
+Buni amalga oshirish uchun biz serverga navigatsiya qilmoqchi bo'lgan URL’ni yuboramiz va server bizga ushbu sahifaning JSX daraxtini qaytaradi. Keyin brauzerdagi React yangi JSX daraxti bilan butun sahifani qayta render qiladi va biz to'liq sahifani yangilamasdan yangi sahifaga ega bo'lamiz. Bu aynan biz amalga oshirishimiz kerak bo'lgan jarayon.
+
+
+### Klient tomonidagi o'zgartirishlar
+Buni amalga oshirish uchun, biz klientdagi kodimizni biroz o'zgartirishimiz kerak. Biz dasturimizdagi barcha havolalarga standart havolani bosish harakatini to'xtatadigan va o'rniga yangi sahifa uchun serverga so'rov yuboradigan event lisetener’ni qo'shamiz. Buni quyidagi tarzda amalga oshirishimiz mumkin:
+``` js copy
+window.addEventListener("click", (event) => {
+  if (event.target.tagName !== "A") {
+    return;
+  }
+  
+  event.preventDefault();
+  navigate(event.target.href);
+});
+```
+
+Biz event lisetener’ni `window`ga qo'shmoqdamiz, chunki bu ishlash samaradorligi uchun muhim: biz dasturimizdagi har bir havolaga event lisetener’ni qo'shishni xohlamaymiz, bu katta miqdordagi event listener’lari qo'shilishiga olib keladi va bu jarayonni sekinlashtirishi mumkin. O'rniga, biz `window`ga bitta event lisetener’ni qo'shamiz va bosish maqsadining havola ekanligini tekshiramiz. Bu usul *event delegation* deb ataladi.
+
+
+### Navigatsiya funksiyasini ta'riflash
+Agar foydalanuvchi A elementiga bosgan bo'lsa, biz avval havolaning standart harakatini to'xtatamiz va o'rniga `navigate` funksiyasini chaqiramiz, bu funksiyani hozirda ta'riflaymiz. Ushbu funksiya yangi sahifa uchun serverga so'rov yuboradi va keyin React uni klientda render qiladi.
+
+Keling `navigate` funksiyasini ta'riflab ko'ramiz:
+``` js copy
+async function navigate(url) {
+  const response = await fetch(url, { headers: { "jsx-only": true } });
+  const jsxTree = await response.json();
+  const element = JSON.parse(jsxTree, (key, value) => {
+    if (key === "$$typeof") {
+      return Symbol.for("react.element");
+    }
+
+    return value;
+  });
+  root.render(element);
+}
+```
+
+Bu yerda biz amalga oshirayotgan jarayon juda oddiy: biz yangi sahifa uchun serverga so'rov yuboramiz, javobni React elementi sifatida deserializatsiya qilamiz va keyin bu elementni dasturimizning asosiga render qilamiz. Bu React’ga sahifani yangi JSX daraxti bilan qayta render qilishga olib keladi va biz to'liq sahifani yangilamasdan yangi sahifaga ega bo'lamiz. Lekin `root` nima? Buni tushunish uchun biz klient tomonidagi to'liq JavaScript faylini ko'rib chiqishimiz kerak:
+``` js copy
+import { hydrateRoot } from "react-dom/client";
+import { deserialize } from "./serializer.js";
+import App from "./App";
+
+const root = hydrateRoot(document, <App />); // <- bu root
+
+window.addEventListener("click", (event) => {
+  if (event.target.tagName !== "A") {
+    return;
+  }
+
+  event.preventDefault();
+  navigate(event.target.href);
+});
+
+async function navigate(url) {
+    const response = await fetch(url);
+    const jsxTree = await response.json();
+    const element = deserialize(jsxTree);
+    root.render(element);
+}
+```
+
+Biz sahifani dastlabki hidratsiyalashda React’dan root’ni olamiz va bu root’dan yangi elementlarni render qilish uchun foydalanamiz. Bu React ichki tomondan qanday ishlashini ifodalaydi va biz faqat React ichki ishlatadigan API’ni ishlatmoqdamiz. Bu yaxshi narsa, chunki bu biz hech qanday maxsus yoki qiyin jarayonni amalga oshirmayotganimizni anglatadi, biz faqat React’ning ochiq API’sini ishlatmoqdamiz.
+
+
+### Serverning javobini sozlash
+Va nihoyat, bizning serverimiz `jsx-only` sarlavhasi bilan berilgan so'rovga, to'liq HTML string o'rniga faqat JSX daraxti obyektini qaytarishi kerak.
+
+Buni quyidagicha amalga oshirishimiz mumkin:
+``` js copy
+app.get("*", async (req, res) => {
+  const jsxTree = await turnServerComponentsIntoTreeOfElements(<App />);
+
+  // Bu yerda maxsus kodlar bor
+  if (req.headers["jsx-only"]) {
+    res.end(
+      JSON.stringify(jsxTree, (key, value) => {
+        if (key === "$$typeof") {
+          return "react.element";
+        }
+
+        return value;
+      })
+    );
+  } else {
+    const html = ReactDOMServer.renderToString(jsxTree);
+
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+            <title>My React App</title>
+        </head>
+        <body>
+            <div id="root">${html}</div>
+            <script src="/static/js/main.js"></script>
+        </body>
+      </html>
+    `);
+  }
+});
+```
+
+E'tibor bering, agar sarlavha mavjud bo'lsa, biz JSON yubormayapmiz, faqat string yuboryapmizmi? Bu shuning uchun, biz buni klient tomonda `JSON.parse` qilishimiz kerak va `JSON.parse` string’ni kutadi, JSON obyektini emas. Bu API’ga oid bir o'ziga xoslik, lekin juda yomon emas.
+
+
+### Yangi sahifalarga navigatsiya
+Endi biz yangi sahifalarga to'liq sahifa yangilanishisiz navigatsiya qilish yo'lini yaratdik. Bizning RSCs imkoniyatiga ega dasturimizda barcha bog'lanish havolalari navigatsiyasi silliq va erkin o'tadi. Lekin yangilanishlar haqida nima deysiz? Yangilanishlarni qanday boshqaramiz? Keling, buni keyin ko'rib chiqamiz.
