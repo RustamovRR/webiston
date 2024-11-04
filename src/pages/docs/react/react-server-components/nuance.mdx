@@ -1,0 +1,41 @@
+## Nozik farqlar (Nuances)
+
+Server komponentlari faqat serverda, klient komponentlari esa faqat klientda bajariladi, degan umumiy noto'g'ri tushuncha mavjud. Bu haqiqat emas. Server komponentlari faqat serverda bajariladi va React elementlarini ifodalovchi obyektlarni chiqaradi, lekin klient komponentlari faqat klientda bajarilmaydi.
+
+
+### "Komponentlar bajariladi" deganda nima nazarda tutiladi?
+"Komponentlar bajariladi" deganda, biz komponentni ifodalovchi funksiya chaqirilishini nazarda tutamiz. Masalan, bunday komponentni olaylik:
+``` js copy
+function MyComponent() {
+  return <div>hello world</div>;
+}
+```
+
+"`MyComponent` bajariladi" deganda, biz `MyComponent` funksiyasi uning props’lari bilan chaqirilishi va React elementini qaytarishini nazarda tutamiz—bu oddiy JavaScript obyekti bo'lib, quyidagi ko'rinishga ega:
+``` js copy
+{
+  $$typeof: Symbol(react.element),
+  type: "div",
+  props: {
+    children: "hello world"
+  }
+}
+```
+
+Bu "komponentlar bajariladi" deganda nimani nazarda tutayotganimiz.
+
+
+### Serverda klient komponentlari bajarilishi
+Serverda rendering paytida klient komponentlari serverda bajariladi va React elementlarini ifodalovchi obyektlarni chiqaradi. Bu elementlar keyinchalik HTML satriga seriyalanadi va klientga jo'natiladi, bu yerda brauzer HTML markup’ini render qiladi. Shunday qilib, klient komponentlari ham serverda bajariladi, React elementlarini ifodalovchi ba'zi obyektlarni qaytaradi, va keyin server ularni HTML’ga seriyalaydi va klientga yuboradi.
+
+
+### To'g'ri bayonotlar
+Biz quyidagi to'g'ri bayonotlarni keltira olamiz:
+1. Server komponentlari serverda bajariladi, React elementlarini ifodalovchi obyektlarni chiqaradi.
+2. Klient komponentlari serverda bajariladi, React elementlarini ifodalovchi obyektlarni chiqaradi.
+3. Serverda server va klient komponentlaridan iborat katta obyekt mavjud.
+4. Bu string’ga aylantiriladi va klientga yuboriladi.
+5. Bu nuqtadan boshlab, server komponentlari klientda hech qachon bajarilmaydi.
+6. Klient komponentlari faqat klientda bajariladi.
+
+Bu nuqtai nazar bilan, server va klient komponentlarining bajarilish chegaralari yanada aniqroq bo'ladi. Biz bu yerda nozik masalalarni muhokama qilayotgan bo'lishimiz mumkin, lekin ikkita komponent turining o'zaro ta'sirini to'liq tushunish va qadrlash uchun qo'shimcha tafsilotlarni qo'shish muhimdir.
