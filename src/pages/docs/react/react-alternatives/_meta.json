@@ -1,5 +1,6 @@
 {
   "vue-js": "Vue.js",
   "angular": "Angular",
-  "svelte": "Svelte"
+  "svelte": "Svelte",
+  "solid-js": "Solid.js"
 }

@@ -1,0 +1,38 @@
+## Solid.js
+Solid - bu foydalanuvchi interfeyslarini yaratish uchun deklarativ JavaScript kutubxonasi. U komponent modeliga asoslanganligi bilan React’ga o'xshaydi, ammo Solid reaktiv primitivlardan foydalanadi. Solid virtual DOM o'rniga, bog'liqliklarni avtomatik ravishda kuzatib boradigan va DOM’ni to'g'ridan-to'g'ri yangilaydigan nozik reaktivlik tizimidan foydalanadi, bu esa samarali yangilanishlarga olib kelishi mumkin.
+
+Quyida oddiy Solid komponentining misoli keltirilgan:
+``` js copy
+import { createSignal } from "solid-js";
+
+function Component() {
+  const [count, setCount] = createSignal(0);
+
+  return (
+    <>
+      <div>{count()}</div>
+      <button onClick={() => setCount(count() + 1)}>Increment</button>
+    </>
+  );
+}
+```
+
+Ushbu misolda, `createSignal` reaktiv primitiv yaratadi, bu Reactdagi `useState`ga o'xshaydi. Asosiy farq shundaki, `count` joriy qiymatni qaytaradigan funksiyadir va bilvosita reaktiv kontekst uchun bog'liqlikni ro'yxatdan o'tkazadi. `setCount` chaqirilganda, bu `count`ga bog'liq bo'lgan UI’ning har qanday qismida yangilanishni ishga tushiradi, funksional komponentlarni qayta chaqirishsiz.
+
+Buni React bilan taqqoslaganda, React’da bu holatda `Component` nomli komponent yana chaqiriladi, uning ichidagi barcha logikani ham o'z ichiga oladi. Shunday qilib, `count` qiymati o'z-o'zidan reaktiv emas. Solid’da esa `Component` funksiyasi hech qachon qayta chaqirilmaydi, lekin `count` qiymati o'z-o'zidan reaktiv bo'lib, `setCount` chaqirilganda har doim o'zgaradi. Bu nozik reaktivlik deb ataladi va React’ning qattiq reaktivligiga to'g'ridan-to'g'ri qarama-qarshi hisoblanadi.
+
+
+### Solid’ning nozik reaktivlik tizimi
+Solid’ning nozik reaktivlik tizimi ortiqcha yangilanishlarni minimallashtirish va diffing bosqichiga ehtiyojni yo'qotish imkonini beradi, bu esa juda yuqori samaradorlikka olib keladi. Biroq, u nisbatan yangi va kamroq ishlatiladigan kutubxona bo'lgani uchun, u ba'zi an'anaviy variantlar bilan solishtirganda ko'proq resurslar va hamjamiyat yechimlari mavjud emas.
+
+Solid`ning `createSignal()` API dizayni o'qish/yozish ajratilishiga e'tibor qaratadi. Signal o'qish uchun mo'ljallangan getter va alohida setter sifatida ochiladi:
+``` js copy
+const [count, setCount] = createSignal(0);
+
+count(); // qiymatga kirish
+setCount(1); // qiymatni yangilash
+```
+
+`count` signali setter’siz o'tkazilishi mumkinligiga e'tibor bering. Bu holat, holat faqat setter aniq ochilganida o'zgartirilishi mumkinligini ta'minlaydi.
+
+Solid signal konseptini yana bir bor muhokama qilishga qaytadi va bu tushuncha ko'plab boshqa freymvorklar va kutubxonalar tomonidan qabul qilingan, oldin ko'rganimizdek. Signalga oid ilgari aytib o'tgan barcha ma'lumotlar Solid muallifi Ryan Carniato tomonidan keltirilgan bo'lib, u qandaydir tarzda 2010-yildan kelgan tushunchani qayta olib kelish orqali butun oldingi ekotizimni o'zgartira oldi.
