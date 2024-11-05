@@ -2,5 +2,6 @@
   "vue-js": "Vue.js",
   "angular": "Angular",
   "svelte": "Svelte",
-  "solid-js": "Solid.js"
+  "solid-js": "Solid.js",
+  "qwik": "Qwik"
 }
