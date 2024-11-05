@@ -1,0 +1,39 @@
+## Angular
+
+Angular, Google tomonidan ishlab chiqilgan va qo'llab-quvvatlanadigan, JavaScript freymvorklari dunyosidagi mashhur o'yinchilardan biridir. Angular to'liq, ma'lum me'yorlarga ega bo'lgan freymvork bo'lib, frontend bilan bog'liq keng qamrovli masalalar uchun o'z yechimlarini taklif etadi, bu yechimlar orasida renderlash, state menejment, routing va forma ishlovi mavjud.
+
+Angular React’dan farqli reaktivlik modelini taklif etadi. Virtual DOM farqlash(diffing) va moslashtirish(reconciliation) jarayoni o'rniga Angular o'zining "o'zgarishlarni aniqlash" (change detection) tizimini qo'llaydi. 
+
+Angular’da har bir komponent o'z ko'rinishida o'zgarishlarni tekshiradigan o'zgarish detektori bilan jihozlangan bo'lib, bu uchun Zone.js kutubxonasidan foydalanadi. Bu jarayon haqida ko'proq ma'lumotni quyida ko'rib chiqamiz.
+
+
+### O'zgarishlarni aniqlash (Change detection)
+O'zgarishlarni aniqlash — bu Angular ilova holatining o'zgargan yoki o'zgarmaganligini tekshirish va kerakli hollarda DOM yangilanishi kerakligini aniqlash jarayoni. Yuqori darajada qaralganda, Angular komponentlaringizni yuqoridan pastga qarab yurib, o'zgarishlarni qidiradi. Angular o'zgarishlarni aniqlash mexanizmini vaqti-vaqti bilan ishga tushiradi, shunda ma'lumot modeli o'zgarishlari ilovaning ko'rinishiga aks etadi. O'zgarishlarni aniqlashni qo'lda yoki asinxron event orqali ishga tushirish mumkin.
+
+O'zgarishlarni aniqlash yuqori darajada optimallashtirilgan va samarali, ammo ilova uni tez-tez ishga tushirsa, sekinlashuvga olib kelishi mumkin. Ushbu tizim kuchli va moslashuvchan vositadir, shuningdek, Angular turli xil ssenariylar uchun ishlashni optimallashtirish maqsadida uning xatti-harakatlarini puxta sozlash uchun bir nechta strategiyalarni taklif etadi.
+
+#### Shablon sintaksisi (Template syntax)
+Angular, Vue singari, shablon sintaksisidan foydalanadi, ammo DOM bilan ishlash uchun yanada kuchli direktivalar va konstruksiyalarni taklif etadi, masalan, elementlarni shartli ravishda renderlash uchun `*ngIf` va ro'yxatlarni renderlash uchun `*ngFor`. Bu React’dan farq qiladi, chunki React dinamik ma'lumotlarni renderlash uchun JSX va uni ichida JavaScript ifodalari ishlatiladi.
+
+
+### Signallar
+Angular fundamental o'zgarishlarni boshdan kechirmoqda, bunda kirli tekshiruvlar(dirty-checking)dan voz kechib, o'zining reaktivlik primitivi bo'yicha yechimini taqdim etmoqda. Angular Signal API quyidagicha ko'rinadi:
+``` js copy
+const count = signal(0);
+
+count(); // qiymatni olish
+count.set(1); // yangi qiymatni o'rnatish
+count.update((v) => v + 1); // avvalgi qiymat asosida yangilash
+
+// chuqur obyektlarni bir xil identifikator bilan o'zgartirish
+const state = signal({ count: 0 });
+state.mutate((o) => {
+  o.count++;
+});
+```
+
+Vue refs bilan solishtirganda, Angular’ning getter’ga asoslangan API uslubi Vue komponentlarida foydalanilganda qiziqarli trade-off’larni taqdim etadi:
+- `()` ishlatish `.value`dan ko'ra kam batafsilroq bo'ladi, ammo qiymatni yangilash biroz batafsilroq.
+- Hech qanday ref-unwrapping (qiymatlarni avtomatik ochish) mavjud emas: qiymatni olish har doim `()` bilan amalga oshiriladi. Bu qiymat olishni har yerda izchil qiladi. Bu, shuningdek, oddiy signallarni komponent parametrlariga to'g'ridan-to'g'ri uzatishga imkon beradi.
+
+Angular murakkab ilovalarni yaratish uchun keng qamrovli vositalarni taqdim etuvchi universal vosita sifatida tanilgan. Uning qat'iy qoidalari bir tomondan kod strukturasi va izchilligini ta'minlash bilan kuchli tomon hisoblanadi, boshqa tomondan esa yangi dasturchilar uchun o'rganish jarayonini qiyinlashtiradi va moslashuvchanlikni cheklaydi.
