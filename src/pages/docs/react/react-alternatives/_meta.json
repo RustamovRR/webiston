@@ -3,5 +3,6 @@
   "angular": "Angular",
   "svelte": "Svelte",
   "solid-js": "Solid.js",
-  "qwik": "Qwik"
+  "qwik": "Qwik",
+  "common-patterns": "Umumiy pattern’lar"
 }
