@@ -4,5 +4,6 @@
   "svelte": "Svelte",
   "solid-js": "Solid.js",
   "qwik": "Qwik",
-  "common-patterns": "Umumiy pattern’lar"
+  "common-patterns": "Umumiy pattern’lar",
+  "react-is-not-reactive": "React reaktiv emas"
 }
