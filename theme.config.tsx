@@ -7,14 +7,6 @@ const config: DocsThemeConfig = {
     link: 'https://github.com/shuding/nextra',
   },
   docsRepositoryBase: 'https://github.com/shuding/nextra/tree/main/docs',
-  useNextSeoProps() {
-    const { asPath } = useRouter()
-    if (asPath !== '/') {
-      return {
-        titleTemplate: '%s – Nextra',
-      }
-    }
-  },
   // logo: '',
   head: function useHead() {
     const { title } = useConfig()
@@ -45,28 +37,17 @@ const config: DocsThemeConfig = {
     )
   },
   editLink: {
-    text: 'Edit this page on GitHub →',
+    content: 'Edit this page on GitHub →',
   },
   feedback: {
     content: 'Question? Give us feedback →',
     labels: 'feedback',
   },
-  sidebar: {
-    titleComponent({ title, type }) {
-      if (type === 'separator') {
-        return <span className="cursor-default">{title}</span>
-      }
-      return <>{title}</>
-    },
-    defaultMenuCollapseLevel: 1,
-    toggleButton: true,
-    autoCollapse: false,
-  },
   search: {
     placeholder: 'Dokumentatsiyadan qidirish...',
   },
   footer: {
-    text: (
+    content: (
       <div className="flex w-full flex-col items-center sm:items-start">
         <div>
           <a

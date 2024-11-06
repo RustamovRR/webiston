@@ -3,5 +3,10 @@
   "settings": {
     "mdx/code-blocks": true,
     "mdx/language-mapper": {}
+  },
+  "rules": {
+    "import/no-anonymous-default-export": [
+      "off"
+    ]
   }
 }
