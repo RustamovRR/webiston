@@ -5,9 +5,9 @@ event - event
 layout - layout
 framework - freymvork
 open source - ochiq manbali
-Separation of concerns - vazifalarni ajratish
-Single source of truth - Ma'lumotlarning markaziy boshqaruvi
-status quo - o'sha paytdagi standard
+Separation of concerns - ma'suliyatlarni ajratish
+Single source of truth - Yagona ishonch manbai
+status quo - Amaldagi vaziyat
 curly braces - jingalak qavslar
 maintain - davom ettirish
 maintainability - davom ettiriluvchanlik
@@ -21,7 +21,7 @@ syntax sugar - sodda sintaksis
 runtime - kodni bajarilish vaqti
 reconciliation - moslashtirish
 expensive - ko'p(qo'shimcha) resurs talab qilish
-batch update - to'plab yangilash
+batch update - yangilanishlarni guruhlash
 unique - takrorlanmas
 advanced - ilg'or
 scalable - kengayish, kengayuvchan
@@ -29,18 +29,26 @@ reusable components - qayta ishlatiladigan komponentlar
 performance - ishlash samaradorligi
 flicker - miltillash
 responsive - moslashuvchan, javob beruvchan
-Cross-browser compatibility - Brauzerlararo o'zaro mutanosiblik
+Cross-browser compatibility - Brauzerlararo moslik
 core - negizi
 dirty - ifloslangan
 artifact - artifact
 accessibility - foydalanish imkoniyati qulayligi
 shallow comparison - yuzaki taqqoslash
-dependency - bog'liqlik
+dependency - dependency
 event delegation - event delegation
-lazy loading - kechiktirilgan yuklanish
-cross-cutting concern - o'zaro bog'liq muammo
-custom - moslashtirilgan
+lazy loading - keyin yuklash
+cross-cutting concern - Umumiy masala
+custom - maxsus
 fallback - vaqtinchalik muqobil
 hydration - hidratsiya
 sensitive data - nozik ma'lumotlar
 routing- routing
+Fine-grained - yuqori aniqlikdagi
+Coarse-grained - kam aniqlikdagi
+predictable - prognozli
+two-way data binding - ikki tomonlama ma'lumotni bog'lash
+Tight coupling - kuchli bog'lanish
+built-in - ichki o'rnatilgan
+presentation - prezentatsiya
+lightweight - yengil, ixcham
