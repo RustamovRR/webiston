@@ -15,7 +15,7 @@ community - hamjamiyat
 under the hood - ichki ishlash mexanizmi
 string - satr
 alternative - muqobil
-engine - dvijok
+engine - dvigatel
 bundle - to'plam paketi
 syntax sugar - sodda sintaksis
 runtime - kodni bajarilish vaqti
