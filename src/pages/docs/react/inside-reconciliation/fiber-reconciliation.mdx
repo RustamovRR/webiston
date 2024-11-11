@@ -65,13 +65,13 @@ Bu yerda, `beginWork` bilan bir xil ko'rinish mavjud.
 
 
 ### Commit bosqichi
-*Commit bosqichi* (rasmga qarang) haqiqiy DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlar bilan yangilash uchun javobgardir. *Commit bosqichi* davomida yangi virtual DOM daraxti asosiy host muhitga kiritiladi va hali tugallanmagan daraxt joriy daraxt bilan almashtiriladi. Shu bosqichda barcha effektlar ham bajariladi. *Ccommit bosqichi* ikki qismga bo'linadi: mutatsiya bosqichi va layout bosqichi.
+*Commit bosqichi* (rasmga qarang) real DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlar bilan yangilash uchun javobgardir. *Commit bosqichi* davomida yangi virtual DOM daraxti asosiy host muhitga kiritiladi va hali tugallanmagan daraxt joriy daraxt bilan almashtiriladi. Shu bosqichda barcha effektlar ham bajariladi. *Ccommit bosqichi* ikki qismga bo'linadi: mutatsiya bosqichi va layout bosqichi.
 
 ![FiberRootNode bilan commit bosqichi](/commit-phase.png)
 
 
 #### Mutatsiya bosqichi (mutation phase)
-Mutatsiya bosqichi — bu commit bosqichining birinchi qismi bo'lib, virtual DOM’ga kiritilgan o'zgarishlarni haqiqiy DOM’ga yangilash uchun javobgardir. Ushbu bosqichda React yangilanishlar kerakligini aniqlaydi va `commitMutationEffects` deb nomlangan maxsus funksiyani chaqiradi. Bu funksiya render bosqichida muqobil daraxtdagi Fiber tugunlariga kiritilgan o'zgarishlarni haqiqiy DOM’ga qo'llaydi.
+Mutatsiya bosqichi — bu commit bosqichining birinchi qismi bo'lib, virtual DOM’ga kiritilgan o'zgarishlarni real DOM’ga yangilash uchun javobgardir. Ushbu bosqichda React yangilanishlar kerakligini aniqlaydi va `commitMutationEffects` deb nomlangan maxsus funksiyani chaqiradi. Bu funksiya render bosqichida muqobil daraxtdagi Fiber tugunlariga kiritilgan o'zgarishlarni real DOM’ga qo'llaydi.
 
 Bu yerda, `commitMutationEffects` qanday amalga oshirilishi mumkinligini to'liq psevdokod misolida ko'rsatamiz:
 ``` ts copy
@@ -102,7 +102,7 @@ Layout bosqichi — commit bosqichining ikkinchi qismi bo'lib, DOM’dagi yangil
 
 `commitMutationEffects` kabi, `commitLayoutEffects` ham turli tugunlar yangilanishiga qarab har xil funksiyalarni chaqiradigan katta switch operatoriga ega.
 
-Layout bosqichi yakunlangandan so'ng, React haqiqiy DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlarga mos ravishda muvaffaqiyatli yangilaydi.
+Layout bosqichi yakunlangandan so'ng, React real DOM’ni render bosqichida virtual DOM’ga kiritilgan o'zgarishlarga mos ravishda muvaffaqiyatli yangilaydi.
 
 Commit bosqichini ikki qismga — mutatsiya va layout’larga ajratish orqali React DOM’ga yangilanishlarni samarali tarzda qo'llaydi. Reconciler’dagi boshqa asosiy funksiyalar bilan hamkorlikda ishlash orqali commit bosqichi React ilovalari murakkablashib, katta miqdordagi ma'lumotlarni qayta ishlashiga qaramay, tez, javob beruvchan va ishonchli bo'lishini ta'minlaydi.
 
@@ -124,7 +124,7 @@ React ikkita daraxtdan biriga ishora qiluvchi `FiberRootNode` deb nomlangan yuqo
 
 Virtual DOM’ga o'zgarishlar kiritilganda, React `workInProgress` daraxtini yangilaydi, lekin `current` daraxtini o'zgarishsiz qoldiradi. Bu React’ga virtual DOM’ni render qilish va yangilashni davom ettirish imkonini beradi, shu bilan birga dastur holatining hozirgi versiyasini saqlaydi.
 
-Render jarayoni tugagach, React `commitRoot` deb nomlangan funksiyani chaqiradi, bu funksiya `workInProgress` daraxtida amalga oshirilgan o'zgarishlarni haqiqiy DOM’ga kiritish uchun javobgardir. `commitRoot` funksiyasi `FiberRootNode` ko'rsatkich ishorasi(pointer)ni joriy daraxtdan `workInProgress` daraxtiga o'zgartiradi, natijada `workInProgress` daraxti yangi joriy daraxt bo'lib qoladi.
+Render jarayoni tugagach, React `commitRoot` deb nomlangan funksiyani chaqiradi, bu funksiya `workInProgress` daraxtida amalga oshirilgan o'zgarishlarni real DOM’ga kiritish uchun javobgardir. `commitRoot` funksiyasi `FiberRootNode` ko'rsatkich ishorasi(pointer)ni joriy daraxtdan `workInProgress` daraxtiga o'zgartiradi, natijada `workInProgress` daraxti yangi joriy daraxt bo'lib qoladi.
 
 Shundan so'ng, kelajakdagi barcha yangilanishlar yangi joriy daraxtga asoslanadi. Bu jarayon dastur holatining izchil qolishini va o'zgarishlarning to'g'ri va samarali tarzda qo'llanilishini ta'minlaydi.
 

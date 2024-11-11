@@ -1,15 +1,15 @@
 ### Bo'limni qisqacha takrorlash
 Ushbu bob davomida biz veb dasturlashda real DOM va virtual DOM o'rtasidagi farqlar hamda React’da virtual DOM’dan foydalanishning afzalliklarini o'rganib chiqdik.
 
-Dastlab, real DOM haqida gaplashdik va uning sekin renderlash va turli brauzerlararo o'zaro mutanosiblik kabi cheklovlari borligini muhokama qildik. Bu holat dasturchilarga turli platformalarda bir xil ishlaydigan veb ilovalarni yaratishda qiyinchilik tug'dirishi mumkin. Buni tasvirlash uchun biz real DOM API’laridan foydalanib oddiy veb sahifa yaratish misolini ko'rib chiqdik va sahifaning murakkabligi oshgani sayin bu API’larni boshqarish qiyinlashib borishini ko'rdik.
+Dastlab, real DOM haqida gaplashdik va uning sekin renderlash va turli brauzerlararo o'zaro mos kelishi kabi cheklovlari borligini muhokama qildik. Bu holat dasturchilarga turli platformalarda bir xil ishlaydigan veb ilovalarni yaratishda qiyinchilik tug'dirishi mumkin. Buni tasvirlash uchun biz real DOM API’laridan foydalanib oddiy veb sahifa yaratish misolini ko'rib chiqdik va sahifaning murakkabligi oshgani sayin bu API’larni boshqarish qiyinlashib borishini ko'rdik.
 
-Keyinchalik, virtual DOM’ga o'tib, uning qanday qilib real DOM cheklovlarini hal qilishi haqida so'z yuritdik. React virtual DOM’dan foydalanib, real DOM’ga kerakli yangilanishlar sonini minimallashtirib, ishlash samaradorligini qanday oshirishi haqida tushuntirdik. React elementlardan foydalanib, virtual DOM’ni oldingi versiyasi bilan solishtirishi va real DOM’ni yangilashning eng samarali usulini hisoblash jarayonini ko'rib chiqdik.
+Keyinchalik, virtual DOM’ga o'tib, uning qanday qilib real DOM cheklovlarini hal qilishi haqida so'z yuritdik. React virtual DOM’dan foydalanib, real DOM’ga kerakli yangilanishlar sonini minimallashtirib, renderlash vaqti tomonidan qimmatli bo'lgan, performance muammosini qanday kamaytirishi haqida tushuntirdik. React elementlardan foydalanib, virtual DOM’ni oldingi versiyasi bilan solishtirishi va real DOM’ni yangilashning eng samarali usulini hisoblash jarayonini ko'rib chiqdik.
 
 Virtual DOM afzalliklarini ko'rsatish uchun biz React komponentlaridan foydalanib xuddi shu oddiy veb sahifani yaratish misolini ko'rib chiqdik. Ushbu yondashuvni real DOM yondashuvi bilan taqqoslab, sahifa murakkabligi oshgani sari React komponentlarining yanada ixcham va boshqarishga osonroq ekanligini ko'rdik.
 
 Shuningdek, `React.createElement` va `document.createElement` o'rtasidagi farqlarni ko'rib chiqdik va JSX yordamida komponentlarni qanday yaratish mumkinligini o'rgandik. JSX HTML’ga o'xshash sintaksisni taqdim etib, virtual DOM strukturasini tushunishni osonlashtiradi.
 
-Oxirgi qismda esa React diffing algoritmining keraksiz qayta render qilishlarga olib kelishi mumkinligi haqida gapirdik. Bu ayniqsa katta va murakkab foydalanuvchi interfeyslarida jiddiy ishlash muammolariga olib kelishi mumkin. Biz bu masalani 5-bobda React’ning `memo` va `useMemo` xususiyatlaridan foydalanib qanday optimallashtirish mumkinligini o'rganamiz.
+Oxirgi qismda esa React "diffing" algoritmining keraksiz qayta render qilishlarga olib kelishi mumkinligi haqida gapirdik. Bu ayniqsa katta va murakkab foydalanuvchi interfeyslarida jiddiy performance muammolariga olib kelishi mumkin. Biz bu masalani [5-bobda](/docs/react/common-questions) React’ning `memo` va `useMemo` xususiyatlaridan foydalanib qanday optimizatsiya qilish mumkinligini o'rganamiz.
 
 Umuman olganda, bu bobda veb dasturlashda virtual DOM’dan foydalanishning afzalliklari haqida va React bu konsepsiyadan foydalanib veb ilovalarni yaratishni qanday oson va samarali qilishini o'rgandik.
 
@@ -25,4 +25,4 @@ Quyidagi savollarga javob berib, mavzularni yaxshiroq tushunganingizni tekshirib
 
 
 ### Keyingi bo'lim
-4-bobda React reconciliation va uning Fiber arxitekturasi haqida chuqurroq bilib olamiz.
+Kelasi 4-bobda React reconciliation va uning Fiber arxitekturasi haqida chuqurroq o'rganamiz.

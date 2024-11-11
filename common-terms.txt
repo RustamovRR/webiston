@@ -2,7 +2,7 @@
 button - tugma
 state - state
 event - event
-layout - layout
+layout - joylashuv
 framework - freymvork
 open source - ochiq manbali
 Separation of concerns - ma'suliyatlarni ajratish
@@ -39,7 +39,7 @@ dependency - dependency
 event delegation - event delegation
 lazy loading - keyin yuklash
 cross-cutting concern - Umumiy masala
-custom - maxsus
+custom - maxsus, xos
 fallback - vaqtinchalik muqobil
 hydration - hidratsiya
 sensitive data - nozik ma'lumotlar
@@ -52,3 +52,8 @@ Tight coupling - kuchli bog'lanish
 built-in - ichki o'rnatilgan
 presentation - prezentatsiya
 lightweight - yengil, ixcham
+reflow - qayta joylashish
+repaint - qayta chizish
+computational cost - hisoblashning resursi talabi
+nuance - nozik jihat
+trade-offs - muvozanatlari, murosalari
