@@ -1,5 +1,5 @@
 export default {
-  'memoization-with-react-memo': 'React.memo bilan memoization',
+  'memoization-with-react-memo': 'React.memo bilan memoizatsiya',
   'getting-fluent-in-react-memo': "React.memo’dan to'liq foydalanish",
   'its-guideline-not-rule': "Qoida emas, Yo'riqnoma",
   'memoization-with-useMemo': 'useMemo bilan memoizatsiya',

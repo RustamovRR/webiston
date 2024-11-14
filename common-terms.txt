@@ -37,7 +37,7 @@ accessibility - foydalanish imkoniyati qulayligi
 shallow comparison - yuzaki taqqoslash
 dependency - dependency
 event delegation - event delegation
-lazy loading - keyin yuklash
+lazy loading - kerakli vaqtda yuklash
 cross-cutting concern - Umumiy masala
 custom - maxsus, xos
 fallback - vaqtinchalik muqobil
@@ -57,3 +57,6 @@ repaint - qayta chizish
 computational cost - hisoblashning resursi talabi
 nuance - nozik jihat
 trade-offs - muvozanatlari, murosalari
+instance - nusxa
+render lanes - render yo'llari
+commit - tatbiq qilish

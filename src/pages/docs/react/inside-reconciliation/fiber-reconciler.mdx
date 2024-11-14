@@ -1,7 +1,62 @@
-## Fiber Reconciler
+# Fiber Reconciler
 
-Fiber reconciler’i “Fiber” deb nomlanuvchi boshqa ma'lumotlar strukturasidan foydalanadi, bu reconciler uchun bir ish birligi(unit)ni ifodalaydi. Fiber’lar biz [3-bobda](/docs/react/virtual-dom) ko'rib chiqqan React elementlaridan yaratiladi, asosiy farq shundaki, stateful va uzoq muddatli, React elementlari esa qisqa muddatli va stateless’dir.
+Fiber reconciler “Fiber” deb nomlanuvchi boshqa bir ma'lumotlar strukturasidan foydalanadi, bu reconciler uchun bir ish birligi(unit)ni ifodalaydi. Fiber’lar biz [3-bobda](/docs/react/virtual-dom/how-virtual-dom-works#react-elementlari-react-elements) ko'rib chiqqan React elementlaridan yaratiladi, asosiy farq shundaki, stateful(holatli) va uzoq muddatli, React elementlari esa qisqa muddatli va stateless(holatsiz)dir.
 
-Redux maintainer’i va taniqli React eksperti Mark Erikson Fiber’larni “belgilangan biror vaqt nuqtasida haqiqiy komponent daraxtini ifodalaydigan React’ning ichki ma'lumotlar strukturasidir" deb ta'riflaydi. Darhaqiqat, bu Fiber’lar haqida yaxshi fikrdir va buni Mark uchun o'z vaqtida aytib o'tgan, chunki u Replay bilan React ilovalarini vaqt sayohati bo'ylab debug qilish bo'yicha to'liq ishlaydi: bu ilovaning holatini qayta ko'rib chiqish va takrorlash imkonini beruvchi vosita. Agar hali ko'rmagan bo'lsangiz, [Replay.io](https://www.replay.io/) saytigaga kirib ko'rishingiz mumkin.
+Redux maintainer’i va taniqli React eksperti Mark Erikson Fiber’larni “belgilangan biror vaqt nuqtasida haqiqiy komponent daraxtini ifodalaydigan React’ning ichki ma'lumotlar strukturasidir" deb ta'riflaydi. Darhaqiqat, bu Fiber’lar haqida yaxshi fikrdir va buni Mark o'z vaqtida aytib o'tgan, chunki u Replay bilan React ilovalarini vaqt sayohati bo'ylab debug qilish bo'yicha to'liq ishlaydi: bu ilovaning holatini qayta ko'rib chiqish va takrorlash imkonini beruvchi vosita. Agar hali ko'rmagan bo'lsangiz, [Replay.io](https://www.replay.io/) saytiga kirib ko'rishingiz mumkin.
 
 VDOM elementlar daraxti bo'lganidek, React reconciler Fiber daraxtidan foydalanadi, nomidan ko'rinib turganidek, bu VDOM asosida bevosita modellashtirilgan Fiber’lar daraxtidir.
+
+## Fiber’ning ma'lumotlar strukturasi sifatida ko'rinishi
+
+React’dagi Fiber ma'lumotlar strukturasi - bu Fiber reconciler’ning asosiy komponenti hisoblanadi. Fiber reconciler yangilanishlarni ustuvorliklarga ajratib, ularga bir vaqtning o'zida ishlash imkonini beradi, bu esa React ilovalari samaradorligi va javob qaytarish qobiliyatini oshiradi. Keling, Fiber ma'lumotlar strukturasini batafsilroq ko'rib chiqamiz.
+
+Negizida, Fiber ma'lumotlar strukturasining asosiy vazifasi - bu React ilovasidagi komponent nusxasi va uning holatini ifodalashdir. Fiber ma'lumotlar strukturasi o'zgaruvchan bo'lib, reconciliation jarayonida yangilanadi va qayta tartiblanishi mumkin.
+
+Har bir Fiber tuguni nusxasida u ifodalayotgan komponent haqida ma'lumotlar, jumladan uning props, state va bola komponentlari haqida ma'lumotlar mavjud bo'ladi. Shuningdek, Fiber tuguni komponent daraxtidagi joylashuvi va yangilanishlarni ustuvorlik asosida bajarishga yordam beradigan metadata bilan ham ta'minlangan.
+
+### Fiber tuguniga misol
+
+Bu yerda Fiber tuguniga oddiy misol berilgan:
+``` js copy
+{
+  tag: 3, // 3 = ClassComponent
+  type: App,
+  key: null,
+  ref: null,
+  props: {
+    name: "Tejas",
+    age: 30
+  },
+  stateNode: AppInstance,
+  return: FiberParent,
+  child: FiberChild,
+  sibling: FiberSibling,
+  index: 0,
+  //...
+}
+```
+
+Ushbu misolda, bizda `App` deb nomlangan `ClassComponent`ni ifodalovchi Fiber tuguni mavjud. Fiber tuguni komponentning quyidagi ma'lumotlarini o'z ichiga oladi:
+- **tag**: Bu yerda `3` qiymatiga ega bo'lib, React uni class komponentligini aniqlash uchun ishlatadi. Har bir komponent turi (class komponentlari, funksiya komponentlari, Suspense va Error boundary, fragmentlar va boshqalar) Fiber sifatida o'ziga xos raqamli ID’ga ega.
+- **type**: Bu yerda `App` ushbu Fiber ifodalaydigan funksional yoki class komponentiga ishora qiladi.
+- **props**: `{name: "Tejas", age: 30}` komponentga berilgan input props’larini yoki funksiya argumentlarini ifodalaydi.
+- **stateNode**: Bu Fiber’ni ifodalovchi `App` komponentining nusxasidir. Uning komponent daraxtidagi o'rni: `return`, `child`, `sibling` va `index` maydonlari Fiber reconciler'ga daraxt bo'ylab "yurib chiqish" imkoniyatini beradi, ya'ni ota, bola, birodar va Fiber indeksini aniqlash imkonini beradi.
+
+### Fiber’lar reconciliation’da
+
+Fiber reconciliation esa, hozirgi Fiber daraxtini keyingi Fiber daraxti bilan solishtirib, qaysi tugunlarni yangilash, qo'shish yoki olib tashlash kerakligini aniqlashni o'z ichiga oladi.
+
+Reconciliation jarayonida, Fiber reconciler virtual DOM’dagi har bir React elementi uchun Fiber tugun yaratadi. Bu jarayonni `createFiberFromTypeAndProps` deb nomlangan funksiya amalga oshiradi. "Type va props"ni boshqacha qilib aytganda, React elementlari deb atash ham mumkin. React elementi quyidagi shaklda bo'ladi: type va props:
+``` js copy
+{
+  type: "div",
+  props: {
+    className: "container"
+  }
+}
+```
+
+Ushbu funksiya elementlardan olingan Fiber’ni qaytaradi. Fiber tugunlari yaratilgach, Fiber reconciler *ish sikli(work loop)* ni ishlatib, foydalanuvchi interfeysini yangilaydi. "Work loop" ildiz Fiber tugunidan boshlanib, komponent daraxti bo'ylab pastga qarab harakat qiladi va har bir Fiber tugunni agar yangilanishi kerak bo'lsa, "ifloslangan"(dirty) deb belgilaydi. Daraxtning oxiriga yetgach, u qayta yuqoriga ko'tarilib, xotirada brauzerdan ajratilgan yangi DOM daraxtini yaratadi, u oxir-oqibat ekranga chiqariladi(flushed). Bu jarayon ikki funksiya tomonidan amalga oshiriladi: `beginWork` pastga qarab yuradi va komponentlarni "yangilanishi kerak" deb belgilaydi, `completeWork` esa qayta yuqoriga ko'tarilib, brauzer bilan bog'lanmagan real DOM elementlar daraxtini yaratadi. Bu ekran tashqarisida bo'ladigan rendering qilish jarayoni istalgan vaqtda to'xtatilishi yoki bekor qilinishi mumkin, chunki foydalanuvchi buni ko'rmaydi.
+
+Fiber arxitekturasi o'yin dunyosidagi "ikki marta buferlash" (double buffering) deb ataladigan tushunchadan ilhom olgan, bu yerda navbatdagi ekran ekran tashqarisida tayyor bo'ladi va keyin "flushed" holatida joriy ekranga chiqariladi. Fiber arxitekturasini yaxshiroq tushunish uchun, bu tushunchani batafsilroq ko'rib chiqamiz.
+
