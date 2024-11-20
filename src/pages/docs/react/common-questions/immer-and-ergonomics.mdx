@@ -1,12 +1,12 @@
-## Immer va ergonomika
+# Immer va foydalanish qulayligi
 
 Immer - bu juda mashhur React kutubxonasi bo'lib, ilovalaringizdagi murakkab state boshqaruvida foydali hisoblanadi. State’ning shakli murakkab yoki ichma-ich joylashgan bo'lsa, an'anaviy state’ni yangilash usullari ko'p vaqt talab qilishi va xatolarga moyil bo'lishi mumkin. Immer bunday murakkabliklarni boshqarishda sizga o'zgaruvchan qoralama state (mutable draft state) bilan ishlashga imkon beradi, shu bilan birga ishlab chiqarilgan state o'zgarmas bo'lib qolishini ta'minlaydi.
 
-React ilovasida state boshqaruvi odatda `useState` yoki `useReducer` hook’lari orqali amalga oshiriladi. `useState` oddiy state uchun mos bo'lsa, `useReducer` murakkab state boshqaruvi uchun ko'proq mos keladi va aynan shu yerda Immer eng katta foydasini beradi.
+React ilovasida state boshqaruvi odatda `useState` yoki `useReducer` hook’lari orqali amalga oshiriladi. `useState` oddiy state uchun mos bo'lsa, `useReducer` murakkab state boshqaruvi uchun ko'proq mos keladi va aynan shu yerda Immer’ning eng katta foydasi namoyon bo'ladi.
 
+## useReducer bilan ishlatish
 
-### useReducer bilan ishlash
-`useReducer` bilan ishlaganda, siz taqdim etgan reducer funksiyasi sof bo'lishi va doim yangi state obyektini qaytarishi kutiladi. Bu ichma-ich joylashgan state obyektlarini boshqarishda ko'p vaqt talab qiluvchi, ko'proq yoziladigan kodga olib kelishi mumkin. Ammo, *use-immer* kutubxonasidagi `useImmerReducer` orqali Immer’ni `useReducer` bilan integratsiya qilib, siz state’ni bevosita o'zgartirgandek yozishingiz mumkin, aslida esa Immer tomonidan taqdim etilgan draft state’da ishlaysiz. Shu tariqa, siz oddiy va intuitiv reducer funksiyalarini yozishingiz mumkin:
+`useReducer` bilan ishlaganda, siz taqdim etgan reducer funksiyasi sof bo'lishi va doim yangi state obyektini qaytarishi kutiladi. Bu ichma-ich joylashgan state obyektlarini boshqarishda ko'p vaqt talab qiluvchi, ko'proq yoziladigan kodga olib kelishi mumkin. Ammo, *use-immer* kutubxonasidagi `useImmerReducer` orqali Immer’ni `useReducer` bilan integratsiya qilib, siz state’ni bevosita o'zgartirgandek yozishingiz mumkin, aslida esa Immer tomonidan taqdim etilgan qoralama state’da ishlaysiz. Shu tariqa, siz oddiy va intuitiv reducer funksiyalarini yozishingiz mumkin:
 ``` js copy
 import { useImmerReducer } from "use-immer";
 
@@ -43,7 +43,8 @@ const MyComponent = () => {
 
 Ushbu misolda, `useImmerReducer` reducer funksiyasini sezilarli darajada soddalashtiradi, ichma-ich joylashgan state xususiyatlarini bevosita tayinlash orqali yangilash imkonini beradi, bu esa an’anaviy reducer’da `spread` yoki `Object.assign` operatsiyalarini talab qilgan bo'lar edi.
 
-### useState bilan ham foydalanish
+## useState bilan ishlatish
+
 Bundan tashqari, Immer faqat `useReducer` bilan cheklanmagan. Agar sizda murakkab state obyekti bo'lsa va state’ni yangilashda o'zgarmasligini ta’minlashni istasangiz, uni `useState` bilan ham ishlatishingiz mumkin. Immer `produce` funksiyasini taqdim etadi, bu orqali hozirgi state’ga asoslangan holda va bir qator ko'rsatmalar yordamida yangi state yaratishingiz mumkin:
 ``` js copy
 import produce from "immer";
@@ -67,4 +68,4 @@ const MyComponent = () => {
 
 
 ### Immer’ning soddalashtirish qobiliyati
-Imme’rning state yangilanishlarini soddalashtirish qobiliyati, ayniqsa murakkab yoki ichma-ich joylashgan state tuzilmalarida, React’ning state boshqaruvi hook’lariga ajoyib yordamchi bo'lib, kodni toza, oson boshqariladigan va xatolarga kamroq moyil bo'lishiga yordam beradi.
+Imme’rning state yangilanishlarini soddalashtirish qobiliyati, ayniqsa murakkab yoki ichma-ich joylashgan state strukturalarida, React’ning state boshqaruvi hook’lariga ajoyib yordamchi bo'lib, kodni toza, oson boshqariladigan va xatolarga kamroq moyil bo'lishiga yordam beradi.

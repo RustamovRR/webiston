@@ -35,9 +35,9 @@ dirty - ifloslangan
 artifact - artifact
 accessibility - foydalanish imkoniyati qulayligi
 shallow comparison - yuzaki taqqoslash
-dependency - dependency
+dependency - qaramlik
 event delegation - event delegation
-lazy loading - kerakli vaqtda yuklash
+lazy loading - kerakli vaqtda yuklash, kerak bo'lganda yuklash
 cross-cutting concern - Umumiy masala
 custom - maxsus, xos
 fallback - vaqtinchalik muqobil
@@ -60,3 +60,11 @@ trade-offs - muvozanatlari, murosalari
 instance - nusxa
 render lanes - render yo'llari
 commit - tatbiq qilish
+tricky - chalg'ituvchi, chalg'ituvchi jihat
+fast path - tezkor yo'l
+work-in-progress - jarayondagi
+reference - referens, havola
+handler - ishlov beruvchi
+code splitting - kodlarni bo'lib yuklash
+fallback - zaxira
+single responsibility principle - yagona ma'suliyat tamoyili

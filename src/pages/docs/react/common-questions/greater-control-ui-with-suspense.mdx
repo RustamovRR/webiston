@@ -1,8 +1,8 @@
-## Suspense bilan kengroq UI nazorati
+# Suspense yordamida UI'ni yaxshiroq boshqarish
 
-`React.Suspense` ishlash usuli `try/catch` bloklariga o'xshaydi. Misol uchun, qanday qilib istalgan joydan xatolik(exception)ni `throw` qilib, keyin uni boshqa joyda (hatto boshqa modulda ham) `catch` qilish mumkin bo'lsa, `Suspense` ham shunga o'xshash tarzda ishlaydi (garchi to'liq bir xil bo'lmasa ham). Komponent daraxtida har qanday joyda kechikib yuklanadigan va asinxron primitivlarni joylashtirishingiz va keyin daraxtning istalgan yuqori qismida, hatto boshqa faylda joylashgan `Suspense` komponenti orqali ham ularni `catch` bilan ushlab olishingiz mumkin.
+`React.Suspense` ishlash usuli `try/catch` bloklariga o'xshaydi. Misol uchun, qanday qilib istalgan joydan xatolik(exception)ni `throw` qilib, keyin uni boshqa joyda (hatto boshqa modulda ham) `catch` qilish mumkin bo'lsa, `Suspense` ham shunga o'xshash tarzda ishlaydi (garchi to'liq bir xil bo'lmasa ham). Komponent daraxtida har qanday joyda kerakli paytda yuklanadigan va asinxron primitivlarni joylashtirishingiz va keyin daraxtning istalgan yuqori qismida, hatto boshqa faylda joylashgan `Suspense` komponenti orqali ham ularni `catch` bilan ushlab olishingiz mumkin.
 
-Bu ma'lumotdan kelib chiqib, bizda 22 MB sidebar uchun yuklanish holatini (loading state) ko'rsatish joyini tanlash imkoniyati paydo bo'ladi. Masalan, biz sidebar yuklanayotgan paytda butun ilovani yashirishimiz mumkin — bu yaxshi g'oya emas, chunki foydalanuvchidan ilovaning barcha ma'lumotlarini bloklaymiz, shunchaki faqat sidebar uchun — yoki faqat sidebar uchun yuklanish holatini ko'rsatamiz. Keling, birinchisini qanday amalga oshirishni ko'rib chiqaylik (garchi buni qilmasligimiz kerak), shunchaki `Suspense` imkoniyatlarini tushunish uchun:
+Bu ma'lumotdan kelib chiqib, bizda 22 MB sidebar uchun yuklanish holatini (loading state) ko'rsatish joyini tanlash imkoniyati paydo bo'ladi. Masalan, biz sidebar yuklanayotgan paytda butun ilovani ko'rsatmasligimiz mumkin — bu yaxshi g'oya emas, chunki foydalanuvchidan ilovaning barcha ma'lumotlarini bloklaymiz, shunchaki faqat sidebar uchun — yoki faqat sidebar uchun yuklanish holatini ko'rsatamiz. Keling, birinchisini qanday amalga oshirishni ko'rib chiqaylik (garchi buni qilmasligimiz kerak), shunchaki `Suspense` imkoniyatlarini tushunish uchun:
 ``` js copy
 import { lazy, Suspense } from "react";
 
@@ -27,9 +27,9 @@ const MyComponent = () => {
 };
 ```
             
-Bu misolda, biz butun komponentni `Suspense` bilan o'rab olamiz va `fallback`ni (promise hal qilinmaguncha ko'rsatiladigan holatni) asinxron komponentlar resolved bo'lmaguncha ko'rsatamiz. Bu degani, sidebar yuklanmaguncha butun ilova yashirin bo'lib turadi. Ba'zan bu foydali bo'lishi mumkin, masalan, hamma narsa tayyor bo'lganda foydalanuvchi interfeysini ko'rsatmoqchi bo'lsak, ammo bu holatda eng yaxshi g'oya emas, chunki foydalanuvchi nima bo'layotganini bilmay qoladi va ilova bilan muloqot qila olmaydi.
+Bu misolda, biz butun komponentni `Suspense` bilan o'rab olamiz va `fallback`ni (promise hal qilinmaguncha ko'rsatiladigan holatni) asinxron komponentlar hal qilinib bo'lmaguncha ko'rsatamiz. Bu degani, sidebar yuklanmaguncha butun ilova yashirin bo'lib turadi. Ba'zan bu foydali bo'lishi mumkin, masalan, hamma narsa tayyor bo'lganda foydalanuvchi interfeysini ko'rsatmoqchi bo'lsak, ammo bu holatda eng yaxshi g'oya emas, chunki foydalanuvchi nima bo'layotganini bilmay qoladi va ilova bilan muloqot qila olmaydi.
 
-Shuning uchun, faqat kechiktirib yuklanadigan komponentlarni o'rab olish uchun `Suspense`ni ishlatish kerak, quyidagicha:
+Shuning uchun, faqat kerakli paytda yuklanadigan komponentlarni o'rab olish uchun `Suspense`ni ishlatish kerak, quyidagicha:
 ``` js copy
 import { lazy, Suspense } from "react";
 
