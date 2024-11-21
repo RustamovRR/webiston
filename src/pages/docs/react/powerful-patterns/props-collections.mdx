@@ -1,4 +1,4 @@
-## Props kolleksiyasi (Props collections)
+# Props kolleksiyasi (Props collections)
 
 Ko'pincha bir nechta prop’larni birga to'plashimiz kerak bo'ladi. Masalan, "sudrab tashlash" (drag-and-drop) foydalanuvchi interfeyslarini yaratishda bir qancha prop’larni boshqarish talab qilinadi:
 - `onDragStart`: foydalanuvchi elementni sudrashni boshlaganda brauzerga nima qilish kerakligini bildirish uchun
@@ -42,9 +42,9 @@ Bu kutilmagan xatti-harakatlarga olib kelishi mumkin, va komponentni `Dropzone`g
 
 Yaxshiyamki, biz bu muammoni *prop getters* yordamida tuzatishimiz mumkin.
 
+## Props oluvchilar (Prop getters)
 
-### Prop oluvchilari (Prop getters)
-*Prop getter*’lari aslida prop kolleksiyalarini maxsus prop’lar bilan tuzadi va ularni birga birlashtiradi. Bizning misolimizda, `droppableProps` kolleksiyasidagi `onDragOver` hodisa ishlov beruvchisidagi `event.preventDefault` chaqiruvini saqlab qolishni va unga maxsus `alert("Dragged!");` chaqiruvini qo'shishni xohlaymiz. Buni *prop getter*’lari yordamida amalga oshirishimiz mumkin.
+*Prop getter*’lari aslida prop kolleksiyalarini maxsus prop’lar bilan kompozitsiya qiladi va ularni birga birlashtiradi. Bizning misolimizda, `droppableProps` kolleksiyasidagi `onDragOver` hodisa ishlov beruvchisidagi `event.preventDefault` chaqiruvini saqlab qolishni va unga maxsus `alert("Dragged!");` chaqiruvini qo'shishni xohlaymiz. Buni *prop getter*’lari yordamida amalga oshirishimiz mumkin.
 
 Birinchi navbatda, `droppableProps` kolleksiyasini *prop getter*’ga o'zgartiramiz:
 ``` js copy
@@ -58,7 +58,7 @@ export const getDroppableProps = () => {
 };
 ```
 
-Bu yerda prop kolleksiyasini eksport qilgan joyimizdan tashqari hech narsa o'zgarmagan, endi biz prop kolleksiyalarini qaytaradigan funksiya eksport qilamiz, bu *prop getter*’dir Chunki bu funksiya bo'lgani tufayli, u argumentlarni qabul qilishi mumkin, masalan, moslashtirilgan `onDragOver` funksiyasi. Biz bu maxsus `onDragOver`ni bizning default bo'yicha `onDragOver` bilan quyidagicha birlashtira olamiz:
+Bu yerda prop kolleksiyasini eksport qilgan joyimizdan tashqari hech narsa o'zgarmagan, endi biz prop kolleksiyalarini qaytaradigan funksiya eksport qilamiz, bu *prop getter*’dir Chunki bu funksiya bo'lgani tufayli, u argumentlarni qabul qilishi mumkin, masalan, maxsus `onDragOver` funksiyasi. Biz bu maxsus `onDragOver`ni bizning default bo'yicha `onDragOver` bilan quyidagicha birlashtira olamiz:
 ``` js copy
 const compose =
     (...functions) =>

@@ -1,4 +1,4 @@
-## Birlashgan komponentlar (Compound Components)
+# Birlashgan komponentlar (Compound Components)
 
 Ba’zida bizda shunga o'xshash accordion komponentlari bo'ladi:
 ``` js copy
@@ -70,7 +70,8 @@ export const Accordion = ({ items }) => {
 
 Endi, bu kod bilan faxrlansak bo'ladimi? Ishonchimiz komil emas. Shuning uchun bizga *birlashgan komponentlar* kerak bo'ladi: ular o'zaro bog'langan, alohida komponentlarni guruhlash imkonini beradi, ular birgalikda state’ni ulashadi, ammo ular avtomatik ravishda render qilinishi mumkin, bu esa bizga elementlar daraxtini boshqarish uchun ko'proq nazoratni taqdim etadi.
 
-### Birlashgan komponentlar yordamida Accordion
+## Birlashgan komponentlar yordamida Accordion
+
 Birlashgan komponentlar (compound components) pattern’ini ishlatsak, ushbu accordion quyidagicha ko'rinadi:
 ``` js copy
 <Accordion>
@@ -83,6 +84,8 @@ Birlashgan komponentlar (compound components) pattern’ini ishlatsak, ushbu acc
 Agar bu pattern’ni React’da qanday amalga oshirish mumkinligini o'rgansak, ikkita usulni ko'rib chiqishimiz mumkin:
 - `React.cloneElement` yordamida bolalarni boshqarish
 - `React Context` yordamida
+
+### React.context qo'shish
 
 `React.cloneElement` eski API hisoblanadi, shuning uchun bu masalani React Context yordamida hal qilishni o'rganamiz. Avvalo, accordion’ning har bir qismi o'qiy oladigan context’ni yaratishdan boshlaymiz:
 ``` js copy
@@ -164,6 +167,6 @@ Yoki aralash usulni qo'llashimiz mumkin:
 </Accordion>
 ```
 
-Bu birlashgan komponentlarning afzalligi shundaki, ular boshqaruvni render qilish uchun ota komponentga topshiradi, shu bilan birga farzandlar o'rtasidagi kontekstual holatni saqlab qoladi. Xuddi shu yondashuvni tab interfeysida ham qo'llash mumkin, bunda tab’lar joriy tab holatidan xabardor bo'ladi, lekin har xil darajadagi elementlar joylashishi mumkin.
+Bu birlashgan komponentlarning afzalligi shundaki, ular boshqaruvni render qilish uchun ota komponentga topshiradi, shu bilan birga farzandlar o'rtasidagi kontekstual holatni saqlab qoladi. Xuddi shu yondashuvni "tab" interfeysida ham qo'llash mumkin, bunda tab’lar joriy tab holatidan xabardor bo'ladi, lekin har xil darajadagi elementlar joylashishi mumkin.
 
-Boshqa bir afzallik shundaki, bu pattern vazifalarni ajratish(separation of concerns)ni qo'llab-quvvatlaydi, bu esa dasturlarni vaqt o'tishi bilan ancha yaxshi kengaytirishga yordam beradi.
+Boshqa bir afzallik shundaki, bu pattern ma'suliyatlarni ajratish(separation of concerns)ni qo'llab-quvvatlaydi, bu esa dasturlarni vaqt o'tishi bilan ancha yaxshi kengaytirishga yordam beradi.

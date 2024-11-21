@@ -1,10 +1,10 @@
-## Boshqariladigan props’lar (Control props)
+# Boshqaruvchi props’lar (Control props)
 
 React’da *Control Props* pattern’i — bu state’ni boshqarishning strategik yondashuvi bo'lib, boshqariladigan komponentlar konsepsiyasini kengaytiradi. Bu pattern komponent ichida qanday qilib state boshqarilishi haqida moslashuvchan mexanizm taqdim etadi. Buni yaxshiroq tushunish uchun avval boshqariladigan komponentlar haqida tushuncha hosil qilishimiz kerak.
 
+## Boshqariladigan komponentlar (Controlled components)
 
-### Boshqariladigan komponentlar (Controlled components)
-Boshqariladigan komponentlar o'z ichki state’ini saqlab turmaydigan komponentlardir. Buning o'rniga, ular o'zining joriy qiymatini ota komponentdan prop sifatida oladi, va bu state uchun yagona haqiqat manbai hisoblanadi. State o'zgarishi kerak bo'lganda, boshqariladigan komponentlar ota komponentga odatda `onChange` kabi callback funksiyalar orqali xabar beradi. Shunday qilib, ota komponent state’ni boshqarish va boshqariladigan komponentning qiymatini yangilash uchun javobgar hisoblanadi.
+Boshqariladigan komponentlar o'z ichki state’ini saqlab turmaydigan komponentlardir. Buning o'rniga, ular o'zining joriy qiymatini ota komponentdan prop sifatida oladi, va bu state uchun yagona ishonch manbai hisoblanadi. State o'zgarishi kerak bo'lganda, boshqariladigan komponentlar ota komponentga odatda `onChange` kabi callback funksiyalar orqali xabar beradi. Shunday qilib, ota komponent state’ini boshqarish va boshqariladigan komponentning qiymatini yangilash uchun javobgar hisoblanadi.
 
 Masalan, boshqariladigan `<input>` elementi quyidagicha bo'ladi:
 ``` js copy
@@ -20,6 +20,8 @@ function Form() {
 ```
 
 *Control Props* pattern’i boshqariladigan komponentlar tamoyilini yanada rivojlantiradi, bu orqali komponentga tashqaridan prop’lar orqali boshqarilish yoki o'zini state’ini ichki tomondan mustaqil ravishda boshqarish imkoniyati beriladi, ya'ni tashqi boshqaruvni ixtiyoriy qiladi. Ushbu pattern’ga amal qiluvchi komponent state qiymatini va uni yangilash uchun funksiyani prop sifatida qabul qiladi. Bu ikki tomonlama imkoniyat ota komponentga bolaning holatini nazorat qilish imkonini beradi, lekin nazorat qilinmasa, bola komponent mustaqil ravishda ishlay oladi.
+
+### `Toggle` komponenti misoli
 
 *Control Props* pattern’ga misol sifatida boshqarilishi mumkin bo'lgan yoki o'z holatini mustaqil boshqaruvchi almashtirish tugmasi(button)ni keltirish mumkin:
 ``` js copy

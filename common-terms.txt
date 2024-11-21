@@ -9,8 +9,8 @@ Separation of concerns - ma'suliyatlarni ajratish
 Single source of truth - Yagona ishonch manbai
 status quo - Amaldagi vaziyat
 curly braces - jingalak qavslar
-maintain - davom ettirish
-maintainability - davom ettiriluvchanlik
+maintain - qo'llab-quvvatlash
+maintainability - qo'llab-quvvatlash qulayligi
 community - hamjamiyat
 under the hood - ichki ishlash mexanizmi
 string - satr
@@ -50,7 +50,7 @@ predictable - prognozli
 two-way data binding - ikki tomonlama ma'lumotni bog'lash
 Tight coupling - kuchli bog'lanish
 built-in - ichki o'rnatilgan
-presentation - prezentatsiya
+presentation - taqdimot
 lightweight - yengil, ixcham
 reflow - qayta joylashish
 repaint - qayta chizish
@@ -68,3 +68,5 @@ handler - ishlov beruvchi
 code splitting - kodlarni bo'lib yuklash
 fallback - zaxira
 single responsibility principle - yagona ma'suliyat tamoyili
+behaviour - xatti-harakat, xususiyat, funksionallik
+headless - interfeysga ega emas
