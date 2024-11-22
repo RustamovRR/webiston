@@ -45,7 +45,7 @@ Remix’ni o'rganish Next.js’ga nisbata biroz osonroq bo'lishi mumkin, chunki 
 Remix ko'pincha platformaning asosiy imkoniyatlarini ko'rsatishga imkon beradi. Bu yondashuvning ikki tomonlama ta'siri bor: bir tomondan bu intuitiv va tanish ko'rinadi, boshqa tomondan esa ba'zida boshqa freymvorklardagi kabi “mo'jizaviy” yechimlar yo'qligi sababli biroz noqulay bo'lishi mumkin.
 
 #### Ishlash samaradorligi
-Remix’ning routing va ma'lumot yuklash bo'yicha noyob yondashuvi uni samarali va tezkor qiladi. Ma'lumotlarni olish routing’ga bog'liq bo'lib, faqat kerakli routing uchun kerakli ma'lumotlar olinadi, bu esa umumiy ma'lumot hajmini kamaytiradi. Shuningdek, Remix’da optimistik UI yangilanishlari va bosqichma-bosqich yaxshilanish strategiyalari foydalanuvchi tajribasini oshiradi.
+Remix’ning routing va ma'lumot yuklash bo'yicha noyob yondashuvi uni samarali va tezkor qiladi. Ma'lumotlarni olish routing’ga bog'liq bo'lib, faqat kerakli routing uchun kerakli ma'lumotlar olinadi, bu esa umumiy ma'lumot hajmini kamaytiradi. Shuningdek, Remix’da optimistik UI yangilanishlari va bosqichma-bosqich yaxshilanish strategiyalari foydalanuvchi bilan ishlash qulayligini oshiradi.
 
 
 ### Trade-off’lar
@@ -67,8 +67,8 @@ To'g'ri freymvorkni tanlash loyihangiz ehtiyojlari va shaxsiy afzalliklarga bog'
 Ikkala holatda ham, biror kichik loyiha yoki dasturingizning bir qismi uchun ularni sinab ko'rish yaxshi g'oya bo'ladi. Shu orqali ularning qanday ishlashini va qaysi biri bilan ishlash qulayroq ekanini yaxshiroq tushunasiz.
 
 
-### Dasturchilar tajribasi
-Ikkala freymvork ham yuqori darajadagi dasturchilar tajribasini taklif qiladi, ular mahsuldorlik va foydalanish qulayligiga e'tibor qaratadi. Ularning har ikkisi dasturchilarni sifatli dasturlar yaratishga yordam beruvchi boy funksiyalar va vositalar to'plamini taqdim etadi, bu bo'limda ilgari ko'rib o'tganimizdek.
+### Dasturchi bilan ishlash qulayligi(DX)
+Ikkala freymvork ham yuqori darajadagi dasturchi bilan ishlash qulayligini taklif qiladi, ular mahsuldorlik va foydalanish qulayligiga e'tibor qaratadi. Ularning har ikkisi dasturchilarni sifatli dasturlar yaratishga yordam beruvchi boy funksiyalar va vositalar to'plamini taqdim etadi, bu bo'limda ilgari ko'rib o'tganimizdek.
 
 #### Qurilish tezligi
 Loyihaning murakkabligi va hajmi oshgani sayin, qurilish tezligi ham muhim ahamiyat kasb etadi. Next.js va Remix qurilish vaqtini yaxshilash uchun bir qator optimallashtirishlarni amalga oshirgan.
@@ -97,6 +97,6 @@ Remix ish faoliyatiga biroz boshqacha yondashuvni tanlaydi. U sahifalarni oldind
 Remixning muhim xususiyatlaridan biri uning kuchli kesh strategiyasidir. U brauzerning native fetch va kesh API’laridan foydalanadi, bu esa dasturchilarga turli resurslar uchun kesh strategiyalarini belgilash imkonini beradi. Bu esa sahifalarning tezroq yuklanishiga va mustahkamroq ilovaga olib keladi.
 
 #### Next.js va Remix
-Ikkala Next.js va Remix ham katta hajmdagi, murakkab loyihalar uchun jozibador afzalliklarni taklif etadi. Ular har ikkalasi ham dasturchilar tajribasi, qurilish ish faoliyati va ish faoliyati bo'yicha yuqori natijalarga erishadilar. Agar siz kengaytirilgan resurslar va plaginlarga ega yetuk ekotizimni, gibrid SSG/SSR modelini va ISR kabi innovatsion xususiyatlarni afzal ko'rsangiz, Next.js yaxshiroq tanlov bo'lishi mumkin. Aksincha, agar siz serverdan render qilishga, darhol joylashuvlarga, brauzer platformasi xususiyatlariga (fetch va kesh API’lar) va Suspense hamda Server Component’lar kabi ilg'or React konseptlariga katta e'tibor qaratishni afzal ko'rsangiz, Remix sizga mos kelishi mumkin.
+Ikkala Next.js va Remix ham katta hajmdagi, murakkab loyihalar uchun jozibador afzalliklarni taklif etadi. Ular har ikkalasi ham dasturchi bilan ishlash qulayligi, qurilish ish faoliyati va ish faoliyati bo'yicha yuqori natijalarga erishadilar. Agar siz kengaytirilgan resurslar va plaginlarga ega yetuk ekotizimni, gibrid SSG/SSR modelini va ISR kabi innovatsion xususiyatlarni afzal ko'rsangiz, Next.js yaxshiroq tanlov bo'lishi mumkin. Aksincha, agar siz serverdan render qilishga, darhol joylashuvlarga, brauzer platformasi xususiyatlariga (fetch va kesh API’lar) va Suspense hamda Server Component’lar kabi ilg'or React konseptlariga katta e'tibor qaratishni afzal ko'rsangiz, Remix sizga mos kelishi mumkin.
 
 Sizning aniq loyihangizga eng mos keluvchi framework, oxir-oqibat, jamoangizning tajribasiga, loyiha talablariga va ma'lum arxitektura pattern’lariga bo'lgan afzalliklaringizga bog'liq bo'ladi. Tanlovdan qat'i nazar, Next.js va Remix ikkalasi ham yuqori sifatli va ish faoliyatiga ega React ilovalarini yaratish uchun mustahkam asosdir.

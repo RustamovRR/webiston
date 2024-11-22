@@ -40,7 +40,6 @@ event delegation - event delegation
 lazy loading - kerakli vaqtda yuklash, kerak bo'lganda yuklash
 cross-cutting concern - Umumiy masala
 custom - maxsus, xos
-fallback - vaqtinchalik muqobil
 hydration - hidratsiya
 sensitive data - nozik ma'lumotlar
 routing- routing
@@ -70,3 +69,16 @@ fallback - zaxira
 single responsibility principle - yagona ma'suliyat tamoyili
 behaviour - xatti-harakat, xususiyat, funksionallik
 headless - interfeysga ega emas
+search engine crawlers - qidiruv tizimi botlari
+development - ishlab chiqish
+production - foydalanish
+stream - uzluksiz uzatish, oqim
+user experience - foydalanuvchi bilan ishlash qulayligi
+developer experience - dasturchi bilan ishlash qulayligi
+resumability - davom ettiruvchanlik qobiliyati
+serialization - seriyalizatsiya
+deserialization - deserializatsiya
+manually - o'zimiz, mustaqil, qo'lda
+suspense boundary - suspense hududi
+sibling element - qo'shni element
+edge cases - kutilmagan holatlar

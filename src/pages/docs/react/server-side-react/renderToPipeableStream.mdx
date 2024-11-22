@@ -1,11 +1,12 @@
 import { Callout } from 'nextra/components'
 
-## `renderToPipeableStream` API haqida
-`renderToPipeableStream` — bu React 18’da joriy qilingan server tomonidagi rendering API’si bo'lib, katta hajmdagi React ilovalarini samaraliroq va moslashuvchanroq tarzda Node.js stream’ga o'tkazish imkonini beradi. Bu stream qaytaradi va uni javob (response) obyektiga uzatish mumkin. `renderToPipeableStream` HTML qanday render qilinishini yaxshiroq boshqarish va boshqa Node.js stream’lari bilan yaxshiroq integratsiyani ta'minlash imkonini beradi.
+# `renderToPipeableStream` API’si
 
-Bundan tashqari, u React’ning parallel (concurrent) funksiyalarini, jumladan, Suspense’ni to'liq qo'llab-quvvatlaydi, bu esa server tomonidagi rendering davomida asinxron ma'lumotlarni olishni yaxshiroq boshqarish imkonini ochib beradi. Stream bo'lganligi sababli, u tarmoq orqali oqim holatida bo'lishi mumkin, ya'ni HTML qismlari bloklanmagan holda asinxron va yig'ilib boruvchi tarzda tarmoq orqali klientlarga yuboriladi. Bu tezkorroq TTFB (birinchi bayt vaqti) va umuman yaxshiroq ishlash ko'rsatkichlarini ta'minlaydi.
+`renderToPipeableStream` — bu React 18’da joriy qilingan server tomonidagi rendering API’si bo'lib, katta hajmdagi React ilovalarini samaraliroq va moslashuvchanroq tarzda Node.js oqimiga o'tkazish imkonini beradi. Bu "stream" qaytaradi va uni javob (response) obyektiga uzatish mumkin. `renderToPipeableStream` HTML qanday render qilinishini yaxshiroq boshqarish va boshqa Node.js oqimlari bilan yaxshiroq integratsiyani ta'minlash imkonini beradi.
 
-Oldingi server kodimizni `renderToPipeableStream` yordamida qayta yozish uchun quyidagicha harakat qilamiz:
+Bundan tashqari, u React’ning "concurrent" xususiyatlarini, jumladan, Suspense’ni to'liq qo'llab-quvvatlaydi, bu esa server tomonidagi renderlash davomida asinxron ma'lumotlarni olishni yaxshiroq boshqarish imkonini ochib beradi. Stream bo'lganligi sababli, u tarmoq orqali uzluksiz uzatish holatida bo'lishi mumkin, ya'ni HTML qismlari bloklanmagan holda asinxron va yig'ilib boruvchi tarzda tarmoq orqali klientlarga yuboriladi. Bu tezkorroq TTFB (birinchi baytga erishish vaqti) va umuman yaxshiroq ishlash samaradorligi ko'rsatkichlarini ta'minlaydi.
+
+Oldingi server kodimizni `renderToPipeableStream` yordamida qayta yozish uchun quyidagicha o'zgartirish qilamiz:
 ``` js copy filename="server.js"
 const express = require("express");
 const path = require("path");
@@ -24,7 +25,7 @@ app.get("*", (req, res) => {
         onShellReady: () => {
             // Klientga HTML yuborilishini bildiramiz
             res.setHeader("Content-Type", "text/html");
-            pipe(res); // React stream chiqishini javob stream’ga uzatish
+            pipe(res); // React oqimini chiqishini javob oqimiga uzatish
         },
     });
 });
@@ -34,81 +35,85 @@ app.listen(3000, () => {
 });
 ```
 
-Keling, `renderToPipeableStream`ni chuqurroq o'rganamiz, uning xususiyatlari, afzalliklari va qo'llanilish holatlari haqida muhokama qilamiz. Shuningdek, ushbu API’ni React ilovalaringizda qanday amalga oshirishni yaxshiroq tushunishingizga yordam berish uchun kod qismlari va misollarni taqdim etamiz.
+Keling, `renderToPipeableStream`ni chuqurroq o'rganamiz, uning xususiyatlari, afzalliklari va qo'llanilish holatlari haqida muhokama qilamiz. Shuningdek, ushbu API’ni React ilovalaringizda qanday amalga oshirishni yaxshiroq tushunishingizga yordam berish uchun bir qancha kod namunalari va misollarni taqdim etamiz.
 
+## Bu qanday ishlaydi
 
-### Bu qanday ishlaydi
-`renderToPipeableStream` ham `renderToString` funksiyasiga o'xshab, deklarativ tarzda tasvirlangan React elementlari daraxtini oladi va uni HTML satriga aylantirish o'rniga, Node.js oqimiga(stream) aylantiradi. Node.js oqimi — bu Node.js ischi muhiti(runtime environment) asosidagi fundamental tushuncha bo'lib, samarali ma'lumotlarni qayta ishlash va boshqarishni ta'minlaydi. Oqimlar ma'lumotlarni bir maromda, bo'laklarga bo'lib ishlash imkoniyatini beradi, bu esa barcha ma'lumotlar to'plamini bir vaqtning o'zida xotiraga yuklamasdan amalga oshiriladi. Bu yondashuv katta satrlar yoki xotiraga sig'maydigan yoki tarmoq orqali uzatilishi mumkin bo'lmagan ma'lumotlar oqimlari bilan ishlashda ayniqsa foydali bo'ladi.
+`renderToPipeableStream` ham `renderToString` funksiyasiga o'xshab, deklarativ tarzda tasvirlangan React elementlari daraxtini oladi va uni HTML satriga aylantirish o'rniga, Node.js oqimi(stream)ga aylantiradi. Node.js stream — bu Node.js ishchi muhiti(runtime environment) asosidagi fundamental tushuncha bo'lib, samarali tarzda ma'lumotlarni qayta ishlash va boshqarishni ta'minlaydi. Oqimlar ma'lumotlarni bir maromda, bo'laklarga bo'lib ishlash imkoniyatini beradi, bu esa barcha ma'lumotlar to'plamini bir vaqtning o'zida xotiraga yuklamasdan amalga oshiriladi. Bu yondashuv katta satrlar yoki xotiraga sig'maydigan yoki tarmoq orqali uzatilishi mumkin bo'lmagan ma'lumotlar oqimlari bilan ishlashda ayniqsa foydali bo'ladi.
 
+## Node.js oqimlari (Node.js streams)
 
-### Node.js oqimlari (Node.js streams)
-Asosan, Node.js oqimi manba va manzil o'rtasida oqayotgan ma'lumotlar oqimini ifodalaydi. Bu ma'lumotlar oqadigan truboprovod kabi tasavvur qilinishi mumkin, yo'lda turli xil operatsiyalar qo'llaniladi va ma'lumotlar qayta ishlanadi.
+Asosan, Node.js oqimi manba va manzil o'rtasida uzluksiz uzatilayotgan ma'lumotlar oqimini ifodalaydi. Bu ma'lumotlar oqadigan truboprovod kabi tasavvur qilinishi mumkin, yo'lda turli xil operatsiyalar qo'llaniladi va ma'lumotlar qayta ishlanadi.
 
 Node.js oqimlari tabiati va ma'lumotlar oqimi yo'nalishiga qarab to'rtta turga bo'linadi:
-1. **O'qiladigan oqimlar (Readable streams)**: O'qiladigan oqim ma'lumotlar manbasini ifodalaydi, undan ma'lumot o'qishingiz mumkin. U `data`, `end` va `error` kabi hodisalarni tarqatadi. O'qiladigan oqimlarga fayldan ma'lumot o'qish, HTTP so'rovini qabul qilish yoki maxsus generator yordamida ma'lumot yaratish misollar kiradi. React’ning `renderToPipeableStream` funksiyasi HTML oqimini o'qishingiz va uni Express’dagi `res` javob obyektiga o'xshash yoziladigan oqimga chiqarishingiz mumkin bo'lgan o'qiladigan oqimni qaytaradi.
-2. **Yoziladigan oqimlar (Writable streams)**: Yoziladigan oqim ma'lumotlar yozilishi mumkin bo'lgan manzilni ifodalaydi. U `write()` va `end()` kabi metodlar orqali oqimga ma'lumot yuborish imkonini beradi. Yoziladigan oqimlar destination ko'proq ma'lumotlarni qabul qila oladigan bo'lsa, `drain` hodisasini, yozish paytida xatolik yuz berganida esa `error` hodisasini tarqatadi. Yoziladigan oqimlarning misoli sifatida Express’dagi `res` javob obyektini keltirish mumkin.
-3. **Ikki tomonlama oqimlar (Duplex streams)**: Dupleks(ikki tomonlama) oqim ham o'qiladigan, ham yoziladigan oqimni bir vaqtning o'zida ifodalaydi. Bu ikki tomonlama ma'lumotlar oqimini ta'minlaydi, ya'ni oqimdan o'qish va unga yozish imkonini beradi. Dupleks oqimlar odatda tarmoq soketlari yoki ma'lumotlar ikki yo'nalishda oqishi kerak bo'lgan aloqa kanallari uchun qo'llaniladi.
-4. **Transform oqimlar (Transform streams)**: Transform oqim — bu ma'lumotlar oqimi orqali o'tayotganda ularni qayta ishlaydigan dupleks oqimning maxsus turi. U kiruvchi ma'lumotlarni o'qiydi, ularni qayta ishlaydi va qayta ishlangan ma'lumotlarni chiqish sifatida taqdim etadi. Transform oqimlar siqish, shifrlash, siqilgan ma'lumotlarni yechish yoki ma'lumotlarni tahlil qilish kabi vazifalarni bajarish uchun ishlatilishi mumkin.
+1. **O'qiladigan oqimlar (Readable streams)**: O'qiladigan oqimlar ma'lumotlar manbasini ifodalaydi, undan ma'lumot o'qishingiz mumkin. U `data`, `end` va `error` kabi event’larni tarqatadi. O'qiladigan oqimlarga fayldan ma'lumot o'qish, HTTP so'rovini qabul qilish yoki maxsus generator yordamida ma'lumot yaratish misollar kiradi. React’ning `renderToPipeableStream` funksiyasi HTML oqimini o'qishingiz va uni Express’dagi `res` javob obyektiga o'xshash yoziladigan oqimga chiqarishingiz mumkin bo'lgan o'qiladigan oqimni qaytaradi.
+2. **Yoziladigan oqimlar (Writable streams)**: Yoziladigan oqimlar ma'lumotlar yozilishi mumkin bo'lgan manzilni ifodalaydi. U `write()` va `end()` kabi metodlar orqali oqimga ma'lumot yuborish imkonini beradi. Agar manzil ko'proq ma'lumotlarni qabul qila oladigan bo'lsa, yoziladigan oqimlar `drain` event’ini, yozish paytida xatolik yuz berganida esa `error` event’ini tarqatadi. Yoziladigan oqimlarning misoli sifatida Express’dagi `res` javob obyektini keltirish mumkin.
+3. **Ikki tomonlama oqimlar (Duplex streams)**: Dupleks(ikki tomonlama) oqimlar ham o'qiladigan, ham yoziladigan oqimni bir vaqtning o'zida ifodalaydi. Bu ikki tomonlama ma'lumotlar oqimini ta'minlaydi, ya'ni oqimdan o'qish va unga yozish imkonini beradi. Dupleks oqimlar odatda tarmoq soketlari yoki ma'lumotlar ikki yo'nalishda oqishi kerak bo'lgan aloqa kanallari uchun qo'llaniladi.
+4. **Transform oqimlar (Transform streams)**: Transform oqimlar — bu ma'lumotlar oqimi orqali o'tayotganda ularni qayta ishlaydigan dupleks oqimning maxsus turi. U kiruvchi ma'lumotlarni o'qiydi, ularni qayta ishlaydi va qayta ishlangan ma'lumotlarni chiquvchi natija sifatida taqdim etadi. Transform oqimlar siqish, shifrlash, siqilgan ma'lumotlarni yechish yoki ma'lumotlarni tahlil qilish kabi vazifalarni bajarish uchun ishlatilishi mumkin.
 
 Node.js oqimlarining kuchli xususiyatlaridan biri oqimlar orasida ma'lumotni ulash (piping qilish) imkoniyatidir. Piping usuli o'qiladigan oqimning chiqishini yoziladigan oqimning kirishiga ulashga imkon beradi va bu ma'lumotlar oqimini uzluksiz amalga oshirishni ta'minlaydi. Bu usul ma'lumotlarni boshqarish jarayonini ancha soddalashtiradi va xotira sarfini kamaytiradi. Haqiqatan ham, React’da server tomonida oqim orqali ishlov berish shunday amalga oshiriladi.
 
-Node.js oqimlari ortiqcha bosimni boshqarishni ham qo'llab-quvvatlaydi. Ortiqcha bosim — bu ma'lumotlarni qayta ishlash vaqtida yuz beradigan muammo bo'lib, u ma'lumotlar bufer ortida yig'ilib qolishini ifodalaydi. Yoziladigan oqim yetarlicha tez ma'lumotlarni qayta ishlay olmaganda, o'qiladigan oqim `data` event’larini tarqatishni to'xtatadi va bu ma'lumotlar yo'qotilishining oldini oladi. Yoziladigan oqim ko'proq ma'lumotlarni qabul qilishga tayyor bo'lganida, `drain` event’ini chiqaradi va o'qiladigan oqim `data` event’larini tarqatishni davom ettiradi.
+Node.js oqimlari ortiqcha bosim(backpressure)ni boshqarishni ham qo'llab-quvvatlaydi. Ortiqcha bosim — bu ma'lumotlarni qayta ishlash vaqtida yuz beradigan muammo bo'lib, u ma'lumotlar bufer ortida yig'ilib qolishini ifodalaydi. Yoziladigan oqim yetarlicha tez ma'lumotlarni qayta ishlay olmaganda, o'qiladigan oqim `data` event’larini tarqatishni to'xtatadi va bu ma'lumotlar yo'qotilishining oldini oladi. Yoziladigan oqim ko'proq ma'lumotlarni qabul qilishga tayyor bo'lganida, `drain` event’ini chiqaradi va o'qiladigan oqim `data` event’larini tarqatishni davom ettiradi.
 
-Ko'p chuqurlashmasdan va chetlashmasdan aytganda, Node.js oqimlari katta hajmdagi ma'lumotlar to'plamlarini, faylga kirish/chiqish operatsiyalarini, tarmoq aloqalarini samarali tarzda boshqarish va xotira tejamkor usulda amalga oshirish uchun kuchli abstraksiya hisoblanadi.
+Ko'p chuqurlashmasdan va mavzudan chetlashmagan holda aytganda, Node.js oqimlari katta hajmdagi ma'lumotlar to'plamlarini, faylga kirish/chiqish operatsiyalarini, tarmoq aloqalarini samarali tarzda boshqarish va xotira tejamkor usulda amalga oshirish uchun kuchli abstraksiya hisoblanadi.
 
+## `renderToPipeableStream` qanday ishlaydi
 
-### React’ning renderToPipeableStream’i va qanday ishlashi
-React’da komponentlarni yoziladigan oqimga oqimlashning maqsadi server tomonidan qayta ishlangan ilovalarning birinchi baytning kelishi vaqti (TTFB) samaradorligini oshirishdir. HTML markup’ining to'liq yaratilib, klientga yuborilishini kutish o'rniga, ushbu usullar serverga tayyor bo'lgan har bir bo'lak HTML javobini ketma-ket yuborishni boshlashga imkon beradi va shu bilan umumiy kechikishni kamaytiradi.
+React’da komponentlarni yoziladigan oqimga aylantirishning maqsadi server tomonidan qayta ishlangan ilovalarning birinchi baytning kelishi vaqti (TTFB) samaradorligini oshirishdir. HTML markup’ini to'liq yaratilib, klientga yuborilishini kutish o'rniga, ushbu usullar serverga tayyor bo'lgan har bir bo'lak HTML javobini ketma-ket yuborishni boshlashga imkon beradi va shu bilan umumiy kechikishni kamaytiradi.
 
-`renderToPipeableStream` funksiyasi React’ning server renderer’ining bir qismi bo'lib, u React ilovasini Node.js oqimiga oqib chiqish orqali streaming usulida render qilishni qo'llab-quvvatlash uchun mo'ljallangan. Bu “Fizz” deb ataladigan server renderer arxitekturasining bir qismidir.
+`renderToPipeableStream` funksiyasi React’ning server renderer’ining bir qismi bo'lib, u React ilovasini Node.js oqimiga oqib chiqish orqali streaming usulida uzluksiz uzatishlikni ta'minlash maqsadida render qilishni qo'llab-quvvatlash uchun mo'ljallangan. Bu “Fizz” deb ataladigan server renderer arxitekturasining bir qismidir.
 
 
 <Callout type="info">
-Ushbu bo'limda biz React’ning texnik tafsilotlariga chuqur kirib boramiz va ular vaqt o'tishi bilan o'zgarishi mumkin. Yana bir bor ta'kidlaymizki, bu ta’limiy maqsadlar uchun va o'quvchining qiziqishini qondirish uchundir. Bu tafsilotlar React’ning o'qish vaqtida qanday ishlashi haqida umumiy tasavvur beradi, lekin uni ishlab chiqarishda foydalanish uchun mo'ljallanmagan va React’dan qanday foydalanishni bilish uchun muhim emas. Bu faqat ta'lim va qiziqish uchun mo'ljallangan.
+Ushbu bo'limda biz React’ning texnik tafsilotlariga chuqur kirib boramiz va ular vaqt o'tishi bilan o'zgarishi mumkin. Yana bir bor ta'kidlaymizki, bu ta’limiy maqsadlar uchun va o'quvchining qiziqishini qondirish uchundir. O'qiyotgan paytingizda bu React dasturini amalga oshirish tafsilotlariga to'liq mos kelmasligi mumkin, ammo yozish paytida bu qanday ishlashi haqida yaxshi tasavvurga ega bo'lish uchun yetarlicha yaqin. Bu, ehtimol siz foydalanish muhitida ishlatadigan narsa emasdir va React’dan qanday foydalanishni bilish uchun muhim emas, balki bu faqat ta'lim va qiziqish uchundir.
 </Callout>
 
-Server render qilish jarayonini umumiy kontekstdan chetga chiqmasdan, qisqacha izohlaymiz
+Server render qilish jarayonini umumiy kontekstdan chetga chiqmasdan, qisqacha va sodda qilib tushuntirib o'tamiz:
 
-#### So'rov yaratish
-`renderToPipeableStream` funksiyasi kirish sifatida render qilinishi kerak bo'lgan React elementlarini va ixtiyoriy parametrlar obyektini oladi. Keyin u `createRequestImpl` funksiyasi yordamida so'rov obyektini yaratadi. Bu so'rov obyekti React elementlari, resurslar, javob holati va format kontekstini o'z ichiga oladi.
+#### So'rov(request) yaratish
 
+`renderToPipeableStream` funksiyasi kiritish sifatida render qilinishi kerak bo'lgan React elementlarini va ixtiyoriy parametrlar obyektini oladi. Keyin u `createRequestImpl` funksiyasi yordamida so'rov obyektini yaratadi. Bu so'rov obyekti React elementlari, resurslar, javob holati va format kontekstini qamrab oladi.
 
 #### Ishni boshlash
-So'rov yaratib bo'lgandan so'ng, `startWork` funksiyasi argument sifatida so'rovni qabul qilib, chaqiriladi. Bu funksiya render qilish jarayonini boshlaydi. Render qilish jarayoni asinxron bo'lib, kerak bo'lganda to'xtatilishi va davom ettirilishi mumkin, bu yerda React’ning Suspense xususiyati qo'llaniladi. Agar komponent Suspense chegarasi bilan o'ralgan bo'lsa va u qandaydir asinxron operatsiyani (masalan, ma'lumotlarni olib kelish) boshlasa, ushbu komponent (va ehtimol uning qarindoshlari) mazkur operatsiya tugaguncha "to'xtatilishi" mumkin.
 
-Komponent to'xtatilgan paytda u odatda yuklanish indikatori yoki boshqa o'rinbosar kabi "fallback" holatda ko'rsatilishi mumkin. Operatsiya tugaganidan so'ng, komponent qayta tiklanadi va yakuniy holatda render qilinadi. Suspense asinxron ma'lumotlarni olib kelish va server tomonida yuklashni samaraliroq amalga oshirishga imkon beruvchi kuchli xususiyatdir.
+So'rov yaratib bo'lgandan so'ng, `startWork` funksiyasi argument sifatida so'rovni qabul qilib, chaqiriladi. Bu funksiya render qilish jarayonini boshlaydi. Render qilish jarayoni asinxron bo'lib, kerak bo'lganda to'xtatilishi va davom ettirilishi mumkin, bu yerda React’ning Suspense xususiyati qo'llaniladi. Agar komponent Suspense hududi bilan o'ralgan bo'lsa va u qandaydir asinxron operatsiyani (masalan, ma'lumotlarni olib kelish) boshlasa, ushbu komponent (va ehtimol uning sheriklari) mazkur operatsiya tugaguncha "to'xtatilishi" mumkin.
 
-Bu yondashuv orqali foydalanuvchiga darhol mazmunli sahifa ko'rsatish va keyinchalik ma'lumotlar mavjud bo'lganda uni bosqichma-bosqich boyitish imkoniyati yaratiladi. Bu foydalanuvchi tajribasini yaxshilash uchun qo'llanilishi mumkin bo'lgan samarali texnikadir.
+Komponent to'xtatilgan paytda u odatda yuklanish indikatori yoki boshqa o'rinbosar kabi "fallback", ya'ni zaxira, holatda ko'rsatilishi mumkin. Operatsiya tugaganidan so'ng, komponent qayta tiklanadi va yakuniy holatda render qilinadi. 
 
+Suspense - bu React’ga server tomonida renderlash paytida asinxron ma'lumotlarni olish va "lazy loading" texnikasi orqali samaraliroq boshqarish imkonini beruvchi kuchli xususiyatdir.
+
+Bu yondashuv orqali foydalanuvchiga darhol mazmunli sahifa ko'rsatish va keyinchalik ma'lumotlar mavjud bo'lganda uni bosqichma-bosqich boyitish imkoniyati yaratiladi. Bu foydalanuvchi bilan ishlash qulayligini yaxshilash uchun qo'llanilishi mumkin bo'lgan samarali texnikadir.
 
 #### O'tkaziluvchan(pipeable) oqimni qaytarish
+
 `renderToPipeableStream` funksiya `pipe` va `abort` metodlarini o'z ichiga olgan obyektni qaytaradi. `pipe` metodi render qilingan natijani yoziladigan oqimga (masalan, Node.js’dagi HTTP javob obyekti) o'tkazish uchun ishlatiladi. `abort` metodi esa qolgan barcha I/O operatsiyalarni bekor qilish va barcha qolgan ma'lumotlarni klient tomonidan render qilinadigan rejimga o'tkazish uchun ishlatilishi mumkin.
 
-
 #### Belgilangan joy(destination)ga o'tkazish
-`pipe` metodi belgilangan joy oqimi bilan chaqirilganda, u ma'lumotlar oqimi allaqachon boshlanganini tekshiradi. Agar boshlanmagan bo'lsa, `hasStartedFlowing` qiymatini `true` ga o'rnatadi va `startFlowing` funksiyasini so'rov va belgilangan joy bilan chaqiradi. Shuningdek, belgilangan joy oqimning `drain`, `error` va `close` hodisalari uchun ishlovchilarni o'rnatadi.
 
+`pipe` metodi belgilangan joy oqimi bilan chaqirilganda, u ma'lumotlar oqimi allaqachon boshlanganini tekshiradi. Agar boshlanmagan bo'lsa, `hasStartedFlowing` qiymatini `true`ga o'rnatadi va `startFlowing` funksiyasini so'rov va belgilangan joy bilan chaqiradi. Shuningdek, belgilangan joy oqimning `drain`, `error` va `close` event’lari uchun ishlov beruvchilarni o'rnatadi.
 
-#### Oqim hodisalarini boshqarish
-`drain` hodisasi ishlovchisi belgilangan joy oqimi ko'proq ma'lumotlarni qabul qilishga tayyor bo'lganda ma'lumot oqimini davom ettirish uchun `startFlowing` funksiyasini qayta chaqiradi. `error` va `close` hodisalari ishlovchilari belgilangan joy oqimida xatolik yuz berganda yoki oqim muddatidan oldin yopilganda render qilish jarayonini to'xtatish uchun `abort` funksiyasini chaqiradi.
+#### Oqim hodisa(stream event)larini boshqarish
 
+`drain` event’i ishlov beruvchisi belgilangan joy oqimi ko'proq ma'lumotlarni qabul qilishga tayyor bo'lganda ma'lumot oqimini davom ettirish uchun `startFlowing` funksiyasini qayta chaqiradi. `error` va `close` event’lari ishlov beruvchilari belgilangan joy oqimida xatolik yuz berganda yoki oqim muddatidan oldin yopilganda render qilish jarayonini to'xtatish uchun `abort` funksiyasini chaqiradi.
 
 #### Render qilishni bekor qilish
+
 Qaytarilgan obyektning `abort` metodi render qilish jarayonini to'xtatish uchun biror sabab bilan chaqirilishi mumkin. Bu `react-server` modulidan so'rov va sabab bilan `abort` funksiyasini chaqiradi.
 
-### react-server va react-dom
-Ushbu funksiyalarni haqiqiy amalga oshirishda progressiv render qilish, xatolarni boshqarish va React server renderer’ining qolgan qismi bilan integratsiya kabi murakkabroq logika mavjud. Ushbu funksiyalar uchun kod `react-server` va `react-dom` paketlarida joylashgan.
+## `react-server` va `react-dom` paketlari
 
+Ushbu funksiyalarni haqiqiy implementatsiyasida progressiv render qilish, xatolarni boshqarish va React server renderer’ining qolgan qismi bilan integratsiya kabi murakkabroq logika mavjud. Ushbu funksiyalar uchun kod `react-server` va `react-dom` paketlarida joylashgan.
 
-### renderToPipeableStream xususiyatlari
+## `renderToPipeableStream` xususiyatlari
+
 `renderToPipeableStream` xususiyatlariga quyidagilar kiradi:
 
-- **Oqimlash (Streaming)**: `renderToPipeableStream` o'tkazuvchan Node.js oqimini qaytaradi, bu esa uni javob obyektiga o'tkazish imkonini beradi. Bu serverga butun sahifa render qilinmasdan turib HTML’ni klientga yuborishni boshlash imkonini beradi, bu esa katta ilovalar uchun tezroq foydalanuvchi tajribasini va yaxshiroq ishlashini ta’minlaydi.
-- **Moslashuvchanlik**: `renderToPipeableStream` HTML’ni qanday render qilishni yanada ko'proq nazorat qilish imkonini beradi. U boshqa Node.js oqimlari bilan oson integratsiyalashishi mumkin, bu esa dasturchilarga render qilish pipeline’ini moslashtirish va samaraliroq server tomoni render qilish yechimlarini yaratish imkonini beradi.
-- **Suspense’ni qo'llab-quvvatlash**: `renderToPipeableStream` React’ning bir vaqtning o'zida bajariladigan(concurrent) xususiyatlarini, jumladan Suspense’ni to'liq qo'llab-quvvatlaydi. Bu dasturchilarga server tomonida render qilish vaqtida asinxron ma'lumotlarni olib kelish va kechiktirilgan yuklashni yanada samaraliroq boshqarish imkonini beradi, shuningdek, ma'lumotga bog'liq komponentlar faqat zarur ma'lumot mavjud bo'lganda render qilinishini ta'minlaydi.
+- **Uzluksiz uzatishlik (Streaming)**: `renderToPipeableStream` o'tkaziluvchan Node.js oqimini qaytaradi, bu esa uni javob obyektiga o'tkazish imkonini beradi. Bu serverga butun sahifa render qilinmasdan turib HTML’ni klientga yuborishni boshlash imkonini beradi, bu esa katta ilovalar uchun tezroq foydalanuvchi bilan ishlash qulayligini va yaxshiroq ishlashini ta’minlaydi.
+- **Moslashuvchanlik**: `renderToPipeableStream` HTML’ni qanday render qilishni yanada ko'proq nazorat qilish imkonini beradi. U boshqa Node.js oqimlari bilan oson integratsiyalashishi mumkin, bu esa dasturchilarga render qilish pipeline’ini moslashtirish va samaraliroq server tomonida render qilish yechimlarini yaratish imkonini beradi.
+- **Suspense’ni qo'llab-quvvatlash**: `renderToPipeableStream` React’ning bir vaqtning o'zida bajariladigan(concurrent) xususiyatlarini, jumladan Suspense’ni to'liq qo'llab-quvvatlaydi. Bu dasturchilarga server tomonida render qilish vaqtida asinxron ma'lumotlarni olib kelish va kerakli vaqtda yuklashni yanada samaraliroq boshqarish imkonini beradi, shuningdek, ma'lumotga bog'liq komponentlar faqat zarur ma'lumot mavjud bo'lganda render qilinishini ta'minlaydi.
 
+## Qanday moslashadi
 
-### U qanday mos keladi
 Keling, ushbu API’ning afzalliklarini ko'rsatadigan kodga nazar tashlaymiz. Bizda kuchuk zotlari ro'yxatini ko'rsatadigan ilova bor. Ro'yxat API manzilidan ma'lumotlarni olib kelish orqali to'ldiriladi. Ushbu ilova serverda `renderToPipeableStream` yordamida render qilinadi va keyin klientga yuboriladi. Avval, kuchuk zotlari ro'yxatini ko'rsatuvchi komponentimizni ko'rib chiqamiz:
 ``` js copy filename="./src/DogBreeds.jsx"
 const dogResource = createResource(
@@ -152,7 +157,7 @@ function App() {
 export default App;
 ```
 
-Diqqat qiling, bu yerda biz `React.lazy`dan foydalanmoqdamiz, oldingi boblarda aytilganidek, faqat `renderToPipeableStream` Suspense’ni qanday boshqarishini ko'rsatish uchun boshqa Suspense chegarasini qo'shmoqdamiz. OK, bularning hammasini birlashtirib, Express serverini yaratamiz:
+Diqqat qiling, bu yerda biz `React.lazy`dan foydalanmoqdamiz, oldingi boblarda aytilganidek, faqat `renderToPipeableStream` Suspense’ni qanday boshqarishini ko'rsatish uchun boshqa Suspense hududini qo'shmoqdamiz. Yaxshi, bularning hammasini birlashtirib, Express serverini yaratamiz:
 
 ``` js copy filename="server.js"
 import express from "express";
@@ -165,7 +170,7 @@ const app = express();
 app.use(express.static("build"));
 
 app.get("/", async (req, res) => {
-  // Boshlang'ich HTML strukturasini aniqlaymiz
+  // Boshlang'ich HTML strukturasini e'lon qilamiz
   const htmlStart = `
     <!DOCTYPE html>
     <html lang="en">
@@ -185,7 +190,7 @@ app.get("/", async (req, res) => {
   // va qobiq tayyor bo'lishi uchun options obyektini taqdim etamiz
   const { pipe } = renderToPipeableStream(<App />, {
     onShellReady: () => {
-      // Qobiq tayyor bo'lganda oqimni javobga oqizamiz
+      // Qobiq tayyor bo'lganda render qiligan natijanis javobga uzatamiz
       pipe(res);
     },
   });
@@ -197,17 +202,17 @@ app.listen(3000, () => {
 });
 ```
 
-Ushbu kod bo'lagi yordamida biz so'rovga HTML oqimini qaytarish orqali javob bermoqdamiz. Biz `renderToPipeableStream` yordamida `App` komponentimizni oqimga render qilyapmiz va keyin shu oqimni javob obyektimizga uzatmoqdamiz. `onShellReady` option’i yordamida qobiq tayyor bo'lgandan keyin oqimni javob obyektiga uzatamiz. Qobiq(Shell) - bu React ilovasi hidratsiya qilinishidan va Suspense chegaralarida o'ralgan ma'lumotlarga bo'lgan bog'liqliklar hal qilinishidan oldin render qilingan HTML qismi. Bizning holatimizda qobiq - bu kuchuk zotlari API’dan olinmasdan oldin render qilingan HTML. Keling, ushbu kodni ishga tushirganda nima sodir bo'lishini ko'rib chiqaylik.
+Ushbu kod bo'lagi yordamida biz so'rovga HTML oqimini qaytarish orqali javob bermoqdamiz. Biz `renderToPipeableStream` yordamida `App` komponentimizni oqimga render qilyapmiz va keyin shu oqimni javob obyektimizga uzatmoqdamiz. `onShellReady` parametri yordamida qobiq tayyor bo'lgandan keyin oqimni javob obyektiga uzatamiz. Qobiq(Shell) - bu React ilovasi hidratsiya qilinishidan va Suspense hududlarida o'ralgan ma'lumotlarga bo'lgan qaramliklar hal qilinishidan oldin render qilingan HTML qismi. Bizning holatimizda qobiq - bu kuchuk zotlari API’dan olinmasdan oldin render qilingan HTML. Keling, ushbu kodni ishga tushirganda nima sodir bo'lishini ko'rib chiqaylik.
 
-Agar biz http://localhost:3000 ga tashrif buyursak, "Dog Breeds" sarlavhasi va Suspense fallback "Loading Dog Breeds…" bilan sahifa paydo bo'ladi. Bu - kuchuk zotlari API’dan olingunga qadar render qilingan qobiq (shell). Ajoyib tomoni shundaki, agar HTML kodimizga React’ni qo'shmasak ham va sahifani hidratsiya qilmasak ham, Suspense fallback o'rniga haqiqiy kuchuk zotlari API’dan kelgach avtomatik ravishda joylashtiriladi. Bu DOM almashinuvi faqat server tomonidan amalga oshiriladi va klient tomoni React’siz!
+Agar biz http://localhost:3000 ga tashrif buyursak, "Dog Breeds" sarlavhasi va Suspense zaxira "Loading Dog Breeds…" bilan sahifa paydo bo'ladi. Bu - kuchuk zotlari API’dan olingunga qadar render qilingan qobiq (shell). Ajoyib tomoni shundaki, agar HTML kodimizga React’ni qo'shmasak ham va sahifani hidratsiya qilmasak ham, Suspense zaxirasi o'rniga haqiqiy kuchuk zotlari API’dan kelgach avtomatik ravishda joylashtiriladi. Ma'lumotlar mavjud bo'lganda DOM’ni almashtirish klient tomonidagi React ishtirokisiz to'liq server tomonidan amalga oshiriladi!
 
+## Bu qanday ishlashini batafsil tushunamiz
 
-### Bu qanday ishlashini batafsil tushunamiz
 <Callout type="info">
 Yana bir bor aytib o'tamiz, biz bu yerda React implementatsiyasi tafsilotlariga chuqur kiryapmiz, lekin bu tafsilotlar vaqt o'tishi bilan o'zgarishi mumkin. Bu mashqning (va bu kitobning) maqsadi alohida implementatsiya tafsilotlariga ko'p urg'u berish emas, balki React’ning asosiy mexanizmini tushunib olishdir. Bu mexanizmni tushunish orqali biz React’ni yaxshiroq tushunamiz va o'z kunlik ishimizda amaliy vositalarga ega bo'lamiz.
 </Callout>
 
-Agar http://localhost:3000 ga tashrif buyursak, server “Dog Breeds” sarlavhasi va Suspense fallback “Loading Dog Breeds…” bilan HTML qobiqqa javob beradi. Ushbu HTML quyidagicha ko'rinadi:
+Agar http://localhost:3000 ga tashrif buyursak, server “Dog Breeds” sarlavhasi va Suspense zaxira “Loading Dog Breeds…” bilan HTML qobiqqa javob beradi. Ushbu HTML quyidagicha ko'rinadi:
 ``` html copy"
 <!DOCTYPE html>
 <html lang="en">
@@ -270,9 +275,9 @@ Agar http://localhost:3000 ga tashrif buyursak, server “Dog Breeds” sarlavha
 
 Bu yerda qiziqarli holatni ko'rishimiz mumkin. `<template>` elementini yaratilgan ID bilan (bu holda `B:0` ) va HTML izohlari mavjud. Ushbu HTML izohlari qobiqning boshlanish va tugash joylarini belgilaydi. Ular Suspense hal qilingandan keyin ma'lumotlar joylashtiriladigan belgilar yoki “bo'sh joylar” sifatida ishlaydi. HTML’dagi `<template>` elementlari, DOM iyerarxiyasida qo'shimcha darajani yaratmasdan, dokument subdaraxtlarini yaratish va tugunlarni ushlab turish imkonini beradi. Ular tugunlar guruhlarini boshqarish uchun yengil konteyner bo'lib xizmat qiladi, DOM manipulyatsiyasi paytida bajarilgan ish hajmini kamaytirish orqali ish faoliyatini yaxshilaydi.
 
-Shuningdek, `<script>` elementi mavjud. Ushbu `<script>` tegida `$RC` deb nomlangan funksiya mavjud bo'lib, u qobiqni haqiqiy kontent bilan almashtirish uchun ishlatiladi. `$RC` funksiyasi ikkita argumentni qabul qiladi: markerni o'z ichiga olgan `<template>` elementining ID’si va fallback’ni o'z ichiga olgan `<div>` elementining ID’si. Funksiya, ma'lumotlar mavjud bo'lgandan keyin, markerni render qilingan UI bilan to'ldiradi va fallback’ni olib tashlaydi.
+Shuningdek, `<script>` elementi mavjud. Ushbu `<script>` tegida `$RC` deb nomlangan funksiya mavjud bo'lib, u qobiqni haqiqiy kontent bilan almashtirish uchun ishlatiladi. `$RC` funksiyasi ikkita argumentni qabul qiladi: markerni o'z ichiga olgan `<template>` elementining ID’si va zaxirani o'z ichiga olgan `<div>` elementining ID’si. Funksiya, ma'lumotlar mavjud bo'lgandan keyin, markerni render qilingan UI bilan to'ldiradi va zaxirani olib tashlaydi.
 
-Bu funksiya minimallashtirilgani unchalik qulay emas, lekin uni qayta ochishga va nima qilayotganini tushunishga harakat qilaylik. Agar biz shunday qilsak, quyidagi kodni ko'ramiz:
+Ushbu funksiyaning minimallashtirilganligi unchalik qulay emas, lekin uni qayta ochishga va nima qilayotganini tushunishga harakat qilaylik. Agar biz shunday qilsak, quyidagi kodni ko'ramiz:
 ``` js copy
 function reactComponentCleanup(reactMarkerId, siblingId) {
   let reactMarker = document.getElementById(reactMarkerId);
@@ -315,24 +320,24 @@ function reactComponentCleanup(reactMarkerId, siblingId) {
 reactComponentCleanup("B:0", "S:0");
 ```
 
+### Ushbu funksiyani tahlil qilamiz
 
-### Funksiyani yanada chuqurroq tushunamiz
-Funksiya ikkita argumentni qabul qiladi: `reactMarkerId` va `siblingId`. Aniqrog'i, marker bu - render qilingan komponentlar mavjud bo'lganda joylashtiriladigan bo'shliqdir, va sibling bu - Suspense fallback’idir.
+Funksiya ikkita argumentni qabul qiladi: `reactMarkerId` va `siblingId`. Aniqrog'i, marker bu - render qilingan komponentlar mavjud bo'lganda joylashtiriladigan bo'shliqdir, va sibling(qo'shni element) bu - Suspense fallback, ya'ni zaxira xabaridir.
 
-Funksiya `removeChild` metodidan foydalanib, ma'lumotlar mavjud bo'lganda DOM’dan sibling elementini (fallback’ni) olib tashlaydi.
+Funksiya `removeChild` metodidan foydalanib, ma'lumotlar mavjud bo'lganda DOM’dan qo'shni elementni (fallback’ni) olib tashlaydi.
 
-Agar `reactMarker` elementi mavjud bo'lsa, funksiya ishga tushadi. Bu funksiya `reactMarker` o'zgaruvchisini hozirgi `reactMarker` elementining oldingi aka-ukasi(sibling)ga o'rnatadi. Funksiya, shuningdek, `parentNode`, `nextSibling` va `nestedLevel` o'zgaruvchilarini ham ishga tushiradi.
+Agar `reactMarker` elementi mavjud bo'lsa, funksiya ishga tushadi. Bu funksiya `reactMarker` o'zgaruvchisini hozirgi `reactMarker` elementining oldingi qo'shni elementiga o'rnatadi. Funksiya, shuningdek, `parentNode`, `nextSibling` va `nestedLevel` o'zgaruvchilarini ham ishga tushiradi.
 
 `do...while` sikli DOM daraxtini kesib o'tish uchun ishlatiladi, va bu `nextSibling` elementdan boshlanadi. Sikl davom etadi, toki `nextSibling` elementi mavjud bo'lsa. Sikl ichida funksiya `nextSibling` elementining izoh tuguni (`nodeType` qiymati 8 ko'rsatilgan) ekanligini tekshiradi:
 - Agar `nextSibling` elementi izoh tuguni bo'lsa, funksiya uning ma'lumotlarini (ya'ni, izoh matnini) tekshiradi. Bu ma'lumot `"/$"`ga teng bo'lsa, bu ichma-ich strukturaning oxirini bildiradi. Agar `nestedLevel` qiymati `0` bo'lsa, sikl tugaydi, ya'ni kerakli struktura oxiri topilgan bo'ladi. Agar `nestedLevel` qiymati `0` bo'lmasa, bu `"/$"` izoh tuguni ichma-ich strukturaning bir qismi ekanligini anglatadi va `nestedLevel` qiymati kamayadi.
 - Agar izoh tugunidagi ma'lumot `"/$"`ga teng bo'lmasa, funksiya uning `"$"`, `"$?"`, yoki `"$!"` ekanligini tekshiradi. Bu qiymatlar yangi ichma-ich strukturaning boshlanishini bildiradi. Agar ushbu qiymatlardan birontasi topilsa, `nestedLevel` qiymati oshadi.
 
-Har bir iteratsiyada `nextSibling` elementi (ya'ni, Suspense chegarasi) `removeChild` metodidan foydalanib uning ota tugunidan olib tashlanadi. Sikl davom etadi va DOM daraxtidagi keyingi aka-ukasi bilan davom etadi.
+Har bir iteratsiyada `nextSibling` elementi (ya'ni, Suspense hududi) `removeChild` metodidan foydalanib uning ota tugunidan olib tashlanadi. Sikl davom etadi va DOM daraxtidagi keyingi qo'shni elementi bilan davom etadi.
 
-Sikl tugallangandan so'ng, funksiya sibling elementining barcha bolalarini DOM daraxtida `nextSibling` elementining oldiga ko'chiradi va bunda `insertBefore` metodidan foydalanadi. Bu jarayon DOM’ni `reactMarker` elementi atrofida qayta tuzadi va Suspense fallback’ini o'rab turgan komponent bilan almashtiradi.
+Sikl tugallangandan so'ng, funksiya qo'shni elementining barcha bolalarini DOM daraxtida `nextSibling` elementining oldiga ko'chiradi va bunda `insertBefore` metodidan foydalanadi. Bu jarayon DOM’ni `reactMarker` elementi atrofida qayta tuzadi va Suspense zaxirasini o'rab turgan komponent bilan almashtiradi.
 
 Shundan so'ng, funksiya `reactMarker` elementining ma'lumotini `"$"`ga o'rnatadi, bu ehtimol keyinchalik ishlov berish yoki murojaat qilish uchun komponentni belgilash uchun ishlatiladi. Agar `reactMarker` elementida `reactRetry` xususiyati mavjud bo'lsa va u funksiya bo'lsa, funksiya ushbu metodni chaqiradi.
 
-Agar ba'zi qismni tushunish qiyin bo'lgan bo'lsa, xavotir olmang. Bularni qisqacha umumlashtirsak: bu funksiya React komponentlari ma'lumotga bog'liq bo'lganda ularga tayyor bo'lishini kutadi va tayyor bo'lgach, Suspense fallback’larini serverda render qilingan komponentlarga almashtiradi. Bu izoh tugunlarini aniq ma'lumot qiymatlari bilan ishlatadi va shu orqali komponentlar strukturasini aniqlaydi hamda DOM’ni shu asosda boshqaradi. Bu HTML’da server tomonidan qo'shilgani uchun, `renderToPipeableStream` yordamida ma'lumotlarni shunday oqimda uzatishimiz va brauzer React’ni bog'lamasdan yoki hidratsiya qilmasdan UI’ni mavjud bo'lganda ko'rsatishi mumkin.
+Agar ba'zi qismni tushunish qiyin bo'lgan bo'lsa, xavotir olmang. Bularni qisqacha umumlashtirsak: bu funksiya React komponentlari ma'lumotga bog'liq bo'lganda ularga tayyor bo'lishini kutadi va tayyor bo'lgach, Suspense fallback(zaxira)’larini serverda render qilingan komponentlarga almashtiradi. Bu izoh tugunlarini aniq ma'lumot qiymatlari bilan ishlatadi va shu orqali komponentlar strukturasini aniqlaydi hamda DOM’ni shu asnoda manipulyatsiya qiladi. Bu HTML’da server tomonidan qo'shilgani uchun, `renderToPipeableStream` yordamida ma'lumotlarni shunday oqimda uzatishimiz va brauzer React’ni bog'lamasdan yoki hidratsiya qilmasdan UI’ni mavjud bo'lganda ko'rsatishi mumkin.
 
-Shunday qilib, `renderToPipeableStream` bizga serverda render qilishda `renderToString`ga nisbatan ancha ko'proq boshqarish imkoniyatini va quvvatni beradi.
+Shunday qilib, `renderToPipeableStream` bizga serverda render qilishda `renderToString`ga nisbatan ancha ko'proq nazorat qilish imkoniyatini va quvvatni beradi.

@@ -1,8 +1,8 @@
 ## useDeferredValue hook’i haqida
 
-`useDeferredValue` — bu React hook’i bo'lib, ma'lum UI yangilanishlarini keyinroq vaqtlarga kechiktirish imkonini beradi. Bu, ayniqsa, dastur og'ir yuk yoki hisoblash bilan bog'liq murakkab vazifalar bilan ishlayotgan holatlarda foydali bo'lib, yangilanishlarni ustuvorlik asosida boshqarishga va silliq o'tishlarni ta'minlashga, foydalanuvchi tajribasini yaxshilashga yordam beradi.
+`useDeferredValue` — bu React hook’i bo'lib, ma'lum UI yangilanishlarini keyinroq vaqtlarga kechiktirish imkonini beradi. Bu, ayniqsa, dastur og'ir yuk yoki hisoblash bilan bog'liq murakkab vazifalar bilan ishlayotgan holatlarda foydali bo'lib, yangilanishlarni ustuvorlik asosida boshqarishga va silliq o'tishlarni ta'minlashga, foydalanuvchi bilan ishlash qulayligini yaxshilashga yordam beradi.
 
-Dastlabki render paytida qaytarilgan kechiktirilgan qiymat taqdim etilgan qiymat bilan bir xil bo'ladi. Keyingi yangilanishlarda esa, `useDeferredValue` eski qiymatni uzoqroq saqlash orqali silliq foydalanuvchi tajribasini ta'minlaydi va yangi qiymatga o'tishni kechiktiradi, ayniqsa hisoblashni talab qiluvchi vaziyatlarda. Bu ko'p marta eski va yangi qiymatlar bilan qayta render qilishni emas, balki boshqarilgan yangilanishni anglatadi. Ushbu mexanizm *eskirgan-qiymat-bilan-yangilash*`(stale-while-revalidate)` strategiyasiga o'xshaydi, yangi qiymatlarni kutish davomida U’Ining javob beruvchanliginini saqlaydi.
+Dastlabki render paytida qaytarilgan kechiktirilgan qiymat taqdim etilgan qiymat bilan bir xil bo'ladi. Keyingi yangilanishlarda esa, `useDeferredValue` eski qiymatni uzoqroq saqlash orqali silliq foydalanuvchi bilan ishlash qulayligini ta'minlaydi va yangi qiymatga o'tishni kechiktiradi, ayniqsa hisoblashni talab qiluvchi vaziyatlarda. Bu ko'p marta eski va yangi qiymatlar bilan qayta render qilishni emas, balki boshqarilgan yangilanishni anglatadi. Ushbu mexanizm *eskirgan-qiymat-bilan-yangilash*`(stale-while-revalidate)` strategiyasiga o'xshaydi, yangi qiymatlarni kutish davomida U’Ining javob beruvchanliginini saqlaydi.
 
 Reactning commit tarixini ko'rib chiqsak, `useDeferredValue`ning birinchi implementatsiyasi quyidagicha bo'lgan:
 ``` js copy
@@ -27,13 +27,13 @@ Keling, ushbu kod nima qilayotganini tushuntiramiz. Dastlab, berilgan dastlabki 
 
 `useDeferredValue` — bu Reactning concurrent’k imkoniyatlarining bir qismi bo'lib, ayrim holat yangilanishlarini kechiktirish orqali uzilishliligiga imkon beradi.
 
-Komponent kechiktirilgan qiymat bilan qayta render qilinganda, React bir muddat eski qiymatni saqlab turadi, bu esa yuqori ustuvorlikdagi yangilanishlar past ustuvorlikdagilardan oldinroq ishlov berilishiga imkon beradi. Bu, renderlash ishini kichik qismlarga bo'lib, vaqt davomida tarqatib beradi, responsivlikni yaxshilaydi va yuqori ustuvorlikdagi yangilanishlar (masalan, foydalanuvchi bilan o'zaro aloqalar) past ustuvorlikdagilar tomonidan kechiktirilmasligini ta'minlaydi, shu bilan foydalanuvchi tajribasini oshiradi.
+Komponent kechiktirilgan qiymat bilan qayta render qilinganda, React bir muddat eski qiymatni saqlab turadi, bu esa yuqori ustuvorlikdagi yangilanishlar past ustuvorlikdagilardan oldinroq ishlov berilishiga imkon beradi. Bu, renderlash ishini kichik qismlarga bo'lib, vaqt davomida tarqatib beradi, responsivlikni yaxshilaydi va yuqori ustuvorlikdagi yangilanishlar (masalan, foydalanuvchi bilan o'zaro aloqalar) past ustuvorlikdagilar tomonidan kechiktirilmasligini ta'minlaydi, shu bilan foydalanuvchi bilan ishlash qulayligini oshiradi.
 
 
 ### useDeferredValue’ning maqsadi
 `useDeferredValue`ning asosiy maqsadi, kamroq ahamiyatga ega yangilanishlarni renderlashni kechiktirishga imkon berishdir. Bu, foydalanuvchi bilan o'zaro aloqalar kabi muhimroq yangilanishlarni serverdan yangilangan ma'lumotlarni ko'rsatish kabi kamroq muhim bo'lgan yangilanishlarga nisbatan ustuvorlik berish uchun juda foydalidir.
 
-`useDeferredValue`dan foydalanish orqali, siz foydalanuvchi tajribasini yanada silliq qilib ta’minlashingiz va ilovangizning yuklangan paytlarda yoki murakkab operatsiyalar bilan shug'ullanganda ham javobgarligini saqlab qolishingiz mumkin.
+`useDeferredValue`dan foydalanish orqali, siz foydalanuvchi bilan ishlash qulayligini yanada silliq qilib ta’minlashingiz va ilovangizning yuklangan paytlarda yoki murakkab operatsiyalar bilan shug'ullanganda ham javobgarligini saqlab qolishingiz mumkin.
 
 
 #### Foydalanish

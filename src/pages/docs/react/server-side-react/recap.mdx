@@ -1,20 +1,21 @@
 ### Bo'limni qisqacha takrorlash
-Xulosa qilib aytganda, server tomondan render qilish va hidratsiya veb-ilovalarining ishlashi, foydalanuvchi tajribasi va SEO ko'rsatkichlarini sezilarli darajada yaxshilaydigan kuchli texnikalar hisoblanadi. React server tomondan render qilish uchun `renderToString` va `renderToPipeableStream` kabi keng API to'plamini taqdim etadi, ularning har biri o'zining kuchli tomonlari va kamchiliklariga ega. Ushbu API’larni tushunish va ilova hajmi, server muhiti va dasturchi tajribasi kabi omillarga asoslanib to'g'ri API’ni tanlash orqali siz React ilovangizni server va klient tomoni uchun optimallashtirishingiz mumkin.
 
-Ushbu bob davomida ko'rib chiqqanimizdek, `renderToString` kichik ilovalar uchun mos bo'lgan oddiy va tushunarli server tomondan render qilish API’sidir. Biroq, uning sinxronlik xususiyati va event loop’ni bloklash potensiali sababli u katta ilovalar uchun eng samarali variant bo'lmasligi mumkin. Boshqa tomondan, `renderToPipeableStream` ancha rivojlangan va moslashuvchan API bo'lib, render qilish jarayonini yaxshiroq boshqarish imkonini beradi va boshqa Node.js oqimlari bilan yaxshiroq integratsiyalashadi, bu esa uni katta ilovalar uchun ko'proq mos keladigan tanlovga aylantiradi.
+Xulosa qilib aytganda, server tomondan render qilish va hidratsiya veb-ilovalarining ishlashi, foydalanuvchi bilan ishlash qulayligi va SEO ko'rsatkichlarini sezilarli darajada yaxshilaydigan kuchli texnikalar hisoblanadi. React server tomondan render qilish uchun `renderToString` va `renderToPipeableStream` kabi keng API to'plamini taqdim etadi, ularning har biri o'zining kuchli tomonlari va kamchiliklariga ega. Ushbu API’larni tushunish va ilova hajmi, server muhiti va dasturchi bilan ishlash qulayligi kabi omillarga asoslanib to'g'ri API’ni tanlash orqali siz React ilovangizni server va klient tomoni uchun optimizatsiya qilishingiz mumkin.
 
+Ushbu bob davomida ko'rib chiqqanimizdek, `renderToString` kichik ilovalar uchun mos bo'lgan oddiy va tushunarli server tomonda render qilish API’sidir. Biroq, uning sinxronlik xususiyati va event loop’ni bloklash potensiali sababli u katta ilovalar uchun eng samarali variant bo'lmasligi mumkin. Boshqa tomondan, `renderToPipeableStream` ancha rivojlangan va moslashuvchan API bo'lib, render qilish jarayonini yaxshiroq boshqarish imkonini beradi va boshqa Node.js oqimlari bilan yaxshiroq integratsiyalashadi, bu esa uni katta ilovalar uchun ko'proq mos keladigan tanlovga aylantiradi.
 
 ### Takrorlash uchun savollar
-Endi siz React’da server tomondan render qilish va hidratsiya haqida puxta tushunchaga ega bo'ldingiz, bilimlaringizni ba'zi savollar bilan sinab ko'rish vaqti keldi. Agar siz ushbu savollarga ishonch bilan javob bera olsangiz, bu React mexanizmini yaxshi tushunishingizdan dalolat beradi va mavzularni davom ettirishda o'zingizni qulay his qilishingiz mumkin. Agar javob bera olmasangiz, biroz ko'proq o'qib chiqishni tavsiya qilamiz, lekin bu sizning tajribangizga salbiy ta’sir qilmaydi.
+
+Endi siz React’da server tomonda render qilish va hidratsiya haqida puxta tushunchaga ega bo'ldingiz, bilimlaringizni ba'zi savollar bilan sinab ko'rish vaqti keldi. Agar siz ushbu savollarga ishonch bilan javob bera olsangiz, bu React mexanizmini yaxshi tushunishingizdan dalolat beradi va mavzularni davom ettirishda o'zingizni qulay his qilishingiz mumkin. Agar javob bera olmasangiz, biroz ko'proq o'qib chiqishni tavsiya qilamiz, lekin bu sizning tajribangizga salbiy ta’sir qilmaydi.
 
 1. *React ilovasida server tomondan render qilishning asosiy afzalligi nimada?*
 2. *React’da hidratsiya qanday ishlaydi va nima uchun muhim?*
-3. *Qayta tiklanuvchanlik(Resumability) nima? Nima uchun u hidratsiyadan ustun ekanligi ta'kidlanadi?*
-4. *Faqat klient tomoni render qilishning asosiy afzalliklari va kamchiliklari nimalardan iborat?*
+3. *Davom ettiruvchanlik qobiliyati(Resumability) nima? Nima uchun u hidratsiyadan ustun ekanligi ta'kidlanadi?*
+4. *Faqat klient tomonida render qilishning asosiy afzalliklari va kamchiliklari nimalardan iborat?*
 5. *React’da `renderToReadableStream` va `renderToPipeableStream` API’larining asosiy farqlari nimada?*
 
 
 ### Keyingi bo'lim
-Server tomondan render qilish va hidratsiyani puxta o'zlashtirganingizdan so'ng, React dasturlashda yanada takomillashgan mavzularni o'rganishga tayyormiz. Keyingi bobda biz concurrent React (bir vaqtning o'zida bajariladigan React) mavzusiga sho'ng'iymiz. Veb-ilovalar tobora murakkablashib borar ekan, asinxron harakatlarni boshqarish muhim ahamiyat kasb etadi.
+Server tomonda render qilish va hidratsiyani puxta o'zlashtirganingizdan so'ng, React dasturlash olamida yanada takomillashgan mavzularni o'rganishga tayyormiz. Keyingi bobda biz concurrent React (bir vaqtning o'zida bajariladigan React) mavzusiga sho'ng'iymiz. Veb-ilovalar tobora murakkablashib borar ekan, asinxron harakatlarni boshqarish muhim ahamiyat kasb etadi.
 
-Concurrent React’dan qanday foydalanishni o'rganib, siz murakkab ma'lumotlar bilan oson ishlay oladigan yuqori samaradorlikka ega, ko'lamdor va foydalanuvchi uchun qulay ilovalar yaratishingiz mumkin. Shunday ekan, tayyor turing va React ko'nikmalaringizni oshirishga hozirlashing!
+Concurrent React’dan qanday foydalanishni o'rganib, siz murakkab ma'lumotlar bilan oson ishlay oladigan yuqori samaradorlikka ega, ko'lamdor va foydalanuvchi uchun qulay ilovalar yaratishingiz mumkin. Shunday ekan, tayyor turing va React ko'nikmalaringizni oshirishga hozirlaning!

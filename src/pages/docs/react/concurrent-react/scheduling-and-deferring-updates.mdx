@@ -73,7 +73,7 @@ const ChatApp = () => {
 };
 ```
 
-Ushbu misolda React’ning concurrent render qilish qobiliyatlari xabarlar ro'yxatini va foydalanuvchi bilan o'zaro interaktivlikni samarali boshqaradi. Foydalanuvchi xabar yozayotganida yoki yuborayotganida, React tekst kiritish yangilanishlarini boshqa yangilanishlardan ustuvor deb hisoblab, qulay foydalanuvchi tajribasini ta’minlaydi.
+Ushbu misolda React’ning concurrent render qilish qobiliyatlari xabarlar ro'yxatini va foydalanuvchi bilan o'zaro interaktivlikni samarali boshqaradi. Foydalanuvchi xabar yozayotganida yoki yuborayotganida, React tekst kiritish yangilanishlarini boshqa yangilanishlardan ustuvor deb hisoblab, qulay foydalanuvchi bilan ishlash qulayligini ta’minlaydi.
 
 ### Yangi xabarlarni pastroq ustuvorlikda render qilish
 Serverdan yangi xabarlar kelganida va ular render qilinishi kerak bo'lganida, ular odatiy yoki noma'lum render lane’da render qilinadi. Bu, DOM’ni sinxron va bir zumda bloklovchi tarzda yangilaydi, bu esa foydalanuvchi kiritishlarini kechiktiradi. Agar yangi xabarlar ro'yxatini render qilishni pastroq ustuvorlikka o'tkazmoqchi bo'lsak, tegishli holat yangilanishini `useTransition` hook’idan `startTransition` funksiyasi orqali o'rab ishlatishimiz mumkin. Quyidagi kabi:
@@ -111,7 +111,7 @@ const ChatApp = () => {
 
 Bu bilan, React’ga xabarlar ro'yxati yangilanishlarini pastroq ustuvorlikda rejalashtirish va ularni UI’ni bloklamasdan render qilishni signal beramiz. Bu chat ilovasining og'ir yuk ostida ham samarali ishlashiga imkon beradi, foydalanuvchi kiritmalari hech qachon to'xtatilmaydi va kiruvchi xabarlar foydalanuvchi bilan o'zaro interaktivlikda kamroq ahamiyatli bo'lganligi sababli pastroq ustuvorlikda render qilinadi.
 
-Ushbu misol, React’ning concurrent render qilish qobiliyatlarini murakkab o'zaro ta’sirlar va tez-tez yangilanishlarni samaradorlik yoki foydalanuvchi tajribasidan voz kechmasdan qanday boshqarish mumkinligini ko'rsatadi. Keyingi bo'limda `useTransition` hook’ini yanada chuqurroq o'rganamiz. Hozir esa React yangilanishlarni qanday rejalashtirishini yanada chuqurroq ko'rib chiqamiz.
+Ushbu misol, React’ning concurrent render qilish qobiliyatlarini murakkab o'zaro ta’sirlar va tez-tez yangilanishlarni samaradorlik yoki foydalanuvchi bilan ishlash qulayligidan voz kechmasdan qanday boshqarish mumkinligini ko'rsatadi. Keyingi bo'limda `useTransition` hook’ini yanada chuqurroq o'rganamiz. Hozir esa React yangilanishlarni qanday rejalashtirishini yanada chuqurroq ko'rib chiqamiz.
 
 
 ### Chuqurroq o'rganish

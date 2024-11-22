@@ -2,7 +2,7 @@
 
 `useTransition` — bu kuchli React hook’i bo'lib, komponentlaringizda state yangilanishlarining ustuvorligini boshqarishga va yuqori ustuvorlikdagi yangilanishlar tufayli UI'ning javob beruvchanligini yo'qotmaslikka yordam beradi. Bu ayniqsa yangi ma'lumotlarni yuklash yoki sahifalar orasida o'tish kabi vizual tarzda buzilishi mumkin bo'ladigan yangilanishlarda foydali hisoblanadi.
 
-`useTransition` orqali qaytarilgan `startTransition` funksiyasiga o'ralgan har qanday yangilanishni "transition lane"ga (biz ilgari ko'rganimizdek, Sync qatordan pastroq ustuvorlik darajasiga) o'tkazadi. Bu sizga yangilanishlarning vaqtini boshqarish va yuqori ustuvorlikdagi boshqa yangilanishlar asosiy thread uchun raqobat qilayotgan bo'lsa ham, silliq foydalanuvchi tajribasini ta'minlash imkonini beradi.
+`useTransition` orqali qaytarilgan `startTransition` funksiyasiga o'ralgan har qanday yangilanishni "transition lane"ga (biz ilgari ko'rganimizdek, Sync qatordan pastroq ustuvorlik darajasiga) o'tkazadi. Bu sizga yangilanishlarning vaqtini boshqarish va yuqori ustuvorlikdagi boshqa yangilanishlar asosiy thread uchun raqobat qilayotgan bo'lsa ham, silliq foydalanuvchi bilan ishlash qulayligini ta'minlash imkonini beradi.
 
 `useTransition` hook bo'lgani uchun uni faqatgina funksional komponentlar ichida ishlatishingiz mumkin. Bu ikkita elementdan iborat massivni qaytaradi:
 
@@ -44,7 +44,7 @@ Ushbu misolda, biz `useTransition`dan foydalanib hisoblagichni oshiruvchi state 
 
 
 ### Murakkab misol: Navigatsiya
-`useTransition` sahifalar orasida o'tishda ham foydali. Navigatsiya bilan bog'liq yangilanishlarning ustuvorligini boshqarish orqali foydalanuvchi tajribasini silliq va tezkor saqlash mumkin, hatto murakkab sahifa o'tishlarida ham.
+`useTransition` sahifalar orasida o'tishda ham foydali. Navigatsiya bilan bog'liq yangilanishlarning ustuvorligini boshqarish orqali foydalanuvchi bilan ishlash qulayligini silliq va tezkor saqlash mumkin, hatto murakkab sahifa o'tishlarida ham.
 
 Ushbu, `useTransition` yordamida bir sahifali ilovada (SPA) sahifa o'tishlarini qanday boshqarish mumkinligini ko'rsatadigan misol:
 ``` js copy
@@ -91,7 +91,7 @@ export default App;
 
 Ushbu misolda, bizning SPA’dagi turli sahifalarni ifodalovchi ikkita oddiy komponent mavjud. Biz `useTransition`’dan foydalanib joriy sahifani o'zgartiruvchi holat yangilanishini o'rab qo'yamiz, bu sahifa o'tishini boshqa yuqori ustuvor yangilanishlar (masalan, foydalanuvchi kiritadigan input ma'lumotlar) sodir bo'layotgan paytda kechiktiradi.
 
-Bu misolda shunday savol tug'ilishi mumkin: "To'xtang, sahifa o'tishi foydalanuvchi bosganidan keyin darhol amalga oshishi kerak emasmi?" Ha, siz to'g'ri fikr qilasiz; ammo, agar keyingi sahifa `Suspense` yordamida biror ma'lumotni yuklashni talab qilsa, unda sahifa o'tishi kechikishi mumkin. Bu yerda `useTransition` yordam beradi, chunki u navigatsiyaga tegishli yangilanishlarning ustuvorligini boshqarishga imkon beradi, murakkab sahifa o'tishlarida ham foydalanuvchi tajribasi silliq va javob beruvchi bo'lishini ta'minlaydi.
+Bu misolda shunday savol tug'ilishi mumkin: "To'xtang, sahifa o'tishi foydalanuvchi bosganidan keyin darhol amalga oshishi kerak emasmi?" Ha, siz to'g'ri fikr qilasiz; ammo, agar keyingi sahifa `Suspense` yordamida biror ma'lumotni yuklashni talab qilsa, unda sahifa o'tishi kechikishi mumkin. Bu yerda `useTransition` yordam beradi, chunki u navigatsiyaga tegishli yangilanishlarning ustuvorligini boshqarishga imkon beradi, murakkab sahifa o'tishlarida ham foydalanuvchi bilan ishlash qulayligi silliq va javob beruvchi bo'lishini ta'minlaydi.
 
 E'tiborga olish kerakki, agar keyingi sahifa ma'lumotni effekt (masalan `useEffect` bilan) orqali yuklashni talab qilsa, `startTransition` ushbu ma'lumotning yuklanishini kutmaydi; ammo, transition ichida kechiktirilganda, React `isPending` state’ini ma'lumotni yuklash va qaytgandan so'ng uni ko'rsatishga bog'laydi.
 
@@ -110,4 +110,4 @@ Mana `useTransition` hook’idan foydalanishda bajariladigan qadamlar sharhi:
 4. `isPending` state’i o'tish jarayoni hali tugallanmagan yoki tugallanganligini ko'rsatadi.
 5. React o'tishga o'ralgan yangilanishlarni tegishli ustuvorlik darajasi bilan ishlov berishini ta’minlaydi. Bu yangilanishlarni tayinlash va boshqarish uchun jadval va render qatorlari mexanizmidan foydalanish orqali amalga oshiriladi.
 
-`useTransition`dan foydalanish orqali biz yangilanishlarning vaqtini samarali boshqara olamiz va yuqori ustuvorlikka ega yangilanishlar asosiy jarayon uchun raqobat qilayotganida ham silliq foydalanuvchi tajribasini saqlashimiz mumkin.
+`useTransition`dan foydalanish orqali biz yangilanishlarning vaqtini samarali boshqara olamiz va yuqori ustuvorlikka ega yangilanishlar asosiy jarayon uchun raqobat qilayotganida ham silliq foydalanuvchi bilan ishlash qulayligini saqlashimiz mumkin.
