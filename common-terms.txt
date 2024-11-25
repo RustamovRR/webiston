@@ -21,7 +21,7 @@ syntax sugar - sodda sintaksis
 runtime - kodni bajarilish vaqti
 reconciliation - moslashtirish
 expensive - ko'p(qo'shimcha) resurs talab qilish
-batch update - yangilanishlarni guruhlash
+batch update - guruhlab yangilash, yangilanishlarni guruhlash
 unique - takrorlanmas
 advanced - ilg'or
 scalable - kengayish, kengayuvchan
@@ -82,3 +82,4 @@ manually - o'zimiz, mustaqil, qo'lda
 suspense boundary - suspense hududi
 sibling element - qo'shni element
 edge cases - kutilmagan holatlar
+under heavy load - katta yuklama ostida

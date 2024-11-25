@@ -1,16 +1,16 @@
-## Concurrent renderingdagi muammolar
+# Concurrent renderingdagi muammolar
 
-Concurrent renderlash foydalanuvchi bilan samarali va javob beradigan o'zaro ta'sirlarni taqdim etsa ham, dasturchilar uchun yangi muammolarni keltirib chiqaradi. Asosiy muammo shundaki, yangilanishlarning qaysi tartibda ishlov berilishini tushunish qiyin, bu esa kutilmagan xatti-harakatlar va xatolarga olib kelishi mumkin.
+Concurrent(bir vaqtda) renderlash foydalanuvchilarning samarali va tezkor javob beruvchan interaktivligiga ruxsat etish bilan birga, dasturchilar uchun yangi muammolarni keltirib chiqaradi. Asosiy muammo shundaki, yangilanishlarning qaysi tartibda ishlov berilishini tushunish qiyin, bu esa kutilmagan xatti-harakatlar va xatolarga olib kelishi mumkin.
 
 Bunday xatolardan biri *tearing* (vizual nomuvofiqlik) deb nomlanadi, bunda UI bir tekis bo'lmagan holatga keladi, chunki yangilanishlarga tartibsiz ishlov beriladi. Bu xususan, komponent hali renderlash jarayonida bo'lganida ba'zi qiymatlar yangilansa, yuzaga kelishi mumkin. Natijada, ilovalar mos kelmaydigan ma'lumotlar bilan render qilinishi mumkin.
 
-Keling, bu masalani yanada chuqurroq tushunib olaylik.
+Keling, bu masalani yanada chuqurroq tushunib chiqaylik.
 
+## Tearing muammosi
 
-### Tearing muammosi nima
 Tearing bu xatolik bo'lib, u komponent ma'lum bir state’ga bog'liq bo'lganda, lekin shu vaqtda ilova hali renderlash jarayonida bo'lsa yuzaga keladi. Keling, bu xatoni tushunishlik uchun sinxron va concurrent renderlashni taqqoslab ko'raylik.
 
-Sinxron dunyoda, React komponentlar daraxtini yuqoridan pastga birma-bir renderlashda davom etadi, bu esa ilovaning state’i butun renderlash jarayonida mos va yangilangan holatda qolishini ta'minlaydi.
+Sinxron dunyoda, React komponentlar daraxtini yuqoridan pastga birma-bir renderlashda davom etadi, bu esa ilovaning holati butun renderlash jarayonida izchil bo'lishini ta'minlaydi, chunki har bir komponent oxirgi holat bilan render qilinadi.
 
 Ushbu misolni ko'rib chiqamiz:
 ``` js copy
@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div>
       <input value={name} onChange={(e) => updateName(e.target.value)} />
-      {isPending && <div>Yuklanmoqda...</div>}
+      {isPending && <div>Loading...</div>}
       <ul>
         <li><ExpensiveComponent /></li>
         <li><ExpensiveComponent /></li>
@@ -49,44 +49,46 @@ const ExpensiveComponent = () => {
   const now = performance.now();
 
   while (performance.now() - now < 100) {
-    // Biror narsa qilmay, shunchaki kutib turamiz
+    // Biror narsa qilmay, shunchaki kutiladi
   }
 
-  return <>Expensive count bu {count}</>;
+  return <>Expensive count is {count}</>;
 };
 ```
 
+### Tearing’ni sababi
 
-#### Tearing'ning sababi
-Dasturimizning yuqori qismida bizda `count` o'zgaruvchisi mavjud: bu o'zgaruvchini global darajada o'rnatib, `setInterval` orqali React’ning render qilish siklidagina emas, balki tashqaridan doimiy yangilab turamiz. Shu tarzda, dastur ishlayotgan paytda yangilanishlar jarayonida *tearing* xatosini simulyatsiya qilishga erishamiz. Rendering jarayoni bir vaqtning o'zida bajariladigan va uzilishli bo'lgani sababli, `ExpensiveComponent` bir necha xil `count` qiymatlari bilan render qilinishi va foydalanuvchiga mos kelmaydigan ma'lumot ko'rsatilishi yoki *tearing* xatosi sodir bo'lishi mumkin.
+Dasturimizning yuqori qismida bizda `count` o'zgaruvchisi mavjud: bu o'zgaruvchini global darajada o'rnatib, `setInterval` orqali React’ning render qilish siklidagina emas, balki tashqaridan doimiy yangilab turamiz. Shu tarzda, dastur ishlayotgan paytda yangilanishlar jarayonida *tearing* xatosini simulyatsiya qilishga erishamiz. Renderlash jarayoni bir vaqtning o'zida bajariladigan va to'xtatilishi mumkin bo'lgani sababli, `ExpensiveComponent` bir necha xil `count` qiymatlari bilan render qilinishi va foydalanuvchiga mos kelmaydigan ma'lumot ko'rsatilishi yoki *tearing* xatosi sodir bo'lishi mumkin.
 
 `ExpensiveComponent` ichida `count`ning mos kelmaydigan qiymatlari paydo bo'lishini kutamiz, chunki React foydalanuvchi kiritmalariga javob berish uchun render qilish jarayonini "to'xtatib", yanada dolzarb yangilanishga, masalan, matn kiritish maydonini yangilashga ustuvorlik beradi. Bu esa ba'zi holatlarda `ExpensiveComponent`da `count`ning eskirgan qiymatini qoldirishi mumkin.
 
-Ushbu misolda matn kiritish maydoni va 5 ta `ExpensiveComponent` ro'yxatini render qilamiz. Bu komponentlar ataylab memoizatsiya qilinmagan, chunki bu yerda samaradorlik muammolarini ko'rsatish uchun kerak. Tushuntirish maqsadida *tearing* muammosini aniqlash uchun bu muammolar muhimdir. Real hayotda siz `ExpensiveComponent`ni `React.memo` bilan o'rab qo'yishni xohlaysiz, ammo bu yerda dasturdagi *tearing*ni namoyish qilish uchun buni ataylab bajarmayapmiz.
+Ushbu misolda matn kiritish maydoni va 5 ta `ExpensiveComponent` ro'yxatini render qilamiz. Bu komponentlar ataylab memoizatsiya qilinmagan, chunki bu yerda ishlash samaradorligi muammolarini ko'rsatish uchun kerak. Tushuntirish maqsadida *tearing* muammosini aniqlash uchun bu muammolar muhimdir. Real hayotda siz `ExpensiveComponent`ni `React.memo` bilan o'rab qo'yishingiz mumkin, ammo bu yerda dasturdagi *tearing*ni namoyish qilish uchun buni ataylab bajarmayapmiz.
 
 `ExpensiveComponent` render qilish uchun uzoq vaqt oladi va hisoblash jihatdan murakkab jarayonni simulyatsiya qiladi. `ExpensiveComponent` shuningdek, har bir millisekundda yangilanadigan `count` o'zgaruvchisining joriy qiymatini ko'rsatadi va bu qiymat tashqi store’dan, ya'ni global namespace’dan o'qiladi.
 
+### `ExpensiveComponent`da tearing hodisasi
 
-#### ExpensiveComponent’da tearing hodisasi
-Agar ushbu misolni ishga tushirsak, `ExpensiveComponent`ning beshta nusxasi kiritilgan bir necha tugmalarni yozganimizdan so'ng, `count` uchun turli qiymatlar bilan renderlanishini ko'ramiz. Chunki React komponentlarni parallel ravishda renderlaganligi sababli, `ExpensiveComponent` turli `count` qiymatlari bilan renderlanib, foydalanuvchiga nomuvofiq ma'lumotlarni ko'rsatadi.
+Agar ushbu misolni ishga tushirsak, biz render qiladigan `ExpensiveComponent`ning beshta nusxasi uchun input’da kiritilgan bir necha tugmalarni yozganimizdan so'ng, `ExpensiveComponent` komponentining `count` uchun turli qiymatlar bilan renderlashini ko'ramiz.
+
+Buning sababi, `ExpensiveComponent` besh marta render qilinadi va har safar render qilinganda hisoblash qiymati boshqacha bo'ladi. React komponentlarni bir vaqtning o'zida render qilayotganligi sababli, `ExpensiveComponent` komponenti `count` uchun turli qiymatlar bilan render qilinishi mumkin, natijada foydalanuvchiga mos kelmaydigan ma'lumotlar ko'rsatiladi.
 
 Bu holat *tearing* deb ataladi va komponent dasturni renderlash davomida yangilanayotgan biror state’ga bog'liq bo'lganda yuzaga keladigan xatodir. Bu misolda `ExpensiveComponent` `count` o'zgaruvchisiga bog'liq va komponent hali renderlanayotgan paytda yangilanib, ilovaning nomuvofiq ma'lumot bilan renderlanishiga sabab bo'ladi.
 
-*Tearing* hodisasi sababli, beshta `ExpensiveComponent` nusxasi uchun quyidagi chiqishni ko'ramiz:
-- Expensive count is 568
-- Expensive count is 568
-- Expensive count is 569
-- Expensive count is 569
-- Expensive count is 570
+*Tearing* hodisasi sababli, beshta `ExpensiveComponent` nusxasi uchun quyidagi chiqish natijalarini ko'ramiz:
+- `Expensive count is 568`
+- `Expensive count is 568`
+- `Expensive count is 569`
+- `Expensive count is 569`
+- `Expensive count is 570`
 
-Buning sababi shundaki, komponentning avvalgi nusxalari renderlanadi, `count`ning yangilangan qiymati DOM’ga kiritiladi, va keyingi nusxalar yangi `count` qiymatlari bilan davom ettiriladi (yangilanadi).
+Bunday bo'lishi tabiiy holat, chunki komponentning oldingi nusxalari renderlanadi, `count`ning yangilangan qiymati tozalanadi/DOMga biriktiriladi va keyingi nusxalar yangi `count` qiymatlari bilan render qilinishi va uzatilishi (tozalanishi, yangilanishi) davom etadi.
 
 Bu katta muammo emas, chunki React oxir-oqibat mos keluvchi state’ni renderlaydi. Asosiy muammo quyidagi kabi misollarda yuzaga keladi:
 ``` js copy
 <UserDetails id={user.id} />
 ```
 
-Agar kod shunday bo'lsa va renderlar orasida foydalanuvchi global xotiradan o'chirilsa, bu foydalanuvchini hayratlantiruvchi xatoga olib kelishi mumkin. Mana shu sababli *tearing* muammoli hisoblanadi.
+Agar kod shunday bo'lsa va renderlar orasida foydalanuvchi global xotiradan o'chirilsa, bu xato albatta foydalanuvchini hayratga solishi mumkin. Mana shu sababli *tearing* muammo hisoblanadi.
 
 
 #### Tearing muammosini hal qilish

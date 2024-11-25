@@ -1,15 +1,17 @@
-## useSyncExternalStore hook’i haqida
+# useSyncExternalStore 
 
-`useSyncExternalStore` — bu React hook bo'lib, u tashqi state’ni ilovangizning ichki state’i bilan sinxronlash imkonini beradi. Bu *tearing*’ni oldini olish kerak bo'lgan murakkab hisob-kitob operatsiyalari bilan ishlaganda ayniqsa foydalidir. `useSyncExternalStore` dagi “sync” so'zi ikki ma'noga ega: bu “sinxronlashtirish”ni ham, “sinxron”ni ham anglatadi, ya'ni store o'zgarganda sinxron yangilanishni majburiy qiladi.
+`useSyncExternalStore` — bu React hook bo'lib, u tashqi state’ni ilovangizning ichki state’i bilan sinxronlash imkonini beradi. Bu ayniqsa, *tearing*’ni oldini olish kerak bo'lgan murakkab hisob-kitob operatsiyalari bilan ishlaganda foydalidir. `useSyncExternalStore` dagi “sync” so'zi ikki ma'noga ega: bu “sinxronlashtirish”ni ham, “sinxron”ni ham anglatadi, ya'ni store o'zgarganda sinxron yangilanishni majburiy qiladi.
+
+## useSyncExternalStore tarkibi
 
 `useSyncExternalStore` hook’ining ko'rinishi quyidagicha:
 ``` js copy
 const value = useSyncExternalStore(store.subscribe, store.getSnapshot);
 ```
 
-
 ### `store.subscribe`
-Bu callback funksiyasini birinchi va yagona argument sifatida qabul qiladigan funksiya. Ushbu funksiya ichida tashqi store’dagi o'zgarishlarga obuna bo'lib, store o'zgarganda callback funksiyasini chaqirasiz. Bu callback’ni React’ga yangi qiymat bilan komponentni qayta render qilishga undovchi chaqiriq sifatida ko'rish mumkin. Ushbu funksiyaning kutilgan natijasi — store’dan obunani bekor qiluvchi "cleanup" funksiyasidir.
+
+Bu callback funksiyasini birinchi va yagona argument sifatida qabul qiladigan funksiya. Ushbu funksiya ichida tashqi store’dagi o'zgarishlarga obuna bo'lib, store o'zgarganda callback funksiyasi chaqiriladi. Bu callback’ni React’ga yangi qiymat bilan komponentni qayta render qilishga undovchi chaqiriq sifatida ko'rish mumkin. Ushbu funksiyaning kutilgan natijasi — store’dan obunani bekor qiluvchi "cleanup" funksiyasidir.
 
 `subscribe` funksiyasining oddiy ko'rinishi quyidagicha:
 ``` js copy
@@ -23,9 +25,7 @@ const store = {
 };
 ```
 
-
-### Oddiy misol: Window’ning o'zgarishlarga obuna bo'lish
-Buning uchun oddiy foydalanish misoli brauzer hodisalariga obuna bo'lish, masalan, `resize` yoki `scroll` hodisalari va ushbu hodisalar sodir bo'lganda komponentni yangilash, masalan:
+Buning uchun oddiy foydalanish misoli brauzer event’lariga obuna bo'lish, masalan, `resize` yoki `scroll` event’lari va ushbu event’lar sodir bo'lganda komponentni yangilash, masalan:
 ``` js copy
 const store = {
   subscribe(rerenderImmediately) {
@@ -37,11 +37,10 @@ const store = {
 };
 ```
 
-Yuqoridagi misolda, brauzerning oyna hajmi o'zgarganda bizning React komponentlarimiz qayta renderlanadi. Biroq, qanday qilib yangi qiymat olinadi? Buning uchun `useSyncExternalStore`ning ikkinchi argumenti kerak bo'ladi.
-
-
+Yuqoridagi misolda, brauzerning oyna hajmi o'zgarganda bizning React komponentlarimiz qayta render bo'ladi. Biroq, qanday qilib yangi qiymat olinadi? Buning uchun `useSyncExternalStore`ning ikkinchi argumenti kerak bo'ladi.
 
 ### `store.getSnapshot`
+
 Bu tashqi store’ning joriy qiymatini qaytaradigan funksiya. Ushbu funksiya komponent renderlanganda chaqiriladi va qaytarilgan qiymat komponentning ichki state’ini yangilash uchun ishlatiladi. Ushbu funksiya sinxron chaqiriladi, shuning uchun u asinxron operatsiyalarni bajarmasligi yoki hech qanday *side effect*’ga ega bo'lmasligi kerak. Bu funksiya komponentning bir nechta nusxalarida render vaqtida state’ning mosligini ta'minlaydi.
 
 Oyna hajmi bo'yicha misolimizga qaytsak, quyidagi kod joriy oyna hajmini olish usulini ko'rsatadi:
@@ -62,15 +61,12 @@ const store = {
 };
 ```
 
-Bu `{ width, height }` obyekti oynaning joriy state’ining snapshoti bo'lib, `useSyncExternalStore` bu qiymatni qaytaradi. Ushbu obyektni komponentimizda ishlatishimiz mumkin va uning holati barcha parallel renderlarda mos kelishini ishonch bilan bilishimiz mumkin.
+Bu `{ width, height }` obyekti oynaning joriy state’ining snapshoti bo'lib, `useSyncExternalStore` bu qiymatni qaytaradi. Ushbu obyektni komponentimizda ishlatishimiz mumkin va uning holati barcha bir paytda bajariladigan renderlarda mos kelishini ishonch bilan bilishimiz mumkin.
 
-
-
-### Nima uchun `useSyncExternalStore` ishonchli?
-Bu ishonchni bizga nima beradi? Chunki `immediatelyRerenderSynchronously` funksiyasi sinxron ravishda qayta render qilishni majburlaydi va React’ga uni kechiktirishga ruxsat bermaydi. Bu *tearing* muammosini hal qilishning kalitidir.
-
+Bu ishonchni bizga nima beradi? Chunki `immediatelyRerenderSynchronously` funksiyasi sinxron ravishda qayta render qilishni majburlaydi va React’ga uni kechiktirishga ruxsat bermaydi. Bu *tearing* muammosini hal qilishning asosiy kalitidir.
 
 ### Tearing muammosini `useSyncExternalStore` bilan hal qilish
+
 Endi oldingi misolimizda *tearing* muammosini qanday hal qilishimiz mumkinligini `useSyncExternalStore` yordamida ko'rib chiqamiz. Eslasak, bizda *tearing* tufayli har xil qiymatlarda `count` o'zgaruvchisini qaytaruvchi bir nechta` ExpensiveComponent`lar mavjud edi. Endi bu muammoni `useSyncExternalStore` yordamida qanday hal qilishni ko'raylik.
 
 Avvalo, biz store’gaga obuna bo'lishni va yangilanishlar sodir bo'lganda React’ni qayta render qilishni istamaymiz; buning o'rniga, qayta renderlash foydalanuvchi kiritishiga bog'liq bo'lganda, mos holatni olishni xohlaymiz. Shunday qilib, bizning `subscribe` funksiyamiz bo'sh bo'ladi, lekin mos holatni olish uchun `getSnapshot` funksiyasidan foydalanamiz va `count`ning joriy qiymatini qaytarib beramiz:
@@ -83,8 +79,8 @@ const store = {
 };
 ```
 
+#### `useSyncExternalStore` bilan yangilangan misol 
 
-### `useSyncExternalStore` bilan yangilangan misol
 Quyida oldingi misolimiz `useSyncExternalStore` bilan qanday ko'rinishga ega bo'lishi:
 ``` js copy
 import { useState, useSyncExternalStore, useTransition } from "react";
@@ -117,8 +113,8 @@ export default function App() {
 }
 
 const ExpensiveComponent = () => {
-  // count’ni global o'qish o'rniga, useSyncExternalStore’ni ishlatamiz
-  // Bu usul qayta renderlashda mos holatni ta'minlaydi
+  // count’ni global o'qish o'rniga,
+  // barqaror holatni ta'minlash uchun ushbu hook’dan foydalanamiz
   const consistentCount = useSyncExternalStore(
     () => {},
     () => count
@@ -126,23 +122,23 @@ const ExpensiveComponent = () => {
 
   const now = performance.now();
   while (performance.now() - now < 100) {
-    // Bu yerda hech narsa qilinmaydi, faqat vaqt o'tishi uchun
+    // Bu yerda hech narsa qilinmaydi
   }
 
   return <>Expensive count is {consistentCount}</>;
 };
 ```
 
-Endi ushbu misolni ishga tushirsak, `ExpensiveComponent`lar `count` uchun bir xil qiymat bilan renderlanadi, bu esa *tearing*ning oldini oladi. `useSyncExternalStore` hook’i render vaqtida komponentning bir nechta nusxalari uchun mos holatni ta'minlaydi va *tearing*dan himoya qiladi.
-
+Endi ushbu misolni ishga tushirsak, `ExpensiveComponent`lar `count` uchun bir xil qiymat bilan renderlanadi, bu esa *tearing*’ning oldini oladi. `useSyncExternalStore` hook’i render vaqtida komponentning bir nechta nusxalari uchun state’ni bir xil bo'lishini ta'minlaydi.
 
 #### Tearing muammosini hal qilishda `subscribe` funksiyasidan foydalanmaslik sababi
-Biz `subscribe` funksiyasidan foydalanmaymiz, chunki uning maqsadi React’ga eng so'nggi holatda qayta render qilish kerakligini aytishdir. Biroq, bizning misolimizda faqat barcha renderlar davomida state mos bo'lishini xohlaymiz. `getSnapshot` funksiyasini ishlatib, `count`ning joriy qiymatini qaytarib olamiz va shu orqali komponentning bir nechta nusxalarida render vaqtida mos holatni ta'minlaymiz.
 
-Bu usulni oldingi misolimizda `useSyncExternalStore` bilan *tearing* muammosini hal qilish uchun qo'llash mumkin. Shu orqali komponentning bir nechta nusxalarida render vaqtida mos holatni ta'minlaymiz.
+Biz `subscribe` funksiyasidan foydalanmaymiz, chunki uning maqsadi React’ga eng so'nggi state qiymatida qayta render qilish kerakligini aytishdir. Biroq, bizning misolimizda faqat barcha renderlar davomida state mos bo'lishini xohlaymiz. `getSnapshot` funksiyasini ishlatib, `count`ning joriy qiymatini qaytarib olamiz va shu orqali komponentning bir nechta nusxalarida render vaqtida state’ning mos bo'lishini ta'minlaymiz.
 
+Bu usulni oldingi misolimizda `useSyncExternalStore` bilan *tearing* muammosini hal qilish uchun qo'llash mumkin. Shu orqali komponentning bir nechta nusxalarida render vaqtida state’ning mos bo'lishini ta'minlay olamiz.
 
 #### `useSyncExternalStore` bilan holatni moslash
+
 Shunday qilib, matn kiritish maydoni o'zgarganda va `ExpensiveComponent` qayta render qilinganda, boshqa `ExpensiveComponent` nusxalari bilan bir xil `count` qiymatiga ega bo'ladi va *tearing*’ning oldi olinadi. Ammo, agar biz `ExpensiveComponent` ichida ham `count`ni tashqi `count` bilan bir xil intervalda yangilamoqchi bo'lsak-chi?
 
 Buning uchun quyidagi kabi bir store yaratamiz, bu store bir xil yangilanish qoidalariga amal qiladi:
@@ -154,7 +150,7 @@ setInterval(() => count++, 1);
 
 const store = {
   subscribe(forceSyncRerender) {
-    // count o'zgarganda sinxron qayta renderlashni ta'minlash
+    // count o'zgarganda
     forceSyncRerender();
   },
   getSnapshot() {
@@ -187,8 +183,8 @@ export default function App() {
 }
 
 const ExpensiveComponent = () => {
-  // Global count qiymatini o'qish o'rniga,
-  // `useSyncExternalStore` bilan mos holatni ta'minlaymiz
+  // count’ni global o'qish o'rniga,
+  // barqaror holatni ta'minlash uchun ushbu hook’dan foydalanamiz
   const consistentCount = useSyncExternalStore(
     store.subscribe,
     store.getSnapshot
@@ -196,7 +192,7 @@ const ExpensiveComponent = () => {
 
   const now = performance.now();
   while (performance.now() - now < 100) {
-    // Bu yerda hech narsa qilinmaydi, faqat vaqt o'tishi uchun
+    // Bu yerda hech narsa qilinmaydi
   }
 
   return <>Expensive count is {consistentCount}</>;
@@ -204,11 +200,11 @@ const ExpensiveComponent = () => {
 ```
 
 Endi, har safar `count` o'zgarganda, `ExpensiveComponent` yangi `count` qiymati bilan qayta renderlanadi va biz `ExpensiveComponent`ning barcha nusxalarida bir xil `count` qiymatini ko'ramiz. O'zgarishlarni aniqlash logikasi oddiy yoki murakkab bo'lishi mumkin, lekin muhim jihati shundaki, `useSyncExternalStore` qanday ishlashini va uning asosiy vazifalarini tushunishimiz kerak:
-- Bir vaqtning o'zida renderlar davomida mos holatni ta'minlash
-- Store’da o'zgarish bo'lganida sinxron qayta render qilishni ta'minlash
-
+- Bir vaqtning o'zida renderlar davomida mos state’ni ta'minlash
+- Store’da o'zgarish bo'lganida sinxron qayta render qilishga majbur qilishlik
 
 #### `useSyncExternalStore` va tearing muammosi
-Endi `useSyncExternalStore` qanday ishlashini va *tearing* muammosini qanday hal qilishini tushunganimizdan so'ng, biz nafaqat Reactda concurrent rendering haqida, balki u bilan bog'liq muammolarni hal qilish haqida ham mustahkam tushunchaga egamiz. Bu React dasturchisi sifatida juda muhim.
 
-Bu chuqurroq ko'rib chiqish bo'ldi, lekin biz deyarli tugatdik. Keling, o'zlashtirganlarimizni ko'rib chiqamiz.
+Endi `useSyncExternalStore` qanday ishlashini va *tearing* muammosini qanday hal qilishini tushunganimizdan so'ng, biz nafaqat React’da concurrent rendering haqida, balki u bilan bog'liq muammolarni hal qilish haqida ham mustahkam tushunchaga egamiz. Bu React dasturchisi sifatida juda muhim.
+
+Bu narsalarni tushunishda biz ichkariga chuqurroq kirdik, lekin deyarli nihoyasiga yetdi. Keling, o'zlashtirganlarimizni bir eslab olamiz va xulosa qilamiz.
