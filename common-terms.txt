@@ -43,8 +43,8 @@ custom - maxsus, xos
 hydration - hidratsiya
 sensitive data - nozik ma'lumotlar
 routing- routing
-Fine-grained - yuqori aniqlikdagi
-Coarse-grained - kam aniqlikdagi
+Fine-grained - yuqori tafsiliy darajada
+Coarse-grained - kam tafsiliy darajada
 predictable - prognozli
 two-way data binding - ikki tomonlama ma'lumotni bog'lash
 Tight coupling - kuchli bog'lanish
@@ -55,7 +55,7 @@ reflow - qayta joylashish
 repaint - qayta chizish
 computational cost - hisoblashning resursi talabi
 nuance - nozik jihat
-trade-offs - muvozanatlari, murosalari
+trade-offs - ijobiy va salbiy jihatlari, afzallik va kamchiliklari
 instance - nusxa
 render lanes - render yo'llari
 commit - tatbiq qilish
@@ -83,3 +83,4 @@ suspense boundary - suspense hududi
 sibling element - qo'shni element
 edge cases - kutilmagan holatlar
 under heavy load - katta yuklama ostida
+new generation of build tooling - yangi avlod qurilish vositalari

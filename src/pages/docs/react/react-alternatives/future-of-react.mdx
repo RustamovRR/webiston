@@ -35,7 +35,7 @@ Endi, agar biz hisobni oshirish uchun tugmani bosamiz, nima bo'ladi? `Counter` f
 
 
 ### React’ning samaradorligi va coarse-grained reaktivlik
-Bu coarse-grained reaktivlik React'ni potensialidan kam samarali qiladi. Biroq, bu muammoni juda oson hal qilish mumkin: biz faqat kerakli joyda va kerakli vaqtda `memo`dan foydalanishimiz kerak:
+Bu kam tafsiliy darajadagi reaktivlik React'ni potensialidan kam samarali qiladi. Biroq, bu muammoni juda oson hal qilish mumkin: biz faqat kerakli joyda va kerakli vaqtda `memo`dan foydalanishimiz kerak:
 ``` js copy
 import React, { useState, memo } from "react";
 import { ComponentWithExpensiveChildren } from "./ComponentWithExpensiveChildren";

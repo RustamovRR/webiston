@@ -1,15 +1,16 @@
-## Nega bizga freymvork kerak
-React interaktiv foydalanuvchi interfeyslarini yaratish uchun asosiy elementlarni taqdim etsa-da, u ko'plab muhim arxitektura qarorlarini dasturchilarga qoldiradi. React bu borada fikrga ega emas, bu esa dasturchilarga ilovalarini o'zlari xohlagan tarzda tuzish uchun moslashuvchanlik beradi. Biroq, ilovalar kengaygan sari, bu erkinlik yukga aylanishi mumkin. Siz doimiy ravishda takroriy muammolarni hal qilish, masalan, yo'naltirish, ma'lumotlarni olish va serverda render qilish kabi muammolarni hal qilishda o'z-o'zidan qaytalanish xavfiga duch kelishingiz mumkin.
+# Nega bizga freymvork kerak
 
-Bu erda React freymvorklari yordamga keladi. Ular oldindan belgilangan strukturani va umumiy muammolar uchun yechimlarni taqdim etadi, bu esa dasturchilarga o'z ilovasining o'ziga xos tomonlariga e'tibor qaratishga imkon beradi, shuning uchun qaytariluvchan kod bilan shug'ullanish shart emas. Bu ishlab chiqish jarayonini sezilarli darajada tezlashtirishi va freymvork tomonidan ta'minlangan eng yaxshi amaliyotlarga rioya qilish orqali kod bazasining sifatini yaxshilashi mumkin.
+React interaktiv foydalanuvchi interfeyslarini yaratish uchun asosiy elementlarni taqdim etsa-da, u ko'plab muhim arxitektura qarorlarini dasturchilarga qoldiradi. React bu borada fikrga ega emas, bu esa dasturchilarga ilovalarini o'zlari xohlagan tarzda tuzish uchun moslashuvchanlik beradi. Biroq, ilovalar kengaygan sari, bu erkinlik ortiqcha yukka aylanishi mumkin. Siz doimiy ravishda takroriy muammolarni hal qilish, masalan, routing, ma'lumotlarni olish va serverda render qilish kabi muammolarni hal qilishda o'z-o'zidan qaytalanish xavfiga duch kelishingiz mumkin.
+
+Bu yerda React freymvorklari yordamga keladi. Ular oldindan belgilangan strukturani va umumiy muammolar uchun yechimlarni taqdim etadi, bu esa dasturchilarga o'z ilovasining o'ziga xos tomonlariga e'tibor qaratishga imkon beradi, shuning uchun qaytariluvchan kod bilan shug'ullanish shart emas. Bu ishlab chiqish jarayonini sezilarli darajada tezlashtirishi va freymvork tomonidan ta'minlangan eng yaxshi amaliyotlarga rioya qilish orqali kod bazasining sifatini yaxshilashi mumkin.
 
 Buni to'liq tushunish uchun, keling, o'zimizning minimal freymvorkimizni yozib ko'rishga harakat qilaylik. Buni amalga oshirish uchun, biz freymvorklardan osonlik bilan ololmaydigan bir nechta asosiy xususiyatlarni aniqlashimiz kerak. Qisqa qilib aytganda, biz freymvorklardan oladigan uchta asosiy xususiyatni aniqlaymiz. Freymvorklar ko'p narsalarni bajaradi, lekin bu kichik guruh bizni ajoyib muhokama qilish uchun asos yaratadi:
 - Serverda render qilish
 - Routing
 - Ma'lumotlarni olish (Data fetching)
 
+## Sodda freymvorkimizni tuzish
 
-### Sodda freymvorkimizni tuzish
 Keling, mavjud bo'lgan tasavvuriy React ilovasini olib, bu xususiyatlarni bosqichma-bosqich qo'shamiz, shunda freymvorklar biz uchun nima qilishini tushunamiz. Biz "freymvork sifatida" qabul qilayotgan React ilovasining quyidagi strukturasi bor:
 - `index.js`
 - `List.js`
@@ -94,39 +95,39 @@ export const Detail = ({ thingId }) => {
 };
 ```
 
+### Duch keladigan ba'zi muammolar
 
-#### Duch keladigan ba'zi muammolar
-Bu muammolar barcha faqat-klient tomondan render qilingan React ilovalariga ta'sir qiladi:
+Bu muammolar barcha faqat-klient tomonda render qilinadigan React ilovalariga ta'sir qiladi:
 
+#### Foydalanuvchiga bo'sh sahifa jo'natamiz
 
-##### Foydalanuvchiga bo'sh sahifa jo'natamiz
 Biz foydalanuvchiga faqat yuklash uchun kodni jo'natamiz, keyin esa JavaScript’ni tahlil qilib, bajarishimiz kerak.
 
-JavaScript ishga tushguncha, foydalanuvchi bo'sh sahifani ko'radi va keyin ular bizning ilovamizni ko'radilar. Agar foydalanuvchi qidiruv tizimi bo'lsa, ular hech narsani ko'rmaydilar. Agar qidiruv tizimi roboti JavaScript’ni qo'llab-quvvatlamasa, qidiruv tizimi bizning veb-saytimizni indekslamaydi.
+JavaScript ishga tushguncha, foydalanuvchi bo'sh sahifani ko'radi va keyin ular bizning ilovamizni ko'radilar. Agar foydalanuvchi qidiruv tizimi bo'lsa, ular hech narsani ko'rmaydilar. Agar qidiruv tizimi boti JavaScript’ni qo'llab-quvvatlamasa, qidiruv tizimi bizning veb-saytimizni indekslamaydi.
 
+#### Biz ma'lumotlarni juda kech olishni boshlaymiz
 
-##### Ma'lumotlarni kechikkan holda yuklaymiz
 Ilovamiz foydalanuvchi bilan ishlash qulayligiga ta'sir etadigan *network waterfall*(tarmoq sharsharasi) deb ataladigan bir muammoga duch keladi: bu g'aroyib hodisa, tarmoq so'rovlarining ketma-ket amalga oshirilishi natijasida yuzaga keladi va ilovalarni sekinlashtiradi. Ilovamiz asosiy funksionallik uchun serverga bir nechta so'rovlar yuborishi kerak. 
 
 Masalan, ishga tushirish jarayoni quyidagicha amalga oshadi:
 - JavaScript’ni yuklab olish, tahlil qilish va bajarish.
-- React komponentlarini render qilish va amalga oshirish.
+- React komponentlarini render qilish va tatbiq qilish.
 - `useEffect` ma'lumotlarni yuklay boshlaydi.
-- Spinner’lar va boshqalarni render qilish va amalga oshirish.
+- Spinner’lar va boshqalarni render qilish va tatbiq qilish.
 - `useEffect` ma'lumotlarni yuklashni tugatadi.
-- Ma'lumotlarni render qilish va amalga oshirish. Bularning barchasini, agar biz brauzerga bevosita ma'lumotlar bilan sahifa jo'natadigan bo'lsak, oldini olishimiz mumkin: agar biz HTML markup’ini jo'natsak, bu esa [7-bobda](/docs/react/concurrent-react) server tomonidagi React’da muhokama qilingan.
+- Ma'lumotlarni render qilish va tatbiq qilish. Bularning barchasini, agar biz brauzerga bevosita ma'lumotlar bilan sahifa jo'natadigan bo'lsak, oldini olishimiz mumkin: agar biz HTML markup’ini jo'natsak, xuddi [7-bobda](/docs/react/concurrent-react) server tomonidagi React’da muhokama qilinganidek.
 
+#### Router’imiz faqat klient tomonida ishlashga asoslangan
 
-##### Router’imiz faqat klient asoslangan
-Agar brauzer https://our-app.com/detail?thingId=24 manzilini so'rasa, server 404 sahifasini qaytaradi, chunki serverda bunday fayl yo'q. Bu muammoni hal qilish uchun ishlatiladigan keng tarqalgan xakerlik — 404 topilganda HTML faylini render qilish va JavaScript yuklashini ta'minlaydigan sahifa yaratishdir va shunda klient tomonidagi router ishga tushadi. Bu xakerlik qidiruv tizimlari yoki JavaScript qo'llab-quvvatlanishi cheklangan muhitlar uchun ishlamaydi.
+Agar brauzer https://our-app.com/detail?thingId=24 manzilini so'rasa, server 404 sahifasini qaytaradi, chunki serverda bunday fayl yo'q. Bu muammoni hal qilish uchun ishlatiladigan keng tarqalgan hiyla — 404 topilganda HTML faylini render qilish va JavaScript yuklashini ta'minlaydigan sahifa yaratishdir va shunda klient tomonidagi router ishga tushadi. Bu hiyla qidiruv tizimlari yoki JavaScript qo'llab-quvvatlanishi cheklangan muhitlar uchun ishlamaydi.
 
 Freymvorklar bu muammolarni va boshqalarni hal qilishda yordam beradi. Keling, ular buni qanday qilib amalga oshirayotganini o'rganamiz.
 
+### Server tomonda renderlash
 
-### Server renderlash
 Odatda, freymvorklar bizga serverda render qilish imkonini o'zi bilan taqdim qiladi. Ushbu ilovaga serverda render qilishni qo'shish uchun bizga server kerak. Biz buni Express.js kabi paket yordamida o'zimiz yozishimiz mumkin. Keyin ushbu serverni joylashtiramiz va ishlaymiz. Keling, bunday serverni boshqaradigan kodni ko'rib chiqamiz.
 
-Diqqat qiling, bu yerda `renderToString` funksiyasidan faqat soddalik uchun foydalanamiz va freymvorklar ushbu funksiyalarni qanday amalga oshirishini tushuntirish uchun qo'shdik. Haqiqiy ishlab chiqarish holatida, serverda render qilish uchun `renderToPipeableStream` kabi kuchliroq asinxron API’lardan foydalanish afzal, bu [6-bobda](/docs/react/server-side-react/renderToPipeableStream) batafsil yoritilgan.
+Diqqat qiling, bu yerda `renderToString` funksiyasidan faqat soddalik uchun foydalanamiz va freymvorklar ushbu funksiyalarni qanday amalga oshirishini tushuntirish uchun qo'shdik. Haqiqiy foydalanish holatida, serverda render qilish uchun `renderToPipeableStream` kabi kuchliroq asinxron API’lardan foydalanish afzal, bu [6-bobda](/docs/react/server-side-react/renderToPipeableStream) batafsil yoritilgan.
 
 Keling, buni amalga oshiramiz:
 ``` js copy filename="server.js"
@@ -169,14 +170,14 @@ app.listen(3000, () => {
 
 Ushbu kod ilovamizga serverda render qilishni qo'shish uchun yetarli. E'tibor bering, klient tomoni uchun `index.js` o'zining klient router’iga ega, va biz asosan server uchun yana bitta router qo'shdik. Freymvorklar *izomorf router’lar* birga keladi, ya'ni klient va serverda ishlaydigan router’lar.
 
-
 ### Routing
-Bu server yaxshi ishlayotgan bo'lsa-da, kengaytirishda qiyinchilik tug'diradi: har bir qo'shimcha router uchun qo'lda `req.get` chaqiruvlarini qo'shishimiz kerak bo'ladi. Keling, buni biroz kengaytirish mumkinligini ko'rib chiqaylik. Bunga konfiguratsiya obyekti orqali router’larni komponentlarga bog'lash yoki fayl tizimiga asoslangan router’lash kabi bir nechta usullarda erishishimiz mumkin. Ta'lim maqsadida (va, albatta, qiziqish uchun), *fayl tizimiga asoslangan* router’lashni o'rganamiz. Bu Next.js kabi freymvorklar tomonidan kiritilgan konvensiya va fikrlarning sababi va mexanizmini aniqroq tushunishga yordam beradi.
+
+Bu server yaxshi ishlayotgan bo'lsa-da, kengaytirishda qiyinchilik tug'diradi: har bir qo'shimcha router uchun o'zimiz `req.get` chaqiruvlarini qo'shishimiz kerak bo'ladi. Keling, buni biroz kengaytirish mumkinligini ko'rib chiqaylik. Bunga konfiguratsiya obyekti orqali router’larni komponentlarga bog'lash yoki fayl tizimiga asoslangan router’lash kabi bir nechta usullarda erishishimiz mumkin. Ta'lim maqsadida (va, albatta, qiziqish uchun), *fayl tizimiga asoslangan* router’lashni o'rganamiz. Bu Next.js kabi freymvorklar tomonidan kiritilgan konvensiya va fikrlarning sababi va mexanizmini aniqroq tushunishga yordam beradi.
 
 Agar biz barcha sahifalar *./pages* katalogida joylashishi va ushbu katalogdagi barcha fayl nomlari router yo'llariga aylanishi kerak degan qoidani qo'llasak, serverimiz bu qoidaga asoslanib ishlaydi va kengaytirish imkoniyati oshadi.
 
-
 #### Katalog strukturasini kengaytirish
+
 Buni misol yordamida ko'rsatamiz. Avval katalog tuzilmasini yangilaymiz. Yangi katalog tuzilmasi quyidagicha ko'rinadi:
 - `index.js`
 - `pages/`
@@ -194,7 +195,7 @@ import { renderToString } from "react-dom/server"; // 6-bobda yoritilgan
 
 const app = express();
 
-app.use(express.static("./dist")); // Statik fayllarni, masalan, klient JS-larini olish uchun
+app.use(express.static("./dist")); //  Statik fayllarni, masalan, klient JS’larini olish uchun
 
 const createLayout = (children) => `<html lang="en">
 <head>
@@ -216,7 +217,7 @@ app.get("/:route", async (req, res) => {
     // `.default` standartlashtirilgan, shuning uchun bunga suyansak bo'ladi
     const Page = exportedStuff.default;
 
-    // Props’larni URL qatoridan olishimiz mumkin.
+    // Props’larni 'query string'dan olishimiz mumkin.
     const props = req.query;
 
     res.setHeader("Content-Type", "text/html");
@@ -228,13 +229,13 @@ app.listen(3000, () => {
 });
 ```
 
-
 #### Kengaytirilgan strukturaning afzalliklari
-Endi serverimiz *./pages* katalogidagi konvensiya tufayli ancha kengaytirilgan! Bu yaxshi! Biroq, endi har bir sahifa komponentini default eksport qilishimiz kerak bo'ladi, chunki bizning yondashuvimiz umumiyroq bo'lib qoladi va import qilish uchun nomni oldindan bilishning imkoni bo'lmaydi. Bu freymvorklar bilan ishlashning ba'zi kamchiliklaridan biridir, ammo bu holatda, ushbu kamchilik foydali ko'rinmoqda.
 
+Endi serverimiz *./pages* katalogidagi konvensiya tufayli ancha kengaytirilgan! Bu yaxshi! Biroq, endi har bir sahifa komponentini default eksport qilishimiz kerak bo'ladi, chunki bizning yondashuvimiz umumiyroq bo'lib qoladi va import qilish uchun nomni oldindan bilishning imkoni bo'lmaydi. Bu freymvorklar bilan ishlashning ba'zi ijobiy va salbiy jihatlaridan biridir, ammo bu holatda, ushbu jihatlar foydali ko'rinmoqda.
 
 ### Ma'lumotlarni olish (data fetching)
-Ajoyib! Biz serverda rendering va fayl tizimiga asoslangan route’lashni qo'shdik, lekin hali ham tarmoqda yuzaga kelayotgan kechikish muammosiga duch kelyapmiz. Keling, ma'lumot olish jarayonini yaxshilaylik. Avvalo, komponentlarimizni dastlabki ma'lumotlarni props orqali olishga moslashtiramiz. Soddalashtirish uchun faqat `List` komponenti bilan shug'ullanamiz va `Detail` komponentini sizga uyga vazifa sifatida qoldiramiz:
+
+Ajoyib! Biz serverda render qilish va fayl tizimiga asoslangan route’lashni qo'shdik, lekin hali ham tarmoqda yuzaga kelayotgan "tarmoq sharsharalari"ga duch kelyapmiz. Keling, ma'lumot olish jarayonini yaxshilaylik. Avvalo, komponentlarimizni dastlabki ma'lumotlarni props orqali olishga moslashtiramiz. Soddalashtirish uchun faqat `List` komponenti bilan shug'ullanamiz va `Detail` komponentini sizga uyga vazifa sifatida qoldiramiz:
 ``` js copy filename="./pages/list.jsx"
 // Fayl tizimiga asoslangan route’lash uchun default eksportdan foydalanamiz.
 export default function List({ initialThings } /* <- dastlabki prop qo'shilmoqda */) {
@@ -270,7 +271,7 @@ export default function List({ initialThings } /* <- dastlabki prop qo'shilmoqda
 }
 ```
 
-Endi biz dastlabki prop qo'shganimiz uchun, bu sahifa uchun kerakli ma'lumotlarni serverda olish va renderingdan oldin komponentga uzatish usulini izlashimiz kerak. Ideal holda, quyidagi tarzda harakat qilamiz:
+Endi biz dastlabki prop qo'shganimiz uchun, bu sahifa uchun kerakli ma'lumotlarni serverda olish va renderlashdan oldin komponentga uzatish usulini izlashimiz kerak. Ideal holda, quyidagi tarzda harakat qilamiz:
 ``` js copy filename="./server.js"
 import express from "express";
 import { join } from "path";
@@ -278,7 +279,7 @@ import { renderToString } from "react-dom/server"; // 6-bobda yoritilgan
 
 const app = express();
 
-app.use(express.static("./dist")); // Statik fayllar, masalan, klient JS-larini olish uchun
+app.use(express.static("./dist")); // Statik fayllar, masalan, klient JS’larini olish uchun
 
 const createLayout = (children) => `<html lang="en">
 <head>
@@ -362,7 +363,7 @@ Tayyor! Endi biz:
 - Butun sahifani HTML satri ko'rinishida render qilamiz
 - Ushbu HTML’ni klientga yuboramiz
 
-Biz freymvorklardan turli xususiyatlarni o'z ilovamizga qo'shdik va ularning asosiy versiyalarini yaratib chiqdik. Shu orqali freymvorklarning qanday ishlashini va ularning mexanizmlarini o'rgandik. Xususan, quyidagilarni bilib oldik:
+Biz turli xil freymvorklardan uchta xususiyatni o'z ilovamizga muvaffaqiyatli qo'shdik va ularning asosiy versiyalarini implementatsiya qildik. Shu orqali freymvorklarning qanday ishlashini va ularning asosiy mexanizmlarini o'rgandik. Xususan, quyidagilarni bilib oldik:
 - Freymvorklar bizga serverda render qilish imkonini beradi
 - Fayl tizimiga asoslangan izomorf router’lashdan foydalanadi
 - Ma'lumotlarni eksport qilingan funksiyalar orqali olish imkonini beradi
