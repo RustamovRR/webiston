@@ -1,6 +1,6 @@
-## React’ning kelajagi
+# React’ning kelajagi
 
-Reaktiv primitivlar, masalan, signal kabi texnologiyalarning keng tarqalgan qabul qilinishi bilan, ba'zilar React ham shunga o'xshash yondashuvni qabul qilishi mumkin deb o'ylashlari mumkin. Biroq, React jamoasi signalga "hayajonlanmaganligini" bildirgan va o'xshash samaradorlik foydalariga erishish uchun muqobil yondashuvni tanlagan.
+Reaktiv primitivlar, masalan, signal kabi texnologiyalarning keng tarqalgan qabul qilinishi bilan, ba'zilar React ham shunga o'xshash yondashuvni qabul qilishi mumkin deb o'ylashlari mumkin. Biroq, React jamoasi signalga "hayajonlanmaganligini" bildirgan va signallar taqdim etadigan shunga o'xshash ishlash samaradorligi afzalliklariga erishish uchun muqobil yondashuvni tanlashlarini bildirgan.
 
 Buni biroz yaxshiroq tushunish uchun, React haqida o'rgangan ba'zi narsalarni misol bilan ko'rib chiqaylik. Quyidagi komponentni ko'rib chiqamiz:
 ``` js copy
@@ -29,12 +29,12 @@ export default Counter;
 Bu juda oddiy misolda, bizda `Counter` deb nomlangan state’ga ega bo'lgan komponent mavjud, unda bir nechta bolalar mavjud:
 - Joriy hisobni ko'rsatuvchi `<p>` elementi
 - Hisobni oshiradigan `<button>` elementi
-- Ko'p hisoblashlarni bajaradigan qimmatli bolalarni chizadigan `<ComponentWithExpensiveChildren>` komponenti
+- Ko'p hisoblashlarni bajaradigan qimmatli *children*’ni render qiladigan `<ComponentWithExpensiveChildren>` komponenti
 
 Endi, agar biz hisobni oshirish uchun tugmani bosamiz, nima bo'ladi? `Counter` funksiyasi chaqiriladi/yangidan chaqiriladi/yangi render qilinadi, bu bilan uning barcha bolalari ham yangilanadi. Bu React’ning default xatti-harakatidir. Demak, `<ComponentWithExpensiveChildren>` komponenti ham yangilanadi, garchi u yangilanishi shart bo'lmasa: uning props yoki state’i o'zgarmagan taqdirda ham!
 
+### React’ning va kam tafsiliy darajali reaktivligi
 
-### React’ning samaradorligi va coarse-grained reaktivlik
 Bu kam tafsiliy darajadagi reaktivlik React'ni potensialidan kam samarali qiladi. Biroq, bu muammoni juda oson hal qilish mumkin: biz faqat kerakli joyda va kerakli vaqtda `memo`dan foydalanishimiz kerak:
 ``` js copy
 import React, { useState, memo } from "react";
@@ -63,12 +63,12 @@ const MemoizedComponentWithExpensiveChildren = memo(
 export default Counter;
 ```
 
-Bu ishlaydi, chunki biz `memo`dan har doim kerakli joyda foydalanishni eslaymiz. Haqiqatan ham, bu signallar bilan bir xil nozik reaktivlikni taqdim etadi. Biroq, bu signallarga nisbatan qulay emas, chunki har doim `memo`dan foydalanishni eslab qolishimiz kerak.
-
+Bu ishlaydi, chunki biz `memo`dan har doim kerakli joyda foydalanishni eslaymiz. Haqiqatan ham, bu signallar bilan bir xil yuqori tafsiliy darajali reaktivlikni taqdim etadi. Biroq, bu signallarga nisbatan qulay emas, chunki har doim `memo`dan foydalanishni eslab qolishimiz kerak.
 
 ### Signal va React jamoasi yondashuvi
-Ko'pchiligimiz, signallar bu muammoni oson hal qilishi mumkin deb o'ylashimiz mumkin, lekin Meta kompaniyasidagi React jamoasi signallar, `memo` kabi, kundalik dasturchilar uchun amalga oshirish detali bo'lishi kerak, deb hisoblaydi. Ular React’ning dastlabki qiymat taklifi: “UI’ni deklarativ tarzda tasvirlab bering, React esa qolganini amalga oshirsin.” React jamoasi, dasturchilar signallar, `memo`, yoki boshqa detallar bilan bog'liq emasligi va React UI’ni eng optimal tarzda render qilishini ta'minlashini maqsad qiladi.
 
+Ko'pchiligimiz, signallar bu muammoni oson hal qilishi mumkin deb o'ylashimiz mumkin, lekin Meta kompaniyasidagi React jamoasi signallar, `memo` kabi, kundalik dasturchilar uchun amalga oshirish tafsiloti bo'lishi kerak, deb hisoblaydi va React’dan foydalanadigan kundalik dasturchilar bu haqda o'ylamasligi kerak. Ular React’ning dastlabki qiymat taklifiga quloq solishadi: “UI’ni deklarativ tarzda tasvirlab bering, React esa qolganini amalga oshirsin.” React jamoasi, dasturchilar signallar, `memo`, yoki boshqa tafsilotlarga bog'lanib qolmasligini va React UI’ni eng optimal tarzda render qilishini ta'minlashini maqsad qilishadi.
 
 ### Yangi Dastur: React Forget
+
 Bu maqsadga erishish uchun jamoa yangi dastur ustida ishlamoqda: React Forget. Bu dastur orqali React UI’ni yanada samarali va intuitiv tarzda yaratishga yordam beradi, shunda dasturchilar ko'proq murakkablikni hisobga olishlari shart emas.

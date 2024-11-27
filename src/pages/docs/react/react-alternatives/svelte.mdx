@@ -1,6 +1,8 @@
-## Svelte
+# Svelte
 
 Svelte foydalanuvchi interfeyslarini yaratish uchun tubdan yangi bo'lgan yondashuvni taklif qiladi. An'anaviy freymvorklardan farqli o'laroq, Svelte sizning deklarativ komponentlaringizni samarali imperativ kodga aylantiruvchi kompilyator hisoblanadi va bu kod DOM’ni aniq yangilab turadi. Natijada, kamroq kod bilan yuqori samaradorlikka ega, reaktiv veb-ilovalarni yozish imkoniyatiga ega bo'lasiz.
+
+## Reaktivlik
 
 Svelte'ning reaktivlik modeli juda oddiy, lekin kuchli. Svelte'dagi reaktiv yozuvlar oddiy sintaksisda yoziladi va bu, masalan, elektron jadvallardagi formulalarni eslatadi. Quyida asosiy Svelte komponenti keltirilgan:
 ``` html copy
@@ -39,17 +41,17 @@ Svelte, shuningdek, reaktiv yozuv sintaksisini ham taqdim etadi, bu orqali reakt
 </button>
 ```
 
-Bu misolda `doubleCount` avtomatik tarzda `count` o'zgarganida yangilanadi. Bu Vue'dagi computed properties (hisoblangan xususiyatlar)ni eslatadi, ammo biroz oddiyroq sintaksisda.
+Bu misolda `doubleCount` avtomatik tarzda `count` o'zgarganida yangilanadi. Bu Vue'dagi *computed properties* (hisoblangan xususiyatlar)ni eslatadi, ammo biroz oddiyroq sintaksisda.
 
 Svelte'ning kompilyatorga asoslangan yondashuvi bir qancha afzalliklarga ega. Bu odatda tezroq ish vaqti samaradorligini ta'minlaydi, chunki virtual DOM diffing va patching (farqni topish va tuzatish) jarayoniga ehtiyoj yo'q. Buning o'rniga, Svelte DOM’ni bevosita yangilaydigan kod yaratadi.
 
-Shu bilan birga, bu yondashuv bilan bog'liq ijobiy va salbiy jihatlar ham mavjud. Svelte'ning kompilyatorga asoslangan tabiati virtual DOM’ga asoslangan freymvorklar taklif qiladigan ba'zi dinamik imkoniyatlarni, masalan, dinamik komponent turlarini ifodalashni biroz qiyinlashtiradi yoki murakkablashtiradi. Shuningdek, Svelte ekotizimi React, Vue va Angular’nikiga qaraganda kichikroq va yoshroq bo'lgani uchun, unda resurslar, kutubxonalar va hamjamiyat yechimlari kamroq bo'lishi mumkin.
+Shu bilan birga, bu yondashuv bilan bog'liq ijobiy va salbiy jihatlar ham mavjud. Svelte'ning kompilyatorga asoslangan tabiati virtual DOM’ga asoslangan freymvorklar taklif qiladigan ba'zi dinamik imkoniyatlarni, masalan, dinamik komponent turlarini ifodalashni biroz qiyinroq yoki batafsilroq qiladi. Shuningdek, Svelte ekotizimi React, Vue va Angular’nikiga qaraganda kichikroq va yoshroq bo'lgani uchun, unda resurslar, kutubxonalar va hamjamiyat yechimlari kamroq bo'lishi mumkin.
 
+## Runiklar (Runes)
 
-### Runlar (Runes)
-Runlar — bu Svelte kompilyatoriga ta'sir qiluvchi belgilar. Bugungi kunda Svelte `let`, `=`, `export` kalit so'zi va `$:` belgilaridan maxsus ma'nolar bilan foydalanadi, lekin runlar funksiyalar sintaksisi orqali shunga o'xshash va qo'shimcha imkoniyatlarni ham taqdim etadi.
+Runiklar — bu Svelte kompilyatoriga ta'sir qiluvchi maxsus belgilar. Bugungi kunda Svelte `let`, `=`, `export` kalit so'zi va `$:` belgilaridan maxsus ma'nolar bilan foydalanadi, lekin runiklar *funksiya sintaksisi* orqali shunga o'xshash va qo'shimcha imkoniyatlarni ham taqdim etadi.
 
-Misol uchun, reaktiv holatni e'lon qilish uchun `$state` runidan foydalanish mumkin:
+Misol uchun, reaktiv holatni e'lon qilish uchun `$state` runikidan foydalanish mumkin:
 ``` html copy {3}
 <script>
 // let count = 0;
@@ -65,9 +67,9 @@ Misol uchun, reaktiv holatni e'lon qilish uchun `$state` runidan foydalanish mum
 </button>
 ```
 
-Ilovalar murakkablashgani sayin, qaysi qiymatlar reaktiv ekanligini va qaysilari reaktiv emasligini aniqlash qiyin bo'lib qoladi. Hozirgi amaliyot faqat komponentning yuqori darajasida `let` bilan e'lon qilingan qiymatlar uchun ishlaydi, bu esa tushunmovchiliklarni keltirib chiqarishi mumkin. *.svelte* fayllarida bir xil, *.js* fayllarida esa boshqacha ishlash xulq-atvori, masalan, kodni ko'plab joylarda qayta yozish zarurati tug'ilganda uni refactor qilishni murakkablashtiradi.
+Ilovalar murakkablashgani sayin, qaysi qiymatlar reaktiv ekanligini va qaysilari reaktiv emasligini aniqlash qiyin bo'lib qoladi. Hozirgi amaliyot faqat komponentning yuqori darajasida `let` bilan e'lon qilingan qiymatlar uchun ishlaydi, bu esa tushunmovchiliklarni keltirib chiqarishi mumkin. *.svelte* fayllarida bir xil, *.js* fayllarida esa boshqacha ishlash xatti-harakati, masalan, kodni ko'plab joylarda qayta yozish zarurati tug'ilganda uni refactor qilishni murakkablashtiradi.
 
-Runlar yordamida reaktivlik *.svelte* fayllarining chegarasidan tashqariga ham kengayadi. Masalan, hisoblagich logikasini bir nechta komponentlar o'rtasida qayta ishlatilishi mumkin bo'lgan tarzda inkapsulyatsiya qilishni xohlasangiz, bugungi kunda *.js* yoki .ts faylida maxsus saqlovchi (store) yaratishingiz kerak bo'ladi:
+Runiklar yordamida reaktivlik *.svelte* fayllarining chegarasidan tashqariga ham kengayadi. Masalan, hisoblagich logikasini bir nechta komponentlar o'rtasida qayta ishlatilishi mumkin bo'lgan tarzda inkapsulyatsiya qilishni xohlasangiz, bugungi kunda *.js* yoki .ts faylida maxsus saqlovchi (store) yaratishingiz kerak bo'ladi:
 ``` js copy
 import { writable } from "svelte/store";
 
@@ -81,9 +83,7 @@ export function createCounter() {
 }
 ```
 
-Ushbu usul yordamida hisoblagich qiymatini saqlovchi (store) sifatida yaratib, uni bir nechta komponentlar o'rtasida osonlik bilan ulashish mumkin.
-
-Chunki bu saqlovchi shartnomasini (store contract) amalga oshiradi — ya'ni qaytarilgan qiymat `subscribe` metodiga ega — biz store qiymatini `$` prefiksini qo'shish orqali olamiz:
+Chunki bu *saqlovchi shartnomasini (store contract)* amalga oshiradi — ya'ni qaytarilgan qiymat `subscribe` metodiga ega — biz store qiymatini `$` prefiksini qo'shish orqali olamiz:
 ``` html copy {2, 4, 13-14}
 <script>
 import { createCounter } from './counter.js';
@@ -102,7 +102,7 @@ const counter = createCounter();
 </button>
 ```
 
-Bu ishlaydi, lekin biroz g'alati! Store API yanada murakkab narsalarni bajarishga uringanda, juda noqulay bo'lib qolishi mumkin. Runlar yordamida, bu jarayon ancha osonlashadi:
+Bu ishlaydi, lekin biroz g'alati! Store API yanada murakkab narsalarni bajarishga uringanda, juda noqulay bo'lib qolishi mumkin. Runiklar yordamida, bu jarayon ancha osonlashadi:
 ``` js copy {5, 10-11}
 // import { writable } from 'svelte/store';
 
@@ -134,25 +134,25 @@ export function createCounter() {
 
 E'tibor bering, biz qaytarilgan obyekt ichida `get` xususiyatidan foydalanmoqdamiz, shuning uchun `counter.count` har doim hozirgi qiymatga ishora qiladi, funksiya chaqirilgan vaqtdagi qiymatga emas.
 
+## Ishlash vaqtida reaktivlik (Runtime reactivity)
 
-### Ishlash vaqtida reaktivlik (Runtime reactivity)
-Bugungi kunda Svelte kompilyatsiya vaqtida reaktivlikdan foydalanadi. Bu, agar sizda `$:` yorlig'idan foydalanadigan ba'zi kod bo'lsa va u avtomatik ravishda qayta ishlanishi kerak bo'lsa, bu bog'lanishlar Svelte sizning komponentingizni kompilyatsiya qilganda aniqlanadi:
+Bugungi kunda Svelte *kompilyatsiya vaqtida reaktivlik(compile-time reactivity)dan* foydalanadi. Bu, agar sizda `$:` yorlig'idan foydalanadigan ba'zi kod bo'lsa va u avtomatik ravishda qayta ishlanishi kerak bo'lsa, bu qaramliklar Svelte sizning komponentingizni kompilyatsiya qilganda aniqlanadi:
 ``` html copy
 <script>
 export let width;
 export let height;
 
-// kompilyator `area` ni qayta hisoblashini biladi
-// `width` yoki `height` o'zgarganda...
+// `width` yoki `height` o'zgarganda
+// kompilyator `area`ni qayta hisoblash kerakligini biladi...
 $: area = width * height;
 
-// ...va `area` ning qiymatini log qilishini biladi
-// u o'zgarganda
+// ...va u o'zgarganda
+// `area`ning qiymatini log qilishini biladi
 $: console.log(area);
 </script>
 ```
 
-Bu yaxshi ishlaydi...garchi bu ishlamasa. Faraz qilaylik, biz kodni quyidagicha qayta tashkil qildik:
+Bu yaxshi ishlaydi...garchi bu ishlamasa. Faraz qilaylik, biz kodni quyidagicha refactor qilaylik:
 ``` js copy
 // @errors: 7006 2304
 const multiplyByHeight = (width) => width * height;
@@ -161,9 +161,9 @@ $: area = multiplyByHeight(width);
 
 Chunki `$: area = ...` e'lon qilinishi faqat `width`ni ko'radi, bu `height` o'zgarganda qayta hisoblanmaydi. Natijada, kodni refactor qilish qiyinlashadi va Svelte qachon qanday qiymatlarni yangilashini tushunish ma'lum darajadagi murakkablikdan keyin juda qiyin bo'lib qolishi mumkin.
 
+## Svelte 5’da yangi runiklar
 
-### Svelte 5 da yangi run
-Svelte 5 `$derived `va `$effect` runlarini taqdim etadi, bu esa o'z ifodalari bog'lanishlarini baholanganida aniqlaydi:
+Svelte 5 `$derived `va `$effect` runiklarini taqdim etadi, bu esa o'z ifodalari qaramliklarini baholanganida aniqlaydi:
 ``` html copy
 <script>
 let { width, height } = $props(); // `export let` o'rniga
@@ -178,8 +178,8 @@ $effect(() => {
 
 Yana, `$state`, `$derived` va `$effect` sizning `.js` va `.ts` fayllaringizda ham ishlatilishi mumkin.
 
+## Signalni kuchaytirish
 
-### Signalni kuchaytirish
 Boshqa barcha freymvorklar singari, Svelte ham Knockout har doim haqligini anglab yetdi.
 
-Svelte 5 ning reaktivligi signallar yordamida boshqariladi, bu asosan 2010 yilda Knockout tomonidan amalga oshirilgan narsalardir. So'nggi paytlarda, signallar Solid tomonidan ommalashgan (keyinchalik bu haqida ko'proq ma'lumot beramiz) va boshqa ko'plab freymvorklar tomonidan qabul qilingan. Svelte 5 da signallar to'g'ridan-to'g'ri o'zaro ta'sir qilinadigan narsalar emas, balki tizim ichida amalga oshiriladigan detal hisoblanadi.
+Svelte 5’ning reaktivligi signallar yordamida boshqariladi, bu asosan 2010 yilda Knockout tomonidan amalga oshirilgan narsalardir. So'nggi paytlarda, signallar Solid tomonidan ommalashgan (keyinchalik bu haqida ko'proq ma'lumot beramiz) va boshqa ko'plab freymvorklar tomonidan qabul qilingan. Svelte 5’da signallar to'g'ridan-to'g'ri o'zaro ta'sir qilinadigan narsalar emas, balki ichki ishlash mexanizmida amalga oshiriladigan tafsilot hisoblanadi.

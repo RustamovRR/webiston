@@ -46,7 +46,7 @@ sensitive data - nozik ma'lumotlar
 routing- routing
 Fine-grained - yuqori tafsiliy darajada
 Coarse-grained - kam tafsiliy darajada
-predictable - prognozli
+predictable - prognozli, oldindan ko'ra oluvchanlik imkoniyati
 two-way data binding - ikki tomonlama ma'lumotni bog'lash
 Tight coupling - kuchli bog'lanish
 built-in - ichki o'rnatilgan
