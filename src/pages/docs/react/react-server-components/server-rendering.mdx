@@ -1,15 +1,16 @@
-## Server tomonda render qilinishi
+# Server rendering
 
 Biz oldingi boblarda server tomonida render qilishni batafsil muhokama qildik, shuning uchun bu yerda uning tafsilotlariga chuqur to'xtalmaymiz. Asosiy e’tiborimizni server komponentlari va server tomonida render qilishning qanday o'zaro aloqada ishlashiga qaratamiz.
 
-Aslida, server komponentlari va serverda render qilishni ikki mustaqil jarayon sifatida tasavvur qilishimiz mumkin. Bunda bir jarayon komponentlarni serverda render qilish va React elementlari daraxtini yaratish bilan shug'ullanadi, ikkinchi jarayon — server renderer — esa bu React elementlari daraxtini markup’ga (HTML formatiga) o'tkazib, tarmoqlar orqali klientlarga uzatadi.
+Aslini olganda, server komponentlari va serverda render qilishni ikki mustaqil jarayon sifatida tasavvur qilishimiz mumkin. Bunda bir jarayon komponentlarni serverda render qilish va React elementlari daraxtini yaratish bilan shug'ullanadi, ikkinchi jarayon — server renderer — esa bu React elementlari daraxtini markup’ga (HTML formatiga) o'tkazib, tarmoq orqali klientlarga uzatadi.
 
-Agar bu ikkita jarayonni ko'rib chiqsak — biri komponentlarni React elementlariga aylantiradi, ikkinchisi esa React elementlarini HTML string’lariga yoki oqimlarga aylantiradi — bu ikkita tushunchaning qanday mos tushishini tushuna boshlaymiz. Birinchi jarayonni *RSC’s renderer* deb ataymiz, u server komponentlarini React elementlari daraxtiga aylantiradi; ikkinchi jarayon esa *server renderer* bo'lib, React elementlarini HTML oqimiga aylantiradi.
+Agar bu ikkita jarayonni ko'rib chiqsak — biri komponentlarni React elementlariga aylantiradi, ikkinchisi esa React elementlarini HTML satrlariga yoki oqim(stream)larga aylantiradi — bu ikkita tushunchaning qanday mos tushishini tushuna boshlaymiz. Birinchi jarayonni *RSC’s renderer* deb ataymiz, u server komponentlarini React elementlari daraxtiga aylantiradi; ikkinchi jarayon esa *server renderer* bo'lib, React elementlarini HTML oqimiga aylantiradi.
 
+## Server komponentlari va server tomonda renderlash
 
-### Server komponentlari va server tomonida render qilishni o'zaro bog'lash
 Bu tushunchaga asoslanib, server komponentlari va serverda render qilish qanday o'zaro bog'lanishini quyidagicha tushuntirish mumkin:
-##### 1. Serverda JSX daraxtini React elementlari daraxtiga aylantirish
+
+#### 1. Serverda JSX daraxtini React elementlari daraxtiga aylantirish
 
 Masalan, quyidagi JSX daraxtini ko'rib chiqamiz:
 ``` jsx copy
@@ -44,17 +45,20 @@ Bu daraxt quyidagi elementlar daraxtiga aylantiriladi:
   }
 }
 ```
-##### 2. Serverda elementlar daraxtini string yoki oqimga aylantirish
-Ushbu elementlar daraxti keyinroq qatorga yoki oqimga seriyalizatsiya qilinadi.
+#### 2. Serverda elementlar daraxtini satr yoki oqimga aylantirish
 
-##### 3. Klientga katta JSON qatori sifatida yuborish
-Shu tarzda yaratilgan katta string’ga aylantirilgan JSON obyekti klientga uzatiladi
+Ushbu elementlar daraxti keyinroq satrga yoki oqimga seriyalashtiriladi.
 
-##### 4. Klient tomonida render qilish
-Klient tomonida React ushbu JSON m'’lumotlarini o'qib, odatdagidek render qiladi.
+#### 3. Klientga katta JSON sifatida yuborish
 
+Shu tarzda yaratilgan katta satrga aylantirilgan JSON obyekti klientga uzatiladi
 
-### Server kodi
+#### 4. Klient tomonida render qilish
+
+Klient tomonida React ushbu JSON ma'lumotlarini o'qib, odatdagidek render qiladi.
+
+## Server kodi
+
 Agar bu jarayonni server tomonidagi kod sifatida tasvirlasak, quyidagicha ko'rinishda bo'ladi:
 ``` js copy filename="server.js"
 const express = require("express");
@@ -100,4 +104,4 @@ Mantiqan olganda, server komponentlari va server tomonidagi renderlash aynan shu
 
 Yana bir bor ta'kidlash joizki, biz bu yerda `renderToString` funksiyasidan faqat namoyish uchun foydalanmoqdamiz. Va [6-bobda](/docs/react/server-side-react) ta'kidlanganidek, asosiy foydalanish holatlarida `renderToPipeableStream` yoki shunga o'xshash asinxron va uzluksiz API’dan foydalanish yaxshiroq bo'ladi.
 
-Endi biz server rendering va server komponentlari o'rtasidagi o'zaro aloqani tushunib olganimizdan so'ng, oldingi kodda ishlatilgan `turnServerComponentsIntoTreeOfElements` funksiyasini chuqurroq o'rganamiz. Bu nima qiladi? Qanday qilib server komponentlarini elementlar daraxtiga aylantiradi? Bu React rendereri hisoblanadimi? Keling, buni aniqlab olaylik.
+Endi biz *server rendering* va server komponentlari o'rtasidagi o'zaro aloqani tushunib olganimizdan so'ng, oldingi kodda ishlatilgan `turnServerComponentsIntoTreeOfElements` funksiyasini chuqurroq o'rganamiz. Bu nima qiladi? Qanday qilib server komponentlarini elementlar daraxtiga aylantiradi? Bu React renderer’i hisoblanadimi? Keling, buni aniqlab olaylik.

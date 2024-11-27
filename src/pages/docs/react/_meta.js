@@ -9,5 +9,5 @@ export default {
   'concurrent-react': 'React Concurrent',
   frameworks: 'Freymvorklar',
   'react-server-components': 'React server komponentlari',
-  'react-alternatives': 'React muqobillari',
+  'react-alternatives': 'React alternativlari',
 }
