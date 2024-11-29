@@ -21,6 +21,8 @@ const config: DocsThemeConfig = {
 
     return (
       <>
+        <meta name="google-site-verification" content="Xz0YDnKOB7hdnXLb0nSAIiFs4cRw7zA8wchJDKi08uU" />
+        <title>{title ? title + ' – Webiston' : 'Webiston - Veb texnologiyalar dunyosiga teran nigoh'}</title>
         <meta name="msapplication-TileColor" content="#fff" />
         <meta name="theme-color" content="#fff" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,12 +31,22 @@ const config: DocsThemeConfig = {
           name="og:description"
           content="Zamonaviy veb-dasturlash texnologiyalari haqida o'zbek tilidagi qo'llanma."
         />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={socialCard} />
-        <meta name="twitter:site:domain" content="webiston.uz" />
-        <meta name="twitter:url" content="https://webiston.uz" />
 
-        <meta property="og:title" content={title ? title + ' – Webiston' : 'Webiston'} />
+        <meta
+          name="description"
+          content="O'zbek tilidagi eng mukammal React va zamonaviy veb-dasturlash qo'llanmasi. React, JavaScript, TypeScript va boshqa texnologiyalar haqida batafsil ma'lumot."
+        />
+        <meta
+          name="keywords"
+          content="react, javascript, typescript, o'zbek tili, dasturlash, veb dasturlash, frontend, nextjs, reactjs tutorial, react darslari, jsx, tsx, reconciliation, virtual DOM, real DOM, react server components, react server komponentlari, memo, usememo, usecallback, usememo, usecallback, react concurrent, react concurrent mode, webiston, vebiston, webistan, vebistan"
+        />
+        <meta property="og:site_name" content="Webiston" />
+        <meta
+          property="og:title"
+          content={title ? title + ' – Webiston' : 'Webiston - Veb texnologiyalar dunyosiga teran nigoh'}
+        />
+        <meta property="og:image" content={socialCard} />
+        <meta property="og:type" content="website" />
         <meta property="og:image" content={socialCard} />
         <meta property="og:description" content={`Veb texnologiyalar dunyosiga teran nigoh.`} />
 
