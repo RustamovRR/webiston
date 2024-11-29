@@ -16,6 +16,9 @@ const config: Config = {
       backgroundImage: {
         'gradient-text': 'linear-gradient(to right, white, #757a7d)',
       },
+      fontSize: {
+        dynamic: 'calc(5vw + 0.5rem)',
+      },
     },
   },
   plugins: [],

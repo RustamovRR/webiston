@@ -163,6 +163,13 @@ td {
   animation-delay: 0.5s;
 }
 
+@media screen and (max-width: 640px) {
+  .background-pattern::before,
+  .background-pattern::after {
+    display: none;
+  }
+}
+
 @keyframes slideInHorizontal {
   0% {
     transform: translateX(0);

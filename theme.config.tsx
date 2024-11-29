@@ -61,19 +61,17 @@ const config: DocsThemeConfig = {
   },
   footer: {
     content: (
-      <div className="flex w-full flex-col items-center sm:items-start">
-        <div>
-          <a
-            className="flex items-center gap-1 text-current"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="webiston.uz"
-            href="https://webiston.uz"
-          >
-            <span>Powered by</span>&nbsp;
-            <span className="font-bold">Webiston</span>
-          </a>
-        </div>
+      <div className="flex w-full flex-col items-center text-center sm:items-start">
+        <a
+          className="flex items-center gap-1 text-current"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="webiston.uz"
+          href="https://webiston.uz"
+        >
+          <span>Powered by</span>&nbsp;
+          <span className="font-bold">Webiston</span>
+        </a>
         <p className="mt-6 text-xs"> {new Date().getFullYear()} Webiston. Barcha huquqlar himoyalangan.</p>
       </div>
     ),
