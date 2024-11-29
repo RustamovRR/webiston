@@ -188,8 +188,21 @@ td {
   }
 }
 
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .animate-fadeIn {
   animation: fadeIn 2s ease-in-out forwards;
   animation-delay: 2s;
   opacity: 0;
+}
+
+.animate-fadeInText {
+  animation: fadeInText 0.5s ease-in-out forwards;
 }

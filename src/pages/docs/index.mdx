@@ -1,4 +1,5 @@
 import { Card } from "@/components"
+import { REACT_CHAPTERS } from "@/constants"
 
 # So'zboshi
 
@@ -16,15 +17,12 @@ Bu yerda qiziqarli va murakkab texnologiyalarni chuqur o'rganishingiz mumkin!
 
 
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mt-10">
+   {REACT_CHAPTERS.map((card, index) => (
     <Card 
-        href="/docs/react" 
-        title="React" 
-        description="React asoslari, JSX, Virtual DOM, Reconciliation, Server-side rendering, React concurrent, React server komponentlari, Kuchli pattern’lar..." 
+      key={index}
+      href={card.href}
+      title={card.title}
+      description={card.description}
     />
-    {/* <Card 
-        href="/docs/javascript" 
-        title="Javascript" 
-         description="Tez kunda..." 
-        disabled
-    /> */}
+  ))}
 </div>

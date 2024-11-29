@@ -1,9 +1,10 @@
 ---
-title: Nextra – Next.js Static Site Generator
+title: Webiston – Veb texnologiyalar dunyosiga teran nigoh
 ---
 
 import { CircleIcon, ReactIcon, ArrowRightIcon } from '@/assets/icons'
 import { ButtonLink, Card, SectionTitle } from '@/components'
+import { REACT_CHAPTERS } from '@/constants'
 
 <div className='w-full px-16 pb-16'>
   <header className="background-pattern flex h-full min-h-screen w-full flex-col items-center text-center p-10 pt-20 mt-8 gap-10">
@@ -15,12 +16,12 @@ import { ButtonLink, Card, SectionTitle } from '@/components'
   <div className="vertical-line-1"></div>
   <div className="vertical-line-2"></div>
 
-  <CircleIcon className="absolute top-[20%] left-[7.5%] animate-fadeIn"/>
-  <CircleIcon className="absolute top-[70%] right-[37.5%] animate-fadeIn"/>
+  <CircleIcon className="absolute top-[20%] left-[12%] animate-fadeIn"/>
+  <CircleIcon className="absolute top-[70%] right-[32%] animate-fadeIn"/>
 
-  <h1 className="bg-gradient-text bg-clip-text text-7xl font-extrabold text-transparent p-6">Veb texnologiyalarni birgalikda chuqur o'rganamiz </h1>
+  <h1 className="bg-gradient-text bg-clip-text text-7xl font-extrabold text-transparent p-6 animate-fadeInText">Veb texnologiyalar dunyosiga teran nigoh </h1>
 
-  <p className="max-w-[750px] text-center text-xl text-gray-primary">Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.</p>
+  <p className="max-w-[750px] text-center text-xl text-gray-primary animate-fadeInText">Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.</p>
 
   <div className='flex gap-2 mt-10'>
     <ButtonLink href='/docs' variant='secondary' className="group">O'rganishni boshlash <span className='ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1'><ArrowRightIcon/></span></ButtonLink>
@@ -28,24 +29,17 @@ import { ButtonLink, Card, SectionTitle } from '@/components'
 </header>
 
 <section className='w-full flex flex-col gap-8'>
-  <SectionTitle title="React" description="React kutubxonasining ichki mexanizmlari." icon={<ReactIcon className="w-10 h-10" />} />
+  <SectionTitle title="React" description="React kutubxonasining ichki ishlash mexanizmlari." icon={<ReactIcon className="w-10 h-10" />} />
 
    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <Card 
-        href="/docs/react/virtual-dom" 
-        title="Virtual DOM" 
-        description="Reactning Virtual DOM tushunchasi haqida qisqacha ma'lumot." 
-      />
-      <Card 
-        href="/docs/react/reconciliation" 
-        title="Reconciliation" 
-        description="Reconciliation mexanizmi va uning Reactda qanday ishlashi." 
-      />
-      <Card 
-        href="/docs/react/jsx" 
-        title="JSX" 
-        description="JSX syntaxi va uning Reactda ishlatilishi." 
-      />
+      {REACT_CHAPTERS.map((card, index) => (
+        <Card 
+          key={index}
+          href={card.href}
+          title={card.title}
+          description={card.description}
+        />
+      ))}
     </div>
 </section>
 </div>
