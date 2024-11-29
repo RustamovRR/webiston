@@ -79,6 +79,11 @@ const config: DocsThemeConfig = {
   themeSwitch: {
     component: null,
   },
+  darkMode: true,
+  nextThemes: {
+    defaultTheme: 'dark',
+    forcedTheme: 'dark',
+  },
   toc: {
     backToTop: true,
   },
