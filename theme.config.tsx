@@ -52,10 +52,70 @@ const config: DocsThemeConfig = {
         <meta property="og:description" content={`Veb texnologiyalar dunyosiga teran nigoh.`} />
 
         <meta name="apple-mobile-web-app-title" content="Webiston" />
-        <link rel="icon" href="/favicon.ico" type="image/svg+xml" />
-        <link rel="icon" href="/logo.png" type="image/png" />
-        <link rel="icon" href="/logo.png" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
-        <link rel="icon" href="/logo.png" type="image/png" media="(prefers-color-scheme: dark)" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Webiston',
+              url: 'https://webiston.uz',
+              description: "O'zbek tilidagi eng so'nggi React va zamonaviy veb-dasturlash qo'llanmasi",
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: 'https://webiston.uz/search?q={search_term_string}',
+                },
+                'query-input': 'required name=search_term_string',
+              },
+              sameAs: [
+                'https://github.com/RustamovRR/webiston',
+                'https://t.me/webiston_uz',
+                'https://linkedin.com/company/webiston',
+                'https://x.com/webiston_uz',
+              ],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SiteNavigationElement',
+              name: [
+                "React paydo bo'lishi",
+                'JSX',
+                'Virtual DOM',
+                'Reconciliation',
+                'useMemo, useCallback va memo',
+                'React patternlar',
+                'Server tomonda React',
+                'React Server Components',
+                'React Concurrent',
+                'React freymvorklari',
+              ],
+              url: [
+                'https://webiston.uz/docs/react/entry-level-stuff',
+                'https://webiston.uz/docs/react/jsx',
+                'https://webiston.uz/docs/react/virtual-dom',
+                'https://webiston.uz/docs/react/inside-reconciliation',
+                'https://webiston.uz/docs/react/common-questions',
+                'https://webiston.uz/docs/react/powerful-patterns',
+                'https://webiston.uz/docs/react/server-side-react',
+                'https://webiston.uz/docs/react/react-server-components',
+                'https://webiston.uz/docs/react/concurrent-react',
+                'https://webiston.uz/docs/react/frameworks',
+              ],
+            }),
+          }}
+        />
       </>
     )
   },
