@@ -1,3 +1,5 @@
+import { TelegramIcon, LinkedInIcon, TwitterIcon, EmailIcon } from '@/assets/icons'
+
 export const REACT_CHAPTERS = [
   {
     href: '/docs/react/entry-level-stuff',
@@ -53,5 +55,32 @@ export const REACT_CHAPTERS = [
     href: '/docs/react/react-alternatives',
     title: 'React alternativlari',
     description: "Vue, Angular, Svelte va Solid kabi React alternativlari va texnikasi haqida ma'lumot.",
+  },
+]
+
+export const socialLinks = [
+  {
+    id: 1,
+    href: 'https://t.me/webiston_uz',
+    icon: <TelegramIcon />,
+    label: 'Telegram',
+  },
+  {
+    id: 2,
+    href: 'https://linkedin.com/company/webiston',
+    icon: <LinkedInIcon />,
+    label: 'LinkedIn',
+  },
+  {
+    id: 3,
+    href: 'https://x.com/webiston_uz',
+    icon: <TwitterIcon />,
+    label: 'X(Twitter)',
+  },
+  {
+    id: 4,
+    href: 'mailto:webiston.uz@gmail.com',
+    icon: <EmailIcon />,
+    label: 'Email',
   },
 ]
