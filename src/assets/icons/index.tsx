@@ -23,7 +23,7 @@ export const CircleIcon: FC<IProps> = ({ className }) => {
           r="1"
         >
           <stop></stop>
-          <stop offset="0.5" stop-opacity="0.34"></stop>
+          <stop offset="0.5" stopOpacity="0.34"></stop>
           <stop offset="1"></stop>
         </radialGradient>
       </defs>

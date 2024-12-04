@@ -6,6 +6,12 @@ import Script from 'next/script'
 export default function App({ Component, pageProps }: AppProps) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
+  const isDevelopment = process.env.NODE_ENV === 'development'
+
+  if (isDevelopment) {
+    console.log('Development mode: Analytics disabled')
+    return <Component {...pageProps} />
+  }
 
   return (
     <>
