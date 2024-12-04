@@ -23,6 +23,7 @@ const config: DocsThemeConfig = {
     return (
       <>
         <meta name="google-site-verification" content="Xz0YDnKOB7hdnXLb0nSAIiFs4cRw7zA8wchJDKi08uU" />
+        <meta name="yandex-verification" content="0c91a9b588bee8d3" />
         <title>{title ? title + ' – Webiston' : 'Webiston - Veb texnologiyalar dunyosiga teran nigoh'}</title>
         <meta name="msapplication-TileColor" content="#fff" />
         <meta name="theme-color" content="#fff" />
