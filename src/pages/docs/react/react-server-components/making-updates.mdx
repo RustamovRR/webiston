@@ -90,7 +90,7 @@ Shunday qilib, kontseptual jihatdan bizda serverda bajariladigan server grafigi 
 Pastdagi rasmda, hisoblagich ilovamiz uchun komponentlar daraxtini vizualizatsiya qilamiz, bu yerda to'rtta komponentlar serverda render qilingan va yashil komponentlar klientda render qilingan. Daraxtning ildizi server komponenti bo'lgani uchun, butun daraxt serverda render qilinadi. Biroq, `InteractiveClientPart` komponenti klient komponenti bo'lgani uchun, u serverda render qilinmaydi. Buning o'rniga, server klient komponenti uchun placeholder, ya'ni joy saqlab turuvchi, render qiladi, bu esa klient to'plash vositasi ishlab chiqargan maxsus modulga havola hisoblanadi.
 
 Ushbu modul havolasi asosan “agar siz daraxtda ushbu nuqtaga yetib kelsangiz, ushbu maxsus moduldan foydalanish vaqti keldi” degan ma'noni anglatadi.
-![Server va klient komponentlarini ko'rsatuvchi daraxt](/server-and-client-components.png)
+![Server va klient komponentlarini ko'rsatuvchi daraxt](/react/server-and-client-components.png)
 
 Modul har doim faqat kerak bo'lganda yuklab olinishi shart emas, balki dastlabki to'plam to'plam paketdan ham yuklab olinishi mumkin, chunki to'plash vositalari foydalanuvchilarga yetkazib beradigan to'plam paketlarda ko'plab modullarni qo'shadi. Bu tom ma'noda, `getModuleFromBundleAtPosition([0,4])` yoki shunga o'xshash narsa bo'lishi mumkin. Asosiy nuqtasi shundaki, server to'g'ri klient moduliga havolani yuboradi va React klient tomonida bo'sh joyni to'ldiradi.
 
