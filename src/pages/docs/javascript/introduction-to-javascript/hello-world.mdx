@@ -1,0 +1,25 @@
+# Salom dunyo
+
+Uzunroq kod parchalarini sinab ko'rishni boshlashga tayyor bo'lganingizda, qator-qator interaktiv muhitlar endi mos kelmasligi mumkin va siz kodingizni matn muharririda yozishni afzal ko'rasiz. U yerdan siz JavaScript konsoliga yoki Node sessiyasiga nusxalab olishingiz va joylashtirishingiz mumkin. Yoki kodingizni faylga saqlashingiz mumkin (JavaScript kodi uchun an'anaviy fayl kengaytmasi *.js*) va keyin Node yordamida ushbu JavaScript kod faylini ishga tushirishingiz mumkin:
+```bash copy
+$ node snippet.js
+```
+
+Agar siz Node'ni bunday nointeraktiv tarzda ishlatsangiz, u ishga tushirgan barcha kodingizning qiymatini avtomatik ravishda chop etmaydi, shuning uchun buni o'zingiz qilishingiz kerak bo'ladi. Terminal oynangizda yoki brauzerning dasturchi vositalari konsolida matn va boshqa JavaScript qiymatlarini ko'rsatish uchun `console.log()` funksiyasidan foydalanishingiz mumkin. Masalan, agar siz quyidagi kod qatorini o'z ichiga olgan *hello.js* faylini yaratsangiz:
+``` js copy
+console.log("Hello World!");
+```
+
+va faylni `node hello.js` bilan ishga tushirsangiz, "Hello World!" xabarini chop etilganini ko'rasiz.
+
+Agar siz xuddi shu xabarni veb-brauzerning JavaScript konsolida chop etilganini ko'rmoqchi bo'lsangiz, *hello.html* nomli yangi fayl yarating va unga quyidagi matnni joylashtiring:
+``` js copy
+<script src="hello.js"></script>
+```
+
+Keyin *hello.html* faylini brauzeringizga quyidagi kabi `file://` URL orqali yuklang:
+``` text copy
+file:///Users/username/javascript/hello.html
+```
+
+Konsolda salomlashuvni ko'rish uchun dasturchi vositalari oynasini oching.

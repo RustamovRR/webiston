@@ -87,3 +87,6 @@ under heavy load - katta yuklama ostida
 new generation of build tooling - yangi avlod qurilish vositalari
 out of the box - tayyor holatda
 backward compatibility - oldingi versiyalar bilan moslik
+developer tools - dasturchi vositalari
+initializer expression - boshlang'ich qiymat ifodasi
+arrow functions - strelkali funksiyalar
