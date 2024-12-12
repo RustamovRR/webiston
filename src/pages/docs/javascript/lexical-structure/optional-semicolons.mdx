@@ -1,0 +1,75 @@
+# Ixtiyoriy nuqta-vergullar
+
+Ko'p dasturlash tillari kabi, JavaScript operatorlarni (bunga 5-bobda batafsil to'xtalamiz) bir-biridan ajratish uchun nuqta-vergul (`;`) dan foydalanadi. Bu kodning ma'nosini aniqroq qilish uchun muhimdir: agar ajratkich bo'lmasa, bir bayonot keyingi bayonotning boshlanishi deb noto'g'ri talqin qilinishi mumkin yoki aksincha. JavaScript’da, agar operatorlar alohida qatorlarda yozilgan bo'lsa, odatda ular orasidagi nuqta-vergulni tashlab ketishingiz mumkin. (Shuningdek, dastur oxiridagi yoki dasturda keyingi belgi yopuvchi jingalak qavs (`}`) bo'lsa, nuqta-vergulni tashlab ketishingiz mumkin.) Ko'p JavaScript dasturchilari (va bu kitobdagi kod) operatorlar oxirini aniq belgilash uchun, hatto talab qilinmagan joylarda ham nuqta-vergullardan foydalanadi. Boshqa uslub esa nuqta-vergullarni iloji boricha tashlab ketish va ularni faqat talab qilinadigan holatlardagina ishlatishdir. Qaysi uslubni tanlasangiz ham, JavaScript’dagi ixtiyoriy nuqta-vergullar haqida tushunishingiz kerak bo'lgan bir necha tafsilotlar mavjud.
+
+Quyidagi kodni ko'rib chiqamiz. Ikki operator alohida qatorlarda bo'lgani uchun, birinchi nuqta-vergul tashlab ketilishi mumkin:
+``` js
+a = 3;
+b = 4;
+```
+
+Biroq, quyidagicha yozilganda, birinchi nuqta-vergul talab qilinadi:
+``` js
+a = 3; b = 4;
+```
+
+### Qator uzilishlari va nuqta-vergullar
+
+E'tibor bering, JavaScript har bir qator uzilishini nuqta-vergul sifatida qabul qilmaydi: u odatda qator uzilishlarini faqat yashirin nuqta-vergul qo'shmasdan kodni tahlil qila olmasa, nuqta-vergul sifatida qabul qiladi. Rasmiyroq qilib aytganda (va keyinroq tasvirlanadigan uchta istisno bilan), JavaScript qator uzilishini nuqta-vergul sifatida qabul qiladi, agar keyingi bo'sh bo'lmagan belgini joriy operatorning davomi sifatida talqin qilib bo'lmasa. Quyidagi kodni ko'rib chiqamiz:
+``` js
+let a
+a
+=
+3
+console.log(a)
+```
+
+JavaScript buni quyidagicha talqin qiladi:
+``` js
+let a; a = 3; console.log(a);
+```
+
+JavaScript birinchi qator uzilishini nuqta-vergul sifatida qabul qiladi, chunki u `let a a` kodini nuqta-vergulsiz tahlil qila olmaydi. Ikkinchi `a` alohida `a;` operatori sifatida turishi mumkin, lekin JavaScript ikkinchi qator uzilishini nuqta-vergul sifatida qabul qilmaydi, chunki u uzunroq `a = 3;` operatorini tahlil qilishni davom ettirishi mumkin.
+
+### Kutilmagan holatlar
+
+Bu operator tugatish qoidalari ba'zi kutilmagan holatlarga olib keladi. Bu kod yangi qator bilan ajratilgan ikkita alohida operator bo'lib ko'rinadi:
+``` js
+let y = x + f
+(a+b).toString()
+```
+
+Lekin ikkinchi qatordagi qavslar birinchi qatordagi `f`ning funksiya chaqiruvi sifatida talqin qilinishi mumkin va JavaScript kodni quyidagicha talqin qiladi:
+``` js
+let y = x + f(a+b).toString();
+```
+
+Katta ehtimol, bu kod muallifi nazarda tutgan talqin emas. Ikki alohida operator sifatida ishlashi uchun, bu holatda aniq nuqta-vergul talab qilinadi.
+
+Umuman olganda, agar operator `(`, `[`, `/`, `+` yoki `-` bilan boshlansa, u oldingi operatorning davomi sifatida talqin qilinishi mumkin. `/`, `+` va `-` bilan boshlanadigan operatorlar amalda juda kam uchraydi, lekin hech bo'lmaganda `(` va `[` bilan boshlanadigan operatorlar JavaScript dasturlash uslublarida tez-tez uchrab turadi. Ba'zi dasturchilar bunga o'xshash har qanday operator boshiga himoyalovchi nuqta-vergul qo'yishni yoqtiradi, shunda u oldingi operator o'zgartirilganda va oldingi tugatuvchi nuqta-vergul olib tashlanganda ham to'g'ri ishlashda davom etadi:
+``` js
+let x = 0  // Bu yerda nuqta-vergul tashlab ketilgan
+;[x,x+1,x+2].forEach(console.log)  // Himoyalovchi ; bu operatorni alohida saqlaydi
+```
+
+### Istisnolar
+
+JavaScript birinchi qatordagi operatorni ikkinchi qatordagi operatorning davomi sifatida tahlil qila olmasa, qator uzilishlarini nuqta-vergul sifatida talqin qiladi degan umumiy qoidaning uchta istisnosi mavjud. Birinchi istisno `return`, `throw`, `yield`, `break` va `continue` operatorlarini o'z ichiga oladi (5-bobga qarang). Bu operatorlar ko'pincha alohida turadi, lekin ba'zan ulardan keyin identifikator yoki ifoda keladi. Agar bu so'zlardan keyin qator uzilishi paydo bo'lsa (boshqa belgilardan oldin), JavaScript har doim bu qator uzilishini nuqta-vergul sifatida talqin qiladi. Masalan, agar siz shunday yozsangiz:
+``` js
+return
+true;
+```
+
+JavaScript siz quyidagini nazarda tutgansiz deb taxmin qiladi:
+``` js
+return; true;
+```
+
+Biroq, siz ehtimol quyidagini nazarda tutgan bo'lishingiz mumkin:
+``` js
+return true;
+```
+
+Bu shuni anglatadiki, siz `return`, `break` yoki `continue` va undan keyin keladigan ifoda orasiga qator uzilishini kiritmasligingiz kerak. Agar siz qator uzilishini kiritsangiz, kodingiz nosozlikni tuzatish qiyin bo'lgan noaniq tarzda ishlamay qolishi mumkin.
+
+Ikkinchi istisno `++` va `--` operatorlarini o'z ichiga oladi (§4.8). Bu operatorlar ifodadan oldin keladigan prefix operatorlari yoki ifodadan keyin keladigan postfix operatorlari bo'lishi mumkin. Agar siz bu operatorlardan birini postfix operatori sifatida ishlatmoqchi bo'lsangiz, ular qo'llanilayotgan ifoda bilan bir qatorda bo'lishi kerak. Uchinchi istisno ixcham "strelka" sintaksisi yordamida aniqlangan funksiyalarga tegishli: => strelkaning o'zi parametrlar ro'yxati bilan bir qatorda bo'lishi kerak.

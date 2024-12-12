@@ -1,0 +1,11 @@
+# Unicode normalizatsiyasi
+
+Agar siz JavaScript dasturlaringizda ASCII bo'lmagan belgilardan foydalansangiz, Unicode bir xil belgini kodlashning bir nechta usulini ta'minlashini hisobga olishingiz kerak bo'ladi. Masalan, `é` satri bitta Unicode belgisi `\u00E9` sifatida yoki oddiy ASCII `e` va undan keyin keladigan o'tkir urg'u qo'shuvchi belgi `\u0301` sifatida kodlanishi mumkin. Bu ikki kodlash matn muharriri tomonidan ko'rsatilganda odatda bir xil ko'rinadi, lekin ularning ikkilik kodlashlari turlicha, ya'ni JavaScript ularni turli deb hisoblaydi, bu esa dasturda juda chalkashliklarga olib kelishi mumkin:
+``` js
+const café = 1;  // Bu konstanta "caf\u{e9}" deb nomlangan
+const café = 2;  // Bu konstanta boshqacha: "cafe\u{301}"
+café             // => 1: bu konstantaning bir qiymati bor
+café             // => 2: bu farqlab bo'lmaydigan konstantaning boshqa qiymati bor
+```
+
+Unicode standarti barcha belgilar uchun afzal kodlashni belgilaydi va matnni taqqoslash uchun mos keladigan kanonikal shaklga o'tkazish uchun normallashtirish protsedurasini belgilaydi. JavaScript u talqin qilayotgan manba kodi allaqachon normallashtirilgan deb taxmin qiladi va o'zida hech qanday normallashtirishni amalga oshirmaydi. Agar siz JavaScript dasturlaringizda Unicode belgilaridan foydalanmoqchi bo'lsangiz, turli, lekin vizual farqlab bo'lmaydigan identifikatorlarga duch kelmaslik uchun muharriringiz yoki boshqa vosita manba kodingizni Unicode normallashtirish jarayonini amalga oshirishiga ishonch hosil qilishingiz kerak.

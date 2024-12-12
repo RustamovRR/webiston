@@ -1,0 +1,20 @@
+# Zaxiralangan so'zlar
+
+Quyidagi so'zlar JavaScript tilining bir qismidir. Ularning ko'pchiligi (masalan, `if`, `while` va `for` kabi) konstantalar, o'zgaruvchilar, funksiyalar yoki class’lar nomlari sifatida ishlatilmasligi kerak bo'lgan zaxiralangan kalit so'zlardir (biroq ularning barchasi obyekt ichidagi xossalar nomlari sifatida ishlatilishi mumkin). Boshqalari (masalan, `from`, `of`, `get` va `set` kabi) cheklangan kontekstlarda sintaktik noaniqlik bo'lmagan holda ishlatiladi va identifikatorlar sifatida to'liq qonuniydir. Yana boshqa kalit so'zlar (masalan, `let` kabi) oldingi versiyalar bilan moslikni saqlab qolish uchun to'liq zaxiralanishi mumkin emas, shuning uchun ularni qachon identifikator sifatida ishlatish mumkinligi va qachon mumkin emasligini boshqaradigan murakkab qoidalar mavjud. (Masalan, `let` `class` tashqarisida `var` bilan e'lon qilinganda o'zgaruvchi nomi sifatida ishlatilishi mumkin, lekin `class` ichida yoki `const` bilan e'lon qilinganda ishlatib bo'lmaydi.) Eng oddiy yo'l - `from`, `set` va `target` kabi allaqachon keng qo'llaniladigan va xavfsiz bo'lgan so'zlardan tashqari, bu so'zlarning hech birini identifikator sifatida ishlatmaslikdir.
+``` js
+as          const       export      get         null        target      void
+async       continue    extends     if          of          this        while
+await       debugger    false       import      return      throw       with
+break       default     finally     in          set         true        yield
+case        delete      for         instanceof  static      try
+catch       do          from        let         super       typeof
+class       else        function    new         switch      var
+```
+
+JavaScript shuningdek hozirda til tomonidan ishlatilmaydigan, lekin kelajakdagi versiyalarda ishlatilishi mumkin bo'lgan ba'zi kalit so'zlarni zaxiralaydi yoki cheklaydi:
+``` js  
+enum  implements  interface   package     private     protected   public
+```
+
+Tarixiy sabablarga ko'ra, arguments va eval ma'lum holatlarda identifikatorlar sifatida ruxsat etilmaydi va ularni ishlatishdan butunlay qochish maqsadga muvofiqdir.
+
