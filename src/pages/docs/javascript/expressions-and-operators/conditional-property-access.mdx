@@ -1,0 +1,43 @@
+# Shartli xususiyatga murojaat
+
+ES2020 xususiyatga kirish ifodalari uchun ikkita yangi tur qo'shadi:
+``` js
+expression ?. identifier
+expression ?.[ expression ]
+```
+
+JavaScript’da `null` va `undefined` qiymatlari xususiyatlarga ega bo'lmagan yagona ikki qiymatdir. `.` yoki `[]`dan foydalanadigan oddiy xususiyatga kirish ifodasida, agar chapdagi ifoda `null` yoki `undefined`ga baholansa, *TypeError* olasiz. Bunday turdagi xatolarning oldini olish uchun `?.` va `?.[]` sintaksisidan foydalanishingiz mumkin.
+
+`a?.b` ifodasini ko'rib chiqaylik. Agar `a` qiymati `null` yoki `undefined` bo'lsa, unda ifoda `b` xususiyatga kirishga urinmasdan `undefined`ga baholanadi. Agar `a` boshqa qiymat bo'lsa, unda `a?.b` ifodasi `a.b` nimaga baholansa, aynan o'shanga baholanadi (agar `a`da `b` nomli xususiyat mavjud bo'lmasa, qiymat yana `undefined` bo'ladi).
+
+Ushbu xususiyatga murojaat qilish shakli "ixtiyoriy zanjirlash" (optional chaining) deb ham ataladi, chunki u uzunroq zanjirlangan xususiyatlarga murojaat qilish uchun ham ishlaydi.
+``` js
+let a = { b: null };
+a.b?.c.d // => undefined
+```
+
+`a` obyekt bo'lgani uchun `a.b` tegishli xususiyatga kirish ifodasi to'g'ri bo'ladi. Lekin `a.b` ning qiymati `null` bo'lgani uchun `a.b.c` ifodasi *TypeError* xatosini tashlaydi. `.` o'rniga `?.` ishlatganimizda esa `a.b?.c` qiymati `undefined`ga baholanadi. Demak, `(a.b?.c).d` ifodasi *TypeError* xatosini tashlaydi, chunki u `undefined` qiymatining `d` xususiyatiga murojaat qilmoqchi bo'ladi. Lekin — bu juda muhim — `a.b?.c.d` (qavslar qo'yilmagan holda) ifodasi oddiygina `undefined` qiymatiga baholanadi va hech qanday xatolik yuzaga kelmaydi.
+
+Buning sababi `?.` orqali xususiyatga murojaat qilish *qisqa tutashuv(short-circuiting)* xususiyatiga ega: agar `?.`ning chap tomonidagi ifoda `null` yoki `undefined` bo'lsa, butun ifoda avtomatik ravishda `undefined` qiymatiga baholanadi va xususiyatga murojaat qilishga urinish amalga oshirilmaydi.
+
+Albatta, agar `a.b` obyekt bo'lsa va bu obyektning `c` nomli xususiyati mavjud bo'lmasa, unda `a.b?.c.d` ifodasi yana *TypeError* xatosini tashlaydi. Bunday holatlarning oldini olish uchun yana bir shartli murojaatdan foydalanish mumkin:
+``` js
+let a = { b: {} };  
+a.b?.c?.d // => undefined  
+```
+
+Shartli xususiyatga murojaat `[]` ning o'rniga `?.[]` orqali ham amalga oshiriladi. Masalan, `a?.[b][c]` ifodasida, agar `a`ning qiymati `null` yoki `undefined` bo'lsa, butun ifoda avtomatik ravishda `undefined`ga baholanadi va `b` hamda `c` subifodalar baholanmaydi. Agar bu subifodalar side effect’ga ega bo'lsa, `a` aniqlanmagan bo'lsa, side effect sodir bo'lmaydi:
+``` js
+let a;          // Op, biz bu o‘zgaruvchini ishga tushirishni unutib qo‘ydik!
+let index = 0;  
+try {  
+    a[index++]; // => TypeError xatolik tashlaydi
+} catch(e) {  
+    index       // => 1: Qiymat osishi TypeError sodir bo'lishidan oldin bo'ladi
+}  
+a?.[index++]    // => `undefined`: chunki `a` aniqlanmagan  
+index           // => 1: Qiymat oshmaydi, chunki `?.[]` "short-circuits" ifodasidir 
+a[index++]      // !TypeError: aniqlanmagan indeksni kiritib bo'lmaydi.
+```
+
+`?.` va `?.[]` yordamida shartli xususiyatga murojaat qilish ES2020’ning yangi imkoniyatlaridan biridir. 2020-yil boshidan boshlab ushbu yangi sintaksis ko'pgina yirik brauzerlarning joriy yoki beta versiyalarida qo'llab-quvvatlanadi..

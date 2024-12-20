@@ -1,0 +1,40 @@
+# Obyekt va array boshlang'ich qiymatlari
+
+*Obyekt* va *array boshlang'ich qiymatlari* — bu yangi yaratilgan obyekt yoki array’ning qiymatini ifodalovchi ifodalardir. Ushbu boshlang'ich qiymat ifodalari ba'zan obyekt literallar va array literallar deb ataladi. Ammo, haqiqiy literal qiymatlardan farqli o'laroq, ular asosiy ifodalar emas, chunki ular xususiyatlar va elementlar qiymatlarini belgilovchi bir qancha kichik ifodalardan iborat. Array boshlang'ich qiymatlari sintaksisi biroz oddiyroq bo'lib, avval ularni ko'rib chiqamiz.
+
+Array boshlang'ich qiymati — bu vergul bilan ajratilgan ifodalar ro'yxati va u to'rtburchak qavslar ichida joylashgan. Array boshlang'ich qiymatining qiymati yangi yaratilgan array’dir. Ushbu yangi array elementlari vergul bilan ajratilgan ifodalarning qiymatlariga boshlang'ich qiymat sifatida o'rnatiladi:
+``` js copy
+[]              // Bo'sh array: qavslar ichida hech qanday ifoda yo'q, demak, elementlar yo'q
+[1+2, 3+4]      // 2 elementli array. Birinchi element 3, ikkinchisi esa 7
+```
+
+Array boshlang'ich qiymatlaridagi element ifodalari o'zlari ham array boshlang'ich qiymatlari bo'lishi mumkin, bu esa ichma-ich array’lar yaratishga imkon beradi:
+``` js copy
+let matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]; 
+```
+
+Array boshlang'ich qiymatlaridagi element ifodalari array boshlang'ich qiymati har safar baholanganda qaytadan baholanadi. Bu shuni anglatadiki, array boshlang'ich qiymati ifodasining qiymati har safar baholanganda o'zgarishi mumkin.
+
+Array literaliga qiymatlarni vergul orasida qoldirib, aniqlanmagan elementlarni kiritish mumkin. Misol uchun, quyidagi array beshta elementni o'z ichiga oladi, ulardan uchtasi aniqlanmagan:
+``` js copy
+let sparseArray = [1, , , , 5];
+```
+
+Array boshlang'ich qiymatlarida oxirgi ifodadan keyin bitta qo'shimcha vergul qo'yishga ruxsat beriladi va bu aniqlanmagan element yaratmaydi. Ammo, oxirgi ifodadan keyingi indeks uchun array’ga murojaat qilish har doim aniqlanmagan qiymatga baholanadi.
+
+Obyekt boshlang'ich qiymati ifodalari array boshlang'ich qiymatlariga o'xshaydi, lekin to'rtburchak qavslar o'rniga jingalak qavslar ishlatiladi va har bir kichik ifodadan oldin xususiyat nomi va ikki nuqta keltiriladi:
+``` js copy
+let p = { x: 2.3, y: -1.2 };    // 2 ta xususiyatga ega obyekt  
+let q = {};                     // Hech qanday xususiyatga ega bo'lmagan bo'sh obyekt  
+q.x = 2.3; q.y = -1.2;          // Endi q obyekti p bilan bir xil xususiyatlarga ega  
+```
+
+ES6’dan boshlab, obyekt literal sintaksisi ancha boy imkoniyatlarga ega bo'ldi (batafsil ma'lumotni §6.10 bo'limida topishingiz mumkin). obyekt literal ifodalari ichma-ich joylashtirilishi mumkin. Masalan:
+``` js copy
+let rectangle = {  
+    upperLeft: { x: 2, y: 2 },  
+    lowerRight: { x: 4, y: 5 }  
+}; 
+```
+
+Obyekt va array boshlang'ich qiymatlari 6 va 7-boblardagi misollarda yana ko'rib chiqiladi.

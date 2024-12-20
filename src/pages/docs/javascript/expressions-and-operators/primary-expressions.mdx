@@ -1,0 +1,31 @@
+# Asosiy ifodalar
+
+Eng oddiy ifodalar, ya'ni *asosiy ifodalar*, yakka e'lon qilinadigan ifodalardir — ular boshqa oddiy ifodalarni o'z ichiga olmaydi. JavaScript’dagi asosiy ifodalar — bu konstanta yoki *literal* qiymatlar, ba'zi til kalit so'zlari va o'zgaruvchi havolalari.
+
+**Literal** qiymatlar — bu dasturga to'g'ridan-to'g'ri kiritilgan konstanta qiymatlar. Ular quyidagicha ko'rinishda bo'ladi:
+``` js
+1.23        // Number literal
+"hello"     // String literal
+/pattern/   // Regular expression literal
+```
+
+JavaScript’dagi *number literal* sintaksisi §3.2 bo'limida ko'rib chiqilgan. *String literal* sintaksisi §3.3 bo'limida keltirib o'tilgan. *Regular expression literal* sintaksisi esa §3.3.5 bo'limida tanishtirilgan va batafsil §11.3 bo'limida hujjatlashtiriladi.
+
+Ba'zi JavaScript zaxira so'zlari ham asosiy ifodalar hisoblanadi:
+``` js
+true        // Boolean true qiymatiga baholanadi
+false       // Boolean false qiymatiga baholanadi
+null        // null qiymatiga baholanadi
+this        // "hozirgi" obyektga baholanadi
+```
+
+Biz `true`, `false` va `null` qiymatlar haqida §3.4 va §3.5 bo'limlarda o'rgandik. Boshqa kalit so'zlardan farqli o'laroq, `this` — bu konstanta emas, u dasturda turli joylarda turli qiymatlarga baholanadi. `this` kalit so'zi obyektga yo'naltirilgan dasturlashda ishlatiladi. Metodning tanasida `this` — metod chaqirilgan obyektga baholanadi. Bu haqda ko'proq ma'lumotni §4.5, 8-bob (ayniqsa §8.2.2) va 9-bobda topishingiz mumkin.
+
+Nihoyat, asosiy ifodalar turining uchinchi turi — bu o'zgaruvchi, konstanta yoki global obyektning xususiyatiga havola:
+``` js
+i           // i o'zgaruvchisining qiymatiga baholanadi
+sum         // sum o'zgaruvchisining qiymatiga baholanadi
+undefined   // Global obyektning `undefined` xususiyatining qiymati
+```
+
+Agar dasturda har qanday identifikator o'z-o'zidan paydo bo'lsa, JavaScript uni o'zgaruvchi, konstanta yoki global obyektning xususiyati deb hisoblaydi va uning qiymatini qidiradi. Agar bunday nomdagi o'zgaruvchi mavjud bo'lmasa, mavjud bo'lmagan o'zgaruvchini baholashga urinish `ReferenceError` xatolikni keltirib chiqaradi.

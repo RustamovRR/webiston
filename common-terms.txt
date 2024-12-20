@@ -90,3 +90,4 @@ backward compatibility - oldingi versiyalar bilan moslik
 developer tools - dasturchi vositalari
 initializer expression - boshlang'ich qiymat ifodasi
 arrow functions - strelkali funksiyalar
+initializers - boshlang'ich qiymatlar

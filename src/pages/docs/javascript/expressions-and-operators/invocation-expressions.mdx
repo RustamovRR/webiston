@@ -1,0 +1,16 @@
+# Chaqiruv ifodalari (Invocation expressions)
+
+Chaqiruv ifodasi — bu JavaScript tilida funksiyani yoki metodni chaqirish (yoki bajarish) uchun ishlatiladigan sintaksis. U chaqirilishi kerak bo'lgan funksiyani aniqlaydigan funksiya ifodasi bilan boshlanadi. Funksiya ifodasidan keyin ochiluvchi qavs, vergul bilan ajratilgan nol yoki undan ko'p argument ifodalari ro'yxati va yopiluvchi qavs keladi. Quyidagi misollarni ko'rib chiqamiz:
+``` js copy
+f(0)              // f — funksiya ifodasi; 0 — argument ifodasi.
+Math.max(x,y,z)   // Math.max — funksiya; x, y va z — argumentlar.
+a.sort()          // a.sort — funksiya; hech qanday argument yo'q.
+```
+
+Chaqiruv ifodasi baholanganda, avvalo funksiya ifodasi baholanadi, keyin argument ifodalari baholanadi va argument qiymatlari ro'yxati hosil qilinadi. Agar funksiya ifodasining qiymati funksiya bo'lmasa, *TypeError* xatosi tashlanadi. Keyin, argument qiymatlari funksiya aniqlanganda belgilangan parametr nomlariga tartib bilan tayinlanadi va funksiya tanasi bajariladi
+
+Agar funksiya return operatoridan foydalanib qiymat qaytarsa, ushbu qiymat chaqirish ifodasining qiymati bo'ladi. Aks holda, chaqirish ifodasining qiymati undefined bo'ladi. Funksiyani chaqirishning to'liq tafsilotlari, jumladan, argumentlar soni funksiyaning parametrlar soniga mos kelmagan holatdagi xatti-harakatlar, 8-bobda keltirilgan.
+
+Har bir chaqirish ifodasida qavslar jufti () va qavsdan oldin ifoda bo'ladi. Agar bu ifoda xususiyatga murojaat ifodasi (property access expression) bo'lsa, unda chaqirish metod chaqirish (method invocation) deb ataladi. Metod chaqirishda, xususiyatga murojaatning subyekti bo'lgan obyekt yoki massiv funksiyaning tanasi bajarilayotgan vaqtda this kalit so'zining qiymatiga aylanadi.
+
+Bu imkoniyat obyektga yo'naltirilgan dasturlash paradigmalarini qo'llash imkonini beradi. Bunday holatda funksiyalar (bunday foydalanilganda “metodlar” deb ataladi) o'zlari tegishli bo'lgan obyekt ustida ishlaydi. Batafsil ma’lumot 9-bobda keltirilgan.

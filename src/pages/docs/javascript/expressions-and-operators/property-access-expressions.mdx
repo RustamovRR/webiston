@@ -1,0 +1,33 @@
+# Xususiyatga murojaat qilish ifodalari
+
+*Xususiyatga murojaat qilish ifodasi* obyekt xususiyati yoki array elementi qiymatini baholaydi. JavaScript xususiyatga murojaat qilish uchun ikki xil sintaksisni taqdim etadi:
+``` js copy
+expression . identifier  
+expression [ expression ]  
+```
+
+Xususiyatga murojaat qilishning birinchi usulida ifoda nuqta (.) va bir identifikator bilan davom etadi. Ifoda obyektni belgilaydi, identifikator esa kerakli xususiyatning nomini ko'rsatadi.
+
+Xususiyatga murojaat qilishning ikkinchi usulida birinchi ifodadan (obyekt yoki array) keyin to'rtburchak qavslar ichida yana bir ifoda yoziladi. Ushbu ikkinchi ifoda kerakli xususiyat nomini yoki kerakli array elementining indeksini bildiradi.
+
+Quyida aniq misollar keltirilgan:
+``` js copy
+let o = {x: 1, y: {z: 3}}; // Obyekt namunasi  
+let a = [o, 4, [5, 6]];    // Obyektni o'z ichiga olgan array namunasi
+o.x                        // => 1: o ifodasining x xususiyati  
+o.y.z                      // => 3: o.y ifodasining z xususiyati  
+o["x"]                     // => 1: o obyektining x xususiyati  
+a[1]                       // => 4: a ifodasining 1-indeksidagi element  
+a[2]["1"]                  // => 6: a[2] ifodasining 1-indeksidagi element  
+a[0].x                     // => 1: a[0] ifodasining x xususiyati  
+```
+
+Har qanday turdagi property access expression'da, nuqta `.` yoki to'rtburchak qavs `[` dan oldingi ifoda birinchi bo'lib baholanadi. Agar bu qiymat `null` yoki `undefined` bo'lsa, ifoda `TypeError` xatosini keltirib chiqaradi, chunki JavaScript'da bu ikkita qiymat xususiyatlarga ega bo'lishi mumkin emas.
+
+Agar obyekt ifodasi nuqta va identifikator bilan davom etsa, ushbu identifikator bilan nomlangan xususiyatning qiymati qidiriladi va umumiy ifoda qiymatiga aylanadi. Agar obyekt ifodasi to'rtburchak qavslar ichidagi boshqa ifoda bilan davom etsa, bu ikkinchi ifoda baholanadi va string turiga aylantiriladi. Umumiy ifoda qiymati esa shu string bilan nomlangan xususiyatning qiymati bo'ladi. Ikkala holatda ham, agar nomlangan xususiyat mavjud bo'lmasa, xususiyatga murojaat qilish ifodasining qiymati `undefined` bo'ladi.
+
+*.identifier* sintaksisi ikkita variantdan soddarog'i, ammo shuni yodda tutish kerakki, bu sintaksisni faqatgina xususiyat nomi to'g'ri identifikator bo'lganda va uni dasturni yozayotganingizda bu nomni bilsangiz ishlatishingiz mumkin. Agar xususiyat nomi o'z ichiga bo'sh joylar yoki tinish belgilarini olgan bo'lsa yoki u son (array’lar uchun) bo'lsa, siz to'rtburchak qavslar notatsiyasidan foydalanishingiz kerak bo'ladi.
+
+Bundan tashqari, to'rtburchak qavslar xususiyat nomi statik bo'lmaganda, ya'ni hisoblash natijasida aniqlanganida qo'llaniladi. Batafsil misollarni §6.3.1 bo'limida ko'rishingiz mumkin.
+
+Obyektlar va ularning xususiyatlari 6-bobda batafsil yoritiladi, array’lar va ularning elementlari esa 7-bobda muhokama qilinadi.

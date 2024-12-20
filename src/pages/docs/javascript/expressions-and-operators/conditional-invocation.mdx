@@ -1,0 +1,47 @@
+# Shartli chaqiruv
+
+ES2020’da siz funksiyani `()` o'rniga `?.()`dan foydalanib ham chaqirishingiz mumkin. Odatda funksiyani chaqirganingizda, agar qavslardan chapdagi ifoda `null`, `undefined` yoki funksiya bo'lmagan boshqa qiymat bo'lsa, *TypeError* tashlanadi. Yangi `?.()` chaqiruv sintaksisi bilan, agar `?.`dan chapdagi ifoda `null` yoki `undefined`ga baholansa, butun chaqiruv ifodasi `undefined`ga baholanadi va hech qanday istisno tashlanmaydi.
+
+Array obyektlari array elementlarining kerakli saralash tartibini belgilaydigan funksiya argumentini ixtiyoriy qabul qiladigan `sort()` metodiga ega. ES2020’dan oldin, agar siz `sort()` kabi ixtiyoriy funksiya argumentini qabul qiladigan metod yozmoqchi bo'lsangiz, odatda `if` operatori yordamida funksiya argumenti `if` tanasida chaqirishdan oldin aniqlangan-aniqlanmaganligini tekshirardingiz:
+``` js
+function square(x, log) {    // Ikkinchi argument ixtiyoriy funksiya
+    if (log) {               // Agar ixtiyoriy funksiya uzatilgan bo'lsa
+        log(x);              // Uni chaqirish
+    }
+    return x * x;            // Argumentning kvadratini qaytarish
+}
+```
+
+Biroq, ES2020’ning bu shartli chaqiruv sintaksisi bilan, siz shunchaki funksiya chaqiruvini `?.()`dan foydalanib yozishingiz mumkin, chunki chaqiruv faqat chaqiriladigan qiymat mavjud bo'lgandagina sodir bo'lishini bilasiz:
+``` js
+function square(x, log) {    // Ikkinchi argument ixtiyoriy funksiya
+    log?.(x);                // Agar funksiya mavjud bo'lsa, uni chaqirish
+    return x * x;            // Argumentning kvadratini qaytarish
+}
+```
+
+Biroq shuni e'tiborga olingki, `?.()` faqat chap tomondagi qiymat `null` yoki `undefined` ekanligini tekshiradi. U qiymat haqiqatan ham funksiya ekanligini tekshirmaydi. Shuning uchun, masalan, agar siz bu misolda `square()` funksiyasiga ikkita son uzatsangiz, u hali ham istisno(exception) tashlaydi.
+
+Shartli xossa kirish ifodalari (§4.4.1) kabi, `?.()` bilan funksiya chaqiruvi qisqa tutashuv xususiyatiga ega: agar `?.`dan chapdagi qiymat `null` yoki `undefined` bo'lsa, qavslar ichidagi argument ifodalarning hech biri baholanmaydi:
+``` js
+let f = null, x = 0;
+try {
+    f(x++);     // f null bo'lgani uchun TypeError tashlaydi
+} catch(e) {
+    x           // => 1: istisno tashlanishidan oldin x qiymati oshiriladi
+}
+
+f?.(x++)        // => undefined: f null, lekin istisno tashlanmaydi
+x               // => 1: qisqa tutashuv tufayli oshirish o'tkazib yuboriladi
+```
+
+`?.()` bilan shartli chaqiruv ifodalari funksiyalar uchun qanday ishlasa, metodlar uchun ham shunday ishlaydi. Lekin metod chaqiruvi xossa kirishni ham o'z ichiga olgani uchun, quyidagi ifodalar orasidagi farqlarni tushunishingizga  ishonch hosil qilish bir oz vaqt ajratishga arziydi:
+``` js
+o.m()       // Oddiy xossa kirishi, oddiy chaqiruv
+o?.m()      // Shartli xossa kirishi, oddiy chaqiruv
+o.m?.()     // Oddiy xossa kirishi, shartli chaqiruv           
+```
+
+Birinchi ifodada, `o` `m` xossasiga ega obyekt bo'lishi va bu xossaning qiymati funksiya bo'lishi kerak. Ikkinchi ifodada, agar `o` `null` yoki `undefined` bo'lsa, ifoda `undefined`ga baholanadi. Lekin agar `o` boshqa qiymatga ega bo'lsa, unda uning qiymati funksiya bo'lgan `m` xossasi bo'lishi kerak. Va uchinchi ifodada, `o` `null` yoki `undefined` bo'lmasligi kerak. Agar unda `m` xossasi bo'lmasa yoki bu xossaning qiymati `null` bo'lsa, butun ifoda `undefined`ga baholanadi.
+
+`?.()` bilan shartli chaqiruv JavaScript’ning eng yangi xususiyatlaridan biridir. 2020 yilning birinchi oylariga kelib, bu yangi sintaksis asosiy brauzerlarning joriy yoki beta versiyalarida qo'llab-quvvatlanadi.
