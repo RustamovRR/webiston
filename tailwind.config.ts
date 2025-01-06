@@ -19,6 +19,15 @@ const config: Config = {
       fontSize: {
         dynamic: 'calc(5vw + 0.5rem)',
       },
+      keyframes: {
+        'animate-rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(180deg)' },
+        },
+      },
+      animation: {
+        'rotate-once': 'animate-rotate 700ms ease-in-out forwards',
+      },
     },
   },
   plugins: [],
