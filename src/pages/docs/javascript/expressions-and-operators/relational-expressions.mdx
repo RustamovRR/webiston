@@ -1,0 +1,50 @@
+import { Callout } from 'nextra/components'
+
+# Munosabat ifodalari (Relational expressions)
+
+Bu bo'lim JavaScript’ning munosabat operatorlarini tasvirlaydi. Bu operatorlar ikki qiymat o'rtasidagi munosabatni ("teng", "-dan katta yoki kichik" yoki "-ning xossasi" kabi) tekshiradi va bu munosabat mavjudligiga qarab `true` yoki `false` qaytaradi. Munosabat ifodalari har doim mantiqiy qiymatga baholanadi va bu qiymat ko'pincha `if`, `while` va `for` operatorlarida (5-bobga qarang) dastur bajarilishini boshqarish uchun ishlatiladi. Kelayotgan mavzularda tenglik va tengsizlik operatorlari, taqqoslash operatorlari va JavaScript’ning boshqa ikkita munosabat operatorlari bo'lmish `in` va `instanceof` haqida batafsil ma'lumot beriladi.
+
+## Tenglik va Tengsizlik operatorlari
+
+`==` va `===` operatorlari ikki qiymatning bir xilligini tekshiradi, bunda bir xillikning ikki xil ta'rifidan foydalanadi. Ikkalasi ham har qanday turdagi operandlarni qabul qiladi va agar operandlari bir xil bo'lsa `true`, farq qilsa `false` qaytaradi. `===` operatori qat'iy tenglik operatori (ba'zan identifikatsiya operatori) deb tanilgan va u o'zining ikki operandi bir xillikning qat'iy ta'rifidan foydalangan holda "aynan bir xil" ekanligini tekshiradi. `==` operatori tenglik operatori sifatida tanilgan; u o'zining ikki operandi tur o'zgartirishlariga yo'l qo'yadigan yumshoqroq ta'rifdan foydalangan holda "teng" ekanligini tekshiradi.
+
+`!=` va `!==` operatorlari `==` va `===` operatorlarining aynan teskarisini tekshiradi. `!=` tengsizlik operatori agar ikki qiymat `==` ga ko'ra bir-biriga teng bo'lsa `false` qaytaradi, aks holda `true` qaytaradi. `!==` operatori agar ikki qiymat bir-biriga qat'iy teng bo'lsa `false` qaytaradi, aks holda `true` qaytaradi. §4.10 da ko'rishingiz mumkin bo'lganidek, `!` operatori mantiqiy NOT (EMAS) operatsiyasini hisoblaydi. Bu `!=` va `!==` "teng emas" va "qat'iy teng emas" degan ma'noni anglatishini eslab qolishni osonlashtiradi.
+
+<Callout type="info">
+#### `=`, `==` va `===` operatorlari
+
+JavaScript `=`, `==` va `===` operatorlarini qo'llab-quvvatlaydi. Bu tayinlash, tenglik va qat'iy tenglik operatorlari o'rtasidagi farqlarni tushunishingizga va kod yozayotganda to'g'risini ishlatishingizga ishonch hosil qiling! Garchi uchala operatorni ham "teng" deb o'qish jozibali bo'lsa-da, chalkashliklarni kamaytirish uchun `=` ni "qiymat oladi" yoki "tayinlanadi", `==` ni "teng" va `===` ni "qat'iy teng" deb o'qish foydali bo'lishi mumkin.
+
+`==` operatori JavaScript’ning eski xususiyati hisoblanadi va xatolarning manbai sifatida keng tan olingan. Siz deyarli har doim `==` o'rniga `===` va `!=` o'rniga `!==` ni ishlatishingiz kerak.
+</Callout>
+
+§3.8 da aytib o'tilganidek, JavaScript obyektlari qiymat bo'yicha emas, balki referens bo'yicha taqqoslanadi. Obyekt o'ziga teng, lekin boshqa hech qanday obyektga teng emas. Agar ikkita alohida obyektning bir xil nomlari va qiymatlari bo'lgan bir xil sondagi xossalari bo'lsa ham, ular teng emas. Xuddi shunday, bir xil elementlari bir xil tartibda joylashgan ikkita array ham bir-biriga teng emas.
+
+#### Qat'iy tenglik (Strict equality)
+
+`===` qat'iy tenglik operatori o'z operandlarini baholaydi, keyin hech qanday tur o'zgartirishini bajarmagan holda ikki qiymatni quyidagicha taqqoslaydi:
+- Agar ikki qiymatning turlari har xil bo'lsa, ular teng emas.
+- Agar ikkala qiymat ham `null` yoki ikkala qiymat ham `undefined` bo'lsa, ular teng.
+- Agar ikkala qiymat ham mantiqiy `true` qiymati yoki ikkala qiymat ham mantiqiy `false` qiymati bo'lsa, ular teng.
+- Agar qiymatlarning biri yoki ikkisi ham `NaN` bo'lsa, ular teng emas. (Bu ajablanarli, lekin `NaN` qiymati hech qachon boshqa hech qanday qiymatga, hatto o'ziga ham teng emas! `x` qiymatining `NaN` ekanligini tekshirish uchun `x !== x` yoki global `isNaN()` funksiyasidan foydalaning.)
+- Agar ikkala qiymat ham number bo'lsa va bir xil qiymatga ega bo'lsa, ular teng. Agar qiymatlardan biri `0` va boshqasi `-0` bo'lsa, ular ham teng.
+- Agar ikkala qiymat ham string bo'lsa va bir xil pozitsiyalarda aynan bir xil 16-bitli qiymatlarni (§3.3 dagi izohga qarang) o'z ichiga olsa, ular teng. Agar string’lar uzunligi yoki tarkibi bo'yicha farq qilsa, ular teng emas. Ikkita string bir xil ma'noga va bir xil vizual ko'rinishga ega bo'lishi mumkin, lekin baribir turli 16-bitli qiymatlar ketma-ketligi yordamida kodlangan bo'lishi mumkin. JavaScript Unicode normallashtirishni bajarmaydi va bunday string’lar juftligi `===` yoki `==` operatorlari uchun teng deb hisoblanmaydi.
+- Agar ikkala qiymat ham bir xil obyekt, array yoki funksiyaga havola qilsa, ular teng. Agar ular turli obyektlarga havola qilsa, hatto ikkala obyektda bir xil xossalar bo'lsa ham, ular teng emas.
+
+#### Tur o'zgartirish (Type conversion) bilan tenglik
+
+`==` tenglik operatori qat'iy tenglik operatoriga o'xshaydi, lekin u kamroq qat'iy. Agar ikki operandning qiymatlari bir xil turda bo'lmasa, u ba'zi tur o'zgartirishlarini amalga oshiradi va qaytadan taqqoslashga urinib ko'radi:
+1. Agar ikki qiymat bir xil turga ega bo'lsa, ularni yuqorida tasvirlanganidek qat'iy tenglik uchun tekshiradi. Agar ular qat'iy teng bo'lsa, ular teng. Agar ular qat'iy teng bo'lmasa, ular teng emas.
+2. Agar ikki qiymat bir xil turga ega bo'lmasa, `==` operatori ularni baribir teng deb hisoblashi mumkin. U tenglikni tekshirish uchun quyidagi qoidalar va tur o'zgartirishlaridan foydalanadi:
+    - Agar qiymatlardan biri `null` va boshqasi `undefined` bo'lsa, ular teng.
+    - Agar qiymatlardan biri number va boshqasi string bo'lsa, string’ni number’ga o'zgartiradi va o'zgartirilgan qiymatdan foydalanib qaytadan taqqoslashga urinib ko'radi.
+    - Agar qiymatlardan biri `true` bo'lsa, uni 1 ga o'zgartiradi va qaytadan taqqoslashga urinib ko'radi. Agar qiymatlardan biri `false` bo'lsa, uni 0 ga o'zgartiradi va qaytadan taqqoslashga urinib ko'radi.
+    - Agar qiymatlardan biri obyekt va boshqasi number yoki string bo'lsa, §3.9.3 da tasvirlangan algoritm yordamida obyektni primitivga o'zgartiradi va qaytadan taqqoslashga urinib ko'radi. Obyekt o'zining `toString()` metodi yoki `valueOf()` metodi orqali primitiv qiymatga o'zgartiriladi. JavaScript’ning negizidagi ichki o'rnatilgan class’lari Date class’idan tashqari `toString()` o'zgartirishidan oldin `valueOf()` o'zgartirishini amalga oshirishga harakat qiladi. Date class’i esa `toString()` o'zgartirishini bajaradi.
+    Qiymatlarning boshqa har qanday kombinatsiyalari teng emas.
+
+Tenglikni tekshirishga misol sifatida quyidagi taqqoslashni ko'rib chiqing:
+``` js copy
+"1" == true  // => true
+```
+
+Bu ifoda `true` ga baholanadi, bu juda boshqacha ko'rinadigan qiymatlar aslida teng ekanligini ko'rsatadi. Mantiqiy `true` qiymati avval `1` soniga o'zgartiriladi va taqqoslash qaytadan amalga oshiriladi. Keyin `"1"` string qiymati `1` soniga o'zgartiriladi. Endi ikkala qiymat ham bir xil bo'lgani uchun, taqqoslash `true` qaytaradi.

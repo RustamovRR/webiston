@@ -8,4 +8,6 @@ export default {
   'conditional-invocation': 'Shartli chaqiruv',
   'object-creation-expressions': 'Obyekt yaratish ifodalari',
   'operator-overview': "Operatorlarning umumiy ko'rinishi",
+  'arithmetic-expressions': 'Arifmetik ifodalar',
+  'relational-expressions': 'Munosabat ifodalari',
 }

@@ -1,0 +1,129 @@
+# Arifmetik ifodalar
+
+Bu bo'lim operandlarda arifmetik yoki boshqa sonli manipulyatsiyalarni bajaradigan operatorlarni qamrab oladi. Darajaga ko'tarish, ko'paytirish, bo'lish va ayirish operatorlari to'g'ridan-to'g'ri va birinchi navbatda ko'rib chiqiladi. Qo'shish operatori o'zining alohida bo'limini oladi, chunki u string’larni birlashtirishi ham mumkin va ba'zi g'ayrioddiy tur o'zgartirish qoidalariga ega. Bir operandli operatorlar va bitli operatorlar ham o'zlarining alohida bo'limlarida ko'rib chiqiladi.
+
+Bu arifmetik operatorlarning ko'pchiligi (quyida ko'rsatilganlardan tashqari) *BigInt* (§3.2.5 ga qarang) operandlari yoki oddiy sonlar bilan ishlatilishi mumkin, faqat ikki turni aralashtirmaslik sharti bilan.
+
+Asosiy arifmetik operatorlar: `**` (darajaga ko'tarish), `*` (ko'paytirish), `/` (bo'lish), `%` (modul: bo'lishdan qoldiq), `+` (qo'shish), `-` (ayirish).
+
+Aytib o'tilganidek, `+` operatorini alohida bo'limda ko'rib chiqamiz. Qolgan beshta asosiy operator shunchaki o'z operandlarini baholaydi, kerak bo'lsa qiymatlarni sonlarga o'zgartiradi va keyin darajani, ko'paytmani, bo'linmani, qoldiqni yoki ayirmani hisoblaydi. Songa o'zgartirila olmaydigan sonli bo'lmagan operandlar `NaN` qiymatiga o'zgartiriladi. Agar operandlardan biri `NaN` bo'lsa (yoki `NaN`ga o'zgartirilsa), operatsiya natijasi (deyarli har doim) `NaN` bo'ladi.
+
+`**` operatori *, `/` va `%` dan yuqoriroq ustuvorlikka ega (ular esa o'z navbatida `+` va - dan yuqoriroq ustuvorlikka ega). Boshqa operatorlardan farqli o'laroq, `**` o'ngdan chapga qarab ishlaydi, shuning uchun `2**2**3` bu `2**8`ga teng, `4**3`ga emas. `-3**2` kabi ifodalarda tabiiy noaniqlik mavjud. Bir operandli minus va darajaga ko'tarishning nisbiy ustuvorligiga qarab, bu ifoda `(-3)**2` yoki `-(3**2)` ma'nosini anglatishi mumkin. Turli tillar buni turlicha hal qiladi va JavaScript tomonlarni tanlamasdan, bunday holda qavslarni tashlab ketishni sintaksis xato deb belgilaydi, bu sizni aniq ifoda yozishga majbur qiladi. `**` JavaScript’ning eng yangi arifmetik operatorlaridan biri: u ES2016 bilan tilga qo'shilgan. Biroq, `Math.pow()` funksiyasi JavaScript’ning eng dastlabki versiyalaridan beri mavjud va u `**` operatori bajaradigan operatsiyani aynan bajaradi.
+
+`/` operatori birinchi operandini ikkinchisiga bo'ladi. Agar siz butun va suzuvchi nuqtali sonlarni farqlaydigan dasturlash tillariga o'rgangan bo'lsangiz, bir butun sonni boshqasiga bo'lganda butun son natijasini kutishingiz mumkin. Biroq, JavaScript'da barcha sonlar suzuvchi nuqtali bo'lgani uchun, barcha bo'lish operatsiyalari suzuvchi nuqtali natijalar beradi: `5/2` amali `2.5`ga baholanadi, `2`ga emas. Nolga bo'lish musbat yoki manfiy cheksizlikni beradi, `0/0 `esa `NaN`ga baholanadi: bu hollarning hech biri xato yuzaga keltirmaydi.
+
+`%` operatori birinchi operandning ikkinchi operandga nisbatan modulini hisoblaydi. Boshqacha aytganda, u birinchi operandni ikkinchi operandga butun sonli bo'lgandagi qoldiqni qaytaradi. Natijaning belgisi birinchi operandning belgisi bilan bir xil bo'ladi. Masalan, `5 % 2` amali `1`ga baholanadi va `-5 % 2` esa `-1`ga baholanadi.
+
+Modul operatori odatda butun son operandlari bilan ishlatilsa-da, u suzuvchi nuqtali qiymatlar bilan ham ishlaydi. Masalan, `6.5 % 2.1` amali `0.2`ga baholanadi.
+
+##  `+` Operatori
+
+Ikki operandli `+` operatori sonli operandlarni qo'shadi yoki string operandlarini birlashtiradi:
+``` js
+1 + 2                    // => 3
+"hello" + " " + "there"  // => "hello there"
+"1" + "2"                // => "12"
+```
+
+Ikkala operandning qiymatlari number bo'lganda yoki ikkisi ham string bo'lganda, `+` operatori nima qilishi aniq. Biroq, boshqa har qanday holatda *turdagi o'zgartirish (type conversion)* zarur va bajariladigan operatsiya amalga oshiriladigan o'zgartirishga bog'liq. `+` uchun o'zgartirish qoidalari string’larni birlashtirish ustuvorligini beradi: agar operandlardan biri string yoki string’ga o'zgartirilishi mumkin bo'lgan obyekt bo'lsa, boshqa operand string’ga o'zgartiriladi va birlashtirish amalga oshiriladi. Qo'shish faqat operandlarning hech biri string’ga o'xshash bo'lmaganda amalga oshiriladi.
+
+Texnik jihatdan, `+` operatori quyidagicha ishlaydi:
+- Agar operand qiymatlaridan biri obyekt bo'lsa, u §3.9.3 da tasvirlangan obyektdan-primitivga algoritmi yordamida uni primitivga o'zgartiradi. *Date* obyektlari o'zlarining `toString()` metodi orqali o'zgartiriladi va barcha boshqa obyektlar `valueOf()` orqali o'zgartiriladi, agar bu metod primitiv qiymat qaytarsa. Biroq, ko'pchilik obyektlar foydali bo'lgan `valueOf()` metodiga ega emas, shuning uchun ular ham `toString()` orqali o'zgartiriladi.
+- Obyektdan-primitivga o'zgartirishdan keyin, agar operandlardan biri string bo'lsa, boshqasi string’ga o'zgartiriladi va birlashtirish amalga oshiriladi.
+- Aks holda, ikkala operand ham number’ga (yoki `NaN`ga) o'zgartiriladi va qo'shish amalga oshiriladi.
+
+Quyidagi misollarni ko'rib chiqamiz:
+``` js
+1 + 2           // => 3: qo'shish
+"1" + "2"       // => "12": birlashtirish(concatenation)
+"1" + 2         // => "12": number’dan-string’ga o'zgartirishdan keyin birlashtirish
+1 + {}          // => "1[object Object]": obyektdan-string’ga o'zgartirishdan keyin birlashtirish
+true + true     // => 2: boolean’dan-number’ga o'zgartirishdan keyin qo'shish
+2 + null        // => 2: null 0’ga o'zgartirilgandan keyin qo'shish
+2 + undefined   // => NaN: undefined NaN’ga o'zgartirilgandan keyin qo'shish
+```
+
+Nihoyat, shuni ta'kidlash muhimki, `+` operatori string’lar va number’lar bilan ishlatilganda, u assotsiativ bo'lmasligi mumkin. Ya'ni, natija operatsiyalarning bajarilish tartibiga bog'liq bo'lishi mumkin.
+
+Masalan:
+``` js
+1 + 2 + " blind mice"      // => "3 blind mice"
+1 + (2 + " blind mice")    // => "12 blind mice"
+```
+
+Birinchi qatorda qavslar yo'q va `+` operatori chapdan-o'ngga assotsiativlikka ega, shuning uchun avval ikkita son qo'shiladi va ularning yig'indisi string bilan birlashtiriladi. Ikkinchi qatorda qavslar bu operatsiyalar tartibini o'zgartiradi: 2 soni string bilan birlashtiriladi va yangi string hosil qiladi. Keyin 1 soni yangi string bilan birlashtirib yakuniy natijani hosil qiladi.
+
+## Bir operandli arifmetik operatorlar
+
+Bir operandli operatorlar bitta operandning qiymatini o'zgartirib yangi qiymat hosil qiladi. JavaScript’da bir operandli operatorlarning barchasi yuqori ustuvorlikka ega va barchasi o'ngdan-chapga assotsiativdir. Ushbu bo'limda tasvirlangan arifmetik bir operandli operatorlar (`+`, `-`, `++` va `--`) barchasi kerak bo'lganda o'zlarining yagona operandini number’ga o'zgartiradi. E'tibor bering, `+` va `-` tinish belgilari ham bir operandli, ham ikki operandli operatorlar sifatida ishlatiladi.
+
+Bir operandli arifmetik operatorlar quyidagilar:
+
+#### Bir operandli plyus (+)
+
+Bir operandli plyus operatori o'z operandini number’ga (yoki `NaN`ga) o'zgartiradi va o'sha o'zgartirilgan qiymatni qaytaradi. Allaqachon number bo'lgan operand bilan ishlatilganda, u hech narsa qilmaydi. Bu operator BigInt qiymatlari bilan ishlatilmasligi mumkin, chunki ularni oddiy number’larga o'zgartirib bo'lmaydi.
+
+#### Bir operandli minus (-)
+
+Bir operandli minus operator sifatida ishlatilganda, u kerak bo'lsa o'z operandini number’ga o'zgartiradi va keyin natijaning ishorasini o'zgartiradi.
+
+
+#### Oshirish (++)
+
+`++` operatori o'zining yagona operandini oshiradi (ya'ni, 1 ni qo'shadi), bu operand lvalue (o'zgaruvchi, array elementi yoki obyekt xossasi) bo'lishi kerak. Operator o'z operandini songa o'zgartiradi, unga 1 ni qo'shadi va oshirilgan qiymatni qaytadan o'zgaruvchi, element yoki xossaga tayinlaydi.
+
+`++` operatorining qaytarish qiymati uning operandga nisbatan joylashuviga bog'liq:
+Operanddan oldin ishlatilganda (pre-increment operator deb tanilgan), u operandni oshiradi va o'sha operandning oshirilgan qiymatini baholaydi.
+Operanddan keyin ishlatilganda (post-increment operator deb tanilgan), u operandni oshiradi, lekin o'sha operandning *oshirilmagan* qiymatini baholaydi.
+Quyidagi ikki qator kod o'rtasidagi farqni ko'rib chiqing:
+``` js
+let i = 1, j = ++i;  // i va j ikkisi ham 2
+let n = 1, m = n++;  // n 2 ga teng, m 1 ga teng
+```
+
+E'tibor bering, `x++` ifodasi har doim ham `x=x+1` bilan bir xil emas. `++` operatori hech qachon string’larni birlashtirmaydi: u har doim o'z operandini number’ga o'zgartiradi va oshiradi. Agar `x` "1" string bo'lsa, `++x` qiymati number’da 2 soni bo'ladi, lekin `x+1` string’da "11" bo'ladi.
+
+Shuningdek e'tibor bering, JavaScript’ning avtomatik nuqta-vergul qo'yish xususiyati tufayli, siz post-increment operatori va undan oldingi operand orasiga qator uzilishini qo'ya olmaysiz. Agar shunday qilsangiz, JavaScript operandni o'zi alohida operator deb qabul qiladi va undan oldin nuqta-vergul qo'yadi.
+
+Bu operator, ham pre-increment, ham post-increment shakllarida, ko'pincha `for` sikli (§5.4.3)ni boshqaradigan hisoblagichni oshirish uchun ishlatiladi.
+
+#### Kamaytirish (`--`)
+
+`--` operatori lvalue operandini kutadi. U operand qiymatini number’ga o'zgartiradi, 1 ni ayiradi va kamaytirilgan qiymatni qaytadan operandga tayinlaydi. `++` operatori kabi, `--` ning qaytarish qiymati ham uning operandga nisbatan joylashuviga bog'liq. Operanddan oldin ishlatilganda, u kamaytirib, kamaytirilgan qiymatni qaytaradi. Operanddan keyin ishlatilganda, u operandni kamaytiradi, lekin kamaytirilmagan qiymatni qaytaradi. Operanddan keyin ishlatilganda, operand va operator orasida qator uzilishiga yo'l qo'yilmaydi.
+
+## Bitwise operatorlari
+
+Bitwise operatorlari sonlarning ikkilik ko'rinishidagi bitlar ustida quyi darajadagi manipulyatsiyani bajaradi. Garchi ular an'anaviy arifmetik amallarni bajarmasa-da, ular sonli operandlar ustida ishlab, son qiymatini qaytargani uchun bu yerda arifmetik operatorlar sifatida turkumlanadi. Bu operatorlarning to'rttasi operandlarning har bir biti ustida mantiqiy(Boolean) algebrasi amallarini bajaradi, har bir operanddagi har bir bitga mantiqiy qiymat sifatida munosabatda bo'ladi (1=rost, 0=yolg'on). Qolgan uchta bitwise operatori esa bitlarni chapga va o'ngga surish uchun ishlatiladi. Bu operatorlar JavaScript dasturlashda ko'p ishlatilmaydi va agar siz manfiy sonlarning ikkilik to'ldiruvchi ko'rinishi bilan birga sonlarning ikkilik ko'rinishini yaxshi bilmasangiz, bu bo'limni o'tkazib yuborishingiz mumkin.
+
+Bitwise operatorlari butun son operandlarini kutadi va bu qiymatlar 64-bitli floating-point qiymatlar o'rniga 32-bitli butun sonlar sifatida tasvirlanganday ishlaydi. Bu operatorlar kerak bo'lsa o'z operandlarini sonlarga o'zgartiradi va keyin sonli qiymatlarni kasr qismini va 32-bitdan keyingi har qanday bitlarni tashlab, 32-bitli butun sonlarga majburiy o'zgartiradi. Surish(shift) operatorlari o'ng tomondagi operandning 0 dan 31 gacha bo'lishini talab qiladi. Bu operandni ishora qo'yilmagan 32-bitli butun songa o'zgartirgandan so'ng, ular 5-bitdan keyingi har qanday bitlarni tashlab yuboradi, bu esa tegishli oraliqda son hosil qiladi. Ajablanarli tomoni shundaki, `NaN`, `Infinity` va `-Infinity` bu bitwise operatorlarining operandlari sifatida ishlatilganda 0 ga aylanadi.
+
+`>>>` operatoridan tashqari bu bitwise operatorlarining barchasi oddiy son operandlari yoki BigInt (§3.2.5 ga qarang) operandlari bilan ishlatilishi mumkin.
+
+#### Bitwise AND (`&`)
+
+`&` operatori o'zining butun son argumentlarining har bir biti ustida Boolean qiymatidagi AND (Va) operatsiyasini bajaradi. Natijada bit faqat ikkala operandning mos biti 1 bo'lsagina 1 bo'ladi. Masalan, `0x1234 & 0x00FF` ifodasi `0x0034` ga baholanadi.
+
+#### Bitwise OR (`|`)
+
+`|` operatori o'zining butun son argumentlarining har bir biti ustida Boolean qiymatidagi OR (YOKI) operatsiyasini bajaradi. Agar operandlarning biri yoki ikkalasining mos biti 1 bo'lsa, natijada bit 1 bo'ladi. Masalan, `0x1234 | 0x00FF` ifodasi `0x12FF` ga baholanadi.
+
+#### Bitwise XOR (`^`)
+
+`^` operatori o'zining butun son argumentlarining har bir biti ustida Boolean qiymatidagi istisno OR operatsiyasini bajaradi. Istisno OR degani birinchi yoki ikkinchi operand `true` bo'lishi kerak, lekin ikkalasi ham birdan emas. Bu operatsiya natijasida bit faqat ikkita operandning bittasining (lekin ikkalasining emas) mos biti 1 bo'lsagina 1 bo'ladi. Masalan, `0xFF00 ^ 0xF0F0` ifodasi `0x0FF0` ga baholanadi.
+
+#### Bitwise NOT (`~`)
+
+`~` operatori o'zining yagona butun son operandidan oldin keladigan bir operandli operatordir. U operanddagi barcha bitlarni teskarisiga o'zgartirish orqali ishlaydi. JavaScript’da ishorali butun sonlar qanday tasvirlanishi tufayli, qiymatga `~` operatorini qo'llash uning ishorasini o'zgartirish va 1 ni ayirishga teng. Masalan, `~0x0F` ifodasi `0xFFFFFFF0` yoki `−16` ga baholanadi.
+
+#### Shift left (`<<`, Chapga surish)
+
+`<<` operatori o'zining birinchi operandidagi barcha bitlarni ikkinchi operandda ko'rsatilgan o'rinlar soniga nisbatan chapga suradi (ikkinchi operand 0 dan 31 gacha bo'lgan butun son bo'lishi kerak). Masalan, `a << 1` operatsiyasida, `a` ning birinchi biti (birlar biti) ikkinchi bitga (ikkilar biti) aylanadi, `a` ning ikkinchi biti uchinchisiga aylanadi va hokazo. Yangi birinchi bit uchun nol ishlatiladi va 32-bitning qiymati yo'qoladi. Qiymatni bir pozitsiyaga chapga surish 2 ga ko'paytirishga teng, ikki pozitsiyaga surish 4 ga ko'paytirishga teng va hokazo. Masalan, `7 << 2` ifodasi 28 ga baholanadi.
+
+#### Shift right with sign (`>>`, Ishora bilan o'ngga surish)
+
+`>>` operatori o'zining birinchi operandidagi barcha bitlarni ikkinchi operandda ko'rsatilgan o'rinlar soniga (0 dan 31 gacha bo'lgan butun son) nisbatan o'ngga suradi. O'ng tomonga surilgan bitlar yo'qoladi. Natijaning ishorasini saqlash uchun chap tomonda to'ldirilgan bitlar asl operandning ishora bitiga bog'liq. Agar birinchi operand musbat bo'lsa, natijaning yuqori bitlari nollar bilan to'ldiriladi; agar birinchi operand manfiy bo'lsa, natijaning yuqori bitlari birlar bilan to'ldiriladi. Musbat qiymatni bir o'ringa o'ngga surish 2 ga bo'lishga (qoldiqni tashlab yuborish bilan) teng, ikki o'ringa o'ngga surish 4 ga butun bo'lishga teng va hokazo. Masalan, `7 >> 1` ifodasi 3 ga baholanadi, lekin `-7 >> 1` ifodasi -4 ga baholanadi.
+
+#### Shift right with zero fill (`>>>`, Nol bilan to'ldirib o'ngga surish)
+
+`>>>` operatori xuddi `>>` operatori kabi ishlaydi, faqat chap tomonda to'ldirilgan bitlar birinchi operandning ishorasidan qat'i nazar har doim nol bo'ladi. Bu ishorali 32-bitli qiymatlarni ishorasiz butun sonlar sifatida ko'rmoqchi bo'lganingizda foydali. Masalan, `-1 >> 4` ifodasi -1 ga baholanadi, lekin `-1 >>> 4` ifodasi `0x0FFFFFFF` ga baholanadi. Bu JavaScript’ning bitli operatorlari orasida `BigInt` qiymatlari bilan ishlatib bo'lmaydigan yagona operatordir. `BigInt` 32-bitli butun sonlar kabi yuqori bitni o'rnatish orqali manfiy sonlarni ifodalamaydi va bu operator faqat shu ma'lum ikkilik to'ldiruvchi tasvirlash uchun ma'noli.
+
