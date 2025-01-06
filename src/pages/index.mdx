@@ -2,7 +2,7 @@
 title: Webiston – Veb texnologiyalar dunyosiga teran nigoh
 ---
 
-import { CircleIcon, ReactIcon, ArrowRightIcon } from '@/assets/icons'
+import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon } from '@/assets/icons'
 import { ButtonLink, Card, SectionTitle } from '@/components'
 import { REACT_CHAPTERS } from '@/constants'
 
@@ -30,8 +30,12 @@ import { REACT_CHAPTERS } from '@/constants'
   </div>
 </header>
 
-<section className='w-full flex flex-col gap-8'>
-  <SectionTitle title="React" description="React kutubxonasining ichki ishlash mexanizmlari." icon={<ReactIcon className="w-10 h-10" />} />
+<section className='w-full flex flex-col gap-8 group'>
+  <SectionTitle
+    title={<div>React - <i>"Fluent React"</i> kitobi tarjimasi</div>} 
+    description="React kutubxonasining ichki ishlash mexanizmlari."
+    icon={<ReactIcon className="w-10 h-10 group-hover:scale-110 duration-300 ease-in-out" />} 
+  />
 
    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-6">
       {REACT_CHAPTERS.map((card, index) => (
@@ -43,5 +47,13 @@ import { REACT_CHAPTERS } from '@/constants'
         />
       ))}
     </div>
+</section>
+
+<section className='w-full flex flex-col gap-8 mt-12'>
+    <SectionTitle 
+      title={<div>JavaScript - <i>"JavaScript: The Definitive Guide, 7th Edition"</i> kitobi tarjimasi</div>} description="Tez kunda..."
+      icon={<JavascriptIcon className="w-10 h-10" />} 
+      disabled
+    />
 </section>
 </div>
