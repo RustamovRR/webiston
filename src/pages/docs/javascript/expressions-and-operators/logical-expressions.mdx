@@ -1,0 +1,81 @@
+# Mantiqiy ifodalar (Logical expressions)
+
+`&&`, `||` va `!` mantiqiy operatorlari Boolean algebrasi amallarini bajaradi va ko'pincha ikki munosabat ifodasini bitta murakkab ifodaga birlashtirish uchun munosabat operatorlari bilan birga ishlatiladi. Bu operatorlar kelayotgan kichik mavzularga bo'lib tasvirlanadi. Ularni to'liq tushunish uchun §3.4 da tanishtirilib o'tilgan "truthy" va "falsy" qiymatlar tushunchasini qayta ko'rib chiqishingiz mumkin.
+
+## Mantiqiy VA (`&&`, Logical AND)
+
+`&&` operatorini uch xil darajada tushunish mumkin. Eng oddiy darajada, mantiqiy operandlar bilan ishlatilganda, `&&` operatori ikki qiymat ustida mantiqiy AND operatsiyasini bajaradi: u faqat va faqat uning birinchi operandi *va* ikkinchi operandi ham `true` bo'lsagina `true` qaytaradi. Agar bu operandlarning biri yoki ikkisi ham `false` bo'lsa, u `false` qaytaradi.
+
+`&&` operatori ko'pincha ikki munosabat ifodasini birlashtirish uchun bog'lovchi sifatida ishlatiladi:
+```js copy
+x === 0 && y === 0  // faqatgina x ham, y ham 0 bo'lsagina true
+```
+
+Munosabat ifodalari har doim `true` yoki `false` ga baholanadi, shuning uchun bunday ishlatilganda, `&&` operatorining o'zi ham `true` yoki `false` qaytaradi. Munosabat operatorlari `&&` (va `||`) dan yuqoriroq ustuvorlikka ega, shuning uchun bunday ifodalarni qavslar ishlatmasdan yozish mumkin.
+
+Lekin `&&` operatori operandlarining mantiqiy qiymatlar bo'lishini talab qilmaydi. Esda tutingki, barcha JavaScript qiymatlari yo "truthy" yoki "falsy" bo'ladi. (Tafsilotlar uchun §3.4 ga qarang. *Falsy* qiymatlar: `false`, `null`, `undefined`, `0`, `-0`, `NaN` va `""`. Barcha boshqa qiymatlar, shu jumladan barcha obyektlar, *truthy*.)
+
+`&&` ni tushunishning ikkinchi darajasi - bu *truthy* va *falsy* qiymatlar uchun mantiqiy AND operatori sifatida. Agar ikkala operand ham *truthy* bo'lsa, operator *truthy* qiymat qaytaradi. Aks holda, operandlarning biri yoki ikkisi ham *falsy* bo'lishi kerak va operator *falsy* qiymat qaytaradi. JavaScript’da mantiqiy qiymat kutadigan har qanday ifoda yoki operator *truthy* yoki *falsy* qiymat bilan ishlaydi, shuning uchun `&&` har doim `true` yoki `false` qaytarmasligi amaliy muammolar keltirib chiqarmaydi.
+
+E'tibor bering, bu tavsif operatorning "*truthy* qiymat" yoki "*falsy* qiymat" qaytarishini aytadi, lekin bu qiymatning nima ekanligini aniqlamaydi. Buning uchun `&&` ni uchinchi va yakuniy darajada tasvirlashimiz kerak. Bu operator o'z chap tomonidagi ifodani, ya'ni birinchi operandini baholashdan boshlaydi. Agar chapdagi qiymat *falsy* bo'lsa, butun ifodaning qiymati ham *falsy* bo'lishi kerak, shuning uchun `&&` shunchaki chapdagi qiymatni qaytaradi va o'ng tomondagi ifodani umuman baholamaydi.
+
+Boshqa tomondan, agar chapdagi qiymat *truthy* bo'lsa, ifodaning umumiy qiymati o'ng tomondagi qiymatga bog'liq bo'ladi. Agar o'ng tomondagi qiymat *truthy* bo'lsa, umumiy qiymat ham *truthy* bo'lishi kerak, va agar o'ng tomondagi qiymat *falsy* bo'lsa, umumiy qiymat ham *falsy* bo'lishi kerak. Shuning uchun chapdagi qiymat *truthy* bo'lganda, `&&` operatori o'ng tomondagi qiymatni baholaydi va qaytaradi:
+```js copy
+let o = {x: 1};
+let p = null;
+o && o.x    // => 1: o qiymati truthy, shuning uchun o.x ning qiymatini qaytaradi
+p && p.x    // => null: p qiymati esa falsy, shuning uchun uni qaytaradi va p.x ni baholamaydi
+```
+
+`&&` operatori o'ng tomondagi operandini baholashi yoki baholamasligi mumkinligini tushunish muhim. Bu kod misolida, `p` o'zgaruvchisi `null` ga o'rnatilgan va `p.x` ifodasi, agar baholansa, *TypeError* xatosini keltirib chiqarardi. Lekin kod `&&` ni idiomatik tarzda ishlatadi, shuning uchun `p.x` faqat `p` *truthy* bo'lgandagina - `null` yoki `undefined` bo'lmagandagina baholanadi.
+
+`&&` ning bu xatti-harakati ba'zan "qisqa tutashuv" (short circuiting) deb ataladi va ba'zan kodni shartli ravishda bajarish uchun bu xatti-harakatdan ataylab foydalanadigan kodlarni ko'rishingiz mumkin. Masalan, quyidagi JavaScript kodining ikki qatori bir xil natija beradi:
+```js copy
+if (a === b) stop();      // stop() ni faqat a === b bo'lsagina chaqiradi
+(a === b) && stop();      // Bu ham xuddi shunday ishlaydi
+```
+
+Umuman olganda, `&&` ning o'ng tomonida side effectlar’i (tayinlashlar, oshirishlar, kamaytirishlar yoki funksiya chaqiruvlari) bo'lgan ifoda yozganingizda ehtiyot bo'lishingiz kerak. Bu side effect’larning sodir bo'lishi chap tomondagi qiymatga bog'liq.
+
+Bu operator aslida qanchalik murakkab ishlashiga qaramay, u ko'pincha *truthy* va *falsy* qiymatlar bilan ishlaydigan oddiy Boolean algebra operatori sifatida ishlatiladi.
+
+## Mantiqiy YOKI (`||`, Logical OR)
+
+`||` operatori o'zining ikki operandi ustida mantiqiy OR operatsiyasini bajaradi. Agar operandlarning biri yoki ikkisi ham *truthy* bo'lsa, u *truthy* qiymat qaytaradi. Agar ikkala operand ham *falsy* bo'lsa, u *falsy* qiymat qaytaradi.
+
+Garchi `||` operatori ko'pincha oddiy mantiqiy OR operatori sifatida ishlatilsa-da, u `&&` operatori kabi, murakkabroq xatti-harakatga ega. U o'z chap tomonidagi ifodani, ya'ni birinchi operandini baholashdan boshlaydi. Agar bu birinchi operandning qiymati *truthy* bo'lsa, u qisqa tutashuv qiladi va o'ng tomondagi ifodani umuman baholamasdan o'sha *truthy* qiymatni qaytaradi. Boshqa tomondan, agar birinchi operandning qiymati *falsy* bo'lsa, `||` ikkinchi operandini baholaydi va o'sha ifodaning qiymatini qaytaradi.
+
+`&&` operatori kabi, o'ng tomondagi ifodaning baholanmasligi faktidan ataylab foydalanmoqchi bo'lmasangiz, side effectlar’i bo'lgan o'ng tomondagi operandlardan qochishingiz kerak.
+
+Bu operatorning idiomatik qo'llanilishi - bu alternativalar to'plamidan birinchi *truthy* qiymatni tanlash:
+```js 
+// Agar maxWidth truthy bo'lsa, uni ishlatamiz. Aks holda, preferences obyektidan
+// qiymat qidiramiz. Agar u ham truthy bo'lmasa, hardcode qilib yozilgan konstanta qiymatini ishlatamiz.
+let max = maxWidth || preferences.maxWidth || 500;
+```
+
+E'tibor bering, agar 0 `maxWidth` uchun to'g'ri qiymat bo'lsa, bu kod to'g'ri ishlamaydi, chunki 0 *falsy* qiymat. Muqobil yechim uchun `??` operatoriga (§4.13.2) qarang.
+
+ES6’dan oldin, bu idioma ko'pincha funksiyalarda parametrlar uchun default qiymatlarni ta'minlash uchun ishlatilgan:
+```js copy
+// o ning xossalarini p ga nusxalash va p ni qaytarish
+function copy(o, p) {
+    p = p || {};  // Agar p uchun obyekt uzatilmagan bo'lsa, yangi yaratilgan obyektni ishlatish
+    // funksiya tanasi shu yerda
+}
+```
+
+Biroq, ES6 va undan keyingi versiyalarda bu usulga ehtiyoj yo'q, chunki default parametr qiymatini to'g'ridan-to'g'ri funksiya ta'rifining o'zida yozish mumkin: `function copy(o, p={}) { ... }`.
+
+## Mantiqiy EMAS (`!`, Logical NOT)
+
+`!` operatori bir operandli operator; u bitta operand oldiga qo'yiladi. Uning maqsadi operandining mantiqiy qiymatini teskarisiga o'zgartirish. Masalan, agar `x` *truthy* bo'lsa, `!x` qiymati `false` ga baholanadi. Agar `x` *falsy* bo'lsa, `!x` qiymati `true` bo'ladi.
+
+`&&` va `||` operatorlaridan farqli o'laroq, `!` operatori o'zgartirilgan qiymatni teskarisiga o'zgartirishdan oldin o'z operandini mantiqiy qiymatga o'zgartiradi (3-bobda tasvirlangan qoidalardan foydalanib). Bu shuni anglatadiki, `!` har doim `true` yoki `false` qaytaradi va siz har qanday `x` qiymatini bu operatorni ikki marta qo'llash orqali uning ekvivalent mantiqiy qiymatiga o'zgartirishingiz mumkin: `!!x` (§3.9.2 ga qarang).
+
+Bir operandli operator sifatida, `!` yuqori ustuvorlikka ega va qattiq bog'lanadi. Agar siz `p && q` kabi ifodaning qiymatini teskarisiga o'zgartirmoqchi bo'lsangiz, qavslardan foydalanishingiz kerak: `!(p && q)`. Bu yerda JavaScript sintaksisi yordamida ifodalay oladigan Boolean algebrasi qonunlaridan ikkitasini ta'kidlash o'rinli:
+``` js copy
+// De Morgan qonunlari
+!(p && q) === (!p || !q)  // => true: p va q ning barcha qiymatlari uchun
+!(p || q) === (!p && !q)  // => true: p va q ning barcha qiymatlari uchun
+```

@@ -48,3 +48,72 @@ Tenglikni tekshirishga misol sifatida quyidagi taqqoslashni ko'rib chiqing:
 ```
 
 Bu ifoda `true` ga baholanadi, bu juda boshqacha ko'rinadigan qiymatlar aslida teng ekanligini ko'rsatadi. Mantiqiy `true` qiymati avval `1` soniga o'zgartiriladi va taqqoslash qaytadan amalga oshiriladi. Keyin `"1"` string qiymati `1` soniga o'zgartiriladi. Endi ikkala qiymat ham bir xil bo'lgani uchun, taqqoslash `true` qaytaradi.
+
+## Taqqoslash operatorlari
+
+Taqqoslash operatorlari o'zlarining ikki operandining nisbiy tartibini (sonli yoki alifbo tartibida) tekshiradi:
+- **Kichik (`<`)**: `<` operatori agar uning birinchi operandi ikkinchi operandidan kichik bo'lsa `true` ga baholanadi; aks holda `false` ga baholanadi.
+- **Katta (`>`)**: `>` operatori agar uning birinchi operandi ikkinchi operandidan katta bo'lsa `true` ga baholanadi; aks holda `false` ga baholanadi.
+- **Kichik yoki teng (`<=`)**: `<=` operatori agar uning birinchi operandi ikkinchi operandidan kichik yoki unga teng bo'lsa `true` ga baholanadi; aks holda `false` ga baholanadi.
+- **Katta yoki teng (`>=`)**: `>=` operatori agar uning birinchi operandi ikkinchi operandidan katta yoki unga teng bo'lsa `true` ga baholanadi; aks holda `false` ga baholanadi.
+
+Bu taqqoslash operatorlarining operandlari har qanday turda bo'lishi mumkin. Biroq, taqqoslash faqat number va string’lar ustida bajarilishi mumkin, shuning uchun number yoki string bo'lmagan operandlar o'zgartiriladi.
+
+Taqqoslash va o'zgartirish quyidagicha amalga oshiriladi:
+- Agar operandlardan biri obyektga baholansa, bu obyekt §3.9.3 oxirida tasvirlanganidek primitiv qiymatga o'zgartiriladi; agar uning `valueOf()` metodi primitiv qiymat qaytarsa, o'sha qiymat ishlatiladi. Aks holda, uning `toString()` metodining qaytarilgan qiymati ishlatiladi.
+- Agar kerakli obyektdan-primitivga o'zgartirishdan keyin ikkala operand ham string bo'lsa, ikkita string alifbo tartibi bo'yicha taqqoslanadi, bunda "alifbo tartibi" string’larni tashkil etuvchi 16-bitli Unicode qiymatlarining sonli tartibi bilan aniqlanadi.
+- Agar obyektdan-primitivga o'zgartirishdan keyin operandlardan kamida bittasi string bo'lmasa, ikkala operand ham number’ga o'zgartiriladi va number turi bo'yicha taqqoslanadi. `0` va `-0` teng deb hisoblanadi. `Infinity` o'zidan boshqa har qanday sondan katta va `-Infinity` o'zidan boshqa har qanday sondan kichik. Agar operandlardan biri `NaN` bo'lsa (yoki unga o'zgartirilsa), taqqoslash operatori har doim `false` qaytaradi. Arifmetik operatorlar *BigInt* qiymatlarini oddiy sonlar bilan aralashtirish imkonini bermasa-da, taqqoslash operatorlari sonlar va *BigInt*’lar o'rtasidagi taqqoslashlarga ruxsat beradi.
+
+Shuni yodda tutingki, JavaScript string’lari 16-bitli butun son qiymatlar ketma-ketligi hisoblanadi va string’larni taqqoslash shunchaki ikkita string’dagi qiymatlarning sonli taqqoslashidir. Unicode tomonidan belgilangan sonli kodlash tartibi har qanday ma'lum til yoki lokalda ishlatiladigan an'anaviy saralash tartibiga mos kelmasligi mumkin. Ayniqsa shuni e'tiborga olingki, string’larni taqqoslash *case-sensitive (katta-kichik harflarni farqlaydigan)* va barcha katta harfli ASCII belgilari barcha kichik harfli ASCII belgilaridan "kichik" hisoblanadi. Agar siz buni kutmagan bo'lsangiz, bu qoida chalkash natijalarga olib kelishi mumkin. Masalan, `<` operatoriga ko'ra, ushbu string turdagi "Zoo" so'zi "aardvark" so'zidan string bo'yicha oldin keladi.
+
+String’larni taqqoslashning yanada mustahkam algoritmi uchun `String.localeCompare()` metodini sinab ko'ring, u alifbo tartibining lokallarga xos ta'riflarini ham hisobga oladi. *Case-sensitive* bo'lmagan taqqoslashlar uchun `String.toLowerCase()` yoki `String.toUpperCase()` yordamida string’larni barcha kichik yoki barcha katta harflarga o'zgartirishingiz mumkin. Va string’larni taqqoslashning yanada umumiy va yaxshiroq lokallashtirilgan vositasi uchun §11.7.3 da tasvirlangan *Intl.Collator* class’idan foydalaning.
+
+`+` operatori ham, taqqoslash operatorlari ham number va string operandlari uchun turlicha ishlaydi. `+` string’larga afzallik beradi: agar operandlardan biri string bo'lsa, u birlashtirish(concatenation) amalini bajaradi. Taqqoslash operatorlari esa number’larga afzallik beradi va faqat ikkala operand ham string bo'lsagina string’larni taqqoslashni bajaradi:
+``` js copy
+1 + 2        // => 3: qo'shish
+"1" + "2"    // => "12": birlashtirish
+"1" + 2      // => "12": number turidagi 2 string turidagi "2" ga o'zgartiriladi
+11 < 3       // => false: number turidagi taqqoslash
+"11" < "3"   // => true: string turidagi taqqoslash
+"11" < 3     // => false: number turidagi taqqoslash, string bo'lgan "11" number bo'lgan 11 ga o'zgartiriladi
+"one" < 3    // => false: number turidagi taqqoslash, "one" qiymate NaN ga o'zgartiriladi
+```
+
+Nihoyat, shuni e'tiborga olingki, `<=` (kichik yoki teng) va `>=` (katta yoki teng) operatorlari ikki qiymatning "teng" ekanligini aniqlash uchun tenglik yoki qat'iy tenglik operatorlariga tayanmaydi. Buning o'rniga, kichik-yoki-teng operatori shunchaki "katta emas" deb, katta-yoki-teng operatori esa "kichik emas" deb aniqlanadi. Yagona istisno operandlardan biri `NaN` bo'lganda (yoki unga o'zgartirilganda) yuz beradi, bunday holda to'rtta taqqoslash operatorining barchasi `false` qaytaradi.
+
+## `in` operatori
+
+`in` operatori chap tomondagi operand sifatida string, symbol yoki string’ga o'zgartirilishi mumkin bo'lgan qiymatni kutadi. U o'ng tomondagi operand sifatida obyektni kutadi. Agar chap tomondagi qiymat o'ng tomondagi obyektning xossa nomi bo'lsa, u `true` ga baholanadi. Masalan:
+
+``` js copy 
+let point = {x: 1, y: 1};  // Obyektni e'lon qilish
+"x" in point               // => true: obyektda "x" nomli xossa bor
+"z" in point              // => false: obyektda "z" xossasi yo'q
+"toString" in point       // => true: obyekt toString metodini meros qilib olgan
+
+let data = [7,8,9];       // 0, 1 va 2 indeksli elementlari bo'lgan array
+"0" in data               // => true: array’da "0" elementi bor
+1 in data                 // => true: number’lar string’larga o'zgartiriladi
+3 in data                 // => false: 3 elementi yo'q
+```
+
+## `instanceof` operatori
+
+`instanceof` operatori chap tomondagi operand sifatida obyektni va o'ng tomondagi operand sifatida obyektlar class’ini aniqlaydigan qiymatni kutadi. Agar chap tomondagi obyekt o'ng tomondagi class’ning nusxasi bo'lsa operator `true` ga baholanadi, aks holda `false` ga baholanadi.
+
+9-bobda tushuntirilishicha, JavaScript’da obyektlar class’lari ularni ishga tushiradigan konstruktor funksiya orqali aniqlanadi. Shuning uchun, `instanceof` ning o'ng tomondagi operandi funksiya bo'lishi kerak. Quyida misollar keltirilgan:
+
+``` js copy
+let d = new Date();      // Date() konstruktori bilan yangi obyekt yaratish
+d instanceof Date        // => true: d qiymati Date() bilan yaratilgan
+d instanceof Object      // => true: barcha obyektlar Object'ning nusxalari
+d instanceof Number      // => false: d Number obyekti emas
+let a = [1, 2, 3];      // Array literal sintaksisi bilan array yaratish
+a instanceof Array      // => true: a qiymati array
+a instanceof Object     // => true: barcha array’lar obyektlardir
+a instanceof RegExp     // => false: array’lar regex’lar emas
+```
+
+E'tibor bering, barcha obyektlar `Object` ning nusxalaridir. `instanceof` obyektning biror class’ga tegishli ekanligini aniqlashda "superclass"larni ham hisobga oladi. Agar `instanceof` ning chap tomondagi operandi obyekt bo'lmasa, `instanceof` `false` qaytaradi. Agar o'ng tomondagi operand obyektlar class’i bo'lmasa, u `TypeError` xatosini chiqaradi.
+
+`instanceof` operatori qanday ishlashini tushunish uchun "prototip zanjiri"ni tushunishingiz kerak. Bu JavaScript’ning meros qilib olish mexanizmi bo'lib, u §6.3.2 da tasvirlangan. `o instanceof f` ifodasini baholash uchun JavaScript `f.prototype` ni baholaydi va keyin bu qiymatni `o` ning prototip zanjirida qidiradi. Agar uni topsa, u holda `o` qiymati `f` ning (yoki `f` ning kichik class’ining) nusxasi (instance) hisoblanadi va operator `true` qaytaradi. Agar `f.prototype` qiymati `o` ning prototip zanjirida mavjud qiymatlardan biri bo'lmasa, u holda `o` qiymati `f` ning nusxasi emas va `instanceof` operatori `false` qaytaradi.

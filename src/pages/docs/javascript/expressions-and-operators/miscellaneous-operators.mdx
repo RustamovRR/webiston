@@ -1,0 +1,138 @@
+# Boshqa operatorlar (Miscellaneous operators)
+
+JavaScript quyidagi kichik mavzularda tasvirlangan bir qator boshqa turli operatorlarni qo'llab-quvvatlaydi.
+
+## Shartli operator (`?:`)
+
+Shartli operator JavaScript’dagi yagona uch operandli (ternary) operator bo'lib, ba'zida haqiqatan ham *ternary operator* deb ataladi. Bu operator ba'zida `?:` deb yoziladi, garchi u kodda aynan shunday ko'rinishda paydo bo'lmasa ham. Bu operator uch operandli bo'lgani uchun, birinchisi `?` dan oldin, ikkinchisi `?` va `:` orasida, va uchinchisi `:` dan keyin keladi. U quyidagicha ishlatiladi:
+``` js copy
+x > 0 ? x : -x  // x ning absolyut qiymati
+```
+
+Shartli operatorning operandlari har qanday turda bo'lishi mumkin. Birinchi operand baholanadi va boolean qiymat sifatida talqin qilinadi. Agar birinchi operandning qiymati *truthy* bo'lsa, ikkinchi operand baholanadi va uning qiymati qaytariladi. Aks holda, agar birinchi operand *falsy* bo'lsa, uchinchi operand baholanadi va uning qiymati qaytariladi. Ikkinchi va uchinchi operandlarning faqat bittasi baholanadi; hech qachon ikkisi birdaniga emas.
+
+Garchi siz `if` operatori (§5.3.1) yordamida o'xshash natijalarga erishishingiz mumkin bo'lsa-da, `?:` operatori ko'pincha qulay qisqartma taqdim etadi. Mana odatiy foydalanish, u o'zgaruvchi aniqlanganligiga (va mazmunli, *truthy* qiymatga ega ekanligiga) ishonch hosil qiladi va agar shunday bo'lsa uni ishlatadi yoki aks holda default qiymatni taqdim etadi:
+``` js copy
+greeting = "hello " + (username ? username : "there");
+```
+
+Bu quyidagi `if` operatoriga teng, lekin undan ixchamroq:
+``` js copy
+greeting = "hello ";
+if (username) {
+    greeting += username;
+} else {
+    greeting += "there";
+}
+```
+
+## Birinchi-aniqlangan (`??`, First-defined)
+
+Birinchi-aniqlangan `??` operatori o'zining birinchi aniqlangan operandiga baholanadi: agar uning chap operandi `null` va `undefined` bo'lmasa, u o'sha qiymatni qaytaradi. Aks holda, u o'ng operandning qiymatini qaytaradi. `&&` va `||` operatorlari kabi, `??` ham qisqa tutashuvli: u ikkinchi operandini faqat birinchi operand `null` yoki `undefined` ga baholanganda baholaydi. Agar `a` ifodaning side effect’lari bo'lmasa, `a ?? b` ifodasi quyidagiga teng:
+``` js copy
+(a !== null && a !== undefined) ? a : b
+```
+
+`??` birinchi *truthy* operand emas, balki birinchi aniqlangan operandni tanlashni xohlaganingizda `||` (§4.10.2) ning foydali muqobili hisoblanadi. Garchi `||` nomiga ko'ra mantiqiy OR operatori bo'lsa-da, u idiomatik tarzda quyidagi kod kabi birinchi *falsy* bo'lmagan operandni tanlash uchun ham ishlatiladi:
+``` js copy
+// Agar maxWidth truthy bo'lsa, uni ishlating. Aks holda, preferences obyektidan
+// qiymat qidiring. Agar u ham truthy bo'lmasa, hardcode qilib yozilgan konstantani ishlating.
+let max = maxWidth || preferences.maxWidth || 500;
+```
+
+Bu idiomatik foydalanishning muammosi shundaki, nol, bo'sh string va `false` - barchasi ba'zi hollarda mutlaqo to'g'ri bo'lishi mumkin bo'lgan *falsy* qiymatlardir. Bu kod misolida, agar `maxWidth` nol bo'lsa, bu qiymat e'tiborga olinmaydi. Lekin agar biz `||` operatorini `??` ga o'zgartirsak, nol to'g'ri qiymat bo'lgan ifodaga ega bo'lamiz:
+``` js copy
+// Agar maxWidth aniqlangan bo'lsa, uni ishlating. Aks holda, preferences obyektidan
+// qiymat qidiring. Agar u ham aniqlanmagan bo'lsa, hardcode qilib yozilgan konstantani ishlating.
+let max = maxWidth ?? preferences.maxWidth ?? 500;
+```
+
+Mana birinchi operand *falsy* bo'lganda `??` qanday ishlashini ko'rsatuvchi ko'proq misollar. Agar operand *falsy*, lekin aniqlangan bo'lsa, `??` uni qaytaradi. Bu operator ikkinchi operandni faqat birinchi operand "nullish" (ya'ni, `null` yoki `undefined`) bo'lgandagina baholaydi va qaytaradi:
+``` js copy
+let options = { timeout: 0, title: "", verbose: false, n: null };
+options.timeout ?? 1000     // => 0: obyektda aniqlangandek
+options.title ?? "Untitled" // => "": obyektda aniqlangandek
+options.verbose ?? true     // => false: obyektda aniqlangandek
+options.quiet ?? false      // => false: xossa aniqlanmagan
+options.n ?? 10             // => 10: xossa null
+```
+
+E'tibor bering, agar biz `??` o'rniga `||` ishlatsak, bu yerda `timeout`, `title` va `verbose` ifodalari boshqacha qiymatlarga ega bo'lardi.
+
+`??` operatori `&&` va `||` operatorlariga o'xshash, lekin ulardan yuqoriroq yoki pastroq ustuvorlikka ega emas. Agar siz uni bu operatorlardan biri bilan birgalikda ifodada ishlatsangiz, qaysi amalni birinchi bajarmoqchi ekanligingizni aniq ko'rsatish uchun qavslardan foydalanishingiz kerak:
+``` js copy
+(a ?? b) || c    // avval ??, keyin ||
+a ?? (b || c)    // avval ||, keyin ??
+a ?? b || c      // SyntaxError: qavslar talab qilinadi
+```
+
+`??` operatori ES2020 tomonidan aniqlangan va 2020 yil boshiga kelib, barcha asosiy brauzerlarning joriy yoki beta versiyalari tomonidan yangi qo'llab-quvvatlanadi. Bu operator rasmiy ravishda "nullish coalescing" operatori deb ataladi, lekin men bu atamadan qochaman, chunki bu operator o'z operandlaridan birini tanlaydi, lekin men ko'ra oladigan tarzda ularni hech qanday tarzda "birlashtirmaydi".
+
+## `typeof` operatori
+
+`typeof` - bu bitta operandi oldiga qo'yiladigan bir operandli operator bo'lib, operand har qanday turda bo'lishi mumkin. Uning qiymati operandning turini ko'rsatadigan string’dir. 4-3 jadvalda har qanday JavaScript qiymati uchun `typeof` operatorining qiymati ko'rsatilgan.
+
+#### `typeof` operatori qaytaradigan qiymatlar jadvali
+
+| `x` qiymati               | `typeof x` qiymati|
+|---------------------------|-------------------|
+| `undefined`               | `"undefined"`     |
+| `null`                    | `"object"`        |
+| `true` yoki `false`       | `"boolean"`       |
+| Har qanday `number` yoki `NaN` | `"number"`      |
+| Har qanday `BigInt`       | `"bigint"`        |
+| Har qanday `string`       | `"string"`        |
+| Har qanday `symbol`       | `"symbol"`        |
+| Har qanday funksiya       | `"function"`      |
+| Har qanday funksiya bo'lmagan obyekt | `"object"`    |
+
+Siz `typeof` operatorini quyidagi kabi ifodada ishlatishingiz mumkin:
+``` js copy
+// Agar qiymat string bo'lsa, uni qo'shtirnoq ichiga o'rash, aks holda, konvertatsiya qilish
+(typeof value === "string") ? "'" + value + "'" : value.toString()
+```
+
+E'tibor bering, agar operand qiymati `null` bo'lsa, `typeof` qiymati "object" qaytaradi. Agar siz `null` ni obyektlardan farqlamoqchi bo'lsangiz, bu maxsus holatdagi qiymatni aniq tekshirishingiz kerak bo'ladi.
+
+Garchi JavaScript funksiyalari obyektning bir turi bo'lsa-da, `typeof` operatori funksiyalarni yetarlicha farqli deb hisoblab, ularga o'z qaytish qiymatini beradi.
+
+`typeof` funksiyalardan tashqari barcha obyekt va array qiymatlari uchun "object" ga baholanishi sababli, u faqat obyektlarni boshqa primitiv turlardan farqlash uchun foydalidir. Bir obyekt class’ini boshqasidan farqlash uchun siz `instanceof` operatori (§4.9.4 ga qarang), `class` atributi (§14.4.3 ga qarang) yoki `constructor` xossasi (§9.2.2 va §14.3 ga qarang) kabi boshqa texnikalardan foydalanishingiz kerak.
+
+## `delete` operatori
+
+`delete` - bu obyekt xossasi yoki array elementini o'chirishga harakat qiladigan bir operandli operator. Tayinlash, oshirish va kamaytirish operatorlari kabi, `delete` ham odatda o'zining xossani o'chirish side effecti uchun ishlatiladi va u qaytaradigan qiymat uchun emas. Ba'zi misollar:
+``` js copy
+let o = { x: 1, y: 2};  // Obyekt bilan boshlash
+delete o.x;             // Uning xossalaridan birini o'chirish
+"x" in o                // => false: xossa endi mavjud emas
+
+let a = [1,2,3];        // Array bilan boshlash
+delete a[2];            // Array’ning oxirgi elementini o'chirish
+2 in a                  // => false: array elementi 2 endi mavjud emas
+a.length                // => 3: e'tibor bering, array uzunligi o'zgarmaydi
+```
+
+E'tibor bering, o'chirilgan xossa yoki array elementi shunchaki undefined qiymatiga o'rnatilmaydi. Xossa o'chirilganda, xossa mavjud bo'lmay qoladi. Mavjud bo'lmagan xossani o'qishga urinish undefined qaytaradi, lekin siz xossaning haqiqiy mavjudligini in operatori (§4.9.3) bilan tekshirishingiz mumkin. Array elementini o'chirish array’da "teshik" qoldiradi va array uzunligini o'zgartirmaydi. Natijada hosil bo'lgan array siyrak bo'ladi (§7.3).
+
+`delete` operandi lvalue bo'lishini kutadi. Agar u lvalue bo'lmasa, operator hech qanday harakat qilmaydi va `true` qaytaradi. Aks holda, `delete` ko'rsatilgan lvalue ni o'chirishga harakat qiladi.
+
+`delete` ko'rsatilgan lvalue ni muvaffaqiyatli o'chirsa, `true` qaytaradi. Biroq, barcha xossalarni ham o'chirib bo'lmaydi: konfiguratsiya qilinmaydigan xossalar (§14.1) o'chirishdan himoyalangan.
+
+Qat'iy rejimda, agar `delete` ning operandi o'zgaruvchi, funksiya yoki funksiya parametri kabi malakasiz identifikator bo'lsa, *SyntaxError* xatosini chiqaradi: u faqat operand xossaga murojaat ifodasi (§4.4) bo'lganda ishlaydi. Qat'iy rejim shuningdek, agar konfiguratsiya qilinmaydigan (ya'ni, o'chirib bo'lmaydigan) xossani o'chirishga so'ralsa, `delete` TypeError xatosini chiqarishini belgilaydi. Qat'iy rejimdan tashqarida, bu hollarda hech qanday xato yuz bermaydi va `delete` shunchaki operandni o'chirib bo'lmasligini ko'rsatish uchun false qaytaradi.
+
+Mana `delete` operatorining ba'zi misollari:
+``` js copy
+let o = {x: 1, y: 2};
+delete o.x;            // Obyekt xossalaridan birini o'chirish; true qaytaradi
+typeof o.x;           // Xossa mavjud emas; "undefined" qaytaradi
+delete o.x;           // Mavjud bo'lmagan xossani o'chirish; true qaytaradi
+delete 1;             // Bu mantiqsiz, lekin shunchaki true qaytaradi
+
+// O'zgaruvchini o'chirib bo'lmaydi; false qaytaradi yoki qat'iy rejimda SyntaxError
+delete o;
+
+// O'chirib bo'lmaydigan xossa: false qaytaradi yoki qat'iy rejimda TypeError
+delete Object.prototype;
+```
+
+Biz `delete` operatorini yana §6.4 da ko'rib chiqamiz.

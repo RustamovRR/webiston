@@ -91,3 +91,6 @@ developer tools - dasturchi vositalari
 initializer expression - boshlang'ich qiymat ifodasi
 arrow functions - strelkali funksiyalar
 initializers - boshlang'ich qiymatlar
+numerical order - sonli tartib
+case-sensitive - katta-kichik harflarni farqlaydigan
+boilerplate code - keraksiz (ortiqcha) takrorlanuvchi kod

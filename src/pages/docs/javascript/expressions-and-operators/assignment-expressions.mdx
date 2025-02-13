@@ -1,0 +1,70 @@
+# Tayinlash ifodalari (Assignment expressions)
+
+JavaScript qiymatni o'zgaruvchi yoki xossaga tayinlash uchun `=` operatoridan foydalanadi. Masalan:
+``` js copy
+i = 0;      // i o'zgaruvchisiga 0 ni tayinlash
+o.x = 1;    // o obyektining x xossasiga 1 ni tayinlash
+```
+
+`=` operatori chap tomondagi operand sifatida *lvalue* bo'lishini kutadi: o'zgaruvchi yoki obyekt xossasi (yoki array elementi). U o'ng tomondagi operand sifatida har qanday turdagi ixtiyoriy qiymat bo'lishini kutadi. Tayinlash ifodasining qiymati o'ng tomondagi operandning qiymatidir. Side effect sifatida, `=` operatori o'ng tomondagi qiymatni chap tomondagi o'zgaruvchi yoki xossaga tayinlaydi, shunda o'zgaruvchi yoki xossaga keyingi murojatlar shu qiymatga baholanadi.
+
+Garchi tayinlash ifodalari odatda juda oddiy bo'lsa-da, ba'zida tayinlash ifodasining qiymati kattaroq ifodaning bir qismi sifatida ishlatilganini ko'rishingiz mumkin. Masalan, siz qiymatni quyidagi kod kabi bir ifodaning o'zida tayinlash va tekshirishingiz mumkin:
+``` js copy
+(a = b) === 0
+```
+
+Agar siz buni qilsangiz, `=` va `===` operatorlari o'rtasidagi farqni aniq tushunishingizga ishonch hosil qiling! E'tibor bering, `=` juda past ustuvorlikka ega va tayinlash qiymati kattaroq ifodada ishlatilganda odatda qavslar zarur.
+
+Tayinlash operatori o'ngdan chapga assotsiativlikka ega, bu shuni anglatadiki, ifodada bir nechta tayinlash operatori paydo bo'lganda, ular o'ngdan chapga qarab baholanadi. Shunday qilib, siz bir qiymatni bir nechta o'zgaruvchiga tayinlash uchun quyidagi kodni yozishingiz mumkin:
+``` js copy
+i = j = k = 0;    // 3 ta o'zgaruvchini 0 qiymatiga boshlang'ich qiymat sifatida o'rnatish
+```
+
+## Operatsiya bilan tayinlash
+
+Oddiy `=` tayinlash operatoridan tashqari, JavaScript tayinlashni boshqa operatsiya bilan birlashtirish orqali qisqartma yo'llar taqdim etuvchi boshqa tayinlash operatorlarini ham qo'llab-quvvatlaydi. Masalan, `+=` operatori qo'shish va tayinlashni bajaradi. Quyidagi ifoda:
+``` js copy
+total += salesTax;
+```
+
+quyidagiga teng:
+``` js copy
+total = total + salesTax;
+```
+
+Kutganingizdek, `+=` operatori number’lar yoki string’lar uchun ishlaydi. Sonli operandlar uchun u qo'shish va tayinlashni bajaradi; string operandlari uchun u birlashtirish va tayinlashni bajaradi.
+
+Shunga o'xshash operatorlarga `-=`, `*=`, `&=`va boshqalar kiradi. Quyidagi jadvalda ularning barchasi keltirilgan.
+
+### Tayinlash operatorlari jadvali
+
+| **Operator** | **Misol**       | **Ekvivalent**                  |
+|----------|-------------|-----------------------------------------|
+| `+=`     | `a += b`    | `a = a + b`                             |
+| `-=`     | `a -= b`    | `a = a - b`                             |
+| `*=`     | `a *= b`    | `a = a * b`                             |
+| `/=`     | `a /= b`    | `a = a / b`                             |
+| `%=`     | `a %= b`    | `a = a % b`                             |
+| `**=`    | `a **= b`   | `a = a ** b`                            |
+| `<<=`    | `a <<= b`   | `a = a << b`                            |
+| `>>=`    | `a >>= b`   | `a = a >> b`                            |
+| `>>>=`   | `a >>>= b`  | `a = a >>> b`                           |
+| `&=`     | `a &= b`    | `a = a & b`                             |
+| `\|=`     | `a \|= b`    | `a = a \| b`                          |
+| `^=`     | `a ^= b`    | `a = a ^ b`                             |
+
+Ko'p hollarda:
+``` js copy
+a op= b
+```
+
+ifodasi, bu yerda op operator, quyidagi ifodaga teng:
+``` js copy
+a = a op b
+```
+
+Birinchi qatorda `a` ifodasi bir marta baholanadi. Ikkinchisida esa u ikki marta baholanadi. Bu ikki hol faqat `a` funksiya chaqiruvi yoki oshirish operatori kabi side effect’larga ega bo'lsa farq qiladi. Masalan, quyidagi ikkita tayinlash bir xil emas:
+``` js copy
+data[i++] *= 2;
+data[i++] = data[i++] * 2;
+```

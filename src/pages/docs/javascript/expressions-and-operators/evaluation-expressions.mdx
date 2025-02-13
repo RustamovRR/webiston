@@ -1,0 +1,77 @@
+import { Callout } from 'nextra/components'
+
+# Baholash ifodalari (Evaluation expressions)
+
+Ko'p interpretatsiya qilinadigan tillar kabi, JavaScript ham JavaScript manba kodining string’larini interpretatsiya qilish, ularni qiymat hosil qilish uchun baholash qobiliyatiga ega. JavaScript buni global `eval()` funksiyasi bilan bajaradi:
+``` js copy
+eval("3+2")  // => 5
+```
+
+Manba kodi string’larini dinamik baholash - bu kuchli til xususiyati bo'lib, amalda deyarli hech qachon zarur emas. Agar siz `eval()` dan foydalanayotgan bo'lsangiz, undan haqiqatan ham foydalanish kerakligini yaxshilab o'ylab ko'rishingiz kerak. Xususan, `eval()` xavfsizlik teshigi bo'lishi mumkin va siz hech qachon foydalanuvchi kiritgan ma'lumotlardan olingan hech qanday string’ni `eval()` ga uzatmasligingiz kerak. JavaScript kabi murakkab til bilan foydalanuvchi kiritgan ma'lumotlarni `eval()` bilan ishlatish uchun xavfsiz qilishning iloji yo'q. Bu xavfsizlik muammolari tufayli ba'zi veb-serverlar butun veb-sayt uchun `eval()` ni o'chirish uchun *HTTP "Content-Security-Policy"* sarlavhasidan foydalanadi.
+
+Kelasi kichik mavzularda `eval()` ning asosiy ishlatilishi va uning optimizatorga kamroq ta'sir ko'rsatadigan ikkita cheklangan versiyasi tushuntiriladi.
+
+<Callout type="info">
+## `eval()` Funksiyami yoki Operatormi?
+
+`eval()` - bu funksiya, lekin u ifodalar haqidagi ushbu bobga kiritilgan, chunki u aslida operator bo'lishi kerak edi. Tilning eng dastlabki versiyalari `eval()` funksiyasini aniqlagan va o'shandan beri til dizaynerlari va interpretator yozuvchilari unga uni tobora ko'proq operatorga o'xshash qiladigan cheklovlar qo'yib kelmoqda. Zamonaviy JavaScript interpretatorlari ko'p kod tahlili va optimizatsiyasini bajaradi. Umuman olganda, agar funksiya `eval()` ni chaqirsa, interpretator bu funksiyani optimizatsiya qila olmaydi. `eval()` ni funksiya sifatida aniqlashning muammosi shundaki, unga boshqa nomlar berish mumkin:
+``` js copy
+let f = eval;
+let g = f;
+```
+
+Agar bunga ruxsat berilsa, interpretator qaysi funksiyalar `eval()` ni chaqirishini aniq bila olmaydi, shuning uchun u faol optimizatsiya qila olmaydi. Agar `eval()` operator (va zaxiralangan so'z) bo'lganida bu muammoning oldini olish mumkin edi. Biz `eval()` ni ko'proq operatorga o'xshash qilish uchun qo'yilgan cheklovlar haqida (§4.12.2 va §4.12.3 da) bilib olamiz.
+</Callout>
+
+## `eval()`
+
+`eval()` bitta argument kutadi. Agar siz string’dan boshqa har qanday qiymat uzatsangiz, u shunchaki o'sha qiymatni qaytaradi. Agar siz string uzatsangiz, u string’ni JavaScript kodi sifatida tahlil qilishga harakat qiladi, agar muvaffaqiyatsiz bo'lsa `SyntaxError` xatosini chiqaradi. Agar u string’ni muvaffaqiyatli tahlil qilsa, u kodni baholaydi va string’dagi oxirgi ifoda yoki operatorning qiymatini qaytaradi yoki agar oxirgi ifoda yoki operatorning qiymati bo'lmasa `undefined` qaytaradi. Agar baholangan string xato chiqarsa, bu xato `eval()` chaqiruvidan tarqaladi.
+
+`eval()` haqidagi (bunday chaqirilganda) asosiy narsa shundaki, u uni chaqiradigan kodning o'zgaruvchilar muhitidan foydalanadi. Ya'ni, u o'zgaruvchilar qiymatlarini qidiradi va yangi o'zgaruvchilar va funksiyalarni xuddi mahalliy kod kabi aniqlaydi. Agar funksiya mahalliy `x` o'zgaruvchisini aniqlasa va keyin `eval("x")` ni chaqirsa, u mahalliy o'zgaruvchining qiymatini oladi. Agar u `eval("x=1")` ni chaqirsa, u mahalliy o'zgaruvchining qiymatini o'zgartiradi. Va agar funksiya `eval("var y = 3;")` ni chaqirsa, u yangi mahalliy `y` o'zgaruvchisini e'lon qiladi. Boshqa tomondan, agar baholanayotgan string `let` yoki `const` dan foydalansa, e'lon qilingan o'zgaruvchi yoki konstanta baholashga mahalliy bo'ladi va chaqiruvchi muhitda aniqlanmaydi.
+
+Xuddi shunday, funksiya quyidagi kod bilan mahalliy funksiyani e'lon qilishi mumkin:
+``` js copy
+eval("function f() { return x+1; }");
+```
+
+Agar siz `eval()` ni yuqori darajadagi koddan chaqirsangiz, u albatta global o'zgaruvchilar va global funksiyalar bilan ishlaydi.
+
+E'tibor bering, siz `eval()` ga string sifatida uzatadigan kod qiymati o'z-o'zidan sintaktik ma'noga ega bo'lishi kerak: siz undan funksiyaga kod fragmentlarini joylash uchun foydalana olmaysiz. Masalan, `eval("return;")` yozish mantiqsiz, chunki `return` faqat funksiyalar ichida qonuniy va baholanayotgan string qiymatini chaqiruvchi funksiya bilan bir xil o'zgaruvchilar muhitidan foydalanishi uni o'sha funksiyaning bir qismi qilib qo'ymaydi. Agar sizning string sifatida bergan qiymatingiz mustaqil skript sifatida mantiqli bo'lsa (hatto `x=0` kabi juda qisqa bo'lsa ham), uni `eval()` ga uzatish qonuniy. Aks holda, `eval()` *SyntaxError* xatosini chiqaradi.
+
+## Global `eval()`
+
+JavaScript optimizatorlari uchun muammoli bo'lgan narsa - bu `eval()` ning mahalliy o'zgaruvchilarni o'zgartirish qobiliyatidir. Biroq, buning yechimi sifatida interpretatorlar shunchaki `eval()` ni chaqiradigan har qanday funksiyada kamroq optimizatsiya qiladi. Lekin agar skript `eval()` uchun taxallus aniqlasa va keyin bu funksiyani boshqa nom bilan chaqirsa, JavaScript interpretatori nima qilishi kerak?
+
+JavaScript spetsifikatsiyasi e'lon qiladiki, `eval()` "eval" dan boshqa har qanday nom bilan chaqirilganda, u string’ni xuddi yuqori darajadagi global kod bo'lganday baholashi kerak. Baholangan kod yangi global o'zgaruvchilar yoki global funksiyalarni aniqlashi va global o'zgaruvchilarni o'rnatishi mumkin, lekin u chaqiruvchi funksiyaga mahalliy o'zgaruvchilarni ishlatmaydi yoki o'zgartirmaydi va shuning uchun mahalliy optimizatsiyalarga aralashmaydi.
+
+"To'g'ridan-to'g'ri eval" - bu aniq, malakasiz "eval" nomidan (bu zaxiralangan so'zga o'xshab qolmoqda) foydalanadigan ifoda bilan `eval()` funksiyasini chaqirish. `eval()` ga to'g'ridan-to'g'ri chaqiruvlar chaqiruvchi kontekstning o'zgaruvchilar muhitidan foydalanadi. Har qanday boshqa chaqiruv - bilvosita chaqiruv - global obyektni o'zining o'zgaruvchilar muhiti sifatida ishlatadi va mahalliy o'zgaruvchilar yoki funksiyalarni o'qiy, yoza yoki aniqlay olmaydi. (To'g'ridan-to'g'ri va bilvosita chaqiruvlar yangi o'zgaruvchilarni faqat var bilan aniqlashi mumkin. Baholanayotgan string ichida `let` va `const` dan foydalanish baholashga mahalliy bo'lgan o'zgaruvchilar va konstantalarni yaratadi va chaqiruvchi yoki global muhitni o'zgartirmaydi.)
+
+Quyidagi kod buni namoyish etadi:
+``` js copy
+const geval = eval;                // Boshqa nom bilan global eval qilish
+let x = "global", y = "global";    // Ikkita global o'zgaruvchi
+
+function f() {                     // Bu funksiya mahalliy eval qiladi
+    let x = "local";               // Mahalliy o'zgaruvchi aniqlash
+    eval("x += 'changed';");       // To'g'ridan-to'g'ri eval mahalliy o'zgaruvchini o'rnatadi
+    return x;                      // O'zgartirilgan mahalliy o'zgaruvchini qaytarish
+}
+
+function g() {                     // Bu funksiya global eval qiladi
+    let y = "local";               // Mahalliy o'zgaruvchi
+    geval("y += 'changed';");      // Bilvosita eval global o'zgaruvchini o'rnatadi
+    return y;                      // O'zgartirilmagan mahalliy o'zgaruvchini qaytarish
+}
+
+console.log(f(), x);               // Mahalliy o'zgaruvchi o'zgartirildi: "localchanged global" chop etadi
+console.log(g(), y);               // Global o'zgaruvchi o'zgartirildi: "local globalchanged" chop etadi
+```
+
+E'tibor bering, global eval qilish imkoniyati - bu shunchaki optimizator ehtiyojlariga moslashish emas; bu aslida kod satrlarini xuddi ular mustaqil, yuqori darajadagi skriptlar bo'lganday bajarish imkonini beradigan juda foydali xususiyat. Ushbu bo'limning boshida ta'kidlanganidek, kod satrini haqiqatan ham baholash kerak bo'lgan hollar kamdan-kam uchraydi. Lekin agar siz buni zarur deb topsangiz, mahalliy evaldan ko'ra global evalni qilish ehtimoli ko'proq.
+
+## Qat'iy(Strict) `eval()`
+
+Qat'iy rejim (§5.6.3 ga qarang) `eval()` funksiyasining xatti-harakatiga va hatto "eval" identifikatorining ishlatilishiga yanada ko'proq cheklovlar qo'yadi. `eval()` qat'iy rejim kodidan chaqirilganda yoki baholanishi kerak bo'lgan kod satri o'zi "use strict" direktivasi bilan boshlanganda, `eval()` shaxsiy o'zgaruvchilar muhiti bilan mahalliy baholashni amalga oshiradi. Bu shuni anglatadiki, qat'iy rejimda, baholangan kod mahalliy o'zgaruvchilarni so'rashi va o'rnatishi mumkin, lekin mahalliy doirada yangi o'zgaruvchilar yoki funksiyalarni aniqlay olmaydi.
+
+Bundan tashqari, qat'iy rejim "eval" ni amalda zaxiralangan so'zga aylantirish orqali `eval()` ni yanada ko'proq operatorga o'xshash qiladi. Siz `eval()` funksiyasini yangi qiymat bilan qayta yozishingiz mumkin emas. Va siz "eval" nomi bilan o'zgaruvchi, funksiya, funksiya parametri yoki *catch* bloki parametrini e'lon qilishingiz mumkin emas.
+

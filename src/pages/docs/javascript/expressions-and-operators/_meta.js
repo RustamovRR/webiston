@@ -10,4 +10,8 @@ export default {
   'operator-overview': "Operatorlarning umumiy ko'rinishi",
   'arithmetic-expressions': 'Arifmetik ifodalar',
   'relational-expressions': 'Munosabat ifodalari',
+  'logical-expressions': 'Mantiqiy ifodalar',
+  'assignment-expressions': 'Tayinlash ifodalari',
+  'evaluation-expressions': 'Baholash ifodalari',
+  'miscellaneous-operators': 'Boshqa operatorlar',
 }
