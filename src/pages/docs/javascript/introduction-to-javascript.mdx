@@ -1,0 +1,43 @@
+# JavaScript’ga kirish
+
+JavaScript — bu vebn dasturlash tili. Veb-saytlarning katta qismi JavaScript’dan foydalanadi va barcha zamonaviy veb-brauzerlar — ish stoli kompyuterlari, planshetlar va telefonlarda — JavaScript interpretatorlarini o'z ichiga oladi. Bu JavaScript’ni tarixdagi eng keng qo'llanilgan dasturlash tiliga aylantiradi. So'nggi o'n yillikda Node.js texnologiyasi JavaScript’dan veb-brauzerlar tashqarisida foydalanishga imkon yaratdi. Node’ning katta muvaffaqiyati tufayli, JavaScript hozirda dasturiy ta'minot ishlab chiquvchilar orasida eng ko'p ishlatiladigan dasturlash tiliga aylandi. Siz JavaScript’ni noldan o'rganayotgan bo'lasizmi yoki uni professional darajada ishlatayotgan bo'lsangiz ham, ushbu kitob sizga bu tilni mukammal o'zlashtirishda yordam beradi.
+
+Agar siz boshqa dasturlash tillari bilan tanish bo'lsangiz, quyidagi ma'lumotlar foydali bo'lishi mumkin: JavaScript yuqori darajadagi, dinamik, interpretatsiya qilinadigan dasturlash tili bo'lib, u obyektga yo'naltirilgan va funksional dasturlash uslublariga mos keladi. JavaScript o'zgaruvchilari tiplanmagan (untyped). Uning sintaksisi Java tiliga asoslangan, ammo boshqa jihatlari bilan ular o'zaro mutlaqo bog'liq emas. JavaScript o'zining birinchi darajali funksiyalarini Scheme tilidan va prototipga asoslangan meros olish xususiyatini kam tanilgan Self tilidan meros qilib olgan. Ammo ushbu tillarni bilish yoki ushbu terminlarga tanish bo'lish shart emas — ushbu kitob orqali JavaScript’ni o'rganishingiz mumkin.
+
+“JavaScript” nomi juda chalg'ituvchi. Java dasturlash tili bilan faqat sirtqi sintaktik o'xshashlikdan tashqari, JavaScript butunlay boshqa til. JavaScript skriptlash tiliga asoslangan ildizlarini anchadan beri ortda qoldirib, jiddiy dasturiy muhandislik va katta kod bazalariga ega loyihalar uchun mos bo'lgan, kuchli va samarali umumiy maqsadli dasturlash tiliga aylandi.
+
+## JavaScript: Nomlari, Versiyalari va Rejimlari
+
+JavaScript dastlab vebning dastlabki kunlarida Netscape tomonidan yaratilgan. Texnik jihatdan “JavaScript” — Sun Microsystems (hozirda Oracle) tomonidan litsenziyalangan savdo belgisi bo'lib, Netscape’ning (hozirda Mozilla’ning) ushbu tilni amalga oshirishiga nisbatan qo'llaniladi. Netscape ushbu tilni standartlashtirish uchun ECMA (European Computer Manufacturer’s Association) tashkilotiga taqdim etdi, biroq savdo belgisi bilan bog'liq muammolar tufayli tilning standartlashgan versiyasi “ECMAScript” deb nomlandi. Bu nom biroz noqulay bo'lsa-da, amaliyotda barchasi bu tilni JavaScript deb ataydi. Ushbu kitobda esa til standarti va uning versiyalariga murojaat qilishda “ECMAScript” yoki qisqacha “ES” atamalari ishlatiladi.
+
+### ECMAScript'ning rivojlanishi
+
+2010-yillarda barcha veb-brauzerlar ECMAScript standarti 5-versiyasini (ES5) qo'llab-quvvatlay boshladi. Ushbu kitob ES5’ni moslik bazasi sifatida qabul qiladi va undan oldingi versiyalarni muhokama qilmaydi.
+
+2015-yilda ES6 (ECMAScript 6) chiqarildi va u yangi muhim xususiyatlarni, jumladan, klasslar va modullar sintaksisini qo'shdi. Bu yangiliklar JavaScript’ni faqat skriptlash tili emas, balki katta hajmdagi dasturiy ta'minot loyihalari uchun mos keladigan, umumiy maqsadli jiddiy dasturlash tiliga aylantirdi. ES6’dan so'ng ECMAScript spetsifikatsiyasi har yili yangi versiyalar chiqarish jadvaliga o'tdi. Shu sababli, tilning keyingi versiyalari — ES2016, ES2017, ES2018, ES2019 va ES2020 — chiqarilgan yil nomi bilan ataladi.
+
+### JavaScript'ning qat'iy rejimi (Strict Mode)
+
+JavaScript rivojlanar ekan, til dizaynerlari ES5’dan oldingi dastlabki versiyalardagi xatolarni tuzatishga harakat qilishdi. Oldingi versiyalar bilan moslikni saqlab qolish uchun eski (legacy) xususiyatlarni, qanchalik kamchiliklari bo'lmasin, olib tashlash imkoni yo'q edi. Biroq, ES5 va undan keyingi versiyalarda, dasturlar JavaScript’ning *qat'iy rejimi(strict mode)ni* tanlash imkoniga ega bo'ldi. Ushbu rejimda dastlabki versiyalardagi bir qator xatoliklar tuzatilgan. *Qat'iy rejim*ni yoqish mexanizmi *"use strict"* direktivasi orqali amalga oshiriladi, bu esa keyingi bo'limlarda batafsil tushuntiriladi. Shu bo'limda eski JavaScript va *qat'iy rejim*dagi JavaScript o'rtasidagi farqlar ham keltiriladi.
+
+ES6 va undan keyingi versiyalarda yangi xususiyatlarni qo'llash ko'pincha *qat'iy rejim*ni avtomatik tarzda ishga tushiradi. Masalan, agar siz ES6 `class` kalit so'zini ishlatsangiz yoki ES6 modul yaratgan bo'lsangiz, ushbu class yoki modul ichidagi barcha kod avtomatik ravishda qat'iy bo'ladi va eski, xatoli xususiyatlar bu kontekstdan tashqarida bo'ladi.
+
+Ushbu kitob JavaScript’ning eski xususiyatlarini ham yoritib beradi, lekin ular *qat'iy rejim*da ishlatilmasligini alohida qayd etadi.
+
+## JavaScript'ning asosiy platformasi va muhiti
+
+Foydali bo'lishi uchun har qanday dasturlash tili asosiy kirish va chiqish amallarini bajarish uchun platforma yoki standart kutubxonaga ega bo'lishi kerak. JavaScript tilining asosiy qismi sonlar, matn, massivlar, to'plamlar, xaritalar va shu kabi ma'lumotlar bilan ishlash uchun minimal API'ni belgilaydi, lekin hech qanday kirish yoki chiqish funksionalligini o'z ichiga olmaydi. Kirish va chiqish (shuningdek, tarmoq, xotira va grafika kabi murakkabroq xususiyatlar) JavaScript joylashtirilgan "host muhit"ning vazifasi hisoblanadi.
+
+### Veb-brauzer muhiti
+
+JavaScript uchun asl host muhiti veb-brauzer edi va bu hamon JavaScript kodi uchun eng keng tarqalgan ijro muhiti hisoblanadi. Veb-brauzer muhiti JavaScript kodiga foydalanuvchining sichqoncha va klaviaturasidan, shuningdek HTTP so'rovlari orqali ma'lumot olish imkonini beradi. Va u JavaScript kodiga HTML va CSS yordamida foydalanuvchiga natijani ko'rsatish imkonini beradi.
+
+### Node muhiti
+
+2010-yildan beri JavaScript kodi uchun yana bir host muhiti mavjud. Node, JavaScript’ni veb-brauzer taqdim etgan API'lar bilan ishlashini cheklash o'rniga, unga butun operatsion tizimga kirish imkonini beradi, bu esa JavaScript dasturlariga fayllarni o'qish va yozish, tarmoq orqali ma'lumotlarni yuborish va qabul qilish, HTTP so'rovlarini yaratish va xizmat ko'rsatish imkonini beradi. Node veb-serverlarni amalga oshirish uchun mashhur tanlov va shell skriptlariga muqobil sifatida oddiy yordamchi skriptlarni yozish uchun qulay vosita hisoblanadi.
+
+## Kitobning tuzilishi
+
+Ushbu kitobning asosiy qismi JavaScript tilining o'ziga qaratilgan. 11-bob JavaScript standart kutubxonasini, 15-bob veb-brauzer host muhitini va 16-bob Node host muhitini tanishtiradi.
+
+Bu kitob avval quyi darajadagi asoslarni, so'ngra ular asosida yanada takomillashgan va yuqori darajadagi abstraksiyalarni qamrab oladi. Boblarni imkon qadar ketma-ketlikda o'qish tavsiya etiladi. Ammo yangi dasturlash tilini o'rganish hech qachon chiziqli jarayon bo'lmagan, va tilni tasvirlash ham chiziqli emas: har bir til xususiyati boshqa xususiyatlarga bog'liq, va bu kitob tegishli materiallarga ko'plab havola(cross-reference)lar - ba'zan orqaga va ba'zan oldinga - bilan to'la. Ushbu kirish bo'limda til bo'ylab tezkor ko'z yugurtirib chiqiladi, keyingi boblarda chuqur o'rganish uchun muhim xususiyatlarni tanishtiriladi. Agar siz allaqachon tajribali JavaScript dasturchisi bo'lsangiz, bu bobni o'tkazib yuborishingiz mumkin (garchi davom etishdan oldin bobning oxiridagi 1-1 misolni o'qib chiqishdan zavqlanishingiz mumkin bo'lsa ham).

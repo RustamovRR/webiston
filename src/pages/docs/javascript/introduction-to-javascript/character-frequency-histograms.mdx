@@ -1,0 +1,119 @@
+# Misol: Belgilar chastotasi gistogrammalari
+
+Bu bob qisqa, lekin oddiy bo'lmagan JavaScript dasturi bilan yakunlanadi. 1-1 misol - bu standart kiritishdan matnni o'qiydigan, ushbu matndan belgilar chastotasi gistogrammasini hisoblaydigan va keyin gistogrammani chop etadigan Node dasturi. Siz dasturni o'zining manba kodining belgilar chastotasini tahlil qilish uchun quyidagicha ishga tushirishingiz mumkin:
+```bash
+$ node charfreq.js < charfreq.js
+T: ########### 11.22%
+E: ########## 10.15%
+R: ####### 6.68%
+S: ###### 6.44%
+A: ###### 6.16%
+N: ###### 5.81%
+O: ##### 5.45%
+I: ##### 4.54%
+H: #### 4.07%
+C: ### 3.36%
+L: ### 3.20%
+U: ### 3.08%
+/: ### 2.88%
+```
+
+Bu misol JavaScript’ning bir qator takomillashgan xususiyatlaridan foydalanadi va haqiqiy JavaScript dasturlari qanday ko'rinishini namoyish etishga mo'ljallangan. Siz hali barcha kodni tushunishingiz shart emas, lekin uning barchasi keyingi boblarda tushuntirilishiga ishonch hosil qiling.
+
+*1-1 misol. JavaScript yordamida belgilar chastotasi gistogrammalarini hisoblash*
+``` js
+/**
+ * Bu Node dasturi standart kiritishdan matnni o'qiydi, ushbu matndagi
+ * har bir harfning chastotasini hisoblaydi va eng ko'p ishlatiladigan
+ * belgilarning gistogrammasini ko'rsatadi. Ishga tushirish uchun Node 12 
+ * yoki undan yuqori versiya talab qilinadi.
+ * 
+ * Unix tipidagi muhitda dasturni quyidagicha ishga tushirishingiz mumkin:
+ *   node charfreq.js < corpus.txt
+ */
+
+// Bu class Map'ni kengaytiradi, shunday qilib get() metodi kalit map’da 
+// bo'lmaganda null o'rniga ko'rsatilgan qiymatni qaytaradi
+class DefaultMap extends Map {
+    constructor(defaultValue) {
+        super();                    // Superclass konstruktorini chaqirish
+        this.defaultValue = defaultValue;  // default qiymatni eslab qolish
+    }
+
+    get(key) {
+        if (this.has(key)) {        // Agar kalit allaqachon map’da bo'lsa
+            return super.get(key);   // superclass’dan uning qiymatini qaytarish
+        } else {
+            return this.defaultValue;// Aks holda default qiymatni qaytarish
+        }
+    }
+}
+
+// Bu class harf chastotasi gistogrammalarini hisoblaydi va ko'rsatadi
+class Histogram {
+    constructor() {
+        this.letterCounts = new DefaultMap(0);  // Harflardan hisobga xarita
+        this.totalLetters = 0;                  // Jami harflar soni
+    }
+
+    // Bu funksiya gistogrammani matn harflari bilan yangilaydi
+    add(text) {
+        // Matndagi bo'shliqlarni olib tashlash va katta harflarga o'tkazish
+        text = text.replace(/\s/g, "").toUpperCase();
+
+        // Endi matn belgilari bo'ylab yurib chiqish
+        for(let character of text) {
+            let count = this.letterCounts.get(character);  // Eski hisobni olish
+            this.letterCounts.set(character, count+1);     // Uni oshirish
+            this.totalLetters++;
+        }
+    }
+
+    // Gistogrammani ASCII grafikasini ko'rsatadigan string’ga aylantirish
+    toString() {
+        // Map'ni [kalit,qiymat] massivlari massiviga aylantirish
+        let entries = [...this.letterCounts];
+
+        // Massivni hisob bo'yicha, keyin alfavit bo'yicha saralash
+        entries.sort((a,b) => {          // Saralash tartibini belgilovchi funksiya
+            if (a[1] === b[1]) {         // Agar hisoblar bir xil bo'lsa
+                return a[0] < b[0] ? -1 : 1;  // alfavit bo'yicha saralash
+            } else {                     // Agar hisoblar farq qilsa
+                return b[1] - a[1];      // eng katta hisob bo'yicha saralash
+            }
+        });
+
+        // Hisoblarni foizlarga aylantirish
+        for(let entry of entries) {
+            entry[1] = entry[1] / this.totalLetters*100;
+        }
+
+        // 1% dan kam bo'lgan yozuvlarni tushirib qoldirish
+        entries = entries.filter(entry => entry[1] >= 1);
+
+        // Endi har bir yozuvni matn qatoriga aylantirish
+        let lines = entries.map(
+            ([l,n]) => `${l}: ${"#".repeat(Math.round(n))} ${n.toFixed(2)}%`
+        );
+
+        // Va qatorlarni yangi qator belgilari bilan ajratib, birlashtirish
+        return lines.join("\n");
+    }
+}
+
+// Bu asinxron (Promise qaytaruvchi) funksiya Histogram obyektini yaratadi,
+// standart kiritishdan matn qismlarini asinxron o'qiydi va bu qismlarni
+// gistogrammaga qo'shadi. Oqim oxiriga yetganda, u ushbu gistogrammani qaytaradi
+async function histogramFromStdin() {
+    process.stdin.setEncoding("utf-8");  // Baytlar emas, Unicode satrlarini o'qish
+    let histogram = new Histogram();
+    for await (let chunk of process.stdin) {
+        histogram.add(chunk);
+    }
+    return histogram;
+}
+
+// Kodning bu oxirgi qatori dasturning asosiy qismi.
+// U standart kiritishdan Histogram obyekti yaratadi, keyin gistogrammani chop etadi.
+histogramFromStdin().then(histogram => { console.log(histogram.toString()); });
+```

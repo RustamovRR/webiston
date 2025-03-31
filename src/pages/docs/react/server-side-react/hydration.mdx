@@ -19,14 +19,14 @@ Server tomonda renderlash va hidratsiyani birlashtirib, dasturchilar tez yuklana
 ### Hidratsiyaning salbiy jihatlari
 
 Hidratsiya server tomonidan render qilingan HTML’ni interaktiv qilishning yaxshi usuli bo'lsa-da, ba'zilar hidratsiyani keraksiz darajada sekin deb tanqid qiladilar, ko'pincha davom ettiruvchanlik qobiliyati(resumability)ni ustun muqobil sifatida keltiradilar (rasmga qarang). Keling, bu masalani biroz o'rganamiz.
-![Hidratsiya](/hydration.png)
+![Hidratsiya](/react/hydration.png)
 
 Hidratsiya jarayonida biz React ilovasini serverda render qilamiz va keyin render qilingan natijani klientga jo'natamiz. Biroq, bu vaqt davomida hech narsa interaktiv emas. Bu nuqtadan boshlab, brauzerimiz klient to'plam paketini yuklashi, event listener’larni biriktirishi va samarali ravishda klientni “qayta render” qilishi kerak. Bu ko'p ish va ba'zida foydalanuvchi uchun kontent paydo bo'lgan vaqti bilan foydalanuvchi saytdan foydalanish imkoniyati o'rtasida kechikish yuzaga kelishi mumkin.
 
 
 ### Davom ettiruvchanlik qobiliyati (Resumability)
 Boshqa tomondan, Davom ettiruvchanlik qobiliyati biroz boshqacha ishlaydi (rasmga qarang).
-![Resumability](/resumability.png)
+![Resumability](/react/resumability.png)
 
 *Davom ettiruvchanlik qobiliyati* bilan, butun ilova serverda render qilinadi va brauzerga uzluksiz uzatishlik(stream) tarzida jo'natiladi. Dastlabki markup bilan birga, barcha interaktiv xatti-harakatlar ham seriyalangan holda klientga yuboriladi. Klient, shu tariqa, interaktiv bo'lish uchun zarur bo'lgan barcha ma'lumotlarga ega bo'ladi va shu bilan server qoldirgan joydan davom etishi mumkin. U hidratsiya qilishi (ya'ni, event listener’larni biriktirishi va sahifani klient tomonida render qilishi) shart emas, aksincha server bergan ma'lumotlarni deserializatsiya qilib, mos ravishda javob berishi mumkin. Hidratsiya bosqichini o'tkazib yuborish interaktivlik uchun sarflanadigan vaqtni (TTI) tezlashtirishi va foydalanuvchi bilan ishlash qulayligini yaxshilashi mumkin.
 

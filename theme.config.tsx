@@ -123,7 +123,7 @@ const config: DocsThemeConfig = {
     )
   },
   sidebar: {
-    defaultMenuCollapseLevel: 2,
+    defaultMenuCollapseLevel: 1,
   },
   editLink: {
     content: "GitHub'da tahrirlash →",

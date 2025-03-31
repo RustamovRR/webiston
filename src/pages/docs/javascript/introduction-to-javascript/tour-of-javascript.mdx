@@ -1,0 +1,285 @@
+import { Callout } from 'nextra/components'
+
+# JavaScript bo'ylab sayohat
+
+Bu bo'lim kod misollari orqali JavaScript tiliga qisqacha kirish qismini taqdim etadi. Ushbu kirish bobidan so'ng, biz JavaScript’ni eng quyi darajada o'rganishni boshlaymiz: 2-bob JavaScript’da izohlar, nuqta-vergullar va Unicode belgilar to'plami kabi narsalarni tushuntiradi. 3-bob esa yanada qiziqarliroq bo'ladi: u JavaScript o'zgaruvchilar va siz bu o'zgaruvchilarga tayinlashingiz mumkin bo'lgan qiymatlarni tushuntiradi.
+
+### Primitiv turlar
+
+Mana ushbu ikkita bobning asosiy jihatlarini ko'rsatish uchun namuna kodi:
+``` js 
+// Ikkita slash'dan keyin kelgan har qanday narsa ingliz tilidagi izoh hisoblanadi.
+// Izohlarni diqqat bilan o'qing: ular JavaScript kodini tushuntiradi.
+
+// O'zgaruvchi - bu qiymat uchun ramziy nom.
+// O'zgaruvchilar `let` kalit so'zi bilan e'lon qilinadi:
+let x;  // x nomli o'zgaruvchini e'lon qilish.
+
+// Qiymatlarni o'zgaruvchilarga = belgisi bilan tayinlash mumkin
+x = 0;  // Endi x o'zgaruvchisi 0 qiymatiga ega
+x       // => 0: O'zgaruvchi o'zining qiymatiga baholanadi.
+
+// JavaScript bir necha turdagi qiymatlarni qo'llab-quvvatlaydi
+x = 1;            // Sonlar.
+x = 0.01;         // Sonlar butun yoki haqiqiy bo'lishi mumkin.
+x = "hello world"; // Qo'shtirnoq ichidagi matn satrlari.
+x = 'JavaScript’;  // Bir tirnoq ham qatorlarni chegaralaydi.
+x = true;          // Boolean qiymati.
+x = false;         // Boshqa Boolean qiymati.
+x = null;          // Null "qiymat yo'q" degan maxsus qiymat.
+x = undefined;     // Undefined null kabi boshqa maxsus qiymat.
+```
+
+### Referens turlar
+
+JavaScript dasturlari boshqara oladigan yana ikkita juda muhim tur - bu obyektlar va massivlar. Bular 6 va 7-boblarning mavzulari, lekin ular shunchalik muhimki, siz ularni bu boblarga yetib borguncha ko'p marta ko'rasiz:
+``` js 
+// JavaScript’ning eng muhim ma'lumot turi - bu obyekt.
+// Obyekt - bu nom/qiymat juftliklari to'plami yoki string’dan qiymatga xarita.
+let book = {                // Obyektlar jingalak qavslar ichiga olinadi.
+    topic: "JavaScript",    // "topic" xossasi "JavaScript" qiymatiga ega.
+    edition: 7             // "edition" xossasi 7 qiymatiga ega
+};                         // Jingalak qavs obyekt oxirini belgilaydi.
+
+// Obyekt xossalariga . yoki [] bilan murojaat qiling:
+book.topic                 // => "JavaScript"
+book["edition"]           // => 7: xossa qiymatlariga murojaat qilishning boshqa usuli.
+book.author = "Flanagan"; // Tayinlash orqali yangi xossalar yarating.
+book.contents = {};       // {} - bu xossalari bo'lmagan bo'sh obyekt.
+
+// ?. yordamida xossalarga shartli murojaat (ES2020):
+book.contents?.ch01?.sect1 // => undefined: book.contents'da ch01 xossasi yo'q.
+
+// JavaScript shuningdek qiymatlarning massivlarini (raqamli indekslangan ro'yxatlar) qo'llab-quvvatlaydi:
+let primes = [2, 3, 5, 7];  // [ va ] bilan chegaralangan 4 ta qiymatli massiv.
+primes[0]                   // => 2: massivning birinchi elementi (0-indeks).
+primes.length              // => 4: massivda nechta element borligini ko'rsatadi.
+primes[primes.length-1]    // => 7: massivning oxirgi elementi.
+primes[4] = 9;             // Tayinlash orqali yangi element qo'shish.
+primes[4] = 11;            // Yoki tayinlash orqali mavjud elementni o'zgartirish.
+let empty = [];            // [] - bu elementlari bo'lmagan bo'sh massiv.
+empty.length              // => 0
+
+// Massivlar va obyektlar boshqa massivlar va obyektlarni saqlay oladi:
+let points = [            // 2 ta elementli massiv.
+    {x: 0, y: 0},        // Har bir element obyekt.
+    {x: 1, y: 1}
+];
+let data = {             // 2 ta xossali obyekt
+    trial1: [[1,2], [3,4]], // Har bir xossa qiymati massiv.
+    trial2: [[2,3], [4,5]]  // Massiv elementlari massivlardir.
+};
+```
+
+<Callout type="info">
+### Kod misollaridagi izohlar sintaksisi
+
+Siz oldingi kodda ba'zi izohlar strelka `(=>)` bilan boshlanganini payqagan bo'lishingiz mumkin. Bular izohdan oldingi kod natijasida hosil bo'lgan qiymatni ko'rsatadi va bu men tomondan bosma kitobda veb-brauzer konsoli kabi interaktiv JavaScript muhitini taqlid qilish uchun qilingan urinishdir.
+
+Bu `// =>` izohlari shuningdek *tasdiq(assertion)* vazifasini ham bajaradi, va men kodni tekshiradigan va izohda ko'rsatilgan qiymatni hosil qilishini tekshiradigan vosita qilganman. Umid qilamanki, bu kitobdagi xatolarni kamaytirishga yordam beradi.
+
+Izoh/tasdiqning ikkita o'zaro bog'liq uslubi mavjud. Agar siz `// a == 42` ko'rinishidagi izohni ko'rsangiz, bu izohdan oldingi kod bajarilgandan so'ng, `a` o'zgaruvchisi 42 qiymatiga ega bo'lishini anglatadi. Agar siz `// !` ko'rinishidagi izohni ko'rsangiz, bu izohdan oldingi qatordagi kod istisno(exception) chaqirishini anglatadi (va undov belgisidan keyingi izohning qolgan qismi odatda qanday turdagi istisno chaqirilishini tushuntiradi).
+
+Siz bu izohlarni kitob davomida ishlatilganini ko'rishingiz mumkin.
+</Callout>
+
+Bu yerda ko'rsatilgan kvadrat qavslar ichida massiv elementlarini ro'yxatlash yoki jingalak qavslar ichida obyekt xossa nomlarini xossa qiymatlariga moslashtirish sintaksisi *boshlang'ich qiymat ifodasi(initializer expression)*  deb ataladi va bu 4-bobning mavzularidan biri hisoblanadi. *Ifoda(expression)* - bu qiymat hosil qilish uchun *baholanishi* mumkin bo'lgan JavaScript iborasi. Masalan, obyekt xossasi yoki massiv elementining qiymatiga murojaat qilish uchun `.` va `[]`dan foydalanish ifoda hisoblanadi.
+
+JavaScript’da ifodalarni shakllantishning eng keng tarqalgan usullaridan biri *bayonotlardan* foydalanishdir:
+``` js 
+// bayonotlar yangi qiymat hosil qilish uchun qiymatlar (operandlar) ustida ishlaydi.
+// Arifmetik bayonotlar eng oddiylaridan hisoblanadi:
+3 + 2                      // => 5: qo'shish
+3 - 2                      // => 1: ayirish
+3 * 2                      // => 6: ko'paytirish
+3 / 2                      // => 1.5: bo'lish
+points[1].x - points[0].x  // => 1: murakkab operandlar ham ishlaydi
+"3" + "2"                  // => "32": + sonlarni qo'shadi, string’larni qo'shib birlashtiradi
+
+// JavaScript ba'zi qisqartirilgan arifmetik bayonotlarni belgilaydi
+let count = 0;    // O'zgaruvchini aniqlash
+count++;          // O'zgaruvchini oshirish
+count--;          // O'zgaruvchini kamaytirish
+count += 2;       // 2 ni qo'shish: count = count + 2 bilan bir xil
+count *= 3;       // 3 ga ko'paytirish: count = count * 3 bilan bir xil
+count             // => 6: o'zgaruvchi nomlari ham ifodalardir
+
+// Tenglik va taqqoslash bayonotlari ikki qiymatning tengligi,
+// tengsizligi, kichik, katta va hokazolarni tekshiradi. Ular true yoki false qiymatini qaytaradi.
+let x = 2, y = 3;     // Bu = belgilari tayinlash, tenglikni tekshirish emas
+x === y               // => false: tenglik
+x !== y               // => true: tengsizlik
+x < y                 // => true: kichik
+x <= y                // => true: kichik yoki teng
+x > y                 // => false: katta
+x >= y                // => false: katta yoki teng
+"two" === "three"     // => false: ikkita string farqli
+"two" > "three"       // => true: "tw" alifbo bo'yicha "th" dan katta
+false === (x > y)     // => true: false false’ga teng
+
+// Mantiqiy bayonotlar boolean qiymatlarni birlashtiradi yoki teskarisiga o'zgartiradi
+(x === 2) && (y === 3) // => true: ikkala taqqoslash ham to'g'ri. && AND bayonoti
+(x > 3) || (y < 3)     // => false: hech bir taqqoslash to'g'ri emas. || OR bayonoti
+!(x === y)             // => true: ! boolean qiymatni teskarisiga o'zgartiradi
+```
+
+### JavaScript ifodalari va bayonotlari
+
+Agar JavaScript ifodalari iboralar kabi bo'lsa, JavaScript *bayonotlari(statements)* to'liq jumlalarga o'xshaydi. Bayonotlar 5-bobning mavzusidir. Taxminan, ifoda bu qiymatni hisoblaydigan, lekin hech narsa *qilmaydigan* narsadir: u dastur holatini hech qanday tarzda o'zgartirmaydi. Boshqa tomondan, bayonotning qiymati yo'q, lekin ular holatni o'zgartiradi.
+
+Siz yuqorida o'zgaruvchilarni e'lon qilish va tayinlash bayonotini ko'rdingiz. Bayonotning boshqa keng toifasi - bu shartli bayonot va sikllar kabi *boshqaruv strukturalaridir*. Siz ularning misollarini funksiyalarni ko'rib chiqqanimizdan so'ng ko'rasiz.
+
+### Funksiyalar
+
+Funksiya - bu siz bir marta belgilaydigan va keyin qayta-qayta chaqira oladigan nomlangan va parametrlangan JavaScript kodi bloki. Funksiyalar rasman 8-bobgacha yoritilmaydi, lekin obyektlar va massivlar kabi, siz ularni bu bobga yetib borguncha ko'p marta ko'rasiz. Mana ba'zi oddiy misollar:
+``` js 
+// Funksiyalar - bu biz chaqira oladigan parametrlangan JavaScript kodi bloklari.
+function plus1(x) {    // "plus1" nomli funksiyani "x" parametri bilan aniqlash
+    return x + 1;      // Kiritilgan qiymatdan 1 ta katta qiymatni qaytarish
+}                      // Funksiyalar jingalak qavslar ichiga olinadi
+
+plus1(y)              // => 4: y 3 ga teng, shuning uchun bu chaqiruv 3+1 ni qaytaradi
+
+let square = function(x) {   // Funksiyalar qiymatlardir va o'zgaruvchilarga tayinlanishi mumkin
+    return x * x;            // Funksiya qiymatini hisoblash
+};                          // Nuqtali vergul tayinlash oxirini belgilaydi
+
+square(plus1(y))            // => 16: bir ifodada ikkita funksiyani chaqirish
+```
+
+ES6 va undan keyingi versiyalarda funksiyalarni aniqlash uchun qisqa sintaksis mavjud. Bu ixcham sintaksis argumentlar ro'yxatini funksiya tanasidan ajratish uchun `=>`dan foydalanadi, shuning uchun bu usulda aniqlangan funksiyalar *strelkali funksiyalar(arrow functions)* deb nomlanadi. Strelkali funksiyalar ko'pincha siz nomsiz funksiyani boshqa funksiyaga argument sifatida uzatmoqchi bo'lganingizda ishlatiladi.
+
+Yuqoridagi kod strelkali funksiyalardan foydalangan holda qayta yozilganda quyidagicha ko'rinadi:
+``` js
+const plus1 = x => x + 1;    // Kiruvchi x chiquvchi x + 1 ga o'tadi
+const square = x => x * x;    // Kiruvchi x chiquvchi x * x ga o'tadi
+plus1(y)                      // => 4: funksiya chaqiruvi bir xil
+square(plus1(y))             // => 16
+```
+
+### Metodlar
+
+Funksiyalarni obyektlar bilan ishlatganimizda, *metodlarni* olamiz:
+``` js
+// Funksiyalar obyekt xossalariga tayinlanganda, biz ularni
+// "metodlar" deb ataymiz. Barcha JavaScript obyektlari (massivlar ham) metodlarga ega:
+let a = [];              // Bo'sh massiv yaratish
+a.push(1,2,3);          // push() metodi massivga elementlar qo'shadi
+a.reverse();            // Boshqa metod: elementlar tartibini teskari o'girish
+
+// Biz o'z metodlarimizni ham aniqlay olamiz. "this" kalit so'zi metod
+// aniqlangan obyektga murojaat qiladi: bu holda, oldingi points massiviga.
+points.dist = function() {    // Nuqtalar orasidagi masofani hisoblash metodi
+    let p1 = this[0];        // Biz chaqirgan massivning birinchi elementi
+    let p2 = this[1];        // "this" obyektining ikkinchi elementi
+    let a = p2.x-p1.x;       // x koordinatalari farqi
+    let b = p2.y-p1.y;       // y koordinatalari farqi
+    return Math.sqrt(a*a + b*b);    // Pifagor teoremasi, Math.sqrt() kvadrat ildizni hisoblaydi
+};
+points.dist()                // => Math.sqrt(2): bizning 2 ta nuqtamiz orasidagi masofa
+```
+
+### Boshqaruv strukturalari
+
+Va'da qilinganidek, quyida JavaScript’ning umumiy boshqaruv tuzilmasi bayonotlarini namoyish etuvchi funksiya tanasi keltirilgan:
+
+``` js
+// JavaScript bayonotlari C, C++, Java va boshqa tillarning sintaksisidan
+// foydalangan holda shartli bayonotlar va siklllarni o'z ichiga oladi.
+function abs(x) {            // Absolyut qiymatni hisoblash funksiyasi
+    if (x >= 0) {           // if bayonoti...
+        return x;           // agar taqqoslash rost bo'lsa, bu kodni bajaradi
+    }                       // Bu if qismining oxiri
+    else {                  // Ixtiyoriy else qismi o'z kodini bajaradi agar
+        return -x;          // taqqoslash yolg'on bo'lsa
+    }                       // Har bir qismda 1 ta bayonot bo'lsa jingalak qavslar ixtiyoriy
+}                          // if/else ichida return bayonotlariga e'tibor bering
+abs(-10) === abs(10)       // => true
+
+function sum(array) {       // Massiv elementlari yig'indisini hisoblash
+    let sum = 0;           // 0 dan boshlang'ich yig'indi bilan boshlash
+    for(let x of array) {  // Massiv bo'ylab yurib chiqish, har bir elementni x ga tayinlash
+        sum += x;          // Element qiymatini yig'indiga qo'shish
+    }                      // Sikl oxiri
+    return sum;            // Yig'indini qaytarish
+}
+sum(primes)               // => 28: birinchi 5 ta tub son yig'indisi 2+3+5+7+11
+
+function factorial(n) {    // Faktorialni hisoblash funksiyasi
+    let product = 1;      // 1 ko'paytma bilan boshlash
+    while(n > 1) {        // () ichidagi ifoda rost bo'lganda {} ichidagi bayonotlarni takrorlash
+        product *= n;     // product = product * n uchun qisqartma
+        n--;              // n = n - 1 uchun qisqartma
+    }                     // Sikl oxiri
+    return product;       // Ko'paytmani qaytarish
+}
+factorial(4)              // => 24: 1*4*3*2
+
+function factorial2(n) {   // Boshqa versiya boshqa sikldan foydalangan holda
+    let i, product = 1;   // 1 dan boshlash
+    for(i=2; i <= n; i++) // i ni 2 dan n gacha avtomatik oshirish
+        product *= i;     // Har safar buni bajarish. 1 qatorli sikl uchun {} shart emas
+    return product;       // Faktorialni qaytarish
+}
+factorial2(5)             // => 120: 1*2*3*4*5
+```
+
+### Obyektga yo'naltirilgan dasturlash
+
+JavaScript obyektga yo'naltirilgan dasturlash uslubini qo'llab-quvvatlaydi, lekin u "class’ik" obyektga yo'naltirilgan dasturlash tillaridan sezilarli darajada farq qiladi. 9-bob JavaScript’da obyektga yo'naltirilgan dasturlashni ko'plab misollar bilan batafsil yoritadi. Quyida 2D geometrik nuqtalarni ifodalash uchun JavaScript class’ini qanday aniqlashni ko'rsatuvchi juda oddiy misol keltirilgan. Bu class’ning nusxalari bo'lgan obyektlar nuqtaning koordinata boshidan masofasini hisoblaydigan `distance()` nomli yagona metodga ega:
+``` js 
+class Point {              // Kelishuv bo'yicha class’ nomlari bosh harf bilan yoziladi
+    constructor(x, y) {    // Yangi namunalarni ishga tushirish uchun konstruktor funksiya
+        this.x = x;        // `this` kalit so'zi ishga tushirilayotgan yangi obyekt
+        this.y = y;        // Funksiya argumentlarini obyekt xossalari sifatida saqlash
+    }                      // Konstruktor funksiyalarda return kerak emas
+
+    distance() {           // Nuqtadan koordinata boshigacha masofani hisoblash metodi
+        return Math.sqrt(  // x² + y² ning kvadrat ildizini qaytarish
+            this.x * this.x +  // bu yerda `this` Point obyektiga murojaat qiladi 
+            this.y * this.y    // distance metodi chaqirilgan
+        );
+    }
+}
+
+// Point obyektlarini yaratish uchun Point() konstruktor funksiyasini "new" bilan ishlating
+let p = new Point(1, 1);   // Geometrik nuqta (1,1)
+// Endi Point obyekti p’ning metodini ishlating
+p.distance()               // => Math.SQRT2
+```
+
+### Keyingi boblar mavzulari
+
+JavaScript’ning asosiy sintaksisi va imkoniyatlariga ushbu kirish sayohati shu yerda tugaydi, lekin kitob tilning qo'shimcha xususiyatlarini qamrab oluvchi mustaqil boblar bilan davom etadi:
+
+#### 10-bob, Modullar
+
+Bir fayl yoki skriptdagi JavaScript kodi boshqa fayl yoki skriptlarda aniqlangan JavaScript funksiyalari va class’laridan qanday foydalanishini ko'rsatadi.
+
+#### 11-bob, JavaScript Standart Kutubxonasi
+
+Barcha JavaScript dasturlari uchun mavjud bo'lgan ichki o'rnatilgan funksiyalar va class’larni qamrab oladi. Bu map va set’lar kabi muhim ma'lumotlar tuzilmalari, matnli pattern’larni moslashtirish uchun regular expression class’i, JavaScript ma'lumotlar tuzilmalarini seriyalashtirish uchun funksiyalar va boshqa ko'p narsalarni o'z ichiga oladi.
+
+#### 12-bob, Iteratorlar va Generatorlar
+
+`for/of` siklining qanday ishlashini va o'z class’laringizni `for/of` bilan takrorlanadigan qilishni tushuntiradi. U shuningdek generator funksiyalari va `yield` operatorini ham qamrab oladi.
+
+#### 13-bob, Asinxron JavaScript
+
+Bu bob JavaScript’da asinxron dasturlashni chuqur o'rganish bo'lib, callback’lar va event’lar, Promise’ga asoslangan API’lar, `async` va `await` kalit so'zlarini qamrab oladi. Asosiy JavaScript tili asinxron bo'lmasa-da, asinxron API’lar ham veb-brauzerlar, ham Node’da standart hisoblanadi va bu bob ushbu API’lar bilan ishlash usullarini tushuntiradi.
+
+#### 14-bob, Metadasturlash
+
+Boshqa JavaScript dasturchilari foydalanishi uchun kod kutubxonalarini yozayotgan dasturchilarga qiziq bo'lishi mumkin bo'lgan JavaScript’ning bir qator takomillashgan xususiyatlarini tanishtiradi.
+
+#### 15-bob, Veb-brauzerlarda JavaScript
+
+Veb-brauzer host muhitini tanishtiradi, veb-brauzerlar JavaScript kodini qanday bajarishini tushuntiradi va veb-brauzerlar tomonidan belgilangan ko'plab API’larning eng muhimlarini qamrab oladi. Bu kitobdagi eng uzun bob.
+
+#### 16-bob, Node bilan Server tomonidagi JavaScript
+
+Node host muhitini tanishtiradi, asosiy dasturlash modelini va tushunish uchun eng muhim bo'lgan ma'lumotlar tuzilmalari va API’larni qamrab oladi.
+
+#### 17-bob, JavaScript Vositalari va Kengaytmalari
+
+Keng qo'llanilishi va sizni yanada samaraliroq dasturchi qilishi mumkinligi sababli bilish kerak bo'lgan vositalar va til kengaytmalarini qamrab oladi.
