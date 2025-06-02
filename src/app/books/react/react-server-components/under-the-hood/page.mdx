@@ -1,0 +1,141 @@
+# Ichki ishlash mexanizmi
+
+Qisqa va ba'zan soddalashtirilgan javob: ha, `turnServerComponentsIntoTreeOfElements` bu React renderer’i hisoblanadi. U yuqori darajadan, masalan, `<App />` dan boshlanib, rekursiv ravishda React daraxtiga kirib boradi va har bir komponentni chaqirib, uning qaytaradigan React elementi(oddiy JavaScript obyekti)ni oladi.
+
+Keling, buni amalga oshirishning namunaviy kodini ko'rib chiqaylik va uning nima qilishi haqida muhokama qilaylik:
+``` js copy
+async function turnServerComponentsIntoTreeOfElements(jsx) {
+  if (
+    typeof jsx === "string" ||
+    typeof jsx === "number" ||
+    typeof jsx === "boolean" ||
+    jsx == null
+  ) {
+    // Bu turdagi qiymatlar bilan hech narsa qilish shart emas.
+    return jsx;
+  }
+
+  if (Array.isArray(jsx)) {
+    // Massivdagi har bir elementni qayta ishlash.
+    return await Promise.all(jsx.map(renderJSXToClientJSX(child)));
+  }
+
+  // Agar obyekt bilan ishlayotgan bo'lsak
+  if (jsx != null && typeof jsx === "object") {
+    // Agar bu React elementi bo'lsa,
+    if (jsx.$$typeof === Symbol.for("react.element")) {
+      // `{ type }` o'zgaruvchisi ichki o'rnatilgan komponentlar uchun string.
+      if (typeof jsx.type === "string") {
+        // Bu `<div />` kabi ichki o'rnatilgan komponent.
+        // JSON formatiga o'tishi mumkin bo'lgan props’larni tekshiramiz.
+        return {
+          ...jsx,
+          props: await renderJSXToClientJSX(jsx.props),
+        };
+      }
+
+      if (typeof jsx.type === "function") {
+        // Bu `<Footer />` kabi maxsus React komponenti.
+        // Uning funksiyasini chaqirib, qaytarilgan JSX uchun jarayonni takrorlaymiz.
+        const Component = jsx.type;
+        const props = jsx.props;
+        const returnedJsx = await Component(props);
+        return await renderJSXToClientJSX(returnedJsx);
+      }
+      throw new Error("Not implemented.");
+    } else {
+      // Bu oddiy obyekt (props yoki ulardagi biror narsa).
+      // Obyekt, lekin bu React elementi emas (yuqoridagi holatni hal qildik).
+      // Har bir qiymatni ko'rib chiqamiz va ichidagi JSX’ni qayta ishlaymiz.
+      return Object.fromEntries(
+        await Promise.all(
+          Object.entries(jsx).map(async ([propName, value]) => [
+            propName,
+            await renderJSXToClientJSX(value),
+          ])
+        )
+      );
+    }
+  }
+  throw new Error("Not implemented");
+}
+```
+
+Ushbu kod parchasini ko'rganingizda, u biroz qo'rqinchli ko'rinishi mumkin bo'lsa-da, aniq aytadigan bo'lsak: bu faqatgina argumentlarga asoslangan katta `if/else` daraxtidir. Keling, har bir tarmoqni ko'rib chiqaylik va uning qanday ishlashini tushunamiz, avval input argumenti `jsx`dan boshlaymiz.
+
+### Birinchi tarmoq(branch)
+
+Birinchi tarmoq uchun, agar biz React elementini quyidagicha hisoblasak:
+``` jsx copy
+<div>hi!</div>
+```
+
+Bu yerda `"hi!"` bolasi faqatgina string. Agar biz bu string’ni server komponenti renderer'iga topshirsak, uni shunday qoldirishni xohlaymiz. G'oya shundaki, server va klient tomonida React tushunishi mumkin bo'lgan turdagi narsalarni qaytarishdir. React, string, number va boolean’larni server va klient tomonida tushunishi va render qilishi mumkin, shuning uchun ularni shunday qoldiramiz.
+
+### Massivlarni qayta ishlash
+
+Keyingi bosqichda, agar bizda massiv bo'lsa, uni `.map` metodi orqali yurib chiqamiz va har bir elementni rekursiv ravishda bizning funksiyamiz orqali qayta ishlaymiz. Massivlar bir qancha bolalarni o'z ichiga olishi mumkin, masalan:
+``` jsx copy
+[
+  <div>hi</div>,
+  <h1>hello</h1>,
+  <span>love u</span>,
+  (props) => <p id={props.id}>lorem ipsum</p>,
+];
+```
+
+Masalan, Fragment’lar bolalarni massiv sifatida ifodalaydi. Shunday qilib, biz shunchaki ularni har bir bola uchun rekursiv chaqirib qayta ishlaymiz va davom etamiz.
+
+
+### Obyektlar bilan ishlash
+Keyingi qismda juda qiziqarli bo'ladi: obyektlarni qayta ishlaymiz. Unutmangki, barcha React elementlari obyektlardir, lekin barcha obyektlar React elementlari emas. Qanday qilib biz obyektning React elementi ekanligini bilamiz? U `$$typeof` xususiyatiga ega bo'lib, bu symbol qiymatini oladi — aniqrog'i, `Symbol.for('react.element')`. Shuning uchun, biz obyekt bu kalit/qiymat juftligiga ega ekanligini tekshiramiz va agar mavjud bo'lsa, uni React elementi sifatida qayta ishlaymiz. Bu qismdagi kodda buni qilamiz:
+``` jsx copy
+if (jsx.$$typeof === Symbol.for("react.element")) {
+  if (typeof jsx.type === "string") {
+    // Bu <div /> kabi komponent.
+    // JSON’ga aylantira olishimizni tekshirish uchun uning props’larini ko'rib chiqamiz.
+    return {
+      ...jsx,
+      props: await renderJSXToClientJSX(jsx.props),
+    };
+  }
+  if (typeof jsx.type === "function") {
+    // Bu <Footer /> kabi maxsus React komponenti.
+    // Uning funksiyasini chaqirib, qaytarilgan JSX uchun jarayonni takrorlaymiz.
+    const Component = jsx.type;
+    const props = jsx.props;
+    const returnedJsx = await Component(props);
+    return renderJSXToClientJSX(returnedJsx);
+  }
+  throw new Error("Not implemented.");
+} else {
+  // Bu oddiy obyekt (props yoki ulardagi biror narsa).
+  // Har bir qiymatni ko'rib chiqamiz va ichidagi JSX’ni qayta ishlaymiz.
+  return Object.fromEntries(
+    await Promise.all(
+      Object.entries(jsx).map(async ([propName, value]) => [
+        propName,
+        await renderJSXToClientJSX(value),
+      ])
+    )
+  );
+}
+```
+
+### Yana bir tekshiruv
+
+Agar shartli `if` bayonotining haqiqiy tarmog'ida bo'lsak, yana bir tekshiruv o'tkazamiz: `jsx.type` qiymati `"string"` yoki `"function"`mi? Buni biz React elementlari ikkisini ham tur sifatida olishi mumkinligi uchun qilamiz. String’lar oddiy DOM elementlari, masalan, `"div"`, `"span"` kabi ishlatiladi. Funksiyalar esa maxsus komponentlar, masalan, `<Footer />` uchun ishlatiladi. Agar bu string bo'lsa, u oddiy DOM elementi ekanligini bilamiz, shuning uchun uni shunday qoldiramiz, lekin uning props’larini rekursiv chaqiramiz — chunki uning props’lari bolalarga ega bo'lishi mumkin bo'lgan concurrent React komponentidir. Agar bu funksiya bo'lsa, u maxsus komponent ekanligini bilamiz, shuning uchun uni props’lari bilan chaqiramiz va rekursiv ravishda qaytarilgan JSX ustida funksiyamizni chaqiramiz. Bu jarayon oxir-oqibatda string, number, boolean, yoki ushbu turlardan iborat array yoki string turidagi React elementi qaytarguncha davom etadi. Bu boshqa tarmoqqa tushishi mumkin.
+
+### `await` va server komponentlari
+
+Biz funksional komponentni chaqirishimizdan oldin `await`ni e'tiborga olishimiz kerak. Bu server tomonida bajarilayotgani sababli, agar bu server komponenti bo'lsa, funksional komponentni kutishimiz mumkin! Server komponentlarining sirli tomoni shundaki, biz ularni serverda `await` orqali kutishimiz mumkin va ular bizga React elementini qaytaradi. Keyinchalik, biz uni `renderToString` yoki `renderToPipeableStream`ga uzatib, klientga yuborilishi mumkin bo'lgan string yoki string’lar oqimiga render qilishimiz mumkin. Haqiqatan ham, bizning funksiyamiz shuni amalga oshiradi: u rekursiv ravishda barcha asinxron narsalarni kutmoqda, natijada elementlar daraxtini (JavaScript obyekti) ishlab chiqaradi va uning barcha ma'lumotlar qaramliklari hal qilinadi.
+
+### Oddiy obyektlar bilan ishlash
+
+Nihoyat, agar obyekt React elementi bo'lmasa, demak, u oddiy obyekt ekanligini bilamiz, shuning uchun biz rekursiv ravishda funksiyamizni obyekt ichidagi har bir qiymatga chaqiramiz va natijani qaytaramiz. Odatda, obyekt faqat props’larni o'z ichiga oladi, shuning uchun `else` tarmog'ida, biz shunchaki har bir prop qiymatiga rekursiv ravishda funksiyamizni chaqiramiz va natijani qaytaramiz, bu esa *render props* kabi pattern’lar orqali props sifatida berilishi mumkin bo'lgan har qanday komponentlarni samarali tarzda ochadi, bu haqida [5-bobda](/books/react/powerful-patterns/render-props) muhokama qilingan.
+
+
+### Minimal RSCs Renderer
+Shu bilan, bizning minimal RSCs renderer’imiz tugadi. Bu mukammal emas, lekin yaxshi boshlanishdir. Biz uni server komponentlarimizni React elementlariga render qilish uchun ishlatishimiz mumkin, keyin esa ularni klientlarga yuboramiz.
+
+Bu jarayonni yakunlagach, biz uni `renderToString` yoki `renderToPipeableStream`ga uzatyapmiz, yoki hatto uni seriyalashtirib, to'g'ridan-to'g'ri brauzerga yuborishimiz mumkin. Klient tomonida React uni render qilishi mumkin, chunki bu, asosan, React tushunishi mumkin bo'lgan React elementlaridan iborat daraxtdir. Biroq, bu jarayonda hal qilishimiz kerak bo'lgan yana bir muammo bor: *seriyalashtirish*.

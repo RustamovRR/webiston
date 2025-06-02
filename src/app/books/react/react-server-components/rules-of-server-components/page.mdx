@@ -1,0 +1,171 @@
+# Server komponentlar qoidalari
+
+Endi server komponentlarning qanday ishlashini tushunib yetganimizdan so'ng, server komponentlar bilan ishlashda amal qilishimiz kerak bo'lgan ba'zi qoidalarni, yoki kengroq ma'noda, server komponentlar bilan ishlashda e'tiborga olishimiz kerak bo'lgan jihatlarni muhokama qilamiz.
+
+### Seriyalashtirish muhim omil
+
+Server komponentlar bilan ishlashda barcha props’lar seriyalashtiriladigan bo'lishi kerak. Buning sababi shundaki, server props’larni seriyalashtirib, ularni klientga yuborishi kerak, avval muhokama qilganimizdek. Shuning uchun props’lar server komponentlarda funksiyalar yoki boshqa seriyalashtirilmaydigan qiymatlar bo'lishi mumkin emas. Bu esa, [5-bobda](/books/react/powerful-patterns/render-props) ko'rib chiqqanimiz "render props" pattern’ini amalda eskirgan qilib qo'yadi.
+
+Ushbu nuqtada, RSC’lar serverda qanday render qilinishi, keyin oson va silliq navigatsiya orqali klientga yuborilish jarayonini tushungan holda, bu qoida nimaga kerakligini tushunishimiz kerak. Misol uchun, agar bizda quyidagicha server komponent bo'lsa:
+``` js copy
+function ServerComponent() {
+  return <ClientComponent onClick={() => alert("hi")} />;
+}
+```
+
+Bu xato keltirib chiqaradi. Ammo, biz `ClientComponent` ichidagi `onClick` prop’ini inkapsulyatsiya qilish orqali bu muammoni hal qilishimiz mumkin.
+
+### Effektli hook’lardan foydalanmaslik
+
+Server klientdan keskin farq qiladigan muhitdir. U interaktiv emas, DOM’ga ega emas va unda `window` mavjud emas. Shu sababli, effektli hook’lar server komponentlarda qo'llab-quvvatlanmaydi.
+
+Ba'zi freymvorklar, masalan, Next.js, server komponentlarda barcha hook’larni taqiqlovchi lint qoidalariga ega, lekin bu har doim ham zarur emas. RSC’lar state, effektlar yoki faqat brauzerga xos API’larga bog'lanmagan hook’larni ishlatishi mumkin. Masalan, `useRef` hook’ini server komponentlarda ishlatish mutlaqo to'g'ri, chunki u state, effekt yoki faqat brauzerga xos API’larga bog'liq emas. Biroq, bu yomon bo'lmasligi mumkin, chunki bu bizni komponentlar bilan xavfsizroq ishlashga majbur qilad.
+
+### State - klient komponentidagi state emas
+
+Server komponentlardagi state - klient komponentlardagi state’dan farq qiladi. Chunki server komponentlar serverda, klient komponentlar esa klientda render qilinadi. Bu, server komponentlardagi state bir nechta klientlar orasida umumiy bo'lishi mumkinligini anglatadi, chunki server va klient o'rtasidagi aloqa keng tarqaluvchi (broadcast) usulda amalga oshadi, unicast (bitta klient, bitta state) kabi emas, va shu sababli klientlar o'rtasida state’ni oshkor qilish xavfi yuqori bo'lishi mumkin.
+
+Hook’lar qoidasini hisobga olgan holda, `useState` yoki `useReducer` kabi state’ga bog'liq komponentlar eng yaxshi klient komponentlar sifatida ishlatilishi tavsiya etiladi. 
+
+### Klient komponentlar server komponentlarni import qilolmaydi
+
+Klient komponentlar server komponentlarni import qila olmaydi. Buning sababi, server komponentlar faqat serverda bajariladi, ammo klient komponentlar ham serverda, ham brauzerlarda bajariladi.
+
+Masalan, agar bizda quyidagi kabi klient komponenti bo'lsa:
+``` js copy
+"use client";
+import { ServerComponent } from "./ServerComponent";
+
+function ClientComponent() {
+  return (
+    <div>
+      <h1>Hey everyone, check out my great server component!</h1>
+      <ServerComponent />
+    </div>
+  );
+}
+```
+
+bu xato keltirib chiqaradi, chunki klient komponenti server komponentini import qilishga harakat qilmoqda. Server komponentlar faqat serverda bajarilishi sababli, bu komponent Node.js API’larini import qilishi mumkin, va ular klient muhitida mavjud emas, bu esa klientda xatolarga olib keladi.
+
+Masalan, server komponenti quyidagicha ko'rinishi mumkin:
+``` js copy
+import { readFile } from "node:fs/promises";
+
+export async function ServerComponent() {
+  const content = await readFile("./some-file.txt", "utf-8");
+  return <div>{content}</div>;
+}
+```
+
+Agar biz bu komponentni klientda ishlatishga urinib ko'rsak, `readFile` funksiyasi va `node:fs/promises` moduli brauzerda mavjud emasligi sababli xato yuzaga keladi. Shu sababdan, klient komponentlar server komponentlarni import qila olmaydi.
+
+#### Server komponentlarni props yordamida kompozitsiya qilish
+
+Ammo, klient komponentlar server komponentlarni props orqali kompozitsiya qilishi mumkin. Masalan, biz klient komponentini quyidagicha qayta yozishimiz mumkin:
+``` js copy
+"use client";
+
+function ClientComponent({ children }) {
+  return (
+    <div>
+      <h1>Hey everyone, check out my great server component!</h1>
+      {children}
+    </div>
+  );
+}
+```
+
+Keyin esa, bu klient komponentini o'z ichiga olgan ota server komponentda shunday qilish mumkin:
+``` js copy
+import { ServerComponent } from "./ServerComponent";
+
+async function TheParentOfBothComponents() {
+  return (
+    <ClientComponent>
+      <ServerComponent />
+    </ClientComponent>
+  );
+}
+```
+
+Bu ishlaydi, chunki bu yerda klient komponenti server komponentini aniq import qilmayapti; aksincha, ota server komponent server komponentni props sifatida klient komponentiga uzatmoqda. Importlar orqali cheklov qo'yilishining sababi server komponentlarni klient uchun mo'ljallangan to'plam paketda ko'rish imkoniyatini oldini olishdir, chunki to'plash vositalar(bundlers) faqat import bayonotlariga e'tibor beradi, props orqali kompozitsiyaga esa emas.
+
+### Klient komponentlar yomon emas
+
+Shuni ta'kidlash joizki, server komponentlar joriy etilgunga qadar, klient komponentlar bizda React’da mavjud bo'lgan  yagona komponent turi bo'lgan. Bu, mavjud barcha komponentlarimiz klient komponentlar ekanligini anglatadi va bu yomon emas. Klient komponentlar yomon emas va ular yo'qolmaydi. Klient komponentlar React ilovalarining asosi bo'lib qoladi va hali ham eng ko'p yoziladigan komponentlar hisoblanadi.
+
+Bu yerda bu mavzuni eslatib o'tishimizning sababi, ayrimlar server komponentlarni klient komponentlarga nisbatan ustunroq deb qabul qilayotganidir. Aslida, bu noto'g'ri. Server komponentlar klient komponentlarga qo'shimcha sifatida ishlatilishi mumkin bo'lgan yangi turdagi komponentdir, lekin klient komponentlar uchun o'rinbosar emas.
+
+### Server harakatlari (Server actions)
+
+Server komponentlar React’da kuchli bo'lgan yangi xususiyat bo'lsa-da, ular yagona yangi xususiyat emas. RSC'lar `"use server"` deb nomlangan yangi direktiva bilan birgalikda ishlaydi, bu direktiva klient kodidan chaqirilishi mumkin bo'lgan server tomonidagi funksiyalarni belgilaydi. Biz bu funksiyalarni *server harakatlari (server actions)* deb ataymiz.
+
+Har qanday asinxron funksiya tanasining birinchi qatorida `"use server"` ni yozish orqali, bu funksiyani klient kodidan chaqirish mumkinligini, lekin faqat serverda bajarilishi kerakligini React va to'plash vositasiga bildiradi. Agar klient tomonda server harakatini chaqirganimizda, u serverga tarmoqli so'rov yuboradi va barcha argumentlarni seriyalashtirilgan holda uzatadi. Agar server harakati qiymat qaytarsa, bu qiymat ham seriyalashtirilib, klientga qaytariladi.
+
+Agar alohida funksiyalarni `"use server"` bilan belgilashni xohlamasangiz, fayl boshiga bu direktivani qo'shib, fayldagi barcha eksport qilingan funksiyalarni *server actions* sifatida belgilashingiz ham mumkin. Bu holatda, ularni klient kodidan ham import qilib ishlatish mumkin bo'ladi.
+
+### Formalar va mutatsiyalar (Forms and mutations)
+
+[8-bobda](/books/react/frameworks) biz Next.js va Remix qanday qilib formalar va o'zgartirishlarni (mutatsiyalarni) boshqarishi haqida gaplashgan edik. React ham bu funksiyalar uchun birinchi darajali primitivlarni qo'shmoqda (yoki allaqachon qo'shgan). Quyidagi formani ko'rib chiqaylik:
+``` js copy filename="App.js"
+async function requestUsername(formData) {
+  'use server';
+  const username = formData.get('username');
+  // ...
+}
+
+export default function App() {
+  return (
+    <form action={requestUsername}>
+      <input type="text" name="username" />
+      <button type="submit">Request</button>
+    </form>
+  );
+}
+```
+
+Ushbu misolda, `requestUsername` formaga server harakati sifatida berilgan. Foydalanuvchi formani yuborganida, `requestUsername` server funksiyasiga tarmoqli so'rov amalga oshiriladi. Formada server harakatini chaqirganda, React formaning `FormData` obyektini server harakatiga birinchi argument sifatida taqdim etadi.
+
+Formaga server harakatini `action` sifatida berish orqali, React formani asta-sekin yaxshilaydi. Bu shuni anglatadiki, forma JavaScript to'plam paketi yuklanmasidan oldin yuborilishi mumkin.
+
+### Formalardan tashqarida
+
+Server harakatlari ochiq server so'rov nuqtalari(endpoint) hisoblanadi va klient kodida istalgan joydan chaqirilishi mumkin. 
+
+Formadan tashqarida server harakatini ishlatishda, biz uni o'tish (transition) jarayonida chaqirishimiz mumkin, bu esa yuklanish indikatorini ko'rsatish, optimistik state yangilanishlarini namoyish qilish va kutilmagan xatolarni boshqarish imkonini beradi. Quyida formadan tashqarida server harakatiga misol keltirilgan:
+``` js copy
+"use client";
+
+import incrementLike from "./actions";
+import { useState, useTransition } from "react";
+
+function LikeButton() {
+  const [isPending, startTransition] = useTransition();
+  const [likeCount, setLikeCount] = useState(0);
+
+  const incrementLink = async () => {
+    "use server";
+    return likeCount + 1;
+  };
+
+  const onClick = () => {
+    startTransition(async () => {
+      // Server harakati qaytarayotgan qiymatni o'qish uchun, promise’ni kutamiz.
+      const currentCount = await incrementLike();
+      setLikeCount(currentCount);
+    });
+  };
+
+  return (
+    <>
+      <p>Total Likes: {likeCount}</p>
+      <button onClick={onClick} disabled={isPending}>
+        Like
+      </button>
+    </>
+  );
+}
+```
+
+Shunday qilib, server harakatlari React’da klient tomonidagi koddan server tomonidagi funksiyalarni chaqirish imkonini beruvchi kuchli yangi xususiyatdir. Bu funksiyalar asosan kutubxonalar yoki freymvorklar  ichida ishlatish uchun mo'ljallangan, chunki ularni an’anaviy (vanilla) React’da ishlatish biroz qiyinchilik tug'dirishi va ko'p moslashtirish ishlari talab etiladi. Biroq, bu juda ko'p qiziqarli foydalanish holatlarini amalga oshirishga imkon beruvchi kuchli xususiyatdir.

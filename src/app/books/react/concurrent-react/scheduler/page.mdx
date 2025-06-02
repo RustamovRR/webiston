@@ -1,0 +1,129 @@
+# Scheduler (Rejalashtiruvchi)
+
+React arxitekturasining asos qismida mustaqil paket sifatida ishlaydigan scheduler (rejalashtiruvchi) joylashgan bo'lib, vaqtga oid turli yordamchi vositalarni taqdim etadi va u Fiber reconciler’iga bog'liq emas. React ushbu scheduler’ni reconciler ichida ishlatadi. Scheduler va reconciler, render yo'llari(lanes) yordamida vazifalarni ularning dolzarbligiga qarab ustuvorlik bilan tartiblaydi va ularga birgalikda ishlash imkonini beradi. Hademay render yo'llari haqida batafsil to'xtalamiz. Bugungi kunda React’dagi scheduler’ning asosiy vazifasi asosiy thread’ni boshqarishdan iborat bo'lib, asosan mikrotask’larni rejalashtirish orqali silliq bajarilishni ta'minlaydi.
+
+Bu jarayonni yanada yaxshiroq tushunish uchun, hozirgi vaqtdagi React’ning manba kodidan kichik bir qismga nazar tashlaymiz:
+``` ts copy
+ export function ensureRootIsScheduled(root: FiberRoot): void {
+  // Bu funksiya har safar bir root yangilanish qabul qilganda chaqiriladi.
+  // U ikkita asosiy ishni bajaradi: 
+  // 1) u root’ning ildiz jadvalida bo'lishini ta'minlaydi va 
+  // 2) root jadvalini qayta ishlash uchun kutilayotgan mikrotask mavjudligini ta'minlaydi.
+  // 
+  // Ko'p jadval tuzish jarayonlari `scheduleTaskForRootDuringMicrotask` amalga oshgunga qadar boshlanmaydi.
+  
+  // root’ni ildiz jadvaliga qo'shish
+  if (root === lastScheduledRoot || root.next !== null) {
+    // Tezkor yo'l. Bu root allaqachon jadvalga kiritilgan.
+  } else {
+    if (lastScheduledRoot === null) {
+      firstScheduledRoot = lastScheduledRoot = root;
+    } else {
+      lastScheduledRoot.next = root;
+      lastScheduledRoot = root;
+    }
+  }
+
+  // Har safar root yangilanish qabul qilganda, biz jadvalni
+  // keyingi qayta ishlamaganunimizcha buni true qiymatga o'rnatamiz
+  // Agar bu false bo'lsa, biz jadvalni
+  // tekshirmasdan tezda flushSync’ni yakunlashimiz mumkin.
+  mightHavePendingSyncWork = true;
+
+  // Hozirgi voqealar oxirida, har bir root’ni ko'rib chiqib
+  // va ularning har biri uchun to'g'ri ustuvorlikda
+  // rejalashtirilgan vazifa borligiga ishonch hosil qilish.
+  if (__DEV__ && ReactCurrentActQueue.current !== null) {
+    // Biz `act` rejimida ishlayapmiz.
+    if (!didScheduleMicrotask_act) {
+      didScheduleMicrotask_act = true;
+      scheduleImmediateTask(processRootScheduleInMicrotask);
+    }
+  } else {
+    if (!didScheduleMicrotask) {
+      didScheduleMicrotask = true;
+      scheduleImmediateTask(processRootScheduleInMicrotask);
+    }
+  }
+
+  if (!enableDeferRootSchedulingToMicrotask) {
+    // Ushbu bayroq o'chirilgan paytda,
+    // biz mikrotask’ni kutmasdan render vazifasini darhol rejalashtiramiz.
+    // TODO: Biz rejalashtirilgan qo'shimcha imkoniyatlarni blokdan chiqarish uchun,
+    // imkon qadar tezroq enableDeferRootSchedulingToMicrotask’ni ishga tushirishimiz kerak.
+    scheduleTaskForRootDuringMicrotask(root, now());
+  }
+
+  if (
+    __DEV__ &&
+    ReactCurrentActQueue.isBatchingLegacy &&
+    root.tag === LegacyRoot
+  ) {
+    // `act` rejimining maxsus holati: eski yangilanishlar jadvalga kiritilganida bu qayd etiladi.
+    ReactCurrentActQueue.didScheduleLegacyUpdate = true;
+  }
+}
+```
+
+`ensureRootIsScheduled` funksiyasi, React kod bazasida render’ni boshqarishda muhim rol o'ynaydi. React ildizi, `root: FiberRoot` deb nomlangan, yangilanishni qabul qilganda, ushbu funksiya ikkita muhim harakatni bajarish uchun chaqiriladi. [4-bobdan eslang](/books/react/inside-reconciliation/fiber-reconciliation#commit-bosqichi): React ildizi bu yakuniy "o'zgartirish" bo'lib, u yangilanishlarni amalga oshirish uchun commit(tatbiq qilish) bosqichida sodir bo'ladi.
+
+`ensureRootIsScheduled` chaqirilganda, u root’ning ildiz jadvaliga kiritilganligini tasdiqlaydi: bu qayta ishlanishi kerak bo'lgan ildizlarni kuzatadigan ro'yxat. Ikkinchidan, ushbu ildiz jadvalini qayta ishlashga bag'ishlangan kutilayotgan mikrotask mavjudligini ta'minlaydi.
+
+## Event loop va microtask’lar
+
+JavaScriptda mikrotask — bu hodisa sikli (event-loop) menejmentida ishlatiladigan tushuncha bo'lib, bu turdagi vazifalar mikrotask’lar navbati orqali boshqariladi. Mikrotask’larni tushunish uchun avvalo JavaScript event loop va unga tegishli vazifalar navbatlari(task queue)ni tushunish muhim:
+
+#### Event loop
+
+JavaScript dvigateli asinxron operatsiyalarni boshqarish uchun event loop’dan foydalanadi. Event loop uzluksiz ravishda bajarilishi kerak bo'lgan ish (masalan, callback funksiyani bajarish) bor-yo'qligini tekshiradi. U ikki turdagi vazifalar navbatida ishlaydi: vazifalar navbati (makrotask navbati) va mikrotasklar navbati.
+
+#### Vazifalar navbati (makrotask navbati(queue))
+
+Bu navbat event’larni boshqarish, `setTimeout` va `setInterval` callback’larini bajarish, va I/O operatsiyalarni bajarish kabi vazifalarni o'z ichiga oladi. Bu navbatdagi vazifalar bittalab qayta ishlanadi, va navbatdagi vazifa faqat joriy vazifa tugagandan so'ng tanlanadi.
+
+#### Mikrotasklar navbati
+
+Mikrotask — bu kichikroq, tezroq bajarilishi kerak bo'lgan vazifa. Mikrotask’lar promise’lar, `Object.observe` va `MutationObserver` kabi operatsiyalardan hosil bo'ladi. Ular oddiy vazifalar navbatidan farq qiluvchi mikrotask’lar navbati(microtask queue)da saqlanadi.
+
+#### Bajarilish (execution)
+
+Mikrotas’klar joriy vazifa tugagandan keyin, JavaScript dvigateli keyingi (makro) vazifani vazifalar navbatidan olguniga qadar qayta ishlanadi. Vazifa bajarilgandan keyin, dvigatel mikrotask’lar navbatida vazifalar borligini tekshiradi va keyingi vazifaga o'tishdan oldin ularning barchasini bajaradi. Bu mikrotask’larning tezkor va ketma-ket qayta ishlanishini ta'minlaydi, joriy skript bajarilgandan keyin va boshqa vazifalardan, masalan, renderlash yoki event’larni boshqarishdan oldin.
+
+#### Xususiyatlari va qo'llanilishi
+
+Mikrotask’lar navbatdagi makrotask’ga o'tishdan oldin bajarilishi bilan yuqori ustuvorlikka ega, ya'ni ular makrotask’lardan oldin bajariladi. Agar mikrotask navbatga uzluksiz yangi mikrotasklar qo'shsa, bu vaziyat vazifalar(macrotask) navbati qayta ishlanmasligi holatiga olib kelishi mumkin. Bu holat *starvation (och qolish)* deb ataladi.
+
+## `ensureRootIsScheduled` funksiyasi tahlili
+
+`ensureRootIsScheduled` funksiyasi kontekstida mikrotask ildiz jadvalini qayta ishlash darhol va yuqori ustuvorlikda, joriy skript bajarilgandan so'ng va brauzer boshqa vazifalar, masalan, renderlash yoki event’larni boshqarishdan oldin bajarilishini ta'minlash uchun qo'llaniladi. Bu React’da silliq foydalanuvchi interfeysini yangilanishi va samarali vazifa boshqaruvini ta'minlaydi.
+
+Funksiya ildizni jadvalga qo'shishdan boshlanadi. Bu, ildizning oxirgi rejalashtirilgan ekanligini yoki jadvalda allaqachon mavjud ekanligini tekshirishni o'z ichiga oladi. Agar u jadvalda mavjud bo'lmasa, funksiya ildizni jadvalning oxiriga qo'shib, `lastScheduledRoot`ni joriy ildizga ko'rsatishga yangilaydi. Agar ilgari hech qanday ildiz rejalashtirilmagan bo'lsa `(lastScheduledRoot === null)`, joriy ildiz jadvalda ham birinchi, ham oxirgi ildiz bo'ladi.
+
+Keyingi qadamda funksiya `mightHavePendingSyncWork` bayrog'ini `true`ga o'rnatadi. Bu bayroq sinxron ishlov berish kutilayotganini ko'rsatadi va bu holat keyingi bo'limda muhokama qilinadigan `flushSync` funksiyasi uchun muhimdir.
+
+Funksiya, shuningdek, ildiz jadvalini qayta ishlash uchun mikrotask rejalashtirilganligiga ishonch hosil qiladi. Bu `scheduleImmediateTask`ni (`processRootScheduleInMicrotask`) chaqirish orqali amalga oshiriladi. Bu rejalashtirish React'ning `__DEV__ `va `ReactCurrentActQueue.current` bilan ifodalangan `act` test yordam dasturi doirasida ham, undan tashqarida ham sodir bo'ladi.
+
+Funksiya tarkibidagi yana bir muhim qism `enableDeferRootSchedulingToMicrotask` bayrog'ini tekshiruvchi shart blokidir. Agar bu bayroq o'chirilgan bo'lsa, funksiya render vazifasini mikrotask’ga qoldirish o'rniga darhol rejalashtiradi. Bu qismda (hozirgi paytda) `TODO` izohi mavjud bo'lib, kelajakda qo'shimcha imkoniyatlarni ochish uchun ushbu funksiyani yoqish rejalashtirilganligini ko'rsatadi.
+
+Nihoyat, funksiya React’ning `act` dasturida eski yangilanishlarni boshqarish uchun shartni o'z ichiga oladi. Bu o'zgacha test vaziyatlariga tegishli bo'lib, u yerda yangilanishlar boshqacha tartibda yig'iladi va eski yangilanish rejalashtirilgan har safar ro'yxatdan o'tkaziladi.
+
+Xulosa qilib aytganda, `ensureRootIsScheduled` bu React’ning rejalashtirish va render qilish logikasini bir necha jihatlarini o'z ichiga olgan murakkab funksiyadir. U React ildizlariga yangilanishlarni samarali boshqarishga va vazifalar va mikrotask’larni strategik rejalashtirish orqali oson va silliq renderlashni ta'minlashga qaratilgan.
+
+Shu bilan biz React’dagi rejalashtiruvchi (scheduler) roli haqida tushuncha hosil qilamiz: ishni qaysi render yo'llariga (lanes) tushganiga qarab rejalashtirish. Keyingi bo'limda ushbu "yo'l"lar haqida batafsil tushunchaga ega bo'lamiz, ammo hozircha shuni aytish mumkinki, yo'llar yangilanishning ustuvorligini ko'rsatadi.
+
+### "scheduler" va "lanes"
+
+Agar rejalashtiruvchining xatti-harakatlarini kodda modellashtirsak, u quyidagicha ko'rinadi:
+``` js copy
+if (nextLane === Sync) {
+    queueMicrotask(processNextLane);
+} else {
+    Scheduler.scheduleCallback(callback, processNextLane);
+}
+```
+
+Shu orqali ko'rish mumkinki:
+- Agar keyingi yo'l `Sync` bo'lsa, scheduler keyingi yo'lda darhol ishlov berish uchun mikrotask navbatini shakllantiradi. Bu yerda mikrotask’lar nima ekanligini va ularning qanday mos kelishini tushunamiz.
+- Agar keyingi yo'l `Sync` bo'lmasa, scheduler qayta chaqirishni rejalashtiradi va keyingi yo'lda ishlov beradi.
+
+Shunday qilib, "scheduler" o'z nomiga mos keladi: u yo'liga qarab funksiyalarni bajarish uchun belgilangan tizimdir. Yaxshi, biz "lane"lar haqida ko'p gaplashdik. Endi ularni batafsil tushunib chiqamiz!
