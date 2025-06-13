@@ -1,6 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@theme {
+  --color-primary-black: rgba(17, 17, 17);
+  --color-gray-primary: #757a7d;
+  --color-gray-secondary: #adadad;
+
+  --background-image-gradient-text: linear-gradient(to right, white, #757a7d);
+
+  --text-dynamic: calc(5vw + 0.5rem);
+
+  --animate-rotate-once: animate-rotate 700ms ease-in-out forwards;
+
+  @keyframes animate-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 body {
   font-feature-settings:

@@ -14,20 +14,20 @@ export default function HomePage() {
         <div className="vertical-line-1 max-sm:hidden"></div>
         <div className="vertical-line-2 max-sm:hidden"></div>
 
-        <CircleIcon className="animate-fadeIn absolute left-[12%] top-[20%] max-sm:hidden" />
-        <CircleIcon className="animate-fadeIn absolute right-[32%] top-[70%] max-sm:hidden" />
+        <CircleIcon className="animate-fadeIn absolute top-[20%] left-[12%] max-sm:hidden" />
+        <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
 
-        <h1 className="animate-fadeInText bg-gradient-text bg-clip-text p-6 text-7xl font-extrabold text-transparent max-xl:text-dynamic max-lg:text-5xl max-md:p-0">
+        <h1 className="animate-fadeInText bg-gradient-text max-xl:text-dynamic bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
           Veb texnologiyalar dunyosiga teran nigoh{' '}
         </h1>
 
-        <p className="animate-fadeInText max-w-[750px] text-center text-xl text-gray-primary md:!w-full">
+        <p className="animate-fadeInText text-gray-primary max-w-[750px] text-center text-xl md:w-full!">
           Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini
           chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.
         </p>
 
         <div className="mt-10 flex gap-2">
-          <ButtonLink href="/docs" variant="secondary" className="group">
+          <ButtonLink href="/books" variant="secondary" className="group">
             O'rganishni boshlash{' '}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
               <ArrowRightIcon />

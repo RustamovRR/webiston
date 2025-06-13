@@ -1,4 +1,3 @@
-/** @type {import('next').NextConfig} */
 
 import nextra from "nextra";
 
@@ -7,7 +6,6 @@ const withNextra = nextra({
   search: {
     codeblocks: false,
   },
-  contentDirBasePath: "/books",
 });
 
 export default withNextra({

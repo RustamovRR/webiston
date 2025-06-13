@@ -1,4 +1,9 @@
 export default {
+  index: {
+    type: 'page',
+    title: 'React',
+    href: '/books/react',
+  },
   'entry-level-stuff': 'React asoslari',
   jsx: 'JSX',
   'virtual-dom': 'Virtual DOM',

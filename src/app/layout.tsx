@@ -1,13 +1,13 @@
-import type { Metadata } from 'next'
-import NextImage from 'next/image'
-import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs'
+import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
-import type { FC, PropsWithChildren, ReactNode } from 'react'
-import './globals.css'
-import { socialLinks } from '@/constants'
 import { getPageMap } from 'nextra/page-map'
-import Script from 'next/script'
+import 'nextra-theme-docs/style.css'
+import './globals.css'
+import { Metadata } from 'next'
+import Link from 'next/link'
 import Image from 'next/image'
+import { socialLinks } from '@/constants'
+import Script from 'next/script'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://webiston.uz'),
@@ -91,13 +91,14 @@ const navbar = (
   <Navbar
     logo={
       <Link href="/" className="flex items-center gap-2">
-        <NextImage src="/logo.png" alt="Webiston Logo" width={50} height={50} />
+        <Image src="/logo.png" alt="Webiston Logo" width={50} height={50} />
         <span className="hidden text-lg font-bold sm:inline">Webiston</span>
       </Link>
     }
     logoLink="/"
   />
 )
+
 const footer = (
   <Footer className="flex w-full flex-col items-center gap-4 sm:items-start">
     <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
@@ -122,7 +123,7 @@ const footer = (
   </Footer>
 )
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: any) {
   const pageMap = await getPageMap()
 
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
@@ -130,7 +131,14 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   const isDevelopment = process.env.NODE_ENV === 'development'
 
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
+    <html
+      // Not required, but good for SEO
+      lang="uz"
+      // Required to be set
+      dir="ltr"
+      // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
+      suppressHydrationWarning
+    >
       <Head>
         {!isDevelopment && (
           <>
@@ -187,10 +195,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <Layout
           navbar={navbar}
           pageMap={pageMap}
-          docsRepositoryBase="https://github.com/shuding/nextra/tree/main/books"
-          editLink="Edit this page on GitHub"
-          sidebar={{ defaultMenuCollapseLevel: 1 }}
+          docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
           footer={footer}
+          sidebar={{ defaultMenuCollapseLevel: 2 }}
           darkMode={true}
           toc={{ backToTop: true }}
           nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
