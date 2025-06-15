@@ -1,5 +1,5 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
+import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import './globals.css'
@@ -100,7 +100,7 @@ const navbar = (
 )
 
 const footer = (
-  <Footer className="flex w-full flex-col items-center gap-4 sm:items-start">
+  <Footer className="flex w-full flex-col !items-center !justify-center gap-4 sm:items-start">
     <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
       {socialLinks.map(({ id, href, icon, label }) => (
         <a
@@ -131,14 +131,7 @@ export default async function RootLayout({ children }: any) {
   const isDevelopment = process.env.NODE_ENV === 'development'
 
   return (
-    <html
-      // Not required, but good for SEO
-      lang="uz"
-      // Required to be set
-      dir="ltr"
-      // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
-      suppressHydrationWarning
-    >
+    <html lang="uz" dir="ltr" suppressHydrationWarning>
       <Head>
         {!isDevelopment && (
           <>
@@ -193,7 +186,7 @@ export default async function RootLayout({ children }: any) {
 
       <body>
         <Layout
-          navbar={navbar}
+          navbar={navbar || null}
           pageMap={pageMap}
           docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
           footer={footer}
@@ -201,7 +194,7 @@ export default async function RootLayout({ children }: any) {
           darkMode={true}
           toc={{ backToTop: true }}
           nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-          search={'Dokumentatsiyadan qidirish...'}
+          search={<Search placeholder="Dokumentatsiyadan qidirish..." />}
           feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
         >
           {children}
