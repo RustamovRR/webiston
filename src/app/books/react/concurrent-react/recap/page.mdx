@@ -1,3 +1,10 @@
+---
+title: "'Concurrent React' bo'limini qisqacha takrorlash"
+description: "Ushbu keng qamrovli suhbat concurrent React haqida chuqur o'rganish bilan bog'liq bo'lib, Fiber reconciler, scheduler(rejalashtiruvchi), yangilanishlarni kechiktirish(defer updates), render yo'llari va yangi hook’lar, masalan, `useTransition` va `useDeferredValue` kabi ko'p jihatlarni qamrab oldi.
+
+Biz Fiber reconciler haqida gaplashishdan boshladik, bu React’ning concurrent rendering mexanizmining yuragidir. Bu algoritm freymvorkning kichik ish birliklariga bo'lish va bajarish ustuvorligini boshqarish imkoniyatini ta'minlaydi, bu esa React’ga "to'xtatib bo'ladigan" va concurrent renderingni qo'llab-quvvatlash imkonini beradi. Bu React’ga murakkab va yuqori samarali ilovalarni silliq ravishda boshqarish qobiliyatiga katta hissa qo'shadi, foydalanuvchi interaktivligi og'ir hisob-kitoblar davomida ham javobgar bo'lishini ta'minlaydi."
+---
+
 ### Bo'limni qisqacha takrorlash
 
 Ushbu keng qamrovli suhbat concurrent React haqida chuqur o'rganish bilan bog'liq bo'lib, Fiber reconciler, scheduler(rejalashtiruvchi), yangilanishlarni kechiktirish(defer updates), render yo'llari va yangi hook’lar, masalan, `useTransition` va `useDeferredValue` kabi ko'p jihatlarni qamrab oldi.
@@ -6,7 +13,7 @@ Biz Fiber reconciler haqida gaplashishdan boshladik, bu React’ning concurrent 
 
 Keyin, rejalashtirish va yangilanishlarni kechiktirish tushunchasiga o'tdik. Bu asosan React’ga ma'lum state yangilanishlarini boshqalariga nisbatan ustuvorlik qo'yishga imkon beradi. React past ustuvorlikdagi yangilanishlarni yuqori ustuvorlikdagilarni afzal ko'rgan holda kechiktirishi mumkin, shuning uchun katta yuklama ostida ham silliq foydalanuvchi bilan ishlash qulayligini saqlab qoladi. Misol sifatida, kelayotgan xabar yangilanishlari intuitiv ravishda rejalashtirilgan va UI’ni blok qilmasdan render qilingan chat ilovasi keltirildi.
 
-Suhbat keyingi bosqichda render yo'llari(lanes), ya'ni React’ning concurrent xususiyatlaridagi markaziy tushuncha haqida bo'ldi. Render yo'llari — bu React’ning yangilanishlarga ustuvorlik berish va ularning bajarilishini samarali boshqarish uchun ishlatadigan mexanizmdir. Bu, React qanday yangilanishlarning zaruriy ekanini va darhol qayta ishlanishi kerakligini, qaysilarini esa keyinroqqa kechiktirilishi mumkinligini aniqlashning siridir. Tafsilotlarda, bu render yo'llari ko'p ustuvorliklarni samarali boshqarish uchun *bitmasking* usulidan qanday foydalanishligi haqida ta'kidlab o'tildi.
+Suhbat keyingi bosqichda render yo'llari(lanes), ya'ni React’ning concurrent xususiyatlaridagi markaziy tushuncha haqida bo'ldi. Render yo'llari — bu React’ning yangilanishlarga ustuvorlik berish va ularning bajarilishini samarali boshqarish uchun ishlatadigan mexanizmdir. Bu, React qanday yangilanishlarning zaruriy ekanini va darhol qayta ishlanishi kerakligini, qaysilarini esa keyinroqqa kechiktirilishi mumkinligini aniqlashning siridir. Tafsilotlarda, bu render yo'llari ko'p ustuvorliklarni samarali boshqarish uchun _bitmasking_ usulidan qanday foydalanishligi haqida ta'kidlab o'tildi.
 
 Keyin esa, React’da concurrent operatsiyalar uchun joriy etilgan yangi hook’lar — `useTransition` va `useDeferredValue` haqida muhokama qildik. Bu hook’lar o'zgarishlarni boshqarish va vaqtni talab qiluvchi operatsiyalar uchun yanada silliq foydalanuvchi bilan ishlash qulayligini ta’minlashga mo'ljallangan.
 
@@ -14,7 +21,7 @@ Birinchi navbatda `useTransition` hook’i muhokama qilindi. Bu hook React’ga 
 
 Shuningdek, `useDeferredValue` hook’i haqida ham gapirdik. Bu hook komponentning kam muhim qismlarining yangilanishini kechiktiradi, shunday qilib noqulay foydalanuvchi bilan ishlash qulayligini oldini oladi. Aslida, bu React’ga yangi qiymat juda ko'p vaqt oladigan bo'lsa, avvalgi qiymatni bir oz uzoqroq ushlab turish imkonini beradi.
 
-Nihoyat, biz concurrent’lik bilan bog'liq muammolarni, shu jumladan *tearing* (vizual nomuvofiqlik) muammosini ko'rib chiqdik va `useSyncExternalStore` qanday qilib bir vaqtning o'zida bir nechta renderlar o'rtasida state’ni izchil saqlashga yordam berishini o'rgandik.
+Nihoyat, biz concurrent’lik bilan bog'liq muammolarni, shu jumladan _tearing_ (vizual nomuvofiqlik) muammosini ko'rib chiqdik va `useSyncExternalStore` qanday qilib bir vaqtning o'zida bir nechta renderlar o'rtasida state’ni izchil saqlashga yordam berishini o'rgandik.
 
 Suhbat davomida takrorlanuvchi mavzu React’ning murakkab, dinamik ilovalarni og'ir hisoblash bilan boshqarish strategiyalarining "nima" va "nega"larini tushunish edi. Shuningdek, dasturchilar bu strategiyalarni qanday qilib foydalanuvchi bilan ishlash qulayligini silliq va tezkor javob beruvchi qilish uchun qo'llashlari mumkinligini ko'rsatdi.
 
@@ -22,11 +29,11 @@ Suhbat davomida takrorlanuvchi mavzu React’ning murakkab, dinamik ilovalarni o
 
 Ushbu bobda o'rganilgan tushunchalarni sinab ko'rish uchun o'zimizga bir nechta savollar beramiz:
 
-1. *Fiber reconciler nima va u React’da murakkab, yuqori samarali ilovalarni boshqarishga qanday yordam beradi?*
-2. *React’da yangilanishlarni rejalashtirish va kechiktirish tushunchasi qanday? Bu katta yuklama ostida silliq foydalanuvchi bilan ishlash qulayligini qanday saqlashga yordam beradi?*
-3. *React’da render yo'llari nima va ular yangilanishlarning ijrosini qanday boshqaradi? Bir nechta ustuvorliklarni boshqarish uchun render yo'llari qanday bitmasking’dan foydalanadi?*
-4. *`useTransition` va `useDeferredValue` hook'larining maqsadi nima? Har bir hook qanday vaziyatda foydali bo'lishini tavsiflang*.
-5. *`useDeferredValue`dan foydalanish nojo'ya bo'lgan vaziyatlar qachon bo'lishi mumkin? Bu hook’lardan foydalanish bilan bog'liq bo'lgan ayrim afzallik va kamchiliklar nima?*
+1. _Fiber reconciler nima va u React’da murakkab, yuqori samarali ilovalarni boshqarishga qanday yordam beradi?_
+2. _React’da yangilanishlarni rejalashtirish va kechiktirish tushunchasi qanday? Bu katta yuklama ostida silliq foydalanuvchi bilan ishlash qulayligini qanday saqlashga yordam beradi?_
+3. _React’da render yo'llari nima va ular yangilanishlarning ijrosini qanday boshqaradi? Bir nechta ustuvorliklarni boshqarish uchun render yo'llari qanday bitmasking’dan foydalanadi?_
+4. _`useTransition` va `useDeferredValue` hook'larining maqsadi nima? Har bir hook qanday vaziyatda foydali bo'lishini tavsiflang_.
+5. _`useDeferredValue`dan foydalanish nojo'ya bo'lgan vaziyatlar qachon bo'lishi mumkin? Bu hook’lardan foydalanish bilan bog'liq bo'lgan ayrim afzallik va kamchiliklar nima?_
 
 ### Keyingi bo'lim
 

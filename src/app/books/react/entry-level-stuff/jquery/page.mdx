@@ -1,33 +1,39 @@
+---
+title: 'jQuery haqida'
+description: "Keling, veb texnologiyalaridagi ba'zi muammolarni React paydo bo'lishidan oldin qanday hal qilinganligini ko'rib chiqaylik va nega React muhimligini tushunamiz. Biz dastlab jQuery bilan boshlaymiz va oldingi *Like* tugmasi misolimizni qayta ko'rib chiqamiz."
+---
+
 # jQuery
 
-Keling, veb texnologiyalaridagi ba'zi muammolarni React paydo bo'lishidan oldin qanday hal qilinganligini ko'rib chiqaylik va nega React muhimligini tushunamiz. Biz dastlab jQuery bilan boshlaymiz va oldingi *Like* tugmasi misolimizni qayta ko'rib chiqamiz.
+Keling, veb texnologiyalaridagi ba'zi muammolarni React paydo bo'lishidan oldin qanday hal qilinganligini ko'rib chiqaylik va nega React muhimligini tushunamiz. Biz dastlab jQuery bilan boshlaymiz va oldingi _Like_ tugmasi misolimizni qayta ko'rib chiqamiz.
 
 ## jQuery’ning yechim bo'lishi
 
-Qisqacha eslatma, bu yerda biz brauzerdagi *Like* tugmasinni interaktiv qilishni xohlaymiz:
-``` js copy
+Qisqacha eslatma, bu yerda biz brauzerdagi _Like_ tugmasinni interaktiv qilishni xohlaymiz:
+
+```js copy
 <button id="likeButton">Like</button>
 ```
 
 jQuery yordamida bu buttonga “like” funksiyasini quyidagicha qo'shamiz:
 
-``` js copy
-$("#likeButton").on("click", function () {
-  this.prop("disabled", true);
-  fetch("/like", {
-    method: "POST",
-    body: JSON.stringify({ liked: this.text() === "Like" }),
+```js copy
+$('#likeButton').on('click', function () {
+  this.prop('disabled', true)
+  fetch('/like', {
+    method: 'POST',
+    body: JSON.stringify({ liked: this.text() === 'Like' }),
   })
-  .then(() => {
-    this.text(this.text() === "Like" ? "Liked" : "Like");
-  })
-  .catch(() => {
-    this.text("Failed");
-  })
-  .finally(() => {
-    this.prop("disabled", false);
-  });
-});
+    .then(() => {
+      this.text(this.text() === 'Like' ? 'Liked' : 'Like')
+    })
+    .catch(() => {
+      this.text('Failed')
+    })
+    .finally(() => {
+      this.prop('disabled', false)
+    })
+})
 ```
 
 Ushbu misoldan ko'rinib turibdiki, biz ma'lumotlarni foydalanuvchi interfeysiga bog'laymiz va bu ma'lumotlar orqali interfeysni yangilaymiz. jQuery bir vosita sifatida foydalanuvchi interfeysini to'g'ridan-to'g'ri boshqarishda juda faol.
@@ -41,15 +47,17 @@ Zamonaviy freymvorklar bu muammolarni to'g'ridan-to'g'ri DOM bilan ishlashdan vo
 ### jQuery’ni test qilishning qiyinchiliklari
 
 Bundan tashqari, jQuery bilan tugmani test qilish ham qiyin, chunki bu faqat event handler’dan iborat. Agar test yozadigan bo'lsak, u quyidagicha ko'rinadi:
-``` js copy
-test("LikeButton", () => {
-  const $button = $("#likeButton");
-  expect($button.text()).toBe("Like");
-  $button.trigger("click");
-  expect($button.text()).toBe("Liked");
-});
+
+```js copy
+test('LikeButton', () => {
+  const $button = $('#likeButton')
+  expect($button.text()).toBe('Like')
+  $button.trigger('click')
+  expect($button.text()).toBe('Liked')
+})
 ```
-Bu yerda yagona muammo shundaki, `$('#likeButton')` test muhitida `null` qiymat qaytaradi, chunki bu haqiqiy brauzer emas. Ushbu kodni test qilish uchun brauzer muhitini sun'iy ravishda yaratish kerak bo'ladi, bu esa juda ko'p mehnat talab qiladi. Bu jQuery bilan bog'liq keng tarqalgan muammo: uni test qilish qiyin, chunki  u qo'shadigan xatti-harakatlarni izolyatsiyalab, ajratib olish qiyin. jQuery, shuningdek, brauzer muhiti bilan kuchli bog'liq bo'lib, brauzer foydalanuvchi interfeysiga egalik qilsa-da, jQuery shunchaki mehmon hisoblanadi. Bu "bir tomonlama ma'lumot oqimi"(one-way data flow) paradigmasidan og'ish jQuery va o'sha davr uchun keng tarqalgan muammolardan biri edi.
+
+Bu yerda yagona muammo shundaki, `$('#likeButton')` test muhitida `null` qiymat qaytaradi, chunki bu haqiqiy brauzer emas. Ushbu kodni test qilish uchun brauzer muhitini sun'iy ravishda yaratish kerak bo'ladi, bu esa juda ko'p mehnat talab qiladi. Bu jQuery bilan bog'liq keng tarqalgan muammo: uni test qilish qiyin, chunki u qo'shadigan xatti-harakatlarni izolyatsiyalab, ajratib olish qiyin. jQuery, shuningdek, brauzer muhiti bilan kuchli bog'liq bo'lib, brauzer foydalanuvchi interfeysiga egalik qilsa-da, jQuery shunchaki mehmon hisoblanadi. Bu "bir tomonlama ma'lumot oqimi"(one-way data flow) paradigmasidan og'ish jQuery va o'sha davr uchun keng tarqalgan muammolardan biri edi.
 
 ## jQuery’ning ommaviyligini yo'qotish sabablari
 
@@ -76,4 +84,3 @@ Yuqoridagi sabablar tufayli, jQuery veb evolyutsiyasida muhim rol o'ynagan va da
 ## jQuery’ning inqilobiy roli
 
 jQuery’ning kamchiliklariga qaramay, u o'sha paytda DOM bilan ishlashda haqiqiy inqilob bo'lgan. Bu shunday darajaga chiqdiki, boshqa kutubxonalar ham jQuery’ni qo'llab, lekin unga ko'proq prognoz qilishlik va qayta foydalanishlik imkoniyatlarini qo'shgan holda paydo bo'la boshladi. Bunday kutubxonalardan biri Backbone edi, bu kutubxona React bugungi kunda hal qilayotgan muammolarni o'z vaqtida hal qilishga harakat qilgan. Keling, bunga yanada batafsil kirishamiz.
-

@@ -1,3 +1,14 @@
+---
+title: 'Stack Reconciler (eskirgan)'
+description: "Ilgari, React rendering uchun stack(stek) ma'lumotlar strukturasi(data structure)dan foydalangan. Biz bir xil tushunchani tasavvur qilayotganimizga ishonch hosil qilish uchun, stack ma'lumotlar strukturasini qisqacha muhokama qilamiz
+
+## Stack o'zi nima
+
+Computer science’da stack — bu oxirgi kirgan birinchi chiqadi (LIFO) tamoyiliga amal qiladigan chiziqli ma'lumotlar strukturasi(linear data structure). Bu shuni anglatadiki, stack’ga qo'shilgan oxirgi element birinchi bo'lib olib tashlanadi. Stack’da ikkita asosiy amal mavjud: push va pop, ular orqali elementlarni mos ravishda stack’ning yuqori qismiga qo'shish va undan olib tashlash mumkin.
+
+Stack’ni vertikal joylashtirilgan elementlar to'plami sifatida tasavvur qilish mumkin, bunda eng yuqori element eng oxirgi qo'shilgan element hisoblanadi."
+---
+
 # Stack Reconciler (eskirgan)
 
 Ilgari, React rendering uchun stack(stek) ma'lumotlar strukturasi(data structure)dan foydalangan. Biz bir xil tushunchani tasavvur qilayotganimizga ishonch hosil qilish uchun, stack ma'lumotlar strukturasini qisqacha muhokama qilamiz
@@ -7,14 +18,16 @@ Ilgari, React rendering uchun stack(stek) ma'lumotlar strukturasi(data structure
 Computer science’da stack — bu oxirgi kirgan birinchi chiqadi (LIFO) tamoyiliga amal qiladigan chiziqli ma'lumotlar strukturasi(linear data structure). Bu shuni anglatadiki, stack’ga qo'shilgan oxirgi element birinchi bo'lib olib tashlanadi. Stack’da ikkita asosiy amal mavjud: push va pop, ular orqali elementlarni mos ravishda stack’ning yuqori qismiga qo'shish va undan olib tashlash mumkin.
 
 Stack’ni vertikal joylashtirilgan elementlar to'plami sifatida tasavvur qilish mumkin, bunda eng yuqori element eng oxirgi qo'shilgan element hisoblanadi. Bu yerda stack’ning uchta elementi bilan ASCII illyustratsiyasini ko'rishingiz mumkin:
-``` mdx copy
------
+
+```mdx copy
+---
+
 | 3 |
-|___|
+|**_|
 | 2 |
-|___|
+|_**|
 | 1 |
-|___|
+|\_\_\_|
 ```
 
 ### pop va push amali
@@ -22,17 +35,19 @@ Stack’ni vertikal joylashtirilgan elementlar to'plami sifatida tasavvur qilish
 Ushbu misolda, eng oxirgi qo'shilgan element — `3`, stack’ning yuqorisida joylashgan. Birinchi qo'shilgan element — `1` esa stack’ning pastki qismida joylashgan.
 
 Ushbu stack’da push amali elementni stack’ning yuqorisiga qo'shadi. Kodda bu JavaScript’da array va `push` metodidan foydalanib bajarilishi mumkin, quyidagicha:
-``` js copy
-const stack = [];
-stack.push(1); // stack hozir [1]
-stack.push(2); // stack hozir [1, 2]
-stack.push(3); // stack hozir [1, 2, 3]
+
+```js copy
+const stack = []
+stack.push(1) // stack hozir [1]
+stack.push(2) // stack hozir [1, 2]
+stack.push(3) // stack hozir [1, 2, 3]
 ```
 
 Pop amali esa stackning yuqori elementini olib tashlaydi. Kodda bu JavaScript’da array va `pop` metodidan foydalanib bajarilishi mumkin, quyidagicha:
-``` js copy
-const stack = [1, 2, 3];
-const top = stack.pop(); // top hozir 3, va stack hozir [1, 2]
+
+```js copy
+const stack = [1, 2, 3]
+const top = stack.pop() // top hozir 3, va stack hozir [1, 2]
 ```
 
 Ushbu misolda, pop metodi stack’ning yuqori elementini (3) olib tashlaydi va uni qaytaradi. Stack massivi hozirda qolgan elementlarni (1 va 2) o'z ichiga oladi.
@@ -44,43 +59,45 @@ React’ning dastlabki "reconciler" algoritmi stack asosida ishlaydigan algoritm
 ### Form misoli
 
 Keling, nega bu holat yuz berganini tezkorlik bilan ko'rib chiqamiz. Buning uchun quyidagi misolni ko'rib chiqamiz, bunda bizda yangilanishlar ro'yxati bor:
+
 1. Keraksiz va hisoblash jihatdan og'ir komponent CPU’ni ishlatadi va render qilinadi.
 2. Foydalanuvchi `input` elementiga ma'lumot yozadi.
 3. Agar kiritilgan ma'lumot yaroqli(valid) bo'lsa, `Button` yoqiladi.
 4. Ichida `Form` bo'lgan komponenti state’ni saqlaydi, shuning uchun u qayta render qilinadi.
 
 Kodda biz buni quyidagicha ifodalaymiz:
-``` js copy
-import React, { useReducer } from "react";
 
-const initialState = { text: "", isValid: false };
+```js copy
+import React, { useReducer } from 'react'
+
+const initialState = { text: '', isValid: false }
 
 function Form() {
-    const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-    const handleChange = (e) => {
-        dispatch({ type: "handleInput", payload: e.target.value });
-    };
+  const handleChange = (e) => {
+    dispatch({ type: 'handleInput', payload: e.target.value })
+  }
 
-    return (
-        <div>
-            <ExpensiveComponent />
-            <input value={state.text} onChange={handleChange} />
-            <Button disabled={!state.isValid}>Submit</Button>
-        </div>
-    );
+  return (
+    <div>
+      <ExpensiveComponent />
+      <input value={state.text} onChange={handleChange} />
+      <Button disabled={!state.isValid}>Submit</Button>
+    </div>
+  )
 }
 
 function reducer(state, action) {
-    switch (action.type) {
-        case "handleInput":
-            return {
-                text: action.payload,
-                isValid: action.payload.length > 0,
-            };
-        default:
-            throw new Error();
-    }
+  switch (action.type) {
+    case 'handleInput':
+      return {
+        text: action.payload,
+        isValid: action.payload.length > 0,
+      }
+    default:
+      throw new Error()
+  }
 }
 ```
 

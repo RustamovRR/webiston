@@ -1,3 +1,12 @@
+---
+title: "`renderToString` API’si haqida"
+description: "`renderToString` — bu React tomonidan taqdim etilgan server tomonidagi render qilish API'sidir, bu bizga React komponentini serverda HTML satriga render qilish imkonini beradi. Ushbu API sinxron ishlaydi va to'liq render qilingan HTML satrini qaytaradi, bu esa keyinchalik klientga javob sifatida yuborilishi mumkin. `renderToString` odatda server tomonidan render qilingan React ilovalarida ishlatiladi va bu, o'z navbatida, ishlash samaradorligi, SEO va foydalanish imkoniyati qulayligini yaxshilashga yordam beradi.
+
+## Foydalanish
+
+`renderToString`dan foydalanish uchun `react-dom/server` paketidan `renderToString` funksiyasini import qilishingiz kerak. Keyin, siz ushbu funksiyani React komponenti bilan argument sifatida chaqirishingiz mumkin. Bu esa sizga to'liq render qilingan HTML’ni satr sifatida qaytaradi."
+---
+
 # `renderToString` API’si
 
 `renderToString` — bu React tomonidan taqdim etilgan server tomonidagi render qilish API'sidir, bu bizga React komponentini serverda HTML satriga render qilish imkonini beradi. Ushbu API sinxron ishlaydi va to'liq render qilingan HTML satrini qaytaradi, bu esa keyinchalik klientga javob sifatida yuborilishi mumkin. `renderToString` odatda server tomonidan render qilingan React ilovalarida ishlatiladi va bu, o'z navbatida, ishlash samaradorligi, SEO va foydalanish imkoniyati qulayligini yaxshilashga yordam beradi.
@@ -5,9 +14,10 @@
 ## Foydalanish
 
 `renderToString`dan foydalanish uchun `react-dom/server` paketidan `renderToString` funksiyasini import qilishingiz kerak. Keyin, siz ushbu funksiyani React komponenti bilan argument sifatida chaqirishingiz mumkin. Bu esa sizga to'liq render qilingan HTML’ni satr sifatida qaytaradi. Quyida `renderToString`dan foydalanib, oddiy React komponentini render qilish misoli keltirilgan:
-``` js copy
-import React from "react";
-import { renderToString } from "react-dom/server";
+
+```js copy
+import React from 'react'
+import { renderToString } from 'react-dom/server'
 
 function App() {
   return (
@@ -15,11 +25,11 @@ function App() {
       <h1>Hello, world!</h1>
       <p>This is a simple React app.</p>
     </div>
-  );
+  )
 }
 
-const html = renderToString(<App />);
-console.log(html);
+const html = renderToString(<App />)
+console.log(html)
 ```
 
 Ushbu misolda biz oddiy `App` komponentini yaratamiz va uni `renderToString` funksiyasinining argumenti sifatida chaqiramiz. Funksiya to'liq render qilingan HTM’Lni qaytaradi, bu esa klientga yuborilishi mumkin.
@@ -29,12 +39,14 @@ Ushbu misolda biz oddiy `App` komponentini yaratamiz va uni `renderToString` fun
 `renderToString` funksiyasi React elementlari daraxtidan o'tadi, ularni real DOM elementlarining satr ko'rinishiga o'giradi va nihoyat, satrni chiqaradi.
 
 Eslatib o'tish joiz, React’da `<div>` quyidagicha o'girilib yoziladi:
-``` js copy
-React.createElement("div", {}, "Hello, world!");
+
+```js copy
+React.createElement('div', {}, 'Hello, world!')
 ```
 
 Bu natijada chiqadigan qiymat:
-``` js copy
+
+```js copy
 {
   type: "div",
   props: {},
@@ -49,26 +61,24 @@ Buni avvalgi boblarda muhokama qilganmiz, lekin biz endi qilishimiz kerak bo'lga
 `renderToString` API’si sinxron va blok qiluvchi bo'lib, ya'ni uni to'xtatib yoki pauza qilib bo'lmaydi. Agar komponentlar daraxti ko'p darajalarda chuqur bo'lsa, u ko'p jarayonni talab qilishi mumkin. Odatda server bir nechta klientlarga xizmat ko'rsatadi, shuning uchun `renderToString` har bir klient uchun chaqirilishi mumkin, agar biron bir turdagi kesh mavjud bo'lmasa, bu tezda event loop’ni to'sib qo'yishi va tizimga ortiqcha yuklama(overload) qilishi mumkin.
 
 Kod nuqtai nazaridan, `renderToString` bu ko'rinishni o'zgartiradi:
-``` js copy
+
+```js copy
 React.createElement(
-  "section",
-  { id: "list" },
-  React.createElement("h1", {}, "This is my list!"),
+  'section',
+  { id: 'list' },
+  React.createElement('h1', {}, 'This is my list!'),
+  React.createElement('p', {}, "Isn't my list amazing? It contains amazing things!"),
   React.createElement(
-    "p",
+    'ul',
     {},
-    "Isn't my list amazing? It contains amazing things!"
+    amazingThings.map((t) => React.createElement('li', { key: t.id }, t.label)),
   ),
-  React.createElement(
-    "ul",
-    {},
-    amazingThings.map((t) => React.createElement("li", { key: t.id }, t.label))
-  )
-);
+)
 ```
 
 Natijada, quyidagi HTML’ga aylantiriladi:
-``` js copy
+
+```js copy
 <section id="list">
   <h1>This is my list!</h1>
   <p>Isn't my list amazing? It contains amazing things!</p>
@@ -99,4 +109,4 @@ React deklarativ bo'lgani sababli va React elementlari deklarativ abstraksiyalar
 
 ## `renderToString`ga alternativlar
 
-Katta ilovalar yoki `renderToString` ning kamchiliklari muammo bo'lib qoladigan vaziyatlarda, React server tomonida render qilish uchun alternativ API’larni taklif etadi, masalan `renderToPipeableStream` va `renderToReadableStream` kabi. Ushbu API’lar *Node.js stream* yoki *brauzer stream*ni qaytaradi, bu esa yaxshiroq ishlash samaradorligini va uzluksiz uzatishlik imkoniyatini ta'minlaydi. Biz bular haqida keyingi mavzularda batafsil to'xtalamiz
+Katta ilovalar yoki `renderToString` ning kamchiliklari muammo bo'lib qoladigan vaziyatlarda, React server tomonida render qilish uchun alternativ API’larni taklif etadi, masalan `renderToPipeableStream` va `renderToReadableStream` kabi. Ushbu API’lar _Node.js stream_ yoki *brauzer stream*ni qaytaradi, bu esa yaxshiroq ishlash samaradorligini va uzluksiz uzatishlik imkoniyatini ta'minlaydi. Biz bular haqida keyingi mavzularda batafsil to'xtalamiz

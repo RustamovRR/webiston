@@ -1,3 +1,10 @@
+---
+title: "`renderToPipeableStream` API’si haqida"
+description: "`renderToPipeableStream` — bu React 18’da joriy qilingan server tomonidagi rendering API’si bo'lib, katta hajmdagi React ilovalarini samaraliroq va moslashuvchanroq tarzda Node.js oqimiga o'tkazish imkonini beradi. Bu "stream" qaytaradi va uni javob (response) obyektiga uzatish mumkin. `renderToPipeableStream` HTML qanday render qilinishini yaxshiroq boshqarish va boshqa Node.js oqimlari bilan yaxshiroq integratsiyani ta'minlash imkonini beradi.
+
+Bundan tashqari, u React’ning "concurrent" xususiyatlarini, jumladan, Suspense’ni to'liq qo'llab-quvvatlaydi, bu esa server tomonidagi renderlash davomida asinxron ma'lumotlarni olishni yaxshiroq boshqarish imkonini ochib beradi. Stream bo'lganligi sababli, u tarmoq orqali uzluksiz uzatish holatida bo'lishi mumkin, ya'ni HTML qismlari bloklanmagan holda asinxron va yig'ilib boruvchi tarzda tarmoq orqali klientlarga yuboriladi. Bu tezkorroq TTFB (birinchi baytga erishish vaqti) va umuman yaxshiroq ishlash samaradorligi ko'rsatkichlarini ta'minlaydi."
+---
+
 import { Callout } from 'nextra/components'
 
 # `renderToPipeableStream` API’si
@@ -7,32 +14,33 @@ import { Callout } from 'nextra/components'
 Bundan tashqari, u React’ning "concurrent" xususiyatlarini, jumladan, Suspense’ni to'liq qo'llab-quvvatlaydi, bu esa server tomonidagi renderlash davomida asinxron ma'lumotlarni olishni yaxshiroq boshqarish imkonini ochib beradi. Stream bo'lganligi sababli, u tarmoq orqali uzluksiz uzatish holatida bo'lishi mumkin, ya'ni HTML qismlari bloklanmagan holda asinxron va yig'ilib boruvchi tarzda tarmoq orqali klientlarga yuboriladi. Bu tezkorroq TTFB (birinchi baytga erishish vaqti) va umuman yaxshiroq ishlash samaradorligi ko'rsatkichlarini ta'minlaydi.
 
 Oldingi server kodimizni `renderToPipeableStream` yordamida qayta yozish uchun quyidagicha o'zgartirish qilamiz:
-``` js copy filename="server.js"
-const express = require("express");
-const path = require("path");
-const React = require("react");
-const ReactDOMServer = require("react-dom/server");
-const App = require("./src/App");
 
-const app = express();
+```js copy filename="server.js"
+const express = require('express')
+const path = require('path')
+const React = require('react')
+const ReactDOMServer = require('react-dom/server')
+const App = require('./src/App')
 
-app.use(express.static(path.join(__dirname, "build")));
+const app = express()
 
-app.get("*", (req, res) => {
-    // O'zgarishlar shu yerda boshlanadi
-    const { pipe } = ReactDOMServer.renderToPipeableStream(<App />, {
-        // Ilova o'z ma'lumotlarini olishdan oldin tayyor bo'lsa
-        onShellReady: () => {
-            // Klientga HTML yuborilishini bildiramiz
-            res.setHeader("Content-Type", "text/html");
-            pipe(res); // React oqimini chiqishini javob oqimiga uzatish
-        },
-    });
-});
+app.use(express.static(path.join(__dirname, 'build')))
+
+app.get('*', (req, res) => {
+  // O'zgarishlar shu yerda boshlanadi
+  const { pipe } = ReactDOMServer.renderToPipeableStream(<App />, {
+    // Ilova o'z ma'lumotlarini olishdan oldin tayyor bo'lsa
+    onShellReady: () => {
+      // Klientga HTML yuborilishini bildiramiz
+      res.setHeader('Content-Type', 'text/html')
+      pipe(res) // React oqimini chiqishini javob oqimiga uzatish
+    },
+  })
+})
 
 app.listen(3000, () => {
-    console.log("Server 3000-portda ishlamoqda");
-});
+  console.log('Server 3000-portda ishlamoqda')
+})
 ```
 
 Keling, `renderToPipeableStream`ni chuqurroq o'rganamiz, uning xususiyatlari, afzalliklari va qo'llanilish holatlari haqida muhokama qilamiz. Shuningdek, ushbu API’ni React ilovalaringizda qanday amalga oshirishni yaxshiroq tushunishingizga yordam berish uchun bir qancha kod namunalari va misollarni taqdim etamiz.
@@ -46,6 +54,7 @@ Keling, `renderToPipeableStream`ni chuqurroq o'rganamiz, uning xususiyatlari, af
 Asosan, Node.js oqimi manba va manzil o'rtasida uzluksiz uzatilayotgan ma'lumotlar oqimini ifodalaydi. Bu ma'lumotlar oqadigan truboprovod kabi tasavvur qilinishi mumkin, yo'lda turli xil operatsiyalar qo'llaniladi va ma'lumotlar qayta ishlanadi.
 
 Node.js oqimlari tabiati va ma'lumotlar oqimi yo'nalishiga qarab to'rtta turga bo'linadi:
+
 1. **O'qiladigan oqimlar (Readable streams)**: O'qiladigan oqimlar ma'lumotlar manbasini ifodalaydi, undan ma'lumot o'qishingiz mumkin. U `data`, `end` va `error` kabi event’larni tarqatadi. O'qiladigan oqimlarga fayldan ma'lumot o'qish, HTTP so'rovini qabul qilish yoki maxsus generator yordamida ma'lumot yaratish misollar kiradi. React’ning `renderToPipeableStream` funksiyasi HTML oqimini o'qishingiz va uni Express’dagi `res` javob obyektiga o'xshash yoziladigan oqimga chiqarishingiz mumkin bo'lgan o'qiladigan oqimni qaytaradi.
 2. **Yoziladigan oqimlar (Writable streams)**: Yoziladigan oqimlar ma'lumotlar yozilishi mumkin bo'lgan manzilni ifodalaydi. U `write()` va `end()` kabi metodlar orqali oqimga ma'lumot yuborish imkonini beradi. Agar manzil ko'proq ma'lumotlarni qabul qila oladigan bo'lsa, yoziladigan oqimlar `drain` event’ini, yozish paytida xatolik yuz berganida esa `error` event’ini tarqatadi. Yoziladigan oqimlarning misoli sifatida Express’dagi `res` javob obyektini keltirish mumkin.
 3. **Ikki tomonlama oqimlar (Duplex streams)**: Dupleks(ikki tomonlama) oqimlar ham o'qiladigan, ham yoziladigan oqimni bir vaqtning o'zida ifodalaydi. Bu ikki tomonlama ma'lumotlar oqimini ta'minlaydi, ya'ni oqimdan o'qish va unga yozish imkonini beradi. Dupleks oqimlar odatda tarmoq soketlari yoki ma'lumotlar ikki yo'nalishda oqishi kerak bo'lgan aloqa kanallari uchun qo'llaniladi.
@@ -63,9 +72,13 @@ React’da komponentlarni yoziladigan oqimga aylantirishning maqsadi server tomo
 
 `renderToPipeableStream` funksiyasi React’ning server renderer’ining bir qismi bo'lib, u React ilovasini Node.js oqimiga oqib chiqish orqali streaming usulida uzluksiz uzatishlikni ta'minlash maqsadida render qilishni qo'llab-quvvatlash uchun mo'ljallangan. Bu “Fizz” deb ataladigan server renderer arxitekturasining bir qismidir.
 
-
 <Callout type="info">
-Ushbu bo'limda biz React’ning texnik tafsilotlariga chuqur kirib boramiz va ular vaqt o'tishi bilan o'zgarishi mumkin. Yana bir bor ta'kidlaymizki, bu ta’limiy maqsadlar uchun va o'quvchining qiziqishini qondirish uchundir. O'qiyotgan paytingizda bu React dasturini amalga oshirish tafsilotlariga to'liq mos kelmasligi mumkin, ammo yozish paytida bu qanday ishlashi haqida yaxshi tasavvurga ega bo'lish uchun yetarlicha yaqin. Bu, ehtimol siz foydalanish muhitida ishlatadigan narsa emasdir va React’dan qanday foydalanishni bilish uchun muhim emas, balki bu faqat ta'lim va qiziqish uchundir.
+  Ushbu bo'limda biz React’ning texnik tafsilotlariga chuqur kirib boramiz va ular vaqt o'tishi bilan o'zgarishi mumkin.
+  Yana bir bor ta'kidlaymizki, bu ta’limiy maqsadlar uchun va o'quvchining qiziqishini qondirish uchundir. O'qiyotgan
+  paytingizda bu React dasturini amalga oshirish tafsilotlariga to'liq mos kelmasligi mumkin, ammo yozish paytida bu
+  qanday ishlashi haqida yaxshi tasavvurga ega bo'lish uchun yetarlicha yaqin. Bu, ehtimol siz foydalanish muhitida
+  ishlatadigan narsa emasdir va React’dan qanday foydalanishni bilish uchun muhim emas, balki bu faqat ta'lim va
+  qiziqish uchundir.
 </Callout>
 
 Server render qilish jarayonini umumiy kontekstdan chetga chiqmasdan, qisqacha va sodda qilib tushuntirib o'tamiz:
@@ -78,7 +91,7 @@ Server render qilish jarayonini umumiy kontekstdan chetga chiqmasdan, qisqacha v
 
 So'rov yaratib bo'lgandan so'ng, `startWork` funksiyasi argument sifatida so'rovni qabul qilib, chaqiriladi. Bu funksiya render qilish jarayonini boshlaydi. Render qilish jarayoni asinxron bo'lib, kerak bo'lganda to'xtatilishi va davom ettirilishi mumkin, bu yerda React’ning Suspense xususiyati qo'llaniladi. Agar komponent Suspense hududi bilan o'ralgan bo'lsa va u qandaydir asinxron operatsiyani (masalan, ma'lumotlarni olib kelish) boshlasa, ushbu komponent (va ehtimol uning sheriklari) mazkur operatsiya tugaguncha "to'xtatilishi" mumkin.
 
-Komponent to'xtatilgan paytda u odatda yuklanish indikatori yoki boshqa o'rinbosar kabi "fallback", ya'ni zaxira, holatda ko'rsatilishi mumkin. Operatsiya tugaganidan so'ng, komponent qayta tiklanadi va yakuniy holatda render qilinadi. 
+Komponent to'xtatilgan paytda u odatda yuklanish indikatori yoki boshqa o'rinbosar kabi "fallback", ya'ni zaxira, holatda ko'rsatilishi mumkin. Operatsiya tugaganidan so'ng, komponent qayta tiklanadi va yakuniy holatda render qilinadi.
 
 Suspense - bu React’ga server tomonida renderlash paytida asinxron ma'lumotlarni olish va "lazy loading" texnikasi orqali samaraliroq boshqarish imkonini beruvchi kuchli xususiyatdir.
 
@@ -115,12 +128,13 @@ Ushbu funksiyalarni haqiqiy implementatsiyasida progressiv render qilish, xatola
 ## Qanday moslashadi
 
 Keling, ushbu API’ning afzalliklarini ko'rsatadigan kodga nazar tashlaymiz. Bizda kuchuk zotlari ro'yxatini ko'rsatadigan ilova bor. Ro'yxat API manzilidan ma'lumotlarni olib kelish orqali to'ldiriladi. Ushbu ilova serverda `renderToPipeableStream` yordamida render qilinadi va keyin klientga yuboriladi. Avval, kuchuk zotlari ro'yxatini ko'rsatuvchi komponentimizni ko'rib chiqamiz:
-``` js copy filename="./src/DogBreeds.jsx"
+
+```js copy filename="./src/DogBreeds.jsx"
 const dogResource = createResource(
-  fetch("https://dog.ceo/api/breeds/list/all")
+  fetch('https://dog.ceo/api/breeds/list/all')
     .then((r) => r.json())
-    .then((r) => Object.keys(r.message))
-);
+    .then((r) => Object.keys(r.message)),
+)
 
 function DogBreeds() {
   return (
@@ -131,17 +145,18 @@ function DogBreeds() {
         ))}
       </Suspense>
     </ul>
-  );
+  )
 }
 
-export default DogBreeds;
+export default DogBreeds
 ```
 
 Endi esa umumiy `App`ni ko'rib chiqamiz, bu `DogBreeds` komponentini o'z ichiga oladi:
-``` js copy filename="src/App.js"
-import React, { Suspense } from "react";
 
-const ListOfBreeds = React.lazy(() => import("./DogBreeds"));
+```js copy filename="src/App.js"
+import React, { Suspense } from 'react'
+
+const ListOfBreeds = React.lazy(() => import('./DogBreeds'))
 
 function App() {
   return (
@@ -151,25 +166,25 @@ function App() {
         <ListOfBreeds />
       </Suspense>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
 ```
 
 Diqqat qiling, bu yerda biz `React.lazy`dan foydalanmoqdamiz, oldingi boblarda aytilganidek, faqat `renderToPipeableStream` Suspense’ni qanday boshqarishini ko'rsatish uchun boshqa Suspense hududini qo'shmoqdamiz. Yaxshi, bularning hammasini birlashtirib, Express serverini yaratamiz:
 
-``` js copy filename="server.js"
-import express from "express";
-import React from "react";
-import { renderToPipeableStream } from "react-dom/server";
-import App from "./App.jsx";
+```js copy filename="server.js"
+import express from 'express'
+import React from 'react'
+import { renderToPipeableStream } from 'react-dom/server'
+import App from './App.jsx'
 
-const app = express();
+const app = express()
 
-app.use(express.static("build"));
+app.use(express.static('build'))
 
-app.get("/", async (req, res) => {
+app.get('/', async (req, res) => {
   // Boshlang'ich HTML strukturasini e'lon qilamiz
   const htmlStart = `
     <!DOCTYPE html>
@@ -181,25 +196,25 @@ app.get("/", async (req, res) => {
       </head>
       <body>
         <div id="root">
-  `;
+  `
 
   // Boshlang'ich HTML’ni javobga yozamiz
-  res.write(htmlStart);
+  res.write(htmlStart)
 
   // React App komponentini renderToPipeableStream bilan chaqiramiz
   // va qobiq tayyor bo'lishi uchun options obyektini taqdim etamiz
   const { pipe } = renderToPipeableStream(<App />, {
     onShellReady: () => {
       // Qobiq tayyor bo'lganda render qiligan natijanis javobga uzatamiz
-      pipe(res);
+      pipe(res)
     },
-  });
-});
+  })
+})
 
 // Serverni 3000-portda ishga tushiramiz va konsolda xabar yozamiz
 app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
-});
+  console.log('Server is listening on port 3000')
+})
 ```
 
 Ushbu kod bo'lagi yordamida biz so'rovga HTML oqimini qaytarish orqali javob bermoqdamiz. Biz `renderToPipeableStream` yordamida `App` komponentimizni oqimga render qilyapmiz va keyin shu oqimni javob obyektimizga uzatmoqdamiz. `onShellReady` parametri yordamida qobiq tayyor bo'lgandan keyin oqimni javob obyektiga uzatamiz. Qobiq(Shell) - bu React ilovasi hidratsiya qilinishidan va Suspense hududlarida o'ralgan ma'lumotlarga bo'lgan qaramliklar hal qilinishidan oldin render qilingan HTML qismi. Bizning holatimizda qobiq - bu kuchuk zotlari API’dan olinmasdan oldin render qilingan HTML. Keling, ushbu kodni ishga tushirganda nima sodir bo'lishini ko'rib chiqaylik.
@@ -209,11 +224,15 @@ Agar biz http://localhost:3000 ga tashrif buyursak, "Dog Breeds" sarlavhasi va S
 ## Bu qanday ishlashini batafsil tushunamiz
 
 <Callout type="info">
-Yana bir bor aytib o'tamiz, biz bu yerda React implementatsiyasi tafsilotlariga chuqur kiryapmiz, lekin bu tafsilotlar vaqt o'tishi bilan o'zgarishi mumkin. Bu mashqning (va bu kitobning) maqsadi alohida implementatsiya tafsilotlariga ko'p urg'u berish emas, balki React’ning asosiy mexanizmini tushunib olishdir. Bu mexanizmni tushunish orqali biz React’ni yaxshiroq tushunamiz va o'z kunlik ishimizda amaliy vositalarga ega bo'lamiz.
+  Yana bir bor aytib o'tamiz, biz bu yerda React implementatsiyasi tafsilotlariga chuqur kiryapmiz, lekin bu tafsilotlar
+  vaqt o'tishi bilan o'zgarishi mumkin. Bu mashqning (va bu kitobning) maqsadi alohida implementatsiya tafsilotlariga
+  ko'p urg'u berish emas, balki React’ning asosiy mexanizmini tushunib olishdir. Bu mexanizmni tushunish orqali biz
+  React’ni yaxshiroq tushunamiz va o'z kunlik ishimizda amaliy vositalarga ega bo'lamiz.
 </Callout>
 
 Agar http://localhost:3000 ga tashrif buyursak, server “Dog Breeds” sarlavhasi va Suspense zaxira “Loading Dog Breeds…” bilan HTML qobiqqa javob beradi. Ushbu HTML quyidagicha ko'rinadi:
-``` html copy"
+
+```html copy"
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -241,32 +260,32 @@ Agar http://localhost:3000 ga tashrif buyursak, server “Dog Breeds” sarlavha
       </div>
       <script>
         function $RC(a, b) {
-          a = document.getElementById(a);
-          b = document.getElementById(b);
-          b.parentNode.removeChild(b);
+          a = document.getElementById(a)
+          b = document.getElementById(b)
+          b.parentNode.removeChild(b)
           if (a) {
-            a = a.previousSibling;
+            a = a.previousSibling
             var f = a.parentNode,
               c = a.nextSibling,
-              e = 0;
+              e = 0
             do {
               if (c && 8 === c.nodeType) {
-                var d = c.data;
-                if ("/$" === d)
-                  if (0 === e) break;
-                  else e--;
-                else ("$" !== d && "$?" !== d && "$!" !== d) || e++;
+                var d = c.data
+                if ('/$' === d)
+                  if (0 === e) break
+                  else e--
+                else ('$' !== d && '$?' !== d && '$!' !== d) || e++
               }
-              d = c.nextSibling;
-              f.removeChild(c);
-              c = d;
-            } while (c);
-            for (; b.firstChild; ) f.insertBefore(b.firstChild, c);
-            a.data = "$";
-            a._reactRetry && a._reactRetry();
+              d = c.nextSibling
+              f.removeChild(c)
+              c = d
+            } while (c)
+            for (; b.firstChild; ) f.insertBefore(b.firstChild, c)
+            a.data = '$'
+            a._reactRetry && a._reactRetry()
           }
         }
-        $RC("B:0", "S:0");
+        $RC('B:0', 'S:0')
       </script>
     </div>
   </body>
@@ -278,46 +297,47 @@ Bu yerda qiziqarli holatni ko'rishimiz mumkin. `<template>` elementini yaratilga
 Shuningdek, `<script>` elementi mavjud. Ushbu `<script>` tegida `$RC` deb nomlangan funksiya mavjud bo'lib, u qobiqni haqiqiy kontent bilan almashtirish uchun ishlatiladi. `$RC` funksiyasi ikkita argumentni qabul qiladi: markerni o'z ichiga olgan `<template>` elementining ID’si va zaxirani o'z ichiga olgan `<div>` elementining ID’si. Funksiya, ma'lumotlar mavjud bo'lgandan keyin, markerni render qilingan UI bilan to'ldiradi va zaxirani olib tashlaydi.
 
 Ushbu funksiyaning minimallashtirilganligi unchalik qulay emas, lekin uni qayta ochishga va nima qilayotganini tushunishga harakat qilaylik. Agar biz shunday qilsak, quyidagi kodni ko'ramiz:
-``` js copy
+
+```js copy
 function reactComponentCleanup(reactMarkerId, siblingId) {
-  let reactMarker = document.getElementById(reactMarkerId);
-  let sibling = document.getElementById(siblingId);
-  sibling.parentNode.removeChild(sibling);
+  let reactMarker = document.getElementById(reactMarkerId)
+  let sibling = document.getElementById(siblingId)
+  sibling.parentNode.removeChild(sibling)
 
   if (reactMarker) {
-    reactMarker = reactMarker.previousSibling;
+    reactMarker = reactMarker.previousSibling
     let parentNode = reactMarker.parentNode,
       nextSibling = reactMarker.nextSibling,
-      nestedLevel = 0;
+      nestedLevel = 0
 
     do {
       if (nextSibling && 8 === nextSibling.nodeType) {
-        let nodeData = nextSibling.data;
-        if ("/$" === nodeData) {
+        let nodeData = nextSibling.data
+        if ('/$' === nodeData) {
           if (0 === nestedLevel) {
-            break;
+            break
           } else {
-            nestedLevel--;
+            nestedLevel--
           }
-        } else if ("$" !== nodeData && "$?" !== nodeData && "$!" !== nodeData) {
-          nestedLevel++;
+        } else if ('$' !== nodeData && '$?' !== nodeData && '$!' !== nodeData) {
+          nestedLevel++
         }
       }
-      let nextNode = nextSibling.nextSibling;
-      parentNode.removeChild(nextSibling);
-      nextSibling = nextNode;
-    } while (nextSibling);
+      let nextNode = nextSibling.nextSibling
+      parentNode.removeChild(nextSibling)
+      nextSibling = nextNode
+    } while (nextSibling)
 
     while (sibling.firstChild) {
-      parentNode.insertBefore(sibling.firstChild, nextSibling);
+      parentNode.insertBefore(sibling.firstChild, nextSibling)
     }
 
-    reactMarker.data = "$";
-    reactMarker._reactRetry && reactMarker._reactRetry();
+    reactMarker.data = '$'
+    reactMarker._reactRetry && reactMarker._reactRetry()
   }
 }
 
-reactComponentCleanup("B:0", "S:0");
+reactComponentCleanup('B:0', 'S:0')
 ```
 
 ### Ushbu funksiyani tahlil qilamiz
@@ -329,6 +349,7 @@ Funksiya `removeChild` metodidan foydalanib, ma'lumotlar mavjud bo'lganda DOM’
 Agar `reactMarker` elementi mavjud bo'lsa, funksiya ishga tushadi. Bu funksiya `reactMarker` o'zgaruvchisini hozirgi `reactMarker` elementining oldingi qo'shni elementiga o'rnatadi. Funksiya, shuningdek, `parentNode`, `nextSibling` va `nestedLevel` o'zgaruvchilarini ham ishga tushiradi.
 
 `do...while` sikli DOM daraxtini kesib o'tish uchun ishlatiladi, va bu `nextSibling` elementdan boshlanadi. Sikl davom etadi, toki `nextSibling` elementi mavjud bo'lsa. Sikl ichida funksiya `nextSibling` elementining izoh tuguni (`nodeType` qiymati 8 ko'rsatilgan) ekanligini tekshiradi:
+
 - Agar `nextSibling` elementi izoh tuguni bo'lsa, funksiya uning ma'lumotlarini (ya'ni, izoh matnini) tekshiradi. Bu ma'lumot `"/$"`ga teng bo'lsa, bu ichma-ich strukturaning oxirini bildiradi. Agar `nestedLevel` qiymati `0` bo'lsa, sikl tugaydi, ya'ni kerakli struktura oxiri topilgan bo'ladi. Agar `nestedLevel` qiymati `0` bo'lmasa, bu `"/$"` izoh tuguni ichma-ich strukturaning bir qismi ekanligini anglatadi va `nestedLevel` qiymati kamayadi.
 - Agar izoh tugunidagi ma'lumot `"/$"`ga teng bo'lmasa, funksiya uning `"$"`, `"$?"`, yoki `"$!"` ekanligini tekshiradi. Bu qiymatlar yangi ichma-ich strukturaning boshlanishini bildiradi. Agar ushbu qiymatlardan birontasi topilsa, `nestedLevel` qiymati oshadi.
 

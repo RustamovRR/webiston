@@ -1,8 +1,17 @@
+---
+title: "Angular haqida"
+description: "Angular, Google tomonidan ishlab chiqilgan va qo'llab-quvvatlanadigan, JavaScript freymvorklari dunyosidagi mashhur o'yinchilardan biridir. Angular to'liq, ma'lum me'yorlarga ega bo'lgan freymvork bo'lib, frontend bilan bog'liq keng qamrovli masalalar uchun o'z yechimlarini taklif etadi, bu yechimlar orasida renderlash, state menejment, routing va forma ishlovi mavjud.
+
+Angular React’dan farqli reaktivlik modelini taklif etadi. Virtual DOM farqlash(diffing) va reconciliation jarayoni o'rniga Angular o'zining "o'zgarishlarni aniqlash" (change detection) tizimini qo'llaydi.
+
+Angular’da har bir komponent o'z ko'rinishida o'zgarishlarni tekshiradigan o'zgarish detektori bilan jihozlangan bo'lib, bu uchun Zone.js kutubxonasidan foydalanadi. Bu jarayon haqida ko'proq ma'lumotni quyida ko'rib chiqamiz."
+---
+
 # Angular
 
 Angular, Google tomonidan ishlab chiqilgan va qo'llab-quvvatlanadigan, JavaScript freymvorklari dunyosidagi mashhur o'yinchilardan biridir. Angular to'liq, ma'lum me'yorlarga ega bo'lgan freymvork bo'lib, frontend bilan bog'liq keng qamrovli masalalar uchun o'z yechimlarini taklif etadi, bu yechimlar orasida renderlash, state menejment, routing va forma ishlovi mavjud.
 
-Angular React’dan farqli reaktivlik modelini taklif etadi. Virtual DOM farqlash(diffing) va reconciliation jarayoni o'rniga Angular o'zining "o'zgarishlarni aniqlash" (change detection) tizimini qo'llaydi. 
+Angular React’dan farqli reaktivlik modelini taklif etadi. Virtual DOM farqlash(diffing) va reconciliation jarayoni o'rniga Angular o'zining "o'zgarishlarni aniqlash" (change detection) tizimini qo'llaydi.
 
 Angular’da har bir komponent o'z ko'rinishida o'zgarishlarni tekshiradigan o'zgarish detektori bilan jihozlangan bo'lib, bu uchun Zone.js kutubxonasidan foydalanadi. Bu jarayon haqida ko'proq ma'lumotni quyida ko'rib chiqamiz.
 
@@ -18,23 +27,25 @@ Angular, Vue singari, shablon sintaksisidan foydalanadi, ammo DOM bilan ishlash 
 
 ## Signallar
 
-Angular fundamental o'zgarishlarni boshdan kechirmoqda, bunda kirli tekshiruvlar(dirty-checking)dan voz kechib, o'zining reaktivlik primitivi bo'yicha yechimini taqdim etmoqda. *Angular Signal API* quyidagicha ko'rinadi:
-``` js copy
-const count = signal(0);
+Angular fundamental o'zgarishlarni boshdan kechirmoqda, bunda kirli tekshiruvlar(dirty-checking)dan voz kechib, o'zining reaktivlik primitivi bo'yicha yechimini taqdim etmoqda. _Angular Signal API_ quyidagicha ko'rinadi:
 
-count(); // qiymatni olish
-count.set(1); // yangi qiymatni o'rnatish
-count.update((v) => v + 1); // avvalgi qiymat asosida yangilash
+```js copy
+const count = signal(0)
+
+count() // qiymatni olish
+count.set(1) // yangi qiymatni o'rnatish
+count.update((v) => v + 1) // avvalgi qiymat asosida yangilash
 
 // chuqur obyektlarni bir xil identifikator bilan o'zgartirish
-const state = signal({ count: 0 });
+const state = signal({ count: 0 })
 state.mutate((o) => {
-  o.count++;
-});
+  o.count++
+})
 ```
 
-*Vue refs* bilan solishtirganda, Angular’ning getter’ga asoslangan API uslubi Vue komponentlarida foydalanilganda qiziqarli ijobiy va salbiy jihatlarini taqdim etadi:
+_Vue refs_ bilan solishtirganda, Angular’ning getter’ga asoslangan API uslubi Vue komponentlarida foydalanilganda qiziqarli ijobiy va salbiy jihatlarini taqdim etadi:
+
 - `()` ishlatish `.value`dan ko'ra kam batafsilroq bo'ladi, ammo qiymatni yangilash biroz batafsilroq.
-- Hech qanday *ref-unwrapping*(qiymatlarni avtomatik ochish) mavjud emas: qiymatni olish har doim `()` bilan amalga oshiriladi. Bu qiymat olishni har yerda izchil qiladi. Bu, shuningdek, oddiy signallarni komponent parametrlariga to'g'ridan-to'g'ri uzatishga imkon beradi.
+- Hech qanday _ref-unwrapping_(qiymatlarni avtomatik ochish) mavjud emas: qiymatni olish har doim `()` bilan amalga oshiriladi. Bu qiymat olishni har yerda izchil qiladi. Bu, shuningdek, oddiy signallarni komponent parametrlariga to'g'ridan-to'g'ri uzatishga imkon beradi.
 
 Angular murakkab ilovalarni yaratish uchun keng qamrovli vositalarni taqdim etuvchi universal vosita sifatida tanilgan. Uning qat'iy qoidalari bir tomondan kod strukturasi va izchilligini ta'minlash bilan kuchli tomon hisoblanadi, boshqa tomondan esa yangi dasturchilar uchun o'rganish jarayonini qiyinlashtiradi va moslashuvchanlikni cheklaydi.

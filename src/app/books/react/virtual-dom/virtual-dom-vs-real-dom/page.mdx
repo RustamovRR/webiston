@@ -1,3 +1,12 @@
+---
+title: "Reactda Virtual DOM va Real DOM o'rtasidagi farq"
+description: "`React.createElement` funksiyasi va DOM’ning ichki o'rnatilgan `document.createElement` metodi ikkalasi ham yangi elementlarni yaratishda o'xshash; ammo, `React.createElement` React elementlarini yaratadi, `document.createElement` esa DOM tugunlarini yaratadi. Ular implementatsiya, ya'ni amalga oshirish, jihatidan juda farq qiladi, ammo konseptual jihatdan bir xil funksiyani bajaradi.
+
+`React.createElement` — bu React tomonidan taqdim etilgan funksiya bo'lib, xotirada yangi virtual element yaratadi.
+`document.createElement` — DOM API tomonidan taqdim etilgan metod bo'lib, xotirada yangi element yaratadi, lekin u DOM’ga `document.appendChild` yoki boshqa o'xshash API’lar yordamida qo'shilmaguncha real DOM’ga ulanmaydi.
+Ikkala funksiya ham birinchi argument sifatida teg nomlarini qabul qiladi, ammo `React.createElement` qo'shimcha argumentlar sifatida props va children’ni qabul qiladi."
+---
+
 # Virtual DOM va Real DOM o'rtasidagi farq
 
 `React.createElement` funksiyasi va DOM’ning ichki o'rnatilgan `document.createElement` metodi ikkalasi ham yangi elementlarni yaratishda o'xshash; ammo, `React.createElement` React elementlarini yaratadi, `document.createElement` esa DOM tugunlarini yaratadi. Ular implementatsiya, ya'ni amalga oshirish, jihatidan juda farq qiladi, ammo konseptual jihatdan bir xil funksiyani bajaradi.
@@ -9,61 +18,56 @@ Ikkala funksiya ham birinchi argument sifatida teg nomlarini qabul qiladi, ammo 
 ### `React.createElement` va `document.createElement`ga misol
 
 Quyida ikkala usul yordamida `<div>` elementi qanday yaratilishini taqqoslaymiz:
-``` js copy
+
+```js copy
 // React’ning createElement funksiyasidan foydalanish
-const divElement = React.createElement(
-    "div",
-    { className: "my-class" },
-    "Hello, World!"
-);
+const divElement = React.createElement('div', { className: 'my-class' }, 'Hello, World!')
 
 // DOM API’ning createElement metodidan foydalanish
-const divElement = document.createElement("div");
-divElement.className = "my-class";
-divElement.textContent = "Hello, World!";
+const divElement = document.createElement('div')
+divElement.className = 'my-class'
+divElement.textContent = 'Hello, World!'
 ```
 
-React'da virtual DOM va real DOM konseptual jihatdan o'xshash, chunki ikkalasi ham elementlarning daraxtga o'xshash strukturani ifodalaydi. React komponenti render qilinayotganda, React yangi virtual DOM daraxtini yaratadi, uni avvalgi virtual DOM daraxti bilan taqqoslaydi va eski daraxtni yangi daraxtga moslashtirish uchun minimal o'zgarishlarni hisoblaydi. Bu jarayon *reconciliation process*, ya'ni *moslashtirish jarayoni*, deb nomlanadi.
+React'da virtual DOM va real DOM konseptual jihatdan o'xshash, chunki ikkalasi ham elementlarning daraxtga o'xshash strukturani ifodalaydi. React komponenti render qilinayotganda, React yangi virtual DOM daraxtini yaratadi, uni avvalgi virtual DOM daraxti bilan taqqoslaydi va eski daraxtni yangi daraxtga moslashtirish uchun minimal o'zgarishlarni hisoblaydi. Bu jarayon _reconciliation process_, ya'ni _moslashtirish jarayoni_, deb nomlanadi.
 
 ## Reconciliation jarayoni misoli
 
 Quyidagi misolda, React komponentida bu jarayon qanday ishlashini ko'rsatamiz:
 
-``` js copy
+```js copy
 function App() {
-    const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
-    return (
-        <div>
-            <h1>Count: {count}</h1>
-            <button onClick={() => setCount(count + 1)}>Increment</button>
-        </div>
-    );
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  )
 }
 ```
 
 Yuqoridagi komponentni quyidagicha ham ifodalash mumkin:
-``` js copy
+
+```js copy
 function App() {
-    const [count, setCount] = React.useState(0);
-    
-    return React.createElement(
-        "div",
-        null,
-        React.createElement("h1", null, "Count: ", count),
-        React.createElement(
-            "button",
-            { onClick: () => setCount(count + 1) },
-            "Increment"
-        )
-    );
+  const [count, setCount] = React.useState(0)
+
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('h1', null, 'Count: ', count),
+    React.createElement('button', { onClick: () => setCount(count + 1) }, 'Increment'),
+  )
 }
 ```
 
 `createElement` chaqiruvlarida, birinchi argument HTML teg nomi yoki React komponentining nomi, ikkinchi argument xususiyatlar obyektini (yoki xususiyatlar bo'lmasa `null` qiymatini) bildiradi, va qolgan argumentlar bola elementlar sifatida xizmat qiladi.
 
 Komponent dastlab render qilinganda, React quyidagi kabi virtual DOM daraxtini yaratadi:
-``` js copy
+
+```js copy
 div
 ├─ h1
 │   └─ "Count: 0"
@@ -72,7 +76,8 @@ div
 ```
 
 Button bosilganda, React yangi virtual DOM daraxtini yaratadi, bu yangi ko'rinishda bo'ladi:
-``` js copy
+
+```js copy
 div
 ├─ h1
 │   └─ "Count: 1"

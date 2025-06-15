@@ -1,3 +1,16 @@
+---
+title: 'Klient tomonda render qilishning cheklovlari"
+description: "2013-yilda ochiq manba dastur sifatida chiqarilgandan beri React yordamida foydalanuvchi interfeyslarini yaratish davom etmoqda. Natijada, ushbu yondashuv bilan bog'liq bir qator cheklovlar paydo bo'ldi. Bu cheklovlar vaqt o'tishi bilan ko'proq ishlarni server tomoniga ko'chirishga olib keldi.
+
+## SEO (Qidiruv tizimlari uchun optimallashtirish)
+
+Klient tomonida render qilishning asosiy cheklovlaridan biri, qidiruv tizimi botlari kontentni to'g'ri indekslay olmasligi mumkin emas, chunki ularning ba'zilari JavaScriptni bajarishmaydi yoki bajaradiganlari ham biz kutgandek ishlamaydi.
+
+Qidiruv tizimi botlarining turli xil yondashuvlarini hisobga olib, ularning qanday ishlashi ko'pchilik omma uchun aniq bo'lmaganligi tufayli, _faqat klient_ tomonida render qilish orqali yaratilgan veb-sayt yoki ilova qamrovi biroz noma'lum bo'lib qoladi.
+
+2015-yilda [Search Engine Land](https://searchengineland.com/tested-googlebot-crawls-javascript-heres-learned-220157) nashrida chop etilgan maqola qidiruv tizimlarining turli xil tajribalar yordamida _faqat klient_ tomonida yaratilgan ilovalar bilan qanday ishlashini sinab ko'rishni maqsad qilgan edi."
+---
+
 import { Callout } from 'nextra/components'
 
 # Klient tomonda render qilishning cheklovlari
@@ -8,22 +21,25 @@ import { Callout } from 'nextra/components'
 
 Klient tomonida render qilishning asosiy cheklovlaridan biri, qidiruv tizimi botlari kontentni to'g'ri indekslay olmasligi mumkin emas, chunki ularning ba'zilari JavaScriptni bajarishmaydi yoki bajaradiganlari ham biz kutgandek ishlamaydi.
 
-Qidiruv tizimi botlarining turli xil yondashuvlarini hisobga olib, ularning qanday ishlashi ko'pchilik omma uchun aniq bo'lmaganligi tufayli, *faqat klient* tomonida render qilish orqali yaratilgan veb-sayt yoki ilova qamrovi biroz noma'lum bo'lib qoladi.
+Qidiruv tizimi botlarining turli xil yondashuvlarini hisobga olib, ularning qanday ishlashi ko'pchilik omma uchun aniq bo'lmaganligi tufayli, _faqat klient_ tomonida render qilish orqali yaratilgan veb-sayt yoki ilova qamrovi biroz noma'lum bo'lib qoladi.
 
-2015-yilda [Search Engine Land](https://searchengineland.com/tested-googlebot-crawls-javascript-heres-learned-220157) nashrida chop etilgan maqola qidiruv tizimlarining turli xil tajribalar yordamida *faqat klient* tomonida yaratilgan ilovalar bilan qanday ishlashini sinab ko'rishni maqsad qilgan edi. Maqolada quyidagilar aytilgan:
+2015-yilda [Search Engine Land](https://searchengineland.com/tested-googlebot-crawls-javascript-heres-learned-220157) nashrida chop etilgan maqola qidiruv tizimlarining turli xil tajribalar yordamida _faqat klient_ tomonida yaratilgan ilovalar bilan qanday ishlashini sinab ko'rishni maqsad qilgan edi. Maqolada quyidagilar aytilgan:
+
 <Callout type="info">
-Biz bir qator sinovlar o'tkazdik va Google turli xil yondashuvlar bilan JavaScript’ni bajarish va indekslash imkoniyatiga ega ekanligini tekshirdik. Shuningdek, Google butun sahifani ko'rsatish va DOM’ni o'qish orqali dinamik yaratilgan kontentni indekslashi mumkinligini tasdiqladik.
+  Biz bir qator sinovlar o'tkazdik va Google turli xil yondashuvlar bilan JavaScript’ni bajarish va indekslash
+  imkoniyatiga ega ekanligini tekshirdik. Shuningdek, Google butun sahifani ko'rsatish va DOM’ni o'qish orqali dinamik
+  yaratilgan kontentni indekslashi mumkinligini tasdiqladik.
 </Callout>
 
-Bu maqola bo'yicha Google va Bing *faqat klient* tomonidagi (client-only) veb-saytlarni indekslash uchun yetarli darajada takomillashganligi aniqlanadi, lekin bu aslida keng va noma'lum texnologiyalar okeanidagi bir tadqiqotning natijasi hisoblanadi.
+Bu maqola bo'yicha Google va Bing _faqat klient_ tomonidagi (client-only) veb-saytlarni indekslash uchun yetarli darajada takomillashganligi aniqlanadi, lekin bu aslida keng va noma'lum texnologiyalar okeanidagi bir tadqiqotning natijasi hisoblanadi.
 
 ### "Client-only" ilovalarda mavjud ba'zi xavflar
 
-Shunday qilib, zamonaviy qidiruv tizimlari bilan *faqat klient* tomonidagi ilovalar yaxshi ishlashi mumkin bo'lsa-da, server tomonida bo'lmaganligi tufayli biroz xavf bor. An'anaviy veb-ilovalarda, foydalanuvchi yoki qidiruv tizimi boti sahifani olish uchun so'rov yuborganda, server sahifaning HTML kodini ishlab chiqaradi va uni qaytaradi. HTML’da barcha kontent, havolalar va ma'lumotlar mavjud bo'lib, bu qidiruv tizimi botlariga sahifani o'qish va indekslashni osonlashtiradi, chunki sahifaning barcha mazmuni shunchaki matndan, ya'ni markup’dan iborat bo'ladi.
+Shunday qilib, zamonaviy qidiruv tizimlari bilan _faqat klient_ tomonidagi ilovalar yaxshi ishlashi mumkin bo'lsa-da, server tomonida bo'lmaganligi tufayli biroz xavf bor. An'anaviy veb-ilovalarda, foydalanuvchi yoki qidiruv tizimi boti sahifani olish uchun so'rov yuborganda, server sahifaning HTML kodini ishlab chiqaradi va uni qaytaradi. HTML’da barcha kontent, havolalar va ma'lumotlar mavjud bo'lib, bu qidiruv tizimi botlariga sahifani o'qish va indekslashni osonlashtiradi, chunki sahifaning barcha mazmuni shunchaki matndan, ya'ni markup’dan iborat bo'ladi.
 
 Biroq, React kabi kutubxona yoki freymvork yordamida yaratilgan klient tomonida render qilinadigan ilovada, server deyarli bo'sh HTML faylni qaytaradi, uning yagona vazifasi o'sha serverda yoki boshqa alternativ serverda joylashgan JavaScript faylini yuklashdan iborat. JavaScript fayli keyin yuklanadi va brauzerda bajariladi, bu esa sahifa kontentini dinamik ravishda ko'rsatadi. Ushbu yondashuv tabiiy ilovalarnikiga o'xshash silliq foydalanuvchi bilan ishlash qulayligini taqdim etadi, lekin qidiruv tizimlari uchun optimallashtirish (SEO) va ishlash samaradorligi(performance) borasida bir kamchiligi bor: biz birinchi so'rovda odamlar uchun foydali bo'lgan hech qanday narsani yuklamaymiz, balki sahifa yuklanishi bilan darhol butun saytni ishga tushiradigan JavaScript faylini yuklash uchun boshqa so'rov yuborishimiz kerak bo'ladi. Bu "tarmoq sharsharasi"(network waterfall) deb ataladi.
 
-Shunday qilib, *faqat klient* tomonida render qilishning yana bir kamchiligi ishlash samaradorligidir. Endi bu haqda gaplashamiz.
+Shunday qilib, _faqat klient_ tomonida render qilishning yana bir kamchiligi ishlash samaradorligidir. Endi bu haqda gaplashamiz.
 
 ## Ishlash samaradorligi (Performance)
 
@@ -37,20 +53,21 @@ Keng miqyosda, klient tomonida render qilinadigan ilovalarda SEO va ishlash sama
 
 Progressiv yaxshilanish tamoyili asosiy kontent va funksionallikni barcha brauzerlarga yetkazishni nazarda tutadi, takomillashgan xususiyatlar esa yaxshilanish sifatida ko'rib chiqiladi va alternativlar bilan yaxshi mos keladi. Kontentning asosiy tub qismini server tomonida render qilish orqali barcha foydalanuvchilar va qidiruv tizimlari JavaScript bajarilishidan qat'i nazar, asosiy kontent va funksiyaga kirish imkoniyatiga ega bo'lishini ta'minlagan bo'lasiz. Keyin, klient tomonidagi JavaScript interaktivlikni qo'shish, animatsiyaga boy bo'lgan va boshqa takomillashgan funksiyalarni qo'shib foydalanuvchi bilan ishlash qulayligini yaxshilaydi, bu brauzerlar va qurilmalar bunga tayyor bo'lganda amalga oshiriladi.
 
-Barcha tajribani faqat klient tomonidagi JavaScriptga bog'lash hech qanday ma'noga ega emas, chunki bu vebning asl dizayni emas. JavaScript’ning roli veb sahifani *yaxshilashdan* iborat, veb sahifani *o'zi bo'lish* emas.
+Barcha tajribani faqat klient tomonidagi JavaScriptga bog'lash hech qanday ma'noga ega emas, chunki bu vebning asl dizayni emas. JavaScript’ning roli veb sahifani _yaxshilashdan_ iborat, veb sahifani _o'zi bo'lish_ emas.
 
 Keling, ushbu misolni ko'rib chiqaylik:
-``` js copy
-import React, { useEffect, useState } from "react";
+
+```js copy
+import React, { useEffect, useState } from 'react'
 
 const Home = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch("https://api.example.com/data")
+    fetch('https://api.example.com/data')
       .then((response) => response.json())
-      .then((data) => setData(data));
-  }, []);
+      .then((data) => setData(data))
+  }, [])
 
   return (
     <div>
@@ -58,10 +75,10 @@ const Home = () => {
         <div key={item.id}>{item.title}</div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
 ```
 
 Yuqoridagi misolda biz API orqali ma'lumotlarni klient tomonida olib kelib, ularni render qilmoqdamiz. Bu klient tomonida ekanligini `useEffect` hook’idan foydalanayotganimizdan bilamiz, chunki `useEffect` hooki faqat brauzerda (klientda) bajariladi. Ma'lumotlar `useState` hook’ida saqlanadi va sahifa yuklangandan so'ng ma'lumotlar API orqali olinadi.
@@ -81,7 +98,7 @@ Agar biz buni tasavvur qilmoqchi bo'lsak, shunday ko'rinishda bo'lardi:
 
 Server-tomonli renderlash bilan biz yaxshiroq natijaga erishishimiz va foydalanuvchilarga darhol foydali mazmundagi kontentni ko'rish imkonini berishimiz mumkin, diagrammani quyidagicha o'zgartirgan holda.
 
-*HTML’ni yuklash (to'liq UI, ma'lumot serverda olingan holda)*
+_HTML’ni yuklash (to'liq UI, ma'lumot serverda olingan holda)_
 
 Darhaqiqat, dastlabki yuklanishda foydalanuvchi uchun foydali bo'lgan ma'lumotlar mavjud, chunki biz ma'lumotlarni oldindan olib, komponentni serverda render qilganmiz. Bu yerda hech qanday tarmoq sharsharasi yo'q va foydalanuvchi barcha kerakli ma'lumotlarni darhol oladi. Bu server-tomonda renderlashning foydali jihatidir.
 
@@ -105,11 +122,12 @@ Faqat klient tomonda render qilish, ayniqsa, nozik ma'lumotlar bilan ishlaganda 
 
 CSRF haqida juda chuqur kirishmasdan, unga qarshi kurashishning keng tarqalgan usuli - foydalanuvchilarga veb-sayt yoki veb-ilovalarni taqdim etadigan server ustidan nazoratga ega bo'lishdir. Agar biz ushbu serverni nazorat qilsak, biz serverdan ishonchli manba sifatida klientga mos anti-CSRF tokenlarini yuborishimiz mumkin, so'ngra klient bu tokenlarni forma yoki shunga o'xshash usulda serverga qaytaradi, bu esa so'rovning to'g'ri klientdan kelayotganini tasdiqlash imkonini beradi. Bu CSRF’ga qarshi kurashishning keng tarqalgan usullaridan biridir.
 
-Agar biz nazorat qiladigan statik sayt serveridan faqat klient tomonda ishlaydigan ilovalarga xizmat ko'rsatish texnik jihatdan mumkin bo'lsa-da va shu yo'l bilan CSRF’ga qarshi choralar ko'rsak, bu hali ham veb-saytni taqdim etishning eng yaxshi usuli emas, chunki biz ilgari muhokama qilgan boshqa ijobiy va salbiy jihatlari (trade-offs) mavjud. Agar biz serverni nazorat qilsak, unda nega  server tomonida render qilish(SSR)ni qo'shmasligimiz kerak?
+Agar biz nazorat qiladigan statik sayt serveridan faqat klient tomonda ishlaydigan ilovalarga xizmat ko'rsatish texnik jihatdan mumkin bo'lsa-da va shu yo'l bilan CSRF’ga qarshi choralar ko'rsak, bu hali ham veb-saytni taqdim etishning eng yaxshi usuli emas, chunki biz ilgari muhokama qilgan boshqa ijobiy va salbiy jihatlari (trade-offs) mavjud. Agar biz serverni nazorat qilsak, unda nega server tomonida render qilish(SSR)ni qo'shmasligimiz kerak?
 
 ### Ba'zi xulosalar
 
 Oxir-oqibat, biz shuni aytmoqchimiz:
+
 - Agar biz server tomonga kirish imkoniga ega bo'lmasak, lekin jamoada faqat `git push` klient tomoni kodini qo'llab-quvvatlaydigan joyda ishlasak va kodimiz qayergadur joylanadigan bo'lsa, bu yerda o'ziga xos CSRF xavflari mavjud.
 - Agar biz server tomonga kirish imkoniga ega bo'lsak va agar bizning veb-saytimiz yoki veb-ilovamiz hali ham faqat klient tomonda bo'lsa, CSRF’ga qarshi juda yaxshi choralar ko'rishimiz mumkin va buni atrofidagi xavflar yo'qoladi.
 - Agar biz server tomonga kirish imkoniga ega bo'lsak va agar bizning veb-saytimiz yoki veb-ilovamiz hali ham faqat klient tomonda bo'lsa, bu uchun server tomonida render qilishni qo'shish uchun kuchli dalil mavjud, chunki biz serverga kirish imkoniga egamiz, bu esa SEO va ishlash bo'yicha boshqa foydalarini taqdim etadi.
@@ -117,40 +135,41 @@ Oxir-oqibat, biz shuni aytmoqchimiz:
 ### Akkountdan pul yechish misoli
 
 Keling, amaliy misolni ko'rib chiqaylik:
-``` js copy
-import React, { useState } from "react";
+
+```js copy
+import React, { useState } from 'react'
 
 const Account = () => {
-    const [balance, setBalance] = useState(100);
+  const [balance, setBalance] = useState(100)
 
-    const handleWithdrawal = async (amount) => {
-        // Ushbu so'rov pulni yechish uchun serverga borishini faraz qiling
-        const response = await fetch("/withdraw", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({ amount }),
-        });
+  const handleWithdrawal = async (amount) => {
+    // Ushbu so'rov pulni yechish uchun serverga borishini faraz qiling
+    const response = await fetch('/withdraw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ amount }),
+    })
 
-        if (response.ok) {
-            const updatedBalance = await response.json();
-            setBalance(updatedBalance);
-        }
-    };
+    if (response.ok) {
+      const updatedBalance = await response.json()
+      setBalance(updatedBalance)
+    }
+  }
 
-    return (
-        <div>
-            <h1>Hisob Balansi: {balance}</h1>
-            <button onClick={() => handleWithdrawal(10)}>$10 yechish</button>
-            <button onClick={() => handleWithdrawal(50)}>$50 yechish</button>
-            <button onClick={() => handleWithdrawal(100)}>$100 yechish</button>
-        </div>
-    );
-};
+  return (
+    <div>
+      <h1>Hisob Balansi: {balance}</h1>
+      <button onClick={() => handleWithdrawal(10)}>$10 yechish</button>
+      <button onClick={() => handleWithdrawal(50)}>$50 yechish</button>
+      <button onClick={() => handleWithdrawal(100)}>$100 yechish</button>
+    </div>
+  )
+}
 
-export default Account;
+export default Account
 ```
 
 Ushbu kodda `handleWithdrawal` funksiyasi pulni yechish uchun faraziy server tomonidagi `/withdraw` manzilga `POST` so'rov yuboradi. Agar ushbu manzil so'rovning kelish manzilini to'g'ri tekshirmasa va hech qanday anti-CSRF tokenini talab qilmasa, CSRF xavfi paydo bo'lishi mumkin.

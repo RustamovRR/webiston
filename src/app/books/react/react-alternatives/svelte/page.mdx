@@ -1,3 +1,12 @@
+---
+title: 'Svelte haqida'
+description: "Svelte foydalanuvchi interfeyslarini yaratish uchun tubdan yangi bo'lgan yondashuvni taklif qiladi. An'anaviy freymvorklardan farqli o'laroq, Svelte sizning deklarativ komponentlaringizni samarali imperativ kodga aylantiruvchi kompilyator hisoblanadi va bu kod DOM’ni aniq yangilab turadi. Natijada, kamroq kod bilan yuqori samaradorlikka ega, reaktiv veb-ilovalarni yozish imkoniyatiga ega bo'lasiz.
+
+## Reaktivlik
+
+Svelte'ning reaktivlik modeli juda oddiy, lekin kuchli. Svelte'dagi reaktiv yozuvlar oddiy sintaksisda yoziladi va bu, masalan, elektron jadvallardagi formulalarni eslatadi. Quyida asosiy Svelte komponenti keltirilgan."
+---
+
 # Svelte
 
 Svelte foydalanuvchi interfeyslarini yaratish uchun tubdan yangi bo'lgan yondashuvni taklif qiladi. An'anaviy freymvorklardan farqli o'laroq, Svelte sizning deklarativ komponentlaringizni samarali imperativ kodga aylantiruvchi kompilyator hisoblanadi va bu kod DOM’ni aniq yangilab turadi. Natijada, kamroq kod bilan yuqori samaradorlikka ega, reaktiv veb-ilovalarni yozish imkoniyatiga ega bo'lasiz.
@@ -5,43 +14,41 @@ Svelte foydalanuvchi interfeyslarini yaratish uchun tubdan yangi bo'lgan yondash
 ## Reaktivlik
 
 Svelte'ning reaktivlik modeli juda oddiy, lekin kuchli. Svelte'dagi reaktiv yozuvlar oddiy sintaksisda yoziladi va bu, masalan, elektron jadvallardagi formulalarni eslatadi. Quyida asosiy Svelte komponenti keltirilgan:
-``` html copy
+
+```html copy
 <script>
-  let count = 0;
+  let count = 0
 
   function increment() {
-    count += 1;
+    count += 1
   }
 </script>
 
 <div>{count}</div>
-<button on:click={increment}>
-  Click me
-</button>
+<button on:click="{increment}">Click me</button>
 ```
 
 Ushbu misolda `{count}` sintaksisi markup ichida `count` o'zgaruvchisi o'zgarganda avtomatik yangilanadi. Bu React’ning JSX’iga o'xshaydi, ammo bir asosiy farq bor: Svelte'da bu reaktivlik avtomatik tarzda amalga oshadi. DOM’ni yangilash uchun setter funksiyasini chaqirish yoki maxsus API’dan foydalanish shart emas; o'zgaruvchiga yangi qiymat tayinlashning o'zi kifoya va Svelte qolgan ishni o'zi bajardi.
 
 Svelte, shuningdek, reaktiv yozuv sintaksisini ham taqdim etadi, bu orqali reaktiv ma'lumotlar asosida qiymatlarni hisoblash mumkin:
-``` html copy
-<script>
-  let count = 0;
-  let doubleCount = 0;
 
-  $: doubleCount = count * 2;
+```html copy
+<script>
+  let count = 0
+  let doubleCount = 0
+
+  $: doubleCount = count * 2
 
   function increment() {
-    count += 1;
+    count += 1
   }
 </script>
 
 <div>{doubleCount}</div>
-<button on:click={increment}>
-  Click me
-</button>
+<button on:click="{increment}">Click me</button>
 ```
 
-Bu misolda `doubleCount` avtomatik tarzda `count` o'zgarganida yangilanadi. Bu Vue'dagi *computed properties* (hisoblangan xususiyatlar)ni eslatadi, ammo biroz oddiyroq sintaksisda.
+Bu misolda `doubleCount` avtomatik tarzda `count` o'zgarganida yangilanadi. Bu Vue'dagi _computed properties_ (hisoblangan xususiyatlar)ni eslatadi, ammo biroz oddiyroq sintaksisda.
 
 Svelte'ning kompilyatorga asoslangan yondashuvi bir qancha afzalliklarga ega. Bu odatda tezroq ish vaqti samaradorligini ta'minlaydi, chunki virtual DOM diffing va patching (farqni topish va tuzatish) jarayoniga ehtiyoj yo'q. Buning o'rniga, Svelte DOM’ni bevosita yangilaydigan kod yaratadi.
 
@@ -49,61 +56,61 @@ Shu bilan birga, bu yondashuv bilan bog'liq ijobiy va salbiy jihatlar ham mavjud
 
 ## Runiklar (Runes)
 
-Runiklar — bu Svelte kompilyatoriga ta'sir qiluvchi maxsus belgilar. Bugungi kunda Svelte `let`, `=`, `export` kalit so'zi va `$:` belgilaridan maxsus ma'nolar bilan foydalanadi, lekin runiklar *funksiya sintaksisi* orqali shunga o'xshash va qo'shimcha imkoniyatlarni ham taqdim etadi.
+Runiklar — bu Svelte kompilyatoriga ta'sir qiluvchi maxsus belgilar. Bugungi kunda Svelte `let`, `=`, `export` kalit so'zi va `$:` belgilaridan maxsus ma'nolar bilan foydalanadi, lekin runiklar _funksiya sintaksisi_ orqali shunga o'xshash va qo'shimcha imkoniyatlarni ham taqdim etadi.
 
 Misol uchun, reaktiv holatni e'lon qilish uchun `$state` runikidan foydalanish mumkin:
-``` html copy {3}
+
+```html copy {3}
 <script>
-// let count = 0;
- let count =$state(0);
+  // let count = 0;
+  let count = $state(0)
 
   function increment() {
-    count += 1;
+    count += 1
   }
 </script>
 
-<button on:click={increment}>
-  clicks: {count}
-</button>
+<button on:click="{increment}">clicks: {count}</button>
 ```
 
-Ilovalar murakkablashgani sayin, qaysi qiymatlar reaktiv ekanligini va qaysilari reaktiv emasligini aniqlash qiyin bo'lib qoladi. Hozirgi amaliyot faqat komponentning yuqori darajasida `let` bilan e'lon qilingan qiymatlar uchun ishlaydi, bu esa tushunmovchiliklarni keltirib chiqarishi mumkin. *.svelte* fayllarida bir xil, *.js* fayllarida esa boshqacha ishlash xatti-harakati, masalan, kodni ko'plab joylarda qayta yozish zarurati tug'ilganda uni refactor qilishni murakkablashtiradi.
+Ilovalar murakkablashgani sayin, qaysi qiymatlar reaktiv ekanligini va qaysilari reaktiv emasligini aniqlash qiyin bo'lib qoladi. Hozirgi amaliyot faqat komponentning yuqori darajasida `let` bilan e'lon qilingan qiymatlar uchun ishlaydi, bu esa tushunmovchiliklarni keltirib chiqarishi mumkin. _.svelte_ fayllarida bir xil, _.js_ fayllarida esa boshqacha ishlash xatti-harakati, masalan, kodni ko'plab joylarda qayta yozish zarurati tug'ilganda uni refactor qilishni murakkablashtiradi.
 
-Runiklar yordamida reaktivlik *.svelte* fayllarining chegarasidan tashqariga ham kengayadi. Masalan, hisoblagich logikasini bir nechta komponentlar o'rtasida qayta ishlatilishi mumkin bo'lgan tarzda inkapsulyatsiya qilishni xohlasangiz, bugungi kunda *.js* yoki .ts faylida maxsus saqlovchi (store) yaratishingiz kerak bo'ladi:
-``` js copy
-import { writable } from "svelte/store";
+Runiklar yordamida reaktivlik _.svelte_ fayllarining chegarasidan tashqariga ham kengayadi. Masalan, hisoblagich logikasini bir nechta komponentlar o'rtasida qayta ishlatilishi mumkin bo'lgan tarzda inkapsulyatsiya qilishni xohlasangiz, bugungi kunda _.js_ yoki .ts faylida maxsus saqlovchi (store) yaratishingiz kerak bo'ladi:
+
+```js copy
+import { writable } from 'svelte/store'
 
 export function createCounter() {
-  const { subscribe, update } = writable(0);
+  const { subscribe, update } = writable(0)
 
   return {
     subscribe,
     increment: () => update((n) => n + 1),
-  };
+  }
 }
 ```
 
-Chunki bu *saqlovchi shartnomasini (store contract)* amalga oshiradi — ya'ni qaytarilgan qiymat `subscribe` metodiga ega — biz store qiymatini `$` prefiksini qo'shish orqali olamiz:
-``` html copy {2, 4, 13-14}
+Chunki bu _saqlovchi shartnomasini (store contract)_ amalga oshiradi — ya'ni qaytarilgan qiymat `subscribe` metodiga ega — biz store qiymatini `$` prefiksini qo'shish orqali olamiz:
+
+```html copy {2, 4, 13-14}
 <script>
-import { createCounter } from './counter.js';
+  import { createCounter } from './counter.js'
 
-const counter = createCounter();
-// let count = 0;
+  const counter = createCounter()
+  // let count = 0;
 
-// function increment() {
-//   count += 1;
-// }
+  // function increment() {
+  //   count += 1;
+  // }
 </script>
 <!-- <button on:click={increment}> -->
 <!-- clicks: {count} -->
-<button on:click={counter.increment}>
-  clicks: {$counter}
-</button>
+<button on:click="{counter.increment}">clicks: {$counter}</button>
 ```
 
 Bu ishlaydi, lekin biroz g'alati! Store API yanada murakkab narsalarni bajarishga uringanda, juda noqulay bo'lib qolishi mumkin. Runiklar yordamida, bu jarayon ancha osonlashadi:
-``` js copy {5, 10-11}
+
+```js copy {5, 10-11}
 // import { writable } from 'svelte/store';
 
 export function createCounter() {
@@ -119,16 +126,16 @@ export function createCounter() {
 }
 ```
 
-``` html copy {9}
+```html copy {9}
 <script>
-    import { createCounter } from './counter.js';
+  import { createCounter } from './counter.js'
 
-    const counter = createCounter();
+  const counter = createCounter()
 </script>
 
-<button on:click={counter.increment}>
-<!-- clicks: {$counter} -->
-     clicks: {counter.count}
+<button on:click="{counter.increment}">
+  <!-- clicks: {$counter} -->
+  clicks: {counter.count}
 </button>
 ```
 
@@ -136,27 +143,29 @@ E'tibor bering, biz qaytarilgan obyekt ichida `get` xususiyatidan foydalanmoqdam
 
 ## Ishlash vaqtida reaktivlik (Runtime reactivity)
 
-Bugungi kunda Svelte *kompilyatsiya vaqtida reaktivlik(compile-time reactivity)dan* foydalanadi. Bu, agar sizda `$:` yorlig'idan foydalanadigan ba'zi kod bo'lsa va u avtomatik ravishda qayta ishlanishi kerak bo'lsa, bu qaramliklar Svelte sizning komponentingizni kompilyatsiya qilganda aniqlanadi:
-``` html copy
+Bugungi kunda Svelte _kompilyatsiya vaqtida reaktivlik(compile-time reactivity)dan_ foydalanadi. Bu, agar sizda `$:` yorlig'idan foydalanadigan ba'zi kod bo'lsa va u avtomatik ravishda qayta ishlanishi kerak bo'lsa, bu qaramliklar Svelte sizning komponentingizni kompilyatsiya qilganda aniqlanadi:
+
+```html copy
 <script>
-export let width;
-export let height;
+  export let width
+  export let height
 
-// `width` yoki `height` o'zgarganda
-// kompilyator `area`ni qayta hisoblash kerakligini biladi...
-$: area = width * height;
+  // `width` yoki `height` o'zgarganda
+  // kompilyator `area`ni qayta hisoblash kerakligini biladi...
+  $: area = width * height
 
-// ...va u o'zgarganda
-// `area`ning qiymatini log qilishini biladi
-$: console.log(area);
+  // ...va u o'zgarganda
+  // `area`ning qiymatini log qilishini biladi
+  $: console.log(area)
 </script>
 ```
 
 Bu yaxshi ishlaydi...garchi bu ishlamasa. Faraz qilaylik, biz kodni quyidagicha refactor qilaylik:
-``` js copy
+
+```js copy
 // @errors: 7006 2304
-const multiplyByHeight = (width) => width * height;
-$: area = multiplyByHeight(width);
+const multiplyByHeight = (width) => width * height
+$: area = multiplyByHeight(width)
 ```
 
 Chunki `$: area = ...` e'lon qilinishi faqat `width`ni ko'radi, bu `height` o'zgarganda qayta hisoblanmaydi. Natijada, kodni refactor qilish qiyinlashadi va Svelte qachon qanday qiymatlarni yangilashini tushunish ma'lum darajadagi murakkablikdan keyin juda qiyin bo'lib qolishi mumkin.
@@ -164,15 +173,16 @@ Chunki `$: area = ...` e'lon qilinishi faqat `width`ni ko'radi, bu `height` o'zg
 ## Svelte 5’da yangi runiklar
 
 Svelte 5 `$derived `va `$effect` runiklarini taqdim etadi, bu esa o'z ifodalari qaramliklarini baholanganida aniqlaydi:
-``` html copy
+
+```html copy
 <script>
-let { width, height } = $props(); // `export let` o'rniga
+  let { width, height } = $props() // `export let` o'rniga
 
-const area = $derived(width * height);
+  const area = $derived(width * height)
 
-$effect(() => {
-  console.log(area);
-});
+  $effect(() => {
+    console.log(area)
+  })
 </script>
 ```
 

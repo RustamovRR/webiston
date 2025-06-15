@@ -1,13 +1,19 @@
+---
+title: 'Reconciliation’ni yaxshiroq tushunish'
+description: "Tezda ko'z yugurtirib chiqadigan bo'lsak, React’ning virtual DOM’i bizning kerakli UI holatimizning chizmasidir. React bu chizma yordamida, **_reconciliation(moslashtirish)_** deb ataladigan jarayon orqali, uni berilgan muhitda; odatda veb-brauzerda, lekin boshqa muhitlarda, masalan, terminal, iOS va Android kabi native platformalarda ham amalga oshiradi."
+---
+
 # Reconciliation’ni yaxshiroq tushunish
 
-Tezda ko'z yugurtirib chiqadigan bo'lsak, React’ning virtual DOM’i bizning kerakli UI holatimizning chizmasidir. React bu chizma yordamida, ***reconciliation(moslashtirish)*** deb ataladigan jarayon orqali, uni berilgan muhitda; odatda veb-brauzerda, lekin boshqa muhitlarda, masalan, terminal, iOS va Android kabi native platformalarda ham amalga oshiradi.
+Tezda ko'z yugurtirib chiqadigan bo'lsak, React’ning virtual DOM’i bizning kerakli UI holatimizning chizmasidir. React bu chizma yordamida, **_reconciliation(moslashtirish)_** deb ataladigan jarayon orqali, uni berilgan muhitda; odatda veb-brauzerda, lekin boshqa muhitlarda, masalan, terminal, iOS va Android kabi native platformalarda ham amalga oshiradi.
 
 Quyidagi kodni ko'rib chiqamiz:
-``` js copy
-import { useState } from "react";
+
+```js copy
+import { useState } from 'react'
 
 const App = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   return (
     <main>
@@ -17,37 +23,35 @@ const App = () => {
         <button onClick={() => setCount(count + 1)}>Increment</button>
       </div>
     </main>
-  );
-};
+  )
+}
 ```
 
 Ushbu kod qismi UI holatini qanday bo'lishini deklarativ tavsifini o'z ichiga oladi: elementlar daraxti. Bizning hamkasblarimiz va React bu kodni o'qib, biz hisoblagich(counter) ilovasini yaratmoqchi ekanligimizni tushunishlari mumkin. Reconciliation’ni yaxshiroq tushunish uchun, bunday komponentga duch kelganda React ichida nimalar sodir bo'lishini tushunishimiz kerak.
 
 Birinchidan, JSX React elementlari daraxtiga aylanadi. Bu biz [Virtual Dom](/books/react/virtual-dom) bobida ko'rgan narsalarimizdir. Ushbu component chaqirilganda, `App` komponenti o'z bolalari yana boshqa React elementlari bo'lgan React elementini qaytaradi. React elementlari o'zgarmasdir(biz uchun) va UI’ning kerakli holatini ifodalaydi. Ular haqiqiy UI holati emas. React elementlari `React.createElement` yoki JSX `<` belgisi orqali yaratiladi, shuning uchun bu quyidagi ko'rinishga transpilatsiya qilinadi:
-``` js copy
+
+```js copy
 const App = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   return React.createElement(
-    "main",
+    'main',
     null,
     React.createElement(
-      "div",
+      'div',
       null,
-      React.createElement("h1", null, "Hello, world!"),
-      React.createElement("span", null, "Count: ", count),
-      React.createElement(
-        "button",
-        { onClick: () => setCount(count + 1) },
-        "Increment"
-      )
-    )
-  );
-};
+      React.createElement('h1', null, 'Hello, world!'),
+      React.createElement('span', null, 'Count: ', count),
+      React.createElement('button', { onClick: () => setCount(count + 1) }, 'Increment'),
+    ),
+  )
+}
 ```
 
 Bu bizga ushbu tarzda yaratilgan React elementlari daraxtini quyidagicha beradi:
-``` js copy
+
+```js copy
 {
   type: "main",
   props: {

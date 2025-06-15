@@ -1,3 +1,8 @@
+---
+title: "React.memo’ni chuqurroq o'rganish"
+description: "React.memo qanday ishlashini qisqacha tushuntirib o'tamiz. React’da yangilanish yuz berganda, sizning komponentingiz avvalgi renderdan qaytarilgan vDOM(virtual DOM) natijasi bilan taqqoslanadi. Agar bu natijalar boshqacha bo'lsa — ya'ni, props o'zgarsa — reconciler host muhiti (odatda brauzer DOM) ichida mavjud bo'lgan element uchun yangilash effektini ishlatadi yoki u mavjud bo'lmasa, joylashtirish effektini bajaradi. Agar props bir xil bo'lsa, komponent baribir qayta render qilinadi va DOM ham yangilanadi."
+---
+
 # React.memo’ni chuqurroq o'rganish
 
 `React.memo` qanday ishlashini qisqacha tushuntirib o'tamiz. React’da yangilanish yuz berganda, sizning komponentingiz avvalgi renderdan qaytarilgan vDOM(virtual DOM) natijasi bilan taqqoslanadi. Agar bu natijalar boshqacha bo'lsa — ya'ni, props o'zgarsa — reconciler host muhiti (odatda brauzer DOM) ichida mavjud bo'lgan element uchun yangilash effektini ishlatadi yoki u mavjud bo'lmasa, joylashtirish effektini bajaradi. Agar props bir xil bo'lsa, komponent baribir qayta render qilinadi va DOM ham yangilanadi.
@@ -6,7 +11,7 @@
 
 ## Memoizatsiya qilingan komponentlar baribir qayta render bo'lishi
 
-`React.memo` komponentning props qiymatlari o'zgarganmi yoki yo'qligini aniqlash uchun *yuzaki taqqoslash (shallow comparison)* usulidan foydalanadi. Bu yondashuvning kamchiligi shundaki, JavaScript’da skalyar turlar aniq taqqoslanishi mumkin bo'lsa-da, skalyar bo'lmagan turlar taqqoslashda aniq natija bermaydi. Bularni yaxshiroq tushunib olishimiz uchun, keling, avval skalyar va skalyar bo'lmagan turlar nima ekanligini hamda ularning taqqoslash operatsiyalaridagi xatti-harakatlarini ko'rib chiqamiz.
+`React.memo` komponentning props qiymatlari o'zgarganmi yoki yo'qligini aniqlash uchun _yuzaki taqqoslash (shallow comparison)_ usulidan foydalanadi. Bu yondashuvning kamchiligi shundaki, JavaScript’da skalyar turlar aniq taqqoslanishi mumkin bo'lsa-da, skalyar bo'lmagan turlar taqqoslashda aniq natija bermaydi. Bularni yaxshiroq tushunib olishimiz uchun, keling, avval skalyar va skalyar bo'lmagan turlar nima ekanligini hamda ularning taqqoslash operatsiyalaridagi xatti-harakatlarini ko'rib chiqamiz.
 
 ### Skalyar turlar (primitive types)
 
@@ -17,7 +22,8 @@ Skalyar turlar, shuningdek, primitiv turlar deb ham ataladi, va ular asosiy, sod
 Skalyarlarning soddaligidan tashqariga chiqsak, biz skalyar bo'lmagan yoki referens(reference) yoki havola turlari bilan tanishamiz. Bu turlar ma'lumotlarni o'zida saqlamaydi, balki ma'lumotlar xotirada saqlanadigan joyga ishora qiluvchi havola yoki ko'rsatkichni saqlaydi. Bu farqni anglash juda muhim, chunki bu turlar qanday taqqoslanishi, boshqarilishi va kodda o'zaro ishlashi bilan bog'liq xatti-harakatlariga ta'sir qiladi. JavaScript’da eng keng tarqalgan skalyar bo'lmagan turlar object’lar va array’lar hisoblanadi. Object’lar kalit-qiymat juftliklari bilan tuzilgan ma'lumotlarni saqlashga imkon beradi, array’lar esa tartiblangan to'plamni taqdim etadi. Funksiyalar ham JavaScript’da referens turlari hisoblanadi.
 
 Skalyar bo'lmagan turlarning asosiy xususiyati shundaki, bir nechta havola bir xil xotira joyiga ishora qilishi mumkin. Bu shuni anglatadiki, agar ma'lumot bir havola orqali o'zgartirilsa, bu o'zgarish boshqa bir xil ma'lumotga ishora qiluvchi havolalarga ham ta'sir qiladi. Taqqoslashga kelganda, skalyar bo'lmagan turlar xotiradagi havolasi orqali taqqoslanadi, tarkibi orqali emas, skalyar turlardan farqli o'laroq. Bu ba'zida ushbu nozik jihat bilan tanish bo'lmagan odamlar uchun kutilmagan natijalarga olib kelishi mumkin. Masalan, tarkibi bir xil bo'lgan ikkita array, lekin xotirada turli joylarda saqlanayotgan bo'lsa, ular qat'iy tenglik operatori yordamida taqqoslanganda teng bo'lmaydi.
-``` js copy
+
+```js copy
 // Skalyar turlar
 "a" === "a"; // string; true
 3 === 3; // number; true
@@ -27,12 +33,13 @@ Skalyar bo'lmagan turlarning asosiy xususiyati shundaki, bir nechta havola bir x
 { foo: "bar" } === { foo: "bar" } // object; false
 ```
 
-Yuqoridagi massivlarni taqqoslashda, array’lar, object’lar va boshqa skalyar bo'lmagan turlar havola, ya'ni *reference*, orqali taqqoslanadi: ya'ni chap tarafdagi array’ning kompyuter xotirasidagi joyiga bo'lgan havolasi o'ng tarafdagi array’ning xotiradagi joyiga tengmi yoki yo'qmi, shuni solishtiradi. Shuning uchun taqqoslash `false` qiymatini qaytaradi. Object’lar uchun ham xuddi shunday. Obyektlarni taqqoslaganimizda, xotirada chap taraf va o'ng tarafda ikkita turli obyekt yaratamiz — tabiiyki, ular teng emas, ular xotirada ikki xil joyda yashaydigan ikkita turli obyekt! Ularning kontenti bir xil bo'lsa ham.
+Yuqoridagi massivlarni taqqoslashda, array’lar, object’lar va boshqa skalyar bo'lmagan turlar havola, ya'ni _reference_, orqali taqqoslanadi: ya'ni chap tarafdagi array’ning kompyuter xotirasidagi joyiga bo'lgan havolasi o'ng tarafdagi array’ning xotiradagi joyiga tengmi yoki yo'qmi, shuni solishtiradi. Shuning uchun taqqoslash `false` qiymatini qaytaradi. Object’lar uchun ham xuddi shunday. Obyektlarni taqqoslaganimizda, xotirada chap taraf va o'ng tarafda ikkita turli obyekt yaratamiz — tabiiyki, ular teng emas, ular xotirada ikki xil joyda yashaydigan ikkita turli obyekt! Ularning kontenti bir xil bo'lsa ham.
 
 ### React.memo’dan foydalanishda e'tibor qilish kerak bo'lgan jihatlar
 
 `React.memo` ishlatishda ba'zi bir chalg'ituvchi jihatlar bo'lishi mumkin. Quyidagi misol orqali buni ko'rib chiqamiz: `List` deb nomlangan funksional komponentga items nomli massivni props sifatida uzatamiz va uni render qilamiz:
-``` js copy
+
+```js copy
 const List = React.memo(function List({ items }) {
   return (
     <ul>
@@ -40,42 +47,41 @@ const List = React.memo(function List({ items }) {
         <li key={item}>{item}</li>
       ))}
     </ul>
-  );
-});
+  )
+})
 ```
 
 Endi, bu komponentni ota komponent ichida ishlatamiz va har bir ota komponent qayta render qilinganda yangi massiv nusxasini uzatamiz:
-``` js copy
+
+```js copy
 function ParentComponent({ allFruits }) {
-  const [count, setCount] = React.useState(0);
-  const favoriteFruits = allFruits.filter((fruit) => fruit.isFavorite);
+  const [count, setCount] = React.useState(0)
+  const favoriteFruits = allFruits.filter((fruit) => fruit.isFavorite)
 
   return (
     <div>
       <button onClick={() => setCount(count + 1)}>Increment</button>
       <List items={favoriteFruits} />
     </div>
-  );
+  )
 }
 ```
 
 Har safar `Increment` tugmasi bosilganda, `ParentComponent` qayta render qilinadi. Garchi `List` komponentiga uzatilayotgan items massivining qiymati o'zgarmagan bo'lsa ham, har safar qayta `['apple', 'banana', 'cherry']` kabi yangi massiv nusxasi yaratiladi. `React.memo` props’ni yuzaki taqqoslash (shallow comparison) orqali taqqoslaydi, shuning uchun bu yangi massiv nusxasini oldingi renderdagi massivdan farqli deb ko'radi va `List` komponentini keraksiz qayta render qiladi.
 
 Bu muammoni hal qilish uchun, massivni `useMemo` yordamida memoizatsiya qilishimiz mumkin:
-``` js copy
+
+```js copy
 function ParentComponent({ allFruits }) {
-  const [count, setCount] = React.useState(0);
-  const favoriteFruits = React.useMemo(
-    () => allFruits.filter((fruit) => fruit.isFavorite),
-    []
-  );
+  const [count, setCount] = React.useState(0)
+  const favoriteFruits = React.useMemo(() => allFruits.filter((fruit) => fruit.isFavorite), [])
 
   return (
     <div>
       <button onClick={() => setCount(count + 1)}>Increment</button>
       <List items={favoriteFruits} />
     </div>
-  );
+  )
 }
 ```
 
@@ -83,44 +89,37 @@ Endi massiv faqat bir marta yaratiladi va har bir qayta render qilinishda bir xi
 
 Bu misol `React.memo` va skalyar bo'lmagan, ya'ni referens turlar bilan, props’lar bilan ishlaganda havola bo'yicha taqqoslashni tushunish qanchalik muhimligini ko'rsatadi. Agar ehtiyotkorlik bilan foydalanilmasa, optimallashtirish o'rniga, tasodifan ishlash samaradorligiga salbiy ta'sir qiluvchi muammolarni yuzaga keltirishi mumkin.
 
-
 ### Funksiyalarni memoizatsiya qilish
+
 `React.memo` ko'pincha funksiyalar kabi referens turdagi qiymatlar tufayli ham chetlab o'tiladi. Quyidagi holatni ko'rib chiqamiz:
-``` js copy
-<MemoizedAvatar
-  name="Tejas"
-  url="https://github.com/tejasq.png"
-  onChange={() => save()}
-/>
+
+```js copy
+<MemoizedAvatar name="Tejas" url="https://github.com/tejasq.png" onChange={() => save()} />
 ```
 
 Yuqoridagi kodda props’lar o'zgarmaydigandek tuyuladi: `name`, `url`, va `onChange` o'zgarmas(constant) qiymatlarga ega. Ammo props’larni taqqoslasak, quyidagicha bo'ladi:
-``` js copy
-"Tejas" === "Tejas"; // <- `name` prop; true
-"https://github.com/tejasq.png" === "https://github.com/tejasq.png"; // <- `url` prop; true
-(() => save()) === (() => save()); // <- `onChange` prop; false
+
+```js copy
+'Tejas' === 'Tejas' // <- `name` prop; true
+'https://github.com/tejasq.png' === 'https://github.com/tejasq.png' // <- `url` prop; true
+;(() => save()) === (() => save()) // <- `onChange` prop; false
 ```
 
 Buning sababi shundaki, funksiyalar havola orqali taqqoslanadi. Har safar qayta render qilinganda, `onChange` prop uchun yangi funksional nusxa yaratiladi va bu yangi havola(reference) deb hisoblanadi, natijada `MemoizedAvatar` komponenti qayta memoizatsiya qilinmaydi.
 
 Bu muammoni `useCallback` hook’idan foydalanib hal qilish mumkin. `useCallback` yordamida ota komponent ichida funksiyani xotirada saqlab qo'yamiz, shunda u faqatgina uning qaramlik(dependency) ro'yxatidagi biror narsa o'zgarganda yangilanadi:
-``` js copy
+
+```js copy
 const Parent = ({ currentUser }) => {
   const onAvatarChange = useCallback(
     (newAvatarUrl) => {
-      updateUserModel({ avatarUrl: newAvatarUrl, id: currentUser.id });
+      updateUserModel({ avatarUrl: newAvatarUrl, id: currentUser.id })
     },
-    [currentUser]
-  );
+    [currentUser],
+  )
 
-  return (
-    <MemoizedAvatar
-      name="Tejas"
-      url="https://github.com/tejasq.png"
-      onChange={onAvatarChange}
-    />
-  );
-};
+  return <MemoizedAvatar name="Tejas" url="https://github.com/tejasq.png" onChange={onAvatarChange} />
+}
 ```
 
 Endi ishonchimiz komil bo'lishi mumkinki, `onAvatarChange` hech qachon o'zgarmaydi, agar uning qaramliklar massividagi(ikkinchi argumenti) biror narsa o'zgarmasa. Shu orqali, biz qilgan memoizatsiya texnikasi to'liq va ishonchli bo'ladi. Bu funksiyalarni props orqali komponentga o'tkazganda tavsiya etiladigan usul hisoblanadi.

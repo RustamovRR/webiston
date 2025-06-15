@@ -1,3 +1,10 @@
+---
+title: "React server komponentlar bo'limini qisqacha takrorlash"
+description: "Ushbu bobda biz React Server Componentlar (RSC) haqida to'liq to'xtalib o'tdik. Bu React ekotizimida katta yutuq bo'lib, u React ilovalarining ishlash samaradorligi, unumdorligi va foydalanuvchi bilan ishlash qulayligini oshirishga qaratilgan. RSC’lar serverda render qilingan ko'p sahifali ilovalar (MPA) va klientda render qilingan bir sahifali ilovalar (SPA)ning eng yaxshi xususiyatlarini birlashtiradigan innovatsion ilova arxitekturasini ifodalaydi. Bu yondashuv ishlash samaradorligi yoki qo'llab-quvvatlash qulayligini qurbon qilmasdan uzluksiz foydalanuvchi bilan ishlash qulayligini taqdim etadi. Biz RSC’lar asosiy tushunchalari, afzalliklari hamda ularning mental model va mexanizmlari bilan tanishdik. Asosiy e'tibor serverda ishlaydigan yangi turdagi komponentga qaratildi. Bu komponent klient tomoni JavaScript to'plam paketiga kirmaydi va qurilish vaqtida ishlashi mumkin. Ushbu yutuq yanada samarali va effektiv ilova strukturasini yaratadi.
+
+E'tibor bering, ushbu dokumentatsiya yozilayotgan paytda, RSC’lar React va veb muhandislik sohasida muhim mavzu hisoblanadi, shuning uchun ba'zi tafsilotlar o'zgargan bo'lishi mumkin. Har doim so'nggi yangiliklar uchun [react.dev](https://react.dev) va React’ning turli hamjamiyat kanallariga nazar tashlashni tavsiya qilamiz."
+---
+
 ### Bo'limni qisqacha takrorlash
 
 Ushbu bobda biz React Server Componentlar (RSC) haqida to'liq to'xtalib o'tdik. Bu React ekotizimida katta yutuq bo'lib, u React ilovalarining ishlash samaradorligi, unumdorligi va foydalanuvchi bilan ishlash qulayligini oshirishga qaratilgan. RSC’lar serverda render qilingan ko'p sahifali ilovalar (MPA) va klientda render qilingan bir sahifali ilovalar (SPA)ning eng yaxshi xususiyatlarini birlashtiradigan innovatsion ilova arxitekturasini ifodalaydi. Bu yondashuv ishlash samaradorligi yoki qo'llab-quvvatlash qulayligini qurbon qilmasdan uzluksiz foydalanuvchi bilan ishlash qulayligini taqdim etadi. Biz RSC’lar asosiy tushunchalari, afzalliklari hamda ularning mental model va mexanizmlari bilan tanishdik. Asosiy e'tibor serverda ishlaydigan yangi turdagi komponentga qaratildi. Bu komponent klient tomoni JavaScript to'plam paketiga kirmaydi va qurilish vaqtida ishlashi mumkin. Ushbu yutuq yanada samarali va effektiv ilova strukturasini yaratadi.
@@ -6,11 +13,11 @@ E'tibor bering, ushbu dokumentatsiya yozilayotgan paytda, RSC’lar React va veb
 
 ### Takrorlash uchun savollar
 
-1. *React server komponentlarining asosiy qiymati nimada?*
-2. *Klient komponentlari server komponentlarini import qila oladimi? Nima uchun ha/yo'q?*
-3. *Server komponentlari va an’anaviy faqat klient tomonida ishlaydigan React ilovalari o'rtasidagi ba'zi afzallik va kamchiliklar qanday?*
-4. *Modul ma'lumotnomalari nima va React ularni reconciliation jarayonida qanday qayta ishlaydi?*
-5. *Server harakatlari React ilovalarini qanday qilib yanada qulayroq qiladi?*
+1. _React server komponentlarining asosiy qiymati nimada?_
+2. _Klient komponentlari server komponentlarini import qila oladimi? Nima uchun ha/yo'q?_
+3. _Server komponentlari va an’anaviy faqat klient tomonida ishlaydigan React ilovalari o'rtasidagi ba'zi afzallik va kamchiliklar qanday?_
+4. _Modul ma'lumotnomalari nima va React ularni reconciliation jarayonida qanday qayta ishlaydi?_
+5. _Server harakatlari React ilovalarini qanday qilib yanada qulayroq qiladi?_
 
 ### Keyingi bo'lim
 
@@ -19,6 +26,7 @@ Keyingi bobda biz ozgina boshqa yo'lga o'tamiz. Hozirgacha bo'lgan sayohatimizda
 Biz React’dan tashqariga chiqib, React’ning o'sishi bilan birga rivojlangan va ba'zan uning ustunligiga javoban paydo bo'lgan alternativ UI kutubxonalari va freymvorklar olamiga sho'ng'iymiz. Ushbu alternativlar nafaqat React’ning eng yaxshi xususiyatlarini qabul qilgan, balki UI dasturiy ta'minotida yangi paradigmalarga va imkoniyatlarga olib keluvchi o'ziga xos yangiliklarni ham joriy qilgan.
 
 Kelgusi tadqiqotda biz Vue, Angular, Solid, Qwik va Svelte kabi boshqa UI kutubxonalarining ishlash mexanizmlari va falsafasini o'rganamiz. Biz ularning state menejment, side effect’larni boshqarish strategiyalari va React bilan taqqoslaganda ishlash samaradorligi va dasturchi bilan ishlash qulayligi bo'yicha qanday farqlanishlarini ko'rib chiqamiz. Har bir alternativni o'ziga xos afzallik va kamchiliklari bilan baholaymiz, bu ularni turli loyihalar yoki dasturchilar afzalliklari uchun mosroq qiladi:
+
 - **Vue**: Vue progressiv qabul qilinadigan freymvork bo'lib, sizga kichikroq loyihadan boshlash imkonini beradi va asta-sekin Vue xususiyatlarini zarur bo'lganda qabul qilishingiz mumkin. Vue o'zining nafis API va dasturchi bilan ishlash qulayligiga e'tibori bilan mashhur. U oddiy, ammo kuchli reaktivlik modelini taqdim etadi, uning asosiy kontseptsiyasi reaktivlikka bo'lgan qaramliklarni ko'rsatish paytida kuzatiladi.
 - **Angular**: Angular to'liq va qat'iy freymvork bo'lib, o'rganish qiyinroq, ammo tayyor holatda kuchli yechimlarni taklif qiladi. Uning bog'lanish tizimi va deklarativ shablonlari React bilan taqqoslaganda ilova strukturasi va state menejmentda boshqacha yondashuvni ta'minlaydi.
 - **Solid**: Solid JavaScript hamjamiyatida e'tibor qozonayotgan yana bir da'vogardir. U React’ga o'xshash dasturlash modeli bilan birga, tezroq va samaraliroq render qilishga e'tibor beradi. Solid qaramliklarni kuzatish usuli ko'proq samaradorlik izlayotgan dasturchilar uchun yangicha yondashuv bo'lishi mumkin.

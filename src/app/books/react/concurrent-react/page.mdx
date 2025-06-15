@@ -1,5 +1,11 @@
 ---
 asIndexPage: true
+title: "React’ning concurrent rejimi"
+description: "Oldingi bobda biz React yordamida server tomonida render qilish olamiga chuqur sho'ng'idik. Ilovalarimizning ishlash tezligini va foydalanuvchi bilan ishlash qulayligini yaxshilash uchun server tomonida render qilishning qanchalik muhimligini, ayniqsa zamonaviy veb-ishlab chiqish kontekstida o'rgandik. `renderToString` va `renderToPipeableStream` kabi turli server tomonida render qilish API’larini o'rganib chiqdik hamda ularning foydalanish holatlari va afzalliklarini muhokama qildik. Shuningdek, server tomonida render qilishni joriy qilishdagi qiyinchiliklarga to'xtaldik va bu jarayonning murakkabliklarini hal qilishda Next.js va Remix kabi mavjud freymvorklarga tayangan ma'qul ekanligini ko'rsatdik.
+
+Hidratsiya tushunchasini va uning serverda yaratilgan HTML kodini klient tomoni React komponentlari bilan bog'lab, muammosiz foydalanuvchi bilan ishlash qulayligini yaratishdagi ahamiyatini ko'rib chiqdik. Bundan tashqari, bir nechta klient ulanishlarini boshqarishda paydo bo'ladigan xavfsizlik muammolari va qiyinchiliklarni muhokama qildik hamda bu muammolarni samarali hal qilish uchun freymvorklardan foydalanish zarurligini ta'kidladik.
+
+Endi biz concurrent React (bir vaqtning o'zida bajariluvchi React) mavzusiga o'tib, ilgari o'rgangan bilimlarimizni yanada kengaytiramiz. Fiber reconciler haqida bilib olamiz va React’ning bir vaqtning o'zida bajariladigan imkoniyatlari, shuningdek, yangilanishlar va render qilishni qanday samarali boshqarishi haqida tushuncha hosil qilamiz. Rejalashtirish, yangilanishlarni kechiktirish va renderlanish yo'llari kabi mavzularni o'rganish orqali React’ning asosiy arxitekturasi orqali yaratilgan ishlash optimizatsiya yo'llaridan xabardor bo'lamiz."
 ---
 
 import { Callout } from 'nextra/components'

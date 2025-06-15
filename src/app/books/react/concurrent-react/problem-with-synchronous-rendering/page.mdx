@@ -1,3 +1,10 @@
+---
+title: "Sinxron render qilish bilan bog'liq muammo"
+description: "Qayta eslab olish uchun, sinxron render qilishdagi muammo shundaki, bu asosiy thread’ga to'sqinlik qiladi, natijada foydalanuvchi bilan ishlash qulayligiga salbiy ta'sir qilishi mumkin. Bu ayniqsa ko'p komponentli va tez-tez yangilanadigan murakkab ilovalar uchun juda dolzarbdir. Bunday holatlarda, foydalanuvchi interfeysi javobsiz bo'lib qolishi mumkin, bu esa foydalanuvchini hafsalasini pir qilishi mumkin.
+
+Ushbu muammoni bartaraf etish uchun odatiy bir yechim – bu yangilanishlar seriyasini to'plab, asosiy thread’dagi ishlashni minimallashtirish: masalan, 10 ta narsani 10 marta qayta ishlash o'rniga, ularni to'plab bir marta qayta ishlash. Biz [4-bobda](/books/react/inside-reconciliation) guruhlab yangilash(batching update) haqida gaplashgan edik, shuning uchun bu yerda ko'p tafsilotlarga to'xtab o'tirmaymiz. Ammo bizning muhokamamiz uchun tushunish muhimki, guruhlab yangilash bu muammolarga qarshi vaqtinchalik yechimdir va u ham o'ziga xos cheklovlarga ega, buni kelgusi mavzularda ko'rib chiqamiz.."
+---
+
 # Sinxron render qilish bilan bog'liq muammo
 
 Qayta eslab olish uchun, sinxron render qilishdagi muammo shundaki, bu asosiy thread’ga to'sqinlik qiladi, natijada foydalanuvchi bilan ishlash qulayligiga salbiy ta'sir qilishi mumkin. Bu ayniqsa ko'p komponentli va tez-tez yangilanadigan murakkab ilovalar uchun juda dolzarbdir. Bunday holatlarda, foydalanuvchi interfeysi javobsiz bo'lib qolishi mumkin, bu esa foydalanuvchini hafsalasini pir qilishi mumkin.

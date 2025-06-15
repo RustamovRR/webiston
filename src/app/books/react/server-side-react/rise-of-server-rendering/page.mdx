@@ -1,3 +1,21 @@
+---
+title: "Reactda server tomonda renderlashning yuksalishi"
+description: "Ushbu sabablarga ko'ra, server tomonda render qilish veb-ilovalarining samaradorligi va foydalanuvchi bilan ishlash qulayligini yaxshilash uchun nisbatan afzal usul sifatida paydo bo'ldi. Server render qilish bilan ilovalar tezlik va foydalanish imkoniyati qulayligi uchun optimallashtirilishi mumkin, bu esa tezroq yuklanish vaqtlariga, yaxshiroq SEO’ga va foydalanuvchi jalb etishining oshishiga olib keladi.
+
+## Serverda renderlashning foydalari
+
+Serverda render qilishning foydalarini yanada chuqurroq ko'rib chiqaylik. Ushbu foydalar darhol aniq bo'lishi kerak, chunki biz klient tomonda render qilishning cheklovlarini yanada yaxshiroq tushunamiz:
+
+- **Birinchi muhim chizish uchun vaqt tezroq**: Server dastlabki HTML markup’ini render qilib, uni klientga yuborishi mumkin, bu esa darhol ko'rsatilishi mumkin. Bu klient tomonda render qilish bilan taqqoslaganda, klient ilova render qilinishidan oldin JavaScript yuklanishi, tahlil qilinishi va bajarilishi uchun kutishi kerak, .
+- **Serverda render qilish veb-ilovalarining foydalanish imkoniyati qulayligini yaxshilaydi**: Sekin internet aloqalari yoki kuchsiz qurilmalar bilan foydalanuvchilar to'liq render qilingan HTML olishsa, yaxshiroq tajribaga ega bo'lishlari mumkin, klient tomonida JavaScript’ni yuklash va sahifani render qilishni kutish o'rniga.
+- **Serverda render qilish veb-ilovalarining SEO’sini yaxshilaydi**: Qidiruv tizimlari botlari saytingizni indekslaganda, ular to'liq render qilingan HTML’ni ko'rishlari mumkin, bu esa ularning kontenti va strukturasini tushunishini osonlashtiradi.
+- **Serverda render qilish veb-ilovalarining xavfsizligini ham yaxshilaydi**: Asosiy kontentni server tomonda render qilish orqali, barcha foydalanuvchilar va qidiruv tizimlariga fundamental kontent va funksiyalarga kirish imkonini berasiz, JavaScript bajarilishidan qat'iy nazar. Shundan so'ng, klient tomoni JavaScript foydalanuvchi bilan ishlash qulayligini yaxshilab, interaktivlik, yanada boy bo'lgan animatsiyalar va boshqa takomillashgan funksiyalarni qo'shishi mumkin.
+
+## Statik HTML’ning cheklovlari
+
+Biroq, server tomonidan render qilingan HTML statikdir va interaktivlikni yo'qotadi, chunki dastlab hech qanday JavaScript yuklanmaydi. U event listener’lar yoki boshqa dinamik funksiyalarni o'z ichiga olmaydi. Foydalanuvchi interaktivligi va boshqa dinamik funksiyalarni tatbiq qilish uchun, statik HTML "hidratsiya" qilinishi kerak. Keyingi mavzuda hidratsiya atamasini yaxshiroq tushunamiz."
+---
+
 # Serverda renderlashning yuksalishi
 
 Ushbu sabablarga ko'ra, server tomonda render qilish veb-ilovalarining samaradorligi va foydalanuvchi bilan ishlash qulayligini yaxshilash uchun nisbatan afzal usul sifatida paydo bo'ldi. Server render qilish bilan ilovalar tezlik va foydalanish imkoniyati qulayligi uchun optimallashtirilishi mumkin, bu esa tezroq yuklanish vaqtlariga, yaxshiroq SEO’ga va foydalanuvchi jalb etishining oshishiga olib keladi.

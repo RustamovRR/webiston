@@ -1,3 +1,19 @@
+---
+title: "Ikki marta buferlash (Double buffering)"
+description: "Ikki marta buferlash — bu kompyuter grafikalari va video ishlov berishda miltillashni kamaytirish va sezilarli ishlashni yaxshilash uchun qo'llaniladigan usul. Ushbu texnika tasvirlar yoki kadrlarni saqlash uchun ikkita bufer (yoki xotira maydoni) yaratishni va ularni muntazam intervallarda almashtirishni o'z ichiga oladi, bu orqali yakuniy tasvir yoki video namoyish etiladi.
+
+## Ikki marta buferlashning ishlash jarayoni
+
+Amaliyotda ikki marta buferlash quyidagicha ishlaydi:
+
+1. Birinchi bufer dastlabki tasvir yoki kadr bilan to'ldiriladi.
+2. Birinchi bufer namoyish etilayotgan paytda, ikkinchi bufer yangi ma'lumot yoki tasvirlar bilan yangilanadi.
+3. Ikkinchi bufer tayyor bo'lganda, u birinchi bufer bilan almashtiriladi va ekranga chiqariladi.
+4. Ushbu jarayon davom ettiriladi, birinchi va ikkinchi buferlar muntazam intervallarda almashtiriladi va yakuniy tasvir yoki video namoyish etiladi.
+
+Ikki marta buferlashdan foydalanish orqali, miltillash va boshqa vizual ishlanmalar(artifacts) kamaytirilishi mumkin, chunki yakuniy tasvir yoki video uzilishlarsiz yoki kechikishlarsiz namoyish etiladi."
+---
+
 # Ikki marta buferlash (Double buffering)
 
 Ikki marta buferlash — bu kompyuter grafikalari va video ishlov berishda miltillashni kamaytirish va sezilarli ishlashni yaxshilash uchun qo'llaniladigan usul. Ushbu texnika tasvirlar yoki kadrlarni saqlash uchun ikkita bufer (yoki xotira maydoni) yaratishni va ularni muntazam intervallarda almashtirishni o'z ichiga oladi, bu orqali yakuniy tasvir yoki video namoyish etiladi.
@@ -15,7 +31,7 @@ Ikki marta buferlashdan foydalanish orqali, miltillash va boshqa vizual ishlanma
 
 ## Fiber reconciliation’da "double buffering"
 
-Fiber reconciliation ham ikki marta buferlashga o'xshash bo'lib, yangilanishlar sodir bo'lganda, joriy Fiber daraxti tarmoqlanib, foydalanuvchi interfeysining yangi holatini aks ettirish uchun yangilanadi. Ushbu jarayon ***rendering*** deb ataladi. So'ng, muqobil daraxt tayyor bo'lib, foydalanuvchi ko'rishni kutgan holatni aniq aks ettirganda, u ikki marta buferlashda video buferlar almashtirilgandek joriy daraxt bilan almashtiriladi. Bu reconciliation’nning ***tatbiq qilish bosqichi(commit phase)*** yoki ***tatbiq qilish(commit)*** deb ataladi.
+Fiber reconciliation ham ikki marta buferlashga o'xshash bo'lib, yangilanishlar sodir bo'lganda, joriy Fiber daraxti tarmoqlanib, foydalanuvchi interfeysining yangi holatini aks ettirish uchun yangilanadi. Ushbu jarayon **_rendering_** deb ataladi. So'ng, muqobil daraxt tayyor bo'lib, foydalanuvchi ko'rishni kutgan holatni aniq aks ettirganda, u ikki marta buferlashda video buferlar almashtirilgandek joriy daraxt bilan almashtiriladi. Bu reconciliation’nning **_tatbiq qilish bosqichi(commit phase)_** yoki **_tatbiq qilish(commit)_** deb ataladi.
 
 Tugallanmagan, ya'ni hali ish jarayonida bo'lgan, daraxtdan foydalanish orqali Fiber reconciler bir qancha afzalliklarni taqdim etadi:
 
@@ -24,7 +40,3 @@ Tugallanmagan, ya'ni hali ish jarayonida bo'lgan, daraxtdan foydalanish orqali F
 - Reconciliation ekrandan tashqarida sodir bo'lganligi sababli, u hatto pauza qilishi va davom ettirishi mumkin, bu foydalanuvchi hozirda ko'rayotgan narsaga ta'sir qilmaydi.
 
 Fiber reconciler yordamida foydalanuvchi tomonidan belgilangan JSX elementlari daraxtidan ikkita daraxt hosil qilinadi: biri "joriy" Fiber’larni o'z ichiga oladi, va ikkinchisi hali tugallanmagan, ya'ni hali ish jarayonida bo'lgan, Fiber’larni o'z ichiga oladi. Keling, ushbu daraxtlarni biroz batafsilroq o'rganamiz.
-
-
-
-

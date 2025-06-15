@@ -1,3 +1,22 @@
+---
+title: "Reactda Real DOM’ning ayrim kamchiliklari"
+description: "Real DOM'ning bir qancha kamchiliklari bor, bu esa yuqori samarador veb-ilovani yaratishni qiyinlashtirishi mumkin. Bu kamchiliklardan ba'zilari ishlash samaradorligiga doir muammolari, brauzerlararo moslik va xavfsizlik zaifliklarini o'z ichiga oladi, bu yerda DOM’ni to'g'ridan-to'g'ri o'zgartirish, cross-site scripting (XSS) zaifliklarini keltirib chiqarishi mumkin.
+
+## Performance (Ishlash samaradorligi)
+
+Real DOM bilan bog'liq eng katta muammolardan biri uning performance muammosidir. DOM’da o'zgarish yuz berganda, masalan, element qo'shish yoki olib tashlash, yoki elementning teksti yoki atributlarini o'zgartirishda, brauzer joylashuv(layout)larni qayta hisoblash va o'zgargan qismlarni qayta chizish kerak bo'ladi. Bu jarayon katta va murakkab veb-sahifalar uchun sekin va resurslarni ko'p iste'mol qiluvchan bo'lishi mumkin.
+
+### `offsetWidth` ishlatishning kamchiliklari
+
+Oldin aytib o'tilganidek, DOM elementining `offsetWidth` xususiyatini o'qish oddiy operatsiya kabi ko'rinishi mumkin, lekin aslida brauzer tomonidan joylashuvni qimmatli bo'lgan qayta hisoblashga olib kelishi mumkin. Buning sababi, `offsetWidth` hisoblangan xususiyat(computed property) bo'lib, u element va uning avlodlarining joylashuviga bog'liq bo'ladi, bu esa brauzerga aniq qiymatni qaytarishdan oldin joylashuv ma'lumotlari yangilanmaganligini ta'minlash zaruriyatini tug'diradi.
+
+Eng yomon holatda, `offsetWidth` xususiyatini o'qish Big O notatsiyasida (O(n)) sifatida baholanadi. Buning sababi, bu xususiyatga kirish brauzerda reflow, ya'ni qayta joylashish, jarayonini keltirib chiqarishi mumkin, bu esa sahifadagi bir nechta elementlar uchun joylashuv pozitsiyalarini qayta hisoblashni o'z ichiga oladi. Bu kontekstda (n) reflow tomonidan ta'sir qilingan va o'zgartirilgan DOM elementlarining sonini anglatadi. Bevosita xususiyatga kirish tez bo'lsa-da, reflow kabi bog'langan side effect’lar sahifadagi elementlar soni bilan operatsiyaning ko'payishiga olib kelishi mumkin.
+
+### `getBoundingClientRect()`dan foydalanishning afzalligi
+
+Agar biz `offsetWidth` kabi joylashuv xususiyatlariga kirish orqali keltirilishi mumkin bo'lgan reflow’dan qochmoqchi bo'lsak, biz operatsiyani samaraliroq qilish uchun ma'lum usullarni qo'llashimiz mumkin. Bu yerda, `getBoundingClientRect()` usulidan foydalanish bir yondashuv bo'lib, bu joylashuv o'qishni va yozishni birlashitirishi mumkin."
+---
+
 # Real DOM’ning ayrim kamchiliklari
 
 Real DOM'ning bir qancha kamchiliklari bor, bu esa yuqori samarador veb-ilovani yaratishni qiyinlashtirishi mumkin. Bu kamchiliklardan ba'zilari ishlash samaradorligiga doir muammolari, brauzerlararo moslik va xavfsizlik zaifliklarini o'z ichiga oladi, bu yerda DOM’ni to'g'ridan-to'g'ri o'zgartirish, cross-site scripting (XSS) zaifliklarini keltirib chiqarishi mumkin.
@@ -15,27 +34,28 @@ Eng yomon holatda, `offsetWidth` xususiyatini o'qish Big O notatsiyasida (O(n)) 
 ### `getBoundingClientRect()`dan foydalanishning afzalligi
 
 Agar biz `offsetWidth` kabi joylashuv xususiyatlariga kirish orqali keltirilishi mumkin bo'lgan reflow’dan qochmoqchi bo'lsak, biz operatsiyani samaraliroq qilish uchun ma'lum usullarni qo'llashimiz mumkin. Bu yerda, `getBoundingClientRect()` usulidan foydalanish bir yondashuv bo'lib, bu joylashuv o'qishni va yozishni birlashitirishi mumkin:
-``` js copy
+
+```js copy
 // Joylashuv xususiyatlarini yanada samaraliroq o'qish
 function getOffsetWidthWithoutTriggeringReflow(element) {
-    let width;
+  let width
 
-    // Barcha o'qish operatsiyalarini birlashtirish
-    const rect = element.getBoundingClientRect();
-    width = rect.width;
+  // Barcha o'qish operatsiyalarini birlashtirish
+  const rect = element.getBoundingClientRect()
+  width = rect.width
 
-    // ... boshqa o'qish operatsiyalari
+  // ... boshqa o'qish operatsiyalari
 
-    // Agar bor bo'lsa, bu yerda ba'zi yozish operatsiyalari
+  // Agar bor bo'lsa, bu yerda ba'zi yozish operatsiyalari
 
-    return width;
+  return width
 }
-const element = document.querySelector(".myElement");
-const width = getOffsetWidthWithoutTriggeringReflow(element);
-console.log(width);
+const element = document.querySelector('.myElement')
+const width = getOffsetWidthWithoutTriggeringReflow(element)
+console.log(width)
 ```
 
-`getBoundingClientRect()`dan foydalangan holda, biz bir martada bir nechta joylashuv xususiyatlarini olishimiz mumkin, bu esa bir nechta reflow’larni keltirib chiqarish ehtimolligini kamaytiradi. Qo'shimcha ravishda, o'qish va yozish operatsiyalarini alohida to'plab, birlashtirish orqali, biz ***layout thrashing***(joylashuvni ortiqcha keraksiz qayta hisoblash va chizib chiqish)ni minimallashtirishimiz mumkin, bu esa tez-tez takrorlanuvchi aralash joylashuv xususiyatlarini o'qish va yozishdan kelib chiqadigan muhim bo'lmagan qayta hisoblashlarni anglatadi (rasmga qarang). Bu *thrashing* veb-sahifaning ishlash samaradorligini sezilarli darajada pasaytirishi mumkin, bu esa foydalanuvchi bilan ishlash qulayligi(UX)ni sustlashuviga olib kelishi mumkin. Joylashuv xususiyatlariga strategik kirish va operatsiyalarimizni birlashtirish orqali, biz veb-sahifalarimizni silliq(smooth) va tez javob beruvchan(responsive) qilishimiz mumkin.
+`getBoundingClientRect()`dan foydalangan holda, biz bir martada bir nechta joylashuv xususiyatlarini olishimiz mumkin, bu esa bir nechta reflow’larni keltirib chiqarish ehtimolligini kamaytiradi. Qo'shimcha ravishda, o'qish va yozish operatsiyalarini alohida to'plab, birlashtirish orqali, biz **_layout thrashing_**(joylashuvni ortiqcha keraksiz qayta hisoblash va chizib chiqish)ni minimallashtirishimiz mumkin, bu esa tez-tez takrorlanuvchi aralash joylashuv xususiyatlarini o'qish va yozishdan kelib chiqadigan muhim bo'lmagan qayta hisoblashlarni anglatadi (rasmga qarang). Bu _thrashing_ veb-sahifaning ishlash samaradorligini sezilarli darajada pasaytirishi mumkin, bu esa foydalanuvchi bilan ishlash qulayligi(UX)ni sustlashuviga olib kelishi mumkin. Joylashuv xususiyatlariga strategik kirish va operatsiyalarimizni birlashtirish orqali, biz veb-sahifalarimizni silliq(smooth) va tez javob beruvchan(responsive) qilishimiz mumkin.
 
 ![Layout thrashing image](/layout-thrashing.png)
 
@@ -46,26 +66,27 @@ Biroq, `getBoundingClientRect()` ham, agar kutilayotgan joylashuv o'zgarishlari 
 React bularning barchasini biz uchun virtual DOM orqali real DOM operatsiyalari o'rtasidagi o'rta qatlam sifatida ishlatadi.
 
 Quyidagi misolni ko'rib chiqaylik, bu yerda oddiy HTML dokumenti va bitta `div` elementi mavjud:
-``` html copy
+
+```html copy
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>offsetWidth namunasini o'qish</title>
-        <style>
-            #my-div {
-                width: 100px;
-                height: 100px;
-                background-color: red;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="my-div"></div>
-        <script>
-            var div = document.getElementById("my-div");
-            console.log(div.offsetWidth);
-        </script>
-    </body>
+  <head>
+    <title>offsetWidth namunasini o'qish</title>
+    <style>
+      #my-div {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="my-div"></div>
+    <script>
+      var div = document.getElementById('my-div')
+      console.log(div.offsetWidth)
+    </script>
+  </body>
 </html>
 ```
 
@@ -85,31 +106,34 @@ Umuman olganda, biz `offsetWidth` kabi joylashuv’ga bog'liq xususiyatlarni ish
 ### Ro'yxat elementi misoli
 
 Real DOM bilan bog'liq tasodifiy uchrashi mumkin bo'lgan performance muammolarini yanada yaxshiroq tushunish uchun, keling, bir nechta misollarni ko'rib chiqaylik. Quyidagi HTML dokumentini ko'rib chiqamiz:
-``` html copy
+
+```html copy
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Namuna</title> 
-    </head>
-    <body>
-        <ul id="list">
-            <li>Element 1</li>
-            <li>Element 2</li>
-            <li>Element 3</li>
-        </ul>
-    </body>
+  <head>
+    <title>Namuna</title>
+  </head>
+  <body>
+    <ul id="list">
+      <li>Element 1</li>
+      <li>Element 2</li>
+      <li>Element 3</li>
+    </ul>
+  </body>
 </html>
 ```
 
 Faraz qilaylik, biz JavaScript yordamida ro'yxatga yangi element qo'shmoqchimiz. Biz quyidagi kodni yozishimiz mumkin:
-``` js copy
-const list = document.getElementById("list");
-const newItem = document.createElement("li");
-newItem.textContent = "Element 4";
-list.appendChild(newItem);
+
+```js copy
+const list = document.getElementById('list')
+const newItem = document.createElement('li')
+newItem.textContent = 'Element 4'
+list.appendChild(newItem)
 ```
 
 Biz bu yerda `querySelector` o'rniga `getElementById` dan foydalanayotganimizga e'tibor bering, chunki:
+
 - Biz ID’ni bilamiz
 - Biz performance ijobiy va salbiy jihatlari, ya'ni ishlash samaradorligini ijobiy va salbiy jihatlarini bilamiz
 
@@ -118,44 +142,46 @@ Keling, davom etamiz.
 Ushbu kod "list" ID'ga ega `ul` elementini tanlaydi, yangi `li` elementini yaratadi, uning kontenti `"Element 4"` ga o'zgaradi va uni ro'yxatga qo'shadi. Bu kodni ishga tushirganimizda, brauzer yangi elementni ko'rsatish uchun joylashuvni qayta hisoblaydi, uni qayta chizib chiqadi va sahifaning o'zgargan qismlarini yangilaydi.
 
 Bu jarayon katta ro'yxatlar uchun sekin va ko'p resurs talab qilishi mumkin. Masalan, agar bizda 1,000 ta elementdan iborat ro'yxat bo'lsa va biz ro'yxat oxiriga yangi element qo'shmoqchi bo'lsak, biz quyidagi kodni yozishimiz mumkin:
-``` js copy
-const list = document.getElementById("list");
-const newItem = document.createElement("li");
-newItem.textContent = "Element 1001";
-list.appendChild(newItem);
+
+```js copy
+const list = document.getElementById('list')
+const newItem = document.createElement('li')
+newItem.textContent = 'Element 1001'
+list.appendChild(newItem)
 ```
 
 Ushbu kodni ishga tushirganda, brauzer layout’ni qayta hisoblaydi, uni qayta chizib chiqadi va butun ro'yxatni yangilaydi, atigi bittagina element qo'shilgan bo'lsa ham. Bu sekin ishlaydigan qurilmalarda yoki katta ro'yxatlarda ko'p vaqt va resurslarni talab qilishi mumkin.
 
 Ushbu muammoni yanada yaxshiroq tushuntirish uchun quyidagi misolni ko'rib chiqamiz:
-``` html copy
+
+```html copy
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Namuna</title> 
-        <style>
-            #list li {
-                background-color: #f5f5f5;
-            }
-            .highlight {
-                background-color: yellow;
-            }
-        </style>
-    </head>
-    <body>
-        <ul id="list">
-            <li>Element 1</li>
-            <li>Element 2</li>
-            <li>Element 3</li>
-        </ul>
-        <button onclick="highlight()">Element 2 ni ajratish</button>
-        <script>
-            function highlight() {
-                const item = document.querySelector("#list li:nth-child(2)");
-                item.classList.add("highlight");
-            }
-        </script>
-    </body>
+  <head>
+    <title>Namuna</title>
+    <style>
+      #list li {
+        background-color: #f5f5f5;
+      }
+      .highlight {
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="list">
+      <li>Element 1</li>
+      <li>Element 2</li>
+      <li>Element 3</li>
+    </ul>
+    <button onclick="highlight()">Element 2 ni ajratish</button>
+    <script>
+      function highlight() {
+        const item = document.querySelector('#list li:nth-child(2)')
+        item.classList.add('highlight')
+      }
+    </script>
+  </body>
 </html>
 ```
 
@@ -190,14 +216,15 @@ Bu muammo React tomonidan o'zining sintetik event tizimi yordamida bartaraf etil
 #### Birlashtirilgan interfeys
 
 Sof(Vanilla) JavaScript’da brauzer event’larini boshqarish nomutanosibliklar tufayli murakkab bo'lishi mumkin. Masalan, event xususiyatlariga kirish brauzerlarga qarab farq qilishi mumkin. Ba'zilari `event.target`dan, boshqalari esa `event.srcElement`dan foydalanishi mumkin. `SyntheticEvent` bu turli-xilliklarni abstraksiyalaydi, event’lar bilan o'zaro mutanosiblikni ta'minlash uchun bir xil usulni taqdim etadi va dasturchilarni har bir brauzerga moslab kod yozish majburiyatidan ozod etadi:
-``` js copy
+
+```js copy
 // React’dan oldin dasturchilar brauzerga mos xususiyatlar bor-yo'qligini tekshirishgan
-const targetElement = event.target || event.srcElement;
+const targetElement = event.target || event.srcElement
 
 // React’da esa, `SyntheticEvent` tufayli, bu bir xildir
 function handleClick(event) {
-    const target = event.target;
-    // ... qolgan kod
+  const target = event.target
+  // ... qolgan kod
 }
 ```
 
@@ -212,14 +239,15 @@ Event listener’larni to'g'ridan-to'g'ri elementlarga qo'shish o'rniga, React e
 Native brauzer event’larida turli input elementlarida ba'zi event’larni qanday boshqarish borasida nomuvofiqliklar mavjud. E'tiborga molik misol - `onChange` event’i:
 
 1. **Oddiy JavaScript’da, `onChange` event’ining xatti-harakati input turlariga qarab farq qiladi:**
-    - `<input type="text">` uchun, ba'zi brauzerlarda `onChange` event’i, qiymat o'zgarganidan so'ng darhol emas, balki input maydoni fokusni yo'qotganida, ishga tushishi mumkin.
-    - `<select>` uchun, bu har safar biron bir `option` tanlanganda ishga tushishi mumkin, hatto bu oldingi `option` bilan bir xil bo'lsa ham.
-    - Boshqa holatlarda, ayniqsa eski brauzerlarda, `onChange` event’i ma'lum bir `form` elementlarida barcha foydalanuvchi interaktivliklarida ishonchli ishlamasligi mumkin.
 
-2.  **React’ning `SyntheticEvent` tizimi `onChange` event’ining ushbu input elementlari bo'yicha xatti-harakatini normallashtiradi. React’da:**
-    - Matn kiritish uchun `onChange` event’i (`<input type="text">`) har bir bosish bilan doimiy ravishda ishga tushadi, bu real vaqtda fikr-mulohazalar(feedback) beradi.
-    - `<select>` uchun, yangi `option` tanlanganda ishonchli ravishda ishga tushadi.
-    - React, shuningdek, boshqa form elementlarida `onChange` event’ining muvofiqligini ta'minlaydi.
+   - `<input type="text">` uchun, ba'zi brauzerlarda `onChange` event’i, qiymat o'zgarganidan so'ng darhol emas, balki input maydoni fokusni yo'qotganida, ishga tushishi mumkin.
+   - `<select>` uchun, bu har safar biron bir `option` tanlanganda ishga tushishi mumkin, hatto bu oldingi `option` bilan bir xil bo'lsa ham.
+   - Boshqa holatlarda, ayniqsa eski brauzerlarda, `onChange` event’i ma'lum bir `form` elementlarida barcha foydalanuvchi interaktivliklarida ishonchli ishlamasligi mumkin.
+
+2. **React’ning `SyntheticEvent` tizimi `onChange` event’ining ushbu input elementlari bo'yicha xatti-harakatini normallashtiradi. React’da:**
+   - Matn kiritish uchun `onChange` event’i (`<input type="text">`) har bir bosish bilan doimiy ravishda ishga tushadi, bu real vaqtda fikr-mulohazalar(feedback) beradi.
+   - `<select>` uchun, yangi `option` tanlanganda ishonchli ravishda ishga tushadi.
+   - React, shuningdek, boshqa form elementlarida `onChange` event’ining muvofiqligini ta'minlaydi.
 
 Bunday qilish orqali, React dasturchilarni ushbu native event bilan bog'liq nomutanosibliklar bilan shug'ullanishdan ozod qiladi, va bular bilan tashvishlanmasdan, diqqat-e'tiboringizni dasturni yozishga qaratish imkonini beradi.
 

@@ -1,3 +1,8 @@
+---
+title: 'AngularJS’ ning rivojlanishi'
+description: "AngularJS 2010-yilda Google tomonidan ishlab chiqilgan bo'lib, veb ishlab chiqish sohasiga katta ta'sir ko'rsatgan dastlabki JavaScript freymvorklaridan biri edi. Bu freymvork avvalgi kutubxonalar va freymvorklardan keskin farq qildi, bir qator innovatsion funksiyalarni o'z ichiga oldi va bu funksiyalar keyinchalik React kabi boshqa kutubxonalar va freymvorklarda ham o'z aksini topdi. Keling, AngularJS bilan boshqa kutubxonalarni batafsil solishtirib, uning muhim funksiyalariga nazar tashlab, React uchun qanday yo'l ochilganini tushunishga harakat qilib ko'ramiz."
+---
+
 # AngularJS’ ning rivojlanishi
 
 AngularJS 2010-yilda Google tomonidan ishlab chiqilgan bo'lib, veb ishlab chiqish sohasiga katta ta'sir ko'rsatgan dastlabki JavaScript freymvorklaridan biri edi. Bu freymvork avvalgi kutubxonalar va freymvorklardan keskin farq qildi, bir qator innovatsion funksiyalarni o'z ichiga oldi va bu funksiyalar keyinchalik React kabi boshqa kutubxonalar va freymvorklarda ham o'z aksini topdi. Keling, AngularJS bilan boshqa kutubxonalarni batafsil solishtirib, uning muhim funksiyalariga nazar tashlab, React uchun qanday yo'l ochilganini tushunishga harakat qilib ko'ramiz.
@@ -7,7 +12,8 @@ AngularJS 2010-yilda Google tomonidan ishlab chiqilgan bo'lib, veb ishlab chiqis
 AngularJS’ning asosiy xususiyatlaridan biri ikki tomonlama ma'lumotni bog'lash(two-way data binding) edi, bu UI va dasturdagi ma'lumotlar o'rtasidagi o'zaro ta'sirni ancha osonlashtirdi. Agar model (asosiy ma'lumotlar) o'zgarsa, view (UI) avtomatik ravishda yangilanadi va aksincha. Bu jQuery kabi kutubxonalardan keskin farq qildi, chunki jQueryda dasturchilar DOM’ni qo'lda boshqarib, foydalanuvchi kiritgan ma'lumotlarni saqlashlari kerak edi.
 
 Quyida ikki tomonlama ma'lumotni bog'lash muhim rol o'ynagan oddiy AngularJS dastur kodi ko'rsatilgan:
-``` html copy
+
+```html copy
 <!DOCTYPE html>
 <html>
   <head>
@@ -27,48 +33,45 @@ Ushbu kodda, `ng-model` direktivasi input maydonining qiymatini `name` o'zgaruvc
 AngularJS modulli arxitekturani joriy qildi, bu dasturchilarga dastur komponentlarini mantiqiy tomondan ajratishga imkon berdi. Har bir modul alohida funksiyani o'z ichiga olib, mustaqil ravishda ishlab chiqilishi, test qilinishi va maintain qilinishi mumkin edi. Ba'zilar buni React’ning komponentlar modeliga turtki bo'lgan deb atashadi, lekin bu biroz bahsli masala.
 
 Quyida oddiy misol:
-``` js copy
-var app = angular.module("myApp", [
-  "ngRoute",
-  "appRoutes",
-  "userCtrl",
-  "userService",
-]);
 
-var userCtrl = angular.module("userCtrl", []);
-userCtrl.controller("UserController", function ($scope) {
-  $scope.message = "Hello from UserController";
-});
+```js copy
+var app = angular.module('myApp', ['ngRoute', 'appRoutes', 'userCtrl', 'userService'])
 
-var userService = angular.module("userService", []);
-userService.factory("User", function ($http) {
+var userCtrl = angular.module('userCtrl', [])
+userCtrl.controller('UserController', function ($scope) {
+  $scope.message = 'Hello from UserController'
+})
+
+var userService = angular.module('userService', [])
+userService.factory('User', function ($http) {
   //...
-});
+})
 ```
 
 Yuqoridagi misolda `myApp` moduli bir nechta boshqa modullarga bog'liq: `ngRoute`, `appRoutes`, `userCtrl`, va `userService`. Ushbu har bir bog'liq bo'lgan modul o'zining alohida JavaScript faylida bo'lishi mumkin va asosiy `myApp` modulidan mustaqil ravishda ishlab chiqilishi mumkin. Bu tushuncha jQuery va Backbone.js kabi kutubxonalardan sezilarli darajada farq qildi, chunki ularda bunday "modul" tushunchasi mavjud emas edi.
 
-Biz bu bog'liq bo'lgan modullar(`appRoutes`, `userCtrl` va boshqalar)ni asosiy `app` moduliga kiritamiz va Angularda mashhur bo'lgan  "dependency injection"(bog'liqlikni kiritish) pattern’ini qo'llaymiz. Shuni ta'kidlash kerakki, bu pattern JavaScript modullari standartlashtirilishidan oldin keng tarqalgan edi. Keyinchalik `import` va `export` operatorlari tezda asosiy darajaga chiqdi. Bu dependency’larni React komponentlari bilan solishtirish uchun, dependency injection haqida bir oz mulohaza yuritamiz.
+Biz bu bog'liq bo'lgan modullar(`appRoutes`, `userCtrl` va boshqalar)ni asosiy `app` moduliga kiritamiz va Angularda mashhur bo'lgan "dependency injection"(bog'liqlikni kiritish) pattern’ini qo'llaymiz. Shuni ta'kidlash kerakki, bu pattern JavaScript modullari standartlashtirilishidan oldin keng tarqalgan edi. Keyinchalik `import` va `export` operatorlari tezda asosiy darajaga chiqdi. Bu dependency’larni React komponentlari bilan solishtirish uchun, dependency injection haqida bir oz mulohaza yuritamiz.
 
 ### Dependency Injection
 
 Dependency injection (DI) — bu dizayn pattern bo'lib, unda obyekt o'z dependency’larini o'zi yaratmasdan qabul qiladi. AngularJS ushbu pattern’ni o'z core dasturiga, ya'ni asosiy dasturiga, kiritgan va bu boshqa JavaScript kutubxonalarida keng tarqalgan xususiyat emas edi. Bu modullar va komponentlarni yaratish va boshqarish usullariga katta ta'sir ko'rsatdi, ular modullik va qayta foydalanish darajasini yuqori ravishda oshirdi.
 
 Quyida DI’ning AngularJS’da qanday ishlashiga misol keltirilgan:
-``` js copy
-var app = angular.module("myApp", []);
 
-app.controller("myController", function ($scope, myService) {
-  $scope.greeting = myService.sayHello();
-});
+```js copy
+var app = angular.module('myApp', [])
 
-app.factory("myService", function () {
+app.controller('myController', function ($scope, myService) {
+  $scope.greeting = myService.sayHello()
+})
+
+app.factory('myService', function () {
   return {
     sayHello: function () {
-      return "Salom, Dunyo!";
+      return 'Salom, Dunyo!'
     },
-  };
-});
+  }
+})
 ```
 
 Bu misolda `myService` — bu DI orqali `myController`ga kiritiladigan servisdir. Kontroller servisni qanday yaratishni bilishi shart emas, u shunchaki servisni dependency sifatida belgilaydi va Angular uni yaratish va kiritish bilan shug'ullanadi. Bu dependency’larni boshqarishni osonlashtiradi, komponentlarni testlashni va qayta foydalanuvchanligini oshiradi.
@@ -107,11 +110,9 @@ Bundan tashqari, debugging ham qiyinlashdi, chunki template’lar murakkab logik
 
 Nazariy jihatdan, template biror yangilanishni amalga oshirish uchun kontroller metodini chaqirishi kerak edi, lekin bunday amaliyotni cheklovchi narsa yo'q edi.
 
-
 #### Tip xavfsizligining yo'qligi
 
 AngularJS template’lari statik tiplarni tekshiruvchi vositalar, masalan, TypeScript bilan ishlamasdi. Bu dasturlash jarayonida xatolarni oldindan aniqlashni qiyinlashtiradi. Bu katta miqyosli dasturlar uchun muhim kamchilik edi, chunki bunday dasturlarda tip xavfsizligi boshqaruvchanlik va kengaytiriluvchanlik uchun juda muhimdir.
-
 
 #### `$scope` modelining chalkashligi
 
@@ -123,6 +124,6 @@ Ushbu meros olish kutilmagan side effect’larga olib kelishi mumkin edi, ayniqs
 
 Misol uchun, Reactda state kerakli komponent bilan bir joyda saqlanadi va bu muammoni butunlay bartaraf etadi.
 
-
 #### Cheklangan development vositalari
+
 AngularJS debugging va ishlash samaradorligini profillash(performance profiling) uchun keng imkoniyatlarni taqdim etuvchi vositalarni taklif qilmadi. Ayniqsa, React DevTools bilan taqqoslaganda, masalan, Replay.io kabi vositalar React ilovalari uchun vaqt bo'ylab debugging imkoniyatlarini kengaytiruvchi imkoniyatlarni taqdim etadi.

@@ -1,3 +1,8 @@
+---
+title: "Bu Qoida emas, Yo'riqnoma!"
+description: "React `React.memo` funksiyasidan o'zining reconciler’iga ishora sifatida foydalanadi, agar komponentning props’lari o'zgarmasa, qayta render qilinishini xohlamasligimizni bildirish uchun mo'ljallangan. Bu faqatgina React uchun ishora bo'lib xizmat qiladi, lekin oxir-oqibatda React nima qilishni o'zi hal qiladi. `React.memo`ning yagona maqsadi ota komponentdan kelib chiqadigan qayta render qilinishlarni oldini olishga yordam berishdir. Biroq, bu komponent hech qachon qayta render qilinmasligini kafolatlamaydi."
+---
+
 # Bu Qoida emas, Yo'riqnoma!
 
 React `React.memo` funksiyasidan o'zining reconciler’iga ishora sifatida foydalanadi, agar komponentning props’lari o'zgarmasa, qayta render qilinishini xohlamasligimizni bildirish uchun mo'ljallangan. Bu faqatgina React uchun ishora bo'lib xizmat qiladi, lekin oxir-oqibatda React nima qilishni o'zi hal qiladi. `React.memo`ning yagona maqsadi ota komponentdan kelib chiqadigan qayta render qilinishlarni oldini olishga yordam berishdir. Biroq, bu komponent hech qachon qayta render qilinmasligini kafolatlamaydi.
@@ -11,13 +16,14 @@ Keling, React manbasining kodidagi ba'zi kod qismlariga nazar tashlab ko'raylik,
 ## React.memo funksiyasi
 
 Avvalo, `React.memo` ning bajarilishini ko'rib chiqamiz:
-``` js copy
+
+```js copy
 function memo(type, compare) {
   return {
     $$typeof: REACT_MEMO_TYPE,
     type,
     compare: compare === undefined ? null : compare,
-  };
+  }
 }
 ```
 
@@ -26,7 +32,8 @@ Ushbu implementatsiyada, `React.memo` memoizatsiya qilingan komponentni ifodalov
 ### React.memo’ning reconciler ichida ishlatilinishi
 
 `React.memo` reconciler ichida qanday ishlashini ko'rib chiqamiz:
-``` js copy
+
+```js copy
 function updateMemoComponent(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -158,18 +165,18 @@ function updateMemoComponent(
 6. **Yangilashdan chiqish**: Agar props’lar teng bo'lsa va ref o'zgarmagan bo'lsa, `bailoutOnAlreadyFinishedWork` yordamida yangilashdan chiqib ketishi mumkin, ya'ni ushbu komponent uchun qo'shimcha render ishlari talab qilinmaydi.
 7. **Jarayondagi Fiber’ni yangilash**: Agar yangilanish kerak bo'lsa, funksiya jarayondagi Fiber’ni `PerformedWork` bayrog'i bilan belgilaydi va joriy bola asosida yangi jarayondagi bola Fiber yaratadi, lekin yangi props bilan.
 
-
 Xulosa qilib aytganda, ushbu funksiya memoizatsiyalangan komponentni (`React.memo` bilan o'ralgan komponent), uning ishlash samaradorligini optimallashtirish uchun yangilash kerakmi yoki yangilanishni o'tkazib yuborsa bo'ladimi, shuni aniqlaydi. U dastlabki render va keyingi yangilanishlarni boshqaradi hamda yangi Fiber yaratish yoki mavjudini yangilashga qarab turli operatsiyalarni bajaradi.
 
 ### React.memo’ning renderlash shartlari
 
 Mana bu yerda, ushbu funksiyadagi qaysi qismlar `React.memo` komponentining qayta render qilinish yoki qilinmasligi shartlarini qanday belgilashi haqida:
+
 - **Avvalgi render yo'q (birinchi marta o'rnatish(mount))**: Agar `current === null` bo'lsa, komponent birinchi marta yuklanayotgan bo'ladi va shu sababli render qilishni o'tkazib yuborolmaydi. Yangi Fiber yaratiladi va render qilish uchun qaytariladi.
 - **Oddiy funksiya komponentini optimallashtirish**: Agar komponent oddiy funksiya komponenti bo'lsa (default props’larsiz va maxsus taqqoslash funksiyasiz), React uni `SimpleMemoComponent`ga optimallashtiradi. Bu React’ga yangilanishlar uchun tezkor yo'ldan foydalanishga imkon beradi, chunki u komponent faqat props’larga bog'liq ekanligi va yuzaki taqqoslash (shallow comparison) uni yangilash kerakmi yoki yo'qligini aniqlash uchun yetarli ekanligini taxmin qilishi mumkin.
 - **Taqqoslash funksiyasi**: Agar oldingi render mavjud bo'lsa, komponent faqat taqqoslash funksiyasi `false` qiymat qaytargan taqdirda yangilanadi. Ushbu taqqoslash funksiyasi, agar berilgan bo'lsa, maxsus bo'lishi mumkin yoki aks holda yuzaki tenglikni tekshiruvchi `(shallowEqual)` bo'lishi mumkin. Agar taqqoslash funksiyasi yangi props’larni avvalgilari bilan bir xil deb aniqlasa va `ref` o'zgarmagan bo'lsa, komponent qayta render qilinmaydi va funksiya render jarayonidan chiqib ketadi.
 - **Default props va prop turlarini "development"da tekshirish**: Ishlab chiqish rejimida `(__DEV__)`, `defaultProps` va `propTypes` uchun tekshiruvlar mavjud. Ishlab chiqish rejimida `defaultProps` ishlatilishi ogohlantirish beradi, chunki React’ning kelgusi versiyalarida funksional komponentlarda `defaultProps`dan foydalanish tavsiya qilinmaydi. Prop turlari esa validatsiya maqsadida tekshiriladi.
-- **Yangilanishdan chiqish shartlari**: Agar hech qanday rejalashtirilgan yangilanish yoki *context* o'zgarishi bo'lmasa (`hasScheduledUpdateOrContext` qiymati `false` bo'lsa), taqqoslash funksiyasi eski va yangi props’larni teng deb aniqlasa va `ref` o'zgarmagan bo'lsa, funksiya `bailoutOnAlreadyFinishedWork` natijasini qaytaradi va qayta render qilishni samarali tarzda o'tkazib yuboradi. 
-Ammo, agar rejalashtirilgan *context* yangilanishlari bo'lsa, komponent qayta render qilinadi — hatto uning props’lari o'zgarmagan bo'lsa ham, chunki *context* yangilanishlari komponent props’lari doirasidan tashqarida hisoblanadi. *State* o'zgarishlari, *context* o'zgarishlari va rejalashtirilgan yangilanishlar ham qayta render qilinishiga olib kelishi mumkin.
+- **Yangilanishdan chiqish shartlari**: Agar hech qanday rejalashtirilgan yangilanish yoki _context_ o'zgarishi bo'lmasa (`hasScheduledUpdateOrContext` qiymati `false` bo'lsa), taqqoslash funksiyasi eski va yangi props’larni teng deb aniqlasa va `ref` o'zgarmagan bo'lsa, funksiya `bailoutOnAlreadyFinishedWork` natijasini qaytaradi va qayta render qilishni samarali tarzda o'tkazib yuboradi.
+  Ammo, agar rejalashtirilgan _context_ yangilanishlari bo'lsa, komponent qayta render qilinadi — hatto uning props’lari o'zgarmagan bo'lsa ham, chunki _context_ yangilanishlari komponent props’lari doirasidan tashqarida hisoblanadi. _State_ o'zgarishlari, _context_ o'zgarishlari va rejalashtirilgan yangilanishlar ham qayta render qilinishiga olib kelishi mumkin.
 - **Bajarilgan ish bayrog'i**: Agar yangilanish zarur bo'lsa, `workInProgress` Fiber’da `PerformedWork` bayrog'i o'rnatiladi, bu esa ushbu Fiber joriy render davomida ishni bajarganligini ko'rsatadi.
 
-Shunday qilib, `React.memo` komponentlari faqat eski va yangi props orasidagi taqqoslash (berilgan maxsus taqqoslash funksiyasi yoki default yuzaki taqqoslash yordamida) props’larni teng deb belgilasa va *state* yoki *context* o'zgarishlari sababli rejalashtirilgan yangilanishlar bo'lmasa, qayta render qilinmaydi. Agar props’lar boshqacha, ya'ni o'zgargan, deb aniqlansa yoki *state* yoki *context* o'zgarishlari mavjud bo'lsa, komponent qayta render qilinadi.
+Shunday qilib, `React.memo` komponentlari faqat eski va yangi props orasidagi taqqoslash (berilgan maxsus taqqoslash funksiyasi yoki default yuzaki taqqoslash yordamida) props’larni teng deb belgilasa va _state_ yoki _context_ o'zgarishlari sababli rejalashtirilgan yangilanishlar bo'lmasa, qayta render qilinmaydi. Agar props’lar boshqacha, ya'ni o'zgargan, deb aniqlansa yoki _state_ yoki _context_ o'zgarishlari mavjud bo'lsa, komponent qayta render qilinadi.

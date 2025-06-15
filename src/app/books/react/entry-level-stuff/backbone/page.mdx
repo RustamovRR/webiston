@@ -1,9 +1,13 @@
+---
+title: 'Backbone’ning rivojlanishi'
+description: "Backbone, 2010-yillar boshida ishlab chiqilgan bo'lib, React paydo bo'lishidan avval veb-dasturlarda uchraydigan bir qancha muammolarga yechim edi: brauzer va JavaScript o'rtasidagi uyg'unlik yo'qligi holati, kodni qayta ishlatish, testlash imkoniyati va boshqalar. Bu juda sodda va samarali yechim bo'lib, “model” va “view” yaratish imkonini beradigan kutubxona edi. Backbone o'zining MVC (Model-View-Controller) design pattern(dizayn namunasi) bo'yicha yondashuvini yaratdi (rasmga qarang). Keling, bu patternni yaxshiroq tushunish uchun MVC haqida qisqacha to'xtalib o'taylik."
+---
+
 # Backbone’ning rivojlanishi
 
 Backbone, 2010-yillar boshida ishlab chiqilgan bo'lib, React paydo bo'lishidan avval veb-dasturlarda uchraydigan bir qancha muammolarga yechim edi: brauzer va JavaScript o'rtasidagi uyg'unlik yo'qligi holati, kodni qayta ishlatish, testlash imkoniyati va boshqalar. Bu juda sodda va samarali yechim bo'lib, “model” va “view” yaratish imkonini beradigan kutubxona edi. Backbone o'zining MVC (Model-View-Controller) design pattern(dizayn namunasi) bo'yicha yondashuvini yaratdi (rasmga qarang). Keling, bu patternni yaxshiroq tushunish uchun MVC haqida qisqacha to'xtalib o'taylik.
 
 ![MVC pattern image](/mvc-pattern.png)
-
 
 ## MVC pattern
 
@@ -40,39 +44,41 @@ Bu pattern’ning tafsilotlariga juda chuqur kirishishimiz shart emas, chunki bu
 ## Backbone’da "Like" button misoli
 
 Endi oldingi "Like" tugmasi misolimizni Backbone yordamida ko'rib chiqamiz:
-``` js copy
+
+```js copy
 const LikeButton = Backbone.View.extend({
-  tagName: "button",
+  tagName: 'button',
   attributes: {
-    type: "button",
+    type: 'button',
   },
   events: {
-    click: "onClick",
+    click: 'onClick',
   },
   initialize() {
-    this.model.on("change", this.render, this);
+    this.model.on('change', this.render, this)
   },
   render() {
-    this.$el.text(this.model.get("liked") ? "Liked" : "Like");
-    return this;
+    this.$el.text(this.model.get('liked') ? 'Liked' : 'Like')
+    return this
   },
   onClick() {
-    fetch("/like", {
-      method: "POST",
-      body: JSON.stringify({ liked: !this.model.get("liked") }),
+    fetch('/like', {
+      method: 'POST',
+      body: JSON.stringify({ liked: !this.model.get('liked') }),
     })
-    .then(() => {
-      this.model.set("liked", !this.model.get("liked"));
-    })
-    .catch(() => {
-      this.model.set("failed", true);
-    })
-    .finally(() => {
-      this.model.set("pending", false);
-    });
+      .then(() => {
+        this.model.set('liked', !this.model.get('liked'))
+      })
+      .catch(() => {
+        this.model.set('failed', true)
+      })
+      .finally(() => {
+        this.model.set('pending', false)
+      })
   },
-});
+})
 ```
+
 Diqqat qilinsa, bu yerda `LikeButton` `Backbone.View`dan meros oladi va unda `render` metodi mavjud, bu esa `this`ni qaytaradi. Reactda ham shunga o'xshash `render` metodini ko'ramiz, lekin bu haqida keyinroq gaplashamiz. Bu yerda yana bir narsani ta'kidlash joizki, Backbone aslida `render` metodining haqiqiy amalga oshirilishini o'z ichiga olmaydi. Buning o'rniga, siz DOM’ni qo'lda o'zgartirishingiz yoki Handlebars kabi namuna tizimidan foydalanishingiz kerak edi.
 
 Backbone dasturchilarga obyektlarda logikani joylashtirish imkonini beruvchi zanjirli API’ni ochib berdi. Oldingi misol bilan solishtirsak, Backbone yordamida interaktiv tugma yaratish va foydalanuvchi interfeysi(UI)ni event’larga javoban yangilash ancha qulay bo'lganini ko'ramiz.
@@ -82,48 +88,50 @@ Backbone dasturchilarga obyektlarda logikani joylashtirish imkonini beruvchi zan
 Shuningdek, Backbone logikani birlashtirib, bu jarayonni ancha strukturalashgan holga keltiradi. Bundan tashqari, Backbone yordamida ushbu tugmani izolyatsiyalangan holda test qilish osonlashadi, chunki biz `LikeButton` namunasini yaratib, uning `render` metodini chaqirib test qilishimiz mumkin.
 
 Ushbu komponentni quyidagicha test qilishimiz mumkin:
-``` js copy
-test("LikeButton dastlabki holati", () => {
+
+```js copy
+test('LikeButton dastlabki holati', () => {
   const likeButton = new LikeButton({
     model: new Backbone.Model({
       liked: false, // Dastlabki holat, "unlike" holatda
     }),
-  });
-  likeButton.render(); // Dastlabki holatni aks ettirish uchun render chaqiriladi
+  })
+  likeButton.render() // Dastlabki holatni aks ettirish uchun render chaqiriladi
   // Tekst kontentining dastlabki holatni "Like"’ga o'zgartirishini tekshirish
-  expect(likeButton.el.textContent).toBe("Like"); 
-});
+  expect(likeButton.el.textContent).toBe('Like')
+})
 ```
 
 Biz hatto button’ning holati o'zgarganidan keyingi harakatini, masalan, click event’i holatida ham test qilishimiz mumkin:
-``` js copy
-test("LikeButton", async () => {
+
+```js copy
+test('LikeButton', async () => {
   // Promise’ni boshqarish uchun funksiya async deb belgilandi
   const likeButton = new LikeButton({
     model: new Backbone.Model({
       liked: false,
     }),
-  });
-  expect(likeButton.render().el.textContent).toBe("Like");
+  })
+  expect(likeButton.render().el.textContent).toBe('Like')
 
   // HTTP so'rovining amalga oshirilishini oldini olish uchun fetch’ni mock qilamiz
   global.fetch = jest.fn(() =>
     Promise.resolve({
       json: () => Promise.resolve({ liked: true }),
-    })
-  );
+    }),
+  )
 
   // onClick metodining async amallari tugallanganini ta'minlash uchun uni kutamiz
-  await likeButton.onClick();
+  await likeButton.onClick()
 
-  expect(likeButton.render().el.textContent).toBe("Liked");
+  expect(likeButton.render().el.textContent).toBe('Liked')
 
   // Kerak bo'lsa, fetch’ni asl holatiga qaytarish mumkin
-  global.fetch.mockRestore();
-});
+  global.fetch.mockRestore()
+})
 ```
 
-Shu sababdan Backbone o'z vaqtida juda mashhur yechim bo'lgan. Muqobil yechim esa ko'p kod yozishni talab qilgan, bu kodni test qilish ham qiyin bo'lgan va uning kutilganidek ishlashiga hech qanday kafolat bo'lmagan. Shu bois Backbone bu masalaga juda kutilgan va mos yechim bo'lgan. 
+Shu sababdan Backbone o'z vaqtida juda mashhur yechim bo'lgan. Muqobil yechim esa ko'p kod yozishni talab qilgan, bu kodni test qilish ham qiyin bo'lgan va uning kutilganidek ishlashiga hech qanday kafolat bo'lmagan. Shu bois Backbone bu masalaga juda kutilgan va mos yechim bo'lgan.
 
 ## Ba'zi tanqidlar
 
@@ -138,4 +146,3 @@ Mashhurligining dastavvalida o'zining soddaligi va moslashuvchanligi bilan mashh
 - **Kompozitsiyaning yetishmasligi**: Backbone.js ichma-ich "view"larni osonlikcha joylashtirish uchun o'zini ichki o'rnatilgan funksiyalariga ega emas, bu esa murakkab foydalanuvchi interfeyslarini yaratishni qiyinlashtiradi. React esa, aksincha, "children props" yordamida komponentlarni osongina joylashtirishni ta'minlaydi, bu esa murakkab UI ierarxiyalarini yaratishni osonlashtiradi. Marionette.js, Backbone’ning kengaytmasi, ushbu kompozitsiya muammolarining ba'zilarini hal qilishga uringan, lekin u React’ning komponent modeli kabi integratsiyalashgan yechimni ta'minlamaydi.
 
 Zero, Backbone.js o'ziga xos muammolarga ega bo'lsa ham, hech qanday vosita yoki freymvork mukammal emasligini unutmaslik kerak. Eng yaxshi tanlov ko'pincha loyihani ehtiyojlariga va jamoaning afzalliklariga bog'liq. Shuningdek, veb-dasturlash vositalari kuchli jamoaga tayanishi kerakligini ta'kidlash joiz, afsuski, Backbone.js so'nggi yillarda, ayniqsa React paydo bo'lishi bilan, ommaviyligini yo'qotdi. Ayrimlar hatto React uni "o'ldirdi" deb aytishadi, lekin bu masala bo'yicha yakuniy hukmni keyinga qoldiramiz.
-

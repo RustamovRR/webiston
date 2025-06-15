@@ -1,15 +1,21 @@
+---
+title: 'Renderlovchi props'
+description: 'JSX ifodalari haqida allaqachon gaplashganimiz uchun, kodni qayta ishlatishni osonlashtirish uchun komponent darajasidagi holatni argument sifatida qabul qiladigan funksiyalarni props sifatida berish keng tarqalgan pattern’dir.'
+---
+
 # Renderlovchi props
 
 JSX ifodalari haqida allaqachon gaplashganimiz uchun, kodni qayta ishlatishni osonlashtirish uchun komponent darajasidagi holatni argument sifatida qabul qiladigan funksiyalarni props sifatida berish keng tarqalgan pattern’dir.
 
 Keling, oddiy misolni ko'rib chiqamiz:
-``` jsx copy
+
+```jsx copy
 <WindowSize
-    render={({ width, height }) => (
-        <div>
-            Sizning oynangiz {width}x{height}px
-        </div>
-    )}
+  render={({ width, height }) => (
+    <div>
+      Sizning oynangiz {width}x{height}px
+    </div>
+  )}
 />
 ```
 
@@ -18,39 +24,40 @@ Bu yerda `render` deb nomlangan prop borligini ko'rishimiz mumkin, bu qiymat sif
 ## `WindowSize` komponenti misoli
 
 Keling, yaxshiroq tushunish uchun `WindowSize`ni ko'rib chiqaylik:
-``` js copy
+
+```js copy
 const WindowSize = (props) => {
-    const [size, setSize] = useState({ width: -1, height: -1 });
+  const [size, setSize] = useState({ width: -1, height: -1 })
 
-    useEffect(() => {
-        const handleResize = () => {
-            setSize({ width: window.innerWidth, height: window.innerHeight });
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setSize({ width: window.innerWidth, height: window.innerHeight })
+    }
 
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-    return props.render(size);
-};
+  return props.render(size)
+}
 ```
 
-Ushbu misoldan ko'rish mumkinki, `WindowSize` har safar o'lcham o'zgarganda ma'lumotlarni saqlash uchun event listener’dan foydalanadi, lekin komponentning o'zi interfeysga ega emas, shuning uchun "headless" deb nomlanadi, ya'ni qanday UI ko'rsatishi kerakligi haqida bilmaydi. Bu boshqaruvni uni render qilayotgan ota komponentga topshiradi va o'ziga berilgan *render prop*’ni chaqiradi, ya'ni render qilish ishini ota komponentga topshiradi.
+Ushbu misoldan ko'rish mumkinki, `WindowSize` har safar o'lcham o'zgarganda ma'lumotlarni saqlash uchun event listener’dan foydalanadi, lekin komponentning o'zi interfeysga ega emas, shuning uchun "headless" deb nomlanadi, ya'ni qanday UI ko'rsatishi kerakligi haqida bilmaydi. Bu boshqaruvni uni render qilayotgan ota komponentga topshiradi va o'ziga berilgan _render prop_’ni chaqiradi, ya'ni render qilish ishini ota komponentga topshiradi.
 
 Bu pattern, oyna o'lchamiga bog'liq komponentga `useEffect` bloklarini takrorlamasdan ushbu ma'lumotni olishga yordam beradi va kodimizni biroz ko'proq DRY (Takrorlanmas Kod, "Don't repeat yourself") saqlaydi. Biroq, bu pattern hozirgi kunda unchalik ommalashmagan va React hook’lari bilan samarali tarzda almashtirilgan.
 
 ## Funksiya sifatida children
 
 Chunki `children` ham prop hisoblanadi, ba'zi dasturchilar `render` prop nomini butunlay olib tashlashni afzal ko'rishadi va o'rniga faqat `children`dan foydalanishadi. Bu `WindowSize`dan foydalanishni quyidagicha o'zgartiradi:
-``` js copy
+
+```js copy
 <WindowSize>
-    {({ width, height }) => (
-        <div>
-            Sizning oynangiz {width}x{height}px
-        </div>
-    )}
+  {({ width, height }) => (
+    <div>
+      Sizning oynangiz {width}x{height}px
+    </div>
+  )}
 </WindowSize>
 ```
 
 Ba'zi React mualliflari bu yondashuvni afzal ko'rishadi, chunki bu kodning maqsadiga yaqinroq: bu holda `WindowSize` biroz "React context"ga o'xshab ketadi va nima ko'rsatayotganimiz "context"ni iste'mol qilayotgan "children" kabi ko'rinadi. Shunga qaramay, React hook’lari ushbu pattern’ga bo'lgan ehtiyojni umuman yo'q qiladi, shuning uchun ehtiyotkorlik bilan yondashish kerak.
-

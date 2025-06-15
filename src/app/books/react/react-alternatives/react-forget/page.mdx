@@ -1,3 +1,10 @@
+---
+title: 'React Forget haqida'
+description: "Forget — bu React uchun linterni andozasiga o'xshash bir vositalar to'plami bo'lib, uning `--fix` bayrog'i faollashtirilgan. Bu React qoidalarini majburan amalga oshiradi va keyin avtomatik ravishda React kodini dastur lifecycle’i davomida o'zgarmaydigan qiymatlarni, masalan, `ComponentWithExpensiveChildren`ni aqlli tarzda memoizatsiya qilib, optimal holatga aylantiradi.
+
+React qoidalari sababli, Forget kompilyatori bu qiymatlarni oldindan taxmin qila olishi va biz uchun memoizatsiya qilishi mumkin. Bu Svelte’dan olingan o'xshash yondashuvdir, lekin imperativ kodga kompilatsiya qilish o'rniga, Forget yanada samarali React kodiga kompilatsiya qiladi."
+---
+
 # React Forget
 
 Forget — bu React uchun linterni andozasiga o'xshash bir vositalar to'plami bo'lib, uning `--fix` bayrog'i faollashtirilgan. Bu React qoidalarini majburan amalga oshiradi va keyin avtomatik ravishda React kodini dastur lifecycle’i davomida o'zgarmaydigan qiymatlarni, masalan, `ComponentWithExpensiveChildren`ni aqlli tarzda memoizatsiya qilib, optimal holatga aylantiradi.
@@ -7,15 +14,16 @@ React qoidalari sababli, Forget kompilyatori bu qiymatlarni oldindan taxmin qila
 ## React qoidalari
 
 React qoidalarini qaytadan ko'rib chiqamiz:
+
 1. React komponentlari sof(pure) funksiyalar bo'lishi kerak.
 2. Ba'zi hook’lar va maxsus event handler’lar sof bo'lishi shart emas.
 3. Sof funksiyalar ichida taqiqlangan harakatlar:
-    - Funksiya ichida yangi yaratilmagan o'zgaruvchilar/obyektlarni o'zgartirish.
-    - O'zgarishi mumkin bo'lgan xususiyatlarni o'qish.
+   - Funksiya ichida yangi yaratilmagan o'zgaruvchilar/obyektlarni o'zgartirish.
+   - O'zgarishi mumkin bo'lgan xususiyatlarni o'qish.
 4. Ruxsat berilgan harakatlar:
-    - Props yoki state’ni o'qish.
-    - Xatolarni chiqarish.
-    - Yangi yaratilgan obyektlarni/binding’larni o'zgartirish.
+   - Props yoki state’ni o'qish.
+   - Xatolarni chiqarish.
+   - Yangi yaratilgan obyektlarni/binding’larni o'zgartirish.
 5. Kerakli vaqtda ishga tushirish (lazy initialization) — ishga tushirish maqsadida o'zgartirishga(mutatsiyaga) ruxsat beruvchi istisno.
 6. Render paytida yaratilgan obyektlar yoki closure’lar render tugagandan so'ng o'zgartirilmasligi kerak, faqat state'da saqlangan o'zgaruvchilar bundan mustasno.
 

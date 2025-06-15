@@ -1,20 +1,26 @@
+---
+title: 'Solid.js haqida'
+description: "Solid - bu foydalanuvchi interfeyslarini yaratish uchun deklarativ JavaScript kutubxonasi. U komponent modeliga asoslanganligi bilan React’ga o'xshaydi, ammo Solid reaktiv primitivlardan foydalanadi. Solid virtual DOM o'rniga, qaramliklarni avtomatik ravishda kuzatib boradigan va DOM’ni to'g'ridan-to'g'ri yangilaydigan yuqori tafsiliy daraja tizimidan foydalanadi, bu esa samarali yangilanishlarga olib kelishi mumkin."
+---
+
 # Solid.js
 
 Solid - bu foydalanuvchi interfeyslarini yaratish uchun deklarativ JavaScript kutubxonasi. U komponent modeliga asoslanganligi bilan React’ga o'xshaydi, ammo Solid reaktiv primitivlardan foydalanadi. Solid virtual DOM o'rniga, qaramliklarni avtomatik ravishda kuzatib boradigan va DOM’ni to'g'ridan-to'g'ri yangilaydigan yuqori tafsiliy daraja tizimidan foydalanadi, bu esa samarali yangilanishlarga olib kelishi mumkin.
 
 Quyida oddiy Solid komponentining misoli keltirilgan:
-``` js copy
-import { createSignal } from "solid-js";
+
+```js copy
+import { createSignal } from 'solid-js'
 
 function Component() {
-  const [count, setCount] = createSignal(0);
+  const [count, setCount] = createSignal(0)
 
   return (
     <>
       <div>{count()}</div>
       <button onClick={() => setCount(count() + 1)}>Increment</button>
     </>
-  );
+  )
 }
 ```
 
@@ -24,16 +30,17 @@ Buni React bilan taqqoslaganda, React’da bu holatda `Component` nomli komponen
 
 ## Solid’ning yuqori tafsiliy darajali tizimi
 
-Solid’ning yuqori tafsiliy darajali reaktivlik tizimi ortiqcha yangilanishlarni minimallashtirish va *diffing* bosqichiga ehtiyojni yo'qotish imkonini beradi, bu esa juda yuqori samaradorlikka olib keladi. Biroq, u nisbatan yangi va kamroq ishlatiladigan kutubxona bo'lgani uchun, uni ba'zi an'anaviy variantlar bilan solishtirganda ko'proq resurslar va hamjamiyat yechimlari mavjud emas.
+Solid’ning yuqori tafsiliy darajali reaktivlik tizimi ortiqcha yangilanishlarni minimallashtirish va _diffing_ bosqichiga ehtiyojni yo'qotish imkonini beradi, bu esa juda yuqori samaradorlikka olib keladi. Biroq, u nisbatan yangi va kamroq ishlatiladigan kutubxona bo'lgani uchun, uni ba'zi an'anaviy variantlar bilan solishtirganda ko'proq resurslar va hamjamiyat yechimlari mavjud emas.
 
-Solid’ning `createSignal()` API dizayni o'qish/yozish ajratilishiga e'tibor qaratadi. Signal o'qish uchun mo'ljallangan *getter* va alohida *setter* sifatida ochiladi:
-``` js copy
-const [count, setCount] = createSignal(0);
+Solid’ning `createSignal()` API dizayni o'qish/yozish ajratilishiga e'tibor qaratadi. Signal o'qish uchun mo'ljallangan _getter_ va alohida _setter_ sifatida ochiladi:
 
-count(); // qiymatga kirish
-setCount(1); // qiymatni yangilash
+```js copy
+const [count, setCount] = createSignal(0)
+
+count() // qiymatga kirish
+setCount(1) // qiymatni yangilash
 ```
 
-`count` signali *setter*’siz qanday o'tkazilishi mumkinligiga e'tibor bering. Bu, agar *setter* ham aniq namoyon bo'lmasa, state hech qachon mutatsiyaga uchramasligini ta'minlaydi.
+`count` signali _setter_’siz qanday o'tkazilishi mumkinligiga e'tibor bering. Bu, agar _setter_ ham aniq namoyon bo'lmasa, state hech qachon mutatsiyaga uchramasligini ta'minlaydi.
 
-Solid *signal* tushunchasini yana bir bor muhokama qilishga qaytadi va bu tushuncha ko'plab boshqa freymvorklar va kutubxonalar tomonidan qabul qilingan, oldin ko'rganimizdek. Signalga oid ilgari aytib o'tgan barcha ma'lumotlar Solid muallifi Ryan Carniato tomonidan keltirilgan bo'lib, u qandaydir tarzda 2010-yildan kelgan tushunchani qayta olib kelish orqali butun oldingi ekotizimni o'zgartira oldi.
+Solid _signal_ tushunchasini yana bir bor muhokama qilishga qaytadi va bu tushuncha ko'plab boshqa freymvorklar va kutubxonalar tomonidan qabul qilingan, oldin ko'rganimizdek. Signalga oid ilgari aytib o'tgan barcha ma'lumotlar Solid muallifi Ryan Carniato tomonidan keltirilgan bo'lib, u qandaydir tarzda 2010-yildan kelgan tushunchani qayta olib kelish orqali butun oldingi ekotizimni o'zgartira oldi.

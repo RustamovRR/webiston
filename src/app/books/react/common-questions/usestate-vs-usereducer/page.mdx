@@ -1,45 +1,50 @@
+---
+title: 'useState va useReducer'
+description: "React state’ni boshqarish uchun mo'ljallangan ikkita hook’larni taklif etadi: `useState` va `useReducer`. Ikkalasi ham komponentda state’ni boshqarish uchun ishlatiladi. Farqi shundaki, `useState` birgina state’ni boshqarishga yaxshiroq mos kelsa, `useReducer` murakkabroq state’ni boshqarish uchun ishlatiladi."
+---
+
 # useState va useReducer
 
-React state’ni boshqarish uchun mo'ljallangan ikkita hook’larni taklif etadi: `useState` va `useReducer`. Ikkalasi ham komponentda state’ni boshqarish uchun ishlatiladi. Farqi shundaki, `useState` birgina state’ni boshqarishga yaxshiroq mos kelsa, `useReducer` murakkabroq state’ni boshqarish uchun ishlatiladi. 
+React state’ni boshqarish uchun mo'ljallangan ikkita hook’larni taklif etadi: `useState` va `useReducer`. Ikkalasi ham komponentda state’ni boshqarish uchun ishlatiladi. Farqi shundaki, `useState` birgina state’ni boshqarishga yaxshiroq mos kelsa, `useReducer` murakkabroq state’ni boshqarish uchun ishlatiladi.
 
 Keling, `useState` bilan komponentda state’ni boshqarish usulini ko'rib chiqaylik:
-``` js copy
-import { useState } from "react";
+
+```js copy
+import { useState } from 'react'
 
 const MyComponent = () => {
-    const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
-    return (
-        <div>
-            <p>Count: {count}</p>
-            <button onClick={() => setCount(count + 1)}>Increment</button>
-        </div>
-    );
-};
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  )
+}
 ```
 
 Ushbu misolda, biz `useState`dan foydalanib bitta state’ni boshqaryapmiz: `count`. Ammo, agar bizning state’imiz biroz murakkabroq bo'lsa-chi?
-``` js copy
-import { useState } from "react";
+
+```js copy
+import { useState } from 'react'
 
 const MyComponent = () => {
-    const [state, setState] = useState({
-        count: 0,
-        name: "Tejumma",
-        age: 30,
-    });
+  const [state, setState] = useState({
+    count: 0,
+    name: 'Tejumma',
+    age: 30,
+  })
 
-    return (
-        <div>
-            <p>Count: {state.count}</p>
-            <p>Name: {state.name}</p>
-            <p>Age: {state.age}</p>
-            <button onClick={() => setState({ ...state, count: state.count + 1 })}>
-                Increment
-            </button>
-        </div>
-    );
-};
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <p>Name: {state.name}</p>
+      <p>Age: {state.age}</p>
+      <button onClick={() => setState({ ...state, count: state.count + 1 })}>Increment</button>
+    </div>
+  )
+}
 ```
 
 Endi ko'rib turibmizki, bizdagi state’lar biroz murakkabroq. Bizda `count`, `name`, va `age` mavjud. Tugmani bosish orqali hisobni oshiramiz, bu esa state’ni eski qiymatlar bilan bir xil bo'lgan yangi obyektga o'rnatadi, faqat `count` birga oshirilgan bo'ladi. Bu React’da juda keng tarqalgan amaliyot. Ammo, bu usulda xatolik yuzaga kelishi mumkin, masalan, agar eski state’ni diqqat bilan "spread" qilmasak, ba'zi xususiyatlar noto'g'ri o'zgartirilishi mumkin.
@@ -47,53 +52,52 @@ Endi ko'rib turibmizki, bizdagi state’lar biroz murakkabroq. Bizda `count`, `n
 ## useState ham useReducer’dan foydalanadi
 
 `useState` ichida aslida `useReducer` ishlatiladi. `useState`ni `useReducer`ning yuqori darajadagi abstraksiyasi deb hisoblash mumkin. Hatto, istasangiz, `useState`ni `useReducer` yordamida qayta yaratishingiz mumkin:
-``` js copy
-import { useReducer } from "react";
+
+```js copy
+import { useReducer } from 'react'
 
 function useState(initialState) {
-    const [state, dispatch] = useReducer(
-        (state, newValue) => newValue,
-        initialState
-    );
+  const [state, dispatch] = useReducer((state, newValue) => newValue, initialState)
 
-    return [state, dispatch];
+  return [state, dispatch]
 }
 ```
 
 Keling, shu misolni `useReducer` yordamida qanday amalga oshirishni ko'rib chiqaylik:
-``` js copy
-import { useReducer } from "react";
+
+```js copy
+import { useReducer } from 'react'
 
 const initialState = {
-    count: 0,
-    name: "Tejumma",
-    age: 30,
-};
+  count: 0,
+  name: 'Tejumma',
+  age: 30,
+}
 
 const reducer = (state, action) => {
-    switch (action.type) {
-        case "increment":
-            return { ...state, count: state.count + 1 };
-        default:
-            return state;
-    }
-};
+  switch (action.type) {
+    case 'increment':
+      return { ...state, count: state.count + 1 }
+    default:
+      return state
+  }
+}
 
 const MyComponent = () => {
-    const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-    return (
-        <div>
-            <p>Count: {state.count}</p>
-            <p>Name: {state.name}</p>
-            <p>Age: {state.age}</p>
-            <button onClick={() => dispatch({ type: "increment" })}>Increment</button>
-        </div>
-    );
-};
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <p>Name: {state.name}</p>
+      <p>Age: {state.age}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>
+    </div>
+  )
+}
 ```
 
-Ba’zilar bu usulda kod `useState`ga qaraganda bir oz ortiqcha cho'zilib ketishini aytadilar va ko'pchilik bunga qo'shiladi, lekin bu abstraksiyalarni pastroq darajada ishlatishda odatiy hol: abstraksiya qanchalik past bo'lsa, kod shunchalik batafsilroq bo'ladi. Abstraksiyalar odatda murakkab logikani oddiyroq sintaksis bilan almashtirish uchun mo'ljallangan, bular ya'na *syntactic sugar* ham deb ataladi. 
+Ba’zilar bu usulda kod `useState`ga qaraganda bir oz ortiqcha cho'zilib ketishini aytadilar va ko'pchilik bunga qo'shiladi, lekin bu abstraksiyalarni pastroq darajada ishlatishda odatiy hol: abstraksiya qanchalik past bo'lsa, kod shunchalik batafsilroq bo'ladi. Abstraksiyalar odatda murakkab logikani oddiyroq sintaksis bilan almashtirish uchun mo'ljallangan, bular ya'na _syntactic sugar_ ham deb ataladi.
 
 ## Nima uchun useReducer ishlatish foydali?
 
@@ -106,36 +110,37 @@ Tabiiyki bir savol tug'ilishi mumkin, xo'sh, agar biz `useState` yordamida `useR
 U yangilanish holati logika qismnini komponentdan ajratadi. Uning qo'shimcha qilib berilgan `reducer` funksiyasi alohida holatda test qilinishi mumkin va uni boshqa komponentlarda qayta ishlatish mumkin. Bu bizning komponentlarimizni toza va oddiy saqlash hamda yagona ma'suliyat tamoyili(single responsibility principle)ni qo'llashning ajoyib usulidir
 
 Biz reducer funksiyasini quyidagicha test qilishimiz mumkin:
-``` js copy
-describe("reducer", () => {
-    test("increment harakati berilganda count qiymatini oshirishi kerak", () => {
-        const initialState = {
-            count: 0,
-            name: "Tejumma",
-            age: 30,
-        };
-        const action = { type: "increment" };
-        const expectedState = {
-            count: 1,
-            name: "Tejumma",
-            age: 30,
-        };
-        const actualState = reducer(initialState, action);
-        expect(actualState).toEqual(expectedState);
-    });
 
-    test("noma'lum harakat berilganda bir xil obyektni qaytarishi kerak", () => {
-        const initialState = {
-            count: 0,
-            name: "Tejumma",
-            age: 30,
-        };
-        const action = { type: "unknown" };
-        const expectedState = initialState;
-        const actualState = reducer(initialState, action);
-        expect(actualState).toBe(expectedState);
-    });
-});
+```js copy
+describe('reducer', () => {
+  test('increment harakati berilganda count qiymatini oshirishi kerak', () => {
+    const initialState = {
+      count: 0,
+      name: 'Tejumma',
+      age: 30,
+    }
+    const action = { type: 'increment' }
+    const expectedState = {
+      count: 1,
+      name: 'Tejumma',
+      age: 30,
+    }
+    const actualState = reducer(initialState, action)
+    expect(actualState).toEqual(expectedState)
+  })
+
+  test("noma'lum harakat berilganda bir xil obyektni qaytarishi kerak", () => {
+    const initialState = {
+      count: 0,
+      name: 'Tejumma',
+      age: 30,
+    }
+    const action = { type: 'unknown' }
+    const expectedState = initialState
+    const actualState = reducer(initialState, action)
+    expect(actualState).toBe(expectedState)
+  })
+})
 ```
 
 Ushbu misolda biz ikki ssenariy holatida test qilmoqdamiz: biri increment harakati reducer’ga uzatilganda, ikkinchisi esa noma'lum harakat yuborilganda.
@@ -154,6 +159,6 @@ Ikkinchi testda esa `count` qiymati `0` bo'lgan boshlang'ich state obyektini va 
 
 `useReducer` bu voqealarga asoslangan (event sourced) model bo'lib, bizning dasturimizda sodir bo'lgan event’larni modellashtirish uchun ishlatilishi mumkin, bu event’larni audit log turidagi ro'yxatga yozib borishimiz mumkin. Ushbu audit log dasturimizdagi event’larni qayta ijro etish, xatolarni takrorlash yoki vaqt bo'yicha orqaga siljish orqali xatolarni tuzatish uchun ishlatilishi mumkin. Bundan tashqari, kuchli pattern’lar, masalan, bekor qilish/qaytarish, optimistik yangilanishlar va interfeysimizdagi umumiy foydalanuvchi harakatlarini kuzatish kabi imkoniyatlarni taqdim etadi.
 
-
 #### Qachon qay birini ishlatgan ma'qul
+
 `useReducer` qulay vosita bo'lsa-da, uni har doim ishlatish shart emas. Aslida, ko'pincha uni ishlatish ortiqcha bo'lishi mumkin. Shunday ekan, qachon `useState`ni va qachon `useReducer`ni ishlatish kerak? Javob sizning state’ingizning murakkabligiga bog'liq. Lekin umid qilamizki, barcha ushbu ma'lumotlar bilan siz qaysi biri sizning dasturingizda ishlatilishi kerakligi haqida ko'proq tushunchaga ega bo'lasiz.

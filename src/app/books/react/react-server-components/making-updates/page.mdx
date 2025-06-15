@@ -1,3 +1,8 @@
+---
+title: 'React server komponentlarda yangilanishlarni amalga oshirish'
+description: "RSC’larning ko'plab ijobiy jihatlari bo'lsa-da, e'tibor berish kerak bo'lgan ayrim cheklovlar ham mavjud, ikki xil turdagi komponentlar (server va klient) haqida o'ylash kerak bo'lgan ortiqcha aqliy o'ylashni qabul qilish. Buning sababi shundaki, barcha komponentlar server komponentlari bo'la olmaydi."
+---
+
 # Yangilanishlarni amalga oshirish
 
 RSC’larning ko'plab ijobiy jihatlari bo'lsa-da, e'tibor berish kerak bo'lgan ayrim cheklovlar ham mavjud, ikki xil turdagi komponentlar (server va klient) haqida o'ylash kerak bo'lgan ortiqcha aqliy o'ylashni qabul qilish. Buning sababi shundaki, barcha komponentlar server komponentlari bo'la olmaydi.
@@ -5,9 +10,10 @@ RSC’larning ko'plab ijobiy jihatlari bo'lsa-da, e'tibor berish kerak bo'lgan a
 ## Misol: Counter komponenti
 
 Masalan, foydalanuvchi `+` tugmasini bosganida hisob qiymatini `1` ga oshiradigan oddiy hisoblagich komponentini ko'rib chiqaylik:
-``` js copy
+
+```js copy
 function Counter() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   return (
     <div>
@@ -16,7 +22,7 @@ function Counter() {
       <p>Count: {count}</p>
       <button onClick={() => setCount(count + 1)}>+</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -37,33 +43,33 @@ Bundan tashqari, `useState`dan olinadigan `setState` dispetcher funksiyasi seriy
 ### Klient va server komponentga ajratish
 
 Shu sababli, agar biz server komponentlarining kuchidan foydalanishni xohlasak, oddiy hisoblagich endi server qismi va klient qismiga bo'linishi kerak:
-``` js copy
+
+```js copy
 // Server Component
 function ServerCounter() {
   return (
     <div>
       <h1>Hello friends, look at my nice counter!</h1>
       <p>
-        About me: I like to count things and I'm a counter and sometimes I count
-        things but other times I enjoy playing the Cello and one time at band
-        camp I counted to 1000 and a pirate appeared
+        About me: I like to count things and I'm a counter and sometimes I count things but other times I enjoy playing
+        the Cello and one time at band camp I counted to 1000 and a pirate appeared
       </p>
       <InteractiveClientPart />
     </div>
-  );
+  )
 }
 
 // Client Component
-"use client";
+;('use client')
 function InteractiveClientPart() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   return (
     <div>
       <p>Count: {count}</p>
       <button onClick={() => setCount(count + 1)}>+</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -79,9 +85,9 @@ Qo'shimcha aqliy o'ylashni hisobga olgan holda, keling, React qanday qilib serve
 
 ### Klient komponentlari va grafiklar
 
-Klient komponentlari `"use client"` direktivasi yordamida ajratiladi va bu direktiva klient komponentlarini o'z ichiga olgan faylning yuqori qismida joylashadi. RSCs server va klient komponentlarini ushbu direktivalarning ishlatilishiga asoslanib farqlash uchun keyingi avlod vositalarini talab qiladi. 
+Klient komponentlari `"use client"` direktivasi yordamida ajratiladi va bu direktiva klient komponentlarini o'z ichiga olgan faylning yuqori qismida joylashadi. RSCs server va klient komponentlarini ushbu direktivalarning ishlatilishiga asoslanib farqlash uchun keyingi avlod vositalarini talab qiladi.
 
-Keyingi avlod vositalarini to'plash vositasi(bundler) yoki to'plash vositasi konfiguratsiyasi(bundler configuration)dan foydalangan holda, to'plash vositalari React ilovalari uchun alohida modul grafiklarini ishlab chiqarish imkoniyatiga ega: server grafik va klient grafik. Server grafiki hech qachon to'plam paketiga aylantirilmaydi, chunki u foydalanuvchilarga yetkazib berilmaydi, lekin `"use client"` direktivasi bilan boshlanuvchi barcha fayllar bitta klient to'plam paketi yoki bir nechta to'plam paketlarga qo'shiladi, ularni *lazy loading* orqali yuklab olish mumkin. Ushbu implementatsiya tafsilotlari RSCs ustida qurilgan freymvorklar bilan bog'liq.
+Keyingi avlod vositalarini to'plash vositasi(bundler) yoki to'plash vositasi konfiguratsiyasi(bundler configuration)dan foydalangan holda, to'plash vositalari React ilovalari uchun alohida modul grafiklarini ishlab chiqarish imkoniyatiga ega: server grafik va klient grafik. Server grafiki hech qachon to'plam paketiga aylantirilmaydi, chunki u foydalanuvchilarga yetkazib berilmaydi, lekin `"use client"` direktivasi bilan boshlanuvchi barcha fayllar bitta klient to'plam paketi yoki bir nechta to'plam paketlarga qo'shiladi, ularni _lazy loading_ orqali yuklab olish mumkin. Ushbu implementatsiya tafsilotlari RSCs ustida qurilgan freymvorklar bilan bog'liq.
 
 Shunday qilib, kontseptual jihatdan bizda serverda bajariladigan server grafigi va klientda kerak bo'lganda yuklab olinadigan va bajariladigan bitta yoki bir nechta klient to'plam paketlari mavjud. Ammo React klient komponentlarini qachon import qilish va bajarish kerakligini qanday biladi? Buni tushunish uchun biz odatiy React daraxtini ko'rib chiqishimiz kerak. Keling, hisoblagich misolimizdan foydalanamiz.
 
@@ -99,7 +105,8 @@ Bu jarayon sodir bo'lganda, React modul havolasini klient to'plam paketi ichidag
 ### Render qilingan daraxt
 
 Amalda, bu bizning hisoblagich misolimizda server quyidagi daraxtni render qiladi:
-``` js copy
+
+```js copy
 {
   $$typeof: Symbol(react.element),
   type: "div",
@@ -164,7 +171,7 @@ Ushbu daraxt klient tomoniga yuboriladi va React uni render qilar ekan, modul ha
 
 Shunday qilib, biz to'plash vositasi(bundler) serverda butun daraxtni render qilish imkoniyatiga ega ekanligini va faqat klientda to'ldirilishi kerak bo'lgan "teshiklar" qoldirilishini ko'ramiz, shu bilan birga, serverda klient komponentlarining bolalarini rekursiv tarzda render qilib, to'liq daraxt hosil qiladi. Keyin esa, klient zarur bo'lgan har qanday teshikni klient to'plam paketlarini yuklab olish va bajarish orqali to'ldiradi.
 
-Server komponentlarini, shuningdek, Suspense hududlariga o'rash ham mumkin, bunda freymvorklar "tayyor" bo'lganda ularni server tomonidan foydalanuvchilarga *stream* tarzida uzatish uchun zarur ishlarni bajaradi: ya'ni ular talab qiladigan har qanday ma'lumotlar olinadi va boshqa barcha operatsiyalar asinxron tarzda bajariladi.
+Server komponentlarini, shuningdek, Suspense hududlariga o'rash ham mumkin, bunda freymvorklar "tayyor" bo'lganda ularni server tomonidan foydalanuvchilarga _stream_ tarzida uzatish uchun zarur ishlarni bajaradi: ya'ni ular talab qiladigan har qanday ma'lumotlar olinadi va boshqa barcha operatsiyalar asinxron tarzda bajariladi.
 
 Umid qilamizki, endi biz klient komponentlarining server komponentlaridan qanday ajratilishini tushundik, bu esa RSC’larga yo'naltirilgan ilovalarda yangilanishlarni amalga oshirish imkonini beradi. `"use client"` bilan belgilangan klient komponentlari ichki state’lar(`useState` kabi) va `onClick` kabi event handler’larni muammosiz o'z ichiga olishi mumkin.
 

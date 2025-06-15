@@ -1,26 +1,32 @@
+---
+title: 'Scheduler (Rejalashtiruvchi)'
+description: "React arxitekturasining asos qismida mustaqil paket sifatida ishlaydigan scheduler (rejalashtiruvchi) joylashgan bo'lib, vaqtga oid turli yordamchi vositalarni taqdim etadi va u Fiber reconciler’iga bog'liq emas. React ushbu scheduler’ni reconciler ichida ishlatadi. Scheduler va reconciler, render yo'llari(lanes) yordamida vazifalarni ularning dolzarbligiga qarab ustuvorlik bilan tartiblaydi va ularga birgalikda ishlash imkonini beradi. Hademay render yo'llari haqida batafsil to'xtalamiz. Bugungi kunda React’dagi scheduler’ning asosiy vazifasi asosiy thread’ni boshqarishdan iborat bo'lib, asosan mikrotask’larni rejalashtirish orqali silliq bajarilishni ta'minlaydi."
+---
+
 # Scheduler (Rejalashtiruvchi)
 
 React arxitekturasining asos qismida mustaqil paket sifatida ishlaydigan scheduler (rejalashtiruvchi) joylashgan bo'lib, vaqtga oid turli yordamchi vositalarni taqdim etadi va u Fiber reconciler’iga bog'liq emas. React ushbu scheduler’ni reconciler ichida ishlatadi. Scheduler va reconciler, render yo'llari(lanes) yordamida vazifalarni ularning dolzarbligiga qarab ustuvorlik bilan tartiblaydi va ularga birgalikda ishlash imkonini beradi. Hademay render yo'llari haqida batafsil to'xtalamiz. Bugungi kunda React’dagi scheduler’ning asosiy vazifasi asosiy thread’ni boshqarishdan iborat bo'lib, asosan mikrotask’larni rejalashtirish orqali silliq bajarilishni ta'minlaydi.
 
 Bu jarayonni yanada yaxshiroq tushunish uchun, hozirgi vaqtdagi React’ning manba kodidan kichik bir qismga nazar tashlaymiz:
-``` ts copy
- export function ensureRootIsScheduled(root: FiberRoot): void {
+
+```ts copy
+export function ensureRootIsScheduled(root: FiberRoot): void {
   // Bu funksiya har safar bir root yangilanish qabul qilganda chaqiriladi.
-  // U ikkita asosiy ishni bajaradi: 
-  // 1) u root’ning ildiz jadvalida bo'lishini ta'minlaydi va 
+  // U ikkita asosiy ishni bajaradi:
+  // 1) u root’ning ildiz jadvalida bo'lishini ta'minlaydi va
   // 2) root jadvalini qayta ishlash uchun kutilayotgan mikrotask mavjudligini ta'minlaydi.
-  // 
+  //
   // Ko'p jadval tuzish jarayonlari `scheduleTaskForRootDuringMicrotask` amalga oshgunga qadar boshlanmaydi.
-  
+
   // root’ni ildiz jadvaliga qo'shish
   if (root === lastScheduledRoot || root.next !== null) {
     // Tezkor yo'l. Bu root allaqachon jadvalga kiritilgan.
   } else {
     if (lastScheduledRoot === null) {
-      firstScheduledRoot = lastScheduledRoot = root;
+      firstScheduledRoot = lastScheduledRoot = root
     } else {
-      lastScheduledRoot.next = root;
-      lastScheduledRoot = root;
+      lastScheduledRoot.next = root
+      lastScheduledRoot = root
     }
   }
 
@@ -28,7 +34,7 @@ Bu jarayonni yanada yaxshiroq tushunish uchun, hozirgi vaqtdagi React’ning man
   // keyingi qayta ishlamaganunimizcha buni true qiymatga o'rnatamiz
   // Agar bu false bo'lsa, biz jadvalni
   // tekshirmasdan tezda flushSync’ni yakunlashimiz mumkin.
-  mightHavePendingSyncWork = true;
+  mightHavePendingSyncWork = true
 
   // Hozirgi voqealar oxirida, har bir root’ni ko'rib chiqib
   // va ularning har biri uchun to'g'ri ustuvorlikda
@@ -36,13 +42,13 @@ Bu jarayonni yanada yaxshiroq tushunish uchun, hozirgi vaqtdagi React’ning man
   if (__DEV__ && ReactCurrentActQueue.current !== null) {
     // Biz `act` rejimida ishlayapmiz.
     if (!didScheduleMicrotask_act) {
-      didScheduleMicrotask_act = true;
-      scheduleImmediateTask(processRootScheduleInMicrotask);
+      didScheduleMicrotask_act = true
+      scheduleImmediateTask(processRootScheduleInMicrotask)
     }
   } else {
     if (!didScheduleMicrotask) {
-      didScheduleMicrotask = true;
-      scheduleImmediateTask(processRootScheduleInMicrotask);
+      didScheduleMicrotask = true
+      scheduleImmediateTask(processRootScheduleInMicrotask)
     }
   }
 
@@ -51,16 +57,12 @@ Bu jarayonni yanada yaxshiroq tushunish uchun, hozirgi vaqtdagi React’ning man
     // biz mikrotask’ni kutmasdan render vazifasini darhol rejalashtiramiz.
     // TODO: Biz rejalashtirilgan qo'shimcha imkoniyatlarni blokdan chiqarish uchun,
     // imkon qadar tezroq enableDeferRootSchedulingToMicrotask’ni ishga tushirishimiz kerak.
-    scheduleTaskForRootDuringMicrotask(root, now());
+    scheduleTaskForRootDuringMicrotask(root, now())
   }
 
-  if (
-    __DEV__ &&
-    ReactCurrentActQueue.isBatchingLegacy &&
-    root.tag === LegacyRoot
-  ) {
+  if (__DEV__ && ReactCurrentActQueue.isBatchingLegacy && root.tag === LegacyRoot) {
     // `act` rejimining maxsus holati: eski yangilanishlar jadvalga kiritilganida bu qayd etiladi.
-    ReactCurrentActQueue.didScheduleLegacyUpdate = true;
+    ReactCurrentActQueue.didScheduleLegacyUpdate = true
   }
 }
 ```
@@ -91,7 +93,7 @@ Mikrotas’klar joriy vazifa tugagandan keyin, JavaScript dvigateli keyingi (mak
 
 #### Xususiyatlari va qo'llanilishi
 
-Mikrotask’lar navbatdagi makrotask’ga o'tishdan oldin bajarilishi bilan yuqori ustuvorlikka ega, ya'ni ular makrotask’lardan oldin bajariladi. Agar mikrotask navbatga uzluksiz yangi mikrotasklar qo'shsa, bu vaziyat vazifalar(macrotask) navbati qayta ishlanmasligi holatiga olib kelishi mumkin. Bu holat *starvation (och qolish)* deb ataladi.
+Mikrotask’lar navbatdagi makrotask’ga o'tishdan oldin bajarilishi bilan yuqori ustuvorlikka ega, ya'ni ular makrotask’lardan oldin bajariladi. Agar mikrotask navbatga uzluksiz yangi mikrotasklar qo'shsa, bu vaziyat vazifalar(macrotask) navbati qayta ishlanmasligi holatiga olib kelishi mumkin. Bu holat _starvation (och qolish)_ deb ataladi.
 
 ## `ensureRootIsScheduled` funksiyasi tahlili
 
@@ -114,15 +116,17 @@ Shu bilan biz React’dagi rejalashtiruvchi (scheduler) roli haqida tushuncha ho
 ### "scheduler" va "lanes"
 
 Agar rejalashtiruvchining xatti-harakatlarini kodda modellashtirsak, u quyidagicha ko'rinadi:
-``` js copy
+
+```js copy
 if (nextLane === Sync) {
-    queueMicrotask(processNextLane);
+  queueMicrotask(processNextLane)
 } else {
-    Scheduler.scheduleCallback(callback, processNextLane);
+  Scheduler.scheduleCallback(callback, processNextLane)
 }
 ```
 
 Shu orqali ko'rish mumkinki:
+
 - Agar keyingi yo'l `Sync` bo'lsa, scheduler keyingi yo'lda darhol ishlov berish uchun mikrotask navbatini shakllantiradi. Bu yerda mikrotask’lar nima ekanligini va ularning qanday mos kelishini tushunamiz.
 - Agar keyingi yo'l `Sync` bo'lmasa, scheduler qayta chaqirishni rejalashtiradi va keyingi yo'lda ishlov beradi.
 

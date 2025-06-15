@@ -1,3 +1,12 @@
+---
+title: 'Murakkab narsani o'zingiz ixtiro qilmang"
+description: "React ilovasi uchun maxsus serverda render qilishni yaratish murakkab va ko'p vaqt talab qiluvchi vazifa bo'lishi mumkin. React serverda render qilish uchun ba'zi API’larni taqdim etsa ham, o'zingiz noldan butunlay maxsus yechim yaratish turli muammolar va samarasizliklarga olib kelishi mumkin. Ushbu bo'limda biz nima uchun Next.js va Remix kabi mavjud freymvorklarga tayangan holda ishlash, o'z serveringizni yaratishga qaraganda afzal ekanligini ko'rib chiqamiz:
+
+## Kutilmagan holatlarni va murakkabliklarni boshqarish
+
+React ilovalari juda murakkablashishi mumkin va serverda render qilishni amalga oshirishda turli xil kutilmagan holatlar(edge cases) va murakkabliklarni hal qilish talab etiladi. Bularga asinxron ma'lumot olishni boshqarish(data fetching), kodni bo'lib yuklash(code splitting) va React’ning turli xil lifecycle’larini boshqarish kiradi. Next.js yoki Remix kabi freymvorklarni ishlatish orqali siz bu murakkabliklarni o'zingiz hal qilish zaruriyatidan qutulasiz, chunki bu freymvorklar ko'plab umumiy kutilmagan holatlar uchun o'z yechimlariga ega."
+---
+
 # O'zingiz ixtiro qilmang
 
 React ilovasi uchun maxsus serverda render qilishni yaratish murakkab va ko'p vaqt talab qiluvchi vazifa bo'lishi mumkin. React serverda render qilish uchun ba'zi API’larni taqdim etsa ham, o'zingiz noldan butunlay maxsus yechim yaratish turli muammolar va samarasizliklarga olib kelishi mumkin. Ushbu bo'limda biz nima uchun Next.js va Remix kabi mavjud freymvorklarga tayangan holda ishlash, o'z serveringizni yaratishga qaraganda afzal ekanligini ko'rib chiqamiz:
@@ -11,45 +20,46 @@ React ilovalari juda murakkablashishi mumkin va serverda render qilishni amalga 
 Bunday kutilmagan holatlardan biri xavfsizlikdir. Server ko'plab klientlar so'rovlarini qayta ishlaganda, bir klientning maxfiy ma'lumotlari boshqa klientga beixtiyor tarqalib ketmasligiga ishonch hosil qilish juda muhim. Bu yerda Next.js, Remix va Gatsby kabi freymvorklar ushbu xavotirlarni boshqarishda bebaho yordam berishi mumkin. Aytaylik, klient A serverga murojaat qiladi va ularning ma'lumotlari server tomonidan keshlanadi. Agar server bu keshlangan ma'lumotni tasodifan klient B’ga yuborsa, maxfiy ma'lumotlar fosh bo'lishi mumkin.
 
 Ushbu misolni ko'rib chiqaylik:
-``` js copy filename="server.js"
+
+```js copy filename="server.js"
 // express modulini import qilish
-const express = require("express");
+const express = require('express')
 
 // Yangi express dastur nusxasini yaratish
-const app = express();
+const app = express()
 
 // Keshlangan foydalanuvchi ma'lumotlarini saqlash uchun o'zgaruvchi e'lon qilish
 // Dastlab, keshda ma'lumot yo'q, shuning uchun uning qiymati null bo'ladi
-let cachedUserData = null;
+let cachedUserData = null
 
 // "/user/:userId"ga GET so'rovlar uchun route ishlov beruvchisini belgilash
 // Bu ma'lum foydalanuvchi ID uchun foydalanuvchi ma'lumotlari bilan javob beradi
-app.get("/user/:userId", (req, res) => {
+app.get('/user/:userId', (req, res) => {
   // So'rov parametrlardan userId’ni chiqarish
-  const { userId } = req.params;
+  const { userId } = req.params
 
   // Keshlangan foydalanuvchi ma'lumotlari borligini tekshirish
   // Agar mavjud bo'lsa, keshdagi ma'lumotlarni qaytarish
   if (cachedUserData) {
-    return res.json(cachedUserData);
+    return res.json(cachedUserData)
   }
 
   // Aks holda, foydalanuvchi ma'lumotlarini ma'lumotlar bazasi yoki boshqa manbadan olish
   // fetchUserData funksiyasi boshqa joyda e'lon qilingan deb hisoblab turaylik
-  const userData = fetchUserData(userId);
+  const userData = fetchUserData(userId)
 
   // Keshni olingan foydalanuvchi ma'lumotlari bilan yangilash
-  cachedUserData = userData;
+  cachedUserData = userData
 
   // Olingan foydalanuvchi ma'lumotlari bilan javob qaytarish
-  res.json(userData);
-});
+  res.json(userData)
+})
 
 // Serverni ishga tushirish va 3000-portni tinglash
 // Server tayyor bo'lganida konsolda xabar chiqadi
 app.listen(3000, () => {
-  console.log("Server listening on port 3000");
-});
+  console.log('Server listening on port 3000')
+})
 ```
 
 Ushbu kodda `cachedUserData` foydalanuvchi ma'lumotlarini keshlash uchun mo'ljallangan, ammo u barcha so'rovlar uchun `userId`dan qat'i nazar umumiydir. Har safar `/user/:userId`ga so'rov yuborilganda, server `cachedUserData`’ni tekshiradi va agar keshda ma'lumot mavjud bo'lsa, `userId` mos kelishi yoki mos kelmasligidan qat'i nazar keshdagi ma'lumotlarni qaytaradi. Agar keshda ma'lumot bo'lmasa, uni olish, keshlash va qaytarish jarayonini bajaradi. Bu shuni anglatadiki, agar ketma-ket `/user/1` va `/user/2`ga ikkita so'rov yuborilsa, ikkinchi so'rov birinchi foydalanuvchining ma'lumotlarini olishi mumkin, bu esa katta xavfsizlik muammosidir.
@@ -73,32 +83,33 @@ Maxsus server tomonida render qilish yechimini yaratish murakkab va ko'p vaqt ta
 ### Eng yaxshi amaliyotlar va konvensiyalar
 
 Next.js yoki Remix kabi freymvorklardan foydalanish loyihangizda eng yaxshi amaliyotlar va konvensiyalarni qo'llashga yordam beradi. Ushbu freymvorklar eng yaxshi amaliyotlarni hisobga olgan holda ishlab chiqilgan va ularning konvensiyalariga rioya qilish orqali ilovangiz mustahkam poydevorga asoslangan holda yaratilishini ta'minlashingiz mumkin.
-``` js copy
+
+```js copy
 // Remix bilan eng yaxshi amaliyotlar misoli
 // Fayl: routes/posts/$postId.tsx
 
-import { useParams } from "react-router-dom";
-import { useLoaderData } from "@remix-run/react";
+import { useParams } from 'react-router-dom'
+import { useLoaderData } from '@remix-run/react'
 
 // Eng yaxshi amaliyot: ma'lumotlarni iloji boricha erta olish
 // Eng yaxshi amaliyot: ma'lumotlarni UI bilan birlashtirish
 export function loader({ params }) {
-  return fetchPost(params.postId);
+  return fetchPost(params.postId)
 }
 
 function Post() {
-  const { postId } = useParams();
-  const post = useLoaderData();
+  const { postId } = useParams()
+  const post = useLoaderData()
 
   return (
     <div>
       <h1>{post.title}</h1>
       <div>{post.content}</div>
     </div>
-  );
+  )
 }
 
-export default Post;
+export default Post
 ```
 
 Next.js va Remix kabi mavjud freymvorklar tomonidan taqdim etilgan afzalliklar va optimizatsiyalarni hisobga olganda, React ilovasi uchun alohida bir server tomonda render qilish yechimini yaratish maqbul yondashuv emasligi aniq bo'ladi. Ushbu freymvorklardan foydalanish orqali siz ishlab chiqish vaqtini tejashingiz, eng yaxshi amaliyotlarga rioya qilinishini ta'minlashingiz va ularning tegishli jamoalari tomonidan taqdim etilgan doimiy yangilanishlar va qo'llab-quvvatlashdan foyda olishingiz mumkin.

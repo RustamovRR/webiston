@@ -1,3 +1,15 @@
+---
+title: "Nega bizga freymvork kerak"
+description: "React interaktiv foydalanuvchi interfeyslarini yaratish uchun asosiy elementlarni taqdim etsa-da, u ko'plab muhim arxitektura qarorlarini dasturchilarga qoldiradi. React bu borada fikrga ega emas, bu esa dasturchilarga ilovalarini o'zlari xohlagan tarzda tuzish uchun moslashuvchanlik beradi. Biroq, ilovalar kengaygan sari, bu erkinlik ortiqcha yukka aylanishi mumkin. Siz doimiy ravishda takroriy muammolarni hal qilish, masalan, routing, ma'lumotlarni olish va serverda render qilish kabi muammolarni hal qilishda o'z-o'zidan qaytalanish xavfiga duch kelishingiz mumkin.
+
+Bu yerda React freymvorklari yordamga keladi. Ular oldindan belgilangan strukturani va umumiy muammolar uchun yechimlarni taqdim etadi, bu esa dasturchilarga o'z ilovasining o'ziga xos tomonlariga e'tibor qaratishga imkon beradi, shuning uchun qaytariluvchan kod bilan shug'ullanish shart emas. Bu ishlab chiqish jarayonini sezilarli darajada tezlashtirishi va freymvork tomonidan ta'minlangan eng yaxshi amaliyotlarga rioya qilish orqali kod bazasining sifatini yaxshilashi mumkin.
+
+Buni to'liq tushunish uchun, keling, o'zimizning minimal freymvorkimizni yozib ko'rishga harakat qilaylik. Buni amalga oshirish uchun, biz freymvorklardan osonlik bilan ololmaydigan bir nechta asosiy xususiyatlarni aniqlashimiz kerak. Qisqa qilib aytganda, biz freymvorklardan oladigan uchta asosiy xususiyatni aniqlaymiz. Freymvorklar ko'p narsalarni bajaradi, lekin bu kichik guruh bizni ajoyib muhokama qilish uchun asos yaratadi:
+- Serverda render qilish
+- Routing
+- Ma'lumotlarni olish (Data fetching)"
+---
+
 # Nega bizga freymvork kerak
 
 React interaktiv foydalanuvchi interfeyslarini yaratish uchun asosiy elementlarni taqdim etsa-da, u ko'plab muhim arxitektura qarorlarini dasturchilarga qoldiradi. React bu borada fikrga ega emas, bu esa dasturchilarga ilovalarini o'zlari xohlagan tarzda tuzish uchun moslashuvchanlik beradi. Biroq, ilovalar kengaygan sari, bu erkinlik ortiqcha yukka aylanishi mumkin. Siz doimiy ravishda takroriy muammolarni hal qilish, masalan, routing, ma'lumotlarni olish va serverda render qilish kabi muammolarni hal qilishda o'z-o'zidan qaytalanish xavfiga duch kelishingiz mumkin.
@@ -5,6 +17,7 @@ React interaktiv foydalanuvchi interfeyslarini yaratish uchun asosiy elementlarn
 Bu yerda React freymvorklari yordamga keladi. Ular oldindan belgilangan strukturani va umumiy muammolar uchun yechimlarni taqdim etadi, bu esa dasturchilarga o'z ilovasining o'ziga xos tomonlariga e'tibor qaratishga imkon beradi, shuning uchun qaytariluvchan kod bilan shug'ullanish shart emas. Bu ishlab chiqish jarayonini sezilarli darajada tezlashtirishi va freymvork tomonidan ta'minlangan eng yaxshi amaliyotlarga rioya qilish orqali kod bazasining sifatini yaxshilashi mumkin.
 
 Buni to'liq tushunish uchun, keling, o'zimizning minimal freymvorkimizni yozib ko'rishga harakat qilaylik. Buni amalga oshirish uchun, biz freymvorklardan osonlik bilan ololmaydigan bir nechta asosiy xususiyatlarni aniqlashimiz kerak. Qisqa qilib aytganda, biz freymvorklardan oladigan uchta asosiy xususiyatni aniqlaymiz. Freymvorklar ko'p narsalarni bajaradi, lekin bu kichik guruh bizni ajoyib muhokama qilish uchun asos yaratadi:
+
 - Serverda render qilish
 - Routing
 - Ma'lumotlarni olish (Data fetching)
@@ -12,47 +25,47 @@ Buni to'liq tushunish uchun, keling, o'zimizning minimal freymvorkimizni yozib k
 ## Sodda freymvorkimizni tuzish
 
 Keling, mavjud bo'lgan tasavvuriy React ilovasini olib, bu xususiyatlarni bosqichma-bosqich qo'shamiz, shunda freymvorklar biz uchun nima qilishini tushunamiz. Biz "freymvork sifatida" qabul qilayotgan React ilovasining quyidagi strukturasi bor:
+
 - `index.js`
 - `List.js`
 - `Detail.js`
 - `dist/`
-    - `clientBundle.js`
+  - `clientBundle.js`
 
 Mana, har bir fayl qanday ko'rinishga ega:
-``` js copy filename="index.js"
-import React from "react";
-import { createRoot } from "react-dom/client";
-import Router from "./Router";
 
-const root = createRoot(document);
+```js copy filename="index.js"
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import Router from './Router'
 
-const params = new URLSearchParams();
-const thingId = params.get("id");
+const root = createRoot(document)
 
-root.render(
-  window.location.pathname === "/" ? <List /> : <Detail thingId={thingId} />
-);
+const params = new URLSearchParams()
+const thingId = params.get('id')
+
+root.render(window.location.pathname === '/' ? <List /> : <Detail thingId={thingId} />)
 ```
 
-``` js copy filename="List.js"
+```js copy filename="List.js"
 export const List = () => {
-  const [things, setThings] = useState([]);
-  const [requestState, setRequestState] = useState("initial");
-  const [error, setError] = useState(null);
+  const [things, setThings] = useState([])
+  const [requestState, setRequestState] = useState('initial')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    setRequestState("loading");
-    fetch("https://api.com/get-list")
+    setRequestState('loading')
+    fetch('https://api.com/get-list')
       .then((r) => r.json())
       .then(setThings)
       .then(() => {
-        setRequestState("success");
+        setRequestState('success')
       })
       .catch((e) => {
-        setRequestState("error");
-        setError(e);
-      });
-  }, []);
+        setRequestState('error')
+        setError(e)
+      })
+  }, [])
 
   return (
     <div>
@@ -62,37 +75,37 @@ export const List = () => {
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 ```
 
-``` js copy filename="Detail.js"
+```js copy filename="Detail.js"
 export const Detail = ({ thingId }) => {
-  const [thing, setThing] = useState([]);
-  const [requestState, setRequestState] = useState("initial");
-  const [error, setError] = useState(null);
+  const [thing, setThing] = useState([])
+  const [requestState, setRequestState] = useState('initial')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    setRequestState("loading");
-    fetch("https://api.com/get-thing/" + thingId)
+    setRequestState('loading')
+    fetch('https://api.com/get-thing/' + thingId)
       .then((r) => r.json())
       .then(setThing)
       .then(() => {
-        setRequestState("success");
+        setRequestState('success')
       })
       .catch((e) => {
-        setRequestState("error");
-        setError(e);
-      });
-  }, []);
+        setRequestState('error')
+        setError(e)
+      })
+  }, [])
 
   return (
     <div>
       <h1>The thing!</h1>
       {thing}
     </div>
-  );
-};
+  )
+}
 ```
 
 ### Duch keladigan ba'zi muammolar
@@ -107,9 +120,10 @@ JavaScript ishga tushguncha, foydalanuvchi bo'sh sahifani ko'radi va keyin ular 
 
 #### Biz ma'lumotlarni juda kech olishni boshlaymiz
 
-Ilovamiz foydalanuvchi bilan ishlash qulayligiga ta'sir etadigan *network waterfall*(tarmoq sharsharasi) deb ataladigan bir muammoga duch keladi: bu g'aroyib hodisa, tarmoq so'rovlarining ketma-ket amalga oshirilishi natijasida yuzaga keladi va ilovalarni sekinlashtiradi. Ilovamiz asosiy funksionallik uchun serverga bir nechta so'rovlar yuborishi kerak. 
+Ilovamiz foydalanuvchi bilan ishlash qulayligiga ta'sir etadigan _network waterfall_(tarmoq sharsharasi) deb ataladigan bir muammoga duch keladi: bu g'aroyib hodisa, tarmoq so'rovlarining ketma-ket amalga oshirilishi natijasida yuzaga keladi va ilovalarni sekinlashtiradi. Ilovamiz asosiy funksionallik uchun serverga bir nechta so'rovlar yuborishi kerak.
 
 Masalan, ishga tushirish jarayoni quyidagicha amalga oshadi:
+
 - JavaScript’ni yuklab olish, tahlil qilish va bajarish.
 - React komponentlarini render qilish va tatbiq qilish.
 - `useEffect` ma'lumotlarni yuklay boshlaydi.
@@ -130,16 +144,17 @@ Odatda, freymvorklar bizga serverda render qilish imkonini o'zi bilan taqdim qil
 Diqqat qiling, bu yerda `renderToString` funksiyasidan faqat soddalik uchun foydalanamiz va freymvorklar ushbu funksiyalarni qanday amalga oshirishini tushuntirish uchun qo'shdik. Haqiqiy foydalanish holatida, serverda render qilish uchun `renderToPipeableStream` kabi kuchliroq asinxron API’lardan foydalanish afzal, bu [6-bobda](/books/react/server-side-react/renderToPipeableStream) batafsil yoritilgan.
 
 Keling, buni amalga oshiramiz:
-``` js copy filename="server.js"
-import express from "express";
-import { renderToString } from "react-dom/server"; // 6-bobda yoritilgan
 
-import { List } from "./List";
-import { Detail } from "./Detail";
+```js copy filename="server.js"
+import express from 'express'
+import { renderToString } from 'react-dom/server' // 6-bobda yoritilgan
 
-const app = express();
+import { List } from './List'
+import { Detail } from './Detail'
 
-app.use(express.static("./dist")); // Statik fayllarni, masalan, klient JS’larini olish uchun
+const app = express()
+
+app.use(express.static('./dist')) // Statik fayllarni, masalan, klient JS’larini olish uchun
 
 const createLayout = (children) => `<html lang="en">
 <head>
@@ -149,53 +164,53 @@ const createLayout = (children) => `<html lang="en">
     ${children}
     <script src="/clientBundle.js"></script>
 </body>
-<html>`;
+<html>`
 
-app.get("/", (req, res) => {
-    res.setHeader("Content-Type", "text/html");
-    res.end(createLayout(renderToString(<List />)));
-});
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html')
+  res.end(createLayout(renderToString(<List />)))
+})
 
-app.get("/detail", (req, res) => {
-    res.setHeader("Content-Type", "text/html");
-    res.end(
-        createLayout(renderToString(<Detail thingId={req.params.thingId} />))
-    );
-});
+app.get('/detail', (req, res) => {
+  res.setHeader('Content-Type', 'text/html')
+  res.end(createLayout(renderToString(<Detail thingId={req.params.thingId} />)))
+})
 
 app.listen(3000, () => {
-    console.info("Ilova tinglayapti!");
-});
+  console.info('Ilova tinglayapti!')
+})
 ```
 
-Ushbu kod ilovamizga serverda render qilishni qo'shish uchun yetarli. E'tibor bering, klient tomoni uchun `index.js` o'zining klient router’iga ega, va biz asosan server uchun yana bitta router qo'shdik. Freymvorklar *izomorf router’lar* birga keladi, ya'ni klient va serverda ishlaydigan router’lar.
+Ushbu kod ilovamizga serverda render qilishni qo'shish uchun yetarli. E'tibor bering, klient tomoni uchun `index.js` o'zining klient router’iga ega, va biz asosan server uchun yana bitta router qo'shdik. Freymvorklar _izomorf router’lar_ birga keladi, ya'ni klient va serverda ishlaydigan router’lar.
 
 ### Routing
 
-Bu server yaxshi ishlayotgan bo'lsa-da, kengaytirishda qiyinchilik tug'diradi: har bir qo'shimcha router uchun o'zimiz `req.get` chaqiruvlarini qo'shishimiz kerak bo'ladi. Keling, buni biroz kengaytirish mumkinligini ko'rib chiqaylik. Bunga konfiguratsiya obyekti orqali router’larni komponentlarga bog'lash yoki fayl tizimiga asoslangan router’lash kabi bir nechta usullarda erishishimiz mumkin. Ta'lim maqsadida (va, albatta, qiziqish uchun), *fayl tizimiga asoslangan* router’lashni o'rganamiz. Bu Next.js kabi freymvorklar tomonidan kiritilgan konvensiya va fikrlarning sababi va mexanizmini aniqroq tushunishga yordam beradi.
+Bu server yaxshi ishlayotgan bo'lsa-da, kengaytirishda qiyinchilik tug'diradi: har bir qo'shimcha router uchun o'zimiz `req.get` chaqiruvlarini qo'shishimiz kerak bo'ladi. Keling, buni biroz kengaytirish mumkinligini ko'rib chiqaylik. Bunga konfiguratsiya obyekti orqali router’larni komponentlarga bog'lash yoki fayl tizimiga asoslangan router’lash kabi bir nechta usullarda erishishimiz mumkin. Ta'lim maqsadida (va, albatta, qiziqish uchun), _fayl tizimiga asoslangan_ router’lashni o'rganamiz. Bu Next.js kabi freymvorklar tomonidan kiritilgan konvensiya va fikrlarning sababi va mexanizmini aniqroq tushunishga yordam beradi.
 
-Agar biz barcha sahifalar *./pages* katalogida joylashishi va ushbu katalogdagi barcha fayl nomlari router yo'llariga aylanishi kerak degan qoidani qo'llasak, serverimiz bu qoidaga asoslanib ishlaydi va kengaytirish imkoniyati oshadi.
+Agar biz barcha sahifalar _./pages_ katalogida joylashishi va ushbu katalogdagi barcha fayl nomlari router yo'llariga aylanishi kerak degan qoidani qo'llasak, serverimiz bu qoidaga asoslanib ishlaydi va kengaytirish imkoniyati oshadi.
 
 #### Katalog strukturasini kengaytirish
 
 Buni misol yordamida ko'rsatamiz. Avval katalog tuzilmasini yangilaymiz. Yangi katalog tuzilmasi quyidagicha ko'rinadi:
+
 - `index.js`
 - `pages/`
-    - `list.js`
-    - `detail.js`
-   <br/>
- - `dist/`
-    - `clientBundle.js`
+  - `list.js`
+  - `detail.js`
+    <br />
+- `dist/`
+  - `clientBundle.js`
 
 Endi `pages` katalogidagi har bir narsa route’ga aylanadi, va serverimizni ushbu tuzilmaga moslashtirishimiz mumkin.
-``` js copy filename="server.js"
-import express from "express";
-import { join } from "path";
-import { renderToString } from "react-dom/server"; // 6-bobda yoritilgan
 
-const app = express();
+```js copy filename="server.js"
+import express from 'express'
+import { join } from 'path'
+import { renderToString } from 'react-dom/server' // 6-bobda yoritilgan
 
-app.use(express.static("./dist")); //  Statik fayllarni, masalan, klient JS’larini olish uchun
+const app = express()
+
+app.use(express.static('./dist')) //  Statik fayllarni, masalan, klient JS’larini olish uchun
 
 const createLayout = (children) => `<html lang="en">
 <head>
@@ -205,81 +220,81 @@ const createLayout = (children) => `<html lang="en">
     ${children}
     <script src="/clientBundle.js"></script>
 </body>
-<html>`;
+<html>`
 
-app.get("/:route", async (req, res) => {
-    // `pages` katalogidan route komponentini import qilamiz
-    const exportedStuff = await import(
-        join(process.cwd(), "pages", req.params.route)
-    );
-    // Nomlangan eksportlardan foydalanib bo'lmaydi, shuning uchun
-    // default eksportdan foydalanamiz.
-    // `.default` standartlashtirilgan, shuning uchun bunga suyansak bo'ladi
-    const Page = exportedStuff.default;
+app.get('/:route', async (req, res) => {
+  // `pages` katalogidan route komponentini import qilamiz
+  const exportedStuff = await import(join(process.cwd(), 'pages', req.params.route))
+  // Nomlangan eksportlardan foydalanib bo'lmaydi, shuning uchun
+  // default eksportdan foydalanamiz.
+  // `.default` standartlashtirilgan, shuning uchun bunga suyansak bo'ladi
+  const Page = exportedStuff.default
 
-    // Props’larni 'query string'dan olishimiz mumkin.
-    const props = req.query;
+  // Props’larni 'query string'dan olishimiz mumkin.
+  const props = req.query
 
-    res.setHeader("Content-Type", "text/html");
-    res.end(createLayout(renderToString(<Page {...props} />)));
-});
+  res.setHeader('Content-Type', 'text/html')
+  res.end(createLayout(renderToString(<Page {...props} />)))
+})
 
 app.listen(3000, () => {
-    console.info("Ilova tinglanyapti!");
-});
+  console.info('Ilova tinglanyapti!')
+})
 ```
 
 #### Kengaytirilgan strukturaning afzalliklari
 
-Endi serverimiz *./pages* katalogidagi konvensiya tufayli ancha kengaytirilgan! Bu yaxshi! Biroq, endi har bir sahifa komponentini default eksport qilishimiz kerak bo'ladi, chunki bizning yondashuvimiz umumiyroq bo'lib qoladi va import qilish uchun nomni oldindan bilishning imkoni bo'lmaydi. Bu freymvorklar bilan ishlashning ba'zi ijobiy va salbiy jihatlaridan biridir, ammo bu holatda, ushbu jihatlar foydali ko'rinmoqda.
+Endi serverimiz _./pages_ katalogidagi konvensiya tufayli ancha kengaytirilgan! Bu yaxshi! Biroq, endi har bir sahifa komponentini default eksport qilishimiz kerak bo'ladi, chunki bizning yondashuvimiz umumiyroq bo'lib qoladi va import qilish uchun nomni oldindan bilishning imkoni bo'lmaydi. Bu freymvorklar bilan ishlashning ba'zi ijobiy va salbiy jihatlaridan biridir, ammo bu holatda, ushbu jihatlar foydali ko'rinmoqda.
 
 ### Ma'lumotlarni olish (data fetching)
 
 Ajoyib! Biz serverda render qilish va fayl tizimiga asoslangan route’lashni qo'shdik, lekin hali ham tarmoqda yuzaga kelayotgan "tarmoq sharsharalari"ga duch kelyapmiz. Keling, ma'lumot olish jarayonini yaxshilaylik. Avvalo, komponentlarimizni dastlabki ma'lumotlarni props orqali olishga moslashtiramiz. Soddalashtirish uchun faqat `List` komponenti bilan shug'ullanamiz va `Detail` komponentini sizga uyga vazifa sifatida qoldiramiz:
-``` js copy filename="./pages/list.jsx"
+
+```js copy filename="./pages/list.jsx"
 // Fayl tizimiga asoslangan route’lash uchun default eksportdan foydalanamiz.
 export default function List({ initialThings } /* <- dastlabki prop qo'shilmoqda */) {
-    const [things, setThings] = useState(initialThings);
-    const [requestState, setRequestState] = useState("initial");
-    const [error, setError] = useState(null);
+  const [things, setThings] = useState(initialThings)
+  const [requestState, setRequestState] = useState('initial')
+  const [error, setError] = useState(null)
 
-    // Agar kerak bo'lsa, bu funksiya hali ham ma'lumotlarni olish uchun ishlashi mumkin.
-    useEffect(() => {
-        if (initialThings) return;
-        setRequestState("loading");
-        fetch("https://api.com/get-list")
-            .then((r) => r.json())
-            .then(setThings)
-            .then(() => {
-                setRequestState("success");
-            })
-            .catch((e) => {
-                setRequestState("error");
-                setError(e);
-            });
-    }, [initialThings]);
+  // Agar kerak bo'lsa, bu funksiya hali ham ma'lumotlarni olish uchun ishlashi mumkin.
+  useEffect(() => {
+    if (initialThings) return
+    setRequestState('loading')
+    fetch('https://api.com/get-list')
+      .then((r) => r.json())
+      .then(setThings)
+      .then(() => {
+        setRequestState('success')
+      })
+      .catch((e) => {
+        setRequestState('error')
+        setError(e)
+      })
+  }, [initialThings])
 
-    return (
-        <div>
-            <ul>
-                {things.map((thing) => (
-                    <li key={thing.id}>{thing.label}</li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div>
+      <ul>
+        {things.map((thing) => (
+          <li key={thing.id}>{thing.label}</li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 ```
 
 Endi biz dastlabki prop qo'shganimiz uchun, bu sahifa uchun kerakli ma'lumotlarni serverda olish va renderlashdan oldin komponentga uzatish usulini izlashimiz kerak. Ideal holda, quyidagi tarzda harakat qilamiz:
-``` js copy filename="./server.js"
-import express from "express";
-import { join } from "path";
-import { renderToString } from "react-dom/server"; // 6-bobda yoritilgan
 
-const app = express();
+```js copy filename="./server.js"
+import express from 'express'
+import { join } from 'path'
+import { renderToString } from 'react-dom/server' // 6-bobda yoritilgan
 
-app.use(express.static("./dist")); // Statik fayllar, masalan, klient JS’larini olish uchun
+const app = express()
+
+app.use(express.static('./dist')) // Statik fayllar, masalan, klient JS’larini olish uchun
 
 const createLayout = (children) => `<html lang="en">
 <head>
@@ -289,87 +304,89 @@ const createLayout = (children) => `<html lang="en">
     ${children}
     <script src="/clientBundle.js"></script>
 </body>
-<html>`;
+<html>`
 
-app.get("/:route", async (req, res) => {
-    const exportedStuff = await import(
-        join(process.cwd(), "pages", req.params.route)
-    );
+app.get('/:route', async (req, res) => {
+  const exportedStuff = await import(join(process.cwd(), 'pages', req.params.route))
 
-    const Page = exportedStuff.default;
+  const Page = exportedStuff.default
 
-    // Komponent ma'lumotlarini olish
-    const data = await exportedStuff.getData();
-    const props = req.query;
+  // Komponent ma'lumotlarini olish
+  const data = await exportedStuff.getData()
+  const props = req.query
 
-    res.setHeader("Content-Type", "text/html");
-    // `props` va `data`ni uzatamiz
+  res.setHeader('Content-Type', 'text/html')
+  // `props` va `data`ni uzatamiz
 
-    res.end(createLayout(renderToString(<Page {...props} {...data.props} />)));
-});
+  res.end(createLayout(renderToString(<Page {...props} {...data.props} />)))
+})
 
 app.listen(3000, () => {
-    console.info("Ilova tinglayapti!");
-});
+  console.info('Ilova tinglayapti!')
+})
 ```
 
 Bu shuni anglatadiki, biz ma'lumotlarga muhtoj bo'lgan har qanday sahifa komponentlaridan `getData` deb nomlangan oluvchi funksiyani eksport qilishimiz kerak bo'ladi! Buning uchun ro'yxatni sozlaymiz:
-``` js copy filename="./pages/list.jsx"
+
+```js copy filename="./pages/list.jsx"
 // Biz buni serverda chaqiramiz va ushbu `props`larni komponentga uzatamiz
 export const getData = async () => {
-    return {
-        props: {
-            initialThings: await fetch("https://api.com/get-list").then((r) => r.json()),
-        },
-    };
-};
+  return {
+    props: {
+      initialThings: await fetch('https://api.com/get-list').then((r) => r.json()),
+    },
+  }
+}
 
 export default function List({ initialThings } /* <- dastlabki prop qo'shildi */) {
-    const [things, setThings] = useState(initialThings);
-    const [requestState, setRequestState] = useState("initial");
-    const [error, setError] = useState(null);
+  const [things, setThings] = useState(initialThings)
+  const [requestState, setRequestState] = useState('initial')
+  const [error, setError] = useState(null)
 
-    // Agar kerak bo'lsa, bu funksiya hali ham ma'lumotlarni olish uchun ishlashi mumkin.
-    useEffect(() => {
-        if (initialThings) return;
-        setRequestState("loading");
-        getData()
-            .then(setThings)
-            .then(() => {
-                setRequestState("success");
-            })
-            .catch((e) => {
-                setRequestState("error");
-                setError(e);
-            });
-    }, [initialThings]);
+  // Agar kerak bo'lsa, bu funksiya hali ham ma'lumotlarni olish uchun ishlashi mumkin.
+  useEffect(() => {
+    if (initialThings) return
+    setRequestState('loading')
+    getData()
+      .then(setThings)
+      .then(() => {
+        setRequestState('success')
+      })
+      .catch((e) => {
+        setRequestState('error')
+        setError(e)
+      })
+  }, [initialThings])
 
-    return (
-        <div>
-            <ul>
-                {things.map((thing) => (
-                    <li key={thing.id}>{thing.label}</li>
-                ))}
-            </ul>
-        </div>
-    );
+  return (
+    <div>
+      <ul>
+        {things.map((thing) => (
+          <li key={thing.id}>{thing.label}</li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 ```
 
-
 #### Yakuniy Natija
+
 Tayyor! Endi biz:
+
 - Har bir route uchun serverda imkon qadar tezroq ma'lumotlarni olishni boshlaymiz
 - Butun sahifani HTML satri ko'rinishida render qilamiz
 - Ushbu HTML’ni klientga yuboramiz
 
 Biz turli xil freymvorklardan uchta xususiyatni o'z ilovamizga muvaffaqiyatli qo'shdik va ularning asosiy versiyalarini implementatsiya qildik. Shu orqali freymvorklarning qanday ishlashini va ularning asosiy mexanizmlarini o'rgandik. Xususan, quyidagilarni bilib oldik:
+
 - Freymvorklar bizga serverda render qilish imkonini beradi
 - Fayl tizimiga asoslangan izomorf router’lashdan foydalanadi
 - Ma'lumotlarni eksport qilingan funksiyalar orqali olish imkonini beradi
 
 Agar siz ilgari Next.js ning 13-versiyasidan avvalgi versiyalaridan foydalangan bo'lsangiz, undagi quyidagi ko'rinishlarning sabablari yanada ravshan bo'ladi:
-- *./pages* katalogi
+
+- _./pages_ katalogi
 - Barcha sahifa eksportlari default eksportlar bo'lishi
 - `getServerSideProps` va `getStaticProps` funksiyalari
 

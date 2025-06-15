@@ -1,6 +1,6 @@
-# Remix freymvorki
-
-Remix — bu zamonaviy va kuchli bo'lgan veb freymvorki bo'lib, React va veb platformasining imkoniyatlaridan foydalanadi. Keling, qanday ishlashini tushunish uchun amaliy misollar bilan tanishamiz.
+---
+title: "Remix freymvorki"
+description: "Remix — bu zamonaviy va kuchli bo'lgan veb freymvorki bo'lib, React va veb platformasining imkoniyatlaridan foydalanadi. Keling, qanday ishlashini tushunish uchun amaliy misollar bilan tanishamiz.
 
 ## Asosiy Remix ilovasi
 
@@ -11,12 +11,30 @@ npm create remix@2.2.0
 
 Bu sizning joriy katalogingizda yangi Remix loyihasini yaratadi. Keling, ichiga nazar solamiz. Avvalambor, bizda *app* katalogi mavjud bo'lib, unda *entry.client.tsx* va *entry.server.tsx* fayllari bor. Shuningdek, ushbu katalogda *root.tsx* ham mavjud.
 
-Darhol ko'rinib turibdiki, Remix dastlabki holatda klient va server kirish nuqtalarini qo'llab-quvvatlaydi. Bundan tashqari, *root.tsx* fayli har bir sahifada render qilinadigan umumiy layout komponentini o'z ichiga oladi. Bu, Remix’ning sizga tezda boshlashishingizga yordam beradigan oldindan belgilangan strukturani taqdim etishining ajoyib namunasidir.
+Darhol ko'rinib turibdiki, Remix dastlabki holatda klient va server kirish nuqtalarini qo'llab-quvvatlaydi. Bundan tashqari, *root.tsx* fayli har bir sahifada render qilinadigan umumiy layout komponentini o'z ichiga oladi. Bu, Remix’ning sizga tezda boshlashishingizga yordam beradigan oldindan belgilangan strukturani taqdim etishining ajoyib namunasidir."
+---
+
+# Remix freymvorki
+
+Remix — bu zamonaviy va kuchli bo'lgan veb freymvorki bo'lib, React va veb platformasining imkoniyatlaridan foydalanadi. Keling, qanday ishlashini tushunish uchun amaliy misollar bilan tanishamiz.
+
+## Asosiy Remix ilovasi
+
+Avval biz asosiy Remix ilovasini o'rnatamiz. Remix’ni `npm` yordamida o'rnatishingiz mumkin:
+
+```shell copy
+npm create remix@2.2.0
+```
+
+Bu sizning joriy katalogingizda yangi Remix loyihasini yaratadi. Keling, ichiga nazar solamiz. Avvalambor, bizda _app_ katalogi mavjud bo'lib, unda _entry.client.tsx_ va _entry.server.tsx_ fayllari bor. Shuningdek, ushbu katalogda _root.tsx_ ham mavjud.
+
+Darhol ko'rinib turibdiki, Remix dastlabki holatda klient va server kirish nuqtalarini qo'llab-quvvatlaydi. Bundan tashqari, _root.tsx_ fayli har bir sahifada render qilinadigan umumiy layout komponentini o'z ichiga oladi. Bu, Remix’ning sizga tezda boshlashishingizga yordam beradigan oldindan belgilangan strukturani taqdim etishining ajoyib namunasidir.
 
 ## Server rendering
 
-Remix *entry.server.tsx* orqali serverda render qilish texnikasini standart holatda taqdim etadi. Fayl biz uchun avtomatik ravishda yaratilgan, lekin uning qanday ishlashini bir oz tushunishga harakat qilamiz. Mana bu yerda, uning ko'rinishi keltirilgan:
-``` js copy
+Remix _entry.server.tsx_ orqali serverda render qilish texnikasini standart holatda taqdim etadi. Fayl biz uchun avtomatik ravishda yaratilgan, lekin uning qanday ishlashini bir oz tushunishga harakat qilamiz. Mana bu yerda, uning ko'rinishi keltirilgan:
+
+```js copy
 import { PassThrough } from "node:stream";
 
 import type { AppLoadContext, EntryContext } from "@remix-run/node";
@@ -85,7 +103,7 @@ function handleBotRequest(
                 },
                 onError(error: unknown) {
                     responseStatusCode = 500;
-                    // Shell ichidan streaming render xatolarini yozib olish. 
+                    // Shell ichidan streaming render xatolarini yozib olish.
                     // Dastlabki shell(qobiq)ni render qilishda duch kelgan xatolarni yozmang
                     // chunki ular rad etadi va handleDocumentRequest tizimiga kiradi.
                     if (shellRendered) {
@@ -135,7 +153,7 @@ function handleBrowserRequest(
                 },
                 onError(error: unknown) {
                     responseStatusCode = 500;
-                    // Shell ichidan streaming render xatolarini yozib olish. 
+                    // Shell ichidan streaming render xatolarini yozib olish.
                     // Dastlabki shell(qobiq)ni render qilishda duch kelgan xatolarni yozmang
                     // chunki ular rad etadi va handleDocumentRequest tizimiga kiradi.
                     if (shellRendered) {
@@ -152,7 +170,7 @@ function handleBrowserRequest(
 
 ### Kodni tushunib chiqish
 
-Remix haqida juda yaxshi narsa shundaki, ushbu fayl ichki foydalanish uchun mo'ljallangan, lekin biz uni sozlash uchun bu yerda ochiq holda taqdim etilgan. Agar biz ushbu faylni o'chirsak, Remix ushbu faylning ichki standart implementatsiyasiga murojaat qiladi. Bu, agar kerak bo'lsa, *server rendering* xatti-harakatini sozlashimizga imkon beruvchi yaxshi chiqish yo'li. Shunday qilib, bizni freymvorkning "sehri"ga bog'lab qo'ymaydi.
+Remix haqida juda yaxshi narsa shundaki, ushbu fayl ichki foydalanish uchun mo'ljallangan, lekin biz uni sozlash uchun bu yerda ochiq holda taqdim etilgan. Agar biz ushbu faylni o'chirsak, Remix ushbu faylning ichki standart implementatsiyasiga murojaat qiladi. Bu, agar kerak bo'lsa, _server rendering_ xatti-harakatini sozlashimizga imkon beruvchi yaxshi chiqish yo'li. Shunday qilib, bizni freymvorkning "sehri"ga bog'lab qo'ymaydi.
 
 Ushbu fayl HTTP javoblari qanday yaratilishi va boshqarilishi kerakligini belgilaydi, xususan, botlar va oddiy brauzerlar uchun so'rovlar qanday boshqarilishini ta'riflaydi. Remix — bu zamonaviy React ilovalarini qurish uchun mo'ljallangan freymvork va ushbu fayl Remix ilovasining server tomoni logikasining bir qismidir.
 
@@ -164,7 +182,7 @@ Fayl bir nechta argumentlarni qabul qiluvchi `handleRequest` funksiyasini ekspor
 
 Bu SEO va ishlash samaradorligiga yordam beradi. Masalan, agar so'rov botdan kelsa, javobda sahifaning render qilingan HTML kontenti bo'lishi muhim, bu esa `handleBotRequest` funksiyasining vazifasidir. Aksincha, agar so'rov oddiy brauzerdan kelsa, sahifaning render qilingan HTML kontenti va sahifani hidratsiya qilish uchun zarur JavaScript kodini o'z ichiga olishi muhim, bu esa `handleBrowserRequest` funksiyasining vazifasidir. Remix biz uchun buni avtomatik ravishda bajarishi juda ajoyib.
 
-`handleBotRequest` va `handleBrowserRequest` funksiyalari tuzilish jihatidan deyarli o'xshash, ammo render qobiq tayyor bo'lganida yoki xatoga duch kelganda har xil ishlov beruvchi, ya'ni *handler*’larga, ega. Ular HTTP javobiga ega bo'lgan promise qaytaradi. Ular `renderToPipeableStream` yordamida o'tkaziluvchan oqim(pipeable stream)ga render operatsiyasini boshlaydi, so'rovdan olingan zarur kontekst va URL bilan birga `RemixServer` komponentini uzatadi. Ular `ABORT_DELAY` dan ko'proq vaqt oladigan renderlash operatsiyasini bekor qilish uchun timeout belgilaydi.
+`handleBotRequest` va `handleBrowserRequest` funksiyalari tuzilish jihatidan deyarli o'xshash, ammo render qobiq tayyor bo'lganida yoki xatoga duch kelganda har xil ishlov beruvchi, ya'ni _handler_’larga, ega. Ular HTTP javobiga ega bo'lgan promise qaytaradi. Ular `renderToPipeableStream` yordamida o'tkaziluvchan oqim(pipeable stream)ga render operatsiyasini boshlaydi, so'rovdan olingan zarur kontekst va URL bilan birga `RemixServer` komponentini uzatadi. Ular `ABORT_DELAY` dan ko'proq vaqt oladigan renderlash operatsiyasini bekor qilish uchun timeout belgilaydi.
 
 Renderlash operatsiyasi uchun event handler’larida `PassThrough` stream’ini va undan olingan o'qiladigan stream’ni yaratadi. Ular javob uchun `Content-Type` sarlavhasini `text/html` sifatida o'rnatadi. Ular promise’ni yangi `Response` obyekti bilan hal qiladi, bu esa stream, javob sarlavhalari va status kodini o'z ichiga oladi. Renderlash davomida xatolar yuzaga kelsa, ular promise’ni rad qiladi yoki xatoni konsolga yozadi, xato qaysi renderlash bosqichida yuz berganiga qarab.
 
@@ -174,35 +192,37 @@ Agar bizda hech qanday sozlashlar bo'lmasa, biz ushbu faylni o'chirib tashlaymiz
 
 ## Routing
 
-Remix’da har bir routing *routes* katalogida joylashgan fayl bilan ifodalanadi. Agar biz *./routes/cheese.tsx* faylini yaratib, uning default eksportini quyidagicha qilsak:
-``` js copy
+Remix’da har bir routing _routes_ katalogida joylashgan fayl bilan ifodalanadi. Agar biz _./routes/cheese.tsx_ faylini yaratib, uning default eksportini quyidagicha qilsak:
+
+```js copy
 export default function CheesePage() {
-  return <h1>This might sound cheesy, but I think you're really grate!</h1>;
+  return <h1>This might sound cheesy, but I think you're really grate!</h1>
 }
 ```
 
 va keyin lokal ishlab chiqish serverini `npm run dev` buyrug'i bilan ishga tushirsak, biz qiziqarli sarlavhaga ega sahifani ko'ramiz. Yana bir bor, Remix bizga tezda boshlashga yordam beradigan oldindan belgilangan strukturani taqdim etishini ko'ramiz va bu konvensiyada default eksportlarning qiymati bizning avvalgi fayl tizimi asosidagi routing qilishimizga o'xshashdir.
 
-Bu *./app/root.tsx* ichidagi umumiy layout komponenti va server va klient kirish nuqtalari bilan birlashganda, bu ko'pchilik veb-saytlarining asosini tashkil etadi. Biroq, biz zamonaviy veb-ilovalar uchun bir muhim komponentdan mahrummiz: ma'lumotlarni olish. Keling, Remix buni qanday hal qilishini ko'raylik.
+Bu _./app/root.tsx_ ichidagi umumiy layout komponenti va server va klient kirish nuqtalari bilan birlashganda, bu ko'pchilik veb-saytlarining asosini tashkil etadi. Biroq, biz zamonaviy veb-ilovalar uchun bir muhim komponentdan mahrummiz: ma'lumotlarni olish. Keling, Remix buni qanday hal qilishini ko'raylik.
 
 ## Ma'lumotlarni olish (data fetching)
 
-Remix’da ma'lumotlarni olish jarayoni yozilish vaqtida *loader*’lar, ya'ni *yuklovchilar*, deb nomlangan funksiyalarni ishlatishni o'z ichiga oladi. Agar siz `loader` deb nomlangan va ma'lum bir qiymat qaytaruvchi asinxron funksiyani eksport qilsangiz, bu qiymat sizning sahifa komponentingizda `useLoaderData` hook’i orqali mavjud bo'ladi. Keling, bu qanday ishlashini misol bilan ko'raylik.
+Remix’da ma'lumotlarni olish jarayoni yozilish vaqtida _loader_’lar, ya'ni _yuklovchilar_, deb nomlangan funksiyalarni ishlatishni o'z ichiga oladi. Agar siz `loader` deb nomlangan va ma'lum bir qiymat qaytaruvchi asinxron funksiyani eksport qilsangiz, bu qiymat sizning sahifa komponentingizda `useLoaderData` hook’i orqali mavjud bo'ladi. Keling, bu qanday ishlashini misol bilan ko'raylik.
 
 Oldingi pishloq sahifasiga misolimizga qaytamiz, aytaylik, biz API’dan pishloqlar ro'yxatini olishni va ularni sahifada ko'rsatishni xohlaymiz. Buni `./routes/cheese.tsx` faylidan `loader` funksiyasini eksport qilish orqali amalga oshirishimiz mumkin:
-``` js copy
+
+```js copy
 // Yordamchi funksiyalarni olish
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { json } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 
 // Loader
 export async function loader() {
-  const data = await fetch("https://api.com/get-cheeses");
-  return json(await data.json());
+  const data = await fetch('https://api.com/get-cheeses')
+  return json(await data.json())
 }
 
 export default function CheesePage() {
-  const cheeses = useLoaderData();
+  const cheeses = useLoaderData()
   return (
     <div>
       <ul>
@@ -212,7 +232,7 @@ export default function CheesePage() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
 ```
 
@@ -223,6 +243,7 @@ Bu bilan biz o'zimizning avvalgi ma'lumotlarni olish jarayonimizda takrorlanishn
 Ideal holatda, hozirda biz freymvorklar ushbu xususiyatlarni qanday amalga oshirishini aks ettiruvchi umumiy pattern’lar va asosiy mexanizmlarni o'rganish imkoniyatiga egamiz.
 
 Hozirga qadar biz bularni ko'rib chiqdik:
+
 - Server rendering
 - Routing
 - Data fetching
@@ -231,20 +252,21 @@ Biroq, biz hali to'xtab o'tmagan yana bir Remix xususiyati bor: formalar va serv
 
 ## Ma'lumotlarni mutatsiya qilish (mutating data)
 
-Remix vebni uning asoslariga qaytarishga mas'ul bo'lib, native veb platformasi konvensiyalari va xatti-harakatlariga kuchli tayanadi. Buning eng yaxshi tomoni ma'lumotlarni mutatsiya qilishda va Remix’ning formalarni ishlatishida ko'rinadi. Keling, avvalgi pishloq misolimizni kengaytirib, pishloq ro'yxatini o'zgartiriladigan qilib qo'yamiz. Buni amalga oshirish uchun, *./routes/cheese.tsx* faylini yangilaymiz:
-``` js copy
+Remix vebni uning asoslariga qaytarishga mas'ul bo'lib, native veb platformasi konvensiyalari va xatti-harakatlariga kuchli tayanadi. Buning eng yaxshi tomoni ma'lumotlarni mutatsiya qilishda va Remix’ning formalarni ishlatishida ko'rinadi. Keling, avvalgi pishloq misolimizni kengaytirib, pishloq ro'yxatini o'zgartiriladigan qilib qo'yamiz. Buni amalga oshirish uchun, _./routes/cheese.tsx_ faylini yangilaymiz:
+
+```js copy
 // Yordamchi funksiyalarni olish
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { json } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
 
 // Loader
 export async function loader() {
-  const data = await fetch("https://api.com/get-cheeses");
-  return json(await data.json());
+  const data = await fetch('https://api.com/get-cheeses')
+  return json(await data.json())
 }
 
 export default function CheesePage() {
-  const cheeses = useLoaderData();
+  const cheeses = useLoaderData()
   return (
     <div>
       <ul>
@@ -258,7 +280,7 @@ export default function CheesePage() {
         <button type="submit">Add Cheese</button>
       </form>
     </div>
-  );
+  )
 }
 ```
 
@@ -266,10 +288,11 @@ E'tiboringizni jalb qiladigan jihat shundaki, biz sahifaga yangi `form` elementi
 
 ### Forma orqali ma'lumotlarni yuborish
 
-Forma uchun harakat(action) qiymati `/cheese`ga teng va biz allaqachon *./routes/cheese.tsx* faylida joylashganmiz, shuning uchun forma xuddi shu route’ga yuborilishini taxmin qilishimiz mumkin. Ushbu route’ga `POST` metodi bilan kirilganida, forma yuborilganini bilamiz. Standart bo'yicha `GET` metodi bilan kirilganda esa, formani yuborish hali amalga oshirilmaganligini bilamiz va dastlabki foydalanuvchi interfeysini ko'rsatamiz.
+Forma uchun harakat(action) qiymati `/cheese`ga teng va biz allaqachon _./routes/cheese.tsx_ faylida joylashganmiz, shuning uchun forma xuddi shu route’ga yuborilishini taxmin qilishimiz mumkin. Ushbu route’ga `POST` metodi bilan kirilganida, forma yuborilganini bilamiz. Standart bo'yicha `GET` metodi bilan kirilganda esa, formani yuborish hali amalga oshirilmaganligini bilamiz va dastlabki foydalanuvchi interfeysini ko'rsatamiz.
 
-Keling, *./routes/cheese.tsx* faylini yangilab, bu jarayonni boshqarishni qo'shamiz:
-``` js copy
+Keling, _./routes/cheese.tsx_ faylini yangilab, bu jarayonni boshqarishni qo'shamiz:
+
+```js copy
 // Yordamchi funksiyalarni olish
 import { json, ActionFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";

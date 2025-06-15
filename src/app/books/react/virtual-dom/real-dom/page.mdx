@@ -1,3 +1,8 @@
+---
+title: 'Reactda Real DOM'
+description: "HTML sahifasi veb brauzerga yuklanganda, u tahlil qilinadi(parsing) va tugunlar(nodes) va obyektlardan iborat daraxtga aylantiriladi — bu obyekt modeli bo'lib, DOM deb ataladi: bu shunchaki katta JavaScript obyekti. DOM — bu veb sahifaning jonli namoyandasi, ya'ni foydalanuvchilar sahifa bilan o'zaro aloqada bo'lar ekan, doimiy ravishda yangilanadi."
+---
+
 import { Callout } from 'nextra/components'
 
 # Real DOM
@@ -7,76 +12,78 @@ HTML sahifasi veb brauzerga yuklanganda, u tahlil qilinadi(parsing) va tugunlar(
 ## Real DOM misoli
 
 Bu yerda oddiy HTML sahifasi uchun real DOM misoli keltirilgan:
-``` html copy
+
+```html copy
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Misol Sahifa</title>
-    </head>
-    <body>
-        <h1 class="heading">Sahifamga xush kelibsiz!</h1>
-        <p>Bu misol paragrafigidir.</p>
-        <ul>
-            <li>Element 1</li>
-            <li>Element 2</li>
-            <li>Element 3</li>
-        </ul>
-    </body>
+  <head>
+    <title>Misol Sahifa</title>
+  </head>
+  <body>
+    <h1 class="heading">Sahifamga xush kelibsiz!</h1>
+    <p>Bu misol paragrafigidir.</p>
+    <ul>
+      <li>Element 1</li>
+      <li>Element 2</li>
+      <li>Element 3</li>
+    </ul>
+  </body>
 </html>
 ```
 
 ### DOM’ning tugunlari
 
 Ushbu misolda, real DOM sahifadagi har bir HTML elementi uchun tugunlardan iborat daraxtga o'xshash struktura bilan tasvirlangan. Bu yerda daraxt strukrurasi qanday ko'rinishda bo'lishi mumkinligi haqida misol keltirilgan, bu tushunishni osonlashtirish uchun juda soddalashtirilgan. Real DOM’da har bir tugunda ko'pgina xususiyatlar va metodlar mavjud. Shunga qaramay, bu dokumentni obyekt sifatida qanday modellashtirishni tushunishimizga yordam beradi:
-``` js copy
+
+```js copy
 const dom = {
-  type: "document",
-  doctype: "html",
+  type: 'document',
+  doctype: 'html',
   children: [
     {
-      type: "element",
-      tagName: "html",
+      type: 'element',
+      tagName: 'html',
       children: [
         {
-          type: "element",
-          tagName: "head",
+          type: 'element',
+          tagName: 'head',
           children: [
             {
-              type: "element",
-              tagName: "title",
-              children: "Namuna sahifa",
+              type: 'element',
+              tagName: 'title',
+              children: 'Namuna sahifa',
             },
           ],
         },
         {
-          type: "element",
-          tagName: "body",
+          type: 'element',
+          tagName: 'body',
           children: [
             {
-              type: "element",
-              tagName: "h1",
-              innerHTML: "Sahifamga xush kelibsiz!",
+              type: 'element',
+              tagName: 'h1',
+              innerHTML: 'Sahifamga xush kelibsiz!',
               children: [],
-              className: "heading",
+              className: 'heading',
             },
             {
-              type: "element",
-              tagName: "p",
-              children: "Bu namuna paragrafigidir.",
+              type: 'element',
+              tagName: 'p',
+              children: 'Bu namuna paragrafigidir.',
             },
             {
-              type: "element",
-              tagName: "ul",
+              type: 'element',
+              tagName: 'ul',
               children: [
                 {
-                  type: "element",
-                  tagName: "li",
-                  children: "Element 1",
+                  type: 'element',
+                  tagName: 'li',
+                  children: 'Element 1',
                 },
                 {
-                  type: "element",
-                  tagName: "li",
-                  children: "Element 2",
+                  type: 'element',
+                  tagName: 'li',
+                  children: 'Element 2',
                 },
                 // ...qolganlarini to'ldirishingiz mumkin
               ],
@@ -86,22 +93,23 @@ const dom = {
       ],
     },
   ],
-};
+}
 ```
 
 ### `document.querySelector()` bilan DOM manipulyatsiyasi
 
 Daraxtdagi har bir tugun HTML elementini ifodalaydi va uni JavaScript orqali manipulyatsiya qilish imkonini beruvchi xususiyatlar va metodlarni o'z ichiga oladi. Masalan, biz `document.querySelector()` metodidan foydalanib, real DOM’dan ma'lum bir tugunni olishimiz va uning ichidagi kontentini o'zgartirishimiz mumkin:
-``` js copy
+
+```js copy
 // <h1> tugunini olish
-const h1Node = document.querySelector(".heading");
+const h1Node = document.querySelector('.heading')
 
 // Uning matnini o'zgartirish
 if (h1Node) {
-  h1Node.innerHTML = "Yangilangan Sarlavha!";
+  h1Node.innerHTML = 'Yangilangan Sarlavha!'
 }
 
-console.log(h1Node);
+console.log(h1Node)
 ```
 
 Ushbu misolda, biz `document.querySelector()` metodi orqali `"heading"` class’iga ega bo'lgan `h1` elementini olamiz. Keyin, elementning kontentini `innerHTML` xususiyatini `"Yangilangan Sarlavha!"` ga o'rnatish orqali o'zgartiramiz. Bu sahifada `"Sahifamga xush kelibsiz!"` tekstini `"Yangilangan Sarlavha!"` ga o'zgartiradi.
@@ -124,7 +132,8 @@ Murakkablikni Big O notatsiyasi yordamida o'lchaganda, `getElementById` zamonavi
 
 #### Big O notatsiyasi
 
-*Computer science*'da yaxshi bo'lmaganlar va ehtimol Big O’ni tushunmaydiganlar uchun, bu dasturchilar tomonidan kodning tez yoki sekin ishlashini baholash uchun ishlatiladigan qulay vositadir, ayniqsa kod ishlashi kerak bo'lgan ma'lumotlar miqdori oshganda. Aslida, Big O notatsiyasi algoritmlarning yuqori darajadagi tushunilishini ta'minlaydi, bunda vaqt murakkabligi (*time complexity*, ya'ni bajarilish vaqti kiritilish(input) hajmiga qarab qanday o'sadi) va joy murakkabligi (*space complexity*, ya'ni xotira hajmi kiritilish hajmiga qarab qanday o'sadi) nazarda tutiladi. Odatda bu quyidagi shakllarda ifodalanadi: (O(1)), (O(n)), (O(n log n)) yoki (O(n²)), bu yerda (n) — kiritilish hajmini bildiradi. Shunday qilib, dasturchilar kod "samarali" yoki "kengayuvchan" deb gapirganda, ular odatda shu Big O qiymatlari haqida gapirishadi, bu esa algoritmlarni vaqt va joy murakkabligi kamroq bo'lganini ta'minlash uchun mo'ljallangan bo'ladi. Bu esa dasturiy ta'minot ko'proq ma'lumot bilan ishlaganda ham samarador bo'lib qolishini kafolatlaydi.
+_Computer science_'da yaxshi bo'lmaganlar va ehtimol Big O’ni tushunmaydiganlar uchun, bu dasturchilar tomonidan kodning tez yoki sekin ishlashini baholash uchun ishlatiladigan qulay vositadir, ayniqsa kod ishlashi kerak bo'lgan ma'lumotlar miqdori oshganda. Aslida, Big O notatsiyasi algoritmlarning yuqori darajadagi tushunilishini ta'minlaydi, bunda vaqt murakkabligi (_time complexity_, ya'ni bajarilish vaqti kiritilish(input) hajmiga qarab qanday o'sadi) va joy murakkabligi (_space complexity_, ya'ni xotira hajmi kiritilish hajmiga qarab qanday o'sadi) nazarda tutiladi. Odatda bu quyidagi shakllarda ifodalanadi: (O(1)), (O(n)), (O(n log n)) yoki (O(n²)), bu yerda (n) — kiritilish hajmini bildiradi. Shunday qilib, dasturchilar kod "samarali" yoki "kengayuvchan" deb gapirganda, ular odatda shu Big O qiymatlari haqida gapirishadi, bu esa algoritmlarni vaqt va joy murakkabligi kamroq bo'lganini ta'minlash uchun mo'ljallangan bo'ladi. Bu esa dasturiy ta'minot ko'proq ma'lumot bilan ishlaganda ham samarador bo'lib qolishini kafolatlaydi.
+
 </Callout>
 
 ### `document.querySelector`ning afzalligi

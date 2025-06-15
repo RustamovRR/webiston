@@ -1,3 +1,16 @@
+---
+title: "React Virtual DOM qanday ishlaydi?"
+description: "Virtual DOM — bu real DOM’ning kamchiliklarini kamaytirishga yordam beradigan bir texnika. Xotirada DOM'ning virtual ko'rinishidagi talqinini yaratib, real DOM’ga bevosita o'zgartirishlar kiritmasdan, avval ushbu virtual talqinda o'zgartirishlar amalga oshiriladi. Bu dokument fragmentlariga o'xshash tarzda ishlaydi. Bu usul orqali freymvork yoki kutubxona real DOM’ni yanada samarali va tezkor usulda yangilash imkoniyatiga ega bo'ladi va brauzerning sahifaning joylashuvlarini qayta hisoblash yoki elementlarni qayta chizish bilan bog'liq jarayonlariga aralashmaslikka yordam beradi.
+
+Virtual DOM, shuningdek, elementlar va ularning yangilanishlarini yaratish jarayonini ham yaxshilaydi, turli brauzerlardagi real DOM’ning farqlarini abstraksiyalagan holda bir xil API taqdim etadi. Masalan, boshqa runtime’da `document.appendChild` funksiyasi boshqacha ishlashi mumkin, ammo JSX va virtual DOM yordamida bu farqlar ahamiyatga ega bo'lmaydi. Bu esa dasturchilarga turli brauzerlar va platformalarda bir xil ishlaydigan veb-ilovalarni yaratishni osonlashtiradi.
+
+React virtual DOM’dan foydalanuvchi interfeyslarini yaratish uchun foydalanadi. Ushbu bo'limda biz React’ning virtual DOM ishlash mexanizmini ko'rib chiqamiz.
+
+## React elementlari (React Elements)
+
+React’da foydalanuvchi interfeyslari React elementlari daraxti sifatida ifodalanadi. Bu elementlar komponent yoki HTML elementning yengil talqinlari bo'lib, ular `React.createElement` funksiyasi yordamida yaratiladi va murakkab foydalanuvchi interfeyslarini yaratish uchun bir-birining ichiga joylashtirilishi mumkin."
+---
+
 # Virtual DOM qanday ishlaydi
 
 Virtual DOM — bu real DOM’ning kamchiliklarini kamaytirishga yordam beradigan bir texnika. Xotirada DOM'ning virtual ko'rinishidagi talqinini yaratib, real DOM’ga bevosita o'zgartirishlar kiritmasdan, avval ushbu virtual talqinda o'zgartirishlar amalga oshiriladi. Bu dokument fragmentlariga o'xshash tarzda ishlaydi. Bu usul orqali freymvork yoki kutubxona real DOM’ni yanada samarali va tezkor usulda yangilash imkoniyatiga ega bo'ladi va brauzerning sahifaning joylashuvlarini qayta hisoblash yoki elementlarni qayta chizish bilan bog'liq jarayonlariga aralashmaslikka yordam beradi.
@@ -11,18 +24,16 @@ React virtual DOM’dan foydalanuvchi interfeyslarini yaratish uchun foydalanadi
 React’da foydalanuvchi interfeyslari React elementlari daraxti sifatida ifodalanadi. Bu elementlar komponent yoki HTML elementning yengil talqinlari bo'lib, ular `React.createElement` funksiyasi yordamida yaratiladi va murakkab foydalanuvchi interfeyslarini yaratish uchun bir-birining ichiga joylashtirilishi mumkin.
 
 Quyidagi misol React elementini yaratishni ko'rsatadi:
-``` js copy
-const element = React.createElement(
-  "div",
-  { className: "my-class" },
-  "Hello, world!"
-);
+
+```js copy
+const element = React.createElement('div', { className: 'my-class' }, 'Hello, world!')
 ```
 
 Bu kod `div` elementini yaratadi, uning `className` atributi `"my-class"` va tekst kontenti `"Hello, world!"`.
 
 Agar biz `console.log(element)` orqali ushbu elementni ko'rsak, u quyidagicha ko'rinadi:
-``` jsx copy
+
+```jsx copy
 {
   $$typeof: Symbol(react.element),
   type: "div",
@@ -36,6 +47,7 @@ Agar biz `console.log(element)` orqali ushbu elementni ko'rsak, u quyidagicha ko
   _store: {}
 }
 ```
+
 Bu React elementi talqinidir. React elementlari React ilovasining eng kichik qurilish bloklari hisoblanadi va ular ekranda nima paydo bo'lishi kerakligini tasvirlaydi. Har bir element JavaScript obyekti bo'lib, u o'ziga tegishli komponentni va kerakli props yoki atributlarni tasvirlaydi.
 
 Yuqorida keltirilgan kod blokida React elementi bir nechta xususiyatlarga ega obyekt sifatida ko'rsatilgan. Ular quyidagicha izohlanadi:
@@ -43,6 +55,7 @@ Yuqorida keltirilgan kod blokida React elementi bir nechta xususiyatlarga ega ob
 ### `$$typeof` xususiyati
 
 Bu React tomonidan obyektning haqiqiy React elementi ekanligini tekshirish uchun ishlatiladigan maxsus belgidir (symbol). Bu holda, u `Symbol(react.element)` qiymatiga ega. `$$typeof` elementning turiga qarab boshqa qiymatlarni ham qabul qilishi mumkin:
+
 - `Symbol(react.fragment)`: Element React fragment’ni ifodalaganda.
 - `Symbol(react.portal)`: Element React portal’ni ifodalaganda.
 - `Symbol(react.profiler)`: Element React profiler’ni ifodalaganda.
@@ -55,15 +68,17 @@ Umuman olganda,`$$typeof` React elementining turini aniqlovchi belgidir. Keyingi
 Ushbu xususiyat element ifodalagan komponentning turini ko'rsatadi. Masalan, bu holda `type` qiymati `"div"` bo'lib, bu `<div>` DOM elementi, ya'ni "host komponent" ekanligini bildiradi. React elementining `type` xususiyati string yoki funksiya (yoki class, lekin class’lardan foydalanish asta-sekin bekor qilinmoqda) bo'lishi mumkin. Agar u string bo'lsa, u HTML teg nomini ifodalaydi, masalan, `"div"`, `"span"`, `"button"` va hokazo. Agar bu funksiya bo'lsa, u xos(custom) React komponentni ifodalaydi, bu asosan JSX qaytaradigan JavaScript funksiyasidir.
 
 Bu yerda xos komponent turi bilan yaratilgan elementga misoli:
-``` js copy
+
+```js copy
 const MyComponent = (props) => {
-    return <div>{props.text}</div>;
-};
-const myElement = <MyComponent text="Hello, world!" />;
+  return <div>{props.text}</div>
+}
+const myElement = <MyComponent text="Hello, world!" />
 ```
 
 Bu holda, `myElement`ning `type` xususiyati `MyComponent` bo'lib, bu xos komponentni belgilovchi funksiya hisoblanadi. `myElement`ning React elementi sifatidagi obyekt ko'rinishi quyidagicha bo'ladi:
-``` js copy
+
+```js copy
 {
     $$typeof: Symbol(react.element),
     type: MyComponent,
@@ -83,8 +98,8 @@ Agar React elementining `type` xususiyati funksiya bo'lsa, u funksiyani elementn
 
 Bu yerda string turidagi element misoli:
 
-``` js copy
-const myElement = <div>Hello, world!</div>;
+```js copy
+const myElement = <div>Hello, world!</div>
 ```
 
 Bu holda, `myElement`ning `type` qiymati `"div"` bo'lib, bu HTML teg nomini bildiruvchi string’dir. React ushbu string turdagi elementga duch kelganda, mos keluvchi HTML elementni yaratib, uning ichida bolalarini(children) render qiladi.
@@ -102,15 +117,16 @@ Ushbu xususiyat komponentga berilgan barcha atributlar va props’larni o'z ichi
 Ushbu xususiyatga, faqat React’ning foydalanishga oid bo'lmagan (nonproduction) versiyalarida kirish mumkin bo'lib, React tomonidan ushbu elementni yaratgan komponentni kuzatish uchun ichki tomondan ishlatiladi. Ushbu ma'lumot, elementning props’lari yoki state’lari o'zgarganda qaysi komponent yangilanishi kerakligini aniqlash uchun ishlatiladi.
 
 Bu yerda `_owner` xususiyatining ishlatilishi misoli:
-``` js copy
+
+```js copy
 function Parent() {
-    return <Child />;
+  return <Child />
 }
 
 function Child() {
-    const element = <div>Hello, world!</div>;
-    console.log(element._owner); // Parent
-    return element;
+  const element = <div>Hello, world!</div>
+  console.log(element._owner) // Parent
+  return element
 }
 ```
 
@@ -125,7 +141,8 @@ Shuni ta'kidlash joizki, `_owner` xususiyati React’ning ichki ishlash tafsilot
 React elementi obyektining `_store` xususiyati element haqida qo'shimcha ma'lumotlarni saqlash uchun o'zining ichki foydalanishi uchun ishlatiladi. `_store`dagi xususiyatlar va qiymatlar umumiy API’ning bir qismi emas va ular dasturiy kodda to'g'ridan-to'g'ri foydalanilmasligi kerak.
 
 Quyida `_store` xususiyatining qanday ko'rinishga ega bo'lishi mumkinligi haqida misol keltirilgan:
-``` js copy
+
+```js copy
 {
     validation: null,
     key: null,
