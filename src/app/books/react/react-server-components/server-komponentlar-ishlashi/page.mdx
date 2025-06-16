@@ -1,0 +1,57 @@
+---
+title: 'React Server Komponentlar Qanday Ishlaydi?'
+description: |
+  React Server Komponentlari (RSC) qanday ishlaydi? Ularning faqat serverda bajarilishi, asinxron bo'lish imkoniyati va xavfsizlik afzalliklari haqida bilib oling.
+keywords: 'React Server Components, RSC, server, asinxron, async, xavfsizlik, virtual DOM, React element, ishlash mexanizmi, webiston'
+author: 'Webiston.uz'
+---
+
+# Server komponentlar qanday ishlaydi
+
+Server komponentlar qanday qilib ishlaydi? Server komponentlari nima ekanligini yaxshiroq tushunish uchun bu mavzuga chuqurroq kiramiz.
+
+Kirish qismida aytib o'tilganidek, server komponenti — bu faqat serverda bajariladigan maxsus turdagi komponent. Buni yaxshiroq tushunish uchun, React komponenti shunchaki bir React elementini qaytaradigan funksiyadan boshqa narsa emasligini eslaylik:
+
+```js copy
+const Component = () => <div>hi!</div>
+```
+
+Ushbu kodda `Component` funksiyasi `<div>hi!</div>` elementini qaytaradi. Tabiiyki, `<div>hi!</div>` React elementini qaytaradi, chunki React’da `<` belgisi `React.createElement`ga sinonim hisoblanadi. Biz buni [2-bobda](/books/react/jsx) JSX haqida o'rgangan edik. Agar bu haqida unutgan bo'lsangiz, tezda ushbu mavzuni qayta ko'rib chiqib, davom ettirishingiz mumkin.
+
+Oxir-oqibat, barcha komponentlar React elementlarini, ya'ni virtual DOM (vDOM)ni qaytaradi.
+
+Server komponentlari ham bundan farq qilmaydi. Agar `Component` funksiyasi server yoki klientda bajarilsa, u vDOM’ni qaytaradi. [3-bobda](/books/react/virtual-dom), React elementlari shunchaki quyidagi sxemaga ega JavaScript obyektlari ekanligini ko'rgan edik:
+
+```js copy
+{
+  $$typeOf: Symbol("react.element"),
+  type: () => ({
+    $$typeOf: Symbol("react.element"),
+    type: "div",
+    props: {
+      children: [
+        {
+          $$typeOf: Symbol("react.element"),
+          props: {
+            children: "hi!"
+          },
+        },
+      ],
+    },
+  }),
+}
+```
+
+`Component` funksiyamiz klient yoki server muhitida ishga tushirilsa, React elementini qaytaradi, xuddi yuqoridagi kabi.
+
+Server komponentlari esa faqatgina serverda chaqiriladi va elementni ifodalovchi JavaScript obyektini tarmoq orqali klientga yuboradi. Klient komponentlari esa biz odatlangan oddiy React komponentlari hisoblanadi.
+
+## Afzalliklari
+
+Server komponentlarini tushungan holda, ular ba'zi bir asosiy afzalliklarni taqdim etishini ko'ra boshlaymiz:
+
+- **Serverda bajarilishi**: Server komponentlari faqat server tomonida, biz nazorat qiladigan hisoblash quvvatiga ega qurilmalarda bajariladi. Bu esa ancha prognozli ishlash samaradorligini ta'minlaydi, chunki klient qurilmalaridagi noaniq hisoblashlar bilan bog'liq muammolar yo'q.
+- **Xavfsizlik muhiti**: Ular bizning xavfsiz server muhitlarimizda bajariladi, shuning uchun server komponentlarida xavfsiz operatsiyalarni bajarishimiz mumkin va tokenlar yoki boshqa xavfsiz ma'lumotlarning sizib chiqishi haqida tashvishlanmasak ham bo'ladi.
+- **Asinxronlik imkoniyati**: Server komponentlari asinxron bo'lishi mumkin, chunki biz ularga serverda ishlashni yakunlashlari uchun kutishimiz va natijalarni klientlarga tarmoqlar orqali ulashishimiz mumkin.
+
+Bu — server komponentlarining haqiqiy kuchidir. Endi, server komponentlarining server tomonida render qilish (SSR) bilan qanday o'zaro bog'lanishini ko'rib chiqamiz.

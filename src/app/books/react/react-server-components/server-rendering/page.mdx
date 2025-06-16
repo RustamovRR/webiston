@@ -1,0 +1,119 @@
+---
+title: 'Server Komponentlar va Serverda Renderlash (SSR) Aloqasi'
+description: |
+  React Server Komponentlari (RSC) va Server Tomonida Renderlash (SSR) qanday birga ishlaydi? Ularning ikki mustaqil, ammo bir-birini to'ldiruvchi jarayon ekanligini bilib oling.
+keywords: 'React Server Components, RSC, server-side rendering, SSR, server renderer, renderToString, renderToPipeableStream, React element, HTML, webiston'
+author: 'Webiston.uz'
+---
+
+# Server rendering
+
+Biz oldingi boblarda server tomonida render qilishni batafsil muhokama qildik, shuning uchun bu yerda uning tafsilotlariga chuqur to'xtalmaymiz. Asosiy e’tiborimizni server komponentlari va server tomonida render qilishning qanday o'zaro aloqada ishlashiga qaratamiz.
+
+Aslini olganda, server komponentlari va serverda render qilishni ikki mustaqil jarayon sifatida tasavvur qilishimiz mumkin. Bunda bir jarayon komponentlarni serverda render qilish va React elementlari daraxtini yaratish bilan shug'ullanadi, ikkinchi jarayon — server renderer — esa bu React elementlari daraxtini markup’ga (HTML formatiga) o'tkazib, tarmoq orqali klientlarga uzatadi.
+
+Agar bu ikkita jarayonni ko'rib chiqsak — biri komponentlarni React elementlariga aylantiradi, ikkinchisi esa React elementlarini HTML satrlariga yoki oqim(stream)larga aylantiradi — bu ikkita tushunchaning qanday mos tushishini tushuna boshlaymiz. Birinchi jarayonni _RSC’s renderer_ deb ataymiz, u server komponentlarini React elementlari daraxtiga aylantiradi; ikkinchi jarayon esa _server renderer_ bo'lib, React elementlarini HTML oqimiga aylantiradi.
+
+## Server komponentlari va server tomonda renderlash
+
+Bu tushunchaga asoslanib, server komponentlari va serverda render qilish qanday o'zaro bog'lanishini quyidagicha tushuntirish mumkin:
+
+#### 1. Serverda JSX daraxtini React elementlari daraxtiga aylantirish
+
+Masalan, quyidagi JSX daraxtini ko'rib chiqamiz:
+
+```jsx copy
+<div>
+  <h1>hi!</h1>
+  <p>I like React!</p>
+</div>
+```
+
+Bu daraxt quyidagi elementlar daraxtiga aylantiriladi:
+
+```js copy
+{
+  $$typeOf: Symbol("react.element"),
+  type: "div",
+  props: {
+    children: [
+      {
+        $$typeOf: Symbol("react.element"),
+        type: "h1",
+        props: {
+          children: "hi!"
+        }
+      },
+      {
+        $$typeOf: Symbol("react.element"),
+        type: "p",
+        props: {
+          children: "I like React!"
+        }
+      }
+    ]
+  }
+}
+```
+
+#### 2. Serverda elementlar daraxtini satr yoki oqimga aylantirish
+
+Ushbu elementlar daraxti keyinroq satrga yoki oqimga seriyalashtiriladi.
+
+#### 3. Klientga katta JSON sifatida yuborish
+
+Shu tarzda yaratilgan katta satrga aylantirilgan JSON obyekti klientga uzatiladi
+
+#### 4. Klient tomonida render qilish
+
+Klient tomonida React ushbu JSON ma'lumotlarini o'qib, odatdagidek render qiladi.
+
+## Server kodi
+
+Agar bu jarayonni server tomonidagi kod sifatida tasvirlasak, quyidagicha ko'rinishda bo'ladi:
+
+```js copy filename="server.js"
+const express = require('express')
+const path = require('path')
+const React = require('react')
+const ReactDOMServer = require('react-dom/server')
+const App = require('./src/App')
+
+const app = express()
+
+app.use(express.static(path.join(__dirname, 'build')))
+
+app.get('*', async (req, res) => {
+  // Bu yerda maxsus kod amalga oshiriladi
+  const rscTree = await turnServerComponentsIntoTreeOfElements(<App />)
+  // Bu yerda maxsus kod amalga oshiriladi
+
+  // Kutib olingan server komponentlarini string sifatida render qiladi
+  const html = ReactDOMServer.renderToString(rscTree)
+
+  // Uni jo'natadi
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head></head>
+      <body>
+        <title>My React App</title>
+        <div id="root">${html}</div>
+        <script src="/static/js/main.js"></script>
+      </body>
+    </html>
+  `)
+})
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000')
+})
+```
+
+Ushbu server kodi [6-bobdan](/books/react/server-side-react) bevosita olingan bo'lib, u yerda server tomonidagi React haqida muhokama qilgan edik. Bu yerda esa, biz server komponentlarini server tomoni renderer'iga uzatishdan oldin ularni qayta ishlash bosqichini qo'shdik — bu bizning misolimizdagi ikkinchi jarayon.
+
+Mantiqan olganda, server komponentlari va server tomonidagi renderlash aynan shunday bir-biriga mos keladi: ular bir-birini to'ldiruvchi jarayonlardir.
+
+Yana bir bor ta'kidlash joizki, biz bu yerda `renderToString` funksiyasidan faqat namoyish uchun foydalanmoqdamiz. Va [6-bobda](/books/react/server-side-react) ta'kidlanganidek, asosiy foydalanish holatlarida `renderToPipeableStream` yoki shunga o'xshash asinxron va uzluksiz API’dan foydalanish yaxshiroq bo'ladi.
+
+Endi biz _server rendering_ va server komponentlari o'rtasidagi o'zaro aloqani tushunib olganimizdan so'ng, oldingi kodda ishlatilgan `turnServerComponentsIntoTreeOfElements` funksiyasini chuqurroq o'rganamiz. Bu nima qiladi? Qanday qilib server komponentlarini elementlar daraxtiga aylantiradi? Bu React renderer’i hisoblanadimi? Keling, buni aniqlab olaylik.

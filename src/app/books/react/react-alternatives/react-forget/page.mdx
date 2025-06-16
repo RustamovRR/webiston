@@ -1,0 +1,39 @@
+---
+title: 'React Forget: Avtomatik Memoizatsiya Kelajagi'
+description: |
+  React Forget nima va u qanday ishlaydi? React qoidalari asosida avtomatik memoizatsiya qiluvchi yangi kompilyator va uning signallarga nisbatan o'rnini o'rganing.
+keywords: 'React Forget, React compiler, avtomatik memoizatsiya, React qoidalari, signals, signallar, reaktivlik, optimallashtirish, Svelte, Meta, webiston'
+author: 'Webiston.uz'
+---
+
+# React Forget
+
+Forget — bu React uchun linterni andozasiga o'xshash bir vositalar to'plami bo'lib, uning `--fix` bayrog'i faollashtirilgan. Bu React qoidalarini majburan amalga oshiradi va keyin avtomatik ravishda React kodini dastur lifecycle’i davomida o'zgarmaydigan qiymatlarni, masalan, `ComponentWithExpensiveChildren`ni aqlli tarzda memoizatsiya qilib, optimal holatga aylantiradi.
+
+React qoidalari sababli, Forget kompilyatori bu qiymatlarni oldindan taxmin qila olishi va biz uchun memoizatsiya qilishi mumkin. Bu Svelte’dan olingan o'xshash yondashuvdir, lekin imperativ kodga kompilatsiya qilish o'rniga, Forget yanada samarali React kodiga kompilatsiya qiladi.
+
+## React qoidalari
+
+React qoidalarini qaytadan ko'rib chiqamiz:
+
+1. React komponentlari sof(pure) funksiyalar bo'lishi kerak.
+2. Ba'zi hook’lar va maxsus event handler’lar sof bo'lishi shart emas.
+3. Sof funksiyalar ichida taqiqlangan harakatlar:
+   - Funksiya ichida yangi yaratilmagan o'zgaruvchilar/obyektlarni o'zgartirish.
+   - O'zgarishi mumkin bo'lgan xususiyatlarni o'qish.
+4. Ruxsat berilgan harakatlar:
+   - Props yoki state’ni o'qish.
+   - Xatolarni chiqarish.
+   - Yangi yaratilgan obyektlarni/binding’larni o'zgartirish.
+5. Kerakli vaqtda ishga tushirish (lazy initialization) — ishga tushirish maqsadida o'zgartirishga(mutatsiyaga) ruxsat beruvchi istisno.
+6. Render paytida yaratilgan obyektlar yoki closure’lar render tugagandan so'ng o'zgartirilmasligi kerak, faqat state'da saqlangan o'zgaruvchilar bundan mustasno.
+
+Bu qoidalar tufayli, Forget kompilyatori qaysi qiymatlar dastur lifecycle’i davomida o'zgarmasligini oldindan taxmin qilib, ularni biz uchun memoizatsiya qila oladi. Natijada? Yuqori darajada optimallashtirilgan, samarali React kodi, boshqa kutubxonalar bilan raqobatlashadigan darajada signal ishlatadigan kutubxonalar bilan teng keladigan ishlash samaradorligini ta'minlaydi.
+
+Ushbu dokumentatsiyalar yozilishi vaqtida, Forget Meta’da baholanish jarayonida bo'lib, Instagram va WhatsApp’da foydalanishda kutilganidan yuqori natijalarni ko'rsatmoqda. Hozirda u ochiq manbali emas, lekin React jamoasi uni yaqin kelajakda ochiq manba dasturi sifatida chiqarishni ko'rib chiqmoqda.
+
+## Forget va signallarni taqqoslash
+
+Forget hali ochiq manba emasligi sababli, uning afzalliklari va kamchiliklari haqida ishonchli tarzda fikr bildirish qiyin. Biroq, shuni aytishimiz mumkinki, agar Forget haqiqatan ham o'zgarmaydigan barcha qiymatlarni memoizatsiya qilsa, signallarning yuqori tafsiliy darajali reaktivligi React Forget bilan kam tafsiliy darajali reaktivlikdan ustun bo'lishi mumkin, chunki signallar komponentlar ierarxiyasidan tashqarida parallel olamda yashaydi.
+
+Shunday qilib, yangilanish sodir bo'lganda, React hali ham butun komponent daraxti bo'ylab yurib chiqishi va har bir komponentning props’larining yangi va eski qiymatlarini taqqoslab, qaysi komponentlarning qayta render qilinishi kerakligini aniqlashi kerak. Bu signallar bilan bunday emas; signallar bilan UI’ning faqat reaktiv qismlari yangilanadi va butun daraxtni yurib chiqishga hojat qolmaydi. Bu dastlabki ma'lumotlar shuni ko'rsatadiki, hatto Forget bilan ham, React signallar standart bo'lgan kutubxonalarga nisbatan sekinroq bo'lishi mumkin, ammo bu haqida aytish uchun hali erta.

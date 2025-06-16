@@ -1,0 +1,239 @@
+---
+title: 'useMemo va useCallback: Qachon Ishlatish Kerak (va Kerak Emas)?'
+description: |
+  Ortiqcha optimizatsiya xavfidan saqlaning! React'da useMemo va useCallback'ni qachon ishlatish (va eng muhimi, qachon ishlatmaslik kerak) haqida bilib oling.
+keywords: 'useMemo, useCallback, optimallashtirish, premature optimization, ortiqcha optimizatsiya, referential integrity, host components, event delegation, React hooks, performance, webiston'
+author: 'Webiston.uz'
+---
+
+import { Callout } from 'nextra/components'
+
+# useMemo'dan ehtiyotkorlik bilan foydalaning
+
+Bir qarashda e'lon qilingan barcha o'zgaruvchilarni komponent ichida `useMemo` bilan o'rash jozibador ko'rinishi mumkin, lekin bu har doim ham foydali emas. `useMemo` asosan hisoblash jihatidan qimmatli bo'lgan operatsiyalarni memoizatsiya qilish yoki obyekt va massivlar uchun barqaror referenslarni saqlash uchun qimmatli hisoblanadi. Qator qiymatlar, masalan, string, number yoki boolean qiymatlar uchun `useMemo` ishlatish zarur emas. Chunki JavaScript’da bunday skalyar qiymatlar ularning haqiqiy qiymatlari orqali uzatiladi va taqqoslanadi, referens orqali emas. Shunday qilib, har safar siz skalyar qiymatni o'rnatasiz yoki taqqoslaysiz, bu haqiqiy qiymat bilan ishlashingizni anglatadi, referens bilan emas.
+
+Bunday hollarda, `useMemo` funksiyasini yuklash va bajarish u optimallashtirishga harakat qilayotgan amaliyotdan ko'ra ko'proq qimmatga tushishi mumkin. Misol uchun, quyidagi misolni ko'rib chiqaylik:
+
+```js copy
+const MyComponent = () => {
+  const [count, setCount] = useState(0)
+  const doubledCount = useMemo(() => count * 2, [count])
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <p>Doubled count: {doubledCount}</p>
+      <button onClick={() => setCount((oldCount) => oldCount + 1)}>Increment</button>
+    </div>
+  )
+}
+```
+
+Ushbu misolda, `doubledCount` o'zgaruvchisi `useMemo` yordamida memoizatsiya qilingan. Biroq, `count` skalyar qiymat bo'lganligi sababli, uni memoizatsiya qilish kerak emas. Buning o'rniga, biz ikkiga ko'paytirilgan hisobni to'g'ridan-to'g'ri JSX ichida hisoblashimiz mumkin:
+
+```js copy
+const MyComponent = () => {
+  const [count, setCount] = useState(0)
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <p>Doubled count: {count * 2}</p>
+      <button onClick={() => setCount((oldCount) => oldCount + 1)}>Increment</button>
+    </div>
+  )
+}
+```
+
+Endi, `doubledCount` memoizatsiya qilinmaydi, lekin komponent hamon bir xil hisoblashni kamroq xotira sarflab va ortiqcha xarajatlarsiz bajaradi, chunki biz `useMemo`ni import qilmayapmiz va uni chaqirmayapmiz. Bu `useMemo`ni kerak bo'lmagan joyda ishlatmaslik uchun yaxshi misol.
+
+Ammo qo'shimcha ishlash samaradorligini keltirib chiqarishi mumkin bo'lgan narsa shuki, biz `onClick` tugmasidagi ishlov beruvchi(handler) funksiyani har bir renderda qaytadan yaratmoqdamiz, chunki u xotirada referens orqali uzatiladi. Ammo bu yerda haqiqatan ham muammo bormi? Keling, buni yaxshiroq ko'rib chiqamiz.
+
+Ba'zilar `onClick`da ishlov beruvchi `increment`ni `useCallback` yordamida memoizatsiya qilishni tavsiya qiladi:
+
+```js copy
+const MyComponent = () => {
+  const [count, setCount] = useState(0)
+  const doubledCount = useMemo(() => count * 2, [count])
+  const increment = useCallback(() => setCount((oldCount) => oldCount + 1), [setCount])
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <p>Doubled count: {doubledCount}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  )
+}
+```
+
+Lekin, buni qilish kerakmi? Javob - yo'q. Bu yerda `increment` funksiyasini memoizatsiya qilishdan hech qanday foyda yo'q, chunki `<button>` brauzerning o'zini _native_ elementi bo'lib bo'lib, u chaqirilishi mumkin bo'lgan React funksional komponenti emas. Shuningdek, uning ostida React qayta render qilishi mumkin bo'lgan boshqa komponentlar yo'q.
+
+Bundan tashqari, React’ning o'zida mavjud bo'lgan yoki "host" komponentlar (`div`, `button`, `input` kabi) props (shu jumladan funksiya props’lari) bo'yicha maxsus komponentlardan bir oz farqli ravishda ishlaydi.
+
+## Ichki o'rnatilgan (built-in) komponentlar uchun props’larning ishlashi
+
+Mavjud komponentlar uchun funksiyal props’lari qanday ishlashini ko'rib chiqamiz:
+
+### To'g'ridan-to'g'ri uzatish
+
+Agar siz funksiya props’larini (masalan, `onClick` ishlov beruvchi(handler))ni ichki o'rnatilgan komponentga uzatsangiz, React uni bevosita real DOM elementiga uzatadi. Bu funksiyalar ustida hech qanday o'ram yoki qo'shimcha ish qilinmaydi.
+
+Biroq, `onClick` va boshqa event’ga asoslangan props’lar uchun, React event’larni boshqarishda event delegatsiyasidan foydalanadi, to'g'ridan-to'g'ri DOM elementlariga event ishlov beruvchilarini biriktirmaydi. Bu shuni anglatadiki, siz React’dagi `<button>` kabi React’da mavjud elementga `onClick` ishlov beruvchisini berganingizda, React uni bevosita button’ning DOM tuguniga biriktirmaydi. Buning o'rniga, React barcha event’larni yuqori darajada, bitta event tinglovchisi(listener)ni ishlatib, ushlaydi. Bu tinglovchi dokumentning ildiziga (yoki React ilovasining ildiziga) biriktiriladi va u individual elementlardan kelib chiqadigan event’larni ushlash uchun "event bubbling" hodisasiga tayanadi. Bu usul samarali bo'lib, event ishlov beruvchilarini dastlabki sozlash vaqtini va xotira hajmini qisqartiradi. Har bir element uchun event ishlov beruvchilarini alohida boshqarish o'rniga, React bitta haqiqiy event tinglovchisi yordamida barcha shu turdagi event’larni (masalan, click) boshqarishi mumkin. Event sodir bo'lganda, React uni tegishli komponentga moslab, siz belgilagan ishlov beruvchilarga chaqiradi, bu jarayon esa kutilgan propagatsiya yo'li (expected propogation path) bo'ylab amalga oshadi. Shunday qilib, event’lar yuqori darajada ushlansa-da, ular xuddi tegishli elementlarga bevosita biriktirilgandek ishlaydi.
+
+Ushbu "event delegation" tizimi React ilovasini yozayotganingizda asosan ko'zga tashlanmaydi; siz `onClick` ishlov beruvchilarini ular to'g'ridan-to'g'ri biriktirilgandek belgilaysiz. Biroq, uning ichki ishlash mexanizmida React event’larni boshqarishni siz uchun optimizatsiya qiladi.
+
+### Qayta render qilish xatti-harakati
+
+Agar ichki o'rnatilgan(built-in) komponentlar qayta render qilingan yuqori darajadagi komponentning bir qismi bo'lmasa, funksiya props’lari o'zgarganida qayta render qilinmaydi. Misol uchun, agar ota komponent qayta render bo'lib, ichki o'rnatilgan komponentga yangi funksiyani props sifatida uzatsa, ichki o'rnatilgan komponent qayta render qilinadi, chunki uning props’lari o'zgardi. Biroq, bu qayta render bo'lish odatda juda tez bo'lib, profiling’da muammo bo'lmas ekan, optimallashtirish talab qilinmaydi.
+
+### Funksiyalar uchun virtual DOM taqqoslash yo'q
+
+Ichki o'rnatilgan komponentlar uchun virtual DOM taqqoslashi props’larning o'ziga asoslangan. Agar siz "inline" funksiyani uzatsangiz (masalan, `onClick={() => doSomething()}`), har safar komponent qayta render qilinganda yangi funksiya yaratiladi, lekin React funksiyalarda o'zgarishlarni aniqlash uchun chuqur taqqoslash qilmaydi. Yangi funksiya DOM elementida eskisini almashtiradi, shuning uchun ichki o'rnatilgan komponentlarda ishlash samaradorligi ortadi.
+
+### Event pooling
+
+React event handler’lar uchun event pooling’dan foydalanadi, bu esa xotiradagi ortiqcha yuklanishlarni kamaytiradi. Event pooling shuni anglatadiki, event handler’larga uzatilgan event obyekti sintetik event bo'lib, bu obyekt turli event’lar uchun qayta ishlatiladi, shu orqali chiqindi yig'ish(garbage collection) yukini kamaytiradi.
+
+## Custom va host komponentlar
+
+Bu maxsus(custom) komponentlar bilan kuchli qarama-qarshilikdir. Agar siz maxsus komponentlarga yangi funksiyani prop sifatida o'tkazsangiz, bola komponenti sof(pure) komponent bo'lsa yoki memoizatsiya qo'llanilgan bo'lsa (masalan, React.memo bilan), u holda props’larda o'zgarishni sezishi sababli qayta render bo'lishi mumkin. Biroq, host komponentlar uchun React bunday ichki memoizatsiyani taqdim etmaydi, chunki bu ko'p hollarda foydasiz ortiqcha yuklama keltiradi. React natijaviy chiqargan real DOM elementlarida memoizatsiya tushunchasi yo'q; ular shunchaki xususiyatlar o'zgarganda yangi funksiya referensini yangilaydi.
+
+Amalda, siz maxsus komponentlarga yangi funksiya nusxalarini o'tkazishda ehtiyot bo'lishingiz kerak, chunki bu qimmatga tushishi mumkin, lekin ichki o'rnatilgan komponentlar bilan bunday qilish kamdan-kam muammoga olib keladi. Biroq, har doim yangi funksiyalarni yaratish va ularga o'tkazish qanchalik ko'p bo'layotganiga e'tibor berish yaxshi, chunki keraksiz funksiya yaratish chiqindilarni to'plashga olib kelishi mumkin, bu juda yuqori chastotali yangilanishlar holatlarida ishlash samaradorligi muammosi bo'lishi mumkin.
+
+Shunday qilib, `useCallback` bu yerda yordam bermaydi va aslida foydasizdan ham yomonroq: u nafaqat hech qanday qiymat bermaydi, balki dasturimizga ortiqcha yuklama olib keladi. Bu `useCallback` import qilinishi, chaqirilishi va qaramliklarni o'tkazishi kerakligini anglatadi, so'ngra funksiyaning qayta hisoblanishi kerakmi yoki yo'qligini tekshirish uchun qaramliklarni taqqoslashi kerak. Bularning barchasi ishga tushirish murakkabligini keltirib chiqarishi mumkin, bu esa dasturimizga ko'proq ziyon yetkazishi mumkin.
+
+Xo'sh, unda `useCallback` uchun yaxshi misol nima? `useCallback`, agar sizda ko'p qayta render bo'lishi mumkin bo'lgan komponent bo'lsa va siz "callback"ni bola komponentiga o'tkazsangiz, ayniqsa, agar bola komponenti `React.memo` yoki `shouldComponentUpdate` bilan optimallashtirilgan bo'lsa, juda foydalidir. Callback’ning memoizatsiya qilinishi ota komponenti render qilinganda bola komponentining keraksiz qayta render bo'lishini oldini oladi.
+
+### useCallback misoli
+
+Bu yerda `useCallback` foydali bo'lgan misol keltirilgan:
+
+```js copy
+import React, { useState, useCallback } from 'react'
+
+const ExpensiveComponent = React.memo(({ onButtonClick }) => {
+  // Ushbu komponentni render qilish qiyin va keraksiz renderlardan qochishni xohlaymiz
+  // Biz bu yerda shunchaki og'ir ishni simulyatsiya qilmoqdamiz
+  const now = performance.now()
+  while (performance.now() - now < 1000) {
+    // Sun'iy kechikish -- 1000ms uchun bloklanadi
+  }
+
+  return <button onClick={onButtonClick}>Click Me</button>
+})
+
+const MyComponent = () => {
+  const [count, setCount] = useState(0)
+  const [otherState, setOtherState] = useState(0)
+
+  // Ushbu callback memoizatsiya qilingan va faqat count o'zgarganda o'zgaradi
+  const incrementCount = useCallback(() => {
+    setCount((prevCount) => prevCount + 1)
+  }, []) // Bog'liqliklar massiv
+
+  // Ushbu state yangilanishi MyComponent'ni qayta render qilinishiga sabab bo'ladi
+  const doSomethingElse = () => {
+    setOtherState((s) => s + 1)
+  }
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <ExpensiveComponent onButtonClick={incrementCount} />
+      <button onClick={doSomethingElse}>Do Something Else</button>
+    </div>
+  )
+}
+```
+
+Ushbu misolda:
+
+- **`ExpensiveComponent`**: bu bola komponenti bo'lib, `React.memo` bilan o'ralgan. Bu demak, faqat uning props’lari o'zgarganda qayta render bo'ladi. Har bir render’da yangi funksiya nusxasini o'tkazmaslik kerak.
+- **`MyComponent`**: ikkita state’ga ega: `count` va `otherState`.
+- **`incrementCount`**: bu `count`ni yangilaydigan callback. Bu `useCallback` bilan memoizatsiya qilingan, demak `MyComponent`ning `otherState`’i o'zgarganda `ExpensiveComponent` komponenti qayta render bo'lmaydi.
+- **`doSomethingElse`**: funksiyasi `otherState`ni o'zgartiradi, lekin u `ExpensiveComponent` yoki boshqa bolalarga o'tkazilmaydi, shuning uchun `useCallback` bilan memoizatsiya qilinishi shart emas.
+
+`useCallback`dan foydalanish orqali, `MyComponent` boshqa sabablarga ko'ra, ya'ni `count` bilan bog'liq bo'lmagan, qayta render bo'lganda `ExpensiveComponent`ning keraksiz qayta render bo'lishini oldini olamiz. Bu, bolalar komponentini render qilish og'ir bo'lgan hollarda va render’lar sonini kamaytirish orqali ishlash samaradorligini optimallashtirishni xohlayotganda foydalidir.
+
+Bu `useCallback`dan keraksiz qayta render’larni oldini olish uchun qanday foydalanishni yaxshi misoli. Faqatgina og'ir komponentga o'tkaziladigan funksiya bir marta yaratiladi va qayta render’lar davomida bir xil manzilni saqlaydi. Bu og'ir komponentning keraksiz qayta render’larini oldini oladi. `useCallback` asosan funksiyalar uchun `useMemo` kabidir.
+
+### useMemo misoli
+
+Keling, yana boshqa bir misolga qaraymiz:
+
+```js copy
+const MyComponent = () => {
+  const dateOfBirth = '1993-02-19'
+  const isAdult = new Date().getFullYear() - new Date(dateOfBirth).getFullYear() >= 18
+
+  if (isAdult) {
+    return <h1>You are an adult!</h1>
+  } else {
+    return <h1>You are a minor!</h1>
+  }
+}
+```
+
+Bu yerda biz `useMemo`dan foydalanmayapmiz, asosan, komponentda state yo'q. Bu yaxshi! Lekin agar bizda quyidagicha qayta render qilishga sabab bo'ladigan `input` bo'lsa:
+
+```js copy
+const MyComponent = () => {
+  const [birthYear, setBirthYear] = useState(1993);
+  const isAdult = new Date().getFullYear() - birthYear >= 18;
+
+  return (
+    <div>
+      <label>
+        Birth year:
+        <input
+          type="number"
+          value={birthYear}
+          onChange={(e) => setBirthYear(e.target.value)}
+        />
+      </label>
+    </div>
+    {isAdult ? <h1>You are an adult!</h1> : <h1>You are a minor!</h1>}
+  );
+};
+```
+
+Endi har bir klaviatura bosishida `new Date()` qayta hisoblanmoqda. Keling, buni `useMemo` bilan to'g'irlaymiz:
+
+```js copy
+const MyComponent = () => {
+  const [birthYear, setBirthYear] = useState(1993);
+  const today = useMemo(() => new Date(), []);
+  const isAdult = today.getFullYear() - birthYear >= 18;
+
+  return (
+    <div>
+      <label>
+        Birth year:
+        <input
+          type="number"
+          value={birthYear}
+          onChange={(e) => setBirthYear(e.target.value)}
+        />
+      </label>
+    </div>
+    {isAdult ? <h1>You are an adult!</h1> : <h1>You are a minor!</h1>}
+  );
+};
+```
+
+Bu yaxshi, chunki `today` har bir marta komponent qayta render bo'lganda bir xil obyektga havola bo'ladi va biz komponent har doim bir kunda qayta render bo'ladi deb hisoblaymiz.
+
+<Callout type="info">
+  Agar foydalanuvchining soati yarim tun atrofida to'xtab qolsa, bu yerda bir oz muammo bor, lekin bu hozirgi paytda
+  e'tiborga olishimiz mumkin bo'lgan kamdan-kam holatdir. Albatta, real ishlab chiqarish kodida yaxshiroq ishlarni
+  amalga oshiramiz.
+</Callout>
+
+Bu misol kattaroq bir savolni yuzaga keltiradi: `isAdult` qiymatini `useMemo` bilan o'rab olishimiz kerakmi? Agar shunday qilsak, nima bo'ladi? Javob shundaki, buni qilmasligimiz kerak, chunki `isAdult` — bu skalyar qiymat bo'lib, xotira ajratishdan boshqa hech qanday hisoblashni talab qilmaydi. Biz `.getFullYear` ni bir necha marta chaqiramiz, lekin JavaScript dvigateli va React runtime’lari bularni biz uchun yanada samaraliroq ishlatishiga ishonamiz. Bu bir oddiy "assignment" bo'lib, boshqa hisoblashlar, masalan, saralash, filtr yoki "mapping"lar yo'q.
+
+#### Ushbu holatda useMemo’dan foydalanish to'g'rimi?
+
+Ushbu holatda, `useMemo`dan foydalanmaslik kerak, chunki u ilovamizni tezlashtirishdan ko'ra sekinlashtirish ehtimoli ko'proq, chunki `useMemo` o'zini ishlatishdan kelib chiqadigan ortiqcha yuk, shu jumladan import qilish, chaqirish, qaramliklarni o'tkazish va keyin qiymatni qayta hisoblash kerakmi yoki yo'qligini taqqoslash bilan bog'liq. Bularning barchasi ishga tushirish murakkabligini keltirib chiqarishi mumkin, bu esa dasturimizga ko'proq ziyon yetkazishi mumkin. O'rniga, React’ga tayinlaymiz va kerak bo'lganda, o'z optimizatsiyalari bilan komponentimizni aql bilan qayta render qilishiga ishonamiz.
+
+Hozirgi vaqtda ilovalarimiz og'ir hisoblashlar mavjud bo'lsa ham tezroq qayta render qilish foydasiga ega, lekin bundan tashqari ko'proq narsalar qila olamizmi? Keyingi mavzuda, biz hozirgacha ko'rgan narsalar bir necha yildan keyin ahamiyatsiz bo'lishi mumkinligini ko'rib chiqamiz, chunki React jamoasi avtomatik ravishda memoizatsiyani ko'rib chiqish ustida ishlamoqda, bu esa bizga ortiqcha tafsilotlarni unutishga imkon beradi va o'z ilovalarimizga e'tibor berishimizga yordam beradi.

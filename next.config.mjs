@@ -1,11 +1,14 @@
-/** @type {import('next').NextConfig} */
 
-import withNextra from "nextra";
+import nextra from "nextra";
 
-const nextConfig = {
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
-  latex: true
-};
+const withNextra = nextra({
+  latex: true,
+  search: {
+    codeblocks: false,
+  },
+});
 
-export default withNextra(nextConfig);
+export default withNextra({
+  reactStrictMode: true,
+  output: "standalone",
+});

@@ -1,0 +1,73 @@
+---
+title: 'React Server Komponentlarida Seriyalashtirish (Serialization)'
+description: |
+  React Server Komponentlari serverdan klientga qanday yuboriladi? Seriyalashtirish jarayoni, `$$typeof` Symbol muammosi va uni `JSON.stringify` bilan hal qilishni o'rganing.
+keywords: 'React Server Components, RSC, serialization, seriyalashtirish, deserialization, JSON.stringify, Symbol, $$typeof, SSR, server-side rendering, webiston'
+author: 'Webiston.uz'
+---
+
+# Seriyalashtirish
+
+React elementlarini seriyalashtirishda ish biroz qiyinlashadi. React elementlarini seriyalashtirish dasturiy ta'minotingizni dastlabki yuklanishda to'g'ri va samarali render qilishini ta'minlashning asosiy jihati hisoblanadi, chunki serverdan olingan bir xil renderlangan chiquvchi natija klient bilan mos kelishi kerak, shunda React to'g'ri muvofiqlashtirishi va farqlarni aniqlashi mumkin. Dasturiy ta'minotingiz serverda render qilinayotganda, yaratilgan React elementlari HTML satrlariga aylantirilishi kerak, buning yordamida ularni brauzerga yuborish mumkin. React elementlarini satrlarga, ya'ni string’ga, aylantirish jarayoni **seriyalashtirish(serialization)** deb ataladi.
+
+### Odatiy React ilovasi namunasida
+
+Odatiy React ilovasida, React elementlari xotirada obyektlar hisoblanadi. Ular `React.createElement` chaqirilishi yoki JSX sintaksisi yordamida yaratiladi. Ushbu elementlar komponentning maqsadli renderlanishini ifodalaydi, lekin ular hali real DOM elementlari emas. Ular DOM qanday ko'rinishda bo'lishi kerakligi haqida instruksiyalardir:
+
+```jsx copy
+const element = <h1>Hello, world</h1>
+```
+
+Serverda `ReactDOMServer.renderToString` kabi funksiya yordamida render qilinayotganda, ushbu React elementlari HTML satrlariga seriyalashtiriladi. Bu seriyalashtirish jarayoni React elementlar daraxtidan o'tib chiqadi, har bir element uchun mos HTML yaratadi va barchasini bitta HTML satriga birlashtiradi:
+
+```jsx copy
+const htmlString = ReactDOMServer.renderToString(element)
+// htmlString <h1>Hello, world</h1> bo'ladi
+```
+
+Ushbu HTML satr keyinchalik klientga yuborilishi mumkin, u sahifaning dastlabki markup’i sifatida ishlatiladi. JavaScript to'plam paketi klientda yuklangach, React DOM’ni hidratsiya qiladi, event handler’larni ulaydi va har qanday dinamik kontentni to'ldiradi.
+
+### Seriyalashtirishning ahamiyati
+
+Seriyalashtirish jarayoni bir necha sabablarga ko'ra muhimdir. Birinchi navbatda, bu serverga klientga tezda ko'rsatishga tayyor bo'lgan to'liq HTML markup’ini yuborishga imkon beradi. Bu sahifaning yuklanish vaqtini sezilarli darajada yaxshilaydi, chunki foydalanuvchilar kontent bilan tezroq interaktivlikka kirishishlari mumkin bo'ladi.
+
+Shuningdek, React elementlarini HTML satriga seriyalashtirish muhitdan qat'i nazar, bir xil va prognozli dastlabki renderni ta'minlaydi. Yaratilgan HTML statikdir va serverda yoki klientda render qilinganda bir xil ko'rinishga ega bo'ladi. Ushbu muvofiqlik, dastlabki renderning oxirgi renderdan farq qilishi natijasida yuz berishi mumkin bo'lgan miltillashlar yoki joylashuv o'zgarishlarini oldini oladi, bu esa foydalanuvchi bilan ishlash qulayligini yaxshilashga yordam beradi.
+
+Oxir-oqibat, seriyalashtirish klient tomonida hidratsiyalash jarayonini osonlashtiradi. JavaScript to'plam paketi klientda yuklanganda, React event handler’larni ulash va har qanday dinamik kontentni to'ldirish kerak bo'ladi. Dastlabki markup sifatida seriyalashgan HTML satrini olish, React uchun ishonchli asosni ta'minlaydi va qayta hidratsiyalash jarayonini samarali va ishonchli qilishga yordam beradi.
+
+### Seriyalashtirish jarayoni
+
+Biz komponentlarni satrlarga seriyalashtirishimiz kerak bo'lsa ham, lekin shunchaki `JSON.stringify`dan foydalana olmaymiz, chunki React elementlari odatiy JavaScript obyektlari emas. Ular React tomonidan ularni aniqlash uchun ishlatiladigan maxsus `$$typeof` xususiyatiga ega. Ushbu xususiyatlarning qiymati esa symbol hisoblanadi. Symbol’ni esa seriyalashtirish va tarmoq orqali yuborish mumkin emas, shuning uchun biz boshqa yo'l tutishimiz kerak.
+
+Bu jarayonni amalga oshirish oson, chunki JavaScript ishchi muhitlarida, jumladan brauzer va Node.js’da bizga kerakli bo'lgan ichki o'rnatilgan qo'llab-quvvatlash mavjud. Bu qo'llab-quvvatlash `JSON.stringify` va `JSON.parse` funksiyalari orqali taqdim etiladi. Ushbu funksiyalar JSON obyektlarini seriyalashtirish yoki deseriyalashtirish(seriyadan chiqarish) uchun rekursiv tarzda ishlaydi, bu esa React elementlaridir. Ularning API’si quyidagicha:
+
+```js copy
+JSON.stringify(object, replacer)
+JSON.parse(object, replacer)
+```
+
+Bu yerda `replacer` funksiyasi kalit va qiymatni oladi va ma'lum shartlar bajarilgan taqdirda, almashtirish qiymatini qaytarishi mumkin. Bizning holatimizda, biz `$$typeof` qiymatini seriyalashtirish mumkin bo'lgan turga, masalan, string’ga almashtirmoqchimiz. Buni quyidagicha amalga oshiramiz:
+
+```js copy
+JSON.stringify(jsxTree, (key, value) => {
+  if (key === '$$typeof') {
+    return 'react.element' // <- string!!
+  }
+  return value // <- boshqa barcha qiymatlarni o'z holicha qaytaradi
+})
+```
+
+### Deseriyalashtirish (seriyadan chiqarish)
+
+Bu holatda endi tayyor! Klient tomonida bu jarayonni deseriyalashtirish uchun, bunga qarama-qarshi jarayonni bajaramiz:
+
+```js copy
+JSON.parse(serializedJsxTree, (key, value) => {
+  if (key === '$$typeof') {
+    return Symbol.for('react.element') // <- simbol!!
+  }
+  return value // <- boshqa barcha qiymatlarni o'z holicha qaytaradi
+})
+```
+
+Shu bilan biz React elementlarini seriyalashtirish va deseriyalashtirishimiz mumkin. Endi biz serverda server komponentlarini render qilolamiz va ularni klientlarga yubora olamiz. Bu dastlabki yuklashni hal qiladi; ammo, yangilanishlar va navigatsiya bilan ishlashimiz kerak. Avval navigatsiya bilan shug'ullanamiz va keyin yangilanishlarni ko'rib chiqamiz.

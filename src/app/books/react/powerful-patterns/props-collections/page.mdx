@@ -1,0 +1,107 @@
+---
+title: "React'da Props Collections va Prop Getters Patternlari"
+description: |
+  Props Collections va Prop Getters patternlari yordamida qayta ishlatiladigan va moslashuvchan komponentlar yarating. Prop'larni guruhlash va birlashtirishni o'rganing.
+keywords: 'React, design pattern, props collections, prop getters, props, drag-and-drop, compose, qayta ishlatish, webiston'
+author: 'Webiston.uz'
+---
+
+# Props kolleksiyasi (Props collections)
+
+Ko'pincha bir nechta prop’larni birga to'plashimiz kerak bo'ladi. Masalan, "sudrab tashlash" (drag-and-drop) foydalanuvchi interfeyslarini yaratishda bir qancha prop’larni boshqarish talab qilinadi:
+
+- `onDragStart`: foydalanuvchi elementni sudrashni boshlaganda brauzerga nima qilish kerakligini bildirish uchun
+- `onDragOver`: tushirilishi mumkin bo'lgan zona(dropzone)ni aniqlash uchun
+- `onDrop`: element bu zonaga tushirilganda qandaydir kodni bajarish uchun
+- `onDragEnd`: element sudrab olib bo'lgandan keyin brauzerga nima qilish kerakligini bildirish uchun
+
+Bundan tashqari, ma'lumotlar yoki elementlar boshqa elementlarga default holatda tushirilishi mumkin emas. Bir elementning boshqasiga tushirilishini ta'minlash uchun, biz `onDragOver` hodisasi uchun `event.preventDefault` metodini chaqirib, elementning default holatda ishlov berishini oldini olishimiz kerak.
+
+Ushbu prop’lar odatda birga qo'llaniladi va `onDragOver` odatda quyidagi kabi ishlatiladi: `event => { event.preventDefault(); moreStuff(); }`, shuning uchun biz bu prop’larni birga to'plab, turli komponentlarda qayta ishlatishimiz mumkin:
+
+```js copy
+export const droppableProps = {
+  onDragOver: (event) => {
+    event.preventDefault()
+  },
+  onDrop: (event) => {},
+}
+
+export const draggableProps = {
+  onDragStart: (event) => {},
+  onDragEnd: (event) => {},
+}
+```
+
+Endi, agar biz React komponentini tushirilishi mumkin bo'lgan zona kabi ishlashini kutayotgan bo'lsak, bu prop kolleksiyasini quyidagicha ishlatishimiz mumkin:
+
+```js copy
+<Dropzone {...droppableProps} />
+```
+
+Bu — _Prop collection_ pattern’i bo'lib, bir nechta prop’larni qayta ishlatiladigan qiladi. Bu pattern ko'pincha foydalanish imkoniyati qulayligi(accessibility)ni oshirish sohasida keng qo'llaniladi, masalan, foydalanish imkoniyati qulayligiga ega komponentlarda bir qator `aria-*` prop’larni kiritish uchun. Shunga qaramay, hali ham bir muammo mavjud, agar biz o'zimizning maxsus `onDragOver` prop’imizni yozsak va kolleksiyani bekor qilsak, kolleksiyadan avtomatik kelgan `event.preventDefault` chaqiruvini yo'qotamiz.
+
+Bu kutilmagan xatti-harakatlarga olib kelishi mumkin, va komponentni `Dropzone`ga tushirish imkoniyatini yo'qotadi:
+
+```js copy
+<Dropzone
+  {...droppableProps}
+  onDragOver={() => {
+    alert('Dragged!')
+  }}
+/>
+```
+
+Yaxshiyamki, biz bu muammoni _prop getters_ yordamida tuzatishimiz mumkin.
+
+## Props oluvchilar (Prop getters)
+
+_Prop getter_’lari aslida prop kolleksiyalarini maxsus prop’lar bilan kompozitsiya qiladi va ularni birga birlashtiradi. Bizning misolimizda, `droppableProps` kolleksiyasidagi `onDragOver` hodisa ishlov beruvchisidagi `event.preventDefault` chaqiruvini saqlab qolishni va unga maxsus `alert("Dragged!");` chaqiruvini qo'shishni xohlaymiz. Buni _prop getter_’lari yordamida amalga oshirishimiz mumkin.
+
+Birinchi navbatda, `droppableProps` kolleksiyasini _prop getter_’ga o'zgartiramiz:
+
+```js copy
+export const getDroppableProps = () => {
+  return {
+    onDragOver: (event) => {
+      event.preventDefault()
+    },
+    onDrop: (event) => {},
+  }
+}
+```
+
+Bu yerda prop kolleksiyasini eksport qilgan joyimizdan tashqari hech narsa o'zgarmagan, endi biz prop kolleksiyalarini qaytaradigan funksiya eksport qilamiz, bu _prop getter_’dir Chunki bu funksiya bo'lgani tufayli, u argumentlarni qabul qilishi mumkin, masalan, maxsus `onDragOver` funksiyasi. Biz bu maxsus `onDragOver`ni bizning default bo'yicha `onDragOver` bilan quyidagicha birlashtira olamiz:
+
+```js copy
+const compose =
+  (...functions) =>
+  (...args) =>
+    functions.forEach((fn) => fn?.(...args))
+
+export const getDroppableProps = ({ onDragOver: replacementOnDragOver, ...replacementProps }) => {
+  const defaultOnDragOver = (event) => {
+    event.preventDefault()
+  }
+
+  return {
+    onDragOver: compose(replacementOnDragOver, defaultOnDragOver),
+    onDrop: (event) => {},
+    ...replacementProps,
+  }
+}
+```
+
+Endi biz _prop getter_’ni quyidagicha ishlatishimiz mumkin:
+
+```js copy
+<Dropzone
+  {...getDroppableProps({
+    onDragOver: () => {
+      alert('Dragged!')
+    },
+  })}
+/>
+```
+
+Bu moslashtirilgan `onDragOver` bizning default bo'yicha `onDragOver`ga birikadi, va ikkita narsa sodir bo'ladi: `event.preventDefault()` va `alert("Dragged!")`. Bu _prop getter_ pattern’idir.

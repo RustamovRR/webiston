@@ -1,0 +1,172 @@
+---
+title: "React'ning Asosiy Qiymati: Deklarativ UI, Virtual DOM va Komponentlar"
+description: |
+  React nima uchun bunchalik kuchli? Uning deklarativ yondashuvi, Virtual DOM, komponent modeli va o'zgarmas state kabi asosiy qiymatlarini o'rganing.
+keywords: "React, Virtual DOM, vDOM, reconciliation, declarative, komponentlar, component model, immutable state, o'zgarmas state, React hooks, useState, webiston"
+author: 'Webiston.uz'
+---
+
+# React taklif qiladigan qiymati
+
+Keling, endi tarixdan chetlashib haqiqiy React’ga kirib boramiz. Umid qilamizki, endi nima uchun React borligini tushunish uchun yetarlicha kontekstga ega bo'ldik. Katta miqyosdagi xavfsiz bo'lmagan, prognoz qilib bo'lmaydigan va samarasiz JavaScript kodiga tushib qolish oson bo'lganligi sababli, bizni "_kutilmaganda g'alaba qozonish_"ga yo'naltiradigan yechim kerak edi, ya'ni tasodifan muvaffaqiyatga erishadigan joy. Keling, React buni qanday amalga oshirishini batafsilroq muhokama qilaylik.
+
+## Deklarativ va imperativ kod
+
+React DOM ustida deklarativ abstraksiyani taqdim etadi. Bu haqida keyingi bo'limlarda batafsilroq gaplashamiz, lekin asosan React bizga nimani ko'rishni xohlayotganimizni ifodalashimiz uchun bir usulni taklif qiladi, keyin esa qanday amalga oshishini React’ning o'zi hal qiladi. Bu orqali foydalanuvchi interfeysi xavfsiz, prognoz qilsa bo'ladigan va samarali tarzda yaratiladi va ishlaydi.
+
+Keling, ilgari yaratgan ro'yxat dasturimizni qayta ko'rib chiqaylik. React’da uni quyidagicha qayta yozishimiz mumkin:
+
+```js copy
+function MyList() {
+  const [items, setItems] = useState(['I love'])
+
+  return (
+    <div>
+      <ul>
+        {items.map((i) => (
+          <li key={i /* elementlarni noyobligini aniqlash uchun */}>{i}</li>
+        ))}
+      </ul>
+      <NewItemForm onAddItem={(newItem) => setItems([...items, newItem])} />
+    </div>
+  )
+}
+```
+
+E'tibor bersangiz, `return` ichida biz aniq HTML’ga o'xshash narsani yozamiz: biz ko'rmoqchi bo'lgan narsani yozamiz. Men `NewItemForm` bo'lgan quti va ro'yxatni ko'rmoqchiman. Tayyor. Qanday qilib u paydo bo'ladi? Buni React hal qiladi. Ro'yxat elementlarini bir martada qo'shamizmi? Ularni birma-bir qo'shamizmi? React buni qanday amalga oshirishni o'zi hal qiladi, biz esa faqat qanday natija chiqishini ta’riflaymiz. Keyingi bo'limlarda React buni qanday qilishi haqida batafsilroq o'rganamiz.
+
+HTML elementlariga murojaat qilish uchun class nomlaridan foydalanamizmi? JavaScript’da `getElementById` ishlatamizmi? Yo'q. React biz uchun “React elementlar”ni o'zi ichki mexanizmida yaratadi va ular yordamida o'zgarishlarni aniqlaydi va incremental (qismlarga bo'lib) yangilanishlarni amalga oshiradi, shuning uchun bizga foydalanuvchi kodidan class nomlari va ID’larini o'qishga hojat yo'q: haqiqiy ma'lumot manbai faqat React’dagi JavaScript bo'ladi.
+
+Biz `MyList` komponentimizni React’ga eksport qilamiz va React biz uchun uni ekranga xavfsiz, prognoz qilinadigan va samarali tarzda chiqaradi. Komponentning vazifasi faqat foydalanuvchi interfeysining ushbu qismi qanday ko'rinishda bo'lishini ta’riflashdir. Bu virtual DOM (vDOM) orqali amalga oshiriladi, ya’ni foydalanuvchi interfeysining yengil va ixcham (lightweight) ko'rinishidier. React yangilanish sodir bo'lgandan so'ng virtual DOM’ni yangilanishdan oldingi holat bilan solishtiradi va real DOM’ni virtual DOM bilan moslashtirish uchun kichik va samarali yangilanishlar qiladi. Shu yo'l bilan React DOM’ni yangilaydi.
+
+## Virtual DOM
+
+Virtual DOM real DOM’ni aks ettiruvchi, lekin JavaScript obyekti sifatida ishlaydigan dasturlash tushunchasidir. Agar hozircha bu biroz chalkash tuyulsa, xavotir olmang: keyingi bo'limlarda Virtual DOM’ga alohida bir bo'lim bag'ishlaganmiz va haqida batafsil gaplashamiz. Hozircha, shuni bilish muhimki, virtual DOM dasturchilarga real DOM’ni bevosita boshqarmasdan foydalanuvchi interfeysini yangilash imkonini beradi. React virtual DOM’dan komponentning o'zgarishlarini kuzatish va faqat kerak bo'lgan paytda uni qayta render qilish uchun foydalanadi. Bu yondashuv butun DOM daraxtini har safar o'zgarish bo'lganda yangilashdan ko'ra tezroq va samaraliroqdir.
+
+React’da virtual DOM real DOM daraxtining yengil va ixcham ko'rinishi hisoblanadi. U foydalanuvchi interfeysi elementlarining strukturasi va xususiyatlarini tavsiflaydigan oddiy JavaScript obyekti. React virtual DOM’ni real DOM daraxtiga mos ravishda yaratadi va yangilaydi, va virtual DOM’da amalga oshirilgan o'zgarishlar **_reconciliation(moslashtirish)_** jarayoni orqali real DOM’ga qo'llaniladi.
+
+### "Like" button misoli React talqinida
+
+Bitta alohida bob shu mavzuga, ya'ni reconciliation jarayonining qanday ishlashiga, bag'ishlangan, ammo hozirgi kontekstda kichik xulosani va ba'zi misollarni ko'rib chiqamiz. Virtual DOM qanday ishlashini tushunish uchun "Like" tugmasi misolimizni qayta ko'rib chiqamiz. Biz foydalanuvchi "Like" tugmasini bosganda like’lar soni bitta oshishi kerak bo'lgan React komponentini yaratamiz.
+
+Ushbu komponent kodi:
+
+```js copy
+import React, { useState } from 'react'
+
+function LikeButton() {
+  const [likes, setLikes] = useState(0)
+
+  function handleLike() {
+    setLikes(likes + 1)
+  }
+
+  return (
+    <div>
+      <button onClick={handleLike}>Like</button>
+      <p>{likes} Likes</p>
+    </div>
+  )
+}
+
+export default LikeButton
+```
+
+Ushbu kodda biz `useState` hook’idan foydalanib, `likes` deb nomlangan state o'zgaruvchisini yaratdik, bu o'zgaruvchi "like"lar sonini saqlaydi.
+
+#### Hook’larga qisqacha ta'rif
+
+React haqida avval ba'zi tushunchalarni eslab olamiz: hook — bu funksional komponentlar ichida React’ning **state** va **lifecycle**(hayotiy sikli) metodlaridan foydalanish imkonini beruvchi maxsus funksiya. Hook’lar stateful (holatli) logikani qayta ishlatish imkonini beradi, bu esa komponent iyerarxiyasini o'zgartirmasdan hook’larni boshqa komponentlar bilan yoki hatto ochiq manbali paketlar sifatida hamjamiyat bilan baham ko'rishni osonlashtiradi.
+
+#### Virtual DOM qanday ishlashi
+
+Shuningdek, foydalanuvchi tugmani bosganda "like"lar sonini bittaga oshiradigan `handleLike` funksiyasini e'lon qildik. Nihoyat, JSX yordamida _Like_ tugmasi va "like"lar sonini render qildik.
+
+Endi bu misolda virtual DOM qanday ishlashini batafsilroq ko'rib chiqamiz.
+
+`LikeButton` komponenti birinchi marta render qilinganda, React real DOM daraxtiga mos keladigan virtual DOM daraxtini yaratadi. Virtual DOM bitta `div` elementini, u esa o'z navbatida `button` va `p` elementlarini o'z ichiga oladi:
+
+```js copy
+{
+  $$typeof: Symbol.for('react.element'),
+  type: 'div',
+  props: {},
+  children: [
+    {
+      $$typeof: Symbol.for('react.element'),
+      type: 'button',
+      props: { onClick: handleLike },
+      children: ['Like']
+    },
+    {
+      $$typeof: Symbol.for('react.element'),
+      type: 'p',
+      props: {},
+      children: [0, ' Likes']
+    }
+  ]
+}
+```
+
+`p` elementining children(farzandlar) xususiyati `Likes` state o'zgaruvchisining qiymatini o'z ichiga oladi, bunda dastlabki holat nolga teng.
+
+Foydalanuvchi _Like_ tugmasini bosganda, `handleLike` funksiyasi chaqiriladi va bu "like"lar sonini yangilaydi. React keyin yangilangan state’ni aks ettiruvchi yangi virtual DOM daraxtini yaratadi:
+
+```js copy
+{
+  type: 'div',
+  props: {},
+  children: [
+    {
+      type: 'button',
+      props: { onClick: handleLike },
+      children: ['Like']
+    },
+    {
+      type: 'p',
+      props: {},
+      children: [1, ' Likes']
+    }
+  ]
+}
+```
+
+E'tibor bering, virtual DOM daraxti avvalgi elementlarni o'z ichiga oladi, lekin `p` elementining `children` xususiyati "like"larning yangi qiymatini aks ettirish uchun yangilangan, ya'ni 0 dan 1 gacha o'zgargan. Bu React’da **reconciliation** deb ataladigan jarayondir, bu jarayonda yangi virtual DOM eski virtual DOM bilan taqqoslanadi. Keling, bu jarayonni qisqacha muhokama qilamiz.
+
+#### Reconciliation jarayoni
+
+Yangi virtual DOM daraxtini hisoblagandan so'ng, React reconciliation jarayonini bajaradi, bu yangi daraxt bilan eski daraxt o'rtasidagi farqlarni tushunish uchun ishlatiladi. Reconciliation — eski virtual DOM daraxtini yangi virtual DOM daraxti bilan solishtirish va real DOM’ning qaysi qismlarini yangilash kerakligini aniqlash jarayoni. Bu mavzuga alohida bobda batafsil va chuqurroq to'xtalamiz.
+
+Hozir esa _Like_ tugmasini ko'rib chiqamiz.
+
+Bizning misolimizda, React eski virtual DOM daraxtini yangi virtual DOM daraxti bilan taqqoslaydi va `p` elementi o'zgarganligini topadi: aniqrog'i, uning `props` yoki `state` yoki har ikkalasi ham o'zgargan. Bu React’ga komponentni “ifloslangan”(dirty) yoki “yangilanish kerak” deb belgilash imkonini beradi. React keyin real DOM’ga minimal samarali yangilanishlar to'plamini hisoblaydi va oxir-oqibat virtual DOM’da amalga oshirilgan o'zgarishlarni aks ettirish uchun real DOM’ni yangilaydi.
+
+React real DOM’ning faqat kerakli qismlarini yangilaydi, bu esa DOM manipulyatsiyalari sonini minimallashtiradi. Bu yondashuv har safar o'zgarish sodir bo'lganda butun DOM daraxtini yangilashdan ko'ra ancha tez va samaraliroqdir.
+
+Virtual DOM zamonaviy veb uchun kuchli va nufuzli ixtiro bo'lib, React’da sinovdan o'tgach, Preact va Inferno kabi yangi kutubxonalar ham uni qabul qilishdi.
+
+## Komponent modeli
+
+React’da "komponentlarcha fikrlash" (thinking in components) ni kuchli qo'llab-quvvatlaydi: ya'ni, dasturingizni kichik qismlarga ajratib, ularni katta daraxtga qo'shish orqali dasturni tuzish. Komponent modeli React’ning asosiy tushunchalaridan biri bo'lib, React’ni shunchalik kuchli qiladigan ham aynan shu narsadir. Keling, nima uchun bunday ekanligini ko'rib chiqamiz:
+
+- U ilova kodining har xil joyida bir xil narsani qayta ishlatishni rag'batlantiradi, shunda biror narsa buzilsa, uni bir joyda tuzatasiz va bu o'sha narsani hamma joyda tuzatadi. Bu **DRY** (Don’t Repeat Yourself) deb nomlangan development tushunchasi bo'lib, dasturiy injineringning muhim tushunchasi hisoblanadi. Masalan, agar bizda `Button` komponenti bo'lsa, uni dasturimizning ko'p joylarida ishlatishimiz mumkin, va agar tugma stilini o'zgartirishimiz kerak bo'lsa, uni bir joyda o'zgartiramiz va u hamma joyda yangilanadi.
+
+- React komponentlarni kuzatishni osonlashtiradi va ushbu komponentlarni qayta-qayta aniqlab, vaqt o'tishi bilan o'zgarishlarni kuzatishi orqali memoizatsiya, guruhlash(batching) va boshqa optimizatsiyalarni amalga oshiradi. Bu **keying** (kalitlash) deb ataladi. Masalan, agar bizda `Button` komponenti bo'lsa, unga `key` prop berishimiz mumkin va React vaqt o'tishi bilan `Button` komponentini kuzatib borishi va qachon uni yangilash kerakligini yoki yangilamasdan foydalanuvchi interfeysida minimal o'zgarishlarni amalga oshirish kerakligini "biladi". Ko'pgina komponentlar implicit (noaniq) kalitlarga ega, lekin agar xohlasak, ularga aniq kalitlarni ham berishimiz mumkin.
+
+- Bu bizga ma'suliyatlarni ajratib, foydalanuvchi interfeysining ma'lum qismlariga tegishli bo'lgan logikani o'sha qismlarga yaqin joylashtirishga yordam beradi. Masalan, agar bizda `RegisterButton` komponenti bo'lsa, tugma bosilganda nima sodir bo'lishini boshqaruvchi logikani `RegisterButton` komponenti bilan bitta faylda joylashtirishimiz mumkin, tugma bosilganda nima bo'lishini aniqlash uchun boshqa fayllarga o'tishning hojati bo'lmaydi. `RegisterButton` komponenti oddiyroq `Button` komponentini o'rab oladi va `RegisterButton` tugma bosilganda nima sodir bo'lishini boshqarish uchun mas'ul bo'ladi. Bu **kompozitsiya(composition)** deb ataladi.
+
+React’ning komponent modeli freymvorkning mashhurligi va muvaffaqiyatini ta'minlaydigan fundamental tushuncha hisoblanadi. Ushbu development yondashuvi ko'pgina afzalliklarga ega, jumladan modulni yaxshilash, xatolilarni osongina aniqlash(debugging) va kodni samarali qayta ishlatish.
+
+## Holatning o'zgarmasligi (Immutable state)
+
+React dizayn filosofiyasi ilova holatini, ya'ni state’ni, o'zgarmas (immutable) qiymatlar to'plami sifatida tasvirlash paradigmasini e'tirof etadi. Har bir state yangilanishi yangi, alohida snapshot va xotira havolasi(memory reference) sifatida ko'riladi. Bu o'zgarmas yondashuv state’ni boshqarishning asosiy qismidir va kuchli, samarali va prognoz qilinadigan foydalanuvchi interfeyslarini ishlab chiqishda bir qancha afzalliklarga ega.
+
+O'zgarmaslikni ta'minlash orqali, React UI komponentlarini har qanday vaqtda aniq bir holatini aks ettirishini kafolatlaydi. State o'zgarganda, uni to'g'ridan-to'g'ri o'zgartirish o'rniga, yangi state’ni ifodalovchi yangi obyekt qaytariladi. Bu o'zgarishlarni kuzatishni, debug qilishni va ilovaning xatti-harakatlarini tushunishni osonlashtiradi. State o'zgarishlari diskret (ajralgan) bo'lib, bir-biriga xalaqit bermagani sababli, umumiy o'zgaruvchan(mutable) state tufayli yuzaga keladigan nozik xatoliklar imkoniyati sezilarli darajada kamayadi.
+
+Keyingi bo'limlarda React qanday qilib state yangilanishlarini guruhlashi(batching updates) va ularni asinxron tarzda optimallashtirish uchun ishlov berishini o'rganamiz. State’ni o'zgarmas tarzda boshqarish kerak bo'lgani uchun, bu “tranzaksiyalarni” xavfsiz tarzda yig'ish va qo'llash mumkin, bu esa bir yangilanish boshqa yangilanish uchun state’ni buzishi xavfini kamaytiradi. Bu yondashuv yanada prognoz qilinuvchan state menejmentga olib keladi va ayniqsa murakkab state o'zgarishlari paytida ilovaning ishlashini yaxshilaydi.
+
+O'zgarmas state’dan foydalanish dasturiy ta'minotni ishlab chiqishdagi eng yaxshi amaliyotlarni yana bir bor mustahkamlaydi. Bu dasturchilarni ma'lumot oqimlarini funksional tarzda o'ylashga undaydi, side effect’larni kamaytiradi va kodni osonroq tushunish imkonini beradi. O'zgarmas ma'lumot oqimining aniq bo'lishi ilovaning qanday ishlashini tushunish uchun mental(aqliy) modelni soddalashtiradi.
+
+O'zgarmaslik(Immutability) - dasturchilar uchun yanada kuchliroq vositalarini yaratishga imkon beradi, masalan, Replay.io kabi vositalar yordamida vaqt bo'ylab orqaga va oldinga qadam tashlab, ilovaning state o'zgarishlarini kuzatish va UI’ni har qanday vaqtda tekshirish mumkin. Bu faqat har bir state yangilanishi alohida va o'zgarmas snapshot sifatida saqlanganda mumkin bo'ladi.
+
+React’ning o'zgarmas state yangilanishlariga sodiqligi maqsadli tanlangan dizayn qaroridir va ko'plab afzalliklarni beradi. Bu zamonaviy funksional dasturlash tamoyillariga mos keladi, samarali UI yangilanishlariga imkon beradi, ishlashni optimallashtiradi, xatoliklar ehtimolini kamaytiradi va dasturchi bilan ishlash qulayligini yaxshilaydi. Ushbu yondashuv React’ning ko'plab takomillashgan funksiyalari asosida yotadi va React rivojlanishda davom etar ekan, asosiy tamoyillardan biri bo'lib qoladi.

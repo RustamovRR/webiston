@@ -1,0 +1,152 @@
+---
+title: 'React.memo Asoslari: Memoizatsiya bilan Ilovani Tezlashtirish'
+description: |
+  Memoizatsiya nima va u React'da qanday ishlaydi? React.memo yordamida keraksiz qayta renderlarning oldini olish va ilova samaradorligini oshirishni o'rganing.
+keywords: 'React.memo, memoization, memoizatsiya, pure function, sof funksiya, optimallashtirish, performance, qayta render, re-render, reconciliation, webiston'
+author: 'Webiston.uz'
+---
+
+# React.memo bilan memoizatsiya
+
+## Memoizatsiya tushunchasi va misol
+
+Memoizatsiya(Memoization) — computer science’da funksiyalarning avvalgi hisoblangan natijalarini keshda saqlash orqali ularning ishlash samaradorligini oshirish uchun qo'llaniladigan texnika. Oddiy qilib aytganda, memoizatsiya funksiyaning kirish ma'lumotlariga asoslangan holda uning natijasini saqlaydi, shuning uchun funksiya xuddi shu kirish ma'lumotlari bilan yana chaqirilsa, u hisoblangan natijani qayta hisoblash o'rniga saqlangan natijani qaytaradi. Bu, ayniqsa, hisoblashlar ko'p vaqt talab qiladigan yoki tez-tez chaqiriladigan funksiyalar uchun vaqt va resurslarni sezilarli darajada tejaydi. Memoizatsiya funksiyaning sof(pure) bo'lishiga bog'liq bo'lib, bu funksiya ma'lum bir kirish ma'lumotlari uchun doimo bir xil natijani qaytarishi kerakligini anglatadi. Masalan, sof funksiyaga misol:
+
+```js copy
+function add(num1, num2) {
+  return num1 + num2
+}
+```
+
+Ushbu `add` funksiyasi, agar argument sifatida `1` va `2` kiritilgan bo'lsa, doimo `3` ni qaytaradi, shuning uchun uni xavfsiz tarzda memoizatsiya qilish mumkin. Agar funksiya qandaydir side effect’ga, masalan, tarmoq orqali bog'lanishga bog'liq bo'lsa, u holda memoizatsiya qilish mumkin bo'lmaydi. Masalan:
+
+```js copy
+async function addToNumberOfTheDay(num) {
+  const todaysNumber = await fetch('https://number-api.com/today')
+    .then((r) => r.json())
+    .then((data) => data.number)
+  return num + todaysNumber
+}
+```
+
+Agar kirish ma'lumoti `2` bo'lsa, bu funksiya har kuni turli xil natija qaytaradi va shuning uchun uni memoizatsiya qilish mumkin emas. Bu oddiy misol bo'lsa ham, asosiy memoizatsiya tushunchasini tushunishga yordam beradi.
+
+Memoizatsiya ayniqsa murakkab hisob-kitoblar bilan shug'ullanishda yoki katta ro'yxatdagi elementlarni render qilishda foydali bo'ladi. Masalan:
+
+```js copy
+let result = null
+const doHardThing = () => {
+  if (result) return result
+
+  // ...og'ir ishlarni bajarish
+
+  result = hardStuff
+  return hardStuff
+}
+```
+
+`doHardThing` funksiyasini birinchi marta chaqirish bir necha daqiqa davom etishi mumkin, lekin ikkinchi, uchinchi, to'rtinchi yoki n-marta chaqirilganda bu og'ir ishlarni bajarish o'rniga saqlangan natijani qaytaradi. Bu memoizatsiyaning asosiy mazmunidir.
+
+## React’da memoizatsiya
+
+React konteksida memoizatsiya funksional komponentlarga `React.memo` komponenti yordamida qo'llanishi mumkin. Ushbu funksiya yangi komponentni qaytaradi, u faqat props o'zgargan taqdirda qayta render qilinadi. [4-bobga](/books/react/inside-reconciliation) asoslanib, "qayta render qilish" funksional komponentni qayta chaqirishni anglatishini bilamiz. Agar komponent `React.memo` bilan o'ralgan bo'lsa, props o'zgarmagan taqdirda uni qayta chaqirish amalga oshirilmaydi. Funksional komponentlarni memoizatsiya qilish orqali kerak bo'lmagan qayta render qilishlarning oldini olish mumkin, bu esa umumiy ishlash samaradorligini oshiradi.
+
+Biz allaqachon bilamizki, React komponentlari reconciliation jarayonida chaqiriladigan funksiyalardir. React funksional komponentlarini ularning props’i bilan rekursiv ravishda chaqirib, keyin ikki Fiber daraxti asosida foydalaniladigan vDOM daraxtini yaratadi. Ba'zan, funksional komponent jadal hisob-kitoblar yoki uni DOM’ga qo'llashda joylashtirish(placement) yoki yangilash(update) effekti natijasida render qilish uzoq vaqt olishi mumkin, [4-bobda yoritilganidek](/books/react/inside-reconciliation/fiber-reconciliation#effektlar-effects). Bu ilovaning ishlashini sekinlashtiradi va foydalanuvchiga kechikuvchi UI taqdim etadi, bu esa UX tomonidan yomon hisoblanadi. Memoizatsiya bu muammoni qimmatli hisob-kitoblar natijalarini saqlab, xuddi shu bir xil kirish qiymatlari funksiyaga yoki komponentga o'tkazilganida ularni qaytarish orqali bartaraf etish usuli hisoblanadi.
+
+## Nega `React.memo` muhim?
+
+Keling, `React.memo`ning ahamiyatini tushunish uchun keng tarqalgan bir holatni ko'rib chiqamiz, bunda bizda ro'yxatdagi elementlarni komponentda render qilish kerak bo'ladi. Masalan, bizda vazifalar ro'yxati (to do list) mavjud bo'lib, uni komponentda ko'rsatish kerak, quyidagicha:
+
+```js copy
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>{todo.title}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+Endi bu komponentni foydalanuvchi kiritishlari bo'yicha qayta render qilinadigan boshqa komponentga qo'shamiz:
+
+```js copy
+function App() {
+  const todos = Array.from({ length: 1000000 })
+  const [name, setName] = useState('')
+
+  return (
+    <div>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <TodoList todos={todos} />
+    </div>
+  )
+}
+```
+
+Bizning `App` komponentimizda, input maydonidagi har bir klaviatura bosilishi bilan `TodoList` qayta render qilinadi: har bir klaviatura bosilishi bilan `TodoList` funksional komponenti o'z props’i bilan qayta chaqiriladi. Bu ishlash samaradorligi muammolarini keltirib chiqarishi mumkin va ehtimol, keltirib chiqaradi. Biroq, bu React’ning qanday ishlashida muhim hisoblanadi: komponentda state o'zgarishi sodir bo'lganda, daraxtda o'sha komponentdan pastdagi har bir funksional komponent reconciliation jarayonida qayta chaqiriladi.
+
+### Sodda misol: vazifalar ro'yxati
+
+Agar vazifalar ro'yxati katta bo'lsa va komponent tez-tez qayta render qilinsa, bu ilovada ishlashda to'siqlar(bottleneck)ga sabab bo'lishi mumkin. Ushbu komponentni optimizatsiya qilish usullaridan biri uni `React.memo` yordamida memoizatsiya qilishdir:
+
+```js copy
+const MemoizedTodoList = React.memo(function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>{todo.title}</li>
+      ))}
+    </ul>
+  )
+})
+```
+
+`TodoList` komponentini `React.memo` bilan o'rash orqali, React faqat props o'zgarganda komponentni qayta render qiladi. Atrofidagi state o'zgarishlari unga ta'sir qilmaydi. Bu shuni anglatadiki, agar vazifalar ro'yxati o'zgarmasa, komponent qayta render qilinmaydi va uning keshlangan natijasi ishlatiladi. Bu ayniqsa komponent murakkab bo'lsa va vazifalar ro'yxati katta bo'lsa, sezilarli darajada vaqt va resurslarni tejash imkonini beradi.
+
+### Murakkab misol: Ichma-ich joylashgan komponentlar
+
+Keling, murakkab tarkibga ega, bir necha ichki komponentlarni o'z ichiga olgan, render qilish qimmatli bo'lgan boshqa bir komponentni ko'rib chiqamiz:
+
+```js copy
+function Dashboard({ data }) {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <UserStats user={data.user} />
+      <RecentActivity activity={data.activity} />
+      <ImportantMessages messages={data.messages} />
+    </div>
+  )
+}
+```
+
+Agar `data` prop tez-tez o'zgaradigan bo'lsa, bu komponentni render qilish qimmatga tushishi mumkin, ayniqsa ichki komponentlar ham murakkab bo'lsa. Biz ushbu komponentni optimallashtirish uchun har bir ichki komponentni `React.memo` yordamida memoizatsiya qilishimiz mumkin:
+
+```js copy
+const MemoizedUserStats = React.memo(function UserStats({ user }) {
+  // ...
+})
+
+const MemoizedRecentActivity = React.memo(function RecentActivity({ activity }) {
+  // ...
+})
+
+const MemoizedImportantMessages = React.memo(function ImportantMessages({ messages }) {
+  // ...
+})
+
+function Dashboard({ data }) {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <MemoizedUserStats user={data.user} />
+      <MemoizedRecentActivity activity={data.activity} />
+      <MemoizedImportantMessages messages={data.messages} />
+    </div>
+  )
+}
+```
+
+Har bir ichki komponentni memoizatsiya qilish orqali, React faqat o'zgargan komponentlarni qayta render qiladi va o'zgarmagan komponentlar uchun keshlangan natijalar ishlatiladi. Bu `Dashboard` komponentining ishlashini sezilarli darajada yaxshilaydi va kerak bo'lmagan qayta render qilishlarni kamaytiradi. Shu tariqa, `React.memo` React’da funksional komponentlarning ishlashini optimallashtirish uchun muhim vosita ekanini ko'rish mumkin. Bu ayniqsa render qilish qimmat bo'lgan yoki murakkab logikaga ega komponentlar uchun foydalidir.
