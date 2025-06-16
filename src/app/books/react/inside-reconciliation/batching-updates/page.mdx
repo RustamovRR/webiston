@@ -1,8 +1,9 @@
 ---
-title: "Batching updates (Yangilanishlarni guruhlash)"
-description: "[3-bobda](/books/react/virtual-dom/document-fragments) biz brauzerlardagi document fragmentlarini DOM’ning o'zida mavjud bo'lgan API qismlaridan biri sifatida muhokama qildik: bu yengil konteynerlar bo'lib, ular DOM tugunlarining to'plamlarini saqlaydi va vaqtinchalik DOM uchun tayyorlash maydoni vazifasini bajaradi, unda bir nechta o'zgarishlarni amalga oshirish mumkin, asosiy DOM’ga ta’sir qilmasdan. Nihoyat, document fragmenti DOM’ga qo'shilganda, bitta reflow va repaint jarayoni ishga tushadi.
-
-Xuddi shunga o'xshash tarzda, React reconciliation jarayonida real DOM’ga yangilanishlarni guruhlaydi, bir nechta vDOM yangilanishlarini bitta DOM yangilanishiga birlashtiradi. Bu real DOM’ni yangilashlar sonini kamaytiradi va shuning uchun veb-ilovalarning samaradorligini yaxshilaydi."
+title: "React'da Yangilanishlarni Guruhlash (Batching Updates)"
+description: |
+  React qanday qilib bir nechta state yangilanishini bitta renderga birlashtiradi? Yangilanishlarni guruhlash (batching) va uning performance'ga ta'sirini o'rganing.
+keywords: 'React, batching, batching updates, yangilanishlarni guruhlash, performance, samaradorlik, reconciliation, DOM, state, useState, Fiber, webiston'
+author: 'Webiston.uz'
 ---
 
 import { Callout } from 'nextra/components'

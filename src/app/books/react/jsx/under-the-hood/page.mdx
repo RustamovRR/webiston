@@ -1,19 +1,9 @@
 ---
-title: "JSX’ning ichki ishlash mexanizmi (under the hood)"
-description: "Qanday qilib biror dasturlash tilining kengaytmasini yaratish mumkin? Ular qanday ishlaydi? Bu savollarga javob berish uchun dasturlash tillari haqida biroz tushunishimiz kerak bo'ladi. Ayniqsa, quyidagi kod qanday qilib 3 ni chiqarishini tushunib olishimiz zarur:
-
-```js copy
-const a = 1
-let b = 2
-
-console.log(a + b)
-```
-
-Bu oddiy misolni tushunish JSX’ni yaxshiroq anglashimizga yordam beradi, bu esa o'z navbatida React’ni yaxshiroq tushunishga va React bilan ishlashdagi qobiliyatimizni oshirishga olib keladi.
-
-## Kod qanday ishlaydi?
-
-Oldingi kod misoli faqatgina tekst edi. Bu qanday qilib kompyuter tomonidan tushunilib, bajariladi? Yangi boshlovchilar uchun, bu tekst faylidagi so'zlarni aniqlay oladigan katta, aqlli `RegExp` (regular expression) emas. Tajribada shunday bir marta dasturlash tilini shu usulda yaratishga harakat qilingan va bu muvaffaqiyatsiz bo'lgan, chunki regex’lar to'g'ri ishlashini ta'minlash qiyin, ular o'qish va tushunish uchun ham murakkab, va texnik muammolar tufayli uni maintain qilish qiyin bo'ladi. Misol sifatida, quyidagi regex haqiqiy email manzilini tanib olish uchun ishlatiladi."
+title: "JSX'ning Ichki Mexanizmi: Kompilyatorlar Qanday Ishlaydi?"
+description: |
+  JSX kodining orqasida nima yotadi? Kompilyatorlarning ishlash jarayoni: tokenizatsiya, parsing (AST) va kod generatsiyasi haqida bilib oling.
+keywords: 'JSX, kompilyator, compiler, tokenization, lexer, parsing, AST, Abstract Syntax Tree, code generation, JIT, JavaScript engine, runtime, webiston'
+author: 'Webiston.uz'
 ---
 
 # JSX’ning ichki ishlash mexanizmi (under the hood)

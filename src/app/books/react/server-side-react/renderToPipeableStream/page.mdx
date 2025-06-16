@@ -1,8 +1,9 @@
 ---
-title: "`renderToPipeableStream` API’si haqida"
-description: "`renderToPipeableStream` — bu React 18’da joriy qilingan server tomonidagi rendering API’si bo'lib, katta hajmdagi React ilovalarini samaraliroq va moslashuvchanroq tarzda Node.js oqimiga o'tkazish imkonini beradi. Bu "stream" qaytaradi va uni javob (response) obyektiga uzatish mumkin. `renderToPipeableStream` HTML qanday render qilinishini yaxshiroq boshqarish va boshqa Node.js oqimlari bilan yaxshiroq integratsiyani ta'minlash imkonini beradi.
-
-Bundan tashqari, u React’ning "concurrent" xususiyatlarini, jumladan, Suspense’ni to'liq qo'llab-quvvatlaydi, bu esa server tomonidagi renderlash davomida asinxron ma'lumotlarni olishni yaxshiroq boshqarish imkonini ochib beradi. Stream bo'lganligi sababli, u tarmoq orqali uzluksiz uzatish holatida bo'lishi mumkin, ya'ni HTML qismlari bloklanmagan holda asinxron va yig'ilib boruvchi tarzda tarmoq orqali klientlarga yuboriladi. Bu tezkorroq TTFB (birinchi baytga erishish vaqti) va umuman yaxshiroq ishlash samaradorligi ko'rsatkichlarini ta'minlaydi."
+title: "React'da `renderToPipeableStream` API'si: Streaming SSR Tahlili"
+description: |
+  `renderToPipeableStream` qanday ishlaydi? React 18'ning ushbu kuchli API'si yordamida Node.js oqimlari, Suspense va streaming orqali SSR'ni qanday optimallashtirishni o'rganing.
+keywords: 'renderToPipeableStream, React 18, SSR, server-side rendering, streaming, Node.js streams, Suspense, performance, TTFB, Fizz, webiston'
+author: 'Webiston.uz'
 ---
 
 import { Callout } from 'nextra/components'

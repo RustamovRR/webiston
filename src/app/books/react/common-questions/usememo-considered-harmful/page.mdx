@@ -1,6 +1,9 @@
 ---
-title: "useMemo'dan ehtiyotkorlik bilan foydalaning"
-description: "Bir qarashda e'lon qilingan barcha o'zgaruvchilarni komponent ichida `useMemo` bilan o'rash jozibador ko'rinishi mumkin, lekin bu har doim ham foydali emas. `useMemo` asosan hisoblash jihatidan qimmatli bo'lgan operatsiyalarni memoizatsiya qilish yoki obyekt va massivlar uchun barqaror referenslarni saqlash uchun qimmatli hisoblanadi. Qator qiymatlar, masalan, string, number yoki boolean qiymatlar uchun `useMemo` ishlatish zarur emas. Chunki JavaScript’da bunday skalyar qiymatlar ularning haqiqiy qiymatlari orqali uzatiladi va taqqoslanadi, referens orqali emas. Shunday qilib, har safar siz skalyar qiymatni o'rnatasiz yoki taqqoslaysiz, bu haqiqiy qiymat bilan ishlashingizni anglatadi, referens bilan emas."
+title: 'useMemo va useCallback: Qachon Ishlatish Kerak (va Kerak Emas)?'
+description: |
+  Ortiqcha optimizatsiya xavfidan saqlaning! React'da useMemo va useCallback'ni qachon ishlatish (va eng muhimi, qachon ishlatmaslik kerak) haqida bilib oling.
+keywords: 'useMemo, useCallback, optimallashtirish, premature optimization, ortiqcha optimizatsiya, referential integrity, host components, event delegation, React hooks, performance, webiston'
+author: 'Webiston.uz'
 ---
 
 import { Callout } from 'nextra/components'

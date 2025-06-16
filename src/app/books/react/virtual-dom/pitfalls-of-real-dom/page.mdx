@@ -1,20 +1,9 @@
 ---
-title: "Reactda Real DOM’ning ayrim kamchiliklari"
-description: "Real DOM'ning bir qancha kamchiliklari bor, bu esa yuqori samarador veb-ilovani yaratishni qiyinlashtirishi mumkin. Bu kamchiliklardan ba'zilari ishlash samaradorligiga doir muammolari, brauzerlararo moslik va xavfsizlik zaifliklarini o'z ichiga oladi, bu yerda DOM’ni to'g'ridan-to'g'ri o'zgartirish, cross-site scripting (XSS) zaifliklarini keltirib chiqarishi mumkin.
-
-## Performance (Ishlash samaradorligi)
-
-Real DOM bilan bog'liq eng katta muammolardan biri uning performance muammosidir. DOM’da o'zgarish yuz berganda, masalan, element qo'shish yoki olib tashlash, yoki elementning teksti yoki atributlarini o'zgartirishda, brauzer joylashuv(layout)larni qayta hisoblash va o'zgargan qismlarni qayta chizish kerak bo'ladi. Bu jarayon katta va murakkab veb-sahifalar uchun sekin va resurslarni ko'p iste'mol qiluvchan bo'lishi mumkin.
-
-### `offsetWidth` ishlatishning kamchiliklari
-
-Oldin aytib o'tilganidek, DOM elementining `offsetWidth` xususiyatini o'qish oddiy operatsiya kabi ko'rinishi mumkin, lekin aslida brauzer tomonidan joylashuvni qimmatli bo'lgan qayta hisoblashga olib kelishi mumkin. Buning sababi, `offsetWidth` hisoblangan xususiyat(computed property) bo'lib, u element va uning avlodlarining joylashuviga bog'liq bo'ladi, bu esa brauzerga aniq qiymatni qaytarishdan oldin joylashuv ma'lumotlari yangilanmaganligini ta'minlash zaruriyatini tug'diradi.
-
-Eng yomon holatda, `offsetWidth` xususiyatini o'qish Big O notatsiyasida (O(n)) sifatida baholanadi. Buning sababi, bu xususiyatga kirish brauzerda reflow, ya'ni qayta joylashish, jarayonini keltirib chiqarishi mumkin, bu esa sahifadagi bir nechta elementlar uchun joylashuv pozitsiyalarini qayta hisoblashni o'z ichiga oladi. Bu kontekstda (n) reflow tomonidan ta'sir qilingan va o'zgartirilgan DOM elementlarining sonini anglatadi. Bevosita xususiyatga kirish tez bo'lsa-da, reflow kabi bog'langan side effect’lar sahifadagi elementlar soni bilan operatsiyaning ko'payishiga olib kelishi mumkin.
-
-### `getBoundingClientRect()`dan foydalanishning afzalligi
-
-Agar biz `offsetWidth` kabi joylashuv xususiyatlariga kirish orqali keltirilishi mumkin bo'lgan reflow’dan qochmoqchi bo'lsak, biz operatsiyani samaraliroq qilish uchun ma'lum usullarni qo'llashimiz mumkin. Bu yerda, `getBoundingClientRect()` usulidan foydalanish bir yondashuv bo'lib, bu joylashuv o'qishni va yozishni birlashitirishi mumkin."
+title: "Real DOM'ning Kamchiliklari: Performance va Brauzerlararo Moslik"
+description: |
+  Real DOM bilan ishlashning kamchiliklari nimalardan iborat? Reflow, repaint, layout thrashing va brauzerlararo moslik muammolari haqida bilib oling.
+keywords: 'DOM, Real DOM, performance, reflow, repaint, layout thrashing, offsetWidth, getBoundingClientRect, cross-browser, SyntheticEvent, webiston'
+author: 'Webiston.uz'
 ---
 
 # Real DOM’ning ayrim kamchiliklari

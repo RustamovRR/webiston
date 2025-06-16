@@ -1,6 +1,9 @@
 ---
-title: 'Fiber reconciliation haqida'
-description: "Fiber reconciliation ikki bosqichda amalga oshiriladi: *render(tayyorlash) *bosqichi va *commit(o'zgarishlarni tatbiq qilish) bosqichi*. Ushbu ikki bosqichli yondashuv (rasmda ko'rsatilgan) React’ga, DOM’ga qo'shilishdan va foydalanuvchilarga yangi holatni ko'rsatishdan oldin har qanday vaqtda bekor qilinishi mumkin bo'lgan renderlash ishini bajarish imkonini beradi: bu renderlashni to'xtatib qo'yadigan qiladi. Biroz batafsilroq aytadigan bo'lsak, renderlashni to'xtatib qo'yadigan narsa bu React rejalashtiruvchisi(scheduler) tomonidan har 5 msda bajarishni asosiy thread(main thread)ga qaytarishning g'ayrioddiy yondashuvi bo'lib, bu hatto 120 fps (kadr/sekund) tezlikdagi qurilmalarda ham bitta kadrlashdan kichikroqdir."
+title: "Fiber Reconciliation: React'da Render va Commit Bosqichlari"
+description: |
+  React'ning Fiber reconciliation jarayonini chuqur o'rganing. Render va Commit bosqichlari, beginWork, completeWork va render yo'llari (lanes) qanday ishlashini bilib oling.
+keywords: 'Fiber reconciliation, render phase, commit phase, beginWork, completeWork, render lanes, mutation phase, layout phase, React internals, optimallashtirish, webiston'
+author: 'Webiston.uz'
 ---
 
 # Fiber reconciliation

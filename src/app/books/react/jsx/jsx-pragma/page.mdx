@@ -1,34 +1,9 @@
 ---
-title: 'JSX Pragma haqida'
-description: "Hamma narsa `<` bilan boshlanadi, bu o'z-o'zidan JavaScript’da taqqoslash amallaridan tashqarida ishlatilganda tanib bo'lmaydigan belgi hisoblanadi. JavaScript dvigateli bunga duch kelganda, `SyntaxError: Unexpected token '<'` xatosini chiqaradi. JSX'da esa bu "JSX pragma" funksiya chaqiruviga transpilyatsiya qilinadi.
-
-## Pragma ma'nosi
-
-**Pragma** - kompilyatorga qo'shimcha ma'lumot berish uchun qo'llaniladigan kompilyator direktivasi bo'lib, odatda tilning o'zida ifodalangan narsalardan tashqari ma'lumot beradi. Masalan, kompilyatorga faylning ba'zi tarkibiga qanday ishlov berish kerakligini ko'rsatishi mumkin.
-
-JavaScript’da bunga misol qilib, eski modullar tepasida ko'rinadigan "use strict" pragma’larini, shuningdek, React Server Components (RSC) kontekstidagi yaqinda qo'llanilgan "use client" pragmasini keltirish mumkin. Bu haqda batafsil "React Server Komponentlari" bobida to'xtalib o'tamiz.
-
-## Pragma’larning ishlatilinishi
-
-Parser `<` pragmasiga duch kelganda chaqiriladigan funksiya nomi moslashtirilishi mumkin va avval aytib o'tilganidek, `React.createElement` funksiyasiga yoki yangiroq o'zgartirish bilan `_jsxs` funksiyasiga o'zgartiriladi. Bu funksiya quyidagicha bo'lishi kerak:
-
-```js copy
-function pragma(tag, props, ...children)
-```
-
-Ya'ni, u argument sifatida `tag`, `props` va `children`larni qabul qiladi. JSX qanday qilib oddiy JavaScript sintaksisiga mos kelishini quyida ko'rish mumkin. Quyidagi JSX kodi:
-
-```js copy
-<MyComponent prop="value">contents</MyComponent>
-```
-
-quyidagi JavaScript kodiga aylantiriladi:
-
-```js copy
-React.createElement(MyComponent, { prop: 'value' }, 'contents')
-```
-
-Bu yerda tag (`MyComponent`), props (`prop="value"`) va children (`"contents"`) orasidagi moslikni ko'rishingiz mumkin. JSX pragmasining roli shunday: bu bir necha, rekursiv funksiya chaqiruvlariga sodda sintaksis(syntax sugar)ni beradi. JSX pragma asosan qisqartma(alias) hisoblanadi: `React.createElement` o'rniga `<` belgisi."
+title: 'JSX Pragma: JSX Sintaksisining Funksiya Chaqiruviga Aylanishi'
+description: |
+  JSX pragma nima va u qanday ishlaydi? JSX kodining orqasida turgan React.createElement funksiya chaqiruviga aylanish jarayonini tushunib oling.
+keywords: 'JSX, JSX pragma, pragma, React.createElement, jsx-runtime, syntax sugar, transpilyatsiya, kompilyator, webiston'
+author: 'Webiston.uz'
 ---
 
 # JSX Pragma

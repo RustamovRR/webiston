@@ -1,10 +1,9 @@
 ---
-title: "Fiber Reconciler haqida"
-description: "Fiber reconciler “Fiber” deb nomlanuvchi boshqa bir ma'lumotlar strukturasidan foydalanadi, bu reconciler uchun bir ish birligi(unit)ni ifodalaydi. Fiber’lar biz [3-bobda](/books/react/virtual-dom/how-virtual-dom-works#react-elementlari-react-elements) ko'rib chiqqan React elementlaridan yaratiladi, asosiy farq shundaki, stateful(holatli) va uzoq muddatli, React elementlari esa qisqa muddatli va stateless(holatsiz)dir.
-
-Redux maintainer’i va taniqli React eksperti Mark Erikson Fiber’larni “belgilangan biror vaqt nuqtasida haqiqiy komponent daraxtini ifodalaydigan React’ning ichki ma'lumotlar strukturasidir" deb ta'riflaydi. Darhaqiqat, bu Fiber’lar haqida yaxshi fikrdir va buni Mark o'z vaqtida aytib o'tgan, chunki u Replay bilan React ilovalarini vaqt sayohati bo'ylab debug qilish bo'yicha to'liq ishlaydi: bu ilovaning holatini qayta ko'rib chiqish va takrorlash imkonini beruvchi vosita. Agar hali ko'rmagan bo'lsangiz, [Replay.io](https://www.replay.io/) saytiga kirib ko'rishingiz mumkin.
-
-VDOM elementlar daraxti bo'lganidek, React reconciler Fiber daraxtidan foydalanadi, nomidan ko'rinib turganidek, bu VDOM asosida bevosita modellashtirilgan Fiber’lar daraxtidir."
+title: "React Fiber Reconciler: Ish Birligi va Ma'lumotlar Strukturasi"
+description: |
+  React'ning Fiber reconciler'i qanday ishlaydi? Fiber ma'lumotlar strukturasi, uning React elementlaridan farqi va reconciliation jarayonidagi o'rni haqida bilib oling.
+keywords: 'React Fiber, Fiber reconciler, Fiber data structure, reconciliation, work unit, stateful, stateless, beginWork, completeWork, React internals, webiston'
+author: 'Webiston.uz'
 ---
 
 # Fiber Reconciler

@@ -1,12 +1,10 @@
 ---
-title: "React Virtual DOM’ga kirish"
-description: "Virtual DOM, xuddi DOM kabi, JavaScript obyekti sifatida modellashtirilgan HTML dokumentidir: bu "Document Object Model" (DOM) atamasining to'g'ridan-to'g'ri ma’nosi ham shudir. DOM’ning o'zi brauzerning kodni bajarilish vaqti(runtime)da ishlatiladigan dokument modelidir. Virtual DOM esa ushbu modelning yengil nusxasi(lightweight) bo'lib, muhim farqi shundaki, real DOM `Node` obyektlaridan tashkil topgan bo'lsa, virtual DOM oddiy JavaScript obyektlaridan tashkil topadi va ular DOM’ni tavsiflash uchun xizmat qiladi. Bu yondashuv veb dasturchilarga foydalanuvchi interfeyslarini yanada samarali va tezkor tarzda yaratishga yordam beradi, bu bobda buni batafsil ko'rib chiqamiz.
-
-React’da, biz interfeysda biror o'zgarish bo'lishligini kiritganimizda, masalan, `setState` yoki boshqa bir mexanizm orqali, avval virtual DOM yangilanadi, so'ngra real DOM virtual DOM’dagi o'zgarishlarga mos ravishda yangilanadi. Ushbu jarayon **_reconciliation_** (moslashtirish) deb ataladi, bu haqida ham keyingi bobda batafsil o'rganamiz.
-
-Avval virtual DOM’ni yangilashning sababi shundaki, real DOM’ni yangilash biroz sekin va ko'p resurs talab qilishi mumkin. Keyingi qismda buni batafsil ko'rib chiqamiz, lekin qisqacha aytganda, real DOM’da har safar o'zgarish qilganimizda, brauzer sahifa joylashuvini qayta hisoblashga, ekranni qayta chizishga va boshqa vaqt talab qiluvchi jarayonlarni bajarishga majbur bo'ladi.
-
-Masalan, biror elementning `offsetWidth` qiymatini o'qish hatto qayta joylashish jarayoni(reflow)ni ishga tushirishi mumkin, bu brauzerning dokumentning butun yoki qisman joylashuvini qayta hisoblash jarayoni(recalculation)dir, bu esa ishlash samaradorligi(performance)ga salbiy ta'sir ko'rsatishi mumkin."
+asIndexPage: true
+title: 'React Virtual DOM: Kirish va Asosiy Konsepsiyalar'
+description: |
+  Virtual DOM (vDOM) nima va u nima uchun kerak? Real DOM'ning kamchiliklari, React'ning reconciliation va diffing algoritmlari haqida asosiy tushunchalar.
+keywords: 'React, Virtual DOM, vDOM, DOM, reconciliation, diffing algorithm, performance, reflow, repaint, optimallashtirish, webiston'
+author: 'Webiston.uz'
 ---
 
 # Virtual DOM’ga kirish
