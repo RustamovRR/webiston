@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://webiston.uz
+
+# Sitemaps
+Sitemap: https://webiston.uz/sitemap.xml
