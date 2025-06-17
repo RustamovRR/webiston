@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       res.arrayBuffer(),
     )
 
-    const fontDataRegular = await fetch(new URL('../../../assets/Inter_18pt-Regular.ttf', import.meta.url)).then(
+    const fontDataRegular = await fetch(new URL('../../../assets/fonts/Inter_18pt-Regular.ttf', import.meta.url)).then(
       (res) => res.arrayBuffer(),
     )
 
