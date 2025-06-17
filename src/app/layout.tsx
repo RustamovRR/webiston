@@ -8,6 +8,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { socialLinks } from '@/constants'
 import Script from 'next/script'
+import dynamic from 'next/dynamic'
+
+const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://webiston.uz'),
@@ -180,6 +183,8 @@ export default async function RootLayout({ children }: any) {
                 />
               </div>
             </noscript>
+
+            <OpenReplayNoSSR />
           </>
         )}
       </Head>
@@ -188,13 +193,13 @@ export default async function RootLayout({ children }: any) {
         <Layout
           navbar={navbar || null}
           pageMap={pageMap}
-          docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
+          docsRepositoryBase="https://github.com/RustamovRR/webiston/tree/main/docs"
           footer={footer}
           sidebar={{ defaultMenuCollapseLevel: 2 }}
           darkMode={true}
           toc={{ backToTop: true }}
           nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-          search={<Search placeholder="Dokumentatsiyadan qidirish..." />}
+          search={<Search placeholder="Qidirish..." />}
           feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
         >
           {children}
