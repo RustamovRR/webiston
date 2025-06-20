@@ -1,6 +1,6 @@
-import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon } from '@/assets/icons'
-import { ButtonLink, Card, SectionTitle } from '@/components'
-import { REACT_CHAPTERS } from '@/constants'
+import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
+import { ButtonLink, Card, SectionTitle } from '@/components/shared'
+import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 
 export default function HomePage() {
   return (
@@ -26,11 +26,17 @@ export default function HomePage() {
           chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.
         </p>
 
-        <div className="mt-10 flex gap-2">
+        <div className="mt-10 flex gap-4">
           <ButtonLink href="/books" variant="secondary" className="group">
             O'rganishni boshlash{' '}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
               <ArrowRightIcon />
+            </span>
+          </ButtonLink>
+          <ButtonLink href="/tools" variant="outline" className="group">
+            Foydali Qurollar{' '}
+            <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
+              <ToolsIcon className="h-4 w-4" />
             </span>
           </ButtonLink>
         </div>
@@ -50,6 +56,20 @@ export default function HomePage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {REACT_CHAPTERS.map((card, index) => (
             <Card key={index} href={card.href} title={card.title} description={card.description} />
+          ))}
+        </div>
+      </section>
+
+      <section className="group mt-12 flex w-full flex-col gap-8">
+        <SectionTitle
+          title="Foydali Qurollar"
+          description="Dasturlash va matn ishlatish uchun foydali onlayn qurollar to'plami."
+          icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
+        />
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {TOOLS_LIST.map((tool, index) => (
+            <Card key={index} href={tool.href} title={tool.title} description={tool.description} />
           ))}
         </div>
       </section>

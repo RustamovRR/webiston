@@ -7,4 +7,8 @@ export default {
     type: 'page',
     title: 'Kitoblar',
   },
+  tools: {
+    type: 'page',
+    title: 'Foydali Qurollar',
+  },
 }

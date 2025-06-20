@@ -13,15 +13,19 @@
   },
   "dependencies": {
     "@openreplay/tracker": "^16.3.0",
-    "@sentry/nextjs": "^9.29.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.18.1",
+    "lucide-react": "^0.516.0",
+    "motion": "^12.18.1",
     "next": "15.3.3",
     "next-sitemap": "^4.2.3",
     "nextra": "4.2.17",
     "nextra-theme-docs": "4.2.17",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwind-merge": "^3.3.0"
+    "tailwind-merge": "^3.3.0",
+    "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -44,6 +48,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^4.1.8",
+    "tw-animate-css": "^1.3.4",
     "typescript": "^5.8.3"
   },
   "lint-staged": {
