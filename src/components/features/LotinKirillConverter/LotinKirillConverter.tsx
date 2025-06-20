@@ -78,7 +78,7 @@ const LotinKirillConverter = () => {
 
     return (
       <motion.div layout className="relative flex w-full flex-col rounded-xl bg-zinc-900/80 shadow-inner">
-        <section className="flex items-center justify-between border-b border-zinc-800 p-4">
+        <section className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
           <span className="text-lg font-semibold text-zinc-100">{lang}</span>
           {isSource ? (
             <AnimatePresence>
@@ -88,7 +88,7 @@ const LotinKirillConverter = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   onClick={handleClear}
-                  className="rounded-full p-1.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
+                  className="rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
                   aria-label="Tozalash"
                 >
                   <X size={18} />
