@@ -8,8 +8,6 @@ tracker.configure({
   __DISABLE_SECURE_MODE: true,
 })
 
-tracker.setUserID('john@doe.com')
-
 const Openreplay = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
