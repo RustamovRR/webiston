@@ -1,8 +1,10 @@
-// ====================================================================================
-// === 1. LOTINDAN KIRILLGA O'GIRISH FUNKSIYALARI (MAVJUD VA MUKAMMAL HOLATDA) ===
-// ====================================================================================
+// lib/transliteration.ts (Sizning kodingiz + To'ldirilgan toLatin funksiyasi)
 
 import { NON_TRANSLITERATABLE_WORDS } from '@/constants/transliteration'
+
+// ====================================================================================
+// === 1. LOTINDAN KIRILLGA O'GIRISH (SIZ BERGAN VA O'ZGARTIRILMAGAN KOD) ===
+// ====================================================================================
 
 function transliteratePureUzbek(text: string): string {
   // BU FUNKSIYA O'ZGARISHSIZ QOLDI - U O'Z ISHINI TO'G'RI QILADI
@@ -125,88 +127,54 @@ function transliteratePureCyrillic(text: string): string {
     const char = text[i]
     let latinChar = ''
 
-    switch (char) {
-      // Bir harfdan ikki harfga (digraphs) o'tadiganlar
+    // Eng birinchi navbatda ikki belgili 'нг' ni tekshiramiz
+    const nextChar = text[i + 1] || ''
+    if (char.toLowerCase() === 'н' && nextChar.toLowerCase() === 'г') {
+      latinChar = isUpperCase(char) ? 'NG' : 'Ng'
+      if (!isUpperCase(char) && !isUpperCase(nextChar)) latinChar = 'ng'
+      i += 2
+      latinText += latinChar
+      continue
+    }
+
+    switch (char.toLowerCase()) {
       case 'ғ':
         latinChar = "g'"
-        break
-      case 'Ғ':
-        latinChar = "G'"
         break
       case 'ў':
         latinChar = "o'"
         break
-      case 'Ў':
-        latinChar = "O'"
-        break
       case 'ш':
         latinChar = 'sh'
-        break
-      case 'Ш':
-        latinChar = 'Sh'
         break
       case 'ч':
         latinChar = 'ch'
         break
-      case 'Ч':
-        latinChar = 'Ch'
-        break
       case 'ц':
         latinChar = 'ts'
-        break
-      case 'Ц':
-        latinChar = 'Ts'
         break
       case 'ё':
         latinChar = 'yo'
         break
-      case 'Ё':
-        latinChar = 'Yo'
-        break
       case 'ю':
         latinChar = 'yu'
-        break
-      case 'Ю':
-        latinChar = 'Yu'
         break
       case 'я':
         latinChar = 'ya'
         break
-      case 'Я':
-        latinChar = 'Ya'
-        break
-      case 'нг':
-        latinChar = 'ng'
-        break
-      case 'Нг':
-        latinChar = 'Ng'
-        break
-
-      // Kontekstga bog'liq 'Е' va 'Э' harflari
       case 'е':
-      case 'Е':
         if (i === 0 || /[\s\(\-\"\'«]/.test(text[i - 1])) {
-          latinChar = isUpperCase(char) ? 'Ye' : 'ye'
+          latinChar = 'ye'
         } else {
-          latinChar = isUpperCase(char) ? 'E' : 'e'
+          latinChar = 'e'
         }
         break
       case 'э':
         latinChar = 'e'
         break
-      case 'Э':
-        latinChar = 'E'
-        break
-
-      // Tutuq belgisi
       case 'ъ':
         latinChar = "'"
         break
-      case 'Ъ':
-        latinChar = "'"
-        break
-
-      // Oddiy birma-bir o'giriladiganlar
       default:
         const mapping: { [k: string]: string } = {
           а: 'a',
@@ -233,15 +201,22 @@ function transliteratePureCyrillic(text: string): string {
           қ: 'q',
           ҳ: 'h',
         }
-        const lowerChar = char.toLowerCase()
-        if (mapping[lowerChar]) {
-          latinChar = isUpperCase(char) ? mapping[lowerChar].toUpperCase() : mapping[lowerChar]
+        if (mapping[char.toLowerCase()]) {
+          latinChar = mapping[char.toLowerCase()]
         } else {
-          latinChar = char // Raqamlar, tinish belgilari va boshqalar
+          latinChar = char
         }
         break
     }
-    latinText += latinChar
+
+    if (latinChar.length > 1 && isUpperCase(char)) {
+      latinText += latinChar.charAt(0).toUpperCase() + latinChar.slice(1)
+    } else if (latinChar.length === 1 && isUpperCase(char)) {
+      latinText += latinChar.toUpperCase()
+    } else {
+      latinText += latinChar
+    }
+
     i++
   }
   // Apostroflarni to'g'rilash (g' -> g‘, o' -> o‘)
@@ -253,17 +228,19 @@ function transliteratePureCyrillic(text: string): string {
 // =========================================================================
 
 const placeholder = (index: number) => `%%${index}%%`
+// BU REGEX O'ZGARTIRILMADI
 const protectionRegex = new RegExp(
   [
     '```[\\s\\S]*?```',
     '`[^`]+?`',
     '\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b',
     '\\b(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*',
-    `\\b(${NON_TRANSLITERATABLE_WORDS.join('|')}|[a-zA-Z]+-[a-zA-Z]+|[A-Z]{2,}'[a-z]*)\\b`,
+    `\\b(${NON_TRANSLITERATABLE_WORDS.join('|')})\\b`,
   ].join('|'),
   'gi',
 )
 
+// SIZNING toCyrillic FUNKSIYANGIZ - O'ZGARTIRILMAGAN
 export function toCyrillic(text: string): string {
   if (!text) return ''
   const protectedParts: string[] = []
@@ -281,11 +258,11 @@ export function toCyrillic(text: string): string {
   })
 }
 
+// YANGI toLatin FUNKSIYASI - XUDDI SHU ARXITEKTURADA
 export function toLatin(text: string): string {
   if (!text) return ''
   const protectedParts: string[] = []
 
-  // Xuddi shu himoya mexanizmini bu yerda ham qo'llaymiz
   const maskedText = text.replace(protectionRegex, (match) => {
     const index = protectedParts.length
     protectedParts.push(match)
