@@ -3,7 +3,7 @@ import Link, { LinkProps } from 'next/link'
 import { cn } from '@/lib'
 
 interface IProps extends LinkProps {
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'outline'
   children: ReactNode
   href: string
   className?: string
@@ -16,6 +16,7 @@ const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, ...p
       'bg-white text-black hover:bg-[#ccc]': variant === 'primary',
       'bg-primary-black text-white border border-[rgba(255,255,255,0.17)] hover:bg-[rgba(255,255,255,0.12)]':
         variant === 'secondary',
+      'bg-transparent text-white border border-white/20 hover:bg-white/10 hover:border-white/30': variant === 'outline',
     },
     className,
   )

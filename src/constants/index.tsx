@@ -58,6 +58,15 @@ export const REACT_CHAPTERS = [
   },
 ]
 
+export const TOOLS_LIST = [
+  {
+    href: '/tools/latin-cyrillic',
+    title: "Lotin-Kirill O'giruvchi",
+    description: "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girish uchun qulay tool.",
+  },
+  // Bu yerga boshqa toollar qo'shiladi
+]
+
 export const socialLinks = [
   {
     id: 1,

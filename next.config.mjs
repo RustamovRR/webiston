@@ -1,16 +1,15 @@
-
-import nextra from "nextra";
+import nextra from 'nextra'
 
 const withNextra = nextra({
   latex: true,
   search: {
     codeblocks: false,
   },
-});
+})
 
 export default withNextra({
   reactStrictMode: true,
-  output: "standalone",
+  output: 'standalone',
   async redirects() {
     return [
       {
@@ -20,4 +19,4 @@ export default withNextra({
       },
     ]
   },
-});
+})
