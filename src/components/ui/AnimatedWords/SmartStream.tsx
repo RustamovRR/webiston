@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib'
 import { useEffect, useRef } from 'react'
 
 const PASTE_THRESHOLD = 25

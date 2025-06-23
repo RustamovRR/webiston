@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { CopyButton } from '@/components/shared/CopyButton'
+import { ShimmerButton } from '@/components/ui'
 
 const PasswordGenerator = () => {
   const [password, setPassword] = useState('')
@@ -245,10 +246,13 @@ const PasswordGenerator = () => {
               </div>
             </div>
 
-            <Button onClick={generatePassword} className="mt-6 w-full bg-blue-600 hover:bg-blue-700">
+            <ShimmerButton
+              onClick={generatePassword}
+              className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+            >
               <RefreshCw size={18} className="mr-2" />
               Yangi parol yaratish
-            </Button>
+            </ShimmerButton>
           </div>
         </Card>
 

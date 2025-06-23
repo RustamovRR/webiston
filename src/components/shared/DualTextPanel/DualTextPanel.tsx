@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
 import { countWords } from '@/lib/utils'
+import { MACOS_DOTS } from '@/constants/ui-constants'
+import { cn } from '@/lib'
 
 interface DualTextPanelProps {
   sourceText: string
@@ -21,6 +23,7 @@ interface DualTextPanelProps {
   showClearButton?: boolean
   isLoading?: boolean
   error?: string
+  variant?: 'simple' | 'terminal'
 }
 
 export function DualTextPanel({
@@ -36,6 +39,7 @@ export function DualTextPanel({
   showClearButton = true,
   isLoading = false,
   error,
+  variant = 'simple',
 }: DualTextPanelProps) {
   const sourceStats = [
     { label: 'belgi', value: sourceText.length },
@@ -49,6 +53,8 @@ export function DualTextPanel({
     { label: 'qator', value: convertedText.split('\n').length },
   ]
 
+  const isTerminal = variant === 'terminal'
+
   const renderPanel = (type: 'source' | 'target') => {
     const isSource = type === 'source'
     const text = isSource ? sourceText : convertedText
@@ -56,9 +62,35 @@ export function DualTextPanel({
     const stats = isSource ? sourceStats : targetStats
 
     return (
-      <motion.div layout className="relative flex w-full flex-col rounded-xl bg-zinc-900/80 shadow-inner">
-        <section className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
-          <span className="text-lg font-semibold text-zinc-100">{label}</span>
+      <motion.div
+        layout
+        className={cn(
+          'relative flex w-full flex-col shadow-inner',
+          isTerminal
+            ? 'rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm'
+            : 'rounded-xl bg-zinc-900/80',
+        )}
+      >
+        <section
+          className={cn(
+            'flex items-center justify-between border-b border-zinc-800 px-4',
+            isTerminal ? 'h-16 bg-zinc-800/50' : 'h-16',
+          )}
+        >
+          <div className="flex items-center gap-3">
+            {/* macOS dots for terminal variant */}
+            {isTerminal && (
+              <div className="flex items-center gap-2">
+                {MACOS_DOTS.map((dot, index) => (
+                  <div
+                    key={index}
+                    className={cn('h-3 w-3 cursor-pointer rounded-full transition-colors', dot.color, dot.hover)}
+                  />
+                ))}
+              </div>
+            )}
+            <span className="text-lg font-semibold text-zinc-100">{label}</span>
+          </div>
           {isSource ? (
             <AnimatePresence>
               {showClearButton && sourceText && (
@@ -106,7 +138,7 @@ export function DualTextPanel({
           )}
         </section>
 
-        <section className="flex justify-end border-t border-zinc-800 px-4 py-2">
+        <section className={cn('flex justify-end border-t border-zinc-800 px-4 py-2', isTerminal && 'bg-zinc-800/30')}>
           <StatsDisplay stats={stats} />
         </section>
       </motion.div>
@@ -123,7 +155,7 @@ export function DualTextPanel({
             onClick={onSwap}
             variant="outline"
             size="sm"
-            className="group border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white"
+            className="group cursor-pointer border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white"
             aria-label="Almashtirish"
             disabled={isLoading}
           >

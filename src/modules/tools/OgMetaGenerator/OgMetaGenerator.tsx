@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Share2, Copy, Eye, RefreshCw } from 'lucide-react'
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { useCopyToClipboard } from 'usehooks-ts'
+import { CodeHighlight, ShimmerButton } from '@/components/ui'
 
 interface MetaData {
   title: string
@@ -153,6 +154,11 @@ export default function OGMetaGeneratorPage() {
   const updateField = (field: keyof MetaData, value: string) => {
     setMetaData((prev) => ({ ...prev, [field]: value }))
   }
+
+  // Real-time generation whenever metaData changes
+  useEffect(() => {
+    generateMeta()
+  }, [metaData])
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4">
@@ -326,10 +332,13 @@ export default function OGMetaGeneratorPage() {
                 </div>
               </div>
 
-              <Button onClick={generateMeta} className="mt-4 w-full bg-blue-600 hover:bg-blue-700">
+              <ShimmerButton
+                onClick={generateMeta}
+                className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+              >
                 <Share2 className="mr-2 h-4 w-4" />
                 Meta teglar yaratish
-              </Button>
+              </ShimmerButton>
             </div>
           </Card>
         </div>
@@ -369,8 +378,8 @@ export default function OGMetaGeneratorPage() {
                   <CopyButton text={generatedMeta} />
                 </div>
 
-                <div className="overflow-auto rounded-lg border border-zinc-700 bg-zinc-900 p-4">
-                  <pre className="text-sm whitespace-pre-wrap text-zinc-300">{generatedMeta}</pre>
+                <div className="overflow-auto rounded-lg border border-zinc-700">
+                  <CodeHighlight code={generatedMeta} language="html" showLineNumbers={true} />
                 </div>
               </div>
             </Card>

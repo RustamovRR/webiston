@@ -44,7 +44,7 @@ export function CopyButton({
       disabled={disabled || !text}
       size={size}
       variant={variant}
-      className={`${className} transition-colors`}
+      className={`${className} cursor-pointer transition-colors`}
       aria-label="Nusxalash"
     >
       {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}

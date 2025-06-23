@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Search } from 'nextra/components'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib'
 
 const Header = () => {
   const pathname = usePathname()

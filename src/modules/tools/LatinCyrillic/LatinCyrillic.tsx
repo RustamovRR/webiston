@@ -4,6 +4,7 @@ import { toCyrillic, toLatin } from '@/lib/transliteration'
 import React, { useMemo, useState, useEffect } from 'react'
 import { useDebounceValue } from 'usehooks-ts'
 import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { ToolHeader } from '@/components/shared/ToolHeader'
 
 type Direction = 'latin-to-cyrillic' | 'cyrillic-to-latin'
 
@@ -51,12 +52,10 @@ export default function LatinCyrillicPage() {
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex-1 p-4">
         <div className="mx-auto mt-6 w-full max-w-7xl">
-          <div className="mb-8 text-center">
-            <h1 className="mb-4 text-4xl font-bold text-zinc-100">Lotin-Kirill O'giruvchi</h1>
-            <p className="text-lg text-zinc-400">
-              O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring
-            </p>
-          </div>
+          <ToolHeader
+            title="Lotin-Kirill O'giruvchi"
+            description="O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring"
+          />
 
           <DualTextPanel
             sourceText={sourceText}
