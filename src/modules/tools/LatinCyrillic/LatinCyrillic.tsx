@@ -7,7 +7,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel'
 
 type Direction = 'latin-to-cyrillic' | 'cyrillic-to-latin'
 
-const LotinKirillConverter = () => {
+export default function LatinCyrillicPage() {
   const [direction, setDirection] = useState<Direction>('latin-to-cyrillic')
   const [sourceText, setSourceText] = useState('')
   const [prevConvertedText, setPrevConvertedText] = useState('')
@@ -47,26 +47,29 @@ const LotinKirillConverter = () => {
   const sourceLang = direction === 'latin-to-cyrillic' ? 'Lotin' : 'Kirill'
   const targetLang = direction === 'latin-to-cyrillic' ? 'Kirill' : 'Lotin'
   const sourcePlaceholder = direction === 'latin-to-cyrillic' ? 'Matn kiriting...' : 'Матн киритинг...'
-
   return (
-    <div className="mx-auto mt-6 w-full max-w-7xl">
-      <div className="mb-8 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-zinc-100">Lotin-Kirill O'giruvchi</h1>
-        <p className="text-lg text-zinc-400">O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring</p>
-      </div>
+    <div className="flex min-h-screen w-full flex-col">
+      <div className="flex-1 p-4">
+        <div className="mx-auto mt-6 w-full max-w-7xl">
+          <div className="mb-8 text-center">
+            <h1 className="mb-4 text-4xl font-bold text-zinc-100">Lotin-Kirill O'giruvchi</h1>
+            <p className="text-lg text-zinc-400">
+              O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring
+            </p>
+          </div>
 
-      <DualTextPanel
-        sourceText={sourceText}
-        convertedText={convertedText}
-        sourcePlaceholder={sourcePlaceholder}
-        sourceLabel={sourceLang}
-        targetLabel={targetLang}
-        onSourceChange={setSourceText}
-        onSwap={handleSwap}
-        onClear={handleClear}
-      />
+          <DualTextPanel
+            sourceText={sourceText}
+            convertedText={convertedText}
+            sourcePlaceholder={sourcePlaceholder}
+            sourceLabel={sourceLang}
+            targetLabel={targetLang}
+            onSourceChange={setSourceText}
+            onSwap={handleSwap}
+            onClear={handleClear}
+          />
+        </div>
+      </div>
     </div>
   )
 }
-
-export default LotinKirillConverter

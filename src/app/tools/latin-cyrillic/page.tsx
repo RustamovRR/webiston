@@ -1,10 +1,10 @@
-import { LotinKirillConverter } from '@/components'
 import { Metadata } from 'next'
+import { LatinCyrillic } from '@/modules/tools'
 
 export const metadata: Metadata = {
-  title: "Lotin-Kirill O'giruvchi | Webiston",
+  title: "Lotin-Kirill O'giruvchi | Latin-Cyrillic Converter | Webiston",
   description:
-    "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool. Lotin va kirill alifbosida yozilgan matnlarni tezda tarjima qiling.",
+    "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool. Convert Uzbek text between Latin and Cyrillic scripts instantly and accurately.",
   keywords: [
     'Lotin Kirill',
     'Latin Cyrillic',
@@ -18,29 +18,57 @@ export const metadata: Metadata = {
     "Onlayn o'giruvchi",
     'Webiston tools',
     'Foydali qurollar',
+    'Uzbek alphabet converter',
+    'Latin to Cyrillic',
+    'Cyrillic to Latin',
+    'Uzbek text converter',
+    'Script converter',
+    'Language tools',
   ],
   openGraph: {
-    title: "Lotin-Kirill O'giruvchi | Webiston",
-    description: "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool.",
+    title: "Lotin-Kirill O'giruvchi | Latin-Cyrillic Converter | Webiston",
+    description:
+      "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool. Convert Uzbek text between Latin and Cyrillic scripts.",
     type: 'website',
     locale: 'uz_UZ',
+    siteName: 'Webiston',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: "Lotin-Kirill O'giruvchi",
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Lotin-Kirill O'giruvchi | Webiston",
+    title: "Lotin-Kirill O'giruvchi | Latin-Cyrillic Converter",
     description: "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool.",
+    images: ['/og-image.png'],
   },
   alternates: {
     canonical: '/tools/latin-cyrillic',
+    languages: {
+      'uz-UZ': '/tools/latin-cyrillic',
+      'en-US': '/tools/latin-cyrillic',
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 
-export default function LatinCyrillicPage() {
-  return (
-    <div className="flex min-h-screen w-full flex-col">
-      <div className="flex-1 p-4">
-        <LotinKirillConverter />
-      </div>
-    </div>
-  )
+const LatinCyrillicPage = () => {
+  return <LatinCyrillic />
 }
+
+export default LatinCyrillicPage
