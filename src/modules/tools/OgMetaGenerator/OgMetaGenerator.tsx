@@ -1,16 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Share2, Copy, Eye, RefreshCw } from 'lucide-react'
+import { Share2, Copy, Eye, RefreshCw, Download, Check, Globe, Zap, FileText, Code } from 'lucide-react'
+import { useCopyToClipboard } from 'usehooks-ts'
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { CopyButton } from '@/components/shared/CopyButton'
-import { useCopyToClipboard } from 'usehooks-ts'
-import { CodeHighlight, ShimmerButton } from '@/components/ui'
+import { CodeHighlight, ShimmerButton, GradientTabs, ModeSwitch } from '@/components/ui'
+import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
+import { useOgMetaGenerator } from '@/hooks/tools'
 
 interface MetaData {
   title: string
@@ -54,155 +55,151 @@ const SAMPLE_DATA: MetaData = {
   twitterCreator: '@webiston_uz',
 }
 
-export default function OGMetaGeneratorPage() {
-  const [metaData, setMetaData] = useState<MetaData>({
-    title: '',
-    description: '',
-    image: '',
-    url: '',
-    siteName: '',
-    type: 'website',
-    locale: 'uz_UZ',
-    twitterCard: 'summary_large_image',
-    twitterSite: '',
-    twitterCreator: '',
-  })
-
-  const [generatedMeta, setGeneratedMeta] = useState<string>('')
-  const [, copy] = useCopyToClipboard()
-
-  const generateMeta = () => {
-    const meta = []
-
-    // Basic Open Graph tags
-    if (metaData.title) {
-      meta.push(`<meta property="og:title" content="${metaData.title}" />`)
-      meta.push(`<meta name="twitter:title" content="${metaData.title}" />`)
-    }
-
-    if (metaData.description) {
-      meta.push(`<meta property="og:description" content="${metaData.description}" />`)
-      meta.push(`<meta name="twitter:description" content="${metaData.description}" />`)
-      meta.push(`<meta name="description" content="${metaData.description}" />`)
-    }
-
-    if (metaData.image) {
-      meta.push(`<meta property="og:image" content="${metaData.image}" />`)
-      meta.push(`<meta name="twitter:image" content="${metaData.image}" />`)
-    }
-
-    if (metaData.url) {
-      meta.push(`<meta property="og:url" content="${metaData.url}" />`)
-      meta.push(`<meta name="twitter:url" content="${metaData.url}" />`)
-      meta.push(`<link rel="canonical" href="${metaData.url}" />`)
-    }
-
-    if (metaData.siteName) {
-      meta.push(`<meta property="og:site_name" content="${metaData.siteName}" />`)
-    }
-
-    if (metaData.type) {
-      meta.push(`<meta property="og:type" content="${metaData.type}" />`)
-    }
-
-    if (metaData.locale) {
-      meta.push(`<meta property="og:locale" content="${metaData.locale}" />`)
-    }
-
-    // Twitter specific tags
-    if (metaData.twitterCard) {
-      meta.push(`<meta name="twitter:card" content="${metaData.twitterCard}" />`)
-    }
-
-    if (metaData.twitterSite) {
-      meta.push(`<meta name="twitter:site" content="${metaData.twitterSite}" />`)
-    }
-
-    if (metaData.twitterCreator) {
-      meta.push(`<meta name="twitter:creator" content="${metaData.twitterCreator}" />`)
-    }
-
-    // Additional SEO tags
-    if (metaData.title) {
-      meta.push(`<title>${metaData.title}</title>`)
-    }
-
-    const generated = meta.join('\n')
-    setGeneratedMeta(generated)
-  }
-
-  const loadSampleData = () => {
-    setMetaData(SAMPLE_DATA)
-  }
-
-  const clearForm = () => {
-    setMetaData({
-      title: '',
-      description: '',
-      image: '',
-      url: '',
-      siteName: '',
+const PRESET_TEMPLATES = [
+  {
+    label: 'Blog maqolasi',
+    data: {
+      title: 'Ajoyib maqola sarlavhasi',
+      description: 'Bu maqola haqida qisqacha va jozibali tavsif yozing. SEO uchun muhim.',
+      type: 'article',
+      locale: 'uz_UZ',
+      twitterCard: 'summary_large_image',
+    },
+  },
+  {
+    label: 'Mahsulot sahifasi',
+    data: {
+      title: 'Ajoyib Mahsulot - Eng Yaxshi Tanlov',
+      description: "Mahsulotning asosiy xususiyatlari va afzalliklari haqida qisqa ma'lumot.",
       type: 'website',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
-      twitterSite: '',
-      twitterCreator: '',
-    })
-    setGeneratedMeta('')
-  }
+    },
+  },
+  {
+    label: 'Video kontent',
+    data: {
+      title: "Qiziqarli Video - Ko'rishga arziydi",
+      description: 'Video haqida qisqacha tavsif. Nima haqida ekanligini tushuntiring.',
+      type: 'video.other',
+      locale: 'uz_UZ',
+      twitterCard: 'player',
+    },
+  },
+]
 
-  const updateField = (field: keyof MetaData, value: string) => {
-    setMetaData((prev) => ({ ...prev, [field]: value }))
-  }
+export default function OGMetaGeneratorPage() {
+  const {
+    metaData,
+    generatedMeta,
+    formattedMeta,
+    copied,
+    activeTab,
+    previewInfo,
+    presetTemplates,
+    generateMeta,
+    loadSampleData,
+    loadTemplate,
+    clearForm,
+    updateField,
+    handleCopy,
+    downloadMeta,
+    downloadFormatted,
+    setActiveTab,
+  } = useOgMetaGenerator()
 
-  // Real-time generation whenever metaData changes
-  useEffect(() => {
-    generateMeta()
-  }, [metaData])
+  const [outputFormat, setOutputFormat] = useState('raw')
+  const toolColors = TOOL_COLOR_MAP['og-meta-generator']
+
+  const tabOptions = [
+    {
+      value: 'form',
+      label: "Ma'lumot kiritish",
+      icon: <Globe size={16} />,
+    },
+    {
+      value: 'preview',
+      label: "Ko'rinish",
+      icon: <Eye size={16} />,
+    },
+  ]
+
+  const formatOptions = [
+    {
+      value: 'raw',
+      label: 'Meta taglar',
+      icon: <Code size={16} />,
+    },
+    {
+      value: 'formatted',
+      label: "To'liq HTML",
+      icon: <FileText size={16} />,
+    },
+  ]
+
+  const currentOutput = outputFormat === 'formatted' ? formattedMeta : generatedMeta
+  const currentLanguage = outputFormat === 'formatted' ? 'html' : 'html'
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title="Open Graph Meta Generator"
-        description="Ijtimoiy tarmoqlar uchun meta taglar yarating va SEO ni yaxshilang"
+        title="OG Meta Generator"
+        description="Ijtimoiy tarmoqlar uchun meta taglar yarating va SEO ni professional darajada yaxshilang"
       />
 
-      {/* Sample Data Section */}
-      <Card className="mb-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-medium text-zinc-200">Tez boshlash</h3>
-              <p className="text-sm text-zinc-400">
-                Namuna ma'lumotlari bilan boshlang yoki barcha maydonlarni tozalang
-              </p>
-            </div>
-            <div className="flex gap-2">
+      {/* Tab Selection */}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-zinc-300">Rejim tanlang:</h3>
+          <GradientTabs options={tabOptions} value={activeTab} onChange={setActiveTab} toolCategory="utilities" />
+        </div>
+      </div>
+
+      {/* Templates */}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-zinc-300">Tez shablonlar:</h3>
+          <div className="flex flex-wrap items-center gap-4">
+            {presetTemplates.map((template, index) => (
               <Button
-                onClick={loadSampleData}
+                key={index}
+                onClick={() => loadTemplate(template.data)}
                 variant="outline"
-                className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                size="sm"
+                className="cursor-pointer border-zinc-700 text-xs text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
               >
-                <Eye className="mr-2 h-4 w-4" />
-                Namuna yuklash
+                {template.label}
               </Button>
-              <Button onClick={clearForm} variant="outline" className="border-zinc-700">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Tozalash
-              </Button>
-            </div>
+            ))}
+            <Button
+              onClick={loadSampleData}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer border-blue-500/50 text-xs text-blue-400 hover:border-blue-500 hover:text-blue-300"
+            >
+              <Eye size={14} className="mr-1" />
+              Demo ma'lumot
+            </Button>
+            <Button
+              onClick={clearForm}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer border-zinc-700 text-xs text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+            >
+              <RefreshCw size={14} className="mr-1" />
+              Tozalash
+            </Button>
           </div>
         </div>
-      </Card>
+      </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Input Form */}
-        <div className="space-y-6">
+      {activeTab === 'form' && (
+        <>
           {/* Basic Information */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Asosiy Ma'lumotlar</h3>
+          <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+            <h3 className="mb-6 text-lg font-semibold text-zinc-100">Asosiy Ma'lumotlar</h3>
 
+            <div className="grid gap-6 lg:grid-cols-2">
               <div className="space-y-4">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-200">Sahifa sarlavhasi *</label>
@@ -212,9 +209,31 @@ export default function OGMetaGeneratorPage() {
                     onChange={(e) => updateField('title', e.target.value)}
                     className="border-zinc-700 bg-zinc-800"
                   />
-                  <p className="mt-1 text-xs text-zinc-500">Tavsiya: 50-60 belgi</p>
+                  <p className="mt-1 text-xs text-zinc-500">Tavsiya: 50-60 belgi. Joriy: {metaData.title.length}</p>
                 </div>
 
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-zinc-200">Sahifa URL manzili</label>
+                  <Input
+                    placeholder="https://example.com/page"
+                    value={metaData.url}
+                    onChange={(e) => updateField('url', e.target.value)}
+                    className="border-zinc-700 bg-zinc-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-zinc-200">Sayt nomi</label>
+                  <Input
+                    placeholder="Webiston"
+                    value={metaData.siteName}
+                    onChange={(e) => updateField('siteName', e.target.value)}
+                    className="border-zinc-700 bg-zinc-800"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-zinc-200">Tavsif *</label>
                   <Textarea
@@ -239,199 +258,334 @@ export default function OGMetaGeneratorPage() {
                   />
                   <p className="mt-1 text-xs text-zinc-500">Tavsiya: 1200x630 piksel, 8MB dan kam</p>
                 </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Sahifa URL manzili</label>
-                  <Input
-                    placeholder="https://example.com/page"
-                    value={metaData.url}
-                    onChange={(e) => updateField('url', e.target.value)}
-                    className="border-zinc-700 bg-zinc-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Sayt nomi</label>
-                  <Input
-                    placeholder="Webiston"
-                    value={metaData.siteName}
-                    onChange={(e) => updateField('siteName', e.target.value)}
-                    className="border-zinc-700 bg-zinc-800"
-                  />
-                </div>
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Advanced Settings */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Qo'shimcha Sozlamalar</h3>
+          <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+            <h3 className="mb-6 text-lg font-semibold text-zinc-100">Qo'shimcha Sozlamalar</h3>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Kontent turi</label>
-                  <Select value={metaData.type} onValueChange={(value) => updateField('type', value)}>
-                    <SelectTrigger className="border-zinc-700 bg-zinc-800">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {OG_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Til kodi</label>
-                  <Input
-                    placeholder="uz_UZ"
-                    value={metaData.locale}
-                    onChange={(e) => updateField('locale', e.target.value)}
-                    className="border-zinc-700 bg-zinc-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter Card turi</label>
-                  <Select value={metaData.twitterCard} onValueChange={(value) => updateField('twitterCard', value)}>
-                    <SelectTrigger className="border-zinc-700 bg-zinc-800">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TWITTER_CARD_TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter sahifa (@username)</label>
-                  <Input
-                    placeholder="@webiston_uz"
-                    value={metaData.twitterSite}
-                    onChange={(e) => updateField('twitterSite', e.target.value)}
-                    className="border-zinc-700 bg-zinc-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter muallif (@username)</label>
-                  <Input
-                    placeholder="@author_username"
-                    value={metaData.twitterCreator}
-                    onChange={(e) => updateField('twitterCreator', e.target.value)}
-                    className="border-zinc-700 bg-zinc-800"
-                  />
-                </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-200">Kontent turi</label>
+                <Select value={metaData.type} onValueChange={(value) => updateField('type', value)}>
+                  <SelectTrigger className="border-zinc-700 bg-zinc-800">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {OG_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-200">Til kodi</label>
+                <Input
+                  placeholder="uz_UZ"
+                  value={metaData.locale}
+                  onChange={(e) => updateField('locale', e.target.value)}
+                  className="border-zinc-700 bg-zinc-800"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter Card turi</label>
+                <Select value={metaData.twitterCard} onValueChange={(value) => updateField('twitterCard', value)}>
+                  <SelectTrigger className="border-zinc-700 bg-zinc-800">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TWITTER_CARD_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter sahifa (@username)</label>
+                <Input
+                  placeholder="@webiston_uz"
+                  value={metaData.twitterSite}
+                  onChange={(e) => updateField('twitterSite', e.target.value)}
+                  className="border-zinc-700 bg-zinc-800"
+                />
+              </div>
+
+              <div className="md:col-span-2 lg:col-span-2">
+                <label className="mb-2 block text-sm font-medium text-zinc-200">Twitter muallif (@username)</label>
+                <Input
+                  placeholder="@author_username"
+                  value={metaData.twitterCreator}
+                  onChange={(e) => updateField('twitterCreator', e.target.value)}
+                  className="border-zinc-700 bg-zinc-800"
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Output Format Selection */}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-zinc-300">Chiqish formati:</h3>
+          <ModeSwitch
+            options={formatOptions}
+            value={outputFormat}
+            onChange={setOutputFormat}
+            toolCategory="utilities"
+          />
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <ShimmerButton onClick={generateMeta} variant="default" size="sm">
+              <Share2 size={16} className="mr-2" />
+              Meta teglar yaratish
+            </ShimmerButton>
+          </div>
+
+          {generatedMeta && (
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleCopy}
+                variant="outline"
+                size="sm"
+                className="border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+              >
+                {copied ? <Check size={16} className="mr-2 text-green-500" /> : <Copy size={16} className="mr-2" />}
+                {copied ? 'Nusxalandi!' : 'Nusxalash'}
+              </Button>
 
               <ShimmerButton
-                onClick={generateMeta}
-                className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+                onClick={outputFormat === 'formatted' ? downloadFormatted : downloadMeta}
+                variant="outline"
+                size="sm"
               >
-                <Share2 className="mr-2 h-4 w-4" />
-                Meta teglar yaratish
+                <Download size={16} className="mr-2" />
+                {outputFormat === 'formatted' ? 'HTML yuklash' : 'Meta yuklash'}
               </ShimmerButton>
             </div>
-          </Card>
+          )}
         </div>
+      </div>
 
-        {/* Generated Meta Tags */}
-        <div className="space-y-6">
-          {/* Preview */}
-          {metaData.title && (
-            <Card className="border-zinc-800 bg-zinc-900/80">
-              <div className="p-6">
-                <h3 className="mb-4 text-lg font-semibold text-zinc-100">Ko'rinish</h3>
+      {/* Preview Panel - Only show when activeTab is 'preview' or when there's content */}
+      {(activeTab === 'preview' || generatedMeta) && (
+        <>
+          {/* Social Media Preview */}
+          {metaData.title && activeTab === 'preview' && (
+            <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Ijtimoiy tarmoqlarda ko'rinish</h3>
 
-                {/* Social Media Preview */}
-                <div className="overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800">
-                  {metaData.image && (
-                    <div
-                      className="aspect-[1.91/1] bg-zinc-700 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${metaData.image})` }}
-                    ></div>
-                  )}
-                  <div className="p-4">
-                    <div className="mb-1 text-sm text-zinc-400">{metaData.url || 'example.com'}</div>
-                    <div className="mb-1 line-clamp-2 font-medium text-zinc-100">{metaData.title}</div>
-                    <div className="line-clamp-2 text-sm text-zinc-400">{metaData.description}</div>
+              <div className="max-w-md overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800">
+                {metaData.image && (
+                  <div
+                    className="aspect-[1.91/1] bg-zinc-700 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${metaData.image})` }}
+                  ></div>
+                )}
+                <div className="p-4">
+                  <div className="mb-1 text-sm text-zinc-400">{metaData.url || 'example.com'}</div>
+                  <div className="mb-1 line-clamp-2 font-medium text-zinc-100">{metaData.title}</div>
+                  <div className="line-clamp-2 text-sm text-zinc-400">{metaData.description}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Main Panel with beautiful formatting */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Left Panel - Raw/Formatted View */}
+            <div className={UI_PATTERNS.TERMINAL_PANEL.container}>
+              <div className={UI_PATTERNS.TERMINAL_PANEL.header}>
+                <div className="flex items-center gap-4">
+                  <div className={UI_PATTERNS.TERMINAL_PANEL.dots}>
+                    {[0, 1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className={`h-3 w-3 rounded-full ${
+                          i === 0 ? 'bg-red-500' : i === 1 ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <h3 className="text-sm font-medium text-zinc-300">
+                    {outputFormat === 'formatted' ? "To'liq HTML kod" : 'Meta teglar'}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handleCopy} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  </Button>
+                </div>
+              </div>
+              <div className={`${UI_PATTERNS.TERMINAL_PANEL.content} bg-zinc-950/50`}>
+                {currentOutput ? (
+                  <CodeHighlight
+                    code={currentOutput}
+                    language={currentLanguage}
+                    showLineNumbers={true}
+                    className="h-full overflow-auto"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-zinc-500">
+                    Ma'lumotlarni to'ldiring...
+                  </div>
+                )}
+              </div>
+              {currentOutput && (
+                <div className={UI_PATTERNS.TERMINAL_PANEL.footer}>
+                  <div className="flex items-center justify-between text-xs text-zinc-500">
+                    <span>
+                      {currentOutput.split('\n').length} qator • {currentOutput.length} belgi
+                    </span>
+                    <span>{outputFormat === 'formatted' ? 'HTML Document' : 'Meta Tags'}</span>
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* Right Panel - Info or Preview */}
+            <div className={UI_PATTERNS.TERMINAL_PANEL.container}>
+              <div className={UI_PATTERNS.TERMINAL_PANEL.header}>
+                <div className="flex items-center gap-4">
+                  <div className={UI_PATTERNS.TERMINAL_PANEL.dots}>
+                    {[0, 1, 2].map((i) => (
+                      <div
+                        key={i}
+                        className={`h-3 w-3 rounded-full ${
+                          i === 0 ? 'bg-red-500' : i === 1 ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <h3 className="text-sm font-medium text-zinc-300">Ma'lumotlar</h3>
+                </div>
               </div>
-            </Card>
-          )}
-
-          {/* Generated Code */}
-          {generatedMeta && (
-            <Card className="border-zinc-800 bg-zinc-900/80">
-              <div className="p-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-zinc-100">Yaratilgan Meta Teglar</h3>
-                  <CopyButton text={generatedMeta} />
-                </div>
-
-                <div className="overflow-auto rounded-lg border border-zinc-700">
-                  <CodeHighlight code={generatedMeta} language="html" showLineNumbers={true} />
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Meta Tags Information */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Meta Teglar Haqida</h3>
-
-              <div className="space-y-3 text-sm">
-                <div className="rounded-lg bg-blue-500/10 p-3">
-                  <div className="mb-1 font-medium text-blue-400">Open Graph</div>
-                  <div className="text-zinc-400">Facebook, LinkedIn va boshqa ijtimoiy tarmoqlar uchun</div>
-                </div>
-
-                <div className="rounded-lg bg-cyan-500/10 p-3">
-                  <div className="mb-1 font-medium text-cyan-400">Twitter Cards</div>
-                  <div className="text-zinc-400">Twitter (X) da go'zal ko'rinish uchun</div>
-                </div>
-
-                <div className="rounded-lg bg-green-500/10 p-3">
-                  <div className="mb-1 font-medium text-green-400">SEO Teglar</div>
-                  <div className="text-zinc-400">Qidiruv tizimlari uchun optimallashtirilgan</div>
+              <div className={`${UI_PATTERNS.TERMINAL_PANEL.content} bg-zinc-950/50 p-4`}>
+                <div className="space-y-4 text-sm">
+                  {metaData.title ? (
+                    <>
+                      <div>
+                        <span className="text-zinc-400">Sarlavha:</span>
+                        <p className="text-zinc-200">{metaData.title}</p>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400">Tavsif:</span>
+                        <p className="text-zinc-200">{metaData.description}</p>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400">URL:</span>
+                        <p className="text-zinc-200">{metaData.url || "Yo'q"}</p>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400">Rasm:</span>
+                        <p className="text-zinc-200">{metaData.image || "Yo'q"}</p>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400">Turi:</span>
+                        <p className="text-zinc-200">{metaData.type}</p>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400">Twitter Card:</span>
+                        <p className="text-zinc-200">{metaData.twitterCard}</p>
+                      </div>
+                      <div className="border-t border-zinc-700 pt-4">
+                        <span className="text-zinc-400">Statistika:</span>
+                        <div className="mt-2 space-y-1 text-xs">
+                          <p>Meta teglar: {generatedMeta.split('\n').filter((line) => line.trim()).length}</p>
+                          <p>Sarlavha uzunligi: {metaData.title.length} belgi</p>
+                          <p>Tavsif uzunligi: {metaData.description.length} belgi</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center text-zinc-500">
+                      <p>Ma'lumotlarni to'ldiring...</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
+        </>
+      )}
 
-          {/* Tips */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h4 className="mb-3 font-medium text-zinc-200">Maslahatlar</h4>
-              <div className="space-y-2 text-sm text-zinc-400">
-                <p>
-                  • <strong>Sarlavha:</strong> 50-60 belgi, qisqa va aniq
-                </p>
-                <p>
-                  • <strong>Tavsif:</strong> 150-160 belgi, jozibali va informativ
-                </p>
-                <p>
-                  • <strong>Rasm:</strong> 1200x630 piksel, JPEG/PNG format
-                </p>
-                <p>
-                  • <strong>URL:</strong> To'liq va aniq manzil kiriting
-                </p>
-                <p>
-                  • Meta teglarni HTML <code>&lt;head&gt;</code> qismiga joylashtiring
-                </p>
-              </div>
+      {/* Help Section */}
+      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Zap size={20} className={toolColors.text.replace('text-', 'text-')} />
+          Meta teglar haqida ma'lumot
+        </h3>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-lg bg-blue-500/10 p-4">
+            <div className="mb-2 font-medium text-blue-400">Open Graph</div>
+            <div className="text-sm text-zinc-400">
+              Facebook, LinkedIn va boshqa ijtimoiy tarmoqlar uchun. Kontentingizni go'zal ko'rinishda baham ko'rish
+              imkonini beradi.
             </div>
-          </Card>
+          </div>
+
+          <div className="rounded-lg bg-cyan-500/10 p-4">
+            <div className="mb-2 font-medium text-cyan-400">Twitter Cards</div>
+            <div className="text-sm text-zinc-400">
+              Twitter (X) da professional ko'rinish. Turli xil card turlari: summary, large image, player va app.
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-green-500/10 p-4">
+            <div className="mb-2 font-medium text-green-400">SEO Teglar</div>
+            <div className="text-sm text-zinc-400">
+              Qidiruv tizimlari uchun optimallashtirilgan meta ma'lumotlar va canonical linklar.
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 border-t border-zinc-700 pt-6">
+          <h4 className="mb-3 font-medium text-zinc-200">Muhim maslahatlar:</h4>
+          <div className="grid gap-4 md:grid-cols-2">
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                <strong>Sarlavha:</strong> 50-60 belgi, qisqa va aniq
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                <strong>Tavsif:</strong> 150-160 belgi, jozibali va informativ
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                <strong>Rasm:</strong> 1200x630 piksel, JPEG/PNG format
+              </li>
+            </ul>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                <strong>URL:</strong> To'liq va aniq manzil kiriting
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                Meta teglarni HTML <code>&lt;head&gt;</code> qismiga joylashtiring
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-pink-500"></div>
+                Har bir sahifa uchun alohida meta teglar yarating
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

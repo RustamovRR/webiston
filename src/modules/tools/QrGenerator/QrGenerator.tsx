@@ -1,27 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Copy, Download, Upload, X, QrCode, FileDown } from 'lucide-react'
-import { useCopyToClipboard } from 'usehooks-ts'
+import { Download, Upload, Hash, Zap, FileDown, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { ToolPanel, TextInputPanel } from '@/components/ui/tool-panel'
-import { ShimmerButton } from '@/components/ui'
-import { useQrGenerator, QrPreset } from '@/hooks/tools/useQrGenerator'
-import { getToolColor } from '@/constants/ui-constants'
+import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { ShimmerButton, GradientTabs } from '@/components/ui'
+import { useQrGenerator, QrSize, QrErrorLevel, QrPreset } from '@/hooks/tools/useQrGenerator'
+import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
 
 const QrGenerator = () => {
-  const [copied, setCopied] = useState(false)
-  const [activeCategory, setActiveCategory] = useState<string>('url')
-  const [_, copy] = useCopyToClipboard()
-  const toolColors = getToolColor('qr-generator')
+  const [activeCategory, setActiveCategory] = useState('url')
+  const toolColors = TOOL_COLOR_MAP['qr-generator']
 
   const {
     inputText,
+    qrUrl,
     qrSize,
     errorLevel,
-    qrUrl,
     isGenerating,
     inputStats,
+    presets,
     groupedPresets,
     availableSizes,
     errorLevels,
@@ -37,17 +36,6 @@ const QrGenerator = () => {
     onSuccess: (message) => console.log(message),
     onError: (error) => console.error(error),
   })
-
-  const handleCopy = async () => {
-    if (!inputText) return
-    try {
-      await copy(inputText)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Copy failed:', error)
-    }
-  }
 
   const handleFileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -66,45 +54,47 @@ const QrGenerator = () => {
 
   const inputType = detectInputType(inputText)
 
-  // Convert inputStats to proper format
-  const formattedStats = inputStats.map((stat) => ({
-    label: stat.label,
-    value: typeof stat.value === 'string' ? 0 : stat.value,
-  }))
+  const qrResultText = qrUrl
+    ? `QR kod muvaffaqiyatli yaratildi!\n\nO'lcham: ${qrSize}x${qrSize} pixels\nXato tuzatish: ${errorLevel}\nTur: ${inputType}\n\nQR URL: ${qrUrl}`
+    : ''
 
   return (
-    <div className="mx-auto mt-6 w-full max-w-7xl">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title="QR Code Generator"
-        description="Matn, URL va ma'lumotlar uchun professional QR kod yaratish vositasi"
+        title="QR Kod Generator"
+        description="URL, matn, kontakt ma'lumotlari va boshqalar uchun QR kodlar yaratish"
       />
 
-      {/* Preset Categories */}
-      <ToolPanel title="Namuna kategoriyalari" variant="simple" className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {Object.keys(groupedPresets).map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                activeCategory === category
-                  ? 'bg-gradient-to-r ' + toolColors.primary + ' text-white shadow-lg'
-                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-              }`}
-            >
-              {categoryLabels[category as keyof typeof categoryLabels] || category}
-            </button>
-          ))}
+      {/* Category Selection */}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-zinc-300">Kategoriya tanlang:</h3>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(categoryLabels).map(([category, label]) => (
+              <Button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                variant="outline"
+                size="sm"
+                className={`cursor-pointer text-xs transition-all ${
+                  activeCategory === category
+                    ? `${toolColors.border} ${toolColors.bg} ${toolColors.text}`
+                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
+                }`}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
         </div>
-      </ToolPanel>
+      </div>
 
       {/* Presets for Active Category */}
       {groupedPresets[activeCategory] && (
-        <ToolPanel
-          title={`${categoryLabels[activeCategory as keyof typeof categoryLabels]} namunalari`}
-          variant="simple"
-          className="mb-6"
-        >
+        <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+          <h3 className="mb-4 text-sm font-medium text-zinc-300">
+            {categoryLabels[activeCategory as keyof typeof categoryLabels]} namunalari:
+          </h3>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {groupedPresets[activeCategory].map((preset: QrPreset, index: number) => (
               <div
@@ -112,14 +102,15 @@ const QrGenerator = () => {
                 className="flex flex-col gap-2 rounded-lg border border-zinc-700 bg-zinc-800/30 p-3 transition-all hover:bg-zinc-800/50"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-zinc-200">{preset.label}</span>
-                  <ShimmerButton
+                  <h4 className="text-sm font-medium text-zinc-200">{preset.label}</h4>
+                  <Button
                     onClick={() => handlePresetSelect(preset)}
-                    className="bg-gradient-to-r from-zinc-700 to-zinc-600 text-zinc-300 hover:from-zinc-600 hover:to-zinc-500"
+                    variant="outline"
                     size="sm"
+                    className="cursor-pointer text-xs"
                   >
                     Yuklash
-                  </ShimmerButton>
+                  </Button>
                 </div>
                 <p className="text-xs text-zinc-400">{preset.description}</p>
                 <div className="overflow-hidden rounded bg-zinc-900/50 p-2 font-mono text-xs text-zinc-500">
@@ -128,53 +119,61 @@ const QrGenerator = () => {
               </div>
             ))}
           </div>
-        </ToolPanel>
+        </div>
       )}
 
       {/* QR Settings */}
-      <ToolPanel title="QR kod sozlamalari" variant="simple" className="mb-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">QR o'lchami:</label>
-            <div className="flex flex-wrap gap-2">
-              {availableSizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setQrSize(size)}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                    qrSize === size
-                      ? 'bg-gradient-to-r ' + toolColors.primary + ' text-white shadow-lg'
-                      : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                  }`}
-                >
-                  {size}x{size}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-300">Xato tuzatish darajasi:</label>
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-6">
+            {/* QR Size */}
             <div className="space-y-2">
-              {errorLevels.map((level) => (
-                <label key={level.value} className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="radio"
-                    checked={errorLevel === level.value}
-                    onChange={() => setErrorLevel(level.value)}
-                    className="text-emerald-500 focus:ring-emerald-500"
-                  />
-                  <span className="text-sm text-zinc-300">{level.label}</span>
-                  <span className="text-xs text-zinc-500">- {level.description}</span>
-                </label>
-              ))}
+              <label className="text-sm font-medium text-zinc-300">QR o'lchami:</label>
+              <div className="flex flex-wrap gap-2">
+                {availableSizes.map((size) => (
+                  <Button
+                    key={size}
+                    onClick={() => setQrSize(size)}
+                    variant="outline"
+                    size="sm"
+                    className={`cursor-pointer text-xs transition-all ${
+                      qrSize === size
+                        ? `${toolColors.border} ${toolColors.bg} ${toolColors.text}`
+                        : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
+                    }`}
+                  >
+                    {size}x{size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Error Level */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-300">Xato tuzatish darajasi:</label>
+              <div className="space-y-2">
+                {errorLevels.map((level) => (
+                  <label key={level.value} className="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="radio"
+                      name="errorLevel"
+                      value={level.value}
+                      checked={errorLevel === level.value}
+                      onChange={(e) => setErrorLevel(e.target.value as QrErrorLevel)}
+                      className="text-blue-500"
+                    />
+                    <span className="text-sm text-zinc-300">{level.label}</span>
+                    <span className="text-xs text-zinc-500">- {level.description}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </ToolPanel>
+      </div>
 
       {/* Controls */}
-      <ToolPanel title="Fayl yuklash va yuklab olish" variant="simple" className="mb-6">
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -185,51 +184,21 @@ const QrGenerator = () => {
                 className="hidden"
                 id="file-upload"
               />
-              <label
-                htmlFor="file-upload"
-                className="flex cursor-pointer items-center gap-2 rounded bg-zinc-700 px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:bg-zinc-600"
-              >
-                <Upload size={16} />
-                Fayl yuklash
-              </label>
+              <Button variant="outline" size="sm" asChild>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload size={16} className="mr-2" />
+                  Fayl yuklash
+                </label>
+              </Button>
             </div>
 
             {inputText && (
-              <ShimmerButton
-                onClick={handleClear}
-                className="bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-500 hover:to-red-400"
-              >
-                <X size={16} className="mr-1" />
+              <Button onClick={handleClear} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
+                <X size={16} className="mr-2" />
                 Tozalash
-              </ShimmerButton>
+              </Button>
             )}
-          </div>
 
-          {qrUrl && (
-            <div className="flex items-center gap-2">
-              <ShimmerButton
-                onClick={() => downloadQr()}
-                disabled={isGenerating}
-                className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-500 hover:to-emerald-400"
-              >
-                <Download size={16} className="mr-1" />
-                {isGenerating ? 'Yuklanmoqda...' : 'QR kod yuklab olish'}
-              </ShimmerButton>
-            </div>
-          )}
-        </div>
-      </ToolPanel>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Input Section */}
-        <TextInputPanel
-          title="Input Text/URL"
-          value={inputText}
-          onChange={setInputText}
-          placeholder="QR kodga aylantirmoqchi bo'lgan matn, URL yoki ma'lumotni kiriting..."
-          stats={formattedStats}
-          minHeight="300px"
-          actions={
             <div className="flex items-center gap-2">
               {inputType !== 'empty' && (
                 <span
@@ -246,28 +215,41 @@ const QrGenerator = () => {
                   {inputType.toUpperCase()}
                 </span>
               )}
-              {inputText && (
-                <button
-                  onClick={handleCopy}
-                  disabled={!inputText}
-                  className="rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200 disabled:opacity-50"
-                >
-                  {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-                </button>
-              )}
             </div>
-          }
-        />
+          </div>
 
-        {/* QR Code Display */}
-        <ToolPanel title="QR Code" variant="terminal" className="min-h-[400px]">
+          {qrUrl && (
+            <ShimmerButton onClick={() => downloadQr()} disabled={isGenerating} variant="default" size="sm">
+              <Download size={16} className="mr-2" />
+              QR kodni yuklab olish
+            </ShimmerButton>
+          )}
+        </div>
+      </div>
+
+      {/* Main Panel */}
+      <DualTextPanel
+        sourceText={inputText}
+        convertedText={qrResultText}
+        sourcePlaceholder="QR kod yaratish uchun matn, URL yoki ma'lumot kiriting..."
+        sourceLabel="QR kodi uchun matn"
+        targetLabel="QR kod ma'lumoti"
+        onSourceChange={setInputText}
+        onClear={handleClear}
+        variant="terminal"
+      />
+
+      {/* QR Code Preview */}
+      {(qrUrl || isGenerating) && (
+        <div className={`mt-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+          <h3 className="mb-4 text-lg font-semibold text-zinc-100">QR Kod</h3>
           <div className="flex min-h-[350px] items-center justify-center p-8">
             {qrUrl ? (
               <div className="space-y-4 text-center">
                 <img
                   src={qrUrl}
                   alt="Generated QR Code"
-                  className="mx-auto rounded-lg bg-white p-4 shadow-xl"
+                  className="mx-auto rounded-lg border border-zinc-700 bg-white p-2"
                   style={{ width: qrSize, height: qrSize }}
                 />
                 <div className="space-y-1 text-sm text-zinc-400">
@@ -279,114 +261,98 @@ const QrGenerator = () => {
                 </div>
               </div>
             ) : (
-              <div className="text-center text-zinc-500">
-                <QrCode size={64} className="mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium">QR kod yaratish uchun</p>
-                <p className="text-sm">matn yoki URL kiriting</p>
+              <div className="text-center text-zinc-400">
+                <Hash size={48} className="mx-auto mb-4 text-zinc-600" />
+                <p>QR kod yaratilmoqda...</p>
               </div>
             )}
           </div>
-        </ToolPanel>
-      </div>
+        </div>
+      )}
 
-      {/* QR Code Information */}
+      {/* QR Stats */}
       {qrUrl && (
-        <ToolPanel title="QR kod ma'lumotlari" variant="simple" className="mt-6">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded border border-zinc-700 bg-zinc-800/30 p-4">
+        <div className={`mt-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div>
               <h4 className="mb-2 font-medium text-zinc-200">O'lcham</h4>
-              <p className="text-2xl font-bold text-emerald-400">{qrSize}px</p>
-              <p className="text-xs text-zinc-500">Kvadrat format</p>
+              <p className="text-2xl font-bold text-blue-400">
+                {qrSize}×{qrSize}
+              </p>
+              <p className="text-xs text-zinc-500">pixels</p>
             </div>
-
-            <div className="rounded border border-zinc-700 bg-zinc-800/30 p-4">
+            <div>
+              <h4 className="mb-2 font-medium text-zinc-200">Ma'lumot turi</h4>
+              <p className="text-2xl font-bold text-green-400 capitalize">{inputType}</p>
+              <p className="text-xs text-zinc-500">Aniqlangan tur</p>
+            </div>
+            <div>
               <h4 className="mb-2 font-medium text-zinc-200">Xato tuzatish</h4>
               <p className="text-2xl font-bold text-blue-400">{errorLevel}</p>
               <p className="text-xs text-zinc-500">{errorLevels.find((e) => e.value === errorLevel)?.description}</p>
             </div>
-
-            <div className="rounded border border-zinc-700 bg-zinc-800/30 p-4">
-              <h4 className="mb-2 font-medium text-zinc-200">Ma'lumot turi</h4>
-              <p className="text-2xl font-bold text-purple-400 capitalize">{inputType}</p>
-              <p className="text-xs text-zinc-500">Autodetect</p>
-            </div>
           </div>
-        </ToolPanel>
+          <p className="mt-3 text-sm text-zinc-500">
+            Yuqori xato tuzatish darajasi QR kodning zarar ko'rgan taqdirda ham o'qilishini ta'minlaydi, lekin kod
+            murakkablashadi.
+          </p>
+        </div>
       )}
 
       {/* Help Section */}
-      <ToolPanel title="QR Code haqida ma'lumot" variant="simple" className="mt-8">
-        <div className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <h4 className="mb-3 font-medium text-zinc-200">QR Code turlari:</h4>
-              <ul className="space-y-2 text-sm text-zinc-400">
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                  URL va web linklar
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                  Email manzillari va xabarlar
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                  Telefon raqamlari va SMS
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                  WiFi ulanish ma'lumotlari
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                  vCard kontakt kartalari
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-3 font-medium text-zinc-200">Foydalanish sohalari:</h4>
-              <ul className="space-y-2 text-sm text-zinc-400">
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-indigo-500"></div>
-                  Marketing va reklama kampaniyalari
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-pink-500"></div>
-                  Event ro'yxatdan o'tish
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-yellow-500"></div>
-                  Menu va narx ro'yxatlari
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-teal-500"></div>
-                  App download linklari
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
-                  To'lov va kontakt ma'lumotlari
-                </li>
-              </ul>
-            </div>
+      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Zap size={20} className={toolColors.text.replace('text-', 'text-')} />
+          QR Kodlar haqida ma'lumot
+        </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Foydalanish sohalari:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Website URL va linklar ulashish
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                Kontakt ma'lumotlari (vCard)
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                WiFi parol va ulanish ma'lumotlari
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                To'lov ma'lumotlari va banking
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                Event va kalendar ma'lumotlari
+              </li>
+            </ul>
           </div>
-
-          <div className="border-t border-zinc-700 pt-4">
-            <h4 className="mb-2 font-medium text-zinc-200">Xato tuzatish darajalari:</h4>
-            <div className="grid gap-2 md:grid-cols-4">
-              {errorLevels.map((level) => (
-                <div key={level.value} className="text-center">
-                  <div className="text-lg font-bold text-emerald-400">{level.value}</div>
-                  <div className="text-xs text-zinc-400">{level.label}</div>
-                </div>
-              ))}
-            </div>
-            <p className="mt-3 text-sm text-zinc-500">
-              Yuqori xato tuzatish darajasi QR kodning zarar ko'rgan taqdirda ham o'qilishini ta'minlaydi, lekin kod
-              murakkablashadi.
-            </p>
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Texnik ma'lumotlar:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li>• Maksimal sig'im: 7,089 raqam yoki 4,296 harf</li>
+              <li>• Xato tuzatish: L(7%), M(15%), Q(25%), H(30%)</li>
+              <li>• ISO/IEC 18004 standard asosida</li>
+              <li>• Barcha smartphone va qurilmalarda qo'llab-quvvatlanadi</li>
+              <li>• JPEG va PNG formatlarida yuklab olish</li>
+            </ul>
           </div>
         </div>
-      </ToolPanel>
+
+        <div className="mt-6 border-t border-zinc-700 pt-6">
+          <h4 className="mb-2 font-medium text-zinc-200">Maslahatlar:</h4>
+          <ul className="space-y-1 text-sm text-zinc-400">
+            <li>• Katta o'lchamlar (512px+) chop etish uchun yaxshiroq</li>
+            <li>• Yuqori xato tuzatish zarar ko'rgan kodlarni ham o'qiydi</li>
+            <li>• WiFi ma'lumotlari uchun WIFI: formatidan foydalaning</li>
+            <li>• vCard formatida to'liq kontakt ma'lumotlarini saqlash mumkin</li>
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }

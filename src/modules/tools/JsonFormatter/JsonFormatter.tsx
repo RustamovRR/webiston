@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Download, Upload, FileJson, Eye, EyeOff } from 'lucide-react'
+import { Download, Upload, FileJson, Eye, EyeOff, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -10,6 +9,7 @@ import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
 import { countWords } from '@/lib/utils'
 import { CodeHighlight, ShimmerButton } from '@/components/ui'
+import { useJsonFormatter } from '@/hooks/tools/useJsonFormatter'
 
 const sampleJson = {
   foydalanuvchi: {
@@ -35,30 +35,21 @@ const sampleJson = {
 }
 
 const JSONFormatter = () => {
-  const [inputJson, setInputJson] = useState('')
-  const [indentation, setIndentation] = useState('2')
-  const [showLineNumbers, setShowLineNumbers] = useState(true)
-  const [isMinified, setIsMinified] = useState(false)
-
-  const jsonResult = useMemo(() => {
-    if (!inputJson.trim()) {
-      return { formatted: '', error: '', isValid: false, minified: '' }
-    }
-
-    try {
-      const parsed = JSON.parse(inputJson)
-      const formatted = JSON.stringify(parsed, null, parseInt(indentation))
-      const minified = JSON.stringify(parsed)
-      return { formatted, error: '', isValid: true, minified }
-    } catch (error) {
-      return {
-        formatted: '',
-        error: error instanceof Error ? error.message : "Noto'g'ri JSON format",
-        isValid: false,
-        minified: '',
-      }
-    }
-  }, [inputJson, indentation])
+  const {
+    inputJson,
+    setInputJson,
+    indentation,
+    setIndentation,
+    showLineNumbers,
+    isMinified,
+    jsonResult,
+    handleFileUpload,
+    loadSampleJson,
+    downloadResult,
+    clearInput,
+    toggleMinify,
+    toggleLineNumbers,
+  } = useJsonFormatter()
 
   const displayJson = isMinified ? jsonResult.minified : jsonResult.formatted
 
@@ -76,45 +67,6 @@ const JSONFormatter = () => {
 
   const fileSizeKB = Math.round((displayJson.length / 1024) * 100) / 100
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const content = event.target?.result as string
-        setInputJson(content)
-      }
-      reader.readAsText(file)
-    }
-  }
-
-  const loadSampleJson = () => {
-    setInputJson(JSON.stringify(sampleJson, null, 2))
-  }
-
-  const downloadResult = () => {
-    if (!jsonResult.formatted) return
-
-    const content = isMinified ? jsonResult.minified : jsonResult.formatted
-    const blob = new Blob([content], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `formatted-${Date.now()}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
-
-  const clearInput = () => {
-    setInputJson('')
-  }
-
-  const toggleMinify = () => {
-    setIsMinified(!isMinified)
-  }
-
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
@@ -124,31 +76,29 @@ const JSONFormatter = () => {
 
       {/* Boshqaruv paneli */}
       <div className="mb-6 rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Fayl yuklash */}
-            <div className="flex items-center gap-2">
-              <input type="file" accept=".json,.txt" onChange={handleFileUpload} className="hidden" id="file-upload" />
-              <Button variant="outline" size="sm" asChild>
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload size={16} className="mr-2" />
-                  Fayl yuklash
-                </label>
-              </Button>
-            </div>
-
-            {/* Namuna JSON */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Kirish amallari */}
+            <span className="text-sm font-medium text-zinc-400">Amallar:</span>
+            <input type="file" accept=".json,.txt" onChange={handleFileUpload} className="hidden" id="file-upload" />
+            <Button variant="outline" size="sm" asChild>
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload size={16} className="mr-2" />
+                Fayl yuklash
+              </label>
+            </Button>
             <ShimmerButton onClick={loadSampleJson} variant="outline" size="sm">
               <FileJson size={16} className="mr-2" />
-              Namuna JSON
+              Namuna
             </ShimmerButton>
-
-            {/* Tozalash */}
             <Button variant="ghost" size="sm" onClick={clearInput}>
+              <X size={16} className="mr-2" />
               Tozalash
             </Button>
+          </div>
 
-            {/* Chekinish sozlamalari */}
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Sozlamalar */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-zinc-300">Chekinish:</span>
               <Select value={indentation} onValueChange={setIndentation}>
@@ -161,29 +111,23 @@ const JSONFormatter = () => {
                   <SelectItem value="8">8</SelectItem>
                 </SelectContent>
               </Select>
-              <span className="text-sm text-zinc-400">bo'sh joy</span>
             </div>
-          </div>
-
-          {/* O'ng tomon sozlamalari */}
-          <div className="flex items-center gap-2">
-            {/* Qator raqamlari */}
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setShowLineNumbers(!showLineNumbers)}
+              onClick={toggleLineNumbers}
               className="text-zinc-400 hover:text-zinc-200"
+              title={showLineNumbers ? 'Qator raqamlarini yashirish' : "Qator raqamlarini ko'rsatish"}
             >
               {showLineNumbers ? <EyeOff size={16} /> : <Eye size={16} />}
-              <span className="ml-1 text-xs">Qator №</span>
+              <span className="ml-2 hidden sm:inline">Qator №</span>
             </Button>
-
-            {/* Minify toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleMinify}
-              className={`text-xs ${isMinified ? 'text-orange-400' : 'text-zinc-400'}`}
+              className={`text-sm ${isMinified ? 'text-orange-400' : 'text-zinc-400'}`}
+              title={isMinified ? "Kengaytirilgan ko'rinish" : "Siqilgan ko'rinish"}
             >
               {isMinified ? 'Kengaytirilgan' : 'Siqilgan'}
             </Button>
@@ -231,8 +175,13 @@ const JSONFormatter = () => {
             />
           </div>
 
-          <div className="flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
+          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
             <StatsDisplay stats={inputStats} />
+            {!jsonResult.isValid && jsonResult.error && (
+              <div className="text-right">
+                <p className="font-mono text-xs text-red-400">{jsonResult.error}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -252,12 +201,12 @@ const JSONFormatter = () => {
 
           <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
             <div className="absolute inset-0 h-full w-full overflow-y-auto">
-              {jsonResult.error ? (
+              {jsonResult.error && !jsonResult.isValid ? (
                 <div className="p-4">
                   <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-red-400"></div>
-                      <strong className="text-sm text-red-400">Xatolik</strong>
+                      <strong className="text-sm text-red-400">JSON Format Xatoligi</strong>
                     </div>
                     <p className="font-mono text-sm text-red-300">{jsonResult.error}</p>
                   </div>

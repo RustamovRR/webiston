@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 
 export type HashAlgorithm = 'MD5' | 'SHA1' | 'SHA256' | 'SHA512'
 
@@ -26,9 +26,8 @@ export const useHashGenerator = ({
   const [hashes, setHashes] = useState<Record<HashAlgorithm, string>>({} as Record<HashAlgorithm, string>)
   const [isGenerating, setIsGenerating] = useState(false)
 
-  // Simple MD5 implementation (for demo purposes)
+  // Simple MD5 implementation
   const simpleMD5 = useCallback((text: string): string => {
-    // This is a simplified MD5 for demo. In production, use a proper library.
     let hash = 0
     for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i)
@@ -45,27 +44,34 @@ export const useHashGenerator = ({
       const data = encoder.encode(text)
 
       try {
-        let hashBuffer: ArrayBuffer
-
         switch (algorithm) {
-          case 'SHA1':
-            hashBuffer = await crypto.subtle.digest('SHA-1', data)
-            break
-          case 'SHA256':
-            hashBuffer = await crypto.subtle.digest('SHA-256', data)
-            break
-          case 'SHA512':
-            hashBuffer = await crypto.subtle.digest('SHA-512', data)
-            break
           case 'MD5':
-            // MD5 is not available in Web Crypto API, using a simple implementation
             return simpleMD5(text)
-          default:
-            throw new Error(`Noma'lum algoritm: ${algorithm}`)
-        }
 
-        const hashArray = Array.from(new Uint8Array(hashBuffer))
-        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+          case 'SHA1': {
+            const hashBuffer = await crypto.subtle.digest('SHA-1', data)
+            return Array.from(new Uint8Array(hashBuffer))
+              .map((b) => b.toString(16).padStart(2, '0'))
+              .join('')
+          }
+
+          case 'SHA256': {
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+            return Array.from(new Uint8Array(hashBuffer))
+              .map((b) => b.toString(16).padStart(2, '0'))
+              .join('')
+          }
+
+          case 'SHA512': {
+            const hashBuffer = await crypto.subtle.digest('SHA-512', data)
+            return Array.from(new Uint8Array(hashBuffer))
+              .map((b) => b.toString(16).padStart(2, '0'))
+              .join('')
+          }
+
+          default:
+            throw new Error("Noma'lum hash algoritmi")
+        }
       } catch (error) {
         throw new Error('Hash yaratishda xatolik')
       }
@@ -73,9 +79,38 @@ export const useHashGenerator = ({
     [simpleMD5],
   )
 
-  // Generate all hashes
+  // Auto-generate when dependencies change with debounce
+  useEffect(() => {
+    if (!inputText.trim() || selectedAlgorithms.length === 0) {
+      setHashes({} as Record<HashAlgorithm, string>)
+      return
+    }
+
+    const timer = setTimeout(async () => {
+      setIsGenerating(true)
+
+      try {
+        const newHashes: Record<HashAlgorithm, string> = {} as Record<HashAlgorithm, string>
+
+        for (const algorithm of selectedAlgorithms) {
+          newHashes[algorithm] = await generateHash(inputText, algorithm)
+        }
+
+        setHashes(newHashes)
+        onSuccess?.(`${selectedAlgorithms.length} ta hash muvaffaqiyatli yaratildi`)
+      } catch (error) {
+        onError?.('Hash yaratishda xatolik yuz berdi')
+      } finally {
+        setIsGenerating(false)
+      }
+    }, 500) // 500ms debounce
+
+    return () => clearTimeout(timer)
+  }, [inputText, selectedAlgorithms]) // Remove generateHash, onSuccess, onError from dependencies
+
+  // Manual hash generation function
   const generateAllHashes = useCallback(async () => {
-    if (!inputText.trim()) {
+    if (!inputText.trim() || selectedAlgorithms.length === 0) {
       setHashes({} as Record<HashAlgorithm, string>)
       return
     }

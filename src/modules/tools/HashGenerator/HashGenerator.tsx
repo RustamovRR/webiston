@@ -1,18 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Check, Copy, Download, Upload, X, Hash, FileDown } from 'lucide-react'
+import { useState } from 'react'
+import { Check, Copy, Download, Upload, X, Hash, FileDown, Zap } from 'lucide-react'
 import { useCopyToClipboard } from 'usehooks-ts'
+import { Button } from '@/components/ui/button'
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { ToolPanel, TextInputPanel } from '@/components/ui/tool-panel'
-import { ShimmerButton } from '@/components/ui'
+import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { useHashGenerator, HashAlgorithm } from '@/hooks/tools/useHashGenerator'
-import { getToolColor } from '@/constants/ui-constants'
+import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
 
 const HashGenerator = () => {
   const [copied, setCopied] = useState('')
   const [_, copy] = useCopyToClipboard()
-  const toolColors = getToolColor('hash-generator')
+  const toolColors = TOOL_COLOR_MAP['hash-generator']
 
   const {
     inputText,
@@ -33,11 +34,6 @@ const HashGenerator = () => {
     onSuccess: (message) => console.log(message),
     onError: (error) => console.error(error),
   })
-
-  // Auto-generate hashes when input or algorithms change
-  useEffect(() => {
-    generateAllHashes()
-  }, [generateAllHashes])
 
   const handleCopy = async (hash: string, algorithm: string) => {
     try {
@@ -63,76 +59,83 @@ const HashGenerator = () => {
     { label: 'Test String', value: 'Bu test matni hash yaratish uchun' },
   ]
 
-  // Convert inputStats to the required format
-  const formattedStats = [
-    { label: 'Characters', value: inputStats.characters },
-    { label: 'Words', value: inputStats.words },
-    { label: 'Lines', value: inputStats.lines },
-    { label: 'Bytes', value: inputStats.bytes },
-  ]
+  const hashResultText =
+    hashResults.length > 0 ? hashResults.map((result) => `${result.algorithm}: ${result.hash}`).join('\n\n') : ''
 
   return (
-    <div className="mx-auto mt-6 w-full max-w-7xl">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
         title="Hash Generator"
         description="MD5, SHA256, SHA512 va boshqa hash algoritmlar bilan ma'lumotlarni hash qilish"
       />
 
       {/* Algorithm Selection */}
-      <ToolPanel title="Hash Algoritmlari" variant="simple" className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {availableAlgorithms.map((algorithm) => {
-            const info = getAlgorithmInfo(algorithm)
-            const isActive = selectedAlgorithms.includes(algorithm)
-            return (
-              <button
-                key={algorithm}
-                onClick={() => toggleAlgorithm(algorithm)}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                  isActive
-                    ? 'bg-gradient-to-r ' + toolColors.primary + ' text-white shadow-lg'
-                    : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span>{algorithm}</span>
-                  <span
-                    className={`rounded px-1.5 py-0.5 text-xs ${
-                      info.status === 'deprecated'
-                        ? 'bg-red-900/30 text-red-400'
-                        : info.status === 'weak'
-                          ? 'bg-yellow-900/30 text-yellow-400'
-                          : info.status === 'secure'
-                            ? 'bg-blue-900/30 text-blue-400'
-                            : 'bg-green-900/30 text-green-400'
-                    }`}
-                  >
-                    {info.security}
-                  </span>
-                </div>
-              </button>
-            )
-          })}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-zinc-300">Hash Algoritmlari:</h3>
+          <div className="flex flex-wrap gap-2">
+            {availableAlgorithms.map((algorithm) => {
+              const info = getAlgorithmInfo(algorithm)
+              const isActive = selectedAlgorithms.includes(algorithm)
+              return (
+                <Button
+                  key={algorithm}
+                  onClick={() => toggleAlgorithm(algorithm)}
+                  variant="outline"
+                  size="sm"
+                  className={`cursor-pointer text-xs transition-all ${
+                    isActive
+                      ? `${toolColors.border} ${toolColors.bg} ${toolColors.text}`
+                      : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span>{algorithm}</span>
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-xs ${
+                        info.status === 'deprecated'
+                          ? 'bg-red-900/30 text-red-400'
+                          : info.status === 'weak'
+                            ? 'bg-yellow-900/30 text-yellow-400'
+                            : info.status === 'secure'
+                              ? 'bg-blue-900/30 text-blue-400'
+                              : 'bg-green-900/30 text-green-400'
+                      }`}
+                    >
+                      {info.security}
+                    </span>
+                  </div>
+                </Button>
+              )
+            })}
+          </div>
         </div>
-      </ToolPanel>
+      </div>
 
       {/* Sample Data */}
-      <ToolPanel title="Namuna ma'lumotlar" variant="simple" className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {presetTexts.map((preset, index) => (
-            <ShimmerButton
-              key={index}
-              onClick={() => setInputText(preset.value)}
-              className="bg-gradient-to-r from-zinc-700 to-zinc-600 text-zinc-300 hover:from-zinc-600 hover:to-zinc-500"
-            >
-              {preset.label}
-            </ShimmerButton>
-          ))}
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-zinc-300">Namuna ma'lumotlar:</span>
+            <div className="flex flex-wrap gap-2">
+              {presetTexts.map((preset, index) => (
+                <Button
+                  key={index}
+                  onClick={() => setInputText(preset.value)}
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer border-zinc-700 text-xs text-zinc-400 transition-all hover:border-zinc-600 hover:text-zinc-200"
+                >
+                  {preset.label}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
-      </ToolPanel>
+      </div>
 
       {/* Controls */}
-      <ToolPanel title="Fayl yuklash va yuklab olish" variant="simple" className="mb-6">
+      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -143,97 +146,79 @@ const HashGenerator = () => {
                 className="hidden"
                 id="file-upload"
               />
-              <label
-                htmlFor="file-upload"
-                className="flex cursor-pointer items-center gap-2 rounded bg-zinc-700 px-3 py-1.5 text-sm text-zinc-200 transition-colors hover:bg-zinc-600"
-              >
-                <Upload size={16} />
-                Fayl yuklash
-              </label>
+              <Button variant="outline" size="sm" asChild>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload size={16} className="mr-2" />
+                  Fayl yuklash
+                </label>
+              </Button>
             </div>
 
             {inputText && (
-              <ShimmerButton
-                onClick={handleClear}
-                className="bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-500 hover:to-red-400"
-              >
-                <X size={16} className="mr-1" />
+              <Button onClick={handleClear} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
+                <X size={16} className="mr-2" />
                 Tozalash
-              </ShimmerButton>
+              </Button>
             )}
           </div>
 
           {hashResults.length > 0 && (
             <div className="flex items-center gap-2">
-              <ShimmerButton
-                onClick={downloadHashes}
-                className="bg-gradient-to-r from-zinc-700 to-zinc-600 text-zinc-200 hover:from-zinc-600 hover:to-zinc-500"
-              >
-                <Download size={16} className="mr-1" />
+              <ShimmerButton onClick={downloadHashes} variant="outline" size="sm">
+                <Download size={16} className="mr-2" />
                 TXT yuklab olish
               </ShimmerButton>
 
-              <ShimmerButton
-                onClick={downloadAsJson}
-                className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-500 hover:to-emerald-400"
-              >
-                <FileDown size={16} className="mr-1" />
+              <ShimmerButton onClick={downloadAsJson} variant="default" size="sm">
+                <FileDown size={16} className="mr-2" />
                 JSON yuklab olish
               </ShimmerButton>
             </div>
           )}
         </div>
-      </ToolPanel>
+      </div>
 
-      {/* Input Section */}
-      <TextInputPanel
-        title="Input Text"
-        value={inputText}
-        onChange={setInputText}
-        placeholder="Hash qilmoqchi bo'lgan matnni kiriting..."
-        stats={formattedStats}
-        minHeight="200px"
-        actions={
-          inputText ? (
-            <button
-              onClick={handleClear}
-              className="rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
-              aria-label="Clear"
-            >
-              <X size={18} />
-            </button>
-          ) : null
-        }
+      {/* Main Panel */}
+      <DualTextPanel
+        sourceText={inputText}
+        convertedText={hashResultText}
+        sourcePlaceholder="Hash qilmoqchi bo'lgan matnni kiriting..."
+        sourceLabel="Input Text"
+        targetLabel="Hash Natijalari"
+        onSourceChange={setInputText}
+        onClear={handleClear}
+        variant="terminal"
       />
 
-      {/* Hash Results */}
+      {/* Hash Results Detail */}
       {hashResults.length > 0 && (
-        <div className="mt-6 space-y-4">
-          <h3 className="text-lg font-semibold text-zinc-100">Hash Natijalari</h3>
-          {hashResults.map((result) => {
-            const info = getAlgorithmInfo(result.algorithm)
+        <div className={`mt-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+          <h3 className="mb-4 text-lg font-semibold text-zinc-100">Batafsil Hash Natijalari</h3>
+          <div className="space-y-4">
+            {hashResults.map((result) => {
+              const info = getAlgorithmInfo(result.algorithm)
 
-            return (
-              <ToolPanel
-                key={result.algorithm}
-                title={`${result.algorithm} Hash (${result.length} chars)`}
-                variant="terminal"
-                className="mb-4"
-                actions={
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`rounded px-2 py-1 text-xs ${
-                        result.status === 'deprecated'
-                          ? 'bg-red-900/30 text-red-400'
-                          : result.status === 'weak'
-                            ? 'bg-yellow-900/30 text-yellow-400'
-                            : result.status === 'secure'
-                              ? 'bg-blue-900/30 text-blue-400'
-                              : 'bg-green-900/30 text-green-400'
-                      }`}
-                    >
-                      {info.description}
-                    </span>
+              return (
+                <div key={result.algorithm} className="rounded-xl bg-zinc-900/80 shadow-inner">
+                  <div className="flex h-16 items-center justify-between border-b border-zinc-800 px-4">
+                    <div className="flex items-center gap-3">
+                      <Hash size={18} className="text-zinc-400" />
+                      <span className="text-lg font-semibold text-zinc-100">{result.algorithm}</span>
+                      <span className="text-sm text-zinc-400">({result.length} chars)</span>
+                      <span
+                        className={`rounded px-2 py-1 text-xs ${
+                          result.status === 'deprecated'
+                            ? 'bg-red-900/30 text-red-400'
+                            : result.status === 'weak'
+                              ? 'bg-yellow-900/30 text-yellow-400'
+                              : result.status === 'secure'
+                                ? 'bg-blue-900/30 text-blue-400'
+                                : 'bg-green-900/30 text-green-400'
+                        }`}
+                      >
+                        {info.description}
+                      </span>
+                    </div>
                     <button
                       onClick={() => handleCopy(result.hash, result.algorithm)}
                       className="rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
@@ -246,20 +231,23 @@ const HashGenerator = () => {
                       )}
                     </button>
                   </div>
-                }
-              >
-                <div className="rounded bg-zinc-800/50 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">
-                  {result.hash}
+
+                  <div className="p-4">
+                    <div className="rounded bg-zinc-800/50 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">
+                      {result.hash}
+                    </div>
+                  </div>
                 </div>
-              </ToolPanel>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       )}
 
       {/* Hash Comparison */}
       {hashResults.length > 1 && (
-        <ToolPanel title="Hash Taqqoslash" variant="simple" className="mt-8">
+        <div className={`mt-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
+          <h3 className="mb-4 text-lg font-semibold text-zinc-100">Hash Taqqoslash</h3>
           <div className="grid gap-3">
             {hashResults.map((result) => {
               const info = getAlgorithmInfo(result.algorithm)
@@ -291,76 +279,78 @@ const HashGenerator = () => {
               )
             })}
           </div>
-        </ToolPanel>
+        </div>
       )}
 
       {/* Help Section */}
-      <ToolPanel title="Hash Algoritmlari haqida" variant="simple" className="mt-8">
-        <div className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <h4 className="mb-3 font-medium text-zinc-200">Foydalanish sohalari:</h4>
-              <ul className="space-y-2 text-sm text-zinc-400">
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                  Parol hashing va autentifikatsiya
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                  File integrity tekshirish
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                  Digital signatures yaratish
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                  Data verification va checksums
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                  Blockchain va cryptocurrency
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-3 font-medium text-zinc-200">Xavfsizlik darajalari:</h4>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center justify-between">
-                  <span className="font-medium text-red-400">MD5</span>
-                  <span className="rounded bg-red-900/30 px-2 py-1 text-xs text-red-400">Deprecated - Ishlatmang</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="font-medium text-yellow-400">SHA1</span>
-                  <span className="rounded bg-yellow-900/30 px-2 py-1 text-xs text-yellow-400">Zaif - Deprecated</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="font-medium text-blue-400">SHA256</span>
-                  <span className="rounded bg-blue-900/30 px-2 py-1 text-xs text-blue-400">
-                    Xavfsiz - Tavsiya etiladi
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="font-medium text-green-400">SHA512</span>
-                  <span className="rounded bg-green-900/30 px-2 py-1 text-xs text-green-400">
-                    Eng xavfsiz - Professional
-                  </span>
-                </li>
-              </ul>
-            </div>
+      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Zap size={20} className={toolColors.text.replace('text-', 'text-')} />
+          Hash Algoritmlari haqida
+        </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Foydalanish sohalari:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Parol hashing va autentifikatsiya
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                File integrity tekshirish
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                Digital signatures yaratish
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                Data verification va checksums
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                Blockchain va cryptocurrency
+              </li>
+            </ul>
           </div>
-
-          <div className="border-t border-zinc-700 pt-4">
-            <h4 className="mb-2 font-medium text-zinc-200">Muhim eslatmalar:</h4>
-            <ul className="space-y-1 text-sm text-zinc-400">
-              <li>• Hash funksiyalari bir tomonlama (irreversible) hisoblanadi</li>
-              <li>• Bir xil matn har doim bir xil hash beradi</li>
-              <li>• Kichik o'zgarish butunlay boshqa hash yaratadi</li>
-              <li>• Parollar uchun faqat SHA256 yoki SHA512 ishlating</li>
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Xavfsizlik darajalari:</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-center justify-between">
+                <span className="font-medium text-red-400">MD5</span>
+                <span className="rounded bg-red-900/30 px-2 py-1 text-xs text-red-400">Deprecated - Ishlatmang</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="font-medium text-yellow-400">SHA1</span>
+                <span className="rounded bg-yellow-900/30 px-2 py-1 text-xs text-yellow-400">Zaif - Deprecated</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="font-medium text-blue-400">SHA256</span>
+                <span className="rounded bg-blue-900/30 px-2 py-1 text-xs text-blue-400">
+                  Xavfsiz - Tavsiya etiladi
+                </span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="font-medium text-green-400">SHA512</span>
+                <span className="rounded bg-green-900/30 px-2 py-1 text-xs text-green-400">
+                  Eng xavfsiz - Professional
+                </span>
+              </li>
             </ul>
           </div>
         </div>
-      </ToolPanel>
+
+        <div className="mt-6 border-t border-zinc-700 pt-6">
+          <h4 className="mb-2 font-medium text-zinc-200">Muhim eslatmalar:</h4>
+          <ul className="space-y-1 text-sm text-zinc-400">
+            <li>• Hash funksiyalari bir tomonlama (irreversible) hisoblanadi</li>
+            <li>• Bir xil matn har doim bir xil hash beradi</li>
+            <li>• Kichik o'zgarish butunlay boshqa hash yaratadi</li>
+            <li>• Parollar uchun faqat SHA256 yoki SHA512 ishlating</li>
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }
