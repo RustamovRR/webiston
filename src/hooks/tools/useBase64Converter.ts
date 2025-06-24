@@ -6,6 +6,7 @@ import {
   FILE_SIZE_LIMITS,
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
+  BASE64_SAMPLE_TEXTS,
 } from '@/constants'
 
 interface UseBase64ConverterOptions {
@@ -13,6 +14,13 @@ interface UseBase64ConverterOptions {
   onSuccess?: (message: string) => void
   onError?: (error: string) => void
 }
+
+const samples = [
+  { key: 'UZBEK_GREETING', label: "O'zbek salomlashuvi", value: BASE64_SAMPLE_TEXTS.UZBEK_GREETING },
+  { key: 'JSON_SAMPLE', label: 'JSON namunasi', value: BASE64_SAMPLE_TEXTS.JSON_SAMPLE },
+  { key: 'URL_SAMPLE', label: 'URL namunasi', value: BASE64_SAMPLE_TEXTS.URL_SAMPLE },
+  { key: 'EMAIL_SAMPLE', label: 'Email namunasi', value: BASE64_SAMPLE_TEXTS.EMAIL_SAMPLE },
+]
 
 interface UseBase64ConverterReturn {
   // State
@@ -33,6 +41,7 @@ interface UseBase64ConverterReturn {
   // Computed
   canDownload: boolean
   acceptedFileTypes: string
+  samples: typeof samples
 }
 
 export const useBase64Converter = (options: UseBase64ConverterOptions = {}): UseBase64ConverterReturn => {
@@ -178,5 +187,6 @@ export const useBase64Converter = (options: UseBase64ConverterOptions = {}): Use
     // Computed
     canDownload,
     acceptedFileTypes,
+    samples,
   }
 }

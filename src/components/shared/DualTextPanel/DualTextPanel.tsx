@@ -19,9 +19,10 @@ interface DualTextPanelProps {
   onSourceChange: (text: string) => void
   onSwap?: () => void
   onClear?: () => void
+  swapIcon?: React.ReactNode
   showSwapButton?: boolean
   showClearButton?: boolean
-  isLoading?: boolean
+  isProcessing?: boolean
   error?: string
   variant?: 'simple' | 'terminal'
 }
@@ -35,9 +36,10 @@ export function DualTextPanel({
   onSourceChange,
   onSwap,
   onClear,
+  swapIcon,
   showSwapButton = true,
   showClearButton = true,
-  isLoading = false,
+  isProcessing: isLoading = false,
   error,
   variant = 'simple',
 }: DualTextPanelProps) {
@@ -159,7 +161,7 @@ export function DualTextPanel({
             aria-label="Almashtirish"
             disabled={isLoading}
           >
-            <ArrowLeftRight size={18} className="transition-transform group-hover:scale-110" />
+            {swapIcon || <ArrowLeftRight size={18} className="transition-transform group-hover:scale-110" />}
           </Button>
         </div>
       )}

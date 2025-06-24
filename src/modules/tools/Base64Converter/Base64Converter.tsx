@@ -1,18 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { Download, Upload, ArrowLeftRight, FileJson, Image, Type, Zap } from 'lucide-react'
+import { Download, Upload, ArrowLeftRight, FileText, X, Zap, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { useBase64Converter } from '@/hooks'
-import { BASE64_SAMPLE_TEXTS } from '@/constants'
 import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
 
 const Base64Converter = () => {
-  const [selectedSample, setSelectedSample] = useState<string>('')
-
   const toolColors = TOOL_COLOR_MAP['base64-converter']
 
   const {
@@ -29,14 +26,8 @@ const Base64Converter = () => {
     loadSampleText,
     canDownload,
     acceptedFileTypes,
-  } = useBase64Converter({
-    onSuccess: (message) => {
-      console.log('Success:', message)
-    },
-    onError: (error) => {
-      console.error('Error:', error)
-    },
-  })
+    samples,
+  } = useBase64Converter()
 
   const handleFileUploadWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -45,29 +36,9 @@ const Base64Converter = () => {
     }
   }
 
-  const handleSampleLoad = (sample: string) => {
-    loadSampleText(sample)
-    setSelectedSample(sample)
-  }
-
-  const samples = [
-    { key: 'UZBEK_GREETING', label: "O'zbek salomlashuvi", value: BASE64_SAMPLE_TEXTS.UZBEK_GREETING },
-    { key: 'JSON_SAMPLE', label: 'JSON namunasi', value: BASE64_SAMPLE_TEXTS.JSON_SAMPLE },
-    { key: 'URL_SAMPLE', label: 'URL namunasi', value: BASE64_SAMPLE_TEXTS.URL_SAMPLE },
-    { key: 'EMAIL_SAMPLE', label: 'Email namunasi', value: BASE64_SAMPLE_TEXTS.EMAIL_SAMPLE },
-  ]
-
   const tabOptions = [
-    {
-      value: 'encode',
-      label: 'Kodlash',
-      icon: <Type size={16} />,
-    },
-    {
-      value: 'decode',
-      label: 'Dekodlash',
-      icon: <Zap size={16} />,
-    },
+    { value: 'encode', label: 'Kodlash (Encode)', icon: <Zap size={16} /> },
+    { value: 'decode', label: 'Dekodlash (Decode)', icon: <FileText size={16} /> },
   ]
 
   return (
@@ -77,99 +48,71 @@ const Base64Converter = () => {
         description="Matn va fayllarni Base64 formatiga o'girish va aksincha dekodlash vositasi"
       />
 
-      {/* Rejim tanlash paneli */}
+      {/* Yagona Boshqaruv Paneli */}
       <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Gradient Tabs */}
+        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-4">
             <GradientTabs
               options={tabOptions}
               value={mode}
               onChange={(value) => setMode(value as 'encode' | 'decode')}
               toolCategory="converters"
             />
-
-            {/* Sample data buttons */}
-            <div className="flex flex-wrap gap-2">
-              {samples.map((sample) => (
-                <Button
-                  key={sample.key}
-                  onClick={() => handleSampleLoad(sample.value)}
-                  variant="outline"
-                  size="sm"
-                  className={`cursor-pointer text-xs transition-all ${
-                    selectedSample === sample.value
-                      ? `${toolColors.border} ${toolColors.bg} ${toolColors.text}`
-                      : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
-                  }`}
-                >
-                  {sample.label}
-                </Button>
-              ))}
-            </div>
           </div>
 
-          {/* Tozalash tugmasi */}
-          <Button
-            onClick={handleClear}
-            variant="ghost"
-            size="sm"
-            className="cursor-pointer text-zinc-400 hover:text-zinc-200"
-          >
-            Tozalash
-          </Button>
-        </div>
-      </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="file"
+              accept={acceptedFileTypes}
+              onChange={handleFileUploadWrapper}
+              className="hidden"
+              id="file-upload"
+              disabled={isProcessing}
+            />
+            <Button variant="outline" size="sm" asChild disabled={isProcessing}>
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload size={16} className="mr-2" />
+                Fayl yuklash
+              </label>
+            </Button>
 
-      {/* Boshqaruv tugmalari */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Fayl yuklash */}
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                accept={acceptedFileTypes}
-                onChange={handleFileUploadWrapper}
-                className="hidden"
-                id="file-upload"
-                disabled={isProcessing}
-              />
-              <Button variant="outline" size="sm" asChild disabled={isProcessing}>
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload size={16} className="mr-2" />
-                  {mode === 'encode' ? (
-                    <>
-                      <Image size={14} className="mr-1" />
-                      Fayl yuklash (Matn/Rasm)
-                    </>
-                  ) : (
-                    <>
-                      <FileJson size={14} className="mr-1" />
-                      Fayl yuklash (Matn)
-                    </>
-                  )}
-                </label>
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Namuna
+                  <ChevronDown size={16} className="ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {samples.map((sample) => (
+                  <DropdownMenuItem key={sample.key} onClick={() => loadSampleText(sample.value)}>
+                    {sample.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Mode switch button */}
-            <ShimmerButton onClick={handleModeSwitch} variant="outline" size="sm" disabled={isProcessing}>
-              <ArrowLeftRight size={16} className="mr-2" />
-              Rejimni almashtirish
+            <Button
+              onClick={handleClear}
+              variant="ghost"
+              size="sm"
+              className="text-zinc-400 hover:text-zinc-200"
+              title="Tozalash"
+            >
+              <X size={16} className="mr-2" />
+              Tozalash
+            </Button>
+
+            <ShimmerButton
+              onClick={downloadResult}
+              disabled={!canDownload || isProcessing}
+              variant={canDownload ? 'default' : 'outline'}
+              size="sm"
+            >
+              <Download size={16} className="mr-2" />
+              Yuklab olish
             </ShimmerButton>
           </div>
-
-          {/* Yuklab olish */}
-          <ShimmerButton
-            onClick={downloadResult}
-            disabled={!canDownload || isProcessing}
-            variant={canDownload ? 'default' : 'outline'}
-            size="sm"
-          >
-            <Download size={16} className="mr-2" />
-            Yuklab olish
-          </ShimmerButton>
         </div>
       </div>
 
@@ -188,7 +131,9 @@ const Base64Converter = () => {
         onSwap={handleModeSwitch}
         onClear={handleClear}
         error={result.error}
+        swapIcon={<ArrowLeftRight />}
         variant="terminal"
+        isProcessing={isProcessing}
       />
 
       {/* Ma'lumot va yordam bo'limi */}
@@ -237,7 +182,7 @@ const Base64Converter = () => {
         {/* Base64 format tushuntirishi */}
         <div className="mt-6 rounded-lg border border-zinc-700/30 bg-zinc-800/30 p-4">
           <h4 className="mb-3 flex items-center gap-2 font-semibold text-zinc-200">
-            <FileJson size={16} className={toolColors.text.replace('text-', 'text-')} />
+            <FileText size={16} className={toolColors.text.replace('text-', 'text-')} />
             Base64 format misoli
           </h4>
           <div className="grid gap-4 md:grid-cols-2">
