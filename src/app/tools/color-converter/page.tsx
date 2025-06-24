@@ -2,20 +2,20 @@ import type { Metadata } from 'next'
 import { ColorConverter } from '@/modules/tools'
 
 export const metadata: Metadata = {
-  title: 'Color Converter - Rang Konvertatsiya Vositasi | Webiston',
+  title: 'Color Converter - Rang Konvertatsiya Tool | Webiston',
   description:
-    'HEX, RGB, HSL formatlar orasida rang konvertatsiyasi. Rang palitralari generatsiyasi va professional rang moslamalari uchun onlayn vosita.',
+    'HEX, RGB, HSL ranglarni konvertatsiya qilish va palette yaratish tool. Convert colors between HEX, RGB, HSL formats and generate color palettes.',
   keywords: [
     'color converter',
+    'rang konvertatsiyasi',
     'hex to rgb',
     'rgb to hsl',
-    'rang konvertatsiyasi',
-    'color palette generator',
+    'color palette',
     'rang palitra',
-    'design tools',
-    'web development',
-    'css colors',
     'color picker',
+    'design tools',
+    'webiston tools',
+    'foydali qurollar',
   ],
   authors: [{ name: 'Webiston' }],
   creator: 'Webiston',
@@ -28,42 +28,31 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://webiston.uz'),
   alternates: {
     canonical: '/tools/color-converter',
+    languages: { 'uz-UZ': '/tools/color-converter', 'en-US': '/tools/color-converter' },
   },
   openGraph: {
-    title: 'Color Converter - Professional Rang Konvertatsiya Vositasi',
+    title: 'Color Converter - Rang Konvertatsiya Tool | Webiston',
     description:
-      'HEX, RGB, HSL formatlar orasida rang konvertatsiyasi. Rang palitralari generatsiyasi va professional rang moslamalari.',
-    url: '/tools/color-converter',
+      'HEX, RGB, HSL ranglarni konvertatsiya qilish va palette yaratish tool. Convert colors and generate palettes.',
+    type: 'website',
+    locale: 'uz_UZ',
     siteName: 'Webiston',
     images: [
       {
-        url: '/tools-preview.png',
+        url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Color Converter Tool Preview',
+        alt: 'Color Converter Tool',
       },
     ],
-    locale: 'uz_UZ',
-    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Color Converter | Webiston',
-    description: 'Professional rang konvertatsiya va palette generatsiya vositasi. HEX, RGB, HSL formatlar.',
-    images: ['/tools-preview.png'],
-    creator: '@webiston_uz',
+    title: 'Color Converter - Rang Konvertatsiya Tool',
+    description: 'HEX, RGB, HSL ranglarni konvertatsiya qilish va palette yaratish tool.',
+    images: ['/logo.png'],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  robots: { index: true, follow: true },
   verification: {
     google: 'your-google-verification-code',
     yandex: 'your-yandex-verification-code',

@@ -1,40 +1,32 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Copy, Palette, Eye, Droplets, Shuffle, RefreshCw, Download } from 'lucide-react'
-import { useCopyToClipboard } from 'usehooks-ts'
+import { Palette, Eye, Droplets, Shuffle, RefreshCw, Download } from 'lucide-react'
+
+// UI Components
 import { Button } from '@/components/ui/button'
+import { ShimmerButton, GradientTabs, CodeHighlight } from '@/components/ui'
+
+// Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { ShimmerButton, GradientTabs, ToolPanel } from '@/components/ui'
+import { CopyButton } from '@/components/shared/CopyButton'
+import { StatsDisplay } from '@/components/shared/StatsDisplay'
+
+// Utils & Hooks
+import { countWords } from '@/lib/utils'
 import { useColorConverter } from '@/hooks'
-import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
 
 const ColorConverter = () => {
-  const [copied, setCopied] = useState('')
   const [paletteType, setPaletteType] = useState<'monochromatic' | 'analogous' | 'complementary'>('monochromatic')
-  const [_, copy] = useCopyToClipboard()
 
-  const toolColors = TOOL_COLOR_MAP['color-converter']
-
-  const { inputColor, setInputColor, colorFormats, generatePalette, getColorName, setColorFromRgb, setColorFromHsl } =
-    useColorConverter({
-      onSuccess: (message) => {
-        console.log('Success:', message)
-      },
-      onError: (error) => {
-        console.error('Error:', error)
-      },
-    })
-
-  const handleCopy = async (value: string, type: string) => {
-    try {
-      await copy(value)
-      setCopied(type)
-      setTimeout(() => setCopied(''), 2000)
-    } catch (error) {
-      console.error('Copy failed:', error)
-    }
-  }
+  const { inputColor, setInputColor, colorFormats, generatePalette, getColorName } = useColorConverter({
+    onSuccess: (message) => {
+      console.log('Success:', message)
+    },
+    onError: (error) => {
+      console.error('Error:', error)
+    },
+  })
 
   const handleRandomColor = () => {
     const randomColor =
@@ -101,18 +93,50 @@ const ColorConverter = () => {
 
   const generatedPalette = generatePalette(inputColor, paletteType)
 
+  const inputStats = [
+    { label: 'format', value: 'HEX' },
+    { label: 'qiymat', value: inputColor },
+  ]
+
+  const formatContent = colorFormats?.isValid
+    ? JSON.stringify(
+        {
+          hex: colorFormats.hex,
+          rgb: colorFormats.rgb,
+          hsl: colorFormats.hsl,
+          rgbValues: colorFormats.rgbValues,
+          hslValues: colorFormats.hslValues,
+        },
+        null,
+        2,
+      )
+    : ''
+
+  const outputStats = colorFormats?.isValid
+    ? [
+        { label: 'formatlar', value: 3 },
+        { label: 'belgi', value: formatContent.length },
+        { label: 'qator', value: formatContent.split('\n').length },
+      ]
+    : [
+        { label: 'formatlar', value: 0 },
+        { label: 'belgi', value: 0 },
+        { label: 'qator', value: 0 },
+      ]
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title="Color Converter"
+        title="Color Converter va Palette Generator"
         description="HEX, RGB, HSL formatlar orasida rang konvertatsiyasi va palette generatsiya vositasi"
       />
 
-      {/* Palette turi tanlash paneli */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Palette Type Tabs */}
+      {/* Boshqaruv paneli */}
+      <div className="mb-6 rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm font-medium text-zinc-400">Palette turi:</span>
+
             <GradientTabs
               options={paletteOptions}
               value={paletteType}
@@ -120,188 +144,189 @@ const ColorConverter = () => {
               toolCategory="converters"
             />
 
-            {/* Random color button */}
             <ShimmerButton onClick={handleRandomColor} variant="outline" size="sm">
               <RefreshCw size={16} className="mr-2" />
               Tasodifiy rang
             </ShimmerButton>
           </div>
 
-          {/* Download palette */}
-          <ShimmerButton onClick={handleDownloadPalette} variant="outline" size="sm" disabled={!colorFormats?.isValid}>
-            <Download size={16} className="mr-2" />
-            Palette yuklab olish
-          </ShimmerButton>
-        </div>
-      </div>
-
-      {/* Rang tanlash paneli */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="space-y-4">
-          {/* Color picker va input */}
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-3">
-              <label className="text-lg font-semibold text-zinc-100">Rang tanlang:</label>
-              <div className="relative">
-                <input
-                  type="color"
-                  value={inputColor}
-                  onChange={(e) => setInputColor(e.target.value)}
-                  className="h-12 w-12 cursor-pointer rounded-lg border-2 border-zinc-700 transition-colors hover:border-zinc-600"
-                />
-                <div className="absolute -right-2 -bottom-2 rounded-full bg-zinc-800 p-1">
-                  <Palette size={12} className="text-zinc-400" />
-                </div>
-              </div>
-              <input
-                type="text"
-                value={inputColor}
-                onChange={(e) => setInputColor(e.target.value)}
-                className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 font-mono text-zinc-100 transition-colors focus:border-zinc-600 focus:outline-none"
-                placeholder="#000000"
-              />
-            </div>
-
+          <div className="flex items-center gap-2">
             {colorFormats?.isValid && (
-              <div className="text-sm text-zinc-400">
-                <span className="font-medium">Rang nomi:</span> {getColorName(inputColor)}
-              </div>
+              <ShimmerButton onClick={handleDownloadPalette} variant="outline" size="sm">
+                <Download size={16} className="mr-2" />
+                Palette yuklab olish
+              </ShimmerButton>
             )}
           </div>
-
-          {/* Preset colors */}
-          <div>
-            <h3 className="mb-3 text-sm font-medium text-zinc-300">Tayyor ranglar:</h3>
-            <div className="flex flex-wrap gap-3">
-              {presetColors.map((preset, index) => (
-                <button
-                  key={index}
-                  onClick={() => setInputColor(preset.color)}
-                  className={`group relative h-10 w-10 rounded-lg border-2 transition-all hover:scale-110 ${
-                    inputColor.toLowerCase() === preset.color.toLowerCase()
-                      ? 'border-zinc-400 shadow-lg'
-                      : 'border-zinc-600 hover:border-zinc-400'
-                  }`}
-                  style={{ backgroundColor: preset.color }}
-                  title={`${preset.name} (${preset.color})`}
-                >
-                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 transform rounded bg-zinc-800 px-2 py-1 text-xs whitespace-nowrap text-zinc-300 opacity-0 transition-opacity group-hover:opacity-100">
-                    {preset.name}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Rang ko'rinishi */}
-      {colorFormats?.isValid && (
-        <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-          <div className="flex flex-wrap items-center gap-6">
-            <div
-              className="h-24 w-24 rounded-xl border-2 border-zinc-700 shadow-lg"
-              style={{ backgroundColor: inputColor }}
-            />
-            <div className="flex-1">
-              <h3 className="mb-2 text-lg font-semibold text-zinc-100">Rang ko'rinishi</h3>
-              <p className="mb-2 text-sm text-zinc-400">
-                Bu rang turli formatlarda qanday ko'rinadi va rang palitralari
-              </p>
-              <div className="flex flex-wrap gap-4 text-xs text-zinc-500">
-                <span>
-                  RGB: {colorFormats.rgbValues.r}, {colorFormats.rgbValues.g}, {colorFormats.rgbValues.b}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Rang tanlash paneli */}
+        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
+          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 text-lg font-semibold text-zinc-100">Rang Tanlash</span>
+            </div>
+            <div className="text-xs text-zinc-400">
+              {colorFormats?.isValid ? (
+                <span className="flex items-center gap-1 text-green-400">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-400"></div>
+                  To'g'ri format
                 </span>
-                <span>
-                  HSL: {colorFormats.hslValues.h}°, {colorFormats.hslValues.s}%, {colorFormats.hslValues.l}%
+              ) : (
+                <span className="flex items-center gap-1 text-red-400">
+                  <div className="h-1.5 w-1.5 rounded-full bg-red-400"></div>
+                  Noto'g'ri format
                 </span>
+              )}
+            </div>
+          </div>
+
+          <div className="relative flex-grow p-4" style={{ minHeight: '400px' }}>
+            {/* Color picker va input */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <label className="text-sm font-medium text-zinc-300">Rang:</label>
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={inputColor}
+                    onChange={(e) => setInputColor(e.target.value)}
+                    className="h-10 w-16 cursor-pointer rounded-lg border border-zinc-700 bg-zinc-800"
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={inputColor}
+                  onChange={(e) => setInputColor(e.target.value)}
+                  className="flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 font-mono text-sm text-zinc-100 focus:border-zinc-600 focus:outline-none"
+                  placeholder="#000000"
+                />
+              </div>
+
+              {/* Rang ko'rinishi */}
+              {colorFormats?.isValid && (
+                <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="h-16 w-16 rounded-lg border border-zinc-700"
+                      style={{ backgroundColor: inputColor }}
+                    />
+                    <div>
+                      <h3 className="font-semibold text-zinc-200">Rang ma'lumotlari</h3>
+                      <p className="text-sm text-zinc-400">Rang nomi: {getColorName(inputColor)}</p>
+                      <div className="mt-1 text-xs text-zinc-500">
+                        RGB: {colorFormats.rgbValues.r}, {colorFormats.rgbValues.g}, {colorFormats.rgbValues.b}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Preset colors */}
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-zinc-300">Tayyor ranglar:</h3>
+                <div className="grid grid-cols-6 gap-2">
+                  {presetColors.map((preset, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setInputColor(preset.color)}
+                      className={`h-8 w-8 rounded-lg border transition-all hover:scale-110 ${
+                        inputColor.toLowerCase() === preset.color.toLowerCase()
+                          ? 'border-zinc-400 ring-2 ring-zinc-400/50'
+                          : 'border-zinc-600 hover:border-zinc-400'
+                      }`}
+                      style={{ backgroundColor: preset.color }}
+                      title={`${preset.name} (${preset.color})`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+
+          <div className="border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
+            <StatsDisplay stats={inputStats as any} />
+          </div>
         </div>
-      )}
 
-      {/* Color formats */}
-      {colorFormats?.isValid && (
-        <div className="mb-6 grid gap-6 lg:grid-cols-3">
-          {/* HEX */}
-          <ToolPanel
-            title="HEX Format"
-            variant="terminal"
-            actions={
-              <button
-                onClick={() => handleCopy(colorFormats.hex, 'hex')}
-                className="cursor-pointer rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
-                aria-label="Copy HEX"
-              >
-                {copied === 'hex' ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-              </button>
-            }
-          >
-            <div className="space-y-3 p-4">
-              <div className="font-mono text-xl text-zinc-200">{colorFormats.hex}</div>
-              <div className="text-sm text-zinc-400">Hexadecimal format</div>
-              <div className="text-xs text-zinc-500">Web dasturlashda eng keng tarqalgan format</div>
+        {/* Formatlar va ma'lumotlar paneli */}
+        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
+          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 text-lg font-semibold text-zinc-100">Formatlar va Ma'lumotlar</span>
             </div>
-          </ToolPanel>
+            <CopyButton text={formatContent} disabled={!colorFormats?.isValid} />
+          </div>
 
-          {/* RGB */}
-          <ToolPanel
-            title="RGB Format"
-            variant="terminal"
-            actions={
-              <button
-                onClick={() => handleCopy(colorFormats.rgb, 'rgb')}
-                className="cursor-pointer rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
-                aria-label="Copy RGB"
-              >
-                {copied === 'rgb' ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-              </button>
-            }
-          >
-            <div className="space-y-3 p-4">
-              <div className="font-mono text-xl text-zinc-200">{colorFormats.rgb}</div>
-              <div className="space-y-1 text-sm text-zinc-400">
-                <div>R: {colorFormats.rgbValues.r}</div>
-                <div>G: {colorFormats.rgbValues.g}</div>
-                <div>B: {colorFormats.rgbValues.b}</div>
-              </div>
-              <div className="text-xs text-zinc-500">Red, Green, Blue qiymatlari (0-255)</div>
-            </div>
-          </ToolPanel>
+          <div className="relative flex-grow" style={{ minHeight: '400px' }}>
+            <div className="absolute inset-0 h-full w-full overflow-y-auto">
+              {!colorFormats?.isValid ? (
+                <div className="flex h-full items-center justify-center p-8 text-center">
+                  <div className="text-zinc-500">
+                    <Palette size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-sm">To'g'ri HEX rang kiriting...</p>
+                    <p className="mt-2 text-xs opacity-75">Rang formatlar bu yerda ko'rinadi</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 p-4">
+                  {/* HEX Format */}
+                  <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <h3 className="font-semibold text-blue-400">HEX Format</h3>
+                      <CopyButton text={colorFormats.hex} />
+                    </div>
+                    <div className="font-mono text-lg text-zinc-100">{colorFormats.hex}</div>
+                    <div className="mt-1 text-xs text-zinc-400">Web dasturlashda eng keng tarqalgan</div>
+                  </div>
 
-          {/* HSL */}
-          <ToolPanel
-            title="HSL Format"
-            variant="terminal"
-            actions={
-              <button
-                onClick={() => handleCopy(colorFormats.hsl, 'hsl')}
-                className="cursor-pointer rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
-                aria-label="Copy HSL"
-              >
-                {copied === 'hsl' ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-              </button>
-            }
-          >
-            <div className="space-y-3 p-4">
-              <div className="font-mono text-xl text-zinc-200">{colorFormats.hsl}</div>
-              <div className="space-y-1 text-sm text-zinc-400">
-                <div>H: {colorFormats.hslValues.h}° (Hue)</div>
-                <div>S: {colorFormats.hslValues.s}% (Saturation)</div>
-                <div>L: {colorFormats.hslValues.l}% (Lightness)</div>
-              </div>
-              <div className="text-xs text-zinc-500">Inson uchun tushunarli format</div>
+                  {/* RGB Format */}
+                  <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <h3 className="font-semibold text-green-400">RGB Format</h3>
+                      <CopyButton text={colorFormats.rgb} />
+                    </div>
+                    <div className="font-mono text-lg text-zinc-100">{colorFormats.rgb}</div>
+                    <div className="mt-1 text-xs text-zinc-400">
+                      R: {colorFormats.rgbValues.r}, G: {colorFormats.rgbValues.g}, B: {colorFormats.rgbValues.b}
+                    </div>
+                  </div>
+
+                  {/* HSL Format */}
+                  <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <h3 className="font-semibold text-purple-400">HSL Format</h3>
+                      <CopyButton text={colorFormats.hsl} />
+                    </div>
+                    <div className="font-mono text-lg text-zinc-100">{colorFormats.hsl}</div>
+                    <div className="mt-1 text-xs text-zinc-400">
+                      H: {colorFormats.hslValues.h}°, S: {colorFormats.hslValues.s}%, L: {colorFormats.hslValues.l}%
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </ToolPanel>
+          </div>
+
+          <div className="border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
+            <StatsDisplay stats={outputStats} />
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Generated palette */}
       {colorFormats?.isValid && generatedPalette.length > 0 && (
-        <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-zinc-100">
-            <Palette size={20} className={toolColors.text.replace('text-', 'text-')} />
+        <div className="mt-6 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-100">
+            <Palette size={18} className="text-indigo-400" />
             {paletteType === 'monochromatic' && 'Monoxromatik palette'}
             {paletteType === 'analogous' && 'Analogik palette'}
             {paletteType === 'complementary' && 'Komplementar palette'}
@@ -310,7 +335,7 @@ const ColorConverter = () => {
             {generatedPalette.map((color, index) => (
               <div key={index} className="group cursor-pointer" onClick={() => setInputColor(color)}>
                 <div
-                  className="h-20 w-full rounded-lg border-2 border-zinc-700 transition-all group-hover:scale-105 group-hover:border-zinc-500"
+                  className="h-16 w-full rounded-lg border border-zinc-700 transition-all group-hover:scale-105 group-hover:border-zinc-500"
                   style={{ backgroundColor: color }}
                 />
                 <div className="mt-2 text-center">
@@ -323,10 +348,10 @@ const ColorConverter = () => {
         </div>
       )}
 
-      {/* Ma'lumot va yordam bo'limi */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+      {/* Ma'lumot bo'limi */}
+      <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Palette size={20} className={toolColors.text.replace('text-', 'text-')} />
+          <Palette size={20} className="text-indigo-400" />
           Rang formatlar haqida ma'lumot
         </h3>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -365,35 +390,6 @@ const ColorConverter = () => {
               <li>• CSS3 da qo'llab-quvvatlanadi</li>
               <li>• Rang moslamalari uchun qulay</li>
             </ul>
-          </div>
-        </div>
-
-        {/* Palette turlari haqida */}
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
-              <Droplets size={16} className="text-blue-400" />
-              Monoxromatik
-            </h4>
-            <p className="text-sm text-zinc-400">
-              Bir rangning turli soyalari va tinglari. Harmonik va tinch ko'rinish beradi.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
-              <Eye size={16} className="text-green-400" />
-              Analogik
-            </h4>
-            <p className="text-sm text-zinc-400">
-              Rang doirasida yaqin joylashgan ranglar. Tabiy va yumshoq ko'rinish.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
-              <Shuffle size={16} className="text-purple-400" />
-              Komplementar
-            </h4>
-            <p className="text-sm text-zinc-400">Qarama-qarshi ranglar. Yuqori kontrast va diqqatga tortuvchi.</p>
           </div>
         </div>
       </div>
