@@ -61,9 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'UUID Generator | Webiston',
-    description: 'Professional UUID generator vositasi. UUID v4, v1, NIL formatlar va turli stillar.',
-    images: ['/tools-preview.png'],
+    title: 'UUID Generator - Noyob Identifikator Tool',
+    description: 'UUID v4, v1, NIL formatlar bilan noyob identifikatorlar yaratish professional tool.',
+    images: ['/logo.png'],
     creator: '@webiston_uz',
   },
   robots: {
