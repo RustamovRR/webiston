@@ -1,29 +1,29 @@
 'use client'
 
-import { useState } from 'react'
-import { Check, Copy, Download, Upload, X, ArrowLeftRight, Link, Globe, ExternalLink } from 'lucide-react'
-import { useCopyToClipboard } from 'usehooks-ts'
+import { Download, Upload, Link, Globe, ArrowLeftRight, ChevronDown, X, ExternalLink } from 'lucide-react'
+
+// UI Components
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { ShimmerButton, GradientTabs } from '@/components/ui'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+
+// Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { ShimmerButton, GradientTabs, TextInputPanel, OutputPanel } from '@/components/ui'
-import { useUrlEncoder } from '@/hooks'
-import { URL_SAMPLE_TEXTS, ENCODING_EXAMPLES } from '@/constants'
-import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
+import { CopyButton } from '@/components/shared/CopyButton'
+import { StatsDisplay } from '@/components/shared/StatsDisplay'
+
+// Utils & Hooks
+import { useUrlEncoder } from '@/hooks/tools/useUrlEncoder'
 
 const UrlEncoder = () => {
-  const [copied, setCopied] = useState(false)
-  const [selectedSample, setSelectedSample] = useState<string>('')
-  const [_, copy] = useCopyToClipboard()
-
-  const toolColors = TOOL_COLOR_MAP['url-encoder']
-
   const {
     inputText,
-    mode,
-    result,
-    isProcessing,
     setInputText,
+    mode,
     setMode,
+    isProcessing,
+    result,
     handleModeSwitch,
     handleClear,
     handleFileUpload,
@@ -32,14 +32,8 @@ const UrlEncoder = () => {
     canDownload,
     inputStats,
     outputStats,
-  } = useUrlEncoder({
-    onSuccess: (message) => {
-      console.log('Success:', message)
-    },
-    onError: (error) => {
-      console.error('Error:', error)
-    },
-  })
+    samples,
+  } = useUrlEncoder()
 
   const handleFileUploadWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -48,29 +42,7 @@ const UrlEncoder = () => {
     }
   }
 
-  const handleSampleLoad = (sample: string) => {
-    loadSampleText(sample)
-    setSelectedSample(sample)
-  }
-
-  const handleCopy = async () => {
-    if (!result.output) return
-    try {
-      await copy(result.output)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Copy failed:', error)
-    }
-  }
-
-  const samples = [
-    { key: 'SIMPLE_URL', label: 'Oddiy URL', value: URL_SAMPLE_TEXTS.SIMPLE_URL },
-    { key: 'COMPLEX_URL', label: 'Murakkab URL', value: URL_SAMPLE_TEXTS.COMPLEX_URL },
-    { key: 'QUERY_STRING', label: "Qidiruv so'rovi", value: URL_SAMPLE_TEXTS.QUERY_STRING },
-    { key: 'EMAIL_QUERY', label: 'Email havolasi', value: URL_SAMPLE_TEXTS.EMAIL_QUERY },
-    { key: 'SOCIAL_SHARE', label: 'Ijtimoiy tarmoq', value: URL_SAMPLE_TEXTS.SOCIAL_SHARE },
-  ]
+  const displayOutput = result.output || ''
 
   const inputStatsArray = [
     { label: 'belgi', value: inputStats.characters },
@@ -84,238 +56,311 @@ const UrlEncoder = () => {
     { label: 'qator', value: outputStats.lines },
   ]
 
+  const fileSizeKB = Math.round((displayOutput.length / 1024) * 100) / 100
+
   const tabOptions = [
-    {
-      value: 'encode',
-      label: 'Kodlash',
-      icon: <Link size={16} />,
-    },
-    {
-      value: 'decode',
-      label: 'Dekodlash',
-      icon: <Globe size={16} />,
-    },
+    { value: 'encode', label: 'Kodlash (Encode)', icon: <Link size={16} /> },
+    { value: 'decode', label: 'Dekodlash (Decode)', icon: <Globe size={16} /> },
   ]
-
-  // URL info component
-  const urlInfoContent = result.urlInfo?.isValidUrl ? (
-    <div className="mt-4 rounded-lg border border-zinc-700 bg-zinc-800/50 p-4">
-      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-300">
-        <Link size={16} className={toolColors.text.replace('text-', 'text-')} />
-        URL Tuzilishi:
-      </div>
-      <div className="space-y-2 text-sm text-zinc-400">
-        <div className="flex items-center gap-2">
-          <span className="min-w-[80px] font-medium text-zinc-300">Protocol:</span>
-          <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">{result.urlInfo.protocol}</code>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="min-w-[80px] font-medium text-zinc-300">Hostname:</span>
-          <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">{result.urlInfo.hostname}</code>
-        </div>
-        {result.urlInfo.pathname && (
-          <div className="flex items-center gap-2">
-            <span className="min-w-[80px] font-medium text-zinc-300">Path:</span>
-            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">{result.urlInfo.pathname}</code>
-          </div>
-        )}
-        {result.urlInfo.search && (
-          <div className="flex items-center gap-2">
-            <span className="min-w-[80px] font-medium text-zinc-300">Query:</span>
-            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">{result.urlInfo.search}</code>
-          </div>
-        )}
-        {result.urlInfo.hash && (
-          <div className="flex items-center gap-2">
-            <span className="min-w-[80px] font-medium text-zinc-300">Hash:</span>
-            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">{result.urlInfo.hash}</code>
-          </div>
-        )}
-      </div>
-    </div>
-  ) : undefined
-
-  const outputActions = (
-    <>
-      {result.urlInfo?.isValidUrl && (
-        <div className="flex items-center gap-1 text-green-500">
-          <ExternalLink size={16} />
-          <span className="text-xs">To'g'ri URL</span>
-        </div>
-      )}
-      <button
-        onClick={handleCopy}
-        disabled={!result.output}
-        className="cursor-pointer rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
-        aria-label="Nusxalash"
-      >
-        {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
-      </button>
-    </>
-  )
-
-  const inputActions = inputText ? (
-    <button
-      onClick={handleClear}
-      className="cursor-pointer rounded-full p-2.5 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
-      aria-label="Tozalash"
-    >
-      <X size={18} />
-    </button>
-  ) : undefined
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title="URL Encoder/Decoder"
+        title="URL Kodlash va Dekodlash"
         description="URL manzillarini xavfsiz formatga kodlash va dekodlash uchun professional vosita"
       />
 
-      {/* Rejim tanlash va sample data paneli */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Gradient Tabs */}
+      {/* Boshqaruv paneli */}
+      <div className="mb-6 rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Gradient Tabs for Mode Selection */}
             <GradientTabs
               options={tabOptions}
               value={mode}
               onChange={(value) => setMode(value as 'encode' | 'decode')}
               toolCategory="converters"
             />
-
-            {/* Sample data buttons */}
-            <div className="flex flex-wrap gap-2">
-              {samples.map((sample) => (
-                <Button
-                  key={sample.key}
-                  onClick={() => handleSampleLoad(sample.value)}
-                  variant="outline"
-                  size="sm"
-                  className={`cursor-pointer text-xs transition-all ${
-                    selectedSample === sample.value
-                      ? `${toolColors.border} ${toolColors.bg} ${toolColors.text}`
-                      : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200'
-                  }`}
-                >
-                  {sample.label}
-                </Button>
-              ))}
-            </div>
           </div>
 
-          {/* Tozalash tugmasi */}
-          <Button onClick={handleClear} variant="ghost" size="sm" className="text-zinc-400 hover:text-zinc-200">
-            Tozalash
-          </Button>
-        </div>
-      </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* File Upload */}
+            <input
+              type="file"
+              accept=".txt,.json"
+              onChange={handleFileUploadWrapper}
+              className="hidden"
+              id="file-upload"
+              disabled={isProcessing}
+            />
+            <Button variant="outline" size="sm" asChild disabled={isProcessing}>
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload size={16} className="mr-2" />
+                Fayl yuklash
+              </label>
+            </Button>
 
-      {/* Boshqaruv tugmalari */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Fayl yuklash */}
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                accept=".txt,.json"
-                onChange={handleFileUploadWrapper}
-                className="hidden"
-                id="file-upload"
-                disabled={isProcessing}
-              />
-              <Button variant="outline" size="sm" asChild disabled={isProcessing}>
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload size={16} className="mr-2" />
-                  Fayl yuklash
-                </label>
-              </Button>
-            </div>
+            {/* Sample Data */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Link size={16} className="mr-2" />
+                  Namuna URL
+                  <ChevronDown size={16} className="ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {samples.map((sample) => (
+                  <DropdownMenuItem key={sample.key} onClick={() => loadSampleText(sample.value)}>
+                    {sample.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Mode switch button */}
-            <ShimmerButton onClick={handleModeSwitch} variant="outline" size="sm" disabled={isProcessing}>
-              <ArrowLeftRight size={16} className="mr-2" />
-              Rejimni almashtirish
+            <Button variant="ghost" size="sm" onClick={handleClear}>
+              <X size={16} className="mr-2" />
+              Tozalash
+            </Button>
+
+            {/* Download */}
+            <ShimmerButton
+              onClick={downloadResult}
+              disabled={!canDownload || isProcessing}
+              variant={canDownload ? 'default' : 'outline'}
+              size="sm"
+            >
+              <Download size={16} className="mr-2" />
+              Yuklab olish
             </ShimmerButton>
           </div>
-
-          {/* Yuklab olish */}
-          <ShimmerButton
-            onClick={downloadResult}
-            disabled={!canDownload || isProcessing}
-            variant={canDownload ? 'default' : 'outline'}
-            size="sm"
-          >
-            <Download size={16} className="mr-2" />
-            Yuklab olish
-          </ShimmerButton>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Kirish paneli */}
-        <TextInputPanel
-          title={mode === 'encode' ? 'Oddiy URL/Matn' : 'Kodlangan URL/Matn'}
-          value={inputText}
-          onChange={setInputText}
-          placeholder={
-            mode === 'encode'
-              ? 'https://example.com/search?q=hello world&filter=active'
-              : 'https%3A//example.com/search%3Fq%3Dhello%20world%26filter%3Dactive'
-          }
-          autoFocus
-          stats={inputStatsArray}
-          actions={inputActions}
-          variant="terminal"
-        />
+        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
+          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 text-lg font-semibold text-zinc-100">
+                {mode === 'encode' ? 'Oddiy URL/Matn Kirish' : 'Kodlangan URL Kirish'}
+              </span>
+            </div>
+            <div className="text-xs text-zinc-400">
+              {inputText.length > 0 && (
+                <span className="flex items-center gap-1 text-blue-400">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
+                  {mode === 'encode' ? 'Kodlashga tayyor' : 'Dekodlashga tayyor'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
+            <Textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0"
+              placeholder={
+                mode === 'encode'
+                  ? 'https://webiston.uz/search?q=hello world&filter=active'
+                  : 'https%3A//webiston.uz/search%3Fq%3Dhello%20world%26filter%3Dactive'
+              }
+              disabled={isProcessing}
+            />
+          </div>
+
+          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
+            <StatsDisplay stats={inputStatsArray} />
+            {isProcessing && (
+              <div className="text-right">
+                <p className="text-xs text-blue-400">Ishlanmoqda...</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Swap Button - Markazda */}
+        <div className="relative lg:absolute lg:top-1/2 lg:left-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
+          <div className="flex justify-center lg:justify-start">
+            <ShimmerButton
+              onClick={handleModeSwitch}
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-full border-2 border-zinc-700 bg-zinc-900/90 shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-800/90"
+              title="Rejimni almashtirish"
+              disabled={!result.isValid || isProcessing}
+            >
+              <ArrowLeftRight size={20} className="text-zinc-300" />
+            </ShimmerButton>
+          </div>
+        </div>
 
         {/* Chiqish paneli */}
-        <OutputPanel
-          title={mode === 'encode' ? 'Kodlangan natija' : 'Dekodlangan natija'}
-          content={result.output}
-          error={result.error || undefined}
-          emptyStateIcon={<Link size={48} />}
-          emptyStateMessage="Kodlangan/dekodlangan natija bu yerda ko'rinadi..."
-          additionalContent={urlInfoContent}
-          stats={outputStatsArray}
-          actions={outputActions}
-          variant="terminal"
-        />
-      </div>
-
-      {/* Misollar bo'limi */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Link size={20} className={toolColors.text.replace('text-', 'text-')} />
-          URL Encoding misollari
-        </h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          {ENCODING_EXAMPLES.map((example, index) => (
-            <div key={index} className="rounded-lg border border-zinc-700 bg-zinc-800/30 p-4">
-              <div className="mb-3 text-xs font-medium text-zinc-400">{example.description}</div>
-              <div className="space-y-3">
-                <div>
-                  <div className="mb-1 text-xs text-zinc-500">Asl holati:</div>
-                  <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-200">
-                    {example.original}
-                  </code>
-                </div>
-                <div>
-                  <div className="mb-1 text-xs text-zinc-500">Kodlangan:</div>
-                  <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-300">
-                    {example.encoded}
-                  </code>
-                </div>
-              </div>
+        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
+          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <span className="ml-2 text-lg font-semibold text-zinc-100">
+                {mode === 'encode' ? 'Kodlangan URL Natija' : 'Dekodlangan URL Natija'}
+              </span>
             </div>
-          ))}
+            <div className="flex items-center gap-2">
+              {result.urlInfo?.isValidUrl && (
+                <div className="flex items-center gap-1 text-green-400">
+                  <ExternalLink size={14} />
+                  <span className="text-xs">To'g'ri URL</span>
+                </div>
+              )}
+              <CopyButton text={displayOutput} disabled={!result.isValid} />
+            </div>
+          </div>
+
+          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
+            <div className="absolute inset-0 h-full w-full overflow-y-auto">
+              {result.error && !result.isValid ? (
+                <div className="p-4">
+                  <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
+                    <div className="mb-2 flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-red-400"></div>
+                      <strong className="text-sm text-red-400">URL Konvertatsiya Xatoligi</strong>
+                    </div>
+                    <p className="font-mono text-sm text-red-300">{result.error}</p>
+                  </div>
+                </div>
+              ) : displayOutput ? (
+                <div className="space-y-4 p-4">
+                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{displayOutput}</pre>
+
+                  {/* URL Info Section */}
+                  {result.urlInfo?.isValidUrl && (
+                    <div className="rounded-lg border border-zinc-700/30 bg-zinc-800/30 p-4">
+                      <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-300">
+                        <Link size={16} className="text-indigo-400" />
+                        URL Tuzilishi:
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="min-w-[80px] font-medium text-zinc-300">Protocol:</span>
+                          <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">
+                            {result.urlInfo.protocol}
+                          </code>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="min-w-[80px] font-medium text-zinc-300">Hostname:</span>
+                          <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">
+                            {result.urlInfo.hostname}
+                          </code>
+                        </div>
+                        {result.urlInfo.pathname && (
+                          <div className="flex items-center gap-2">
+                            <span className="min-w-[80px] font-medium text-zinc-300">Path:</span>
+                            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">
+                              {result.urlInfo.pathname}
+                            </code>
+                          </div>
+                        )}
+                        {result.urlInfo.search && (
+                          <div className="flex items-center gap-2">
+                            <span className="min-w-[80px] font-medium text-zinc-300">Query:</span>
+                            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">
+                              {result.urlInfo.search}
+                            </code>
+                          </div>
+                        )}
+                        {result.urlInfo.hash && (
+                          <div className="flex items-center gap-2">
+                            <span className="min-w-[80px] font-medium text-zinc-300">Hash:</span>
+                            <code className="rounded bg-zinc-900/50 px-2 py-1 text-zinc-200">
+                              {result.urlInfo.hash}
+                            </code>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex h-full items-center justify-center p-8 text-center">
+                  <div className="text-zinc-500">
+                    <Link size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-sm">
+                      {mode === 'encode'
+                        ? "Kodlangan URL bu yerda ko'rinadi..."
+                        : "Dekodlangan URL bu yerda ko'rinadi..."}
+                    </p>
+                    <p className="mt-2 text-xs opacity-75">URL kiriting yoki fayl yuklang</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
+            <StatsDisplay stats={outputStatsArray} />
+            {displayOutput && (
+              <div className="text-xs text-zinc-400">
+                <span className="text-zinc-500">Hajm:</span> <span className="text-zinc-300">{fileSizeKB} KB</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Ma'lumot va yordam bo'limi */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+      {/* Misollar bo'limi */}
+      <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Globe size={20} className={toolColors.text.replace('text-', 'text-')} />
+          <Link size={20} className="text-indigo-400" />
+          URL Encoding misollari
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-zinc-700/30 bg-zinc-800/30 p-4">
+            <div className="mb-3 text-xs font-medium text-zinc-400">Bo'shliq va maxsus belgilar</div>
+            <div className="space-y-3">
+              <div>
+                <div className="mb-1 text-xs text-zinc-500">Asl holati:</div>
+                <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-200">
+                  hello world & symbols
+                </code>
+              </div>
+              <div>
+                <div className="mb-1 text-xs text-zinc-500">Kodlangan:</div>
+                <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-300">
+                  hello%20world%20%26%20symbols
+                </code>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-zinc-700/30 bg-zinc-800/30 p-4">
+            <div className="mb-3 text-xs font-medium text-zinc-400">Query parametrlari</div>
+            <div className="space-y-3">
+              <div>
+                <div className="mb-1 text-xs text-zinc-500">Asl holati:</div>
+                <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-200">
+                  name=Ali Valiyev&city=Toshkent
+                </code>
+              </div>
+              <div>
+                <div className="mb-1 text-xs text-zinc-500">Kodlangan:</div>
+                <code className="block rounded bg-zinc-900/50 p-2 font-mono text-sm break-all text-zinc-300">
+                  name%3DAli%20Valiyev%26city%3DToshkent
+                </code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Yordam va ma'lumot bo'limi */}
+      <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Globe size={20} className="text-indigo-400" />
           URL Encoding haqida ma'lumot
         </h3>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -348,16 +393,16 @@ const UrlEncoder = () => {
             </h4>
             <ul className="space-y-1 text-sm text-zinc-400">
               <li>
-                • Bo'shliq → <code className={toolColors.text.replace('text-', 'text-')}>%20</code>
+                • Bo'shliq → <code className="text-indigo-400">%20</code>
               </li>
               <li>
-                • @ → <code className={toolColors.text.replace('text-', 'text-')}>%40</code>
+                • @ → <code className="text-indigo-400">%40</code>
               </li>
               <li>
-                • & → <code className={toolColors.text.replace('text-', 'text-')}>%26</code>
+                • & → <code className="text-indigo-400">%26</code>
               </li>
               <li>
-                • ? → <code className={toolColors.text.replace('text-', 'text-')}>%3F</code>
+                • ? → <code className="text-indigo-400">%3F</code>
               </li>
             </ul>
           </div>

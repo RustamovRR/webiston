@@ -1,40 +1,23 @@
 'use client'
 
 import { Download, Upload, FileJson, Eye, EyeOff, X } from 'lucide-react'
+
+// UI Components
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { CodeHighlight, ShimmerButton } from '@/components/ui'
+
+// Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
+
+// Utils & Hooks
 import { countWords } from '@/lib/utils'
-import { CodeHighlight, ShimmerButton } from '@/components/ui'
 import { useJsonFormatter } from '@/hooks/tools/useJsonFormatter'
 
-const sampleJson = {
-  foydalanuvchi: {
-    id: 1,
-    ism: 'Ali Valiyev',
-    email: 'ali@example.com',
-    yosh: 30,
-    manzil: {
-      viloyat: 'Toshkent',
-      tuman: 'Chilonzor',
-      "ko'cha": "Amir Temur ko'chasi",
-      uy: '15',
-    },
-    telefon: ['+998901234567', '+998712345678'],
-    faol: true,
-    "ro'yxatdanOtganSana": '2024-01-15T10:30:00Z',
-    sozlamalar: {
-      til: 'uz',
-      xabarNomalar: true,
-      "qorong'uRejim": false,
-    },
-  },
-}
-
-const JSONFormatter = () => {
+const JsonFormatter = () => {
   const {
     inputJson,
     setInputJson,
@@ -70,8 +53,8 @@ const JSONFormatter = () => {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title="JSON Formatlash"
-        description="JSON ma'lumotlarni formatlash, tasdiqlash va optimallashtirish vositasi"
+        title="JSON Formatlash va Tekshirish"
+        description="JSON ma'lumotlarni formatlash, tekshirish va optimallashtirish vositasi"
       />
 
       {/* Boshqaruv paneli */}
@@ -89,7 +72,7 @@ const JSONFormatter = () => {
             </Button>
             <ShimmerButton onClick={loadSampleJson} variant="outline" size="sm">
               <FileJson size={16} className="mr-2" />
-              Namuna
+              Namuna JSON
             </ShimmerButton>
             <Button variant="ghost" size="sm" onClick={clearInput}>
               <X size={16} className="mr-2" />
@@ -126,7 +109,7 @@ const JSONFormatter = () => {
               variant="ghost"
               size="sm"
               onClick={toggleMinify}
-              className={`text-sm ${isMinified ? 'text-orange-400' : 'text-zinc-400'}`}
+              className={`text-sm transition-colors ${isMinified ? 'text-orange-400 hover:text-orange-300' : 'text-zinc-400 hover:text-zinc-200'}`}
               title={isMinified ? "Kengaytirilgan ko'rinish" : "Siqilgan ko'rinish"}
             >
               {isMinified ? 'Kengaytirilgan' : 'Siqilgan'}
@@ -154,14 +137,20 @@ const JSONFormatter = () => {
               <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
               <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
               <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">Kirish</span>
+              <span className="ml-2 text-lg font-semibold text-zinc-100">JSON Kirish</span>
             </div>
             <div className="text-xs text-zinc-400">
               {inputJson.length > 0 &&
                 (jsonResult.isValid ? (
-                  <span className="text-green-400">✓ To'g'ri format</span>
+                  <span className="flex items-center gap-1 text-green-400">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-400"></div>
+                    To'g'ri format
+                  </span>
                 ) : (
-                  <span className="text-red-400">✗ Xatolik mavjud</span>
+                  <span className="flex items-center gap-1 text-red-400">
+                    <div className="h-1.5 w-1.5 rounded-full bg-red-400"></div>
+                    Xatolik mavjud
+                  </span>
                 ))}
             </div>
           </div>
@@ -193,7 +182,7 @@ const JSONFormatter = () => {
               <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
               <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
               <span className="ml-2 text-lg font-semibold text-zinc-100">
-                {isMinified ? 'Siqilgan natija' : 'Formatlangan natija'}
+                {isMinified ? 'Siqilgan JSON' : 'Formatlangan JSON'}
               </span>
             </div>
             <CopyButton text={displayJson} disabled={!jsonResult.isValid} />
@@ -283,4 +272,4 @@ const JSONFormatter = () => {
   )
 }
 
-export default JSONFormatter
+export default JsonFormatter
