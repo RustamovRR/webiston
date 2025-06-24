@@ -1,14 +1,12 @@
 'use client'
 
 import { FileType, Copy, RefreshCw, Settings, Download, Check, Zap, Type } from 'lucide-react'
-import { ToolHeader } from '@/components/shared/ToolHeader'
+import { ToolHeader, StatsDisplay } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { DualTextPanel } from '@/components/shared/DualTextPanel'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
-import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
 import { useLoremIpsum } from '@/hooks/tools'
 
 type GenerationType = 'paragraphs' | 'sentences' | 'words' | 'bytes'
@@ -28,8 +26,6 @@ export default function LoremIpsumPage() {
     handleCopy,
     downloadText,
   } = useLoremIpsum()
-
-  const toolColors = TOOL_COLOR_MAP['lorem-ipsum']
 
   const generationTypeOptions = [
     {
@@ -61,43 +57,55 @@ export default function LoremIpsumPage() {
         description="Professional placeholder matn va paragraflar yaratish uchun zamonaviy vosita"
       />
 
-      {/* Sample Data Section */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="font-medium text-zinc-200">Tez boshlash</h3>
-            <p className="text-sm text-zinc-400">Standart Lorem Ipsum bilan boshlang yoki sozlamalarni o'zgartiring</p>
+      {/* Konfiguratsiya Panel */}
+      <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+        {/* Panel Header */}
+        <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500"></div>
+            </div>
+            <span className="text-sm font-medium text-zinc-300">Tool Konfiguratsiya</span>
           </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={loadSample}
-              variant="outline"
-              className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-            >
-              <FileType className="mr-2 h-4 w-4" />
-              Namuna yuklash
-            </Button>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-green-500"></div>
+            <span className="text-xs text-zinc-500">Ready</span>
           </div>
         </div>
-      </div>
 
-      {/* Generation Type Selection */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium text-zinc-300">Yaratish turi:</h3>
-          <GradientTabs
-            options={generationTypeOptions}
-            value={settings.generationType}
-            onChange={(value: string) => updateSettings({ generationType: value as GenerationType })}
-            toolCategory="utilities"
-          />
-        </div>
-      </div>
+        {/* Panel Content */}
+        <div className="p-6">
+          {/* Quick Start */}
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="font-medium text-zinc-200">Tez boshlash</h3>
+              <p className="text-sm text-zinc-400">
+                Standart Lorem Ipsum bilan boshlang yoki sozlamalarni o'zgartiring
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={loadSample} variant="outline" size="sm">
+                <FileType className="mr-2 h-4 w-4" />
+                Namuna yuklash
+              </Button>
+            </div>
+          </div>
 
-      {/* Settings Panel */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {/* Generation Type */}
+          <div className="mb-6 space-y-4">
+            <h3 className="text-sm font-medium text-zinc-300">Yaratish turi:</h3>
+            <GradientTabs
+              options={generationTypeOptions}
+              value={settings.generationType}
+              onChange={(value: string) => updateSettings({ generationType: value as GenerationType })}
+              toolCategory="utilities"
+            />
+          </div>
+
+          {/* Settings Grid */}
+          <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Amount Setting */}
             <div>
               <label className="mb-2 block text-sm font-medium text-zinc-200">Miqdor: {settings.amount}</label>
@@ -107,7 +115,7 @@ export default function LoremIpsumPage() {
                 max="1000"
                 value={settings.amount}
                 onChange={(e) => updateSettings({ amount: parseInt(e.target.value) || 1 })}
-                className="border-zinc-700 bg-zinc-800"
+                className="border-zinc-700 bg-zinc-800/50"
               />
               <p className="mt-1 text-xs text-zinc-500">1 dan 1000 gacha</p>
             </div>
@@ -116,7 +124,7 @@ export default function LoremIpsumPage() {
             <div>
               <label className="mb-2 block text-sm font-medium text-zinc-200">Matn turi</label>
               <Select value={settings.textType} onValueChange={(value) => updateSettings({ textType: value })}>
-                <SelectTrigger className="border-zinc-700 bg-zinc-800">
+                <SelectTrigger className="border-zinc-700 bg-zinc-800/50">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -145,50 +153,38 @@ export default function LoremIpsumPage() {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* Main Generate Button with Actions */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <ShimmerButton onClick={generateText} variant="default" size="lg" className="px-8 py-3">
-            <Type className="mr-2 h-5 w-5" />
-            Yangi matn yaratish
-          </ShimmerButton>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <ShimmerButton onClick={generateText} size="sm">
+              <Type className="mr-2 h-4 w-4" />
+              Yangi matn yaratish
+            </ShimmerButton>
 
-          {generatedText && (
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handleCopy}
-                variant="outline"
-                size="sm"
-                className="border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
-              >
-                {copied ? <Check size={16} className="mr-2 text-green-500" /> : <Copy size={16} className="mr-2" />}
-                {copied ? 'Nusxalandi!' : 'Nusxalash'}
-              </Button>
+            {generatedText && (
+              <div className="flex items-center gap-2">
+                <Button onClick={handleCopy} variant="outline" size="sm">
+                  {copied ? <Check size={16} className="mr-2 text-green-500" /> : <Copy size={16} className="mr-2" />}
+                  {copied ? 'Nusxalandi!' : 'Nusxalash'}
+                </Button>
 
-              <Button onClick={downloadText} variant="outline" size="sm">
-                <Download size={16} className="mr-2" />
-                Yuklab olish
-              </Button>
+                <Button onClick={downloadText} variant="outline" size="sm">
+                  <Download size={16} className="mr-2" />
+                  Yuklab olish
+                </Button>
 
-              <Button
-                onClick={clearText}
-                variant="outline"
-                size="sm"
-                className="border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Tozalash
-              </Button>
-            </div>
-          )}
+                <Button onClick={clearText} variant="outline" size="sm">
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Tozalash
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Stats Display */}
-      {generatedText && <StatsDisplay stats={textStats} />}
+      {generatedText && <StatsDisplay stats={textStats} className="mb-6" />}
 
       {/* Main Panel */}
       <DualTextPanel
@@ -205,10 +201,10 @@ export default function LoremIpsumPage() {
         showClearButton={false}
       />
 
-      {/* Text Types Info Panel */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+      {/* Ma'lumot Section */}
+      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Zap size={20} className={toolColors.text.replace('text-', 'text-')} />
+          <Zap size={20} className="text-blue-400" />
           Matn turlari haqida
         </h3>
 
@@ -253,9 +249,9 @@ export default function LoremIpsumPage() {
       </div>
 
       {/* Help Section */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
+      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Settings size={20} className={toolColors.text.replace('text-', 'text-')} />
+          <Settings size={20} className="text-green-400" />
           Lorem Ipsum nima uchun ishlatiladi?
         </h3>
 

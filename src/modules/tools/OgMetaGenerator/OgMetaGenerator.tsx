@@ -418,18 +418,18 @@ export default function OgMetaGenerator() {
 
             {/* Generated Meta Tags */}
             <div className="space-y-4">
-              {generatedMeta ? (
+              {currentOutput ? (
                 <>
                   <CodeHighlight
-                    code={generatedMeta}
-                    language="html"
+                    code={currentOutput}
+                    language={currentLanguage}
                     showLineNumbers={true}
                     className="max-h-96 overflow-y-auto"
                   />
 
                   {/* Action Buttons */}
                   <div className="flex flex-wrap items-center gap-3">
-                    <CopyButton text={generatedMeta} size="sm" variant="outline" />
+                    <CopyButton text={currentOutput} size="sm" variant="outline" />
                     <Button onClick={() => downloadMeta('raw')} variant="outline" size="sm">
                       <Download size={16} className="mr-2" />
                       TXT
@@ -451,7 +451,7 @@ export default function OgMetaGenerator() {
             </div>
 
             {/* Stats Display */}
-            {generatedMeta && (
+            {currentOutput && (
               <div className="mt-6 border-t border-zinc-800 pt-6">
                 <h4 className="mb-3 text-sm font-medium text-zinc-300">Yaratilgan natija</h4>
                 <StatsDisplay stats={outputStats} />
