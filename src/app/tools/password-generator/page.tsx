@@ -1,200 +1,86 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { PasswordGenerator } from '@/modules/tools'
 
 export const metadata: Metadata = {
-  title: 'Password Generator - Xavfsiz Parol Yaratuvchi | Webiston',
+  title: 'Password Generator - Xavfsiz Parol Yaratish Tool | Webiston',
   description:
-    'Kuchli va xavfsiz parollar yarating. Generate strong, secure passwords with customizable length, character types, and security options. Professional password generator tool.',
+    'Xavfsiz va kuchli parollar yaratish vositasi. Generate strong, secure passwords with customizable options. Professional password generator tool.',
   keywords: [
     'password generator',
-    'secure password',
-    'strong password',
-    'random password',
     'parol yaratuvchi',
+    'secure password',
     'xavfsiz parol',
+    'strong password',
     'kuchli parol',
-    'tasodifiy parol',
-    'password security',
-    'parol xavfsizligi',
+    'random password',
     'cybersecurity',
-    'account security',
-    'password tool',
-    'security generator',
-    'memorable password',
-    'PIN generator',
-    'character password',
-    'symbol password',
-    'password strength',
-    'password complexity',
-    'security tool',
-    'authentication',
-    'data security',
-    'web security',
-    'developer tools',
-    'IT security',
-    'privacy protection',
-    'secure login',
-    'password policy',
-    'cryptographic password',
-    'random string',
-    'password manager',
-    'security best practices',
-    'access control',
-    'identity protection',
-    'Webiston tools',
-    'Foydali qurollar',
-    'security utilities',
-    'password creation',
-    'secure authentication',
-    'digital security',
-    'online privacy',
-    'password compliance',
+    'password security',
+    'webiston tools',
+    'foydali qurollar',
   ],
   openGraph: {
-    title: 'Password Generator - Xavfsiz Parol Yaratuvchi | Webiston',
+    title: 'Password Generator - Xavfsiz Parol Yaratish Tool | Webiston',
     description:
-      'Kuchli va xavfsiz parollar yarating. Generate strong, secure passwords with customizable options for maximum security.',
+      'Xavfsiz va kuchli parollar yaratish vositasi. Generate strong, secure passwords with customizable options.',
     type: 'website',
     locale: 'uz_UZ',
     siteName: 'Webiston',
     images: [
       {
-        url: '/og-image.png',
+        url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'Password Generator - Xavfsiz Parol Yaratuvchi',
+        alt: 'Password Generator Tool',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Password Generator - Xavfsiz Parol Yaratuvchi',
-    description: 'Kuchli va xavfsiz parollar yarating professional tool bilan.',
-    images: ['/og-image.png'],
+    title: 'Password Generator - Professional Security Tool',
+    description: 'Xavfsiz parollar yaratish professional vositasi. Custom settings bilan.',
+    images: ['/logo.png'],
   },
   alternates: {
     canonical: '/tools/password-generator',
-    languages: {
-      'uz-UZ': '/tools/password-generator',
-      'en-US': '/tools/password-generator',
-    },
+    languages: { 'uz-UZ': '/tools/password-generator', 'en-US': '/tools/password-generator' },
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  other: {
-    'application-name': 'Webiston Password Generator',
-    'msapplication-TileColor': '#0f172a',
-    'theme-color': '#0f172a',
-    'format-detection': 'telephone=no',
-    'mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'application/ld+json': JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      name: 'Password Generator - Xavfsiz Parol Yaratuvchi',
-      applicationCategory: 'SecurityApplication',
-      operatingSystem: 'Web Browser',
-      description:
-        'Kuchli va xavfsiz parollar yaratish uchun professional vosita. Generate strong, secure passwords with customizable options.',
-      url: 'https://webiston.uz/tools/password-generator',
-      author: {
-        '@type': 'Organization',
-        name: 'Webiston',
-        url: 'https://webiston.uz',
-      },
-      provider: {
-        '@type': 'Organization',
-        name: 'Webiston',
-        url: 'https://webiston.uz',
-      },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.9',
-        ratingCount: '847',
-        bestRating: '5',
-        worstRating: '1',
-      },
-      review: [
-        {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: 'Ahmad Karimov',
-          },
-          datePublished: '2024-01-15',
-          reviewBody:
-            'Juda foydali parol yaratuvchi. Turli xil sozlamalar bilan kuchli parollar yaratishga yordam beradi.',
-          name: 'Ajoyib parol yaratuvchi',
-          reviewRating: {
-            '@type': 'Rating',
-            bestRating: '5',
-            ratingValue: '5',
-            worstRating: '1',
-          },
-        },
-        {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: 'Dilshod Rustamov',
-          },
-          datePublished: '2024-01-10',
-          reviewBody: 'Professional darajadagi xavfsizlik vositasi. Barcha kerakli funksiyalar mavjud.',
-          name: 'Professional tool',
-          reviewRating: {
-            '@type': 'Rating',
-            bestRating: '5',
-            ratingValue: '5',
-            worstRating: '1',
-          },
-        },
-      ],
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-      },
-      featureList: [
-        'Turli uzunlikdagi parollar yaratish',
-        "Katta va kichik harflar qo'shish",
-        'Raqamlar va maxsus belgilarni kiritish',
-        "O'xshash belgilarni chiqarib tashlash",
-        'Eslab qolinadigan parollar yaratish',
-        'Parol mustahkamligini baholash',
-        'Yuklab olish va nusxalash',
-        'Tez sozlamalar',
-        'Xavfsizlik maslahatlar',
-        'Professional interface',
-      ],
-      softwareVersion: '2.0',
-      releaseNotes: 'Enhanced security features and improved user interface',
-      screenshot: 'https://webiston.uz/screenshots/password-generator.png',
-      applicationSubCategory: 'Password Management',
-      permissions: 'No permissions required - works entirely in browser',
-      installUrl: 'https://webiston.uz/tools/password-generator',
-      downloadUrl: 'https://webiston.uz/tools/password-generator',
-      softwareRequirements: 'Modern web browser with JavaScript enabled',
-      memoryRequirements: 'Minimal - under 1MB',
-      storageRequirements: 'No storage required',
-      processorRequirements: 'Any modern processor',
-      supportingData: 'https://webiston.uz/docs/password-generator',
-    }),
-  },
+  robots: { index: true, follow: true },
 }
 
-const PasswordGeneratorPage = () => {
-  return <PasswordGenerator />
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Password Generator',
+  description: 'Xavfsiz va kuchli parollar yaratish uchun professional vosita',
+  url: 'https://webiston.uz/tools/password-generator',
+  applicationCategory: 'SecurityApplication',
+  operatingSystem: 'Any',
+  permissions: 'browser',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Webiston',
+    url: 'https://webiston.uz',
+  },
+  featureList: [
+    'Random Password Generation',
+    'Memorable Password Creation',
+    'Custom Length Settings',
+    'Character Type Options',
+    'Password Strength Analysis',
+    'Professional Interface',
+  ],
 }
 
-export default PasswordGeneratorPage
+export default function PasswordGeneratorPage() {
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <PasswordGenerator />
+    </>
+  )
+}

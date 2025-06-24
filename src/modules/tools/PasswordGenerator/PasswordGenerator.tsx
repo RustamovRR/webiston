@@ -1,12 +1,12 @@
 'use client'
 
-import { RefreshCw, Eye, EyeOff, Shield, Download, Copy, Check, Zap, Lock } from 'lucide-react'
+import { useState } from 'react'
+import { RefreshCw, Eye, EyeOff, Shield, Download, Copy, Check, Zap, Lock, Settings, Key } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { ToolHeader, StatsDisplay, DualTextPanel } from '@/components/shared'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { UI_PATTERNS, TOOL_COLOR_MAP } from '@/constants/ui-constants'
-import { usePasswordGenerator } from '@/hooks/tools'
+import { cn } from '@/lib'
+import { usePasswordGenerator } from '@/hooks'
 
 const PasswordGenerator = () => {
   const {
@@ -15,8 +15,10 @@ const PasswordGenerator = () => {
     copied,
     settings,
     passwordDisplayText,
-    passwordInfo,
     passwordStrength,
+    stats,
+    inputStats,
+    outputStats,
     presetSettings,
     generatePassword,
     handleCopy,
@@ -24,9 +26,10 @@ const PasswordGenerator = () => {
     loadPreset,
     togglePasswordVisibility,
     updateSettings,
-  } = usePasswordGenerator()
-
-  const toolColors = TOOL_COLOR_MAP['password-generator']
+  } = usePasswordGenerator({
+    onSuccess: (message) => console.log(message),
+    onError: (error) => console.error(error),
+  })
 
   const passwordTypeOptions = [
     {
@@ -37,7 +40,7 @@ const PasswordGenerator = () => {
     {
       value: 'memorable',
       label: 'Eslab qolinadigan',
-      icon: <Lock size={16} />,
+      icon: <Key size={16} />,
     },
     {
       value: 'strong',
@@ -46,268 +49,336 @@ const PasswordGenerator = () => {
     },
   ]
 
+  const getCharacterTypes = () => {
+    const types = []
+    if (settings.includeUppercase) types.push('ABC')
+    if (settings.includeLowercase) types.push('abc')
+    if (settings.includeNumbers) types.push('123')
+    if (settings.includeSymbols) types.push('!@#')
+    return types.join('+') || 'Hech qanday'
+  }
+
+  const passwordInfo = password
+    ? `Parol muvaffaqiyatli yaratildi!\n\nUzunlik: ${password.length} belgi\nTuri: ${settings.passwordType === 'memorable' ? 'Eslab qolinadigan' : settings.passwordType === 'strong' ? 'Kuchli' : 'Tasodifiy'}\nMustahkamlik: ${passwordStrength.text}\nEntropiya: ${stats.entropy} bit\n\nBelgi turlari: ${getCharacterTypes()}\nNoyob belgilar: ${stats.unique}/${stats.characters}`
+    : ''
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
         title="Password Generator"
-        description="Xavfsiz va kuchli parollar yaratish uchun professional vosita"
+        description="Professional xavfsiz parol yaratish vositasi. Turli xil sozlamalar bilan kuchli parollar yaratish."
       />
 
-      {/* Password Type Selection */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium text-zinc-300">Parol turi:</h3>
-          <GradientTabs
-            options={passwordTypeOptions}
-            value={settings.passwordType}
-            onChange={(value) => updateSettings({ passwordType: value as 'random' | 'memorable' | 'strong' })}
-            toolCategory="generators"
-          />
-        </div>
-      </div>
-
-      {/* Preset Settings */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-zinc-300">Tez sozlamalar:</span>
-            <div className="flex flex-wrap gap-2">
-              {presetSettings.map((preset, index) => (
-                <Button
-                  key={index}
-                  onClick={() => loadPreset(preset)}
-                  variant="outline"
-                  size="sm"
-                  className="cursor-pointer border-zinc-700 text-xs text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
-                >
-                  {preset.label}
-                </Button>
-              ))}
+      {/* Konfiguratsiya Panel */}
+      <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+        {/* Panel Header */}
+        <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-red-500"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500"></div>
             </div>
+            <span className="text-sm font-medium text-zinc-300">Tool Konfiguratsiya</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-green-500"></div>
+            <span className="text-xs text-zinc-500">Ready</span>
           </div>
         </div>
-      </div>
 
-      {/* Settings Panel */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="space-y-6">
-          {/* Length Setting */}
-          <div>
-            <label className="mb-3 block text-sm font-medium text-zinc-300">Parol uzunligi: {settings.length}</label>
-            <input
-              type="range"
-              min="4"
-              max="128"
-              value={settings.length}
-              onChange={(e) => updateSettings({ length: parseInt(e.target.value) })}
-              className="w-full accent-blue-500"
-            />
-            <div className="mt-2 flex justify-between text-xs text-zinc-500">
-              <span>4</span>
-              <span>64</span>
-              <span>128</span>
+        {/* Panel Content */}
+        <div className="p-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Password Type Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-zinc-300">Parol Turi:</label>
+              <GradientTabs
+                options={passwordTypeOptions}
+                value={settings.passwordType}
+                onChange={(value) => updateSettings({ passwordType: value as 'random' | 'memorable' | 'strong' })}
+                toolCategory="generators"
+              />
+              <div className="rounded-lg bg-zinc-800/50 p-3">
+                <div className="text-xs text-zinc-400">
+                  {settings.passwordType === 'random' && 'Tasodifiy belgilar kombinatsiyasi'}
+                  {settings.passwordType === 'memorable' && "Eslab qolinadigan so'zlar va raqamlar"}
+                  {settings.passwordType === 'strong' && 'Maksimal xavfsizlik uchun kuchli parol'}
+                </div>
+              </div>
+            </div>
+
+            {/* Length Setting */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-zinc-300">
+                Parol Uzunligi: <span className="text-blue-400">{settings.length}</span>
+              </label>
+              <input
+                type="range"
+                min="4"
+                max="128"
+                value={settings.length}
+                onChange={(e) => updateSettings({ length: parseInt(e.target.value) })}
+                className="w-full accent-blue-500"
+              />
+              <div className="flex justify-between text-xs text-zinc-500">
+                <span>4 (Qisqa)</span>
+                <span>16 (Standart)</span>
+                <span>32 (Kuchli)</span>
+                <span>128 (Maksimal)</span>
+              </div>
             </div>
           </div>
 
           {/* Character Options */}
-          <div className="grid gap-3 md:grid-cols-2">
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                checked={settings.includeUppercase}
-                onChange={(e) => updateSettings({ includeUppercase: e.target.checked })}
-                className="accent-blue-500"
-              />
-              <span className="text-sm text-zinc-300">Katta harflar (A-Z)</span>
-            </label>
+          <div className="mt-6 space-y-3">
+            <label className="text-sm font-medium text-zinc-300">Belgi Turlari:</label>
+            <div className="grid gap-3 md:grid-cols-2">
+              <label
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
+                  settings.includeUppercase
+                    ? 'border-green-500 bg-green-500/10 text-green-300'
+                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={settings.includeUppercase}
+                  onChange={(e) => updateSettings({ includeUppercase: e.target.checked })}
+                  className="sr-only"
+                />
+                <div className="text-sm font-medium">Katta harflar (A-Z)</div>
+              </label>
 
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                checked={settings.includeLowercase}
-                onChange={(e) => updateSettings({ includeLowercase: e.target.checked })}
-                className="accent-blue-500"
-              />
-              <span className="text-sm text-zinc-300">Kichik harflar (a-z)</span>
-            </label>
+              <label
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
+                  settings.includeLowercase
+                    ? 'border-green-500 bg-green-500/10 text-green-300'
+                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={settings.includeLowercase}
+                  onChange={(e) => updateSettings({ includeLowercase: e.target.checked })}
+                  className="sr-only"
+                />
+                <div className="text-sm font-medium">Kichik harflar (a-z)</div>
+              </label>
 
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                checked={settings.includeNumbers}
-                onChange={(e) => updateSettings({ includeNumbers: e.target.checked })}
-                className="accent-blue-500"
-              />
-              <span className="text-sm text-zinc-300">Raqamlar (0-9)</span>
-            </label>
+              <label
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
+                  settings.includeNumbers
+                    ? 'border-green-500 bg-green-500/10 text-green-300'
+                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={settings.includeNumbers}
+                  onChange={(e) => updateSettings({ includeNumbers: e.target.checked })}
+                  className="sr-only"
+                />
+                <div className="text-sm font-medium">Raqamlar (0-9)</div>
+              </label>
 
-            <label className="flex cursor-pointer items-center gap-3">
-              <input
-                type="checkbox"
-                checked={settings.includeSymbols}
-                onChange={(e) => updateSettings({ includeSymbols: e.target.checked })}
-                className="accent-blue-500"
-              />
-              <span className="text-sm text-zinc-300">Maxsus belgilar (!@#$)</span>
-            </label>
+              <label
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
+                  settings.includeSymbols
+                    ? 'border-green-500 bg-green-500/10 text-green-300'
+                    : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={settings.includeSymbols}
+                  onChange={(e) => updateSettings({ includeSymbols: e.target.checked })}
+                  className="sr-only"
+                />
+                <div className="text-sm font-medium">Maxsus belgilar (!@#$)</div>
+              </label>
+            </div>
 
-            <label className="flex cursor-pointer items-center gap-3 md:col-span-2">
+            {/* Additional Options */}
+            <label
+              className={cn(
+                'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
+                settings.excludeSimilar
+                  ? 'border-blue-500 bg-blue-500/10 text-blue-300'
+                  : 'border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+              )}
+            >
               <input
                 type="checkbox"
                 checked={settings.excludeSimilar}
                 onChange={(e) => updateSettings({ excludeSimilar: e.target.checked })}
-                className="accent-blue-500"
+                className="sr-only"
               />
-              <span className="text-sm text-zinc-300">O'xshash belgilarni chiqarish (i, l, 1, L, o, 0, O)</span>
+              <div className="text-sm font-medium">O'xshash belgilarni chiqarish (i, l, 1, L, o, 0, O)</div>
             </label>
           </div>
-        </div>
-      </div>
 
-      {/* Controls */}
-      <div className={`mb-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <ShimmerButton onClick={generatePassword} variant="default" size="sm">
-              <RefreshCw size={16} className="mr-2" />
-              Yangi parol yaratish
-            </ShimmerButton>
-
-            <Button
-              onClick={togglePasswordVisibility}
-              variant="outline"
-              size="sm"
-              className="border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
-            >
-              {showPassword ? <EyeOff size={16} className="mr-2" /> : <Eye size={16} className="mr-2" />}
-              {showPassword ? 'Yashirish' : "Ko'rsatish"}
-            </Button>
+          {/* Preset Settings */}
+          <div className="mt-6 space-y-3">
+            <label className="text-sm font-medium text-zinc-300">Tez Sozlamalar:</label>
+            <div className="grid gap-2 md:grid-cols-3 lg:grid-cols-5">
+              {presetSettings.map((preset, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-2 rounded-lg border border-zinc-700 bg-zinc-800/30 p-3 transition-colors hover:bg-zinc-800/50"
+                >
+                  <div className="text-sm font-medium text-zinc-200">{preset.label}</div>
+                  <div className="text-xs text-zinc-400">{preset.description}</div>
+                  <Button onClick={() => loadPreset(preset)} variant="outline" size="sm" className="mt-auto">
+                    Yuklash
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {password && (
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handleCopy}
-                variant="outline"
-                size="sm"
-                className="border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
-              >
-                {copied ? <Check size={16} className="mr-2 text-green-500" /> : <Copy size={16} className="mr-2" />}
-                {copied ? 'Nusxalandi!' : 'Nusxalash'}
-              </Button>
-
-              <ShimmerButton onClick={downloadPassword} variant="outline" size="sm">
-                <Download size={16} className="mr-2" />
-                Yuklab olish
+          {/* Controls */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {/* Generate Button */}
+              <ShimmerButton onClick={generatePassword} size="sm">
+                <RefreshCw size={16} className="mr-2" />
+                Yangi Parol
               </ShimmerButton>
+
+              {/* Visibility Toggle */}
+              <Button onClick={togglePasswordVisibility} variant="outline" size="sm">
+                {showPassword ? <EyeOff size={16} className="mr-2" /> : <Eye size={16} className="mr-2" />}
+                {showPassword ? 'Yashirish' : "Ko'rsatish"}
+              </Button>
             </div>
-          )}
+
+            {/* Action Buttons */}
+            {password && (
+              <div className="flex items-center gap-2">
+                <Button onClick={handleCopy} variant="outline" size="sm">
+                  {copied ? <Check size={16} className="mr-2 text-green-500" /> : <Copy size={16} className="mr-2" />}
+                  {copied ? 'Nusxalandi!' : 'Nusxalash'}
+                </Button>
+
+                <Button onClick={downloadPassword} variant="outline" size="sm">
+                  <Download size={16} className="mr-2" />
+                  Yuklab olish
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Main Panel */}
+      {/* Dual Panel Layout */}
       <DualTextPanel
         sourceText={passwordDisplayText}
         convertedText={passwordInfo}
-        sourcePlaceholder="Parol yaratish uchun yuqoridagi tugmani bosing..."
-        sourceLabel="Yaratilgan parol"
-        targetLabel="Parol ma'lumoti"
+        sourceLabel="Tool Kirish"
+        targetLabel="Tool Natija"
         onSourceChange={() => {}} // Read-only
-        variant="terminal"
+        sourcePlaceholder="Yaratilgan parol bu yerda ko'rinadi..."
+        onClear={() => {}}
         showSwapButton={false}
         showClearButton={false}
+        variant="terminal"
       />
 
-      {/* Password Strength Indicator */}
+      {/* Password Strength Display */}
       {password && (
-        <div className={`mt-6 ${UI_PATTERNS.CONTROL_PANEL}`}>
-          <div className="flex items-center justify-between">
+        <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
+          <div className="mb-6 flex items-center justify-between border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-3">
-              <Shield size={18} className="text-zinc-400" />
-              <span className="text-sm font-medium text-zinc-300">Parol mustahkamligi:</span>
-              <span className={`text-sm font-bold ${passwordStrength.color}`}>{passwordStrength.text}</span>
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-sm font-medium text-zinc-300">Parol Mustahkamligi</span>
             </div>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4].map((level) => (
-                <div
-                  key={level}
-                  className={`h-2 w-6 rounded-sm transition-colors ${
-                    level <= passwordStrength.level
-                      ? passwordStrength.level === 1
-                        ? 'bg-red-400'
-                        : passwordStrength.level === 2
-                          ? 'bg-yellow-400'
-                          : passwordStrength.level === 3
-                            ? 'bg-blue-400'
-                            : 'bg-green-400'
-                      : 'bg-zinc-700'
-                  }`}
-                />
-              ))}
+            <div className="flex items-center gap-2">
+              <div
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  passwordStrength.level <= 2
+                    ? 'bg-red-500'
+                    : passwordStrength.level <= 3
+                      ? 'bg-yellow-500'
+                      : passwordStrength.level <= 4
+                        ? 'bg-blue-500'
+                        : 'bg-green-500',
+                )}
+              ></div>
+              <span className="text-xs text-zinc-500">{passwordStrength.text}</span>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-4">
+            <div className="rounded-lg border border-zinc-700 bg-zinc-800/30 p-4 text-center">
+              <div className="text-2xl font-bold text-blue-400">{stats.characters}</div>
+              <div className="text-xs text-zinc-500">Belgilar</div>
+            </div>
+            <div className="rounded-lg border border-zinc-700 bg-zinc-800/30 p-4 text-center">
+              <div className="text-2xl font-bold text-green-400">{stats.unique}</div>
+              <div className="text-xs text-zinc-500">Noyob belgilar</div>
+            </div>
+            <div className="rounded-lg border border-zinc-700 bg-zinc-800/30 p-4 text-center">
+              <div className="text-2xl font-bold text-purple-400">{stats.entropy}</div>
+              <div className="text-xs text-zinc-500">Entropiya (bit)</div>
+            </div>
+            <div className="rounded-lg border border-zinc-700 bg-zinc-800/30 p-4 text-center">
+              <div className={cn('text-2xl font-bold', passwordStrength.color)}>{passwordStrength.level}/5</div>
+              <div className="text-xs text-zinc-500">Mustahkamlik</div>
+            </div>
+          </div>
+
+          {/* Strength Bar */}
+          <div className="mt-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm text-zinc-300">Mustahkamlik darajasi:</span>
+              <span className={cn('text-sm font-medium', passwordStrength.color)}>{passwordStrength.text}</span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-zinc-800">
+              <div
+                className={cn(
+                  'h-2 rounded-full transition-all duration-300',
+                  passwordStrength.level <= 1
+                    ? 'bg-red-500'
+                    : passwordStrength.level <= 2
+                      ? 'bg-red-400'
+                      : passwordStrength.level <= 3
+                        ? 'bg-yellow-400'
+                        : passwordStrength.level <= 4
+                          ? 'bg-blue-400'
+                          : 'bg-green-400',
+                )}
+                style={{ width: `${(passwordStrength.level / 5) * 100}%` }}
+              ></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Help Section */}
-      <div className={`mt-8 ${UI_PATTERNS.CONTROL_PANEL}`}>
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Zap size={20} className={toolColors.text.replace('text-', 'text-')} />
-          Parol xavfsizligi haqida
-        </h3>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <h4 className="mb-3 font-medium text-zinc-200">Kuchli parol yaratish:</h4>
-            <ul className="space-y-2 text-sm text-zinc-400">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                Kamida 12 ta belgi uzunligida bo'lsin
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                Turli xil belgilar turlarini qo'shing
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                O'xshash belgilarni chiqarib tashlang
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                Har bir hisob uchun alohida parol yarating
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                Parolni xavfsiz joyda saqlang
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-3 font-medium text-zinc-200">Parol turlari:</h4>
-            <ul className="space-y-2 text-sm text-zinc-400">
-              <li>
-                • <strong>Tasodifiy:</strong> Eng xavfsiz, barcha belgilar random
-              </li>
-              <li>
-                • <strong>Eslab qolinadigan:</strong> So'zlar + raqamlar + belgilar
-              </li>
-              <li>
-                • <strong>PIN:</strong> Faqat raqamlar, mobil qurilmalar uchun
-              </li>
-              <li>
-                • <strong>Xavfsiz:</strong> Maksimal uzunlik va murakkablik
-              </li>
-            </ul>
-          </div>
+      {/* Ma'lumot Section */}
+      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
+          <h3 className="mb-2 font-medium text-zinc-200">Xavfsizlik Maslahatlar</h3>
+          <p className="text-sm text-zinc-400">
+            Har bir account uchun alohida parol ishlating. 16+ belgi uzunligini tanlang.
+          </p>
         </div>
-
-        <div className="mt-6 border-t border-zinc-700 pt-6">
-          <h4 className="mb-2 font-medium text-zinc-200">Muhim eslatmalar:</h4>
-          <ul className="space-y-1 text-sm text-zinc-400">
-            <li>• Hech qachon bir xil parolni ikki marta ishlatmang</li>
-            <li>• Parolni boshqalar bilan baham ko'rmang</li>
-            <li>• Muntazam ravishda parollarni yangilang</li>
-            <li>• 2FA (ikki faktorli autentifikatsiya) qo'shing</li>
-          </ul>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
+          <h3 className="mb-2 font-medium text-zinc-200">Eslab Qolish</h3>
+          <p className="text-sm text-zinc-400">Memorable option so'zlar va raqamlar kombinatsiyasini yaratadi.</p>
+        </div>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
+          <h3 className="mb-2 font-medium text-zinc-200">Entropiya</h3>
+          <p className="text-sm text-zinc-400">Yuqori entropiya parolni sindirish qiyinligini bildiradi.</p>
         </div>
       </div>
     </div>
