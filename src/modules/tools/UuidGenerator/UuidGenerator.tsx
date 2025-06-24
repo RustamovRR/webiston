@@ -404,24 +404,98 @@ const UuidGenerator = () => {
       )}
 
       {/* Ma'lumot Section */}
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">UUID v4</h3>
-          <p className="text-sm text-zinc-400">
-            Random-based UUID. Eng xavfsiz va keng ishlatiladi. Har bir UUID matematik jihatdan noyob.
-          </p>
+      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Hash size={20} className="text-blue-400" />
+          UUID nima va nima uchun ishlatiladi?
+        </h3>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">UUID versiyalari:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                <strong>UUID v4 (Random):</strong> Tasodifiy qiymatlar asosida, eng xavfsiz va mashhur
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                <strong>UUID v1 (Timestamp):</strong> Vaqt va MAC address asosida, ketma-ketlik saqlaydi
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-yellow-500"></div>
+                <strong>NIL UUID:</strong> Barcha noldan iborat, bo'sh holatni bildiradi
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                <strong>UUID v3/v5:</strong> Namespace va nom asosida, deterministic
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                <strong>UUID v6/v7/v8:</strong> Yangi standartlar, kelajakda qo'llab-quvvatlanadi
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Qo'llanish sohalari:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                <strong>Database Primary Keys:</strong> Auto-increment o'rniga global unique identifiers
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                <strong>Microservices:</strong> Distributed systemlarda noyob ID yaratish
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                <strong>File naming:</strong> Fayl va resurs nomlari uchun collision-free identifiers
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                <strong>Session IDs:</strong> Web application'larda session tracking
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                <strong>API Keys:</strong> Service authentication va authorization
+              </li>
+            </ul>
+
+            <div className="mt-4 rounded-lg bg-blue-500/10 p-3">
+              <div className="text-sm text-blue-400">
+                <strong>Muhim:</strong> UUID v4 ning collision ehtimoli 5.3×10⁻³⁶ ga teng, bu amalda noyoblikni
+                kafolatlaydi.
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">UUID v1</h3>
-          <p className="text-sm text-zinc-400">
-            Timestamp-based UUID. Vaqt va MAC address asosida yaratiladi. Ketma-ketlik saqlaydi.
-          </p>
-        </div>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">Format tanlovlari</h3>
-          <p className="text-sm text-zinc-400">
-            Standard, Compact, Brackets va Uppercase formatlar. Har xil dasturlash ehtiyojlari uchun.
-          </p>
+
+        {/* Format Types Info */}
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-lg bg-blue-500/10 p-4">
+            <div className="mb-2 font-medium text-blue-400">Standard Format</div>
+            <div className="mb-2 text-sm text-zinc-400">8-4-4-4-12 format bilan chiziqli ajratilgan</div>
+            <div className="font-mono text-xs text-zinc-500">550e8400-e29b-41d4-a716-446655440000</div>
+          </div>
+
+          <div className="rounded-lg bg-green-500/10 p-4">
+            <div className="mb-2 font-medium text-green-400">Compact Format</div>
+            <div className="mb-2 text-sm text-zinc-400">Chiziqsiz, 32 belgilik format</div>
+            <div className="font-mono text-xs text-zinc-500">550e8400e29b41d4a716446655440000</div>
+          </div>
+
+          <div className="rounded-lg bg-purple-500/10 p-4">
+            <div className="mb-2 font-medium text-purple-400">Brackets Format</div>
+            <div className="mb-2 text-sm text-zinc-400">Qavslar bilan o'ralgan format</div>
+            <div className="font-mono text-xs text-zinc-500">{'{550e8400-e29b-41d4-a716-446655440000}'}</div>
+          </div>
+
+          <div className="rounded-lg bg-orange-500/10 p-4">
+            <div className="mb-2 font-medium text-orange-400">Uppercase Format</div>
+            <div className="mb-2 text-sm text-zinc-400">Katta harflar bilan yozilgan</div>
+            <div className="font-mono text-xs text-zinc-500">550E8400-E29B-41D4-A716-446655440000</div>
+          </div>
         </div>
       </div>
     </div>

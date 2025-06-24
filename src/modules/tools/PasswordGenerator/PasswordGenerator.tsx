@@ -365,20 +365,98 @@ const PasswordGenerator = () => {
       )}
 
       {/* Ma'lumot Section */}
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">Xavfsizlik Maslahatlar</h3>
-          <p className="text-sm text-zinc-400">
-            Har bir account uchun alohida parol ishlating. 16+ belgi uzunligini tanlang.
-          </p>
+      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <Shield size={20} className="text-green-400" />
+          Parol xavfsizligi nima uchun muhim?
+        </h3>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Asosiy xavfsizlik qoidalari:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                <strong>Har bir account uchun alohida parol:</strong> Bir parolning buzilishi boshqalarini xavf ostiga
+                qo'ymaydi
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                <strong>16+ belgi uzunligi:</strong> Uzun parollar matematik jihatdan sindirish qiyinroq
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                <strong>Turli belgi turlari:</strong> Harflar, raqamlar va maxsus belgilar kombinatsiyasi
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                <strong>Password manager ishlatish:</strong> Barcha parollarni xavfsiz saqlash
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                <strong>2FA yoqish:</strong> Ikki faktorli autentifikatsiya qo'shimcha himoya beradi
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-pink-500"></div>
+                <strong>Muntazam yangilash:</strong> Muhim accountlar uchun parolni davriy o'zgartirish
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-3 font-medium text-zinc-200">Professional maslahatlar:</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                O'xshash belgilarni (i, l, 1, L, o, 0, O) chiqarib tashlang
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                Shaxsiy ma'lumotlar (ism, tug'ilgan yil) ishlatmang
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
+                Lug'atdagi so'zlarni to'g'ridan-to'g'ri ishlatmang
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                Brute force hujumlarni hisobga oling (120+ bit entropiya)
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
+                Memorable parollar oson eslab qolish uchun foydali
+              </li>
+            </ul>
+
+            <div className="mt-4 rounded-lg bg-green-500/10 p-3">
+              <div className="text-sm text-green-400">
+                <strong>Tavsiya:</strong> Kuchli parollar kompyuter tomonidan 100+ yil davomida sindirish mumkin emas.
+                Bu tool professional standartlarga mos parollar yaratadi.
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">Eslab Qolish</h3>
-          <p className="text-sm text-zinc-400">Memorable option so'zlar va raqamlar kombinatsiyasini yaratadi.</p>
-        </div>
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4">
-          <h3 className="mb-2 font-medium text-zinc-200">Entropiya</h3>
-          <p className="text-sm text-zinc-400">Yuqori entropiya parolni sindirish qiyinligini bildiradi.</p>
+
+        {/* Password Type Info */}
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-lg bg-blue-500/10 p-4">
+            <div className="mb-2 font-medium text-blue-400">Tasodifiy Parollar</div>
+            <div className="text-sm text-zinc-400">
+              Matematik jihatdan eng xavfsiz, to'liq random belgilar kombinatsiyasi
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-purple-500/10 p-4">
+            <div className="mb-2 font-medium text-purple-400">Eslab Qolinadigan</div>
+            <div className="text-sm text-zinc-400">So'zlar va raqamlardan iborat, eslab qolish oson lekin xavfsiz</div>
+          </div>
+
+          <div className="rounded-lg bg-green-500/10 p-4">
+            <div className="mb-2 font-medium text-green-400">Kuchli Parollar</div>
+            <div className="text-sm text-zinc-400">
+              Maksimal xavfsizlik uchun, barcha belgi turlarini o'z ichiga oladi
+            </div>
+          </div>
         </div>
       </div>
     </div>

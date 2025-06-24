@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 interface MetaData {
@@ -14,6 +14,12 @@ interface MetaData {
   twitterCreator: string
 }
 
+interface UseOgMetaGeneratorProps {
+  onSuccess?: (message: string) => void
+  onError?: (error: string) => void
+}
+
+// Sample data constants
 const SAMPLE_DATA: MetaData = {
   title: 'Webiston - Dasturlash va Web Texnologiyalar',
   description:
@@ -28,12 +34,14 @@ const SAMPLE_DATA: MetaData = {
   twitterCreator: '@webiston_uz',
 }
 
+// Preset template constants
 const PRESET_TEMPLATES = [
   {
     label: 'Blog maqolasi',
+    description: 'Maqola va blog post uchun',
     data: {
-      title: 'Ajoyib maqola sarlavhasi',
-      description: 'Bu maqola haqida qisqacha va jozibali tavsif yozing. SEO uchun muhim.',
+      title: "Ajoyib maqola sarlavhasi - Eng so'nggi ma'lumotlar",
+      description: "Bu maqola haqida qiziqarli va jozibali tavsif. O'quvchilarni jalb qilish uchun muhim.",
       type: 'article',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
@@ -41,9 +49,10 @@ const PRESET_TEMPLATES = [
   },
   {
     label: 'Mahsulot sahifasi',
+    description: 'E-commerce va landing page',
     data: {
-      title: 'Ajoyib Mahsulot - Eng Yaxshi Tanlov',
-      description: "Mahsulotning asosiy xususiyatlari va afzalliklari haqida qisqa ma'lumot.",
+      title: 'Ajoyib Mahsulot - Eng Yaxshi Tanlov | Premium Sifat',
+      description: 'Mahsulotning asosiy xususiyatlari va afzalliklari. Nima uchun aynan bizni tanlash kerak.',
       type: 'website',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
@@ -51,17 +60,63 @@ const PRESET_TEMPLATES = [
   },
   {
     label: 'Video kontent',
+    description: 'YouTube va video content',
     data: {
-      title: "Qiziqarli Video - Ko'rishga arziydi",
-      description: 'Video haqida qisqacha tavsif. Nima haqida ekanligini tushuntiring.',
+      title: "Qiziqarli Video - Ko'rishga arziydi | Professional Content",
+      description:
+        "Video haqida qisqacha tavsif. Nima haqida ekanligini va nimaga e'tibor berish kerakligini tushuntiring.",
       type: 'video.other',
       locale: 'uz_UZ',
       twitterCard: 'player',
     },
   },
+  {
+    label: 'Kompaniya sahifasi',
+    description: 'Biznes va korporativ',
+    data: {
+      title: 'Bizning Kompaniya - Professional Xizmatlar',
+      description: "Kompaniya haqida qisqacha ma'lumot va asosiy xizmatlar. Mijozlar uchun qiymat taklifimiz.",
+      type: 'website',
+      locale: 'uz_UZ',
+      twitterCard: 'summary_large_image',
+    },
+  },
+  {
+    label: 'Event sahifasi',
+    description: 'Tadbirlar va konferensiyalar',
+    data: {
+      title: 'Ajoyib Tadbir 2024 - Qatnashing!',
+      description: "Tadbir haqida ma'lumot, sana, joy va ishtirokchilar uchun foydali ma'lumotlar.",
+      type: 'website',
+      locale: 'uz_UZ',
+      twitterCard: 'summary_large_image',
+    },
+  },
 ]
 
-export const useOgMetaGenerator = () => {
+// OG Types with descriptions
+const OG_TYPES = [
+  { value: 'website', label: 'Website', description: 'Oddiy web sahifa' },
+  { value: 'article', label: 'Article', description: 'Maqola va blog post' },
+  { value: 'book', label: 'Book', description: 'Kitob va nashr' },
+  { value: 'profile', label: 'Profile', description: 'Shaxsiy profil' },
+  { value: 'music.song', label: 'Music Song', description: 'Musiqa treki' },
+  { value: 'music.album', label: 'Music Album', description: 'Musiqa albomi' },
+  { value: 'video.movie', label: 'Video Movie', description: 'Film' },
+  { value: 'video.episode', label: 'Video Episode', description: 'Serial epizod' },
+  { value: 'video.tv_show', label: 'TV Show', description: 'TV dasturi' },
+  { value: 'video.other', label: 'Video Other', description: 'Boshqa video' },
+]
+
+// Twitter Card Types
+const TWITTER_CARD_TYPES = [
+  { value: 'summary', label: 'Summary', description: 'Kichik rasm bilan' },
+  { value: 'summary_large_image', label: 'Large Image', description: 'Katta rasm bilan' },
+  { value: 'app', label: 'App', description: 'Mobil ilova' },
+  { value: 'player', label: 'Player', description: 'Video/audio player' },
+]
+
+export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorProps = {}) => {
   const [metaData, setMetaData] = useState<MetaData>({
     title: '',
     description: '',
@@ -78,100 +133,114 @@ export const useOgMetaGenerator = () => {
   const [generatedMeta, setGeneratedMeta] = useState<string>('')
   const [formattedMeta, setFormattedMeta] = useState<string>('')
   const [copied, setCopied] = useState(false)
-  const [_, copy] = useCopyToClipboard()
   const [activeTab, setActiveTab] = useState('form')
 
+  // Generate meta tags with enhanced logic
   const generateMeta = useCallback(() => {
-    const meta = []
+    try {
+      const meta = []
 
-    // Basic Open Graph tags
-    if (metaData.title) {
-      meta.push(`<meta property="og:title" content="${metaData.title}" />`)
-      meta.push(`<meta name="twitter:title" content="${metaData.title}" />`)
+      // Basic Open Graph tags
+      if (metaData.title) {
+        meta.push(`<meta property="og:title" content="${metaData.title}" />`)
+        meta.push(`<meta name="twitter:title" content="${metaData.title}" />`)
+        meta.push(`<title>${metaData.title}</title>`)
+      }
+
+      if (metaData.description) {
+        meta.push(`<meta property="og:description" content="${metaData.description}" />`)
+        meta.push(`<meta name="twitter:description" content="${metaData.description}" />`)
+        meta.push(`<meta name="description" content="${metaData.description}" />`)
+      }
+
+      if (metaData.image) {
+        meta.push(`<meta property="og:image" content="${metaData.image}" />`)
+        meta.push(`<meta name="twitter:image" content="${metaData.image}" />`)
+        meta.push(`<meta property="og:image:alt" content="${metaData.title || 'Image'}" />`)
+      }
+
+      if (metaData.url) {
+        meta.push(`<meta property="og:url" content="${metaData.url}" />`)
+        meta.push(`<meta name="twitter:url" content="${metaData.url}" />`)
+        meta.push(`<link rel="canonical" href="${metaData.url}" />`)
+      }
+
+      if (metaData.siteName) {
+        meta.push(`<meta property="og:site_name" content="${metaData.siteName}" />`)
+      }
+
+      if (metaData.type) {
+        meta.push(`<meta property="og:type" content="${metaData.type}" />`)
+      }
+
+      if (metaData.locale) {
+        meta.push(`<meta property="og:locale" content="${metaData.locale}" />`)
+      }
+
+      // Twitter specific tags
+      if (metaData.twitterCard) {
+        meta.push(`<meta name="twitter:card" content="${metaData.twitterCard}" />`)
+      }
+
+      if (metaData.twitterSite) {
+        meta.push(`<meta name="twitter:site" content="${metaData.twitterSite}" />`)
+      }
+
+      if (metaData.twitterCreator) {
+        meta.push(`<meta name="twitter:creator" content="${metaData.twitterCreator}" />`)
+      }
+
+      // Additional SEO tags
+      meta.push(`<meta name="robots" content="index, follow" />`)
+      meta.push(`<meta name="googlebot" content="index, follow" />`)
+
+      const generated = meta.join('\n')
+      setGeneratedMeta(generated)
+
+      // Create formatted version with proper HTML structure
+      const formatted = [
+        '<!DOCTYPE html>',
+        `<html lang="${metaData.locale.replace('_', '-') || 'uz-UZ'}">`,
+        '<head>',
+        '  <meta charset="UTF-8">',
+        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        '',
+        '  <!-- Primary Meta Tags -->',
+        ...meta.map((tag) => `  ${tag}`),
+        '',
+        '  <!-- Additional Meta Tags -->',
+        '  <meta name="format-detection" content="telephone=no">',
+        '  <meta name="mobile-web-app-capable" content="yes">',
+        '</head>',
+        '<body>',
+        '  <!-- Your content here -->',
+        '</body>',
+        '</html>',
+      ].join('\n')
+
+      setFormattedMeta(formatted)
+      onSuccess?.('Meta taglar muvaffaqiyatli yaratildi')
+    } catch (error) {
+      onError?.('Meta taglar yaratishda xatolik yuz berdi')
     }
+  }, [metaData, onSuccess, onError])
 
-    if (metaData.description) {
-      meta.push(`<meta property="og:description" content="${metaData.description}" />`)
-      meta.push(`<meta name="twitter:description" content="${metaData.description}" />`)
-      meta.push(`<meta name="description" content="${metaData.description}" />`)
-    }
-
-    if (metaData.image) {
-      meta.push(`<meta property="og:image" content="${metaData.image}" />`)
-      meta.push(`<meta name="twitter:image" content="${metaData.image}" />`)
-    }
-
-    if (metaData.url) {
-      meta.push(`<meta property="og:url" content="${metaData.url}" />`)
-      meta.push(`<meta name="twitter:url" content="${metaData.url}" />`)
-      meta.push(`<link rel="canonical" href="${metaData.url}" />`)
-    }
-
-    if (metaData.siteName) {
-      meta.push(`<meta property="og:site_name" content="${metaData.siteName}" />`)
-    }
-
-    if (metaData.type) {
-      meta.push(`<meta property="og:type" content="${metaData.type}" />`)
-    }
-
-    if (metaData.locale) {
-      meta.push(`<meta property="og:locale" content="${metaData.locale}" />`)
-    }
-
-    // Twitter specific tags
-    if (metaData.twitterCard) {
-      meta.push(`<meta name="twitter:card" content="${metaData.twitterCard}" />`)
-    }
-
-    if (metaData.twitterSite) {
-      meta.push(`<meta name="twitter:site" content="${metaData.twitterSite}" />`)
-    }
-
-    if (metaData.twitterCreator) {
-      meta.push(`<meta name="twitter:creator" content="${metaData.twitterCreator}" />`)
-    }
-
-    // Additional SEO tags
-    if (metaData.title) {
-      meta.push(`<title>${metaData.title}</title>`)
-    }
-
-    const generated = meta.join('\n')
-    setGeneratedMeta(generated)
-
-    // Create formatted version with proper HTML structure
-    const formatted = [
-      '<!DOCTYPE html>',
-      '<html lang="' + (metaData.locale || 'uz_UZ') + '">',
-      '<head>',
-      '  <meta charset="UTF-8">',
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-      '',
-      '  <!-- Primary Meta Tags -->',
-      ...meta.map((tag) => (tag.startsWith('<title>') ? `  ${tag}` : `  ${tag}`)),
-      '',
-      '  <!-- Additional Meta Tags -->',
-      '  <meta name="robots" content="index, follow">',
-      '  <meta name="googlebot" content="index, follow">',
-      '</head>',
-      '<body>',
-      '  <!-- Your content here -->',
-      '</body>',
-      '</html>',
-    ].join('\n')
-
-    setFormattedMeta(formatted)
-  }, [metaData])
-
+  // Load sample data
   const loadSampleData = useCallback(() => {
     setMetaData(SAMPLE_DATA)
-  }, [])
+    onSuccess?.("Demo ma'lumotlar yuklandi")
+  }, [onSuccess])
 
-  const loadTemplate = useCallback((templateData: Partial<MetaData>) => {
-    setMetaData((prev) => ({ ...prev, ...templateData }))
-  }, [])
+  // Load template
+  const loadTemplate = useCallback(
+    (templateData: Partial<MetaData>) => {
+      setMetaData((prev) => ({ ...prev, ...templateData }))
+      onSuccess?.('Shablon yuklandi')
+    },
+    [onSuccess],
+  )
 
+  // Clear form
   const clearForm = useCallback(() => {
     setMetaData({
       title: '',
@@ -189,64 +258,130 @@ export const useOgMetaGenerator = () => {
     setFormattedMeta('')
   }, [])
 
-  const updateField = useCallback((field: keyof MetaData, value: string) => {
-    setMetaData((prev) => ({ ...prev, [field]: value }))
-  }, [])
+  // Update field with validation
+  const updateField = useCallback(
+    (field: keyof MetaData, value: string) => {
+      // Basic validation
+      if (field === 'title' && value.length > 70) {
+        onError?.('Sarlavha 70 belgidan oshmasligi kerak')
+        return
+      }
+      if (field === 'description' && value.length > 200) {
+        onError?.('Tavsif 200 belgidan oshmasligi kerak')
+        return
+      }
+      if (field === 'url' && value && !value.match(/^https?:\/\//)) {
+        value = 'https://' + value
+      }
 
-  const handleCopy = useCallback(async () => {
-    if (!generatedMeta) return
-    try {
-      await copy(generatedMeta)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Copy failed:', error)
+      setMetaData((prev) => ({ ...prev, [field]: value }))
+    },
+    [onError],
+  )
+
+  // Copy to clipboard
+  const handleCopy = useCallback(
+    async (content?: string) => {
+      const textToCopy = content || generatedMeta
+      if (!textToCopy) {
+        onError?.('Nusxalash uchun matn mavjud emas')
+        return
+      }
+
+      try {
+        await navigator.clipboard.writeText(textToCopy)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+        onSuccess?.('Meta taglar nusxalandi')
+      } catch (error) {
+        onError?.('Nusxalashda xatolik yuz berdi')
+      }
+    },
+    [generatedMeta, onSuccess, onError],
+  )
+
+  // Download meta tags
+  const downloadMeta = useCallback(
+    (format: 'raw' | 'formatted' = 'raw') => {
+      const content = format === 'formatted' ? formattedMeta : generatedMeta
+      if (!content) {
+        onError?.('Yuklab olish uchun meta taglar mavjud emas')
+        return
+      }
+
+      try {
+        const filename = format === 'formatted' ? `meta-tags-${Date.now()}.html` : `meta-tags-${Date.now()}.txt`
+        const blob = new Blob([content], { type: format === 'formatted' ? 'text/html' : 'text/plain' })
+        const url = URL.createObjectURL(blob)
+
+        const a = document.createElement('a')
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+
+        URL.revokeObjectURL(url)
+        onSuccess?.('Meta taglar yuklab olindi')
+      } catch (error) {
+        onError?.('Faylni yuklab olishda xatolik yuz berdi')
+      }
+    },
+    [generatedMeta, formattedMeta, onSuccess, onError],
+  )
+
+  // Statistics
+  const stats = useMemo(() => {
+    const titleLength = metaData.title.length
+    const descriptionLength = metaData.description.length
+    const fieldsCompleted = Object.values(metaData).filter((value) => value.trim() !== '').length
+
+    return {
+      titleLength,
+      descriptionLength,
+      fieldsCompleted,
+      totalFields: Object.keys(metaData).length,
     }
-  }, [generatedMeta, copy])
+  }, [metaData])
 
-  const downloadMeta = useCallback(() => {
-    if (!generatedMeta) return
+  // Input statistics
+  const inputStats = useMemo(
+    () => [
+      { label: 'maydon', value: stats.fieldsCompleted },
+      { label: 'sarlavha', value: stats.titleLength },
+      { label: 'tavsif', value: stats.descriptionLength },
+    ],
+    [stats],
+  )
 
-    const content = [
-      '<!-- Open Graph Meta Tags -->',
-      "<!-- HTML <head> qismiga qo'ying -->",
-      '',
-      generatedMeta,
-      '',
-      "<!-- Meta teglar haqida ma'lumot -->",
-      `<!-- Yaratilgan: ${new Date().toLocaleString()} -->`,
-      '<!-- Webiston.uz - OG Meta Generator tomonidan yaratilgan -->',
-    ].join('\n')
+  // Output statistics
+  const outputStats = useMemo(
+    () => [
+      { label: 'taglar', value: generatedMeta.split('\n').filter((line) => line.trim()).length },
+      { label: 'belgi', value: generatedMeta.length },
+      { label: 'qator', value: generatedMeta.split('\n').length },
+    ],
+    [generatedMeta],
+  )
 
-    const blob = new Blob([content], { type: 'text/html' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `meta-tags-${Date.now()}.html`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, [generatedMeta])
-
-  const downloadFormatted = useCallback(() => {
-    if (!formattedMeta) return
-
-    const blob = new Blob([formattedMeta], { type: 'text/html' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `complete-page-${Date.now()}.html`
-    a.click()
-    URL.revokeObjectURL(url)
-  }, [formattedMeta])
-
-  // Real-time generation whenever metaData changes
+  // Auto-generate when data changes
   useEffect(() => {
-    generateMeta()
+    if (metaData.title || metaData.description || metaData.url) {
+      generateMeta()
+    }
   }, [metaData, generateMeta])
 
-  const previewInfo = metaData.title
-    ? `Meta tag preview:\n\nSarlavha: ${metaData.title}\nTavsif: ${metaData.description}\nRasm: ${metaData.image || "Yo'q"}\nURL: ${metaData.url || "Yo'q"}\nSayt nomi: ${metaData.siteName || "Yo'q"}\nTuri: ${metaData.type}\nTil: ${metaData.locale}\nTwitter Card: ${metaData.twitterCard}\n\nGenerated meta tags count: ${generatedMeta.split('\n').filter((line) => line.trim()).length} tags`
-    : "Ma'lumotlarni to'ldiring..."
+  // Preview info for social media
+  const previewInfo = useMemo(
+    () => ({
+      title: metaData.title || 'Sarlavha kiritilmagan',
+      description: metaData.description || 'Tavsif kiritilmagan',
+      image: metaData.image || '/placeholder-image.jpg',
+      url: metaData.url || 'https://example.com',
+      siteName: metaData.siteName || 'Sayt nomi',
+    }),
+    [metaData],
+  )
 
   return {
     // State
@@ -255,10 +390,15 @@ export const useOgMetaGenerator = () => {
     formattedMeta,
     copied,
     activeTab,
+    stats,
+    inputStats,
+    outputStats,
     previewInfo,
 
-    // Constants
+    // Data
     presetTemplates: PRESET_TEMPLATES,
+    ogTypes: OG_TYPES,
+    twitterCardTypes: TWITTER_CARD_TYPES,
 
     // Actions
     generateMeta,
@@ -268,7 +408,6 @@ export const useOgMetaGenerator = () => {
     updateField,
     handleCopy,
     downloadMeta,
-    downloadFormatted,
     setActiveTab,
   }
 }

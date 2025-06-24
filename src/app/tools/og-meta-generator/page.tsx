@@ -1,201 +1,86 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { OgMetaGenerator } from '@/modules/tools'
 
 export const metadata: Metadata = {
-  title: 'OG Meta Generator - Open Graph Meta Tag Generator | Webiston',
+  title: 'OG Meta Generator - Open Graph Meta Tag Tool | Webiston',
   description:
-    'Open Graph va Twitter Card meta teglarini yarating. Generate Open Graph and Twitter Card meta tags for better social media sharing and SEO optimization.',
+    'Open Graph va Twitter Card meta teglarini yaratish vositasi. Generate Open Graph and Twitter Card meta tags for social media sharing.',
   keywords: [
     'OG meta generator',
     'Open Graph generator',
-    'Meta tag generator',
+    'meta tag yaratuvchi',
     'Twitter Card generator',
-    'Social media meta tags',
-    'OG tags',
-    'Facebook meta tags',
-    'Twitter meta tags',
+    'social media meta',
+    'OG teglar',
     'SEO meta tags',
-    'Social sharing tags',
-    'meta teglar yaratuvchi',
-    'ijtimoiy tarmoq meta taglari',
-    'Open Graph teglar',
-    'Twitter Card teglar',
-    'Social media optimization',
-    'Website meta tags',
-    'HTML meta generator',
-    'Social preview',
-    'Content sharing',
-    'Social media cards',
-    'Preview generator',
-    'Meta data generator',
-    'Schema markup',
-    'Rich snippets',
-    'Social media marketing',
-    'Web development tools',
-    'Frontend tools',
-    'Developer utilities',
-    'SEO tools',
-    'Digital marketing',
-    'Content optimization',
-    'Website promotion',
-    'Social media presence',
-    'Brand visibility',
-    'Online marketing',
-    'Web analytics',
-    'Link preview',
-    'Social engagement',
-    'Content strategy',
-    'Webiston tools',
-    'Foydali qurollar',
-    'Professional tools',
-    'Free meta generator',
+    'ijtimoiy tarmoq',
+    'meta generator',
+    'webiston tools',
+    'foydali qurollar',
   ],
   openGraph: {
-    title: 'OG Meta Generator - Open Graph Meta Tag Generator | Webiston',
+    title: 'OG Meta Generator - Open Graph Meta Tag Tool | Webiston',
     description:
-      'Open Graph va Twitter Card meta teglarini yarating. Generate professional meta tags for better social media sharing.',
+      'Open Graph va Twitter Card meta teglarini yaratish vositasi. Generate professional meta tags for social media sharing.',
     type: 'website',
     locale: 'uz_UZ',
     siteName: 'Webiston',
     images: [
       {
-        url: '/og-image.png',
+        url: '/logo.png',
         width: 1200,
         height: 630,
-        alt: 'OG Meta Generator - Open Graph Meta Tag Generator',
+        alt: 'OG Meta Generator Tool',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'OG Meta Generator - Open Graph Meta Tag Generator',
+    title: 'OG Meta Generator - Professional Meta Tool',
     description: 'Open Graph va Twitter Card meta teglarini professional tool bilan yarating.',
-    images: ['/og-image.png'],
+    images: ['/logo.png'],
   },
   alternates: {
     canonical: '/tools/og-meta-generator',
-    languages: {
-      'uz-UZ': '/tools/og-meta-generator',
-      'en-US': '/tools/og-meta-generator',
-    },
+    languages: { 'uz-UZ': '/tools/og-meta-generator', 'en-US': '/tools/og-meta-generator' },
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  other: {
-    'application-name': 'Webiston OG Meta Generator',
-    'msapplication-TileColor': '#0f172a',
-    'theme-color': '#0f172a',
-    'format-detection': 'telephone=no',
-    'mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'application/ld+json': JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      name: 'OG Meta Generator - Open Graph Meta Tag Generator',
-      applicationCategory: 'DeveloperApplication',
-      operatingSystem: 'Web Browser',
-      description:
-        'Open Graph va Twitter Card meta teglarini yaratish uchun professional vosita. Generate meta tags for better social media sharing and SEO.',
-      url: 'https://webiston.uz/tools/og-meta-generator',
-      author: {
-        '@type': 'Organization',
-        name: 'Webiston',
-        url: 'https://webiston.uz',
-      },
-      provider: {
-        '@type': 'Organization',
-        name: 'Webiston',
-        url: 'https://webiston.uz',
-      },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.8',
-        ratingCount: '924',
-        bestRating: '5',
-        worstRating: '1',
-      },
-      review: [
-        {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: 'Sherzod Abdullayev',
-          },
-          datePublished: '2024-01-20',
-          reviewBody: "Ajoyib meta tag generator. Ijtimoiy tarmoqlarda kontentim go'zal ko'rinadi. Professional tool.",
-          name: 'Juda foydali vosita',
-          reviewRating: {
-            '@type': 'Rating',
-            bestRating: '5',
-            ratingValue: '5',
-            worstRating: '1',
-          },
-        },
-        {
-          '@type': 'Review',
-          author: {
-            '@type': 'Person',
-            name: 'Malika Karimova',
-          },
-          datePublished: '2024-01-15',
-          reviewBody: 'Web saytim uchun perfect meta taglar yaratdim. SEO ni yaxshilashda katta yordam berdi.',
-          name: 'SEO uchun mukammal',
-          reviewRating: {
-            '@type': 'Rating',
-            bestRating: '5',
-            ratingValue: '5',
-            worstRating: '1',
-          },
-        },
-      ],
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-        availability: 'https://schema.org/InStock',
-      },
-      featureList: [
-        'Open Graph meta taglar yaratish',
-        'Twitter Card meta taglar',
-        'SEO optimizatsiya',
-        'Ijtimoiy tarmoq preview',
-        'Real-time preview',
-        'Tez shablonlar',
-        'HTML kod export',
-        'Yuklab olish funksiyasi',
-        'Professional interface',
-        'Multi-platform support',
-        "Schema markup qo'llab-quvvatlash",
-        'Rich snippets yaratish',
-      ],
-      softwareVersion: '2.0',
-      releaseNotes: 'Enhanced templates, improved preview, better meta tag generation',
-      screenshot: 'https://webiston.uz/screenshots/og-meta-generator.png',
-      applicationSubCategory: 'SEO Tools',
-      permissions: 'No permissions required - works entirely in browser',
-      installUrl: 'https://webiston.uz/tools/og-meta-generator',
-      downloadUrl: 'https://webiston.uz/tools/og-meta-generator',
-      softwareRequirements: 'Modern web browser with JavaScript enabled',
-      memoryRequirements: 'Minimal - under 1MB',
-      storageRequirements: 'No storage required',
-      processorRequirements: 'Any modern processor',
-      supportingData: 'https://webiston.uz/docs/og-meta-generator',
-    }),
-  },
+  robots: { index: true, follow: true },
 }
 
-const OgMetaGeneratorPage = () => {
-  return <OgMetaGenerator />
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'OG Meta Generator',
+  description: 'Open Graph va Twitter Card meta teglarini yaratish uchun professional vosita',
+  url: 'https://webiston.uz/tools/og-meta-generator',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  permissions: 'browser',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Webiston',
+    url: 'https://webiston.uz',
+  },
+  featureList: [
+    'Open Graph Meta Generation',
+    'Twitter Card Support',
+    'SEO Optimization',
+    'Social Media Preview',
+    'Template Library',
+    'Professional Interface',
+  ],
 }
 
-export default OgMetaGeneratorPage
+export default function OgMetaGeneratorPage() {
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <OgMetaGenerator />
+    </>
+  )
+}

@@ -286,7 +286,7 @@ const HashGenerator = () => {
 
       {/* Detailed Hash Results */}
       {hashResults.length > 0 && (
-        <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+        <div className="mt-6 mb-6 rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
           <div className="flex h-16 items-center border-b border-zinc-800 px-4">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -333,7 +333,7 @@ const HashGenerator = () => {
       )}
 
       {/* Info Section */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
           <div className="mb-4 flex items-center gap-2">
             <Shield size={20} className="text-blue-400" />
