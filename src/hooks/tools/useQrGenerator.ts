@@ -11,78 +11,108 @@ export interface QrPreset {
 }
 
 interface UseQrGeneratorProps {
-  initialSize?: QrSize
-  initialErrorLevel?: QrErrorLevel
   onSuccess?: (message: string) => void
   onError?: (error: string) => void
 }
 
-export const useQrGenerator = ({
-  initialSize = 200,
-  initialErrorLevel = 'M',
-  onSuccess,
-  onError,
-}: UseQrGeneratorProps = {}) => {
-  const [inputText, setInputText] = useState('')
-  const [qrSize, setQrSize] = useState<QrSize>(initialSize)
-  const [errorLevel, setErrorLevel] = useState<QrErrorLevel>(initialErrorLevel)
-  const [isGenerating, setIsGenerating] = useState(false)
+// Sample data constants
+const SAMPLE_PRESETS: QrPreset[] = [
+  {
+    label: 'Website URL',
+    value: 'https://webiston.uz',
+    description: 'Website havolasi',
+    category: 'url',
+  },
+  {
+    label: 'GitHub Profile',
+    value: 'https://github.com/webiston',
+    description: 'GitHub profil sahifasi',
+    category: 'url',
+  },
+  {
+    label: 'YouTube Channel',
+    value: 'https://youtube.com/@webiston',
+    description: 'YouTube kanal',
+    category: 'url',
+  },
+  {
+    label: 'Email Contact',
+    value: 'mailto:info@webiston.uz?subject=Salom&body=Assalomu aleykum!',
+    description: 'Email manzili',
+    category: 'contact',
+  },
+  {
+    label: 'Phone Number',
+    value: 'tel:+998901234567',
+    description: 'Telefon raqami',
+    category: 'contact',
+  },
+  {
+    label: 'vCard Contact',
+    value:
+      'BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nORG:Webiston\nTEL:+998901234567\nEMAIL:john@webiston.uz\nURL:https://webiston.uz\nEND:VCARD',
+    description: 'Kontakt kartasi',
+    category: 'contact',
+  },
+  {
+    label: 'SMS Message',
+    value: 'sms:+998901234567?body=Salom! Qanday ahvolingiz?',
+    description: 'SMS xabari',
+    category: 'sms',
+  },
+  {
+    label: 'WhatsApp Message',
+    value: 'https://wa.me/998901234567?text=Salom!%20Qanday%20yordam%20kerak?',
+    description: 'WhatsApp xabari',
+    category: 'sms',
+  },
+  {
+    label: 'WiFi Network',
+    value: 'WIFI:T:WPA;S:MyNetwork;P:MyPassword;H:false;',
+    description: 'WiFi ulanish',
+    category: 'wifi',
+  },
+  {
+    label: 'WiFi Guest',
+    value: 'WIFI:T:WPA;S:GuestNetwork;P:guest123;H:false;',
+    description: 'Mehmon WiFi',
+    category: 'wifi',
+  },
+  {
+    label: 'Simple Text',
+    value: "Bu oddiy matn. QR kod orqali o'qish mumkin.",
+    description: 'Oddiy matn',
+    category: 'text',
+  },
+  {
+    label: 'Location',
+    value: 'geo:41.311151,69.279737?q=Tashkent,Uzbekistan',
+    description: 'Geografik joylashuv',
+    category: 'text',
+  },
+]
 
-  // QR code presets
-  const presets: QrPreset[] = useMemo(
-    () => [
-      {
-        label: 'Website URL',
-        value: 'https://webiston.uz',
-        description: 'Website havolasi',
-        category: 'url',
-      },
-      {
-        label: 'Email',
-        value: 'mailto:info@webiston.uz?subject=Salom&body=Assalomu aleykum!',
-        description: 'Email manzili',
-        category: 'contact',
-      },
-      {
-        label: 'Phone',
-        value: 'tel:+998901234567',
-        description: 'Telefon raqami',
-        category: 'contact',
-      },
-      {
-        label: 'SMS',
-        value: 'sms:+998901234567?body=Salom! Qanday ahvolingiz?',
-        description: 'SMS xabari',
-        category: 'sms',
-      },
-      {
-        label: 'WiFi',
-        value: 'WIFI:T:WPA;S:MyNetwork;P:MyPassword;H:false;',
-        description: "WiFi ulanish ma'lumotlari",
-        category: 'wifi',
-      },
-      {
-        label: 'vCard',
-        value:
-          'BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\nORG:Webiston\nTEL:+998901234567\nEMAIL:john@webiston.uz\nEND:VCARD',
-        description: 'Kontakt kartasi',
-        category: 'contact',
-      },
-      {
-        label: 'Location',
-        value: 'geo:41.311151,69.279737?q=Tashkent,Uzbekistan',
-        description: 'Geografik joylashuv',
-        category: 'text',
-      },
-      {
-        label: 'YouTube',
-        value: 'https://youtube.com/watch?v=dQw4w9WgXcQ',
-        description: 'YouTube video',
-        category: 'url',
-      },
-    ],
-    [],
-  )
+// QR size options with descriptions
+const QR_SIZE_OPTIONS = [
+  { value: 150, label: '150x150', description: 'Kichik' },
+  { value: 200, label: '200x200', description: "O'rtacha" },
+  { value: 300, label: '300x300', description: 'Katta' },
+  { value: 400, label: '400x400', description: 'Juda katta' },
+] as const
+
+// Error correction levels with descriptions
+const ERROR_LEVELS = [
+  { value: 'L', label: 'Past (L)', description: '~7% tiklash' },
+  { value: 'M', label: "O'rtacha (M)", description: '~15% tiklash' },
+  { value: 'Q', label: 'Yuqori (Q)', description: '~25% tiklash' },
+  { value: 'H', label: 'Maksimal (H)', description: '~30% tiklash' },
+] as const
+
+export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {}) => {
+  const [inputText, setInputText] = useState('')
+  const [qrSize, setQrSize] = useState<QrSize>(300)
+  const [errorLevel, setErrorLevel] = useState<QrErrorLevel>('M')
+  const [isGenerating, setIsGenerating] = useState(false)
 
   // Generate QR code URL
   const generateQrUrl = useCallback((text: string, size: QrSize, errorCorrectionLevel: QrErrorLevel) => {
@@ -115,6 +145,18 @@ export const useQrGenerator = ({
     [onSuccess],
   )
 
+  // Set text with validation
+  const setTextSafe = useCallback(
+    (text: string) => {
+      if (text.length > 2000) {
+        onError?.('Matn 2000 belgidan oshmasligi kerak')
+        return
+      }
+      setInputText(text)
+    },
+    [onError],
+  )
+
   // Clear input
   const handleClear = useCallback(() => {
     setInputText('')
@@ -139,8 +181,10 @@ export const useQrGenerator = ({
 
         const a = document.createElement('a')
         a.href = url
-        a.download = filename || `qrcode-${Date.now()}.png`
+        a.download = filename || `qr-kod-${Date.now()}.png`
+        document.body.appendChild(a)
         a.click()
+        document.body.removeChild(a)
 
         URL.revokeObjectURL(url)
         onSuccess?.('QR kod muvaffaqiyatli yuklab olindi')
@@ -153,12 +197,30 @@ export const useQrGenerator = ({
     [qrUrl, onSuccess, onError],
   )
 
-  // Handle file upload
+  // Handle file upload with validation
   const handleFileUpload = useCallback(
     (file: File) => {
+      // File validation
+      const maxSize = 1 * 1024 * 1024 // 1MB
+      const allowedTypes = ['text/plain', 'application/json', 'text/csv', 'text/markdown']
+
+      if (file.size > maxSize) {
+        onError?.('Fayl hajmi 1MB dan oshmasligi kerak')
+        return
+      }
+
+      if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|json|csv|md)$/i)) {
+        onError?.("Faqat TXT, JSON, CSV, MD fayl turlari qo'llab-quvvatlanadi")
+        return
+      }
+
       const reader = new FileReader()
       reader.onload = (e) => {
         const content = e.target?.result as string
+        if (content.length > 2000) {
+          onError?.('Fayl tarkibi 2000 belgidan oshmasligi kerak')
+          return
+        }
         setInputText(content)
         onSuccess?.('Fayl muvaffaqiyatli yuklandi')
       }
@@ -172,60 +234,35 @@ export const useQrGenerator = ({
 
   // Detect input type
   const detectInputType = useCallback((text: string) => {
-    if (!text.trim()) return 'empty'
+    if (!text.trim()) return "Bo'sh"
 
     // URL detection
-    if (text.match(/^https?:\/\//i)) return 'url'
+    if (text.match(/^https?:\/\//i)) return 'URL'
 
     // Email detection
-    if (text.match(/^mailto:/i) || text.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return 'email'
+    if (text.match(/^mailto:/i) || text.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return 'Email'
 
     // Phone detection
-    if (text.match(/^tel:/i) || text.match(/^\+?[\d\s\-\(\)]{7,}$/)) return 'phone'
+    if (text.match(/^tel:/i) || text.match(/^\+?[\d\s\-\(\)]{7,}$/)) return 'Telefon'
 
     // SMS detection
-    if (text.match(/^sms:/i)) return 'sms'
+    if (text.match(/^sms:/i)) return 'SMS'
 
     // WiFi detection
-    if (text.match(/^WIFI:/i)) return 'wifi'
+    if (text.match(/^WIFI:/i)) return 'WiFi'
 
     // vCard detection
-    if (text.match(/^BEGIN:VCARD/i)) return 'vcard'
+    if (text.match(/^BEGIN:VCARD/i)) return 'vCard'
 
     // Location detection
-    if (text.match(/^geo:/i)) return 'location'
+    if (text.match(/^geo:/i)) return 'Joylashuv'
 
-    return 'text'
+    return 'Matn'
   }, [])
-
-  // Input statistics
-  const inputStats = useMemo(() => {
-    const encoder = new TextEncoder()
-    const bytes = encoder.encode(inputText).length
-    const type = detectInputType(inputText)
-
-    return [
-      { label: 'Characters', value: inputText.length },
-      { label: 'Bytes', value: bytes },
-      { label: 'Type', value: type },
-      { label: 'Size', value: qrSize },
-    ]
-  }, [inputText, qrSize, detectInputType])
-
-  // Available sizes
-  const availableSizes: QrSize[] = [150, 200, 300, 400]
-
-  // Available error levels
-  const errorLevels: { value: QrErrorLevel; label: string; description: string }[] = [
-    { value: 'L', label: 'Low (7%)', description: 'Eng kam xato tuzatish' },
-    { value: 'M', label: 'Medium (15%)', description: "O'rtacha xato tuzatish" },
-    { value: 'Q', label: 'Quartile (25%)', description: 'Yuqori xato tuzatish' },
-    { value: 'H', label: 'High (30%)', description: 'Eng yuqori xato tuzatish' },
-  ]
 
   // Group presets by category
   const groupedPresets = useMemo(() => {
-    return presets.reduce(
+    return SAMPLE_PRESETS.reduce(
       (acc, preset) => {
         if (!acc[preset.category]) {
           acc[preset.category] = []
@@ -235,34 +272,71 @@ export const useQrGenerator = ({
       },
       {} as Record<string, QrPreset[]>,
     )
-  }, [presets])
+  }, [])
+
+  // Statistics
+  const stats = useMemo(() => {
+    const textLength = inputText.length
+    const lines = inputText.split('\n').length
+    const words = inputText.trim() ? inputText.trim().split(/\s+/).length : 0
+
+    return {
+      characters: textLength,
+      words,
+      lines,
+      qrSize: qrSize,
+      errorLevel,
+    }
+  }, [inputText, qrSize, errorLevel])
+
+  // Input statistics
+  const inputStats = useMemo(
+    () => [
+      { label: 'belgi', value: stats.characters },
+      { label: "so'z", value: stats.words },
+      { label: 'qator', value: stats.lines },
+    ],
+    [stats],
+  )
+
+  // Output statistics
+  const outputStats = useMemo(
+    () => [
+      { label: "o'lcham", value: stats.qrSize },
+      { label: 'xato tuzatish', value: 0 }, // will display as string
+      { label: 'turi', value: 0 }, // will display as string
+    ],
+    [stats],
+  )
 
   return {
     // State
     inputText,
+    qrUrl,
     qrSize,
     errorLevel,
-    qrUrl,
     isGenerating,
+    stats,
     inputStats,
-    presets,
-    groupedPresets,
-    availableSizes,
-    errorLevels,
+    outputStats,
 
-    // Setters
-    setInputText,
-    setQrSize,
-    setErrorLevel,
+    // Data
+    presets: SAMPLE_PRESETS,
+    groupedPresets,
+    availableSizes: QR_SIZE_OPTIONS,
+    errorLevels: ERROR_LEVELS,
 
     // Actions
+    setInputText: setTextSafe,
+    setQrSize,
+    setErrorLevel,
     handlePresetSelect,
     handleClear,
     downloadQr,
     handleFileUpload,
 
     // Utilities
-    generateQrUrl,
     detectInputType,
+    generateQrUrl,
   }
 }
