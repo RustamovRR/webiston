@@ -1,6 +1,40 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
 
+// Sample detection results for demo
+const SAMPLE_DEVICE_INFO = {
+  browser: {
+    name: 'Chrome',
+    version: '120.0.6099.109',
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+  },
+  system: {
+    platform: 'MacIntel',
+    language: 'uz-UZ',
+    languages: ['uz-UZ', 'en-US', 'ru-RU'],
+    timezone: 'Asia/Tashkent',
+    cookieEnabled: true,
+    onlineStatus: true,
+  },
+  screen: {
+    width: 1920,
+    height: 1080,
+    availWidth: 1920,
+    availHeight: 1050,
+    colorDepth: 24,
+    pixelRatio: 2.0,
+    orientation: 'landscape',
+  },
+  device: {
+    type: 'Desktop',
+    isMobile: false,
+    isTablet: false,
+    isDesktop: true,
+    touchSupport: false,
+    maxTouchPoints: 0,
+  },
+}
+
 export interface DeviceInfo {
   browser: {
     name: string
@@ -152,7 +186,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
       onError?.("Qurilma ma'lumotlarini yuklashda xatolik yuz berdi")
       setIsLoading(false)
     }
-  }, [onSuccess, onError])
+  }, [])
 
   const handleCopy = useCallback(
     async (text: string, type: string) => {
@@ -293,7 +327,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
       window.removeEventListener('orientationchange', handleOrientationChange)
       window.removeEventListener('resize', handleOrientationChange)
     }
-  }, [detectDevice])
+  }, [])
 
   return {
     // State
