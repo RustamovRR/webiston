@@ -138,63 +138,110 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
   // Generate meta tags with enhanced logic
   const generateMeta = useCallback(() => {
     try {
-      const meta = []
+      const ogMetas = []
+      const twitterMetas = []
+      const basicMetas = []
 
-      // Basic Open Graph tags
+      // Basic HTML meta tags
       if (metaData.title) {
-        meta.push(`<meta property="og:title" content="${metaData.title}" />`)
-        meta.push(`<meta name="twitter:title" content="${metaData.title}" />`)
-        meta.push(`<title>${metaData.title}</title>`)
+        basicMetas.push(`<title>${metaData.title}</title>`)
       }
 
       if (metaData.description) {
-        meta.push(`<meta property="og:description" content="${metaData.description}" />`)
-        meta.push(`<meta name="twitter:description" content="${metaData.description}" />`)
-        meta.push(`<meta name="description" content="${metaData.description}" />`)
+        basicMetas.push(`<meta name="description" content="${metaData.description}" />`)
       }
 
-      if (metaData.image) {
-        meta.push(`<meta property="og:image" content="${metaData.image}" />`)
-        meta.push(`<meta name="twitter:image" content="${metaData.image}" />`)
-        meta.push(`<meta property="og:image:alt" content="${metaData.title || 'Image'}" />`)
+      // Open Graph meta tags
+      if (metaData.type) {
+        ogMetas.push(`<meta property="og:type" content="${metaData.type}" />`)
+      }
+
+      if (metaData.title) {
+        ogMetas.push(`<meta property="og:title" content="${metaData.title}" />`)
+      }
+
+      if (metaData.description) {
+        ogMetas.push(`<meta property="og:description" content="${metaData.description}" />`)
       }
 
       if (metaData.url) {
-        meta.push(`<meta property="og:url" content="${metaData.url}" />`)
-        meta.push(`<meta name="twitter:url" content="${metaData.url}" />`)
-        meta.push(`<link rel="canonical" href="${metaData.url}" />`)
+        ogMetas.push(`<meta property="og:url" content="${metaData.url}" />`)
+      }
+
+      if (metaData.image) {
+        ogMetas.push(`<meta property="og:image" content="${metaData.image}" />`)
+        ogMetas.push(`<meta property="og:image:alt" content="${metaData.title || 'Image'}" />`)
       }
 
       if (metaData.siteName) {
-        meta.push(`<meta property="og:site_name" content="${metaData.siteName}" />`)
-      }
-
-      if (metaData.type) {
-        meta.push(`<meta property="og:type" content="${metaData.type}" />`)
+        ogMetas.push(`<meta property="og:site_name" content="${metaData.siteName}" />`)
       }
 
       if (metaData.locale) {
-        meta.push(`<meta property="og:locale" content="${metaData.locale}" />`)
+        ogMetas.push(`<meta property="og:locale" content="${metaData.locale}" />`)
       }
 
-      // Twitter specific tags
+      // Twitter meta tags
       if (metaData.twitterCard) {
-        meta.push(`<meta name="twitter:card" content="${metaData.twitterCard}" />`)
+        twitterMetas.push(`<meta name="twitter:card" content="${metaData.twitterCard}" />`)
       }
 
       if (metaData.twitterSite) {
-        meta.push(`<meta name="twitter:site" content="${metaData.twitterSite}" />`)
+        twitterMetas.push(`<meta name="twitter:site" content="${metaData.twitterSite}" />`)
       }
 
       if (metaData.twitterCreator) {
-        meta.push(`<meta name="twitter:creator" content="${metaData.twitterCreator}" />`)
+        twitterMetas.push(`<meta name="twitter:creator" content="${metaData.twitterCreator}" />`)
+      }
+
+      if (metaData.title) {
+        twitterMetas.push(`<meta name="twitter:title" content="${metaData.title}" />`)
+      }
+
+      if (metaData.description) {
+        twitterMetas.push(`<meta name="twitter:description" content="${metaData.description}" />`)
+      }
+
+      if (metaData.image) {
+        twitterMetas.push(`<meta name="twitter:image" content="${metaData.image}" />`)
+        twitterMetas.push(`<meta name="twitter:image:alt" content="${metaData.title || 'Image'}" />`)
+      }
+
+      if (metaData.url) {
+        twitterMetas.push(`<meta name="twitter:url" content="${metaData.url}" />`)
+      }
+
+      // Combine all meta tags with comments
+      const allMetas = []
+
+      if (basicMetas.length > 0) {
+        allMetas.push('<!-- Basic Meta Tags -->')
+        allMetas.push(...basicMetas)
+        allMetas.push('')
+      }
+
+      if (ogMetas.length > 0) {
+        allMetas.push('<!-- Open Graph Meta Tags -->')
+        allMetas.push(...ogMetas)
+        allMetas.push('')
+      }
+
+      if (twitterMetas.length > 0) {
+        allMetas.push('<!-- Twitter Meta Tags -->')
+        allMetas.push(...twitterMetas)
+        allMetas.push('')
       }
 
       // Additional SEO tags
-      meta.push(`<meta name="robots" content="index, follow" />`)
-      meta.push(`<meta name="googlebot" content="index, follow" />`)
+      allMetas.push('<!-- Additional SEO Tags -->')
+      allMetas.push(`<meta name="robots" content="index, follow" />`)
+      allMetas.push(`<meta name="googlebot" content="index, follow" />`)
 
-      const generated = meta.join('\n')
+      if (metaData.url) {
+        allMetas.push(`<link rel="canonical" href="${metaData.url}" />`)
+      }
+
+      const generated = allMetas.join('\n')
       setGeneratedMeta(generated)
 
       // Create formatted version with proper HTML structure
@@ -205,10 +252,9 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
         '  <meta charset="UTF-8">',
         '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
         '',
-        '  <!-- Primary Meta Tags -->',
-        ...meta.map((tag) => `  ${tag}`),
+        ...allMetas.map((tag) => `  ${tag}`),
         '',
-        '  <!-- Additional Meta Tags -->',
+        '  <!-- Additional Technical Meta Tags -->',
         '  <meta name="format-detection" content="telephone=no">',
         '  <meta name="mobile-web-app-capable" content="yes">',
         '</head>',

@@ -145,7 +145,7 @@ export default function OgMetaGenerator() {
   ]
 
   const currentOutput = outputFormat === 'formatted' ? formattedMeta : generatedMeta
-  const currentLanguage = outputFormat === 'formatted' ? 'html' : 'html'
+  const currentLanguage = outputFormat === 'formatted' ? 'html' : 'xml'
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">

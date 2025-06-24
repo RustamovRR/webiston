@@ -53,10 +53,19 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
   }
 
   const highlightHTML = (html: string) => {
-    return html
+    // First escape HTML to prevent rendering
+    const escaped = html
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+
+    return escaped
       .replace(/(&lt;\/?[^&gt;]+&gt;)/g, '<span class="text-blue-400">$1</span>') // tags
       .replace(/(\w+)=/g, '<span class="text-purple-400">$1</span>=') // attributes
-      .replace(/"([^"]*)"/g, '"<span class="text-green-400">$1</span>"') // attribute values
+      .replace(/&quot;([^&]*)&quot;/g, '&quot;<span class="text-green-400">$1</span>&quot;') // attribute values
+      .replace(/(&lt;!--[^&]*--&gt;)/g, '<span class="text-gray-500">$1</span>') // comments
   }
 
   const highlightCSS = (css: string) => {
