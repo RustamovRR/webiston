@@ -12,6 +12,15 @@ export interface VideoInfo {
   frameRate: number
 }
 
+export interface CapturedMedia {
+  id: string
+  type: 'screenshot' | 'video'
+  url: string
+  filename: string
+  timestamp: Date
+  size?: number
+}
+
 interface UseCameraRecorderOptions {
   onSuccess?: (message: string) => void
   onError?: (error: string) => void
@@ -26,7 +35,13 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const [error, setError] = useState<string>('')
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null)
   const [isStreaming, setIsStreaming] = useState(false)
-  const [screenshotCount, setScreenshotCount] = useState(0)
+  const [isCameraActive, setIsCameraActive] = useState(false)
+  const [capturedMedia, setCapturedMedia] = useState<CapturedMedia[]>([])
+  const [previewMedia, setPreviewMedia] = useState<CapturedMedia | null>(null)
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null)
+  const [recordingDuration, setRecordingDuration] = useState<number>(0)
+  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null)
+  const [videoQuality, setVideoQuality] = useState<{ width: number; height: number }>({ width: 1280, height: 720 })
 
   const { onSuccess, onError } = options
 
@@ -43,19 +58,60 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   } = useReactMediaRecorder({
     video: {
       deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
+      width: { ideal: videoQuality.width },
+      height: { ideal: videoQuality.height },
       frameRate: { ideal: 30 },
     },
-    audio: false, // Video only for camera recorder
-    askPermissionOnMount: true, // Auto-request permission
+    audio: true, // Enable audio recording
+    askPermissionOnMount: false, // Don't auto-request permission
     onStart: () => {
-      onSuccess?.('Video yozib olish boshlandi')
+      setRecordingStartTime(Date.now())
+      onSuccess?.('Video va ovoz yozib olish boshlandi')
     },
     onStop: (blobUrl: string) => {
-      onSuccess?.('Video yozib olish tugallandi')
+      setRecordingStartTime(null)
+      setRecordingDuration(0)
+
+      if (blobUrl) {
+        const timestamp = new Date()
+        const filename = `video-${timestamp.toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+
+        // Get blob size
+        fetch(blobUrl).then((response) => {
+          const media: CapturedMedia = {
+            id: Date.now().toString(),
+            type: 'video',
+            url: blobUrl,
+            filename,
+            timestamp,
+            size: response.headers.get('content-length')
+              ? parseInt(response.headers.get('content-length')!)
+              : undefined,
+          }
+          setCapturedMedia((prev) => [media, ...prev])
+        })
+
+        onSuccess?.('Video va ovoz muvaffaqiyatli saqlandi')
+      }
     },
   })
+
+  // Recording duration timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (status === 'recording' && recordingStartTime) {
+      interval = setInterval(() => {
+        setRecordingDuration(Math.floor((Date.now() - recordingStartTime) / 1000))
+      }, 1000)
+    } else {
+      setRecordingDuration(0)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [status, recordingStartTime])
 
   const getCameraDevices = useCallback(async () => {
     try {
@@ -84,36 +140,39 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(errorMessage)
       console.error('Error getting camera devices:', err)
     }
-  }, [selectedCamera, onSuccess, onError])
+  }, [onSuccess, onError])
 
   const startCamera = useCallback(async () => {
     try {
       setError('')
 
-      // Just get user media to check permission and set streaming state
       const constraints: MediaStreamConstraints = {
         video: {
           deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
+          width: { ideal: videoQuality.width },
+          height: { ideal: videoQuality.height },
           frameRate: { ideal: 30 },
         },
       }
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
 
+      // Store the camera stream for preview
+      setCameraStream(mediaStream)
+
       // Set video info from the stream
       const track = mediaStream.getVideoTracks()[0]
       const settings = track.getSettings()
 
       const info: VideoInfo = {
-        width: settings.width || 1280,
-        height: settings.height || 720,
+        width: settings.width || videoQuality.width,
+        height: settings.height || videoQuality.height,
         frameRate: settings.frameRate || 30,
       }
 
       setVideoInfo(info)
       setIsStreaming(true)
+      setIsCameraActive(true)
 
       // Set up our own video ref for screenshot functionality
       if (videoRef.current) {
@@ -135,7 +194,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(errorMessage)
       console.error('Error starting camera:', err)
     }
-  }, [selectedCamera, onSuccess, onError])
+  }, [selectedCamera, videoQuality, onSuccess, onError])
 
   const stopCamera = useCallback(() => {
     // Stop any ongoing recording first
@@ -153,15 +212,22 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       videoRef.current.srcObject = null
     }
 
+    // Clean up camera stream state
+    if (cameraStream) {
+      cameraStream.getTracks().forEach((track) => track.stop())
+      setCameraStream(null)
+    }
+
     setIsStreaming(false)
+    setIsCameraActive(false)
     setVideoInfo(null)
     setError('')
     clearBlobUrl()
     onSuccess?.("Kamera to'xtatildi")
-  }, [status, stopRecording, clearBlobUrl, onSuccess])
+  }, [status, stopRecording, clearBlobUrl, cameraStream, onSuccess])
 
   const takeScreenshot = useCallback(() => {
-    if (!videoRef.current || !canvasRef.current) {
+    if (!videoRef.current || !canvasRef.current || !isCameraActive) {
       onError?.("Screenshot olish uchun kamera yoqilgan bo'lishi kerak")
       return
     }
@@ -180,116 +246,193 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `camera-recorder-screenshot-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.png`
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            URL.revokeObjectURL(url)
-            setScreenshotCount((prev) => prev + 1)
+            const timestamp = new Date()
+            const filename = `screenshot-${timestamp.toISOString().slice(0, 19).replace(/:/g, '-')}.png`
 
-            onSuccess?.('Screenshot muvaffaqiyatli saqlandi')
+            const media: CapturedMedia = {
+              id: Date.now().toString(),
+              type: 'screenshot',
+              url,
+              filename,
+              timestamp,
+              size: blob.size,
+            }
+
+            setCapturedMedia((prev) => [media, ...prev])
+            onSuccess?.('Screenshot muvaffaqiyatli olindi')
           }
-        })
+        }, 'image/png')
       }
     } catch (err) {
       onError?.('Screenshot olishda xatolik yuz berdi')
       console.error('Error taking screenshot:', err)
     }
-  }, [onSuccess, onError])
+  }, [isCameraActive, onSuccess, onError])
 
-  const downloadRecording = useCallback(() => {
-    if (!mediaBlobUrl) {
-      onError?.('Yuklab olish uchun video mavjud emas')
-      return
-    }
-
-    try {
+  const downloadMedia = useCallback(
+    (media: CapturedMedia) => {
       const a = document.createElement('a')
-      a.href = mediaBlobUrl
-      a.download = `camera-recorder-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+      a.href = media.url
+      a.download = media.filename
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
+      onSuccess?.(`${media.type === 'screenshot' ? 'Screenshot' : 'Video'} yuklab olindi`)
+    },
+    [onSuccess],
+  )
 
-      onSuccess?.('Video muvaffaqiyatli yuklab olindi')
-    } catch (err) {
-      onError?.('Video yuklab olishda xatolik yuz berdi')
-      console.error('Error downloading recording:', err)
+  const deleteMedia = useCallback(
+    (mediaId: string) => {
+      setCapturedMedia((prev) => {
+        const mediaToDelete = prev.find((m) => m.id === mediaId)
+        if (mediaToDelete) {
+          URL.revokeObjectURL(mediaToDelete.url)
+          onSuccess?.(`${mediaToDelete.type === 'screenshot' ? 'Screenshot' : 'Video'} o'chirildi`)
+        }
+        return prev.filter((m) => m.id !== mediaId)
+      })
+
+      // Close preview if this media was being previewed
+      if (previewMedia?.id === mediaId) {
+        setPreviewMedia(null)
+      }
+    },
+    [previewMedia, onSuccess],
+  )
+
+  const openPreview = useCallback((media: CapturedMedia) => {
+    setPreviewMedia(media)
+  }, [])
+
+  const closePreview = useCallback(() => {
+    setPreviewMedia(null)
+  }, [])
+
+  // Sample data for testing
+  const getSampleData = useCallback(() => {
+    return {
+      cameras: [
+        { deviceId: 'sample1', label: 'Front Camera' },
+        { deviceId: 'sample2', label: 'Back Camera' },
+      ],
+      videoInfo: { width: 1280, height: 720, frameRate: 30 },
     }
-  }, [mediaBlobUrl, onSuccess, onError])
-
-  const refreshCameras = useCallback(() => {
-    getCameraDevices()
-  }, [getCameraDevices])
+  }, [])
 
   const switchCamera = useCallback(
     (deviceId: string) => {
       setSelectedCamera(deviceId)
-      // If currently streaming, restart with new camera
-      if (isStreaming) {
+
+      // If camera is currently active, restart with new camera
+      if (isCameraActive) {
         stopCamera()
+        // Wait a bit for cleanup
         setTimeout(() => {
           startCamera()
         }, 500)
       }
     },
-    [isStreaming, stopCamera, startCamera],
+    [isCameraActive, stopCamera, startCamera],
   )
 
-  const getVideoQuality = useCallback(() => {
-    if (!videoInfo) return 'Unknown'
+  const refreshCameras = useCallback(async () => {
+    try {
+      onSuccess?.('Kameralar yangilanmoqda...')
 
-    if (videoInfo.height >= 1080) return 'Full HD (1080p)'
-    if (videoInfo.height >= 720) return 'HD (720p)'
-    if (videoInfo.height >= 480) return 'SD (480p)'
-    return 'Low Quality'
-  }, [videoInfo])
+      // Clear current cameras list
+      setCameras([])
+      setSelectedCamera('')
+
+      // Refresh cameras list
+      await getCameraDevices()
+
+      onSuccess?.('Kameralar muvaffaqiyatli yangilandi')
+    } catch (err) {
+      onError?.('Kameralar yangilashda xatolik yuz berdi')
+      console.error('Error refreshing cameras:', err)
+    }
+  }, [onSuccess, onError, getCameraDevices])
+
+  const downloadRecording = useCallback(() => {
+    if (mediaBlobUrl) {
+      const a = document.createElement('a')
+      a.href = mediaBlobUrl
+      a.download = `camera-recording-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      onSuccess?.('Video yuklab olindi')
+    }
+  }, [mediaBlobUrl, onSuccess])
 
   const getCameraStats = useCallback(() => {
-    if (!videoInfo) return null
-
     return {
-      resolution: `${videoInfo.width} × ${videoInfo.height}`,
-      frameRate: `${Math.round(videoInfo.frameRate)} FPS`,
-      quality: getVideoQuality(),
-      aspectRatio: (videoInfo.width / videoInfo.height).toFixed(2),
+      isActive: isCameraActive,
+      recordingStatus: status,
+      screenshotCount: capturedMedia.filter((m) => m.type === 'screenshot').length,
+      videoCount: capturedMedia.filter((m) => m.type === 'video').length,
+      totalMedia: capturedMedia.length,
+      hasPreview: !!previewMedia,
+      videoInfo,
     }
-  }, [videoInfo, getVideoQuality])
+  }, [isCameraActive, status, capturedMedia, previewMedia, videoInfo])
 
-  // Auto-refresh cameras on mount
+  const updateVideoQuality = useCallback(
+    (quality: { width: number; height: number }) => {
+      setVideoQuality(quality)
+
+      // If camera is currently active, restart with new quality
+      if (isCameraActive) {
+        stopCamera()
+        // Wait a bit for cleanup
+        setTimeout(() => {
+          startCamera()
+        }, 500)
+      }
+    },
+    [isCameraActive, stopCamera, startCamera],
+  )
+
+  const formatRecordingDuration = useCallback((seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }, [])
+
+  const getCurrentRecordingInfo = useCallback(() => {
+    return {
+      isRecording: status === 'recording',
+      duration: recordingDuration,
+      formattedDuration: formatRecordingDuration(recordingDuration),
+      quality: videoQuality,
+      qualityLabel: `${videoQuality.width}×${videoQuality.height}`,
+      frameRate: videoInfo?.frameRate || 30,
+      status: status,
+    }
+  }, [status, recordingDuration, formatRecordingDuration, videoQuality, videoInfo])
+
+  // Auto-initialize camera devices on mount - only once
   useEffect(() => {
     getCameraDevices()
-  }, [])
-
-  // Cleanup effect
-  useEffect(() => {
-    return () => {
-      stopCamera()
-    }
-  }, [])
+  }, []) // Empty dependency array - run only once
 
   return {
-    // Refs
     videoRef,
     canvasRef,
-
-    // State
     isStreaming,
+    isCameraActive,
     cameras,
     selectedCamera,
     error,
     videoInfo,
-    screenshotCount,
-
-    // React Media Recorder state
     status,
     mediaBlobUrl,
     previewStream,
+    cameraStream,
     isRecording: status === 'recording',
-
-    // Actions
+    capturedMedia,
+    previewMedia,
     startCamera,
     stopCamera,
     startRecording,
@@ -301,9 +444,17 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     refreshCameras,
     switchCamera,
     clearBlobUrl,
-
-    // Utilities
     getCameraStats,
-    getVideoQuality,
+    getSampleData,
+    downloadMedia,
+    deleteMedia,
+    openPreview,
+    closePreview,
+    recordingDuration,
+    recordingStartTime,
+    videoQuality,
+    updateVideoQuality,
+    formatRecordingDuration,
+    getCurrentRecordingInfo,
   }
 }
