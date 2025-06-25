@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CameraRecorder } from '@/modules/tools'
+import { CameraRecorderClient } from './CameraRecorderClient'
 
 export const metadata: Metadata = {
   title: 'Kamera Yozuvchi - Camera Recorder Tool | Webiston',
@@ -46,8 +46,42 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Kamera Yozuvchi - Camera Recorder',
+  description: "Kamerangizni sinab ko'ring, video yozing va screenshot oling",
+  url: 'https://webiston.uz/tools/camera-recorder',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Any',
+  permissions: 'camera, microphone',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Webiston',
+    url: 'https://webiston.uz',
+  },
+  featureList: [
+    'Camera Testing',
+    'Video Recording',
+    'Screenshot Capture',
+    'Multiple Camera Support',
+    'Real-time Preview',
+    'Professional Interface',
+  ],
+}
+
 const CameraRecorderPage = () => {
-  return <CameraRecorder />
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <CameraRecorderClient />
+    </>
+  )
 }
 
 export default CameraRecorderPage

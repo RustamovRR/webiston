@@ -1,5 +1,4 @@
 export * from './ButtonLink'
-export * from './Card'
 export * from './Header'
 export * from './SectionTitle'
 export * from './ToolHeader'
@@ -8,5 +7,5 @@ export * from './StatsDisplay'
 export * from './DualTextPanel'
 
 export { default as ButtonLink } from './ButtonLink'
-export { default as Card } from './Card'
+export { SimpleCard } from './Card'
 export { default as SectionTitle } from './SectionTitle'

@@ -1,5 +1,5 @@
 import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
-import { ButtonLink, Card, SectionTitle } from '@/components/shared'
+import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
 import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 
 export default function HomePage() {
@@ -55,7 +55,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {REACT_CHAPTERS.map((card, index) => (
-            <Card key={index} href={card.href} title={card.title} description={card.description} />
+            <SimpleCard key={index} href={card.href} title={card.title} description={card.description} />
           ))}
         </div>
       </section>
@@ -69,7 +69,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {TOOLS_LIST.map((tool, index) => (
-            <Card key={index} href={tool.href} title={tool.title} description={tool.description} />
+            <SimpleCard key={index} href={tool.href} title={tool.title} description={tool.description} />
           ))}
         </div>
       </section>
