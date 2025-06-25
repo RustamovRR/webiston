@@ -93,7 +93,7 @@ export const TOOL_COLOR_MAP = {
   'lorem-ipsum': TOOL_COLORS.GENERATORS,
 
   'device-info': TOOL_COLORS.UTILITIES,
-  'camera-test': TOOL_COLORS.UTILITIES,
+  'camera-recorder': TOOL_COLORS.UTILITIES,
   'microphone-test': TOOL_COLORS.UTILITIES,
   'keycode-info': TOOL_COLORS.UTILITIES,
   'screen-resolution': TOOL_COLORS.UTILITIES,

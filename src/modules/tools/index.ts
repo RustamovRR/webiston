@@ -1,6 +1,6 @@
 export { default as ToolsMainPage } from './ToolsMainPage'
 export { default as Base64Converter } from './Base64Converter'
-export { default as CameraTest } from './CameraTest'
+export { default as CameraRecorder } from './CameraRecorder'
 export { default as ColorConverter } from './ColorConverter'
 export { default as DeviceInfo } from './DeviceInfo'
 export { default as HashGenerator } from './HashGenerator'

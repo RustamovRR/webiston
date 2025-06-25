@@ -127,9 +127,9 @@ export const TOOLS_LIST: Tool[] = [
     category: 'utilities',
   },
   {
-    title: 'Kamera Test',
+    title: 'Kamera Yozib Oluvchi',
     description: "Kamerangizni sinab ko'ring va video yozing",
-    href: '/tools/camera-test',
+    href: '/tools/camera-recorder',
     icon: Camera,
     color: 'bg-emerald-500',
     category: 'utilities',

@@ -1,6 +1,6 @@
 // Export all tool hooks
 export * from './useBase64Converter'
-export * from './useCameraTest'
+export * from './useCameraRecorder'
 export * from './useColorConverter'
 export * from './useDeviceInfo'
 export * from './useHashGenerator'

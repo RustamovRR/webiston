@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useReactMediaRecorder } from 'react-media-recorder'
 
 export interface CameraDevice {
   deviceId: string
@@ -11,26 +12,50 @@ export interface VideoInfo {
   frameRate: number
 }
 
-interface UseCameraTestOptions {
+interface UseCameraRecorderOptions {
   onSuccess?: (message: string) => void
   onError?: (error: string) => void
 }
 
-export const useCameraTest = (options: UseCameraTestOptions = {}) => {
+export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
 
-  const [stream, setStream] = useState<MediaStream | null>(null)
-  const [isStreaming, setIsStreaming] = useState(false)
   const [cameras, setCameras] = useState<CameraDevice[]>([])
   const [selectedCamera, setSelectedCamera] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null)
-  const [isRecording, setIsRecording] = useState(false)
-  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([])
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [screenshotCount, setScreenshotCount] = useState(0)
 
   const { onSuccess, onError } = options
+
+  // React Media Recorder hook
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+    mediaBlobUrl,
+    previewStream,
+    clearBlobUrl,
+  } = useReactMediaRecorder({
+    video: {
+      deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+      frameRate: { ideal: 30 },
+    },
+    audio: false, // Video only for camera recorder
+    askPermissionOnMount: true, // Auto-request permission
+    onStart: () => {
+      onSuccess?.('Video yozib olish boshlandi')
+    },
+    onStop: (blobUrl: string) => {
+      onSuccess?.('Video yozib olish tugallandi')
+    },
+  })
 
   const getCameraDevices = useCallback(async () => {
     try {
@@ -65,6 +90,7 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
     try {
       setError('')
 
+      // Just get user media to check permission and set streaming state
       const constraints: MediaStreamConstraints = {
         video: {
           deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
@@ -75,41 +101,34 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
       }
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
-      setStream(mediaStream)
 
+      // Set video info from the stream
+      const track = mediaStream.getVideoTracks()[0]
+      const settings = track.getSettings()
+
+      const info: VideoInfo = {
+        width: settings.width || 1280,
+        height: settings.height || 720,
+        frameRate: settings.frameRate || 30,
+      }
+
+      setVideoInfo(info)
+      setIsStreaming(true)
+
+      // Set up our own video ref for screenshot functionality
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream
+        videoRef.current.muted = true
+        videoRef.current.playsInline = true
 
-        // Wait for metadata to load
-        const handleLoadedMetadata = () => {
-          if (videoRef.current && mediaStream) {
-            const track = mediaStream.getVideoTracks()[0]
-            const settings = track.getSettings()
-
-            const info: VideoInfo = {
-              width: settings.width || videoRef.current.videoWidth,
-              height: settings.height || videoRef.current.videoHeight,
-              frameRate: settings.frameRate || 30,
-            }
-
-            setVideoInfo(info)
-            setIsStreaming(true)
-            onSuccess?.(`Kamera ishga tushirildi: ${info.width}x${info.height}`)
-          }
-        }
-
-        // Add event listener for metadata loaded
-        videoRef.current.addEventListener('loadedmetadata', handleLoadedMetadata)
-
-        // Also try to play the video
         try {
           await videoRef.current.play()
         } catch (playError) {
-          console.error('Error playing video:', playError)
-          // Even if autoplay fails, the video should still show
-          setIsStreaming(true)
+          console.log('Autoplay issue, but camera should work:', playError)
         }
       }
+
+      onSuccess?.(`Kamera ishga tushirildi: ${info.width}x${info.height}`)
     } catch (err) {
       const errorMessage = 'Kamerani ishga tushirishda xatolik yuz berdi'
       setError(errorMessage)
@@ -119,95 +138,27 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
   }, [selectedCamera, onSuccess, onError])
 
   const stopCamera = useCallback(() => {
-    // Stop recording first
-    stopRecording()
+    // Stop any ongoing recording first
+    if (status === 'recording') {
+      stopRecording()
+    }
 
-    // Stop all tracks
-    if (stream) {
+    // Stop the camera stream
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream
       stream.getTracks().forEach((track) => {
         track.stop()
         console.log('Stopped track:', track.kind, track.label)
       })
-      setStream(null)
-    }
-
-    // Clear video element
-    if (videoRef.current) {
       videoRef.current.srcObject = null
-      videoRef.current.load() // Force reload to clear any cached stream
     }
 
     setIsStreaming(false)
     setVideoInfo(null)
     setError('')
+    clearBlobUrl()
     onSuccess?.("Kamera to'xtatildi")
-  }, [stream, onSuccess])
-
-  const startRecording = useCallback(() => {
-    if (!stream) {
-      onError?.('Yozib olish uchun avval kamerani yoqing')
-      return
-    }
-
-    try {
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9',
-      })
-
-      mediaRecorderRef.current = mediaRecorder
-      setRecordedChunks([])
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setRecordedChunks((prev) => [...prev, event.data])
-        }
-      }
-
-      mediaRecorder.onstop = () => {
-        onSuccess?.('Video yozib olish tugallandi')
-      }
-
-      mediaRecorder.start(1000) // Record in 1-second chunks
-      setIsRecording(true)
-      onSuccess?.('Video yozib olish boshlandi')
-    } catch (err) {
-      const errorMessage = "Yozib olishni boshlab bo'lmadi"
-      setError(errorMessage)
-      onError?.(errorMessage)
-      console.error('Error starting recording:', err)
-    }
-  }, [stream, onSuccess, onError])
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
-    }
-  }, [isRecording])
-
-  const downloadRecording = useCallback(() => {
-    if (recordedChunks.length === 0) {
-      onError?.('Yuklab olish uchun video mavjud emas')
-      return
-    }
-
-    try {
-      const blob = new Blob(recordedChunks, { type: 'video/webm' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `camera-test-${new Date().toISOString().slice(0, 19)}.webm`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-
-      onSuccess?.('Video muvaffaqiyatli yuklab olindi')
-    } catch (err) {
-      onError?.('Video yuklab olishda xatolik yuz berdi')
-      console.error('Error downloading recording:', err)
-    }
-  }, [recordedChunks, onSuccess, onError])
+  }, [status, stopRecording, clearBlobUrl, onSuccess])
 
   const takeScreenshot = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) {
@@ -226,17 +177,17 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
       if (ctx) {
         ctx.drawImage(video, 0, 0)
 
-        // Download screenshot
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `camera-screenshot-${new Date().toISOString().slice(0, 19)}.png`
+            a.download = `camera-recorder-screenshot-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.png`
             document.body.appendChild(a)
             a.click()
             document.body.removeChild(a)
             URL.revokeObjectURL(url)
+            setScreenshotCount((prev) => prev + 1)
 
             onSuccess?.('Screenshot muvaffaqiyatli saqlandi')
           }
@@ -248,13 +199,44 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
     }
   }, [onSuccess, onError])
 
+  const downloadRecording = useCallback(() => {
+    if (!mediaBlobUrl) {
+      onError?.('Yuklab olish uchun video mavjud emas')
+      return
+    }
+
+    try {
+      const a = document.createElement('a')
+      a.href = mediaBlobUrl
+      a.download = `camera-recorder-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      onSuccess?.('Video muvaffaqiyatli yuklab olindi')
+    } catch (err) {
+      onError?.('Video yuklab olishda xatolik yuz berdi')
+      console.error('Error downloading recording:', err)
+    }
+  }, [mediaBlobUrl, onSuccess, onError])
+
   const refreshCameras = useCallback(() => {
     getCameraDevices()
   }, [getCameraDevices])
 
-  const switchCamera = useCallback((deviceId: string) => {
-    setSelectedCamera(deviceId)
-  }, [])
+  const switchCamera = useCallback(
+    (deviceId: string) => {
+      setSelectedCamera(deviceId)
+      // If currently streaming, restart with new camera
+      if (isStreaming) {
+        stopCamera()
+        setTimeout(() => {
+          startCamera()
+        }, 500)
+      }
+    },
+    [isStreaming, stopCamera, startCamera],
+  )
 
   const getVideoQuality = useCallback(() => {
     if (!videoInfo) return 'Unknown'
@@ -276,6 +258,11 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
     }
   }, [videoInfo, getVideoQuality])
 
+  // Auto-refresh cameras on mount
+  useEffect(() => {
+    getCameraDevices()
+  }, [])
+
   // Cleanup effect
   useEffect(() => {
     return () => {
@@ -283,46 +270,37 @@ export const useCameraTest = (options: UseCameraTestOptions = {}) => {
     }
   }, [])
 
-  // Auto-refresh cameras on mount
-  useEffect(() => {
-    getCameraDevices()
-  }, [])
-
-  // Handle camera switching
-  useEffect(() => {
-    if (isStreaming && selectedCamera) {
-      // Restart camera with new device
-      stopCamera()
-      setTimeout(() => {
-        startCamera()
-      }, 100)
-    }
-  }, [selectedCamera])
-
   return {
     // Refs
     videoRef,
     canvasRef,
 
     // State
-    stream,
     isStreaming,
     cameras,
     selectedCamera,
     error,
     videoInfo,
-    isRecording,
-    recordedChunks: recordedChunks.length > 0,
+    screenshotCount,
+
+    // React Media Recorder state
+    status,
+    mediaBlobUrl,
+    previewStream,
+    isRecording: status === 'recording',
 
     // Actions
     startCamera,
     stopCamera,
     startRecording,
     stopRecording,
+    pauseRecording,
+    resumeRecording,
     downloadRecording,
     takeScreenshot,
     refreshCameras,
     switchCamera,
+    clearBlobUrl,
 
     // Utilities
     getCameraStats,
