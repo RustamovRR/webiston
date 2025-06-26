@@ -4,50 +4,37 @@ import { KeycodeInfo } from '@/modules/tools'
 export const metadata: Metadata = {
   title: "Keycode Ma'lumotlari - Keyboard Key Info Tool | Webiston",
   description:
-    "Klaviatura tugmalarining kodlarini va ma'lumotlarini ko'rish tool. Get keyboard key codes and information. Free online keycode detector and analyzer.",
+    "Klaviatura tugmalarining kodlarini va ma'lumotlarini aniqlash tool. Professional keyboard keycode detector va analyzer. Get keyboard key codes, detect key events.",
   keywords: [
-    'Keycode info',
-    'Keyboard codes',
-    'Key codes',
-    'Klaviatura kodlari',
-    'Keycode detector',
-    'Key events',
-    'Keyboard events',
+    'keycode info',
+    'klaviatura kodlari',
+    'keyboard codes',
+    'key codes',
+    'keycode detector',
+    'keyboard events',
+    'key events',
+    'keyboard tester',
+    'tugma kodlari',
+    'klaviatura test',
     'ASCII codes',
-    'Key bindings',
-    'Keyboard tester',
-    'Key press detector',
-    'Event codes',
+    'key bindings',
+    'keyboard shortcuts',
+    'key mapping',
+    'input events',
+    'event codes',
     'JavaScript keycode',
-    'Keyboard shortcuts',
-    'Key mapping',
-    'Input events',
-    'Developer tools',
-    'Dasturlash vositalari',
-    'Webiston tools',
-    'Foydali qurollar',
+    'developer tools',
+    'dasturlash vositalari',
+    'webiston tools',
+    'foydali qurollar',
   ],
-  openGraph: {
-    title: "Keycode Ma'lumotlari - Keyboard Key Info Tool | Webiston",
-    description:
-      "Klaviatura tugmalarining kodlarini va ma'lumotlarini ko'rish tool. Get keyboard key codes and information.",
-    type: 'website',
-    locale: 'uz_UZ',
-    siteName: 'Webiston',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: "Keycode Ma'lumotlari",
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: "Keycode Ma'lumotlari - Keyboard Key Info Tool",
-    description: "Klaviatura tugmalarining kodlarini va ma'lumotlarini ko'rish tool.",
-    images: ['/og-image.png'],
+  authors: [{ name: 'Webiston' }],
+  creator: 'Webiston',
+  publisher: 'Webiston',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
   },
   alternates: {
     canonical: '/tools/keycode-info',
@@ -55,6 +42,28 @@ export const metadata: Metadata = {
       'uz-UZ': '/tools/keycode-info',
       'en-US': '/tools/keycode-info',
     },
+  },
+  openGraph: {
+    title: "Keycode Ma'lumotlari - Professional Keyboard Key Info Tool",
+    description:
+      "Klaviatura tugmalarining kodlarini va ma'lumotlarini aniqlash. Professional keycode detector va analyzer.",
+    type: 'website',
+    locale: 'uz_UZ',
+    siteName: 'Webiston',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: "Keycode Ma'lumotlari Tool",
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Keycode Ma'lumotlari - Keyboard Key Info Tool",
+    description: "Klaviatura tugmalarining kodlarini va ma'lumotlarini aniqlash tool.",
+    images: ['/logo.png'],
   },
   robots: {
     index: true,
@@ -69,8 +78,45 @@ export const metadata: Metadata = {
   },
 }
 
+// Structured Data for SEO
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: "Keycode Ma'lumotlari - Keyboard Key Info",
+  description: "Professional klaviatura tugma kodlarini aniqlash va ma'lumot olish vositasi",
+  url: 'https://webiston.uz/tools/keycode-info',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  permissions: 'keyboard',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Webiston',
+    url: 'https://webiston.uz',
+  },
+  featureList: [
+    'Real-time Keycode Detection',
+    'Key Event Analysis',
+    'Keyboard Shortcuts Testing',
+    'Common Keys Reference',
+    'Key History Tracking',
+    'Professional Interface',
+    'Copy Key Information',
+    'Modifier Keys Support',
+  ],
+}
+
 const KeycodeInfoPage = () => {
-  return <KeycodeInfo />
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <KeycodeInfo />
+    </>
+  )
 }
 
 export default KeycodeInfoPage
