@@ -4,7 +4,7 @@ import { LatinCyrillic } from '@/modules/tools'
 export const metadata: Metadata = {
   title: "Lotin-Kirill O'giruvchi | Latin-Cyrillic Converter | Webiston",
   description:
-    "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan onlayn tool. Convert Uzbek text between Latin and Cyrillic scripts instantly and accurately.",
+    "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan professional onlayn tool. Convert Uzbek text between Latin and Cyrillic scripts instantly and accurately.",
   keywords: [
     'Lotin Kirill',
     'Latin Cyrillic',

@@ -19,6 +19,7 @@ import {
   User,
   MapPin,
   Globe2,
+  Server,
 } from 'lucide-react'
 
 export interface Tool {
@@ -196,6 +197,14 @@ export const TOOLS_LIST: Tool[] = [
     href: '/tools/website-status',
     icon: Globe2,
     color: 'bg-green-600',
+    category: 'utilities',
+  },
+  {
+    title: 'HTTP Status Kodlari',
+    description: "Barcha HTTP status kodlari va ularning ma'nolari",
+    href: '/tools/http-status',
+    icon: Server,
+    color: 'bg-slate-600',
     category: 'utilities',
   },
 ]
