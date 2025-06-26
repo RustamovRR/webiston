@@ -9,6 +9,7 @@ export * from './useJsonFormatter'
 export * from './useJwtDecoder'
 export * from './useKeycodeInfo'
 export * from './useLoremIpsum'
+// export * from './useMicrophoneTest' // Removed to prevent SSR Worker issues
 export * from './useOgMetaGenerator'
 export * from './usePasswordGenerator'
 export * from './useQrGenerator'

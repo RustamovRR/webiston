@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { MicrophoneTest } from '@/modules/tools'
+import { MicrophoneTestClient } from './MicrophoneTestClient'
 
 export const metadata: Metadata = {
   title: 'Mikrofon Test - Microphone Test Tool | Webiston',
@@ -68,8 +68,42 @@ export const metadata: Metadata = {
   },
 }
 
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Mikrofon Test - Microphone Test Tool',
+  description: "Mikrofoningizni sinab ko'ring, audio sifatini tekshiring va real-time visualizatsiya ko'ring",
+  url: 'https://webiston.uz/tools/microphone-test',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Any',
+  permissions: 'microphone',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  author: {
+    '@type': 'Organization',
+    name: 'Webiston',
+    url: 'https://webiston.uz',
+  },
+  featureList: [
+    'Microphone Testing',
+    'Audio Quality Analysis',
+    'Real-time Visualization',
+    'Audio Recording',
+    'Multiple Device Support',
+    'Professional Interface',
+  ],
+}
+
 const MicrophoneTestPage = () => {
-  return <MicrophoneTest />
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <MicrophoneTestClient />
+    </>
+  )
 }
 
 export default MicrophoneTestPage
