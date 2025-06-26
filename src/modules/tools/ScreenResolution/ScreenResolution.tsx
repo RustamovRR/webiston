@@ -1,405 +1,478 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Ruler, Monitor, Smartphone, RefreshCw } from 'lucide-react'
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import React from 'react'
+import { motion } from 'framer-motion'
 
-interface ScreenInfo {
-  width: number
-  height: number
-  availWidth: number
-  availHeight: number
-  colorDepth: number
-  pixelDepth: number
-  pixelRatio: number
-  orientation: string
-  innerWidth: number
-  innerHeight: number
-  outerWidth: number
-  outerHeight: number
-  scrollX: number
-  scrollY: number
-}
+// UI Components
+import { ShimmerButton } from '@/components/ui/shimmer-button'
 
-export default function ScreenResolutionPage() {
-  const [screenInfo, setScreenInfo] = useState<ScreenInfo | null>(null)
-  const [isFullscreen, setIsFullscreen] = useState(false)
+// Shared Components
+import { ToolHeader } from '@/components/shared'
+import { StatsDisplay } from '@/components/shared'
 
-  const getScreenInfo = () => {
-    const info: ScreenInfo = {
-      width: screen.width,
-      height: screen.height,
-      availWidth: screen.availWidth,
-      availHeight: screen.availHeight,
-      colorDepth: screen.colorDepth,
-      pixelDepth: screen.pixelDepth,
-      pixelRatio: window.devicePixelRatio,
-      orientation: screen.width > screen.height ? 'Landscape' : 'Portrait',
-      innerWidth: window.innerWidth,
-      innerHeight: window.innerHeight,
-      outerWidth: window.outerWidth,
-      outerHeight: window.outerHeight,
-      scrollX: window.scrollX,
-      scrollY: window.scrollY,
-    }
+// Utils & Hooks
+import { useScreenResolution } from '@/hooks/tools'
 
-    setScreenInfo(info)
-  }
+export default function ScreenResolution() {
+  const {
+    screenInfo,
+    isLoading,
+    isFullscreen,
+    refreshInfo,
+    toggleFullscreen,
+    loadSampleData,
+    downloadScreenInfo,
+    getScreenAnalysis,
+    getResolutionCategories,
+    getDeviceTypes,
+    getStats,
+  } = useScreenResolution()
 
-  useEffect(() => {
-    getScreenInfo()
-
-    const handleResize = () => {
-      getScreenInfo()
-    }
-
-    const handleScroll = () => {
-      setScreenInfo((prev) =>
-        prev
-          ? {
-              ...prev,
-              scrollX: window.scrollX,
-              scrollY: window.scrollY,
-            }
-          : null,
-      )
-    }
-
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement)
-      setTimeout(getScreenInfo, 100) // Small delay for accurate measurements
-    }
-
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('scroll', handleScroll)
-    window.addEventListener('orientationchange', handleResize)
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('orientationchange', handleResize)
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    }
-  }, [])
-
-  const refreshInfo = () => {
-    getScreenInfo()
-  }
-
-  const toggleFullscreen = async () => {
-    if (!document.fullscreenElement) {
-      try {
-        await document.documentElement.requestFullscreen()
-      } catch (err) {
-        console.error('Error entering fullscreen:', err)
-      }
-    } else {
-      try {
-        await document.exitFullscreen()
-      } catch (err) {
-        console.error('Error exiting fullscreen:', err)
-      }
-    }
-  }
-
-  const getDeviceType = () => {
-    if (!screenInfo) return 'Unknown'
-
-    const { width, height } = screenInfo
-    const maxDimension = Math.max(width, height)
-
-    if (maxDimension <= 768) return 'Mobile'
-    if (maxDimension <= 1024) return 'Tablet'
-    if (maxDimension <= 1920) return 'Desktop'
-    return 'Large Desktop'
-  }
-
-  const getResolutionCategory = () => {
-    if (!screenInfo) return 'Unknown'
-
-    const { width, height } = screenInfo
-    const pixels = width * height
-
-    if (pixels >= 3840 * 2160) return '4K UHD'
-    if (pixels >= 2560 * 1440) return '2K QHD'
-    if (pixels >= 1920 * 1080) return 'Full HD'
-    if (pixels >= 1366 * 768) return 'HD'
-    if (pixels >= 1024 * 768) return 'XGA'
-    return 'Lower Resolution'
-  }
-
-  const getAspectRatio = () => {
-    if (!screenInfo) return 'Unknown'
-
-    const { width, height } = screenInfo
-    const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
-    const divisor = gcd(width, height)
-
-    return `${width / divisor}:${height / divisor}`
-  }
-
-  if (!screenInfo) {
-    return (
-      <div className="mx-auto w-full max-w-4xl px-4">
-        <ToolHeader title="Ekran O'lchami" description="Ekran o'lchami va resolution ma'lumotlari" />
-        <div className="py-12 text-center">
-          <div className="text-lg text-zinc-400">Ma'lumotlar yuklanmoqda...</div>
-        </div>
-      </div>
-    )
-  }
+  const analysis = screenInfo ? getScreenAnalysis() : null
+  const stats = screenInfo ? getStats() : []
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4">
-      <ToolHeader title="Ekran O'lchami" description="Ekran o'lchami va resolution ma'lumotlari" />
-
-      {/* Controls */}
-      <Card className="mb-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-medium text-zinc-200">Ekran ma'lumotlari</h3>
-              <p className="text-sm text-zinc-400">Real vaqtda ekran o'lchami va resolution ma'lumotlari</p>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={refreshInfo} variant="outline" className="border-zinc-700">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Yangilash
-              </Button>
-              <Button onClick={toggleFullscreen} variant="outline" className="border-zinc-700">
-                <Monitor className="mr-2 h-4 w-4" />
-                {isFullscreen ? 'Fullscreen dan chiqish' : 'Fullscreen'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      {/* Overview Cards */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-400">
-              {screenInfo.width} × {screenInfo.height}
-            </div>
-            <div className="text-sm text-zinc-400">Ekran o'lchami</div>
-          </div>
-        </Card>
-
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-400">{getResolutionCategory()}</div>
-            <div className="text-sm text-zinc-400">Resolution turi</div>
-          </div>
-        </Card>
-
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-4 text-center">
-            <div className="text-2xl font-bold text-purple-400">{getAspectRatio()}</div>
-            <div className="text-sm text-zinc-400">Nisbat</div>
-          </div>
-        </Card>
-
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-400">{getDeviceType()}</div>
-            <div className="text-sm text-zinc-400">Qurilma turi</div>
-          </div>
-        </Card>
-      </div>
+    <div className="mx-auto w-full max-w-6xl px-4">
+      <ToolHeader
+        title="Ekran O'lchami"
+        description="Real vaqtda ekran o'lchami, rezolutsiya va displey ma'lumotlarini ko'ring"
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Screen Information */}
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-6">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                <Ruler className="h-5 w-5 text-blue-400" />
+        {/* Tool Kirish */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            <div className="flex items-center gap-2 border-b border-zinc-800 px-4 py-3">
+              <div className="flex gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
               </div>
-              <h3 className="text-lg font-semibold text-zinc-100">Ekran Ma'lumotlari</h3>
+              <span className="ml-2 text-sm font-medium text-zinc-300">Tool Kirish</span>
+              <div className="ml-auto flex items-center gap-2">
+                <div className={`h-2 w-2 rounded-full ${!isLoading ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                <span className="text-xs text-zinc-400">{!isLoading ? 'Tayyor' : 'Yuklanmoqda...'}</span>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-zinc-400">Umumiy o'lcham</div>
-                  <div className="font-mono text-zinc-100">
-                    {screenInfo.width} × {screenInfo.height}
-                  </div>
+            <div className="space-y-6 p-6">
+              {/* Boshqaruv tugmalari */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-zinc-200">Boshqaruv paneli</h3>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <ShimmerButton onClick={refreshInfo} disabled={isLoading} className="w-full">
+                    Ma'lumotlarni yangilash
+                  </ShimmerButton>
+                  <ShimmerButton onClick={toggleFullscreen} disabled={isLoading} className="w-full" variant="secondary">
+                    {isFullscreen ? 'Fullscreen dan chiqish' : 'Fullscreen rejimi'}
+                  </ShimmerButton>
                 </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Mavjud o'lcham</div>
-                  <div className="font-mono text-zinc-100">
-                    {screenInfo.availWidth} × {screenInfo.availHeight}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Rang chuqurligi</div>
-                  <div className="text-zinc-100">{screenInfo.colorDepth} bit</div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Piksel chuqurligi</div>
-                  <div className="text-zinc-100">{screenInfo.pixelDepth} bit</div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Piksel nisbati</div>
-                  <div className="text-zinc-100">{screenInfo.pixelRatio}x</div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Yo'nalish</div>
-                  <div className="text-zinc-100">{screenInfo.orientation}</div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <ShimmerButton onClick={loadSampleData} className="w-full" variant="outline">
+                    Demo ma'lumotlar
+                  </ShimmerButton>
+                  <ShimmerButton
+                    onClick={downloadScreenInfo}
+                    disabled={!screenInfo}
+                    className="w-full"
+                    variant="outline"
+                  >
+                    Ma'lumotlarni yuklab olish
+                  </ShimmerButton>
                 </div>
               </div>
+
+              {/* Statistika */}
+              {stats.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-zinc-300">Asosiy ko'rsatkichlar</h4>
+                  <StatsDisplay stats={stats} />
+                </div>
+              )}
             </div>
           </div>
-        </Card>
+        </motion.div>
 
-        {/* Browser Window */}
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-6">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                <Monitor className="h-5 w-5 text-green-400" />
+        {/* Tool Natija/Chiqish */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-6"
+        >
+          <div className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            <div className="flex items-center gap-2 border-b border-zinc-800 px-4 py-3">
+              <div className="flex gap-2">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
               </div>
-              <h3 className="text-lg font-semibold text-zinc-100">Brauzer Oynasi</h3>
+              <span className="ml-2 text-sm font-medium text-zinc-300">Tool Natija/Chiqish</span>
+              <div className="ml-auto flex items-center gap-2">
+                <div className={`h-2 w-2 rounded-full ${screenInfo ? 'bg-green-500' : 'bg-zinc-500'}`}></div>
+                <span className="text-xs text-zinc-400">{screenInfo ? "Ma'lumot mavjud" : "Ma'lumot yo'q"}</span>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-zinc-400">Ichki o'lcham</div>
-                  <div className="font-mono text-zinc-100">
-                    {screenInfo.innerWidth} × {screenInfo.innerHeight}
+            <div className="p-6">
+              {!screenInfo ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="mb-4 rounded-lg bg-zinc-800/50 p-4">
+                    <svg className="h-12 w-12 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="mb-2 text-lg font-medium text-zinc-300">Ma'lumot kutilmoqda</h3>
+                  <p className="mb-4 text-sm text-zinc-500">
+                    Ekran ma'lumotlarini olish uchun yuqoridagi tugmalardan birini bosing
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Asosiy ma'lumotlar */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-zinc-200">Ekran ma'lumotlari</h3>
+
+                    {/* Ekran o'lchami */}
+                    <div className="rounded-lg bg-zinc-800/30 p-4">
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <div className="text-2xl font-bold text-blue-400">
+                            {screenInfo.width} × {screenInfo.height}
+                          </div>
+                          <div className="text-sm text-zinc-400">Ekran o'lchami</div>
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-green-400">{analysis?.resolutionCategory}</div>
+                          <div className="text-sm text-zinc-400">Resolution turi</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Viewport ma'lumotlari */}
+                    <div className="rounded-lg bg-zinc-800/30 p-4">
+                      <h4 className="mb-3 text-sm font-medium text-zinc-300">Viewport ma'lumotlari</h4>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="space-y-1">
+                          <div className="text-lg font-semibold text-purple-400">
+                            {screenInfo.innerWidth} × {screenInfo.innerHeight}
+                          </div>
+                          <div className="text-xs text-zinc-500">Ichki o'lchami</div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="text-lg font-semibold text-orange-400">
+                            {screenInfo.outerWidth} × {screenInfo.outerHeight}
+                          </div>
+                          <div className="text-xs text-zinc-500">Tashqi o'lchami</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Qo'shimcha ma'lumotlar */}
+                    <div className="rounded-lg bg-zinc-800/30 p-4">
+                      <h4 className="mb-3 text-sm font-medium text-zinc-300">Texnik ma'lumotlar</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Pixel nisbati:</span>
+                          <span className="text-zinc-200">{screenInfo.pixelRatio}x</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Aspect ratio:</span>
+                          <span className="text-zinc-200">{analysis?.aspectRatio}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Yo'nalish:</span>
+                          <span className="text-zinc-200">{screenInfo.orientation}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Rang chuqurligi:</span>
+                          <span className="text-zinc-200">{screenInfo.colorDepth} bit</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Qurilma turi:</span>
+                          <span className="text-zinc-200">{analysis?.deviceType}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-zinc-400">Retina displey:</span>
+                          <span className="text-zinc-200">{analysis?.isRetina ? 'Ha' : "Yo'q"}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Scroll pozitsiyasi */}
+                    {(screenInfo.scrollX > 0 || screenInfo.scrollY > 0) && (
+                      <div className="rounded-lg bg-zinc-800/30 p-4">
+                        <h4 className="mb-3 text-sm font-medium text-zinc-300">Scroll pozitsiyasi</h4>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="space-y-1">
+                            <div className="text-lg font-semibold text-cyan-400">{screenInfo.scrollX}px</div>
+                            <div className="text-xs text-zinc-500">Gorizontal scroll</div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-lg font-semibold text-pink-400">{screenInfo.scrollY}px</div>
+                            <div className="text-xs text-zinc-500">Vertikal scroll</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Tashqi o'lcham</div>
-                  <div className="font-mono text-zinc-100">
-                    {screenInfo.outerWidth} × {screenInfo.outerHeight}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Scroll X</div>
-                  <div className="text-zinc-100">{Math.round(screenInfo.scrollX)}px</div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Scroll Y</div>
-                  <div className="text-zinc-100">{Math.round(screenInfo.scrollY)}px</div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Fullscreen</div>
-                  <div className={`${isFullscreen ? 'text-green-400' : 'text-red-400'}`}>
-                    {isFullscreen ? 'Ha' : "Yo'q"}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-400">Umumiy piksellar</div>
-                  <div className="text-zinc-100">{(screenInfo.width * screenInfo.height).toLocaleString()}</div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
-        </Card>
-
-        {/* Resolution Categories */}
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-6">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
-                <Smartphone className="h-5 w-5 text-purple-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-zinc-100">Resolution Turlari</h3>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              {[
-                { name: '4K UHD', resolution: '3840×2160', active: getResolutionCategory() === '4K UHD' },
-                { name: '2K QHD', resolution: '2560×1440', active: getResolutionCategory() === '2K QHD' },
-                { name: 'Full HD', resolution: '1920×1080', active: getResolutionCategory() === 'Full HD' },
-                { name: 'HD', resolution: '1366×768', active: getResolutionCategory() === 'HD' },
-                { name: 'XGA', resolution: '1024×768', active: getResolutionCategory() === 'XGA' },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className={`flex justify-between rounded p-2 ${
-                    item.active ? 'bg-blue-500/20 text-blue-400' : 'text-zinc-400'
-                  }`}
-                >
-                  <span>{item.name}</span>
-                  <span className="font-mono">{item.resolution}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        {/* Device Types */}
-        <Card className="border-zinc-800 bg-zinc-900/80">
-          <div className="p-6">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10">
-                <Monitor className="h-5 w-5 text-orange-400" />
-              </div>
-              <h3 className="text-lg font-semibold text-zinc-100">Qurilma Turlari</h3>
-            </div>
-
-            <div className="space-y-2 text-sm">
-              {[
-                { name: 'Mobile', range: '≤ 768px', active: getDeviceType() === 'Mobile' },
-                { name: 'Tablet', range: '769px - 1024px', active: getDeviceType() === 'Tablet' },
-                { name: 'Desktop', range: '1025px - 1920px', active: getDeviceType() === 'Desktop' },
-                { name: 'Large Desktop', range: '> 1920px', active: getDeviceType() === 'Large Desktop' },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className={`flex justify-between rounded p-2 ${
-                    item.active ? 'bg-green-500/20 text-green-400' : 'text-zinc-400'
-                  }`}
-                >
-                  <span>{item.name}</span>
-                  <span className="font-mono text-xs">{item.range}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
+        </motion.div>
       </div>
 
-      {/* Help Section */}
-      <Card className="mt-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-6">
-          <h4 className="mb-3 font-medium text-zinc-200">Ekran o'lchami vositasi haqida</h4>
-          <div className="space-y-2 text-sm text-zinc-400">
-            <p>
-              • <strong>Umumiy o'lcham:</strong> Ekranning to'liq fizik o'lchami
-            </p>
-            <p>
-              • <strong>Mavjud o'lcham:</strong> Taskbar va boshqa tizim elementlaridan tashqari
-            </p>
-            <p>
-              • <strong>Ichki o'lcham:</strong> Brauzer oynasining kontent maydoni
-            </p>
-            <p>
-              • <strong>Tashqi o'lcham:</strong> Brauzer oynasining to'liq o'lchami
-            </p>
-            <p>
-              • <strong>Piksel nisbati:</strong> Fizik va mantiqiy piksellar nisbati (Retina ekranlar uchun)
-            </p>
-            <p>
-              • <strong>Scroll:</strong> Sahifa gorizontal va vertikal scroll pozitsiyasi
+      {/* Qo'shimcha ma'lumotlar */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
+        {/* Resolution turlari */}
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+          <h3 className="mb-4 text-lg font-semibold text-zinc-200">Resolution turlari</h3>
+          <div className="space-y-3">
+            {getResolutionCategories().map((category, index) => (
+              <div
+                key={index}
+                className={`flex items-center justify-between rounded-lg p-3 transition-colors ${
+                  analysis?.resolutionCategory === category.name
+                    ? 'border border-blue-500/30 bg-blue-500/20'
+                    : 'bg-zinc-800/30'
+                }`}
+              >
+                <div>
+                  <div className="font-medium text-zinc-300">{category.name}</div>
+                  <div className="text-xs text-zinc-500">{category.resolution}</div>
+                </div>
+                {analysis?.resolutionCategory === category.name && (
+                  <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Qurilma turlari */}
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+          <h3 className="mb-4 text-lg font-semibold text-zinc-200">Qurilma turlari</h3>
+          <div className="space-y-3">
+            {getDeviceTypes().map((device, index) => (
+              <div
+                key={index}
+                className={`flex items-center justify-between rounded-lg p-3 transition-colors ${
+                  analysis?.deviceType === device.name ? 'border border-green-500/30 bg-green-500/20' : 'bg-zinc-800/30'
+                }`}
+              >
+                <div>
+                  <div className="font-medium text-zinc-300">{device.name}</div>
+                  <div className="text-xs text-zinc-500">{device.range}</div>
+                </div>
+                {analysis?.deviceType === device.name && <div className="h-2 w-2 rounded-full bg-green-500"></div>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fullscreen rejimi */}
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+          <h3 className="mb-4 text-lg font-semibold text-zinc-200">Rejim ma'lumotlari</h3>
+          <div className="space-y-4">
+            <div
+              className={`flex items-center justify-between rounded-lg p-3 ${
+                isFullscreen ? 'border border-purple-500/30 bg-purple-500/20' : 'bg-zinc-800/30'
+              }`}
+            >
+              <span className="text-zinc-300">Fullscreen rejimi</span>
+              <div className={`h-2 w-2 rounded-full ${isFullscreen ? 'bg-purple-500' : 'bg-zinc-500'}`}></div>
+            </div>
+
+            {analysis && (
+              <div
+                className={`flex items-center justify-between rounded-lg p-3 ${
+                  analysis.isRetina ? 'border border-yellow-500/30 bg-yellow-500/20' : 'bg-zinc-800/30'
+                }`}
+              >
+                <span className="text-zinc-300">Retina displey</span>
+                <div className={`h-2 w-2 rounded-full ${analysis.isRetina ? 'bg-yellow-500' : 'bg-zinc-500'}`}></div>
+              </div>
+            )}
+
+            {analysis && (
+              <div className="rounded-lg bg-zinc-800/30 p-3">
+                <div className="mb-1 text-sm text-zinc-400">Viewport foizi</div>
+                <div className="text-lg font-semibold text-cyan-400">{analysis.viewportRatio}%</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Info panel - Professional dizayn */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm"
+      >
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <svg className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          Ekran O'lchami va Displey Ma'lumotlari
+        </h3>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-blue-400"></div>
+              Real-time Monitoring
+            </h4>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Ekran o'lchami, viewport ma'lumotlari va qurilma spetsifikatsiyalarini real vaqtda kuzating. Brauzer
+              oynasi o'lchami va scroll pozitsiyasini instant tracking.
             </p>
           </div>
 
-          <div className="mt-4 rounded-lg bg-blue-500/10 p-3">
-            <div className="text-sm text-blue-400">
-              <strong>Maslahat:</strong> Responsive dizayn uchun turli ekran o'lchamlarida saytingizni sinab ko'ring.
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-green-400"></div>
+              Professional Testing
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Responsive web dizayn testing</li>
+              <li>• Cross-device compatibility check</li>
+              <li>• Fullscreen mode analysis</li>
+              <li>• Pixel ratio va Retina detection</li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-purple-400"></div>
+              Technical Analysis
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Resolution category detection</li>
+              <li>• Device type classification</li>
+              <li>• Aspect ratio calculation</li>
+              <li>• JSON export functionality</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Resolution Standards */}
+        <div className="mt-6 rounded-lg border border-zinc-700/30 bg-zinc-800/30 p-4">
+          <h4 className="mb-3 flex items-center gap-2 font-semibold text-zinc-200">
+            <svg className="h-4 w-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v18a1 1 0 01-1 1H4a1 1 0 01-1-1V1a1 1 0 011-1h2a1 1 0 011 1v3"
+              />
+            </svg>
+            Resolution Standards va Qurilma Turlari
+          </h4>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="mb-2 text-xs text-zinc-500">Popular Resolution'lar:</p>
+              <div className="space-y-2">
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">4K UHD</span>
+                  <code className="text-blue-400">3840×2160</code>
+                </div>
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">Full HD</span>
+                  <code className="text-blue-400">1920×1080</code>
+                </div>
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">HD</span>
+                  <code className="text-blue-400">1366×768</code>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="mb-2 text-xs text-zinc-500">Device Categories:</p>
+              <div className="space-y-2">
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">Mobile</span>
+                  <code className="text-green-400">≤ 768px</code>
+                </div>
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">Tablet</span>
+                  <code className="text-green-400">769px - 1024px</code>
+                </div>
+                <div className="flex justify-between rounded bg-zinc-900/50 p-2 text-sm">
+                  <span className="text-zinc-300">Desktop</span>
+                  <code className="text-green-400">1025px+</code>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </Card>
+
+        {/* Professional Tips */}
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg bg-blue-500/10 p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <svg className="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="text-sm font-medium text-blue-400">Web Development</span>
+            </div>
+            <p className="text-sm text-zinc-400">
+              Responsive dizayn uchun breakpoint'larni to'g'ri sozlang. Mobile-first yondashuvni qo'llang va har xil
+              qurilmalarda test qiling.
+            </p>
+          </div>
+
+          <div className="rounded-lg bg-green-500/10 p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <svg className="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className="text-sm font-medium text-green-400">Quality Assurance</span>
+            </div>
+            <p className="text-sm text-zinc-400">
+              Cross-browser testing uchun turli qurilma o'lchamlarini simulyatsiya qiling. Retina displeylar uchun
+              alohida test qiling.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-lg bg-cyan-500/10 p-4">
+          <div className="text-sm text-cyan-400">
+            <strong>💡 Professional Tip:</strong> Viewport meta tag'ni to'g'ri sozlash responsive dizayn uchun muhim.
+            <code className="mx-1 rounded bg-cyan-400/20 px-1 text-cyan-300">
+              &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+            </code>
+            ishlatishni unutmang.
+          </div>
+        </div>
+      </motion.div>
     </div>
   )
 }
