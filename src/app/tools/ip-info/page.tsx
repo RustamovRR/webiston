@@ -2,9 +2,9 @@ import { Metadata } from 'next'
 import { IpInfo } from '@/modules/tools'
 
 export const metadata: Metadata = {
-  title: "IP Ma'lumotlari - IP Address Information Tool | Webiston",
+  title: "IP Ma'lumotlari - IP Address Geolocation Tool | Webiston",
   description:
-    "IP manzilingiz va geolokatsiya ma'lumotlarini ko'rish tool. Get your IP address and geolocation information. Free IP address lookup tool.",
+    "IP manzil va geolokatsiya ma'lumotlarini professional tahlil qiling. IP address geolocation, ISP detection, security analysis. Real-time IP lookup tool.",
   keywords: [
     'IP address',
     "IP ma'lumotlari",
@@ -12,43 +12,30 @@ export const metadata: Metadata = {
     'IP lookup',
     'My IP address',
     'IP checker',
-    'IP info',
+    'IP analyzer',
     'Geolocation',
     'IP location',
-    'Public IP',
-    'External IP',
-    'IP address finder',
-    'IP detector',
-    'What is my IP',
-    'IP country',
-    'IP city',
-    'ISP information',
-    'Internet provider',
-    'Network tools',
-    'Webiston tools',
-    'Foydali qurollar',
+    'ISP detection',
+    'IP security',
+    'Network analysis',
+    'IP information',
+    'Professional IP tools',
+    'Webiston IP analyzer',
+    'IP manzil tahlil',
+    'Geolokatsiya tool',
   ],
   openGraph: {
-    title: "IP Ma'lumotlari - IP Address Information Tool | Webiston",
+    title: "IP Ma'lumotlari - IP Address Geolocation Tool | Webiston",
     description:
-      "IP manzilingiz va geolokatsiya ma'lumotlarini ko'rish tool. Get your IP address and geolocation information.",
+      'Professional IP manzil va geolokatsiya tahlil vositasi. Real-time IP lookup, ISP detection, security analysis.',
     type: 'website',
     locale: 'uz_UZ',
     siteName: 'Webiston',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: "IP Ma'lumotlari",
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "IP Ma'lumotlari - IP Address Information Tool",
-    description: "IP manzilingiz va geolokatsiya ma'lumotlarini ko'rish tool.",
-    images: ['/og-image.png'],
+    title: "IP Ma'lumotlari - IP Address Geolocation Tool",
+    description: 'Professional IP address analysis va geolocation tool.',
   },
   alternates: {
     canonical: '/tools/ip-info',

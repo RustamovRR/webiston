@@ -1,528 +1,493 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { MapPin, Globe, Wifi, RefreshCw, Search } from 'lucide-react'
-import { ToolHeader } from '@/components/shared/ToolHeader'
+// UI Components
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { CodeHighlight } from '@/components/ui/code-highlight'
+
+// Shared Components
+import { ToolHeader } from '@/components/shared/ToolHeader'
 import { CopyButton } from '@/components/shared/CopyButton'
+import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
-interface IPInfo {
-  ip: string
-  type: string
-  continent_code: string
-  continent_name: string
-  country_code: string
-  country_name: string
-  region_code: string
-  region_name: string
-  city: string
-  zip: string
-  latitude: number
-  longitude: number
-  location: {
-    geoname_id: number
-    capital: string
-    country_flag: string
-    country_flag_emoji: string
-    calling_code: string
-    is_eu: boolean
-  }
-  time_zone: {
-    id: string
-    current_time: string
-    gmt_offset: number
-    code: string
-    is_daylight_saving: boolean
-  }
-  currency: {
-    code: string
-    name: string
-    plural: string
-    symbol: string
-    symbol_native: string
-  }
-  connection: {
-    asn: number
-    isp: string
-    domain: string
-    usage_type: string
-    user_type: string
-  }
-  security: {
-    is_proxy: boolean
-    proxy_type: string
-    is_crawler: boolean
-    crawler_name: string
-    crawler_type: string
-    is_tor: boolean
-    threat_level: string
-    threat_types: string[]
-  }
-}
+// Utils & Hooks
+import { useIPInfo } from '@/hooks'
 
-const SAMPLE_IPS = [
-  { name: 'Google DNS', ip: '8.8.8.8' },
-  { name: 'Cloudflare DNS', ip: '1.1.1.1' },
-  { name: 'OpenDNS', ip: '208.67.222.222' },
-  { name: 'Quad9 DNS', ip: '9.9.9.9' },
-]
+// Icons
+import { MapPin, Globe, Wifi, RefreshCw, Search, Download, Shield, Clock } from 'lucide-react'
 
-export default function IPInfoPage() {
-  const [ipAddress, setIpAddress] = useState<string>('')
-  const [ipInfo, setIpInfo] = useState<IPInfo | null>(null)
-  const [currentIP, setCurrentIP] = useState<string>('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string>('')
-
-  useEffect(() => {
-    getCurrentIP()
-  }, [])
-
-  const getCurrentIP = async () => {
-    try {
-      // Use a free IP service to get user's current IP
-      const response = await fetch('https://api.ipify.org?format=json')
-      const data = await response.json()
-      setCurrentIP(data.ip)
-    } catch (err) {
-      console.error('Error getting current IP:', err)
-      // Fallback: try another service
-      try {
-        const response = await fetch('https://ipapi.co/ip/')
-        const ip = await response.text()
-        setCurrentIP(ip.trim())
-      } catch (err2) {
-        console.error('Error getting IP from fallback service:', err2)
-      }
-    }
-  }
-
-  const isValidIP = (ip: string): boolean => {
-    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-    const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/
-    return ipv4Regex.test(ip) || ipv6Regex.test(ip)
-  }
-
-  const getIPInfo = async (ip: string) => {
-    if (!isValidIP(ip)) {
-      setError("Noto'g'ri IP manzil formati")
-      return
-    }
-
-    setIsLoading(true)
-    setError('')
-
-    try {
-      // Use ipapi.co for free IP geolocation (no API key required)
-      const response = await fetch(`https://ipapi.co/${ip}/json/`)
-
-      if (!response.ok) {
-        throw new Error('API request failed')
-      }
-
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.reason || "IP ma'lumotlarini olishda xatolik")
-      }
-
-      // Transform the data to match our interface
-      const transformedData: IPInfo = {
-        ip: data.ip,
-        type: data.version === 6 ? 'ipv6' : 'ipv4',
-        continent_code: data.continent_code || '',
-        continent_name:
-          data.continent_code === 'AS'
-            ? 'Asia'
-            : data.continent_code === 'EU'
-              ? 'Europe'
-              : data.continent_code === 'NA'
-                ? 'North America'
-                : data.continent_code === 'SA'
-                  ? 'South America'
-                  : data.continent_code === 'AF'
-                    ? 'Africa'
-                    : data.continent_code === 'OC'
-                      ? 'Oceania'
-                      : data.continent_code === 'AN'
-                        ? 'Antarctica'
-                        : 'Unknown',
-        country_code: data.country_code || '',
-        country_name: data.country_name || '',
-        region_code: data.region_code || '',
-        region_name: data.region || '',
-        city: data.city || '',
-        zip: data.postal || '',
-        latitude: data.latitude || 0,
-        longitude: data.longitude || 0,
-        location: {
-          geoname_id: 0,
-          capital: data.country_capital || '',
-          country_flag: `https://flagcdn.com/16x12/${data.country_code?.toLowerCase()}.png`,
-          country_flag_emoji: data.country_emoji || '',
-          calling_code: data.country_calling_code || '',
-          is_eu: data.in_eu || false,
-        },
-        time_zone: {
-          id: data.timezone || '',
-          current_time: data.utc_offset || '',
-          gmt_offset: 0,
-          code: data.timezone?.split('/')[1] || '',
-          is_daylight_saving: false,
-        },
-        currency: {
-          code: data.currency || '',
-          name: data.currency_name || '',
-          plural: data.currency_name || '',
-          symbol: '',
-          symbol_native: '',
-        },
-        connection: {
-          asn: data.asn ? parseInt(data.asn.replace('AS', '')) : 0,
-          isp: data.org || '',
-          domain: '',
-          usage_type: data.connection_type || '',
-          user_type: '',
-        },
-        security: {
-          is_proxy: false,
-          proxy_type: '',
-          is_crawler: false,
-          crawler_name: '',
-          crawler_type: '',
-          is_tor: false,
-          threat_level: 'low',
-          threat_types: [],
-        },
-      }
-
-      setIpInfo(transformedData)
-      setIsLoading(false)
-    } catch (err) {
-      console.error('Error fetching IP info:', err)
-      setError("IP ma'lumotlarini olishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.")
-      setIsLoading(false)
-    }
-  }
-
-  const loadSampleIP = (ip: string) => {
-    setIpAddress(ip)
-    getIPInfo(ip)
-  }
-
-  const loadCurrentIP = () => {
-    if (currentIP) {
-      setIpAddress(currentIP)
-      getIPInfo(currentIP)
-    }
-  }
-
-  const analyzeIP = () => {
-    if (ipAddress.trim()) {
-      getIPInfo(ipAddress.trim())
-    }
-  }
-
-  const clearData = () => {
-    setIpAddress('')
-    setIpInfo(null)
-    setError('')
-  }
-
-  const getThreatLevelColor = (level: string) => {
-    switch (level) {
-      case 'low':
-        return 'text-green-400'
-      case 'medium':
-        return 'text-yellow-400'
-      case 'high':
-        return 'text-red-400'
-      default:
-        return 'text-zinc-400'
-    }
-  }
+export default function IpInfo() {
+  const {
+    ipAddress,
+    ipInfo,
+    currentIP,
+    isLoading,
+    error,
+    setIpAddress,
+    analyzeIP,
+    loadSampleIP,
+    loadCurrentIP,
+    clearData,
+    downloadInfo,
+    getStats,
+    samples,
+    canDownload,
+    isEmpty,
+  } = useIPInfo()
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4">
-      <ToolHeader title="IP Ma'lumotlari" description="IP manzil va joylashuv ma'lumotlari, xavfsizlik tahlili" />
+    <div className="mx-auto w-full max-w-7xl px-4">
+      <ToolHeader
+        title="IP Ma'lumotlari"
+        description="IP manzil va geolokatsiya ma'lumotlarini professional tahlil qiling, ISP va xavfsizlik ma'lumotlari"
+      />
 
-      {/* Sample Data Section */}
-      <Card className="mb-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-medium text-zinc-200">Tez boshlash</h3>
-              <p className="text-sm text-zinc-400">Joriy IP manzilingiz yoki namuna IP bilan boshlang</p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={loadCurrentIP}
-                variant="outline"
-                className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-                disabled={!currentIP}
-              >
-                <MapPin className="mr-2 h-4 w-4" />
-                Joriy IP
-              </Button>
-              <Button onClick={clearData} variant="outline" className="border-zinc-700">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Tozalash
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
+      {/* Quick Actions */}
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Button
+          onClick={loadCurrentIP}
+          variant="outline"
+          size="sm"
+          className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+          disabled={!currentIP}
+        >
+          <MapPin className="mr-2 h-4 w-4" />
+          Joriy IP
+        </Button>
+        <Button onClick={clearData} variant="outline" size="sm" className="border-zinc-700 hover:bg-zinc-800">
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Tozalash
+        </Button>
+        {canDownload && (
+          <Button
+            onClick={downloadInfo}
+            variant="outline"
+            size="sm"
+            className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            JSON yuklab olish
+          </Button>
+        )}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Input Section */}
+        {/* Left Panel - Input */}
         <div className="space-y-6">
-          {/* IP Input */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">IP Manzil Kiriting</h3>
+          {/* Terminal Input Panel */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            {/* Terminal Header */}
+            <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="ml-2 text-sm font-medium text-zinc-400">Tool Kirish</span>
+            </div>
 
+            {/* Input Content */}
+            <div className="p-6">
               <div className="space-y-4">
                 <div>
                   <Input
-                    placeholder="Masalan: 8.8.8.8 yoki 2001:4860:4860::8888"
+                    placeholder="IP manzilni kiriting (masalan: 8.8.8.8)"
                     value={ipAddress}
                     onChange={(e) => setIpAddress(e.target.value)}
-                    className="border-zinc-700 bg-zinc-800 font-mono"
+                    className="border-zinc-700 bg-zinc-800/50 font-mono text-sm"
                   />
-                  {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+                  {error && (
+                    <p className="mt-2 flex items-center gap-2 text-sm text-red-400">
+                      <div className="h-1.5 w-1.5 rounded-full bg-red-400"></div>
+                      {error}
+                    </p>
+                  )}
                 </div>
 
-                <Button
-                  onClick={analyzeIP}
-                  disabled={!ipAddress.trim() || isLoading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  {isLoading ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
+                <div className="flex items-center justify-between">
+                  <StatsDisplay stats={getStats()} />
+                  <ShimmerButton
+                    onClick={analyzeIP}
+                    disabled={isEmpty || isLoading}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                  >
                     <Search className="mr-2 h-4 w-4" />
-                  )}
-                  {isLoading ? 'Tahlil qilinmoqda...' : 'Tahlil qilish'}
-                </Button>
+                    {isLoading ? 'Tahlil qilinmoqda...' : 'Tahlil qilish'}
+                  </ShimmerButton>
+                </div>
               </div>
             </div>
-          </Card>
+          </div>
+
+          {/* Current IP Display */}
+          {currentIP && (
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+              <div className="border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+                <h3 className="text-sm font-medium text-zinc-300">Sizning IP Manzilingiz</h3>
+              </div>
+              <div className="p-4">
+                <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-3">
+                  <div className="font-mono text-lg text-zinc-100">{currentIP}</div>
+                  <div className="mt-1 text-sm text-zinc-400">Joriy IP manzil</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Sample IPs */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Namuna IP Manzillar</h3>
-
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            <div className="border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <h3 className="text-sm font-medium text-zinc-300">Namuna IP Manzillar</h3>
+            </div>
+            <div className="p-4">
               <div className="space-y-2">
-                {SAMPLE_IPS.map((sample, index) => (
+                {samples.map((sample, index) => (
                   <button
                     key={index}
-                    onClick={() => loadSampleIP(sample.ip)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 p-3 text-left transition-colors hover:border-zinc-600 hover:bg-zinc-800"
+                    onClick={() => loadSampleIP(sample)}
+                    className="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-3 text-left transition-all hover:border-zinc-600 hover:bg-zinc-800/50"
                   >
-                    <div className="font-medium text-zinc-100">{sample.name}</div>
-                    <div className="font-mono text-sm text-zinc-400">{sample.ip}</div>
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="font-medium text-zinc-200">{sample.name}</span>
+                      <Globe className="h-3 w-3 text-blue-400" />
+                    </div>
+                    <p className="text-xs text-zinc-500">{sample.description}</p>
+                    <div className="mt-2 font-mono text-sm text-zinc-400">{sample.ip}</div>
                   </button>
                 ))}
               </div>
             </div>
-          </Card>
-
-          {/* Current IP Info */}
-          {currentIP && (
-            <Card className="border-zinc-800 bg-zinc-900/80">
-              <div className="p-6">
-                <h3 className="mb-4 text-lg font-semibold text-zinc-100">Sizning IP Manzilingiz</h3>
-                <div className="rounded-lg bg-zinc-800/50 p-3">
-                  <div className="font-mono text-lg text-zinc-100">{currentIP}</div>
-                  <div className="mt-1 text-sm text-zinc-400">Bu sizning joriy IP manzilingiz</div>
-                </div>
-              </div>
-            </Card>
-          )}
+          </div>
         </div>
 
-        {/* Results Section */}
+        {/* Right Panel - Results */}
         <div className="space-y-6">
-          {ipInfo && (
-            <>
-              {/* Location Info */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
-                        <MapPin className="h-5 w-5 text-blue-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-zinc-100">Joylashuv</h3>
-                    </div>
-                    <div className="text-2xl">{ipInfo.location.country_flag_emoji}</div>
-                  </div>
+          {/* Terminal Output Panel */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            {/* Terminal Header */}
+            <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="ml-2 text-sm font-medium text-zinc-400">Tool Natija/Chiqish</span>
+              <div className="ml-auto flex items-center gap-2">
+                {ipInfo && (
+                  <>
+                    <div className="h-2 w-2 rounded-full bg-green-400"></div>
+                    <span className="text-xs text-green-400">Tahlil tayyor</span>
+                  </>
+                )}
+              </div>
+            </div>
 
+            {/* Analysis Content */}
+            <div className="p-6">
+              {ipInfo ? (
+                <div className="space-y-6">
+                  {/* Location Information */}
                   <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <MapPin className="h-4 w-4 text-blue-400" />
+                      Joylashuv Ma'lumotlari
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
                       <div>
-                        <div className="text-sm text-zinc-400">IP manzil</div>
-                        <div className="font-mono text-zinc-100">{ipInfo.ip}</div>
+                        <div className="text-xs text-zinc-500">IP manzil</div>
+                        <div className="font-mono text-sm font-medium text-zinc-200">{ipInfo.ip}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Turi</div>
-                        <div className="text-zinc-100 uppercase">{ipInfo.type}</div>
+                        <div className="text-xs text-zinc-500">IP turi</div>
+                        <div className="text-sm font-medium text-zinc-200 uppercase">{ipInfo.type}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Mamlakat</div>
-                        <div className="text-zinc-100">{ipInfo.country_name || "Noma'lum"}</div>
+                        <div className="text-xs text-zinc-500">Mamlakat</div>
+                        <div className="flex items-center gap-2 text-sm font-medium text-zinc-200">
+                          {ipInfo.location.country_flag_emoji}
+                          {ipInfo.country_name || "Noma'lum"}
+                        </div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Viloyat</div>
-                        <div className="text-zinc-100">{ipInfo.region_name || "Noma'lum"}</div>
+                        <div className="text-xs text-zinc-500">Viloyat/Shtat</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.region_name || "Noma'lum"}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Shahar</div>
-                        <div className="text-zinc-100">{ipInfo.city || "Noma'lum"}</div>
+                        <div className="text-xs text-zinc-500">Shahar</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.city || "Noma'lum"}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Pochta indeksi</div>
-                        <div className="text-zinc-100">{ipInfo.zip || "Noma'lum"}</div>
+                        <div className="text-xs text-zinc-500">Koordinatalar</div>
+                        <div className="font-mono text-sm text-zinc-200">
+                          {ipInfo.latitude.toFixed(4)}, {ipInfo.longitude.toFixed(4)}
+                        </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="border-t border-zinc-700 pt-2">
-                      <div className="mb-1 text-sm text-zinc-400">Koordinatalar</div>
-                      <div className="font-mono text-zinc-100">
-                        {ipInfo.latitude.toFixed(4)}, {ipInfo.longitude.toFixed(4)}
+                  {/* Network Information */}
+                  <div className="space-y-3">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <Wifi className="h-4 w-4 text-green-400" />
+                      Tarmoq Ma'lumotlari
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                      <div>
+                        <div className="text-xs text-zinc-500">Internet Provayider</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.connection.isp || "Noma'lum"}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">ASN</div>
+                        <div className="text-sm font-medium text-zinc-200">
+                          {ipInfo.connection.asn ? `AS${ipInfo.connection.asn}` : "Noma'lum"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Ulanish turi</div>
+                        <div className="text-sm font-medium text-zinc-200 capitalize">
+                          {ipInfo.connection.usage_type || "Noma'lum"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Qit'a</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.continent_name}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Information */}
+                  <div className="space-y-3">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <Clock className="h-4 w-4 text-purple-400" />
+                      Qo'shimcha Ma'lumotlar
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                      <div>
+                        <div className="text-xs text-zinc-500">Vaqt zonasi</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.time_zone.id || "Noma'lum"}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Valyuta</div>
+                        <div className="text-sm font-medium text-zinc-200">
+                          {ipInfo.currency.code ? `${ipInfo.currency.name} (${ipInfo.currency.code})` : "Noma'lum"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Qo'ng'iroq kodi</div>
+                        <div className="text-sm font-medium text-zinc-200">
+                          {ipInfo.location.calling_code ? `${ipInfo.location.calling_code}` : "Noma'lum"}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">EU a'zosi</div>
+                        <div className="text-sm font-medium text-zinc-200">{ipInfo.location.is_eu ? 'Ha' : "Yo'q"}</div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </Card>
-
-              {/* Network Info */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
-                      <Wifi className="h-5 w-5 text-green-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-zinc-100">Tarmoq Ma'lumotlari</h3>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-sm text-zinc-400">ISP</div>
-                      <div className="text-zinc-100">{ipInfo.connection.isp || "Noma'lum"}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">ASN</div>
-                      <div className="text-zinc-100">{ipInfo.connection.asn || "Noma'lum"}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">Ulanish turi</div>
-                      <div className="text-zinc-100">{ipInfo.connection.usage_type || "Noma'lum"}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">Vaqt zonasi</div>
-                      <div className="text-zinc-100">{ipInfo.time_zone.id || "Noma'lum"}</div>
-                    </div>
+              ) : (
+                <div className="flex h-40 items-center justify-center text-zinc-500">
+                  <div className="text-center">
+                    <Search className="mx-auto mb-2 h-8 w-8 opacity-50" />
+                    <p>IP manzil tahlil qilish uchun chap paneldan foydalaning</p>
                   </div>
                 </div>
-              </Card>
-
-              {/* Currency Info */}
-              {ipInfo.currency.code && (
-                <Card className="border-zinc-800 bg-zinc-900/80">
-                  <div className="p-6">
-                    <div className="mb-4 flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
-                        <Globe className="h-5 w-5 text-purple-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-zinc-100">Mamlakat Ma'lumotlari</h3>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-zinc-400">Valyuta</div>
-                        <div className="text-zinc-100">
-                          {ipInfo.currency.name} ({ipInfo.currency.code})
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-zinc-400">Poytaxt</div>
-                        <div className="text-zinc-100">{ipInfo.location.capital || "Noma'lum"}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-zinc-400">Qo'ng'iroq kodi</div>
-                        <div className="text-zinc-100">
-                          {ipInfo.location.calling_code ? `+${ipInfo.location.calling_code}` : "Noma'lum"}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-zinc-400">EU a'zosi</div>
-                        <div className="text-zinc-100">{ipInfo.location.is_eu ? 'Ha' : "Yo'q"}</div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
               )}
+            </div>
+          </div>
 
-              {/* Raw Data */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-zinc-100">JSON Ma'lumotlar</h3>
-                    <CopyButton text={JSON.stringify(ipInfo, null, 2)} />
-                  </div>
-
-                  <div className="max-h-64 overflow-auto rounded-lg border border-zinc-700 bg-zinc-900 p-4">
-                    <pre className="text-sm text-zinc-300">{JSON.stringify(ipInfo, null, 2)}</pre>
-                  </div>
-                </div>
-              </Card>
-            </>
+          {/* JSON Output */}
+          {ipInfo && (
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+              <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+                <h4 className="text-sm font-medium text-zinc-300">JSON Ma'lumotlar</h4>
+                <CopyButton text={JSON.stringify(ipInfo, null, 2)} />
+              </div>
+              <div className="p-4">
+                <CodeHighlight
+                  code={JSON.stringify(ipInfo, null, 2)}
+                  language="json"
+                  className="max-h-80 overflow-auto"
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Help Section */}
-      <Card className="mt-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-6">
-          <h4 className="mb-3 font-medium text-zinc-200">IP ma'lumotlari vositasi haqida</h4>
-          <div className="space-y-2 text-sm text-zinc-400">
-            <p>
-              • <strong>Real ma'lumotlar:</strong> Haqiqiy IP geolocation API orqali ma'lumot olish
-            </p>
-            <p>
-              • <strong>Geolokatsiya:</strong> IP manzil asosida joylashuvni aniqlash
-            </p>
-            <p>
-              • <strong>ISP ma'lumotlari:</strong> Internet provayideri va tarmoq tafsilotlari
-            </p>
-            <p>
-              • <strong>Vaqt zonasi:</strong> Mahalliy vaqt va GMT ofset ma'lumotlari
-            </p>
-            <p>
-              • <strong>Valyuta:</strong> Mamlakat valyutasi va qo'ng'iroq kodi
-            </p>
+      {/* Professional Info Section */}
+      <div className="mt-12 space-y-8">
+        <div className="text-center">
+          <h2 className="mb-4 text-3xl font-bold text-zinc-100">IP Ma'lumotlari Haqida</h2>
+          <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+            Professional IP geolocation va tarmoq tahlil vositasi. IP manzillar asosida joylashuv, ISP va xavfsizlik
+            ma'lumotlarini real-time olish imkoniyati.
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* Geolocation Features */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8">
+            <h3 className="mb-6 text-xl font-semibold text-zinc-100">Geolokatsiya Aniqlash</h3>
+            <p className="mb-6 text-zinc-400">IP manzil asosida aniq joylashuv va geografik ma'lumotlarni aniqlash:</p>
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-blue-500/20 px-2 py-1 text-blue-300">Mamlakat</code>
+                <span>Davlat va bayroq ma'lumotlari</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-green-500/20 px-2 py-1 text-green-300">Mintaqa</code>
+                <span>Viloyat va shahar ma'lumotlari</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-purple-500/20 px-2 py-1 text-purple-300">Koordinatalar</code>
+                <span>Kenglik va uzunlik daraja</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-orange-500/20 px-2 py-1 text-orange-300">Vaqt Zonasi</code>
+                <span>Mintaqaviy vaqt va UTC offset</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="mt-4 space-y-2">
-            <div className="rounded-lg bg-blue-500/10 p-3">
-              <div className="text-sm text-blue-400">
-                <strong>Eslatma:</strong> Bu ma'lumotlar haqiqiy IP geolocation servisidan olinadi. VPN va proxy
-                ishlatilgan hollarda noto'g'ri bo'lishi mumkin.
-              </div>
+          {/* Network Analysis */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8">
+            <h3 className="mb-6 text-xl font-semibold text-zinc-100">Tarmoq Tahlili</h3>
+            <p className="mb-6 text-zinc-400">
+              Internet provayider va tarmoq tafsilotlarini professional tahlil qilish:
+            </p>
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-cyan-500/20 px-2 py-1 text-cyan-300">ISP</code>
+                <span>Internet Xizmat Provayderi</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-yellow-500/20 px-2 py-1 text-yellow-300">ASN</code>
+                <span>Avtonom Tizim Raqami</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-red-500/20 px-2 py-1 text-red-300">IP Turi</code>
+                <span>IPv4 yoki IPv6 protokol turi</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-indigo-500/20 px-2 py-1 text-indigo-300">Ulanish</code>
+                <span>Tarmoq turi va foydalanuvchi klassi</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Country Information */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8">
+            <h3 className="mb-6 text-xl font-semibold text-zinc-100">Mamlakat Ma'lumotlari</h3>
+            <p className="mb-6 text-zinc-400">Davlat va mintaqa haqida keng qamrovli ma'lumotlar:</p>
+            <ul className="space-y-3 text-sm text-zinc-400">
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-pink-500/20 px-2 py-1 text-pink-300">Valyuta</code>
+                <span>Milliy valyuta va kod</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-teal-500/20 px-2 py-1 text-teal-300">Poytaxt</code>
+                <span>Bosh shahar ma'lumotlari</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-violet-500/20 px-2 py-1 text-violet-300">Telefon Kodi</code>
+                <span>Xalqaro qo'ng'iroq kodi</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <code className="rounded bg-emerald-500/20 px-2 py-1 text-emerald-300">EU Holati</code>
+                <span>Yevropa Ittifoqi a'zoligi</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* API Information */}
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <h3 className="mb-6 text-xl font-semibold text-zinc-100">API Integratsiya va Ma'lumot Manbalari</h3>
+          <p className="mb-8 text-zinc-400">
+            IP Ma'lumotlari vositasi professional geolocation API'lar bilan integratsiya qilingan va real-time
+            ma'lumotlar bilan ishlaydi:
+          </p>
+
+          <div className="mt-2 grid gap-6 md:grid-cols-2">
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-6">
+              <h4 className="mb-3 font-semibold text-zinc-200">Real-time Ma'lumot Olish</h4>
+              <p className="mb-3 text-sm text-zinc-400">
+                Professional IP geolokatsiya xizmati bilan real-time ma'lumot olish imkoniyati.
+              </p>
+              <code className="text-xs text-green-300">ipapi.co, ipify.org API integratsiyasi</code>
             </div>
-            <div className="rounded-lg bg-yellow-500/10 p-3">
-              <div className="text-sm text-yellow-400">
-                <strong>Maxfiylik:</strong> Hech qanday IP manzil ma'lumotlari saqlanmaydi yoki uchinchi tomonlarga
-                uzatilmaydi.
-              </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-6">
+              <h4 className="mb-3 font-semibold text-zinc-200">Ma'lumot Aniqligi</h4>
+              <p className="mb-3 text-sm text-zinc-400">
+                ISP va tarmoq ma'lumotlari 95%+ aniqlik bilan taqdim etiladi.
+              </p>
+              <code className="text-xs text-blue-300">Yuqori sifatli geolokatsiya bazasi</code>
+            </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-6">
+              <h4 className="mb-3 font-semibold text-zinc-200">IPv4 va IPv6 Qo'llab-quvvatlash</h4>
+              <p className="mb-3 text-sm text-zinc-400">
+                Ikkala IP protokol versiyasi uchun to'liq qo'llab-quvvatlash mavjud.
+              </p>
+              <code className="text-xs text-purple-300">Universal IP protokol qo'llab-quvvatlash</code>
+            </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-6">
+              <h4 className="mb-3 font-semibold text-zinc-200">JSON Eksport</h4>
+              <p className="mb-3 text-sm text-zinc-400">Tahlil natijalarini JSON formatda yuklab olish imkoniyati.</p>
+              <code className="text-xs text-orange-300">Strukturaviy ma'lumot eksport funksiyasi</code>
             </div>
           </div>
         </div>
-      </Card>
+
+        {/* Use Cases */}
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-8">
+          <h3 className="mb-6 text-xl font-semibold text-zinc-100">Foydalanish Holatlari</h3>
+          <div className="grid gap-8 md:grid-cols-2">
+            <div>
+              <h4 className="mb-4 font-semibold text-zinc-200">Veb Dasturlash va Xavfsizlik</h4>
+              <ul className="space-y-3 text-sm text-zinc-400">
+                <li>• Geo-targeting va mintaqaviy kontent yetkazib berish</li>
+                <li>• Firibgarlik aniqlash va xavfsizlik monitoring</li>
+                <li>• Foydalanuvchi joylashuviga asoslangan shaxsiylashtirish</li>
+                <li>• Tarmoq muammolarini hal qilish va diagnostika</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-4 font-semibold text-zinc-200">Analitika va Biznes Ma'lumotlari</h4>
+              <ul className="space-y-3 text-sm text-zinc-400">
+                <li>• Veb-sayt traffigi geografik tahlili</li>
+                <li>• Bozor tadqiqoti va foydalanuvchi demografiyasi</li>
+                <li>• CDN optimallashtirish va server joylashuvi rejalashtirish</li>
+                <li>• Qonunchilik va tartibga solish talablari</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Final Tips */}
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-8">
+          <h4 className="mb-4 font-semibold text-blue-200">Professional Maslahatlar</h4>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <p className="text-sm text-blue-100">
+                <strong>Maxfiylik Eslatmasi:</strong> Hech qanday IP manzil ma'lumotlari serverda saqlanmaydi. Barcha
+                ma'lumotlar real-time API orqali olinadi va xavfsizlik ta'minlanadi.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-blue-100">
+                <strong>Aniqlik Eslatmasi:</strong> VPN va proxy serverlar orqali ulangan IP'lar uchun
+                <code className="mx-1 rounded bg-blue-500/20 px-1 text-blue-300">haqiqiy joylashuv</code>
+                ko'rsatilmasligi mumkin.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

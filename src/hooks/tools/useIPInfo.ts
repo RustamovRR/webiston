@@ -54,6 +54,45 @@ interface IPInfo {
   }
 }
 
+export interface IPSample {
+  name: string
+  ip: string
+  description: string
+}
+
+const SAMPLE_IPS: IPSample[] = [
+  {
+    name: 'Google DNS',
+    ip: '8.8.8.8',
+    description: 'Google DNS primary server',
+  },
+  {
+    name: 'Cloudflare DNS',
+    ip: '1.1.1.1',
+    description: 'Cloudflare public DNS server',
+  },
+  {
+    name: 'OpenDNS',
+    ip: '208.67.222.222',
+    description: 'OpenDNS primary server',
+  },
+  {
+    name: 'Quad9 DNS',
+    ip: '9.9.9.9',
+    description: 'Quad9 secure DNS server',
+  },
+  {
+    name: 'IBM Quad9',
+    ip: '149.112.112.112',
+    description: 'IBM Quad9 secondary server',
+  },
+  {
+    name: 'Level3 DNS',
+    ip: '4.2.2.2',
+    description: 'Level3 public DNS server',
+  },
+]
+
 export const useIPInfo = () => {
   const [ipAddress, setIpAddress] = useState<string>('')
   const [ipInfo, setIpInfo] = useState<IPInfo | null>(null)
@@ -198,9 +237,9 @@ export const useIPInfo = () => {
     }
   }
 
-  const loadSampleIP = (ip: string) => {
-    setIpAddress(ip)
-    getIPInfo(ip)
+  const loadSampleIP = (sample: IPSample) => {
+    setIpAddress(sample.ip)
+    getIPInfo(sample.ip)
   }
 
   const loadCurrentIP = () => {
@@ -216,6 +255,55 @@ export const useIPInfo = () => {
     setError('')
   }
 
+  const downloadInfo = () => {
+    if (!ipInfo) {
+      return
+    }
+
+    const data = {
+      timestamp: new Date().toISOString(),
+      analyzed_ip: ipInfo.ip,
+      location: {
+        country: ipInfo.country_name,
+        region: ipInfo.region_name,
+        city: ipInfo.city,
+        coordinates: `${ipInfo.latitude}, ${ipInfo.longitude}`,
+      },
+      network: {
+        isp: ipInfo.connection.isp,
+        asn: ipInfo.connection.asn,
+        type: ipInfo.type,
+      },
+      additional: {
+        timezone: ipInfo.time_zone.id,
+        currency: ipInfo.currency.code,
+        calling_code: ipInfo.location.calling_code,
+      },
+      full_data: ipInfo,
+    }
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `ip-analysis-${ipInfo.ip}-${new Date().toISOString().slice(0, 10)}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const getStats = () => {
+    return [
+      { label: 'Belgilar', value: ipAddress.length },
+      { label: 'IP Turi', value: ipInfo ? (ipInfo.type === 'ipv4' ? 4 : 6) : 0 },
+      { label: 'Joylashuv', value: ipInfo ? 1 : 0 },
+    ]
+  }
+
+  const canDownload = !!ipInfo
+  const isEmpty = !ipAddress.trim()
+
   return {
     ipAddress,
     setIpAddress,
@@ -227,6 +315,12 @@ export const useIPInfo = () => {
     loadSampleIP,
     loadCurrentIP,
     clearData,
+    downloadInfo,
+    getStats,
+    samples: SAMPLE_IPS,
+    canDownload,
+    isEmpty,
+    isValidIP,
   }
 }
 
