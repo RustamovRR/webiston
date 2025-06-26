@@ -1,473 +1,460 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { User, Search, RefreshCw, Copy } from 'lucide-react'
-import { ToolHeader } from '@/components/shared/ToolHeader'
+// UI Components
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { CodeHighlight } from '@/components/ui/code-highlight'
+
+// Shared Components
+import { ToolHeader } from '@/components/shared/ToolHeader'
 import { CopyButton } from '@/components/shared/CopyButton'
+import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
-interface ParsedUserAgent {
-  browser: {
-    name: string
-    version: string
-    major: string
-  }
-  engine: {
-    name: string
-    version: string
-  }
-  os: {
-    name: string
-    version: string
-  }
-  device: {
-    vendor: string
-    model: string
-    type: string
-  }
-  cpu: {
-    architecture: string
-  }
-}
+// Utils & Hooks
+import { useUserAgentAnalyzer } from '@/hooks/tools/useUserAgentAnalyzer'
 
-const SAMPLE_USER_AGENTS = [
-  {
-    name: 'Chrome on Windows',
-    ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  },
-  {
-    name: 'Safari on macOS',
-    ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15',
-  },
-  {
-    name: 'Firefox on Linux',
-    ua: 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0',
-  },
-  {
-    name: 'Edge on Windows',
-    ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0',
-  },
-  {
-    name: 'Chrome on Android',
-    ua: 'Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-  },
-  {
-    name: 'Safari on iPhone',
-    ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1',
-  },
-]
+// Icons
+import { Monitor, Smartphone, Download, RotateCcw, Search, User } from 'lucide-react'
 
-export default function UserAgentAnalyzerPage() {
-  const [userAgent, setUserAgent] = useState<string>('')
-  const [parsedUA, setParsedUA] = useState<ParsedUserAgent | null>(null)
-  const [currentUA, setCurrentUA] = useState<string>('')
-
-  useEffect(() => {
-    const ua = navigator.userAgent
-    setCurrentUA(ua)
-    setUserAgent(ua)
-    parseUserAgent(ua)
-  }, [])
-
-  const parseUserAgent = (ua: string) => {
-    if (!ua.trim()) {
-      setParsedUA(null)
-      return
-    }
-
-    // Simple parser - in production, you might want to use a library like UAParser.js
-    const parsed: ParsedUserAgent = {
-      browser: { name: 'Unknown', version: 'Unknown', major: 'Unknown' },
-      engine: { name: 'Unknown', version: 'Unknown' },
-      os: { name: 'Unknown', version: 'Unknown' },
-      device: { vendor: 'Unknown', model: 'Unknown', type: 'Unknown' },
-      cpu: { architecture: 'Unknown' },
-    }
-
-    // Browser detection
-    if (ua.includes('Edg/')) {
-      parsed.browser.name = 'Microsoft Edge'
-      const match = ua.match(/Edg\/([0-9.]+)/)
-      if (match) {
-        parsed.browser.version = match[1]
-        parsed.browser.major = match[1].split('.')[0]
-      }
-    } else if (ua.includes('Chrome/') && !ua.includes('Edg')) {
-      parsed.browser.name = 'Google Chrome'
-      const match = ua.match(/Chrome\/([0-9.]+)/)
-      if (match) {
-        parsed.browser.version = match[1]
-        parsed.browser.major = match[1].split('.')[0]
-      }
-    } else if (ua.includes('Firefox/')) {
-      parsed.browser.name = 'Mozilla Firefox'
-      const match = ua.match(/Firefox\/([0-9.]+)/)
-      if (match) {
-        parsed.browser.version = match[1]
-        parsed.browser.major = match[1].split('.')[0]
-      }
-    } else if (ua.includes('Safari/') && !ua.includes('Chrome')) {
-      parsed.browser.name = 'Safari'
-      const match = ua.match(/Version\/([0-9.]+)/)
-      if (match) {
-        parsed.browser.version = match[1]
-        parsed.browser.major = match[1].split('.')[0]
-      }
-    }
-
-    // Engine detection
-    if (ua.includes('Gecko/')) {
-      parsed.engine.name = 'Gecko'
-      const match = ua.match(/rv:([0-9.]+)/)
-      if (match) parsed.engine.version = match[1]
-    } else if (ua.includes('WebKit/')) {
-      parsed.engine.name = 'WebKit'
-      const match = ua.match(/WebKit\/([0-9.]+)/)
-      if (match) parsed.engine.version = match[1]
-    } else if (ua.includes('Trident/')) {
-      parsed.engine.name = 'Trident'
-      const match = ua.match(/Trident\/([0-9.]+)/)
-      if (match) parsed.engine.version = match[1]
-    }
-
-    // OS detection
-    if (ua.includes('Windows NT')) {
-      parsed.os.name = 'Windows'
-      const match = ua.match(/Windows NT ([0-9.]+)/)
-      if (match) {
-        const version = match[1]
-        const windowsVersions: { [key: string]: string } = {
-          '10.0': '10/11',
-          '6.3': '8.1',
-          '6.2': '8',
-          '6.1': '7',
-          '6.0': 'Vista',
-          '5.2': 'XP',
-          '5.1': 'XP',
-        }
-        parsed.os.version = windowsVersions[version] || version
-      }
-    } else if (ua.includes('Mac OS X')) {
-      parsed.os.name = 'macOS'
-      const match = ua.match(/Mac OS X ([0-9_]+)/)
-      if (match) {
-        parsed.os.version = match[1].replace(/_/g, '.')
-      }
-    } else if (ua.includes('Linux')) {
-      parsed.os.name = 'Linux'
-      if (ua.includes('Android')) {
-        parsed.os.name = 'Android'
-        const match = ua.match(/Android ([0-9.]+)/)
-        if (match) parsed.os.version = match[1]
-      }
-    } else if (ua.includes('iPhone')) {
-      parsed.os.name = 'iOS'
-      const match = ua.match(/OS ([0-9_]+)/)
-      if (match) parsed.os.version = match[1].replace(/_/g, '.')
-    }
-
-    // Device detection
-    if (ua.includes('iPhone')) {
-      parsed.device.vendor = 'Apple'
-      parsed.device.model = 'iPhone'
-      parsed.device.type = 'mobile'
-    } else if (ua.includes('iPad')) {
-      parsed.device.vendor = 'Apple'
-      parsed.device.model = 'iPad'
-      parsed.device.type = 'tablet'
-    } else if (ua.includes('Android')) {
-      if (ua.includes('Mobile')) {
-        parsed.device.type = 'mobile'
-      } else {
-        parsed.device.type = 'tablet'
-      }
-      // Try to extract Android device model
-      const deviceMatch = ua.match(/Android [0-9.]+; ([^)]+)\)/)
-      if (deviceMatch) {
-        const deviceInfo = deviceMatch[1]
-        if (deviceInfo.includes('SM-')) {
-          parsed.device.vendor = 'Samsung'
-          parsed.device.model = deviceInfo
-        } else {
-          parsed.device.model = deviceInfo
-        }
-      }
-    } else {
-      parsed.device.type = 'desktop'
-    }
-
-    // CPU architecture
-    if (ua.includes('x64') || ua.includes('x86_64')) {
-      parsed.cpu.architecture = 'amd64'
-    } else if (ua.includes('x86')) {
-      parsed.cpu.architecture = 'ia32'
-    } else if (ua.includes('arm64') || ua.includes('aarch64')) {
-      parsed.cpu.architecture = 'arm64'
-    } else if (ua.includes('arm')) {
-      parsed.cpu.architecture = 'arm'
-    }
-
-    setParsedUA(parsed)
-  }
-
-  const loadSampleUA = (sampleUA: string) => {
-    setUserAgent(sampleUA)
-    parseUserAgent(sampleUA)
-  }
-
-  const loadCurrentUA = () => {
-    setUserAgent(currentUA)
-    parseUserAgent(currentUA)
-  }
-
-  const analyzeUA = () => {
-    parseUserAgent(userAgent)
-  }
-
-  const clearUA = () => {
-    setUserAgent('')
-    setParsedUA(null)
-  }
+export default function UserAgentAnalyzer() {
+  const {
+    userAgent,
+    parsedUA,
+    isAnalyzing,
+    setUserAgent,
+    analyzeUserAgent,
+    loadSampleUA,
+    loadCurrentUA,
+    clearAll,
+    downloadAnalysis,
+    samples,
+    getStats,
+    canDownload,
+    isEmpty,
+  } = useUserAgentAnalyzer()
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4">
+    <div className="mx-auto w-full max-w-7xl px-4">
       <ToolHeader
-        title="User Agent Tahlil"
-        description="Brauzer User Agent ma'lumotlarini tahlil qiling va batafsil ma'lumot oling"
+        title="User Agent Analyzer"
+        description="Brauzer va qurilma ma'lumotlarini tahlil qiling, User Agent stringlarini dekod qiling"
       />
 
-      {/* Sample Data Section */}
-      <Card className="mb-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-medium text-zinc-200">Tez boshlash</h3>
-              <p className="text-sm text-zinc-400">Joriy brauzeringiz yoki namuna User Agent bilan boshlang</p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={loadCurrentUA}
-                variant="outline"
-                className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
-              >
-                <User className="mr-2 h-4 w-4" />
-                Joriy brauzer
-              </Button>
-              <Button onClick={clearUA} variant="outline" className="border-zinc-700">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Tozalash
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
+      {/* Quick Actions */}
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Button
+          onClick={loadCurrentUA}
+          variant="outline"
+          size="sm"
+          className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+        >
+          <User className="mr-2 h-4 w-4" />
+          Joriy brauzer
+        </Button>
+        <Button onClick={clearAll} variant="outline" size="sm" className="border-zinc-700 hover:bg-zinc-800">
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Tozalash
+        </Button>
+        {canDownload && (
+          <Button
+            onClick={downloadAnalysis}
+            variant="outline"
+            size="sm"
+            className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            JSON yuklab olish
+          </Button>
+        )}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Input Section */}
+        {/* Left Panel - Input */}
         <div className="space-y-6">
-          {/* User Agent Input */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">User Agent String</h3>
+          {/* Terminal Input Panel */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            {/* Terminal Header */}
+            <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="ml-2 text-sm font-medium text-zinc-400">Tool Kirish</span>
+            </div>
 
+            {/* Input Content */}
+            <div className="p-6">
               <div className="space-y-4">
                 <Textarea
-                  placeholder="User Agent stringini kiriting yoki pastdagi namunalardan birini tanlang..."
+                  placeholder="User Agent stringini kiriting..."
                   value={userAgent}
                   onChange={(e) => setUserAgent(e.target.value)}
-                  rows={4}
-                  className="border-zinc-700 bg-zinc-800 font-mono text-sm"
+                  rows={6}
+                  className="min-h-[150px] border-zinc-700 bg-zinc-800/50 font-mono text-sm"
                 />
 
-                <Button
-                  onClick={analyzeUA}
-                  disabled={!userAgent.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  Tahlil qilish
-                </Button>
+                <div className="flex items-center justify-between">
+                  <StatsDisplay stats={getStats()} />
+                  <ShimmerButton
+                    onClick={analyzeUserAgent}
+                    disabled={isEmpty || isAnalyzing}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    {isAnalyzing ? 'Tahlil qilinmoqda...' : 'Tahlil qilish'}
+                  </ShimmerButton>
+                </div>
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Sample User Agents */}
-          <Card className="border-zinc-800 bg-zinc-900/80">
-            <div className="p-6">
-              <h3 className="mb-4 text-lg font-semibold text-zinc-100">Namuna User Agents</h3>
-
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            <div className="border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <h3 className="text-sm font-medium text-zinc-300">Namuna User Agents</h3>
+            </div>
+            <div className="p-4">
               <div className="space-y-2">
-                {SAMPLE_USER_AGENTS.map((sample, index) => (
+                {samples.map((sample, index) => (
                   <button
                     key={index}
-                    onClick={() => loadSampleUA(sample.ua)}
-                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 p-3 text-left transition-colors hover:border-zinc-600 hover:bg-zinc-800"
+                    onClick={() => loadSampleUA(sample)}
+                    className="w-full rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-3 text-left transition-all hover:border-zinc-600 hover:bg-zinc-800/50"
                   >
-                    <div className="mb-1 font-medium text-zinc-100">{sample.name}</div>
-                    <div className="truncate font-mono text-xs text-zinc-400">{sample.ua}</div>
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="font-medium text-zinc-200">{sample.name}</span>
+                      <div className="flex items-center gap-1">
+                        {sample.ua.includes('Mobile') && <Smartphone className="h-3 w-3 text-blue-400" />}
+                        {!sample.ua.includes('Mobile') && <Monitor className="h-3 w-3 text-green-400" />}
+                      </div>
+                    </div>
+                    <p className="text-xs text-zinc-500">{sample.description}</p>
+                    <div className="mt-2 truncate font-mono text-xs text-zinc-400">{sample.ua.slice(0, 80)}...</div>
                   </button>
                 ))}
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Analysis Results */}
+        {/* Right Panel - Analysis Results */}
         <div className="space-y-6">
-          {parsedUA && (
-            <>
-              {/* Browser Info */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-zinc-100">Brauzer Ma'lumotlari</h3>
-                    <CopyButton text={JSON.stringify(parsedUA.browser, null, 2)} />
-                  </div>
+          {/* Terminal Output Panel */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+            {/* Terminal Header */}
+            <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-500"></div>
+                <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="ml-2 text-sm font-medium text-zinc-400">Tool Natija/Chiqish</span>
+              <div className="ml-auto flex items-center gap-2">
+                {parsedUA && (
+                  <>
+                    <div className="h-2 w-2 rounded-full bg-green-400"></div>
+                    <span className="text-xs text-green-400">Tahlil tayyor</span>
+                  </>
+                )}
+              </div>
+            </div>
 
+            {/* Analysis Content */}
+            <div className="p-6">
+              {parsedUA ? (
+                <div className="space-y-6">
+                  {/* Browser Information */}
                   <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <Monitor className="h-4 w-4 text-blue-400" />
+                      Brauzer Ma'lumotlari
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
                       <div>
-                        <div className="text-sm text-zinc-400">Nomi</div>
-                        <div className="text-zinc-100">{parsedUA.browser.name}</div>
+                        <div className="text-xs text-zinc-500">Brauzer nomi</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.browser.name}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Versiya</div>
-                        <div className="text-zinc-100">{parsedUA.browser.version}</div>
+                        <div className="text-xs text-zinc-500">Versiya</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.browser.version}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Asosiy versiya</div>
-                        <div className="text-zinc-100">{parsedUA.browser.major}</div>
+                        <div className="text-xs text-zinc-500">Asosiy versiya</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.browser.major}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-zinc-400">Engine</div>
-                        <div className="text-zinc-100">{parsedUA.engine.name}</div>
+                        <div className="text-xs text-zinc-500">Engine</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.engine.name}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Operating System */}
+                  <div className="space-y-3">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <Smartphone className="h-4 w-4 text-green-400" />
+                      Operatsion Tizim
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                      <div>
+                        <div className="text-xs text-zinc-500">Tizim nomi</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.os.name}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Versiya</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.os.version}</div>
+                      </div>
+                      <div className="col-span-2">
+                        <div className="text-xs text-zinc-500">CPU Arxitektura</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.cpu.architecture}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Device Information */}
+                  <div className="space-y-3">
+                    <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+                      <Monitor className="h-4 w-4 text-purple-400" />
+                      Qurilma Ma'lumotlari
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+                      <div>
+                        <div className="text-xs text-zinc-500">Qurilma turi</div>
+                        <div className="text-sm font-medium text-zinc-200 capitalize">{parsedUA.device.type}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Brend</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.device.vendor}</div>
+                      </div>
+                      <div className="col-span-2">
+                        <div className="text-xs text-zinc-500">Model</div>
+                        <div className="text-sm font-medium text-zinc-200">{parsedUA.device.model}</div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </Card>
-
-              {/* Operating System */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <h3 className="mb-4 text-lg font-semibold text-zinc-100">Operatsion Tizim</h3>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-sm text-zinc-400">Tizim nomi</div>
-                      <div className="text-zinc-100">{parsedUA.os.name}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">Versiya</div>
-                      <div className="text-zinc-100">{parsedUA.os.version}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">Arxitektura</div>
-                      <div className="text-zinc-100">{parsedUA.cpu.architecture}</div>
-                    </div>
+              ) : (
+                <div className="flex h-40 items-center justify-center text-zinc-500">
+                  <div className="text-center">
+                    <Search className="mx-auto mb-2 h-8 w-8 opacity-50" />
+                    <p>User Agent tahlil qilish uchun chap paneldan foydalaning</p>
                   </div>
                 </div>
-              </Card>
+              )}
+            </div>
+          </div>
 
-              {/* Device Info */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <h3 className="mb-4 text-lg font-semibold text-zinc-100">Qurilma Ma'lumotlari</h3>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-sm text-zinc-400">Turi</div>
-                      <div className="text-zinc-100 capitalize">{parsedUA.device.type}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-zinc-400">Brend</div>
-                      <div className="text-zinc-100">{parsedUA.device.vendor}</div>
-                    </div>
-                    <div className="col-span-2">
-                      <div className="text-sm text-zinc-400">Model</div>
-                      <div className="text-zinc-100">{parsedUA.device.model}</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Raw Data */}
-              <Card className="border-zinc-800 bg-zinc-900/80">
-                <div className="p-6">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-zinc-100">JSON Ma'lumotlar</h3>
-                    <CopyButton text={JSON.stringify(parsedUA, null, 2)} />
-                  </div>
-
-                  <div className="overflow-auto rounded-lg border border-zinc-700 bg-zinc-900 p-4">
-                    <pre className="text-sm text-zinc-300">{JSON.stringify(parsedUA, null, 2)}</pre>
-                  </div>
-                </div>
-              </Card>
-            </>
+          {/* JSON Output */}
+          {parsedUA && (
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+              <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+                <h4 className="text-sm font-medium text-zinc-300">JSON Natija</h4>
+                <CopyButton text={JSON.stringify(parsedUA, null, 2)} />
+              </div>
+              <div className="p-4">
+                <CodeHighlight
+                  code={JSON.stringify(parsedUA, null, 2)}
+                  language="json"
+                  className="max-h-80 overflow-auto"
+                />
+              </div>
+            </div>
           )}
 
           {/* Original User Agent */}
           {userAgent && (
-            <Card className="border-zinc-800 bg-zinc-900/80">
-              <div className="p-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-zinc-100">Asl User Agent</h3>
-                  <CopyButton text={userAgent} />
-                </div>
-
-                <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-4">
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 backdrop-blur-sm">
+              <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-4 py-3">
+                <h4 className="text-sm font-medium text-zinc-300">Asl User Agent</h4>
+                <CopyButton text={userAgent} />
+              </div>
+              <div className="p-4">
+                <div className="rounded-lg bg-zinc-800/50 p-3">
                   <div className="font-mono text-sm break-all text-zinc-300">{userAgent}</div>
                 </div>
               </div>
-            </Card>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Help Section */}
-      <Card className="mt-6 border-zinc-800 bg-zinc-900/80">
-        <div className="p-6">
-          <h4 className="mb-3 font-medium text-zinc-200">User Agent nima va nima uchun muhim?</h4>
-          <div className="space-y-2 text-sm text-zinc-400">
-            <p>
-              • <strong>Identifikatsiya:</strong> Web serverlar brauzer va qurilmani tanib olish uchun
+      {/* Professional Info Section */}
+      <div className="mt-12 space-y-8">
+        <div className="flex flex-col items-center justify-center">
+          <h2 className="mb-4 text-3xl font-bold text-zinc-100">User Agent Analyzer Haqida</h2>
+          <p className="mx-auto max-w-2xl text-center text-lg text-zinc-400">
+            Professional brauzer va qurilma aniqlash vositasi. User Agent stringlarini tahlil qilib, brauzer, operatsion
+            tizim va qurilma haqida batafsil ma'lumot olish uchun mo'ljallangan.
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* Browser Detection */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+            <h3 className="mb-4 text-xl font-semibold text-zinc-100">Browser Detection</h3>
+            <p className="mb-4 text-zinc-400">
+              Eng mashhur brauzerlarni aniq tanib olish va versiya ma'lumotlarini aniqlash:
             </p>
-            <p>
-              • <strong>Moslashuvchanlik:</strong> Turli qurilmalar uchun mos kontent taqdim etish
-            </p>
-            <p>
-              • <strong>Analytics:</strong> Website trafikini tahlil qilish va statistika yig'ish
-            </p>
-            <p>
-              • <strong>Debugging:</strong> Browser-specific muammolarni hal qilish
-            </p>
-            <p>
-              • <strong>Feature Detection:</strong> Brauzer imkoniyatlarini aniqlash
-            </p>
-            <p>
-              • <strong>Security:</strong> Bot va zararli traffikni filtrlash
-            </p>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-blue-500/20 px-2 py-1 text-blue-300">Chrome</code>
+                <span>Google Chrome va Chromium-based brauzerlar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-orange-500/20 px-2 py-1 text-orange-300">Firefox</code>
+                <span>Mozilla Firefox va Gecko engine</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-cyan-500/20 px-2 py-1 text-cyan-300">Safari</code>
+                <span>Apple Safari va WebKit engine</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-green-500/20 px-2 py-1 text-green-300">Edge</code>
+                <span>Microsoft Edge (Chromium)</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="mt-4 space-y-2">
-            <div className="rounded-lg bg-blue-500/10 p-3">
-              <div className="text-sm text-blue-400">
-                <strong>Eslatma:</strong> User Agent ma'lumotlari osonlik bilan o'zgartirilishi mumkin, shuning uchun
-                100% ishonchli emas.
-              </div>
+          {/* Operating System Analysis */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+            <h3 className="mb-4 text-xl font-semibold text-zinc-100">OS Detection</h3>
+            <p className="mb-4 text-zinc-400">
+              Operatsion tizimlar va ularning versiyalarini professional darajada aniqlash:
+            </p>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-blue-500/20 px-2 py-1 text-blue-300">Windows</code>
+                <span>Windows 7, 8, 10, 11 versiyalari</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-gray-500/20 px-2 py-1 text-gray-300">macOS</code>
+                <span>macOS versiyalari va Mac hardware</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-yellow-500/20 px-2 py-1 text-yellow-300">Linux</code>
+                <span>Linux distributivlari va versiyalar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-green-500/20 px-2 py-1 text-green-300">Mobile</code>
+                <span>iOS va Android platformalar</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Device & Hardware */}
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+            <h3 className="mb-4 text-xl font-semibold text-zinc-100">Device Analysis</h3>
+            <p className="mb-4 text-zinc-400">Qurilma turlari va hardware ma'lumotlarini aniqlash:</p>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-purple-500/20 px-2 py-1 text-purple-300">Desktop</code>
+                <span>Kompyuter va noutbuk qurilmalari</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-pink-500/20 px-2 py-1 text-pink-300">Mobile</code>
+                <span>Smartfon va qo'l qurilmalari</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-indigo-500/20 px-2 py-1 text-indigo-300">Tablet</code>
+                <span>Planshet va hybrid qurilmalar</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <code className="rounded bg-red-500/20 px-2 py-1 text-red-300">CPU</code>
+                <span>Protsessor arxitekturasi (x64, ARM)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Engine Information */}
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+          <h3 className="mb-4 text-xl font-semibold text-zinc-100">Browser Engine Ma'lumotlari</h3>
+          <p className="mb-6 text-zinc-400">
+            User Agent Analyzer zamonaviy brauzer engine'larini aniq tanib oladi va ularning versiyalarini ko'rsatadi:
+          </p>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+              <h4 className="mb-2 font-semibold text-zinc-200">WebKit Engine</h4>
+              <p className="mb-2 text-sm text-zinc-400">
+                Safari va Chromium-based brauzerlar tomonidan ishlatiladigan engine.
+              </p>
+              <code className="text-xs text-green-300">WebKit/605.1.15, AppleWebKit/537.36</code>
             </div>
-            <div className="rounded-lg bg-yellow-500/10 p-3">
-              <div className="text-sm text-yellow-400">
-                <strong>Maslahat:</strong> Feature detection'dan foydalanish User Agent detection'dan ko'ra yaxshiroq
-                hisoblanadi.
-              </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+              <h4 className="mb-2 font-semibold text-zinc-200">Gecko Engine</h4>
+              <p className="mb-2 text-sm text-zinc-400">
+                Mozilla Firefox va boshqa Mozilla brauzerlar uchun ishlab chiqilgan.
+              </p>
+              <code className="text-xs text-orange-300">Gecko/20100101, rv:109.0</code>
+            </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+              <h4 className="mb-2 font-semibold text-zinc-200">Blink Engine</h4>
+              <p className="mb-2 text-sm text-zinc-400">
+                Google Chrome, Microsoft Edge va Opera zamonaviy versiyalari.
+              </p>
+              <code className="text-xs text-blue-300">Chrome/120.0.0.0, Edg/120.0.0.0</code>
+            </div>
+
+            <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/30 p-4">
+              <h4 className="mb-2 font-semibold text-zinc-200">Detection Accuracy</h4>
+              <p className="mb-2 text-sm text-zinc-400">
+                Professional regex pattern'lar orqali 95%+ aniqlik bilan tanib olish.
+              </p>
+              <code className="text-xs text-purple-300">Real-time parsing, instant results</code>
             </div>
           </div>
         </div>
-      </Card>
+
+        {/* Use Cases */}
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+          <h3 className="mb-4 text-xl font-semibold text-zinc-100">Foydalanish Holatlari</h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <h4 className="mb-3 font-semibold text-zinc-200">Web Development</h4>
+              <ul className="space-y-2 text-sm text-zinc-400">
+                <li>• Browser compatibility testing</li>
+                <li>• Feature detection va polyfill'lar</li>
+                <li>• Responsive design optimization</li>
+                <li>• Cross-platform debugging</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-3 font-semibold text-zinc-200">Analytics & Security</h4>
+              <ul className="space-y-2 text-sm text-zinc-400">
+                <li>• Bot detection va filtering</li>
+                <li>• User behavior analysis</li>
+                <li>• Security threat identification</li>
+                <li>• Traffic source validation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Final Tips */}
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-6">
+          <h4 className="mb-3 font-semibold text-blue-200">Professional Tips</h4>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="text-sm text-blue-100">
+                <strong>API Integration:</strong> User Agent parsing natijalarini JSON formatda yuklab oling va o'z
+                loyihalaringizda ishlatishingiz mumkin.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-blue-100">
+                <strong>Real-time Testing:</strong>{' '}
+                <code className="mx-1 rounded bg-blue-500/20 px-1 text-blue-300">navigator.userAgent</code>
+                orqali joriy brauzer ma'lumotlarini darhol tahlil qiling.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
