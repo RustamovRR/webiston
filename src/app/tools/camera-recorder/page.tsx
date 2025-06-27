@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'screenshot tool',
     'online recorder',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: 'Kamera Yozuvchi - Camera Recorder Tool | Webiston',

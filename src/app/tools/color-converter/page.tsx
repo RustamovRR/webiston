@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'color picker',
     'design tools',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   authors: [{ name: 'Webiston' }],
   creator: 'Webiston',

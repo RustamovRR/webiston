@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'design placeholder',
     'typography testing',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: 'Lorem Ipsum Generator - Professional Placeholder Text Tool | Webiston',

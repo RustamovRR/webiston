@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     'Developer tools',
     'Dasturlash vositalari',
     'Webiston tools',
-    'Foydali qurollar',
+    'Foydali vositalar',
   ],
   openGraph: {
     title: 'JWT Decoder - JWT Token Dekoder | Webiston',

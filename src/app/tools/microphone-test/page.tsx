@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     'Audio spectrum',
     'Sound analyzer',
     'Webiston tools',
-    'Foydali qurollar',
+    'Foydali vositalar',
   ],
   openGraph: {
     title: 'Mikrofon Test - Microphone Test Tool | Webiston',

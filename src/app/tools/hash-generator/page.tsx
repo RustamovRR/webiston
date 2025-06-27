@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     'enterprise hash',
     'hash analytics',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
     'online hash tool',
     'free hash generator',
   ],

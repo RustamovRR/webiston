@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'vCard QR',
     'professional qr',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: 'QR Kod Generator - QR Code Yaratish Tool | Webiston',

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'ijtimoiy tarmoq',
     'meta generator',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: 'OG Meta Generator - Open Graph Meta Tag Tool | Webiston',

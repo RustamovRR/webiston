@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'cybersecurity',
     'password security',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: 'Password Generator - Xavfsiz Parol Yaratish Tool | Webiston',

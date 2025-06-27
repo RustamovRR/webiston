@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     'REST API',
     'Web debugging',
     'Webiston tools',
-    'Foydali qurollar',
+    'Foydali vositalar',
   ],
   openGraph: {
     title: 'HTTP Status Kodlari - HTTP Status Codes Reference | Webiston',

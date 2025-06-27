@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     'Validate JSON',
     'Dasturchi vositalari',
     'Developer tools',
-    'Dasturlash qurollari',
+    'Dasturlash vositalari',
     'Webiston tools',
-    'Foydali qurollar',
+    'Foydali vositalar',
     'Utility tools',
   ],
   openGraph: {

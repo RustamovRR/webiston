@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     'developer tools',
     'dasturlash vositalari',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   authors: [{ name: 'Webiston' }],
   creator: 'Webiston',

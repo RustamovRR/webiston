@@ -34,7 +34,7 @@ export default function HomePage() {
             </span>
           </ButtonLink>
           <ButtonLink href="/tools" variant="outline" className="group">
-            Foydali Qurollar{' '}
+            Foydali Vositalar
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
               <ToolsIcon className="h-4 w-4" />
             </span>
@@ -62,8 +62,8 @@ export default function HomePage() {
 
       <section className="group mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title="Foydali Qurollar"
-          description="Dasturlash va matn ishlatish uchun foydali onlayn qurollar to'plami."
+          title="Foydali Vositalar"
+          description="Dasturlash va matn ishlatish uchun foydali onlayn vositalar to'plami."
           icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 

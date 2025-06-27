@@ -17,7 +17,7 @@ const Header = () => {
     },
     {
       href: '/tools',
-      label: 'Qurollar',
+      label: 'Vositalar',
       active: pathname?.startsWith('/tools'),
     },
   ]

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     'Uzbek script',
     "Onlayn o'giruvchi",
     'Webiston tools',
-    'Foydali qurollar',
+    'Foydali vositalar',
     'Uzbek alphabet converter',
     'Latin to Cyrillic',
     'Cyrillic to Latin',

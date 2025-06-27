@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     'user agent',
     'platform details',
     'webiston tools',
-    'foydali qurollar',
+    'foydali vositalar',
   ],
   openGraph: {
     title: "Qurilma Ma'lumotlari - Device Information Tool | Webiston",
