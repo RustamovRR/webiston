@@ -1,0 +1,1 @@
+export { DualTextPanel } from './DualTextPanel'
