@@ -15,7 +15,7 @@ import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
 // Icons
 import { MapPin, Globe, Wifi, RefreshCw, Search, Download, Clock } from 'lucide-react'
-import { useIpInfo } from '@/hooks/tools/useIpInfo'
+import { useIPInfo } from '@/hooks/tools/useIPInfo'
 
 export default function IpInfo() {
   const {
@@ -34,7 +34,7 @@ export default function IpInfo() {
     samples,
     canDownload,
     isEmpty,
-  } = useIpInfo()
+  } = useIPInfo()
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4">
