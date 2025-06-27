@@ -14,8 +14,8 @@ import { StatsDisplay } from '@/components/shared/StatsDisplay'
 // Utils & Hooks
 
 // Icons
-import { MapPin, Globe, Wifi, RefreshCw, Search, Download, Shield, Clock } from 'lucide-react'
-import { useIpInfo } from '@/hooks'
+import { MapPin, Globe, Wifi, RefreshCw, Search, Download, Clock } from 'lucide-react'
+import { useIpInfo } from '@/hooks/tools/useIpInfo'
 
 export default function IpInfo() {
   const {
