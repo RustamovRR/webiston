@@ -125,53 +125,57 @@ export const useHashGenerator = ({ onSuccess, onError }: UseHashGeneratorProps =
   )
 
   // Generate all selected hashes
-  const generateAllHashes = useCallback(async () => {
-    if (!inputText.trim()) {
-      onError?.('Matn kiritilmagan')
-      return
-    }
+  const generateAllHashes = useCallback(
+    async (textOverride?: string) => {
+      const textToHash = textOverride || inputText
 
-    if (selectedAlgorithms.length === 0) {
-      onError?.('Kamida bitta algoritm tanlang')
-      return
-    }
-
-    setIsGenerating(true)
-    const newResults: HashResult[] = []
-
-    try {
-      for (const algorithm of selectedAlgorithms) {
-        const hash = await generateHash(inputText, algorithm)
-        const info = ALGORITHM_INFO[algorithm]
-
-        newResults.push({
-          algorithm,
-          hash,
-          length: hash.length,
-          security: info.security,
-          status: info.status,
-        })
+      if (!textToHash.trim()) {
+        onError?.('Matn kiritilmagan')
+        return
       }
 
-      setHashResults(newResults)
-      onSuccess?.(`${selectedAlgorithms.length} ta hash muvaffaqiyatli yaratildi`)
-    } catch (error) {
-      onError?.(error instanceof Error ? error.message : 'Hash yaratishda xatolik')
-    } finally {
-      setIsGenerating(false)
-    }
-  }, [inputText, selectedAlgorithms, generateHash, onSuccess, onError])
+      if (selectedAlgorithms.length === 0) {
+        onError?.('Kamida bitta algoritm tanlang')
+        return
+      }
+
+      setIsGenerating(true)
+      const newResults: HashResult[] = []
+
+      try {
+        for (const algorithm of selectedAlgorithms) {
+          const hash = await generateHash(textToHash, algorithm)
+          const info = ALGORITHM_INFO[algorithm]
+
+          newResults.push({
+            algorithm,
+            hash,
+            length: hash.length,
+            security: info.security,
+            status: info.status,
+          })
+        }
+
+        setHashResults(newResults)
+        onSuccess?.(`${selectedAlgorithms.length} ta hash muvaffaqiyatli yaratildi`)
+      } catch (error) {
+        onError?.(error instanceof Error ? error.message : 'Hash yaratishda xatolik')
+      } finally {
+        setIsGenerating(false)
+      }
+    },
+    [inputText, selectedAlgorithms, generateHash, onSuccess, onError],
+  )
 
   // Auto-generate on text/algorithm change
   const handleTextChange = useCallback(
     (text: string) => {
       setInputText(text)
       if (text.trim() && selectedAlgorithms.length > 0) {
-        // Debounced auto-generation
-        const timer = setTimeout(() => {
-          generateAllHashes()
-        }, 500)
-        return () => clearTimeout(timer)
+        // Debounced auto-generation with new text
+        setTimeout(() => {
+          generateAllHashes(text)
+        }, 300)
       } else {
         setHashResults([])
       }
@@ -222,7 +226,7 @@ export const useHashGenerator = ({ onSuccess, onError }: UseHashGeneratorProps =
       reader.onload = (e) => {
         const content = e.target?.result as string
         if (content) {
-          setInputText(content)
+          handleTextChange(content)
           onSuccess?.(`Fayl muvaffaqiyatli yuklandi: ${file.name}`)
         }
       }
@@ -231,7 +235,7 @@ export const useHashGenerator = ({ onSuccess, onError }: UseHashGeneratorProps =
       }
       reader.readAsText(file)
     },
-    [onSuccess, onError],
+    [onSuccess, onError, handleTextChange],
   )
 
   // Download hashes as TXT
