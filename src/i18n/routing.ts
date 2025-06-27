@@ -8,12 +8,5 @@ export const routing = defineRouting({
   defaultLocale: 'uz',
 
   // Only add locale prefix for non-default locales
-  localePrefix: {
-    mode: 'as-needed',
-    // Don't show /uz in URL, only /en
-    prefixes: {
-      // uz: '', // no prefix for default
-      // en: '/en' // prefix for English
-    },
-  },
+  localePrefix: 'as-needed',
 })

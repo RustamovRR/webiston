@@ -1,5 +1,4 @@
 export * from './ButtonLink'
-export * from './Header'
 export * from './SectionTitle'
 export * from './ToolHeader'
 export * from './CopyButton'

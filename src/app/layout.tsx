@@ -2,7 +2,7 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
-// import './globals.css'
+import './globals.css'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,85 +11,86 @@ import Script from 'next/script'
 import dynamic from 'next/dynamic'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import { LanguageSelector } from '@/components'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
-// export const metadata: Metadata = {
-//   title: {
-//     default: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
-//     template: '%s | Webiston',
-//   },
-//   description: 'Veb texnologiyalar dunyosiga teran nigoh',
-//   applicationName: 'Webiston',
-//   appleWebApp: {
-//     title: 'Webiston',
-//   },
-//   keywords: [
-//     'Webiston',
-//     'Vebiston',
-//     'Onlayn platforma',
-//     'Fluent React',
-//     'React.js',
-//     'Next.js',
-//     'React',
-//     'Veb dasturlash',
-//     'Veb texnologiyalar',
-//     'JavaScript',
-//     'TypeScript',
-//     'Node.js',
-//   ],
-//   authors: [{ name: 'Webiston', url: 'https://webiston.uz' }],
-//   creator: 'Webiston',
-//   publisher: 'https://github.com/rustamovRR',
-//   generator: 'Next.js',
-//   verification: { google: 'Xz0YDnKOB7hdnXLb0nSAIiFs4cRw7zA8wchJDKi08uU', yandex: '0c91a9b588bee8d3' },
-//   openGraph: {
-//     url: 'https://webiston.uz',
-//     title: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
-//     siteName: 'Webiston',
-//     locale: 'en_US',
-//     type: 'website',
-//     description: "Zamonaviy veb-dasturlash texnologiyalari haqida o'zbek tilidagi qo'llanma",
-//     countryName: 'Uzbekistan',
-//     images: [
-//       {
-//         url: '/logo.png',
-//         width: 1200,
-//         height: 630,
-//         alt: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
-//       },
-//     ],
-//   },
-//   other: {
-//     'msapplication-TileColor': '#fff',
-//   },
-//   twitter: {
-//     card: 'summary_large_image',
-//     site: '@webiston_uz',
-//     creator: '@Rustamov_RR',
-//     title: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
-//     description:
-//       "Webiston - Veb texnologiyalar dunyosiga teran nigoh. Zamonaviy veb-dasturlash texnologiyalari haqida o'zbek tilidagi qo'llanma.",
-//     images: ['/logo.png'],
-//   },
-//   alternates: {
-//     canonical: './',
-//   },
-//   icons: {
-//     icon: [
-//       { type: 'image/png', url: '/favicon-32x32.png', sizes: '32x32' },
-//       { type: 'image/png', url: '/favicon-16x16.png', sizes: '16x16' },
-//       { type: 'image/x-icon', url: '/favicon.ico', sizes: '48x48' },
-//     ],
-//     shortcut: '/favicon.ico',
-//     apple: {
-//       sizes: '180x180',
-//       url: '/apple-touch-icon.png',
-//       href: '/apple-touch-icon.png',
-//     },
-//   },
-//   manifest: '/site.webmanifest',
-// }
+export const metadata: Metadata = {
+  title: {
+    default: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
+    template: '%s | Webiston',
+  },
+  description: 'Veb texnologiyalar dunyosiga teran nigoh',
+  applicationName: 'Webiston',
+  appleWebApp: {
+    title: 'Webiston',
+  },
+  keywords: [
+    'Webiston',
+    'Vebiston',
+    'Onlayn platforma',
+    'Fluent React',
+    'React.js',
+    'Next.js',
+    'React',
+    'Veb dasturlash',
+    'Veb texnologiyalar',
+    'JavaScript',
+    'TypeScript',
+    'Node.js',
+  ],
+  authors: [{ name: 'Webiston', url: 'https://webiston.uz' }],
+  creator: 'Webiston',
+  publisher: 'https://github.com/rustamovRR',
+  generator: 'Next.js',
+  verification: { google: 'Xz0YDnKOB7hdnXLb0nSAIiFs4cRw7zA8wchJDKi08uU', yandex: '0c91a9b588bee8d3' },
+  openGraph: {
+    url: 'https://webiston.uz',
+    title: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
+    siteName: 'Webiston',
+    locale: 'en_US',
+    type: 'website',
+    description: "Zamonaviy veb-dasturlash texnologiyalari haqida o'zbek tilidagi qo'llanma",
+    countryName: 'Uzbekistan',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
+      },
+    ],
+  },
+  other: {
+    'msapplication-TileColor': '#fff',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@webiston_uz',
+    creator: '@Rustamov_RR',
+    title: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
+    description:
+      "Webiston - Veb texnologiyalar dunyosiga teran nigoh. Zamonaviy veb-dasturlash texnologiyalari haqida o'zbek tilidagi qo'llanma.",
+    images: ['/logo.png'],
+  },
+  alternates: {
+    canonical: './',
+  },
+  icons: {
+    icon: [
+      { type: 'image/png', url: '/favicon-32x32.png', sizes: '32x32' },
+      { type: 'image/png', url: '/favicon-16x16.png', sizes: '16x16' },
+      { type: 'image/x-icon', url: '/favicon.ico', sizes: '48x48' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: {
+      sizes: '180x180',
+      url: '/apple-touch-icon.png',
+      href: '/apple-touch-icon.png',
+    },
+  },
+  manifest: '/site.webmanifest',
+}
 
 const navbar = (
   <Navbar
@@ -100,7 +101,9 @@ const navbar = (
       </Link>
     }
     logoLink="/"
-  />
+  >
+    <LanguageSelector />
+  </Navbar>
 )
 
 const footer = (
@@ -128,8 +131,14 @@ const footer = (
 )
 
 export default async function RootLayout({ children }: any) {
-  const pageMap = await getPageMap()
+  const rawPageMap = await getPageMap()
   const messages = await getMessages()
+
+  // Filter out [locale] from pageMap to prevent it from appearing in navigation
+  const pageMap = rawPageMap.filter((item: any) => {
+    // Only include books and other non-dynamic routes
+    return item.name !== '[locale]' && !item.name?.startsWith('[')
+  })
 
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
@@ -192,22 +201,20 @@ export default async function RootLayout({ children }: any) {
       </Head>
 
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <Layout
-            // navbar={navbar || null}
-            pageMap={pageMap}
-            // docsRepositoryBase="https://github.com/RustamovRR/webiston/tree/main/docs"
-            // footer={footer}
-            // sidebar={{ defaultMenuCollapseLevel: 2 }}
-            darkMode={true}
-            // toc={{ backToTop: true }}
-            // nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-            // search={<Search placeholder="Qidirish..." />}
-            // feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
-          >
-            {children}
-          </Layout>
-        </NextIntlClientProvider>
+        <Layout
+          navbar={navbar || null}
+          pageMap={pageMap}
+          docsRepositoryBase="https://github.com/RustamovRR/webiston/tree/main/docs"
+          footer={footer}
+          sidebar={{ defaultMenuCollapseLevel: 2 }}
+          darkMode={true}
+          toc={{ backToTop: true }}
+          nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
+          search={<Search placeholder="Qidirish..." />}
+          feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
+        >
+          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        </Layout>
       </body>
     </html>
   )

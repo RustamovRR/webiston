@@ -1,62 +1,82 @@
 'use client'
 
 import { useRouter, usePathname } from 'next/navigation'
-import { useLocale, useTranslations } from 'next-intl'
-import { Globe } from 'lucide-react'
+import { Globe, ChevronDown } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { useEffect, useState } from 'react'
 
 interface Language {
-  code: 'uz' | 'en' | 'ru'
+  code: 'uz' | 'en'
   name: string
-  nativeName: string
   flag: string
 }
 
 const languages: Language[] = [
-  { code: 'uz', name: 'Uzbek', nativeName: "O'zbek", flag: '🇺🇿' },
-  { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺' },
+  { code: 'uz', name: "O'zbek", flag: '🇺🇿' },
+  { code: 'en', name: 'English', flag: '🇺🇸' },
 ]
 
 export function LanguageSelector() {
   const router = useRouter()
   const pathname = usePathname()
-  const locale = useLocale()
-  const t = useTranslations('common')
+  const [currentLocale, setCurrentLocale] = useState<'uz' | 'en'>('uz')
 
-  const currentLanguage = languages.find((lang) => lang.code === locale)
+  // Detect current locale from URL
+  useEffect(() => {
+    console.log('LanguageSelector: pathname =', pathname)
+    if (pathname.startsWith('/en')) {
+      console.log('LanguageSelector: Setting locale to EN')
+      setCurrentLocale('en')
+    } else {
+      console.log('LanguageSelector: Setting locale to UZ')
+      setCurrentLocale('uz')
+    }
+  }, [pathname])
 
-  const handleLanguageChange = (newLocale: string) => {
-    // Remove current locale from pathname and add new one
-    const pathWithoutLocale = pathname.replace(/^\/(uz|en|ru)/, '')
-    const newPath = `/${newLocale}${pathWithoutLocale || ''}`
-    router.push(newPath)
+  const currentLanguage = languages.find((lang) => lang.code === currentLocale)
+
+  const handleLanguageChange = (newLocale: 'uz' | 'en') => {
+    console.log('LanguageSelector: Changing language to', newLocale, 'from pathname', pathname)
+    if (newLocale === 'uz') {
+      // For Uzbek (default), remove /en prefix if exists
+      const newPath = pathname.replace(/^\/en/, '') || '/'
+      console.log('LanguageSelector: Pushing to UZ path', newPath)
+      router.push(newPath)
+    } else {
+      // For English, add /en prefix
+      const newPath = pathname.startsWith('/en') ? pathname : `/en${pathname}`
+      console.log('LanguageSelector: Pushing to EN path', newPath)
+      router.push(newPath)
+    }
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex cursor-pointer items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
           <Globe size={16} />
-          <span className="hidden sm:inline">{currentLanguage?.flag}</span>
-          <span className="hidden md:inline">{currentLanguage?.nativeName}</span>
+          <span className="font-medium">{currentLocale}</span>
+          <ChevronDown size={14} />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-32">
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            className={`flex items-center gap-3 ${locale === language.code ? 'bg-zinc-100 dark:bg-zinc-800' : ''}`}
+            className={`flex cursor-pointer items-center gap-2 ${currentLocale === language.code ? 'bg-zinc-100 dark:bg-zinc-800' : ''}`}
           >
-            <span className="text-lg">{language.flag}</span>
-            <div className="flex flex-col">
-              <span className="font-medium">{language.nativeName}</span>
-              <span className="text-muted-foreground text-xs">{language.name}</span>
-            </div>
-            {locale === language.code && <span className="ml-auto text-xs text-green-600 dark:text-green-400">✓</span>}
+            <span className="text-sm">{language.flag}</span>
+            <span className="font-medium">{language.code}</span>
+            {currentLocale === language.code && (
+              <span className="ml-auto text-xs text-green-600 dark:text-green-400">✓</span>
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
