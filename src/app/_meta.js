@@ -9,6 +9,6 @@ export default {
   },
   tools: {
     type: 'page',
-    title: 'Foydali Qurollar',
+    title: 'Foydali Vositalar',
   },
 }

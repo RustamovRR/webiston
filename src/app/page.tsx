@@ -1,5 +1,5 @@
 import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
-import { ButtonLink, Card, SectionTitle } from '@/components/shared'
+import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
 import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 
 export default function HomePage() {
@@ -34,7 +34,7 @@ export default function HomePage() {
             </span>
           </ButtonLink>
           <ButtonLink href="/tools" variant="outline" className="group">
-            Foydali Qurollar{' '}
+            Foydali Vositalar
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
               <ToolsIcon className="h-4 w-4" />
             </span>
@@ -55,21 +55,21 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {REACT_CHAPTERS.map((card, index) => (
-            <Card key={index} href={card.href} title={card.title} description={card.description} />
+            <SimpleCard key={index} href={card.href} title={card.title} description={card.description} />
           ))}
         </div>
       </section>
 
       <section className="group mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title="Foydali Qurollar"
-          description="Dasturlash va matn ishlatish uchun foydali onlayn qurollar to'plami."
+          title="Foydali Vositalar"
+          description="Dasturlash va matn ishlatish uchun foydali onlayn vositalar to'plami."
           icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {TOOLS_LIST.map((tool, index) => (
-            <Card key={index} href={tool.href} title={tool.title} description={tool.description} />
+            <SimpleCard key={index} href={tool.href} title={tool.title} description={tool.description} />
           ))}
         </div>
       </section>
