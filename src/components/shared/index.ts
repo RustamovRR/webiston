@@ -5,6 +5,8 @@ export * from './ToolHeader'
 export * from './CopyButton'
 export * from './StatsDisplay'
 export * from './DualTextPanel'
+export * from './UniversalDualPanel'
+export * from './LanguageSelector'
 
 export { default as ButtonLink } from './ButtonLink'
 export { SimpleCard } from './Card'

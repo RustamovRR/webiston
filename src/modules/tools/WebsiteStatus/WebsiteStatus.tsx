@@ -12,7 +12,14 @@ import {
   Wifi,
   Shield,
 } from 'lucide-react'
-import { ToolHeader, DualTextPanel, StatsDisplay, CopyButton } from '@/components/shared'
+import {
+  ToolHeader,
+  UniversalDualPanel,
+  StatsDisplay,
+  CopyButton,
+  createTextInputPanel,
+  createDisplayPanel,
+} from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'

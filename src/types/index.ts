@@ -5,6 +5,9 @@ export * from './tools'
 // UI component types
 export * from './ui'
 
+// Panel component types
+export * from './panel'
+
 // Common tool types
 export interface ToolResult<T = string> {
   output: T

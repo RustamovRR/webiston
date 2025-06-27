@@ -1,12 +1,18 @@
 'use client'
 
 import { FileType, Copy, RefreshCw, Settings, Download, Check, Zap, Type } from 'lucide-react'
-import { ToolHeader, StatsDisplay } from '@/components/shared'
+import {
+  ToolHeader,
+  UniversalDualPanel,
+  createDisplayPanel,
+  createCustomPanel,
+  CopyButton,
+  StatsDisplay,
+} from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { useLoremIpsum } from '@/hooks/tools'
 
 type GenerationType = 'paragraphs' | 'sentences' | 'words' | 'bytes'
@@ -49,6 +55,46 @@ export default function LoremIpsumPage() {
       icon: <Copy size={16} />,
     },
   ]
+
+  const renderGeneratedTextContent = () => {
+    if (!generatedText) {
+      return (
+        <div className="flex h-full items-center justify-center p-8 text-center">
+          <div className="text-zinc-500">
+            <Type size={48} className="mx-auto mb-4 opacity-50" />
+            <p className="text-sm">Yaratilgan matn bu yerda ko'rinadi...</p>
+            <p className="mt-2 text-xs opacity-75">Yuqoridagi 'Yangi matn yaratish' tugmasini bosing</p>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="absolute inset-0 h-full w-full overflow-y-auto p-4">
+        <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{generatedText}</pre>
+      </div>
+    )
+  }
+
+  const renderTextInfoContent = () => {
+    if (!textInfo) {
+      return (
+        <div className="flex h-full items-center justify-center p-8 text-center">
+          <div className="text-zinc-500">
+            <FileType size={48} className="mx-auto mb-4 opacity-50" />
+            <p className="text-sm">Matn ma'lumoti bu yerda ko'rinadi...</p>
+            <p className="mt-2 text-xs opacity-75">Matn yaratilgandan keyin</p>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="absolute inset-0 h-full w-full overflow-y-auto p-4">
+        <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{textInfo}</pre>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
@@ -187,136 +233,63 @@ export default function LoremIpsumPage() {
       {generatedText && <StatsDisplay stats={textStats} className="mb-6" />}
 
       {/* Main Panel */}
-      <DualTextPanel
-        sourceText={generatedText}
-        convertedText={textInfo}
-        sourcePlaceholder="Yuqoridagi 'Yangi matn yaratish' tugmasini bosing..."
-        sourceLabel="Yaratilgan matn"
-        targetLabel="Matn ma'lumoti"
-        onSourceChange={(text) => {
-          // Allow manual editing if needed
-        }}
+      <UniversalDualPanel
+        sourcePanel={createCustomPanel(
+          'Yaratilgan matn',
+          renderGeneratedTextContent(),
+          generatedText ? { type: 'success', message: 'Generated' } : { type: 'ready' },
+          generatedText ? textStats : undefined,
+          <CopyButton text={generatedText} disabled={!generatedText} />,
+        )}
+        targetPanel={createCustomPanel(
+          "Matn ma'lumoti",
+          renderTextInfoContent(),
+          textInfo ? { type: 'success', message: 'Generated' } : { type: 'ready' },
+          undefined,
+        )}
         variant="terminal"
-        showSwapButton={false}
-        showClearButton={false}
       />
 
-      {/* Ma'lumot Section */}
-      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
+      {/* Yordam va ma'lumot bo'limi */}
+      <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Zap size={20} className="text-blue-400" />
-          Matn turlari haqida
+          <Type size={20} className="text-indigo-400" />
+          Lorem Ipsum haqida ma'lumot
         </h3>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-lg bg-blue-500/10 p-4">
-            <div className="mb-2 font-medium text-blue-400">Cicero (Klasik)</div>
-            <div className="text-sm text-zinc-400">
-              Asl Lorem Ipsum matni, klassik dizayn va maket uchun eng mashhur variant
-            </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-blue-400"></div>
+              Lorem Ipsum nima?
+            </h4>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Lorem Ipsum - matn va grafik dizayn sanoatida placeholder sifatida ishlatiladigan standart dummy matn.
+              1500-yillardan beri ishlatilmoqda.
+            </p>
           </div>
-
-          <div className="rounded-lg bg-orange-500/10 p-4">
-            <div className="mb-2 font-medium text-orange-400">Bacon Ipsum</div>
-            <div className="text-sm text-zinc-400">
-              Go'sht va ovqat atamalaridan tashkil topgan mazali va qiziqarli matn variant
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-purple-500/10 p-4">
-            <div className="mb-2 font-medium text-purple-400">Hipster Ipsum</div>
-            <div className="text-sm text-zinc-400">
-              Zamonaviy va trendy so'zlar bilan yaratilgan, kreativ loyihalar uchun
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-pink-500/10 p-4">
-            <div className="mb-2 font-medium text-pink-400">Cupcake Ipsum</div>
-            <div className="text-sm text-zinc-400">
-              Shirinlik va desert nomlari bilan, qiziqarli va shirin matn turi
-            </div>
-          </div>
-
-          {alternativeTexts.uzbek && (
-            <div className="rounded-lg bg-green-500/10 p-4 md:col-span-2 lg:col-span-2">
-              <div className="mb-2 font-medium text-green-400">O'zbek Lorem</div>
-              <div className="text-sm text-zinc-400">
-                O'zbek tilida texnologiya va dasturlash sohasidagi so'zlar bilan yaratilgan maxsus variant
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Help Section */}
-      <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-sm">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
-          <Settings size={20} className="text-green-400" />
-          Lorem Ipsum nima uchun ishlatiladi?
-        </h3>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <h4 className="mb-3 font-medium text-zinc-200">Asosiy foydalanish joylari:</h4>
-            <ul className="space-y-2 text-sm text-zinc-400">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                <strong>Web dizayn:</strong> Sahifa maketlarini yaratishda
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                <strong>Grafik dizayn:</strong> Buklet va poster dizaynida
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                <strong>Typography:</strong> Shrift va matn ko'rinishini sinovdan o'tkazishda
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                <strong>Prototyping:</strong> Loyiha prototiplarida
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                <strong>Testing:</strong> Kontent-independent sinovlarda
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-pink-500"></div>
-                <strong>Placeholder:</strong> Haqiqiy kontent tayyor bo'lgunga qadar
-              </li>
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-green-400"></div>
+              Nima uchun ishlatiladi?
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Dizayn prototipleshtirish</li>
+              <li>• Matn joylashuvini ko'rsatish</li>
+              <li>• Diqqatni tarkibdan chalg'itmaslik</li>
+              <li>• Professional ko'rinish berish</li>
             </ul>
           </div>
-
-          <div>
-            <h4 className="mb-3 font-medium text-zinc-200">Professional maslahatlar:</h4>
-            <ul className="space-y-2 text-sm text-zinc-400">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                Haqiqiy kontentning taxminiy uzunligini hisobga oling
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                Turli xil matn uzunliklarini sinab ko'ring
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                Responsive dizayn uchun turli ekran o'lchamlarida tekshiring
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                Mijoz uchun munosib matn turi tanlang
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                Matn hierarxiyasini to'g'ri tuzish uchun ishlatib ko'ring
-              </li>
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-purple-400"></div>
+              Foydalanish sohalari
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Web dizayn va development</li>
+              <li>• Grafik dizayn loyihalari</li>
+              <li>• Nashriyot va matbuot</li>
+              <li>• Prototiplash va mockup</li>
             </ul>
-
-            <div className="mt-4 rounded-lg bg-blue-500/10 p-3">
-              <div className="text-sm text-blue-400">
-                <strong>Maslahat:</strong> Lorem Ipsum mazmundan chalg'itmasdan dizayn elementlariga e'tibor qaratish
-                imkonini beradi va professional natijaga erishishga yordam beradi.
-              </div>
-            </div>
           </div>
         </div>
       </div>

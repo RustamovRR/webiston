@@ -4,7 +4,13 @@ import { useState } from 'react'
 import { Download, Upload, Hash, Zap, X, QrCode, Image, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { ToolHeader, StatsDisplay, DualTextPanel } from '@/components/shared'
+import {
+  ToolHeader,
+  StatsDisplay,
+  UniversalDualPanel,
+  createTextInputPanel,
+  createDisplayPanel,
+} from '@/components/shared'
 import { cn } from '@/lib'
 import { useQrGenerator, QrSize, QrErrorLevel, QrPreset } from '@/hooks'
 
@@ -237,21 +243,26 @@ const QrGenerator = () => {
       </div>
 
       {/* Dual Panel Layout */}
-      <DualTextPanel
-        sourceText={inputText}
-        convertedText={
+      <UniversalDualPanel
+        sourcePanel={createTextInputPanel(
+          'Tool Kirish',
+          inputText,
+          setInputText,
+          "QR kod uchun matn kiriting (URL, kontakt ma'lumotlari, WiFi sozlamalari va h.k.)",
+          isGenerating ? { type: 'processing' } : { type: 'ready' },
+          inputStats,
+        )}
+        targetPanel={createDisplayPanel(
+          'Tool Natija',
           qrUrl
             ? `QR kod muvaffaqiyatli yaratildi!\n\nO'lcham: ${qrSize}x${qrSize} pixels\nXato tuzatish: ${errorLevel}\nTur: ${inputType}\n\nQR Kodi quyida ko'rinadi.`
-            : ''
-        }
-        sourceLabel="Tool Kirish"
-        targetLabel="Tool Natija"
-        onSourceChange={setInputText}
-        sourcePlaceholder="QR kod uchun matn kiriting (URL, kontakt ma'lumotlari, WiFi sozlamalari va h.k.)"
-        onClear={handleClear}
-        showSwapButton={false}
-        isProcessing={isGenerating}
-        variant="terminal"
+            : '',
+          qrUrl ? { type: 'success' } : { type: 'ready' },
+          outputStats,
+          undefined,
+          { message: "QR kod bu yerda ko'rinadi...", subMessage: 'Matn kiriting va QR kod oling' },
+        )}
+        swapConfig={{ show: false }}
       />
 
       {/* QR Code Display */}

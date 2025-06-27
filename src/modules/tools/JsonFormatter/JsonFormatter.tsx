@@ -4,14 +4,20 @@ import { Download, Upload, FileJson, Eye, EyeOff, X } from 'lucide-react'
 
 // UI Components
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CodeHighlight, ShimmerButton } from '@/components/ui'
 
 // Shared Components
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { CopyButton } from '@/components/shared/CopyButton'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
+import {
+  CopyButton,
+  createCustomPanel,
+  createTextInputPanel,
+  ToolHeader,
+  UniversalDualPanel,
+} from '@/components/shared'
+
+// Local Components
+import { JsonInputPanel, JsonOutputPanel } from './components'
 
 // Utils & Hooks
 import { countWords } from '@/lib/utils'
@@ -49,6 +55,40 @@ const JsonFormatter = () => {
   ]
 
   const fileSizeKB = Math.round((displayJson.length / 1024) * 100) / 100
+
+  const renderJsonDisplay = () => {
+    if (jsonResult.error && !jsonResult.isValid) {
+      return (
+        <div className="p-4">
+          <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-red-400"></div>
+              <strong className="text-sm text-red-400">JSON Format Xatoligi</strong>
+            </div>
+            <p className="font-mono text-sm text-red-300">{jsonResult.error}</p>
+          </div>
+        </div>
+      )
+    }
+
+    if (!displayJson) {
+      return (
+        <div className="flex h-full items-center justify-center p-8 text-center">
+          <div className="text-zinc-500">
+            <FileJson size={48} className="mx-auto mb-4 opacity-50" />
+            <p className="text-sm">Formatlangan JSON bu yerda ko'rinadi...</p>
+            <p className="mt-2 text-xs opacity-75">JSON kiriting yoki fayl yuklang</p>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="absolute inset-0 h-full w-full overflow-hidden">
+        <CodeHighlight language="json" code={displayJson} showLineNumbers={showLineNumbers} className="h-full" />
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
@@ -129,101 +169,36 @@ const JsonFormatter = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Kirish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">JSON Kirish</span>
-            </div>
-            <div className="text-xs text-zinc-400">
-              {inputJson.length > 0 &&
-                (jsonResult.isValid ? (
-                  <span className="flex items-center gap-1 text-green-400">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-400"></div>
-                    To'g'ri format
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-red-400">
-                    <div className="h-1.5 w-1.5 rounded-full bg-red-400"></div>
-                    Xatolik mavjud
-                  </span>
-                ))}
-            </div>
-          </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <Textarea
-              value={inputJson}
-              onChange={(e) => setInputJson(e.target.value)}
-              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0"
-              placeholder="JSON ma'lumotlaringizni bu yerga kiriting yoki fayl yuklang..."
-            />
-          </div>
-
-          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={inputStats} />
-            {!jsonResult.isValid && jsonResult.error && (
-              <div className="text-right">
-                <p className="font-mono text-xs text-red-400">{jsonResult.error}</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Chiqish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">
-                {isMinified ? 'Siqilgan JSON' : 'Formatlangan JSON'}
-              </span>
-            </div>
-            <CopyButton text={displayJson} disabled={!jsonResult.isValid} />
-          </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <div className="absolute inset-0 h-full w-full overflow-y-auto">
-              {jsonResult.error && !jsonResult.isValid ? (
-                <div className="p-4">
-                  <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
-                    <div className="mb-2 flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-red-400"></div>
-                      <strong className="text-sm text-red-400">JSON Format Xatoligi</strong>
-                    </div>
-                    <p className="font-mono text-sm text-red-300">{jsonResult.error}</p>
-                  </div>
-                </div>
-              ) : displayJson ? (
-                <CodeHighlight code={displayJson} language="json" showLineNumbers={showLineNumbers} />
-              ) : (
-                <div className="flex h-full items-center justify-center p-8 text-center">
-                  <div className="text-zinc-500">
-                    <FileJson size={48} className="mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">Formatlangan JSON bu yerda ko'rinadi...</p>
-                    <p className="mt-2 text-xs opacity-75">JSON kiriting yoki fayl yuklang</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={outputStats} />
+      <UniversalDualPanel
+        sourcePanel={createTextInputPanel(
+          'JSON Kirish',
+          inputJson,
+          setInputJson,
+          "JSON ma'lumotlaringizni bu yerga kiriting yoki fayl yuklang...",
+          inputJson.length > 0
+            ? jsonResult.isValid
+              ? { type: 'valid', message: "To'g'ri format" }
+              : { type: 'error', message: 'Xatolik mavjud' }
+            : { type: 'ready' },
+          inputStats,
+        )}
+        targetPanel={createCustomPanel(
+          isMinified ? 'Siqilgan JSON' : 'Formatlangan JSON',
+          renderJsonDisplay(),
+          jsonResult.isValid ? { type: 'success' } : { type: 'ready' },
+          outputStats,
+          <div className="flex items-center gap-3">
             {displayJson && (
-              <div className="text-xs text-zinc-400">
-                <span className="text-zinc-500">Hajm:</span> <span className="text-zinc-300">{fileSizeKB} KB</span>
-              </div>
+              <>
+                <span className="text-zinc-500">Hajm:</span>
+                <span className="text-zinc-300">{fileSizeKB} KB</span>
+              </>
             )}
-          </div>
-        </div>
-      </div>
+            <CopyButton text={displayJson} disabled={!jsonResult.isValid} />
+          </div>,
+        )}
+        variant="terminal"
+      />
 
       {/* Yordam va ma'lumot bo'limi */}
       <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
@@ -238,32 +213,32 @@ const JsonFormatter = () => {
               JSON nima?
             </h4>
             <p className="text-sm leading-relaxed text-zinc-400">
-              JSON (JavaScript Object Notation) - ma'lumotlarni saqlash va uzatish uchun yengil va tushunarli format.
-              Zamonaviy veb-ilovalar va API larda keng qo'llaniladi.
+              JSON (JavaScript Object Notation) - ma'lumotlarni almashish uchun yengil format. Insonlar oson o'qiydi va
+              yozadi, mashinalar esa oson tahlil qiladi.
             </p>
           </div>
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
               <div className="h-2 w-2 rounded-full bg-green-400"></div>
-              Asosiy xususiyatlari
+              Afzalliklari
             </h4>
             <ul className="space-y-1 text-sm text-zinc-400">
-              <li>• Odam o'qishi oson format</li>
-              <li>• Til mustaqil standart</li>
-              <li>• Kichik hajm va tez ishlov</li>
-              <li>• Keng qo'llab-quvvatlash</li>
+              <li>• Yengil va tez</li>
+              <li>• Ko'p tillar qo'llab-quvvatlaydi</li>
+              <li>• Odam o'qiydi</li>
+              <li>• Standart format</li>
             </ul>
           </div>
           <div className="space-y-3">
             <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
               <div className="h-2 w-2 rounded-full bg-purple-400"></div>
-              Qo'llanish sohalari
+              Qo'llanish
             </h4>
             <ul className="space-y-1 text-sm text-zinc-400">
-              <li>• API javoblari va so'rovlari</li>
+              <li>• API javoblari</li>
               <li>• Konfiguratsiya fayllari</li>
-              <li>• Ma'lumotlar bazasi eksport</li>
-              <li>• Veb ilovalar uchun ma'lumot uzatish</li>
+              <li>• Ma'lumotlar bazasi</li>
+              <li>• Veb ilovalar</li>
             </ul>
           </div>
         </div>

@@ -5,19 +5,20 @@ import { FileText, ArrowLeftRight, X, ChevronDown, Download } from 'lucide-react
 
 // UI Components
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Card } from '@/components/ui/card'
 
 // Shared Components
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { CopyButton } from '@/components/shared/CopyButton'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
+import {
+  ToolHeader,
+  UniversalDualPanel,
+  createTextInputPanel,
+  createDisplayPanel,
+  CopyButton,
+} from '@/components/shared'
 
 // Utils & Hooks
 import { useLatinCyrillic } from '@/hooks/tools/useLatinCyrillic'
-import { SectionTitle } from '@/components'
 import { countWords } from '@/lib/utils'
 
 export default function LatinCyrillicPage() {
@@ -140,246 +141,79 @@ export default function LatinCyrillicPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Kirish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">{sourceLang} Matn Kirish</span>
-            </div>
-            <div className="text-xs text-zinc-400">
-              {sourceText.length > 0 && (
-                <span className="flex items-center gap-1 text-blue-400">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
-                  O'girishga tayyor
-                </span>
-              )}
-            </div>
+      <UniversalDualPanel
+        sourcePanel={createTextInputPanel(
+          `${sourceLang} Matn Kirish`,
+          sourceText,
+          setSourceText,
+          sourcePlaceholder,
+          sourceText.length > 0 ? { type: 'valid', message: "O'girishga tayyor" } : { type: 'ready' },
+          inputStats,
+        )}
+        targetPanel={createDisplayPanel(
+          `${targetLang} Natija`,
+          convertedText,
+          convertedText.length > 0 ? { type: 'success' } : { type: 'ready' },
+          outputStats,
+          undefined,
+          {
+            icon: <FileText size={48} className="mx-auto mb-4 opacity-50" />,
+            message: `${targetLang}cha matn bu yerda ko'rinadi...`,
+            subMessage: 'Matn kiriting',
+          },
+          undefined,
+          <CopyButton text={convertedText} disabled={!convertedText} />,
+        )}
+        swapConfig={{
+          show: true,
+          onClick: handleSwap,
+          disabled: !convertedText,
+          icon: <ArrowLeftRight size={20} className="text-zinc-300" />,
+        }}
+        variant="terminal"
+      />
+
+      {/* Yordam va ma'lumot bo'limi */}
+      <div className="mt-8 rounded-xl border border-zinc-800/30 bg-zinc-900/60 p-6 backdrop-blur-sm">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-100">
+          <FileText size={20} className="text-indigo-400" />
+          Lotin-Kirill O'giruvchi haqida
+        </h3>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-blue-400"></div>
+              Nima uchun kerak?
+            </h4>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              O'zbek tilidagi matnlarni lotin va kirill yozuvlari o'rtasida o'girish uchun. Rasmiy hujjatlar, web
+              saytlar va shaxsiy foydalanish uchun qulay.
+            </p>
           </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <Textarea
-              value={sourceText}
-              onChange={(e) => setSourceText(e.target.value)}
-              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0"
-              placeholder={sourcePlaceholder}
-            />
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-green-400"></div>
+              Xususiyatlari
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Real vaqtda o'girish</li>
+              <li>• To'g'ri harflar moslamasi</li>
+              <li>• Ikki tomonlama konvertatsiya</li>
+              <li>• Uzun matnlar bilan ishlash</li>
+            </ul>
           </div>
-
-          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={inputStats} />
+          <div className="space-y-3">
+            <h4 className="flex items-center gap-2 font-semibold text-zinc-200">
+              <div className="h-2 w-2 rounded-full bg-purple-400"></div>
+              Qo'llanish
+            </h4>
+            <ul className="space-y-1 text-sm text-zinc-400">
+              <li>• Hujjatlar tayyorlash</li>
+              <li>• Web kontent o'girish</li>
+              <li>• Ta'lim materiallar</li>
+              <li>• Shaxsiy xatlar</li>
+            </ul>
           </div>
-        </div>
-
-        {/* Swap Button - Markazda */}
-        <div className="relative lg:absolute lg:top-1/2 lg:left-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
-          <div className="flex justify-center lg:justify-start">
-            <ShimmerButton
-              onClick={handleSwap}
-              variant="outline"
-              size="icon"
-              className="h-12 w-12 rounded-full border-2 border-zinc-700 bg-zinc-900/90 shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-800/90"
-              title="Yo'nalishni almashtirish"
-            >
-              <ArrowLeftRight size={20} className="text-zinc-300" />
-            </ShimmerButton>
-          </div>
-        </div>
-
-        {/* Chiqish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">{targetLang} Natija</span>
-            </div>
-            <CopyButton text={convertedText} disabled={!convertedText} />
-          </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <div className="absolute inset-0 h-full w-full overflow-y-auto">
-              {convertedText ? (
-                <div className="p-4">
-                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{convertedText}</pre>
-                </div>
-              ) : (
-                <div className="flex h-full items-center justify-center p-8 text-center">
-                  <div className="text-zinc-500">
-                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">O'girilgan matn bu yerda ko'rinadi...</p>
-                    <p className="mt-2 text-xs opacity-75">Matn kiriting yoki namuna yuklang</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={outputStats} />
-            {convertedText && (
-              <div className="text-xs text-zinc-400">
-                <span className="text-zinc-500">Alifbo:</span> <span className="text-zinc-300">{targetLang}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Info Section - Card Based Layout */}
-      <div className="mt-12">
-        <SectionTitle
-          icon={<FileText className="h-6 w-6" />}
-          title="Lotin-Kirill Alifbosi Haqida"
-          description="O'zbek tilida yozish uchun zarur bo'lgan ma'lumotlar"
-        />
-
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Lotin Alifbosi */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
-                  <FileText className="h-5 w-5 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">Lotin Alifbosi</h3>
-              </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">
-                O'zbek tilida 1992-yildan beri rasmiy ravishda ishlatilayotgan yozuv tizimi.
-              </p>
-              <div className="space-y-2 text-sm">
-                <p className="text-zinc-300">
-                  <strong>Harflar soni:</strong> 29 ta
-                </p>
-                <p className="text-zinc-300">
-                  <strong>Maxsus belgilar:</strong> o', g', sh, ch, ng
-                </p>
-                <p className="text-zinc-300">
-                  <strong>Xususiyat:</strong> Kompyuterda yozish uchun qulay
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Kirill Alifbosi */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
-                  <FileText className="h-5 w-5 text-green-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">Кирилл Алифбоси</h3>
-              </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">
-                Совет даврида ишлатилган ва ҳозирда ҳам баъзи соҳаларда қўлланилади.
-              </p>
-              <div className="space-y-2 text-sm">
-                <p className="text-zinc-300">
-                  <strong>Ҳарфлар сони:</strong> 35 та
-                </p>
-                <p className="text-zinc-300">
-                  <strong>Махсус ҳарфлар:</strong> ў, ғ, қ, ҳ
-                </p>
-                <p className="text-zinc-300">
-                  <strong>Хусусият:</strong> Рус тилига яқин
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Transliteratsiya qoidalari */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/20">
-                  <ArrowLeftRight className="h-5 w-5 text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">O'girish Qoidalari</h3>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-zinc-400">
-                <div>
-                  <p className="font-medium text-zinc-300">Lotin → Kirill:</p>
-                  <p>o' → ў, g' → ғ, sh → ш, ch → ч</p>
-                </div>
-                <div>
-                  <p className="font-medium text-zinc-300">Kirill → Lotin:</p>
-                  <p>ў → o', ғ → g', ш → sh, ч → ch</p>
-                </div>
-                <p className="mt-3 text-xs">Avtomatik o'girish 99.9% aniqlikda ishlaydi.</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Tarix */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20">
-                  <FileText className="h-5 w-5 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">Tarixiy Ma'lumot</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>
-                  <strong className="text-zinc-300">1928-1940:</strong> Lotin alifbosi
-                </p>
-                <p>
-                  <strong className="text-zinc-300">1940-1992:</strong> Kirill alifbosi
-                </p>
-                <p>
-                  <strong className="text-zinc-300">1992-hozir:</strong> Lotin alifbosi
-                </p>
-                <p className="mt-3 text-xs">O'zbekiston mustaqillik olganidan keyin lotin alifbosiga qaytildi.</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Qo'llanish sohalari */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/20">
-                  <FileText className="h-5 w-5 text-red-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">Qo'llanish</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>
-                  <strong className="text-zinc-300">Lotin:</strong> Rasmiy hujjatlar, ta'lim
-                </p>
-                <p>
-                  <strong className="text-zinc-300">Kirill:</strong> Adabiyot, arxiv
-                </p>
-                <p>
-                  <strong className="text-zinc-300">Aralash:</strong> Internet, ijtimoiy tarmoqlar
-                </p>
-                <p className="mt-3 text-xs">Ikki alifbo ham o'z o'rniga ega va muhim.</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Foydali maslahatlar */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20">
-                  <FileText className="h-5 w-5 text-indigo-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">Maslahatlar</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>• Matnni to'liq kiritib, keyin o'giring</p>
-                <p>• Namuna matnlardan foydalaning</p>
-                <p>• Natijani tekshirib ko'ring</p>
-                <p>• Fayl sifatida saqlash mumkin</p>
-                <p className="mt-3 text-xs">Professional natijalar uchun matnni diqqat bilan tayyorlang.</p>
-              </div>
-            </div>
-          </Card>
         </div>
       </div>
     </div>

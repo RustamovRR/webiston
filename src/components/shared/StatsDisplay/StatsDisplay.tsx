@@ -2,7 +2,7 @@ import { NumberTicker } from '@/components/ui/number-ticker'
 
 interface StatItem {
   label: string
-  value: number
+  value: number | string
 }
 
 interface StatsDisplayProps {
@@ -15,7 +15,11 @@ export function StatsDisplay({ stats, className = '' }: StatsDisplayProps) {
     <div className={`flex gap-4 text-sm text-zinc-500 ${className}`}>
       {stats.map((stat, index) => (
         <span key={index} className="flex items-center gap-1">
-          <NumberTicker value={stat.value} />
+          {typeof stat.value === 'number' ? (
+            <NumberTicker value={stat.value} />
+          ) : (
+            <span className="font-mono">{stat.value}</span>
+          )}
           <span>{stat.label}</span>
         </span>
       ))}

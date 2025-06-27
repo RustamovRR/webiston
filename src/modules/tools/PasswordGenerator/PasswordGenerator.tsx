@@ -3,7 +3,13 @@
 import { useState } from 'react'
 import { RefreshCw, Eye, EyeOff, Shield, Download, Copy, Check, Zap, Lock, Settings, Key } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ToolHeader, StatsDisplay, DualTextPanel } from '@/components/shared'
+import {
+  ToolHeader,
+  StatsDisplay,
+  UniversalDualPanel,
+  createDisplayPanel,
+  createCustomPanel,
+} from '@/components/shared'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { cn } from '@/lib'
 import { usePasswordGenerator } from '@/hooks'
@@ -276,17 +282,34 @@ const PasswordGenerator = () => {
       </div>
 
       {/* Dual Panel Layout */}
-      <DualTextPanel
-        sourceText={passwordDisplayText}
-        convertedText={passwordInfo}
-        sourceLabel="Tool Kirish"
-        targetLabel="Tool Natija"
-        onSourceChange={() => {}} // Read-only
-        sourcePlaceholder="Yaratilgan parol bu yerda ko'rinadi..."
-        onClear={() => {}}
-        showSwapButton={false}
-        showClearButton={false}
-        variant="terminal"
+      <UniversalDualPanel
+        sourcePanel={createDisplayPanel(
+          'Tool Kirish',
+          passwordDisplayText,
+          password ? { type: 'success' } : { type: 'ready' },
+          password
+            ? [
+                { label: 'belgi', value: stats.characters },
+                { label: 'noyob', value: stats.unique },
+              ]
+            : undefined,
+          undefined,
+          { message: "Yaratilgan parol bu yerda ko'rinadi...", subMessage: 'Yuqorida parol yaratish tugmasini bosing' },
+        )}
+        targetPanel={createDisplayPanel(
+          'Tool Natija',
+          passwordInfo,
+          password ? { type: 'success' } : { type: 'ready' },
+          password
+            ? [
+                { label: 'entropiya', value: `${stats.entropy} bit` },
+                { label: 'mustahkamlik', value: `${passwordStrength.level}/5` },
+              ]
+            : undefined,
+          undefined,
+          { message: "Parol ma'lumotlari bu yerda ko'rinadi...", subMessage: 'Parol yaratilgandan keyin' },
+        )}
+        swapConfig={{ show: false }}
       />
 
       {/* Password Strength Display */}
