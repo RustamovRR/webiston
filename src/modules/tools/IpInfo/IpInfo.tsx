@@ -12,10 +12,10 @@ import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
 // Utils & Hooks
-import { useIPInfo } from '@/hooks'
 
 // Icons
 import { MapPin, Globe, Wifi, RefreshCw, Search, Download, Shield, Clock } from 'lucide-react'
+import { useIpInfo } from '@/hooks'
 
 export default function IpInfo() {
   const {
@@ -34,7 +34,7 @@ export default function IpInfo() {
     samples,
     canDownload,
     isEmpty,
-  } = useIPInfo()
+  } = useIpInfo()
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4">

@@ -93,7 +93,7 @@ const SAMPLE_IPS: IPSample[] = [
   },
 ]
 
-export const useIPInfo = () => {
+const useIpInfo = () => {
   const [ipAddress, setIpAddress] = useState<string>('')
   const [ipInfo, setIpInfo] = useState<IPInfo | null>(null)
   const [currentIP, setCurrentIP] = useState<string>('')
@@ -324,4 +324,4 @@ export const useIPInfo = () => {
   }
 }
 
-export type { IPInfo }
+export default useIpInfo
