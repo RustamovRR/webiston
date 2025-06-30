@@ -9,9 +9,6 @@ import Image from 'next/image'
 import { socialLinks } from '@/constants'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { LanguageSelector } from '@/components'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
@@ -95,15 +92,13 @@ export const metadata: Metadata = {
 const navbar = (
   <Navbar
     logo={
-      <Link href="/" className="flex items-center gap-2">
+      <Link href="/" className="relative flex items-center gap-2">
         <Image src="/logo.png" alt="Webiston Logo" width={50} height={50} />
         <span className="hidden text-lg font-bold sm:inline">Webiston</span>
       </Link>
     }
     logoLink="/"
-  >
-    <LanguageSelector />
-  </Navbar>
+  ></Navbar>
 )
 
 const footer = (
@@ -132,12 +127,9 @@ const footer = (
 
 export default async function RootLayout({ children }: any) {
   const rawPageMap = await getPageMap()
-  const messages = await getMessages()
 
-  // Filter out [locale] from pageMap to prevent it from appearing in navigation
   const pageMap = rawPageMap.filter((item: any) => {
-    // Only include books and other non-dynamic routes
-    return item.name !== '[locale]' && !item.name?.startsWith('[')
+    return item.name !== '[locale]' && item.name !== 'tools'
   })
 
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
@@ -210,10 +202,10 @@ export default async function RootLayout({ children }: any) {
           darkMode={true}
           toc={{ backToTop: true }}
           nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-          search={<Search placeholder="Qidirish..." />}
+          search={<Search className="mr-12" placeholder="Qidirish..." />}
           feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
         >
-          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+          {children}
         </Layout>
       </body>
     </html>
