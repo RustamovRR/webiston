@@ -202,7 +202,7 @@ export default async function RootLayout({ children }: any) {
           darkMode={true}
           toc={{ backToTop: true }}
           nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-          search={<Search className="mr-12" placeholder="Qidirish..." />}
+          search={<Search className="mr-14" placeholder="Qidirish..." />}
           feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
         >
           {children}
