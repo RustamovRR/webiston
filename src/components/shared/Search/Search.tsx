@@ -1,7 +1,7 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import Image from 'next/image'
+import { SearchIcon } from 'lucide-react'
 import { RefObject, useEffect, useRef, useState, useCallback } from 'react'
 import SearchDialog from './SearchDialog'
 
@@ -57,17 +57,11 @@ export default function Search() {
         className="relative hidden cursor-pointer rounded-xl bg-[#F2F2F7] md:block dark:bg-[#151515]"
         onClick={() => setOpen(true)}
       >
-        <Image
-          src="/search-icon.svg"
-          width={24}
-          height={24}
-          alt="Search"
-          className="text-muted-foreground absolute top-1/2 left-3 h-6 w-6 -translate-y-1/2 pr-1"
-        />
+        <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
         <Input
           ref={inputRef as RefObject<HTMLInputElement>}
           placeholder="Qidirish..."
-          className="cursor-pointer pr-12 pl-9"
+          className="cursor-pointer pr-12 pl-10"
           readOnly
         />
         <kbd className="absolute top-1/2 right-3 -translate-y-1/2 rounded-[4px] border border-[#F2F2F7] px-2 py-0.5 text-xs select-none dark:border-[#2C2C2E]">
@@ -76,7 +70,7 @@ export default function Search() {
       </div>
 
       <div className="flex cursor-pointer items-center justify-center md:hidden" onClick={() => setOpen(true)}>
-        <Image src="/search-icon.svg" width={24} height={24} alt="Search" className="h-6 w-6" />
+        <SearchIcon className="h-6 w-6" />
       </div>
 
       <SearchDialog
