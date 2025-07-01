@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "tools": "Vositalar",
+    "books": "Kitoblar",
+    "about": "Haqida"
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik",
+    "success": "Muvaffaqiyatli",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "clear": "Tozalash",
+    "copy": "Nusxalash",
+    "download": "Yuklab olish",
+    "upload": "Yuklash",
+    "generate": "Yaratish",
+    "search": "Qidirish",
+    "language": "Til"
+  },
+  "tools": {
+    "title": "Vositalar",
+    "description": "Professional web development uchun foydali vositalar to'plami"
+  }
+}

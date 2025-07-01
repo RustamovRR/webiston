@@ -1,4 +1,5 @@
 import createMDX from '@next/mdx'
+import createNextIntlPlugin from 'next-intl/plugin'
 
 // MDX configuration with standard plugins
 const withMDX = createMDX({
@@ -10,6 +11,8 @@ const withMDX = createMDX({
     providerImportSource: '@mdx-js/react',
   },
 })
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig = {
   // Configure pageExtensions to include md and mdx
@@ -36,4 +39,4 @@ const nextConfig = {
   },
 }
 
-export default withMDX(nextConfig)
+export default withMDX(withNextIntl(nextConfig))

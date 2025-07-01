@@ -1,12 +1,13 @@
 import './globals.css'
 import { Metadata } from 'next'
-import Link from 'next/link'
 import Image from 'next/image'
-import { socialLinks } from '@/constants'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
 import Footer from '@/components/shared/Footer/Footer'
 import Header from '@/components/shared/Header/Header'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
@@ -88,10 +89,12 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
+
+  const messages = await getMessages()
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
@@ -150,9 +153,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <NextIntlClientProvider messages={messages}>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "home": "Home",
+    "tools": "Tools",
+    "books": "Books",
+    "about": "About"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "clear": "Clear",
+    "copy": "Copy",
+    "download": "Download",
+    "upload": "Upload",
+    "generate": "Generate",
+    "search": "Search",
+    "language": "Language"
+  },
+  "tools": {
+    "title": "Tools",
+    "description": "Useful tools collection for professional web development"
+  }
+}
