@@ -6,7 +6,7 @@ keywords: "Webiston, dasturlash, qo'llanma, dokumentatsiya, React, JavaScript, T
 author: 'Webiston.uz'
 ---
 
-import { Card } from '@/components'
+import { SimpleCard } from '@/components'
 import { REACT_CHAPTERS } from '@/constants'
 
 # So'zboshi
@@ -26,6 +26,6 @@ Bu yerda qiziqarli va murakkab texnologiyalarni chuqur o'rganishingiz mumkin!
 
 <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
   {REACT_CHAPTERS.map((card, index) => (
-    <Card key={index} href={card.href} title={card.title} description={card.description} />
+    <SimpleCard key={index} href={card.href} title={card.title} description={card.description} />
   ))}
 </div>
