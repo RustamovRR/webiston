@@ -1,4 +1,3 @@
-@import 'nextra-theme-docs/style.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -63,15 +62,6 @@ main {
 .home-content p {
   margin-top: 1.5em;
   line-height: 1.75em;
-}
-
-.home-content a {
-  --tw-ring-color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50%/0.3);
-  --tw-text-opacity: 1;
-  text-underline-position: under;
-  text-decoration-line: underline;
-  text-decoration-thickness: from-font;
-  color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50% / var(--tw-text-opacity));
 }
 
 figcaption {

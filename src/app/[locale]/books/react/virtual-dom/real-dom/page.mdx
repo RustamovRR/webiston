@@ -1,0 +1,156 @@
+---
+title: 'Real DOM nima? Tuzilishi va Manipulyatsiyasi'
+description: |
+  Real DOM (Document Object Model) qanday ishlaydi? Uning tugunli tuzilishini, `querySelector` va `getElementById` orqali manipulyatsiya qilishni va Big O notatsiyasini o'rganing.
+keywords: 'DOM, Real DOM, Document Object Model, querySelector, getElementById, Big O notation, performance, JavaScript, webiston'
+author: 'Webiston.uz'
+---
+
+import { Callout } from '@/components/mdx'
+
+# Real DOM
+
+HTML sahifasi veb brauzerga yuklanganda, u tahlil qilinadi(parsing) va tugunlar(nodes) va obyektlardan iborat daraxtga aylantiriladi — bu obyekt modeli bo'lib, DOM deb ataladi: bu shunchaki katta JavaScript obyekti. DOM — bu veb sahifaning jonli namoyandasi, ya'ni foydalanuvchilar sahifa bilan o'zaro aloqada bo'lar ekan, doimiy ravishda yangilanadi.
+
+## Real DOM misoli
+
+Bu yerda oddiy HTML sahifasi uchun real DOM misoli keltirilgan:
+
+```html copy
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Misol Sahifa</title>
+  </head>
+  <body>
+    <h1 class="heading">Sahifamga xush kelibsiz!</h1>
+    <p>Bu misol paragrafigidir.</p>
+    <ul>
+      <li>Element 1</li>
+      <li>Element 2</li>
+      <li>Element 3</li>
+    </ul>
+  </body>
+</html>
+```
+
+### DOM’ning tugunlari
+
+Ushbu misolda, real DOM sahifadagi har bir HTML elementi uchun tugunlardan iborat daraxtga o'xshash struktura bilan tasvirlangan. Bu yerda daraxt strukrurasi qanday ko'rinishda bo'lishi mumkinligi haqida misol keltirilgan, bu tushunishni osonlashtirish uchun juda soddalashtirilgan. Real DOM’da har bir tugunda ko'pgina xususiyatlar va metodlar mavjud. Shunga qaramay, bu dokumentni obyekt sifatida qanday modellashtirishni tushunishimizga yordam beradi:
+
+```js copy
+const dom = {
+  type: 'document',
+  doctype: 'html',
+  children: [
+    {
+      type: 'element',
+      tagName: 'html',
+      children: [
+        {
+          type: 'element',
+          tagName: 'head',
+          children: [
+            {
+              type: 'element',
+              tagName: 'title',
+              children: 'Namuna sahifa',
+            },
+          ],
+        },
+        {
+          type: 'element',
+          tagName: 'body',
+          children: [
+            {
+              type: 'element',
+              tagName: 'h1',
+              innerHTML: 'Sahifamga xush kelibsiz!',
+              children: [],
+              className: 'heading',
+            },
+            {
+              type: 'element',
+              tagName: 'p',
+              children: 'Bu namuna paragrafigidir.',
+            },
+            {
+              type: 'element',
+              tagName: 'ul',
+              children: [
+                {
+                  type: 'element',
+                  tagName: 'li',
+                  children: 'Element 1',
+                },
+                {
+                  type: 'element',
+                  tagName: 'li',
+                  children: 'Element 2',
+                },
+                // ...qolganlarini to'ldirishingiz mumkin
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+}
+```
+
+### `document.querySelector()` bilan DOM manipulyatsiyasi
+
+Daraxtdagi har bir tugun HTML elementini ifodalaydi va uni JavaScript orqali manipulyatsiya qilish imkonini beruvchi xususiyatlar va metodlarni o'z ichiga oladi. Masalan, biz `document.querySelector()` metodidan foydalanib, real DOM’dan ma'lum bir tugunni olishimiz va uning ichidagi kontentini o'zgartirishimiz mumkin:
+
+```js copy
+// <h1> tugunini olish
+const h1Node = document.querySelector('.heading')
+
+// Uning matnini o'zgartirish
+if (h1Node) {
+  h1Node.innerHTML = 'Yangilangan Sarlavha!'
+}
+
+console.log(h1Node)
+```
+
+Ushbu misolda, biz `document.querySelector()` metodi orqali `"heading"` class’iga ega bo'lgan `h1` elementini olamiz. Keyin, elementning kontentini `innerHTML` xususiyatini `"Yangilangan Sarlavha!"` ga o'rnatish orqali o'zgartiramiz. Bu sahifada `"Sahifamga xush kelibsiz!"` tekstini `"Yangilangan Sarlavha!"` ga o'zgartiradi.
+
+Bu juda murakkab ko'rinmaydi, ammo bu yerda e'tiborga olish kerak bo'lgan bir nechta narsalar mavjud. Birinchidan, biz real DOM’dan elementni olish uchun `document.querySelector()` metodidan foydalanmoqdamiz. Ushbu metod CSS selektorini argument sifatida qabul qiladi va selektorga mos keladigan birinchi elementni qaytaradi. Ushbu holatda, biz `.heading` class selektorini ishlatmoqdamiz, bu `"heading"` class’iga ega bo'lgan `h1` elementiga mos keladi.
+
+### `document.querySelector()` va `document.getElementById`
+
+Bu yerda bir oz xavf mavjud, chunki `document.querySelector` metodi real DOM’da CSS selektorlari asosida elementlarni tanlash uchun kuchli vosita bo'lsa-da, bu metodning potensial ishlash muammosi shundaki, katta va murakkab dokumentlarda ishlaganda bu sekin bo'lishi mumkin. Ushbu metod dokumentning yuqorisidan boshlab, kerakli elementni topish uchun pastga qarab o'tishi kerak, bu esa ko'proq vaqt talab qiladigan jarayon bo'lishi mumkin.
+
+Biz `document.querySelector()`ni CSS selektori bilan chaqirganimizda, brauzer unga mos keladigan elementlar uchun butun dokument daraxtini qidirishi kerak. Bu, ayniqsa, dokument katta va murakkab strukturaga ega bo'lsa, qidirish sekin bo'lishini anglatadi. Bundan tashqari, brauzer selektorni o'zini baholashi kerak, bu esa selektorning qiyinligiga qarab murakkab jarayon bo'lishi mumkin.
+
+Aksincha, `document.getElementById` CSS selektorlari kabi validatsiyani talab qilmaydi va `id` atributlari takrorlanmas(unique) bo'lishi tufayli aniqlik darajasini oshiradi, shuning uchun bu odatda samaraliroqdir.
+
+### Murakkablik va ishlash samaradorligi
+
+Murakkablikni Big O notatsiyasi yordamida o'lchaganda, `getElementById` zamonaviy brauzerlarda (O(1)) ga yaqin hisoblanadi, chunki ular ID→element xaritalash uchun samarali hashing mexanizmlarini, masalan, hash jadvallarini qo'llashi mumkin. Idealdagi hash jadvali qidirishlari o'rtacha (O(1)) hisoblanadi, ammo eng yomon holatlarda, masalan, hash to'qnashuv(collision)larida, qidirish uzoqroq bo'lishi mumkin. Brauzerlar ID takrorlanmas bo'lishligini qat'iy ravishda amalga oshirmagani sababli, bu hash to'qnashuvlarining sodir bo'lishi ehtimoli katta. Shunga qaramay, zamonaviy brauzerlarda takomillashgan(advanced) hashing funksiyalari va o'lchov strategiyalari bilan bunday holatlar kamdan-kam uchraydi.
+
+<Callout type="info">
+
+#### Big O notatsiyasi
+
+_Computer science_'da yaxshi bo'lmaganlar va ehtimol Big O’ni tushunmaydiganlar uchun, bu dasturchilar tomonidan kodning tez yoki sekin ishlashini baholash uchun ishlatiladigan qulay vositadir, ayniqsa kod ishlashi kerak bo'lgan ma'lumotlar miqdori oshganda. Aslida, Big O notatsiyasi algoritmlarning yuqori darajadagi tushunilishini ta'minlaydi, bunda vaqt murakkabligi (_time complexity_, ya'ni bajarilish vaqti kiritilish(input) hajmiga qarab qanday o'sadi) va joy murakkabligi (_space complexity_, ya'ni xotira hajmi kiritilish hajmiga qarab qanday o'sadi) nazarda tutiladi. Odatda bu quyidagi shakllarda ifodalanadi: (O(1)), (O(n)), (O(n log n)) yoki (O(n²)), bu yerda (n) — kiritilish hajmini bildiradi. Shunday qilib, dasturchilar kod "samarali" yoki "kengayuvchan" deb gapirganda, ular odatda shu Big O qiymatlari haqida gapirishadi, bu esa algoritmlarni vaqt va joy murakkabligi kamroq bo'lganini ta'minlash uchun mo'ljallangan bo'ladi. Bu esa dasturiy ta'minot ko'proq ma'lumot bilan ishlaganda ham samarador bo'lib qolishini kafolatlaydi.
+
+</Callout>
+
+### `document.querySelector`ning afzalligi
+
+Shuningdek, ID’lar takrorlanmas bo'lgani sababli, ular bir sahifada bir nechta qayta ishlatiladigan komponentlar uchun juda ham mos kelavermaydi. Aynan shu yerda `querySelector`ning afzalligi namoyon bo'ladi, chunki u bir xil class nomiga ega bo'lgan bir nechta elementlarni tanlash uchun ishlatilishi mumkin.
+
+Shu bilan birga, `querySelector` keng turdagi CSS selektorlarini qabul qilishi mumkin va uning murakkabligi o'zgaruvchan bo'ladi. Eng yomon holatda, bu usul DOM’ning butun strukturasini tekshirishi kerak bo'lishi mumkin, natijada uning murakkabligi (O(n)) bo'lib, bu yerda (n) DOM’dagi elementlar sonini bildiradi. Biroq, element DOM daraxtining avvalrog'ida topilsa, vaqt murakkabligi (O(n))’dan kichik bo'lishi mumkin. Ammo shuni yodda tutish kerakki, selektorlarni tahlil qilish va validatsiya qilishing qo'shimcha hisoblashning resurs talab qilishi ham mavjud.
+
+Shuningdek, `document.getElementById` va `document.querySelector` o'rtasidagi ishlash tezligi farqi kichik dokumentlarda yoki dokument daraxtining muayyan qismlarida elementlarni qidirishda unchalik sezilmasligi mumkin. Ammo katta va murakkab dokumentlarda bu farq yaqqol ko'rinadi.
+
+### Virtual DOM ishlatishning samaradorligi
+
+Ba'zilar ushbu "CPU samaradorligi" argumenti haqida o'ylash haddan tashqari bo'rttirib yuborilgan, deb ta'kidlashlari mumkin va bunga ahamiyat berish kerak emas deb o'ylashadi. Bu to'g'ri bo'lishi yoki bo'lmasligi mumkin, ammo hech kim React’ning virtual DOM orqali logikani komponentlarga ajratib, o'zgaruvchan DOM’da state’ni boshqarish zaruratini bartaraf qilishdagi qo'shimcha qiymatini inkor eta olmaydi. DOM’ni o'zgaruvchan deb atashimizning sababi, uni foydalanuvchi bilan o'zaro interaktivligi, tarmoq so'rovlari, klient tomoni skriptlari va boshqa event’lar kabi ko'plab omillar ta'sirida doimiy ravishda o'zgarib turishi bilan bog'liq. React esa, virtual DOM orqali bizni ushbu muhitdan himoya qiladi.
+
+Biz bu nozik tafsilotlarga chuqur kirib borayapmiz, chunki React bilan haqiqatan ham mukammal ishlash uchun DOM’ning umumiy murakkabligini tushunish juda muhimdir. DOM bilan oqilona ishlash oddiy ish emas va React bilan biz tanlovga egamiz: o'zimiz DOM orqali bu mina maydonida harakat qilib, ba'zan minaga qadam bosamizmi yoki virtual DOM yordamida DOM’ni xavfsiz boshqarish uchun qo'shimcha vositadan foydalanamizmi.
+
+Elementlarni tanlashda ba'zi kichik nozik jihatlarni muhokama qildik, ammo DOM bilan to'g'ridan-to'g'ri ishlashning xavf-xatarlari haqida chuqurroq to'xtalish imkoniyatiga ega bo'lmadik. Keling, buni tezda ko'rib chiqib, React’ning virtual DOM bilan bizga taqdim etadigan qiymatini to'liq tushunaylik.

@@ -1,0 +1,55 @@
+---
+title: "React'da Yangilanishlarni Guruhlash (Batching Updates)"
+description: |
+  React qanday qilib bir nechta state yangilanishini bitta renderga birlashtiradi? Yangilanishlarni guruhlash (batching) va uning performance'ga ta'sirini o'rganing.
+keywords: 'React, batching, batching updates, yangilanishlarni guruhlash, performance, samaradorlik, reconciliation, DOM, state, useState, Fiber, webiston'
+author: 'Webiston.uz'
+---
+
+import { Callout } from '@/components/mdx'
+
+# Batching updates (Yangilanishlarni guruhlash)
+
+[3-bobda](/books/react/virtual-dom/document-fragments) biz brauzerlardagi document fragmentlarini DOM’ning o'zida mavjud bo'lgan API qismlaridan biri sifatida muhokama qildik: bu yengil konteynerlar bo'lib, ular DOM tugunlarining to'plamlarini saqlaydi va vaqtinchalik DOM uchun tayyorlash maydoni vazifasini bajaradi, unda bir nechta o'zgarishlarni amalga oshirish mumkin, asosiy DOM’ga ta’sir qilmasdan. Nihoyat, document fragmenti DOM’ga qo'shilganda, bitta reflow va repaint jarayoni ishga tushadi.
+
+Xuddi shunga o'xshash tarzda, React reconciliation jarayonida real DOM’ga yangilanishlarni guruhlaydi, bir nechta vDOM yangilanishlarini bitta DOM yangilanishiga birlashtiradi. Bu real DOM’ni yangilashlar sonini kamaytiradi va shuning uchun veb-ilovalarning samaradorligini yaxshilaydi.
+
+## Yangilanishlarni guruhlash va unga misol
+
+Buni tushunish uchun state’ni bir necha marotaba yangilaydigan komponentni ko'rib chiqaylik:
+
+```js copy
+function Example() {
+  const [count, setCount] = useState(0)
+
+  const handleClick = () => {
+    setCount((prevCount) => prevCount + 1)
+    setCount((prevCount) => prevCount + 1)
+    setCount((prevCount) => prevCount + 1)
+  }
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleClick}>Increment</button>
+    </div>
+  )
+}
+```
+
+Ushbu misolda, `handleClick` funksiyasi `setCount` funksiyasini ketma-ket uzluksiz uch marta chaqiradi. Agar "batching"(yangilanishlarni guruhlash) bo'lmaganida, React real DOM’ni uch marta yangilagan bo'lardi, garchi `count` qiymati faqat bir marta o'zgargan bo'lsa ham. Bu samarasiz va sekin bo'lardi.
+
+Biroq, React yangilanishlarni to'plab guruhlaganligi, ya'ni "batching" qilganligi, sababli, har safar `count + 1` bilan uchta yangilanish o'rniga, u DOM’ga faqat bitta yangilanishni `count + 3` qiymat bilan amalga oshiradi.
+
+DOM’ga eng samarali guruhlangan yangilanishni hisoblash uchun React hozirgi vDOM daraxtining yangi nusxasini yaratadi, bu yerda `count` qiymati `3` ga teng bo'ladi. Bu daraxt brauzerdagi mavjud bo'lgan holat bilan moslashishi (_reconciled bo'lishi_) kerak, bu esa `0` ni `3` ga aylantirishni anglatadi. React yangi vDOM qiymati `3` dan foydalangan holda DOM’ga faqat bitta yangilanish talab qilinishini hisoblab chiqadi, DOM’ni qo'lda uch marta yangilash o'rniga. Bu "batching"ni qanday ishlashini tushuntiradi va bu biz chuqurroq o'rganishga kirishayotgan kengroq mavzuning bir qismi: reconciliation, yoki kelasi kutilayotgan DOM holatini hozirgi DOM bilan moslashtirish jarayoni.
+
+### React’ning eski "stack" reconciler’i
+
+Hozirgi zamonaviy Reactning qanday ishlashini tushunishdan oldin, React 16-versiyasidan oldin, eski "stack" reconciliation mexanizmi bilan qanday qilib moslanganini ko'rib chiqamiz. Bu bizga bugungi kunda mashhur bo'lgan **_"Fiber reconciler"_** ga bo'lgan ehtiyojni tushunishga yordam beradi.
+
+<Callout type="info">
+  Bu nuqtada, biz muhokama qiladigan barcha mavzular React’da amalga oshirilgan tafsilotlar ekanligini, vaqt o'tishi
+  bilan o'zgarishi mumkin va ehtimol o'zgarishini qayd etish joiz. Bu yerda biz React’ning ishlash mexanizmini uning
+  amaliy qo'llanishidan ajratmoqdamiz. Maqsad — React’ning ichki mexanizmlarini tushunish orqali React’dan ilovalarda
+  samarali foydalanish haqida yaxshiroq tushunchaga ega bo'lishdir.
+</Callout>

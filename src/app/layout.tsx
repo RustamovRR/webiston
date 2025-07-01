@@ -1,7 +1,3 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head, Search } from 'nextra/components'
-import { getPageMap } from 'nextra/page-map'
-import 'nextra-theme-docs/style.css'
 import './globals.css'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -9,6 +5,8 @@ import Image from 'next/image'
 import { socialLinks } from '@/constants'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
+import Footer from '@/components/shared/Footer/Footer'
+import Header from '@/components/shared/Header/Header'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
@@ -90,52 +88,14 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 }
 
-const navbar = (
-  <Navbar
-    logo={
-      <Link href="/" className="flex items-center gap-2">
-        <Image src="/logo.png" alt="Webiston Logo" width={50} height={50} />
-        <span className="hidden text-lg font-bold sm:inline">Webiston</span>
-      </Link>
-    }
-    logoLink="/"
-  />
-)
-
-const footer = (
-  <Footer className="flex w-full flex-col !items-center !justify-center gap-4 sm:items-start">
-    <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
-      {socialLinks.map(({ id, href, icon, label }) => (
-        <a
-          key={id}
-          href={href}
-          aria-label={label}
-          title={label}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 text-current transition-colors hover:text-gray-900 dark:hover:text-gray-100"
-        >
-          {icon}
-        </a>
-      ))}
-    </div>
-
-    <p className="mt-2 text-center text-xs sm:text-left">
-      {new Date().getFullYear()} Webiston. Barcha huquqlar himoyalangan.
-    </p>
-  </Footer>
-)
-
-export default async function RootLayout({ children }: any) {
-  const pageMap = await getPageMap()
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
-      <Head>
+      <head>
         {!isDevelopment && (
           <>
             {/* Google Analytics */}
@@ -187,23 +147,12 @@ export default async function RootLayout({ children }: any) {
             <OpenReplayNoSSR />
           </>
         )}
-      </Head>
+      </head>
 
       <body>
-        <Layout
-          navbar={navbar || null}
-          pageMap={pageMap}
-          docsRepositoryBase="https://github.com/RustamovRR/webiston/tree/main/docs"
-          footer={footer}
-          sidebar={{ defaultMenuCollapseLevel: 2 }}
-          darkMode={true}
-          toc={{ backToTop: true }}
-          nextThemes={{ defaultTheme: 'dark', forcedTheme: 'dark' }}
-          search={<Search placeholder="Qidirish..." />}
-          feedback={{ content: 'Savollaringiz bormi? Fikr bildiring →', labels: 'feedback' }}
-        >
-          {children}
-        </Layout>
+        <Header />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   )

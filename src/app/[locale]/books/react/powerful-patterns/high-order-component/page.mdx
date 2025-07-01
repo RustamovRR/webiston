@@ -1,0 +1,276 @@
+---
+title: "Yuqori Darajadagi Komponentlar (HOC): React'da Logikani Qayta Ishlatish"
+description: |
+  Yuqori darajadagi komponent (Higher-Order Component, HOC) patterni nima? Uning yordamida logikani qanday qayta ishlatish, kompozitsiya qilish va hook'lar bilan solishtirishni o'rganing.
+keywords: 'React, HOC, Higher-Order Component, design pattern, cross-cutting concerns, compose, hooks, React.memo, React.forwardRef, webiston'
+author: 'Webiston.uz'
+---
+
+import { Callout } from '@/components/mdx'
+
+# Yuqori darajadagi komponent (Higher-Order Component)
+
+<Callout type='info'>
+Vikipediyaga ko'ra, yuqori darajadagi funksiya (higher-order function, HOF) quyidagicha ta'riflanadi:
+
+Matematika va computer science’da, yuqori darajadagi funksiya kamida bittasini bajaradi: bir yoki bir nechta funksiyalarni argument sifatida oladi (ya'ni, protsedura parametri, bu protsedura o'zi protsedura bo'lgan parametr), natija sifatida funksiyani qaytaradi.
+
+</Callout>
+
+JSX dunyosida esa, yuqori darajadagi komponent (higher-order component, HOC) asosan shunday: bir komponent boshqa komponentni argument sifatida oladi va ularni kompozitsiyasi, ya'ni birlashtirish, natijasida yangi komponentni qaytaradi. HOC’lar komponentlar o'rtasida umumiy xatti-harakatlarni takrorlamaslik uchun juda foydalidir.
+
+Masalan, ko'plab veb-ilovalar ma'lumotlarni ba'zi ma'lumot manbalaridan asinxron ravishda so'rashlari kerak bo'ladi. Yuklash va xato holatlari bo'lishi ko'pincha muqarrar, ammo ba'zida dasturimizda ularni hisobga olishni unutamiz. Agar biz qo'lda komponentlarimizga `loading`, `data` va `error` kabi props’larni qo'shsak, ba'zilarini unutish ehtimoli oshadi.
+
+## "To do list" misoli
+
+Keling, asosiy vazifalar ro'yxati ilovasini ko'rib chiqaylik:
+
+```js copy
+const App = () => {
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    fetch('https://mytodolist.com/items')
+      .then((res) => res.json())
+      .then(setData)
+  }, [])
+
+  return <BasicTodoList data={data} />
+}
+```
+
+Ushbu ilovada bir nechta muammolar mavjud. Biz bunda yuklash yoki xato holatlarini hisobga olmadik. Keling, buni tuzatamiz:
+
+```js copy
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([])
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    fetch('https://mytodolist.com/items')
+      .then((res) => res.json())
+      .then((data) => {
+        setIsLoading(false)
+        setData(data)
+      })
+      .catch(setError)
+  }, [])
+
+  return isLoading ? 'Yuklanmoqda...' : error ? error.message : <BasicTodoList data={data} />
+}
+```
+
+### "Cross-cutting concern" muammosi va HOC bilan bartaraf etish
+
+Bunga e'tibor bering, bu juda tez murakkablashib ketdi. Bundan tashqari, bu faqat bitta komponent uchun muammoni hal qiladi. Har bir tashqi ma'lumot manbasi bilan ishlaydigan komponentga ushbu holatlarni (ya'ni, yuklanish, ma'lumot va xato) qo'shishimiz kerakmi? Bu umumiy masala muammosidir (cross-cutting concern) va aynan shu yerda HOC’lar yordamga keladi.
+
+Yuklanish, xato va ma'lumotlarni boshqarish uchun har bir komponentda bularni takrorlashning o'rniga, tashqi ma'lumot manbasi bilan asinxron muloqot qiladigan komponentlarda, HOC fabrikasi(factory, yaratuvchi funksiya)dan foydalanishimiz mumkin. Keling, bu holatlarni hal qiluvchi `withAsync` HOC fabrikasini ko'rib chiqamiz:
+
+```js copy
+const TodoList = withAsync(BasicTodoList)
+```
+
+`withAsync` yuklanish va xato holatlarini boshqaradi hamda ma'lumot mavjud bo'lganda har qanday komponentni ko'rsatadi. Keling, uning amalga oshirilishini ko'rib chiqaylik:
+
+```js copy
+const withAsync = (Component) => (props) => {
+  if (props.loading) {
+    return 'Yuklanmoqda...'
+  }
+  if (props.error) {
+    return props.error.message
+  }
+  return (
+    <Component
+      // `Component`ga uzatiladigan boshqa barcha props’larni uzatamiz
+      {...props}
+    />
+  )
+}
+```
+
+Endi `withAsync` orqali har qanday `Component` o'tkazilganda, biz props’lariga asoslanib kerakli ma'lumotlarni ko'rsatadigan yangi komponentni olamiz. Bu dastlabki komponentimizni yanada qulayroq qilishga imkon beradi:
+
+```js copy
+const TodoList = withAsync(BasicTodoList)
+
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([])
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    fetch('https://mytodolist.com/items')
+      .then((res) => res.json())
+      .then((data) => {
+        setIsLoading(false)
+        setData(data)
+      })
+      .catch(setError)
+  }, [])
+
+  return <TodoList loading={isLoading} error={error} data={data} />
+}
+```
+
+Endi murakkab ifodalangan shartlar yo'q, va `TodoList` o'zi yuklanayotgan bo'lsa, xato bo'lsa yoki ma'lumotga ega bo'lsa, mos ma'lumotni ko'rsatadi. `withAsync` HOC fabrikasi bu "cross-cutting concern" muammosini hal qilgani sababli, biz tashqi ma'lumot manbasi bilan ishlaydigan har qanday komponentni u bilan o'rashimiz va `loading` hamda `error` props’lariga javob beradigan yangi komponentni olishimiz mumkin.
+
+Masalan, blogni ko'rib chiqaylik:
+
+```js copy
+const Post = withAsync(BasicPost)
+const Comments = withAsync(BasicComments)
+
+const Blog = ({ req }) => {
+  const { loading: isPostLoading, error: postLoadError } = usePost(req.query.postId)
+  const { loading: areCommentsLoading, error: commentLoadError } = useComments({ postId: req.query.postId })
+
+  return (
+    <>
+      <Post id={req.query.postId} loading={isPostLoading} error={postLoadError} />
+      <Comments postId={req.query.postId} loading={areCommentsLoading} error={commentLoadError} />
+    </>
+  )
+}
+
+export default Blog
+```
+
+Ushbu misolda, `Post` va `Comments` komponentlari `withAsync` HOC pattern’idan foydalanadi, bu esa `BasicPost` va `BasicComments`ning yangi versiyasini qaytaradi, ular endi `loading` va `error` props’lariga javob beradi. Bu "cross-cutting concern" muammosini boshqarish `withAsync`da markazlashgan holda amalga oshirilgan, shuning uchun yuklanish va xato holatlarini hisobga olishni faqat HOC pattern’i orqali hal qilamiz.
+
+Biroq, oldingi tadimot va konteyner(boshqaruv) komponentlariga o'xshash, HOC’lar ko'pincha hook’lar foydasiga chiqarib yuboriladi, chunki hook’lar bir xil afzalliklarni va qo'shimcha qulaylik bilan taqdim etadi.
+
+## HOC’larni kompozitsiya qilish
+
+Bir nechta HOC’larni birlashtirib kompozitsiya React’da keng tarqalgan pattern bo'lib, u dasturchilarga turli komponentlar orasida funksiyalar va xatti-harakatlarni aralashtirish va moslashtirish imkonini beradi. Keling, bir nechta HOC’larni qanday kompozitsiya qilish mumkinligini ko'rib chiqamiz:
+
+Faraz qilaylik, sizda ikkita HOC mavjud: `withLogging` va `withUser`:
+
+```js copy
+// withLogging.js
+const withLogging = (WrappedComponent) => {
+  return (props) => {
+    console.log('Props bilan render qilindi:', props)
+    return <WrappedComponent {...props} />
+  }
+}
+
+// withUser.js
+const withUser = (WrappedComponent) => {
+  const user = { name: 'John Doe' } // Bu ma'lumotlar manbasidan keladi deb faraz qilamiz
+  return (props) => <WrappedComponent {...props} user={user} />
+}
+```
+
+Endi, ushbu ikkita HOC’ni birlashtirishni xohlaysiz. Buning bir usuli ularni ichma-ich joylashtirishdir:
+
+```js copy
+const EnhancedComponent = withLogging(withUser(MyComponent))
+```
+
+Biroq, ichma-ich joylashtirilgan HOC’larni o'qish va qo'llab-quvvatlash qiyin bo'lishi mumkin, ayniqsa HOC’lar soni ko'paygan sari. Faraz qiling, bu dasturingizda vaqt o'tishi bilan quyidagicha ko'rinishda bo'ladi:
+
+```js copy
+const EnhancedComponent = withErrorHandler(
+  withLoadingSpinner(
+    withAuthentication(
+      withAuthorization(
+        withPagination(withDataFetching(withLogging(withUser(withTheme(withIntl(withRouting(MyComponent))))))),
+      ),
+    ),
+  ),
+)
+```
+
+### Yordamchi "compose" funksiyasi
+
+Yo'q! Buni o'qish qiyin. Yaxshi usul - bu bir nechta HOC’larni yagona HOC sifatida birlashtiradigan yordamchi funksiyani yaratishdir. Bunday yordamchi funksiya quyidagicha ko'rinishga ega bo'lishi mumkin:
+
+```js copy
+// compose.js
+const compose =
+  (...hocs) =>
+  (WrappedComponent) =>
+    hocs.reduceRight((acc, hoc) => hoc(acc), WrappedComponent)
+
+// foydalanish:
+const EnhancedComponent = compose(withLogging, withUser)(MyComponent)
+```
+
+Ushbu `compose` funksiyasida `reduceRight` har bir HOC’ni o'ngdan chapga qarab `WrappedComponent`ga qo'llaydi. Bu usulda siz HOC’laringizni tekis ro'yxatda keltira olasiz, bu esa o'qish va uni qo'llab-quvvatlashni osonlashtiradi. `compose` funksiyasi funksional dasturlashda keng tarqalgan yordamchi vosita bo'lib, Redux kabi kutubxonalar ushbu maqsad uchun o'zlarining `compose` yordamchi funksiyasini taqdim etadi.
+
+Avvalgi murakkab misolimizni yangi `compose` yordamchi funksiyamiz bilan qayta ko'rib chiqsak, quyidagicha ko'rinadi:
+
+```js copy
+// compose.js
+const EnhancedComponent = compose(
+  withErrorHandler,
+  withLoadingSpinner,
+  withAuthentication,
+  withAuthorization,
+  withPagination,
+  withDataFetching,
+  withLogging,
+  withUser,
+  withTheme,
+  withIntl,
+  withRouting,
+)(MyComponent)
+```
+
+Yaxshiroq emasmi? Kamroq joy tashlash, yaxshiroq o'qish va osonroq qo'llab-quvvatlash. Zanjirdagi har bir HOC avvalgi HOC tomonidan ishlab chiqarilgan komponentni o'rab, o'z funksionalligini qo'shadi. Bu usulda siz murakkab komponentlarni oddiyroq komponentlar va HOC'lar yordamida yig'ishingiz mumkin, ularning har biri faqatgina o'ziga tegishli bo'lgan bir muammoga e'tibor qaratadi. Bu sizning kodingizni yanada modulli, tushunarli va testlash uchun qulayroq qiladi.
+
+## HOC va hook’larni taqqoslash
+
+Hook’lar joriy etilganidan beri HOC’larning ommabopligi pasaydi. Hook’lar komponentlarga funksiyalarni qo'shish uchun qulayroq usulni taqdim etadi va HOC’lar bilan bog'liq ba'zi muammolarni ham hal qiladi. Masalan, HOC’lar ref’larni yo'naltirishda (ref forwarding) muammolarga olib kelishi mumkin va noto'g'ri ishlatilganda keraksiz qayta renderlashlarga sabab bo'lishi mumkin.
+
+Quyidagi jadvalda HOC va hook'larni taqqoslanishini ko'rishimiz mumkin:
+| **Xususiyat** | **HOC'lar** | **Hook'lar** |
+| :----- | :----: | ----: |
+| **Kodni qayta ishlatish** | Bir nechta komponentlarda logikani umumlashtirish uchun juda yaxshi | Komponent ichida yoki o'xshash komponentlar orasida logikani ajratib olish va umumlashtirish uchun ideal ||
+| **Render qilish logikasi** | O'ralgan komponentni render qilishni boshqarishi mumkin | To'g'ridan-to'g'ri render qilishga ta'sir qilmaydi, lekin funksional komponentlarda rendering bilan bog'liq side effect’larni boshqarishi mumkin ||
+| **Prop’lar manipulyatsiyasi** | Qo'shimcha ma'lumot yoki funksiyalarni taqdim etish uchun prop'larni qo'shishi va boshqarishi mumkin | Prop'larni to'g'ridan-to'g'ri qo'shish yoki boshqarish imkoniga ega emas ||
+| **State’larni boshqarish** | O'ralgan komponentdan tashqarida state’ni boshqarishi va manipulyatsiya qilish mumkin | Funksional komponentlar ichida mahalliy state’ni boshqarish uchun mo'ljallangan ||
+| **Lifecycle metodlari** | O'ralgan komponent bilan bog'liq lifecycle logikalarini o'z ichiga olishi mumkin | `useEffect` va boshqa hook'lar funksional komponentlar ichida lifecycle event’larini boshqarishi mumkin ||
+| **Kompozitsiya osonligi** | Birga kompozitsiya qilinishi mumkin, lekin noto'g'ri boshqarilganda "wrapper hell" ga olib kelishi mumkin | Oson kompozitsiyaga ega va boshqa hook’lar bilan qo'shimcha komponentlar qatlamlarini qo'shmasdan foydalanishi mumkin ||
+| **Testlash qulayligi** | Qo'shimcha o'ralgan komponentlar tufayli testlash murakkablashishi mumkin | Odatda testlash oson, chunki HOC’larga qaraganda osonroq izolyatsiya qilinishi mumkin ||
+| **Tip xavfsizligi** | TypeScript bilan to'g'ri yozish chalg'itishi mumkin, ayniqsa chuqur ichma-ich joylashtirilgan HOC’larda | Yaxshiroq tip xulosasi va TypeScript bilan yozish osonroq ||
+
+Jadval HOC va hook’larni yonma-yon taqqoslab, ularning kuchli tomonlari va qo'llanish joylarini ko'rsatadi. HOC’lar hali ham foydali pattern bo'lib qolmoqda, ammo hook’lar odatda osonligi va sodda ishlatilishi tufayli ko'p hollarda afzal ko'riladi.
+
+### HOC’larning afzallik va kamchiliklari
+
+Ushbu jadvaldan ko'rish mumkinki, HOC va hook’lar React’da komponentlar orasida logikani umumlashtirish uchun juda muhimdir, ammo ularning ishlatilishi vaziyatlarga qarab biroz farqli qiladi. HOC’lar bir nechta komponentlar orasida logikani umumlashtirishda ustunlik qiladi va ayniqsa, o'ralgan komponentning render qilinishini boshqarish va qo'shimcha ma'lumot yoki funksiyalarni taqdim etish uchun prop'larni boshqarishda ancha yaxshi. Ular o'ralgan komponentdan tashqarida state’ni boshqarishi va uning hayotiy siklini o'z ichiga olishi mumkin. Ammo, ko'p HOC’lar bir-birining ichiga joylashtirilganida noto'g'ri boshqarilgan taqdirda “wrapper hell”ga olib kelishi mumkin. Bunday ichma-ich joylashtirish testlashni murakkablashtirishi va TypeScript bilan tip xavfsizligini ta'minlashni qiyinlashtirishi mumkin, ayniqsa chuqur ichma-ich HOC’larda.
+
+### Hook’lar taqdim etadigan afzalliklar
+
+Boshqa tomondan, hook’lar komponent ichida yoki o'xshash komponentlar orasida logikani chiqarib olish va umumlashtirish uchun ideal, qo'shimcha komponentlar qatlamlarini qo'shmasdan. Bu “wrapper hell” holatidan qochishga yordam beradi. HOC’lardan farqli o'laroq, hook’lar to'g'ridan-to'g'ri render qilishga ta'sir qilmaydi va prop’larni qo'shish yoki boshqarish imkonini bermaydi. Ular funksional komponentlar ichida mahalliy state’ni boshqarish va `useEffect` kabi hook’lar yordamida lifecycle event’larini boshqarish uchun mo'ljallangan. Hook’lar kompozitsiyani osonlashtiradi va odatda HOC’larga nisbatan testlash osonroq, chunki ularni izolyatsiya qilish osonroq. Bundan tashqari, TypeScript bilan ishlatilganda hook’lar yaxshiroq tiplashni taqdim etadi va yozish osonroq, shu sababli tip xatolariga oid kamchiliklarni kamaytiradi.
+
+### Qay birini ishlatgan ma'qul
+
+Har ikkisi ham logikani qayta ishlatish uchun mexanizmlar taqdim etadi, lekin hook’lar state’ni boshqarish, lifecycle event’lari va boshqa React xususiyatlarini funksional komponentlar ichida boshqarishda to'g'ridan-to'g'ri va murakkab bo'lmagan yondashuvni taklif etadi. Boshqa tomondan, HOC'lar komponentlarga qo'shimcha xususiyatlarni qo'shish uchun yaxshiroq strukturalashgan usulni taqdim etadi, bu yirik kod bazalarida yoki hali hook’larni qabul qilmagan kod bazalarida foydali bo'lishi mumkin. Har birining o'z afzalliklari bor va HOC yoki hook’lardan foydalanishni tanlash asosan loyihaning aniq talablariga va jamoaning ushbu patter’lar bilan qanchalik tanishligiga bog'liq bo'ladi.
+
+Biz React’da ko'p foydalanadigan HOC’larni eslay olamizmi? Albatta! Shu bobda ko'rib chiqqan `React.memo` - bu aslida HOC hisoblanadi! Yana birini ko'rib chiqamiz: `React.forwardRef`. Bu, ref’ni bola komponentiga yo'naltiradigan HOC hisoblanadi.
+
+Keling, bir misolni ko'rib chiqamiz:
+
+```js copy
+const FancyInput = React.forwardRef((props, ref) => <input type="text" ref={ref} {...props} />)
+
+const App = () => {
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
+
+  return (
+    <div>
+      <FancyInput ref={inputRef} />
+    </div>
+  )
+}
+```
+
+Ushbu misolda biz `React.forwardRef`dan foydalanib, `FancyInput` komponentiga ref’ni yo'naltiryapmiz. Bu, bizga ota komponentda input elementining `focus` metodiga kirish imkonini beradi. Bu React'da keng tarqalgan pattern bo'lib, oddiy komponentlar bilan hal qilish qiyin bo'lgan muammolarni hal qilishda HOC’lar qanday yordam berishini ko'rsatadi.

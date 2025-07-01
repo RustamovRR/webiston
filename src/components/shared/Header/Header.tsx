@@ -1,59 +1,53 @@
-'use client'
-
+import { Search } from '@/components/shared/Search/Search'
+import ThemeToggle from '@/components/shared/ThemeToggle/ThemeToggle'
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu'
 import Link from 'next/link'
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { Search } from 'nextra/components'
-import { cn } from '@/lib'
+import Logo from './Logo'
+import MobileMenuButton from './MobileMenuButton'
 
-const Header = () => {
-  const pathname = usePathname()
-
-  const navItems = [
-    {
-      href: '/books',
-      label: 'Kitoblar',
-      active: pathname?.startsWith('/books'),
-    },
-    {
-      href: '/tools',
-      label: 'Vositalar',
-      active: pathname?.startsWith('/tools'),
-    },
-  ]
-
+export default function Header() {
   return (
-    <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
-        {/* Logo */}
-        <Link href="/" className="mr-6 flex items-center gap-2">
-          <Image src="/logo.png" alt="Webiston Logo" width={32} height={32} />
-          <span className="hidden text-lg font-bold sm:inline">Webiston</span>
-        </Link>
+    <div className="container mx-auto">
+      <div className="flex h-14 items-center px-4">
+        <section className="flex items-center gap-6">
+          <Logo />
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-6 text-sm">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'hover:text-foreground/80 transition-colors',
-                item.active ? 'text-foreground' : 'text-foreground/60',
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href="/tutorials" passHref>
+                  <NavigationMenuTrigger className="relative cursor-pointer text-[#8A8A8E] dark:text-[#8D8D93]">
+                    Darsliklar
+                  </NavigationMenuTrigger>
+                </Link>
+                <NavigationMenuContent>
+                  {/* TODO: Populate with actual tutorials */}
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    <li title="Asoslar">React asoslari bilan tanishing</li>
+                    <li title="Hooks">React Hooks-ni o'rganing</li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </section>
 
-        {/* Search - o'ng tomonda */}
-        <div className="flex flex-1 items-center justify-end">
-          <Search placeholder="Qidirish..." />
-        </div>
+        <section className="ml-auto flex items-center space-x-4">
+          <Search />
+          <ThemeToggle />
+        </section>
+
+        <section className="flex items-center justify-center">
+          <MobileMenuButton />
+        </section>
       </div>
-    </header>
+    </div>
   )
 }
-
-export default Header
