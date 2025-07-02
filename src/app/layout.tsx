@@ -155,7 +155,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <NextIntlClientProvider messages={messages}>
-            <Header />
+            {/* Sticky Header with backdrop blur */}
+            <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+              <Header />
+            </header>
             <main>{children}</main>
             <Footer />
           </NextIntlClientProvider>

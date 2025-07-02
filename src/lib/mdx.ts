@@ -23,12 +23,13 @@ export async function serializeMarkdown(content: string) {
         format: 'md',
         development: process.env.NODE_ENV === 'development',
       },
+      parseFrontmatter: true, // Frontmatter'ni parse qilish
     })
   } catch (mdError) {
     console.error('Error parsing markdown:', mdError)
     // Fallback to simpler parsing if needed
     return await serialize(content, {
-      parseFrontmatter: false,
+      parseFrontmatter: true, // Frontmatter'ni parse qilish
     })
   }
 }
@@ -45,7 +46,7 @@ export async function serializeMdx(content: string) {
         rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
         development: process.env.NODE_ENV === 'development',
       },
-      parseFrontmatter: false,
+      parseFrontmatter: true, // Frontmatter'ni parse qilish
     })
   } catch (mdxError) {
     console.error('Error parsing MDX, falling back to markdown parser:', mdxError)
@@ -60,7 +61,7 @@ export async function serializeMdx(content: string) {
         ],
         format: 'md',
       },
-      parseFrontmatter: false,
+      parseFrontmatter: true, // Frontmatter'ni parse qilish
     })
   }
 }

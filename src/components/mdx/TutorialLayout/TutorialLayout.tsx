@@ -21,22 +21,24 @@ export default async function DocLayout({ children, className, params }: DocLayo
   const navigationItems = await getTutorialNavigation(tutorialId)
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-3.5rem)] w-full">
-      {/* Left Sidebar */}
-      <aside className="sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] w-72 overflow-y-auto max-lg:hidden">
-        <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
+    <div className="flex min-h-[calc(100vh-3.5rem)] w-full">
+      {/* Left Sidebar with border */}
+      <aside className="border-border sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] w-72 overflow-y-auto border-r max-lg:hidden">
+        <div className="px-4 py-6">
+          <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
+        </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Content - wider container */}
       <main className={cn('flex-1 overflow-y-auto', className)}>
-        <div className="max-w-[1600px] py-6">
+        <div className="mx-auto max-w-5xl px-8 py-8">
           <TutorialLayoutContent>{children}</TutorialLayoutContent>
         </div>
       </main>
 
-      {/* Right Navigation */}
+      {/* Right Navigation with border */}
       <nav className="sticky top-[3.5rem] hidden h-[calc(100vh-3.5rem)] w-64 flex-shrink-0 max-lg:hidden lg:block">
-        <div className="h-full py-4 pr-4">
+        <div className="h-full px-4 py-6">
           <TableOfContents slug={slug} />
         </div>
       </nav>

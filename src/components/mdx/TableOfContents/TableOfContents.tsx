@@ -101,9 +101,9 @@ export default function TableOfContents({ slug }: IProps) {
   }
 
   return (
-    <div className="scrollbar-custom relative mt-5 max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
+    <div className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
       <div className="sticky top-0 z-10">
-        <div className="bg-background text-sm font-medium">Ushbu sahifada</div>
+        <div className="bg-background pb-2 text-sm font-semibold">Ushbu sahifada</div>
         <div className="from-background pointer-events-none h-2 bg-gradient-to-b to-transparent" />
       </div>
       <ul className="space-y-1 text-sm">
@@ -120,9 +120,9 @@ export default function TableOfContents({ slug }: IProps) {
             <Link
               href={`#${heading.id}`}
               className={cn(
-                'block py-1 pr-2 text-sm break-all transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200 hover:text-black dark:hover:text-white',
                 activeId === heading.id
-                  ? 'text-sky-400 dark:text-sky-400'
+                  ? 'border-l-blue-500 bg-blue-50 font-medium text-blue-600 dark:bg-blue-950/30 dark:text-blue-400'
                   : 'dark:text-muted-foreground text-muted-foreground hover:text-black dark:hover:text-white',
               )}
               style={{

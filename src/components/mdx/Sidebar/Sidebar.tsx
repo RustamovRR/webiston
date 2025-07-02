@@ -157,9 +157,10 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
                       <AccordionTrigger
                         onClick={(e) => handleAccordionTriggerClick(e, item.path)}
                         className={cn(
-                          'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                          'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
                           {
-                            'font-semibold text-sky-400 [&[data-state=open]>svg]:text-sky-400': isActive,
+                            'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 [&[data-state=open]>svg]:text-blue-600 dark:[&[data-state=open]>svg]:text-blue-400':
+                              isActive,
                           },
                         )}
                       >
@@ -170,9 +171,10 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
                 ) : (
                   <AccordionTrigger
                     className={cn(
-                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
                       {
-                        'font-medium text-sky-400 [&[data-state=open]>svg]:text-sky-400': isActive,
+                        'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 [&[data-state=open]>svg]:text-blue-600 dark:[&[data-state=open]>svg]:text-blue-400':
+                          isActive,
                       },
                     )}
                   >
@@ -191,9 +193,10 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
               key={index}
               href={`/books/${tutorialId}/${item.path}`}
               className={cn(
-                'text-muted-foreground group flex cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
                 {
-                  'font-medium text-sky-400': isActive,
+                  'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400':
+                    isActive,
                 },
               )}
             >
@@ -217,14 +220,14 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
   // Show loading state if no navigation items
   if (!navigationItems || navigationItems.length === 0) {
     return (
-      <div className="p-4">
+      <div>
         <p className="text-muted-foreground text-sm">Navigatsiya yuklanmoqda...</p>
       </div>
     )
   }
 
   return (
-    <div className="p-4" ref={sidebarRef}>
+    <div ref={sidebarRef}>
       <div className="pb-4">
         <h2 className="text-lg font-semibold">Mavzular</h2>
       </div>

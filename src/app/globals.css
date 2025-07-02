@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -43,6 +44,11 @@
   .bg-gradient-text-dark {
     @apply bg-gradient-to-r from-white to-gray-400;
   }
+}
+
+.prose code::before,
+.prose code::after {
+  content: '';
 }
 
 body {
