@@ -14,6 +14,7 @@ import MobileMenuButton from './MobileMenuButton'
 import LanguageSelector from '../LanguageSelector/LanguageSelector'
 import Search from '../Search'
 import ThemeToggle from '../ThemeToggle'
+import Link from 'next/link'
 
 export default function Header() {
   return (
@@ -29,11 +30,19 @@ export default function Header() {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px]">
-                    <ListItem href="/books/react" title="Fluent React">
+                    <ListItem href="/books/fluent-react" title="Fluent React">
                       React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.
                     </ListItem>
                   </ul>
                 </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  asChild
+                  className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]"
+                >
+                  <Link href="/tools">Foydali Vositalar</Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
