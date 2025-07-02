@@ -1,0 +1,120 @@
+---
+title: "React'da SSR'ni O'zimiz Yaratamiz: Client-Only Ilovani Kengaytirish"
+description: |
+  Client-only React ilovasiga server-side rendering (SSR) qanday qo'shiladi? Express.js, `renderToString` va `hydrateRoot` yordamida bu jarayonni o'zingiz yarating.
+keywords: 'React, SSR, server-side rendering, Express.js, renderToString, hydrateRoot, client-only, optimallashtirish, performance, webiston'
+author: 'Webiston.uz'
+---
+
+# Serverda renderlash jarayonini yaratish
+
+Agar sizda avvaldan mavjud bo'lgan faqat klient(client-only) React ilovasi bo'lsa, unga qanday qilib server tomonda render qilishni qo'shish haqida o'ylayotgan bo'lishingiz mumkin. Yaxshiyamki, mavjud React ilovasiga serverda render qilishni qo'shish nisbatan oson. Bir yondashuv sifatida serverda render qilish uchun Next.js yoki Remix kabi serverda render qilish freymvorklaridan foydalanishdir. Bu freymvorklar, albatta, server tomonidan render qilingan React ilovalarini yaratishning eng yaxshi usuli bo'lsa-da, bunday abstraksiyalar, bizning bu serverda renderlash jarayonining asosiy mexanizmlar qanday ishlashiga bo'lgan qiziqishimizni orttirishi va u bilan tanishishga undashi mumkin.
+
+Agar siz qiziquvchan inson bo'lsangiz va faqat klientga mo'ljallangan React ilovasiga serverda render qilishni qanday qo'shish haqida qiziqsangiz, yoki freymvorklar buni qanday amalga oshirayotganini bilmoqchi bo'lsangiz, mavzuni o'qishda davom etishingiz mumkin. Yana bir bor eslatib o'tamiz, ehtimol bu narsalarni siz "production" muhitida ishlatmassiz, biroq bularni shunchaki qiziqish uchun va ta'lim maqsadlarida ko'proq o'rganamiz.
+
+## "Client-only" React ilovasiga server renderlashni o'zimiz qo'shamiz
+
+Agar sizda faqat klient-tomoni React ilova bo'lsa, unga qanday qilib server render qilishni qo'shishingiz mumkin. Birinchi navbatda, loyiha ildizida _server.js_ faylini yaratasiz. Ushbu fayl sizning serveringiz kodini o'z ichiga oladi:
+
+```js copy filename="server.js"
+// Kerakli modullarni import qilish
+const express = require('express') // Express.js kutubxonasini import qilish
+const path = require('path') // Fayl yo'llarini boshqarish uchun Path modulini import qilish
+const React = require('react') // React kutubxonasini import qilish
+// Server tomonida render qilish uchun ReactDOMServer’ni import qilish
+const ReactDOMServer = require('react-dom/server')
+
+// src katalogidan asosiy App komponentini import qilish
+const App = require('./src/App')
+
+// Express ilovasini ishga tushirish
+const app = express()
+
+// 'build' katalogidan statik fayllarga xizmat ko'rsatish
+app.use(express.static(path.join(__dirname, 'build')))
+
+// Barcha GET so'rovlarini boshqarish
+app.get('*', (req, res) => {
+  // App komponentini HTML satriga render qilish
+  const html = ReactDOMServer.renderToString(<App />)
+
+  // Render qilingan App komponentini o'z ichiga olgan HTML javobini yuborish
+  res.send(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>My React App</title>
+            </head>
+            <body>
+                <!-- Render qilingan App komponentini kiritish -->
+                <div id="root">${html}</div>
+                <!-- Asosiy JavaScript to'plam paketi bilan bog'lanish -->
+                <script src="/static/js/main.js"></script>
+            </body>
+        </html>
+    `)
+})
+
+// 3000-portda serverni ishga tushirish
+app.listen(3000, () => {
+  // Server ishga tushganda konsolga xabar yozish
+  console.log('Server listening on port 3000')
+})
+```
+
+Ushbu misolda, biz _Express_'dan foydalanib, _./build_ katalogidan statik fayllarga xizmat ko'rsatadigan server yaratmoqdamiz va keyin React ilovamizni serverda render qilmoqdamiz. Biz, shuningdek, React ilovamizni HTML satriga render qilish va uni klientga yuboriladigan javobga kiritish uchun `ReactDOMServer`dan foydalanmoqdamiz.
+
+Ushbu misolda, bizning faqat klientga mo'ljallangan React ilovamizda, _build_ deb nomlangan katalogga JavaScript to'plam paketini natija sifatida chiqaradigan turli xil `build` skripti mavjud bo'lishini faraz qilamiz. Bu _hidratsiyalash_ uchun muhimdir. Barcha qism tayyor bo'lgach, serverni ishga tushirish uchun quyidagi buyruqni ishlatamiz:
+
+```js copy
+node server.js
+```
+
+Ushbu buyruqni ishga tushirganda, server 3000-portda ishga tushishi va konsolga `Server listening on port 3000` xabarini chiqarishi kerak.
+
+Ushbu qadamlar bilan endi bizda serverda render qilingan React ilovasi bor. Ushbu "ichki ishlash mexanizmiga zimdan qarash" yondashuvi orqali, biz serverda render qilish qanday ishlashini va bu bizning React ilovalarimizga qanday foyda keltirishini chuqurroq tushunamiz.
+
+Agar brauzerni ochib, http://localhost:3000 ga tashrif buyursak, serverda render qilingan ilovani ko'rishimiz mumkin. Bu bo'sh dokument o'rniga haqiqiy HTML markup’ini ko'rsatishi kerak bo'lgan ushbu sahifaning manba kodini ko'rish orqali, serverda render qilinganligini tasdiqlashimiz mumkin.
+
+## HTML Markup
+
+To'liq HTML markup quyidagicha ko'rinishga ega bo'lishi kerak:
+
+```html copy
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My React App</title>
+  </head>
+  <body>
+    <div id="root">
+      <div>
+        <h1>Hello, world!</h1>
+        <p>This is a simple React app.</p>
+      </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>
+```
+
+Ushbu HTML markup klientga yuboriladi. U bizning React ilovamiz uchun to'liq render qilingan HTML’ni o'z ichiga oladi, bu esa qidiruv tizimlari tomonidan indekslanishi va sekin yoki ishonchsiz internet aloqasiga ega foydalanuvchilar uchun samaraliroq foydalanish imkoniyati qulayligini ta'minlaydi. Bu, o'z navbatida, bizning React ilovamiz uchun SEO va yaxshilangan foydalanish imkoniyati qulayliklarini ta'minlaydi.
+
+## Hidratsiyalash
+
+Serverda render qilingan natija foydalanuvchilarga yetib borishi bilan, hidratsiyalash jarayoni bizning klient to'plam paketimizni fayl oxirida `<script>` teg bilan yuklashimizda ro'y beradi. Avval muhokama qilganimizdek hidratsiyalash - bu serverda yaratilgan va klientga yuborilgan statik HTML’ga event listener’larni va boshqa JavaScript funksiyalarini biriktirish jarayoni ekanligini ta'kidlagan edik. Hidratsiyalashning maqsadi, serverda render qilingan ilovaga brauzerda yuklangandan keyin to'liq interaktiv bo'lish imkonini berishdir.
+
+Agar biz ilovamizning klient tomonidagi to'plam paketining hidratsiyalash qadamini o'rganmoqchi bo'lsak, quyidagi kabi ko'rinishda bo'ladi:
+
+```js copy
+// Kerakli kutubxonalarni import qilish
+import React from 'react'
+import { hydrateRoot } from 'react-dom/client'
+// App - bu sizning ilovangizning asosiy komponenti
+import App from './App'
+
+// Klient tomonida ilovani hidratsiya qilish
+hydrateRoot(document, <App />)
+```
+
+Server tomonda render qilish va klientni hidratsiyalash bilan ilovamiz to'liq interaktiv holatga keladi va foydalanuvchi kiritishlariga javob bera oladi, ma'lumotlarni yuklaydi va DOM’ni zarur bo'lganda yangilaydi.

@@ -1,0 +1,29 @@
+---
+title: "React'ning Paydo Bo'lishi: Yangi Arxitektura va G'oyalar"
+description: |
+  React qanday paydo bo'ldi? AngularJS tajribasidan kelib chiqib, komponent arxitekturasi, bir tomonlama ma'lumot oqimi va virtual DOM kabi yangi g'oyalar qanday tug'ilganini bilib oling.
+keywords: "React, React tarixi, AngularJS, BoltJS, Jordan Walke, komponent arxitekturasi, bir tomonlama ma'lumot oqimi, virtual DOM, veb tarixi, webiston"
+author: 'Webiston.uz'
+---
+
+# React’ning paydo bo'lishi
+
+Aynan shu davrda React mashhurlik kasb eta boshladi. React taqdim etgan asosiy g'oyalardan biri bu komponentga asoslangan arxitektura edi. Garchi amalga oshirish boshqacha bo'lsa-da, asosiy g'oya shunday edi: veb va boshqa platformalar uchun foydalanuvchi interfeyslarini qayta foydalanish mumkin bo'lgan komponentlar orqali yaratish optimal usuldir.
+
+## AngularJS va React’ning farqi
+
+AngularJS model’ni view bilan bog'lash uchun direktivalardan foydalangan bo'lsa, React JSX va ancha soddalashtirilgan komponent modelini joriy qildi. Biroq, AngularJS komponentga asoslangan arxitekturani Angular modullari orqali ommalashtirmaganida, ba'zilar fikricha, React’ning modeliga o'tish bunchalik oson bo'lmagan bo'lardi.
+
+AngularJS’ning ikki tomonlama ma'lumotlarni bog'lash modeli sanoat standarti edi, ammo bu yirik ilovalarda ba'zi kamchiliklarga, masalan, performance muammolariga olib kelishi mumkin edi. React bu tajribadan saboq olib, bir tomonlama ma'lumot oqimi modelini kiritdi, bu esa dasturchilarga o'z ilovalarini yanada yaxshi nazorat qilish imkonini berdi va vaqt o'tishi bilan ma'lumotlarning qanday o'zgarishini tushunishni osonlashtirdi.
+
+React shuningdek, virtual DOM’ni taqdim etdi: bu konsepsiya to'g'ridan-to'g'ri DOM’ni boshqarishni minimallashtirish orqali samaradorlikni oshirdi. AngularJS esa DOM’ni bevosita boshqarar edi, bu esa performance’ga salbiy ta'sir ko'rsatishi va jQuery bilan avval muhokama qilingan kabi mavhum holatlar keltirib chiqarishi mumkin edi.
+
+Shunday bo'lsa-da, AngularJS veb-dasturlash amaliyotlarida katta o'zgarish kiritdi va AngularJS nafaqat veb-dasturlash sohasida inqilob qilgan, balki kelajakdagi freymvork va kutubxonalar, jumladan, React uchun yo'l ochganini ta'kidlash o'rinlidir.
+
+### BoltJS va React’ning paydo bo'lishi
+
+Endi React’ning bu o'zgarishlarga qanday mos kelganini va u qayerdan paydo bo'lganini o'rganamiz. O'sha paytda foydalanuvchi interfeyslarini yangilash haligacha murakkab va yechilmagan masala edi. Bugungi kunda ham bu masala to'liq hal etilmagan, ammo React uni ancha osonlashtirdi va SolidJS, Qwik kabi boshqa kutubxonalarni ham ushbu yo'nalishda ilhomlantirdi. Meta (Facebook) ham foydalanuvchi interfeysi murakkabligi va kengayish masalasidan xoli emas edi. Natijada, Meta o'sha paytda mavjud bo'lgan yechimlarni to'ldiruvchi bir qator ichki yechimlarni yaratdi.
+
+Birinchilardan biri BoltJS edi: Facebook dasturchilari buni o'zlariga yoqqan bir qancha narsalarni “bolt” qilib yig'ib qo'yilgan vosita deb atashar edi. Foydalanuvchi interfeysini yangilashini qulaylashtirish va ko'proq intuitiv qilish uchun uchun vositalar to'plami yaratildi.
+
+Shu vaqtlar Facebook dasturchisi Jordan Walke amaldagi vaziyatdan kelib chiqib, u davr uchun butunlay yangi bo'lgan bir g'oyani ilgari surdi va yangilanishlar sodir bo'lganda sahifalarning minimal qismlarini yangi qismlar bilan almashtirish taklifini berdi. Avval ko'rganimizdek, JavaScript kutubxonalari foydalanuvchi interfeyslari (views) va ma'lumotlar manbalari (models) o'rtasidagi munosabatlarni ikki tomonlama ma'lumotlarni bog'lash modeli yordamida boshqarar edi. Ushbu modelning cheklovlarini hisobga olgan holda, Jordanning taklifi bir tomonlama ma'lumotlar oqimi modelidan foydalanish edi. Bu model ancha sodda edi va view va model’ni sinxronlashtirish osonroq bo'ldi. Bu React’ning asosini tashkil qiladigan bir tomonlama arxitektura paydo bo'lishiga olib keldi.

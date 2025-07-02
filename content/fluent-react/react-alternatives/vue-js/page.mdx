@@ -1,0 +1,89 @@
+---
+title: 'Vue.js Tahlili: Reaktivlik, Composition API va Signallar'
+description: |
+  Vue.js freymvorkining reaktivlik tizimini o'rganing. Uning Composition API'si, ref, reactive va signallar bilan aloqasi haqida bilib oling.
+keywords: 'Vue.js, Vue 3, reactivity, reaktivlik, ref, reactive, Composition API, Proxy, signals, JavaScript framework, webiston'
+author: 'Webiston.uz'
+---
+
+# Vue.js
+
+Vue.js foydalanuvchi interfeyslarini yaratish uchun mo'ljallangan mashhur JavaScript freymvorkidir. Uni sobiq Google muhandisi Evan Yu ishlab chiqdi. AngularJS bilan ishlash tajribasiga ega bo'lgan Evan, Angular'ning yaxshi tomonlarini olib, yengilroq, oson qo'llab-quvvatlanadigan va kamroq qattiq qoidalarga ega bo'lgan Vue.js freymvorkini yaratdi.
+
+## Reaktivlik tizimi
+
+Vue.js'ning eng ajralib turadigan xususiyatlaridan biri - reaktivlik tizimi bo'lib, bu tizim ishlatilgan holda komponent state'i reaktiv JavaScript obyektlaridan iborat bo'ladi. Ularni o'zgartirganda, ko'rinish ham yangilanadi. Ushbu model state'ni boshqarishni oddiy va intuitiv qiladi, ammo qanday ishlashini yaxshi tushunish ba'zi muammolardan qochish uchun muhimdir.
+
+Vue'ning reaktivlik modelida, u obyekt xususiyatlarini o'qish va yozish jarayonlarini tutib qoladi. Vue 2 da, brauzer qo'llab-quvvatlash cheklovlari tugayli faqat getter/setter'lardan foydalanilgan. Vue 3 da esa, reaktiv obyektlar uchun proxy'lardan, ref uchun esa getter/setter'lardan foydalaniladi. Quyidagi Vue dokumentatsiyasidagi psevdokod bu jarayonni ko'rsatadi:
+
+```js copy
+function reactive(obj) {
+  return new Proxy(obj, {
+    get(target, key) {
+      track(target, key)
+      return target[key]
+    },
+    set(target, key, value) {
+      target[key] = value
+      trigger(target, key)
+    },
+  })
+}
+
+function ref(value) {
+  const refObject = {
+    get value() {
+      track(refObject, 'value')
+      return value
+    },
+    set value(newValue) {
+      value = newValue
+      trigger(refObject, 'value')
+    },
+  }
+  return refObject
+}
+```
+
+### Reaktiv tizimning soddalashtirilgan namunasi
+
+Bu osonlashtirilgan misol bo'lib, proxy’lardan foydalanadigan sodda reaktiv tizimni ko'rsatadi. `reactive` funksiyasi obyektni qabul qilib, ushbu obyektning proxy’sini qaytaradi, bu proxy `get` va `set` operatsiyalarini tutib qoladi. `get` operatsiyasida, `track` funksiyasi chaqirilib, so'ralgan xususiyatni qaytaradi. `set` operatsiyasida esa qiymat yangilanadi va `trigger` funksiyasi chaqiriladi.
+
+`ref` funksiyasi esa, o'z navbatida, qiymatni obyekt ichiga joylashtiradi va bu qiymat uchun reaktiv `get` va `set` operatsiyalarini taqdim etadi. Bu proxy’ga o'xshash ishlaydi, ammo strukturasida farq bor, ya'ni qiymatga kirish yoki uni o'zgartirishda `track` va `trigger` funksiyalari kerakli vaqtda chaqirilishini ta'minlaydi.
+
+### DOM’ni yangilash uchun reaktiv tizimdan foydalanish
+
+Bu oddiy reaktiv tizim namunasi Vue’ning reaktivlik modelining asosiy tamoyillarini ko'rsatadi. Bu reaktivlik modeli DOM’ni yangilash uchun ham ishlatilishi mumkin. Quyidagi misol oddiy “reaktiv rendering”ni amalga oshiradi:
+
+```js copy
+import { ref, watchEffect } from 'vue'
+
+const count = ref(0)
+
+watchEffect(() => {
+  document.body.innerHTML = `count is: ${count.value}`
+})
+
+// DOM’ni yangilaydi
+count.value++
+```
+
+Aslida, Vue komponenti state va DOM’ni sinxronlashtirish uchun xuddi shunday usuldan foydalanadi - har bir komponent nusxasi DOM’ni render qilish va yangilash uchun reaktiv effekt yaratadi. Albatta, Vue komponentlari DOM’ni yangilashning `innerHTML`dan ko'ra ancha samaraliroq usullaridan foydalanadi, ammo bu Vue’ning qanday ishlashini tushunish uchun yetarli.
+
+### Composition API
+
+`ref()`, `computed()`, va `watchEffect()` kabi API’lar Vue’ning Composition API qismiga kiradi. Bu API’lar Vue komponentlarida state’ni boshqarish, hisoblash va ko'rinishni yangilash jarayonlarini soddalashtiradi.
+
+## Signallar
+
+Bir qancha boshqa freymvorklar Vue’ning Composition API’sidagi `ref`lariga o'xshash reaktivlik primitivlarini “signallar” degan nom ostida joriy qilgan. Ushbu bobda signallarni batafsil muhokama qilamiz.
+
+Asosan, signallar Vue `ref`lariga o'xshash reaktivlik primitividir. Bu qiymatni saqlovchi konteyner bo'lib, unga kirishda qaramlik kuzatuvini ta'minlaydi va o'zgarishda _side effect_’larni ishga tushiradi. Bu reaktivlikka asoslangan paradigma frontend olamida yangi tushuncha emas: bu kontseptsiya o'n yildan ortiq vaqt oldin _Knockout observables_ va _Meteor Tracker_ kabi dasturiy ta'minotlarga borib taqaladi. _Vue Options API_ va React uchun MobX state menejment kutubxonasi ham xuddi shu prinsiplarga asoslangan, ammo ushbu primitivlarni obyekt xususiyatlari ortida yashiradi.
+
+Signal tushunchasiga xos bo'lmasa-da, bugungi kunda ushbu kontseptsiya o'zgarishlar yuqori tafsiliy darajadagi obunalar orqali amalga oshiriladigan rendering modeli bilan birga muhokama qilinadi. Virtual DOM’dan foydalanishi sababli, Vue ayni paytda xuddi shunday optimallashtirishlarni amalga oshirish uchun kompilyatorlarga tayanadi. Biroq, Vue, shuningdek virtual DOM’ga tayanmaydigan va Vue’ning ichki o'rnatilgan reaktivlik tizimidan ko'proq foydalanadigan yangi Solid’dan ilhomlangan kompilyatsiya strategiyasini (Vapor Mode) o'rganmoqda.
+
+## Soddalik
+
+Vue’ning eng katta kuchli tomoni uning soddaligida. Vue bilan ishlashni boshlash juda oson: siz Vue kutubxonasini HTML faylingizga `<script>` tegida kiritishingiz va Vue komponentlarini yozishni boshlashingiz mumkin. Vue, shuningdek, yangi loyihalarni tuzish uchun CLI vositasini ham taqdim etadi, bu esa murakkabroq ilova yaratishni boshlash uchun ajoyib vosita bo'lishi mumkin.
+
+Vue.js’ning faqat asosiy jihatlarini ko'rib chiqqan bo'lsak ham, Vue’ning kuchli reaktivlik tizimi, shablon asosidagi sintaksisi va yaxshi tuzilgan komponent modeli ko'plab dasturchilar uchun jozibador tanlov ekanligini anglash qiyin emas.

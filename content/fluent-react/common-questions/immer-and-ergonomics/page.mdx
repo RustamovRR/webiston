@@ -1,0 +1,81 @@
+---
+title: "Immer: Murakkab React State'ni Oson Boshqarish (useReducer & useState)"
+description: |
+  React'da ichma-ich state'ni yangilashdan charchadingizmi? Immer kutubxonasi yordamida `useReducer` va `useState`'da kodni qanday soddalashtirishni o'rganing.
+keywords: "Immer, use-immer, produce, React state, state boshqaruvi, useReducer, useState, immutable, o'zgarmaslik, nested state, ichma-ich state, webiston"
+author: 'Webiston.uz'
+---
+
+# Immer va foydalanish qulayligi
+
+Immer - bu juda mashhur React kutubxonasi bo'lib, ilovalaringizdagi murakkab state boshqaruvida foydali hisoblanadi. State’ning shakli murakkab yoki ichma-ich joylashgan bo'lsa, an'anaviy state’ni yangilash usullari ko'p vaqt talab qilishi va xatolarga moyil bo'lishi mumkin. Immer bunday murakkabliklarni boshqarishda sizga o'zgaruvchan qoralama state (mutable draft state) bilan ishlashga imkon beradi, shu bilan birga ishlab chiqarilgan state o'zgarmas bo'lib qolishini ta'minlaydi.
+
+React ilovasida state boshqaruvi odatda `useState` yoki `useReducer` hook’lari orqali amalga oshiriladi. `useState` oddiy state uchun mos bo'lsa, `useReducer` murakkab state boshqaruvi uchun ko'proq mos keladi va aynan shu yerda Immer’ning eng katta foydasi namoyon bo'ladi.
+
+## useReducer bilan ishlatish
+
+`useReducer` bilan ishlaganda, siz taqdim etgan reducer funksiyasi sof bo'lishi va doim yangi state obyektini qaytarishi kutiladi. Bu ichma-ich joylashgan state obyektlarini boshqarishda ko'p vaqt talab qiluvchi, ko'proq yoziladigan kodga olib kelishi mumkin. Ammo, _use-immer_ kutubxonasidagi `useImmerReducer` orqali Immer’ni `useReducer` bilan integratsiya qilib, siz state’ni bevosita o'zgartirgandek yozishingiz mumkin, aslida esa Immer tomonidan taqdim etilgan qoralama state’da ishlaysiz. Shu tariqa, siz oddiy va intuitiv reducer funksiyalarini yozishingiz mumkin:
+
+```js copy
+import { useImmerReducer } from 'use-immer'
+
+const initialState = {
+  user: {
+    name: 'John Doe',
+    age: 28,
+    address: {
+      city: 'New York',
+      country: 'USA',
+    },
+  },
+}
+
+const reducer = (draft, action) => {
+  switch (action.type) {
+    case 'updateName':
+      draft.user.name = action.payload
+      break
+    case 'updateCity':
+      draft.user.address.city = action.payload
+      break
+    // boshqa holatlar...
+    default:
+      break
+  }
+}
+
+const MyComponent = () => {
+  const [state, dispatch] = useImmerReducer(reducer, initialState)
+  // ...
+}
+```
+
+Ushbu misolda, `useImmerReducer` reducer funksiyasini sezilarli darajada soddalashtiradi, ichma-ich joylashgan state xususiyatlarini bevosita tayinlash orqali yangilash imkonini beradi, bu esa an’anaviy reducer’da `spread` yoki `Object.assign` operatsiyalarini talab qilgan bo'lar edi.
+
+## useState bilan ishlatish
+
+Bundan tashqari, Immer faqat `useReducer` bilan cheklanmagan. Agar sizda murakkab state obyekti bo'lsa va state’ni yangilashda o'zgarmasligini ta’minlashni istasangiz, uni `useState` bilan ham ishlatishingiz mumkin. Immer `produce` funksiyasini taqdim etadi, bu orqali hozirgi state’ga asoslangan holda va bir qator ko'rsatmalar yordamida yangi state yaratishingiz mumkin:
+
+```js copy
+import produce from 'immer'
+import { useState } from 'react'
+
+const MyComponent = () => {
+  const [state, setState] = useState(initialState)
+
+  const updateName = (newName) => {
+    setState(
+      produce((draft) => {
+        draft.user.name = newName
+      }),
+    )
+  }
+  // ...
+}
+```
+
+`updateName` funksiyasida, Immer’ning `produce` funksiyasi hozirgi `state` va state’ning `draft`ini qabul qiladigan funksiyani oladi. Ushbu funksiya ichida `draft` bilan go'yo u o'zgaruvchan kabi ishlashingiz mumkin, Immer esa ishlab chiqarilgan state’ning yangi o'zgarmas obyekt ekanligini ta’minlaydi.
+
+### Immer’ning soddalashtirish qobiliyati
+
+Imme’rning state yangilanishlarini soddalashtirish qobiliyati, ayniqsa murakkab yoki ichma-ich joylashgan state strukturalarida, React’ning state boshqaruvi hook’lariga ajoyib yordamchi bo'lib, kodni toza, oson boshqariladigan va xatolarga kamroq moyil bo'lishiga yordam beradi.

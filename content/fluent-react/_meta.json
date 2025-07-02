@@ -1,0 +1,467 @@
+{
+  "entry-level-stuff": {
+    "title": "React asoslari",
+    "path": "entry-level-stuff/page",
+    "hasIndex": true,
+    "children": {
+      "world-before-react": {
+        "title": "Reactdan oldingi davr",
+        "path": "entry-level-stuff/world-before-react/page"
+      },
+      "jquery": {
+        "title": "jQuery",
+        "path": "entry-level-stuff/jquery/page"
+      },
+      "backbone": {
+        "title": "Backbone",
+        "path": "entry-level-stuff/backbone/page"
+      },
+      "knockout": {
+        "title": "Knockout",
+        "path": "entry-level-stuff/knockout/page"
+      },
+      "angular": {
+        "title": "Angular",
+        "path": "entry-level-stuff/angular/page"
+      },
+      "enter-react": {
+        "title": "Reactga kirish",
+        "path": "entry-level-stuff/enter-react/page"
+      },
+      "react-value-proposition": {
+        "title": "React taklif qiladigan qiymati",
+        "path": "entry-level-stuff/react-value-proposition/page"
+      },
+      "releasing-react": {
+        "title": "Reactning ommaga chiqishi",
+        "path": "entry-level-stuff/releasing-react/page"
+      },
+      "flux-architecture": {
+        "title": "Flux arxitekturasi",
+        "path": "entry-level-stuff/flux-architecture/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "entry-level-stuff/recap/page"
+      }
+    }
+  },
+  "jsx": {
+    "title": "JSX",
+    "path": "jsx/page",
+    "hasIndex": true,
+    "children": {
+      "javascript-xml": {
+        "title": "JavaScript XML(mi)?",
+        "path": "jsx/javascript-xml/page"
+      },
+      "under-the-hood": {
+        "title": "Ichki ishlash mexanizmi",
+        "path": "jsx/under-the-hood/page"
+      },
+      "extending-javascript-syntax-with-jsx": {
+        "title": "Javascriptni JSX bilan kengaytirish",
+        "path": "jsx/extending-javascript-syntax-with-jsx/page"
+      },
+      "jsx-pragma": {
+        "title": "JSX pragma",
+        "path": "jsx/jsx-pragma/page"
+      },
+      "jsx-expressions": {
+        "title": "JSX ifodalar",
+        "path": "jsx/jsx-expressions/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "jsx/recap/page"
+      }
+    }
+  },
+  "virtual-dom": {
+    "title": "Virtual DOM",
+    "path": "virtual-dom/page",
+    "hasIndex": true,
+    "children": {
+      "intro-virtual-dom": {
+        "title": "Virtual DOMga kirish",
+        "path": "virtual-dom/intro-virtual-dom/page"
+      },
+      "real-dom": {
+        "title": "Real DOM",
+        "path": "virtual-dom/real-dom/page"
+      },
+      "pitfalls-of-real-dom": {
+        "title": "Real DOMning kamchiliklari",
+        "path": "virtual-dom/pitfalls-of-real-dom/page"
+      },
+      "document-fragments": {
+        "title": "Dokument fragmentlari",
+        "path": "virtual-dom/document-fragments/page"
+      },
+      "how-virtual-dom-works": {
+        "title": "Virtual DOM qanday ishlaydi",
+        "path": "virtual-dom/how-virtual-dom-works/page"
+      },
+      "virtual-dom-vs-real-dom": {
+        "title": "Virtual DOM vs Real DOM",
+        "path": "virtual-dom/virtual-dom-vs-real-dom/page"
+      },
+      "efficient-updates": {
+        "title": "Samarador yangilanishlar",
+        "path": "virtual-dom/efficient-updates/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "virtual-dom/recap/page"
+      }
+    }
+  },
+  "inside-reconciliation": {
+    "title": "Reconciliationning ichki ishlashi",
+    "path": "inside-reconciliation/page",
+    "hasIndex": true,
+    "children": {
+      "understanding-reconciliation": {
+        "title": "Reconciliationni yaxshiroq tushunish",
+        "path": "inside-reconciliation/understanding-reconciliation/page"
+      },
+      "batching-updates": {
+        "title": "Batching updates",
+        "path": "inside-reconciliation/batching-updates/page"
+      },
+      "stack-reconciler": {
+        "title": "Stack reconciler",
+        "path": "inside-reconciliation/stack-reconciler/page"
+      },
+      "fiber-reconciler": {
+        "title": "Fiber reconciler",
+        "path": "inside-reconciliation/fiber-reconciler/page"
+      },
+      "double-buffering": {
+        "title": "Double buffering",
+        "path": "inside-reconciliation/double-buffering/page"
+      },
+      "fiber-reconciliation": {
+        "title": "Fiber reconciliation",
+        "path": "inside-reconciliation/fiber-reconciliation/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "inside-reconciliation/recap/page"
+      }
+    }
+  },
+  "common-questions": {
+    "title": "Keng tarqalgan savollar va javoblar",
+    "path": "common-questions/page",
+    "hasIndex": true,
+    "children": {
+      "memoization-with-react-memo": {
+        "title": "React.memo bilan memoizatsiya",
+        "path": "common-questions/memoization-with-react-memo/page"
+      },
+      "getting-fluent-in-react-memo": {
+        "title": "React.memoni chuqurroq o'rganish",
+        "path": "common-questions/getting-fluent-in-react-memo/page"
+      },
+      "its-guideline-not-rule": {
+        "title": "Qoida emas, Yo'riqnoma",
+        "path": "common-questions/its-guideline-not-rule/page"
+      },
+      "memoization-with-useMemo": {
+        "title": "useMemo bilan memoizatsiya",
+        "path": "common-questions/memoization-with-useMemo/page"
+      },
+      "usememo-considered-harmful": {
+        "title": "useMemodan to'g'ri foydalanish",
+        "path": "common-questions/usememo-considered-harmful/page"
+      },
+      "forget-about-all-this": {
+        "title": "Bularni barchasini 'Unuting'",
+        "path": "common-questions/forget-about-all-this/page"
+      },
+      "lazy-loading": {
+        "title": "Lazy loading",
+        "path": "common-questions/lazy-loading/page"
+      },
+      "greater-control-ui-with-suspense": {
+        "title": "Suspense bilan yaxshilangan UI boshqaruvi",
+        "path": "common-questions/greater-control-ui-with-suspense/page"
+      },
+      "usestate-vs-usereducer": {
+        "title": "useState va useReducer",
+        "path": "common-questions/usestate-vs-usereducer/page"
+      },
+      "immer-and-ergonomics": {
+        "title": "Immer va foydalanish qulayligi",
+        "path": "common-questions/immer-and-ergonomics/page"
+      }
+    }
+  },
+  "powerful-patterns": {
+    "title": "Kuchli naqshlar",
+    "path": "powerful-patterns/page",
+    "hasIndex": true,
+    "children": {
+      "presentational-container-components": {
+        "title": "Presentational va Container komponentlar",
+        "path": "powerful-patterns/presentational-container-components/page"
+      },
+      "high-order-component": {
+        "title": "High order component",
+        "path": "powerful-patterns/high-order-component/page"
+      },
+      "render-props": {
+        "title": "Render props",
+        "path": "powerful-patterns/render-props/page"
+      },
+      "control-props": {
+        "title": "Control props",
+        "path": "powerful-patterns/control-props/page"
+      },
+      "compound-components": {
+        "title": "Compound components",
+        "path": "powerful-patterns/compound-components/page"
+      },
+      "props-collections": {
+        "title": "Props collections",
+        "path": "powerful-patterns/props-collections/page"
+      },
+      "state-reducer": {
+        "title": "State reducer",
+        "path": "powerful-patterns/state-reducer/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "powerful-patterns/recap/page"
+      }
+    }
+  },
+  "server-side-react": {
+    "title": "Server-side React",
+    "path": "server-side-react/page",
+    "hasIndex": true,
+    "children": {
+      "limitations-of-client-side-rendering": {
+        "title": "Client-side renderingning cheklovlari",
+        "path": "server-side-react/limitations-of-client-side-rendering/page"
+      },
+      "rise-of-server-rendering": {
+        "title": "Server renderingning yuksalishi",
+        "path": "server-side-react/rise-of-server-rendering/page"
+      },
+      "server-rendering-apis-in-react": {
+        "title": "Reactda server rendering APIlari",
+        "path": "server-side-react/server-rendering-apis-in-react/page"
+      },
+      "renderToString": {
+        "title": "renderToString",
+        "path": "server-side-react/renderToString/page"
+      },
+      "renderToPipeableStream": {
+        "title": "renderToPipeableStream",
+        "path": "server-side-react/renderToPipeableStream/page"
+      },
+      "renderToReadableStream": {
+        "title": "renderToReadableStream",
+        "path": "server-side-react/renderToReadableStream/page"
+      },
+      "when-to-use-what": {
+        "title": "Qachon nimani ishlatish kerak",
+        "path": "server-side-react/when-to-use-what/page"
+      },
+      "hydration": {
+        "title": "Hydration",
+        "path": "server-side-react/hydration/page"
+      },
+      "creating-server-rendering": {
+        "title": "Server renderingni yaratish",
+        "path": "server-side-react/creating-server-rendering/page"
+      },
+      "dont-roll-your-own": {
+        "title": "O'zingiznikini yaratmang",
+        "path": "server-side-react/dont-roll-your-own/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "server-side-react/recap/page"
+      }
+    }
+  },
+  "concurrent-react": {
+    "title": "Concurrent React",
+    "path": "concurrent-react/page",
+    "hasIndex": true,
+    "children": {
+      "problem-with-synchronous-rendering": {
+        "title": "Sinxron renderingning muammosi",
+        "path": "concurrent-react/problem-with-synchronous-rendering/page"
+      },
+      "problems-with-concurrent-rendering": {
+        "title": "Concurrent renderingning muammolari",
+        "path": "concurrent-react/problems-with-concurrent-rendering/page"
+      },
+      "revisiting-fiber": {
+        "title": "Fiberni qayta ko'rib chiqish",
+        "path": "concurrent-react/revisiting-fiber/page"
+      },
+      "scheduler": {
+        "title": "Scheduler",
+        "path": "concurrent-react/scheduler/page"
+      },
+      "render-lanes": {
+        "title": "Render lanes",
+        "path": "concurrent-react/render-lanes/page"
+      },
+      "scheduling-and-deferring-updates": {
+        "title": "Yangilanishlarni rejalashtirish va kechiktirish",
+        "path": "concurrent-react/scheduling-and-deferring-updates/page"
+      },
+      "useTransition": {
+        "title": "useTransition",
+        "path": "concurrent-react/useTransition/page"
+      },
+      "useDeferredValue": {
+        "title": "useDeferredValue",
+        "path": "concurrent-react/useDeferredValue/page"
+      },
+      "useSyncExternalStore": {
+        "title": "useSyncExternalStore",
+        "path": "concurrent-react/useSyncExternalStore/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "concurrent-react/recap/page"
+      }
+    }
+  },
+  "frameworks": {
+    "title": "Frameworklar",
+    "path": "frameworks/page",
+    "hasIndex": true,
+    "children": {
+      "why-we-need-framework": {
+        "title": "Nima uchun framework kerak",
+        "path": "frameworks/why-we-need-framework/page"
+      },
+      "benefits-of-using-framework": {
+        "title": "Framework ishlatishning afzalliklari",
+        "path": "frameworks/benefits-of-using-framework/page"
+      },
+      "trade-offs-of-using-framework": {
+        "title": "Framework ishlatishning kelishmovchiliklari",
+        "path": "frameworks/trade-offs-of-using-framework/page"
+      },
+      "choosing-framework": {
+        "title": "Framework tanlash",
+        "path": "frameworks/choosing-framework/page"
+      },
+      "next-js": {
+        "title": "Next.js",
+        "path": "frameworks/next-js/page"
+      },
+      "remix": {
+        "title": "Remix",
+        "path": "frameworks/remix/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "frameworks/recap/page"
+      }
+    }
+  },
+  "react-server-components": {
+    "title": "React Server komponentlar",
+    "path": "react-server-components/page",
+    "hasIndex": true,
+    "children": {
+      "server-rendering": {
+        "title": "Server rendering",
+        "path": "react-server-components/server-rendering/page"
+      },
+      "server-komponentlar-ishlashi": {
+        "title": "Server komponentlar ishlashi",
+        "path": "react-server-components/server-komponentlar-ishlashi/page"
+      },
+      "under-the-hood": {
+        "title": "Ichki ishlash mexanizmi",
+        "path": "react-server-components/under-the-hood/page"
+      },
+      "serialization": {
+        "title": "Serialization",
+        "path": "react-server-components/serialization/page"
+      },
+      "rules-of-server-components": {
+        "title": "Server komponentlar qoidalari",
+        "path": "react-server-components/rules-of-server-components/page"
+      },
+      "navigation": {
+        "title": "Navigation",
+        "path": "react-server-components/navigation/page"
+      },
+      "making-updates": {
+        "title": "Yangilanishlar kiritish",
+        "path": "react-server-components/making-updates/page"
+      },
+      "nuance": {
+        "title": "Noziklik",
+        "path": "react-server-components/nuance/page"
+      },
+      "future-of-react-server-components": {
+        "title": "React Server komponentlarning kelajagi",
+        "path": "react-server-components/future-of-react-server-components/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "react-server-components/recap/page"
+      }
+    }
+  },
+  "react-alternatives": {
+    "title": "React alternativlari",
+    "path": "react-alternatives/page",
+    "hasIndex": true,
+    "children": {
+      "react-is-not-reactive": {
+        "title": "React reaktiv emas",
+        "path": "react-alternatives/react-is-not-reactive/page"
+      },
+      "common-patterns": {
+        "title": "Umumiy naqshlar",
+        "path": "react-alternatives/common-patterns/page"
+      },
+      "angular": {
+        "title": "Angular",
+        "path": "react-alternatives/angular/page"
+      },
+      "vue-js": {
+        "title": "Vue.js",
+        "path": "react-alternatives/vue-js/page"
+      },
+      "svelte": {
+        "title": "Svelte",
+        "path": "react-alternatives/svelte/page"
+      },
+      "solid-js": {
+        "title": "Solid.js",
+        "path": "react-alternatives/solid-js/page"
+      },
+      "qwik": {
+        "title": "Qwik",
+        "path": "react-alternatives/qwik/page"
+      },
+      "react-forget": {
+        "title": "React Forget",
+        "path": "react-alternatives/react-forget/page"
+      },
+      "future-of-react": {
+        "title": "Reactning kelajagi",
+        "path": "react-alternatives/future-of-react/page"
+      },
+      "recap": {
+        "title": "Xulosa",
+        "path": "react-alternatives/recap/page"
+      }
+    }
+  }
+}

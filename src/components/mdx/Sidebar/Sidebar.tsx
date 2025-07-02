@@ -1,22 +1,238 @@
-// import { getTutorialNavigation } from '@/api'
-import SidebarClient from './SidebarClient'
+'use client'
+
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import type { TutorialNavigation } from '@/lib/mdx'
+import { cn } from '@/lib'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 interface SidebarProps {
   tutorialId: string
+  navigationItems: TutorialNavigation[]
 }
 
-export default async function Sidebar({ tutorialId }: SidebarProps) {
-  // Fetch navigation data server-side
-  // const navigation = await getTutorialNavigation(tutorialId).catch((error) => {
-  //   console.error('Error fetching navigation:', error)
-  //   return { data: [] }
-  // })
+const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
+  const pathname = usePathname()
+  const router = useRouter()
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [openAccordionItems, setOpenAccordionItems] = useState<string[]>(() => {
+    // Initialize from sessionStorage on component mount
+    if (typeof window !== 'undefined') {
+      const savedState = sessionStorage.getItem(`accordionState_${tutorialId}`)
+      return savedState ? JSON.parse(savedState) : []
+    }
+    return []
+  })
 
-  // const navigationItems = navigation?.data || []
+  // Save accordion state to sessionStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`accordionState_${tutorialId}`, JSON.stringify(openAccordionItems))
+    }
+  }, [openAccordionItems, tutorialId])
+
+  // Memoize the navigation items to prevent unnecessary rerenders
+  const memoizedNavigation = useMemo(() => navigationItems, [navigationItems])
+
+  // Custom navigation handler
+  const handleNavigation = useCallback(
+    (path: string) => {
+      // Save current scroll position
+      if (sidebarRef.current) {
+        sessionStorage.setItem('sidebarScrollPosition', sidebarRef.current.scrollTop.toString())
+      }
+
+      // Navigate without scroll
+      router.push(`/books/${tutorialId}/${path}`, { scroll: false })
+    },
+    [router, tutorialId],
+  )
+
+  // Handle accordion trigger click
+  const handleAccordionTriggerClick = useCallback(
+    (e: React.MouseEvent, path: string) => {
+      // Toggle accordion state
+      setOpenAccordionItems((prev) => {
+        if (prev.includes(path)) {
+          return prev.filter((item) => item !== path)
+        } else {
+          return [...prev, path]
+        }
+      })
+
+      // Handle navigation
+      handleNavigation(path)
+    },
+    [handleNavigation],
+  )
+
+  // Find active item path
+  const findActiveItemPath = useCallback(
+    (items: TutorialNavigation[]): string | null => {
+      for (const item of items) {
+        if (pathname === `/books/${tutorialId}/${item.path}`) {
+          return item.path
+        }
+        if (item.list && item.list.length > 0) {
+          const found = findActiveItemPath(item.list)
+          if (found) return found
+        }
+      }
+      return null
+    },
+    [pathname, tutorialId],
+  )
+
+  // Find parent paths of active item
+  const findParentPaths = useCallback((items: TutorialNavigation[], targetPath: string): string[] => {
+    const parentPaths: string[] = []
+
+    function findParents(items: TutorialNavigation[], targetPath: string, currentPath: string = ''): boolean {
+      for (const item of items) {
+        const itemPath = currentPath ? `${currentPath}/${item.path}` : item.path
+
+        if (item.path === targetPath) {
+          return true
+        }
+
+        if (item.list && item.list.length > 0) {
+          if (findParents(item.list, targetPath, itemPath)) {
+            parentPaths.push(itemPath)
+            return true
+          }
+        }
+      }
+      return false
+    }
+
+    findParents(items, targetPath)
+    return parentPaths
+  }, [])
+
+  // Restore scroll position on initial load
+  useEffect(() => {
+    if (isInitialLoad && sidebarRef.current) {
+      const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition')
+      if (savedScrollPosition) {
+        sidebarRef.current.scrollTop = parseInt(savedScrollPosition)
+        sessionStorage.removeItem('sidebarScrollPosition')
+      }
+      setIsInitialLoad(false)
+    }
+  }, [isInitialLoad])
+
+  // Memoize the renderNavigationItems function
+  const renderNavigationItems = useCallback(
+    (items: TutorialNavigation[], parentPath: string = '') => {
+      return items.map((item, index) => {
+        const itemPath = parentPath ? `${parentPath}/${item.path}` : item.path
+        const isActive = pathname === `/books/${tutorialId}/${item.path}`
+        const isActiveParent = pathname.includes(`/books/${tutorialId}/${item.path}/`)
+
+        // Find active item path and parent paths
+        const activeItemPath = findActiveItemPath(navigationItems)
+        const parentPaths = activeItemPath ? findParentPaths(navigationItems, activeItemPath) : []
+
+        // Check if this item is a parent of the active item
+        const isParentOfActive = parentPaths.includes(itemPath)
+
+        if (item.list && item.list.length > 0) {
+          const shouldBeOpen =
+            isActiveParent || isParentOfActive || index === 0 || openAccordionItems.includes(item.path)
+
+          return (
+            <Accordion
+              key={index}
+              type="single"
+              collapsible
+              defaultValue={shouldBeOpen ? item.path : undefined}
+              className="space-y-2"
+            >
+              <AccordionItem value={item.path} className="border-none">
+                {item.hasIndex ? (
+                  <div className="relative">
+                    <Link href={`/books/${tutorialId}/${item.path}`}>
+                      <AccordionTrigger
+                        onClick={(e) => handleAccordionTriggerClick(e, item.path)}
+                        className={cn(
+                          'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                          {
+                            'font-semibold text-sky-400 [&[data-state=open]>svg]:text-sky-400': isActive,
+                          },
+                        )}
+                      >
+                        {item.title}
+                      </AccordionTrigger>
+                    </Link>
+                  </div>
+                ) : (
+                  <AccordionTrigger
+                    className={cn(
+                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                      {
+                        'font-medium text-sky-400 [&[data-state=open]>svg]:text-sky-400': isActive,
+                      },
+                    )}
+                  >
+                    {item.title}
+                  </AccordionTrigger>
+                )}
+                <AccordionContent className="pt-1 pb-0 pl-4">
+                  <div className="flex flex-col gap-1">{renderNavigationItems(item.list, itemPath)}</div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )
+        } else {
+          return (
+            <Link
+              key={index}
+              href={`/books/${tutorialId}/${item.path}`}
+              className={cn(
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 rounded-md py-2 pl-2 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
+                {
+                  'font-medium text-sky-400': isActive,
+                },
+              )}
+            >
+              {item.title}
+            </Link>
+          )
+        }
+      })
+    },
+    [
+      pathname,
+      tutorialId,
+      navigationItems,
+      findActiveItemPath,
+      findParentPaths,
+      openAccordionItems,
+      handleAccordionTriggerClick,
+    ],
+  )
+
+  // Show loading state if no navigation items
+  if (!navigationItems || navigationItems.length === 0) {
+    return (
+      <div className="p-4">
+        <p className="text-muted-foreground text-sm">Navigatsiya yuklanmoqda...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex-shrink-0 border-r">
-      <SidebarClient navigationItems={[]} tutorialId={tutorialId} defaultOpenItem="first" />
+    <div className="p-4" ref={sidebarRef}>
+      <div className="pb-4">
+        <h2 className="text-lg font-semibold">Mavzular</h2>
+      </div>
+      <nav className="space-y-1">{renderNavigationItems(memoizedNavigation)}</nav>
     </div>
   )
-}
+})
+
+Sidebar.displayName = 'Sidebar'
+
+export default Sidebar

@@ -16,7 +16,7 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
     currentIndex > 0
       ? {
           title: flattenedNavigation[currentIndex - 1].title,
-          href: `/tutorials/${tutorialId}/${flattenedNavigation[currentIndex - 1].path}`,
+          href: `/books/${tutorialId}/${flattenedNavigation[currentIndex - 1].path}`,
         }
       : undefined
 
@@ -24,7 +24,7 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
     currentIndex < flattenedNavigation.length - 1
       ? {
           title: flattenedNavigation[currentIndex + 1].title,
-          href: `/tutorials/${tutorialId}/${flattenedNavigation[currentIndex + 1].path}`,
+          href: `/books/${tutorialId}/${flattenedNavigation[currentIndex + 1].path}`,
         }
       : undefined
 

@@ -3,6 +3,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeRaw from 'rehype-raw'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
+import path from 'path'
 
 /**
  * Serializes markdown content to MDX
@@ -44,6 +45,7 @@ export async function serializeMdx(content: string) {
         rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
         development: process.env.NODE_ENV === 'development',
       },
+      parseFrontmatter: false,
     })
   } catch (mdxError) {
     console.error('Error parsing MDX, falling back to markdown parser:', mdxError)
@@ -73,5 +75,164 @@ export async function serializeContent(content: string, isMarkdown: boolean) {
   } else {
     console.log('Using MDX parser')
     return serializeMdx(content)
+  }
+}
+
+export interface NavigationItem {
+  title: string
+  path: string
+  hasIndex?: boolean
+  children?: Record<string, NavigationItem>
+}
+
+export interface TutorialNavigation {
+  title: string
+  path: string
+  hasIndex: boolean
+  list?: TutorialNavigation[]
+}
+
+// Meta fayldan navigatsiya ma'lumotlarini olish
+export async function getTutorialNavigation(tutorialId: string): Promise<TutorialNavigation[]> {
+  try {
+    const { promises: fs } = await import('fs')
+    const metaPath = path.resolve(process.cwd(), 'content', tutorialId, '_meta.json')
+
+    // Fayl mavjudligini tekshirish
+    await fs.access(metaPath)
+
+    // JSON faylni o'qish
+    const fileContent = await fs.readFile(metaPath, 'utf8')
+    const metaData = JSON.parse(fileContent)
+
+    return convertMetaToNavigation(metaData)
+  } catch (error) {
+    console.error('Error loading tutorial navigation:', error)
+    console.error('Tried path:', path.resolve(process.cwd(), 'content', tutorialId, '_meta.json'))
+    return []
+  }
+}
+
+// Meta ma'lumotlarini navigatsiya strukturasiga o'tkazish
+function convertMetaToNavigation(metaData: Record<string, any>): TutorialNavigation[] {
+  const navigation: TutorialNavigation[] = []
+
+  for (const [key, value] of Object.entries(metaData)) {
+    if (typeof value === 'object' && value.title) {
+      // Path'dan '/page' qismini olib tashlash
+      const cleanPath = value.path ? value.path.replace(/\/page$/, '') : key
+
+      const item: TutorialNavigation = {
+        title: value.title,
+        path: cleanPath,
+        hasIndex: value.hasIndex || false,
+      }
+
+      // Agar children bo'lsa, recursively convert qilish
+      if (value.children) {
+        item.list = convertMetaToNavigation(value.children)
+      }
+
+      navigation.push(item)
+    }
+  }
+
+  return navigation
+}
+
+// MDX fayl content'ini olish
+export async function getMDXContent(tutorialId: string, contentPath: string): Promise<string | null> {
+  try {
+    const { promises: fs } = await import('fs')
+    let filePath: string | null = null
+
+    // Path bo'sh bo'lsa yoki "/" bo'lsa, asosiy page.mdx faylni olish
+    if (!contentPath || contentPath === '' || contentPath === '/') {
+      filePath = path.join(process.cwd(), 'content', tutorialId, 'page.mdx')
+    } else {
+      // Content path'ni tozalash
+      const cleanPath = contentPath.replace(/^\//, '').replace(/\/$/, '')
+
+      // Turli variantlarni sinab ko'rish
+      const possiblePaths = [
+        path.join(process.cwd(), 'content', tutorialId, cleanPath, 'page.mdx'),
+        path.join(process.cwd(), 'content', tutorialId, cleanPath + '.mdx'),
+        path.join(process.cwd(), 'content', tutorialId, cleanPath, 'index.mdx'),
+      ]
+
+      for (const possiblePath of possiblePaths) {
+        try {
+          await fs.access(possiblePath)
+          filePath = possiblePath
+          break
+        } catch {
+          // Continue to next path
+        }
+      }
+
+      if (!filePath) {
+        console.error(`MDX file not found for path: ${contentPath}`)
+        console.error('Tried paths:', possiblePaths)
+        return null
+      }
+    }
+
+    const content = await fs.readFile(filePath, 'utf8')
+    return content
+  } catch (error) {
+    console.error('Error reading MDX file:', error)
+    return null
+  }
+}
+
+// Tutorial ma'lumotlarini olish
+export async function getTutorialInfo(tutorialId: string) {
+  try {
+    const navigation = await getTutorialNavigation(tutorialId)
+
+    // Tutorial asosiy ma'lumotlari
+    const tutorialInfo = {
+      id: tutorialId,
+      title: getTutorialTitle(tutorialId),
+      description: getTutorialDescription(tutorialId),
+      navigation,
+    }
+
+    return tutorialInfo
+  } catch (error) {
+    console.error('Error getting tutorial info:', error)
+    return null
+  }
+}
+
+// Tutorial sarlavhasini olish
+function getTutorialTitle(tutorialId: string): string {
+  const titles: Record<string, string> = {
+    'fluent-react': 'Fluent React',
+    // Boshqa tutoriallar qo'shilganda bu yerga qo'shamiz
+  }
+
+  return titles[tutorialId] || tutorialId
+}
+
+// Tutorial tavsifini olish
+function getTutorialDescription(tutorialId: string): string {
+  const descriptions: Record<string, string> = {
+    'fluent-react': "React'ni chuqur o'rganish uchun to'liq qo'llanma",
+    // Boshqa tutoriallar qo'shilganda bu yerga qo'shamiz
+  }
+
+  return descriptions[tutorialId] || "Dasturlash bo'yicha qo'llanma"
+}
+
+// Barcha tutoriallar ro'yxatini olish
+export async function getAllTutorials() {
+  try {
+    // Static qilib qo'yamiz, chunki bizda faqat bitta tutorial bor
+    const tutorialInfo = await getTutorialInfo('fluent-react')
+    return tutorialInfo ? [tutorialInfo] : []
+  } catch (error) {
+    console.error('Error getting all tutorials:', error)
+    return []
   }
 }
