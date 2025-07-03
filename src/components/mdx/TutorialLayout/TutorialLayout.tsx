@@ -24,7 +24,7 @@ export default async function DocLayout({ children, className, params }: DocLayo
     <div className="flex min-h-[calc(100vh-3.5rem)] w-full">
       {/* Left Sidebar with border */}
       <aside className="border-border sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] w-72 overflow-y-auto border-r max-lg:hidden">
-        <div className="px-4 py-6">
+        <div className="py-6 pl-4">
           <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
         </div>
       </aside>

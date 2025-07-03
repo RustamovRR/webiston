@@ -151,36 +151,21 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
               className="space-y-2"
             >
               <AccordionItem value={item.path} className="border-none">
-                {item.hasIndex ? (
-                  <div className="relative">
-                    <Link href={`/books/${tutorialId}/${item.path}`}>
-                      <AccordionTrigger
-                        onClick={(e) => handleAccordionTriggerClick(e, item.path)}
-                        className={cn(
-                          'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
-                          {
-                            'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 [&[data-state=open]>svg]:text-blue-600 dark:[&[data-state=open]>svg]:text-blue-400':
-                              isActive,
-                          },
-                        )}
-                      >
-                        {item.title}
-                      </AccordionTrigger>
-                    </Link>
-                  </div>
-                ) : (
+                <Link href={`/books/${tutorialId}/${item.path}`}>
                   <AccordionTrigger
+                    onClick={(e) => handleAccordionTriggerClick(e, item.path)}
                     className={cn(
-                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-none py-2 pr-4 pl-3 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
                       {
-                        'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400 [&[data-state=open]>svg]:text-blue-600 dark:[&[data-state=open]>svg]:text-blue-400':
+                        'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black !no-underline dark:border-[#878787] dark:bg-[#022248] dark:text-white [&[data-state=open]>svg]:text-white dark:[&[data-state=open]>svg]:text-white':
                           isActive,
                       },
                     )}
                   >
                     {item.title}
                   </AccordionTrigger>
-                )}
+                </Link>
+
                 <AccordionContent className="pt-1 pb-0 pl-4">
                   <div className="flex flex-col gap-1">{renderNavigationItems(item.list, itemPath)}</div>
                 </AccordionContent>
@@ -193,9 +178,9 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
               key={index}
               href={`/books/${tutorialId}/${item.path}`}
               className={cn(
-                'text-muted-foreground group flex cursor-pointer items-center gap-2 rounded-md border-l-2 border-transparent py-2 pl-2 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 py-2 pl-3 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
                 {
-                  'border-l-blue-500 bg-blue-50 font-semibold text-blue-600 dark:bg-blue-950/30 dark:text-blue-400':
+                  'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white':
                     isActive,
                 },
               )}
@@ -228,9 +213,6 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
 
   return (
     <div ref={sidebarRef}>
-      <div className="pb-4">
-        <h2 className="text-lg font-semibold">Mavzular</h2>
-      </div>
       <nav className="space-y-1">{renderNavigationItems(memoizedNavigation)}</nav>
     </div>
   )
