@@ -153,7 +153,11 @@ export default async function TutorialPage({ params }: any) {
     }
 
     // For content pages, use the server-side TutorialContent component
-    return <TutorialContent slug={slug} />
+    return (
+      <div className="container mx-auto py-8">
+        <TutorialContent slug={slug} />
+      </div>
+    )
   } catch (error) {
     console.error('Error in tutorial page:', error)
     return <ErrorContent />

@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeftToLineIcon, LinkIcon } from 'lucide-react'
+import { ArrowUpIcon, LinkIcon } from 'lucide-react'
 import { MDXRemote } from 'next-mdx-remote'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
@@ -136,11 +136,7 @@ export default function MDXContent({ source }: MDXContentProps) {
                 {...linkProps}
               >
                 <span>{linkChildren}</span>
-                <ArrowLeftToLineIcon
-                  width={14}
-                  height={14}
-                  // pathClassName="!stroke-sky-500 group-hover:!stroke-sky-400"
-                />
+                <ArrowUpIcon width={14} height={14} className="!stroke-sky-500 group-hover:!stroke-sky-400" />
               </a>
             )
           } else {

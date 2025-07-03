@@ -40,9 +40,9 @@ export default async function TutorialContent({ slug }: TutorialContentProps) {
 
     return (
       <>
-        <article className="prose prose-lg dark:prose-invert prose-headings:scroll-mt-16 prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800 prose-code:text-pink-600 dark:prose-code:text-pink-400 w-full max-w-none">
+        <div className="markdown-content mx-auto w-full">
           <MDXContent source={serializedContent} />
-        </article>
+        </div>
 
         {/* Content Metadata */}
         <ContentMeta repoName={slug[0]} updatedAt={contentData?.updatedAt} />
