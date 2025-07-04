@@ -1,4 +1,4 @@
-import { ArrowUpIcon } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import Link from 'next/link'
 
 interface PaginationProps {
@@ -32,10 +32,10 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
     <div className="my-5 flex items-center justify-between gap-8">
       {prevPage ? (
         <div className="flex w-1/2 justify-start">
-          <Link className="group flex items-end gap-4" href={prevPage.href} prefetch>
-            <ArrowUpIcon className="mb-[7px]" />
+          <Link className="group flex items-end gap-2" href={prevPage.href} prefetch>
+            <ChevronLeftIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
             <div className="group flex flex-col">
-              <span className="font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
+              <span className="text-xs font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
                 Oldingi
               </span>
               <span className="text-lg text-black max-sm:text-base dark:text-white">{prevPage.title}</span>
@@ -48,13 +48,13 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
       {nextPage && (
         <div className="flex w-1/2 justify-end">
           <Link className="group flex flex-col items-start" href={nextPage.href} prefetch>
-            <span className="font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
+            <span className="text-xs font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
               Keyingi
             </span>
-            <div className="group flex items-center gap-4">
+            <div className="group flex items-center gap-2">
               <span className="line-clamp-2 text-lg text-black max-sm:text-base dark:text-white">{nextPage.title}</span>
-              <div className="rotate-180 justify-self-end">
-                <ArrowUpIcon />
+              <div className="justify-self-end">
+                <ChevronRightIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
               </div>
             </div>
           </Link>

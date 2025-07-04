@@ -45,7 +45,7 @@ export default async function TutorialContent({ slug }: TutorialContentProps) {
         </div>
 
         {/* Content Metadata */}
-        <ContentMeta repoName={slug[0]} updatedAt={contentData?.updatedAt} />
+        <ContentMeta updatedAt={contentData?.updatedAt} />
 
         {/* Pagination */}
         <Pagination currentPath={currentPath} tutorialId={slug[0]} flattenedNavigation={flattenedNavigation} />

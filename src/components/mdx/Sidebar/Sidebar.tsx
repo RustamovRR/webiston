@@ -155,7 +155,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
                   <AccordionTrigger
                     onClick={(e) => handleAccordionTriggerClick(e, item.path)}
                     className={cn(
-                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-none py-2 pr-4 pl-3 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-none py-2 pr-4 pl-3 text-sm font-semibold text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
                       {
                         'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black !no-underline dark:border-[#878787] dark:bg-[#022248] dark:text-white [&[data-state=open]>svg]:text-white dark:[&[data-state=open]>svg]:text-white':
                           isActive,
@@ -178,7 +178,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
               key={index}
               href={`/books/${tutorialId}/${item.path}`}
               className={cn(
-                'text-muted-foreground group flex cursor-pointer items-center gap-2 py-2 pl-3 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 overflow-hidden py-2 pl-3 text-sm text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white',
                 {
                   'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white':
                     isActive,

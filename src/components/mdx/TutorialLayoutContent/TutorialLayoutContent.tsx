@@ -13,6 +13,9 @@ import { cn } from '@/lib'
 import { type TutorialNavigation } from '@/lib/mdx'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { PanelLeftClose, PanelLeftOpen, PanelsTopLeft, PanelTop } from 'lucide-react'
+import React from 'react'
 
 interface BreadcrumbItemType {
   title: string
@@ -110,14 +113,14 @@ export default function TutorialLayoutContent({
             <Link
               href={item.path}
               title={item.title}
-              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis whitespace-nowrap transition-colors max-sm:max-w-[100px]"
+              className="hover:text-foreground max-w-[150px] text-sm font-medium transition-colors max-sm:max-w-[100px]"
             >
               {item.title}
             </Link>
           ) : (
             <BreadcrumbPage
               title={item.title}
-              className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap max-sm:max-w-[100px]"
+              className="text-foreground max-w-[150px] font-medium max-sm:max-w-[100px]"
             >
               {item.title}
             </BreadcrumbPage>
@@ -168,14 +171,12 @@ export default function TutorialLayoutContent({
           {lastItem.hasIndex ? (
             <Link
               href={lastItem.path}
-              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis whitespace-nowrap transition-colors max-sm:max-w-[100px]"
+              className="hover:text-foreground max-w-[150px] text-sm font-medium transition-colors max-sm:max-w-[100px]"
             >
               {lastItem.title}
             </Link>
           ) : (
-            <BreadcrumbPage className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap max-sm:max-w-[100px]">
-              {lastItem.title}
-            </BreadcrumbPage>
+            <BreadcrumbPage className="text-foreground font-medium">{lastItem.title}</BreadcrumbPage>
           )}
         </BreadcrumbItem>
       </>
@@ -184,15 +185,12 @@ export default function TutorialLayoutContent({
 
   return (
     <div className="flex flex-col">
-      {/* Breadcrumb Navigation */}
       <section className="flex items-center justify-between">
-        <Breadcrumb className="max-w-4/5">
-          <BreadcrumbList className="flex-nowrap overflow-hidden text-ellipsis whitespace-nowrap">
-            {renderBreadcrumbItems()}
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        <div className="m-0 flex cursor-pointer items-center gap-1">{/* <ShareButton /> */}</div>
+        <div className="flex items-center gap-2">
+          <Breadcrumb className="max-w-4/5">
+            <BreadcrumbList className="flex-nowrap whitespace-nowrap">{renderBreadcrumbItems()}</BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </section>
 
       {/* Main Article Content */}
@@ -201,7 +199,7 @@ export default function TutorialLayoutContent({
           'prose prose-slate dark:prose-invert',
           'dark:prose-headings:text-white prose-headings:scroll-mt-28',
           'prose-a:font-semibold prose-a:no-underline prose-pre:m-0',
-          'max-w-none',
+          'max-w-none pt-6',
         )}
       >
         {children}

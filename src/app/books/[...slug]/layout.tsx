@@ -1,5 +1,5 @@
 import { TutorialLayout } from '@/components/mdx'
-import { getMDXContent, serializeContent } from '@/lib'
+import { getMDXContent, getTutorialNavigation, getTutorialTitle, serializeContent } from '@/lib'
 import { notFound } from 'next/navigation'
 
 export default async function TutorialsLayout({ children, params }: any) {
@@ -11,6 +11,10 @@ export default async function TutorialsLayout({ children, params }: any) {
 
   const tutorialId = slug[0]
   const currentPath = slug.slice(1).join('/')
+
+  // Fetch navigation and title on the server
+  const navigationItems = await getTutorialNavigation(tutorialId)
+  const tutorialTitle = getTutorialTitle(tutorialId)
 
   let pageTitle = ''
 
@@ -32,7 +36,12 @@ export default async function TutorialsLayout({ children, params }: any) {
   }
 
   return (
-    <TutorialLayout className="px-8 max-lg:px-4" params={await params} pageTitle={pageTitle}>
+    <TutorialLayout
+      params={await params}
+      pageTitle={pageTitle}
+      navigationItems={navigationItems}
+      tutorialTitle={tutorialTitle}
+    >
       {children}
     </TutorialLayout>
   )
