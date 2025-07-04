@@ -212,7 +212,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
   }
 
   return (
-    <div ref={sidebarRef}>
+    <div ref={sidebarRef} className="h-[calc(100vh-8rem)] overflow-y-auto pr-4">
       <nav className="space-y-1">{renderNavigationItems(memoizedNavigation)}</nav>
     </div>
   )
