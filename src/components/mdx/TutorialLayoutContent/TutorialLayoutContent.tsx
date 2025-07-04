@@ -9,78 +9,94 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Skeleton } from '@/components/ui/skeleton'
-// import useGetNavigation from '@/hooks/queries/useGetNavigation'
 import { cn } from '@/lib'
+import { type TutorialNavigation } from '@/lib/mdx'
 import Link from 'next/link'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
+
+interface BreadcrumbItemType {
+  title: string
+  path: string
+  hasIndex?: boolean
+}
 
 interface TutorialLayoutContentProps {
   children: React.ReactNode
   lastUpdated?: string
+  navigationItems: TutorialNavigation[]
+  tutorialTitle: string
+  pageTitle?: string
 }
 
-export default function TutorialLayoutContent({ children, lastUpdated }: TutorialLayoutContentProps) {
-  const pathname = usePathname()
-  const { slug } = useParams()
-  const tutorialId = slug?.[0] as string
-  // const { data: navigationData, isLoading } = useGetNavigation(tutorialId)
-
-  const findNavigationItem = (items: any[] | null, currentPath: string): any | null => {
-    if (!items) return null
-
-    for (const item of items) {
-      if (currentPath.includes(item.path)) {
-        if (item.list) {
-          const foundInChildren = findNavigationItem(item.list, currentPath)
-          if (foundInChildren) return foundInChildren
-        }
-        return item
-      }
-    }
-    return null
-  }
+export default function TutorialLayoutContent({
+  children,
+  lastUpdated,
+  navigationItems,
+  tutorialTitle,
+  pageTitle,
+}: TutorialLayoutContentProps) {
+  const { slug } = useParams<{ slug: string[] }>()
+  const tutorialId = slug?.[0]
 
   const getBreadcrumbItems = () => {
-    // if (!navigationData) return []
+    const items: BreadcrumbItemType[] = [
+      { title: 'Bosh sahifa', path: '/books', hasIndex: true },
+      { title: tutorialTitle, path: `/books/${tutorialId}`, hasIndex: true },
+    ]
 
-    const items = []
-    const currentPath = pathname.replace('/tutorials/', '')
+    if (!navigationItems || !slug || slug.length <= 1) {
+      return items
+    }
 
-    items.push({
-      title: 'Bosh sahifa',
-      path: '/',
-      hasIndex: true,
-    })
+    const findPathRecursively = (
+      nodes: TutorialNavigation[],
+      pathSegments: string[],
+      currentPath: string,
+    ): BreadcrumbItemType[] => {
+      if (pathSegments.length === 0) {
+        return []
+      }
 
-    // const currentItem = findNavigationItem(navigationData, currentPath)
-    // if (!currentItem) return items
+      const [currentSegment, ...restSegments] = pathSegments
+      const currentNode = nodes.find((node) => node.path === currentSegment)
 
-    // const pathParts = currentItem.path.split('/')
-    // let currentPathPart = tutorialId
+      if (!currentNode) {
+        return []
+      }
 
-    // const tutorialItem = findNavigationItem(navigationData, tutorialId)
-    // if (tutorialItem) {
-    //   items.push({
-    //     title: tutorialItem.title,
-    //     path: `/tutorials/${tutorialId}`,
-    //     hasIndex: tutorialItem.hasIndex,
-    //   })
-    // }
+      const newPath = `${currentPath}/${currentNode.path}`
+      const breadcrumbPart: BreadcrumbItemType = {
+        title: currentNode.title,
+        path: newPath,
+        hasIndex: currentNode.hasIndex || !!currentNode.list?.length,
+      }
 
-    // for (const part of pathParts) {
-    //   currentPathPart += (currentPathPart ? '/' : '') + part
-    //   const item = findNavigationItem(navigationData, currentPathPart)
-    //   if (item) {
-    //     items.push({
-    //       title: item.title,
-    //       path: `/tutorials/${currentPathPart}`,
-    //       hasIndex: item.hasIndex,
-    //     })
-    //   }
-    // }
+      if (restSegments.length > 0 && currentNode.list) {
+        return [breadcrumbPart, ...findPathRecursively(currentNode.list, restSegments, newPath)]
+      }
 
-    return items
+      return [breadcrumbPart]
+    }
+
+    const pagePathSegments = slug.slice(1)
+    const breadcrumbTrail = findPathRecursively(navigationItems, pagePathSegments, `/books/${tutorialId}`)
+
+    const finalItems = [...items, ...breadcrumbTrail]
+
+    // If there's a specific page title from frontmatter, add it as the last, non-clickable item.
+    if (pageTitle && finalItems.length > 0) {
+      const lastItem = finalItems[finalItems.length - 1]
+      // Ensure the title isn't duplicated
+      if (lastItem.title !== pageTitle) {
+        finalItems.push({
+          title: pageTitle,
+          path: lastItem.path, // Path is not really used as it won't be a link
+          hasIndex: false,
+        })
+      }
+    }
+
+    return finalItems
   }
 
   const breadcrumbItems = getBreadcrumbItems()
@@ -90,18 +106,18 @@ export default function TutorialLayoutContent({ children, lastUpdated }: Tutoria
       return breadcrumbItems.map((item, index) => (
         <BreadcrumbItem key={item.path}>
           {index > 0 && <BreadcrumbSeparator />}
-          {item.hasIndex ? (
+          {index < breadcrumbItems.length - 1 && item.hasIndex ? (
             <Link
               href={item.path}
               title={item.title}
-              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis transition-colors max-sm:max-w-[100px]"
+              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis whitespace-nowrap transition-colors max-sm:max-w-[100px]"
             >
               {item.title}
             </Link>
           ) : (
             <BreadcrumbPage
               title={item.title}
-              className="max-w-[150px] overflow-hidden text-ellipsis max-sm:max-w-[100px]"
+              className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap max-sm:max-w-[100px]"
             >
               {item.title}
             </BreadcrumbPage>
@@ -117,9 +133,13 @@ export default function TutorialLayoutContent({ children, lastUpdated }: Tutoria
     return (
       <>
         <BreadcrumbItem>
-          <Link href={firstItem.path} className="hover:text-foreground text-sm font-medium transition-colors">
-            {firstItem.title}
-          </Link>
+          {firstItem.hasIndex ? (
+            <Link href={firstItem.path} className="hover:text-foreground text-sm font-medium transition-colors">
+              {firstItem.title}
+            </Link>
+          ) : (
+            <span className="text-sm font-medium">{firstItem.title}</span>
+          )}
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -148,29 +168,17 @@ export default function TutorialLayoutContent({ children, lastUpdated }: Tutoria
           {lastItem.hasIndex ? (
             <Link
               href={lastItem.path}
-              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis transition-colors max-sm:max-w-[100px]"
+              className="hover:text-foreground max-w-[150px] overflow-hidden text-sm font-medium text-ellipsis whitespace-nowrap transition-colors max-sm:max-w-[100px]"
             >
               {lastItem.title}
             </Link>
           ) : (
-            <BreadcrumbPage className="max-w-[200px] overflow-hidden text-ellipsis max-sm:max-w-[100px]">
+            <BreadcrumbPage className="max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap max-sm:max-w-[100px]">
               {lastItem.title}
             </BreadcrumbPage>
           )}
         </BreadcrumbItem>
       </>
-    )
-  }
-
-  const renderBreadcrumbSkeleton = () => {
-    return (
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-4 w-20" />
-        <BreadcrumbSeparator />
-        <Skeleton className="h-4 w-24" />
-        <BreadcrumbSeparator />
-        <Skeleton className="h-4 w-32" />
-      </div>
     )
   }
 
@@ -180,7 +188,7 @@ export default function TutorialLayoutContent({ children, lastUpdated }: Tutoria
       <section className="flex items-center justify-between">
         <Breadcrumb className="max-w-4/5">
           <BreadcrumbList className="flex-nowrap overflow-hidden text-ellipsis whitespace-nowrap">
-            {/* {isLoading ? renderBreadcrumbSkeleton() : renderBreadcrumbItems()} */}
+            {renderBreadcrumbItems()}
           </BreadcrumbList>
         </Breadcrumb>
 

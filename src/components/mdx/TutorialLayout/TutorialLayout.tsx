@@ -1,5 +1,5 @@
 import { cn } from '@/lib'
-import { getTutorialNavigation } from '@/lib/mdx'
+import { getTutorialNavigation, getTutorialTitle } from '@/lib/mdx'
 import Sidebar from '../Sidebar'
 import TableOfContents from '../TableOfContents'
 import TutorialLayoutContent from '../TutorialLayoutContent'
@@ -10,12 +10,14 @@ interface DocLayoutProps {
   params: {
     slug: string[]
   }
+  pageTitle?: string
 }
 
-export default async function DocLayout({ children, className, params }: DocLayoutProps) {
+export default async function DocLayout({ children, className, params, pageTitle }: DocLayoutProps) {
   const { slug } = await params
 
   const tutorialId = slug[0]
+  const tutorialTitle = getTutorialTitle(tutorialId)
 
   // Load navigation on server side
   const navigationItems = await getTutorialNavigation(tutorialId)
@@ -32,7 +34,9 @@ export default async function DocLayout({ children, className, params }: DocLayo
       {/* Main Content - wider container */}
       <main className={cn('flex-1 overflow-y-auto', className)}>
         <div className="mx-auto max-w-5xl px-8 py-8">
-          <TutorialLayoutContent>{children}</TutorialLayoutContent>
+          <TutorialLayoutContent tutorialTitle={tutorialTitle} navigationItems={navigationItems} pageTitle={pageTitle}>
+            {children}
+          </TutorialLayoutContent>
         </div>
       </main>
 

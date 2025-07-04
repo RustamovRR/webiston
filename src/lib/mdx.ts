@@ -207,7 +207,7 @@ export async function getTutorialInfo(tutorialId: string) {
 }
 
 // Tutorial sarlavhasini olish
-function getTutorialTitle(tutorialId: string): string {
+export function getTutorialTitle(tutorialId: string): string {
   const titles: Record<string, string> = {
     'fluent-react': 'Fluent React',
     // Boshqa tutoriallar qo'shilganda bu yerga qo'shamiz
