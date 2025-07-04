@@ -200,7 +200,7 @@ export default function TutorialLayoutContent({
         className={cn(
           'prose prose-slate dark:prose-invert',
           'dark:prose-headings:text-white prose-headings:scroll-mt-28',
-          'prose-a:font-semibold prose-a:no-underline prose-pre:m-0 prose-p:my2',
+          'prose-a:font-semibold prose-a:no-underline prose-pre:m-0',
           'max-w-none',
         )}
       >

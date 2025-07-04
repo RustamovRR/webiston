@@ -1,11 +1,10 @@
 'use client'
 
-import { useTheme } from 'next-themes'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Moon, Sun } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useTheme } from 'next-themes'
 
-const TOGGLE_CLASSES = 'relative flex h-8 w-14 cursor-pointer items-center rounded-full p-1 transition-colors'
-const THUMB_CLASSES = 'absolute h-6 w-6 rounded-full bg-white flex items-center justify-center'
+import { Button } from '@/components/ui/button'
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -15,16 +14,25 @@ export default function ThemeToggle() {
   }
 
   return (
-    <div className={`${TOGGLE_CLASSES} ${theme === 'light' ? 'bg-zinc-300' : 'bg-zinc-700'}`} onClick={handleToggle}>
-      <div className="relative flex w-full justify-between">
-        <Sun size={14} className="z-10 text-yellow-500" />
-        <Moon size={14} className="z-10 text-slate-300" />
-      </div>
-      <motion.div
-        layout
-        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-        className={`${THUMB_CLASSES} ${theme === 'dark' ? 'left-[30px]' : 'left-1'}`}
-      />
-    </div>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleToggle}
+      className="relative h-9 w-9 cursor-pointer overflow-hidden"
+      aria-label="Mavzuni o'zgartirish"
+    >
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div
+          key={theme === 'light' ? 'sun' : 'moon'}
+          initial={{ y: 10, opacity: 0, rotate: -90 }}
+          animate={{ y: 0, opacity: 1, rotate: 0 }}
+          exit={{ y: -10, opacity: 0, rotate: 90 }}
+          transition={{ duration: 0.15, ease: 'easeInOut' }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          {theme === 'light' ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+        </motion.div>
+      </AnimatePresence>
+    </Button>
   )
 }

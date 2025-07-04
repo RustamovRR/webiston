@@ -120,10 +120,9 @@ export default function TableOfContents({ slug }: IProps) {
             <Link
               href={`#${heading.id}`}
               className={cn(
-                'block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200 hover:text-black dark:hover:text-white',
-                activeId === heading.id
-                  ? 'border-l-blue-500 bg-blue-50 font-medium text-blue-600 dark:bg-blue-950/30 dark:text-blue-400'
-                  : 'dark:text-muted-foreground text-muted-foreground hover:text-black dark:hover:text-white',
+                'block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200',
+                'text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white',
+                activeId === heading.id && 'font-semibold text-black dark:text-white',
               )}
               style={{
                 wordBreak: 'break-word',

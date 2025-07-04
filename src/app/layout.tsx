@@ -5,7 +5,7 @@ import Script from 'next/script'
 import dynamic from 'next/dynamic'
 import Footer from '@/components/shared/Footer/Footer'
 import Header from '@/components/shared/Header/Header'
-import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { ThemeProvider } from 'next-themes'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
@@ -155,7 +155,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <NextIntlClientProvider messages={messages}>
-            {/* Sticky Header with backdrop blur */}
             <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
               <Header />
             </header>
