@@ -178,7 +178,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
               key={index}
               href={`/books/${tutorialId}/${item.path}`}
               className={cn(
-                'text-muted-foreground group flex cursor-pointer items-center gap-2 overflow-hidden py-2 pl-3 text-sm text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 overflow-hidden py-2 pr-4 pl-3 text-sm text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white',
                 {
                   'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white':
                     isActive,
@@ -212,7 +212,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
   }
 
   return (
-    <div ref={sidebarRef} className="h-[calc(100vh-8rem)] overflow-y-auto pr-4">
+    <div ref={sidebarRef} className="h-[calc(100vh-8rem)] overflow-y-auto">
       <nav className="space-y-1">{renderNavigationItems(memoizedNavigation)}</nav>
     </div>
   )
