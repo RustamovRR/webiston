@@ -16,7 +16,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
   const pathname = usePathname()
   const router = useRouter()
   const sidebarRef = useRef<HTMLDivElement>(null)
-  const [isInitialLoad, setIsInitialLoad] = useState(true)
+
   const [openAccordionItems, setOpenAccordionItems] = useState<string[]>(() => {
     // Initialize from sessionStorage on component mount
     if (typeof window !== 'undefined') {
@@ -39,9 +39,9 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
   // Custom navigation handler
   const handleNavigation = useCallback(
     (path: string) => {
-      // Save current scroll position
+      // Save current scroll position with a tutorial-specific key
       if (sidebarRef.current) {
-        sessionStorage.setItem('sidebarScrollPosition', sidebarRef.current.scrollTop.toString())
+        sessionStorage.setItem(`sidebarScrollPosition_${tutorialId}`, sidebarRef.current.scrollTop.toString())
       }
 
       // Navigate without scroll
@@ -111,17 +111,13 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
     return parentPaths
   }, [])
 
-  // Restore scroll position on initial load
+  // Restore scroll position on every navigation, not just initial load
   useEffect(() => {
-    if (isInitialLoad && sidebarRef.current) {
-      const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition')
-      if (savedScrollPosition) {
-        sidebarRef.current.scrollTop = parseInt(savedScrollPosition)
-        sessionStorage.removeItem('sidebarScrollPosition')
-      }
-      setIsInitialLoad(false)
+    const savedScrollPosition = sessionStorage.getItem(`sidebarScrollPosition_${tutorialId}`)
+    if (sidebarRef.current && savedScrollPosition) {
+      sidebarRef.current.scrollTop = parseInt(savedScrollPosition, 10)
     }
-  }, [isInitialLoad])
+  }, [pathname, tutorialId]) // This now correctly depends on the pathname
 
   // Memoize the renderNavigationItems function
   const renderNavigationItems = useCallback(
@@ -155,14 +151,16 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
                   <AccordionTrigger
                     onClick={(e) => handleAccordionTriggerClick(e, item.path)}
                     className={cn(
-                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-none py-2 pr-4 pl-3 text-sm font-semibold text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
+                      'group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-none py-2 pr-4 pl-3 text-sm font-semibold transition-colors duration-200 hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white',
                       {
                         'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black !no-underline dark:border-[#878787] dark:bg-[#022248] dark:text-white [&[data-state=open]>svg]:text-white dark:[&[data-state=open]>svg]:text-white':
                           isActive,
                       },
                     )}
                   >
-                    {item.title}
+                    <span className="flex-1 truncate text-left" title={item.title}>
+                      {item.title}
+                    </span>
                   </AccordionTrigger>
                 </Link>
 
@@ -177,15 +175,22 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
             <Link
               key={index}
               href={`/books/${tutorialId}/${item.path}`}
+              onClick={() => {
+                if (sidebarRef.current) {
+                  sessionStorage.setItem(`sidebarScrollPosition_${tutorialId}`, sidebarRef.current.scrollTop.toString())
+                }
+              }}
               className={cn(
-                'text-muted-foreground group flex cursor-pointer items-center gap-2 overflow-hidden py-2 pr-4 pl-3 text-sm text-ellipsis whitespace-nowrap transition-colors duration-200 hover:text-black dark:hover:text-white',
+                'text-muted-foreground group flex cursor-pointer items-center gap-2 py-2 pl-3 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
                 {
                   'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white':
                     isActive,
                 },
               )}
             >
-              {item.title}
+              <span className="truncate pr-4" title={item.title}>
+                {item.title}
+              </span>
             </Link>
           )
         }
