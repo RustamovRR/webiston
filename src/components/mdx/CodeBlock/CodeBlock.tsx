@@ -5,11 +5,12 @@ import { useTheme } from 'next-themes'
 import { ReactNode, useLayoutEffect, useState } from 'react'
 import { highlight } from './highlight'
 import { CopyButton } from '@/components/shared'
+import { CodeBlockSkeleton } from './CodeBlockSkeleton'
 
 export default function CodeBlock({ children }: { children?: any }) {
   const [nodes, setNodes] = useState<ReactNode | string | null>(children)
-  const [isLoading, setIsLoading] = useState(true)
   const { theme, resolvedTheme } = useTheme()
+  const [isLoading, setIsLoading] = useState(true)
 
   const codeString = String(children || '').trim()
 
@@ -34,10 +35,14 @@ export default function CodeBlock({ children }: { children?: any }) {
     void highlightCode()
   }, [children, theme])
 
+  if (isLoading) {
+    return codeString ? <CodeBlockSkeleton codeString={codeString} /> : null
+  }
+
   return (
-    <div className={cn('group relative rounded-lg border bg-white py-2 dark:border-[#2C2C2E] dark:bg-[#0D1117]')}>
+    <div className={cn('group relative rounded-lg border bg-white py-2 dark:border-[#2C2C2E] dark:bg-[#0A0A0A]')}>
       {codeString && (
-        <div className={cn('absolute top-0 right-0 z-10')}>
+        <div className={cn('absolute top-2 right-2 z-10')}>
           <CopyButton text={codeString} />
         </div>
       )}

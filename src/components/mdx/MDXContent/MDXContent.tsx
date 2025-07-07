@@ -227,7 +227,7 @@ export default function MDXContent({ source }: MDXContentProps) {
     },
 
     pre: (props: any) => {
-      return <pre className="w-full bg-inherit !p-0" {...props} />
+      return <pre className="w-full bg-inherit !p-0 dark:[&_pre]:!bg-[#0A0A0A]" {...props} />
     },
 
     // Handle video container divs produced by our custom processing

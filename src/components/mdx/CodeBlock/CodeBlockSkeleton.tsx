@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/common'
+import { cn } from '@/lib/'
 
 interface CodeBlockSkeletonProps {
   codeString: string

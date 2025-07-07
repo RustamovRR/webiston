@@ -1,5 +1,3 @@
-'use client'
-
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
 import type { JSX } from 'react'
 import { Fragment } from 'react'
@@ -11,7 +9,7 @@ export async function highlight(code: string, lang: BundledLanguage, theme: stri
   const out = await codeToHast(code, {
     lang,
     defaultColor: 'dark',
-    theme: theme === 'dark' ? 'github-dark-default' : 'github-light-default',
+    theme: theme === 'dark' ? 'dark-plus' : 'light-plus',
   })
 
   return toJsxRuntime(out, {
