@@ -5,9 +5,10 @@ import type { TutorialNavigation } from '@/lib/mdx'
 import Sidebar from '../Sidebar'
 import TableOfContents from '../TableOfContents'
 import TutorialLayoutContent from '../TutorialLayoutContent'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { PanelsTopLeft, PanelTop } from 'lucide-react'
+import { useNavigationStore } from '@/stores/navigationStore'
 
 interface DocLayoutProps {
   children: React.ReactNode
@@ -31,9 +32,16 @@ export default function TutorialLayout({
   const { slug } = params
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const tutorialId = slug[0]
+  const setNavItems = useNavigationStore((state) => state.setNavigationItems)
+
+  useEffect(() => {
+    if (navigationItems && navigationItems.length > 0) {
+      setNavItems(tutorialId, navigationItems)
+    }
+  }, [tutorialId, navigationItems, setNavItems])
 
   return (
-    <div className="relative mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-[1536px]">
+    <div className="relative mx-auto flex min-h-[calc(100vh-3.5rem)] w-full max-w-[1536px] px-4 sm:px-6 lg:px-8">
       <aside
         className={cn(
           'sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] transition-all duration-500 ease-in-out max-lg:hidden',
