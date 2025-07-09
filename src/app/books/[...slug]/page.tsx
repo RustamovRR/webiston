@@ -154,7 +154,7 @@ export default async function TutorialPage({ params }: any) {
 
     // For content pages, use the server-side TutorialContent component
     return (
-      <div className="container mx-auto pt-4 pb-2">
+      <div className="mx-auto pt-4 pb-2">
         <TutorialContent slug={slug} />
       </div>
     )

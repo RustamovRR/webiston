@@ -33,7 +33,7 @@ export default function TutorialLayout({
   const tutorialId = slug[0]
 
   return (
-    <div className="relative flex min-h-[calc(100vh-3.5rem)] w-full">
+    <div className="relative mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-[1536px]">
       <aside
         className={cn(
           'sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] transition-all duration-500 ease-in-out max-lg:hidden',

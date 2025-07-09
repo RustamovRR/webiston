@@ -18,8 +18,8 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <div className="bg-background/95 sticky top-0 z-50 w-full border-b backdrop-blur-sm dark:border-zinc-800">
-      <div className="flex h-16 items-center justify-between px-4">
+    <div className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm dark:border-zinc-800">
+      <div className="mx-auto flex h-16 max-w-[1536px] items-center justify-between px-4">
         <section className="flex items-center gap-6">
           <Logo />
           <NavigationMenu>
