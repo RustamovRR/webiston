@@ -11,7 +11,7 @@ export const CodeBlockSkeleton = ({ codeString, className }: CodeBlockSkeletonPr
   const displayLines = lines.slice(0, 30)
 
   return (
-    <div className={cn('rounded-lg border p-4 pt-6 dark:border-[#2C2C2E] dark:bg-[#0D1117]', className)}>
+    <div className={cn('rounded-lg border p-4 pt-6 dark:border-[#2C2C2E] dark:bg-[#0A0A0A]', className)}>
       {displayLines.map((line, i) => {
         // Indent: count leading spaces/tabs
         const match = line.match(/^(\s*)/)

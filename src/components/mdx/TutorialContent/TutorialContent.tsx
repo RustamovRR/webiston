@@ -1,10 +1,10 @@
 import { getMDXContent, getTutorialNavigation } from '@/lib/mdx'
 import { flattenNavigation, processContentForVideos } from '@/lib/content'
 import MDXContent from '../MDXContent'
-import { serializeContent } from '@/lib'
 import ContentMeta from '../ContentMeta'
 import ErrorContent from '../ErrorContent'
 import { Pagination } from './Pagination'
+import matter from 'gray-matter'
 
 interface TutorialContentProps {
   slug: string[]
@@ -26,26 +26,27 @@ export default async function TutorialContent({ slug }: TutorialContentProps) {
       throw new Error('Kontent topilmadi')
     }
 
-    // Process the content for videos without escaping HTML
-    const processedContent = processContentForVideos(contentText)
+    // Parse frontmatter and content from the raw string using gray-matter
+    const { content: mdxContent, data: frontmatter } = matter(contentText)
 
-    // Serialize the MDX content
-    const serializedContent = await serializeContent(processedContent, false)
+    // Process the content for videos without escaping HTML
+    const processedContent = processContentForVideos(mdxContent)
 
     // Create flattened navigation for pagination
     const navigationArray = Array.isArray(navigation) ? navigation : []
     const flattenedNavigation = flattenNavigation(navigationArray)
 
-    const contentData = { updatedAt: new Date().toISOString() }
+    // Use frontmatter for metadata, for example:
+    const updatedAt = frontmatter.updatedAt || new Date().toISOString()
 
     return (
       <>
         <div className="markdown-content mx-auto w-full">
-          <MDXContent source={serializedContent} />
+          <MDXContent source={processedContent} />
         </div>
 
         {/* Content Metadata */}
-        <ContentMeta updatedAt={contentData?.updatedAt} />
+        <ContentMeta updatedAt={updatedAt} />
 
         {/* Pagination */}
         <Pagination currentPath={currentPath} tutorialId={slug[0]} flattenedNavigation={flattenedNavigation} />

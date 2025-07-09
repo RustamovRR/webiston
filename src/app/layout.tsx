@@ -3,13 +3,16 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
+import { getMessages } from 'next-intl/server'
+import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 import Footer from '@/components/shared/Footer/Footer'
 import Header from '@/components/shared/Header/Header'
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from '@/components/shared/Providers'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://webiston.uz'),
@@ -89,7 +92,13 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+  params: { locale },
+}: Readonly<{
+  children: React.ReactNode
+  params: { locale: string }
+}>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
@@ -97,7 +106,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages()
 
   return (
-    <html lang="uz" dir="ltr" suppressHydrationWarning>
+    <html lang={locale} dir="ltr" suppressHydrationWarning>
       <head>
         {!isDevelopment && (
           <>
@@ -152,14 +161,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       </head>
 
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
           <NextIntlClientProvider messages={messages}>
             <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
               <Header />
             </header>
             <main>{children}</main>
             <Footer />
+            <Toaster />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
