@@ -22,5 +22,17 @@
   "tools": {
     "title": "Tools",
     "description": "Useful tools collection for professional web development"
+  },
+  "Search": {
+    "placeholder": "Search..."
+  },
+  "ThemeSwitcher": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "MobileMenu": {
+    "noTutorialId": "No tutorial ID found for navigation.",
+    "language": "Language",
+    "theme": "Theme"
   }
 }

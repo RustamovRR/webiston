@@ -48,9 +48,11 @@ export default function Header() {
         </section>
 
         <section className="flex items-center space-x-2">
-          <Search />
-          <LanguageSelector />
-          <ThemeToggle />
+          <div className="hidden md:flex">
+            <Search />
+            <LanguageSelector />
+            <ThemeToggle />
+          </div>
           <div className="md:hidden">
             <MobileMenuButton />
           </div>

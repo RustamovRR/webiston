@@ -53,10 +53,7 @@ export default function Search() {
 
   return (
     <>
-      <div
-        className="relative hidden cursor-pointer rounded-xl bg-[#F2F2F7] md:block dark:bg-[#151515]"
-        onClick={() => setOpen(true)}
-      >
+      <div className="relative cursor-pointer rounded-xl bg-[#F2F2F7] dark:bg-[#151515]" onClick={() => setOpen(true)}>
         <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
         <Input
           ref={inputRef as RefObject<HTMLInputElement>}
@@ -69,9 +66,9 @@ export default function Search() {
         </kbd>
       </div>
 
-      <div className="flex cursor-pointer items-center justify-center md:hidden" onClick={() => setOpen(true)}>
+      {/* <div className="flex cursor-pointer items-center justify-center md:hidden" onClick={() => setOpen(true)}>
         <SearchIcon className="h-6 w-6" />
-      </div>
+      </div> */}
 
       <SearchDialog
         open={open}

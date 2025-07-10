@@ -22,5 +22,17 @@
   "tools": {
     "title": "Vositalar",
     "description": "Professional web development uchun foydali vositalar to'plami"
+  },
+  "Search": {
+    "placeholder": "Qidiruv..."
+  },
+  "ThemeSwitcher": {
+    "light": "Yorug'",
+    "dark": "Qorong'u"
+  },
+  "MobileMenu": {
+    "noTutorialId": "Navigatsiya uchun darslik ID'si topilmadi.",
+    "language": "Til",
+    "theme": "Mavzu"
   }
 }

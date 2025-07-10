@@ -5,6 +5,10 @@ import { getTutorialNavigation, type TutorialNavigation } from '@/lib/mdx'
 import { useEffect, useState } from 'react'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { Skeleton } from '@/components/ui/skeleton'
+import Search from '../Search'
+import LanguageSelector from '../LanguageSelector'
+import { ThemeSwitcher } from '../ThemeSwitcher'
+import { Separator } from '@/components/ui/separator'
 
 interface MobileMenuContentProps {
   tutorialId: string
@@ -57,5 +61,20 @@ export default function MobileMenuContent({ tutorialId }: MobileMenuContentProps
     )
   }
 
-  return <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
+  return (
+    <div className="flex h-full flex-col">
+      <section className="p-4">
+        <Search />
+      </section>
+      <section className="flex-grow overflow-y-auto px-4">
+        <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
+      </section>
+      <section className="flex-shrink-0 border-t p-4">
+        <div className="flex items-center justify-between">
+          <LanguageSelector />
+          <ThemeSwitcher />
+        </div>
+      </section>
+    </div>
+  )
 }
