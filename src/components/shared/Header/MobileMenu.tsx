@@ -43,7 +43,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       >
         <div className="h-full pr-0">
           <div className="h-full px-4 [&>*]:pr-0">
-            {isOpen && tutorialId && <MobileMenuContent tutorialId={tutorialId} />}
+            {isOpen && tutorialId && <MobileMenuContent tutorialId={tutorialId} onClose={onClose} />}
           </div>
         </div>
       </div>

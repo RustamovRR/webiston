@@ -10,9 +10,10 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 interface SidebarProps {
   tutorialId: string
   navigationItems: TutorialNavigation[]
+  onLinkClick?: () => void
 }
 
-const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
+const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps) => {
   const pathname = usePathname()
   const router = useRouter()
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -44,10 +45,15 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
         sessionStorage.setItem(`sidebarScrollPosition_${tutorialId}`, sidebarRef.current.scrollTop.toString())
       }
 
+      // Close mobile menu if onLinkClick is provided
+      if (onLinkClick) {
+        onLinkClick()
+      }
+
       // Navigate without scroll
       router.push(`/books/${tutorialId}/${path}`, { scroll: false })
     },
-    [router, tutorialId],
+    [router, tutorialId, onLinkClick],
   )
 
   // Handle accordion trigger click
@@ -179,6 +185,9 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
                 if (sidebarRef.current) {
                   sessionStorage.setItem(`sidebarScrollPosition_${tutorialId}`, sidebarRef.current.scrollTop.toString())
                 }
+                if (onLinkClick) {
+                  onLinkClick()
+                }
               }}
               className={cn(
                 'text-muted-foreground group flex cursor-pointer items-center gap-2 py-2 pl-3 text-sm transition-colors duration-200 hover:text-black dark:hover:text-white',
@@ -204,6 +213,7 @@ const Sidebar = memo(({ tutorialId, navigationItems }: SidebarProps) => {
       findParentPaths,
       openAccordionItems,
       handleAccordionTriggerClick,
+      onLinkClick,
     ],
   )
 

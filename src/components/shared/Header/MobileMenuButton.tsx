@@ -1,11 +1,15 @@
 'use client'
 
 import { cn } from '@/lib'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import MobileMenu from './MobileMenu'
 
 const MobileMenuButton = () => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
 
   return (
     <>
@@ -32,7 +36,7 @@ const MobileMenuButton = () => {
         </div>
       </button>
 
-      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <MobileMenu isOpen={isOpen} onClose={handleClose} />
     </>
   )
 }
