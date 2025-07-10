@@ -237,3 +237,47 @@ export async function getAllTutorials() {
     return []
   }
 }
+
+// Barcha darslik sahifalarining yo'llarini (paths) olish
+export async function getAllTutorialPaths() {
+  const { promises: fs } = await import('fs')
+  const contentDir = path.join(process.cwd(), 'content')
+  const tutorials = await fs.readdir(contentDir, { withFileTypes: true })
+  const allPaths: { slug: string[] }[] = []
+
+  for (const tutorial of tutorials) {
+    if (tutorial.isDirectory()) {
+      const tutorialId = tutorial.name
+      // Har bir darslik uchun asosiy sahifa
+      allPaths.push({ slug: [tutorialId] })
+
+      const tutorialDir = path.join(contentDir, tutorialId)
+      const filesAndDirs = await fs.readdir(tutorialDir, { withFileTypes: true })
+
+      const processDirectory = async (currentDir: string, basePath: string[]) => {
+        const items = await fs.readdir(currentDir, { withFileTypes: true })
+        for (const item of items) {
+          const itemPath = path.join(currentDir, item.name)
+          if (item.isDirectory()) {
+            await processDirectory(itemPath, [...basePath, item.name])
+          } else if (item.name.endsWith('.mdx') || item.name.endsWith('.md')) {
+            let slugPath = [...basePath]
+            if (item.name !== 'page.mdx' && item.name !== 'index.mdx') {
+              slugPath.push(item.name.replace(/\.mdx?$/, ''))
+            }
+            // Duplikatlarni tekshirish
+            if (!allPaths.some((p) => p.slug.join('/') === slugPath.join('/'))) {
+              allPaths.push({ slug: slugPath })
+            }
+          }
+        }
+      }
+      await processDirectory(tutorialDir, [tutorialId])
+    }
+  }
+
+  // Asosiy darslik sahifalarini qo'shish (duplikatlarsiz)
+  const uniquePaths = Array.from(new Set(allPaths.map((p) => JSON.stringify(p)))).map((s) => JSON.parse(s))
+
+  return uniquePaths
+}

@@ -19,7 +19,10 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   transpilePackages: ['next-mdx-remote'],
   reactStrictMode: true,
-  output: 'standalone',
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   async redirects() {
     return [
       {

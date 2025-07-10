@@ -10,6 +10,7 @@ import Footer from '@/components/shared/Footer/Footer'
 import Header from '@/components/shared/Header/Header'
 import { ThemeProvider } from '@/components/shared/Providers'
 import { NextIntlClientProvider } from 'next-intl'
+import uzMessages from '../../messages/uz.json'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 const inter = Inter({ subsets: ['latin'] })
@@ -94,19 +95,17 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: { locale },
 }: Readonly<{
   children: React.ReactNode
-  params: { locale: string }
 }>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
 
-  const messages = await getMessages()
+  const messages = await getMessages({ locale: 'uz' })
 
   return (
-    <html lang={locale} dir="ltr" suppressHydrationWarning>
+    <html lang="uz" dir="ltr" suppressHydrationWarning>
       <head>
         {!isDevelopment && (
           <>
@@ -163,11 +162,11 @@ export default async function RootLayout({
 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale="uz" messages={messages}>
             <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
               <Header />
             </header>
-            <main>{children}</main>
+            <main data-pagefind-body>{children}</main>
             <Footer />
             <Toaster />
           </NextIntlClientProvider>

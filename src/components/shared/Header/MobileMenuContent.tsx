@@ -1,15 +1,12 @@
 'use client'
 
-import { Sidebar } from '@/components/mdx'
-import { getTutorialNavigation, type TutorialNavigation } from '@/lib/mdx'
-import { useEffect, useState } from 'react'
-import { useNavigationStore } from '@/stores/navigationStore'
+import Sidebar from '@/components/mdx/Sidebar'
+import type { TutorialNavigation } from '@/lib/mdx'
 import { Skeleton } from '@/components/ui/skeleton'
 import Search from '../Search'
 import LanguageSelector from '../LanguageSelector'
 import { ThemeSwitcher } from '../ThemeSwitcher'
-import { Separator } from '@/components/ui/separator'
-import { useTranslations } from 'next-intl'
+import { useNavigationStore } from '@/stores/navigationStore'
 
 interface MobileMenuContentProps {
   tutorialId: string
@@ -17,43 +14,13 @@ interface MobileMenuContentProps {
 }
 
 export default function MobileMenuContent({ tutorialId, onClose }: MobileMenuContentProps) {
-  const storedItems = useNavigationStore((state) => state.navigationItems[tutorialId])
-  const setStoredItems = useNavigationStore((state) => state.setNavigationItems)
-  const [navigationItems, setNavigationItems] = useState<TutorialNavigation[] | undefined>(storedItems)
-
-  useEffect(() => {
-    if (storedItems) {
-      setNavigationItems(storedItems)
-      return
-    }
-
-    let isMounted = true
-    const fetchNavigationItems = async () => {
-      try {
-        const items = await getTutorialNavigation(tutorialId)
-        if (isMounted) {
-          setNavigationItems(items)
-          setStoredItems(tutorialId, items) // Update the store
-        }
-      } catch (error) {
-        console.error('Failed to fetch navigation items for mobile menu:', error)
-      }
-    }
-
-    if (!storedItems && tutorialId) {
-      fetchNavigationItems()
-    }
-
-    return () => {
-      isMounted = false
-    }
-  }, [tutorialId, storedItems, setStoredItems])
+  const navigationItems = useNavigationStore((state) => state.navigationItems[tutorialId])
 
   if (!tutorialId) {
     return <div className="text-muted-foreground p-4 text-sm">Navigatsiya uchun darslik ID'si topilmadi.</div>
   }
 
-  if (navigationItems === undefined) {
+  if (!navigationItems) {
     return (
       <div className="space-y-4 p-4">
         <Skeleton className="h-8 w-3/4" />

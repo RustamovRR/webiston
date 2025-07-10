@@ -1,6 +1,7 @@
 import { TutorialLayout } from '@/components/mdx'
-import { getMDXContent, getTutorialNavigation, getTutorialTitle, serializeContent } from '@/lib'
+import { getMDXContent, getTutorialNavigation, getTutorialTitle, serializeContent } from '@/lib/mdx'
 import { notFound } from 'next/navigation'
+import NavigationStoreInitializer from '@/components/mdx/NavigationStoreInitializer'
 
 export default async function TutorialsLayout({ children, params }: any) {
   const { slug } = await params
@@ -36,13 +37,16 @@ export default async function TutorialsLayout({ children, params }: any) {
   }
 
   return (
-    <TutorialLayout
-      params={await params}
-      pageTitle={pageTitle}
-      navigationItems={navigationItems}
-      tutorialTitle={tutorialTitle}
-    >
-      {children}
-    </TutorialLayout>
+    <>
+      <NavigationStoreInitializer tutorialId={tutorialId} navigationItems={navigationItems} />
+      <TutorialLayout
+        params={await params}
+        pageTitle={pageTitle}
+        navigationItems={navigationItems}
+        tutorialTitle={tutorialTitle}
+      >
+        {children}
+      </TutorialLayout>
+    </>
   )
 }

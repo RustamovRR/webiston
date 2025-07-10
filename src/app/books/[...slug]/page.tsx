@@ -1,9 +1,11 @@
 import { ErrorContent, TutorialContent, TutorialLanding } from '@/components/mdx'
-import { getAllTutorials, getTutorialInfo, getMDXContent } from '@/lib/mdx'
+import { getAllTutorials, getTutorialInfo, getMDXContent, serializeContent, getAllTutorialPaths } from '@/lib/mdx'
 import { notFound } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 3600
+export async function generateStaticParams() {
+  const paths = await getAllTutorialPaths()
+  return paths
+}
 
 const navigationCache = new Map()
 
@@ -51,7 +53,6 @@ export async function generateMetadata({ params }: any): Promise<any> {
 
     if (contentText) {
       // Frontmatter'ni parse qilish uchun MDX serialize qilamiz
-      const { serializeContent } = await import('@/lib')
       const serializedContent = await serializeContent(contentText, false)
 
       // Frontmatter'dan metadata olish
