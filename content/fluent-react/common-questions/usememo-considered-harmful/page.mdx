@@ -6,8 +6,6 @@ keywords: 'useMemo, useCallback, optimallashtirish, premature optimization, orti
 author: 'Webiston.uz'
 ---
 
-import { Callout } from 'nextra/components'
-
 # useMemo'dan ehtiyotkorlik bilan foydalaning
 
 Bir qarashda e'lon qilingan barcha o'zgaruvchilarni komponent ichida `useMemo` bilan o'rash jozibador ko'rinishi mumkin, lekin bu har doim ham foydali emas. `useMemo` asosan hisoblash jihatidan qimmatli bo'lgan operatsiyalarni memoizatsiya qilish yoki obyekt va massivlar uchun barqaror referenslarni saqlash uchun qimmatli hisoblanadi. Qator qiymatlar, masalan, string, number yoki boolean qiymatlar uchun `useMemo` ishlatish zarur emas. Chunki JavaScript’da bunday skalyar qiymatlar ularning haqiqiy qiymatlari orqali uzatiladi va taqqoslanadi, referens orqali emas. Shunday qilib, har safar siz skalyar qiymatni o'rnatasiz yoki taqqoslaysiz, bu haqiqiy qiymat bilan ishlashingizni anglatadi, referens bilan emas.

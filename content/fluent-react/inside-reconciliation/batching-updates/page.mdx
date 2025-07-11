@@ -6,8 +6,6 @@ keywords: 'React, batching, batching updates, yangilanishlarni guruhlash, perfor
 author: 'Webiston.uz'
 ---
 
-import { Callout } from 'nextra/components'
-
 # Batching updates (Yangilanishlarni guruhlash)
 
 [3-bobda](/books/react/virtual-dom/document-fragments) biz brauzerlardagi document fragmentlarini DOM’ning o'zida mavjud bo'lgan API qismlaridan biri sifatida muhokama qildik: bu yengil konteynerlar bo'lib, ular DOM tugunlarining to'plamlarini saqlaydi va vaqtinchalik DOM uchun tayyorlash maydoni vazifasini bajaradi, unda bir nechta o'zgarishlarni amalga oshirish mumkin, asosiy DOM’ga ta’sir qilmasdan. Nihoyat, document fragmenti DOM’ga qo'shilganda, bitta reflow va repaint jarayoni ishga tushadi.
