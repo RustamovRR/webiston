@@ -1,19 +1,15 @@
 'use client'
 
 import { cn } from '@/lib'
-import { useCallback, useState } from 'react'
+import { useMobileMenuStore } from '@/stores'
 import MobileMenu from './MobileMenu'
 
 const MobileMenuButton = () => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const handleClose = () => {
-    setIsOpen(false)
-  }
+  const { isOpen, toggle, close } = useMobileMenuStore()
 
   return (
     <>
-      <button className="flex cursor-pointer items-center justify-center lg:hidden" onClick={() => setIsOpen(!isOpen)}>
+      <button className="flex cursor-pointer items-center justify-center lg:hidden" onClick={toggle}>
         <div className="relative ml-auto flex h-9 w-9 items-center justify-center">
           <span
             className={cn(
@@ -36,7 +32,7 @@ const MobileMenuButton = () => {
         </div>
       </button>
 
-      <MobileMenu isOpen={isOpen} onClose={handleClose} />
+      <MobileMenu isOpen={isOpen} onClose={close} />
     </>
   )
 }

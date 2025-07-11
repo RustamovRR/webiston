@@ -6,6 +6,7 @@ import { CustomSearchBox, GroupedHit, NoResults } from './SearchComponents'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FileSearch } from 'lucide-react'
+import { useMobileMenuStore } from '@/stores'
 
 interface SearchDialogProps {
   open: boolean
@@ -27,10 +28,12 @@ export default function SearchDialog({
   onClearSearch,
 }: SearchDialogProps) {
   const router = useRouter()
+  const closeMobileMenu = useMobileMenuStore((state) => state.close)
 
   const handleHitClick = (path: string) => {
-    onOpenChange(false)
+    onOpenChange(false) // Close the search dialog
     onClearSearch()
+    closeMobileMenu() // Close the mobile menu
     router.push(path)
   }
 
@@ -46,7 +49,7 @@ export default function SearchDialog({
           <DialogTitle>Sayt bo'yicha qidiruv</DialogTitle>
         </DialogHeader>
 
-        <div className="px-4">
+        <div className="px-4 pt-4">
           <CustomSearchBox value={query} onChange={onSearch} />
         </div>
 

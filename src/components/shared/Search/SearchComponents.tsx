@@ -16,11 +16,20 @@ export function GroupedHit({ hits, isCompact = false, onHitClick }: GroupedHitPr
   const router = useRouter()
   const title = hits[0].hierarchy.lvl1 || hits[0].hierarchy.lvl0
 
+  const slugify = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/['’]/g, '') // Remove apostrophes
+      .replace(/[^\w\s-]/g, '') // Remove all non-word chars except spaces and hyphens
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with -
+  }
+
   const getHashForHit = (hit: ISearchHit) => {
     if (hit.hierarchy.lvl3) {
-      return `#${hit.hierarchy.lvl3.toLowerCase().replace(/\s+/g, '-')}`
+      return `#${slugify(hit.hierarchy.lvl3)}`
     } else if (hit.hierarchy.lvl2) {
-      return `#${hit.hierarchy.lvl2.toLowerCase().replace(/\s+/g, '-')}`
+      return `#${slugify(hit.hierarchy.lvl2)}`
     }
     return ''
   }
