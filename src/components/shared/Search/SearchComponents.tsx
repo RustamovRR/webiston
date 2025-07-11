@@ -1,8 +1,8 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { ISearchHit } from '@/types'
+import { SearchIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
@@ -38,7 +38,7 @@ export function GroupedHit({ hits, isCompact = false, onHitClick }: GroupedHitPr
       <div className="mb-2 flex items-center gap-2">
         <h4 className={`${isCompact ? 'text-sm' : 'text-lg'} font-medium`}>{title}</h4>
         <Badge variant="secondary" className={isCompact ? 'text-xs' : ''}>
-          {hits[0].contentType === 'article' ? 'maqola' : 'darslik'}
+          {hits[0].contentType === 'article' ? 'maqola' : 'mavzu'}
         </Badge>
       </div>
 
@@ -50,9 +50,7 @@ export function GroupedHit({ hits, isCompact = false, onHitClick }: GroupedHitPr
             className="hover:bg-accent group -ml-2 cursor-pointer rounded p-2 transition-colors"
           >
             {hit.hierarchy.lvl2 && (
-              <div className="text-muted-foreground mb-1 text-sm font-medium group-hover:text-sky-400">
-                {hit.hierarchy.lvl2}
-              </div>
+              <div className="mb-1 text-sm font-medium group-hover:text-sky-400">{hit.hierarchy.lvl2}</div>
             )}
             <p className={`text-muted-foreground ${isCompact ? 'line-clamp-2 text-sm' : 'text-sm'}`}>{hit.content}</p>
             {hit.metadata?.language && (
@@ -101,43 +99,20 @@ export function NoResults({ query }: NoResultsProps) {
 interface CustomSearchBoxProps {
   value: string
   onChange: (value: string) => void
-  onSearch?: () => void
-  isCompact?: boolean
-  className?: string
 }
 
-export function CustomSearchBox({ value, onChange, onSearch, isCompact = false, className }: CustomSearchBoxProps) {
-  const router = useRouter()
-
+export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
   return (
-    <div className={`relative ${!isCompact ? 'mb-8' : ''} ${className || ''}`}>
-      <Image
-        src="/search-icon.svg"
-        width={24}
-        height={24}
-        alt="Search"
-        className="text-muted-foreground absolute top-1/2 left-2 h-6 w-6 -translate-y-1/2"
-      />
+    <div className="relative">
+      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
       <input
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={isCompact ? 'Nima qidiramiz...' : 'Qidirish'}
-        className={`${
-          isCompact
-            ? 'border-input ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring h-10 w-full rounded-md border bg-transparent px-3 py-2 pl-9 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50'
-            : 'h-12 w-full rounded-md bg-[#F2F2F7] pr-24 pl-9 font-medium dark:bg-[#151515]'
-        }`}
+        placeholder="Mavzular va kodlar orasidan qidiring..."
+        className="h-12 w-full rounded-md bg-[#F2F2F7] px-10 font-medium placeholder:text-gray-500 dark:bg-[#151515] dark:placeholder:text-gray-400"
+        autoFocus
       />
-      {!isCompact && (
-        <Button
-          className="absolute top-1/2 right-1 flex -translate-y-1/2 items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-white"
-          onClick={onSearch}
-        >
-          <Image src="/search-white-icon.svg" width={19} height={19} alt="Search" />
-          <span>Qidiruv</span>
-        </Button>
-      )}
     </div>
   )
 }

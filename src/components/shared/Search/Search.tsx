@@ -1,32 +1,137 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import { ISearchHit } from '@/types/common'
+import { Pagefind } from '@/types/pagefind'
 import { SearchIcon } from 'lucide-react'
-import { RefObject, useEffect, useRef, useState, useCallback } from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import SearchDialog from './SearchDialog'
+import { MOCK_SEARCH_DATA } from '@/lib/mock-search-data'
+
+// Helper function to process real Pagefind results
+const processHits = (results: any[]): ISearchHit[][] => {
+  if (!results.length) {
+    return []
+  }
+  const grouped: Record<string, ISearchHit[]> = {}
+  for (const result of results) {
+    const pageTitle = result.meta.title || 'Nomsiz Sahifa'
+    if (!grouped[pageTitle]) {
+      grouped[pageTitle] = []
+    }
+    if (result.sub_results && result.sub_results.length > 0) {
+      for (const subResult of result.sub_results) {
+        grouped[pageTitle].push({
+          objectID: subResult.url,
+          content: subResult.excerpt,
+          hierarchy: { lvl0: pageTitle, lvl1: subResult.title },
+          contentType: 'tutorial',
+          path: subResult.url,
+          fullPath: new URL(subResult.url, window.location.origin).toString(),
+        })
+      }
+    } else {
+      grouped[pageTitle].push({
+        objectID: result.url,
+        content: result.excerpt,
+        hierarchy: {
+          lvl0: pageTitle,
+          lvl1: result.meta.title || result.excerpt.substring(0, 20),
+        },
+        contentType: 'tutorial',
+        path: result.url,
+        fullPath: new URL(result.url, window.location.origin).toString(),
+      })
+    }
+  }
+  return Object.values(grouped)
+}
 
 export default function Search() {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [pagefind, setPagefind] = useState<Pagefind | null>(null)
+  const debounceTimer = useRef<NodeJS.Timeout>()
 
-  // Mock search logic for UI purposes
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
-  const [groupedHits, setGroupedHits] = useState<any[]>([])
-  const [filter, setFilter] = useState('')
+  const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
+  const [filter, setFilter] = useState('') // This state is kept for potential future use
 
-  const handleSearch = useCallback((value: string) => {
-    setQuery(value)
-    if (value) {
-      setLoading(true)
-      setTimeout(() => {
-        setLoading(false)
-      }, 500)
+  useEffect(() => {
+    // Load Pagefind only in production
+    if (process.env.NODE_ENV === 'production') {
+      const initPagefind = async () => {
+        try {
+          // @ts-ignore: Pagefind is loaded dynamically from a static path
+          const pf = await import(/* webpackIgnore: true */ '/pagefind/pagefind.js')
+          await pf.options({ bundlePath: '/pagefind/' })
+          pf.init()
+          setPagefind(pf)
+        } catch (error) {
+          console.error('Pagefind yuklanmadi:', error)
+        }
+      }
+      initPagefind()
     }
   }, [])
 
+  const handleSearch = useCallback(
+    async (value: string) => {
+      setQuery(value)
+
+      if (!value) {
+        setLoading(false)
+        setGroupedHits([])
+        clearTimeout(debounceTimer.current)
+        return
+      }
+
+      setLoading(true)
+
+      // DEVELOPMENT: Use mock data with debounce
+      if (process.env.NODE_ENV === 'development') {
+        clearTimeout(debounceTimer.current)
+        debounceTimer.current = setTimeout(() => {
+          const lowercasedValue = value.toLowerCase()
+          const filteredData = MOCK_SEARCH_DATA.map((group) =>
+            group.filter(
+              (hit) =>
+                hit.content.toLowerCase().includes(lowercasedValue) ||
+                hit.hierarchy.lvl1?.toLowerCase().includes(lowercasedValue),
+            ),
+          ).filter((group) => group.length > 0)
+          setGroupedHits(filteredData)
+          setLoading(false)
+        }, 300) // Debounce delay
+        return
+      }
+
+      // PRODUCTION: Use real Pagefind (already debounced)
+      if (!pagefind) {
+        setLoading(false)
+        return
+      }
+      const searchResult = await pagefind.debouncedSearch(value)
+      if (searchResult === null) {
+        return
+      }
+      if (searchResult.results.length > 0) {
+        const resultData = await Promise.all(searchResult.results.map((r) => r.data()))
+        const processed = processHits(resultData)
+        setGroupedHits(processed)
+      } else {
+        setGroupedHits([])
+      }
+      setLoading(false)
+    },
+    [pagefind],
+  )
+
   const clearSearch = useCallback(() => {
     setQuery('')
+    setGroupedHits([])
+    clearTimeout(debounceTimer.current)
   }, [])
 
   const handleFilterChange = (type: string) => {
@@ -65,19 +170,12 @@ export default function Search() {
           Ctrl K
         </kbd>
       </div>
-
-      {/* <div className="flex cursor-pointer items-center justify-center md:hidden" onClick={() => setOpen(true)}>
-        <SearchIcon className="h-6 w-6" />
-      </div> */}
-
       <SearchDialog
         open={open}
         onOpenChange={setOpen}
         query={query}
         hits={groupedHits}
         loading={loading}
-        filter={filter}
-        onFilterChange={handleFilterChange}
         onSearch={handleSearch}
         onClearSearch={clearSearch}
       />
