@@ -64,8 +64,8 @@ export default function Search() {
       const initPagefind = async () => {
         try {
           // @ts-ignore: Pagefind is loaded dynamically from a static path
-          const pf = await import(/* webpackIgnore: true */ '/pagefind/pagefind.js')
-          await pf.options({ bundlePath: '/pagefind/' })
+          const pf = await import(/* webpackIgnore: true */ '/_pagefind/pagefind.js')
+          await pf.options({ bundlePath: '/_pagefind/' })
           pf.init()
           setPagefind(pf)
         } catch (error) {
