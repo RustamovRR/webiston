@@ -32,14 +32,7 @@ const nextConfig:NextConfig = {
       },
     ]
   },
-  // Add webpack configuration to handle require-in-the-middle
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals = config.externals || []
-      config.externals.push('require-in-the-middle')
-    }
-    return config
-  },
+ 
 }
 
 export default withMDX(withNextIntl(nextConfig))

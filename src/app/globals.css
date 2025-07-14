@@ -1,13 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
-
-@source inline('aspect-video');
-@source inline('py-10');
-
-@variant dark (&:where(.dark *));
+@plugin "@tailwindcss/typography";
 
 @theme {
   --color-primary-black: rgba(17, 17, 17);
