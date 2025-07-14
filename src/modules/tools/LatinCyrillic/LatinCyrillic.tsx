@@ -17,7 +17,7 @@ import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
 // Utils & Hooks
 import { useLatinCyrillic } from '@/hooks/tools/useLatinCyrillic'
-import { SectionTitle } from '@/components'
+import SectionTitle from '@/components/shared/SectionTitle'
 import { countWords } from '@/lib/utils'
 
 export default function LatinCyrillicPage() {

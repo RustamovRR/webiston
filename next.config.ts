@@ -1,4 +1,5 @@
 import createMDX from '@next/mdx'
+import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
 // MDX configuration with standard plugins
@@ -6,15 +7,14 @@ const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
     remarkPlugins: [],
-    rehypePlugins: [['rehype-pretty-code']],
-    // For use with rehype-pretty-code if we add it later
+    rehypePlugins: [],
     providerImportSource: '@mdx-js/react',
   },
 })
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-const nextConfig = {
+const nextConfig:NextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   transpilePackages: ['next-mdx-remote'],
