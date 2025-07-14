@@ -7,8 +7,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { socialLinks } from '@/constants'
-import Script from 'next/script'
 import dynamic from 'next/dynamic'
+import Script from 'next/script'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 
