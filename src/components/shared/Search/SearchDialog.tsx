@@ -34,7 +34,7 @@ export default function SearchDialog({
     onOpenChange(false) // Close the search dialog
     onClearSearch()
     closeMobileMenu() // Close the mobile menu
-    router.push(path)
+    // router.push(path) // This line is removed. Navigation is now handled by the Link component.
   }
 
   const hasResults = hits.length > 0

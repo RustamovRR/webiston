@@ -8,6 +8,20 @@ import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import SearchDialog from './SearchDialog'
 import { MOCK_SEARCH_DATA } from '@/lib/mock-search-data'
 
+// Helper function to slugify text for URL anchors
+const slugify = (text: string): string => {
+  if (!text) return ''
+  return text
+    .toLowerCase()
+    .replace(/<mark>/g, '') // Remove <mark> tags from slug
+    .replace(/<\/mark>/g, '')
+    .replace(/['’]/g, '') // Remove apostrophes
+    .replace(/[^\w\s-]/g, '') // Remove all non-word chars
+    .trim()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/-+/g, '-') // Replace multiple - with single -
+}
+
 // Helper function to process real Pagefind results
 const processHits = (results: any[]): ISearchHit[][] => {
   if (!results.length) {
@@ -24,8 +38,8 @@ const processHits = (results: any[]): ISearchHit[][] => {
     // This handles sub-results which are usually headings in a page
     if (result.sub_results && result.sub_results.length > 0) {
       for (const subResult of result.sub_results) {
-        const pathWithoutHtml = subResult.url.replace(/\.html$/, '')
-        const hash = subResult.anchor ? `#${subResult.anchor}` : ''
+        const pathWithoutHtml = result.url.replace(/\.html$/, '') // Use main result URL for base path
+        const hash = subResult.anchor ? `#${subResult.anchor}` : `#${slugify(subResult.title)}`
 
         grouped[pageTitle].push({
           objectID: `${pathWithoutHtml}${hash}`,
