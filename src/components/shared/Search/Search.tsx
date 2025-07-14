@@ -6,67 +6,52 @@ import { Pagefind } from '@/types/pagefind'
 import { SearchIcon } from 'lucide-react'
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import SearchDialog from './SearchDialog'
-import { MOCK_SEARCH_DATA } from '@/lib/mock-search-data'
 
-// Helper function to slugify text for URL anchors
-const slugify = (text: string): string => {
-  if (!text) return ''
-  return text
-    .toLowerCase()
-    .replace(/<mark>/g, '') // Remove <mark> tags from slug
-    .replace(/<\/mark>/g, '')
-    .replace(/['’]/g, '') // Remove apostrophes
-    .replace(/[^\w\s-]/g, '') // Remove all non-word chars
-    .trim()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/-+/g, '-') // Replace multiple - with single -
-}
-
-// Helper function to process real Pagefind results
 const processHits = (results: any[]): ISearchHit[][] => {
-  if (!results.length) {
+  if (!results || results.length === 0) {
     return []
   }
   const grouped: Record<string, ISearchHit[]> = {}
 
   for (const result of results) {
+    if (!result || !result.meta) continue
+
     const pageTitle = result.meta.title || 'Nomsiz Sahifa'
     if (!grouped[pageTitle]) {
       grouped[pageTitle] = []
     }
 
-    // This handles sub-results which are usually headings in a page
     if (result.sub_results && result.sub_results.length > 0) {
       for (const subResult of result.sub_results) {
-        const pathWithoutHtml = result.url.replace(/\.html$/, '') // Use main result URL for base path
-        const hash = subResult.anchor ? `#${subResult.anchor}` : `#${slugify(subResult.title)}`
+        // The most reliable way is to use the URL from the sub_result itself
+        // and just clean it up.
+        const finalPath = subResult.url.replace(/\.html/, '')
 
         grouped[pageTitle].push({
-          objectID: `${pathWithoutHtml}${hash}`,
+          objectID: finalPath, // Use the final, unique path as the ID
           content: subResult.excerpt,
           hierarchy: { lvl0: pageTitle, lvl1: subResult.title },
           contentType: 'tutorial',
-          path: { pathname: pathWithoutHtml, hash: hash },
-          fullPath: new URL(`${pathWithoutHtml}${hash}`, window.location.origin).toString(),
+          path: finalPath,
+          fullPath: new URL(finalPath, window.location.origin).toString(),
         })
       }
     } else {
-      // This handles the main page result if there are no sub-results
-      const pathWithoutHtml = result.url.replace(/\.html$/, '')
+      // Handle cases where there's a main result but no sub-results
+      const finalPath = result.url.replace(/\.html$/, '')
       grouped[pageTitle].push({
-        objectID: pathWithoutHtml,
+        objectID: finalPath,
         content: result.excerpt,
-        hierarchy: {
-          lvl0: pageTitle,
-          lvl1: undefined, // No sub-heading
-        },
+        hierarchy: { lvl0: pageTitle, lvl1: undefined },
         contentType: 'tutorial',
-        path: { pathname: pathWithoutHtml, hash: '' },
-        fullPath: new URL(pathWithoutHtml, window.location.origin).toString(),
+        path: finalPath,
+        fullPath: new URL(finalPath, window.location.origin).toString(),
       })
     }
   }
-  return Object.values(grouped)
+
+  const finalGrouped = Object.values(grouped).filter((group) => group.length > 0)
+  return finalGrouped
 }
 
 export default function Search() {
@@ -74,71 +59,43 @@ export default function Search() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [pagefind, setPagefind] = useState<Pagefind | null>(null)
   const debounceTimer = useRef<NodeJS.Timeout>()
-
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
-  const [filter, setFilter] = useState('') // This state is kept for potential future use
 
   useEffect(() => {
-    // Load Pagefind only in production
-    if (process.env.NODE_ENV === 'production') {
-      const initPagefind = async () => {
-        try {
-          // @ts-ignore: Pagefind is loaded dynamically from a static path
-          const pf = await import(/* webpackIgnore: true */ '/_pagefind/pagefind.js')
-          await pf.options({ bundlePath: '/_pagefind/' })
-          pf.init()
-          setPagefind(pf)
-        } catch (error) {
-          console.error('Pagefind yuklanmadi:', error)
-        }
+    const initPagefind = async () => {
+      try {
+        // @ts-ignore
+        const pf = await import(/* webpackIgnore: true */ '/_pagefind/pagefind.js')
+        await pf.options({ bundlePath: '/_pagefind/' })
+        setPagefind(pf)
+      } catch (error) {
+        console.error('Failed to load Pagefind:', error)
       }
-      initPagefind()
     }
+    initPagefind()
   }, [])
 
-  const handleSearch = useCallback(
-    async (value: string) => {
-      setQuery(value)
+  const handleSearchChange = (value: string) => {
+    setQuery(value)
 
-      if (!value) {
-        setLoading(false)
-        setGroupedHits([])
-        clearTimeout(debounceTimer.current)
-        return
-      }
+    clearTimeout(debounceTimer.current)
 
-      setLoading(true)
+    if (!value) {
+      setLoading(false)
+      setGroupedHits([])
+      return
+    }
 
-      // DEVELOPMENT: Use mock data with debounce
-      if (process.env.NODE_ENV === 'development') {
-        clearTimeout(debounceTimer.current)
-        debounceTimer.current = setTimeout(() => {
-          const lowercasedValue = value.toLowerCase()
-          const filteredData = MOCK_SEARCH_DATA.map((group) =>
-            group.filter(
-              (hit) =>
-                hit.content.toLowerCase().includes(lowercasedValue) ||
-                hit.hierarchy.lvl1?.toLowerCase().includes(lowercasedValue),
-            ),
-          ).filter((group) => group.length > 0)
-          setGroupedHits(filteredData)
-          setLoading(false)
-        }, 300) // Debounce delay
-        return
-      }
-
-      // PRODUCTION: Use real Pagefind (already debounced)
+    setLoading(true)
+    debounceTimer.current = setTimeout(async () => {
       if (!pagefind) {
         setLoading(false)
         return
       }
-      const searchResult = await pagefind.debouncedSearch(value)
-      if (searchResult === null) {
-        return
-      }
-      if (searchResult.results.length > 0) {
+      const searchResult = await pagefind.search(value)
+      if (searchResult && searchResult.results.length > 0) {
         const resultData = await Promise.all(searchResult.results.map((r) => r.data()))
         const processed = processHits(resultData)
         setGroupedHits(processed)
@@ -146,19 +103,13 @@ export default function Search() {
         setGroupedHits([])
       }
       setLoading(false)
-    },
-    [pagefind],
-  )
+    }, 300) // 300ms debounce delay
+  }
 
   const clearSearch = useCallback(() => {
     setQuery('')
     setGroupedHits([])
-    clearTimeout(debounceTimer.current)
   }, [])
-
-  const handleFilterChange = (type: string) => {
-    setFilter(type ? `contentType:${type}` : '')
-  }
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -174,7 +125,6 @@ export default function Search() {
   useEffect(() => {
     if (!open) {
       clearSearch()
-      setFilter('')
     }
   }, [open, clearSearch])
 
@@ -198,7 +148,7 @@ export default function Search() {
         query={query}
         hits={groupedHits}
         loading={loading}
-        onSearch={handleSearch}
+        onSearch={handleSearchChange}
         onClearSearch={clearSearch}
       />
     </>
