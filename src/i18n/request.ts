@@ -1,11 +1,14 @@
-// Bu fayl endi kerak emas, lekin uni o'chirish o'rniga
-// vaqtinchalik statik konfiguratsiya qaytaradigan qilib qo'yamiz.
-// Kelajakda next-intl'ni to'g'ri sozlaganda kerak bo'ladi.
+import { getRequestConfig } from 'next-intl/server'
+import { hasLocale } from 'next-intl'
+import { routing } from './routing'
 
-export default async function getRequestConfig() {
-  const locale = 'uz'
+export default getRequestConfig(async ({ requestLocale }) => {
+  // Typically corresponds to the `[locale]` segment
+  const requested = await requestLocale
+  const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale
+
   return {
     locale,
     messages: (await import(`../../messages/${locale}.json`)).default,
   }
-}
+})
