@@ -46,7 +46,7 @@ const processHits = (results: any[]): ISearchHit[][] => {
           content: subResult.excerpt,
           hierarchy: { lvl0: pageTitle, lvl1: subResult.title },
           contentType: 'tutorial',
-          path: `${pathWithoutHtml}${hash}`,
+          path: { pathname: pathWithoutHtml, hash: hash },
           fullPath: new URL(`${pathWithoutHtml}${hash}`, window.location.origin).toString(),
         })
       }
@@ -61,7 +61,7 @@ const processHits = (results: any[]): ISearchHit[][] => {
           lvl1: undefined, // No sub-heading
         },
         contentType: 'tutorial',
-        path: pathWithoutHtml,
+        path: { pathname: pathWithoutHtml, hash: '' },
         fullPath: new URL(pathWithoutHtml, window.location.origin).toString(),
       })
     }

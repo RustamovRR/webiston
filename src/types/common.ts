@@ -53,7 +53,7 @@ export interface ISearchHit {
     lvl3?: string
   }
   contentType: 'tutorial' | 'article'
-  path: string
+  path: any // Changed from string to any to accommodate object format { pathname, hash }
   fullPath: string
   metadata?: {
     language?: string

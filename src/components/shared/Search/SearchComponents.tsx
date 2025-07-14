@@ -27,8 +27,7 @@ export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
           <Link
             key={hit.objectID}
             href={hit.path}
-            // Temporarily remove onClick to isolate the issue.
-            // onClick={() => onHitClick(hit.path)}
+            onClick={() => onHitClick(hit.path)}
             className="group hover:bg-accent -ml-2 block cursor-pointer rounded p-2 transition-colors"
           >
             {hit.hierarchy.lvl1 && (
