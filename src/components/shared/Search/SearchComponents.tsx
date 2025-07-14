@@ -2,70 +2,41 @@
 
 import { Badge } from '@/components/ui/badge'
 import { ISearchHit } from '@/types'
-import { SearchIcon } from 'lucide-react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { SearchIcon } from 'lucide-react' // Keeping SearchIcon for NoResults
+import Link from 'next/link'
 
 interface GroupedHitProps {
   hits: ISearchHit[]
-  isCompact?: boolean
-  onHitClick?: (path: string) => void
+  onHitClick: (path: string) => void
 }
 
-export function GroupedHit({ hits, isCompact = false, onHitClick }: GroupedHitProps) {
-  const router = useRouter()
-  const title = hits[0].hierarchy.lvl1 || hits[0].hierarchy.lvl0
-
-  const slugify = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/['’]/g, '') // Remove apostrophes
-      .replace(/[^\w\s-]/g, '') // Remove all non-word chars except spaces and hyphens
-      .trim()
-      .replace(/\s+/g, '-') // Replace spaces with -
-  }
-
-  const getHashForHit = (hit: ISearchHit) => {
-    if (hit.hierarchy.lvl3) {
-      return `#${slugify(hit.hierarchy.lvl3)}`
-    } else if (hit.hierarchy.lvl2) {
-      return `#${slugify(hit.hierarchy.lvl2)}`
-    }
-    return ''
-  }
-
-  const handleClick = (hit: ISearchHit) => {
-    onHitClick?.(hit.path)
-    const hash = getHashForHit(hit)
-    router.push(hash ? `${hit.path}${hash}` : hit.path, {
-      scroll: true,
-    })
-  }
+export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
+  const title = hits[0]?.hierarchy.lvl0
 
   return (
-    <div className={`rounded-lg ${isCompact ? 'py-3' : 'py-4'}`}>
+    <div className="rounded-lg py-4">
       <div className="mb-2 flex items-center gap-2">
-        <h4 className={`${isCompact ? 'text-sm' : 'text-lg'} font-medium`}>{title}</h4>
-        <Badge variant="secondary" className={isCompact ? 'text-xs' : ''}>
-          {hits[0].contentType === 'article' ? 'maqola' : 'mavzu'}
+        <h4 className="text-lg font-medium">{title}</h4>
+        <Badge variant="secondary" className="text-xs">
+          {hits[0]?.contentType === 'article' ? 'maqola' : 'mavzu'}
         </Badge>
       </div>
 
       <div className="ml-4 space-y-2">
         {hits.map((hit) => (
-          <div
+          <Link
             key={hit.objectID}
-            onClick={() => handleClick(hit)}
-            className="hover:bg-accent group -ml-2 cursor-pointer rounded p-2 transition-colors"
+            href={hit.path}
+            onClick={() => onHitClick(hit.path)}
+            className="group hover:bg-accent -ml-2 block cursor-pointer rounded p-2 transition-colors"
           >
-            {hit.hierarchy.lvl2 && (
-              <div className="mb-1 text-sm font-medium group-hover:text-sky-400">{hit.hierarchy.lvl2}</div>
+            {hit.hierarchy.lvl1 && (
+              <div className="mb-1 text-sm font-medium text-gray-800 group-hover:text-sky-500 dark:text-gray-200">
+                {hit.hierarchy.lvl1}
+              </div>
             )}
-            <p className={`text-muted-foreground ${isCompact ? 'line-clamp-2 text-sm' : 'text-sm'}`}>{hit.content}</p>
-            {hit.metadata?.language && (
-              <div className="text-muted-foreground mt-1 text-xs">Til: {hit.metadata.language}</div>
-            )}
-          </div>
+            <p className="text-muted-foreground text-sm" dangerouslySetInnerHTML={{ __html: hit.content }} />
+          </Link>
         ))}
       </div>
     </div>

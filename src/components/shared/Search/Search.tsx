@@ -14,33 +14,41 @@ const processHits = (results: any[]): ISearchHit[][] => {
     return []
   }
   const grouped: Record<string, ISearchHit[]> = {}
+
   for (const result of results) {
     const pageTitle = result.meta.title || 'Nomsiz Sahifa'
     if (!grouped[pageTitle]) {
       grouped[pageTitle] = []
     }
+
+    // This handles sub-results which are usually headings in a page
     if (result.sub_results && result.sub_results.length > 0) {
       for (const subResult of result.sub_results) {
+        const pathWithoutHtml = subResult.url.replace(/\.html$/, '')
+        const hash = subResult.anchor ? `#${subResult.anchor}` : ''
+
         grouped[pageTitle].push({
-          objectID: subResult.url,
+          objectID: `${pathWithoutHtml}${hash}`,
           content: subResult.excerpt,
           hierarchy: { lvl0: pageTitle, lvl1: subResult.title },
           contentType: 'tutorial',
-          path: subResult.url,
-          fullPath: new URL(subResult.url, window.location.origin).toString(),
+          path: `${pathWithoutHtml}${hash}`,
+          fullPath: new URL(`${pathWithoutHtml}${hash}`, window.location.origin).toString(),
         })
       }
     } else {
+      // This handles the main page result if there are no sub-results
+      const pathWithoutHtml = result.url.replace(/\.html$/, '')
       grouped[pageTitle].push({
-        objectID: result.url,
+        objectID: pathWithoutHtml,
         content: result.excerpt,
         hierarchy: {
           lvl0: pageTitle,
-          lvl1: result.meta.title || result.excerpt.substring(0, 20),
+          lvl1: undefined, // No sub-heading
         },
         contentType: 'tutorial',
-        path: result.url,
-        fullPath: new URL(result.url, window.location.origin).toString(),
+        path: pathWithoutHtml,
+        fullPath: new URL(pathWithoutHtml, window.location.origin).toString(),
       })
     }
   }
