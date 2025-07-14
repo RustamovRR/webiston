@@ -127,8 +127,8 @@ importers:
         specifier: ^4.1.8
         version: 4.1.10
       '@tailwindcss/typography':
-        specifier: git+https://github.com/tailwindcss/typography.git
-        version: git+https://github.com/tailwindcss/typography.git#25051fbfd7c7058708233b1b4c6280f039e5855d(tailwindcss@4.1.10)
+        specifier: ^0.5.16
+        version: 0.5.16(tailwindcss@4.1.10)
       '@types/node':
         specifier: ^22.15.27
         version: 22.15.32
@@ -1190,9 +1190,8 @@ packages:
   '@tailwindcss/postcss@4.1.10':
     resolution: {integrity: sha512-B+7r7ABZbkXJwpvt2VMnS6ujcDoR2OOcFaqrLIo1xbcdxje4Vf+VgJdBzNNbrAjBj/rLZ66/tlQ1knIGNLKOBQ==}
 
-  '@tailwindcss/typography@git+https://github.com/tailwindcss/typography.git#25051fbfd7c7058708233b1b4c6280f039e5855d':
-    resolution: {commit: 25051fbfd7c7058708233b1b4c6280f039e5855d, repo: https://github.com/tailwindcss/typography.git, type: git}
-    version: 0.5.16
+  '@tailwindcss/typography@0.5.16':
+    resolution: {integrity: sha512-0wDLwCVF5V3x3b1SGXPCDcdsbDHMBe+lkFzBRaHeLvNi+nrrnZ1lA18u+OTWO8iSWU2GxUOCvlXtDuqftc1oiA==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
@@ -5173,7 +5172,7 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.10
 
-  '@tailwindcss/typography@git+https://github.com/tailwindcss/typography.git#25051fbfd7c7058708233b1b4c6280f039e5855d(tailwindcss@4.1.10)':
+  '@tailwindcss/typography@0.5.16(tailwindcss@4.1.10)':
     dependencies:
       lodash.castarray: 4.4.0
       lodash.isplainobject: 4.0.6
