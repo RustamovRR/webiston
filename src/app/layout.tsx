@@ -106,29 +106,28 @@ export default async function RootLayout({
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
-      <head>
-        {!isDevelopment && (
-          <>
-            {/* Google Analytics */}
-            <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
-            <Script
-              id="ga-script"
-              strategy="lazyOnload"
-              dangerouslySetInnerHTML={{
-                __html: `
+      {!isDevelopment && (
+        <>
+          {/* Google Analytics */}
+          <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+          <Script
+            id="ga-script"
+            strategy="lazyOnload"
+            dangerouslySetInnerHTML={{
+              __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_ID}');
           `,
-              }}
-            />
-            {/* Yandex Metrica */}
-            <Script
-              id="ym-script"
-              strategy="lazyOnload"
-              dangerouslySetInnerHTML={{
-                __html: `
+            }}
+          />
+          {/* Yandex Metrica */}
+          <Script
+            id="ym-script"
+            strategy="lazyOnload"
+            dangerouslySetInnerHTML={{
+              __html: `
             (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
             m[i].l=1*new Date();
             for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
@@ -142,23 +141,22 @@ export default async function RootLayout({
               webvisor:true
             });
           `,
-              }}
-            />
-            {/* Yandex Metrica noscript */}
-            <noscript>
-              <div>
-                <Image
-                  src={`https://mc.yandex.ru/watch/${YM_ID}`}
-                  style={{ position: 'absolute', left: '-9999px' }}
-                  alt=""
-                />
-              </div>
-            </noscript>
+            }}
+          />
+          {/* Yandex Metrica noscript */}
+          <noscript>
+            <div>
+              <Image
+                src={`https://mc.yandex.ru/watch/${YM_ID}`}
+                style={{ position: 'absolute', left: '-9999px' }}
+                alt=""
+              />
+            </div>
+          </noscript>
 
-            <OpenReplayNoSSR />
-          </>
-        )}
-      </head>
+          <OpenReplayNoSSR />
+        </>
+      )}
 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
