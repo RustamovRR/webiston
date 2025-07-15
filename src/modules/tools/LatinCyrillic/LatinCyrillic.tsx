@@ -2,25 +2,24 @@
 
 import React from 'react'
 import { FileText, ArrowLeftRight, X, ChevronDown, Download } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 // UI Components
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Card } from '@/components/ui/card'
 
 // Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { CopyButton } from '@/components/shared/CopyButton'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
+import { DualTextPanel } from '@/components/shared/DualTextPanel'
 
 // Utils & Hooks
 import { useLatinCyrillic } from '@/hooks/tools/useLatinCyrillic'
 import SectionTitle from '@/components/shared/SectionTitle'
-import { countWords } from '@/lib/utils'
 
 export default function LatinCyrillicPage() {
+  const t = useTranslations('LatinCyrillicPage')
   const {
     direction,
     sourceText,
@@ -40,20 +39,20 @@ export default function LatinCyrillicPage() {
     if (!convertedText) return
 
     const content = [
-      "# Lotin-Kirill O'giruvchi - Natija",
+      t('downloadFile.title'),
       '',
-      `Yaratilgan: ${new Date().toLocaleString()}`,
-      `Yo'nalish: ${sourceLang} → ${targetLang}`,
+      `${t('downloadFile.createdAt')}: ${new Date().toLocaleString()}`,
+      `${t('downloadFile.direction')}: ${sourceLang} → ${targetLang}`,
       '',
-      '## Asl matn:',
+      t('downloadFile.sourceText'),
       sourceText,
       '',
-      "## O'girilgan matn:",
+      t('downloadFile.convertedText'),
       convertedText,
       '',
       '---',
       '',
-      "Webiston.uz - Lotin-Kirill O'giruvchi tomonidan yaratilgan",
+      t('downloadFile.generatedBy'),
     ].join('\n')
 
     const blob = new Blob([content], { type: 'text/plain' })
@@ -66,28 +65,41 @@ export default function LatinCyrillicPage() {
   }
 
   const tabOptions = [
-    { value: 'latin-to-cyrillic', label: 'Lotin → Kirill', icon: <ArrowLeftRight size={16} /> },
-    { value: 'cyrillic-to-latin', label: 'Kirill → Lotin', icon: <ArrowLeftRight size={16} className="rotate-180" /> },
+    { value: 'latin-to-cyrillic', label: t('latinToCyrillic'), icon: <ArrowLeftRight size={16} /> },
+    {
+      value: 'cyrillic-to-latin',
+      label: t('cyrillicToLatin'),
+      icon: <ArrowLeftRight size={16} className="rotate-180" />,
+    },
   ]
 
-  const inputStats = [
-    { label: 'belgi', value: sourceText.length },
-    { label: "so'z", value: countWords(sourceText) },
-    { label: 'qator', value: sourceText.split('\n').length },
-  ]
+  const statusComponent =
+    sourceText.length > 0 ? (
+      <span className="flex items-center gap-1 text-xs text-blue-400">
+        <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
+        {t('statusReady')}
+      </span>
+    ) : null
 
-  const outputStats = [
-    { label: 'belgi', value: convertedText.length },
-    { label: "so'z", value: countWords(convertedText) },
-    { label: 'qator', value: convertedText.split('\n').length },
-  ]
+  const targetEmptyState = (
+    <div className="flex h-full items-center justify-center p-8 text-center">
+      <div className="text-zinc-500">
+        <FileText size={48} className="mx-auto mb-4 opacity-50" />
+        <p className="text-sm">{t('emptyStateTitle')}</p>
+        <p className="mt-2 text-xs opacity-75">{t('emptyStateDescription')}</p>
+      </div>
+    </div>
+  )
+
+  const targetFooterComponent = convertedText ? (
+    <div className="text-xs text-zinc-400">
+      <span className="text-zinc-500">{t('alphabet')}:</span> <span className="text-zinc-300">{targetLang}</span>
+    </div>
+  ) : null
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader
-        title="Lotin-Kirill O'giruvchi"
-        description="O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girish vositasi"
-      />
+      <ToolHeader title={t('ToolHeader.title')} description={t('ToolHeader.description')} />
 
       {/* Boshqaruv paneli */}
       <div className="mb-6 rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm">
@@ -108,7 +120,7 @@ export default function LatinCyrillicPage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
                   <FileText size={16} className="mr-2" />
-                  Namuna matnlar
+                  {t('sampleTexts')}
                   <ChevronDown size={16} className="ml-2" />
                 </Button>
               </DropdownMenuTrigger>
@@ -123,7 +135,7 @@ export default function LatinCyrillicPage() {
 
             <Button variant="ghost" size="sm" onClick={handleClear}>
               <X size={16} className="mr-2" />
-              Tozalash
+              {t('clear')}
             </Button>
 
             {/* Download */}
@@ -134,108 +146,33 @@ export default function LatinCyrillicPage() {
               size="sm"
             >
               <Download size={16} className="mr-2" />
-              Yuklab olish
+              {t('download')}
             </ShimmerButton>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Kirish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">{sourceLang} Matn Kirish</span>
-            </div>
-            <div className="text-xs text-zinc-400">
-              {sourceText.length > 0 && (
-                <span className="flex items-center gap-1 text-blue-400">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
-                  O'girishga tayyor
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <Textarea
-              value={sourceText}
-              onChange={(e) => setSourceText(e.target.value)}
-              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0"
-              placeholder={sourcePlaceholder}
-            />
-          </div>
-
-          <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={inputStats} />
-          </div>
-        </div>
-
-        {/* Swap Button - Markazda */}
-        <div className="relative lg:absolute lg:top-1/2 lg:left-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
-          <div className="flex justify-center lg:justify-start">
-            <ShimmerButton
-              onClick={handleSwap}
-              variant="outline"
-              size="icon"
-              className="h-12 w-12 rounded-full border-2 border-zinc-700 bg-zinc-900/90 shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-800/90"
-              title="Yo'nalishni almashtirish"
-            >
-              <ArrowLeftRight size={20} className="text-zinc-300" />
-            </ShimmerButton>
-          </div>
-        </div>
-
-        {/* Chiqish paneli */}
-        <div className="flex flex-col rounded-xl border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm">
-          <div className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-800/50 px-4">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
-              <span className="ml-2 text-lg font-semibold text-zinc-100">{targetLang} Natija</span>
-            </div>
-            <CopyButton text={convertedText} disabled={!convertedText} />
-          </div>
-
-          <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
-            <div className="absolute inset-0 h-full w-full overflow-y-auto">
-              {convertedText ? (
-                <div className="p-4">
-                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{convertedText}</pre>
-                </div>
-              ) : (
-                <div className="flex h-full items-center justify-center p-8 text-center">
-                  <div className="text-zinc-500">
-                    <FileText size={48} className="mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">O'girilgan matn bu yerda ko'rinadi...</p>
-                    <p className="mt-2 text-xs opacity-75">Matn kiriting yoki namuna yuklang</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3">
-            <StatsDisplay stats={outputStats} />
-            {convertedText && (
-              <div className="text-xs text-zinc-400">
-                <span className="text-zinc-500">Alifbo:</span> <span className="text-zinc-300">{targetLang}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <DualTextPanel
+        sourceText={sourceText}
+        convertedText={convertedText}
+        sourcePlaceholder={sourcePlaceholder}
+        sourceLabel={t('sourceInput', { sourceLang })}
+        targetLabel={t('targetResult', { targetLang })}
+        onSourceChange={setSourceText}
+        onSwap={handleSwap}
+        onClear={handleClear}
+        swapButtonTitle={t('swapDirection')}
+        statusComponent={statusComponent}
+        targetEmptyState={targetEmptyState}
+        targetFooterComponent={targetFooterComponent}
+      />
 
       {/* Info Section - Card Based Layout */}
       <div className="mt-12">
         <SectionTitle
           icon={<FileText className="h-6 w-6" />}
-          title="Lotin-Kirill Alifbosi Haqida"
-          description="O'zbek tilida yozish uchun zarur bo'lgan ma'lumotlar"
+          title={t('Info.title')}
+          description={t('Info.description')}
         />
 
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -246,20 +183,18 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
                   <FileText className="h-5 w-5 text-blue-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">Lotin Alifbosi</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.latinAlphabet.title')}</h3>
               </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">
-                O'zbek tilida 1992-yildan beri rasmiy ravishda ishlatilayotgan yozuv tizimi.
-              </p>
+              <p className="mb-4 leading-relaxed text-zinc-400">{t('Info.latinAlphabet.description')}</p>
               <div className="space-y-2 text-sm">
                 <p className="text-zinc-300">
-                  <strong>Harflar soni:</strong> 29 ta
+                  <strong>{t('Info.latinAlphabet.letterCount')}:</strong> 29 ta
                 </p>
                 <p className="text-zinc-300">
-                  <strong>Maxsus belgilar:</strong> o', g', sh, ch, ng
+                  <strong>{t('Info.latinAlphabet.specialChars')}:</strong> o', g', sh, ch, ng
                 </p>
                 <p className="text-zinc-300">
-                  <strong>Xususiyat:</strong> Kompyuterda yozish uchun qulay
+                  <strong>{t('Info.latinAlphabet.feature')}:</strong> {t('Info.latinAlphabet.featureDesc')}
                 </p>
               </div>
             </div>
@@ -272,20 +207,18 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
                   <FileText className="h-5 w-5 text-green-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">Кирилл Алифбоси</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.cyrillicAlphabet.title')}</h3>
               </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">
-                Совет даврида ишлатилган ва ҳозирда ҳам баъзи соҳаларда қўлланилади.
-              </p>
+              <p className="mb-4 leading-relaxed text-zinc-400">{t('Info.cyrillicAlphabet.description')}</p>
               <div className="space-y-2 text-sm">
                 <p className="text-zinc-300">
-                  <strong>Ҳарфлар сони:</strong> 35 та
+                  <strong>{t('Info.cyrillicAlphabet.letterCount')}:</strong> 35 ta
                 </p>
                 <p className="text-zinc-300">
-                  <strong>Махсус ҳарфлар:</strong> ў, ғ, қ, ҳ
+                  <strong>{t('Info.cyrillicAlphabet.specialChars')}:</strong> ў, ғ, қ, ҳ
                 </p>
                 <p className="text-zinc-300">
-                  <strong>Хусусият:</strong> Рус тилига яқин
+                  <strong>{t('Info.cyrillicAlphabet.feature')}:</strong> {t('Info.cyrillicAlphabet.featureDesc')}
                 </p>
               </div>
             </div>
@@ -298,18 +231,18 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/20">
                   <ArrowLeftRight className="h-5 w-5 text-yellow-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">O'girish Qoidalari</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.rules.title')}</h3>
               </div>
               <div className="space-y-3 text-sm leading-relaxed text-zinc-400">
                 <div>
-                  <p className="font-medium text-zinc-300">Lotin → Kirill:</p>
+                  <p className="font-medium text-zinc-300">{t('Info.rules.latinToCyrillic')}</p>
                   <p>o' → ў, g' → ғ, sh → ш, ch → ч</p>
                 </div>
                 <div>
-                  <p className="font-medium text-zinc-300">Kirill → Lotin:</p>
+                  <p className="font-medium text-zinc-300">{t('Info.rules.cyrillicToLatin')}</p>
                   <p>ў → o', ғ → g', ш → sh, ч → ch</p>
                 </div>
-                <p className="mt-3 text-xs">Avtomatik o'girish 99.9% aniqlikda ishlaydi.</p>
+                <p className="mt-3 text-xs">{t('Info.rules.accuracy')}</p>
               </div>
             </div>
           </Card>
@@ -321,19 +254,19 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20">
                   <FileText className="h-5 w-5 text-purple-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">Tarixiy Ma'lumot</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.history.title')}</h3>
               </div>
               <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
                 <p>
-                  <strong className="text-zinc-300">1928-1940:</strong> Lotin alifbosi
+                  <strong className="text-zinc-300">{t('Info.history.period1')}</strong>
                 </p>
                 <p>
-                  <strong className="text-zinc-300">1940-1992:</strong> Kirill alifbosi
+                  <strong className="text-zinc-300">{t('Info.history.period2')}</strong>
                 </p>
                 <p>
-                  <strong className="text-zinc-300">1992-hozir:</strong> Lotin alifbosi
+                  <strong className="text-zinc-300">{t('Info.history.period3')}</strong>
                 </p>
-                <p className="mt-3 text-xs">O'zbekiston mustaqillik olganidan keyin lotin alifbosiga qaytildi.</p>
+                <p className="mt-3 text-xs">{t('Info.history.note')}</p>
               </div>
             </div>
           </Card>
@@ -345,19 +278,19 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/20">
                   <FileText className="h-5 w-5 text-red-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">Qo'llanish</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.usage.title')}</h3>
               </div>
               <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
                 <p>
-                  <strong className="text-zinc-300">Lotin:</strong> Rasmiy hujjatlar, ta'lim
+                  <strong className="text-zinc-300">{t('Info.usage.latin')}</strong> {t('Info.usage.latinDesc')}
                 </p>
                 <p>
-                  <strong className="text-zinc-300">Kirill:</strong> Adabiyot, arxiv
+                  <strong className="text-zinc-300">{t('Info.usage.cyrillic')}</strong> {t('Info.usage.cyrillicDesc')}
                 </p>
                 <p>
-                  <strong className="text-zinc-300">Aralash:</strong> Internet, ijtimoiy tarmoqlar
+                  <strong className="text-zinc-300">{t('Info.usage.mixed')}</strong> {t('Info.usage.mixedDesc')}
                 </p>
-                <p className="mt-3 text-xs">Ikki alifbo ham o'z o'rniga ega va muhim.</p>
+                <p className="mt-3 text-xs">{t('Info.usage.note')}</p>
               </div>
             </div>
           </Card>
@@ -369,14 +302,14 @@ export default function LatinCyrillicPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20">
                   <FileText className="h-5 w-5 text-indigo-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white">Maslahatlar</h3>
+                <h3 className="text-xl font-semibold text-white">{t('Info.tips.title')}</h3>
               </div>
               <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>• Matnni to'liq kiritib, keyin o'giring</p>
-                <p>• Namuna matnlardan foydalaning</p>
-                <p>• Natijani tekshirib ko'ring</p>
-                <p>• Fayl sifatida saqlash mumkin</p>
-                <p className="mt-3 text-xs">Professional natijalar uchun matnni diqqat bilan tayyorlang.</p>
+                <p>{t('Info.tips.tip1')}</p>
+                <p>{t('Info.tips.tip2')}</p>
+                <p>{t('Info.tips.tip3')}</p>
+                <p>{t('Info.tips.tip4')}</p>
+                <p className="mt-3 text-xs">{t('Info.tips.note')}</p>
               </div>
             </div>
           </Card>

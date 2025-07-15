@@ -24,6 +24,14 @@ export const metadata: Metadata = {
     'Uzbek text converter',
     'Script converter',
     'Language tools',
+    // Russian keywords
+    'узбекский транслит',
+    'латиница кириллица узбекский',
+    'конвертер узбекского алфавита',
+    'перевод с латиницы на кириллицу узбекский',
+    'узбекская раскладка',
+    'кириллица в латиницу',
+    'онлайн-конвертер узбекский',
   ],
   openGraph: {
     title: "Lotin-Kirill O'giruvchi | Latin-Cyrillic Converter | Webiston",
@@ -51,7 +59,7 @@ export const metadata: Metadata = {
     canonical: '/tools/latin-cyrillic',
     languages: {
       'uz-UZ': '/tools/latin-cyrillic',
-      'en-US': '/tools/latin-cyrillic',
+      'en-US': '/en/tools/latin-cyrillic',
     },
   },
   robots: {
