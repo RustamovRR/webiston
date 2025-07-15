@@ -1,38 +1,22 @@
 {
-  "nav": {
-    "home": "Home",
-    "tools": "Tools",
+  "HomePage": {
+    "title": "A deep dive into the world of web technologies",
+    "description": "Through this platform, deeply understand the inner workings of modern technologies like JavaScript, React, and TypeScript, and gain high-level knowledge and experience.",
+    "startLearning": "Start Learning",
+    "usefulTools": "Useful Tools",
+    "reactSectionTitle": "React - Translation of <i>\"Fluent React\"</i>",
+    "reactSectionDescription": "The inner workings of the React library.",
+    "toolsSectionTitle": "Useful Tools",
+    "toolsSectionDescription": "A collection of useful online tools for programming and text manipulation.",
+    "jsSectionTitle": "JavaScript - Translation of <i>\"JavaScript: The Definitive Guide, 7th Edition\"</i>",
+    "jsSectionDescription": "Coming soon..."
+  },
+  "Metadata": {
+    "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
+    "keywords": "React, Next.js, JavaScript, programming, web development, tutorial, guide, webiston, learn to code, react tutorial, nextjs tutorial, javascript tutorial"
+  },
+  "Header": {
     "books": "Books",
-    "about": "About"
-  },
-  "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "cancel": "Cancel",
-    "save": "Save",
-    "clear": "Clear",
-    "copy": "Copy",
-    "download": "Download",
-    "upload": "Upload",
-    "generate": "Generate",
-    "search": "Search",
-    "language": "Language"
-  },
-  "tools": {
-    "title": "Tools",
-    "description": "Useful tools collection for professional web development"
-  },
-  "Search": {
-    "placeholder": "Search..."
-  },
-  "ThemeSwitcher": {
-    "light": "Light",
-    "dark": "Dark"
-  },
-  "MobileMenu": {
-    "noTutorialId": "No tutorial ID found for navigation.",
-    "language": "Language",
-    "theme": "Theme"
+    "tools": "Useful Tools"
   }
 }

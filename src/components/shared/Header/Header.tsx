@@ -14,12 +14,15 @@ import LanguageSelector from '../LanguageSelector/LanguageSelector'
 import Search from '../Search'
 import ThemeToggle from '../ThemeToggle'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface HeaderProps {
   showLanguageSelector?: boolean
 }
 
 export default function Header({ showLanguageSelector = true }: HeaderProps) {
+  const t = useTranslations('Header')
+
   return (
     <div className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm dark:border-zinc-800">
       <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -29,7 +32,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]">
-                  Kitoblar
+                  {t('books')}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px]">
@@ -44,7 +47,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
                   asChild
                   className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]"
                 >
-                  <Link href="/tools">Foydali Vositalar</Link>
+                  <Link href="/tools">{t('tools')}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>

@@ -1,38 +1,22 @@
 {
-  "nav": {
-    "home": "Bosh sahifa",
-    "tools": "Vositalar",
+  "HomePage": {
+    "title": "Veb texnologiyalar dunyosiga teran nigoh",
+    "description": "Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.",
+    "startLearning": "O'rganishni boshlash",
+    "usefulTools": "Foydali Vositalar",
+    "reactSectionTitle": "React - <i>\"Fluent React\"</i> kitobi tarjimasi",
+    "reactSectionDescription": "React kutubxonasining ichki ishlash mexanizmlari.",
+    "toolsSectionTitle": "Foydali Vositalar",
+    "toolsSectionDescription": "Dasturlash va matn ishlatish uchun foydali onlayn vositalar to'plami.",
+    "jsSectionTitle": "JavaScript - <i>\"JavaScript: The Definitive Guide, 7th Edition\"</i> kitobi tarjimasi",
+    "jsSectionDescription": "Tez kunda..."
+  },
+  "Metadata": {
+    "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
+    "keywords": "React, Next.js, JavaScript, dasturlash, veb dasturlash, o'zbekcha, darslar, qo'llanma, webiston, vebiston, реакт, некст, джаваскрипт, программирование, веб-разработка"
+  },
+  "Header": {
     "books": "Kitoblar",
-    "about": "Haqida"
-  },
-  "common": {
-    "loading": "Yuklanmoqda...",
-    "error": "Xatolik",
-    "success": "Muvaffaqiyatli",
-    "cancel": "Bekor qilish",
-    "save": "Saqlash",
-    "clear": "Tozalash",
-    "copy": "Nusxalash",
-    "download": "Yuklab olish",
-    "upload": "Yuklash",
-    "generate": "Yaratish",
-    "search": "Qidirish",
-    "language": "Til"
-  },
-  "tools": {
-    "title": "Vositalar",
-    "description": "Professional web development uchun foydali vositalar to'plami"
-  },
-  "Search": {
-    "placeholder": "Qidiruv..."
-  },
-  "ThemeSwitcher": {
-    "light": "Yorug'",
-    "dark": "Qorong'u"
-  },
-  "MobileMenu": {
-    "noTutorialId": "Navigatsiya uchun darslik ID'si topilmadi.",
-    "language": "Til",
-    "theme": "Mavzu"
+    "tools": "Foydali Vositalar"
   }
 }

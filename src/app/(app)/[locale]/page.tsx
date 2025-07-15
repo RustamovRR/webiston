@@ -1,8 +1,11 @@
 import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
 import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
 import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
+import { getTranslations } from 'next-intl/server'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations('HomePage')
+
   return (
     <div className="w-full px-16 pb-16 max-sm:px-6">
       <header className="background-pattern mt-8 flex h-full min-h-screen w-full flex-col items-center gap-10 p-10 pt-20 text-center max-lg:px-0">
@@ -18,23 +21,22 @@ export default function HomePage() {
         <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
 
         <h1 className="animate-fadeInText bg-gradient-text max-xl:text-dynamic bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
-          Veb texnologiyalar dunyosiga teran nigoh{' '}
+          {t('title')}
         </h1>
 
         <p className="animate-fadeInText text-gray-primary max-w-[750px] text-center text-xl md:w-full!">
-          Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini
-          chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.
+          {t('description')}
         </p>
 
         <div className="mt-10 flex gap-4">
           <ButtonLink href="/books" variant="secondary" className="group">
-            O'rganishni boshlash{' '}
+            {t('startLearning')}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
               <ArrowRightIcon />
             </span>
           </ButtonLink>
           <ButtonLink href="/tools" variant="outline" className="group">
-            Foydali Vositalar
+            {t('usefulTools')}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
               <ToolsIcon className="h-4 w-4" />
             </span>
@@ -44,12 +46,10 @@ export default function HomePage() {
 
       <section className="group flex w-full flex-col gap-8">
         <SectionTitle
-          title={
-            <div>
-              React - <i>"Fluent React"</i> kitobi tarjimasi
-            </div>
-          }
-          description="React kutubxonasining ichki ishlash mexanizmlari."
+          title={t.rich('reactSectionTitle', {
+            i: (chunks) => <i>{chunks}</i>,
+          })}
+          description={t('reactSectionDescription')}
           icon={<ReactIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 
@@ -62,8 +62,8 @@ export default function HomePage() {
 
       <section className="group mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title="Foydali Vositalar"
-          description="Dasturlash va matn ishlatish uchun foydali onlayn vositalar to'plami."
+          title={t('toolsSectionTitle')}
+          description={t('toolsSectionDescription')}
           icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 
@@ -76,12 +76,10 @@ export default function HomePage() {
 
       <section className="mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title={
-            <div>
-              JavaScript - <i>"JavaScript: The Definitive Guide, 7th Edition"</i> kitobi tarjimasi
-            </div>
-          }
-          description="Tez kunda..."
+          title={t.rich('jsSectionTitle', {
+            i: (chunks) => <i>{chunks}</i>,
+          })}
+          description={t('jsSectionDescription')}
           icon={<JavascriptIcon className="h-10 w-10" />}
           disabled
         />

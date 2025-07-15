@@ -3,11 +3,9 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
-import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/shared/Providers'
-import { NextIntlClientProvider } from 'next-intl'
 import Head from 'next/head'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
@@ -19,7 +17,8 @@ export const metadata: Metadata = {
     default: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
     template: '%s | Webiston',
   },
-  description: 'Veb texnologiyalar dunyosiga teran nigoh',
+  description:
+    "Vebiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
   applicationName: 'Webiston',
   appleWebApp: {
     title: 'Webiston',
@@ -37,6 +36,22 @@ export const metadata: Metadata = {
     'JavaScript',
     'TypeScript',
     'Node.js',
+    'dasturlash',
+    "o'zbekcha",
+    'darslar',
+    "qo'llanma",
+    'tutorial',
+    'guide',
+    'learn to code',
+    'react tutorial',
+    'nextjs tutorial',
+    'javascript tutorial',
+    'программирование',
+    'веб-разработка',
+    'реакт',
+    'некст',
+    'джаваскрипт',
+    'учебник',
   ],
   authors: [{ name: 'Webiston', url: 'https://webiston.uz' }],
   creator: 'Webiston',
@@ -93,19 +108,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode
-  params: { locale: string }
 }>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
-  const { locale } = await params
-
-  // const messages = await getMessages()
-  // setRequestLocale(locale)
-  // console.log('LOCALE', locale)
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
