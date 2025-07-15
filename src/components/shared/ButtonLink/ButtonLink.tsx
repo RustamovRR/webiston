@@ -1,12 +1,13 @@
-import { FC, AnchorHTMLAttributes, ReactNode } from 'react'
-import Link, { LinkProps } from 'next/link'
+import { FC, ReactNode } from 'react'
+import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib'
 
-interface IProps extends LinkProps {
+interface IProps {
   variant?: 'primary' | 'secondary' | 'outline'
   children: ReactNode
   href: string
   className?: string
+  [key: string]: any // For any other props
 }
 
 const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, ...props }) => {

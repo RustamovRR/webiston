@@ -2,6 +2,39 @@ import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from
 import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
 import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 import { getTranslations } from 'next-intl/server'
+import { Metadata } from 'next'
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'HomePage.Metadata' })
+
+  const title = t('title')
+  const description = t('description')
+
+  return {
+    title,
+    description,
+    keywords: t('keywords'),
+    alternates: {
+      canonical: '/',
+      languages: {
+        uz: '/',
+        en: '/en',
+        'x-default': '/',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: locale === 'uz' ? 'uz_UZ' : 'en_US',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  }
+}
 
 export default async function HomePage() {
   const tHome = await getTranslations('HomePage')

@@ -1,15 +1,20 @@
 {
   "HomePage": {
+    "Metadata": {
+      "title": "Webiston | Free Courses and Tools for Developers",
+      "description": "A modern platform for learning programming. High-quality, free courses on React and useful tools for developers in Uzbek and English.",
+      "keywords": "free courses, programming, React, JavaScript, developer tools, learn to code, Uzbek IT, free education"
+    },
     "title": "A deep dive into the world of web technologies",
-    "description": "Through this platform, deeply understand the inner workings of modern technologies like JavaScript, React, and TypeScript, and gain high-level knowledge and experience.",
+    "description": "Webiston is a non-commercial project that provides high-quality, modern, and free educational resources in the Uzbek language. We offer in-depth courses on React and a collection of useful tools for developers.",
     "startLearning": "Start Learning",
     "usefulTools": "Useful Tools",
-    "reactSectionTitle": "React - Translation of <i>\"Fluent React\"</i>",
-    "reactSectionDescription": "The inner workings of the React library.",
-    "toolsSectionTitle": "Useful Tools",
-    "toolsSectionDescription": "A collection of useful online tools for programming and text manipulation.",
-    "jsSectionTitle": "JavaScript - Translation of <i>\"JavaScript: The Definitive Guide, 7th Edition\"</i>",
-    "jsSectionDescription": "Coming soon..."
+    "reactSectionTitle": "Mastering <i>React</i>",
+    "reactSectionDescription": "An in-depth guide to the React library, from the basics to the most advanced concepts, available for free in Uzbek.",
+    "toolsSectionTitle": "Developer Tools",
+    "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
+    "jsSectionTitle": "<i>JavaScript</i> from Scratch",
+    "jsSectionDescription": "A comprehensive course on modern JavaScript. Coming soon..."
   },
   "Metadata": {
     "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
@@ -18,6 +23,29 @@
   "Header": {
     "books": "Books",
     "tools": "Useful Tools"
+  },
+  "ToolsPage": {
+    "Metadata": {
+      "title": "Developer Tools | Webiston",
+      "description": "A collection of free and useful online tools for developers. Includes converters, code generators, formatters, and much more for daily tasks.",
+      "keywords": "developer tools, online tools, free tools, converters, generators, JSON formatter, Base64 converter, color converter"
+    },
+    "Main": {
+      "title": "Developer Tools",
+      "description": "A collection of professional tools for programming and web development",
+      "filterByCategory": "Filter by category",
+      "filterByAudience": "Filter by audience",
+      "searchPlaceholder": "Search for tools...",
+      "resultsFound": "{count} tools found",
+      "noResults": "No tools found",
+      "noResultsHint": "Try changing the filter or search terms",
+      "audienceDeveloper": "Developer",
+      "audienceGeneral": "General",
+      "totalTools": "Total Tools",
+      "categories": "Categories",
+      "generalTools": "General Tools",
+      "developerTools": "Developer Tools"
+    }
   },
   "Tools": {
     "latinCyrillic": {
@@ -65,5 +93,22 @@
       "description": "Check the availability and status of a website."
     },
     "httpStatus": { "title": "HTTP Status Codes", "description": "All HTTP status codes and their meanings." }
+  },
+  "ToolCategories": {
+    "converters": { "title": "Converters", "description": "Tools for converting data between different formats." },
+    "generators": { "title": "Generators", "description": "Tools for generating various data and codes." },
+    "analyzers": { "title": "Analyzers", "description": "Tools for analyzing and inspecting data." },
+    "utilities": { "title": "Utilities", "description": "Device testing and other useful tools." }
+  },
+  "Filters": {
+    "allTools": "All Tools",
+    "all": "All",
+    "general": "General",
+    "developer": "Developer",
+    "developers": "Developers",
+    "converters": "Converters",
+    "generators": "Generators",
+    "analyzers": "Analyzers",
+    "utilities": "Utilities"
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Search, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Input } from '@/components/ui/input'
@@ -9,14 +9,22 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AuroraText, GradientTabs } from '@/components/ui'
 import { TOOL_CATEGORIES, FILTER_OPTIONS, AUDIENCE_FILTERS, type Tool } from '@/constants'
+import { useTranslations } from 'next-intl'
 
 const ToolsMainPage = () => {
+  const tMain = useTranslations('ToolsPage.Main')
+  const tTools = useTranslations('Tools')
+  const tCategories = useTranslations('ToolCategories')
+  const tFilters = useTranslations('Filters')
+
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedAudience, setSelectedAudience] = useState('all')
 
+  const allTools = useMemo(() => TOOL_CATEGORIES.flatMap((cat: any) => cat.tools), [])
+
   const filteredTools = useMemo(() => {
-    let tools = TOOL_CATEGORIES.flatMap((cat) => cat.tools)
+    let tools = allTools
 
     // Filter by category
     if (selectedCategory !== 'all') {
@@ -31,16 +39,18 @@ const ToolsMainPage = () => {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim()
-      tools = tools.filter(
-        (tool) => tool.title.toLowerCase().includes(query) || tool.description.toLowerCase().includes(query),
-      )
+      tools = tools.filter((tool) => {
+        const title = tTools(`${tool.tKey}.title`).toLowerCase()
+        const description = tTools(`${tool.tKey}.description`).toLowerCase()
+        return title.includes(query) || description.includes(query)
+      })
     }
 
     return tools
-  }, [searchQuery, selectedCategory, selectedAudience])
+  }, [searchQuery, selectedCategory, selectedAudience, allTools, tTools])
 
   const getCategoryLabel = (category: string) => {
-    return TOOL_CATEGORIES.find((cat) => cat.id === category)?.title || category
+    return tCategories(`${category}.title`)
   }
 
   const getAudienceColor = (audience: string) => {
@@ -54,7 +64,7 @@ const ToolsMainPage = () => {
           {/* Audience badge - top left */}
           <div className="absolute top-4 left-4">
             <Badge variant="secondary" className={`border-0 text-xs ${getAudienceColor(tool.audience)}`}>
-              {tool.audience === 'developer' ? 'Dasturchi' : 'Umumiy'}
+              {tool.audience === 'developer' ? tMain('audienceDeveloper') : tMain('audienceGeneral')}
             </Badge>
           </div>
 
@@ -73,12 +83,12 @@ const ToolsMainPage = () => {
             </div>
             <div className="flex-1">
               <h3 className="text-lg leading-tight font-semibold text-zinc-100 transition-colors group-hover:text-white">
-                {tool.title}
+                {tTools(`${tool.tKey}.title`)}
               </h3>
             </div>
           </div>
           <p className="line-clamp-2 text-sm text-zinc-400 transition-colors group-hover:text-zinc-300">
-            {tool.description}
+            {tTools(`${tool.tKey}.description`)}
           </p>
         </div>
       </Card>
@@ -101,12 +111,10 @@ const ToolsMainPage = () => {
         <div className="mb-4 flex items-center justify-center gap-2">
           <Sparkles className="h-8 w-8 animate-pulse text-blue-400" />
           <h1 className="relative text-4xl font-bold">
-            <AuroraText>Dasturchi Vositalari</AuroraText>
+            <AuroraText>{tMain('title')}</AuroraText>
           </h1>
         </div>
-        <p className="mx-auto max-w-2xl text-center text-lg text-zinc-400">
-          Dasturlash va veb-ishlab chiqish uchun professional vositalar to'plami
-        </p>
+        <p className="mx-auto max-w-2xl text-center text-lg text-zinc-400">{tMain('description')}</p>
       </motion.div>
 
       {/* Category Filters */}
@@ -116,12 +124,12 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
       >
-        <h3 className="mb-3 text-sm font-medium text-zinc-400">Kategoriya bo'yicha filtrlash</h3>
+        <h3 className="mb-3 text-sm font-medium text-zinc-400">{tMain('filterByCategory')}</h3>
         <div className="flex justify-center">
           <GradientTabs
             options={FILTER_OPTIONS.map((option) => ({
               value: option.value,
-              label: option.label,
+              label: tFilters(option.value === 'all' ? 'allTools' : option.value),
               icon: <option.icon size={16} />,
             }))}
             value={selectedCategory}
@@ -139,7 +147,7 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
       >
-        <h3 className="mb-3 text-sm font-medium text-zinc-400">Foydalanuvchi turi</h3>
+        <h3 className="mb-3 text-sm font-medium text-zinc-400">{tMain('filterByAudience')}</h3>
         <div className="flex justify-center gap-2">
           {AUDIENCE_FILTERS.map((filter) => (
             <button
@@ -151,7 +159,7 @@ const ToolsMainPage = () => {
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300'
               }`}
             >
-              {filter.label}
+              {tFilters(filter.value)}
             </button>
           ))}
         </div>
@@ -168,7 +176,7 @@ const ToolsMainPage = () => {
           <Search size={20} className="absolute top-1/2 left-3 -translate-y-1/2 transform text-zinc-400" />
           <Input
             type="text"
-            placeholder="Vositalarni qidirish..."
+            placeholder={tMain('searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="border-zinc-700 bg-zinc-800/50 pl-10 text-zinc-100 placeholder:text-zinc-500"
@@ -183,7 +191,7 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.25 }}
       >
-        <p className="text-sm text-zinc-500">{filteredTools.length} ta vosita topildi</p>
+        <p className="text-sm text-zinc-500">{tMain('resultsFound', { count: filteredTools.length })}</p>
       </motion.div>
 
       {/* Tools Grid */}
@@ -200,8 +208,8 @@ const ToolsMainPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="text-lg text-zinc-400">Hech qanday vosita topilmadi</p>
-            <p className="mt-2 text-sm text-zinc-500">Filter yoki qidiruv shartlarini o'zgartirib ko'ring</p>
+            <p className="text-lg text-zinc-400">{tMain('noResults')}</p>
+            <p className="mt-2 text-sm text-zinc-500">{tMain('noResultsHint')}</p>
           </motion.div>
         ) : (
           <motion.div
@@ -261,7 +269,7 @@ const ToolsMainPage = () => {
               <div className="text-3xl font-bold text-zinc-100">
                 {TOOL_CATEGORIES.reduce((acc, cat) => acc + cat.tools.length, 0)}
               </div>
-              <div className="text-zinc-400">Jami vositalar</div>
+              <div className="text-zinc-400">{tMain('totalTools')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -269,7 +277,7 @@ const ToolsMainPage = () => {
               transition={{ duration: 0.3, delay: 0.6 }}
             >
               <div className="text-3xl font-bold text-zinc-100">{TOOL_CATEGORIES.length}</div>
-              <div className="text-zinc-400">Kategoriyalar</div>
+              <div className="text-zinc-400">{tMain('categories')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -279,7 +287,7 @@ const ToolsMainPage = () => {
               <div className="text-3xl font-bold text-zinc-100">
                 {TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter((tool) => tool.audience === 'general').length}
               </div>
-              <div className="text-zinc-400">Umumiy vositalar</div>
+              <div className="text-zinc-400">{tMain('generalTools')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -289,7 +297,7 @@ const ToolsMainPage = () => {
               <div className="text-3xl font-bold text-zinc-100">
                 {TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter((tool) => tool.audience === 'developer').length}
               </div>
-              <div className="text-zinc-400">Developer vositalar</div>
+              <div className="text-zinc-400">{tMain('developerTools')}</div>
             </motion.div>
           </div>
         </motion.div>

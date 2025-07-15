@@ -209,44 +209,32 @@ export const TOOLS_LIST: Tool[] = [
   },
 ]
 
-export const TOOL_CATEGORIES: ToolCategory[] = [
+export const TOOL_CATEGORIES: Omit<ToolCategory, 'title' | 'description'>[] = [
   {
     id: 'converters',
-    title: "O'giruvchilar",
-    description: "Turli formatlar orasida ma'lumot o'girish vositalari",
     tools: TOOLS_LIST.filter((tool) => tool.category === 'converters'),
   },
   {
     id: 'generators',
-    title: 'Generatorlar',
-    description: "Turli ma'lumotlar va kodlar yaratish vositalari",
     tools: TOOLS_LIST.filter((tool) => tool.category === 'generators'),
   },
   {
     id: 'analyzers',
-    title: 'Tahlilchilar',
-    description: "Ma'lumotlarni tahlil qilish va tekshirish vositalari",
     tools: TOOLS_LIST.filter((tool) => tool.category === 'analyzers'),
   },
   {
     id: 'utilities',
-    title: 'Yordamchilar',
-    description: 'Qurilma test va boshqa foydali vositalar',
     tools: TOOLS_LIST.filter((tool) => tool.category === 'utilities'),
   },
 ]
 
 // Filter options for the UI
 export const FILTER_OPTIONS = [
-  { value: 'all', label: 'Barcha vositalar', icon: Globe },
-  { value: 'converters', label: "O'giruvchilar", icon: RotateCcw },
-  { value: 'generators', label: 'Generatorlar', icon: Shuffle },
-  { value: 'analyzers', label: 'Tahlilchilar', icon: Monitor },
-  { value: 'utilities', label: 'Yordamchilar', icon: FileText },
+  { value: 'all', icon: Globe },
+  { value: 'converters', icon: RotateCcw },
+  { value: 'generators', icon: Shuffle },
+  { value: 'analyzers', icon: Monitor },
+  { value: 'utilities', icon: FileText },
 ]
 
-export const AUDIENCE_FILTERS = [
-  { value: 'all', label: 'Barcha' },
-  { value: 'general', label: 'Umumiy' },
-  { value: 'developer', label: 'Dasturchilar' },
-]
+export const AUDIENCE_FILTERS = [{ value: 'all' }, { value: 'general' }, { value: 'developer' }]

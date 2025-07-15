@@ -1,16 +1,18 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { cn } from '@/lib'
-import Link, { LinkProps } from 'next/link'
+import { Link } from '@/i18n/navigation'
 
-interface IProps extends Omit<LinkProps, 'href'> {
+interface IProps {
   title: string
   description: string
   href?: string
   className?: string
   disabled?: boolean
+  children?: ReactNode // To be safe
+  [key: string]: any // For any other props
 }
 
-const Card: FC<IProps> = ({ title, description, href, className, disabled, ...props }) => {
+const SimpleCard: FC<IProps> = ({ title, description, href, className, disabled, ...props }) => {
   const classNames = cn(
     'relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-[rgba(255,255,255,0.17)] hover:bg-[#ffffff05] select-none',
     {
@@ -37,4 +39,4 @@ const Card: FC<IProps> = ({ title, description, href, className, disabled, ...pr
   )
 }
 
-export default Card
+export default SimpleCard

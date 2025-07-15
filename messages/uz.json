@@ -1,15 +1,20 @@
 {
   "HomePage": {
+    "Metadata": {
+      "title": "Webiston | Dasturchilar uchun bepul kurslar va vositalar",
+      "description": "Dasturlashni o'rganish uchun zamonaviy platforma. O'zbek va ingliz tillarida React bo'yicha yuqori sifatli, bepul kurslar va dasturchilar uchun foydali vositalar.",
+      "keywords": "bepul kurslar, dasturlash, React, JavaScript, dasturchi vositalari, kod o'rganish, o'zbek IT, bepul ta'lim, дастурлаш, бесплатные курсы"
+    },
     "title": "Veb texnologiyalar dunyosiga teran nigoh",
-    "description": "Ushbu platforma orqali JavaScript, React, va TypeScript kabi zamonaviy texnologiyalarning ichki ishlashini chuqur tushunib, ularda yuqori darajadagi bilim va tajribaga ega bo'ling.",
+    "description": "Webiston — bu o'zbek tilida yuqori sifatli, zamonaviy va bepul ta'lim resurslarini taqdim etuvchi notijorat loyiha. Biz React bo'yicha chuqur kurslar va dasturchilar uchun foydali vositalar to'plamini taklif qilamiz.",
     "startLearning": "O'rganishni boshlash",
-    "usefulTools": "Foydali Vositalar",
-    "reactSectionTitle": "React - <i>\"Fluent React\"</i> kitobi tarjimasi",
-    "reactSectionDescription": "React kutubxonasining ichki ishlash mexanizmlari.",
-    "toolsSectionTitle": "Foydali Vositalar",
-    "toolsSectionDescription": "Dasturlash va matn ishlatish uchun foydali onlayn vositalar to'plami.",
-    "jsSectionTitle": "JavaScript - <i>\"JavaScript: The Definitive Guide, 7th Edition\"</i> kitobi tarjimasi",
-    "jsSectionDescription": "Tez kunda..."
+    "usefulTools": "Foydali vositalar",
+    "reactSectionTitle": "<i>React</i>ni mukammal o'rganish",
+    "reactSectionDescription": "React kutubxonasining ichki dunyosiga chuqur sayohat. Asoslardan boshlab eng murakkab tushunchalargacha, barchasi bepul va o'zbek tilida.",
+    "toolsSectionTitle": "Dasturchi vositalari",
+    "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
+    "jsSectionTitle": "<i>JavaScript</i> noldan",
+    "jsSectionDescription": "Zamonaviy JavaScript bo'yicha keng qamrovli kurs. Tez kunda..."
   },
   "Metadata": {
     "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
@@ -18,6 +23,29 @@
   "Header": {
     "books": "Kitoblar",
     "tools": "Foydali Vositalar"
+  },
+  "ToolsPage": {
+    "Metadata": {
+      "title": "Dasturchi vositalari | Webiston",
+      "description": "Dasturchilar uchun bepul va foydali onlayn vositalar to'plami. Kundalik vazifalar uchun konverterlar, kod generatorlari, formatlovchilar va boshqalar.",
+      "keywords": "dasturchi vositalari, onlayn vositalar, bepul vositalar, konverterlar, generatorlar, JSON formatter, Base64 konverter, rang konverteri"
+    },
+    "Main": {
+      "title": "Dasturchi Vositalari",
+      "description": "Dasturlash va veb-ishlab chiqish uchun professional vositalar to'plami",
+      "filterByCategory": "Kategoriya bo'yicha filtrlash",
+      "filterByAudience": "Foydalanuvchi turi",
+      "searchPlaceholder": "Vositalarni qidirish...",
+      "resultsFound": "{count} ta vosita topildi",
+      "noResults": "Hech qanday vosita topilmadi",
+      "noResultsHint": "Filter yoki qidiruv shartlarini o'zgartirib ko'ring",
+      "audienceDeveloper": "Dasturchi",
+      "audienceGeneral": "Umumiy",
+      "totalTools": "Jami vositalar",
+      "categories": "Kategoriyalar",
+      "generalTools": "Umumiy vositalar",
+      "developerTools": "Developer vositalar"
+    }
   },
   "Tools": {
     "latinCyrillic": {
@@ -59,5 +87,22 @@
     "ipInfo": { "title": "IP Ma'lumotlari", "description": "IP manzil va joylashuv ma'lumotlari" },
     "websiteStatus": { "title": "Website Status", "description": "Website mavjudligi va holatini tekshiring" },
     "httpStatus": { "title": "HTTP Status Kodlari", "description": "Barcha HTTP status kodlari va ularning ma'nolari" }
+  },
+  "ToolCategories": {
+    "converters": { "title": "O'giruvchilar", "description": "Turli formatlar orasida ma'lumot o'girish vositalari" },
+    "generators": { "title": "Generatorlar", "description": "Turli ma'lumotlar va kodlar yaratish vositalari" },
+    "analyzers": { "title": "Tahlilchilar", "description": "Ma'lumotlarni tahlil qilish va tekshirish vositalari" },
+    "utilities": { "title": "Yordamchilar", "description": "Qurilma test va boshqa foydali vositalar" }
+  },
+  "Filters": {
+    "allTools": "Barcha vositalar",
+    "all": "Barcha",
+    "general": "Umumiy",
+    "developer": "Dasturchi",
+    "developers": "Dasturchilar",
+    "converters": "O'giruvchilar",
+    "generators": "Generatorlar",
+    "analyzers": "Tahlilchilar",
+    "utilities": "Yordamchilar"
   }
 }
