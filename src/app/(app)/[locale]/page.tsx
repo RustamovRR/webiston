@@ -4,7 +4,8 @@ import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 import { getTranslations } from 'next-intl/server'
 import { Metadata } from 'next'
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage.Metadata' })
 
   const title = t('title')
