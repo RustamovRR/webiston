@@ -15,7 +15,11 @@ import Search from '../Search'
 import ThemeToggle from '../ThemeToggle'
 import Link from 'next/link'
 
-export default function Header() {
+interface HeaderProps {
+  showLanguageSelector?: boolean
+}
+
+export default function Header({ showLanguageSelector = true }: HeaderProps) {
   return (
     <div className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm dark:border-zinc-800">
       <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -48,9 +52,9 @@ export default function Header() {
         </section>
 
         <section className="flex items-center space-x-2">
-          <div className="hidden md:flex">
+          <div className="hidden items-center gap-2 md:flex">
             <Search />
-            <LanguageSelector />
+            {showLanguageSelector && <LanguageSelector />}
             <ThemeToggle />
           </div>
           <div className="md:hidden">

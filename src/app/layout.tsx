@@ -1,13 +1,11 @@
-import '../globals.css'
+import './globals.css'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
-import { getMessages } from 'next-intl/server'
+import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
-import Footer from '@/components/shared/Footer/Footer'
-import Header from '@/components/shared/Header/Header'
 import { ThemeProvider } from '@/components/shared/Providers'
 import { NextIntlClientProvider } from 'next-intl'
 import Head from 'next/head'
@@ -95,14 +93,19 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode
+  params: { locale: string }
 }>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === 'development'
+  const { locale } = await params
 
-  const messages = await getMessages({ locale: 'uz' })
+  // const messages = await getMessages()
+  // setRequestLocale(locale)
+  // console.log('LOCALE', locale)
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
@@ -162,14 +165,8 @@ export default async function RootLayout({
 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
-          <NextIntlClientProvider locale="uz" messages={messages}>
-            <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-              <Header />
-            </header>
-            <main data-pagefind-body>{children}</main>
-            <Footer />
-            <Toaster />
-          </NextIntlClientProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
