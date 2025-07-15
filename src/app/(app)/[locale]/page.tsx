@@ -4,7 +4,8 @@ import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 import { getTranslations } from 'next-intl/server'
 
 export default async function HomePage() {
-  const t = await getTranslations('HomePage')
+  const tHome = await getTranslations('HomePage')
+  const tTools = await getTranslations('Tools')
 
   return (
     <div className="w-full px-16 pb-16 max-sm:px-6">
@@ -21,22 +22,22 @@ export default async function HomePage() {
         <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
 
         <h1 className="animate-fadeInText bg-gradient-text max-xl:text-dynamic bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
-          {t('title')}
+          {tHome('title')}
         </h1>
 
         <p className="animate-fadeInText text-gray-primary max-w-[750px] text-center text-xl md:w-full!">
-          {t('description')}
+          {tHome('description')}
         </p>
 
         <div className="mt-10 flex gap-4">
           <ButtonLink href="/books" variant="secondary" className="group">
-            {t('startLearning')}
+            {tHome('startLearning')}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
               <ArrowRightIcon />
             </span>
           </ButtonLink>
           <ButtonLink href="/tools" variant="outline" className="group">
-            {t('usefulTools')}
+            {tHome('usefulTools')}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
               <ToolsIcon className="h-4 w-4" />
             </span>
@@ -46,10 +47,10 @@ export default async function HomePage() {
 
       <section className="group flex w-full flex-col gap-8">
         <SectionTitle
-          title={t.rich('reactSectionTitle', {
+          title={tHome.rich('reactSectionTitle', {
             i: (chunks) => <i>{chunks}</i>,
           })}
-          description={t('reactSectionDescription')}
+          description={tHome('reactSectionDescription')}
           icon={<ReactIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 
@@ -62,24 +63,29 @@ export default async function HomePage() {
 
       <section className="group mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title={t('toolsSectionTitle')}
-          description={t('toolsSectionDescription')}
+          title={tHome('toolsSectionTitle')}
+          description={tHome('toolsSectionDescription')}
           icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
         />
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {TOOLS_LIST.map((tool, index) => (
-            <SimpleCard key={index} href={tool.href} title={tool.title} description={tool.description} />
+            <SimpleCard
+              key={index}
+              href={tool.href}
+              title={tTools(`${tool.tKey}.title`)}
+              description={tTools(`${tool.tKey}.description`)}
+            />
           ))}
         </div>
       </section>
 
       <section className="mt-12 flex w-full flex-col gap-8">
         <SectionTitle
-          title={t.rich('jsSectionTitle', {
+          title={tHome.rich('jsSectionTitle', {
             i: (chunks) => <i>{chunks}</i>,
           })}
-          description={t('jsSectionDescription')}
+          description={tHome('jsSectionDescription')}
           icon={<JavascriptIcon className="h-10 w-10" />}
           disabled
         />

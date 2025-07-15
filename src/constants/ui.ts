@@ -23,8 +23,7 @@ import {
 } from 'lucide-react'
 
 export interface Tool {
-  title: string
-  description: string
+  tKey: string
   href: string
   icon: any
   color: string
@@ -41,8 +40,7 @@ export interface ToolCategory {
 
 export const TOOLS_LIST: Tool[] = [
   {
-    title: "Lotin-Kirill O'giruvchi",
-    description: "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring",
+    tKey: 'latinCyrillic',
     href: '/tools/latin-cyrillic',
     icon: RotateCcw,
     color: 'bg-blue-500/20',
@@ -50,8 +48,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'JSON Formatlash',
-    description: "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",
+    tKey: 'jsonFormatter',
     href: '/tools/json-formatter',
     icon: FileText,
     color: 'bg-green-500/20',
@@ -59,8 +56,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: "Base64 O'giruvchi",
-    description: "Matn va fayllarni Base64 formatiga o'girish va aksincha",
+    tKey: 'base64Converter',
     href: '/tools/base64-converter',
     icon: Hash,
     color: 'bg-purple-500/20',
@@ -68,8 +64,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'URL Kodlash',
-    description: 'URL va matnlarni kodlash va dekodlash vositasi',
+    tKey: 'urlEncoder',
     href: '/tools/url-encoder',
     icon: Link,
     color: 'bg-orange-500/20',
@@ -77,8 +72,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'JWT Dekoder',
-    description: 'JSON Web Token (JWT) larni dekodlash va tahlil qilish',
+    tKey: 'jwtDecoder',
     href: '/tools/jwt-decoder',
     icon: Key,
     color: 'bg-red-500/20',
@@ -86,8 +80,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: "Rang O'giruvchi",
-    description: 'HEX, RGB, HSL formatlar orasida rang konvertatsiyasi',
+    tKey: 'colorConverter',
     href: '/tools/color-converter',
     icon: Palette,
     color: 'bg-pink-500/20',
@@ -95,8 +88,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Hash Yaratuvchi',
-    description: 'MD5, SHA1, SHA256, SHA512 hash yaratish vositasi',
+    tKey: 'hashGenerator',
     href: '/tools/hash-generator',
     icon: Hash,
     color: 'bg-indigo-500/20',
@@ -104,8 +96,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'UUID Yaratuvchi',
-    description: 'Noyob identifikatorlar (UUID) yaratish vositasi',
+    tKey: 'uuidGenerator',
     href: '/tools/uuid-generator',
     icon: Shuffle,
     color: 'bg-teal-500/20',
@@ -113,8 +104,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'QR Kod Yaratuvchi',
-    description: 'Matn va URL lar uchun QR kodlar yaratish',
+    tKey: 'qrGenerator',
     href: '/tools/qr-generator',
     icon: QrCode,
     color: 'bg-yellow-500/20',
@@ -122,8 +112,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Parol Yaratuvchi',
-    description: 'Xavfsiz va kuchli parollar yaratish vositasi',
+    tKey: 'passwordGenerator',
     href: '/tools/password-generator',
     icon: Lock,
     color: 'bg-cyan-500/20',
@@ -131,8 +120,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: "Qurilma Ma'lumotlari",
-    description: "Brauzer, qurilma va tizim haqida batafsil ma'lumot",
+    tKey: 'deviceInfo',
     href: '/tools/device-info',
     icon: Monitor,
     color: 'bg-slate-500/20',
@@ -140,8 +128,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Kamera Yozib Oluvchi',
-    description: "Kamerangizni sinab ko'ring va video yozing",
+    tKey: 'cameraRecorder',
     href: '/tools/camera-recorder',
     icon: Camera,
     color: 'bg-emerald-500/20',
@@ -149,8 +136,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Mikrofon Test',
-    description: "Mikrofonni sinab ko'ring va ovoz yozing",
+    tKey: 'microphoneTest',
     href: '/tools/microphone-test',
     icon: Mic,
     color: 'bg-blue-600/20',
@@ -158,8 +144,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Klaviatura Kodlari',
-    description: 'Klaviatura tugmalari kodlarini aniqlang',
+    tKey: 'keycodeInfo',
     href: '/tools/keycode-info',
     icon: Keyboard,
     color: 'bg-violet-500/20',
@@ -167,8 +152,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'Open Graph Meta',
-    description: 'Ijtimoiy tarmoqlar uchun meta taglar yarating',
+    tKey: 'ogMetaGenerator',
     href: '/tools/og-meta-generator',
     icon: Share2,
     color: 'bg-blue-500/20',
@@ -176,8 +160,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'Lorem Ipsum',
-    description: 'Placeholder matn va paragraflar yarating',
+    tKey: 'loremIpsum',
     href: '/tools/lorem-ipsum',
     icon: FileType,
     color: 'bg-gray-500/20',
@@ -185,8 +168,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: "Ekran O'lchami",
-    description: "Ekran o'lchami va resolution ma'lumotlari",
+    tKey: 'screenResolution',
     href: '/tools/screen-resolution',
     icon: Ruler,
     color: 'bg-purple-600/20',
@@ -194,8 +176,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'User Agent Tahlil',
-    description: "Brauzer User Agent ma'lumotlarini tahlil qiling",
+    tKey: 'userAgentAnalyzer',
     href: '/tools/user-agent-analyzer',
     icon: User,
     color: 'bg-orange-600/20',
@@ -203,8 +184,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: "IP Ma'lumotlari",
-    description: "IP manzil va joylashuv ma'lumotlari",
+    tKey: 'ipInfo',
     href: '/tools/ip-info',
     icon: MapPin,
     color: 'bg-red-600/20',
@@ -212,8 +192,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
   {
-    title: 'Website Status',
-    description: 'Website mavjudligi va holatini tekshiring',
+    tKey: 'websiteStatus',
     href: '/tools/website-status',
     icon: Globe2,
     color: 'bg-green-600/20',
@@ -221,8 +200,7 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'developer',
   },
   {
-    title: 'HTTP Status Kodlari',
-    description: "Barcha HTTP status kodlari va ularning ma'nolari",
+    tKey: 'httpStatus',
     href: '/tools/http-status',
     icon: Server,
     color: 'bg-slate-600/20',
