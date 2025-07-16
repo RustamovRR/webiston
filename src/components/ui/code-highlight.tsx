@@ -34,22 +34,22 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
       .replace(
         /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
         (match) => {
-          let cls = 'text-blue-400' // numbers
+          let cls = 'text-blue-600 dark:text-blue-400' // numbers
           if (/^"/.test(match)) {
             if (/:$/.test(match)) {
-              cls = 'text-purple-400' // keys
+              cls = 'text-purple-600 dark:text-purple-400' // keys
             } else {
-              cls = 'text-green-400' // strings
+              cls = 'text-green-600 dark:text-green-400' // strings
             }
           } else if (/true|false/.test(match)) {
-            cls = 'text-orange-400' // booleans
+            cls = 'text-orange-600 dark:text-orange-400' // booleans
           } else if (/null/.test(match)) {
-            cls = 'text-red-400' // null
+            cls = 'text-red-600 dark:text-red-400' // null
           }
           return `<span class="${cls}">${match}</span>`
         },
       )
-      .replace(/([{}[\],])/g, '<span class="text-gray-400">$1</span>') // punctuation
+      .replace(/([{}[\],])/g, '<span class="text-gray-600 dark:text-gray-400">$1</span>') // punctuation
   }
 
   const highlightHTML = (html: string) => {
@@ -62,27 +62,27 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
       .replace(/'/g, '&#x27;')
 
     return escaped
-      .replace(/(&lt;\/?[^&gt;]+&gt;)/g, '<span class="text-blue-400">$1</span>') // tags
-      .replace(/(\w+)=/g, '<span class="text-purple-400">$1</span>=') // attributes
-      .replace(/&quot;([^&]*)&quot;/g, '&quot;<span class="text-green-400">$1</span>&quot;') // attribute values
-      .replace(/(&lt;!--[^&]*--&gt;)/g, '<span class="text-gray-500">$1</span>') // comments
+      .replace(/(&lt;\/?[^&gt;]+&gt;)/g, '<span class="text-blue-600 dark:text-blue-400">$1</span>') // tags
+      .replace(/(\w+)=/g, '<span class="text-purple-600 dark:text-purple-400">$1</span>=') // attributes
+      .replace(/&quot;([^&]*)&quot;/g, '&quot;<span class="text-green-600 dark:text-green-400">$1</span>&quot;') // attribute values
+      .replace(/(&lt;!--[^&]*--&gt;)/g, '<span class="text-gray-500 dark:text-gray-500">$1</span>') // comments
   }
 
   const highlightCSS = (css: string) => {
     return css
-      .replace(/([\w-]+)(\s*:)/g, '<span class="text-purple-400">$1</span>$2') // properties
-      .replace(/:\s*([^;}\n]+)/g, ': <span class="text-green-400">$1</span>') // values
-      .replace(/([.#][\w-]+)/g, '<span class="text-blue-400">$1</span>') // selectors
+      .replace(/([\w-]+)(\s*:)/g, '<span class="text-purple-600 dark:text-purple-400">$1</span>$2') // properties
+      .replace(/:\s*([^;}\n]+)/g, ': <span class="text-green-600 dark:text-green-400">$1</span>') // values
+      .replace(/([.#][\w-]+)/g, '<span class="text-blue-600 dark:text-blue-400">$1</span>') // selectors
   }
 
   const highlightJS = (js: string) => {
     return js
       .replace(
         /\b(function|var|let|const|if|else|for|while|return|import|export|from|class|extends)\b/g,
-        '<span class="text-purple-400">$1</span>',
+        '<span class="text-purple-600 dark:text-purple-400">$1</span>',
       ) // keywords
-      .replace(/"([^"]*)"/g, '"<span class="text-green-400">$1</span>"') // strings
-      .replace(/'([^']*)'/g, '\'<span class="text-green-400">$1</span>\'') // strings
+      .replace(/"([^"]*)"/g, '"<span class="text-green-600 dark:text-green-400">$1</span>"') // strings
+      .replace(/'([^']*)'/g, '\'<span class="text-green-600 dark:text-green-400">$1</span>\'') // strings
       .replace(/\/\*[\s\S]*?\*\//g, '<span class="text-gray-500">$&</span>') // comments
       .replace(/\/\/.*$/gm, '<span class="text-gray-500">$&</span>') // line comments
   }
@@ -93,19 +93,24 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
 
   return (
     <div className={cn('relative', className)}>
-      <pre className="overflow-auto rounded-lg bg-zinc-900 p-4 text-sm">
+      <pre className="overflow-auto rounded-lg bg-zinc-100 p-4 text-sm dark:bg-zinc-900">
         <code className="font-mono">
           {showLineNumbers ? (
             <div className="table w-full">
               {highlightedLines.map((line, index) => (
                 <div key={index} className="table-row">
-                  <span className="table-cell w-8 pr-4 text-right text-zinc-500 select-none">{index + 1}</span>
-                  <span className="table-cell text-zinc-200" dangerouslySetInnerHTML={{ __html: line || '&nbsp;' }} />
+                  <span className="table-cell w-8 pr-4 text-right text-zinc-400 select-none dark:text-zinc-500">
+                    {index + 1}
+                  </span>
+                  <span
+                    className="table-cell text-zinc-800 dark:text-zinc-200"
+                    dangerouslySetInnerHTML={{ __html: line || '&nbsp;' }}
+                  />
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-zinc-200" dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+            <div className="text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: highlightedCode }} />
           )}
         </code>
       </pre>

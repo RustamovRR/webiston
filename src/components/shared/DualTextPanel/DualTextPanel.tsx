@@ -30,6 +30,8 @@ interface DualTextPanelProps {
   statusComponent?: React.ReactNode
   targetEmptyState?: React.ReactNode
   targetFooterComponent?: React.ReactNode
+  showShadow?: boolean
+  customTargetContent?: React.ReactNode
 }
 
 export function DualTextPanel({
@@ -51,6 +53,8 @@ export function DualTextPanel({
   statusComponent,
   targetEmptyState,
   targetFooterComponent,
+  showShadow = false,
+  customTargetContent,
 }: DualTextPanelProps) {
   const sourceStats = [
     { label: 'belgi', value: sourceText.length },
@@ -86,8 +90,9 @@ export function DualTextPanel({
         className={cn(
           'relative flex w-full flex-col rounded-xl shadow-inner',
           isTerminal
-            ? 'border border-zinc-200 bg-white/80 shadow-2xl backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80'
+            ? 'border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80'
             : 'bg-zinc-100 dark:bg-zinc-900/80',
+          showShadow && 'shadow-2xl',
         )}
       >
         <section
@@ -145,7 +150,9 @@ export function DualTextPanel({
             />
           ) : (
             <div className="absolute inset-0 h-full w-full overflow-y-auto">
-              {error ? (
+              {customTargetContent ? (
+                customTargetContent
+              ) : error ? (
                 <div className="p-4 text-red-500 dark:text-red-400">{error}</div>
               ) : isLoading ? (
                 <div className="flex h-full items-center justify-center p-4 text-zinc-500 dark:text-zinc-400">
