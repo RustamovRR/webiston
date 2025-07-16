@@ -41,7 +41,7 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
   }
 
   return (
-    <div className={cn(UI_PATTERNS.SWITCH_CONTAINER, sizeClassContainer[size])}>
+    <div className={cn('gap-1', UI_PATTERNS.SWITCH_CONTAINER, sizeClassContainer[size])}>
       {options.map((option) => {
         const isActive = value === option.value
 
@@ -56,7 +56,7 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
               disabled && 'cursor-not-allowed opacity-50',
               isActive
                 ? 'scale-[1.02] transform text-white shadow-lg'
-                : 'text-zinc-300 hover:bg-zinc-700/50 hover:text-zinc-100',
+                : 'text-zinc-600 hover:bg-zinc-500/10 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100',
             )}
             style={
               isActive

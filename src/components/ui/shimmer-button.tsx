@@ -92,7 +92,8 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
           // Base styles
           'group relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-lg font-medium transition-all duration-300 ease-in-out',
           'focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 focus-visible:outline-none',
-          'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+          'disabled:pointer-events-none disabled:cursor-not-allowed disabled:border disabled:border-zinc-300 disabled:!bg-inherit disabled:text-zinc-500 disabled:opacity-50',
+          'dark:disabled:border-zinc-600 dark:disabled:text-zinc-400',
 
           // Size styles
           getSizeStyles(),

@@ -102,7 +102,7 @@ export default function LatinCyrillicPage() {
       <ToolHeader title={t('ToolHeader.title')} description={t('ToolHeader.description')} />
 
       {/* Boshqaruv paneli */}
-      <div className="mb-6 rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm">
+      <div className="mb-6 rounded-lg border p-4 backdrop-blur-sm dark:border-none dark:bg-zinc-900/60">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-4">
             {/* Gradient Tabs for Direction Selection */}

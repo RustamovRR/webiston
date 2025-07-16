@@ -85,13 +85,15 @@ export function DualTextPanel({
       <div
         className={cn(
           'relative flex w-full flex-col rounded-xl shadow-inner',
-          isTerminal ? 'border border-zinc-800/50 bg-zinc-900/80 shadow-2xl backdrop-blur-sm' : 'bg-zinc-900/80',
+          isTerminal
+            ? 'border border-zinc-200 bg-white/80 shadow-2xl backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80'
+            : 'bg-zinc-100 dark:bg-zinc-900/80',
         )}
       >
         <section
           className={cn(
-            'flex h-16 items-center justify-between border-b border-zinc-800 px-4',
-            isTerminal ? 'bg-zinc-800/50' : '',
+            'flex h-16 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800',
+            isTerminal ? 'bg-zinc-100/50 dark:bg-zinc-800/50' : '',
           )}
         >
           <div className="flex items-center gap-2">
@@ -102,7 +104,7 @@ export function DualTextPanel({
                 ))}
               </div>
             )}
-            <span className="ml-2 text-lg font-medium text-zinc-100">{label}</span>
+            <span className="ml-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">{label}</span>
           </div>
           {isSource ? (
             <div className="flex items-center gap-1">
@@ -118,7 +120,7 @@ export function DualTextPanel({
                       onClick={onClear}
                       variant="ghost"
                       size="sm"
-                      className="text-zinc-400 hover:text-zinc-200"
+                      className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
                       aria-label="Tozalash"
                     >
                       <X size={18} />
@@ -137,19 +139,23 @@ export function DualTextPanel({
             <Textarea
               value={sourceText}
               onChange={(e) => onSourceChange(e.target.value)}
-              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0"
+              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-zinc-500"
               placeholder={sourcePlaceholder}
               disabled={isLoading}
             />
           ) : (
             <div className="absolute inset-0 h-full w-full overflow-y-auto">
               {error ? (
-                <div className="p-4 text-red-400">{error}</div>
+                <div className="p-4 text-red-500 dark:text-red-400">{error}</div>
               ) : isLoading ? (
-                <div className="flex h-full items-center justify-center p-4 text-zinc-400">Ishlanmoqda...</div>
+                <div className="flex h-full items-center justify-center p-4 text-zinc-500 dark:text-zinc-400">
+                  Ishlanmoqda...
+                </div>
               ) : convertedText ? (
                 <div className="p-4">
-                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-100">{convertedText}</pre>
+                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">
+                    {convertedText}
+                  </pre>
                 </div>
               ) : (
                 targetEmptyState || DefaultTargetEmptyState
@@ -160,12 +166,11 @@ export function DualTextPanel({
 
         <section
           className={cn(
-            'flex items-center justify-end border-t border-zinc-800 px-4 py-3',
-            isTerminal && 'bg-zinc-800/30',
+            'flex items-center justify-end border-t border-zinc-200 px-4 py-3 dark:border-zinc-800',
+            isTerminal && 'bg-zinc-100/30 dark:bg-zinc-800/30',
           )}
         >
           <StatsDisplay stats={stats} />
-          {!isSource && targetFooterComponent}
         </section>
       </div>
     )
@@ -181,11 +186,11 @@ export function DualTextPanel({
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-zinc-700 bg-zinc-900/90 shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-800/90"
+              className="h-12 w-12 rounded-full border-2 border-zinc-300 !bg-white/90 shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-100/90 dark:border-zinc-700 dark:!bg-zinc-900/90 dark:hover:bg-zinc-800/90"
               title={swapButtonTitle}
               disabled={isLoading}
             >
-              {swapIcon || <ArrowLeftRight size={20} className="text-zinc-300" />}
+              {swapIcon || <ArrowLeftRight size={20} className="text-zinc-600 dark:text-zinc-300" />}
             </ShimmerButton>
           </div>
         </div>
