@@ -8,15 +8,16 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Card } from '@/components/ui/card'
 
 // Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import { DualTextPanel } from '@/components/shared/DualTextPanel'
 
+// Local Components
+import { InfoSection } from './components'
+
 // Utils & Hooks
 import { useLatinCyrillic } from '@/hooks/tools/useLatinCyrillic'
-import SectionTitle from '@/components/shared/SectionTitle'
 
 export default function LatinCyrillicPage() {
   const t = useTranslations('LatinCyrillicPage')
@@ -167,154 +168,7 @@ export default function LatinCyrillicPage() {
         targetFooterComponent={targetFooterComponent}
       />
 
-      {/* Info Section - Card Based Layout */}
-      <div className="mt-12">
-        <SectionTitle
-          icon={<FileText className="h-6 w-6" />}
-          title={t('Info.title')}
-          description={t('Info.description')}
-        />
-
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Lotin Alifbosi */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20">
-                  <FileText className="h-5 w-5 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.latinAlphabet.title')}</h3>
-              </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">{t('Info.latinAlphabet.description')}</p>
-              <div className="space-y-2 text-sm">
-                <p className="text-zinc-300">
-                  <strong>{t('Info.latinAlphabet.letterCount')}:</strong> 29 ta
-                </p>
-                <p className="text-zinc-300">
-                  <strong>{t('Info.latinAlphabet.specialChars')}:</strong> o', g', sh, ch, ng
-                </p>
-                <p className="text-zinc-300">
-                  <strong>{t('Info.latinAlphabet.feature')}:</strong> {t('Info.latinAlphabet.featureDesc')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Kirill Alifbosi */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/20">
-                  <FileText className="h-5 w-5 text-green-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.cyrillicAlphabet.title')}</h3>
-              </div>
-              <p className="mb-4 leading-relaxed text-zinc-400">{t('Info.cyrillicAlphabet.description')}</p>
-              <div className="space-y-2 text-sm">
-                <p className="text-zinc-300">
-                  <strong>{t('Info.cyrillicAlphabet.letterCount')}:</strong> 35 ta
-                </p>
-                <p className="text-zinc-300">
-                  <strong>{t('Info.cyrillicAlphabet.specialChars')}:</strong> ў, ғ, қ, ҳ
-                </p>
-                <p className="text-zinc-300">
-                  <strong>{t('Info.cyrillicAlphabet.feature')}:</strong> {t('Info.cyrillicAlphabet.featureDesc')}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Transliteratsiya qoidalari */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/20">
-                  <ArrowLeftRight className="h-5 w-5 text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.rules.title')}</h3>
-              </div>
-              <div className="space-y-3 text-sm leading-relaxed text-zinc-400">
-                <div>
-                  <p className="font-medium text-zinc-300">{t('Info.rules.latinToCyrillic')}</p>
-                  <p>o' → ў, g' → ғ, sh → ш, ch → ч</p>
-                </div>
-                <div>
-                  <p className="font-medium text-zinc-300">{t('Info.rules.cyrillicToLatin')}</p>
-                  <p>ў → o', ғ → g', ш → sh, ч → ch</p>
-                </div>
-                <p className="mt-3 text-xs">{t('Info.rules.accuracy')}</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Tarix */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20">
-                  <FileText className="h-5 w-5 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.history.title')}</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>
-                  <strong className="text-zinc-300">{t('Info.history.period1')}</strong>
-                </p>
-                <p>
-                  <strong className="text-zinc-300">{t('Info.history.period2')}</strong>
-                </p>
-                <p>
-                  <strong className="text-zinc-300">{t('Info.history.period3')}</strong>
-                </p>
-                <p className="mt-3 text-xs">{t('Info.history.note')}</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Qo'llanish sohalari */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-500/20">
-                  <FileText className="h-5 w-5 text-red-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.usage.title')}</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>
-                  <strong className="text-zinc-300">{t('Info.usage.latin')}</strong> {t('Info.usage.latinDesc')}
-                </p>
-                <p>
-                  <strong className="text-zinc-300">{t('Info.usage.cyrillic')}</strong> {t('Info.usage.cyrillicDesc')}
-                </p>
-                <p>
-                  <strong className="text-zinc-300">{t('Info.usage.mixed')}</strong> {t('Info.usage.mixedDesc')}
-                </p>
-                <p className="mt-3 text-xs">{t('Info.usage.note')}</p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Foydali maslahatlar */}
-          <Card className="border-zinc-800/30 bg-zinc-900/60 backdrop-blur-sm">
-            <div className="p-6">
-              <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/20">
-                  <FileText className="h-5 w-5 text-indigo-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white">{t('Info.tips.title')}</h3>
-              </div>
-              <div className="space-y-2 text-sm leading-relaxed text-zinc-400">
-                <p>{t('Info.tips.tip1')}</p>
-                <p>{t('Info.tips.tip2')}</p>
-                <p>{t('Info.tips.tip3')}</p>
-                <p>{t('Info.tips.tip4')}</p>
-                <p className="mt-3 text-xs">{t('Info.tips.note')}</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
+      <InfoSection />
     </div>
   )
 }
