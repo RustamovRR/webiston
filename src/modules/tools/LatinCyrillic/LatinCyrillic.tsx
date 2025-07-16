@@ -166,6 +166,7 @@ export default function LatinCyrillicPage() {
         statusComponent={statusComponent}
         targetEmptyState={targetEmptyState}
         targetFooterComponent={targetFooterComponent}
+        showShadow
       />
 
       <InfoSection />

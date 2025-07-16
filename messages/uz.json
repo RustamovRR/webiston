@@ -54,7 +54,8 @@
     },
     "jsonFormatter": {
       "title": "JSON Formatlash",
-      "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi"
+      "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",
+      "keywords": "JSON formatter, JSON validator, JSON beautifier, JSON minifier, JSON parser, JSON tool, JSON формат, JSON валидатор, JSON парсер, JSON инструмент, жсон форматлаш, жсон текшириш"
     },
     "base64Converter": {
       "title": "Base64 O'giruvchi",
@@ -87,6 +88,81 @@
     "ipInfo": { "title": "IP Ma'lumotlari", "description": "IP manzil va joylashuv ma'lumotlari" },
     "websiteStatus": { "title": "Website Status", "description": "Website mavjudligi va holatini tekshiring" },
     "httpStatus": { "title": "HTTP Status Kodlari", "description": "Barcha HTTP status kodlari va ularning ma'nolari" }
+  },
+  "Common": {
+    "stats": {
+      "characters": "belgi",
+      "words": "so'z",
+      "lines": "qator"
+    },
+    "processing": "Ishlanmoqda...",
+    "resultWillAppear": "Natija shu yerda ko'rinadi.",
+    "backToTools": "Orqaga qaytish"
+  },
+  "JsonFormatterPage": {
+    "ToolHeader": {
+      "title": "JSON Formatlash va Tekshirish",
+      "description": "JSON ma'lumotlarni formatlash, tekshirish va optimallashtirish vositasi"
+    },
+    "ControlPanel": {
+      "actions": "Amallar:",
+      "fileUpload": "Fayl yuklash",
+      "sampleJson": "Namuna JSON",
+      "clear": "Tozalash",
+      "indentation": "Chekinish:",
+      "lineNumbers": "Qator №",
+      "showLineNumbers": "Qator raqamlarini ko'rsatish",
+      "hideLineNumbers": "Qator raqamlarini yashirish",
+      "minified": "Siqilgan",
+      "formatted": "Kengaytirilgan",
+      "minifiedView": "Siqilgan ko'rinish",
+      "formattedView": "Kengaytirilgan ko'rinish",
+      "download": "Yuklab olish"
+    },
+    "Panel": {
+      "sourceLabel": "JSON Kirish",
+      "targetLabelFormatted": "Formatlangan JSON",
+      "targetLabelMinified": "Siqilgan JSON",
+      "sourcePlaceholder": "JSON ma'lumotlaringizni bu yerga kiriting yoki fayl yuklang...",
+      "validFormat": "To'g'ri format",
+      "errorExists": "Xatolik mavjud",
+      "emptyStateTitle": "Formatlangan JSON bu yerda ko'rinadi...",
+      "emptyStateDescription": "JSON kiriting yoki fayl yuklang",
+      "errorTitle": "JSON Format Xatoligi",
+      "fileSize": "Hajm:"
+    },
+    "Info": {
+      "title": "JSON haqida ma'lumot",
+      "whatIsJson": {
+        "title": "JSON nima?",
+        "description": "JSON (JavaScript Object Notation) - ma'lumotlarni saqlash va uzatish uchun yengil va tushunarli format. Zamonaviy veb-ilovalar va API larda keng qo'llaniladi."
+      },
+      "features": {
+        "title": "Asosiy xususiyatlari",
+        "feature1": "• Odam o'qishi oson format",
+        "feature2": "• Til mustaqil standart",
+        "feature3": "• Kichik hajm va tez ishlov",
+        "feature4": "• Keng qo'llab-quvvatlash"
+      },
+      "usage": {
+        "title": "Qo'llanish sohalari",
+        "usage1": "• API javoblari va so'rovlari",
+        "usage2": "• Konfiguratsiya fayllari",
+        "usage3": "• Ma'lumotlar bazasi eksport",
+        "usage4": "• Veb ilovalar uchun ma'lumot uzatish"
+      }
+    },
+    "Errors": {
+      "invalidJsonFormat": "Noto'g'ri JSON format",
+      "unexpectedToken": "Kutilmagan belgi. JSON formatini tekshiring.",
+      "unexpectedEnd": "JSON tugallanmagan. Qavslar yoki tirnoqlarni tekshiring.",
+      "propertyName": "Xususiyat nomi qo'sh tirnoqda bo'lishi kerak.",
+      "unexpectedString": "Kutilmagan matn. Vergul yoki qavslarni tekshiring.",
+      "jsonError": "JSON xatoligi:",
+      "fileTypeError": "Faqat JSON yoki TXT fayllarni yuklash mumkin.",
+      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
+      "fileReadError": "Faylni o'qishda xatolik yuz berdi."
+    }
   },
   "LatinCyrillicPage": {
     "ToolHeader": {

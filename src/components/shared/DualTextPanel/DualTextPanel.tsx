@@ -88,7 +88,7 @@ export function DualTextPanel({
     return (
       <div
         className={cn(
-          'relative flex w-full flex-col rounded-xl shadow-inner',
+          'relative flex w-full flex-col rounded-xl',
           isTerminal
             ? 'border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80'
             : 'bg-zinc-100 dark:bg-zinc-900/80',

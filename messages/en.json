@@ -52,7 +52,11 @@
       "title": "Latin-Cyrillic Converter",
       "description": "Convert texts in Uzbek from Latin to Cyrillic and vice versa."
     },
-    "jsonFormatter": { "title": "JSON Formatter", "description": "A tool to format and validate JSON data." },
+    "jsonFormatter": {
+      "title": "JSON Formatter",
+      "description": "A tool to format and validate JSON data.",
+      "keywords": "JSON formatter, JSON validator, JSON beautifier, JSON minifier, JSON parser, JSON tool, JSON формат, JSON валидатор, JSON парсер, JSON инструмент, жсон форматлаш, жсон текшириш"
+    },
     "base64Converter": {
       "title": "Base64 Converter",
       "description": "Encode and decode text and files to/from Base64 format."
@@ -93,6 +97,81 @@
       "description": "Check the availability and status of a website."
     },
     "httpStatus": { "title": "HTTP Status Codes", "description": "All HTTP status codes and their meanings." }
+  },
+  "Common": {
+    "stats": {
+      "characters": "characters",
+      "words": "words",
+      "lines": "lines"
+    },
+    "processing": "Processing...",
+    "resultWillAppear": "Result will appear here.",
+    "backToTools": "Back to Tools"
+  },
+  "JsonFormatterPage": {
+    "ToolHeader": {
+      "title": "JSON Formatter and Validator",
+      "description": "A tool to format, validate and optimize JSON data"
+    },
+    "ControlPanel": {
+      "actions": "Actions:",
+      "fileUpload": "Upload File",
+      "sampleJson": "Sample JSON",
+      "clear": "Clear",
+      "indentation": "Indentation:",
+      "lineNumbers": "Line #",
+      "showLineNumbers": "Show line numbers",
+      "hideLineNumbers": "Hide line numbers",
+      "minified": "Minified",
+      "formatted": "Formatted",
+      "minifiedView": "Minified view",
+      "formattedView": "Formatted view",
+      "download": "Download"
+    },
+    "Panel": {
+      "sourceLabel": "JSON Input",
+      "targetLabelFormatted": "Formatted JSON",
+      "targetLabelMinified": "Minified JSON",
+      "sourcePlaceholder": "Enter your JSON data here or upload a file...",
+      "validFormat": "Valid format",
+      "errorExists": "Error exists",
+      "emptyStateTitle": "Formatted JSON will appear here...",
+      "emptyStateDescription": "Enter JSON or upload a file",
+      "errorTitle": "JSON Format Error",
+      "fileSize": "Size:"
+    },
+    "Info": {
+      "title": "About JSON",
+      "whatIsJson": {
+        "title": "What is JSON?",
+        "description": "JSON (JavaScript Object Notation) is a lightweight and readable format for storing and transmitting data. It is widely used in modern web applications and APIs."
+      },
+      "features": {
+        "title": "Key Features",
+        "feature1": "• Human-readable format",
+        "feature2": "• Language-independent standard",
+        "feature3": "• Small size and fast processing",
+        "feature4": "• Wide support"
+      },
+      "usage": {
+        "title": "Usage Areas",
+        "usage1": "• API responses and requests",
+        "usage2": "• Configuration files",
+        "usage3": "• Database exports",
+        "usage4": "• Data transmission for web applications"
+      }
+    },
+    "Errors": {
+      "invalidJsonFormat": "Invalid JSON format",
+      "unexpectedToken": "Unexpected token. Check JSON format.",
+      "unexpectedEnd": "JSON is incomplete. Check brackets or quotes.",
+      "propertyName": "Property name must be in double quotes.",
+      "unexpectedString": "Unexpected string. Check commas or brackets.",
+      "jsonError": "JSON error:",
+      "fileTypeError": "Only JSON or TXT files can be uploaded.",
+      "fileSizeError": "File size must be less than 10MB.",
+      "fileReadError": "Error occurred while reading the file."
+    }
   },
   "LatinCyrillicPage": {
     "ToolHeader": {
