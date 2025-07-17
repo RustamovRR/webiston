@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface JWTPayload {
   [key: string]: any
@@ -38,6 +39,9 @@ interface JwtDecoderState {
 }
 
 export const useJwtDecoder = () => {
+  const tErrors = useTranslations('JwtDecoderPage.ErrorDisplay')
+  const tFileErrors = useTranslations('JwtDecoderPage.FileErrors')
+
   const [inputText, setInputText] = useState('')
   const [viewMode, setViewMode] = useState<'decoded' | 'raw'>('decoded')
   const [showSignature, setShowSignature] = useState(false)
@@ -80,7 +84,7 @@ export const useJwtDecoder = () => {
           payload: {},
           signature: '',
           isValid: false,
-          error: "JWT 3 ta qismdan iborat bo'lishi kerak (header.payload.signature)",
+          error: tErrors('threeParts'),
         }
       }
 
@@ -104,10 +108,10 @@ export const useJwtDecoder = () => {
         payload: {},
         signature: '',
         isValid: false,
-        error: "Noto'g'ri JWT format yoki buzilgan token",
+        error: tErrors('invalidFormat'),
       }
     }
-  }, [inputText])
+  }, [inputText, tErrors])
 
   // Calculate token info
   const tokenInfo = useMemo((): TokenInfo | null => {
@@ -130,43 +134,46 @@ export const useJwtDecoder = () => {
   }, [result])
 
   // File upload handler
-  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleFileUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0]
+      if (!file) return
 
-    // File size validation (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      alert('Fayl hajmi 10MB dan oshmasligi kerak.')
-      return
-    }
+      // File size validation (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert(tFileErrors('fileSizeError'))
+        return
+      }
 
-    // File type validation
-    const allowedTypes = ['text/plain', 'application/json']
-    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|json)$/)) {
-      alert('Faqat .txt yoki .json fayllar qabul qilinadi.')
-      return
-    }
+      // File type validation
+      const allowedTypes = ['text/plain', 'application/json']
+      if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|json)$/)) {
+        alert(tFileErrors('fileTypeError'))
+        return
+      }
 
-    setIsProcessing(true)
+      setIsProcessing(true)
 
-    try {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target?.result as string
-        setInputText(content.trim())
+      try {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const content = e.target?.result as string
+          setInputText(content.trim())
+          setIsProcessing(false)
+        }
+        reader.onerror = () => {
+          alert(tFileErrors('fileReadError'))
+          setIsProcessing(false)
+        }
+        reader.readAsText(file)
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : tFileErrors('fileUploadError')
+        alert(errorMessage)
         setIsProcessing(false)
       }
-      reader.onerror = () => {
-        alert("Faylni o'qishda xatolik yuz berdi.")
-        setIsProcessing(false)
-      }
-      reader.readAsText(file)
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Faylni yuklashda xatolik yuz berdi.'
-      alert(errorMessage)
-      setIsProcessing(false)
-    }
-  }, [])
+    },
+    [tFileErrors],
+  )
 
   // Download handlers
   const handleDownloadHeader = useCallback(() => {
@@ -182,9 +189,9 @@ export const useJwtDecoder = () => {
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      alert('Faylni yuklab olishda xatolik yuz berdi.')
+      alert(tFileErrors('downloadError'))
     }
-  }, [result])
+  }, [result, tFileErrors])
 
   const handleDownloadPayload = useCallback(() => {
     if (!result?.isValid) return
@@ -199,9 +206,9 @@ export const useJwtDecoder = () => {
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      alert('Faylni yuklab olishda xatolik yuz berdi.')
+      alert(tFileErrors('downloadError'))
     }
-  }, [result])
+  }, [result, tFileErrors])
 
   // Load sample text
   const loadSampleText = useCallback((sampleValue: string) => {
