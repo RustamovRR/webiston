@@ -1,5 +1,6 @@
 import React from 'react'
 import { Download, Upload, FileText, ChevronDown, X, Zap } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -29,9 +30,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   canDownload,
   downloadResult,
 }) => {
+  const t = useTranslations('Base64ConverterPage.ControlPanel')
+
   const tabOptions = [
-    { value: 'encode', label: 'Kodlash (Encode)', icon: <Zap size={16} /> },
-    { value: 'decode', label: 'Dekodlash (Decode)', icon: <FileText size={16} /> },
+    { value: 'encode', label: t('encode'), icon: <Zap size={16} /> },
+    { value: 'decode', label: t('decode'), icon: <FileText size={16} /> },
   ]
 
   return (
@@ -58,7 +61,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <Button variant="outline" size="sm" asChild disabled={isProcessing}>
             <label htmlFor="file-upload" className="cursor-pointer">
               <Upload size={16} className="mr-2" />
-              Fayl yuklash
+              {t('fileUpload')}
             </label>
           </Button>
 
@@ -66,7 +69,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <FileText size={16} className="mr-2" />
-                Namuna Base64
+                {t('sampleBase64')}
                 <ChevronDown size={16} className="ml-2" />
               </Button>
             </DropdownMenuTrigger>
@@ -81,7 +84,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
           <Button variant="ghost" size="sm" onClick={handleClear}>
             <X size={16} className="mr-2" />
-            Tozalash
+            {t('clear')}
           </Button>
 
           <ShimmerButton
@@ -91,7 +94,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             size="sm"
           >
             <Download size={16} className="mr-2" />
-            Yuklab olish
+            {t('download')}
           </ShimmerButton>
         </div>
       </div>

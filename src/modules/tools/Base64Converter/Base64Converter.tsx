@@ -1,6 +1,7 @@
 'use client'
 
 import { FileText, ArrowLeftRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 // Shared Components
 import { ToolHeader } from '@/components/shared/ToolHeader'
@@ -13,6 +14,7 @@ import { InfoSection, ControlPanel } from './components'
 import { useBase64Converter } from '@/hooks/tools/useBase64Converter'
 
 const Base64Converter = () => {
+  const t = useTranslations('Base64ConverterPage')
   const {
     inputText,
     setInputText,
@@ -45,7 +47,7 @@ const Base64Converter = () => {
     inputText.length > 0 ? (
       <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
         <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-        {mode === 'encode' ? 'Kodlashga tayyor' : 'Dekodlashga tayyor'}
+        {mode === 'encode' ? t('Panel.readyToEncode') : t('Panel.readyToDecode')}
       </span>
     ) : null
 
@@ -55,9 +57,9 @@ const Base64Converter = () => {
       <div className="text-zinc-500">
         <FileText size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">
-          {mode === 'encode' ? "Kodlangan Base64 bu yerda ko'rinadi..." : "Dekodlangan matn bu yerda ko'rinadi..."}
+          {mode === 'encode' ? t('Panel.encodedBase64WillAppear') : t('Panel.decodedTextWillAppear')}
         </p>
-        <p className="mt-2 text-xs opacity-75">Matn kiriting yoki fayl yuklang</p>
+        <p className="mt-2 text-xs opacity-75">{t('Panel.enterTextOrUpload')}</p>
       </div>
     </div>
   )
@@ -65,7 +67,7 @@ const Base64Converter = () => {
   // Target footer component
   const targetFooterComponent = displayOutput ? (
     <div className="text-xs text-zinc-600 dark:text-zinc-400">
-      <span className="text-zinc-500">Hajm:</span>{' '}
+      <span className="text-zinc-500">{t('Panel.fileSize')}</span>{' '}
       <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
     </div>
   ) : null
@@ -77,7 +79,7 @@ const Base64Converter = () => {
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800/30 dark:bg-red-900/20">
           <div className="mb-2 flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-red-500 dark:bg-red-400"></div>
-            <strong className="text-sm text-red-700 dark:text-red-400">Konvertatsiya Xatoligi</strong>
+            <strong className="text-sm text-red-700 dark:text-red-400">{t('Panel.conversionError')}</strong>
           </div>
           <p className="font-mono text-sm text-red-600 dark:text-red-300">{result.error}</p>
         </div>
@@ -86,10 +88,7 @@ const Base64Converter = () => {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader
-        title="Base64 Konverter va Kodlash"
-        description="Matn va fayllarni Base64 formatiga o'girish va aksincha dekodlash vositasi"
-      />
+      <ToolHeader title={t('ToolHeader.title')} description={t('ToolHeader.description')} />
 
       <ControlPanel
         mode={mode}
@@ -107,18 +106,14 @@ const Base64Converter = () => {
       <DualTextPanel
         sourceText={inputText}
         convertedText={displayOutput}
-        sourcePlaceholder={
-          mode === 'encode'
-            ? "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang..."
-            : "Dekodlamoqchi bo'lgan Base64 matnni kiriting..."
-        }
-        sourceLabel={mode === 'encode' ? 'Oddiy Matn Kirish' : 'Base64 Matn Kirish'}
-        targetLabel={mode === 'encode' ? 'Base64 Natija' : 'Dekodlangan Natija'}
+        sourcePlaceholder={mode === 'encode' ? t('Panel.encodePlaceholder') : t('Panel.decodePlaceholder')}
+        sourceLabel={mode === 'encode' ? t('Panel.plainTextInput') : t('Panel.base64TextInput')}
+        targetLabel={mode === 'encode' ? t('Panel.base64Result') : t('Panel.decodedResult')}
         onSourceChange={setInputText}
         onSwap={handleModeSwitch}
         onClear={handleClear}
         swapIcon={<ArrowLeftRight size={20} />}
-        swapButtonTitle="Rejimni almashtirish"
+        swapButtonTitle={t('Panel.switchMode')}
         showSwapButton={true}
         showShadow={true}
         isProcessing={isProcessing}

@@ -59,7 +59,8 @@
     },
     "base64Converter": {
       "title": "Base64 Converter",
-      "description": "Encode and decode text and files to/from Base64 format."
+      "description": "Encode and decode text and files to/from Base64 format.",
+      "keywords": "Base64 encoder, Base64 decoder, Base64 converter, Base64 tool, кодировщик Base64, декодер Base64, конвертер Base64, инструмент Base64, base64 kodlash, base64 dekodlash"
     },
     "urlEncoder": { "title": "URL Encoder/Decoder", "description": "A tool to encode and decode URLs and text." },
     "jwtDecoder": { "title": "JWT Decoder", "description": "Decode and analyze JSON Web Tokens (JWT)." },
@@ -171,6 +172,64 @@
       "fileTypeError": "Only JSON or TXT files can be uploaded.",
       "fileSizeError": "File size must be less than 10MB.",
       "fileReadError": "Error occurred while reading the file."
+    }
+  },
+  "Base64ConverterPage": {
+    "ToolHeader": {
+      "title": "Base64 Converter and Encoder",
+      "description": "A tool to encode text and files to Base64 format and decode them back"
+    },
+    "ControlPanel": {
+      "encode": "Encode",
+      "decode": "Decode",
+      "fileUpload": "Upload File",
+      "sampleBase64": "Sample Base64",
+      "clear": "Clear",
+      "download": "Download"
+    },
+    "Panel": {
+      "plainTextInput": "Plain Text Input",
+      "base64TextInput": "Base64 Text Input",
+      "base64Result": "Base64 Result",
+      "decodedResult": "Decoded Result",
+      "encodePlaceholder": "Enter text you want to encode or upload a file...",
+      "decodePlaceholder": "Enter Base64 text you want to decode...",
+      "readyToEncode": "Ready to encode",
+      "readyToDecode": "Ready to decode",
+      "encodedBase64WillAppear": "Encoded Base64 will appear here...",
+      "decodedTextWillAppear": "Decoded text will appear here...",
+      "enterTextOrUpload": "Enter text or upload a file",
+      "conversionError": "Conversion Error",
+      "switchMode": "Switch mode",
+      "fileSize": "Size:"
+    },
+    "Info": {
+      "title": "About Base64",
+      "whatIsBase64": {
+        "title": "What is Base64?",
+        "description": "Base64 is an encoding method for representing binary data in text format. It uses 64 characters: A-Z, a-z, 0-9, +, /"
+      },
+      "features": {
+        "title": "Key Features",
+        "feature1": "• 6-bit based encoding",
+        "feature2": "• Platform independent format",
+        "feature3": "• Safe for text protocols",
+        "feature4": "• Wide support"
+      },
+      "usage": {
+        "title": "Usage Areas",
+        "usage1": "• Sending images via email",
+        "usage2": "• Embedding images in web pages",
+        "usage3": "• File transfer via API",
+        "usage4": "• Secure data storage"
+      },
+      "formatExample": {
+        "title": "Base64 format example",
+        "plainText": "Plain text:",
+        "base64Encoded": "Base64 encoded:",
+        "exampleText": "Hello world!",
+        "exampleEncoded": "SGVsbG8gd29ybGQh"
+      }
     }
   },
   "LatinCyrillicPage": {
