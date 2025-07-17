@@ -151,6 +151,13 @@
         "usage2": "• Konfiguratsiya fayllari",
         "usage3": "• Ma'lumotlar bazasi eksport",
         "usage4": "• Veb ilovalar uchun ma'lumot uzatish"
+      },
+      "formatExample": {
+        "title": "JSON format misollari",
+        "simpleObject": "Oddiy obyekt",
+        "nestedObject": "Ichki obyekt",
+        "simpleJson": "{\n  \"name\": \"Ali\",\n  \"age\": 30,\n  \"city\": \"Toshkent\"\n}",
+        "nestedJson": "{\n  \"person\": {\n    \"name\": \"Ali\",\n    \"contacts\": {\n      \"email\": \"ali@example.com\",\n      \"phone\": \"+998901234567\"\n    }\n  },\n  \"isActive\": true\n}"
       }
     },
     "Errors": {

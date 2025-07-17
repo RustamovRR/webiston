@@ -160,6 +160,13 @@
         "usage2": "• Configuration files",
         "usage3": "• Database exports",
         "usage4": "• Data transmission for web applications"
+      },
+      "formatExample": {
+        "title": "JSON format examples",
+        "simpleObject": "Simple object",
+        "nestedObject": "Nested object",
+        "simpleJson": "{\n  \"name\": \"John\",\n  \"age\": 30,\n  \"city\": \"New York\"\n}",
+        "nestedJson": "{\n  \"person\": {\n    \"name\": \"John\",\n    \"contacts\": {\n      \"email\": \"john@example.com\",\n      \"phone\": \"+1234567890\"\n    }\n  },\n  \"isActive\": true\n}"
       }
     },
     "Errors": {
