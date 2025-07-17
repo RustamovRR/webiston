@@ -2,6 +2,7 @@
 
 import { ArrowLeftRight, FileText, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Textarea } from '@/components/ui/textarea'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
@@ -56,16 +57,18 @@ export function DualTextPanel({
   showShadow = false,
   customTargetContent,
 }: DualTextPanelProps) {
+  const tCommon = useTranslations('Common')
+
   const sourceStats = [
-    { label: 'belgi', value: sourceText.length },
-    { label: "so'z", value: countWords(sourceText) },
-    { label: 'qator', value: sourceText.split('\n').length },
+    { label: tCommon('stats.characters'), value: sourceText.length },
+    { label: tCommon('stats.words'), value: countWords(sourceText) },
+    { label: tCommon('stats.lines'), value: sourceText.split('\n').length },
   ]
 
   const targetStats = [
-    { label: 'belgi', value: convertedText.length },
-    { label: "so'z", value: countWords(convertedText) },
-    { label: 'qator', value: convertedText.split('\n').length },
+    { label: tCommon('stats.characters'), value: convertedText.length },
+    { label: tCommon('stats.words'), value: countWords(convertedText) },
+    { label: tCommon('stats.lines'), value: convertedText.split('\n').length },
   ]
 
   const isTerminal = variant === 'terminal'
@@ -74,7 +77,7 @@ export function DualTextPanel({
     <div className="flex h-full items-center justify-center p-8 text-center">
       <div className="text-zinc-500">
         <FileText size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">Natija shu yerda ko'rinadi.</p>
+        <p className="text-sm">{tCommon('resultWillAppear')}</p>
       </div>
     </div>
   )
@@ -126,7 +129,7 @@ export function DualTextPanel({
                       variant="ghost"
                       size="sm"
                       className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
-                      aria-label="Tozalash"
+                      aria-label={tCommon('clear')}
                     >
                       <X size={18} />
                     </Button>
@@ -156,7 +159,7 @@ export function DualTextPanel({
                 <div className="p-4 text-red-500 dark:text-red-400">{error}</div>
               ) : isLoading ? (
                 <div className="flex h-full items-center justify-center p-4 text-zinc-500 dark:text-zinc-400">
-                  Ishlanmoqda...
+                  {tCommon('processing')}
                 </div>
               ) : convertedText ? (
                 <div className="p-4">
