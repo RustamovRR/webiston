@@ -5,6 +5,7 @@ export * from './ToolHeader'
 export * from './CopyButton'
 export * from './StatsDisplay'
 export * from './DualTextPanel'
+export * from './TerminalInput'
 export * from './Footer'
 export * from './Header'
 

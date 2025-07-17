@@ -181,10 +181,11 @@ export function DualTextPanel({
 
         <section
           className={cn(
-            'flex items-center justify-end border-t border-zinc-200 px-4 py-3 dark:border-zinc-800',
+            'flex items-center justify-between border-t border-zinc-200 px-4 py-3 dark:border-zinc-800',
             isTerminal && 'bg-zinc-100/30 dark:bg-zinc-800/30',
           )}
         >
+          <div className="flex items-center">{!isSource && targetFooterComponent}</div>
           <StatsDisplay stats={stats} />
         </section>
       </div>
