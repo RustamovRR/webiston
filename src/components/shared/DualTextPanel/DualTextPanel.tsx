@@ -33,6 +33,7 @@ interface DualTextPanelProps {
   targetFooterComponent?: React.ReactNode
   showShadow?: boolean
   customTargetContent?: React.ReactNode
+  extraHeaderComponent?: React.ReactNode
 }
 
 export function DualTextPanel({
@@ -56,6 +57,7 @@ export function DualTextPanel({
   targetFooterComponent,
   showShadow = false,
   customTargetContent,
+  extraHeaderComponent,
 }: DualTextPanelProps) {
   const tCommon = useTranslations('Common')
 
@@ -138,7 +140,10 @@ export function DualTextPanel({
               </AnimatePresence>
             </div>
           ) : (
-            <CopyButton text={convertedText} disabled={!convertedText || isLoading} />
+            <div className="flex items-center gap-2">
+              {extraHeaderComponent}
+              <CopyButton text={convertedText} disabled={!convertedText || isLoading} />
+            </div>
           )}
         </section>
 

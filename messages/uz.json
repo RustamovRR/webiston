@@ -165,6 +165,85 @@
       "fileReadError": "Faylni o'qishda xatolik yuz berdi."
     }
   },
+  "UrlEncoderPage": {
+    "ToolHeader": {
+      "title": "URL Kodlash va Dekodlash",
+      "description": "URL manzillarini xavfsiz formatga kodlash va dekodlash uchun professional vosita"
+    },
+    "ControlPanel": {
+      "encode": "Kodlash",
+      "decode": "Dekodlash",
+      "fileUpload": "Fayl yuklash",
+      "sampleUrl": "Namuna URL",
+      "clear": "Tozalash",
+      "download": "Yuklab olish"
+    },
+    "Panel": {
+      "plainTextInput": "Oddiy Matn Kirish",
+      "encodedUrlInput": "Kodlangan URL Kirish",
+      "encodedUrlResult": "Kodlangan URL Natija",
+      "decodedUrlResult": "Dekodlangan Natija",
+      "encodePlaceholder": "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang...",
+      "decodePlaceholder": "Dekodlamoqchi bo'lgan URL matnni kiriting...",
+      "readyToEncode": "Kodlashga tayyor",
+      "readyToDecode": "Dekodlashga tayyor",
+      "encodedUrlWillAppear": "Kodlangan URL bu yerda ko'rinadi...",
+      "decodedTextWillAppear": "Dekodlangan matn bu yerda ko'rinadi...",
+      "enterTextOrUpload": "Matn kiriting yoki fayl yuklang",
+      "conversionError": "Konvertatsiya Xatoligi",
+      "switchMode": "Rejimni almashtirish",
+      "fileSize": "Hajm:",
+      "validUrl": "To'g'ri URL",
+      "urlStructure": "URL Tuzilishi:"
+    },
+    "Info": {
+      "title": "URL Encoding haqida ma'lumot",
+      "whatIsUrlEncoding": {
+        "title": "URL Encoding nima?",
+        "description": "URL Encoding (Percent Encoding) - URL larda maxsus ma'noga ega bo'lgan belgilarni xavfsiz formatga o'girish usuli. Har bir belgi % va ikkita hex raqam bilan almashtiriladi."
+      },
+      "features": {
+        "title": "Asosiy xususiyatlari",
+        "feature1": "• Maxsus belgilarni %XX formatiga o'giradi",
+        "feature2": "• URL larni xavfsiz uzatish uchun moslashtiradi",
+        "feature3": "• Bo'shliq va ASCII bo'lmagan belgilarni qo'llab-quvvatlaydi",
+        "feature4": "• Veb ilovalar uchun standart"
+      },
+      "usage": {
+        "title": "Qachon kerak?",
+        "usage1": "• URL da bo'shliq va maxsus belgilar ishlatganda",
+        "usage2": "• Query parametrlarida &, ?, = ishlatganda",
+        "usage3": "• Form ma'lumotlarini yuborishda",
+        "usage4": "• API so'rovlarida xavfsizlik uchun"
+      },
+      "formatExample": {
+        "title": "URL encoding misollari",
+        "spacesAndSymbols": "Bo'shliq va maxsus belgilar",
+        "queryParameters": "Query parametrlari",
+        "plainText": "Asl holati:",
+        "encodedUrl": "Kodlangan:"
+      }
+    },
+    "Errors": {
+      "textTooLong": "Matn juda uzun (maksimal 1MB)",
+      "conversionError": "Konvertatsiya xatoligi",
+      "invalidUrlFormat": "Noto'g'ri URL kodlash formati. Percent encoding to'g'riligini tekshiring.",
+      "decodeError": "URL dekodlashda xatolik. Format to'g'riligini tekshiring.",
+      "encodeError": "URL kodlashda xatolik yuz berdi.",
+      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
+      "fileTypeError": "Faqat matn fayllarni yuklash mumkin.",
+      "fileReadError": "Faylni o'qishda xatolik yuz berdi.",
+      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
+      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    },
+    "Samples": {
+      "simpleUrl": "Oddiy URL",
+      "complexUrl": "Murakkab URL",
+      "queryString": "Qidiruv so'rovi",
+      "emailQuery": "Email havolasi",
+      "socialShare": "Ijtimoiy tarmoq"
+    }
+  },
   "Base64ConverterPage": {
     "ToolHeader": {
       "title": "Base64 Konverter va Kodlash",
