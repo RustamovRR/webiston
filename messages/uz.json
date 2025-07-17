@@ -171,8 +171,8 @@
       "description": "Matn va fayllarni Base64 formatiga o'girish va aksincha dekodlash vositasi"
     },
     "ControlPanel": {
-      "encode": "Kodlash (Encode)",
-      "decode": "Dekodlash (Decode)",
+      "encode": "Kodlash",
+      "decode": "Dekodlash",
       "fileUpload": "Fayl yuklash",
       "sampleBase64": "Namuna Base64",
       "clear": "Tozalash",

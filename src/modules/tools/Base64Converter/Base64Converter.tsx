@@ -101,6 +101,7 @@ const Base64Converter = () => {
         handleClear={handleClear}
         canDownload={canDownload}
         downloadResult={downloadResult}
+        handleModeSwitch={handleModeSwitch}
       />
 
       <DualTextPanel

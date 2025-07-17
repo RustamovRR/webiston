@@ -16,6 +16,7 @@ interface ControlPanelProps {
   handleClear: () => void
   canDownload: boolean
   downloadResult: () => void
+  handleModeSwitch: () => void
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -29,6 +30,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   handleClear,
   canDownload,
   downloadResult,
+  handleModeSwitch,
 }) => {
   const t = useTranslations('Base64ConverterPage.ControlPanel')
 
@@ -44,7 +46,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <GradientTabs
             options={tabOptions}
             value={mode}
-            onChange={(value) => setMode(value as 'encode' | 'decode')}
+            onChange={(value) => {
+              // Instead of directly setting mode, use handleModeSwitch to properly handle input/output swap
+              if (value !== mode) {
+                handleModeSwitch()
+              }
+            }}
             toolCategory="converters"
           />
         </div>
