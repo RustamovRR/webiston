@@ -230,6 +230,30 @@
         "exampleText": "Hello world!",
         "exampleEncoded": "SGVsbG8gd29ybGQh"
       }
+    },
+    "Errors": {
+      "invalidBase64Format": "Invalid Base64 format. Use only A-Z, a-z, 0-9, +, / and = characters.",
+      "conversionError": "Conversion error",
+      "invalidBase64Text": "Invalid Base64 format. Check that the text is properly encoded.",
+      "base64DecodeError": "Error decoding Base64. Check format correctness.",
+      "textEncodeError": "Error occurred while encoding text.",
+      "fileSizeError": "File size must be less than 10MB.",
+      "imageReadError": "Error occurred while reading image file.",
+      "fileReadError": "Error occurred while reading file content.",
+      "encodeFileTypeError": "Only text and image files can be uploaded.",
+      "decodeFileTypeError": "Only text files can be uploaded for decoding.",
+      "fileUploadError": "Error occurred while uploading file.",
+      "downloadError": "Error occurred while downloading file."
+    },
+    "Samples": {
+      "uzbekGreeting": "Uzbek greeting",
+      "jsonSample": "JSON sample",
+      "urlSample": "URL sample",
+      "emailSample": "Email sample",
+      "base64Text": "Base64 text",
+      "base64Json": "Base64 JSON",
+      "base64Url": "Base64 URL",
+      "base64Email": "Base64 Email"
     }
   },
   "LatinCyrillicPage": {

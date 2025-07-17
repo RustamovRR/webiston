@@ -221,6 +221,30 @@
         "exampleText": "Salom dunyo!",
         "exampleEncoded": "U2Fsb20gZHVueW8h"
       }
+    },
+    "Errors": {
+      "invalidBase64Format": "Noto'g'ri Base64 format. Faqat A-Z, a-z, 0-9, +, / va = belgilardan foydalaning.",
+      "conversionError": "Konvertatsiya xatoligi",
+      "invalidBase64Text": "Noto'g'ri Base64 format. Matn to'g'ri kodlanganligini tekshiring.",
+      "base64DecodeError": "Base64 dekodlashda xatolik. Format to'g'riligini tekshiring.",
+      "textEncodeError": "Matnni kodlashda xatolik yuz berdi.",
+      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
+      "imageReadError": "Rasm faylini o'qishda xatolik yuz berdi.",
+      "fileReadError": "Fayl mazmunini o'qishda xatolik yuz berdi.",
+      "encodeFileTypeError": "Faqat matn va rasm fayllarni yuklash mumkin.",
+      "decodeFileTypeError": "Dekodlash uchun faqat matn fayllarni yuklash mumkin.",
+      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
+      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    },
+    "Samples": {
+      "uzbekGreeting": "O'zbek salomlashuvi",
+      "jsonSample": "JSON namunasi",
+      "urlSample": "URL namunasi",
+      "emailSample": "Email namunasi",
+      "base64Text": "Base64 matn",
+      "base64Json": "Base64 JSON",
+      "base64Url": "Base64 URL",
+      "base64Email": "Base64 Email"
     }
   },
   "LatinCyrillicPage": {
