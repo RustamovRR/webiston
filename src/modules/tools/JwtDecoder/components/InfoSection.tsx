@@ -20,9 +20,9 @@ const InfoSection: React.FC = () => {
   return (
     <>
       {/* JWT Examples Section */}
-      <div className="mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+      <div className="animate-in slide-in-from-bottom-2 fade-in mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-200 dark:border-zinc-800/30 dark:bg-zinc-900/60">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
-          <Key size={20} className="text-indigo-400" />
+          <Key size={20} className="text-indigo-400 transition-transform duration-200" />
           {t('structure')}
         </h3>
         <div className="grid gap-4 md:grid-cols-2">
@@ -64,8 +64,8 @@ const InfoSection: React.FC = () => {
         </div>
       </div>
 
-      {/* JWT Info Section */}
-      <div className="mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+      {/* JWT About Section */}
+      <div className="animate-in slide-in-from-bottom-3 fade-in mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-700 hover:shadow-md dark:border-zinc-800/30 dark:bg-zinc-900/60">
         <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
           <Shield size={20} className="text-indigo-400" />
           {t('about')}

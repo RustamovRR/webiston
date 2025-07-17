@@ -28,20 +28,20 @@ const TokenParts: React.FC<TokenPartsProps> = ({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Header Panel */}
-      <div className="rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+      <div className="rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/30 dark:bg-zinc-900/60">
         <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-red-500/80 transition-all duration-200 hover:bg-red-500"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80 transition-all duration-200 hover:bg-yellow-500"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80 transition-all duration-200 hover:bg-green-500"></div>
             </div>
             <span className="ml-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">{t('header')}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadHeader}
-              className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+              className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-all duration-200 hover:scale-105 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
               aria-label="Download Header"
             >
               <Download size={18} />
@@ -50,13 +50,15 @@ const TokenParts: React.FC<TokenPartsProps> = ({
           </div>
         </div>
         <div className="relative min-h-[200px]">
-          <div className="p-4">
+          <div className="p-4 transition-all duration-200">
             {viewMode === 'decoded' ? (
-              <CodeHighlight code={formatJSON(header)} language="json" showLineNumbers={false} />
+              <div className="animate-in fade-in duration-300">
+                <CodeHighlight code={formatJSON(header)} language="json" showLineNumbers={false} />
+              </div>
             ) : (
-              <div>
+              <div className="animate-in fade-in duration-300">
                 <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">{t('rawData')}</div>
-                <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200">
+                <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
                   {inputText.split('.')[0]}
                 </pre>
               </div>
@@ -66,20 +68,20 @@ const TokenParts: React.FC<TokenPartsProps> = ({
       </div>
 
       {/* Payload Panel */}
-      <div className="rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+      <div className="rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/30 dark:bg-zinc-900/60">
         <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-red-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500/80"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500/80"></div>
+              <div className="h-3 w-3 rounded-full bg-red-500/80 transition-all duration-200 hover:bg-red-500"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500/80 transition-all duration-200 hover:bg-yellow-500"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500/80 transition-all duration-200 hover:bg-green-500"></div>
             </div>
             <span className="ml-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">{t('payload')}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadPayload}
-              className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+              className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-all duration-200 hover:scale-105 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
               aria-label="Download Payload"
             >
               <Download size={18} />
@@ -88,13 +90,15 @@ const TokenParts: React.FC<TokenPartsProps> = ({
           </div>
         </div>
         <div className="relative min-h-[200px]">
-          <div className="p-4">
+          <div className="p-4 transition-all duration-200">
             {viewMode === 'decoded' ? (
-              <CodeHighlight code={formatJSON(payload)} language="json" showLineNumbers={false} />
+              <div className="animate-in fade-in duration-300">
+                <CodeHighlight code={formatJSON(payload)} language="json" showLineNumbers={false} />
+              </div>
             ) : (
-              <div>
+              <div className="animate-in fade-in duration-300">
                 <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">{t('rawData')}</div>
-                <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200">
+                <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
                   {inputText.split('.')[1]}
                 </pre>
               </div>

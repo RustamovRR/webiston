@@ -9,7 +9,6 @@ import {
   InfoSection,
   SignatureSection,
   SignatureInfo,
-  ViewModeInfo,
   TokenParts,
   ErrorDisplay,
   InputPanel,
@@ -18,7 +17,6 @@ import {
 const JwtDecoder = () => {
   const t = useTranslations('JwtDecoderPage.ToolHeader')
   const tSamples = useTranslations('JwtDecoderPage.Samples')
-  const tErrors = useTranslations('JwtDecoderPage.ErrorDisplay')
 
   const {
     inputText,
@@ -64,7 +62,7 @@ const JwtDecoder = () => {
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader title={t('title')} description={t('description')} />
 
-      {/* Control Panel */}
+      {/* Enhanced Control Panel with integrated info */}
       <ControlPanel
         viewMode={viewMode}
         setViewMode={setViewMode}
@@ -76,9 +74,6 @@ const JwtDecoder = () => {
         samples={translatedSamples}
         isValid={result?.isValid || false}
       />
-
-      {/* View Mode Info */}
-      <ViewModeInfo />
 
       {/* Input Panel */}
       <InputPanel
@@ -93,29 +88,32 @@ const JwtDecoder = () => {
       {/* Error Display */}
       {result?.error && <ErrorDisplay error={result.error} />}
 
-      {/* Token Status Cards */}
-      {tokenInfo && result?.isValid && <TokenInfoCards tokenInfo={tokenInfo} />}
-
-      {/* Token Parts */}
+      {/* JWT Results Section - Unified Layout */}
       {result?.isValid && (
-        <TokenParts
-          header={result.header}
-          payload={result.payload}
-          viewMode={viewMode}
-          inputText={inputText}
-          handleDownloadHeader={handleDownloadHeader}
-          handleDownloadPayload={handleDownloadPayload}
-          formatJSON={formatJSON}
-        />
+        <div className="space-y-6">
+          {/* Token Status Cards - Moved closer to results */}
+          {tokenInfo && <TokenInfoCards tokenInfo={tokenInfo} />}
+
+          {/* Token Parts */}
+          <TokenParts
+            header={result.header}
+            payload={result.payload}
+            viewMode={viewMode}
+            inputText={inputText}
+            handleDownloadHeader={handleDownloadHeader}
+            handleDownloadPayload={handleDownloadPayload}
+            formatJSON={formatJSON}
+          />
+
+          {/* Signature Section - Moved closer to toggle */}
+          {showSignature && <SignatureSection signature={result.signature} />}
+
+          {/* Signature Info */}
+          <SignatureInfo />
+        </div>
       )}
 
-      {/* Signature Section */}
-      {showSignature && result?.isValid && <SignatureSection signature={result.signature} />}
-
-      {/* Signature Info */}
-      {result?.isValid && <SignatureInfo />}
-
-      {/* Information Section */}
+      {/* Collapsible Information Section */}
       <InfoSection />
     </div>
   )
