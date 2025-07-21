@@ -23,9 +23,20 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
     return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex)
   }, [])
 
-  // Convert hex to RGB
+  // Convert hex to RGB (supports both 3 and 6 digit hex)
   const hexToRgb = useCallback((hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    // Remove # if present
+    hex = hex.replace('#', '')
+
+    // Convert 3-digit hex to 6-digit
+    if (hex.length === 3) {
+      hex = hex
+        .split('')
+        .map((char) => char + char)
+        .join('')
+    }
+
+    const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return result
       ? {
           r: parseInt(result[1], 16),

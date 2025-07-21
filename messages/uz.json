@@ -523,6 +523,81 @@
     "analyzers": { "title": "Tahlilchilar", "description": "Ma'lumotlarni tahlil qilish va tekshirish vositalari" },
     "utilities": { "title": "Yordamchilar", "description": "Qurilma test va boshqa foydali vositalar" }
   },
+  "ColorConverterPage": {
+    "ToolHeader": {
+      "title": "Rang O'giruvchi va Palette Generator",
+      "description": "HEX, RGB, HSL formatlar orasida rang konvertatsiyasi va palette generatsiya vositasi"
+    },
+    "ControlPanel": {
+      "paletteType": "Palette turi:",
+      "monochromatic": "Monoxromatik",
+      "analogous": "Analogik",
+      "complementary": "Komplementar",
+      "randomColor": "Tasodifiy rang",
+      "downloadPalette": "Palette yuklab olish"
+    },
+    "ColorInput": {
+      "title": "Rang Tanlash",
+      "color": "Rang:",
+      "colorPicker": "Rang tanlash",
+      "colorInfo": "Rang ma'lumotlari",
+      "colorName": "Rang nomi",
+      "presetColors": "Tayyor ranglar:",
+      "validFormat": "To'g'ri format",
+      "invalidFormat": "Noto'g'ri format",
+      "format": "Format",
+      "length": "Uzunlik",
+      "valid": "Yaroqli"
+    },
+    "ColorFormats": {
+      "title": "Formatlar va Ma'lumotlar",
+      "formats": "Formatlar",
+      "characters": "Belgilar",
+      "enterValidColor": "To'g'ri HEX rang kiriting...",
+      "formatsWillAppear": "Rang formatlar bu yerda ko'rinadi",
+      "hexDescription": "Web dasturlashda eng keng tarqalgan",
+      "rgbDescription": "Monitor va ekranlar uchun",
+      "hslDescription": "Inson uchun tushunarli"
+    },
+    "ColorPalette": {
+      "monochromatic": "Monoxromatik palette",
+      "analogous": "Analogik palette",
+      "complementary": "Komplementar palette",
+      "clickToSelect": "Rangni tanlash uchun bosing"
+    },
+    "Info": {
+      "examples": {
+        "title": "Rang Format Misollari",
+        "hex": "HEX Formatlar",
+        "rgb": "RGB Formatlar",
+        "hsl": "HSL Formatlar"
+      },
+      "about": {
+        "title": "Rang formatlar haqida ma'lumot",
+        "hex": {
+          "title": "HEX Format",
+          "desc1": "Web dasturlashda eng keng tarqalgan",
+          "desc2": "#RRGGBB formatida (6 ta belgi)",
+          "desc3": "CSS da bevosita ishlatiladi",
+          "desc4": "16 lik sanoq tizimida"
+        },
+        "rgb": {
+          "title": "RGB Format",
+          "desc1": "Red, Green, Blue qiymatlari",
+          "desc2": "0-255 oralig'ida har bir kanal",
+          "desc3": "Monitor va ekranlar uchun",
+          "desc4": "JavaScript da keng ishlatiladi"
+        },
+        "hsl": {
+          "title": "HSL Format",
+          "desc1": "Hue, Saturation, Lightness",
+          "desc2": "Inson uchun tushunarli",
+          "desc3": "CSS3 da qo'llab-quvvatlanadi",
+          "desc4": "Rang moslamalari uchun qulay"
+        }
+      }
+    }
+  },
   "Filters": {
     "allTools": "Barcha vositalar",
     "all": "Barcha",
