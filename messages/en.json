@@ -659,5 +659,77 @@
     "generators": "Generators",
     "analyzers": "Analyzers",
     "utilities": "Utilities"
+  },
+  "HashGeneratorPage": {
+    "ToolHeader": {
+      "title": "Hash Generator",
+      "description": "Generate cryptographic hashes using MD5, SHA256, SHA512 and other hash algorithms"
+    },
+    "ControlPanel": {
+      "textHash": "Text Hash",
+      "fileHash": "File Hash",
+      "uploadFile": "Upload File",
+      "sampleHash": "Sample Hash",
+      "clear": "Clear",
+      "downloadTxt": "Download TXT",
+      "downloadJson": "Download JSON"
+    },
+    "AlgorithmSelector": {
+      "title": "Hash Algorithms"
+    },
+    "InputPanel": {
+      "textInput": "Text Input",
+      "fileInput": "File Hash Input",
+      "readyToHash": "Ready to hash",
+      "textPlaceholder": "Enter text you want to hash...",
+      "selectFile": "Select file",
+      "supportedFormats": "TXT, JSON, CSV, MD, XML, LOG (up to 10MB)",
+      "processing": "Processing..."
+    },
+    "ResultsPanel": {
+      "title": "Hash Results",
+      "noResults": "Hash results will appear here",
+      "instruction": "Enter text and select algorithm",
+      "hashCount": "Hash count"
+    },
+    "DetailedResults": {
+      "title": "Detailed Hash Results",
+      "characters": "characters"
+    },
+    "Info": {
+      "securityLevels": {
+        "title": "Security Levels",
+        "deprecated": "Deprecated",
+        "weak": "Weak",
+        "secure": "Secure",
+        "verysecure": "Very Secure"
+      },
+      "recommendations": {
+        "deprecated": "Don't use",
+        "weak": "Legacy only",
+        "secure": "Recommended",
+        "recommended": "Best choice"
+      },
+      "descriptions": {
+        "deprecated": "Weak, demo only",
+        "weak": "Weak, legacy use",
+        "secure": "Secure, can be used",
+        "recommended": "Most secure, recommended"
+      },
+      "useCases": {
+        "title": "Use Cases",
+        "passwords": "Password hashing",
+        "integrity": "File integrity",
+        "signatures": "Digital signatures",
+        "blockchain": "Blockchain"
+      },
+      "notes": {
+        "title": "Important Notes",
+        "irreversible": "Hash functions are irreversible",
+        "deterministic": "Same input → same hash",
+        "avalanche": "Small change → completely different hash",
+        "recommendation": "Use SHA256+ algorithms"
+      }
+    }
   }
 }

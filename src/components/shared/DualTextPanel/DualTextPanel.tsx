@@ -33,6 +33,7 @@ interface DualTextPanelProps {
   targetFooterComponent?: React.ReactNode
   showShadow?: boolean
   customTargetContent?: React.ReactNode
+  customSourceContent?: React.ReactNode
   extraHeaderComponent?: React.ReactNode
 }
 
@@ -57,6 +58,7 @@ export function DualTextPanel({
   targetFooterComponent,
   showShadow = false,
   customTargetContent,
+  customSourceContent,
   extraHeaderComponent,
 }: DualTextPanelProps) {
   const tCommon = useTranslations('Common')
@@ -149,13 +151,17 @@ export function DualTextPanel({
 
         <div className="relative flex-grow" style={{ minHeight: '500px', maxHeight: '500px' }}>
           {isSource ? (
-            <Textarea
-              value={sourceText}
-              onChange={(e) => onSourceChange(e.target.value)}
-              className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-zinc-500"
-              placeholder={sourcePlaceholder}
-              disabled={isLoading}
-            />
+            customSourceContent ? (
+              <div className="absolute inset-0 h-full w-full">{customSourceContent}</div>
+            ) : (
+              <Textarea
+                value={sourceText}
+                onChange={(e) => onSourceChange(e.target.value)}
+                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-900 placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+                placeholder={sourcePlaceholder}
+                disabled={isLoading}
+              />
+            )
           ) : (
             <div className="absolute inset-0 h-full w-full overflow-y-auto">
               {customTargetContent ? (
