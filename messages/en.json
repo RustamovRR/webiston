@@ -605,6 +605,17 @@
       "noHistory": "No history yet",
       "noFavorites": "No favorite colors yet"
     },
+    "GradientGenerator": {
+      "title": "Gradient Generator",
+      "type": "Type:",
+      "direction": "Direction:",
+      "actions": "Actions:",
+      "random": "Random",
+      "colorStops": "Color Stops:",
+      "addColor": "Add Color",
+      "exportOptions": "Export Options:",
+      "noValidColor": "Enter a valid color"
+    },
     "Info": {
       "examples": {
         "title": "Color Format Examples",

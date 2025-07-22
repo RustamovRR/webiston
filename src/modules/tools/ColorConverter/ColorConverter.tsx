@@ -10,6 +10,7 @@ import { ToolHeader } from '@/components/shared/ToolHeader'
 import { ControlPanel, ColorInputPanel, ColorFormatsPanel, ColorPalette, InfoSection } from './components'
 import TailwindShades from './components/TailwindShades'
 import ColorHistory from './components/ColorHistory'
+import GradientGenerator from './components/GradientGenerator'
 
 // Utils & Hooks
 import { useColorConverter } from '@/hooks'
@@ -110,6 +111,11 @@ const ColorConverter = () => {
       {/* Tailwind Shades */}
       <div className="mt-6">
         <TailwindShades baseColor={inputColor} shades={tailwindShades} isValid={colorFormats?.isValid || false} />
+      </div>
+
+      {/* Gradient Generator */}
+      <div className="mt-6">
+        <GradientGenerator baseColor={inputColor} isValid={colorFormats?.isValid || false} />
       </div>
 
       {/* Information Section */}

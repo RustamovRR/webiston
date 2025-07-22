@@ -586,6 +586,17 @@
       "noHistory": "Hali tarix yo'q",
       "noFavorites": "Hali sevimli ranglar yo'q"
     },
+    "GradientGenerator": {
+      "title": "Gradient Generator",
+      "type": "Turi:",
+      "direction": "Yo'nalish:",
+      "actions": "Amallar:",
+      "random": "Tasodifiy",
+      "colorStops": "Rang nuqtalari:",
+      "addColor": "Rang qo'shish",
+      "exportOptions": "Export variantlari:",
+      "noValidColor": "To'g'ri rang kiriting"
+    },
     "Info": {
       "examples": {
         "title": "Rang Format Misollari",
