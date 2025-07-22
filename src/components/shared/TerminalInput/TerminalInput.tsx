@@ -32,6 +32,7 @@ export interface TerminalInputProps {
   // Header
   title: string
   subtitle?: string
+  titleRight?: React.ReactNode
 
   // Actions
   actions?: TerminalInputAction[]
@@ -97,6 +98,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
   customContent,
   title,
   subtitle,
+  titleRight,
   actions = [],
   showStats = false,
   stats = [],
@@ -203,7 +205,10 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
           </div>
         </div>
 
+        {/* Title Right and Actions - separate for proper justify-between */}
         <div className="flex items-center gap-2">
+          {titleRight && <div className="flex items-center">{titleRight}</div>}
+
           {/* Stats in Header */}
           {showStats && stats.length > 0 && (statsPosition === 'header' || statsPosition === 'both') && (
             <StatsDisplay stats={stats} />

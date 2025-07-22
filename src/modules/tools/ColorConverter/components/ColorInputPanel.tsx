@@ -30,11 +30,6 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
 
   const actions: TerminalInputAction[] = []
 
-  const stats = [
-    { label: t('length') || 'Uzunlik', value: inputColor.length },
-    { label: t('valid') || 'Yaroqli', value: colorFormats?.isValid ? 1 : 0 },
-  ]
-
   const statusText = colorFormats?.isValid
     ? t('validFormat') || "To'g'ri format"
     : t('invalidFormat') || "Noto'g'ri format"
@@ -149,16 +144,13 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
   return (
     <TerminalInput
       title={t('title') || 'Rang Tanlash'}
-      subtitle={statusText}
+      titleRight={statusComponent}
       actions={actions}
-      showStats={true}
-      stats={stats}
-      statsPosition="header"
       customContent={customContent}
       minHeight="400px"
       showShadow={true}
       animate={true}
-      variant={colorFormats?.isValid ? 'success' : 'error'}
+      variant="default"
     />
   )
 }

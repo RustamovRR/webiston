@@ -2,8 +2,8 @@ import React from 'react'
 import { Palette } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { TerminalInput, type TerminalInputAction } from '@/components/shared/TerminalInput'
-import { CopyButton } from '@/components/shared/CopyButton'
 import type { ColorFormats } from '@/hooks/tools/useColorConverter'
+import ColorFormatItem from './ColorFormatItem'
 
 interface ColorFormatsPanelProps {
   colorFormats: ColorFormats | null
@@ -64,115 +64,82 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
     </div>
   )
 
+  // Color formats data array
+  const colorFormatItems = colorFormats?.isValid
+    ? [
+        {
+          title: 'HEX',
+          value: colorFormats.hex,
+          description: t('hexDescription') || 'Web dasturlashda eng keng tarqalgan',
+          colorClass: 'text-blue-600 dark:text-blue-400',
+        },
+        {
+          title: 'RGB',
+          value: colorFormats.rgb,
+          description: `R: ${colorFormats.rgbValues.r}, G: ${colorFormats.rgbValues.g}, B: ${colorFormats.rgbValues.b}`,
+          colorClass: 'text-green-600 dark:text-green-400',
+        },
+        {
+          title: 'HSL',
+          value: colorFormats.hsl,
+          description: `H: ${colorFormats.hslValues.h}°, S: ${colorFormats.hslValues.s}%, L: ${colorFormats.hslValues.l}%`,
+          colorClass: 'text-purple-600 dark:text-purple-400',
+        },
+        {
+          title: 'RGBA',
+          value: colorFormats.rgba,
+          description: t('rgbaDescription') || 'Alpha kanal bilan RGB',
+          colorClass: 'text-teal-600 dark:text-teal-400',
+        },
+        {
+          title: 'HSLA',
+          value: colorFormats.hsla,
+          description: t('hslaDescription') || 'Alpha kanal bilan HSL',
+          colorClass: 'text-indigo-600 dark:text-indigo-400',
+        },
+        {
+          title: 'Lab',
+          value: colorFormats.lab,
+          description: `L: ${colorFormats.labValues.l}, a: ${colorFormats.labValues.a}, b: ${colorFormats.labValues.b}`,
+          colorClass: 'text-pink-600 dark:text-pink-400',
+        },
+        {
+          title: 'LCH',
+          value: colorFormats.lch,
+          description: `L: ${colorFormats.lchValues.l}, C: ${colorFormats.lchValues.c}, H: ${colorFormats.lchValues.h}°`,
+          colorClass: 'text-rose-600 dark:text-rose-400',
+        },
+        {
+          title: 'OKLab',
+          value: colorFormats.oklab,
+          description: `L: ${colorFormats.oklabValues.l}, a: ${colorFormats.oklabValues.a}, b: ${colorFormats.oklabValues.b}`,
+          colorClass: 'text-emerald-600 dark:text-emerald-400',
+        },
+        {
+          title: 'OKLCH',
+          value: colorFormats.oklch,
+          description: `L: ${colorFormats.oklchValues.l}, C: ${colorFormats.oklchValues.c}, H: ${colorFormats.oklchValues.h}°`,
+          colorClass: 'text-cyan-600 dark:text-cyan-400',
+        },
+      ]
+    : []
+
+  const handleCopySuccess = (value: string) => {
+    console.log('Copied:', value)
+  }
+
   const formatContent = colorFormats?.isValid && (
     <div className="max-h-[500px] space-y-3 overflow-y-auto p-4">
-      {/* HEX Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-blue-600 dark:text-blue-400">HEX</h3>
-          <CopyButton text={colorFormats.hex} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.hex}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          {t('hexDescription') || 'Web dasturlashda eng keng tarqalgan'}
-        </div>
-      </div>
-
-      {/* RGB Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-green-600 dark:text-green-400">RGB</h3>
-          <CopyButton text={colorFormats.rgb} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.rgb}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          R: {colorFormats.rgbValues.r}, G: {colorFormats.rgbValues.g}, B: {colorFormats.rgbValues.b}
-        </div>
-      </div>
-
-      {/* HSL Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-purple-600 dark:text-purple-400">HSL</h3>
-          <CopyButton text={colorFormats.hsl} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.hsl}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          H: {colorFormats.hslValues.h}°, S: {colorFormats.hslValues.s}%, L: {colorFormats.hslValues.l}%
-        </div>
-      </div>
-
-      {/* RGBA Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-teal-600 dark:text-teal-400">RGBA</h3>
-          <CopyButton text={colorFormats.rgba} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.rgba}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          {t('rgbaDescription') || 'Alpha kanal bilan RGB'}
-        </div>
-      </div>
-
-      {/* HSLA Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-indigo-600 dark:text-indigo-400">HSLA</h3>
-          <CopyButton text={colorFormats.hsla} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.hsla}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          {t('hslaDescription') || 'Alpha kanal bilan HSL'}
-        </div>
-      </div>
-
-      {/* Lab Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-pink-600 dark:text-pink-400">Lab</h3>
-          <CopyButton text={colorFormats.lab} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.lab}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          L: {colorFormats.labValues.l}, a: {colorFormats.labValues.a}, b: {colorFormats.labValues.b}
-        </div>
-      </div>
-
-      {/* LCH Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-rose-600 dark:text-rose-400">LCH</h3>
-          <CopyButton text={colorFormats.lch} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.lch}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          L: {colorFormats.lchValues.l}, C: {colorFormats.lchValues.c}, H: {colorFormats.lchValues.h}°
-        </div>
-      </div>
-
-      {/* OKLab Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-emerald-600 dark:text-emerald-400">OKLab</h3>
-          <CopyButton text={colorFormats.oklab} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.oklab}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          L: {colorFormats.oklabValues.l}, a: {colorFormats.oklabValues.a}, b: {colorFormats.oklabValues.b}
-        </div>
-      </div>
-
-      {/* OKLCH Format */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-cyan-600 dark:text-cyan-400">OKLCH</h3>
-          <CopyButton text={colorFormats.oklch} />
-        </div>
-        <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{colorFormats.oklch}</div>
-        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          L: {colorFormats.oklchValues.l}, C: {colorFormats.oklchValues.c}, H: {colorFormats.oklchValues.h}°
-        </div>
-      </div>
+      {colorFormatItems.map((item, index) => (
+        <ColorFormatItem
+          key={index}
+          title={item.title}
+          value={item.value}
+          description={item.description}
+          colorClass={item.colorClass}
+          onCopy={handleCopySuccess}
+        />
+      ))}
     </div>
   )
 
