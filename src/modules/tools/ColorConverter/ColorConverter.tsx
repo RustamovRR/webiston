@@ -8,6 +8,8 @@ import { ToolHeader } from '@/components/shared/ToolHeader'
 
 // Local Components
 import { ControlPanel, ColorInputPanel, ColorFormatsPanel, ColorPalette, InfoSection } from './components'
+import TailwindShades from './components/TailwindShades'
+import ColorHistory from './components/ColorHistory'
 
 // Utils & Hooks
 import { useColorConverter } from '@/hooks'
@@ -16,14 +18,15 @@ const ColorConverter = () => {
   const t = useTranslations('ColorConverterPage')
   const [paletteType, setPaletteType] = useState<'monochromatic' | 'analogous' | 'complementary'>('monochromatic')
 
-  const { inputColor, setInputColor, colorFormats, generatePalette, getColorName } = useColorConverter({
-    onSuccess: (message) => {
-      console.log('Success:', message)
-    },
-    onError: (error) => {
-      console.error('Error:', error)
-    },
-  })
+  const { inputColor, setInputColor, colorFormats, generatePalette, generateTailwindShades, getColorName } =
+    useColorConverter({
+      onSuccess: (message) => {
+        console.log('Success:', message)
+      },
+      onError: (error) => {
+        console.error('Error:', error)
+      },
+    })
 
   const handleRandomColor = () => {
     const randomColor =
@@ -56,6 +59,7 @@ const ColorConverter = () => {
   }
 
   const generatedPalette = generatePalette(inputColor, paletteType)
+  const tailwindShades = generateTailwindShades(inputColor)
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
@@ -97,6 +101,16 @@ const ColorConverter = () => {
         getColorName={getColorName}
         onColorSelect={setInputColor}
       />
+
+      {/* Color History & Favorites */}
+      <div className="mt-6">
+        <ColorHistory onColorSelect={setInputColor} currentColor={inputColor} />
+      </div>
+
+      {/* Tailwind Shades */}
+      <div className="mt-6">
+        <TailwindShades baseColor={inputColor} shades={tailwindShades} isValid={colorFormats?.isValid || false} />
+      </div>
 
       {/* Information Section */}
       <InfoSection />

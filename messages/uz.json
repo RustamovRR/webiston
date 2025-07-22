@@ -570,7 +570,21 @@
       "monochromatic": "Monoxromatik palette",
       "analogous": "Analogik palette",
       "complementary": "Komplementar palette",
-      "clickToSelect": "Rangni tanlash uchun bosing"
+      "clickToCopy": "Rangni nusxalash uchun bosing"
+    },
+    "TailwindShades": {
+      "title": "Tailwind rang soyalari",
+      "exportOptions": "Export variantlari:",
+      "noValidColor": "To'g'ri rang kiriting"
+    },
+    "ColorHistory": {
+      "title": "Rang Tarixi va Sevimlilar",
+      "history": "Tarix",
+      "favorites": "Sevimlilar",
+      "clearHistory": "Tarixni tozalash",
+      "clearFavorites": "Sevimlilarni tozalash",
+      "noHistory": "Hali tarix yo'q",
+      "noFavorites": "Hali sevimli ranglar yo'q"
     },
     "Info": {
       "examples": {

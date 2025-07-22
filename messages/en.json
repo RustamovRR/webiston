@@ -589,7 +589,21 @@
       "monochromatic": "Monochromatic palette",
       "analogous": "Analogous palette",
       "complementary": "Complementary palette",
-      "clickToSelect": "Click to select color"
+      "clickToCopy": "Click to copy color"
+    },
+    "TailwindShades": {
+      "title": "Tailwind Shades",
+      "exportOptions": "Export options:",
+      "noValidColor": "Enter a valid color"
+    },
+    "ColorHistory": {
+      "title": "Color History & Favorites",
+      "history": "History",
+      "favorites": "Favorites",
+      "clearHistory": "Clear History",
+      "clearFavorites": "Clear Favorites",
+      "noHistory": "No history yet",
+      "noFavorites": "No favorite colors yet"
     },
     "Info": {
       "examples": {

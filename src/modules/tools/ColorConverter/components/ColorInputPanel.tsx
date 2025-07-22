@@ -137,9 +137,11 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                 <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
                   {t('colorInfo') || "Rang ma'lumotlari"}
                 </h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t('colorName') || 'Rang nomi'}: {getColorName(inputColor)}
-                </p>
+                {getColorName(inputColor) && (
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {t('colorName') || 'Rang nomi'}: {getColorName(inputColor)}
+                  </p>
+                )}
                 <div className="mt-2 grid grid-cols-3 gap-2 text-xs text-zinc-500 dark:text-zinc-500">
                   <div>
                     <span className="font-medium">RGB:</span>
