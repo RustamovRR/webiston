@@ -1,5 +1,5 @@
 import React from 'react'
-import { RefreshCw, Download } from 'lucide-react'
+import { RefreshCw, Download, Circle, Palette, Zap } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 
@@ -24,17 +24,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     {
       value: 'monochromatic',
       label: t('monochromatic') || 'Monoxromatik',
-      icon: <div className="h-3 w-3 rounded-full bg-blue-400" />,
+      icon: <Circle size={16} className="text-blue-500 dark:text-blue-400" />,
     },
     {
       value: 'analogous',
       label: t('analogous') || 'Analogik',
-      icon: <div className="h-3 w-3 rounded-full bg-green-400" />,
+      icon: <Palette size={16} className="text-green-500 dark:text-green-400" />,
     },
     {
       value: 'complementary',
       label: t('complementary') || 'Komplementar',
-      icon: <div className="h-3 w-3 rounded-full bg-purple-400" />,
+      icon: <Zap size={16} className="text-purple-500 dark:text-purple-400" />,
     },
   ]
 

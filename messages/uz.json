@@ -547,7 +547,8 @@
       "invalidFormat": "Noto'g'ri format",
       "format": "Format",
       "length": "Uzunlik",
-      "valid": "Yaroqli"
+      "valid": "Yaroqli",
+      "opacity": "Shaffoflik"
     },
     "ColorFormats": {
       "title": "Formatlar va Ma'lumotlar",

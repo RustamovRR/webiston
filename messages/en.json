@@ -566,7 +566,8 @@
       "invalidFormat": "Invalid format",
       "format": "Format",
       "length": "Length",
-      "valid": "Valid"
+      "valid": "Valid",
+      "opacity": "Opacity"
     },
     "ColorFormats": {
       "title": "Formats and Information",

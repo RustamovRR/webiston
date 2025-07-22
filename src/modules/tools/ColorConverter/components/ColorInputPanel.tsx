@@ -87,7 +87,9 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
           {/* Opacity Slider */}
           {colorFormats?.isValid && (
             <div className="flex items-center gap-4">
-              <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">Opacity:</label>
+              <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('opacity') || 'Shaffoflik'}:
+              </label>
               <div className="flex flex-1 items-center gap-3">
                 <input
                   type="range"
@@ -150,7 +152,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                     {colorFormats.hslValues.h}°, {colorFormats.hslValues.s}%, {colorFormats.hslValues.l}%
                   </div>
                   <div>
-                    <span className="font-medium">Opacity:</span>
+                    <span className="font-medium">{t('opacity') || 'Shaffoflik'}:</span>
                     <br />
                     {Math.round(colorFormats.opacity * 100)}%
                   </div>
@@ -191,17 +193,63 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
     </div>
   )
 
+  // Generate dynamic ambient background styles based on selected color
+  const getDynamicStyles = () => {
+    if (!colorFormats?.isValid) return {}
+
+    const { h, s, l } = colorFormats.hslValues
+
+    // Create more visible glow effect
+    const glowColor = `hsl(${h}, ${Math.min(s * 0.8, 50)}%, ${l}%)`
+
+    return {
+      '--ambient-glow': glowColor,
+    } as React.CSSProperties
+  }
+
   return (
-    <TerminalInput
-      title={t('title') || 'Rang Tanlash'}
-      titleRight={statusComponent}
-      actions={actions}
-      customContent={customContent}
-      minHeight="400px"
-      showShadow={true}
-      animate={true}
-      variant="default"
-    />
+    <div className="relative">
+      {/* Ambient blur effect - butun section bo'yicha */}
+      {colorFormats?.isValid && (
+        <>
+          {/* Inner glow */}
+          <div
+            style={{
+              ...getDynamicStyles(),
+              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 60%)`,
+            }}
+            className="absolute -inset-4 opacity-40 blur-xl transition-all duration-500 dark:opacity-30"
+          />
+          {/* Middle glow */}
+          <div
+            className="absolute -inset-8 opacity-30 blur-2xl transition-all duration-500 dark:opacity-20"
+            style={{
+              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 70%)`,
+            }}
+          />
+          {/* Outer glow */}
+          <div
+            className="absolute -inset-16 opacity-20 blur-3xl transition-all duration-500 dark:opacity-15"
+            style={{
+              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 80%)`,
+            }}
+          />
+        </>
+      )}
+
+      <div className="relative z-10">
+        <TerminalInput
+          title={t('title') || 'Rang Tanlash'}
+          titleRight={statusComponent}
+          actions={actions}
+          customContent={customContent}
+          showShadow={true}
+          animate={true}
+          variant="default"
+          className="h-[604px]"
+        />
+      </div>
+    </div>
   )
 }
 
