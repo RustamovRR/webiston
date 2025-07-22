@@ -80,7 +80,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
               value={inputColor}
               onChange={(e) => setInputColor(e.target.value)}
               className="flex-1 rounded-lg border border-zinc-300 bg-white px-4 py-3 font-mono text-sm text-zinc-900 transition-colors focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
-              placeholder="#000000, rgb(255,0,0), hsl(120,100%,50%), red, blue, qizil, yashil"
+              placeholder="lab(65% 18 17), lch(65% 25 29), oklab(0.7 0.1 0.1), oklch(0.7 0.15 29), red, qizil"
             />
           </div>
 

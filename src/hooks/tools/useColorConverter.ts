@@ -149,6 +149,52 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       return { ...rgb, a }
     }
 
+    // Lab format: lab(l% a b)
+    const labMatch = cleanInput.match(
+      /^lab\s*\(\s*([0-9]*\.?[0-9]+)%?\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/,
+    )
+    if (labMatch) {
+      const l = parseFloat(labMatch[1])
+      const a = parseFloat(labMatch[2])
+      const b = parseFloat(labMatch[3])
+      const rgb = labToRgb(l, a, b)
+      return { ...rgb, a: 1 }
+    }
+
+    // LCH format: lch(l% c h)
+    const lchMatch = cleanInput.match(/^lch\s*\(\s*([0-9]*\.?[0-9]+)%?\s+([0-9]*\.?[0-9]+)\s+([0-9]*\.?[0-9]+)\s*\)$/)
+    if (lchMatch) {
+      const l = parseFloat(lchMatch[1])
+      const c = parseFloat(lchMatch[2])
+      const h = parseFloat(lchMatch[3])
+      const lab = lchToLab(l, c, h)
+      const rgb = labToRgb(lab.l, lab.a, lab.b)
+      return { ...rgb, a: 1 }
+    }
+
+    // OKLab format: oklab(l a b)
+    const oklabMatch = cleanInput.match(
+      /^oklab\s*\(\s*([0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/,
+    )
+    if (oklabMatch) {
+      const l = parseFloat(oklabMatch[1])
+      const a = parseFloat(oklabMatch[2])
+      const b = parseFloat(oklabMatch[3])
+      const rgb = oklabToRgb(l, a, b)
+      return { ...rgb, a: 1 }
+    }
+
+    // OKLCH format: oklch(l c h)
+    const oklchMatch = cleanInput.match(/^oklch\s*\(\s*([0-9]*\.?[0-9]+)\s+([0-9]*\.?[0-9]+)\s+([0-9]*\.?[0-9]+)\s*\)$/)
+    if (oklchMatch) {
+      const l = parseFloat(oklchMatch[1])
+      const c = parseFloat(oklchMatch[2])
+      const h = parseFloat(oklchMatch[3])
+      const oklab = oklchToOklab(l, c, h)
+      const rgb = oklabToRgb(oklab.l, oklab.a, oklab.b)
+      return { ...rgb, a: 1 }
+    }
+
     // Color names: red, blue, white, black, etc.
     const colorByName = getColorByName(cleanInput)
     if (colorByName) {
@@ -308,6 +354,74 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
     if (h < 0) h += 360
 
     return { l, c, h }
+  }, [])
+
+  // Convert Lab to RGB
+  const labToRgb = useCallback((l: number, a: number, b: number) => {
+    // Convert Lab to XYZ
+    let fy = (l + 16) / 116
+    let fx = a / 500 + fy
+    let fz = fy - b / 200
+
+    const delta = 6 / 29
+    const deltaSquared = delta * delta
+    const deltaCubed = delta * delta * delta
+
+    let x = fx > delta ? fx * fx * fx : 3 * deltaSquared * (fx - 4 / 29)
+    let y = fy > delta ? fy * fy * fy : 3 * deltaSquared * (fy - 4 / 29)
+    let z = fz > delta ? fz * fz * fz : 3 * deltaSquared * (fz - 4 / 29)
+
+    // Apply D65 illuminant
+    x *= 0.95047
+    y *= 1.0
+    z *= 1.08883
+
+    // Convert XYZ to RGB
+    let r = x * 3.2406 + y * -1.5372 + z * -0.4986
+    let g = x * -0.9689 + y * 1.8758 + z * 0.0415
+    let bRgb = x * 0.0557 + y * -0.204 + z * 1.057
+
+    // Apply gamma correction
+    r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r
+    g = g > 0.0031308 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : 12.92 * g
+    bRgb = bRgb > 0.0031308 ? 1.055 * Math.pow(bRgb, 1 / 2.4) - 0.055 : 12.92 * bRgb
+
+    return {
+      r: Math.max(0, Math.min(255, Math.round(r * 255))),
+      g: Math.max(0, Math.min(255, Math.round(g * 255))),
+      b: Math.max(0, Math.min(255, Math.round(bRgb * 255))),
+    }
+  }, [])
+
+  // Convert LCH to Lab
+  const lchToLab = useCallback((l: number, c: number, h: number) => {
+    const hRad = (h * Math.PI) / 180
+    const a = Math.round(c * Math.cos(hRad))
+    const b = Math.round(c * Math.sin(hRad))
+    return { l, a, b }
+  }, [])
+
+  // Convert OKLab to RGB (simplified approximation)
+  const oklabToRgb = useCallback((l: number, a: number, b: number) => {
+    // Simplified reverse conversion from OKLab to RGB
+    // This is an approximation since we used simplified forward conversion
+    const r = Math.max(0, Math.min(1, l + a * 2))
+    const g = Math.max(0, Math.min(1, l - a * 2))
+    const bRgb = Math.max(0, Math.min(1, l - b * 4))
+
+    return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(bRgb * 255),
+    }
+  }, [])
+
+  // Convert OKLCH to OKLab
+  const oklchToOklab = useCallback((l: number, c: number, h: number) => {
+    const hRad = (h * Math.PI) / 180
+    const a = (c * Math.cos(hRad)) / 100
+    const b = (c * Math.sin(hRad)) / 100
+    return { l, a, b }
   }, [])
 
   // Main color formats calculation
