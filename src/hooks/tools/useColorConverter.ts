@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
+import { getColorByName } from '@/constants/color-names'
 
 export interface ColorFormats {
   hex: string
@@ -10,12 +11,13 @@ export interface ColorFormats {
   lch: string
   oklab: string
   oklch: string
-  rgbValues: { r: number; g: number; b: number }
-  hslValues: { h: number; s: number; l: number }
+  rgbValues: { r: number; g: number; b: number; a: number }
+  hslValues: { h: number; s: number; l: number; a: number }
   labValues: { l: number; a: number; b: number }
   lchValues: { l: number; c: number; h: number }
   oklabValues: { l: number; a: number; b: number }
   oklchValues: { l: number; c: number; h: number }
+  opacity: number
   isValid: boolean
 }
 
@@ -28,10 +30,147 @@ interface UseColorConverterProps {
 export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError }: UseColorConverterProps = {}) => {
   const [inputColor, setInputColor] = useState(initialColor)
 
-  // Validate hex color
+  // Convert HSL to RGB (moved up for parseColorInput)
+  const hslToRgb = useCallback((h: number, s: number, l: number) => {
+    h /= 360
+    s /= 100
+    l /= 100
+
+    const hue2rgb = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1
+      if (t > 1) t -= 1
+      if (t < 1 / 6) return p + (q - p) * 6 * t
+      if (t < 1 / 2) return q
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
+      return p
+    }
+
+    let r: number, g: number, b: number
+
+    if (s === 0) {
+      r = g = b = l // achromatic
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s
+      const p = 2 * l - q
+      r = hue2rgb(p, q, h + 1 / 3)
+      g = hue2rgb(p, q, h)
+      b = hue2rgb(p, q, h - 1 / 3)
+    }
+
+    return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(b * 255),
+    }
+  }, [])
+
+  // Universal color format validator and parser
+  const parseColorInput = useCallback((input: string): { r: number; g: number; b: number; a: number } | null => {
+    const cleanInput = input.trim().toLowerCase()
+
+    // HEX format (#rgb, #rrggbb, #rrggbbaa)
+    const hexMatch = cleanInput.match(/^#([a-f0-9]{3,8})$/i)
+    if (hexMatch) {
+      let hex = hexMatch[1]
+
+      if (hex.length === 3) {
+        // #rgb -> #rrggbb
+        hex = hex
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      } else if (hex.length === 4) {
+        // #rgba -> #rrggbbaa
+        hex = hex
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      }
+
+      if (hex.length === 6) {
+        // #rrggbb
+        return {
+          r: parseInt(hex.substr(0, 2), 16),
+          g: parseInt(hex.substr(2, 2), 16),
+          b: parseInt(hex.substr(4, 2), 16),
+          a: 1,
+        }
+      } else if (hex.length === 8) {
+        // #rrggbbaa
+        return {
+          r: parseInt(hex.substr(0, 2), 16),
+          g: parseInt(hex.substr(2, 2), 16),
+          b: parseInt(hex.substr(4, 2), 16),
+          a: parseInt(hex.substr(6, 2), 16) / 255,
+        }
+      }
+    }
+
+    // RGB format: rgb(r, g, b)
+    const rgbMatch = cleanInput.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/)
+    if (rgbMatch) {
+      return {
+        r: parseInt(rgbMatch[1]),
+        g: parseInt(rgbMatch[2]),
+        b: parseInt(rgbMatch[3]),
+        a: 1,
+      }
+    }
+
+    // RGBA format: rgba(r, g, b, a)
+    const rgbaMatch = cleanInput.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([0-9]*\.?[0-9]+)\s*\)$/)
+    if (rgbaMatch) {
+      return {
+        r: parseInt(rgbaMatch[1]),
+        g: parseInt(rgbaMatch[2]),
+        b: parseInt(rgbaMatch[3]),
+        a: parseFloat(rgbaMatch[4]),
+      }
+    }
+
+    // HSL format: hsl(h, s%, l%)
+    const hslMatch = cleanInput.match(/^hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/)
+    if (hslMatch) {
+      const h = parseInt(hslMatch[1])
+      const s = parseInt(hslMatch[2])
+      const l = parseInt(hslMatch[3])
+      const rgb = hslToRgb(h, s, l)
+      return { ...rgb, a: 1 }
+    }
+
+    // HSLA format: hsla(h, s%, l%, a)
+    const hslaMatch = cleanInput.match(/^hsla\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*,\s*([0-9]*\.?[0-9]+)\s*\)$/)
+    if (hslaMatch) {
+      const h = parseInt(hslaMatch[1])
+      const s = parseInt(hslaMatch[2])
+      const l = parseInt(hslaMatch[3])
+      const a = parseFloat(hslaMatch[4])
+      const rgb = hslToRgb(h, s, l)
+      return { ...rgb, a }
+    }
+
+    // Color names: red, blue, white, black, etc.
+    const colorByName = getColorByName(cleanInput)
+    if (colorByName) {
+      // Recursively parse the hex color returned by name lookup
+      return parseColorInput(colorByName)
+    }
+
+    return null
+  }, [])
+
+  // Validate hex color (legacy support)
   const isValidHex = useCallback((hex: string): boolean => {
     return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex)
   }, [])
+
+  // Check if input is valid color in any format
+  const isValidColor = useCallback(
+    (input: string): boolean => {
+      return parseColorInput(input) !== null
+    },
+    [parseColorInput],
+  )
 
   // Convert hex to RGB (supports both 3 and 6 digit hex)
   const hexToRgb = useCallback((hex: string) => {
@@ -92,40 +231,6 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       h: Math.round(h * 360),
       s: Math.round(s * 100),
       l: Math.round(l * 100),
-    }
-  }, [])
-
-  // Convert HSL to RGB
-  const hslToRgb = useCallback((h: number, s: number, l: number) => {
-    h /= 360
-    s /= 100
-    l /= 100
-
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1
-      if (t > 1) t -= 1
-      if (t < 1 / 6) return p + (q - p) * 6 * t
-      if (t < 1 / 2) return q
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-      return p
-    }
-
-    let r: number, g: number, b: number
-
-    if (s === 0) {
-      r = g = b = l // achromatic
-    } else {
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-      const p = 2 * l - q
-      r = hue2rgb(p, q, h + 1 / 3)
-      g = hue2rgb(p, q, h)
-      b = hue2rgb(p, q, h - 1 / 3)
-    }
-
-    return {
-      r: Math.round(r * 255),
-      g: Math.round(g * 255),
-      b: Math.round(b * 255),
     }
   }, [])
 
@@ -208,8 +313,11 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
   // Main color formats calculation
   const colorFormats = useMemo((): ColorFormats | null => {
     try {
-      if (!isValidHex(inputColor)) {
-        onError?.("Noto'g'ri HEX rang formati")
+      // Parse input using universal parser
+      const parsedColor = parseColorInput(inputColor)
+
+      if (!parsedColor) {
+        onError?.("Noto'g'ri rang formati")
         return {
           hex: inputColor.toUpperCase(),
           rgb: '',
@@ -220,44 +328,49 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
           lch: '',
           oklab: '',
           oklch: '',
-          rgbValues: { r: 0, g: 0, b: 0 },
-          hslValues: { h: 0, s: 0, l: 0 },
+          rgbValues: { r: 0, g: 0, b: 0, a: 1 },
+          hslValues: { h: 0, s: 0, l: 0, a: 1 },
           labValues: { l: 0, a: 0, b: 0 },
           lchValues: { l: 0, c: 0, h: 0 },
           oklabValues: { l: 0, a: 0, b: 0 },
           oklchValues: { l: 0, c: 0, h: 0 },
+          opacity: 1,
           isValid: false,
         }
       }
 
-      const rgb = hexToRgb(inputColor)
-      if (!rgb) {
-        onError?.('RGB konvertatsiya xatoligi')
-        return null
-      }
-
-      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
-      const lab = rgbToLab(rgb.r, rgb.g, rgb.b)
+      const { r, g, b, a } = parsedColor
+      const hsl = rgbToHsl(r, g, b)
+      const lab = rgbToLab(r, g, b)
       const lch = labToLch(lab.l, lab.a, lab.b)
-      const oklab = rgbToOklab(rgb.r, rgb.g, rgb.b)
+      const oklab = rgbToOklab(r, g, b)
       const oklch = oklabToOklch(oklab.l, oklab.a, oklab.b)
 
+      // Generate HEX with alpha if needed
+      const hexColor =
+        a < 1
+          ? `#${rgbToHex(r, g, b).slice(1)}${Math.round(a * 255)
+              .toString(16)
+              .padStart(2, '0')}`
+          : rgbToHex(r, g, b)
+
       const result: ColorFormats = {
-        hex: inputColor.toUpperCase(),
-        rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+        hex: hexColor.toUpperCase(),
+        rgb: `rgb(${r}, ${g}, ${b})`,
         hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-        rgba: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`,
-        hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 1)`,
+        rgba: `rgba(${r}, ${g}, ${b}, ${a})`,
+        hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${a})`,
         lab: `lab(${lab.l}% ${lab.a} ${lab.b})`,
         lch: `lch(${lch.l}% ${lch.c} ${lch.h})`,
         oklab: `oklab(${oklab.l} ${oklab.a} ${oklab.b})`,
         oklch: `oklch(${oklch.l} ${oklch.c} ${oklch.h})`,
-        rgbValues: rgb,
-        hslValues: hsl,
+        rgbValues: { r, g, b, a },
+        hslValues: { ...hsl, a },
         labValues: lab,
         lchValues: lch,
         oklabValues: oklab,
         oklchValues: oklch,
+        opacity: a,
         isValid: true,
       }
 
@@ -267,7 +380,18 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       onError?.('Rang konvertatsiyasida xatolik yuz berdi')
       return null
     }
-  }, [inputColor, isValidHex, hexToRgb, rgbToHsl, rgbToLab, labToLch, rgbToOklab, oklabToOklch, onSuccess, onError])
+  }, [
+    inputColor,
+    parseColorInput,
+    rgbToHsl,
+    rgbToLab,
+    labToLch,
+    rgbToOklab,
+    oklabToOklch,
+    rgbToHex,
+    onSuccess,
+    onError,
+  ])
 
   // Set color from different formats
   const setColorFromRgb = useCallback(
