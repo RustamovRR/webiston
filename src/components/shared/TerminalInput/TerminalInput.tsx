@@ -44,7 +44,7 @@ export interface TerminalInputProps {
   className?: string
   headerClassName?: string
   contentClassName?: string
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'dynamic'
 
   // Behavior
   disabled?: boolean
@@ -55,6 +55,10 @@ export interface TerminalInputProps {
   // Animation
   showShadow?: boolean
   animate?: boolean
+
+  // Dynamic color props
+  dynamicColor?: string
+  dynamicOpacity?: number
 }
 
 const variantStyles = {
@@ -88,6 +92,38 @@ const variantStyles = {
     header: 'bg-blue-100/50 dark:bg-blue-800/20',
     footer: 'bg-blue-100/30 dark:bg-blue-800/10',
   },
+  dynamic: {
+    border: '',
+    bg: '',
+    header: '',
+    footer: '',
+  },
+}
+
+const getRGBFromColor = (color: string): [number, number, number] => {
+  try {
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = 1
+    const ctx = canvas.getContext('2d')!
+    ctx.fillStyle = color
+    ctx.fillRect(0, 0, 1, 1)
+    const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data
+    return [r, g, b]
+  } catch {
+    return [59, 130, 246] // fallback blue color
+  }
+}
+
+// Dynamic styles generator
+const getDynamicStyles = (color: string, opacity: number = 1) => {
+  const [r, g, b] = getRGBFromColor(color)
+
+  return {
+    borderColor: `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.3, 0.3)})`,
+    backgroundColor: `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.05, 0.05)})`,
+    '--header-bg': `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.1, 0.1)})`,
+    '--footer-bg': `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.08, 0.08)})`,
+  } as React.CSSProperties
 }
 
 export const TerminalInput: React.FC<TerminalInputProps> = ({
@@ -113,9 +149,13 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
   maxHeight,
   showShadow = false,
   animate = true,
+  dynamicColor,
+  dynamicOpacity = 1,
 }) => {
   const tCommon = useTranslations('Common')
   const styles = variantStyles[variant]
+
+  const dynamicStyles = variant === 'dynamic' && dynamicColor ? getDynamicStyles(dynamicColor, dynamicOpacity) : {}
 
   const renderAction = (action: TerminalInputAction, index: number) => {
     if (action.type === 'custom' && action.component) {
@@ -175,6 +215,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         showShadow && 'shadow-lg hover:shadow-xl',
         className,
       )}
+      style={variant === 'dynamic' ? dynamicStyles : {}}
     >
       {/* Header */}
       <div

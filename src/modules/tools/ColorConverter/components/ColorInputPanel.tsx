@@ -193,46 +193,79 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
     </div>
   )
 
-  // Generate dynamic ambient background styles based on selected color
-  const getDynamicStyles = () => {
+  // Generate professional ambient background styles
+  const getAmbientStyles = () => {
     if (!colorFormats?.isValid) return {}
 
-    const { h, s, l } = colorFormats.hslValues
+    const { r, g, b } = colorFormats.rgbValues
+    const opacity = colorFormats.opacity || 1
 
-    // Create more visible glow effect
-    const glowColor = `hsl(${h}, ${Math.min(s * 0.8, 50)}%, ${l}%)`
+    // Create subtle ambient colors with reduced saturation
+    const ambientColor = `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.08, 0.12)})`
+    const glowColor = `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.15, 0.25)})`
 
     return {
-      '--ambient-glow': glowColor,
+      '--ambient-color': ambientColor,
+      '--glow-color': glowColor,
     } as React.CSSProperties
   }
 
   return (
     <div className="relative">
-      {/* Ambient blur effect - butun section bo'yicha */}
+      {/* Professional Ambient Background Effects */}
       {colorFormats?.isValid && (
         <>
-          {/* Inner glow */}
+          {/* Subtle background wash */}
           <div
             style={{
-              ...getDynamicStyles(),
-              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 60%)`,
+              ...getAmbientStyles(),
+              background: `radial-gradient(circle at 30% 20%, var(--ambient-color) 0%, transparent 50%), 
+                          radial-gradient(circle at 70% 80%, var(--ambient-color) 0%, transparent 50%)`,
             }}
-            className="absolute -inset-4 opacity-40 blur-xl transition-all duration-500 dark:opacity-30"
+            className="absolute inset-0 transition-all duration-700 ease-out"
           />
-          {/* Middle glow */}
+
+          {/* Soft glow around edges */}
           <div
-            className="absolute -inset-8 opacity-30 blur-2xl transition-all duration-500 dark:opacity-20"
             style={{
-              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 70%)`,
+              ...getAmbientStyles(),
+              background: `linear-gradient(135deg, 
+                          var(--glow-color) 0%, 
+                          transparent 25%, 
+                          transparent 75%, 
+                          var(--glow-color) 100%)`,
             }}
+            className="absolute inset-0 opacity-60 blur-sm transition-all duration-700 ease-out dark:opacity-40"
           />
-          {/* Outer glow */}
+
+          {/* Inner rim glow */}
           <div
-            className="absolute -inset-16 opacity-20 blur-3xl transition-all duration-500 dark:opacity-15"
             style={{
-              background: `radial-gradient(ellipse at center, var(--ambient-glow) 0%, transparent 80%)`,
+              ...getAmbientStyles(),
+              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`,
             }}
+            className="absolute inset-x-0 top-0 h-px opacity-80 transition-all duration-700 ease-out"
+          />
+          <div
+            style={{
+              ...getAmbientStyles(),
+              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`,
+            }}
+            className="absolute inset-y-0 left-0 w-px opacity-80 transition-all duration-700 ease-out"
+          />
+          <div
+            style={{
+              ...getAmbientStyles(),
+              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`,
+            }}
+            className="absolute inset-y-0 right-0 w-px opacity-80 transition-all duration-700 ease-out"
+          />
+          <div
+            style={{
+              ...getAmbientStyles(),
+              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`,
+            }}
+            className="absolute inset-x-0 bottom-0 h-px opacity-80 transition-all duration-700 ease-out"
           />
         </>
       )}
@@ -245,8 +278,10 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
           customContent={customContent}
           showShadow={true}
           animate={true}
-          variant="default"
-          className="h-[604px]"
+          className="h-[484px]"
+          variant={colorFormats?.isValid ? 'dynamic' : 'error'}
+          dynamicColor={colorFormats?.isValid ? inputColor : undefined}
+          dynamicOpacity={colorFormats?.opacity}
         />
       </div>
     </div>

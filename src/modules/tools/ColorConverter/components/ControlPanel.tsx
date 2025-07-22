@@ -50,7 +50,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             options={paletteOptions}
             value={paletteType}
             onChange={(value) => setPaletteType(value as 'monochromatic' | 'analogous' | 'complementary')}
-            toolCategory="converters"
           />
 
           <ShimmerButton onClick={onRandomColor} variant="outline" size="sm">

@@ -129,7 +129,7 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
   }
 
   const formatContent = colorFormats?.isValid && (
-    <div className="max-h-[500px] space-y-3 overflow-y-auto p-4">
+    <div className="max-h-[380px] space-y-3 overflow-y-auto p-4">
       {colorFormatItems.map((item, index) => (
         <ColorFormatItem
           key={index}
@@ -151,7 +151,6 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
       stats={stats}
       statsPosition="footer"
       customContent={colorFormats?.isValid ? formatContent : emptyState}
-      minHeight="400px"
       showShadow={true}
       animate={true}
       variant="default"
