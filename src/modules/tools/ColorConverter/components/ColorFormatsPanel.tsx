@@ -55,7 +55,7 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
       ]
 
   const emptyState = (
-    <div className="flex h-full items-center justify-center p-8 text-center">
+    <div className="flex h-[380px] items-center justify-center p-8 text-center">
       <div className="text-zinc-500 dark:text-zinc-400">
         <Palette size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">{t('enterValidColor') || "To'g'ri HEX rang kiriting..."}</p>
@@ -154,6 +154,7 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
       showShadow={true}
       animate={true}
       variant="default"
+      className="h-full"
     />
   )
 }

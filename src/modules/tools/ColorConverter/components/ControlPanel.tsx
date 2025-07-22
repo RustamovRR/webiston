@@ -52,7 +52,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             onChange={(value) => setPaletteType(value as 'monochromatic' | 'analogous' | 'complementary')}
           />
 
-          <ShimmerButton onClick={onRandomColor} variant="outline" size="sm">
+          <ShimmerButton
+            onClick={onRandomColor}
+            variant="outline"
+            size="sm"
+            className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
+          >
             <RefreshCw size={16} className="mr-2" />
             {t('randomColor') || 'Tasodifiy rang'}
           </ShimmerButton>
@@ -60,7 +65,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <div className="flex items-center gap-2">
           {isValid && (
-            <ShimmerButton onClick={onDownloadPalette} variant="outline" size="sm">
+            <ShimmerButton
+              onClick={onDownloadPalette}
+              variant="outline"
+              size="sm"
+              className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
+            >
               <Download size={16} className="mr-2" />
               {t('downloadPalette') || 'Palette yuklab olish'}
             </ShimmerButton>
