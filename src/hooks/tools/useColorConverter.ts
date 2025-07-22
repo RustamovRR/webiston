@@ -4,8 +4,18 @@ export interface ColorFormats {
   hex: string
   rgb: string
   hsl: string
+  rgba: string
+  hsla: string
+  lab: string
+  lch: string
+  oklab: string
+  oklch: string
   rgbValues: { r: number; g: number; b: number }
   hslValues: { h: number; s: number; l: number }
+  labValues: { l: number; a: number; b: number }
+  lchValues: { l: number; c: number; h: number }
+  oklabValues: { l: number; a: number; b: number }
+  oklchValues: { l: number; c: number; h: number }
   isValid: boolean
 }
 
@@ -128,6 +138,73 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
     return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
   }, [])
 
+  // Convert RGB to Lab
+  const rgbToLab = useCallback((r: number, g: number, b: number) => {
+    // First convert RGB to XYZ
+    let rNorm = r / 255
+    let gNorm = g / 255
+    let bNorm = b / 255
+
+    // Apply gamma correction
+    rNorm = rNorm > 0.04045 ? Math.pow((rNorm + 0.055) / 1.055, 2.4) : rNorm / 12.92
+    gNorm = gNorm > 0.04045 ? Math.pow((gNorm + 0.055) / 1.055, 2.4) : gNorm / 12.92
+    bNorm = bNorm > 0.04045 ? Math.pow((bNorm + 0.055) / 1.055, 2.4) : bNorm / 12.92
+
+    // Convert to XYZ using sRGB matrix
+    let x = rNorm * 0.4124564 + gNorm * 0.3575761 + bNorm * 0.1804375
+    let y = rNorm * 0.2126729 + gNorm * 0.7151522 + bNorm * 0.072175
+    let z = rNorm * 0.0193339 + gNorm * 0.119192 + bNorm * 0.9503041
+
+    // Normalize for D65 illuminant
+    x = x / 0.95047
+    y = y / 1.0
+    z = z / 1.08883
+
+    // Convert XYZ to Lab
+    const fx = x > 0.008856 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116
+    const fy = y > 0.008856 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116
+    const fz = z > 0.008856 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116
+
+    const l = Math.round(116 * fy - 16)
+    const a = Math.round(500 * (fx - fy))
+    const bLab = Math.round(200 * (fy - fz))
+
+    return { l, a, b: bLab }
+  }, [])
+
+  // Convert Lab to LCH
+  const labToLch = useCallback((l: number, a: number, b: number) => {
+    const c = Math.round(Math.sqrt(a * a + b * b))
+    let h = Math.round((Math.atan2(b, a) * 180) / Math.PI)
+    if (h < 0) h += 360
+
+    return { l, c, h }
+  }, [])
+
+  // Convert RGB to OKLab (simplified approximation)
+  const rgbToOklab = useCallback((r: number, g: number, b: number) => {
+    // Simplified OKLab conversion (approximation)
+    const rNorm = r / 255
+    const gNorm = g / 255
+    const bNorm = b / 255
+
+    // Linear RGB to OKLab (simplified)
+    const l = Math.round((0.2126 * rNorm + 0.7152 * gNorm + 0.0722 * bNorm) * 100) / 100
+    const a = Math.round((rNorm - gNorm) * 0.5 * 100) / 100
+    const bOk = Math.round((rNorm + gNorm - 2 * bNorm) * 0.25 * 100) / 100
+
+    return { l, a, b: bOk }
+  }, [])
+
+  // Convert OKLab to OKLCH
+  const oklabToOklch = useCallback((l: number, a: number, b: number) => {
+    const c = Math.round(Math.sqrt(a * a + b * b) * 100) / 100
+    let h = Math.round((Math.atan2(b, a) * 180) / Math.PI)
+    if (h < 0) h += 360
+
+    return { l, c, h }
+  }, [])
+
   // Main color formats calculation
   const colorFormats = useMemo((): ColorFormats | null => {
     try {
@@ -137,8 +214,18 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
           hex: inputColor.toUpperCase(),
           rgb: '',
           hsl: '',
+          rgba: '',
+          hsla: '',
+          lab: '',
+          lch: '',
+          oklab: '',
+          oklch: '',
           rgbValues: { r: 0, g: 0, b: 0 },
           hslValues: { h: 0, s: 0, l: 0 },
+          labValues: { l: 0, a: 0, b: 0 },
+          lchValues: { l: 0, c: 0, h: 0 },
+          oklabValues: { l: 0, a: 0, b: 0 },
+          oklchValues: { l: 0, c: 0, h: 0 },
           isValid: false,
         }
       }
@@ -150,13 +237,27 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       }
 
       const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+      const lab = rgbToLab(rgb.r, rgb.g, rgb.b)
+      const lch = labToLch(lab.l, lab.a, lab.b)
+      const oklab = rgbToOklab(rgb.r, rgb.g, rgb.b)
+      const oklch = oklabToOklch(oklab.l, oklab.a, oklab.b)
 
       const result: ColorFormats = {
         hex: inputColor.toUpperCase(),
         rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
         hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+        rgba: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`,
+        hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 1)`,
+        lab: `lab(${lab.l}% ${lab.a} ${lab.b})`,
+        lch: `lch(${lch.l}% ${lch.c} ${lch.h})`,
+        oklab: `oklab(${oklab.l} ${oklab.a} ${oklab.b})`,
+        oklch: `oklch(${oklch.l} ${oklch.c} ${oklch.h})`,
         rgbValues: rgb,
         hslValues: hsl,
+        labValues: lab,
+        lchValues: lch,
+        oklabValues: oklab,
+        oklchValues: oklch,
         isValid: true,
       }
 
@@ -166,7 +267,7 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       onError?.('Rang konvertatsiyasida xatolik yuz berdi')
       return null
     }
-  }, [inputColor, isValidHex, hexToRgb, rgbToHsl, onSuccess, onError])
+  }, [inputColor, isValidHex, hexToRgb, rgbToHsl, rgbToLab, labToLch, rgbToOklab, oklabToOklch, onSuccess, onError])
 
   // Set color from different formats
   const setColorFromRgb = useCallback(

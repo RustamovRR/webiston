@@ -576,7 +576,13 @@
       "formatsWillAppear": "Color formats will appear here",
       "hexDescription": "Most widely used in web development",
       "rgbDescription": "For monitors and screens",
-      "hslDescription": "Human-readable format"
+      "hslDescription": "Human-readable format",
+      "rgbaDescription": "RGB with alpha channel",
+      "hslaDescription": "HSL with alpha channel",
+      "labDescription": "CIE Lab color space",
+      "lchDescription": "Lightness, Chroma, Hue",
+      "oklabDescription": "Modern perceptual color space",
+      "oklchDescription": "Cylindrical coordinates of OKLab"
     },
     "ColorPalette": {
       "monochromatic": "Monochromatic palette",

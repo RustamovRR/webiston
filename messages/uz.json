@@ -557,7 +557,13 @@
       "formatsWillAppear": "Rang formatlar bu yerda ko'rinadi",
       "hexDescription": "Web dasturlashda eng keng tarqalgan",
       "rgbDescription": "Monitor va ekranlar uchun",
-      "hslDescription": "Inson uchun tushunarli"
+      "hslDescription": "Inson uchun tushunarli",
+      "rgbaDescription": "Alpha kanal bilan RGB",
+      "hslaDescription": "Alpha kanal bilan HSL",
+      "labDescription": "CIE Lab rang maydoni",
+      "lchDescription": "Lightness, Chroma, Hue",
+      "oklabDescription": "Zamonaviy perceptual rang maydoni",
+      "oklchDescription": "OKLab ning silindr koordinatalari"
     },
     "ColorPalette": {
       "monochromatic": "Monoxromatik palette",
