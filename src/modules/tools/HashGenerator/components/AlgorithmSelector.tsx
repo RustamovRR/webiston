@@ -63,7 +63,7 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
                         : 'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400'
                 }`}
               >
-                {t(`${algorithm}`) || info.recommendation}
+                {tInfo(`recommendations.${info.status}`)}
               </span>
             </button>
           )

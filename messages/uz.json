@@ -687,9 +687,9 @@
       },
       "recommendations": {
         "deprecated": "Ishlatmang - eskirgan",
-        "weak": "Legacy uchun",
+        "weak": "Zaif - faqat eski holat uchun",
         "secure": "Tavsiya etiladi",
-        "recommended": "Eng yaxshi"
+        "recommended": "Eng yaxshi tanlov"
       },
       "descriptions": {
         "deprecated": "Zaif, faqat demo uchun",

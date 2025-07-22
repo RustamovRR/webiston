@@ -705,8 +705,8 @@
         "verysecure": "Very Secure"
       },
       "recommendations": {
-        "deprecated": "Don't use",
-        "weak": "Legacy only",
+        "deprecated": "Don't use - deprecated",
+        "weak": "Weak - legacy only",
         "secure": "Recommended",
         "recommended": "Best choice"
       },

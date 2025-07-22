@@ -25,6 +25,7 @@ interface DetailedResultsProps {
 
 const DetailedResults: React.FC<DetailedResultsProps> = ({ hashResults, getAlgorithmInfo }) => {
   const t = useTranslations('HashGeneratorPage.DetailedResults')
+  const tInfo = useTranslations('HashGeneratorPage.Info')
 
   if (hashResults.length === 0) return null
 
@@ -56,7 +57,7 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({ hashResults, getAlgor
                             : 'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400'
                     }`}
                   >
-                    {t(`descriptions.${result.status}`) || info.description}
+                    {tInfo(`descriptions.${result.status}`)}
                   </span>
                 </div>
                 <CopyButton text={result.hash} />
