@@ -17,7 +17,7 @@ const InputPanel: React.FC<InputPanelProps> = ({ count, version, format, getVers
   const currentFormatInfo = getFormatInfo(format)
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="h-[96%] overflow-auto rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
       {/* Panel Header */}
       <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
         <div className="flex items-center gap-3">
