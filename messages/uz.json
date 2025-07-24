@@ -712,5 +712,124 @@
         "recommendation": "SHA256+ algoritmlarni ishlating"
       }
     }
+  },
+  "UuidGeneratorPage": {
+    "ToolHeader": {
+      "title": "UUID Generator",
+      "description": "Professional UUID yaratish vositasi. Turli formatlar va versiyalar bilan noyob identifikatorlar yaratish."
+    },
+    "ConfigPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Ready",
+      "versionLabel": "UUID Versiyasi:",
+      "formatLabel": "Format:",
+      "countLabel": "Soni:",
+      "countRange": "(1-1000)",
+      "sampleLabel": "Namuna:",
+      "generateButton": "UUID Yaratish",
+      "generating": "Yaratilmoqda...",
+      "clearButton": "Tozalash"
+    },
+    "VersionSelector": {
+      "v4": "UUID v4",
+      "v1": "UUID v1",
+      "nil": "NIL"
+    },
+    "FormatSelector": {
+      "standard": "Standart",
+      "compact": "Ixcham",
+      "brackets": "Qavsli",
+      "uppercase": "KATTA"
+    },
+    "InputPanel": {
+      "title": "Tool Kirish",
+      "status": "Input",
+      "settingsTitle": "Sozlamalar",
+      "countLabel": "soni",
+      "versionLabel": "versiya",
+      "formatLabel": "format",
+      "versionInfoTitle": "UUID Versiya Ma'lumoti",
+      "formatInfoTitle": "Format Ma'lumoti",
+      "nameLabel": "Nom:",
+      "descriptionLabel": "Tavsif:",
+      "securityLabel": "Xavfsizlik:",
+      "patternLabel": "Pattern:",
+      "exampleLabel": "Misol:"
+    },
+    "ResultsPanel": {
+      "title": "Tool Natija",
+      "statusGenerated": "Generated",
+      "statusEmpty": "Empty",
+      "downloadTxt": "TXT",
+      "downloadJson": "JSON",
+      "emptyMessage": "UUID yaratish uchun yuqoridagi tugmani bosing",
+      "itemNumber": "#",
+      "totalLabel": "Jami UUID",
+      "uniqueLabel": "Noyob UUID",
+      "duplicatesLabel": "Dublikat",
+      "bytesLabel": "Jami Bayt"
+    },
+    "StatsPanel": {
+      "title": "Batafsil Statistika"
+    },
+    "InfoPanel": {
+      "title": "UUID nima va nima uchun ishlatiladi?",
+      "versionsTitle": "UUID versiyalari:",
+      "useCasesTitle": "Qo'llanish sohalari:",
+      "importantNote": "Muhim:",
+      "collisionNote": "UUID v4 ning to'qnashuv ehtimoli 5.3×10⁻³⁶ ga teng, bu amalda noyoblikni kafolatlaydi."
+    },
+    "VersionInfo": {
+      "v4": {
+        "name": "UUID v4 (Random)",
+        "description": "Tasodifiy qiymatlar asosida yaratiladi",
+        "security": "High",
+        "recommended": true,
+        "details": "Tasodifiy qiymatlar asosida, eng xavfsiz va mashhur"
+      },
+      "v1": {
+        "name": "UUID v1 (Timestamp)",
+        "description": "Vaqt va MAC address asosida yaratiladi",
+        "security": "Medium",
+        "recommended": false,
+        "details": "Vaqt va MAC address asosida, ketma-ketlik saqlaydi"
+      },
+      "nil": {
+        "name": "NIL UUID",
+        "description": "Barcha noldan iborat UUID",
+        "security": "None",
+        "recommended": false,
+        "details": "Barcha noldan iborat, bo'sh holatni bildiradi"
+      }
+    },
+    "FormatInfo": {
+      "standard": {
+        "name": "Standart Format",
+        "description": "8-4-4-4-12 formatida chiziqlar bilan ajratilgan",
+        "example": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "compact": {
+        "name": "Ixcham Format",
+        "description": "Chiziqsiz, 32 belgilik ixcham format",
+        "example": "550e8400e29b41d4a716446655440000"
+      },
+      "brackets": {
+        "name": "Qavsli Format",
+        "description": "Jingalak qavslar bilan o'ralgan format",
+        "example": "{550e8400-e29b-41d4-a716-446655440000}"
+      },
+      "uppercase": {
+        "name": "Katta Harflar Format",
+        "description": "Barcha harflar katta bo'lgan format",
+        "example": "550E8400-E29B-41D4-A716-446655440000"
+      }
+    },
+    "UseCases": {
+      "database": "Ma'lumotlar bazasi kalitlari: Auto-increment o'rniga global noyob identifikatorlar",
+      "microservices": "Mikroservislar: Taqsimlangan tizimlarda noyob ID yaratish",
+      "fileNaming": "Fayl nomlash: Fayl va resurslar uchun to'qnashuvdan xoli identifikatorlar",
+      "sessionIds": "Sessiya ID lari: Veb-ilovalarda sessiya kuzatish",
+      "apiKeys": "API kalitlari: Servis autentifikatsiya va avtorizatsiya"
+    }
   }
 }
