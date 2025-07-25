@@ -1,0 +1,229 @@
+import React, { useState } from 'react'
+import { Download, Upload, Hash, Zap, X, Settings, QrCode, Image } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ShimmerButton, GradientTabs } from '@/components/ui'
+import { cn } from '@/lib'
+import { QrSize, QrErrorLevel, QrPreset } from '@/hooks'
+
+interface ControlPanelProps {
+  qrSize: QrSize
+  errorLevel: QrErrorLevel
+  isGenerating: boolean
+  availableSizes: Array<{ value: QrSize; label: string }>
+  errorLevels: Array<{ value: QrErrorLevel; label: string; description: string }>
+  groupedPresets: Record<string, QrPreset[]>
+  canDownload: boolean
+  inputText: string
+  onSizeChange: (size: QrSize) => void
+  onErrorLevelChange: (level: QrErrorLevel) => void
+  onPresetSelect: (preset: QrPreset) => void
+  onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onClear: () => void
+  onDownload: () => void
+}
+
+const ControlPanel: React.FC<ControlPanelProps> = ({
+  qrSize,
+  errorLevel,
+  isGenerating,
+  availableSizes,
+  errorLevels,
+  groupedPresets,
+  canDownload,
+  inputText,
+  onSizeChange,
+  onErrorLevelChange,
+  onPresetSelect,
+  onFileUpload,
+  onClear,
+  onDownload,
+}) => {
+  const [activeCategory, setActiveCategory] = useState('url')
+
+  const categoryOptions = [
+    {
+      value: 'url',
+      label: 'URL',
+      icon: <Hash size={16} />,
+    },
+    {
+      value: 'contact',
+      label: 'Kontakt',
+      icon: <Zap size={16} />,
+    },
+    {
+      value: 'text',
+      label: 'Matn',
+      icon: <X size={16} />,
+    },
+    {
+      value: 'wifi',
+      label: 'WiFi',
+      icon: <Settings size={16} />,
+    },
+    {
+      value: 'sms',
+      label: 'SMS',
+      icon: <QrCode size={16} />,
+    },
+  ]
+
+  const sizeOptions = availableSizes.map((size) => ({
+    value: size.value.toString(),
+    label: size.label,
+    icon: <Image size={16} />,
+  }))
+
+  return (
+    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+      {/* Panel Header */}
+      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-red-500"></div>
+            <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
+            <div className="h-3 w-3 rounded-full bg-green-500"></div>
+          </div>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Tool Konfiguratsiya</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-green-500"></div>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">Ready</span>
+        </div>
+      </div>
+
+      {/* Panel Content */}
+      <div className="p-6">
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Category Selection */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Kategoriya:</label>
+            <GradientTabs
+              options={categoryOptions}
+              value={activeCategory}
+              onChange={setActiveCategory}
+              toolCategory="generators"
+            />
+            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                {activeCategory === 'url' && 'Web sahifalar va linklar uchun QR kodlar'}
+                {activeCategory === 'contact' && "Telefon, email va kontakt ma'lumotlari"}
+                {activeCategory === 'text' && "Oddiy matn va ma'lumotlar"}
+                {activeCategory === 'wifi' && "WiFi ulanish ma'lumotlari"}
+                {activeCategory === 'sms' && 'SMS va xabar yuborish'}
+              </div>
+            </div>
+          </div>
+
+          {/* QR Size */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">QR O'lchami:</label>
+            <GradientTabs
+              options={sizeOptions}
+              value={qrSize.toString()}
+              onChange={(value) => onSizeChange(Number(value) as QrSize)}
+              toolCategory="generators"
+            />
+            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                Katta o'lchamlar sifatli chop etish uchun mos
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Level */}
+        <div className="mt-6 space-y-3">
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Xato Tuzatish Darajasi:</label>
+          <div className="grid gap-2 md:grid-cols-4">
+            {errorLevels.map((level) => (
+              <label
+                key={level.value}
+                className={cn(
+                  'flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors',
+                  errorLevel === level.value
+                    ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
+                    : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                )}
+              >
+                <input
+                  type="radio"
+                  name="errorLevel"
+                  value={level.value}
+                  checked={errorLevel === level.value}
+                  onChange={(e) => onErrorLevelChange(e.target.value as QrErrorLevel)}
+                  className="sr-only"
+                />
+                <div className="text-sm font-medium">{level.label}</div>
+                <div className="text-xs opacity-75">{level.description}</div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Preset Selection */}
+        {groupedPresets[activeCategory] && (
+          <div className="mt-6 space-y-3">
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Namuna Tanlovlari:</label>
+            <div className="grid gap-2 md:grid-cols-2">
+              {groupedPresets[activeCategory].map((preset: QrPreset, index: number) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded-lg border border-zinc-300 bg-zinc-100/30 p-3 transition-colors hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{preset.label}</div>
+                    <div className="text-xs text-zinc-600 dark:text-zinc-400">{preset.description}</div>
+                  </div>
+                  <Button onClick={() => onPresetSelect(preset)} variant="outline" size="sm" className="ml-2">
+                    Yuklash
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Controls */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {/* File Upload */}
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                accept=".txt,.json,.csv,.md"
+                onChange={onFileUpload}
+                className="hidden"
+                id="file-upload"
+              />
+              <Button variant="outline" size="sm" asChild>
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload size={16} className="mr-2" />
+                  Fayl yuklash
+                </label>
+              </Button>
+            </div>
+
+            {/* Clear */}
+            {inputText && (
+              <Button onClick={onClear} variant="outline" size="sm">
+                <X size={16} className="mr-2" />
+                Tozalash
+              </Button>
+            )}
+          </div>
+
+          {/* Download */}
+          {canDownload && (
+            <ShimmerButton onClick={onDownload} disabled={isGenerating} size="sm">
+              <Download size={16} className="mr-2" />
+              {isGenerating ? 'Yuklanmoqda...' : 'QR Yuklab olish'}
+            </ShimmerButton>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ControlPanel

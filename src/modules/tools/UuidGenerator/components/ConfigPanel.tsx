@@ -184,9 +184,14 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <Button
                   key={sample.value}
                   onClick={() => onLoadSample(sample.value)}
-                  variant="ghost"
+                  variant={count === sample.value ? 'default' : 'ghost'}
                   size="sm"
-                  className="h-8 px-2 text-xs"
+                  className={cn(
+                    'h-8 px-2 text-xs transition-colors',
+                    count === sample.value
+                      ? 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700'
+                      : 'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+                  )}
                 >
                   {sample.label}
                 </Button>
