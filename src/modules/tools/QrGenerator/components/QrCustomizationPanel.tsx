@@ -234,7 +234,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
   )
 
   const customContent = (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       {/* Preset Styles */}
       <div className="space-y-3">
         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('presetStyles')}</label>

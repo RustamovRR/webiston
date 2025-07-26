@@ -101,8 +101,8 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
       {/* Collapsible Content */}
       <div
         className={cn(
-          'overflow-hidden transition-all duration-500 ease-in-out',
-          isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0',
+          'transition-all duration-500 ease-in-out',
+          isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 overflow-hidden opacity-0',
         )}
       >
         <div className="border-x border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
@@ -119,7 +119,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
 
               {/* Enhanced Mini Preview */}
               <div className="lg:col-span-1">
-                <div className="sticky top-6">
+                <div className="sticky top-[72px] z-10">
                   {qrUrl && isValid ? (
                     <div className="group rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50/80 to-zinc-100/60 p-5 shadow-sm backdrop-blur-sm transition-all duration-500 hover:shadow-md dark:border-zinc-700 dark:from-zinc-800/60 dark:to-zinc-900/40">
                       {/* Header with animated icon */}
