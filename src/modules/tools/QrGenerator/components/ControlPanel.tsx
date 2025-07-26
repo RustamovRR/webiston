@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Download, Upload, Hash, Zap, X, Settings, QrCode, Image } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { cn } from '@/lib'
-import { QrSize, QrErrorLevel, QrPreset } from '@/hooks'
+import { QrSize, QrErrorLevel, QrPreset } from '@/hooks/tools/useQrGenerator'
 
 interface ControlPanelProps {
   qrSize: QrSize
   errorLevel: QrErrorLevel
   isGenerating: boolean
-  availableSizes: Array<{ value: QrSize; label: string }>
-  errorLevels: Array<{ value: QrErrorLevel; label: string; description: string }>
+  availableSizes: ReadonlyArray<{ readonly value: number; readonly label: string; readonly description: string }>
+  errorLevels: ReadonlyArray<{ readonly value: string; readonly label: string; readonly description: string }>
   groupedPresets: Record<string, QrPreset[]>
   canDownload: boolean
   inputText: string
@@ -38,6 +39,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onClear,
   onDownload,
 }) => {
+  const t = useTranslations('QrGeneratorPage.ControlPanel')
+  const tCategories = useTranslations('QrGeneratorPage.Categories')
+  const tSizes = useTranslations('QrGeneratorPage.Sizes')
+  const tErrorLevels = useTranslations('QrGeneratorPage.ErrorLevels')
+
   const [activeCategory, setActiveCategory] = useState('url')
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
 
@@ -51,27 +57,27 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const categoryOptions = [
     {
       value: 'url',
-      label: 'URL',
+      label: tCategories('url'),
       icon: <Hash size={16} />,
     },
     {
       value: 'contact',
-      label: 'Kontakt',
+      label: tCategories('contact'),
       icon: <Zap size={16} />,
     },
     {
       value: 'text',
-      label: 'Matn',
+      label: tCategories('text'),
       icon: <X size={16} />,
     },
     {
       value: 'wifi',
-      label: 'WiFi',
+      label: tCategories('wifi'),
       icon: <Settings size={16} />,
     },
     {
       value: 'sms',
-      label: 'SMS',
+      label: tCategories('sms'),
       icon: <QrCode size={16} />,
     },
   ]
@@ -92,11 +98,11 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Tool Konfiguratsiya</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">Ready</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">{t('status')}</span>
         </div>
       </div>
 
@@ -105,7 +111,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Category Selection */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Kategoriya:</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('categoryLabel')}</label>
             <GradientTabs
               options={categoryOptions}
               value={activeCategory}
@@ -114,18 +120,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             />
             <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
               <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                {activeCategory === 'url' && 'Web sahifalar va linklar uchun QR kodlar'}
-                {activeCategory === 'contact' && "Telefon, email va kontakt ma'lumotlari"}
-                {activeCategory === 'text' && "Oddiy matn va ma'lumotlar"}
-                {activeCategory === 'wifi' && "WiFi ulanish ma'lumotlari"}
-                {activeCategory === 'sms' && 'SMS va xabar yuborish'}
+                {tCategories(`descriptions.${activeCategory}`)}
               </div>
             </div>
           </div>
 
           {/* QR Size */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">QR O'lchami:</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('sizeLabel')}</label>
             <GradientTabs
               options={sizeOptions}
               value={qrSize.toString()}
@@ -133,16 +135,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               toolCategory="generators"
             />
             <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                Katta o'lchamlar sifatli chop etish uchun mos
-              </div>
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">{tSizes('description')}</div>
             </div>
           </div>
         </div>
 
         {/* Error Level */}
         <div className="mt-6 space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Xato Tuzatish Darajasi:</label>
+          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('errorLevelLabel')}</label>
           <div className="grid gap-2 md:grid-cols-4">
             {errorLevels.map((level) => (
               <label
@@ -172,7 +172,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         {/* Preset Selection */}
         {groupedPresets[activeCategory] && (
           <div className="mt-6 space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Namuna Tanlovlari:</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('presetsLabel')}</label>
             <div className="grid gap-2 md:grid-cols-2">
               {groupedPresets[activeCategory].map((preset: QrPreset, index: number) => {
                 const isActive = inputText.trim() === preset.value.trim()
@@ -219,7 +219,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         isActive && 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600',
                       )}
                     >
-                      {isActive ? 'Tanlangan' : 'Yuklash'}
+                      {isActive ? t('selected') : t('load')}
                     </Button>
                   </div>
                 )
@@ -243,7 +243,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               <Button variant="outline" size="sm" asChild>
                 <label htmlFor="file-upload" className="cursor-pointer">
                   <Upload size={16} className="mr-2" />
-                  Fayl yuklash
+                  {t('fileUpload')}
                 </label>
               </Button>
             </div>
@@ -252,7 +252,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             {inputText && (
               <Button onClick={onClear} variant="outline" size="sm">
                 <X size={16} className="mr-2" />
-                Tozalash
+                {t('clear')}
               </Button>
             )}
           </div>
@@ -261,7 +261,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           {canDownload && (
             <ShimmerButton onClick={onDownload} disabled={isGenerating} size="sm">
               <Download size={16} className="mr-2" />
-              {isGenerating ? 'Yuklanmoqda...' : 'QR Yuklab olish'}
+              {isGenerating ? t('downloading') : t('download')}
             </ShimmerButton>
           )}
         </div>

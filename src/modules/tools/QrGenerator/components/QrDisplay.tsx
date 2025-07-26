@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Copy, Check, Download, Eye } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib'
 import { QrSize, QrErrorLevel } from '@/hooks/tools/useQrGenerator'
@@ -27,6 +28,9 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
   stats,
   onDownload,
 }) => {
+  const t = useTranslations('QrGeneratorPage.QrDisplay')
+  const tDataTypes = useTranslations('QrGeneratorPage.DataTypes')
+
   const [copied, setCopied] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
 
@@ -51,11 +55,11 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">QR Kod Natijasi</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">Generated</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">{t('status')}</span>
         </div>
       </div>
 
@@ -75,13 +79,13 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
               </div>
               <div className="mt-2 flex justify-center gap-2 text-xs">
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.characters} belgi
+                  {stats.characters} {t('stats.characters')}
                 </span>
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.words} so'z
+                  {stats.words} {t('stats.words')}
                 </span>
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.lines} qator
+                  {stats.lines} {t('stats.lines')}
                 </span>
               </div>
             </div>
@@ -92,10 +96,10 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
         <div className="space-y-4">
           <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
             <div className="mb-3 flex items-center justify-between">
-              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">QR kod tarkibi:</h4>
+              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('contentTitle')}</h4>
               <Button onClick={() => setShowPreview(!showPreview)} variant="ghost" size="sm" className="h-6 px-2">
                 <Eye size={14} className="mr-1" />
-                {showPreview ? 'Yashirish' : "Ko'rish"}
+                {showPreview ? t('hideContent') : t('showContent')}
               </Button>
             </div>
 
@@ -121,12 +125,12 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 {copied ? (
                   <>
                     <Check size={14} className="mr-1" />
-                    Nusxalandi
+                    {t('copied')}
                   </>
                 ) : (
                   <>
                     <Copy size={14} className="mr-1" />
-                    Matnni nusxalash
+                    {t('copyText')}
                   </>
                 )}
               </Button>
@@ -138,35 +142,35 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 className="flex-1 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               >
                 <Download size={14} className="mr-1" />
-                QR yuklab olish
+                {t('downloadQr')}
               </Button>
             </div>
           </div>
 
           {/* QR Info */}
           <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
-            <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">Texnik ma'lumotlar:</h4>
+            <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('technicalInfo')}</h4>
             <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
               <div className="flex justify-between">
-                <span>Format:</span>
+                <span>{t('format')}</span>
                 <span className="font-mono">PNG</span>
               </div>
               <div className="flex justify-between">
-                <span>O'lcham:</span>
+                <span>{t('size')}</span>
                 <span className="font-mono">
                   {qrSize}x{qrSize}px
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Xato tuzatish:</span>
+                <span>{t('errorCorrection')}</span>
                 <span className="font-mono">{errorLevel}</span>
               </div>
               <div className="flex justify-between">
-                <span>Ma'lumot turi:</span>
-                <span className="font-mono">{inputType}</span>
+                <span>{t('dataType')}</span>
+                <span className="font-mono">{tDataTypes(inputType.toLowerCase())}</span>
               </div>
               <div className="flex justify-between">
-                <span>Margin:</span>
+                <span>{t('margin')}</span>
                 <span className="font-mono">10px</span>
               </div>
             </div>

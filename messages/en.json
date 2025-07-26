@@ -850,5 +850,192 @@
       "sessionIds": "Session IDs: Session tracking in web applications",
       "apiKeys": "API Keys: Service authentication and authorization"
     }
+  },
+  "QrGeneratorPage": {
+    "ToolHeader": {
+      "title": "QR Code Generator",
+      "description": "Professional QR code generation tool. Create QR codes for URLs, text, contact information, and WiFi settings."
+    },
+    "ControlPanel": {
+      "title": "Tool Configuration",
+      "status": "Ready",
+      "categoryLabel": "Category:",
+      "sizeLabel": "QR Size:",
+      "errorLevelLabel": "Error Correction Level:",
+      "presetsLabel": "Sample Presets:",
+      "fileUpload": "Upload File",
+      "clear": "Clear",
+      "download": "Download QR",
+      "downloading": "Downloading...",
+      "selected": "Selected",
+      "load": "Load"
+    },
+    "Categories": {
+      "url": "URL",
+      "contact": "Contact",
+      "text": "Text",
+      "wifi": "WiFi",
+      "sms": "SMS",
+      "descriptions": {
+        "url": "QR codes for web pages and links",
+        "contact": "Phone, email and contact information",
+        "text": "Plain text and data",
+        "wifi": "WiFi connection information",
+        "sms": "SMS and messaging"
+      }
+    },
+    "Sizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "xlarge": "Extra Large",
+      "description": "Larger sizes are suitable for quality printing"
+    },
+    "ErrorLevels": {
+      "low": "Low (L)",
+      "medium": "Medium (M)",
+      "quartile": "Quartile (Q)",
+      "high": "High (H)",
+      "descriptions": {
+        "low": "~7% recovery",
+        "medium": "~15% recovery",
+        "quartile": "~25% recovery",
+        "high": "~30% recovery"
+      }
+    },
+    "InputPanel": {
+      "title": "QR Code Input",
+      "placeholder": "Enter text for QR code...\n\nExamples:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Phone: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Text: Hello world!",
+      "status": "Ready to generate QR"
+    },
+    "ResultsPanel": {
+      "title": "QR Code Information",
+      "success": "QR code generated successfully!",
+      "originalText": "Original text:",
+      "size": "Size:",
+      "errorCorrection": "Error correction:",
+      "type": "Type:",
+      "note": "QR Code appears below.",
+      "emptyTitle": "QR code will appear here...",
+      "emptyDescription": "Enter text and QR code will be generated"
+    },
+    "QrDisplay": {
+      "title": "QR Code Result",
+      "status": "Generated",
+      "contentTitle": "QR code content:",
+      "showContent": "Show",
+      "hideContent": "Hide",
+      "copyText": "Copy text",
+      "copied": "Copied",
+      "downloadQr": "Download QR",
+      "technicalInfo": "Technical information:",
+      "format": "Format:",
+      "size": "Size:",
+      "errorCorrection": "Error correction:",
+      "dataType": "Data type:",
+      "margin": "Margin:",
+      "stats": {
+        "characters": "characters",
+        "words": "words",
+        "lines": "lines"
+      }
+    },
+    "InfoSection": {
+      "title": "QR Codes and Their Applications",
+      "qrTypesTitle": "QR code types:",
+      "professionalTipsTitle": "Professional tips:",
+      "qrTypes": {
+        "url": {
+          "title": "URL QR codes:",
+          "description": "Website links, landing pages and online resources"
+        },
+        "contact": {
+          "title": "Contact QR codes:",
+          "description": "vCard format, phone numbers and email addresses"
+        },
+        "wifi": {
+          "title": "WiFi QR codes:",
+          "description": "Network names, passwords and security settings"
+        },
+        "sms": {
+          "title": "SMS QR codes:",
+          "description": "Phone number and pre-written message text"
+        },
+        "text": {
+          "title": "Text QR codes:",
+          "description": "Any text data and information"
+        },
+        "email": {
+          "title": "Email QR codes:",
+          "description": "Recipient, subject and message text"
+        }
+      },
+      "tips": {
+        "tip1": "Large sizes (300x300+) are suitable for printing",
+        "tip2": "High error correction level (H) reads damaged codes",
+        "tip3": "Leave white borders around QR code (quiet zone)",
+        "tip4": "Using short links (bit.ly) in URLs is recommended",
+        "tip5": "Maintain optimal ratio of QR code size and distance"
+      },
+      "importantNote": "Important:",
+      "importantText": "QR codes can store 2000+ characters of data. More data increases code complexity, so use short links.",
+      "sizeDescriptions": {
+        "150": "Minimal size for digital, screen and social media",
+        "200": "Optimal for business cards and small print materials",
+        "300": "For posters, flyers and large print materials",
+        "400": "High quality for billboards and professional printing"
+      }
+    },
+    "Presets": {
+      "website": "Website URL",
+      "github": "GitHub Profile",
+      "youtube": "YouTube Channel",
+      "email": "Email Contact",
+      "phone": "Phone Number",
+      "vcard": "vCard Contact",
+      "sms": "SMS Message",
+      "whatsapp": "WhatsApp Message",
+      "wifi": "WiFi Network",
+      "wifiGuest": "WiFi Guest",
+      "text": "Simple Text",
+      "location": "Location",
+      "descriptions": {
+        "website": "Website link",
+        "github": "GitHub profile page",
+        "youtube": "YouTube channel",
+        "email": "Email address",
+        "phone": "Phone number",
+        "vcard": "Contact card",
+        "sms": "SMS message",
+        "whatsapp": "WhatsApp message",
+        "wifi": "WiFi connection",
+        "wifiGuest": "Guest WiFi",
+        "text": "Plain text",
+        "location": "Geographic location"
+      }
+    },
+    "DataTypes": {
+      "empty": "Empty",
+      "url": "URL",
+      "email": "Email",
+      "phone": "Phone",
+      "sms": "SMS",
+      "wifi": "WiFi",
+      "vcard": "vCard",
+      "location": "Location",
+      "text": "Text"
+    },
+    "Errors": {
+      "textTooLong": "Text must be less than 2000 characters",
+      "qrNotAvailable": "QR code not available",
+      "downloadFailed": "QR code download failed",
+      "downloadError": "Error occurred while downloading QR code",
+      "fileSizeError": "File size must be less than 1MB",
+      "fileTypeError": "Only TXT, JSON, CSV, MD file types are supported",
+      "fileContentError": "File content must be less than 2000 characters",
+      "fileReadError": "Error occurred while reading file",
+      "fileUploadSuccess": "File uploaded successfully",
+      "downloadSuccess": "QR code downloaded successfully"
+    }
   }
 }

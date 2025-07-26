@@ -1,11 +1,15 @@
 'use client'
 
 import { FileText } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
 import { ControlPanel, QrDisplay, InfoSection } from './components'
 import { useQrGenerator } from '@/hooks/tools/useQrGenerator'
 
 const QrGenerator = () => {
+  const t = useTranslations('QrGeneratorPage.ToolHeader')
+  const tInput = useTranslations('QrGeneratorPage.InputPanel')
+  const tResults = useTranslations('QrGeneratorPage.ResultsPanel')
   const {
     inputText,
     qrUrl,
@@ -44,7 +48,7 @@ const QrGenerator = () => {
     inputText.length > 0 ? (
       <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
         <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-        QR yaratishga tayyor
+        {tInput('status')}
       </span>
     ) : null
 
@@ -53,18 +57,15 @@ const QrGenerator = () => {
     <div className="flex h-full items-center justify-center p-8 text-center">
       <div className="text-zinc-500">
         <FileText size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">QR kod bu yerda ko'rinadi...</p>
-        <p className="mt-2 text-xs opacity-75">Matn kiriting va QR kod yaratiladi</p>
+        <p className="text-sm">{tResults('emptyTitle')}</p>
+        <p className="mt-2 text-xs opacity-75">{tResults('emptyDescription')}</p>
       </div>
     </div>
   )
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader
-        title="QR Kod Generator"
-        description="Professional QR kod yaratish vositasi. URL, matn, kontakt va WiFi ma'lumotlari uchun QR kodlar yaratish."
-      />
+      <ToolHeader title={t('title')} description={t('description')} />
 
       <ControlPanel
         qrSize={qrSize}
@@ -87,13 +88,13 @@ const QrGenerator = () => {
         sourceText={inputText}
         convertedText={
           qrUrl
-            ? `QR kod muvaffaqiyatli yaratildi!\n\nAsl matn:\n${inputText.length > 100 ? inputText.substring(0, 100) + '...' : inputText}\n\nO'lcham: ${qrSize}x${qrSize} pixels\nXato tuzatish: ${errorLevel}\nTur: ${inputType}\n\nQR Kodi quyida ko'rinadi.`
+            ? `${tResults('success')}\n\n${tResults('originalText')}\n${inputText.length > 100 ? inputText.substring(0, 100) + '...' : inputText}\n\n${tResults('size')} ${qrSize}x${qrSize} pixels\n${tResults('errorCorrection')} ${errorLevel}\n${tResults('type')} ${inputType}\n\n${tResults('note')}`
             : ''
         }
-        sourceLabel="QR Kod Kirish"
-        targetLabel="QR Kod Ma'lumotlari"
+        sourceLabel={tInput('title')}
+        targetLabel={tResults('title')}
         onSourceChange={setInputText}
-        sourcePlaceholder="QR kod uchun matn kiriting...\n\nMisol:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Telefon: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Matn: Salom dunyo!"
+        sourcePlaceholder={tInput('placeholder')}
         onClear={handleClear}
         showSwapButton={false}
         isProcessing={isGenerating}
