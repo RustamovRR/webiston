@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 
 export type QrSize = 150 | 200 | 300 | 400
 export type QrErrorLevel = 'L' | 'M' | 'Q' | 'H'
@@ -8,6 +8,20 @@ export interface QrPreset {
   value: string
   description: string
   category: 'url' | 'contact' | 'text' | 'wifi' | 'sms'
+}
+
+export interface QrCustomization {
+  foregroundColor: string
+  backgroundColor: string
+  logo?: string
+  logoSize: number
+  cornerStyle: 'square' | 'rounded' | 'extraRounded' | 'circle'
+  patternStyle: 'square' | 'circle' | 'rounded' | 'diamond'
+  margin: number
+  borderRadius: number
+  gradientEnabled: boolean
+  gradientDirection: 'horizontal' | 'vertical' | 'diagonal' | 'radial'
+  gradientEndColor?: string
 }
 
 interface UseQrGeneratorProps {
@@ -113,27 +127,159 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
   const [qrSize, setQrSize] = useState<QrSize>(300)
   const [errorLevel, setErrorLevel] = useState<QrErrorLevel>('M')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [customization, setCustomization] = useState<QrCustomization>({
+    foregroundColor: '#000000',
+    backgroundColor: '#ffffff',
+    logoSize: 20,
+    cornerStyle: 'square',
+    patternStyle: 'square',
+    margin: 10,
+    borderRadius: 0,
+    gradientEnabled: false,
+    gradientDirection: 'horizontal',
+  })
 
-  // Generate QR code URL
-  const generateQrUrl = useCallback((text: string, size: QrSize, errorCorrectionLevel: QrErrorLevel) => {
-    if (!text.trim()) return ''
+  // Generate QR code URL with customization
+  const generateQrUrl = useCallback(
+    (text: string, size: QrSize, errorCorrectionLevel: QrErrorLevel, custom: QrCustomization) => {
+      if (!text.trim()) return ''
 
-    const baseUrl = 'https://api.qrserver.com/v1/create-qr-code/'
-    const params = new URLSearchParams({
-      size: `${size}x${size}`,
-      data: text, // URLSearchParams avtomatik encode qiladi, qo'shimcha encoding kerak emas
-      ecc: errorCorrectionLevel,
-      format: 'png',
-      margin: '10',
-    })
+      const baseUrl = 'https://api.qrserver.com/v1/create-qr-code/'
+      const params = new URLSearchParams({
+        size: `${size}x${size}`,
+        data: text,
+        ecc: errorCorrectionLevel,
+        format: 'png',
+        margin: custom.margin.toString(),
+        color: custom.foregroundColor.replace('#', ''),
+        bgcolor: custom.backgroundColor.replace('#', ''),
+      })
 
-    return `${baseUrl}?${params.toString()}`
-  }, [])
+      return `${baseUrl}?${params.toString()}`
+    },
+    [],
+  )
 
-  // Current QR URL
+  // Current QR URL (for preview)
   const qrUrl = useMemo(() => {
-    return generateQrUrl(inputText, qrSize, errorLevel)
-  }, [inputText, qrSize, errorLevel, generateQrUrl])
+    return generateQrUrl(inputText, qrSize, errorLevel, customization)
+  }, [inputText, qrSize, errorLevel, customization, generateQrUrl])
+
+  // Generate custom QR with logo and styling
+  const generateCustomQr = useCallback(
+    async (text: string, size: QrSize, errorLevel: QrErrorLevel, custom: QrCustomization) => {
+      if (!text.trim()) return null
+
+      try {
+        // Create canvas
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error('Canvas not supported')
+
+        canvas.width = size
+        canvas.height = size
+
+        // Get base QR image
+        const baseQrUrl = generateQrUrl(text, size, errorLevel, custom)
+        const qrImage = new Image()
+        qrImage.crossOrigin = 'anonymous'
+
+        return new Promise<string>((resolve, reject) => {
+          qrImage.onload = async () => {
+            try {
+              // Draw background
+              ctx.fillStyle = custom.backgroundColor
+              ctx.fillRect(0, 0, size, size)
+
+              // Draw QR code
+              ctx.drawImage(qrImage, 0, 0, size, size)
+
+              // Add gradient overlay if enabled
+              if (custom.gradientEnabled && custom.gradientEndColor) {
+                const gradient =
+                  custom.gradientDirection === 'radial'
+                    ? ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
+                    : custom.gradientDirection === 'horizontal'
+                      ? ctx.createLinearGradient(0, 0, size, 0)
+                      : custom.gradientDirection === 'vertical'
+                        ? ctx.createLinearGradient(0, 0, 0, size)
+                        : ctx.createLinearGradient(0, 0, size, size)
+
+                gradient.addColorStop(0, custom.foregroundColor + '40')
+                gradient.addColorStop(1, custom.gradientEndColor + '40')
+
+                ctx.globalCompositeOperation = 'overlay'
+                ctx.fillStyle = gradient
+                ctx.fillRect(0, 0, size, size)
+                ctx.globalCompositeOperation = 'source-over'
+              }
+
+              // Add logo if present
+              if (custom.logo) {
+                const logoImage = new Image()
+                logoImage.crossOrigin = 'anonymous'
+                logoImage.onload = () => {
+                  const logoSize = (size * custom.logoSize) / 100
+                  const logoX = (size - logoSize) / 2
+                  const logoY = (size - logoSize) / 2
+
+                  // Draw white background for logo
+                  ctx.fillStyle = 'white'
+                  ctx.fillRect(logoX - 4, logoY - 4, logoSize + 8, logoSize + 8)
+
+                  // Draw logo
+                  ctx.drawImage(logoImage, logoX, logoY, logoSize, logoSize)
+
+                  resolve(canvas.toDataURL('image/png'))
+                }
+                logoImage.onerror = () => resolve(canvas.toDataURL('image/png'))
+                logoImage.src = custom.logo
+              } else {
+                resolve(canvas.toDataURL('image/png'))
+              }
+            } catch (error) {
+              reject(error)
+            }
+          }
+          qrImage.onerror = () => reject(new Error('Failed to load QR image'))
+          qrImage.src = baseQrUrl
+        })
+      } catch (error) {
+        throw error
+      }
+    },
+    [generateQrUrl],
+  )
+
+  // Custom QR URL with styling (for advanced preview)
+  const [customQrUrl, setCustomQrUrl] = useState<string>('')
+
+  // Generate custom QR for preview
+  const updateCustomPreview = useCallback(async () => {
+    if (!inputText.trim()) {
+      setCustomQrUrl('')
+      return
+    }
+
+    try {
+      const customUrl = await generateCustomQr(inputText, qrSize, errorLevel, customization)
+      if (customUrl) {
+        setCustomQrUrl(customUrl)
+      }
+    } catch (error) {
+      console.error('Preview generation error:', error)
+      setCustomQrUrl('')
+    }
+  }, [inputText, qrSize, errorLevel, customization, generateCustomQr])
+
+  // Update preview when customization changes
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      updateCustomPreview()
+    }, 300) // Debounce for performance
+
+    return () => clearTimeout(timeoutId)
+  }, [updateCustomPreview])
 
   // Handle preset selection
   const handlePresetSelect = useCallback(
@@ -162,39 +308,72 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
   }, [])
 
   // Download QR code
-  const downloadQr = useCallback(
-    async (filename?: string) => {
-      if (!qrUrl) {
-        onError?.('QR kod mavjud emas')
-        return
+  const downloadQr = useCallback(async () => {
+    if (!inputText.trim()) {
+      onError?.('QR kod mavjud emas')
+      return
+    }
+
+    try {
+      setIsGenerating(true)
+
+      // Generate custom QR with logo and styling
+      const customQrDataUrl = await generateCustomQr(inputText, qrSize, errorLevel, customization)
+
+      if (!customQrDataUrl) {
+        throw new Error('QR kod yaratilmadi')
       }
 
-      try {
-        setIsGenerating(true)
+      // Create download link
+      const a = document.createElement('a')
+      a.href = customQrDataUrl
 
-        const response = await fetch(qrUrl)
-        if (!response.ok) throw new Error("QR kod yuklab bo'lmadi")
+      // Generate proper filename
+      const now = new Date()
+      const timestamp =
+        now.getFullYear() +
+        '-' +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(now.getDate()).padStart(2, '0') +
+        '_' +
+        String(now.getHours()).padStart(2, '0') +
+        '-' +
+        String(now.getMinutes()).padStart(2, '0') +
+        '-' +
+        String(now.getSeconds()).padStart(2, '0')
 
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
+      // Clean text for filename
+      let textPreview = inputText
+        .slice(0, 20)
+        .replace(/[^a-zA-Z0-9\s]/g, '')
+        .replace(/\s+/g, '_')
+        .toLowerCase()
 
-        const a = document.createElement('a')
-        a.href = url
-        a.download = filename || `qr-kod-${Date.now()}.png`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-
-        URL.revokeObjectURL(url)
-        onSuccess?.('QR kod muvaffaqiyatli yuklab olindi')
-      } catch (error) {
-        onError?.('QR kod yuklab olishda xatolik yuz berdi')
-      } finally {
-        setIsGenerating(false)
+      // Ensure textPreview is not empty
+      if (!textPreview || textPreview.trim().length === 0) {
+        textPreview = 'qr_code'
       }
-    },
-    [qrUrl, onSuccess, onError],
-  )
+
+      const defaultFilename = `qr-${textPreview}-${timestamp}.png`
+
+      console.log('Input text:', inputText.slice(0, 20))
+      console.log('Text preview:', textPreview)
+      console.log('Generated filename:', defaultFilename)
+
+      a.download = defaultFilename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      onSuccess?.('QR kod muvaffaqiyatli yuklab olindi')
+    } catch (error) {
+      console.error('Download error:', error)
+      onError?.('QR kod yuklab olishda xatolik yuz berdi')
+    } finally {
+      setIsGenerating(false)
+    }
+  }, [inputText, qrSize, errorLevel, customization, generateCustomQr, onSuccess, onError])
 
   // Handle file upload with validation
   const handleFileUpload = useCallback(
@@ -312,12 +491,14 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
     // State
     inputText,
     qrUrl,
+    customQrUrl: customQrUrl || qrUrl, // Use custom QR if available, fallback to basic
     qrSize,
     errorLevel,
     isGenerating,
     stats,
     inputStats,
     outputStats,
+    customization,
 
     // Data
     presets: SAMPLE_PRESETS,
@@ -329,6 +510,7 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
     setInputText: setTextSafe,
     setQrSize,
     setErrorLevel,
+    setCustomization,
     handlePresetSelect,
     handleClear,
     downloadQr,
@@ -337,5 +519,6 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
     // Utilities
     detectInputType,
     generateQrUrl,
+    generateCustomQr,
   }
 }

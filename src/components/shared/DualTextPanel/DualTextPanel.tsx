@@ -133,7 +133,7 @@ export function DualTextPanel({
                       variant="ghost"
                       size="sm"
                       className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
-                      aria-label={tCommon('clear')}
+                      aria-label={tCommon('clear') || 'tozalash'}
                     >
                       <X size={18} />
                     </Button>

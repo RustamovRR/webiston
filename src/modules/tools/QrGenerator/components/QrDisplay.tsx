@@ -5,12 +5,15 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib'
 import { QrSize, QrErrorLevel } from '@/hooks/tools/useQrGenerator'
 
+import type { QrCustomization } from '@/hooks/tools/useQrGenerator'
+
 interface QrDisplayProps {
   qrUrl: string
   qrSize: QrSize
   errorLevel: QrErrorLevel
   inputType: string
   inputText: string
+  customization?: QrCustomization
   stats: {
     characters: number
     words: number
@@ -25,6 +28,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
   errorLevel,
   inputType,
   inputText,
+  customization,
   stats,
   onDownload,
 }) => {
@@ -66,17 +70,74 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
       <div className="grid gap-6 lg:grid-cols-2">
         {/* QR Code Display */}
         <div className="flex justify-center">
-          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
-            <img
-              src={qrUrl}
-              alt="Generated QR Code"
-              className="mx-auto max-w-full rounded-lg"
-              style={{ maxWidth: '300px', height: 'auto' }}
-            />
+          <div
+            className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30"
+            style={{
+              backgroundColor: customization?.backgroundColor || '#ffffff',
+              borderRadius: customization?.borderRadius ? `${customization.borderRadius}px` : '8px',
+            }}
+          >
+            <div className="relative">
+              <img
+                src={qrUrl}
+                alt="Generated QR Code"
+                className="mx-auto max-w-full"
+                style={{
+                  maxWidth: '300px',
+                  height: 'auto',
+                  borderRadius: customization?.borderRadius ? `${customization.borderRadius * 0.5}px` : '4px',
+                }}
+              />
+
+              {/* Logo Overlay */}
+              {customization?.logo && (
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-1 shadow-lg"
+                  style={{
+                    width: `${customization.logoSize}%`,
+                    height: `${customization.logoSize}%`,
+                  }}
+                >
+                  <img src={customization.logo} alt="QR Logo" className="h-full w-full rounded object-contain" />
+                </div>
+              )}
+            </div>
+
             <div className="mt-3 text-center">
               <div className="text-xs text-zinc-600 dark:text-zinc-500">
                 {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish • {inputType}
               </div>
+
+              {/* Customization Info */}
+              {customization && (
+                <div className="mt-2 flex justify-center gap-2 text-xs">
+                  <span
+                    className="rounded px-2 py-1"
+                    style={{
+                      backgroundColor: customization.foregroundColor + '20',
+                      color: customization.foregroundColor,
+                    }}
+                  >
+                    {customization.gradientEnabled ? 'Gradient' : 'Solid'}
+                  </span>
+                  <span
+                    className="rounded px-2 py-1"
+                    style={{
+                      backgroundColor:
+                        customization.backgroundColor === '#ffffff' ? '#f3f4f6' : customization.backgroundColor + '40',
+                      color: customization.backgroundColor === '#ffffff' ? '#374151' : customization.backgroundColor,
+                    }}
+                  >
+                    {customization.cornerStyle}
+                  </span>
+                  {customization.logo && (
+                    <span className="rounded bg-green-100 px-2 py-1 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                      Logo
+                    </span>
+                  )}
+                </div>
+              )}
+
               <div className="mt-2 flex justify-center gap-2 text-xs">
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
                   {stats.characters} {t('stats.characters')}

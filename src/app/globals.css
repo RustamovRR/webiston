@@ -39,6 +39,9 @@
   .bg-gradient-text-dark {
     @apply bg-gradient-to-r from-white to-gray-400;
   }
+  .bg-gradient-radial {
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  }
 }
 
 .prose code::before,

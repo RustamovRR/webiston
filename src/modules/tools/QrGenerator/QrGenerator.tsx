@@ -4,6 +4,7 @@ import { FileText } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
 import { ControlPanel, QrDisplay, InfoSection } from './components'
+import CollapsibleCustomizationPanel from './components/CollapsibleCustomizationPanel'
 import { useQrGenerator } from '@/hooks/tools/useQrGenerator'
 
 const QrGenerator = () => {
@@ -13,6 +14,7 @@ const QrGenerator = () => {
   const {
     inputText,
     qrUrl,
+    customQrUrl,
     qrSize,
     errorLevel,
     isGenerating,
@@ -20,9 +22,11 @@ const QrGenerator = () => {
     groupedPresets,
     availableSizes,
     errorLevels,
+    customization,
     setInputText,
     setQrSize,
     setErrorLevel,
+    setCustomization,
     handlePresetSelect,
     handleClear,
     downloadQr,
@@ -41,7 +45,7 @@ const QrGenerator = () => {
   }
 
   const inputType = detectInputType(inputText)
-  const canDownload = !!qrUrl
+  const canDownload = !!customQrUrl
 
   // Status component
   const statusComponent =
@@ -87,7 +91,7 @@ const QrGenerator = () => {
       <DualTextPanel
         sourceText={inputText}
         convertedText={
-          qrUrl
+          customQrUrl
             ? `${tResults('success')}\n\n${tResults('originalText')}\n${inputText.length > 100 ? inputText.substring(0, 100) + '...' : inputText}\n\n${tResults('size')} ${qrSize}x${qrSize} pixels\n${tResults('errorCorrection')} ${errorLevel}\n${tResults('type')} ${inputType}\n\n${tResults('note')}`
             : ''
         }
@@ -104,12 +108,21 @@ const QrGenerator = () => {
         showShadow={true}
       />
 
+      <CollapsibleCustomizationPanel
+        customization={customization}
+        onCustomizationChange={setCustomization}
+        isValid={!!inputText.trim()}
+        qrUrl={customQrUrl}
+        inputText={inputText}
+      />
+
       <QrDisplay
-        qrUrl={qrUrl}
+        qrUrl={customQrUrl}
         qrSize={qrSize}
         errorLevel={errorLevel}
         inputType={inputType}
         inputText={inputText}
+        customization={customization}
         stats={stats}
         onDownload={downloadQr}
       />

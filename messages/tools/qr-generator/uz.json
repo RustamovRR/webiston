@@ -173,6 +173,66 @@
       "location": "Joylashuv",
       "text": "Matn"
     },
+    "CustomizationPanel": {
+      "title": "QR Kod Dizayni",
+      "status": "Sozlash",
+      "foregroundColor": "Asosiy rang:",
+      "backgroundColor": "Fon rangi:",
+      "logoUpload": "Logo yuklash",
+      "logoSize": "Logo hajmi:",
+      "cornerStyle": "Burchak stili:",
+      "patternStyle": "Pattern stili:",
+      "margin": "Chetlar:",
+      "borderRadius": "Burchak radiusi:",
+      "gradientEnabled": "Gradient yoqish",
+      "gradientDirection": "Gradient yo'nalishi:",
+      "presetStyles": "Tayyor stillar:",
+      "resetToDefault": "Standartga qaytarish",
+      "applyStyle": "Stilni qo'llash",
+      "uploadLogo": "Logo yuklash",
+      "removeLogo": "Logoni o'chirish",
+      "logoUploaded": "Logo yuklandi",
+      "invalidFile": "Noto'g'ri fayl formati",
+      "fileTooLarge": "Fayl hajmi katta",
+      "styles": {
+        "classic": "Klassik",
+        "modern": "Zamonaviy",
+        "rounded": "Dumaloq",
+        "gradient": "Gradient",
+        "minimal": "Minimal",
+        "colorful": "Rangli"
+      },
+      "corners": {
+        "square": "Kvadrat",
+        "rounded": "Dumaloq",
+        "extraRounded": "Juda dumaloq",
+        "circle": "Doira"
+      },
+      "patterns": {
+        "square": "Kvadrat",
+        "circle": "Doira",
+        "rounded": "Dumaloq",
+        "diamond": "Romb"
+      },
+      "gradients": {
+        "horizontal": "Gorizontal",
+        "vertical": "Vertikal",
+        "diagonal": "Diagonal",
+        "radial": "Radial"
+      },
+      "livePreview": "Jonli Ko'rinish",
+      "enterTextToPreview": "Matn kiriting va ko'rinishni ko'ring",
+      "customized": "Sozlangan",
+      "show": "Ko'rsatish",
+      "hide": "Yashirish",
+      "customization": "Sozlash",
+      "activeCustomizations": "Faol sozlamalar:",
+      "color": "Rang",
+      "logo": "Logo",
+      "gradient": "Gradient",
+      "style": "Stil",
+      "reset": "Qaytarish"
+    },
     "Errors": {
       "textTooLong": "Matn 2000 belgidan oshmasligi kerak",
       "qrNotAvailable": "QR kod mavjud emas",

@@ -173,6 +173,66 @@
       "location": "Location",
       "text": "Text"
     },
+    "CustomizationPanel": {
+      "title": "QR Code Design",
+      "status": "Customizing",
+      "foregroundColor": "Foreground Color:",
+      "backgroundColor": "Background Color:",
+      "logoUpload": "Upload Logo",
+      "logoSize": "Logo Size:",
+      "cornerStyle": "Corner Style:",
+      "patternStyle": "Pattern Style:",
+      "margin": "Margin:",
+      "borderRadius": "Border Radius:",
+      "gradientEnabled": "Enable Gradient",
+      "gradientDirection": "Gradient Direction:",
+      "presetStyles": "Preset Styles:",
+      "resetToDefault": "Reset to Default",
+      "applyStyle": "Apply Style",
+      "uploadLogo": "Upload Logo",
+      "removeLogo": "Remove Logo",
+      "logoUploaded": "Logo Uploaded",
+      "invalidFile": "Invalid file format",
+      "fileTooLarge": "File too large",
+      "styles": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "rounded": "Rounded",
+        "gradient": "Gradient",
+        "minimal": "Minimal",
+        "colorful": "Colorful"
+      },
+      "corners": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extraRounded": "Extra Rounded",
+        "circle": "Circle"
+      },
+      "patterns": {
+        "square": "Square",
+        "circle": "Circle",
+        "rounded": "Rounded",
+        "diamond": "Diamond"
+      },
+      "gradients": {
+        "horizontal": "Horizontal",
+        "vertical": "Vertical",
+        "diagonal": "Diagonal",
+        "radial": "Radial"
+      },
+      "livePreview": "Live Preview",
+      "enterTextToPreview": "Enter text to see preview",
+      "customized": "Customized",
+      "show": "Show",
+      "hide": "Hide",
+      "customization": "Customization",
+      "activeCustomizations": "Active customizations:",
+      "color": "Color",
+      "logo": "Logo",
+      "gradient": "Gradient",
+      "style": "Style",
+      "reset": "Reset"
+    },
     "Errors": {
       "textTooLong": "Text must be less than 2000 characters",
       "qrNotAvailable": "QR code not available",
