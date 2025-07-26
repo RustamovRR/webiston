@@ -1,0 +1,88 @@
+{
+  "QrGeneratorPage": {
+    "ToolHeader": {
+      "title": "QR Code Generator",
+      "description": "Professional QR code generation tool. For text, URL, WiFi and other data types"
+    },
+    "ControlPanel": {
+      "qrType": "QR Type:",
+      "text": "Text",
+      "url": "URL",
+      "wifi": "WiFi",
+      "email": "Email",
+      "phone": "Phone",
+      "sms": "SMS",
+      "vcard": "vCard",
+      "generateQr": "Generate QR",
+      "downloadPng": "Download PNG",
+      "downloadSvg": "Download SVG",
+      "clear": "Clear"
+    },
+    "InputPanel": {
+      "title": "Data Input",
+      "textPlaceholder": "Enter text to be converted to QR code...",
+      "urlPlaceholder": "https://example.com",
+      "emailPlaceholder": "example@email.com",
+      "phonePlaceholder": "+1234567890",
+      "smsPlaceholder": "SMS text...",
+      "wifiSettings": "WiFi Settings",
+      "networkName": "Network Name (SSID)",
+      "password": "Password",
+      "security": "Security",
+      "hidden": "Hidden Network",
+      "vcardSettings": "vCard Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "organization": "Organization",
+      "title": "Title",
+      "email": "Email",
+      "phone": "Phone",
+      "website": "Website",
+      "address": "Address"
+    },
+    "SettingsPanel": {
+      "title": "QR Settings",
+      "size": "Size:",
+      "errorCorrection": "Error Correction:",
+      "foregroundColor": "Foreground Color:",
+      "backgroundColor": "Background Color:",
+      "margin": "Margin:",
+      "format": "Format:"
+    },
+    "PreviewPanel": {
+      "title": "QR Code Preview",
+      "noQrGenerated": "No QR code generated yet",
+      "generateFirst": "Enter data above and generate QR",
+      "qrInfo": "QR Information",
+      "dataType": "Data Type:",
+      "dataLength": "Data Length:",
+      "errorLevel": "Error Correction Level:",
+      "version": "QR Version:",
+      "modules": "Module Count:"
+    },
+    "Info": {
+      "title": "About QR Codes",
+      "whatIsQr": "What is a QR Code?",
+      "description1": "QR (Quick Response) code - a type of two-dimensional barcode",
+      "description2": "Ability to store large amounts of data",
+      "description3": "Fast reading via smartphones",
+      "description4": "Error correction capability available",
+      "useCases": "Use Cases:",
+      "useCase1": "• Website redirects",
+      "useCase2": "• WiFi password sharing",
+      "useCase3": "• Contact information transfer",
+      "useCase4": "• Payment systems",
+      "useCase5": "• Marketing and advertising",
+      "errorCorrection": "Error Correction Levels:",
+      "errorL": "L (Low) - up to 7% error correction",
+      "errorM": "M (Medium) - up to 15% error correction",
+      "errorQ": "Q (Quartile) - up to 25% error correction",
+      "errorH": "H (High) - up to 30% error correction",
+      "tips": "Tips:",
+      "tip1": "• Choose higher error correction level",
+      "tip2": "• Ensure sufficient contrast",
+      "tip3": "• Don't print too small",
+      "tip4": "• Test before use"
+    }
+  }
+}

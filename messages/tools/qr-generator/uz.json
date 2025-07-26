@@ -1,0 +1,88 @@
+{
+  "QrGeneratorPage": {
+    "ToolHeader": {
+      "title": "QR Kod Generator",
+      "description": "Professional QR kod yaratish vositasi. Matn, URL, WiFi va boshqa ma'lumotlar uchun"
+    },
+    "ControlPanel": {
+      "qrType": "QR turi:",
+      "text": "Matn",
+      "url": "URL",
+      "wifi": "WiFi",
+      "email": "Email",
+      "phone": "Telefon",
+      "sms": "SMS",
+      "vcard": "vCard",
+      "generateQr": "QR Yaratish",
+      "downloadPng": "PNG yuklab olish",
+      "downloadSvg": "SVG yuklab olish",
+      "clear": "Tozalash"
+    },
+    "InputPanel": {
+      "title": "Ma'lumot Kirish",
+      "textPlaceholder": "QR kodga aylantirilishi kerak bo'lgan matnni kiriting...",
+      "urlPlaceholder": "https://example.com",
+      "emailPlaceholder": "example@email.com",
+      "phonePlaceholder": "+998901234567",
+      "smsPlaceholder": "SMS matni...",
+      "wifiSettings": "WiFi Sozlamalari",
+      "networkName": "Tarmoq nomi (SSID)",
+      "password": "Parol",
+      "security": "Xavfsizlik",
+      "hidden": "Yashirin tarmoq",
+      "vcardSettings": "vCard Ma'lumotlari",
+      "firstName": "Ism",
+      "lastName": "Familiya",
+      "organization": "Tashkilot",
+      "title": "Lavozim",
+      "email": "Email",
+      "phone": "Telefon",
+      "website": "Veb-sayt",
+      "address": "Manzil"
+    },
+    "SettingsPanel": {
+      "title": "QR Sozlamalari",
+      "size": "Hajmi:",
+      "errorCorrection": "Xato tuzatish:",
+      "foregroundColor": "Asosiy rang:",
+      "backgroundColor": "Fon rangi:",
+      "margin": "Chetlar:",
+      "format": "Format:"
+    },
+    "PreviewPanel": {
+      "title": "QR Kod Ko'rinishi",
+      "noQrGenerated": "QR kod hali yaratilmagan",
+      "generateFirst": "Yuqorida ma'lumot kiritib, QR yarating",
+      "qrInfo": "QR Ma'lumotlari",
+      "dataType": "Ma'lumot turi:",
+      "dataLength": "Ma'lumot uzunligi:",
+      "errorLevel": "Xato tuzatish darajasi:",
+      "version": "QR versiyasi:",
+      "modules": "Modullar soni:"
+    },
+    "Info": {
+      "title": "QR Kod haqida ma'lumot",
+      "whatIsQr": "QR kod nima?",
+      "description1": "QR (Quick Response) kod - ikki o'lchovli shtrix kod turi",
+      "description2": "Katta hajmdagi ma'lumotlarni saqlash imkoniyati",
+      "description3": "Smartfonlar orqali tez o'qish",
+      "description4": "Xato tuzatish imkoniyati mavjud",
+      "useCases": "Qo'llanish sohalari:",
+      "useCase1": "• Veb-saytlarga yo'naltirish",
+      "useCase2": "• WiFi parollarini ulashish",
+      "useCase3": "• Kontakt ma'lumotlarini uzatish",
+      "useCase4": "• To'lov tizimlari",
+      "useCase5": "• Marketing va reklama",
+      "errorCorrection": "Xato tuzatish darajalari:",
+      "errorL": "L (Low) - 7% gacha xato tuzatish",
+      "errorM": "M (Medium) - 15% gacha xato tuzatish",
+      "errorQ": "Q (Quartile) - 25% gacha xato tuzatish",
+      "errorH": "H (High) - 30% gacha xato tuzatish",
+      "tips": "Maslahatlar:",
+      "tip1": "• Yuqori xato tuzatish darajasini tanlang",
+      "tip2": "• Yetarli kontrast ta'minlang",
+      "tip3": "• Kichik hajmda chop etmaslik",
+      "tip4": "• Test qilib ko'ring"
+    }
+  }
+}

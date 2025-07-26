@@ -1,0 +1,99 @@
+{
+  "JwtDecoderPage": {
+    "ToolHeader": {
+      "title": "JWT Token Dekoder",
+      "description": "JSON Web Token larni dekodlash va tahlil qilish uchun professional vosita"
+    },
+    "ControlPanel": {
+      "decoded": "Dekodlangan",
+      "raw": "Xom ma'lumot",
+      "sampleJwt": "Namuna JWT",
+      "fileUpload": "Fayl yuklash",
+      "uploading": "Yuklanmoqda...",
+      "showSignature": "Signature ko'rsatish",
+      "hideSignature": "Signature yashirish",
+      "validJwt": "Yaroqli JWT"
+    },
+    "ViewModeInfo": {
+      "title": "Ko'rish rejimlari:",
+      "decoded": "Dekodlangan",
+      "raw": "Xom ma'lumot",
+      "decodedDescription": "JWT ning header va payload qismlarini JSON formatda ko'rsatadi",
+      "rawDescription": "JWT ning asl Base64 formatidagi kodlangan ma'lumotlarini ko'rsatadi"
+    },
+    "InputPanel": {
+      "title": "JWT Token Kirish",
+      "placeholder": "JWT tokenni bu yerga kiriting... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
+      "characters": "belgi",
+      "parts": "qism",
+      "lines": "qator"
+    },
+    "ErrorDisplay": {
+      "title": "Xatolik",
+      "invalidFormat": "Noto'g'ri JWT format yoki buzilgan token",
+      "threeParts": "JWT 3 ta qismdan iborat bo'lishi kerak (header.payload.signature)"
+    },
+    "TokenInfo": {
+      "expiration": "Muddat",
+      "expired": "Muddati tugagan",
+      "valid": "Hali amal qiladi",
+      "algorithm": "Algoritm",
+      "unknown": "Noma'lum",
+      "type": "Turi",
+      "issued": "Berilgan",
+      "noData": "Ma'lumot yo'q"
+    },
+    "TokenParts": {
+      "header": "Header",
+      "payload": "Payload",
+      "rawData": "Base64 formatidagi xom ma'lumot:"
+    },
+    "SignatureSection": {
+      "title": "Signature (Imzo)",
+      "description": "JWT tokenning xavfsizlik imzosi:"
+    },
+    "SignatureInfo": {
+      "title": "Signature (Imzo) nima?",
+      "description1": "Signature - JWT tokenning uchinchi qismi bo'lib, tokenning haqiqiyligini tasdiqlaydi.",
+      "description2": "Bu qism server tomonidan maxfiy kalit bilan yaratiladi va tokenning o'zgartirilmaganligini kafolatlaydi.",
+      "description3": "Signatureni ko'rsatish/yashirish tugmasi orqali ushbu maxfiy ma'lumotni boshqarishingiz mumkin."
+    },
+    "InfoSection": {
+      "structure": "JWT Tuzilishi",
+      "format": "JWT Formati",
+      "structureDescription": "header.payload.signature",
+      "example": "Misol",
+      "parts": "Qismlar",
+      "headerExample": "{\\n  \"alg\": \"HS256\",\\n  \"typ\": \"JWT\"\\n}",
+      "payloadExample": "{\\n  \"sub\": \"1234567890\",\\n  \"name\": \"John Doe\",\\n  \"iat\": 1516239022\\n}",
+      "about": "JWT haqida ma'lumot",
+      "whatIsJwt": "JWT nima?",
+      "whatIsJwtDescription1": "• JSON Web Token - ma'lumotlarni xavfsiz uzatish uchun",
+      "whatIsJwtDescription2": "• 3 qismdan iborat: Header.Payload.Signature",
+      "whatIsJwtDescription3": "• Base64 formatida kodlangan",
+      "whatIsJwtDescription4": "• Digitally signed bo'lishi mumkin",
+      "standardFields": "Standart fieldlar",
+      "issuer": "• iss - Issuer (kim bergan)",
+      "subject": "• sub - Subject (nima haqida)",
+      "expiration": "• exp - Expiration time",
+      "issuedAt": "• iat - Issued at time",
+      "security": "Xavfsizlik",
+      "securityDescription1": "• Signature orqali ma'lumot tekshiriladi",
+      "securityDescription2": "• Expiration time ni doim tekshiring",
+      "securityDescription3": "• Secret key ni maxfiy saqlang",
+      "securityDescription4": "• HTTPS da uzating"
+    },
+    "Samples": {
+      "standard": "Standart JWT Token",
+      "expired": "Muddati tugagan JWT",
+      "complex": "Murakkab Payload bilan"
+    },
+    "FileErrors": {
+      "fileSizeError": "Fayl hajmi 10MB dan oshmasligi kerak.",
+      "fileTypeError": "Faqat .txt yoki .json fayllar qabul qilinadi.",
+      "fileReadError": "Faylni o'qishda xatolik yuz berdi.",
+      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
+      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    }
+  }
+}

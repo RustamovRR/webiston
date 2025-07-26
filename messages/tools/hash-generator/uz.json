@@ -1,0 +1,74 @@
+{
+  "HashGeneratorPage": {
+    "ToolHeader": {
+      "title": "Hash Generator",
+      "description": "MD5, SHA256, SHA512 va boshqa kriptografik hash algoritmlar bilan ma'lumotlarni hash qilish"
+    },
+    "ControlPanel": {
+      "textHash": "Matn Hash",
+      "fileHash": "Fayl Hash",
+      "uploadFile": "Fayl yuklash",
+      "sampleHash": "Namuna Hash",
+      "clear": "Tozalash",
+      "downloadTxt": "TXT yuklab olish",
+      "downloadJson": "JSON yuklab olish"
+    },
+    "AlgorithmSelector": {
+      "title": "Hash Algoritmlari"
+    },
+    "InputPanel": {
+      "textInput": "Matn Kirish",
+      "fileInput": "Fayl Hash Kirish",
+      "readyToHash": "Hash yaratishga tayyor",
+      "textPlaceholder": "Hash qilmoqchi bo'lgan matnni kiriting...",
+      "selectFile": "Faylni tanlang",
+      "supportedFormats": "TXT, JSON, CSV, MD, XML, LOG (10MB gacha)",
+      "processing": "Ishlanmoqda..."
+    },
+    "ResultsPanel": {
+      "title": "Hash Natijalari",
+      "noResults": "Hash natijalari bu yerda ko'rsatiladi",
+      "instruction": "Matn kiriting va algoritm tanlang",
+      "hashCount": "Hash soni"
+    },
+    "DetailedResults": {
+      "title": "Batafsil Hash Natijalari",
+      "characters": "belgi"
+    },
+    "Info": {
+      "securityLevels": {
+        "title": "Xavfsizlik Darajalari",
+        "deprecated": "Deprecated",
+        "weak": "Zaif",
+        "secure": "Xavfsiz",
+        "verysecure": "Eng xavfsiz"
+      },
+      "recommendations": {
+        "deprecated": "Ishlatmang - eskirgan",
+        "weak": "Zaif - faqat eski holat uchun",
+        "secure": "Tavsiya etiladi",
+        "recommended": "Eng yaxshi tanlov"
+      },
+      "descriptions": {
+        "deprecated": "Zaif, faqat demo uchun",
+        "weak": "Zaif, legacy uchun",
+        "secure": "Xavfsiz, ishlatish mumkin",
+        "recommended": "Eng xavfsiz, tavsiya etiladi"
+      },
+      "useCases": {
+        "title": "Foydalanish Sohalari",
+        "passwords": "Parol hashlash",
+        "integrity": "Fayl yaxlitligi",
+        "signatures": "Raqamli imzolar",
+        "blockchain": "Blokcheyn"
+      },
+      "notes": {
+        "title": "Muhim Eslatmalar",
+        "irreversible": "Hash funksiyalar qaytarilmas",
+        "deterministic": "Bir xil input → bir xil hash",
+        "avalanche": "Kichik o'zgarish → butunlay boshqa hash",
+        "recommendation": "SHA256+ algoritmlarni ishlating"
+      }
+    }
+  }
+}

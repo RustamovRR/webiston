@@ -1,0 +1,84 @@
+{
+  "Base64ConverterPage": {
+    "ToolHeader": {
+      "title": "Base64 Konverter va Kodlash",
+      "description": "Matn va fayllarni Base64 formatiga o'girish va aksincha dekodlash vositasi"
+    },
+    "ControlPanel": {
+      "encode": "Kodlash",
+      "decode": "Dekodlash",
+      "fileUpload": "Fayl yuklash",
+      "sampleBase64": "Namuna Base64",
+      "clear": "Tozalash",
+      "download": "Yuklab olish"
+    },
+    "Panel": {
+      "plainTextInput": "Oddiy Matn Kirish",
+      "base64TextInput": "Base64 Matn Kirish",
+      "base64Result": "Base64 Natija",
+      "decodedResult": "Dekodlangan Natija",
+      "encodePlaceholder": "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang...",
+      "decodePlaceholder": "Dekodlamoqchi bo'lgan Base64 matnni kiriting...",
+      "readyToEncode": "Kodlashga tayyor",
+      "readyToDecode": "Dekodlashga tayyor",
+      "encodedBase64WillAppear": "Kodlangan Base64 bu yerda ko'rinadi...",
+      "decodedTextWillAppear": "Dekodlangan matn bu yerda ko'rinadi...",
+      "enterTextOrUpload": "Matn kiriting yoki fayl yuklang",
+      "conversionError": "Konvertatsiya Xatoligi",
+      "switchMode": "Rejimni almashtirish",
+      "fileSize": "Hajm:"
+    },
+    "Info": {
+      "title": "Base64 haqida ma'lumot",
+      "whatIsBase64": {
+        "title": "Base64 nima?",
+        "description": "Base64 - binary ma'lumotlarni matn formatida ifodalash uchun kodlash usuli. 64 ta belgidan foydalanadi: A-Z, a-z, 0-9, +, /"
+      },
+      "features": {
+        "title": "Asosiy xususiyatlari",
+        "feature1": "• 6-bit ga asoslangan kodlash",
+        "feature2": "• Platform mustaqil format",
+        "feature3": "• Matn protokollarda xavfsiz",
+        "feature4": "• Keng qo'llab-quvvatlash"
+      },
+      "usage": {
+        "title": "Qo'llanish sohalari",
+        "usage1": "• Email da rasm yuborish",
+        "usage2": "• Veb sahifada rasm joylash",
+        "usage3": "• API orqali fayl uzatish",
+        "usage4": "• Ma'lumotlarni xavfsiz saqlash"
+      },
+      "formatExample": {
+        "title": "Base64 format misoli",
+        "plainText": "Oddiy matn:",
+        "base64Encoded": "Base64 kodlangan:",
+        "exampleText": "Salom dunyo!",
+        "exampleEncoded": "U2Fsb20gZHVueW8h"
+      }
+    },
+    "Errors": {
+      "invalidBase64Format": "Noto'g'ri Base64 format. Faqat A-Z, a-z, 0-9, +, / va = belgilardan foydalaning.",
+      "conversionError": "Konvertatsiya xatoligi",
+      "invalidBase64Text": "Noto'g'ri Base64 format. Matn to'g'ri kodlanganligini tekshiring.",
+      "base64DecodeError": "Base64 dekodlashda xatolik. Format to'g'riligini tekshiring.",
+      "textEncodeError": "Matnni kodlashda xatolik yuz berdi.",
+      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
+      "imageReadError": "Rasm faylini o'qishda xatolik yuz berdi.",
+      "fileReadError": "Fayl mazmunini o'qishda xatolik yuz berdi.",
+      "encodeFileTypeError": "Faqat matn va rasm fayllarni yuklash mumkin.",
+      "decodeFileTypeError": "Dekodlash uchun faqat matn fayllarni yuklash mumkin.",
+      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
+      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    },
+    "Samples": {
+      "uzbekGreeting": "O'zbek salomlashuvi",
+      "jsonSample": "JSON namunasi",
+      "urlSample": "URL namunasi",
+      "emailSample": "Email namunasi",
+      "base64Text": "Base64 matn",
+      "base64Json": "Base64 JSON",
+      "base64Url": "Base64 URL",
+      "base64Email": "Base64 Email"
+    }
+  }
+}

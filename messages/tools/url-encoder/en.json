@@ -1,0 +1,91 @@
+{
+  "UrlEncoderPage": {
+    "ToolHeader": {
+      "title": "URL Encoder and Decoder",
+      "description": "A tool to encode and decode URLs and text for safe web usage"
+    },
+    "ControlPanel": {
+      "encode": "Encode",
+      "decode": "Decode",
+      "fileUpload": "Upload File",
+      "sampleUrl": "Sample URL",
+      "clear": "Clear",
+      "download": "Download"
+    },
+    "Panel": {
+      "plainTextInput": "Plain Text Input",
+      "encodedUrlInput": "Encoded URL Input",
+      "encodedUrlResult": "Encoded URL Result",
+      "decodedUrlResult": "Decoded URL Result",
+      "encodePlaceholder": "Enter text you want to encode or upload a file...",
+      "decodePlaceholder": "Enter encoded URL you want to decode...",
+      "readyToEncode": "Ready to encode",
+      "readyToDecode": "Ready to decode",
+      "encodedUrlWillAppear": "Encoded URL will appear here...",
+      "decodedTextWillAppear": "Decoded text will appear here...",
+      "enterTextOrUpload": "Enter text or upload a file",
+      "conversionError": "Conversion Error",
+      "switchMode": "Switch mode",
+      "fileSize": "Size:",
+      "validUrl": "Valid URL",
+      "urlStructure": "URL Structure:"
+    },
+    "Info": {
+      "title": "About URL Encoding",
+      "whatIsUrlEncoding": {
+        "title": "What is URL Encoding?",
+        "description": "URL Encoding (Percent Encoding) is a method to convert characters with special meaning in URLs into a format that can be transmitted safely over the Internet."
+      },
+      "features": {
+        "title": "Key Features",
+        "feature1": "• Converts special characters to %XX format",
+        "feature2": "• Makes URLs safe for transmission",
+        "feature3": "• Handles spaces and non-ASCII characters",
+        "feature4": "• Standard for web applications"
+      },
+      "usage": {
+        "title": "Usage Areas",
+        "usage1": "• Creating valid URLs with special characters",
+        "usage2": "• Form data submission",
+        "usage3": "• API requests with parameters",
+        "usage4": "• Handling multilingual content in URLs"
+      },
+      "formatExample": {
+        "title": "URL encoding examples",
+        "plainText": "Original:",
+        "encodedUrl": "Encoded:",
+        "spacesAndSymbols": "Spaces and special characters",
+        "queryParameters": "Query parameters",
+        "exampleText": "hello world & symbols",
+        "exampleEncoded": "hello%20world%20%26%20symbols"
+      },
+      "urlStructure": {
+        "title": "URL Structure",
+        "protocol": "Protocol",
+        "hostname": "Hostname",
+        "path": "Path",
+        "query": "Query",
+        "hash": "Hash"
+      }
+    },
+    "Errors": {
+      "invalidUrlFormat": "Invalid URL format. Check the syntax.",
+      "conversionError": "Conversion error",
+      "urlDecodeError": "Error decoding URL. Check format correctness.",
+      "urlEncodeError": "Error occurred while encoding URL.",
+      "fileSizeError": "File size must be less than 10MB.",
+      "fileReadError": "Error occurred while reading file content.",
+      "fileTypeError": "Only text files can be uploaded.",
+      "fileUploadError": "Error occurred while uploading file.",
+      "downloadError": "Error occurred while downloading file.",
+      "textTooLong": "Text is too long (maximum 1MB)."
+    },
+    "Samples": {
+      "simpleUrl": "Simple URL",
+      "complexUrl": "Complex URL",
+      "queryString": "Query string",
+      "emailQuery": "Email link",
+      "socialShare": "Social share URL"
+    }
+  }
+}

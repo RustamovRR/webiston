@@ -1,0 +1,48 @@
+{
+  "HomePage": {
+    "Metadata": {
+      "title": "Webiston | Dasturchilar uchun bepul kurslar va vositalar",
+      "description": "Dasturlashni o'rganish uchun zamonaviy platforma. O'zbek va ingliz tillarida React bo'yicha yuqori sifatli, bepul kurslar va dasturchilar uchun foydali vositalar.",
+      "keywords": "bepul kurslar, dasturlash, React, JavaScript, dasturchi vositalari, kod o'rganish, o'zbek IT, bepul ta'lim, дастурлаш, бесплатные курсы"
+    },
+    "title": "Veb texnologiyalar dunyosiga teran nigoh",
+    "description": "Webiston — bu o'zbek tilida yuqori sifatli, zamonaviy va bepul ta'lim resurslarini taqdim etuvchi notijorat loyiha. Biz React bo'yicha chuqur kurslar va dasturchilar uchun foydali vositalar to'plamini taklif qilamiz.",
+    "startLearning": "O'rganishni boshlash",
+    "usefulTools": "Foydali vositalar",
+    "reactSectionTitle": "<i>React</i>ni mukammal o'rganish",
+    "reactSectionDescription": "React kutubxonasining ichki dunyosiga chuqur sayohat. Asoslardan boshlab eng murakkab tushunchalargacha, barchasi bepul va o'zbek tilida.",
+    "toolsSectionTitle": "Dasturchi vositalari",
+    "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
+    "jsSectionTitle": "<i>JavaScript</i> noldan",
+    "jsSectionDescription": "Zamonaviy JavaScript bo'yicha keng qamrovli kurs. Tez kunda..."
+  },
+  "Metadata": {
+    "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
+    "keywords": "React, Next.js, JavaScript, dasturlash, veb dasturlash, o'zbekcha, darslar, qo'llanma, webiston, vebiston, реакт, некст, джаваскрипт, программирование, веб-разработка"
+  },
+  "Header": {
+    "books": "Kitoblar",
+    "tools": "Foydali Vositalar"
+  },
+  "Common": {
+    "stats": {
+      "characters": "belgi",
+      "words": "so'z",
+      "lines": "qator"
+    },
+    "processing": "Ishlanmoqda...",
+    "resultWillAppear": "Natija shu yerda ko'rinadi.",
+    "backToTools": "Orqaga qaytish"
+  },
+  "Filters": {
+    "allTools": "Barcha vositalar",
+    "all": "Barcha",
+    "general": "Umumiy",
+    "developer": "Dasturchi",
+    "developers": "Dasturchilar",
+    "converters": "O'giruvchilar",
+    "generators": "Generatorlar",
+    "analyzers": "Tahlilchilar",
+    "utilities": "Yordamchilar"
+  }
+}

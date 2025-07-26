@@ -1,0 +1,89 @@
+{
+  "LatinCyrillicPage": {
+    "ToolHeader": {
+      "title": "Lotin-Kirill O'giruvchi",
+      "description": "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girish vositasi"
+    },
+    "download": "Yuklab olish",
+    "clear": "Tozalash",
+    "sampleTexts": "Namuna matnlar",
+    "swapDirection": "Yo'nalishni almashtirish",
+    "statusReady": "O'girishga tayyor",
+    "sourceInput": "{sourceLang} Matn Kirish",
+    "targetResult": "{targetLang} Natija",
+    "alphabet": "Alifbo",
+    "latin": "Lotin",
+    "cyrillic": "Kirill",
+    "latinToCyrillic": "Lotin → Kirill",
+    "cyrillicToLatin": "Kirill → Lotin",
+    "inputPlaceholderLatin": "Matn kiriting...",
+    "inputPlaceholderCyrillic": "Матн киритинг...",
+    "emptyStateTitle": "O'girilgan matn bu yerda ko'rinadi...",
+    "emptyStateDescription": "Matn kiriting yoki namuna yuklang",
+    "downloadFile": {
+      "title": "# Lotin-Kirill O'giruvchi - Natija",
+      "createdAt": "Yaratilgan",
+      "direction": "Yo'nalish",
+      "sourceText": "## Asl matn:",
+      "convertedText": "## O'girilgan matn:",
+      "generatedBy": "Webiston.uz - Lotin-Kirill O'giruvchi tomonidan yaratilgan"
+    },
+    "samples": {
+      "latinGreeting": "Lotin salom",
+      "cyrillicGreeting": "Kirill salom",
+      "latinParagraph": "Lotin paragraf",
+      "cyrillicParagraph": "Kirill paragraf"
+    },
+    "Info": {
+      "title": "Lotin-Kirill Alifbosi Haqida",
+      "description": "O'zbek tilida yozish uchun zarur bo'lgan ma'lumotlar",
+      "latinAlphabet": {
+        "title": "Lotin Alifbosi",
+        "description": "O'zbek tilida 1992-yildan beri rasmiy ravishda ishlatilayotgan yozuv tizimi.",
+        "letterCount": "Harflar soni",
+        "specialChars": "Maxsus belgilar",
+        "feature": "Xususiyat",
+        "featureDesc": "Kompyuterda yozish uchun qulay"
+      },
+      "cyrillicAlphabet": {
+        "title": "Кирилл Алифбоси",
+        "description": "Совет даврида ишлатилган ва ҳозирда ҳам баъзи соҳаларда қўлланилади.",
+        "letterCount": "Ҳарфлар сони",
+        "specialChars": "Махсус ҳарфлар",
+        "feature": "Хусусият",
+        "featureDesc": "Рус тилига яқин"
+      },
+      "rules": {
+        "title": "O'girish Qoidalari",
+        "latinToCyrillic": "Lotin → Kirill:",
+        "cyrillicToLatin": "Kirill → Lotin:",
+        "accuracy": "Avtomatik o'girish 99.9% aniqlikda ishlaydi."
+      },
+      "history": {
+        "title": "Tarixiy Ma'lumot",
+        "period1": "1928-1940: Lotin alifbosi",
+        "period2": "1940-1992: Kirill alifbosi",
+        "period3": "1992-hozir: Lotin alifbosi",
+        "note": "O'zbekiston mustaqillik olganidan keyin lotin alifbosiga qaytildi."
+      },
+      "usage": {
+        "title": "Qo'llanish",
+        "latin": "Lotin:",
+        "latinDesc": "Rasmiy hujjatlar, ta'lim",
+        "cyrillic": "Kirill:",
+        "cyrillicDesc": "Adabiyot, arxiv",
+        "mixed": "Aralash:",
+        "mixedDesc": "Internet, ijtimoiy tarmoqlar",
+        "note": "Ikki alifbo ham o'z o'rniga ega va muhim."
+      },
+      "tips": {
+        "title": "Maslahatlar",
+        "tip1": "• Matnni to'liq kiritib, keyin o'giring",
+        "tip2": "• Namuna matnlardan foydalaning",
+        "tip3": "• Natijani tekshirib ko'ring",
+        "tip4": "• Fayl sifatida saqlash mumkin",
+        "note": "Professional natijalar uchun matnni diqqat bilan tayyorlang."
+      }
+    }
+  }
+}

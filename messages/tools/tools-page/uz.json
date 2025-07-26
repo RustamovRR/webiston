@@ -1,0 +1,74 @@
+{
+  "ToolsPage": {
+    "Metadata": {
+      "title": "Dasturchi vositalari | Webiston",
+      "description": "Dasturchilar uchun bepul va foydali onlayn vositalar to'plami. Kundalik vazifalar uchun konverterlar, kod generatorlari, formatlovchilar va boshqalar.",
+      "keywords": "dasturchi vositalari, onlayn vositalar, bepul vositalar, konverterlar, generatorlar, JSON formatter, Base64 konverter, rang konverteri"
+    },
+    "Main": {
+      "title": "Dasturchi Vositalari",
+      "description": "Dasturlash va veb-ishlab chiqish uchun professional vositalar to'plami",
+      "filterByCategory": "Kategoriya bo'yicha filtrlash",
+      "filterByAudience": "Foydalanuvchi turi",
+      "searchPlaceholder": "Vositalarni qidirish...",
+      "resultsFound": "{count} ta vosita topildi",
+      "noResults": "Hech qanday vosita topilmadi",
+      "noResultsHint": "Filter yoki qidiruv shartlarini o'zgartirib ko'ring",
+      "audienceDeveloper": "Dasturchi",
+      "audienceGeneral": "Umumiy",
+      "totalTools": "Jami vositalar",
+      "categories": "Kategoriyalar",
+      "generalTools": "Umumiy vositalar",
+      "developerTools": "Developer vositalar"
+    }
+  },
+  "Tools": {
+    "latinCyrillic": {
+      "title": "Lotin-Kirill O'giruvchi",
+      "description": "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring"
+    },
+    "jsonFormatter": {
+      "title": "JSON Formatlash",
+      "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",
+      "keywords": "JSON formatter, JSON validator, JSON beautifier, JSON minifier, JSON parser, JSON tool, JSON формат, JSON валидатор, JSON парсер, JSON инструмент, жсон форматлаш, жсон текшириш"
+    },
+    "base64Converter": {
+      "title": "Base64 O'giruvchi",
+      "description": "Matn va fayllarni Base64 formatiga o'girish va aksincha",
+      "keywords": "Base64 encoder, Base64 decoder, Base64 converter, Base64 tool, кодировщик Base64, декодер Base64, конвертер Base64, инструмент Base64, base64 kodlash, base64 dekodlash"
+    },
+    "urlEncoder": { "title": "URL Kodlash", "description": "URL va matnlarni kodlash va dekodlash vositasi" },
+    "jwtDecoder": { "title": "JWT Dekoder", "description": "JSON Web Token (JWT) larni dekodlash va tahlil qilish" },
+    "colorConverter": {
+      "title": "Rang O'giruvchi",
+      "description": "HEX, RGB, HSL formatlar orasida rang konvertatsiyasi"
+    },
+    "hashGenerator": { "title": "Hash Yaratuvchi", "description": "MD5, SHA1, SHA256, SHA512 hash yaratish vositasi" },
+    "uuidGenerator": { "title": "UUID Yaratuvchi", "description": "Noyob identifikatorlar (UUID) yaratish vositasi" },
+    "qrGenerator": { "title": "QR Kod Yaratuvchi", "description": "Matn va URL lar uchun QR kodlar yaratish" },
+    "passwordGenerator": { "title": "Parol Yaratuvchi", "description": "Xavfsiz va kuchli parollar yaratish vositasi" },
+    "deviceInfo": {
+      "title": "Qurilma Ma'lumotlari",
+      "description": "Brauzer, qurilma va tizim haqida batafsil ma'lumot"
+    },
+    "cameraRecorder": { "title": "Kamera Yozib Oluvchi", "description": "Kamerangizni sinab ko'ring va video yozing" },
+    "microphoneTest": { "title": "Mikrofon Test", "description": "Mikrofonni sinab ko'ring va ovoz yozing" },
+    "keycodeInfo": { "title": "Klaviatura Kodlari", "description": "Klaviatura tugmalari kodlarini aniqlang" },
+    "ogMetaGenerator": { "title": "Open Graph Meta", "description": "Ijtimoiy tarmoqlar uchun meta taglar yarating" },
+    "loremIpsum": { "title": "Lorem Ipsum", "description": "Placeholder matn va paragraflar yarating" },
+    "screenResolution": { "title": "Ekran O'lchami", "description": "Ekran o'lchami va resolution ma'lumotlari" },
+    "userAgentAnalyzer": {
+      "title": "User Agent Tahlil",
+      "description": "Brauzer User Agent ma'lumotlarini tahlil qiling"
+    },
+    "ipInfo": { "title": "IP Ma'lumotlari", "description": "IP manzil va joylashuv ma'lumotlari" },
+    "websiteStatus": { "title": "Website Status", "description": "Website mavjudligi va holatini tekshiring" },
+    "httpStatus": { "title": "HTTP Status Kodlari", "description": "Barcha HTTP status kodlari va ularning ma'nolari" }
+  },
+  "ToolCategories": {
+    "converters": { "title": "O'giruvchilar", "description": "Turli formatlar orasida ma'lumot o'girish vositalari" },
+    "generators": { "title": "Generatorlar", "description": "Turli ma'lumotlar va kodlar yaratish vositalari" },
+    "analyzers": { "title": "Tahlilchilar", "description": "Ma'lumotlarni tahlil qilish va tekshirish vositalari" },
+    "utilities": { "title": "Yordamchilar", "description": "Qurilma test va boshqa foydali vositalar" }
+  }
+}

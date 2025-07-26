@@ -1,0 +1,121 @@
+{
+  "UuidGeneratorPage": {
+    "ToolHeader": {
+      "title": "UUID Generator",
+      "description": "Professional UUID generation tool. Create unique identifiers with various formats and versions."
+    },
+    "ConfigPanel": {
+      "title": "Tool Configuration",
+      "status": "Ready",
+      "versionLabel": "UUID Version:",
+      "formatLabel": "Format:",
+      "countLabel": "Count:",
+      "countRange": "(1-1000)",
+      "sampleLabel": "Sample:",
+      "generateButton": "Generate UUID",
+      "generating": "Generating...",
+      "clearButton": "Clear"
+    },
+    "VersionSelector": {
+      "v4": "UUID v4",
+      "v1": "UUID v1",
+      "nil": "NIL"
+    },
+    "FormatSelector": {
+      "standard": "Standard",
+      "compact": "Compact",
+      "brackets": "Brackets",
+      "uppercase": "UPPER"
+    },
+    "InputPanel": {
+      "title": "Tool Input",
+      "status": "Input",
+      "settingsTitle": "Settings",
+      "countLabel": "count",
+      "versionLabel": "version",
+      "formatLabel": "format",
+      "versionInfoTitle": "UUID Version Info",
+      "formatInfoTitle": "Format Info",
+      "nameLabel": "Name:",
+      "descriptionLabel": "Description:",
+      "securityLabel": "Security:",
+      "patternLabel": "Pattern:",
+      "exampleLabel": "Example:"
+    },
+    "ResultsPanel": {
+      "title": "Tool Output",
+      "statusGenerated": "Generated",
+      "statusEmpty": "Empty",
+      "downloadTxt": "TXT",
+      "downloadJson": "JSON",
+      "emptyMessage": "Click the button above to generate UUIDs",
+      "itemNumber": "#",
+      "totalLabel": "Total UUIDs",
+      "uniqueLabel": "Unique UUIDs",
+      "duplicatesLabel": "Duplicates",
+      "bytesLabel": "Total Bytes"
+    },
+    "StatsPanel": {
+      "title": "Detailed Statistics"
+    },
+    "InfoPanel": {
+      "title": "What is UUID and why is it used?",
+      "versionsTitle": "UUID versions:",
+      "useCasesTitle": "Use cases:",
+      "importantNote": "Important:",
+      "collisionNote": "UUID v4 collision probability is 5.3×10⁻³⁶, which practically guarantees uniqueness."
+    },
+    "VersionInfo": {
+      "v4": {
+        "name": "UUID v4 (Random)",
+        "description": "Generated based on random values",
+        "security": "High",
+        "recommended": true,
+        "details": "Random-based, most secure and popular"
+      },
+      "v1": {
+        "name": "UUID v1 (Timestamp)",
+        "description": "Generated based on time and MAC address",
+        "security": "Medium",
+        "recommended": false,
+        "details": "Time and MAC address based, maintains sequence"
+      },
+      "nil": {
+        "name": "NIL UUID",
+        "description": "UUID consisting of all zeros",
+        "security": "None",
+        "recommended": false,
+        "details": "All zeros, indicates empty state"
+      }
+    },
+    "FormatInfo": {
+      "standard": {
+        "name": "Standard Format",
+        "description": "8-4-4-4-12 format with dashes",
+        "example": "550e8400-e29b-41d4-a716-446655440000"
+      },
+      "compact": {
+        "name": "Compact Format",
+        "description": "No dashes, 32 character format",
+        "example": "550e8400e29b41d4a716446655440000"
+      },
+      "brackets": {
+        "name": "Brackets Format",
+        "description": "Wrapped with curly brackets",
+        "example": "{550e8400-e29b-41d4-a716-446655440000}"
+      },
+      "uppercase": {
+        "name": "Uppercase Format",
+        "description": "Written in uppercase letters",
+        "example": "550E8400-E29B-41D4-A716-446655440000"
+      }
+    },
+    "UseCases": {
+      "database": "Database Primary Keys: Global unique identifiers instead of auto-increment",
+      "microservices": "Microservices: Creating unique IDs in distributed systems",
+      "fileNaming": "File naming: Collision-free identifiers for files and resources",
+      "sessionIds": "Session IDs: Session tracking in web applications",
+      "apiKeys": "API Keys: Service authentication and authorization"
+    }
+  }
+}
