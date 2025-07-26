@@ -1,10 +1,7 @@
 import React, { useState, useRef } from 'react'
-import { Upload, X, RefreshCw, Palette, Image, Settings } from 'lucide-react'
+import { Upload, X, RefreshCw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { GradientTabs, ShimmerButton } from '@/components/ui'
-import { TerminalInput } from '@/components/shared/TerminalInput'
-import { cn } from '@/lib'
 
 export interface QrCustomization {
   foregroundColor: string
@@ -225,6 +222,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       borderRadius: 0,
       gradientEnabled: false,
       gradientDirection: 'horizontal',
+      gradientEndColor: '#8b5cf6',
     })
   }
 
@@ -258,7 +256,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                 <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{preset.label}</span>
               </div>
               <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                {preset.style.gradientEnabled ? 'Gradient' : 'Solid'} • {preset.style.cornerStyle}
+                {preset.style.gradientEnabled ? t('gradient') : 'Solid'} • {t(`corners.${preset.style.cornerStyle}`)}
               </div>
             </button>
           ))}
@@ -350,21 +348,31 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
           <div className="space-y-4 rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
             <div className="space-y-3">
               <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('gradientDirection')}</label>
-              <GradientTabs
-                options={gradientOptions}
-                value={customization.gradientDirection}
-                onChange={(value) =>
-                  onCustomizationChange({
-                    ...customization,
-                    gradientDirection: value as any,
-                  })
-                }
-                toolCategory="generators"
-              />
+              <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                {gradientOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() =>
+                      onCustomizationChange({
+                        ...customization,
+                        gradientDirection: option.value as any,
+                      })
+                    }
+                    className={`flex flex-col items-center gap-2 rounded-lg border p-3 text-center transition-all ${
+                      customization.gradientDirection === option.value
+                        ? 'border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-900/20 dark:text-purple-300'
+                        : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800/50'
+                    }`}
+                  >
+                    <div className="text-purple-500 dark:text-purple-400">{option.icon}</div>
+                    <span className="text-xs font-medium">{option.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Gradient End Color:</label>
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('gradientEndColor')}:</label>
               <div className="flex items-center gap-3">
                 <input
                   type="color"
@@ -395,55 +403,21 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         )}
       </div>
 
-      {/* Style Settings */}
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('cornerStyle')}</label>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-            {cornerOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() =>
-                  onCustomizationChange({
-                    ...customization,
-                    cornerStyle: option.value as any,
-                  })
-                }
-                className={`flex flex-col items-center gap-2 rounded-lg border p-3 text-center transition-all ${
-                  customization.cornerStyle === option.value
-                    ? 'border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-900/20 dark:text-purple-300'
-                    : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800/50'
-                }`}
-              >
-                <div className="text-purple-500 dark:text-purple-400">{option.icon}</div>
-                <span className="text-xs font-medium">{option.label}</span>
-              </button>
-            ))}
+      {/* Note: Corner and Pattern styles are not supported by QR API */}
+      <div className="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-amber-100 p-1 dark:bg-amber-800/50">
+            <svg className="h-4 w-4 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
           </div>
-        </div>
-
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('patternStyle')}</label>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-            {patternOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() =>
-                  onCustomizationChange({
-                    ...customization,
-                    patternStyle: option.value as any,
-                  })
-                }
-                className={`flex flex-col items-center gap-2 rounded-lg border p-3 text-center transition-all ${
-                  customization.patternStyle === option.value
-                    ? 'border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-900/20 dark:text-purple-300'
-                    : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800/50'
-                }`}
-              >
-                <div className="text-purple-500 dark:text-purple-400">{option.icon}</div>
-                <span className="text-xs font-medium">{option.label}</span>
-              </button>
-            ))}
+          <div>
+            <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200">{t('advancedStylingTitle')}</h4>
+            <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">{t('advancedStylingDescription')}</p>
           </div>
         </div>
       </div>
@@ -554,7 +528,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         </Button>
 
         <div className="text-xs text-zinc-500 dark:text-zinc-400">
-          {isValid ? 'Customization ready' : 'Enter valid QR data first'}
+          {isValid ? t('customizationReady') : t('enterValidFirst')}
         </div>
       </div>
     </div>

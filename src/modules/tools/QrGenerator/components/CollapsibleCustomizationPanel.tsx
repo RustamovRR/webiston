@@ -34,7 +34,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
     customization.borderRadius !== 0
 
   return (
-    <div className="mb-6">
+    <div className="my-6">
       {/* Toggle Header */}
       <div className="rounded-t-xl border border-b-0 border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
         <button
@@ -119,7 +119,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
 
               {/* Enhanced Mini Preview */}
               <div className="lg:col-span-1">
-                <div className="sticky top-4">
+                <div className="sticky top-6">
                   {qrUrl && isValid ? (
                     <div className="group rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50/80 to-zinc-100/60 p-5 shadow-sm backdrop-blur-sm transition-all duration-500 hover:shadow-md dark:border-zinc-700 dark:from-zinc-800/60 dark:to-zinc-900/40">
                       {/* Header with animated icon */}
@@ -156,7 +156,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                             {/* Logo Overlay with smooth animation */}
                             {customization.logo && (
                               <div
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-1 shadow-lg transition-all duration-300 ease-out"
+                                className="absolute top-[60%] left-[60%] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-1 shadow-lg transition-all duration-300 ease-out"
                                 style={{
                                   width: `${customization.logoSize}%`,
                                   height: `${customization.logoSize}%`,
@@ -203,7 +203,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                         </div>
 
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-zinc-600 dark:text-zinc-400">Colors:</span>
+                          <span className="font-medium text-zinc-600 dark:text-zinc-400">{t('colors')}:</span>
                           <div className="flex items-center gap-1.5">
                             <div
                               className="h-4 w-4 rounded-full border-2 border-white shadow-sm transition-transform hover:scale-110"
@@ -295,6 +295,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                   borderRadius: 0,
                   gradientEnabled: false,
                   gradientDirection: 'horizontal',
+                  gradientEndColor: '#8b5cf6',
                 })
               }}
               variant="ghost"

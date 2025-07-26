@@ -131,7 +131,13 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                     {customization.cornerStyle}
                   </span>
                   {customization.logo && (
-                    <span className="rounded bg-green-100 px-2 py-1 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                    <span
+                      style={{
+                        backgroundColor: customization.foregroundColor + '20',
+                        color: customization.foregroundColor,
+                      }}
+                      className="rounded px-2 py-1"
+                    >
                       Logo
                     </span>
                   )}

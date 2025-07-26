@@ -231,7 +231,13 @@
       "logo": "Logo",
       "gradient": "Gradient",
       "style": "Stil",
-      "reset": "Qaytarish"
+      "reset": "Qaytarish",
+      "customizationReady": "Sozlash tayyor",
+      "enterValidFirst": "Avval to'g'ri ma'lumot kiriting",
+      "advancedStylingTitle": "Qo'shimcha Stillar Tez Orada",
+      "advancedStylingDescription": "Burchak va pattern stillari hozirda ishlab chiqilmoqda. Hozircha ranglar, gradientlar, logo va chetlarni sozlashingiz mumkin.",
+      "colors": "Ranglar",
+      "gradientEndColor": "Gradient Oxirgi Rangi"
     },
     "Errors": {
       "textTooLong": "Matn 2000 belgidan oshmasligi kerak",

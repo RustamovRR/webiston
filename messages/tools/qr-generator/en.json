@@ -231,7 +231,13 @@
       "logo": "Logo",
       "gradient": "Gradient",
       "style": "Style",
-      "reset": "Reset"
+      "reset": "Reset",
+      "customizationReady": "Customization ready",
+      "enterValidFirst": "Enter valid QR data first",
+      "advancedStylingTitle": "Advanced Styling Coming Soon",
+      "advancedStylingDescription": "Corner and pattern styles are currently in development. For now, you can customize colors, gradients, logo, and margins.",
+      "colors": "Colors",
+      "gradientEndColor": "Gradient End Color"
     },
     "Errors": {
       "textTooLong": "Text must be less than 2000 characters",

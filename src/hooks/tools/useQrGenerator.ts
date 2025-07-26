@@ -137,6 +137,7 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
     borderRadius: 0,
     gradientEnabled: false,
     gradientDirection: 'horizontal',
+    gradientEndColor: '#8b5cf6', // Default gradient end color
   })
 
   // Generate QR code URL with customization
@@ -195,6 +196,8 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
               ctx.drawImage(qrImage, 0, 0, size, size)
 
               // Add gradient overlay if enabled
+              console.log('Gradient enabled:', custom.gradientEnabled)
+              console.log('Gradient end color:', custom.gradientEndColor)
               if (custom.gradientEnabled && custom.gradientEndColor) {
                 const gradient =
                   custom.gradientDirection === 'radial'
@@ -205,10 +208,10 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
                         ? ctx.createLinearGradient(0, 0, 0, size)
                         : ctx.createLinearGradient(0, 0, size, size)
 
-                gradient.addColorStop(0, custom.foregroundColor + '40')
-                gradient.addColorStop(1, custom.gradientEndColor + '40')
+                gradient.addColorStop(0, custom.foregroundColor + '80')
+                gradient.addColorStop(1, custom.gradientEndColor + '80')
 
-                ctx.globalCompositeOperation = 'overlay'
+                ctx.globalCompositeOperation = 'multiply'
                 ctx.fillStyle = gradient
                 ctx.fillRect(0, 0, size, size)
                 ctx.globalCompositeOperation = 'source-over'
@@ -412,30 +415,30 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
 
   // Detect input type
   const detectInputType = useCallback((text: string) => {
-    if (!text.trim()) return "Bo'sh"
+    if (!text.trim()) return 'empty'
 
     // URL detection
-    if (text.match(/^https?:\/\//i)) return 'URL'
+    if (text.match(/^https?:\/\//i)) return 'url'
 
     // Email detection
-    if (text.match(/^mailto:/i) || text.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return 'Email'
+    if (text.match(/^mailto:/i) || text.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return 'email'
 
     // Phone detection
-    if (text.match(/^tel:/i) || text.match(/^\+?[\d\s\-\(\)]{7,}$/)) return 'Telefon'
+    if (text.match(/^tel:/i) || text.match(/^\+?[\d\s\-\(\)]{7,}$/)) return 'phone'
 
     // SMS detection
-    if (text.match(/^sms:/i)) return 'SMS'
+    if (text.match(/^sms:/i)) return 'sms'
 
     // WiFi detection
-    if (text.match(/^WIFI:/i)) return 'WiFi'
+    if (text.match(/^WIFI:/i)) return 'wifi'
 
     // vCard detection
-    if (text.match(/^BEGIN:VCARD/i)) return 'vCard'
+    if (text.match(/^BEGIN:VCARD/i)) return 'vcard'
 
     // Location detection
-    if (text.match(/^geo:/i)) return 'Joylashuv'
+    if (text.match(/^geo:/i)) return 'location'
 
-    return 'Matn'
+    return 'text'
   }, [])
 
   // Group presets by category

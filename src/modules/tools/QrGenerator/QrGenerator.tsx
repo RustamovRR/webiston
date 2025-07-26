@@ -112,7 +112,7 @@ const QrGenerator = () => {
         customization={customization}
         onCustomizationChange={setCustomization}
         isValid={!!inputText.trim()}
-        qrUrl={customQrUrl}
+        qrUrl={qrUrl}
         inputText={inputText}
       />
 
