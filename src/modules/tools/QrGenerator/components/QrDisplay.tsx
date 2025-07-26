@@ -1,20 +1,46 @@
-import React from 'react'
-import { QrSize, QrErrorLevel } from '@/hooks'
+import React, { useState } from 'react'
+import { Copy, Check, Download, Eye } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib'
+import { QrSize, QrErrorLevel } from '@/hooks/tools/useQrGenerator'
 
 interface QrDisplayProps {
   qrUrl: string
   qrSize: QrSize
   errorLevel: QrErrorLevel
   inputType: string
+  inputText: string
   stats: {
     characters: number
     words: number
     lines: number
   }
+  onDownload: () => void
 }
 
-const QrDisplay: React.FC<QrDisplayProps> = ({ qrUrl, qrSize, errorLevel, inputType, stats }) => {
+const QrDisplay: React.FC<QrDisplayProps> = ({
+  qrUrl,
+  qrSize,
+  errorLevel,
+  inputType,
+  inputText,
+  stats,
+  onDownload,
+}) => {
+  const [copied, setCopied] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+
   if (!qrUrl) return null
+
+  const handleCopyText = async () => {
+    try {
+      await navigator.clipboard.writeText(inputText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      console.error('Copy failed:', error)
+    }
+  }
 
   return (
     <div className="mt-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
@@ -33,28 +59,116 @@ const QrDisplay: React.FC<QrDisplayProps> = ({ qrUrl, qrSize, errorLevel, inputT
         </div>
       </div>
 
-      <div className="flex justify-center">
-        <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
-          <img
-            src={qrUrl}
-            alt="Generated QR Code"
-            className="mx-auto max-w-full rounded-lg"
-            style={{ maxWidth: '300px', height: 'auto' }}
-          />
-          <div className="mt-3 text-center">
-            <div className="text-xs text-zinc-600 dark:text-zinc-500">
-              {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish • {inputType}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* QR Code Display */}
+        <div className="flex justify-center">
+          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
+            <img
+              src={qrUrl}
+              alt="Generated QR Code"
+              className="mx-auto max-w-full rounded-lg"
+              style={{ maxWidth: '300px', height: 'auto' }}
+            />
+            <div className="mt-3 text-center">
+              <div className="text-xs text-zinc-600 dark:text-zinc-500">
+                {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish • {inputType}
+              </div>
+              <div className="mt-2 flex justify-center gap-2 text-xs">
+                <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
+                  {stats.characters} belgi
+                </span>
+                <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
+                  {stats.words} so'z
+                </span>
+                <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
+                  {stats.lines} qator
+                </span>
+              </div>
             </div>
-            <div className="mt-2 flex justify-center gap-2 text-xs">
-              <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                {stats.characters} belgi
-              </span>
-              <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                {stats.words} so'z
-              </span>
-              <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                {stats.lines} qator
-              </span>
+          </div>
+        </div>
+
+        {/* Content Preview & Actions */}
+        <div className="space-y-4">
+          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
+            <div className="mb-3 flex items-center justify-between">
+              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">QR kod tarkibi:</h4>
+              <Button onClick={() => setShowPreview(!showPreview)} variant="ghost" size="sm" className="h-6 px-2">
+                <Eye size={14} className="mr-1" />
+                {showPreview ? 'Yashirish' : "Ko'rish"}
+              </Button>
+            </div>
+
+            {showPreview && (
+              <div className="rounded bg-zinc-200/50 p-3 dark:bg-zinc-800/50">
+                <pre className="text-xs break-all whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
+                  {inputText}
+                </pre>
+              </div>
+            )}
+
+            <div className="mt-3 flex gap-2">
+              <Button
+                onClick={handleCopyText}
+                variant="outline"
+                size="sm"
+                className={cn(
+                  'flex-1',
+                  copied &&
+                    'border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400',
+                )}
+              >
+                {copied ? (
+                  <>
+                    <Check size={14} className="mr-1" />
+                    Nusxalandi
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} className="mr-1" />
+                    Matnni nusxalash
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={onDownload}
+                variant="default"
+                size="sm"
+                className="flex-1 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                <Download size={14} className="mr-1" />
+                QR yuklab olish
+              </Button>
+            </div>
+          </div>
+
+          {/* QR Info */}
+          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
+            <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">Texnik ma'lumotlar:</h4>
+            <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
+              <div className="flex justify-between">
+                <span>Format:</span>
+                <span className="font-mono">PNG</span>
+              </div>
+              <div className="flex justify-between">
+                <span>O'lcham:</span>
+                <span className="font-mono">
+                  {qrSize}x{qrSize}px
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Xato tuzatish:</span>
+                <span className="font-mono">{errorLevel}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Ma'lumot turi:</span>
+                <span className="font-mono">{inputType}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Margin:</span>
+                <span className="font-mono">10px</span>
+              </div>
             </div>
           </div>
         </div>

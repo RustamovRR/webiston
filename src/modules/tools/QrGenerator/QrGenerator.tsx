@@ -3,7 +3,7 @@
 import { FileText } from 'lucide-react'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
 import { ControlPanel, QrDisplay, InfoSection } from './components'
-import { useQrGenerator } from '@/hooks'
+import { useQrGenerator } from '@/hooks/tools/useQrGenerator'
 
 const QrGenerator = () => {
   const {
@@ -87,13 +87,13 @@ const QrGenerator = () => {
         sourceText={inputText}
         convertedText={
           qrUrl
-            ? `QR kod muvaffaqiyatli yaratildi!\n\nO'lcham: ${qrSize}x${qrSize} pixels\nXato tuzatish: ${errorLevel}\nTur: ${inputType}\n\nQR Kodi quyida ko'rinadi.`
+            ? `QR kod muvaffaqiyatli yaratildi!\n\nAsl matn:\n${inputText.length > 100 ? inputText.substring(0, 100) + '...' : inputText}\n\nO'lcham: ${qrSize}x${qrSize} pixels\nXato tuzatish: ${errorLevel}\nTur: ${inputType}\n\nQR Kodi quyida ko'rinadi.`
             : ''
         }
-        sourceLabel="Tool Kirish"
-        targetLabel="Tool Natija"
+        sourceLabel="QR Kod Kirish"
+        targetLabel="QR Kod Ma'lumotlari"
         onSourceChange={setInputText}
-        sourcePlaceholder="QR kod uchun matn kiriting (URL, kontakt ma'lumotlari, WiFi sozlamalari va h.k.)"
+        sourcePlaceholder="QR kod uchun matn kiriting...\n\nMisol:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Telefon: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Matn: Salom dunyo!"
         onClear={handleClear}
         showSwapButton={false}
         isProcessing={isGenerating}
@@ -103,7 +103,15 @@ const QrGenerator = () => {
         showShadow={true}
       />
 
-      <QrDisplay qrUrl={qrUrl} qrSize={qrSize} errorLevel={errorLevel} inputType={inputType} stats={stats} />
+      <QrDisplay
+        qrUrl={qrUrl}
+        qrSize={qrSize}
+        errorLevel={errorLevel}
+        inputType={inputType}
+        inputText={inputText}
+        stats={stats}
+        onDownload={downloadQr}
+      />
 
       <InfoSection />
     </div>

@@ -118,11 +118,10 @@ export const useQrGenerator = ({ onSuccess, onError }: UseQrGeneratorProps = {})
   const generateQrUrl = useCallback((text: string, size: QrSize, errorCorrectionLevel: QrErrorLevel) => {
     if (!text.trim()) return ''
 
-    const encodedText = encodeURIComponent(text)
     const baseUrl = 'https://api.qrserver.com/v1/create-qr-code/'
     const params = new URLSearchParams({
       size: `${size}x${size}`,
-      data: encodedText,
+      data: text, // URLSearchParams avtomatik encode qiladi, qo'shimcha encoding kerak emas
       ecc: errorCorrectionLevel,
       format: 'png',
       margin: '10',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Download, Upload, Hash, Zap, X, Settings, QrCode, Image } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
@@ -39,6 +39,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onDownload,
 }) => {
   const [activeCategory, setActiveCategory] = useState('url')
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null)
+
+  // Reset selected preset when input text changes manually
+  useEffect(() => {
+    if (selectedPreset && inputText.trim() !== selectedPreset.trim()) {
+      setSelectedPreset(null)
+    }
+  }, [inputText, selectedPreset])
 
   const categoryOptions = [
     {
@@ -166,20 +174,56 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <div className="mt-6 space-y-3">
             <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Namuna Tanlovlari:</label>
             <div className="grid gap-2 md:grid-cols-2">
-              {groupedPresets[activeCategory].map((preset: QrPreset, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between rounded-lg border border-zinc-300 bg-zinc-100/30 p-3 transition-colors hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{preset.label}</div>
-                    <div className="text-xs text-zinc-600 dark:text-zinc-400">{preset.description}</div>
+              {groupedPresets[activeCategory].map((preset: QrPreset, index: number) => {
+                const isActive = inputText.trim() === preset.value.trim()
+
+                const handlePresetClick = () => {
+                  setSelectedPreset(preset.value)
+                  onPresetSelect(preset)
+                }
+
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      'flex items-center justify-between rounded-lg border p-3 transition-colors',
+                      isActive
+                        ? 'border-blue-500 bg-blue-500/10 dark:border-blue-400 dark:bg-blue-400/10'
+                        : 'border-zinc-300 bg-zinc-100/30 hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50',
+                    )}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div
+                        className={cn(
+                          'text-sm font-medium',
+                          isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-800 dark:text-zinc-200',
+                        )}
+                      >
+                        {preset.label}
+                      </div>
+                      <div
+                        className={cn(
+                          'text-xs',
+                          isActive ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-400',
+                        )}
+                      >
+                        {preset.description}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handlePresetClick}
+                      variant={isActive ? 'default' : 'outline'}
+                      size="sm"
+                      className={cn(
+                        'ml-2',
+                        isActive && 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600',
+                      )}
+                    >
+                      {isActive ? 'Tanlangan' : 'Yuklash'}
+                    </Button>
                   </div>
-                  <Button onClick={() => onPresetSelect(preset)} variant="outline" size="sm" className="ml-2">
-                    Yuklash
-                  </Button>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
