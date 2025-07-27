@@ -63,7 +63,10 @@
       "twitterSiteLabel": "Twitter Site",
       "twitterSitePlaceholder": "@username",
       "twitterCreatorLabel": "Twitter Creator",
-      "twitterCreatorPlaceholder": "@username"
+      "twitterCreatorPlaceholder": "@username",
+      "gettingLong": "Uzayib bormoqda",
+      "perfect": "Mukammal!",
+      "tooLongError": "Juda uzun!"
     },
     "OutputPanel": {
       "title": "Tool Natija",
@@ -78,9 +81,14 @@
     },
     "PreviewPanel": {
       "title": "Ijtimoiy Tarmoq Ko'rinishi",
-      "status": "Preview",
+      "status": "Ko'rinish",
       "facebook": "Facebook / Open Graph",
-      "twitter": "Twitter Card"
+      "twitter": "Twitter Card",
+      "facebookPreview": "Facebook Ko'rinishi",
+      "twitterCard": "Twitter Kartasi",
+      "telegramPreview": "Telegram Ko'rinishi",
+      "linkedinPreview": "LinkedIn Ko'rinishi",
+      "whatsappPreview": "WhatsApp Ko'rinishi"
     },
     "ValidationPanel": {
       "title": "Aqlli Validatsiya",
@@ -139,7 +147,7 @@
         "seoTitle": "SEO Meta",
         "seoDesc": "Google va boshqa qidiruv tizimlari uchun optimallashtirilgan taglar",
         "schemaTitle": "Schema.org",
-        "schemaDesc": "Tuzilgan ma'lumotlar uchun semantic web standartlari"
+        "schemaDesc": "Tuzilgan ma'lumotlar uchun semantik web standartlari"
       }
     }
   }

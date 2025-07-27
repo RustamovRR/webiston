@@ -63,7 +63,10 @@
       "twitterSiteLabel": "Twitter Site",
       "twitterSitePlaceholder": "@username",
       "twitterCreatorLabel": "Twitter Creator",
-      "twitterCreatorPlaceholder": "@username"
+      "twitterCreatorPlaceholder": "@username",
+      "gettingLong": "Getting long",
+      "perfect": "Perfect!",
+      "tooLongError": "Too long!"
     },
     "OutputPanel": {
       "title": "Tool Output",
@@ -80,7 +83,12 @@
       "title": "Social Media Preview",
       "status": "Preview",
       "facebook": "Facebook / Open Graph",
-      "twitter": "Twitter Card"
+      "twitter": "Twitter Card",
+      "facebookPreview": "Facebook Preview",
+      "twitterCard": "Twitter Card",
+      "telegramPreview": "Telegram Preview",
+      "linkedinPreview": "LinkedIn Preview",
+      "whatsappPreview": "WhatsApp Preview"
     },
     "ValidationPanel": {
       "title": "Smart Validation",

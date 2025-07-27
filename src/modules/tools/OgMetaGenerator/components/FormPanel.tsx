@@ -87,12 +87,12 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, onUpdateFie
                 >
                   {metaData.title.length}/70 {t('titleCounter')}
                 </div>
-                {metaData.title.length > 70 && <div className="text-xs text-red-500">Too long!</div>}
+                {metaData.title.length > 70 && <div className="text-xs text-red-500">{t('tooLongError')}</div>}
                 {metaData.title.length > 50 && metaData.title.length <= 70 && (
-                  <div className="text-xs text-yellow-500">Getting long</div>
+                  <div className="text-xs text-yellow-500">{t('gettingLong')}</div>
                 )}
                 {metaData.title.length > 0 && metaData.title.length <= 50 && (
-                  <div className="text-xs text-green-500">Perfect!</div>
+                  <div className="text-xs text-green-500">{t('perfect')}</div>
                 )}
               </div>
               {/* Progress bar */}
@@ -144,12 +144,12 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, onUpdateFie
                 >
                   {metaData.description.length}/200 {t('titleCounter')}
                 </div>
-                {metaData.description.length > 200 && <div className="text-xs text-red-500">Too long!</div>}
+                {metaData.description.length > 200 && <div className="text-xs text-red-500">{t('tooLongError')}</div>}
                 {metaData.description.length > 160 && metaData.description.length <= 200 && (
-                  <div className="text-xs text-yellow-500">Getting long</div>
+                  <div className="text-xs text-yellow-500">{t('gettingLong')}</div>
                 )}
                 {metaData.description.length > 0 && metaData.description.length <= 160 && (
-                  <div className="text-xs text-green-500">Perfect!</div>
+                  <div className="text-xs text-green-500">{t('perfect')}</div>
                 )}
               </div>
               {/* Progress bar */}
