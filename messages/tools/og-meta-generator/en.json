@@ -1,0 +1,110 @@
+{
+  "OgMetaGeneratorPage": {
+    "ToolHeader": {
+      "title": "OG Meta Generator",
+      "description": "Create meta tags for social media and improve SEO at a professional level"
+    },
+    "ConfigPanel": {
+      "title": "Tool Configuration",
+      "status": "Select Mode",
+      "workMode": "Work mode:",
+      "form": "Data Input",
+      "preview": "Preview"
+    },
+    "TemplatesPanel": {
+      "title": "Templates",
+      "status": "Quick Selection",
+      "readyTemplates": "Ready templates:",
+      "loadButton": "Load",
+      "demoData": "Demo Data",
+      "clear": "Clear",
+      "templates": {
+        "blog": {
+          "label": "Blog Article",
+          "description": "For articles and blog posts"
+        },
+        "product": {
+          "label": "Product Page",
+          "description": "For e-commerce and product pages"
+        },
+        "video": {
+          "label": "Video Content",
+          "description": "For video and multimedia content"
+        }
+      }
+    },
+    "FormPanel": {
+      "title": "Data Input",
+      "status": "Form",
+      "basicInfo": "Basic Information",
+      "systemSettings": "System Settings",
+      "inputStats": "Input data",
+      "titleLabel": "Title *",
+      "titlePlaceholder": "Page title (up to 70 characters)",
+      "titleCounter": "characters",
+      "descLabel": "Description *",
+      "descPlaceholder": "Brief description about the page (up to 200 characters)",
+      "imageLabel": "Image URL",
+      "imagePlaceholder": "https://example.com/image.jpg",
+      "urlLabel": "Page URL",
+      "urlPlaceholder": "https://example.com",
+      "siteNameLabel": "Site Name",
+      "siteNamePlaceholder": "Site or company name",
+      "contentTypeLabel": "Content Type",
+      "twitterCardLabel": "Twitter Card",
+      "twitterSiteLabel": "Twitter Site",
+      "twitterSitePlaceholder": "@username",
+      "twitterCreatorLabel": "Twitter Creator",
+      "twitterCreatorPlaceholder": "@username"
+    },
+    "OutputPanel": {
+      "title": "Tool Output",
+      "status": "Meta Tags",
+      "metaTags": "Meta Tags",
+      "fullHtml": "Full HTML",
+      "outputStats": "Generated output",
+      "emptyTitle": "Fill in the data",
+      "emptyDesc": "meta tags will be generated automatically",
+      "downloadTxt": "TXT",
+      "downloadHtml": "HTML"
+    },
+    "PreviewPanel": {
+      "title": "Social Media Preview",
+      "status": "Preview",
+      "facebook": "Facebook / Open Graph",
+      "twitter": "Twitter Card"
+    },
+    "InfoSection": {
+      "title": "Why is Open Graph Meta important?",
+      "usagePlacesTitle": "Main usage areas:",
+      "professionalTipsTitle": "Professional tips:",
+      "noteTitle": "Note:",
+      "noteText": "When meta tags are properly configured, your site looks professional and trustworthy on social media, which helps attract more customers.",
+      "usagePlaces": {
+        "social": "Social media: Beautiful preview on Facebook, LinkedIn, WhatsApp",
+        "twitter": "Twitter Cards: Professional appearance on Twitter",
+        "seo": "SEO improvement: Detailed information for search engines",
+        "ctr": "Click rate: More clicks through attractive preview",
+        "brand": "Brand identity: Consistent appearance for your brand",
+        "impression": "Professional impression: Positive opinion about your site"
+      },
+      "tips": {
+        "tip1": "Title should not exceed 70 characters (optimal 50-60)",
+        "tip2": "Description should not exceed 200 characters (optimal 150-160)",
+        "tip3": "Image should be 1200x630 pixels in size",
+        "tip4": "Create unique meta tags for each page",
+        "tip5": "Test preview on different platforms"
+      },
+      "metaTypes": {
+        "openGraphTitle": "Open Graph",
+        "openGraphDesc": "Basic meta tags for platforms like Facebook, LinkedIn and WhatsApp",
+        "twitterTitle": "Twitter Cards",
+        "twitterDesc": "Special formats for beautiful and professional appearance on Twitter",
+        "seoTitle": "SEO Meta",
+        "seoDesc": "Optimized tags for Google and other search engines",
+        "schemaTitle": "Schema.org",
+        "schemaDesc": "Semantic web standards for structured data"
+      }
+    }
+  }
+}

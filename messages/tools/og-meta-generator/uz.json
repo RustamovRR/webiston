@@ -1,0 +1,110 @@
+{
+  "OgMetaGeneratorPage": {
+    "ToolHeader": {
+      "title": "OG Meta Generator",
+      "description": "Ijtimoiy tarmoqlar uchun meta taglar yarating va SEO ni professional darajada yaxshilang"
+    },
+    "ConfigPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Rejim Tanlang",
+      "workMode": "Ish rejimi:",
+      "form": "Ma'lumot Kiritish",
+      "preview": "Ko'rinish"
+    },
+    "TemplatesPanel": {
+      "title": "Shablonlar",
+      "status": "Tez Tanlov",
+      "readyTemplates": "Tayyor shablonlar:",
+      "loadButton": "Yuklash",
+      "demoData": "Demo Ma'lumot",
+      "clear": "Tozalash",
+      "templates": {
+        "blog": {
+          "label": "Blog maqolasi",
+          "description": "Maqola va blog postlari uchun"
+        },
+        "product": {
+          "label": "Mahsulot sahifasi",
+          "description": "E-commerce va mahsulot sahifalari uchun"
+        },
+        "video": {
+          "label": "Video kontent",
+          "description": "Video va multimedia kontent uchun"
+        }
+      }
+    },
+    "FormPanel": {
+      "title": "Ma'lumot Kiritish",
+      "status": "Form",
+      "basicInfo": "Asosiy Ma'lumotlar",
+      "systemSettings": "Tizim Sozlamalari",
+      "inputStats": "Kiritilgan ma'lumotlar",
+      "titleLabel": "Sarlavha *",
+      "titlePlaceholder": "Sahifa sarlavhasi (70 belgigacha)",
+      "titleCounter": "belgi",
+      "descLabel": "Tavsif *",
+      "descPlaceholder": "Sahifa haqida qisqacha tavsif (200 belgigacha)",
+      "imageLabel": "Rasm URL",
+      "imagePlaceholder": "https://example.com/image.jpg",
+      "urlLabel": "Sahifa URL",
+      "urlPlaceholder": "https://example.com",
+      "siteNameLabel": "Sayt Nomi",
+      "siteNamePlaceholder": "Sayt yoki kompaniya nomi",
+      "contentTypeLabel": "Kontent Turi",
+      "twitterCardLabel": "Twitter Card",
+      "twitterSiteLabel": "Twitter Site",
+      "twitterSitePlaceholder": "@username",
+      "twitterCreatorLabel": "Twitter Creator",
+      "twitterCreatorPlaceholder": "@username"
+    },
+    "OutputPanel": {
+      "title": "Tool Natija",
+      "status": "Meta Taglar",
+      "metaTags": "Meta Taglar",
+      "fullHtml": "To'liq HTML",
+      "outputStats": "Yaratilgan natija",
+      "emptyTitle": "Ma'lumotlarni to'ldiring",
+      "emptyDesc": "meta taglar avtomatik yaratiladi",
+      "downloadTxt": "TXT",
+      "downloadHtml": "HTML"
+    },
+    "PreviewPanel": {
+      "title": "Ijtimoiy Tarmoq Ko'rinishi",
+      "status": "Preview",
+      "facebook": "Facebook / Open Graph",
+      "twitter": "Twitter Card"
+    },
+    "InfoSection": {
+      "title": "Open Graph Meta nima uchun muhim?",
+      "usagePlacesTitle": "Asosiy foydalanish joylari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "noteTitle": "Eslatma:",
+      "noteText": "Meta taglar to'g'ri sozlangan bo'lsa, ijtimoiy tarmoqlarda sahifangiz professional va ishonchli ko'rinadi, bu esa ko'proq mijoz jalb qilishga yordam beradi.",
+      "usagePlaces": {
+        "social": "Ijtimoiy tarmoqlar: Facebook, LinkedIn, WhatsApp'da chiroyli preview",
+        "twitter": "Twitter Cards: Twitter'da professional ko'rinish",
+        "seo": "SEO yaxshilash: Qidiruv tizimlari uchun batafsil ma'lumot",
+        "ctr": "Klik darajasi: Jozibali preview orqali ko'proq bosish",
+        "brand": "Brand identity: Brendingiz uchun consistent ko'rinish",
+        "impression": "Professional taassurot: Saytingiz haqida ijobiy fikr"
+      },
+      "tips": {
+        "tip1": "Sarlavha 70 belgidan oshmasligi kerak (optimal 50-60)",
+        "tip2": "Tavsif 200 belgidan oshmasligi kerak (optimal 150-160)",
+        "tip3": "Rasm 1200x630 piksel o'lchamida bo'lishi kerak",
+        "tip4": "Har bir sahifa uchun unique meta tag yarating",
+        "tip5": "Preview'ni turli platformalarda sinab ko'ring"
+      },
+      "metaTypes": {
+        "openGraphTitle": "Open Graph",
+        "openGraphDesc": "Facebook, LinkedIn va WhatsApp kabi platformalar uchun asosiy meta taglar",
+        "twitterTitle": "Twitter Cards",
+        "twitterDesc": "Twitter'da chiroyli va professional ko'rinish uchun maxsus formatlar",
+        "seoTitle": "SEO Meta",
+        "seoDesc": "Google va boshqa qidiruv tizimlari uchun optimallashtirilgan taglar",
+        "schemaTitle": "Schema.org",
+        "schemaDesc": "Tuzilgan ma'lumotlar uchun semantic web standartlari"
+      }
+    }
+  }
+}

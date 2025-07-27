@@ -25,6 +25,8 @@ import qrGeneratorUz from './tools/qr-generator/uz.json'
 import qrGeneratorEn from './tools/qr-generator/en.json'
 import passwordGeneratorUz from './tools/password-generator/uz.json'
 import passwordGeneratorEn from './tools/password-generator/en.json'
+import ogMetaGeneratorUz from './tools/og-meta-generator/uz.json'
+import ogMetaGeneratorEn from './tools/og-meta-generator/en.json'
 
 // Merge all translations
 export const uz = {
@@ -40,6 +42,7 @@ export const uz = {
   ...uuidGeneratorUz,
   ...qrGeneratorUz,
   ...passwordGeneratorUz,
+  ...ogMetaGeneratorUz,
 }
 
 export const en = {
@@ -55,6 +58,7 @@ export const en = {
   ...uuidGeneratorEn,
   ...qrGeneratorEn,
   ...passwordGeneratorEn,
+  ...ogMetaGeneratorEn,
 }
 
 // Export default for Next.js i18n
