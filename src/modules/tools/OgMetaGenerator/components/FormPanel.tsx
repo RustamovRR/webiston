@@ -23,12 +23,10 @@ interface MetaData {
 interface FormPanelProps {
   metaData: MetaData
   inputStats: Array<{ label: string; value: number }>
-  ogTypes: Array<{ value: string; label: string; description: string }>
-  twitterCardTypes: Array<{ value: string; label: string; description: string }>
   onUpdateField: (field: keyof MetaData, value: string) => void
 }
 
-const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, ogTypes, twitterCardTypes, onUpdateField }) => {
+const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, onUpdateField }) => {
   const t = useTranslations('OgMetaGeneratorPage.FormPanel')
 
   return (
@@ -205,84 +203,6 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, ogTypes, tw
                 value={metaData.siteName}
                 onChange={(e) => onUpdateField('siteName', e.target.value)}
                 placeholder={t('siteNamePlaceholder')}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Type Selection */}
-        <div className="space-y-4">
-          <h3 className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            <Settings size={16} />
-            {t('systemSettings')}
-          </h3>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('contentTypeLabel')}
-              </label>
-              <Select value={metaData.type} onValueChange={(value) => onUpdateField('type', value)}>
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ogTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      <div>
-                        <div className="font-medium">{type.label}</div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-400">{type.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('twitterCardLabel')}
-              </label>
-              <Select value={metaData.twitterCard} onValueChange={(value) => onUpdateField('twitterCard', value)}>
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {twitterCardTypes.map((card) => (
-                    <SelectItem key={card.value} value={card.value}>
-                      <div>
-                        <div className="font-medium">{card.label}</div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-400">{card.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('twitterSiteLabel')}
-              </label>
-              <Input
-                value={metaData.twitterSite}
-                onChange={(e) => onUpdateField('twitterSite', e.target.value)}
-                placeholder={t('twitterSitePlaceholder')}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('twitterCreatorLabel')}
-              </label>
-              <Input
-                value={metaData.twitterCreator}
-                onChange={(e) => onUpdateField('twitterCreator', e.target.value)}
-                placeholder={t('twitterCreatorPlaceholder')}
                 className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
               />
             </div>

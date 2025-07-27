@@ -88,7 +88,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
   const validationChecks = [
     {
-      label: 'Title Length',
+      label: t('titleLength'),
       status:
         metaData.title.length >= 30 && metaData.title.length <= 60
           ? 'perfect'
@@ -97,15 +97,15 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             : 'error',
       message:
         metaData.title.length >= 30 && metaData.title.length <= 60
-          ? 'Perfect length (30-60 chars)'
+          ? `${t('perfectLength')} (30-60 chars)`
           : metaData.title.length > 60
-            ? 'Too long (over 60 chars)'
+            ? `${t('tooLong')} (over 60 chars)`
             : metaData.title.length > 0
-              ? 'Too short (under 30 chars)'
-              : 'Title required',
+              ? `${t('tooShort')} (under 30 chars)`
+              : t('titleRequired'),
     },
     {
-      label: 'Description Length',
+      label: t('descriptionLength'),
       status:
         metaData.description.length >= 120 && metaData.description.length <= 160
           ? 'perfect'
@@ -114,15 +114,15 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             : 'error',
       message:
         metaData.description.length >= 120 && metaData.description.length <= 160
-          ? 'Perfect length (120-160 chars)'
+          ? `${t('perfectLength')} (120-160 chars)`
           : metaData.description.length > 160
-            ? 'Too long (over 160 chars)'
+            ? `${t('tooLong')} (over 160 chars)`
             : metaData.description.length > 0
-              ? 'Too short (under 120 chars)'
-              : 'Description required',
+              ? `${t('tooShort')} (under 120 chars)`
+              : t('descriptionRequired'),
     },
     {
-      label: 'Image URL',
+      label: t('imageUrl'),
       status: metaData.image.startsWith('https://')
         ? 'perfect'
         : metaData.image.startsWith('http://')
@@ -131,15 +131,15 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             ? 'warning'
             : 'error',
       message: metaData.image.startsWith('https://')
-        ? 'Secure HTTPS image'
+        ? t('secureHttpsImage')
         : metaData.image.startsWith('http://')
-          ? 'Use HTTPS for better security'
+          ? t('useHttps')
           : metaData.image.length > 0
-            ? 'Invalid URL format'
+            ? t('invalidFormat')
             : 'Image URL required',
     },
     {
-      label: 'Page URL',
+      label: t('pageUrl'),
       status: metaData.url.startsWith('https://')
         ? 'perfect'
         : metaData.url.startsWith('http://')
@@ -148,11 +148,11 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             ? 'warning'
             : 'error',
       message: metaData.url.startsWith('https://')
-        ? 'Secure HTTPS URL'
+        ? t('secureHttpsUrl')
         : metaData.url.startsWith('http://')
-          ? 'Use HTTPS for better SEO'
+          ? t('useHttps')
           : metaData.url.length > 0
-            ? 'Invalid URL format'
+            ? t('invalidFormat')
             : 'Page URL required',
     },
   ]
@@ -166,11 +166,11 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Smart Validation</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
         </div>
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-blue-500" />
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">SEO Analysis</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-500">{t('status')}</span>
         </div>
       </div>
 
@@ -181,14 +181,14 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="flex items-center gap-3">
               {getScoreIcon(seoScore)}
               <div>
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">SEO Score</div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">Meta tag optimization</div>
+                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('seoScore')}</div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-500">{t('metaOptimization')}</div>
               </div>
             </div>
             <div className="text-right">
               <div className={`text-2xl font-bold ${getScoreColor(seoScore)}`}>{seoScore}/100</div>
               <div className="text-xs text-zinc-500 dark:text-zinc-500">
-                {seoScore >= 80 ? 'Excellent' : seoScore >= 60 ? 'Good' : 'Needs work'}
+                {seoScore >= 80 ? t('excellent') : seoScore >= 60 ? t('good') : t('needsWork')}
               </div>
             </div>
           </div>
@@ -206,7 +206,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
         {/* Validation Checks */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Validation Checks</h4>
+          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('validationChecks')}</h4>
           <div className="space-y-2">
             {validationChecks.map((check, index) => (
               <div
@@ -239,12 +239,12 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
         {/* Quick Tips */}
         <div className="rounded-lg bg-blue-50/50 p-4 dark:bg-blue-900/20">
-          <div className="mb-2 text-sm font-medium text-blue-700 dark:text-blue-300">💡 Quick Tips</div>
+          <div className="mb-2 text-sm font-medium text-blue-700 dark:text-blue-300">{t('quickTips')}</div>
           <ul className="space-y-1 text-xs text-blue-600 dark:text-blue-400">
-            <li>• Title: 30-60 characters for optimal display</li>
-            <li>• Description: 120-160 characters for best results</li>
-            <li>• Image: Use 1200x630px for perfect social sharing</li>
-            <li>• Always use HTTPS URLs for better security</li>
+            <li>{t('tip1')}</li>
+            <li>{t('tip2')}</li>
+            <li>{t('tip3')}</li>
+            <li>{t('tip4')}</li>
           </ul>
         </div>
       </div>

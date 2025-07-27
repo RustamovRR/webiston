@@ -30,6 +30,14 @@
         "video": {
           "label": "Video kontent",
           "description": "Video va multimedia kontent uchun"
+        },
+        "company": {
+          "label": "Kompaniya sahifasi",
+          "description": "Biznes va korporativ sahifalar uchun"
+        },
+        "event": {
+          "label": "Event sahifasi",
+          "description": "Tadbirlar va konferensiyalar uchun"
         }
       }
     },
@@ -73,6 +81,34 @@
       "status": "Preview",
       "facebook": "Facebook / Open Graph",
       "twitter": "Twitter Card"
+    },
+    "ValidationPanel": {
+      "title": "Aqlli Validatsiya",
+      "status": "SEO Tahlil",
+      "seoScore": "SEO Ball",
+      "metaOptimization": "Meta tag optimizatsiyasi",
+      "excellent": "Ajoyib",
+      "good": "Yaxshi",
+      "needsWork": "Yaxshilash kerak",
+      "validationChecks": "Validatsiya Tekshiruvlari",
+      "titleLength": "Sarlavha Uzunligi",
+      "descriptionLength": "Tavsif Uzunligi",
+      "imageUrl": "Rasm URL",
+      "pageUrl": "Sahifa URL",
+      "titleRequired": "Sarlavha kiritish shart",
+      "descriptionRequired": "Tavsif kiritish shart",
+      "secureHttpsImage": "Xavfsiz HTTPS rasm",
+      "secureHttpsUrl": "Xavfsiz HTTPS URL",
+      "perfectLength": "Mukammal uzunlik",
+      "tooLong": "Juda uzun",
+      "tooShort": "Juda qisqa",
+      "useHttps": "HTTPS ishlatish tavsiya etiladi",
+      "invalidFormat": "Noto'g'ri format",
+      "quickTips": "💡 Tezkor Maslahatlar",
+      "tip1": "• Sarlavha: Optimal ko'rinish uchun 30-60 belgi",
+      "tip2": "• Tavsif: Eng yaxshi natija uchun 120-160 belgi",
+      "tip3": "• Rasm: Mukammal ijtimoiy ulashish uchun 1200x630px",
+      "tip4": "• Har doim xavfsizlik uchun HTTPS URL ishlatish"
     },
     "InfoSection": {
       "title": "Open Graph Meta nima uchun muhim?",

@@ -24,7 +24,7 @@ const SAMPLE_DATA: MetaData = {
   title: "Webiston - O'zbekistondagi Eng Yaxshi Web Development Platformasi",
   description:
     "O'zbek tilida web dasturlash, React, Next.js va zamonaviy texnologiyalar haqida professional qo'llanma. 10,000+ dasturchi bizdan foydalanadi va o'z mahoratini oshiradi.",
-  image: 'https://webiston.uz/images/og-main.jpg',
+  image: 'https://webiston.uz/logo.png',
   url: 'https://webiston.uz',
   siteName: 'Webiston',
   type: 'website',
@@ -34,16 +34,16 @@ const SAMPLE_DATA: MetaData = {
   twitterCreator: '@webiston_uz',
 }
 
-// Preset template constants
-const PRESET_TEMPLATES = [
+// Get preset templates with translations
+const getPresetTemplates = (t: any) => [
   {
-    label: 'Blog maqolasi',
-    description: 'Maqola va blog post uchun',
+    label: t('TemplatesPanel.templates.blog.label'),
+    description: t('TemplatesPanel.templates.blog.description'),
     data: {
       title: "Web Dasturlash bo'yicha Professional Qo'llanma - 2024",
       description:
         "React, Next.js va zamonaviy web texnologiyalar haqida to'liq ma'lumot. Dasturchilar uchun foydali maslahatlar va amaliy misollar bilan.",
-      image: 'https://webiston.uz/images/blog-cover.jpg',
+      image: 'https://webiston.uz/logo.png',
       url: 'https://webiston.uz/blog/web-dasturlash-qollanma',
       siteName: 'Webiston',
       type: 'article',
@@ -54,13 +54,13 @@ const PRESET_TEMPLATES = [
     },
   },
   {
-    label: 'Mahsulot sahifasi',
-    description: 'E-commerce va landing page',
+    label: t('TemplatesPanel.templates.product.label'),
+    description: t('TemplatesPanel.templates.product.description'),
     data: {
       title: 'Premium Web Development Tools - Professional Package',
       description:
         "Dasturchilar uchun eng yaxshi vositalar to'plami. React, Vue, Angular va Node.js uchun professional komponentlar va shablonlar.",
-      image: 'https://webiston.uz/images/product-showcase.jpg',
+      image: 'https://webiston.uz/logo.png',
       url: 'https://webiston.uz/products/premium-tools',
       siteName: 'Webiston Store',
       type: 'website',
@@ -71,13 +71,13 @@ const PRESET_TEMPLATES = [
     },
   },
   {
-    label: 'Video kontent',
-    description: 'YouTube va video content',
+    label: t('TemplatesPanel.templates.video.label'),
+    description: t('TemplatesPanel.templates.video.description'),
     data: {
       title: 'React.js Tutorial - Noldan Professional Darajagacha',
       description:
         "React.js ni o'rganish uchun to'liq video kurs. Hooks, Context API, Redux va zamonaviy React pattern'lar bilan amaliy loyihalar yaratish.",
-      image: 'https://webiston.uz/images/react-tutorial-thumb.jpg',
+      image: 'https://webiston.uz/logo.png',
       url: 'https://webiston.uz/videos/react-tutorial-complete',
       siteName: 'Webiston Academy',
       type: 'video.other',
@@ -88,13 +88,13 @@ const PRESET_TEMPLATES = [
     },
   },
   {
-    label: 'Kompaniya sahifasi',
-    description: 'Biznes va korporativ',
+    label: t('TemplatesPanel.templates.company.label'),
+    description: t('TemplatesPanel.templates.company.description'),
     data: {
       title: "Webiston - O'zbekistondagi Eng Yaxshi Web Development Kompaniyasi",
       description:
         'Professional web saytlar, mobil ilovalar va e-commerce yechimlar. 5+ yillik tajriba, 200+ muvaffaqiyatli loyiha va mijozlar ehtiyojiga moslashgan xizmatlar.',
-      image: 'https://webiston.uz/images/company-hero.jpg',
+      image: 'https://webiston.uz/logo.png',
       url: 'https://webiston.uz/about',
       siteName: 'Webiston',
       type: 'website',
@@ -105,13 +105,13 @@ const PRESET_TEMPLATES = [
     },
   },
   {
-    label: 'Event sahifasi',
-    description: 'Tadbirlar va konferensiyalar',
+    label: t('TemplatesPanel.templates.event.label'),
+    description: t('TemplatesPanel.templates.event.description'),
     data: {
       title: 'Web Development Conference 2024 - Toshkentda Eng Katta Tech Event',
       description:
         "O'zbekistondagi eng yirik web development konferensiyasi. 50+ spikerlar, 1000+ ishtirokchi, networking va yangi texnologiyalar bilan tanishish imkoniyati.",
-      image: 'https://webiston.uz/images/conference-2024.jpg',
+      image: 'https://webiston.uz/logo.png',
       url: 'https://webiston.uz/events/web-dev-conference-2024',
       siteName: 'Webiston Events',
       type: 'website',
@@ -145,12 +145,12 @@ const TWITTER_CARD_TYPES = [
   { value: 'player', label: 'Player', description: 'Video/audio player' },
 ]
 
-export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorProps = {}) => {
+export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorProps = {}, t?: any) => {
   const [metaData, setMetaData] = useState<MetaData>({
     title: '',
     description: '',
-    image: '',
-    url: '',
+    image: 'https://webiston.uz/logo.png',
+    url: 'https://webiston.uz/tools',
     siteName: '',
     type: 'website',
     locale: 'uz_UZ',
@@ -471,7 +471,7 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
     previewInfo,
 
     // Data
-    presetTemplates: PRESET_TEMPLATES,
+    presetTemplates: t ? getPresetTemplates(t) : [],
     ogTypes: OG_TYPES,
     twitterCardTypes: TWITTER_CARD_TYPES,
 

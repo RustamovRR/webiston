@@ -16,25 +16,28 @@ import { useOgMetaGenerator } from '@/hooks/tools'
 
 export default function OgMetaGenerator() {
   const t = useTranslations('OgMetaGeneratorPage.ToolHeader')
+  const tAll = useTranslations('OgMetaGeneratorPage')
 
   const {
     metaData,
     generatedMeta,
     formattedMeta,
-    activeTab,
     inputStats,
     outputStats,
     previewInfo,
     presetTemplates,
-    ogTypes,
-    twitterCardTypes,
     loadSampleData,
     loadTemplate,
     clearForm,
     updateField,
     downloadMeta,
-    setActiveTab,
-  } = useOgMetaGenerator()
+  } = useOgMetaGenerator(
+    {
+      onSuccess: (message) => console.log(message),
+      onError: (error) => console.error(error),
+    },
+    tAll,
+  )
 
   const [outputFormat, setOutputFormat] = useState('raw')
 
@@ -51,34 +54,27 @@ export default function OgMetaGenerator() {
 
       <ValidationPanel metaData={metaData} />
 
-      {/* Professional Responsive Layout */}
-      <div className="space-y-6">
-        {/* Mobile: Stacked, Desktop: Side by side */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Left Column: Form + Validation */}
-          <div className="space-y-6">
-            <FormPanel
-              metaData={metaData}
-              inputStats={inputStats}
-              ogTypes={ogTypes}
-              twitterCardTypes={twitterCardTypes}
-              onUpdateField={updateField}
-            />
+      {/* Professional 2-Column Layout */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* Left Column: Form Panel (Sticky) */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-20">
+            <FormPanel metaData={metaData} inputStats={inputStats} onUpdateField={updateField} />
           </div>
+        </div>
 
-          {/* Right Column: Preview + Output */}
-          <div className="space-y-6">
-            <PreviewPanel previewInfo={previewInfo} />
+        {/* Right Column: Preview + Output (Scrollable) */}
+        <div className="space-y-6 lg:col-span-1">
+          <PreviewPanel previewInfo={previewInfo} />
 
-            <OutputPanel
-              generatedMeta={generatedMeta}
-              formattedMeta={formattedMeta}
-              outputFormat={outputFormat}
-              outputStats={outputStats}
-              onFormatChange={setOutputFormat}
-              onDownload={downloadMeta}
-            />
-          </div>
+          <OutputPanel
+            generatedMeta={generatedMeta}
+            formattedMeta={formattedMeta}
+            outputFormat={outputFormat}
+            outputStats={outputStats}
+            onFormatChange={setOutputFormat}
+            onDownload={downloadMeta}
+          />
         </div>
       </div>
 

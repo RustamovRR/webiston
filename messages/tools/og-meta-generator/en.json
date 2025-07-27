@@ -30,6 +30,14 @@
         "video": {
           "label": "Video Content",
           "description": "For video and multimedia content"
+        },
+        "company": {
+          "label": "Company Page",
+          "description": "For business and corporate pages"
+        },
+        "event": {
+          "label": "Event Page",
+          "description": "For events and conferences"
         }
       }
     },
@@ -73,6 +81,34 @@
       "status": "Preview",
       "facebook": "Facebook / Open Graph",
       "twitter": "Twitter Card"
+    },
+    "ValidationPanel": {
+      "title": "Smart Validation",
+      "status": "SEO Analysis",
+      "seoScore": "SEO Score",
+      "metaOptimization": "Meta tag optimization",
+      "excellent": "Excellent",
+      "good": "Good",
+      "needsWork": "Needs work",
+      "validationChecks": "Validation Checks",
+      "titleLength": "Title Length",
+      "descriptionLength": "Description Length",
+      "imageUrl": "Image URL",
+      "pageUrl": "Page URL",
+      "titleRequired": "Title required",
+      "descriptionRequired": "Description required",
+      "secureHttpsImage": "Secure HTTPS image",
+      "secureHttpsUrl": "Secure HTTPS URL",
+      "perfectLength": "Perfect length",
+      "tooLong": "Too long",
+      "tooShort": "Too short",
+      "useHttps": "Use HTTPS for better security",
+      "invalidFormat": "Invalid URL format",
+      "quickTips": "💡 Quick Tips",
+      "tip1": "• Title: 30-60 characters for optimal display",
+      "tip2": "• Description: 120-160 characters for best results",
+      "tip3": "• Image: Use 1200x630px for perfect social sharing",
+      "tip4": "• Always use HTTPS URLs for better security"
     },
     "InfoSection": {
       "title": "Why is Open Graph Meta important?",
