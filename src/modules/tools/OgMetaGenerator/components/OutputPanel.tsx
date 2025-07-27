@@ -77,6 +77,17 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-3">
               <CopyButton text={currentOutput} size="sm" variant="outline" />
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(currentOutput)
+                  alert(t('copySuccess'))
+                }}
+                variant="outline"
+                size="sm"
+              >
+                <Code size={16} className="mr-2" />
+                {t('copyAndEdit')}
+              </Button>
               <Button onClick={() => onDownload('raw')} variant="outline" size="sm">
                 <Download size={16} className="mr-2" />
                 {t('downloadTxt')}

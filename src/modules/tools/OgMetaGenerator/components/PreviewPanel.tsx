@@ -9,6 +9,7 @@ interface PreviewInfo {
   image: string
   url: string
   siteName: string
+  type?: string
 }
 
 interface PreviewPanelProps {
@@ -85,7 +86,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
               )}
               <div className="space-y-1.5">
                 <div className="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
-                  {previewInfo.siteName || 'SITE NAME'}
+                  {previewInfo.siteName || 'SITE NAME'} • {previewInfo.type?.toUpperCase() || 'WEBSITE'}
                 </div>
                 <div className="line-clamp-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                   {previewInfo.title || 'Enter title to see preview...'}

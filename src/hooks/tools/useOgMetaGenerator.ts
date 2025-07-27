@@ -12,6 +12,7 @@ interface MetaData {
   twitterCard: string
   twitterSite: string
   twitterCreator: string
+  imageSize?: string
 }
 
 interface UseOgMetaGeneratorProps {
@@ -157,6 +158,7 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
     twitterCard: 'summary_large_image',
     twitterSite: '',
     twitterCreator: '',
+    imageSize: '1200x630',
   })
 
   const [generatedMeta, setGeneratedMeta] = useState<string>('')
@@ -183,6 +185,25 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       // Open Graph meta tags
       if (metaData.type) {
         ogMetas.push(`<meta property="og:type" content="${metaData.type}" />`)
+
+        // Add type-specific meta tags
+        if (metaData.type === 'article') {
+          ogMetas.push(`<meta property="article:author" content="${metaData.twitterCreator || 'Author'}" />`)
+          ogMetas.push(`<meta property="article:published_time" content="${new Date().toISOString()}" />`)
+        } else if (metaData.type === 'video.other') {
+          ogMetas.push(`<meta property="video:duration" content="300" />`)
+          ogMetas.push(`<meta property="video:width" content="1280" />`)
+          ogMetas.push(`<meta property="video:height" content="720" />`)
+        } else if (metaData.type === 'book') {
+          ogMetas.push(`<meta property="book:author" content="${metaData.twitterCreator || 'Author'}" />`)
+          ogMetas.push(`<meta property="book:isbn" content="978-0000000000" />`)
+        } else if (metaData.type === 'profile') {
+          ogMetas.push(`<meta property="profile:first_name" content="First" />`)
+          ogMetas.push(`<meta property="profile:last_name" content="Last" />`)
+        } else if (metaData.type === 'music.song') {
+          ogMetas.push(`<meta property="music:duration" content="240" />`)
+          ogMetas.push(`<meta property="music:album" content="Album Name" />`)
+        }
       }
 
       if (metaData.title) {
@@ -200,6 +221,13 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       if (metaData.image) {
         ogMetas.push(`<meta property="og:image" content="${metaData.image}" />`)
         ogMetas.push(`<meta property="og:image:alt" content="${metaData.title || 'Image'}" />`)
+
+        // Add image dimensions based on selected size
+        if (metaData.imageSize) {
+          const [width, height] = metaData.imageSize.split('x')
+          ogMetas.push(`<meta property="og:image:width" content="${width}" />`)
+          ogMetas.push(`<meta property="og:image:height" content="${height}" />`)
+        }
       }
 
       if (metaData.siteName) {
@@ -234,6 +262,13 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       if (metaData.image) {
         twitterMetas.push(`<meta name="twitter:image" content="${metaData.image}" />`)
         twitterMetas.push(`<meta name="twitter:image:alt" content="${metaData.title || 'Image'}" />`)
+
+        // Add Twitter image dimensions
+        if (metaData.imageSize) {
+          const [width, height] = metaData.imageSize.split('x')
+          twitterMetas.push(`<meta name="twitter:image:width" content="${width}" />`)
+          twitterMetas.push(`<meta name="twitter:image:height" content="${height}" />`)
+        }
       }
 
       if (metaData.url) {
@@ -294,25 +329,30 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       ].join('\n')
 
       setFormattedMeta(formatted)
-      onSuccess?.('Meta taglar muvaffaqiyatli yaratildi')
     } catch (error) {
-      onError?.('Meta taglar yaratishda xatolik yuz berdi')
+      console.error('Meta generation error:', error)
     }
-  }, [metaData, onSuccess, onError])
+  }, [metaData])
 
   // Load sample data
   const loadSampleData = useCallback(() => {
     setMetaData(SAMPLE_DATA)
-    onSuccess?.("Demo ma'lumotlar yuklandi")
-  }, [onSuccess])
+    setTimeout(() => {
+      generateMeta()
+      onSuccess?.("Demo ma'lumotlar yuklandi")
+    }, 0)
+  }, [onSuccess, generateMeta])
 
   // Load template
   const loadTemplate = useCallback(
     (templateData: Partial<MetaData>) => {
       setMetaData((prev) => ({ ...prev, ...templateData }))
-      onSuccess?.('Shablon yuklandi')
+      setTimeout(() => {
+        generateMeta()
+        onSuccess?.('Shablon yuklandi')
+      }, 0)
     },
-    [onSuccess],
+    [onSuccess, generateMeta],
   )
 
   // Clear form
@@ -349,9 +389,17 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
         value = 'https://' + value
       }
 
-      setMetaData((prev) => ({ ...prev, [field]: value }))
+      setMetaData((prev) => {
+        const newData = { ...prev, [field]: value }
+        return newData
+      })
+
+      // Generate meta tags after state update
+      setTimeout(() => {
+        generateMeta()
+      }, 0)
     },
-    [onError],
+    [onError, generateMeta],
   )
 
   // Copy to clipboard
@@ -454,6 +502,7 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       image: metaData.image || '/placeholder-image.jpg',
       url: metaData.url || 'https://example.com',
       siteName: metaData.siteName || 'Sayt nomi',
+      type: metaData.type || 'website',
     }),
     [metaData],
   )

@@ -18,6 +18,7 @@ interface MetaData {
   twitterCard: string
   twitterSite: string
   twitterCreator: string
+  imageSize?: string
 }
 
 interface FormPanelProps {
@@ -203,6 +204,108 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, onUpdateFie
                 value={metaData.siteName}
                 onChange={(e) => onUpdateField('siteName', e.target.value)}
                 placeholder={t('siteNamePlaceholder')}
+                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+              />
+            </div>
+          </div>
+
+          {/* Advanced Settings - Compact Layout */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('contentType')}
+              </label>
+              <Select value={metaData.type} onValueChange={(value) => onUpdateField('type', value)}>
+                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="website">🌐 {t('typeWebsite')}</SelectItem>
+                  <SelectItem value="article">📰 {t('typeArticle')}</SelectItem>
+                  <SelectItem value="video.other">🎥 {t('typeVideo')}</SelectItem>
+                  <SelectItem value="book">📚 {t('typeBook')}</SelectItem>
+                  <SelectItem value="profile">👤 {t('typeProfile')}</SelectItem>
+                  <SelectItem value="music.song">🎵 {t('typeMusic')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('twitterCard')}
+              </label>
+              <Select value={metaData.twitterCard} onValueChange={(value) => onUpdateField('twitterCard', value)}>
+                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="summary">📄 {t('cardSummary')}</SelectItem>
+                  <SelectItem value="summary_large_image">🖼️ {t('cardLargeImage')}</SelectItem>
+                  <SelectItem value="app">📱 {t('cardApp')}</SelectItem>
+                  <SelectItem value="player">▶️ {t('cardPlayer')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('language')}</label>
+              <Select value={metaData.locale} onValueChange={(value) => onUpdateField('locale', value)}>
+                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="uz_UZ">🇺🇿 {t('langUzbek')}</SelectItem>
+                  <SelectItem value="en_US">🇺🇸 {t('langEnglish')}</SelectItem>
+                  <SelectItem value="ru_RU">🇷🇺 {t('langRussian')}</SelectItem>
+                  <SelectItem value="tr_TR">🇹🇷 {t('langTurkish')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('imageSize')}
+              </label>
+              <Select
+                value={metaData.imageSize || '1200x630'}
+                onValueChange={(value) => onUpdateField('imageSize', value)}
+              >
+                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1200x630">📐 1200x630 ({t('recommended')})</SelectItem>
+                  <SelectItem value="1200x675">📐 1200x675 (16:9)</SelectItem>
+                  <SelectItem value="1080x1080">📐 1080x1080 ({t('square')})</SelectItem>
+                  <SelectItem value="800x600">📐 800x600 (4:3)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('twitterSite')}
+              </label>
+              <Input
+                value={metaData.twitterSite}
+                onChange={(e) => onUpdateField('twitterSite', e.target.value)}
+                placeholder="@your_site"
+                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t('twitterCreator')}
+              </label>
+              <Input
+                value={metaData.twitterCreator}
+                onChange={(e) => onUpdateField('twitterCreator', e.target.value)}
+                placeholder="@author"
                 className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
               />
             </div>

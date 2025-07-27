@@ -66,7 +66,29 @@
       "twitterCreatorPlaceholder": "@username",
       "gettingLong": "Uzayib bormoqda",
       "perfect": "Mukammal!",
-      "tooLongError": "Juda uzun!"
+      "tooLongError": "Juda uzun!",
+      "contentType": "Kontent Turi",
+      "twitterCard": "Twitter Karta",
+      "language": "Til",
+      "imageSize": "Rasm O'lchami",
+      "twitterSite": "Twitter Sayt",
+      "twitterCreator": "Twitter Muallif",
+      "typeWebsite": "Veb-sayt",
+      "typeArticle": "Maqola",
+      "typeVideo": "Video",
+      "typeBook": "Kitob",
+      "typeProfile": "Profil",
+      "typeMusic": "Musiqa",
+      "cardSummary": "Qisqacha",
+      "cardLargeImage": "Katta Rasm",
+      "cardApp": "Ilova",
+      "cardPlayer": "Player",
+      "langUzbek": "O'zbek",
+      "langEnglish": "Ingliz",
+      "langRussian": "Rus",
+      "langTurkish": "Turk",
+      "recommended": "Tavsiya etiladi",
+      "square": "Kvadrat"
     },
     "OutputPanel": {
       "title": "Tool Natija",
@@ -77,7 +99,9 @@
       "emptyTitle": "Ma'lumotlarni to'ldiring",
       "emptyDesc": "meta taglar avtomatik yaratiladi",
       "downloadTxt": "TXT",
-      "downloadHtml": "HTML"
+      "downloadHtml": "HTML",
+      "copyAndEdit": "Nusxalab Tahrirlash",
+      "copySuccess": "✅ Meta taglar nusxalandi!\n\n📝 Endi siz:\n• Istalgan matn editoriga joylashtiring\n• Kerak bo'lsa tahrirlang\n• HTML faylingizda ishlating"
     },
     "PreviewPanel": {
       "title": "Ijtimoiy Tarmoq Ko'rinishi",

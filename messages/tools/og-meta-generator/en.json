@@ -66,7 +66,29 @@
       "twitterCreatorPlaceholder": "@username",
       "gettingLong": "Getting long",
       "perfect": "Perfect!",
-      "tooLongError": "Too long!"
+      "tooLongError": "Too long!",
+      "contentType": "Content Type",
+      "twitterCard": "Twitter Card",
+      "language": "Language",
+      "imageSize": "Image Size",
+      "twitterSite": "Twitter Site",
+      "twitterCreator": "Twitter Creator",
+      "typeWebsite": "Website",
+      "typeArticle": "Article",
+      "typeVideo": "Video",
+      "typeBook": "Book",
+      "typeProfile": "Profile",
+      "typeMusic": "Music",
+      "cardSummary": "Summary",
+      "cardLargeImage": "Large Image",
+      "cardApp": "App",
+      "cardPlayer": "Player",
+      "langUzbek": "Uzbek",
+      "langEnglish": "English",
+      "langRussian": "Russian",
+      "langTurkish": "Turkish",
+      "recommended": "Recommended",
+      "square": "Square"
     },
     "OutputPanel": {
       "title": "Tool Output",
@@ -77,7 +99,9 @@
       "emptyTitle": "Fill in the data",
       "emptyDesc": "meta tags will be generated automatically",
       "downloadTxt": "TXT",
-      "downloadHtml": "HTML"
+      "downloadHtml": "HTML",
+      "copyAndEdit": "Copy & Edit",
+      "copySuccess": "✅ Meta tags copied to clipboard!\n\n📝 You can now:\n• Paste in any text editor\n• Edit as needed\n• Use in your HTML file"
     },
     "PreviewPanel": {
       "title": "Social Media Preview",
