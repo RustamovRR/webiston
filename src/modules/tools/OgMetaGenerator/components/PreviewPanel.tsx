@@ -36,62 +36,136 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
       </div>
 
       <div className="space-y-6">
-        {/* Social Media Preview */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Platform Tabs */}
+        <div className="flex flex-wrap gap-2 border-b border-zinc-200 pb-4 dark:border-zinc-800">
+          <button className="rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+            Facebook
+          </button>
+          <button className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700">
+            Twitter
+          </button>
+          <button className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700">
+            Telegram
+          </button>
+          <button className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700">
+            LinkedIn
+          </button>
+          <button className="rounded-lg bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700">
+            WhatsApp
+          </button>
+        </div>
+
+        {/* Live Preview Content */}
+        <div className="space-y-4">
           {/* Facebook/Open Graph Preview */}
-          <div className="space-y-3">
-            <h3 className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              <Share2 size={16} />
-              {t('facebook')}
-            </h3>
-            <div className="rounded-lg border border-zinc-300 bg-zinc-100/50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
+          <div className="rounded-xl border border-zinc-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 dark:border-zinc-700 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500">
+                <Share2 size={12} className="text-white" />
+              </div>
+              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">Facebook Preview</span>
+            </div>
+
+            <div className="rounded-lg border border-white/50 bg-white/80 p-3 backdrop-blur-sm dark:border-zinc-600 dark:bg-zinc-800/80">
               {previewInfo.image && (
                 <div className="mb-3">
                   <img
                     src={previewInfo.image}
-                    alt="Preview"
-                    className="h-48 w-full rounded object-cover"
+                    alt="Facebook Preview"
+                    className="h-40 w-full rounded-md object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = '/placeholder-image.jpg'
+                      e.currentTarget.style.display = 'none'
                     }}
                   />
                 </div>
               )}
-              <div className="space-y-2">
-                <div className="text-xs text-zinc-500 uppercase dark:text-zinc-500">{previewInfo.siteName}</div>
-                <div className="line-clamp-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                  {previewInfo.title}
+              <div className="space-y-1.5">
+                <div className="text-xs tracking-wide text-zinc-500 uppercase dark:text-zinc-400">
+                  {previewInfo.siteName || 'SITE NAME'}
                 </div>
-                <div className="line-clamp-3 text-xs text-zinc-600 dark:text-zinc-400">{previewInfo.description}</div>
+                <div className="line-clamp-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  {previewInfo.title || 'Enter title to see preview...'}
+                </div>
+                <div className="line-clamp-2 text-xs text-zinc-600 dark:text-zinc-400">
+                  {previewInfo.description || 'Enter description to see preview...'}
+                </div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {previewInfo.url || 'https://example.com'}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Twitter Preview */}
-          <div className="space-y-3">
-            <h3 className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              <Palette size={16} />
-              {t('twitter')}
-            </h3>
-            <div className="rounded-lg border border-zinc-300 bg-zinc-100/50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
-              <div className="space-y-3">
-                <div className="line-clamp-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                  {previewInfo.title}
+          <div className="rounded-xl border border-zinc-200 bg-gradient-to-br from-sky-50 to-cyan-50 p-4 dark:border-zinc-700 dark:from-sky-900/20 dark:to-cyan-900/20">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500">
+                <Palette size={12} className="text-white" />
+              </div>
+              <span className="text-xs font-medium text-sky-600 dark:text-sky-400">Twitter Card</span>
+            </div>
+
+            <div className="rounded-lg border border-white/50 bg-white/80 p-3 backdrop-blur-sm dark:border-zinc-600 dark:bg-zinc-800/80">
+              <div className="space-y-2">
+                <div className="line-clamp-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  {previewInfo.title || 'Enter title to see preview...'}
                 </div>
-                <div className="line-clamp-2 text-xs text-zinc-600 dark:text-zinc-400">{previewInfo.description}</div>
+                <div className="line-clamp-2 text-xs text-zinc-600 dark:text-zinc-400">
+                  {previewInfo.description || 'Enter description to see preview...'}
+                </div>
                 {previewInfo.image && (
-                  <div>
+                  <div className="mt-2">
                     <img
                       src={previewInfo.image}
                       alt="Twitter Preview"
-                      className="h-32 w-full rounded object-cover"
+                      className="h-32 w-full rounded-md object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = '/placeholder-image.jpg'
+                        e.currentTarget.style.display = 'none'
                       }}
                     />
                   </div>
                 )}
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">{previewInfo.url}</div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {previewInfo.url || 'https://example.com'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Telegram Preview */}
+          <div className="rounded-xl border border-zinc-200 bg-gradient-to-br from-blue-50 to-purple-50 p-4 dark:border-zinc-700 dark:from-blue-900/20 dark:to-purple-900/20">
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-white">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.61 7.59c-.12.54-.44.67-.89.42l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.49.24l.17-2.43 4.47-4.03c.19-.17-.04-.27-.3-.1L9.28 13.47l-2.38-.75c-.52-.16-.53-.52.11-.77l9.28-3.58c.43-.16.81.1.67.73z" />
+                </svg>
+              </div>
+              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">Telegram Preview</span>
+            </div>
+
+            <div className="rounded-lg border border-white/50 bg-white/80 p-3 backdrop-blur-sm dark:border-zinc-600 dark:bg-zinc-800/80">
+              <div className="space-y-2">
+                <div className="line-clamp-1 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  {previewInfo.title || 'Enter title to see preview...'}
+                </div>
+                <div className="line-clamp-3 text-xs text-zinc-600 dark:text-zinc-400">
+                  {previewInfo.description || 'Enter description to see preview...'}
+                </div>
+                {previewInfo.image && (
+                  <div className="mt-2">
+                    <img
+                      src={previewInfo.image}
+                      alt="Telegram Preview"
+                      className="h-28 w-full rounded-md object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="text-xs text-blue-500 dark:text-blue-400">
+                  {previewInfo.url || 'https://example.com'}
+                </div>
               </div>
             </div>
           </div>

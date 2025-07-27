@@ -3,7 +3,15 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { ToolHeader } from '@/components/shared/ToolHeader'
-import { ConfigPanel, TemplatesPanel, FormPanel, OutputPanel, PreviewPanel, InfoSection } from './components'
+import {
+  ConfigPanel,
+  TemplatesPanel,
+  FormPanel,
+  OutputPanel,
+  PreviewPanel,
+  ValidationPanel,
+  InfoSection,
+} from './components'
 import { useOgMetaGenerator } from '@/hooks/tools'
 
 export default function OgMetaGenerator() {
@@ -34,8 +42,6 @@ export default function OgMetaGenerator() {
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader title={t('title')} description={t('description')} />
 
-      <ConfigPanel activeTab={activeTab} onTabChange={setActiveTab} />
-
       <TemplatesPanel
         presetTemplates={presetTemplates}
         onLoadTemplate={loadTemplate}
@@ -43,28 +49,38 @@ export default function OgMetaGenerator() {
         onClearForm={clearForm}
       />
 
-      {activeTab === 'form' && (
+      <ValidationPanel metaData={metaData} />
+
+      {/* Professional Responsive Layout */}
+      <div className="space-y-6">
+        {/* Mobile: Stacked, Desktop: Side by side */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <FormPanel
-            metaData={metaData}
-            inputStats={inputStats}
-            ogTypes={ogTypes}
-            twitterCardTypes={twitterCardTypes}
-            onUpdateField={updateField}
-          />
+          {/* Left Column: Form + Validation */}
+          <div className="space-y-6">
+            <FormPanel
+              metaData={metaData}
+              inputStats={inputStats}
+              ogTypes={ogTypes}
+              twitterCardTypes={twitterCardTypes}
+              onUpdateField={updateField}
+            />
+          </div>
 
-          <OutputPanel
-            generatedMeta={generatedMeta}
-            formattedMeta={formattedMeta}
-            outputFormat={outputFormat}
-            outputStats={outputStats}
-            onFormatChange={setOutputFormat}
-            onDownload={downloadMeta}
-          />
+          {/* Right Column: Preview + Output */}
+          <div className="space-y-6">
+            <PreviewPanel previewInfo={previewInfo} />
+
+            <OutputPanel
+              generatedMeta={generatedMeta}
+              formattedMeta={formattedMeta}
+              outputFormat={outputFormat}
+              outputStats={outputStats}
+              onFormatChange={setOutputFormat}
+              onDownload={downloadMeta}
+            />
+          </div>
         </div>
-      )}
-
-      {activeTab === 'preview' && <PreviewPanel previewInfo={previewInfo} />}
+      </div>
 
       <InfoSection />
     </div>

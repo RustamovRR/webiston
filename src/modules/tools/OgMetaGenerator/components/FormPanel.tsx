@@ -65,10 +65,52 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, ogTypes, tw
                 value={metaData.title}
                 onChange={(e) => onUpdateField('title', e.target.value)}
                 placeholder={t('titlePlaceholder')}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
+                  metaData.title.length > 70
+                    ? 'border-red-300 dark:border-red-700'
+                    : metaData.title.length > 50
+                      ? 'border-yellow-300 dark:border-yellow-700'
+                      : metaData.title.length > 0
+                        ? 'border-green-300 dark:border-green-700'
+                        : ''
+                }`}
               />
-              <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-                {metaData.title.length}/70 {t('titleCounter')}
+              <div className="mt-1 flex items-center justify-between">
+                <div
+                  className={`text-xs ${
+                    metaData.title.length > 70
+                      ? 'text-red-500'
+                      : metaData.title.length > 50
+                        ? 'text-yellow-500'
+                        : metaData.title.length > 0
+                          ? 'text-green-500'
+                          : 'text-zinc-500 dark:text-zinc-500'
+                  }`}
+                >
+                  {metaData.title.length}/70 {t('titleCounter')}
+                </div>
+                {metaData.title.length > 70 && <div className="text-xs text-red-500">Too long!</div>}
+                {metaData.title.length > 50 && metaData.title.length <= 70 && (
+                  <div className="text-xs text-yellow-500">Getting long</div>
+                )}
+                {metaData.title.length > 0 && metaData.title.length <= 50 && (
+                  <div className="text-xs text-green-500">Perfect!</div>
+                )}
+              </div>
+              {/* Progress bar */}
+              <div className="mt-1 h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+                <div
+                  className={`h-1 rounded-full transition-all ${
+                    metaData.title.length > 70
+                      ? 'bg-red-500'
+                      : metaData.title.length > 50
+                        ? 'bg-yellow-500'
+                        : metaData.title.length > 0
+                          ? 'bg-green-500'
+                          : 'bg-zinc-300'
+                  }`}
+                  style={{ width: `${Math.min((metaData.title.length / 70) * 100, 100)}%` }}
+                />
               </div>
             </div>
 
@@ -80,10 +122,52 @@ const FormPanel: React.FC<FormPanelProps> = ({ metaData, inputStats, ogTypes, tw
                 value={metaData.description}
                 onChange={(e) => onUpdateField('description', e.target.value)}
                 placeholder={t('descPlaceholder')}
-                className="min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
+                  metaData.description.length > 200
+                    ? 'border-red-300 dark:border-red-700'
+                    : metaData.description.length > 160
+                      ? 'border-yellow-300 dark:border-yellow-700'
+                      : metaData.description.length > 0
+                        ? 'border-green-300 dark:border-green-700'
+                        : ''
+                }`}
               />
-              <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-                {metaData.description.length}/200 {t('titleCounter')}
+              <div className="mt-1 flex items-center justify-between">
+                <div
+                  className={`text-xs ${
+                    metaData.description.length > 200
+                      ? 'text-red-500'
+                      : metaData.description.length > 160
+                        ? 'text-yellow-500'
+                        : metaData.description.length > 0
+                          ? 'text-green-500'
+                          : 'text-zinc-500 dark:text-zinc-500'
+                  }`}
+                >
+                  {metaData.description.length}/200 {t('titleCounter')}
+                </div>
+                {metaData.description.length > 200 && <div className="text-xs text-red-500">Too long!</div>}
+                {metaData.description.length > 160 && metaData.description.length <= 200 && (
+                  <div className="text-xs text-yellow-500">Getting long</div>
+                )}
+                {metaData.description.length > 0 && metaData.description.length <= 160 && (
+                  <div className="text-xs text-green-500">Perfect!</div>
+                )}
+              </div>
+              {/* Progress bar */}
+              <div className="mt-1 h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+                <div
+                  className={`h-1 rounded-full transition-all ${
+                    metaData.description.length > 200
+                      ? 'bg-red-500'
+                      : metaData.description.length > 160
+                        ? 'bg-yellow-500'
+                        : metaData.description.length > 0
+                          ? 'bg-green-500'
+                          : 'bg-zinc-300'
+                  }`}
+                  style={{ width: `${Math.min((metaData.description.length / 200) * 100, 100)}%` }}
+                />
               </div>
             </div>
 
