@@ -23,6 +23,8 @@ import uuidGeneratorUz from './tools/uuid-generator/uz.json'
 import uuidGeneratorEn from './tools/uuid-generator/en.json'
 import qrGeneratorUz from './tools/qr-generator/uz.json'
 import qrGeneratorEn from './tools/qr-generator/en.json'
+import passwordGeneratorUz from './tools/password-generator/uz.json'
+import passwordGeneratorEn from './tools/password-generator/en.json'
 
 // Merge all translations
 export const uz = {
@@ -37,6 +39,7 @@ export const uz = {
   ...hashGeneratorUz,
   ...uuidGeneratorUz,
   ...qrGeneratorUz,
+  ...passwordGeneratorUz,
 }
 
 export const en = {
@@ -51,6 +54,7 @@ export const en = {
   ...hashGeneratorEn,
   ...uuidGeneratorEn,
   ...qrGeneratorEn,
+  ...passwordGeneratorEn,
 }
 
 // Export default for Next.js i18n

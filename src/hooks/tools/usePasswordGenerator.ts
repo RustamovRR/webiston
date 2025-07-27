@@ -66,11 +66,11 @@ const CHAR_SETS = {
   similar: 'il1Lo0O',
 }
 
-// Preset configurations
-const PRESET_SETTINGS = [
+// Preset configurations - these will be replaced with translations in the component
+const getPresetSettings = (t: any) => [
   {
-    label: 'Standart',
-    description: '16 belgi, aralash',
+    label: t('PresetSettings.standard.label'),
+    description: t('PresetSettings.standard.description'),
     settings: {
       length: 16,
       includeUppercase: true,
@@ -82,8 +82,8 @@ const PRESET_SETTINGS = [
     },
   },
   {
-    label: 'Xavfsiz',
-    description: '24 belgi, maksimal',
+    label: t('PresetSettings.secure.label'),
+    description: t('PresetSettings.secure.description'),
     settings: {
       length: 24,
       includeUppercase: true,
@@ -95,8 +95,8 @@ const PRESET_SETTINGS = [
     },
   },
   {
-    label: 'Oson',
-    description: '12 belgi, eslab qolinadigan',
+    label: t('PresetSettings.easy.label'),
+    description: t('PresetSettings.easy.description'),
     settings: {
       length: 12,
       includeUppercase: true,
@@ -108,8 +108,8 @@ const PRESET_SETTINGS = [
     },
   },
   {
-    label: 'PIN',
-    description: '6 raqam',
+    label: t('PresetSettings.pin.label'),
+    description: t('PresetSettings.pin.description'),
     settings: {
       length: 6,
       includeUppercase: false,
@@ -121,8 +121,8 @@ const PRESET_SETTINGS = [
     },
   },
   {
-    label: 'WiFi',
-    description: '32 belgi, router uchun',
+    label: t('PresetSettings.wifi.label'),
+    description: t('PresetSettings.wifi.description'),
     settings: {
       length: 32,
       includeUppercase: true,
@@ -135,7 +135,11 @@ const PRESET_SETTINGS = [
   },
 ]
 
-export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGeneratorProps = {}) => {
+export const usePasswordGenerator = (
+  { onSuccess, onError }: UsePasswordGeneratorProps = {},
+  t?: any,
+  tStrength?: any,
+) => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(true)
   const [copied, setCopied] = useState(false)
@@ -242,9 +246,9 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
     }
   }, [settings, onSuccess, onError])
 
-  // Calculate password strength
-  const passwordStrength = useMemo((): PasswordStrength => {
-    if (!password) return { level: 0, text: 'Parol yaratilmagan', color: 'text-zinc-500' }
+  // Calculate password strength - this will be replaced with translations in the component
+  const getPasswordStrength = (password: string, tStrength: any): PasswordStrength => {
+    if (!password) return { level: 0, text: tStrength('notGenerated'), color: 'text-zinc-500' }
 
     let score = 0
 
@@ -269,12 +273,12 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
     if (/(.)\1{2,}/.test(password)) score -= 1 // Repeated characters
     if (/123|abc|qwe/i.test(password)) score -= 1 // Common sequences
 
-    if (score <= 2) return { level: 1, text: 'Zaif', color: 'text-red-400' }
-    if (score <= 4) return { level: 2, text: "O'rtacha", color: 'text-yellow-400' }
-    if (score <= 6) return { level: 3, text: 'Yaxshi', color: 'text-blue-400' }
-    if (score <= 8) return { level: 4, text: 'Kuchli', color: 'text-green-400' }
-    return { level: 5, text: 'Juda kuchli', color: 'text-emerald-400' }
-  }, [password])
+    if (score <= 2) return { level: 1, text: tStrength('weak'), color: 'text-red-400' }
+    if (score <= 4) return { level: 2, text: tStrength('fair'), color: 'text-yellow-400' }
+    if (score <= 6) return { level: 3, text: tStrength('good'), color: 'text-blue-400' }
+    if (score <= 8) return { level: 4, text: tStrength('strong'), color: 'text-green-400' }
+    return { level: 5, text: tStrength('veryStrong'), color: 'text-emerald-400' }
+  }
 
   // Copy to clipboard
   const handleCopy = useCallback(async () => {
@@ -307,7 +311,7 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
         `Parol: ${password}`,
         `Uzunlik: ${password.length} belgi`,
         `Turi: ${settings.passwordType === 'memorable' ? 'Eslab qolinadigan' : settings.passwordType === 'strong' ? 'Kuchli' : 'Tasodifiy'}`,
-        `Mustahkamlik: ${passwordStrength.text}`,
+        `Mustahkamlik: ${tStrength ? getPasswordStrength(password, tStrength).text : 'N/A'}`,
         '',
         'Sozlamalar:',
         `- Katta harflar: ${settings.includeUppercase ? 'Ha' : "Yo'q"}`,
@@ -336,12 +340,12 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
     } catch (error) {
       onError?.('Faylni yuklab olishda xatolik yuz berdi')
     }
-  }, [password, settings, passwordStrength.text, onSuccess, onError])
+  }, [password, settings, tStrength, onSuccess, onError])
 
   // Load preset settings
   const loadPreset = useCallback(
-    (preset: (typeof PRESET_SETTINGS)[0]) => {
-      setSettings(preset.settings)
+    (preset: { label: string; description: string; settings: Partial<PasswordSettings> }) => {
+      setSettings(preset.settings as PasswordSettings)
       onSuccess?.(`"${preset.label}" sozlamalari yuklandi`)
     },
     [onSuccess],
@@ -362,14 +366,15 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
     const textLength = password.length
     const uniqueChars = new Set(password).size
     const entropy = Math.log2(Math.pow(95, textLength)) // Approximate entropy
+    const passwordStrengthLevel = tStrength ? getPasswordStrength(password, tStrength).level : 0
 
     return {
       characters: textLength,
       unique: uniqueChars,
       entropy: Math.round(entropy),
-      strength: passwordStrength.level,
+      strength: passwordStrengthLevel,
     }
-  }, [password, passwordStrength.level])
+  }, [password, tStrength])
 
   // Input/Output statistics
   const inputStats = useMemo(
@@ -410,13 +415,15 @@ export const usePasswordGenerator = ({ onSuccess, onError }: UsePasswordGenerato
     copied,
     settings,
     passwordDisplayText,
-    passwordStrength,
+    passwordStrength: tStrength
+      ? getPasswordStrength(password, tStrength)
+      : { level: 0, text: '', color: 'text-zinc-500' },
     stats,
     inputStats,
     outputStats,
 
     // Data
-    presetSettings: PRESET_SETTINGS,
+    presetSettings: t ? getPresetSettings(t) : [],
 
     // Actions
     generatePassword,
