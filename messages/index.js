@@ -7,6 +7,8 @@ import toolsPageUz from './tools/tools-page/uz.json'
 import toolsPageEn from './tools/tools-page/en.json'
 import jsonFormatterUz from './tools/json-formatter/uz.json'
 import jsonFormatterEn from './tools/json-formatter/en.json'
+import loremIpsumUz from './tools/lorem-ipsum/uz.json'
+import loremIpsumEn from './tools/lorem-ipsum/en.json'
 import urlEncoderUz from './tools/url-encoder/uz.json'
 import urlEncoderEn from './tools/url-encoder/en.json'
 import base64ConverterUz from './tools/base64-converter/uz.json'
@@ -43,6 +45,7 @@ export const uz = {
   ...qrGeneratorUz,
   ...passwordGeneratorUz,
   ...ogMetaGeneratorUz,
+  ...loremIpsumUz,
 }
 
 export const en = {
@@ -59,6 +62,7 @@ export const en = {
   ...qrGeneratorEn,
   ...passwordGeneratorEn,
   ...ogMetaGeneratorEn,
+  ...loremIpsumEn,
 }
 
 // Export default for Next.js i18n

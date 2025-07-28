@@ -1,0 +1,112 @@
+{
+  "LoremIpsumPage": {
+    "ToolHeader": {
+      "title": "Lorem Ipsum Generator",
+      "description": "Modern tool for creating professional placeholder text and paragraphs"
+    },
+    "ConfigPanel": {
+      "title": "Tool Configuration",
+      "status": "Ready",
+      "quickStart": "Quick Start",
+      "quickStartDesc": "Start with standard Lorem Ipsum or customize settings",
+      "loadSample": "Load Sample",
+      "generationType": "Generation Type:",
+      "amount": "Amount",
+      "amountRange": "1 to 1000",
+      "textType": "Text Type",
+      "startWithLorem": "Start with \"Lorem ipsum\"",
+      "generateText": "Generate New Text",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "download": "Download",
+      "clear": "Clear"
+    },
+    "GenerationTypes": {
+      "paragraphs": "Paragraphs",
+      "sentences": "Sentences",
+      "words": "Words",
+      "bytes": "Characters"
+    },
+    "TextTypes": {
+      "cicero": "Cicero (Classic)",
+      "bacon": "Bacon Ipsum",
+      "hipster": "Hipster Ipsum",
+      "cupcake": "Cupcake Ipsum",
+      "uzbek": "Uzbek Lorem"
+    },
+    "MainPanel": {
+      "sourcePlaceholder": "Click 'Generate New Text' button above...",
+      "sourceLabel": "Generated Text",
+      "targetLabel": "Text Information"
+    },
+    "TextInfo": {
+      "title": "Generated text information:",
+      "length": "Length",
+      "characters": "characters",
+      "words": "Words",
+      "lines": "Lines",
+      "paragraphs": "Paragraphs",
+      "settings": "Settings:",
+      "type": "Type",
+      "amount": "Amount",
+      "textType": "Text type",
+      "startWithLorem": "Start with Lorem",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "Stats": {
+      "characters": "characters",
+      "words": "words",
+      "lines": "lines",
+      "paragraphs": "paragraphs"
+    },
+    "InfoSection": {
+      "textTypesTitle": "About Text Types",
+      "ciceroDesc": "Original Lorem Ipsum text, the most popular variant for classic design and layout",
+      "baconDesc": "Delicious and fun text variant made from meat and food terms",
+      "hipsterDesc": "Created with modern and trendy words, perfect for creative projects",
+      "cupcakeDesc": "Sweet and fun text type with dessert and candy names",
+      "uzbekDesc": "Special variant created with technology and programming terms in Uzbek language"
+    },
+    "HelpSection": {
+      "title": "Why use Lorem Ipsum?",
+      "usagePlacesTitle": "Main usage areas:",
+      "professionalTipsTitle": "Professional tips:",
+      "noteTitle": "Tip:",
+      "noteText": "Lorem Ipsum allows you to focus on design elements without being distracted by content and helps achieve professional results.",
+      "usagePlaces": {
+        "webDesign": {
+          "title": "Web Design:",
+          "desc": "Creating page layouts"
+        },
+        "graphicDesign": {
+          "title": "Graphic Design:",
+          "desc": "Brochure and poster design"
+        },
+        "typography": {
+          "title": "Typography:",
+          "desc": "Testing font and text appearance"
+        },
+        "prototyping": {
+          "title": "Prototyping:",
+          "desc": "In project prototypes"
+        },
+        "testing": {
+          "title": "Testing:",
+          "desc": "Content-independent testing"
+        },
+        "placeholder": {
+          "title": "Placeholder:",
+          "desc": "Until real content is ready"
+        }
+      },
+      "tips": {
+        "tip1": "Consider the approximate length of real content",
+        "tip2": "Try different text lengths",
+        "tip3": "Test on different screen sizes for responsive design",
+        "tip4": "Choose appropriate text type for your client",
+        "tip5": "Use it to properly structure text hierarchy"
+      }
+    }
+  }
+}
