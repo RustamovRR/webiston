@@ -1,0 +1,107 @@
+{
+  "DeviceInfoPage": {
+    "ToolHeader": {
+      "title": "Qurilma Ma'lumotlari",
+      "description": "Brauzer, qurilma va operatsion tizim haqida batafsil ma'lumot oling"
+    },
+    "ControlPanel": {
+      "title": "Tool Boshqaruv",
+      "status": "Tayyor",
+      "deviceInfoTitle": "Qurilma ma'lumotlari",
+      "deviceInfoDesc": "Joriy brauzer va qurilma haqida batafsil ma'lumot",
+      "refreshButton": "Yangilash",
+      "copyAllButton": "Nusxalash",
+      "copiedAll": "Nusxalandi!",
+      "downloadButton": "JSON",
+      "loadingTitle": "Ma'lumotlar yuklanmoqda...",
+      "loadingDesc": "Iltimos kuting..."
+    },
+    "BrowserInfo": {
+      "title": "Brauzer Ma'lumotlari",
+      "status": "Browser",
+      "browserName": "Brauzer nomi",
+      "version": "Versiya",
+      "userAgent": "User Agent"
+    },
+    "SystemInfo": {
+      "title": "Tizim Ma'lumotlari",
+      "status": "System",
+      "platform": "Platforma",
+      "language": "Asosiy til",
+      "timezone": "Vaqt zonasi",
+      "onlineStatus": "Onlayn holati",
+      "online": "Onlayn",
+      "offline": "Oflayn",
+      "cookieEnabled": "Cookie yoqilgan",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "supportedLanguages": "Qo'llab-quvvatlanadigan tillar"
+    },
+    "ScreenInfo": {
+      "title": "Ekran Ma'lumotlari",
+      "status": "Screen",
+      "screenSize": "Ekran o'lchami",
+      "availableSize": "Mavjud o'lcham",
+      "colorDepth": "Rang chuqurligi",
+      "pixelRatio": "Piksel nisbati",
+      "orientation": "Yo'nalish"
+    },
+    "DeviceInfo": {
+      "title": "Qurilma Xususiyatlari",
+      "status": "Device",
+      "deviceType": "Qurilma turi",
+      "touchScreen": "Sensorli ekran",
+      "touchSupported": "Qo'llab-quvvatlaydi",
+      "touchNotSupported": "Qo'llab-quvvatlamaydi",
+      "maxTouchPoints": "Maksimal sensor nuqtalar",
+      "mobileDevice": "Mobil qurilma"
+    },
+    "ConnectionInfo": {
+      "title": "Internet Ulanishi",
+      "status": "Connection",
+      "connectionType": "Ulanish turi",
+      "speed": "Tezlik (Mbps)",
+      "latency": "Latency (ms)",
+      "dataSaver": "Data tejash rejimi",
+      "enabled": "Yoqilgan",
+      "disabled": "O'chirilgan"
+    },
+    "InfoSection": {
+      "title": "Qurilma ma'lumotlari haqida",
+      "status": "Information",
+      "usagePlacesTitle": "Asosiy foydalanish joylari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "noteTitle": "Maslahat:",
+      "noteText": "Bu ma'lumotlarni JSON formatida yuklab olib, web analytics va performance monitoring uchun ishlatib ko'ring.",
+      "usagePlaces": {
+        "webDev": {
+          "title": "Web Development:",
+          "desc": "Responsive dizayn uchun ekran o'lchamlari"
+        },
+        "browserTesting": {
+          "title": "Browser Testing:",
+          "desc": "Turli brauzerlarda muvofiqlikni tekshirish"
+        },
+        "performance": {
+          "title": "Performance:",
+          "desc": "Qurilma imkoniyatlariga qarab optimallashtirish"
+        },
+        "analytics": {
+          "title": "Analytics:",
+          "desc": "Foydalanuvchi qurilmalari statistikasi"
+        },
+        "support": {
+          "title": "Support:",
+          "desc": "Texnik qo'llab-quvvatlash va debugging"
+        }
+      },
+      "tips": {
+        "tip1": "User Agent ma'lumotlarini server-side detection uchun ishlatib ko'ring",
+        "tip2": "Screen resolution'ni responsive breakpoint'lar uchun tahlil qiling",
+        "tip3": "Device memory va CPU core'larni performance tuning uchun ishlatib ko'ring",
+        "tip4": "Connection type'ni lazy loading strategiyasi uchun hisobga oling",
+        "tip5": "Touch support'ni mobile-first dizayn uchun tekshirib ko'ring"
+      }
+    }
+  }
+}
