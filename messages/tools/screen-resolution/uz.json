@@ -1,0 +1,99 @@
+{
+  "ScreenResolutionPage": {
+    "ToolHeader": {
+      "title": "Ekran O'lchami",
+      "description": "Real vaqtda ekran o'lchami, rezolutsiya va displey ma'lumotlarini ko'ring"
+    },
+    "ControlPanel": {
+      "title": "Tool Kirish",
+      "status": "Tayyor",
+      "loadingStatus": "Yuklanmoqda...",
+      "controlPanelTitle": "Boshqaruv paneli",
+      "refreshButton": "Ma'lumotlarni yangilash",
+      "fullscreenButton": "Fullscreen rejimi",
+      "exitFullscreenButton": "Fullscreen dan chiqish",
+      "demoDataButton": "Demo ma'lumotlar",
+      "downloadButton": "Ma'lumotlarni yuklab olish",
+      "mainIndicators": "Asosiy ko'rsatkichlar"
+    },
+    "OutputPanel": {
+      "title": "Tool Natija/Chiqish",
+      "dataAvailable": "Ma'lumot mavjud",
+      "noData": "Ma'lumot yo'q",
+      "waitingTitle": "Ma'lumot kutilmoqda",
+      "waitingDesc": "Ekran ma'lumotlarini olish uchun yuqoridagi tugmalardan birini bosing",
+      "screenInfoTitle": "Ekran ma'lumotlari",
+      "screenSize": "Ekran o'lchami",
+      "resolutionType": "Resolution turi",
+      "viewportInfoTitle": "Viewport ma'lumotlari",
+      "innerSize": "Ichki o'lchami",
+      "outerSize": "Tashqi o'lchami",
+      "technicalInfoTitle": "Texnik ma'lumotlar",
+      "pixelRatio": "Pixel nisbati",
+      "aspectRatio": "Aspect ratio",
+      "orientation": "Yo'nalish",
+      "colorDepth": "Rang chuqurligi",
+      "deviceType": "Qurilma turi",
+      "retinaDisplay": "Retina displey",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "scrollPositionTitle": "Scroll pozitsiyasi",
+      "horizontalScroll": "Gorizontal scroll",
+      "verticalScroll": "Vertikal scroll"
+    },
+    "ResolutionCategories": {
+      "title": "Resolution turlari",
+      "categories": {
+        "4K": "4K UHD",
+        "QHD": "QHD",
+        "FHD": "Full HD",
+        "HD": "HD",
+        "SD": "SD"
+      }
+    },
+    "DeviceTypes": {
+      "title": "Qurilma turlari",
+      "types": {
+        "Mobile": "Mobil",
+        "Tablet": "Planshet",
+        "Desktop": "Kompyuter",
+        "Large": "Katta ekran"
+      }
+    },
+    "ModeInfo": {
+      "title": "Rejim ma'lumotlari",
+      "fullscreenMode": "Fullscreen rejimi",
+      "retinaDisplay": "Retina displey",
+      "viewportRatio": "Viewport foizi"
+    },
+    "InfoSection": {
+      "title": "Ekran O'lchami va Displey Ma'lumotlari",
+      "realTimeTitle": "Real-time Monitoring",
+      "realTimeDesc": "Ekran o'lchami, viewport ma'lumotlari va qurilma spetsifikatsiyalarini real vaqtda kuzating. Brauzer oynasi o'lchami va scroll pozitsiyasini instant tracking.",
+      "professionalTestingTitle": "Professional Testing",
+      "professionalTestingItems": {
+        "responsive": "Responsive web dizayn testing",
+        "crossDevice": "Cross-device compatibility check",
+        "fullscreen": "Fullscreen mode analysis",
+        "pixelRatio": "Pixel ratio va Retina detection"
+      },
+      "technicalAnalysisTitle": "Technical Analysis",
+      "technicalAnalysisItems": {
+        "resolution": "Resolution category detection",
+        "deviceType": "Device type classification",
+        "aspectRatio": "Aspect ratio calculation",
+        "jsonExport": "JSON export functionality"
+      },
+      "resolutionStandardsTitle": "Resolution Standards va Qurilma Turlari",
+      "popularResolutions": "Popular Resolution'lar:",
+      "deviceCategories": "Device Categories:",
+      "webDevTitle": "Web Development",
+      "webDevDesc": "Responsive dizayn uchun breakpoint'larni to'g'ri sozlang. Mobile-first yondashuvni qo'llang va har xil qurilmalarda test qiling.",
+      "qaTitle": "Quality Assurance",
+      "qaDesc": "Cross-browser testing uchun turli qurilma o'lchamlarini simulyatsiya qiling. Retina displeylar uchun alohida test qiling.",
+      "proTipTitle": "Professional Tip:",
+      "proTipDesc": "Viewport meta tag'ni to'g'ri sozlash responsive dizayn uchun muhim.",
+      "proTipCode": "ishlatishni unutmang."
+    }
+  }
+}

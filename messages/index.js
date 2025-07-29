@@ -13,6 +13,8 @@ import urlEncoderUz from './tools/url-encoder/uz.json'
 import urlEncoderEn from './tools/url-encoder/en.json'
 import deviceInfoUz from './tools/device-info/uz.json'
 import deviceInfoEn from './tools/device-info/en.json'
+import screenResolutionUz from './tools/screen-resolution/uz.json'
+import screenResolutionEn from './tools/screen-resolution/en.json'
 import base64ConverterUz from './tools/base64-converter/uz.json'
 import base64ConverterEn from './tools/base64-converter/en.json'
 import jwtDecoderUz from './tools/jwt-decoder/uz.json'
@@ -39,6 +41,7 @@ export const uz = {
   ...jsonFormatterUz,
   ...urlEncoderUz,
   ...deviceInfoUz,
+  ...screenResolutionUz,
   ...base64ConverterUz,
   ...jwtDecoderUz,
   ...latinCyrillicUz,
@@ -57,6 +60,7 @@ export const en = {
   ...jsonFormatterEn,
   ...urlEncoderEn,
   ...deviceInfoEn,
+  ...screenResolutionEn,
   ...base64ConverterEn,
   ...jwtDecoderEn,
   ...latinCyrillicEn,
