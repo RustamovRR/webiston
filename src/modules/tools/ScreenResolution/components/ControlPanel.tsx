@@ -27,7 +27,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const t = useTranslations('ScreenResolutionPage.ControlPanel')
 
   return (
-    <div className="space-y-6">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="sticky top-20 space-y-6">
       <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
         <div className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <div className="flex gap-2">
@@ -88,7 +88,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

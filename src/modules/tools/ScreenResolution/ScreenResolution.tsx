@@ -40,7 +40,7 @@ export default function ScreenResolution() {
       <ToolHeader title={t('title')} description={t('description')} />
 
       <div className="relative grid gap-6 lg:grid-cols-2">
-        <div className="lg:sticky lg:top-20">
+        <div className="">
           <ControlPanel
             isLoading={isLoading}
             isFullscreen={isFullscreen}
