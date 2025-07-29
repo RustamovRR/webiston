@@ -14,7 +14,10 @@
       "exitFullscreenButton": "To'liq ekrandan chiqish",
       "demoDataButton": "Namuna ma'lumotlar",
       "downloadButton": "Ma'lumotlarni yuklab olish",
-      "mainIndicators": "Asosiy ko'rsatkichlar"
+      "mainIndicators": "Asosiy ko'rsatkichlar",
+      "megapixels": "megapiksel",
+      "width": "kenglik",
+      "height": "balandlik"
     },
     "OutputPanel": {
       "title": "Vosita Natijasi",

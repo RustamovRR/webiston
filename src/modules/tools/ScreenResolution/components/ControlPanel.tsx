@@ -27,7 +27,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const t = useTranslations('ScreenResolutionPage.ControlPanel')
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <div className="space-y-6">
       <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
         <div className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
           <div className="flex gap-2">
@@ -52,15 +52,28 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               <ShimmerButton onClick={onRefresh} disabled={isLoading} className="w-full">
                 {t('refreshButton')}
               </ShimmerButton>
-              <ShimmerButton onClick={onToggleFullscreen} disabled={isLoading} className="w-full" variant="secondary">
+              <ShimmerButton
+                onClick={onToggleFullscreen}
+                disabled={isLoading}
+                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                variant="outline"
+              >
                 {isFullscreen ? t('exitFullscreenButton') : t('fullscreenButton')}
               </ShimmerButton>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <ShimmerButton onClick={onLoadSample} className="w-full" variant="outline">
+              <ShimmerButton
+                onClick={onLoadSample}
+                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                variant="outline"
+              >
                 {t('demoDataButton')}
               </ShimmerButton>
-              <ShimmerButton onClick={onDownload} className="w-full" variant="outline">
+              <ShimmerButton
+                onClick={onDownload}
+                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                variant="outline"
+              >
                 {t('downloadButton')}
               </ShimmerButton>
             </div>
@@ -70,12 +83,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           {stats.length > 0 && (
             <div className="space-y-3">
               <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('mainIndicators')}</h4>
-              <StatsDisplay stats={stats} />
+              <StatsDisplay stats={stats as any} />
             </div>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 

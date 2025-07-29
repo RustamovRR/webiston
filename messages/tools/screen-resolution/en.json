@@ -14,7 +14,10 @@
       "exitFullscreenButton": "Exit Fullscreen",
       "demoDataButton": "Demo Data",
       "downloadButton": "Download Information",
-      "mainIndicators": "Main Indicators"
+      "mainIndicators": "Main Indicators",
+      "megapixels": "megapixels",
+      "width": "width",
+      "height": "height"
     },
     "OutputPanel": {
       "title": "Tool Output/Result",

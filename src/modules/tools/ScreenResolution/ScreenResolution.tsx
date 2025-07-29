@@ -16,6 +16,7 @@ import { useScreenResolution } from '@/hooks/tools'
 
 export default function ScreenResolution() {
   const t = useTranslations('ScreenResolutionPage.ToolHeader')
+  const tStats = useTranslations('ScreenResolutionPage.ControlPanel')
 
   const {
     screenInfo,
@@ -32,13 +33,13 @@ export default function ScreenResolution() {
   } = useScreenResolution()
 
   const analysis = screenInfo ? getScreenAnalysis() : null
-  const stats = screenInfo ? getStats() : []
+  const stats = screenInfo ? getStats(tStats) : []
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4">
       <ToolHeader title={t('title')} description={t('description')} />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="relative grid gap-6 lg:grid-cols-2">
         <div className="lg:sticky lg:top-20">
           <ControlPanel
             isLoading={isLoading}
@@ -51,7 +52,10 @@ export default function ScreenResolution() {
           />
         </div>
 
-        <OutputPanel screenInfo={screenInfo} analysis={analysis} />
+        <div>
+          {' '}
+          <OutputPanel screenInfo={screenInfo} analysis={analysis} />
+        </div>
       </div>
 
       {/* Qo'shimcha ma'lumotlar */}

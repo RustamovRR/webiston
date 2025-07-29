@@ -205,18 +205,30 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
     [],
   )
 
-  const getStats = useCallback(() => {
-    if (!screenInfo) return []
+  const getStats = useCallback(
+    (translations?: any) => {
+      if (!screenInfo) return []
 
-    const totalPixels = screenInfo.width * screenInfo.height
-    const pixelsInMillions = Math.round((totalPixels / 1000000) * 10) / 10 // Round to 1 decimal
+      const totalPixels = screenInfo.width * screenInfo.height
+      const pixelsInMillions = Math.round((totalPixels / 1000000) * 10) / 10 // Round to 1 decimal
 
-    return [
-      { label: 'megapiksel', value: pixelsInMillions },
-      { label: 'kenglik', value: screenInfo.width },
-      { label: 'balandlik', value: screenInfo.height },
-    ]
-  }, [screenInfo])
+      return [
+        {
+          label: translations?.('megapixels') || 'megapiksel',
+          value: pixelsInMillions,
+        },
+        {
+          label: translations?.('width') || 'kenglik',
+          value: screenInfo.width,
+        },
+        {
+          label: translations?.('height') || 'balandlik',
+          value: screenInfo.height,
+        },
+      ]
+    },
+    [screenInfo],
+  )
 
   // Event listeners
   useEffect(() => {
