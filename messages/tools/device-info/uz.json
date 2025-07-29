@@ -18,14 +18,14 @@
     },
     "BrowserInfo": {
       "title": "Brauzer Ma'lumotlari",
-      "status": "Browser",
+      "status": "Brauzer",
       "browserName": "Brauzer nomi",
       "version": "Versiya",
       "userAgent": "User Agent"
     },
     "SystemInfo": {
       "title": "Tizim Ma'lumotlari",
-      "status": "System",
+      "status": "Tizim",
       "platform": "Platforma",
       "language": "Asosiy til",
       "timezone": "Vaqt zonasi",
@@ -39,7 +39,7 @@
     },
     "ScreenInfo": {
       "title": "Ekran Ma'lumotlari",
-      "status": "Screen",
+      "status": "Ekran",
       "screenSize": "Ekran o'lchami",
       "availableSize": "Mavjud o'lcham",
       "colorDepth": "Rang chuqurligi",
@@ -48,59 +48,61 @@
     },
     "DeviceInfo": {
       "title": "Qurilma Xususiyatlari",
-      "status": "Device",
+      "status": "Qurilma",
       "deviceType": "Qurilma turi",
       "touchScreen": "Sensorli ekran",
       "touchSupported": "Qo'llab-quvvatlaydi",
       "touchNotSupported": "Qo'llab-quvvatlamaydi",
       "maxTouchPoints": "Maksimal sensor nuqtalar",
-      "mobileDevice": "Mobil qurilma"
+      "mobileDevice": "Mobil qurilma",
+      "yes": "Ha",
+      "no": "Yo'q"
     },
     "ConnectionInfo": {
       "title": "Internet Ulanishi",
-      "status": "Connection",
+      "status": "Ulanish",
       "connectionType": "Ulanish turi",
       "speed": "Tezlik (Mbps)",
-      "latency": "Latency (ms)",
-      "dataSaver": "Data tejash rejimi",
+      "latency": "Kechikish (ms)",
+      "dataSaver": "Ma'lumot tejash rejimi",
       "enabled": "Yoqilgan",
       "disabled": "O'chirilgan"
     },
     "InfoSection": {
       "title": "Qurilma ma'lumotlari haqida",
-      "status": "Information",
+      "status": "Ma'lumot",
       "usagePlacesTitle": "Asosiy foydalanish joylari:",
       "professionalTipsTitle": "Professional maslahatlar:",
       "noteTitle": "Maslahat:",
-      "noteText": "Bu ma'lumotlarni JSON formatida yuklab olib, web analytics va performance monitoring uchun ishlatib ko'ring.",
+      "noteText": "Bu ma'lumotlarni JSON formatida yuklab olib, veb analitika va ishlash samaradorligi monitoringi uchun ishlatib ko'ring.",
       "usagePlaces": {
         "webDev": {
-          "title": "Web Development:",
-          "desc": "Responsive dizayn uchun ekran o'lchamlari"
+          "title": "Veb ishlab chiqish:",
+          "desc": "Moslashuvchan dizayn uchun ekran o'lchamlari"
         },
         "browserTesting": {
-          "title": "Browser Testing:",
+          "title": "Brauzerni testlash:",
           "desc": "Turli brauzerlarda muvofiqlikni tekshirish"
         },
         "performance": {
-          "title": "Performance:",
+          "title": "Ishlash samaradorligi:",
           "desc": "Qurilma imkoniyatlariga qarab optimallashtirish"
         },
         "analytics": {
-          "title": "Analytics:",
+          "title": "Analitika:",
           "desc": "Foydalanuvchi qurilmalari statistikasi"
         },
         "support": {
-          "title": "Support:",
-          "desc": "Texnik qo'llab-quvvatlash va debugging"
+          "title": "Qo'llab-quvvatlash:",
+          "desc": "Texnik qo'llab-quvvatlash va xatoliklarni topish uchun (debug)"
         }
       },
       "tips": {
-        "tip1": "User Agent ma'lumotlarini server-side detection uchun ishlatib ko'ring",
-        "tip2": "Screen resolution'ni responsive breakpoint'lar uchun tahlil qiling",
-        "tip3": "Device memory va CPU core'larni performance tuning uchun ishlatib ko'ring",
-        "tip4": "Connection type'ni lazy loading strategiyasi uchun hisobga oling",
-        "tip5": "Touch support'ni mobile-first dizayn uchun tekshirib ko'ring"
+        "tip1": "Foydalanuvchi agenti (User-Agent) maʼlumotlarini server tomonida aniqlash uchun qoʻllang.",
+        "tip2": "Ekran oʻlchamini moslashuvchan (responsive) dizaynning nazorat nuqtalari (breakpoint) uchun tahlil qiling.",
+        "tip3": "Qurilma xotirasi va protsessor yadrolari sonini samaradorlikni sozlash (performance tuning) uchun hisobga oling.",
+        "tip4": "Ulanish turini (masalan, 4G, Wi-Fi) kechiktirilgan yuklash (lazy loading) strategiyasida inobatga oling.",
+        "tip5": "Sensorli ekran (touch) imkoniyatini 'mobile-first' yondashuvidagi dizaynni optimallashtirish uchun tekshiring."
       }
     }
   }

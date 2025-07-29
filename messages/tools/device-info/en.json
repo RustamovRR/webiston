@@ -54,7 +54,9 @@
       "touchSupported": "Supported",
       "touchNotSupported": "Not supported",
       "maxTouchPoints": "Max touch points",
-      "mobileDevice": "Mobile device"
+      "mobileDevice": "Mobile device",
+      "yes": "Yes",
+      "no": "No"
     },
     "ConnectionInfo": {
       "title": "Internet Connection",
