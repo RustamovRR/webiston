@@ -39,15 +39,17 @@ export default function ScreenResolution() {
       <ToolHeader title={t('title')} description={t('description')} />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <ControlPanel
-          isLoading={isLoading}
-          isFullscreen={isFullscreen}
-          stats={stats}
-          onRefresh={refreshInfo}
-          onToggleFullscreen={toggleFullscreen}
-          onLoadSample={loadSampleData}
-          onDownload={downloadScreenInfo}
-        />
+        <div className="lg:sticky lg:top-20">
+          <ControlPanel
+            isLoading={isLoading}
+            isFullscreen={isFullscreen}
+            stats={stats}
+            onRefresh={refreshInfo}
+            onToggleFullscreen={toggleFullscreen}
+            onLoadSample={loadSampleData}
+            onDownload={downloadScreenInfo}
+          />
+        </div>
 
         <OutputPanel screenInfo={screenInfo} analysis={analysis} />
       </div>
