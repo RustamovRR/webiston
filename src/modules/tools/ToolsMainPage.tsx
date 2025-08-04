@@ -89,7 +89,7 @@ const ToolsMainPage = () => {
             <div
               className={`flex h-12 w-12 items-center justify-center rounded-lg ${tool.color} opacity-80 transition-opacity group-hover:opacity-100`}
             >
-              <tool.icon size={24} className="text-white" />
+              <tool.icon size={24} className="dark:text-white" />
             </div>
             <div className="flex-1">
               <h3 className="text-lg leading-tight font-semibold text-zinc-900 transition-colors group-hover:text-zinc-800 dark:text-zinc-100 dark:group-hover:text-white">
