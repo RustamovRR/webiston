@@ -6,7 +6,7 @@
       "keywords": "free courses, programming, React, JavaScript, developer tools, learn to code, Uzbek IT, free education"
     },
     "title": "A deep dive into the world of web technologies",
-    "description": "Webiston is a non-commercial project that provides high-quality, modern, and free educational resources in the Uzbek language. We offer in-depth courses on React and a collection of useful tools for developers.",
+    "description": "Webiston — free education and useful tools for modern web technologies. All the resources you need for learning and development in one place.",
     "startLearning": "Start Learning",
     "usefulTools": "Useful Tools",
     "reactSectionTitle": "Mastering <i>React</i>",
@@ -44,5 +44,8 @@
     "generators": "Generators",
     "analyzers": "Analyzers",
     "utilities": "Utilities"
+  },
+  "Footer": {
+    "allRightsReserved": "All rights reserved."
   }
 }

@@ -14,10 +14,12 @@ const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, ...p
   const classNames = cn(
     'relative h-12 px-6 py-2 rounded-lg font-medium text-lg transition-colors duration-300 ease-in-out flex items-center justify-center',
     {
-      'bg-white text-black hover:bg-[#ccc]': variant === 'primary',
-      'bg-primary-black text-white border border-[rgba(255,255,255,0.17)] hover:bg-[rgba(255,255,255,0.12)]':
+      'bg-white text-black hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100':
+        variant === 'primary',
+      'bg-zinc-900 text-white border border-zinc-700 hover:bg-zinc-800 dark:bg-zinc-900 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-800':
         variant === 'secondary',
-      'bg-transparent text-white border border-white/20 hover:bg-white/10 hover:border-white/30': variant === 'outline',
+      'bg-transparent text-zinc-900 border border-zinc-300 hover:bg-zinc-100 hover:border-zinc-400 dark:text-white dark:border-white/20 dark:hover:bg-white/10 dark:hover:border-white/30':
+        variant === 'outline',
     },
     className,
   )

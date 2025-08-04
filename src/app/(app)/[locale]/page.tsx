@@ -55,16 +55,20 @@ export default async function HomePage() {
         <CircleIcon className="animate-fadeIn absolute top-[20%] left-[12%] max-sm:hidden" />
         <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
 
-        <h1 className="animate-fadeInText bg-gradient-text max-xl:text-dynamic bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
+        <h1 className="animate-fadeInText // Light mode gradient dark:bg-gradient-text // Dark mode klass o‘z holicha max-xl:text-dynamic bg-gradient-to-r from-neutral-600 to-neutral-900 bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
           {tHome('title')}
         </h1>
 
-        <p className="animate-fadeInText text-gray-primary max-w-[750px] text-center text-xl md:w-full!">
+        <p className="animate-fadeInText max-w-[750px] text-center text-xl text-zinc-600 md:w-full! dark:text-zinc-400">
           {tHome('description')}
         </p>
 
         <div className="mt-10 flex gap-4">
-          <ButtonLink href="/books" variant="secondary" className="group">
+          <ButtonLink
+            href="/books"
+            variant="secondary"
+            className="group border-zinc-300 bg-white text-black hover:bg-zinc-100"
+          >
             {tHome('startLearning')}
             <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
               <ArrowRightIcon />

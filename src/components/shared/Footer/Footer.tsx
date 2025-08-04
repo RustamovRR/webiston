@@ -1,6 +1,8 @@
 import { socialLinks } from '@/constants'
+import { useTranslations } from 'next-intl'
 
 export default function Footer() {
+  const t = useTranslations('Footer')
   return (
     <footer className="border-border flex w-full flex-col !items-center !justify-center gap-4 border-t p-6 sm:items-start">
       <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
@@ -20,7 +22,7 @@ export default function Footer() {
       </div>
 
       <p className="mt-2 text-center text-xs opacity-80 sm:text-left">
-        {new Date().getFullYear()} Webiston. Barcha huquqlar himoyalangan.
+        {new Date().getFullYear()} Webiston. {t('allRightsReserved')}
       </p>
     </footer>
   )

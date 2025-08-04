@@ -6,7 +6,7 @@
       "keywords": "bepul kurslar, dasturlash, React, JavaScript, dasturchi vositalari, kod o'rganish, o'zbek IT, bepul ta'lim, дастурлаш, бесплатные курсы"
     },
     "title": "Veb texnologiyalar dunyosiga teran nigoh",
-    "description": "Webiston — bu o'zbek tilida yuqori sifatli, zamonaviy va bepul ta'lim resurslarini taqdim etuvchi notijorat loyiha. Biz React bo'yicha chuqur kurslar va dasturchilar uchun foydali vositalar to'plamini taklif qilamiz.",
+    "description": "Webiston — zamonaviy veb texnologiyalar bo'yicha bepul ta'lim va dasturchilar uchun foydali vositalar to'plami. Bilim olish va rivojlanish uchun barcha kerakli resurslar bir joyda.",
     "startLearning": "O'rganishni boshlash",
     "usefulTools": "Foydali vositalar",
     "reactSectionTitle": "<i>React</i>ni mukammal o'rganish",
@@ -44,5 +44,8 @@
     "generators": "Generatorlar",
     "analyzers": "Tahlilchilar",
     "utilities": "Yordamchilar"
+  },
+  "Footer": {
+    "allRightsReserved": "Barcha huquqlar himoyalangan."
   }
 }
