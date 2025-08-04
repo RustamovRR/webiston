@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib'
 import QrCustomizationPanel, { type QrCustomization } from './QrCustomizationPanel'
+import Image from 'next/image'
 
 interface CollapsibleCustomizationPanelProps {
   customization: QrCustomization
@@ -73,7 +74,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                 />
                 {customization.logo && (
                   <div className="h-4 w-4 rounded border border-zinc-300 bg-zinc-100 p-0.5 dark:border-zinc-600 dark:bg-zinc-800">
-                    <img src={customization.logo} alt="Logo" className="h-full w-full rounded object-cover" />
+                    <Image src={customization.logo} alt="Logo" className="h-full w-full rounded object-cover" />
                   </div>
                 )}
                 {customization.gradientEnabled && (
@@ -141,7 +142,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                           }}
                         >
                           <div className="relative overflow-hidden rounded-lg">
-                            <img
+                            <Image
                               src={qrUrl}
                               alt="QR Preview"
                               className="h-36 w-36 transition-all duration-500 ease-out"
@@ -164,7 +165,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
                                   transform: `translate(-50%, -50%) scale(1)`,
                                 }}
                               >
-                                <img
+                                <Image
                                   src={customization.logo}
                                   alt="Logo Preview"
                                   className="h-full w-full rounded object-contain transition-opacity duration-300"

@@ -6,6 +6,7 @@ import { cn } from '@/lib'
 import { QrSize, QrErrorLevel } from '@/hooks/tools/useQrGenerator'
 
 import type { QrCustomization } from '@/hooks/tools/useQrGenerator'
+import Image from 'next/image'
 
 interface QrDisplayProps {
   qrUrl: string
@@ -78,7 +79,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
             }}
           >
             <div className="relative">
-              <img
+              <Image
                 src={qrUrl}
                 alt="Generated QR Code"
                 className="mx-auto max-w-full"
@@ -98,7 +99,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                     height: `${customization.logoSize}%`,
                   }}
                 >
-                  <img src={customization.logo} alt="QR Logo" className="h-full w-full rounded object-contain" />
+                  <Image src={customization.logo} alt="QR Logo" className="h-full w-full rounded object-contain" />
                 </div>
               )}
             </div>

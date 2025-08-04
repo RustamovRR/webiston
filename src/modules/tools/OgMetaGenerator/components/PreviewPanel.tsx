@@ -2,6 +2,7 @@
 
 import { Share2, Palette } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 
 interface PreviewInfo {
   title: string
@@ -70,7 +71,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="rounded-lg border border-white/50 bg-white/80 p-3 backdrop-blur-sm dark:border-zinc-600 dark:bg-zinc-800/80">
               {previewInfo.image && (
                 <div className="mb-3">
-                  <img
+                  <Image
                     src={previewInfo.image}
                     alt="Facebook Preview"
                     className="h-20 w-20 rounded-lg object-cover"
@@ -120,7 +121,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                 </div>
                 {previewInfo.image && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={previewInfo.image}
                       alt="Twitter Preview"
                       className="h-16 w-16 rounded-lg object-cover"
@@ -162,7 +163,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                 </div>
                 {previewInfo.image && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={previewInfo.image}
                       alt="Telegram Preview"
                       className="h-16 w-16 rounded-lg object-cover"
@@ -197,7 +198,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="rounded-lg border border-white/50 bg-white/80 p-3 backdrop-blur-sm dark:border-zinc-600 dark:bg-zinc-800/80">
               {previewInfo.image && (
                 <div className="mb-3">
-                  <img
+                  <Image
                     src={previewInfo.image}
                     alt="LinkedIn Preview"
                     className="h-18 w-18 rounded-lg object-cover"
@@ -246,7 +247,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                 </div>
                 {previewInfo.image && (
                   <div className="mt-2">
-                    <img
+                    <Image
                       src={previewInfo.image}
                       alt="WhatsApp Preview"
                       className="h-16 w-16 rounded-lg object-cover"

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Upload, X, RefreshCw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 export interface QrCustomization {
   foregroundColor: string
@@ -431,7 +432,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
           {customization.logo ? (
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-green-300 bg-green-50 px-3 py-2 dark:border-green-600 dark:bg-green-900/20">
-                <img src={customization.logo} alt="Logo" className="h-6 w-6 rounded object-cover" />
+                <Image src={customization.logo} alt="Logo" className="h-6 w-6 rounded object-cover" />
                 <span className="text-sm text-green-700 dark:text-green-300">{t('logoUploaded')}</span>
               </div>
               <Button
