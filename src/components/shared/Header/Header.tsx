@@ -35,7 +35,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
                   {t('books')}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px]">
+                  <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">
                     <ListItem href="/books/fluent-react" title="Fluent React">
                       React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.
                     </ListItem>

@@ -199,7 +199,7 @@
     }
   },
   "powerful-patterns": {
-    "title": "Kuchli naqshlar",
+    "title": "Kuchli pattern’lar",
     "path": "powerful-patterns/page",
     "hasIndex": true,
     "children": {
@@ -336,24 +336,24 @@
     }
   },
   "frameworks": {
-    "title": "Frameworklar",
+    "title": "Freymvorklar",
     "path": "frameworks/page",
     "hasIndex": true,
     "children": {
       "why-we-need-framework": {
-        "title": "Nima uchun framework kerak",
+        "title": "Nima uchun freymvork kerak",
         "path": "frameworks/why-we-need-framework/page"
       },
       "benefits-of-using-framework": {
-        "title": "Framework ishlatishning afzalliklari",
+        "title": "Freymvork ishlatishning afzalliklari",
         "path": "frameworks/benefits-of-using-framework/page"
       },
       "trade-offs-of-using-framework": {
-        "title": "Framework ishlatishning kelishmovchiliklari",
+        "title": "Freymvork ishlatishning kelishmovchiliklari",
         "path": "frameworks/trade-offs-of-using-framework/page"
       },
       "choosing-framework": {
-        "title": "Framework tanlash",
+        "title": "Freymvork tanlash",
         "path": "frameworks/choosing-framework/page"
       },
       "next-js": {

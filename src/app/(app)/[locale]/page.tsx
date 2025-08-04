@@ -4,7 +4,7 @@ import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 import { getTranslations } from 'next-intl/server'
 import { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage.Metadata' })
 
@@ -63,7 +63,7 @@ export default async function HomePage() {
           {tHome('description')}
         </p>
 
-        <div className="mt-10 flex gap-4">
+        <div className="mt-10 flex gap-4 max-sm:flex-col">
           <ButtonLink
             href="/books"
             variant="secondary"
@@ -83,7 +83,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <section className="group flex w-full flex-col gap-8">
+      <section className="group flex w-full flex-col gap-8 max-[494px]:mt-10">
         <SectionTitle
           title={tHome.rich('reactSectionTitle', {
             i: (chunks) => <i>{chunks}</i>,

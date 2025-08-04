@@ -48,7 +48,7 @@ const UuidGenerator = () => {
         version={version}
         format={format}
         isGenerating={isGenerating}
-        sampleCounts={sampleCounts}
+        sampleCounts={sampleCounts as any}
         onCountChange={setCount}
         onVersionChange={setVersion}
         onFormatChange={setFormat}
