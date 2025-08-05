@@ -172,7 +172,7 @@ export default async function RootLayout({
       </Head>
 
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="theme">
           {children}
           <Toaster />
         </ThemeProvider>
