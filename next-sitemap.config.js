@@ -35,6 +35,7 @@ module.exports = {
         'og-meta-generator',
         'device-info',
         'screen-resolution',
+        'ip-info'
       ]
 
       for (const tool of toolsPages) {
