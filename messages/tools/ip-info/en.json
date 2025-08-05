@@ -26,6 +26,7 @@
       "networkInfoTitle": "Network Information",
       "additionalInfoTitle": "Additional Information",
       "jsonDataTitle": "JSON Data",
+      "mapTitle": "Location Map",
       "ipAddress": "IP address",
       "ipType": "IP type",
       "country": "Country",

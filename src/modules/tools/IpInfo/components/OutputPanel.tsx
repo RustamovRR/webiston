@@ -4,6 +4,7 @@ import { Search, MapPin, Wifi, Clock } from 'lucide-react'
 import { CodeHighlight } from '@/components/ui/code-highlight'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { useTranslations } from 'next-intl'
+import MapView from './MapView'
 
 interface IPInfo {
   ip: string
@@ -173,6 +174,21 @@ export default function OutputPanel({ ipInfo }: OutputPanelProps) {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Interactive Map */}
+              <div className="space-y-3">
+                <h4 className="flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                  <MapPin className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+                  {t('mapTitle')}
+                </h4>
+                <MapView
+                  latitude={ipInfo.latitude}
+                  longitude={ipInfo.longitude}
+                  country={ipInfo.country_name}
+                  city={ipInfo.city}
+                  ip={ipInfo.ip}
+                />
               </div>
             </div>
           ) : (
