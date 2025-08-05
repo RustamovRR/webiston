@@ -2,87 +2,25 @@
 
 import { Input } from '@/components/ui/input'
 import { ISearchHit } from '@/types/common'
-import { Pagefind } from '@/types/pagefind'
 import { SearchIcon } from 'lucide-react'
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import SearchDialog from './SearchDialog'
-
-const processHits = (results: any[]): ISearchHit[][] => {
-  if (!results || results.length === 0) {
-    return []
-  }
-  const grouped: Record<string, ISearchHit[]> = {}
-
-  for (const result of results) {
-    if (!result || !result.meta) continue
-
-    const pageTitle = result.meta.title || 'Nomsiz Sahifa'
-    if (!grouped[pageTitle]) {
-      grouped[pageTitle] = []
-    }
-
-    if (result.sub_results && result.sub_results.length > 0) {
-      for (const subResult of result.sub_results) {
-        // The most reliable way is to use the URL from the sub_result itself
-        // and just clean it up.
-        const finalPath = subResult.url.replace(/\.html/, '')
-
-        grouped[pageTitle].push({
-          objectID: finalPath, // Use the final, unique path as the ID
-          content: subResult.excerpt,
-          hierarchy: { lvl0: pageTitle, lvl1: subResult.title },
-          contentType: 'tutorial',
-          path: finalPath,
-          fullPath: new URL(finalPath, window.location.origin).toString(),
-        })
-      }
-    } else {
-      // Handle cases where there's a main result but no sub-results
-      const finalPath = result.url.replace(/\.html$/, '')
-      grouped[pageTitle].push({
-        objectID: finalPath,
-        content: result.excerpt,
-        hierarchy: { lvl0: pageTitle, lvl1: undefined },
-        contentType: 'tutorial',
-        path: finalPath,
-        fullPath: new URL(finalPath, window.location.origin).toString(),
-      })
-    }
-  }
-
-  const finalGrouped = Object.values(grouped).filter((group) => group.length > 0)
-  return finalGrouped
-}
+import { searchEngine } from '@/lib/search/flexsearch'
 
 export default function Search() {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const [pagefind, setPagefind] = useState<Pagefind | null>(null)
   const debounceTimer = useRef<NodeJS.Timeout>()
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
-
-  useEffect(() => {
-    const initPagefind = async () => {
-      try {
-        // @ts-ignore
-        const pf = await import(/* webpackIgnore: true */ '/_pagefind/pagefind.js')
-        await pf.options({ bundlePath: '/_pagefind/' })
-        setPagefind(pf)
-      } catch (error) {
-        console.error('Failed to load Pagefind:', error)
-      }
-    }
-    initPagefind()
-  }, [])
 
   const handleSearchChange = (value: string) => {
     setQuery(value)
 
     clearTimeout(debounceTimer.current)
 
-    if (!value) {
+    if (!value.trim()) {
       setLoading(false)
       setGroupedHits([])
       return
@@ -90,19 +28,15 @@ export default function Search() {
 
     setLoading(true)
     debounceTimer.current = setTimeout(async () => {
-      if (!pagefind) {
-        setLoading(false)
-        return
-      }
-      const searchResult = await pagefind.search(value)
-      if (searchResult && searchResult.results.length > 0) {
-        const resultData = await Promise.all(searchResult.results.map((r) => r.data()))
-        const processed = processHits(resultData)
-        setGroupedHits(processed)
-      } else {
+      try {
+        const results = await searchEngine.search(value)
+        setGroupedHits(results)
+      } catch (error) {
+        console.error('Search failed:', error)
         setGroupedHits([])
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }, 300) // 300ms debounce delay
   }
 
@@ -127,6 +61,11 @@ export default function Search() {
       clearSearch()
     }
   }, [open, clearSearch])
+
+  // Initialize search engine when component mounts
+  useEffect(() => {
+    searchEngine.initialize().catch(console.error)
+  }, [])
 
   return (
     <>
