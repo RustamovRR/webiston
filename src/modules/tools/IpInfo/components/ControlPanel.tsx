@@ -109,7 +109,7 @@ export default function ControlPanel({
               <ShimmerButton
                 onClick={onAnalyze}
                 disabled={isEmpty || isLoading}
-                className="bg-gradient-to-r from-blue-600 to-purple-600"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 disabled:text-white"
               >
                 <Search className="mr-2 h-4 w-4" />
                 {isLoading ? t('loadingStatus') : t('analyzeButton')}

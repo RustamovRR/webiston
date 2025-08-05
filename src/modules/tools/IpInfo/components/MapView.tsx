@@ -12,6 +12,20 @@ const TileLayer = dynamic(() => import('react-leaflet').then((mod) => mod.TileLa
 const Marker = dynamic(() => import('react-leaflet').then((mod) => mod.Marker), { ssr: false })
 const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), { ssr: false })
 
+// Map update component for re-centering
+function MapUpdater({ center }: { center: [number, number] }) {
+  const { useMap } = require('react-leaflet')
+  const map = useMap()
+
+  useEffect(() => {
+    if (center[0] !== 0 && center[1] !== 0) {
+      map.setView(center, 10)
+    }
+  }, [center, map])
+
+  return null
+}
+
 interface MapViewProps {
   latitude: number
   longitude: number
@@ -26,6 +40,12 @@ export default function MapView({ latitude, longitude, country, city, ip, classN
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [mapLoading, setMapLoading] = useState(true)
   const { theme } = useTheme()
+
+  // Debug coordinates
+  console.log('MapView coordinates:', { latitude, longitude, city, country, ip })
+
+  // Check if coordinates are valid
+  const hasValidCoordinates = latitude !== 0 && longitude !== 0 && !isNaN(latitude) && !isNaN(longitude)
 
   useEffect(() => {
     setIsClient(true)
@@ -42,7 +62,7 @@ export default function MapView({ latitude, longitude, country, city, ip, classN
     }
   }, [])
 
-  if (!isClient) {
+  if (!isClient || !hasValidCoordinates) {
     return (
       <div
         className={`h-64 w-full rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
@@ -50,7 +70,14 @@ export default function MapView({ latitude, longitude, country, city, ip, classN
         <div className="flex h-full items-center justify-center">
           <div className="text-center">
             <MapPin className="mx-auto mb-2 h-8 w-8 text-zinc-400" />
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Xarita yuklanmoqda...</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              {!isClient ? 'Xarita yuklanmoqda...' : 'Koordinatalar mavjud emas'}
+            </p>
+            {!hasValidCoordinates && isClient && (
+              <p className="mt-1 text-xs text-zinc-400">
+                Lat: {latitude}, Lng: {longitude}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -104,6 +131,7 @@ export default function MapView({ latitude, longitude, country, city, ip, classN
         doubleClickZoom={true}
         whenReady={() => setMapLoading(false)}
       >
+        <MapUpdater center={[latitude, longitude]} />
         <TileLayer attribution={attribution} url={tileUrl} />
         <Marker position={[latitude, longitude]}>
           <Popup>

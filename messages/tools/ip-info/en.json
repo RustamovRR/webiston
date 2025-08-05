@@ -15,7 +15,12 @@
       "inputPlaceholder": "Enter IP address (e.g., 8.8.8.8)",
       "yourIpTitle": "Your IP Address",
       "currentIpDesc": "Current IP address",
-      "sampleIpsTitle": "Sample IP Addresses"
+      "sampleIpsTitle": "Sample IP Addresses",
+      "stats": {
+        "characters": "Characters",
+        "ipVersion": "IP Version",
+        "dataAvailable": "Data"
+      }
     },
     "OutputPanel": {
       "title": "Tool Output/Result",
@@ -27,6 +32,7 @@
       "additionalInfoTitle": "Additional Information",
       "jsonDataTitle": "JSON Data",
       "mapTitle": "Location Map",
+      "securityTitle": "Security Analysis",
       "ipAddress": "IP address",
       "ipType": "IP type",
       "country": "Country",
@@ -54,9 +60,21 @@
         "name": "Cloudflare DNS",
         "description": "Cloudflare's fast DNS server"
       },
-      "opendns": {
+      "open": {
         "name": "OpenDNS",
         "description": "Cisco's secure DNS server"
+      },
+      "quad9": {
+        "name": "Quad9 DNS",
+        "description": "Quad9's secure DNS server"
+      },
+      "ibmquad9": {
+        "name": "IBM Quad9",
+        "description": "IBM's secondary Quad9 server"
+      },
+      "level3": {
+        "name": "Level3 DNS",
+        "description": "Level3's public DNS server"
       }
     },
     "InfoSection": {
@@ -122,6 +140,49 @@
       "accuracyNoticeDesc": "For IPs connected through VPN and proxy servers",
       "accuracyNoticeCode": "actual location",
       "accuracyNoticeDesc2": "may not be displayed."
+    },
+    "SecurityAnalysis": {
+      "securityRating": "Security Rating",
+      "additionalInfo": "Additional Information",
+      "levels": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "metrics": {
+        "vpnProxy": {
+          "label": "VPN/Proxy",
+          "detected": "Detected",
+          "notDetected": "None",
+          "descDetected": "This IP is connected via VPN or Proxy",
+          "descNotDetected": "Direct connection"
+        },
+        "serverType": {
+          "label": "Server Type",
+          "dataCenter": "Data Center",
+          "isp": "ISP",
+          "descDataCenter": "From data center or hosting provider",
+          "descIsp": "From regular internet provider"
+        },
+        "botCrawler": {
+          "label": "Bot/Crawler",
+          "yes": "Yes",
+          "no": "No",
+          "descBot": "Detected as bot or crawler",
+          "descNotBot": "Regular user"
+        }
+      },
+      "additionalDetails": {
+        "proxyType": "Proxy type:",
+        "crawlerName": "Crawler name:",
+        "userType": "User type:"
+      }
+    },
+    "Errors": {
+      "invalidIpFormat": "Invalid IP address format",
+      "apiRequestFailed": "Error occurred while fetching IP information. Please try again later.",
+      "rateLimitExceeded": "Rate limit exceeded. Please wait a few minutes and try again.",
+      "networkError": "Network error. Please check your internet connection."
     }
   }
 }

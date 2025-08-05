@@ -8,6 +8,7 @@ import { useIPInfo } from '@/hooks/tools/useIPInfo'
 
 export default function IpInfo() {
   const t = useTranslations('IpInfoPage.ToolHeader')
+  const tStats = useTranslations('IpInfoPage.ControlPanel')
 
   const {
     ipAddress,
@@ -27,15 +28,15 @@ export default function IpInfo() {
     isEmpty,
   } = useIPInfo()
 
-  const stats = getStats()
+  const stats = getStats(tStats)
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4">
       <ToolHeader title={t('title')} description={t('description')} />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         {/* Left Panel - Input */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-6 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
           <ControlPanel
             ipAddress={ipAddress}
             isLoading={isLoading}
@@ -53,11 +54,11 @@ export default function IpInfo() {
 
           <CurrentIpPanel currentIP={currentIP} />
 
-          <SampleIpsPanel samples={samples} onLoadSample={loadSampleIP} />
+          <SampleIpsPanel samples={samples} onLoadSample={loadSampleIP} selectedIp={ipAddress} />
         </div>
 
         {/* Right Panel - Results */}
-        <div className="space-y-6">
+        <div className="space-y-6 pt-14 lg:sticky lg:top-4 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
           <OutputPanel ipInfo={ipInfo} />
         </div>
       </div>

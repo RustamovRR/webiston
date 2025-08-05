@@ -1,10 +1,11 @@
 'use client'
 
-import { Search, MapPin, Wifi, Clock } from 'lucide-react'
+import { Search, MapPin, Wifi, Clock, Shield } from 'lucide-react'
 import { CodeHighlight } from '@/components/ui/code-highlight'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { useTranslations } from 'next-intl'
 import MapView from './MapView'
+import SecurityAnalysis from './SecurityAnalysis'
 
 interface IPInfo {
   ip: string
@@ -174,6 +175,15 @@ export default function OutputPanel({ ipInfo }: OutputPanelProps) {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Security Analysis */}
+              <div className="space-y-3">
+                <h4 className="flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                  <Shield className="h-4 w-4 text-red-500 dark:text-red-400" />
+                  {t('securityTitle')}
+                </h4>
+                <SecurityAnalysis ipInfo={ipInfo} />
               </div>
 
               {/* Interactive Map */}
