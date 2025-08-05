@@ -1,80 +1,35 @@
 'use client'
 
-import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from '@/i18n/navigation'
 import { Globe, ChevronDown } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { useIsMounted } from 'usehooks-ts'
+import dynamic from 'next/dynamic'
 
-interface Language {
-  code: 'uz' | 'en'
-  name: string
-  flag: string
-}
+// Skeleton loading component
+const LanguageSelectorSkeleton = () => (
+  <Button
+    variant="ghost"
+    size="sm"
+    className="flex cursor-pointer items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+    disabled
+  >
+    <div className="animate-pulse">
+      <Globe size={16} className="text-gray-400 dark:text-gray-500" />
+    </div>
+    <div className="relative h-4 w-6 overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+      <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent bg-[length:200%_100%] dark:via-gray-400/30"></div>
+    </div>
+    <div className="animate-pulse">
+      <ChevronDown size={14} className="text-gray-400 dark:text-gray-500" />
+    </div>
+  </Button>
+)
 
-const languages: Language[] = [
-  { code: 'uz', name: "O'zbek", flag: '🇺🇿' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-]
-
-function LanguageSelectorContent() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const locale = useLocale()
-
-  const handleLanguageChange = (newLocale: 'uz' | 'en') => {
-    router.push(pathname, { locale: newLocale })
-  }
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="flex cursor-pointer items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <Globe size={16} />
-          <span className="font-medium">{locale.toUpperCase()}</span>
-          <ChevronDown size={14} />
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end" className="w-32">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className={`flex cursor-pointer items-center gap-2 ${locale === language.code ? 'bg-zinc-100 dark:bg-zinc-800' : ''}`}
-          >
-            <span className="text-sm">{language.flag}</span>
-            <span className="font-medium">{language.code}</span>
-            {locale === language.code && <span className="ml-auto text-xs text-green-600 dark:text-green-400">✓</span>}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+// Dynamic import to avoid SSR issues
+const LanguageSelectorContent = dynamic(() => import('./LanguageSelectorContent'), {
+  ssr: false,
+  loading: () => <LanguageSelectorSkeleton />,
+})
 
 export default function LanguageSelector() {
-  const isMounted = useIsMounted()
-
-  if (!isMounted()) {
-    return (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="flex cursor-pointer items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800"
-        disabled
-      >
-        <Globe size={16} />
-        <span className="font-medium">--</span>
-        <ChevronDown size={14} />
-      </Button>
-    )
-  }
-
   return <LanguageSelectorContent />
 }
