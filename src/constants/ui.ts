@@ -152,14 +152,14 @@ export const TOOLS_LIST: Tool[] = [
     audience: 'general',
   },
 
-  // {
-  //   tKey: 'ipInfo',
-  //   href: '/tools/ip-info',
-  //   icon: MapPin,
-  //   color: 'bg-red-600/20',
-  //   category: 'analyzers',
-  //   audience: 'general',
-  // },
+  {
+    tKey: 'ipInfo',
+    href: '/tools/ip-info',
+    icon: MapPin,
+    color: 'bg-red-600/20',
+    category: 'analyzers',
+    audience: 'general',
+  },
   // {
   //   tKey: 'cameraRecorder',
   //   href: '/tools/camera-recorder',

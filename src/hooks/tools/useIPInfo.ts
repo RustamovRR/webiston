@@ -296,8 +296,8 @@ export const useIPInfo = () => {
   const getStats = () => {
     return [
       { label: 'Belgilar', value: ipAddress.length },
-      { label: 'IP Turi', value: ipInfo ? (ipInfo.type === 'ipv4' ? 4 : 6) : 0 },
-      { label: 'Joylashuv', value: ipInfo ? 1 : 0 },
+      { label: 'IP Versiya', value: ipInfo ? (ipInfo.type === 'ipv4' ? 4 : 6) : 0 },
+      { label: "Ma'lumot", value: ipInfo ? 1 : 0 },
     ]
   }
 

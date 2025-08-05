@@ -33,6 +33,8 @@ import passwordGeneratorUz from './tools/password-generator/uz.json'
 import passwordGeneratorEn from './tools/password-generator/en.json'
 import ogMetaGeneratorUz from './tools/og-meta-generator/uz.json'
 import ogMetaGeneratorEn from './tools/og-meta-generator/en.json'
+import ipInfoEn from './tools/ip-info/en.json'
+import ipInfoUz from './tools/ip-info/uz.json'
 
 // Merge all translations
 export const uz = {
@@ -52,6 +54,7 @@ export const uz = {
   ...passwordGeneratorUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
+  ...ipInfoUz,
 }
 
 export const en = {
@@ -71,6 +74,7 @@ export const en = {
   ...passwordGeneratorEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
+  ...ipInfoEn,
 }
 
 // Export default for Next.js i18n
