@@ -27,14 +27,22 @@ class SearchEngine {
     if (this.initialized) return
 
     try {
-      // Static documents'ni yuklaymiz
-      const response = await fetch('/api/search/documents')
-      if (response.ok) {
-        const documents: SearchDocument[] = await response.json()
+      // Try to load static index first
+      const staticResponse = await fetch('/search-index.json')
+      if (staticResponse.ok) {
+        const documents: SearchDocument[] = await staticResponse.json()
         this.addDocuments(documents)
+        console.log(`Loaded ${documents.length} documents from static index`)
       } else {
-        // Fallback: hardcoded documents
-        this.addFallbackDocuments()
+        // Fallback to API
+        const response = await fetch('/api/search/documents')
+        if (response.ok) {
+          const documents: SearchDocument[] = await response.json()
+          this.addDocuments(documents)
+        } else {
+          // Final fallback: hardcoded documents
+          this.addFallbackDocuments()
+        }
       }
       this.initialized = true
     } catch (error) {
@@ -169,25 +177,51 @@ class SearchEngine {
     if (!query.trim()) return []
 
     try {
+      const searchQuery = query.toLowerCase().trim()
+
       // Multiple search strategies for better results
-      const exactResults = this.index.search(query, { limit: 10 })
-      const partialResults = this.index.search(query + '*', { limit: 10 })
+      const exactResults = this.index.search(searchQuery, { limit: 15 })
+
+      // Also search for individual words
+      const words = searchQuery.split(/\s+/)
+      const wordResults: (string | number)[] = []
+      for (const word of words) {
+        if (word.length > 2) {
+          const wordRes = this.index.search(word, { limit: 10 })
+          wordResults.push(...wordRes)
+        }
+      }
 
       // Combine and deduplicate results
-      const allResults = [...new Set([...exactResults, ...partialResults])]
+      const allResults = [...new Set([...exactResults, ...wordResults])]
       const hits: ISearchHit[] = []
 
       for (const id of allResults) {
         const doc = this.documents.get(id as string)
         if (doc) {
+          // More sophisticated relevance scoring
+          const titleMatch = doc.title.toLowerCase().includes(searchQuery)
+          const contentMatch = doc.content.toLowerCase().includes(searchQuery)
+          const tagMatch = doc.tags?.some((tag) => tag.toLowerCase().includes(searchQuery))
+
+          // Check for partial word matches
+          const titleWordMatch = words.some((word) => doc.title.toLowerCase().includes(word))
+          const contentWordMatch = words.some((word) => doc.content.toLowerCase().includes(word))
+
           // Calculate relevance score
-          const titleMatch = doc.title.toLowerCase().includes(query.toLowerCase())
-          const contentMatch = doc.content.toLowerCase().includes(query.toLowerCase())
-          const tagMatch = doc.tags?.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
+          let relevance = 0
+          if (titleMatch) relevance += 10
+          if (contentMatch) relevance += 5
+          if (tagMatch) relevance += 3
+          if (titleWordMatch) relevance += 2
+          if (contentWordMatch) relevance += 1
+
+          // Skip if no relevance
+          if (relevance === 0) continue
 
           const hit: ISearchHit & { _relevance?: number } = {
             objectID: doc.id,
-            content: this.highlightText(doc.content, query),
+            content: this.highlightText(doc.content, searchQuery),
             hierarchy: {
               lvl0: doc.category === 'tools' ? 'Asboblar' : 'Kitoblar',
               lvl1: doc.title,
@@ -195,7 +229,7 @@ class SearchEngine {
             contentType: doc.category === 'tools' ? 'article' : 'tutorial',
             path: doc.url,
             fullPath: new URL(doc.url, window.location.origin).toString(),
-            _relevance: (titleMatch ? 3 : 0) + (contentMatch ? 2 : 0) + (tagMatch ? 1 : 0),
+            _relevance: relevance,
           }
           hits.push(hit)
         }

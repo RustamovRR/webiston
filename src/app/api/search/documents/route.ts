@@ -104,7 +104,7 @@ export async function GET() {
 
     documents.push(...toolsPages)
 
-    // Books content qo'shamiz
+    // Books content qo'shamiz - barcha MDX fayllarni indekslash
     try {
       const booksDir = path.join(process.cwd(), 'content')
       if (fs.existsSync(booksDir)) {
@@ -115,13 +115,14 @@ export async function GET() {
 
         for (const bookFolder of bookFolders) {
           const bookPath = path.join(booksDir, bookFolder)
-          await processBookDirectory(bookPath, bookFolder, documents)
+          await processBookDirectory(bookPath, bookFolder, documents, '')
         }
       }
     } catch (error) {
       console.error('Error processing books:', error)
     }
 
+    console.log(`Indexed ${documents.length} documents`)
     return NextResponse.json(documents)
   } catch (error) {
     console.error('Error generating search documents:', error)
@@ -129,41 +130,65 @@ export async function GET() {
   }
 }
 
-async function processBookDirectory(dirPath: string, bookName: string, documents: SearchDocument[]) {
+async function processBookDirectory(
+  dirPath: string,
+  bookName: string,
+  documents: SearchDocument[],
+  currentPath: string,
+) {
   try {
     const files = fs.readdirSync(dirPath, { withFileTypes: true })
 
     for (const file of files) {
       const filePath = path.join(dirPath, file.name)
+      const newPath = currentPath ? `${currentPath}/${file.name}` : file.name
 
       if (file.isDirectory()) {
-        await processBookDirectory(filePath, bookName, documents)
-      } else if (file.name.endsWith('.mdx')) {
+        // Recursive directory processing
+        await processBookDirectory(filePath, bookName, documents, newPath)
+      } else if (file.name.endsWith('.mdx') && file.name !== '_meta.json') {
         try {
           const content = fs.readFileSync(filePath, 'utf-8')
           const { data: frontmatter, content: markdownContent } = matter(content)
 
-          const relativePath = path.relative(path.join(process.cwd(), 'content'), filePath)
-          const urlPath = `/books/${relativePath.replace(/\.mdx$/, '').replace(/\\/g, '/')}`
+          // Create proper URL path
+          const urlPath = `/books/${bookName}/${currentPath ? currentPath + '/' : ''}${file.name.replace('.mdx', '')}`
+            .replace(/\/+/g, '/') // Remove double slashes
+            .replace(/\/$/, '') // Remove trailing slash
 
-          // Clean markdown content
+          // Clean markdown content more thoroughly
           const cleanContent = markdownContent
-            .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-            .replace(/`[^`]*`/g, '') // Remove inline code
-            .replace(/#{1,6}\s/g, '') // Remove headers
+            .replace(/```[\s\S]*?```/g, ' ') // Remove code blocks
+            .replace(/`[^`]*`/g, ' ') // Remove inline code
+            .replace(/#{1,6}\s+/g, '') // Remove headers
             .replace(/\*\*([^*]*)\*\*/g, '$1') // Remove bold
             .replace(/\*([^*]*)\*/g, '$1') // Remove italic
             .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // Remove links
+            .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1') // Remove images
+            .replace(/>\s*/g, '') // Remove blockquotes
             .replace(/\n+/g, ' ') // Replace newlines with spaces
+            .replace(/\s+/g, ' ') // Normalize spaces
             .trim()
 
+          // Extract meaningful keywords from content
+          const keywords = extractKeywords(cleanContent, frontmatter.title || file.name)
+
           documents.push({
-            id: `book-${bookName}-${path.basename(file.name, '.mdx')}`,
-            title: frontmatter.title || path.basename(file.name, '.mdx'),
-            content: cleanContent.substring(0, 300) + (cleanContent.length > 300 ? '...' : ''),
+            id: `book-${bookName}-${newPath.replace(/[\/\\]/g, '-').replace('.mdx', '')}`,
+            title: frontmatter.title || formatTitle(file.name.replace('.mdx', '')),
+            content: cleanContent.substring(0, 500) + (cleanContent.length > 500 ? '...' : ''),
             url: urlPath,
             category: 'books',
-            tags: [bookName, 'tutorial', 'guide', ...(frontmatter.tags || [])],
+            tags: [
+              bookName,
+              'tutorial',
+              'guide',
+              'react',
+              'javascript',
+              'frontend',
+              ...keywords,
+              ...(frontmatter.tags || []),
+            ],
           })
         } catch (error) {
           console.error(`Error processing file ${filePath}:`, error)
@@ -173,4 +198,70 @@ async function processBookDirectory(dirPath: string, bookName: string, documents
   } catch (error) {
     console.error(`Error processing directory ${dirPath}:`, error)
   }
+}
+
+// Helper function to format titles
+function formatTitle(filename: string): string {
+  return filename.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+}
+
+// Helper function to extract keywords from content
+function extractKeywords(content: string, title: string): string[] {
+  const commonWords = new Set([
+    'the',
+    'a',
+    'an',
+    'and',
+    'or',
+    'but',
+    'in',
+    'on',
+    'at',
+    'to',
+    'for',
+    'of',
+    'with',
+    'by',
+    'is',
+    'are',
+    'was',
+    'were',
+    'be',
+    'been',
+    'have',
+    'has',
+    'had',
+    'do',
+    'does',
+    'did',
+    'will',
+    'would',
+    'could',
+    'should',
+    'may',
+    'might',
+    'can',
+    'this',
+    'that',
+    'these',
+    'those',
+  ])
+
+  const words = (content + ' ' + title)
+    .toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter((word) => word.length > 2 && !commonWords.has(word))
+
+  // Count word frequency
+  const wordCount: Record<string, number> = {}
+  words.forEach((word) => {
+    wordCount[word] = (wordCount[word] || 0) + 1
+  })
+
+  // Return top 10 most frequent words
+  return Object.entries(wordCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 10)
+    .map(([word]) => word)
 }
