@@ -1,0 +1,102 @@
+{
+  "ScreenResolutionPage": {
+    "ToolHeader": {
+      "title": "Ekran O'lchami",
+      "description": "Real vaqtda ekran o'lchami, aniqlik va displey ma'lumotlarini ko'ring"
+    },
+    "ControlPanel": {
+      "title": "Vosita Kirish",
+      "status": "Tayyor",
+      "loadingStatus": "Yuklanmoqda...",
+      "controlPanelTitle": "Boshqaruv paneli",
+      "refreshButton": "Ma'lumotlarni yangilash",
+      "fullscreenButton": "To'liq ekran rejimi",
+      "exitFullscreenButton": "To'liq ekrandan chiqish",
+      "demoDataButton": "Namuna ma'lumotlar",
+      "downloadButton": "Ma'lumotlarni yuklab olish",
+      "mainIndicators": "Asosiy ko'rsatkichlar",
+      "megapixels": "megapiksel",
+      "width": "kenglik",
+      "height": "balandlik"
+    },
+    "OutputPanel": {
+      "title": "Vosita Natijasi",
+      "dataAvailable": "Ma'lumot mavjud",
+      "noData": "Ma'lumot yo'q",
+      "waitingTitle": "Ma'lumot kutilmoqda",
+      "waitingDesc": "Ekran ma'lumotlarini olish uchun yuqoridagi tugmalardan birini bosing",
+      "screenInfoTitle": "Ekran ma'lumotlari",
+      "screenSize": "Ekran o'lchami",
+      "resolutionType": "Aniqlik turi",
+      "viewportInfoTitle": "Ko'rinish oynasi ma'lumotlari",
+      "innerSize": "Ichki o'lchami",
+      "outerSize": "Tashqi o'lchami",
+      "technicalInfoTitle": "Texnik ma'lumotlar",
+      "pixelRatio": "Piksel nisbati",
+      "aspectRatio": "Tomonlar nisbati",
+      "orientation": "Yo'nalish",
+      "colorDepth": "Rang chuqurligi",
+      "deviceType": "Qurilma turi",
+      "retinaDisplay": "Yuqori aniqlikli displey",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "scrollPositionTitle": "Aylantirish pozitsiyasi",
+      "horizontalScroll": "Gorizontal aylantirish",
+      "verticalScroll": "Vertikal aylantirish"
+    },
+    "ResolutionCategories": {
+      "title": "Aniqlik turlari",
+      "categories": {
+        "4K": "4K Ultra Yuqori Aniqlik",
+        "QHD": "To'rt Barobar HD",
+        "FHD": "To'liq HD",
+        "HD": "Yuqori Aniqlik",
+        "SD": "Standart Aniqlik"
+      }
+    },
+    "DeviceTypes": {
+      "title": "Qurilma turlari",
+      "types": {
+        "Mobile": "Mobil qurilma",
+        "Tablet": "Planshet",
+        "Desktop": "Ish stoli kompyuteri",
+        "Large": "Katta ekranli qurilma"
+      }
+    },
+    "ModeInfo": {
+      "title": "Rejim ma'lumotlari",
+      "fullscreenMode": "To'liq ekran rejimi",
+      "retinaDisplay": "Yuqori aniqlikli displey",
+      "viewportRatio": "Ko'rinish oynasi foizi"
+    },
+    "InfoSection": {
+      "title": "Ekran O'lchami va Displey Ma'lumotlari",
+      "realTimeTitle": "Real Vaqt Kuzatuvi",
+      "realTimeDesc": "Ekran o'lchami, ko'rinish oynasi ma'lumotlari va qurilma spetsifikatsiyalarini real vaqtda kuzating. Brauzer oynasi o'lchami va aylantirish pozitsiyasini oniy kuzatish.",
+      "professionalTestingTitle": "Professional Test",
+      "professionalTestingItems": {
+        "responsive": "Moslashuvchan veb-dizayn testlari",
+        "crossDevice": "Turli qurilmalarda muvofiqlik tekshiruvi",
+        "fullscreen": "To'liq ekran rejimi tahlili",
+        "pixelRatio": "Piksel nisbati va yuqori aniqlik aniqlash"
+      },
+      "technicalAnalysisTitle": "Texnik Tahlil",
+      "technicalAnalysisItems": {
+        "resolution": "Aniqlik kategoriyasini aniqlash",
+        "deviceType": "Qurilma turini tasniflash",
+        "aspectRatio": "Tomonlar nisbatini hisoblash",
+        "jsonExport": "JSON formatida eksport qilish"
+      },
+      "resolutionStandardsTitle": "Aniqlik Standartlari va Qurilma Turlari",
+      "popularResolutions": "Mashhur Aniqliklar:",
+      "deviceCategories": "Qurilma Kategoriyalari:",
+      "webDevTitle": "Veb Dasturlash",
+      "webDevDesc": "Moslashuvchan dizayn uchun sinish nuqtalarini to'g'ri sozlang. Mobil-birinchi yondashuvni qo'llang va har xil qurilmalarda sinab ko'ring.",
+      "qaTitle": "Sifat Nazorati",
+      "qaDesc": "Turli brauzerlarni sinash uchun har xil qurilma o'lchamlarini simulyatsiya qiling. Yuqori aniqlikli displeylar uchun alohida sinov o'tkazing.",
+      "proTipTitle": "Professional Maslahat:",
+      "proTipDesc": "Ko'rinish oynasi meta tegini to'g'ri sozlash moslashuvchan dizayn uchun muhim.",
+      "proTipCode": "ishlatishni unutmang."
+    }
+  }
+}

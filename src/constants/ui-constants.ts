@@ -67,7 +67,7 @@ export const UI_PATTERNS = {
   },
 
   // Switch button styles
-  SWITCH_CONTAINER: 'flex rounded-lg bg-zinc-800/50 p-1 border border-zinc-700/50',
+  SWITCH_CONTAINER: 'flex rounded-lg dark:bg-zinc-800/50 p-1 border dark:border-zinc-700/50',
   SWITCH_BUTTON_ACTIVE: 'bg-gradient-to-r text-white shadow-lg transform scale-105',
   SWITCH_BUTTON_INACTIVE: 'text-zinc-300 hover:text-zinc-100 hover:bg-zinc-700/50',
 

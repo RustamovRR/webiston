@@ -1,0 +1,127 @@
+{
+  "PasswordGeneratorPage": {
+    "ToolHeader": {
+      "title": "Password Generator",
+      "description": "Professional xavfsiz parol yaratish vositasi. Turli xil sozlamalar bilan kuchli parollar yaratish."
+    },
+    "ConfigPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Ready",
+      "passwordType": "Parol Turi:",
+      "passwordLength": "Parol Uzunligi:",
+      "characterTypes": "Belgi Turlari:",
+      "quickSettings": "Tez Sozlamalar:",
+      "generateButton": "Yangi Parol",
+      "showButton": "Ko'rsatish",
+      "hideButton": "Yashirish",
+      "copyButton": "Nusxalash",
+      "copiedButton": "Nusxalandi!",
+      "downloadButton": "Yuklab olish",
+      "loadButton": "Yuklash"
+    },
+    "PasswordTypes": {
+      "random": "Tasodifiy",
+      "memorable": "Eslab qolinadigan",
+      "strong": "Kuchli",
+      "randomDesc": "Tasodifiy belgilar kombinatsiyasi",
+      "memorableDesc": "Eslab qolinadigan so'zlar va raqamlar",
+      "strongDesc": "Maksimal xavfsizlik uchun kuchli parol"
+    },
+    "LengthLabels": {
+      "short": "Qisqa",
+      "standard": "Standart",
+      "strong": "Kuchli",
+      "maximum": "Maksimal"
+    },
+    "CharacterOptions": {
+      "uppercase": "Katta harflar (A-Z)",
+      "lowercase": "Kichik harflar (a-z)",
+      "numbers": "Raqamlar (0-9)",
+      "symbols": "Maxsus belgilar (!@#$)",
+      "excludeSimilar": "O'xshash belgilarni chiqarish (i, l, 1, L, o, 0, O)"
+    },
+    "PresetSettings": {
+      "standard": {
+        "label": "Standart",
+        "description": "16 belgi, aralash"
+      },
+      "secure": {
+        "label": "Xavfsiz",
+        "description": "24 belgi, maksimal"
+      },
+      "easy": {
+        "label": "Oson",
+        "description": "12 belgi, eslab qolinadigan"
+      },
+      "pin": {
+        "label": "PIN",
+        "description": "6 raqam"
+      },
+      "wifi": {
+        "label": "WiFi",
+        "description": "32 belgi, router uchun"
+      }
+    },
+    "InputPanel": {
+      "title": "Tool Kirish",
+      "placeholder": "Yaratilgan parol bu yerda ko'rinadi..."
+    },
+    "ResultsPanel": {
+      "title": "Tool Natija",
+      "success": "Parol muvaffaqiyatli yaratildi!",
+      "length": "Uzunlik:",
+      "type": "Turi:",
+      "strength": "Mustahkamlik:",
+      "entropy": "Entropiya:",
+      "characterTypes": "Belgi turlari:",
+      "uniqueChars": "Noyob belgilar:",
+      "characters": "belgi"
+    },
+    "StrengthPanel": {
+      "title": "Parol Mustahkamligi",
+      "characters": "Belgilar",
+      "unique": "Noyob belgilar",
+      "entropy": "Entropiya (bit)",
+      "strength": "Mustahkamlik",
+      "strengthLevel": "Mustahkamlik darajasi:"
+    },
+    "StrengthLevels": {
+      "weak": "Zaif",
+      "fair": "O'rtacha",
+      "good": "Yaxshi",
+      "strong": "Kuchli",
+      "veryStrong": "Juda kuchli",
+      "notGenerated": "Parol yaratilmagan"
+    },
+    "InfoSection": {
+      "title": "Parol xavfsizligi nima uchun muhim?",
+      "securityRulesTitle": "Asosiy xavfsizlik qoidalari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "recommendation": "Tavsiya:",
+      "recommendationText": "Kuchli parollar kompyuter tomonidan 100+ yil davomida sindirish mumkin emas. Bu tool professional standartlarga mos parollar yaratadi.",
+      "rule1Title": "Har bir account uchun alohida parol:",
+      "rule1Desc": "Bir parolning buzilishi boshqalarini xavf ostiga qo'ymaydi",
+      "rule2Title": "16+ belgi uzunligi:",
+      "rule2Desc": "Uzun parollar matematik jihatdan sindirish qiyinroq",
+      "rule3Title": "Turli belgi turlari:",
+      "rule3Desc": "Harflar, raqamlar va maxsus belgilar kombinatsiyasi",
+      "rule4Title": "Password manager ishlatish:",
+      "rule4Desc": "Barcha parollarni xavfsiz saqlash",
+      "rule5Title": "2FA yoqish:",
+      "rule5Desc": "Ikki faktorli autentifikatsiya qo'shimcha himoya beradi",
+      "rule6Title": "Muntazam yangilash:",
+      "rule6Desc": "Muhim accountlar uchun parolni davriy o'zgartirish",
+      "tip1": "O'xshash belgilarni (i, l, 1, L, o, 0, O) chiqarib tashlang",
+      "tip2": "Shaxsiy ma'lumotlar (ism, tug'ilgan yil) ishlatmang",
+      "tip3": "Lug'atdagi so'zlarni to'g'ridan-to'g'ri ishlatmang",
+      "tip4": "Brute force hujumlarni hisobga oling (120+ bit entropiya)",
+      "tip5": "Memorable parollar oson eslab qolish uchun foydali",
+      "randomTitle": "Tasodifiy Parollar",
+      "randomDesc": "Matematik jihatdan eng xavfsiz, to'liq random belgilar kombinatsiyasi",
+      "memorableTitle": "Eslab Qolinadigan",
+      "memorableDesc": "So'zlar va raqamlardan iborat, eslab qolish oson lekin xavfsiz",
+      "strongTitle": "Kuchli Parollar",
+      "strongDesc": "Maksimal xavfsizlik uchun, barcha belgi turlarini o'z ichiga oladi"
+    }
+  }
+}

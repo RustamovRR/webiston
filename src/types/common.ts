@@ -36,3 +36,27 @@ export interface ToolConfig {
   features: string[]
   supportedFormats?: string[]
 }
+
+export type TLocale = 'uz' | 'en'
+
+export interface IClassName {
+  className?: string
+}
+
+export interface ISearchHit {
+  objectID: string
+  content: string
+  hierarchy: {
+    lvl0: string
+    lvl1?: string
+    lvl2?: string
+    lvl3?: string
+  }
+  contentType: 'tutorial' | 'article'
+  path: string // Reverted back to string
+  fullPath: string
+  metadata?: {
+    language?: string
+    title?: string
+  }
+}

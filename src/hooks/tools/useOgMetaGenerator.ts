@@ -12,6 +12,7 @@ interface MetaData {
   twitterCard: string
   twitterSite: string
   twitterCreator: string
+  imageSize?: string
 }
 
 interface UseOgMetaGeneratorProps {
@@ -21,9 +22,9 @@ interface UseOgMetaGeneratorProps {
 
 // Sample data constants
 const SAMPLE_DATA: MetaData = {
-  title: 'Webiston - Dasturlash va Web Texnologiyalar',
+  title: "Webiston - O'zbekistondagi Eng Yaxshi Web Development Platformasi",
   description:
-    "O'zbek tilida web dasturlash, React, Next.js va zamonaviy texnologiyalar haqida to'liq qo'llanma va foydali vositalar.",
+    "O'zbek tilida web dasturlash, React, Next.js va zamonaviy texnologiyalar haqida professional qo'llanma. 10,000+ dasturchi bizdan foydalanadi va o'z mahoratini oshiradi.",
   image: 'https://webiston.uz/logo.png',
   url: 'https://webiston.uz',
   siteName: 'Webiston',
@@ -34,62 +35,91 @@ const SAMPLE_DATA: MetaData = {
   twitterCreator: '@webiston_uz',
 }
 
-// Preset template constants
-const PRESET_TEMPLATES = [
+// Get preset templates with translations
+const getPresetTemplates = (t: any) => [
   {
-    label: 'Blog maqolasi',
-    description: 'Maqola va blog post uchun',
+    label: t('TemplatesPanel.templates.blog.label'),
+    description: t('TemplatesPanel.templates.blog.description'),
     data: {
-      title: "Ajoyib maqola sarlavhasi - Eng so'nggi ma'lumotlar",
-      description: "Bu maqola haqida qiziqarli va jozibali tavsif. O'quvchilarni jalb qilish uchun muhim.",
+      title: "Web Dasturlash bo'yicha Professional Qo'llanma - 2024",
+      description:
+        "React, Next.js va zamonaviy web texnologiyalar haqida to'liq ma'lumot. Dasturchilar uchun foydali maslahatlar va amaliy misollar bilan.",
+      image: 'https://webiston.uz/logo.png',
+      url: 'https://webiston.uz/blog/web-dasturlash-qollanma',
+      siteName: 'Webiston',
       type: 'article',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
+      twitterSite: '@webiston_uz',
+      twitterCreator: '@webiston_uz',
     },
   },
   {
-    label: 'Mahsulot sahifasi',
-    description: 'E-commerce va landing page',
+    label: t('TemplatesPanel.templates.product.label'),
+    description: t('TemplatesPanel.templates.product.description'),
     data: {
-      title: 'Ajoyib Mahsulot - Eng Yaxshi Tanlov | Premium Sifat',
-      description: 'Mahsulotning asosiy xususiyatlari va afzalliklari. Nima uchun aynan bizni tanlash kerak.',
+      title: 'Premium Web Development Tools - Professional Package',
+      description:
+        "Dasturchilar uchun eng yaxshi vositalar to'plami. React, Vue, Angular va Node.js uchun professional komponentlar va shablonlar.",
+      image: 'https://webiston.uz/logo.png',
+      url: 'https://webiston.uz/products/premium-tools',
+      siteName: 'Webiston Store',
       type: 'website',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
+      twitterSite: '@webiston_uz',
+      twitterCreator: '@webiston_uz',
     },
   },
   {
-    label: 'Video kontent',
-    description: 'YouTube va video content',
+    label: t('TemplatesPanel.templates.video.label'),
+    description: t('TemplatesPanel.templates.video.description'),
     data: {
-      title: "Qiziqarli Video - Ko'rishga arziydi | Professional Content",
+      title: 'React.js Tutorial - Noldan Professional Darajagacha',
       description:
-        "Video haqida qisqacha tavsif. Nima haqida ekanligini va nimaga e'tibor berish kerakligini tushuntiring.",
+        "React.js ni o'rganish uchun to'liq video kurs. Hooks, Context API, Redux va zamonaviy React pattern'lar bilan amaliy loyihalar yaratish.",
+      image: 'https://webiston.uz/logo.png',
+      url: 'https://webiston.uz/videos/react-tutorial-complete',
+      siteName: 'Webiston Academy',
       type: 'video.other',
       locale: 'uz_UZ',
       twitterCard: 'player',
+      twitterSite: '@webiston_uz',
+      twitterCreator: '@webiston_uz',
     },
   },
   {
-    label: 'Kompaniya sahifasi',
-    description: 'Biznes va korporativ',
+    label: t('TemplatesPanel.templates.company.label'),
+    description: t('TemplatesPanel.templates.company.description'),
     data: {
-      title: 'Bizning Kompaniya - Professional Xizmatlar',
-      description: "Kompaniya haqida qisqacha ma'lumot va asosiy xizmatlar. Mijozlar uchun qiymat taklifimiz.",
+      title: "Webiston - O'zbekistondagi Eng Yaxshi Web Development Kompaniyasi",
+      description:
+        'Professional web saytlar, mobil ilovalar va e-commerce yechimlar. 5+ yillik tajriba, 200+ muvaffaqiyatli loyiha va mijozlar ehtiyojiga moslashgan xizmatlar.',
+      image: 'https://webiston.uz/logo.png',
+      url: 'https://webiston.uz/about',
+      siteName: 'Webiston',
       type: 'website',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
+      twitterSite: '@webiston_uz',
+      twitterCreator: '@webiston_uz',
     },
   },
   {
-    label: 'Event sahifasi',
-    description: 'Tadbirlar va konferensiyalar',
+    label: t('TemplatesPanel.templates.event.label'),
+    description: t('TemplatesPanel.templates.event.description'),
     data: {
-      title: 'Ajoyib Tadbir 2024 - Qatnashing!',
-      description: "Tadbir haqida ma'lumot, sana, joy va ishtirokchilar uchun foydali ma'lumotlar.",
+      title: 'Web Development Conference 2024 - Toshkentda Eng Katta Tech Event',
+      description:
+        "O'zbekistondagi eng yirik web development konferensiyasi. 50+ spikerlar, 1000+ ishtirokchi, networking va yangi texnologiyalar bilan tanishish imkoniyati.",
+      image: 'https://webiston.uz/logo.png',
+      url: 'https://webiston.uz/events/web-dev-conference-2024',
+      siteName: 'Webiston Events',
       type: 'website',
       locale: 'uz_UZ',
       twitterCard: 'summary_large_image',
+      twitterSite: '@webiston_uz',
+      twitterCreator: '@webiston_uz',
     },
   },
 ]
@@ -116,18 +146,19 @@ const TWITTER_CARD_TYPES = [
   { value: 'player', label: 'Player', description: 'Video/audio player' },
 ]
 
-export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorProps = {}) => {
+export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorProps = {}, t?: any) => {
   const [metaData, setMetaData] = useState<MetaData>({
     title: '',
     description: '',
-    image: '',
-    url: '',
+    image: 'https://webiston.uz/logo.png',
+    url: 'https://webiston.uz/tools',
     siteName: '',
     type: 'website',
     locale: 'uz_UZ',
     twitterCard: 'summary_large_image',
     twitterSite: '',
     twitterCreator: '',
+    imageSize: '1200x630',
   })
 
   const [generatedMeta, setGeneratedMeta] = useState<string>('')
@@ -154,6 +185,25 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       // Open Graph meta tags
       if (metaData.type) {
         ogMetas.push(`<meta property="og:type" content="${metaData.type}" />`)
+
+        // Add type-specific meta tags
+        if (metaData.type === 'article') {
+          ogMetas.push(`<meta property="article:author" content="${metaData.twitterCreator || 'Author'}" />`)
+          ogMetas.push(`<meta property="article:published_time" content="${new Date().toISOString()}" />`)
+        } else if (metaData.type === 'video.other') {
+          ogMetas.push(`<meta property="video:duration" content="300" />`)
+          ogMetas.push(`<meta property="video:width" content="1280" />`)
+          ogMetas.push(`<meta property="video:height" content="720" />`)
+        } else if (metaData.type === 'book') {
+          ogMetas.push(`<meta property="book:author" content="${metaData.twitterCreator || 'Author'}" />`)
+          ogMetas.push(`<meta property="book:isbn" content="978-0000000000" />`)
+        } else if (metaData.type === 'profile') {
+          ogMetas.push(`<meta property="profile:first_name" content="First" />`)
+          ogMetas.push(`<meta property="profile:last_name" content="Last" />`)
+        } else if (metaData.type === 'music.song') {
+          ogMetas.push(`<meta property="music:duration" content="240" />`)
+          ogMetas.push(`<meta property="music:album" content="Album Name" />`)
+        }
       }
 
       if (metaData.title) {
@@ -171,6 +221,13 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       if (metaData.image) {
         ogMetas.push(`<meta property="og:image" content="${metaData.image}" />`)
         ogMetas.push(`<meta property="og:image:alt" content="${metaData.title || 'Image'}" />`)
+
+        // Add image dimensions based on selected size
+        if (metaData.imageSize) {
+          const [width, height] = metaData.imageSize.split('x')
+          ogMetas.push(`<meta property="og:image:width" content="${width}" />`)
+          ogMetas.push(`<meta property="og:image:height" content="${height}" />`)
+        }
       }
 
       if (metaData.siteName) {
@@ -205,6 +262,13 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       if (metaData.image) {
         twitterMetas.push(`<meta name="twitter:image" content="${metaData.image}" />`)
         twitterMetas.push(`<meta name="twitter:image:alt" content="${metaData.title || 'Image'}" />`)
+
+        // Add Twitter image dimensions
+        if (metaData.imageSize) {
+          const [width, height] = metaData.imageSize.split('x')
+          twitterMetas.push(`<meta name="twitter:image:width" content="${width}" />`)
+          twitterMetas.push(`<meta name="twitter:image:height" content="${height}" />`)
+        }
       }
 
       if (metaData.url) {
@@ -265,25 +329,30 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       ].join('\n')
 
       setFormattedMeta(formatted)
-      onSuccess?.('Meta taglar muvaffaqiyatli yaratildi')
     } catch (error) {
-      onError?.('Meta taglar yaratishda xatolik yuz berdi')
+      console.error('Meta generation error:', error)
     }
-  }, [metaData, onSuccess, onError])
+  }, [metaData])
 
   // Load sample data
   const loadSampleData = useCallback(() => {
     setMetaData(SAMPLE_DATA)
-    onSuccess?.("Demo ma'lumotlar yuklandi")
-  }, [onSuccess])
+    setTimeout(() => {
+      generateMeta()
+      onSuccess?.("Demo ma'lumotlar yuklandi")
+    }, 0)
+  }, [onSuccess, generateMeta])
 
   // Load template
   const loadTemplate = useCallback(
     (templateData: Partial<MetaData>) => {
       setMetaData((prev) => ({ ...prev, ...templateData }))
-      onSuccess?.('Shablon yuklandi')
+      setTimeout(() => {
+        generateMeta()
+        onSuccess?.('Shablon yuklandi')
+      }, 0)
     },
-    [onSuccess],
+    [onSuccess, generateMeta],
   )
 
   // Clear form
@@ -320,9 +389,17 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
         value = 'https://' + value
       }
 
-      setMetaData((prev) => ({ ...prev, [field]: value }))
+      setMetaData((prev) => {
+        const newData = { ...prev, [field]: value }
+        return newData
+      })
+
+      // Generate meta tags after state update
+      setTimeout(() => {
+        generateMeta()
+      }, 0)
     },
-    [onError],
+    [onError, generateMeta],
   )
 
   // Copy to clipboard
@@ -425,6 +502,7 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
       image: metaData.image || '/placeholder-image.jpg',
       url: metaData.url || 'https://example.com',
       siteName: metaData.siteName || 'Sayt nomi',
+      type: metaData.type || 'website',
     }),
     [metaData],
   )
@@ -442,7 +520,7 @@ export const useOgMetaGenerator = ({ onSuccess, onError }: UseOgMetaGeneratorPro
     previewInfo,
 
     // Data
-    presetTemplates: PRESET_TEMPLATES,
+    presetTemplates: t ? getPresetTemplates(t) : [],
     ogTypes: OG_TYPES,
     twitterCardTypes: TWITTER_CARD_TYPES,
 

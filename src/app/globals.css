@@ -1,13 +1,8 @@
-@import 'nextra-theme-docs/style.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
-
-@source inline('aspect-video');
-@source inline('py-10');
-
-@variant dark (&:where(.dark *));
+@plugin "@tailwindcss/typography";
 
 @theme {
   --color-primary-black: rgba(17, 17, 17);
@@ -38,6 +33,15 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+
+  .bg-gradient-radial {
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  }
+}
+
+.prose code::before,
+.prose code::after {
+  content: '';
 }
 
 body {
@@ -63,15 +67,6 @@ main {
 .home-content p {
   margin-top: 1.5em;
   line-height: 1.75em;
-}
-
-.home-content a {
-  --tw-ring-color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50%/0.3);
-  --tw-text-opacity: 1;
-  text-underline-position: under;
-  text-decoration-line: underline;
-  text-decoration-thickness: from-font;
-  color: hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 50% / var(--tw-text-opacity));
 }
 
 figcaption {
@@ -133,10 +128,19 @@ td {
   width: 1px;
   margin-top: 15%;
   height: 80%;
-  border-left: 1px dashed rgba(255, 255, 255, 0.5);
+  border-left: 1px dashed rgba(0, 0, 0, 0.2);
   border-style: dashed;
   opacity: 0;
   animation: slideInVertical 2s forwards cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.dark .background-pattern::before,
+.dark .background-pattern::after,
+.dark .background-pattern .vertical-line-1,
+.dark .background-pattern .vertical-line-2,
+.dark .background-pattern .vertical-line-3,
+.dark .background-pattern .vertical-line-4 {
+  border-left: 1px dashed rgba(255, 255, 255, 0.5);
 }
 
 .background-pattern::before {
@@ -185,10 +189,17 @@ td {
   height: 1px;
   margin-left: 22.5%;
   width: 85%;
-  border-top: 1px dashed rgba(255, 255, 255, 0.3);
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
   border-style: dashed;
   opacity: 0;
   animation: slideInHorizontal 2s forwards cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.dark .background-pattern .horizontal-line-1,
+.dark .background-pattern .horizontal-line-2,
+.dark .background-pattern .horizontal-line-3,
+.dark .background-pattern .horizontal-line-4 {
+  border-top: 1px dashed rgba(255, 255, 255, 0.3);
 }
 
 .background-pattern .horizontal-line-1 {

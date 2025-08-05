@@ -1,0 +1,127 @@
+{
+  "PasswordGeneratorPage": {
+    "ToolHeader": {
+      "title": "Password Generator",
+      "description": "Professional secure password generation tool. Create strong passwords with various settings."
+    },
+    "ConfigPanel": {
+      "title": "Tool Configuration",
+      "status": "Ready",
+      "passwordType": "Password Type:",
+      "passwordLength": "Password Length:",
+      "characterTypes": "Character Types:",
+      "quickSettings": "Quick Settings:",
+      "generateButton": "New Password",
+      "showButton": "Show",
+      "hideButton": "Hide",
+      "copyButton": "Copy",
+      "copiedButton": "Copied!",
+      "downloadButton": "Download",
+      "loadButton": "Load"
+    },
+    "PasswordTypes": {
+      "random": "Random",
+      "memorable": "Memorable",
+      "strong": "Strong",
+      "randomDesc": "Random character combinations",
+      "memorableDesc": "Memorable words and numbers",
+      "strongDesc": "Strong password for maximum security"
+    },
+    "LengthLabels": {
+      "short": "Short",
+      "standard": "Standard",
+      "strong": "Strong",
+      "maximum": "Maximum"
+    },
+    "CharacterOptions": {
+      "uppercase": "Uppercase letters (A-Z)",
+      "lowercase": "Lowercase letters (a-z)",
+      "numbers": "Numbers (0-9)",
+      "symbols": "Special characters (!@#$)",
+      "excludeSimilar": "Exclude similar characters (i, l, 1, L, o, 0, O)"
+    },
+    "PresetSettings": {
+      "standard": {
+        "label": "Standard",
+        "description": "16 chars, mixed"
+      },
+      "secure": {
+        "label": "Secure",
+        "description": "24 chars, maximum"
+      },
+      "easy": {
+        "label": "Easy",
+        "description": "12 chars, memorable"
+      },
+      "pin": {
+        "label": "PIN",
+        "description": "6 numbers"
+      },
+      "wifi": {
+        "label": "WiFi",
+        "description": "32 chars, for router"
+      }
+    },
+    "InputPanel": {
+      "title": "Tool Input",
+      "placeholder": "Generated password will appear here..."
+    },
+    "ResultsPanel": {
+      "title": "Tool Output",
+      "success": "Password generated successfully!",
+      "length": "Length:",
+      "type": "Type:",
+      "strength": "Strength:",
+      "entropy": "Entropy:",
+      "characterTypes": "Character types:",
+      "uniqueChars": "Unique characters:",
+      "characters": "characters"
+    },
+    "StrengthPanel": {
+      "title": "Password Strength",
+      "characters": "Characters",
+      "unique": "Unique characters",
+      "entropy": "Entropy (bits)",
+      "strength": "Strength",
+      "strengthLevel": "Strength level:"
+    },
+    "StrengthLevels": {
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong",
+      "veryStrong": "Very Strong",
+      "notGenerated": "Password not generated"
+    },
+    "InfoSection": {
+      "title": "Why is password security important?",
+      "securityRulesTitle": "Basic security rules:",
+      "professionalTipsTitle": "Professional tips:",
+      "recommendation": "Recommendation:",
+      "recommendationText": "Strong passwords cannot be cracked by computers for 100+ years. This tool creates passwords that meet professional standards.",
+      "rule1Title": "Separate password for each account:",
+      "rule1Desc": "Compromising one password doesn't put others at risk",
+      "rule2Title": "16+ character length:",
+      "rule2Desc": "Longer passwords are mathematically harder to crack",
+      "rule3Title": "Various character types:",
+      "rule3Desc": "Combination of letters, numbers and special characters",
+      "rule4Title": "Use password manager:",
+      "rule4Desc": "Securely store all passwords",
+      "rule5Title": "Enable 2FA:",
+      "rule5Desc": "Two-factor authentication provides additional protection",
+      "rule6Title": "Regular updates:",
+      "rule6Desc": "Periodically change passwords for important accounts",
+      "tip1": "Exclude similar characters (i, l, 1, L, o, 0, O)",
+      "tip2": "Don't use personal information (name, birth year)",
+      "tip3": "Don't use dictionary words directly",
+      "tip4": "Consider brute force attacks (120+ bit entropy)",
+      "tip5": "Memorable passwords are useful for easy recall",
+      "randomTitle": "Random Passwords",
+      "randomDesc": "Mathematically most secure, completely random character combinations",
+      "memorableTitle": "Memorable",
+      "memorableDesc": "Made of words and numbers, easy to remember but secure",
+      "strongTitle": "Strong Passwords",
+      "strongDesc": "For maximum security, includes all character types"
+    }
+  }
+}

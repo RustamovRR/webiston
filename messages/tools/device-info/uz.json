@@ -1,0 +1,109 @@
+{
+  "DeviceInfoPage": {
+    "ToolHeader": {
+      "title": "Qurilma Ma'lumotlari",
+      "description": "Brauzer, qurilma va operatsion tizim haqida batafsil ma'lumot oling"
+    },
+    "ControlPanel": {
+      "title": "Tool Boshqaruv",
+      "status": "Tayyor",
+      "deviceInfoTitle": "Qurilma ma'lumotlari",
+      "deviceInfoDesc": "Joriy brauzer va qurilma haqida batafsil ma'lumot",
+      "refreshButton": "Yangilash",
+      "copyAllButton": "Nusxalash",
+      "copiedAll": "Nusxalandi!",
+      "downloadButton": "JSON",
+      "loadingTitle": "Ma'lumotlar yuklanmoqda...",
+      "loadingDesc": "Iltimos kuting..."
+    },
+    "BrowserInfo": {
+      "title": "Brauzer Ma'lumotlari",
+      "status": "Brauzer",
+      "browserName": "Brauzer nomi",
+      "version": "Versiya",
+      "userAgent": "User Agent"
+    },
+    "SystemInfo": {
+      "title": "Tizim Ma'lumotlari",
+      "status": "Tizim",
+      "platform": "Platforma",
+      "language": "Asosiy til",
+      "timezone": "Vaqt zonasi",
+      "onlineStatus": "Onlayn holati",
+      "online": "Onlayn",
+      "offline": "Oflayn",
+      "cookieEnabled": "Cookie yoqilgan",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "supportedLanguages": "Qo'llab-quvvatlanadigan tillar"
+    },
+    "ScreenInfo": {
+      "title": "Ekran Ma'lumotlari",
+      "status": "Ekran",
+      "screenSize": "Ekran o'lchami",
+      "availableSize": "Mavjud o'lcham",
+      "colorDepth": "Rang chuqurligi",
+      "pixelRatio": "Piksel nisbati",
+      "orientation": "Yo'nalish"
+    },
+    "DeviceInfo": {
+      "title": "Qurilma Xususiyatlari",
+      "status": "Qurilma",
+      "deviceType": "Qurilma turi",
+      "touchScreen": "Sensorli ekran",
+      "touchSupported": "Qo'llab-quvvatlaydi",
+      "touchNotSupported": "Qo'llab-quvvatlamaydi",
+      "maxTouchPoints": "Maksimal sensor nuqtalar",
+      "mobileDevice": "Mobil qurilma",
+      "yes": "Ha",
+      "no": "Yo'q"
+    },
+    "ConnectionInfo": {
+      "title": "Internet Ulanishi",
+      "status": "Ulanish",
+      "connectionType": "Ulanish turi",
+      "speed": "Tezlik (Mbps)",
+      "latency": "Kechikish (ms)",
+      "dataSaver": "Ma'lumot tejash rejimi",
+      "enabled": "Yoqilgan",
+      "disabled": "O'chirilgan"
+    },
+    "InfoSection": {
+      "title": "Qurilma ma'lumotlari haqida",
+      "status": "Ma'lumot",
+      "usagePlacesTitle": "Asosiy foydalanish joylari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "noteTitle": "Maslahat:",
+      "noteText": "Bu ma'lumotlarni JSON formatida yuklab olib, veb analitika va ishlash samaradorligi monitoringi uchun ishlatib ko'ring.",
+      "usagePlaces": {
+        "webDev": {
+          "title": "Veb ishlab chiqish:",
+          "desc": "Moslashuvchan dizayn uchun ekran o'lchamlari"
+        },
+        "browserTesting": {
+          "title": "Brauzerni testlash:",
+          "desc": "Turli brauzerlarda muvofiqlikni tekshirish"
+        },
+        "performance": {
+          "title": "Ishlash samaradorligi:",
+          "desc": "Qurilma imkoniyatlariga qarab optimallashtirish"
+        },
+        "analytics": {
+          "title": "Analitika:",
+          "desc": "Foydalanuvchi qurilmalari statistikasi"
+        },
+        "support": {
+          "title": "Qo'llab-quvvatlash:",
+          "desc": "Texnik qo'llab-quvvatlash va xatoliklarni topish uchun (debug)"
+        }
+      },
+      "tips": {
+        "tip1": "Foydalanuvchi agenti (User-Agent) maʼlumotlarini server tomonida aniqlash uchun qoʻllang.",
+        "tip2": "Ekran oʻlchamini moslashuvchan (responsive) dizaynning nazorat nuqtalari (breakpoint) uchun tahlil qiling.",
+        "tip3": "Qurilma xotirasi va protsessor yadrolari sonini samaradorlikni sozlash (performance tuning) uchun hisobga oling.",
+        "tip4": "Ulanish turini (masalan, 4G, Wi-Fi) kechiktirilgan yuklash (lazy loading) strategiyasida inobatga oling.",
+        "tip5": "Sensorli ekran (touch) imkoniyatini 'mobile-first' yondashuvidagi dizaynni optimallashtirish uchun tekshiring."
+      }
+    }
+  }
+}

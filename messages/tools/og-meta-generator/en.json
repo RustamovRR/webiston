@@ -1,0 +1,178 @@
+{
+  "OgMetaGeneratorPage": {
+    "ToolHeader": {
+      "title": "OG Meta Generator",
+      "description": "Create meta tags for social media and improve SEO at a professional level"
+    },
+    "ConfigPanel": {
+      "title": "Tool Configuration",
+      "status": "Select Mode",
+      "workMode": "Work mode:",
+      "form": "Data Input",
+      "preview": "Preview"
+    },
+    "TemplatesPanel": {
+      "title": "Templates",
+      "status": "Quick Selection",
+      "readyTemplates": "Ready templates:",
+      "loadButton": "Load",
+      "demoData": "Demo Data",
+      "clear": "Clear",
+      "templates": {
+        "blog": {
+          "label": "Blog Article",
+          "description": "For articles and blog posts"
+        },
+        "product": {
+          "label": "Product Page",
+          "description": "For e-commerce and product pages"
+        },
+        "video": {
+          "label": "Video Content",
+          "description": "For video and multimedia content"
+        },
+        "company": {
+          "label": "Company Page",
+          "description": "For business and corporate pages"
+        },
+        "event": {
+          "label": "Event Page",
+          "description": "For events and conferences"
+        }
+      }
+    },
+    "FormPanel": {
+      "title": "Data Input",
+      "status": "Form",
+      "basicInfo": "Basic Information",
+      "systemSettings": "System Settings",
+      "inputStats": "Input data",
+      "titleLabel": "Title *",
+      "titlePlaceholder": "Page title (up to 70 characters)",
+      "titleCounter": "characters",
+      "descLabel": "Description *",
+      "descPlaceholder": "Brief description about the page (up to 200 characters)",
+      "imageLabel": "Image URL",
+      "imagePlaceholder": "https://example.com/image.jpg",
+      "urlLabel": "Page URL",
+      "urlPlaceholder": "https://example.com",
+      "siteNameLabel": "Site Name",
+      "siteNamePlaceholder": "Site or company name",
+      "contentTypeLabel": "Content Type",
+      "twitterCardLabel": "Twitter Card",
+      "twitterSiteLabel": "Twitter Site",
+      "twitterSitePlaceholder": "@username",
+      "twitterCreatorLabel": "Twitter Creator",
+      "twitterCreatorPlaceholder": "@username",
+      "gettingLong": "Getting long",
+      "perfect": "Perfect!",
+      "tooLongError": "Too long!",
+      "contentType": "Content Type",
+      "twitterCard": "Twitter Card",
+      "language": "Language",
+      "imageSize": "Image Size",
+      "twitterSite": "Twitter Site",
+      "twitterCreator": "Twitter Creator",
+      "typeWebsite": "Website",
+      "typeArticle": "Article",
+      "typeVideo": "Video",
+      "typeBook": "Book",
+      "typeProfile": "Profile",
+      "typeMusic": "Music",
+      "cardSummary": "Summary",
+      "cardLargeImage": "Large Image",
+      "cardApp": "App",
+      "cardPlayer": "Player",
+      "langUzbek": "Uzbek",
+      "langEnglish": "English",
+      "langRussian": "Russian",
+      "langTurkish": "Turkish",
+      "recommended": "Recommended",
+      "square": "Square"
+    },
+    "OutputPanel": {
+      "title": "Tool Output",
+      "status": "Meta Tags",
+      "metaTags": "Meta Tags",
+      "fullHtml": "Full HTML",
+      "outputStats": "Generated output",
+      "emptyTitle": "Fill in the data",
+      "emptyDesc": "meta tags will be generated automatically",
+      "downloadTxt": "TXT",
+      "downloadHtml": "HTML",
+      "copyAndEdit": "Copy & Edit",
+      "copySuccess": "✅ Meta tags copied to clipboard!\n\n📝 You can now:\n• Paste in any text editor\n• Edit as needed\n• Use in your HTML file"
+    },
+    "PreviewPanel": {
+      "title": "Social Media Preview",
+      "status": "Preview",
+      "facebook": "Facebook / Open Graph",
+      "twitter": "Twitter Card",
+      "facebookPreview": "Facebook Preview",
+      "twitterCard": "Twitter Card",
+      "telegramPreview": "Telegram Preview",
+      "linkedinPreview": "LinkedIn Preview",
+      "whatsappPreview": "WhatsApp Preview"
+    },
+    "ValidationPanel": {
+      "title": "Smart Validation",
+      "status": "SEO Analysis",
+      "seoScore": "SEO Score",
+      "metaOptimization": "Meta tag optimization",
+      "excellent": "Excellent",
+      "good": "Good",
+      "needsWork": "Needs work",
+      "validationChecks": "Validation Checks",
+      "titleLength": "Title Length",
+      "descriptionLength": "Description Length",
+      "imageUrl": "Image URL",
+      "pageUrl": "Page URL",
+      "titleRequired": "Title required",
+      "descriptionRequired": "Description required",
+      "secureHttpsImage": "Secure HTTPS image",
+      "secureHttpsUrl": "Secure HTTPS URL",
+      "perfectLength": "Perfect length",
+      "tooLong": "Too long",
+      "tooShort": "Too short",
+      "useHttps": "Use HTTPS for better security",
+      "invalidFormat": "Invalid URL format",
+      "quickTips": "💡 Quick Tips",
+      "tip1": "• Title: 30-60 characters for optimal display",
+      "tip2": "• Description: 120-160 characters for best results",
+      "tip3": "• Image: Use 1200x630px for perfect social sharing",
+      "tip4": "• Always use HTTPS URLs for better security"
+    },
+    "InfoSection": {
+      "title": "Why is Open Graph Meta important?",
+      "usagePlacesTitle": "Main usage areas:",
+      "professionalTipsTitle": "Professional tips:",
+      "noteTitle": "Note:",
+      "noteText": "When meta tags are properly configured, your site looks professional and trustworthy on social media, which helps attract more customers.",
+      "usagePlaces": {
+        "social": "Social media: Beautiful preview on Facebook, LinkedIn, WhatsApp",
+        "twitter": "Twitter Cards: Professional appearance on Twitter",
+        "seo": "SEO improvement: Detailed information for search engines",
+        "ctr": "Click rate: More clicks through attractive preview",
+        "brand": "Brand identity: Consistent appearance for your brand",
+        "impression": "Professional impression: Positive opinion about your site"
+      },
+      "tips": {
+        "tip1": "Title should not exceed 70 characters (optimal 50-60)",
+        "tip2": "Description should not exceed 200 characters (optimal 150-160)",
+        "tip3": "Image should be 1200x630 pixels in size",
+        "tip4": "Create unique meta tags for each page",
+        "tip5": "Test preview on different platforms"
+      },
+      "metaTypes": {
+        "openGraphTitle": "Open Graph",
+        "openGraphDesc": "Basic meta tags for platforms like Facebook, LinkedIn and WhatsApp",
+        "twitterTitle": "Twitter Cards",
+        "twitterDesc": "Special formats for beautiful and professional appearance on Twitter",
+        "seoTitle": "SEO Meta",
+        "seoDesc": "Optimized tags for Google and other search engines",
+        "schemaTitle": "Schema.org",
+        "schemaDesc": "Semantic web standards for structured data"
+      }
+    }
+  }
+}

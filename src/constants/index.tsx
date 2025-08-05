@@ -6,3 +6,4 @@ export * from './ui-constants'
 // Tool-specific constants
 export * from './tools'
 export * from './tool-constants'
+export * from './color-names'

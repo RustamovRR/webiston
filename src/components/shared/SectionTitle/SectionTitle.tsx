@@ -14,10 +14,10 @@ const SectionTitle: FC<IProps> = ({ icon, title, description, className, disable
 
   return (
     <div className={classNames}>
-      <div className="group-hover:animate-rotate-once">{icon}</div>
+      <div className="transition-transform duration-700 ease-in-out group-hover:rotate-180">{icon}</div>
       <div>
         <h3 className="gradient-text text-xl font-semibold">{title}</h3>
-        <p className="text-gray-primary">{description}</p>
+        <p className="text-zinc-600 dark:text-zinc-400">{description}</p>
       </div>
     </div>
   )

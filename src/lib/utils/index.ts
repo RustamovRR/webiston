@@ -1,2 +1,7 @@
 export * from './text'
 export * from './url'
+export * from './color-conversions'
+export * from './color-spaces'
+export * from './color-parser'
+export * from './color-palettes'
+export * from './color-storage'

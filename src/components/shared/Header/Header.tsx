@@ -1,59 +1,93 @@
-'use client'
-
-import Link from 'next/link'
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { Search } from 'nextra/components'
+import React from 'react'
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu'
 import { cn } from '@/lib'
+import Logo from './Logo'
+import MobileMenuButton from './MobileMenuButton'
+import LanguageSelector from '../LanguageSelector/LanguageSelector'
+import Search from '../Search'
+import ThemeToggle from '../ThemeToggle'
+import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
-const Header = () => {
-  const pathname = usePathname()
+interface HeaderProps {
+  showLanguageSelector?: boolean
+}
 
-  const navItems = [
-    {
-      href: '/books',
-      label: 'Kitoblar',
-      active: pathname?.startsWith('/books'),
-    },
-    {
-      href: '/tools',
-      label: 'Vositalar',
-      active: pathname?.startsWith('/tools'),
-    },
-  ]
+export default function Header({ showLanguageSelector = true }: HeaderProps) {
+  const t = useTranslations('Header')
 
   return (
-    <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
-        {/* Logo */}
-        <Link href="/" className="mr-6 flex items-center gap-2">
-          <Image src="/logo.png" alt="Webiston Logo" width={32} height={32} />
-          <span className="hidden text-lg font-bold sm:inline">Webiston</span>
-        </Link>
+    <div className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm dark:border-zinc-800">
+      <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <section className="flex items-center gap-6">
+          <Logo />
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]">
+                  {t('books')}
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">
+                    <ListItem href="/books/fluent-react" title="Fluent React">
+                      React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  asChild
+                  className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]"
+                >
+                  <Link href="/tools">{t('tools')}</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </section>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-6 text-sm">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'hover:text-foreground/80 transition-colors',
-                item.active ? 'text-foreground' : 'text-foreground/60',
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Search - o'ng tomonda */}
-        <div className="flex flex-1 items-center justify-end">
-          <Search placeholder="Qidirish..." />
-        </div>
+        <section className="flex items-center space-x-2">
+          <div className="hidden items-center gap-2 md:flex">
+            <Search />
+            {showLanguageSelector && <LanguageSelector />}
+            <ThemeToggle />
+          </div>
+          <div className="md:hidden">
+            <MobileMenuButton />
+          </div>
+        </section>
       </div>
-    </header>
+    </div>
   )
 }
 
-export default Header
+const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a
+            ref={ref}
+            className={cn(
+              'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none',
+              className,
+            )}
+            {...props}
+          >
+            <div className="text-sm leading-none font-medium">{title}</div>
+            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    )
+  },
+)
+ListItem.displayName = 'ListItem'
