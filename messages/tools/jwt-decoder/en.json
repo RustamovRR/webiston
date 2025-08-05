@@ -1,0 +1,99 @@
+{
+  "JwtDecoderPage": {
+    "ToolHeader": {
+      "title": "JWT Token Decoder",
+      "description": "A professional tool for decoding and analyzing JSON Web Tokens"
+    },
+    "ControlPanel": {
+      "decoded": "Decoded",
+      "raw": "Raw Data",
+      "sampleJwt": "Sample JWT",
+      "fileUpload": "Upload File",
+      "uploading": "Uploading...",
+      "showSignature": "Show Signature",
+      "hideSignature": "Hide Signature",
+      "validJwt": "Valid JWT"
+    },
+    "ViewModeInfo": {
+      "title": "View Modes:",
+      "decoded": "Decoded",
+      "raw": "Raw Data",
+      "decodedDescription": "Shows the header and payload parts of the JWT in JSON format",
+      "rawDescription": "Shows the original Base64 encoded data of the JWT"
+    },
+    "InputPanel": {
+      "title": "JWT Token Input",
+      "placeholder": "Enter your JWT token here... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
+      "characters": "characters",
+      "parts": "parts",
+      "lines": "lines"
+    },
+    "ErrorDisplay": {
+      "title": "Error",
+      "invalidFormat": "Invalid JWT format or corrupted token",
+      "threeParts": "JWT must consist of 3 parts (header.payload.signature)"
+    },
+    "TokenInfo": {
+      "expiration": "Expiration",
+      "expired": "Expired",
+      "valid": "Still valid",
+      "algorithm": "Algorithm",
+      "unknown": "Unknown",
+      "type": "Type",
+      "issued": "Issued",
+      "noData": "No data"
+    },
+    "TokenParts": {
+      "header": "Header",
+      "payload": "Payload",
+      "rawData": "Raw Base64 data:"
+    },
+    "SignatureSection": {
+      "title": "Signature",
+      "description": "JWT token security signature:"
+    },
+    "SignatureInfo": {
+      "title": "What is Signature?",
+      "description1": "Signature is the third part of the JWT token that verifies the authenticity of the token.",
+      "description2": "This part is created by the server with a secret key and guarantees that the token has not been modified.",
+      "description3": "You can manage this secret information using the show/hide signature button."
+    },
+    "InfoSection": {
+      "structure": "JWT Structure",
+      "format": "JWT Format",
+      "structureDescription": "header.payload.signature",
+      "example": "Example",
+      "parts": "Parts",
+      "headerExample": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
+      "payloadExample": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
+      "about": "About JWT",
+      "whatIsJwt": "What is JWT?",
+      "whatIsJwtDescription1": "• JSON Web Token - for secure data transmission",
+      "whatIsJwtDescription2": "• Consists of 3 parts: Header.Payload.Signature",
+      "whatIsJwtDescription3": "• Encoded in Base64 format",
+      "whatIsJwtDescription4": "• Can be digitally signed",
+      "standardFields": "Standard Fields",
+      "issuer": "• iss - Issuer (who issued)",
+      "subject": "• sub - Subject (what about)",
+      "expiration": "• exp - Expiration time",
+      "issuedAt": "• iat - Issued at time",
+      "security": "Security",
+      "securityDescription1": "• Data is verified through Signature",
+      "securityDescription2": "• Always check Expiration time",
+      "securityDescription3": "• Keep Secret key confidential",
+      "securityDescription4": "• Transmit via HTTPS"
+    },
+    "Samples": {
+      "standard": "Standard JWT Token",
+      "expired": "Expired JWT",
+      "complex": "With Complex Payload"
+    },
+    "FileErrors": {
+      "fileSizeError": "File size must be less than 10MB.",
+      "fileTypeError": "Only .txt or .json files are accepted.",
+      "fileReadError": "Error occurred while reading the file.",
+      "fileUploadError": "Error occurred while uploading file.",
+      "downloadError": "Error occurred while downloading file."
+    }
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "OgMetaGeneratorPage": {
+    "ToolHeader": {
+      "title": "OG Meta Generator",
+      "description": "Ijtimoiy tarmoqlar uchun meta taglar yarating va SEO ni professional darajada yaxshilang"
+    },
+    "ConfigPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Rejim Tanlang",
+      "workMode": "Ish rejimi:",
+      "form": "Ma'lumot Kiritish",
+      "preview": "Ko'rinish"
+    },
+    "TemplatesPanel": {
+      "title": "Shablonlar",
+      "status": "Tez Tanlov",
+      "readyTemplates": "Tayyor shablonlar:",
+      "loadButton": "Yuklash",
+      "demoData": "Demo Ma'lumot",
+      "clear": "Tozalash",
+      "templates": {
+        "blog": {
+          "label": "Blog maqolasi",
+          "description": "Maqola va blog postlari uchun"
+        },
+        "product": {
+          "label": "Mahsulot sahifasi",
+          "description": "E-commerce va mahsulot sahifalari uchun"
+        },
+        "video": {
+          "label": "Video kontent",
+          "description": "Video va multimedia kontent uchun"
+        },
+        "company": {
+          "label": "Kompaniya sahifasi",
+          "description": "Biznes va korporativ sahifalar uchun"
+        },
+        "event": {
+          "label": "Event sahifasi",
+          "description": "Tadbirlar va konferensiyalar uchun"
+        }
+      }
+    },
+    "FormPanel": {
+      "title": "Ma'lumot Kiritish",
+      "status": "Form",
+      "basicInfo": "Asosiy Ma'lumotlar",
+      "systemSettings": "Tizim Sozlamalari",
+      "inputStats": "Kiritilgan ma'lumotlar",
+      "titleLabel": "Sarlavha *",
+      "titlePlaceholder": "Sahifa sarlavhasi (70 belgigacha)",
+      "titleCounter": "belgi",
+      "descLabel": "Tavsif *",
+      "descPlaceholder": "Sahifa haqida qisqacha tavsif (200 belgigacha)",
+      "imageLabel": "Rasm URL",
+      "imagePlaceholder": "https://example.com/image.jpg",
+      "urlLabel": "Sahifa URL",
+      "urlPlaceholder": "https://example.com",
+      "siteNameLabel": "Sayt Nomi",
+      "siteNamePlaceholder": "Sayt yoki kompaniya nomi",
+      "contentTypeLabel": "Kontent Turi",
+      "twitterCardLabel": "Twitter Card",
+      "twitterSiteLabel": "Twitter Site",
+      "twitterSitePlaceholder": "@username",
+      "twitterCreatorLabel": "Twitter Creator",
+      "twitterCreatorPlaceholder": "@username",
+      "gettingLong": "Uzayib bormoqda",
+      "perfect": "Mukammal!",
+      "tooLongError": "Juda uzun!",
+      "contentType": "Kontent Turi",
+      "twitterCard": "Twitter Karta",
+      "language": "Til",
+      "imageSize": "Rasm O'lchami",
+      "twitterSite": "Twitter Sayt",
+      "twitterCreator": "Twitter Muallif",
+      "typeWebsite": "Veb-sayt",
+      "typeArticle": "Maqola",
+      "typeVideo": "Video",
+      "typeBook": "Kitob",
+      "typeProfile": "Profil",
+      "typeMusic": "Musiqa",
+      "cardSummary": "Qisqacha",
+      "cardLargeImage": "Katta Rasm",
+      "cardApp": "Ilova",
+      "cardPlayer": "Player",
+      "langUzbek": "O'zbek",
+      "langEnglish": "Ingliz",
+      "langRussian": "Rus",
+      "langTurkish": "Turk",
+      "recommended": "Tavsiya etiladi",
+      "square": "Kvadrat"
+    },
+    "OutputPanel": {
+      "title": "Tool Natija",
+      "status": "Meta Taglar",
+      "metaTags": "Meta Taglar",
+      "fullHtml": "To'liq HTML",
+      "outputStats": "Yaratilgan natija",
+      "emptyTitle": "Ma'lumotlarni to'ldiring",
+      "emptyDesc": "meta taglar avtomatik yaratiladi",
+      "downloadTxt": "TXT",
+      "downloadHtml": "HTML",
+      "copyAndEdit": "Nusxalab Tahrirlash",
+      "copySuccess": "✅ Meta taglar nusxalandi!\n\n📝 Endi siz:\n• Istalgan matn editoriga joylashtiring\n• Kerak bo'lsa tahrirlang\n• HTML faylingizda ishlating"
+    },
+    "PreviewPanel": {
+      "title": "Ijtimoiy Tarmoq Ko'rinishi",
+      "status": "Ko'rinish",
+      "facebook": "Facebook / Open Graph",
+      "twitter": "Twitter Card",
+      "facebookPreview": "Facebook Ko'rinishi",
+      "twitterCard": "Twitter Kartasi",
+      "telegramPreview": "Telegram Ko'rinishi",
+      "linkedinPreview": "LinkedIn Ko'rinishi",
+      "whatsappPreview": "WhatsApp Ko'rinishi"
+    },
+    "ValidationPanel": {
+      "title": "Aqlli Validatsiya",
+      "status": "SEO Tahlil",
+      "seoScore": "SEO Ball",
+      "metaOptimization": "Meta tag optimizatsiyasi",
+      "excellent": "Ajoyib",
+      "good": "Yaxshi",
+      "needsWork": "Yaxshilash kerak",
+      "validationChecks": "Validatsiya Tekshiruvlari",
+      "titleLength": "Sarlavha Uzunligi",
+      "descriptionLength": "Tavsif Uzunligi",
+      "imageUrl": "Rasm URL",
+      "pageUrl": "Sahifa URL",
+      "titleRequired": "Sarlavha kiritish shart",
+      "descriptionRequired": "Tavsif kiritish shart",
+      "secureHttpsImage": "Xavfsiz HTTPS rasm",
+      "secureHttpsUrl": "Xavfsiz HTTPS URL",
+      "perfectLength": "Mukammal uzunlik",
+      "tooLong": "Juda uzun",
+      "tooShort": "Juda qisqa",
+      "useHttps": "HTTPS ishlatish tavsiya etiladi",
+      "invalidFormat": "Noto'g'ri format",
+      "quickTips": "💡 Tezkor Maslahatlar",
+      "tip1": "• Sarlavha: Optimal ko'rinish uchun 30-60 belgi",
+      "tip2": "• Tavsif: Eng yaxshi natija uchun 120-160 belgi",
+      "tip3": "• Rasm: Mukammal ijtimoiy ulashish uchun 1200x630px",
+      "tip4": "• Har doim xavfsizlik uchun HTTPS URL ishlatish"
+    },
+    "InfoSection": {
+      "title": "Open Graph Meta nima uchun muhim?",
+      "usagePlacesTitle": "Asosiy foydalanish joylari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "noteTitle": "Eslatma:",
+      "noteText": "Meta taglar to'g'ri sozlangan bo'lsa, ijtimoiy tarmoqlarda sahifangiz professional va ishonchli ko'rinadi, bu esa ko'proq mijoz jalb qilishga yordam beradi.",
+      "usagePlaces": {
+        "social": "Ijtimoiy tarmoqlar: Facebook, LinkedIn, WhatsApp'da chiroyli preview",
+        "twitter": "Twitter Cards: Twitter'da professional ko'rinish",
+        "seo": "SEO yaxshilash: Qidiruv tizimlari uchun batafsil ma'lumot",
+        "ctr": "Klik darajasi: Jozibali preview orqali ko'proq bosish",
+        "brand": "Brand identity: Brendingiz uchun consistent ko'rinish",
+        "impression": "Professional taassurot: Saytingiz haqida ijobiy fikr"
+      },
+      "tips": {
+        "tip1": "Sarlavha 70 belgidan oshmasligi kerak (optimal 50-60)",
+        "tip2": "Tavsif 200 belgidan oshmasligi kerak (optimal 150-160)",
+        "tip3": "Rasm 1200x630 piksel o'lchamida bo'lishi kerak",
+        "tip4": "Har bir sahifa uchun unique meta tag yarating",
+        "tip5": "Preview'ni turli platformalarda sinab ko'ring"
+      },
+      "metaTypes": {
+        "openGraphTitle": "Open Graph",
+        "openGraphDesc": "Facebook, LinkedIn va WhatsApp kabi platformalar uchun asosiy meta taglar",
+        "twitterTitle": "Twitter Cards",
+        "twitterDesc": "Twitter'da chiroyli va professional ko'rinish uchun maxsus formatlar",
+        "seoTitle": "SEO Meta",
+        "seoDesc": "Google va boshqa qidiruv tizimlari uchun optimallashtirilgan taglar",
+        "schemaTitle": "Schema.org",
+        "schemaDesc": "Tuzilgan ma'lumotlar uchun semantik web standartlari"
+      }
+    }
+  }
+}

@@ -1,0 +1,324 @@
+---
+title: "React'dan Oldingi Davr: Veb-dasturlash Muammolari"
+description: |
+  Nima uchun React kabi freymvorklar yaratildi? React'dan oldingi davrdagi veb-dasturlash muammolarini, state boshqaruvidagi qiyinchiliklarni va imperativ kodning kamchiliklarini o'rganing.
+keywords: 'React tarixi, JavaScript, DOM, state boshqaruvi, event listener, XMLHttpRequest, fetch, debouncing, throttling, veb tarixi, webiston'
+author: 'Webiston.uz'
+---
+
+# React’dan oldingi davr
+
+React paydo bo'lishidan avval, biz veb-dasturlar yaratishda katta muammolarga duch kelardik. Dasturlarimizni qanday qilib tezkor va darhol javob beradigan qilib yaratish bilan birga, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlashini ham ta'minlashimiz kerak edi. Masalan, oddiygina tugma bosilish holatini ko'rib chiqaylik: foydalanuvchi tugmani bosganda, biz foydalanuvchi interfeysini(UI) shu tugma bosilganligini aks ettirish uchun yangilamoqchimiz. Buning uchun kamida to'rtta holatni hisobga olishimiz kerak:
+
+### Tugma bosilish holatlari
+
+- **Bosishdan oldingi holat**: Tugma o'zining dastlabki holatida va hali bosilmagan.
+
+- **Bosilgan, lekin natija kutilyapti**: Tugma bosilgan, ammo tugma bosilganda bajarilishi kerak bo'lgan amal hali tugatilmagan.
+
+- **Bosilgan va muvaffaqiyatli bajarilgan**: Tugma bosilgan va bajarilishi kerak bo'lgan amal muvaffaqiyatli bajarilgan. Bu holatda, tugmani avvalgi holatiga qaytaramiz yoki muvaffaqiyat belgisi sifatida tugmaning rangini (yashil) o'zgartiramiz.
+
+- **Bosilgan va muvaffaqiyatsiz bo'lgan**: Tugma bosilgan, ammo bajarilishi kerak bo'lgan amal muvaffaqiyatsiz tugagan. Bu holatda, tugmani avvalgi holatiga qaytarishimiz yoki muvaffaqiyatsizlikni ko'rsatish uchun tugma rangini (qizil) o'zgartirishimiz mumkin.
+
+### Interfeysni yangilash
+
+Bu holatlar mavjud bo'lgandan keyin, foydalanuvchi interfeysini bu holatlarga mos ravishda yangilash kerak bo'ladi. Buning uchun odatda quyidagi qadamlar talab qilinardi:
+
+1. Tugmani brauzer kabi hos muhitda topish, buning uchun `document.querySelector` yoki `document.getElementById` kabi elementni joylashtirish API’laridan foydalanish.
+
+2. Tugmaga bosish(click) event’larini tinglash uchun event listener’lar(voqea tinglovchilar)ni o'rnatish
+
+3. Event’larga javoban holatni yangilash.
+
+4. Tugma sahifadan o'chirilganda, event listener’larni olib tashlash va barcha holatlarni tozalash.
+
+## Sodda misol: Like button
+
+Bu oddiy misol, lekin boshlash uchun yaxshi variant. Tasavvur qilaylik, bizda "_Like_" deb nomlangan tugma bor va foydalanuvchi uni bosganda, tugma tekstini "_Liked_" deb yangilashni xohlaymiz. Buni qanday amalga oshiramiz? Avvalo, bizda HTML elementi bo'ladi:
+
+```js copy
+<button>Like</button>
+```
+
+Endi, ushbu tugmani JavaScript orqali boshqarishimiz uchun, unga `id` atributi qo'shamiz:
+
+```js copy
+<button id="likeButton">Like</button>
+```
+
+### Interaktiv qilish
+
+Ajoyib! Endi tugmada `id` mavjud, shuning uchun JavaScript orqali unga murojaat qilib, uni interaktiv qilishimiz mumkin. `document.getElementById` yordamida tugmaga murojaat qilamiz va tugmani bosish event’larini tinglash uchun event listener qo'shamiz:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  // biror amalni bajarish
+})
+```
+
+Endi bizda event listener mavjud, shuning uchun tugma bosilganda biror amalni bajara olamiz. Masalan, tugma bosilganda uning tekstini "Liked" deb yangilashni xohlaymiz. Buni tugmaning tekst kontentini yangilash orqali amalga oshirishimiz mumkin:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  likeButton.textContent = 'Liked'
+})
+```
+
+### Tugma holatini boshqarish
+
+Ajoyib! Endi bizda "_Like_" deb nomlangan tugma bor, va uni bosganda, kontenti _"Liked"_ deb o'zgaradi. Biroq, bu yerda muammo shundaki, biz tugmani yana "_Unlike_" holatiga qaytarish imkoniga ega emasmiz. Buni to'g'rilash va tugmani "_Liked_" holatida bo'lsa, yana "_Like_" holatiga o'tkazishni amalga oshirish uchun biz tugmaga qaysi holatda ekanligini kuzatib boradigan birorta holat(state) qo'shishimiz kerak. Buni tugmaga `data-liked` atributini qo'shish orqali amalga oshirishimiz mumkin:
+
+```js copy
+<button id="likeButton" data-liked="false">
+  Like
+</button>
+```
+
+Endi bizda ushbu atribut mavjud bo'lganidan so'ng, tugma bosilgan yoki bosilmaganligini kuzatib borishimiz mumkin. Tugmaning kontentini ushbu atribut qiymatiga asoslanib yangilaymiz:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  const liked = likeButton.getAttribute('data-liked') === 'true'
+  likeButton.setAttribute('data-liked', !liked)
+  likeButton.textContent = liked ? 'Like' : 'Liked'
+})
+```
+
+Shoshmang, lekin biz faqat buttonning `textContent`ini o'zgartiryapmiz, xolos! Biz aslida "_Liked_" holatini ma'lumotlar bazasi(database)da saqlamayapmiz. Buni qilish uchun odatda tarmoq(network) orqali muloqot qilishimiz kerak edi, masalan:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  var liked = likeButton.getAttribute('data-liked') === 'true'
+
+  // tarmoq orqali muloqot qilish
+  var xhr = new XMLHttpRequest()
+  xhr.open('POST', '/like', true)
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+
+  xhr.onload = function () {
+    if (xhr.status >= 200 && xhr.status < 400) {
+      // Muvaffaqiyatli!
+      likeButton.setAttribute('data-liked', !liked)
+      likeButton.textContent = liked ? 'Like' : 'Liked'
+    } else {
+      // Ko'zlagan serverimizga yetib bordik, lekin u xato qaytardi
+      console.error('Server xato qaytardi:', xhr.statusText)
+    }
+  }
+
+  xhr.onerror = function () {
+    // Ulanishda qandaydur xato yuz berdi
+    console.error('Tarmoq xatosi.')
+  }
+
+  xhr.send(JSON.stringify({ liked: !liked }))
+})
+```
+
+## Zamonaviy muammolar
+
+Albatta, biz bu yerda o'sha vaqtdagi davrga mos kelish uchun `XMLHttpRequest` va `var`dan foydalanmoqdamiz. React 2013 yilda "_open source_", ya'ni ochiq manbali, dastur sifatida chiqarilgan, `fetch API` esa 2015 yilda joriy etilgan. `XMLHttpRequest` va `fetch` o'rtasida jQuery kabi kutubxonalar murakkabliklarni kamaytirgan, masalan, `$.ajax()`, `$.post()` va boshqalar ishlatilgan.
+
+Agar bugungi kunda biz buni yozadigan bo'lsak, u quyidagicha bo'lardi:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  const liked = likeButton.getAttribute('data-liked') === 'true'
+
+  // tarmoq orqali muloqot qilish
+  fetch('/like', {
+    method: 'POST',
+    body: JSON.stringify({ liked: !liked }),
+  }).then(() => {
+    likeButton.setAttribute('data-liked', !liked)
+    likeButton.textContent = liked ? 'Like' : 'Liked'
+  })
+})
+```
+
+### Xatolarni boshqarish
+
+Hozirgi kunda biz tarmoq orqali muloqot qilayapmiz, lekin agar tarmoq so'rovi muvaffaqiyatsiz(fail) bo'lsa nima bo'ladi? Bunday holda, tugmaning tekstini muvaffaqiyatsizlikni aks ettirish uchun yangilashimiz kerak bo'ladi. Buni amalga oshirish uchun tugmaga `data-failed` atributini qo'shishimiz mumkin:
+
+```js copy
+<button id="likeButton" data-liked="false" data-failed="false">
+  Like
+</button>
+```
+
+Endi biz tugmaning tekstini ushbu atribut qiymatiga asoslanib yangilashimiz mumkin:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  const liked = likeButton.getAttribute('data-liked') === 'true'
+
+  // tarmoq orqali muloqot qilish
+  fetch('/like', {
+    method: 'POST',
+    body: JSON.stringify({ liked: !liked }),
+  })
+    .then(() => {
+      likeButton.setAttribute('data-liked', !liked)
+      likeButton.textContent = liked ? 'Like' : 'Liked'
+    })
+    .catch(() => {
+      likeButton.setAttribute('data-failed', true)
+      likeButton.textContent = 'Failed'
+    })
+})
+```
+
+### Takomillashtirilgan holat boshqaruvi
+
+Yana bir holatni ko'rib chiqish kerak: ayni paytda "_like_" qilish jarayoni. Ya’ni, kutish holati. Buni kodda modellashtirish uchun buttonga kutish holati uchun yana bir `data-pending` atributini qo'shishimiz kerak, quyidagicha:
+
+```js copy
+<button id="likeButton" data-pending="false" data-liked="false" data-failed="false">
+  Like
+</button>
+```
+
+Endi biz tarmoq so'rovi(network request) davom etayotgan paytda tugmani disabled qilishimiz mumkin, shunda bir nechta bosishlar tarmoq so'rovlarini ketma-ket ishga tushirishga olib kelmaydi va bu holat serverning haddan tashqari yuklanishiga ham olib kelmaydi. Buni quyidagicha amalga oshirish mumkin:
+
+```js copy
+const likeButton = document.getElementById('likeButton')
+likeButton.addEventListener('click', () => {
+  const liked = likeButton.getAttribute('data-liked') === 'true'
+  const isPending = likeButton.getAttribute('data-pending') === 'true'
+
+  likeButton.setAttribute('data-pending', 'true')
+  likeButton.setAttribute('disabled', 'disabled')
+
+  // tarmoq orqali muloqot qilish
+  fetch('/like', {
+    method: 'POST',
+    body: JSON.stringify({ liked: !liked }),
+  })
+    .then(() => {
+      likeButton.setAttribute('data-liked', !liked)
+      likeButton.textContent = liked ? 'Like' : 'Liked'
+      likeButton.setAttribute('disabled', null)
+    })
+    .catch(() => {
+      likeButton.setAttribute('data-failed', 'true')
+      likeButton.textContent = 'Failed'
+    })
+    .finally(() => {
+      likeButton.setAttribute('data-pending', 'false')
+    })
+})
+```
+
+### Debouncing va throttling texnikalari
+
+Shuningdek, foydalanuvchilarning takroriy va ortiqcha amallarni bajarishini oldini olish uchun debouncing va throttling kabi samarali texnikalarni qo'llashimiz mumkin.
+
+<Callout type="info" emoji="ℹ️">
+  **Debouncing** texnikasi funksiyaning bajarilishini oxirgi event qo'zg'atilgan(event trigger)dan so'ng ma'lum vaqt
+  o'tganidan keyin kechiktiradi (masalan, foydalanuvchi input’da yozish jarayonini to'xtashini kutish), **throttling**
+  esa funksiyaning ma'lum vaqt intervalida faqat bir marta bajarilishiga imkon beradi, shunda u juda tez-tez
+  bajarilmaydi (masalan, ma'lum vaqt intervalida scroll event’larini ishlatish). Har ikkala texnika funksiya bajarilish
+  tezligini boshqarish orqali ishlash samaradorligini oshiradi.
+</Callout>
+
+## Muammoli savollar
+
+Endi bizdagi tugma barqarorroq bo'lib, bir nechta holatlarni boshqarishi mumkin, lekin hali ham ba'zi savollar tug'iladi:
+
+- **`data-pending` haqiqatdan ham zarurmi?** Tugma disabled qilinganmi yoki yo'qligini shunchaki tekshirish bilan kifoyalana olmaymizmi? Ehtimol, yo'q, chunki disabled qilingan tugma boshqa sabablar, masalan, foydalanuvchining tizimga kirmaganligi yoki tugmani bosishga ruxsati yo'qligi sababli ham o'chirilgan bo'lishi mumkin.
+- **Boshqa ko'plab data atributlarni ishlatish o'rniga, `data-state` atributini qo'llab, holatlarni "_pending_"", "_liked_" yoki "_unliked_" kabi qiymatlar bilan belgilash mantiqiyroq emasmi?** Ehtimol, ha, lekin bu holda har bir holatni boshqarish uchun kattaroq switch/case yoki shunga o'xshash kod bloki qo'shishimiz kerak bo'ladi. Natijada, ikkala yondashuv ham o'ziga xos murakkablik va hajm talab qiladi.
+- **Bu tugmani izolyatsiyalangan holda qanday test qilishimiz mumkin? Buni iloji bormi?**
+- **Nega dastlab tugmani HTML’da yozamiz va keyinroq u bilan JavaScript’da ishlaymiz?** Tugmani shunchaki JavaScript’da `document.createElement`("button") yordamida yaratish va keyin `document.appendChild`("likeButton") orqali qo'shish yaxshiroq emasmi? Bu test qilishni osonlashtiradi va kodni yanada mustaqil qiladi, lekin keyin uning ota(parent) elementini kuzatib borishimiz kerak bo'ladi, agar ota element `document` bo'lmasa. Aslida, sahifadagi barcha ota elementlarni kuzatib borishimiz kerak bo'lishi mumkin.
+
+### Ba'zi javoblar
+
+React bizga ushbu muammolarning ba'zilarini hal qilishda yordam beradi, lekin ularning hammasini ham emas: masalan, holatni alohida bayroq(flag)lar (masalan, "_isPending_", "_hasFailed_" va hokazo) bilan boshqarishmi yoki yagona holat o'zgaruvchisi (masalan, `state`) yordamida boshqarishmi - bu React biz uchun javob bermaydigan savollardan biri. Bu savolga biz o'zimiz javob topishimiz kerak bo'ladi. Shunga qaramay, React bizga kattaroq muammo ko'lamini hal qilishda yordam beradi: ko'plab interaktiv tugmalar yaratish va event’larga javoban foydalanuvchi interfeysini minimal va samarali tarzda yangilash, shuningdek, buni test qilish mumkin bo'lgan, takrorlanuvchi, deklarativ, samarali, prognozli va ishonchli tarzda amalga oshirishda yordam beradi.
+
+Bundan tashqari, React foydalanuvchi interfeysining holatini to'liq nazorat qilish orqali buni ancha barqaror qiladi va shu holatga asoslanib render qiladi. Bu holat brauzer tomonidan boshqariladigan holat bilan tubdan farq qiladi, chunki brauzer holati boshqa klient tomondan(client-side) ishlaydigan skriptlar, brauzer kengaytmalari, qurilma cheklovlari va boshqa ko'plab omillar kabi bir qator omillar tufayli juda ishonchsiz bo'lishi mumkin.
+
+Bizning "_Like_" tugma misolimiz juda sodda, lekin boshlash uchun yaxshi misol. Hozircha, JavaScript yordamida tugmani interaktiv qilish qanday amalga oshirilishini ko'rdik, lekin bu jarayonni _yaxshiroq_ bajarmoqchi bo'lsak, bu qo'lda bajaradigan juda ko'p ishni talab qiladi: tugmani brauzerda topishimiz, event listener qo'shishimiz, tugmaning tekstini yangilashimiz va turli xil murakkab holatlarni hisobga olishimiz kerak. Bu juda ko'p ish, va bu osonlikcha kengaytiriladigan narsa emas. Agar sahifada ko'plab tugmalar bo'lsa-chi? Agar bu ko'plab tugmalar interaktiv bo'lishi kerak bo'lsa-chi? Agar ko'p tugmalar interaktiv bo'lishi kerak bo'lsa va biz event’larga javoban foydalanuvchi interfeysini yangilashimiz kerak bo'lsa-chi? Bu holda biz **_event delegation_** (yoki event bubling) ishlatsak bo'ladimi va yuqoriroqdagi `document`ga event listener’ni qo'shishimiz(attach) kerakmi? Yoki har bir tugmaga event listener’larni qo'shishimiz kerakmi?
+
+Avvalroq atganimizdek, biz quyidagi bayonot haqida yetarlicha tushunchaga ega bo'lishimiz kerak: brauzerlar veb-sahifalarni render qiladi. Veb-sahifalar HTML dokumentlari bo'lib, ularga CSS tomonidan stillar beriladi va JavaScript yordamida interaktiv qilinadi. Bu bir necha o'nlab yillar davomida ajoyib ishladi va hali ham ishlaydi, lekin zamonaviy veb-dasturlarni yaratish, ularni millionlab foydalanuvchilar uchun ishonchli va xavfsiz ishlatish uchun sezilarli darajada abstraksiyaga ehtiyoj bor. Afsuski, biz ko'rib chiqqan "_Like_" tugma misoliga asoslanib aytganda, bizga bu jarayonda yordam kerak bo'ladi.
+
+## Murakkabroq misol: Ro'yxat elementlari
+
+Keling, "_Like_" tugmasidan biroz murakkabroq bo'lgan boshqa bir misolni ko'rib chiqaylik. Oddiy misoldan boshlaymiz: elementlar ro'yxati. Aytaylik, bizda elementlar ro'yxati bor va biz ro'yxatga yangi element qo'shmoqchimiz. Buni quyidagi kabi HTML formasi yordamida amalga oshirishimiz mumkin:
+
+```js copy
+<ul id="list-parent"></ul>
+
+<form id="add-item-form" action="/api/add-item" method="POST">
+  <input type="text" id="new-list-item-label" />
+  <button type="submit">Add Item</button>
+</form>
+```
+
+JavaScript bizga Dokument Obyekt Modeli(DOM) API’lariga kirish imkonini beradi. DOM haqida xabardor bo'lmaganlar uchun, DOM - bu veb-sahifaning dokument strukturasining xotiradagi modeli bo'lib, u sizning sahifangizdagi elementlarni ifodalovchi obyektlar daraxtidir va ularga JavaScript orqali murojaat qilish imkoniyatini beradi. Muammo shundaki, foydalanuvchi qurilmalaridagi DOM’lar begona sayyoraga o'xshaydi: biz ularning qanday brauzerlarni ishlatayotganini, qanday tarmoq sharoitlarida ekanligini va qaysi operatsion tizimlarda(OS) ishlashini bilmaymiz. Xo'sh, natija qanday? Biz barcha bu omillarga javob beradigan va chidamli kod yozishimiz kerak bo'ladi.
+
+## Murakkabliklar va muammolar
+
+Hozirgina biz muhokama qilganimizdek, holatlarni boshqarish mexanizmisiz yangilangan holatlarni oldindan aytib, bashorat qilish qiyinlashadi. Ro'yxat misolini davom ettirib, ro'yxatga yangi element qo'shish uchun JavaScript kodini ko'rib chiqamiz:
+
+```js copy
+;(function myApp() {
+  var listItems = ['I love', 'React', 'and', 'TypeScript']
+  var parentList = document.getElementById('list-parent')
+  var addForm = document.getElementById('add-item-form')
+  var newListItemLabel = document.getElementById('new-list-item-label')
+
+  addForm.onsubmit = function (event) {
+    event.preventDefault()
+    listItems.push(newListItemLabel.value)
+    renderListItems()
+  }
+
+  function renderListItems() {
+    for (i = 0; i < listItems.length; i++) {
+      var el = document.createElement('li')
+      el.textContent = listItems[i]
+      parentList.appendChild(el)
+    }
+  }
+
+  renderListItems()
+})()
+```
+
+Ushbu kod qismini iloji boricha avvalgi veb-dasturlarga o'xshatib yozdik. Buni vaqt o'tishi bilan kengaytirish nimaga olib keladi? Asosan, vaqt o'tishi bilan bunday dasturlarni kengaytirish juda ko'p muammolarni keltirib chiqaradi, bu ularni quyidagicha qiladi:
+
+### Kodimizdagi ba'zi muammolar
+
+#### Xatolarga moyil
+
+"_addForm_"’ning `onsubmit` atributi sahifadagi boshqa klient tomonidagi JavaScript tomonidan osonlik bilan qayta yozilishi mumkin. Buning o'rniga `addEventListener`dan foydalanishimiz mumkin, lekin bu ko'proq savollarni keltirib chiqaradi:
+
+- `removeEventListener` bilan qachon va qayerda tozalashimiz kerak?
+- Agar bunda e'tiborliroq va ehtiyotkor bo'lmasak, vaqt o'tishi bilan juda ko'p event listenerlar yig'ilib qoladimi?
+- Buning uchun qanday jazo to'lashimiz kerak?
+- Event delegation bu holatga qanchalik mos keladi?
+
+#### Prognoz qilinmagan
+
+Bizning ma'lumot manbalarimiz aralashgan: biz ro'yxat elementlarini JavaScript massividagi elementlar sifatida saqlayapmiz, lekin dasturimizni tugatish uchun DOM’da mavjud bo'lgan elementlarga tayanamiz (masalan, `id="list-parent"` elementi). JavaScript va HTML o'rtasidagi bu o'zaro bog'liqliklar tufayli biz yana bir necha narsalarni hisobga olishimiz kerak:
+
+- Agar tasodifan bir xil `id`ga ega bo'lgan bir nechta elementlar bo'lsa-chi?
+- Agar element umuman mavjud bo'lmasa-chi?
+- Agar bu element `ul` bo'lmasa-chi? Ro'yxat elementlarini (`li` elementlarini) boshqa ota elementlariga qo'sha olamizmi?
+- Agar `id`lar o'rniga `class`larni ishlatsak nima bo'ladi?
+
+Bizning ma'lumot manbalarimiz JavaScript va HTML o'rtasida aralashgan bo'lib, bu ularni ishonchsiz qiladi. Bizga yagona ishonch manbasi ko'proq foyda keltiradi. Bundan tashqari, klient tomonidagi JavaScript elementlarni DOM’dan qo'shish va olib tashlashni doimiy ravishda amalga oshiradi. Agar biz ushbu o'ziga xos elementlarning mavjudligiga tayanadigan bo'lsak, UI yangilanayotganda, dasturimizning ishonchli ishlashiga hech qanday kafolatlar yo'q. Bu holda, bizning dasturimiz "_side effectlar_" bilan to'lgan bo'lib, uning muvaffaqiyati yoki muvaffaqiyatsiz bo'lishi foydalanuvchi muammosiga bog'liq. React buni funksional dasturlashdan ilhomlangan modelni targ'ib qilish orqali hal qildi, bu yerda "_side effectlar"_ ataylab belgilangan va izolyatsiya qilingan.
+
+#### Samarasiz
+
+`renderListItems` elementlarni ekranga ketma-ket joylashtiradi. DOM’ning har bir o'zgarishi hisoblash nuqtai nazaridan qimmatga tushishi mumkin, ayniqsa, layout shift va reflow’ga duch kelganimizda. Biz begona sayyorada (noma'lum hisoblash quvvatiga ega muhitda) bo'lganimiz uchun, bu katta ro'yxatlar holatida ishlash nuqtai nazaridan xavfli bo'lishi mumkin.
+Eslatib o'tamiz, bizning keng miqyosli veb-dasturimiz butun dunyo bo'ylab millionlab foydalanuvchilar, jumladan, oxirgi va eng so'nggi Apple M3 Max protsessorlaridan foydalanish imkoni bo'lmagan jamiyatdan, past quvvatli qurilmalarga ega foydalanuvchilar tomonidan ishlatilishi uchun mo'ljallangan. Ushbu holatda, alohida ro'yxat elementlarini ketma-ket yangilash o'rniga, ushbu amallarni qandaydir tarzda guruhlash va ularning barchasini bir vaqtning o'zida DOM’ga qo'llash maqsadga muvofiq bo'lishi mumkin. Lekin, ehtimol biz injenerlar sifatida buni qilishimizning hojati yo'q, chunki brauzerlar oxir-oqibat DOM’ni tez yangilanish bilan ishlash usullarini yangilab, biz uchun bu narsalarni avtomatik ravishda guruhlab yangilashi(batch update) mumkin.
+
+### React va boshqa yechimlar
+
+Bu React va boshqa abstraksiyalar paydo bo'lishidan oldin veb-dasturchilarni yillar davomida qiynagan ba'zi muammolar. Keng miqyosda maintain qilinadigan, qayta ishlatiladigan va prognozli tarzda paketli kod yaratish muammosi industriyada ko'p standartlashtirilgan kelishuvga ega emas edi. Shu paytgacha, ishonchli va kengaytirish mumkin bo'lgan foydalanuvchi interfeyslarini yaratish qiyinchiliklarini ko'plab veb-kompaniyalar boshdan kechirgan edi. Shu paytga kelib, biz JavaScript asosidagi bir nechta yechimlarning mashhurlashayotganini ko'rdik: Backbone, KnockoutJS, AngularJS va jQuery. Keling, ushbu yechimlarni birma-bir ko'rib chiqaylik va ular bu muammoni qanday hal qilganini ko'rib chiqaylik. Bu bizga React qanday qilib boshqa yechimlardan farq qilishini va hatto ulardan ustun bo'lishi mumkinligini tushunishga yordam beradi.

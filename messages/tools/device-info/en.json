@@ -1,0 +1,109 @@
+{
+  "DeviceInfoPage": {
+    "ToolHeader": {
+      "title": "Device Information",
+      "description": "Get detailed information about your browser, device and operating system"
+    },
+    "ControlPanel": {
+      "title": "Tool Control",
+      "status": "Ready",
+      "deviceInfoTitle": "Device information",
+      "deviceInfoDesc": "Detailed information about current browser and device",
+      "refreshButton": "Refresh",
+      "copyAllButton": "Copy All",
+      "copiedAll": "Copied!",
+      "downloadButton": "JSON",
+      "loadingTitle": "Loading data...",
+      "loadingDesc": "Please wait..."
+    },
+    "BrowserInfo": {
+      "title": "Browser Information",
+      "status": "Browser",
+      "browserName": "Browser name",
+      "version": "Version",
+      "userAgent": "User Agent"
+    },
+    "SystemInfo": {
+      "title": "System Information",
+      "status": "System",
+      "platform": "Platform",
+      "language": "Primary language",
+      "timezone": "Timezone",
+      "onlineStatus": "Online status",
+      "online": "Online",
+      "offline": "Offline",
+      "cookieEnabled": "Cookies enabled",
+      "yes": "Yes",
+      "no": "No",
+      "supportedLanguages": "Supported languages"
+    },
+    "ScreenInfo": {
+      "title": "Screen Information",
+      "status": "Screen",
+      "screenSize": "Screen size",
+      "availableSize": "Available size",
+      "colorDepth": "Color depth",
+      "pixelRatio": "Pixel ratio",
+      "orientation": "Orientation"
+    },
+    "DeviceInfo": {
+      "title": "Device Features",
+      "status": "Device",
+      "deviceType": "Device type",
+      "touchScreen": "Touch screen",
+      "touchSupported": "Supported",
+      "touchNotSupported": "Not supported",
+      "maxTouchPoints": "Max touch points",
+      "mobileDevice": "Mobile device",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "ConnectionInfo": {
+      "title": "Internet Connection",
+      "status": "Connection",
+      "connectionType": "Connection type",
+      "speed": "Speed (Mbps)",
+      "latency": "Latency (ms)",
+      "dataSaver": "Data saver mode",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "InfoSection": {
+      "title": "About Device Information",
+      "status": "Information",
+      "usagePlacesTitle": "Main usage areas:",
+      "professionalTipsTitle": "Professional tips:",
+      "noteTitle": "Tip:",
+      "noteText": "Download this information in JSON format and use it for web analytics and performance monitoring.",
+      "usagePlaces": {
+        "webDev": {
+          "title": "Web Development:",
+          "desc": "Screen dimensions for responsive design"
+        },
+        "browserTesting": {
+          "title": "Browser Testing:",
+          "desc": "Check compatibility across different browsers"
+        },
+        "performance": {
+          "title": "Performance:",
+          "desc": "Optimize based on device capabilities"
+        },
+        "analytics": {
+          "title": "Analytics:",
+          "desc": "User device statistics"
+        },
+        "support": {
+          "title": "Support:",
+          "desc": "Technical support and debugging"
+        }
+      },
+      "tips": {
+        "tip1": "Use User Agent information for server-side detection",
+        "tip2": "Analyze screen resolution for responsive breakpoints",
+        "tip3": "Use device memory and CPU cores for performance tuning",
+        "tip4": "Consider connection type for lazy loading strategy",
+        "tip5": "Check touch support for mobile-first design"
+      }
+    }
+  }
+}

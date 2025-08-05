@@ -1,0 +1,112 @@
+{
+  "LoremIpsumPage": {
+    "ToolHeader": {
+      "title": "Lorem Ipsum Generator",
+      "description": "Professional placeholder matn va paragraflar yaratish uchun zamonaviy vosita"
+    },
+    "ConfigPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Tayyor",
+      "quickStart": "Tez boshlash",
+      "quickStartDesc": "Standart Lorem Ipsum bilan boshlang yoki sozlamalarni o'zgartiring",
+      "loadSample": "Namuna yuklash",
+      "generationType": "Yaratish turi:",
+      "amount": "Miqdor",
+      "amountRange": "1 dan 1000 gacha",
+      "textType": "Matn turi",
+      "startWithLorem": "\"Lorem ipsum\" bilan boshlash",
+      "generateText": "Yangi matn yaratish",
+      "copy": "Nusxalash",
+      "copied": "Nusxalandi!",
+      "download": "Yuklab olish",
+      "clear": "Tozalash"
+    },
+    "GenerationTypes": {
+      "paragraphs": "Paragraflar",
+      "sentences": "Jumlalar",
+      "words": "So'zlar",
+      "bytes": "Belgilar"
+    },
+    "TextTypes": {
+      "cicero": "Cicero (Klasik)",
+      "bacon": "Bacon Ipsum",
+      "hipster": "Hipster Ipsum",
+      "cupcake": "Cupcake Ipsum",
+      "uzbek": "O'zbek Lorem"
+    },
+    "MainPanel": {
+      "sourcePlaceholder": "Yuqoridagi 'Yangi matn yaratish' tugmasini bosing...",
+      "sourceLabel": "Yaratilgan matn",
+      "targetLabel": "Matn ma'lumoti"
+    },
+    "TextInfo": {
+      "title": "Yaratilgan matn ma'lumoti:",
+      "length": "Uzunlik",
+      "characters": "belgi",
+      "words": "So'zlar",
+      "lines": "Qatorlar",
+      "paragraphs": "Paragraflar",
+      "settings": "Sozlamalar:",
+      "type": "Turi",
+      "amount": "Miqdor",
+      "textType": "Matn turi",
+      "startWithLorem": "Lorem bilan boshlash",
+      "yes": "Ha",
+      "no": "Yo'q"
+    },
+    "Stats": {
+      "characters": "belgi",
+      "words": "so'z",
+      "lines": "qator",
+      "paragraphs": "paragraf"
+    },
+    "InfoSection": {
+      "textTypesTitle": "Matn turlari haqida",
+      "ciceroDesc": "Asl Lorem Ipsum matni, klassik dizayn va maket uchun eng mashhur variant",
+      "baconDesc": "Go'sht va ovqat atamalaridan tashkil topgan mazali va qiziqarli matn variant",
+      "hipsterDesc": "Zamonaviy va trendy so'zlar bilan yaratilgan, kreativ loyihalar uchun",
+      "cupcakeDesc": "Shirinlik va desert nomlari bilan, qiziqarli va shirin matn turi",
+      "uzbekDesc": "O'zbek tilida texnologiya va dasturlash sohasidagi so'zlar bilan yaratilgan maxsus variant"
+    },
+    "HelpSection": {
+      "title": "Lorem Ipsum nima uchun ishlatiladi?",
+      "usagePlacesTitle": "Asosiy foydalanish joylari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "noteTitle": "Maslahat:",
+      "noteText": "Lorem Ipsum mazmundan chalg'itmasdan dizayn elementlariga e'tibor qaratish imkonini beradi va professional natijaga erishishga yordam beradi.",
+      "usagePlaces": {
+        "webDesign": {
+          "title": "Web dizayn:",
+          "desc": "Sahifa maketlarini yaratishda"
+        },
+        "graphicDesign": {
+          "title": "Grafik dizayn:",
+          "desc": "Buklet va poster dizaynida"
+        },
+        "typography": {
+          "title": "Typography:",
+          "desc": "Shrift va matn ko'rinishini sinovdan o'tkazishda"
+        },
+        "prototyping": {
+          "title": "Prototyping:",
+          "desc": "Loyiha prototiplarida"
+        },
+        "testing": {
+          "title": "Testing:",
+          "desc": "Kontent-independent sinovlarda"
+        },
+        "placeholder": {
+          "title": "Placeholder:",
+          "desc": "Haqiqiy kontent tayyor bo'lgunga qadar"
+        }
+      },
+      "tips": {
+        "tip1": "Haqiqiy kontentning taxminiy uzunligini hisobga oling",
+        "tip2": "Turli xil matn uzunliklarini sinab ko'ring",
+        "tip3": "Responsive dizayn uchun turli ekran o'lchamlarida tekshiring",
+        "tip4": "Mijoz uchun munosib matn turi tanlang",
+        "tip5": "Matn hierarxiyasini to'g'ri tuzish uchun ishlatib ko'ring"
+      }
+    }
+  }
+}

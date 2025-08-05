@@ -1,10 +1,11 @@
 'use client'
 
-import { Image, Video, Eye, Download, Trash2, Play } from 'lucide-react'
+import { ImageIcon, Video, Eye, Download, Trash2, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import type { CapturedMedia } from '@/hooks/tools/useCameraRecorder'
+import Image from 'next/image'
 
 interface MediaGridItemProps {
   media: CapturedMedia
@@ -45,10 +46,10 @@ export const MediaGridItem = ({ media, onPreview, onDownload, onDelete }: MediaG
   const renderThumbnail = () => {
     if (media.type === 'screenshot') {
       return thumbnailUrl ? (
-        <img src={thumbnailUrl} alt="Screenshot thumbnail" className="h-full w-full rounded-lg object-cover" />
+        <Image src={thumbnailUrl} alt="Screenshot thumbnail" className="h-full w-full rounded-lg object-cover" />
       ) : (
         <div className="flex h-full items-center justify-center">
-          <Image className="h-8 w-8 text-blue-400" />
+          <ImageIcon className="h-8 w-8 text-blue-400" />
         </div>
       )
     }
@@ -57,7 +58,7 @@ export const MediaGridItem = ({ media, onPreview, onDownload, onDelete }: MediaG
     return (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-zinc-800">
         {thumbnailUrl ? (
-          <img src={thumbnailUrl} alt="Video thumbnail" className="h-full w-full object-cover" />
+          <Image src={thumbnailUrl} alt="Video thumbnail" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center">
             <Video className="h-8 w-8 text-zinc-400" />
@@ -86,7 +87,7 @@ export const MediaGridItem = ({ media, onPreview, onDownload, onDelete }: MediaG
         <div className="text-white">
           <div className="mb-1 flex items-center gap-1">
             {media.type === 'screenshot' ? (
-              <Image className="h-3 w-3 text-blue-400" />
+              <ImageIcon className="h-3 w-3 text-blue-400" />
             ) : (
               <Video className="h-3 w-3 text-green-400" />
             )}

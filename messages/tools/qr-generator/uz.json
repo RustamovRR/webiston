@@ -1,0 +1,255 @@
+{
+  "QrGeneratorPage": {
+    "ToolHeader": {
+      "title": "QR Kod Generator",
+      "description": "Professional QR kod yaratish vositasi. URL, matn, kontakt va WiFi ma'lumotlari uchun QR kodlar yaratish."
+    },
+    "ControlPanel": {
+      "title": "Tool Konfiguratsiya",
+      "status": "Ready",
+      "categoryLabel": "Kategoriya:",
+      "sizeLabel": "QR O'lchami:",
+      "errorLevelLabel": "Xato Tuzatish Darajasi:",
+      "presetsLabel": "Namuna Tanlovlari:",
+      "fileUpload": "Fayl yuklash",
+      "clear": "Tozalash",
+      "download": "QR Yuklab olish",
+      "downloading": "Yuklanmoqda...",
+      "selected": "Tanlangan",
+      "load": "Yuklash"
+    },
+    "Categories": {
+      "url": "URL",
+      "contact": "Kontakt",
+      "text": "Matn",
+      "wifi": "WiFi",
+      "sms": "SMS",
+      "descriptions": {
+        "url": "Web sahifalar va linklar uchun QR kodlar",
+        "contact": "Telefon, email va kontakt ma'lumotlari",
+        "text": "Oddiy matn va ma'lumotlar",
+        "wifi": "WiFi ulanish ma'lumotlari",
+        "sms": "SMS va xabar yuborish"
+      }
+    },
+    "Sizes": {
+      "small": "Kichik",
+      "medium": "O'rtacha",
+      "large": "Katta",
+      "xlarge": "Juda katta",
+      "description": "Katta o'lchamlar sifatli chop etish uchun mos"
+    },
+    "ErrorLevels": {
+      "low": "Past (L)",
+      "medium": "O'rtacha (M)",
+      "quartile": "Yuqori (Q)",
+      "high": "Maksimal (H)",
+      "descriptions": {
+        "low": "~7% tiklash",
+        "medium": "~15% tiklash",
+        "quartile": "~25% tiklash",
+        "high": "~30% tiklash"
+      }
+    },
+    "InputPanel": {
+      "title": "QR Kod Kirish",
+      "placeholder": "QR kod uchun matn kiriting...\n\nMisol:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Telefon: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Matn: Salom dunyo!",
+      "status": "QR yaratishga tayyor"
+    },
+    "ResultsPanel": {
+      "title": "QR Kod Ma'lumotlari",
+      "success": "QR kod muvaffaqiyatli yaratildi!",
+      "originalText": "Asl matn:",
+      "size": "O'lcham:",
+      "errorCorrection": "Xato tuzatish:",
+      "type": "Tur:",
+      "note": "QR Kodi quyida ko'rinadi.",
+      "emptyTitle": "QR kod bu yerda ko'rinadi...",
+      "emptyDescription": "Matn kiriting va QR kod yaratiladi"
+    },
+    "QrDisplay": {
+      "title": "QR Kod Natijasi",
+      "status": "Generated",
+      "contentTitle": "QR kod tarkibi:",
+      "showContent": "Ko'rish",
+      "hideContent": "Yashirish",
+      "copyText": "Matnni nusxalash",
+      "copied": "Nusxalandi",
+      "downloadQr": "QR yuklab olish",
+      "technicalInfo": "Texnik ma'lumotlar:",
+      "format": "Format:",
+      "size": "O'lcham:",
+      "errorCorrection": "Xato tuzatish:",
+      "dataType": "Ma'lumot turi:",
+      "margin": "Margin:",
+      "stats": {
+        "characters": "belgi",
+        "words": "so'z",
+        "lines": "qator"
+      }
+    },
+    "InfoSection": {
+      "title": "QR kodlar va ularning qo'llanilishi",
+      "qrTypesTitle": "QR kod turlari:",
+      "professionalTipsTitle": "Professional maslahatlar:",
+      "qrTypes": {
+        "url": {
+          "title": "URL QR kodlari:",
+          "description": "Website havolalari, landing pagelar va online resurslar"
+        },
+        "contact": {
+          "title": "Kontakt QR kodlari:",
+          "description": "vCard format, telefon raqami va email manzillari"
+        },
+        "wifi": {
+          "title": "WiFi QR kodlari:",
+          "description": "Tarmoq nomlari, parollar va xavfsizlik sozlamalari"
+        },
+        "sms": {
+          "title": "SMS QR kodlari:",
+          "description": "Telefon raqami va tayyor xabar matni"
+        },
+        "text": {
+          "title": "Matn QR kodlari:",
+          "description": "Har qanday matn ma'lumotlari, ma'lumotlar"
+        },
+        "email": {
+          "title": "Email QR kodlari:",
+          "description": "Qabul qiluvchi, mavzu va xabar matni"
+        }
+      },
+      "tips": {
+        "tip1": "Katta o'lchamlar (300x300+) chop etish uchun mos",
+        "tip2": "Yuqori xato tuzatish darajasi (H) zarar ko'rgan kodlarni o'qiydi",
+        "tip3": "QR kod atrofida oq chegaralar qoldiring (quiet zone)",
+        "tip4": "URL'larda qisqa linklar (bit.ly) ishlatish tavsiya etiladi",
+        "tip5": "QR kod o'lchami va masofa optimal nisbatini saqlang"
+      },
+      "importantNote": "Muhim:",
+      "importantText": "QR kodlar 2000+ belgigacha ma'lumot saqlashi mumkin. Ko'proq ma'lumot kod murakkabligini oshiradi, shuning uchun qisqa linklar foydalaning.",
+      "sizeDescriptions": {
+        "150": "Digital, ekran va social media uchun minimal o'lcham",
+        "200": "Business card va kichik chop materiallar uchun optimal",
+        "300": "Poster, flyer va katta chop materiallari uchun",
+        "400": "Billboard va professional chop uchun yuqori sifat"
+      }
+    },
+    "Presets": {
+      "website": "Website URL",
+      "github": "GitHub Profile",
+      "youtube": "YouTube Channel",
+      "email": "Email Contact",
+      "phone": "Phone Number",
+      "vcard": "vCard Contact",
+      "sms": "SMS Message",
+      "whatsapp": "WhatsApp Message",
+      "wifi": "WiFi Network",
+      "wifiGuest": "WiFi Guest",
+      "text": "Simple Text",
+      "location": "Location",
+      "descriptions": {
+        "website": "Website havolasi",
+        "github": "GitHub profil sahifasi",
+        "youtube": "YouTube kanal",
+        "email": "Email manzili",
+        "phone": "Telefon raqami",
+        "vcard": "Kontakt kartasi",
+        "sms": "SMS xabari",
+        "whatsapp": "WhatsApp xabari",
+        "wifi": "WiFi ulanish",
+        "wifiGuest": "Mehmon WiFi",
+        "text": "Oddiy matn",
+        "location": "Geografik joylashuv"
+      }
+    },
+    "DataTypes": {
+      "empty": "Bo'sh",
+      "url": "URL",
+      "email": "Email",
+      "phone": "Telefon",
+      "sms": "SMS",
+      "wifi": "WiFi",
+      "vcard": "vCard",
+      "location": "Joylashuv",
+      "text": "Matn"
+    },
+    "CustomizationPanel": {
+      "title": "QR Kod Dizayni",
+      "status": "Sozlash",
+      "foregroundColor": "Asosiy rang:",
+      "backgroundColor": "Fon rangi:",
+      "logoUpload": "Logo yuklash",
+      "logoSize": "Logo hajmi:",
+      "cornerStyle": "Burchak stili:",
+      "patternStyle": "Pattern stili:",
+      "margin": "Chetlar:",
+      "borderRadius": "Burchak radiusi:",
+      "gradientEnabled": "Gradient yoqish",
+      "gradientDirection": "Gradient yo'nalishi:",
+      "presetStyles": "Tayyor stillar:",
+      "resetToDefault": "Standartga qaytarish",
+      "applyStyle": "Stilni qo'llash",
+      "uploadLogo": "Logo yuklash",
+      "removeLogo": "Logoni o'chirish",
+      "logoUploaded": "Logo yuklandi",
+      "invalidFile": "Noto'g'ri fayl formati",
+      "fileTooLarge": "Fayl hajmi katta",
+      "styles": {
+        "classic": "Klassik",
+        "modern": "Zamonaviy",
+        "rounded": "Dumaloq",
+        "gradient": "Gradient",
+        "minimal": "Minimal",
+        "colorful": "Rangli"
+      },
+      "corners": {
+        "square": "Kvadrat",
+        "rounded": "Dumaloq",
+        "extraRounded": "Juda dumaloq",
+        "circle": "Doira"
+      },
+      "patterns": {
+        "square": "Kvadrat",
+        "circle": "Doira",
+        "rounded": "Dumaloq",
+        "diamond": "Romb"
+      },
+      "gradients": {
+        "horizontal": "Gorizontal",
+        "vertical": "Vertikal",
+        "diagonal": "Diagonal",
+        "radial": "Radial"
+      },
+      "livePreview": "Jonli Ko'rinish",
+      "enterTextToPreview": "Matn kiriting va ko'rinishni ko'ring",
+      "customized": "Sozlangan",
+      "show": "Ko'rsatish",
+      "hide": "Yashirish",
+      "customization": "Sozlash",
+      "activeCustomizations": "Faol sozlamalar:",
+      "color": "Rang",
+      "logo": "Logo",
+      "gradient": "Gradient",
+      "style": "Stil",
+      "reset": "Qaytarish",
+      "customizationReady": "Sozlash tayyor",
+      "enterValidFirst": "Avval to'g'ri ma'lumot kiriting",
+      "advancedStylingTitle": "Qo'shimcha Stillar Tez Orada",
+      "advancedStylingDescription": "Burchak va pattern stillari hozirda ishlab chiqilmoqda. Hozircha ranglar, gradientlar, logo va chetlarni sozlashingiz mumkin.",
+      "colors": "Ranglar",
+      "gradientEndColor": "Gradient Oxirgi Rangi"
+    },
+    "Errors": {
+      "textTooLong": "Matn 2000 belgidan oshmasligi kerak",
+      "qrNotAvailable": "QR kod mavjud emas",
+      "downloadFailed": "QR kod yuklab bo'lmadi",
+      "downloadError": "QR kod yuklab olishda xatolik yuz berdi",
+      "fileSizeError": "Fayl hajmi 1MB dan oshmasligi kerak",
+      "fileTypeError": "Faqat TXT, JSON, CSV, MD fayl turlari qo'llab-quvvatlanadi",
+      "fileContentError": "Fayl tarkibi 2000 belgidan oshmasligi kerak",
+      "fileReadError": "Faylni o'qishda xatolik yuz berdi",
+      "fileUploadSuccess": "Fayl muvaffaqiyatli yuklandi",
+      "downloadSuccess": "QR kod muvaffaqiyatli yuklab olindi"
+    }
+  }
+}

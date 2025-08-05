@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 // Sample URL data constants
 export const SAMPLE_URL_DATA = {
@@ -10,14 +11,6 @@ export const SAMPLE_URL_DATA = {
   EMAIL_QUERY: 'mailto:info@webiston.uz?subject=Savolim bor&body=Assalomu alaykum',
   SOCIAL_SHARE: 'https://facebook.com/sharer/sharer.php?u=https://webiston.uz&t=Foydali veb tools',
 }
-
-const samples = [
-  { key: 'SIMPLE_URL', label: 'Oddiy URL', value: SAMPLE_URL_DATA.SIMPLE_URL },
-  { key: 'COMPLEX_URL', label: 'Murakkab URL', value: SAMPLE_URL_DATA.COMPLEX_URL },
-  { key: 'QUERY_STRING', label: "Qidiruv so'rovi", value: SAMPLE_URL_DATA.QUERY_STRING },
-  { key: 'EMAIL_QUERY', label: 'Email havolasi', value: SAMPLE_URL_DATA.EMAIL_QUERY },
-  { key: 'SOCIAL_SHARE', label: 'Ijtimoiy tarmoq', value: SAMPLE_URL_DATA.SOCIAL_SHARE },
-]
 
 type ConversionMode = 'encode' | 'decode'
 
@@ -54,9 +47,23 @@ const analyzeUrl = (urlString: string): UrlInfo => {
 }
 
 export const useUrlEncoder = () => {
+  const tErrors = useTranslations('UrlEncoderPage.Errors')
+  const tSamples = useTranslations('UrlEncoderPage.Samples')
   const [inputText, setInputText] = useState('')
   const [mode, setMode] = useState<ConversionMode>('encode')
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // Dynamic samples based on current mode
+  const samples = useMemo(
+    () => [
+      { key: 'SIMPLE_URL', label: tSamples('simpleUrl'), value: SAMPLE_URL_DATA.SIMPLE_URL },
+      { key: 'COMPLEX_URL', label: tSamples('complexUrl'), value: SAMPLE_URL_DATA.COMPLEX_URL },
+      { key: 'QUERY_STRING', label: tSamples('queryString'), value: SAMPLE_URL_DATA.QUERY_STRING },
+      { key: 'EMAIL_QUERY', label: tSamples('emailQuery'), value: SAMPLE_URL_DATA.EMAIL_QUERY },
+      { key: 'SOCIAL_SHARE', label: tSamples('socialShare'), value: SAMPLE_URL_DATA.SOCIAL_SHARE },
+    ],
+    [tSamples],
+  )
 
   const result = useMemo((): UrlResult => {
     if (!inputText.trim()) {
@@ -67,7 +74,7 @@ export const useUrlEncoder = () => {
     if (inputText.length > 1024 * 1024) {
       return {
         output: '',
-        error: 'Matn juda uzun (maksimal 1MB)',
+        error: tErrors('textTooLong'),
         isValid: false,
       }
     }
@@ -94,16 +101,16 @@ export const useUrlEncoder = () => {
         urlInfo,
       }
     } catch (error) {
-      let errorMessage = 'Konvertatsiya xatoligi'
+      let errorMessage = tErrors('conversionError')
 
       if (mode === 'decode') {
         if (error instanceof URIError) {
-          errorMessage = "Noto'g'ri URL kodlash formati. Percent encoding to'g'riligini tekshiring."
+          errorMessage = tErrors('invalidUrlFormat')
         } else {
-          errorMessage = "URL dekodlashda xatolik. Format to'g'riligini tekshiring."
+          errorMessage = tErrors('decodeError')
         }
       } else {
-        errorMessage = 'URL kodlashda xatolik yuz berdi.'
+        errorMessage = tErrors('encodeError')
       }
 
       return { output: '', error: errorMessage, isValid: false }
@@ -112,13 +119,39 @@ export const useUrlEncoder = () => {
 
   const handleModeSwitch = useCallback(() => {
     const newMode: ConversionMode = mode === 'encode' ? 'decode' : 'encode'
-    setMode(newMode)
 
-    // If we have valid output, use it as input for the opposite mode
-    if (result.output && result.isValid) {
-      setInputText(result.output)
+    if (inputText.trim()) {
+      // Try to convert current input to use as input for the opposite mode
+      try {
+        let newInput = inputText
+
+        if (mode === 'encode') {
+          // Current mode is encode, switching to decode
+          // Use the encoded result as input for decode mode
+          const encoded = encodeURIComponent(inputText)
+          newInput = encoded
+        } else {
+          // Current mode is decode, switching to encode
+          // Try to decode current input
+          try {
+            const decoded = decodeURIComponent(inputText)
+            newInput = decoded
+          } catch (error) {
+            // If decoding fails, keep current input
+          }
+        }
+
+        setMode(newMode)
+        setInputText(newInput)
+      } catch (error) {
+        // If conversion fails, just switch mode and keep current input
+        setMode(newMode)
+      }
+    } else {
+      // If no input text, just switch mode
+      setMode(newMode)
     }
-  }, [mode, result])
+  }, [mode, inputText])
 
   const handleClear = useCallback(() => {
     setInputText('')
@@ -128,41 +161,44 @@ export const useUrlEncoder = () => {
     setInputText(sample)
   }, [])
 
-  const handleFileUpload = useCallback(async (file: File): Promise<void> => {
-    setIsProcessing(true)
+  const handleFileUpload = useCallback(
+    async (file: File): Promise<void> => {
+      setIsProcessing(true)
 
-    try {
-      // File size validation (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error("Fayl hajmi 10MB dan kichik bo'lishi kerak.")
-      }
-
-      // File type validation
-      const validTypes = ['text/plain', 'application/json', 'text/json']
-      if (!validTypes.includes(file.type) && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
-        throw new Error('Faqat matn fayllarni yuklash mumkin.')
-      }
-
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target?.result as string
-        if (content.length > 1024 * 1024) {
-          alert('Fayl tarkibi juda uzun (maksimal 1MB)')
-        } else {
-          setInputText(content)
+      try {
+        // File size validation (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(tErrors('fileSizeError'))
         }
+
+        // File type validation
+        const validTypes = ['text/plain', 'application/json', 'text/json']
+        if (!validTypes.includes(file.type) && !file.name.endsWith('.txt') && !file.name.endsWith('.json')) {
+          throw new Error(tErrors('fileTypeError'))
+        }
+
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const content = e.target?.result as string
+          if (content.length > 1024 * 1024) {
+            alert(tErrors('textTooLong'))
+          } else {
+            setInputText(content)
+          }
+          setIsProcessing(false)
+        }
+        reader.onerror = () => {
+          throw new Error(tErrors('fileReadError'))
+        }
+        reader.readAsText(file)
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : tErrors('fileUploadError')
+        alert(errorMessage)
         setIsProcessing(false)
       }
-      reader.onerror = () => {
-        throw new Error("Faylni o'qishda xatolik yuz berdi.")
-      }
-      reader.readAsText(file)
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Faylni yuklashda xatolik yuz berdi.'
-      alert(errorMessage)
-      setIsProcessing(false)
-    }
-  }, [])
+    },
+    [tErrors],
+  )
 
   const downloadResult = useCallback(() => {
     if (!result.isValid || !result.output) return
@@ -172,15 +208,15 @@ export const useUrlEncoder = () => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `url-${mode === 'encode' ? 'kodlangan' : 'dekodlangan'}-${Date.now()}.txt`
+      a.download = `url-${mode === 'encode' ? 'encoded' : 'decoded'}-${Date.now()}.txt`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
     } catch (error) {
-      alert('Faylni yuklab olishda xatolik yuz berdi.')
+      alert(tErrors('downloadError'))
     }
-  }, [result, mode])
+  }, [result, mode, tErrors])
 
   const canDownload = Boolean(result.output && result.isValid)
 

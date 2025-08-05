@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { CapturedMedia } from '@/hooks/tools/useCameraRecorder'
+import Image from 'next/image'
 
 interface MediaPreviewModalProps {
   media: CapturedMedia | null
@@ -38,7 +39,7 @@ export const MediaPreviewModal = ({ media, onClose }: MediaPreviewModalProps) =>
             <h3 className="mb-4 text-lg font-semibold text-zinc-200">{media.filename}</h3>
 
             {media.type === 'screenshot' ? (
-              <img src={media.url} alt="Screenshot preview" className="max-h-[70vh] max-w-full rounded-lg" />
+              <Image src={media.url} alt="Screenshot preview" className="max-h-[70vh] max-w-full rounded-lg" />
             ) : (
               <video src={media.url} controls className="max-h-[70vh] max-w-full rounded-lg" />
             )}

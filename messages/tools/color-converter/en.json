@@ -1,0 +1,109 @@
+{
+  "ColorConverterPage": {
+    "ToolHeader": {
+      "title": "Color Converter and Palette Generator",
+      "description": "A tool for color conversion between HEX, RGB, HSL formats and palette generation"
+    },
+    "ControlPanel": {
+      "paletteType": "Palette type:",
+      "monochromatic": "Monochromatic",
+      "analogous": "Analogous",
+      "complementary": "Complementary",
+      "randomColor": "Random color",
+      "downloadPalette": "Download palette"
+    },
+    "ColorInput": {
+      "title": "Color Selection",
+      "color": "Color:",
+      "colorPicker": "Color picker",
+      "colorInfo": "Color information",
+      "colorName": "Color name",
+      "presetColors": "Preset colors:",
+      "validFormat": "Valid format",
+      "invalidFormat": "Invalid format",
+      "format": "Format",
+      "length": "Length",
+      "valid": "Valid",
+      "opacity": "Opacity"
+    },
+    "ColorFormats": {
+      "title": "Formats and Information",
+      "formats": "Formats",
+      "characters": "Characters",
+      "enterValidColor": "Enter a valid HEX color...",
+      "formatsWillAppear": "Color formats will appear here",
+      "hexDescription": "Most widely used in web development",
+      "rgbDescription": "For monitors and screens",
+      "hslDescription": "Human-readable format",
+      "rgbaDescription": "RGB with alpha channel",
+      "hslaDescription": "HSL with alpha channel",
+      "labDescription": "CIE Lab color space",
+      "lchDescription": "Lightness, Chroma, Hue",
+      "oklabDescription": "Modern perceptual color space",
+      "oklchDescription": "Cylindrical coordinates of OKLab"
+    },
+    "ColorPalette": {
+      "monochromatic": "Monochromatic palette",
+      "analogous": "Analogous palette",
+      "complementary": "Complementary palette",
+      "clickToCopy": "Click to copy color"
+    },
+    "TailwindShades": {
+      "title": "Tailwind Shades",
+      "exportOptions": "Export options:",
+      "noValidColor": "Enter a valid color"
+    },
+    "ColorHistory": {
+      "title": "Color History & Favorites",
+      "history": "History",
+      "favorites": "Favorites",
+      "clearHistory": "Clear History",
+      "clearFavorites": "Clear Favorites",
+      "noHistory": "No history yet",
+      "noFavorites": "No favorite colors yet"
+    },
+    "GradientGenerator": {
+      "title": "Gradient Generator",
+      "type": "Type:",
+      "direction": "Direction:",
+      "actions": "Actions:",
+      "random": "Random",
+      "colorStops": "Color Stops:",
+      "addColor": "Add Color",
+      "exportOptions": "Export Options:",
+      "noValidColor": "Enter a valid color"
+    },
+    "Info": {
+      "examples": {
+        "title": "Color Format Examples",
+        "hex": "HEX Formats",
+        "rgb": "RGB Formats",
+        "hsl": "HSL Formats"
+      },
+      "about": {
+        "title": "About Color Formats",
+        "hex": {
+          "title": "HEX Format",
+          "desc1": "Most widely used in web development",
+          "desc2": "#RRGGBB format (6 characters)",
+          "desc3": "Used directly in CSS",
+          "desc4": "Hexadecimal number system"
+        },
+        "rgb": {
+          "title": "RGB Format",
+          "desc1": "Red, Green, Blue values",
+          "desc2": "0-255 range for each channel",
+          "desc3": "For monitors and screens",
+          "desc4": "Widely used in JavaScript"
+        },
+        "hsl": {
+          "title": "HSL Format",
+          "desc1": "Hue, Saturation, Lightness",
+          "desc2": "Human-readable format",
+          "desc3": "Supported in CSS3",
+          "desc4": "Convenient for color adjustments"
+        }
+      }
+    }
+  }
+}

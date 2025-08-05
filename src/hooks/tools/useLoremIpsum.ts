@@ -1,344 +1,24 @@
 import { useState, useCallback } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
+import { useTranslations } from 'next-intl'
+import { LOREM_WORDS, ALTERNATIVE_TEXTS, LOREM_SAMPLE_SETTINGS } from '@/constants/tool-constants'
 
-type GenerationType = 'paragraphs' | 'sentences' | 'words' | 'bytes'
+export type GenerationType = 'paragraphs' | 'sentences' | 'words' | 'bytes'
 
-interface LoremSettings {
+export interface LoremSettings {
   generationType: GenerationType
   amount: number
   textType: string
   startWithLorem: boolean
 }
 
-const LOREM_WORDS = [
-  'lorem',
-  'ipsum',
-  'dolor',
-  'sit',
-  'amet',
-  'consectetur',
-  'adipiscing',
-  'elit',
-  'sed',
-  'do',
-  'eiusmod',
-  'tempor',
-  'incididunt',
-  'ut',
-  'labore',
-  'et',
-  'dolore',
-  'magna',
-  'aliqua',
-  'enim',
-  'ad',
-  'minim',
-  'veniam',
-  'quis',
-  'nostrud',
-  'exercitation',
-  'ullamco',
-  'laboris',
-  'nisi',
-  'aliquip',
-  'ex',
-  'ea',
-  'commodo',
-  'consequat',
-  'duis',
-  'aute',
-  'irure',
-  'in',
-  'reprehenderit',
-  'voluptate',
-  'velit',
-  'esse',
-  'cillum',
-  'fugiat',
-  'nulla',
-  'pariatur',
-  'excepteur',
-  'sint',
-  'occaecat',
-  'cupidatat',
-  'non',
-  'proident',
-  'sunt',
-  'culpa',
-  'qui',
-  'officia',
-  'deserunt',
-  'mollit',
-  'anim',
-  'id',
-  'est',
-  'laborum',
-  'at',
-  'vero',
-  'eos',
-  'accusamus',
-  'accusantium',
-  'doloremque',
-  'laudantium',
-  'totam',
-  'rem',
-  'aperiam',
-  'eaque',
-  'ipsa',
-  'quae',
-  'ab',
-  'illo',
-  'inventore',
-  'veritatis',
-  'et',
-  'quasi',
-  'architecto',
-  'beatae',
-  'vitae',
-  'dicta',
-  'sunt',
-  'explicabo',
-  'nemo',
-  'ipsam',
-  'voluptatem',
-  'quia',
-  'voluptas',
-  'aspernatur',
-  'aut',
-  'odit',
-  'fugit',
-  'sed',
-  'quia',
-  'consequuntur',
-  'magni',
-  'dolores',
-  'ratione',
-  'sequi',
-  'nesciunt',
-  'neque',
-  'porro',
-  'quisquam',
-  'dolorem',
-  'adipisci',
-  'numquam',
-  'eius',
-  'modi',
-  'tempora',
-  'incidunt',
-  'magnam',
-  'quaerat',
-]
-
-const ALTERNATIVE_TEXTS = {
-  cicero: {
-    name: 'Cicero (Klasik)',
-    words: LOREM_WORDS,
-  },
-  bacon: {
-    name: 'Bacon Ipsum',
-    words: [
-      'bacon',
-      'ipsum',
-      'dolor',
-      'amet',
-      'hamburger',
-      'leberkas',
-      'beef',
-      'ribs',
-      'brisket',
-      'tongue',
-      'spare',
-      'ribs',
-      'jerky',
-      'corned',
-      'beef',
-      'pig',
-      'short',
-      'loin',
-      'chicken',
-      'turkey',
-      'pork',
-      'belly',
-      'shoulder',
-      'chuck',
-      'sirloin',
-      'bresaola',
-      'pancetta',
-      'meatball',
-      'fatback',
-      'strip',
-      'steak',
-      'salami',
-      'capicola',
-      'tail',
-      'ball',
-      'tip',
-      'drumstick',
-      'tri-tip',
-      'sausage',
-      'ground',
-      'round',
-      'pastrami',
-      'shank',
-      'flank',
-      'kielbasa',
-    ],
-  },
-  hipster: {
-    name: 'Hipster Ipsum',
-    words: [
-      'artisan',
-      'sustainable',
-      'organic',
-      'locavore',
-      'craft',
-      'beer',
-      'quinoa',
-      'kale',
-      'chips',
-      'beard',
-      'mustache',
-      'vintage',
-      'retro',
-      'authentic',
-      'artisanal',
-      'small',
-      'batch',
-      'farm',
-      'to',
-      'table',
-      'fixie',
-      'bicycle',
-      'vinyl',
-      'record',
-      'player',
-      'messenger',
-      'bag',
-      'flannel',
-      'shirt',
-      'skinny',
-      'jeans',
-      'coffee',
-      'shop',
-      'bookstore',
-      'thrift',
-      'store',
-      'urban',
-      'farming',
-      'kombucha',
-      'meditation',
-      'yoga',
-      'minimalist',
-    ],
-  },
-  cupcake: {
-    name: 'Cupcake Ipsum',
-    words: [
-      'cupcake',
-      'ipsum',
-      'dolor',
-      'sit',
-      'amet',
-      'chocolate',
-      'cake',
-      'lemon',
-      'drops',
-      'pastry',
-      'carrot',
-      'cake',
-      'gummies',
-      'sweet',
-      'roll',
-      'danish',
-      'jujubes',
-      'donut',
-      'candy',
-      'canes',
-      'apple',
-      'pie',
-      'cheesecake',
-      'brownie',
-      'cotton',
-      'candy',
-      'macaroon',
-      'bonbon',
-      'tart',
-      'biscuit',
-      'wafer',
-      'liquorice',
-      'tiramisu',
-      'powder',
-      'jelly',
-      'beans',
-      'marzipan',
-      'croissant',
-      'pudding',
-      'fruitcake',
-      'ice',
-      'cream',
-      'shortbread',
-    ],
-  },
-  uzbek: {
-    name: "O'zbek Lorem",
-    words: [
-      'matn',
-      'sahifa',
-      'dizayn',
-      'web',
-      'dasturlash',
-      'loyiha',
-      'ishlab',
-      'chiqish',
-      'texnologiya',
-      'zamonaviy',
-      'tizim',
-      'platforma',
-      'mobil',
-      'ilovalar',
-      'foydalanuvchi',
-      'interfeys',
-      'tajriba',
-      'dizayner',
-      'dasturchi',
-      'muhandis',
-      'kreativ',
-      'innovatsiya',
-      'raqamli',
-      'dunyosi',
-      'internet',
-      'tarmoq',
-      'malumot',
-      'bazasi',
-      'server',
-      'bulut',
-      'xavfsizlik',
-      'optimizatsiya',
-      'samaradorlik',
-      'tezlik',
-      'chiroyli',
-      'zamonaviy',
-      'professional',
-      'mukammal',
-      'ajoyib',
-      'qiziqarli',
-    ],
-  },
-}
-
-const SAMPLE_SETTINGS: LoremSettings = {
-  generationType: 'paragraphs',
-  amount: 3,
-  textType: 'cicero',
-  startWithLorem: true,
-}
-
 export const useLoremIpsum = () => {
   const [generatedText, setGeneratedText] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const [_, copy] = useCopyToClipboard()
+  const t = useTranslations('LoremIpsumPage')
 
-  const [settings, setSettings] = useState<LoremSettings>(SAMPLE_SETTINGS)
+  const [settings, setSettings] = useState<LoremSettings>(LOREM_SAMPLE_SETTINGS)
 
   const getRandomWord = useCallback((words: string[]) => {
     return words[Math.floor(Math.random() * words.length)]
@@ -445,7 +125,7 @@ export const useLoremIpsum = () => {
   }, [])
 
   const loadSample = useCallback(() => {
-    setSettings(SAMPLE_SETTINGS)
+    setSettings(LOREM_SAMPLE_SETTINGS)
     // Generate after a small delay to ensure state is updated
     setTimeout(() => {
       generateText()
@@ -500,19 +180,44 @@ export const useLoremIpsum = () => {
     if (!generatedText) return []
 
     return [
-      { label: 'belgi', value: generatedText.length },
+      { label: t('Stats.characters'), value: generatedText.length },
       {
-        label: "so'z",
+        label: t('Stats.words'),
         value: generatedText.split(/\s+/).filter((word) => word.length > 0).length,
       },
-      { label: 'qator', value: generatedText.split('\n').length },
-      { label: 'paragraf', value: generatedText.split('\n\n').filter((p) => p.trim()).length },
+      { label: t('Stats.lines'), value: generatedText.split('\n').length },
+      {
+        label: t('Stats.paragraphs'),
+        value: generatedText.split('\n\n').filter((p) => p.trim()).length,
+      },
     ]
-  }, [generatedText])
+  }, [generatedText, t])
 
-  const textInfo = generatedText
-    ? `Yaratilgan matn ma'lumoti:\n\nUzunlik: ${generatedText.length} belgi\nSo'zlar: ${generatedText.split(/\s+/).filter((w) => w.length > 0).length}\nQatorlar: ${generatedText.split('\n').length}\nParagraflar: ${generatedText.split('\n\n').filter((p) => p.trim()).length}\n\nSozlamalar:\n- Turi: ${settings.generationType}\n- Miqdor: ${settings.amount}\n- Matn turi: ${ALTERNATIVE_TEXTS[settings.textType as keyof typeof ALTERNATIVE_TEXTS].name}\n- Lorem bilan boshlash: ${settings.startWithLorem ? 'Ha' : "Yo'q"}`
-    : ''
+  const getTextInfo = useCallback(() => {
+    if (!generatedText) return ''
+
+    const tInfo = (key: string) => t(`TextInfo.${key}`)
+    const tTypes = (key: string) => t(`GenerationTypes.${key}`)
+
+    const wordsCount = generatedText.split(/\s+/).filter((w) => w.length > 0).length
+    const linesCount = generatedText.split('\n').length
+    const paragraphsCount = generatedText.split('\n\n').filter((p) => p.trim()).length
+
+    return `${tInfo('title')}
+
+${tInfo('length')}: ${generatedText.length} ${tInfo('characters')}
+${tInfo('words')}: ${wordsCount}
+${tInfo('lines')}: ${linesCount}
+${tInfo('paragraphs')}: ${paragraphsCount}
+
+${tInfo('settings')}
+- ${tInfo('type')}: ${tTypes(settings.generationType)}
+- ${tInfo('amount')}: ${settings.amount}
+- ${tInfo('textType')}: ${ALTERNATIVE_TEXTS[settings.textType as keyof typeof ALTERNATIVE_TEXTS].name}
+- ${tInfo('startWithLorem')}: ${settings.startWithLorem ? tInfo('yes') : tInfo('no')}`
+  }, [generatedText, settings, t])
+
+  const textInfo = getTextInfo()
 
   return {
     // State

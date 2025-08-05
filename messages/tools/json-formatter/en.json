@@ -1,0 +1,74 @@
+{
+  "JsonFormatterPage": {
+    "ToolHeader": {
+      "title": "JSON Formatter and Validator",
+      "description": "A tool to format, validate and optimize JSON data"
+    },
+    "ControlPanel": {
+      "actions": "Actions:",
+      "fileUpload": "Upload File",
+      "sampleJson": "Sample JSON",
+      "clear": "Clear",
+      "indentation": "Indentation:",
+      "lineNumbers": "Line #",
+      "showLineNumbers": "Show line numbers",
+      "hideLineNumbers": "Hide line numbers",
+      "minified": "Minified",
+      "formatted": "Formatted",
+      "minifiedView": "Minified view",
+      "formattedView": "Formatted view",
+      "download": "Download"
+    },
+    "Panel": {
+      "sourceLabel": "JSON Input",
+      "targetLabelFormatted": "Formatted JSON",
+      "targetLabelMinified": "Minified JSON",
+      "sourcePlaceholder": "Enter your JSON data here or upload a file...",
+      "validFormat": "Valid format",
+      "errorExists": "Error exists",
+      "emptyStateTitle": "Formatted JSON will appear here...",
+      "emptyStateDescription": "Enter JSON or upload a file",
+      "errorTitle": "JSON Format Error",
+      "fileSize": "Size:"
+    },
+    "Info": {
+      "title": "About JSON",
+      "whatIsJson": {
+        "title": "What is JSON?",
+        "description": "JSON (JavaScript Object Notation) is a lightweight and readable format for storing and transmitting data. It is widely used in modern web applications and APIs."
+      },
+      "features": {
+        "title": "Key Features",
+        "feature1": "• Human-readable format",
+        "feature2": "• Language-independent standard",
+        "feature3": "• Small size and fast processing",
+        "feature4": "• Wide support"
+      },
+      "usage": {
+        "title": "Usage Areas",
+        "usage1": "• API responses and requests",
+        "usage2": "• Configuration files",
+        "usage3": "• Database exports",
+        "usage4": "• Data transmission for web applications"
+      },
+      "formatExample": {
+        "title": "JSON format examples",
+        "simpleObject": "Simple object",
+        "nestedObject": "Nested object",
+        "simpleJson": "{\n  \"name\": \"John\",\n  \"age\": 30,\n  \"city\": \"New York\"\n}",
+        "nestedJson": "{\n  \"person\": {\n    \"name\": \"John\",\n    \"contacts\": {\n      \"email\": \"john@example.com\",\n      \"phone\": \"+1234567890\"\n    }\n  },\n  \"isActive\": true\n}"
+      }
+    },
+    "Errors": {
+      "invalidJsonFormat": "Invalid JSON format",
+      "unexpectedToken": "Unexpected token. Check JSON format.",
+      "unexpectedEnd": "JSON is incomplete. Check brackets or quotes.",
+      "propertyName": "Property name must be in double quotes.",
+      "unexpectedString": "Unexpected string. Check commas or brackets.",
+      "jsonError": "JSON error:",
+      "fileTypeError": "Only JSON or TXT files can be uploaded.",
+      "fileSizeError": "File size must be less than 10MB.",
+      "fileReadError": "Error occurred while reading the file."
+    }
+  }
+}

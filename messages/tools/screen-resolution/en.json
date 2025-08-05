@@ -1,0 +1,102 @@
+{
+  "ScreenResolutionPage": {
+    "ToolHeader": {
+      "title": "Screen Resolution",
+      "description": "View real-time screen dimensions, resolution and display information"
+    },
+    "ControlPanel": {
+      "title": "Tool Input",
+      "status": "Ready",
+      "loadingStatus": "Loading...",
+      "controlPanelTitle": "Control Panel",
+      "refreshButton": "Refresh Information",
+      "fullscreenButton": "Fullscreen Mode",
+      "exitFullscreenButton": "Exit Fullscreen",
+      "demoDataButton": "Demo Data",
+      "downloadButton": "Download Information",
+      "mainIndicators": "Main Indicators",
+      "megapixels": "megapixels",
+      "width": "width",
+      "height": "height"
+    },
+    "OutputPanel": {
+      "title": "Tool Output/Result",
+      "dataAvailable": "Data Available",
+      "noData": "No Data",
+      "waitingTitle": "Waiting for Data",
+      "waitingDesc": "Click one of the buttons above to get screen information",
+      "screenInfoTitle": "Screen Information",
+      "screenSize": "Screen Size",
+      "resolutionType": "Resolution Type",
+      "viewportInfoTitle": "Viewport Information",
+      "innerSize": "Inner Size",
+      "outerSize": "Outer Size",
+      "technicalInfoTitle": "Technical Information",
+      "pixelRatio": "Pixel Ratio",
+      "aspectRatio": "Aspect Ratio",
+      "orientation": "Orientation",
+      "colorDepth": "Color Depth",
+      "deviceType": "Device Type",
+      "retinaDisplay": "Retina Display",
+      "yes": "Yes",
+      "no": "No",
+      "scrollPositionTitle": "Scroll Position",
+      "horizontalScroll": "Horizontal Scroll",
+      "verticalScroll": "Vertical Scroll"
+    },
+    "ResolutionCategories": {
+      "title": "Resolution Types",
+      "categories": {
+        "4K": "4K UHD",
+        "QHD": "QHD",
+        "FHD": "Full HD",
+        "HD": "HD",
+        "SD": "SD"
+      }
+    },
+    "DeviceTypes": {
+      "title": "Device Types",
+      "types": {
+        "Mobile": "Mobile",
+        "Tablet": "Tablet",
+        "Desktop": "Desktop",
+        "Large": "Large Screen"
+      }
+    },
+    "ModeInfo": {
+      "title": "Mode Information",
+      "fullscreenMode": "Fullscreen Mode",
+      "retinaDisplay": "Retina Display",
+      "viewportRatio": "Viewport Ratio"
+    },
+    "InfoSection": {
+      "title": "Screen Resolution and Display Information",
+      "realTimeTitle": "Real-time Monitoring",
+      "realTimeDesc": "Monitor screen dimensions, viewport information and device specifications in real-time. Instant tracking of browser window size and scroll position.",
+      "professionalTestingTitle": "Professional Testing",
+      "professionalTestingItems": {
+        "responsive": "Responsive web design testing",
+        "crossDevice": "Cross-device compatibility check",
+        "fullscreen": "Fullscreen mode analysis",
+        "pixelRatio": "Pixel ratio and Retina detection"
+      },
+      "technicalAnalysisTitle": "Technical Analysis",
+      "technicalAnalysisItems": {
+        "resolution": "Resolution category detection",
+        "deviceType": "Device type classification",
+        "aspectRatio": "Aspect ratio calculation",
+        "jsonExport": "JSON export functionality"
+      },
+      "resolutionStandardsTitle": "Resolution Standards and Device Types",
+      "popularResolutions": "Popular Resolutions:",
+      "deviceCategories": "Device Categories:",
+      "webDevTitle": "Web Development",
+      "webDevDesc": "Set up breakpoints correctly for responsive design. Apply mobile-first approach and test on various devices.",
+      "qaTitle": "Quality Assurance",
+      "qaDesc": "Simulate different device sizes for cross-browser testing. Test separately for Retina displays.",
+      "proTipTitle": "Professional Tip:",
+      "proTipDesc": "Proper viewport meta tag setup is crucial for responsive design.",
+      "proTipCode": "don't forget to use."
+    }
+  }
+}

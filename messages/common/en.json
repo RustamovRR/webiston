@@ -1,0 +1,51 @@
+{
+  "HomePage": {
+    "Metadata": {
+      "title": "Webiston | Free Courses and Tools for Developers",
+      "description": "A modern platform for learning programming. High-quality, free courses on React and useful tools for developers in Uzbek and English.",
+      "keywords": "free courses, programming, React, JavaScript, developer tools, learn to code, Uzbek IT, free education"
+    },
+    "title": "A deep dive into the world of web technologies",
+    "description": "Webiston — free education and useful tools for modern web technologies. All the resources you need for learning and development in one place.",
+    "startLearning": "Start Learning",
+    "usefulTools": "Useful Tools",
+    "reactSectionTitle": "Mastering <i>React</i>",
+    "reactSectionDescription": "An in-depth guide to the React library, from the basics to the most advanced concepts, available for free in Uzbek.",
+    "toolsSectionTitle": "Developer Tools",
+    "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
+    "jsSectionTitle": "<i>JavaScript</i> from Scratch",
+    "jsSectionDescription": "A comprehensive course on modern JavaScript. Coming soon..."
+  },
+  "Metadata": {
+    "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
+    "keywords": "React, Next.js, JavaScript, programming, web development, tutorial, guide, webiston, learn to code, react tutorial, nextjs tutorial, javascript tutorial"
+  },
+  "Header": {
+    "books": "Books",
+    "tools": "Useful Tools"
+  },
+  "Common": {
+    "stats": {
+      "characters": "characters",
+      "words": "words",
+      "lines": "lines"
+    },
+    "processing": "Processing...",
+    "resultWillAppear": "Result will appear here.",
+    "backToTools": "Back to Tools"
+  },
+  "Filters": {
+    "allTools": "All Tools",
+    "all": "All",
+    "general": "General",
+    "developer": "Developer",
+    "developers": "Developers",
+    "converters": "Converters",
+    "generators": "Generators",
+    "analyzers": "Analyzers",
+    "utilities": "Utilities"
+  },
+  "Footer": {
+    "allRightsReserved": "All rights reserved."
+  }
+}

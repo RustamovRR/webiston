@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 // Sample JSON data moved to constants
 export const SAMPLE_JSON_DATA = {
@@ -34,6 +35,7 @@ interface JsonResult {
 }
 
 export const useJsonFormatter = () => {
+  const t = useTranslations('JsonFormatterPage.Errors')
   const [inputJson, setInputJson] = useState('')
   const [indentation, setIndentation] = useState('2')
   const [showLineNumbers, setShowLineNumbers] = useState(true)
@@ -50,20 +52,20 @@ export const useJsonFormatter = () => {
       const minified = JSON.stringify(parsed)
       return { formatted, error: '', isValid: true, minified }
     } catch (error) {
-      let errorMessage = "Noto'g'ri JSON format"
+      let errorMessage = t('invalidJsonFormat')
 
       if (error instanceof SyntaxError) {
         const message = error.message
         if (message.includes('Unexpected token')) {
-          errorMessage = 'Kutilmagan belgi. JSON formatini tekshiring.'
+          errorMessage = t('unexpectedToken')
         } else if (message.includes('Unexpected end')) {
-          errorMessage = 'JSON tugallanmagan. Qavslar yoki tirnoqlarni tekshiring.'
+          errorMessage = t('unexpectedEnd')
         } else if (message.includes('property name')) {
-          errorMessage = "Xususiyat nomi qo'sh tirnoqda bo'lishi kerak."
+          errorMessage = t('propertyName')
         } else if (message.includes('Unexpected string')) {
-          errorMessage = 'Kutilmagan matn. Vergul yoki qavslarni tekshiring.'
+          errorMessage = t('unexpectedString')
         } else {
-          errorMessage = `JSON xatoligi: ${message}`
+          errorMessage = `${t('jsonError')} ${message}`
         }
       }
 
@@ -74,7 +76,7 @@ export const useJsonFormatter = () => {
         minified: '',
       }
     }
-  }, [inputJson, indentation])
+  }, [inputJson, indentation, t])
 
   const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { useDebounceValue } from 'usehooks-ts'
+import { useTranslations } from 'next-intl'
 import { toCyrillic, toLatin } from '@/lib/transliteration'
 
 export type Direction = 'latin-to-cyrillic' | 'cyrillic-to-latin'
@@ -35,6 +36,7 @@ interface UseLatinCyrillicResult {
 }
 
 export const useLatinCyrillic = (): UseLatinCyrillicResult => {
+  const t = useTranslations('LatinCyrillicPage')
   const [direction, setDirection] = useState<Direction>('latin-to-cyrillic')
   const [sourceText, setSourceText] = useState('')
 
@@ -79,16 +81,20 @@ export const useLatinCyrillic = (): UseLatinCyrillicResult => {
   }, [])
 
   // Computed values
-  const sourceLang = direction === 'latin-to-cyrillic' ? 'Lotin' : 'Kirill'
-  const targetLang = direction === 'latin-to-cyrillic' ? 'Kirill' : 'Lotin'
-  const sourcePlaceholder = direction === 'latin-to-cyrillic' ? 'Matn kiriting...' : 'Матн киритинг...'
+  const sourceLang = direction === 'latin-to-cyrillic' ? t('latin') : t('cyrillic')
+  const targetLang = direction === 'latin-to-cyrillic' ? t('cyrillic') : t('latin')
+  const sourcePlaceholder =
+    direction === 'latin-to-cyrillic' ? t('inputPlaceholderLatin') : t('inputPlaceholderCyrillic')
 
-  const samples = [
-    { key: 'LATIN_GREETING', label: 'Lotin salom', value: SAMPLE_TEXTS.LATIN_GREETING },
-    { key: 'CYRILLIC_GREETING', label: 'Kirill salom', value: SAMPLE_TEXTS.CYRILLIC_GREETING },
-    { key: 'LATIN_PARAGRAPH', label: 'Lotin paragraf', value: SAMPLE_TEXTS.LATIN_PARAGRAPH },
-    { key: 'CYRILLIC_PARAGRAPH', label: 'Kirill paragraf', value: SAMPLE_TEXTS.CYRILLIC_PARAGRAPH },
-  ]
+  const samples = useMemo(
+    () => [
+      { key: 'LATIN_GREETING', label: t('samples.latinGreeting'), value: SAMPLE_TEXTS.LATIN_GREETING },
+      { key: 'CYRILLIC_GREETING', label: t('samples.cyrillicGreeting'), value: SAMPLE_TEXTS.CYRILLIC_GREETING },
+      { key: 'LATIN_PARAGRAPH', label: t('samples.latinParagraph'), value: SAMPLE_TEXTS.LATIN_PARAGRAPH },
+      { key: 'CYRILLIC_PARAGRAPH', label: t('samples.cyrillicParagraph'), value: SAMPLE_TEXTS.CYRILLIC_PARAGRAPH },
+    ],
+    [t],
+  )
 
   return {
     // State
