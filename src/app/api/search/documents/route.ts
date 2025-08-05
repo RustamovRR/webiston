@@ -12,9 +12,9 @@ export async function GET() {
     const toolsPages = [
       {
         id: 'tools',
-        title: 'Veb Asboblar',
+        title: 'Onlayn Vositalar',
         content:
-          "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali veb asboblar to'plami",
+          "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali onlayn vositalar to'plami",
         url: '/tools',
         category: 'tools',
         tags: ['tools', 'utilities', 'json', 'url', 'base64', 'qr', 'password'],
@@ -152,9 +152,14 @@ async function processBookDirectory(
           const { data: frontmatter, content: markdownContent } = matter(content)
 
           // Create proper URL path
-          const urlPath = `/books/${bookName}/${currentPath ? currentPath + '/' : ''}${file.name.replace('.mdx', '')}`
+          let urlPath = `/books/${bookName}/${currentPath ? currentPath + '/' : ''}${file.name.replace('.mdx', '')}`
             .replace(/\/+/g, '/') // Remove double slashes
             .replace(/\/$/, '') // Remove trailing slash
+
+          // Remove /page suffix if exists
+          if (urlPath.endsWith('/page')) {
+            urlPath = urlPath.replace('/page', '')
+          }
 
           // Clean markdown content more thoroughly
           const cleanContent = markdownContent
@@ -173,10 +178,16 @@ async function processBookDirectory(
           // Extract meaningful keywords from content
           const keywords = extractKeywords(cleanContent, frontmatter.title || file.name)
 
+          const pageTitle = frontmatter.title || formatTitle(file.name.replace('.mdx', ''))
+
+          // Parse content into sections based on headers
+          const sections = parseContentSections(markdownContent, pageTitle, urlPath)
+
+          // Add main page document
           documents.push({
             id: `book-${bookName}-${newPath.replace(/[\/\\]/g, '-').replace('.mdx', '')}`,
-            title: frontmatter.title || formatTitle(file.name.replace('.mdx', '')),
-            content: cleanContent.substring(0, 500) + (cleanContent.length > 500 ? '...' : ''),
+            title: pageTitle,
+            content: cleanContent.substring(0, 200) + (cleanContent.length > 200 ? '...' : ''),
             url: urlPath,
             category: 'books',
             tags: [
@@ -189,6 +200,40 @@ async function processBookDirectory(
               ...keywords,
               ...(frontmatter.tags || []),
             ],
+          })
+
+          // Add section documents
+          sections.forEach((section, index) => {
+            const sectionContent = section.content
+              .replace(/```[\s\S]*?```/g, ' ')
+              .replace(/`[^`]*`/g, ' ')
+              .replace(/#{1,6}\s+/g, '')
+              .replace(/\*\*([^*]*)\*\*/g, '$1')
+              .replace(/\*([^*]*)\*/g, '$1')
+              .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+              .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+              .replace(/>\s*/g, '')
+              .replace(/\n+/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+
+            documents.push({
+              id: `book-${bookName}-${newPath.replace(/[\/\\]/g, '-').replace('.mdx', '')}-section-${index}`,
+              title: section.title,
+              content: sectionContent.substring(0, 200) + (sectionContent.length > 200 ? '...' : ''),
+              url: `${urlPath}#${section.anchor}`,
+              category: 'books',
+              tags: [
+                bookName,
+                'tutorial',
+                'guide',
+                'react',
+                'javascript',
+                'frontend',
+                ...extractKeywords(sectionContent, section.title),
+                ...(frontmatter.tags || []),
+              ],
+            })
           })
         } catch (error) {
           console.error(`Error processing file ${filePath}:`, error)
@@ -264,4 +309,63 @@ function extractKeywords(content: string, title: string): string[] {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([word]) => word)
+}
+
+// Parse content into sections based on headers
+function parseContentSections(markdownContent: string, pageTitle: string, urlPath: string) {
+  const sections: Array<{ title: string; content: string; anchor: string }> = []
+  const lines = markdownContent.split('\n')
+  let currentSection: string | null = null
+  let currentContent: string[] = []
+
+  for (const line of lines) {
+    // Check for headers (## or ###)
+    const headerMatch = line.match(/^(#{2,3})\s+(.+)$/)
+
+    if (headerMatch) {
+      // Save previous section if exists
+      if (currentSection && currentContent.length > 0) {
+        const cleanContent = currentContent.join('\n').trim()
+        if (cleanContent.length > 50) {
+          // Only add sections with meaningful content
+          sections.push({
+            title: currentSection,
+            content: cleanContent,
+            anchor: createAnchor(currentSection),
+          })
+        }
+      }
+
+      // Start new section
+      currentSection = headerMatch[2].trim()
+      currentContent = []
+    } else if (currentSection) {
+      // Add content to current section
+      currentContent.push(line)
+    }
+  }
+
+  // Add last section
+  if (currentSection && currentContent.length > 0) {
+    const cleanContent = currentContent.join('\n').trim()
+    if (cleanContent.length > 50) {
+      sections.push({
+        title: currentSection,
+        content: cleanContent,
+        anchor: createAnchor(currentSection),
+      })
+    }
+  }
+
+  return sections
+}
+
+// Create URL-friendly anchor from title
+function createAnchor(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .trim()
 }

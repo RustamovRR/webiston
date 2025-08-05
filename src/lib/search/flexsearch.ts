@@ -8,6 +8,10 @@ export interface SearchDocument {
   url: string
   category: string
   tags?: string[]
+  hierarchy?: {
+    lvl0: string
+    lvl1: string
+  }
 }
 
 class SearchEngine {
@@ -65,9 +69,9 @@ class SearchEngine {
     const fallbackDocs: SearchDocument[] = [
       {
         id: 'tools',
-        title: 'Veb Asboblar',
+        title: 'Onlayn Vositalar',
         content:
-          "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali veb asboblar to'plami. Dasturchilar uchun zarur bo'lgan barcha asboblar bir joyda.",
+          "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali onlayn vositalar to'plami. Dasturchilar uchun zarur bo'lgan barcha vositalar bir joyda.",
         url: '/tools',
         category: 'tools',
         tags: ['tools', 'utilities', 'json', 'url', 'base64', 'qr', 'password', 'developer', 'programming'],
@@ -222,8 +226,8 @@ class SearchEngine {
           const hit: ISearchHit & { _relevance?: number } = {
             objectID: doc.id,
             content: this.highlightText(doc.content, searchQuery),
-            hierarchy: {
-              lvl0: doc.category === 'tools' ? 'Asboblar' : 'Kitoblar',
+            hierarchy: doc.hierarchy || {
+              lvl0: doc.category === 'tools' ? 'Vositalar' : 'Kitoblar',
               lvl1: doc.title,
             },
             contentType: doc.category === 'tools' ? 'article' : 'tutorial',
