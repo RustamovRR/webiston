@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react'
-import { Link } from '@/i18n/navigation'
+import { Link as I18nLink } from '@/i18n/navigation'
+import Link from 'next/link'
 import { cn } from '@/lib'
 
 interface IProps {
@@ -7,10 +8,11 @@ interface IProps {
   children: ReactNode
   href: string
   className?: string
+  isNextLink?: boolean
   [key: string]: any // For any other props
 }
 
-const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, ...props }) => {
+const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, isNextLink = false, ...props }) => {
   const classNames = cn(
     'relative h-12 px-6 py-2 rounded-lg font-medium text-lg transition-colors duration-300 ease-in-out flex items-center justify-center',
     {
@@ -24,10 +26,14 @@ const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, ...p
     className,
   )
 
-  return (
+  return isNextLink ? (
     <Link {...props} className={classNames}>
       {children}
     </Link>
+  ) : (
+    <I18nLink {...props} className={classNames}>
+      {children}
+    </I18nLink>
   )
 }
 

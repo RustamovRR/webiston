@@ -109,7 +109,7 @@ export default function TableOfContents({ slug }: IProps) {
       <ul className="space-y-1 text-sm">
         {headings.map((heading) => (
           <li
-            key={heading.id}
+            key={`${heading.id} ${heading.level} ${heading.text}`}
             className={cn(
               'group relative overflow-y-auto rounded-md',
               heading.level === 2 && 'font-semibold',
