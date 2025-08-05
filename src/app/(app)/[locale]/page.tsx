@@ -65,6 +65,7 @@ export default async function HomePage() {
 
         <div className="mt-10 flex gap-4 max-sm:flex-col">
           <ButtonLink
+            isNextLink
             href="/books"
             variant="secondary"
             className="group border-zinc-300 bg-white text-black hover:bg-zinc-100"
@@ -94,7 +95,7 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {REACT_CHAPTERS.map((card, index) => (
-            <SimpleCard key={index} href={card.href} title={card.title} description={card.description} />
+            <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
           ))}
         </div>
       </section>
