@@ -1,0 +1,188 @@
+{
+  "IpInfoPage": {
+    "ToolHeader": {
+      "title": "IP Ma'lumotlari",
+      "description": "IP manzil va geolokatsiya ma'lumotlarini professional tahlil qiling, ISP va xavfsizlik ma'lumotlari"
+    },
+    "ControlPanel": {
+      "title": "Vosita Kirish",
+      "status": "Tayyor",
+      "loadingStatus": "Tahlil qilinmoqda...",
+      "currentIpButton": "Joriy IP",
+      "clearButton": "Tozalash",
+      "downloadButton": "JSON yuklab olish",
+      "analyzeButton": "Tahlil qilish",
+      "inputPlaceholder": "IP manzilni kiriting (masalan: 8.8.8.8)",
+      "yourIpTitle": "Sizning IP Manzilingiz",
+      "currentIpDesc": "Joriy IP manzil",
+      "sampleIpsTitle": "Namuna IP Manzillar",
+      "stats": {
+        "characters": "Belgilar",
+        "ipVersion": "IP Versiya",
+        "dataAvailable": "Ma'lumot"
+      }
+    },
+    "OutputPanel": {
+      "title": "Vosita Natijasi/Chiqish",
+      "dataAvailable": "Tahlil tayyor",
+      "noData": "Ma'lumot yo'q",
+      "waitingTitle": "IP manzil tahlil qilish uchun chap paneldan foydalaning",
+      "locationInfoTitle": "Joylashuv Ma'lumotlari",
+      "networkInfoTitle": "Tarmoq Ma'lumotlari",
+      "additionalInfoTitle": "Qo'shimcha Ma'lumotlar",
+      "jsonDataTitle": "JSON Ma'lumotlar",
+      "mapTitle": "Joylashuv Xaritasi",
+      "securityTitle": "Xavfsizlik Tahlili",
+      "ipAddress": "IP manzil",
+      "ipType": "IP turi",
+      "country": "Mamlakat",
+      "region": "Viloyat/Shtat",
+      "city": "Shahar",
+      "coordinates": "Koordinatalar",
+      "isp": "Internet Provayider",
+      "asn": "ASN",
+      "connectionType": "Ulanish turi",
+      "continent": "Qit'a",
+      "timezone": "Vaqt zonasi",
+      "currency": "Valyuta",
+      "callingCode": "Qo'ng'iroq kodi",
+      "euMember": "EU a'zosi",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "unknown": "Noma'lum"
+    },
+    "SampleIps": {
+      "google": {
+        "name": "Google DNS",
+        "description": "Google'ning ommaviy DNS serveri"
+      },
+      "cloudflare": {
+        "name": "Cloudflare DNS",
+        "description": "Cloudflare'ning tez DNS serveri"
+      },
+      "open": {
+        "name": "OpenDNS",
+        "description": "Cisco'ning xavfsiz DNS serveri"
+      },
+      "quad9": {
+        "name": "Quad9 DNS",
+        "description": "Quad9'ning xavfsiz DNS serveri"
+      },
+      "ibmquad9": {
+        "name": "IBM Quad9",
+        "description": "IBM'ning ikkinchi Quad9 serveri"
+      },
+      "level3": {
+        "name": "Level3 DNS",
+        "description": "Level3'ning ommaviy DNS serveri"
+      }
+    },
+    "InfoSection": {
+      "title": "IP Ma'lumotlari Haqida",
+      "description": "Professional IP geolocation va tarmoq tahlil vositasi. IP manzillar asosida joylashuv, ISP va xavfsizlik ma'lumotlarini real-time olish imkoniyati.",
+      "geolocationTitle": "Geolokatsiya Aniqlash",
+      "geolocationDesc": "IP manzil asosida aniq joylashuv va geografik ma'lumotlarni aniqlash:",
+      "geolocationItems": {
+        "country": "Davlat va bayroq ma'lumotlari",
+        "region": "Viloyat va shahar ma'lumotlari",
+        "coordinates": "Kenglik va uzunlik daraja",
+        "timezone": "Mintaqaviy vaqt va UTC offset"
+      },
+      "networkAnalysisTitle": "Tarmoq Tahlili",
+      "networkAnalysisDesc": "Internet provayider va tarmoq tafsilotlarini professional tahlil qilish:",
+      "networkItems": {
+        "isp": "Internet Xizmat Provayderi",
+        "asn": "Avtonom Tizim Raqami",
+        "ipType": "IPv4 yoki IPv6 protokol turi",
+        "connection": "Tarmoq turi va foydalanuvchi klassi"
+      },
+      "countryInfoTitle": "Mamlakat Ma'lumotlari",
+      "countryInfoDesc": "Davlat va mintaqa haqida keng qamrovli ma'lumotlar:",
+      "countryItems": {
+        "currency": "Milliy valyuta va kod",
+        "capital": "Bosh shahar ma'lumotlari",
+        "phoneCode": "Xalqaro qo'ng'iroq kodi",
+        "euStatus": "Yevropa Ittifoqi a'zoligi"
+      },
+      "apiIntegrationTitle": "API Integratsiya va Ma'lumot Manbalari",
+      "apiIntegrationDesc": "IP Ma'lumotlari vositasi professional geolocation API'lar bilan integratsiya qilingan va real-time ma'lumotlar bilan ishlaydi:",
+      "realTimeDataTitle": "Real-time Ma'lumot Olish",
+      "realTimeDataDesc": "Professional IP geolokatsiya xizmati bilan real-time ma'lumot olish imkoniyati.",
+      "realTimeDataCode": "ipapi.co, ipify.org API integratsiyasi",
+      "dataAccuracyTitle": "Ma'lumot Aniqligi",
+      "dataAccuracyDesc": "ISP va tarmoq ma'lumotlari 95%+ aniqlik bilan taqdim etiladi.",
+      "dataAccuracyCode": "Yuqori sifatli geolokatsiya bazasi",
+      "ipSupportTitle": "IPv4 va IPv6 Qo'llab-quvvatlash",
+      "ipSupportDesc": "Ikkala IP protokol versiyasi uchun to'liq qo'llab-quvvatlash mavjud.",
+      "ipSupportCode": "Universal IP protokol qo'llab-quvvatlash",
+      "jsonExportTitle": "JSON Eksport",
+      "jsonExportDesc": "Tahlil natijalarini JSON formatda yuklab olish imkoniyati.",
+      "jsonExportCode": "Strukturaviy ma'lumot eksport funksiyasi",
+      "useCasesTitle": "Foydalanish Holatlari",
+      "webDevTitle": "Veb Dasturlash va Xavfsizlik",
+      "webDevItems": {
+        "geoTargeting": "Geo-targeting va mintaqaviy kontent yetkazib berish",
+        "fraudDetection": "Firibgarlik aniqlash va xavfsizlik monitoring",
+        "personalization": "Foydalanuvchi joylashuviga asoslangan shaxsiylashtirish",
+        "troubleshooting": "Tarmoq muammolarini hal qilish va diagnostika"
+      },
+      "analyticsTitle": "Analitika va Biznes Ma'lumotlari",
+      "analyticsItems": {
+        "trafficAnalysis": "Veb-sayt trafigi geografik tahlili",
+        "marketResearch": "Bozor tadqiqoti va foydalanuvchi demografiyasi",
+        "cdnOptimization": "CDN optimallashtirish va server joylashuvi rejalashtirish",
+        "compliance": "Qonunchilik va tartibga solish talablari"
+      },
+      "professionalTipsTitle": "Professional Maslahatlar",
+      "privacyNoticeTitle": "Maxfiylik Eslatmasi:",
+      "privacyNoticeDesc": "Hech qanday IP manzil ma'lumotlari serverda saqlanmaydi. Barcha ma'lumotlar real-time API orqali olinadi va xavfsizlik ta'minlanadi.",
+      "accuracyNoticeTitle": "Aniqlik Eslatmasi:",
+      "accuracyNoticeDesc": "VPN va proxy serverlar orqali ulangan IP'lar uchun",
+      "accuracyNoticeCode": "haqiqiy joylashuv",
+      "accuracyNoticeDesc2": "ko'rsatilmasligi mumkin."
+    },
+    "SecurityAnalysis": {
+      "securityRating": "Xavfsizlik Reytingi",
+      "additionalInfo": "Qo'shimcha Ma'lumot",
+      "levels": {
+        "high": "Yuqori",
+        "medium": "O'rta",
+        "low": "Past"
+      },
+      "metrics": {
+        "vpnProxy": {
+          "label": "VPN/Proxy",
+          "detected": "Aniqlandi",
+          "notDetected": "Yo'q",
+          "descDetected": "Bu IP VPN yoki Proxy orqali ulangan",
+          "descNotDetected": "To'g'ridan-to'g'ri ulanish"
+        },
+        "serverType": {
+          "label": "Server Turi",
+          "dataCenter": "Data Center",
+          "isp": "ISP",
+          "descDataCenter": "Data center yoki hosting provayderidan",
+          "descIsp": "Oddiy internet provayderidan"
+        },
+        "botCrawler": {
+          "label": "Bot/Crawler",
+          "yes": "Ha",
+          "no": "Yo'q",
+          "descBot": "Bot yoki crawler sifatida aniqlangan",
+          "descNotBot": "Oddiy foydalanuvchi"
+        }
+      },
+      "additionalDetails": {
+        "proxyType": "Proxy turi:",
+        "crawlerName": "Crawler nomi:",
+        "userType": "Foydalanuvchi turi:"
+      }
+    },
+    "Errors": {
+      "invalidIpFormat": "Noto'g'ri IP manzil formati",
+      "apiRequestFailed": "IP ma'lumotlarini olishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.",
+      "rateLimitExceeded": "So'rovlar soni chegarasi oshdi. Iltimos, bir necha daqiqa kutib qayta urinib ko'ring.",
+      "networkError": "Tarmoq xatosi. Internet ulanishingizni tekshiring."
+    }
+  }
+}

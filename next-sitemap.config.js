@@ -15,7 +15,7 @@ module.exports = {
     )
 
     // Add locale paths
-    const locales = ['uz', 'en']
+    const locales = ['', 'en']
     for (const locale of locales) {
       paths.push(await config.transform(config, `/${locale}`), await config.transform(config, `/${locale}/tools`))
 

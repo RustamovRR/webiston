@@ -1,0 +1,188 @@
+{
+  "IpInfoPage": {
+    "ToolHeader": {
+      "title": "IP Information",
+      "description": "Professionally analyze IP address and geolocation information, ISP and security details"
+    },
+    "ControlPanel": {
+      "title": "Tool Input",
+      "status": "Ready",
+      "loadingStatus": "Analyzing...",
+      "currentIpButton": "Current IP",
+      "clearButton": "Clear",
+      "downloadButton": "Download JSON",
+      "analyzeButton": "Analyze",
+      "inputPlaceholder": "Enter IP address (e.g., 8.8.8.8)",
+      "yourIpTitle": "Your IP Address",
+      "currentIpDesc": "Current IP address",
+      "sampleIpsTitle": "Sample IP Addresses",
+      "stats": {
+        "characters": "Characters",
+        "ipVersion": "IP Version",
+        "dataAvailable": "Data"
+      }
+    },
+    "OutputPanel": {
+      "title": "Tool Output/Result",
+      "dataAvailable": "Analysis ready",
+      "noData": "No data",
+      "waitingTitle": "Use the left panel to analyze IP addresses",
+      "locationInfoTitle": "Location Information",
+      "networkInfoTitle": "Network Information",
+      "additionalInfoTitle": "Additional Information",
+      "jsonDataTitle": "JSON Data",
+      "mapTitle": "Location Map",
+      "securityTitle": "Security Analysis",
+      "ipAddress": "IP address",
+      "ipType": "IP type",
+      "country": "Country",
+      "region": "Region/State",
+      "city": "City",
+      "coordinates": "Coordinates",
+      "isp": "Internet Provider",
+      "asn": "ASN",
+      "connectionType": "Connection type",
+      "continent": "Continent",
+      "timezone": "Timezone",
+      "currency": "Currency",
+      "callingCode": "Calling code",
+      "euMember": "EU member",
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "Unknown"
+    },
+    "SampleIps": {
+      "google": {
+        "name": "Google DNS",
+        "description": "Google's public DNS server"
+      },
+      "cloudflare": {
+        "name": "Cloudflare DNS",
+        "description": "Cloudflare's fast DNS server"
+      },
+      "open": {
+        "name": "OpenDNS",
+        "description": "Cisco's secure DNS server"
+      },
+      "quad9": {
+        "name": "Quad9 DNS",
+        "description": "Quad9's secure DNS server"
+      },
+      "ibmquad9": {
+        "name": "IBM Quad9",
+        "description": "IBM's secondary Quad9 server"
+      },
+      "level3": {
+        "name": "Level3 DNS",
+        "description": "Level3's public DNS server"
+      }
+    },
+    "InfoSection": {
+      "title": "About IP Information",
+      "description": "Professional IP geolocation and network analysis tool. Real-time access to location, ISP and security information based on IP addresses.",
+      "geolocationTitle": "Geolocation Detection",
+      "geolocationDesc": "Accurate location and geographic information detection based on IP address:",
+      "geolocationItems": {
+        "country": "Country and flag information",
+        "region": "State and city information",
+        "coordinates": "Latitude and longitude degrees",
+        "timezone": "Regional time and UTC offset"
+      },
+      "networkAnalysisTitle": "Network Analysis",
+      "networkAnalysisDesc": "Professional analysis of internet provider and network details:",
+      "networkItems": {
+        "isp": "Internet Service Provider",
+        "asn": "Autonomous System Number",
+        "ipType": "IPv4 or IPv6 protocol type",
+        "connection": "Network type and user class"
+      },
+      "countryInfoTitle": "Country Information",
+      "countryInfoDesc": "Comprehensive information about country and region:",
+      "countryItems": {
+        "currency": "National currency and code",
+        "capital": "Capital city information",
+        "phoneCode": "International calling code",
+        "euStatus": "European Union membership"
+      },
+      "apiIntegrationTitle": "API Integration and Data Sources",
+      "apiIntegrationDesc": "IP Information tool is integrated with professional geolocation APIs and works with real-time data:",
+      "realTimeDataTitle": "Real-time Data Retrieval",
+      "realTimeDataDesc": "Real-time data retrieval capability with professional IP geolocation service.",
+      "realTimeDataCode": "ipapi.co, ipify.org API integration",
+      "dataAccuracyTitle": "Data Accuracy",
+      "dataAccuracyDesc": "ISP and network information provided with 95%+ accuracy.",
+      "dataAccuracyCode": "High-quality geolocation database",
+      "ipSupportTitle": "IPv4 and IPv6 Support",
+      "ipSupportDesc": "Full support available for both IP protocol versions.",
+      "ipSupportCode": "Universal IP protocol support",
+      "jsonExportTitle": "JSON Export",
+      "jsonExportDesc": "Ability to download analysis results in JSON format.",
+      "jsonExportCode": "Structured data export functionality",
+      "useCasesTitle": "Use Cases",
+      "webDevTitle": "Web Development and Security",
+      "webDevItems": {
+        "geoTargeting": "Geo-targeting and regional content delivery",
+        "fraudDetection": "Fraud detection and security monitoring",
+        "personalization": "User location-based personalization",
+        "troubleshooting": "Network troubleshooting and diagnostics"
+      },
+      "analyticsTitle": "Analytics and Business Intelligence",
+      "analyticsItems": {
+        "trafficAnalysis": "Website traffic geographic analysis",
+        "marketResearch": "Market research and user demographics",
+        "cdnOptimization": "CDN optimization and server location planning",
+        "compliance": "Legal and regulatory compliance requirements"
+      },
+      "professionalTipsTitle": "Professional Tips",
+      "privacyNoticeTitle": "Privacy Notice:",
+      "privacyNoticeDesc": "No IP address information is stored on the server. All data is obtained through real-time API and security is ensured.",
+      "accuracyNoticeTitle": "Accuracy Notice:",
+      "accuracyNoticeDesc": "For IPs connected through VPN and proxy servers",
+      "accuracyNoticeCode": "actual location",
+      "accuracyNoticeDesc2": "may not be displayed."
+    },
+    "SecurityAnalysis": {
+      "securityRating": "Security Rating",
+      "additionalInfo": "Additional Information",
+      "levels": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "metrics": {
+        "vpnProxy": {
+          "label": "VPN/Proxy",
+          "detected": "Detected",
+          "notDetected": "None",
+          "descDetected": "This IP is connected via VPN or Proxy",
+          "descNotDetected": "Direct connection"
+        },
+        "serverType": {
+          "label": "Server Type",
+          "dataCenter": "Data Center",
+          "isp": "ISP",
+          "descDataCenter": "From data center or hosting provider",
+          "descIsp": "From regular internet provider"
+        },
+        "botCrawler": {
+          "label": "Bot/Crawler",
+          "yes": "Yes",
+          "no": "No",
+          "descBot": "Detected as bot or crawler",
+          "descNotBot": "Regular user"
+        }
+      },
+      "additionalDetails": {
+        "proxyType": "Proxy type:",
+        "crawlerName": "Crawler name:",
+        "userType": "User type:"
+      }
+    },
+    "Errors": {
+      "invalidIpFormat": "Invalid IP address format",
+      "apiRequestFailed": "Error occurred while fetching IP information. Please try again later.",
+      "rateLimitExceeded": "Rate limit exceeded. Please wait a few minutes and try again.",
+      "networkError": "Network error. Please check your internet connection."
+    }
+  }
+}
