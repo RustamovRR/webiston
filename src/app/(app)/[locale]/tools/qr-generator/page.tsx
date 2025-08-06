@@ -2,59 +2,6 @@ import type { Metadata } from 'next'
 import { QrGenerator } from '@/modules/tools'
 
 // Locale-based metadata generation
-function generateMetadata(locale: string = 'uz'): Metadata {
-  const isUzbek = locale === 'uz'
-
-  const titles = {
-    uz: 'QR Kod Yaratish - Bepul QR Kod Generator Onlayn | Webiston',
-    en: 'QR Code Generator - Free Online QR Creator | Webiston',
-  }
-
-  const descriptions = {
-    uz: 'QR kod yaratish uchun eng yaxshi bepul vosita. URL, matn, kontakt, WiFi, SMS uchun QR kodlar yarating. Tez, oson va professional QR generator.',
-    en: 'Best free QR code generator online. Create QR codes for URLs, text, contacts, WiFi, SMS. Fast, easy and professional QR creator.',
-  }
-
-  const keywords = {
-    uz: [
-      'qr kod yaratish',
-      'qr kod generator',
-      'qr kod generatori',
-      'qr kod yasash',
-      'qr kod qilish',
-      'qr kod online',
-      'bepul qr kod',
-      'qr kod bepul',
-      'url qr kod',
-      'matn qr kod',
-      'wifi qr kod',
-      'kontakt qr kod',
-      'professional qr kod generator',
-      'webiston qr tools',
-      "o'zbek qr generator",
-    ],
-    en: [
-      'qr code generator',
-      'free qr generator',
-      'qr code maker',
-      'online qr generator',
-      'qr code creator',
-      'url qr code',
-      'text qr code',
-      'wifi qr code',
-      'contact qr code',
-      'professional qr generator',
-      'webiston tools',
-    ],
-  }
-
-  return {
-    title: titles[locale as keyof typeof titles] || titles.uz,
-    description: descriptions[locale as keyof typeof descriptions] || descriptions.uz,
-    keywords: keywords[locale as keyof typeof keywords] || keywords.uz,
-    // ... rest of metadata
-  }
-}
 
 export const metadata: Metadata = {
   title: 'QR Kod Yaratish - Bepul QR Kod Generator Onlayn | Webiston',
@@ -111,7 +58,7 @@ export const metadata: Metadata = {
     url: 'https://webiston.uz/tools/qr-generator',
     images: [
       {
-        url: 'https://webiston.uz/images/tools/qr-generator-og.png',
+        url: 'https://webiston.uz/logo.png', // Using existing logo for now
         width: 1200,
         height: 630,
         alt: 'QR Kod Generator - Bepul QR Kod Yaratish Vositasi',
@@ -125,7 +72,7 @@ export const metadata: Metadata = {
     creator: '@webiston_uz',
     title: 'QR Kod Yaratish - Bepul QR Generator',
     description: 'Professional QR kod generator. URL, matn, kontakt, WiFi uchun QR kodlar yarating. Bepul va tez!',
-    images: ['https://webiston.uz/images/tools/qr-generator-twitter.png'],
+    images: ['https://webiston.uz/logo.png'], // Using existing logo for now
   },
   alternates: {
     canonical: 'https://webiston.uz/tools/qr-generator',
@@ -212,7 +159,7 @@ const structuredData = {
     'Bepul va cheksiz foydalanish',
     'Yuklab olish imkoniyati',
   ],
-  screenshot: 'https://webiston.uz/images/tools/qr-generator-screenshot.png',
+  // screenshot: 'https://webiston.uz/images/tools/qr-generator-screenshot.png', // TODO: Add screenshot
   softwareVersion: '2.0',
   datePublished: '2024-01-01',
   dateModified: '2025-01-01',
@@ -242,73 +189,121 @@ const structuredData = {
   ],
 }
 
-// FAQ Schema for better SERP features
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
+// FAQ Schema for better SERP features (locale-based)
+function generateFAQSchema(locale: string = 'uz') {
+  const faqData = {
+    uz: {
+      questions: [
+        {
+          question: 'QR kod qanday yaratiladi?',
+          answer:
+            "QR kod yaratish uchun bizning bepul vositamizdan foydalaning. URL, matn yoki kontakt ma'lumotlarini kiriting va QR kod avtomatik yaratiladi.",
+        },
+        {
+          question: 'QR kod bepulmi?',
+          answer: "Ha, bizning QR kod generator to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi.",
+        },
+        {
+          question: 'QR kod qanday formatda yuklab olish mumkin?',
+          answer: "QR kodlarni PNG, JPG formatlarida yuklab olish mumkin. Turli o'lchamlarda ham mavjud.",
+        },
+        {
+          question: 'WiFi QR kod qanday yaratiladi?',
+          answer: 'WiFi QR kod yaratish uchun tarmoq nomi (SSID) va parolni kiriting. QR kod avtomatik yaratiladi.',
+        },
+      ],
+    },
+    en: {
+      questions: [
+        {
+          question: 'How to create a QR code?',
+          answer:
+            'Use our free QR code generator. Enter URL, text or contact information and QR code will be generated automatically.',
+        },
+        {
+          question: 'Is QR code generator free?',
+          answer: 'Yes, our QR code generator is completely free. No limitations or payments required.',
+        },
+        {
+          question: 'What formats can I download QR code?',
+          answer: 'You can download QR codes in PNG, JPG formats. Various sizes are also available.',
+        },
+        {
+          question: 'How to create WiFi QR code?',
+          answer:
+            'Enter network name (SSID) and password to create WiFi QR code. It will connect automatically when scanned.',
+        },
+      ],
+    },
+  }
+
+  const currentFAQ = faqData[locale as keyof typeof faqData] || faqData.uz
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: currentFAQ.questions.map((item) => ({
       '@type': 'Question',
-      name: 'QR kod qanday yaratiladi?',
+      name: item.question,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "QR kod yaratish uchun bizning bepul vositamizdan foydalaning. URL, matn yoki kontakt ma'lumotlarini kiriting va QR kod avtomatik yaratiladi.",
+        text: item.answer,
       },
-    },
-    {
-      '@type': 'Question',
-      name: 'QR kod bepulmi?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Ha, bizning QR kod generator to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'QR kod qanday formatda yuklab olish mumkin?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "QR kodlarni PNG, JPG, SVG formatlarida yuklab olish mumkin. Turli o'lchamlarda ham mavjud.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'WiFi QR kod qanday yaratiladi?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'WiFi QR kod yaratish uchun tarmoq nomi (SSID) va parolni kiriting. QR kod avtomatik yaratiladi va uni scan qilganda WiFi ga avtomatik ulanadi.',
-      },
-    },
-  ],
+    })),
+  }
 }
 
-// Breadcrumb Schema
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Bosh sahifa',
-      item: 'https://webiston.uz',
+// Breadcrumb Schema (locale-based)
+function generateBreadcrumbSchema(locale: string = 'uz') {
+  const breadcrumbData = {
+    uz: {
+      home: 'Bosh sahifa',
+      tools: 'Vositalar',
+      qrGenerator: 'QR Kod Generator',
     },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Vositalar',
-      item: 'https://webiston.uz/tools',
+    en: {
+      home: 'Home',
+      tools: 'Tools',
+      qrGenerator: 'QR Code Generator',
     },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'QR Kod Generator',
-      item: 'https://webiston.uz/tools/qr-generator',
-    },
-  ],
+  }
+
+  const current = breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
+  const baseUrl = locale === 'en' ? 'https://webiston.uz/en' : 'https://webiston.uz'
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: current.home,
+        item: locale === 'en' ? 'https://webiston.uz/en' : 'https://webiston.uz',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: current.tools,
+        item: `${baseUrl}/tools`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: current.qrGenerator,
+        item: `${baseUrl}/tools/qr-generator`,
+      },
+    ],
+  }
 }
 
-export default function QrGeneratorPage() {
+export default function QrGeneratorPage({ params }: { params: { locale: string } }) {
+  const locale = params?.locale || 'uz'
+
+  // Generate locale-specific schemas
+  const faqSchema = generateFAQSchema(locale)
+  const breadcrumbSchema = generateBreadcrumbSchema(locale)
+
   return (
     <>
       {/* Main Application Schema */}

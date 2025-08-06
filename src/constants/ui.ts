@@ -40,6 +40,14 @@ export interface ToolCategory {
 
 export const TOOLS_LIST: Tool[] = [
   {
+    tKey: 'qrGenerator',
+    href: '/tools/qr-generator',
+    icon: QrCode,
+    color: 'bg-yellow-500/20',
+    category: 'generators',
+    audience: 'general',
+  },
+  {
     tKey: 'latinCyrillic',
     href: '/tools/latin-cyrillic',
     icon: RotateCcw,
@@ -102,14 +110,6 @@ export const TOOLS_LIST: Tool[] = [
     color: 'bg-teal-500/20',
     category: 'generators',
     audience: 'developer',
-  },
-  {
-    tKey: 'qrGenerator',
-    href: '/tools/qr-generator',
-    icon: QrCode,
-    color: 'bg-yellow-500/20',
-    category: 'generators',
-    audience: 'general',
   },
   {
     tKey: 'passwordGenerator',
