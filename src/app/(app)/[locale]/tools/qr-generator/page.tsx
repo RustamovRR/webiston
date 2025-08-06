@@ -297,8 +297,8 @@ function generateBreadcrumbSchema(locale: string = 'uz') {
   }
 }
 
-export default function QrGeneratorPage({ params }: { params: { locale: string } }) {
-  const locale = params?.locale || 'uz'
+export default async function QrGeneratorPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = (await params) || { locale: 'uz' }
 
   // Generate locale-specific schemas
   const faqSchema = generateFAQSchema(locale)
