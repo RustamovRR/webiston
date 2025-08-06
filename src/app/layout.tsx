@@ -1,12 +1,10 @@
 import './globals.css'
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Script from 'next/script'
 import dynamic from 'next/dynamic'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/shared/Providers'
-import Head from 'next/head'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 const inter = Inter({ subsets: ['latin'] })
@@ -117,8 +115,14 @@ export default async function RootLayout({
 
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
-      <Head>
-        {!isDevelopment && (
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="theme">
+          {children}
+          <Toaster />
+        </ThemeProvider>
+
+        {/* Analytics Scripts - Production only */}
+        {!isDevelopment && GA_ID && (
           <>
             {/* Google Analytics */}
             <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
@@ -127,55 +131,56 @@ export default async function RootLayout({
               strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `,
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}');
+                `,
               }}
             />
+          </>
+        )}
+
+        {!isDevelopment && YM_ID && (
+          <>
             {/* Yandex Metrica */}
             <Script
               id="ym-script"
               strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
-            (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+                  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                  m[i].l=1*new Date();
+                  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+                  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-            ym(${YM_ID}, "init", {
-              clickmap:true,
-              trackLinks:true,
-              accurateTrackBounce:true,
-              webvisor:true
-            });
-          `,
+                  ym(${YM_ID}, "init", {
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true
+                  });
+                `,
               }}
             />
             {/* Yandex Metrica noscript */}
             <noscript>
               <div>
-                <Image
+                <img
                   src={`https://mc.yandex.ru/watch/${YM_ID}`}
                   style={{ position: 'absolute', left: '-9999px' }}
                   alt=""
+                  width="1"
+                  height="1"
                 />
               </div>
             </noscript>
-
-            <OpenReplayNoSSR />
           </>
         )}
-      </Head>
 
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="theme">
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        {/* OpenReplay - Production only */}
+        {!isDevelopment && <OpenReplayNoSSR />}
       </body>
     </html>
   )
