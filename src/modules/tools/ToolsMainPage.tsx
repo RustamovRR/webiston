@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AuroraText, GradientTabs } from '@/components/ui'
-import { TOOL_CATEGORIES, FILTER_OPTIONS, AUDIENCE_FILTERS, type Tool } from '@/constants'
+import { TOOLS_LIST, TOOL_CATEGORIES, FILTER_OPTIONS, AUDIENCE_FILTERS, type Tool } from '@/constants'
 import { useTranslations } from 'next-intl'
 
 const ToolsMainPage = () => {
@@ -26,7 +26,7 @@ const ToolsMainPage = () => {
     hasAnimated.current = true
   }, [])
 
-  const allTools = useMemo(() => TOOL_CATEGORIES.flatMap((cat: any) => cat.tools), [])
+  const allTools = useMemo(() => TOOLS_LIST, [])
 
   const filteredTools = useMemo(() => {
     let tools = allTools
