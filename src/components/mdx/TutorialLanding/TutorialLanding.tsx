@@ -1,4 +1,5 @@
 import { formatTutorialName } from '@/lib'
+import Link from 'next/link'
 
 interface TutorialLandingProps {
   tutorialId: string
@@ -30,8 +31,14 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
             <h3 className="mb-2 text-lg font-medium">Mavjud bo'limlar:</h3>
             <ul className="list-disc space-y-1 pl-5">
               {navigationItems.map((item, index) => (
-                <li key={index} className="text-muted-foreground">
-                  {item.title}
+                <li key={item.path || index}>
+                  <Link
+                    href={`fluent-react/${item.path}`}
+                    key={index}
+                    className="text-muted-foreground duration-300 hover:text-white"
+                  >
+                    {item.title}
+                  </Link>
                 </li>
               ))}
             </ul>
