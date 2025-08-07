@@ -70,7 +70,7 @@ export function ensureRootIsScheduled(root: FiberRoot): void {
 }
 ```
 
-`ensureRootIsScheduled` funksiyasi, React kod bazasida render’ni boshqarishda muhim rol o'ynaydi. React ildizi, `root: FiberRoot` deb nomlangan, yangilanishni qabul qilganda, ushbu funksiya ikkita muhim harakatni bajarish uchun chaqiriladi. [4-bobdan eslang](/books/react/inside-reconciliation/fiber-reconciliation#commit-bosqichi): React ildizi bu yakuniy "o'zgartirish" bo'lib, u yangilanishlarni amalga oshirish uchun commit(tatbiq qilish) bosqichida sodir bo'ladi.
+`ensureRootIsScheduled` funksiyasi, React kod bazasida render’ni boshqarishda muhim rol o'ynaydi. React ildizi, `root: FiberRoot` deb nomlangan, yangilanishni qabul qilganda, ushbu funksiya ikkita muhim harakatni bajarish uchun chaqiriladi. [4-bobdan eslang](/books/fluent-react/inside-reconciliation/fiber-reconciliation#commit-bosqichi): React ildizi bu yakuniy "o'zgartirish" bo'lib, u yangilanishlarni amalga oshirish uchun commit(tatbiq qilish) bosqichida sodir bo'ladi.
 
 `ensureRootIsScheduled` chaqirilganda, u root’ning ildiz jadvaliga kiritilganligini tasdiqlaydi: bu qayta ishlanishi kerak bo'lgan ildizlarni kuzatadigan ro'yxat. Ikkinchidan, ushbu ildiz jadvalini qayta ishlashga bag'ishlangan kutilayotgan mikrotask mavjudligini ta'minlaydi.
 

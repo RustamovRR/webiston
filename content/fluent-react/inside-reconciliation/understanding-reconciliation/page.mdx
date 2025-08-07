@@ -32,7 +32,7 @@ const App = () => {
 
 Ushbu kod qismi UI holatini qanday bo'lishini deklarativ tavsifini o'z ichiga oladi: elementlar daraxti. Bizning hamkasblarimiz va React bu kodni o'qib, biz hisoblagich(counter) ilovasini yaratmoqchi ekanligimizni tushunishlari mumkin. Reconciliation’ni yaxshiroq tushunish uchun, bunday komponentga duch kelganda React ichida nimalar sodir bo'lishini tushunishimiz kerak.
 
-Birinchidan, JSX React elementlari daraxtiga aylanadi. Bu biz [Virtual Dom](/books/react/virtual-dom) bobida ko'rgan narsalarimizdir. Ushbu component chaqirilganda, `App` komponenti o'z bolalari yana boshqa React elementlari bo'lgan React elementini qaytaradi. React elementlari o'zgarmasdir(biz uchun) va UI’ning kerakli holatini ifodalaydi. Ular haqiqiy UI holati emas. React elementlari `React.createElement` yoki JSX `<` belgisi orqali yaratiladi, shuning uchun bu quyidagi ko'rinishga transpilatsiya qilinadi:
+Birinchidan, JSX React elementlari daraxtiga aylanadi. Bu biz [Virtual Dom](/books/fluent-react/virtual-dom) bobida ko'rgan narsalarimizdir. Ushbu component chaqirilganda, `App` komponenti o'z bolalari yana boshqa React elementlari bo'lgan React elementini qaytaradi. React elementlari o'zgarmasdir(biz uchun) va UI’ning kerakli holatini ifodalaydi. Ular haqiqiy UI holati emas. React elementlari `React.createElement` yoki JSX `<` belgisi orqali yaratiladi, shuning uchun bu quyidagi ko'rinishga transpilatsiya qilinadi:
 
 ```js copy
 const App = () => {

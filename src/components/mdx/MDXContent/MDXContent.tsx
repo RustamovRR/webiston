@@ -1,6 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import Link from 'next/link'
-import { ArrowUpIcon, LinkIcon } from 'lucide-react'
+import { ArrowUpIcon, ArrowUpRightIcon, LinkIcon } from 'lucide-react'
 import React from 'react'
 
 // Plugins
@@ -132,7 +132,11 @@ const components = {
               {...linkProps}
             >
               <span>{linkChildren}</span>
-              <ArrowUpIcon width={14} height={14} className="!stroke-sky-500 group-hover:!stroke-sky-400" />
+              <ArrowUpRightIcon
+                width={14}
+                height={14}
+                className="!stroke-sky-500 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:!stroke-sky-400"
+              />
             </a>
           )
         } else {
