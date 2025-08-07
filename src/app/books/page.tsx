@@ -113,10 +113,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-  },
   category: 'education',
   classification: 'Books and Education',
   referrer: 'origin-when-cross-origin',

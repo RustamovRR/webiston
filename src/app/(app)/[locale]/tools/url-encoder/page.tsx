@@ -107,10 +107,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-  },
   category: 'technology',
   classification: 'Tools and Utilities',
   referrer: 'origin-when-cross-origin',
