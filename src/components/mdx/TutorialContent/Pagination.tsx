@@ -38,7 +38,7 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
               <span className="text-xs font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
                 Oldingi
               </span>
-              <span className="text-lg text-black max-sm:text-base dark:text-white">{prevPage.title}</span>
+              <span className="text-lg font-medium text-black max-sm:text-base dark:text-white">{prevPage.title}</span>
             </div>
           </Link>
         </div>
@@ -52,7 +52,9 @@ export function Pagination({ currentPath, tutorialId, flattenedNavigation }: Pag
               Keyingi
             </span>
             <div className="group flex items-center gap-2">
-              <span className="line-clamp-2 text-lg text-black max-sm:text-base dark:text-white">{nextPage.title}</span>
+              <span className="line-clamp-2 text-lg font-medium text-black max-sm:text-base dark:text-white">
+                {nextPage.title}
+              </span>
               <div className="justify-self-end">
                 <ChevronRightIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
               </div>

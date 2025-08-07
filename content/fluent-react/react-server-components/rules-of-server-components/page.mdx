@@ -12,7 +12,7 @@ Endi server komponentlarning qanday ishlashini tushunib yetganimizdan so'ng, ser
 
 ### Seriyalashtirish muhim omil
 
-Server komponentlar bilan ishlashda barcha props’lar seriyalashtiriladigan bo'lishi kerak. Buning sababi shundaki, server props’larni seriyalashtirib, ularni klientga yuborishi kerak, avval muhokama qilganimizdek. Shuning uchun props’lar server komponentlarda funksiyalar yoki boshqa seriyalashtirilmaydigan qiymatlar bo'lishi mumkin emas. Bu esa, [5-bobda](/books/react/powerful-patterns/render-props) ko'rib chiqqanimiz "render props" pattern’ini amalda eskirgan qilib qo'yadi.
+Server komponentlar bilan ishlashda barcha props’lar seriyalashtiriladigan bo'lishi kerak. Buning sababi shundaki, server props’larni seriyalashtirib, ularni klientga yuborishi kerak, avval muhokama qilganimizdek. Shuning uchun props’lar server komponentlarda funksiyalar yoki boshqa seriyalashtirilmaydigan qiymatlar bo'lishi mumkin emas. Bu esa, [5-bobda](/books/fluent-react/powerful-patterns/render-props) ko'rib chiqqanimiz "render props" pattern’ini amalda eskirgan qilib qo'yadi.
 
 Ushbu nuqtada, RSC’lar serverda qanday render qilinishi, keyin oson va silliq navigatsiya orqali klientga yuborilish jarayonini tushungan holda, bu qoida nimaga kerakligini tushunishimiz kerak. Misol uchun, agar bizda quyidagicha server komponent bo'lsa:
 
@@ -120,7 +120,7 @@ Agar alohida funksiyalarni `"use server"` bilan belgilashni xohlamasangiz, fayl 
 
 ### Formalar va mutatsiyalar (Forms and mutations)
 
-[8-bobda](/books/react/frameworks) biz Next.js va Remix qanday qilib formalar va o'zgartirishlarni (mutatsiyalarni) boshqarishi haqida gaplashgan edik. React ham bu funksiyalar uchun birinchi darajali primitivlarni qo'shmoqda (yoki allaqachon qo'shgan). Quyidagi formani ko'rib chiqaylik:
+[8-bobda](/books/fluent-react/frameworks) biz Next.js va Remix qanday qilib formalar va o'zgartirishlarni (mutatsiyalarni) boshqarishi haqida gaplashgan edik. React ham bu funksiyalar uchun birinchi darajali primitivlarni qo'shmoqda (yoki allaqachon qo'shgan). Quyidagi formani ko'rib chiqaylik:
 
 ```js copy filename="App.js"
 async function requestUsername(formData) {

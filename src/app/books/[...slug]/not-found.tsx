@@ -10,8 +10,8 @@ export default function NotFound() {
           Kechirasiz, siz izlayotgan sahifa yoki kontent mavjud emas.
         </p>
         <div className="pt-4">
-          <Link href="/tutorials" passHref>
-            <Button>Darslik sahifasiga qaytish</Button>
+          <Link href="/books" passHref>
+            <Button>Kitoblar sahifasiga qaytish</Button>
           </Link>
         </div>
       </div>

@@ -16,11 +16,11 @@ Kirish qismida aytib o'tilganidek, server komponenti — bu faqat serverda bajar
 const Component = () => <div>hi!</div>
 ```
 
-Ushbu kodda `Component` funksiyasi `<div>hi!</div>` elementini qaytaradi. Tabiiyki, `<div>hi!</div>` React elementini qaytaradi, chunki React’da `<` belgisi `React.createElement`ga sinonim hisoblanadi. Biz buni [2-bobda](/books/react/jsx) JSX haqida o'rgangan edik. Agar bu haqida unutgan bo'lsangiz, tezda ushbu mavzuni qayta ko'rib chiqib, davom ettirishingiz mumkin.
+Ushbu kodda `Component` funksiyasi `<div>hi!</div>` elementini qaytaradi. Tabiiyki, `<div>hi!</div>` React elementini qaytaradi, chunki React’da `<` belgisi `React.createElement`ga sinonim hisoblanadi. Biz buni [2-bobda](/books/fluent-react/jsx) JSX haqida o'rgangan edik. Agar bu haqida unutgan bo'lsangiz, tezda ushbu mavzuni qayta ko'rib chiqib, davom ettirishingiz mumkin.
 
 Oxir-oqibat, barcha komponentlar React elementlarini, ya'ni virtual DOM (vDOM)ni qaytaradi.
 
-Server komponentlari ham bundan farq qilmaydi. Agar `Component` funksiyasi server yoki klientda bajarilsa, u vDOM’ni qaytaradi. [3-bobda](/books/react/virtual-dom), React elementlari shunchaki quyidagi sxemaga ega JavaScript obyektlari ekanligini ko'rgan edik:
+Server komponentlari ham bundan farq qilmaydi. Agar `Component` funksiyasi server yoki klientda bajarilsa, u vDOM’ni qaytaradi. [3-bobda](/books/fluent-react/virtual-dom), React elementlari shunchaki quyidagi sxemaga ega JavaScript obyektlari ekanligini ko'rgan edik:
 
 ```js copy
 {

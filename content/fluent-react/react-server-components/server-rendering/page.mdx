@@ -110,10 +110,10 @@ app.listen(3000, () => {
 })
 ```
 
-Ushbu server kodi [6-bobdan](/books/react/server-side-react) bevosita olingan bo'lib, u yerda server tomonidagi React haqida muhokama qilgan edik. Bu yerda esa, biz server komponentlarini server tomoni renderer'iga uzatishdan oldin ularni qayta ishlash bosqichini qo'shdik — bu bizning misolimizdagi ikkinchi jarayon.
+Ushbu server kodi [6-bobdan](/books/fluent-react/server-side-react) bevosita olingan bo'lib, u yerda server tomonidagi React haqida muhokama qilgan edik. Bu yerda esa, biz server komponentlarini server tomoni renderer'iga uzatishdan oldin ularni qayta ishlash bosqichini qo'shdik — bu bizning misolimizdagi ikkinchi jarayon.
 
 Mantiqan olganda, server komponentlari va server tomonidagi renderlash aynan shunday bir-biriga mos keladi: ular bir-birini to'ldiruvchi jarayonlardir.
 
-Yana bir bor ta'kidlash joizki, biz bu yerda `renderToString` funksiyasidan faqat namoyish uchun foydalanmoqdamiz. Va [6-bobda](/books/react/server-side-react) ta'kidlanganidek, asosiy foydalanish holatlarida `renderToPipeableStream` yoki shunga o'xshash asinxron va uzluksiz API’dan foydalanish yaxshiroq bo'ladi.
+Yana bir bor ta'kidlash joizki, biz bu yerda `renderToString` funksiyasidan faqat namoyish uchun foydalanmoqdamiz. Va [6-bobda](/books/fluent-react/server-side-react) ta'kidlanganidek, asosiy foydalanish holatlarida `renderToPipeableStream` yoki shunga o'xshash asinxron va uzluksiz API’dan foydalanish yaxshiroq bo'ladi.
 
 Endi biz _server rendering_ va server komponentlari o'rtasidagi o'zaro aloqani tushunib olganimizdan so'ng, oldingi kodda ishlatilgan `turnServerComponentsIntoTreeOfElements` funksiyasini chuqurroq o'rganamiz. Bu nima qiladi? Qanday qilib server komponentlarini elementlar daraxtiga aylantiradi? Bu React renderer’i hisoblanadimi? Keling, buni aniqlab olaylik.

@@ -35,8 +35,8 @@ export default function ErrorContent({
           <Button onClick={handleRetry} variant="outline">
             Qayta urinib ko'rish
           </Button>
-          <Link href="/tutorials" passHref>
-            <Button>Darslik sahifasiga qaytish</Button>
+          <Link href="/books" passHref>
+            <Button>Kitoblar sahifasiga qaytish</Button>
           </Link>
         </div>
       </div>
