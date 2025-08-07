@@ -1,10 +1,8 @@
 'use client'
 
 import Sidebar from '@/components/mdx/Sidebar'
-import type { TutorialNavigation } from '@/lib/mdx'
 import { Skeleton } from '@/components/ui/skeleton'
 import Search from '../Search'
-import LanguageSelector from '../LanguageSelector'
 import { ThemeSwitcher } from '../ThemeSwitcher'
 import { useNavigationStore } from '@/stores/navigationStore'
 
@@ -39,8 +37,7 @@ export default function MobileMenuContent({ tutorialId, onClose }: MobileMenuCon
         <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} onLinkClick={onClose} />
       </section>
       <section className="flex-shrink-0 border-t p-4">
-        <div className="flex items-center justify-between">
-          <LanguageSelector />
+        <div className="flex items-center justify-end">
           <ThemeSwitcher />
         </div>
       </section>
