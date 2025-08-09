@@ -136,7 +136,9 @@
       "download": "Download",
       "screenshotPreview": "Screenshot Preview",
       "videoPreview": "Video Preview",
-      "failedToLoad": "Failed to load image"
+      "failedToLoad": "Failed to load image",
+      "loadingVideo": "Loading video...",
+      "failedToLoadVideo": "Failed to load video"
     },
     "Hook": {
       "messages": {

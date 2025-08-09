@@ -4,7 +4,7 @@ import { X, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 
 interface CapturedMedia {
@@ -25,8 +25,27 @@ interface MediaPreviewModalProps {
 export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
   const t = useTranslations('CameraRecorderPage.MediaPreviewModal')
   const [imageError, setImageError] = useState(false)
-  const [videoDuration, setVideoDuration] = useState<number>(0)
-  const [videoCurrentTime, setVideoCurrentTime] = useState<number>(0)
+  const [videoLoading, setVideoLoading] = useState(true)
+  const [videoError, setVideoError] = useState(false)
+
+  // Reset states when media changes
+  useEffect(() => {
+    if (media?.type === 'video') {
+      setVideoLoading(true)
+      setVideoError(false)
+
+      // Small delay to ensure video element is rendered
+      const timer = setTimeout(() => {
+        const videoElement = document.querySelector(`video[src="${media.url}"]`) as HTMLVideoElement
+        if (videoElement) {
+          videoElement.load() // Force reload to reset state
+          videoElement.currentTime = 0
+        }
+      }, 50)
+
+      return () => clearTimeout(timer)
+    }
+  }, [media])
 
   if (!media) return null
 
@@ -92,26 +111,49 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
                 </div>
               )
             ) : (
-              <div className="space-y-2">
-                <video
-                  src={media.url}
-                  controls
-                  className="max-h-[70vh] w-auto rounded-lg"
-                  preload="metadata"
-                  onLoadedMetadata={(e) => {
-                    const video = e.target as HTMLVideoElement
-                    setVideoDuration(video.duration)
-                    video.currentTime = 0.1 // Set to small value to show first frame
-                  }}
-                  onTimeUpdate={(e) => {
-                    const video = e.target as HTMLVideoElement
-                    setVideoCurrentTime(video.currentTime)
-                  }}
-                  onLoadedData={(e) => {
-                    const video = e.target as HTMLVideoElement
-                    setVideoDuration(video.duration)
-                  }}
-                />
+              <div className="relative">
+                {videoLoading && (
+                  <div className="flex h-64 w-96 items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
+                      <p className="text-zinc-500">{t('loadingVideo')}</p>
+                    </div>
+                  </div>
+                )}
+                {videoError ? (
+                  <div className="flex h-64 w-96 items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                    <p className="text-zinc-500">{t('failedToLoadVideo')}</p>
+                  </div>
+                ) : (
+                  <video
+                    key={media.id} // Force re-render for each video
+                    src={media.url}
+                    controls
+                    className={`max-h-[70vh] w-auto rounded-lg ${videoLoading ? 'hidden' : 'block'}`}
+                    preload="metadata"
+                    autoPlay={false}
+                    muted={false}
+                    onLoadedMetadata={(e) => {
+                      const video = e.target as HTMLVideoElement
+                      // Only set currentTime if it's not already at the beginning
+                      if (video.currentTime !== 0) {
+                        video.currentTime = 0
+                      }
+                      setVideoLoading(false)
+                    }}
+                    onCanPlayThrough={(e) => {
+                      const video = e.target as HTMLVideoElement
+                      // Ensure video is at the beginning when ready to play
+                      if (video.currentTime !== 0) {
+                        video.currentTime = 0
+                      }
+                    }}
+                    onError={() => {
+                      setVideoLoading(false)
+                      setVideoError(true)
+                    }}
+                  />
+                )}
               </div>
             )}
           </div>

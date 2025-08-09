@@ -136,7 +136,9 @@
       "download": "Yuklab olish",
       "screenshotPreview": "Screenshot Ko'rinishi",
       "videoPreview": "Video Ko'rinishi",
-      "failedToLoad": "Rasm yuklanmadi"
+      "failedToLoad": "Rasm yuklanmadi",
+      "loadingVideo": "Video yuklanmoqda...",
+      "failedToLoadVideo": "Video yuklanmadi"
     },
     "Hook": {
       "messages": {
