@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { MediaGridItem } from './MediaGridItem'
 
-interface MediaItem {
+interface CapturedMedia {
   id: string
-  type: 'video' | 'image'
+  type: 'screenshot' | 'video'
   url: string
-  timestamp: number
-  size?: number
+  filename: string
+  timestamp: Date
   duration?: number
+  size?: number
 }
 
 interface CameraStats {
@@ -20,10 +21,10 @@ interface CameraStats {
 }
 
 interface MediaPanelProps {
-  capturedMedia: MediaItem[]
+  capturedMedia: CapturedMedia[]
   cameraStats: CameraStats
-  onPreview: (media: MediaItem) => void
-  onDownload: (media: MediaItem) => void
+  onPreview: (media: CapturedMedia) => void
+  onDownload: (media: CapturedMedia) => void
   onDelete: (id: string) => void
 }
 
@@ -31,7 +32,7 @@ export function MediaPanel({ capturedMedia, cameraStats, onPreview, onDownload, 
   const t = useTranslations('CameraRecorderPage.MediaPanel')
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="flex h-[600px] max-h-[600px] flex-col rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
       <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
@@ -49,19 +50,19 @@ export function MediaPanel({ capturedMedia, cameraStats, onPreview, onDownload, 
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="max-h-96 overflow-y-auto">
+      <div className="flex flex-1 flex-col p-6">
+        <div className="max-h-[450px] flex-1 overflow-y-auto pr-2">
           <AnimatePresence>
             {capturedMedia.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex h-40 items-center justify-center text-zinc-500 dark:text-zinc-400"
+                className="flex h-64 items-center justify-center text-zinc-500 dark:text-zinc-400"
               >
                 <div className="text-center">
-                  <Clock className="mx-auto mb-2 h-12 w-12 opacity-50" />
-                  <p>{t('empty.title')}</p>
-                  <p className="text-sm text-zinc-400 dark:text-zinc-500">{t('empty.subtitle')}</p>
+                  <Clock className="mx-auto mb-4 h-16 w-16 opacity-50" />
+                  <p className="text-lg font-medium">{t('empty.title')}</p>
+                  <p className="mt-2 text-sm text-zinc-400 dark:text-zinc-500">{t('empty.subtitle')}</p>
                 </div>
               </motion.div>
             ) : (
@@ -80,25 +81,23 @@ export function MediaPanel({ capturedMedia, cameraStats, onPreview, onDownload, 
           </AnimatePresence>
         </div>
 
-        {/* Stats */}
-        {capturedMedia.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-4 rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50"
-          >
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-zinc-500 dark:text-zinc-400">{t('stats.screenshots')}</span>
-                <span className="ml-2 text-blue-600 dark:text-blue-400">{cameraStats.screenshotCount}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 dark:text-zinc-400">{t('stats.videos')}</span>
-                <span className="ml-2 text-green-600 dark:text-green-400">{cameraStats.videoCount}</span>
-              </div>
+        {/* Stats - Always at bottom */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50"
+        >
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-zinc-500 dark:text-zinc-400">{t('stats.screenshots')}</span>
+              <span className="ml-2 text-blue-600 dark:text-blue-400">{cameraStats.screenshotCount}</span>
             </div>
-          </motion.div>
-        )}
+            <div>
+              <span className="text-zinc-500 dark:text-zinc-400">{t('stats.videos')}</span>
+              <span className="ml-2 text-green-600 dark:text-green-400">{cameraStats.videoCount}</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

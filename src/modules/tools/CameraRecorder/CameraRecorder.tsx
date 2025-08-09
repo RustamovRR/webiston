@@ -23,7 +23,6 @@ const QUALITY_OPTIONS = [
 
 export default function CameraRecorderPage() {
   const t = useTranslations('CameraRecorderPage.ToolHeader')
-  const tErrors = useTranslations('CameraRecorderPage.Errors')
 
   const [selectedQuality, setSelectedQuality] = useState('hd')
 
@@ -91,9 +90,9 @@ export default function CameraRecorderPage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Camera Preview Panel */}
-        <div className="space-y-4">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Camera Preview Panel - Sticky */}
+        <div className="sticky top-20 flex h-fit flex-col space-y-4">
           <VideoPreviewPanel
             isCameraActive={isCameraActive}
             isRecording={isRecording}
@@ -109,7 +108,7 @@ export default function CameraRecorderPage() {
             isCameraActive={isCameraActive}
             isRecording={isRecording}
             status={status}
-            videoInfo={videoInfo}
+            videoInfo={videoInfo || undefined}
             recordingInfo={recordingInfo}
             selectedCamera={selectedCamera}
             cameras={cameras}
@@ -121,13 +120,15 @@ export default function CameraRecorderPage() {
         </div>
 
         {/* Captured Media Panel */}
-        <MediaPanel
-          capturedMedia={capturedMedia}
-          cameraStats={cameraStats}
-          onPreview={openPreview}
-          onDownload={downloadMedia}
-          onDelete={deleteMedia}
-        />
+        <div className="h-[600px]">
+          <MediaPanel
+            capturedMedia={capturedMedia}
+            cameraStats={cameraStats}
+            onPreview={openPreview}
+            onDownload={downloadMedia}
+            onDelete={deleteMedia}
+          />
+        </div>
       </div>
 
       {/* Error Display */}

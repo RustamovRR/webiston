@@ -29,23 +29,33 @@ export function InfoSection() {
             <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                <strong>Content Creation:</strong> {t('useCases.contentCreation')}
+                <span>
+                  <strong>{t('useCases.contentCreation.title')}</strong> {t('useCases.contentCreation.description')}
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                <strong>Documentation:</strong> {t('useCases.documentation')}
+                <span>
+                  <strong>{t('useCases.documentation.title')}</strong> {t('useCases.documentation.description')}
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
-                <strong>Education:</strong> {t('useCases.education')}
+                <span>
+                  <strong>{t('useCases.education.title')}</strong> {t('useCases.education.description')}
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                <strong>Testing:</strong> {t('useCases.testing')}
+                <span>
+                  <strong>{t('useCases.testing.title')}</strong> {t('useCases.testing.description')}
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-cyan-500"></div>
-                <strong>Quality Control:</strong> {t('useCases.qualityControl')}
+                <span>
+                  <strong>{t('useCases.qualityControl.title')}</strong> {t('useCases.qualityControl.description')}
+                </span>
               </li>
             </ul>
           </div>

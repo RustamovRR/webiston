@@ -75,25 +75,42 @@
         "subtitle": "Screenshot yoki video oling"
       },
       "stats": {
-        "screenshots": "Screenshots:",
+        "screenshots": "Screenshotlar:",
         "videos": "Videolar:"
       },
       "actions": {
         "preview": "Ko'rish",
         "download": "Yuklab olish",
         "delete": "O'chirish"
-      }
+      },
+      "screenshot": "Screenshot",
+      "video": "Video"
     },
     "InfoSection": {
       "title": "Ma'lumot",
       "status": "Yordam",
       "useCases": {
         "title": "Asosiy foydalanish joylari:",
-        "contentCreation": "Content Creation: Blog, video kontent va ijtimoiy media uchun",
-        "documentation": "Documentation: Layihalar va jarayonlar uchun video hujjatlar",
-        "education": "Education: Ta'lim va o'qitish materiallari yaratish",
-        "testing": "Testing: Kamera va mikrofon funksionalligini tekshirish",
-        "qualityControl": "Quality Control: Turli qurilmalarda video sifatini baholash"
+        "contentCreation": {
+          "title": "Kontent Yaratish:",
+          "description": "Blog, video kontent va ijtimoiy media uchun"
+        },
+        "documentation": {
+          "title": "Hujjatlashtirish:",
+          "description": "Layihalar va jarayonlar uchun video hujjatlar"
+        },
+        "education": {
+          "title": "Ta'lim:",
+          "description": "Ta'lim va o'qitish materiallari yaratish"
+        },
+        "testing": {
+          "title": "Sinov:",
+          "description": "Kamera va mikrofon funksionalligini tekshirish"
+        },
+        "qualityControl": {
+          "title": "Sifat Nazorati:",
+          "description": "Turli qurilmalarda video sifatini baholash"
+        }
       },
       "tips": {
         "title": "Professional maslahatlar:",
@@ -114,6 +131,35 @@
       "recordingFailed": "Video yozishda xatolik yuz berdi",
       "screenshotFailed": "Screenshot olishda xatolik yuz berdi",
       "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
+    },
+    "MediaPreviewModal": {
+      "download": "Yuklab olish",
+      "screenshotPreview": "Screenshot Ko'rinishi",
+      "videoPreview": "Video Ko'rinishi",
+      "failedToLoad": "Rasm yuklanmadi"
+    },
+    "Hook": {
+      "messages": {
+        "recordingStarted": "Video va ovoz yozib olish boshlandi",
+        "recordingSaved": "Video va ovoz muvaffaqiyatli saqlandi",
+        "cameraDeviceLabel": "Kamera",
+        "camerasFound": "ta kamera topildi",
+        "cameraAccessDenied": "Kamera qurilmalariga kirish rad etildi yoki mavjud emas",
+        "cameraStarted": "Kamera ishga tushirildi",
+        "cameraStartError": "Kamerani ishga tushirishda xatolik yuz berdi",
+        "cameraStopped": "Kamera to'xtatildi",
+        "screenshotRequired": "Screenshot olish uchun kamera yoqilgan bo'lishi kerak",
+        "screenshotTaken": "Screenshot muvaffaqiyatli olindi",
+        "screenshotError": "Screenshot olishda xatolik yuz berdi",
+        "screenshotDownloaded": "Screenshot yuklab olindi",
+        "videoDownloaded": "Video yuklab olindi",
+        "screenshotDeleted": "Screenshot o'chirildi",
+        "videoDeleted": "Video o'chirildi",
+        "camerasRefreshing": "Kameralar yangilanmoqda...",
+        "camerasRefreshed": "Kameralar muvaffaqiyatli yangilandi",
+        "camerasRefreshError": "Kameralar yangilashda xatolik yuz berdi",
+        "recordingDownloaded": "Video yuklab olindi"
+      }
     }
   }
 }
