@@ -35,7 +35,7 @@ module.exports = {
         'og-meta-generator',
         'device-info',
         'screen-resolution',
-        'ip-info',
+        'camera-recorder',
       ]
 
       for (const tool of toolsPages) {
