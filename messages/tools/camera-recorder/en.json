@@ -1,0 +1,167 @@
+{
+  "CameraRecorderPage": {
+    "ToolHeader": {
+      "title": "Camera Recorder",
+      "description": "Test your camera, record videos and take screenshots"
+    },
+    "ControlPanel": {
+      "title": "Camera Settings",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "camera": {
+        "label": "Camera:",
+        "placeholder": "Select camera",
+        "refresh": "Refresh"
+      },
+      "quality": {
+        "label": "Quality:",
+        "hd": "HD (1280×720)",
+        "fhd": "Full HD (1920×1080)",
+        "sd": "SD (640×480)"
+      },
+      "buttons": {
+        "startCamera": "Start Camera",
+        "stopCamera": "Stop Camera"
+      }
+    },
+    "VideoPreview": {
+      "title": "Camera Preview",
+      "status": {
+        "live": "Live",
+        "off": "Off",
+        "recording": "REC"
+      },
+      "placeholder": {
+        "title": "Click the button above to start camera",
+        "subtitle": "You need to grant permission first"
+      },
+      "controls": {
+        "screenshot": "Screenshot",
+        "startRecording": "Start Recording",
+        "stopRecording": "Stop Recording"
+      }
+    },
+    "StatusPanel": {
+      "status": {
+        "label": "Status",
+        "recording": "Recording",
+        "stopping": "Stopping",
+        "stopped": "Stopped",
+        "idle": "Ready",
+        "acquiring_media": "Acquiring media"
+      },
+      "quality": {
+        "label": "Quality"
+      },
+      "duration": {
+        "label": "Duration"
+      },
+      "camera": {
+        "label": "Camera",
+        "selected": "Selected camera"
+      },
+      "recording": {
+        "format": "Recording to WebM format with audio",
+        "quality": "Quality:"
+      }
+    },
+    "MediaPanel": {
+      "title": "Captured Media",
+      "fileCount": "files",
+      "empty": {
+        "title": "No media captured yet",
+        "subtitle": "Take a screenshot or record a video"
+      },
+      "stats": {
+        "screenshots": "Screenshots:",
+        "videos": "Videos:"
+      },
+      "actions": {
+        "preview": "Preview",
+        "download": "Download",
+        "delete": "Delete"
+      },
+      "screenshot": "Screenshot",
+      "video": "Video"
+    },
+    "InfoSection": {
+      "title": "Information",
+      "status": "Help",
+      "useCases": {
+        "title": "Main use cases:",
+        "contentCreation": {
+          "title": "Content Creation:",
+          "description": "For blogs, video content and social media"
+        },
+        "documentation": {
+          "title": "Documentation:",
+          "description": "Video documentation for projects and processes"
+        },
+        "education": {
+          "title": "Education:",
+          "description": "Creating educational and teaching materials"
+        },
+        "testing": {
+          "title": "Testing:",
+          "description": "Testing camera and microphone functionality"
+        },
+        "qualityControl": {
+          "title": "Quality Control:",
+          "description": "Evaluating video quality on different devices"
+        }
+      },
+      "tips": {
+        "title": "Professional tips:",
+        "lighting": "Record videos in good lighting conditions",
+        "microphone": "Sit closer to the camera for better microphone proximity",
+        "quality": "Choose HD or Full HD quality, but consider internet speed",
+        "screenshot": "Pause the video before taking a screenshot",
+        "storage": "Upload large files to cloud storage"
+      },
+      "note": {
+        "title": "Note:",
+        "content": "Video and audio files are automatically saved in WebM format. This format is well supported in modern browsers and offers high quality with small file size."
+      }
+    },
+    "Errors": {
+      "cameraAccess": "Camera access permission denied",
+      "noCamera": "No camera found",
+      "recordingFailed": "Video recording failed",
+      "screenshotFailed": "Screenshot capture failed",
+      "unsupportedBrowser": "Browser not supported"
+    },
+    "MediaPreviewModal": {
+      "download": "Download",
+      "screenshotPreview": "Screenshot Preview",
+      "videoPreview": "Video Preview",
+      "failedToLoad": "Failed to load image",
+      "loadingVideo": "Loading video...",
+      "failedToLoadVideo": "Failed to load video"
+    },
+    "Hook": {
+      "messages": {
+        "recordingStarted": "Video and audio recording started",
+        "recordingSaved": "Video and audio saved successfully",
+        "cameraDeviceLabel": "Camera",
+        "camerasFound": "cameras found",
+        "cameraAccessDenied": "Camera device access denied or not available",
+        "cameraStarted": "Camera started",
+        "cameraStartError": "Error starting camera",
+        "cameraStopped": "Camera stopped",
+        "screenshotRequired": "Camera must be active to take screenshot",
+        "screenshotTaken": "Screenshot taken successfully",
+        "screenshotError": "Error taking screenshot",
+        "screenshotDownloaded": "Screenshot downloaded",
+        "videoDownloaded": "Video downloaded",
+        "screenshotDeleted": "Screenshot deleted",
+        "videoDeleted": "Video deleted",
+        "camerasRefreshing": "Refreshing cameras...",
+        "camerasRefreshed": "Cameras refreshed successfully",
+        "camerasRefreshError": "Error refreshing cameras",
+        "recordingDownloaded": "Video downloaded"
+      }
+    }
+  }
+}

@@ -1,11 +1,21 @@
 'use client'
 
-import { ImageIcon, Video, Eye, Download, Trash2, Play } from 'lucide-react'
+import { Download, Eye, Trash2, Video, Image as ImageIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import type { CapturedMedia } from '@/hooks/tools/useCameraRecorder'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
+import { useState } from 'react'
+
+interface CapturedMedia {
+  id: string
+  type: 'screenshot' | 'video'
+  url: string
+  filename: string
+  timestamp: Date
+  duration?: number
+  size?: number
+}
 
 interface MediaGridItemProps {
   media: CapturedMedia
@@ -14,125 +24,89 @@ interface MediaGridItemProps {
   onDelete: () => void
 }
 
-export const MediaGridItem = ({ media, onPreview, onDownload, onDelete }: MediaGridItemProps) => {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>('')
+export function MediaGridItem({ media, onPreview, onDownload, onDelete }: MediaGridItemProps) {
+  const t = useTranslations('CameraRecorderPage.MediaPanel')
+  const [imageError, setImageError] = useState(false)
 
-  useEffect(() => {
-    if (media.type === 'screenshot') {
-      setThumbnailUrl(media.url)
-    } else if (media.type === 'video') {
-      // Create video thumbnail
-      const video = document.createElement('video')
-      video.src = media.url
-      video.crossOrigin = 'anonymous'
-      video.currentTime = 1 // Capture frame at 1 second
+  const formatFileSize = (bytes?: number) => {
+    if (!bytes) return 'N/A'
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
+  }
 
-      video.onloadeddata = () => {
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-
-        if (ctx) {
-          ctx.drawImage(video, 0, 0)
-          const thumbnailDataUrl = canvas.toDataURL('image/jpeg', 0.7)
-          setThumbnailUrl(thumbnailDataUrl)
-        }
-      }
-    }
-  }, [media])
+  const formatDuration = (seconds?: number) => {
+    if (!seconds) return 'N/A'
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   const renderThumbnail = () => {
     if (media.type === 'screenshot') {
-      return thumbnailUrl ? (
-        <Image src={thumbnailUrl} alt="Screenshot thumbnail" className="h-full w-full rounded-lg object-cover" />
-      ) : (
-        <div className="flex h-full items-center justify-center">
-          <ImageIcon className="h-8 w-8 text-blue-400" />
+      if (imageError) {
+        return (
+          <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+            <ImageIcon className="h-8 w-8 text-zinc-400" />
+          </div>
+        )
+      }
+
+      return (
+        <div className="relative h-full w-full">
+          <Image
+            src={media.url}
+            alt="Screenshot thumbnail"
+            fill
+            className="rounded-lg object-cover"
+            onError={() => setImageError(true)}
+            unoptimized // For blob URLs
+          />
         </div>
       )
     }
 
     // Video thumbnail
     return (
-      <div className="relative h-full w-full overflow-hidden rounded-lg bg-zinc-800">
-        {thumbnailUrl ? (
-          <Image src={thumbnailUrl} alt="Video thumbnail" className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <Video className="h-8 w-8 text-zinc-400" />
-          </div>
-        )}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-          <Play className="h-6 w-6 text-white" />
-        </div>
+      <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+        <Video className="h-8 w-8 text-green-500" />
       </div>
     )
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      className="group relative aspect-square rounded-lg border border-zinc-800 bg-zinc-900/50 p-2 backdrop-blur-sm transition-all duration-200 hover:border-zinc-600"
+      exit={{ opacity: 0, scale: 0.9 }}
+      className="group relative overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"
     >
       {/* Thumbnail */}
-      <div className="h-full w-full overflow-hidden rounded-md">{renderThumbnail()}</div>
+      <div className="aspect-video w-full overflow-hidden">{renderThumbnail()}</div>
 
       {/* Overlay with actions */}
-      <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-black/60 p-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        {/* File info */}
-        <div className="text-white">
-          <div className="mb-1 flex items-center gap-1">
-            {media.type === 'screenshot' ? (
-              <ImageIcon className="h-3 w-3 text-blue-400" />
-            ) : (
-              <Video className="h-3 w-3 text-green-400" />
-            )}
-            <span className="truncate text-xs font-medium">{media.type}</span>
-          </div>
-          <p className="truncate text-xs text-zinc-300">{media.filename}</p>
-          <p className="text-xs text-zinc-400">{media.timestamp.toLocaleTimeString('uz-UZ')}</p>
-          {media.size && <p className="text-xs text-zinc-400">{(media.size / 1024 / 1024).toFixed(1)} MB</p>}
-        </div>
+      <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+        <Button size="sm" variant="secondary" onClick={onPreview} className="h-8 w-8 p-0">
+          <Eye className="h-4 w-4" />
+        </Button>
+        <Button size="sm" variant="secondary" onClick={onDownload} className="h-8 w-8 p-0">
+          <Download className="h-4 w-4" />
+        </Button>
+        <Button size="sm" variant="destructive" onClick={onDelete} className="h-8 w-8 p-0">
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
 
-        {/* Action buttons */}
-        <div className="flex justify-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 text-white hover:bg-blue-400/20 hover:text-blue-400"
-            onClick={(e) => {
-              e.stopPropagation()
-              onPreview()
-            }}
-          >
-            <Eye className="h-3 w-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 text-white hover:bg-green-400/20 hover:text-green-400"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDownload()
-            }}
-          >
-            <Download className="h-3 w-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 text-white hover:bg-red-400/20 hover:text-red-400"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete()
-            }}
-          >
-            <Trash2 className="h-3 w-3" />
-          </Button>
+      {/* Info */}
+      <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+        <div className="text-xs text-white">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              {media.type === 'screenshot' ? <ImageIcon className="h-3 w-3" /> : <Video className="h-3 w-3" />}
+              {media.type === 'screenshot' ? t('screenshot') : t('video')}
+            </span>
+            <span>{formatFileSize(media.size)}</span>
+          </div>
         </div>
       </div>
     </motion.div>

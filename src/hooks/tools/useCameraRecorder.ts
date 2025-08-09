@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useReactMediaRecorder } from 'react-media-recorder'
+import { useTranslations } from 'next-intl'
 
 export interface CameraDevice {
   deviceId: string
@@ -18,6 +19,7 @@ export interface CapturedMedia {
   url: string
   filename: string
   timestamp: Date
+  duration?: number
   size?: number
 }
 
@@ -27,6 +29,8 @@ interface UseCameraRecorderOptions {
 }
 
 export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
+  const t = useTranslations('CameraRecorderPage.Hook.messages')
+
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -66,9 +70,10 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     askPermissionOnMount: false, // Don't auto-request permission
     onStart: () => {
       setRecordingStartTime(Date.now())
-      onSuccess?.('Video va ovoz yozib olish boshlandi')
+      onSuccess?.(t('recordingStarted'))
     },
     onStop: (blobUrl: string) => {
+      const finalDuration = recordingDuration
       setRecordingStartTime(null)
       setRecordingDuration(0)
 
@@ -84,6 +89,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
             url: blobUrl,
             filename,
             timestamp,
+            duration: finalDuration,
             size: response.headers.get('content-length')
               ? parseInt(response.headers.get('content-length')!)
               : undefined,
@@ -91,7 +97,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
           setCapturedMedia((prev) => [media, ...prev])
         })
 
-        onSuccess?.('Video va ovoz muvaffaqiyatli saqlandi')
+        onSuccess?.(t('recordingSaved'))
       }
     },
   })
@@ -125,7 +131,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         .filter((device) => device.kind === 'videoinput')
         .map((device) => ({
           deviceId: device.deviceId,
-          label: device.label || `Kamera ${device.deviceId.slice(0, 8)}`,
+          label: device.label || `${t('cameraDeviceLabel')} ${device.deviceId.slice(0, 8)}`,
         }))
 
       setCameras(videoDevices)
@@ -133,9 +139,9 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         setSelectedCamera(videoDevices[0].deviceId)
       }
 
-      onSuccess?.(`${videoDevices.length} ta kamera topildi`)
+      onSuccess?.(`${videoDevices.length} ${t('camerasFound')}`)
     } catch (err) {
-      const errorMessage = 'Kamera qurilmalariga kirish rad etildi yoki mavjud emas'
+      const errorMessage = t('cameraAccessDenied')
       setError(errorMessage)
       onError?.(errorMessage)
       console.error('Error getting camera devices:', err)
@@ -187,9 +193,9 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         }
       }
 
-      onSuccess?.(`Kamera ishga tushirildi: ${info.width}x${info.height}`)
+      onSuccess?.(`${t('cameraStarted')}: ${info.width}x${info.height}`)
     } catch (err) {
-      const errorMessage = 'Kamerani ishga tushirishda xatolik yuz berdi'
+      const errorMessage = t('cameraStartError')
       setError(errorMessage)
       onError?.(errorMessage)
       console.error('Error starting camera:', err)
@@ -223,12 +229,12 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     setVideoInfo(null)
     setError('')
     clearBlobUrl()
-    onSuccess?.("Kamera to'xtatildi")
+    onSuccess?.(t('cameraStopped'))
   }, [status, stopRecording, clearBlobUrl, cameraStream, onSuccess])
 
   const takeScreenshot = useCallback(() => {
     if (!videoRef.current || !canvasRef.current || !isCameraActive) {
-      onError?.("Screenshot olish uchun kamera yoqilgan bo'lishi kerak")
+      onError?.(t('screenshotRequired'))
       return
     }
 
@@ -259,12 +265,12 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
             }
 
             setCapturedMedia((prev) => [media, ...prev])
-            onSuccess?.('Screenshot muvaffaqiyatli olindi')
+            onSuccess?.(t('screenshotTaken'))
           }
         }, 'image/png')
       }
     } catch (err) {
-      onError?.('Screenshot olishda xatolik yuz berdi')
+      onError?.(t('screenshotError'))
       console.error('Error taking screenshot:', err)
     }
   }, [isCameraActive, onSuccess, onError])
@@ -277,7 +283,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      onSuccess?.(`${media.type === 'screenshot' ? 'Screenshot' : 'Video'} yuklab olindi`)
+      onSuccess?.(media.type === 'screenshot' ? t('screenshotDownloaded') : t('videoDownloaded'))
     },
     [onSuccess],
   )
@@ -288,7 +294,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         const mediaToDelete = prev.find((m) => m.id === mediaId)
         if (mediaToDelete) {
           URL.revokeObjectURL(mediaToDelete.url)
-          onSuccess?.(`${mediaToDelete.type === 'screenshot' ? 'Screenshot' : 'Video'} o'chirildi`)
+          onSuccess?.(mediaToDelete.type === 'screenshot' ? t('screenshotDeleted') : t('videoDeleted'))
         }
         return prev.filter((m) => m.id !== mediaId)
       })
@@ -338,7 +344,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
 
   const refreshCameras = useCallback(async () => {
     try {
-      onSuccess?.('Kameralar yangilanmoqda...')
+      onSuccess?.(t('camerasRefreshing'))
 
       // Clear current cameras list
       setCameras([])
@@ -347,9 +353,9 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       // Refresh cameras list
       await getCameraDevices()
 
-      onSuccess?.('Kameralar muvaffaqiyatli yangilandi')
+      onSuccess?.(t('camerasRefreshed'))
     } catch (err) {
-      onError?.('Kameralar yangilashda xatolik yuz berdi')
+      onError?.(t('camerasRefreshError'))
       console.error('Error refreshing cameras:', err)
     }
   }, [onSuccess, onError, getCameraDevices])
@@ -362,7 +368,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      onSuccess?.('Video yuklab olindi')
+      onSuccess?.(t('recordingDownloaded'))
     }
   }, [mediaBlobUrl, onSuccess])
 
