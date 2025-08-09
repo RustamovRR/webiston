@@ -160,14 +160,14 @@ export const TOOLS_LIST: Tool[] = [
     category: 'analyzers',
     audience: 'general',
   },
-  // {
-  //   tKey: 'cameraRecorder',
-  //   href: '/tools/camera-recorder',
-  //   icon: Camera,
-  //   color: 'bg-emerald-500/20',
-  //   category: 'utilities',
-  //   audience: 'general',
-  // },
+  {
+    tKey: 'cameraRecorder',
+    href: '/tools/camera-recorder',
+    icon: Camera,
+    color: 'bg-emerald-500/20',
+    category: 'utilities',
+    audience: 'general',
+  },
   // {
   //   tKey: 'microphoneTest',
   //   href: '/tools/microphone-test',
