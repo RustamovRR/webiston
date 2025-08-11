@@ -80,6 +80,7 @@
     "**/*.{jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write --ignore-unknown"
-    ]
+    ],
+    "**/*.{md,mdx}": []
   }
 }
