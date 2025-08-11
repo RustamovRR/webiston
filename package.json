@@ -79,8 +79,7 @@
   "lint-staged": {
     "**/*.{jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --write --ignore-unknown"
-    ],
-    "**/*.{md,mdx}": []
+      "prettier --write --ignore-path .prettierignore"
+    ]
   }
 }

@@ -5,14 +5,14 @@ Ko'plab dasturlash tillari singari, JavaScript ham ko'rsatmalarni (statements) (
 Quyidagi kodni ko'rib chiqamiz. Ikki ko'rsatma alohida qatorlarda yozilgani uchun birinchi nuqta-vergulni tushirib qoldirishi mumkin edi:
 
 ```js
-a = 3
-b = 4
+a = 3;
+b = 4;
 ```
 
 Biroq, quyidagicha yozilganda, birinchi nuqta-vergul talab qilinadi:
 
 ```js
-a = 3 b = 4
+a = 3; b = 4;
 ```
 
 ### Qator uzilishlari va nuqta-vergullar
@@ -21,16 +21,16 @@ E'tibor bering, JavaScript har bir qator uzilishini nuqta-vergul deb hisoblamayd
 
 ```js
 let a
-a = 3
+a
+=
+3
 console.log(a)
 ```
 
 JavaScript buni quyidagicha talqin qiladi:
 
 ```js
-let a
-a = 3
-console.log(a)
+let a; a = 3; console.log(a);
 ```
 
 JavaScript birinchi qator uzilishini nuqta-vergul sifatida qabul qiladi, chunki u `let a a` kodini nuqta-vergulsiz tahlil qila olmaydi. Ikkinchi `a` mustaqil `a;` ko'rsatmasi bo'la olardi, lekin JavaScript ikkinchi qator uzilishini nuqta-vergul deb hisoblamaydi, chunki u uzunroq `a = 3;` ko'rsatmasini tahlil qilishni davom ettira oladi.
@@ -40,13 +40,14 @@ JavaScript birinchi qator uzilishini nuqta-vergul sifatida qabul qiladi, chunki 
 Bu ko'rsatmalarni yakunlash qoidalari ba'zi kutilmagan holatlarga olib keladi. Quyidagi kod yangi qator bilan ajratilgan ikkita alohida ko'rsatma bo'lib ko'rinadi:
 
 ```js
-let y = x + f(a + b).toString()
+let y = x + f
+(a + b).toString()
 ```
 
 Lekin ikkinchi qatordagi qavslar birinchi qatordagi `f` ning funksiya chaqiruvi sifatida talqin qilinishi mumkin va JavaScript kodni quyidagicha talqin qiladi:
 
 ```js
-let y = x + f(a + b).toString()
+let y = x + f(a + b).toString();
 ```
 
 Bu, ehtimol, kod muallifi nazarda tutgan talqin emas. Ikki alohida ko'rsatma sifatida ishlashi uchun, bu holatda aniq nuqta-vergul talab qilinadi.
@@ -66,20 +67,19 @@ Birinchi istisno `return` , `throw` , `yield` , `break` va `continue` ko'rsatmal
 
 ```js
 return
-true
+true;
 ```
 
 JavaScript siz aslida buni nazarda tutgansiz deb hisoblaydi:
 
 ```js
-return
-true
+return; true;
 ```
 
 Holbuki, siz katta ehtimol bilan buni nazarda tutgan edingiz:
 
 ```js
-return true
+return true;
 ```
 
 Bu shuni anglatadiki, siz `return` , `break` yoki `continue` kalit so'zlari va ulardan keyin keladigan ifoda orasiga qator uzilishini qo‘ymasligingiz kerak. Agar qator uzilishini qo‘shsangiz, kodingizning tushunarsiz va tuzatishi qiyin bo‘lgan usulda ishdan chiqishiga olib kelishi mumkin.
