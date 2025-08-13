@@ -9,3 +9,244 @@ JavaScript dasturi kodida to‘g‘ridan-to‘g‘ri yozilgan son _sonli literal
 ---
 
 [^1]: Bu Java, C++ va ko‘pchilik zamonaviy dasturlash tillaridagi `double` tipidagi sonlar uchun qo‘llaniladigan formatdir.
+
+## Butun sonli literallar
+
+JavaScript dasturida o‘nlik sanoq tizimidagi (`base-10`) butun son shunchaki raqamlar ketma-ketligi sifatida yoziladi. Masalan:
+
+``` js
+0
+3
+10000000
+```
+
+O‘nlik sanoq tizimidagi butun sonli literallardan tashqari, JavaScript o‘n oltilik (hexadecimal, `base-16`) qiymatlarni ham tushunadi. O‘n oltilik literal `0x` yoki `0X` bilan boshlanadi va undan keyin o‘n oltilik raqamlar ketma-ketligi keladi. O‘n oltilik raqam — bu 0 dan 9 gacha bo‘lgan raqamlardan biri yoki 10 dan 15 gacha bo‘lgan qiymatlarni ifodalovchi a (yoki A) dan f (yoki F) gacha bo‘lgan harflardir. Quyida o‘n oltilik butun sonli literallarga misollar keltirilgan:
+
+``` js 
+0xff        // => 255: (15*16 + 15)
+0xBADCAFE   // => 195939070
+```
+
+ES6 va undan keyingi versiyalarda butun sonlarni `0x` o‘rniga `0b` va `0o` (yoki `0B` va `0O`) prefikslari yordamida ikkilik (binary, `base-2`) yoki sakkizlik (octal, `base-8`) sanoq tizimlarida ham ifodalash mumkin:
+
+``` js 
+0b10101     // => 21: (1*16 + 0*8 + 1*4 + 0*2 + 1*1)
+0o377       // => 255: (3*64 + 7*8 + 7*1)
+```
+
+## Suzuvchi nuqtali literallar
+
+Suzuvchi nuqtali literallar o‘nli kasr nuqtasiga ega bo‘lishi mumkin; ular haqiqiy sonlar uchun an’anaviy sintaksisdan foydalanadi. Haqiqiy qiymat sonning butun qismi, undan keyin keladigan o‘nli kasr nuqtasi va sonning kasr qismi sifatida ifodalanadi.
+
+Suzuvchi nuqtali literallarni eksponensial yozuv yordamida ham ifodalash mumkin: bunda haqiqiy sondan keyin `e` (yoki `E`) harfi, undan keyin ixtiyoriy plyus yoki minus belgisi va undan keyin butun sonli daraja ko‘rsatkichi keladi. Bu yozuv haqiqiy sonni 10 ning ko‘rsatilgan darajasiga ko‘paytirishni anglatadi.
+
+Qisqacha aytganda, sintaksis quyidagicha:
+
+``` js
+[raqamlar][.raqamlar][(E|e)[(+|-)]raqamlar]
+```
+
+```js
+3.14
+2345.6789
+.333333333333333333
+6.02e23        // 6.02 × 10²³
+1.4738223E-32  // 1.4738223 × 10⁻³²
+```
+
+<Callout type='info'>
+### Sonli literallarda ajratuvchilar
+
+Uzun literallarni o‘qish uchun qulayroq bo‘lgan qismlarga ajratish uchun sonli literallar ichida pastki chiziq (`_`) belgisidan foydalanishingiz mumkin:
+
+```js
+let billion = 1_000_000_000;    // Mingliklar ajratuvchisi sifatida.
+let bytes = 0x89_AB_CD_EF;      // Baytlar ajratuvchisi sifatida.
+let bits = 0b0001_1101_0111;    // Nibble'lar (4 bitlik guruh) ajratuvchisi sifatida.
+let fraction = 0.123_456_789;   // Kasr qismida ham ishlaydi.
+```
+
+Ushbu kitob yozilayotgan 2020-yil boshida sonli literallardagi pastki chiziqlar hali JavaScript'ning rasmiy standarti sifatida qabul qilinmagan edi. Biroq ular standartlashtirish jarayonining yuqori bosqichida turibdi va barcha asosiy brauzerlar hamda Node tomonidan implementatsiya qilingan.
+</Callout>
+
+## JavaScript'da arifmetik amallar
+
+JavaScript dasturlari til taqdim etadigan arifmetik operatorlar yordamida sonlar bilan ishlaydi. Bularga qo‘shish uchun `+`, ayirish uchun `-`, ko‘paytirish uchun `*`, bo‘lish uchun `/` va bo‘lgandagi qoldiqni topish uchun `%` (modulo) kiradi. ES2016 versiyasi darajaga ko‘tarissh uchun `**` operatorini qo‘shgan. Bu va boshqa operatorlar haqidagi to‘liq ma’lumotni 4-bobdan topishingiz mumkin.
+
+Ushbu asosiy arifmetik operatorlardan tashqari, JavaScript `Math` obyektining xossalari sifatida aniqlangan funksiyalar va konstantalar to‘plami orqali murakkabroq matematik amallarni ham qo‘llab-quvvatlaydi:
+
+```js
+Math.pow(2,53)          // => 9007199254740992: 2 ning 53-darajasi
+Math.round(.6)          // => 1.0: eng yaqin butun songa yaxlitlash
+Math.ceil(.6)           // => 1.0: yuqoriga qarab butun songa yaxlitlash
+Math.floor(.6)          // => 0.0: pastga qarab butun songa yaxlitlash
+Math.abs(-5)            // => 5: absolyut qiymat (modul)
+Math.max(x,y,z)         // Eng katta argumentni qaytaradi
+Math.min(x,y,z)         // Eng kichik argumentni qaytaradi
+Math.random()           // 0 <= x < 1.0 shartni qanoatlantiruvchi psevdo-tasodifiy son
+Math.PI                 // π: aylana uzunligining diametriga nisbati
+Math.E                  // e: natural logarifm asosi
+Math.sqrt(3)            // => 3**0.5: 3 ning kvadrat ildizi
+Math.pow(3, 1/3)        // => 3**(1/3): 3 ning kub ildizi
+Math.sin(0)             // Trigonometriya: shuningdek Math.cos, Math.atan va hokazo.
+Math.log(10)            // 10 ning natural logarifmi
+Math.log(100)/Math.LN10 // 100 ning 10 asosli logarifmi
+Math.log(512)/Math.LN2  // 512 ning 2 asosli logarifmi
+Math.exp(3)             // Math.E ning kubi
+```
+
+ES6 `Math` obyektiga yana qo‘shimcha funksiyalar kiritgan:
+
+``` js
+Math.cbrt(27)          // => 3: kub ildiz
+Math.hypot(3, 4)       // => 5: barcha argumentlar kvadratlari yig‘indisining kvadrat ildizi
+Math.log10(100)        // => 2: 10 asosli logarifm
+Math.log2(1024)        // => 10: 2 asosli logarifmi
+Math.log1p(x)          // (1+x) ning natural logarifmi; juda kichik x'lar uchun aniq ishlaydi
+Math.expm1(x)          // Math.exp(x)-1; Math.log1p()'ga teskari funksiya
+Math.sign(x)           // argument <, ==, yoki > 0 bo‘lishiga qarab -1, 0, yoki 1 qaytaradi
+Math.imul(2,3)         // => 6: 32-bitli butun sonlarni optimallashtirilgan ko‘paytirish
+Math.clz32(0xf)        // => 28: 32-bitli butun son boshidagi nollar soni
+Math.trunc(3.9)        // => 3: kasr qismini olib tashlash orqali butun songa o‘tkazish
+Math.fround(x)         // Eng yaqin 32-bitli suzuvchi nuqtali songa yaxlitlash
+Math.sinh(x)           // Giperbolik sinus. Shuningdek Math.cosh(), Math.tanh()
+Math.asinh(x)          // Giperbolik arksinus. Shuningdek Math.acosh(), Math.atanh()
+```
+
+### Cheksizlik va nolga bo‘lish
+
+JavaScript'da arifmetik amallar xotiradan toshib ketish (overflow), minimal qiymatdan pasayib ketish (underflow) yoki nolga bo‘lish holatlarida xatolik yuzaga keltirmaydi. Sonli amal natijasi ifodalash mumkin bo‘lgan eng katta sondan oshib ketsa (overflow), natija maxsus cheksizlik qiymati — `Infinity` bo‘ladi. Xuddi shunday, manfiy qiymatning moduli ifodalash mumkin bo‘lgan eng katta manfiy sonning modulidan oshib ketsa, natija manfiy cheksizlik — `-Infinity` bo‘ladi.
+
+Cheksiz qiymatlar o‘zini siz kutgandek tutadi: ularni biror narsaga qo‘shish, ayirish, ko‘paytirish yoki bo‘lish (ehtimol ishorasi o‘zgarishi bilan) yana cheksiz qiymatni beradi.
+
+_Underflow_ holati sonli amal natijasi ifodalash mumkin bo‘lgan eng kichik sondan ham nolga yaqinroq bo‘lganda yuz beradi. Bunday holda, JavaScript 0 qaytaradi. Agar _underflow_ manfiy sondan kelib chiqsa, JavaScript "manfiy nol" deb nomlanuvchi maxsus qiymatni qaytaradi. Bu qiymat oddiy noldan deyarli farq qilmaydi va JavaScript dasturchilari uni aniqlashiga kamdan-kam ehtiyoj sezadilar.
+
+Nolga bo‘lish JavaScript'da xatolik emas: u shunchaki `Infinity` yoki `-Infinity` qaytaradi. Biroq bitta istisno mavjud: nolni nolga bo‘lish aniq bir qiymatga ega emas va bu amalning natijasi maxsus "son emas" (not-a-number, son emas) qiymati — `NaN` bo‘ladi. `NaN`, shuningdek, cheksizlikni cheksizlikka bo‘lishga harakat qilganda, manfiy sondan kvadrat ildiz olganda yoki sonli bo‘lmagan va songa o‘girib bo‘lmaydigan operandlar bilan arifmetik operatorlarni ishlatganda ham paydo bo‘ladi.
+
+JavaScript musbat cheksizlik va "son emas" qiymatlarini saqlash uchun global `Infinity` va `NaN` konstantalarini oldindan belgilab qo‘ygan. Bu qiymatlarga `Number` obyektining xossalari sifatida ham murojaat qilish mumkin:
+
+``` js 
+Infinity                    // Ifodalash uchun juda katta bo‘lgan musbat son
+Number.POSITIVE_INFINITY    // Xuddi shu qiymat
+1/0                         // => Infinity
+Number.MAX_VALUE * 2        // => Infinity; overflow
+
+-Infinity                   // Ifodalash uchun juda katta bo‘lgan manfiy son
+Number.NEGATIVE_INFINITY    // Xuddi shu qiymat
+-1/0                        // => -Infinity
+-Number.MAX_VALUE * 2       // => -Infinity
+
+NaN                         // "Son emas" qiymati
+Number.NaN                  // Xuddi shu qiymat, boshqacha yozilishi
+0/0                         // => NaN
+Infinity/Infinity           // => NaN
+
+Number.MIN_VALUE/2          // => 0: underflow
+-Number.MIN_VALUE/2         // => -0: manfiy nol
+-1/Infinity                 // -> -0: bu ham manfiy nol
+-0                          // Oddiy manfiy nol
+
+// Quyidagi Number xossalari ES6'da kiritilgan:
+Number.parseInt()           // Global parseInt() funksiyasi bilan bir xil
+Number.parseFloat()         // Global parseFloat() funksiyasi bilan bir xil
+Number.isNaN(x)             // x'ning qiymati NaN'mi?
+Number.isFinite(x)          // x sonmi va chekli miqdormi?
+Number.isInteger(x)         // x butun sonmi?
+Number.isSafeInteger(x)     // x -(2**53) < x < 2**53 oralig'idagi butun sonmi?
+Number.MIN_SAFE_INTEGER     // => -(2**53 - 1)
+Number.MAX_SAFE_INTEGER     // => 2**53 - 1
+Number.EPSILON              // => 2**-52: sonlar orasidagi eng kichik farq
+```
+
+### NaN va manfiy nolning o‘ziga xosliklari
+
+"Son emas" qiymatining JavaScript'da bitta g‘ayrioddiy xususiyati bor: u boshqa hech qanday qiymatga, jumladan, o‘ziga ham teng emas. Bu shuni anglatadiki, `x` o‘zgaruvchisining qiymati `NaN` ekanligini tekshirish uchun `x === NaN` deb yoza olmaysiz. Buning o‘rniga, `x != x` yoki `Number.isNaN(x)` deb yozishingiz kerak. Bu ifodalar faqat va faqat `x` global `NaN` konstantasi bilan bir xil qiymatga ega bo‘lgandagina `true` bo‘ladi.
+
+Global `isNaN()` funksiyasi `Number.isNaN()`'ga o‘xshaydi. U argumenti `NaN` bo‘lsa yoki argument son bo‘lmagan va songa o‘girib bo‘lmaydigan qiymat bo‘lsa, `true` qaytaradi. Unga bog‘liq bo‘lgan `Number.isFinite()` funksiyasi esa argumenti `NaN`, `Infinity` yoki `-Infinity`'dan boshqa har qanday son bo‘lsa, `true` qaytaradi. Global `isFinite()` funksiyasi argumenti chekli son bo‘lsa yoki uni chekli songa o‘girishni imkoni bo‘lsa, `true` qaytaradi.
+
+Manfiy nol qiymati ham biroz g‘ayrioddiydir. U musbat nolga (hatto JavaScript'ning qat’iy tenglik tekshiruvida ham) teng deb topiladi. Bu shuni anglatadiki, bu ikki qiymat bo‘luvchi sifatida ishlatilganidan tashqari deyarli farqlanmaydi:
+
+``` js
+let zero = 0;         // Oddiy nol
+let negz = -0;        // Manfiy nol
+zero === negz         // => true: nol va manfiy nol teng
+1/zero === 1/negz     // => false: Infinity va -Infinity teng emas
+```
+
+## Ikkilik suzuvchi nuqtali sonlar va yaxlitlash xatoliklari
+
+Haqiqiy sonlar cheksiz ko‘p, lekin ularning faqat cheklangan miqdorigina (aniqrog‘i, 18,437,736,874,454,810,627 tasi) JavaScript'ning suzuvchi nuqtali formati orqali mutlaqo aniq ifodalanishi mumkin. Bu shuni anglatadiki, siz JavaScript'da haqiqiy sonlar bilan ishlayotganingizda, sonning ifodalanishi ko‘pincha haqiqiy sonning o‘ziga juda yaqin bo‘lgan **taqribiy qiymat** bo‘ladi.
+
+JavaScript (va deyarli barcha boshqa zamonaviy dasturlash tillari) tomonidan qo‘llaniladigan `IEEE-754` suzuvchi nuqtali ifodalash usuli **ikkilik (`binary`)** ifodalashdir. U `1/2`, `1/8` va `1/1024` kabi kasrlarni mutlaqo aniq ifodalay oladi. Afsuski, biz eng ko‘p ishlatadigan kasrlar (ayniqsa, moliyaviy hisob-kitoblarda) o‘nli kasrlardir: `1/10`, `1/100` va hokazo. Ikkilik suzuvchi nuqtali ifodalash usuli esa hatto `0.1` kabi oddiy sonni ham mutlaqo aniq ifodalay olmaydi.
+
+JavaScript sonlari yetarlicha katta aniqlikka ega va `0.1` ni juda yaqin taqribiylikda ifodalay oladi. Ammo bu sonni mutlaqo aniq ifodalab bo‘lmasligi muammolarga olib kelishi mumkin. Quyidagi kodni ko‘rib chiqing:
+
+```js
+let x = .3 - .2;    // o‘ttiz sentdan yigirma sentni ayirish
+let y = .2 - .1;    // yigirma sentdan o‘n sentni ayirish
+x === y             // => false: bu ikki qiymat bir xil emas!
+x === .1            // => false: .3-.2 qiymati .1 ga teng emas
+y === .1            // => true: .2-.1 qiymati .1 ga teng
+```
+
+Yaxlitlash xatoligi sababli, .3 va .2 ning taqribiy qiymatlari orasidagi farq, .2 va .1 ning taqribiy qiymatlari orasidagi farq bilan bir xil emas. Shuni tushunish muhimki, bu muammo faqat JavaScript'ga xos emas: u ikkilik suzuvchi nuqtali sonlardan foydalanadigan har qanday dasturlash tiliga ta’sir qiladi. Shuningdek, e’tibor bering, yuqoridagi kodda `x` va `y` qiymatlari bir-biriga va to‘g‘ri qiymatga _juda_ yaqin. Hisoblangan bu qiymatlar deyarli har qanday maqsad uchun yetarlidir; muammo faqat qiymatlarni tenglikka tekshirishga harakat qilganimizda yuzaga keladi.
+
+Agar bu kabi suzuvchi nuqtali taqribiyliklar dasturlaringizda muammo tug‘dirsa, masshtablangan butun sonlardan foydalanishni ko‘rib chiqing. Masalan, pul qiymatlari bilan ishlaganda, ularni kasrli dollar sifatida emas, balki butun sonli sentlar sifatida boshqarishingiz mumkin.
+
+## `BigInt` yordamida ixtiyoriy aniqlikdagi butun sonlar
+
+JavaScript'ning ES2020'da kiritilgan eng yangi xususiyatlaridan biri bu `BigInt` deb nomlanuvchi yangi sonli tipdir. 2020-yil boshiga kelib, u Chrome, Firefox, Edge va Node'da implementatsiya qilingan, Safari'da esa implementatsiya jarayoni davom etmoqda. Nomidan ko‘rinib turganidek, `BigInt` — bu qiymatlari butun sonlardan iborat bo‘lgan sonli tip. Bu tip JavaScript'ga asosan boshqa ko‘plab dasturlash tillari va API'lar bilan moslik uchun talab etiladigan 64 bitli butun sonlarni ifodalash imkoniyatini berish uchun qo‘shilgan. Lekin agar sizga juda katta sonlar bilan ishlash kerak bo‘lsa, `BigInt` qiymatlari minglab, hatto millionlab raqamlarga ega bo‘lishi mumkin. (Biroq shuni yodda tutingki, `BigInt` implementatsiyalari kriptografiya uchun mos emas, chunki ular vaqtga bog‘liq hujumlarni (`timing attacks`) oldini olishga harakat qilmaydi.)
+
+`BigInt` literallari raqamlar ketma-ketligi va undan keyin keladigan kichik `n` harfi bilan yoziladi. Standart holatda ular o‘nlik sanoq tizimida bo‘ladi, lekin siz ikkilik, sakkizlik va o‘n oltilik `BigInt`'lar uchun `0b`, `0o` va `0x` prefikslaridan foydalanishingiz mumkin:
+
+```js
+1234n                 // Unchalik katta bo‘lmagan BigInt literali
+0b111111n             // Ikkilik sanoq tizimidagi BigInt
+0o7777n               // Sakkizlik sanoq tizimidagi BigInt
+0x8000000000000000n   // => 2n**63n: 64-bitli butun son
+```
+
+Siz `BigInt()` funksiyasidan oddiy JavaScript sonlari yoki satrlarini BigInt qiymatlariga o‘zgartirish uchun foydalanishingiz mumkin:
+
+``` js 
+BigInt(Number.MAX_SAFE_INTEGER)     // => 9007199254740991n
+let string = "1" + "0".repeat(100); // 1 va undan keyingi 100 ta nol.
+BigInt(string)                      // => 10n**100n: bir gugol
+```
+
+BigInt qiymatlari bilan arifmetik amallar oddiy JavaScript sonlari bilan ishlashga o‘xshaydi, faqat bo‘lish amali har qanday qoldiqni tashlab yuboradi va pastga qarab (nolga tomon) yaxlitlaydi:
+
+``` js
+1000n + 2000n           // => 3000n
+3000n - 2000n           // => 1000n
+2000n * 3000n           // => 6000000n
+3000n / 997n            // => 3n: bo‘linma 3 ga teng
+3000n % 997n            // => 9n: qoldiq esa 9 ga teng
+(2n ** 131071n) - 1n    // 39457 ta o‘nli raqamga ega Mersenn tub soni
+```
+
+Standart `+`, `-`, `*`, `/`, `%`va `**` operatorlari BigInt bilan ishlasa-da, shuni tushunish muhimki, siz BigInt tipidagi operandlarni oddiy sonli operandlar bilan aralashtirib ishlata olmaysiz. Bu dastlab chalkash tuyulishi mumkin, lekin buning jiddiy sababi bor. Agar bir sonli tip boshqasidan umumiyroq bo‘lganida, aralash operandlar bilan arifmetikani shunchaki umumiyroq tipdagi qiymatni qaytaradigan qilib belgilash oson bo‘lardi. Lekin bu ikki tipdan hech biri boshqasidan umumiyroq emas: BigInt haddan ortiq katta qiymatlarni ifodalay oladi, bu uni oddiy sonlardan umumiyroq qiladi. Ammo BigInt faqat butun sonlarni ifodalay oladi, bu esa oddiy JavaScript son tipini umumiyroq qiladi. Bu muammoni hal qilishning iloji yo‘q, shuning uchun JavaScript arifmetik operatorlarga aralash operandlarni ishlatishga ruxsat bermaslik orqali bu muammoni chetlab o‘tadi.
+
+Taqqoslash operatorlari esa, aksincha, aralash sonli tiplar bilan ishlay oladi (lekin `==` va `===` orasidagi farq haqida ko‘proq bilish uchun §3.9.1-bo‘limga qarang):
+
+``` js 
+1 < 2n      // => true
+2 > 1n      // => true
+0 == 0n     // => true
+0 === 0n    // => false: `===` operatori tiplarning ham bir xilligini tekshiradi
+```
+
+Bitli (Bitwise) operatorlar (§4.8.3-bo‘limda yoritilgan) odatda BigInt operandlari bilan ishlaydi. Biroq `Math` obyektining hech bir funksiyasi BigInt operandlarini qabul qilmaydi.
+
+## Sanalar va vaqtlar
+
+JavaScript sanalar va vaqtlarni ifodalovchi sonlarni ko‘rsatish va ular ustida amallar bajarish uchun oddiy `Date` klassini taqdim etadi. JavaScript `Date`'lari obyektlardir, lekin ular bir vaqtning o‘zida 1970-yil, 1-yanvardan beri o‘tgan millisoniyalar sonini belgilovchi **vaqt belgisiga (`timestamp`)** — ya’ni, sonli ifodaga ham ega:
+
+```js
+let timestamp = Date.now();   // Ayni vaqtdagi vaqt belgisi (son) sifatida.
+let now = new Date();         // Hozirgi vaqt `Date` obyekti sifatida.
+let ms = now.getTime();       // Millisekundli vaqt belgisiga o‘tkazish.
+let iso = now.toISOString();  // Standart formatdagi satrga o‘tkazish.
+```
+
+`Date` klassi va uning metodlari §11.4-bo‘limda batafsil yoritilgan. Lekin biz `Date` obyektlarini JavaScript tiplarini o‘zgartirish tafsilotlarini ko‘rib chiqayotganimizda, §3.9.3-bo‘limda yana bir bor uchratamiz.
