@@ -1,0 +1,71 @@
+# O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari
+
+JavaScript'da primitiv qiymatlar (`undefined`, `null`, mantiqiy qiymatlar, sonlar va satrlar) va obyektlar (jumladan, massivlar va funksiyalar) o‘rtasida fundamental farq mavjud.
+
+Primitivlar **o‘zgarmasdir (`immutable`)**: primitiv qiymatni o‘zgartirishning ("mutatsiya" qilishning) iloji yo‘q. Bu sonlar va mantiqiy qiymatlar uchun yaqqol ko‘rinib turibdi — biror sonning qiymatini o‘zgartirish haqida gapirishning o‘zi mantiqsiz. Biroq bu holat satrlar uchun unchalik aniq emas. Satrlar belgilar massiviga o‘xshagani uchun, siz istalgan indeksdagi belgini o‘zgartirish mumkin deb kutishingiz mumkin. Aslida esa, JavaScript bunga yo‘l qo‘ymaydi va satrni o‘zgartirgandek tuyuladigan barcha satr metodlari aslida yangi satr qiymatini qaytaradi. Masalan:
+
+```js
+let s = "hello";    // Kichik harflardagi matndan boshlaymiz
+s.toUpperCase();    // "HELLO" satrini qaytaradi, lekin s'ni o‘zgartirmaydi
+s                   // => "hello": asl satr o‘zgarmagan
+```
+
+Primitivlar, shuningdek, _qiymati_ bo‘yicha taqqoslanadi: ikki qiymat faqatgina ularning qiymatlari bir xil bo‘lgandagina teng hisoblanadi. Bu sonlar, mantiqiy qiymatlar, `null` va `undefined` uchun o‘z-o‘zidan tushunarlidek tuyuladi: ularni boshqacha taqqoslashning ilojisi ham yo‘q. Lekin bu holat yana satrlar uchun juda unchalik aniq emas. Agar ikkita alohida satr qiymati taqqoslansa, JavaScript ularni faqat va faqat uzunliklari bir xil bo‘lsa va har bir indeksdagi belgisi mos kelsagina teng deb hisoblaydi.
+
+## Obyektlarning o‘ziga xosligi
+
+Obyektlar primitivlardan farq qiladi. Birinchidan, **ular o‘zgaruvchandir (`mutable`)** — ularning qiymatlarini o‘zgartirish mumkin:
+
+``` js
+let o = { x: 1 };   // Biror obyektdan boshlaymiz
+o.x = 2;            // Xossasining qiymatini o‘zgartirib, uni mutatsiya qilamiz
+o.y = 3;            // Yangi xossa qo‘shib, uni yana mutatsiya qilamiz
+
+let a =;            // Massivlar ham o‘zgaruvchandir
+a = 0;              // Massiv elementining qiymatini o‘zgartiramiz
+a = 4;              // Yangi massiv elementi qo‘shamiz
+```
+
+Obyektlar qiymati bo‘yicha taqqoslanmaydi: ikkita alohida obyekt, hatto ularning xossalari va qiymatlari bir xil bo‘lsa ham, teng emas. Va ikkita alohida massiv, hatto ularning elementlari bir xil tartibda bo‘lsa ham, teng emas:
+
+``` js
+let o = {x: 1}, p = {x: 1}; // Bir xil xossalarga ega ikkita obyekt
+o === p                     // => false: alohida obyektlar hech qachon teng bo‘lmaydi
+
+let a = [], b = [];         // Ikkita alohida, bo‘sh massiv
+a === b                     // => false: alohida massivlar hech qachon teng bo‘lmaydi
+```
+
+Obyektlarni JavaScript'ning primitiv tiplaridan farqlash uchun ularni _ba’zan havola tiplari (reference types)_ deb atashadi. Bu terminologiyadan foydalansak, obyekt qiymatlari — bu havolalardir (references), va biz obyektlar havolasi bo‘yicha taqqoslanadi deymiz: ikki obyekt qiymati faqat va faqat ular bitta asosiy obyektga ishora qilsagina teng bo‘ladi.
+
+``` js
+let a = [];         // `a` o‘zgaruvchisi bo‘sh massivga ishora qiladi.
+let b = a;          // Endi `b` ham o‘sha massivga ishora qiladi.
+b = 1;              // `b` o‘zgaruvchisi orqali massivni mutatsiya qilamiz.
+a                   // => 1: o‘zgarish `a` o‘zgaruvchisi orqali ham ko‘rinadi.
+a === b             // => true: `a` va `b` bitta obyektga ishora qiladi, shuning uchun ular teng.
+```
+
+Ushbu koddan ko‘rinib turibdiki, obyektni (yoki massivni) o‘zgaruvchiga tayinlash shunchaki havolani tayinlaydi: u obyektning yangi nusxasini yaratmaydi. Agar siz obyekt yoki massivning yangi nusxasini yaratmoqchi bo‘lsangiz, obyektning xossalarini yoki massivning elementlarini birma-bir ko‘chirib chiqishingiz kerak. Bu misol `for` siklidan (§5.4.3) foydalanishni ko‘rsatadi:
+
+```js
+let a = ["a","b","c"];              // Biz nusxalamoqchi bo‘lgan massiv
+let b = [];                         // Biz nusxalab oladigan alohida massiv
+for(let i = 0; i < a.length; i++) { // a[] massivining har bir indeksi uchun
+    b[i] = a[i];                    // a'ning elementini b'ga ko‘chiramiz
+}
+let c = Array.from(b);              // ES6'da massivlarni `Array.from()` bilan nusxalash mumkin
+```
+
+Xuddi shunday, agar biz ikkita alohida obyekt yoki massivni taqqoslamoqchi bo‘lsak, ularning xossalarini yoki elementlarini birma-bir taqqoslashimiz kerak. Bu kod ikkita massivni taqqoslaydigan funksiyani aniqlaydi:
+
+``` js
+function equalArrays(a, b) {
+    if (a === b) return true;                   // Aynan bir xil massivlar teng
+    if (a.length !== b.length) return false;    // Har xil o‘lchamdagi massivlar teng emas
+    for(let i = 0; i < a.length; i++) {         // Barcha elementlar bo‘ylab sikl
+        if (a[i] !== b[i]) return false;        // Agar birortasi farq qilsa, massivlar teng emas
+    }
+    return true;                                // Aks holda ular teng
+}
+```
