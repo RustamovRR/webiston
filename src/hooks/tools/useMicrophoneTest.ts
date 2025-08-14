@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 export interface AudioDevice {
   deviceId: string
@@ -38,6 +39,8 @@ interface UseMicrophoneTestOptions {
 }
 
 export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
+  const t = useTranslations('MicrophoneTestPage.Hook.messages')
+
   // Refs
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
@@ -99,7 +102,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       const audioInputs = devices
         .filter((device) => device.kind === 'audioinput')
         .map((device) => {
-          let label = device.label || `Mikrofon ${device.deviceId.slice(0, 8)}`
+          let label = device.label || `${t('deviceLabel')} ${device.deviceId.slice(0, 8)}`
 
           // Shorten common long device names for better UI
           label = label
@@ -125,9 +128,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
         setSelectedDevice(audioInputs[0].deviceId)
       }
 
-      onSuccess?.(`${audioInputs.length} ta audio qurilma topildi`)
+      onSuccess?.(`${audioInputs.length} ${t('devicesFound')}`)
     } catch (err) {
-      const errorMessage = 'Mikrofon qurilmalariga kirish rad etildi'
+      const errorMessage = t('deviceAccessDenied')
       setError(errorMessage)
       onError?.(errorMessage)
       console.error('Error getting audio devices:', err)
@@ -169,7 +172,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       waveform: new Uint8Array(0),
     })
 
-    onSuccess?.("Mikrofon to'xtatildi")
+    onSuccess?.(t('microphoneStopped'))
   }, [isRecording, onSuccess])
 
   // Start listening to microphone
@@ -220,11 +223,11 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       setAudioInfo(info)
       setIsListening(true)
 
-      onSuccess?.('Mikrofon ishga tushirildi')
+      onSuccess?.(t('microphoneStarted'))
 
       // Audio analysis will start automatically via useEffect
     } catch (err) {
-      const errorMessage = 'Mikrofonni ishga tushirishda xatolik'
+      const errorMessage = t('microphoneStartError')
       setError(errorMessage)
       onError?.(errorMessage)
       console.error('Error starting microphone:', err)
@@ -286,7 +289,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
   // Start recording
   const startRecording = useCallback(() => {
     if (!streamRef.current) {
-      setError('Avval mikrofonni yoqing')
+      setError(t('microphoneStartError'))
       return
     }
 
@@ -328,15 +331,15 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
         setRecordingStartTime(null)
         setRecordingDuration(0)
 
-        onSuccess?.('Audio yozib olindi')
+        onSuccess?.(t('audioRecorded'))
       }
 
       mediaRecorder.start(1000)
       setIsRecording(true)
 
-      onSuccess?.('Audio yozib olish boshlandi')
+      onSuccess?.(t('recordingStarted'))
     } catch (err) {
-      const errorMessage = 'Audio yozib olishda xatolik'
+      const errorMessage = t('recordingError')
       setError(errorMessage)
       onError?.(errorMessage)
       console.error('Error starting recording:', err)
@@ -381,7 +384,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       a.click()
       document.body.removeChild(a)
 
-      onSuccess?.(`${audio.name} yuklab olindi`)
+      onSuccess?.(t('audioDownloaded'))
     },
     [onSuccess],
   )
@@ -397,7 +400,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
         return prev.filter((a) => a.id !== audioId)
       })
 
-      onSuccess?.("Audio o'chirildi")
+      onSuccess?.(t('audioDeleted'))
     },
     [onSuccess],
   )
@@ -409,7 +412,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     })
     setRecordedAudios([])
 
-    onSuccess?.("Barcha audiolar o'chirildi")
+    onSuccess?.(t('allAudiosDeleted'))
   }, [recordedAudios, onSuccess])
 
   // Preview audio

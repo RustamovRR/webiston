@@ -1,0 +1,150 @@
+{
+  "MicrophoneTestPage": {
+    "ToolHeader": {
+      "title": "Mikrofon Test",
+      "description": "Mikrofoningizni sinab ko'ring, audio yozing va sifatni baholang"
+    },
+    "ControlPanel": {
+      "title": "Audio Sozlamalari",
+      "status": {
+        "active": "Faol",
+        "inactive": "Nofaol"
+      },
+      "microphone": {
+        "label": "Mikrofon:",
+        "placeholder": "Mikrofon tanlang"
+      },
+      "quality": {
+        "label": "Sifat:",
+        "excellent": "Ajoyib",
+        "good": "Yaxshi",
+        "average": "O'rtacha",
+        "poor": "Past"
+      },
+      "buttons": {
+        "refresh": "Yangilash",
+        "startMicrophone": "Mikrofonni Yoqish",
+        "stopMicrophone": "Mikrofonni O'chirish"
+      }
+    },
+    "AudioPreviewPanel": {
+      "title": "Audio Vizualizatsiya",
+      "status": {
+        "live": "Live",
+        "off": "Off"
+      },
+      "buttons": {
+        "startRecording": "Yozib Olishni Boshlash",
+        "stopRecording": "Yozib Olishni To'xtatish"
+      },
+      "audioInfo": {
+        "title": "Audio Ma'lumotlar",
+        "sampleRate": "Sample Rate",
+        "channels": "Kanallar",
+        "echoCancellation": "Echo Cancellation",
+        "noiseSuppression": "Noise Suppression",
+        "enabled": "Yoqilgan",
+        "disabled": "O'chirilgan"
+      }
+    },
+    "RecordedAudioPanel": {
+      "title": "Yozilgan Audiolar",
+      "fileCount": "ta fayl",
+      "empty": {
+        "title": "Hali hech qanday audio yozilmagan",
+        "subtitle": "Mikrofonni yoqib audio yozing"
+      },
+      "stats": {
+        "totalAudios": "Jami audiolar",
+        "totalSize": "Jami hajm"
+      },
+      "actions": {
+        "preview": "Eshitish",
+        "download": "Yuklab olish",
+        "delete": "O'chirish"
+      },
+      "buttons": {
+        "clearAll": "Hammasini o'chirish"
+      }
+    },
+    "InfoSection": {
+      "title": "Ma'lumot",
+      "status": "Yordam",
+      "useCases": {
+        "title": "Asosiy foydalanish joylari:",
+        "contentCreation": {
+          "title": "Kontent Yaratish:",
+          "description": "YouTube, blog va ijtimoiy media uchun"
+        },
+        "podcasting": {
+          "title": "Podcasting:",
+          "description": "Professional podcast yozish va audio sifat"
+        },
+        "streaming": {
+          "title": "Live Streaming:",
+          "description": "Jonli efir va video konferensiya"
+        },
+        "voiceOver": {
+          "title": "Voice-over:",
+          "description": "Ovozli tarjima va narration"
+        },
+        "remoteWork": {
+          "title": "Masofaviy Ish:",
+          "description": "Online uchrashuvlar va konferensiyalar"
+        }
+      },
+      "tips": {
+        "title": "Professional maslahatlar:",
+        "distance": "Mikrofonga 15-20 sm masofada gaplashing",
+        "environment": "Shovqinsiz muhitda audio yozing",
+        "level": "40-70% oralig'ida audio level saqlang",
+        "quality": "HD sifatni tanlang, lekin internet tezligini hisobga oling",
+        "testing": "Yozishdan oldin mikrofon sifatini sinab ko'ring"
+      },
+      "note": {
+        "title": "Eslatma:",
+        "content": "Audio fayllar avtomatik WebM/Opus formatida saqlanadi. Bu format zamonaviy brauzerlarda yaxshi qo'llab-quvvatlanadi va yuqori sifat bilan kichik hajmga ega."
+      }
+    },
+    "SampleMicrophones": {
+      "title": "Mikrofon Turlari",
+      "standard": {
+        "name": "Standart Mikrofon",
+        "description": "Asosiy audio kirish qurilmasi",
+        "tip": "Kompyuteringizning o'rnatilgan mikrofonini sinab ko'ring"
+      },
+      "usb": {
+        "name": "USB Mikrofon",
+        "description": "Tashqi USB audio qurilmasi",
+        "tip": "Yuqori sifatli audio yozish uchun"
+      },
+      "bluetooth": {
+        "name": "Bluetooth Quloqchin",
+        "description": "Simsiz audio qurilmasi",
+        "tip": "Bluetooth ulanishi orqali audio kirish"
+      }
+    },
+    "Errors": {
+      "microphoneAccess": "Mikrofon kirish ruxsati berilmadi",
+      "noMicrophone": "Mikrofon topilmadi",
+      "recordingFailed": "Audio yozishda xatolik yuz berdi",
+      "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
+    },
+    "Hook": {
+      "messages": {
+        "devicesFound": "ta audio qurilma topildi",
+        "deviceAccessDenied": "Mikrofon qurilmalariga kirish rad etildi",
+        "microphoneStarted": "Mikrofon ishga tushirildi",
+        "microphoneStartError": "Mikrofonni ishga tushirishda xatolik",
+        "microphoneStopped": "Mikrofon to'xtatildi",
+        "recordingStarted": "Audio yozib olish boshlandi",
+        "recordingError": "Audio yozib olishda xatolik",
+        "audioRecorded": "Audio yozib olindi",
+        "audioDownloaded": "Audio yuklab olindi",
+        "audioDeleted": "Audio o'chirildi",
+        "allAudiosDeleted": "Barcha audiolar o'chirildi",
+        "deviceLabel": "Mikrofon"
+      }
+    }
+  }
+}

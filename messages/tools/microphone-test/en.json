@@ -1,0 +1,150 @@
+{
+  "MicrophoneTestPage": {
+    "ToolHeader": {
+      "title": "Microphone Test",
+      "description": "Test your microphone, record audio and evaluate quality"
+    },
+    "ControlPanel": {
+      "title": "Audio Settings",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "microphone": {
+        "label": "Microphone:",
+        "placeholder": "Select microphone"
+      },
+      "quality": {
+        "label": "Quality:",
+        "excellent": "Excellent",
+        "good": "Good",
+        "average": "Average",
+        "poor": "Poor"
+      },
+      "buttons": {
+        "refresh": "Refresh",
+        "startMicrophone": "Start Microphone",
+        "stopMicrophone": "Stop Microphone"
+      }
+    },
+    "AudioPreviewPanel": {
+      "title": "Audio Visualization",
+      "status": {
+        "live": "Live",
+        "off": "Off"
+      },
+      "buttons": {
+        "startRecording": "Start Recording",
+        "stopRecording": "Stop Recording"
+      },
+      "audioInfo": {
+        "title": "Audio Information",
+        "sampleRate": "Sample Rate",
+        "channels": "Channels",
+        "echoCancellation": "Echo Cancellation",
+        "noiseSuppression": "Noise Suppression",
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      }
+    },
+    "RecordedAudioPanel": {
+      "title": "Recorded Audios",
+      "fileCount": "files",
+      "empty": {
+        "title": "No audio recorded yet",
+        "subtitle": "Turn on microphone and record audio"
+      },
+      "stats": {
+        "totalAudios": "Total audios",
+        "totalSize": "Total size"
+      },
+      "actions": {
+        "preview": "Play",
+        "download": "Download",
+        "delete": "Delete"
+      },
+      "buttons": {
+        "clearAll": "Clear all"
+      }
+    },
+    "InfoSection": {
+      "title": "Information",
+      "status": "Help",
+      "useCases": {
+        "title": "Main use cases:",
+        "contentCreation": {
+          "title": "Content Creation:",
+          "description": "For YouTube, blogs and social media"
+        },
+        "podcasting": {
+          "title": "Podcasting:",
+          "description": "Professional podcast recording and audio quality"
+        },
+        "streaming": {
+          "title": "Live Streaming:",
+          "description": "Live broadcasts and video conferencing"
+        },
+        "voiceOver": {
+          "title": "Voice-over:",
+          "description": "Voice translation and narration"
+        },
+        "remoteWork": {
+          "title": "Remote Work:",
+          "description": "Online meetings and conferences"
+        }
+      },
+      "tips": {
+        "title": "Professional tips:",
+        "distance": "Speak 15-20 cm away from microphone",
+        "environment": "Record audio in quiet environment",
+        "level": "Keep audio level in 40-70% range",
+        "quality": "Choose HD quality, but consider internet speed",
+        "testing": "Test microphone quality before recording"
+      },
+      "note": {
+        "title": "Note:",
+        "content": "Audio files are automatically saved in WebM/Opus format. This format is well supported in modern browsers and offers high quality with small file size."
+      }
+    },
+    "SampleMicrophones": {
+      "title": "Microphone Types",
+      "standard": {
+        "name": "Standard Microphone",
+        "description": "Basic audio input device",
+        "tip": "Try your computer's built-in microphone"
+      },
+      "usb": {
+        "name": "USB Microphone",
+        "description": "External USB audio device",
+        "tip": "For high-quality audio recording"
+      },
+      "bluetooth": {
+        "name": "Bluetooth Headset",
+        "description": "Wireless audio device",
+        "tip": "Audio input via Bluetooth connection"
+      }
+    },
+    "Errors": {
+      "microphoneAccess": "Microphone access permission denied",
+      "noMicrophone": "No microphone found",
+      "recordingFailed": "Audio recording failed",
+      "unsupportedBrowser": "Browser not supported"
+    },
+    "Hook": {
+      "messages": {
+        "devicesFound": "audio devices found",
+        "deviceAccessDenied": "Microphone device access denied",
+        "microphoneStarted": "Microphone started",
+        "microphoneStartError": "Error starting microphone",
+        "microphoneStopped": "Microphone stopped",
+        "recordingStarted": "Audio recording started",
+        "recordingError": "Error recording audio",
+        "audioRecorded": "Audio recorded",
+        "audioDownloaded": "Audio downloaded",
+        "audioDeleted": "Audio deleted",
+        "allAudiosDeleted": "All audios deleted",
+        "deviceLabel": "Microphone"
+      }
+    }
+  }
+}
