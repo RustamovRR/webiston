@@ -29,6 +29,14 @@ export const metadata: Metadata = {
     'aniq lotin kirill',
     "o'zbek harflar o'girish",
     "o'zbek alifbo o'girish",
+    'лотин-кирилл',
+    'кирилл лотин',
+    'кирилл лотин онлайн',
+    'лотин крил таржима программа',
+    'лотин-кирилл онлайн',
+    'лотин-кирилл таржимон',
+    'лотин кирилл таржимон дастури',
+    'кирилл лотин таржима',
 
     // Ingliz tilida
     'uzbek latin cyrillic',
@@ -46,6 +54,8 @@ export const metadata: Metadata = {
     'uzbek script translator',
 
     // Rus tilida (ko'proq ahamiyat)
+    'лотин кирилл переводчик',
+    'кирилл лотин переводчик программа',
     'узбекский транслит',
     'узбекский транслитератор',
     'латиница кириллица узбекский',
