@@ -56,7 +56,7 @@ export function RecordedAudioPanel({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col overflow-hidden p-6">
         <div className="flex-1 overflow-y-auto pr-2">
           <AnimatePresence>
             {recordedAudios.length === 0 ? (

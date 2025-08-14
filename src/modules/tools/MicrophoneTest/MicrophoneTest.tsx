@@ -5,7 +5,7 @@ import { ToolHeader, StatsDisplay } from '@/components/shared'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { useMicrophoneTest } from '@/hooks/tools/useMicrophoneTest'
-import { ControlPanel, AudioPreviewPanel, RecordedAudioPanel, InfoSection } from './components'
+import { ControlPanel, AudioPreviewPanel, RecordedAudioPanel, InfoSection, AudioPreviewModal } from './components'
 
 export default function MicrophoneTest() {
   const t = useTranslations('MicrophoneTestPage.ToolHeader')
@@ -20,6 +20,7 @@ export default function MicrophoneTest() {
     audioInfo,
     recordedAudios,
     recordingDuration,
+    previewAudio,
     audioStats,
     sampleMicrophones,
     getAudioDevices,
@@ -32,6 +33,7 @@ export default function MicrophoneTest() {
     deleteAudio,
     clearAllRecordings,
     openPreview,
+    closePreview,
     formatDuration,
     getAudioQuality,
     getStats,
@@ -67,7 +69,7 @@ export default function MicrophoneTest() {
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Audio Preview Panel */}
-        <div className="sticky top-6 h-fit">
+        <div className="sticky top-20 h-fit">
           <AudioPreviewPanel
             isListening={isListening}
             isRecording={isRecording}
@@ -154,6 +156,9 @@ export default function MicrophoneTest() {
 
       {/* Info Section */}
       <InfoSection />
+
+      {/* Audio Preview Modal */}
+      <AudioPreviewModal audio={previewAudio} onClose={closePreview} />
     </div>
   )
 }

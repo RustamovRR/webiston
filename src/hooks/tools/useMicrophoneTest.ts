@@ -432,12 +432,15 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
   }, [])
 
   // Get audio quality rating
-  const getAudioQuality = useCallback((level: number) => {
-    if (level > 60) return { text: 'Ajoyib', color: 'text-green-400' }
-    if (level > 40) return { text: 'Yaxshi', color: 'text-blue-400' }
-    if (level > 20) return { text: "O'rtacha", color: 'text-yellow-400' }
-    return { text: 'Past', color: 'text-red-400' }
-  }, [])
+  const getAudioQuality = useCallback(
+    (level: number) => {
+      if (level > 60) return { text: t('qualityExcellent'), color: 'text-green-400' }
+      if (level > 40) return { text: t('qualityGood'), color: 'text-blue-400' }
+      if (level > 20) return { text: t('qualityAverage'), color: 'text-yellow-400' }
+      return { text: t('qualityPoor'), color: 'text-red-400' }
+    },
+    [t],
+  )
 
   // Get stats for display
   const getStats = useCallback(() => {

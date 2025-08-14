@@ -130,6 +130,10 @@
       "recordingFailed": "Audio recording failed",
       "unsupportedBrowser": "Browser not supported"
     },
+    "AudioPreviewModal": {
+      "title": "Audio Preview",
+      "download": "Download"
+    },
     "Hook": {
       "messages": {
         "devicesFound": "audio devices found",
@@ -143,7 +147,11 @@
         "audioDownloaded": "Audio downloaded",
         "audioDeleted": "Audio deleted",
         "allAudiosDeleted": "All audios deleted",
-        "deviceLabel": "Microphone"
+        "deviceLabel": "Microphone",
+        "qualityExcellent": "Excellent",
+        "qualityGood": "Good",
+        "qualityAverage": "Average",
+        "qualityPoor": "Poor"
       }
     }
   }

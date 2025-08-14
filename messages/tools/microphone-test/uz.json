@@ -130,6 +130,10 @@
       "recordingFailed": "Audio yozishda xatolik yuz berdi",
       "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
     },
+    "AudioPreviewModal": {
+      "title": "Audio Eshitish",
+      "download": "Yuklab olish"
+    },
     "Hook": {
       "messages": {
         "devicesFound": "ta audio qurilma topildi",
@@ -143,7 +147,11 @@
         "audioDownloaded": "Audio yuklab olindi",
         "audioDeleted": "Audio o'chirildi",
         "allAudiosDeleted": "Barcha audiolar o'chirildi",
-        "deviceLabel": "Mikrofon"
+        "deviceLabel": "Mikrofon",
+        "qualityExcellent": "Ajoyib",
+        "qualityGood": "Yaxshi",
+        "qualityAverage": "O'rtacha",
+        "qualityPoor": "Past"
       }
     }
   }
