@@ -168,14 +168,14 @@ export const TOOLS_LIST: Tool[] = [
     category: 'utilities',
     audience: 'general',
   },
-  // {
-  //   tKey: 'microphoneTest',
-  //   href: '/tools/microphone-test',
-  //   icon: Mic,
-  //   color: 'bg-blue-600/20',
-  //   category: 'utilities',
-  //   audience: 'general',
-  // },
+  {
+    tKey: 'microphoneTest',
+    href: '/tools/microphone-test',
+    icon: Mic,
+    color: 'bg-blue-600/20',
+    category: 'utilities',
+    audience: 'general',
+  },
   // {
   //   tKey: 'keycodeInfo',
   //   href: '/tools/keycode-info',

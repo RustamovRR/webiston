@@ -1,0 +1,19 @@
+[
+  "qr-generator",
+  "latin-cyrillic",
+  "json-formatter",
+  "base64-converter",
+  "url-encoder",
+  "jwt-decoder",
+  "color-converter",
+  "hash-generator",
+  "uuid-generator",
+  "password-generator",
+  "device-info",
+  "og-meta-generator",
+  "screen-resolution",
+  "lorem-ipsum",
+  "ip-info",
+  "camera-recorder",
+  "microphone-test"
+]

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "postbuild": "next-sitemap && node scripts/build-search-index.js",
+    "postbuild": "node scripts/update-tools-list.js && next-sitemap && node scripts/build-search-index.js",
+    "update-tools": "node scripts/update-tools-list.js",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{json,js,ts,tsx,css}\"",
