@@ -151,7 +151,10 @@
         "qualityExcellent": "Excellent",
         "qualityGood": "Good",
         "qualityAverage": "Average",
-        "qualityPoor": "Poor"
+        "qualityPoor": "Poor",
+        "statsAudioLevel": "Audio Level",
+        "statsRecorded": "Recorded",
+        "statsDuration": "Duration"
       }
     }
   }

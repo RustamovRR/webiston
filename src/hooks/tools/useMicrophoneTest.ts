@@ -310,7 +310,12 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
         }
       }
 
+      const startTime = Date.now() // Capture start time in closure
+      setRecordingStartTime(startTime)
+
       mediaRecorder.onstop = () => {
+        const finalDuration = Math.floor((Date.now() - startTime) / 1000)
+
         const blob = new Blob(recordingChunksRef.current, { type: 'audio/webm' })
         const url = URL.createObjectURL(blob)
         const timestamp = new Date()
@@ -321,7 +326,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
           name: filename,
           url,
           blob,
-          duration: recordingDuration,
+          duration: finalDuration,
           timestamp,
           size: blob.size,
           format: 'WebM/Opus',
@@ -344,7 +349,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       onError?.(errorMessage)
       console.error('Error starting recording:', err)
     }
-  }, [recordingDuration, onSuccess, onError])
+  }, [onSuccess, onError, t])
 
   // Stop recording
   const stopRecording = useCallback(() => {
@@ -445,11 +450,11 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
   // Get stats for display
   const getStats = useCallback(() => {
     return [
-      { label: 'Audio Level', value: Math.round(audioStats.level) },
-      { label: 'Yozilgan', value: recordedAudios.length },
-      { label: 'Davomiyligi', value: recordingDuration },
+      { label: t('statsAudioLevel'), value: Math.round(audioStats.level) },
+      { label: t('statsRecorded'), value: recordedAudios.length },
+      { label: t('statsDuration'), value: recordingDuration },
     ]
-  }, [audioStats.level, recordedAudios.length, recordingDuration])
+  }, [audioStats.level, recordedAudios.length, recordingDuration, t])
 
   // Initialize on mount
   useEffect(() => {

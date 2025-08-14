@@ -151,7 +151,10 @@
         "qualityExcellent": "Ajoyib",
         "qualityGood": "Yaxshi",
         "qualityAverage": "O'rtacha",
-        "qualityPoor": "Past"
+        "qualityPoor": "Past",
+        "statsAudioLevel": "Audio Level",
+        "statsRecorded": "Yozilgan",
+        "statsDuration": "Davomiyligi"
       }
     }
   }

@@ -19,56 +19,114 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
 
+  // Reset states when modal opens/closes
   useEffect(() => {
-    if (audio && audioRef.current) {
-      audioRef.current.src = audio.url
-      audioRef.current.load()
+    if (!audio) {
+      setCurrentTime(0)
+      setDuration(0)
+      setIsPlaying(false)
     }
   }, [audio])
 
   useEffect(() => {
     const audioElement = audioRef.current
-    if (!audioElement) return
+    if (!audioElement || !audio) return
 
-    const updateTime = () => setCurrentTime(audioElement.currentTime)
-    const updateDuration = () => setDuration(audioElement.duration)
-    const handleEnded = () => setIsPlaying(false)
+    // Reset states when audio changes
+    setCurrentTime(0)
+    setIsPlaying(false)
 
+    // Use recorded duration from audio object if available, otherwise try to get from element
+    if (audio.duration && audio.duration > 0) {
+      setDuration(audio.duration)
+    } else {
+      setDuration(0)
+    }
+
+    const updateTime = () => {
+      setCurrentTime(audioElement.currentTime)
+    }
+
+    const updateDuration = () => {
+      // Only update if we don't have duration from recording and element has valid duration
+      if (
+        !audio.duration &&
+        audioElement.duration &&
+        !isNaN(audioElement.duration) &&
+        isFinite(audioElement.duration)
+      ) {
+        setDuration(audioElement.duration)
+      }
+    }
+
+    const handleEnded = () => {
+      setIsPlaying(false)
+      setCurrentTime(0)
+    }
+
+    const handleLoadedData = () => {
+      // Only update if we don't have duration from recording
+      if (
+        !audio.duration &&
+        audioElement.duration &&
+        !isNaN(audioElement.duration) &&
+        isFinite(audioElement.duration)
+      ) {
+        setDuration(audioElement.duration)
+      }
+    }
+
+    // Add event listeners
     audioElement.addEventListener('timeupdate', updateTime)
     audioElement.addEventListener('loadedmetadata', updateDuration)
+    audioElement.addEventListener('loadeddata', handleLoadedData)
     audioElement.addEventListener('ended', handleEnded)
+
+    // Force load metadata
+    audioElement.load()
 
     return () => {
       audioElement.removeEventListener('timeupdate', updateTime)
       audioElement.removeEventListener('loadedmetadata', updateDuration)
+      audioElement.removeEventListener('loadeddata', handleLoadedData)
       audioElement.removeEventListener('ended', handleEnded)
     }
-  }, [])
+  }, [audio])
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current) return
 
-    if (isPlaying) {
-      audioRef.current.pause()
+    try {
+      if (isPlaying) {
+        audioRef.current.pause()
+        setIsPlaying(false)
+      } else {
+        await audioRef.current.play()
+        setIsPlaying(true)
+      }
+    } catch (error) {
       setIsPlaying(false)
-    } else {
-      audioRef.current.play()
-      setIsPlaying(true)
     }
   }
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!audioRef.current || !duration) return
+    if (!audioRef.current || !duration || duration <= 0) return
 
     const rect = e.currentTarget.getBoundingClientRect()
     const clickX = e.clientX - rect.left
-    const newTime = (clickX / rect.width) * duration
+    const newTime = Math.max(0, Math.min((clickX / rect.width) * duration, duration))
 
-    audioRef.current.currentTime = newTime
-    setCurrentTime(newTime)
+    try {
+      audioRef.current.currentTime = newTime
+      setCurrentTime(newTime)
+    } catch (error) {
+      // Silently handle seek errors
+    }
   }
 
   const formatTime = (time: number) => {
+    if (!time || !isFinite(time) || isNaN(time)) return '0:00'
+
     const mins = Math.floor(time / 60)
     const secs = Math.floor(time % 60)
     return `${mins}:${secs.toString().padStart(2, '0')}`
@@ -145,7 +203,10 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
                   <div
                     className="absolute top-0 left-0 h-full rounded-full bg-blue-500"
                     style={{
-                      width: duration ? `${(currentTime / duration) * 100}%` : '0%',
+                      width:
+                        duration && duration > 0 && isFinite(duration)
+                          ? `${Math.min((currentTime / duration) * 100, 100)}%`
+                          : '0%',
                     }}
                   />
                 </div>
@@ -159,7 +220,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
             </div>
 
             {/* Hidden Audio Element */}
-            <audio ref={audioRef} preload="metadata" />
+            {audio && <audio key={audio.id} ref={audioRef} src={audio.url} preload="auto" />}
           </div>
         </motion.div>
       </motion.div>
