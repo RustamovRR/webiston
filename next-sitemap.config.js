@@ -19,24 +19,9 @@ module.exports = {
     for (const locale of locales) {
       paths.push(await config.transform(config, `/${locale}`), await config.transform(config, `/${locale}/tools`))
 
-      // Add tools pages for each locale
-      const toolsPages = [
-        'json-formatter',
-        'url-encoder',
-        'base64-converter',
-        'qr-generator',
-        'password-generator',
-        'color-converter',
-        'hash-generator',
-        'uuid-generator',
-        'jwt-decoder',
-        'latin-cyrillic',
-        'lorem-ipsum',
-        'og-meta-generator',
-        'device-info',
-        'screen-resolution',
-        'camera-recorder',
-      ]
+      // Add tools pages for each locale - dynamically from TOOLS_LIST
+      const { TOOLS_LIST } = require('./src/constants/ui.ts')
+      const toolsPages = TOOLS_LIST.map((tool) => tool.href.replace('/tools/', ''))
 
       for (const tool of toolsPages) {
         paths.push(await config.transform(config, `/${locale}/tools/${tool}`))

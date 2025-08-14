@@ -134,6 +134,9 @@
       "title": "Audio Preview",
       "download": "Download"
     },
+    "Loading": {
+      "text": "Loading microphone test..."
+    },
     "Hook": {
       "messages": {
         "devicesFound": "audio devices found",

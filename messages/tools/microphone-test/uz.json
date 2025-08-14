@@ -134,6 +134,9 @@
       "title": "Audio Eshitish",
       "download": "Yuklab olish"
     },
+    "Loading": {
+      "text": "Mikrofon test yuklanmoqda..."
+    },
     "Hook": {
       "messages": {
         "devicesFound": "ta audio qurilma topildi",
