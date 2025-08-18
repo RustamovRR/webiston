@@ -1,4 +1,4 @@
-# Xulosa
+## Xulosa
 
 Bu kitob JavaScript’ni poydevoridan boshlab yuqoriga qarab tushuntiradi. Bu shuni anglatadiki, biz izohlar, identifikatorlar, o'zgaruvchilar va tiplar kabi quyi darajadagi tafsilotlardan boshlaymiz; so'ng ifodalar, ko'rsatmalar, obyektlar va funksiyalarga o'tamiz; va undan keyin klasslar va modullar kabi yuqori darajadagi til abstraksiyalarini ko'rib chiqamiz. Men bu kitob sarlavhasidagi _To‘liq qo‘llanma” (Definitive Guide)_ so'ziga jiddiy yondashaman, va keyingi boblar tilni shunday batafsil tushuntirib boradiki, bu batafsillik darajasi dastlab sizni biroz zeriktirishi yoki biroz qo'rquvga solishi mumkin. Biroq JavaScript’ni haqiqiy ma’noda puxta egallash aynan shu tafsilotlarni tushunishni talab qiladi va umid qilamanki, siz bu kitobni boshidan oxirigacha o‘qish uchun vaqt topasiz.
 
