@@ -1,4 +1,4 @@
-## 4.4 Xossalarga murojaat qilish ifodalari
+## Xossalarga murojaat qilish ifodalari
 
 **Xossaga murojaat qilish ifodasi (Property access expression)** obyekt xossasining yoki massiv elementining qiymatini ifodalaydi. JavaScript xossaga murojaat qilish uchun ikki xil sintaksisni taqdim etadi:
 
@@ -29,3 +29,49 @@ Agar obyekt ifodasidan keyin nuqta va identifikator kelsa, o‘sha identifikator
 `.identifikator` sintaksisi xossaga murojaat qilishning ikki variantidan soddarog‘idir, lekin e’tibor bering, u faqat siz murojaat qilmoqchi bo‘lgan xossaning nomi ruxsat etilgan identifikator bo‘lganda va siz dasturni yozayotganda bu nomni bilganingizdagina ishlatilishi mumkin. Agar xossa nomi bo‘shliqlar yoki tinish belgilarini o‘z ichiga olsa, yoki u son bo‘lsa (massivlar uchun), siz kvadrat qavslar yozuvidan foydalanishingiz shart. Kvadrat qavslar, shuningdek, xossa nomi statik bo‘lmay, o‘zi ham biror hisob-kitob natijasi bo‘lganda ishlatiladi (misol uchun §6.3.1-bo‘limga qarang).
 
 Obyektlar va ularning xossalari 6-bobda, massivlar va ularning elementlari esa 7-bobda batafsil yoritilgan.
+
+## Shartli xossa murojaati (Conditional property access)
+
+ES2020 xossaga murojaat qilish ifodalarining ikki yangi turini qo‘shdi:
+
+``` js
+ifoda ? . identifikator
+ifoda ? .[ ifoda ]
+```
+
+JavaScript'da `null` va `undefined` qiymatlari xossalarga ega bo‘lmagan yagona ikki qiymatdir. `.` yoki `[]` yordamidagi oddiy xossa murojaati ifodasida, agar chap tomondagi ifoda `null` yoki `undefined`'ga baholansa, siz `TypeError` xatoligiga duch kelasiz. `?.` va `?.[]` sintaksisidan aynan shu turdagi xatoliklardan himoyalanish uchun foydalanishingiz mumkin.
+
+`a?.b` ifodasini ko‘rib chiqaylik. Agar `a` qiymati `null` yoki `undefined` bo‘lsa, u holda ifoda `b` xossasiga murojaat qilishga hech qanday urinishsiz `undefined`'ga baholanadi. Agar `a` boshqa biror qiymat bo‘lsa, u holda `a?.b` ifodasi `a.b` ifodasi qanday qiymatga baholansa, o‘sha qiymatga baholanadi (va agar `a`'da `b` nomli xossa bo‘lmasa, qiymat yana `undefined` bo‘ladi).
+
+Xossaga murojaat qilishning bu shakli ba’zan **"ixtiyoriy zanjir" (`optional chaining`)** deb ataladi, chunki u quyidagiga o‘xshash uzunroq, "zanjirsimon" xossa murojaati ifodalari uchun ham ishlaydi:
+
+``` js
+let a = { b: null };
+a.b?.c.d // => undefined
+```
+
+`a` — bu obyekt, shuning uchun `a.b` to‘g‘ri xossa murojaati ifodasidir. Lekin `a.b`'ning qiymati `null`, shuning uchun `a.b.c` qiymatini olish `TypeError` xatoligiga sabab bo‘ladi. `.` o‘rniga `?.`'dan foydalanib, `TypeError`'ni oldini olamiz va `a.b?.c` qiymati `undefined`'ga baholanadi. Bu degani, `(a.b?.c).d` qiymati `TypeError` xatoligiga sabab bo‘ladi, chunki bu ifoda `undefined` qiymatining xossasiga murojaat qilishga harakat qiladi. Lekin — bu "ixtiyoriy zanjir"ning juda muhim qismi — `a.b?.c.d` (qavslarsiz) shunchaki `undefined`'ga baholanadi va xatolik yuzaga keltirmaydi. Buning sababi, `?.` bilan xossaga murojaat qilish **"qisqa tutashuvli" (`short-circuiting`)**dir: agar `?.`'dan chapdagi quyi ifoda `null` yoki `undefined`'ga baholansa, butun ifoda darhol, keyingi xossalarga murojaat qilishga urinmasdan `undefined`'ga baholanadi.
+
+Albatta, agar `a.b` obyekt bo‘lsa va bu obyektda `c` nomli xossa bo‘lmasa, u holda `a.b?.c.d` yana `TypeError` xatoligiga sabab bo‘ladi va biz yana bir shartli xossa murojaatidan foydalanmoqchi bo'lamiz:
+
+``` js
+let a = { b: {} };
+a.b?.c?.d // => undefined
+```
+
+Shartli xossa murojaatini `[]` o‘rniga `?.[]` yordamida amalga oshirish mumkin. `a?.[b][c]` ifodasida, agar `a`'ning qiymati `null` yoki `undefined` bo‘lsa, butun ifoda darhol `undefined`'ga baholanadi va `b` hamda `c` quyi ifodalari umuman bajarilmaydi. Agar bu ifodalarning birortasida qo‘shimcha ta’sir (`side effect`) bo‘lsa, `a` aniqlanmagan taqdirda bu qo‘shimcha ta’sir yuz bermaydi:
+
+``` js
+let a;          // Voy, biz bu o‘zgaruvchini initsializatsiya qilishni unutibmiz!
+let index = 0;
+try {
+    a[index++]; // TypeError xatoligini yuzaga keltiradi
+} catch(e) {
+    index       // => 1: inkrement TypeError yuzaga kelishidan oldin sodir bo‘ladi
+}
+a?.[index++]    // => undefined: chunki `a` undefined
+index           // => 1: `?.[]` qisqa tutashuv sababli inkrement qilinmadi
+a[index++]      // !TypeError: `undefined`'ni indekslab bo‘lmaydi.
+```
+
+`?.` va `?.[]` bilan shartli xossa murojaati JavaScript'ning eng yangi xususiyatlaridan biridir. 2020-yil boshiga kelib, bu yangi sintaksis ko‘pchilik asosiy brauzerlarning joriy yoki beta versiyalarida qo‘llab-quvvatlanadi.
