@@ -1,0 +1,17 @@
+# Obyekt yaratish ifodalari
+
+**Obyekt yaratish ifodasi** yangi obyekt yaratadi va bu obyektning xossalarini initsializatsiya qilish uchun biror funksiyani (bu funksiya **konstruktor** deb ataladi) chaqiradi. Obyekt yaratish ifodalari chaqiruv ifodalariga o‘xshaydi, faqat ulardan oldin `new` kalit so‘zi keladi:
+
+``` js
+new Object()
+new Point(2,3)
+```
+
+Agar obyekt yaratish ifodasida konstruktor funksiyasiga hech qanday argument uzatilmasa, bo‘sh qavslar juftligini tushirib qoldirish mumkin:
+
+``` js
+new Object
+new Date
+```
+
+Obyekt yaratish ifodasining qiymati yangi yaratilgan obyektning o‘zi bo‘ladi. Konstruktorlar 9-bobda batafsilroq tushuntirilgan.
