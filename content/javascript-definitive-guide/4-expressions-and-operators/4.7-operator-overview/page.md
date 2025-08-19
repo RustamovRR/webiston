@@ -1,0 +1,147 @@
+# Operatorlarga umumiy nazar
+
+Operatorlar JavaScript'ning arifmetik ifodalari, taqqoslash ifodalari, mantiqiy ifodalari, tayinlash ifodalari va boshqalar uchun ishlatiladi. 4-1-jadval operatorlarni umumlashtiradi va qulay ma’lumotnoma bo‘lib xizmat qiladi.
+
+E’tibor bering, ko'p operatorlar `+` va `=` kabi tinish belgilari bilan ifodalanadi. Biroq ba’zilari `delete` va `instanceof` kabi kalit so‘zlar bilan ifodalanadi. Kalit so‘zli operatorlar ham xuddi tinish belgilari bilan ifodalanganlar kabi oddiy operatorlardir; ularning sintaksisi shunchaki unchalik ixcham emas.
+
+4-1-jadval operatorlarning **bajarilish ustuvorligi (`precedence`)** bo‘yicha tuzilgan. Yuqorida keltirilgan operatorlar pastdagilarga qaraganda yuqoriroq ustuvorlikka ega. Gorizontal chiziq bilan ajratilgan operatorlar turli ustuvorlik darajalariga ega. **A** ustuni operatorning **assotsiativligini (`associativity`)** ko‘rsatadi, u **L** (chapdan o‘ngga) yoki **R** (o‘ngdan chapga) bo‘lishi mumkin. **N** ustuni esa operandlar sonini belgilaydi. **Tiplar** deb nomlangan ustun operandlarning kutilayotgan tiplarini va (→ belgisidan keyin) operator natijasining tipini ko‘rsatadi. Jadvaldan keyingi quyi bo‘limlar ustuvorlik, assotsiativlik va operand tiplari tushunchalarini tushuntiradi. Operatorlarning o‘zlari esa bu muhokamadan keyin alohida-alohida hujjatlashtirilgan.
+
+<small>_4-1-jadval. JavaScript operatorlari_</small>
+
+| **Operator** | **Amal** | **A** | **N** | **Tiplar** |
+| :--- | :--- | :-: | :-: | :--- |
+| `++` | Pre- yoki post-inkrement | R | 1 | lval→num |
+| `--` | Pre- yoki post-dekrement | R | 1 | lval→num |
+| `-` | Sonni manfiyga o‘girish | R | 1 | num→num |
+| `+` | Songa o‘girish | R | 1 | any→num |
+| `~` | Bitlarni inversiya qilish | R | 1 | int→int |
+| `!` | Mantiqiy qiymatni inversiya qilish | R | 1 | bool→bool |
+| `delete` | Xossani o‘chirish | R | 1 | lval→bool |
+| `typeof` | Operand tipini aniqlash | R | 1 | any→str |
+| `void` | `undefined` qiymatini qaytarish | R | 1 | any→undef |
+| `**` | Darajaga ko‘tarish | R | 2 | num,num→num |
+| `*`, `/`, `%` | Ko‘paytirish, bo‘lish, qoldiq | L | 2 | num,num→num |
+| `+`, `-` | Qo‘shish, ayirish | L | 2 | num,num→num |
+| `+` | Satrlarni birlashtirish | L | 2 | str,str→str |
+| `<<` | Chapga siljitish | L | 2 | int,int→int |
+| `>>` | Ishorani saqlagan holda o‘ngga siljitish | L | 2 | int,int→int |
+| `>>>` | Nol bilan to‘ldirib o‘ngga siljitish | L | 2 | int,int→int |
+| `<`, `<=`, `>`, `>=` | Sonli tartibda taqqoslash | L | 2 | num,num→bool |
+| `<`, `<=`, `>`, `>=` | Alifbo tartibida taqqoslash | L | 2 | str,str→bool |
+| `instanceof` | Obyekt klassini tekshirish | L | 2 | obj,func→bool |
+| `in` | Xossa mavjudligini tekshirish | L | 2 | any,obj→bool |
+| `==` | Noqat’iy tenglikni tekshirish | L | 2 | any,any→bool |
+| `!=` | Noqat’iy tengsizlikni tekshirish | L | 2 | any,any→bool |
+| `===` | Qat’iy tenglikni tekshirish | L | 2 | any,any→bool |
+| `!==` | Qat’iy tengsizlikni tekshirish | L | 2 | any,any→bool |
+| `&` | Bitli VA (AND) | L | 2 | int,int→int |
+| `^` | Bitli Istisno qiluvchi YOKI (XOR) | L | 2 | int,int→int |
+| `|` | Bitli YOKI (OR) | L | 2 | int,int→int |
+| `&&` | Mantiqiy VA (AND) | L | 2 | any,any→any |
+| `||` | Mantiqiy YOKI (OR) | L | 2 | any,any→any |
+| `??` | Birinchi aniqlangan operandni tanlash | L | 2 | any,any→any |
+| `?:` | Ikkinchi yoki uchinchi operandni tanlash | R | 3 | bool,any,any→any |
+| `=` | O‘zgaruvchi yoki xossaga tayinlash | R | 2 | lval,any→any |
+| `**=`, `*=`, `/=`, `%=`, `+=`, `-=`, `&=`, `^=`, `\|=`, `<<=`, `>>=`, `>>>=` | Amal bajarish va tayinlash | R | 2 | lval,any→any |
+| `,` | Birinchi operandni tashlab, ikkinchisini qaytarish | L | 2 | any,any→any |
+
+## Operandlar soni
+
+Operatorlarni ular kutadigan operandlar soniga (ularning **ariteti (`arity`)**'ga) qarab tasniflash mumkin. Ko‘pchilik JavaScript operatorlari, masalan, `*` ko‘paytirish operatori kabi, ikki ifodani bitta, murakkabroq ifodaga birlashtiradigan **ikkilik (`binary`)** operatorlardir. Ya’ni, ular ikkita operand kutadi.
+
+JavaScript, shuningdek, bitta ifodani bitta, murakkabroq ifodaga aylantiradigan bir qator **birlik (`unary`)** operatorlarni ham qo‘llab-quvvatlaydi. `-x` ifodasidagi `-` operatori `x` operandi ustida manfiyga o‘girish amalini bajaradigan birlik operatordir.
+
+Nihoyat, JavaScript bitta **uchlik (`ternary`)** operatorni — shartli operator `?:`'ni qo‘llab-quvvatlaydi. U uchta ifodani bitta yagona ifodaga birlashtiradi.
+
+## Operand va natija tiplari
+
+Ba’zi operatorlar har qanday tipdagi qiymatlar bilan ishlay oladi, lekin ko‘pchiligi o‘z operandlarining ma’lum bir tipda bo‘lishini kutadi va aksariyat operatorlar ma’lum bir tipdagi qiymatni qaytaradi (yoki shunday qiymatga baholanadi). 4-1-jadvaldagi "Tiplar" ustuni operatorlar uchun operand tiplarini (strelkadan oldin) va natija tipini (strelkadan keyin) ko‘rsatadi.
+
+JavaScript operatorlari odatda kerak bo‘lganda o‘z operandlarining tipini o‘zgartiradi (§3.9-bo‘limga qarang). Ko‘paytirish operatori `*` sonli operandlarni kutadi, lekin `"3" * "5"` ifodasi to‘g‘ri hisoblanadi, chunki JavaScript operandlarni sonlarga o‘zgartira oladi. Albatta, bu ifodaning qiymati "15" satri emas, balki `15` sonidir. Shuni ham yodda tutingki, har bir JavaScript qiymati yo _truthy_, yo _falsy_ bo‘ladi, shuning uchun mantiqiy operandlarni kutadigan operatorlar har qanday tipdagi operand bilan ishlay oladi.
+
+Ba’zi operatorlar o‘zlari bilan ishlatilgan operandlarning tipiga qarab turlicha ishlaydi. Eng yaqqol misol, `+` operatori sonli operandlarni qo‘shadi, satrli operandlarni esa birlashtiradi. Xuddi shunday, `<` kabi taqqoslash operatorlari operandlarning tipiga qarab sonli yoki alifbo tartibida taqqoslashni amalga oshiradi. Alohida operatorlarning tavsiflari ularning tiplarga bog‘liqligini tushuntiradi va qanday tip konversiyalarini bajarishini aniqlashtiradi.
+
+E’tibor bering, 4-1-jadvalda keltirilgan tayinlash operatorlari va yana bir nechta boshqa operatorlar `lval` tipidagi operandni kutadi. **`lvalue`** — bu "tayinlash ifodasining chap tomonida sintaktik jihatdan to‘g‘ri ishlatilishi mumkin bo‘lgan ifoda" degan ma’noni anglatuvchi tarixiy atamadir. JavaScript'da o‘zgaruvchilar, obyektlarning xossalari va massivlarning elementlari `lvalue` hisoblanadi.
+
+## Operatorlarning qo‘shimcha ta’sirlari
+
+`2 * 3` kabi oddiy ifodani bajarish dasturingizning holatiga hech qachon ta’sir qilmaydi va dasturingiz kelajakda bajaradigan har qanday hisob-kitob bu bajarilishdan o‘zgarishsiz qoladi. Biroq ba’zi ifodalar **qo‘shimcha ta’sirlarga (`side effects`)** ega bo‘lib, ularning bajarilishi kelajakdagi bajarilishlar natijasiga ta’sir ko‘rsatishi mumkin. Tayinlash operatorlari bunga eng yaqqol misoldir: agar siz o‘zgaruvchi yoki xossaga qiymat tayinlasangiz, bu o‘sha o‘zgaruvchi yoki xossadan foydalanadigan har qanday ifodaning qiymatini o‘zgartiradi. `++` va `--` inkrement va dekrement operatorlari ham shunga o‘xshash, chunki ular zimdan (`implicitly`) tayinlash amalini bajaradi. `delete` operatori ham qo‘shimcha ta’sirlarga ega: xossani o‘chirish xossaga `undefined` tayinlashga o‘xshaydi (lekin aynan bir xil emas).
+
+Boshqa hech qanday JavaScript operatori qo‘shimcha ta’sirlarga ega emas. Lekin, agar funksiya yoki konstruktor tanasida ishlatilgan operatorlarning birortasi qo‘shimcha ta’sirlarga ega bo‘lsa, u holda funksiyani chaqirish va obyekt yaratish ifodalari ham qo‘shimcha ta’sirlarga ega bo‘ladi.
+
+## Operatorlarning bajarilish ustuvorligi
+
+4-1-jadvalda keltirilgan operatorlar yuqori ustuvorlikdan past ustuvorlikka qarab tartiblangan, bunda bir xil ustuvorlik darajasidagi operatorlar guruhlari gorizontal chiziqlar bilan ajratilgan. **Operator ustuvorligi (`precedence`)** amallarning bajarilish tartibini nazorat qiladi. Yuqoriroq ustuvorlikka ega bo‘lgan operatorlar (jadvalning yuqori qismiga yaqinroq) pastroq ustuvorlikka ega bo‘lganlardan (pastki qismiga yaqinroq) oldin bajariladi.
+
+Quyidagi ifodani ko‘rib chiqing:
+
+``` js
+w = x + y*z;
+```
+
+Ko‘paytirish operatori `*` qo‘shish operatori `+`'ga qaraganda yuqoriroq ustuvorlikka ega, shuning uchun ko‘paytirish amali qo‘shishdan oldin bajariladi. Bundan tashqari, tayinlash operatori `=` eng past ustuvorlikka ega, shuning uchun tayinlash amali o‘ng tomondagi barcha amallar yakunlangandan keyin bajariladi.
+
+Operator ustuvorligini qavslardan aniq foydalanish orqali o‘zgartirish mumkin. Oldingi misoldagi qo‘shish amalini birinchi bo‘lib bajarishga majburlash uchun quyidagicha yozing:
+
+``` js
+w = (x + y)*z;
+```
+
+E’tibor bering, xossaga murojaat qilish va funksiyani chaqirish ifodalari 4-1-jadvalda keltirilgan har qanday operatordan yuqoriroq ustuvorlikka ega. Ushbu ifodani ko‘rib chiqing:
+
+``` js
+// `my` - bu `functions` nomli xossaga ega bo‘lgan obyekt.
+// Bu xossaning qiymati funksiyalar massividir. Biz `x`-raqamli funksiyani
+// `y` argumenti bilan chaqiramiz va keyin qaytarilgan qiymatning tipini so‘raymiz.
+typeof my.functions[x](y)
+```
+
+Garchi `typeof` eng yuqori ustuvorlikka ega operatorlardan biri bo‘lsa-da, `typeof` amali xossaga murojaat qilish, massivni indekslash va funksiyani chaqirish amallarining natijasi ustida bajariladi. Bu amallarning barchasi operatorlardan yuqoriroq ustuvorlikka ega.
+
+Amalda, agar siz operatorlaringizning ustuvorligiga biroz bo‘lsa-da shubhangiz bo‘lsa, eng oddiy yechim — bu bajarilish tartibini aniq qilish uchun qavslardan foydalanishdir. Bilish muhim bo‘lgan qoidalar quyidagilar: ko‘paytirish va bo‘lish amallari qo‘shish va ayirishdan oldin bajariladi, tayinlash esa juda past ustuvorlikka ega va deyarli har doim eng oxirida bajariladi.
+
+JavaScript'ga yangi operatorlar qo‘shilganda, ular har doim ham bu ustuvorlik sxemasiga tabiiy ravishda mos tushavermaydi. `??` operatori (§4.13.2) jadvalda `||` va `&&`'dan pastroq ustuvorlikka ega sifatida ko‘rsatilgan, lekin aslida uning bu operatorlarga nisbatan ustuvorligi aniqlanmagan va ES2020 `??`'ni `||` yoki `&&` bilan aralashtirib ishlatsangiz, aniq qavslardan foydalanishni talab qiladi. Xuddi shunday, yangi `**` darajaga ko‘tarish operatorining birlik manfiyga o‘girish operatoriga nisbatan ustuvorligi aniq belgilanmagan va manfiyga o‘girishni darajaga ko‘tarish bilan birga ishlatganingizda qavslardan foydalanishingiz kerak bo'ladi.
+
+## Operatorlarning assotsiativligi
+
+4-1-jadvalda **A** deb belgilangan ustun operatorning **assotsiativligini (`associativity`)** ko‘rsatadi. **L** qiymati chapdan o‘ngga assotsiativlikni, **R** qiymati esa o‘ngdan chapga assotsiativlikni bildiradi. Operatorning assotsiativligi bir xil ustuvorlikka ega bo‘lgan amallarning bajarilish tartibini belgilaydi.
+
+Chapdan-o‘ngga assotsiativlik amallar chapdan o‘ngga qarab bajarilishini anglatadi. Masalan, ayirish operatori chapdan o‘ngga assotsiativlikka ega, shuning uchun:
+
+``` js
+w = x - y - z;
+```
+
+quyidagiga teng bo‘ladi:
+
+``` js
+ w = ((x - y) - z);
+```
+
+Boshqa tomondan, quyidagi ifodalar:
+
+``` js
+y = a ** b ** c;
+x = ~-y;
+w = x = y = z;
+q = a?b:c?d:e?f:g;
+```
+
+quyidagilarga ekvivalentdir:
+
+``` js
+y = (a ** (b ** c));
+x = ~(-y);
+w = (x = (y = z));
+q = a?b:(c?d:(e?f:g));
+```
+
+chunki darajaga ko‘tarish, birlik, tayinlash va uchlik shartli operatorlari o‘ngdan-chapga assotsiativlikka ega.
+
+## Bajarilish tartibi
+
+Operator ustuvorligi va assotsiativligi murakkab ifodadagi amallarning bajarilish ketma-ketligini belgilaydi, lekin ular quyi ifodalarning **bajarilish (`evaluation`) tartibini** belgilamaydi.
+
+JavaScript ifodalarni har doim qat’iy ravishda **chapdan o‘ngga** qarab bajaradi. Masalan, `w = x + y * z` ifodasida avval `w` quyi ifodasi, undan keyin `x`, `y` va `z` bajariladi. Shundan so‘ng `y` va `z` ning qiymatlari ko‘paytiriladi, `x` ning qiymatiga qo‘shiladi va `w` ifodasi bilan ko‘rsatilgan o‘zgaruvchi yoki xossaga tayinlanadi. Ifodalarga qavslar qo‘shish ko‘paytirish, qo‘shish va tayinlash amallarining nisbiy tartibini o‘zgartirishi mumkin, lekin chapdan o‘ngga bajarilish tartibini o‘zgartirmaydi.
+
+Bajarilish tartibi faqatgina bajarilayotgan ifodalardan birortasi boshqa bir ifodaning qiymatiga ta’sir qiladigan qo‘shimcha ta’sirga (`side effect`) ega bo‘lgandagina ahamiyatli bo‘ladi. Agar `x` ifodasi `z` ifodasi tomonidan ishlatiladigan biror o‘zgaruvchini inkrement qilsa, u holda `x` ning `z` dan oldin bajarilishi muhim ahamiyat kasb etadi.
