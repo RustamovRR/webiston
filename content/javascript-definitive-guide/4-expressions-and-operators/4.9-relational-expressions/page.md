@@ -1,0 +1,160 @@
+# Munosabat ifodalari
+
+Ushbu mavzuda JavaScript'ning **munosabat operatorlarini (`relational operators`)** ko'rib chiqamiz. Bu operatorlar ikki qiymat o‘rtasidagi munosabatni (masalan, "teng", "kichik" yoki "uning xossasi" ekanligini) tekshiradi va bu munosabat mavjud yoki mavjud emasligiga qarab `true` yoki `false` qiymatini qaytaradi. Munosabat ifodalari har doim mantiqiy qiymatga baholanadi va bu qiymat ko‘pincha `if`, `while` va `for` ko‘rsatmalarida (5-bobga qarang) dastur bajarilish oqimini boshqarish uchun ishlatiladi. Keyingi quyi mavzular tenglik va tengsizlik operatorlarini, taqqoslash operatorlarini hamda JavaScript'ning boshqa ikkita munosabat operatori — `in` va `instanceof`'ni bayon etadi.
+
+## Tenglik va tengsizlik operatorlari
+
+`==` va `===` operatorlari ikki qiymatning bir xilligini, bir xillikning ikki xil ta’rifidan foydalangan holda tekshiradi. Ikkala operator ham har qanday tipdagi operandlarni qabul qiladi va agar operandlari bir xil bo‘lsa `true`, farqli bo‘lsa `false` qaytaradi.
+
+`===` operatori **qat’iy tenglik operatori** (ba’zan **ayniyat operatori** deb ham ataladi) sifatida tanilgan va u o‘zining ikki operandini bir xillikning qat’iy ta’rifi yordamida "aynan bir xil" ekanligini tekshiradi.
+
+`==` operatori **tenglik operatori** sifatida tanilgan; u o‘zining ikki operandini tip konversiyalariga yo‘l qo‘yadigan erkinroq bir xillik ta’rifi yordamida "teng" ekanligini tekshiradi.
+
+`!=` va `!==` operatorlari `==` va `===` operatorlarining aniq teskarisini tekshiradi. `!=` tengsizlik operatori, agar ikki qiymat `==`'ga ko‘ra bir-biriga teng bo‘lsa `false`, aks holda `true` qaytaradi. `!==` operatori esa, agar ikki qiymat bir-biriga qat’iy teng bo‘lsa `false`, aks holda `true` qaytaradi. §4.10-bo‘limda ko‘rib chiqadiganimizdek, `!` operatori mantiqiy INKOR (`NOT`) amalini bajaradi. Bu `!=` va `!==`'ni "teng emas" va "qat’iy teng emas" deb eslab qolishni osonlashtiradi.
+
+<Callout type='info'>
+
+### `=`, `==`, va `===` operatorlari
+
+JavaScript `=`, `==`, va `===` operatorlarini qo‘llab-quvvatlaydi. Ushbu tayinlash, tenglik va qat’iy tenglik operatorlari o‘rtasidagi farqlarni tushunib olganingizga ishonch hosil qiling va kod yozayotganda ulardan to‘g‘risini ishlatishga xushyor bo‘ling! Garchi uchala operatorni ham bir qarashda "teng" deb o‘qishga moyillik bo‘lsa-da, chalkashliklarni oldini olish uchun ularni quyidagicha farqlab o‘qish tavsiya etiladi: `=`'ni "o‘zlashtiradi" yoki "qiymat oladi", `==`'ni "teng" va `===`'ni "qat’iy teng" deb.
+</Callout>
+
+`==` operatori JavaScript'ning eski meros xususiyati bo‘lib, ko‘pchilik tomonidan xatoliklar manbai deb hisoblanadi. Siz deyarli har doim `==` o‘rniga `===`'ni va `!=` o‘rniga `!==`'ni ishlatishingiz kerak.
+
+§3.8-bo‘limda aytib o‘tilganidek, JavaScript obyektlari qiymati bo‘yicha emas, havolasi bo‘yicha taqqoslanadi. Obyekt o‘ziga teng, lekin boshqa hech qanday obyektga teng emas. Agar ikkita alohida obyekt bir xil miqdordagi, bir xil nomdagi va bir xil qiymatdagi xossalarga ega bo‘lsa ham, ular baribir teng emas. Xuddi shunday, bir xil elementlarga bir xil tartibda ega bo‘lgan ikkita massiv ham bir-biriga teng emas.
+
+### Qat’iy tenglik
+
+Qat’iy tenglik operatori `===` o‘z operandlarini bajaradi, so‘ngra hech qanday tip konversiyasini amalga oshirmasdan, ikki qiymatni quyidagicha taqqoslaydi:
+
+- Agar ikki qiymat turli tiplarga ega bo‘lsa, ular teng emas.
+
+- Agar ikkala qiymat ham `null` yoki ikkalasi ham `undefined` bo‘lsa, ular teng.
+
+- Agar ikkala qiymat ham `true` mantiqiy qiymati yoki ikkalasi ham `false` mantiqiy qiymati bo‘lsa, ular teng.
+
+- Agar bir yoki ikkala qiymat `NaN` bo‘lsa, ular teng emas. (Bu g‘alati tuyulishi mumkin, lekin `NaN` qiymati hech qanday boshqa qiymatga, jumladan, o‘ziga ham hech qachon teng bo‘lmaydi! Biror `x` qiymatining `NaN` ekanligini tekshirish uchun `x !== x` yoki global `isNaN()` funksiyasidan foydalaning.)
+
+- Agar ikkala qiymat ham son bo‘lsa va bir xil qiymatga ega bo‘lsa, ular teng. Agar bir qiymat `0`, ikkinchisi esa `-0` bo‘lsa, ular ham teng hisoblanadi.
+
+- Agar ikkala qiymat ham satr bo‘lsa va aynan bir xil 16 bitli qiymatlarni (§3.3'dagi izohga qarang) bir xil o‘rinlarda o‘z ichiga olsa, ular teng. Agar satrlar uzunligi yoki tarkibi bilan farq qilsa, ular teng emas. Ikki satr bir xil ma’noga va bir xil ko‘rinishga ega bo‘lishi, lekin baribir turli 16 bitli qiymatlar ketma-ketligi yordamida kodlangan bo‘lishi mumkin. JavaScript hech qanday Unicode normalizatsiyasini bajarmaydi va bu kabi bir juft satr `===` yoki `==` operatorlari tomonidan teng deb hisoblanmaydi.
+
+- Agar ikkala qiymat ham ayni bir obyekt, massiv yoki funksiyaga ishora qilsa, ular teng. Agar ular turli obyektlarga ishora qilsa, ikkala obyekt bir xil xossalarga ega bo‘lsa ham, ular teng emas.
+
+### Tip konversiyasi bilan tenglik
+
+Tenglik operatori `==` qat’iy tenglik operatoriga o‘xshaydi, lekin u unchalik qat’iy emas. Agar ikki operandning qiymatlari bir xil tipda bo‘lmasa, u ba’zi tip konversiyalarini amalga oshirishga harakat qiladi va taqqoslashni qayta sinab ko‘radi:
+
+- Agar ikki qiymat bir xil tipda bo‘lsa, ularni yuqorida tasvirlanganidek qat’iy tenglikka tekshiring. Agar ular qat’iy teng bo‘lsa, demak ular teng. Agar qat’iy teng bo‘lmasa, demak ular teng emas.
+
+- Agar ikki qiymat bir xil tipda bo‘lmasa, `==` operatori ularni baribir teng deb hisoblashi mumkin. U tenglikni tekshirish uchun quyidagi qoidalar va tip konversiyalaridan foydalanadi:
+
+    - Agar bir qiymat `null`, ikkinchisi esa `undefined` bo‘lsa, ular teng.
+
+    - Agar bir qiymat son, ikkinchisi esa satr bo‘lsa, satrni songa o‘zgartiradi va taqqoslashni o‘zgartirilgan qiymat yordamida qayta sinab ko'radi.
+
+    - Agar qiymatlardan biri `true` bo‘lsa, uni `1` ga o'zgartiradi va taqqoslashni qayta sinab ko'radi. Agar qiymatlardan biri `false` bo‘lsa, uni `0` ga o'zgartiradi va taqqoslashga qayta urinib ko'radi.
+
+    - Agar bir qiymat obyekt, ikkinchisi esa son yoki satr bo‘lsa, obyektni §3.9.3-bo‘limda tasvirlangan algoritm yordamida primitivga o'zgartiradi va qayta taqqoslashga urinib ko'radi. Obyekt o‘zining `toString()` yoki `valueOf()` metodi orqali primitiv qiymatga o‘zgartiriladi. JavaScript yadrosining ichki o‘rnatilgan klasslari `Date` klassidan tashqari, `toString()` konversiyasidan oldin `valueOf()` konversiyasini sinab ko‘radi. `Date` klassi esa `toString()` konversiyasini amalga oshiradi.
+
+    - Qiymatlarning boshqa har qanday kombinatsiyalari teng emas.
+
+Tenglikni tekshirishga misol sifatida quyidagi taqqoslashni ko‘rib chiqaylik:
+
+``` js
+"1" == true // => true
+```
+
+Bu ifoda `true`'ga baholanadi, bu esa ko‘rinishidan butunlay farqli bo‘lgan bu qiymatlar aslida teng ekanligini bildiradi. Avval `true` mantiqiy qiymati `1` soniga o‘zgartiriladi va taqqoslash qayta bajariladi. Keyin, `"1"` satri `1` soniga o‘zgartiriladi. Endi ikkala qiymat ham bir xil bo‘lgani uchun, taqqoslash `true` qaytaradi.
+
+## Taqqoslash operatorlari
+
+Taqqoslash operatorlari o‘zlarining ikki operandining nisbiy tartibini (sonli yoki alifbo tartibini) tekshiradi:
+
+### Kichik (`<`)
+
+`<` operatori, agar uning birinchi operandi ikkinchi operanddan kichik bo‘lsa, `true`'ga baholanadi; aks holda, `false`'ga baholanadi.
+
+### Katta (`>`)
+
+`>` operatori, agar uning birinchi operandi ikkinchi operanddan katta bo‘lsa, `true`'ga baholanadi; aks holda, `false`'ga baholanadi.
+
+### Kichik yoki teng (`<=`)
+
+`<=` operatori, agar uning birinchi operandi ikkinchi operanddan kichik yoki unga teng bo‘lsa, `true`'ga baholanadi; aks holda, `false`'ga baholanadi.
+
+### Katta yoki teng (`>=`)
+
+`>=` operatori, agar uning birinchi operandi ikkinchi operanddan katta yoki unga teng bo‘lsa, `true`'ga baholanadi; aks holda, `false`'ga baholanadi.
+
+### Taqqoslash jarayonidagi konversiya qoidalari
+
+Ushbu taqqoslash operatorlarining operandlari har qanday tipda bo‘lishi mumkin. Biroq taqqoslash faqat sonlar va satrlar ustida bajarilishi mumkin, shuning uchun son yoki satr bo‘lmagan operandlar konversiya qilinadi.
+
+Taqqoslash va konversiya quyidagicha sodir bo‘ladi:
+
+- Agar operandlardan biri obyektga baholansa, bu obyekt §3.9.3-bo‘limining oxirida tasvirlanganidek primitiv qiymatga o‘zgartiriladi; agar uning `valueOf()` metodi primitiv qiymat qaytarsa, o‘sha qiymat ishlatiladi. Aks holda, uning `toString()` metodining qaytargan qiymati ishlatiladi.
+
+- Har qanday zaruriy obyektdan-primitivga konversiyasidan so‘ng, agar ikkala operand ham satr bo‘lsa, ikki satr alifbo tartibida taqqoslanadi. Bu yerda "alifbo tartibi" satrlarni tashkil etuvchi 16 bitli Unicode qiymatlarining sonli tartibi bilan belgilanadi.
+
+- Obyektdan-primitivga konversiyasidan so‘ng, agar hech bo‘lmaganda bitta operand satr bo‘lmasa, ikkala operand ham songa o‘zgartiriladi va sonli taqqoslanadi. `0` va `-0` teng deb hisoblanadi. `Infinity` o‘zidan boshqa har qanday sondan kattaroq, `-Infinity` esa o‘zidan boshqa har qanday sondan kichikroqdir. Agar operandlardan biri `NaN` bo‘lsa (yoki unga o‘girilsa), taqqoslash operatori har doim `false` qaytaradi. Garchi arifmetik operatorlar `BigInt` qiymatlarini oddiy sonlar bilan aralashtirishga yo‘l qo‘ymasa-da, taqqoslash operatorlari sonlar va `BigInt`'lar o‘rtasida taqqoslashga ruxsat beradi.
+
+### Satrlarni taqqoslashning nozik jihatlari
+
+Yodda tutingki, JavaScript satrlari 16 bitli butun son qiymatlari ketma-ketligidir va satrlarni taqqoslash shunchaki ikki satrdagi qiymatlarni sonli taqqoslashdir. Unicode tomonidan belgilangan sonli kodlash tartibi biror aniq til yoki hududda ishlatiladigan an’anaviy alifbo tartibiga mos kelmasligi mumkin. Ayniqsa, satrlarni taqqoslash katta-kichik harflarga sezgir ekanligini va barcha bosh harfli ASCII harflari barcha kichik harfli ASCII harflaridan "kichik" ekanligini unutmang. Agar buni kutmasangiz, bu qoida chalkash natijalarga olib kelishi mumkin. Masalan, `<` operatoriga ko‘ra, "Zoo" satri "aardvark" satridan oldin keladi.
+
+Yanada ishonchliroq satr taqqoslash algoritmi uchun `String.localeCompare()` metodini sinab ko‘ring, u alifbo tartibining hududga xos ta’riflarini ham hisobga oladi. Katta-kichik harflarga sezgir bo‘lmagan taqqoslashlar uchun satrlarni `String.toLowerCase()` yoki `String.toUpperCase()` yordamida butunlay kichik yoki butunlay bosh harflarga o‘zgartirishingiz mumkin. Yanada umumiyroq va yaxshiroq mahalliylashtirilgan satr taqqoslash vositasi uchun esa §11.7.3-bo‘limda tasvirlangan `Intl.Collator` klassidan foydalaning.
+
+### Operatorlarning tiplarga bog‘liqligi
+
+Ham `+` operatori, ham taqqoslash operatorlari sonli va satrli operandlar uchun turlicha ishlaydi. `+` operatori satrlarga ustunlik beradi: agar operandlardan biri satr bo‘lsa, u birlashtirishni amalga oshiradi. Taqqoslash operatorlari esa sonlarga ustunlik beradi va faqat ikkala operand ham satr bo‘lgandagina satrli taqqoslashni amalga oshiradi:
+
+``` js
+1 + 2       // => 3: qo‘shish.
+"1" + "2"   // => "12": birlashtirish.
+"1" + 2     // => "12": 2 soni "2" satriga o‘zgartiriladi.
+11 < 3      // => false: sonli taqqoslash.
+"11" < "3"  // => true: satrli taqqoslash.
+"11" < 3    // => false: sonli taqqoslash, "11" satri 11 soniga o‘zgartiriladi.
+"one" < 3   // => false: sonli taqqoslash, "one" satri NaN'ga o‘zgartiriladi.
+```
+
+Nihoyat, shuni yodda tutingki, `<=` (kichik yoki teng) va `>=` (katta yoki teng) operatorlari ikki qiymatning "teng" ekanligini aniqlash uchun tenglik yoki qat’iy tenglik operatorlariga tayanmaydi. Buning o‘rniga, "kichik yoki teng" operatori shunchaki "katta emas" deb, "katta yoki teng" operatori esa "kichik emas" deb ta’riflanadi. Yagona istisno operandlardan biri `NaN` bo‘lganda (yoki unga o‘girilganda) yuz beradi, bu holda barcha to‘rtta taqqoslash operatori `false` qaytaradi.
+
+## `in` operatori
+
+`in` operatori chap tomonidagi operandining satr, `symbol` yoki satrga o‘girilishi mumkin bo‘lgan qiymat bo‘lishini kutadi. O‘ng tomonidagi operandining esa obyekt bo‘lishini kutadi. Agar chap tomondagi qiymat o‘ng tomondagi obyektning xossasi nomi bo‘lsa, u `true`'ga baholanadi. Masalan:
+
+``` js
+let point = {x: 1, y: 1};   // Biror obyektni aniqlaymiz
+"x" in point                // => true: obyektda "x" nomli xossa mavjud
+"z" in point                // => false: obyektda "z" xossasi yo‘q
+"toString" in point         // => true: obyekt `toString` metodini meros qilib oladi
+
+let data = [7,8,9];         // Elementlari (indekslari) 0, 1, va 2 bo‘lgan massiv
+"0" in data                 // => true: massivda "0" elementi mavjud
+1 in data                   // => true: sonlar satrlarga o‘zgartiriladi
+3 in data                   // => false: 3-element mavjud emas
+```
+
+## `instanceof` operatori
+
+`instanceof` operatori chap tomonidagi operandining obyekt bo‘lishini, o‘ng tomonidagi operandining esa obyektlar klassini aniqlashini kutadi. Agar chap tomondagi obyekt o‘ng tomondagi klassning **nusxasi (`instance`)** bo‘lsa, operator `true`'ga, aks holda `false`'ga baholanadi.
+
+9-bobda tushuntirilishicha, JavaScript'da obyektlar klasslari ularni initsializatsiya qiluvchi konstruktor funksiyasi orqali aniqlanadi. Shunday qilib, `instanceof`'ning o‘ng tomonidagi operandi funksiya bo‘lishi kerak. Quyida misollar keltirilgan:
+
+``` js
+let d = new Date();     // `Date()` konstruktori bilan yangi obyekt yaratamiz
+d instanceof Date       // => true: `d` obyekti `Date()` bilan yaratilgan
+d instanceof Object     // => true: barcha obyektlar `Object`'ning nusxasidir
+d instanceof Number     // => false: `d` obyekti `Number` klassining obyekti emas
+
+let a = [1, 2, 3];      // Massiv literal sintaksisi bilan massiv yaratamiz
+a instanceof Array      // => true: `a` - bu massiv
+a instanceof Object     // => true: barcha massivlar obyektlardir
+a instanceof RegExp     // => false: massivlar regular ifoda emas
+```
+
+E’tibor bering, barcha obyektlar `Object`'ning nusxasidir. `instanceof` biror obyekt biror klassning nusxasi ekanligini hal qilishda **"superklasslar"** ni ham hisobga oladi. Agar `instanceof`'ning chap tomonidagi operandi obyekt bo‘lmasa, `instanceof` operatori `false` qiymat qaytaradi. Agar o‘ng tomoni obyektlar klassi bo‘lmasa, u `TypeError` xatoligiga sabab bo‘ladi.
+
+`instanceof` operatori qanday ishlashini tushunish uchun siz **"prototiplar zanjiri" (`prototype chain`)**'ni tushunishingiz kerak. Bu JavaScript'ning merosxo‘rlik mexanizmi bo‘lib, u `§6.3.2`-bo‘limda tasvirlangan. `o instanceof f` ifodasini bajarish uchun, JavaScript `f.prototype`'ni baholaydi va so‘ngra bu qiymatni `o`'ning prototiplar zanjiridan qidiradi. Agar uni topsa, demak `o` `f`'ning (yoki `f`'ning quyi klassining) nusxasi hisoblanadi va operator `true` qaytaradi. Agar `f.prototype` `o`'ning prototiplar zanjiridagi qiymatlardan biri bo‘lmasa, demak `o` `f`'ning nusxasi emas va `instanceof` `false` qaytaradi.
