@@ -10,7 +10,7 @@ author: 'Webiston.uz'
 
 Fiber reconciliation ikki bosqichda amalga oshiriladi: *render(tayyorlash) *bosqichi va _commit(o'zgarishlarni tatbiq qilish) bosqichi_. Ushbu ikki bosqichli yondashuv (rasmda ko'rsatilgan) React’ga, DOM’ga qo'shilishdan va foydalanuvchilarga yangi holatni ko'rsatishdan oldin har qanday vaqtda bekor qilinishi mumkin bo'lgan renderlash ishini bajarish imkonini beradi: bu renderlashni to'xtatib qo'yadigan qiladi. Biroz batafsilroq aytadigan bo'lsak, renderlashni to'xtatib qo'yadigan narsa bu React rejalashtiruvchisi(scheduler) tomonidan har 5 msda bajarishni asosiy thread(main thread)ga qaytarishning g'ayrioddiy yondashuvi bo'lib, bu hatto 120 fps (kadr/sekund) tezlikdagi qurilmalarda ham bitta kadrlashdan kichikroqdir.
 
-![Fiber reconciler’da reconciliation oqimi](/reconciliation-flow.png)
+![Fiber reconciler’da reconciliation oqimi](/fluent-react/reconciliation-flow.png)
 
 Biz kelgusi boblarda React’ning concurrent(bir vaqtda ishlashlik) xususiyatlarini o'rganayotganda scheduler’ning tafsilotlariga chuqurroq kiramiz. Ammo hozircha, reconciliation’ning ushbu bosqichlarini ko'rib chiqamiz.
 
@@ -18,7 +18,7 @@ Biz kelgusi boblarda React’ning concurrent(bir vaqtda ishlashlik) xususiyatlar
 
 _Render bosqichi_ joriy daraxtda state o'zgarishi hodisasi sodir bo'lganda boshlanadi. React o'zgarishlarni alternativ daraxtda, ekrandan tashqarida, har bir Fiber’ni rekursiv ravishda bosqichma-bosqich ko'rib chiqish va yangilanishlar kutilayotganligini bildiruvchi bayroqlarni o'rnatish orqali amalga oshiradi (rasmga qarang). Yuqorida aytib o'tilganidek, bu jarayon React ichida `beginWork` deb nomlangan funksiyada sodir bo'ladi.
 
-![Render bosqichining chaqiruv tartibi](/render-phase.png)
+![Render bosqichining chaqiruv tartibi](/fluent-react/render-phase.png)
 
 ### `beginWork`
 
@@ -74,7 +74,7 @@ Bu yerda, `beginWork` bilan bir xil tuzilish mavjud.
 
 _Commit(tatbiq qilish) bosqichi_ (rasmga qarang) real DOM’ni *render bosqichi*da virtual DOM’ga kiritilgan o'zgarishlar bilan yangilash uchun javobgardir. _Commit bosqichi_ davomida yangi virtual DOM daraxti asosiy host muhitga kiritiladi va hali tugallanmagan daraxt joriy daraxt bilan almashtiriladi. Shu bosqichda barcha effektlar ham bajariladi. _Commit bosqichi_ ikki qismga bo'linadi: _mutatsiya bosqichi_ va _layout bosqichi_.
 
-![FiberRootNode bilan commit bosqichi](/commit-phase.png)
+![FiberRootNode bilan commit bosqichi](/fluent-react/commit-phase.png)
 
 ### Mutatsiya bosqichi (mutation phase)
 

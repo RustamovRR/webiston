@@ -19,7 +19,9 @@ export default function ContentMeta({ updatedAt }: ContentMetaProps) {
         </span>
         <ArrowUpRightIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
       </Link>
-      {updatedAt && (
+
+      {/* temporary disabled */}
+      {/* {updatedAt && (
         <div className="text-muted-foreground text-sm">
           Oxirgi yangilanish:{' '}
           {new Date(updatedAt).toLocaleDateString('uz-UZ', {
@@ -28,7 +30,7 @@ export default function ContentMeta({ updatedAt }: ContentMetaProps) {
             year: 'numeric',
           })}
         </div>
-      )}
+      )} */}
     </div>
   )
 }
