@@ -74,7 +74,7 @@ export default function TutorialLayout({
       <section className={cn('mr-4 flex-1 overflow-y-auto transition-all duration-300 ease-in-out', className)}>
         <div
           className={cn('mx-auto pt-8 pl-12 transition-transform duration-500 ease-in-out max-lg:pl-4', {
-            'translate-x-4': !isSidebarOpen,
+            'max-w-[calc(100%-2rem)] translate-x-4 overflow-x-hidden pl-8': !isSidebarOpen,
           })}
         >
           <TutorialLayoutContent tutorialTitle={tutorialTitle} navigationItems={navigationItems} pageTitle={pageTitle}>

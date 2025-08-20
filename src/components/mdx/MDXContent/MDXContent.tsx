@@ -171,6 +171,13 @@ const components = {
     )
   },
   li: (props: any) => {
+    if (props.id.includes('user-content')) {
+      return (
+        <li className="[&_p]:!italic [&>p]:!mt-6" {...props}>
+          {props.children}
+        </li>
+      )
+    }
     return (
       <li className="[&>p]:!m-0" {...props}>
         {props.children}
@@ -244,6 +251,13 @@ const components = {
 
   // Handle iframe for embedded videos
   iframe: (props: any) => <iframe className="absolute inset-0 h-full w-full object-cover" {...props} />,
+
+  sup: (props: any) => (
+    <sup
+      className="[&_a]:text-sky-500 [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-sky-400"
+      {...props}
+    />
+  ),
 }
 
 export default async function MDXContent({ source }: MDXContentProps) {
