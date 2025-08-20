@@ -1,0 +1,11 @@
+## Xulosa
+
+Ushbu bob juda ko‘p turli xil mavzularni qamrab oldi va bu yerda siz JavaScript'ni o‘rganishda davom etar ekansiz, kelajakda qayta o‘qishni xohlashingiz mumkin bo‘lgan ko‘plab ma’lumotnoma materiallari mavjud. Biroq eslab qolish kerak bo‘lgan ba’zi asosiy nuqtalar quyidagilardir:
+
+- Ifodalar — bu JavaScript dasturining iboralaridir.
+- Har qanday ifoda JavaScript qiymatini hosil qilish uchun _bajarilishi_ mumkin.
+- Ifodalar qiymat hosil qilishdan tashqari, qo‘shimcha ta’sirlarga (masalan, o‘zgaruvchiga qiymat tayinlashga) ham ega bo‘lishi mumkin.
+- Literallar, o‘zgaruvchilarga havolalar va xossalarga murojaatlar kabi oddiy ifodalarni operatorlar bilan birlashtirib, kattaroq ifodalar hosil qilish mumkin.
+- JavaScript arifmetika, taqqoslashlar, mantiqiy algebra, tayinlash va bitli amallar uchun operatorlarni, shuningdek, uchlik shartli operatorni o‘z ichiga olgan ba’zi turli xil operatorlarni taqdim etadi.
+- JavaScript'dagi `+` operatori ham sonlarni qo‘shish, ham satrlarni birlashtirish uchun ishlatiladi.
+- `&&` va `||` mantiqiy operatorlari maxsus "qisqa tutashuv" xususiyatiga ega va ba’zan o‘z argumentlaridan faqat bittasini bajaradi. Keng tarqalgan JavaScript idiomalarini tushunish uchun siz bu operatorlarning maxsus xususiyatlarini anglab yetishingiz kerak.
