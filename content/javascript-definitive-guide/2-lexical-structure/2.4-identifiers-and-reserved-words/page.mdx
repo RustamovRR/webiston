@@ -2,7 +2,7 @@
 
 _Identifikator_ - bu shunchaki nom nom. JavaScript’da identifikatorlar konstantalar, o'zgaruvchilar, xossalar, funksiyalar va klasslarni nomlash, shuningdek, JavaScript kodidagi ma'lum sikllarga nishon (label) berish uchun ishlatiladi. JavaScript identifikatori harf, pastki chiziq (`_`) yoki dollar belgisi (`$`) bilan boshlanishi kerak. Undan keyingi belgilar harflar, raqamlar, pastki chiziqlar yoki dollar belgilari bo'lishi mumkin. (Raqamlarga birinchi belgi bo‘lishiga ruxsat berilmaganining sababi, JavaScript interpretatorining identifikatorlarni sonlardan oson ajrata olishini ta’minlashdir). Quyidagilar barchasi to'g'ri identifikatorlardir:
 
-```js
+``` js
 i
 my_variable_name
 v13
@@ -16,7 +16,7 @@ Har qanday tilda bo'lgani kabi, JavaScript ham ma'lum identifikatorlarni tilning
 
 Quyidagi so'zlar JavaScript tilining bir qismidir. Ularning ko'pchiligi (masalan, `if`, `while` va `for` kabi) zaxiralangan kalit so'zlardir (reserved keywords) va ularni konstantalar, o'zgaruvchilar, funksiyalar yoki klasslar nomlari sifatida ishlatish mutlaqo mumkin emas (biroq ularning barchasini obyekt ichidagi xossa nomi sifatida ishlatsa bo'ladi). Boshqalari (masalan, `from`, `of`, `get` va `set` kabi) cheklangan kontekstlarda sintaktik noaniqlik (syntactic ambiguity) bo'lmagan holda ishlatiladi va identifikator sifatida qo‘llash uchun mutlaqo to‘g‘ri hisoblanadi. Yana boshqa kalit so'zlar (masalan, `let` kabi) oldingi versiyalar bilan moslikni (backward compatibility) saqlab qolish uchun to'liq zaxiralanishi mumkin emas, shuning uchun ularni qachon identifikator sifatida ishlatish mumkinu, qachon mumkin emasligini belgilovchi murakkab qoidalar mavjud. (Masalan, `let` so'zini `var` orqali klass tashqarisida e'lon qilinsa, o'zgaruvchi nomi sifatida ishlatsa bo'ladi, lekin klass ichida yoki `const` bilan e'lon qilinsa, mumkin emas.) Eng oson yo'l - bu so‘zlarning hech birini identifikator sifatida ishlatmaslikdir. `from`, `set` va `target` so‘zlarini ishlatish xavfsiz va ular allaqachon keng qo‘llanilmoqda.
 
-```js
+``` js
 as          const       export      get         null        target      void
 async       continue    extends     if          of          this        while
 await       debugger    false       import      return      throw       with
@@ -29,7 +29,7 @@ class       else        function    new         switch      var
 JavaScript, shuningdek, hozirda tilda ishlatilmaydigan, lekin kelajakdagi versiyalarda ishlatilishi mumkin bo'lgan ba'zi kalit so'zlarni ham zaxiralaydi yoki ulardan foydalanishni cheklaydi:
 
 ```js
-enum  implements  interface   package     private     protected   public
+enum   implements   interface   package   private   protected   public
 ```
 
 Tarixiy sabablarga ko'ra, `arguments` va `eval`so'zlariga ma'lum holatlarda identifikator sifatida ruxsat etilmaydi va ularni umuman ishlatmaslik tavsiya etiladi.
