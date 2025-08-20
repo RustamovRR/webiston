@@ -5,12 +5,12 @@ JavaScript'da matnni ifodalash uchun mo‘ljallangan tip **satr (`string`)** deb
 <Callout type="info">
 ### Belgilar, Kod nuqtalari va JavaScript satrlari
 
-JavaScript Unicode belgilar to‘plamining UTF-16 kodlash usulidan foydalanadi va JavaScript satrlari ishorasiz 16 bitli qiymatlar ketma-ketligidir. Eng ko‘p ishlatiladigan Unicode belgilari ("asosiy ko‘p tilli sath"dan olinganlar) 16 bitga sig‘adigan kod nuqtalariga (`codepoints`) ega va ular satrning bitta elementi bilan ifodalanishi mumkin. Kod nuqtalari 16 bitga sig‘maydigan Unicode belgilari esa UTF-16 qoidalariga binoan, ikki 16 bitli qiymatdan iborat ketma-ketlik (**"surrogat juftlik" (`surrogate pair`)** deb ataladi) sifatida kodlanadi. Bu shuni anglatadiki, uzunligi 2 ga teng bo‘lgan (ikkita 16 bitli qiymatdan iborat) JavaScript satri aslida faqat bitta Unicode belgisini ifodalashi mumkin:
+JavaScript Unicode belgilar to‘plamining UTF-16 kodlash usulidan foydalanadi va JavaScript satrlari ishorasiz 16 bitli qiymatlar ketma-ketligidir. Eng ko‘p ishlatiladigan Unicode belgilari ("asosiy ko‘p tilli sath"dan olinganlar) 16 bitga sig‘adigan kod nuqtalariga (`codepoints`) ega va ular satrning bitta elementi bilan ifodalanishi mumkin. Kod nuqtalari 16 bitga sig‘maydigan Unicode belgilari esa UTF-16 qoidalariga binoan, ikki 16 bitli qiymatdan iborat ketma-ketlik ("surrogat juftlik" (`surrogate pair`) deb ataladi) sifatida kodlanadi. Bu shuni anglatadiki, uzunligi 2 ga teng bo‘lgan (ikkita 16 bitli qiymatdan iborat) JavaScript satri aslida faqat bitta Unicode belgisini ifodalashi mumkin:
 
 ```js
 let euro = "€";
 let love = "❤";
-euro.length // => 1: bu belgi bitta 16-bitli elementga ega
+euro.length // => 1: bu belgi bitta 16 bitli elementga ega
 love.length // => 2: `❤` belgisining UTF-16 kodlanishi "\ud83d\udc99"
 ```
 
@@ -136,7 +136,7 @@ s.toUpperCase()         // => "HELLO, WORLD"
 s.normalize()           // Unicode NFC normalizatsiyasi: ES6
 s.normalize("NFD")      // NFD normalizatsiyasi. Shuningdek "NFKC", "NFKD"
 
-// Satrning alohida (16-bitli) belgilarini tekshirish
+// Satrning alohida (16 bitli) belgilarini tekshirish
 s.charAt(0)             // => "H": birinchi belgi
 s.charAt(s.length-1)    // => "d": oxirgi belgi
 s.charCodeAt(0)         // => 72: ko‘rsatilgan pozitsiyadagi 16 bitli son

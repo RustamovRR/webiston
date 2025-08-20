@@ -195,7 +195,7 @@ Agar bu kabi suzuvchi nuqtali taqribiyliklar dasturlaringizda muammo tug‘dirsa
 
 JavaScript'ning ES2020'da kiritilgan eng yangi xususiyatlaridan biri bu `BigInt` deb nomlanuvchi yangi sonli tipdir. 2020-yil boshiga kelib, u Chrome, Firefox, Edge va Node'da implementatsiya qilingan, Safari'da esa implementatsiya jarayoni davom etmoqda. Nomidan ko‘rinib turganidek, `BigInt` — bu qiymatlari butun sonlardan iborat bo‘lgan sonli tip. Bu tip JavaScript'ga asosan boshqa ko‘plab dasturlash tillari va API'lar bilan moslik uchun talab etiladigan 64 bitli butun sonlarni ifodalash imkoniyatini berish uchun qo‘shilgan. Lekin agar sizga juda katta sonlar bilan ishlash kerak bo‘lsa, `BigInt` qiymatlari minglab, hatto millionlab raqamlarga ega bo‘lishi mumkin. (Biroq shuni yodda tutingki, `BigInt` implementatsiyalari kriptografiya uchun mos emas, chunki ular vaqtga bog‘liq hujumlarni (`timing attacks`) oldini olishga harakat qilmaydi.)
 
-`BigInt` literallari raqamlar ketma-ketligi va undan keyin keladigan kichik `n` harfi bilan yoziladi. Standart holatda ular o‘nlik sanoq tizimida bo‘ladi, lekin siz ikkilik, sakkizlik va o‘n oltilik `BigInt`'lar uchun `0b`, `0o` va `0x` prefikslaridan foydalanishingiz mumkin:
+`BigInt` literallari raqamlar ketma-ketligi va undan keyin keladigan kichik `n` harfi bilan yoziladi. Standart holatda ular o‘nlik sanoq tizimida bo‘ladi, lekin ikkilik, sakkizlik va o‘n oltilik `BigInt`'lar uchun `0b`, `0o` va `0x` prefikslaridan foydalanishingiz mumkin:
 
 ```js
 1234n                 // Unchalik katta bo‘lmagan BigInt literali
@@ -212,7 +212,7 @@ let string = "1" + "0".repeat(100); // 1 va undan keyingi 100 ta nol.
 BigInt(string)                      // => 10n**100n: bir gugol
 ```
 
-BigInt qiymatlari bilan arifmetik amallar oddiy JavaScript sonlari bilan ishlashga o‘xshaydi, faqat bo‘lish amali har qanday qoldiqni tashlab yuboradi va pastga qarab (nolga tomon) yaxlitlaydi:
+`BigInt` qiymatlari bilan arifmetik amallar oddiy JavaScript sonlari bilan ishlashga o‘xshaydi, faqat bo‘lish amali har qanday qoldiqni tashlab yuboradi va pastga qarab (nolga tomon) yaxlitlaydi:
 
 ``` js
 1000n + 2000n           // => 3000n
@@ -223,7 +223,7 @@ BigInt qiymatlari bilan arifmetik amallar oddiy JavaScript sonlari bilan ishlash
 (2n ** 131071n) - 1n    // 39457 ta o‘nli raqamga ega Mersenn tub soni
 ```
 
-Standart `+`, `-`, `*`, `/`, `%`va `**` operatorlari BigInt bilan ishlasa-da, shuni tushunish muhimki, siz BigInt tipidagi operandlarni oddiy sonli operandlar bilan aralashtirib ishlata olmaysiz. Bu dastlab chalkash tuyulishi mumkin, lekin buning jiddiy sababi bor. Agar bir sonli tip boshqasidan umumiyroq bo‘lganida, aralash operandlar bilan arifmetikani shunchaki umumiyroq tipdagi qiymatni qaytaradigan qilib belgilash oson bo‘lardi. Lekin bu ikki tipdan hech biri boshqasidan umumiyroq emas: BigInt haddan ortiq katta qiymatlarni ifodalay oladi, bu uni oddiy sonlardan umumiyroq qiladi. Ammo BigInt faqat butun sonlarni ifodalay oladi, bu esa oddiy JavaScript son tipini umumiyroq qiladi. Bu muammoni hal qilishning iloji yo‘q, shuning uchun JavaScript arifmetik operatorlarga aralash operandlarni ishlatishga ruxsat bermaslik orqali bu muammoni chetlab o‘tadi.
+Standart `+`, `-`, `*`, `/`, `%`va `**` operatorlari `BigInt` bilan ishlasa-da, shuni tushunish muhimki, `BigInt` tipidagi operandlarni oddiy sonli operandlar bilan aralashtirib ishlata olmaysiz. Bu dastlab chalkash tuyulishi mumkin, lekin buning jiddiy sababi bor. Agar bir sonli tip boshqasidan umumiyroq bo‘lganida, aralash operandlar bilan arifmetikani shunchaki umumiyroq tipdagi qiymatni qaytaradigan qilib belgilash oson bo‘lardi. Lekin bu ikki tipdan hech biri boshqasidan umumiyroq emas: `BigInt` haddan ortiq katta qiymatlarni ifodalay oladi, bu uni oddiy sonlardan umumiyroq qiladi. Ammo `BigInt` faqat butun sonlarni ifodalay oladi, bu esa oddiy JavaScript son tipini umumiyroq qiladi. Bu muammoni hal qilishning iloji yo‘q, shuning uchun JavaScript arifmetik operatorlarga aralash operandlarni ishlatishga ruxsat bermaslik orqali bu muammoni chetlab o‘tadi.
 
 Taqqoslash operatorlari esa, aksincha, aralash sonli tiplar bilan ishlay oladi (lekin `==` va `===` orasidagi farq haqida ko‘proq bilish uchun §3.9.1-bo‘limga qarang):
 
@@ -234,7 +234,7 @@ Taqqoslash operatorlari esa, aksincha, aralash sonli tiplar bilan ishlay oladi (
 0 === 0n    // => false: `===` operatori tiplarning ham bir xilligini tekshiradi
 ```
 
-Bitli (Bitwise) operatorlar (§4.8.3-bo‘limda yoritilgan) odatda BigInt operandlari bilan ishlaydi. Biroq `Math` obyektining hech bir funksiyasi BigInt operandlarini qabul qilmaydi.
+Bitli (Bitwise) operatorlar (§4.8.3-bo‘limda yoritilgan) odatda `BigInt` operandlari bilan ishlaydi. Biroq `Math` obyektining hech bir funksiyasi `BigInt` operandlarini qabul qilmaydi.
 
 ## Sanalar va vaqtlar
 
