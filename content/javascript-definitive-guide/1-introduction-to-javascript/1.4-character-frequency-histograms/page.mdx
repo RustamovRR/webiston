@@ -38,16 +38,15 @@ _1-1 misol. JavaScript yordamida belgilar chastotasi gistogrammalarini hisoblash
 // map’da mavjud bo'lmasa, `null` o'rniga standart qiymatni qaytaradi.
 class DefaultMap extends Map {
   constructor(defaultValue) {
-    super() // Ota-klass konstruktorini chaqirish.
-    this.defaultValue = defaultValue // Standart qiymatni saqlab qo‘yish.
+    super()                                         // Ota-klass konstruktorini chaqirish.
+    this.defaultValue = defaultValue                // Standart qiymatni saqlab qo‘yish.
   }
 
   get(key) {
-    if (this.has(key)) {
-      // Agar kalit map'da mavjud bo‘lsa,
-      return super.get(key) // ota-klassdan uning qiymatini qaytarish.
+    if (this.has(key)) {                            // Agar kalit map'da mavjud bo‘lsa,
+      return super.get(key)                         // ota-klassdan uning qiymatini qaytarish.
     } else {
-      return this.defaultValue // Aks holda, standart qiymatni qaytarish
+      return this.defaultValue                      // Aks holda, standart qiymatni qaytarish
     }
   }
 }
@@ -55,8 +54,8 @@ class DefaultMap extends Map {
 // Bu klass harflar chastotasi gistogrammalarini hisoblaydi va ko'rsatadi.
 class Histogram {
   constructor() {
-    this.letterCounts = new DefaultMap(0) // Harflarni o‘z sanog‘iga moslashtiruvchi Map.
-    this.totalLetters = 0 // Umumiy harflar soni.
+    this.letterCounts = new DefaultMap(0)           // Harflarni o‘z sanog‘iga moslashtiruvchi Map.
+    this.totalLetters = 0                           // Umumiy harflar soni.
   }
 
   // Bu funksiya gistogrammani matndagi harflar bilan yangilaydi.
@@ -66,8 +65,8 @@ class Histogram {
 
     // Endi matndagi belgilar bo‘ylab sikl orqali o‘tish.
     for (let character of text) {
-      let count = this.letterCounts.get(character) // Avvalgi sanog‘ini olish.
-      this.letterCounts.set(character, count + 1) // Sanog‘ini bittaga oshirish.
+      let count = this.letterCounts.get(character)  // Avvalgi sanog‘ini olish.
+      this.letterCounts.set(character, count + 1)   // Sanog‘ini bittaga oshirish.
       this.totalLetters++
     }
   }
@@ -78,14 +77,11 @@ class Histogram {
     let entries = [...this.letterCounts]
 
     // Massivni avval sanog‘i bo‘yicha, so‘ng alifbo tartibida saralash
-    entries.sort((a, b) => {
-      // Saralash tartibini aniqlaydigan funksiya.
-      if (a[1] === b[1]) {
-        // Agar hisoblar bir xil bo'lsa
-        return a[0] < b[0] ? -1 : 1 // alifbo bo'yicha saralash
+    entries.sort((a, b) => {                        // Saralash tartibini aniqlaydigan funksiya.
+      if (a[1] === b[1]) {                          // Agar hisoblar bir xil bo'lsa
+        return a[0] < b[0] ? -1 : 1                 // alifbo bo'yicha saralash
       } else {
-        // Aks holda,
-        return b[1] - a[1] // eng katta sanoq bo‘yicha saralash.
+        return b[1] - a[1]                          // Aks holda, eng katta sanoq bo‘yicha saralash.
       }
     })
 
@@ -109,7 +105,7 @@ class Histogram {
 // standart kiritishdan matn qismlarini (`chunks`) asinxron o'qiydi va ularni
 // gistogrammaga qo'shadi. Oqim oxiriga yetganda, u ushbu gistogrammani qaytaradi.
 async function histogramFromStdin() {
-  process.stdin.setEncoding('utf-8') // Baytlar emas, Unicode satrlarini o'qish
+  process.stdin.setEncoding('utf-8')                // Baytlar emas, Unicode satrlarini o'qish
   let histogram = new Histogram()
   for await (let chunk of process.stdin) {
     histogram.add(chunk)
