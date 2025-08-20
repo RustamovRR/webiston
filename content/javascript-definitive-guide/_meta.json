@@ -5,11 +5,11 @@
     "hasIndex": true,
     "children": {
       "1.1-exploring-javascript": {
-        "title": "1.1. JavaScriptni o'rganish",
+        "title": "1.1 JavaScript’ni tadqiq qilish",
         "path": "1-introduction-to-javascript/1.1-exploring-javascript/page"
       },
       "1.2-hello-world": {
-        "title": "1.2. Hello World",
+        "title": "1.2. Salom, Dunyo!",
         "path": "1-introduction-to-javascript/1.2-hello-world/page"
       },
       "1.3-tour-of-javascript": {
@@ -17,7 +17,7 @@
         "path": "1-introduction-to-javascript/1.3-tour-of-javascript/page"
       },
       "1.4-character-frequency-histograms": {
-        "title": "1.4. Belgilar chastotasi gistogrammasi",
+        "title": "1.4. Misol: Belgilar chastotasi gistogrammalari",
         "path": "1-introduction-to-javascript/1.4-character-frequency-histograms/page"
       },
       "summary": {
@@ -27,12 +27,12 @@
     }
   },
   "2-lexical-structure": {
-    "title": "2. Leksik tuzilma",
+    "title": "2. Leksik struktura",
     "path": "2-lexical-structure/page",
     "hasIndex": true,
     "children": {
       "2.1-text-of-javascript-program": {
-        "title": "2.1. JavaScript dasturi matni",
+        "title": "2.1. JavaScript dasturining matni",
         "path": "2-lexical-structure/2.1-text-of-javascript-program/page"
       },
       "2.2-comments": {
@@ -44,7 +44,7 @@
         "path": "2-lexical-structure/2.3-literals/page"
       },
       "2.4-identifiers-and-reserved-words": {
-        "title": "2.4. Identifikatorlar va zaxiralangan so'zlar",
+        "title": "2.4. Identifikatorlar va Zaxiralangan so'zlar",
         "path": "2-lexical-structure/2.4-identifiers-and-reserved-words/page"
       },
       "2.5-unicode": {
@@ -52,7 +52,7 @@
         "path": "2-lexical-structure/2.5-unicode/page"
       },
       "2.6-optional-semicolons": {
-        "title": "2.6. Ixtiyoriy nuqtali vergul",
+        "title": "2.6. Ixtiyoriy nuqta-vergullar",
         "path": "2-lexical-structure/2.6-optional-semicolons/page"
       },
       "summary": {
@@ -62,16 +62,16 @@
     }
   },
   "3-types-and-variables": {
-    "title": "3. Turlar, qiymatlar va o'zgaruvchilar",
+    "title": "3. Tiplar, Qiymatlar va O‘zgaruvchilar",
     "path": "3-types-and-variables/page",
     "hasIndex": true,
     "children": {
       "3.1-overview-and-definitions": {
-        "title": "3.1. Umumiy ko'rinish va ta'riflar",
+        "title": "3.1. Umumiy Tanishuv va Ta’riflar",
         "path": "3-types-and-variables/3.1-overview-and-definitions/page"
       },
       "3.2-numbers": {
-        "title": "3.2. Raqamlar",
+        "title": "3.2. Sonlar",
         "path": "3-types-and-variables/3.2-numbers/page"
       },
       "3.3-text": {
@@ -79,7 +79,7 @@
         "path": "3-types-and-variables/3.3-text/page"
       },
       "3.4-boolean-values": {
-        "title": "3.4. Mantiqiy qiymatlar",
+        "title": "3.4. Mantiqiy qiymatlar (Boolean values)",
         "path": "3-types-and-variables/3.4-boolean-values/page"
       },
       "3.5-null-and-undefined": {
@@ -95,15 +95,15 @@
         "path": "3-types-and-variables/3.7-global-object/page"
       },
       "3.8-immutable-primitive-values-and-mutable-object-references": {
-        "title": "3.8. O'zgarmas primitiv qiymatlar va o'zgaruvchan obyekt havolalari",
+        "title": "3.8. O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari",
         "path": "3-types-and-variables/3.8-immutable-primitive-values-and-mutable-object-references/page"
       },
       "3.9-type-conversions": {
-        "title": "3.9. Turlarni o'zgartirish",
+        "title": "3.9. Tiplarni o'zgartirish (konversiya)",
         "path": "3-types-and-variables/3.9-type-conversions/page"
       },
       "3.10-variable-declaration-and-assignment": {
-        "title": "3.10. O'zgaruvchilarni e'lon qilish va tayinlash",
+        "title": "3.10. O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
         "path": "3-types-and-variables/3.10-variable-declaration-and-assignment/page"
       },
       "summary": {
@@ -113,7 +113,7 @@
     }
   },
   "4-expressions-and-operators": {
-    "title": "4. Ifodalar va operatorlar",
+    "title": "4. Ifodalar va Operatorlar",
     "path": "4-expressions-and-operators/page",
     "hasIndex": true,
     "children": {
@@ -126,15 +126,15 @@
         "path": "4-expressions-and-operators/4.2-object-and-array-initializers/page"
       },
       "4.3-function-definition-expressions": {
-        "title": "4.3. Funksiyani aniqlash ifodalari",
+        "title": "4.3. Funksiya ta’rifi ifodalari",
         "path": "4-expressions-and-operators/4.3-function-definition-expressions/page"
       },
       "4.4-property-access-expressions": {
-        "title": "4.4. Xususiyatga kirish ifodalari",
+        "title": "4.4. Xossalarga murojaat qilish ifodalari",
         "path": "4-expressions-and-operators/4.4-property-access-expressions/page"
       },
       "4.5-invocation-expressions": {
-        "title": "4.5. Chaqiruv ifodalari",
+        "title": "4.5. Funksiyani chaqirish ifodalari",
         "path": "4-expressions-and-operators/4.5-invocation-expressions/page"
       },
       "4.6-object-creation-expressions": {
@@ -166,7 +166,7 @@
         "path": "4-expressions-and-operators/4.12-evaluation-expressions/page"
       },
       "4.13-miscellaneous-operators": {
-        "title": "4.13. Boshqa operatorlar",
+        "title": "4.13. Bajarish (Evaluation) ifodalari",
         "path": "4-expressions-and-operators/4.13-miscellaneous-operators/page"
       },
       "summary": {

@@ -23,6 +23,19 @@ interface HeaderProps {
 export default function Header({ showLanguageSelector = true }: HeaderProps) {
   const t = useTranslations('Header')
 
+  const books = [
+    {
+      id: 'fluent-react',
+      title: 'Fluent React',
+      description: "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.",
+    },
+    {
+      id: 'javascript-definitive-guide',
+      title: 'JavaScript Definitive Guide',
+      description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
+    },
+  ]
+
   return (
     <div className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur-sm dark:border-zinc-800">
       <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -36,9 +49,11 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">
-                    <ListItem href="/books/fluent-react" title="Fluent React">
-                      React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.
-                    </ListItem>
+                    {books.map((book) => (
+                      <ListItem key={book.id} href={`/books/${book.id}`} title={book.title}>
+                        {book.description}
+                      </ListItem>
+                    ))}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
