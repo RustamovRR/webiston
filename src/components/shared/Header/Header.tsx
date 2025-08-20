@@ -45,7 +45,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]">
-                  {t('books')}
+                  <Link href="/books">{t('books')}</Link>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">

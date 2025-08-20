@@ -33,7 +33,7 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
               {navigationItems.map((item, index) => (
                 <li key={item.path || index}>
                   <Link
-                    href={`fluent-react/${item.path}`}
+                    href={`${tutorialId}/${item.path}`}
                     key={index}
                     className="text-muted-foreground duration-300 hover:text-white"
                   >
