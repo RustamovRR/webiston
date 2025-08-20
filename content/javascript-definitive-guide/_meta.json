@@ -1,0 +1,178 @@
+{
+  "1-introduction-to-javascript": {
+    "title": "1. JavaScriptga kirish",
+    "path": "1-introduction-to-javascript/page",
+    "hasIndex": true,
+    "children": {
+      "1.1-exploring-javascript": {
+        "title": "1.1. JavaScriptni o'rganish",
+        "path": "1-introduction-to-javascript/1.1-exploring-javascript/page"
+      },
+      "1.2-hello-world": {
+        "title": "1.2. Hello World",
+        "path": "1-introduction-to-javascript/1.2-hello-world/page"
+      },
+      "1.3-tour-of-javascript": {
+        "title": "1.3. JavaScript bo'ylab sayohat",
+        "path": "1-introduction-to-javascript/1.3-tour-of-javascript/page"
+      },
+      "1.4-character-frequency-histograms": {
+        "title": "1.4. Belgilar chastotasi gistogrammasi",
+        "path": "1-introduction-to-javascript/1.4-character-frequency-histograms/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "1-introduction-to-javascript/summary/page"
+      }
+    }
+  },
+  "2-lexical-structure": {
+    "title": "2. Leksik tuzilma",
+    "path": "2-lexical-structure/page",
+    "hasIndex": true,
+    "children": {
+      "2.1-text-of-javascript-program": {
+        "title": "2.1. JavaScript dasturi matni",
+        "path": "2-lexical-structure/2.1-text-of-javascript-program/page"
+      },
+      "2.2-comments": {
+        "title": "2.2. Izohlar",
+        "path": "2-lexical-structure/2.2-comments/page"
+      },
+      "2.3-literals": {
+        "title": "2.3. Literallar",
+        "path": "2-lexical-structure/2.3-literals/page"
+      },
+      "2.4-identifiers-and-reserved-words": {
+        "title": "2.4. Identifikatorlar va zaxiralangan so'zlar",
+        "path": "2-lexical-structure/2.4-identifiers-and-reserved-words/page"
+      },
+      "2.5-unicode": {
+        "title": "2.5. Unicode",
+        "path": "2-lexical-structure/2.5-unicode/page"
+      },
+      "2.6-optional-semicolons": {
+        "title": "2.6. Ixtiyoriy nuqtali vergul",
+        "path": "2-lexical-structure/2.6-optional-semicolons/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "2-lexical-structure/summary/page"
+      }
+    }
+  },
+  "3-types-and-variables": {
+    "title": "3. Turlar, qiymatlar va o'zgaruvchilar",
+    "path": "3-types-and-variables/page",
+    "hasIndex": true,
+    "children": {
+      "3.1-overview-and-definitions": {
+        "title": "3.1. Umumiy ko'rinish va ta'riflar",
+        "path": "3-types-and-variables/3.1-overview-and-definitions/page"
+      },
+      "3.2-numbers": {
+        "title": "3.2. Raqamlar",
+        "path": "3-types-and-variables/3.2-numbers/page"
+      },
+      "3.3-text": {
+        "title": "3.3. Matn",
+        "path": "3-types-and-variables/3.3-text/page"
+      },
+      "3.4-boolean-values": {
+        "title": "3.4. Mantiqiy qiymatlar",
+        "path": "3-types-and-variables/3.4-boolean-values/page"
+      },
+      "3.5-null-and-undefined": {
+        "title": "3.5. Null va Undefined",
+        "path": "3-types-and-variables/3.5-null-and-undefined/page"
+      },
+      "3.6-symbols": {
+        "title": "3.6. Symbol'lar",
+        "path": "3-types-and-variables/3.6-symbols/page"
+      },
+      "3.7-global-object": {
+        "title": "3.7. Global obyekt",
+        "path": "3-types-and-variables/3.7-global-object/page"
+      },
+      "3.8-immutable-primitive-values-and-mutable-object-references": {
+        "title": "3.8. O'zgarmas primitiv qiymatlar va o'zgaruvchan obyekt havolalari",
+        "path": "3-types-and-variables/3.8-immutable-primitive-values-and-mutable-object-references/page"
+      },
+      "3.9-type-conversions": {
+        "title": "3.9. Turlarni o'zgartirish",
+        "path": "3-types-and-variables/3.9-type-conversions/page"
+      },
+      "3.10-variable-declaration-and-assignment": {
+        "title": "3.10. O'zgaruvchilarni e'lon qilish va tayinlash",
+        "path": "3-types-and-variables/3.10-variable-declaration-and-assignment/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "3-types-and-variables/summary/page"
+      }
+    }
+  },
+  "4-expressions-and-operators": {
+    "title": "4. Ifodalar va operatorlar",
+    "path": "4-expressions-and-operators/page",
+    "hasIndex": true,
+    "children": {
+      "4.1-primary-expressions": {
+        "title": "4.1. Birlamchi ifodalar",
+        "path": "4-expressions-and-operators/4.1-primary-expressions/page"
+      },
+      "4.2-object-and-array-initializers": {
+        "title": "4.2. Obyekt va massiv initsializatorlari",
+        "path": "4-expressions-and-operators/4.2-object-and-array-initializers/page"
+      },
+      "4.3-function-definition-expressions": {
+        "title": "4.3. Funksiyani aniqlash ifodalari",
+        "path": "4-expressions-and-operators/4.3-function-definition-expressions/page"
+      },
+      "4.4-property-access-expressions": {
+        "title": "4.4. Xususiyatga kirish ifodalari",
+        "path": "4-expressions-and-operators/4.4-property-access-expressions/page"
+      },
+      "4.5-invocation-expressions": {
+        "title": "4.5. Chaqiruv ifodalari",
+        "path": "4-expressions-and-operators/4.5-invocation-expressions/page"
+      },
+      "4.6-object-creation-expressions": {
+        "title": "4.6. Obyekt yaratish ifodalari",
+        "path": "4-expressions-and-operators/4.6-object-creation-expressions/page"
+      },
+      "4.7-operator-overview": {
+        "title": "4.7. Operatorlarga umumiy nazar",
+        "path": "4-expressions-and-operators/4.7-operator-overview/page"
+      },
+      "4.8-arithmetic-expressions": {
+        "title": "4.8. Arifmetik ifodalar",
+        "path": "4-expressions-and-operators/4.8-arithmetic-expressions/page"
+      },
+      "4.9-relational-expressions": {
+        "title": "4.9. Munosabat ifodalari",
+        "path": "4-expressions-and-operators/4.9-relational-expressions/page"
+      },
+      "4.10-logical-expressions": {
+        "title": "4.10. Mantiqiy ifodalar",
+        "path": "4-expressions-and-operators/4.10-logical-expressions/page"
+      },
+      "4.11-assignment-expressions": {
+        "title": "4.11. Tayinlash ifodalari",
+        "path": "4-expressions-and-operators/4.11-assignment-expressions/page"
+      },
+      "4.12-evaluation-expressions": {
+        "title": "4.12. Baholash ifodalari",
+        "path": "4-expressions-and-operators/4.12-evaluation-expressions/page"
+      },
+      "4.13-miscellaneous-operators": {
+        "title": "4.13. Boshqa operatorlar",
+        "path": "4-expressions-and-operators/4.13-miscellaneous-operators/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "4-expressions-and-operators/summary/page"
+      }
+    }
+  }
+}
