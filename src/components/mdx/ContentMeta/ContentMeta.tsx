@@ -15,7 +15,7 @@ export default function ContentMeta({ updatedAt }: ContentMetaProps) {
         className="group inline-flex items-center gap-2"
       >
         <span className="text-[15px] font-normal text-[#8D8D93] transition-colors duration-200 group-hover:text-black dark:group-hover:text-white">
-          Kontentni yaxshilash uchun GitHub muammosini yuborish
+          Kontentni yaxshilash uchun Githubda muammo ochish
         </span>
         <ArrowUpRightIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
       </Link>

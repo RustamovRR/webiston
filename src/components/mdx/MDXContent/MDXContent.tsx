@@ -176,7 +176,7 @@ const components = {
     )
   },
   li: (props: any) => {
-    if (props.id.includes('user-content')) {
+    if (props.id && props.id.includes('user-content')) {
       return (
         <li className="[&_p]:!italic [&>p]:!mt-6" {...props}>
           {props.children}
