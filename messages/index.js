@@ -35,6 +35,10 @@ import ogMetaGeneratorUz from './tools/og-meta-generator/uz.json'
 import ogMetaGeneratorEn from './tools/og-meta-generator/en.json'
 import ipInfoEn from './tools/ip-info/en.json'
 import ipInfoUz from './tools/ip-info/uz.json'
+import cameraRecorderUz from './tools/camera-recorder/uz.json'
+import cameraRecorderEn from './tools/camera-recorder/en.json'
+import microphoneTestUz from './tools/microphone-test/uz.json'
+import microphoneTestEn from './tools/microphone-test/en.json'
 
 // Merge all translations
 export const uz = {
@@ -55,6 +59,8 @@ export const uz = {
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
   ...ipInfoUz,
+  ...cameraRecorderUz,
+  ...microphoneTestUz,
 }
 
 export const en = {
@@ -75,6 +81,8 @@ export const en = {
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
   ...ipInfoEn,
+  ...cameraRecorderEn,
+  ...microphoneTestEn,
 }
 
 // Export default for Next.js i18n

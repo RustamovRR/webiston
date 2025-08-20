@@ -1,0 +1,167 @@
+{
+  "CameraRecorderPage": {
+    "ToolHeader": {
+      "title": "Kamera Yozuvchi",
+      "description": "Kamerangizni sinab ko'ring, video yozing va screenshot oling"
+    },
+    "ControlPanel": {
+      "title": "Kamera Sozlamalari",
+      "status": {
+        "active": "Faol",
+        "inactive": "Nofaol"
+      },
+      "camera": {
+        "label": "Kamera:",
+        "placeholder": "Kamera tanlang",
+        "refresh": "Yangilash"
+      },
+      "quality": {
+        "label": "Sifat:",
+        "hd": "HD (1280×720)",
+        "fhd": "Full HD (1920×1080)",
+        "sd": "SD (640×480)"
+      },
+      "buttons": {
+        "startCamera": "Kamerani Yoqish",
+        "stopCamera": "Kamerani O'chirish"
+      }
+    },
+    "VideoPreview": {
+      "title": "Kamera Ko'rinishi",
+      "status": {
+        "live": "Live",
+        "off": "Off",
+        "recording": "REC"
+      },
+      "placeholder": {
+        "title": "Kamerani yoqish uchun yuqoridagi tugmani bosing",
+        "subtitle": "Avval ruxsat berishingiz kerak"
+      },
+      "controls": {
+        "screenshot": "Screenshot",
+        "startRecording": "Yozishni Boshlash",
+        "stopRecording": "Yozishni To'xtatish"
+      }
+    },
+    "StatusPanel": {
+      "status": {
+        "label": "Status",
+        "recording": "Yozib olinmoqda",
+        "stopping": "To'xtatilmoqda",
+        "stopped": "To'xtatildi",
+        "idle": "Tayyor",
+        "acquiring_media": "Media olinmoqda"
+      },
+      "quality": {
+        "label": "Sifat"
+      },
+      "duration": {
+        "label": "Vaqt"
+      },
+      "camera": {
+        "label": "Kamera",
+        "selected": "Tanlangan kamera"
+      },
+      "recording": {
+        "format": "Recording to WebM format with audio",
+        "quality": "Quality:"
+      }
+    },
+    "MediaPanel": {
+      "title": "Saqlangan Media",
+      "fileCount": "ta fayl",
+      "empty": {
+        "title": "Hali hech qanday media saqlanmagan",
+        "subtitle": "Screenshot yoki video oling"
+      },
+      "stats": {
+        "screenshots": "Screenshotlar:",
+        "videos": "Videolar:"
+      },
+      "actions": {
+        "preview": "Ko'rish",
+        "download": "Yuklab olish",
+        "delete": "O'chirish"
+      },
+      "screenshot": "Screenshot",
+      "video": "Video"
+    },
+    "InfoSection": {
+      "title": "Ma'lumot",
+      "status": "Yordam",
+      "useCases": {
+        "title": "Asosiy foydalanish joylari:",
+        "contentCreation": {
+          "title": "Kontent Yaratish:",
+          "description": "Blog, video kontent va ijtimoiy media uchun"
+        },
+        "documentation": {
+          "title": "Hujjatlashtirish:",
+          "description": "Layihalar va jarayonlar uchun video hujjatlar"
+        },
+        "education": {
+          "title": "Ta'lim:",
+          "description": "Ta'lim va o'qitish materiallari yaratish"
+        },
+        "testing": {
+          "title": "Sinov:",
+          "description": "Kamera va mikrofon funksionalligini tekshirish"
+        },
+        "qualityControl": {
+          "title": "Sifat Nazorati:",
+          "description": "Turli qurilmalarda video sifatini baholash"
+        }
+      },
+      "tips": {
+        "title": "Professional maslahatlar:",
+        "lighting": "Yaxshi yorug'lik sharoitida video yozing",
+        "microphone": "Mikrofon yaqin bo'lishi uchun kameraga yaqinroq o'tiring",
+        "quality": "HD yoki Full HD sifatni tanlang, lekin internet tezligini hisobga oling",
+        "screenshot": "Screenshot olishdan oldin video ni pauza qiling",
+        "storage": "Katta fayllarni cloud storage'ga yuklang"
+      },
+      "note": {
+        "title": "Eslatma:",
+        "content": "Video va audio fayllar avtomatik WebM formatida saqlanadi. Bu format zamonaviy brauzerlarda yaxshi qo'llab-quvvatlanadi va yuqori sifat bilan kichik hajmga ega."
+      }
+    },
+    "Errors": {
+      "cameraAccess": "Kameraga kirish ruxsati berilmadi",
+      "noCamera": "Kamera topilmadi",
+      "recordingFailed": "Video yozishda xatolik yuz berdi",
+      "screenshotFailed": "Screenshot olishda xatolik yuz berdi",
+      "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
+    },
+    "MediaPreviewModal": {
+      "download": "Yuklab olish",
+      "screenshotPreview": "Screenshot Ko'rinishi",
+      "videoPreview": "Video Ko'rinishi",
+      "failedToLoad": "Rasm yuklanmadi",
+      "loadingVideo": "Video yuklanmoqda...",
+      "failedToLoadVideo": "Video yuklanmadi"
+    },
+    "Hook": {
+      "messages": {
+        "recordingStarted": "Video va ovoz yozib olish boshlandi",
+        "recordingSaved": "Video va ovoz muvaffaqiyatli saqlandi",
+        "cameraDeviceLabel": "Kamera",
+        "camerasFound": "ta kamera topildi",
+        "cameraAccessDenied": "Kamera qurilmalariga kirish rad etildi yoki mavjud emas",
+        "cameraStarted": "Kamera ishga tushirildi",
+        "cameraStartError": "Kamerani ishga tushirishda xatolik yuz berdi",
+        "cameraStopped": "Kamera to'xtatildi",
+        "screenshotRequired": "Screenshot olish uchun kamera yoqilgan bo'lishi kerak",
+        "screenshotTaken": "Screenshot muvaffaqiyatli olindi",
+        "screenshotError": "Screenshot olishda xatolik yuz berdi",
+        "screenshotDownloaded": "Screenshot yuklab olindi",
+        "videoDownloaded": "Video yuklab olindi",
+        "screenshotDeleted": "Screenshot o'chirildi",
+        "videoDeleted": "Video o'chirildi",
+        "camerasRefreshing": "Kameralar yangilanmoqda...",
+        "camerasRefreshed": "Kameralar muvaffaqiyatli yangilandi",
+        "camerasRefreshError": "Kameralar yangilashda xatolik yuz berdi",
+        "recordingDownloaded": "Video yuklab olindi"
+      }
+    }
+  }
+}
