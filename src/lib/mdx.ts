@@ -196,6 +196,7 @@ export async function getTutorialInfo(tutorialId: string) {
       id: tutorialId,
       title: getTutorialTitle(tutorialId),
       description: getTutorialDescription(tutorialId),
+      image: getTutorialImage(tutorialId),
       navigation,
     }
 
@@ -224,6 +225,16 @@ function getTutorialDescription(tutorialId: string): string {
   }
 
   return descriptions[tutorialId] || "Dasturlash bo'yicha qo'llanma"
+}
+
+// Tutorial rasmini olish
+function getTutorialImage(tutorialId: string): string {
+  const images: Record<string, string> = {
+    'fluent-react': 'https://www.oreilly.com/covers/urn:orm:book:9781098138707/900w/',
+    'javascript-definitive-guide': 'https://www.oreilly.com/covers/urn:orm:book:9781491952016/900w/',
+  }
+
+  return images[tutorialId] || '/assets/default-cover.png'
 }
 
 // Barcha tutoriallar ro'yxatini olish
