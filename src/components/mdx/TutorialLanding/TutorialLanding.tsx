@@ -6,6 +6,7 @@ interface TutorialLandingProps {
   tutorialData: {
     title?: string
     description?: string
+    copyright?: string
   }
   navigationItems: any[]
 }
@@ -43,10 +44,11 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
               ))}
             </ul>
           </div>
-        ) : (
-          <p className="text-yellow-600 italic dark:text-yellow-400">
-            Ushbu darslik uchun navigatsiya elementlari topilmadi.
-          </p>
+        ) : null}
+        {tutorialData?.copyright && (
+          <div className="mt-12 border-t pt-6">
+            <p className="text-muted-foreground text-sm">{tutorialData.copyright}</p>
+          </div>
         )}
       </div>
     </div>
