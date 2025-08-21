@@ -18017,7 +18017,7 @@
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-1.1-exploring-javascript-page",
-    "title": "Page",
+    "title": "JavaScript’ni tadqiq qilish",
     "content": "JavaScript’ni tadqiq qilish Yangi dasturlash tilini o'rganayotganda kitobdagi misollarni sinab ko'rish, keyin ularni o'zgartirish va tilni tushunganingizni tekshirish uchun yana qayta sinab ko'rish muhimdir. Buning uchun sizga JavaScript interpretatori kerak bo'ladi. Brauzer konsoli orqali JavaScrip...",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript/1.1-exploring-javascript",
     "category": "books",
@@ -18037,15 +18037,15 @@
       "mumkin",
       "vositalari",
       "node",
+      "tadqiq",
+      "qilish",
       "ularni",
       "yana",
       "buning",
-      "ladi",
-      "brauzer",
-      "konsoli"
+      "ladi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ni tadqiq qilish",
       "lvl1": null
     }
   },
@@ -18079,7 +18079,7 @@
       "qatorini"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ni tadqiq qilish",
       "lvl1": "Brauzer konsoli orqali JavaScript’ni sinab ko'rish"
     }
   },
@@ -18113,13 +18113,13 @@
       "rnatishdir"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ni tadqiq qilish",
       "lvl1": "Node orqali JavaScript’ni sinab ko'rish"
     }
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-1.2-hello-world-page",
-    "title": "Page",
+    "title": "Salom, Dunyo!",
     "content": "Salom, Dunyo! Uzunroq kod parchalarini sinab ko'rishga tayyor bo'lganingizda, qatorma-qator ishlaydigan interaktiv muhitlar endi mos kelmasligi mumkin va siz, kodingizni matn muharririda yozishni afzal ko'rasiz. U yerdan kodni JavaScript konsoliga yoki Node sessiyasiga nusxalab, joylashingiz mumkin....",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript/1.2-hello-world",
     "category": "books",
@@ -18141,19 +18141,19 @@
       "agar",
       "quyidagi",
       "_hello",
+      "salom",
+      "dunyo",
       "kodingizni",
-      "matn",
-      "rasiz",
-      "fayl"
+      "matn"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Salom, Dunyo!",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-1.3-tour-of-javascript-page",
-    "title": "Page",
+    "title": "JavaScript bo'ylab sayohat",
     "content": "JavaScript bo'ylab sayohat Bu bo'lim kod misollari orqali JavaScript tiliga qisqacha kirish qismini taqdim etadi. Ushbu kirish bobidan so'ng, biz JavaScript’ni eng quyi darajada o'rganishni boshlaymiz: 2-bob JavaScript’dagi izohlar, nuqta-vergullar va Unicode belgilari to'plami kabi tushunchalarni y...",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript/1.3-tour-of-javascript",
     "category": "books",
@@ -18169,8 +18169,8 @@
       "uchun",
       "lgan",
       "mumkin",
-      "siz",
       "funksiyalar",
+      "siz",
       "qanday",
       "qamrab",
       "kod",
@@ -18181,7 +18181,7 @@
       "oladi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": null
     }
   },
@@ -18215,7 +18215,7 @@
       "mavzulari"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Murakkab (Referens) qiymatlar"
     }
   },
@@ -18249,7 +18249,7 @@
       "rsatilgan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Kod misollaridagi izohlar sintaksisi"
     }
   },
@@ -18275,15 +18275,15 @@
       "dastur",
       "holatini",
       "rsatmalarning",
-      "siz",
       "agar",
       "_ifodalari",
       "expressions",
       "birikmalariga",
-      "xshasa"
+      "xshasa",
+      "holda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "JavaScript ifodalari va ko'rsatmalari"
     }
   },
@@ -18317,7 +18317,7 @@
       "parametrlangan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Funksiyalar"
     }
   },
@@ -18346,7 +18346,7 @@
       "metodlar"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Metodlar"
     }
   },
@@ -18379,7 +18379,7 @@
       "tuzilmalari"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Boshqaruv tuzilmalari"
     }
   },
@@ -18413,7 +18413,7 @@
       "tillaridan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Obyektga yo'naltirilgan dasturlash"
     }
   },
@@ -18447,13 +18447,13 @@
       "tushuntiradi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript bo'ylab sayohat",
       "lvl1": "Keyingi boblar mavzulari"
     }
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-1.4-character-frequency-histograms-page",
-    "title": "Page",
+    "title": "Misol: Belgilar chastotasi gistogrammalari",
     "content": "Misol: Belgilar chastotasi gistogrammalari Bu bob qisqa, biroq jiddiy JavaScript dasturi bilan yakunlanadi. 1-1-misol — bu standart kiritishdan matnni o‘qiydigan, ushbu matndan belgilar chastotasi gistogrammasini hisoblaydigan va so‘ngra gistogrammani konsolga chiqaradigan Node dasturidir. Siz dastu...",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript/1.4-character-frequency-histograms",
     "category": "books",
@@ -18466,10 +18466,10 @@
       "frontend",
       "misol",
       "belgilar",
-      "javascript",
       "chastotasi",
-      "mumkin",
+      "javascript",
       "gistogrammalari",
+      "mumkin",
       "bob",
       "qisqa",
       "biroq",
@@ -18481,13 +18481,13 @@
       "kiritishdan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Misol: Belgilar chastotasi gistogrammalari",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-page",
-    "title": "Page",
+    "title": "JavaScript’ga kirish",
     "content": "JavaScript’ga kirish JavaScript — bu vebning dasturlash tilidir. Veb-saytlarning mutlaq ko‘pchiligi JavaScript’dan foydalanadi va barcha zamonaviy veb-brauzerlar — kompyuterlar, planshet va telefonlarda — JavaScript interpretatorlarini o'z ichiga oladi. Bu esa JavaScript’ni tarixdagi eng ko‘p joriy ...",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript",
     "category": "books",
@@ -18515,7 +18515,7 @@
       "keyingi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": null
     }
   },
@@ -18549,7 +18549,7 @@
       "davrlarida"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "JavaScript: Nomlar, Versiyalar va Rejimlar"
     }
   },
@@ -18583,7 +18583,7 @@
       "llab"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "ECMAScript'ning rivojlanishi"
     }
   },
@@ -18617,7 +18617,7 @@
       "xususiyatlarni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "JavaScript'ning qat'iy rejimi (Strict Mode)"
     }
   },
@@ -18651,7 +18651,7 @@
       "dasturlash"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "JavaScript'ning asosiy platformasi va muhiti"
     }
   },
@@ -18685,7 +18685,7 @@
       "eng"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "Veb-brauzer muhiti"
     }
   },
@@ -18719,7 +18719,7 @@
       "bir"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "Node muhiti"
     }
   },
@@ -18753,13 +18753,13 @@
       "mumkin"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript’ga kirish",
       "lvl1": "Kitobning tuzilishi"
     }
   },
   {
     "id": "book-javascript-definitive-guide-1-introduction-to-javascript-summary-page",
-    "title": "Page",
+    "title": "JavaScript",
     "content": "Xulosa Bu kitob JavaScript’ni poydevoridan boshlab yuqoriga qarab tushuntiradi. Bu shuni anglatadiki, biz izohlar, identifikatorlar, o'zgaruvchilar va tiplar kabi quyi darajadagi tafsilotlardan boshlaymiz; so'ng ifodalar, ko'rsatmalar, obyektlar va funksiyalarga o'tamiz; va undan keyin klasslar va m...",
     "url": "/books/javascript-definitive-guide/1-introduction-to-javascript/summary",
     "category": "books",
@@ -18770,8 +18770,8 @@
       "react",
       "javascript",
       "frontend",
-      "kitob",
       "javascript",
+      "kitob",
       "kabi",
       "darajadagi",
       "til",
@@ -18787,7 +18787,7 @@
       "yuqoriga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": null
     }
   },
@@ -18821,13 +18821,13 @@
       "qarab"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": "Xulosa"
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.1-text-of-javascript-program-page",
-    "title": "Page",
+    "title": "JavaScript dasturining matni",
     "content": "JavaScript dasturining matni JavaScript katta-kichik harflarga sezgir (case-sensitive) tildir. Bu shuni anglatadiki, tilning kalit so'zlari, o'zgaruvchilari, funksiya nomlari va boshqa _identifikatorlari_ har doim izchil katta-kichik harflarda yozilishi kerak. Masalan, kalit so'zi aynan \"while\" deb ...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.1-text-of-javascript-program",
     "category": "books",
@@ -18842,6 +18842,8 @@
       "qator",
       "while",
       "shliq",
+      "dasturining",
+      "matni",
       "katta",
       "kichik",
       "kalit",
@@ -18850,18 +18852,16 @@
       "kerak",
       "deb",
       "bir",
-      "tiborsiz",
-      "qoldiradi",
-      "ham"
+      "tiborsiz"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript dasturining matni",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.2-comments-page",
-    "title": "Page",
+    "title": "Izohlar",
     "content": "Izohlar JavaScript ikki xil uslubdagi izohlarni qo‘llab-quvvatlaydi. belgisidan boshlab qator oxirigacha bo'lgan har qanday matn izoh sifatida qaraladi va JavaScript tomonidan e'tiborsiz qoldiriladi. va belgilari orasidagi har qanday matn ham izoh hisoblanadi; bu turdagi izohlar bir necha qatorga ch...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.2-comments",
     "category": "books",
@@ -18872,8 +18872,8 @@
       "react",
       "javascript",
       "frontend",
-      "javascript",
       "izohlar",
+      "javascript",
       "har",
       "qanday",
       "matn",
@@ -18889,13 +18889,13 @@
       "boshlab"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Izohlar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.3-literals-page",
-    "title": "Page",
+    "title": "Literallar",
     "content": "Literallar _Literal_ - bu dastur kodida to‘g‘ridan-to‘g‘ri yozilgan ma’lumot qiymatidir. Quyidagilar barchasi literallardir: Sonli va satrli literallar haqidagi to'liq tafsilotlar 3-bobda keltirilgan.",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.3-literals",
     "category": "books",
@@ -18923,13 +18923,13 @@
       "liq"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Literallar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.4-identifiers-and-reserved-words-page",
-    "title": "Page",
+    "title": "Identifikatorlar va Zaxiralangan so'zlar",
     "content": "Identifikatorlar va Zaxiralangan so'zlar _Identifikator_ - bu shunchaki nom nom. JavaScript’da identifikatorlar konstantalar, o'zgaruvchilar, xossalar, funksiyalar va klasslarni nomlash, shuningdek, JavaScript kodidagi ma'lum sikllarga nishon (label) berish uchun ishlatiladi. JavaScript identifikato...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.4-identifiers-and-reserved-words",
     "category": "books",
@@ -18942,22 +18942,22 @@
       "frontend",
       "sifatida",
       "javascript",
+      "zlar",
       "uchun",
       "mumkin",
-      "zlar",
-      "yoki",
       "zaxiralangan",
+      "yoki",
+      "identifikatorlar",
       "kabi",
       "masalan",
       "identifikator",
-      "identifikatorlar",
       "lum",
       "bilan",
       "kalit",
       "ularni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Identifikatorlar va Zaxiralangan so'zlar",
       "lvl1": null
     }
   },
@@ -18991,13 +18991,13 @@
       "zaxiralangan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Identifikatorlar va Zaxiralangan so'zlar",
       "lvl1": "Zaxiralangan so'zlar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.5-unicode-page",
-    "title": "Page",
+    "title": "Unicode",
     "content": "Unicode JavaScript dasturlari Unicode belgilar to'plami yordamida yoziladi va siz har qanday Unicode belgilardan satrlar va izohlar ichida foydalanishingiz mumkin. Ko‘chirishga qulayligi (portativlik) va tahrirlash osonligi uchun odatda identifikatorlarda faqat ASCII harflari va raqamlaridan foydala...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.5-unicode",
     "category": "books",
@@ -19025,12 +19025,46 @@
       "siz"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Unicode",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.5-unicode-page-section-0",
+    "title": "Unicode Qochish Ketma-ketliklari (Unicode Escape Sequences)",
+    "content": "Ba'zi kompyuter uskunalari va dasturiy ta'minoti Unicode belgilarining to'liq to'plamini ko'rsata olmaydi, kirita olmaydi yoki to'g'ri qayta ishlay olmaydi. Eski texnologiyalardan foydalanadigan dastu...",
+    "url": "/books/javascript-definitive-guide/2-lexical-structure/2.5-unicode#unicode-qochish-ketma-ketliklari-unicode-escape-sequences",
+    "category": "books",
+    "tags": [
+      "javascript-definitive-guide",
+      "tutorial",
+      "guide",
+      "react",
+      "javascript",
+      "frontend",
+      "unicode",
+      "qochish",
+      "ketma",
+      "ketliklari",
+      "olmaydi",
+      "yoki",
+      "llab",
+      "uchun",
+      "javascript",
+      "quvvatlash",
+      "faqat",
+      "ascii",
+      "foydalangan",
+      "holda",
+      "belgilari"
+    ],
+    "hierarchy": {
+      "lvl0": "Unicode",
+      "lvl1": "Unicode Qochish Ketma-ketliklari (Unicode Escape Sequences)"
+    }
+  },
+  {
+    "id": "book-javascript-definitive-guide-2-lexical-structure-2.5-unicode-page-section-1",
     "title": "Unicode normalizatsiyasi",
     "content": "Agar siz JavaScript dasturlaringizda ASCII bo'lmagan belgilardan foydalansangiz, Unicode bir xil belgini kodlashning bir nechta usulini ta'minlashini hisobga olishingiz kerak bo'ladi. Masalan, satri b...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.5-unicode#unicode-normalizatsiyasi",
@@ -19059,13 +19093,13 @@
       "mumkin"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Unicode",
       "lvl1": "Unicode normalizatsiyasi"
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-2.6-optional-semicolons-page",
-    "title": "Page",
+    "title": "Ixtiyoriy nuqta-vergullar",
     "content": "Ixtiyoriy nuqta-vergullar Ko'plab dasturlash tillari singari, JavaScript ham ko'rsatmalarni (statements) (5-bobga qarang) bir-biridan ajratish uchun nuqta-verguldan ( ) foydalanadi. Bu kodingiz ma'nosini aniq qilish uchun muhimdir: ajratuvchisiz bir ko'rsatmaning oxiri keyingisining boshi bo'lib tuy...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/2.6-optional-semicolons",
     "category": "books",
@@ -19093,7 +19127,7 @@
       "uchun"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Ixtiyoriy nuqta-vergullar",
       "lvl1": null
     }
   },
@@ -19127,7 +19161,7 @@
       "chunki"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Ixtiyoriy nuqta-vergullar",
       "lvl1": "Qator uzilishlari va nuqta-vergullar"
     }
   },
@@ -19161,7 +19195,7 @@
       "umuman"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Ixtiyoriy nuqta-vergullar",
       "lvl1": "Kutilmagan holatlar"
     }
   },
@@ -19195,13 +19229,13 @@
       "vergul"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Ixtiyoriy nuqta-vergullar",
       "lvl1": "Istisnolar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-page",
-    "title": "Page",
+    "title": "Leksik struktura",
     "content": "Leksik struktura Dasturlash tilining leksik strukturasi - bu sizning ushbu tilda dasturlarni qanday yozishingizni belgilaydigan elementar qoidalar majmuidir. Bu tilning eng quyi darajadagi sintaksisi bo'lib, u masalan, o'zgaruvchi nomlari qanday ko'rinishda bo'lishi, izohlar uchun ajratuvchi belgila...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure",
     "category": "books",
@@ -19214,8 +19248,8 @@
       "frontend",
       "leksik",
       "qanday",
-      "izohlar",
       "struktura",
+      "izohlar",
       "dasturlash",
       "tilining",
       "strukturasi",
@@ -19229,13 +19263,13 @@
       "qoidalar"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Leksik struktura",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-2-lexical-structure-summary-page",
-    "title": "Page",
+    "title": "JavaScript",
     "content": "Xulosa Ushbu bobda JavaScript dasturlari qanday qilib eng quyi darajada yozilishi ko'rsatib o'tildi. Keyingi bob bizni bir pog'ona yuqoriga olib chiqib, JavaScript dasturlari uchun hisoblashning asosiy birliklari bo'lib xizmat qiladigan primitiv tiplar va qiymatlar (sonlar, satrlar va boshqalar) bil...",
     "url": "/books/javascript-definitive-guide/2-lexical-structure/summary",
     "category": "books",
@@ -19263,7 +19297,7 @@
       "bob"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": null
     }
   },
@@ -19297,13 +19331,13 @@
       "bizni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": "Xulosa"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.1-overview-and-definitions-page",
-    "title": "Page",
+    "title": "Umumiy Tanishuv va Ta’riflar",
     "content": "Umumiy Tanishuv va Ta’riflar JavaScript tiplarini ikki toifaga bo‘lish mumkin: _primitiv tiplar_ va _obyekt tiplari_. Primitiv tiplar JavaScript’ning primitiv tiplariga sonlar, matnli satrlar (qisqacha satrlar deb ataladi) va mantiqiy haqiqat qiymatlari (mantiqiy qiymatlar deb ataladi) kiradi. Ushbu...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.1-overview-and-definitions",
     "category": "books",
@@ -19331,7 +19365,7 @@
       "maxsus"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": null
     }
   },
@@ -19365,14 +19399,14 @@
       "sonlar"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Primitiv tiplar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.1-overview-and-definitions-page-section-1",
     "title": "Obyekt tiplari",
-    "content": "JavaScript’da son, satr, mantiqiy qiymat, symbol, null yoki undefined bo‘lmagan har qanday qiymat obyekt hisoblanadi. Obyekt (ya’ni, _object_ tipining a’zosi) — bu har bir xossasi nom va qiymatga (pri...",
+    "content": "JavaScript’da son, satr, mantiqiy qiymat, , yoki bo‘lmagan har qanday qiymat obyekt hisoblanadi. Obyekt (ya’ni, _object_ tipining a’zosi) — bu har bir xossasi nom va qiymatga (primitiv qiymat yoki bos...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.1-overview-and-definitions#obyekt-tiplari",
     "category": "books",
     "tags": [
@@ -19399,13 +19433,13 @@
       "lmagan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Obyekt tiplari"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.1-overview-and-definitions-page-section-2",
-    "title": "Xotirani Avtomatik Boshqarish",
+    "title": "Xotirani avtomatik boshqarish",
     "content": "JavaScript interpretatori xotirani boshqarish uchun keraksiz ma’lumotlarni avtomatik tozalash (garbage collection) mexanizmini ishga soladi. Bu shuni anglatadiki, JavaScript dasturchisi odatda obyektl...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.1-overview-and-definitions#xotirani-avtomatik-boshqarish",
     "category": "books",
@@ -19433,8 +19467,8 @@
       "garbage"
     ],
     "hierarchy": {
-      "lvl0": "Page",
-      "lvl1": "Xotirani Avtomatik Boshqarish"
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
+      "lvl1": "Xotirani avtomatik boshqarish"
     }
   },
   {
@@ -19467,7 +19501,7 @@
       "sodda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Obyektga yo‘naltirilgan uslub"
     }
   },
@@ -19501,7 +19535,7 @@
       "immutable"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Tiplarning o‘zgaruvchanligi (Mutability)"
     }
   },
@@ -19535,7 +19569,7 @@
       "uning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Tiplarni avtomatik o‘zgartirish (konversiya)"
     }
   },
@@ -19569,13 +19603,13 @@
       "beradi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Umumiy Tanishuv va Ta’riflar",
       "lvl1": "Konstantalar va o‘zgaruvchilar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.10-variable-declaration-and-assignment-page",
-    "title": "Page",
+    "title": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
     "content": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash Kompyuter dasturlashining eng fundamental texnikalaridan biri bu qiymatlarni ifodalash uchun nomlar — yoki _identifikatorlardan_ — foydalanishdir. Nomni qiymatga bog‘lash bizga o‘sha qiymatga murojaat qilish va uni biz yozayotgan dasturlarda ishlatis...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.10-variable-declaration-and-assignment",
     "category": "books",
@@ -19593,17 +19627,17 @@
       "yoki",
       "bir",
       "destrukturizatsiya",
+      "qilish",
       "siz",
       "ham",
-      "qilish",
+      "qiymat",
       "uchun",
       "global",
-      "qiymat",
       "agar",
       "chap"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": null
     }
   },
@@ -19637,7 +19671,7 @@
       "zamonaviy"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "`let` va `const` bilan e’lon qilish"
     }
   },
@@ -19671,7 +19705,7 @@
       "ishlatish"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "`const`'ni qachon ishlatish kerak?"
     }
   },
@@ -19705,7 +19739,7 @@
       "jingalak"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "O‘zgaruvchi va konstantalarning ko‘rinish doirasi (`scope`)"
     }
   },
@@ -19739,7 +19773,7 @@
       "joylashgan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "Takroriy e’lonlar"
     }
   },
@@ -19773,7 +19807,7 @@
       "tipli"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "E’lonlar va tiplar"
     }
   },
@@ -19807,7 +19841,7 @@
       "qilish"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "`var` bilan o‘zgaruvchilarni e’lon qilish"
     }
   },
@@ -19841,7 +19875,7 @@
       "kodingizni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "E’lon qilinmagan o‘zgaruvchilardan foydalanish"
     }
   },
@@ -19875,7 +19909,7 @@
       "es6"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "Destrukturizatsiya orqali tayinlash"
     }
   },
@@ -19909,7 +19943,7 @@
       "bir"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "Massiv destrukturizatsiyasi"
     }
   },
@@ -19943,7 +19977,7 @@
       "lishi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "Obyekt destrukturizatsiyasi"
     }
   },
@@ -19977,13 +20011,13 @@
       "yoki"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgaruvchilarni e’lon qilish va qiymat tayinlash",
       "lvl1": "Murakkab destrukturizatsiyani tushunish"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.2-numbers-page",
-    "title": "Page",
+    "title": "Sonlar",
     "content": "Sonlar JavaScript'ning asosiy sonli tipi bo‘lgan tipi ham butun sonlarni ifodalash, ham haqiqiy sonlarni taqriban hisoblash uchun xizmat qiladi. JavaScript sonlarni ifodalash uchun IEEE 754 standarti[^1] bilan belgilangan 64 bitli suzuvchi nuqtali ( ) formatdan foydalanadi. Bu format gacha bo‘lgan u...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.2-numbers",
     "category": "books",
@@ -20004,14 +20038,14 @@
       "yoki",
       "lgan",
       "ifodalash",
-      "emas",
       "sonlar",
+      "emas",
       "son",
       "sonlarni",
       "suzuvchi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": null
     }
   },
@@ -20045,7 +20079,7 @@
       "qiymatlarni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Butun sonli literallar"
     }
   },
@@ -20079,7 +20113,7 @@
       "nuqtasiga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Suzuvchi nuqtali literallar"
     }
   },
@@ -20113,7 +20147,7 @@
       "belgisidan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Sonli literallarda ajratuvchilar"
     }
   },
@@ -20147,7 +20181,7 @@
       "shish"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "JavaScript'da arifmetik amallar"
     }
   },
@@ -20181,7 +20215,7 @@
       "eng"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Cheksizlik va nolga bo‘lish"
     }
   },
@@ -20215,7 +20249,7 @@
       "ziga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "NaN va manfiy nolning o‘ziga xosliklari"
     }
   },
@@ -20249,7 +20283,7 @@
       "taqribiy"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Ikkilik suzuvchi nuqtali sonlar va yaxlitlash xatoliklari"
     }
   },
@@ -20267,7 +20301,6 @@
       "javascript",
       "frontend",
       "bilan",
-      "bigint",
       "uchun",
       "javascript",
       "sonli",
@@ -20279,11 +20312,12 @@
       "esa",
       "qiymatlari",
       "tip",
-      "siz",
-      "aralash"
+      "aralash",
+      "oladi",
+      "yangi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "`BigInt` yordamida ixtiyoriy aniqlikdagi butun sonlar"
     }
   },
@@ -20317,13 +20351,13 @@
       "uchun"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Sonlar",
       "lvl1": "Sanalar va vaqtlar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.3-text-page",
-    "title": "Page",
+    "title": "Matn",
     "content": "Matn JavaScript'da matnni ifodalash uchun mo‘ljallangan tip satr ( ) deb ataladi. Satr — bu har biri odatda bitta Unicode belgisini ifodalovchi, 16 bitli qiymatlarning o‘zgarmas, tartiblangan ketma-ketligidir. Satrning uzunligi undagi 16 bitli qiymatlar soni bilan o‘lchanadi. JavaScript satrlari (va...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.3-text",
     "category": "books",
@@ -20347,11 +20381,11 @@
       "satrning",
       "taqdim",
       "bir",
-      "ketma",
-      "uzunligi"
+      "matn",
+      "ketma"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": null
     }
   },
@@ -20385,7 +20419,7 @@
       "sig"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Belgilar, Kod nuqtalari va JavaScript satrlari"
     }
   },
@@ -20419,7 +20453,7 @@
       "belgilarini"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Satr literallari"
     }
   },
@@ -20453,7 +20487,7 @@
       "apostrof"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Satr literallarida qochish ketma-ketliklari"
     }
   },
@@ -20487,7 +20521,7 @@
       "operatorlari"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Satrlar bilan ishlash"
     }
   },
@@ -20521,7 +20555,7 @@
       "emas"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Shablon literallari (Template literals)"
     }
   },
@@ -20555,7 +20589,7 @@
       "escaping"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Teglangan shablon literallari"
     }
   },
@@ -20589,13 +20623,13 @@
       "fundamental"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Matn",
       "lvl1": "Andozalarni moslashtirish (Pattern matching)"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.4-boolean-values-page",
-    "title": "Page",
+    "title": "Mantiqiy qiymatlar (Boolean values)",
     "content": "Mantiqiy qiymatlar (Boolean values) Mantiqiy ( ) qiymat rost yoki yolg‘onni, \"yoqilgan\" yoki \"o‘chirilgan\"ni, \"ha\" yoki \"yo‘q\"ni ifodalaydi. Bu tipning faqat ikki xil qiymati mavjud. Zaxiralangan va so‘zlari aynan shu ikki qiymatni ifodalaydi. Mantiqiy qiymatlar odatda JavaScript dasturlaringizda ba...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.4-boolean-values",
     "category": "books",
@@ -20610,20 +20644,20 @@
       "false",
       "null",
       "true",
+      "qiymatlar",
       "yoki",
       "ladi",
-      "qiymatlar",
       "qiymat",
       "qiymati",
       "javascript",
       "masalan",
       "teng",
       "lsa",
-      "ifodalaydi",
-      "ikki"
+      "boolean",
+      "values"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy qiymatlar (Boolean values)",
       "lvl1": null
     }
   },
@@ -20657,13 +20691,13 @@
       "faqat"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy qiymatlar (Boolean values)",
       "lvl1": "\"Truthy\" va \"Falsy\" qiymatlar"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.5-null-and-undefined-page",
-    "title": "Page",
+    "title": "null va undefined",
     "content": "va — bu tilning kalit so‘zi bo‘lib, u odatda qiymatning yo‘qligini ifodalash uchun ishlatiladigan maxsus qiymatni anglatadi. 'ga operatorini qo‘llaganimizda, u \"object\" satrini qaytaradi. Bu 'ni \"hech qanday obyekt yo‘q\" degan ma’noni anglatuvchi maxsus obyekt qiymati sifatida tasavvur qilish mumkin...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.5-null-and-undefined",
     "category": "books",
@@ -20691,7 +20725,7 @@
       "kalit"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "null va undefined",
       "lvl1": null
     }
   },
@@ -20725,13 +20759,13 @@
       "normal"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "null va undefined",
       "lvl1": "`null` va `undefined`: Muallifning yondashuvi"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.6-symbols-page",
-    "title": "Page",
+    "title": "Symbol'lar",
     "content": "'lar 'lar ES6 versiyasida satr bo‘lmagan xossa nomlari sifatida xizmat qilish uchun kiritilgan. 'larni tushunish uchun, avvalo, JavaScript'ning fundamental tipi har bir xossasi nom va qiymatga ega bo‘lgan, tartiblanmagan xossalar to‘plami ekanligini bilishingiz kerak. Xossa nomlari odatda satrlar bo...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.6-symbols",
     "category": "books",
@@ -20751,21 +20785,21 @@
       "lgan",
       "qiymatini",
       "xil",
+      "lar",
       "ham",
       "mavjud",
       "boshqa",
       "qiladi",
-      "lar",
       "es6"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Symbol'lar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.7-global-object-page",
-    "title": "Page",
+    "title": "Global obyekt",
     "content": "Global obyekt Oldingi bo‘limlar JavaScript'ning primitiv tiplari va qiymatlarini tushuntirib o'tdi. Obyekt tiplari — obyektlar, massivlar va funksiyalar — kitobning keyingi boblarida alohida ko‘rib chiqiladi. Lekin hozir biz tanishib chiqishimiz shart bo‘lgan juda muhim bir obyekt qiymati bor. Globa...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.7-global-object",
     "category": "books",
@@ -20793,7 +20827,7 @@
       "mumkin"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Global obyekt",
       "lvl1": null
     }
   },
@@ -20827,13 +20861,13 @@
       "obyekti"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Global obyekt",
       "lvl1": "Global obyektga murojaat qilish"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.8-immutable-primitive-values-and-mutable-object-references-page",
-    "title": "Page",
+    "title": "O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari",
     "content": "O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari JavaScript'da primitiv qiymatlar ( , , mantiqiy qiymatlar, sonlar va satrlar) va obyektlar (jumladan, massivlar va funksiyalar) o‘rtasida fundamental farq mavjud. Primitivlar o‘zgarmasdir ( ): primitiv qiymatni o‘zgartirishning (\"mutatsi...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.8-immutable-primitive-values-and-mutable-object-references",
     "category": "books",
@@ -20844,15 +20878,15 @@
       "react",
       "javascript",
       "frontend",
-      "bir",
       "obyekt",
-      "uchun",
+      "bir",
       "qiymatlar",
+      "uchun",
+      "primitiv",
       "ularning",
       "teng",
       "ikkita",
       "yoki",
-      "primitiv",
       "javascript",
       "satrlar",
       "obyektlar",
@@ -20861,7 +20895,7 @@
       "alohida"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari",
       "lvl1": null
     }
   },
@@ -20895,13 +20929,13 @@
       "xil"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "O‘zgarmas primitiv qiymatlar va o‘zgaruvchan obyekt havolalari",
       "lvl1": "Obyektlarning o‘ziga xosligi"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-3.9-type-conversions-page",
-    "title": "Page",
+    "title": "Tiplarni o'zgartirish (konversiya)",
     "content": "Tiplarni o'zgartirish (konversiya) JavaScript o‘zi talab qiladigan qiymat tiplari borasida juda moslashuvchandir. Biz buni mantiqiy qiymatlar misolida ko‘rdik: JavaScript mantiqiy qiymat kutgan joyda, siz istalgan tipdagi qiymatni taqdim etishingiz mumkin va JavaScript uni kerak bo‘lganda o‘zgartiri...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/3.9-type-conversions",
     "category": "books",
@@ -20917,19 +20951,19 @@
       "uchun",
       "agar",
       "zgartiradi",
-      "satrga",
       "konversiya",
+      "satrga",
       "ham",
       "songa",
       "qanday",
       "obyektdan",
       "esa",
+      "zgartirish",
       "qiymat",
-      "mumkin",
-      "zgartirish"
+      "mumkin"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": null
     }
   },
@@ -20963,7 +20997,7 @@
       "konversiyalarni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Konversiyalar va tenglik"
     }
   },
@@ -20997,7 +21031,7 @@
       "tug"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Aniq konversiyalar"
     }
   },
@@ -21031,7 +21065,7 @@
       "boshqa"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Asosiy konversiya funksiyalari"
     }
   },
@@ -21065,7 +21099,7 @@
       "zan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Operatorlar yordamida konversiya"
     }
   },
@@ -21099,7 +21133,7 @@
       "ahamiyatli"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Sonlarni formatlash va tahlil qilish"
     }
   },
@@ -21133,7 +21167,7 @@
       "algoritm"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Obyektdan primitivga konversiyalar"
     }
   },
@@ -21167,7 +21201,7 @@
       "primitivga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Obyektdan mantiqiy qiymatga konversiyalar"
     }
   },
@@ -21201,7 +21235,7 @@
       "ngra"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Obyektdan satrga konversiyalar"
     }
   },
@@ -21235,7 +21269,7 @@
       "avval"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Obyektdan songa konversiyalar"
     }
   },
@@ -21269,7 +21303,7 @@
       "ikki"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Operatorlarning maxsus holatdagi konversiyalari"
     }
   },
@@ -21303,7 +21337,7 @@
       "qilib"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "`toString()` va `valueOf()` metodlari"
     }
   },
@@ -21337,13 +21371,13 @@
       "bitta"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplarni o'zgartirish (konversiya)",
       "lvl1": "Obyektdan-primitivga konversiya algoritmlari"
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-page",
-    "title": "Page",
+    "title": "Tiplar, Qiymatlar va O‘zgaruvchilar",
     "content": "Tiplar, Qiymatlar va O‘zgaruvchilar Kompyuter dasturlari 3.14 soni yoki “Hello World” matni kabi qiymatlar ustida amallar bajarish orqali ishlaydi. Dasturlash tilida ifodalanishi va boshqarilishi mumkin bo‘lgan qiymatlarning turlari tiplar deb nomlanadi va dasturlash tilining eng fundamental xususiy...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables",
     "category": "books",
@@ -21356,9 +21390,9 @@
       "frontend",
       "tiplar",
       "qiymatlar",
+      "zgaruvchilar",
       "dasturlash",
       "qiymatni",
-      "zgaruvchilar",
       "yoki",
       "orqali",
       "tilining",
@@ -21371,13 +21405,13 @@
       "world"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tiplar, Qiymatlar va O‘zgaruvchilar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-3-types-and-variables-summary-page",
-    "title": "Page",
+    "title": "JavaScript",
     "content": "Xulosa Ushbu bobdan eslab qolish kerak bo‘lgan ba’zi asosiy nuqtalar: - JavaScript'da sonlar va matnli satrlarni qanday yozish va ular ustida amallar bajarish. - JavaScript'ning boshqa primitiv tiplari: mantiqiy qiymatlar, 'lar, va bilan qanday ishlash. - O‘zgarmas primitiv tiplar va o‘zgaruvchan ha...",
     "url": "/books/javascript-definitive-guide/3-types-and-variables/summary",
     "category": "books",
@@ -21405,7 +21439,7 @@
       "lgan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": null
     }
   },
@@ -21439,13 +21473,13 @@
       "asosiy"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": "Xulosa"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.1-primary-expressions-page",
-    "title": "Page",
+    "title": "Birlamchi ifodalar",
     "content": "Birlamchi ifodalar Birlamchi ifodalar ( ) deb nomlanuvchi eng sodda ifodalar o‘z tarkibida boshqa soddaroq ifodalarni qamrab olmaydi, ya’ni mustaqil holda mavjud bo‘ladi. JavaScript'dagi birlamchi ifodalar — bu konstantalar yoki literal qiymatlar, ba’zi til kalit so‘zlari va o‘zgaruvchilarga havolal...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.1-primary-expressions",
     "category": "books",
@@ -21473,13 +21507,13 @@
       "zlari"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Birlamchi ifodalar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.10-logical-expressions-page",
-    "title": "Page",
+    "title": "Mantiqiy ifodalar",
     "content": "Mantiqiy ifodalar , , va mantiqiy operatorlari mantiqiy algebrani amalga oshiradi va ko‘pincha ikki munosabat ifodasini bitta, murakkabroq ifodaga birlashtirish uchun munosabat operatorlari bilan birgalikda ishlatiladi. Bu operatorlar keyingi quyi mavzularda tasvirlangan. Ularni to‘liq tushunish uch...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.10-logical-expressions",
     "category": "books",
@@ -21507,7 +21541,7 @@
       "kerak"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy ifodalar",
       "lvl1": null
     }
   },
@@ -21541,7 +21575,7 @@
       "shuning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy ifodalar",
       "lvl1": "Mantiqiy VA (`&&`)"
     }
   },
@@ -21575,7 +21609,7 @@
       "uchun"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy ifodalar",
       "lvl1": "Mantiqiy YOKI (`||`)"
     }
   },
@@ -21609,13 +21643,13 @@
       "operandning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Mantiqiy ifodalar",
       "lvl1": "Mantiqiy INKOR (`!`)"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.11-assignment-expressions-page",
-    "title": "Page",
+    "title": "Tayinlash ifodalari",
     "content": "Tayinlash ifodalari JavaScript o‘zgaruvchi yoki xossaga qiymat tayinlash uchun operatoridan foydalanadi. Masalan: operatori o‘zining chap tomonidagi operandining bo‘lishini kutadi: ya’ni, o‘zgaruvchi yoki obyekt xossasi (yoki massiv elementi). U o‘ng tomonidagi operandining esa har qanday tipdagi ix...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.11-assignment-expressions",
     "category": "books",
@@ -21636,14 +21670,14 @@
       "masalan",
       "bilan",
       "tayinlashni",
+      "ifodalari",
       "xossaga",
       "qiymat",
       "esa",
-      "qiymati",
-      "mumkin"
+      "qiymati"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tayinlash ifodalari",
       "lvl1": null
     }
   },
@@ -21677,13 +21711,13 @@
       "ifoda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Tayinlash ifodalari",
       "lvl1": "Amal bilan birga tayinlash"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.12-evaluation-expressions-page",
-    "title": "Page",
+    "title": "Bajarish (`Evaluation`) ifodalari",
     "content": "Bajarish ( ) ifodalari Ko‘plab interpretatsiya qilinadigan tillar singari, JavaScript ham JavaScript manba kodi satrlarini interpretatsiya qilish, ularni bajarib, qiymat hosil qilish qobiliyatiga ega. JavaScript bu ishni global funksiyasi yordamida amalga oshiradi: Manba kodi satrlarini dinamik ravi...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.12-evaluation-expressions",
     "category": "books",
@@ -21711,7 +21745,7 @@
       "siz"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Bajarish (`Evaluation`) ifodalari",
       "lvl1": null
     }
   },
@@ -21745,7 +21779,7 @@
       "unga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Bajarish (`Evaluation`) ifodalari",
       "lvl1": "`eval()` — Funksiyami yoki Operator?"
     }
   },
@@ -21779,7 +21813,7 @@
       "kabi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Bajarish (`Evaluation`) ifodalari",
       "lvl1": "`eval()`"
     }
   },
@@ -21813,7 +21847,7 @@
       "eval"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Bajarish (`Evaluation`) ifodalari",
       "lvl1": "Global `eval()`"
     }
   },
@@ -21847,13 +21881,13 @@
       "qarang"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Bajarish (`Evaluation`) ifodalari",
       "lvl1": "Qat’iy rejimdagi `eval()`"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.13-miscellaneous-operators-page",
-    "title": "Page",
+    "title": "Turli xil operatorlar",
     "content": "Turli xil operatorlar JavaScript keyingi mavzularda keltirib o'tiladigan bir qator boshqa turli xil operatorlarni ham qo‘llab-quvvatlaydi. Shartli operator ( ) Shartli operator JavaScript'dagi yagona uchlik ( ) operatordir (uchta operandli) va ba’zan u aslida _ternar operator_ deb ham ataladi. Bu op...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.13-miscellaneous-operators",
     "category": "books",
@@ -21881,7 +21915,7 @@
       "operator"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": null
     }
   },
@@ -21915,7 +21949,7 @@
       "shunday"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "Shartli operator (`?:`)"
     }
   },
@@ -21949,7 +21983,7 @@
       "operator"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "Birinchi aniqlangan (`??`)"
     }
   },
@@ -21983,7 +22017,7 @@
       "funksiya"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "`typeof` operatori"
     }
   },
@@ -22017,7 +22051,7 @@
       "kabi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "`delete` operatori"
     }
   },
@@ -22051,7 +22085,7 @@
       "kiritilgan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "`await` operatori"
     }
   },
@@ -22085,7 +22119,7 @@
       "yagona"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "`void` operatori"
     }
   },
@@ -22119,13 +22153,13 @@
       "qanday"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Turli xil operatorlar",
       "lvl1": "Vergul operatori (`,`)"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.2-object-and-array-initializers-page",
-    "title": "Page",
+    "title": "Obyekt va massiv initsializatorlari",
     "content": "Obyekt va massiv initsializatorlari Obyekt va massiv initsializatorlari ( ) — bu qiymati yangi yaratilgan obyekt yoki massiv bo‘lgan ifodalardir. Bu initsializator ifodalari ba’zan obyekt literallari va massiv literallari deb ham ataladi. Biroq haqiqiy literallardan farqli o‘laroq, ular birlamchi if...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.2-object-and-array-initializers",
     "category": "books",
@@ -22138,9 +22172,9 @@
       "frontend",
       "massiv",
       "obyekt",
+      "initsializatorlari",
       "initsializatori",
       "mumkin",
-      "initsializatorlari",
       "ifodalari",
       "literallari",
       "element",
@@ -22153,13 +22187,13 @@
       "bilan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Obyekt va massiv initsializatorlari",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.3-function-definition-expressions-page",
-    "title": "Page",
+    "title": "Funksiya ta’rifi ifodalari",
     "content": "Funksiya ta’rifi ifodalari Funksiya ta’rifi ifodasi — bu JavaScript funksiyasini yaratishga xizmat qiluvchi ifodadir va uning yakuniy qiymati aynan o‘sha yangi yaratilgan funksiyaning o‘zi bo‘ladi. Qaysidir ma’noda, obyekt initsializatori \"obyekt literali\" vazifasini o‘tagani kabi, funksiya ta’rifi ...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.3-function-definition-expressions",
     "category": "books",
@@ -22173,10 +22207,10 @@
       "funksiya",
       "rifi",
       "ham",
+      "ifodalari",
       "ifodasi",
       "mumkin",
       "undan",
-      "ifodalari",
       "javascript",
       "yangi",
       "obyekt",
@@ -22187,13 +22221,13 @@
       "funksiyalarni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Funksiya ta’rifi ifodalari",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.4-property-access-expressions-page",
-    "title": "Page",
+    "title": "Xossalarga murojaat qilish ifodalari",
     "content": "Xossalarga murojaat qilish ifodalari Xossaga murojaat qilish ifodasi (Property access expression) obyekt xossasining yoki massiv elementining qiymatini ifodalaydi. JavaScript xossaga murojaat qilish uchun ikki xil sintaksisni taqdim etadi: Birinchi uslubdagi xossaga murojaat ifodasi, biror ifodadan ...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.4-property-access-expressions",
     "category": "books",
@@ -22211,56 +22245,22 @@
       "xossa",
       "qiymati",
       "xossaga",
-      "ladi",
       "qilish",
+      "ladi",
       "uchun",
       "ikki",
       "lsa",
       "obyekt",
       "baholanadi",
-      "identifikator"
+      "xossalarga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Xossalarga murojaat qilish ifodalari",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.4-property-access-expressions-page-section-0",
-    "title": "Xossalarga murojaat qilish ifodalari",
-    "content": "Xossaga murojaat qilish ifodasi (Property access expression) obyekt xossasining yoki massiv elementining qiymatini ifodalaydi. JavaScript xossaga murojaat qilish uchun ikki xil sintaksisni taqdim etad...",
-    "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.4-property-access-expressions#xossalarga-murojaat-qilish-ifodalari",
-    "category": "books",
-    "tags": [
-      "javascript-definitive-guide",
-      "tutorial",
-      "guide",
-      "react",
-      "javascript",
-      "frontend",
-      "murojaat",
-      "xossaga",
-      "yoki",
-      "ifoda",
-      "qiymati",
-      "qilish",
-      "ikki",
-      "identifikator",
-      "xossaning",
-      "agar",
-      "obyekt",
-      "birinchi",
-      "keyin",
-      "ladi",
-      "kvadrat"
-    ],
-    "hierarchy": {
-      "lvl0": "Page",
-      "lvl1": "Xossalarga murojaat qilish ifodalari"
-    }
-  },
-  {
-    "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.4-property-access-expressions-page-section-1",
     "title": "Shartli xossa murojaati (Conditional property access)",
     "content": "ES2020 xossaga murojaat qilish ifodalarining ikki yangi turini qo‘shdi: JavaScript'da va qiymatlari xossalarga ega bo‘lmagan yagona ikki qiymatdir. yoki yordamidagi oddiy xossa murojaati ifodasida, ag...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.4-property-access-expressions#shartli-xossa-murojaati-conditional-property-access",
@@ -22289,13 +22289,13 @@
       "xossaga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Xossalarga murojaat qilish ifodalari",
       "lvl1": "Shartli xossa murojaati (Conditional property access)"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.5-invocation-expressions-page",
-    "title": "Page",
+    "title": "Funksiyani chaqirish ifodalari",
     "content": "Funksiyani chaqirish ifodalari Chaqiruv ifodasi ( ) — bu JavaScript'da funksiya yoki metodni chaqirish (yoki bajarish) uchun mo‘ljallangan sintaksisdir. U chaqirilishi kerak bo‘lgan funksiyani aniqlovchi funksiya ifodasi bilan boshlanadi. Funksiya ifodasidan keyin ochuvchi qavs, nolta yoki undan ort...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.5-invocation-expressions",
     "category": "books",
@@ -22313,17 +22313,17 @@
       "uchun",
       "bilan",
       "ifodasi",
+      "ifodalari",
       "argument",
       "lsa",
       "ham",
-      "ifodalari",
+      "funksiyani",
       "bir",
       "qiymati",
-      "lishi",
-      "ifoda"
+      "lishi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Funksiyani chaqirish ifodalari",
       "lvl1": null
     }
   },
@@ -22357,13 +22357,13 @@
       "yordamida"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Funksiyani chaqirish ifodalari",
       "lvl1": "Shartli chaqiruv"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.6-object-creation-expressions-page",
-    "title": "Page",
+    "title": "Obyekt yaratish ifodalari",
     "content": "Obyekt yaratish ifodalari Obyekt yaratish ifodasi yangi obyekt yaratadi va bu obyektning xossalarini initsializatsiya qilish uchun biror funksiyani (bu funksiya konstruktor deb ataladi) chaqiradi. Obyekt yaratish ifodalari chaqiruv ifodalariga o‘xshaydi, faqat ulardan oldin kalit so‘zi keladi: Agar ...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.6-object-creation-expressions",
     "category": "books",
@@ -22391,13 +22391,13 @@
       "funksiya"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Obyekt yaratish ifodalari",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.7-operator-overview-page",
-    "title": "Page",
+    "title": "Operatorlarga umumiy nazar",
     "content": "Operatorlarga umumiy nazar Operatorlar JavaScript'ning arifmetik ifodalari, taqqoslash ifodalari, mantiqiy ifodalari, tayinlash ifodalari va boshqalar uchun ishlatiladi. 4-1-jadval operatorlarni umumlashtiradi va qulay ma’lumotnoma bo‘lib xizmat qiladi. E’tibor bering, ko'p operatorlar va kabi tinis...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.7-operator-overview",
     "category": "books",
@@ -22425,7 +22425,7 @@
       "bir"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": null
     }
   },
@@ -22459,7 +22459,7 @@
       "ularning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Operandlar soni"
     }
   },
@@ -22493,7 +22493,7 @@
       "lekin"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Operand va natija tiplari"
     }
   },
@@ -22527,7 +22527,7 @@
       "operatori"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Operatorlarning qo‘shimcha ta’sirlari"
     }
   },
@@ -22561,7 +22561,7 @@
       "bilan"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Operatorlarning bajarilish ustuvorligi"
     }
   },
@@ -22595,7 +22595,7 @@
       "assotsiativligini"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Operatorlarning assotsiativligi"
     }
   },
@@ -22629,13 +22629,13 @@
       "murakkab"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Operatorlarga umumiy nazar",
       "lvl1": "Bajarilish tartibi"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.8-arithmetic-expressions-page",
-    "title": "Page",
+    "title": "Arifmetik ifodalar",
     "content": "Arifmetik ifodalar Ushbu mavzu o‘z operandlari ustida arifmetik yoki boshqa sonli amallarni bajaradigan operatorlarni qamrab oladi. Darajaga ko‘tarish, ko‘paytirish, bo‘lish va ayirish operatorlari tushunarli bo‘lgani uchun birinchi bo‘lib yoritiladi. Qo‘shish operatori esa satrlarni birlashtirish a...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.8-arithmetic-expressions",
     "category": "books",
@@ -22663,7 +22663,7 @@
       "har"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": null
     }
   },
@@ -22697,7 +22697,7 @@
       "lsa"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "`+` operatori"
     }
   },
@@ -22731,7 +22731,7 @@
       "qiymatini"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Birlik arifmetik operatorlar"
     }
   },
@@ -22765,7 +22765,7 @@
       "son"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Birlik plyus (+)"
     }
   },
@@ -22799,7 +22799,7 @@
       "minus"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Birlik minus (-)"
     }
   },
@@ -22833,7 +22833,7 @@
       "zgartiradi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Inkrement (++)"
     }
   },
@@ -22867,7 +22867,7 @@
       "songa"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Dekrement (--)"
     }
   },
@@ -22901,7 +22901,7 @@
       "arifmetik"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Bitli operatorlar"
     }
   },
@@ -22935,7 +22935,7 @@
       "bit"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Bitli VA (`&`)"
     }
   },
@@ -22969,7 +22969,7 @@
       "natijada"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Bitli YOKI (`|`)"
     }
   },
@@ -23003,7 +23003,7 @@
       "har"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Bitli Istisno qiluvchi YOKI (`^`)"
     }
   },
@@ -23037,7 +23037,7 @@
       "girish"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Bitli INKOR (`~`)"
     }
   },
@@ -23071,7 +23071,7 @@
       "bitlarni"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Chapga siljitish (`<<`)"
     }
   },
@@ -23105,7 +23105,7 @@
       "lishga"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Ishorani saqlagan holda o‘ngga siljitish (`>>`)"
     }
   },
@@ -23139,13 +23139,13 @@
       "birinchi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Arifmetik ifodalar",
       "lvl1": "Nol bilan to‘ldirib o‘ngga siljitish (`>>>`)"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-4.9-relational-expressions-page",
-    "title": "Page",
+    "title": "Munosabat ifodalari",
     "content": "Munosabat ifodalari Ushbu mavzuda JavaScript'ning munosabat operatorlarini ( ) ko'rib chiqamiz. Bu operatorlar ikki qiymat o‘rtasidagi munosabatni (masalan, \"teng\", \"kichik\" yoki \"uning xossasi\" ekanligini) tekshiradi va bu munosabat mavjud yoki mavjud emasligiga qarab yoki qiymatini qaytaradi. Muno...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/4.9-relational-expressions",
     "category": "books",
@@ -23173,7 +23173,7 @@
       "satr"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": null
     }
   },
@@ -23207,7 +23207,7 @@
       "ham"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Tenglik va tengsizlik operatorlari"
     }
   },
@@ -23241,7 +23241,7 @@
       "ikkita"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "`=`, `==`, va `===` operatorlari"
     }
   },
@@ -23275,7 +23275,7 @@
       "ikki"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Qat’iy tenglik"
     }
   },
@@ -23309,7 +23309,7 @@
       "tenglik"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Tip konversiyasi bilan tenglik"
     }
   },
@@ -23339,7 +23339,7 @@
       "tekshiradi"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Taqqoslash operatorlari"
     }
   },
@@ -23370,7 +23370,7 @@
       "holda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Kichik (`<`)"
     }
   },
@@ -23401,7 +23401,7 @@
       "holda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Katta (`>`)"
     }
   },
@@ -23435,7 +23435,7 @@
       "holda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Kichik yoki teng (`<=`)"
     }
   },
@@ -23469,7 +23469,7 @@
       "holda"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Katta yoki teng (`>=`)"
     }
   },
@@ -23503,7 +23503,7 @@
       "uning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Taqqoslash jarayonidagi konversiya qoidalari"
     }
   },
@@ -23537,7 +23537,7 @@
       "harfli"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Satrlarni taqqoslashning nozik jihatlari"
     }
   },
@@ -23571,7 +23571,7 @@
       "satr"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "Operatorlarning tiplarga bog‘liqligi"
     }
   },
@@ -23605,7 +23605,7 @@
       "esa"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "`in` operatori"
     }
   },
@@ -23639,13 +23639,13 @@
       "klassning"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Munosabat ifodalari",
       "lvl1": "`instanceof` operatori"
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-page",
-    "title": "Page",
+    "title": "Ifodalar va Operatorlar",
     "content": "Ifodalar va Operatorlar Ushbu bob JavaScript ifodalari ( ) va bu ifodalarning ko‘pchiligi uchun asos bo‘lib xizmat qiladigan operatorlarni yoritib beradi. Ifoda — bu qiymat hosil qilish uchun bajarilishi ( ) mumkin bo‘lgan JavaScript iborasidir. Dasturingizga literal sifatida kiritilgan konstanta ju...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators",
     "category": "books",
@@ -23658,6 +23658,7 @@
       "frontend",
       "ifoda",
       "javascript",
+      "ifodalar",
       "uchun",
       "lib",
       "qiymat",
@@ -23668,18 +23669,17 @@
       "ifodalovchi",
       "bir",
       "operator",
-      "ifodalar",
-      "ushbu",
-      "bob"
+      "operatorlar",
+      "ushbu"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "Ifodalar va Operatorlar",
       "lvl1": null
     }
   },
   {
     "id": "book-javascript-definitive-guide-4-expressions-and-operators-summary-page",
-    "title": "Page",
+    "title": "JavaScript",
     "content": "Xulosa Ushbu bob juda ko‘p turli xil mavzularni qamrab oldi va bu yerda siz JavaScript'ni o‘rganishda davom etar ekansiz, kelajakda qayta o‘qishni xohlashingiz mumkin bo‘lgan ko‘plab ma’lumotnoma materiallari mavjud. Biroq eslab qolish kerak bo‘lgan ba’zi asosiy nuqtalar quyidagilardir: - Ifodalar —...",
     "url": "/books/javascript-definitive-guide/4-expressions-and-operators/summary",
     "category": "books",
@@ -23707,7 +23707,7 @@
       "mantiqiy"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": null
     }
   },
@@ -23741,7 +23741,7 @@
       "mantiqiy"
     ],
     "hierarchy": {
-      "lvl0": "Page",
+      "lvl0": "JavaScript",
       "lvl1": "Xulosa"
     }
   }

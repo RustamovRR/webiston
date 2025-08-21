@@ -13,6 +13,7 @@ const InfoSection: React.FC = () => {
   return (
     <div className="mt-12">
       <SectionTitle
+        href=""
         icon={<FileText className="h-6 w-6" />}
         title={t('Info.title')}
         description={t('Info.description')}
