@@ -1,0 +1,27 @@
+# Obyektlarga kirish
+
+Obyekt — bu **murakkab (`composite`)** qiymatdir: u bir nechta qiymatlarni (primitiv qiymatlar yoki boshqa obyektlarni) bir joyga to‘playdi va sizga bu qiymatlarni nom orqali saqlash hamda olish imkonini beradi. Obyekt — bu har birining nomi va qiymati bo‘lgan xossalarning tartiblanmagan to‘plamidir. Xossa nomlari odatda satrlar bo‘ladi (garchi §6.10.3-bo‘limda ko‘rib chiqadiganimizdek, xossa nomlari `Symbol`'lar ham bo‘lishi mumkin), shuning uchun obyektlar satrlarni qiymatlarga moslashtiradi (`map` qiladi) deyishimiz mumkin.
+
+Bu satrdan-qiymatga moslashtirish turli nomlar bilan ataladi — ehtimol siz bu fundamental ma’lumotlar tuzilmasi bilan "hesh", "heshtable", "lug‘at" yoki "assotsiativ massiv" nomlari ostida allaqachon tanishdirsiz. Biroq obyekt oddiy satrdan-qiymatga moslashtirishdan ko‘ra ko‘proq narsadir. JavaScript obyekti o‘zining shaxsiy xossalar to‘plamini saqlashdan tashqari, o‘zining **"prototipi"** deb nomlanuvchi boshqa bir obyektning xossalarini ham meros qilib oladi. Obyektning metodlari odatda meros qilib olingan xossalardir va bu **"prototipik merosxo‘rlik" (`prototypal inheritance`)** JavaScript'ning asosiy xususiyatidir.
+
+JavaScript obyektlari **dinamikdir** — odatda xossalarni qo‘shish va o‘chirish mumkin — lekin ulardan statik tipli tillardagi statik obyektlar va "struct"larni simulyatsiya qilish uchun ham foydalanish mumkin. Ular, shuningdek, (satrdan-qiymatga moslashtirishning qiymat qismini e’tiborsiz qoldirib) satrlar to‘plamini ifodalash uchun ham ishlatilishi mumkin.
+
+JavaScript'da satr, son, `Symbol`, `true`, `false`, `null` yoki `undefined` bo‘lmagan har qanday qiymat obyekt hisoblanadi. Va garchi satrlar, sonlar va mantiqiy qiymatlar obyekt bo‘lmasa-da, ular o‘zlarini o‘zgarmas obyektlardek tutishi mumkin.
+
+§3.8-bo‘limdan eslaydigan bo'lsak, obyektlar **o‘zgaruvchandir (`mutable`)** va qiymati bo‘yicha emas, balki **havolasi (`reference`)** bo‘yicha boshqariladi. Agar `x` o‘zgaruvchisi biror obyektga ishora qilsa va `let y = x;` kodi bajarilsa, `y` o‘zgaruvchisi o‘sha obyektning nusxasini emas, balki unga bo‘lgan havolani saqlaydi. `y` o‘zgaruvchisi orqali obyektga kiritilgan har qanday o‘zgartirish `x` o‘zgaruvchisi orqali ham ko‘rinadi.
+
+Obyektlar bilan qilinadigan eng keng tarqalgan amallar — bu ularni yaratish va ularning xossalarini o‘rnatish (set), so‘rash (query), o‘chirish (delete), tekshirish (test) va sanab o‘tishdir (enumerate). Bu fundamental amallar ushbu bobning boshlang‘ich bo‘limlarida keltirib o'tilgan. Undan keyingi bo‘limlar esa yanada takomillashgan mavzularni mujassamlashtiradi.
+
+### Xossalar haqida
+
+Xossa (property) nom va qiymatga ega. Xossa nomi har qanday satr, jumladan, bo‘sh satr (yoki har qanday `Symbol`) bo‘lishi mumkin, lekin hech bir obyekt bir xil nomdagi ikkita xossaga ega bo‘la olmaydi. Qiymat (value) esa har qanday JavaScript qiymati bo‘lishi, yoki u **getter** yoxud **setter** funksiyasi (yoki ikkalasi ham) bo‘lishi mumkin. _Getter_ va _setter_ funksiyalari haqida §6.10.6-bo‘limda o‘rganamiz.
+
+Ba’zan to‘g‘ridan-to‘g‘ri obyektning o‘zida aniqlangan xossalar bilan prototip obyektidan meros qilib olingan xossalarni farqlay olish muhimdir. JavaScript meros qilib olinmagan xossalarga ishora qilish uchun **xususiy xossa (`own property`)** atamasidan foydalanadi.
+
+O‘zining nomi va qiymatidan tashqari, har bir xossa uchta **xossa atributiga** ega:
+
+- **`writable` (yoziladigan)** atributi xossaning qiymatini o‘rnatish mumkinmi yoki yo‘qligini belgilaydi.
+- **`enumerable` (sanab o‘tiladigan)** atributi xossa nomi `for/in` sikli tomonidan qaytarilishi mumkinmi yoki yo‘qligini belgilaydi.
+- **`configurable` (sozlanadigan)** atributi xossani o‘chirish mumkinligi va uning atributlarini o‘zgartirish mumkinligini belgilaydi.
+
+JavaScript'ning ko‘plab ichki o‘rnatilgan obyektlari faqat o‘qish uchun mo‘ljallangan, sanab o‘tilmaydigan yoki sozlanmaydigan xossalarga ega. Biroq standart holatda, siz yaratgan obyektlarning barcha xossalari yoziladigan, sanab o‘tiladigan va sozlanadigan bo‘ladi. §14.1-bo‘limda obyektlaringiz uchun standart bo‘lmagan xossa atribut qiymatlarini belgilash usullari tushuntirilgan.
