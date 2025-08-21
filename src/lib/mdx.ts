@@ -196,6 +196,7 @@ export async function getTutorialInfo(tutorialId: string) {
       id: tutorialId,
       title: getTutorialTitle(tutorialId),
       description: getTutorialDescription(tutorialId),
+      image: getTutorialImage(tutorialId),
       navigation,
     }
 
@@ -210,7 +211,7 @@ export async function getTutorialInfo(tutorialId: string) {
 export function getTutorialTitle(tutorialId: string): string {
   const titles: Record<string, string> = {
     'fluent-react': 'Fluent React',
-    // Boshqa tutoriallar qo'shilganda bu yerga qo'shamiz
+    'javascript-definitive-guide': 'JavaScript Definitive Guide',
   }
 
   return titles[tutorialId] || tutorialId
@@ -220,18 +221,29 @@ export function getTutorialTitle(tutorialId: string): string {
 function getTutorialDescription(tutorialId: string): string {
   const descriptions: Record<string, string> = {
     'fluent-react': "React'ni chuqur o'rganish uchun to'liq qo'llanma",
-    // Boshqa tutoriallar qo'shilganda bu yerga qo'shamiz
+    'javascript-definitive-guide': "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma",
   }
 
   return descriptions[tutorialId] || "Dasturlash bo'yicha qo'llanma"
+}
+
+// Tutorial rasmini olish
+export function getTutorialImage(tutorialId: string): string {
+  const images: Record<string, string> = {
+    'fluent-react': 'https://www.oreilly.com/covers/urn:orm:book:9781098138707/900w/',
+    'javascript-definitive-guide': 'https://www.oreilly.com/covers/urn:orm:book:9781491952016/900w/',
+  }
+
+  return images[tutorialId] || '/assets/default-cover.png'
 }
 
 // Barcha tutoriallar ro'yxatini olish
 export async function getAllTutorials() {
   try {
     // Static qilib qo'yamiz, chunki bizda faqat bitta tutorial bor
-    const tutorialInfo = await getTutorialInfo('fluent-react')
-    return tutorialInfo ? [tutorialInfo] : []
+    const fluentReact = await getTutorialInfo('fluent-react')
+    const javascriptDefinitiveGuide = await getTutorialInfo('javascript-definitive-guide')
+    return [fluentReact, javascriptDefinitiveGuide]
   } catch (error) {
     console.error('Error getting all tutorials:', error)
     return []

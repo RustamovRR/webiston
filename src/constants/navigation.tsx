@@ -58,6 +58,29 @@ export const REACT_CHAPTERS = [
   },
 ]
 
+export const JAVASCRIPT_CHAPTERS = [
+  {
+    href: '/books/javascript-definitive-guide/1-introduction-to-javascript',
+    title: "JavaScript'ga kirish",
+    description: "JavaScript asoslari va uning veb-dasturlashdagi o'rni.",
+  },
+  {
+    href: '/books/javascript-definitive-guide/2-lexical-structure',
+    title: 'Leksik tuzilma',
+    description: "JavaScript kodining leksik tuzilishi, o'zgaruvchilar, izohlar va boshqalar.",
+  },
+  {
+    href: '/books/javascript-definitive-guide/3-types-and-variables',
+    title: "Tiplar va o'zgaruvchilar",
+    description: "JavaScript'dagi ma'lumotlar turlari va o'zgaruvchilar bilan ishlash.",
+  },
+  {
+    href: '/books/javascript-definitive-guide/4-expressions-and-operators',
+    title: 'Ifodalar va operatorlar',
+    description: "JavaScript'dagi arifmetik, mantiqiy va boshqa operatorlar.",
+  },
+]
+
 export const socialLinks = [
   {
     id: 1,

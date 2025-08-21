@@ -20,7 +20,7 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
         {tutorialData?.description && <p className="text-muted-foreground text-lg">{tutorialData.description}</p>}
       </div>
 
-      <div className="bg-card rounded-md border p-8 pt-0">
+      <div className="bg-card mb-8 rounded-md border p-8 pt-0">
         <h2 className="mb-4 text-xl font-semibold">Boshlash</h2>
         <p className="text-muted-foreground mb-4">
           Ushbu darslikka xush kelibsiz! O'rganishni boshlash uchun yon panel navigatsiyasidan mavzuni tanlang.
@@ -33,7 +33,7 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
               {navigationItems.map((item, index) => (
                 <li key={item.path || index}>
                   <Link
-                    href={`fluent-react/${item.path}`}
+                    href={`${tutorialId}/${item.path}`}
                     key={index}
                     className="text-muted-foreground duration-300 hover:text-white"
                   >

@@ -1,0 +1,19 @@
+---
+title: Funksiya ta’rifi ifodalari
+description: "Funksiya ifodalari: function deklaratsiyasi vs ifodasi, nomlangan/no‑name ifodalar, arrow function’lar va “funksiya literali” g‘oyasi."
+keywords: JavaScript, function expression, function declaration, named function, anonymous, arrow function, function literal
+author: Webiston.uz
+---
+
+# Funksiya ta’rifi ifodalari
+
+**Funksiya ta’rifi ifodasi** — bu JavaScript funksiyasini yaratishga xizmat qiluvchi ifodadir va uning yakuniy qiymati aynan o‘sha yangi yaratilgan funksiyaning o‘zi bo‘ladi. Qaysidir ma’noda, obyekt initsializatori "obyekt literali" vazifasini o‘tagani kabi, funksiya ta’rifi ifodasini ham "funksiya literali" deb hisoblash mumkin.
+
+Funksiya ta’rifi ifodasi odatda quyidagi qismlardan tarkib topadi: `function` kalit so‘zi, undan keyin keladigan qavslar ichidagi nolta yoki undan ortiq parametr nomlari (vergul bilan ajratilgan holda) va jingalak qavslar ichiga olingan JavaScript kodi bloki, ya’ni **funksiya tanasi**. Masalan:
+
+``` js
+// Bu funksiya o‘ziga uzatilgan qiymatning kvadratini qaytaradi.
+let square = function(x) { return x * x; };
+```
+
+Funksiya ta’rifi ifodasi o‘zi yaratayotgan funksiya uchun nomni ham o‘z ichiga olishi mumkin. Shuni ham aytib o‘tish kerakki, funksiyalarni ifoda yordamida emas, balki **funksiya ko‘rsatmasi (`function statement`)** orqali ham ta’riflash mumkin. ES6 va undan keyingi versiyalarda esa funksiya ifodalari uchun yangi, ixcham **"strelkali funksiya" (`arrow function`)** sintaksisi ham mavjud. Funksiyalarni ta’riflashning barcha jihatlari 8-bobda batafsil yoritiladi.

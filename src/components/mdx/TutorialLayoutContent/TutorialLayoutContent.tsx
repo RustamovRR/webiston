@@ -113,7 +113,7 @@ export default function TutorialLayoutContent({
             <Link
               href={item.path}
               title={item.title}
-              className="hover:text-foreground max-w-[150px] text-sm font-medium transition-colors max-sm:max-w-[100px]"
+              className="hover:text-foreground max-w-[150px] truncate text-sm font-medium transition-colors max-sm:max-w-[100px]"
             >
               {item.title}
             </Link>

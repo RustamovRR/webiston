@@ -314,6 +314,7 @@ Content-Length: 123`}
         className="mt-12"
       >
         <SectionTitle
+          href=""
           icon={<Server className="h-6 w-6" />}
           title="HTTP Status Kodlari Haqida"
           description="Web development uchun zarur bo'lgan ma'lumotlar"

@@ -59,7 +59,7 @@ export default function Callout({ children, type = 'info', title, icon, classNam
   return (
     <div
       className={cn(
-        'my-6 rounded-lg border p-4 py-6 shadow-sm [&_h4]:!mt-0 dark:[&_h4_a]:!text-white',
+        'my-6 rounded-lg border p-4 py-6 pr-12 shadow-sm [&_h2]:!mt-0 [&_h3]:!mt-0 dark:[&_h3_a]:!text-white [&_h4]:!mt-0 dark:[&_h4_a]:!text-white',
         styles.containerClass,
         className,
       )}
@@ -67,7 +67,7 @@ export default function Callout({ children, type = 'info', title, icon, classNam
       <div className="flex items-start space-x-3">
         <div className="flex-shrink-0 pt-0.5">{icon || styles.icon}</div>
         <div>
-          <div className={cn('prose', styles.textClass)}>{children}</div>
+          <div className={cn('[&_p]:py-2', styles.textClass)}>{children}</div>
         </div>
       </div>
     </div>

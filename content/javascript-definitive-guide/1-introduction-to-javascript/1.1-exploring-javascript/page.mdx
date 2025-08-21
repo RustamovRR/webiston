@@ -1,0 +1,45 @@
+---
+title: JavaScript’ni tadqiq qilish
+description: Brauzer konsoli va Node REPL’da kodni sinash, tajriba qilish va tilni faol o‘rganish. Developer Tools’dan foydalanish, interaktiv seanslar, tezkor natijalar va samarali mashq qilish yo‘llari.
+keywords: JavaScript, brauzer konsoli, Developer Tools, Node REPL, interaktiv, tajriba, o‘rganish, boshlang‘ich, tez sinash, webiston
+author: Webiston.uz
+---
+
+# JavaScript’ni tadqiq qilish
+
+Yangi dasturlash tilini o'rganayotganda kitobdagi misollarni sinab ko'rish, keyin ularni o'zgartirish va tilni tushunganingizni tekshirish uchun yana qayta sinab ko'rish muhimdir. Buning uchun sizga JavaScript interpretatori kerak bo'ladi.
+
+### Brauzer konsoli orqali JavaScript’ni sinab ko'rish
+
+JavaScript’ning bir necha qatorini sinab ko'rishning eng oson yo'li - veb-brauzeringizda dasturchi vositalarini (developer tools) ochish (buning uchun `F12`, `Ctrl+Shift+I` yoki `Command+Option+I` tugmalaridan foydalaning) va Konsol (Console) yorlig'ini tanlash. Shundan so‘ng, taklif satrida (prompt) kod yozishingiz va natijalarni darhol ko‘rib borishingiz mumkin. Brauzerning dasturchi vositalari dasturchi vositalari odatda brauzer oynasining pastki yoki o'ng qismida panel sifatida paydo bo'ladi, lekin odatda ularni alohida oynalar sifatida ajratib olish mumkin (1-1 rasmda ko'rsatilganidek), bu ko'pincha juda qulay hisoblanadi.
+
+![Firefox'ning dasturchi vositalaridagi JavaScript konsoli](/javascript-definitive-guide/developer-tools.png)
+_1-1 rasm. Firefox'ning Dasturchi Vositalari’dagi JavaScript konsoli_ 
+
+### Node orqali JavaScript’ni sinab ko'rish
+
+JavaScript kodini sinab ko'rishning yana bir usuli - bu https://nodejs.org saytidan Node’ni yuklab olib o'rnatishdir. Node tizimingizga o'rnatilgandan so'ng, Terminal oynasini ochib, quyidagidek interaktiv JavaScript sessiyasini boshlash uchun shunchaki `node` deb yozishingiz mumkin:
+
+```bash
+$ node
+Welcome to Node.js v12.13.0.
+Type ".help" for more information.
+> .help
+.break Sometimes you get stuck, this gets you out
+.clear Alias for .break
+.editor Enter editor mode
+.exit Exit the repl
+.help Print this help message
+.load Load JS from a file into the REPL session
+.save Save all evaluated commands in this REPL session to a file
+
+Press ^C to abort current expression, ^D to exit the repl
+> let x = 2, y = 3;
+undefined
+> x + y
+5
+> (x === 2) && (y === 3)
+true
+> (x > 3) || (y < 3)
+false
+```
