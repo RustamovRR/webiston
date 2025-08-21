@@ -197,6 +197,7 @@ export async function getTutorialInfo(tutorialId: string) {
       title: getTutorialTitle(tutorialId),
       description: getTutorialDescription(tutorialId),
       image: getTutorialImage(tutorialId),
+      copyright: getCopyrightText(tutorialId),
       navigation,
     }
 
@@ -230,11 +231,22 @@ function getTutorialDescription(tutorialId: string): string {
 // Tutorial rasmini olish
 export function getTutorialImage(tutorialId: string): string {
   const images: Record<string, string> = {
-    'fluent-react': 'https://www.oreilly.com/covers/urn:orm:book:9781098138707/900w/',
-    'javascript-definitive-guide': 'https://www.oreilly.com/covers/urn:orm:book:9781491952016/900w/',
+    'fluent-react': '/fluent-react/book-logo.jpeg',
+    'javascript-definitive-guide': '/javascript-definitive-guide/book-logo.jpeg',
   }
 
   return images[tutorialId] || '/assets/default-cover.png'
+}
+
+// Tutorial mualliflik huquqi matnini olish
+function getCopyrightText(tutorialId: string): string {
+  const copyrights: Record<string, string> = {
+    'javascript-definitive-guide':
+      "Ushbu kitobning o'zbekcha tarjimasi: JavaScript: The Definitive Guide, 7-nashr, David Flanagan. Mualliflik huquqi 2020 David Flanagan. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
+    'fluent-react':
+      "Ushbu kitobning o'zbekcha tarjimasi: Fluent React, Tejas Kumar. Mualliflik huquqi 2024 Tejas Kumar. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
+  }
+  return copyrights[tutorialId] || ''
 }
 
 // Barcha tutoriallar ro'yxatini olish

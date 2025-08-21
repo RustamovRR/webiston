@@ -31,7 +31,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
     },
     {
       id: 'javascript-definitive-guide',
-      title: 'JavaScript Definitive Guide',
+      title: 'JavaScript The Definitive Guide',
       description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
     },
   ]
