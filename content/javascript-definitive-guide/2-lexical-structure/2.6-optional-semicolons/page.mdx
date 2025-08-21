@@ -1,3 +1,9 @@
+---
+title: Ixtiyoriy nuqta-vergullar
+description: "Avtomatik nuqta‑vergul qo‘yish (ASI): qator uzilishlari talqini, himoyalovchi `;` ishlatish, `return/throw/break/continue` istisnolari, `++/--` va strelkali funksiyalar bilan nozik holatlar."
+keywords: JavaScript, ASI, semicolon, line break, return, throw, break, continue, ++, --, arrow function, pitfalls
+author: Webiston.uz
+---
 # Ixtiyoriy nuqta-vergullar
 
 Ko'plab dasturlash tillari singari, JavaScript ham ko'rsatmalarni (statements) (5-bobga qarang) bir-biridan ajratish uchun nuqta-verguldan ( `;` ) foydalanadi. Bu kodingiz ma'nosini aniq qilish uchun muhimdir: ajratuvchisiz bir ko'rsatmaning oxiri keyingisining boshi bo'lib tuyulishi yoki aksincha bo'lishi mumkin. JavaScript’da, agar ikki ko'rsatma alohida qatorlarda yozilgan bo'lsa, odatda ular orasidagi nuqta-vergulni tushirib qoldirishingiz mumkin. (Shuningdek, dastur oxiridagi yoki dasturdagi keyingi token yopuvchi jingalak qavs ( `}` ) bo'lsa ham nuqta-vergulni tushirib qoldirsa bo‘ladi.) Ko'p JavaScript dasturchilari (va ushbu kitobdagi kod) ko'rsatmalar oxirini aniq belgilash uchun, hatto talab qilinmagan joylarda ham nuqta-vergullardan foydalanadi. Boshqa bir uslub esa nuqta-vergullarni iloji boricha tushirib qoldirib, faqat talab qilinadigan sanoqli holatlardagina ishlatishdir. Qaysi uslubni tanlashingizdan qat'i nazar, JavaScript’dagi ixtiyoriy nuqta-vergullar haqida tushunishingiz kerak bo'lgan bir necha tafsilotlar mavjud.

@@ -136,7 +136,6 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
   // On mount, mark hydrated; do NOT merge with saved accordion state to avoid multiple open
   useEffect(() => {
     setIsHydrated(true)
-     
   }, [])
 
   // Save accordion state to sessionStorage whenever it changes
