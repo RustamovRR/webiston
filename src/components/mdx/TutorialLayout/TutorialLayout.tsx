@@ -61,9 +61,9 @@ export default function TutorialLayout({
           variant="ghost"
           size="icon"
           className={cn(
-            'absolute top-[21px] left-[calc(100%+0.3rem)] h-10 w-10 cursor-pointer transition-transform duration-500 ease-in-out',
+            'absolute top-[21px] left-[calc(100%+0.3rem)] h-10 w-10 cursor-pointer transition-all duration-500 ease-in-out',
             {
-              'translate-x-4': !isSidebarOpen,
+              '!left-[calc(100%-0.5rem)] translate-x-4': !isSidebarOpen,
             },
           )}
         >
@@ -74,7 +74,7 @@ export default function TutorialLayout({
       <section className={cn('mr-4 flex-1 overflow-y-auto transition-all duration-300 ease-in-out', className)}>
         <div
           className={cn('mx-auto pt-8 pl-12 transition-transform duration-500 ease-in-out max-lg:pl-4', {
-            'translate-x-4': !isSidebarOpen,
+            'max-w-[calc(100%-1.5rem)] translate-x-4 overflow-x-hidden pl-8': !isSidebarOpen,
           })}
         >
           <TutorialLayoutContent tutorialTitle={tutorialTitle} navigationItems={navigationItems} pageTitle={pageTitle}>

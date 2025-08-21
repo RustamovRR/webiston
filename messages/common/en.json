@@ -9,12 +9,12 @@
     "description": "Webiston — free education and useful tools for modern web technologies. All the resources you need for learning and development in one place.",
     "startLearning": "Start Learning",
     "usefulTools": "Useful Tools",
-    "reactSectionTitle": "Mastering <i>React</i>",
-    "reactSectionDescription": "An in-depth guide to the React library, from the basics to the most advanced concepts, available for free in Uzbek.",
+    "reactSectionTitle": "Fluent React",
+    "reactSectionDescription": "A deep dive into the fundamental concepts of React. From component logic to advanced architectural patterns—everything you need to master React professionally, available for free in Uzbek.",
     "toolsSectionTitle": "Developer Tools",
     "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
-    "jsSectionTitle": "<i>JavaScript</i> from Scratch",
-    "jsSectionDescription": "A comprehensive course on modern JavaScript. Coming soon..."
+    "jsSectionTitle": "JavaScript: The Definitive Guide",
+    "jsSectionDescription": "The complete Uzbek translation of the classic masterpiece on JavaScript. From the foundational principles to the most advanced features—everything you need in a single guide."
   },
   "Metadata": {
     "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",

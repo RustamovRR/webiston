@@ -1,6 +1,8 @@
-import { CircleIcon, ReactIcon, JavascriptIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
+import { CircleIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
 import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
-import { REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
+import { JAVASCRIPT_CHAPTERS, REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
+import { getTutorialImage } from '@/lib/mdx'
+import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { Metadata } from 'next'
 
@@ -197,7 +199,7 @@ export default async function HomePage() {
 
       {/* Main Content */}
       <div className="w-full px-16 pb-16 max-sm:px-6">
-        <header className="background-pattern mt-8 flex h-full min-h-screen w-full flex-col items-center gap-10 p-10 pt-20 text-center max-lg:px-0">
+        <header className="background-pattern mt-8 flex h-full min-h-screen w-full flex-col items-center gap-10 p-10 pt-20 text-center max-[471px]:min-h-[120vh] max-lg:px-0">
           <div className="horizontal-line-1 max-sm:hidden"></div>
           <div className="horizontal-line-2 max-sm:hidden"></div>
           <div className="horizontal-line-3 max-sm:hidden"></div>
@@ -238,13 +240,42 @@ export default async function HomePage() {
           </div>
         </header>
 
-        <section className="group flex w-full flex-col gap-8 max-[494px]:mt-10">
+        <section className="group mx-auto flex w-full max-w-[1536px] flex-col gap-8">
           <SectionTitle
-            title={tHome.rich('reactSectionTitle', {
-              i: (chunks) => <i>{chunks}</i>,
-            })}
+            title="JavaScript: The Definitive Guide, 7th Edition"
+            href="/books/javascript-definitive-guide"
+            description={tHome('jsSectionDescription')}
+            icon={
+              <Image
+                src={getTutorialImage('javascript-definitive-guide')}
+                alt="JavaScript: The Definitive Guide, 7th Edition"
+                width={40}
+                height={40}
+                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
+              />
+            }
+          />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+            {JAVASCRIPT_CHAPTERS.map((card, index) => (
+              <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
+            ))}
+          </div>
+        </section>
+
+        <section className="group 8 mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
+          <SectionTitle
+            title="Fluent React"
+            href="/books/fluent-react"
             description={tHome('reactSectionDescription')}
-            icon={<ReactIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
+            icon={
+              <Image
+                src={getTutorialImage('fluent-react')}
+                alt="Fluent React"
+                width={40}
+                height={40}
+                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
+              />
+            }
           />
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
@@ -254,8 +285,9 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="group mt-12 flex w-full flex-col gap-8">
+        <section className="group mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
           <SectionTitle
+            href="/tools"
             title={tHome('toolsSectionTitle')}
             description={tHome('toolsSectionDescription')}
             icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
@@ -271,17 +303,6 @@ export default async function HomePage() {
               />
             ))}
           </div>
-        </section>
-
-        <section className="mt-12 flex w-full flex-col gap-8">
-          <SectionTitle
-            title={tHome.rich('jsSectionTitle', {
-              i: (chunks) => <i>{chunks}</i>,
-            })}
-            description={tHome('jsSectionDescription')}
-            icon={<JavascriptIcon className="h-10 w-10" />}
-            disabled
-          />
         </section>
       </div>
     </>

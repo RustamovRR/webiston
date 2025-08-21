@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getAllTutorials } from '@/lib/mdx'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 
 export const metadata: Metadata = {
@@ -265,21 +266,14 @@ export default async function BooksPage() {
               mo'ljallangan va amaliy misollar bilan boyitilgan.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                JavaScript
-              </span>
-              <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800 dark:bg-green-900 dark:text-green-200">
-                React.js
-              </span>
-              <span className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                Web Development
-              </span>
-              <span className="rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800 dark:bg-orange-900 dark:text-orange-200">
-                Bepul
-              </span>
-              <span className="rounded-full bg-pink-100 px-3 py-1 text-sm text-pink-800 dark:bg-pink-900 dark:text-pink-200">
-                O'zbek tilida
-              </span>
+              {['JavaScript', 'React.js', 'Web Development', 'Bepul', "O'zbek tilida"].map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-zinc-300 bg-zinc-100/80 px-3 py-1 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -288,31 +282,35 @@ export default async function BooksPage() {
               <div className="mb-6">
                 <h2 className="mb-2 text-xl font-semibold">Mavjud Kitoblar ({tutorials.length})</h2>
                 <p className="text-muted-foreground">
-                  Professional dasturchilar tomonidan yozilgan va o'zbek tiliga tarjima qilingan kitoblar
+                  Dunyoning yetakchi dasturchilari tomonidan yozilgan kitoblarning o'zbek tilidagi tarjimalari
                 </p>
               </div>
 
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {tutorials.map((tutorial) => (
-                  <Link key={tutorial.id} href={`/books/${tutorial.id}`}>
-                    <Card className="h-full p-6 transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                      <div className="mb-3">
-                        <span className="inline-block rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                          Kitob
-                        </span>
+                {tutorials?.map((tutorial) => (
+                  <Link key={tutorial?.id} href={`/books/${tutorial?.id}`} className="group block h-full">
+                    <Card className="relative flex h-full flex-col overflow-hidden border-zinc-200 bg-white/80 transition-all duration-200 group-hover:border-zinc-300 group-hover:bg-white group-hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/80 dark:group-hover:border-zinc-600 dark:group-hover:bg-zinc-800/80">
+                      <div className="relative w-full pt-[50%]">
+                        {tutorial?.image && (
+                          <Image
+                            src={tutorial.image}
+                            alt={`${tutorial.title} kitobi muqovasi`}
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                        )}
                       </div>
-                      <h3 className="mb-2 text-xl font-semibold">{tutorial.title}</h3>
-                      <p className="text-muted-foreground mb-4 line-clamp-3">{tutorial.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="text-sm text-blue-600 dark:text-blue-400">
-                          📚 {tutorial.navigation?.length || 0} ta bo'lim
-                        </div>
-                        <div className="text-sm font-medium text-green-600 dark:text-green-400">Bepul</div>
-                      </div>
-                      <div className="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700">
-                        <div className="text-muted-foreground flex items-center text-sm">
-                          <span className="mr-2">🌐</span>
-                          O'zbek tilida
+                      <div className="flex flex-1 flex-col px-6">
+                        <h3 className="mb-2 text-xl font-semibold">{tutorial?.title}</h3>
+                        <p className="text-muted-foreground line-clamp-3 flex-grow pb-4">{tutorial?.description}</p>
+                        <div className="mt-auto flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                          <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                            📚 {tutorial?.navigation?.length || 0} ta bo'lim
+                          </div>
+                          <div className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Bepul
+                          </div>
                         </div>
                       </div>
                     </Card>
@@ -322,36 +320,40 @@ export default async function BooksPage() {
 
               {/* Additional SEO Content */}
               <div className="prose prose-gray dark:prose-invert mt-12 max-w-none">
-                <h2>Nima uchun bizning kitoblarimizni tanlash kerak?</h2>
+                <h2>Nima uchun bu resursdan foydalanish kerak?</h2>
                 <div className="not-prose grid gap-6 md:grid-cols-2">
-                  <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950">
-                    <h3 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">🎯 Professional Sifat</h3>
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      Barcha kitoblar tajribali dasturchilar tomonidan yozilgan va professional standartlarga javob
-                      beradi.
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-green-50 p-4 dark:bg-green-950">
-                    <h3 className="mb-2 font-semibold text-green-900 dark:text-green-100">💰 To'liq Bepul</h3>
-                    <p className="text-sm text-green-800 dark:text-green-200">
-                      Barcha kitoblar va materiallar to'liq bepul. Hech qanday yashirin to'lovlar yo'q.
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-purple-50 p-4 dark:bg-purple-950">
-                    <h3 className="mb-2 font-semibold text-purple-900 dark:text-purple-100">🇺🇿 O'zbek Tilida</h3>
-                    <p className="text-sm text-purple-800 dark:text-purple-200">
-                      Barcha kitoblar o'zbek tiliga professional tarjima qilingan va mahalliy kontekstga
-                      moslashtirilgan.
-                    </p>
-                  </div>
-                  <div className="rounded-lg bg-orange-50 p-4 dark:bg-orange-950">
-                    <h3 className="mb-2 font-semibold text-orange-900 dark:text-orange-100">
-                      📱 Zamonaviy Texnologiyalar
-                    </h3>
-                    <p className="text-sm text-orange-800 dark:text-orange-200">
-                      Eng so'nggi va mashhur dasturlash texnologiyalari bo'yicha yangilangan materiallar.
-                    </p>
-                  </div>
+                  {[
+                    {
+                      icon: '🎯',
+                      title: 'Ishonchli Manbalar',
+                      text: 'Kitoblar xalqaro miqyosda tan olingan mualliflar tomonidan yozilgan va biz ularni sifatli tarjima qilamiz.',
+                    },
+                    {
+                      icon: '💰',
+                      title: "To'liq Bepul va Ochiq Kodli",
+                      text: "Barcha materiallar bepul va ochiq kodli. Bilim olish hammaga ochiq bo'lishi kerak.",
+                    },
+                    {
+                      icon: '🇺🇿',
+                      title: "Ona Tilida O'rganish",
+                      text: "Murakkab texnologiyalarni o'zbek tilida, tushunarli va izchil o'rganish imkoniyati.",
+                    },
+                    {
+                      icon: '📱',
+                      title: 'Eng So‘nggi Bilimlar',
+                      text: "Dasturlash olamidagi eng so'nggi va dolzarb texnologiyalar bo'yicha qo'llanmalar.",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.title}
+                      className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                    >
+                      <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-100">
+                        {item.icon} {item.title}
+                      </h3>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">{item.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </>

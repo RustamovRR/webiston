@@ -9,12 +9,12 @@
     "description": "Webiston — zamonaviy veb texnologiyalar bo'yicha bepul ta'lim va dasturchilar uchun foydali vositalar to'plami. Bilim olish va rivojlanish uchun barcha kerakli resurslar bir joyda.",
     "startLearning": "O'rganishni boshlash",
     "usefulTools": "Foydali vositalar",
-    "reactSectionTitle": "<i>React</i>ni mukammal o'rganish",
-    "reactSectionDescription": "React kutubxonasining ichki dunyosiga chuqur sayohat. Asoslardan boshlab eng murakkab tushunchalargacha, barchasi bepul va o'zbek tilida.",
+    "reactSectionTitle": "Fluent React",
+    "reactSectionDescription": "React'ning fundamental konsepsiyalariga chuqur sho‘ng‘ish. Komponentlar mantig‘idan tortib, ilg‘or arxitektura pattern'larigacha — React'ni professional darajada o‘zlashtirish uchun barchasi, bepul va o‘zbek tilida.",
     "toolsSectionTitle": "Dasturchi vositalari",
     "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
-    "jsSectionTitle": "<i>JavaScript</i> noldan",
-    "jsSectionDescription": "Zamonaviy JavaScript bo'yicha keng qamrovli kurs. Tez kunda..."
+    "jsSectionTitle": "JavaScript: To'liq qo'llanma",
+    "jsSectionDescription": "JavaScript bo‘yicha klassik asarning to‘liq o‘zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg‘or xususiyatlarigacha — barchasi bitta qo‘llanmada"
   },
   "Metadata": {
     "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",

@@ -1,0 +1,85 @@
+---
+title: Tayinlash ifodalari
+description: "Tayinlash operatorlari: =, o‘ngdan‑chapga assotsiativlik, qiymat qaytarish, amal bilan birga tayinlash (`+=`, `*=`, ...), side‑effect farqlari."
+keywords: JavaScript, assignment, lvalue, =, compound assignment, +=, -=, *=, /=, %=, **=, <<=, >>=, >>>=, &=, |=, ^=, associativity, side effects
+author: Webiston.uz
+---
+
+# Tayinlash ifodalari
+
+JavaScript o‘zgaruvchi yoki xossaga qiymat tayinlash uchun `=` operatoridan foydalanadi. Masalan:
+
+``` js
+i = 0;   // `i` o‘zgaruvchisini 0 ga sozlash.
+o.x = 1; // `o` obyektining `x` xossasini 1 ga sozlash.
+```
+
+`=` operatori o‘zining chap tomonidagi operandining `lvalue` bo‘lishini kutadi: ya’ni, o‘zgaruvchi yoki obyekt xossasi (yoki massiv elementi). U o‘ng tomonidagi operandining esa har qanday tipdagi ixtiyoriy qiymat bo‘lishini kutadi. Tayinlash ifodasining qiymati o‘ng tomondagi operandning qiymatidir. Qo‘shimcha ta’sir (`side effect`) sifatida, `=` operatori o‘ngdagi qiymatni chapdagi o‘zgaruvchi yoki xossaga tayinlaydi, natijada kelajakda bu o‘zgaruvchi yoki xossaga qilingan murojaatlar o‘sha qiymatga baholanadi.
+
+Garchi tayinlash ifodalari odatda ancha sodda bo‘lsa-da, ba’zan tayinlash ifodasining qiymati kattaroq bir ifodaning qismi sifatida ishlatilganini ko‘rishingiz mumkin. Masalan, quyidagi kabi kod bilan bitta ifodada ham qiymat tayinlab, ham uni tekshirishingiz mumkin:
+
+``` js
+(a = b) === 0
+```
+
+Agar shunday qilsangiz, `=` va `===` operatorlari o‘rtasidagi farqni aniq tushunib olganingizga ishonch hosil qiling! E’tibor bering, `=` juda past ustuvorlikka ega va tayinlash qiymati kattaroq ifodada ishlatilishi kerak bo‘lganda, odatda qavslar zarur bo‘ladi.
+
+Tayinlash operatori o‘ngdan chapga assotsiativlikka ega, bu shuni anglatadiki, agar ifodada bir nechta tayinlash operatori kelsa, ular o‘ngdan chapga qarab bajariladi. Shunday qilib, siz bitta qiymatni bir nechta o‘zgaruvchiga tayinlash uchun quyidagi kabi kod yozishingiz mumkin:
+
+``` js
+i = j = k = 0; // 3 ta o‘zgaruvchini 0 ga initsializatsiya qilish
+```
+
+## Amal bilan birga tayinlash
+
+Oddiy `=` tayinlash operatoridan tashqari, JavaScript tayinlashni biror boshqa amal bilan birlashtirish orqali qisqa yozuvlarni taqdim etadigan bir qator boshqa tayinlash operatorlarini ham qo‘llab-quvvatlaydi. Masalan, `+=` operatori qo‘shish va tayinlashni birga bajaradi. Quyidagi ifoda:
+
+``` js
+total += salesTax;
+```
+
+quyidagiga ekvivalentdir:
+
+``` js
+total = total + salesTax;
+```
+
+Ko'rinib turibdiki, `+=` operatori sonlar yoki satrlar bilan ishlaydi. Sonli operandlar uchun u qo‘shish va tayinlashni; satrli operandlar uchun esa birlashtirish va tayinlashni amalga oshiradi.
+
+Shunga o‘xshash operatorlarga `-=`, `*=`, `&=` va hokazolar kiradi. 4-2-jadvalda ularning barchasi keltirilgan.
+
+<small>_4-2-jadval. Tayinlash operatorlari_</small>
+
+| Operator | Misol | Ekvivalenti |
+| :--- | :--- | :--- |
+| `+=` | `a += b` | `a = a + b` |
+| `-=` | `a -= b` | `a = a - b` |
+| `*=` | `a *= b` | `a = a * b` |
+| `/=` | `a /= b` | `a = a / b` |
+| `%=` | `a %= b` | `a = a % b` |
+| `**=` | `a **= b` | `a = a ** b` |
+| `<<=` | `a <<= b` | `a = a << b` |
+| `>>=` | `a >>= b` | `a = a >> b` |
+| `>>>=` | `a >>>= b` | `a = a >>> b` |
+| `&=` | `a &= b` | `a = a & b` |
+| `\|=` | `a \|= b` | `a = a \| b` |
+| `^=` | `a ^= b` | `a = a ^ b` |
+
+Ko‘p hollarda, quyidagi ifoda:
+
+``` js
+a op= b
+```
+
+(bu yerda `op` — biror operator) quyidagi ifodaga ekvivalentdir:
+
+``` js
+a = a op b
+```
+
+Birinchi qatorda `a` ifodasi bir marta bajariladi. Ikkinchisida esa u ikki marta bajariladi. Bu ikki holat faqatgina `a` ifodasi funksiya chaqiruvi yoki inkrement operatori kabi qo‘shimcha ta’sirlarni (`side effects`) o‘z ichiga olgandagina farqlanadi. Masalan, quyidagi ikki tayinlash bir xil emas:
+
+``` js
+data[i++] *= 2;
+data[i++] = data[i++] * 2;
+```

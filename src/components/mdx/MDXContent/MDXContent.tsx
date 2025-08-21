@@ -39,21 +39,26 @@ const components = {
       )}
     </h1>
   ),
-  h2: (props: any) => (
-    <h2 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
-      {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-5 w-5 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h2>
-  ),
+  h2: (props: any) => {
+    if (props.id === 'footnote-label') {
+      return null
+    }
+    return (
+      <h2 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
+        {props.children}
+        {props.id && (
+          <Link
+            href={`#${props.id}`}
+            aria-hidden="true"
+            tabIndex={-1}
+            className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          >
+            <LinkIcon className="h-5 w-5 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
+          </Link>
+        )}
+      </h2>
+    )
+  },
   h3: (props: any) => (
     <h3 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
       {props.children}
@@ -171,6 +176,13 @@ const components = {
     )
   },
   li: (props: any) => {
+    if (props.id && props.id.includes('user-content')) {
+      return (
+        <li className="[&_p]:!italic [&>p]:!mt-6" {...props}>
+          {props.children}
+        </li>
+      )
+    }
     return (
       <li className="[&>p]:!m-0" {...props}>
         {props.children}
@@ -244,6 +256,22 @@ const components = {
 
   // Handle iframe for embedded videos
   iframe: (props: any) => <iframe className="absolute inset-0 h-full w-full object-cover" {...props} />,
+
+  sup: (props: any) => (
+    <sup
+      className="[&_a]:text-sky-500 [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-sky-400"
+      {...props}
+    />
+  ),
+
+  table: (props: any) => <table {...props} className="w-full" />,
+
+  th: (props: any) => (
+    <th
+      {...props}
+      className="border border-[#ddd] p-3 text-left text-sm font-semibold tracking-wide whitespace-nowrap"
+    />
+  ),
 }
 
 export default async function MDXContent({ source }: MDXContentProps) {

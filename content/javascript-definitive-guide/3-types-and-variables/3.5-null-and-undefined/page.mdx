@@ -1,0 +1,18 @@
+---
+title: "null va undefined"
+description: "null va undefined: ma’nolari, `typeof` xatti‑harakati, `==` vs `===`, falsy bo‘lishi va xossa/methodga murojaatda `TypeError` xavflari."
+keywords: JavaScript, null, undefined, typeof, equality, ===, ==, falsy, TypeError, best practices
+author: Webiston.uz
+---
+
+# `null` va `undefined`
+
+`null` — bu tilning kalit so‘zi bo‘lib, u odatda qiymatning yo‘qligini ifodalash uchun ishlatiladigan maxsus qiymatni anglatadi. `null`'ga `typeof` operatorini qo‘llaganimizda, u "object" satrini qaytaradi. Bu `null`'ni "hech qanday obyekt yo‘q" degan ma’noni anglatuvchi maxsus obyekt qiymati sifatida tasavvur qilish mumkinligiga ishora qiladi. Amalda esa, `null` odatda o‘zining alohida tipining yagona a’zosi sifatida qabul qilinadi va u nafaqat obyektlar, balki sonlar va satrlar uchun ham "qiymat yo‘qligini" bildirish uchun ishlatilishi mumkin. Ko‘pchilik dasturlash tillarida JavaScript'dagi `null`'ning muqobili mavjud: ehtimol siz uni `NULL`, `nil` yoki `None` nomlari bilan bilarsiz.
+
+JavaScript'da qiymatning yo‘qligini bildiruvchi ikkinchi bir qiymat ham bor. `undefined` qiymati yanada chuqurroq ma’nodagi yo‘qlikni ifodalaydi. Bu — hali **initsializatsiya qilinmagan** (ya’ni, boshlang‘ich qiymat berilmagan) o‘zgaruvchilarning qiymati hamda mavjud bo‘lmagan obyekt xossasi yoki massiv elementining qiymatini so‘raganda olinadigan qiymatdir. Shuningdek, `undefined` qiymati aniq bir qiymat qaytarmaydigan funksiyalarning qaytaradigan qiymati va argument uzatilmagan funksiya parametrlarining qiymati hamdir. `undefined` — bu oldindan belgilangan global konstanta bo‘lib (`null` kabi til kalit so‘zi emas, garchi bu amalda muhim farq bo‘lmasa ham), u `undefined` qiymatiga initsializatsiya qilingan. Agar `undefined` qiymatiga `typeof` operatorini qo‘llasangiz, u "undefined" satrini qaytaradi. Bu esa ushbu qiymatning maxsus bir tipning yagona a’zosi ekanligini ko‘rsatadi.
+
+Ushbu farqlarga qaramay, `null` ham, `undefined` ham qiymatning yo‘qligini bildiradi va ko‘pincha bir-birining o‘rnida ishlatilishi mumkin. `==` tenglik operatori ularni bir-biriga teng deb hisoblaydi. (Ularni bir-biridan farqlash uchun `===` qat’iy tenglik operatoridan foydalaning.) Ikkalasi ham "falsy" qiymatlardir: ya’ni, mantiqiy qiymat talab qilingan joyda ular `false` kabi ishlaydi. Na `null`'da, na `undefined`'da biron bir xossa yoki metod mavjud. Aslida, bu qiymatlarning xossasi yoki metodiga `.` yoki `[]` orqali murojaat qilish `TypeError` xatoligiga sabab bo‘ladi.
+
+### `null` va `undefined`: Muallifning yondashuvi
+
+Men shaxsan `undefined`'ni tizim darajasidagi, kutilmagan yoki xatolikka o‘xshash qiymat yo‘qligi, `null`'ni esa dastur darajasidagi, normal yoki kutilgan qiymat yo‘qligi deb bilaman. Iloji boricha `null` va `undefined`'ni ishlatmaslikka harakat qilaman. Lekin agar o‘zgaruvchi yoki xossaga bu qiymatlardan birini tayinlashim, funksiyaga uzatishim yoki funksiyadan qaytarishim kerak bo‘lib qolsa, men odatda `null`'ni ishlataman. Ba’zi dasturchilar esa `null`'dan butunlay qochishga intilib, iloji boricha uning o‘rniga `undefined`'ni ishlatadilar.
