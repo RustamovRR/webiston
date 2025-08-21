@@ -228,7 +228,7 @@ function getTutorialDescription(tutorialId: string): string {
 }
 
 // Tutorial rasmini olish
-function getTutorialImage(tutorialId: string): string {
+export function getTutorialImage(tutorialId: string): string {
   const images: Record<string, string> = {
     'fluent-react': 'https://www.oreilly.com/covers/urn:orm:book:9781098138707/900w/',
     'javascript-definitive-guide': 'https://www.oreilly.com/covers/urn:orm:book:9781491952016/900w/',
