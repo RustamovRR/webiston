@@ -1,0 +1,13 @@
+# Obyektlarni seriyalashtirish
+
+**Obyektlarni seriyalashtirish (`serialization`)** — bu obyekt holatini keyinchalik qayta tiklash mumkin bo‘lgan satrga o‘zgartirish jarayonidir. `JSON.stringify()` va `JSON.parse()` funksiyalari JavaScript obyektlarini seriyalashtiradi va qayta tiklaydi. Bu funksiyalar JSON ma’lumotlar almashinuvi formatidan foydalanadi. JSON — bu "JavaScript Object Notation" (JavaScript Obyekt Yozuvi) so‘zlarining qisqartmasi va uning sintaksisi JavaScript obyekt va massiv literallariga juda o‘xshaydi:
+
+``` js
+let o = {x: 1, y: {z: [false, null, ""]}};  // Sinov uchun obyektni yaratamiz
+let s = JSON.stringify(o);                  // s == '{"x":1,"y":{"z":[false,null,""]}}'
+let p = JSON.parse(s);                      // p == {x: 1, y: {z: [false, null, ""]}}
+```
+
+JSON sintaksisi JavaScript sintaksisining bir qismidir va u barcha JavaScript qiymatlarini ifodalay olmaydi. Obyektlar, massivlar, satrlar, chekli sonlar, `true`, `false` va `null` qo‘llab-quvvatlanadi hamda ularni seriyalashtirish va qayta tiklash mumkin. `NaN`, `Infinity` va `-Infinity` qiymatlari `null`'ga seriyalashtiriladi. `Date` obyektlari ISO formatidagi sana satrlariga seriyalashtiriladi (qarang: `Date.toJSON()` funksiyasi), lekin `JSON.parse()` ularni satr ko‘rinishida qoldiradi va asl `Date` obyektini qayta tiklamaydi. `Function`, `RegExp` va `Error` obyektlari hamda `undefined` qiymatini seriyalashtirib yoki qayta tiklab bo‘lmaydi.
+
+`JSON.stringify()` faqat obyektning sanab o‘tiladigan shaxsiy xossalarini seriyalashtiradi. Agar biror xossa qiymatini seriyalashtirib bo‘lmasa, bu xossa satrlashtirilgan natijadan shunchaki tushirib qoldiriladi. Ham `JSON.stringify()`, ham `JSON.parse()` ixtiyoriy ikkinchi argumentlarni qabul qiladi. Bu argumentlar, masalan, seriyalashtirilishi kerak bo‘lgan xossalar ro‘yxatini ko‘rsatish orqali yoki seriyalashtirish yoxud satrlashtirish jarayonida ma’lum qiymatlarni o‘zgartirish orqali seriyalashtirish va/yoki qayta tiklash jarayonini moslashtirish uchun ishlatilishi mumkin. Bu funksiyalarning to‘liq dokumentatsiyasi §11.6-bo‘limda keltirilgan.
