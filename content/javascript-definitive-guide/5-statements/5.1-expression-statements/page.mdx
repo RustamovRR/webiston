@@ -1,0 +1,41 @@
+# Ifoda ko‘rsatmalari
+
+JavaScript'dagi eng sodda ko‘rsatma turlari — bu qo‘shimcha ta’sirlarga (`side effects`) ega bo‘lgan ifodalardir. Bu turdagi ko‘rsatmalar 4-bobda ko‘rib chiqilgan edi. **Tayinlash ko‘rsatmalari** ifoda ko‘rsatmalarining asosiy toifasidir. Masalan:
+
+``` js
+greeting = "Hello " + name;
+i *= 3;
+```
+
+Inkrement (`++`) va dekrement (`--`) operatorlari tayinlash ko‘rsatmalariga yaqindan bog‘liq. Ular ham xuddi tayinlash amali bajarilgandek, o‘zgaruvchi qiymatini o‘zgartirish qo‘shimcha ta’siriga ega:
+
+``` js
+counter++;
+```
+
+`delete` operatori obyekt xossasini o‘chirish kabi muhim qo‘shimcha ta’sirga ega. Shu sababli, u kattaroq ifodaning bir qismi sifatida emas, balki deyarli har doim mustaqil ko‘rsatma sifatida ishlatiladi:
+
+``` js
+delete o.x;
+```
+
+Funksiya chaqiruvlari — ifoda ko‘rsatmalarining yana bir yirik toifasidir. Masalan:
+
+``` js
+console.log(debugMessage);
+displaySpinner(); // Veb-ilovada aylana animatsiyasini ko‘rsatish uchun taxminiy funksiya.
+```
+
+Bu funksiya chaqiruvlari aslida ifodalardir, lekin ular host muhitiga (`host environment`) yoki dastur holatiga (`state`) ta’sir ko‘rsatadigan qo‘shimcha ta’sirlarga ega va aynan shuning uchun bu yerda ko‘rsatma sifatida qo‘llanilmoqda. Agar funksiyaning hech qanday qo‘shimcha ta’siri bo‘lmasa, uni kattaroq ifodaning bir qismi yoki tayinlash ko‘rsatmasi tarkibida bo‘lmagan holda shunchaki chaqirishdan ma’no yo‘q. Masalan, siz kosinusni shunchaki hisoblab, natijasini tashlab yubormaysiz:
+
+``` js
+Math.cos(x);
+```
+
+Buning o‘rniga, qiymatni hisoblab, kelajakda foydalanish uchun uni o‘zgaruvchiga tayinlashingiz ancha ma’qulroq:
+
+``` js
+cx = Math.cos(x);
+```
+
+E’tibor bering, bu misollarning har biridagi kod qatori nuqtali vergul bilan yakunlangan.
