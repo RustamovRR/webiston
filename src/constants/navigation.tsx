@@ -1,4 +1,5 @@
 import { TelegramIcon, LinkedInIcon, TwitterIcon, EmailIcon } from '@/assets/icons'
+import { HandHeartIcon } from 'lucide-react'
 
 export const REACT_CHAPTERS = [
   {
@@ -105,5 +106,11 @@ export const socialLinks = [
     href: 'mailto:webiston.uz@gmail.com',
     icon: <EmailIcon />,
     label: 'Email',
+  },
+  {
+    id: 5,
+    href: 'https://tirikchilik.uz/webiston',
+    icon: <HandHeartIcon size={32} />,
+    label: "Loyihani qo'llab-quvvatlash",
   },
 ]
