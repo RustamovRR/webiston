@@ -1,0 +1,80 @@
+# E’lonlar (Declarations)
+
+`const`, `let`, `var`, `function`, `class`, `import` va `export` kalit so‘zlari texnik jihatdan ko‘rsatmalar emas, lekin ular ko‘rsatmalarga juda o‘xshaydi va ushbu kitobda norasmiy ravishda ularga ko‘rsatmalar sifatida murojaat qilinadi, shuning uchun ular ushbu bobda tilga olinishga loyiqdir.
+
+Bu kalit so‘zlarni ko‘rsatmalardan ko‘ra **e’lonlar (`declarations`)** deb ta’riflash ko'proq mos bo‘ladi. Biz ushbu bobning boshida ko‘rsatmalar "biror narsa sodir bo‘lishiga" sabab bo‘ladi, degan edik. E’lonlar esa yangi qiymatlarni yaratishga va ularga biz o‘sha qiymatlarga murojaat qilish uchun ishlatishimiz mumkin bo‘lgan nomlar berishga xizmat qiladi. Ularning o‘zlari unchalik ko‘p narsa sodir bo‘lishiga olib kelmaydi, lekin qiymatlar uchun nomlar taqdim etish orqali ular, muhim ma’noda, dasturingizdagi boshqa ko‘rsatmalarning ma’nosini belgilab beradi.
+
+Dastur ishlaganda, dasturning ifodalari baholanadi va ko‘rsatmalari bajariladi. Dasturdagi e’lonlar esa xuddi shunday "ishga tushmaydi": buning o‘rniga, ular dasturning o‘zining tuzilishini shakllantiradi. Sodda qilib aytganda, e’lonlarni kod ishga tushishidan oldin qayta ishlanadigan dastur qismlari deb tasavvur qilish mumkin.
+
+JavaScript e’lonlari konstantalar, o‘zgaruvchilar, funksiyalar va klasslarni yaratish hamda modullar o‘rtasida qiymatlarni import va eksport qilish uchun ishlatiladi. Keyingi quyi bo‘limlarda bu e’lonlarning barchasiga misollar keltiriladi. Ularning barchasi ushbu kitobning boshqa joylarida ancha batafsilroq yoritilgan.
+
+## `const`, `let` va `var`
+
+`const`, `let` va `var` e’lonlari §3.10-bo‘limda yoritib o'tilgan. ES6 va undan keyingi versiyalarda `const` konstantalarni, `let` esa o‘zgaruvchilarni e’lon qiladi. ES6'dan oldin, `var` kalit so‘zi o‘zgaruvchilarni e’lon qilishning yagona yo‘li edi va konstantalarni e’lon qilishning imkoni yo‘q edi.
+
+`var` bilan e’lon qilingan o‘zgaruvchilar o‘zlarini o‘rab turgan blokka emas, balki o‘zlarini o‘rab turgan funksiyaga bog‘liq ko‘rinish doirasiga (`scope`) ega bo‘ladi. Bu xatoliklar manbai bo‘lishi mumkin va zamonaviy JavaScript'da `let` o‘rniga `var`'dan foydalanish uchun hech qanday jiddiy sabab yo‘q.
+
+``` js
+const TAU = 2*Math.PI;
+let radius = 3;
+var circumference = TAU * radius;
+```
+
+## `function`
+
+`function` e’lon qilinishi 8-bobda batafsil yoritiladigan funksiyalarni ta’riflash uchun ishlatiladi. (Biz `function`'ni §4.3-bo‘limda ham ko‘rgan edik, u yerda u funksiya e’loni sifatida emas, balki funksiya ifodasining bir qismi sifatida ishlatilgan edi.) Funksiya e’loni quyidagicha bo'ladi:
+
+``` js
+function area(radius) {
+    return Math.PI * radius * radius;
+}
+```
+
+Funksiya e’loni funksiya obyektini yaratadi va uni ko‘rsatilgan nomga — bu misolda `area`'ga — biriktiradi. Dasturimizning boshqa joylarida biz bu nomdan foydalanib, funksiyaga murojaat qilishimiz va uning ichidagi kodni ishga tushirishimiz mumkin.
+
+Har qanday JavaScript kodi blokidagi funksiya e’lonlari o‘sha kod ishga tushishidan oldin qayta ishlanadi va funksiya nomlari butun blok davomida funksiya obyektlariga bog‘lanadi. Biz funksiya e’lonlari **"ko‘tariladi" (`hoisted`)** deymiz, chunki ular go‘yoki o‘zlari ta’riflangan ko‘rinish doirasining eng yuqorisiga ko‘chirilgandek bo‘ladi. Buning natijasi shundaki, funksiyani chaqiradigan kod dasturingizda funksiyani e’lon qiladigan koddan oldin kelishi mumkin.
+
+§12.3-bo‘limda **generator** deb nomlanuvchi maxsus funksiya turi tasvirlangan. Generator e’lonlari `function` kalit so‘zidan foydalanadi, lekin undan keyin yulduzcha (`*`) keladi. §13.3-bo‘limda esa **asinxron funksiyalar** tasvirlangan, ular ham `function` kalit so‘zi yordamida e’lon qilinadi, lekin ulardan oldin `async` kalit so‘zi keladi.
+
+## `class`
+
+ES6 va undan keyingi versiyalarda `class` e’loni yangi klass yaratadi va unga biz murojaat qilish uchun ishlatishimiz mumkin bo‘lgan nom beradi. Klasslar 9-bobda batafsil tasvirlangan. Oddiy klass e’loni quyidagicha bo'lishi mumkin:
+
+``` js
+class Circle {
+    constructor(radius) { this.r = radius; }
+    area() { return Math.PI * this.r * this.r; }
+    circumference() { return 2 * Math.PI * this.r; }
+}
+```
+
+Funksiyalardan farqli o‘laroq, klass e’lonlari **ko‘tarilmaydi (`not hoisted`)** va bu tarzda e’lon qilingan klassni e’londan oldin keladigan kodda ishlata olmaysiz.
+
+## `import` va `export`
+
+`import` va `export` e’lonlari bir JavaScript kodi modulida ta’riflangan qiymatlarni boshqa bir modulda mavjud qilish uchun birgalikda ishlatiladi. **Modul** — bu o‘zining global nomlar fazosiga (`namespace`) ega bo‘lgan va boshqa barcha modullardan butunlay mustaqil bo‘lgan JavaScript kodi faylidir. Bir modulda ta’riflangan qiymat (masalan, funksiya yoki klass) boshqa modulda ishlatilishining yagona yo‘li — bu ta’riflovchi modul uni `export` bilan eksport qilishi va foydalanuvchi modul uni `import` bilan import qilishi orqalidir. Modullar 10-bobning mavzusidir va `import` hamda `export` §10.3-bo‘limda batafsil yoritib o'tiladi.
+
+`import` direktivalari boshqa bir JavaScript kodi faylidan bir yoki bir nechta qiymatni import qilish va ularga joriy modul ichida nomlar berish uchun ishlatiladi. `import` direktivalari bir nechta turli shakllarda keladi. Quyida bir nechta misollar keltirilgan:
+
+``` js
+import Circle from './geometry/circle.js';
+import { PI, TAU } from './geometry/constants.js';
+import { magnitude as hypotenuse } from './vectors/utils.js';
+```
+
+JavaScript moduli ichidagi qiymatlar xususiydir va agar ular aniq eksport qilinmagan bo‘lsa, boshqa modullarga import qilinishi mumkin emas. `export` direktivasi aynan shu ishni qiladi: u joriy modulda ta’riflangan bir yoki bir nechta qiymat eksport qilinganligini va shuning uchun boshqa modullar tomonidan import qilish uchun mavjud ekanligini e’lon qiladi. `export` direktivasi `import` direktivasiga qaraganda ko‘proq variantlarga ega. Quyida ulardan biri keltirilgan:
+
+``` js
+// geometry/constants.js
+const PI = Math.PI;
+const TAU = 2 * PI;
+export { PI, TAU };
+```
+
+`export` kalit so‘zi ba’zan boshqa e’lonlarda modifikator sifatida ishlatiladi. Bu konstanta, o‘zgaruvchi, funksiya yoki klassni ta’riflaydigan va ayni paytda uni eksport qiladigan murakkab e’lon turini hosil qiladi. Va agar modul faqat bitta qiymatni eksport qilsa, bu odatda maxsus `export default` shakli bilan amalga oshiriladi:
+
+``` js
+export const TAU = 2 * Math.PI;
+export function magnitude(x,y) { return Math.sqrt(x*x + y*y); }
+export default class Circle { /* klass ta’rifi bu yerda tushirib qoldirilgan */ }
+```
