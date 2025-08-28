@@ -1,0 +1,291 @@
+# O‘tishlar
+
+JavaScript ko‘rsatmalarining yana bir toifasi — bu **o‘tish (`jump`) ko‘rsatmalaridir**. Nomidan ayon bo'lib turganidek, bular JavaScript interpretatorini manba kodidagi yangi bir joyga o‘tishga majbur qiladi.
+
+`break` ko‘rsatmasi interpretatorni sikl yoki boshqa bir ko‘rsatmaning oxiriga o‘tkazadi. `continue` esa interpretatorni sikl tanasining qolgan qismini o‘tkazib yuborib, yangi iteratsiyani boshlash uchun siklning boshiga qaytaradi. JavaScript ko‘rsatmalarni nomlash yoki **belgilash (`label`)** imkonini beradi va `break` hamda `continue` o‘zining nishonidagi sikl yoki boshqa ko‘rsatma belgisini aniqlashi mumkin.
+
+`return` ko‘rsatmasi interpretatorni funksiya chaqiruvidan uni chaqirgan kodga qaytaradi va ayni paytda chaqiruv uchun qiymat ham taqdim etadi. `throw` ko‘rsatmasi istisno (`exception`) yuzaga keltiradi yoki "otadi" va u istisnolarni qayta ishlash blokini o‘rnatadigan `try/catch/finally` ko‘rsatmasi bilan ishlash uchun mo‘ljallangan. Bu o‘tish ko‘rsatmasining murakkab bir turidir: istisno yuzaga kelganda, interpretator eng yaqin joylashgan istisnolarni qayta ishlovchiga o‘tadi. Bu ishlov beruvchi (`handler`) ayni funksiyada yoki chaqiruvlar stekida (`call stack`) yuqoriroqda, chaqiruvchi funksiyada bo‘lishi mumkin.
+
+Ushbu o‘tish ko‘rsatmalarining har biri haqidagi tafsilotlar keyingi bo‘limlarda keltirilgan.
+
+## Belgilangan ko‘rsatmalar
+
+Har qanday ko‘rsatmani uning oldidan identifikator va ikki nuqta qo‘yish orqali **belgilash (`label`)** mumkin:
+
+``` js
+identifier: statement
+```
+
+Ko‘rsatmani belgilash orqali siz unga nom berasiz va bu nomdan dasturingizning boshqa joylarida unga murojaat qilish uchun foydalanishingiz mumkin. Har qanday ko‘rsatmani belgilash mumkin, zero bu faqat sikllar va shartli ko‘rsatmalar kabi tanaga ega bo‘lgan ko‘rsatmalarni belgilagandagina foydali bo‘ladi. Siklga nom berish orqali, siz sikl tanasi ichida `break` va `continue` ko‘rsatmalaridan foydalanib, sikldan chiqib ketishingiz yoki to‘g‘ridan-to‘g‘ri siklning boshiga o‘tib, keyingi iteratsiyani boshlashingiz mumkin. `break` va `continue` — ko‘rsatma belgilaridan foydalanadigan yagona JavaScript ko‘rsatmalaridir; ular keyingi quyi bo‘limlarda yoritilgan. Quyida belgilangan `while` sikli va o‘sha belgidan foydalanadigan `continue` ko‘rsatmasiga misol keltirilgan.
+
+``` js
+mainloop: while(token !== null) {
+    // Kod qismi tushirib qoldirilgan...
+    continue mainloop; // Nomlangan siklning keyingi iteratsiyasiga o‘tish
+    // Yana kod qismi tushirib qoldirilgan...
+}
+```
+
+Ko‘rsatmani belgilash uchun ishlatiladigan identifikator zaxiralangan so‘z bo‘lmagan har qanday to‘g‘ri JavaScript identifikatori bo‘lishi mumkin. Belgilar uchun nomlar fazosi (`namespace`) o‘zgaruvchilar va funksiyalar uchun nomlar fazosidan farq qiladi, shuning uchun siz bir xil identifikatorni ham ko‘rsatma belgisi, ham o‘zgaruvchi yoki funksiya nomi sifatida ishlatishingiz mumkin. Ko‘rsatma belgilari faqat o‘zlari qo‘llanilgan ko‘rsatma ichidagina (va, albatta, uning quyi ko‘rsatmalari ichida) aniqlangan bo‘ladi. Biror ko‘rsatma o‘zini o‘rab turgan ko‘rsatma bilan bir xil belgiga ega bo‘lishi mumkin emas, lekin ikkita ko‘rsatma, agar ulardan biri ikkinchisining ichida joylashmagan bo‘lsa, bir xil belgiga ega bo‘lishi mumkin. Belgilangan ko‘rsatmalarning o‘zlari ham belgilanishi mumkin. Amalda, bu har qanday ko‘rsatma bir nechta belgiga ega bo‘lishi mumkinligini anglatadi.
+
+## `break`
+
+`break` ko‘rsatmasi yolg‘iz ishlatilganda, eng ichkarida joylashgan sikl yoki `switch` ko‘rsatmasidan darhol chiqib ketishga sabab bo‘ladi. Uning sintaksisi oddiy:
+
+``` js
+break;
+```
+
+U sikl yoki `switch`'dan chiqishga sabab bo‘lgani uchun, `break` ko‘rsatmasining bu shakli faqatgina ushbu ko‘rsatmalardan birining ichida kelgandagina to'g'ri hisoblanadi.
+
+`break` ko‘rsatmasining `switch` ko‘rsatmasi ichidagi misollarini allaqachon ko‘rdingiz. Sikllarda u odatda, biror sababga ko‘ra siklni yakunlashga endi hojat qolmaganda, muddatidan oldin chiqish uchun ishlatiladi. Sikl murakkab yakunlanish shartlariga ega bo‘lganda, bu shartlarning ba’zilarini bitta sikl ifodasida ifodalashga urinishdan ko‘ra, `break` ko‘rsatmalari bilan implementatsiya qilish ko‘pincha osonroq bo‘ladi. Quyidagi kod massiv elementlari ichidan ma’lum bir qiymatni qidiradi. Sikl massivning oxiriga yetganda normal tarzda yakunlanadi; agar u qidirayotgan narsasini massivda topsa, `break` ko‘rsatmasi bilan yakunlanadi:
+
+``` js
+for(let i = 0; i < a.length; i++) {
+    if (a[i] === target) break;
+}
+```
+
+JavaScript, shuningdek, `break` kalit so‘zidan keyin ko‘rsatma belgisi (faqat identifikator, ikki nuqtasiz) kelishiga ham ruxsat beradi:
+
+``` js
+break labelname;
+```
+
+`break` belgi bilan ishlatilganda, u ko‘rsatilgan belgiga ega bo‘lgan o‘rab turuvchi ko‘rsatmaning oxiriga o‘tadi yoki uni yakunlaydi. Agar ko‘rsatilgan belgiga ega bo‘lgan o‘rab turuvchi ko‘rsatma bo‘lmasa, `break`'ni bu shaklda ishlatish sintaktik xatodir. `break` ko‘rsatmasining bu shakli bilan, nomlangan ko‘rsatma sikl yoki `switch` bo‘lishi shart emas: `break` har qanday o‘rab turuvchi ko‘rsatmadan "chiqib keta oladi". Bu ko‘rsatma hatto faqatgina blokni belgi bilan nomlash maqsadi uchungina jingalak qavslar ichiga guruhlangan ko‘rsatmalar bloki ham bo‘lishi mumkin.
+
+`break` kalit so‘zi va `labelname` o‘rtasida yangi qatorga yo‘l qo‘yilmaydi. Bu JavaScript'ning tushirib qoldirilgan nuqtali vergullarni avtomatik qo‘yishining natijasidir: agar siz `break` kalit so‘zi va undan keyingi belgi o‘rtasiga qator yakunlovchisini qo‘ysangiz, JavaScript ko‘rsatmaning oddiy, belgisiz shaklini nazarda tutgansiz deb hisoblaydi va qator yakunlovchisini nuqtali vergul sifatida qabul qiladi. (§2.6-bo‘limga qarang.)
+
+`break` ko‘rsatmasining belgilangan shakli sizga eng yaqin o‘rab turuvchi sikl yoki `switch` bo‘lmagan ko‘rsatmadan chiqib ketish kerak bo‘lganda kerak bo‘ladi. Quyidagi kod buni namoyon etadi:
+
+``` js
+let matrix = getData(); // Qayerdandir 2D sonlar massivini olish
+// Endi matritsadagi barcha sonlarni yig‘amiz.
+let sum = 0, success = false;
+
+// Xatoliklar yuzaga kelsa, chiqib ketishimiz mumkin bo‘lgan belgilangan ko‘rsatma bilan boshlaymiz
+computeSum: if (matrix) {
+    for(let x = 0; x < matrix.length; x++) {
+        let row = matrix[x];
+        if (!row) break computeSum;
+        for(let y = 0; y < row.length; y++) {
+            let cell = row[y];
+            if (isNaN(cell)) break computeSum;
+            sum += cell;
+        }
+    }
+    success = true;
+}
+// `break` ko‘rsatmalari shu yerga o‘tadi. Agar biz bu yerga `success == false`
+// bilan kelsak, demak bizga berilgan matritsada nimadir noto‘g‘ri bo‘lgan.
+// Aks holda, `sum` matritsaning barcha katakchalari yig‘indisini o‘z ichiga oladi.
+```
+
+Nihoyat, shuni yodda tutish lozimki, `break` ko‘rsatmasi, belgisi bilan yoki belgisiz bo‘lishidan qat’i nazar, boshqaruvni funksiya chegaralaridan tashqariga o‘tkaza olmaydi. Masalan, siz funksiya ta’rifini belgilab, so‘ngra bu belgini funksiya ichida ishlata olmaysiz.
+
+## `continue`
+
+`continue` ko‘rsatmasi `break` ko‘rsatmasiga o‘xshaydi. Biroq sikldan chiqib ketish o‘rniga, `continue` siklni keyingi iteratsiyadan qayta boshlaydi. `continue` ko‘rsatmasining sintaksisi xuddi `break` ko‘rsatmasiniki kabi oddiy:
+
+``` js
+continue;
+```
+
+`continue` ko‘rsatmasi belgi bilan ham ishlatilishi mumkin:
+
+``` js
+continue labelname;
+```
+
+`continue` ko‘rsatmasi, ham belgilangan, ham belgilanmagan shakllarida, faqat sikl tanasi ichida ishlatilishi mumkin. Uni boshqa har qanday joyda ishlatish sintaktik xatolikka sabab bo‘ladi.
+
+`continue` ko‘rsatmasi bajarilganda, o‘rab turuvchi siklning joriy iteratsiyasi yakunlanadi va keyingi iteratsiya boshlanadi. Bu turli xil sikl turlari uchun turli narsalarni anglatadi:
+
+- `while` siklida, sikl boshidagi ko‘rsatilgan ifoda qayta tekshiriladi va agar u _truthy_ bo‘lsa, sikl tanasi boshidan bajariladi.
+- `do/while` siklida, bajarilish siklning quyi qismiga o‘tadi, u yerda sikl sharti siklni boshidan qayta boshlashdan oldin yana bir bor tekshiriladi.
+- `for` siklida, `increment` ifodasi baholanadi va yana bir iteratsiya qilish kerakligini aniqlash uchun `test` ifodasi qayta tekshiriladi.
+- `for/of` yoki `for/in` siklida, sikl keyingi iteratsiya qilinadigan qiymat yoki keyingi xossa nomi ko‘rsatilgan o‘zgaruvchiga tayinlanishi bilan qaytadan boshlanadi.
+
+`continue` ko‘rsatmasining `while` va `for` sikllaridagi xatti-harakatidagi farqqa e’tibor bering: `while` sikli to‘g‘ridan-to‘g‘ri o‘z shartiga qaytadi, lekin `for` sikli avval o‘zining `increment` ifodasini baholaydi va keyin o‘z shartiga qaytadi. Avvalroq biz `for` siklining xatti-harakatini "ekvivalent" `while` sikli nuqtai nazaridan ko‘rib chiqqan edik. Biroq `continue` ko‘rsatmasi bu ikki sikl uchun turlicha ishlagani sababli, `for` siklini faqat `while` sikli yordamida mukammal simulyatsiya qilish aslida mumkin emas.
+
+Quyidagi misol xatolik yuzaga kelganda siklning joriy iteratsiyasining qolgan qismini o‘tkazib yuborish uchun ishlatilayotgan belgilanmagan `continue` ko‘rsatmasini ko‘rsatadi:
+
+``` js
+for(let i = 0; i < data.length; i++) {
+    if (!data[i]) continue; // `undefined` ma’lumot bilan davom eta olmaymiz
+    total += data[i];
+}
+```
+
+`break` ko‘rsatmasi kabi, `continue` ko‘rsatmasi ham qayta boshlanishi kerak bo‘lgan sikl bevosita o‘rab turuvchi sikl bo‘lmaganda, ichma-ich joylashgan sikllar ichida o‘zining belgilangan shaklida ishlatilishi mumkin. Shuningdek, `break` ko‘rsatmasidagi kabi, `continue` ko‘rsatmasi va uning `labelname`'i o‘rtasida qator uzilishlariga yo‘l qo‘yilmaydi.
+
+## `return`
+
+Esingizda bo‘lsa, funksiya chaqiruvlari ifodalardir va barcha ifodalar qiymatlarga ega ekanligiga to'xtalgandik. Funksiya ichidagi `return` ko‘rsatmasi o‘sha funksiya chaqiruvlarining qiymatini belgilaydi. `return` ko‘rsatmasining sintaksisi quyidagicha:
+
+``` js
+return expression;
+```
+
+`return` ko‘rsatmasi faqat funksiya tanasi ichida kelishi mumkin. Uning boshqa har qanday joyda paydo bo‘lishi sintaktik xatodir. `return` ko‘rsatmasi bajarilganda, uni o‘z ichiga olgan funksiya `expression`'ning qiymatini o‘zini chaqirgan kodga qaytaradi. Masalan:
+
+``` js
+function square(x) { return x*x; } // `return` ko‘rsatmasiga ega funksiya
+square(2)                          // => 4
+```
+
+`return` ko‘rsatmasi bo‘lmaganda, funksiya chaqiruvi shunchaki funksiya tanasidagi har bir ko‘rsatmani navbatma-navbat, funksiya oxiriga yetguncha bajaradi va so‘ngra o‘zini chaqirgan kodga qaytadi. Bu holda, chaqiruv ifodasi `undefined`'ga baholanadi.
+
+`return` ko‘rsatmasi ko‘pincha funksiyadagi oxirgi ko‘rsatma sifatida keladi, lekin uning oxirgi bo‘lishi shart emas: `return` ko‘rsatmasi bajarilganda funksiya o‘zini chaqirgan kodga qaytadi, hatto funksiya tanasida boshqa ko‘rsatmalar qolgan bo‘lsa ham.
+
+`return` ko‘rsatmasini, shuningdek, funksiya o‘zini chaqirgan kodga `undefined` qaytarishi uchun ifodasiz ham ishlatish mumkin. Masalan:
+
+``` js
+function displayObject(o) {
+    // Agar argument `null` yoki `undefined` bo‘lsa, darhol qaytish.
+    if (!o) return;
+    // Funksiyaning qolgan qismi shu yerda davom etadi...
+}
+```
+
+JavaScript'ning avtomatik nuqtali vergul qo‘yishi (§2.6) sababli, siz `return` kalit so‘zi va undan keyingi ifoda o‘rtasida qator uzilishini qo‘ya olmaysiz.
+
+## `yield`
+
+`yield` ko‘rsatmasi `return` ko‘rsatmasiga juda o‘xshaydi, lekin u faqat ES6 **generator funksiyalari** (§12.3-bo‘limga qarang) ichida, generatsiya qilinayotgan qiymatlar ketma-ketligidagi navbatdagi qiymatni aslida funksiyadan qaytmasdan hosil qilish uchun ishlatiladi:
+
+``` js
+// Butun sonlar diapazonini "hosil qiladigan" (`yield`) generator funksiyasi
+function* range(from, to) {
+    for(let i = from; i <= to; i++) {
+        yield i;
+    }
+}
+```
+
+`yield`'ni tushunish uchun siz iteratorlar va generatorlarni tushunishingiz kerak, ular esa 12-bobgacha yoritilmaydi. Shunday bo‘lsa-da, `yield` bu yerga to‘liqlik uchun kiritilgan. (Texnik jihatdan esa, §12.4.2-bo‘limda tushuntirilganidek, `yield` ko‘rsatmadan ko‘ra ko‘proq operatorga tortadi.)
+
+## `throw`
+
+**Istisno (`exception`)** — bu qandaydir favqulodda holat yoki xatolik yuz berganini bildiruvchi signaldir. **Istisno yuzaga keltirish (`to throw an exception`)** — bu shunday xatolik yoki favqulodda holat haqida signal berishdir. **Istisnoni ushlab olish (`to catch an exception`)** — bu uni qayta ishlash, ya’ni istisnodan tiklanish uchun zarur yoki mos bo‘lgan har qanday harakatlarni amalga oshirishdir.
+
+JavaScript'da `runtime` xatoligi yuzaga kelganda va dastur `throw` ko‘rsatmasi yordamida aniq bir istisno yuzaga keltirganda istisnolar yuzaga keladi. Istisnolar keyingi bo‘limda tasvirlanadigan `try/catch/finally` ko‘rsatmasi bilan ushlab olinadi.
+
+`throw` ko‘rsatmasi quyidagi sintaksisga ega:
+
+``` js
+throw expression;
+```
+
+`expression` har qanday tipdagi qiymatga baholanishi mumkin. Siz xato kodini ifodalovchi sonni yoki odam o‘qiy oladigan xato xabarini o‘z ichiga olgan satrni "otishingiz" (`throw`) mumkin. JavaScript interpretatorining o‘zi xatolik yuzaga keltirganda `Error` klassi va uning ostklasslari ishlatiladi va siz ham ulardan foydalanishingiz mumkin. `Error` obyekti xato turini belgilovchi `name` xossasiga va konstruktor funksiyasiga uzatilgan satrni saqlaydigan `message` xossasiga ega. Quyida noto‘g‘ri argument bilan chaqirilganda `Error` obyekti "otadigan" funksiyaga misol keltirilgan:
+
+``` js
+function factorial(x) {
+    // Agar kiruvchi argument noto‘g‘ri bo‘lsa, istisno yuzaga keltiradi!
+    if (x < 0) throw new Error("x manfiy bo‘lmasligi kerak");
+    // Aks holda, qiymatni hisoblaydi va normal tarzda qaytaradi
+    let f;
+    for(f = 1; x > 1; f *= x, x--) /* bo‘sh */ ;
+    return f;
+}
+factorial(4) // => 24
+```
+
+Istisno yuzaga kelganda, JavaScript interpretatori darhol dasturning normal bajarilishini to‘xtatadi va eng yaqin istisnolarni qayta ishlov beruvchiga o‘tadi. Istisnolarni qayta ishlov beruvchilar keyingi bo‘limda tasvirlanadigan `try/catch/finally` ko‘rsatmasining `catch` bandi yordamida yoziladi. Agar istisno yuzaga kelgan kod bloki o‘zi bilan bog‘langan `catch` bandiga ega bo‘lmasa, interpretator keyingi, yuqoriroq darajadagi o‘rab turuvchi kod blokini tekshirib, unda istisnolarni qayta ishlov beruvchi bor-yo‘qligini ko‘radi. Bu jarayon ishlov beruvchi topilguncha davom etadi.
+
+Agar istisno uni qayta ishlash uchun `try/catch/finally` ko‘rsatmasiga ega bo‘lmagan funksiyada yuzaga kelsa, istisno bu funksiyani chaqirgan kodga yuqoriga uzatiladi. Shu tarzda, istisnolar JavaScript metodlarining leksik tuzilmasi bo‘ylab va chaqiruvlar steki (`call stack`) bo‘ylab yuqoriga tarqaladi. Agar hech qanday istisnolarni qayta ishlov beruvchi topilmasa, istisno xato sifatida qabul qilinadi va foydalanuvchiga xabar qilinadi.
+
+## `try/catch/finally`
+
+`try/catch/finally` ko‘rsatmasi JavaScript'ning istisnolarni qayta ishlash mexanizmidir.
+
+Bu ko‘rsatmaning **`try`** bandi shunchaki istisnolari qayta ishlanishi kerak bo‘lgan kod blokini aniqlaydi. `try` blokidan keyin **`catch`** bandi keladi. Bu `try` bloki ichining istalgan joyida istisno yuzaga kelganda chaqiriladigan ko‘rsatmalar blokidir. `catch` bandidan keyin esa **`finally`** bloki keladi. U `try` blokida nima sodir bo‘lishidan qat’i nazar, bajarilishi kafolatlangan "tozalash" kodini o‘z ichiga oladi.
+
+`catch` blogi ham, `finally` blogi ham ixtiyoriydir, lekin `try` bloki bu bloklardan kamida bittasi bilan birga kelishi shart. `try`, `catch` va `finally` bloklarining barchasi jingalak qavslar bilan boshlanadi va tugaydi. Bu qavslar sintaksisning majburiy qismidir va band faqat bitta ko‘rsatmadan iborat bo‘lsa ham, ularni tushirib qoldirib bo‘lmaydi.
+
+Quyidagi kod `try/catch/finally` ko‘rsatmasining sintaksisi va maqsadini ko‘rsatadi:
+
+``` js
+try {
+    // Odatda, bu kod blokning boshidan oxirigacha
+    // muammosiz ishlaydi. Lekin u ba’zan istisno yuzaga keltirishi mumkin,
+    // yo to‘g‘ridan-to‘g‘ri `throw` ko‘rsatmasi bilan, yo bilvosita,
+    // istisno yuzaga keltiradigan metodni chaqirish orqali.
+}
+catch(e) {
+    // Bu blokdagi ko‘rsatmalar faqat va faqat `try`
+    // bloki istisno yuzaga keltirgandagina bajariladi. Bu ko‘rsatmalar
+    // "otilgan" `Error` obyekti yoki boshqa qiymatga murojaat qilish uchun
+    // `e` lokal o‘zgaruvchisidan foydalanishi mumkin. Bu blok istisnoni
+    // qandaydir tarzda qayta ishlashi, hech narsa qilmasdan e’tiborsiz qoldirishi,
+    // yoki `throw` bilan istisnoni qayta "otishi" mumkin.
+}
+finally {
+    // Bu blok `try` blokida nima sodir bo‘lishidan qat’i nazar,
+    // har doim bajariladigan ko‘rsatmalarni o‘z ichiga oladi. Ular `try`
+    // bloki quyidagi hollarda yakunlansa ham bajariladi:
+    // 1) normal tarzda, blokning oxiriga yetganda
+    // 2) `break`, `continue`, yoki `return` ko‘rsatmasi sababli
+    // 3) yuqoridagi `catch` bandi tomonidan qayta ishlangan istisno bilan
+    // 4) hali ham tarqalayotgan, ushlanmagan istisno bilan
+}
+```
+
+E’tibor bering, `catch` kalit so‘zidan keyin odatda qavslar ichida identifikator keladi. Bu identifikator funksiya parametriga o‘xshaydi. Istisno ushlab olinganda, istisno bilan bog‘liq bo‘lgan qiymat (masalan, `Error` obyekti) bu parametrga tayinlanadi. `catch` bandi bilan bog‘langan identifikator blokli ko‘rinish doirasiga ega — u faqat `catch` bloki ichidagina aniqlangan bo‘ladi.
+
+Quyida `try/catch` ko‘rsatmasining hayotiy misoli keltirilgan. U oldingi bo‘limda ta’riflangan `factorial()` metodidan hamda kiritish va chiqarish uchun klient tomonidagi JavaScript metodlari `prompt()` va `alert()`'dan foydalanadi:
+
+``` js
+try {
+    // Foydalanuvchidan son kiritishni so‘rash
+    let n = Number(prompt("Iltimos, musbat butun son kiriting", ""));
+    // Kiritilgan ma’lumot to‘g‘ri deb faraz qilib, sonning faktorialini hisoblash
+    let f = factorial(n);
+    // Natijani ko‘rsatish
+    alert(n + "! = " + f);
+}
+catch(ex) { // Agar foydalanuvchi kiritgan ma’lumot noto‘g‘ri bo‘lsa, shu yerga tushamiz
+    alert(ex); // Foydalanuvchiga xato nima ekanligini bildirish
+}
+```
+
+Bu misol `finally` bandisiz `try/catch` ko‘rsatmasidir. Garchi `finally` `catch` kabi tez-tez ishlatilmasa-da, u foydali bo‘lishi mumkin. Biroq uning xatti-harakati qo‘shimcha tushuntirishni talab qiladi. Agar `try` blokining biror qismi bajarilsa, `try` blokidagi kod qanday yakunlanishidan qat’i nazar, `finally` bandining bajarilishi kafolatlanadi. U odatda `try` bandidagi koddan keyin "tozalash" uchun ishlatiladi.
+
+Normal holatda, JavaScript interpretatori `try` blokining oxiriga yetadi, so‘ngra har qanday zaruriy tozalashni amalga oshiradigan `finally` blokiga o‘tadi. Agar interpretator `try` blokini `return`, `continue` yoki `break` ko‘rsatmasi sababli tark etsa, `finally` bloki interpretator o‘zining yangi manziliga o‘tishidan oldin bajariladi.
+
+Agar `try` blokida istisno yuzaga kelsa va istisnoni qayta ishlash uchun bog‘langan `catch` bloki mavjud bo‘lsa, interpretator avval `catch` blokini, so‘ngra `finally` blokini bajaradi. Agar istisnoni qayta ishlash uchun lokal `catch` bloki bo‘lmasa, interpretator avval `finally` blokini bajaradi va so‘ngra eng yaqin o‘rab turuvchi `catch` bandiga o‘tadi.
+
+Agar `finally` blokining o‘zi `return`, `continue`, `break` yoki `throw` ko‘rsatmasi bilan yoki istisno yuzaga keltiradigan metodni chaqirish orqali o‘tishga sabab bo‘lsa, interpretator kutilayotgan har qanday o‘tishdan voz kechadi va yangi o‘tishni amalga oshiradi. Masalan, agar `finally` bandi istisno yuzaga keltirsa, bu istisno "otilish" jarayonida bo‘lgan har qanday istisnoning o‘rnini bosadi. Agar `finally` bandi `return` ko‘rsatmasini bersa, metod normal tarzda qaytadi, hatto istisno yuzaga kelgan va hali qayta ishlanmagan bo‘lsa ham.
+
+`try` va `finally`'ni `catch` bandisiz birga ishlatish mumkin. Bu holda, `finally` bloki shunchaki `try` blokida nima sodir bo‘lishidan qat’i nazar, bajarilishi kafolatlangan tozalash kodi bo‘ladi. Esingizda bo‘lsa, biz `for` siklini `while` sikli bilan to‘liq simulyatsiya qila olmagan edik, chunki `continue` ko‘rsatmasi bu ikki sikl uchun turlicha ishlaydi. Agar biz `try/finally` ko‘rsatmasini qo‘shsak, `for` sikli kabi ishlaydigan va `continue` ko‘rsatmalarini to‘g‘ri qayta ishlaydigan `while` siklini yozishimiz mumkin:
+
+``` js
+// `for(initialize ; test ;increment ) body;` ni simulyatsiya qilish
+initialize ;
+while( test ) {
+    try { body ; }
+    finally { increment ; }
+}
+```
+
+Biroq shuni yodda tutish kerakki, `break` ko‘rsatmasini o‘z ichiga olgan `body` `while` siklida `for` siklidagiga qaraganda biroz boshqacha ishlaydi (chiqishdan oldin qo‘shimcha inkrementga sabab bo‘ladi), shuning uchun hatto `finally` bandi bilan ham `for` siklini `while` bilan to‘liq simulyatsiya qilishning imkoni yo‘q.
+
+<Callout type="info">
+
+### Yolg‘iz `catch` bandlari
+
+Ba’zan siz `catch` bandidan faqatgina istisnoning tarqalishini aniqlash va to‘xtatish uchun foydalanishingiz mumkin, garchi sizga istisnoning tipi yoki qiymati qiziq bo‘lmasa ham. ES2019 va undan keyingi versiyalarda qavslarni va identifikatorni tushirib qoldirib, `catch` kalit so‘zini yolg‘iz ishlatishingiz mumkin. Quyida misol keltirilgan:
+
+``` js
+// `JSON.parse()` kabi, lekin xatolik yuzaga keltirish o‘rniga `undefined` qaytaradi
+function parseJSON(s) {
+    try {
+        return JSON.parse(s);
+    } catch {
+        // Nimadir noto‘g‘ri ketdi, lekin nima bo‘lgani bizga muhim emas
+        return undefined;
+    }
+}
+```
+
+</Callout>
