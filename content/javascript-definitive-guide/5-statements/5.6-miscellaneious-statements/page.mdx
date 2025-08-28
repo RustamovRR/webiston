@@ -1,0 +1,103 @@
+# Turli xil ko‘rsatmalar
+
+Ushbu bo‘lim qolgan uchta JavaScript ko‘rsatmasi — `with`, `debugger` va `"use strict"`ni tasvirlaydi.
+
+## `with`
+
+`with` ko‘rsatmasi biror kod blokini xuddi belgilangan obyektning xossalari o‘sha kod uchun ko‘rinish doirasidagi (`scope`) o‘zgaruvchilar bo‘lgandek ishga tushiradi. Uning sintaksisi quyidagicha:
+
+``` js
+with (object)
+    statement
+```
+
+Bu ko‘rsatma `object`'ning xossalarini o‘zgaruvchilar sifatida ishlatadigan vaqtinchalik ko‘rinish doirasini yaratadi va so‘ngra `statement`'ni o‘sha doira ichida bajaradi.
+
+`with` ko‘rsatmasi qat’iy rejimda (§5.6.3) **taqiqlangan** va qat’iy bo'lmagan rejimda ham **eskirgan** deb hisoblanishi kerak: iloji boricha undan foydalanishdan tiyiling. `with`'dan foydalanadigan JavaScript kodini optimizatsiya qilish qiyin va u `with` ko‘rsatmasisiz yozilgan ekvivalent kodga qaraganda ancha sekinroq ishlashi ehtimoli yuqori.
+
+`with` ko‘rsatmasining keng tarqalgan qo‘llanilishi — bu chuqur ichma-ich joylashgan obyekt ierarxiyalari bilan ishlashni osonlashtirishdir. Masalan, klient tomonidagi JavaScript'da HTML formaning elementlariga murojaat qilish uchun quyidagi kabi ifodalarni yozishga to‘g‘ri kelishi mumkin:
+
+``` js
+document.forms[0].address.value
+```
+
+Agar bu kabi ifodalarni bir necha bor yozish kerak bo‘lsa, `with` ko‘rsatmasidan foydalanib, forma obyektining xossalariga o‘zgaruvchilardek munosabatda bo‘lish mumkin:
+
+``` js
+with(document.forms[0]) {
+    // Bu yerda forma elementlariga to‘g‘ridan-to‘g‘ri murojaat qiling. Masalan:
+    name.value = "";
+    address.value = "";
+    email.value = "";
+}
+```
+
+Bu siz yozishingiz kerak bo‘lgan kod hajmini kamaytiradi: endi har bir forma xossasi nomidan oldin `document.forms[0]` prefiksini yozish shart emas. Albatta, `with` ko‘rsatmasini ishlatmagan holda, oldingi kodni quyidagicha xuddi shunday oson yozsa ham bo'ladi:
+
+``` js
+let f = document.forms[0];
+f.name.value = "";
+f.address.value = "";
+f.email.value = "";
+```
+
+E’tibor bering, agar `with` ko‘rsatmasi tanasi ichida `const`, `let` yoki `var` yordamida o‘zgaruvchi yoki konstanta e’lon qilsangiz, u oddiy o‘zgaruvchi yaratadi va belgilangan obyekt ichida yangi xossa ta’riflamaydi.
+
+## `debugger`
+
+`debugger` ko‘rsatmasi odatda hech narsa qilmaydi. Biroq agar **nosozliklarni tuzatuvchi (`debugger`)** dasturi mavjud va ishlayotgan bo‘lsa, u holda implementatsiya qandaydir nosozliklarni tuzatish amalini bajarishi mumkin (lekin majbur emas). Amalda, bu ko‘rsatma **to‘xtash nuqtasi (`breakpoint`)** kabi ishlaydi: JavaScript kodining bajarilishi to‘xtaydi va siz o‘zgaruvchilarning qiymatlarini chiqarish, chaqiruvlar stekini (`call stack`) tekshirish va hokazolar uchun nosozliklarni tuzatuvchidan foydalanishingiz mumkin.
+
+Tasavvur qiling, masalan, siz `f()` funksiyangizda `undefined` argument bilan chaqirilayotgani sababli istisno olayapsiz va bu chaqiruv qayerdan kelayotganini aniqlay olmayapsiz. Bu muammoni tuzatishda yordam berish uchun, `f()`'ni quyidagicha boshlanadigan qilib o‘zgartirishingiz mumkin:
+
+``` js
+function f(o) {
+    if (o === undefined) debugger;  // Nosozliklarni tuzatish uchun vaqtinchalik qator
+   ...                              // Funksiyaning qolgan qismi shu yerda davom etadi.
+    
+}
+```
+
+Endi, `f()` argumentsiz chaqirilganda, bajarilish to‘xtaydi va siz chaqiruvlar stekini tekshirib, bu noto‘g‘ri chaqiruv qayerdan kelayotganini aniqlash uchun nosozliklarni tuzatuvchidan foydalanishingiz mumkin.
+
+E’tibor bering, nosozliklarni tuzatuvchining shunchaki mavjud bo‘lishi yetarli emas: `debugger` ko‘rsatmasi siz uchun nosozliklarni tuzatuvchini ishga tushirmaydi. Biroq agar siz veb-brauzerdan foydalanayotgan bo‘lsangiz va dasturchi vositalari (`developer tools`) konsoli ochiq bo‘lsa, bu ko‘rsatma to‘xtash nuqtasini yuzaga keltiradi.
+
+## `"use strict"`
+
+`"use strict"` — bu ES5'da kiritilgan **direktivadir**. Direktivalar ko‘rsatmalar emas (lekin shunchalik yaqinki, `"use strict"` shu yerda keltirilmoqda). `"use strict"` direktivasi va oddiy ko‘rsatmalar o‘rtasida ikkita muhim farq bor:
+
+- Unda hech qanday til kalit so‘zlari bo'lmaydi: direktiva shunchaki maxsus satr literalidan (bir tirnoq yoki qo‘shtirnoq ichidagi) iborat bo‘lgan ifoda ko‘rsatmasidir.
+- U faqat skriptning boshida yoki funksiya tanasining boshida, har qanday haqiqiy ko‘rsatmalar paydo bo‘lishidan oldin kelishi mumkin.
+
+`"use strict"` direktivasining maqsadi — undan keyin keladigan kod (skriptda yoki funksiyada) **qat’iy kod (`strict code`)** ekanligini bildirishdir. Skriptning eng yuqori darajadagi (funksiya bo‘lmagan) kodi, agar skriptda `"use strict"` direktivasi bo‘lsa, qat’iy kod hisoblanadi. Funksiya tanasi, agar u qat’iy kod ichida ta’riflangan bo‘lsa yoki o‘zida `"use strict"` direktivasiga ega bo‘lsa, qat’iy kod hisoblanadi. `eval()` metodiga uzatilgan kod, agar `eval()` qat’iy koddan chaqirilsa yoki kod satri `"use strict"` direktivasini o‘z ichiga olsa, qat’iy kod hisoblanadi.
+
+Qat’iy deb aniq e’lon qilingan koddan tashqari, klass tanasi (9-bob) ichidagi yoki ES6 moduli (§10.3) ichidagi har qanday kod avtomatik ravishda qat’iy kod hisoblanadi. Bu shuni anglatadiki, agar sizning barcha JavaScript kodingiz modullar sifatida yozilgan bo‘lsa, u holda ularning barchasi avtomatik ravishda qat’iy bo‘ladi va siz hech qachon aniq `"use strict"` direktivasidan foydalanishingizga hojat qolmaydi.
+
+Qat’iy kod **qat’iy rejimda (`strict mode`)** bajariladi. Qat’iy rejim — bu tilning muhim kamchiliklarini tuzatadigan, kuchliroq xatoliklarni tekshirishni va kuchaytirilgan xavfsizlikni ta’minlaydigan, tilning cheklangan bir qismidir. Qat’iy rejim standart holat bo‘lmagani uchun, tilning kamchilikka ega eski xususiyatlaridan hali ham foydalanadigan eski JavaScript kodi to‘g‘ri ishlashda davom etadi.
+
+Qat’iy rejim va noqat’iy rejim o‘rtasidagi farqlar quyidagilardir (dastlabki uchtasi ayniqsa muhim):
+
+- `with` ko‘rsatmasiga qat’iy rejimda ruxsat berilmaydi.
+
+- Qat’iy rejimda barcha o‘zgaruvchilar e’lon qilinishi shart: agar siz e’lon qilinmagan o‘zgaruvchi, funksiya, funksiya parametri, `catch` bandi parametri yoki global obyektning xossasi bo‘lmagan identifikatorga qiymat tayinlasangiz, `ReferenceError` xatoligi yuzaga keladi. (Qat’iy bo'lmagan rejimda bu holat global obyektga yangi xossa qo‘shish orqali zimdan global o‘zgaruvchi e’lon qiladi.)
+
+- Qat’iy rejimda, funksiya sifatida (metod sifatida emas) chaqirilgan funksiyalarning `this` qiymati `undefined` bo‘ladi. (Qat’iy bo'lmagan rejimda, funksiya sifatida chaqirilgan funksiyalarga har doim global obyekt ularning `this` qiymati sifatida uzatiladi.) Shuningdek, qat’iy rejimda, funksiya `call()` yoki `apply()` (§8.7.4) bilan chaqirilganda, `this` qiymati `call()` yoki `apply()`'ga birinchi argument sifatida uzatilgan qiymatning aynan o‘zi bo‘ladi. (Qat’iy bo'lmagan rejimda, `null` va `undefined` qiymatlari global obyekt bilan almashtiriladi va obyekt bo‘lmagan qiymatlar obyektlarga o‘zgartiriladi.)
+
+- Qat’iy rejimda, yozilmaydigan xossalarga qiymat tayinlashga urinishlar va kengaytirilmaydigan obyektlarda yangi xossalar yaratishga urinishlar `TypeError` xatoligiga sabab bo‘ladi. (Qat’iy bo'lmagan rejimda bu urinishlar "jimgina" muvaffaqiyatsizlikka uchraydi.)
+
+- Qat’iy rejimda, `eval()`'ga uzatilgan kod qat’iy bo'lmagan rejimdagidek chaqiruvchining ko‘rinish doirasida o‘zgaruvchilar e’lon qila olmaydi yoki funksiyalar ta’riflay olmaydi. Buning o‘rniga, o‘zgaruvchi va funksiya ta’riflari `eval()` uchun yaratilgan yangi ko‘rinish doirasida yashaydi. Bu doira `eval()` qaytganida yo‘q qilinadi.
+
+- Qat’iy rejimda, funksiyadagi `Arguments` obyekti (§8.3.3) funksiyaga uzatilgan qiymatlarning statik nusxasini saqlaydi. Qat’iy bo'lmagan rejimda esa, `Arguments` obyekti "sehrli" xususiyatga ega bo‘lib, unda massiv elementlari va nomlangan funksiya parametrlari ikkalasi ham bir xil qiymatga ishora qiladi.
+
+- Qat’iy rejimda, agar `delete` operatoridan keyin o‘zgaruvchi, funksiya yoki funksiya parametri kabi to‘g‘ridan-to‘g‘ri identifikator kelsa, `SyntaxError` xatoligi yuzaga keladi. (Qat’iy bo'lmagan rejimda, bunday `delete` ifodasi hech narsa qilmaydi va `false`'ga baholanadi.)
+
+- Qat’iy rejimda, konfiguratsiya bo'lmaydigan xossani o‘chirishga urinish `TypeError` xatoligiga sabab bo‘ladi. (Qat’iy bo'lmagan rejimda, urinish muvaffaqiyatsiz bo‘ladi va `delete` ifodasi `false`'ga baholanadi.)
+
+- Qat’iy rejimda, obyekt literalining bir xil nom bilan ikki yoki undan ortiq xossani ta’riflashi sintaktik xatodir. (Qat’iy bo'lmagan rejimda xatolik yuz bermaydi.)
+
+- Qat’iy rejimda, funksiya e’lonining bir xil nomga ega bo‘lgan ikki yoki undan ortiq parametrga ega bo‘lishi sintaktik xatodir. (Qat’iy bo'lmagan rejimda xatolik yuz bermaydi.)
+
+- Qat’iy rejimda, sakkizlik sanoq tizimidagi butun son literallariga (`0` bilan boshlanadigan va undan keyin `x` kelmaydigan) ruxsat berilmaydi. (Qat’iy bo'lmagan rejimda, ba’zi implementatsiyalar sakkizlik literallarga ruxsat beradi.)
+
+- Qat’iy rejimda, `eval` va `arguments` identifikatorlari kalit so‘zlar kabi qabul qilinadi va ularning qiymatini o‘zgartirishga ruxsat berilmaydi. Bu identifikatorlarga qiymat tayinlay olmaysiz, ularni o‘zgaruvchi sifatida e’lon qila olmaysiz, ularni funksiya nomi, funksiya parametri nomi yoki `catch` bloki identifikatori sifatida ishlata olmaysiz.
+
+- Qat’iy rejimda, chaqiruvlar stekini tekshirish qobiliyati cheklangan. Qat’iy rejimdagi funksiya ichida `arguments.caller` va `arguments.callee` ikkalasi ham `TypeError` xatoligiga sabab bo‘ladi. Qat’iy rejimdagi funksiyalarning `caller` va `arguments` xossalari ham o‘qilganda `TypeError` xatoligiga sabab bo‘ladi. (Ba’zi implementatsiyalar bu nostandart xossalarni qat’iy bo'lmagan rejimdagi funksiyalar uchun taqdim etadi.)
