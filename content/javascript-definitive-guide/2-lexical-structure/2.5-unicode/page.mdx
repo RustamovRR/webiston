@@ -1,13 +1,13 @@
 ---
 title: Unicode
-description: "Unicode: Identifikator va satrlarda ASCII bo‘lmagan belgilar, Unicode escape’lar ('\\uXXXX', '\\u{...}'), emojilarni qo‘llash va normalizatsiya masalalari."
+description: "Unicode: Identifikator va satrlarda ASCII bo'lmagan belgilar, Unicode escape'lar ('\\uXXXX', '\\u{...}'), emojilarni qo'llash va normalizatsiya masalalari."
 keywords: JavaScript, Unicode, escape sequences, emoji, normalization, identifiers, strings
 author: Webiston.uz
 ---
 
 # Unicode
 
-JavaScript dasturlari Unicode belgilar to'plami yordamida yoziladi va siz har qanday Unicode belgilardan satrlar va izohlar ichida foydalanishingiz mumkin. Ko‘chirishga qulayligi (portativlik) va tahrirlash osonligi uchun odatda identifikatorlarda faqat ASCII harflari va raqamlaridan foydalanish keng ommalashgan. Lekin bu shunchaki dasturlashdagi qoida (konvensiya) bo'lib, tilning o'zi identifikatorlarda Unicode harflari, raqamlari va ideograflaridan (lekin emojilardan emas) foydalanishga ruxsat beradi. Bu dasturchilar matematik belgilar va ingliz tilidan boshqa tillardagi so'zlarni konstantalar va o'zgaruvchilar sifatida ishlatishi mumkinligini anglatadi:
+JavaScript dasturlari Unicode belgilar to'plami yordamida yoziladi va siz har qanday Unicode belgilardan satrlar va izohlar ichida foydalanishingiz mumkin. Ko'chirishga qulayligi (portativlik) va tahrirlash osonligi uchun odatda identifikatorlarda faqat ASCII harflari va raqamlaridan foydalanish keng ommalashgan. Lekin bu shunchaki dasturlashdagi qoida (konvensiya) bo'lib, tilning o'zi identifikatorlarda Unicode harflari, raqamlari va ideograflaridan (lekin emojilardan emas) foydalanishga ruxsat beradi. Bu dasturchilar matematik belgilar va ingliz tilidan boshqa tillardagi so'zlarni konstantalar va o'zgaruvchilar sifatida ishlatishi mumkinligini anglatadi:
 
 ```js
 const π = 3.14;
@@ -24,7 +24,7 @@ caf\u00e9        // => 1; qochish ketma-ketligidan foydalanib o'zgaruvchiga muro
 caf\u{E9}        // => 1; xuddi shu qochish ketma-ketligining boshqa shakli
 ```
 
-JavaScript’ning dastlabki versiyalari faqat to'rt raqamli qochish ketma-ketligini qo'llab-quvvatlagan. Jingalak qavsli versiya ES6’da 16 bitdan ko'proq joy talab qiladigan Unicode kod nuqtalarini (codepoints), masalan emoji’larni yaxshiroq qo'llab-quvvatlash uchun kiritilgan:
+JavaScript'ning dastlabki versiyalari faqat to'rt raqamli qochish ketma-ketligini qo'llab-quvvatlagan. Jingalak qavsli versiya ES6'da 16 bitdan ko'proq joy talab qiladigan Unicode kod nuqtalarini (codepoints), masalan emoji'larni yaxshiroq qo'llab-quvvatlash uchun kiritilgan:
 
 ```js copy
 console.log('\u{1F600}'); // Tabassum qilayotgan yuz emojisini chiqaradi
@@ -34,13 +34,13 @@ Unicode qochish ketma-ketliklari izohlarda ham ishlatilishi mumkin, lekin izohla
 
 ## Unicode normalizatsiyasi
 
-Agar siz JavaScript dasturlaringizda ASCII bo'lmagan belgilardan foydalansangiz, Unicode bir xil belgini kodlashning bir nechta usulini ta'minlashini hisobga olishingiz kerak bo'ladi. Masalan, `é` satri bitta Unicode belgisi `\u00E9` sifatida yoki oddiy ASCII `e` va undan keyin keladigan o‘tkir urg‘u beruvchi birlashtiruvchi belgi (acute accent combining mark) `\u0301` sifatida kodlanishi mumkin. Bu ikki kodlash usuli matn muharririda odatda bir xil ko'rinadi, lekin ularning ikkilik kodlashlari turlicha. Bu shuni anglatadiki, JavaScript ularni har xil deb hisoblaydi, bu esa dasturda juda chalkashliklarga olib kelishi mumkin:
+Agar siz JavaScript dasturlaringizda ASCII bo'lmagan belgilardan foydalansangiz, Unicode bir xil belgini kodlashning bir nechta usulini ta'minlashini hisobga olishingiz kerak bo'ladi. Masalan, `é` satri bitta Unicode belgisi `\u00E9` sifatida yoki oddiy ASCII `e` va undan keyin keladigan o'tkir urg'u beruvchi birlashtiruvchi belgi (acute accent combining mark) `\u0301` sifatida kodlanishi mumkin. Bu ikki kodlash usuli matn muharririda odatda bir xil ko'rinadi, lekin ularning ikkilik kodlashlari turlicha. Bu shuni anglatadiki, JavaScript ularni har xil deb hisoblaydi, bu esa dasturda juda chalkashliklarga olib kelishi mumkin:
 
 ```js
 const café = 1; // Bu konstanta "caf\u{e9}" deb nomlangan
 const café = 2; // Bu konstanta boshqacha: "cafe\u{301}"
 café            // => 1: bu konstantaning qiymati bir
-café            // => 2: ko‘rinishidan farqlab bo‘lmaydigan bu konstantaning qiymati esa boshqacha
+café            // => 2: ko'rinishidan farqlab bo'lmaydigan bu konstantaning qiymati esa boshqacha
 ```
 
-Unicode standarti barcha belgilar uchun afzal ko'rilgan kodlash usulini belgilaydi va matnni taqqoslash uchun mos keladigan kanonikal shaklga o'tkazish uchun normalizatsiya jarayonini aniqlaydi. JavaScript o'zi talqin qilayotgan manba kodi allaqachon normalizatsiya qilingan deb hisoblaydi va o'zi hech qanday normalizatsiyani amalga oshirmaydi. Agar siz JavaScript dasturlaringizda Unicode belgilaridan foydalanmoqchi bo'lsangiz, bir-biridan farqli, lekin vizual jihatdan farqlab bo'lmaydigan identifikatorlarga duch kelmaslik uchun muharriringiz yoki boshqa vosita manba kodingizni Unicode normalizatsiyasidan o‘tkazishini ta’minlashingiz kerak.
+Unicode standarti barcha belgilar uchun afzal ko'rilgan kodlash usulini belgilaydi va matnni taqqoslash uchun mos keladigan kanonikal shaklga o'tkazish uchun normalizatsiya jarayonini aniqlaydi. JavaScript o'zi talqin qilayotgan manba kodi allaqachon normalizatsiya qilingan deb hisoblaydi va o'zi hech qanday normalizatsiyani amalga oshirmaydi. Agar siz JavaScript dasturlaringizda Unicode belgilaridan foydalanmoqchi bo'lsangiz, bir-biridan farqli, lekin vizual jihatdan farqlab bo'lmaydigan identifikatorlarga duch kelmaslik uchun muharriringiz yoki boshqa vosita manba kodingizni Unicode normalizatsiyasidan o'tkazishini ta'minlashingiz kerak.

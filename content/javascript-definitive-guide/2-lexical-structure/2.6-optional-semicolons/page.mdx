@@ -1,13 +1,13 @@
 ---
 title: Ixtiyoriy nuqta-vergullar
-description: "Avtomatik nuqta‑vergul qo‘yish (ASI): qator uzilishlari talqini, himoyalovchi `;` ishlatish, `return/throw/break/continue` istisnolari, `++/--` va strelkali funksiyalar bilan nozik holatlar."
+description: "Avtomatik nuqta-vergul qo'yish (ASI): qator uzilishlari talqini, himoyalovchi `;` ishlatish, `return/throw/break/continue` istisnolari, `++/--` va strelkali funksiyalar bilan nozik holatlar."
 keywords: JavaScript, ASI, semicolon, line break, return, throw, break, continue, ++, --, arrow function, pitfalls
 author: Webiston.uz
 ---
 
 # Ixtiyoriy nuqta-vergullar
 
-Ko'plab dasturlash tillari singari, JavaScript ham ko'rsatmalarni (statements) (5-bobga qarang) bir-biridan ajratish uchun nuqta-verguldan ( `;` ) foydalanadi. Bu kodingiz ma'nosini aniq qilish uchun muhimdir: ajratuvchisiz bir ko'rsatmaning oxiri keyingisining boshi bo'lib tuyulishi yoki aksincha bo'lishi mumkin. JavaScript’da, agar ikki ko'rsatma alohida qatorlarda yozilgan bo'lsa, odatda ular orasidagi nuqta-vergulni tushirib qoldirishingiz mumkin. (Shuningdek, dastur oxiridagi yoki dasturdagi keyingi token yopuvchi jingalak qavs ( `}` ) bo'lsa ham nuqta-vergulni tushirib qoldirsa bo‘ladi.) Ko'p JavaScript dasturchilari (va ushbu kitobdagi kod) ko'rsatmalar oxirini aniq belgilash uchun, hatto talab qilinmagan joylarda ham nuqta-vergullardan foydalanadi. Boshqa bir uslub esa nuqta-vergullarni iloji boricha tushirib qoldirib, faqat talab qilinadigan sanoqli holatlardagina ishlatishdir. Qaysi uslubni tanlashingizdan qat'i nazar, JavaScript’dagi ixtiyoriy nuqta-vergullar haqida tushunishingiz kerak bo'lgan bir necha tafsilotlar mavjud.
+Ko'plab dasturlash tillari singari, JavaScript ham ko'rsatmalarni (statements) (5-bobga qarang) bir-biridan ajratish uchun nuqta-verguldan ( `;` ) foydalanadi. Bu kodingiz ma'nosini aniq qilish uchun muhimdir: ajratuvchisiz bir ko'rsatmaning oxiri keyingisining boshi bo'lib tuyulishi yoki aksincha bo'lishi mumkin. JavaScript'da, agar ikki ko'rsatma alohida qatorlarda yozilgan bo'lsa, odatda ular orasidagi nuqta-vergulni tushirib qoldirishingiz mumkin. (Shuningdek, dastur oxiridagi yoki dasturdagi keyingi token yopuvchi jingalak qavs ( `}` ) bo'lsa ham nuqta-vergulni tushirib qoldirsa bo'ladi.) Ko'p JavaScript dasturchilari (va ushbu kitobdagi kod) ko'rsatmalar oxirini aniq belgilash uchun, hatto talab qilinmagan joylarda ham nuqta-vergullardan foydalanadi. Boshqa bir uslub esa nuqta-vergullarni iloji boricha tushirib qoldirib, faqat talab qilinadigan sanoqli holatlardagina ishlatishdir. Qaysi uslubni tanlashingizdan qat'i nazar, JavaScript'dagi ixtiyoriy nuqta-vergullar haqida tushunishingiz kerak bo'lgan bir necha tafsilotlar mavjud.
 
 Quyidagi kodni ko'rib chiqamiz. Ikki ko'rsatma alohida qatorlarda yozilgani uchun birinchi nuqta-vergulni tushirib qoldirishi mumkin edi:
 
@@ -89,8 +89,8 @@ Holbuki, siz katta ehtimol bilan buni nazarda tutgan edingiz:
 return true;
 ```
 
-Bu shuni anglatadiki, siz `return` , `break` yoki `continue` kalit so'zlari va ulardan keyin keladigan ifoda orasiga qator uzilishini qo‘ymasligingiz kerak. Agar qator uzilishini qo‘shsangiz, kodingizning tushunarsiz va tuzatishi qiyin bo‘lgan usulda ishdan chiqishiga olib kelishi mumkin.
+Bu shuni anglatadiki, siz `return` , `break` yoki `continue` kalit so'zlari va ulardan keyin keladigan ifoda orasiga qator uzilishini qo'ymasligingiz kerak. Agar qator uzilishini qo'shsangiz, kodingizning tushunarsiz va tuzatishi qiyin bo'lgan usulda ishdan chiqishiga olib kelishi mumkin.
 
-Ikkinchi istisno `++` va `--` operatorlariga (§4.8) bog'liq. Bu operatorlar ifodadan oldin keladigan prefiks operatorlari yoki ifodadan keyin keladigan postfiks operatorlari bo'lishi mumkin. Agar siz bu operatorlardan birini postfiks operatori sifatida ishlatmoqchi bo'lsangiz, ular o‘zlari ta’sir qiladigan ifoda bilan bir qatorda turishi kerak.
+Ikkinchi istisno `++` va `--` operatorlariga (§4.8) bog'liq. Bu operatorlar ifodadan oldin keladigan prefiks operatorlari yoki ifodadan keyin keladigan postfiks operatorlari bo'lishi mumkin. Agar siz bu operatorlardan birini postfiks operatori sifatida ishlatmoqchi bo'lsangiz, ular o'zlari ta'sir qiladigan ifoda bilan bir qatorda turishi kerak.
 
 Uchinchi istisno ixcham "strelka" sintaksisi yordamida aniqlangan funksiyalarga tegishli: `=>` strelkaning o'zi parametrlar ro'yxati bilan bir qatorda bo'lishi shart.

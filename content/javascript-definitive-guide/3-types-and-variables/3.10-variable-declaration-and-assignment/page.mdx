@@ -1,65 +1,65 @@
 ---
-title: O‘zgaruvchilarni e’lon qilish va qiymat tayinlash
-description: "let, const, var: e’lon qilish, scope (block/function/global), hoisting, globalThis bilan bog‘liqlik, strict mode’dagi xatolar va destrukturizatsiya orqali tayinlash."
+title: O'zgaruvchilarni e'lon qilish va qiymat tayinlash
+description: "let, const, var: e'lon qilish, scope (block/function/global), hoisting, globalThis bilan bog'liqlik, strict mode'dagi xatolar va destrukturizatsiya orqali tayinlash."
 keywords: JavaScript, variables, let, const, var, scope, hoisting, globalThis, strict mode, destructuring
 author: Webiston.uz
 ---
 
-# O‘zgaruvchilarni e’lon qilish va qiymat tayinlash
+# O'zgaruvchilarni e'lon qilish va qiymat tayinlash
 
-Kompyuter dasturlashining eng fundamental texnikalaridan biri bu qiymatlarni ifodalash uchun nomlar — yoki _identifikatorlardan_ — foydalanishdir. Nomni qiymatga bog‘lash bizga o‘sha qiymatga murojaat qilish va uni biz yozayotgan dasturlarda ishlatish imkonini beradi. Biz bu ishni qilganimizda, odatda, o‘zgaruvchiga **qiymat** tayinlayapmiz deymiz. "O‘zgaruvchi" atamasi yangi qiymatlar tayinlanishi mumkinligini anglatadi: ya’ni, o‘zgaruvchi bilan bog‘langan qiymat dasturimiz ishlashi davomida **o‘zgarishi** mumkin. Agar biz biror nomga qiymatni doimiy ravishda biriktirsak, u holda bu nomni o‘zgaruvchi emas, **konstanta** deb ataymiz.
+Kompyuter dasturlashining eng fundamental texnikalaridan biri bu qiymatlarni ifodalash uchun nomlar — yoki _identifikatorlardan_ — foydalanishdir. Nomni qiymatga bog'lash bizga o'sha qiymatga murojaat qilish va uni biz yozayotgan dasturlarda ishlatish imkonini beradi. Biz bu ishni qilganimizda, odatda, o'zgaruvchiga **qiymat** tayinlayapmiz deymiz. "O'zgaruvchi" atamasi yangi qiymatlar tayinlanishi mumkinligini anglatadi: ya'ni, o'zgaruvchi bilan bog'langan qiymat dasturimiz ishlashi davomida **o'zgarishi** mumkin. Agar biz biror nomga qiymatni doimiy ravishda biriktirsak, u holda bu nomni o'zgaruvchi emas, **konstanta** deb ataymiz.
 
-JavaScript dasturida o‘zgaruvchi yoki konstantani ishlatishdan oldin, siz uni **e’lon qilishingiz** kerak. ES6 va undan keyingi versiyalarda bu `let` va `const` kalit so‘zlari bilan amalga oshiriladi, ularni keyinroq tushuntiramiz. ES6'dan oldin o‘zgaruvchilar `var` bilan e’lon qilinardi, bu ancha o‘ziga xosroq va ushbu mavzuning keyingi qismida tushuntiriladi.
+JavaScript dasturida o'zgaruvchi yoki konstantani ishlatishdan oldin, siz uni **e'lon qilishingiz** kerak. ES6 va undan keyingi versiyalarda bu `let` va `const` kalit so'zlari bilan amalga oshiriladi, ularni keyinroq tushuntiramiz. ES6'dan oldin o'zgaruvchilar `var` bilan e'lon qilinardi, bu ancha o'ziga xosroq va ushbu mavzuning keyingi qismida tushuntiriladi.
 
-## `let` va `const` bilan e’lon qilish
+## `let` va `const` bilan e'lon qilish
 
-Zamonaviy JavaScript'da (ES6 va undan keyin) o‘zgaruvchilar `let` kalit so‘zi bilan e’lon qilinadi, masalan:
+Zamonaviy JavaScript'da (ES6 va undan keyin) o'zgaruvchilar `let` kalit so'zi bilan e'lon qilinadi, masalan:
 
 ``` js
 let i;
 let sum;
 ```
 
-Siz bitta `let` ko‘rsatmasida bir nechta o‘zgaruvchini ham e’lon qilishingiz mumkin:
+Siz bitta `let` ko'rsatmasida bir nechta o'zgaruvchini ham e'lon qilishingiz mumkin:
 
 ``` js
 let i, sum;
 ```
 
-Iloji boricha, o‘zgaruvchilarni e’lon qilayotganda ularga boshlang‘ich qiymat berish yaxshi dasturlash amaliyoti hisoblanadi:
+Iloji boricha, o'zgaruvchilarni e'lon qilayotganda ularga boshlang'ich qiymat berish yaxshi dasturlash amaliyoti hisoblanadi:
 
 ``` js
 let message = "hello";
 let i = 0, j = 0, k = 0;
-let x = 2, y = x*x; // Boshlang‘ich qiymatlar avval e’lon qilingan o‘zgaruvchilardan foydalanishi mumkin
+let x = 2, y = x*x; // Boshlang'ich qiymatlar avval e'lon qilingan o'zgaruvchilardan foydalanishi mumkin
 ```
 
-Agar siz `let` ko‘rsatmasi bilan o‘zgaruvchiga boshlang‘ich qiymat bermasangiz, o‘zgaruvchi e’lon qilinadi, lekin kodingiz unga qiymat tayinlamaguncha uning qiymati `undefined` bo‘lib qoladi.
+Agar siz `let` ko'rsatmasi bilan o'zgaruvchiga boshlang'ich qiymat bermasangiz, o'zgaruvchi e'lon qilinadi, lekin kodingiz unga qiymat tayinlamaguncha uning qiymati `undefined` bo'lib qoladi.
 
-O‘zgaruvchi o‘rniga konstanta e’lon qilish uchun `let` o‘rniga `const`'dan foydalaning. `const` xuddi `let` kabi ishlaydi, faqat siz konstantani e’lon qilish paytida uni initsializatsiya qilishingiz (boshlang‘ich qiymat berishingiz) shart:
+O'zgaruvchi o'rniga konstanta e'lon qilish uchun `let` o'rniga `const`'dan foydalaning. `const` xuddi `let` kabi ishlaydi, faqat siz konstantani e'lon qilish paytida uni initsializatsiya qilishingiz (boshlang'ich qiymat berishingiz) shart:
 
 ``` js
 const H0 = 74;          // Hubble konstantasi (km/s/Mpc)
-const C = 299792.458;   // Vakuumdagi yorug‘lik tezligi (km/s)
+const C = 299792.458;   // Vakuumdagi yorug'lik tezligi (km/s)
 const AU = 1.496E8;     // Astronomik Birlik: quyoshgacha masofa (km)
 ```
 
-Nomidan ko‘rinib turganidek, konstantalarning qiymatini o‘zgartirib bo‘lmaydi va bunga qilingan har qanday urinish `TypeError` xatoligiga sabab bo‘ladi.
+Nomidan ko'rinib turganidek, konstantalarning qiymatini o'zgartirib bo'lmaydi va bunga qilingan har qanday urinish `TypeError` xatoligiga sabab bo'ladi.
 
-Konstantalarni o‘zgaruvchilardan farqlash uchun ularni `H0` yoki `HTTP_NOT_FOUND` kabi butunlay bosh harflar bilan yozilgan nomlar yordamida e’lon qilish keng tarqalgan (lekin universal bo‘lmagan) qoidadir.
+Konstantalarni o'zgaruvchilardan farqlash uchun ularni `H0` yoki `HTTP_NOT_FOUND` kabi butunlay bosh harflar bilan yozilgan nomlar yordamida e'lon qilish keng tarqalgan (lekin universal bo'lmagan) qoidadir.
 
 <Callout type="info">
 
 ### `const`'ni qachon ishlatish kerak?
 
-`const` kalit so‘zidan foydalanish bo‘yicha ikki xil qarash mavjud. Birinchi yondashuv — `const`'ni faqat yuqorida ko‘rsatilgan fizik konstantalar, dastur versiyasi raqamlari yoki fayl turlarini aniqlash uchun ishlatiladigan baytlar ketma-ketligi kabi fundamental jihatdan o‘zgarmaydigan qiymatlar uchun ishlatish.
+`const` kalit so'zidan foydalanish bo'yicha ikki xil qarash mavjud. Birinchi yondashuv — `const`'ni faqat yuqorida ko'rsatilgan fizik konstantalar, dastur versiyasi raqamlari yoki fayl turlarini aniqlash uchun ishlatiladigan baytlar ketma-ketligi kabi fundamental jihatdan o'zgarmaydigan qiymatlar uchun ishlatish.
 
-Ikkinchi yondashuv esa dasturlarimizdagi "o‘zgaruvchi" deb ataladigan ko‘plab qiymatlar aslida dastur ishlashi davomida hech qachon o‘zgarmasligini tan oladi. Bu yondashuvda biz hamma narsani `const` bilan e’lon qilamiz va agar qiymatning haqiqatan ham o‘zgarishiga ruxsat berishni istasak, e’lonni `let`'ga o‘zgartiramiz. Bu biz o‘zgartirishni niyat qilmagan o‘zgaruvchilarga tasodifiy o‘zgartirish kiritishning oldini olib, xatoliklarni kamaytirishga yordam berishi mumkin.
+Ikkinchi yondashuv esa dasturlarimizdagi "o'zgaruvchi" deb ataladigan ko'plab qiymatlar aslida dastur ishlashi davomida hech qachon o'zgarmasligini tan oladi. Bu yondashuvda biz hamma narsani `const` bilan e'lon qilamiz va agar qiymatning haqiqatan ham o'zgarishiga ruxsat berishni istasak, e'lonni `let`'ga o'zgartiramiz. Bu biz o'zgartirishni niyat qilmagan o'zgaruvchilarga tasodifiy o'zgartirish kiritishning oldini olib, xatoliklarni kamaytirishga yordam berishi mumkin.
 
-Xulosa qilib aytganda, birinchi yondashuvda biz `const`'ni faqat o‘zgarishi **mumkin bo‘lmagan** qiymatlar uchun ishlatamiz. Ikkinchisida esa, biz `const`'ni shunchaki o‘zgarmaydigan har qanday qiymat uchun ishlatamiz. Men o‘z kodimda birinchi yondashuvni afzal ko‘raman.
+Xulosa qilib aytganda, birinchi yondashuvda biz `const`'ni faqat o'zgarishi **mumkin bo'lmagan** qiymatlar uchun ishlatamiz. Ikkinchisida esa, biz `const`'ni shunchaki o'zgarmaydigan har qanday qiymat uchun ishlatamiz. Men o'z kodimda birinchi yondashuvni afzal ko'raman.
 </Callout>
 
-5-bobda biz JavaScript'dagi `for`, `for/in` va `for/of` sikl ko‘rsatmalarini o‘rganamiz. Bu sikllarning har biri siklning har bir iteratsiyasida yangi qiymat tayinlanadigan sikl o‘zgaruvchisiga ega. JavaScript sikl o‘zgaruvchisini sikl sintaksisining bir qismi sifatida e’lon qilishga imkon beradi va bu `let`'ni ishlatishning yana bir keng tarqalgan usulidir:
+5-bobda biz JavaScript'dagi `for`, `for/in` va `for/of` sikl ko'rsatmalarini o'rganamiz. Bu sikllarning har biri siklning har bir iteratsiyasida yangi qiymat tayinlanadigan sikl o'zgaruvchisiga ega. JavaScript sikl o'zgaruvchisini sikl sintaksisining bir qismi sifatida e'lon qilishga imkon beradi va bu `let`'ni ishlatishning yana bir keng tarqalgan usulidir:
 
 ```js
 for(let i = 0, len = data.length; i < len; i++) console.log(data[i]);
@@ -67,47 +67,47 @@ for(let datum of data) console.log(datum);
 for(let property in object) console.log(property);
 ```
 
-Bu g‘alati tuyulishi mumkin, lekin siz `for/in` va `for/of` sikllarining "o‘zgaruvchilarini" e’lon qilish uchun `const`'dan ham foydalanishingiz mumkin, agar sikl tanasi unga yangi qiymat qayta tayinlamasa. Bu holda, `const` e’loni shunchaki qiymatning bitta sikl iteratsiyasi davomida o‘zgarmas ekanligini bildiradi:
+Bu g'alati tuyulishi mumkin, lekin siz `for/in` va `for/of` sikllarining "o'zgaruvchilarini" e'lon qilish uchun `const`'dan ham foydalanishingiz mumkin, agar sikl tanasi unga yangi qiymat qayta tayinlamasa. Bu holda, `const` e'loni shunchaki qiymatning bitta sikl iteratsiyasi davomida o'zgarmas ekanligini bildiradi:
 
 ``` js
 for(const datum of data) console.log(datum);
 for(const property in object) console.log(property);
 ```
 
-### O‘zgaruvchi va konstantalarning ko‘rinish doirasi (`scope`)
+### O'zgaruvchi va konstantalarning ko'rinish doirasi (`scope`)
 
-O‘zgaruvchining **ko‘rinish doirasi (`scope`)** — bu dasturingiz manba kodining u aniqlangan qismidir. `let` va `const` bilan e’lon qilingan o‘zgaruvchilar va konstantalar **blokli ko‘rinish doirasiga (`block scoped`)** ega. Bu shuni anglatadiki, ular faqat `let` yoki `const` ko‘rsatmasi joylashgan kod bloki ichidagina aniqlangan bo‘ladi. JavaScript'da klass va funksiya ta’riflari, shuningdek, `if/else` ko‘rsatmalari, `while` sikllari, `for` sikllari va hokazolarning tanasi blok hisoblanadi. Qisqacha aytganda, agar o‘zgaruvchi yoki konstanta jingalak qavslar to‘plami ichida e’lon qilinsa, o‘sha jingalak qavslar bu o‘zgaruvchi yoki konstanta aniqlangan kod hududini chegaralaydi (garchi, albatta, o‘zgaruvchini e’lon qiladigan `let` yoki `const` ko‘rsatmasidan oldin bajariladigan kod qatorlaridan unga murojaat qilish mumkin bo‘lmasa ham). `for`, `for/in` yoki `for/of` siklining bir qismi sifatida e’lon qilingan o‘zgaruvchi va konstantalar, texnik jihatdan jingalak qavslardan tashqarida paydo bo‘lsa-da, ularning ko‘rinish doirasi sikl tanasi hisoblanadi.
+O'zgaruvchining **ko'rinish doirasi (`scope`)** — bu dasturingiz manba kodining u aniqlangan qismidir. `let` va `const` bilan e'lon qilingan o'zgaruvchilar va konstantalar **blokli ko'rinish doirasiga (`block scoped`)** ega. Bu shuni anglatadiki, ular faqat `let` yoki `const` ko'rsatmasi joylashgan kod bloki ichidagina aniqlangan bo'ladi. JavaScript'da klass va funksiya ta'riflari, shuningdek, `if/else` ko'rsatmalari, `while` sikllari, `for` sikllari va hokazolarning tanasi blok hisoblanadi. Qisqacha aytganda, agar o'zgaruvchi yoki konstanta jingalak qavslar to'plami ichida e'lon qilinsa, o'sha jingalak qavslar bu o'zgaruvchi yoki konstanta aniqlangan kod hududini chegaralaydi (garchi, albatta, o'zgaruvchini e'lon qiladigan `let` yoki `const` ko'rsatmasidan oldin bajariladigan kod qatorlaridan unga murojaat qilish mumkin bo'lmasa ham). `for`, `for/in` yoki `for/of` siklining bir qismi sifatida e'lon qilingan o'zgaruvchi va konstantalar, texnik jihatdan jingalak qavslardan tashqarida paydo bo'lsa-da, ularning ko'rinish doirasi sikl tanasi hisoblanadi.
 
-Agar e’lon eng yuqori darajada, har qanday kod blokidan tashqarida paydo bo‘lsa, biz uni **global o‘zgaruvchi** yoki konstanta deymiz va u **global ko‘rinish doirasiga** ega bo‘ladi. Node'da va klient tomonidagi JavaScript modullarida (10-bobga qarang), global o‘zgaruvchining ko‘rinish doirasi u aniqlangan fayl hisoblanadi. An’anaviy klient tomonidagi JavaScript'da esa, global o‘zgaruvchining ko‘rinish doirasi u aniqlangan HTML hujjati hisoblanadi. Ya’ni: agar bitta `<script>` global o‘zgaruvchi yoki konstantani e’lon qilsa, bu o‘zgaruvchi yoki konstanta o‘sha hujjatdagi barcha `<script>` elementlarida (yoki hech bo‘lmaganda, `let` yoki `const` ko‘rsatmasi bajarilgandan keyin ishga tushadigan barcha skriptlarda) aniqlangan bo‘ladi.
+Agar e'lon eng yuqori darajada, har qanday kod blokidan tashqarida paydo bo'lsa, biz uni **global o'zgaruvchi** yoki konstanta deymiz va u **global ko'rinish doirasiga** ega bo'ladi. Node'da va klient tomonidagi JavaScript modullarida (10-bobga qarang), global o'zgaruvchining ko'rinish doirasi u aniqlangan fayl hisoblanadi. An'anaviy klient tomonidagi JavaScript'da esa, global o'zgaruvchining ko'rinish doirasi u aniqlangan HTML hujjati hisoblanadi. Ya'ni: agar bitta `<script>` global o'zgaruvchi yoki konstantani e'lon qilsa, bu o'zgaruvchi yoki konstanta o'sha hujjatdagi barcha `<script>` elementlarida (yoki hech bo'lmaganda, `let` yoki `const` ko'rsatmasi bajarilgandan keyin ishga tushadigan barcha skriptlarda) aniqlangan bo'ladi.
 
-### Takroriy e’lonlar
+### Takroriy e'lonlar
 
-Bir ko‘rinish doirasi (`scope`) ichida bir xil nomni bir nechta `let` yoki `const` e’lonlari bilan ishlatish sintaktik xatodir. Ichki joylashgan ko‘rinish doirasida xuddi shu nom bilan yangi o‘zgaruvchi e’lon qilish esa mumkin (garchi bu amaliyotni qilmaslik ma’qul bo‘lsa ham):
+Bir ko'rinish doirasi (`scope`) ichida bir xil nomni bir nechta `let` yoki `const` e'lonlari bilan ishlatish sintaktik xatodir. Ichki joylashgan ko'rinish doirasida xuddi shu nom bilan yangi o'zgaruvchi e'lon qilish esa mumkin (garchi bu amaliyotni qilmaslik ma'qul bo'lsa ham):
 
 ``` js
-const x = 1;        // x'ni global konstanta sifatida e’lon qilamiz
+const x = 1;        // x'ni global konstanta sifatida e'lon qilamiz
 if (x === 1) {
     let x = 2;      // Blok ichida x boshqa qiymatga ishora qilishi mumkin
     console.log(x); // 2 ni chiqaradi
 }
-console.log(x);     // 1 ni chiqaradi: biz yana global ko‘rinish doirasiga qaytdik
-let x = 3;          // XATO! x'ni qayta e’lon qilishga urinish sintaktik xatoga olib keladi
+console.log(x);     // 1 ni chiqaradi: biz yana global ko'rinish doirasiga qaytdik
+let x = 3;          // XATO! x'ni qayta e'lon qilishga urinish sintaktik xatoga olib keladi
 ```
 
-### E’lonlar va tiplar
+### E'lonlar va tiplar
 
-Agar siz C yoki Java kabi statik tipli tillarga o‘rgangan bo‘lsangiz, o‘zgaruvchilarni e’lon qilishning asosiy maqsadi o‘zgaruvchiga tayinlanishi mumkin bo‘lgan qiymatlarning tipini ko‘rsatish deb o‘ylashingiz mumkin. Lekin, ko‘rib turganingizdek, JavaScript'ning o‘zgaruvchi e’lonlarida hech qanday tip biriktirilmaydi.[^2] JavaScript o‘zgaruvchisi har qanday tipdagi qiymatni saqlashi mumkin. Masalan, JavaScript'da bir o‘zgaruvchiga avval son, keyinroq esa satr tayinlash mutlaqo mumkin (lekin odatda bu yomon dasturlash uslubi hisoblanadi):
+Agar siz C yoki Java kabi statik tipli tillarga o'rgangan bo'lsangiz, o'zgaruvchilarni e'lon qilishning asosiy maqsadi o'zgaruvchiga tayinlanishi mumkin bo'lgan qiymatlarning tipini ko'rsatish deb o'ylashingiz mumkin. Lekin, ko'rib turganingizdek, JavaScript'ning o'zgaruvchi e'lonlarida hech qanday tip biriktirilmaydi.[^2] JavaScript o'zgaruvchisi har qanday tipdagi qiymatni saqlashi mumkin. Masalan, JavaScript'da bir o'zgaruvchiga avval son, keyinroq esa satr tayinlash mutlaqo mumkin (lekin odatda bu yomon dasturlash uslubi hisoblanadi):
 
 ``` js
 let i = 10;
 i = "ten";
 ```
 
-[^2]: TypeScript va Flow (§17.8) kabi JavaScript kengaytmalari `let x: number = 0;` kabi sintaksis bilan o‘zgaruvchilarni e’lon qilishda tiplarni ko‘rsatish imkonini beradi.
+[^2]: TypeScript va Flow (§17.8) kabi JavaScript kengaytmalari `let x: number = 0;` kabi sintaksis bilan o'zgaruvchilarni e'lon qilishda tiplarni ko'rsatish imkonini beradi.
 
-## `var` bilan o‘zgaruvchilarni e’lon qilish
+## `var` bilan o'zgaruvchilarni e'lon qilish
 
-JavaScript'ning ES6'dan oldingi versiyalarida o‘zgaruvchini e’lon qilishning yagona yo‘li `var` kalit so‘zi edi va konstantalarni e’lon qilishning imkoni yo‘q edi. `var`'ning sintaksisi xuddi `let`'ning sintaksisi kabi:
+JavaScript'ning ES6'dan oldingi versiyalarida o'zgaruvchini e'lon qilishning yagona yo'li `var` kalit so'zi edi va konstantalarni e'lon qilishning imkoni yo'q edi. `var`'ning sintaksisi xuddi `let`'ning sintaksisi kabi:
 
 ``` js
 var x;
@@ -115,30 +115,30 @@ var data = [], count = data.length;
 for(var i = 0; i < count; i++) console.log(data[i]);
 ```
 
-Garchi `var` va `let` bir xil sintaksisga ega bo‘lsa-da, ularning ishlashida muhim farqlar mavjud:
+Garchi `var` va `let` bir xil sintaksisga ega bo'lsa-da, ularning ishlashida muhim farqlar mavjud:
 
-- `var` bilan e’lon qilingan o‘zgaruvchilar blokli ko‘rinish doirasiga (`block scope`ga) ega emas. Buning o‘rniga, ular o‘zlari joylashgan funksiya tanasi ichida qanchalik chuqur joylashganidan qat’i nazar, o‘sha **funksiya ko‘rinish doirasiga (`function scope`ga)** ega bo‘ladi.
+- `var` bilan e'lon qilingan o'zgaruvchilar blokli ko'rinish doirasiga (`block scope`ga) ega emas. Buning o'rniga, ular o'zlari joylashgan funksiya tanasi ichida qanchalik chuqur joylashganidan qat'i nazar, o'sha **funksiya ko'rinish doirasiga (`function scope`ga)** ega bo'ladi.
 
-- Agar siz `var`'ni funksiya tanasidan tashqarida ishlatsangiz, u global o‘zgaruvchi e’lon qiladi. Lekin `var` bilan e’lon qilingan global o‘zgaruvchilar `let` bilan e’lon qilingan globallardan muhim bir jihati bilan farq qiladi. `var` bilan e’lon qilingan globallar global obyektning (§3.7) xossalari sifatida implementatsiya qilinadi. Global obyektga `globalThis` orqali murojaat qilish mumkin. Shunday qilib, agar siz funksiyadan tashqarida `var x = 2;` deb yozsangiz, bu xuddi `globalThis.x = 2;` deb yozganingizdek bo‘ladi. Biroq shuni yodda tutingki, bu o‘xshatish mukammal emas: global `var` e’lonlari bilan yaratilgan xossalarni `delete` operatori (§4.13.4) bilan o‘chirib bo‘lmaydi. `let` va `const` bilan e’lon qilingan global o‘zgaruvchilar va konstantalar esa global obyektning xossalari emas.
+- Agar siz `var`'ni funksiya tanasidan tashqarida ishlatsangiz, u global o'zgaruvchi e'lon qiladi. Lekin `var` bilan e'lon qilingan global o'zgaruvchilar `let` bilan e'lon qilingan globallardan muhim bir jihati bilan farq qiladi. `var` bilan e'lon qilingan globallar global obyektning (§3.7) xossalari sifatida implementatsiya qilinadi. Global obyektga `globalThis` orqali murojaat qilish mumkin. Shunday qilib, agar siz funksiyadan tashqarida `var x = 2;` deb yozsangiz, bu xuddi `globalThis.x = 2;` deb yozganingizdek bo'ladi. Biroq shuni yodda tutingki, bu o'xshatish mukammal emas: global `var` e'lonlari bilan yaratilgan xossalarni `delete` operatori (§4.13.4) bilan o'chirib bo'lmaydi. `let` va `const` bilan e'lon qilingan global o'zgaruvchilar va konstantalar esa global obyektning xossalari emas.
 
-- `let` bilan e’lon qilingan o‘zgaruvchilardan farqli o‘laroq, bir xil o‘zgaruvchini `var` bilan bir necha marta e’lon qilish mumkin. Chunki `var` o‘zgaruvchilari blokli emas, funksiya ko‘rinish doirasiga ega bo‘lgani uchun, bunday qayta e’lon qilish amaliyoti aslida keng tarqalgan. `i` o‘zgaruvchisi ko‘pincha butun sonli qiymatlar uchun, ayniqsa, `for` sikllarining indeks o‘zgaruvchisi sifatida ishlatiladi. Bir nechta `for` sikliga ega funksiyada, har birining `for(var i = 0; ...` bilan boshlanishi odatiy holdir. `var` bu o‘zgaruvchilarni sikl tanasi bilan cheklamagani uchun, bu sikllarning har biri bir xil o‘zgaruvchini (zararsiz) qayta e’lon qiladi va qayta initsializatsiya qiladi.
+- `let` bilan e'lon qilingan o'zgaruvchilardan farqli o'laroq, bir xil o'zgaruvchini `var` bilan bir necha marta e'lon qilish mumkin. Chunki `var` o'zgaruvchilari blokli emas, funksiya ko'rinish doirasiga ega bo'lgani uchun, bunday qayta e'lon qilish amaliyoti aslida keng tarqalgan. `i` o'zgaruvchisi ko'pincha butun sonli qiymatlar uchun, ayniqsa, `for` sikllarining indeks o'zgaruvchisi sifatida ishlatiladi. Bir nechta `for` sikliga ega funksiyada, har birining `for(var i = 0; ...` bilan boshlanishi odatiy holdir. `var` bu o'zgaruvchilarni sikl tanasi bilan cheklamagani uchun, bu sikllarning har biri bir xil o'zgaruvchini (zararsiz) qayta e'lon qiladi va qayta initsializatsiya qiladi.
 
-- `var` e’lonlarining eng g’ayrioddiy xususiyatlaridan biri **"ko‘tarilish" (`hoisting`)** deb nomlanadi. O‘zgaruvchi `var` bilan e’lon qilinganda, e’lonning o‘zi u joylashgan funksiyaning eng yuqorisiga "ko‘tariladi". O‘zgaruvchining initsializatsiyasi siz yozgan joyda qoladi, lekin o‘zgaruvchining ta’rifi funksiyaning tepasiga ko‘chadi. Shunday qilib, `var` bilan e’lon qilingan o‘zgaruvchilarni ular joylashgan funksiyaning istalgan yerida xatosiz ishlatish mumkin. Agar initsializatsiya kodi hali ishga tushmagan bo‘lsa, o‘zgaruvchining qiymati `undefined` bo‘lishi mumkin, lekin siz o‘zgaruvchini initsializatsiya qilinishidan oldin ishlatsangiz, xatolikka duch kelmaysiz. (Bu xatoliklar manbai bo‘lishi mumkin va `let` buni tuzatishi mumkin muhim kamchiliklardan biridir: agar siz o‘zgaruvchini `let` bilan e’lon qilsangiz, lekin uni `let` ko‘rsatmasi ishga tushishidan oldin ishlatishga harakat qilsangiz, shunchaki `undefined` qiymatini ko‘rish o‘rniga, haqiqiy xatolikka duch kelasiz.)
+- `var` e'lonlarining eng g'ayrioddiy xususiyatlaridan biri **"ko'tarilish" (`hoisting`)** deb nomlanadi. O'zgaruvchi `var` bilan e'lon qilinganda, e'lonning o'zi u joylashgan funksiyaning eng yuqorisiga "ko'tariladi". O'zgaruvchining initsializatsiyasi siz yozgan joyda qoladi, lekin o'zgaruvchining ta'rifi funksiyaning tepasiga ko'chadi. Shunday qilib, `var` bilan e'lon qilingan o'zgaruvchilarni ular joylashgan funksiyaning istalgan yerida xatosiz ishlatish mumkin. Agar initsializatsiya kodi hali ishga tushmagan bo'lsa, o'zgaruvchining qiymati `undefined` bo'lishi mumkin, lekin siz o'zgaruvchini initsializatsiya qilinishidan oldin ishlatsangiz, xatolikka duch kelmaysiz. (Bu xatoliklar manbai bo'lishi mumkin va `let` buni tuzatishi mumkin muhim kamchiliklardan biridir: agar siz o'zgaruvchini `let` bilan e'lon qilsangiz, lekin uni `let` ko'rsatmasi ishga tushishidan oldin ishlatishga harakat qilsangiz, shunchaki `undefined` qiymatini ko'rish o'rniga, haqiqiy xatolikka duch kelasiz.)
 
 <Callout type="info">
 
-### E’lon qilinmagan o‘zgaruvchilardan foydalanish
+### E'lon qilinmagan o'zgaruvchilardan foydalanish
 
-Qat’iy rejimda (`strict mode`, §5.6.3), agar siz e’lon qilinmagan o‘zgaruvchidan foydalanishga harakat qilsangiz, kodingizni ishga tushirganingizda `ReferenceError` xatoligiga duch kelasiz. Biroq qat’iy rejimsiz, agar siz `let`, `const` yoki `var` bilan e’lon qilinmagan nomga qiymat tayinlasangiz, yakunda yangi global o‘zgaruvchi yaratib qo‘yasiz. Kodingiz funksiyalar va bloklar ichida qanchalik chuqur joylashganidan qat’i nazar, bu o‘zgaruvchi global bo‘ladi. Bu esa, deyarli hech qachon siz xohlagan natija emas, xatoliklarga moyil va qat’iy rejimdan foydalanish uchun eng asosli sabablardan biridir!
+Qat'iy rejimda (`strict mode`, §5.6.3), agar siz e'lon qilinmagan o'zgaruvchidan foydalanishga harakat qilsangiz, kodingizni ishga tushirganingizda `ReferenceError` xatoligiga duch kelasiz. Biroq qat'iy rejimsiz, agar siz `let`, `const` yoki `var` bilan e'lon qilinmagan nomga qiymat tayinlasangiz, yakunda yangi global o'zgaruvchi yaratib qo'yasiz. Kodingiz funksiyalar va bloklar ichida qanchalik chuqur joylashganidan qat'i nazar, bu o'zgaruvchi global bo'ladi. Bu esa, deyarli hech qachon siz xohlagan natija emas, xatoliklarga moyil va qat'iy rejimdan foydalanish uchun eng asosli sabablardan biridir!
 
-Bu tasodifiy usulda yaratilgan global o‘zgaruvchilar `var` bilan e’lon qilingan global o‘zgaruvchilarga o‘xshaydi: ular global obyektning xossalarini aniqlaydi. Lekin to‘g‘ri `var` e’lonlari bilan aniqlangan xossalardan farqli o‘laroq, bu xossalarni `delete` operatori (§4.13.4) yordamida o‘chirib yuborish mumkin.
+Bu tasodifiy usulda yaratilgan global o'zgaruvchilar `var` bilan e'lon qilingan global o'zgaruvchilarga o'xshaydi: ular global obyektning xossalarini aniqlaydi. Lekin to'g'ri `var` e'lonlari bilan aniqlangan xossalardan farqli o'laroq, bu xossalarni `delete` operatori (§4.13.4) yordamida o'chirib yuborish mumkin.
 </Callout>
 
 ## Destrukturizatsiya orqali tayinlash
 
-ES6 **destrukturizatsiya (`destructuring`)**, ya’ni **tuzilmani qismlarga ajratish orqali tayinlash** deb nomlanuvchi murakkab e’lon qilish va qiymat tayinlash sintaksisini implementatsiya qiladi. Destrukturizatsiya orqali tayinlashda, tenglik belgisining o‘ng tomonidagi qiymat massiv yoki obyekt ("tuzilmali" qiymat) bo‘ladi, chap tomon esa massiv va obyekt literallari sintaksisiga taqlid qiluvchi sintaksis yordamida bir yoki bir nechta o‘zgaruvchi nomlarini ko‘rsatadi. Bu amal sodir bo‘lganda, o‘ng tomondagi qiymatdan bir yoki bir nechta qiymatlar "ajratib olinadi" ("destrukturizatsiya qilinadi") va chap tomonda nomlangan o‘zgaruvchilarga saqlanadi.
+ES6 **destrukturizatsiya (`destructuring`)**, ya'ni **tuzilmani qismlarga ajratish orqali tayinlash** deb nomlanuvchi murakkab e'lon qilish va qiymat tayinlash sintaksisini implementatsiya qiladi. Destrukturizatsiya orqali tayinlashda, tenglik belgisining o'ng tomonidagi qiymat massiv yoki obyekt ("tuzilmali" qiymat) bo'ladi, chap tomon esa massiv va obyekt literallari sintaksisiga taqlid qiluvchi sintaksis yordamida bir yoki bir nechta o'zgaruvchi nomlarini ko'rsatadi. Bu amal sodir bo'lganda, o'ng tomondagi qiymatdan bir yoki bir nechta qiymatlar "ajratib olinadi" ("destrukturizatsiya qilinadi") va chap tomonda nomlangan o'zgaruvchilarga saqlanadi.
 
-Destrukturizatsiya, ehtimol, eng ko‘p `const`, `let` yoki `var` e’lon qilish ko‘rsatmasining bir qismi sifatida o‘zgaruvchilarni initsializatsiya qilish uchun ishlatiladi, lekin uni oddiy tayinlash ifodalarida ham (allaqachon e’lon qilingan o‘zgaruvchilar bilan) bajarish mumkin. Va §8.3.5-bo‘limda ko‘rib chiqadiganimizdek, destrukturizatsiyadan funksiya parametrlarini aniqlashda ham foydalanish mumkin.
+Destrukturizatsiya, ehtimol, eng ko'p `const`, `let` yoki `var` e'lon qilish ko'rsatmasining bir qismi sifatida o'zgaruvchilarni initsializatsiya qilish uchun ishlatiladi, lekin uni oddiy tayinlash ifodalarida ham (allaqachon e'lon qilingan o'zgaruvchilar bilan) bajarish mumkin. Va §8.3.5-bo'limda ko'rib chiqadiganimizdek, destrukturizatsiyadan funksiya parametrlarini aniqlashda ham foydalanish mumkin.
 
 ### Massiv destrukturizatsiyasi
 
@@ -147,19 +147,19 @@ Quyida qiymatlar massividan foydalanadigan oddiy destrukturizatsiya misollari ke
 ``` js
 let [x,y] = [1,2]; // `let x=1, y=2` bilan bir xil
 [x,y] = [x+1,y+1]; // `x = x + 1, y = y + 1` bilan bir xil
-[x,y] = [y,x];     // Ikki o‘zgaruvchining qiymatini almashtirish
+[x,y] = [y,x];     // Ikki o'zgaruvchining qiymatini almashtirish
 [x,y]              // => [3,2]: qiymatlari oshirilgan va almashtirilgan
 ```
 
-Destrukturizatsiya qiymatlar massivini qaytaradigan funksiyalar bilan ishlashni qanchalik osonlashtirishiga e’tibor bering:
+Destrukturizatsiya qiymatlar massivini qaytaradigan funksiyalar bilan ishlashni qanchalik osonlashtirishiga e'tibor bering:
 
 ``` js
-// [x,y] koordinatalarini [r,theta] qutb koordinatalariga o‘zgartirish
+// [x,y] koordinatalarini [r,theta] qutb koordinatalariga o'zgartirish
 function toPolar(x, y) {
     return [Math.sqrt(x*x+y*y), Math.atan2(y,x)];
 }
 
-// Qutb koordinatalarini Dekart koordinatalariga o‘zgartirish
+// Qutb koordinatalarini Dekart koordinatalariga o'zgartirish
 function toCartesian(r, theta) {
     return [r*Math.cos(theta), r*Math.sin(theta)];
 }
@@ -168,7 +168,7 @@ let [r,theta] = toPolar(1.0, 1.0);  // r == Math.sqrt(2); theta == Math.PI/4
 let [x,y] = toCartesian(r,theta);   // [x, y] == [1.0, 1.0]
 ```
 
-Biz o‘zgaruvchilar va konstantalarni JavaScript'ning turli `for` sikllarining bir qismi sifatida e’lon qilish mumkinligini ko‘rdik. Bu kontekstda o‘zgaruvchilarni destrukturizatsiya qilishdan ham foydalanish mumkin. Quyida obyektning barcha xossalarining nom/qiymat juftliklari bo‘ylab aylanib chiqadigan va bu juftliklarni ikki elementli massivlardan alohida o‘zgaruvchilarga aylantirish uchun destrukturizatsiyadan foydalanadigan kod keltirilgan:
+Biz o'zgaruvchilar va konstantalarni JavaScript'ning turli `for` sikllarining bir qismi sifatida e'lon qilish mumkinligini ko'rdik. Bu kontekstda o'zgaruvchilarni destrukturizatsiya qilishdan ham foydalanish mumkin. Quyida obyektning barcha xossalarining nom/qiymat juftliklari bo'ylab aylanib chiqadigan va bu juftliklarni ikki elementli massivlardan alohida o'zgaruvchilarga aylantirish uchun destrukturizatsiyadan foydalanadigan kod keltirilgan:
 
 ``` js
 let o = { x: 1, y: 2 };         // Biz aylanib chiqadigan obyekt
@@ -177,7 +177,7 @@ for(const [name, value] of Object.entries(o)) {
 }
 ```
 
-Destrukturizatsiya orqali tayinlashda chap tomondagi o‘zgaruvchilar soni o‘ng tomondagi massiv elementlari soniga mos kelishi shart emas. Chap tomondagi ortiqcha o‘zgaruvchilarga `undefined` qiymati beriladi, o‘ng tomondagi ortiqcha qiymatlar esa e’tiborsiz qoldiriladi. Chap tomondagi o‘zgaruvchilar ro‘yxati o‘ng tomondagi ba’zi qiymatlarni o‘tkazib yuborish uchun unda qo‘shimcha vergullar ham bo'lishi mumkin:
+Destrukturizatsiya orqali tayinlashda chap tomondagi o'zgaruvchilar soni o'ng tomondagi massiv elementlari soniga mos kelishi shart emas. Chap tomondagi ortiqcha o'zgaruvchilarga `undefined` qiymati beriladi, o'ng tomondagi ortiqcha qiymatlar esa e'tiborsiz qoldiriladi. Chap tomondagi o'zgaruvchilar ro'yxati o'ng tomondagi ba'zi qiymatlarni o'tkazib yuborish uchun unda qo'shimcha vergullar ham bo'lishi mumkin:
 
 ``` js
 let [x,y] = [1];        // x == 1; y == undefined
@@ -185,21 +185,21 @@ let [x,y] = [1];        // x == 1; y == undefined
 [,x,,y] = [1,2,3,4];    // x == 2; y == 4
 ```
 
-Massivni destrukturizatsiya qilayotganda barcha ishlatilmagan yoki qolgan qiymatlarni bitta o‘zgaruvchiga yig‘ib olmoqchi bo‘lsangiz, chap tomondagi oxirgi o‘zgaruvchi nomidan oldin uchta nuqta (`...`) ishlating:
+Massivni destrukturizatsiya qilayotganda barcha ishlatilmagan yoki qolgan qiymatlarni bitta o'zgaruvchiga yig'ib olmoqchi bo'lsangiz, chap tomondagi oxirgi o'zgaruvchi nomidan oldin uchta nuqta (`...`) ishlating:
 
 ``` js
 let [x, ...y] = [1,2,3,4]; // y == [2,3,4]
 ```
 
-Uchta nuqtaning bu tarzda ishlatilishini §8.3.2-bo‘limda yana ko‘ramiz, u yerda ular funksiyaning qolgan barcha argumentlarini bitta massivga yig‘ish kerakligini bildirish uchun ishlatiladi.
+Uchta nuqtaning bu tarzda ishlatilishini §8.3.2-bo'limda yana ko'ramiz, u yerda ular funksiyaning qolgan barcha argumentlarini bitta massivga yig'ish kerakligini bildirish uchun ishlatiladi.
 
-Destrukturizatsiya orqali tayinlashni ichma-ich joylashgan massivlar bilan ham ishlatish mumkin. Bunday holda, tayinlashning chap tomoni ichma-ich joylashgan massiv literaliga o‘xshashi kerak:
+Destrukturizatsiya orqali tayinlashni ichma-ich joylashgan massivlar bilan ham ishlatish mumkin. Bunday holda, tayinlashning chap tomoni ichma-ich joylashgan massiv literaliga o'xshashi kerak:
 
 ``` js
 let [a, [b, c]] = [1, [2,2.5], 3]; // a == 1; b == 2; c == 2.5
 ```
 
-Massiv destrukturizatsiyasining kuchli bir xususiyati shundaki, u aslida massiv bo'lishni talab qilmaydi! Siz tayinlashning o‘ng tomonida har qanday **iteratsiya qilinadigan (`iterable`)** obyektni (12-bob) ishlatishingiz mumkin; `for/of` sikli (§5.4.4) bilan ishlatilishi mumkin bo‘lgan har qanday obyektni destrukturizatsiya qilish ham mumkin:
+Massiv destrukturizatsiyasining kuchli bir xususiyati shundaki, u aslida massiv bo'lishni talab qilmaydi! Siz tayinlashning o'ng tomonida har qanday **iteratsiya qilinadigan (`iterable`)** obyektni (12-bob) ishlatishingiz mumkin; `for/of` sikli (§5.4.4) bilan ishlatilishi mumkin bo'lgan har qanday obyektni destrukturizatsiya qilish ham mumkin:
 
 ``` js
 let [first, ...rest] = "Hello"; // first == "H"; rest == ["e","l","l","o"]
@@ -207,59 +207,59 @@ let [first, ...rest] = "Hello"; // first == "H"; rest == ["e","l","l","o"]
 
 ### Obyekt destrukturizatsiyasi
 
-Destrukturizatsiya orqali tayinlashni o‘ng tomondagi qiymat obyekt bo‘lganda ham amalga oshirish mumkin. Bunday holda, tayinlashning chap tomoni obyekt literaliga o‘xshaydi: jingalak qavslar ichida vergul bilan ajratilgan o‘zgaruvchi nomlari ro‘yxati:
+Destrukturizatsiya orqali tayinlashni o'ng tomondagi qiymat obyekt bo'lganda ham amalga oshirish mumkin. Bunday holda, tayinlashning chap tomoni obyekt literaliga o'xshaydi: jingalak qavslar ichida vergul bilan ajratilgan o'zgaruvchi nomlari ro'yxati:
 
 ``` js
 let transparent = {r: 0.0, g: 0.0, b: 0.0, a: 1.0}; // RGBA rangi
 let {r, g, b} = transparent;                        // r == 0.0; g == 0.0; b == 0.0
 ```
 
-Keyingi misol `Math` obyektining global funksiyalarini o‘zgaruvchilarga ko‘chirib oladi, bu ko‘p trigonometrik hisob-kitoblarni bajaradigan kodni soddalashtirishi mumkin:
+Keyingi misol `Math` obyektining global funksiyalarini o'zgaruvchilarga ko'chirib oladi, bu ko'p trigonometrik hisob-kitoblarni bajaradigan kodni soddalashtirishi mumkin:
 
 ``` js
 // `const sin=Math.sin`, `cos=Math.cos`, `tan=Math.tan` bilan bir xil
 const {sin, cos, tan} = Math;
 ```
 
-Bu yerdagi kodda e’tibor bering, `Math` obyekti alohida o‘zgaruvchilarga destrukturizatsiya qilingan uchta xossadan tashqari ko‘plab boshqa xossalarga ham ega. Nomlari ko‘rsatilmagan xossalar shunchaki e’tiborsiz qoldiriladi. Agar bu tayinlashning chap tomonida nomi `Math`'ning xossasi bo‘lmagan o‘zgaruvchi bo‘lganida, bu o‘zgaruvchiga shunchaki `undefined` qiymati tayinlanar edi.
+Bu yerdagi kodda e'tibor bering, `Math` obyekti alohida o'zgaruvchilarga destrukturizatsiya qilingan uchta xossadan tashqari ko'plab boshqa xossalarga ham ega. Nomlari ko'rsatilmagan xossalar shunchaki e'tiborsiz qoldiriladi. Agar bu tayinlashning chap tomonida nomi `Math`'ning xossasi bo'lmagan o'zgaruvchi bo'lganida, bu o'zgaruvchiga shunchaki `undefined` qiymati tayinlanar edi.
 
-Ushbu obyekt destrukturizatsiyasi misollarining har birida biz destrukturizatsiya qilinayotgan obyektning xossa nomlariga mos keladigan o‘zgaruvchi nomlarini tanladik. Bu sintaksisni sodda va tushunarli saqlaydi, lekin bu majburiy emas. Obyekt destrukturizatsiyasi tayinlashining chap tomonidagi identifikatorlarning har biri ikki nuqta bilan ajratilgan identifikatorlar juftligi ham bo‘lishi mumkin. Bunda birinchisi qiymati tayinlanishi kerak bo‘lgan xossaning nomi, ikkinchisi esa qiymat tayinlanadigan o‘zgaruvchining nomi bo‘ladi:
+Ushbu obyekt destrukturizatsiyasi misollarining har birida biz destrukturizatsiya qilinayotgan obyektning xossa nomlariga mos keladigan o'zgaruvchi nomlarini tanladik. Bu sintaksisni sodda va tushunarli saqlaydi, lekin bu majburiy emas. Obyekt destrukturizatsiyasi tayinlashining chap tomonidagi identifikatorlarning har biri ikki nuqta bilan ajratilgan identifikatorlar juftligi ham bo'lishi mumkin. Bunda birinchisi qiymati tayinlanishi kerak bo'lgan xossaning nomi, ikkinchisi esa qiymat tayinlanadigan o'zgaruvchining nomi bo'ladi:
 
 ``` js
 // `const cosine = Math.cos`, `tangent = Math.tan;` bilan bir xil
 const { cos: cosine, tan: tangent } = Math;
 ```
 
-Shaxsan men o‘zgaruvchi nomlari va xossa nomlari bir xil bo‘lmaganda, obyekt destrukturizatsiyasi sintaksisi foydali bo‘lish uchun juda murakkablashib ketadi deb hisoblayman va bunday hollarda qisqa yozuvdan qochishga harakat qilaman. Agar siz undan foydalanishni tanlasangiz, yodda tutingki, xossa nomlari har doim ikki nuqtaning chap tomonida bo‘ladi — ham obyekt literallarida, ham obyekt destrukturizatsiyasi tayinlashining chap tomonida.
+Shaxsan men o'zgaruvchi nomlari va xossa nomlari bir xil bo'lmaganda, obyekt destrukturizatsiyasi sintaksisi foydali bo'lish uchun juda murakkablashib ketadi deb hisoblayman va bunday hollarda qisqa yozuvdan qochishga harakat qilaman. Agar siz undan foydalanishni tanlasangiz, yodda tutingki, xossa nomlari har doim ikki nuqtaning chap tomonida bo'ladi — ham obyekt literallarida, ham obyekt destrukturizatsiyasi tayinlashining chap tomonida.
 
 Destrukturizatsiya orqali tayinlash ichma-ich joylashgan obyektlar, obyektlar massivlari yoki massivlar obyektlari bilan ishlatilganda yanada murakkablashadi, lekin bunga ruxsat etilgan:
 
 ``` js
 let points = [{x: 1, y: 2}, {x: 3, y: 4}];      // Ikki nuqta obyektidan iborat massiv
-let [{x: x1, y: y1}, {x: x2, y: y2}] = points;  // 4 ta o‘zgaruvchiga destrukturizatsiya qilingan.
+let [{x: x1, y: y1}, {x: x2, y: y2}] = points;  // 4 ta o'zgaruvchiga destrukturizatsiya qilingan.
 (x1 === 1 && y1 === 2 && x2 === 3 && y2 === 4)  // => true
 ```
 
-Yoki obyektlar massivini destrukturizatsiya qilish o‘rniga, biz massivlar obyektini destrukturizatsiya qilishimiz mumkin:
+Yoki obyektlar massivini destrukturizatsiya qilish o'rniga, biz massivlar obyektini destrukturizatsiya qilishimiz mumkin:
 
 ``` js
 let points = { p1: [1,2], p2: [3,4] };          // 2 ta massiv xossasiga ega obyekt
-let { p1: [x1, y1], p2: [x2, y2] } = points;    // 4 ta o‘zgaruvchiga destrukturizatsiya qilindi
+let { p1: [x1, y1], p2: [x2, y2] } = points;    // 4 ta o'zgaruvchiga destrukturizatsiya qilindi
 (x1 === 1 && y1 === 2 && x2 === 3 && y2 === 4)   // => true
 ```
 
-Bunga o‘xshash murakkab destrukturizatsiya sintaksisini yozish ham, o‘qish ham qiyin bo‘lishi mumkin va siz shunchaki `let x1 = points.p1[0];` kabi an’anaviy kod bilan tayinlashlarni aniq yozib chiqqaningiz ma’qulroq bo‘lishi mumkin.
+Bunga o'xshash murakkab destrukturizatsiya sintaksisini yozish ham, o'qish ham qiyin bo'lishi mumkin va siz shunchaki `let x1 = points.p1[0];` kabi an'anaviy kod bilan tayinlashlarni aniq yozib chiqqaningiz ma'qulroq bo'lishi mumkin.
 
 <Callout type='info'>
 
 ### Murakkab destrukturizatsiyani tushunish
 
-Agar siz murakkab destrukturizatsiya orqali tayinlashlardan foydalanadigan kod bilan ishlayotgan bo‘lsangiz, murakkab holatlarni tushunishga yordam beradigan foydali bir qonuniyat mavjud. Avval oddiy (bitta qiymatli) tayinlash haqida o‘ylang. Tayinlash bajarilgandan so‘ng, siz tayinlashning chap tomonidagi o‘zgaruvchi nomini olib, uni kodingizda ifoda sifatida ishlatishingiz mumkin va u o‘ziga tayinlangan qiymatni qaytaradi.
+Agar siz murakkab destrukturizatsiya orqali tayinlashlardan foydalanadigan kod bilan ishlayotgan bo'lsangiz, murakkab holatlarni tushunishga yordam beradigan foydali bir qonuniyat mavjud. Avval oddiy (bitta qiymatli) tayinlash haqida o'ylang. Tayinlash bajarilgandan so'ng, siz tayinlashning chap tomonidagi o'zgaruvchi nomini olib, uni kodingizda ifoda sifatida ishlatishingiz mumkin va u o'ziga tayinlangan qiymatni qaytaradi.
 
-Xuddi shu narsa destrukturizatsiya orqali tayinlash uchun ham o‘rinlidir. Destrukturizatsiya orqali tayinlashning chap tomoni massiv literali yoki obyekt literaliga (§6.2.1 va §6.10) o‘xshaydi. Tayinlash bajarilgandan so‘ng, chap tomon haqiqatan ham kodingizning boshqa joyida haqiqiy massiv literali yoki obyekt literali sifatida ishlay oladi. Siz destrukturizatsiya orqali tayinlashni to‘g‘ri yozganingizni chap tomonni boshqa bir tayinlash ifodasining o‘ng tomonida ishlatib ko‘rish orqali tekshirishingiz mumkin:
+Xuddi shu narsa destrukturizatsiya orqali tayinlash uchun ham o'rinlidir. Destrukturizatsiya orqali tayinlashning chap tomoni massiv literali yoki obyekt literaliga (§6.2.1 va §6.10) o'xshaydi. Tayinlash bajarilgandan so'ng, chap tomon haqiqatan ham kodingizning boshqa joyida haqiqiy massiv literali yoki obyekt literali sifatida ishlay oladi. Siz destrukturizatsiya orqali tayinlashni to'g'ri yozganingizni chap tomonni boshqa bir tayinlash ifodasining o'ng tomonida ishlatib ko'rish orqali tekshirishingiz mumkin:
 
 ``` js
-// Biror ma’lumotlar tuzilmasi va murakkab destrukturizatsiyadan boshlaymiz
+// Biror ma'lumotlar tuzilmasi va murakkab destrukturizatsiyadan boshlaymiz
 let points = [{x: 1, y: 2}, {x: 3, y: 4}];
 let [{x: x1, y: y1}, {x: x2, y: y2}] = points;
 

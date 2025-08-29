@@ -1,23 +1,23 @@
 ---
 title: Mantiqiy qiymatlar (Boolean values)
-description: "Boolean: true/false, taqqoslash natijalari, boshqaruv tuzilmalarida qo‘llanishi, truthy/falsy to‘plami, va mantiqiy operatorlar `&&`, `||`, `!`."
+description: "Boolean: true/false, taqqoslash natijalari, boshqaruv tuzilmalarida qo'llanishi, truthy/falsy to'plami, va mantiqiy operatorlar `&&`, `||`, `!`."
 keywords: JavaScript, boolean, true, false, truthy, falsy, comparison, logical operators, AND, OR, NOT
 author: Webiston.uz
 ---
 
 # Mantiqiy qiymatlar (Boolean values)
 
-Mantiqiy (`boolean`) qiymat rost yoki yolg‘onni, "yoqilgan" yoki "o‘chirilgan"ni, "ha" yoki "yo‘q"ni ifodalaydi. Bu tipning faqat ikki xil qiymati mavjud. Zaxiralangan `true` va `false` so‘zlari aynan shu ikki qiymatni ifodalaydi.
+Mantiqiy (`boolean`) qiymat rost yoki yolg'onni, "yoqilgan" yoki "o'chirilgan"ni, "ha" yoki "yo'q"ni ifodalaydi. Bu tipning faqat ikki xil qiymati mavjud. Zaxiralangan `true` va `false` so'zlari aynan shu ikki qiymatni ifodalaydi.
 
-Mantiqiy qiymatlar odatda JavaScript dasturlaringizda bajariladigan taqqoslashlar natijasida hosil bo‘ladi. Masalan:
+Mantiqiy qiymatlar odatda JavaScript dasturlaringizda bajariladigan taqqoslashlar natijasida hosil bo'ladi. Masalan:
 
 ```js
 a === 4
 ```
 
-Bu kod `a` o‘zgaruvchisining qiymati 4 soniga teng yoki yo‘qligini tekshiradi. Agar teng bo‘lsa, bu taqqoslash natijasi `true` mantiqiy qiymati bo‘ladi. Agar `a` 4 ga teng bo‘lmasa, taqqoslash natijasi `false` bo‘ladi.
+Bu kod `a` o'zgaruvchisining qiymati 4 soniga teng yoki yo'qligini tekshiradi. Agar teng bo'lsa, bu taqqoslash natijasi `true` mantiqiy qiymati bo'ladi. Agar `a` 4 ga teng bo'lmasa, taqqoslash natijasi `false` bo'ladi.
 
-Mantiqiy qiymatlar JavaScript'ning boshqaruv tuzilmalarida keng qo‘llaniladi. Masalan, JavaScript'dagi `if/else` ko‘rsatmasi mantiqiy qiymat `true` bo‘lsa bir amalni, `false` bo‘lsa boshqa bir amalni bajaradi. Odatda, mantiqiy qiymat hosil qiluvchi taqqoslashni to‘g‘ridan-to‘g‘ri undan foydalanadigan ko‘rsatma bilan birlashtiriladi. Natija quyidagicha ko‘rinadi:
+Mantiqiy qiymatlar JavaScript'ning boshqaruv tuzilmalarida keng qo'llaniladi. Masalan, JavaScript'dagi `if/else` ko'rsatmasi mantiqiy qiymat `true` bo'lsa bir amalni, `false` bo'lsa boshqa bir amalni bajaradi. Odatda, mantiqiy qiymat hosil qiluvchi taqqoslashni to'g'ridan-to'g'ri undan foydalanadigan ko'rsatma bilan birlashtiriladi. Natija quyidagicha ko'rinadi:
 `
 ``` js
 if (a === 4) {
@@ -27,11 +27,11 @@ if (a === 4) {
 }
 ```
 
-Bu kod `a` ning 4 ga tengligini tekshiradi. Agar shunday bo‘lsa, `b` ga 1 qo‘shadi; aks holda, `a` ga 1 qo‘shadi.
+Bu kod `a` ning 4 ga tengligini tekshiradi. Agar shunday bo'lsa, `b` ga 1 qo'shadi; aks holda, `a` ga 1 qo'shadi.
 
 ### "Truthy" va "Falsy" qiymatlar
 
-§3.9-bo‘limda muhokama qilganimizdek, har qanday JavaScript qiymatini mantiqiy qiymatga o‘girsa bo‘ladi. Quyidagi qiymatlar `false`'ga o‘giriladi va shuning uchun `false` kabi ishlaydi:
+§3.9-bo'limda muhokama qilganimizdek, har qanday JavaScript qiymatini mantiqiy qiymatga o'girsa bo'ladi. Quyidagi qiymatlar `false`'ga o'giriladi va shuning uchun `false` kabi ishlaydi:
 
 ``` js
 undefined
@@ -39,32 +39,32 @@ null
 0
 -0
 NaN
-"" // bo‘sh satr
+"" // bo'sh satr
 ```
 
-Boshqa barcha qiymatlar, jumladan, barcha obyektlar (va massivlar) `true`'ga o‘giriladi va `true` kabi ishlaydi. `false` va unga o‘giriladigan oltita qiymat ba’zan _falsy_ qiymatlar deb ataladi, qolgan barcha qiymatlar esa _truthy_ deb ataladi. JavaScript mantiqiy qiymatni kutgan har qanday joyda, _falsy_ qiymat `false` kabi, _truthy_ qiymat esa `true` kabi ishlaydi.
+Boshqa barcha qiymatlar, jumladan, barcha obyektlar (va massivlar) `true`'ga o'giriladi va `true` kabi ishlaydi. `false` va unga o'giriladigan oltita qiymat ba’zan _falsy_ qiymatlar deb ataladi, qolgan barcha qiymatlar esa _truthy_ deb ataladi. JavaScript mantiqiy qiymatni kutgan har qanday joyda, _falsy_ qiymat `false` kabi, _truthy_ qiymat esa `true` kabi ishlaydi.
 
-Misol uchun, `o` o‘zgaruvchisi yo biror obyektni, yo `null` qiymatini saqlaydi deb faraz qilaylik. Siz `o` ning `null` emasligini quyidagi kabi `if` ko‘rsatmasi bilan aniq tekshirishingiz mumkin:
+Misol uchun, `o` o'zgaruvchisi yo biror obyektni, yo `null` qiymatini saqlaydi deb faraz qilaylik. Siz `o` ning `null` emasligini quyidagi kabi `if` ko'rsatmasi bilan aniq tekshirishingiz mumkin:
 
 ``` js
 if (o !== null) ...
 ```
 
-Teng emas `!==` operatori `o` ni `null` bilan taqqoslaydi va `true` yoki `false` qiymatini qaytaradi. Lekin siz taqqoslashni tushirib qoldirib, uning o‘rniga `null`'ning _falsy_, obyektlarning esa _truthy_ ekanligiga tayansangiz ham bo‘ladi:
+Teng emas `!==` operatori `o` ni `null` bilan taqqoslaydi va `true` yoki `false` qiymatini qaytaradi. Lekin siz taqqoslashni tushirib qoldirib, uning o'rniga `null`'ning _falsy_, obyektlarning esa _truthy_ ekanligiga tayansangiz ham bo'ladi:
 
 ``` js
 if (o) ...
 ```
 
-Birinchi holda, `if` tanasi faqat `o` `null` bo‘lmagandagina bajariladi. Ikkinchi holat esa unchalik qat’iy emas: u `if` tanasini faqat `o` qiymati `false` yoki biror _falsy_ qiymat (masalan, `null` yoki `undefined`) bo‘lmagandagina bajaradi. Dasturingiz uchun qaysi `if` ko‘rsatmasi mos kelishi `o`'ga qanday qiymatlar tayinlanishini kutayotganingizga bog‘liq. Agar siz `null`'ni 0 va "" dan farqlashingiz kerak bo‘lsa, unda aniq taqqoslashdan foydalanishingiz lozim.
+Birinchi holda, `if` tanasi faqat `o` `null` bo'lmagandagina bajariladi. Ikkinchi holat esa unchalik qat’iy emas: u `if` tanasini faqat `o` qiymati `false` yoki biror _falsy_ qiymat (masalan, `null` yoki `undefined`) bo'lmagandagina bajaradi. Dasturingiz uchun qaysi `if` ko'rsatmasi mos kelishi `o`'ga qanday qiymatlar tayinlanishini kutayotganingizga bog'liq. Agar siz `null`'ni 0 va "" dan farqlashingiz kerak bo'lsa, unda aniq taqqoslashdan foydalanishingiz lozim.
 
-Mantiqiy qiymatlarning `toString()` metodi mavjud bo‘lib, siz uni qiymatlarni "true" yoki "false" satrlariga o‘zgartirish uchun ishlatishingiz mumkin, lekin ularning boshqa foydali metodlari yo‘q. Buning API'si sodda bo'lishiga qaramay, uchta muhim mantiqiy operator mavjud.
+Mantiqiy qiymatlarning `toString()` metodi mavjud bo'lib, siz uni qiymatlarni "true" yoki "false" satrlariga o'zgartirish uchun ishlatishingiz mumkin, lekin ularning boshqa foydali metodlari yo'q. Buning API'si sodda bo'lishiga qaramay, uchta muhim mantiqiy operator mavjud.
 
-`&& `operatori mantiqiy VA (AND) amalini bajaradi. U faqat va faqat ikkala operandi ham _truthy_ bo‘lgandagina _truthy_ qiymatga ega bo‘ladi; aks holda, _falsy_ qiymatga ega bo‘ladi.
+`&& `operatori mantiqiy VA (AND) amalini bajaradi. U faqat va faqat ikkala operandi ham _truthy_ bo'lgandagina _truthy_ qiymatga ega bo'ladi; aks holda, _falsy_ qiymatga ega bo'ladi.
 
-`||` operatori mantiqiy YOKI (OR) amalidir: u operandlaridan biri (yoki ikkalasi) _truthy_ bo‘lsa, _truthy_ qiymatga, ikkala operandi ham _falsy_ bo‘lsa, _falsy_ qiymatga ega bo‘ladi.
+`||` operatori mantiqiy YOKI (OR) amalidir: u operandlaridan biri (yoki ikkalasi) _truthy_ bo'lsa, _truthy_ qiymatga, ikkala operandi ham _falsy_ bo'lsa, _falsy_ qiymatga ega bo'ladi.
 
-Nihoyat, birlik (unary) `!` operatori mantiqiy INKOR (NOT) amalini bajaradi: u operandi _falsy_ bo‘lsa `true`'ga, operandi _truthy_ bo‘lsa `false`'ga ega bo‘ladi. Masalan:
+Nihoyat, birlik (unary) `!` operatori mantiqiy INKOR (NOT) amalini bajaradi: u operandi _falsy_ bo'lsa `true`'ga, operandi _truthy_ bo'lsa `false`'ga ega bo'ladi. Masalan:
 
 ``` js
 if ((x === 0 && y === 0) || !(z === 0)) {
@@ -72,4 +72,4 @@ if ((x === 0 && y === 0) || !(z === 0)) {
 }
 ```
 
-Bu operatorlar haqida to‘liq ma’lumot §4.10-bo‘limda keltirilgan.
+Bu operatorlar haqida to'liq ma’lumot §4.10-bo'limda keltirilgan.

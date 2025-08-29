@@ -1,26 +1,26 @@
 ---
 title: Tiplarni o'zgartirish (konversiya)
-description: "Tip konversiyasi: truthy/falsy, primitivlar o‘rtasida o‘zgartirish, obyektdan primitivga algoritmlar (prefer‑string/number/no‑preference), `==` vs `===`, `toString()`/`valueOf()`." 
+description: "Tip konversiyasi: truthy/falsy, primitivlar o'rtasida o'zgartirish, obyektdan primitivga algoritmlar (prefer-string/number/no-preference), `==` vs `===`, `toString()`/`valueOf()`." 
 keywords: JavaScript, type conversion, coercion, truthy, falsy, string, number, boolean, object to primitive, equality, ==, ===, toString, valueOf
 author: Webiston.uz
 ---
 
 # Tiplarni o'zgartirish (konversiya)
 
-JavaScript o‘zi talab qiladigan qiymat tiplari borasida juda **moslashuvchandir**. Biz buni mantiqiy qiymatlar misolida ko‘rdik: JavaScript mantiqiy qiymat kutgan joyda, siz istalgan tipdagi qiymatni taqdim etishingiz mumkin va JavaScript uni kerak bo‘lganda o‘zgartirib oladi. Ba’zi qiymatlar (_truthy_ qiymatlar) `true`'ga, boshqalari (_falsy_ qiymatlar) esa `false`'ga o‘giriladi. Xuddi shu holat boshqa tiplar uchun ham o‘rinli: agar JavaScript satr kutsa, siz bergan har qanday qiymatni satrga o‘zgartiradi. Agar JavaScript son kutsa, u siz bergan qiymatni songa o‘zgartirishga harakat qiladi (yoki ma’noli o‘zgartirishni amalga oshirolmasa, `NaN`'ga o‘zgartiradi).
+JavaScript o'zi talab qiladigan qiymat tiplari borasida juda **moslashuvchandir**. Biz buni mantiqiy qiymatlar misolida ko'rdik: JavaScript mantiqiy qiymat kutgan joyda, siz istalgan tipdagi qiymatni taqdim etishingiz mumkin va JavaScript uni kerak bo'lganda o'zgartirib oladi. Ba'zi qiymatlar (_truthy_ qiymatlar) `true`'ga, boshqalari (_falsy_ qiymatlar) esa `false`'ga o'giriladi. Xuddi shu holat boshqa tiplar uchun ham o'rinli: agar JavaScript satr kutsa, siz bergan har qanday qiymatni satrga o'zgartiradi. Agar JavaScript son kutsa, u siz bergan qiymatni songa o'zgartirishga harakat qiladi (yoki ma'noli o'zgartirishni amalga oshirolmasa, `NaN`'ga o'zgartiradi).
 
 Bir nechta misollar:
 
 ```js
-10 + " objects"     // => "10 objects": 10 soni satrga o‘giriladi
-"7" * "4"           // => 28: ikkala satr ham songa o‘giriladi
-let n = 1 - "x";    // n == NaN; "x" satrini songa o‘girib bo‘lmaydi
-n + " objects"      // => "NaN objects": NaN qiymati "NaN" satriga o‘giriladi
+10 + " objects"     // => "10 objects": 10 soni satrga o'giriladi
+"7" * "4"           // => 28: ikkala satr ham songa o'giriladi
+let n = 1 - "x";    // n == NaN; "x" satrini songa o'girib bo'lmaydi
+n + " objects"      // => "NaN objects": NaN qiymati "NaN" satriga o'giriladi
 ```
 
-3-2-jadvalda JavaScript'da qiymatlar bir tipdan boshqasiga qanday o‘girilishi umumlashtirilgan. Jadvaldagi qalin yozuvlar siz uchun kutilmagan bo‘lishi mumkin bo‘lgan o‘zgarishlarni ajratib ko‘rsatadi. Bo‘sh kataklar esa o‘zgartirish kerak emasligini va bajarilmasligini bildiradi.
+3-2-jadvalda JavaScript'da qiymatlar bir tipdan boshqasiga qanday o'girilishi umumlashtirilgan. Jadvaldagi qalin yozuvlar siz uchun kutilmagan bo'lishi mumkin bo'lgan o'zgarishlarni ajratib ko'rsatadi. Bo'sh kataklar esa o'zgartirish kerak emasligini va bajarilmasligini bildiradi.
 
-<small>_3-2-jadval. JavaScript tiplarini o‘zgartirish_</small>
+<small>_3-2-jadval. JavaScript tiplarini o'zgartirish_</small>
 
 | **Qiymat** | **Satrga** | **Songa** | **Mantiqiy qiymatga** |
 |--------|--------|-------|-------------------|
@@ -28,9 +28,9 @@ n + " objects"      // => "NaN objects": NaN qiymati "NaN" satriga o‘giriladi
 | `null` | `"null"` | **`0`** | `false` |
 | `true` | `"true"` | **`1`** |  |
 | `false` | `"false"` | **`0`** |  |
-| `""` (bo‘sh satr) |  | **`0`** | **`false`** |
-| `"1.2"` (bo‘sh bo‘lmagan, sonli) |  | `1.2` | `true` |
-| `"one"` (bo‘sh bo‘lmagan, sonli emas) |  | `NaN` | `true` |
+| `""` (bo'sh satr) |  | **`0`** | **`false`** |
+| `"1.2"` (bo'sh bo'lmagan, sonli) |  | `1.2` | `true` |
+| `"one"` (bo'sh bo'lmagan, sonli emas) |  | `NaN` | `true` |
 | `0` | `"0"` |  | **`false`** |
 | `-0` | `"0"` |  | **`false`** |
 | `1` (chekli, noldan farqli) | `"1"` |  | `true` |
@@ -38,38 +38,38 @@ n + " objects"      // => "NaN objects": NaN qiymati "NaN" satriga o‘giriladi
 | `-Infinity` | `"-Infinity"` |  | `true` |
 | `NaN` | `"NaN"` |  | **`false`** |
 | `{}` (har qanday obyekt) | §3.9.3'ga qarang | §3.9.3'ga qarang | `true` |
-| `[]` (bo‘sh massiv) | `""` | **`0`** | `true` |
+| `[]` (bo'sh massiv) | `""` | **`0`** | `true` |
 | `[9]` (bitta sonli element) | `"9"` | **`9`** | `true` |
 | `['a']` (boshqa har qanday massiv) | `join()` metodini ishlatadi | `NaN` | `true` |
 | `function(){}` (har qanday funksiya) | §3.9.3'ga qarang | `NaN` | `true` |
 
 
-Jadvalda ko‘rsatilgan primitivdan-primitivga o‘zgartirishlar nisbatan tushunarli. Mantiqiy qiymatga o‘zgartirish §3.4-bo‘limda allaqachon muhokama qilingan. Barcha primitiv qiymatlar uchun satrga o‘zgartirish aniq belgilangan. Songa o‘zgartirish esa biroz murakkabroq. Son sifatida tahlil (parse) qilish mumkin bo‘lgan satrlar o‘sha sonlarga o‘giriladi. Boshida va oxirida bo‘shliqlar bo‘lishiga ruxsat etiladi, lekin sonli literalning qismi bo‘lmagan har qanday boshqa belgilar satrni songa o‘zgartirishda `NaN` natijasini beradi. Ba’zi sonli o‘zgartirishlar kutilmagan tuyulishi mumkin: `true` 1 ga, `false` va bo‘sh satr esa 0 ga o‘giriladi.
+Jadvalda ko'rsatilgan primitivdan-primitivga o'zgartirishlar nisbatan tushunarli. Mantiqiy qiymatga o'zgartirish §3.4-bo'limda allaqachon muhokama qilingan. Barcha primitiv qiymatlar uchun satrga o'zgartirish aniq belgilangan. Songa o'zgartirish esa biroz murakkabroq. Son sifatida tahlil (parse) qilish mumkin bo'lgan satrlar o'sha sonlarga o'giriladi. Boshida va oxirida bo'shliqlar bo'lishiga ruxsat etiladi, lekin sonli literalning qismi bo'lmagan har qanday boshqa belgilar satrni songa o'zgartirishda `NaN` natijasini beradi. Ba'zi sonli o'zgartirishlar kutilmagan tuyulishi mumkin: `true` 1 ga, `false` va bo'sh satr esa 0 ga o'giriladi.
 
-Obyektdan-primitivga o‘zgartirish ancha murakkabroq va u §3.9.3-bo‘limning mavzusidir.
+Obyektdan-primitivga o'zgartirish ancha murakkabroq va u §3.9.3-bo'limning mavzusidir.
 
 ## Konversiyalar va tenglik
 
-JavaScript'da ikki qiymatning tengligini tekshiradigan ikkita operator mavjud. **"Qat’iy tenglik operatori" (`===`)**, agar operandlari bir xil tipda bo‘lmasa, ularni teng deb hisoblamaydi va bu deyarli har doim kod yozishda ishlatish uchun eng to‘g‘ri operatordir. Lekin JavaScript tiplarni o‘zgartirishda juda moslashuvchan bo‘lgani uchun, u `==` operatorini ham moslashuvchan tenglik ta’rifi bilan taqdim etadi. Masalan, quyidagi barcha taqqoslashlar `true` qiymatini beradi:
+JavaScript'da ikki qiymatning tengligini tekshiradigan ikkita operator mavjud. **"Qat'iy tenglik operatori" (`===`)**, agar operandlari bir xil tipda bo'lmasa, ularni teng deb hisoblamaydi va bu deyarli har doim kod yozishda ishlatish uchun eng to'g'ri operatordir. Lekin JavaScript tiplarni o'zgartirishda juda moslashuvchan bo'lgani uchun, u `==` operatorini ham moslashuvchan tenglik ta'rifi bilan taqdim etadi. Masalan, quyidagi barcha taqqoslashlar `true` qiymatini beradi:
 
 ```js
 null == undefined // => true: Bu ikki qiymat teng deb qabul qilinadi.
-"0" == 0          // => true: Satr taqqoslashdan oldin songa o‘giriladi.
-0 == false        // => true: Mantiqiy qiymat taqqoslashdan oldin songa o‘giriladi.
-"0" == false      // => true: Ikkala operand ham taqqoslashdan oldin 0 ga o‘giriladi!
+"0" == 0          // => true: Satr taqqoslashdan oldin songa o'giriladi.
+0 == false        // => true: Mantiqiy qiymat taqqoslashdan oldin songa o'giriladi.
+"0" == false      // => true: Ikkala operand ham taqqoslashdan oldin 0 ga o'giriladi!
 ```
 
-§4.9.1-bo‘limda ikki qiymatni teng deb hisoblash kerakligini aniqlash uchun `==` operatori aynan qanday konversiyalarni amalga oshirishi tushuntirilgan.
+§4.9.1-bo'limda ikki qiymatni teng deb hisoblash kerakligini aniqlash uchun `==` operatori aynan qanday konversiyalarni amalga oshirishi tushuntirilgan.
 
-Shuni yodda tutingki, bir qiymatning boshqasiga o‘girilishi mumkinligi bu ikki qiymatning tengligini anglatmaydi. Masalan, agar mantiqiy qiymat kutilgan joyda `undefined` ishlatilsa, u `false`'ga o‘giriladi. Lekin bu `undefined == false` degani emas. JavaScript operatorlari va ko‘rsatmalari turli tiplardagi qiymatlarni kutadi va o‘sha tiplarga konversiyalarni amalga oshiradi. `if` ko‘rsatmasi `undefined`'ni `false`'ga o‘giradi, lekin `==` operatori hech qachon o‘z operandlarini mantiqiy qiymatlarga o‘zgartirishga harakat qilmaydi.
+Shuni yodda tutingki, bir qiymatning boshqasiga o'girilishi mumkinligi bu ikki qiymatning tengligini anglatmaydi. Masalan, agar mantiqiy qiymat kutilgan joyda `undefined` ishlatilsa, u `false`'ga o'giriladi. Lekin bu `undefined == false` degani emas. JavaScript operatorlari va ko'rsatmalari turli tiplardagi qiymatlarni kutadi va o'sha tiplarga konversiyalarni amalga oshiradi. `if` ko'rsatmasi `undefined`'ni `false`'ga o'giradi, lekin `==` operatori hech qachon o'z operandlarini mantiqiy qiymatlarga o'zgartirishga harakat qilmaydi.
 
 ## Aniq konversiyalar
 
-Garchi JavaScript ko‘plab tip konversiyalarini avtomatik tarzda bajarsa-da, ba’zan sizga **aniq (`explicit`)** konversiya qilish zarurati tug‘ilishi mumkin, yoki kodingizni tushunarliroq qilish uchun konversiyalarni aniq ko‘rsatishni afzal ko‘rarsiz.
+Garchi JavaScript ko'plab tip konversiyalarini avtomatik tarzda bajarsa-da, ba'zan sizga **aniq (`explicit`)** konversiya qilish zarurati tug'ilishi mumkin, yoki kodingizni tushunarliroq qilish uchun konversiyalarni aniq ko'rsatishni afzal ko'rarsiz.
 
 ### Asosiy konversiya funksiyalari
 
-Aniq tip konversiyasini bajarishning eng oddiy yo‘li — bu `Boolean()`, `Number()` va `String()` funksiyalaridan foydalanish:
+Aniq tip konversiyasini bajarishning eng oddiy yo'li — bu `Boolean()`, `Number()` va `String()` funksiyalaridan foydalanish:
 
 ```js
 Number("3")   // => 3
@@ -77,26 +77,26 @@ String(false) // => "false": Yoki `false.toString()`dan foydalaning
 Boolean([])   // => true
 ```
 
-`null` yoki `undefined`'dan boshqa har qanday qiymatning `toString()` metodi mavjud va bu metodning natijasi odatda `String()` funksiyasi qaytaradigan natija bilan bir xil bo‘ladi.
+`null` yoki `undefined`'dan boshqa har qanday qiymatning `toString()` metodi mavjud va bu metodning natijasi odatda `String()` funksiyasi qaytaradigan natija bilan bir xil bo'ladi.
 
-Qo‘shimcha ma’lumot sifatida shuni aytib o‘tish kerakki, `Boolean()`, `Number()` va `String()` funksiyalarini `new` kalit so‘zi bilan konstruktor sifatida ham chaqirish mumkin. Agar ularni shu tarzda ishlatsangiz, siz xuddi primitiv mantiqiy qiymat, son yoki satr kabi ishlaydigan "o‘ram" (wrapper) obyektini olasiz. Bu o‘ram obyektlar JavaScript'ning ilk davrlaridan qolgan tarixiy merosdir va ularni ishlatish uchun hech qachon jiddiy sabab bo‘lmaydi.
+Qo'shimcha ma'lumot sifatida shuni aytib o'tish kerakki, `Boolean()`, `Number()` va `String()` funksiyalarini `new` kalit so'zi bilan konstruktor sifatida ham chaqirish mumkin. Agar ularni shu tarzda ishlatsangiz, siz xuddi primitiv mantiqiy qiymat, son yoki satr kabi ishlaydigan "o'ram" (wrapper) obyektini olasiz. Bu o'ram obyektlar JavaScript'ning ilk davrlaridan qolgan tarixiy merosdir va ularni ishlatish uchun hech qachon jiddiy sabab bo'lmaydi.
 
 ### Operatorlar yordamida konversiya
 
-Ba’zi JavaScript operatorlari zimdan (implicit) tip konversiyalarini amalga oshiradi va ular ba’zan aynan tip konversiyasi maqsadida aniq ishlatiladi. Agar `+` operatorining bir operandi satr bo‘lsa, u ikkinchisini ham satrga o‘zgartiradi. Unar (birlik) `+` operatori o‘z operandini songa o‘zgartiradi. Unar `!` operatori esa o‘z operandini mantiqiy qiymatga o‘zgartiradi va uni inkor qiladi. Bu faktlar ba’zi kodlarda uchrashi mumkin bo‘lgan quyidagi tip konversiyasi idiomalariga (usullariga) olib keladi:
+Ba'zi JavaScript operatorlari zimdan (implicit) tip konversiyalarini amalga oshiradi va ular ba'zan aynan tip konversiyasi maqsadida aniq ishlatiladi. Agar `+` operatorining bir operandi satr bo'lsa, u ikkinchisini ham satrga o'zgartiradi. Unar (birlik) `+` operatori o'z operandini songa o'zgartiradi. Unar `!` operatori esa o'z operandini mantiqiy qiymatga o'zgartiradi va uni inkor qiladi. Bu faktlar ba'zi kodlarda uchrashi mumkin bo'lgan quyidagi tip konversiyasi idiomalariga (usullariga) olib keladi:
 
 ``` js
 x + ""   // => String(x)
 +x       // => Number(x)
 x - 0    // => Number(x)
-!!x      // => Boolean(x): Ikkita undov belgisiga e’tibor bering
+!!x      // => Boolean(x): Ikkita undov belgisiga e'tibor bering
 ```
 
 ### Sonlarni formatlash va tahlil qilish
 
-Sonlarni formatlash va tahlil qilish (parsing) kompyuter dasturlarida keng tarqalgan vazifalardir va JavaScript sonni satrga va satrni songa o‘zgartirish ustidan yanada aniqroq nazoratni ta’minlaydigan maxsus funksiyalar va metodlarga ega.
+Sonlarni formatlash va tahlil qilish (parsing) kompyuter dasturlarida keng tarqalgan vazifalardir va JavaScript sonni satrga va satrni songa o'zgartirish ustidan yanada aniqroq nazoratni ta'minlaydigan maxsus funksiyalar va metodlarga ega.
 
-`Number` klassi tomonidan taqdim etilgan `toString()` metodi ixtiyoriy argument qabul qiladi. Bu argument konversiya uchun **sanoq tizimi asosi (`radix` yoki `base`)**'ni belgilaydi. Agar argumentni ko‘rsatmasangiz, konversiya o‘nlik sanoq tizimida amalga oshiriladi. Biroq sonlarni boshqa sanoq tizimlarida (2 dan 36 gacha) ham o‘zgartirishingiz mumkin. Masalan:
+`Number` klassi tomonidan taqdim etilgan `toString()` metodi ixtiyoriy argument qabul qiladi. Bu argument konversiya uchun **sanoq tizimi asosi (`radix` yoki `base`)**'ni belgilaydi. Agar argumentni ko'rsatmasangiz, konversiya o'nlik sanoq tizimida amalga oshiriladi. Biroq sonlarni boshqa sanoq tizimlarida (2 dan 36 gacha) ham o'zgartirishingiz mumkin. Masalan:
 
 ```js
 let n = 17;
@@ -105,15 +105,15 @@ let octal = "0o" + n.toString(8);   // octal == "0o21"
 let hex = "0x" + n.toString(16);    // hex == "0x11"
 ```
 
-Moliyaviy yoki ilmiy ma’lumotlar bilan ishlayotganda, siz sonlarni satrlarga o‘zgartirishda o‘nli kasrdan keyingi xonalar sonini yoki natijadagi ahamiyatli raqamlar sonini nazorat qilishni xohlashingiz mumkin. Yoki eksponensial yozuvdan foydalanish yoki foydalanmaslikni boshqarishni istarsiz. `Number` klassi aynan shunday sonni satrga o‘zgartirish turlari uchun uchta metodni taqdim etadi.
+Moliyaviy yoki ilmiy ma'lumotlar bilan ishlayotganda, siz sonlarni satrlarga o'zgartirishda o'nli kasrdan keyingi xonalar sonini yoki natijadagi ahamiyatli raqamlar sonini nazorat qilishni xohlashingiz mumkin. Yoki eksponensial yozuvdan foydalanish yoki foydalanmaslikni boshqarishni istarsiz. `Number` klassi aynan shunday sonni satrga o'zgartirish turlari uchun uchta metodni taqdim etadi.
 
-`toFixed()` metodi sonni o‘nli kasr nuqtasidan keyin belgilangan miqdordagi raqamlarga ega bo‘lgan satrga o‘zgartiradi. U hech qachon eksponensial yozuvdan foydalanmaydi.
+`toFixed()` metodi sonni o'nli kasr nuqtasidan keyin belgilangan miqdordagi raqamlarga ega bo'lgan satrga o'zgartiradi. U hech qachon eksponensial yozuvdan foydalanmaydi.
 
-`toExponential()` metodi sonni eksponensial yozuv yordamida satrga o‘zgartiradi, bunda o‘nli kasr nuqtasidan oldin bitta raqam va undan keyin belgilangan miqdordagi raqamlar bo‘ladi (bu degani, ahamiyatli raqamlar soni siz belgilagan qiymatdan bittaga ko‘p bo‘ladi).
+`toExponential()` metodi sonni eksponensial yozuv yordamida satrga o'zgartiradi, bunda o'nli kasr nuqtasidan oldin bitta raqam va undan keyin belgilangan miqdordagi raqamlar bo'ladi (bu degani, ahamiyatli raqamlar soni siz belgilagan qiymatdan bittaga ko'p bo'ladi).
 
-`toPrecision()` metodi sonni siz belgilagan miqdordagi ahamiyatli raqamlarga ega bo‘lgan satrga o‘zgartiradi. Agar ahamiyatli raqamlar soni sonning butun qismini to‘liq ko‘rsatish uchun yetarli bo‘lmasa, u eksponensial yozuvdan foydalanadi.
+`toPrecision()` metodi sonni siz belgilagan miqdordagi ahamiyatli raqamlarga ega bo'lgan satrga o'zgartiradi. Agar ahamiyatli raqamlar soni sonning butun qismini to'liq ko'rsatish uchun yetarli bo'lmasa, u eksponensial yozuvdan foydalanadi.
 
-E’tibor bering, har uchala metod ham oxirgi raqamlarni yaxlitlaydi yoki kerak bo‘lganda nollar bilan to‘ldiradi. Quyidagi misollarni ko‘rib chiqing:
+E'tibor bering, har uchala metod ham oxirgi raqamlarni yaxlitlaydi yoki kerak bo'lganda nollar bilan to'ldiradi. Quyidagi misollarni ko'rib chiqing:
 
 ``` js
 let n = 123456.789;
@@ -127,11 +127,11 @@ n.toPrecision(7)   // => "123456.8"
 n.toPrecision(10)  // => "123456.7890"
 ```
 
-Bu yerda ko‘rsatilgan sonlarni formatlash metodlariga qo‘shimcha ravishda, `Intl.NumberFormat` klassi yanada umumiyroq, xalqarolashtirilgan sonlarni formatlash metodini taqdim etadi. Tafsilotlar uchun §11.7.1-bo‘limga qarang.
+Bu yerda ko'rsatilgan sonlarni formatlash metodlariga qo'shimcha ravishda, `Intl.NumberFormat` klassi yanada umumiyroq, xalqarolashtirilgan sonlarni formatlash metodini taqdim etadi. Tafsilotlar uchun §11.7.1-bo'limga qarang.
 
-Agar siz `Number()` konversiya funksiyasiga satr uzatsangiz, u bu satrni butun son yoki suzuvchi nuqtali literal sifatida tahlil qilishga (`parse`) harakat qiladi. Bu funksiya faqat o‘nlik sanoq tizimidagi butun sonlar uchun ishlaydi va literalning qismi bo‘lmagan oxirgi belgilarga ruxsat bermaydi. `parseInt()` va `parseFloat()` funksiyalari (bular global funksiyalar, biror klassning metodlari emas) ancha moslashuvchanroqdir. `parseInt()` faqat butun sonlarni tahlil qiladi, `parseFloat()` esa ham butun, ham suzuvchi nuqtali sonlarni tahlil qiladi.
+Agar siz `Number()` konversiya funksiyasiga satr uzatsangiz, u bu satrni butun son yoki suzuvchi nuqtali literal sifatida tahlil qilishga (`parse`) harakat qiladi. Bu funksiya faqat o'nlik sanoq tizimidagi butun sonlar uchun ishlaydi va literalning qismi bo'lmagan oxirgi belgilarga ruxsat bermaydi. `parseInt()` va `parseFloat()` funksiyalari (bular global funksiyalar, biror klassning metodlari emas) ancha moslashuvchanroqdir. `parseInt()` faqat butun sonlarni tahlil qiladi, `parseFloat()` esa ham butun, ham suzuvchi nuqtali sonlarni tahlil qiladi.
 
-Agar satr "0x" yoki "0X" bilan boshlansa, `parseInt()` uni o‘n oltilik sanoq tizimidagi son sifatida talqin qiladi. Ham `parseInt()`, ham `parseFloat()` boshidagi bo‘shliqlarni o‘tkazib yuboradi, iloji boricha ko‘proq sonli belgilarni tahlil qiladi va undan keyin kelgan har qanday narsani e’tiborsiz qoldiradi. Agar birinchi bo‘shliq bo‘lmagan belgi haqiqiy sonli literalning qismi bo‘lmasa, ular `NaN` qaytaradi:
+Agar satr "0x" yoki "0X" bilan boshlansa, `parseInt()` uni o'n oltilik sanoq tizimidagi son sifatida talqin qiladi. Ham `parseInt()`, ham `parseFloat()` boshidagi bo'shliqlarni o'tkazib yuboradi, iloji boricha ko'proq sonli belgilarni tahlil qiladi va undan keyin kelgan har qanday narsani e'tiborsiz qoldiradi. Agar birinchi bo'shliq bo'lmagan belgi haqiqiy sonli literalning qismi bo'lmasa, ular `NaN` qaytaradi:
 
 ```js
 parseInt("3 blind mice")    // => 3
@@ -146,7 +146,7 @@ parseInt(".1")              // => NaN: butun sonlar "." bilan boshlanmaydi
 parseFloat("$72.47")        // => NaN: sonlar "$" bilan boshlanmaydi
 ```
 
-`parseInt()` ixtiyoriy ikkinchi argumentni qabul qiladi. Bu argument tahlil qilinadigan sonning sanoq tizimi asosini (radix) belgilaydi. Mumkin bo‘lgan qiymatlar 2 dan 36 gacha. Masalan:
+`parseInt()` ixtiyoriy ikkinchi argumentni qabul qiladi. Bu argument tahlil qilinadigan sonning sanoq tizimi asosini (radix) belgilaydi. Mumkin bo'lgan qiymatlar 2 dan 36 gacha. Masalan:
 
 ``` js
 parseInt("11", 2)    // => 3: (1*2 + 1)
@@ -158,60 +158,60 @@ parseInt("077", 10)  // => 77: (7*10 + 7)
 
 ## Obyektdan primitivga konversiyalar
 
-Oldingi mavzular qiymatlarni bir tipdan boshqasiga qanday qilib aniq (`explicit`) o‘zgartirish mumkinligini tushuntirdi va JavaScript'ning qiymatlarni bir primitiv tipdan boshqa primitiv tipga zimdan (`implicit`) o‘zgartirishlarini yoritib berdi. Ushbu mavzu esa JavaScript'ning obyektlarni primitiv qiymatlarga o‘zgartirish uchun qo‘llaydigan murakkab qoidalarini qamrab oladi. Bu mavzu uzun va tushunish uchun biroz qiyin, agar siz ushbu bobni birinchi marta o‘qiyotgan bo‘lsangiz, bemalol §3.10-bo‘limga o‘tib ketishingiz mumkin.
+Oldingi mavzular qiymatlarni bir tipdan boshqasiga qanday qilib aniq (`explicit`) o'zgartirish mumkinligini tushuntirdi va JavaScript'ning qiymatlarni bir primitiv tipdan boshqa primitiv tipga zimdan (`implicit`) o'zgartirishlarini yoritib berdi. Ushbu mavzu esa JavaScript'ning obyektlarni primitiv qiymatlarga o'zgartirish uchun qo'llaydigan murakkab qoidalarini qamrab oladi. Bu mavzu uzun va tushunish uchun biroz qiyin, agar siz ushbu bobni birinchi marta o'qiyotgan bo'lsangiz, bemalol §3.10-bo'limga o'tib ketishingiz mumkin.
 
-JavaScript'ning obyektdan-primitivga konversiyalari murakkabligining bir sababi shundaki, ba’zi obyekt tiplari bir nechta primitiv ifodaga ega. Masalan, `Date` obyektlari satrlar yoki sonli vaqt belgilari (`timestamps`) sifatida ifodalanishi mumkin. JavaScript spetsifikatsiyasi obyektlarni primitiv qiymatlarga o‘zgartirish uchun uchta fundamental algoritmni belgilaydi:
+JavaScript'ning obyektdan-primitivga konversiyalari murakkabligining bir sababi shundaki, ba'zi obyekt tiplari bir nechta primitiv ifodaga ega. Masalan, `Date` obyektlari satrlar yoki sonli vaqt belgilari (`timestamps`) sifatida ifodalanishi mumkin. JavaScript spetsifikatsiyasi obyektlarni primitiv qiymatlarga o'zgartirish uchun uchta fundamental algoritmni belgilaydi:
 
-**`prefer-string` (satrni afzal ko‘rish)**
-Bu algoritm primitiv qiymat qaytaradi va agar satrga o‘zgartirish imkoni bo‘lsa, satr qiymatini afzal ko‘radi.
+**`prefer-string` (satrni afzal ko'rish)**
+Bu algoritm primitiv qiymat qaytaradi va agar satrga o'zgartirish imkoni bo'lsa, satr qiymatini afzal ko'radi.
 
-**`prefer-number` (sonni afzal ko‘rish)**
-Bu algoritm primitiv qiymat qaytaradi va agar shunday imkoniyat bo‘lsa, sonni afzal ko‘radi.
+**`prefer-number` (sonni afzal ko'rish)**
+Bu algoritm primitiv qiymat qaytaradi va agar shunday imkoniyat bo'lsa, sonni afzal ko'radi.
 
-**`no-preference` (afzallik yo‘q)**
-Bu algoritm qanday tipdagi primitiv qiymat kerakligi haqida hech qanday afzallik bildirmaydi va klasslar o‘zlarining konversiyalarini aniqlashi mumkin. JavaScript'ning ichki o‘rnatilgan tiplaridan `Date`'dan tashqari barchasi bu algoritmni `prefer-number` kabi implementatsiya qiladi. `Date` klassi esa bu algoritmni `prefer-string` kabi implementatsiya qiladi.
+**`no-preference` (afzallik yo'q)**
+Bu algoritm qanday tipdagi primitiv qiymat kerakligi haqida hech qanday afzallik bildirmaydi va klasslar o'zlarining konversiyalarini aniqlashi mumkin. JavaScript'ning ichki o'rnatilgan tiplaridan `Date`'dan tashqari barchasi bu algoritmni `prefer-number` kabi implementatsiya qiladi. `Date` klassi esa bu algoritmni `prefer-string` kabi implementatsiya qiladi.
 
 Ushbu obyektdan-primitivga konversiya algoritmlarining implementatsiyasi ushbu mavzuning oxirida tushuntiriladi. Biroq avval biz bu algoritmlarning JavaScript'da qanday ishlatilishini yoritib beramiz.
 
 ### Obyektdan mantiqiy qiymatga konversiyalar
 
-Obyektdan mantiqiy qiymatga konversiyalar juda oddiy: barcha obyektlar `true`'ga o‘giriladi. E’tibor bering, bu konversiya yuqorida tasvirlangan obyektdan-primitivga algoritmlaridan foydalanishni talab qilmaydi va u istisnosiz barcha obyektlarga, jumladan, bo‘sh massivlarga va hatto `new Boolean(false)` o‘ram obyektiga ham taalluqlidir.
+Obyektdan mantiqiy qiymatga konversiyalar juda oddiy: barcha obyektlar `true`'ga o'giriladi. E'tibor bering, bu konversiya yuqorida tasvirlangan obyektdan-primitivga algoritmlaridan foydalanishni talab qilmaydi va u istisnosiz barcha obyektlarga, jumladan, bo'sh massivlarga va hatto `new Boolean(false)` o'ram obyektiga ham taalluqlidir.
 
 ### Obyektdan satrga konversiyalar
 
-Biror obyektni satrga o‘zgartirish kerak bo‘lganda, JavaScript avval uni `prefer-string` algoritmi yordamida primitivga o‘zgartiradi, so‘ngra, agar kerak bo‘lsa, hosil bo‘lgan primitiv qiymatni 3-2-jadvaldagi qoidalarga binoan satrga o‘zgartiradi.
+Biror obyektni satrga o'zgartirish kerak bo'lganda, JavaScript avval uni `prefer-string` algoritmi yordamida primitivga o'zgartiradi, so'ngra, agar kerak bo'lsa, hosil bo'lgan primitiv qiymatni 3-2-jadvaldagi qoidalarga binoan satrga o'zgartiradi.
 
-Bu turdagi konversiya, masalan, siz obyektni satr argumentini kutadigan ichki o‘rnatilgan funksiyaga uzatganingizda, `String()`'ni konversiya funksiyasi sifatida chaqirganingizda va obyektlarni shablon literallariga (§3.3.4) interpolyatsiya qilganingizda sodir bo‘ladi.
+Bu turdagi konversiya, masalan, siz obyektni satr argumentini kutadigan ichki o'rnatilgan funksiyaga uzatganingizda, `String()`'ni konversiya funksiyasi sifatida chaqirganingizda va obyektlarni shablon literallariga (§3.3.4) interpolyatsiya qilganingizda sodir bo'ladi.
 
 ### Obyektdan songa konversiyalar
 
-Biror obyektni songa o‘zgartirish kerak bo‘lganda, JavaScript avval uni `prefer-number` algoritmi yordamida primitiv qiymatga o‘zgartiradi, so‘ngra, agar kerak bo‘lsa, hosil bo‘lgan primitiv qiymatni 3-2-jadvaldagi qoidalarga binoan songa o‘zgartiradi.
+Biror obyektni songa o'zgartirish kerak bo'lganda, JavaScript avval uni `prefer-number` algoritmi yordamida primitiv qiymatga o'zgartiradi, so'ngra, agar kerak bo'lsa, hosil bo'lgan primitiv qiymatni 3-2-jadvaldagi qoidalarga binoan songa o'zgartiradi.
 
-Sonli argumentlarni kutadigan ichki o‘rnatilgan JavaScript funksiyalari va metodlari obyekt argumentlarini shu tarzda sonlarga o‘zgartiradi. Shuningdek, sonli operandlarni kutadigan ko‘pchilik JavaScript operatorlari (quyidagi istisnolarga qarang) ham obyektlarni shu tarzda sonlarga o‘zgartiradi.
+Sonli argumentlarni kutadigan ichki o'rnatilgan JavaScript funksiyalari va metodlari obyekt argumentlarini shu tarzda sonlarga o'zgartiradi. Shuningdek, sonli operandlarni kutadigan ko'pchilik JavaScript operatorlari (quyidagi istisnolarga qarang) ham obyektlarni shu tarzda sonlarga o'zgartiradi.
 
 ### Operatorlarning maxsus holatdagi konversiyalari
 
 Operatorlar 4-bobda batafsil yoritilgan. Bu yerda biz yuqorida tasvirlangan asosiy obyektdan-satrga va obyektdan-songa konversiyalaridan foydalanmaydigan maxsus holatdagi operatorlarni tushuntiramiz.
 
-JavaScript'dagi `+` operatori sonli qo‘shish va satrli birlashtirish (`concatenation`) amallarini bajaradi. Agar uning operandlaridan biri obyekt bo‘lsa, JavaScript ularni `no-preference` algoritmi yordamida primitiv qiymatlarga o‘zgartiradi. Ikki primitiv qiymatga ega bo‘lgach, u ularning tiplarini tekshiradi. Agar argumentlardan biri satr bo‘lsa, u ikkinchisini ham satrga o‘zgartiradi va satrlarni birlashtiradi. Aks holda, u ikkala argumentni ham songa o‘zgartiradi va ularni qo‘shadi.
+JavaScript'dagi `+` operatori sonli qo'shish va satrli birlashtirish (`concatenation`) amallarini bajaradi. Agar uning operandlaridan biri obyekt bo'lsa, JavaScript ularni `no-preference` algoritmi yordamida primitiv qiymatlarga o'zgartiradi. Ikki primitiv qiymatga ega bo'lgach, u ularning tiplarini tekshiradi. Agar argumentlardan biri satr bo'lsa, u ikkinchisini ham satrga o'zgartiradi va satrlarni birlashtiradi. Aks holda, u ikkala argumentni ham songa o'zgartiradi va ularni qo'shadi.
 
-`==` va `!=` operatorlari tip konversiyalariga yo‘l qo‘yadigan erkin usulda tenglik va tengsizlikni tekshiradi. Agar bir operand obyekt, ikkinchisi esa primitiv qiymat bo‘lsa, bu operatorlar obyektni `no-preference` algoritmi yordamida primitivga o‘zgartiradi va so‘ngra ikki primitiv qiymatni taqqoslaydi.
+`==` va `!=` operatorlari tip konversiyalariga yo'l qo'yadigan erkin usulda tenglik va tengsizlikni tekshiradi. Agar bir operand obyekt, ikkinchisi esa primitiv qiymat bo'lsa, bu operatorlar obyektni `no-preference` algoritmi yordamida primitivga o'zgartiradi va so'ngra ikki primitiv qiymatni taqqoslaydi.
 
-Nihoyat, munosabat operatorlari `<`, `<=`, `>` va `>=` o‘z operandlarining tartibini solishtiradi va ham sonlarni, ham satrlarni taqqoslash uchun ishlatilishi mumkin. Agar operandlardan biri obyekt bo‘lsa, u `prefer-number` algoritmi yordamida primitiv qiymatga o‘zgartiriladi. Biroq e’tibor bering, obyektdan-songa konversiyasidan farqli o‘laroq, `prefer-number` konversiyasi natijasida qaytarilgan primitiv qiymatlar keyin songa o‘zgartirilmaydi.
+Nihoyat, munosabat operatorlari `<`, `<=`, `>` va `>=` o'z operandlarining tartibini solishtiradi va ham sonlarni, ham satrlarni taqqoslash uchun ishlatilishi mumkin. Agar operandlardan biri obyekt bo'lsa, u `prefer-number` algoritmi yordamida primitiv qiymatga o'zgartiriladi. Biroq e'tibor bering, obyektdan-songa konversiyasidan farqli o'laroq, `prefer-number` konversiyasi natijasida qaytarilgan primitiv qiymatlar keyin songa o'zgartirilmaydi.
 
-Shuni yodda tutingki, `Date` obyektlarining sonli ifodasi `<` va `>` bilan ma’noli tarzda taqqoslanishi mumkin, lekin ularning satrli ifodasi taqqoslanmaydi. `Date` obyektlari uchun `no-preference` algoritmi satrga o‘zgartiradi. JavaScript'ning munosabat operatorlari uchun `prefer-number` algoritmidan foydalanishi esa, biz bu operatorlarni ikki `Date` obyektining tartibini solishtirish uchun ishlata olishimizni anglatadi.
+Shuni yodda tutingki, `Date` obyektlarining sonli ifodasi `<` va `>` bilan ma'noli tarzda taqqoslanishi mumkin, lekin ularning satrli ifodasi taqqoslanmaydi. `Date` obyektlari uchun `no-preference` algoritmi satrga o'zgartiradi. JavaScript'ning munosabat operatorlari uchun `prefer-number` algoritmidan foydalanishi esa, biz bu operatorlarni ikki `Date` obyektining tartibini solishtirish uchun ishlata olishimizni anglatadi.
 
 ### `toString()` va `valueOf()` metodlari
 
 Barcha obyektlar obyektdan-primitivga konversiyalarida ishlatiladigan ikkita konversiya metodini meros qilib oladi. `prefer-string`, `prefer-number` va `no-preference` konversiya algoritmlarini tushuntirishdan oldin, biz shu ikki metodni yoritib berishimiz kerak.
 
-Birinchi metod — **`toString()`** bo‘lib, uning vazifasi obyektning satrli ifodasini qaytarishdir. Standart `toString()` metodi juda ham unchalik qiziqarli qiymat qaytarmaydi (garchi biz uni §14.4.3-bo‘limda foydali deb ishlatsak ham):
+Birinchi metod — **`toString()`** bo'lib, uning vazifasi obyektning satrli ifodasini qaytarishdir. Standart `toString()` metodi juda ham unchalik qiziqarli qiymat qaytarmaydi (garchi biz uni §14.4.3-bo'limda foydali deb ishlatsak ham):
 
 ```js
 ({x: 1, y: 2}).toString() // => "[object Object]"
 ```
 
-Ko‘pgina klasslar `toString()` metodining o‘zlariga xos, aniqroq versiyalarini aniqlaydilar. Masalan, Array klassining `toString()` metodi har bir massiv elementini satrga o‘zgartiradi va hosil bo‘lgan satrlarni vergullar bilan birlashtiradi. `Function` klassining `toString()` metodi foydalanuvchi tomonidan aniqlangan funksiyalarni JavaScript manba kodi (source-code) satriga o‘zgartiradi. `Date` klassi odam o‘qiy oladigan (va JavaScript tahlil qila oladigan) sana va vaqt satrini qaytaradigan `toString()` metodini aniqlaydi. `RegExp` klassi esa `RegExp` obyektlarini `RegExp` literaliga o‘xshash satrga o‘zgartiradigan `toString()` metodini aniqlaydi:
+Ko'pgina klasslar `toString()` metodining o'zlariga xos, aniqroq versiyalarini aniqlaydilar. Masalan, Array klassining `toString()` metodi har bir massiv elementini satrga o'zgartiradi va hosil bo'lgan satrlarni vergullar bilan birlashtiradi. `Function` klassining `toString()` metodi foydalanuvchi tomonidan aniqlangan funksiyalarni JavaScript manba kodi (source-code) satriga o'zgartiradi. `Date` klassi odam o'qiy oladigan (va JavaScript tahlil qila oladigan) sana va vaqt satrini qaytaradigan `toString()` metodini aniqlaydi. `RegExp` klassi esa `RegExp` obyektlarini `RegExp` literaliga o'xshash satrga o'zgartiradigan `toString()` metodini aniqlaydi:
 
 ``` js
 .toString()                         // => "1,2,3"
@@ -221,9 +221,9 @@ let d = new Date(2020,0,1);
 d.toString()                        // => "Wed Jan 01 2020 00:00:00 GMT-0800 (Pacific Standard Time)"
 ```
 
-Obyektni konversiya qiluvchi ikkinchi funksiya `valueOf()` deb ataladi. Bu metodning vazifasi unchalik aniq belgilanmagan: u, agar shunday primitiv qiymat mavjud bo‘lsa, obyektni shu obyektni ifodalovchi primitiv qiymatga o‘zgartirishi kerak. Obyektlar murakkab qiymatlardir va ko‘pchilik obyektlarni bitta primitiv qiymat bilan ifodalab bo‘lmaydi. Shuning uchun standart `valueOf()` metodi primitiv qaytarish o‘rniga, shunchaki obyektning o‘zini qaytaradi.
+Obyektni konversiya qiluvchi ikkinchi funksiya `valueOf()` deb ataladi. Bu metodning vazifasi unchalik aniq belgilanmagan: u, agar shunday primitiv qiymat mavjud bo'lsa, obyektni shu obyektni ifodalovchi primitiv qiymatga o'zgartirishi kerak. Obyektlar murakkab qiymatlardir va ko'pchilik obyektlarni bitta primitiv qiymat bilan ifodalab bo'lmaydi. Shuning uchun standart `valueOf()` metodi primitiv qaytarish o'rniga, shunchaki obyektning o'zini qaytaradi.
 
-`String`, `Number` va `Boolean` kabi o‘ram (wrapper) klasslari shunchaki o‘ralgan primitiv qiymatni qaytaradigan `valueOf()` metodlarini aniqlaydilar. Massivlar, funksiyalar va regular ifodalar standart metodni shunchaki meros qilib oladilar. Bu tiplarning nusxalari uchun `valueOf()`'ni chaqirish shunchaki obyektning o‘zini qaytaradi. `Date` klassi esa sanani uning ichki ifodalanishida qaytaradigan `valueOf()` metodini aniqlaydi: ya’ni, 1970-yil, 1-yanvardan beri o‘tgan millisekundlar soni:
+`String`, `Number` va `Boolean` kabi o'ram (wrapper) klasslari shunchaki o'ralgan primitiv qiymatni qaytaradigan `valueOf()` metodlarini aniqlaydilar. Massivlar, funksiyalar va regular ifodalar standart metodni shunchaki meros qilib oladilar. Bu tiplarning nusxalari uchun `valueOf()`'ni chaqirish shunchaki obyektning o'zini qaytaradi. `Date` klassi esa sanani uning ichki ifodalanishida qaytaradigan `valueOf()` metodini aniqlaydi: ya'ni, 1970-yil, 1-yanvardan beri o'tgan millisekundlar soni:
 
 ``` js
 let d = new Date(2010, 0, 1); // 2010-yil, 1-yanvar (Tinch okeani vaqti bilan)
@@ -232,21 +232,21 @@ d.valueOf()                   // => 1262332800000
 
 ### Obyektdan-primitivga konversiya algoritmlari
 
-`toString()` va `valueOf()` metodlari tushuntirilganidan so‘ng, endi biz uchta obyektdan-primitivga konversiya algoritmlari taxminan qanday ishlashini yoritib bera olamiz (to‘liq tafsilotlar §14.4.7-bo‘limga qoldirilgan):
+`toString()` va `valueOf()` metodlari tushuntirilganidan so'ng, endi biz uchta obyektdan-primitivga konversiya algoritmlari taxminan qanday ishlashini yoritib bera olamiz (to'liq tafsilotlar §14.4.7-bo'limga qoldirilgan):
 
--  **`prefer-string` algoritmi** avval `toString()` metodini sinab ko‘radi. Agar bu metod mavjud bo‘lsa va primitiv qiymat qaytarsa, u holda JavaScript aynan shu primitiv qiymatdan foydalanadi (hatto u satr bo‘lmasa ham!). Agar `toString()` mavjud bo‘lmasa yoki u obyekt qaytarsa, unda JavaScript `valueOf()` metodi bilan urinib ko‘radi. Agar bu metod mavjud bo‘lsa va primitiv qiymat qaytarsa, JavaScript o‘sha qiymatdan foydalanadi. Aks holda, konversiya `TypeError` xatoligi bilan yakunlanadi.
+-  **`prefer-string` algoritmi** avval `toString()` metodini sinab ko'radi. Agar bu metod mavjud bo'lsa va primitiv qiymat qaytarsa, u holda JavaScript aynan shu primitiv qiymatdan foydalanadi (hatto u satr bo'lmasa ham!). Agar `toString()` mavjud bo'lmasa yoki u obyekt qaytarsa, unda JavaScript `valueOf()` metodi bilan urinib ko'radi. Agar bu metod mavjud bo'lsa va primitiv qiymat qaytarsa, JavaScript o'sha qiymatdan foydalanadi. Aks holda, konversiya `TypeError` xatoligi bilan yakunlanadi.
 
--  **`prefer-number` algoritmi** `prefer-string` algoritmi kabi ishlaydi, faqat u avval `valueOf()`'ni, keyin esa `toString()`'ni sinab ko‘radi.
+-  **`prefer-number` algoritmi** `prefer-string` algoritmi kabi ishlaydi, faqat u avval `valueOf()`'ni, keyin esa `toString()`'ni sinab ko'radi.
 
--  **`no-preference` algoritmi** konversiya qilinayotgan obyektning klassiga bog‘liq. Agar obyekt `Date` obyekti bo‘lsa, JavaScript `prefer-string` algoritmidan foydalanadi. Boshqa har qanday obyekt uchun esa JavaScript `prefer-number` algoritmidan foydalanadi.
+-  **`no-preference` algoritmi** konversiya qilinayotgan obyektning klassiga bog'liq. Agar obyekt `Date` obyekti bo'lsa, JavaScript `prefer-string` algoritmidan foydalanadi. Boshqa har qanday obyekt uchun esa JavaScript `prefer-number` algoritmidan foydalanadi.
 
-Bu yerda tasvirlangan qoidalar barcha ichki o‘rnatilgan JavaScript tiplari uchun amal qiladi va siz o‘zingiz yozadigan har qanday klasslar uchun standart qoidalar hisoblanadi. §14.4.7-bo‘limda siz o‘zingiz yozgan klasslar uchun shaxsiy obyektdan-primitivga konversiya algoritmlarini qanday aniqlash mumkinligi tushuntirilgan.
+Bu yerda tasvirlangan qoidalar barcha ichki o'rnatilgan JavaScript tiplari uchun amal qiladi va siz o'zingiz yozadigan har qanday klasslar uchun standart qoidalar hisoblanadi. §14.4.7-bo'limda siz o'zingiz yozgan klasslar uchun shaxsiy obyektdan-primitivga konversiya algoritmlarini qanday aniqlash mumkinligi tushuntirilgan.
 
-Ushbu mavzuni yakunlashdan oldin, `prefer-number` konversiyasining tafsilotlari nima uchun bo‘sh massivlar `0` soniga, bitta elementli massivlar esa songa o‘girilishi mumkinligini tushuntirib berishini ta’kidlab o‘tish maqsadga muvofiqdir:
+Ushbu mavzuni yakunlashdan oldin, `prefer-number` konversiyasining tafsilotlari nima uchun bo'sh massivlar `0` soniga, bitta elementli massivlar esa songa o'girilishi mumkinligini tushuntirib berishini ta'kidlab o'tish maqsadga muvofiqdir:
 
 ```js
 Number([])      // => 0: bu kutilmagan holat!
 Number([99])    // => 99: rostdanmi?
 ```
 
-Obyektdan-songa konversiyasi avval obyektni `prefer-number` algoritmi yordamida primitivga o‘zgartiradi, so‘ngra hosil bo‘lgan primitiv qiymatni songa o‘zgartiradi. `prefer-number` algoritmi avval `valueOf()`'ni sinab ko‘radi va keyin `toString()`'ga o‘tadi. Lekin `Array` klassi primitiv qiymat qaytarmaydigan standart `valueOf()` metodini meros qilib oladi. Shuning uchun, biz massivni songa o‘zgartirishga harakat qilganimizda, yakunda massivning `toString()` metodini chaqirgan bo‘lamiz. Bo‘sh massivlar bo‘sh satrga o‘giriladi. Bo‘sh satr esa 0 soniga o‘giriladi. Bitta elementli massiv o‘sha bitta element o‘giriladigan satrning o‘ziga o‘giriladi. Agar massiv bitta sonni o‘z ichiga olsa, bu son satrga, so‘ngra yana qaytib songa o‘zgartiriladi.
+Obyektdan-songa konversiyasi avval obyektni `prefer-number` algoritmi yordamida primitivga o'zgartiradi, so'ngra hosil bo'lgan primitiv qiymatni songa o'zgartiradi. `prefer-number` algoritmi avval `valueOf()`'ni sinab ko'radi va keyin `toString()`'ga o'tadi. Lekin `Array` klassi primitiv qiymat qaytarmaydigan standart `valueOf()` metodini meros qilib oladi. Shuning uchun, biz massivni songa o'zgartirishga harakat qilganimizda, yakunda massivning `toString()` metodini chaqirgan bo'lamiz. Bo'sh massivlar bo'sh satrga o'giriladi. Bo'sh satr esa 0 soniga o'giriladi. Bitta elementli massiv o'sha bitta element o'giriladigan satrning o'ziga o'giriladi. Agar massiv bitta sonni o'z ichiga olsa, bu son satrga, so'ngra yana qaytib songa o'zgartiriladi.

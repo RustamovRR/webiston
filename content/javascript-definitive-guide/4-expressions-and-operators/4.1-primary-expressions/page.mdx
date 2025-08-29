@@ -7,9 +7,9 @@ author: Webiston.uz
 
 # Birlamchi ifodalar
 
-**Birlamchi ifodalar (`primary expressions`)** deb nomlanuvchi eng sodda ifodalar o‘z tarkibida boshqa soddaroq ifodalarni qamrab olmaydi, ya’ni mustaqil holda mavjud bo‘ladi. JavaScript'dagi birlamchi ifodalar — bu konstantalar yoki literal qiymatlar, ba’zi til kalit so‘zlari va o‘zgaruvchilarga havolalardir.
+**Birlamchi ifodalar (`primary expressions`)** deb nomlanuvchi eng sodda ifodalar o'z tarkibida boshqa soddaroq ifodalarni qamrab olmaydi, ya'ni mustaqil holda mavjud bo'ladi. JavaScript'dagi birlamchi ifodalar — bu konstantalar yoki literal qiymatlar, ba'zi til kalit so'zlari va o'zgaruvchilarga havolalardir.
 
-**Literallar** — bu dasturingizga to‘g‘ridan-to‘g‘ri kiritilgan o‘zgarmas qiymatlardir. Ular quyidagicha ko‘rinishga ega:
+**Literallar** — bu dasturingizga to'g'ridan-to'g'ri kiritilgan o'zgarmas qiymatlardir. Ular quyidagicha ko'rinishga ega:
 
 ``` js
 1.23      // Sonli literal
@@ -17,9 +17,9 @@ author: Webiston.uz
 /pattern/ // Regular ifoda literali
 ```
 
-JavaScript'dagi sonli literallar sintaksisi §3.2-bo‘limda yoritilgan. Satrli literallar §3.3-bo‘limda keltirilgan. Regular ifoda literali sintaksisi §3.3.5-bo‘limda tanishtirilgan va §11.3-bo‘limda batafsil yoritiladi.
+JavaScript'dagi sonli literallar sintaksisi §3.2-bo'limda yoritilgan. Satrli literallar §3.3-bo'limda keltirilgan. Regular ifoda literali sintaksisi §3.3.5-bo'limda tanishtirilgan va §11.3-bo'limda batafsil yoritiladi.
 
-JavaScript'ning ba’zi zaxiralangan so‘zlari ham birlamchi ifodalardir:
+JavaScript'ning ba'zi zaxiralangan so'zlari ham birlamchi ifodalardir:
 
 ``` js
 true  // `true` mantiqiy qiymatini ifodalaydi
@@ -28,14 +28,14 @@ null  // `null` qiymatini ifodalaydi
 this  // "Joriy" obyektni ifodalaydi
 ```
 
-Biz `true`, `false` va `null` haqida §3.4 va §3.5-bo‘limlarda o‘rgangan edik. Boshqa kalit so‘zlardan farqli o‘laroq, `this` konstanta emas — u dasturning turli joylarida turli qiymatlarni ifodalaydi. `this` kalit so‘zi obyektga yo‘naltirilgan dasturlashda ishlatiladi. Metod tanasi ichida `this` o‘sha metod chaqirilgan obyektni ifodalaydi. `this` haqida ko‘proq ma’lumot olish uchun §4.5, 8-bobga (ayniqsa, §8.2.2) va 9-bobga qarang.
+Biz `true`, `false` va `null` haqida §3.4 va §3.5-bo'limlarda o'rgangan edik. Boshqa kalit so'zlardan farqli o'laroq, `this` konstanta emas — u dasturning turli joylarida turli qiymatlarni ifodalaydi. `this` kalit so'zi obyektga yo'naltirilgan dasturlashda ishlatiladi. Metod tanasi ichida `this` o'sha metod chaqirilgan obyektni ifodalaydi. `this` haqida ko'proq ma'lumot olish uchun §4.5, 8-bobga (ayniqsa, §8.2.2) va 9-bobga qarang.
 
-Nihoyat, birlamchi ifodalarning uchinchi turi — bu o‘zgaruvchi, konstanta yoki global obyektning xossasiga bo‘lgan havoladir:
+Nihoyat, birlamchi ifodalarning uchinchi turi — bu o'zgaruvchi, konstanta yoki global obyektning xossasiga bo'lgan havoladir:
 
 ``` js
-i           // `i` o‘zgaruvchisining qiymatini ifodalaydi.
-sum         // `sum` o‘zgaruvchisining qiymatini ifodalaydi.
+i           // `i` o'zgaruvchisining qiymatini ifodalaydi.
+sum         // `sum` o'zgaruvchisining qiymatini ifodalaydi.
 undefined   // Global obyektning "undefined" xossasining qiymati.
 ```
 
-Dasturda biror identifikator yolg‘iz o‘zi kelganda, JavaScript uni o‘zgaruvchi, konstanta yoki global obyektning xossasi deb hisoblaydi va uning qiymatini qidiradi. Agar bunday nomdagi o‘zgaruvchi mavjud bo‘lmasa, mavjud bo‘lmagan o‘zgaruvchini ifodalashga urinish `ReferenceError` xatoligiga sabab bo‘ladi.
+Dasturda biror identifikator yolg'iz o'zi kelganda, JavaScript uni o'zgaruvchi, konstanta yoki global obyektning xossasi deb hisoblaydi va uning qiymatini qidiradi. Agar bunday nomdagi o'zgaruvchi mavjud bo'lmasa, mavjud bo'lmagan o'zgaruvchini ifodalashga urinish `ReferenceError` xatoligiga sabab bo'ladi.

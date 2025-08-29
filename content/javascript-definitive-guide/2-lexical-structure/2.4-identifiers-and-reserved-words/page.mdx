@@ -1,13 +1,13 @@
 ---
 title: Identifikatorlar va Zaxiralangan so'zlar
-description: "Identifikatorlar: ruxsat etilgan belgilar to‘plami, nomlash qoidalari va amaliy tavsiyalar. Zaxiralangan so‘zlar ro‘yxati, xavfli identifikatorlar (`arguments`, `eval`) va kontekstga bog‘liq cheklovlar."
+description: "Identifikatorlar: ruxsat etilgan belgilar to'plami, nomlash qoidalari va amaliy tavsiyalar. Zaxiralangan so'zlar ro'yxati, xavfli identifikatorlar (`arguments`, `eval`) va kontekstga bog'liq cheklovlar."
 keywords: JavaScript, identifiers, naming, reserved words, keywords, arguments, eval, best practices, syntax
 author: Webiston.uz
 ---
 
 # Identifikatorlar va Zaxiralangan so'zlar
 
-_Identifikator_ - bu shunchaki nom nom. JavaScript’da identifikatorlar konstantalar, o'zgaruvchilar, xossalar, funksiyalar va klasslarni nomlash, shuningdek, JavaScript kodidagi ma'lum sikllarga nishon (label) berish uchun ishlatiladi. JavaScript identifikatori harf, pastki chiziq (`_`) yoki dollar belgisi (`$`) bilan boshlanishi kerak. Undan keyingi belgilar harflar, raqamlar, pastki chiziqlar yoki dollar belgilari bo'lishi mumkin. (Raqamlarga birinchi belgi bo‘lishiga ruxsat berilmaganining sababi, JavaScript interpretatorining identifikatorlarni sonlardan oson ajrata olishini ta’minlashdir). Quyidagilar barchasi to'g'ri identifikatorlardir:
+_Identifikator_ - bu shunchaki nom nom. JavaScript'da identifikatorlar konstantalar, o'zgaruvchilar, xossalar, funksiyalar va klasslarni nomlash, shuningdek, JavaScript kodidagi ma'lum sikllarga nishon (label) berish uchun ishlatiladi. JavaScript identifikatori harf, pastki chiziq (`_`) yoki dollar belgisi (`$`) bilan boshlanishi kerak. Undan keyingi belgilar harflar, raqamlar, pastki chiziqlar yoki dollar belgilari bo'lishi mumkin. (Raqamlarga birinchi belgi bo'lishiga ruxsat berilmaganining sababi, JavaScript interpretatorining identifikatorlarni sonlardan oson ajrata olishini ta'minlashdir). Quyidagilar barchasi to'g'ri identifikatorlardir:
 
 ``` js
 i
@@ -21,7 +21,7 @@ Har qanday tilda bo'lgani kabi, JavaScript ham ma'lum identifikatorlarni tilning
 
 ## Zaxiralangan so'zlar
 
-Quyidagi so'zlar JavaScript tilining bir qismidir. Ularning ko'pchiligi (masalan, `if`, `while` va `for` kabi) zaxiralangan kalit so'zlardir (reserved keywords) va ularni konstantalar, o'zgaruvchilar, funksiyalar yoki klasslar nomlari sifatida ishlatish mutlaqo mumkin emas (biroq ularning barchasini obyekt ichidagi xossa nomi sifatida ishlatsa bo'ladi). Boshqalari (masalan, `from`, `of`, `get` va `set` kabi) cheklangan kontekstlarda sintaktik noaniqlik (syntactic ambiguity) bo'lmagan holda ishlatiladi va identifikator sifatida qo‘llash uchun mutlaqo to‘g‘ri hisoblanadi. Yana boshqa kalit so'zlar (masalan, `let` kabi) oldingi versiyalar bilan moslikni (backward compatibility) saqlab qolish uchun to'liq zaxiralanishi mumkin emas, shuning uchun ularni qachon identifikator sifatida ishlatish mumkinu, qachon mumkin emasligini belgilovchi murakkab qoidalar mavjud. (Masalan, `let` so'zini `var` orqali klass tashqarisida e'lon qilinsa, o'zgaruvchi nomi sifatida ishlatsa bo'ladi, lekin klass ichida yoki `const` bilan e'lon qilinsa, mumkin emas.) Eng oson yo'l - bu so‘zlarning hech birini identifikator sifatida ishlatmaslikdir. `from`, `set` va `target` so‘zlarini ishlatish xavfsiz va ular allaqachon keng qo‘llanilmoqda.
+Quyidagi so'zlar JavaScript tilining bir qismidir. Ularning ko'pchiligi (masalan, `if`, `while` va `for` kabi) zaxiralangan kalit so'zlardir (reserved keywords) va ularni konstantalar, o'zgaruvchilar, funksiyalar yoki klasslar nomlari sifatida ishlatish mutlaqo mumkin emas (biroq ularning barchasini obyekt ichidagi xossa nomi sifatida ishlatsa bo'ladi). Boshqalari (masalan, `from`, `of`, `get` va `set` kabi) cheklangan kontekstlarda sintaktik noaniqlik (syntactic ambiguity) bo'lmagan holda ishlatiladi va identifikator sifatida qo'llash uchun mutlaqo to'g'ri hisoblanadi. Yana boshqa kalit so'zlar (masalan, `let` kabi) oldingi versiyalar bilan moslikni (backward compatibility) saqlab qolish uchun to'liq zaxiralanishi mumkin emas, shuning uchun ularni qachon identifikator sifatida ishlatish mumkinu, qachon mumkin emasligini belgilovchi murakkab qoidalar mavjud. (Masalan, `let` so'zini `var` orqali klass tashqarisida e'lon qilinsa, o'zgaruvchi nomi sifatida ishlatsa bo'ladi, lekin klass ichida yoki `const` bilan e'lon qilinsa, mumkin emas.) Eng oson yo'l - bu so'zlarning hech birini identifikator sifatida ishlatmaslikdir. `from`, `set` va `target` so'zlarini ishlatish xavfsiz va ular allaqachon keng qo'llanilmoqda.
 
 ``` js
 as          const       export      get         null        target      void

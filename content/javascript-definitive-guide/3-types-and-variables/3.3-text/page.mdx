@@ -1,18 +1,18 @@
 ---
 title: Matn
-description: "Stringlar: UTF‑16, indeksatsiya, literallar, qatorlarga bo‘lish, qochish ketma‑ketliklari, konkatenatsiya, qidirish/bo‘lish/almashish, `length`, normalizatsiya va template literal/interpolyatsiya."
-keywords: JavaScript, string, UTF‑16, index, escape sequences, concatenation, substring, split, replace, normalize, template literal, interpolation, RegExp
+description: "Stringlar: UTF-16, indeksatsiya, literallar, qatorlarga bo'lish, qochish ketma-ketliklari, konkatenatsiya, qidirish/bo'lish/almashish, `length`, normalizatsiya va template literal/interpolyatsiya."
+keywords: JavaScript, string, UTF-16, index, escape sequences, concatenation, substring, split, replace, normalize, template literal, interpolation, RegExp
 author: Webiston.uz
 ---
 
 # Matn
 
-JavaScript'da matnni ifodalash uchun mo‘ljallangan tip **satr (`string`)** deb ataladi. Satr — bu har biri odatda bitta Unicode belgisini ifodalovchi, 16 bitli qiymatlarning o‘zgarmas, tartiblangan ketma-ketligidir. Satrning uzunligi undagi 16 bitli qiymatlar soni bilan o‘lchanadi. JavaScript satrlari (va massivlari) noldan boshlanuvchi indeksatsiyadan foydalanadi: birinchi 16 bitli qiymat 0-indeksda, ikkinchisi 1-indeksda va hokazo. _Bo‘sh satr_ — bu uzunligi 0 ga teng bo‘lgan satrdir. JavaScript'da satrning bitta elementini ifodalovchi maxsus tip mavjud emas. Bitta 16 bitli qiymatni ifodalash uchun shunchaki uzunligi 1 ga teng bo‘lgan satrdan foydalaniladi.
+JavaScript'da matnni ifodalash uchun mo'ljallangan tip **satr (`string`)** deb ataladi. Satr — bu har biri odatda bitta Unicode belgisini ifodalovchi, 16 bitli qiymatlarning o'zgarmas, tartiblangan ketma-ketligidir. Satrning uzunligi undagi 16 bitli qiymatlar soni bilan o'lchanadi. JavaScript satrlari (va massivlari) noldan boshlanuvchi indeksatsiyadan foydalanadi: birinchi 16 bitli qiymat 0-indeksda, ikkinchisi 1-indeksda va hokazo. _Bo'sh satr_ — bu uzunligi 0 ga teng bo'lgan satrdir. JavaScript'da satrning bitta elementini ifodalovchi maxsus tip mavjud emas. Bitta 16 bitli qiymatni ifodalash uchun shunchaki uzunligi 1 ga teng bo'lgan satrdan foydalaniladi.
 
 <Callout type="info">
 ### Belgilar, Kod nuqtalari va JavaScript satrlari
 
-JavaScript Unicode belgilar to‘plamining UTF-16 kodlash usulidan foydalanadi va JavaScript satrlari ishorasiz 16 bitli qiymatlar ketma-ketligidir. Eng ko‘p ishlatiladigan Unicode belgilari ("asosiy ko‘p tilli sath"dan olinganlar) 16 bitga sig‘adigan kod nuqtalariga (`codepoints`) ega va ular satrning bitta elementi bilan ifodalanishi mumkin. Kod nuqtalari 16 bitga sig‘maydigan Unicode belgilari esa UTF-16 qoidalariga binoan, ikki 16 bitli qiymatdan iborat ketma-ketlik ("surrogat juftlik" (`surrogate pair`) deb ataladi) sifatida kodlanadi. Bu shuni anglatadiki, uzunligi 2 ga teng bo‘lgan (ikkita 16 bitli qiymatdan iborat) JavaScript satri aslida faqat bitta Unicode belgisini ifodalashi mumkin:
+JavaScript Unicode belgilar to'plamining UTF-16 kodlash usulidan foydalanadi va JavaScript satrlari ishorasiz 16 bitli qiymatlar ketma-ketligidir. Eng ko'p ishlatiladigan Unicode belgilari ("asosiy ko'p tilli sath"dan olinganlar) 16 bitga sig'adigan kod nuqtalariga (`codepoints`) ega va ular satrning bitta elementi bilan ifodalanishi mumkin. Kod nuqtalari 16 bitga sig'maydigan Unicode belgilari esa UTF-16 qoidalariga binoan, ikki 16 bitli qiymatdan iborat ketma-ketlik ("surrogat juftlik" (`surrogate pair`) deb ataladi) sifatida kodlanadi. Bu shuni anglatadiki, uzunligi 2 ga teng bo'lgan (ikkita 16 bitli qiymatdan iborat) JavaScript satri aslida faqat bitta Unicode belgisini ifodalashi mumkin:
 
 ```js
 let euro = "€";
@@ -21,17 +21,17 @@ euro.length // => 1: bu belgi bitta 16 bitli elementga ega
 love.length // => 2: `❤` belgisining UTF-16 kodlanishi "\ud83d\udc99"
 ```
 
-JavaScript taqdim etadigan ko'plab satrlar ustida ishlovchi metodlar belgilar ustida emas, balki 16 bitli qiymatlar ustida amal bajaradi. Ular surrogat juftliklarga maxsus munosabatda bo‘lmaydi, satrni normalizatsiya qilmaydi va hatto satrning to‘g‘ri formatlangan UTF-16 ekanligini ham tekshirmaydi.
+JavaScript taqdim etadigan ko'plab satrlar ustida ishlovchi metodlar belgilar ustida emas, balki 16 bitli qiymatlar ustida amal bajaradi. Ular surrogat juftliklarga maxsus munosabatda bo'lmaydi, satrni normalizatsiya qilmaydi va hatto satrning to'g'ri formatlangan UTF-16 ekanligini ham tekshirmaydi.
 
-Biroq ES6'dan boshlab satrlar _iteratsiya qilinadigan (iterable)_ hisoblanadi. Agar siz satr bilan `for/of` sikli yoki `...` operatoridan foydalansangiz, u 16 bitli qiymatlar bo‘ylab emas, balki satrning haqiqiy belgilari bo‘ylab iteratsiya qiladi.
+Biroq ES6'dan boshlab satrlar _iteratsiya qilinadigan (iterable)_ hisoblanadi. Agar siz satr bilan `for/of` sikli yoki `...` operatoridan foydalansangiz, u 16 bitli qiymatlar bo'ylab emas, balki satrning haqiqiy belgilari bo'ylab iteratsiya qiladi.
 </Callout>
 
 ## Satr literallari
 
-JavaScript dasturiga satr kiritish uchun satr belgilarini bir-biriga mos keladigan bir tirnoq, qo‘shtirnoq yoki teskari tirnoq (`'` yoki `"` yoki `` ` ``) juftligi ichiga olish kifoya. Qo‘shtirnoq va teskari tirnoq belgilari bir tirnoq bilan chegaralangan satrlar ichida, xuddi shunday boshqa holatlar uchun ham, ishlatilishi mumkin. Quyida satr literallariga misollar keltirilgan:
+JavaScript dasturiga satr kiritish uchun satr belgilarini bir-biriga mos keladigan bir tirnoq, qo'shtirnoq yoki teskari tirnoq (`'` yoki `"` yoki `` ` ``) juftligi ichiga olish kifoya. Qo'shtirnoq va teskari tirnoq belgilari bir tirnoq bilan chegaralangan satrlar ichida, xuddi shunday boshqa holatlar uchun ham, ishlatilishi mumkin. Quyida satr literallariga misollar keltirilgan:
 
 ``` js
-""                               // Bo‘sh satr: u nolga teng belgiga ega
+""                               // Bo'sh satr: u nolga teng belgiga ega
 'testing'
 "3.14"
 'name="myform"'
@@ -40,9 +40,9 @@ JavaScript dasturiga satr kiritish uchun satr belgilarini bir-biriga mos keladig
 `"She said 'hi'", he said.`
 ```
 
-Teskari tirnoqlar (backticks) bilan chegaralangan satrlar ES6 xususiyati bo‘lib, ular JavaScript ifodalarini satr literali ichiga **joylashtirish (embedding)** yoki **interpolyatsiya qilish (interpolation)** imkonini beradi. Bu ifoda interpolyatsiyasi sintaksisi §3.3.4-bo‘limda yoritilgan.
+Teskari tirnoqlar (backticks) bilan chegaralangan satrlar ES6 xususiyati bo'lib, ular JavaScript ifodalarini satr literali ichiga **joylashtirish (embedding)** yoki **interpolyatsiya qilish (interpolation)** imkonini beradi. Bu ifoda interpolyatsiyasi sintaksisi §3.3.4-bo'limda yoritilgan.
 
-JavaScript'ning dastlabki versiyalari satr literallarini bitta qatorda yozishni talab qilardi va ko‘pincha `+` operatori yordamida bir qatorli satrlarni birlashtirib, uzun satrlar hosil qiladigan JavaScript kodini uchratish mumkin. Biroq ES5'dan boshlab, siz oxirgisidan tashqari har bir qatorni teskari slesh (`\`) bilan yakunlab, satr literalini bir necha qatorga bo‘lib yozishingiz mumkin. Bunda na teskari slesh, na undan keyingi qator yakunlovchisi satr literalining bir qismi hisoblanadi. Agar bir tirnoqli yoki qo‘shtirnoqli satr literaliga yangi qator belgisini kiritish kerak bo‘lsa, `\n` belgilar ketma-ketligidan foydalaning (bu keyingi bo‘limda batafsil yoritilgan). ES6'ning teskari tirnoq sintaksisi satrlarni bir necha qatorga bo‘lishga imkon beradi va bu holda qator yakunlovchilari satr literalining bir qismi bo‘lib qoladi:
+JavaScript'ning dastlabki versiyalari satr literallarini bitta qatorda yozishni talab qilardi va ko'pincha `+` operatori yordamida bir qatorli satrlarni birlashtirib, uzun satrlar hosil qiladigan JavaScript kodini uchratish mumkin. Biroq ES5'dan boshlab, siz oxirgisidan tashqari har bir qatorni teskari slesh (`\`) bilan yakunlab, satr literalini bir necha qatorga bo'lib yozishingiz mumkin. Bunda na teskari slesh, na undan keyingi qator yakunlovchisi satr literalining bir qismi hisoblanadi. Agar bir tirnoqli yoki qo'shtirnoqli satr literaliga yangi qator belgisini kiritish kerak bo'lsa, `\n` belgilar ketma-ketligidan foydalaning (bu keyingi bo'limda batafsil yoritilgan). ES6'ning teskari tirnoq sintaksisi satrlarni bir necha qatorga bo'lishga imkon beradi va bu holda qator yakunlovchilari satr literalining bir qismi bo'lib qoladi:
 
 ``` js
 // Bir qatorda yozilgan 2 qatorli satr:
@@ -58,9 +58,9 @@ line"
 is included literally in this string`
 ```
 
-Shuni yodda tutingki, satrlaringizni chegaralash uchun bir tirnoqdan foydalanganda, ingliz tilidagi _can't_ va _O'Reilly's_ kabi qisqartmalar va egalik qo‘shimchalariga ehtiyot bo‘lishingiz kerak. Chunki apostrof belgisi bir tirnoq belgisi bilan bir xil. Shuning uchun bir tirnoqli satrlar ichida keladigan har qanday apostrofni "ekranlash" (escape) uchun teskari slesh (`\`) belgisidan foydalanishingiz kerak (ekranlash keyingi paragrafda tushuntiriladi).
+Shuni yodda tutingki, satrlaringizni chegaralash uchun bir tirnoqdan foydalanganda, ingliz tilidagi _can't_ va _O'Reilly's_ kabi qisqartmalar va egalik qo'shimchalariga ehtiyot bo'lishingiz kerak. Chunki apostrof belgisi bir tirnoq belgisi bilan bir xil. Shuning uchun bir tirnoqli satrlar ichida keladigan har qanday apostrofni "ekranlash" (escape) uchun teskari slesh (`\`) belgisidan foydalanishingiz kerak (ekranlash keyingi paragrafda tushuntiriladi).
 
-Klient tomonidagi JavaScript dasturlashida, JavaScript kodi HTML kodi satrlarini, HTML kodi esa JavaScript kodi satrlarini o‘z ichiga olishi mumkin. JavaScript kabi, HTML ham o‘z satrlarini chegaralash uchun bir tirnoq yoki qo‘shtirnoqdan foydalanadi. Shuning uchun, JavaScript va HTML'ni birgalikda ishlatganda, JavaScript uchun bir uslubdagi tirnoqlarni, HTML uchun esa boshqa uslubdagisini ishlatish yaxshi fikrdir. Quyidagi misolda, "Thank you" satri JavaScript ifodasi ichida bir tirnoqqa olingan, bu ifodaning o‘zi esa HTML'ning _event-handler_ atributi ichida qo‘shtirnoqqa olingan:
+Klient tomonidagi JavaScript dasturlashida, JavaScript kodi HTML kodi satrlarini, HTML kodi esa JavaScript kodi satrlarini o'z ichiga olishi mumkin. JavaScript kabi, HTML ham o'z satrlarini chegaralash uchun bir tirnoq yoki qo'shtirnoqdan foydalanadi. Shuning uchun, JavaScript va HTML'ni birgalikda ishlatganda, JavaScript uchun bir uslubdagi tirnoqlarni, HTML uchun esa boshqa uslubdagisini ishlatish yaxshi fikrdir. Quyidagi misolda, "Thank you" satri JavaScript ifodasi ichida bir tirnoqqa olingan, bu ifodaning o'zi esa HTML'ning _event-handler_ atributi ichida qo'shtirnoqqa olingan:
 
 ``` html
 <button onclick="alert('Thank you')">Click Me</button>
@@ -68,15 +68,15 @@ Klient tomonidagi JavaScript dasturlashida, JavaScript kodi HTML kodi satrlarini
 
 ## Satr literallarida qochish ketma-ketliklari
 
-Teskari slesh (`\`) belgisi JavaScript satrlarida maxsus vazifaga ega. U o‘zidan keyin kelgan belgi bilan birgalikda, satr ichida boshqa yo‘l bilan ifodalab bo‘lmaydigan belgini ifodalaydi. Masalan, `\n` — bu yangi qator belgisini ifodalovchi _qochish ketma-ketligidir_.
+Teskari slesh (`\`) belgisi JavaScript satrlarida maxsus vazifaga ega. U o'zidan keyin kelgan belgi bilan birgalikda, satr ichida boshqa yo'l bilan ifodalab bo'lmaydigan belgini ifodalaydi. Masalan, `\n` — bu yangi qator belgisini ifodalovchi _qochish ketma-ketligidir_.
 
-Avvalroq aytib o‘tilgan yana bir misol — bu `\'` qochish ketma-ketligi bo‘lib, u bir tirnoq (yoki apostrof) belgisini ifodalaydi. Bu qochish ketma-ketligi bir tirnoqlar ichiga olingan satr literaliga apostrof kiritish kerak bo‘lganda juda foydalidir. Nima uchun ularning "qochish ketma-ketliklari" deb atalishini tushunishingiz mumkin: teskari slesh sizga bir tirnoq belgisining odatiy talqinidan "qochib qutulish" imkonini beradi. Uni satr oxirini belgilash uchun ishlatish o‘rniga, siz uni apostrof sifatida ishlatasiz:
+Avvalroq aytib o'tilgan yana bir misol — bu `\'` qochish ketma-ketligi bo'lib, u bir tirnoq (yoki apostrof) belgisini ifodalaydi. Bu qochish ketma-ketligi bir tirnoqlar ichiga olingan satr literaliga apostrof kiritish kerak bo'lganda juda foydalidir. Nima uchun ularning "qochish ketma-ketliklari" deb atalishini tushunishingiz mumkin: teskari slesh sizga bir tirnoq belgisining odatiy talqinidan "qochib qutulish" imkonini beradi. Uni satr oxirini belgilash uchun ishlatish o'rniga, siz uni apostrof sifatida ishlatasiz:
 
 ```js
 'You\'re right, it can\'t be a quote'
 ```
 
-3-1-jadvalda JavaScript qochish ketma-ketliklari va ular ifodalaydigan belgilar ro‘yxati keltirilgan. Uchta qochish ketma-ketligi umumiy bo‘lib, ular har qanday belgini uning Unicode belgi kodini o‘n oltilik sanoq tizimidagi son sifatida ko‘rsatish orqali ifodalash uchun ishlatilishi mumkin. Masalan, `\xA9` ketma-ketligi mualliflik huquqi belgisini ifodalaydi, uning Unicode kodlanishi o‘n oltilik A9 soni bilan berilgan. Xuddi shunday, `\u` qochish ketma-ketligi to‘rtta o‘n oltilik raqam bilan yoki raqamlar jingalak qavslar ichiga olinganda birdan beshgacha raqam bilan ko‘rsatilgan ixtiyoriy Unicode belgisini ifodalaydi: masalan, `\u03c0` belgisi `π` ni ifodalaydi, `\u{1f600}` esa "irshayib turgan yuz" emojisini ifodalaydi.
+3-1-jadvalda JavaScript qochish ketma-ketliklari va ular ifodalaydigan belgilar ro'yxati keltirilgan. Uchta qochish ketma-ketligi umumiy bo'lib, ular har qanday belgini uning Unicode belgi kodini o'n oltilik sanoq tizimidagi son sifatida ko'rsatish orqali ifodalash uchun ishlatilishi mumkin. Masalan, `\xA9` ketma-ketligi mualliflik huquqi belgisini ifodalaydi, uning Unicode kodlanishi o'n oltilik A9 soni bilan berilgan. Xuddi shunday, `\u` qochish ketma-ketligi to'rtta o'n oltilik raqam bilan yoki raqamlar jingalak qavslar ichiga olinganda birdan beshgacha raqam bilan ko'rsatilgan ixtiyoriy Unicode belgisini ifodalaydi: masalan, `\u03c0` belgisi `π` ni ifodalaydi, `\u{1f600}` esa "irshayib turgan yuz" emojisini ifodalaydi.
 
 <small>_3-1-jadval. JavaScript qochish ketma-ketliklari_</small>
 | Ketma-ketlik | Ifodalaydigan belgi |
@@ -86,29 +86,29 @@ Avvalroq aytib o‘tilgan yana bir misol — bu `\'` qochish ketma-ketligi bo‘
 | `\t`         | Gorizontal tabulyatsiya (`\u0009`) |
 | `\n`         | Yangi qator (`\u000A`) |
 | `\v`         | Vertikal tabulyatsiya (`\u000B`) |
-| `\f`         | Sahifani o‘tkazish (Form feed, `\u000C`) |
+| `\f`         | Sahifani o'tkazish (Form feed, `\u000C`) |
 | `\r`         | Karetka qaytishi (`\u000D`) |
-| `\"`         | Qo‘shtirnoq (`\u0022`) |
+| `\"`         | Qo'shtirnoq (`\u0022`) |
 | `\'`         | Apostrof yoki bir tirnoq (`\u0027`) |
 | `\\`         | Teskari slesh (`\u005C`) |
-| `\xnn`       | Ikkita o‘n oltilik `nn` raqami bilan belgilangan Unicode belgisi |
-| `\unnnn`     | To‘rtta o‘n oltilik `nnnn` raqami bilan belgilangan Unicode belgisi |
-| `\u{n}`      | `n` kod nuqtasi bilan belgilangan Unicode belgisi, bunda `n` 0 dan `10FFFF` gacha bo‘lgan birdan oltitagacha o‘n oltilik raqamdir (ES6) |
+| `\xnn`       | Ikkita o'n oltilik `nn` raqami bilan belgilangan Unicode belgisi |
+| `\unnnn`     | To'rtta o'n oltilik `nnnn` raqami bilan belgilangan Unicode belgisi |
+| `\u{n}`      | `n` kod nuqtasi bilan belgilangan Unicode belgisi, bunda `n` 0 dan `10FFFF` gacha bo'lgan birdan oltitagacha o'n oltilik raqamdir (ES6) |
 
-Agar `\` belgisi 3-1-jadvalda ko‘rsatilganlardan boshqa har qanday belgidan oldin kelsa, teskari slesh shunchaki e’tiborsiz qoldiriladi (garchi, albatta, tilning kelajakdagi versiyalari yangi qochish ketma-ketliklarini aniqlashi mumkin). Masalan, `\#` belgisi `#` bilan bir xil. Va nihoyat, avvalroq aytib o‘tilganidek, ES5 satr literalini bir necha qatorga bo‘lish uchun qator uzilishidan oldin teskari slesh qo‘yishga ruxsat beradi.
+Agar `\` belgisi 3-1-jadvalda ko'rsatilganlardan boshqa har qanday belgidan oldin kelsa, teskari slesh shunchaki e'tiborsiz qoldiriladi (garchi, albatta, tilning kelajakdagi versiyalari yangi qochish ketma-ketliklarini aniqlashi mumkin). Masalan, `\#` belgisi `#` bilan bir xil. Va nihoyat, avvalroq aytib o'tilganidek, ES5 satr literalini bir necha qatorga bo'lish uchun qator uzilishidan oldin teskari slesh qo'yishga ruxsat beradi.
 
 ## Satrlar bilan ishlash
 
-JavaScript'ning ichki o‘rnatilgan xususiyatlaridan biri bu satrlarni birlashtirish (`concatenate`) qobiliyatidir. Agar siz `+` operatorini sonlar bilan ishlatsangiz, u ularni qo‘shadi. Lekin bu operatorni satrlarga qo‘llasangiz, u ikkinchi satrni birinchisining oxiriga qo‘shish orqali ularni birlashtiradi. Masalan:
+JavaScript'ning ichki o'rnatilgan xususiyatlaridan biri bu satrlarni birlashtirish (`concatenate`) qobiliyatidir. Agar siz `+` operatorini sonlar bilan ishlatsangiz, u ularni qo'shadi. Lekin bu operatorni satrlarga qo'llasangiz, u ikkinchi satrni birinchisining oxiriga qo'shish orqali ularni birlashtiradi. Masalan:
 
 ```js
 let msg = "Hello, " + "world"; // "Hello, world" satrini hosil qiladi
 let greeting = "Welcome to my blog," + " " + name;
 ```
 
-Satrlarni standart `===` tenglik va `!==` tengsizlik operatorlari bilan taqqoslash mumkin: ikki satr faqat va faqat ular aynan bir xil 16 bitli qiymatlar ketma-ketligidan iborat bo‘lgandagina teng hisoblanadi. Satrlarni, shuningdek, `<`, `<=,` `>`, va `>=` operatorlari bilan ham taqqoslash mumkin. Satrlarni taqqoslash shunchaki 16 bitli qiymatlarni solishtirish orqali amalga oshiriladi. (Mahalliy sozlamalarga sezgir (locale-aware) bo‘lgan, yanada ishonchli satr taqqoslash va saralash uchun §11.7.3-bo‘limga murojaat qiling.)
+Satrlarni standart `===` tenglik va `!==` tengsizlik operatorlari bilan taqqoslash mumkin: ikki satr faqat va faqat ular aynan bir xil 16 bitli qiymatlar ketma-ketligidan iborat bo'lgandagina teng hisoblanadi. Satrlarni, shuningdek, `<`, `<=,` `>`, va `>=` operatorlari bilan ham taqqoslash mumkin. Satrlarni taqqoslash shunchaki 16 bitli qiymatlarni solishtirish orqali amalga oshiriladi. (Mahalliy sozlamalarga sezgir (locale-aware) bo'lgan, yanada ishonchli satr taqqoslash va saralash uchun §11.7.3-bo'limga murojaat qiling.)
 
-Satrning uzunligini — ya’ni, u o‘z ichiga olgan 16 bitli qiymatlar sonini — aniqlash uchun satrning `length` xossasidan foydalaning:
+Satrning uzunligini — ya'ni, u o'z ichiga olgan 16 bitli qiymatlar sonini — aniqlash uchun satrning `length` xossasidan foydalaning:
 
 ``` js 
 s.length
@@ -123,7 +123,7 @@ let s = "Hello, world"; // Biror matndan boshlaymiz.
 s.substring(1,4)        // => "ell": 2-, 3-, va 4-belgilar.
 s.slice(1,4)            // => "ell": xuddi shu narsa
 s.slice(-3)             // => "rld": oxirgi 3 ta belgi
-s.split(", ")           // => ["Hello", "world"]: ajratuvchi satr bo‘yicha bo‘lish
+s.split(", ")           // => ["Hello", "world"]: ajratuvchi satr bo'yicha bo'lish
 
 // Satr ichidan qidirish
 s.indexOf("l")          // => 2: birinchi "l" harfining indeksi
@@ -134,9 +134,9 @@ s.lastIndexOf("l")      // => 10: oxirgi "l" harfining indeksi
 // ES6 va undan keyingi versiyalardagi mantiqiy qidiruv funksiyalari
 s.startsWith("Hell")    // => true: satr shu belgilar bilan boshlanadi
 s.endsWith("!")         // => false: s bu belgi bilan tugamaydi
-s.includes("or")        // => true: s o‘z ichiga "or" qism satrini oladi
+s.includes("or")        // => true: s o'z ichiga "or" qism satrini oladi
 
-// Satrning o‘zgartirilgan versiyalarini yaratish
+// Satrning o'zgartirilgan versiyalarini yaratish
 s.replace("llo", "ya")  // => "Heya, world"
 s.toLowerCase()         // => "hello, world"
 s.toUpperCase()         // => "HELLO, WORLD"
@@ -146,28 +146,28 @@ s.normalize("NFD")      // NFD normalizatsiyasi. Shuningdek "NFKC", "NFKD"
 // Satrning alohida (16 bitli) belgilarini tekshirish
 s.charAt(0)             // => "H": birinchi belgi
 s.charAt(s.length-1)    // => "d": oxirgi belgi
-s.charCodeAt(0)         // => 72: ko‘rsatilgan pozitsiyadagi 16 bitli son
+s.charCodeAt(0)         // => 72: ko'rsatilgan pozitsiyadagi 16 bitli son
 s.codePointAt(0)        // => 72: ES6, 16 bitdan katta kod nuqtalari uchun ishlaydi
 
-// ES2017'dagi satrni to‘ldirish (padding) funksiyalari
-"x".padStart(3)         // => "  x": chapdan bo‘shliqlar qo‘shib, uzunlikni 3 ga yetkazish
-"x".padEnd(3)           // => "x  ": o‘ngdan bo‘shliqlar qo‘shib, uzunlikni 3 ga yetkazish
-"x".padStart(3, "*")    // => "**x": chapdan yulduzchalar qo‘shib, uzunlikni 3 ga yetkazish
-"x".padEnd(3, "-")      // => "x--": o‘ngdan chiziqchalar qo‘shib, uzunlikni 3 ga yetkazish
+// ES2017'dagi satrni to'ldirish (padding) funksiyalari
+"x".padStart(3)         // => "  x": chapdan bo'shliqlar qo'shib, uzunlikni 3 ga yetkazish
+"x".padEnd(3)           // => "x  ": o'ngdan bo'shliqlar qo'shib, uzunlikni 3 ga yetkazish
+"x".padStart(3, "*")    // => "**x": chapdan yulduzchalar qo'shib, uzunlikni 3 ga yetkazish
+"x".padEnd(3, "-")      // => "x--": o'ngdan chiziqchalar qo'shib, uzunlikni 3 ga yetkazish
 
-// Bo‘shliqlarni olib tashlash (trimming) funksiyalari. trim() ES5; qolganlari ES2019
-" test ".trim()         // => "test": boshidagi va oxiridagi bo‘shliqlarni olib tashlash
-" test ".trimStart()    // => "test ": chapdagi bo‘shliqlarni olib tashlash. Shuningdek `trimLeft`
-" test ".trimEnd()      // => " test": o‘ngdagi bo‘shliqlarni olib tashlash. Shuningdek `trimRight`
+// Bo'shliqlarni olib tashlash (trimming) funksiyalari. trim() ES5; qolganlari ES2019
+" test ".trim()         // => "test": boshidagi va oxiridagi bo'shliqlarni olib tashlash
+" test ".trimStart()    // => "test ": chapdagi bo'shliqlarni olib tashlash. Shuningdek `trimLeft`
+" test ".trimEnd()      // => " test": o'ngdagi bo'shliqlarni olib tashlash. Shuningdek `trimRight`
 
 // Turli xil satr metodlari
-s.concat("!")           // => "Hello, world!": buning o‘rniga shunchaki `+` operatorini ishlating
+s.concat("!")           // => "Hello, world!": buning o'rniga shunchaki `+` operatorini ishlating
 "<>".repeat(5)          // => "<><><><><>": n marta nusxasini birlashtirish. ES6
 ```
 
-Yodda tuting, JavaScript'da satrlar o‘zgarmasdir (immutable). `replace()` va `toUpperCase()` kabi metodlar yangi satrlarni qaytaradi: ular o‘zlari chaqirilgan satrni o‘zgartirmaydi.
+Yodda tuting, JavaScript'da satrlar o'zgarmasdir (immutable). `replace()` va `toUpperCase()` kabi metodlar yangi satrlarni qaytaradi: ular o'zlari chaqirilgan satrni o'zgartirmaydi.
 
-Satrlarga, shuningdek, faqat o‘qish uchun mo‘ljallangan massivlar kabi munosabatda bo‘lish mumkin va siz satrdan alohida belgilarni (16 bitli qiymatlarni) `charAt()` metodi o‘rniga kvadrat qavslar yordamida ham olishingiz mumkin:
+Satrlarga, shuningdek, faqat o'qish uchun mo'ljallangan massivlar kabi munosabatda bo'lish mumkin va siz satrdan alohida belgilarni (16 bitli qiymatlarni) `charAt()` metodi o'rniga kvadrat qavslar yordamida ham olishingiz mumkin:
 
 ``` js
 let s = "hello, world";
@@ -183,16 +183,16 @@ ES6 va undan keyingi versiyalarda satr literallarini teskari tirnoqlar (backtick
 let s = `hello world`;
 ```
 
-Biroq bu shunchaki yana bir satr literali sintaksisi emas, chunki bu _shablon literallari (template literals)_ o‘z ichiga ixtiyoriy JavaScript ifodalarini ola oladi. Teskari tirnoqlar ichidagi satr literalining yakuniy qiymati uning ichidagi har qanday ifodani bajarish, bu ifodalarning qiymatlarini satrlarga o‘zgartirish va hosil bo‘lgan satrlarni teskari tirnoqlar ichidagi literal belgilar bilan birlashtirish orqali hisoblanadi:
+Biroq bu shunchaki yana bir satr literali sintaksisi emas, chunki bu _shablon literallari (template literals)_ o'z ichiga ixtiyoriy JavaScript ifodalarini ola oladi. Teskari tirnoqlar ichidagi satr literalining yakuniy qiymati uning ichidagi har qanday ifodani bajarish, bu ifodalarning qiymatlarini satrlarga o'zgartirish va hosil bo'lgan satrlarni teskari tirnoqlar ichidagi literal belgilar bilan birlashtirish orqali hisoblanadi:
 
 ``` js
 let name = "Bill";
 let greeting = `Hello ${ name }.`; // greeting == "Hello Bill."
 ```
 
-`${` va unga mos keluvchi `}` belgilari orasidagi har qanday narsa JavaScript ifodasi sifatida talqin qilinadi. Jingalak qavslardan tashqaridagi barcha narsa oddiy satr literali matnidir. Qavslar ichidagi ifoda bajariladi, so‘ng satrga o‘zgartiriladi va dollar belgisi, jingalak qavslar va ularning orasidagi hamma narsaning o‘rniga shablonga joylashtiriladi.
+`${` va unga mos keluvchi `}` belgilari orasidagi har qanday narsa JavaScript ifodasi sifatida talqin qilinadi. Jingalak qavslardan tashqaridagi barcha narsa oddiy satr literali matnidir. Qavslar ichidagi ifoda bajariladi, so'ng satrga o'zgartiriladi va dollar belgisi, jingalak qavslar va ularning orasidagi hamma narsaning o'rniga shablonga joylashtiriladi.
 
-Shablon literali istalgancha ifodalarni o‘z ichiga olishi mumkin. U oddiy satrlar ishlata oladigan har qanday qochish ketma-ketliklaridan foydalana oladi va hech qanday maxsus chetlab o'tishni talab qilmasdan istalgancha qatorlarga bo‘linishi mumkin. Quyidagi shablon literali to‘rtta JavaScript ifodasini, bitta Unicode qochish ketma-ketligini va kamida to‘rtta yangi qatorni o‘z ichiga oladi (ifoda qiymatlarining o‘zi ham yangi qatorlarni o‘z ichiga olishi mumkin):
+Shablon literali istalgancha ifodalarni o'z ichiga olishi mumkin. U oddiy satrlar ishlata oladigan har qanday qochish ketma-ketliklaridan foydalana oladi va hech qanday maxsus chetlab o'tishni talab qilmasdan istalgancha qatorlarga bo'linishi mumkin. Quyidagi shablon literali to'rtta JavaScript ifodasini, bitta Unicode qochish ketma-ketligini va kamida to'rtta yangi qatorni o'z ichiga oladi (ifoda qiymatlarining o'zi ham yangi qatorlarni o'z ichiga olishi mumkin):
 
 ``` js 
 let errorMessage = `\
@@ -203,43 +203,43 @@ ${exception.stack}
 `;
 ```
 
-Bu yerdagi birinchi qator oxiridagi teskari slesh boshlang‘ich yangi qatorni bekor qiladi, natijada hosil bo‘lgan satr yangi qatordan emas, balki Unicode `✘` belgisidan (`\u2718`) boshlanadi.
+Bu yerdagi birinchi qator oxiridagi teskari slesh boshlang'ich yangi qatorni bekor qiladi, natijada hosil bo'lgan satr yangi qatordan emas, balki Unicode `✘` belgisidan (`\u2718`) boshlanadi.
 
 ### Teglangan shablon literallari
 
-Shablon literallarining kuchli, ammo kamroq ishlatiladigan xususiyati shundaki, agar ochiluvchi teskari tirnoqdan (`` ` ``) oldin funksiya nomi ("teg") kelsa, u holda shablon literali ichidagi matn va ifodalarning qiymatlari o‘sha funksiyaga argument sifatida uzatiladi. Bunday _"teglangan shablon literalining" (tagged template literal)_ yakuniy qiymati o‘sha funksiyaning qaytargan qiymati bo‘ladi. Bu, masalan, qiymatlarni matnga qo‘shishdan oldin ularga HTML yoki SQL uchun maxsus ma’nolarni bekor qilishni (`escaping`) qo‘llash uchun ishlatilishi mumkin.
+Shablon literallarining kuchli, ammo kamroq ishlatiladigan xususiyati shundaki, agar ochiluvchi teskari tirnoqdan (`` ` ``) oldin funksiya nomi ("teg") kelsa, u holda shablon literali ichidagi matn va ifodalarning qiymatlari o'sha funksiyaga argument sifatida uzatiladi. Bunday _"teglangan shablon literalining" (tagged template literal)_ yakuniy qiymati o'sha funksiyaning qaytargan qiymati bo'ladi. Bu, masalan, qiymatlarni matnga qo'shishdan oldin ularga HTML yoki SQL uchun maxsus ma'nolarni bekor qilishni (`escaping`) qo'llash uchun ishlatilishi mumkin.
 
-ES6'da bitta ichki o‘rnatilgan teg funksiyasi mavjud: `String.raw()`. U teskari tirnoqlar ichidagi matnni teskari sleshli qochish ketma-ketliklarini hech qanday qayta ishlamasdan qaytaradi:
+ES6'da bitta ichki o'rnatilgan teg funksiyasi mavjud: `String.raw()`. U teskari tirnoqlar ichidagi matnni teskari sleshli qochish ketma-ketliklarini hech qanday qayta ishlamasdan qaytaradi:
 
 ```js
 `\n`.length             // => 1: satr bitta yangi qator belgisiga ega
 String.raw`\n`.length   // => 2: teskari slesh belgisi va "n" harfi
 ```
 
-E’tibor bering, teglangan shablon literalining teg qismi funksiya bo‘lsa-da, uni chaqirishda qavslar ishlatilmaydi. Aynan shu maxsus holatda, teskari tirnoq belgilari ochuvchi va yopuvchi qavslarning o‘rnini bosadi.
+E'tibor bering, teglangan shablon literalining teg qismi funksiya bo'lsa-da, uni chaqirishda qavslar ishlatilmaydi. Aynan shu maxsus holatda, teskari tirnoq belgilari ochuvchi va yopuvchi qavslarning o'rnini bosadi.
 
-O‘zingizning shablon teg funksiyalaringizni aniqlash qobiliyati JavaScript'ning kuchli xususiyatidir. Bu funksiyalar satr qaytarishi shart emas va ularni xuddi til uchun yangi literal sintaksisini aniqlayotgandek, konstruktorlar kabi ishlatish mumkin. Bunga §14.5-bo‘limda misol ko‘ramiz.
+O'zingizning shablon teg funksiyalaringizni aniqlash qobiliyati JavaScript'ning kuchli xususiyatidir. Bu funksiyalar satr qaytarishi shart emas va ularni xuddi til uchun yangi literal sintaksisini aniqlayotgandek, konstruktorlar kabi ishlatish mumkin. Bunga §14.5-bo'limda misol ko'ramiz.
 
 ## Andozalarni moslashtirish (Pattern matching)
 
-JavaScript matnli satrlar ichidagi _andozalarni (patterns)_ tasvirlash va moslashtirish uchun **regular ifoda (`regular expression` yoki `RegExp`)** deb nomlanuvchi ma’lumotlar tipini taqdim etadi. `RegExp`'lar JavaScript'dagi fundamental ma’lumotlar tiplaridan biri emas, lekin ular ham sonlar va satrlar kabi o‘zlarining literal sintaksisiga ega, shuning uchun ular ba’zan fundamental tipdek tuyulishi mumkin. Regular ifoda literallarining grammatikasi murakkab va ular taqdim etadigan API ham oddiy emas. Ular haqida §11.3-bo‘limda batafsil ma’lumot berilgan. Shunday bo‘lsa-da, `RegExp`'lar matnni qayta ishlashda juda kuchli va keng qo‘llaniladigan vosita bo‘lgani uchun, ushbu bo‘limda ular haqida qisqacha tanishuv taqdim etiladi.
+JavaScript matnli satrlar ichidagi _andozalarni (patterns)_ tasvirlash va moslashtirish uchun **regular ifoda (`regular expression` yoki `RegExp`)** deb nomlanuvchi ma'lumotlar tipini taqdim etadi. `RegExp`'lar JavaScript'dagi fundamental ma'lumotlar tiplaridan biri emas, lekin ular ham sonlar va satrlar kabi o'zlarining literal sintaksisiga ega, shuning uchun ular ba'zan fundamental tipdek tuyulishi mumkin. Regular ifoda literallarining grammatikasi murakkab va ular taqdim etadigan API ham oddiy emas. Ular haqida §11.3-bo'limda batafsil ma'lumot berilgan. Shunday bo'lsa-da, `RegExp`'lar matnni qayta ishlashda juda kuchli va keng qo'llaniladigan vosita bo'lgani uchun, ushbu bo'limda ular haqida qisqacha tanishuv taqdim etiladi.
 
-Ikki slesh (`/`) belgisi orasidagi matn regular ifoda literalini tashkil etadi. Ikkinchi sleshdan keyin bir yoki bir nechta harf kelishi mumkin, bu harflar andozaning ma’nosini o‘zgartiradi (modifikatsiya qiladi). Masalan:
+Ikki slesh (`/`) belgisi orasidagi matn regular ifoda literalini tashkil etadi. Ikkinchi sleshdan keyin bir yoki bir nechta harf kelishi mumkin, bu harflar andozaning ma'nosini o'zgartiradi (modifikatsiya qiladi). Masalan:
 
 ```js
 /^HTML/;            // Satr boshidagi H T M L harflariga mos keladi
 /[1-9][0-9]*/;      // Noldan farqli raqam va undan keyingi ixtiyoriy sondagi raqamlarga mos keladi
-/\bjavascript\b/i;  // "javascript" so‘ziga, katta-kichik harflarni farqlamagan holda mos keladi
+/\bjavascript\b/i;  // "javascript" so'ziga, katta-kichik harflarni farqlamagan holda mos keladi
 ```
 
-`RegExp` obyektlari bir nechta foydali metodlarni taqdim etadi, shuningdek, satrlarning o‘zida ham `RegExp` argumentlarini qabul qiladigan metodlar mavjud. Masalan:
+`RegExp` obyektlari bir nechta foydali metodlarni taqdim etadi, shuningdek, satrlarning o'zida ham `RegExp` argumentlarini qabul qiladigan metodlar mavjud. Masalan:
 
 ``` js
 let text = "testing: 1, 2, 3";  // Namuna matni
 let pattern = /\d+/g;           // Bir yoki undan ortiq raqamlarning barcha uchragan holatlariga mos keladi
 pattern.test(text)              // => true: moslik mavjud
-text.search(pattern)            // => 9: birinchi moslikning o‘rni (indeksi)
+text.search(pattern)            // => 9: birinchi moslikning o'rni (indeksi)
 text.match(pattern)             // => ["1", "2", "3"]: barcha mosliklar massivi
 text.replace(pattern, "#")      // => "testing: #, #, #"
-text.split(/\D+/)               // => ["","1","2","3"]: raqam bo‘lmagan belgilar bo‘yicha bo‘lish
+text.split(/\D+/)               // => ["","1","2","3"]: raqam bo'lmagan belgilar bo'yicha bo'lish
 ```

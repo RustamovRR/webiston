@@ -1,30 +1,30 @@
 ---
 title: Obyekt va massiv initsializatorlari
-description: "Obyekt/massiv initsializatorlari: literal sintaksis, ichma‑ich tuzilmalar, siyrak massivlar, trailing comma va ES6 obyekt literal xususiyatlari."
+description: "Obyekt/massiv initsializatorlari: literal sintaksis, ichma-ich tuzilmalar, siyrak massivlar, trailing comma va ES6 obyekt literal xususiyatlari."
 keywords: JavaScript, object literal, array literal, initializer, nested, sparse array, trailing comma, ES6 features
 author: Webiston.uz
 ---
 
 # Obyekt va massiv initsializatorlari
 
-Obyekt va massiv **initsializatorlari (`initializers`)** — bu qiymati yangi yaratilgan obyekt yoki massiv bo‘lgan ifodalardir. Bu initsializator ifodalari ba’zan **obyekt literallari** va **massiv literallari** deb ham ataladi. Biroq haqiqiy literallardan farqli o‘laroq, ular birlamchi ifodalar emas, chunki ular o‘z tarkibiga xossa va element qiymatlarini belgilovchi bir nechta quyi ifodalarni oladi. Massiv initsializatorlari biroz soddaroq sintaksisga ega, shuning uchun avval ulardan boshlaymiz.
+Obyekt va massiv **initsializatorlari (`initializers`)** — bu qiymati yangi yaratilgan obyekt yoki massiv bo'lgan ifodalardir. Bu initsializator ifodalari ba'zan **obyekt literallari** va **massiv literallari** deb ham ataladi. Biroq haqiqiy literallardan farqli o'laroq, ular birlamchi ifodalar emas, chunki ular o'z tarkibiga xossa va element qiymatlarini belgilovchi bir nechta quyi ifodalarni oladi. Massiv initsializatorlari biroz soddaroq sintaksisga ega, shuning uchun avval ulardan boshlaymiz.
 
-Massiv initsializatori — bu kvadrat qavslar ichiga olingan, vergul bilan ajratilgan ifodalar ro‘yxatidir. Massiv initsializatorining qiymati yangi yaratilgan massivdir. Bu yangi massivning elementlari vergul bilan ajratilgan ifodalarning qiymatlariga initsializatsiya qilinadi:
+Massiv initsializatori — bu kvadrat qavslar ichiga olingan, vergul bilan ajratilgan ifodalar ro'yxatidir. Massiv initsializatorining qiymati yangi yaratilgan massivdir. Bu yangi massivning elementlari vergul bilan ajratilgan ifodalarning qiymatlariga initsializatsiya qilinadi:
 
 ``` js
-[]        // Bo‘sh massiv: qavslar ichida ifoda yo‘qligi element yo‘qligini bildiradi
+[]        // Bo'sh massiv: qavslar ichida ifoda yo'qligi element yo'qligini bildiradi
 [1+2,3+4] // 2 elementli massiv. Birinchi element 3, ikkinchisi 7
 ```
 
-Massiv initsializatoridagi element ifodalari o‘zlari ham massiv initsializatorlari bo‘lishi mumkin, bu esa bu ifodalar yordamida ichma-ich joylashgan massivlar yaratish mumkinligini anglatadi:
+Massiv initsializatoridagi element ifodalari o'zlari ham massiv initsializatorlari bo'lishi mumkin, bu esa bu ifodalar yordamida ichma-ich joylashgan massivlar yaratish mumkinligini anglatadi:
 
 ``` js
 let matrix = [[1,2,3], [4,5,6], [7,8,9]];
 ```
 
-Massiv initsializatoridagi element ifodalari har safar massiv initsializatori bajarilganda qayta bajariladi. Bu shuni anglatadiki, massiv initsializatori ifodasining qiymati har safar bajarilganda farqli bo‘lishi mumkin.
+Massiv initsializatoridagi element ifodalari har safar massiv initsializatori bajarilganda qayta bajariladi. Bu shuni anglatadiki, massiv initsializatori ifodasining qiymati har safar bajarilganda farqli bo'lishi mumkin.
 
-Massiv literaliga `undefined` elementlarni shunchaki vergullar orasida qiymat qoldirmaslik orqali kiritish mumkin. Masalan, quyidagi massiv beshta elementni, jumladan, uchta `undefined` elementni o‘z ichiga oladi:
+Massiv literaliga `undefined` elementlarni shunchaki vergullar orasida qiymat qoldirmaslik orqali kiritish mumkin. Masalan, quyidagi massiv beshta elementni, jumladan, uchta `undefined` elementni o'z ichiga oladi:
 
 ``` js
 let sparseArray = [1,,,,5];
@@ -32,15 +32,15 @@ let sparseArray = [1,,,,5];
 
 Massiv initsializatoridagi oxirgi ifodadan keyin bitta ortiqcha vergul qoldirishga ruxsat etiladi va bu `undefined` element yaratmaydi. Biroq oxirgi ifoda indeksidan keyingi har qanday indeks uchun massivga murojaat qilish ifodasi muqarrar ravishda `undefined` qiymatini beradi.
 
-Obyekt initsializatori ifodalari massiv initsializatori ifodalariga o‘xshaydi, lekin kvadrat qavslar jingalak qavslar bilan almashtiriladi va har bir quyi ifodadan oldin xossa nomi va ikki nuqta keladi:
+Obyekt initsializatori ifodalari massiv initsializatori ifodalariga o'xshaydi, lekin kvadrat qavslar jingalak qavslar bilan almashtiriladi va har bir quyi ifodadan oldin xossa nomi va ikki nuqta keladi:
 
 ``` js
 let p = { x: 2.3, y: -1.2 };    // 2 ta xossaga ega obyekt
-let q = {};                     // Xossalari yo‘q bo‘sh obyekt
+let q = {};                     // Xossalari yo'q bo'sh obyekt
 q.x = 2.3; q.y = -1.2;          // Endi q'da ham p'dagi kabi xossalar mavjud
 ```
 
-ES6'da obyekt literallari ancha ko‘p xususiyatlarga boy sintaksisga ega (tafsilotlarni §6.10-bo‘limdan topishingiz mumkin). Obyekt literallari ichma-ich joylashishi mumkin. Masalan:
+ES6'da obyekt literallari ancha ko'p xususiyatlarga boy sintaksisga ega (tafsilotlarni §6.10-bo'limdan topishingiz mumkin). Obyekt literallari ichma-ich joylashishi mumkin. Masalan:
 
 ``` js
 let rectangle = {
@@ -49,4 +49,4 @@ let rectangle = {
 };
 ```
 
-Biz obyekt va massiv initsializatorlarini 6 va 7-boblarda yana ko‘rib chiqamiz.
+Biz obyekt va massiv initsializatorlarini 6 va 7-boblarda yana ko'rib chiqamiz.
