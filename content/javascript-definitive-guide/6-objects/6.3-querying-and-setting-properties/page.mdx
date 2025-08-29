@@ -1,0 +1,159 @@
+---
+title: Xossalarni so'rash va o'rnatish
+description: "JavaScript obyektlarida xossalarni so'rash va o'rnatish: nuqta va kvadrat qavslar operatorlari, assotsiativ massivlar, merosxo'rlik va xatoliklar."
+keywords: JavaScript, obyekt xossalari, object properties, xossalarni so'rash, querying properties, xossalarni o'rnatish, setting properties, nuqta operatori, dot notation, kvadrat qavslar, bracket notation, assotsiativ massivlar, associative arrays, merosxo'rlik, inheritance, xossalarga murojaat, property access
+author: Webiston.uz
+---
+
+# Xossalarni so'rash va o'rnatish
+
+Biror xossaning qiymatini olish uchun §4.4-bo'limda tasvirlangan nuqta (`.`) yoki kvadrat qavslar (`[]`) operatorlaridan foydalaning. Chap tomonda qiymati obyekt bo'lgan ifoda bo'lishi kerak. Agar nuqta operatoridan foydalanilsa, o'ng tomon xossani nomlaydigan oddiy identifikator bo'lishi shart. Agar kvadrat qavslardan foydalanilsa, qavslar ichidagi qiymat kerakli xossa nomini o'z ichiga olgan satrga baholanadigan ifoda bo'lishi kerak:
+
+``` js
+let author = book.author;         // `book`ning "author" xossasini olish.
+let name = author.surname;        // `author`ning "surname" xossasini olish.
+let title = book["main title"];   // `book`ning "main title" xossasini olish.
+```
+
+Xossani yaratish yoki o'rnatish uchun, xuddi xossani so'ragandek nuqta yoki kvadrat qavslardan foydalaning, lekin ularni tayinlash ifodasining chap tomoniga qo'ying:
+
+``` js
+book.edition = 7;                 // `book`ning "edition" xossasini yaratish.
+book["main title"] = "ECMAScript"; // "main title" xossasini o'zgartirish.
+```
+
+Kvadrat qavslar yozuvidan foydalanganda, biz kvadrat qavslar ichidagi ifoda satrga baholanishi kerak dedik. Aniqroq aytganda, bu ifoda satrga yoki satrga o'girilishi mumkin bo'lgan qiymatga yoxud `Symbol`'ga (§6.10.3) baholanishi kerak. Masalan, 7-bobda biz kvadrat qavslar ichida sonlarni ishlatish keng tarqalgan holat ekanligini ko'rishimiz mumkin.
+
+## Obyektlar assotsiativ massivlar sifatida
+
+Oldingi bo'limda tushuntirilganidek, quyidagi ikki JavaScript ifodasi bir xil qiymatga ega:
+
+``` js
+object.property
+object["property"]
+```
+
+Nuqta va identifikatordan foydalanadigan birinchi sintaksis C yoki Java'dagi `struct` yoki obyektning statik maydoniga murojaat qilish uchun ishlatiladigan sintaksisga o'xshaydi. Kvadrat qavslar va satrdan foydalanadigan ikkinchi sintaksis esa massivga murojaat qilishga o'xshaydi, lekin bu sonlar bilan emas, balki satrlar bilan indekslanadigan massivdir. Bu turdagi massiv **assotsiativ massiv** (yoki hesh, map yoxud lug'at) deb nomlanadi. JavaScript obyektlari assotsiativ massivlardir va ushbu bo'lim buning nima uchun muhim ekanligini tushuntiradi.
+
+C, C++, Java va shunga o'xshash qat'iy tipli tillarda obyekt faqat belgilangan miqdordagi xossalarga ega bo'lishi mumkin va bu xossalarning nomlari oldindan aniqlangan bo'lishi shart. JavaScript erkin tipli til bo'lgani uchun bu qoida qo'llanilmaydi: dastur har qanday obyektda istalgancha xossa yaratishi mumkin. Biroq siz obyektning xossasiga `.` operatori yordamida murojaat qilganingizda, xossaning nomi identifikator sifatida ifodalanadi. Identifikatorlar esa JavaScript dasturingizga literal tarzda yozilishi kerak; ular ma'lumotlar tipi emas, shuning uchun ularni dastur tomonidan boshqarib bo'lmaydi.
+
+Boshqa tomondan, obyektning xossasiga `[]` massiv yozuvi yordamida murojaat qilganingizda, xossaning nomi satr sifatida ifodalanadi. Satrlar JavaScript ma'lumotlar tiplaridir, shuning uchun ularni dastur ishlayotgan vaqtda boshqarish va yaratish mumkin. Shunday qilib, masalan, JavaScript'da quyidagi kodni yozishingiz mumkin:
+
+``` js
+let addr = "";
+for(let i = 0; i < 4; i++) {
+    addr += customer[`address${i}`] + "\n";
+}
+```
+
+Bu kod `customer` obyektining `address0`, `address1`, `address2` va `address3` xossalarini o'qiydi va birlashtiradi.
+
+Bu qisqa misol satrli ifodalar yordamida obyekt xossalariga murojaat qilishda massiv yozuvining moslashuvchanligini namoyish etadi. Bu kodni nuqta yozuvi yordamida qayta yozish mumkin edi, lekin faqat massiv yozuvi ishlaydigan holatlar ham mavjud.
+
+Tasavvur qiling, masalan, siz foydalanuvchining fond bozoridagi sarmoyalarining joriy qiymatini hisoblash uchun tarmoq resurslaridan foydalanadigan dastur yozyapsiz. Dastur foydalanuvchiga o'zi egalik qiladigan har bir aksiyaning nomini hamda har bir aksiyaning sonini kiritishga imkon beradi. Siz bu ma'lumotni saqlash uchun `portfolio` nomli obyektdan foydalanishingiz mumkin. Obyekt har bir aksiya uchun bitta xossaga ega. Xossaning nomi aksiyaning nomi, xossa qiymati esa o'sha aksiyaning sonidir. Shunday qilib, masalan, agar foydalanuvchi IBM'da 50 ta aksiyaga ega bo'lsa, `portfolio.ibm` xossasining qiymati `50` bo'ladi.
+
+Bu dasturning bir qismi portfelga yangi aksiya qo'shadigan funksiya bo'lishi mumkin:
+
+``` js
+function addstock(portfolio, stockname, shares) {
+    portfolio[stockname] = shares;
+}
+```
+
+Foydalanuvchi aksiya nomlarini dastur ishlayotgan vaqtda (`runtime`) kiritgani uchun, xossa nomlarini oldindan bila olmaysiz. Dasturni yozayotganda xossa nomlarini bila olmas ekansiz, `portfolio` obyektining xossalariga murojaat qilish uchun `.` operatoridan foydalana olmaysiz. Biroq siz `[]` operatoridan foydalanishingiz mumkin, chunki u xossani nomlash uchun identifikatordan (statik va dasturda qat'iy yozilishi kerak bo'lgan) emas, balki satr qiymatidan (dinamik va `runtime`'da o'zgarishi mumkin) foydalanadi.
+
+5-bobda biz `for/in` siklini tanishtirgan edik (va uni tez orada, §6.6-bo'limda yana ko'ramiz). Bu JavaScript ko'rsatmasining kuchi uni assotsiativ massivlar bilan ishlatilishini ko'rib chiqqaningizda yaqqol namoyon bo'ladi. Quyida portfelning umumiy qiymatini hisoblashda undan qanday foydalanish ko'rsatilgan:
+
+``` js
+function computeValue(portfolio) {
+    let total = 0.0;
+    for(let stock in portfolio) {       // Portfeldagi har bir aksiya uchun:
+        let shares = portfolio[stock];  // aksiya sonini olamiz
+        let price = getQuote(stock);    // aksiya narxini qidiramiz
+        total += shares * price;        // aksiya qiymatini umumiy qiymatga qo'shamiz
+    }
+    return total;                       // Umumiy qiymatni qaytaramiz.
+}
+```
+
+JavaScript obyektlari bu yerda ko'rsatilganidek, assotsiativ massivlar sifatida keng qo'llaniladi va buning qanday ishlashini tushunish muhimdir. Biroq ES6 va undan keyingi versiyalarda, §11.1.2-bo'limda tasvirlangan `Map` klassi ko'pincha oddiy obyektdan foydalanishdan ko'ra yaxshiroq tanlovdir.
+
+## Merosxo'rlik (Inheritance)
+
+JavaScript obyektlari o'zlarining **"shaxsiy xossalari" (`own properties`)** to'plamiga ega va ular, shuningdek, o'zlarining prototip obyektidan xossalar to'plamini **meros qilib oladilar**. Buni tushunish uchun xossaga murojaat qilishni batafsilroq ko'rib chiqishimiz kerak. Ushbu bo'limdagi misollar belgilangan prototiplarga ega obyektlarni yaratish uchun `Object.create()` funksiyasidan foydalanadi. Biroq 9-bobda ko'rib chiqadiganimizdek, har safar `new` yordamida biror klassning nusxasini yaratganingizda, prototip obyektidan xossalarni meros qilib oladigan obyekt yaratgan bo'lasiz.
+
+Tasavvur qiling, siz `o` obyektidagi `x` xossasini so'rayapsiz. Agar `o`'da bu nomdagi shaxsiy xossa bo'lmasa, `o`'ning prototip obyekti[^1] `x` xossasi uchun so'raladi. Agar prototip obyektida bu nomdagi shaxsiy xossa bo'lmasa, lekin uning o'zining prototipi bo'lsa, so'rov prototipning prototipida bajariladi. Bu jarayon `x` xossasi topilguncha yoki `null` prototipga ega bo'lgan obyekt qidirilguncha davom etadi. Ko'rib turganingizdek, obyektning prototip atributi xossalar meros qilib olinadigan bir **zanjir** yoki bog'langan ro'yxatni yaratadi:
+
+``` js
+let o = {};               // `o` obyekt metodlarini `Object.prototype`dan meros oladi
+o.x = 1;                  // va endi uning shaxsiy `x` xossasi bor.
+let p = Object.create(o); // `p` xossalarni `o` va `Object.prototype`dan meros oladi
+p.y = 2;                  // va uning shaxsiy `y` xossasi bor.
+let q = Object.create(p); // `q` xossalarni `p`, `o`, va...
+q.z = 3;                  // ...`Object.prototype`dan meros qilib oladi va shaxsiy `z` xossasiga ega.
+let f = q.toString();     // `toString` `Object.prototype`dan meros olingan
+q.x + q.y                 // => 3; `x` va `y` `o` va `p`dan meros olingan
+```
+
+Endi tasavvur qiling, siz `o` obyektining `x` xossasiga qiymat tayinlayapsiz. Agar `o`'da allaqachon `x` nomli shaxsiy (meros olinmagan) xossa mavjud bo'lsa, tayinlash shunchaki bu mavjud xossaning qiymatini o'zgartiradi. Aks holda, tayinlash `o` obyektida `x` nomli yangi xossa yaratadi. Agar `o` avval `x` xossasini meros qilib olayotgan bo'lsa, o'sha meros olingan xossa endi bir xil nomdagi yangi yaratilgan shaxsiy xossa tomonidan **yashiriladi**.
+
+Xossaga qiymat tayinlash prototiplar zanjirini faqat tayinlashga ruxsat etilganmi yoki yo'qligini aniqlash uchungina tekshiradi. Masalan, agar `o` obyekti `x` nomli faqat o'qish uchun mo'ljallangan xossani meros qilib olsa, u holda tayinlashga ruxsat etilmaydi. (Xossani qachon o'rnatish mumkinligi haqidagi tafsilotlar §6.3.3-bo'limda.) Biroq agar tayinlashga ruxsat etilgan bo'lsa, u har doim asl obyektda xossa yaratadi yoki o'rnatadi va hech qachon prototiplar zanjiridagi obyektlarni o'zgartirmaydi. Merosxo'rlik xossalarni so'rashda sodir bo'lib, ularni o'rnatishda sodir bo'lmasligi JavaScript'ning asosiy xususiyatidir, chunki bu bizga meros olingan xossalarni tanlab **qayta yozish (`override`)** imkonini beradi:
+
+``` js
+let unitcircle = { r: 1 };         // Meros olinadigan obyekt
+let c = Object.create(unitcircle); // `c` obyekti `r` xossasini meros oladi
+c.x = 1; c.y = 1;                  // `c` o'zining ikkita shaxsiy xossasini tayinlaydi
+c.r = 2;                           // `c` o'zining meros olingan xossasini qayta yozadi
+unitcircle.r                       // => 1: prototipga ta'sir qilinmadi
+```
+
+Xossaga qiymat tayinlash yo muvaffaqiyatsiz bo'ladi, yo asl obyektda xossa yaratadi yoki o'rnatadi, degan qoidaning bitta istisnosi bor. Agar `o` obyekti `x` xossasini meros qilib olsa va bu xossa **setter metodiga (`setter method`)** ega bo'lgan **aksessor xossa (`accessor property`)** bo'lsa (§6.10.6-bo'limga qarang), u holda `o`'da yangi `x` xossasini yaratish o'rniga, o'sha setter metodi chaqiriladi. Biroq shuni ham unutmangki, _setter_ metodi xossani aniqlagan prototip obyektida emas, balki `o` obyektida chaqiriladi. Shuning uchun, agar _setter_ metodi biror xossani aniqlasa, u buni `o` obyektida qiladi va yana prototiplar zanjirini o'zgarishsiz qoldiradi.
+
+[^1]: Eslatma: deyarli barcha obyektlar prototipga ega, lekin ko'pchiligi `prototype` nomli xossaga ega emas. JavaScript merosxo'rligi siz prototip obyektiga to'g'ridan-to'g'ri murojaat qila olmasangiz ham ishlaydi. Lekin buni qanday qilishni o'rganmoqchi bo'lsangiz, §14.3-bo'limga qarang.
+
+## Xossalarga murojaat qilishdagi xatoliklar
+
+Xossaga murojaat qilish ifodalari har doim ham qiymat qaytaravermaydi yoki o'rnatmaydi. Ushbu bo'lim xossani so'rash yoki o'rnatishda nimalar noto'g'ri ketishi mumkinligini tushuntiradi.
+
+Mavjud bo'lmagan xossani so'rash xato emas. Agar `x` xossasi `o`'ning shaxsiy xossasi yoki meros olingan xossasi sifatida topilmasa, `o.x` xossaga murojaat qilish ifodasi `undefined`'ga baholanadi. Esingizda bo'lsa, `book` obyektimizda "sub-title" xossasi bor, lekin "subtitle" xossasi yo'q:
+
+``` js
+book.subtitle // => undefined: xossa mavjud emas
+```
+
+Biroq mavjud bo'lmagan obyektning xossasini so'rashga urinish xatodir. `null` va `undefined` qiymatlarining xossalari yo'q va bu qiymatlarning xossalarini so'rash xatolikka olib keladi. Oldingi misolni davom ettiramiz:
+
+``` js
+let len = book.subtitle.length; // !TypeError: `undefined`da `length` yo'q
+```
+
+Agar `.`'ning chap tomoni `null` yoki `undefined` bo'lsa, xossaga murojaat qilish ifodalari muvaffaqiyatsiz bo'ladi. Shuning uchun `book.author.surname` kabi ifoda yozayotganda, agar `book` va `book.author` haqiqatan ham aniqlanganligiga ishonchingiz komil bo'lmasa, ehtiyot bo'lishingiz kerak. Bu turdagi muammodan himoyalanishning ikki yo'li mavjud:
+
+``` js
+// So'zma-so'z va aniq usul
+let surname = undefined;
+if (book) {
+    if (book.author) {
+        surname = book.author.surname;
+    }
+}
+
+// `surname`ni yoki `null` yoxud `undefined`ni olish uchun ixcham va idiomatik alternativ
+surname = book && book.author && book.author.surname;
+```
+
+Bu idiomatik ifoda nima uchun `TypeError` istisnolarining oldini olishini tushunish uchun, §4.10.1-bo'limdagi `&&` operatorining qisqa tutashuv xususiyatini qayta ko'rib chiqishingiz foydali bo'lishi mumkin. 
+
+§4.4.1-bo'limda tasvirlanganidek, ES2020 `?.` bilan shartli xossa murojaatini qo'llab-quvvatlaydi, bu esa bizga oldingi tayinlash ifodasini quyidagicha qayta yozish imkonini beradi:
+
+``` js
+let surname = book?.author?.surname;
+```
+
+`null` yoki `undefined`'da xossa o'rnatishga urinish ham `TypeError`'ga sabab bo'ladi. Boshqa qiymatlarda xossalarni o'rnatishga urinishlar ham har doim ham muvaffaqiyatli bo'lavermaydi: ba'zi xossalar faqat o'qish uchun mo'ljallangan va ularni o'rnatib bo'lmaydi, ba'zi obyektlar esa yangi xossalar qo'shishga ruxsat bermaydi. Qat'iy rejimda (§5.6.3), xossani o'rnatishga urinish muvaffaqiyatsiz bo'lganda har doim `TypeError` xatoligi yuzaga keladi. Qat'iy rejimsiz, bu muvaffaqiyatsizliklar odatda "jim" o'tib ketadi.
+
+Xossaga qiymat tayinlash qachon muvaffaqiyatli bo'lishi va qachon muvaffaqiyatsiz bo'lishini belgilaydigan qoidalar intuitiv tushunarli, lekin qisqacha ifodalash qiyin. `o` obyektining `p` xossasini o'rnatishga urinish quyidagi hollarda muvaffaqiyatsiz bo'ladi:
+
+- `o`'da faqat o'qish uchun mo'ljallangan shaxsiy `p` xossasi mavjud: faqat o'qish uchun mo'ljallangan xossalarni o'rnatib bo'lmaydi.
+- `o` faqat o'qish uchun mo'ljallangan meros olingan `p` xossasiga ega: meros olingan, faqat o'qish uchun mo'ljallangan xossani bir xil nomdagi shaxsiy xossa bilan yashirib bo'lmaydi.
+- `o`'da shaxsiy `p` xossasi yo'q; `o` _setter_ metodiga ega bo'lgan `p` xossasini meros qilib olmaydi va `o`'ning **kengaytiriladigan (`extensible`)** atributi (§14.2) `false`'dir. `p` `o`'da allaqachon mavjud bo'lmagani uchun va agar chaqirish uchun _setter_ metodi bo'lmasa, `p` xossasi `o` obyetiga qo'shilishi kerak. Lekin agar `o` obyekti kengaytiriladigan bo'lmasa, unga yangi xossalarni tayinlab bo'lmaydi.

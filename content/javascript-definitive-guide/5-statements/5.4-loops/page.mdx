@@ -1,0 +1,287 @@
+---
+title: Sikllar
+description: "JavaScript'dagi sikl ko'rsatmalari: while, do/while, for, for/of, for/in sikllari va iteratsiya mexanizmlari. Massivlar va obyektlar bilan ishlash."
+keywords: JavaScript, sikllar, loops, while sikli, while loop, do/while sikli, do while loop, for sikli, for loop, for/of sikli, for of loop, for/in sikli, for in loop, iteratsiya, iteration, massivlar, arrays, obyektlar, objects, takrorlash, repetition, sikl ko'rsatmalari, loop statements
+author: Webiston.uz
+---
+
+# Sikllar
+
+Shartli ko'rsatmalarni tushunish uchun biz JavaScript interpretatorini manba kodingiz bo'ylab tarmoqlanuvchi yo'ldan bormoqda deb tasavvur qilgan edik. **Sikl ko'rsatmalari** esa, kodingizning ma'lum qismlarini takrorlash uchun o'sha yo'lni o'z-o'ziga qaytarib bog'laydigan ko'rsatmalardir. JavaScript'da beshta sikl ko'rsatmasi mavjud: `while`, `do/while`, `for`, `for/of` (va uning `for/await` varianti) hamda `for/in`. Keyingi quyi bo'limlar har birini navbatma-navbat tushuntiradi. Sikllarning keng tarqalgan qo'llanilishidan biri — bu massiv elementlari bo'ylab iteratsiya qilishdir. §7.6-bo'limda bu turdagi sikllar batafsil muhokama qilinadi va `Array` klassi tomonidan ta'riflangan maxsus sikl metodlari yoritiladi.
+
+## `while`
+
+Xuddi `if` ko'rsatmasi JavaScript'ning asosiy shartli ko'rsatmasi bo'lgani kabi, `while` ko'rsatmasi ham JavaScript'ning asosiy siklidir. U quyidagi sintaksisga ega:
+
+``` js
+while (expression)
+    statement
+```
+
+`while` ko'rsatmasini bajarish uchun interpretator avval `expression`'ni baholaydi. Agar ifodaning qiymati _falsy_ bo'lsa, interpretator sikl tanasi vazifasini bajaruvchi `statement`'ni o'tkazib yuboradi va dasturdagi keyingi ko'rsatmaga o'tadi. Boshqa tomondan, agar ifoda _truthy_ bo'lsa, interpretator `statement`'ni bajaradi va takrorlaydi, ya'ni siklning boshiga qaytib, `expression`'ni qaytadan baholaydi. Buni boshqacha aytganda, interpretator `expression` _truthy_ bo'lib turar ekan, `statement`'ni takroran bajaradi. E'tibor bering, `while(true)` sintaksisi yordamida cheksiz sikl yaratish mumkin.
+
+Odatda, JavaScript'ning bir xil amalni qayta-qayta bajarishini hech kim xohlamaydi. Deyarli har bir siklda, siklning har bir iteratsiyasida bir yoki bir nechta o'zgaruvchi o'zgaradi. O'zgaruvchilar o'zgargani sababli, `statement`'ni bajarish orqali amalga oshiriladigan harakatlar siklning har bir aylanishida farq qilishi mumkin. Bundan tashqari, agar o'zgaruvchan o'zgaruvchi yoki o'zgaruvchilar `expression`'da ishtirok etsa, ifodaning qiymati ham siklning har bir aylanishida farqli bo'lishi mumkin. Bu muhim; aks holda, _truthy_ bo'lib boshlangan ifoda hech qachon o'zgarmas edi va sikl hech qachon tugamas edi!
+
+Quyida 0 dan 9 gacha bo'lgan sonlarni chiqaradigan `while` sikliga misol keltirilgan:
+
+``` js
+let count = 0;
+while(count < 10) {
+    console.log(count);
+    count++;
+}
+```
+
+Ko'rib turganingizdek, `count` o'zgaruvchisi 0 dan boshlanadi va sikl tanasi har safar ishlaganda inkrement qilinadi. Sikl 10 marta bajarilgandan so'ng, ifoda `false` bo'ladi (ya'ni, `count` o'zgaruvchisi endi 10 dan kichik bo'lmaydi), `while` ko'rsatmasi yakunlanadi va interpretator dasturdagi keyingi ko'rsatmaga o'tishi mumkin. Ko'pgina sikllar `count` kabi hisoblagich o'zgaruvchisiga ega. `i`, `j` va `k` o'zgaruvchi nomlari odatda sikl hisoblagichlari sifatida ishlatiladi, garchi kodni tushunishni osonlashtirsa, yanada tavsiflovchi nomlardan foydalanish kerak.
+
+## `do/while`
+
+`do/while` sikli `while` sikliga juda o'xshaydi, faqat unda sikl ifodasi siklning boshida emas, balki oxirida tekshiriladi. Bu shuni anglatadiki, sikl tanasi **har doim kamida bir marta** bajariladi. Uning sintaksisi quyidagicha:
+
+``` js
+do
+    statement
+while (expression);
+```
+
+`do/while` sikli o'zining "qarindoshi" `while`'ga qaraganda kamroq qo'llaniladi — amalda, biror siklning kamida bir marta bajarilishini aniq xohlash holati unchalik ko'p uchramaydi.
+
+Quyida `do/while` sikliga misol keltirilgan:
+
+``` js
+function printArray(a) {
+    let len = a.length, i = 0;
+    if (len === 0) {
+        console.log("Empty Array");
+    } else {
+        do {
+            console.log(a[i]);
+        } while(++i < len);
+    }
+}
+```
+
+`do/while` sikli va oddiy `while` sikli o'rtasida bir nechta sintaktik farqlar mavjud. Birinchidan, `do` sikli ham `do` kalit so'zini (sikl boshlanishini belgilash uchun), ham `while` kalit so'zini (sikl oxirini belgilash va sikl shartini kiritish uchun) talab qiladi. Shuningdek, `do` sikli har doim nuqtali vergul bilan yakunlanishi shart. `while` siklida esa, agar sikl tanasi jingalak qavslar ichiga olingan bo'lsa, nuqtali vergul kerak bo'lmaydi.
+
+## `for`
+
+`for` ko'rsatmasi `while` ko'rsatmasidan ko'ra ko'pincha qulayroq bo'lgan sikl tuzilmasini taqdim etadi. `for` ko'rsatmasi keng tarqalgan biror andozaga (`pattern`) mos keladigan sikllarni soddalashtiradi. Ko'pchilik sikllar qandaydir hisoblagich o'zgaruvchisiga ega bo'ladi. Bu o'zgaruvchi sikl boshlanishidan oldin initsializatsiya qilinadi va siklning har bir iteratsiyasidan oldin tekshiriladi. Nihoyat, hisoblagich o'zgaruvchisi sikl tanasining oxirida, o'zgaruvchi qayta tekshirilishidan sal oldin, inkrement qilinadi yoki boshqacha tarzda yangilanadi. Bu turdagi siklda initsializatsiya, tekshiruv va yangilash sikl o'zgaruvchisining uchta hal qiluvchi amali hisoblanadi. `for` ko'rsatmasi bu uch amalning har birini ifoda sifatida kodlaydi va bu ifodalarni sikl sintaksisining aniq bir qismiga aylantiradi:
+
+``` js
+for(initialize ; test ; increment)
+    statement
+```
+
+`initialize`, `test` va `increment` — bu sikl o'zgaruvchisini initsializatsiya qilish, tekshirish va inkrement qilish uchun mas'ul bo'lgan uchta ifodadir (nuqtali vergullar bilan ajratilgan). Ularning barchasini siklning birinchi qatoriga joylashtirish `for` sikli nima qilayotganini tushunishni osonlashtiradi va sikl o'zgaruvchisini initsializatsiya qilish yoki inkrement qilishni unutish kabi xatolarning oldini oladi.
+
+`for` sikli qanday ishlashini tushuntirishning eng oddiy yo'li — uning ekvivalent `while` siklini ko'rsatishdir:[^2]
+
+``` js
+initialize;
+while(test) {
+    statement
+    increment;
+}
+```
+
+Boshqacha aytganda, `initialize` ifodasi sikl boshlanishidan oldin bir marta baholanadi. Foydali bo'lishi uchun bu ifoda qo'shimcha ta'sirga ega bo'lishi kerak (odatda tayinlash). JavaScript, shuningdek, `initialize`'ning o'zgaruvchi e'lon qilish ko'rsatmasi bo'lishiga ham ruxsat beradi, shunda sikl hisoblagichini bir vaqtning o'zida ham e'lon, ham initsializatsiya qilish mumkin. `test` ifodasi har bir iteratsiyadan oldin baholanadi va sikl tanasining bajarilishi yoki bajarilmasligini nazorat qiladi. Agar `test` _truthy_ qiymatga baholansa, sikl tanasi bo'lgan `statement` bajariladi. Nihoyat, `increment` ifodasi baholanadi. Yana, foydali bo'lishi uchun bu ham qo'shimcha ta'sirga ega ifoda bo'lishi kerak. Odatda, u yo tayinlash ifodasi bo'ladi, yo `++` yoki `--` operatorlaridan foydalanadi.
+
+Biz 0 dan 9 gacha bo'lgan sonlarni `for` sikli yordamida quyidagicha chiqarishimiz mumkin. Uni oldingi bo'limda ko'rsatilgan ekvivalent `while` sikli bilan solishtirib ko'ring:
+
+``` js
+for(let count = 0; count < 10; count++) {
+    console.log(count);
+}
+```
+
+Albatta, sikllar bu oddiy misoldan ancha murakkabroq bo'lishi mumkin va ba'zan siklning har bir iteratsiyasida bir nechta o'zgaruvchi o'zgaradi. Bu holat JavaScript'da vergul operatori keng qo'llaniladigan yagona joydir; u bir nechta initsializatsiya va inkrement ifodalarini `for` siklida ishlatishga yaroqli yagona ifodaga birlashtirish yo'lini taqdim etadi:
+
+``` js
+let i, j, sum = 0;
+for(i = 0, j = 10 ; i < 10 ; i++, j--) {
+    sum += i * j;
+}
+```
+
+Hozirgacha barcha sikl misollarimizda sikl o'zgaruvchisi sonli bo'ldi. Bu juda keng tarqalgan, lekin majburiy emas. Quyidagi kod bog'langan ro'yxat (`linked list`) ma'lumotlar tuzilmasi bo'ylab harakatlanish va ro'yxatdagi oxirgi obyektni (ya'ni, `next` xossasiga ega bo'lmagan birinchi obyektni) qaytarish uchun `for` siklidan foydalanadi:
+
+``` js
+function tail(o) {                          // `o` bog'langan ro'yxatining "dumini" qaytarish
+    for(; o.next; o = o.next) /* bo'sh */ ; // `o.next` "truthy" bo'lsa, harakatlanish
+    return o;
+}
+```
+
+E'tibor bering, bu kodda `initialize` ifodasi yo'q. `for` siklidan uchta ifodaning har qanday turi tushirib qoldirilishi mumkin, lekin ikkita nuqtali vergul talab qilinadi. Agar `test` ifodasini tushirib qoldirsangiz, sikl cheksiz takrorlanadi va `for(;;)` cheksiz sikl yozishning `while(true)` kabi yana bir usulidir.
+
+[^2]: §5.5.3-bo'limda `continue` ko'rsatmasini ko'rib chiqqanimizda, bu `while` sikli `for` siklining aniq ekvivalenti emasligini ko'ramiz.
+
+## `for/of`
+
+ES6 yangi sikl ko'rsatmasini kiritdi: `for/of`. Bu yangi turdagi sikl `for` kalit so'zidan foydalanadi, lekin u oddiy `for` siklidan butunlay farq qiladigan sikl turidir. (U, shuningdek, §5.4.5-bo'limda tasvirlanadigan eskiroq `for/in` siklidan ham butunlay farq qiladi.)
+
+`for/of` sikli **iteratsiya qilinadigan (`iterable`)** obyektlar bilan ishlaydi. Biror obyektning iteratsiya qilinadigan bo'lishi aynan nima ekanligini 12-bobda tushuntiramiz, lekin bu bob uchun massivlar, satrlar, to'plamlar (`Set`) va xaritalar (`Map`) iteratsiya qilinadigan ekanligini bilish kifoya: ular `for/of` sikli yordamida aylanib yoki iteratsiya qilib chiqishingiz mumkin bo'lgan elementlar ketma-ketligi yoki to'plamini ifodalaydi.
+
+Mana, masalan, sonlar massivining elementlari bo'ylab aylanib chiqish va ularning yig'indisini hisoblash uchun `for/of`'dan qanday foydalanishimiz mumkin:
+
+``` js
+let data = [1, 2, 3, 4, 5, 6, 7, 8, 9], sum = 0;
+for(let element of data) {
+    sum += element;
+}
+sum // => 45
+```
+
+Yuzaki qaraganda, sintaksis oddiy `for` sikliga o'xshaydi: `for` kalit so'zidan keyin sikl nima qilishi kerakligi haqidagi tafsilotlarni o'z ichiga olgan qavslar keladi. Bu holda, qavslar ichida o'zgaruvchi e'loni (yoki allaqachon e'lon qilingan o'zgaruvchilar uchun shunchaki o'zgaruvchi nomi), undan keyin `of` kalit so'zi va bu holdagi `data` massivi kabi iteratsiya qilinadigan obyektga baholanadigan ifoda keladi. Barcha sikllardagi kabi, `for/of` siklining tanasi ham qavslardan keyin, odatda jingalak qavslar ichida keladi.
+
+Hozirgina ko'rsatilgan kodda, sikl tanasi `data` massivining har bir elementi uchun bir marta ishga tushadi. Sikl tanasi har safar bajarilishidan oldin, massivning navbatdagi elementi `element` o'zgaruvchisiga tayinlanadi. Massiv elementlari birinchisidan oxirgisiga qarab tartib bilan iteratsiya qilinadi.
+
+Massivlar "jonli" iteratsiya qilinadi — iteratsiya davomida kiritilgan o'zgarishlar iteratsiya natijasiga ta'sir qilishi mumkin. Agar biz oldingi kodni sikl tanasi ichiga `data.push(sum);` qatorini qo'shish orqali o'zgartirsak, u holda cheksiz sikl yaratgan bo'lamiz, chunki iteratsiya hech qachon massivning oxirgi elementiga yeta olmaydi.
+
+### `for/of` va obyektlar
+
+Obyektlar standart holatda iteratsiya qilinadigan (`iterable`) emas. Oddiy obyekt ustida `for/of`'dan foydalanishga urinish `runtime`'da `TypeError` xatoligiga sabab bo'ladi:
+
+``` js
+let o = { x: 1, y: 2, z: 3 };
+for(let element of o) { // `o` obyekti iteratsiya qilinadigan bo'lmagani uchun TypeError yuzaga keladi
+    console.log(element);
+}
+```
+
+Agar obyektning xossalari bo'ylab iteratsiya qilmoqchi bo'lsangiz, `for/in` siklidan (§5.4.5-bo'limda tanishtiriladi) foydalanishingiz yoki `for/of`'ni `Object.keys()` metodi bilan birga ishlatishingiz mumkin:
+
+``` js
+let o = { x: 1, y: 2, z: 3 };
+let keys = "";
+for(let k of Object.keys(o)) {
+    keys += k;
+}
+keys // => "xyz"
+```
+
+Bu ishlaydi, chunki `Object.keys()` obyektning xossa nomlari massivini qaytaradi, massivlar esa `for/of` bilan iteratsiya qilinadi. Shuni ham yodda tutingki, obyekt kalitlarining bu iteratsiyasi yuqoridagi massiv misolidagidek "jonli" emas — sikl tanasida `o` obyektiga kiritilgan o'zgarishlar iteratsiyaga ta'sir qilmaydi.
+
+Agar sizga obyektning kalitlari qiziq bo'lmasa, ularning mos qiymatlari bo'ylab quyidagicha iteratsiya qilishingiz ham mumkin:
+
+``` js
+let sum = 0;
+for(let v of Object.values(o)) {
+    sum += v;
+}
+sum // => 6
+```
+
+Va agar sizga obyekt xossalarining ham kalitlari, ham qiymatlari qiziq bo'lsa, `for/of`'ni `Object.entries()` va destrukturizatsiya orqali tayinlash bilan birga ishlatishingiz mumkin:
+
+``` js
+let pairs = "";
+for(let [k, v] of Object.entries(o)) {
+    pairs += k + v;
+}
+pairs // => "x1y2z3"
+```
+
+`Object.entries()` massivlar massivini qaytaradi, bunda har bir ichki massiv obyektning bir xossasi uchun kalit/qiymat juftligini ifodalaydi. Biz bu kod misolida o'sha ichki massivlarni ikkita alohida o'zgaruvchiga "ochib olish" (`unpack`) uchun destrukturizatsiya orqali tayinlashdan foydalandik.
+
+### `for/of` va satrlar
+
+ES6'da satrlar belgima-belgi iteratsiya qilinadi:
+
+``` js
+let frequency = {};
+for(let letter of "mississippi") {
+    if (frequency[letter]) {
+        frequency[letter]++;
+    } else {
+        frequency[letter] = 1;
+    }
+}
+frequency // => {m: 1, i: 4, s: 4, p: 2}
+```
+
+E'tibor bering, satrlar UTF-16 belgisi bo'yicha emas, balki **Unicode kod nuqtasi (`codepoint`)** bo'yicha iteratsiya qilinadi. "I ❤️ 🐈" satrining `.length` xossasi 5 ga teng (chunki ikkita emoji belgisining har birini ifodalash uchun ikkita UTF-16 belgisi kerak bo'ladi). Lekin agar siz bu satrni `for/of` bilan iteratsiya qilsangiz, sikl tanasi uch marta ishga tushadi, ya'ni uchta kod nuqtasi — "I", "❤️", va "🐈" — uchun bir martadan.
+
+### `for/of` hamda `Set` va `Map`
+
+ES6'ning tayyor ichki o'rnatilgan `Set` va `Map` klasslari iteratsiya qilinadigan (`iterable`) hisoblanadi. `Set`'ni `for/of` bilan iteratsiya qilganingizda, sikl tanasi to'plamning har bir elementi uchun bir martadan ishga tushadi. Siz matn satridagi unikal so'zlarni chiqarish uchun quyidagi kabi koddan foydalanishingiz mumkin:
+
+``` js
+let text = "Na na na na na na na na Batman!";
+let wordSet = new Set(text.split(" "));
+let unique = [];
+for(let word of wordSet) {
+    unique.push(word);
+}
+unique // => ["Na", "na", "Batman!"]
+```
+
+`Map`'lar qiziqarli holatdir, chunki `Map` obyekti uchun iterator `Map` kalitlarini yoki `Map` qiymatlarini emas, balki kalit/qiymat juftliklarini iteratsiya qiladi. Iteratsiyaning har bir aylanishida iterator birinchi elementi kalit, ikkinchi elementi esa unga mos qiymat bo'lgan massivni qaytaradi. `m` `Map`'i berilgan bo'lsa, siz uning kalit/qiymat juftliklarini quyidagicha iteratsiya qilishingiz va destrukturizatsiya qilishingiz mumkin:
+
+``` js
+let m = new Map([[1, "one"]]);
+for(let [key, value] of m) {
+    key   // => 1
+    value // => "one"
+}
+```
+
+### `for/await` bilan asinxron iteratsiya
+
+ES2018 **asinxron iterator** deb nomlanuvchi yangi iterator turini va asinxron iteratorlar bilan ishlaydigan `for/of` siklining **`for/await` sikli** deb nomlanuvchi variantini kiritdi.
+
+`for/await` siklini tushunish uchun 12 va 13-boblarni o'qishingiz kerak bo'ladi, lekin uning kodda qanday ko'rinishi quyidagicha:
+
+``` js
+// Asinxron iteratsiya qilinadigan oqimdan qismlarni (`chunks`) o'qish va ularni chiqarish
+async function printStream(stream) {
+    for await (let chunk of stream) {
+        console.log(chunk);
+    }
+}
+```
+
+## `for/in`
+
+`for/in` sikli `for/of` sikliga juda o'xshaydi, faqat `of` kalit so'zi `in`'ga o'zgartirilgan. `for/of` sikli `of`'dan keyin iteratsiya qilinadigan (`iterable`) obyektni talab qilsa, `for/in` sikli `in`'dan keyin har qanday obyekt bilan ishlay oladi. `for/of` sikli ES6'da yangi, lekin `for/in` JavaScript'ning dastlabki davrlaridanoq uning bir qismi bo'lgan (shuning uchun ham uning sintaksisi tabiiyroq eshitiladi).
+
+`for/in` ko'rsatmasi belgilangan obyektning **xossa nomlari** bo'ylab aylanib chiqadi. Uning sintaksisi quyidagicha ko'rinadi:
+
+``` js
+for (variable in object)
+    statement
+```
+
+`variable` odatda o'zgaruvchini nomlaydi, lekin u o'zgaruvchi e'loni yoki tayinlash ifodasining chap tomoniga mos keladigan har qanday narsa bo'lishi mumkin. `object` esa obyektga baholanadigan ifodadir. Odatdagidek, `statement` sikl tanasi vazifasini bajaruvchi ko'rsatma yoki ko'rsatmalar blokidir.
+
+Siz `for/in` siklini quyidagicha ishlatishingiz mumkin:
+
+``` js
+for(let p in o) {       // `o` obyektining xossa nomlarini `p` o'zgaruvchisiga tayinlash
+    console.log(o[p]);  // Har bir xossaning qiymatini chiqarish
+}
+```
+
+`for/in` ko'rsatmasini bajarish uchun JavaScript interpretatori avval `object` ifodasini baholaydi. Agar u `null` yoki `undefined`'ga baholansa, interpretator siklni o'tkazib yuboradi va keyingi ko'rsatmaga o'tadi. So'ngra interpretator obyektning har bir **sanab o'tiladigan (`enumerable`)** xossasi uchun sikl tanasini bir martadan bajaradi. Biroq har bir iteratsiyadan oldin, interpretator `variable` ifodasini baholaydi va unga xossaning nomini (satr qiymatini) tayinlaydi.
+
+E'tibor bering, `for/in` siklidagi `variable` ixtiyoriy ifoda bo'lishi mumkin, agar u tayinlashning chap tomoniga mos keladigan biror narsaga baholansa. Bu ifoda siklning har bir aylanishida baholanadi, bu esa uning har safar turlicha baholanishi mumkinligini anglatadi. Masalan, siz barcha obyekt xossalarining nomlarini massivga ko'chirish uchun quyidagi kabi koddan foydalanishingiz mumkin:
+
+``` js
+let o = { x: 1, y: 2, z: 3 };
+let a = [], i = 0;
+for(a[i++] in o) /* bo'sh */;
+```
+
+JavaScript massivlari shunchaki obyektning ixtisoslashgan bir turidir va massiv indekslari `for/in` sikli yordamida sanab o'tilishi mumkin bo'lgan obyekt xossalaridir. Masalan, oldingi koddan keyin kelgan bu qator `0`, `1` va `2` massiv indekslarini sanab o'tadi:
+
+``` js
+for(let i in a) console.log(i);
+```
+
+Men o'z kodimdagi keng tarqalgan xatoliklar manbalaridan biri bu `for/of`'ni ishlatmoqchi bo'lganimda, tasodifan massivlar bilan `for/in`'ni ishlatib yuborishim ekanligini payqaganman. Massivlar bilan ishlayotganda, deyarli har doim `for/in` o'rniga `for/of`'dan foydalanish kerak.
+
+`for/in` sikli aslida obyektning **barcha** xossalarini sanab o'tmaydi. U nomlari `symbol` bo'lgan xossalarni sanab o'tmaydi. Va nomlari satr bo'lgan xossalardan faqat **sanab o'tiladigan (`enumerable`)** xossalar bo'ylab aylanib chiqadi (§14.1-bo'limga qarang). JavaScript yadrosi tomonidan ta'riflangan turli ichki o'rnatilgan metodlar sanab o'tilmaydi. Masalan, barcha obyektlar `toString()` metodiga ega, lekin `for/in` sikli bu `toString` xossasini sanab o'tmaydi. Ichki o'rnatilgan metodlardan tashqari, ichki o'rnatilgan obyektlarning ko'plab boshqa xossalari ham sanab o'tilmaydi. Sizning kodingiz tomonidan ta'riflangan barcha xossalar va metodlar esa, standart holatda, sanab o'tiladigan bo'ladi. (§14.1-bo'limda tushuntirilgan usullar yordamida ularni sanab o'tilmaydigan qilishingiz mumkin.)
+
+Sanab o'tiladigan meros qilib olingan xossalar (§6.3.2) ham `for/in` sikli tomonidan sanab o'tiladi. Bu shuni anglatadiki, agar siz `for/in` sikllaridan foydalansangiz va ayni paytda barcha obyektlar tomonidan meros qilib olinadigan xossalarni ta'riflaydigan koddan ham foydalansangiz, siklingiz siz kutgan tarzda ishlamasligi mumkin. Shu sababli, ko'plab dasturchilar `for/in` sikli o'rniga `Object.keys()` bilan birga `for/of` siklidan foydalanishni afzal ko'radilar.
+
+Agar `for/in` siklining tanasi hali sanab o'tilmagan xossani o'chirsa, bu xossa sanab o'tilmaydi. Agar sikl tanasi obyektda yangi xossalar ta'riflasa, bu xossalar sanab o'tilishi yoki o'tilmasligi mumkin. `for/in`'ning obyekt xossalarini qanday tartibda sanab o'tishi haqida ko'proq ma'lumot olish uchun §6.6.1-bo'limga qarang.
