@@ -1,20 +1,27 @@
+---
+title: Obyekt metodlari
+description: "JavaScript obyektlarining universal metodlari: toString(), toLocaleString(), valueOf(), toJSON() va ularning moslashtirilishi."
+keywords: JavaScript, object methods, toString, toLocaleString, valueOf, toJSON, Object.prototype, method customization
+author: Webiston.uz
+---
+
 # Obyekt metodlari
 
-Avvalroq muhokama qilinganidek, barcha JavaScript obyektlari (prototipsiz, aniq yaratilganlaridan tashqari) xossalarni `Object.prototype`'dan meros qilib oladi. Bu meros olingan xossalar asosan metodlardir va ular universal darajada mavjud bo‘lgani uchun JavaScript dasturchilari uchun alohida qiziqish uyg‘otadi. Masalan, biz `hasOwnProperty()` va `propertyIsEnumerable()` metodlarini allaqachon ko‘rib chiqdik. (Shuningdek, `Object` konstruktorida mavjud bo'lgan `Object.create()` va `Object.keys()` kabi bir nechta statik funksiyalarni ham yoritib o‘tdik.)
+Avvalroq muhokama qilinganidek, barcha JavaScript obyektlari (prototipsiz, aniq yaratilganlaridan tashqari) xossalarni `Object.prototype`'dan meros qilib oladi. Bu meros olingan xossalar asosan metodlardir va ular universal darajada mavjud bo'lgani uchun JavaScript dasturchilari uchun alohida qiziqish uyg'otadi. Masalan, biz `hasOwnProperty()` va `propertyIsEnumerable()` metodlarini allaqachon ko'rib chiqdik. (Shuningdek, `Object` konstruktorida mavjud bo'lgan `Object.create()` va `Object.keys()` kabi bir nechta statik funksiyalarni ham yoritib o'tdik.)
 
-Ushbu bo‘lim `Object.prototype`'da ta’riflangan, lekin boshqa, yanada ixtisoslashgan implementatsiyalar bilan almashtirilishi ko‘zda tutilgan bir nechta universal obyekt metodlarini tushuntiradi. Keyingi bo‘limlarda biz bu metodlarni bitta obyektda ta’riflashga doir misollarni ko‘rsatamiz. 9-bobda esa, bu metodlarni butun bir obyektlar klassi uchun yanada umumiyroq tarzda qanday tayinlash mumkinligini o‘rganasiz.
+Ushbu bo'lim `Object.prototype`'da ta'riflangan, lekin boshqa, yanada ixtisoslashgan implementatsiyalar bilan almashtirilishi ko'zda tutilgan bir nechta universal obyekt metodlarini tushuntiradi. Keyingi bo'limlarda biz bu metodlarni bitta obyektda ta'riflashga doir misollarni ko'rsatamiz. 9-bobda esa, bu metodlarni butun bir obyektlar klassi uchun yanada umumiyroq tarzda qanday tayinlash mumkinligini o'rganasiz.
 
 ## `toString()` metodi
 
-`toString()` metodi hech qanday argument qabul qilmaydi; u o‘zi chaqirilgan obyektning qiymatini biror tarzda ifodalovchi satrni qaytaradi. JavaScript obyektni satrga o‘zgartirishi kerak bo‘lgan har qanday holatda aynan shu metodni chaqiradi. Bu, masalan, siz `+` operatori yordamida satrni obyekt bilan birlashtirganingizda yoki obyektni satr kutadigan metodga uzatganingizda sodir bo‘ladi.
+`toString()` metodi hech qanday argument qabul qilmaydi; u o'zi chaqirilgan obyektning qiymatini biror tarzda ifodalovchi satrni qaytaradi. JavaScript obyektni satrga o'zgartirishi kerak bo'lgan har qanday holatda aynan shu metodni chaqiradi. Bu, masalan, siz `+` operatori yordamida satrni obyekt bilan birlashtirganingizda yoki obyektni satr kutadigan metodga uzatganingizda sodir bo'ladi.
 
-Standart `toString()` metodi unchalik ko‘p ma’lumot bermaydi (garchi u, §14.4.3-bo‘limda ko‘rib chiqadiganimizdek, obyektning klassini aniqlash uchun foydali bo‘lsa ham). Masalan, quyidagi kod qatori shunchaki "[object Object]" satriga baholanadi:
+Standart `toString()` metodi unchalik ko'p ma'lumot bermaydi (garchi u, §14.4.3-bo'limda ko'rib chiqadiganimizdek, obyektning klassini aniqlash uchun foydali bo'lsa ham). Masalan, quyidagi kod qatori shunchaki "[object Object]" satriga baholanadi:
 
 ``` js
 let s = { x: 1, y: 1 }.toString(); // s == "[object Object]"
 ```
 
-Bu standart metod unchalik ham foydali ma’lumot ko‘rsatmagani uchun, ko‘plab klasslar `toString()`'ning o‘zlariga xos versiyalarini ta’riflaydilar. Masalan, massiv satrga o‘zgartirilganda, siz massiv elementlarining ro‘yxatini olasiz (har bir elementning o‘zi ham satrga o‘zgartirilgan holda). Funksiya satrga o‘zgartirilganda esa, siz funksiyaning manba kodini olasiz. Siz o‘zingizning shaxsiy `toString()` metodingizni quyidagicha yaratishingiz mumkin:
+Bu standart metod unchalik ham foydali ma'lumot ko'rsatmagani uchun, ko'plab klasslar `toString()`'ning o'zlariga xos versiyalarini ta'riflaydilar. Masalan, massiv satrga o'zgartirilganda, siz massiv elementlarining ro'yxatini olasiz (har bir elementning o'zi ham satrga o'zgartirilgan holda). Funksiya satrga o'zgartirilganda esa, siz funksiyaning manba kodini olasiz. Siz o'zingizning shaxsiy `toString()` metodingizni quyidagicha yaratishingiz mumkin:
 
 ``` js
 let point = {
@@ -22,14 +29,14 @@ let point = {
     y: 2,
     toString: function() { return `(${this.x}, ${this.y})`; }
 };
-String(point) // => "(1, 2)": satrga o‘zgartirishlarda `toString()` ishlatiladi
+String(point) // => "(1, 2)": satrga o'zgartirishlarda `toString()` ishlatiladi
 ```
 
 ## `toLocaleString()` metodi
 
-Asosiy `toString()` metodiga qo‘shimcha ravishda, barcha obyektlar `toLocaleString()` metodiga ham ega. Bu metodning vazifasi obyektning **mahalliylashtirilgan (`localized`)** satrli ifodasini qaytarishdir.
+Asosiy `toString()` metodiga qo'shimcha ravishda, barcha obyektlar `toLocaleString()` metodiga ham ega. Bu metodning vazifasi obyektning **mahalliylashtirilgan (`localized`)** satrli ifodasini qaytarishdir.
 
-`Object` tomonidan ta’riflangan standart `toLocaleString()` metodi o‘z-o‘zidan hech qanday mahalliylashtirishni amalga oshirmaydi: u shunchaki `toString()`'ni chaqiradi va o‘sha qiymatni qaytaradi. `Date` va `Number` klasslari esa `toLocaleString()`'ning sonlar, sanalar va vaqtlarni mahalliy qoidalarga muvofiq formatlashga harakat qiladigan moslashtirilgan versiyalarini ta’riflaydi. `Array` klassi `toString()` kabi ishlaydigan `toLocaleString()` metodini ta’riflaydi, faqat u massiv elementlarini ularning `toString()` metodlarini emas, balki `toLocaleString()` metodlarini chaqirish orqali formatlaydi.
+`Object` tomonidan ta'riflangan standart `toLocaleString()` metodi o'z-o'zidan hech qanday mahalliylashtirishni amalga oshirmaydi: u shunchaki `toString()`'ni chaqiradi va o'sha qiymatni qaytaradi. `Date` va `Number` klasslari esa `toLocaleString()`'ning sonlar, sanalar va vaqtlarni mahalliy qoidalarga muvofiq formatlashga harakat qiladigan moslashtirilgan versiyalarini ta'riflaydi. `Array` klassi `toString()` kabi ishlaydigan `toLocaleString()` metodini ta'riflaydi, faqat u massiv elementlarini ularning `toString()` metodlarini emas, balki `toLocaleString()` metodlarini chaqirish orqali formatlaydi.
 
 Siz ham `point` obyekti bilan xuddi shunday qilishingiz mumkin:
 
@@ -43,18 +50,18 @@ let point = {
     }
 };
 point.toString()       // => "(1000, 2000)"
-point.toLocaleString() // => "(1,000, 2,000)": mingliklar ajratuvchisiga e’tibor bering
+point.toLocaleString() // => "(1,000, 2,000)": mingliklar ajratuvchisiga e'tibor bering
 ```
 
-§11.7-bo‘limda keltirib o'tiladigan xalqarolashtirish (`internationalization`) klasslari `toLocaleString()` metodini implementatsiya qilishda foydali bo‘lishi mumkin.
+§11.7-bo'limda keltirib o'tiladigan xalqarolashtirish (`internationalization`) klasslari `toLocaleString()` metodini implementatsiya qilishda foydali bo'lishi mumkin.
 
 ## `valueOf()` metodi
 
-`valueOf()` metodi `toString()` metodiga juda o‘xshaydi, lekin u JavaScript obyektni satrdan boshqa biror primitiv tipga — odatda, songa — o‘zgartirishi kerak bo‘lganda chaqiriladi. Agar obyekt primitiv qiymat talab qilinadigan kontekstda ishlatilsa, JavaScript bu metodni avtomatik ravishda chaqiradi.
+`valueOf()` metodi `toString()` metodiga juda o'xshaydi, lekin u JavaScript obyektni satrdan boshqa biror primitiv tipga — odatda, songa — o'zgartirishi kerak bo'lganda chaqiriladi. Agar obyekt primitiv qiymat talab qilinadigan kontekstda ishlatilsa, JavaScript bu metodni avtomatik ravishda chaqiradi.
 
-Standart `valueOf()` metodi hech qanday diqqatga sazovor ish qilmaydi, lekin ba’zi ichki o‘rnatilgan klasslar o‘zlarining shaxsiy `valueOf()` metodlarini ta’riflaydilar. `Date` klassi sanalarni sonlarga o‘zgartirish uchun `valueOf()`'ni ta’riflaydi va bu `Date` obyektlarini `<` va `>` yordamida xronologik tarzda taqqoslash imkonini beradi.
+Standart `valueOf()` metodi hech qanday diqqatga sazovor ish qilmaydi, lekin ba'zi ichki o'rnatilgan klasslar o'zlarining shaxsiy `valueOf()` metodlarini ta'riflaydilar. `Date` klassi sanalarni sonlarga o'zgartirish uchun `valueOf()`'ni ta'riflaydi va bu `Date` obyektlarini `<` va `>` yordamida xronologik tarzda taqqoslash imkonini beradi.
 
-Siz ham `point` obyekti bilan shunga o‘xshash ish qilishingiz, ya’ni nuqtadan koordinata boshigacha bo‘lgan masofani qaytaradigan `valueOf()` metodini ta’riflashingiz mumkin:
+Siz ham `point` obyekti bilan shunga o'xshash ish qilishingiz, ya'ni nuqtadan koordinata boshigacha bo'lgan masofani qaytaradigan `valueOf()` metodini ta'riflashingiz mumkin:
 
 ``` js
 let point = {
@@ -62,7 +69,7 @@ let point = {
     y: 4,
     valueOf: function() { return Math.hypot(this.x, this.y); }
 };
-Number(point) // => 5: songa o‘zgartirishlarda `valueOf()` ishlatiladi
+Number(point) // => 5: songa o'zgartirishlarda `valueOf()` ishlatiladi
 point > 4     // => true
 point > 5     // => false
 point < 6     // => true
@@ -70,9 +77,9 @@ point < 6     // => true
 
 ## `toJSON()` metodi
 
-`Object.prototype` aslida `toJSON()` metodini ta’riflamaydi, lekin `JSON.stringify()` metodi (§6.8-bo‘limga qarang) o‘ziga seriyalashtirish uchun uzatilgan har qanday obyektdan `toJSON()` metodini qidiradi. Agar seriyalashtirilishi kerak bo‘lgan obyektda bu metod mavjud bo‘lsa, u chaqiriladi va asl obyekt o‘rniga uning qaytargan qiymati seriyalashtiriladi.
+`Object.prototype` aslida `toJSON()` metodini ta'riflamaydi, lekin `JSON.stringify()` metodi (§6.8-bo'limga qarang) o'ziga seriyalashtirish uchun uzatilgan har qanday obyektdan `toJSON()` metodini qidiradi. Agar seriyalashtirilishi kerak bo'lgan obyektda bu metod mavjud bo'lsa, u chaqiriladi va asl obyekt o'rniga uning qaytargan qiymati seriyalashtiriladi.
 
-`Date` klassi (§11.4) sananing seriyalashtiriladigan satrli ifodasini qaytaradigan `toJSON()` metodini ta’riflaydi. Biz ham o‘zimizning `Point` obyektimiz uchun xuddi shunday qilishimiz mumkin:
+`Date` klassi (§11.4) sananing seriyalashtiriladigan satrli ifodasini qaytaradigan `toJSON()` metodini ta'riflaydi. Biz ham o'zimizning `Point` obyektimiz uchun xuddi shunday qilishimiz mumkin:
 
 ``` js
 let point = {

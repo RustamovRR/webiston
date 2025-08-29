@@ -1,51 +1,58 @@
+---
+title: Xossalarni tekshirish
+description: "JavaScript'da obyekt xossalarini tekshirish: in operatori, hasOwnProperty(), propertyIsEnumerable() metodlari va xossa mavjudligini aniqlash."
+keywords: JavaScript, property testing, in operator, hasOwnProperty, propertyIsEnumerable, object properties, property existence
+author: Webiston.uz
+---
+
 # Xossalarni tekshirish
 
-JavaScript obyektlarini xossalar to‘plami sifatida tasavvur qilish mumkin va ko‘pincha to‘plamga a’zolikni sinab ko‘rish — ya’ni, obyektda berilgan nomdagi xossa mavjudligini tekshirish — foydalidir. Buni `in` operatori, `hasOwnProperty()` va `propertyIsEnumerable()` metodlari yordamida yoki shunchaki xossani so‘rash orqali amalga oshirishingiz mumkin. Bu yerda ko‘rsatilgan barcha misollar xossa nomlari sifatida satrlardan foydalanadi, lekin ular `Symbol`'lar (§6.10.3) bilan ham ishlaydi.
+JavaScript obyektlarini xossalar to'plami sifatida tasavvur qilish mumkin va ko'pincha to'plamga a'zolikni sinab ko'rish — ya'ni, obyektda berilgan nomdagi xossa mavjudligini tekshirish — foydalidir. Buni `in` operatori, `hasOwnProperty()` va `propertyIsEnumerable()` metodlari yordamida yoki shunchaki xossani so'rash orqali amalga oshirishingiz mumkin. Bu yerda ko'rsatilgan barcha misollar xossa nomlari sifatida satrlardan foydalanadi, lekin ular `Symbol`'lar (§6.10.3) bilan ham ishlaydi.
 
-`in` operatori chap tomonida xossa nomini, o‘ng tomonida esa obyektni kutadi. Agar obyektda shu nomdagi shaxsiy yoki meros qilib olingan xossa mavjud bo‘lsa, u `true` qaytaradi:
+`in` operatori chap tomonida xossa nomini, o'ng tomonida esa obyektni kutadi. Agar obyektda shu nomdagi shaxsiy yoki meros qilib olingan xossa mavjud bo'lsa, u `true` qaytaradi:
 
 ``` js
 let o = { x: 1 };
 "x" in o          // => true: `o` obyektida shaxsiy "x" xossasi bor
-"y" in o          // => false: `o` obyektida "y" xossasi yo‘q
+"y" in o          // => false: `o` obyektida "y" xossasi yo'q
 "toString" in o   // => true: `o` obyekti `toString` xossasini meros qilib oladi
 ```
 
-Obyektning `hasOwnProperty()` metodi o‘sha obyektda berilgan nomdagi shaxsiy xossa mavjudligini tekshiradi. U meros qilib olingan xossalar uchun `false` qaytaradi:
+Obyektning `hasOwnProperty()` metodi o'sha obyektda berilgan nomdagi shaxsiy xossa mavjudligini tekshiradi. U meros qilib olingan xossalar uchun `false` qaytaradi:
 
 ``` js
 let o = { x: 1 };
 o.hasOwnProperty("x")        // => true: `o` obyektida shaxsiy `x` xossasi bor
-o.hasOwnProperty("y")        // => false: `o` obyektida `y` xossasi yo‘q
+o.hasOwnProperty("y")        // => false: `o` obyektida `y` xossasi yo'q
 o.hasOwnProperty("toString") // => false: `toString` meros olingan xossa
 ```
 
-`propertyIsEnumerable()` metodi `hasOwnProperty()` tekshiruvini yanada aniqlashtiradi. U faqat nomlangan xossa shaxsiy xossa bo‘lsa va uning `enumerable` (sanab o‘tiladigan) atributi `true` bo‘lsagina `true` qaytaradi. Ba’zi ichki o‘rnatilgan xossalar sanab o‘tilmaydi. Oddiy JavaScript kodi orqali yaratilgan xossalar esa, agar siz ularni sanab o‘tilmaydigan qilish uchun §14.1-bo‘limda ko‘rsatilgan usullardan birini ishlatmagan bo‘lsangiz, sanab o‘tiladigan bo‘ladi.
+`propertyIsEnumerable()` metodi `hasOwnProperty()` tekshiruvini yanada aniqlashtiradi. U faqat nomlangan xossa shaxsiy xossa bo'lsa va uning `enumerable` (sanab o'tiladigan) atributi `true` bo'lsagina `true` qaytaradi. Ba'zi ichki o'rnatilgan xossalar sanab o'tilmaydi. Oddiy JavaScript kodi orqali yaratilgan xossalar esa, agar siz ularni sanab o'tilmaydigan qilish uchun §14.1-bo'limda ko'rsatilgan usullardan birini ishlatmagan bo'lsangiz, sanab o'tiladigan bo'ladi.
 
 ``` js
 let o = { x: 1 };
 o.propertyIsEnumerable("x")                         // => true: `o` obyektida shaxsiy, sanaladigan `x` xossasi bor
 o.propertyIsEnumerable("toString")                  // => false: shaxsiy xossa emas
-Object.prototype.propertyIsEnumerable("toString")   // => false: sanab o‘tilmaydigan
+Object.prototype.propertyIsEnumerable("toString")   // => false: sanab o'tilmaydigan
 ```
 
-`in` operatorini ishlatish o‘rniga, ko‘pincha shunchaki xossani so‘rash va uning `undefined` emasligiga ishonch hosil qilish uchun `!==`'dan foydalanish yetarli bo‘ladi:
+`in` operatorini ishlatish o'rniga, ko'pincha shunchaki xossani so'rash va uning `undefined` emasligiga ishonch hosil qilish uchun `!==`'dan foydalanish yetarli bo'ladi:
 
 ``` js
 let o = { x: 1 };
 o.x !== undefined          // => true: `o`da `x` xossasi bor
-o.y !== undefined          // => false: `o`da `y` xossasi yo‘q
+o.y !== undefined          // => false: `o`da `y` xossasi yo'q
 o.toString !== undefined   // => true: `o` obyekti `toString` xossasini meros oladi
 ```
 
-`in` operatorining oddiy xossaga murojaat qilish usulidan bitta muhim ustunligi bor: u xossaning umuman mavjud emasligi holatini xossaning mavjud, lekin qiymati `undefined`'ga tenglashtirilgan holatidan farqlay oladi. Ushbu kodni ko‘rib chiqing:
+`in` operatorining oddiy xossaga murojaat qilish usulidan bitta muhim ustunligi bor: u xossaning umuman mavjud emasligi holatini xossaning mavjud, lekin qiymati `undefined`'ga tenglashtirilgan holatidan farqlay oladi. Ushbu kodni ko'rib chiqing:
 
 ``` js
-let o = { x: undefined }; // Xossa aniq `undefined`ga o‘rnatilgan
+let o = { x: undefined }; // Xossa aniq `undefined`ga o'rnatilgan
 o.x !== undefined         // => false: xossa mavjud, lekin `undefined`
 o.y !== undefined         // => false: xossa umuman mavjud emas
 "x" in o                  // => true: xossa mavjud
 "y" in o                  // => false: xossa mavjud emas
-delete o.x;               // `x` xossasini o‘chiramiz
+delete o.x;               // `x` xossasini o'chiramiz
 "x" in o                  // => false: u endi mavjud emas
 ```
