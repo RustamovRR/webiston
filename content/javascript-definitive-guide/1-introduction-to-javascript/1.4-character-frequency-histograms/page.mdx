@@ -1,12 +1,12 @@
 ---
-title: 'Misol: Belgilar chastotasi gistogrammalari'
-description: "Belgilar chastotasi gistogrammasi: Node’da standart kiritishdan matn o‘qish, Map va sinflar bilan hisoblash, foizlarga aylantirish hamda ASCII grafik ko‘rinishida chiqarish."
-keywords: JavaScript, Node.js, Map, sinf, gistogramma, matn tahlili, chastota, ASCII grafika, terminal, misol
+title: "Misol: Belgilar chastotasi gistogrammalari"
+description: "Belgilar chastotasi gistogrammasi: Node'da standart kiritishdan matn o'qish, Map va sinflar bilan hisoblash, foizlarga aylantirish hamda ASCII grafik ko'rinishida chiqarish."
+keywords: JavaScript, Node.js, Map, sinf, class, gistogramma, histogram, matn tahlili, text analysis, chastota, frequency, ASCII grafika, ASCII graphics, terminal, misol, example, belgilar, characters
 author: Webiston.uz
 ---
 # Misol: Belgilar chastotasi gistogrammalari
 
-Bu bob qisqa, biroq jiddiy JavaScript dasturi bilan yakunlanadi. 1-1-misol — bu standart kiritishdan matnni o‘qiydigan, ushbu matndan belgilar chastotasi gistogrammasini hisoblaydigan va so‘ngra gistogrammani konsolga chiqaradigan Node dasturidir. Siz dasturni o‘zining manba kodidagi belgilar chastotasini tahlil qilish uchun quyidagicha ishga tushirishingiz mumkin:
+Bu bob qisqa, biroq jiddiy JavaScript dasturi bilan yakunlanadi. 1-1-misol — bu standart kiritishdan matnni o'qiydigan, ushbu matndan belgilar chastotasi gistogrammasini hisoblaydigan va so'ngra gistogrammani konsolga chiqaradigan Node dasturidir. Siz dasturni o'zining manba kodidagi belgilar chastotasini tahlil qilish uchun quyidagicha ishga tushirishingiz mumkin:
 
 ```bash
 $ node charfreq.js < charfreq.js
@@ -25,7 +25,7 @@ U: ### 3.08%
 /: ### 2.88%
 ```
 
-Bu misol JavaScript’ning bir qator takomillashgan xususiyatlaridan foydalanadi va real hayotdagi JavaScript dasturlari qanday ko'rinishda bo'lishini namoyish etishga mo'ljallangan. Hozircha barcha kodni tushunmasligingiz mumkin, va bu tabiiy. Lekin ishonchingiz komil bo'lsinki, uning barchasi keyingi boblarda tushuntiriladi.
+Bu misol JavaScript'ning bir qator takomillashgan xususiyatlaridan foydalanadi va real hayotdagi JavaScript dasturlari qanday ko'rinishda bo'lishini namoyish etishga mo'ljallangan. Hozircha barcha kodni tushunmasligingiz mumkin, va bu tabiiy. Lekin ishonchingiz komil bo'lsinki, uning barchasi keyingi boblarda tushuntiriladi.
 
 _1-1 misol. JavaScript yordamida belgilar chastotasi gistogrammalarini hisoblash_
 
@@ -41,15 +41,15 @@ _1-1 misol. JavaScript yordamida belgilar chastotasi gistogrammalarini hisoblash
  */
 
 // Bu klass `Map`ni kengaytiradi, natijada `get()` metodi agar kalit
-// map’da mavjud bo'lmasa, `null` o'rniga standart qiymatni qaytaradi.
+// map'da mavjud bo'lmasa, `null` o'rniga standart qiymatni qaytaradi.
 class DefaultMap extends Map {
   constructor(defaultValue) {
     super()                                         // Ota-klass konstruktorini chaqirish.
-    this.defaultValue = defaultValue                // Standart qiymatni saqlab qo‘yish.
+    this.defaultValue = defaultValue                // Standart qiymatni saqlab qo'yish.
   }
 
   get(key) {
-    if (this.has(key)) {                            // Agar kalit map'da mavjud bo‘lsa,
+    if (this.has(key)) {                            // Agar kalit map'da mavjud bo'lsa,
       return super.get(key)                         // ota-klassdan uning qiymatini qaytarish.
     } else {
       return this.defaultValue                      // Aks holda, standart qiymatni qaytarish
@@ -60,7 +60,7 @@ class DefaultMap extends Map {
 // Bu klass harflar chastotasi gistogrammalarini hisoblaydi va ko'rsatadi.
 class Histogram {
   constructor() {
-    this.letterCounts = new DefaultMap(0)           // Harflarni o‘z sanog‘iga moslashtiruvchi Map.
+    this.letterCounts = new DefaultMap(0)           // Harflarni o'z sanog'iga moslashtiruvchi Map.
     this.totalLetters = 0                           // Umumiy harflar soni.
   }
 
@@ -69,25 +69,25 @@ class Histogram {
     // Matndagi bo'shliqlarni olib tashlash va barcha harflarni kattasiga o'tkazish.
     text = text.replace(/\s/g, '').toUpperCase()
 
-    // Endi matndagi belgilar bo‘ylab sikl orqali o‘tish.
+    // Endi matndagi belgilar bo'ylab sikl orqali o'tish.
     for (let character of text) {
-      let count = this.letterCounts.get(character)  // Avvalgi sanog‘ini olish.
-      this.letterCounts.set(character, count + 1)   // Sanog‘ini bittaga oshirish.
+      let count = this.letterCounts.get(character)  // Avvalgi sanog'ini olish.
+      this.letterCounts.set(character, count + 1)   // Sanog'ini bittaga oshirish.
       this.totalLetters++
     }
   }
 
-  // Gistogrammani ASCII-grafik ko‘rinishidagi satrga aylantirish.
+  // Gistogrammani ASCII-grafik ko'rinishidagi satrga aylantirish.
   toString() {
-    // Map'ni `[kalit, qiymat]` ko‘rinishidagi massivlardan iborat massivga o‘tkazish.
+    // Map'ni `[kalit, qiymat]` ko'rinishidagi massivlardan iborat massivga o'tkazish.
     let entries = [...this.letterCounts]
 
-    // Massivni avval sanog‘i bo‘yicha, so‘ng alifbo tartibida saralash
+    // Massivni avval sanog'i bo'yicha, so'ng alifbo tartibida saralash
     entries.sort((a, b) => {                        // Saralash tartibini aniqlaydigan funksiya.
       if (a[1] === b[1]) {                          // Agar hisoblar bir xil bo'lsa
         return a[0] < b[0] ? -1 : 1                 // alifbo bo'yicha saralash
       } else {
-        return b[1] - a[1]                          // Aks holda, eng katta sanoq bo‘yicha saralash.
+        return b[1] - a[1]                          // Aks holda, eng katta sanoq bo'yicha saralash.
       }
     })
 
@@ -96,7 +96,7 @@ class Histogram {
       entry[1] = (entry[1] / this.totalLetters) * 100
     }
 
-    // Qiymati 1% dan kam bo‘lgan yozuvlarni olib tashlash.
+    // Qiymati 1% dan kam bo'lgan yozuvlarni olib tashlash.
     entries = entries.filter((entry) => entry[1] >= 1)
 
     // Endi har bir yozuvni matnli satrga aylantirish
@@ -119,8 +119,8 @@ async function histogramFromStdin() {
   return histogram
 }
 
-// Mana bu so‘nggi bir qator kod — dasturning asosiy tanasi.
-// U standart kiritishdan `Histogram` obyekti yaratadi, so‘ng gistogrammani konsolga chiqaradi.
+// Mana bu so'nggi bir qator kod — dasturning asosiy tanasi.
+// U standart kiritishdan `Histogram` obyekti yaratadi, so'ng gistogrammani konsolga chiqaradi.
 histogramFromStdin().then((histogram) => {
   console.log(histogram.toString())
 })

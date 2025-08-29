@@ -1,14 +1,14 @@
 ---
 title: JavaScript bo'ylab sayohat
-description: "JavaScript bo‘ylab qisqa sayohat: primitivlar, obyektlar, massivlar, operatorlar, ko‘rsatmalar, funksiyalar, metodlar va boshqaruv tuzilmalari. Keyingi boblar uchun tezkor asos."
-keywords: JavaScript, sayohat, primitiv, obyekt, massiv, operator, ko‘rsatma, funksiya, metod, boshqaruv tuzilmasi, misollar
+description: "JavaScript bo'ylab qisqa sayohat: primitivlar, obyektlar, massivlar, operatorlar, ko'rsatmalar, funksiyalar, metodlar va boshqaruv tuzilmalari. Keyingi boblar uchun tezkor asos."
+keywords: JavaScript, sayohat, tour, primitiv, primitive, obyekt, object, massiv, array, operator, ko'rsatma, statement, funksiya, function, metod, method, boshqaruv tuzilmasi, control structure, misollar, examples
 author: Webiston.uz
 ---
 # JavaScript bo'ylab sayohat
 
-Bu bo'lim kod misollari orqali JavaScript tiliga qisqacha kirish qismini taqdim etadi. Ushbu kirish bobidan so'ng, biz JavaScript’ni eng quyi darajada o'rganishni boshlaymiz: 2-bob JavaScript’dagi izohlar, nuqta-vergullar va Unicode belgilari to'plami kabi tushunchalarni yoritadi. 3-bob esa yanada qiziqarliroq: u JavaScript o'zgaruvchilari va bu o‘zgaruvchilarga tayinlash mumkin bo‘lgan qiymatlarni tushuntiradi.
+Bu bo'lim kod misollari orqali JavaScript tiliga qisqacha kirish qismini taqdim etadi. Ushbu kirish bobidan so'ng, biz JavaScript'ni eng quyi darajada o'rganishni boshlaymiz: 2-bob JavaScript'dagi izohlar, nuqta-vergullar va Unicode belgilari to'plami kabi tushunchalarni yoritadi. 3-bob esa yanada qiziqarliroq: u JavaScript o'zgaruvchilari va bu o'zgaruvchilarga tayinlash mumkin bo'lgan qiymatlarni tushuntiradi.
 
-Quyida ushbu ikki bobning asosiy jihatlarini ko‘rsatish uchun namuna kodi keltirilgan:
+Quyida ushbu ikki bobning asosiy jihatlarini ko'rsatish uchun namuna kodi keltirilgan:
 
 ### Primitiv qiymatlar
 
@@ -22,7 +22,7 @@ let x               // x nomli o'zgaruvchini e'lon qilish.
 
 // Qiymatlarni o'zgaruvchilarga `=` belgisi bilan tayinlash mumkin:
 x = 0               // Endi x o'zgaruvchisi 0 qiymatiga ega
-x                   // => 0: O‘zgaruvchiga murojaat etilganda, u o‘z qiymatini qaytaradi.
+x                   // => 0: O'zgaruvchiga murojaat etilganda, u o'z qiymatini qaytaradi.
 
 // JavaScript bir necha turdagi qiymatlarni qo'llab-quvvatlaydi
 x = 1               // Sonlar.
@@ -31,16 +31,16 @@ x = 'hello world'   // Qo'shtirnoq ichidagi matnli satrlar.
 x = 'JavaScript'    // Bir tirnoq ham satrlarni chegaralaydi.
 x = true            // Mantiqiy (boolean) qiymat.
 x = false           // Ikkinchi mantiqiy qiymat.
-x = null            // `null` — "qiymat yo‘q" degan ma’noni anglatuvchi maxsus qiymat.
+x = null            // `null` — "qiymat yo'q" degan ma'noni anglatuvchi maxsus qiymat.
 x = undefined       // `undefined` — `null` kabi yana bir maxsus qiymat.
 ```
 
 ### Murakkab (Referens) qiymatlar
 
-JavaScript dasturlari boshqarishi mumkin bo‘lgan yana ikkita juda muhim tur - bu obyektlar va massivlar. Bular 6 va 7-boblarning mavzulari, lekin ular shunchalik muhimki, siz ularni bu boblarga yetib borguncha ko'p marta uchratasiz:
+JavaScript dasturlari boshqarishi mumkin bo'lgan yana ikkita juda muhim tur - bu obyektlar va massivlar. Bular 6 va 7-boblarning mavzulari, lekin ular shunchalik muhimki, siz ularni bu boblarga yetib borguncha ko'p marta uchratasiz:
 
 ```js
-// JavaScript’ning eng muhim ma'lumot turi - bu obyekt.
+// JavaScript'ning eng muhim ma'lumot turi - bu obyekt.
 // Obyekt - bu nom/qiymat juftliklari to'plami yoki satrdan qiymatga ishora qiluvchi xarita.
 let book = {                // Obyektlar jingalak qavslar `{}` ichiga olinadi.
   topic: 'JavaScript',      // "topic" xossasi "JavaScript" qiymatiga ega.
@@ -51,7 +51,7 @@ let book = {                // Obyektlar jingalak qavslar `{}` ichiga olinadi.
 book.topic                  // => "JavaScript"
 book['edition']             // => 7: xossa qiymatlariga murojaat qilishning boshqa usuli.
 book.author = 'Flanagan'    // Tayinlash orqali yangi xossalar yarating.
-book.contents = {}          // `{}` - hech qanday xossaga ega bo‘lmagan bo‘sh obyekt.
+book.contents = {}          // `{}` - hech qanday xossaga ega bo'lmagan bo'sh obyekt.
 
 // `?.` yordamida xossalarga shartli murojaat (ES2020):
 book.contents?.ch01?.sect1  // => undefined: `book.contents`da `ch01` xossasi yo'q.
@@ -63,10 +63,10 @@ primes.length               // => 4: massivda nechta element borligi.
 primes[primes.length - 1]   // => 7: massivning oxirgi elementi.
 primes[4] = 9               // Tayinlash orqali yangi element qo'shish.
 primes[4] = 11              // Yoki tayinlash orqali mavjud elementni o'zgartirish.
-let empty = []              // `[]` — elementlari yo‘q bo‘sh massiv.
+let empty = []              // `[]` — elementlari yo'q bo'sh massiv.
 empty.length                // => 0
 
-// Massivlar va obyektlar o‘z ichida boshqa massiv va obyektlarni saqlashi mumkin:
+// Massivlar va obyektlar o'z ichida boshqa massiv va obyektlarni saqlashi mumkin:
 let points = [              // 2 ta elementdan iborat massiv.
   { x: 0, y: 0 },           // Har bir element - obyekt.
   { x: 1, y: 1 },
@@ -80,16 +80,16 @@ let data = {                // 2 ta xossaga ega obyekt
 <Callout type="info">
 ### Kod misollaridagi izohlar sintaksisi
 
-Siz oldingi kodda ba'zi izohlar strelka `(=>)` bilan boshlanganini payqagan bo'lishingiz mumkin. Bular izohdan oldingi kod natijasida hosil bo'lgan qiymatni ko'rsatadi va bu men tomondan bosma kitobda veb-brauzer konsoli kabi interaktiv JavaScript muhitini o‘xshatishga bo‘lgan urinishimdir.
+Siz oldingi kodda ba'zi izohlar strelka `(=>)` bilan boshlanganini payqagan bo'lishingiz mumkin. Bular izohdan oldingi kod natijasida hosil bo'lgan qiymatni ko'rsatadi va bu men tomondan bosma kitobda veb-brauzer konsoli kabi interaktiv JavaScript muhitini o'xshatishga bo'lgan urinishimdir.
 
-Bu `// =>` ko‘rinishidagi izohlar, shuningdek _tasdiq (assertion)_ vazifasini ham bajaradi. Men kodni sinovdan o'tkazadigan va izohda ko'rsatilgan qiymatni hosil qilishini tekshiradigan maxsus vosita yozganman. Umid qilamanki, bu kitobdagi xatolarni kamaytirishga yordam beradi.
+Bu `// =>` ko'rinishidagi izohlar, shuningdek _tasdiq (assertion)_ vazifasini ham bajaradi. Men kodni sinovdan o'tkazadigan va izohda ko'rsatilgan qiymatni hosil qilishini tekshiradigan maxsus vosita yozganman. Umid qilamanki, bu kitobdagi xatolarni kamaytirishga yordam beradi.
 
 Izoh/tasdiqlarning o'zaro bog'liq ikki uslubi mavjud. Agar siz `// a == 42` ko'rinishidagi izohni ko'rsangiz, bu izohdan oldingi kod bajarilgandan so'ng, `a` o'zgaruvchisi 42 qiymatiga ega bo'lishini anglatadi. Agar siz `// !` ko'rinishidagi izohni ko'rsangiz, bu izohdan oldingi qatordagi kod istisno (exception) yuzaga keltirishini anglatadi (va undov belgisidan keyingi izohning qolgan qismi odatda qanday turdagi istisno yuzaga kelishini tushuntiradi).
 
-Siz bu izohlarni kitob davomida qo‘llanilishini ko'rishingiz mumkin.
+Siz bu izohlarni kitob davomida qo'llanilishini ko'rishingiz mumkin.
 </Callout>
 
-Bu yerda ko‘rsatilgan, massiv elementlarini kvadrat qavslar ichida ro‘yxat qilish yoki obyekt xossalarining nomlarini ularning qiymatlariga jingalak qavslar ichida bog‘lash sintaksisi _initsializator ifodasi (initializer expression)_ deb ataladi va bu 4-bobning mavzularidan faqat bittasidir. _Ifoda (expression)_ - bu qiymat hosil qilish uchun _bajarilishi (evaluate)_ mumkin bo'lgan JavaScript iborasidir. Masalan, obyekt xossasi yoki massiv elementining qiymatiga murojaat qilish uchun `.` va `[]`dan foydalanish ham ifoda hisoblanadi.
+Bu yerda ko'rsatilgan, massiv elementlarini kvadrat qavslar ichida ro'yxat qilish yoki obyekt xossalarining nomlarini ularning qiymatlariga jingalak qavslar ichida bog'lash sintaksisi _initsializator ifodasi (initializer expression)_ deb ataladi va bu 4-bobning mavzularidan faqat bittasidir. _Ifoda (expression)_ - bu qiymat hosil qilish uchun _bajarilishi (evaluate)_ mumkin bo'lgan JavaScript iborasidir. Masalan, obyekt xossasi yoki massiv elementining qiymatiga murojaat qilish uchun `.` va `[]`dan foydalanish ham ifoda hisoblanadi.
 
 JavaScript'da ifodalarni hosil qilishning eng keng tarqalgan usullaridan biri bu _operatorlardan_ foydalanishdir:
 
@@ -115,8 +115,8 @@ count                     // => 6: o'zgaruvchi nomlari ham ifodalardir
 // teng emas, kichik, katta va hokazo ekanligini tekshiradi. Ular `true` yoki `false` qiymatini qaytaradi.
 let x = 2,
   y = 3                   // Bu `=` belgilari tayinlash operatori, tenglikni tekshirish emas.
-x === y                   // => false: qat’iy tenglik
-x !== y                   // => true: qat’iy tengsizlik
+x === y                   // => false: qat'iy tenglik
+x !== y                   // => true: qat'iy tengsizlik
 x < y                     // => true: kichik
 x <= y                    // => true: kichik yoki teng
 x > y                     // => false: katta
@@ -127,15 +127,15 @@ x >= y                    // => false: katta yoki teng
     
 // Mantiqiy operatorlar mantiqiy (boolean) qiymatlarni birlashtiradi yoki inversiya qiladi
 (x === 2) && (y === 3)    // => true: ikkala taqqoslash ham rost. `&&` — bu mantiqiy VA (AND).
-(x > 3) || (y < 3)        // => false: ikkala taqqoslash ham yolg‘on. `||` — bu mantiqiy YOKI (OR)
-!(x === y)                // => true: `!` mantiqiy qiymatni teskarisiga o‘giradi (inversiya qiladi).
+(x > 3) || (y < 3)        // => false: ikkala taqqoslash ham yolg'on. `||` — bu mantiqiy YOKI (OR)
+!(x === y)                // => true: `!` mantiqiy qiymatni teskarisiga o'giradi (inversiya qiladi).
 ```
 
 ### JavaScript ifodalari va ko'rsatmalari
 
-Agar JavaScript _ifodalari (expressions)_ so‘z birikmalariga o‘xshasa, u holda JavaScript _ko‘rsatmalari (statements)_ to‘liq gaplarga o‘xshaydi. Ko'rsatmalar 5-bobning mavzusidir. Qisqacha aytganda, ifoda - bu qiymatni hisoblaydigan, lekin o‘zi hech qanday _amal bajarmaydigan_ narsadir: u dastur holatini (state) hech qanday tarzda o‘zgartirmaydi. Boshqa tomondan, ko‘rsatmalarning qiymati bo‘lmaydi, lekin ular dastur holatini o‘zgartiradi.
+Agar JavaScript _ifodalari (expressions)_ so'z birikmalariga o'xshasa, u holda JavaScript _ko'rsatmalari (statements)_ to'liq gaplarga o'xshaydi. Ko'rsatmalar 5-bobning mavzusidir. Qisqacha aytganda, ifoda - bu qiymatni hisoblaydigan, lekin o'zi hech qanday _amal bajarmaydigan_ narsadir: u dastur holatini (state) hech qanday tarzda o'zgartirmaydi. Boshqa tomondan, ko'rsatmalarning qiymati bo'lmaydi, lekin ular dastur holatini o'zgartiradi.
 
-Yuqorida o'zgaruvchilarni e'lon qilish va tayinlash ko‘rsatmalarini ko'rdingiz. Ko'rsatmalarning yana bir katta toifasi - bu shartli ko'rsatmalar va sikllar kabi _boshqaruv tuzilmalaridir (control structures)_. Siz ularning misollarini funksiyalarni ko'rib chiqqanimizdan so'ng ko'rasiz.
+Yuqorida o'zgaruvchilarni e'lon qilish va tayinlash ko'rsatmalarini ko'rdingiz. Ko'rsatmalarning yana bir katta toifasi - bu shartli ko'rsatmalar va sikllar kabi _boshqaruv tuzilmalaridir (control structures)_. Siz ularning misollarini funksiyalarni ko'rib chiqqanimizdan so'ng ko'rasiz.
 
 ### Funksiyalar
 
@@ -151,7 +151,7 @@ plus1(y)                    // => 4: `y`ning qiymati 3, shuning uchun bu chaqiru
 
 let square = function (x) { // Funksiyalar qiymatlardir va o'zgaruvchilarga tayinlanishi mumkin
   return x * x              // Funksiya qiymatini hisoblash
-}                           // Nuqtali vergul tayinlash ko‘rsatmasi oxirini bildiradi
+}                           // Nuqtali vergul tayinlash ko'rsatmasi oxirini bildiradi
 
 square(plus1(y))            // => 16: bir ifodada ikkita funksiyani chaqirish
 ```
@@ -163,7 +163,7 @@ Yuqoridagi kod strelkali funksiyalardan foydalangan holda qayta yozilganda quyid
 ```js
 const plus1 = (x) => x + 1  // Kiruvchi x qiymati chiquvchi x + 1 ga moslanadi
 const square = (x) => x * x // Kiruvchi x qiymati chiquvchi x * x ga moslanadi
-plus1(y)                    // => 4: funksiyani chaqirish o‘zgarmaydi
+plus1(y)                    // => 4: funksiyani chaqirish o'zgarmaydi
 square(plus1(y))            // => 16
 ```
 
@@ -192,13 +192,13 @@ points.dist()                     // => Math.sqrt(2): bizning 2 ta nuqtamiz oras
 
 ### Boshqaruv tuzilmalari
 
-Va'da qilinganidek, quyida JavaScript’ning keng tarqalgan boshqaruv tuzilmasi ko'rsatmalarini namoyish etuvchi funksiyalar keltirilgan:
+Va'da qilinganidek, quyida JavaScript'ning keng tarqalgan boshqaruv tuzilmasi ko'rsatmalarini namoyish etuvchi funksiyalar keltirilgan:
 
 ```js
-// JavaScript ko‘rsatmalariga C, C++, Java va boshqa tillar sintaksisidagi
-// shartli ko‘rsatmalar va sikllar kiradi.
+// JavaScript ko'rsatmalariga C, C++, Java va boshqa tillar sintaksisidagi
+// shartli ko'rsatmalar va sikllar kiradi.
 function abs(x) {         // Absolyut qiymatni hisoblaydigan funksiya
-  if (x >= 0) {           // `if` ko‘rsatmasi...
+  if (x >= 0) {           // `if` ko'rsatmasi...
     return x              // agar taqqoslash rost bo'lsa, shu kodni bajaradi
   }                       // `if` blokining oxiri
   else {                  // Ixtiyoriy `else` bloki, agar taqqoslash
@@ -208,7 +208,7 @@ function abs(x) {         // Absolyut qiymatni hisoblaydigan funksiya
 abs(-10) === abs(10)      // => true
 
 function sum(array) {     // Massiv elementlari yig'indisini hisoblash
-  let sum = 0             // Boshlang‘ich yig‘indini 0 dan boshlaymiz.
+  let sum = 0             // Boshlang'ich yig'indini 0 dan boshlaymiz.
   for (let x of array) {  // Massiv bo'ylab sikl, har bir elementni x ga tayinlaydi
     sum += x              // Element qiymatini yig'indiga qo'shish
   }                       // Siklning oxiri
@@ -217,7 +217,7 @@ function sum(array) {     // Massiv elementlari yig'indisini hisoblash
 sum(primes)               // => 28: dastlabki 5 ta tub son yig'indisi 2+3+5+7+11
 
 function factorial(n) {   // Faktorialni hisoblash funksiyasi
-  let product = 1         // Ko‘paytmani 1 dan boshlaymiz.
+  let product = 1         // Ko'paytmani 1 dan boshlaymiz.
   while (n > 1) {         // `()` ichidagi ifoda rost bo'lsa, `{}` ichidagi ko'rsatmalarni takrorlaydi.
     product *= n          // `product = product * n` uchun qisqartma
     n--                   // `n = n - 1` uchun qisqartma
@@ -242,7 +242,7 @@ factorial2(5)             // => 120: 1*2*3*4*5
 
 ### Obyektga yo'naltirilgan dasturlash
 
-JavaScript obyektga yo'naltirilgan dasturlash (OYD, object-oriented programming - OOP) uslubini qo'llab-quvvatlaydi, lekin u klassik OYD tillaridan sezilarli darajada farq qiladi. 9-bob JavaScript’dagi OYDni ko'plab misollar bilan batafsil yoritadi. Quyida 2D geometrik nuqtalarni ifodalovchi JavaScript klassini qanday aniqlashni ko'rsatuvchi juda oddiy misol keltirilgan. Bu klass _nusxalari (instances)_ bo'lgan obyektlar nuqtaning koordinata boshidan masofasini hisoblaydigan `distance()` nomli yagona metodga ega:
+JavaScript obyektga yo'naltirilgan dasturlash (OYD, object-oriented programming - OOP) uslubini qo'llab-quvvatlaydi, lekin u klassik OYD tillaridan sezilarli darajada farq qiladi. 9-bob JavaScript'dagi OYDni ko'plab misollar bilan batafsil yoritadi. Quyida 2D geometrik nuqtalarni ifodalovchi JavaScript klassini qanday aniqlashni ko'rsatuvchi juda oddiy misol keltirilgan. Bu klass _nusxalari (instances)_ bo'lgan obyektlar nuqtaning koordinata boshidan masofasini hisoblaydigan `distance()` nomli yagona metodga ega:
 
 ```js
 class Point {           // Qoida bo'yicha, klass nomlari bosh harf bilan yoziladi.
@@ -267,7 +267,7 @@ p.distance()            // => Math.SQRT2
 
 ### Keyingi boblar mavzulari
 
-JavaScript’ning fundamental sintaksisi va imkoniyatlari bo'ylab ushbu kirish sayohatimiz shu yerda poyoniga yetadi, lekin kitob tilning qo'shimcha xususiyatlarini qamrab oluvchi mustaqil boblar bilan davom etadi:
+JavaScript'ning fundamental sintaksisi va imkoniyatlari bo'ylab ushbu kirish sayohatimiz shu yerda poyoniga yetadi, lekin kitob tilning qo'shimcha xususiyatlarini qamrab oluvchi mustaqil boblar bilan davom etadi:
 
 #### 10-bob, Modullar
 
@@ -283,19 +283,19 @@ Barcha JavaScript dasturlari uchun mavjud bo'lgan ichki o'rnatilgan funksiyalar 
 
 #### 13-bob, Asinxron JavaScript
 
-Bu bob JavaScript’da asinxron dasturlashni chuqur o'rganib, `callback`’lar va `event`’lar, `Promise`’larga asoslangan API’lar hamda `async` va `await` kalit so'zlarini qamrab oladi. Garchi JavaScript tilining yadrosi asinxron bo'lmasa-da, asinxron API’lar veb-brauzerlarda ham, Node’da ham standart yondashuv hisoblanadi va bu bob ushbu API’lar bilan ishlash usullarini tushuntiradi.
+Bu bob JavaScript'da asinxron dasturlashni chuqur o'rganib, `callback`'lar va `event`'lar, `Promise`'larga asoslangan API'lar hamda `async` va `await` kalit so'zlarini qamrab oladi. Garchi JavaScript tilining yadrosi asinxron bo'lmasa-da, asinxron API'lar veb-brauzerlarda ham, Node'da ham standart yondashuv hisoblanadi va bu bob ushbu API'lar bilan ishlash usullarini tushuntiradi.
 
 #### 14-bob, Metadasturlash
 
-Boshqa JavaScript dasturchilari foydalanishi uchun kutubxonalar yozadigan dasturchilarga qiziq bo'lishi mumkin bo'lgan JavaScript’ning bir qator takomillashgan xususiyatlarini tanishtiradi.
+Boshqa JavaScript dasturchilari foydalanishi uchun kutubxonalar yozadigan dasturchilarga qiziq bo'lishi mumkin bo'lgan JavaScript'ning bir qator takomillashgan xususiyatlarini tanishtiradi.
 
 #### 15-bob, Veb-brauzerlarda JavaScript
 
-Veb-brauzer host muhitini tanishtiradi, veb-brauzerlar JavaScript kodini qanday bajarishini tushuntiradi va veb-brauzerlar tomonidan belgilangan ko'plab API’larning eng muhimlarini qamrab oladi. Bu kitobdagi eng uzun bob.
+Veb-brauzer host muhitini tanishtiradi, veb-brauzerlar JavaScript kodini qanday bajarishini tushuntiradi va veb-brauzerlar tomonidan belgilangan ko'plab API'larning eng muhimlarini qamrab oladi. Bu kitobdagi eng uzun bob.
 
 #### 16-bob, Node bilan Server tomonidagi JavaScript
 
-Node host muhitini tanishtiradi, uning fundamental dasturlash modelini hamda tushunish uchun eng muhim bo'lgan ma'lumotlar tuzilmalari va API’larni qamrab oladi.
+Node host muhitini tanishtiradi, uning fundamental dasturlash modelini hamda tushunish uchun eng muhim bo'lgan ma'lumotlar tuzilmalari va API'larni qamrab oladi.
 
 #### 17-bob, JavaScript Vositalari va Kengaytmalari
 

@@ -1,0 +1,200 @@
+---
+title: Shartli ko'rsatmalar
+description: "JavaScript'da shartli bajarilish: if/else ko'rsatmalari, else if zanjiri, switch ko'rsatmasi va tarmoqlanish mexanizmlari."
+keywords: JavaScript, shartli ko'rsatmalar, conditional statements, if else, switch, tarmoqlar, branches, qaror qabul qilish, decision making, boshqaruv oqimi, control flow, shartli bajarilish, conditional execution, if/else zanjiri, else if chain
+author: Webiston.uz
+---
+
+# Shartli ko'rsatmalar
+
+**Shartli ko'rsatmalar** belgilangan ifodaning qiymatiga qarab boshqa ko'rsatmalarni bajaradi yoki o'tkazib yuboradi. Bu ko'rsatmalar kodingizning "qaror qabul qilish nuqtalari" bo'lib, ular ba'zan **"tarmoqlar" (`branches`)** deb ham ataladi. Agar JavaScript interpretatorini kodingiz bo'ylab biror yo'ldan ketayotgan deb tasavvur qilsak, shartli ko'rsatmalar kod ikki yoki undan ortiq yo'lga tarmoqlanadigan va interpretator qaysi yo'ldan borishni tanlashi kerak bo'lgan joylardir.
+
+Keyingi quyi bo'limlar JavaScript'ning asosiy shartli ko'rsatmasi — `if/else` ko'rsatmasini tushuntiradi, shuningdek, murakkabroq, ko'p tarmoqli `switch` ko'rsatmasini ham qamrab oladi.
+
+## `if`
+
+`if` ko'rsatmasi — bu JavaScript'ga qarorlar qabul qilish, aniqrog'i, ko'rsatmalarni shartli ravishda bajarish imkonini beruvchi fundamental boshqaruvchi ko'rsatmadir. Bu ko'rsatmaning ikki xil shakli mavjud. Birinchisi:
+
+``` js
+if (expression)
+    statement
+```
+
+Bu shaklda `expression` (ifoda) baholanadi. Agar hosil bo'lgan qiymat _truthy_ bo'lsa, `statement` (ko'rsatma) bajariladi. Agar `expression` _falsy_ bo'lsa, `statement` bajarilmaydi. (_truthy_ va _falsy_ qiymatlarning ta'rifi uchun §3.4-bo'limga qarang.) Masalan:
+
+``` js
+if (username == null)       // Agar `username` qiymati `null` yoki `undefined` bo'lsa,
+    username = "John Doe";  // unga qiymat beramiz
+```
+
+Yoki shunga o'xshash:
+
+``` js
+// Agar `username` qiymati `null`, `undefined`, `false`, `0`, `""`, yoki `NaN` bo'lsa, unga yangi qiymat tayinlaymiz
+if (!username) username = "John Doe";
+```
+
+E'tibor bering, ifodani o'rab turuvchi qavslar `if` ko'rsatmasi sintaksisining majburiy qismidir.
+
+JavaScript sintaksisi `if` kalit so'zi va qavs ichidagi ifodadan keyin yagona ko'rsatma kelishini talab qiladi, lekin ko'rsatmalar blokidan foydalanib, bir nechta ko'rsatmani bittaga birlashtirish mumkin. Shunday qilib, `if` ko'rsatmasi quyidagi ko'rinishga ham ega bo'lishi mumkin:
+
+``` js
+if (!address) {
+    address = "";
+    message = "Please specify a mailing address.";
+}
+```
+
+`if` ko'rsatmasining ikkinchi shakli `expression` `false` bo'lganda bajariladigan `else` qismini kiritadi. Uning sintaksisi quyidagicha:
+
+``` js
+if (expression)
+    statement1
+else
+    statement2
+```
+
+Ko'rsatmaning bu shakli, agar `expression` _truthy_ bo'lsa, `statement1`'ni, _falsy_ bo'lsa, `statement2`'ni bajaradi. Masalan:
+
+``` js
+if (n === 1)
+    console.log("You have 1 new message.");
+else
+    console.log(`You have ${n} new messages.`);
+```
+
+Ichma-ich joylashgan `if` ko'rsatmalari `else` qismlari bilan ishlatilganda, `else` qismining tegishli `if` ko'rsatmasiga bog'langanligiga ishonch hosil qilish uchun biroz ehtiyotkorlik talab etiladi. Quyidagi qatorlarni ko'rib chiqamiz:
+
+``` js
+i = j = 1;
+k = 2;
+if (i === j)
+    if (j === k)
+        console.log("i equals k");
+else
+    console.log("i doesn't equal j"); // NOTO'G'RI!!
+```
+
+Bu misolda ichki `if` ko'rsatmasi tashqi `if` ko'rsatmasi sintaksisi ruxsat bergan yagona ko'rsatma vazifasini bajarmoqda. Afsuski, `else`'ning qaysi `if`'ga tegishli ekanligi noaniq (abzas bilan berilgan ishoradan tashqari). Va bu misolda abzas xato qo'llanilgan, chunki JavaScript interpretatori aslida avvalgi misolni quyidagicha talqin qiladi:
+
+``` js
+if (i === j) {
+    if (j === k)
+        console.log("i equals k");
+    else
+        console.log("i doesn't equal j"); // XATO!
+}
+```
+
+JavaScript'dagi (va boshqa ko'plab dasturlash tillaridagi) qoida shundan iboratki, standart holatda `else` qismi o'ziga eng yaqin joylashgan `if` ko'rsatmasining bir qismi hisoblanadi. Bu misolni kamroq noaniq va o'qish, tushunish, qo'llab-quvvatlash hamda nosozliklarni tuzatishni osonlashtirish uchun jingalak qavslardan foydalanish kerak:
+
+``` js
+if (i === j) {
+    if (j === k) {
+        console.log("i equals k");
+    }
+} else { // Jingalak qavsning o'rni qanday katta farq yaratadi-ya!
+    console.log("i doesn't equal j");
+}
+```
+
+Ko'pgina dasturchilar, tanasi faqat bitta ko'rsatmadan iborat bo'lsa ham, `if` va `else` ko'rsatmalarining (shuningdek, `while` sikllari kabi boshqa tarkibiy ko'rsatmalarning) tanasini doim jingalak qavslar ichiga olishni odat qilishgan. Bunga doimiy amal qilish yuqorida ko'rsatilgan kabi muammolarning oldini oladi va shu amaliyotni qo'llash tavsiya etiladi. Ushbu chop etilgan kitobda men misol kodlarini vertikal jihatdan ixcham saqlashga ko'proq e'tibor beraman va shu sababli bu masalada har doim ham o'z maslahatimga amal qilavermayman.
+
+## `else if` zanjiri
+
+`if/else` ko'rsatmasi bitta shartga ko'ra ikki yo'ldan birini tanlash imkonini beradi. Xo'sh, agar yo'llar ko'p bo'lsa-chi? Bir nechta kod qismlaridan faqat bittasini bajarish kerak bo'lganda, `else if` yordamga keladi. Aslida, `else if` JavaScript'ning alohida bir ko'rsatmasi emas. U shunchaki ketma-ket kelgan `if/else` ko'rsatmalari natijasida vujudga keladigan va dasturchilar orasida keng ommalashgan uslubiy yechimdir (`idiom`):
+
+``` js
+if (n === 1) {
+    // 1-kod bloki ishga tushadi
+} else if (n === 2) {
+    // 2-kod bloki ishga tushadi
+} else if (n === 3) {
+    // 3-kod bloki ishga tushadi
+} else {
+    // Agar yuqoridagilarning hech biri mos kelmasa, 4-blok ishga tushadi
+}
+```
+
+Bu kodning tuzilishida hech qanday o'zgacha biror narsa yo'q. Bu shunchaki `if` ko'rsatmalarining zanjiri bo'lib, unda har bir keyingi `if` o'zidan oldingi ko'rsatmaning `else` qismini tashkil etadi. `else if` uslubidan foydalanish, bu ko'rsatmalarni ularning sintaktik jihatdan teng kuchli, ammo o'qish uchun noqulay bo'lgan, to'liq ichma-ich joylashgan shaklidan ko'ra ancha afzalroqdir:
+
+``` js
+if (n === 1) {
+    // 1-kod bloki ishga tushadi
+}
+else {
+    if (n === 2) {
+        // 2-kod bloki ishga tushadi
+    }
+    else {
+        if (n === 3) {
+            // 3-kod bloki ishga tushadi
+        }
+        else {
+            // Agar yuqoridagilarning hech biri mos kelmasa, 4-blok ishga tushadi
+        }
+    }
+}
+```
+
+## `switch`
+
+`if` ko'rsatmasi dastur bajarilish oqimida tarmoqlanishni yuzaga keltiradi va `else if` uslubidan foydalanib, ko'p yo'nalishli tarmoqlanishni amalga oshirish mumkin. Biroq barcha tarmoqlar ayni bir ifodaning qiymatiga bog'liq bo'lgan holatlarda, bu eng yaxshi yechim emas. Bunday vaziyatda, o'sha ifodani bir nechta `if` ko'rsatmalarida qayta-qayta baholash — resurslarni behuda sarflashdir.
+
+`switch` ko'rsatmasi aynan shu holatni hal qilish uchun mo'ljallangan. `switch` kalit so'zidan keyin qavslar ichida ifoda va jingalak qavslar ichida kod bloki keladi:
+
+``` js
+switch(expression) {
+    statements
+}
+```
+
+Biroq `switch` ko'rsatmasining to'liq sintaksisi bundan murakkabroq. Kod bloki ichidagi turli joylar `case` kalit so'zi, undan keyin keladigan ifoda va ikki nuqta bilan belgilanadi. `switch` ishga tushganda, u `expression`'ning qiymatini hisoblaydi va so'ngra `case` begilaridan o'z ifodasi ayni shu qiymatga baholanadiganini qidiradi (bu yerda moslik `===` operatori bilan aniqlanadi). Agar shunday belgi topilsa, u kod blokini o'sha `case` bilan belgilangan ko'rsatmadan boshlab bajarishni boshlaydi. Agar mos keladigan qiymatga ega `case` topilmasa, u `default:` deb belgilangan ko'rsatmani qidiradi. Agar `default:` belgisi ham bo'lmasa, `switch` ko'rsatmasi kod blokini butunlay o'tkazib yuboradi.
+
+`switch` — tushuntirish uchun biroz chalkash ko'rsatma; uning ishlashi misol bilan ancha oydinlashadi. Quyidagi `switch` ko'rsatmasi oldingi bo'limda ko'rsatilgan takroriy `if/else` ko'rsatmalariga ekvivalentdir:
+
+``` js
+switch(n) {
+    case 1:                           // Agar `n === 1` bo'lsa, shu yerdan boshlanadi
+        // 1-kod blokini bajaradi.
+        break;                        // Shu yerda to'xtaydi
+    case 2:                           // Agar `n === 2` bo'lsa, shu yerdan boshlanadi
+        // 2-kod blokini bajaradi.
+        break;                        // Shu yerda to'xtaydi
+    case 3:                           // Agar `n === 3` bo'lsa, shu yerdan boshlanadi
+        // 3-kod blokini bajaradi.
+        break;                        // Shu yerda to'xtaydi
+    default:                          // Agar yuqoridagilarning hech biri mos kelmasa...
+        // 4-kod blokini bajaradi.
+        break;                        // Shu yerda to'xtaydi
+}
+```
+
+Bu koddagi har bir `case`'ning oxirida ishlatilgan `break` kalit so'ziga e'tibor bering. Ushbu bobning keyingi qismida tasvirlanadigan `break` ko'rsatmasi interpretatorni `switch` ko'rsatmasining oxiriga "sakrashga" (yoki undan "chiqib ketishga") va undan keyin keladigan ko'rsatma bilan davom etishga majbur qiladi.
+
+`switch` ko'rsatmasidagi `case` bandlari faqat kerakli kodning boshlanish nuqtasini belgilaydi; ular hech qanday tugash nuqtasini belgilamaydi. `break` ko'rsatmalari bo'lmagan taqdirda, `switch` ko'rsatmasi o'z kod blokini o'z ifodasining qiymatiga mos keladigan `case` belgisidan boshlab bajarishni boshlaydi va blokning oxiriga yetguncha ko'rsatmalarni bajarishda davom etadi. Kamdan-kam hollarda, bir `case` belgisidan keyingisiga "o'tib ketadigan" (`falls through`) bunday kod yozish foydali bo'ladi, lekin 99% hollarda har bir `case`'ni `break` ko'rsatmasi bilan yakunlashga ehtiyot bo'lish kerak. (Biroq `switch`'ni funksiya ichida ishlatganda, `break` ko'rsatmasi o'rniga `return` ko'rsatmasidan foydalanish mumkin. Ikkalasi ham `switch` ko'rsatmasini yakunlashga va bajarilishning keyingi `case`'ga o'tib ketishining oldini olishga xizmat qiladi.)
+
+Quyida `switch` ko'rsatmasining yanada hayotiyroq misoli keltirilgan; u qiymatni uning tipiga qarab satrga o'zgartiradi:
+
+``` js
+function convert(x) {
+    switch(typeof x) {
+        case "number": // Sonni o'n oltilik butun songa o'zgartirish
+            return x.toString(16);
+        case "string": // Satrni qo'shtirnoq ichiga olib qaytarish
+            return '"' + x + '"';
+        default:       // Boshqa har qanday tipni odatiy usulda o'zgartirish
+            return String(x);
+    }
+}
+```
+
+E'tibor bering, oldingi ikki misolda `case` kalit so'zlaridan keyin mos ravishda son va satr literallari kelgan. Amalda `switch` ko'rsatmasi eng ko'p shu tarzda ishlatiladi, lekin shuni yodda tutingki, ECMAScript standarti har bir `case`'dan keyin ixtiyoriy ifoda kelishiga ruxsat beradi.
+
+`switch` ko'rsatmasi avval `switch` kalit so'zidan keyingi ifodani baholaydi, so'ngra mos keladigan qiymatni topguncha `case` ifodalarini ular paydo bo'lish tartibida baholaydi.[^1] Mos keladigan `case` `==` tenglik operatori bilan emas, balki `===` ayniyat operatori yordamida aniqlanadi, shuning uchun ifodalar hech qanday tip konversiyasisiz mos kelishi kerak.
+
+`switch` ko'rsatmasi har safar bajarilganda `case` ifodalarining hammasi ham baholanmasligi sababli, tarkibida funksiya chaqiruvlari yoki tayinlashlar kabi qo'shimcha ta'sirlarga ega bo'lgan `case` ifodalarini ishlatishdan qochish kerak. Eng xavfsiz yo'l — bu `case` ifodalarini shunchaki konstantali ifodalar bilan cheklashdir.
+
+Avvalroq tushuntirilganidek, agar `case` ifodalarining hech biri `switch` ifodasiga mos kelmasa, `switch` ko'rsatmasi o'z tanasini `default:` belgisi qo'yilgan ko'rsatmadan boshlab bajaradi. Agar `default:` belgisi bo'lmasa, `switch` ko'rsatmasi o'z tanasini butunlay o'tkazib yuboradi. E'tibor bering, ko'rsatilgan misollarda `default:` belgisi barcha `case` belgilaridan keyin, `switch` tanasining oxirida kelmoqda. Bu uning mantiqiy va keng tarqalgan joylashuvi, lekin u aslida ko'rsatma tanasining istalgan joyida paydo bo'lishi mumkin.
+
+[^1]: `case` ifodalarining `runtime`'da baholanishi JavaScript'dagi `switch` ko'rsatmasini C, C++ va Java'dagi `switch` ko'rsatmasidan ancha farqli (va kamroq samarali) qiladi. Bu tillarda `case` ifodalari bir xil tipdagi, kompilyatsiya vaqtidagi konstantalar bo'lishi shart va `switch` ko'rsatmalari ko'pincha yuqori samarali sakrash jadvallariga kompilyatsiya qilinishi mumkin.

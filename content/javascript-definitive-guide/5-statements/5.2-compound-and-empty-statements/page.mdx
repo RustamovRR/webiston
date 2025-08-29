@@ -1,0 +1,50 @@
+---
+title: Tarkibiy va bo'sh ko'rsatmalar
+description: "Ko'rsatmalar bloki va tarkibiy ko'rsatmalar: jingalak qavslar, quyi ko'rsatmalar, bo'sh ko'rsatmalar va ularning qo'llanilishi."
+keywords: JavaScript, tarkibiy ko'rsatmalar, compound statements, bo'sh ko'rsatmalar, empty statements, ko'rsatmalar bloki, statement blocks, jingalak qavslar, curly braces, quyi ko'rsatmalar, substatements, blok, block, kod bloki, code block
+author: Webiston.uz
+---
+
+# Tarkibiy va bo'sh ko'rsatmalar
+
+Xuddi vergul operatori (§4.13.7) bir nechta ifodani yagona ifodaga birlashtirgani kabi, **ko'rsatmalar bloki** ham bir nechta ko'rsatmani yagona **tarkibiy ko'rsatmaga** jamlaydi. Ko'rsatmalar bloki — bu shunchaki jingalak qavslar (`{}`) ichiga olingan ko'rsatmalar ketma-ketligidir. Shunday qilib, quyidagi qatorlar yagona ko'rsatma sifatida ishlaydi va JavaScript yagona ko'rsatma talab qiladigan har qanday joyda qo'llanilishi mumkin:
+
+``` js
+{
+    x = Math.PI;
+    cx = Math.cos(x);
+    console.log("cos(π) = " + cx);
+}
+```
+
+Ushbu ko'rsatmalar bloki haqida bir nechta narsani ta'kidlash lozim. Birinchidan, u nuqtali vergul bilan tugamaydi. Blok ichidagi primitiv ko'rsatmalar nuqtali vergul bilan yakunlanadi, lekin blokning o'zi yakunlanmaydi. Ikkinchidan, blok ichidagi qatorlar uni o'rab turuvchi jingalak qavslarga nisbatan abzas bilan yozilgan. Bu majburiy emas, lekin kodni o'qish va tushunishni osonlashtiradi.
+
+Ifodalar ko'pincha quyi ifodalardan tashkil topgani kabi, ko'plab JavaScript ko'rsatmalari ham o'z tarkibida **quyi ko'rsatmalarga** ega bo'ladi. Rasman, JavaScript sintaksisi odatda bitta quyi ko'rsatmaga ruxsat beradi. Misol uchun, `while` sikli sintaksisida sikl tanasi vazifasini bajaruvchi yagona ko'rsatma mavjud. Ko'rsatmalar blokidan foydalanib, ruxsat etilgan shu yagona quyi ko'rsatma o'rniga istalgancha ko'rsatma joylashtirish mumkin.
+
+Tarkibiy ko'rsatma JavaScript sintaksisi bitta ko'rsatmani kutgan joyda bir nechta ko'rsatmani ishlatishga imkon beradi. **Bo'sh ko'rsatma** esa buning aksidir: u bitta ko'rsatma kutilgan joyda hech qanday ko'rsatma ishlatmaslik imkonini beradi. Bo'sh ko'rsatma quyidagicha ko'rinishga ega:
+
+``` js
+;
+```
+
+JavaScript interpretatori bo'sh ko'rsatmani bajarganda hech qanday amal bajarmaydi. Bo'sh ko'rsatma ba'zan tanasi bo'sh bo'lgan sikl yaratish kerak bo'lganda foydali bo'ladi. Quyidagi `for` siklini ko'rib chiqing (`for` sikllari §5.4.3-bo'limda batafsil yoritiladi):
+
+``` js
+// `a` massivini initsializatsiya qilish
+for(let i = 0; i < a.length; a[i++] = 0) ;
+```
+
+Bu siklda barcha ish `a[i++] = 0` ifodasi orqali bajariladi va sikl tanasiga ehtiyoj qolmaydi. Biroq JavaScript sintaksisi sikl tanasi sifatida biror ko'rsatma bo'lishini talab qiladi, shuning uchun bu yerda bo'sh ko'rsatma — ya'ni shunchaki nuqtali vergul — ishlatiladi.
+
+E'tibor bering, `for`, `while` yoki `if` ko'rsatmalarining yopiluvchi qavsidan keyin beixtiyor qo'yib yuborilgan nuqtali vergul aniqlash qiyin bo'lgan jiddiy xatoliklarga olib kelishi mumkin. Masalan, quyidagi kod muallif kutgan natijani bermasligi aniq:
+
+``` js
+if ((a === 0) || (b === 0));    // Voy! Bu qator hech narsa bajarmaydi...
+o = null;                       // ...va bu qator har doim bajariladi.
+```
+
+Agar bo'sh ko'rsatmani ataylab ishlatsangiz, buni maqsadli ravishda qilayotganingizni aniq ko'rsatish uchun kodingizga izoh qo'shib qo'yish yaxshi amaliyotdir. Masalan:
+
+``` js
+for(let i = 0; i < a.length; a[i++] = 0) /* bo'sh */ ;
+```

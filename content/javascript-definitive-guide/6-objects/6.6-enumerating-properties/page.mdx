@@ -1,0 +1,56 @@
+---
+title: Xossalarni sanab o'tish
+description: "JavaScript obyektlarida xossalarni sanab o'tish: for/in sikli, Object.keys(), Object.getOwnPropertyNames() va xossalar tartibi."
+keywords: JavaScript, xossalarni sanab o'tish, property enumeration, enumerating properties, for/in sikli, for in loop, Object.keys, Object.getOwnPropertyNames, sanaladigan xossalar, enumerable properties, xossalar tartibi, property order, iteratsiya, iteration
+author: Webiston.uz
+---
+
+# Xossalarni sanab o'tish
+
+Ba'zan alohida xossalarning mavjudligini tekshirish o'rniga, obyektning barcha xossalari bo'ylab iteratsiya qilishni yoki ularning ro'yxatini olishni xohlaymiz. Buni amalga oshirishning bir nechta turli yo'llari mavjud.
+
+`for/in` sikli §5.4.5-bo'limda yoritilgan edi. U ko'rsatilgan obyektning har bir **sanab o'tiladigan (`enumerable`)** xossasi (shaxsiy yoki meros olingan) uchun sikl tanasini bir marta ishga tushiradi va xossa nomini sikl o'zgaruvchisiga tayinlaydi. Obyektlar meros qilib oladigan ichki o'rnatilgan metodlar sanab o'tilmaydi, lekin sizning kodingiz obyektlarga qo'shadigan xossalar standart holatda sanab o'tiladigan bo'ladi. Masalan:
+
+``` js
+let o = {x: 1, y: 2, z: 3};         // Uchta sanaladigan shaxsiy xossa
+o.propertyIsEnumerable("toString")  // => false: sanab o'tilmaydi
+for(let p in o) {                   // Xossalar bo'ylab aylanib chiqish
+    console.log(p);                 // `x`, `y`, va `z`ni chiqaradi, lekin `toString`ni emas
+}
+```
+
+`for/in` yordamida meros olingan xossalarni sanab o'tishdan himoyalanish uchun sikl tanasi ichiga aniq tekshiruv qo'shishingiz mumkin:
+
+``` js
+for(let p in o) {
+    if (!o.hasOwnProperty(p)) continue;         // Meros olingan xossalarni o'tkazib yuborish
+}
+
+for(let p in o) {
+    if (typeof o[p] === "function") continue;   // Barcha metodlarni o'tkazib yuborish
+}
+```
+
+`for/in` siklidan foydalanishga alternativ sifatida, ko'pincha obyektning xossa nomlari massivini olib, so'ngra bu massiv bo'ylab `for/of` sikli yordamida aylanib chiqish osonroq bo'ladi. Xossa nomlari massivini olish uchun foydalanishingiz mumkin bo'lgan to'rtta funksiya mavjud:
+
+- `Object.keys()` obyektning sanab o'tiladigan shaxsiy xossalari nomlari massivini qaytaradi. U sanab o'tilmaydigan xossalarni, meros qilib olingan xossalarni yoki nomi `Symbol` bo'lgan xossalarni (§6.10.3-bo'limga qarang) o'z ichiga olmaydi.
+
+- `Object.getOwnPropertyNames()` xuddi `Object.keys()` kabi ishlaydi, lekin nomlari satr bo'lsa, sanab o'tilmaydigan shaxsiy xossalarning nomlari massivini ham qaytaradi.
+
+- `Object.getOwnPropertySymbols()` nomlari `Symbol` bo'lgan shaxsiy xossalarni, ular sanab o'tiladigan yoki o'tilmaydigan bo'lishidan qat'i nazar, qaytaradi.
+
+- `Reflect.ownKeys()` barcha shaxsiy xossa nomlarini — ham sanab o'tiladigan, ham sanab o'tilmaydigan, ham satrli, ham `Symbol`'li — qaytaradi. (§14.6-bo'limga qarang.)
+
+`Object.keys()`'ni `for/of` sikli bilan ishlatishga doir misollar §6.7-bo'limda keltirilgan.
+
+## Xossalarni sanab o'tish tartibi
+
+ES6 obyektning shaxsiy xossalari qanday tartibda sanab o'tilishini rasman belgilaydi. `Object.keys()`, `Object.getOwnPropertyNames()`, `Object.getOwnPropertySymbols()`, `Reflect.ownKeys()` va `JSON.stringify()` kabi o'zaro bog'liq metodlarning barchasi xossalarni quyidagi tartibda ro'yxat qiladi (bunda ularning sanab o'tilmaydigan xossalarni yoki nomlari satr yoxud `Symbol` bo'lgan xossalarni ro'yxatga olish-olmasligi haqidagi o'zlarining qo'shimcha cheklovlari saqlanib qoladi):
+
+- Avvalo, nomlari manfiy bo'lmagan butun sonlar bo'lgan satrli xossalar eng kichigidan eng kattasiga qarab, sonli tartibda ro'yxatga olinadi. Bu qoida massivlar va massivsimon obyektlarning xossalari tartib bilan sanab o'tilishini anglatadi.
+
+- Massiv indekslariga o'xshash barcha xossalar ro'yxatga olingandan so'ng, satr nomlariga ega bo'lgan qolgan barcha xossalar ro'yxatga olinadi (jumladan, manfiy sonlarga yoki suzuvchi nuqtali sonlarga o'xshash xossalar ham). Bu xossalar obyektga qo'shilish tartibida ro'yxatga olinadi. Obyekt literalida aniqlangan xossalar uchun bu tartib ularning literalda kelish tartibi bilan bir xil bo'ladi.
+
+- Nihoyat, nomlari `Symbol` obyektlari bo'lgan xossalar obyektga qo'shilish tartibida ro'yxatga olinadi.
+
+`for/in` sikli uchun sanab o'tish tartibi bu sanab o'tish funksiyalaridagidek qat'iy belgilanmagan, lekin implementatsiyalar odatda shaxsiy xossalarni yuqorida tasvirlangan tartibda sanab o'tadi, so'ngra prototiplar zanjiri bo'ylab yuqoriga ko'tarilib, har bir prototip obyekti uchun xossalarni xuddi shu tartibda sanab o'tadi. Biroq shuni yodda tutingki, agar xuddi shu nomdagi xossa allaqachon sanab o'tilgan bo'lsa, yoki hatto shu nomdagi sanab o'tilmaydigan xossa allaqachon ko'rib chiqilgan bo'lsa, bu xossa sanab o'tilmaydi.

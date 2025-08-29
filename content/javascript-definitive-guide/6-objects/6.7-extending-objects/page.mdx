@@ -1,0 +1,65 @@
+---
+title: Obyektlarni kengaytirish
+description: "JavaScript'da obyektlarni kengaytirish: Object.assign(), xossalarni ko'chirish, standart qiymatlarni boshqarish va merge funksiyalari."
+keywords: JavaScript, obyektlarni kengaytirish, object extension, extending objects, Object.assign, xossalarni ko'chirish, property copying, standart qiymatlar, default values, obyektlarni birlashtirish, merge objects, spread operatori, spread operator, obyektlarni yoyish
+author: Webiston.uz
+---
+
+# Obyektlarni kengaytirish
+
+JavaScript dasturlarida tez-tez uchraydigan amallardan biri — bu bir obyektning xossalarini boshqa bir obyektga ko'chirish zaruratidir. Buni quyidagi kabi kod bilan osongina amalga oshirish mumkin:
+
+``` js
+let target = {x: 1}, source = {y: 2, z: 3};
+for(let key of Object.keys(source)) {
+    target[key] = source[key];
+}
+target // => {x: 1, y: 2, z: 3}
+```
+
+Lekin bu keng tarqalgan amal bo'lgani uchun, turli JavaScript freymvorklari bu ko'chirish amalini bajarish uchun ko'pincha `extend()` deb nomlanuvchi yordamchi funksiyalarni taqdim etgan. Nihoyat, ES6'da bu imkoniyat `Object.assign()` ko'rinishida JavaScript tilining yadrosiga kiritildi.
+
+`Object.assign()` o'ziga argument sifatida ikki yoki undan ortiq obyektni kutadi. U birinchi argumentni — **maqsad (`target`)** obyektni — o'zgartiradi va qaytaradi, lekin ikkinchi va undan keyingi argumentlarni — **manba (`source`)** obyektlarni — o'zgartirmaydi. Har bir manba obyekti uchun u o'sha obyektning sanab o'tiladigan shaxsiy xossalarini (jumladan, nomlari `Symbol` bo'lganlarni ham) maqsad obyektga ko'chiradi. U manba obyektlarini argumentlar ro'yxatidagi tartibda qayta ishlaydi. Shunday qilib, birinchi manba obyektdagi xossalar maqsad obyektdagi bir xil nomdagi xossalarni qayta yozadi, ikkinchi manba obyektdagi (agar mavjud bo'lsa) xossalar esa birinchi manba obyektdagi bir xil nomdagi xossalarni qayta yozadi.
+
+`Object.assign()` xossalarni oddiy xossani olish (`get`) va o'rnatish (`set`) amallari yordamida ko'chiradi. Shuning uchun, agar manba obyektda _getter_ metodi yoki maqsad obyektda _setter_ metodi bo'lsa, ular ko'chirish davomida chaqiriladi, lekin ularning o'zlari ko'chirilmaydi.
+
+### Standart qiymatlarni boshqarish
+
+Xossalarni bir obyektdan boshqasiga tayinlashning sabablaridan biri — bu sizda ko'plab xossalar uchun standart qiymatlarni aniqlaydigan obyekt mavjud bo'lganda va siz bu standart xossalarni, agar shu nomdagi xossa boshqa obyektda allaqachon mavjud bo'lmasa, o'sha obyektga ko'chirishni xohlaganingizda yuz beradi. `Object.assign()`'dan soddalik bilan foydalanish siz kutgan natijani bermaydi:
+
+``` js
+Object.assign(o, defaults); // `o` obyektdagi hamma narsani `defaults` bilan qayta yozadi
+```
+
+Buning o'rniga, siz yangi obyekt yaratib, unga standart qiymatlarni ko'chirib, so'ngra bu standart qiymatlarni `o`'dagi xossalar bilan qayta yozishingiz mumkin:
+
+``` js
+o = Object.assign({}, defaults, o);
+```
+
+§6.10.4-bo'limda ko'rib chiqadiganimizdek, bu obyektni ko'chirish-va-qayta-yozish amalini `...` "spread" operatori yordamida quyidagicha ham ifodalash mumkin:
+
+``` js
+o = {...defaults, ...o};
+```
+
+Biz, shuningdek, qo'shimcha obyekt yaratish va bilan bog'liq ortiqcha yuklamadan qochib, faqat mavjud bo'lmagan xossalarnigina ko'chiradigan `Object.assign()` versiyasini yozishimiz ham mumkin:
+
+``` js
+// `Object.assign()`ga o'xshaydi, lekin mavjud xossalarni qayta yozmaydi
+// (va `Symbol` xossalarini ham qayta ishlamaydi)
+function merge(target, ...sources) {
+    for(let source of sources) {
+        for(let key of Object.keys(source)) {
+            if (!(key in target)) { // Bu `Object.assign()`dan farqli joyi
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+}
+Object.assign({x: 1}, {x: 2, y: 2}, {y: 3, z: 4})   // => {x: 2, y: 3, z: 4}
+merge({x: 1}, {x: 2, y: 2}, {y: 3, z: 4})           // => {x: 1, y: 2, z: 4}
+```
+
+Ushbu `merge()` funksiyasi kabi boshqa xossalarni boshqarish yordamchi funksiyalarini yozish qiyin emas. Masalan, `restrict()` funksiyasi obyektning xossalarini, agar ular boshqa bir shablon obyektda mavjud bo'lmasa, o'chirib yuborishi mumkin. Yoki `subtract()` funksiyasi bir obyektning barcha xossalarini boshqa bir obyektdan olib tashlashi mumkin.

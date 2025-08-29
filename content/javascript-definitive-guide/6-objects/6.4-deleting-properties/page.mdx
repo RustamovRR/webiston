@@ -1,0 +1,52 @@
+---
+title: Xossalarni o'chirish
+description: "JavaScript'da delete operatori: obyekt xossalarini o'chirish, configurable atribut, qat'iy rejim va xatoliklar."
+keywords: JavaScript, delete operatori, delete operator, xossalarni o'chirish, property deletion, deleting properties, sozlanadigan xossalar, configurable properties, qat'iy rejim, strict mode, obyekt xossalari, object properties, xossalarni olib tashlash, removing properties
+author: Webiston.uz
+---
+
+# Xossalarni o'chirish
+
+`delete` operatori (§4.13.4) obyektdan xossani olib tashlaydi. Uning yagona operandi xossaga murojaat qilish ifodasi bo'lishi kerak. Ajablanarlisi shundaki, `delete` xossaning qiymati ustida emas, balki xossaning o'zi ustida ishlaydi:
+
+``` js
+delete book.author;          // `book` obyektida endi `author` xossasi yo'q.
+delete book["main title"];   // Endi unda "main title" ham yo'q.
+```
+
+`delete` operatori faqat shaxsiy xossalarni o'chiradi, meros qilib olinganlarni emas. (Meros qilib olingan xossani o'chirish uchun siz uni o'sha xossa aniqlangan prototip obyektidan o'chirishingiz kerak. Bu ish o'sha prototipdan meros oladigan har bir obyektga ta'sir qiladi.)
+
+Agar o'chirish muvaffaqiyatli bo'lsa yoki o'chirish hech qanday ta'sir ko'rsatmasa (masalan, mavjud bo'lmagan xossani o'chirish), `delete` ifodasi `true`'ga baholanadi. `delete`, shuningdek, xossaga murojaat qilish ifodasi bo'lmagan ifoda bilan (ma'nosiz) ishlatilganda ham `true`'ga baholanadi:
+
+``` js
+let o = {x: 1};      // `o` shaxsiy `x` xossasiga ega va `toString` xossasini meros oladi
+delete o.x          // => true: `x` xossasini o'chiradi
+delete o.x          // => true: hech narsa qilmaydi (`x` mavjud emas), lekin baribir `true`
+delete o.toString   // => true: hech narsa qilmaydi (`toString` shaxsiy xossa emas)
+delete 1            // => true: bema'nilik, lekin baribir `true`
+```
+
+`delete` operatori `configurable` atributi `false` bo'lgan xossalarni olib tashlamaydi. Ichki o'rnatilgan obyektlarning ba'zi xossalari, shuningdek, o'zgaruvchi e'loni va funksiya e'loni orqali yaratilgan global obyektning xossalari sozlanmaydigan (`non-configurable`) hisoblanadi. Qat'iy rejimda, sozlanmaydigan xossani o'chirishga urinish `TypeError` xatoligiga sabab bo'ladi. Qat'iy bo'lmagan rejimda esa, bu holda `delete` shunchaki `false`'ga baholanadi:
+
+``` js
+// Qat'iy rejimda bu o'chirishlarning barchasi `false` qaytarish o'rniga `TypeError` xatoligiga sabab bo'ladi
+delete Object.prototype // => false: xossa sozlanmaydigan
+var x = 1;              // Global o'zgaruvchi e'lon qilish
+delete globalThis.x     // => false: bu xossani o'chirib bo'lmaydi
+function f() {}         // Global funksiya e'lon qilish
+delete globalThis.f     // => false: bu xossani ham o'chirib bo'lmaydi
+```
+
+Qat'iy bo'lmagan rejimda global obyektning sozlanadigan xossalarini o'chirayotganda, global obyektga havolani tushirib qoldirishingiz va shunchaki `delete` operatoridan keyin xossa nomini yozishingiz mumkin:
+
+``` js
+globalThis.x = 1; // Sozlanadigan global xossa yaratish (`let` yoki `var`siz)
+delete x          // => true: bu xossani o'chirish mumkin
+```
+
+Biroq qat'iy rejimda, agar `delete`'ning operandi `x` kabi to'g'ridan-to'g'ri identifikator bo'lsa, u `SyntaxError` xatoligiga sabab bo'ladi va siz xossaga murojaatni to'liq ko'rinishda (`globalThis.x` kabi) yozishingiz shart:
+
+``` js
+delete x;               // Qat'iy rejimda `SyntaxError`
+delete globalThis.x;    // Bu ishlaydi
+```
