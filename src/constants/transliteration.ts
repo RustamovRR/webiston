@@ -1,4 +1,8 @@
 export const NON_TRANSLITERATABLE_WORDS = [
+  'x',
+  'y',
+  'z',
+
   'html',
   'css',
   'scss',
@@ -108,6 +112,9 @@ export const NON_TRANSLITERATABLE_WORDS = [
   'button',
   'label',
   'submit',
+  'javascript',
+  'object',
+  'notation',
 
   'readme',
   'license',
@@ -237,4 +244,6 @@ export const NON_TRANSLITERATABLE_WORDS = [
   'console.log',
   'console.error',
   'console.warn',
+
+  'youtube',
 ]
