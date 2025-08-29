@@ -1,0 +1,15 @@
+# Ko'rsatmalar
+
+4-bobda ifodalarni JavaScript'ning iboralari sifatida tasvirlagan edik. Shu o'xshatishni davom ettirsak, **ko'rsatmalar (`statements`)** — bu JavaScript'ning gaplari yoki buyruqlaridir. Xuddi o'zbek tilidagi gaplar nuqta bilan yakunlanib, bir-biridan ajratilganidek, JavaScript ko'rsatmalari ham nuqtali vergul (`;`) bilan yakunlanadi (`§2.6`). Ifodalar qiymat hosil qilish uchun **baholanadi (`evaluate`)**, ko'rsatmalar esa biror narsa sodir bo'lishi uchun **bajariladi (`execute`)**.
+
+"Biror narsa sodir bo'lishi"ning bir yo'li — bu qo'shimcha ta'sirlarga (`side effects`) ega bo'lgan ifodani baholashdir. Tayinlashlar va funksiya chaqiruvlari kabi qo'shimcha ta'sirga ega ifodalar mustaqil ko'rsatma sifatida kela oladi va bu tarzda ishlatilganda ular **ifoda ko'rsatmalari (`expression statements`)** deb nomlanadi. Ko'rsatmalarning shunga o'xshash yana bir toifasi — bu yangi o'zgaruvchilarni e'lon qiladigan va yangi funksiyalarni ta'riflaydigan **e'lon qilish ko'rsatmalaridir (`declaration statements`)**.
+
+JavaScript dasturlari bajarilishi kerak bo'lgan ko'rsatmalar ketma-ketligidan boshqa narsa emas. Standart holatda, JavaScript interpretatori bu ko'rsatmalarni ular yozilgan tartibda, birin-ketin bajaradi. "Biror narsa sodir bo'lishi"ning yana bir yo'li — bu standart bajarilish tartibini o'zgartirishdir va JavaScript'da aynan shu vazifani amalga oshiradigan bir nechta ko'rsatmalar yoki **boshqaruv tuzilmalari (`control structures`)** mavjud:
+
+- **Shartli ko'rsatmalar (`Conditionals`)**: `if` va `switch` kabi ko'rsatmalar bo'lib, ular ifoda qiymatiga qarab JavaScript interpretatorini boshqa ko'rsatmalarni **bajarishga** yoki o'tkazib yuborishga majbur qiladi.
+
+- **Sikllar (`Loops`)**: `while` va `for` kabi ko'rsatmalar bo'lib, ular boshqa ko'rsatmalarni takroran bajaradi.
+
+- **O'tishlar (`Jumps`)**: `break`, `return` va `throw` kabi ko'rsatmalar bo'lib, ular interpretatorni dasturning boshqa bir qismiga "sakrashga" sabab bo'ladi.
+
+Keyingi bo'limlarda JavaScript'dagi turli ko'rsatmalar tasvirlanadi va ularning sintaksisi tushuntiriladi. Bob so'nggida keltirilgan 5-1-jadval bu sintaksisni umumlashtiradi. JavaScript dasturi — bu shunchaki bir-biridan nuqtali vergul bilan ajratilgan ko'rsatmalar ketma-ketligidir. Shunday ekan, JavaScript ko'rsatmalari bilan tanishib chiqqach, bemalol JavaScript dasturlarini yozishni boshlashingiz mumkin.

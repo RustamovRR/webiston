@@ -1,0 +1,247 @@
+---
+title: Obyekt literallarining kengaytirilgan sintaksisi
+description: "ES6+ obyekt literali xususiyatlari: qisqartirilgan xossalar, hisoblanadigan xossa nomlari, Symbol'lar, spread operatori, getter/setter'lar."
+keywords: JavaScript, ES6, obyekt literallari, object literals, kengaytirilgan sintaksis, extended syntax, qisqartirilgan xossalar, shorthand properties, hisoblanadigan xossalar, computed properties, Symbol'lar, symbols, spread operatori, spread operator, getter, setter, obyekt literal kengaytmalari
+author: Webiston.uz
+---
+
+# Obyekt literallarining kengaytirilgan sintaksisi
+
+JavaScript'ning so'nggi versiyalari obyekt literallari sintaksisini bir qator foydali usullar bilan kengaytirdi. Quyidagi quyi bo'limlar bu kengaytmalarni tushuntiradi.
+
+## Qisqartirilgan xossalar
+
+Tasavvur qiling, sizda `x` va `y` o'zgaruvchilarida saqlangan qiymatlar bor va siz o'sha qiymatlarni saqlaydigan `x` va `y` nomli xossalarga ega obyekt yaratmoqchisiz. Asosiy obyekt literali sintaksisi bilan har bir identifikatorni ikki marta takrorlashingizga to'g'ri kelardi:
+
+``` js
+let x = 1, y = 2;
+let o = {
+    x: x,
+    y: y
+};
+```
+
+ES6 va undan keyingi versiyalarda ikki nuqta va identifikatorning bir nusxasini tushirib qoldirib, ancha soddaroq kodga ega bo'lishingiz mumkin:
+
+``` js
+let x = 1, y = 2;
+let o = { x, y };
+o.x + o.y   // => 3
+```
+
+## Hisoblanadigan xossa nomlari
+
+Ba'zan sizga ma'lum bir xossaga ega obyekt yaratish kerak bo'ladi, lekin bu xossaning nomi manba kodingizda literal tarzda yoza oladigan, kompilyatsiya vaqtidagi konstanta bo'lmaydi. Buning o'rniga, sizga kerakli xossa nomi biror o'zgaruvchida saqlanadi yoki siz chaqiradigan funksiyaning qaytargan qiymati bo'ladi. Bu turdagi xossa uchun siz asosiy obyekt literalidan foydalana olmaysiz. Buning o'rniga, avval obyekt yaratib, so'ngra kerakli xossalarni qo'shimcha qadam sifatida qo'shishingizga to'g'ri keladi:
+
+``` js
+const PROPERTY_NAME = "p1";
+function computePropertyName() { return "p" + 2; }
+
+let o = {};
+o[PROPERTY_NAME] = 1;
+o[computePropertyName()] = 2;
+```
+
+Bunday obyektni ES6'ning **hisoblanadigan xossalar (`computed properties`)** deb nomlanuvchi xususiyati yordamida sozlash ancha osonroq. Bu xususiyat sizga oldingi koddagi kvadrat qavslarni olib, ularni to'g'ridan-to'g'ri obyekt literalining ichiga ko'chirish imkonini beradi:
+
+``` js
+const PROPERTY_NAME = "p1";
+function computePropertyName() { return "p" + 2; }
+
+let p = {
+    [PROPERTY_NAME]: 1,
+    [computePropertyName()]: 2
+};
+p.p1 + p.p2 // => 3
+```
+
+Bu yangi sintaksis bilan, kvadrat qavslar ixtiyoriy JavaScript ifodasini o'rab turadi. Bu ifoda bajariladi va hosil bo'lgan qiymat (agar kerak bo'lsa, satrga o'zgartirilib) xossa nomi sifatida ishlatiladi.
+
+Hisoblanadigan xossalardan foydalanishni xohlashingiz mumkin bo'lgan bir holat — bu sizda ma'lum bir xossalar to'plamiga ega obyektlarni qabul qilishni kutadigan JavaScript kodi kutubxonasi mavjud bo'lganda va bu xossalarning nomlari o'sha kutubxonada konstantalar sifatida aniqlangan bo'lganda yuz beradi. Agar siz o'sha kutubxonaga uzatiladigan obyektlarni yaratish uchun kod yozayotgan bo'lsangiz, xossa nomlarini qat'iy kodlashingiz mumkin edi. Lekin agar xossa nomini biror joyda noto'g'ri yozsangiz, xatoliklarga duch kelish xavfi va agar kutubxonaning yangi versiyasi talab qilinadigan xossa nomlarini o'zgartirsa, versiyalar nomuvofiqligi muammolari xavfi mavjud bo'lardi. Buning o'rniga, siz kutubxona tomonidan taqdim etilgan xossa nomi konstantalari bilan hisoblanadigan xossa sintaksisidan foydalanish kodingizni yanada **mustahkam (`robust`)** qilishini ko'rishingiz mumkin.
+
+## Xossa nomlari sifatida `Symbol`'lar
+
+Hisoblanadigan xossa sintaksisi yana bir juda muhim obyekt literali xususiyatini ishga soladi. ES6 va undan keyingi versiyalarda xossa nomlari satrlar yoki `symbol`'lar bo'lishi mumkin. Agar siz biror `symbol`'ni o'zgaruvchi yoki konstantaga tayinlasangiz, u holda siz bu `symbol`'ni hisoblanadigan xossa sintaksisi yordamida xossa nomi sifatida ishlatishingiz mumkin:
+
+``` js
+const extension = Symbol("my extension symbol");
+let o = {
+    [extension]: { /* kengaytma ma'lumotlari bu obyektda saqlanadi */ }
+};
+o[extension].x = 0; // Bu `o`ning boshqa xossalari bilan ziddiyat keltirib chiqarmaydi
+```
+
+§3.6-bo'limda tushuntirilganidek, `Symbol`'lar **shaffof bo'lmagan (`opaque`)** qiymatlardir. Siz ularni xossa nomlari sifatida ishlatishdan boshqa hech narsa qila olmaysiz. Biroq har bir `Symbol` boshqa har qanday `Symbol`'dan farq qiladi, bu esa `Symbol`'lar unikal xossa nomlarini yaratish uchun juda yaxshi ekanligini anglatadi. Yangi `Symbol` yaratish uchun `Symbol()` fabrika funksiyasini chaqiring. (`Symbol`'lar obyektlar emas, primitiv qiymatlardir, shuning uchun `Symbol()` `new` bilan chaqiriladigan konstruktor funksiyasi emas.) `Symbol()` tomonidan qaytarilgan qiymat boshqa hech qanday `Symbol` yoki boshqa qiymatga teng emas. Siz `Symbol()`'ga satr uzatishingiz mumkin va bu satr sizning `Symbol`'ingiz satrga o'zgartirilganda ishlatiladi. Lekin bu faqat nosozliklarni tuzatish (`debugging`) uchun yordamdir: bir xil satr argumenti bilan yaratilgan ikkita `Symbol` baribir bir-biridan farq qiladi.
+
+`Symbol`'larning maqsadi xavfsizlik emas, balki JavaScript obyektlari uchun **xavfsiz kengaytirish mexanizmini** ta'riflashdir. Agar siz nazorat qila olmaydigan uchinchi tomon kodidan biror obyekt olsangiz va bu obyektga o'zingizning ba'zi xossalaringizni qo'shishingiz kerak bo'lsa, lekin xossalaringiz obyektda allaqachon mavjud bo'lishi mumkin bo'lgan har qanday xossalar bilan ziddiyatga kirmasligiga ishonch hosil qilishni istasangiz, siz xossa nomlari sifatida `Symbol`'lardan xavfsiz foydalanishingiz mumkin. Agar shunday qilsangiz, uchinchi tomon kodi sizning `Symbol` bilan nomlangan xossalaringizni tasodifan o'zgartirib yubormasligiga ham amin bo'lishingiz mumkin. (Albatta, o'sha uchinchi tomon kodi siz ishlatayotgan `Symbol`'larni aniqlash uchun `Object.getOwnPropertySymbols()`'dan foydalanishi va keyin xossalaringizni o'zgartirishi yoki o'chirishi mumkin. `Symbol`'larning xavfsizlik mexanizmi bo'lmasligi aynan shuning uchun.)
+
+## Yoyish (`spread`) operatori
+
+ES2018 va undan keyingi versiyalarda mavjud obyektning xossalarini yangi obyektga obyekt literali ichida **"yoyish (`spread`) operatori"** `...` yordamida ko'chirib olishingiz mumkin:
+
+``` js
+let position = { x: 0, y: 0 };
+let dimensions = { width: 100, height: 75 };
+let rect = { ...position, ...dimensions };
+rect.x + rect.y + rect.width + rect.height // => 175
+```
+
+Bu kodda `position` va `dimensions` obyektlarining xossalari `rect` obyekt literaliga xuddi ular o'sha jingalak qavslar ichida literal tarzda yozilgandek "yoyiladi". E'tibor bering, bu `...` sintaksisi ko'pincha "yoyish operatori" deb atalsa-da, u hech qanday ma'noda haqiqiy JavaScript operatori emas. Buning o'rniga, u faqat obyekt literallari ichida mavjud bo'lgan maxsus holatdagi sintaksisdir. (Uchta nuqta boshqa JavaScript kontekstlarida boshqa maqsadlar uchun ishlatiladi, lekin obyekt literallari uchta nuqta bir obyektni boshqasiga bunday interpolyatsiya qilishiga sabab bo'ladigan yagona kontekstdir.)
+
+Agar manba obyekt va maqsad obyekt ikkalasi ham bir xil nomdagi xossaga ega bo'lsa, yakuniy qiymat sifatida keyinroq kelgan xossaning qiymati olinadi:
+
+``` js
+let o = { x: 1 };
+let p = { x: 0, ...o };
+p.x // => 1: `o` obyektidan olingan qiymat boshlang'ich qiymatni qayta yozadi
+let q = { ...o, x: 2 };
+q.x // => 2: `2` qiymati `o` obyektidan olingan oldingi qiymatni qayta yozadi.
+```
+
+Shuni ham yodda tutingki, yoyish operatori faqat obyektning shaxsiy xossalarini yoyadi, meros qilib olinganlarini emas:
+
+``` js
+let o = Object.create({x: 1});  // `o` obyekti `x` xossasini meros qilib oladi
+let p = { ...o };
+p.x                             // => undefined
+```
+
+Nihoyat, shuni ta'kidlash joizki, garchi yoyish operatori kodingizda shunchaki uchta kichik nuqta bo'lsa-da, u JavaScript interpretatori uchun ancha katta ishni anglatishi mumkin. Agar obyektda `n` ta xossa bo'lsa, bu xossalarni boshqa obyektga yoyish jarayoni, ehtimol, **O(n)** murakkablikdagi amal bo'ladi. Bu shuni anglatadiki, agar siz ma'lumotlarni bitta katta obyektga to'plash usuli sifatida `...`'ni sikl yoki rekursiv funksiya ichida ishlatayotgan bo'lsangiz, siz `n` kattalashgan sari yaxshi masshtablanmaydigan, samarasiz **O(n²)** murakkablikdagi algoritm yozayotgan bo'lishingiz mumkin.
+
+## Qisqartirilgan metodlar
+
+Funksiya obyektning xossasi sifatida ta'riflanganda, biz bu funksiyani **metod** deb ataymiz (metodlar haqida 8 va 9-boblarda ancha ko'proq gaplashamiz). ES6'dan oldin, siz obyekt literalida metodni xuddi obyektning boshqa har qanday xossasini ta'riflagandek, funksiya ta'rifi ifodasi yordamida ta'riflardingiz:
+
+``` js
+let square = {
+    area: function() { return this.side * this.side; },
+    side: 10
+};
+square.area() // => 100
+```
+
+Biroq ES6'da obyekt literali sintaksisi (va 9-bobda ko'rib chiqadiganimiz klass ta'rifi sintaksisi ham) `function` kalit so'zi va ikki nuqtani tushirib qoldirishga imkon beradigan qisqa yozuv bilan kengaytirildi. Natijada kod quyidagicha ko'rinishga keladi:
+
+``` js
+let square = {
+    area() { return this.side * this.side; },
+    side: 10
+};
+square.area() // => 100
+```
+
+Kodning har ikki shakli ham ekvivalentdir: ikkalasi ham obyekt literaliga `area` nomli xossa qo'shadi va ikkalasi ham bu xossaning qiymatini ko'rsatilgan funksiyaga o'rnatadi. Qisqartirilgan sintaksis `area()`'ning `side` kabi ma'lumot xossasi emas, balki metod ekanligini aniqroq ko'rsatib turadi.
+
+Bu qisqartirilgan sintaksis yordamida metod yozganingizda, xossa nomi obyekt literalida ruxsat etilgan har qanday shaklni olishi mumkin: yuqoridagi `area` nomi kabi oddiy JavaScript identifikatoriga qo'shimcha ravishda, siz satr literallari va hisoblanadigan xossa nomlaridan ham foydalanishingiz mumkin. Bular `Symbol` xossa nomlarini ham o'z ichiga olishi mumkin:
+
+``` js
+const METHOD_NAME = "m";
+const symbol = Symbol();
+let weirdMethods = {
+    "method With Spaces"(x) { return x + 1; },
+    [METHOD_NAME](x) { return x + 2; },
+    [symbol](x) { return x + 3; }
+};
+weirdMethods["method With Spaces"](1)   // => 2
+weirdMethods[METHOD_NAME](1)            // => 3
+weirdMethods[symbol](1)                 // => 4
+```
+
+Metod nomi sifatida `Symbol`'dan foydalanish ko'ringanichalik g'alati emas. Obyektni iteratsiya qilinadigan (`iterable`) qilish uchun (shunda uni `for/of` sikli bilan ishlatish mumkin bo'ladi), siz `symbol`'li nomiga ega bo'lgan `Symbol.iterator`  metodni ta'riflashingiz kerak va aynan shunday qilishga doir misollar 12-bobda keltirilgan.
+
+## Xossa `getter` va `setter`'lari
+
+Ushbu bobda biz hozirgacha muhokama qilgan barcha obyekt xossalari nom va oddiy qiymatga ega bo'lgan **ma'lumot xossalari (`data properties`)** edi. JavaScript, shuningdek, bitta qiymatga ega bo'lmagan, balki uning o'rniga bir yoki ikkita kirish metodiga: **getter** va/yoki **setter**'ga ega bo'lgan **aksessor xossalarni (`accessor properties`)** ham qo'llab-quvvatlaydi.
+
+Dastur aksessor xossaning qiymatini so'raganda, JavaScript **getter** metodini chaqiradi (unga hech qanday argument uzatmasdan). Bu metodning qaytargan qiymati xossaga murojaat qilish ifodasining qiymatiga aylanadi. Dastur aksessor xossaning qiymatini o'rnatganda esa, JavaScript _setter_ metodini chaqirib, unga tayinlashning o'ng tomonidagi qiymatni uzatadi. Bu metod, qaysidir ma'noda, xossa qiymatini "o'rnatish" uchun mas'uldir. _Setter_ metodining qaytargan qiymati e'tiborsiz qoldiriladi.
+
+Agar xossa ham _getter_, ham _setter_ metodiga ega bo'lsa, u o'qish/yozish mumkin bo'lgan xossadir. Agar unda faqat _getter_ metodi bo'lsa, u faqat o'qish uchun mo'ljallangan xossadir. Va agar unda faqat _setter_ metodi bo'lsa, u faqat yozish uchun mo'ljallangan xossadir (bu ma'lumot xossalari bilan mumkin bo'lmagan holat) va uni o'qishga urinishlar har doim `undefined`'ga baholanadi.
+
+Aksessor xossalarni obyekt literali sintaksisining kengaytmasi bilan ta'riflash mumkin (biz bu yerda ko'rgan boshqa ES6 kengaytmalaridan farqli o'laroq, _getter_'lar va _setter_'lar ES5'da kiritilgan):
+
+``` js
+let o = {
+    // Oddiy ma'lumot xossasi
+    dataProp: value,
+
+    // Bir juft funksiya sifatida ta'riflangan aksessor xossa.
+    get accessorProp() { return this.dataProp; },
+    set accessorProp(value) { this.dataProp = value; }
+};
+```
+
+Aksessor xossalar nomi xossa nomiga o'xshash bo'lgan bir yoki ikkita metod sifatida ta'riflanadi. Ular ES6'ning qisqartirilgan sintaksisi yordamida ta'riflangan oddiy metodlarga o'xshaydi, faqat _getter_ va _setter_ ta'riflaridan oldin `get` yoki `set` prefiksi keladi. (ES6'da siz _getter_ va _setter_'larni ta'riflayotganda hisoblanadigan xossa nomlaridan ham foydalanishingiz mumkin. Shunchaki `get` yoki `set`'dan keyingi xossa nomini kvadrat qavslar ichidagi ifoda bilan almashtiring.)
+
+### Amaliy misollar va qo'llanilishi
+
+Yuqorida ta'riflangan aksessor metodlar shunchaki ma'lumot xossasining qiymatini oladi va o'rnatadi, va aksessor xossani ma'lumot xossasidan afzal ko'rish uchun hech qanday sabab yo'q. Lekin yanada qiziqarliroq misol sifatida, 2D Dekart nuqtasini ifodalovchi quyidagi obyektni ko'rib chiqing. U nuqtaning `x` va `y` koordinatalarini ifodalash uchun oddiy ma'lumot xossalariga ega va nuqtaning ekvivalent qutb koordinatalarini beruvchi aksessor xossalariga ega:
+
+``` js
+let p = {
+    // `x` va `y` oddiy o'qish/yozish mumkin bo'lgan ma'lumot xossalari.
+    x: 1.0,
+    y: 1.0,
+
+    // `r` - getter va setter'ga ega bo'lgan o'qish/yozish mumkin bo'lgan aksessor xossa.
+    // Aksessor metodlardan keyin vergul qo'yishni unutmang.
+    get r() { return Math.hypot(this.x, this.y); },
+    set r(newvalue) {
+        let oldvalue = Math.hypot(this.x, this.y);
+        let ratio = newvalue/oldvalue;
+        this.x *= ratio;
+        this.y *= ratio;
+    },
+
+    // theta - faqat getter'ga ega bo'lgan, faqat o'qish uchun mo'ljallangan aksessor xossa.
+    get theta() { return Math.atan2(this.y, this.x); }
+};
+p.r     // => Math.SQRT2
+p.theta // => Math.PI / 4
+```
+
+Bu misoldagi _getter_'lar va _setter_da `this` kalit so'zining ishlatilishiga e'tibor bering. JavaScript bu funksiyalarni ular ta'riflangan obyektning metodlari sifatida chaqiradi, bu esa funksiya tanasi ichida `this` `p` nuqta obyektiga ishora qilishini anglatadi. Shunday qilib, `r` xossasi uchun _getter_ metodi `x` va `y` xossalariga `this.x` va `this.y` sifatida murojaat qilishi mumkin. Metodlar va `this` kalit so'zi §8.2.2-bo'limda batafsilroq yoritilgan.
+
+Aksessor xossalar ham xuddi ma'lumot xossalari kabi meros qilib olinadi, shuning uchun yuqorida ta'riflangan `p` obyektini boshqa nuqtalar uchun prototip sifatida ishlatishingiz mumkin. Siz yangi obyektlarga o'zlarining shaxsiy `x` va `y` xossalarini berishingiz mumkin va ular `r` va `theta` xossalarini meros qilib oladilar:
+
+``` js
+let q = Object.create(p);   // Getter va setter'larni meros oladigan yangi obyekt
+q.x = 3; q.y = 4;           // `q` obyektining shaxsiy ma'lumot xossalarini yaratamiz
+q.r                         // => 5: meros olingan aksessor xossalar ishlaydi
+q.theta                     // => Math.atan2(4, 3)
+```
+
+Yuqoridagi kod bitta ma'lumotlar to'plamining ikki xil ifodasini (Dekart koordinatalari va qutb koordinatalari) taqdim etadigan API'ni aniqlash uchun aksessor xossalardan foydalanadi. Aksessor xossalardan foydalanishning boshqa sabablari qatoriga xossalarga yozishni tekshirish va har bir xossani o'qishda turli qiymatlar qaytarish kiradi:
+
+``` js
+// Bu obyekt qat'iy o'suvchi seriya raqamlarini generatsiya qiladi
+const serialnum = {
+    // Bu ma'lumot xossasi keyingi seriya raqamini saqlaydi.
+    // Xossa nomidagi `_` belgisi uning faqat ichki foydalanish uchun ekanligiga ishora qiladi.
+    _n: 0,
+
+    // Joriy qiymatni qaytarish va uni inkrement qilish
+    get next() { return this._n++; },
+
+    // `n`ning yangi qiymatini o'rnatish, lekin faqat u joriy qiymatdan kattaroq bo'lsa
+    set next(n) {
+        if (n > this._n) this._n = n;
+        else throw new Error("seriya raqami faqat kattaroq qiymatga o'rnatilishi mumkin");
+    }
+};
+serialnum.next = 10; // Boshlang'ich seriya raqamini o'rnatamiz
+serialnum.next       // => 10
+serialnum.next       // => 11: har safar `next`'ni olganimizda qiymat boshqacha
+```
+
+Nihoyat, quyida "sehrli" xususiyatga ega bo'lgan xossani implementatsiya qilish uchun _getter_ metodidan foydalanadigan yana bir misol keltirilgan:
+
+``` js
+// Bu obyekt tasodifiy sonlar qaytaradigan aksessor xossalarga ega.
+// Masalan, "random.octet" ifodasi har safar bajarilganda
+// 0 dan 255 gacha bo'lgan tasodifiy sonni beradi.
+const random = {
+    get octet() { return Math.floor(Math.random()*256); },
+    get uint16() { return Math.floor(Math.random()*65536); },
+    get int16() { return Math.floor(Math.random()*65536) - 32768; }
+};
+```

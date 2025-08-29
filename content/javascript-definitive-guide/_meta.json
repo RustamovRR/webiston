@@ -174,5 +174,95 @@
         "path": "4-expressions-and-operators/summary/page"
       }
     }
+  },
+  "5-statements": {
+    "title": "5. Ko'rsatmalar",
+    "path": "5-statements/page",
+    "hasIndex": true,
+    "children": {
+      "5.1-expression-statements": {
+        "title": "5.1. Ifoda ko'rsatmalari",
+        "path": "5-statements/5.1-expression-statements/page"
+      },
+      "5.2-compound-and-empty-statements": {
+        "title": "5.2. Tarkibiy va bo'sh ko'rsatmalar",
+        "path": "5-statements/5.2-compound-and-empty-statements/page"
+      },
+      "5.3-conditionals": {
+        "title": "5.3. Shartli ko'rsatmalar",
+        "path": "5-statements/5.3-conditionals/page"
+      },
+      "5.4-loops": {
+        "title": "5.4. Sikllar",
+        "path": "5-statements/5.4-loops/page"
+      },
+      "5.5-jumps": {
+        "title": "5.5. O'tishlar",
+        "path": "5-statements/5.5-jumps/page"
+      },
+      "5.6-miscellaneous-statements": {
+        "title": "5.6. Turli xil ko'rsatmalar",
+        "path": "5-statements/5.6-miscellaneous-statements/page"
+      },
+      "5.7-declarations": {
+        "title": "5.7. E'lonlar (Declarations)",
+        "path": "5-statements/5.7-declarations/page"
+      },
+      "5.8-summary-of-javascript-statements": {
+        "title": "5.8. JavaScript ko'rsatmalarining xulosasi",
+        "path": "5-statements/5.8-summary-of-javascript-statements/page"
+      }
+    }
+  },
+  "6-objects": {
+    "title": "6. Obyektlar",
+    "path": "6-objects/page",
+    "hasIndex": true,
+    "children": {
+      "6.1-introduction-to-objects": {
+        "title": "6.1. Obyektlarga kirish",
+        "path": "6-objects/6.1-introduction-to-objects/page"
+      },
+      "6.2-creating-objects": {
+        "title": "6.2. Obyektlarni yaratish",
+        "path": "6-objects/6.2-creating-objects/page"
+      },
+      "6.3-querying-and-setting-properties": {
+        "title": "6.3. Xossalarni so'rash va o'rnatish",
+        "path": "6-objects/6.3-querying-and-setting-properties/page"
+      },
+      "6.4-deleting-properties": {
+        "title": "6.4. Xossalarni o'chirish",
+        "path": "6-objects/6.4-deleting-properties/page"
+      },
+      "6.5-testing-properties": {
+        "title": "6.5. Xossalarni tekshirish",
+        "path": "6-objects/6.5-testing-properties/page"
+      },
+      "6.6-enumerating-properties": {
+        "title": "6.6. Xossalarni sanab o'tish",
+        "path": "6-objects/6.6-enumerating-properties/page"
+      },
+      "6.7-extending-objects": {
+        "title": "6.7. Obyektlarni kengaytirish",
+        "path": "6-objects/6.7-extending-objects/page"
+      },
+      "6.8-serializing-objects": {
+        "title": "6.8. Obyektlarni seriyalashtirish",
+        "path": "6-objects/6.8-serializing-objects/page"
+      },
+      "6.9-object-methods": {
+        "title": "6.9. Obyekt metodlari",
+        "path": "6-objects/6.9-object-methods/page"
+      },
+      "6.10-extended-object-literal-syntax": {
+        "title": "6.10. Obyekt literallarining kengaytirilgan sintaksisi",
+        "path": "6-objects/6.10-extended-object-literal-syntax/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "6-objects/summary/page"
+      }
+    }
   }
 }
