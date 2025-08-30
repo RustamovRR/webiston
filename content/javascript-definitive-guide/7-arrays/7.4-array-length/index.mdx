@@ -1,0 +1,26 @@
+---
+title: Massiv uzunligi
+description: "JavaScriptda massiv uzunligini aniqlash: length xossasi orqali elementlar sonini olish, massivni qisqartirish yoki kengaytirish va length bilan bog‘liq amaliy misollar."
+keywords: JavaScript, massiv, array, uzunlik, length, elementlar soni, array length, massivni qisqartirish, massivni kengaytirish, beginner, misollar, tutorial, dasturlash
+author: Webiston.uz
+---
+
+
+
+# Massiv uzunligi
+
+Har bir massiv `length` xususiyatiga ega va aynan shu xususiyat massiv'larni oddiy JavaScript obyekt'laridan ajratib turadi. Zich (ya’ni, siyrak bo‘lmagan) massiv'lar uchun `length` xususiyati massiv'dagi elementlar sonini bildiradi. Uning qiymati massiv'dagi eng yuqori indeksdan birga ko‘pdir:
+``` js
+    [].length                 // => 0: massivda elementlar yo'q
+    ["a","b","c"].length       // => 3: eng yuqori indeks 2, uzunlik 3
+```
+Massiv siyrak bo‘lganda, `length` xususiyati elementlar sonidan katta bo‘ladi va bu haqda aytish mumkinki, `length` massiv'dagi har bir elementning indeksidan katta bo‘lishi kafolatlangan. Boshqacha qilib aytganda, massiv (siyrak bo‘ladimi yoki yo‘qmi) hech qachon indeksi uning `length`'iga teng yoki undan katta bo‘lgan elementga ega bo‘lmaydi. Ushbu invariantni (o'zgarmas qoidani) saqlab qolish uchun massiv'lar ikkita o‘ziga xos xatti-harakatga ega. Birinchisini yuqorida ta’rifladik: agar siz massiv elementiga uning joriy `length`'idan katta yoki unga teng bo‘lgan `i` indeksi bo‘yicha qiymat o‘zlashtirsangiz, `length` xususiyatining qiymati `i+1` ga o‘zgaradi.
+
+Massiv'lar `length` invariantini saqlash uchun amalga oshiradigan ikkinchi o‘ziga xos xatti-harakat shundan iboratki, agar siz `length` xususiyatiga uning joriy qiymatidan kichikroq bo‘lgan manfiy bo‘lmagan butun `n` sonini o‘rnatsangiz, indeksi `n` ga teng yoki undan katta bo‘lgan har qanday massiv elementi massiv'dan o‘chirib yuboriladi:
+``` js
+    a = [1,2,3,4,5]; // Ishni 5 elementli massiv bilan boshlaymiz.
+    a.length = 3;    // a endi [1,2,3] ga teng.
+    a.length = 0;    // Barcha elementlarni o'chirish. a endi [].
+    a.length = 5;    // Uzunlik 5, lekin elementlar yo'q, xuddi new Array(5) kabi.
+```
+Siz massiv'ning `length` xususiyatini uning joriy qiymatidan kattaroq qiymatga ham o‘rnatishingiz mumkin. Bu amal massiv'ga amalda hech qanday yangi element qo‘shmaydi; u shunchaki massiv'ning oxirida siyrak maydon hosil qiladi.

@@ -1,0 +1,71 @@
+---
+title: Massiv'simon obyekt'lar
+description: "JavaScriptda massivsimon obyektlar (array-like objects): length xossasiga ega bo‘lgan, lekin to‘liq massiv metodlariga ega bo‘lmagan tuzilmalar. arguments obyektidan foydalanish, DOM kolleksiyalari va ularni haqiqiy massivga aylantirish usullari."
+keywords: JavaScript, massiv, array, massivsimon obyekt, array-like objects, arguments, DOM collection, NodeList, HTMLCollection, length property, convert to array, Array.from, slice.call, beginner, advanced, tutorial
+author: Webiston.uz
+---
+
+
+
+# Massiv'simon obyekt'lar
+
+Ko‘rib turganimizdek, JavaScript massiv'lari boshqa obyekt'larda mavjud bo‘lmagan ba’zi o‘ziga xos xususiyatlarga ega:
+
+*   Ro‘yxatga yangi elementlar qo‘shilishi bilan `length` xususiyati avtomatik tarzda yangilanadi.
+*   `length`'ni kichikroq qiymatga o‘rnatish massiv'ni kesadi (truncates).
+*   Massiv'lar `Array.prototype`'dan foydali metodlarni meros qilib oladi.
+*   `Array.isArray()` massiv'lar uchun `true` qaytaradi.
+
+Bular JavaScript massiv'larini oddiy obyekt'lardan ajratib turuvchi xususiyatlardir. Lekin bular massiv'ni ta’riflovchi asosiy xususiyatlar emas. Sonli `length` xususiyatiga va mos keluvchi manfiy bo‘lmagan butun sonli xususiyatlarga ega bo‘lgan har qanday obyekt'ga massiv'ning bir turi sifatida qarash ko‘pincha mutlaqo o‘rinlidir.
+
+Bu “massiv'simon” obyekt'lar amalda vaqti-vaqti bilan uchrab turadi va garchi siz ularda to‘g‘ridan-to‘g‘ri massiv metodlarini chaqira olmasangiz yoki `length` xususiyatidan alohida xatti-harakatni kutmasangiz ham, ularni haqiqiy massiv uchun ishlatadigan kodingiz bilan aylanib chiqishingiz mumkin. Ma’lum bo‘lishicha, ko‘plab massiv algoritmlari haqiqiy massiv'lar bilan qanday ishlagan bo‘lsa, massiv'simon obyekt'lar bilan ham xuddi shunday yaxshi ishlaydi. Bu, ayniqsa, agar sizning algoritmlaringiz massiv'ga faqat o‘qish uchun (read-only) deb qaraydigan bo‘lsa yoki hech bo‘lmaganda massiv uzunligini o‘zgartirmasa, to‘g‘ri keladi.
+
+Quyidagi kod oddiy obyekt'ni oladi, uni massiv'simon qilish uchun xususiyatlar qo‘shadi va so‘ngra hosil bo‘lgan psevdo-massivning “elementlari” bo‘ylab aylanib chiqadi:
+``` js
+    let a = {}; // Ishni oddiy bo'sh obyekt bilan boshlaymiz
+
+    // Uni "massiv'simon" qilish uchun xususiyatlar qo'shamiz
+    let i = 0;
+    while(i < 10) {
+        a[i] = i * i;
+        i++;
+    }
+    a.length = i;
+
+    // Endi uni go'yo haqiqiy massivdek aylanib chiqamiz
+    let total = 0;
+    for(let j = 0; j < a.length; j++) {
+        total += a[j];
+    }
+```
+Kliyent tomoni (client-side) JavaScript'da HTML hujjatlari bilan ishlash uchun mo‘ljallangan bir qator metodlar (masalan, `document.querySelectorAll()`) massiv'simon obyekt'lar qaytaradi. Quyida massiv'lar kabi ishlaydigan obyekt'larni tekshirish uchun foydalanishingiz mumkin bo‘lgan funksiya keltirilgan:
+``` js
+    // o ning massiv'simon obyekt ekanligini aniqlash.
+    // Satr'lar va funksiyalar sonli length xususiyatiga ega, lekin
+    // typeof tekshiruvi bilan chiqarib yuboriladi. Kliyent tomoni JavaScript'da
+    // DOM matn nodlari (text nodes) sonli length xususiyatiga ega va ularni
+    // qo'shimcha o.nodeType !== 3 tekshiruvi bilan chiqarib yuborish kerak bo'lishi mumkin.
+    function isArrayLike(o) {
+        if (o &&                                // o null, undefined va hokazo emas.
+            typeof o === "object" &&            // o — obyekt
+            Number.isFinite(o.length) &&        // o.length — chekli son
+            o.length >= 0 &&                    // o.length manfiy emas
+            Number.isInteger(o.length) &&       // o.length — butun son
+            o.length < 4294967295) {            // o.length < 2^32 - 1
+            return true;                        // Demak, o massiv'simon.
+        } else {
+            return false;                       // Aks holda, emas.
+        }
+    }
+```
+Keyingi bo‘limda satr'lar o‘zini massiv'lar kabi tutishini ko‘ramiz. Shunga qaramay, massiv'simon obyekt'lar uchun bunday tekshiruvlar odatda satr'lar uchun `false` qaytaradi — ularni massiv sifatida emas, satr sifatida qayta ishlash odatda eng yaxshi yondashuvdir.
+
+Ko‘pgina JavaScript massiv metodlari maqsadli ravishda **umumiy (generic)** qilib ta’riflangan, shuning uchun ular haqiqiy massiv'lardan tashqari massiv'simon obyekt'larga qo‘llanilganda ham to‘g‘ri ishlaydi. Massiv'simon obyekt'lar `Array.prototype`'dan meros olmaganligi sababli, siz massiv metodlarini ularda to‘g‘ridan-to‘g‘ri chaqira olmaysiz. Biroq, ularni `Function.call` metodi yordamida bilvosita chaqirishingiz mumkin (tafsilotlar uchun §8.7.4 ga qarang):
+``` js
+    let a = {"0": "a", "1": "b", "2": "c", length: 3}; // Massiv'simon obyekt
+    Array.prototype.join.call(a, "+")                // => "a+b+c"
+    Array.prototype.map.call(a, x => x.toUpperCase())  // => ["A","B","C"]
+    Array.prototype.slice.call(a, 0)                 // => ["a","b","c"]: haqiqiy massiv nusxasi
+    Array.from(a)                                    // => ["a","b","c"]: osonroq massiv nusxasi
+```
+Ushbu kodning oxirgidan oldingi qatori o‘sha obyekt elementlarini haqiqiy massiv obyektiga nusxalash uchun massiv'simon obyekt'da `Array slice()` metodini chaqiradi. Bu ko‘plab eski kodlarda (legacy code) mavjud bo‘lgan idiomatik usuldir, lekin hozir buni `Array.from()` yordamida qilish ancha osonroq.

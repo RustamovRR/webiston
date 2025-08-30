@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{json,js,ts,tsx,css}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "precommit": "lint-staged"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

@@ -1,0 +1,391 @@
+---
+title: Massiv metodlari
+description: "JavaScriptda massiv metodlari: push, pop, shift, unshift, splice, slice, concat, map, filter, reduce va boshqa qulay usullar. Elementlarni qo‘shish, o‘chirish, qidirish va o‘zgartirish bo‘yicha amaliy misollar."
+keywords: JavaScript, massiv, array, metodlar, array methods, push, pop, shift, unshift, splice, slice, concat, map, filter, reduce, sort, find, foreach, beginner, advanced, tutorial, misollar
+author: Webiston.uz
+---
+
+
+
+# Massiv metodlari
+
+Avvalgi bo‘limlar massiv'lar bilan ishlashning asosiy JavaScript sintaksisiga qaratilgan edi. Lekin, umuman olganda, `Array` sinfi tomonidan ta’riflangan metodlar eng qudratli vositalar hisoblanadi. Keyingi bo‘limlarda ushbu metodlar hujjatlashtirilgan. Bu metodlar haqida o‘qiyotganda, shuni yodda tutingki, ularning ba’zilari o‘zi chaqirilgan massiv'ni **o‘zgartiradi**, ba’zilari esa massiv'ni **o‘zgarishsiz qoldiradi**. Ko‘pgina metodlar massiv qaytaradi: ba’zida bu yangi massiv bo‘ladi va asl nusxa o‘zgarishsiz qoladi. Boshqa hollarda, metod massiv'ni **joyida o‘zgartiradi (in-place)** va ayni paytda o‘zgartirilgan massiv'ga havolani ham qaytaradi.
+
+Quyidagi har bir bo‘lim o‘zaro bog‘liq massiv metodlari guruhini qamrab oladi:
+
+*   **Iterator metodlari:** massiv elementlarini aylanib chiqadi va odatda siz ko‘rsatgan funksiyani har bir element uchun chaqiradi.
+*   **Stek va navbat metodlari:** massiv'ning boshi va oxiriga elementlarni qo‘shadi va olib tashlaydi.
+*   **Qism-massiv (Subarray) metodlari:** kattaroq massiv'ning uzluksiz qismlarini ajratib olish, o‘chirish, joylashtirish, to‘ldirish va nusxalash uchun mo‘ljallangan.
+*   **Qidirish va saralash metodlari:** massiv ichidan elementlarni topish va massiv elementlarini saralash uchun ishlatiladi.
+
+Quyidagi bo‘limlar, shuningdek, `Array` sinfining **statik metodlari**ni hamda massiv'larni birlashtirish va ularni satr'larga o‘zgartirish uchun mo‘ljallangan bir nechta boshqa turli metodlarni ham qamrab oladi.
+
+
+
+### 7.8.1 Massiv iterator metodlari
+
+Bu bo‘limda tasvirlangan metodlar massiv elementlarini siz taqdim etgan funksiyaga tartib bilan uzatish orqali massiv'larni aylanib chiqadi. Ular massiv'larni iteratsiya qilish, `map` qilish, filtrlash, tekshirish va `reduce` qilish uchun qulay usullarni taqdim etadi.
+
+Biroq, metodlarni batafsil tushuntirishdan oldin, ular haqida ba’zi umumiy xulosalar chiqarish o‘rinlidir. Birinchidan, bu metodlarning barchasi birinchi argument sifatida funksiyani qabul qiladi va bu funksiyani massiv'ning har bir elementi (yoki ba’zi elementlari) uchun bir martadan chaqiradi. Agar massiv siyrak bo‘lsa, siz uzatgan funksiya mavjud bo‘lmagan elementlar uchun chaqirilmaydi. Ko‘p hollarda, siz taqdim etgan funksiya uchta argument bilan chaqiriladi: massiv elementining **qiymati**, massiv elementining **indeksi** va **massivning o‘zi**. Ko‘pincha sizga faqat birinchi argument qiymati kerak bo‘ladi va ikkinchi va uchinchi qiymatlarni e’tiborsiz qoldirishingiz mumkin.
+
+Quyidagi bo‘limlarda tasvirlangan iterator metodlarining aksariyati ixtiyoriy **ikkinchi argumentni** qabul qiladi. Agar bu argument ko‘rsatilsa, funksiya go‘yo shu ikkinchi argumentning metodi sifatida chaqiriladi. Ya’ni, siz uzatgan ikkinchi argument birinchi argument sifatida uzatilgan funksiya ichidagi `this` kalit so‘zining qiymatiga aylanadi. Siz uzatgan funksiyaning qaytaradigan qiymati odatda muhim, lekin turli metodlar qaytarilgan qiymatni turlicha ishlatadi. Bu yerda tasvirlangan metodlarning hech biri o‘zi chaqirilgan massiv'ni o‘zgartirmaydi (albatta, siz uzatgan funksiya massiv'ni o‘zgartirishi mumkin).
+
+Ushbu funksiyalarning har biri birinchi argument sifatida funksiya bilan chaqiriladi va boshqa joyda ta’riflangan mavjud funksiyadan foydalanish o‘rniga, o‘sha funksiyani metod chaqiruvi ifodasining bir qismi sifatida **ichki (inline)** ta’riflash juda keng tarqalgan. Strelkali funksiya sintaksisi (§8.1.3 ga qarang) bu metodlar bilan ayniqsa yaxshi ishlaydi va biz keyingi misollarda undan foydalanamiz.
+
+#### forEach()
+
+`forEach()` metodi massiv'ni aylanib chiqib, har bir element uchun siz ko‘rsatgan funksiyani chaqiradi. Yuqorida aytib o‘tganimizdek, siz funksiyani `forEach()`'ga birinchi argument sifatida uzatasiz. Shundan so‘ng `forEach()` sizning funksiyangizni uchta argument bilan chaqiradi: massiv elementining qiymati, massiv elementining indeksi va massiv'ning o‘zi. Agar sizni faqat massiv elementining qiymati qiziqtirsa, siz faqat bitta parametrli funksiya yozishingiz mumkin — qo‘shimcha argumentlar e’tiborsiz qoldiriladi:
+``` js
+    let data = [1,2,3,4,5], sum = 0;
+    // Massiv elementlari yig'indisini hisoblash
+    data.forEach(value => { sum += value; }); // sum == 15
+
+    // Endi har bir massiv elementini oshiramiz
+    data.forEach(function(v, i, a) { a[i] = v + 1; }); // data == [2,3,4,5,6]
+```
+Shuni yodda tutingki, `forEach()` barcha elementlar funksiyaga uzatilishidan oldin iteratsiyani to‘xtatish imkonini bermaydi. Ya’ni, oddiy `for` siklida ishlatiladigan `break` operatorining muqobili yo‘q.
+
+#### map()
+
+`map()` metodi o‘zi chaqirilgan massiv'ning har bir elementini siz ko‘rsatgan funksiyaga uzatadi va funksiyangiz qaytargan qiymatlarni o‘z ichiga olgan yangi massiv qaytaradi. Masalan:
+``` js
+    let a = [1, 2, 3];
+    a.map(x => x*x) // => [1, 4, 9]: funksiya kirish sifatida x oladi va x*x qaytaradi
+```
+`map()`'ga siz uzatgan funksiya `forEach()`'ga uzatilgan funksiya bilan bir xil tarzda chaqiriladi. Biroq, `map()` metodi uchun siz uzatgan funksiya qiymat qaytarishi kerak. E’tibor bering, `map()` **yangi massiv qaytaradi**: u o‘zi chaqirilgan massiv'ni o‘zgartirmaydi. Agar o‘sha massiv siyrak bo‘lsa, sizning funksiyangiz mavjud bo‘lmagan elementlar uchun chaqirilmaydi, lekin qaytarilgan massiv ham asl massiv kabi siyrak bo‘ladi: u bir xil `length`'ga va bir xil mavjud bo‘lmagan elementlarga ega bo‘ladi.
+
+#### filter()
+
+`filter()` metodi o‘zi chaqirilgan massiv elementlarining bir qismini o‘z ichiga olgan yangi massiv qaytaradi. Siz unga uzatadigan funksiya **predikat (predicate)** bo‘lishi kerak: ya’ni `true` yoki `false` qaytaradigan funksiya. Predikat `forEach()` va `map()`'dagi kabi chaqiriladi. Agar qaytarilgan qiymat `true` bo‘lsa yoki `true`'ga o‘giriladigan qiymat bo‘lsa, u holda predikatga uzatilgan element qism-to‘plamning a’zosi hisoblanadi va qaytariladigan qiymat bo‘ladigan massiv'ga qo‘shiladi. Misollar:
+``` js
+    let a = [5, 4, 3, 2, 1];
+    a.filter(x => x < 3)        // => [2, 1]; 3 dan kichik qiymatlar
+    a.filter((x,i) => i%2 === 0) // => [5, 3, 1]; har ikkinchi qiymat
+```
+E’tibor bering, `filter()` siyrak massiv'lardagi mavjud bo‘lmagan elementlarni o‘tkazib yuboradi va uning qaytargan qiymati har doim **zich (dense)** bo‘ladi. Siyrak massiv'dagi bo‘shliqlarni yopish uchun shunday qilishingiz mumkin:
+``` js
+    let dense = sparse.filter(() => true);
+```
+Bo‘shliqlarni yopish hamda `undefined` va `null` elementlarni olib tashlash uchun `filter()`'ni quyidagicha ishlatishingiz mumkin:
+``` js
+    a = a.filter(x => x !== undefined && x !== null);
+```
+#### find() va findIndex()
+
+`find()` va `findIndex()` metodlari `filter()`'ga o‘xshaydi, chunki ular ham predikat funksiyangiz `true`'ga o‘xshash (truthy) qiymat qaytaradigan elementlarni qidirib, massiv'ni aylanib chiqadi. Biroq, `filter()`'dan farqli o‘laroq, bu ikki metod predikat elementni topishi bilan iteratsiyani **to‘xtatadi**. Bu sodir bo‘lganda, `find()` mos keluvchi **elementni**, `findIndex()` esa mos keluvchi elementning **indeksini** qaytaradi. Agar mos keluvchi element topilmasa, `find()` `undefined` qiymatini, `findIndex()` esa `-1` ni qaytaradi:
+``` js
+    let a = [1,2,3,4,5];
+    a.findIndex(x => x === 3) // => 2; 3 qiymati 2-indeksda joylashgan
+    a.findIndex(x => x < 0)   // => -1; massivda manfiy sonlar yo'q
+    a.find(x => x % 5 === 0)  // => 5: bu 5 ga karrali son
+    a.find(x => x % 7 === 0)  // => undefined: massivda 7 ga karrali sonlar yo'q
+```
+#### every() va some()
+
+`every()` va `some()` metodlari — massiv predikatlaridir: ular siz ko‘rsatgan predikat funksiyani massiv elementlariga qo‘llaydi, so‘ngra `true` yoki `false` qaytaradi.
+
+`every()` metodi matematikadagi **“barchasi uchun” kvantori (∀)** ga o‘xshaydi: u faqat va faqat sizning predikat funksiyangiz massiv'dagi **barcha elementlar uchun** `true` qaytargandagina `true` qaytaradi:
+``` js
+    let a = [1,2,3,4,5];
+    a.every(x => x < 10)       // => true: barcha qiymatlar 10 dan kichik.
+    a.every(x => x % 2 === 0)  // => false: barcha qiymatlar ham juft emas.
+```
+`some()` metodi matematikadagi **“mavjudlik” kvantori (∃)** ga o‘xshaydi: u massiv'da predikat `true` qaytaradigan **kamida bitta element mavjud bo‘lsa**, `true` qaytaradi va faqat va faqat predikat massiv'ning barcha elementlari uchun `false` qaytargandagina `false` qaytaradi:
+``` js
+    let a = [1,2,3,4,5];
+    a.some(x => x%2===0) // => true; a massivida juft sonlar bor.
+    a.some(isNaN)        // => false; a massivida son bo'lmagan qiymatlar yo'q.
+```
+Shuni yodda tutingki, `every()` ham, `some()` ham qanday qiymat qaytarishni bilishi bilan massiv elementlarini aylanib chiqishni to‘xtatadi. `some()` sizning predikatingiz birinchi marta `true` qaytarganda `true` qaytaradi va faqat predikatingiz har doim `false` qaytargandagina butun massiv'ni aylanib chiqadi. `every()` esa buning teskarisi: u sizning predikatingiz birinchi marta `false` qaytarganda `false` qaytaradi va faqat predikatingiz har doim `true` qaytargandagina barcha elementlarni aylanib chiqadi.
+
+Shuningdek, matematik kelishuvga ko‘ra, bo‘sh massiv'da chaqirilganda `every()` `true`, `some()` esa `false` qaytaradi.
+
+#### reduce() va reduceRight()
+
+`reduce()` va `reduceRight()` metodlari siz ko‘rsatgan funksiyadan foydalanib, massiv elementlarini yagona qiymat hosil qilish uchun birlashtiradi. Bu funksional dasturlashda keng tarqalgan operatsiya bo‘lib, “inject” va “fold” nomlari bilan ham tanilgan. Misollar uning qanday ishlashini tushunishga yordam beradi:
+``` js
+    let a = [1,2,3,4,5];
+    a.reduce((x,y) => x+y, 0)      // => 15; qiymatlar yig'indisi
+    a.reduce((x,y) => x*y, 1)      // => 120; qiymatlar ko'paytmasi
+    a.reduce((x,y) => (x > y) ? x : y) // => 5; qiymatlarning eng kattasi
+```
+`reduce()` ikkita argument qabul qiladi. Birinchisi — **qisqartirish (reduction)** operatsiyasini bajaruvchi funksiya. Bu qisqartirish funksiyasining vazifasi ikkita qiymatni qandaydir yo‘l bilan bitta qiymatga birlashtirish yoki qisqartirish va o‘sha qisqartirilgan qiymatni qaytarishdir. Biz bu yerda ko‘rsatgan misollarda funksiyalar ikkita qiymatni qo‘shish, ko‘paytirish va eng kattasini tanlash orqali birlashtirmoqda. Ikkinchi (ixtiyoriy) argument — bu funksiyaga uzatiladigan **boshlang‘ich qiymat (initial value)**.
+
+`reduce()` bilan ishlatiladigan funksiyalar `forEach()` va `map()` bilan ishlatiladigan funksiyalardan farq qiladi. Tanish bo‘lgan qiymat, indeks va massiv qiymatlari ikkinchi, uchinchi va to‘rtinchi argumentlar sifatida uzatiladi. Birinchi argument — bu shu paytgacha qisqartirishning **jamlangan natijasi (accumulator)**. Funksiyaga birinchi chaqiruvda, bu birinchi argument siz `reduce()`'ga ikkinchi argument sifatida uzatgan boshlang‘ich qiymat bo‘ladi. Keyingi chaqiruvlarda esa, u funksiyaning oldingi chaqiruvi tomonidan qaytarilgan qiymat bo‘ladi. Birinchi misolda qisqartirish funksiyasi avval 0 va 1 argumentlari bilan chaqiriladi. U bularni qo‘shib, 1 ni qaytaradi. Keyin u yana 1 va 2 argumentlari bilan chaqirilib, 3 ni qaytaradi. So‘ngra u 3+3=6, keyin 6+4=10 va nihoyat 10+5=15 ni hisoblaydi. Bu yakuniy qiymat, 15, `reduce()`'ning qaytaradigan qiymatiga aylanadi.
+
+Siz bu misoldagi uchinchi `reduce()` chaqiruvi faqat bitta argumentga ega ekanligini payqagan bo‘lishingiz mumkin: unda boshlang‘ich qiymat ko‘rsatilmagan. `reduce()`'ni boshlang‘ich qiymatsiz chaqirganingizda, u massiv'ning birinchi elementini boshlang‘ich qiymat sifatida ishlatadi. Bu shuni anglatadiki, qisqartirish funksiyasiga birinchi chaqiruvda birinchi va ikkinchi argumentlar sifatida massiv'ning birinchi va ikkinchi elementlari uzatiladi. Yig‘indi va ko‘paytma misollarida biz boshlang‘ich qiymat argumentini tushirib qoldirishimiz mumkin edi.
+
+Bo‘sh massiv'da `reduce()`'ni boshlang‘ich qiymat argumentsiz chaqirish `TypeError`'ga sabab bo‘ladi. Agar siz uni faqat bitta qiymat bilan chaqirsangiz — yo bir elementli massiv va boshlang‘ich qiymatsiz, yo bo‘sh massiv va boshlang‘ich qiymat bilan — u qisqartirish funksiyasini umuman chaqirmasdan, o‘sha bitta qiymatni shunchaki qaytaradi.
+
+`reduceRight()` xuddi `reduce()` kabi ishlaydi, faqat u massiv'ni eng pastdan eng yuqori indeksgacha (chapdan o‘ngga) emas, balki eng yuqoridan eng past indeksgacha (o‘ngdan chapga) qayta ishlaydi. Buni, masalan, qisqartirish operatsiyasi o‘ngdan chapga assotsiativlikka ega bo‘lsa, qilishni xohlashingiz mumkin:
+``` js
+    // 2^(3^4) ni hisoblash. Darajaga ko'tarish o'ngdan chapga ustuvorlikka ega.
+    let a = [2, 3, 4];
+    a.reduceRight((acc,val) => Math.pow(val,acc)) // => 2.4178516392292583e+24
+```
+E’tibor bering, na `reduce()`, na `reduceRight()` qisqartirish funksiyasi chaqirilishi kerak bo‘lgan `this` qiymatini belgilovchi ixtiyoriy argumentni qabul qiladi. Uning o‘rnini ixtiyoriy boshlang‘ich qiymat argumenti egallaydi. Agar qisqartirish funksiyangiz ma’lum bir obyekt'ning metodi sifatida chaqirilishi kerak bo‘lsa, `Function.bind()` metodiga qarang (§8.7.5).
+
+Hozirgacha ko‘rsatilgan misollar soddalik uchun sonli bo‘ldi, lekin `reduce()` va `reduceRight()` faqat matematik hisob-kitoblar uchun mo‘ljallanmagan. Ikkita qiymatni (masalan, ikkita obyekt'ni) bir xil turdagi bitta qiymatga birlashtira oladigan har qanday funksiya qisqartirish funksiyasi sifatida ishlatilishi mumkin. Boshqa tomondan, massiv qisqartirishlari yordamida ifodalangan algoritmlar tezda murakkablashib, tushunish qiyin bo‘lib qolishi mumkin va siz massiv'laringizni qayta ishlash uchun oddiy sikl tuzilmalaridan foydalansangiz, kodingizni o‘qish, yozish va tahlil qilish osonroq ekanligini ko‘rishingiz mumkin.
+
+
+
+### 7.8.2 Massiv'larni `flat()` va `flatMap()` yordamida yassilash
+
+ES2019'da `flat()` metodi yangi massiv yaratadi va qaytaradi. Bu yangi massiv, o‘zi chaqirilgan massiv bilan bir xil elementlarni o‘z ichiga oladi, faqat undagi o‘zlari ham massiv bo‘lgan har qanday elementlar qaytarilayotgan massiv ichiga **“yassilanadi”**. Masalan:
+
+ ``` js   [1, [2, 3]].flat()    // => [1, 2, 3]
+    [1, [2, [3]]].flat()  // => [1, 2, [3]]
+```
+Argumentsiz chaqirilganda, `flat()` bir darajali ichma-ich joylashuvni yassilaydi. Asl massiv'ning o‘zlari ham massiv bo‘lgan elementlari yassilanadi, lekin o‘sha massiv'larning ichidagi massiv elementlari yassilanmaydi. Agar siz ko‘proq darajalarni yassilamoqchi bo‘lsangiz, `flat()`'ga son uzating:
+``` js
+    let a = [1, [2, [3, [4]]]];
+    a.flat(1) // => [1, 2, [3, [4]]]
+    a.flat(2) // => [1, 2, 3, [4]]
+    a.flat(3) // => [1, 2, 3, 4]
+    a.flat(4) // => [1, 2, 3, 4]
+```
+`flatMap()` metodi xuddi `map()` metodi kabi ishlaydi (qarang: “map()”), farqi shundaki, qaytarilgan massiv go‘yo `flat()`'ga uzatilgandek avtomatik tarzda yassilanadi. Ya’ni, `a.flatMap(f)`'ni chaqirish `a.map(f).flat()` bilan bir xil (lekin undan samaraliroq):
+``` js
+    let phrases = ["hello world", "the definitive guide"];
+    let words = phrases.flatMap(phrase => phrase.split(" "));
+    words // => ["hello", "world", "the", "definitive", "guide"];
+```
+`flatMap()`'ni `map()`'ning umumlashmasi deb hisoblash mumkin. U kirish massiv'ining har bir elementini chiqish massiv'ining istalgan sondagi elementlariga `map` qilish imkonini beradi. Xususan, `flatMap()` kirish elementlarini bo‘sh massiv'ga `map` qilishga imkon beradi, bu esa chiqish massiv'ida yassilanish natijasida hech narsaga aylanadi:
+``` js
+    // Manfiy bo'lmagan sonlarni ularning kvadrat ildiziga map qilish
+    [-2, -1, 1, 2].flatMap(x => x < 0 ? [] : Math.sqrt(x)) // => [1, 1.414...]
+```
+
+
+
+### 7.8.3 Massiv'larni `concat()` yordamida qo'shish
+
+`concat()` metodi yangi massiv yaratadi va qaytaradi. Bu massiv `concat()` chaqirilgan asl massiv elementlaridan, so‘ngra `concat()`'ga berilgan har bir argumentdan tashkil topadi. Agar bu argumentlarning birortasi o‘zi massiv bo‘lsa, u holda massivning o‘zi emas, balki uning **elementlari** birlashtiriladi. Shuni yodda tutingki, `concat()` massiv'lar ichidagi massiv'larni rekursiv tarzda yassilamaydi. `concat()` o‘zi chaqirilgan massiv'ni o‘zgartirmaydi:
+``` js
+    let a = [1,2,3];
+    a.concat(4, 5)          // => [1,2,3,4,5]
+    a.concat([4,5],[6,7])   // => [1,2,3,4,5,6,7]; massiv'lar yassilanadi
+    a.concat(4, [5,[6,7]])  // => [1,2,3,4,5,[6,7]]; lekin ichki massiv'lar emas
+    a                       // => [1,2,3]; asl massiv o'zgarishsiz qoladi
+```
+E’tibor bering, `concat()` o‘zi chaqirilgan massiv'ning yangi nusxasini yaratadi. Ko‘p hollarda bu to‘g‘ri yondashuv, lekin bu resurs talab qiladigan operatsiyadir. Agar o‘zingizni `a = a.concat(x)` kabi kod yozayotganingizni ko‘rsangiz, yangisini yaratish o‘rniga massiv'ingizni `push()` yoki `splice()` yordamida joyida o‘zgartirish haqida o‘ylashingiz kerak.
+
+
+
+
+### 7.8.4 `push()`, `pop()`, `shift()` va `unshift()` yordamida Stek va Navbatlar
+
+`push()` va `pop()` metodlari massiv'lar bilan go‘yo ular stek'dek ishlashga imkon beradi. `push()` metodi massiv'ning oxiriga bir yoki bir nechta yangi element qo‘shadi va massiv'ning yangi uzunligini qaytaradi. `concat()`'dan farqli o‘laroq, `push()` massiv argumentlarini yassilamaydi. `pop()` metodi esa teskarisini bajaradi: u massiv'ning oxirgi elementini o‘chiradi, massiv uzunligini kamaytiradi va o‘chirib yuborilgan qiymatni qaytaradi. E’tibor bering, har ikkala metod ham massiv'ni **joyida o‘zgartiradi**. `push()` va `pop()` kombinatsiyasi JavaScript massiv'idan **birinchi-kirib-oxirgi-chiqadigan (first-in, last-out)** stek'ni implementatsiya qilish imkonini beradi. Masalan:
+``` js
+    let stack = [];     // stack == []
+    stack.push(1,2);    // stack == [1,2];
+    stack.pop();        // stack == [1]; 2 ni qaytaradi
+    stack.push(3);      // stack == [1,3]
+    stack.pop();        // stack == [1]; 3 ni qaytaradi
+    stack.push([4,5]);  // stack == [1,[4,5]]
+    stack.pop()         // stack == [1]; [4,5] ni qaytaradi
+    stack.pop();        // stack == []; 1 ni qaytaradi
+```
+`push()` metodi siz unga uzatgan massiv'ni yassilamaydi, lekin agar siz bir massiv'dagi barcha elementlarni boshqa massiv'ga `push` qilmoqchi bo‘lsangiz, uni aniq yassilash uchun yoyish operatoridan (§8.3.4) foydalanishingiz mumkin:
+``` js
+    a.push(...values);
+```
+`unshift()` va `shift()` metodlari `push()` va `pop()`'ga juda o‘xshab ishlaydi, faqat ular elementlarni massiv'ning oxiridan emas, **boshidan** qo‘shadi va olib tashlaydi. `unshift()` massiv'ning boshiga bir yoki bir nechta element qo‘shadi, joy ochish uchun mavjud elementlarni yuqoriroq indekslarga siljitadi va massiv'ning yangi uzunligini qaytaradi. `shift()` massiv'ning birinchi elementini olib tashlaydi va qaytaradi, keyingi barcha elementlarni massiv boshidagi yangi bo‘shagan joyni egallash uchun bir pog‘ona pastga siljitadi. Siz `unshift()` va `shift()` yordamida stek implementatsiya qilishingiz mumkin edi, lekin bu `push()` va `pop()`'dan foydalanishdan ko‘ra kamroq samarali bo‘lardi, chunki massiv boshiga element qo‘shilganda yoki olib tashlanganda har safar massiv elementlarini siljitish kerak bo‘ladi. Buning o‘rniga, `push()` yordamida massiv oxiriga elementlar qo‘shib, `shift()` yordamida ularni massiv boshidan olib tashlash orqali **navbat (queue)** ma’lumotlar tuzilmasini implementatsiya qilishingiz mumkin:
+``` js
+    let q = [];     // q == []
+    q.push(1,2);    // q == [1,2]
+    q.shift();      // q == [2]; 1 ni qaytaradi
+    q.push(3)       // q == [2, 3]
+    q.shift()       // q == [3]; 2 ni qaytaradi
+    q.shift()       // q == []; 3 ni qaytaradi
+```
+`unshift()`'ning bir jihati borki, uni alohida ta’kidlab o‘tish joiz, chunki bu siz uchun kutilmagan bo‘lishi mumkin. `unshift()`'ga bir nechta argument uzatilganda, ular bir vaqtning o‘zida qo‘shiladi, bu esa ularning massiv'da birma-bir qo‘shilgandagidan farqli tartibda joylashishiga olib keladi:
+``` js
+    let a = [];     // a == []
+    a.unshift(1)    // a == [1]
+    a.unshift(2)    // a == [2, 1]
+    a = [];         // a == []
+    a.unshift(1,2)  // a == [1, 2]```
+```
+
+
+### 7.8.5 `slice()`, `splice()`, `fill()` va `copyWithin()` yordamida qism-massiv'lar bilan ishlash
+
+Massiv'lar uzluksiz qismlar, ya’ni massiv'ning **qism-massiv'lari** yoki **“bo‘laklari” (slices)** bilan ishlaydigan bir qator metodlarni taqdim etadi. Quyidagi bo‘limlarda qismlarni ajratib olish, almashtirish, to‘ldirish va nusxalash metodlari tasvirlangan.
+
+#### slice()
+
+`slice()` metodi ko‘rsatilgan massiv'ning bir bo‘lagini, ya’ni qism-massiv'ini qaytaradi. Uning ikkita argumenti qaytarilishi kerak bo‘lgan bo‘lakning boshi va oxirini belgilaydi. Qaytarilgan massiv birinchi argument bilan belgilangan elementni va undan keyingi barcha elementlarni o‘z ichiga oladi, lekin ikkinchi argument bilan belgilangan elementni o‘z ichiga olmaydi. Agar faqat bitta argument ko‘rsatilsa, qaytarilgan massiv boshlang‘ich pozitsiyadan massiv'ning oxirigacha bo‘lgan barcha elementlarni o‘z ichiga oladi. Agar argumentlarning birortasi manfiy bo‘lsa, u massiv elementini massiv uzunligiga nisbatan belgilaydi. Masalan, –1 argumenti massiv'dagi oxirgi elementni, –2 argumenti esa undan oldingi elementni bildiradi. E’tibor bering, `slice()` o‘zi chaqirilgan massiv'ni o‘zgartirmaydi. Quyida bir nechta misollar keltirilgan:
+``` js
+    let a = [1,2,3,4,5];
+    a.slice(0,3);  // [1,2,3] ni qaytaradi
+    a.slice(3);    // [4,5] ni qaytaradi
+    a.slice(1, -1); // [2,3,4] ni qaytaradi
+    a.slice(-3,-2); // [3] ni qaytaradi
+```
+#### splice()
+
+`splice()` — bu massiv'dan elementlarni qo‘shish yoki olib tashlash uchun mo‘ljallangan umumiy maqsadli metoddir. `slice()` va `concat()`'dan farqli o‘laroq, `splice()` o‘zi chaqirilgan massiv'ni **o‘zgartiradi**. Shuni yodda tutingki, `splice()` va `slice()` nomlari juda o‘xshash, ammo ular butunlay boshqa operatsiyalarni bajaradi.
+
+`splice()` massiv'dan elementlarni o‘chirishi, massiv'ga yangi elementlar qo‘shishi yoki bir vaqtning o‘zida ikkala operatsiyani ham bajarishi mumkin. Qo‘shish yoki o‘chirish nuqtasidan keyin keladigan massiv elementlarining indekslari, ular massiv'ning qolgan qismi bilan uzluksiz bo‘lib qolishi uchun zaruratga qarab oshiriladi yoki kamaytiriladi. `splice()`'ning birinchi argumenti qo‘shish va/yoki o‘chirish boshlanishi kerak bo‘lgan massiv pozitsiyasini belgilaydi. Ikkinchi argument massiv'dan o‘chirilishi kerak bo‘lgan elementlar sonini belgilaydi. (E’tibor bering, bu ikki metod o‘rtasidagi yana bir farqdir. `slice()`'ning ikkinchi argumenti — bu tugash pozitsiyasi. `splice()`'ning ikkinchi argumenti — bu uzunlik.) Agar bu ikkinchi argument tushirib qoldirilsa, boshlang‘ich elementdan massiv'ning oxirigacha bo‘lgan barcha elementlar o‘chirib yuboriladi. `splice()` o‘chirilgan elementlar massiv'ini qaytaradi, agar hech qanday element o‘chirilmagan bo‘lsa, bo‘sh massiv qaytaradi. Masalan:
+``` js
+    let a = [1,2,3,4,5,6,7,8];
+    a.splice(4)    // => [5,6,7,8]; a endi [1,2,3,4]
+    a.splice(1,2)  // => [2,3]; a endi [1,4]
+    a.splice(1,1)  // => [4]; a endi [1]
+```
+`splice()`'ning birinchi ikki argumenti qaysi massiv elementlari o‘chirilishini belgilaydi. Bu argumentlardan so‘ng birinchi argumentda ko‘rsatilgan pozitsiyadan boshlab massiv'ga qo‘shilishi kerak bo‘lgan elementlarni belgilaydigan istalgancha qo‘shimcha argumentlar kelishi mumkin. Masalan:
+``` js
+    let a = [1,2,3,4,5];
+    a.splice(2,0,"a","b")  // => []; a endi [1,2,"a","b",3,4,5]
+    a.splice(2,2,[1,2],3)  // => ["a","b"]; a endi [1,2,[1,2],3,3,4,5]
+```
+E’tibor bering, `concat()`'dan farqli o‘laroq, `splice()` massiv'larning elementlarini emas, balki ularning o‘zini qo‘shadi.
+
+#### fill()
+
+`fill()` metodi massiv elementlarini yoki massiv'ning bir qismini belgilangan qiymat bilan to‘ldiradi. U o‘zi chaqirilgan massiv'ni o‘zgartiradi va o‘zgartirilgan massiv'ni qaytaradi:
+``` js
+    let a = new Array(5); // Elementlarsiz, uzunligi 5 ga teng massiv bilan boshlaymiz
+    a.fill(0)             // => [0,0,0,0,0]; massivni nollar bilan to'ldirish
+    a.fill(9, 1)          // => [0,9,9,9,9]; 1-indeksdan boshlab 9 bilan to'ldirish
+    a.fill(8, 2, -1)      // => [0,9,8,8,9]; 2 va 3-indekslarni 8 bilan to'ldirish
+```
+`fill()`'ning birinchi argumenti — massiv elementlariga o‘rnatiladigan qiymat. Ixtiyoriy ikkinchi argument — boshlang‘ich indeksni belgilaydi. Agar u tushirib qoldirilsa, to‘ldirish 0-indeksdan boshlanadi. Ixtiyoriy uchinchi argument — tugash indeksini belgilaydi — massiv elementlari shu indeksgacha (lekin shu indeksning o‘zi kirmaydi) to‘ldiriladi. Agar bu argument tushirib qoldirilsa, massiv boshlang‘ich indeksdan oxirigacha to‘ldiriladi. `slice()`'dagi kabi, manfiy sonlarni uzatish orqali massiv oxiriga nisbatan indekslarni belgilashingiz mumkin.
+
+#### copyWithin()
+
+`copyWithin()` massiv'ning bir qismini massiv ichidagi yangi pozitsiyaga nusxalaydi. U massiv'ni joyida o‘zgartiradi va o‘zgartirilgan massiv'ni qaytaradi, lekin massiv'ning uzunligini o‘zgartirmaydi. Birinchi argument birinchi element nusxalanadigan manzil indeksini belgilaydi. Ikkinchi argument nusxalanishi kerak bo‘lgan birinchi elementning indeksini belgilaydi. Agar bu ikkinchi argument tushirib qoldirilsa, 0 ishlatiladi. Uchinchi argument nusxalanishi kerak bo‘lgan elementlar qismining oxirini belgilaydi. Agar u tushirib qoldirilsa, massiv'ning uzunligi ishlatiladi. Boshlang‘ich indeksdan boshlab tugash indeksigacha (lekin shu indeksning o‘zi kirmaydi) bo‘lgan elementlar nusxalanadi. `slice()`'dagi kabi, manfiy sonlarni uzatish orqali massiv oxiriga nisbatan indekslarni belgilashingiz mumkin:
+``` js
+    let a = [1,2,3,4,5];
+    a.copyWithin(1)       // => [1,1,2,3,4]: massiv elementlarini bir pog'ona yuqoriga nusxalash
+    a.copyWithin(2, 3, 5) // => [1,1,3,4,4]: oxirgi 2 ta elementni 2-indeksga nusxalash
+    a.copyWithin(0, -2)   // => [4,4,3,4,4]: manfiy siljishlar ham ishlaydi
+```
+`copyWithin()` yuqori unumdorlikka ega metod bo‘lib, ayniqsa turlashtirilgan massiv'lar (qarang: §11.2) bilan ishlashda foydalidir. U C standart kutubxonasidagi `memmove()` funksiyasidan modellashtirilgan. Shuni yodda tutingki, nusxalash manba va manzil hududlari o‘rtasida ustma-ust tushish bo‘lsa ham to‘g‘ri ishlaydi.
+
+
+
+### 7.8.6 Massiv'larni qidirish va saralash metodlari
+
+Massiv'lar satr'larning xuddi shu nomdagi metodlariga o‘xshash `indexOf()`, `lastIndexOf()` va `includes()` metodlarini implementatsiya qiladi. Shuningdek, massiv elementlarining tartibini o‘zgartirish uchun `sort()` va `reverse()` metodlari mavjud. Ushbu metodlar keyingi bo‘limlarda tasvirlangan.
+
+#### indexOf() va lastIndexOf()
+
+`indexOf()` va `lastIndexOf()` massiv'dan belgilangan qiymatga ega elementni qidiradi va topilgan birinchi shunday elementning indeksini yoki, agar topilmasa, -1 ni qaytaradi. `indexOf()` massiv'ni boshidan oxirigacha, `lastIndexOf()` esa oxiridan boshigacha qidiradi:
+``` js
+    let a = [0,1,2,1,0];
+    a.indexOf(1)      // => 1: a[1] ning qiymati 1
+    a.lastIndexOf(1)  // => 3: a[3] ning qiymati 1
+    a.indexOf(3)      // => -1: qiymati 3 ga teng element yo'q
+```
+`indexOf()` va `lastIndexOf()` o‘z argumentini massiv elementlariga `===` operatorining ekvivalenti yordamida taqqoslaydi. Agar massiv'ingiz primitiv qiymatlar o‘rniga obyekt'larni o‘z ichiga olsa, bu metodlar ikkala havola ham aynan bir xil obyekt'ga ishora qilishini tekshiradi. Agar siz obyekt'ning tarkibini tekshirmoqchi bo‘lsangiz, buning o‘rniga o‘zingizning maxsus predikat funksiyangiz bilan `find()` metodidan foydalanib ko‘ring.
+
+`indexOf()` va `lastIndexOf()` qidiruvni boshlash kerak bo‘lgan massiv indeksini belgilaydigan ixtiyoriy ikkinchi argumentni qabul qiladi. Agar bu argument tushirib qoldirilsa, `indexOf()` boshidan, `lastIndexOf()` esa oxiridan boshlaydi. Ikkinchi argument uchun manfiy qiymatlarga ruxsat beriladi va ular `slice()` metodidagi kabi massiv oxiridan siljish sifatida qabul qilinadi: masalan, –1 qiymati massiv'ning oxirgi elementini bildiradi.
+
+Quyidagi funksiya massiv'dan belgilangan qiymatni qidiradi va barcha mos keluvchi indekslar massiv'ini qaytaradi. Bu `indexOf()`'ning ikkinchi argumentidan birinchisidan keyingi mosliklarni topish uchun qanday foydalanish mumkinligini ko‘rsatadi.
+``` js
+    // a massividagi x qiymatining barcha uchragan o'rinlarini topish va
+    // mos keluvchi indekslar massivini qaytarish
+    function findall(a, x) {
+        let results = [],            // Biz qaytaradigan indekslar massivi
+            len = a.length,          // Qidiriladigan massiv uzunligi
+            pos = 0;                 // Qidiruv boshlanadigan pozitsiya
+
+        while(pos < len) {           // Qidirish uchun elementlar bor ekan...
+            pos = a.indexOf(x, pos); // Qidiramiz
+            if (pos === -1) break;   // Agar hech narsa topilmasa, tugatdik.
+            results.push(pos);       // Aks holda, indeksni massivga saqlaymiz
+            pos = pos + 1;           // Va keyingi qidiruvni keyingi elementdan boshlaymiz
+        }
+        return results;              // Indekslar massivini qaytaramiz
+    }
+```
+E’tibor bering, satr'larda ham ushbu massiv metodlari kabi ishlaydigan `indexOf()` va `lastIndexOf()` metodlari mavjud, faqat ularda manfiy ikkinchi argument nol sifatida qabul qilinadi.
+
+#### includes()
+
+ES2016'da kiritilgan `includes()` metodi bitta argument qabul qiladi va agar massiv o‘sha qiymatni o‘z ichiga olsa `true`, aks holda `false` qaytaradi. U sizga qiymatning indeksini aytmaydi, faqat uning mavjud yoki mavjud emasligini bildiradi. `includes()` metodi massiv'lar uchun a’zolikni tekshirish (set membership test) vazifasini bajaradi. Biroq, shuni yodda tutingki, massiv'lar to‘plamlar (sets) uchun samarali ifoda shakli emas va agar siz bir nechta elementdan ko‘proq ma’lumot bilan ishlayotgan bo‘lsangiz, haqiqiy `Set` obyektidan foydalanishingiz kerak (§11.1.1).
+
+`includes()` metodi `indexOf()` metodidan bir muhim jihati bilan biroz farq qiladi. `indexOf()` tenglikni `===` operatori ishlatadigan algoritm bilan tekshiradi va bu tenglik algoritmi **son-emas (not-a-number, NaN)** qiymatini boshqa har qanday qiymatdan, shu jumladan o‘zidan ham farqli deb hisoblaydi. `includes()` esa `NaN`'ni o‘ziga teng deb hisoblaydigan biroz boshqacha tenglik versiyasidan foydalanadi. Bu shuni anglatadiki, `indexOf()` massiv'dagi `NaN` qiymatini aniqlay olmaydi, lekin `includes()` aniqlay oladi:
+``` js
+    let a = [1,true,3,NaN];
+    a.includes(true) // => true
+    a.includes(2)    // => false
+    a.includes(NaN)  // => true
+    a.indexOf(NaN)   // => -1; indexOf NaN'ni topa olmaydi
+```
+#### sort()
+
+`sort()` massiv elementlarini **joyida (in-place)** saralaydi va saralangan massiv'ni qaytaradi. `sort()`'ga argumentsiz murojaat qilinganda, u massiv elementlarini alifbo tartibida saralaydi (zarur bo‘lsa, taqqoslash uchun ularni vaqtincha satr'larga o‘giradi):
+``` js
+    let a = ["banana", "cherry", "apple"];
+    a.sort(); // a == ["apple", "banana", "cherry"]
+```
+Agar massiv'da `undefined` elementlar bo‘lsa, ular massiv'ning oxiriga saralanadi.
+
+Massiv'ni alifbo tartibidan boshqa tartibda saralash uchun `sort()`'ga argument sifatida **taqqoslash funksiyasi (comparison function)** uzatishingiz kerak. Bu funksiya o‘zining ikki argumentidan qaysi biri saralangan massiv'da birinchi kelishi kerakligini hal qiladi. Agar birinchi argument ikkinchisidan oldin kelishi kerak bo‘lsa, taqqoslash funksiyasi noldan kichik son qaytarishi kerak. Agar birinchi argument saralangan massiv'da ikkinchisidan keyin kelishi kerak bo‘lsa, funksiya noldan katta son qaytarishi kerak. Va agar ikkala qiymat ekvivalent bo‘lsa (ya’ni, ularning tartibi ahamiyatsiz bo‘lsa), taqqoslash funksiyasi 0 qaytarishi kerak. Shunday qilib, masalan, massiv elementlarini alifbo tartibida emas, balki sonli tartibda saralash uchun shunday qilishingiz mumkin:
+``` js
+    let a = [33, 4, 1111, 222];
+    a.sort();                  // a == [1111, 222, 33, 4]; alifbo tartibi
+    a.sort(function(a,b) {     // Taqqoslash funksiyasini uzatamiz
+        return a-b;            // Tartibga qarab < 0, 0, yoki > 0 qaytaradi
+    });                        // a == [4, 33, 222, 1111]; sonli tartib
+    a.sort((a,b) => b-a);      // a == [1111, 222, 33, 4]; teskari sonli tartib
+```
+Massiv elementlarini saralashning yana bir misoli sifatida, satr'lar massiv'ida registrga sezgir bo‘lmagan (case-insensitive) alifbo tartibida saralashni, taqqoslashdan oldin ikkala argumentini ham kichik harflarga o‘giradigan (`toLowerCase()` metodi bilan) taqqoslash funksiyasini uzatish orqali amalga oshirish mumkin:
+``` js
+    let a = ["ant", "Bug", "cat", "Dog"];
+    a.sort();                    // a == ["Bug","Dog","ant","cat"]; registrga sezgir saralash
+    a.sort(function(s,t) {
+        let a = s.toLowerCase();
+        let b = t.toLowerCase();
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    });                          // a == ["ant","Bug","cat","Dog"]; registrga sezgir bo'lmagan saralash
+```
+#### reverse()
+
+`reverse()` metodi massiv elementlarining tartibini teskarisiga o‘giradi va teskari qilingan massiv'ni qaytaradi. U buni **joyida (in place)** amalga oshiradi; boshqacha aytganda, u elementlari qayta tartiblangan yangi massiv yaratmaydi, balki ularni mavjud massiv'ning o‘zida qayta tartiblaydi:
+``` js
+    let a = [1,2,3];
+    a.reverse(); // a == [3,2,1]
+```
+
+
+
+### 7.8.7 Massiv'ni satr'ga o‘girish
+
+`Array` sinfi massiv'larni satr'larga o‘giradigan uchta metodni ta’riflaydi. Bu odatda log va xatolik xabarlarini yaratishda kerak bo‘lishi mumkin. (Agar siz massiv tarkibini keyinchalik qayta ishlatish uchun matn shaklida saqlamoqchi bo‘lsangiz, bu yerda tasvirlangan metodlar o‘rniga massiv'ni `JSON.stringify()` [§6.8] yordamida serializatsiya qiling.)
+
+`join()` metodi massiv'ning barcha elementlarini satr'larga o‘giradi va ularni birlashtirib, natijaviy satr'ni qaytaradi. Siz natijaviy satr'da elementlarni ajratib turadigan ixtiyoriy satr'ni ko‘rsatishingiz mumkin. Agar ajratuvchi satr ko‘rsatilmasa, vergul ishlatiladi:
+``` js
+    let a = [1, 2, 3];
+    a.join()      // => "1,2,3"
+    a.join(" ")   // => "1 2 3"
+    a.join("")    // => "123"
+    let b = new Array(10); // Uzunligi 10, lekin elementlari yo'q massiv
+    b.join("-")   // => "---------": 9 ta chiziqchadan iborat satr
+```
+`join()` metodi satr'ni qismlarga bo‘lish orqali massiv yaratadigan `String.split()` metodining teskarisidir.
+
+Barcha JavaScript obyekt'lari kabi, massiv'lar ham `toString()` metodiga ega. Massiv uchun bu metod xuddi `join()` metodining argumentsiz chaqirilishi kabi ishlaydi:
+``` js
+    [1,2,3].toString()       // => "1,2,3"
+    ["a", "b", "c"].toString() // => "a,b,c"
+    [1, [2,"c"]].toString()  // => "1,2,c"
+```
+E’tibor bering, natija massiv qiymati atrofida to‘rtburchak qavslar yoki boshqa turdagi ajratgichlarni o‘z ichiga olmaydi.
+
+`toLocaleString()` — bu `toString()`'ning mahalliylashtirilgan versiyasidir. U har bir massiv elementining `toLocaleString()` metodini chaqirish orqali uni satr'ga o‘giradi va so‘ngra natijaviy satr'larni mahalliy (va implementatsiyaga bog‘liq) ajratuvchi satr yordamida birlashtiradi.
+
+### 7.8.8 Statik massiv funksiyalari
+
+Biz yuqorida hujjatlashtirgan massiv metodlariga qo‘shimcha ravishda, `Array` sinfi siz massiv'larda emas, balki `Array` konstruktori orqali chaqirishingiz mumkin bo‘lgan uchta statik funksiyani ham ta’riflaydi. `Array.of()` va `Array.from()` yangi massiv'lar yaratish uchun fabrika metodlaridir. Ular §7.1.4 va §7.1.5'da hujjatlashtirilgan.
+
+Yana bir statik massiv funksiyasi — bu `Array.isArray()`. U noma’lum qiymatning massiv ekanligini yoki emasligini aniqlash uchun foydalidir:
+``` js
+    Array.isArray([]) // => true
+    Array.isArray({}) // => false
+```
