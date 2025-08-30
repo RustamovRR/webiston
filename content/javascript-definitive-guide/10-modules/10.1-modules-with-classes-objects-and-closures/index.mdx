@@ -1,0 +1,109 @@
+---
+title: Sinflar, obyekt'lar va closure'lar yordamida modullar yaratish
+description: "avaScriptda modullar yaratish: sinflar, obyektlar va closure’lar yordamida kodni kapsulalash, xususiy ma’lumotlarni himoyalash va qayta foydalaniladigan funksional imkoniyatlarni yaratish. Modular dasturlash va amaliy misollar."
+keywords: JavaScript, modul, modules, sinf, class, obyekt, object, closure, kapsulalash, encapsulation, private data, modular programming, qayta foydalanish, reusable code, advanced, tutorial, misollar, design pattern
+author: Webiston.uz
+---
+
+
+
+# Sinflar, obyekt'lar va closure'lar yordamida modullar yaratish
+
+Garchi bu yaqqol ko‘rinib tursa-da, shuni ta’kidlash joizki, sinflarning muhim xususiyatlaridan biri ularning o‘z metodlari uchun modul vazifasini bajarishidir. 9-8-misolni eslang. Ushbu misolda bir nechta turli sinflar ta’riflangan bo‘lib, ularning barchasida `has()` nomli metod mavjud edi. Lekin siz o‘sha misoldan bir nechta to‘plam sinflarini ishlatadigan dastur yozishda hech qanday muammoga duch kelmagan bo‘lardingiz: masalan, `SingletonSet`'dagi `has()` implementatsiyasi `BitSet`'ning `has()` metodini qayta yozib yuborish xavfi yo‘q.
+
+Bir sinf metodlarining boshqa, bog‘liq bo‘lmagan sinflar metodlaridan mustaqil bo‘lishining sababi shundaki, har bir sinfning metodlari mustaqil prototip obyekt'larining xususiyatlari sifatida ta’riflanadi. Sinflarning modular bo‘lishining sababi — obyekt'larning modular ekanligidadir: JavaScript obyekt'ida xususiyatni ta’riflash o‘zgaruvchi e’lon qilishga juda o‘xshaydi, lekin obyekt'larga xususiyat qo‘shish dasturning global nomlar fazosiga (global namespace) ta’sir qilmaydi va boshqa obyekt'larning xususiyatlariga ham daxl qilmaydi. JavaScript ancha ko‘p matematik funksiyalar va konstantalarni ta’riflaydi, lekin ularning barchasini global miqyosda e’lon qilish o‘rniga, ular yagona global `Math` obyekt'ining xususiyatlari sifatida guruhlangan. Xuddi shu usulni 9-8-misolda ham qo‘llash mumkin edi. `SingletonSet` va `BitSet` kabi nomlar bilan global sinflarni ta’riflash o‘rniga, o‘sha misolni faqat bitta global `Sets` obyekt'ini ta’riflaydigan qilib yozish mumkin edi va bu obyektning xususiyatlari turli sinflarga havola qilgan bo‘lardi. Shunda bu `Sets` kutubxonasi foydalanuvchilari sinflarga `Sets.Singleton` va `Sets.Bit` kabi nomlar bilan murojaat qilishlari mumkin edi.
+
+Modullik uchun sinflar va obyekt'lardan foydalanish JavaScript dasturlashida keng tarqalgan va foydali usuldir, lekin u yetarlicha imkoniyat bermaydi. Xususan, u bizga modul ichidagi ichki implementatsiya tafsilotlarini yashirish imkonini bermaydi. Yana 9-8-misolni ko‘rib chiqaylik. Agar biz o‘sha misolni modul sifatida yozayotgan bo‘lganimizda, ehtimol, turli abstrakt sinflarni modul ichida saqlab, faqat konkret quyi sinflarni modul foydalanuvchilariga taqdim etishni xohlagan bo‘lardik. Xuddi shunday, `BitSet` sinfidagi `_valid()` va `_has()` metodlari aslida sinf foydalanuvchilariga ko‘rsatilmasligi kerak bo‘lgan ichki yordamchi dasturlardir. `BitSet.bits` va `BitSet.masks` esa yashirilgani ma’qul bo‘lgan implementatsiya tafsilotlaridir.
+
+§8.6'da ko‘rganimizdek, funksiya ichida e’lon qilingan lokal o‘zgaruvchilar va ichki funksiyalar o‘sha funksiya uchun shaxsiy (private) hisoblanadi. Bu shuni anglatadiki, biz implementatsiya tafsilotlari va yordamchi funksiyalarni o‘rab turuvchi funksiya ichida yashirin qoldirib, modulning ommaviy API'sini (public API) esa funksiyaning qaytariladigan qiymati sifatida taqdim etish orqali modullikning bir turiga erishish uchun **darhol chaqiriladigan funksiya ifodalaridan (immediately invoked function expressions)** foydalanishimiz mumkin. `BitSet` sinfi misolida modulni quyidagicha tuzishimiz mumkin:
+``` js
+    const BitSet = (function() { // BitSet'ga bu funksiyaning qaytarilgan qiymatini o'zlashtiramiz
+        // Bu yerda shaxsiy implementatsiya tafsilotlari
+        function isValid(set, n) { ... }
+        function has(set, byte, bit) { ... }
+        const BITS = new Uint8Array([1, 2, 4, 8, 16, 32, 64, 128]);
+        const MASKS = new Uint8Array([~1, ~2, ~4, ~8, ~16, ~32, ~64, ~128]);
+
+        // Modulning ommaviy API'si — bu shunchaki BitSet sinfidir, biz uni shu yerda
+        // ta'riflab, qaytaramiz. Sinf yuqorida ta'riflangan shaxsiy funksiyalar va
+        // konstantalardan foydalana oladi, lekin ular sinf foydalanuvchilaridan yashirin bo'ladi.
+        return class BitSet extends AbstractWritableSet {
+            // ... implementatsiya qismi tushirib qoldirildi ...
+        };
+    }());
+```
+Modullikka bu yondashuv modulda bir nechta element mavjud bo‘lganda biroz qiziqroq bo‘ladi. Masalan, quyidagi kod `mean()` va `stddev()` funksiyalarini eksport qiladigan, ayni paytda implementatsiya tafsilotlarini yashirin qoldiradigan mini statistika modulini ta’riflaydi:
+``` js
+    // stats modulini shunday ta'riflashimiz mumkin
+    const stats = (function() {
+        // Modul uchun shaxsiy bo'lgan yordamchi funksiyalar
+        const sum = (x, y) => x + y;
+        const square = x => x * x;
+
+        // Eksport qilinadigan ommaviy funksiya
+        function mean(data) {
+            return data.reduce(sum)/data.length;
+        }
+
+        // Biz eksport qiladigan ommaviy funksiya
+        function stddev(data) {
+            let m = mean(data);
+            return Math.sqrt(
+                data.map(x => x - m).map(square).reduce(sum)/(data.length-1)
+            );
+        }
+
+        // Biz ommaviy funksiyalarni obyekt xususiyatlari sifatida eksport qilamiz
+        return { mean, stddev };
+    }());
+
+    // Va moduldan shunday foydalanishimiz mumkin
+    stats.mean([1, 3, 5, 7, 9])   // => 5
+    stats.stddev([1, 3, 5, 7, 9]) // => Math.sqrt(10)
+```
+
+
+### 10.1.1 Closure'larga asoslangan modullikni avtomatlashtirish
+
+E’tibor bering, JavaScript kod faylini boshiga va oxiriga matn qo‘shish orqali uni bu turdagi modulga aylantirish ancha mexanik jarayondir. Buning uchun JavaScript kod faylida qaysi qiymatlar eksport qilinishi va qaysilari eksport qilinmasligini ko‘rsatadigan qandaydir kelishuv bo‘lishi kifoya.
+
+Bir nechta fayllarni olib, har birining tarkibini darhol chaqiriladigan funksiya ifodasi ichiga o‘raydigan, har bir funksiyaning qaytarilgan qiymatini kuzatib boradigan va barchasini bitta katta faylga birlashtiradigan vositani tasavvur qiling. Natija taxminan quyidagicha ko‘rinishi mumkin:
+``` js
+    const modules = {};
+    function require(moduleName) { return modules[moduleName]; }
+
+    modules["sets.js"] = (function() {
+        const exports = {};
+
+        // sets.js faylining tarkibi shu yerda bo'ladi:
+        exports.BitSet = class BitSet { ... };
+
+        return exports;
+    }());
+
+    modules["stats.js"] = (function() {
+        const exports = {};
+
+        // stats.js faylining tarkibi shu yerda bo'ladi:
+        const sum = (x, y) => x + y;
+        const square = x => x * x;
+        exports.mean = function(data) { ... };
+        exports.stddev = function(data) { ... };
+
+        return exports;
+    }());
+```
+Modullar avvalgi misolda ko‘rsatilgandek bitta faylga jamlanganda, ulardan foydalanish uchun quyidagicha kod yozishni tasavvur qilishingiz mumkin:
+``` js
+    // Bizga kerak bo'lgan modullarga (yoki modul tarkibiga) havolalarni olamiz
+    const stats = require("stats.js");
+    const BitSet = require("sets.js").BitSet;
+
+    // Endi o'sha modullardan foydalanib kod yozamiz
+    let s = new BitSet(100);
+    s.insert(10);
+    s.insert(20);
+    s.insert(30);
+    let average = stats.mean([...s]); // average 20 ga teng
+```
+Bu kod veb-brauzerlar uchun mo‘ljallangan kodlarni jamlovchi vositalarning (masalan, webpack va Parcel) qanday ishlashining taxminiy ko‘rinishi va ayni paytda Node dasturlarida ishlatiladigan `require()` funksiyasiga sodda kirishdir.

@@ -1,0 +1,245 @@
+---
+title: ES6'dagi modullar
+description: "JavaScript ES6 modullari: import va export sintaksisi, modul fayllarini ulash, qayta foydalaniladigan kod yaratish va modular dasturlash amaliyoti. CommonJS va ES6 modullaridagi farqlar hamda real loyihalarda qo‘llash."
+keywords: JavaScript, ES6, modul, modules, import, export, ES6 modules, CommonJS vs ES6, modular programming, qayta foydalanish, reusable code, beginner, advanced, tutorial, misollar, modern JavaScript
+author: Webiston.uz
+---
+
+
+
+
+# ES6'dagi modullar
+
+ES6 JavaScript'ga `import` va `export` kalit so‘zlarini qo‘shib, nihoyat, tilning asosiy xususiyati sifatida haqiqiy modullikni qo‘llab-quvvatladi. ES6 modulligi konseptual jihatdan Node modulligi bilan bir xil: har bir fayl o‘zining alohida moduli hisoblanadi va fayl ichida ta’riflangan konstantalar, o‘zgaruvchilar, funksiyalar va sinflar, agar ular aniq eksport qilinmagan bo‘lsa, o‘sha modul uchun shaxsiy bo‘ladi. Bir moduldan eksport qilingan qiymatlar ularni aniq import qilgan modullarda foydalanish uchun mavjud bo‘ladi. ES6 modullari Node modullaridan eksport va import qilish uchun ishlatiladigan sintaksisi hamda veb-brauzerlarda modullarning qanday ta’riflanishi bilan farq qiladi. Keyingi bo‘limlarda bu narsalar batafsil tushuntiriladi.
+
+Biroq, avvalo shuni ta’kidlash joizki, ES6 modullari oddiy JavaScript “skriptlari”dan ham ba’zi muhim jihatlari bilan farq qiladi. Eng yaqqol farq — bu modullikning o‘zidir: oddiy skriptlarda yuqori darajadagi o‘zgaruvchilar, funksiyalar va sinflarning e’lonlari barcha skriptlar tomonidan bo‘lishiladigan yagona global kontekstga tushadi. Modullarda esa har bir fayl o‘zining shaxsiy kontekstiga ega va `import` hamda `export` operatorlaridan foydalanishi mumkin, axir, butun mohiyat shunda. Lekin modullar va skriptlar o‘rtasida boshqa farqlar ham bor. ES6 moduli ichidagi kod (har qanday ES6 sinf ta’rifi ichidagi kod kabi) avtomatik ravishda **qat’iy rejimda (strict mode)** bo‘ladi (qarang: §5.6.3). Bu shuni anglatadiki, siz ES6 modullaridan foydalanishni boshlaganingizda, boshqa hech qachon `"use strict"` yozishingizga hojat qolmaydi. Va bu modullar ichidagi kod `with` operatori yoki `arguments` obyekti yoki e’lon qilinmagan o‘zgaruvchilardan foydalana olmasligini anglatadi. ES6 modullari hatto qat’iy rejimdan ham biroz qat’iyroqdir: qat’iy rejimda, funksiya sifatida chaqirilgan funksiyalarda `this` `undefined` bo‘ladi. Modullarda esa `this` hatto eng yuqori darajadagi kodda ham `undefined`'dir. (Aksincha, veb-brauzerlar va Node'dagi skriptlar `this`'ni global obyekt'ga o‘rnatadi.)
+
+> ### Veb va Node'dagi ES6 Modullari
+>
+> ES6 modullari vebda yillar davomida JavaScript kodining mustaqil modullarini veb-sahifalarga qo‘shish uchun mos bo‘lgan katta, modular bo‘lmagan to‘plamlarga birlashtiradigan webpack kabi kod jamlovchilar yordamida ishlatilib kelinmoqda. Ushbu kitob yozilayotgan vaqtda, nihoyat, ES6 modullari Internet Explorer'dan tashqari barcha veb-brauzerlar tomonidan bevosita (natively) qo‘llab-quvvatlanmoqda. Bevosita ishlatilganda, ES6 modullari HTML sahifalariga ushbu bobda keyinroq tasvirlanadigan maxsus `<script type="module">` tegi yordamida qo‘shiladi.
+>
+> Shu bilan birga, JavaScript modulligining kashshofi bo‘lgan Node, bir-biriga to‘liq mos kelmaydigan ikkita modul tizimini qo‘llab-quvvatlashdek noqulay ahvolda qoldi. Node 13 versiyasi ES6 modullarini qo‘llab-quvvatlaydi, lekin hozircha Node dasturlarining aksariyati hali ham Node modullaridan foydalanadi.
+
+
+### 10.3.1 ES6 eksportlari
+
+ES6 modulidan konstanta, o‘zgaruvchi, funksiya yoki sinfni eksport qilish uchun shunchaki e’lon qilishdan oldin `export` kalit so‘zini qo‘shing:
+``` js
+    export const PI = Math.PI;
+
+    export function degreesToRadians(d) { return d * PI / 180; }
+
+    export class Circle {
+        constructor(r) { this.r = r; }
+        area() { return PI * this.r * this.r; }
+    }
+```
+`export` kalit so‘zlarini modulingiz bo‘ylab tarqatib yuborishning muqobili sifatida, siz o‘z konstantalaringiz, o‘zgaruvchilaringiz, funksiyalaringiz va sinflaringizni odatdagidek, `export` operatorsiz ta’riflab, so‘ngra (odatda modul oxirida) aynan nima eksport qilinishini bir joyda e’lon qiladigan yagona `export` operatorini yozishingiz mumkin. Shunday qilib, avvalgi kodda uchta alohida `export` yozish o‘rniga, biz xuddi shunga teng bo‘lgan bitta qatorni oxirida yozishimiz mumkin edi:
+``` js
+    export { Circle, degreesToRadians, PI };
+```
+Bu sintaksis `export` kalit so‘zidan keyin kelgan obyekt literaliga o‘xshaydi (qisqa yozuvdan foydalanilgan). Lekin bu holda, jingalak qavslar aslida obyekt literalini ta’riflamaydi. Bu eksport sintaksisi shunchaki jingalak qavslar ichida vergul bilan ajratilgan identifikatorlar ro‘yxatini talab qiladi.
+
+Faqat bitta qiymatni (odatda funksiya yoki sinfni) eksport qiladigan modullar yozish keng tarqalgan va bu holda biz odatda `export` o‘rniga `export default`'dan foydalanamiz:
+``` js
+    export default class BitSet {
+        // implementatsiya qismi tushirib qoldirildi
+    }
+```
+Standart (default) eksportlarni import qilish standart bo‘lmagan eksportlarga qaraganda biroz osonroq, shuning uchun faqat bitta eksport qilingan qiymat mavjud bo‘lganda `export default`'dan foydalanish sizning eksport qilingan qiymatingizdan foydalanadigan modullar uchun ishni osonlashtiradi.
+
+`export` bilan qilinadigan oddiy eksportlar faqat nomga ega e’lonlarda amalga oshirilishi mumkin. `export default` bilan qilinadigan standart eksportlar esa anonim funksiya ifodalari va anonim sinf ifodalarini o‘z ichiga olgan har qanday ifodani eksport qila oladi. Bu shuni anglatadiki, agar siz `export default`'dan foydalansangiz, obyekt literallarini eksport qilishingiz mumkin. Demak, `export` sintaksisidan farqli o‘laroq, agar `export default`'dan keyin jingalak qavslarni ko‘rsangiz, bu haqiqatan ham eksport qilinayotgan obyekt literalidir.
+
+Modullarning bir qator oddiy eksportlarga va ayni paytda standart eksportga ega bo‘lishi qonuniy, lekin biroz kam uchraydigan holatdir. Agar modulda standart eksport mavjud bo‘lsa, u faqat bitta bo‘lishi mumkin.
+
+Va nihoyat, shuni yodda tutingki, `export` kalit so‘zi faqat JavaScript kodingizning eng yuqori darajasida kelishi mumkin. Siz sinf, funksiya, sikl yoki shart operatori ichidan qiymatni eksport qila olmaysiz. (Bu ES6 modul tizimining muhim xususiyati bo‘lib, statik tahlil qilish imkonini beradi: modulning eksportlari har bir ishga tushirishda bir xil bo‘ladi va eksport qilingan belgilar modul amalda ishga tushirilishidan oldin aniqlanishi mumkin.)
+
+
+### 10.3.2 ES6 importlari
+
+Siz boshqa modullar tomonidan eksport qilingan qiymatlarni `import` kalit so‘zi yordamida import qilasiz. `import`'ning eng oddiy shakli standart eksportni (**default export**) ta’riflaydigan modullar uchun ishlatiladi:
+``` js
+    import BitSet from './bitset.js';
+```
+Bu `import` kalit so‘zi, undan keyin identifikator, so‘ngra `from` kalit so‘zi va nihoyat, biz standart eksportini import qilayotgan modulni nomlaydigan satr literali keladi. Ko‘rsatilgan modulning standart eksport qiymati joriy modulda ko‘rsatilgan identifikatorning qiymatiga aylanadi.
+
+Import qilingan qiymat o‘zlashtirilgan identifikator go‘yo `const` kalit so‘zi bilan e’lon qilingandek, konstanta hisoblanadi. Eksportlar kabi, importlar ham faqat modulning eng yuqori darajasida kelishi mumkin va sinflar, funksiyalar, sikllar yoki shart operatorlari ichida ruxsat etilmaydi.
+
+Deyarli universal kelishuvga ko‘ra, modul uchun kerakli importlar modulning boshida joylashtiriladi. Qizig‘i shundaki, bu talab qilinmaydi: funksiya e’lonlari kabi, importlar ham yuqoriga “ko‘tariladi” (“hoisted” qilinadi) va barcha import qilingan qiymatlar modul kodining istalgan qismi ishga tushishi uchun mavjud bo‘ladi.
+
+Qiymat import qilinadigan modul doimiy satr literali sifatida bittalik yoki ikkitalik tirnoqlar ichida ko‘rsatiladi. (Siz qiymati satr bo‘lgan o‘zgaruvchi yoki boshqa ifodadan foydalana olmaysiz va teskari tirnoqlar ichidagi satr'dan foydalana olmaysiz, chunki andoza literallari (template literals) o‘zgaruvchilarni interpolyatsiya qilishi mumkin va har doim ham doimiy qiymatlarga ega bo‘lmaydi.) Veb-brauzerlarda bu satr import qilayotgan modulning joylashuviga nisbatan URL sifatida talqin qilinadi. (Node'da yoki jamlovchi vositadan foydalanganda, satr joriy modulga nisbatan fayl nomi sifatida talqin qilinadi, lekin amalda bu unchalik katta farq qilmaydi.) Modul belgilovchi satr “/” bilan boshlanadigan mutlaq yo‘l, “./” yoki “../” bilan boshlanadigan nisbiy yo‘l yoki protokol va xostnomaga ega to‘liq URL bo‘lishi kerak. ES6 spetsifikatsiyasi “util.js” kabi to‘liq bo‘lmagan modul belgilovchi satrlarga ruxsat bermaydi, chunki bu joriy katalogdagi modulni nomlash uchun mo‘ljallanganmi yoki qandaydir maxsus joyda o‘rnatilgan tizim modulimi, noaniq bo‘lgani uchun ruxsat etilmaydi. (Ushbu “yalang‘och modul belgilovchilari”ga (bare module specifiers) qarshi cheklov webpack kabi kod jamlovchi vositalar tomonidan qo‘llanilmaydi, ularni siz belgilagan kutubxona katalogidan yalang‘och modullarni topish uchun osongina sozlash mumkin.) Tilning kelajakdagi versiyasi “yalang‘och modul belgilovchilari”ga ruxsat berishi mumkin, lekin hozircha ularga ruxsat yo‘q. Agar siz joriy katalogdagi modulni import qilmoqchi bo‘lsangiz, shunchaki modul nomidan oldin “./” qo‘ying va “util.js” o‘rniga “./util.js”'dan import qiling.
+
+Hozirgacha biz faqat `export default`'dan foydalanadigan moduldan yagona qiymatni import qilish holatini ko‘rib chiqdik. Bir nechta qiymatni eksport qiladigan moduldan qiymatlarni import qilish uchun biz biroz boshqacha sintaksisdan foydalanamiz:
+``` js
+    import { mean, stddev } from "./stats.js";
+```
+Eslatib o‘tamiz, standart eksportlar ularni ta’riflaydigan modulda nomga ega bo‘lishi shart emas. Buning o‘rniga, biz o‘sha qiymatlarni import qilganda lokal nom beramiz. Ammo modulning standart bo‘lmagan eksportlari eksport qiluvchi modulda nomlarga ega va biz o‘sha qiymatlarni import qilganda, ularga o‘sha nomlar bilan murojaat qilamiz. Eksport qiluvchi modul istalgancha nomlangan qiymatni eksport qilishi mumkin. O‘sha modulga murojaat qiluvchi `import` operatori o‘sha qiymatlarning istalgan qismini shunchaki ularning nomlarini jingalak qavslar ichida sanab o‘tish orqali import qilishi mumkin. Jingalak qavslar bu turdagi `import` operatorini destrukturlashgan o‘zlashtirishga (destructuring assignment) o‘xshatib yuboradi va destrukturlashgan o‘zlashtirish aslida bu uslubdagi import nima qilayotganiga yaxshi o‘xshatishdir. Jingalak qavslar ichidagi identifikatorlarning barchasi import qiluvchi modulning yuqori qismiga ko‘tariladi va o‘zini konstantalar kabi tutadi.
+
+Uslub bo‘yicha qo‘llanmalar ba’zan modulingiz ishlatadigan har bir belgini aniq import qilishni tavsiya qiladi. Biroq, ko‘plab eksportlarni ta’riflaydigan moduldan import qilganda, hamma narsani quyidagi kabi `import` operatori bilan osongina import qilishingiz mumkin:
+``` js
+    import * as stats from "./stats.js";
+```
+Bunday `import` operatori obyekt yaratadi va uni `stats` nomli konstantaga o‘zlashtiradi. Import qilinayotgan modulning har bir standart bo‘lmagan eksporti bu `stats` obyektining xususiyatiga aylanadi. Standart bo‘lmagan eksportlar har doim nomlarga ega va ular obyekt ichida xususiyat nomlari sifatida ishlatiladi. Bu xususiyatlar amalda konstantalardir: ularni qayta yozish yoki o‘chirish mumkin emas. Avvalgi misolda ko‘rsatilgan yulduzchali import bilan import qiluvchi modul import qilingan `mean()` va `stddev()` funksiyalaridan `stats` obyekti orqali foydalanadi va ularni `stats.mean()` va `stats.stddev()` sifatida chaqiradi.
+
+Modullar odatda bitta standart eksportni yoki bir nechta nomlangan eksportlarni ta’riflaydi. Modulning ham `export`, ham `export default`'dan foydalanishi qonuniy, lekin biroz kam uchraydigan holatdir. Ammo modul shunday qilganda, siz ham standart qiymatni, ham nomlangan qiymatlarni quyidagi kabi `import` operatori bilan import qilishingiz mumkin:
+``` js
+    import Histogram, { mean, stddev } from "./histogram-stats.js";
+```
+Hozirgacha biz standart eksportga ega modullardan va standart bo‘lmagan yoki nomlangan eksportlarga ega modullardan qanday import qilishni ko‘rib chiqdik. Ammo `import` operatorining yana bir shakli borki, u umuman eksportga ega bo‘lmagan modullar bilan ishlatiladi. Dasturingizga eksportsiz modulni qo‘shish uchun shunchaki `import` kalit so‘zini modul belgilovchisi bilan ishlating:
+``` js
+    import "./analytics.js";
+```
+Bunday modul birinchi marta import qilinganda ishga tushadi. (Va keyingi importlar hech narsa qilmaydi.) Faqat funksiyalarni ta’riflaydigan modul, agar u o‘sha funksiyalardan kamida bittasini eksport qilsagina foydalidir. Lekin agar modul biror kodni ishga tushirsa, uni hatto belgilarsiz import qilish ham foydali bo‘lishi mumkin. Veb-ilova uchun analitika moduli turli hodisa ishlovchilarini (event handlers) ro‘yxatdan o‘tkazish uchun kodni ishga tushirishi va keyin o‘sha hodisa ishlovchilaridan tegishli vaqtlarda serverga telemetriya ma’lumotlarini yuborish uchun foydalanishi mumkin. Modul o‘z-o‘zidan yetarli va hech narsani eksport qilishi shart emas, lekin biz uni import qilishimiz kerak, shunda u haqiqatan ham dasturimizning bir qismi sifatida ishga tushadi.
+
+E’tibor bering, siz bu hech narsani-import-qilmaslik sintaksisidan hatto eksportga ega bo‘lgan modullar bilan ham foydalanishingiz mumkin. Agar modul o‘zi eksport qiladigan qiymatlardan mustaqil ravishda foydali xatti-harakatni ta’riflasa va dasturingizga o‘sha eksport qilingan qiymatlarning hech biri kerak bo‘lmasa, siz modulni shunchaki o‘sha standart xatti-harakati uchun import qilishingiz mumkin.
+
+
+### 10.3.3 Import va eksportlarda nomni o‘zgartirish
+
+Agar ikkita modul bir xil nomdan foydalanib ikkita turli qiymatni eksport qilsa va siz ularning ikkalasini ham import qilmoqchi bo‘lsangiz, import qilishda ulardan birining yoki ikkalasining nomini o‘zgartirishingizga to‘g‘ri keladi. Xuddi shunday, agar siz modulingizda nomi allaqachon ishlatilayotgan qiymatni import qilmoqchi bo‘lsangiz, import qilinayotgan qiymat nomini o‘zgartirishingiz kerak bo‘ladi. Siz nomlangan importlarni import qilish jarayonida ularning nomini o‘zgartirish uchun `as` kalit so‘zidan foydalanishingiz mumkin:
+``` js
+    import { render as renderImage } from "./imageutils.js";
+    import { render as renderUI } from "./ui.js";
+```
+Bu qatorlar joriy modulga ikkita funksiyani import qiladi. Ular o‘zlarini ta’riflagan modullarda ikkalasi ham `render()` deb nomlangan, lekin ular `renderImage()` va `renderUI()` kabi tushunarliroq va noaniqlikni bartaraf etuvchi nomlar bilan import qilinadi.
+
+Eslatib o‘tamiz, standart eksportlar nomga ega emas. Standart eksportni import qilishda import qiluvchi modul har doim nomni o‘zi tanlaydi. Shuning uchun bu holda nomni o‘zgartirish uchun maxsus sintaksisga ehtiyoj yo‘q.
+
+Shunday bo‘lsa-da, import qilishda nomni o‘zgartirish imkoniyati ham standart eksportni, ham nomlangan eksportlarni ta’riflaydigan modullardan import qilishning yana bir usulini taqdim etadi. Avvalgi bo‘limdagi “./histogram-stats.js” modulini eslang. Quyida o‘sha modulning ham standart, ham nomlangan eksportlarini import qilishning yana bir usuli keltirilgan:
+``` js
+    import { default as Histogram, mean, stddev } from "./histogram-stats.js";
+```
+Bu holda, JavaScript'ning `default` kalit so‘zi o‘rin to‘ldiruvchi (placeholder) vazifasini bajaradi va modulning standart eksportini import qilib, unga nom berishni xohlayotganimizni bildirishga imkon beradi.
+
+Qiymatlarni eksport qilish jarayonida ham ularning nomini o‘zgartirish mumkin, lekin faqat `export` operatorining jingalak qavsli variantidan foydalanganda. Bunga ehtiyoj sezish kam uchraydi, lekin agar siz modulingiz ichida foydalanish uchun qisqa va ixcham nomlarni tanlagan bo‘lsangiz, qiymatlaringizni boshqa modullar bilan ziddiyatga kirish ehtimoli kamroq bo‘lgan tushunarliroq nomlar bilan eksport qilishni afzal ko‘rishingiz mumkin. Importlardagi kabi, buning uchun `as` kalit so‘zidan foydalanasiz:
+``` js
+    export {
+        layout as calculateLayout,
+        render as renderLayout
+    };
+```
+Yodda tutingki, garchi jingalak qavslar obyekt literallariga o‘xshab ko‘rinsa-da, ular aslida unday emas va `export` kalit so‘zi `as`'dan oldin ifodani emas, balki yagona identifikatorni kutadi. Bu, afsuski, eksportda nomni o‘zgartirishdan quyidagicha foydalana olmasligingizni anglatadi:
+``` js
+    export { Math.sin as sin, Math.cos as cos }; // SyntaxError
+```
+
+
+### 10.3.4 Qayta eksport qilish
+
+Ushbu bob davomida biz `mean()` va `stddev()` funksiyalarini eksport qiladigan faraziy “./stats.js” modulini muhokama qildik. Agar biz shunday modul yozayotgan bo‘lsak va modulning ko‘plab foydalanuvchilari faqat u yoki bu funksiyani xohlashini o‘ylasak, u holda `mean()`'ni “./stats/mean.js” modulida va `stddev()`'ni “./stats/stddev.js” modulida ta’riflashni xohlashimiz mumkin edi. Shunday qilib, dasturlar faqat o‘zlariga kerakli funksiyalarni import qiladi va keraksiz kod bilan ortiqcha yuklanmaydi.
+
+Biroq, biz bu statistik funksiyalarni alohida modullarda ta’riflagan taqdirimizda ham, ikkala funksiyani ham xohlaydigan va ularni bir qatorda import qilish imkonini beradigan qulay “./stats.js” modulini qadrlaydigan ko‘plab dasturlar bo‘lishini kutishimiz mumkin edi.
+
+Implementatsiyalar endi alohida fayllarda ekanligini hisobga olsak, bu “./stats.js” modulini ta’riflash oson:
+``` js
+    import { mean } from "./stats/mean.js";
+    import { stddev } from "./stats/stddev.js";
+    export { mean, stddev };
+```
+ES6 modullari bu kabi holatni oldindan ko‘ra bilgan va buning uchun maxsus sintaksisni taqdim etadi. Belgini shunchaki qayta eksport qilish uchun import qilish o‘rniga, siz import va eksport qadamlarini `export` va `from` kalit so‘zlaridan foydalanadigan yagona **“qayta eksport” (re-export)** operatoriga birlashtirishingiz mumkin:
+``` js
+    export { mean } from "./stats/mean.js";
+    export { stddev } from "./stats/stddev.js";
+```
+E’tibor bering, `mean` va `stddev` nomlari bu kodda amalda ishlatilmaydi. Agar biz qayta eksport qilishda tanlovchanlik qilmay, shunchaki boshqa moduldan barcha nomlangan qiymatlarni eksport qilmoqchi bo‘lsak, yulduzcha (`*`) belgisidan foydalanishimiz mumkin:
+``` js
+    export * from "./stats/mean.js";
+    export * from "./stats/stddev.js";
+```
+Qayta eksport sintaksisi xuddi oddiy `import` va `export` operatorlari kabi `as` yordamida nomni o‘zgartirishga imkon beradi. Aytaylik, biz `mean()` funksiyasini qayta eksport qilib, shu bilan birga funksiya uchun boshqa nom sifatida `average()`'ni ham ta’riflamoqchimiz. Buni quyidagicha qilishimiz mumkin:
+``` js
+    export { mean, mean as average } from "./stats/mean.js";
+    export { stddev } from "./stats/stddev.js";
+```
+Bu misoldagi barcha qayta eksportlar “./stats/mean.js” va “./stats/stddev.js” modullari o‘z funksiyalarini `export default` o‘rniga `export` yordamida eksport qiladi deb faraz qiladi. Aslida esa, bular faqat bitta eksportga ega modullar bo‘lgani uchun ularni `export default` bilan ta’riflash mantiqan to‘g‘ri bo‘lardi. Agar shunday qilganimizda, qayta eksport sintaksisi biroz murakkablashardi, chunki u nomsiz standart eksportlar uchun nom ta’riflashi kerak bo‘ladi. Buni quyidagicha qilishimiz mumkin:
+``` js
+    export { default as mean } from "./stats/mean.js";
+    export { default as stddev } from "./stats/stddev.js";
+```
+Agar siz boshqa moduldan nomlangan belgini o‘z modulingizning standart eksporti sifatida qayta eksport qilmoqchi bo‘lsangiz, `import`'dan keyin `export default` qilishingiz yoki ikkita operatorni quyidagicha birlashtirishingiz mumkin:
+``` js
+    // ./stats.js'dan mean() funksiyasini import qilib, uni
+    // ushbu modulning standart eksportiga aylantirish
+    export { mean as default } from "./stats.js"
+```
+Va nihoyat, boshqa modulning standart eksportini o‘z modulingizning standart eksporti sifatida qayta eksport qilish uchun (garchi nima uchun bunday qilishni xohlashingiz noaniq bo‘lsa-da, chunki foydalanuvchilar shunchaki boshqa modulni to‘g‘ridan-to‘g‘ri import qilishlari mumkin), siz shunday yozishingiz mumkin:
+``` js
+    // average.js moduli shunchaki stats/mean.js modulining standart eksportini qayta eksport qiladi
+    export { default } from "./stats/mean.js"
+```
+
+
+### 10.3.5 Vebdagi JavaScript modullari
+
+Avvalgi bo‘limlar ES6 modullarini va ularning `import` va `export` e’lonlarini biroz mavhum tarzda tasvirlab berdi. Ushbu va keyingi bo‘limlarda biz ularning veb-brauzerlarda amalda qanday ishlashini muhokama qilamiz va agar siz hali tajribali veb-dasturchi bo‘lmasangiz, 15-bobni o‘qib chiqqaningizdan so‘ng ushbu bobning qolgan qismini tushunish osonroq bo‘lishi mumkin.
+
+2020-yil boshiga kelib, ES6 modullaridan foydalanadigan **production** kod hali ham odatda webpack kabi vosita bilan jamlanadi. Buning o‘ziga yarasha yutuq va kamchiliklari bor,¹ lekin umuman olganda, kodni jamlash yaxshiroq unumdorlikni (performance) ta’minlaydi. Bu kelajakda tarmoq tezligi oshishi va brauzer ishlab chiqaruvchilari o‘zlarining ES6 modul implementatsiyalarini optimallashtirishda davom etishlari bilan o‘zgarishi mumkin.
+
+Garchi jamlovchi vositalar production'da hali ham maqsadga muvofiq bo‘lishi mumkin bo‘lsa-da, ular endi **development**'da talab qilinmaydi, chunki barcha zamonaviy brauzerlar JavaScript modullarini bevosita (native) qo‘llab-quvvatlaydi. Eslatib o‘tamiz, modullar standart holatda qat’iy rejimdan foydalanadi, `this` global obyekt'ga ishora qilmaydi va yuqori darajadagi e’lonlar standart holatda global miqyosda bo‘lishilmaydi. Modullar eski, modular bo‘lmagan koddan farqli ravishda bajarilishi kerakligi sababli, ularning kiritilishi JavaScript'dan tashqari HTML'ga ham o‘zgartirishlar kiritishni talab qiladi. Agar veb-brauzerda `import` direktivalaridan bevosita foydalanmoqchi bo‘lsangiz, veb-brauzerga kodingiz modul ekanligini `<script type="module">` tegi yordamida aytishingiz kerak.
+
+ES6 modullarining yaxshi xususiyatlaridan biri shundaki, har bir modul statik importlar to‘plamiga ega. Shunday qilib, bitta boshlang‘ich modul berilganida, veb-brauzer uning barcha import qilingan modullarini, so‘ngra o‘sha birinchi to‘plam modullari tomonidan import qilingan barcha modullarni va hokazolarni to‘liq dastur yuklanmaguncha yuklashi mumkin. Biz `import` operatoridagi modul belgilovchisini nisbiy URL sifatida qabul qilish mumkinligini ko‘rdik. `<script type="module">` tegi modular dasturning boshlang‘ich nuqtasini belgilaydi. Biroq, u import qiladigan modullarning hech biri `<script>` teglari ichida bo‘lishi kutilmaydi: buning o‘rniga, ular talabga binoan oddiy JavaScript fayllari sifatida yuklanadi va oddiy ES6 modullari sifatida qat’iy rejimda bajariladi. Modular JavaScript dasturi uchun asosiy kirish nuqtasini belgilash uchun `<script type="module">` tegidan foydalanish quyidagicha oddiy bo‘lishi mumkin:
+``` js
+    <script type="module">import "./main.js";</script>
+```
+Ichki (inline) `<script type="module">` tegi ichidagi kod ES6 moduli hisoblanadi va shunday ekan, `export` operatoridan foydalanishi mumkin. Biroq, bunday qilishdan hech qanday ma’no yo‘q, chunki HTML `<script>` tegi sintaksisi ichki modullar uchun nom belgilash imkonini bermaydi, shuning uchun bunday modul qiymat eksport qilsa ham, boshqa modulning uni import qilish imkoni yo‘q.
+
+`type="module"` atributiga ega skriptlar `defer` atributiga ega skriptlar kabi yuklanadi va bajariladi. Kodni yuklash HTML-parser `<script>` tegiga duch kelishi bilan boshlanadi (modullar holatida bu kodni yuklash bosqichi bir nechta JavaScript fayllarini yuklaydigan rekursiv jarayon bo‘lishi mumkin). Lekin kodning bajarilishi HTML-parsing tugamaguncha boshlanmaydi. Va HTML-parsing tugagandan so‘ng, skriptlar (ham modular, ham oddiy) HTML hujjatida paydo bo‘lish tartibida bajariladi.
+
+Siz `async` atributi yordamida modullarning bajarilish vaqtini o‘zgartirishingiz mumkin, u modullar uchun xuddi oddiy skriptlar uchun ishlagandek ishlaydi. `async` modul kod yuklanishi bilan, hatto HTML-parsing tugamagan bo‘lsa ham va bu skriptlarning nisbiy tartibini o‘zgartirsa ham, bajariladi.
+
+`<script type="module">`'ni qo‘llab-quvvatlaydigan veb-brauzerlar `<script nomodule>`'ni ham qo‘llab-quvvatlashi kerak. Modullarni tushunadigan brauzerlar `nomodule` atributiga ega har qanday skriptni e’tiborsiz qoldiradi va uni bajarmaydi. Modullarni qo‘llab-quvvatlamaydigan brauzerlar `nomodule` atributini tanimaydi, shuning uchun ular uni e’tiborsiz qoldirib, skriptni ishga tushiradi. Bu brauzerlar bilan moslik muammolarini hal qilish uchun kuchli usulni taqdim etadi. ES6 modullarini qo‘llab-quvvatlaydigan brauzerlar, shuningdek, sinflar, strelkali funksiyalar va `for/of` sikli kabi boshqa zamonaviy JavaScript xususiyatlarini ham qo‘llab-quvvatlaydi. Agar siz zamonaviy JavaScript yozsangiz va uni `<script type="module">` bilan yuklasangiz, u faqat uni qo‘llab-quvvatlay oladigan brauzerlar tomonidan yuklanishini bilasiz. Va IE11 (2020-yilda ES6'ni qo‘llab-quvvatlamaydigan yagona qolgan brauzer) uchun zaxira (fallback) sifatida siz Babel va webpack kabi vositalardan foydalanib, kodingizni modular bo‘lmagan ES5 kodiga aylantirishingiz va so‘ngra o‘sha kamroq samarali o‘zgartirilgan kodni `<script nomodule>` orqali yuklashingiz mumkin.
+
+Oddiy skriptlar va modul skriptlari o‘rtasidagi yana bir muhim farq **boshqa manbadan yuklash (cross-origin loading)** bilan bog‘liq. Oddiy `<script>` tegi JavaScript kod faylini internetdagi istalgan serverdan yuklay oladi va internetning reklama, analitika va kuzatuv kodlari infratuzilmasi shu faktga tayanadi. Ammo `<script type="module">` buni qat’iylashtirish imkonini beradi va modullar faqat o‘zini o‘z ichiga olgan HTML hujjati bilan bir xil manbadan (same origin) yoki boshqa manbadan yuklashga xavfsiz ruxsat berish uchun to‘g‘ri **CORS** sarlavhalari mavjud bo‘lgandagina yuklanishi mumkin. Ushbu yangi xavfsizlik cheklovining noxush yon ta’siri shundaki, u development rejimida ES6 modullarini `file:` URL'lari yordamida sinovdan o‘tkazishni qiyinlashtiradi. ES6 modullaridan foydalanganda, siz sinov uchun statik veb-serverni sozlab olishingiz kerak bo‘ladi.
+
+Ba’zi dasturchilar o‘zlarining modular JavaScript fayllarini an’anaviy `.js` kengaytmali oddiy, modular bo‘lmagan JavaScript fayllaridan ajratish uchun `.mjs` fayl kengaytmasidan foydalanishni yoqtirishadi. Veb-brauzerlar va `<script>` teglari uchun fayl kengaytmasi aslida ahamiyatsizdir. (Biroq, MIME turi muhim, shuning uchun agar siz `.mjs` fayllaridan foydalansangiz, veb-serveringizni ularni `.js` fayllari bilan bir xil MIME turida uzatish uchun sozlashingiz kerak bo‘lishi mumkin.) Node'ning ES6'ni qo‘llab-quvvatlashi fayl kengaytmasidan u yuklaydigan har bir fayl qaysi modul tizimidan foydalanishini ajratish uchun ishora sifatida foydalanadi. Shunday qilib, agar siz ES6 modullarini yozayotgan bo‘lsangiz va ularning Node bilan ishlashini xohlasangiz, `.mjs` nomlash konvensiyasini qabul qilish foydali bo‘lishi mumkin.
+
+Masalan: tez-tez bosqichma-bosqich yangilanib turadigan va foydalanuvchilari tez-tez qaytib keladigan veb-ilovalar katta jamlamalar o‘rniga kichik modullardan foydalanish foydalanuvchi brauzer keshidan yaxshiroq foydalanish hisobiga o‘rtacha yuklanish vaqtini yaxshilashini ko‘rishlari mumkin.
+
+
+### 10.3.6 `import()` yordamida dinamik import qilish
+
+Biz ES6 `import` va `export` direktivalarining to‘liq statik ekanligini va ular JavaScript interpretatorlari hamda boshqa JavaScript vositalariga modullar orasidagi bog‘liqlikni, modullar yuklanayotgan paytda ulardagi kodni amalda bajarmasdan, oddiy matn tahlili orqali aniqlash imkonini berishini ko‘rdik. Statik import qilingan modullar bilan, siz import qilgan qiymatlar modulingizdagi kod ishga tushishidan oldin foydalanishga tayyor bo‘lishi kafolatlanadi.
+
+Vebda kod fayl tizimidan o‘qilish o‘rniga tarmoq orqali uzatilishi kerak. Va uzatilgandan so‘ng, bu kod ko‘pincha nisbatan sekin protsessorli mobil qurilmalarda bajariladi. Bu statik modul importlari — ya’ni dasturning biror qismi ishga tushishidan oldin butun dasturni yuklashni talab qiladigan yondashuv — unchalik ham mantiqqa to‘g‘ri kelmaydigan muhitdir.
+
+Veb-ilovalarning dastlab faqat foydalanuvchiga ko‘rsatiladigan birinchi sahifani render qilish uchun yetarli bo‘lgan kodnigina yuklashi odatiy holdir. So‘ngra, foydalanuvchi o‘zaro aloqa qilishi mumkin bo‘lgan dastlabki kontentga ega bo‘lgach, ular veb-ilovaning qolgan qismi uchun kerak bo‘ladigan, ko‘pincha ancha kattaroq hajmdagi kodni yuklashni boshlashlari mumkin. Veb-brauzerlar DOM API yordamida joriy HTML hujjatiga yangi `<script>` tegini qo‘shish orqali kodni dinamik ravishda yuklashni osonlashtiradi va veb-ilovalar bu usuldan ko‘p yillar davomida foydalanib kelmoqda.
+
+Garchi dinamik yuklash uzoq vaqtdan beri mavjud bo‘lsa-da, u tilning o‘zining bir qismi bo‘lmagan. Bu holat ES2020'da `import()`'ning kiritilishi bilan o‘zgardi (2020-yil boshiga kelib, dinamik import ES6 modullarini qo‘llab-quvvatlaydigan barcha brauzerlar tomonidan qo‘llab-quvvatlanadi). Siz `import()`'ga modul belgilovchisini uzatasiz va u ko‘rsatilgan modulni yuklash va ishga tushirishning asinxron jarayonini ifodalaydigan `Promise` obyektini qaytaradi. Dinamik import tugallanganda, `Promise` “bajariladi” (“fulfilled” bo'ladi) (asinxron dasturlash va `Promise`'lar haqida to‘liq ma’lumot uchun 13-bobga qarang) va statik `import * as` operatori yordamida olinadigan obyekt kabi obyekt hosil qiladi.
+
+Shunday qilib, “./stats.js” modulini statik ravishda quyidagicha import qilish o‘rniga:
+``` js
+    import * as stats from "./stats.js";
+```
+biz uni dinamik ravishda import qilib, quyidagicha ishlatishimiz mumkin:
+``` js
+    import("./stats.js").then(stats => {
+        let average = stats.mean(data);
+    })
+```
+Yoki `async` funksiya ichida (yana, bu kodni tushunish uchun 13-bobni o‘qib chiqishingiz kerak bo‘lishi mumkin), biz `await` yordamida kodni soddalashtirishimiz mumkin:
+``` js
+    async function analyzeData(data) {
+        let stats = await import("./stats.js");
+        return {
+            average: stats.mean(data),
+            stddev: stats.stddev(data)
+        };
+    }
+```
+`import()`'ga beriladigan argument, xuddi statik `import` direktivasida ishlatiladigandek, modul belgilovchisi bo‘lishi kerak. Lekin `import()` bilan siz doimiy satr literalidan foydalanish bilan cheklanmaysiz: to‘g‘ri shakldagi satr'ga hisoblanadigan har qanday ifoda ishlayveradi.
+
+Dinamik `import()` funksiya chaqiruviga o‘xshaydi, lekin aslida unday emas. Buning o‘rniga, `import()` — bu **operator** va qavslar operator sintaksisining majburiy qismidir. Bunday g‘ayrioddiy sintaksisning sababi shundaki, `import()` modul belgilovchilarini joriy ishlayotgan modulga nisbatan URL sifatida aniqlay olishi kerak va bu JavaScript funksiyasiga qo‘yish noqonuniy bo‘lgan biroz implementatsiya “sehrgarligini” talab qiladi. Funksiya va operator o‘rtasidagi farq amalda kamdan-kam ahamiyatga ega, lekin siz `console.log(import);` yoki `let require = import;` kabi kod yozishga harakat qilsangiz, buni sezasiz.
+
+Va nihoyat, shuni yodda tutingki, dinamik `import()` faqat veb-brauzerlar uchun emas. Webpack kabi kodlarni paketlovchi vositalar ham undan unumli foydalanishi mumkin. Kod jamlovchidan foydalanishning eng to‘g‘ri yo‘li — unga dasturingizning asosiy kirish nuqtasini aytish va uning barcha statik `import` direktivalarini topib, hamma narsani bitta katta faylga yig‘ishiga imkon berishdir. Biroq, dinamik `import()` chaqiruvlaridan strategik foydalanib, siz o‘sha yagona monolit jamlanmani talabga binoan yuklanishi mumkin bo‘lgan kichikroq jamlanmalarga bo‘lishingiz mumkin.
+
+
+### 10.3.7 import.meta.url
+
+ES6 modul tizimida muhokama qilishimiz kerak bo‘lgan yana bir so‘nggi xususiyat mavjud. ES6 moduli ichida (lekin oddiy `<script>` yoki `require()` yordamida yuklangan Node moduli ichida emas), maxsus `import.meta` sintaksisi joriy bajarilayotgan modul haqidagi **metama’lumotlarni (metadata)** o‘z ichiga olgan obyekt'ga ishora qiladi. Ushbu obyekt'ning `url` xususiyati — modul yuklangan URL manzilidir. (Node'da bu `file://` URL'i bo‘ladi.)
+
+`import.meta.url`'ning asosiy qo‘llanilish sohasi — modul bilan bir xil katalogda (yoki unga nisbatan) saqlanadigan rasmlar, ma’lumotlar fayllari yoki boshqa resurslarga murojaat qila olishdir. `URL()` konstruktori `import.meta.url` kabi mutlaq URL'dan foydalanib, nisbiy URL'dan to‘liq manzil hosil qilishni osonlashtiradi. Masalan, faraz qilaylik, siz mahalliylashtirilishi kerak bo‘lgan satr'larni o‘z ichiga olgan modul yozdingiz va lokalizatsiya fayllari modulning o‘zi bilan bir xil katalogda joylashgan `l10n/` katalogida saqlanadi. Sizning modulingiz o‘z satr'larini quyidagi kabi funksiya yordamida yaratilgan URL orqali yuklashi mumkin:
+``` js
+    function localStringsURL(locale) {
+        return new URL(`l10n/${locale}.json`, import.meta.url);
+    }
+```
