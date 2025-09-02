@@ -264,5 +264,79 @@
         "path": "6-objects/summary/page"
       }
     }
+  },
+  "7-arrays": {
+    "title": "7. Massivlar",
+    "path": "7-arrays/page",
+    "hasIndex": true,
+    "children": {
+      "7.1-creating-arrays": {
+        "title": "7.1. Massivlarni yaratish",
+        "path": "7-arrays/7.1-creating-arrays/page"
+      },
+      "7.2-reading-and-writing-array-elements": {
+        "title": "7.2. Massiv elementlarini o'qish va yozish",
+        "path": "7-arrays/7.2-reading-and-writing-array-elements/page"
+      },
+      "7.3-sparse-arrays": {
+        "title": "7.3. Siyrak massivlar",
+        "path": "7-arrays/7.3-sparse-arrays/page"
+      },
+      "7.4-array-length": {
+        "title": "7.4. Massiv uzunligi",
+        "path": "7-arrays/7.4-array-length/page"
+      },
+      "7.5-adding-and-deleting-array-elements": {
+        "title": "7.5. Massiv elementlarini qo‘shish va o‘chirish",
+        "path": "7-arrays/7.5-adding-and-deleting-array-elements/page"
+      },
+      "7.6-iterating-arrays": {
+        "title": "7.6. Massiv'larni aylanib chiqish",
+        "path": "7-arrays/7.6-iterating-arrays/page"
+      },
+      "7.7-multidimensional-arrays": {
+        "title": "7.7. Koʻp oʻlchovli massiv'lar",
+        "path": "7-arrays/7.7-multidimensional-arrays/page"
+      },
+      "7.8-array-methods": {
+        "title": "7.8. Massiv metodlari",
+        "path": "7-arrays/7.8-array-methods/page"
+      },
+      "7.9-array-like-objects": {
+        "title": "7.9. Massiv'simon obyekt'lar",
+        "path": "7-arrays/7.9-array-like-objects/page"
+      },
+      "7.10-strings-as-arrays": {
+        "title": "7.10. Satr'lar massiv sifatida",
+        "path": "7-arrays/7.10-strings-as-arrays/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "7-arrays/summary/page"
+      }
+    }
+  },
+  "10-modules": {
+    "title": "10. Modullar",
+    "path": "10-modules/page",
+    "hasIndex": true,
+    "children": {
+      "10.1-creating-arrays": {
+        "title": "10.1. Sinflar, obyekt'lar va closure'lar yordamida modullar yaratish",
+        "path": "10-modules/10.1-modules-with-classes-objects-and-closures/page"
+      },
+      "10.2-modules-in-node": {
+        "title": "10.2. Node'dagi modullar",
+        "path": "10-modules/10.2-modules-in-node/page"
+      },
+      "10.3-modules-in-es6": {
+        "title": "10.3. ES6'dagi modullar",
+        "path": "10-modules/10.3-modules-in-es6/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "10-modules/summary/page"
+      }
+    }
   }
 }

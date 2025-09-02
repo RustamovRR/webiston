@@ -1,0 +1,19 @@
+---
+title: Modullar
+description: "JavaScriptda massiv uzunligini aniqlash: length xossasi orqali elementlar sonini olish, massivni qisqartirish yoki kengaytirish va length bilan bog‘liq amaliy misollar."
+keywords: JavaScript, massiv, array, uzunlik, length, elementlar soni, array length, massivni qisqartirish, massivni kengaytirish, beginner, misollar, tutorial, dasturlash
+author: Webiston.uz
+---
+
+
+# Modullar
+
+Modular dasturlashning maqsadi — katta dasturlarni turli xil mualliflar va manbalardan olingan kod modullari yordamida yig‘ishga imkon berish va bu kodlarning barchasi, hatto turli modul mualliflari kutmagan kodlar mavjud bo‘lganda ham, to‘g‘ri ishlashini ta’minlashdir. Amaliy jihatdan, modullik asosan shaxsiy implementatsiya tafsilotlarini **inkapsulyatsiya qilish** yoki yashirish hamda modullar boshqa modullar tomonidan ta’riflangan o‘zgaruvchilar, funksiyalar va sinflarni tasodifan o‘zgartirib yubormasligi uchun global nomlar fazosini (global namespace) tartibli saqlashdan iborat.
+
+Yaqin vaqtgacha JavaScript'da modullar uchun o‘rnatilgan qo‘llab-quvvatlash mavjud emas edi va katta kod bazalari ustida ishlaydigan dasturchilar sinflar, obyekt'lar va `closure`'lar orqali mavjud bo‘lgan zaif modullikdan imkon qadar unumli foydalanishga harakat qilishardi. `Closure`'larga asoslangan modullik, kodlarni jamlovchi (code-bundling) vositalar yordamida, `require()` funksiyasiga asoslangan amaliy modullik shakliga olib keldi va bu Node tomonidan qabul qilindi. `require()`'ga asoslangan modullar Node dasturlash muhitining asosiy qismi bo‘lsa-da, ular hech qachon JavaScript tilining rasmiy qismi sifatida qabul qilinmagan. Buning o‘rniga, ES6 `import` va `export` kalit so‘zlari yordamida modullarni ta’riflaydi. Garchi `import` va `export` yillar davomida tilning bir qismi bo‘lib kelgan bo‘lsa-da, ular veb-brauzerlar va Node tomonidan nisbatan yaqinda implementatsiya qilindi. Va amaliy jihatdan, JavaScript'dagi modullik hali ham kodlarni jamlovchi vositalarga bog‘liqdir.
+
+Keyingi bo‘limlar quyidagilarni qamrab oladi:
+
+*   Sinflar, obyekt'lar va `closure`'lar yordamida mustaqil modullar yaratish
+*   `require()` yordamidagi Node modullari
+*   `export`, `import` va `import()` yordamidagi ES6 modullari

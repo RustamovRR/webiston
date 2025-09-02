@@ -1,0 +1,38 @@
+---
+title: Massiv elementlarini qo‘shish va o‘chirish
+description: "JavaScriptda massiv elementlarini qo‘shish va o‘chirish usullari: push, pop, shift, unshift va splice metodlari. Dinamik massivlar bilan ishlash, yangi qiymatlar qo‘shish va keraksiz elementlarni olib tashlash."
+keywords: JavaScript, massiv, array, element qo‘shish, element o‘chirish, push, pop, shift, unshift, splice, dynamic array, beginner, misollar, tutorial, dasturlash
+author: Webiston.uz
+---
+
+
+# Massiv elementlarini qo‘shish va o‘chirish
+
+Biz massiv'ga elementlar qo‘shishning eng oddiy usulini allaqachon ko‘rib chiqdik: shunchaki yangi indekslarga qiymatlar o‘zlashtirish:
+``` js
+    let a = [];      // Ishni bo'sh massivdan boshlaymiz.
+    a[0] = "zero";   // Va unga elementlar qo'shamiz.
+    a[1] = "one";
+```
+Shuningdek, massiv'ning oxiriga bir yoki bir nechta qiymat qo‘shish uchun `push()` metodidan foydalanishingiz mumkin:
+``` js
+    let a = [];            // Ishni bo'sh massivdan boshlaymiz
+    a.push("zero");        // Oxiriga qiymat qo'shamiz. a = ["zero"]
+    a.push("one", "two");  // Yana ikkita qiymat qo'shamiz. a = ["zero", "one", "two"]
+```
+`a` massiviga qiymatni `push()` qilish `a[a.length]`'ga qiymat o‘zlashtirish bilan bir xildir.
+
+Siz massiv'ning boshiga qiymat qo‘shish uchun `unshift()` metodidan (§7.8'da tasvirlangan) foydalanishingiz mumkin, bu mavjud massiv elementlarini yuqoriroq indekslarga siljitadi. `pop()` metodi `push()`'ning teskarisidir: u massiv'ning oxirgi elementini o‘chirib, uni qaytaradi va massiv uzunligini 1 ga qisqartiradi. Xuddi shunday, `shift()` metodi massiv'ning birinchi elementini o‘chirib, uni qaytaradi, uzunlikni 1 ga kamaytiradi va barcha elementlarni joriy indeksidan bir pog‘ona pastroqqa siljitadi. Ushbu metodlar haqida qo‘shimcha ma’lumotni §7.8'da topishingiz mumkin.
+
+Xuddi obyekt xususiyatlarini o‘chirganingiz kabi, massiv elementlarini ham `delete` operatori yordamida o‘chirishingiz mumkin:
+``` js
+    let a = [1,2,3];
+    delete a[2];    // a endi 2-indeksda elementga ega emas
+    2 in a          // => false: 2-indeksli massiv elementi aniqlanmagan
+    a.length        // => 3: delete massiv uzunligiga ta'sir qilmaydi
+```
+Massiv elementini o‘chirish o‘sha elementga `undefined` o‘zlashtirishga o‘xshaydi (lekin undan nozik farqlarga ega). E’tibor bering, massiv elementida `delete`'ni ishlatish `length` xususiyatini o‘zgartirmaydi va yuqori indeksli elementlarni o‘chirilgan xususiyatdan qolgan bo‘shliqni to‘ldirish uchun pastga surmaydi. Agar siz massiv'dan elementni o‘chirsangiz, massiv siyrak bo‘lib qoladi.
+
+Yuqorida ko‘rganimizdek, massiv'ning oxiridagi elementlarni shunchaki `length` xususiyatini yangi kerakli uzunlikka o‘rnatish orqali ham olib tashlashingiz mumkin.
+
+Va nihoyat, `splice()` — bu massiv elementlarini qo‘shish, o‘chirish yoki almashtirish uchun umumiy maqsadli metoddir. U `length` xususiyatini o‘zgartiradi va zaruratga qarab massiv elementlarini yuqori yoki pastki indekslarga siljitadi. Tafsilotlar uchun §7.8 ga qarang.
