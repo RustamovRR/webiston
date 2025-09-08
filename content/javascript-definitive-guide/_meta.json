@@ -315,28 +315,5 @@
         "path": "7-arrays/summary/page"
       }
     }
-  },
-  "10-modules": {
-    "title": "10. Modullar",
-    "path": "10-modules/page",
-    "hasIndex": true,
-    "children": {
-      "10.1-creating-arrays": {
-        "title": "10.1. Sinflar, obyekt'lar va closure'lar yordamida modullar yaratish",
-        "path": "10-modules/10.1-modules-with-classes-objects-and-closures/page"
-      },
-      "10.2-modules-in-node": {
-        "title": "10.2. Node'dagi modullar",
-        "path": "10-modules/10.2-modules-in-node/page"
-      },
-      "10.3-modules-in-es6": {
-        "title": "10.3. ES6'dagi modullar",
-        "path": "10-modules/10.3-modules-in-es6/page"
-      },
-      "summary": {
-        "title": "Xulosa",
-        "path": "10-modules/summary/page"
-      }
-    }
   }
 }
