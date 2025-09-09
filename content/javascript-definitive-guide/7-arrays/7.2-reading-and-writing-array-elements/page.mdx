@@ -1,44 +1,52 @@
 ---
-title: Massiv elementlarini o‘qish va yozish
-description: "JavaScriptda massiv elementlarini indeks orqali o‘qish va o‘zgartirish. Array ichidagi qiymatlarga kirish, yangi qiymat yozish, mavjudini yangilash va amaliy misollar orqali tushuntirish."
-keywords: JavaScript, massiv, array, element o‘qish, read array element, element yozish, write array element, indeks, index, update array, element yangilash, beginner, misollar, examples, tutorial
+title: Massiv elementlarini o'qish va yozish
+description: "JavaScriptda massiv elementlarini indeks orqali o'qish va o'zgartirish. Array ichidagi qiymatlarga kirish, yangi qiymat yozish, mavjudini yangilash va amaliy misollar orqali tushuntirish."
+keywords: JavaScript, massiv, array, element o'qish, read array element, element yozish, write array element, indeks, index, update array, element yangilash, beginner, misollar, examples, tutorial
 author: Webiston.uz
 ---
 
+# Massiv elementlarini o'qish va yozish
 
-# Massiv elementlarini o‘qish va yozish
+Massiv elementiga `[]` operatori yordamida murojaat qilinadi. Qavslarning chap tomonida massivga havolaning o'zi kelishi kerak. Qavslar ichida esa manfiy bo'lmagan butun son qiymatiga ega bo'lgan ixtiyoriy ifoda bo'lishi kerak. Bu sintaksisdan massiv elementining qiymatini ham o'qish, ham yozish uchun foydalanish mumkin. Shunday qilib, quyidagilarning barchasi to'g'ri JavaScript ko'rsatmalaridir:
 
-Massiv elementiga `[]` operatori yordamida murojaat qilasiz. Qavslarning chap tomonida massiv'ga havola bo‘lishi kerak. Qavslar ichida esa manfiy bo‘lmagan butun son qiymatiga ega ixtiyoriy ifoda bo‘lishi lozim. Bu sintaksisdan massiv elementining qiymatini **o‘qish** uchun ham, **yozish** uchun ham foydalanishingiz mumkin. Shunday qilib, quyidagilarning barchasi to‘g‘ri JavaScript operatorlaridir:
 ``` js
-    let a = ["world"];    // Bir elementli massiv bilan boshlaymiz
-    let value = a[0];     // 0-elementni o‘qish
-    a[1] = 3.14;          // 1-elementga yozish
-    let i = 2;
-    a[i] = 3;             // 2-elementga yozish
-    a[i + 1] = "hello";   // 3-elementga yozish
-    a[a[i]] = a[0];       // 0 va 2-elementlarni o‘qish, 3-elementga yozish
+let a = ["world"];      // Bir elementli massivdan boshlaymiz
+let value = a[0];       // 0-elementni o'qish
+a[1] = 3.14;            // 1-elementga yozish
+let i = 2;
+a[i] = 3;               // 2-elementga yozish
+a[i + 1] = "hello";     // 3-elementga yozish
+a[a[i]] = a[0];         // 0 va 2-elementlarni o'qib, 3-elementga yozish
 ```
-Massiv'larning o‘ziga xosligi shundaki, siz xususiyat nomlari sifatida 2³²−1 dan kichik manfiy bo‘lmagan butun sonlarni ishlatsangiz, massiv avtomatik ravishda `length` xususiyatining qiymatini yangilab boradi. Masalan, yuqoridagi misolda biz bitta elementli `a` massiv'ini yaratdik. So‘ng 1, 2 va 3-indekslarga qiymatlar o‘zlashtirdik. Bu amallarni bajarganimiz sari massiv'ning `length` xususiyati ham o‘zgarib bordi, natijada:
-``` js
-    a.length // => 4
-```
-Yodda tuting, massiv'lar obyekt'ning ixtisoslashtirilgan turidir. Massiv elementlariga murojaat qilish uchun ishlatiladigan kvadrat qavslar, xuddi obyekt xususiyatlariga murojaat qilish uchun ishlatiladigan kvadrat qavslar kabi ishlaydi. JavaScript siz ko‘rsatgan raqamli massiv indeksini satr'ga o‘giradi — masalan, 1 indeksi "1" satr'iga aylanadi — so‘ngra bu satr'ni xususiyat nomi sifatida ishlatadi. Indeksni sondan satr'ga o‘girishda hech qanday o‘ziga xoslik yo‘q: buni oddiy obyekt'lar bilan ham qilsa bo‘ladi:
-``` js
-    let o = {};      // Oddiy obyekt yaratamiz
-    o[1] = "one";    // Uni butun son bilan indekslaymiz
-    o["1"]           // => "one"; sonli va satrli xususiyat nomlari bir xil
-```
-Massiv indeksi va obyekt xususiyati nomini aniq farqlay bilish muhimdir. Barcha indekslar xususiyat nomlaridir, lekin faqat 0 va 2³²–2 oralig‘idagi butun sonlar bo‘lgan xususiyat nomlarigina **indeks** hisoblanadi. Barcha massiv'lar obyekt'dir va siz ularda istalgan nomdagi xususiyatlarni yaratishingiz mumkin. Biroq, agar siz massiv indeksi hisoblanadigan xususiyatlardan foydalansangiz, massiv'lar o‘z `length` xususiyatini zaruratga qarab yangilashdek o‘ziga xos xususiyatga ega bo‘ladi.
 
-Shuni ham unutmangki, siz massiv'ni manfiy yoki butun bo‘lmagan sonlar bilan indekslashingiz mumkin. Bunday holatda, son satr'ga o‘giriladi va bu satr xususiyat nomi sifatida ishlatiladi. Bu nom manfiy bo‘lmagan butun son bo‘lmagani uchun, u massiv indeksi sifatida emas, balki oddiy obyekt xususiyati sifatida qabul qilinadi. Shuningdek, agar siz massiv'ni tasodifan manfiy bo‘lmagan butun son bo‘lgan satr bilan indekslasangiz, u obyekt xususiyati emas, balki massiv indeksi sifatida ishlaydi. Xuddi shu holat butun songa teng bo‘lgan o‘nli kasr (floating-point number) ishlatganingizda ham kuzatiladi:
+Massivlarning o'ziga xosligi shundaki, siz 2³²-1 dan kichik, manfiy bo'lmagan butun sonlar bo'lgan xossa nomlaridan foydalanganingizda, massiv avtomatik ravishda `length` xossasining qiymatini siz uchun saqlab boradi. Masalan, yuqorida biz bitta elementli `a` massivini yaratdik. So'ngra 1, 2 va 3-indekslarga qiymatlar tayinladik. Biz shunday qilganimiz sari massivning `length` xossasi ham o'zgardi:
+
 ``` js
-    a[-1.23] = true;      // Bu "-1.23" nomli xususiyat yaratadi
-    a["1000"] = 0;        // Bu massiv'ning 1001-elementi bo'ladi
-    a[1.000] = 1;         // Massiv indeksi 1. a[1] = 1; bilan bir xil
+a.length // => 4
 ```
-Massiv indekslari shunchaki obyekt xususiyat nomlarining maxsus bir turi ekanligi, JavaScript massiv'larida **“chegaradan chiqish” (out of bounds)** xatosi degan tushuncha yo‘qligini anglatadi. Siz har qanday obyekt'ning mavjud bo‘lmagan xususiyatiga murojaat qilganingizda, xato olmaysiz; shunchaki `undefined` qiymatini olasiz. Bu qoida obyekt'lar uchun qanchalik to‘g‘ri bo‘lsa, massiv'lar uchun ham shunchalik to‘g‘ri:
+
+Shuni yodda tutingki, massivlar obyektning ixtisoslashgan bir turidir. Massiv elementlariga murojaat qilish uchun ishlatiladigan kvadrat qavslar xuddi obyekt xossalariga murojaat qilish uchun ishlatiladigan kvadrat qavslar kabi ishlaydi. JavaScript siz ko'rsatgan sonli massiv indeksini satrga o'zgartiradi — `1` indeksi `"1"` satriga aylanadi — so'ngra o'sha satrni xossa nomi sifatida ishlatadi. Indeksning sondan satrga o'zgartirilishida hech qanday taajjublanarli narsa yo'q: buni oddiy obyektlar bilan ham qilsa bo'ladi:
+
 ``` js
-    let a = [true, false]; // Bu massiv'ning 0 va 1-indekslarida elementlar bor
-    a[2]                   // => undefined; bu indeksda element yo'q
-    a[-1]                  // => undefined; bu nomdagi xususiyat yo'q
+let o = {};   // Oddiy obyekt yaratamiz
+o[1] = "one"; // Uni butun son bilan indekslaymiz
+o["1"]        // => "one"; sonli va satrli xossa nomlari bir xil
+```
+
+Massiv indeksi bilan obyekt xossasi nomini aniq farqlash muhimdir. Barcha indekslar xossa nomlaridir, lekin faqat `0` dan `2³²-2` gacha bo'lgan butun sonlar bo'lgan xossa nomlarigina indeks hisoblanadi. Barcha massivlar obyektlardir va ularda istalgan nomdagi xossalarni yaratish mumkin. Biroq agar massiv indekslari bo'lgan xossalardan foydalansangiz, massivlar kerak bo'lganda o'zlarining `length` xossasini yangilab borish kabi alohida xususiyatga ega.
+
+E’tibor bering, massivni manfiy yoki butun bo'lmagan sonlar yordamida indekslash mumkin. Bunday qilinganda, son satrga o'zgartiriladi va bu satr xossa nomi sifatida ishlatiladi. Bu nom manfiy bo'lmagan butun son bo'lmagani uchun, u massiv indeksi sifatida emas, balki oddiy obyekt xossasi sifatida qabul qilinadi. Shuningdek, agar massivni tasodifan manfiy bo'lmagan butun son bo'lib chiqqan satr bilan indekslasangiz, u obyekt xossasi sifatida emas, balki massiv indeksi sifatida ishlaydi. Xuddi shu narsa butun songa teng bo'lgan suzuvchi nuqtali son ishlatganingizda ham o'rinlidir:
+
+``` js
+a[-1.23] = true;   // Bu "-1.23" nomli xossa yaratadi
+a["1000"] = 0;     // Bu massivning 1001-elementi
+a[1.000] = 1;      // 1-massiv indeksi. `a[1] = 1;` bilan bir xil
+```
+
+Massiv indekslarining shunchaki obyekt xossasi nomining maxsus bir turi ekanligi JavaScript massivlarida "chegaradan tashqari" (`out of bounds`) xatoligi tushunchasi yo'qligini anglatadi. Har qanday obyektning mavjud bo'lmagan xossasini so'rashga harakat qilganingizda, siz xatolikka duch kelmaysiz; shunchaki `undefined` olasiz. Bu obyektlar uchun qanchalik to'g'ri bo'lsa, massivlar uchun ham shunchalik to'g'ri:
+
+``` js
+let a = [true, false]; // Bu massivda 0 va 1-indekslarda elementlar bor
+a[2]                   // => undefined; bu indeksda element yo'q.
+a[-1]                  // => undefined; bu nomdagi xossa yo'q.
 ```
