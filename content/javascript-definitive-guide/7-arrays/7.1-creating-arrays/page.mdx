@@ -1,0 +1,137 @@
+---
+title: Massivlarni yaratish
+description: "JavaScriptda massivlarni yaratish usullari: literal ([]), new Array() konstruktoridan foydalanish va dinamik ravishda element qo'shish. Boshlang'ich dasturchilar uchun oddiy tushuntirish va amaliy misollar."
+keywords: JavaScript, massiv yaratish, array creation, massiv literali, array literal, new Array, Array konstruktori, Array.of, Array.from, yoyish operatori, spread operator, iteratsiya qilinadigan, iterable, fabrika metodlari, factory methods, boshlang'ich, beginner, misollar, examples
+author: Webiston.uz
+---
+
+# Massivlarni yaratish
+
+Massivlarni yaratishning bir nechta usuli mavjud. Keyingi quyi bo'limlar massivlarni quyidagilar yordamida qanday yaratishni tushuntiradi:
+
+- Massiv literallari
+- Iteratsiya qilinadigan (`iterable`) obyektda `...` yoyish (`spread`) operatori
+- `Array()` konstruktori
+- `Array.of()` va `Array.from()` fabrika metodlari
+
+## Massiv literallari
+
+Massiv yaratishning eng oddiy yo'li, shubhasiz, massiv literalidan foydalanishdir. Bu shunchaki kvadrat qavslar ichidagi, vergul bilan ajratilgan massiv elementlari ro'yxatidir. Masalan:
+
+``` js
+let empty = [];                 // Elementlari yo'q massiv
+let primes = [2, 3, 5, 7, 11];  // 5 ta sonli elementga ega massiv
+let misc = [ 1.1, true, "a", ]; // Har xil tipdagi 3 ta element + ortiqcha vergul
+```
+
+Massiv literalidagi qiymatlar konstanta bo'lishi shart emas; ular ixtiyoriy ifodalar bo'lishi mumkin:
+
+``` js
+let base = 1024;
+let table = [base, base+1, base+2, base+3];
+```
+
+Massiv literallari o'z ichiga obyekt literallarini yoki boshqa massiv literallarini olishi mumkin:
+
+``` js
+let b = [[1, {x: 1, y: 2}], [2, {x: 3, y: 4}]];
+```
+
+Agar massiv literali ketma-ket bir nechta vergulni o'z ichiga olsa va ular orasida qiymat bo'lmasa, massiv **siyrak (`sparse`)** bo'ladi (§7.3-bo'limga qarang). Qiymatlari tushirib qoldirilgan massiv elementlari mavjud bo'lmaydi, lekin agar ularni so'rasangiz, `undefined` bo'lib ko'rinadi:
+
+``` js
+let count = [1,,3]; // 0 va 2-indekslarda elementlar bor. 1-indeksda element yo'q
+let undefs = [,,];  // Elementlari yo'q, lekin uzunligi 2 ga teng massiv
+```
+
+Massiv literali sintaksisi ixtiyoriy ortiqcha vergulga ruxsat beradi, shuning uchun `[,,]` massivining uzunligi 3 emas, 2 ga teng.
+
+## Yoyish (`spread`) operatori
+
+ES6 va undan keyingi versiyalarda bir massivning elementlarini boshqa bir massiv literali ichiga kiritish uchun **"yoyish (`spread`) operatori"** `...`'dan foydalanishingiz mumkin:
+
+``` js
+let a = [1, 2, 3];
+let b = [0, ...a, 4]; // b == [0, 1, 2, 3, 4]
+```
+
+Uchta nuqta `a` massivini "yoyadi", natijada uning elementlari yaratilayotgan massiv literalining elementlariga aylanadi. Bu xuddi `...a` ifodasi `a` massivining elementlari bilan almashtirilib, o'rab turuvchi massiv literalining bir qismi sifatida yozilgandek bo'ladi. (E’tibor bering, garchi biz bu uchta nuqtani yoyish operatori deb atasak-da, bu haqiqiy operator emas, chunki u faqat massiv literallarida va kitobning keyingi qismlarida ko'rib chiqadiganimizdek, funksiya chaqiruvlarida ishlatilishi mumkin.)
+
+Yoyish operatori massivning **yuzaki (`shallow`)** nusxasini yaratishning qulay usulidir:
+
+``` js
+let original = [1,2,3];
+let copy = [...original];
+copy[0] = 0;   // Nusxani o'zgartirish asl nusxani o'zgartirmaydi
+original[0]    // => 1
+```
+
+Yoyish operatori har qanday **iteratsiya qilinadigan (`iterable`)** obyekt bilan ishlaydi. (Iteratsiya qilinadigan obyektlar — bu `for/of` sikli aylanib chiqadigan obyektlardir; biz ularni birinchi marta §5.4.4-bo'limda ko'rgan edik va ular haqida 12-bobda ancha ko'proq ma’lumot olamiz.) Satrlar iteratsiya qilinadi, shuning uchun siz yoyish operatoridan har qanday satrni bitta belgidan iborat satrlar massiviga aylantirish uchun foydalanishingiz mumkin:
+
+``` js
+let digits = [..."0123456789ABCDEF"];
+// digits => ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
+```
+
+`Set` obyektlari (§11.1.1) iteratsiya qilinadi, shuning uchun massivdan takrorlanuvchi elementlarni olib tashlashning oson yo'li — bu massivni `Set`'ga o'zgartirib, so'ngra `Set`'ni darhol yoyish operatori yordamida massivga qayta o'zgartirishdir:
+
+``` js
+let letters = [..."hello world"];
+[...new Set(letters)] // => ["h","e","l","o"," ","w","r","d"]
+```
+
+## `Array()` konstruktori
+
+Massiv yaratishning yana bir yo'li — bu `Array()` konstruktoridan foydalanish. Bu konstruktorni uch xil usulda chaqirish mumkin:
+
+- **Hech qanday argumentsiz chaqirish:**
+
+``` js
+let a = new Array();
+```
+
+Bu usul hech qanday elementi bo'lmagan bo'sh massiv yaratadi va `[]` massiv literaliga ekvivalentdir.
+
+- **Uzunlikni belgilovchi yagona sonli argument bilan chaqirish:**
+
+``` js
+let a = new Array(10);
+```
+
+Bu usul belgilangan uzunlikdagi massiv yaratadi. `Array()` konstruktorining bu shaklidan qancha element kerak bo'lishi oldindan ma’lum bo'lganda massivni oldindan ajratib qo'yish uchun foydalanish mumkin. E’tibor bering, massivda hech qanday qiymat saqlanmaydi va hatto massiv uchun "0", "1" va hokazo kabi massiv indeks xossalari shakllantirilmaydi ham.
+
+- **Massiv uchun ikki yoki undan ortiq elementni yoki yagona sonli bo'lmagan elementni aniq ko'rsatish:**
+
+``` js
+let a = new Array(5, 4, 3, 2, 1, "testing, testing");
+```
+
+Bu shaklda konstruktor argumentlari yangi massivning elementlariga aylanadi. `Array()` konstruktorining bu tarzda ishlatilishidan ko'ra massiv literalidan foydalanish deyarli har doim soddaroqdir.
+
+## `Array.of()`
+
+`Array()` konstruktor funksiyasi bitta sonli argument bilan chaqirilganda, u bu argumentni massiv uzunligi sifatida ishlatadi. Lekin bir nechta sonli argument bilan chaqirilganda, u bu argumentlarni yaratilishi kerak bo'lgan massivning elementlari sifatida qabul qiladi. Bu shuni anglatadiki, `Array()` konstruktoridan yagona sonli elementga ega bo'lgan massiv yaratish uchun foydalanib bo'lmaydi.
+
+ES6'da `Array.of()` funksiyasi aynan shu muammoni hal qiladi: bu o'zining argument qiymatlarini (ularning sonidan qat’i nazar) massiv elementlari sifatida ishlatib, yangi massiv yaratadigan va qaytaradigan **fabrika metodi (`factory method`)**'dir:
+
+``` js
+Array.of()        // => []; argumentsiz bo'sh massiv qaytaradi
+Array.of(10)      // => [10]; yagona sonli argument bilan massiv yarata oladi
+Array.of(1,2,3)   // => [1, 2, 3]
+```
+
+## `Array.from()`
+
+`Array.from()` — bu ES6'da kiritilgan yana bir massiv fabrika metodidir. U birinchi argument sifatida iteratsiya qilinadigan (`iterable`) yoki massivsimon (`array-like`) obyektni kutadi va o'sha obyektning elementlarini o'z ichiga olgan yangi massivni qaytaradi. Iteratsiya qilinadigan argument bilan `Array.from(iterable)` xuddi yoyish (`spread`) operatori `[...iterable]` kabi ishlaydi. Bu, shuningdek, massivning nusxasini yaratishning oddiy usulidir:
+
+``` js
+let copy = Array.from(original);
+```
+
+`Array.from()` shuningdek, massivsimon obyektning haqiqiy massiv nusxasini yaratish yo'lini taqdim etgani uchun ham muhimdir. Massivsimon obyektlar — bu sonli `length` xossasiga ega bo'lgan va qiymatlari nomlari tasodifan butun sonlar bo'lib qolgan xossalar bilan saqlanadigan, massiv bo'lmagan obyektlardir. Klient tomonidagi JavaScript bilan ishlayotganda, ba’zi veb-brauzer metodlarining qaytaradigan qiymatlari massivsimon bo'ladi va agar ularni avval haqiqiy massivlarga o'zgartirib olsangiz, ular bilan ishlash osonroq bo'lishi mumkin:
+
+``` js
+let truearray = Array.from(arraylike);
+```
+
+`Array.from()` ixtiyoriy ikkinchi argumentni ham qabul qiladi. Agar siz ikkinchi argument sifatida funksiya uzatsangiz, u holda yangi massiv qurilayotganda, manba obyektdan olingan har bir element siz ko'rsatgan funksiyaga uzatiladi va asl qiymat o'rniga funksiyaning qaytargan qiymati massivda saqlanadi. (Bu bobning keyingi qismida tanishtiriladigan massivning `map()` metodiga juda o'xshaydi, lekin massiv qurilayotgan paytda moslashtirishni (`mapping`) amalga oshirish, avval massivni qurib, so'ngra uni boshqa yangi massivga moslashtirishdan ko'ra samaraliroqdir.)
