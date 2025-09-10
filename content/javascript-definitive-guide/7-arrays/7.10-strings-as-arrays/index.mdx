@@ -1,24 +1,26 @@
 ---
 title: Satr'lar massiv sifatida
-description: "JavaScriptda satrlarni massiv sifatida ishlatish: belgilarni indeks orqali o‘qish, length xossasi, split, join, Array.from kabi usullar yordamida satrni massivga aylantirish va amaliy misollar."
+description: "JavaScriptda satrlarni massiv sifatida ishlatish: belgilarni indeks orqali o'qish, length xossasi, split, join, Array.from kabi usullar yordamida satrni massivga aylantirish va amaliy misollar."
 keywords: JavaScript, satr, string, massiv sifatida, array-like string, belgilar massiv, character array, string length, split, join, Array.from, indeks, index, beginner, tutorial, misollar
 author: Webiston.uz
 ---
 
+# Satrlar massivlar sifatida
 
+JavaScript satrlari o'zini faqat o'qish uchun mo'ljallangan, UTF-16 Unicode belgilaridan iborat massivlardek tutadi. Alohida belgilarga `charAt()` metodi orqali murojaat qilish o'rniga, siz kvadrat qavslardan foydalanishingiz mumkin:
 
-# Satr'lar massiv sifatida
-
-JavaScript satr'lari o‘zini UTF-16 Unicode belgilaridan iborat **faqat o‘qish uchun mo‘ljallangan (read-only)** massiv'lar kabi tutadi. Alohida belgilarga `charAt()` metodi bilan murojaat qilish o‘rniga, siz to‘rtburchak qavslardan foydalanishingiz mumkin:
 ``` js
-    let s = "test";
-    s.charAt(0) // => "t"
-    s[1]        // => "e"
+let s = "test";
+s.charAt(0) // => "t"
+s[1]        // => "e"
 ```
-Albatta, `typeof` operatori satr'lar uchun hali ham “string” qiymatini qaytaradi va `Array.isArray()` metodiga satr uzatsangiz, u `false` qaytaradi.
 
-Indekslanadigan satr'larning asosiy afzalligi shunchaki `charAt()` chaqiruvlarini ancha ixcham, o‘qishga oson va potensial jihatdan samaraliroq bo‘lgan to‘rtburchak qavslar bilan almashtirishimiz mumkinligidir. Satr'larning o‘zini massiv'lar kabi tutishi, shuningdek, biz ularga umumiy massiv metodlarini qo‘llashimiz mumkinligini ham anglatadi. Masalan:
+Albatta, `typeof` operatori satrlar uchun baribir "string" qaytaradi va agar siz `Array.isArray()` metodiga satr uzatsangiz, u `false` qaytaradi.
+
+Indekslanadigan satrlarning asosiy afzalligi shunchaki `charAt()` chaqiruvlarini ancha ixchamroq, o'qishliroq va potensial jihatdan samaraliroq bo'lgan kvadrat qavslar bilan almashtirishimiz mumkinligidadir. Biroq satrlarning o'zini massivlardek tutishi, biz ularga universal (`generic`) massiv metodlarini qo'llashimiz mumkinligini ham anglatadi. Masalan:
+
 ``` js
-    Array.prototype.join.call("JavaScript", " ") // => "J a v a S c r i p t"
+Array.prototype.join.call("JavaScript", " ") // => "J a v a S c r i p t"
 ```
-Yodda tutingki, satr'lar **o‘zgarmas (immutable)** qiymatlardir, shuning uchun ularga massiv sifatida qaralganda, ular faqat o‘qish uchun mo‘ljallangan massiv'lar hisoblanadi. `push()`, `sort()`, `reverse()` va `splice()` kabi massiv'ni joyida o‘zgartiradigan metodlar satr'larda ishlamaydi. Biroq, satr'ni massiv metodi yordamida o‘zgartirishga urinish xatolikka olib kelmaydi: u shunchaki **hech qanday ogohlantirishsiz (silently)** bajarilmay qoladi.
+
+Shuni yodda tutingki, satrlar o'zgarmas qiymatlardir, shuning uchun ularga massiv sifatida qaralganda, ular faqat o'qish uchun mo'ljallangan massivlar bo'ladi. `push()`, `sort()`, `reverse()` va `splice()` kabi massivni joyida o'zgartiradigan massiv metodlari satrlarda ishlamaydi. Biroq satrni massiv metodi yordamida o'zgartirishga urinish xatolikka olib kelmaydi: u shunchaki "jimgina" muvaffaqiyatsizlikka uchraydi.
