@@ -291,11 +291,11 @@
         "path": "7-arrays/7.5-adding-and-deleting-array-elements/page"
       },
       "7.6-iterating-arrays": {
-        "title": "7.6. Massiv'larni aylanib chiqish",
+        "title": "7.6. Massivlarni iteratsiya qilish",
         "path": "7-arrays/7.6-iterating-arrays/page"
       },
       "7.7-multidimensional-arrays": {
-        "title": "7.7. Koʻp oʻlchovli massiv'lar",
+        "title": "7.7. Ko'p o'lchamli massivlar",
         "path": "7-arrays/7.7-multidimensional-arrays/page"
       },
       "7.8-array-methods": {
@@ -303,11 +303,11 @@
         "path": "7-arrays/7.8-array-methods/page"
       },
       "7.9-array-like-objects": {
-        "title": "7.9. Massiv'simon obyekt'lar",
+        "title": "7.9. Massivsimon obyektlar",
         "path": "7-arrays/7.9-array-like-objects/page"
       },
       "7.10-strings-as-arrays": {
-        "title": "7.10. Satr'lar massiv sifatida",
+        "title": "7.10. Satrlar massivlar sifatida",
         "path": "7-arrays/7.10-strings-as-arrays/page"
       },
       "summary": {
