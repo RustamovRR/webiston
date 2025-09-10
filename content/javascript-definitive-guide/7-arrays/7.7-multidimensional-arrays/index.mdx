@@ -1,29 +1,32 @@
 ---
-title: Koʻp oʻlchovli massiv'lar
-description: "JavaScriptda ko‘p o‘lchovli massivlar (multidimensional arrays): massiv ichida massiv yaratish, 2D va 3D massivlar bilan ishlash, indekslar orqali elementlarga murojaat qilish va amaliy misollar."
-keywords: JavaScript, massiv, array, ko‘p o‘lchovli massiv, multidimensional array, 2D array, 3D array, nested array, indeks, index, element o‘qish, element yozish, misollar, tutorial, beginner, advanced
+title: Ko'p o'lchovli massiv'lar
+description: "JavaScriptda ko'p o'lchovli massivlar (multidimensional arrays): massiv ichida massiv yaratish, 2D va 3D massivlar bilan ishlash, indekslar orqali elementlarga murojaat qilish va amaliy misollar."
+keywords: JavaScript, massiv, array, ko'p o'lchovli massiv, multidimensional array, 2D array, 3D array, nested array, indeks, index, element o'qish, element yozish, misollar, tutorial, beginner, advanced
 author: Webiston.uz
 ---
 
+# Ko'p o'lchamli massivlar
 
+JavaScript haqiqiy ko'p o'lchamli massivlarni qo'llab-quvvatlamaydi, lekin massivlar ichidagi massivlar yordamida ularni shunga o'xshatib yozish mumkin. Massivlar massivi ichidagi biror qiymatga murojaat qilish uchun shunchaki `[]` operatorini ikki marta ishlating.
 
-# Koʻp oʻlchovli massiv'lar
+Masalan, `matrix` o'zgaruvchisi sonlar massivlaridan iborat massiv deb faraz qilaylik. `matrix[x]`'dagi har bir element — bu sonlar massividir. Bu massiv ichidagi aniq bir songa murojaat qilish uchun siz `matrix[x][y]` deb yozasiz.
 
-JavaScript haqiqiy koʻp oʻlchovli massiv'larni qoʻllab-quvvatlamaydi, lekin siz ularni massiv'lar ichidagi massiv'lar yordamida hosil qilishingiz mumkin. Massiv'lar massiv'idagi qiymatga murojaat qilish uchun shunchaki `[]` operatoridan ikki marta foydalaning. Masalan, `matrix` o‘zgaruvchisi sonlar massiv'laridan iborat massiv deb faraz qilaylik. `matrix[x]`'dagi har bir element — bu sonlar massiv'idir. Bu massiv ichidagi ma'lum bir songa murojaat qilish uchun siz `matrix[x][y]` deb yozasiz. Quyida ikki o‘lchovli massiv'dan ko‘paytirish jadvali sifatida foydalanilgan amaliy misol keltirilgan:
+Quyida ikki o'lchamli massivdan ko'paytirish jadvali sifatida foydalanilgan aniq bir misol keltirilgan:
+
 ``` js
-    // Koʻp oʻlchovli massiv yaratish
-    let table = new Array(10);                  // Jadvalning 10 ta qatori
-    for(let i = 0; i < table.length; i++) {
-      table[i] = new Array(10);               // Har bir qatorda 10 ta ustun mavjud
-    }
+// Ko'p o'lchamli massiv yaratish
+let table = new Array(10);                 // Jadvalning 10 ta qatori
+for(let i = 0; i < table.length; i++) {
+    table[i] = new Array(10);              // Har bir qatorda 10 ta ustun bor
+}
 
-    // Massiv'ni qiymatlar bilan to'ldirish
-    for(let row = 0; row < table.length; row++) {
-      for(let col = 0; col < table[row].length; col++) {
+// Massivni initsializatsiya qilish
+for(let row = 0; row < table.length; row++) {
+    for(let col = 0; col < table[row].length; col++) {
         table[row][col] = row*col;
-      }
     }
+}
 
-    // 5*7 ni hisoblash uchun koʻp oʻlchovli massiv'dan foydalanish
-    table[5][7]  // => 35
+// 5*7 ni hisoblash uchun ko'p o'lchamli massivdan foydalanish
+table[5][7] // => 35
 ```
