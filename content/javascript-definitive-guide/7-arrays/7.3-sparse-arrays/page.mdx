@@ -1,0 +1,31 @@
+---
+title: Siyrak massiv'lar
+description: "JavaScriptda siyrak massivlar (sparse arrays) tushunchasi: indekslar orasida bo'sh elementlar qolishi, length xossasining xatti-harakati, undefined qiymatlar va siyrak massivlar bilan ishlashdagi nozik jihatlar."
+keywords: JavaScript, massiv, array, siyrak massiv, sparse array, bo'sh element, undefined, array length, indeks, index, advanced, tutorial, performance, optimallashtirish
+author: Webiston.uz
+---
+
+# Siyrak massivlar
+
+**Siyrak (`sparse`) massiv** — bu elementlari `0`'dan boshlanuvchi uzluksiz indekslarga ega bo'lmagan massivdir. Odatda, massivning `length` xossasi undagi elementlar sonini bildiradi. Agar massiv siyrak bo'lsa, `length` xossasining qiymati elementlar sonidan katta bo'ladi. Siyrak massivlarni `Array()` konstruktori yordamida yoki shunchaki massivning joriy uzunligidan kattaroq bo'lgan indeksga qiymat tayinlash orqali yaratish mumkin.
+
+``` js
+let a = new Array(5);   // Elementlar yo'q, lekin `a.length` 5 ga teng.
+a = [];                 // Elementlari yo'q va `length = 0` bo'lgan massiv yaratamiz.
+a = 0;                  // Tayinlash bitta element qo'shadi, lekin `length`ni 1001 qilib belgilaydi.
+```
+
+Keyinroq ko'rib chiqadiganimizdek, `delete` operatori yordamida ham massivni siyrak holatga keltirish mumkin.
+
+Yetarlicha siyrak bo'lgan massivlar odatda zich massivlarga qaraganda sekinroq, lekin xotira jihatidan tejamkorroq usulda implementatsiya qilinadi va bunday massivdan elementlarni qidirish deyarli oddiy obyekt xossasini qidirish bilan bir xil vaqtni oladi.
+
+E'tibor bering, massiv literalida qiymatni tushirib qoldirganingizda (masalan, `[1,,3]` kabi takroriy vergullardan foydalanganda), hosil bo'lgan massiv siyrak bo'ladi va tushirib qoldirilgan elementlar shunchaki **mavjud bo'lmaydi**:
+
+``` js
+let a1 = [,];         // Bu massivda elementlar yo'q va uzunligi 1 ga teng
+let a2 = [undefined]; // Bu massivda bitta `undefined` element bor
+0 in a1               // => false: `a1`da 0-indeksli element yo'q
+0 in a2               // => true: `a2`ning 0-indeksida `undefined` qiymati bor
+```
+
+Siyrak massivlarni tushunish — bu JavaScript massivlarining asl tabiatini anglashning muhim bir qismidir. Amalda esa, siz ishlaydigan ko'pchilik JavaScript massivlari siyrak bo'lmaydi. Va agar sizga siyrak massiv bilan ishlashga to'g'ri kelsa ham, kodingiz katta ehtimol bilan unga xuddi `undefined` elementlari bor zich massivga munosabatda bo'lgandek munosabatda bo'ladi.

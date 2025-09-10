@@ -1,0 +1,81 @@
+---
+title: Massiv'larni aylanib chiqish
+description: "JavaScriptda massivlarni aylanib chiqish usullari: for, for...of, forEach, map va boshqa iteratsiya metodlari. Elementlarga ketma-ket murojaat qilish va ulardan samarali foydalanish bo'yicha amaliy misollar."
+keywords: JavaScript, massiv, array, iteratsiya, loop, for loop, for...of, forEach, map, massivni aylanib chiqish, array iteration, beginner, misollar, tutorial, dasturlash
+author: Webiston.uz
+---
+
+# Massivlarni iteratsiya qilish
+
+ES6'dan boshlab, massivning (yoki har qanday iteratsiya qilinadigan obyektning) har bir elementi bo'ylab aylanib chiqishning eng oson yo'li — bu §5.4.4-bo'limda batafsil yoritilgan `for/of` siklidir:
+
+``` js
+let letters = [..."Hello world"]; // Harflar massivi
+let string = "";
+for(let letter of letters) {
+    string += letter;
+}
+string // => "Hello world"; biz asl matnni qayta yig'dik
+```
+
+`for/of` sikli ishlatadigan ichki o'rnatilgan massiv iteratori massiv elementlarini o'sish tartibida qaytaradi. U siyrak massivlar uchun hech qanday alohida xususiyatga ega emas va mavjud bo'lmagan har qanday massiv elementi uchun shunchaki `undefined` qaytaradi.
+
+Agar massiv uchun `for/of` siklidan foydalanmoqchi bo'lsangiz va har bir massiv elementining indeksini bilishingiz kerak bo'lsa, massivning `entries()` metodidan destrukturizatsiya orqali tayinlash bilan birga foydalaning:
+
+``` js
+let everyother = "";
+for(let [index, letter] of letters.entries()) {
+    if (index % 2 === 0) everyother += letter; // Juft indeksdagi harflar
+}
+everyother // => "Hlowrd"
+```
+
+Massivlarni iteratsiya qilishning yana bir yaxshi usuli — bu `forEach()`'dir. Bu `for` siklining yangi shakli emas, balki massiv iteratsiyasiga funksional yondashuvni taklif qiladigan massiv metodidir. Siz massivning `forEach()` metodiga funksiya uzatasiz va `forEach()` sizning funksiyangizni massivning har bir elementi uchun bir martadan chaqiradi:
+
+``` js
+let uppercase = "";
+letters.forEach(letter => { // Bu yerda strelkali funksiya sintaksisiga e'tibor bering
+    uppercase += letter.toUpperCase();
+});
+uppercase // => "HELLO WORLD"
+```
+
+Kutganingizdek, `forEach()` massivni tartib bilan iteratsiya qiladi va qiziq jihati shundaki, u massiv indeksini ham funksiyangizga ikkinchi argument sifatida uzatadi, bu esa ba'zi hollarda juda qo'l keladi. `for/of` siklidan farqli o'laroq, `forEach()` siyrak massivlardan "xabardor" va u mavjud bo'lmagan elementlar uchun funksiyangizni chaqirmaydi.
+
+§7.8.1-bo'lim `forEach()` metodini yanada batafsil yoritadi. Bu bo'lim, shuningdek, massiv iteratsiyasining ixtisoslashgan turlarini bajaradigan `map()` va `filter()` kabi unga yaqin metodlarni ham qamrab oladi.
+
+Albatta, massiv elementlari bo'ylab eski, qadrdon `for` sikli (`§5.4.3`) yordamida ham aylanib chiqish mumkin:
+
+``` js
+let vowels = "";
+for(let i = 0; i < letters.length; i++) { // Massivdagi har bir indeks uchun
+    let letter = letters[i];             // O'sha indeksdagi elementni olamiz
+    if (/[aeiou]/.test(letter)) {        // Regular ifoda tekshiruvidan foydalanamiz
+        vowels += letter;                // Agar u unli harf bo'lsa, uni saqlab qo'yamiz
+    }
+}
+vowels // => "eoo"
+```
+
+Ichma-ich joylashgan sikllarda yoki ishlash samaradorligini hal qiluvchi ahamiyatga ega bo'lgan boshqa kontekstlarda, ba'zan bu asosiy massiv iteratsiyasi siklining massiv uzunligi har bir iteratsiyada qayta-qayta emas, balki faqat bir marta qidiriladigan qilib yozilganini ko'rishingiz mumkin. Quyidagi `for` siklining har ikki shakli ham idiomatik hisoblanadi, garchi unchalik keng tarqalgan bo'lmasa-da. Zamonaviy JavaScript interpretatorlari bilan ularning ishlash samaradorligiga biror sezilarli ta'siri borligi ham aniq emas:
+
+``` js
+// Massiv uzunligini lokal o'zgaruvchiga saqlab olish
+for(let i = 0, len = letters.length; i < len; i++) {
+    // sikl tanasi o'zgarishsiz qoladi
+}
+
+// Massivning oxiridan boshiga qarab teskari iteratsiya qilish
+for(let i = letters.length-1; i >= 0; i--) {
+    // sikl tanasi o'zgarishsiz qoladi
+}
+```
+
+Bu misollar massiv zich va barcha elementlar to'g'ri ma'lumotlarni o'z ichiga oladi, deb faraz qiladi. Agar bunday bo'lmasa, massiv elementlarini ishlatishdan oldin ularni tekshirish lozim. Agar `undefined` va mavjud bo'lmagan elementlarni o'tkazib yubormoqchi bo'lsangiz, quyidagicha yozishingiz mumkin:
+
+``` js
+for(let i = 0; i < a.length; i++) {
+    if (a[i] === undefined) continue; // `undefined` va mavjud bo'lmagan elementlarni o'tkazib yuborish
+    // sikl tanasi shu yerda
+}
+```

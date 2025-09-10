@@ -1,0 +1,22 @@
+---
+title: Massivlar
+description: "JavaScriptda massivlar (arrays): elementlarni tartibli saqlash, o'qish va yozish, qo'shish va o'chirish, uzunlikni aniqlash, ko'p o'lchovli massivlar va massivsimon obyektlar. Massiv metodlari bilan samarali dasturlash va amaliy misollar."
+keywords: JavaScript, massivlar, arrays, massiv asoslari, array basics, elementlar, elements, indeks, index, massiv uzunligi, array length, dinamik massivlar, dynamic arrays, tiplashtirilmagan, untyped, massiv metodlari, array methods, push, pop, map, filter, reduce, forEach, massivsimon obyektlar, array-like objects, ko'p o'lchovli massivlar, multidimensional arrays
+author: Webiston.uz
+---
+
+# Massivlar
+
+Ushbu bob JavaScript va boshqa ko'plab dasturlash tillaridagi fundamental ma'lumotlar tipi bo'lgan **massivlarni** yoritib beradi. Massiv — bu tartiblangan qiymatlar to'plamidir. Har bir qiymat **element** deb ataladi va har bir element massivda o'zining **indeksi** deb nomlanuvchi raqamli o'ringa ega.
+
+JavaScript massivlari **tiplashtirilmagan (`untyped`)**: massiv elementi istalgan tipda bo'lishi mumkin va bitta massivning turli elementlari har xil tipda bo'lishi ham mumkin. Massiv elementlari hatto obyektlar yoki boshqa massivlar bo'lishi ham mumkin, bu esa obyektlar massivi va massivlar massivi kabi murakkab ma'lumotlar tuzilmalarini yaratishga imkon beradi.
+
+JavaScript massivlarida indeksatsiya noldan boshlanadi va 32 bitli indekslar ishlatiladi: birinchi elementning indeksi `0`, eng yuqori mumkin bo'lgan indeks esa `4294967294` (2³²−2) ga teng. Bu massivning maksimal hajmini 4,294,967,295 elementgacha bo'lishini ta'minlaydi. JavaScript massivlari **dinamikdir**: ular zaruratga qarab kattalashadi yoki kichrayadi va massiv yaratilayotganda uning hajmini oldindan belgilash yoki o'lchami o'zgarganda uni qayta taqsimlash shart emas.
+
+JavaScript massivlari **siyrak (`sparse`)** bo'lishi mumkin: ya'ni, elementlar ketma-ket indekslarga ega bo'lishi shart emas va ular orasida bo'shliqlar bo'lishi mumkin. Har bir JavaScript massivining `length` xossasi mavjud. **Siyrak bo'lmagan (zich)** massivlar uchun bu xossa massivdagi elementlar sonini bildiradi. Siyrak massivlar uchun esa `length` har qanday elementning eng yuqori indeksidan katta bo'ladi.
+
+JavaScript massivlari JavaScript obyektining ixtisoslashtirilgan shaklidir va massiv indekslari aslida shunchaki butun son ko'rinishidagi xossa nomlaridir. Massivlarning o'ziga xos jihatlari haqida ushbu bobning keyingi qismlarida batafsilroq to'xtalamiz. Odatda, implementatsiyalar massivlarni optimallashtiradi, shuning uchun raqamli indekslangan massiv elementlariga murojaat qilish oddiy obyekt xossalariga murojaat qilishdan ancha tezroq bo'ladi.
+
+Massivlar o'z xossalarini `Array.prototype`'dan meros qilib oladi. Bu prototip massivlar bilan ishlash uchun boy metodlar to'plamini taqdim etadi va ular §7.8-bo'limda ko'rib chiqiladi. Bu metodlarning aksariyati **universal (`generic`)** hisoblanadi, ya'ni ular nafaqat haqiqiy massivlar, balki har qanday **"massivsimon obyekt" (`array-like object`)** uchun ham to'g'ri ishlaydi. Massivsimon obyektlarni §7.9-bo'limda muhokama qilamiz. Va nihoyat, JavaScript satrlari belgilar massivi kabi ishlaydi va buni §7.10-bo'limda ko'rib chiqamiz.
+
+ES6 birgalikda **"tiplashtirilgan massivlar" (`typed arrays`)** deb nomlanuvchi yangi massiv klasslari to'plamini kiritdi. Oddiy JavaScript massivlaridan farqli o'laroq, tiplashtirilgan massivlar qat'iy belgilangan uzunlikka va qat'iy belgilangan raqamli element tipiga ega. Ular yuqori ishlash samaradorligini (`performance`) ta'minlaydi va ikkilik ma'lumotlarga bayt darajasida murojaat qilish imkonini beradi. Bu mavzu §11.2-bo'limda yoritilgan.
