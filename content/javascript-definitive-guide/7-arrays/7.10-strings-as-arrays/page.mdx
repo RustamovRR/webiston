@@ -1,0 +1,26 @@
+---
+title: Satr'lar massiv sifatida
+description: "JavaScriptda satrlarni massiv sifatida ishlatish: belgilarni indeks orqali o'qish, length xossasi, split, join, Array.from kabi usullar yordamida satrni massivga aylantirish va amaliy misollar."
+keywords: JavaScript, satr, string, massiv sifatida, array-like string, belgilar massiv, character array, string length, split, join, Array.from, indeks, index, beginner, tutorial, misollar
+author: Webiston.uz
+---
+
+# Satrlar massivlar sifatida
+
+JavaScript satrlari o'zini faqat o'qish uchun mo'ljallangan, UTF-16 Unicode belgilaridan iborat massivlardek tutadi. Alohida belgilarga `charAt()` metodi orqali murojaat qilish o'rniga, siz kvadrat qavslardan foydalanishingiz mumkin:
+
+``` js
+let s = "test";
+s.charAt(0) // => "t"
+s[1]        // => "e"
+```
+
+Albatta, `typeof` operatori satrlar uchun baribir "string" qaytaradi va agar siz `Array.isArray()` metodiga satr uzatsangiz, u `false` qaytaradi.
+
+Indekslanadigan satrlarning asosiy afzalligi shunchaki `charAt()` chaqiruvlarini ancha ixchamroq, o'qishliroq va potensial jihatdan samaraliroq bo'lgan kvadrat qavslar bilan almashtirishimiz mumkinligidadir. Biroq satrlarning o'zini massivlardek tutishi, biz ularga universal (`generic`) massiv metodlarini qo'llashimiz mumkinligini ham anglatadi. Masalan:
+
+``` js
+Array.prototype.join.call("JavaScript", " ") // => "J a v a S c r i p t"
+```
+
+Shuni yodda tutingki, satrlar o'zgarmas qiymatlardir, shuning uchun ularga massiv sifatida qaralganda, ular faqat o'qish uchun mo'ljallangan massivlar bo'ladi. `push()`, `sort()`, `reverse()` va `splice()` kabi massivni joyida o'zgartiradigan massiv metodlari satrlarda ishlamaydi. Biroq satrni massiv metodi yordamida o'zgartirishga urinish xatolikka olib kelmaydi: u shunchaki "jimgina" muvaffaqiyatsizlikka uchraydi.
