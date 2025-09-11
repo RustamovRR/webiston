@@ -1,0 +1,12 @@
+
+# Funksiyalar
+
+Ushbu bob JavaScript funksiyalariga bag'ishlangan. Funksiyalar — bu JavaScript dasturlari uchun **fundamental qurilish bloki** va deyarli barcha dasturlash tillarida uchraydigan umumiy xususiyatdir. Ehtimol, siz funksiya tushunchasi bilan **"subroutine"** (quyi dastur) yoki **"procedure"** (protsedura) kabi nomlar ostida allaqachon tanishdirsiz.
+
+**Funksiya** — bu bir marta ta'riflanib, istalgancha marta **bajarilishi** yoki **chaqirilishi** mumkin bo'lgan JavaScript kodi blokidir. JavaScript funksiyalari parametrlashtirilgandir: funksiya ta'rifi o'z ichiga funksiya tanasi uchun lokal o'zgaruvchilar sifatida ishlaydigan va **parametrlar** deb nomlanuvchi identifikatorlar ro'yxatini olishi mumkin. Funksiya chaqiruvlari esa funksiya parametrlari uchun qiymatlar, ya'ni **argumentlarni** taqdim etadi. Funksiyalar ko'pincha o'zlarining argument qiymatlaridan foydalanib, funksiyani chaqirish ifodasining qiymatiga aylanadigan **qaytariladigan qiymatni (`return value`)** hisoblaydi. Argumentlardan tashqari, har bir chaqiruv yana bir qiymatga — **chaqiruv kontekstiga** — ega bo'ladi. Bu `this` kalit so'zining qiymatidir.
+
+Agar funksiya biror obyektning xossasiga tayinlansa, u o'sha obyektning **metodi** deb nomlanadi. Funksiya biror obyektda yoki u orqali chaqirilganda, o'sha obyekt funksiya uchun chaqiruv konteksti yoki `this` qiymati bo'ladi. Yangi yaratilgan obyektni initsializatsiya qilish uchun mo'ljallangan funksiyalar **konstruktorlar** deb ataladi. Konstruktorlar §6.2-bo'limda tasvirlangan edi va 9-bobda yana ko'rib chiqiladi.
+
+JavaScript'da funksiyalar — bu obyektlardir va ularni dasturlar orqali boshqarish mumkin. Masalan, JavaScript funksiyalarni o'zgaruvchilarga tayinlashi va ularni boshqa funksiyalarga uzatishi mumkin. Funksiyalar obyekt bo'lgani uchun, ularga xossalar o'rnatishingiz va hatto ularning metodlarini chaqirishingiz ham mumkin.
+
+JavaScript funksiya ta'riflari boshqa funksiyalar ichida joylashishi mumkin va ular o'zlari ta'riflangan joyda ko'rinish doirasida (`scope`) bo'lgan har qanday o'zgaruvchiga murojaat qila oladi. Bu shuni anglatadiki, JavaScript funksiyalari **closure**'lardir. **Closure** — bu o‘zi yaratilgan muhitdagi (tashqi funksiyadagi) o‘zgaruvchilarga murojaat qilish imkoniyatini "eslab qoladigan" funksiyadir. Bu xususiyat juda muhim va kuchli dasturlash usullarini qo‘llash imkonini beradi.

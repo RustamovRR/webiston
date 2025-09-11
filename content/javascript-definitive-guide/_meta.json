@@ -315,5 +315,16 @@
         "path": "7-arrays/summary/page"
       }
     }
+  },
+  "8-functions": {
+    "title": "8. Funksiyalar",
+    "path": "8-functions/page",
+    "hasIndex": true,
+    "children": {
+      "8.1-creating-functions": {
+        "title": "8.1. Funksiyalarni yaratish",
+        "path": "8-functions/8.1-creating-functions/page"
+      }
+    }
   }
 }
