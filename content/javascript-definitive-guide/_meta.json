@@ -321,9 +321,9 @@
     "path": "8-functions/page",
     "hasIndex": true,
     "children": {
-      "8.1-creating-functions": {
-        "title": "8.1. Funksiyalarni yaratish",
-        "path": "8-functions/8.1-creating-functions/page"
+      "8.1-defining-functions": {
+        "title": "8.1. Funksiyalarni ta'riflash",
+        "path": "8-functions/8.1-defining-functions/page"
       }
     }
   }
