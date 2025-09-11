@@ -115,7 +115,6 @@ export const NON_TRANSLITERATABLE_WORDS = [
   'javascript',
   'object',
   'notation',
-
   'readme',
   'license',
   'changelog',
@@ -132,7 +131,6 @@ export const NON_TRANSLITERATABLE_WORDS = [
   'div',
   'span',
   'ul',
-  'li',
   'h1',
   'h2',
   'h3',
@@ -232,7 +230,6 @@ export const NON_TRANSLITERATABLE_WORDS = [
   'throw',
   'debugger',
   'instanceof',
-  'in',
   'typeof',
   'delete',
   'NaN',

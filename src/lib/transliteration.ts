@@ -65,6 +65,13 @@ function transliteratePureUzbek(text: string): string {
     }
     const digraphs: { [key: string]: string } = { sh: 'ш', ch: 'ч', ng: 'нг', ts: 'ц' }
     const twoChar = (char + nextChar).toLowerCase()
+    // Maxsus holat: "ng'" ketma-ketligida 'g\'' ni Ғ sifatida ishlatish uchun 'ng' digrafini qo'llamaymiz
+    if (twoChar === 'ng' && normalizedText[i + 2] === "'") {
+      // Faqat 'n' ni transliteratsiya qilamiz, 'g\'' keyingi iteratsiyada 'Ғ' bo'ladi
+      cyrillicText += isUpperCase(char) ? 'Н' : 'н'
+      i += 1
+      continue
+    }
     if (digraphs[twoChar]) {
       let originalCase = normalizedText.substring(i, i + 2)
       let cyrillicChar = digraphs[twoChar]
@@ -76,8 +83,14 @@ function transliteratePureUzbek(text: string): string {
       continue
     }
     if (char === "'") {
-      if (i > 0 && 'aeiou'.includes(normalizedText[i - 1].toLowerCase())) cyrillicText += 'ъ'
-      else cyrillicText += "'"
+      const prev = i > 0 ? normalizedText[i - 1].toLowerCase() : ''
+      const next = i + 1 < normalizedText.length ? normalizedText[i + 1].toLowerCase() : ''
+      const vowels = 'aeiou'
+      if ((prev && vowels.includes(prev)) || (next && vowels.includes(next))) {
+        cyrillicText += 'ъ'
+      } else {
+        cyrillicText += "'"
+      }
       i++
       continue
     }
@@ -230,13 +243,16 @@ function transliteratePureCyrillic(text: string): string {
 
 const placeholder = (index: number) => `%%${index}%%`
 // BU REGEX O'ZGARTIRILMADI
+// Apostroflar to'plami (character class ko'rinishida ishlatamiz)
+const APOST_CLASS = "[`´‘’ʻʼʿˈ′']"
 const protectionRegex = new RegExp(
   [
     '```[\\s\\S]*?```',
     '`[^`]+?`',
     '\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b',
     '\\b(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*',
-    `\\b(${NON_TRANSLITERATABLE_WORDS.join('|')})\\b`,
+    // Apostrof bilan tutashmagan aniq so'zlar (oldi/ketida apostrof bo'lmasin)
+    `(^|[^${APOST_CLASS}])\\b(${NON_TRANSLITERATABLE_WORDS.join('|')})\\b(?=$|[^${APOST_CLASS}])`,
   ].join('|'),
   'gi',
 )
@@ -246,8 +262,14 @@ export function toCyrillic(text: string): string {
   if (!text) return ''
   const protectedParts: string[] = []
 
-  const maskedText = text.replace(protectionRegex, (match) => {
+  const maskedText = text.replace(protectionRegex, (match, p1, p2) => {
     const index = protectedParts.length
+    if (p2) {
+      // Bu NON_TRANSLITERATABLE_WORDS mosligi: p1 — oldingi belgi (saqlaymiz), p2 — so'zning o'zi (maskalaymiz)
+      protectedParts.push(p2)
+      return `${p1}${placeholder(index)}`
+    }
+    // Aks holda (code block, email, url) — to'liq match ni maskalaymiz
     protectedParts.push(match)
     return placeholder(index)
   })
@@ -264,8 +286,12 @@ export function toLatin(text: string): string {
   if (!text) return ''
   const protectedParts: string[] = []
 
-  const maskedText = text.replace(protectionRegex, (match) => {
+  const maskedText = text.replace(protectionRegex, (match, p1, p2) => {
     const index = protectedParts.length
+    if (p2) {
+      protectedParts.push(p2)
+      return `${p1}${placeholder(index)}`
+    }
     protectedParts.push(match)
     return placeholder(index)
   })
