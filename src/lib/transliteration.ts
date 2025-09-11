@@ -10,7 +10,8 @@ function transliteratePureUzbek(text: string): string {
   // BU FUNKSIYA O'ZGARISHSIZ QOLDI - U O'Z ISHINI TO'G'RI QILADI
   let cyrillicText = ''
   let i = 0
-  const normalizedText = text.replace(/‘|’|ʻ|ʼ/g, "'")
+  // Apostrof/tutuq belgilarini yagona `'` ga normallashtiramiz (`, ´, ‘, ’, ʻ, ʼ, ʿ, ˈ, ′)
+  const normalizedText = text.replace(/[`´‘’ʻʼʿˈ′]/g, "'")
   const isUpperCase = (c: string) => c === c.toUpperCase() && c !== c.toLowerCase()
 
   while (i < normalizedText.length) {
@@ -219,8 +220,8 @@ function transliteratePureCyrillic(text: string): string {
 
     i++
   }
-  // Apostroflarni to'g'rilash (g' -> g‘, o' -> o‘)
-  return latinText.replace(/g'/g, 'g‘').replace(/G'/g, 'G‘').replace(/o'/g, 'o‘').replace(/O'/g, 'O‘')
+  // Natijadagi barcha turdagi apostrof/tutuq belgilarini oddiy `'` ga normallashtiramiz
+  return latinText.replace(/[`´‘’ʻʼʿˈ′]/g, "'")
 }
 
 // =========================================================================
