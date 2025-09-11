@@ -174,7 +174,7 @@ export function DualTextPanel({
                 </div>
               ) : convertedText ? (
                 <div className="p-4">
-                  <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">
+                  <pre className="font-mono text-sm break-words whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">
                     {convertedText}
                   </pre>
                 </div>
