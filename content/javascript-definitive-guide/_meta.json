@@ -324,6 +324,10 @@
       "8.1-defining-functions": {
         "title": "8.1. Funksiyalarni ta'riflash",
         "path": "8-functions/8.1-defining-functions/page"
+      },
+      "8.2-invoking-functions": {
+        "title": "8.2. Funksiyalarni chaqirish",
+        "path": "8-functions/8.2-invoking-functions/page"
       }
     }
   }

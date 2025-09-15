@@ -1,0 +1,220 @@
+# Funksiyalarni chaqirish
+
+Funksiya tanasini tashkil etuvchi JavaScript kodi funksiya ta'riflanganda emas, balki u **chaqirilganda** bajariladi. JavaScript funksiyalarini besh xil usulda chaqirish mumkin:
+
+- **Funksiya sifatida**
+- **Metod sifatida**
+- **Konstruktor sifatida**
+- Ularning `call()` va `apply()` metodlari orqali **bilvosita**
+- Oddiy funksiya chaqiruviga o'xshamaydigan JavaScript tilining xususiyatlari orqali **zimdan (`implicitly`)**
+
+## Funksiya chaqiruvi
+
+Funksiyalar chaqiruv ifodasi (§4.5) yordamida funksiya sifatida yoki metod sifatida chaqiriladi. Chaqiruv ifodasi funksiya obyektiga baholanadigan funksiya ifodasi, undan keyin keladigan ochuvchi qavs, nolta yoki undan ortiq argument ifodalaridan iborat vergul bilan ajratilgan ro'yxat va yopuvchi qavsdan tashkil topadi.
+
+Agar funksiya ifodasi xossaga murojaat qilish ifodasi bo'lsa — ya'ni, agar funksiya biror obyektning xossasi yoki massivning elementi bo'lsa — u holda bu **metod chaqiruvi** ifodasi bo'ladi. Bu holat keyingi misolda tushuntiriladi. Quyidagi kodda bir nechta oddiy funksiya chaqiruvi ifodalari keltirilgan:
+
+``` js
+printprops({x: 1});
+let total = distance(0,0,2,1) + distance(2,1,3,5);
+let probability = factorial(5)/factorial(13);
+```
+
+Chaqiruv jarayonida har bir argument ifodasi (qavslar orasidagilar) baholanadi va hosil bo'lgan qiymatlar funksiyaning argumentlariga aylanadi. Bu qiymatlar funksiya ta'rifida nomlangan parametrlarga tayinlanadi. Funksiya tanasi ichida parametrga qilingan murojaat mos keluvchi argument qiymatiga baholanadi.
+
+Oddiy funksiya chaqiruvida funksiyaning qaytargan qiymati chaqiruv ifodasining qiymatiga aylanadi. Agar funksiya interpretator uning oxiriga yetgani uchun qaytsa, qaytariladigan qiymat `undefined` bo'ladi. Agar funksiya interpretator `return` ko'rsatmasini bajargani uchun qaytsa, u holda qaytariladigan qiymat `return`'dan keyingi ifodaning qiymati bo'ladi yoki agar `return` ko'rsatmasi qiymatga ega bo'lmasa, `undefined` bo'ladi.
+
+<Callout>
+### Shartli chaqiruv
+
+ES2020'da funksiya chaqiruvida funksiya ifodasidan keyin va ochuvchi qavsdan oldin `?.` belgisini qo'yib, funksiyani faqat u `null` yoki `undefined` bo'lmagandagina chaqirishingiz mumkin. Ya'ni, `f?.(x)` ifodasi (qo'shimcha ta'sirlar yo'q deb faraz qilsak) quyidagiga ekvivalentdir:
+
+``` js
+(f !== null && f !== undefined) ? f(x) : undefined
+```
+
+Ushbu shartli chaqiruv sintaksisining to'liq tafsilotlari §4.5.1-bo'limda keltirilgan.
+</Callout>
+
+Qat'iy bo'lmagan rejimdagi funksiya chaqiruvi uchun chaqiruv konteksti (`this` qiymati) global obyekt bo'ladi. Qat'iy rejimda esa, chaqiruv konteksti `undefined` bo'ladi. E'tibor bering, strelkali sintaksis yordamida ta'riflangan funksiyalar boshqacha ishlaydi: ular har doim o'zlari ta'riflangan joyda amalda bo'lgan `this` qiymatini meros qilib oladilar.
+
+Funksiya sifatida (metod sifatida emas) chaqirilish uchun yozilgan funksiyalar odatda `this` kalit so'zidan umuman foydalanmaydi. Biroq bu kalit so'zdan qat'iy rejim amalda yoki yo'qligini aniqlash uchun foydalanish mumkin:
+
+``` js
+// Qat'iy rejimda ekanligimizni aniqlash uchun funksiya ta'riflash va chaqirish.
+const strict = (function() { return !this; }());
+```
+
+<Callout>
+### Rekursiv funksiyalar va stek
+
+**Rekursiv funksiya** — bu, ushbu bobning boshidagi `factorial()` funksiyasi kabi, o'z-o'zini chaqiradigan funksiyadir. Ba'zi algoritmlar, masalan, daraxtsimon ma'lumotlar tuzilmalari bilan bog'liq bo'lganlar, aynan rekursiv funksiyalar yordamida juda nafis implementatsiya qilinishi mumkin. Biroq rekursiv funksiya yozayotganda, xotira cheklovlari haqida o'ylash muhimdir.
+
+Biror `A` funksiyasi `B` funksiyasini, so'ngra `B` funksiyasi `C` funksiyasini chaqirganda, JavaScript interpretatori uchala funksiya uchun ham **bajarilish kontekstlarini (`execution contexts`)** yodda saqlashi kerak bo'ladi. `C` funksiyasi yakunlanganda, interpretator `B` funksiyasining bajarilishini qayerdan davom ettirishni bilishi kerak, `B` funksiyasi yakunlanganda esa, u `A` funksiyasining bajarilishini qayerdan davom ettirishni bilishi kerak.
+
+Bu bajarilish kontekstlarini **stek (`stack`)** sifatida tasavvur qilish mumkin. Funksiya boshqa bir funksiyani chaqirganda, stekka yangi bajarilish konteksti qo'shiladi (`push`). O'sha funksiya qaytganda esa, uning bajarilish konteksti obyekti stekdan olib tashlanadi (`pop`). Agar funksiya o'z-o'zini rekursiv tarzda 100 marta chaqirsa, stekka 100 ta obyekt qo'shiladi va so'ngra o'sha 100 ta obyekt olib tashlanadi. Bu **chaqiruvlar steki (`call stack`)** xotira talab qiladi. Zamonaviy uskunalarda o'z-o'zini yuzlab marta chaqiradigan rekursiv funksiyalarni yozish odatda muammo emas. Lekin agar funksiya o'z-o'zini o'n ming marta chaqirsa, u "Maksimal chaqiruvlar steki hajmidan oshib ketildi" (`Maximum call-stack size exceeded`) kabi xatolik bilan ishdan chiqishi ehtimoli yuqori.
+</Callout>
+
+## Metod chaqiruvi
+
+**Metod** — bu shunchaki obyektning xossasida saqlanadigan JavaScript funksiyasidir. Agar sizda `f` funksiyasi va `o` obyekti bo'lsa, siz `o` obyektining `m` nomli metodini quyidagi qator bilan ta'riflashingiz mumkin:
+
+``` js
+o.m = f;
+```
+
+`o` obyektining `m()` metodini ta'riflaganingizdan so'ng, uni quyidagicha chaqirasiz:
+
+``` js
+o.m();
+```
+
+Yoki, agar `m()` ikkita argument kutsa, uni quyidagicha chaqirishingiz mumkin:
+
+``` js
+o.m(x, y);
+```
+
+Bu misoldagi kod chaqiruv ifodasidir: u `o.m` funksiya ifodasini va `x` hamda `y` ikkita argument ifodasini o'z ichiga oladi. Funksiya ifodasining o'zi xossaga murojaat qilish ifodasidir va bu funksiya oddiy funksiya sifatida emas, balki **metod sifatida** chaqirilayotganini anglatadi.
+
+Metod chaqiruvining argumentlari va qaytaradigan qiymati xuddi oddiy funksiya chaqiruvida tasvirlanganidek ishlanadi. Biroq metod chaqiruvlari funksiya chaqiruvlaridan bitta muhim jihati bilan farq qiladi: bu **chaqiruv kontekstidir**. Xossaga murojaat qilish ifodalari ikki qismdan iborat: obyekt (bu yerda `o`) va xossa nomi (`m`). Bunga o'xshash metod chaqiruvi ifodasida, `o` obyekti chaqiruv kontekstiga aylanadi va funksiya tanasi o'sha obyektga `this` kalit so'zi yordamida murojaat qilishi mumkin. Quyida aniq bir misol keltirilgan:
+
+``` js
+let calculator = { // Obyekt literali
+    operand1: 1,
+    operand2: 1,
+    add() {     // Bu funksiya uchun metodning qisqa sintaksisidan foydalanyapmiz.
+                // O'rab turuvchi obyektga murojaat qilish uchun `this` kalit so'zining ishlatilishiga e'tibor bering.
+        this.result = this.operand1 + this.operand2;
+    }
+};
+calculator.add(); // 1+1 ni hisoblash uchun metod chaqiruvi.
+calculator.result // => 2
+```
+
+Ko'pgina metod chaqiruvlari xossaga murojaat qilish uchun nuqta yozuvidan foydalanadi, lekin kvadrat qavslardan foydalanadigan xossaga murojaat qilish ifodalari ham metod chaqiruviga sabab bo'ladi. Masalan, quyidagilarning ikkalasi ham metod chaqiruvidir:
+
+``` js
+o["m"](x,y); // `o.m(x,y)`ni yozishning boshqa bir usuli.
+a[0](z)      // Bu ham metod chaqiruvi (`a[0]` funksiya deb faraz qilsak).
+```
+
+Metod chaqiruvlari yanada murakkabroq xossaga murojaat qilish ifodalarini ham o'z ichiga olishi mumkin:
+
+``` js
+customer.surname.toUpperCase(); // `customer.surname`da metod chaqirish
+f().m();                        // `f()`ning qaytargan qiymatida `m()` metodini chaqirish
+```
+
+Metodlar va `this` kalit so'zi obyektga yo'naltirilgan dasturlash paradigmasining markazida turadi. Metod sifatida ishlatiladigan har qanday funksiyaga aslida zimdan (`implicitly`) bitta argument uzatiladi — bu u orqali chaqirilayotgan obyekt. Odatda, metod o'sha obyekt ustida qandaydir amal bajaradi va metod chaqiruvi sintaksisi funksiya biror obyekt ustida ishlayotgani faktini ifodalashning nafis usulidir. Quyidagi ikki qatorni solishtiring:
+
+``` js
+rect.setSize(width, height);
+setRectSize(rect, width, height);
+```
+
+Ushbu ikki kod qatorida chaqirilayotgan faraziy funksiyalar `rect` obyekti ustida aynan bir xil amalni bajarishi mumkin, lekin birinchi qatordagi metod chaqiruvi sintaksisi amalning asosiy diqqat markazida aynan `rect` obyekti turgani g'oyasini ancha aniqroq ko'rsatib turibdi.
+
+<Callout>
+### Metodlar zanjiri
+
+Metodlar obyekt qaytarganda, bir metod chaqiruvining qaytargan qiymatini keyingi chaqiruvning bir qismi sifatida ishlatishingiz mumkin. Bu bitta ifoda sifatida metod chaqiruvlarining ketma-ketligini (yoki "zanjirini") hosil qiladi. Masalan, `Promise`'larga asoslangan asinxron amallar (13-bobga qarang) bilan ishlayotganda, quyidagi kabi tuzilgan kodni yozish keng tarqalgan:
+
+``` js
+// Uchta asinxron amalni ketma-ket ishga tushirish, xatoliklarni qayta ishlash.
+doStepOne().then(doStepTwo).then(doStepThree).catch(handleErrors);
+```
+
+O'zining shaxsiy qaytaradigan qiymatiga ega bo'lmagan metod yozayotganingizda, metodning `this`'ni qaytarishini ko'rib chiqing. Agar siz buni butun API'ngizda izchil qilsangiz, **metodlar zanjiri (`method chaining`)** [^1] deb nomlanuvchi dasturlash uslubini yoqib qo'ygan bo'lasiz. Bunda obyekt bir marta nomlanadi va so'ngra unga bir nechta metodlar chaqirilishi mumkin:
+
+``` js
+new Square().x(100).y(100).size(50).outline("red").fill("blue").draw();
+```
+</Callout>
+
+E'tibor bering, `this` — bu kalit so'z, o'zgaruvchi yoki xossa nomi emas. JavaScript sintaksisi `this`'ga qiymat tayinlashga ruxsat bermaydi.
+
+`this` kalit so'zi o'zgaruvchilar kabi ko'rinish doirasiga (`scope`) ega emas va strelkali funksiyalardan tashqari, ichma-ich joylashgan funksiyalar o'zlarini o'rab turgan funksiyaning `this` qiymatini meros qilib olmaydi. Agar ichma-ich joylashgan funksiya metod sifatida chaqirilsa, uning `this` qiymati u chaqirilgan obyekt bo'ladi. Agar ichma-ich joylashgan funksiya (strelkali funksiya bo'lmagan) funksiya sifatida chaqirilsa, u holda uning `this` qiymati yo global obyekt (qat'iy bo'lmagan rejimda), yo `undefined` (qat'iy rejimda) bo'ladi.
+
+Metod ichida ta'riflangan va funksiya sifatida chaqirilgan ichki funksiya metodning chaqiruv kontekstini olish uchun `this`'dan foydalana oladi deb o'ylash keng tarqalgan xatodir. Quyidagi kod bu muammoni namoyish etadi:
+
+``` js
+let o = {                 // `o` obyekti.
+    m: function() {       // Obyektning `m` metodi.
+        let self = this;  // "this" qiymatini o'zgaruvchida saqlab olamiz.
+        this === o        // => true: "this" bu `o` obyekti.
+        f();              // Endi yordamchi `f()` funksiyasini chaqiramiz.
+
+        function f() {    // `f` ichki funksiyasi
+            this === o    // => false: "this" global yoki `undefined`
+            self === o    // => true: `self` bu tashqi "this" qiymati.
+        }
+    }
+};
+o.m(); // `o` obyektida `m` metodini chaqiramiz.
+```
+
+Ichki `f()` funksiyasi ichida `this` kalit so'zi `o` obyektiga teng emas. Bu ko'pchilik tomonidan JavaScript tilining kamchiligi deb hisoblanadi va bundan xabardor bo'lish muhimdir. Yuqoridagi kod bu muammoni chetlab o'tishning keng tarqalgan bir usulini ko'rsatadi. `m` metodi ichida biz `this` qiymatini `self` o'zgaruvchisiga tayinlaymiz va ichki `f` funksiyasi ichida o'rab turuvchi obyektga murojaat qilish uchun `this` o'rniga `self`'dan foydalanishimiz mumkin.
+
+ES6 va undan keyingi versiyalarda bu muammoning yana bir yechimi — bu ichki `f` funksiyasini `this` qiymatini to'g'ri meros qilib oladigan strelkali funksiyaga aylantirishdir:
+
+``` js
+const f = () => {
+    this === o // true, chunki strelkali funksiyalar `this`ni meros qilib oladi
+};
+```
+
+Ko'rsatmalar o'rniga ifodalar sifatida ta'riflangan funksiyalar "ko'tarilmaydi" (`not hoisted`), shuning uchun bu kod ishlashi uchun `f` funksiyasining ta'rifi `m` metodi ichida u chaqirilishidan oldin keladigan qilib ko'chirilishi kerak bo'ladi.
+
+Yana bir yechim — bu ichki funksiyaning `bind()` metodini chaqirib, belgilangan obyektda zimdan (`implicitly`) chaqiriladigan yangi funksiyani ta'riflashdir:
+
+``` js
+const f = (function() {
+    this === o // true, chunki biz bu funksiyani tashqi `this`ga bog'ladik
+}.bind(this);
+```
+
+Biz `bind()` haqida §8.7.5-bo'limda batafsilroq gaplashamiz.
+
+[^1]: Bu atama Martin Fowler tomonidan kiritilgan. Qarang: http://martinfowler.com/dslCatalog/methodChaining.html.
+
+## Konstruktor chaqiruvi
+
+Agar funksiya yoki metod chaqiruvi oldidan `new` kalit so'zi kelsa, u holda bu **konstruktor chaqiruvidir**. (Konstruktor chaqiruvlari §4.6 va §6.2.2-bo'limlarda tanishtirilgan edi va konstruktorlar 9-bobda yanada batafsil yoritiladi.) Konstruktor chaqiruvlari oddiy funksiya va metod chaqiruvlaridan argumentlarni qayta ishlashi, chaqiruv konteksti va qaytariladigan qiymati bilan farq qiladi.
+
+Agar konstruktor chaqiruvi qavslar ichida argumentlar ro'yxatini o'z ichiga olsa, bu argument ifodalari xuddi funksiya va metod chaqiruvlaridagidek baholanadi va funksiyaga uzatiladi. Bu keng tarqalgan amaliyot emas, lekin siz konstruktor chaqiruvida bo'sh qavslar juftligini tushirib qoldirishingiz mumkin. Masalan, quyidagi ikki qator ekvivalentdir:
+
+``` js
+o = new Object();
+o = new Object;
+```
+
+Konstruktor chaqiruvi konstruktorning `prototype` xossasi bilan belgilangan obyektdan meros oladigan yangi, bo'sh obyekt yaratadi. Konstruktor funksiyalari obyektlarni initsializatsiya qilish uchun mo'ljallangan va aynan shu yangi yaratilgan obyekt chaqiruv konteksti sifatida ishlatiladi. Shunday qilib, konstruktor funksiyasi unga `this` kalit so'zi orqali murojaat qilishi mumkin. E'tibor bering, yangi obyekt chaqiruv konteksti sifatida ishlatiladi, hatto konstruktor chaqiruvi metod chaqiruviga o'xshab ko'rinsa ham. Ya'ni, `new o.m()` ifodasida `o` chaqiruv konteksti sifatida ishlatilmaydi.
+
+Konstruktor funksiyalari odatda `return` kalit so'zidan foydalanmaydi. Ular odatda yangi obyektni initsializatsiya qiladi va so'ngra o'z tanasining oxiriga yetganda zimdan (`implicitly`) qaytadi. Bu holda, yangi obyekt konstruktor chaqiruvi ifodasining qiymati bo'ladi.
+
+Biroq agar konstruktor obyekt qaytarish uchun `return` ko'rsatmasidan aniq foydalansa, u holda o'sha obyekt chaqiruv ifodasining qiymatiga aylanadi. Agar konstruktor `return`'ni qiymatsiz ishlatsa yoki u primitiv qiymat qaytarsa, bu qaytarilgan qiymat e'tiborsiz qoldiriladi va yangi obyekt chaqiruvning qiymati sifatida ishlatiladi.
+
+## Bilvosita chaqiruv
+
+JavaScript funksiyalari — bu obyektlardir va barcha JavaScript obyektlari singari, ularning ham metodlari bor. Bu metodlardan ikkitasi, `call()` va `apply()`, funksiyani **bilvosita** chaqiradi.
+
+Ikkala metod ham chaqiruv uchun `this` qiymatini aniq ko'rsatish imkonini beradi. Bu shuni anglatadiki, siz har qanday funksiyani har qanday obyektning metodi sifatida chaqirishingiz mumkin, hatto u aslida o'sha obyektning metodi bo'lmasa ham. Ikkala metod, shuningdek, chaqiruv uchun argumentlarni belgilashga ham imkon beradi. `call()` metodi o'zining shaxsiy argumentlar ro'yxatini funksiyaga argument sifatida ishlatadi, `apply()` metodi esa argument sifatida ishlatilishi kerak bo'lgan qiymatlar massivini kutadi.
+
+`call()` va `apply()` metodlari §8.7.4-bo'limda batafsil yoritilgan.
+
+## Zimdan (`implicit`) funksiya chaqiruvi
+
+JavaScript tilida funksiya chaqiruviga o'xshamaydigan, lekin funksiyalarning chaqirilishiga sabab bo'ladigan turli xil xususiyatlar mavjud. Zimdan chaqirilishi mumkin bo'lgan funksiyalarni yozayotganda yanada ehtiyotkorroq bo'ling, chunki bu funksiyalardagi xatoliklar, qo'shimcha ta'sirlar va ishlash samaradorligi muammolarini tashxislash va tuzatish oddiy funksiyalarga qaraganda qiyinroq. Buning sababi oddiy: kodingizga shunchaki ko'z yugurtirish orqali ularning qachon chaqirilayotganini anglash oson bo'lmasligi mumkin.
+
+Zimdan funksiya chaqiruviga sabab bo'lishi mumkin bo'lgan til xususiyatlariga quyidagilar kiradi:
+
+*   Agar obyektda _getter_ yoki _setter_'lar ta'riflangan bo'lsa, uning xossalarining qiymatini so'rash yoki o'rnatish o'sha metodlarni chaqirishi mumkin. Qo'shimcha ma'lumot uchun §6.10.6-bo'limga qarang.
+
+*   Obyekt satrli kontekstda ishlatilganda (masalan, u satr bilan birlashtirilganda), uning `toString()` metodi chaqiriladi. Xuddi shunday, obyekt sonli kontekstda ishlatilganda, uning `valueOf()` metodi chaqiriladi. Tafsilotlar uchun §3.9.3-bo'limga qarang.
+
+*   Iteratsiya qilinadigan (`iterable`) obyektning elementlari bo'ylab sikl qilganingizda, bir qator metod chaqiruvlari sodir bo'ladi. 12-bob iteratorlar funksiya chaqiruvi darajasida qanday ishlashini tushuntiradi va siz o'zingizning shaxsiy iteratsiya qilinadigan tiplaringizni ta'riflay olishingiz uchun bu metodlarni qanday yozishni namoyon etadi.
+
+*   **Teglangan shablon literali** — bu niqoblangan funksiya chaqiruvidir. §14.5-bo'lim shablon literali satrlari bilan birgalikda ishlatilishi mumkin bo'lgan funksiyalarni qanday yozishni ifodalab beradi.
+
+*   **Proksi (`Proxy`)** obyektlarining (§14.7-bo'limda tasvirlangan) xatti-harakati butunlay funksiyalar tomonidan boshqariladi. Bu obyektlar ustidagi deyarli har qanday amal funksiyaning chaqirilishiga sabab bo'ladi.
