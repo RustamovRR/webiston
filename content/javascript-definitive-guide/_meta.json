@@ -328,6 +328,10 @@
       "8.2-invoking-functions": {
         "title": "8.2. Funksiyalarni chaqirish",
         "path": "8-functions/8.2-invoking-functions/page"
+      },
+      "8.3-function-arguments-and-parameters": {
+        "title": "8.3. Funksiya argumentlari va parametrlari",
+        "path": "8-functions/8.3-function-arguments-and-parameters/page"
       }
     }
   }
