@@ -336,6 +336,10 @@
       "8.4-functions-as-values": {
         "title": "8.4. Funksiyalar qiymatlar sifatida",
         "path": "8-functions/8.4-functions-as-values/page"
+      },
+      "8.5-functions-as-namespaces": {
+        "title": "8.5. Funksiyalar nomlar fazosi (namespace) sifatida",
+        "path": "8-functions/8.5-functions-as-namespaces/page"
       }
     }
   }
