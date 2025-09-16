@@ -1,4 +1,8 @@
 {
+  "preface": {
+    "title": "So'zboshi",
+    "path": "preface/page"
+  },
   "entry-level-stuff": {
     "title": "React asoslari",
     "path": "entry-level-stuff/page",
