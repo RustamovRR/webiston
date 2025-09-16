@@ -1,0 +1,153 @@
+---
+title: "Funksiya xossalari, metodlari va konstruktori"
+description: "JavaScript funksiyalarining length, name, prototype xossalari; call/apply/bind metodlari; Function() konstruktori va toString() metodi. this konteksti va amaliy foydalanishlar."
+keywords: JavaScript, function properties, function methods, length, name, prototype, call, apply, bind, toString, Function constructor, this konteksti, metodlarni o'rash, trace, partial application, currying
+author: Webiston.uz
+---
+
+# Funksiya xossalari, metodlari va konstruktori
+
+Biz funksiyalarning JavaScript dasturlarida qiymatlar ekanligini ko'rdik. `typeof` operatori funksiyaga qo'llanilganda "function" satrini qaytarsa-da, funksiyalar aslida JavaScript obyektining ixtisoslashgan bir turidir. Funksiyalar obyekt bo'lgani uchun, ular ham xuddi boshqa har qanday obyekt kabi xossalar va metodlarga ega bo'lishi mumkin. Hatto yangi funksiya obyektlarini yaratish uchun `Function()` konstruktori ham mavjud.
+
+Keyingi quyi mavzularda `length`, `name` va `prototype` xossalarini; `call()`, `apply()`, `bind()` va `toString()` metodlarini; hamda `Function()` konstruktorini yoritib beramiz.
+
+## `length` xossasi
+
+Funksiyaning faqat o'qish uchun mo'ljallangan `length` xossasi funksiyaning **aritetini** — ya'ni, uning parametrlar ro'yxatida e'lon qilingan parametrlar sonini — belgilaydi. Bu odatda funksiya kutadigan argumentlar sonidir. Agar funksiya qolgan parametrga (`rest parameter`) ega bo'lsa, bu parametr `length` xossasi maqsadlari uchun hisobga olinmaydi.
+
+## `name` xossasi
+
+Funksiyaning faqat o'qish uchun mo'ljallangan `name` xossasi, agar funksiya nom bilan yaratilgan bo'lsa, o'sha nomni ko'rsatadi. Agar u nomsiz funksiya ifodasi bo'lsa, u birinchi marta yaratilganda tayinlangan o'zgaruvchi yoki xossa nomini ko'rsatadi. Bu xossa asosan nosozliklarni tuzatish (`debugging`) yoki xato xabarlarini yozishda foydalidir.
+
+## `prototype` xossasi
+
+Strelkali funksiyalardan tashqari barcha funksiyalar **prototip obyekti** deb nomlanuvchi obyektga ishora qiluvchi `prototype` xossasiga ega. Har bir funksiyaning prototip obyekti turlicha bo'ladi. Funksiya konstruktor sifatida ishlatilganda, yangi yaratilgan obyekt xossalarni aynan shu prototip obyektidan meros qilib oladi. Prototiplar va `prototype` xossasi §6.2.3-bo'limda muhokama qilingan edi va 9-bobda yana ko'rib chiqiladi.
+
+## `call()` va `apply()` metodlari
+
+`call()` va `apply()` metodlari funksiyani (§8.2.4) xuddi u boshqa biror obyektning metodi kabi **bilvosita** chaqirish imkonini beradi.
+
+Ham `call()`, ham `apply()`'ning birinchi argumenti — bu funksiya chaqirilishi kerak bo'lgan obyekt; bu argument chaqiruv konteksti bo'ladi va funksiya tanasi ichidagi `this` kalit so'zining qiymatiga aylanadi. `f()` funksiyasini `o` obyektining metodi sifatida (hech qanday argument uzatmasdan) chaqirish uchun siz `call()` yoki `apply()`'dan foydalanishingiz mumkin:
+
+``` js
+f.call(o);
+f.apply(o);
+```
+
+Bu kod qatorlarining ikkalasi ham quyidagiga o'xshaydi (bunda `o`'da `m` nomli xossa allaqachon mavjud emas deb faraz qilinadi):
+
+``` js
+o.m = f;      // `f`ni `o`ning vaqtinchalik metodiga aylantiramiz.
+o.m();        // Uni chaqiramiz, hech qanday argument uzatmasdan.
+delete o.m;   // Vaqtinchalik metodni olib tashlaymiz.
+```
+
+Eslatib o'tamiz, strelkali funksiyalar o'zlari yaratilgan kontekstning `this` qiymatini meros qilib oladi. Buni `call()` va `apply()` metodlari bilan qayta yozib bo'lmaydi. Agar siz bu metodlardan birortasini strelkali funksiyada chaqirsangiz, birinchi argument amalda e'tiborsiz qoldiriladi.
+
+`call()`'ning birinchi chaqiruv konteksti argumentidan keyingi har qanday argumentlari chaqirilayotgan funksiyaga uzatiladigan qiymatlardir (va bu argumentlar strelkali funksiyalar uchun e'tiborsiz qoldirilmaydi). Masalan, `f()` funksiyasiga ikkita son uzatish va uni `o` obyektining metodi kabi chaqirish uchun quyidagi kabi koddan foydalanish mumkin:
+
+``` js
+f.call(o, 1, 2);
+```
+
+`apply()` metodi `call()` metodiga o'xshaydi, faqat funksiyaga uzatilishi kerak bo'lgan argumentlar massiv sifatida ko'rsatiladi:
+
+``` js
+f.apply(o, [1,2]);
+```
+
+Agar funksiya ixtiyoriy miqdordagi argumentlarni qabul qilish uchun yaratilgan bo'lsa, `apply()` metodi o'sha funksiyani ixtiyoriy uzunlikdagi massivning tarkibi bilan chaqirish imkonini beradi. ES6 va undan keyingi versiyalarda biz shunchaki yoyish (`spread`) operatoridan foydalanishimiz mumkin, lekin siz buning o'rniga `apply()`'dan foydalanadigan ES5 kodiga duch kelishingiz mumkin. Masalan, sonlar massividagi eng katta sonni yoyish operatorisiz topish uchun, massiv elementlarini `Math.max()` funksiyasiga uzatishda `apply()` metodidan foydalanishingiz mumkin:
+
+``` js
+let biggest = Math.max.apply(Math, arrayOfNumbers);
+```
+
+Quyida ta'riflangan `trace()` funksiyasi §8.3.4-bo'limda keltirilgan `timed()` funksiyasiga o'xshaydi, lekin u funksiyalar o'rniga metodlar uchun ishlaydi. U yoyish operatori o'rniga `apply()` metodidan foydalanadi va shu orqali u o'ralgan metodni o'rovchi metod bilan bir xil argumentlar va bir xil `this` qiymati bilan chaqira oladi:
+
+``` js
+// `o` obyektining `m` nomli metodini asl metodni chaqirishdan oldin va keyin
+// xabarlarni log qiladigan versiya bilan almashtirish.
+function trace(o, m) {
+    let original = o[m];        // Asl metodni `closure`da saqlab qolamiz.
+    o[m] = function(...args) {  // Endi yangi metodni qo'shamiz.
+        console.log(new Date(), "Kirilmoqda:", m);  // Xabarni log qilamiz.
+        let result = original.apply(this, args);    // Asl nusxani chaqiramiz.
+        console.log(new Date(), "Chiqilmoqda:", m); // Xabarni log qilamiz.
+        return result;                              // Natijani qaytaramiz.
+    };
+}
+```
+
+## `bind()` metodi
+
+`bind()`'ning asosiy vazifasi — bu funksiyani obyektga **bog'lashdir**. Siz `f` funksiyasida `bind()` metodini chaqirib, unga `o` obyektini uzatganingizda, metod yangi funksiya qaytaradi. Bu yangi funksiyani (oddiy funksiya sifatida) chaqirish asl `f` funksiyasini `o`'ning metodi sifatida chaqiradi. Siz yangi funksiyaga uzatgan har qanday argumentlar asl funksiyaga uzatiladi. Masalan:
+
+``` js
+function f(y) { return this.x + y; }    // Bu funksiyani bog'lash kerak
+let o = { x: 1 };                       // Bog'lamoqchi bo'lgan obyektimiz
+let g = f.bind(o);                      // `g(x)`ni chaqirish `f()`ni `o`da chaqiradi
+g(2)                                    // => 3
+let p = { x: 10, g };                   // `g()`ni bu obyektning metodi sifatida chaqirish
+p.g(2)                                  // => 3: `g` metodi `p`ga emas, hali ham `o`ga bog'langan.
+```
+
+Strelkali funksiyalar o'zlarining `this` qiymatini o'zlari yaratilgan muhitdan meros qilib oladi va bu qiymatni `bind()` bilan qayta yozib bo'lmaydi. Shuning uchun, agar oldingi koddagi `f()` funksiyasi strelkali funksiya sifatida yaratilgan bo'lganida, bog'lash ishlamas edi. Biroq `bind()`'ni chaqirishning eng keng tarqalgan holati — bu strelkali bo'lmagan funksiyalarni strelkali funksiyalardek tutishiga majbur qilishdir, shuning uchun strelkali funksiyalarni bog'lashdagi bu cheklov amalda muammo emas.
+
+### Qisman qo'llash (`partial application`)
+
+Biroq `bind()` metodi shunchaki funksiyani obyektga bog'lashdan ko'proq ish amalga oshiradi. U, shuningdek, **qisman qo'llash (`partial application`)**'ni ham amalga oshirishi mumkin: siz `bind()`'ga birinchisidan keyin uzatgan har qanday argumentlar `this` qiymati bilan birga bog'lanadi. `bind()`'ning bu qisman qo'llash xususiyati strelkali funksiyalar bilan ishlaydi. Qisman qo'llash — bu funksional dasturlashda keng tarqalgan usul bo'lib, ba'zan **"currying"** deb ham ataladi. Quyida `bind()` metodining qisman qo'llash uchun ishlatilishiga doir bir nechta misollar keltirilgan:
+
+``` js
+let sum = (x,y) => x + y;       // 2 ta argument yig'indisini qaytarish
+let succ = sum.bind(null, 1);   // Birinchi argumentni 1 ga bog'lash
+succ(2)                         // => 3: `x` 1 ga bog'langan, va biz `y` argumenti uchun 2 ni uzatdik
+
+function f(y,z) { return this.x + y + z; }
+let g = f.bind({x: 1}, 2);      // `this` va `y`ni bog'lash
+g(3)                            // => 6: `this.x` 1 ga, `y` 2 ga bog'langan va `z` 3 ga teng
+```
+
+`bind()` tomonidan qaytarilgan funksiyaning `name` xossasi `bind()` chaqirilgan funksiyaning `name` xossasi bo'lib, uning oldiga "bound" so'zi qo'shilgan bo'ladi.
+
+## `toString()` metodi
+
+Barcha JavaScript obyektlari singari, funksiyalarning ham `toString()` metodi mavjud. ECMAScript spetsifikatsiyasi bu metoddan funksiya e'lon qilish ko'rsatmasi sintaksisiga mos keladigan satr qaytarishni talab qiladi. Amalda, bu `toString()` metodining ko'pgina (lekin hammasi emas) implementatsiyalari funksiyaning to'liq manba kodini qaytaradi. Ichki o'rnatilgan funksiyalar esa odatda funksiya tanasi sifatida "[native code]" kabi yozuvni o'z ichiga olgan satr qaytaradi.
+
+## `Function()` konstruktori
+
+Funksiyalar obyekt bo'lganligi tufayli, yangi funksiyalar yaratishda ishlatilishi mumkin bo'lgan `Function()` konstruktori mavjud:
+
+``` js
+const f = new Function("x", "y", "return x*y;");
+```
+
+Bu kod qatori bizga tanish bo'lgan sintaksis bilan yaratilgan funksiyaga deyarli ekvivalent bo'lgan yangi funksiya yaratadi:
+
+``` js
+const f = function(x, y) { return x*y; };
+```
+
+`Function()` konstruktori istalgancha satr argumentlarini kutadi. Oxirgi argument — bu funksiya tanasining matnidir; u o'z ichiga bir-biridan nuqtali vergul bilan ajratilgan ixtiyoriy JavaScript ko'rsatmalarini olishi mumkin. Konstruktorga berilgan boshqa barcha argumentlar funksiya uchun parametr nomlarini belgilaydigan satrlardir. Agar siz hech qanday argument qabul qilmaydigan funksiya yaratayotgan bo'lsangiz, konstruktorga shunchaki bitta satr — funksiya tanasini — uzatasiz.
+
+E'tibor bering, `Function()` konstruktoriga u yaratayotgan funksiya uchun nomni belgilaydigan hech qanday argument uzatilmaydi. Funksiya literallari kabi, `Function()` konstruktori ham **anonim** funksiyalar yaratadi.
+
+`Function()` konstruktori haqida tushunish muhim bo'lgan bir nechta nuqta bor:
+
+- `Function()` konstruktori JavaScript funksiyalarini `runtime`'da dinamik ravishda yaratish va kompilyatsiya qilish imkonini beradi.
+
+- `Function()` konstruktori har safar chaqirilganda funksiya tanasini tahlil qiladi va yangi funksiya obyekti yaratadi. Agar konstruktor chaqiruvi sikl ichida yoki tez-tez chaqiriladigan funksiya ichida kelsa, bu jarayon samarasiz bo'lishi mumkin. Aksincha, sikllar ichida keladigan ichma-ich joylashgan funksiyalar va funksiya ifodalari har safar uchraganda qayta kompilyatsiya qilinmaydi.
+
+- `Function()` konstruktori haqidagi oxirgi, juda muhim nuqta shundaki, u yaratgan funksiyalar leksik ko'rinish doirasidan (`lexical scoping`) foydalanmaydi; buning o'rniga, ular har doim xuddi eng yuqori darajadagi funksiyalar kabi kompilyatsiya qilinadi. Buni quyidagi kod tasvirlab beradi:
+
+``` js
+let scope = "global";
+function constructFunction() {
+    let scope = "local";
+    return new Function("return scope"); // Lokal ko'rinish doirasini "qo'lga olmaydi"!
+}
+// Bu qator "global" qaytaradi, chunki `Function()` konstruktori
+// tomonidan qaytarilgan funksiya lokal ko'rinish doirasidan foydalanmaydi.
+constructFunction()() // => "global"
+```
+
+`Function()` konstruktorini o'zining shaxsiy ko'rinish doirasida yangi o'zgaruvchilar va funksiyalar yaratadigan, global ko'rinish doirasiga ega `eval()`'ning (§4.12.2) bir versiyasi deb tasavvur qilgan ma'qul. Sizga, ehtimol, kodingizda bu konstruktordan foydalanishga hech qachon hojat bo'lmasligi mumkin.

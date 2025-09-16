@@ -1,0 +1,35 @@
+---
+title: "Funksiyalar nomlar fazosi (namespace) sifatida"
+description: "Global nomlar fazosini ifloslantirmaslik uchun funksiyalardan vaqtinchalik namespace sifatida foydalanish: IIFE (Immediately Invoked Function Expression), lokal scope va amaliy naqshlar."
+keywords: JavaScript, namespace, nomlar fazosi, IIFE, immediately invoked function expression, local scope, global scope, scope isolation, closure, module pattern
+author: Webiston.uz
+---
+
+# Funksiyalar nomlar fazosi (`namespace`) sifatida
+
+Funksiya ichida e'lon qilingan o'zgaruvchilar funksiya tashqarisida "ko'rinmaydi". Aynan shu sababli, ba'zan global nomlar fazosini ortiqcha o'zgaruvchilar bilan "ifloslantirmasdan" ishlash uchun funksiyadan shunchaki vaqtinchalik **nomlar fazosi** sifatida foydalanish maqsadga muvofiq bo'ladi.
+
+Tasavvur qiling, sizda bir nechta turli JavaScript dasturlarida (yoki klient tomonidagi JavaScript uchun, bir nechta turli veb-sahifalarda) ishlatmoqchi bo'lgan bir kod qismi bor. Faraz qilaylik, bu kod, ko'plab kodlar kabi, o'z hisob-kitoblarining oraliq natijalarini saqlash uchun o'zgaruvchilar yaratadi. Muammo shundaki, bu kod qismi ko'plab turli dasturlarda ishlatilishi sababli, u yaratadigan o'zgaruvchilar uni ishlatadigan dasturlar tomonidan yaratilgan o'zgaruvchilar bilan ziddiyatga (`conflict`) kirishish-kirishmasligini bilmaysiz.
+
+Yechim — bu kod qismini funksiya ichiga joylashtirish va so'ngra o'sha funksiyani chaqirishdir. Bu usulda, global bo'lishi mumkin bo'lgan o'zgaruvchilar funksiya uchun lokal bo'lib qoladi:
+
+``` js
+function chunkNamespace() {
+    // Kod qismi shu yerga joylashadi
+    // Bu qismda yaratilgan har qanday o'zgaruvchi global nomlar fazosini
+    // "ifloslantirish" o'rniga, shu funksiya uchun lokal bo'lib qoladi.
+}
+chunkNamespace(); // Lekin funksiyani chaqirishni unutmang!
+```
+
+Bu kod faqat bitta global o'zgaruvchini hosil qiladi: `chunkNamespace` funksiya nomini. Agar hatto bitta nom yaratish ham ko'plik qilsa, anonim funksiyani bitta ifodada ham yaratib, ham chaqirib ketishingiz mumkin:
+
+``` js
+(function() { // `chunkNamespace()` funksiyasi anonim ifoda sifatida qayta yozildi.
+    // Kod qismi shu yerga joylashadi
+}()); // Funksiya literalini yakunlang va uni hoziroq chaqiring.
+```
+
+Funksiyani bitta ifodada yaratish va chaqirishning bu usuli shunchalik ko'p ishlatiladiki, u idiomatik holatga kelgan va unga **"darhol chaqiriladigan funksiya ifodasi" (`immediately invoked function expression` yoki `IIFE`)** nomi berilgan. Oldingi kod misolidagi qavslarning ishlatilishiga e'tibor bering. `function`'dan oldingi ochuvchi qavs majburiydir, chunki u bo'lmasa, JavaScript interpretatori `function` kalit so'zini funksiya e'lon qilish ko'rsatmasi sifatida tahlil qilishga harakat qiladi. Qavs bilan esa, interpretator buni to'g'ri, funksiya ta'rifi ifodasi sifatida taniydi. Boshidagi qavs, shuningdek, bu funksiyani o'qiydigan inson uchun ham funksiya keyinroq ishlatish uchun emas, balki darhol chaqirilish uchun yaratilayotganini anglashga yordam beradi.
+
+Funksiyalardan nomlar fazosi sifatida foydalanish, biz nomlar fazosi funksiyasi ichida o'sha fazodagi o'zgaruvchilardan foydalangan holda bir yoki bir nechta funksiya yaratib, so'ngra ularni nomlar fazosi funksiyasining qaytariladigan qiymati sifatida tashqariga uzatganimizda, haqiqatan ham o'zining to'liq qudratini namoyon etadi. Bunday funksiyalar **`closure`**'lar deb nomlanadi va ular keyingi bo'limning mavzusidir.

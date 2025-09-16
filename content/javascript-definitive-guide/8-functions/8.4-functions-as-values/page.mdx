@@ -1,0 +1,129 @@
+---
+title: "Funksiyalar qiymatlar sifatida"
+description: "JavaScript funksiyalarini qiymat sifatida ishlatish: o'zgaruvchilarga tayinlash, obyekt xossalari (metodlar), massiv elementlari, funksiyani argument sifatida uzatish va qaytarish. Amaliy misollar va naqshlar."
+keywords: JavaScript, funksiya qiymat, functions as values, higher-order functions, method, obyekt xossasi, array of functions, callback, first-class functions, sort comparator, closure, functional patterns
+author: Webiston.uz
+---
+
+# Funksiyalar qiymatlar sifatida
+
+Funksiyalarning eng muhim xususiyatlari — bu ularni ta'riflash va chaqirish mumkinligidir. Funksiyani ta'riflash va chaqirish JavaScript hamda boshqa ko'pgina dasturlash tillarining sintaktik xususiyatlaridir. Biroq JavaScript'da funksiyalar nafaqat sintaksis, balki ayni paytda **qiymatlar** hamdir. Bu shuni anglatadiki, ularni o'zgaruvchilarga tayinlash, obyektlarning xossalarida yoki massivlarning elementlarida saqlash, funksiyalarga argument sifatida uzatish va hokazolar mumkin.[^3]
+
+Funksiyalar qanday qilib JavaScript sintaksisi bo'lish bilan birga JavaScript ma'lumoti ham bo'lishi mumkinligini tushunish uchun ushbu funksiya ta'rifini ko'rib chiqamiz:
+
+``` js
+function square(x) { return x*x; }
+```
+
+Bu ta'rif yangi funksiya obyektini yaratadi va uni `square` o'zgaruvchisiga tayinlaydi. Funksiyaning nomi aslida unchalik muhim emas; u shunchaki funksiya obyektiga ishora qiluvchi o'zgaruvchining nomidir. Funksiyani boshqa o'zgaruvchiga tayinlash mumkin va u baribir o'sha tarzda ishlayveradi:
+
+``` js
+let s = square; // Endi `s` o'zgaruvchisi `square` ishora qilayotgan o'sha funksiyaga ishora qiladi
+square(4)       // => 16
+s(4)            // => 16
+```
+
+Funksiyalarni o'zgaruvchilarga emas, balki obyekt xossalariga ham tayinlash mumkin. Biz allaqachon muhokama qilganimizdek, bunday qilganimizda biz funksiyalarni "metodlar" deb ataymiz:
+
+``` js
+let o = {square: function(x) { return x*x; }}; // Obyekt literali
+let y = o.square(16);                          // y == 256
+```
+
+Funksiyalar, masalan, massiv elementlariga tayinlanganda, umuman nom talab qilmasligi ham mumkin:
+
+``` js
+let a = [x => x*x, 20]; // Massiv literali
+a[0](a[1])              // => 400
+```
+
+Bu oxirgi misolning sintaksisi g'alati ko'rinishi mumkin, lekin u baribir to'g'ri funksiya chaqiruvi ifodasidir!
+
+Funksiyalarga qiymat sifatida qarash qanchalik foydali ekanligiga misol sifatida `Array.sort()` metodini ko'rib chiqaylik. Bu metod massiv elementlarini saralaydi. Saralash uchun juda ko'p mumkin bo'lgan tartiblar (sonli tartib, alifbo tartibi, sana tartibi, o'sish, kamayish va hokazo) mavjud bo'lgani uchun, `sort()` metodi saralashni qanday amalga oshirishni aytish uchun ixtiyoriy ravishda argument sifatida funksiya qabul qiladi. Bu funksiyaning vazifasi oddiy: unga uzatilgan har qanday ikki qiymat uchun u saralangan massivda qaysi element birinchi kelishini belgilaydigan qiymatni qaytaradi. Bu funksiya argumenti `Array.sort()`'ni mutlaqo universal va cheksiz moslashuvchan qiladi; u har qanday tipdagi ma'lumotni tasavvur qilish mumkin bo'lgan har qanday tartibda saralay oladi. Misollar §7.8.6-bo'limda ko'rsatilgan.
+
+8-1-misol funksiyalar qiymatlar sifatida ishlatilganda qanday ishlarni qilish mumkinligini ifoda etadi. Bu misol biroz murakkab bo'lishi mumkin, lekin izohlar nima bo'layotganini tushuntiradi.
+
+``` js
+// Bu yerda bir nechta oddiy funksiyalarni ta'riflaymiz
+function add(x,y) { return x + y; }
+function subtract(x,y) { return x - y; }
+function multiply(x,y) { return x * y; }
+function divide(x,y) { return x / y; }
+
+// Bu funksiya oldingi funksiyalardan birini argument sifatida
+// qabul qiladi va uni ikki operandda chaqiradi
+function operate(operator, operand1, operand2) {
+    return operator(operand1, operand2);
+}
+
+// Biz bu funksiyani (2+3) + (4*5) qiymatini hisoblash uchun shunday chaqirishimiz mumkin:
+let i = operate(add, operate(add, 2, 3), operate(multiply, 4, 5));
+
+// Misol uchun, biz oddiy funksiyalarni yana bir bor implementatsiya qilamiz,
+// bu safar obyekt literali ichida;
+const operators = {
+    add:      (x,y) => x+y,
+    subtract: (x,y) => x-y,
+    multiply: (x,y) => x*y,
+    divide:   (x,y) => x/y,
+    pow:      Math.pow  // Bu oldindan ta'riflangan funksiyalar uchun ham ishlaydi
+};
+
+// Bu funksiya operator nomini oladi, o'sha operatorni
+// obyektdan qidiradi va so'ngra uni taqdim etilgan operandlarda chaqiradi.
+// Operator funksiyasini chaqirish uchun ishlatilgan sintaksisga e'tibor bering.
+function operate2(operation, operand1, operand2) {
+    if (typeof operators[operation] === "function") {
+        return operators[operation](operand1, operand2);
+    }
+    else throw "noma'lum operator";
+}
+
+operate2("add", "hello", operate2("add", " ", "world")) // => "hello world"
+operate2("pow", 10, 2)                                  // => 100
+```
+
+<small>_8-1-misol. Funksiyalardan ma'lumot sifatida foydalanish_</small>
+
+[^3]: Agar siz funksiyalar dasturning bir qismi bo'lgan, lekin dastur tomonidan boshqarilishi mumkin bo'lmagan statikroq tillar bilan tanish bo'lmasangiz, bu unchalik qiziqarli nuqta bo'lib tuyulmasligi mumkin.
+
+## Shaxsiy funksiya xossalarini yaratish
+JavaScript'da funksiyalar primitiv qiymatlar emas, balki obyektning ixtisoslashgan bir turidir. Bu shuni anglatadiki, funksiyalar xossalarga ega bo'lishi mumkin. Biror funksiya chaqiruvdan chaqiruvga o'z qiymatini saqlab qoladigan "statik" o'zgaruvchiga ehtiyoj sezganda, ko'pincha funksiyaning o'zining xossasidan foydalanish qulay bo'ladi.
+
+Tasavvur qiling, siz har safar chaqirilganda unikal butun son qaytaradigan funksiya yozmoqchisiz. Funksiya hech qachon bir xil qiymatni ikki marta qaytarmasligi kerak. Buni boshqarish uchun funksiya o'zi allaqachon qaytargan qiymatlarni kuzatib borishi kerak va bu ma'lumot funksiya chaqiruvlari oralig'ida saqlanib qolishi lozim. Siz bu ma'lumotni global o'zgaruvchida saqlashingiz mumkin edi, lekin bunga hojat yo'q, chunki bu ma'lumot faqat funksiyaning o'zi tomonidan ishlatiladi. Ma'lumotni `Function` obyektining xossasida saqlash ancha yaxshiroqdir. 
+
+Quyida har safar chaqirilganda turli xil butun son qaytaradigan misol keltirilgan:
+
+``` js
+// Funksiya obyektining `counter` xossasini initsializatsiya qilamiz.
+// Funksiya e'lonlari "ko'tariladi" (`hoisted`), shuning uchun biz haqiqatan ham
+// bu tayinlashni funksiya e'lonidan oldin bajara olamiz.
+uniqueInteger.counter = 0;
+
+// Bu funksiya har safar chaqirilganda boshqa butun son qaytaradi.
+// U qaytarilishi kerak bo'lgan keyingi qiymatni eslab qolish uchun o'zining xossasidan foydalanadi.
+function uniqueInteger() {
+    return uniqueInteger.counter++; // `counter` xossasini qaytarish va inkrement qilish
+}
+uniqueInteger() // => 0
+uniqueInteger() // => 1
+```
+
+Yana bir misol sifatida, avval hisoblangan natijalarni keshlash uchun o'zining xossalaridan (o'ziga massiv sifatida qarab) foydalanadigan quyidagi `factorial()` funksiyasini ko'rib chiqamiz:
+
+``` js
+// Faktoriallarni hisoblash va natijalarni funksiyaning o'zining xossalarida keshlash.
+function factorial(n) {
+    if (Number.isInteger(n) && n > 0) {         // Faqat musbat butun sonlar
+        if (!(n in factorial)) {                // Agar keshda natija bo'lmasa
+            factorial[n] = n * factorial(n-1);  // Uni hisoblash va keshlash
+        }
+        return factorial[n];                    // Keshdagi natijani qaytarish
+    } else {
+        return NaN;                             // Agar kiritilgan ma'lumot yaroqsiz bo'lsa
+    }
+}
+factorial[1] = 1; // Keshni ushbu asosiy holatni saqlash uchun initsializatsiya qilamiz.
+factorial(6)      // => 720
+factorial[5]      // => 120; yuqoridagi chaqiruv bu qiymatni keshlaydi
+```

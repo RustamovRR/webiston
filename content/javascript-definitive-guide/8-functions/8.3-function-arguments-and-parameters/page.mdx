@@ -1,0 +1,298 @@
+---
+title: "Funksiya argumentlari va parametrlari"
+description: "JavaScript funksiyalarida argumentlar: ixtiyoriy parametrlar, standart qiymatlar, qolgan parametr (rest), Arguments obyekti, yoyish (spread), destrukturizatsiya va argument tiplari. Amaliy misollar bilan tushuntirish."
+keywords: JavaScript, argumentlar, parameters, params, ixtiyoriy parametrlar, optional parameters, default values, qolgan parametr, rest parameters, arguments object, spread operator, destructuring, type checking, varargs, map, reduce, performance
+author: Webiston.uz
+---
+
+# Funksiya argumentlari va parametrlari
+
+JavaScript funksiya ta'riflari funksiya parametrlari uchun kutilayotgan tipni belgilamaydi va funksiya chaqiruvlari siz uzatgan argument qiymatlarida hech qanday tip tekshiruvini amalga oshirmaydi. Aslida, JavaScript funksiya chaqiruvlari hatto uzatilayotgan argumentlar sonini ham tekshirmaydi. Keyingi quyi bo'limlar funksiya e'lon qilingan parametrlardan kamroq argumentlar bilan yoki e'lon qilingan parametrlardan ko'proq argumentlar bilan chaqirilganda nima sodir bo'lishini tasvirlaydi. Ular, shuningdek, agar funksiya nomaqbul argumentlar bilan chaqirilmasligiga ishonch hosil qilishingiz kerak bo'lsa, funksiya argumentlarining tipini qanday qilib aniq tekshirishingiz mumkinligini namoyish etadi.
+
+## Ixtiyoriy parametrlar va standart qiymatlar
+
+Funksiya e'lon qilingan parametrlardan kamroq argumentlar bilan chaqirilganda, qo'shimcha parametrlarga ularning standart qiymati o'rnatiladi, bu odatda `undefined` bo'ladi. Ko'pincha funksiyalarning ba'zi argumentlarini ixtiyoriy bo'ladigan qilib yozish foydalidir. Quyida misol keltirilgan:
+
+``` js
+// `o` obyektining sanab o'tiladigan xossalari nomlarini `a` massiviga
+// qo'shadi va `a`ni qaytaradi. Agar `a` tushirib qoldirilsa, yangi massiv yaratadi va qaytaradi.
+function getPropertyNames(o, a) {
+    if (a === undefined) a = []; // Agar `undefined` bo'lsa, yangi massivdan foydalanadi
+    for(let property in o) a.push(property);
+    return a;
+}
+
+// `getPropertyNames()`ni bir yoki ikkita argument bilan chaqirish mumkin:
+let o = {x: 1}, p = {y: 2, z: 3};   // Sinov uchun ikkita obyekt
+let a = getPropertyNames(o);        // a == ["x"]; `o`ning xossalarini yangi massivda olish
+getPropertyNames(p, a);             // a == ["x","y","z"]; unga `p`ning xossalarini qo'shish
+```
+
+Ushbu funksiyaning birinchi qatorida `if` ko'rsatmasidan foydalanish o'rniga, siz `||` operatoridan quyidagi idiomatik usulda foydalanishingiz mumkin:
+
+``` js
+a = a || [];
+```
+
+§4.10.2-bo'limdan eslaydigan bo'lsak, `||` operatori, agar birinchi argumenti _truthy_ bo'lsa, o'sha argumentni, aks holda, ikkinchi argumentini qaytaradi. Bu holda, agar ikkinchi argument sifatida biror obyekt uzatilsa, funksiya o'sha obyektdan foydalanadi. Lekin agar ikkinchi argument tushirib qoldirilsa (yoki `null` yoxud boshqa _falsy_ qiymat uzatilsa), uning o'rniga yangi yaratilgan bo'sh massiv ishlatiladi.
+
+E'tibor bering, ixtiyoriy argumentlarga ega funksiyalarni loyihalashtirayotganda, ularni tushirib qoldirish imkonini berish uchun ixtiyoriy parametrlarni argumentlar ro'yxatining oxiriga qo'yganingizga ishonch hosil qiling. Funksiyangizni chaqirayotgan dasturchi birinchi argumentni tushirib qoldirib, ikkinchisini uzata olmaydi: buning uchun u birinchi argument sifatida aniq `undefined` qiymatini uzatishiga to'g'ri kelardi.
+
+ES6 va undan keyingi versiyalarda siz funksiyangizning har bir parametri uchun standart qiymatni to'g'ridan-to'g'ri funksiyaning parametrlar ro'yxatida ta'riflashingiz mumkin. Buning uchun parametr nomidan keyin tenglik belgisi va o'sha parametr uchun argument taqdim etilmaganda ishlatiladigan standart qiymatni yozish kifoya:
+
+``` js
+// `o` obyektining sanab o'tiladigan xossalari nomlarini `a` massiviga
+// qo'shing va `a`ni qaytaradi. Agar `a` tushirib qoldirilsa, yangi massiv yaratadi va qaytaradi.
+function getPropertyNames(o, a = []) {
+    for(let property in o) a.push(property);
+    return a;
+}
+```
+
+Parametrning standart ifodalari funksiyangiz ta'riflanganda emas, balki u **chaqirilganda** baholanadi. Shuning uchun, bu `getPropertyNames()` funksiyasi har safar bitta argument bilan chaqirilganda, yangi bo'sh massiv yaratiladi va uzatiladi.[^2]
+
+Agar parametrning standart qiymatlari konstantalar (yoki `[]` va `{}` kabi literal ifodalar) bo'lsa, funksiyalarni tahlil qilish osonroq bo'ladi. Lekin bu talab qilinmaydi: siz, masalan, parametrning standart qiymatini hisoblash uchun o'zgaruvchilar yoki funksiya chaqiruvlaridan foydalanishingiz mumkin. Qiziqarli bir holat shundaki, bir nechta parametrga ega funksiyalar uchun siz undan keyingi parametrlarning standart qiymatini ta'riflashda oldingi parametrning qiymatidan foydalanishingiz mumkin:
+
+``` js
+// Bu funksiya to'rtburchakning o'lchamlarini ifodalovchi obyekt qaytaradi.
+// Agar faqat `width` (kenglik) taqdim etilsa, uni kengligidan ikki baravar baland qiladi.
+const rectangle = (width, height=width*2) => ({width, height});
+rectangle(1) // => { width: 1, height: 2 }
+```
+
+Bu kod parametrning standart qiymatlari strelkali funksiyalar bilan ishlashini namoyish etadi. Xuddi shu narsa metodlarning qisqa yozuvi va funksiya ta'riflarining boshqa barcha shakllari uchun ham o'rinlidir.
+
+## Qolgan parametrlar va o'zgaruvchan uzunlikdagi argumentlar ro'yxati
+
+Parametrning standart qiymatlari bizga parametrlardan kamroq argumentlar bilan chaqirilishi mumkin bo'lgan funksiyalarni yozish imkonini beradi. **Qolgan parametrlar (`rest parameters`)** esa buning teskari holatiga imkon yaratadi: ular bizga parametrlardan ixtiyoriy ravishda ko'proq argumentlar bilan chaqirilishi mumkin bo'lgan funksiyalarni yozishga yo'l qo'yadi.
+
+Quyida bir yoki undan ortiq sonli argumentlarni kutadigan va ularning eng kattasini qaytaradigan funksiyaga misol keltirilgan:
+
+``` js
+function max(first=-Infinity, ...rest) {
+    let maxValue = first; // Avvaliga birinchi argumentni eng katta deb faraz qilamiz
+    // So'ngra qolgan argumentlar bo'ylab aylanib, kattaroqlarini qidiramiz
+    for(let n of rest) {
+        if (n > maxValue) {
+            maxValue = n;
+        }
+    }
+    // Eng kattasini qaytaramiz
+    return maxValue;
+}
+max(1, 10, 100, 2, 3, 1000, 4, 5, 6) // => 1000
+```
+
+Qolgan parametr oldidan uchta nuqta keladi va u funksiya e'lonidagi **eng oxirgi parametr** bo'lishi shart. Siz qolgan parametrga ega funksiyani chaqirganingizda, uzatgan argumentlaringiz avval oddiy, nomlangan parametrlarga tayinlanadi, so'ngra qolgan barcha argumentlar ("argumentlarning qolgani") massivga saqlanadi va bu massiv qolgan parametrning qiymatiga aylanadi. Bu oxirgi nuqta muhim: funksiya tanasi ichida qolgan parametrning qiymati har doim massiv bo'ladi. Massiv bo'sh bo'lishi mumkin, lekin qolgan parametr hech qachon `undefined` bo'lmaydi. (Bundan kelib chiqadiki, qolgan parametr uchun standart qiymat ta'riflash hech qachon foydali emas — va to'g'ri usul ham emas.)
+
+Oldingi misoldagi kabi istalgancha argument qabul qila oladigan funksiyalar **variadik funksiyalar**, **o'zgaruvchan aritetli funksiyalar** yoki **vararg funksiyalari** deb ataladi. Ushbu kitob C dasturlash tilining ilk davrlariga borib taqaladigan eng sodda atama — **varargs**'dan foydalanadi.
+
+Funksiya ta'rifida qolgan (`rest`) parametrni belgilaydigan `...`'ni funksiya chaqiruvlarida ishlatilishi mumkin bo'lgan `...` yoyish (`spread`) operatori (§8.3.4-bo'limda tasvirlangan) bilan chalkashtirmang.
+
+[^2]: Agar siz Python dasturlash tili bilan tanish bo'lsangiz, bu Python'dan farqli ekanligini unutmang, unda har bir chaqiruv bir xil standart qiymatga ega.
+
+## `Arguments` obyekti
+
+Qolgan parametrlar (`rest parameters`) JavaScript'ga ES6'da kiritilgan. Tilning bu versiyasidan oldin, **varargs** funksiyalari `Arguments` obyekti yordamida yozilardi: har qanday funksiya tanasi ichida `arguments` identifikatori o'sha chaqiruv uchun **`Arguments` obyektiga** ishora qiladi.
+
+`Arguments` obyekti — bu massivsimon obyekt (§7.9-bo'limga qarang) bo'lib, u funksiyaga uzatilgan argument qiymatlarini nom bilan emas, balki raqam bilan olish imkonini beradi. Quyida avvalgi `max()` funksiyasining qolgan parametr o'rniga `Arguments` obyektidan foydalanib qayta yozilgan ko'rinishi keltirilgan:
+
+``` js
+function max(x) {
+    let maxValue = -Infinity;
+    // Argumentlar bo'ylab aylanib, eng kattasini qidirish va eslab qolish.
+    for(let i = 0; i < arguments.length; i++) {
+        if (arguments[i] > maxValue) maxValue = arguments[i];
+    }
+    // Eng kattasini qaytarish
+    return maxValue;
+}
+max(1, 10, 100, 2, 3, 1000, 4, 5, 6) // => 1000
+```
+
+`Arguments` obyekti JavaScript'ning ilk davrlariga borib taqaladi va o'zida tilning ilk davrlaridan meros bo'lib qolgan ba'zi g'ayrioddiy xususiyatlarni saqlab qolgan bo'lib, aynan shu xususiyatlar uni samarasiz va optimizatsiya qilish qiyin bo'lgan vositaga aylantiradi, ayniqsa, qat'iy bo'lmagan rejimda. Siz hali ham `Arguments` obyektidan foydalanadigan kodga duch kelishingiz mumkin, lekin yozayotgan har qanday yangi kodingizda undan foydalanishdan imkon qadar qochishingiz kerak. Eski kodni refaktoring qilayotganda, agar `arguments`'dan foydalanadigan funksiyaga duch kelsangiz, uni ko'pincha `...args` qolgan parametri bilan almashtirishingiz mumkin.
+
+`Arguments` obyektidan meros bo'lib qolgan yomon bir narsa shundaki, qat'iy rejimda `arguments` zaxiralangan so'z sifatida qabul qilinadi va siz bu nom bilan funksiya parametri yoki lokal o'zgaruvchi e'lon qila olmaysiz.
+
+## Funksiya chaqiruvlari uchun yoyish (`spread`) operatori
+
+Yoyish (`spread`) operatori `...` massiv (yoki satrlar kabi boshqa har qanday iteratsiya qilinadigan obyekt) elementlarini alohida qiymatlar kutiladigan kontekstda "ochib berish" yoki "yoyib chiqish" uchun ishlatiladi. Biz yoyish operatorining massiv literallari bilan ishlatilishini §7.1.2-bo'limda ko'rgan edik. Operatorni xuddi shu tarzda funksiya chaqiruvlarida ham qo'llash mumkin:
+
+``` js
+let numbers = [5, 2, 10, -1, 9, 100, 1];
+Math.min(...numbers) // => -1
+```
+
+E'tibor bering, `...` qiymat hosil qilish uchun baholanishi mumkin bo'lgan haqiqiy ma'nodagi operator emas. Buning o'rniga, u massiv literallari va funksiya chaqiruvlarida ishlatilishi mumkin bo'lgan maxsus JavaScript sintaksisidir.
+
+Biz xuddi shu `...` sintaksisini funksiya chaqiruvida emas, balki funksiya ta'rifida ishlatsak, u yoyish operatoriga teskari ta'sir ko'rsatadi. §8.3.2-bo'limda ko'rganimizdek, funksiya ta'rifida `...`'dan foydalanish bir nechta funksiya argumentlarini bitta massivga **yig'adi**.
+
+Qolgan parametrlar (`rest parameters`) va yoyish operatori ko'pincha birgalikda foydalidir. Bunga misol sifatida, funksiya argumentini qabul qilib, sinov uchun o'sha funksiyaning "jihozlangan" versiyasini qaytaradigan quyidagi funksiyani keltirish mumkin:
+
+``` js
+// Bu funksiya biror funksiyani qabul qilib, uning o'ralgan versiyasini qaytaradi
+function timed(f) {
+    return function(...args) { // Argumentlarni qolgan parametr massiviga yig'ib olamiz
+        console.log(`${f.name} funksiyasiga kirilmoqda`);
+        let startTime = Date.now();
+        try {
+            // Barcha argumentlarimizni o'ralgan funksiyaga uzatamiz
+            return f(...args); // Argumentlarni yana qayta yoyib chiqamiz
+        } finally {
+            // O'ralgan funksiyaning qiymatini qaytarishdan oldin, o'tgan vaqtni chiqaramiz.
+            console.log(`${f.name}'dan ${Date.now()-startTime}ms so'ng chiqilmoqda`);
+        }
+    };
+}
+
+// 1 dan n gacha bo'lgan sonlar yig'indisini qo'pol kuch bilan hisoblash
+function benchmark(n) {
+    let sum = 0;
+    for(let i = 1; i <= n; i++) sum += i;
+    return sum;
+}
+
+// Endi o'sha test funksiyasining vaqt o'lchanadigan versiyasini chaqiramiz
+timed(benchmark)(1000000) // => 500000500000; bu sonlar yig'indisi
+```
+
+## Funksiya argumentlarini parametrlarga destrukturizatsiya qilish
+
+Funksiyani argument qiymatlari ro'yxati bilan chaqirganingizda, bu qiymatlar yakunda funksiya ta'rifida e'lon qilingan parametrlarga tayinlanadi. Funksiya chaqiruvining bu boshlang'ich bosqichi o'zgaruvchiga qiymat tayinlashga juda o'xshaydi. Shuning uchun, biz funksiyalar bilan destrukturizatsiya orqali tayinlash (§3.10.3-bo'limga qarang) usullaridan foydalana olishimiz ajablanarli emas.
+
+### Massiv argumentlarini destrukturizatsiya qilish
+
+Agar parametr nomlari kvadrat qavslar ichida bo'lgan funksiyani ta'riflasangiz, siz funksiyaga har bir kvadrat qavs juftligi uchun massiv qiymati uzatilishini kutayotganini aytgan bo'lasiz. Chaqiruv jarayonining bir qismi sifatida, massiv argumentlari alohida nomlangan parametrlarga "ochib beriladi" (`unpack`).
+Misol tariqasida, biz 2D vektorlarni birinchi elementi X koordinatasi, ikkinchi elementi esa Y koordinatasi bo'lgan ikki sonli massivlar sifatida ifodalayapmiz deb faraz qilaylik. Shu oddiy ma'lumotlar tuzilmasi bilan biz ikki vektorni qo'shish uchun quyidagi funksiyani yozishimiz mumkin edi:
+
+``` js
+function vectorAdd(v1, v2) {
+    return [v1[0] + v2[0], v1[1] + v2[1]];
+}
+vectorAdd([1,2], [3,4]) // => [4,6]
+```
+
+Agar biz ikki vektor argumentini aniqroq nomlangan parametrlarga destrukturizatsiya qilsak, kod ancha tushunarliroq bo'lardi:
+
+``` js
+function vectorAdd([x1,y1], [x2,y2]) { // 2 ta argumentni 4 ta parametrga "ochib berish"
+    return [x1 + x2, y1 + y2];
+}
+vectorAdd([1,2], [3,4]) // => [4,6]
+```
+
+### Obyekt argumentlarini destrukturizatsiya qilish
+
+Xuddi shunday, agar siz obyekt argumentini kutadigan funksiya ta'riflayotgan bo'lsangiz, o'sha obyektning parametrlarini destrukturizatsiya qilishingiz mumkin. Keling, yana vektor misolidan foydalanamiz, faqat bu safar vektorlarni `x` va `y` parametrlariga ega obyektlar sifatida ifodalaymiz deb faraz qilaylik:
+
+``` js
+// {x,y} vektorini skalyar qiymatga ko'paytirish
+function vectorMultiply({x, y}, scalar) {
+    return { x: x*scalar, y: y*scalar };
+}
+vectorMultiply({x: 1, y: 2}, 2) // => {x: 2, y: 4}
+```
+
+Bitta obyekt argumentini ikki parametrga destrukturizatsiya qilishning bu misoli ancha tushunarli, chunki biz ishlatgan parametr nomlari kiruvchi obyektning xossa nomlariga mos keladi. Xossalarni bir nomdan boshqa nomdagi parametrlarga destrukturizatsiya qilish kerak bo'lganda, sintaksis ancha ko'p so'zli va chalkash bo'lib qoladi. Quyida obyektga asoslangan vektorlar uchun implementatsiya qilingan vektorlarni qo'shish misoli keltirilgan:
+
+``` js
+function vectorAdd(
+    {x: x1, y: y1}, // 1-obyektni `x1` va `y1` parametrlariga "ochib berish"
+    {x: x2, y: y2}  // 2-obyektni `x2` va `y2` parametrlariga "ochib berish"
+)
+{
+    return { x: x1 + x2, y: y1 + y2 };
+}
+vectorAdd({x: 1, y: 2}, {x: 3, y: 4}) // => {x: 4, y: 6}
+```
+
+`{x:x1, y:y1}` kabi destrukturizatsiya sintaksisining murakkab jihati — qaysilari xossa nomlari va qaysilari parametr nomlari ekanligini eslab qolishdir. Destrukturizatsiya orqali tayinlash va destrukturizatsiya orqali funksiya chaqiruvlari uchun yodda tutish kerak bo'lgan qoida shuki, e'lon qilinayotgan o'zgaruvchilar yoki parametrlar obyekt literalida qiymatlar kelishi kutilgan joylarda keladi. Shunday qilib, xossa nomlari har doim ikki nuqtaning chap tomonida, parametr (yoki o'zgaruvchi) nomlari esa o'ng tomonida bo'ladi.
+
+### Destrukturizatsiyalangan parametrlarda standart qiymatlar
+
+Siz destrukturizatsiyalangan parametrlar bilan standart parametr qiymatlarini ta'riflashingiz mumkin. Quyida 2D yoki 3D vektorlar bilan ishlaydigan vektor ko'paytmasi keltirilgan:
+
+``` js
+// {x,y} yoki {x,y,z} vektorini skalyar qiymatga ko'paytirish
+function vectorMultiply({x, y, z=0}, scalar) {
+    return { x: x*scalar, y: y*scalar, z: z*scalar };
+}
+vectorMultiply({x: 1, y: 2}, 2) // => {x: 2, y: 4, z: 0}
+```
+
+### Nomlangan argumentlarni simulyatsiya qilish
+
+Ba'zi tillar (masalan, Python) funksiya chaqiruvchisiga funksiyani `nom=qiymat` shaklida ko'rsatilgan argumentlar bilan chaqirishga imkon beradi. Bu ko'plab ixtiyoriy argumentlar bo'lganda yoki parametrlar ro'yxati shunchalik uzun bo'lib, to'g'ri tartibni eslab qolish qiyin bo'lganda qulaydir. JavaScript bunga to'g'ridan-to'g'ri ruxsat bermaydi, lekin siz obyekt argumentini funksiya parametrlaringizga destrukturizatsiya qilish orqali buni **simulyatsiya qilishingiz** mumkin.
+
+Tasavvur qiling, bizda belgilangan miqdordagi elementlarni bir massivdan boshqa massivga, har bir massiv uchun ixtiyoriy belgilangan boshlang'ich siljishlar bilan ko'chiradigan funksiya bor. Beshta mumkin bo'lgan parametr borligi, ularning ba'zilari standart qiymatlarga ega ekanligi va chaqiruvchi uchun argumentlarni qaysi tartibda uzatishni eslab qolish qiyin bo'lishini hisobga olib, biz `arraycopy()` funksiyasini quyidagicha ta'riflashimiz va chaqirishimiz mumkin:
+
+``` js
+function arraycopy({from, to=from, n=from.length, fromIndex=0, toIndex=0}) {
+    let valuesToCopy = from.slice(fromIndex, fromIndex + n);
+    to.splice(toIndex, 0, ...valuesToCopy);
+    return to;
+}
+let a = [1,2,3,4,5], b = [9,8,7,6,5];
+arraycopy({from: a, n: 3, to: b, toIndex: 4}) // => [9,8,7,6,1,2,3,5]
+```
+
+Massivni destrukturizatsiya qilganingizda, "ochib berilayotgan" massiv ichidagi ortiqcha qiymatlar uchun qolgan parametrni (`rest parameter`) ta'riflashingiz mumkin. Kvadrat qavslar ichidagi bu qolgan parametr funksiyaning haqiqiy qolgan parametrlaridan butunlay farq qiladi:
+
+``` js
+// Bu funksiya massiv argumentini kutadi. Bu massivning dastlabki ikki elementi
+// `x` va `y` parametrlariga "ochib beriladi". Qolgan har qanday elementlar
+// `coords` massivida saqlanadi. Va birinchi massivdan keyingi har qanday argumentlar
+// `rest` massiviga yig'iladi.
+function f([x, y, ...coords], ...rest) {
+    return [x+y, ...rest, ...coords]; // E'tibor bering: bu yerda yoyish operatori
+}
+f([1, 2, 3, 4], 5, 6) // => [3, 5, 6, 3, 4]
+```
+
+ES2018'da siz obyektni destrukturizatsiya qilganingizda ham qolgan parametrdan foydalanishingiz mumkin. Bu qolgan parametrning qiymati destrukturizatsiya qilinmagan har qanday xossalarga ega bo'lgan obyekt bo'ladi. Obyektning qolgan parametrlari ko'pincha obyektni yoyish operatori bilan birga foydalidir, bu ham ES2018'ning yangi xususiyatidir:
+
+``` js
+// {x,y} yoki {x,y,z} vektorini skalyar qiymatga ko'paytirish, boshqa xossalarni saqlab qolish
+function vectorMultiply({x, y, z=0, ...props}, scalar) {
+    return { x: x*scalar, y: y*scalar, z: z*scalar, ...props };
+}
+vectorMultiply({x: 1, y: 2, w: -1}, 2) // => {x: 2, y: 4, z: 0, w: -1}
+```
+
+Nihoyat, shuni ham yodda tutingki, argument obyektlari va massivlarini destrukturizatsiya qilishdan tashqari, siz obyektlar massivlarini, massiv xossalariga ega bo'lgan obyektlarni va obyekt xossalariga ega bo'lgan obyektlarni ham, deyarli har qanday chuqurlikda, destrukturizatsiya qilishingiz mumkin. Tasavvur qiling, bizda doiralarni `x`, `y`, `radius` va `color` xossalariga ega bo'lgan obyektlar sifatida ifodalaydigan grafik kodi bor. Bunda `color` xossasi qizil, yashil va ko'k rang komponentlaridan iborat massivdir. Siz yagona doira obyektini qabul qilishni kutadigan, lekin bu doira obyektini oltita alohida parametrga destrukturizatsiya qiladigan funksiya ta'riflashingiz mumkin:
+
+``` js
+function drawCircle({x, y, radius, color: [r, g, b]}) {
+    // Hali implementatsiya qilinmagan
+}
+```
+
+Agar funksiya argumentlarini destrukturizatsiya qilish bundan murakkabroq bo'lsa, menimcha, kod soddalashish o'rniga, o'qish uchun qiyinlashib ketadi. Ba'zan, obyekt xossalariga murojaat qilish va massivni indekslashda aniq va to'g'ridan-to'g'ri yozganingiz ma'qulroq.
+
+## Argument tiplari
+
+JavaScript'da funksiya parametrlari uchun oldindan tip e'lon qilinmaydi va funksiyaga uzatilayotgan argument qiymatlarida hech qanday tip tekshiruvi o'tkazilmaydi. Funksiya argumentlari uchun mazmunli nomlar tanlash va har bir funksiya izohlarida ularni sinchkovlik bilan hujjatlashtirish orqali kodingizni o'z-o'zidan tushunarli bo'lishiga yordam berishingiz mumkin. (Alternativ ravishda, oddiy JavaScript ustiga tip tekshiruvini qatlam sifatida qo'shish imkonini beruvchi til kengaytmasi uchun §17.8-bo'limga qarang.)
+
+§3.9-bo'limda ko'rib o'tganimizdek, JavaScript zarurat tug'ilganda tiplarni erkin konversiya qiladi. Shunday ekan, agar siz satr argumentini kutadigan funksiya yozsangiz va uni boshqa bir tipdagi qiymat bilan chaqirsangiz, funksiya o'sha qiymatni satr sifatida ishlatishga harakat qilganida, u shunchaki satrga aylanadi. Barcha primitiv tiplarni satrga o'zgartirish mumkin va barcha obyektlar `toString()` metodiga ega (garchi har doim ham foydali bo'lmasa-da), shuning uchun bu holatda hech qachon xatolik yuz bermaydi.
+
+Biroq bu qoida har doim ham ishlayvermaydi. Avvalroq ko'rsatilgan `arraycopy()` metodini yana bir bor eslaylik. U bir yoki ikkita massiv argumentini kutadi va agar bu argumentlar noto'g'ri tipda bo'lsa, ishdan chiqadi. Agar siz faqat kodingizning yaqin qismlaridan chaqiriladigan xususiy funksiya yozmayotgan bo'lsangiz, bu kabi argumentlarning tiplarini tekshiradigan kod qo'shishga arziydi. Funksiyaning noto'g'ri qiymatlar uzatilganda darhol va kutilgan tarzda ishdan chiqqani, ishga tushib, keyinroq tushunarsiz bo'lishi, ehtimoli yuqori bo'lgan xato xabari bilan ishdan chiqqanidan yaxshiroqdir.
+
+Quyida tip tekshiruvini amalga oshiradigan funksiyaga misol keltirilgan:
+
+``` js
+// `a` iteratsiya qilinadigan obyektining elementlari yig'indisini qaytarish.
+// `a`ning elementlari barchasi son bo'lishi kerak.
+function sum(a) {
+    let total = 0;
+    for(let element of a) { // Agar `a` iteratsiya qilinadigan bo'lmasa, TypeError yuzaga keladi
+        if (typeof element !== "number") {
+            throw new TypeError("sum(): elementlar son bo'lishi kerak");
+        }
+        total += element;
+    }
+    return total;
+}
+sum([1,2,3])    // => 6
+sum(1, 2, 3);   // !TypeError: 1 iteratsiya qilinadigan emas
+sum([1,2,"3"]); // !TypeError: 2-element son emas
+```
