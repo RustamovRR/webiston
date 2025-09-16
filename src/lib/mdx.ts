@@ -213,6 +213,7 @@ export function getTutorialTitle(tutorialId: string): string {
   const titles: Record<string, string> = {
     'fluent-react': 'Fluent React',
     'javascript-definitive-guide': 'JavaScript Definitive Guide',
+    'ai-engineering': 'AI Engineering',
   }
 
   return titles[tutorialId] || tutorialId
@@ -223,6 +224,7 @@ function getTutorialDescription(tutorialId: string): string {
   const descriptions: Record<string, string> = {
     'fluent-react': "React'ni chuqur o'rganish uchun to'liq qo'llanma",
     'javascript-definitive-guide': "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma",
+    'ai-engineering': "AI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma",
   }
 
   return descriptions[tutorialId] || "Dasturlash bo'yicha qo'llanma"
@@ -233,6 +235,7 @@ export function getTutorialImage(tutorialId: string): string {
   const images: Record<string, string> = {
     'fluent-react': '/fluent-react/book-logo.jpeg',
     'javascript-definitive-guide': '/javascript-definitive-guide/book-logo.jpeg',
+    'ai-engineering': '/ai-engineering/book-logo.jpeg',
   }
 
   return images[tutorialId] || '/assets/default-cover.png'
@@ -245,6 +248,8 @@ function getCopyrightText(tutorialId: string): string {
       "Ushbu kitobning o'zbekcha tarjimasi: JavaScript: The Definitive Guide, 7-nashr, David Flanagan. Mualliflik huquqi 2020 David Flanagan. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
     'fluent-react':
       "Ushbu kitobning o'zbekcha tarjimasi: Fluent React, Tejas Kumar. Mualliflik huquqi 2024 Tejas Kumar. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
+    'ai-engineering':
+      "Ushbu kitobning o'zbekcha tarjimasi: AI Engineering, CHip Huyen. Mualliflik huquqi 2024 CHip Huyen. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
   }
   return copyrights[tutorialId] || ''
 }
@@ -255,7 +260,8 @@ export async function getAllTutorials() {
     // Static qilib qo'yamiz, chunki bizda faqat bitta tutorial bor
     const fluentReact = await getTutorialInfo('fluent-react')
     const javascriptDefinitiveGuide = await getTutorialInfo('javascript-definitive-guide')
-    return [fluentReact, javascriptDefinitiveGuide]
+    const aiEngineering = await getTutorialInfo('ai-engineering')
+    return [fluentReact, javascriptDefinitiveGuide, aiEngineering]
   } catch (error) {
     console.error('Error getting all tutorials:', error)
     return []

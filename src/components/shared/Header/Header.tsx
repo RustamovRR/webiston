@@ -34,6 +34,11 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
       title: 'JavaScript The Definitive Guide',
       description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
     },
+    {
+      id: 'ai-engineering',
+      title: 'AI Engineering',
+      description: "AI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
+    },
   ]
 
   return (
