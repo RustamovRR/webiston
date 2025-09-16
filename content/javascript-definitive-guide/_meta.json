@@ -340,6 +340,10 @@
       "8.5-functions-as-namespaces": {
         "title": "8.5. Funksiyalar nomlar fazosi (namespace) sifatida",
         "path": "8-functions/8.5-functions-as-namespaces/page"
+      },
+      "8.6-closures": {
+        "title": "8.6. Closure'lar",
+        "path": "8-functions/8.6-closures/page"
       }
     }
   }

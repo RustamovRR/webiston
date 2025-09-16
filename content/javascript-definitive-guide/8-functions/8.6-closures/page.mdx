@@ -1,0 +1,193 @@
+# `Closure`'lar
+
+Ko'plab zamonaviy dasturlash tillari singari, JavaScript ham **leksik ko'rinish doirasidan (`lexical scoping`)** foydalanadi. Bu shuni anglatadiki, funksiyalar ular chaqirilgan paytda amalda bo'lgan o'zgaruvchilar doirasidan emas, balki ular yaratilgan paytda amalda bo'lgan o'zgaruvchilar doirasidan foydalanib bajariladi.
+
+Leksik ko'rinish doirasini implementatsiya qilish uchun JavaScript funksiya obyektining ichki holati nafaqat funksiya kodini, balki funksiya yaratilgan ko'rinish doirasiga (`scope`) havolani ham o'z ichiga olishi kerak. Funksiya obyekti va uning o'zgaruvchilari hal qilinadigan ko'rinish doirasi (o'zgaruvchilar bog'lanmalari to'plami) majmuasi kompyuter fanlari adabiyotida **`closure`** deb ataladi.
+
+Texnik jihatdan, barcha JavaScript funksiyalari `closure`'lardir. Lekin ko'pgina funksiyalar o'zlari yaratilgan ko'rinish doirasining o'zidan chaqirilgani uchun, bu jarayonda `closure` ishtirok etayotgani odatda unchalik ahamiyat kasb etmaydi. `Closure`'lar o'zlari yaratilgan doiradan farqli bir doiradan chaqirilganda qiziqarli tus oladi. Bu ko'pincha ichma-ich joylashgan funksiya obyekti o'zi yaratilgan funksiya ichidan qaytarilganda sodir bo'ladi. Aynan shu turdagi ichma-ich joylashgan funksiya `closure`'larini o'z ichiga olgan bir qator kuchli dasturlash usullari mavjud va ulardan foydalanish JavaScript dasturlashida ancha keng tarqalgan. `Closure`'larga birinchi marta duch kelganingizda ular chalkash tuyulishi mumkin, lekin ulardan bemalol foydalana olish uchun ularni yetarlicha yaxshi tushunib olishingiz muhimdir.
+
+`Closure`'larni tushunishdagi birinchi qadam — bu ichma-ich joylashgan funksiyalar uchun leksik ko'rinish doirasi qoidalarini qayta ko'rib chiqishdir. Quyidagi kodga diqqat bilan e'tibor qiling:
+
+``` js
+let scope = "global scope";         // Global o'zgaruvchi
+function checkscope() {
+    let scope = "local scope";      // Lokal o'zgaruvchi
+    function f() { return scope; }  // Bu yerdagi ko'rish doirasidagi qiymatni qaytarish
+    return f();
+}
+checkscope()                        // => "local scope"
+```
+
+`checkscope()` funksiyasi lokal o'zgaruvchi e'lon qiladi, so'ngra o'sha o'zgaruvchining qiymatini qaytaradigan funksiyani yaratadi va chaqiradi. `checkscope()`'ga qilingan chaqiruv nima uchun "local scope" qaytarishi sizga tushunarli bo'lishi kerak. Endi, keling, kodni biroz o'zgartiramiz. Bu kod nima qaytarishini ayta olasizmi?
+
+``` js
+let scope = "global scope";         // Global o'zgaruvchi
+function checkscope() {
+    let scope = "local scope";      // Lokal o'zgaruvchi
+    function f() { return scope; }  // Bu yerdagi ko'rinish doirasidagi qiymatni qaytarish
+    return f;
+}
+let s = checkscope()();             // Bu nima qaytaradi?
+```
+
+Bu kodda qavslar juftligi `checkscope()` ichidan uning tashqarisiga ko'chirilgan. Ichki funksiyani chaqirib, uning natijasini qaytarish o'rniga, `checkscope()` endi shunchaki ichki funksiya obyektining o'zini qaytaradi. Biz o'sha ichki funksiyani (kodning oxirgi qatoridagi ikkinchi qavslar juftligi bilan) u yaratilgan funksiya tashqarisida chaqirganimizda nima sodir bo'ladi?
+
+Leksik ko'rinish doirasining fundamental qoidasini eslang: JavaScript funksiyalari o'zlari yaratilgan ko'rinish doirasidan foydalanib bajariladi. Ichki `f()` funksiyasi `scope` o'zgaruvchisi "local scope" qiymatiga bog'langan bo'lgan doirada yaratilgan edi. Bu bog'lanma `f` qayerdan bajarilishidan qat'i nazar, u bajarilayotganda ham o'z kuchida qoladi. Shunday qilib, oldingi kod misolining oxirgi qatori "global scope" emas, balki "local scope" qaytaradi.
+
+Qisqacha aytganda, `closure`'larning ajablanarli va qudratli tabiati aynan shunda: ular o'zlari yaratilgan tashqi funksiya ichidagi lokal o'zgaruvchi (va parametr) bog'lanmalarini "o'zlari bilan olib yuradilar".
+
+### `Closure`'lar yordamida xususiy (private) _state_'ni saqlash
+
+§8.4.1-bo'limda biz qaytarilishi kerak bo'lgan keyingi qiymatni kuzatib borish uchun funksiyaning o'zining xossasidan foydalanadigan `uniqueInteger()` funksiyasini yaratgan edik. Bu yondashuvning bir kamchiligi shundaki, xatolikka ega yoki yomon niyatli kod hisoblagichni qayta o'rnatishi yoki uni butun bo'lmagan songa o'rnatishi mumkin. Bu esa `uniqueInteger()` funksiyasining o'z tuzilmasidagi "unikal" yoki "butun son" qismini buzishiga olib keladi.
+
+`Closure`'lar yagona bir funksiya chaqiruvining lokal o'zgaruvchilarini "qo'lga oladi" va bu o'zgaruvchilardan xususiy _state_ sifatida foydalanishi mumkin. Quyida biz `uniqueInteger()`'ni darhol chaqiriladigan funksiya ifodasidan foydalanib, nomlar fazosini yaratish va o'z _state_'ini o'zida xususiy saqlash uchun o'sha nomlar fazosidan foydalanadigan `closure` yordamida qanday qayta yozishimiz mumkinligi ko'rsatilgan:
+
+``` js
+let uniqueInteger = (function() { // Yaratish va chaqirish
+    let counter = 0;              // Quyidagi funksiyaning xususiy state'i
+    return function() { return counter++; };
+}());
+uniqueInteger() // => 0
+uniqueInteger() // => 1
+```
+
+Bu kodni tushunish uchun uni diqqat bilan o'qish kerak. Bir qarashda, kodning birinchi qatori `uniqueInteger` o'zgaruvchisiga funksiya tayinlayotgandek ko'rinadi. Aslida esa, kod funksiyani **ham yaratib, ham chaqirmoqda** (birinchi qatordagi ochuvchi qavs shunga ishora qiladi), shuning uchun `uniqueInteger`'ga funksiyaning **qaytargan qiymati** tayinlanmoqda.
+
+Endi, agar biz funksiya tanasini o'rgansak, uning qaytaradigan qiymati **boshqa bir funksiya** ekanligini ko'ramiz. `uniqueInteger`'ga aynan shu ichki funksiya obyekti tayinlanadi. Ichki funksiya o'zining ko'rinish doirasidagi (`scope`) o'zgaruvchilarga murojaat qila oladi va tashqi funksiyada yaratilgan `counter` o'zgaruvchisidan foydalana oladi. O'sha tashqi funksiya qaytib bo'lgandan so'ng, boshqa hech qanday kod `counter` o'zgaruvchisini ko'ra olmaydi: ichki funksiya unga **mutlaq kirish huquqiga** ega bo'ladi.
+
+### Bir nechta `closure`'lar o'rtasida _state_'ni bo'lishish
+
+`counter` kabi xususiy o'zgaruvchilar faqat bitta `closure`'ga tegishli bo'lishi shart emas: bir xil tashqi funksiya ichida ikki yoki undan ortiq ichki funksiyalar yaratilishi va ular bir xil ko'rinish doirasini mutlaqo bo'lishishi mumkin. Quyidagi kodni ko'rib chiqamiz:
+
+``` js
+function counter() {
+    let n = 0;
+    return {
+        count: function() { return n++; },
+        reset: function() { n = 0; }
+    };
+}
+
+let c = counter(), d = counter();   // Ikkita hisoblagich yaratamiz
+c.count()                           // => 0
+d.count()                           // => 0: ular mustaqil hisoblaydi
+c.reset();                          // `reset()` va `count()` metodlari bitta `state`ni bo'lishadi
+c.count()                           // => 0: chunki biz `c`ni qayta o'rnatdik
+d.count()                           // => 1: `d` qayta o'rnatilmadi
+```
+
+`counter()` funksiyasi "hisoblagich" obyektini qaytaradi. Bu obyekt ikkita metodga ega: `count()` keyingi butun sonni qaytaradi, `reset()` esa ichki _state_'ni qayta o'rnatadi. Tushunish kerak bo'lgan birinchi narsa shuki, bu ikki metod xususiy `n` o'zgaruvchisiga umumiy murojaatga ega. Tushunish kerak bo'lgan ikkinchi narsa esa, `counter()`'ning har bir chaqiruvi oldingi chaqiruvlar ishlatgan doiralardan mustaqil bo'lgan yangi ko'rinish doirasini va o'sha doira ichida yangi xususiy o'zgaruvchini yaratadi. Shunday qilib, agar siz `counter()`'ni ikki marta chaqirsangiz, turli xil xususiy o'zgaruvchilarga ega bo'lgan ikkita hisoblagich obyektini olasiz. Bir hisoblagich obyektida `count()` yoki `reset()`'ni chaqirish boshqasiga hech qanday ta'sir qilmaydi.
+
+Shu o'rinda ta'kidlash joizki, siz bu `closure` usulini xossa _getter_ va _setter_'lari bilan birlashtirishingiz mumkin. `counter()` funksiyasining quyidagi versiyasi §6.10.6-bo'limda kelgan kodning bir variatsiyasidir, lekin u oddiy obyekt xossasiga tayanish o'rniga, xususiy _state_ uchun `closure`'lardan foydalanadi:
+
+``` js
+function counter(n) { // Funksiya argumenti `n` xususiy o'zgaruvchidir
+    return {
+        // Xossa `getter` metodi xususiy hisoblagich o'zgaruvchisini qaytaradi va inkrement qiladi.
+        get count() { return n++; },
+        // Xossa `setter` metodi `n`ning qiymati kamayishiga yo'l qo'ymaydi
+        set count(m) {
+            if (m > n) n = m;
+            else throw Error("hisoblagich faqat kattaroq qiymatga o'rnatilishi mumkin");
+        }
+    };
+}
+
+let c = counter(1000);
+c.count         // => 1000
+c.count         // => 1001
+c.count = 2000;
+c.count         // => 2000
+c.count = 2000; // !Error: hisoblagich faqat kattaroq qiymatga o'rnatilishi mumkin
+```
+
+E'tibor bering, `counter()` funksiyasining bu versiyasi lokal o'zgaruvchi e'lon qilmaydi, balki xossa aksessor metodlari bo'lishadigan xususiy _state_'ni saqlash uchun shunchaki o'zining `n` parametrini ishlatadi. Bu `counter()`'ni chaqiruvchiga xususiy o'zgaruvchining boshlang'ich qiymatini belgilash imkonini beradi.
+
+8-2-misol biz bu yerda namoyish etayotgan `closure`'lar orqali xususiy _state_'ni bo'lishish usulining umumlashtirilgan ko'rinishidir. Bu misol xususiy o'zgaruvchini va bu o'zgaruvchining qiymatini olish hamda o'rnatish uchun ikkita ichki funksiyani yaratadigan `addPrivateProperty()` funksiyasini taqdim etadi. U bu ichki funksiyalarni siz ko'rsatgan obyektga metodlar sifatida qo'shadi.
+
+``` js
+// Bu funksiya `o` obyektiga belgilangan nomdagi xossa uchun
+// xossa aksessor metodlarini qo'shadi. Metodlar `get<name>`
+// va `set<name>` deb nomlanadi. Agar predikat funksiyasi taqdim etilsa, `setter`
+// metodi o'z argumentini saqlashdan oldin uning to'g'riligini tekshirish uchun
+// undan foydalanadi. Agar predikat `false` qaytarsa, `setter` metodi istisno yuzaga keltiradi.
+//
+// Bu funksiyaning g'ayrioddiy jihati shundaki, `getter` va `setter` metodlari
+// tomonidan boshqariladigan xossa qiymati `o` obyektida saqlanmaydi.
+// Buning o'rniga, qiymat faqat shu funksiyadagi lokal o'zgaruvchida saqlanadi.
+// `getter` va `setter` metodlari ham shu funksiyaga lokal ravishda yaratiladi
+// va shuning uchun bu lokal o'zgaruvchiga murojaat qila oladi. Bu qiymatning
+// ikki aksessor metod uchun xususiy ekanligini va uni `setter` metodidan
+// boshqa yo'l bilan o'rnatish yoki o'zgartirish mumkin emasligini anglatadi.
+function addPrivateProperty(o, name, predicate) {
+    let value;  // Bu xossa qiymati
+
+    // `getter` metodi shunchaki qiymatni qaytaradi.
+    o[`get${name}`] = function() { return value; };
+
+    // `setter` metodi qiymatni saqlaydi yoki agar predikat
+    // qiymatni rad etsa, istisno yuzaga keltiradi.
+    o[`set${name}`] = function(v) {
+        if (predicate && !predicate(v)) {
+            throw new TypeError(`set${name}: yaroqsiz qiymat ${v}`);
+        } else {
+            value = v;
+        }
+    };
+}
+
+// Quyidagi kod `addPrivateProperty()` metodini ifodalab beradi.
+let o = {}; // Ushbu bo'sh obyekt
+
+// `getName` va `setName()` xossa aksessor metodlarini qo'shish.
+// Faqat satr qiymatlariga ruxsat berilishini ta'minlash.
+addPrivateProperty(o, "Name", x => typeof x === "string");
+
+o.setName("Frank"); // Xossa qiymatini o'rnatish
+o.getName()         // => "Frank"
+o.setName(0);       // !TypeError: noto'g'ri tipdagi qiymatni o'rnatishga urinish
+```
+<small>_8-2-misol. `Closure`'lar yordamida xususiy xossa aksessor metodlari_</small>
+
+### `Closure`'lardagi kutilmagan o'zgaruvchilarni bo'lishish
+
+Biz hozirgacha bir xil ko'rinish doirasida yaratilgan va bir xil xususiy o'zgaruvchi yoki o'zgaruvchilarga umumiy murojaatga ega bo'lgan ikkita `closure`'ga doir bir nechta misollarni ko'rib o'tdik. Bu muhim usul, lekin `closure`'lar o'zlari bo'lishmasligi kerak bo'lgan o'zgaruvchiga beixtiyor umumiy murojaatga ega bo'lib qolish holatlarini aniqlay olish ham xuddi shunday muhimdir. Quyidagi kodni ko'rib chiqing:
+
+``` js
+// Bu funksiya har doim `v`ni qaytaradigan funksiya qaytaradi
+function constfunc(v) { return () => v; }
+
+// Konstant funksiyalar massivini yaratamiz:
+let funcs = [];
+for(var i = 0; i < 10; i++) funcs[i] = constfunc(i);
+
+// Massivning 5-elementidagi funksiya 5 qiymatini qaytaradi.
+funcs[5]() // => 5
+```
+
+Sikl yordamida bir nechta `closure` yaratadigan bu kabi kod bilan ishlayotganda, siklni `closure`'larni yaratadigan funksiyaning ichiga ko'chirishga urinish keng tarqalgan xatodir. Masalan, quyidagi kod haqida mulohaza yuritib ko'ramiz:
+
+``` js
+// 0-9 qiymatlarini qaytaradigan funksiyalar massivini qaytaradi
+function constfuncs() {
+    let funcs = [];
+    for(var i = 0; i < 10; i++) {
+        funcs[i] = () => i;
+    }
+    return funcs;
+}
+let funcs = constfuncs();
+funcs[5]() // => 10; Nima uchun bu 5 qaytarmayapti?
+```
+
+Bu kod 10 ta `closure` yaratadi va ularni massivda saqlaydi. `Closure`'larning barchasi funksiyaning yagona bir chaqiruvi ichida yaratilgan, shuning uchun ular `i` o'zgaruvchisiga umumiy murojaatga ega. `constfuncs()` qaytganida, `i` o'zgaruvchisining qiymati `10` bo'ladi va barcha 10 ta `closure` aynan shu qiymatni bo'lishadi. Shuning uchun, qaytarilgan funksiyalar massividagi barcha funksiyalar bir xil qiymatni qaytaradi, bu esa biz umuman xohlagan narsa emas edi.
+
+Yodda tutish kerak bo'lgan muhim narsa shuki, `closure` bilan bog'langan ko'rinish doirasi "jonli"dir. Ichki funksiyalar ko'rinish doirasining xususiy nusxalarini yaratmaydi yoki o'zgaruvchi bog'lanmalarining statik "suratlarini" olmaydi.
+
+Aslida, bu yerdagi muammo `var` bilan e'lon qilingan o'zgaruvchilar butun funksiya bo'ylab aniqlanganligidadir. Bizning `for` siklimiz sikl o'zgaruvchisini `var i` bilan e'lon qiladi, shuning uchun `i` o'zgaruvchisi torroq, sikl tanasiga bog'langan ko'rinish doirasiga ega bo'lish o'rniga, butun funksiya bo'ylab aniqlangan bo'ladi. Bu kod ES5 va undan oldingi versiyalardagi keng tarqalgan xatoliklar toifasini aks ettiradi, lekin ES6'da blokli ko'rinish doirasiga ega o'zgaruvchilarning kiritilishi bu muammoni hal qiladi. Agar biz shunchaki `var`'ni `let` yoki `const` bilan almashtirsak, muammo yo'qoladi. `let` va `const` blokli ko'rinish doirasiga ega bo'lgani uchun, siklning har bir iteratsiyasi boshqa barcha iteratsiyalar doiralaridan mustaqil bo'lgan o'zining ko'rinish doirasini yaratadi va bu doiralarning har biri o'zining mustaqil `i` bog'lanmasiga ega bo'ladi.
+
+`Closure`'lar yozayotganda esda tutish kerak bo'lgan yana bir narsa shuki, `this` — bu o'zgaruvchi emas, balki JavaScript kalit so'zidir. Avvalroq muhokama qilinganidek, strelkali funksiyalar o'zlarini o'rab turgan funksiyaning `this` qiymatini meros qilib oladi, lekin `function` kalit so'zi bilan yaratilgan funksiyalar bunday qilmaydi. Shunday qilib, agar siz o'zini o'rab turgan funksiyaning `this` qiymatidan foydalanishi kerak bo'lgan `closure` yozayotgan bo'lsangiz, strelkali funksiyadan foydalanishingiz, yoki `closure`'ni qaytarishdan oldin unga `bind()`'ni chaqirishingiz, yoxud tashqi `this` qiymatini `closure`'ingiz meros qilib oladigan o'zgaruvchiga tayinlashingiz kerak:
+
+``` js
+const self = this; // `this` qiymatini ichki funksiyalar uchun mavjud qilish
+```
