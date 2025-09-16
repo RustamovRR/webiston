@@ -332,6 +332,10 @@
       "8.3-function-arguments-and-parameters": {
         "title": "8.3. Funksiya argumentlari va parametrlari",
         "path": "8-functions/8.3-function-arguments-and-parameters/page"
+      },
+      "8.4-functions-as-values": {
+        "title": "8.4. Funksiyalar qiymatlar sifatida",
+        "path": "8-functions/8.4-functions-as-values/page"
       }
     }
   }
