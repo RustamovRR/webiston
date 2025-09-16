@@ -1,4 +1,8 @@
 {
+  "preface": {
+    "title": "So'zboshi",
+    "path": "preface/page"
+  },
   "1-introduction-to-javascript": {
     "title": "1. JavaScriptga kirish",
     "path": "1-introduction-to-javascript/page",
