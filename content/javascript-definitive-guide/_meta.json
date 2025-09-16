@@ -344,6 +344,10 @@
       "8.6-closures": {
         "title": "8.6. Closure'lar",
         "path": "8-functions/8.6-closures/page"
+      },
+      "8.7-function-properties-methods-and-constructor": {
+        "title": "8.7. Funksiya xossalari, metodlari va konstruktori",
+        "path": "8-functions/8.7-function-properties-methods-and-constructor/page"
       }
     }
   }
