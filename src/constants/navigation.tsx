@@ -80,6 +80,27 @@ export const JAVASCRIPT_CHAPTERS = [
     title: 'Ifodalar va operatorlar',
     description: "JavaScript'dagi arifmetik, mantiqiy va boshqa operatorlar.",
   },
+  {
+    href: '/books/javascript-definitive-guide/5-statements',
+    title: "Ko'rsatmalar",
+    description:
+      "JavaScript'dagi ko'rsatmalar va boshqaruv oqimi: if/else, switch, sikllar va boshqa konstruktsiyalar.",
+  },
+  {
+    href: '/books/javascript-definitive-guide/6-objects',
+    title: 'Obyektlar',
+    description: "Obyektlar: xossalar, metodlar, prototipik merosxo'rlik va obyektlar bilan ishlash.",
+  },
+  {
+    href: '/books/javascript-definitive-guide/7-arrays',
+    title: 'Massivlar',
+    description: 'Massivlar: yaratish, indekslash, iteratsiya va keng tarqalgan metodlar.',
+  },
+  {
+    href: '/books/javascript-definitive-guide/8-functions',
+    title: 'Funksiyalar',
+    description: "Funksiyalar: ta'riflash, chaqirish, parametrlar/argumentlar, closure va funksional usullar.",
+  },
 ]
 
 export const socialLinks = [
