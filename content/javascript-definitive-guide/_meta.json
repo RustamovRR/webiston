@@ -352,6 +352,10 @@
       "8.8-functional-programming": {
         "title": "8.8. Funksional dasturlash",
         "path": "8-functions/8.8-functional-programming/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "8-functions/summary/page"
       }
     }
   }
