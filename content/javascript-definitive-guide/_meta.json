@@ -348,6 +348,10 @@
       "8.7-function-properties-methods-and-constructor": {
         "title": "8.7. Funksiya xossalari, metodlari va konstruktori",
         "path": "8-functions/8.7-function-properties-methods-and-constructor/page"
+      },
+      "8.8-functional-programming": {
+        "title": "8.8. Funksional dasturlash",
+        "path": "8-functions/8.8-functional-programming/page"
       }
     }
   }

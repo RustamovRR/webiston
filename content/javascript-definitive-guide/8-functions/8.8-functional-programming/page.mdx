@@ -1,0 +1,251 @@
+# Funksional dasturlash
+
+JavaScript Lisp yoki Haskell kabi sof funksional dasturlash tili emas, lekin JavaScript'ning funksiyalarni obyektlar sifatida boshqara olishi bizga JavaScript'da funksional dasturlash usullaridan foydalanish imkonini beradi. `map()` va `reduce()` kabi massiv metodlari funksional dasturlash uslubiga ayniqsa yorqin misol bo'la oladi. Keyingi bo'limlar JavaScript'da funksional dasturlash usullarini ifoda etadi. Ular yaxshi dasturlash uslubi uchun ko'rsatma sifatida emas, balki JavaScript funksiyalarining qudratini kengroq anglashga yordam beruvchi, tafakkurni kengaytiruvchi tadqiqot sifatida mo'ljallangan.
+
+## Massivlarni funksiyalar yordamida qayta ishlash
+
+Tasavvur qiling, bizda sonlar massivi bor va biz bu qiymatlarning o'rta arifmetik qiymati va standart chetlanishini hisoblamoqchimiz. Buni funksional bo'lmagan uslubda quyidagicha amalga oshirishimiz mumkin:
+
+``` js
+let data = [1,1,3,5,5]; // Bu bizning sonlar massivimiz
+
+// O'rta arifmetik qiymat — bu elementlar yig'indisining elementlar soniga bo'linmasi
+let total = 0;
+for(let i = 0; i < data.length; i++) total += data[i];
+let mean = total/data.length; // mean == 3; Ma'lumotlarimizning o'rta arifmetik qiymati 3
+
+// Standart chetlanishni hisoblash uchun, avval har bir elementning
+// o'rta arifmetik qiymatdan chetlanishi kvadratlari yig'indisini topamiz.
+total = 0;
+for(let i = 0; i < data.length; i++) {
+    let deviation = data[i] - mean;
+    total += deviation * deviation;
+}
+let stddev = Math.sqrt(total/(data.length-1)); // stddev == 2
+```
+
+Xuddi shu hisob-kitoblarni `map()` va `reduce()` massiv metodlaridan foydalanib, ixcham funksional uslubda ham amalga oshirishimiz mumkin (bu metodlarni eslab olish uchun §7.8.1-bo'limga qarang):
+
+``` js
+// Avval ikkita oddiy funksiya yaratib olamiz
+const sum = (x,y) => x+y;
+const square = x => x*x;
+
+// So'ngra o'rta arifmetik qiymat va standart chetlanishni hisoblash uchun
+// bu funksiyalarni Massiv metodlari bilan birga ishlatamiz
+let data = [1,1,3,5,5];
+let mean = data.reduce(sum)/data.length;
+let deviations = data.map(x => x-mean);
+let stddev = Math.sqrt(deviations.map(square).reduce(sum)/(data.length-1));
+stddev // => 2
+```
+
+Kodning bu yangi versiyasi birinchisidan ancha farqli ko'rinadi, lekin u hali ham obyektlarda metodlarni chaqirmoqda, shuning uchun unda ba'zi obyektga yo'naltirilgan an'analar saqlanib qolgan. Keling, `map()` va `reduce()` metodlarining funksional versiyalarini yozamiz:
+
+``` js
+const map = function(a, ...args) { return a.map(...args); };
+const reduce = function(a, ...args) { return a.reduce(...args); };
+```
+
+Bu `map()` va `reduce()` funksiyalari yaratilganidan so'ng, o'rta arifmetik qiymat va standart chetlanishni hisoblaydigan kodimiz endi quyidagicha ko'rinadi:
+
+``` js
+const sum = (x,y) => x+y;
+const square = x => x*x;
+let data = [1,1,3,5,5];
+let mean = reduce(data, sum)/data.length;
+let deviations = map(data, x => x-mean);
+let stddev = Math.sqrt(reduce(map(deviations, square), sum)/(data.length-1));
+stddev // => 2
+```
+
+## Yuqori tartibli funksiyalar
+
+**Yuqori tartibli funksiya (`higher-order function`)** — bu funksiyalar ustida ishlaydigan, argument sifatida bir yoki bir nechta funksiyani qabul qilib, yangi funksiya qaytaradigan funksiyadir. Quyida misol keltirilgan:
+
+``` js
+// Bu yuqori tartibli funksiya o'z argumentlarini `f`ga uzatadigan
+// va `f`ning qaytargan qiymatining mantiqiy inkorini qaytaradigan yangi funksiya qaytaradi;
+function not(f) {
+    return function(...args) {              // Yangi funksiya qaytarish
+        let result = f.apply(this, args);   // u `f`ni chaqiradi
+        return !result;                     // va uning natijasini inkor qiladi.
+    };
+}
+const even = x => x % 2 === 0; // Sonning juft ekanligini aniqlaydigan funksiya
+const odd = not(even);         // Teskari ishni qiladigan yangi funksiya
+[1,1,3,5,5].every(odd)         // => true: massivning har bir elementi toq
+```
+
+Bu `not()` funksiyasi yuqori tartiblidir, chunki u argument sifatida funksiya qabul qiladi va yangi funksiya qaytaradi. Yana bir misol sifatida, quyidagi `mapper()` funksiyasini ko'rib chiqamiz. U argument sifatida funksiya qabul qiladi va o'sha funksiya yordamida bir massivni boshqasiga moslashtiradigan (`map`) yangi funksiya qaytaradi. Bu funksiya avvalroq yaratilgan `map()` funksiyasidan foydalanadi va bu ikki funksiyaning qanday farq qilishini tushunishingiz muhimdir:
+
+``` js
+// Massiv argumentini kutadigan va `f`ni har bir elementga qo'llab,
+// qaytarilgan qiymatlar massivini qaytaradigan funksiya qaytarish.
+// Buni avvalgi `map()` funksiyasi bilan solishtirib ko'ring.
+function mapper(f) {
+    return a => map(a, f);
+}
+const increment = x => x+1;
+const incrementAll = mapper(increment);
+incrementAll([1,2,3]) // => [2,3,4]
+```
+
+Quyida yana bir, umumiyroq misol keltirilgan. U `f` va `g` degan ikkita funksiyani qabul qilib, `f(g())`'ni hisoblaydigan yangi funksiya qaytaradi:
+
+``` js
+// `f(g(...))`ni hisoblaydigan yangi funksiya qaytarish.
+// Qaytarilgan `h` funksiyasi o'zining barcha argumentlarini `g`ga uzatadi,
+// so'ngra `g`ning qaytargan qiymatini `f`ga uzatadi,
+// keyin esa `f`ning qaytargan qiymatini qaytaradi.
+// `f` ham, `g` ham `h` chaqirilgan `this` qiymatining o'zi bilan chaqiriladi.
+function compose(f, g) {
+    return function(...args) {
+        // Biz `f` uchun `call`dan foydalanamiz, chunki yagona qiymat uzatyapmiz va
+        // `g` uchun `apply`dan foydalanamiz, chunki qiymatlar massivini uzatyapmiz.
+        return f.call(this, g.apply(this, args));
+    };
+}
+const sum = (x,y) => x+y;
+const square = x => x*x;
+compose(square, sum)(2,3) // => 25; yig'indining kvadrati
+```
+
+Keyingi bo'limlarda keltirib o'tiladigan `partial()` va `memoize()` funksiyalari yana ikkita muhim yuqori tartibli funksiyalardir.
+
+## Funksiyalarni qisman qo'llash
+
+Biror `f` funksiyasining `bind()` metodi (§8.7.5) `f`'ni belgilangan kontekstda va belgilangan argumentlar to'plami bilan chaqiradigan yangi funksiya qaytaradi. Biz buni funksiyani obyektga **bog'laydi** va argumentlarni **qisman qo'llaydi** deymiz. `bind()` metodi argumentlarni chap tomondan qisman qo'llaydi — ya'ni, siz `bind()`'ga uzatgan argumentlar asl funksiyaga uzatiladigan argumentlar ro'yxatining boshiga joylashtiriladi. Lekin argumentlarni o'ng tomondan ham qisman qo'llash mumkin:
+
+``` js
+// Bu funksiyaga uzatilgan argumentlar chap tomonga qo'yiladi
+function partialLeft(f, ...outerArgs) {
+    return function(...innerArgs) { // Bu funksiyani qaytarish
+        let args = [...outerArgs, ...innerArgs]; // Argumentlar ro'yxatini qurish
+        return f.apply(this, args);              // So'ngra `f`ni u bilan chaqirish
+    };
+}
+
+// Bu funksiyaga uzatilgan argumentlar o'ng tomonga qo'yiladi
+function partialRight(f, ...outerArgs) {
+    return function(...innerArgs) { // Bu funksiyani qaytarish
+        let args = [...innerArgs, ...outerArgs]; // Argumentlar ro'yxatini qurish
+        return f.apply(this, args);              // So'ngra `f`ni u bilan chaqirish
+    };
+}
+
+// Bu funksiyaga uzatilgan argumentlar shablon bo'lib xizmat qiladi. Argumentlar
+// ro'yxatidagi `undefined` qiymatlar ichki to'plamdagi qiymatlar bilan to'ldiriladi.
+function partial(f, ...outerArgs) {
+    return function(...innerArgs) {
+        let args = [...outerArgs]; // tashqi argumentlar shablonining lokal nusxasi
+        let innerIndex = 0;        // navbatdagi ichki argument
+        // `args` bo'ylab aylanib, `undefined` qiymatlarni ichki argumentlardan to'ldirish
+        for(let i = 0; i < args.length; i++) {
+            if (args[i] === undefined) args[i] = innerArgs[innerIndex++];
+        }
+        // Endi qolgan har qanday ichki argumentlarni qo'shib qo'yish
+        args.push(...innerArgs.slice(innerIndex));
+        return f.apply(this, args);
+    };
+}
+
+// Quyida uchta argumentli funksiya
+const f = function(x,y,z) { return x * (y - z); };
+// Bu uchta qisman qo'llash qanday farq qilishiga e'tibor bering
+partialLeft(f, 2)(3,4)        // => -2: Birinchi argumentni bog'lash: 2 * (3 - 4)
+partialRight(f, 2)(3,4)       // => 6: Oxirgi argumentni bog'lash: 3 * (4 - 2)
+partial(f, undefined, 2)(3,4) // => -6: O'rtadagi argumentni bog'lash: 3 * (2 - 4)
+```
+
+Bu qisman qo'llash funksiyalari bizga allaqachon mavjud bo'lgan funksiyalardan yangi va qiziqarli funksiyalarni osongina yaratish imkonini beradi. Quyida bir nechta misollar keltirilgan:
+
+``` js
+const increment = partialLeft(sum, 1);
+const cuberoot = partialRight(Math.pow, 1/3);
+cuberoot(increment(26)) // => 3
+```
+
+Qisman qo'llashni boshqa yuqori tartibli funksiyalar bilan birlashtirganimizda, u yanada qiziqarliroq tus oladi. Mana, masalan, avvalroq ko'rsatilgan `not()` funksiyasini kompozitsiya va qisman qo'llash yordamida yaratishning bir yo'li:
+
+``` js
+const not = partialLeft(compose, x => !x);
+const even = x => x % 2 === 0;
+const odd = not(even);
+const isNumber = not(isNaN);
+odd(3) && isNumber(2) // => true
+```
+
+Biz, shuningdek, kompozitsiya va qisman qo'llashdan foydalanib, o'rta arifmetik qiymat va standart chetlanish hisob-kitoblarimizni **ekstremal funksional uslubda** qayta bajarishimiz mumkin:
+
+``` js
+// `sum()` va `square()` funksiyalari yuqorida ta'riflangan. Mana yana bir nechtasi:
+const product = (x,y) => x*y;
+const neg = partial(product, -1);
+const sqrt = partial(Math.pow, undefined, .5);
+const reciprocal = partial(Math.pow, undefined, neg(1));
+
+// Endi o'rta arifmetik qiymat va standart chetlanishni hisoblaymiz.
+let data = [1,1,3,5,5]; // Bizning ma'lumotlar
+let mean = product(reduce(data, sum), reciprocal(data.length));
+let stddev = sqrt(product(reduce(map(data,
+                                    compose(square,
+                                            partial(sum, neg(mean)))),
+                                sum),
+                            reciprocal(sum(data.length,neg(1)))));
+[mean, stddev] // => [3, 2]
+```
+
+E'tibor bering, o'rta arifmetik qiymat va standart chetlanishni hisoblaydigan bu kod butunlay funksiya chaqiruvlaridan iborat; unda hech qanday operatorlar ishtirok etmayapti va qavslar soni shunchalik ko'payib ketdiki, bu JavaScript kodi Lisp kodiga o'xshab qoldi. Yana bir bor aytaman, bu men JavaScript dasturlashi uchun targ'ib qiladigan uslub emas, lekin JavaScript kodi qanchalik chuqur funksional bo'lishi mumkinligini ko'rish qiziqarli bir mashqdir.
+
+## Memoizatsiya
+
+§8.4.1-bo'limda biz avval hisoblangan natijalarini keshlaydigan faktorial funksiyasini yaratgan edik. Funksional dasturlashda bu turdagi keshlash **memoizatsiya (`memoization`)** deb ataladi. Quyidagi kod argument sifatida funksiya qabul qilib, o'sha funksiyaning memoizatsiya qilingan versiyasini qaytaradigan yuqori tartibli `memoize()` funksiyasini ko'rsatadi:
+
+``` js
+// `f`ning memoizatsiya qilingan versiyasini qaytarish.
+// Bu faqat `f`ning argumentlari barchasi bir-biridan farqli satrli ifodaga
+// ega bo'lgandagina ishlaydi.
+function memoize(f) {
+    const cache = new Map(); // `closure`da saqlanadigan qiymatlar keshi.
+
+    return function(...args) {
+        // Kesh kaliti sifatida ishlatish uchun argumentlarning satrli versiyasini yaratish.
+        let key = args.length + args.join("+");
+        if (cache.has(key)) {
+            return cache.get(key);
+        } else {
+            let result = f.apply(this, args);
+            cache.set(key, result);
+            return result;
+        }
+    };
+}
+```
+
+`memoize()` funksiyasi kesh sifatida ishlatish uchun yangi obyekt yaratadi va bu obyektni lokal o'zgaruvchiga tayinlaydi. Shunday qilib, u qaytarilgan funksiya uchun xususiy bo'lib qoladi (`closure`'da). Qaytarilgan funksiya o'zining argumentlar massivini satrga o'zgartiradi va bu satrni kesh obyekti uchun xossa nomi sifatida ishlatadi. Agar keshda qiymat mavjud bo'lsa, u uni to'g'ridan-to'g'ri qaytaradi. Aks holda, u bu argumentlar uchun qiymatni hisoblash maqsadida ko'rsatilgan funksiyani chaqiradi, o'sha qiymatni keshlaydi va uni qaytaradi.
+
+Quyida `memoize()`'dan qanday foydalanishimiz mumkinligi ko'rsatilgan:
+
+``` js
+// Yevklid algoritmi yordamida ikki butun sonning Eng Katta Umumiy Bo'luvchisini (EKUB) qaytarish:
+// http://en.wikipedia.org/wiki/Euclidean_algorithm
+function gcd(a,b) {         // `a` va `b` uchun tip tekshiruvi tushirib qoldirilgan
+    if (a < b) {            // Boshlashdan oldin `a >= b` ekanligiga ishonch hosil qilish
+        [a, b] = [b, a];    // O'zgaruvchilarni almashtirish uchun destrukturizatsiya
+    }
+    while(b !== 0) {
+        [a, b] = [b, a%b];  // Bu Yevklidning EKUB uchun algoritmi
+    }
+    return a;
+}
+const gcdmemo = memoize(gcd);
+gcdmemo(85, 187) // => 17
+
+// E'tibor bering, biz memoizatsiya qilmoqchi bo'lgan rekursiv funksiya yozganimizda,
+// odatda asl nusxaga emas, balki memoizatsiya qilingan versiyaga rekursiya qilishni xohlaymiz.
+const factorial = memoize(function(n) {
+    return (n <= 1) ? 1 : n * factorial(n-1);
+});
+factorial(5) // => 120: shuningdek, 4, 3, 2 va 1 uchun qiymatlarni keshlaydi.
+```
