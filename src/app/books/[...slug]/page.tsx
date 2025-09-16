@@ -1,13 +1,11 @@
 import { ErrorContent, TutorialContent, TutorialLanding } from '@/components/mdx'
-import { getAllTutorials, getTutorialInfo, getMDXContent, serializeContent, getAllTutorialPaths } from '@/lib/mdx'
+import { getTutorialInfo, getMDXContent, serializeContent, getAllTutorialPaths } from '@/lib/mdx'
 import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
   const paths = await getAllTutorialPaths()
   return paths
 }
-
-const navigationCache = new Map()
 
 // Dinamik metadata yaratish
 export async function generateMetadata({ params }: any): Promise<any> {
