@@ -1,0 +1,152 @@
+---
+title: "Funksiyalarni ta'riflash"
+description: "JavaScript funksiyalarini ta'riflash usullari: function e'loni, funksiya ifodasi va ES6 strelkali (arrow) funksiyalar. Metodlar uchun qisqa sintaksis, getter/setter hamda Function konstruktori haqida amaliy tushuntirishlar va misollar."
+keywords: JavaScript, funksiya, function, funksiyani ta'riflash, function declaration, function expression, arrow function, strelkali funksiya, metod qisqa sintaksisi, method shorthand, getter, setter, Function konstruktori, Function constructor, hoisting, scope, rekursiya, recursion
+author: Webiston.uz
+---
+
+# Funksiyalarni ta'riflash
+
+JavaScript funksiyasini ta'riflashning eng to'g'ridan-to'g'ri usuli — bu `function` kalit so'zidan foydalanishdir. Uni ham e'lon, ham ifoda sifatida ishlatish mumkin. ES6 `function` kalit so'zisiz funksiyalarni ta'riflashning muhim yangi usulini kiritdi: **"strelkali funksiyalar" (`arrow functions`)** ayniqsa ixcham sintaksisga ega va bir funksiyani boshqa funksiyaga argument sifatida uzatishda juda qo'l keladi. Keyingi quyi bo'limlar funksiyalarni ta'riflashning shu uchta usulini qamrab oladi. E'tibor bering, funksiya parametrlariga oid ba'zi sintaksis tafsilotlari §8.3-bo'limga qoldirilgan.
+
+Obyekt literallari va klass ta'riflarida metodlarni ta'riflash uchun qulay qisqartirilgan sintaksis mavjud. Bu qisqa sintaksis §6.10.5-bo'limda yoritilgan edi va u funksiya ta'rifi ifodasidan foydalanib, uni asosiy `nom:qiymat` obyekt literali sintaksisi yordamida obyekt xossasiga tayinlashga ekvivalentdir. Yana bir maxsus holatda, siz obyekt literallarida maxsus xossa _getter_ va _setter_ metodlarini ta'riflash uchun `get` va `set` kalit so'zlaridan foydalanishingiz mumkin. Bu funksiya ta'rifi sintaksisi §6.10.6-bo'limda yoritilgan edi.
+
+Shuni ham yodda tutingki, funksiyalarni `Function()` konstruktori yordamida ham ta'riflash mumkin, bu esa §8.7.7-bo'limning mavzusidir. Shuningdek, JavaScript ba'zi ixtisoslashgan funksiya turlarini ham taqdim etadi. `function*` **generator funksiyalarini** (12-bobga qarang), `async function` esa **asinxron funksiyalarni** (13-bobga qarang) ta'riflaydi.
+
+## Funksiya e'lonlari (Function declarations)
+
+**Funksiya e'lonlari** `function` kalit so'zidan va undan keyingi quyidagi komponentlardan iborat bo'ladi:
+
+- Funksiyani nomlaydigan **identifikator**. Bu nom funksiya e'lonlarining majburiy qismi hisoblanadi: u o'zgaruvchi nomi sifatida ishlatiladi va yangi yaratilgan funksiya obyekti shu o'zgaruvchiga tayinlanadi.
+
+- Qavslar juftligi ichidagi, vergul bilan ajratilgan, nolta yoki undan ortiq **identifikatorlar ro'yxati**. Bu identifikatorlar funksiyaning parametr nomlaridir va ular funksiya tanasi ichida lokal o'zgaruvchilar kabi ishlaydi.
+
+- Jingalak qavslar juftligi ichidagi nolta yoki undan ortiq **JavaScript ko'rsatmalari**. Bu ko'rsatmalar funksiyaning **tanasini** tashkil etadi: ular funksiya har safar chaqirilganda bajariladi.
+
+Quyida funksiya e'lonlariga bir nechta misollar keltirilgan:
+
+``` js
+// `o`ning har bir xossasining nomi va qiymatini chiqaradi. `undefined` qaytaradi.
+function printprops(o) {
+    for(let p in o) {
+        console.log(`${p}: ${o[p]}\n`);
+    }
+}
+
+// Dekart nuqtalari (x1,y1) va (x2,y2) o'rtasidagi masofani hisoblaydi.
+function distance(x1, y1, x2, y2) {
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+// Faktoriallarni hisoblaydigan rekursiv funksiya (o'z-o'zini chaqiradigan).
+// Eslatma: x! bu x va undan kichik barcha musbat butun sonlarning ko'paytmasidir.
+function factorial(x) {
+    if (x <= 1) return 1;
+    return x * factorial(x-1);
+}
+```
+
+Funksiya e'lonlari haqida tushunish kerak bo'lgan muhim jihatlardan biri shuki, funksiya nomi qiymati funksiyaning o'zi bo'lgan o'zgaruvchiga aylanadi. Funksiya e'lon qilish ko'rsatmalari o'zlarini o'rab turgan skript, funksiya yoki blokning eng yuqorisiga **"ko'tariladi" (`hoisted`)**. Shuning uchun, bu tarzda ta'riflangan funksiyalarni ularning ta'rifidan oldin kelgan koddan ham chaqirish mumkin. Boshqacha aytganda, JavaScript kodining biror blokida e'lon qilingan barcha funksiyalar o'sha blokning hamma joyida mavjud bo'ladi va ular JavaScript interpretatori o'sha blokdagi biror kodni bajarishni boshlashidan **oldinroq** ta'riflanib bo'lgan bo'ladi.
+
+Biz tasvirlagan `distance()` va `factorial()` funksiyalari qiymat hisoblash uchun mo'ljallangan va ular o'sha qiymatni o'zlarini chaqirgan kodga qaytarish uchun `return`'dan foydalanadi. `return` ko'rsatmasi funksiyaning bajarilishini to'xtatadi va o'zining ifoda qiymatini (agar mavjud bo'lsa) chaqiruvchiga qaytaradi. Agar `return` ko'rsatmasi o'zi bilan bog'langan ifodaga ega bo'lmasa, funksiyaning qaytaradigan qiymati `undefined` bo'ladi.
+
+`printprops()` funksiyasi esa boshqacha: uning vazifasi obyekt xossalarining nomlari va qiymatlarini chiqarishdir. Hech qanday qiymat qaytarish zarur emas va funksiya `return` ko'rsatmasini o'z ichiga olmaydi. `printprops()` funksiyasi chaqiruvining qiymati har doim `undefined` bo'ladi. Agar funksiya `return` ko'rsatmasini o'z ichiga olmasa, u shunchaki funksiya tanasidagi har bir ko'rsatmani oxiriga yetguncha bajaradi va chaqiruvchiga `undefined` qiymatini qaytaradi.
+
+ES6'dan oldin, funksiya e'lonlariga faqat eng yuqori darajada — JavaScript fayli ichida yoki boshqa funksiya ichida — ruxsat berilgan edi. Garchi ba'zi implementatsiyalar bu qoidani chetlab o'tgan bo'lsa-da, funksiyalarni sikllar, shartli ko'rsatmalar yoki boshqa bloklar tanasi ichida ta'riflash texnik jihatdan mumkin emas edi. Biroq ES6'ning qat'iy rejimida bloklar ichida funksiya e'lonlariga ruxsat berilgan. Blok ichida ta'riflangan funksiya faqat o'sha blok ichida mavjud bo'ladi va blokdan tashqarida ko'rinmaydi.
+
+## Funksiya ifodalari (Function expressions)
+
+**Funksiya ifodalari** funksiya e'lonlariga juda o'xshaydi, lekin ular kattaroq bir ifoda yoki ko'rsatma kontekstida keladi va nomga ega bo'lishi ixtiyoriydir. Quyida funksiya ifodalariga bir nechta misollar keltirilgan:
+
+``` js
+// Bu funksiya ifodasi o'z argumentini kvadratga ko'taradigan funksiyani ta'riflaydi.
+// E'tibor bering, biz uni o'zgaruvchiga tayinlayapmiz.
+const square = function(x) { return x*x; };
+
+// Funksiya ifodalari nomga ega bo'lishi mumkin, bu rekursiya uchun foydalidir.
+const f = function fact(x) { if (x <= 1) return 1; else return x*fact(x-1); };
+
+// Funksiya ifodalari, shuningdek, boshqa funksiyalarga argument sifatida ham ishlatilishi mumkin:
+[3,2,1].sort(function(a,b) { return a-b; });
+
+// Funksiya ifodalari ba'zan ta'riflanishi bilanoq darhol chaqiriladi:
+let tensquared = (function(x) {return x*x;}(10));
+```
+
+E'tibor bering, ifoda sifatida ta'riflangan funksiyalar uchun nom ixtiyoriydir va biz yuqorida ko'rsatgan funksiya ifodalarining aksariyatida u tushirib qoldirilgan. Funksiya e'loni aslida o'zgaruvchi e'lon qiladi va unga funksiya obyektini tayinlaydi. Funksiya ifodasi esa, aksincha, o'zgaruvchi e'lon qilmaydi: agar siz yangi ta'riflangan funksiya obyektiga bir necha bor murojaat qilishingiz kerak bo'lsa, uni konstanta yoki o'zgaruvchiga tayinlash o'zingizga bog'liq. Funksiya ifodalari bilan `const`'dan foydalanish yaxshi amaliyotdir, shunda siz tasodifan yangi qiymatlar tayinlash orqali funksiyalaringizni qayta yozib yubormaysiz.
+
+Faktorial funksiyasi kabi, o'z-o'ziga murojaat qilishi kerak bo'lgan funksiyalar uchun nomga ruxsat etiladi. Agar funksiya ifodasi **nom bilan kelsa**, o'sha funksiya uchun lokal ko'rinish doirasi (`scope`) o'sha nomning funksiya obyektiga bog'lanishini o'zida aks ettiradi. Aslida, funksiya nomi funksiya ichida lokal o'zgaruvchiga aylanadi. Ifoda sifatida ta'riflangan ko'pchilik funksiyalar nomga ehtiyoj sezmaydi, bu esa ularning ta'rifini yanada ixchamroq qiladi (garchi quyida tasvirlanadigan strelkali funksiyalarchalik ixcham bo'lmasa ham).
+
+`f()` funksiyasini funksiya e'loni bilan ta'riflash va uni ifoda sifatida yaratgandan keyin `f` o'zgaruvchisiga tayinlash o'rtasida muhim farq bor. Siz e'lon shaklidan foydalanganingizda, funksiya obyektlari ular joylashgan kod ishga tushishidan oldin yaratiladi va ta'riflar "ko'tariladi" (`hoisted`). Natijada siz bu funksiyalarni ularning ta'rif ko'rsatmasidan oldin kelgan koddan ham chaqira olasiz. Biroq bu ifoda sifatida ta'riflangan funksiyalar uchun to'g'ri emas: bu funksiyalar ularni ta'riflaydigan ifoda haqiqatan ham baholanmaguncha **mavjud bo'lmaydi**. Bundan tashqari, funksiyani chaqirish uchun siz unga murojaat qila olishingiz kerak va ifoda sifatida ta'riflangan funksiyaga u biror o'zgaruvchiga tayinlanmaguncha murojaat qila olmaysiz. Shuning uchun, ifodalar bilan ta'riflangan funksiyalarni ular ta'riflanishidan oldin chaqirib bo'lmaydi.
+
+## Strelkali funksiyalar
+
+ES6'da funksiyalarni **"strelkali funksiyalar" (`arrow functions`)** deb nomlanuvchi juda ixcham sintaksis yordamida ta'riflashingiz mumkin. Bu sintaksis matematik yozuvni eslatadi va funksiya parametrlarini funksiya tanasidan ajratish uchun `=>` "strelka"sidan foydalanadi.
+
+Bunda `function` kalit so'zi ishlatilmaydi va strelkali funksiyalar ko'rsatmalar emas, balki ifodalar bo'lgani uchun, funksiya nomiga ham hojat yo'q. Strelkali funksiyaning umumiy ko'rinishi — bu qavslar ichidagi, vergul bilan ajratilgan parametrlar ro'yxati, undan keyin keladigan `=>` strelkasi va jingalak qavslar ichidagi funksiya tanasidir:
+
+``` js
+const sum = (x, y) => { return x + y; };
+```
+
+Lekin strelkali funksiyalar bundan ham ixchamroq sintaksisni qo'llab-quvvatlaydi. Agar funksiya tanasi yagona `return` ko'rsatmasidan iborat bo'lsa, siz `return` kalit so'zini, u bilan birga keladigan nuqtali vergulni va jingalak qavslarni tushirib qoldirib, funksiya tanasini shunchaki qaytarilishi kerak bo'lgan qiymatning ifodasi sifatida yozishingiz mumkin:
+
+``` js
+const sum = (x, y) => x + y;
+```
+
+Bundan tashqari, agar strelkali funksiya aniq bitta parametrga ega bo'lsa, parametrlar ro'yxati atrofidagi qavslarni ham tushirib qoldirishingiz mumkin:
+
+``` js
+const polynomial = x => x*x + 2*x + 3;
+```
+
+Biroq shuni yodda tutingki, umuman argumentsiz bo'lgan strelkali funksiya bo'sh qavslar juftligi bilan yozilishi shart:
+
+``` js
+const constantFunc = () => 42;
+```
+
+E'tibor bering, strelkali funksiya yozayotganda, funksiya parametrlari va `=>` strelkasi o'rtasida yangi qator qo'ymaslik kerak. Aks holda, siz `const polynomial = x` kabi, o'z-o'zidan sintaktik jihatdan to'g'ri bo'lgan tayinlash ko'rsatmasiga ega bo'lib qolishingiz mumkin.
+
+Shuningdek, agar strelkali funksiyangizning tanasi yagona `return` ko'rsatmasi bo'lsa, lekin qaytarilishi kerak bo'lgan ifoda obyekt literali bo'lsa, u holda siz funksiya tanasining jingalak qavslari bilan obyekt literalining jingalak qavslari o'rtasidagi sintaktik noaniqlikdan qochish uchun obyekt literalini **qavslar ichiga olishingiz kerak**:
+
+``` js
+const f = x => { return { value: x }; };    // Yaxshi: f() obyekt qaytaradi
+const g = x => ({ value: x });              // Yaxshi: g() obyekt qaytaradi
+const h = x => { value: x };                // Yomon: h() hech narsa qaytarmaydi
+const i = x => { v: x, w: x };              // Yomon: Sintaktik Xato
+```
+
+Ushbu kodning uchinchi qatorida `h()` funksiyasi haqiqatan ham noaniqdir: siz obyekt literali deb maqsad qilgan kodingiz belgilangan ko'rsatma sifatida tahlil qilinishi mumkin, shuning uchun `undefined` qaytaradigan funksiya yaratiladi. To'rtinchi qatorda esa, murakkabroq obyekt literali to'g'ri ko'rsatma emas va bu noto'g'ri kod sintaktik xatolikka sabab bo'ladi.
+
+Strelkali funksiyalarning ixcham sintaksisi ularni bir funksiyani boshqa funksiyaga uzatish kerak bo'lganda ideal vositaga aylantiradi. Bu, masalan, `map()`, `filter()` va `reduce()` kabi massiv metodlari (§7.8.1) bilan ishlashda keng tarqalgan holatdir:
+
+``` js
+// `null` elementlari olib tashlangan massiv nusxasini yaratish.
+let filtered = [1,null,2,3].filter(x => x !== null);    // filtered == [1,2,3]
+
+// Ba'zi sonlarni kvadratga ko'tarish:
+let squares = [1,2,3,4].map(x => x*x);                  // squares == [1,4,9,16]
+```
+
+Strelkali funksiyalar boshqa usullarda ta'riflangan funksiyalardan bitta hal qiluvchi jihati bilan farq qiladi: ular `this` kalit so'zining qiymatini, boshqa usullarda ta'riflangan funksiyalar kabi o'zlarining shaxsiy chaqiruv kontekstini yaratish o'rniga, o'zlari ta'riflangan muhitdan **meros qilib oladilar**. Bu strelkali funksiyalarning muhim va juda foydali xususiyatidir va biz unga ushbu bobning keyingi qismlarida yana qaytamiz.
+
+Strelkali funksiyalar boshqa funksiyalardan `prototype` xossasiga ega emasligi bilan ham farq qiladi. Bu shuni anglatadiki, ularni yangi klasslar uchun konstruktor funksiyalari sifatida ishlatib bo'lmaydi (§9.2-bo'limga qarang).
+
+## Ichma-ich joylashgan funksiyalar
+
+JavaScript'da funksiyalarni boshqa funksiyalar ichida joylashtirish mumkin. Masalan:
+
+``` js
+function hypotenuse(a, b) {
+    function square(x) { return x*x; }
+    return Math.sqrt(square(a) + square(b));
+}
+```
+
+Ichma-ich joylashgan funksiyalarning qiziqarli jihati ularning o'zgaruvchilar ko'rinish doirasi (`scope`) qoidalaridir: ular o'zlari joylashgan funksiya (yoki funksiyalar)ning parametrlariga va o'zgaruvchilariga murojaat qila oladilar. Masalan, yuqorida ko'rsatilgan kodda ichki `square()` funksiyasi tashqi `hypotenuse()` funksiyasi ta'riflagan `a` va `b` parametrlarini o'qiy oladi va yoza oladi.
+
+Ichma-ich joylashgan funksiyalar uchun bu ko'rinish doirasi qoidalari juda muhim va biz ularni §8.6-bo'limda yana ko'rib chiqamiz.
