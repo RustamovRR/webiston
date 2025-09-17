@@ -1,29 +1,6 @@
 {
-  "1-introduction-to-javascript": {
-    "title": "1. JavaScriptga kirish",
-    "path": "1-introduction-to-javascript/page",
-    "hasIndex": true,
-    "children": {
-      "1.1-exploring-javascript": {
-        "title": "1.1 JavaScript’ni tadqiq qilish",
-        "path": "1-introduction-to-javascript/1.1-exploring-javascript/page"
-      },
-      "1.2-hello-world": {
-        "title": "1.2. Salom, Dunyo!",
-        "path": "1-introduction-to-javascript/1.2-hello-world/page"
-      },
-      "1.3-tour-of-javascript": {
-        "title": "1.3. JavaScript bo'ylab sayohat",
-        "path": "1-introduction-to-javascript/1.3-tour-of-javascript/page"
-      },
-      "1.4-character-frequency-histograms": {
-        "title": "1.4. Misol: Belgilar chastotasi gistogrammalari",
-        "path": "1-introduction-to-javascript/1.4-character-frequency-histograms/page"
-      },
-      "summary": {
-        "title": "Xulosa",
-        "path": "1-introduction-to-javascript/summary/page"
-      }
-    }
+  "preface": {
+    "title": "So'zboshi",
+    "path": "preface/page"
   }
 }

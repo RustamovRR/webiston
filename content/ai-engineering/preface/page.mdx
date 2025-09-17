@@ -1,0 +1,188 @@
+# So'zboshi
+
+`ChatGPT` paydo bo'lganda, ko'plab hamkasblarim singari men ham shoshib qoldim. Meni hayratga solgan narsa modelning hajmi yoki imkoniyatlari emas edi. O'n yildan oshiq vaqtdan beri sun'iy intellekt hamjamiyati model miqyosini oshirish uni takomillashtirishini bilar edi. 2012-yilda AlexNet mualliflari o'zlarining [burilish yasagan maqolasida](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) shunday degan edi: “Barcha tajribalarimiz shuni ko'rsatadiki, natijalarimizni shunchaki tezroq `GPU`'lar va kattaroq ma'lumotlar to'plamlari paydo bo'lishini kutish orqali yaxshilash mumkin.”[^1], [^2]
+
+Meni ajablantirgan narsa — bu imkoniyatlarning keskin o'sishi qanchalik ko'p amaliy dasturlarga yo'l ochgani bo'ldi. Men model sifatidagi kichik o'sish amaliy dasturlarning biroz ko'payishiga olib keladi deb o'ylagandim. Buning o'rniga, bu yangi imkoniyatlarning misli ko'rilmagan portlashiga sabab bo'ldi.
+
+Sun'iy intellektning bu yangi imkoniyatlari nafaqat SI dasturlariga bo'lgan talabni oshirdi, balki dasturchilar uchun sohaga kirish to'sig'ini ham pasaytirdi. Sun'iy intellekt dasturlarini yaratishni boshlash shu qadar osonlashdiki, hatto biror qator ham kod yozmasdan turib dastur yaratish mumkin bo'lib qoldi. Bu o'zgarish sun'iy intellektni ixtisoslashgan sohadan har kim foydalana oladigan qudratli ishlab chiqish vositasiga aylantirdi.
+
+Garchi bugungi kunda sun'iy intellektning joriy etilishi yangilikdek tuyulsa-da, u anchadan beri mavjud bo'lgan texnikalarga asoslanadi. Tilni modellashtirish haqidagi ilk maqolalar 1950-yillardayoq paydo bo'lgan. Qidiruv bilan to'ldirilgan generatsiya (`RAG`) dasturlari `RAG` atamasi paydo bo'lishidan ancha oldin qidiruv va tavsiya tizimlarini quvvatlab kelgan qidiruv texnologiyasiga asoslanadi. An'anaviy mashinaviy ta'lim (`machine learning`) dasturlarini `deployment` qilishning eng ilg'or amaliyotlari — tizimli tajribalar o'tkazish, puxta baholash, tezroq va arzonroq modellar uchun murosasiz optimallashtirish — fundamental modellarga asoslangan dasturlar bilan ishlashning ham eng yaxshi amaliyotlari bo'lib qolmoqda.
+
+Ko'plab sun'iy intellekt muhandisligi uslublarining tanishligi va qo'llash osonligi odamlarni bu sohada hech qanday yangilik yo'q degan noto'g'ri fikrga olib kelishi mumkin. Ammo sun'iy intellekt dasturlarini yaratishning ko'plab tamoyillari o'zgarishsiz qolayotgan bo'lsa-da, sun'iy intellekt modellarining miqyosi va takomillashgan imkoniyatlari yangi yechimlarni talab qiladigan imkoniyatlar va qiyinchiliklarni yuzaga keltiradi.
+
+Ushbu kitob fundamental modellarni real hayotiy muammolarni hal qilishga moslashtirishning boshidan oxirigacha bo'lgan jarayonini qamrab oladi; u boshqa muhandislik sohalarining allaqachon sinovdan o'tgan uslublari va fundamental modellar bilan birga paydo bo'layotgan yangi texnikalarni o'z ichiga oladi.
+
+Men bu kitobni yozishga kirishdim, chunki o'rganishni xohlagandim va haqiqatan ham ko'p narsani o'rgandim. Men o'zim ishlagan loyihalar, o'qigan maqolalarim va suhbatlashgan insonlarimdan o'rgandim. Kitobni yozish jarayonida men 100 dan ortiq suhbat va intervyulardan olingan qaydlardan foydalandim. Ular orasida yirik sun'iy intellekt laboratoriyalari (OpenAI, Google, Anthropic, ...) tadqiqotchilari, freymvork ishlab chiquvchilari (NVIDIA, Meta, Hugging Face, Anyscale, LangChain, LlamaIndex, ...), turli hajmdagi kompaniyalarning rahbarlari va sun'iy intellekt/ma'lumotlar bo'limi boshliqlari, mahsulot menejerlari, hamjamiyat tadqiqotchilari va mustaqil dastur ishlab chiquvchilari bor edi (“Minnatdorchilik” bo'limiga qarang).
+
+Ayniqsa, mening taxminlarimni sinovdan o'tkazgan, meni turli qarashlar bilan tanishtirgan va yangi muammolar hamda yondashuvlarni ko'rsatib bergan dastlabki o'quvchilardan ko'p narsa o'rgandim. Kitobning ayrim bo'limlari [blogimda](https://huyenchip.com/blog/) e'lon qilinganidan so'ng hamjamiyat tomonidan minglab izohlar oldi va ularning ko'pchiligi menga yangi istiqbollarni taqdim etdi yoki biror gipotezani tasdiqladi.
+
+Endi kitob sizning qo'lingizda ekan, bu o'rganish jarayoni men uchun davom etishiga umid qilaman, zero sizning ham o'zingizga xos tajriba va qarashlaringiz bor. Kitob bo'yicha har qanday fikr-mulohazalaringizni men bilan [X](https://x.com/chipro), [LinkedIn](https://www.linkedin.com/in/chiphuyen/) yoki hi@huyenchip.com elektron pochtasi orqali bemalol o'rtoqlashishingiz mumkin.
+
+## Bu kitob nima haqida
+
+Ushbu kitob fundamental modellarni (ularga katta til modellari (`LLM`) va katta multimodal modellari (`LMM`) kiradi) maxsus dasturlarga moslashtirish uchun tizim (freymvork) taqdim etadi.
+
+Dastur yaratishning turli usullari mavjud. Bu kitobda turli yechimlar ko'rib chiqiladi va ayni paytda, o'z ehtiyojlaringiz uchun eng maqbul yechimni baholashda yordam beradigan savollarni o'rtaga tashlaydi. Kitob yordamida javob topishingiz mumkin bo'lgan ko'plab savollardan ba'zilari quyidagilardir:
+
+- Shu SI (Sun'iy Intellekt) dasturini yaratishim kerakmi?
+- Dasturimni qanday baholashim kerak? Sun'iy intellekt mahsulotini baholash uchun sun'iy intellektdan foydalansam bo'ladimi?
+- Gallyutsinatsiyalarga nima sabab bo'ladi? Ularni qanday aniqlash va yumshatish mumkin?
+- _Prompt_ muhandisligining eng ilg'or amaliyotlari qaysilar?
+- Nima uchun `RAG` ishlaydi? `RAG`'ni amalga oshirish strategiyalari qanday?
+- `Agent` nima? Uni qanday yaratish va baholash mumkin?
+- Qachon modelni qo'shimcha sozlash (`finetuning` qilish) kerak? Qachon bunga hojat yo'q?
+- Menga qancha hajmda ma'lumot kerak? Ma'lumotlarim sifatini qanday tekshira olaman?
+- Modelimni qanday qilib tezroq, arzonroq va xavfsizroq qila olaman?
+- Dasturimni doimiy takomillashtirib borish uchun qayta aloqa halqasini (`feedback loop`) qanday yarataman?
+
+Shuningdek, kitob sizga SI'ning keng olamida adashib qolmaslikka yordam beradi: modellarning turlari, baholash mezonlari (`benchmark`), cheksizdek tuyulgan qo'llanish holatlari va dastur andozalari (`patterns`) shular jumlasidandir.
+
+Kitobdagi ma'lumotlar ko'plab manbalar bilan tasdiqlangan, turli sohalardagi ekspertlar tomonidan sinchkovlik bilan ko'rib chiqilgan va men shaxsan ishlagan amaliy misollar yordamida tushuntirilgan. Garchi kitobni yozishga ikki yil vaqt ketgan bo'lsa-da, u mening so'nggi o'n yillikdagi til modellari va _ML_ tizimlari bilan ishlash tajribamga tayanadi.
+
+Mening avvalgi, O'Reilly nashriyotida chiqqan _"Mashinaviy Ta'lim Tizimlarini Loyihalash"_ (`DMLS`) kitobim singari, bu kitob ham biror maxsus vosita yoki `API`'ga emas, balki sun'iy intellekt muhandisligining asoslariga e'tibor qaratadi. Vositalar tez eskiradi, ammo asoslar uzoqroq xizmat qilishi kerak.[^3]
+
+### "Sun'iy intellekt muhandisligi" (`AIE`) kitobini "Mashinaviy ta'lim tizimlarini loyihalash" (`DMLS`) bilan birga o'qish
+
+`AIE` kitobini `DMLS` uchun hamroh, ya'ni uni to'ldiruvchi qo'llanma deyish mumkin. `DMLS` an'anaviy _ML_ modellariga asoslangan dasturlarni yaratishga bag'ishlangan bo'lib, unda jadvalli ma'lumotlarni belgilash, belgi muhandisligi va modelni o'qitish kabi jarayonlarga ko'proq e'tibor qaratiladi. `AIE` esa fundamental modellarga asoslangan dasturlarni yaratishga yo'naltirilgan bo'lib, u _prompt_ muhandisligi, kontekstni shakllantirish va parametrlari samarali qo'shimcha sozlash kabi masalalarni chuqurroq yoritadi. Ikkala kitob ham mustaqil va modulli tuzilishga ega, shu sababli ularni bir-biridan alohida o'qish mumkin.
+
+Fundamental modellar ham _ML_ modellarining bir turi bo'lgani uchun, ayrim tushunchalar ikkala yo'nalish uchun ham umumiy hisoblanadi. Agar biror mavzu `AIE` uchun muhim bo'lsa-yu, lekin `DMLS`'da atroflicha yoritilgan bo'lsa, bu kitobda u baribir eslab o'tiladi, ammo qisqaroq va tegishli manbalarga havolalar bilan birga taqdim etiladi.
+
+Shuni ta'kidlash joizki, ko'plab mavzular faqat `DMLS`'da yoki aksincha, faqat `AIE`'da yoritilgan. Ushbu kitobning birinchi bobida an'anaviy _ML_ muhandisligi va sun'iy intellekt muhandisligi o'rtasidagi farqlar ham ko'rib chiqiladi. Real hayotiy tizimlar ko'pincha ham an'anaviy _ML_ modellarini, ham fundamental modellarni o'z ichiga olgani sababli, ikkalasi bilan ishlash bo'yicha bilimga ega bo'lish zarur.
+
+### Dolzarbligini yo'qotmaydigan bilimlar
+
+Albatta, biror narsaning qanchalik uzoq xizmat qilishini, ya'ni dolzarbligini yo'qotmasligini oldindan aniqlash ko'pincha qiyin. Men mazmunni tanlashda uchta mezonga tayandim. Birinchidan, har bir muammo uchun men uning sun'iy intellekt ishlashining fundamental cheklovlaridan kelib chiqadimi yoki vaqt o'tib, modellar yaxshilanishi bilan o'z-o'zidan yo'qolib ketadimi, shuni aniqlashga harakat qildim. Agar muammo fundamental bo'lsa, men uning ortidagi qiyinchiliklarni va har biriga mos yechimlarni tahlil qilaman. Men "soddadan boshlash" yondashuvining tarafdoriman, shuning uchun ko'plab muammolar uchun avval eng oddiy yechimni ko'rib chiqib, so'ngra yuzaga kelayotgan yangi qiyinchiliklarni hal qilish uchun murakkabroq yechimlarga o'tib boraman.
+
+Ikkinchidan, men o'zimdan ancha aqlli bo'lgan tadqiqotchi va muhandislarning keng tarmog'i bilan maslahatlashib, ularning fikricha qaysi muammolar va yechimlar eng muhim ekanligini so'radim.
+
+Ba'zi hollarda men ["Lindi qonuni"ga](https://en.wikipedia.org/wiki/Lindy_effect) ham tayandim. Bu qonunga ko'ra, biror texnologiyaning kelajakdagi yashovchanligi uning hozirgi yoshiga mutanosib bo'ladi. Ya'ni, agar biror narsa ancha vaqtdan beri mavjud bo'lsa, demak, u yana ancha vaqt biz bilan birga bo'ladi.
+
+Shunga qaramay, men ushbu kitobga ba'zida vaqtinchalik deb hisoblagan tushunchalarni ham kiritdim. Bunga sabab, ularning ayrim dastur ishlab chiquvchilari uchun hozirning o'zida foydali ekanligi yoki muammoni hal qilishning qiziqarli bir yondashuvini namoyon etishidir.
+
+## Bu kitob nima haqida emas
+
+Bu kitob darslik emas. Unda muayyan vositalar tilga olinib, ba'zi tushunchalarni izohlash uchun psevdokod parchalari keltirilgan bo'lsa-da, kitob biror vositadan foydalanishni o'rgatmaydi. Aksincha, u vositalarni tanlash uchun freymvork taklif qiladi. Kitobda turli yechimlar o'rtasidagi muqobil afzallik va kamchiliklar (`trade-offs`) hamda biror yechimni baholashda o'zingizga berishingiz kerak bo'lgan savollar keng muhokama qilinadi. Biror vositadan foydalanmoqchi bo'lsangiz, unga doir amaliy qo'llanmalarni internetdan topish odatda qiyin emas. Shuningdek, sun'iy intellekt `chatbot`'lari ham ommabop vositalar bilan ishlashni boshlashingizga ancha yaxshi yordam bera oladi.
+
+Bu kitob _ML_ nazariyasiga oid darslik emas. Unda neyron to'r nima ekanligi yoki modelni noldan qanday yaratish va o'qitish kerakligi tushuntirilmaydi. Garchi kitobda muhokama qilinayotgan mavzuga bevosita aloqador ko'plab nazariy tushunchalarga izoh berilsa-da, u real hayotiy muammolarni hal qilish uchun muvaffaqiyatli SI dasturlarini yaratishga yordam berishga qaratilgan amaliy qo'llanmadir.
+
+### Dastlabki bilimlar haqida
+
+Fundamental modellarga asoslangan dasturlarni _ML_ bo'yicha chuqur bilimlarsiz ham yaratish mumkin bo'lsa-da, _ML_ va statistika bo'yicha boshlang'ich tushunchalarga ega bo'lish sizga yanada mukammalroq dasturlar yaratishga yordam beradi va ortiqcha mashaqqatlardan xalos qiladi. Bu kitobni _ML_ sohasida hech qanday bilimga ega bo'lmasdan ham o'qishingiz mumkin. Biroq, quyidagi tushunchalarni bilsangiz, SI dasturlarini yaratishda ishingiz ancha samaraliroq bo'ladi:
+
+- **Ehtimollikka oid tushunchalar:** Tanlab olish (`sampling`), `determinizm` (jarayonning natijasi qat'iy belgilanganligi, ya'ni bir xil boshlang'ich shartlar doim bir xil natijaga olib kelishi) va taqsimot (`distribution`).
+
+- **_ML_ tushunchalari:** Nazoratli o'qitish (`supervision`), o'z-o'zini nazorat qilish (`self-supervision`), logarifmik ishonchlilik (`log-likelihood`) (modelning berilgan ma'lumotlarga qanchalik mos kelishini o'lchaydigan statistik ko'rsatkich), gradient tushishi (`gradient descent`), xatoni teskari tarqatish (`backpropagation`), yo'qotish funksiyasi (`loss function`) va giperparametrlarni sozlash (`hyperparameter tuning`).
+
+- **Turli neyron to'r arxitekturalari:** Jumladan, to'g'ridan-to'g'ri tarqaluvchi (`feedforward`), qaytalanuvchi (`recurrent`) va `transformer` (asosan, matn kabi ketma-ket ma'lumotlarni qayta ishlash uchun yaratilgan, diqqat mexanizmiga asoslangan neyron to'r arxitekturasi).
+
+- **Metrikalar:** To'g'rilik (`accuracy`), puxtalik (`precision`) (ijobiy deb topilgan natijalarning qanchasi haqiqatdan ham ijobiy ekanligi), qamrov (`recall`) (mavjud bo'lgan barcha ijobiy holatlarning qanchasini model topa olganligi), F1-mezon (`F1 score`) (aniqlik va qamrov o'rtasidagi balansni ifodalovchi o'lchov) va o'zaro entropiya (`cross entropy`).
+
+Agar bu tushunchalar bilan hali tanish bo'lmasangiz, xavotir olmang — kitobda ularning qisqacha, umumiy izohlari yoki sizga tezda bilim olish imkonini beruvchi manbalarga havolalar keltirilgan.
+
+## Bu kitob kimlar uchun mo'ljallangan
+
+Bu kitob real hayotiy muammolarni hal qilish uchun fundamental modellarning imkoniyatlaridan foydalanishni istagan har bir kishi uchun mo'ljallangan. Bu texnik kitob bo'lgani sababli, uning tili ham texnik mutaxassislarga, jumladan, SI muhandislari, _ML_ muhandislari, ma'lumotlar bo'yicha olimlar, muhandislik menejerlari va texnik mahsulot menejerlariga mo'ljallangan.
+
+Agar quyidagi holatlardan birortasi sizga tanish bo'lsa, demak, bu kitob aynan siz uchun:
+
+- Siz SI dasturini yaratayotgan yoki takomillashtirayotgan bo'lsangiz — noldan boshlayapsizmi yoki demo bosqichidan o'tib, uni amaliyotga to'liq tayyor holatga keltirish arafasidamisiz, buning farqi yo'q. Shuningdek, gallyutsinatsiya, xavfsizlik, kechikish (latency) yoki xarajatlar kabi muammolarga duch kelayotgan va ularga aniq yechimlar izlayotgan bo'lishingiz mumkin.
+
+- Jamoangizning SI'ni ishlab chiqish jarayonini optimallashtirishni, uni yanada tizimli, tezkor va ishonchli qilishni xohlasangiz.
+
+- Tashkilotingiz fundamental modellardan qanday qilib samarali foydalanishi mumkinligini, bu orqali biznesning moliyaviy natijalarini qanday yaxshilashni va bu vazifani amalga oshirish uchun qanday jamoa tuzish kerakligini tushunishni istasangiz.
+
+Shuningdek, quyidagi guruhlardan biriga mansub bo'lsangiz ham, ushbu kitobdan katta foyda olishingiz mumkin:
+
+- Sun'iy intellekt muhandisligida hali yetarlicha e'tibor qaratilmagan sohalarni aniqlashni va o'z mahsulotlaringizni ekotizimda to'g'ri joylashtirishni istagan vosita ishlab chiquvchilari.
+
+- SI'ning amaliy qo'llanish holatlarini (`use cases`) chuqurroq anglashni istagan tadqiqotchilar.
+
+- SI muhandisi sifatida faoliyat yuritish uchun qanday ko'nikmalar zarurligiga aniqlik kiritishni xohlagan nomzodlar.
+
+- SI'ning imkoniyatlari va cheklovlarini, shuningdek, uning turli sohalarga qanday ta'sir ko'rsatishi mumkinligini yaxshiroq tushunishni istagan har bir kishi.
+
+Men har bir narsaning tub mohiyatiga yetishni yaxshi ko'raman, shu sababli ayrim bo'limlarda texnik tafsilotlarga biroz chuqurroq sho'ng'iymiz. Garchi ko'plab dastlabki o'quvchilarga bunday batafsillik yoqqan bo'lsa-da, bu hamma uchun ham qiziqarli bo'lmasligi mumkin. Mavzu haddan tashqari texnik tus olishidan oldin sizni ogohlantiraman. Agar mavzu juda mayda detallarga kirib ketayotgandek tuyulsa, bemalol keyingi qismga o'tib ketavering!
+
+## Kitobdan foydalanish bo'yicha yo'riqnoma
+
+Bu kitob SI dasturlarini yaratishning klassik bosqichlariga asoslanadi. Quyida ushbu jarayonning umumiy ko'rinishi va har bir bob uning qaysi qismiga to'g'ri kelishi tasvirlangan. Kitob modulli tuzilishga ega bo'lgani uchun, siz allaqachon tanish bo'lgan yoki o'zingiz uchun kamroq ahamiyatli bo'lgan bo'limlarni bemalol o'tkazib yuborishingiz mumkin.
+
+SI dasturini yaratishga kirishishdan avval, bu jarayon nimalarni o'z ichiga olishini tushunish va bir nechta savollarga javob topish zarur: Bu dastur haqiqatan ham kerakmi? Buning uchun SI ishlatish shartmi? Bu dasturni o'zim yaratishim kerakmi? Kitobning birinchi bobi aynan shu savollarga javob topishingizga yordam beradi. Shuningdek, unda fundamental modellarning nimalarga qodir ekanligi haqida tasavvur berish uchun bir qator muvaffaqiyatli qo'llanish holatlari (`use cases`) ham ko'rib chiqiladi.
+
+SI dasturlarini yaratish uchun _ML_ bo'yicha chuqur bilim shart bo'lmasa-da, fundamental modelning ichki ishlash mexanizmini tushunish uning imkoniyatlaridan maksimal darajada foydalanish uchun juda muhim. Ikkinchi bobda fundamental modelning yaratilish jarayoni va undan keyin yaratiladigan dasturlarga jiddiy ta'sir ko'rsatadigan dizayn qarorlari tahlil qilinadi. Bularga modelni o'qitish uchun ishlatilgan ma'lumotlar tarkibi, model arxitekturasi va miqyosi hamda modelning inson xohish-istaklariga qanday moslashtirilgani kiradi. So'ngra, modelning javobni qanday generatsiya qilishi muhokama qilinadi — bu uning barqarorsizlik va gallyutsinatsiya kabi tushunarsizdek ko'ringan holatlarini izohlashga yordam beradi. Shuni ham aytib o'tish joizki, modelning generatsiya sozlamalarini o'zgartirish — ko'pincha uning samaradorligini sezilarli darajada oshirishning arzon va oson usulidir.
+
+Fundamental modellar bilan dastur yaratishga qaror qilganingizdan so'ng, baholash jarayonning har bir qadamidagi ajralmas qismiga aylanadi. Baholash — sun'iy intellekt muhandisligidagi eng qiyin muammolardan biri, balki eng qiyinidir. Ushbu kitobda turli baholash usullarini o'rganishga va ulardan foydalanib, o'z dasturingiz uchun ishonchli va tizimli baholash jarayonlari ketma-ketligini (`pipeline`) yaratishga ikkita butun bob — 3- va 4-boblar bag'ishlangan.
+
+Biror so'rov kelib tushganda, model javobining sifati (uning generatsiya sozlamalaridan tashqari) quyidagi jihatlarga bog'liq bo'ladi:
+
+- Model o'zini qanday tutishi kerakligi haqidagi ko'rsatmalar
+
+- Model so'rovga javob berish uchun foydalanishi mumkin bo'lgan kontekst
+
+- Modelning o'zi
+
+Kitobning keyingi uch bobi aynan shu jihatlarni takomillashtirish orqali modelning dastur uchun samaradorligini oshirishga bag'ishlanadi.
+
+5-bob prompt muhandisligi (`prompt engineering`) mavzusiga bag'ishlangan. Unda avval `prompt` nima ekanligi, bu yondashuv nima uchun ishlashi va uning eng ilg'or amaliyotlari ko'rib chiqiladi. Shundan so'ng, g'arazli shaxslar `prompt` hujumlari orqali dasturingiz zaifliklaridan qanday foydalanishi mumkinligi va ulardan qanday himoyalanish kerakligi muhokama qilinadi.
+
+6-bobda modelning to'g'ri javoblar qaytarishi uchun kontekst nima sababdan muhim ekanligi tahlil qilinadi. Unda kontekstni shakllantirishning ikkita asosiy andozasiga (`pattern`) chuqurroq nazar tashlanadi: `RAG` va `agentlik` yondashuvi. `RAG` andozasi ancha yaxshi o'rganilgan va amaliyotda o'zini yaxshi isbotlagan. Boshqa tomondan, `agentlik` yondashuvi ancha qudratliroq bo'lishi kutilayotgan bo'lsa-da, u ancha murakkab va hali ham tadqiq qilinmoqda.
+
+7-bob modelni qo'shimcha sozlash (`finetuning`) orqali uning o'zini o'zgartirib, dasturga moslashtirish haqida. Fundamental modellarning miqyosi katta bo'lgani sababli, ularni to'g'ridan-to'g'ri qo'shimcha sozlash katta xotira resurslarini talab qiladi. Shu bois, kamroq xotira bilan yaxshiroq modellarni qo'shimcha sozlash imkonini beruvchi ko'plab texnikalar ishlab chiqilgan. Bobda turli qo'shimcha sozlash yondashuvlari ko'rib chiqiladi va ular yanada tajribaviy usul — modellarni birlashtirish bilan to'ldiriladi. Bu bobda modelning xotirada egallaydigan hajmini hisoblashni ko'rsatuvchi texnikroq qism ham mavjud.
+
+Ko'plab qo'shimcha sozlash freymvorklari mavjudligi sababli, bu jarayonning o'zi ko'pincha qiyinchilik tug'dirmaydi. Biroq, qo'shimcha sozlash uchun ma'lumotlar to'plash — ancha mashaqqatli ish. Keyingi bob to'laligicha ma'lumotlarga bag'ishlangan bo'lib, u ma'lumotlarni yig'ish, ularni belgilash, sintez qilish va qayta ishlash kabi mavzularni qamrab oladi. 8-bobda muhokama qilingan ko'plab mavzular, jumladan, ma'lumotlar sifati nima ekanligi va uni qanday baholash kerakligi haqidagi savollar nafaqat qo'shimcha sozlash, balki boshqa ko'plab sohalar uchun ham dolzarbdir.
+
+Agar 5-bobdan 8-bobgacha model sifatini oshirishga e'tibor qaratilgan bo'lsa, 9-bob uning `inference` (xulosa chiqarish) jarayonini arzonroq va tezroq qilishga bag'ishlangan. Unda optimallashtirish ham model darajasida, ham `inference` xizmati darajasida muhokama qilinadi. Agar siz model `API`'sidan foydalansangiz — ya'ni, modelingizni siz uchun kimdir `host` qilib tursa — bu `API` katta ehtimol bilan `inference` optimizatsiyasini o'z zimmasiga oladi. Biroq, agar siz modelni o'zingiz `host` qilsangiz — xoh u ochiq manbali model bo'lsin, xoh o'zingiz yaratgan model — ushbu bobda muhokama qilingan ko'plab texnikalarni o'zingiz joriy qilishingizga to'g'ri keladi.
+
+Kitobning so'nggi bobi undagi turli tushunchalarni jamlab, dasturni boshidan oxirigacha yaratish jarayonini ko'rsatib beradi. Bobning ikkinchi qismi ko'proq mahsulotga yo'naltirilgan bo'lib, unda foydalanuvchiga yaxshi foydalanish qulayligini taqdim etgan holda, foydali fikr-mulohazalarni yig'ishga yordam beradigan qayta aloqa tizimini loyihalash masalalari muhokama qilinadi.
+
+<Callout>
+### Eslatma
+
+Men ushbu kitobda ko'pincha “biz” olmoshini ishlataman va bu bilan siz (o'quvchi) va o'zimni nazarda tutaman. Bu o'qituvchilik davrimdan qolgan odat, chunki men yozish jarayonini yozuvchi uchun ham, o'quvchilar uchun ham birgalikdagi o'rganish tajribasi deb bilaman.
+</Callout>
+
+## Kod namunalaridan foydalanish
+
+Qo'shimcha materiallarni (kod namunalari, mashqlar va hokazo) https://github.com/chiphuyen/aie-book manzilidan yuklab olishingiz mumkin. Ushbu repozitoriyda sun'iy intellekt muhandisligi bo'yicha qo'shimcha manbalar, jumladan, muhim ilmiy maqolalar va foydali vositalar jamlangan. Shuningdek, unda kitobda atroflicha yoritish imkoni bo'lmagan chuqurroq mavzular ham o'rin olgan. Kitobning yozilish jarayoniga qiziquvchilar uchun `GitHub` repozitoriysida "parda ortidagi" ma'lumotlar va kitobga oid statistikalar ham o'rin olgan.
+
+Agar sizda texnik savol yoki kod namunalaridan foydalanish bilan bog'liq muammo yuzaga kelsa, iltimos, support@oreilly.com elektron pochta manziliga murojaat qiling.
+
+Bu kitob ishingizni samarali bajarishingizga ko'maklashishni maqsad qilgan. Umuman olganda, agar ushbu kitobda kod namunalari taqdim etilgan bo'lsa, siz ulardan o'z dasturlaringiz va hujjatlaringizda foydalanishingiz mumkin. Agar kodning salmoqli qismini nusxalamayotgan bo'lsangiz, buning uchun bizdan ruxsat so'rashingiz shart emas. Masalan, ushbu kitobdan olingan bir nechta kod parchalaridan foydalanadigan dastur yozish ruxsat talab qilmaydi. O'Reilly kitoblaridagi namunalarni sotish yoki tarqatish esa ruxsat talab qiladi. Biror savolga javob berishda ushbu kitobga havola keltirish va undan kod namunasini iqtibos qilib keltirish uchun ruxsat talab qilinmaydi. Ushbu kitobdagi salmoqli miqdordagi kod namunasini mahsulotingiz dokumentatsiyasiga joylashtirish uchun esa ruxsat olish kerak bo'ladi.
+
+Mualliflikni ko'rsatishingizni qadrlaymiz, lekin odatda buni talab qilmaymiz. Mualliflikni ko'rsatish odatda kitob nomi, muallif, nashriyot va ISBN raqamini o'z ichiga oladi. Masalan: _“AI Engineering_ by Chip Huyen (O'Reilly). Copyright 2025 Developer Experience Advisory LLC, 978-1-098-16630-4.”
+
+Agar fikringizcha, kod namunalaridan foydalanishingiz to'g'ri foydalanish (`fair use`) doirasidan chiqsa yoki yuqorida berilgan ruxsat shartlariga mos kelmasa, permissions@oreilly.com manziliga bemalol murojaat qilishingiz mumkin.
+
+## Minnatdorchilik
+
+Bu kitobni yozish jarayonida menga yordam bergan ajoyib insonlar bo'lmaganida, uni yakunlash ancha ko'p vaqt talab etgan va unda ko'plab muhim mavzular yoritilmay qolgan bo'lardi.
+
+Loyiha uchun ajratilgan vaqt juda qisqa bo'lgani sababli — 150 000 so'zdan iborat va keng qamrovli kitob uchun ikki yil — o'z qimmatli vaqtlarini ajratib, kitobni shunchalik tez ko'rib chiqqan texnik taqrizchilarga alohida minnatdorchilik bildiraman.
+
+Luke Metz mening taxminlarimni sinovdan o'tkazib, noto'g'ri yo'nalishga ketib qolishimdan asrab qolgan ajoyib maslahatchim bo'ldi. SI olamidagi so'nggi yangiliklar va hamjamiyatdagi o'zgarishlardan doimo xabardor bo'lib turadigan Han-chung Lee esa men e'tibordan chetda qoldirgan manbalarni ko'rsatib berdi. Luke va Han mening qoralamalarimni keyingi bosqich texnik taqrizchilariga yuborishimdan oldin birinchi bo'lib ko'rib chiqdilar va men ularning xato va kamchiliklarimga sabr qilganlari uchun bir umr qarzdorman.
+
+"Fortune 500" kompaniyalarida SI innovatsiyalariga rahbarlik qilgan Vittorio Cretella va Andrei Lopatenko chuqur texnik bilim va boshqaruv tajribasini o'zida mujassam etgan bebaho fikr-mulohazalarini berdilar. Vicki Reyzelman kitob mazmunini hayotga yaqinlashtirishga va uni dasturiy ta'minot muhandisligi sohasidan kelgan o'quvchilar uchun dolzarb bo'lishini ta'minlashga yordam berdi.
+
+Qadrli do'stim va ajoyib amaliyotchi olim Eugene Yan menga ham texnik, ham ruhiy dalda berib turdi. Shawn Wang (swyx) kitobning umumiy ruhini va uslubini baholab, unga bo'lgan ishonchimni mustahkamlashga yordam berdi. Men bilgan eng yaxshi o'rganuvchilardan va kamtarin insonlardan biri bo'lgan Sanyam Bhutani nafaqat puxta yozma fikr-mulohazalar berdi, balki o'z fikrlarini tushuntirish uchun videolar ham yozib yubordi.
+
+Chuqur o'rganish (`deep learning`) bo'yicha yetakchi yorqin mutaxassis Kyle Kranen o'z hamkasblari bilan suhbatlashib, ularning qo'shimcha sozlash (`finetuning`) jarayoni haqidagi ajoyib tahliliy ma'lumotni men bilan bo'lishdi va bu “Qo'shimcha sozlash” bobiga asos bo'ldi. Doimo eng qiziqarli muammolarning yurak urishini his qilib turadigan izlanuvchan inson Mark Saroufim meni samaradorlikka oid ajoyib manbalar bilan tanishtirdi. Kyle va Markning fikr-mulohazalari 7 va 9-boblarni yozishda hal qiluvchi ahamiyatga ega bo'ldi.
+
+Kittipat “Bot” Kampa ko'plab savollarimga javob berish bilan birga, SI platformalari haqidagi o'z tasavvurlarining batafsil vizualizatsiyasini men bilan bo'lishdi. Denys Linkovning baholash va platforma yaratishga tizimli yondashuvini yuqori baholayman. Chetan Tekur SI dastur andozalarini (`patterns`) tizimlashtirishimga yordam bergan ajoyib misollar keltirdi. Shuningdek, Shengzhi (Alex) Li va Hien Luuga SI arxitekturasiga oid qoralamam bo'yicha bildirgan chuqur mulohazalari uchun tashakkur aytaman.
+
+Aileen Bui mahsulot menejeri nuqtai nazaridan o'zining noyob fikr-mulohazalari va misollari bilan bo'lishgan haqiqiy xazinadir. Todor Markovga `RAG` va `Agentlar` bobiga oid amaliy maslahatlari uchun rahmat. Tal Kachmanga esa so'nggi daqiqada yordamga kelib, “Qo'shimcha sozlash” bobini yakuniga yetkazishga yordam bergani uchun tashakkur.
+
+Suhbatlari va davralari ushbu kitob mazmuniga yo'l ochib bergan g'oyalarni taqdim etgan ajoyib insonlar juda ko'p. Men bu yerda yordam bergan har bir kishining ismini kiritishga harakat qildim, ammo inson xotirasiga xos bo'lgan nuqsonlar sababli, shubhasiz, ko'pchilikni esdan chiqarganman. Agar ismingizni kiritishni unutgan bo'lsam, bilingki, bu sizning hissangizni qadrlamaganimdan emas. Iltimos, bu haqda menga eslatib qo'ysangiz, men bu xatoni imkon qadar tezroq to'g'rilayman!
+
+Andrew Francis, Anish Nag, Anthony Galczak, Anton Bacaj, Balázs Galambosi, Charles Frye, Charles Packer, Chris Brousseau, Eric Hartford, Goku Mohandas, Hamel Husain, Harpreet Sahota, Hassan El Mghari, Huu Nguyen, Jeremy Howard, Jesse Silver, John Cook, Juan Pablo Bottaro, Kyle Gallatin, Lance Martin, Lucio Dery, Matt Ross, Maxime Labonne, Miles Brundage, Nathan Lambert, Omar Khattab, Phong Nguyen, Purnendu Mukherjee, Sam Reiswig, Sebastian Raschka, Shahul ES, Sharif Shameem, Soumith Chintala, Teknium, Tim Dettmers, Undi95, Val Andrei Fajardo, Vern Liang, Victor Sanh, Wing Lian, Xiquan Cui, Ying Sheng, and Kristofer.
+
+Shuningdek, o'z fikr-mulohazalari bilan bo'lishgan barcha dastlabki o'quvchilarga ham tashakkur aytaman. Douglas Bailley juda ko'p puxta o'ylangan fikr-mulohazalari bilan bo'lishgan super o'quvchidir. Nutan Sahooga `perplexity` (modelning javobidagi noaniqlik darajasi) tushunchasini izohlashning nafis usulini taklif qilgani uchun tashakkur.
+
+Ko'pchilik bilan bo'lgan onlayn muhokamalardan juda ko'p narsa o'rgandim. Savollarimga javob bergan, postlarimga izoh qoldirgan yoki o'z fikrlarini elektron pochta orqali yuborgan har bir kishiga tashakkur.
+
+Albatta, O'Reilly jamoasi, ayniqsa, rivojlantiruvchi muharrirlarim (Melissa Potter, Corbin Collins, Jill Leonard) va nashrga tayyorlovchi muharririm (Elizabeth Kelly) bo'lmaganida, bu kitob yuzaga kelmas edi. Liz Wheeler men ishlagan eng sinchkov va talabchan matn tahrirchisidir. Nicole Butterfield bu kitobni g'oya holatidan to yakuniy mahsulotga aylanguncha nazorat qilib turgan haqiqiy kuch.
+
+Axir, bu kitob mening faoliyatim davomida olgan bebaho saboqlarimning jamlanmasidir. Bu saboqlar uchun men o'ta malakali va sabrli hamkasblarim va sobiq hamkasblarimdan qarzdorman. Men bilan ishlagan har bir inson menga _ML_'ni hayotga tatbiq etish haqida yangi narsalarni o'rgatgan.
+
+[^1]: AlexNet maqolasi mualliflaridan biri Ilya Sutskever keyinchalik OpenAI kompaniyasiga asos soldi va bu saboqni `GPT` modellari bilan hayotga tatbiq etdi.
+[^2]: Hatto [mening 2017-yildagi kichik loyihamda](https://x.com/chipro/status/937384141791698944) ham, unda tarjima sifatini baholash uchun til modelidan foydalanilgan edi, bizga “yaxshiroq til modeli” kerak degan xulosaga kelingan edi.
+[^3]: 2017-yilda `TensorFlow`'dan foydalanish bo'yicha kurs o'tishim menga vositalar va qo'llanmalar qanchalik tez eskirishi haqida achchiq saboq bergan.
