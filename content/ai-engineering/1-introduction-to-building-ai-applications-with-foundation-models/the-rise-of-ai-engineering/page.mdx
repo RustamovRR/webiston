@@ -1,0 +1,94 @@
+# Sun'iy intellekt muhandisligining yuksalishi
+
+Fundamental modellar katta til modellaridan, ular esa, o'z navbatida, oddiy til modellaridan kelib chiqqan. `ChatGPT` va `GitHub Copilot` kabi dasturlar go'yo hech qayerdan paydo bo'lib qolgandek tuyulsa-da, aslida ular o'nlab yillik texnologik taraqqiyotning mahsulidir, zero birinchi til modellari 1950-yillarda paydo bo'lgan. Ushbu bo'limda til modellaridan sun'iy intellekt muhandisligigacha bo'lgan evolyutsiyaga imkon bergan eng muhim yutuqlar izma-iz ko'rib chiqiladi.
+
+## Til modellari (_LM_) dan katta til modellari (_LLM_) ga
+
+Til modellari ancha vaqtdan beri mavjud bo'lsa-da, ular faqatgina o'z-o'zini nazorat qilish (`self-supervision`) yordamidagina bugungi miqyosga erisha oldi. Ushbu qismda til modeli va o'z-o'zini nazorat qilish tushunchalari qisqacha sharhlanadi. Agar bu tushunchalar bilan allaqachon tanish bo'lsangiz, bu qismni o'tkazib yuborishingiz mumkin.
+
+## Til modellari
+
+Til modeli bir yoki bir nechta til haqidagi statistik ma'lumotlarni o'zida jamlaydi. Mohiyatan, bu ma'lumotlar biror so'zning ma'lum bir kontekstda paydo bo'lish ehtimoli qanchalik ekanligini bildiradi. Masalan, “Mening sevimli rangim __” degan kontekst berilganda, ingliz tilini o'zida jamlagan til modeli “mashina” so'ziga qaraganda “ko'k” so'zini ko'proq bashorat qilishi kerak.
+
+Tillarning statistik tabiati asrlar oldin kashf etilgan. 1905-yilda yozilgan [“Raqsga tushayotgan odamchalar sarguzashti”](https://en.wikipedia.org/wiki/The_Adventure_of_the_Dancing_Men) hikoyasida Sherlok Holms sirli tayoqcha shakllar ketma-ketligining shifrini yechish uchun ingliz tilining oddiy statistik ma'lumotlaridan foydalangan. Ingliz tilida eng ko'p uchraydigan harf _E_ bo'lgani uchun, Holms eng ko'p uchraydigan tayoqcha shakli _E_ harfini anglatishi kerak degan xulosaga kelgan.
+
+Keyinroq, Klod Shennon Ikkinchi jahon urushi paytida dushman xabarlarining shifrini ochish uchun yanada murakkabroq statistikadan foydalangan. Uning ingliz tilini qanday modellashtirish haqidagi ishi 1951-yilda chop etilgan va o'z davrida tub burilish yasagan [“Bosma ingliz tilining bashorati va entropiyasi”](https://www.kuenzigbooks.com/pages/books/28623/c-e-shannon-claude-elwood/prediction-and-entropy-of-printed-english-bell-monograph) (`Prediction and Entropy of Printed English`) nomli maqolasida nashr etilgan. Ushbu maqolada kiritilgan ko'plab tushunchalar, jumladan, entropiya, bugungi kunda ham til modellashtirishda qo'llaniladi.
+
+Dastlabki paytlarda til modeli faqat bitta tilni o'z ichiga olardi. Biroq, bugungi kunda til modeli bir nechta tilni qamrab olishi mumkin.
+
+Til modelining asosiy birligi — bu token. Token — bu modelga qarab, belgi, so'z yoki so'zning bir qismi (masalan, `-tion` kabi) bo'lishi mumkin.[^2] Masalan, `ChatGPT` ortida turgan model — `GPT-4` — “I can't wait to build AI applications” iborasini 1-1-rasmda ko'rsatilganidek, to'qqizta tokenga ajratadi. E'tibor bering, bu misolda “can't” so'zi ikkita tokenga — `can` va `'t`'ga ajratilgan. Turli `OpenAI` modellarining matnni qanday tokenlarga ajratishini `OpenAI` veb-saytida ko'rishingiz mumkin.
+
+![GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish](/ai-engineering/1.1-figure.png)
+<div className='text-center text-sm'>_1-1 rasm. GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish_</div>
+
+Asl matnni tokenlarga ajratish jarayoni **tokenizatsiya** deb ataladi. `GPT-4` uchun o'rtacha bitta token [so'z uzunligining taxminan ¾ qismiga](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them) teng. Demak, 100 ta token taxminan 75 ta so'zga to'g'ri keladi.
+
+Model ishlay oladigan barcha tokenlar to'plami **modelning lug'ati** (`vocabulary`) deb ataladi. Xuddi alifbodagi sanoqli harflardan foydalanib ko'plab so'zlarni hosil qilish mumkin bo'lganidek, cheklangan miqdordagi tokenlar yordamida ham juda ko'p sonli turli xil so'zlarni yaratish mumkin. [`Mixtral 8x7B`](https://mistral.ai/news/mixtral-of-experts) modelining lug'at hajmi 32 000 tani tashkil etadi. `GPT-4`'ning lug'at hajmi esa [100 256](https://github.com/openai/tiktoken/blob/main/tiktoken/model.py) ga teng. Tokenizatsiya usuli va lug'at hajmi model yaratuvchilari tomonidan belgilanadi.
+
+<Callout>
+### Nima uchun til modellari so'z yoki belgilar o'rniga tokenlardan foydalanadi?
+
+Til modellari o'zining asosiy birligi sifatida so'z yoki belgilarni emas, aynan tokenlarni ishlatishining uchta asosiy sababi bor:
+
+1. **Ma'noli qismlarga ajratish.** Belgilarga nisbatan, tokenlar modelga so'zlarni ma'noli tarkibiy qismlarga ajratish imkonini beradi. Masalan, “cooking” (pishirish) so'zini “cook” (pishirmoq) va “ing” (jarayonni bildiruvchi qo'shimcha) qismlariga ajratish mumkin, bunda ikkala qism ham asl so'zning ma'nosidan bir qismini o'zida saqlab qoladi.
+
+2. **Samaradorlik.** Noyob tokenlar soni noyob so'zlar sonidan kamroq bo'lgani uchun, bu modelning lug'at hajmini qisqartiradi va uni yanada samaraliroq qiladi (bu haqda 2-bobda muhokama qilinadi).
+
+3. **Noma'lum so'zlarni qayta ishlash.** Tokenlar, shuningdek, modelga noma'lum so'zlarni qayta ishlashga yordam beradi. Masalan, “chatgpting” kabi o'ylab topilgan so'zni “chatgpt” va “ing” qismlariga ajratish mumkin, bu esa modelga uning tuzilishini tushunishga yordam beradi. Shunday qilib, tokenlar bir tomondan birliklar sonini so'zlarga qaraganda kamroq ushlab tursa, ikkinchi tomondan, alohida belgilarga qaraganda ko'proq ma'no saqlab qolish o'rtasidagi muvozanatni ta'minlaydi.
+</Callout>
+
+Til modellarining ikkita asosiy turi mavjud: _niqoblangan (masked) til modellari_ va _avtoregressiv (autoregressive) til modellari_. Bu ikki tur bir-biridan tokenni bashorat qilishda qanday ma'lumotlardan foydalanishi bilan ajralib turadi:
+
+### Niqoblangan til modellari
+
+Niqoblangan til modeli ketma-ketlikning istalgan joyidagi tushib qolgan tokenlarni, ham oldingi, ham keyingi kontekstdan foydalangan holda, bashorat qilishga o'rgatiladi. Mohiyatan, niqoblangan til modeli bo'sh joyni to'ldirishga o'rgatiladi. Masalan, “Mening sevimli __ ko'k” degan kontekst berilsa, niqoblangan til modeli bo'sh joy “rang” so'zi bo'lishi ehtimoli yuqori ekanligini bashorat qilishi kerak. Niqoblangan til modelining mashhur namunasi — bu transformatorlardan olingan ikki tomonlama kodlovchi tasvirlar (`bidirectional encoder representations from transformers`), ya'ni `BERT` ([Devlin va boshq., 2018](https://arxiv.org/abs/1810.04805)).
+
+Ushbu kitob yozilayotgan vaqtda, niqoblangan til modellari odatda hissiyot tahlili (`sentiment analysis`) va matn tasnifi (`text classification`) kabi generativ bo'lmagan vazifalar uchun qo'llaniladi. Ular, shuningdek, koddagi xatolarni tuzatish (`code debugging`) kabi umumiy kontekstni tushunishni talab qiladigan vazifalar uchun ham foydalidir, chunki bunda model xatolarni aniqlash uchun ham oldingi, ham keyingi kodni tushunishi kerak bo'ladi.
+
+### Avtoregressiv til modellari
+
+Avtoregressiv til modeli ketma-ketlikdagi keyingi tokenni faqat o'zidan oldingi tokenlardan foydalangan holda bashorat qilishga o'rgatiladi. U “Mening sevimli rangim __” jumlasida keyin nima kelishini bashorat qiladi.[^3] Avtoregressiv model uzluksiz ravishda birin-ketin token generatsiya qila oladi. Bugungi kunda avtoregressiv til modellari matn generatsiyasi uchun eng maqbul modellar hisoblanadi va shu sababli ular niqoblangan til modellariga qaraganda ancha ommaboproqdir.[^4]
+
+1-2-rasmda til modellarining bu ikki turi ko'rsatilgan.
+
+![1-2-rasm. Avtoregressiv til modeli va niqoblangan til modeli](/ai-engineering/1.2-figure.png)
+
+<div className='text-center text-sm'>_1-2 rasm. Avtoregressiv til modeli va niqoblangan til modeli_</div>
+
+<Callout>
+### Eslatma
+
+Ushbu kitobda, agar alohida ta'kidlanmagan bo'lsa, “til modeli” deganda avtoregressiv model nazarda tutiladi.
+</Callout>
+
+Til modellarining natijalari erkin va cheklanmagandir. Til modeli o'zining qat'iy, cheklangan lug'atidan foydalanib, cheksiz miqdordagi ehtimoliy natijalarni yarata oladi. Erkin natijalar generatsiya qila oladigan model **generativ** deb ataladi, shu sababli **generativ SI** atamasi kelib chiqqan.
+
+Til modelini bir **to'ldiruvchi mashina** deb tasavvur qilish mumkin: unga biror matn (`prompt`) berilsa, u shu matnni to'ldirishga harakat qiladi. Mana bir misol:
+
+``` markdown
+Prompt (foydalanuvchidan): "Bo'lmoq yoki bo'lmaslik"
+Davomi (til modelidan): ", mana masalaning asl mohiyati."
+```
+
+Shuni ta'kidlash muhimki, bu to'ldirmalar ehtimolliklarga asoslangan bashoratlar bo'lib, ularning to'g'ri bo'lishi kafolatlanmagan. Til modellarining aynan shu ehtimoliy tabiati ulardan foydalanishni bir vaqtning o'zida ham hayajonli, ham asabiylashtiruvchi qiladi. Bu mavzuni 2-bobda yanada chuqurroq o'rganamiz.
+
+Garchi sodda eshitilsa-da, to'ldirish jarayoni nihoyatda qudratli imkoniyatdir. Tarjima, qisqacha bayon qilish, kod yozish va matematik masalalarni yechish kabi ko'plab vazifalarni to'ldirish vazifalari sifatida ifodalash mumkin. Masalan, “Fransuz tilida 'ahvollaringiz qalay' … degani” `prompt`'i berilganda, til modeli uni “Comment ça va” bilan to'ldirishi mumkin, bu esa bir tildan ikkinchisiga samarali tarjima qilish demakdir.
+
+Yana bir misol, quyidagi `prompt` berilganda:
+
+``` markdown
+Savol: Ushbu elektron pochta spam bo'lishi ehtimoli bormi? Xatning matni: <elektron pochta matni>
+Javob:
+```
+
+Til modeli uni “Ehtimoliy spam” deb to'ldirishi mumkin, bu esa o'z navbatida til modelini spam-klassifikatorga aylantiradi.
+
+To'ldirish qudratli bo'lsa-da, bu suhbat qurish bilan bir xil narsa emas. Masalan, agar siz to'ldiruvchi mashinaga savol bersangiz, u savolga javob berish o'rniga, sizning gapingizni yana bir savol qo'shish orqali to'ldirishi mumkin. “O'qitishdan keyingi bosqich” (`Post-Training`) bo'limida modelni foydalanuvchi so'roviga qanday qilib munosib javob berishga o'rgatish muhokama qilinadi.
+
+
+
+
+[^3]: Bu jarayon `causal language modeling` (sababiy til modellashtirish) deb ham ataladi.
+[^4]: Masalan, `GPT` (Generative Pre-trained Transformer) nomidagi “Generative” so'zi uning avtoregressiv ekanligini bildiradi.
+
+[^2]: So'z qismlariga ajratish `subword tokenization` deb ataladi.

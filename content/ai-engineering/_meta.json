@@ -9,6 +9,13 @@
   },
   "1-introduction-to-building-ai-applications-with-foundation-models": {
     "title": "1. Fundamental modellar yordamida sun'iy intellekt dasturlarini yaratishga kirish",
-    "path": "1-introduction-to-building-ai-applications-with-foundation-models/page"
+    "path": "1-introduction-to-building-ai-applications-with-foundation-models/page",
+    "hasIndex": true,
+    "children": {
+      "the-rise-of-ai-engineering": {
+        "title": "Sun'iy intellekt muhandisligining yuksalishi",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/the-rise-of-ai-engineering/page"
+      }
+    }
   }
 }
