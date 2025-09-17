@@ -1,4 +1,8 @@
 {
+  "praise": {
+    "title": "E'tiroflar",
+    "path": "praise/page"
+  },
   "preface": {
     "title": "So'zboshi",
     "path": "preface/page"
