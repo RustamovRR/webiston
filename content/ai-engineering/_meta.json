@@ -6,5 +6,9 @@
   "preface": {
     "title": "So'zboshi",
     "path": "preface/page"
+  },
+  "1-introduction-to-building-ai-applications-with-foundation-models": {
+    "title": "1. Fundamental modellar yordamida sun'iy intellekt dasturlarini yaratishga kirish",
+    "path": "1-introduction-to-building-ai-applications-with-foundation-models/page"
   }
 }
