@@ -6,7 +6,7 @@ Fundamental modellar katta til modellaridan, ular esa, o'z navbatida, oddiy til 
 
 Til modellari ancha vaqtdan beri mavjud bo'lsa-da, ular faqatgina o'z-o'zini nazorat qilish (`self-supervision`) yordamidagina bugungi miqyosga erisha oldi. Ushbu qismda til modeli va o'z-o'zini nazorat qilish tushunchalari qisqacha sharhlanadi. Agar bu tushunchalar bilan allaqachon tanish bo'lsangiz, bu qismni o'tkazib yuborishingiz mumkin.
 
-## Til modellari
+### Til modellari
 
 Til modeli bir yoki bir nechta til haqidagi statistik ma'lumotlarni o'zida jamlaydi. Mohiyatan, bu ma'lumotlar biror so'zning ma'lum bir kontekstda paydo bo'lish ehtimoli qanchalik ekanligini bildiradi. Masalan, “Mening sevimli rangim __” degan kontekst berilganda, ingliz tilini o'zida jamlagan til modeli “mashina” so'ziga qaraganda “ko'k” so'zini ko'proq bashorat qilishi kerak.
 
@@ -85,7 +85,7 @@ Til modeli uni “Ehtimoliy spam” deb to'ldirishi mumkin, bu esa o'z navbatida
 
 To'ldirish qudratli bo'lsa-da, bu suhbat qurish bilan bir xil narsa emas. Masalan, agar siz to'ldiruvchi mashinaga savol bersangiz, u savolga javob berish o'rniga, sizning gapingizni yana bir savol qo'shish orqali to'ldirishi mumkin. “O'qitishdan keyingi bosqich” (`Post-Training`) bo'limida modelni foydalanuvchi so'roviga qanday qilib munosib javob berishga o'rgatish muhokama qilinadi.
 
-## O'z-o'zini nazorat qilish (Self-supervision)
+### O'z-o'zini nazorat qilish (Self-supervision)
 
 Til modellashtirish — bu ko'plab _ML_ algoritmlaridan faqat bittasigina xolos. Bundan tashqari, obyektlarni aniqlash, mavzularni modellashtirish, tavsiya tizimlari, ob-havoni bashorat qilish, aksiya narxlarini taxmin qilish va hokazolar uchun ham modellar mavjud. Xo'sh, til modellarining boshqa ko'plab _ML_ algoritmlaridan qanday afzalligi bor va nima ularni `ChatGPT` inqilobiga olib kelgan miqyoslash yondashuvining markaziga aylantirdi?
 
@@ -127,6 +127,61 @@ Biroq, _LLM_ atamasi ilmiy jihatdan unchalik aniq emas. Til modeli “katta” d
 2018-yil iyun oyida `OpenAI`'ning birinchi generativ oldindan o'qitilgan transformeri (`GPT`) chiqqanida, uning 117 million parametri bor edi va bu katta hisoblanardi. 2019-yil fevral oyida `OpenAI` 1.5 milliard parametrli `GPT-2`'ni taqdim etganida, 117 million endi kichik deb hisoblana boshlandi. Ushbu kitob yozilayotgan vaqtda, 100 milliard parametrli model katta hisoblanadi. Balki bir kun kelib bu hajm ham kichik bo'lib qolar.
 
 Keyingi bo'limga o'tishdan oldin, odatda e'tibordan chetda qoladigan bir savolga to'xtalib o'tmoqchiman: _Nima uchun kattaroq modellarga ko'proq ma'lumot kerak?_ Kattaroq modellar o'rganish uchun ko'proq salohiyatga ega, shuning uchun ularning samaradorligini maksimal darajaga chiqarish uchun ko'proq o'qitish ma'lumotlari kerak bo'ladi.[^7] Katta modelni kichik ma'lumotlar to'plamida ham o'qitish mumkin, lekin bu hisoblash resurslarini behuda sarflash bo'ladi. Bu ma'lumotlar to'plamida kichikroq modellar yordamida ham xuddi shunday yoki undan ham yaxshiroq natijalarga erishish mumkin edi.
+
+## Katta til modellari (_LLM_) dan fundamental modellarga
+
+Til modellari misli ko'rilmagan vazifalarni bajara olsa-da, ular matn bilan cheklangan. Biz, insonlar, dunyoni nafaqat til orqali, balki ko'rish, eshitish, sezish va boshqa tuyg'ular yordamida idrok etamiz. Matndan tashqari ma'lumotlarni qayta ishlay olish SI'ning real dunyoda faoliyat yuritishi uchun juda muhimdir.
+
+Shu sababli, til modellari ko'proq ma'lumot modalliklarini o'z ichiga olish uchun kengaytirilmoqda. `GPT-4V` va `Claude 3` kabi modellar ham tasvirlarni, ham matnlarni tushuna oladi. Ba'zi modellar hatto videolar, 3D obyektlar, oqsil tuzilmalari va hokazolarni ham tushunadi. Til modellariga ko'proq ma'lumot modalliklarini qo'shish ularni yanada qudratliroq qiladi. "OpenAI" 2023-yilda [o'zining `GPT-4V` tizimi haqidagi hisobotida](https://cdn.openai.com/papers/GPTV_System_Card.pdf) shunday degan edi: “_LLM_'larga qo'shimcha modalliklarni (masalan, tasvirli kiritishlarni) qo'shish ba'zilar tomonidan SI tadqiqotlari va ishlanmalaridagi asosiy, ilg'or yo'nalishlardan biri sifatida qaralmoqda.”
+
+Garchi ko'pchilik `Gemini` va `GPT-4V`'ni hali ham _LLM_ deb atasa-da, ularni [fundamental modellar](https://arxiv.org/abs/2108.07258) deb ta'riflash to'g'riroq bo'ladi. “Fundamental” so'zi ham bu modellarning SI dasturlaridagi muhimligini, ham ularning asosida turli ehtiyojlar uchun yangi narsalar qurish mumkinligini anglatadi.
+
+Fundamental modellar SI tadqiqotlarining an'anaviy tuzilishida yangi bir bosqichni boshlab berdi. Uzoq vaqt davomida SI tadqiqotlari ma'lumot modalliklari bo'yicha bo'lingan edi. Tabiiy tilni qayta ishlash (`NLP`) faqat matn bilan shug'ullanardi. Kompyuter ko'rishi (`Computer vision`) faqat tasvir bilan shug'ullanardi. Faqat matn bilan ishlaydigan modellar tarjima va spamni aniqlash kabi vazifalar uchun ishlatilishi mumkin edi. Faqat tasvir bilan ishlaydigan modellar esa obyektlarni aniqlash va tasvirlarni tasniflash uchun ishlatilardi. Faqat audio bilan ishlaydigan modellar nutqni aniqlash (nutqdan-matnga yoki `STT`) va nutq sintezi (matndan-nutqqa yoki `TTS`) kabi vazifalarni bajara olardi.
+
+Birdan ortiq ma'lumot modalligi bilan ishlay oladigan model **multimodal model** deb ham ataladi. Generativ multimodal model esa **katta multimodal model** (`LMM`) deyiladi. Agar til modeli keyingi tokenni faqat matnli tokenlarga asoslanib generatsiya qilsa, multimodal model keyingi tokenni ham matn, ham tasvir tokenlariga, ya'ni model qo'llab-quvvatlaydigan barcha modalliklarga asoslanib generatsiya qiladi (1-3-rasm).
+
+![](/ai-engineering/1.3-figure.png)
+
+<div className='text-center text-sm italic'>1-3-rasm. Multimodal model keyingi tokenni ham matn, ham vizual tokenlardan olingan ma'lumotlar asosida generatsiya qila oladi</div>
+
+Til modellari singari, multimodal modellar ham miqyoslash uchun ma'lumotlarga muhtoj. O'z-o'zini nazorat qilish yondashuvi multimodal modellar uchun ham ishlaydi. Masalan, OpenAI o'zining til-tasvir modeli bo'lgan `CLIP`'ni o'qitish uchun o'z-o'zini nazorat qilishning tabiiy til nazorati (`natural language supervision`) deb nomlangan bir turidan foydalangan ([OpenAI, 2021](https://openai.com/index/clip/)). Ular har bir tasvir uchun yorliqlarni mustaqil yaratish o'rniga, internetda birga uchraydigan (tasvir, matn) juftliklarini topdilar. Ular mustaqil belgilash xarajatlarisiz 400 million (tasvir, matn) juftligidan iborat ma'lumotlar to'plamini yarata oldilar, bu esa _ImageNet_'dan 400 baravar kattaroq edi. Bu ma'lumotlar to'plami `CLIP`'ning qo'shimcha o'qitishni talab qilmasdan, bir nechta tasvir tasnifi vazifalariga umumlashtira oladigan birinchi modelga aylanishiga imkon berdi.
+
+<Callout>
+### Eslatma
+
+Ushbu kitobda fundamental modellar atamasi ham katta til modellari, ham katta multimodal modellarni anglatadi.
+</Callout>
+
+Shuni ta'kidlash joizki, `CLIP` generativ model emas — u erkin natijalar generatsiya qilishga o'rgatilmagan. `CLIP` — bu ham matnlar, ham tasvirlarning qo'shma embedding'larini hosil qilishga o'rgatilgan embedding modelidir (embedding — bu so'z yoki tasvir kabi murakkab ma'lumotni ma'nosini saqlagan holda ixcham raqamli ko'rinishga, ya'ni vektorga o'tkazish jarayoni). “Embedding'larga kirish” bo'limida embedding'lar batafsil muhokama qilinadi. Hozircha, embedding'larni asl ma'lumotlarning ma'nosini o'zida aks ettirishga harakat qiladigan vektorlar deb tasavvur qilishingiz mumkin. `CLIP` kabi multimodal embedding modellari `Flamingo`, `LLaVA` va `Gemini` (avvalgi `Bard`) singari generativ multimodal modellarning asosini, ya'ni tayanchini tashkil etadi.
+
+### Maxsus vazifali modellardan umumiy maqsadli modellarga
+
+Fundamental modellar, shuningdek, maxsus vazifali modellardan umumiy maqsadli modellarga o'tish davrini ham anglatadi. Ilgari modellar ko'pincha hissiyot tahlili (`sentiment analysis`) yoki tarjima kabi maxsus vazifalar uchun ishlab chiqilardi. Hissiyot tahlili uchun o'qitilgan model tarjima qila olmasdi va aksincha.
+
+Fundamental modellar o'zlarining miqyosi va o'qitilish usuli tufayli juda keng doiradagi vazifalarni bajara oladi. Tayyor holatida, umumiy maqsadli modellar ko'plab vazifalarni nisbatan yaxshi bajara oladi. _LLM_ ham hissiyot tahlilini, ham tarjimani bajara oladi. Biroq, ko'p hollarda umumiy maqsadli modelni biror maxsus vazifa uchun uning samaradorligini maksimal darajaga chiqarish maqsadida biroz o'zgartirish (`tweak`) mumkin.
+
+1-4-rasmda fundamental modellarni baholash uchun _Super-NaturalInstructions_ mezonida (`benchmark`) ishlatiladigan vazifalar ko'rsatilgan va bu fundamental model qanday turdagi vazifalarni bajara olishi haqida tasavvur beradi ([Wang va boshq., 2022](https://arxiv.org/abs/2204.07705)).
+
+Tasavvur qiling, siz bir chakana savdo kompaniyasi bilan ularning veb-sayti uchun mahsulot tavsiflarini generatsiya qiladigan dastur ustida ishlayapsiz. Tayyor holatidagi model to'g'ri tavsiflarni generatsiya qilishi mumkin, lekin brendning o'ziga xos ovozini (`voice`) aks ettira olmasligi yoki brendning asosiy g'oyalarini (`messaging`) ta'kidlay olmasligi mumkin. Generatsiya qilingan tavsiflar hatto marketing nutqi va siyqasi chiqqan iboralarga (`cliches`) to'la bo'lishi ham mumkin.
+
+![Super-NaturalInstructions mezonidagi vazifalar doirasi (Wang va boshq., 2022)](/ai-engineering/1.4-figure.png)
+
+<div className='text-center text-sm italic'>1-4-rasm. _Super-NaturalInstructions_ mezonidagi vazifalar doirasi (Wang va boshq., 2022).</div>
+
+### Modelni vazifaga moslashtirish
+
+Modeldan o'zingiz istagan natijani olish uchun qo'llashingiz mumkin bo'lgan bir nechta texnikalar mavjud. Masalan, siz kerakli mahsulot tavsiflariga oid misollar bilan boyitilgan batafsil ko'rsatmalar ishlab chiqishingiz mumkin. Bu yondashuv prompt muhandisligi (`prompt engineering`) deb ataladi. Yoki modelni mijozlarning fikr-mulohazalari bazasiga ulashingiz mumkin, model esa bu ma'lumotlardan dastak sifatida foydalanib, yanada yaxshiroq tavsiflar generatsiya qiladi. Ko'rsatmalarni ma'lumotlar bazasi bilan to'ldirish qidiruv bilan to'ldirilgan generatsiya (_Retrieval-Augmented Generation_, `RAG`) deb nomlanadi. Shuningdek, siz modelni yuqori sifatli mahsulot tavsiflari to'plamida qo'shimcha sozlash (`finetuning`), ya'ni qo'shimcha o'qitish imkoniga ham egasiz.
+
+### Tayyor modeldan foydalanish yoki o'zi yaratish?
+
+Prompt muhandisligi, `RAG` va qo'shimcha sozlash — bular modelni o'z ehtiyojlaringizga moslashtirish uchun ishlatishingiz mumkin bo'lgan, sun'iy intellekt muhandisligidagi uchta eng keng tarqalgan texnikadir. Kitobning qolgan qismida ularning barchasi batafsil muhokama qilinadi.
+
+Mavjud qudratli modelni o'z vazifangizga moslashtirish, odatda, vazifangiz uchun modelni noldan yaratishdan ancha osonroqdir — masalan, 1 million namuna va olti oyga qarshi o'nta namuna va bir dam olish kuni. Fundamental modellar SI dasturlarini ishlab chiqishni arzonlashtiradi va mahsulotni bozorga chiqarish vaqtini (`time to market`) qisqartiradi. Modelni moslashtirish uchun aniq qancha ma'lumot kerakligi siz qo'llaydigan texnikaga bog'liq. Ushbu kitob har bir texnikani muhokama qilganda bu savolga ham to'xtalib o'tadi. Shunga qaramay, maxsus vazifali modellarning ham ko'plab afzalliklari bor, masalan, ular ancha kichikroq bo'lishi mumkin, bu esa ulardan foydalanishni tezroq va arzonroq qiladi.
+
+O'z modelingizni yaratish yoki mavjudidan foydalanish — bu jamoalar o'zlari javob topishlari kerak bo'lgan klassik "sotib olish yoki o'zi yaratish" masalasidir. Kitob davomidagi muhokamalar bu qarorni qabul qilishga yordam beradi.
+
+
+
 
 [^1]: Ingliz tilidan boshqa tillarda bitta `Unicode` belgisi ba'zan bir nechta token sifatida ifodalanishi mumkin.
 
