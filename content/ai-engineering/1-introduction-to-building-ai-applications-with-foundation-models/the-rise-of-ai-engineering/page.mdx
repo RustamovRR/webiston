@@ -16,7 +16,7 @@ Keyinroq, Klod Shennon Ikkinchi jahon urushi paytida dushman xabarlarining shifr
 
 Dastlabki paytlarda til modeli faqat bitta tilni o'z ichiga olardi. Biroq, bugungi kunda til modeli bir nechta tilni qamrab olishi mumkin.
 
-Til modelining asosiy birligi — bu token. Token — bu modelga qarab, belgi, so'z yoki so'zning bir qismi (masalan, `-tion` kabi) bo'lishi mumkin.[^2] Masalan, `ChatGPT` ortida turgan model — `GPT-4` — “I can't wait to build AI applications” iborasini 1-1-rasmda ko'rsatilganidek, to'qqizta tokenga ajratadi. E'tibor bering, bu misolda “can't” so'zi ikkita tokenga — `can` va `'t`'ga ajratilgan. Turli `OpenAI` modellarining matnni qanday tokenlarga ajratishini `OpenAI` veb-saytida ko'rishingiz mumkin.
+Til modelining asosiy birligi — bu token. Token — bu modelga qarab, belgi, so'z yoki so'zning bir qismi (masalan, `-tion` kabi) bo'lishi mumkin.[^1] Masalan, `ChatGPT` ortida turgan model — `GPT-4` — “I can't wait to build AI applications” iborasini 1-1-rasmda ko'rsatilganidek, to'qqizta tokenga ajratadi. E'tibor bering, bu misolda “can't” so'zi ikkita tokenga — `can` va `'t`'ga ajratilgan. Turli `OpenAI` modellarining matnni qanday tokenlarga ajratishini `OpenAI` veb-saytida ko'rishingiz mumkin.
 
 ![GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish](/ai-engineering/1.1-figure.png)
 <div className='text-center text-sm'>_1-1 rasm. GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish_</div>
@@ -47,7 +47,7 @@ Ushbu kitob yozilayotgan vaqtda, niqoblangan til modellari odatda hissiyot tahli
 
 ### Avtoregressiv til modellari
 
-Avtoregressiv til modeli ketma-ketlikdagi keyingi tokenni faqat o'zidan oldingi tokenlardan foydalangan holda bashorat qilishga o'rgatiladi. U “Mening sevimli rangim __” jumlasida keyin nima kelishini bashorat qiladi.[^3] Avtoregressiv model uzluksiz ravishda birin-ketin token generatsiya qila oladi. Bugungi kunda avtoregressiv til modellari matn generatsiyasi uchun eng maqbul modellar hisoblanadi va shu sababli ular niqoblangan til modellariga qaraganda ancha ommaboproqdir.[^4]
+Avtoregressiv til modeli ketma-ketlikdagi keyingi tokenni faqat o'zidan oldingi tokenlardan foydalangan holda bashorat qilishga o'rgatiladi. U “Mening sevimli rangim __” jumlasida keyin nima kelishini bashorat qiladi.[^2] Avtoregressiv model uzluksiz ravishda birin-ketin token generatsiya qila oladi. Bugungi kunda avtoregressiv til modellari matn generatsiyasi uchun eng maqbul modellar hisoblanadi va shu sababli ular niqoblangan til modellariga qaraganda ancha ommaboproqdir.[^3]
 
 1-2-rasmda til modellarining bu ikki turi ko'rsatilgan.
 
@@ -85,10 +85,59 @@ Til modeli uni “Ehtimoliy spam” deb to'ldirishi mumkin, bu esa o'z navbatida
 
 To'ldirish qudratli bo'lsa-da, bu suhbat qurish bilan bir xil narsa emas. Masalan, agar siz to'ldiruvchi mashinaga savol bersangiz, u savolga javob berish o'rniga, sizning gapingizni yana bir savol qo'shish orqali to'ldirishi mumkin. “O'qitishdan keyingi bosqich” (`Post-Training`) bo'limida modelni foydalanuvchi so'roviga qanday qilib munosib javob berishga o'rgatish muhokama qilinadi.
 
+## O'z-o'zini nazorat qilish (Self-supervision)
 
+Til modellashtirish — bu ko'plab _ML_ algoritmlaridan faqat bittasigina xolos. Bundan tashqari, obyektlarni aniqlash, mavzularni modellashtirish, tavsiya tizimlari, ob-havoni bashorat qilish, aksiya narxlarini taxmin qilish va hokazolar uchun ham modellar mavjud. Xo'sh, til modellarining boshqa ko'plab _ML_ algoritmlaridan qanday afzalligi bor va nima ularni `ChatGPT` inqilobiga olib kelgan miqyoslash yondashuvining markaziga aylantirdi?
 
+Javob shundaki, til modellarini o'z-o'zini nazorat qilish (`self-supervision`) yordamida o'qitish mumkin, holbuki, boshqa ko'plab modellar nazoratli o'qitishni (`supervision`) talab qiladi. Nazoratli o'qitish — bu _ML_ algoritmlarini maxsus belgilangan ma'lumotlar yordamida o'qitish jarayonidir va bunday ma'lumotlarni to'plash qimmatga tushishi va ko'p vaqt talab qilishi mumkin. O'z-o'zini nazorat qilish esa aynan shu ma'lumotlarni belgilashdagi to'siqni yengib o'tishga yordam beradi. Bu esa, o'z navbatida, modellarga o'rganish uchun kattaroq ma'lumotlar to'plamlarini yaratish va ularning miqyosini samarali ravishda kengaytirish imkonini beradi. Keling, buni batafsil ko'rib chiqamiz.
 
-[^3]: Bu jarayon `causal language modeling` (sababiy til modellashtirish) deb ham ataladi.
-[^4]: Masalan, `GPT` (Generative Pre-trained Transformer) nomidagi “Generative” so'zi uning avtoregressiv ekanligini bildiradi.
+Nazoratli o'qitishda siz model o'rganishi kerak bo'lgan xususiyatlarni ko'rsatish uchun namunalarni belgilab chiqasiz va keyin modelni shu namunalar asosida o'qitasiz. O'qitib bo'lingach, modelni yangi ma'lumotlarga qo'llash mumkin bo'ladi. Masalan, firibgarlikni aniqlash modelini o'qitish uchun siz har biri “firibgarlik” yoki “firibgarlik emas” deb belgilangan tranzaksiyalar namunalaridan foydalanasiz. Model bu namunalardan o'rganib olgach, siz undan yangi tranzaksiyaning firibgarlik ekanligini bashorat qilish uchun foydalanishingiz mumkin.
 
-[^2]: So'z qismlariga ajratish `subword tokenization` deb ataladi.
+2010-yillarda SI modellarining muvaffaqiyati aynan nazoratli o'qitishga asoslangan edi. Chuqur o'rganish (`deep learning`) inqilobini boshlab bergan model — _AlexNet_ ([Krizhevsky va boshq., 2012](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)) — nazoratli o'qitishga asoslangan edi. U _ImageNet_ ma'lumotlar to'plamidagi 1 milliondan ortiq rasmni tasniflashni o'rganish uchun o'qitilgan. U har bir rasmni “mashina”, “havo shari” yoki “maymun” kabi 1000 ta toifadan biriga ajratgan.
+
+Nazoratli o'qitishning kamchiligi shundaki, ma'lumotlarni belgilash qimmat va ko'p vaqt talab qiladigan jarayondir. Agar bir kishi bitta rasmni belgilashi uchun 5 sent ketsa, _ImageNet_ uchun millionta rasmni belgilash 50 000 dollarga tushadi.[^4] Agar siz har bir rasmni ikki xil odam belgilashini istasangiz — bu orqali belgilash sifatini qayta tekshirish mumkin bo'ladi — xarajat ikki baravar oshadi. Dunyoda 1000 tadan ancha ko'p obyekt mavjudligini hisobga olsak, modellarning imkoniyatlarini ko'proq obyektlar bilan ishlashga kengaytirish uchun siz ko'proq toifalarga oid belgilarni qo'shishingiz kerak bo'ladi. Miqyosni 1 million toifaga yetkazish uchun esa, faqat belgilash xarajatining o'zi 50 million dollarga yetadi.
+
+Kundalik obyektlarni belgilashni ko'pchilik odamlar maxsus tayyorgarliksiz ham bajara oladi. Shu sababli, buni nisbatan arzon amalga oshirish mumkin. Biroq, hamma belgilash vazifalari ham bunchalik oson emas. Ingliz tilidan lotin tiliga tarjima qiluvchi model uchun lotincha tarjimalarni yaratish ancha qimmatroq. Kompyuter tomografiyasi (`CT scan`) suratida saraton belgilari bor-yo'qligini belgilash esa tasavvur qilib bo'lmas darajada qimmatga tushardi.
+
+O'z-o'zini nazorat qilish ma'lumotlarni belgilashdagi bu to'siqni yengib o'tishga yordam beradi. O'z-o'zini nazorat qilishda model aniq belgilarni talab qilish o'rniga, belgilarni kiruvchi ma'lumotlarning o'zidan chiqarib oladi. Til modellashtirish o'z-o'zini nazorat qilishga asoslanadi, chunki har bir kiruvchi ketma-ketlik ham belgilarni (bashorat qilinishi kerak bo'lgan tokenlarni), ham model bu belgilarni bashorat qilish uchun foydalanishi mumkin bo'lgan kontekstni o'zida mujassam etadi. Masalan, "Men ko'cha taomlarini yaxshi ko'raman." ("I love street food.") jumlasi 1-1-jadvalda ko'rsatilganidek, oltita o'qitish namunasini beradi.
+
+| Kirish (kontekst) | Chiqish (keyingi token) |
+| :--- | :--- |
+| `<BOS>` | I |
+| `<BOS>`, I | love |
+| `<BOS>`, I, love | street |
+| `<BOS>`, I, love, street | food |
+| `<BOS>`, I, love, street, food | . |
+| `<BOS>`, I, love, street, food, . | `<EOS>` |
+
+<div className='text-center text-sm italic'>1-1 jadval. "I love street food." jumlasidan til modellashtirish uchun olingan o'qitish namunalari.</div>
+
+1-1-jadvalda `<BOS>` va `<EOS>` ketma-ketlikning boshlanishi va tugashini bildiradi. Bu belgilar til modelining bir nechta ketma-ketliklar bilan ishlashi uchun zarur. Har bir belgi odatda model tomonidan bitta maxsus token sifatida qabul qilinadi. Ketma-ketlikning tugash belgisi ayniqsa muhim, chunki u til modellariga o'z javoblarini qachon tugatish kerakligini bilishga yordam beradi.[^5]
+
+<Callout>
+### Eslatma
+
+O'z-o'zini nazorat qilish (`self-supervision`) nazoratsiz o'qitishdan (`unsupervision`) farq qiladi. O'z-o'zini nazorat qilishda belgilar kiruvchi ma'lumotlarning o'zidan chiqarib olinsa, nazoratsiz o'qitishda esa belgilarga umuman hojat yo'q.
+</Callout>
+
+O'z-o'zini nazorat qilish til modellarining hech qanday belgilashni talab qilmasdan, to'g'ridan-to'g'ri matn ketma-ketliklaridan o'rganishini anglatadi. Matn ketma-ketliklari hamma joyda — kitoblarda, blog postlarida, maqolalarda va `Reddit` izohlarida — mavjud bo'lgani uchun, ulkan hajmdagi o'qitish ma'lumotlarini to'plash mumkin. Bu esa til modellarining miqyosini kengaytirib, katta til modellariga (_LLM_) aylanishiga imkon beradi.
+
+Biroq, _LLM_ atamasi ilmiy jihatdan unchalik aniq emas. Til modeli “katta” deb hisoblanishi uchun qanchalik katta bo'lishi kerak? Bugun katta deb hisoblangan narsa ertaga kichik bo'lib qolishi mumkin. Modelning hajmi odatda uning parametrlari soni bilan o'lchanadi. Parametr — bu _ML_ modelidagi o'zgaruvchi bo'lib, u o'qitish jarayonida yangilanib boradi.[^6] Umuman olganda, garchi bu har doim ham to'g'ri bo'lmasa-da, modelda qancha ko'p parametr bo'lsa, uning kerakli xususiyatlarni o'rganish salohiyati shuncha yuqori bo'ladi.
+
+2018-yil iyun oyida `OpenAI`'ning birinchi generativ oldindan o'qitilgan transformeri (`GPT`) chiqqanida, uning 117 million parametri bor edi va bu katta hisoblanardi. 2019-yil fevral oyida `OpenAI` 1.5 milliard parametrli `GPT-2`'ni taqdim etganida, 117 million endi kichik deb hisoblana boshlandi. Ushbu kitob yozilayotgan vaqtda, 100 milliard parametrli model katta hisoblanadi. Balki bir kun kelib bu hajm ham kichik bo'lib qolar.
+
+Keyingi bo'limga o'tishdan oldin, odatda e'tibordan chetda qoladigan bir savolga to'xtalib o'tmoqchiman: _Nima uchun kattaroq modellarga ko'proq ma'lumot kerak?_ Kattaroq modellar o'rganish uchun ko'proq salohiyatga ega, shuning uchun ularning samaradorligini maksimal darajaga chiqarish uchun ko'proq o'qitish ma'lumotlari kerak bo'ladi.[^7] Katta modelni kichik ma'lumotlar to'plamida ham o'qitish mumkin, lekin bu hisoblash resurslarini behuda sarflash bo'ladi. Bu ma'lumotlar to'plamida kichikroq modellar yordamida ham xuddi shunday yoki undan ham yaxshiroq natijalarga erishish mumkin edi.
+
+[^1]: Ingliz tilidan boshqa tillarda bitta `Unicode` belgisi ba'zan bir nechta token sifatida ifodalanishi mumkin.
+
+[^2]: Avtoregressiv til modellari ba'zan sababiy til modellari ([`causal language models`](https://huggingface.co/docs/transformers/en/tasks/language_modeling)) deb ham ataladi.
+
+[^3]: Texnik jihatdan, agar juda qattiq harakat qilinsa, `BERT` kabi niqoblangan til modelidan ham matn generatsiyasi uchun foydalanish mumkin.
+
+[^4]: Ma'lumotlarni belgilashning haqiqiy narxi bir nechta omillarga, jumladan, vazifaning murakkabligi, miqyosi (kattaroq ma'lumotlar to'plamlari odatda har bir namuna uchun arzonroq narxga olib keladi) va belgilash xizmatini taqdim etuvchi provayderga bog'liq. Masalan, 2024-yil sentabr holatiga ko'ra, [`Amazon SageMaker Ground Truth`](https://aws.amazon.com/sagemaker/ai/groundtruth/) 50 000 tadan kam rasmni belgilash uchun har bir rasmga 8 sent, 1 milliondan ortiq rasmni belgilash uchun esa har bir rasmga atigi 2 sent oladi.
+
+[^5]: Bu xuddi insonlar uchun qachon gapirishni to'xtatishni bilish muhim bo'lganiga o'xshaydi.
+
+[^6]: Maktabda menga model parametrlari ham model og'irliklari (`weights`), ham model siljishlari (`biases`)ni o'z ichiga oladi deb o'rgatishgan. Biroq, bugungi kunda biz odatda barcha parametrlarni nazarda tutib, model og'irliklari atamasini ishlatamiz.
+
+[^7]: Kattaroq modellarga ko'proq o'qitish ma'lumotlari kerakligi mantiqqa zid tuyulishi mumkin. Agar model qudratliroq bo'lsa, o'rganish uchun kamroq namuna talab qilishi kerak emasmi? Biroq, bizning maqsadimiz katta modelning bir xil ma'lumotlar yordamida kichik modelning samaradorligiga erishishi emas. Bizning maqsadimiz — model samaradorligini maksimal darajaga chiqarishdir.
