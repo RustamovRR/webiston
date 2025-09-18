@@ -195,7 +195,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
                         )
                       }
                     }}
-                    className="min-w-0 flex-1 truncate text-left no-underline hover:underline"
+                    className="min-w-0 flex-1 text-left no-underline hover:underline"
                     title={item.title}
                   >
                     {item.title}
@@ -223,7 +223,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
                 },
               )}
             >
-              <span className="truncate pr-4" title={item.title}>
+              <span className="pr-4" title={item.title}>
                 {item.title}
               </span>
             </Link>
