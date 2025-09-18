@@ -180,8 +180,61 @@ Mavjud qudratli modelni o'z vazifangizga moslashtirish, odatda, vazifangiz uchun
 
 O'z modelingizni yaratish yoki mavjudidan foydalanish — bu jamoalar o'zlari javob topishlari kerak bo'lgan klassik "sotib olish yoki o'zi yaratish" masalasidir. Kitob davomidagi muhokamalar bu qarorni qabul qilishga yordam beradi.
 
+## Fundamental modellardan sun'iy intellekt muhandisligiga
 
+Sun'iy intellekt muhandisligi (_AI Engineering_) fundamental modellar asosida dasturlar yaratish jarayonini anglatadi. Odamlar o'n yildan oshiq vaqtdan beri SI dasturlarini yaratib kelishadi — bu jarayon ko'pincha _ML_ muhandisligi yoki _MLOps_ (_ML operatsiyalari_ qisqartmasi) deb nomlanadi. Xo'sh, nega endi aynan sun'iy intellekt muhandisligi haqida gapiryapmiz?
 
+Agar an'anaviy _ML_ muhandisligi _ML_ modellarini ishlab chiqishni o'z ichiga olsa, sun'iy intellekt muhandisligi mavjudlaridan dastak sifatida foydalanadi. Qudratli fundamental modellarning mavjudligi va ochiqligi birgalikda sun'iy intellekt muhandisligining bir yo'nalish sifatida jadal rivojlanishi uchun ideal sharoitlarni yaratadigan uchta omilga olib keldi:
+
+### 1-omil: Umumiy maqsadli SI imkoniyatlari
+
+Fundamental modellar nafaqat mavjud vazifalarni yaxshiroq bajara olgani uchun, balki ko'proq vazifalarni bajara olgani uchun ham qudratlidir. Ilgari imkonsiz deb hisoblangan dasturlar endi mumkin bo'lib qoldi, ilgari o'ylab ham ko'rilmagan dasturlar paydo bo'lmoqda. Hatto bugun imkonsiz deb hisoblangan dasturlar ertaga mumkin bo'lib qolishi ham hech gap emas. Bu esa SI'ni hayotning ko'proq jabhalari uchun foydaliroq qiladi va ham foydalanuvchilar bazasini, ham SI dasturlariga bo'lgan talabni keskin oshiradi.
+
+Masalan, SI endi insonlar kabi, ba'zan esa ulardan ham yaxshiroq yoza olgani uchun, u muloqotni talab qiladigan har bir vazifani avtomatlashtirishi yoki qisman avtomatlashtirishi mumkin — bu esa deyarli hamma narsani anglatadi. SI elektron pochta xabarlarini yozish, mijozlar so'rovlariga javob berish va murakkab shartnomalarni tushuntirish uchun ishlatilmoqda. Kompyuterga ega bo'lgan har bir kishi marketing materiallarini yaratish, professional portret suratlarni tahrirlash, san'at konsepsiyalarini vizualizatsiya qilish, kitoblarni illustratsiya qilish va hokazolarda yordam beradigan moslashtirilgan, yuqori sifatli tasvirlar va videolarni bir zumda generatsiya qila oladigan vositalarga ega. SI hatto o'qitish ma'lumotlarini sintez qilish, algoritmlar ishlab chiqish va kod yozish uchun ham ishlatilishi mumkin, bularning barchasi kelajakda yanada qudratliroq modellarni o'qitishga yordam beradi.
+
+### 2-omil: SI sohasiga investitsiyalarning ortishi
+
+`ChatGPT`'ning muvaffaqiyati ham venchur kapitalistlar, ham korxonalar tomonidan SI sohasiga kiritilayotgan investitsiyalarning keskin ortishiga turtki bo'ldi. SI dasturlarini yaratish arzonlashib, bozorga chiqish tezlashgani sari, SI'ga kiritilgan sarmoyadan olinadigan daromad ham jozibadorroq bo'lib bormoqda. Kompaniyalarning barchasi o'z mahsulotlari va jarayonlariga SI'ni joriy etishga shoshilmoqda. "Scribd" kompaniyasining amaliy tadqiqotlar bo'yicha katta menejeri Mett Rossning menga aytishicha, uning qo'llanish holatlari (`use cases`) uchun taxminiy SI xarajatlari 2022-yil aprelidan 2023-yil apreligacha bo'lgan davrda 100 baravarga kamaygan.
+
+["Goldman Sachs Research"](https://www.goldmansachs.com/insights/articles/ai-investment-forecast-to-approach-200-billion-globally-by-2025.html) hisob-kitoblariga ko'ra, 2025-yilga kelib SI investitsiyalari AQSHda 100 milliard dollarga, global miqyosda esa 200 milliard dollarga yaqinlashishi mumkin.[^8] SI ko'pincha raqobatbardosh ustunlik sifatida tilga olinadi. "FactSet" tadqiqotiga ko'ra, 2023-yilning ikkinchi choragida _S&P 500_ kompaniyalarining har uchdan biri o'zlarining daromadlari haqidagi hisobotlarida SI'ni tilga olgan — bu ko'rsatkich o'tgan yilgiga nisbatan uch baravar ko'pdir. 1-5-rasmda 2018-yildan 2023-yilgacha bo'lgan davrda o'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni ko'rsatilgan.
+
+![O'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan](/ai-engineering/1.5-figure.png)
+
+<div className='text-center text-sm italic'>1-5-rasm. O'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan.</div>
+
+"WallStreetZen" ma'lumotlariga ko'ra, o'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan kompaniyalarning aksiya narxlari tilga olmaganlarga qaraganda ko'proq o'sgan: [2.4% ga nisbatan o'rtacha 4.6% o'sdi](https://www.theregister.com/2023/09/18/mention_ai_in_earnings_calls/). Bu sabab-oqibat bog'liqligimi (SI bu kompaniyalarni muvaffaqiyatliroq qilmoqda) yoki shunchaki korrelyatsiyami (kompaniyalar yangi texnologiyalarga tez moslashgani uchun muvaffaqiyatli), bu hali noaniq.
+
+### 3-omil: SI dasturlarini yaratish uchun kirish to'sig'ining pastligi
+
+"OpenAI" va boshqa model provayderlari tomonidan ommalashtirilgan "xizmat sifatida taqdim etiluvchi model" yondashuvi SI'dan foydalanib dasturlar yaratishni ancha osonlashtiradi. Bu yondashuvda modellar foydalanuvchi so'rovlarini qabul qiluvchi va model natijalarini qaytaruvchi _API_'lar orqali taqdim etiladi. Bu _API_'larsiz SI modelidan foydalanish ushbu modelni host qilish va xizmat ko'rsatish uchun maxsus infratuzilmani talab qiladi. _API_'lar esa sizga oddiy _API_ chaqiruvlari orqali qudratli modellardan foydalanish imkonini beradi.
+
+Nafaqat bu, SI minimal darajada kod yozish bilan ham dasturlar yaratish imkonini beradi. Birinchidan, SI siz uchun kod yoza oladi, bu esa dasturiy ta'minot muhandisligi bo'yicha tajribasi bo'lmagan odamlarga o'z g'oyalarini tezda kodga aylantirish va ularni foydalanuvchilarga taqdim etish imkonini beradi. Ikkinchidan, siz bu modellar bilan biror dasturlash tilidan foydalanish o'rniga, oddiy ingliz tilida ishlashingiz mumkin. _Endi har kim, ha, istalgan odam SI dasturlarini yarata oladi_.
+
+### SI muhandisligining portlashi
+
+Fundamental modellarni ishlab chiqish uchun talab etiladigan resurslar tufayli, bu jarayon faqat yirik korporatsiyalar (Google, Meta, Microsoft, Baidu, Tencent), hukumatlar ([Yaponiya](https://www.nii.ac.jp/en/news/release/2023/1020.html), [BAA](https://www.ft.com/content/ab36d481-9e7c-4d18-855d-7d313db0db0d)) va ambitsiyali, yaxshi moliyalashtirilgan startaplar (OpenAI, Anthropic, Mistral) uchungina mumkin. 2022-yil sentabr oyidagi intervyusida ["OpenAI" bosh direktori Sem Altman](https://greylock.com/greymatter/sam-altman-ai-for-the-next-era/) aksariyat odamlar uchun eng katta imkoniyat bu modellarni maxsus dasturlarga moslashtirish bo'lishini aytgan.
+
+Dunyo bu imkoniyatni tezda qabul qildi. Sun'iy intellekt muhandisligi eng tez, balki eng jadal rivojlanayotgan muhandislik yo'nalishi sifatida maydonga chiqdi. Sun'iy intellekt muhandisligi uchun vositalar avvalgi har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq ommalashmoqda. Atigi ikki yil ichida to'rtta ochiq manbali SI muhandislik vositasi (`AutoGPT`, `Stable Diffusion web UI`, `LangChain`, `Ollama`) GitHub'da Bitcoin'dan ko'ra ko'proq yulduzcha to'plab ulgurdi. Ular yulduzchalar soni bo'yicha hatto eng mashhur veb-ishlab chiqish freymvorklari, jumladan React va Vue'ni ham ortda qoldirish arafasida. 1-6-rasmda SI muhandislik vositalarining GitHub yulduzchalari o'sishi Bitcoin, Vue va React bilan taqqoslangan.
+
+LinkedIn'ning 2023-yil avgust oyidagi so'rovnomasi shuni ko'rsatadiki, o'z profiliga “Generativ SI,” “ChatGPT,” “Prompt Muhandisligi,” va “Prompt Yaratish” kabi atamalarni qo'shgan mutaxassislar soni har oy o'rtacha 75% ga oshgan. "ComputerWorld" esa “SI'ni o'zini tutishga o'rgatish — eng tez o'sayotgan karyera ko'nikmasi” deb e'lon qildi.
+
+![Ochiq manbali SI muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda](/ai-engineering/1.6-figure.png)
+
+<div className='text-center text-sm italic'>1-6-rasm. Ochiq manbali SI muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda.</div>
+
+### Nega aynan “Sun'iy intellekt muhandisligi” atamasi?
+
+> Fundamental modellar asosida dasturlar yaratish jarayonini tasvirlash uchun ko'plab atamalar qo'llanilmoqda, jumladan, _ML_ muhandisligi, _MLOps_, _AIOps_, _LLMOps_ va hokazo. Xo'sh, nima uchun men bu kitob uchun aynan sun'iy intellekt muhandisligi atamasini tanladim?
+>
+> Men _ML_ muhandisligi atamasini tanlamadim, chunki “SI muhandisligi _ML_ muhandisligiga qarshi” bo'limida muhokama qilinishidek, fundamental modellar bilan ishlash an'anaviy _ML_ modellari bilan ishlashdan bir nechta muhim jihatlari bilan farq qiladi. _ML_ muhandisligi atamasi bu farqni to'liq ifodalash uchun yetarli bo'lmaydi. Shunday bo'lsa-da, _ML_ muhandisligi ikkala jarayonni ham qamrab oluvchi ajoyib umumiy atamadir.
+>
+> Men “Ops” bilan tugaydigan atamalarning barchasidan voz kechdim, chunki jarayonda operatsion qismlar mavjud bo'lsa-da, asosiy e'tibor fundamental modellarni siz xohlagandek ishlashi uchun sozlashga (ya'ni, muhandislikka) qaratilgan.
+>
+> Va nihoyat, men fundamental modellar asosida dasturlar ishlab chiqayotgan 20 kishidan ular o'z faoliyatini qanday atashlari haqida so'rovnoma o'tkazdim. Aksariyati sun'iy intellekt muhandisligi atamasini ma'qul ko'rdi. Men ham ko'pchilikning tanloviga qo'shilishga qaror qildim.
+
+Jadal kengayib borayotgan SI muhandislari hamjamiyati misli ko'rilmagan darajada qiziqarli va xilma-xil dasturlar bilan ajoyib ijodkorlikni namoyon etmoqda. Keyingi bo'limda eng keng tarqalgan dastur andozalaridan (`application patterns`) ba'zilari ko'rib chiqiladi.
+
+### Izohlar
 
 [^1]: Ingliz tilidan boshqa tillarda bitta `Unicode` belgisi ba'zan bir nechta token sifatida ifodalanishi mumkin.
 
@@ -196,3 +249,5 @@ O'z modelingizni yaratish yoki mavjudidan foydalanish — bu jamoalar o'zlari ja
 [^6]: Maktabda menga model parametrlari ham model og'irliklari (`weights`), ham model siljishlari (`biases`)ni o'z ichiga oladi deb o'rgatishgan. Biroq, bugungi kunda biz odatda barcha parametrlarni nazarda tutib, model og'irliklari atamasini ishlatamiz.
 
 [^7]: Kattaroq modellarga ko'proq o'qitish ma'lumotlari kerakligi mantiqqa zid tuyulishi mumkin. Agar model qudratliroq bo'lsa, o'rganish uchun kamroq namuna talab qilishi kerak emasmi? Biroq, bizning maqsadimiz katta modelning bir xil ma'lumotlar yordamida kichik modelning samaradorligiga erishishi emas. Bizning maqsadimiz — model samaradorligini maksimal darajaga chiqarishdir.
+
+[^8]: Taqqoslash uchun, AQSHning davlat boshlang'ich va o'rta maktablari uchun umumiy xarajatlari taxminan 900 milliard dollarni tashkil etadi — bu AQSHdagi SI investitsiyalaridan atigi to'qqiz baravar ko'p.
