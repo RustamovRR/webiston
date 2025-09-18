@@ -267,10 +267,7 @@ const components = {
   table: (props: any) => <table {...props} className="w-full" />,
 
   th: (props: any) => (
-    <th
-      {...props}
-      className="border border-[#ddd] p-3 text-left text-sm font-semibold tracking-wide whitespace-nowrap"
-    />
+    <th {...props} className="border border-[#ddd] p-3 text-left text-sm font-semibold tracking-wide" />
   ),
 }
 

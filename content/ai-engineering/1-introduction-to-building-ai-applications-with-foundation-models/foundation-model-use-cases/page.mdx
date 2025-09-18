@@ -1,0 +1,59 @@
+# Fundamental modellarning qo'llanish holatlari
+
+Agar siz hali SI dasturlarini yaratmayotgan bo'lsangiz, umid qilamanki, avvalgi bo'lim sizni buning uchun ayni vaqti ekanligiga ishontirdi. Agar xayolingizda o'ylab yurgan biror dastur bo'lsa, “SI dasturlarini rejalashtirish” bo'limiga o'tib ketishingiz mumkin. Agar ilhom izlayotgan bo'lsangiz, ushbu bo'limda sohada o'zini isbotlagan va istiqbolli qo'llanish holatlarining keng doirasi yoritiladi.
+
+Fundamental modellar yordamida yaratishingiz mumkin bo'lgan ehtimoliy dasturlar soni cheksizdek tuyuladi. Qanday qo'llanish holatini o'ylamang, katta ehtimol bilan buning uchun ham biror SI mavjud.[^1] SI uchun barcha ehtimoliy qo'llanish holatlarini sanab o'tishning iloji yo'q.
+
+### Qo'llanish holatlarini tasniflash
+
+Hatto bu qo'llanish holatlarini tasniflashga urinishning o'zi ham qiyin, chunki turli so'rovnomalar turli tasniflardan foydalanadi. Masalan, ["Amazon Web Services" (AWS)](https://aws.amazon.com/ai/generative-ai/use-cases/) korporativ generativ SI qo'llanish holatlarini uchta guruhga ajratgan: mijozlar tajribasi, xodimlar unumdorligi va jarayonlarni optimallashtirish. 2024-yilda o'tkazilgan "[O'Reilly" so'rovnomasi](https://www.oreilly.com/radar/generative-ai-in-the-enterprise/) esa qo'llanish holatlarini sakkizta toifaga bo'lgan: dasturlash, ma'lumotlar tahlili, mijozlarni qo'llab-quvvatlash, marketing matnlari, boshqa matnlar, tadqiqot, veb-dizayn va san'at.
+
+["Deloitte"](https://www.deloitte.com/us/en/services/consulting/content/gen-ai-use-cases.html) kabi ba'zi tashkilotlar qo'llanish holatlarini qiymatni yuzaga chiqarish (`value capture`) bo'yicha tasniflagan, masalan, xarajatlarni kamaytirish, jarayonlar samaradorligi, o'sish va innovatsiyalarni tezlashtirish. Qiymatni yuzaga chiqarish borasida ["Gartner"da](https://www.gartner.com/en/topics/generative-ai) biznes uzluksizligi (`business continuity`) degan toifa ham bor, ya'ni, agar tashkilot generativ SI'ni joriy etmasa, u biznesdan chiqib ketishi mumkin. "Gartner" 2023-yilda so'rov o'tkazgan 2500 nafar rahbarning 7 foizi generativ SI'ni joriy etishga turtki sifatida aynan biznes uzluksizligini keltirgan.
+
+### Kasblarning SI ta'siriga uchrovchanligi
+
+[Eloundou va boshqalarning (2023)](https://arxiv.org/abs/2303.10130) turli kasblarning SI ta'siriga qanchalik uchragani haqida ajoyib tadqiqoti mavjud. Ular biror vazifani, agar SI va SI bilan quvvatlantirilgan dasturiy ta'minot bu vazifani bajarish uchun zarur bo'lgan vaqtni kamida 50% ga qisqartira olsa, "ta'sir ostida" deb ta'riflaganlar. Biror kasbning 80% ta'sir ostida ekanligi, shu kasb vazifalarining 80%i ta'sir ostida ekanligini anglatadi. Tadqiqotga ko'ra, 100% yoki 100% ga yaqin ta'sir ostida bo'lgan kasblarga og'zaki va yozma tarjimonlar, soliq deklaratsiyalarini tayyorlovchilar, veb-dizaynerlar va yozuvchilar kiradi. Ularning ba'zilari 1-2-jadvalda ko'rsatilgan. Ajablanarli bo'lmagan jihati shundaki, SI ta'siriga umuman uchramagan kasblarga oshpazlar, tosh yo'nuvchilar va sportchilar kiradi. Bu tadqiqot SI qanday qo'llanish holatlari uchun yaxshi ekanligi haqida yaxshi tasavvur beradi.
+
+| Guruh | Eng yuqori ta'sir ostidagi kasblar | Ta'sir foizi (%) |
+| :--- | :--- | :--- |
+| `α` Inson | Og'zaki va yozma tarjimonlar<br/>So'rovnoma tadqiqotchilari<br/>Shoirlar, qo'shiq matni mualliflari va ijodiy yozuvchilar<br/>Hayvonotshunos olimlar<br/>Jamoatchilik bilan aloqalar bo'yicha mutaxassislar | 76.5<br/>75.0<br/>68.8<br/>66.7<br/>66.7 |
+| `α` + `β` Inson | So'rovnoma tadqiqotchilari<br/>Yozuvchilar va mualliflar<br/>Og'zaki va yozma tarjimonlar<br/>Jamoatchilik bilan aloqalar bo'yicha mutaxassislar<br/>Hayvonotshunos olimlar | 84.4<br/>82.5<br/>82.4<br/>80.6<br/>77.8 |
+| `α` + `ζ` Inson | Matematiklar<br/>Soliq deklaratsiyalarini tayyorlovchilar<br/>Moliyaviy miqdoriy tahlilchilar<br/>Yozuvchilar va mualliflar<br/>Veb va raqamli interfeys dizaynerlari<br/><small>_Insonlar 15 ta kasbni “to'liq ta'sir ostida” deb belgilaganlar._</small> | 100.0<br/>100.0<br/>100.0<br/>100.0<br/>100.0 |
+
+<div className='text-center text-sm italic'>1-2-jadval. Insonlar tomonidan SI ta'siriga eng ko'p uchraydigan deb belgilangan kasblar. `α` belgisi SI modellarining to'g'ridan-to'g'ri ta'sirini anglatsa, `α` + `β` va `α` + `ζ` belgilari SI bilan quvvatlantirilgan dasturiy ta'minot ta'sirini anglatadi. Jadval Eloundou va boshqalarning (2023) tadqiqotidan olingan.</div>
+
+Qo'llanish holatlarini tahlil qilar ekanman, men ham korporativ, ham iste'molchilar uchun mo'ljallangan dasturlarni ko'rib chiqdim. Korporativ qo'llanish holatlarini tushunish uchun men 50 ta kompaniya bilan ularning SI strategiyalari bo'yicha suhbatlashdim va 100 dan ortiq amaliy misollarni o'rgandim. Iste'molchilar uchun dasturlarni tushunish uchun esa GitHub'da kamida 500 yulduzcha to'plagan 205 ta ochiq manbali SI dasturini o'rganib chiqdim.[^2] Men dasturlarni 1-3-jadvalda ko'rsatilganidek, sakkizta guruhga ajratdim. Bu yerdagi cheklangan ro'yxat eng yaxshi holatda ma'lumotnoma bo'lib xizmat qiladi. 2-bobda fundamental modellarni qanday yaratish va 3-bobda ularni qanday baholash haqida ko'proq o'rganganingiz sari, fundamental modellar qanday qo'llanish holatlari uchun ishlatilishi mumkin va kerakligi haqida ham yaxshiroq tasavvurga ega bo'lasiz.
+
+| Toifa | Iste'molchilar uchun qo'llanish holatlariga misollar | Korporativ qo'llanish holatlariga misollar |
+| :--- | :--- | :--- |
+| Kodlash | Kodlash | Kodlash |
+| Tasvir va video yaratish | Foto va video tahrirlash<br/>Dizayn | Taqdimot<br/>Reklama generatsiyasi |
+| Yozish | Elektron pochta<br/>Ijtimoiy tarmoqlar va blog postlari | Kopirayting, qidiruv tizimlarini optimallashtirish (`SEO`)<br/>Hisobotlar, xizmat yozishmalari, dizayn hujjatlari |
+| Ta'lim | Repetitorlik<br/>Esse baholash | Xodimlarni ishga moslashtirish<br/>Xodimlarning malakasini oshirish |
+| Suhbatdosh botlar | Umumiy chatbot<br/>SI hamroh | Mijozlarni qo'llab-quvvatlash<br/>Mahsulot kopilotlari |
+| Axborotni jamlash | Qisqacha bayon qilish<br/>Hujjatlar bilan muloqot | Qisqacha bayon qilish<br/>Bozor tadqiqoti |
+| Ma'lumotlarni tartiblash | Tasvir qidiruvi<br/>`Memex` | Bilimlarni boshqarish<br/>Hujjatlarga ishlov berish |
+| Ish jarayonlarini avtomatlashtirish | Sayohatni rejalashtirish<br/>Tadbirlarni rejalashtirish | Ma'lumotlarni ajratib olish, kiritish va belgilash<br/>Potensial mijozlarni jalb qilish 
+
+<div className='text-center text-sm italic'>1-3-jadval. Iste'molchilar va korporativ dasturlarda keng tarqalgan generativ SI qo'llanish holatlari.</div>
+
+Fundamental modellar umumiy maqsadli bo'lgani uchun, ularning asosida yaratilgan dasturlar ko'plab muammolarni hal qila oladi. Bu shuni anglatadiki, bitta dastur bir nechta toifaga tegishli bo'lishi mumkin. Masalan, bot ham hamrohlik qilishi, ham axborotni jamlashi mumkin. Yoki biror dastur sizga _PDF_'dan tizimli ma'lumotlarni ajratib olishga yordam berishi va ayni paytda o'sha _PDF_ haqidagi savollarga javob berishi mumkin.
+
+1-7-rasmda ushbu qo'llanish holatlarining 205 ta ochiq manbali dastur orasidagi taqsimoti ko'rsatilgan. Shuni ta'kidlash joizki, ta'lim, ma'lumotlarni tartiblash va yozish qo'llanish holatlarining foizi pastligi bu yo'nalishlar ommabop emasligini anglatmaydi. Bu shunchaki ushbu dasturlarning ochiq manbali emasligini bildiradi. Bu kabi dasturlarni yaratuvchilar ularni korporativ qo'llanish holatlari uchun ko'proq mos deb bilishlari mumkin.
+
+![GitHub'dagi 205 ta ochiq manbali repozitoriyda qo'llanish holatlarining taqsimoti.](/ai-engineering/1.7-figure.png)
+
+<div className='text-center text-sm italic'>1-7-rasm. GitHub'dagi 205 ta ochiq manbali repozitoriyda qo'llanish holatlarining taqsimoti.</div>
+
+Korporativ dunyo odatda tavakkalchiligi pastroq bo'lgan dasturlarni afzal ko'radi. Masalan, ["a16z Growth"ning 2024-yilgi hisobotida](https://a16z.com/generative-ai-enterprise-2024/) ko'rsatilishicha, kompaniyalar tashqi foydalanish uchun mo'ljallangan dasturlarga (mijozlarni qo'llab-quvvatlash chatbotlari) qaraganda ichki foydalanish uchun mo'ljallangan dasturlarni (ichki bilimlarni boshqarish) tezroq joriy etmoqda (1-8-rasm). Ichki dasturlar kompaniyalarga ma'lumotlar maxfiyligi, muvofiqlik va ehtimoliy halokatli nosozliklar bilan bog'liq xavflarni minimallashtirgan holda, o'zlarining SI muhandisligi bo'yicha tajribalarini rivojlantirishga yordam beradi. Xuddi shunday, fundamental modellar erkin va har qanday vazifa uchun ishlatilishi mumkin bo'lsa-da, ularning asosida yaratilgan ko'plab dasturlar hali ham tasniflash kabi yopiq turdagi (`close-ended`) vazifalarni bajaradi. Yopiq turdagi vazifalarni baholash osonroq, bu esa ularning xavflarini taxmin qilishni ham osonlashtiradi.
+
+![1-8-rasm. Kompaniyalar ichki foydalanish uchun mo'ljallangan dasturlarni joriy etishga ko'proq moyil.) qaraganda ancha yuqori qabul darajasiga ega.](/ai-engineering/1.8-figure.png)
+
+<div className='text-center text-sm italic'>1-8-rasm. Kompaniyalar ichki foydalanish uchun mo'ljallangan dasturlarni joriy etishga ko'proq moyil.</div>
+
+Yuzlab SI dasturlarini ko'rgan bo'lsam ham, men hali ham har hafta meni hayratda qoldiradigan yangi dasturlarni topaman. Internetning ilk kunlarida, bir kun kelib internetdagi dominant qo'llanish holati ijtimoiy media bo'lishini kamchilik bashorat qilgan edi. Biz SI'dan maksimal darajada foydalanishni o'rganar ekanmiz, oxir-oqibat dominantlik qiladigan qo'llanish holati bizni hayratda qoldirishi mumkin. Omadimiz kelsa, bu yoqimli hayratlanish bo'ladi.
+
+
+[^1]: **Qiziqarli fakt:** 2024-yil 16-sentabr holatiga ko‘ra, [theresanaiforthat.com](https://theresanaiforthat.com/) veb-saytida 14 688 ta vazifa va 4 803 ta kasb uchun 16 814 ta SI ro‘yxati keltirilgan.
+
+[^2]: Turli SI dasturlarini o'rganish, ehtimol, bu kitobni yozishdagi eng sevimli mashg'ulotlarimdan biri bo'ldi. Odamlarning nimalar yaratayotganini ko'rish juda maroqli. Men kuzatib boradigan [ochiq manbali SI dasturlari ro'yxatini](https://huyenchip.com/llama-police) shu yerdan topishingiz mumkin. Ro'yxat har 12 soatda yangilanadi.

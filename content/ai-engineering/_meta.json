@@ -15,6 +15,10 @@
       "the-rise-of-ai-engineering": {
         "title": "Sun'iy intellekt muhandisligining yuksalishi",
         "path": "1-introduction-to-building-ai-applications-with-foundation-models/the-rise-of-ai-engineering/page"
+      },
+      "foundation-model-use-cases": {
+        "title": "Fundamental modellar foydalanish usullari",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/foundation-model-use-cases/page"
       }
     }
   }
