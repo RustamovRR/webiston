@@ -53,6 +53,35 @@ Korporativ dunyo odatda tavakkalchiligi pastroq bo'lgan dasturlarni afzal ko'rad
 
 Yuzlab SI dasturlarini ko'rgan bo'lsam ham, men hali ham har hafta meni hayratda qoldiradigan yangi dasturlarni topaman. Internetning ilk kunlarida, bir kun kelib internetdagi dominant qo'llanish holati ijtimoiy media bo'lishini kamchilik bashorat qilgan edi. Biz SI'dan maksimal darajada foydalanishni o'rganar ekanmiz, oxir-oqibat dominantlik qiladigan qo'llanish holati bizni hayratda qoldirishi mumkin. Omadimiz kelsa, bu yoqimli hayratlanish bo'ladi.
 
+## Kodlash
+
+Ko'plab generativ SI so'rovnomalarida kodlash, shubhasiz, eng ommabop qo'llanish holati sifatida e'tirof etiladi. SI kodlash vositalarining ommalashishiga sabab, birinchidan, SI'ning kodlashda mohirligi bo'lsa, ikkinchidan, SI muhandisligining ilk kashshoflari dasturchilar bo'lib, ular kodlash muammolari bilan ko'proq to'qnash kelishadi.
+
+Fundamental modellarning amaliyotdagi eng dastlabki muvaffaqiyatlaridan biri bu kodni to'ldirish vositasi bo'lgan GitHub Copilot'dir. Uning yillik barqaror daromadi ishga tushirilganidan atigi ikki yil o'tib [100 million dollardan oshdi](https://www.theinformation.com/briefings/microsoft-github-copilot-revenue-100-million-ARR-ai). Ushbu kitob yozilayotgan vaqtda, SI bilan quvvatlantirilgan kodlash startaplari yuz millionlab dollar sarmoya jalb qildi, jumladan, ["Magic" 320 million dollar](https://techcrunch.com/2024/08/29/generative-ai-coding-startup-magic-lands-320m-investment-from-eric-schmidt-atlassian-and-others/) va ["Anysphere" 60 million dollar](https://cursor.com/blog/series-a), ikkalasi ham 2024-yil avgust oyida. [`gpt-engineer`](https://github.com/AntonOsika/gpt-engineer) va [`screenshot-to-code`](https://github.com/abi/screenshot-to-code) kabi ochiq manbali kodlash vositalari bir yil ichida GitHub'da 50 000 tadan yulduzcha to'pladi va yana ko'plab yangilari jadal sur'atlarda paydo bo'lmoqda.
+
+Umumiy kodlashga yordam beradigan vositalardan tashqari, ko'plab vositalar muayyan kodlash vazifalariga ixtisoslashgan. Mana bu vazifalarga bir nechta misollar:
+
+- Veb-sahifalar va _PDF_'lardan tizimli ma'lumotlarni ajratib olish ([`AgentGPT`](https://github.com/reworkd/AgentGPT))
+- Ingliz tilini kodga o'girish ([`DB-GPT`](https://github.com/eosphoros-ai/DB-GPT), [`SQL Chat`](https://github.com/sqlchat/sqlchat), [`PandasAI`](https://github.com/Sinaptik-AI/pandas-ai))
+- Berilgan dizayn yoki skrinshot asosida, o'sha tasvirga o'xshash veb-saytni yaratadigan kodni generatsiya qilish ([`screenshot-to-code`](https://github.com/abi/screenshot-to-code), [`draw-a-ui`](https://github.com/sawyerhood/draw-a-ui))
+- Bir dasturlash tilidan yoki freymvorkdan boshqasiga tarjima qilish ([`GPT-Migrate`](https://github.com/joshpxyne/gpt-migrate), [`AI Code Translator`](https://github.com/mckaywrigley/ai-code-translator))
+- Hujjatlar yozish ([`Autodoc`](https://github.com/context-labs/autodoc))
+- Testlar yaratish ([`PentestGPT`](https://github.com/GreyDGL/PentestGPT))
+- `Commit` xabarlarini generatsiya qilish ([`AI Commits`](https://github.com/Nutlope/aicommits))
+
+Ko'rinib turibdiki, SI ko'plab dasturiy ta'minot muhandisligi vazifalarini bajara oladi. Savol shundaki, SI dasturiy ta'minot muhandisligini butunlay avtomatlashtira oladimi? Bir tomondan, ["NVIDIA" bosh direktori Jensen Huang](https://www.tomshardware.com/tech-industry/artificial-intelligence/jensen-huang-advises-against-learning-to-code-leave-it-up-to-ai) SI inson dasturiy ta'minot muhandislarining o'rnini egallashini va biz bolalarga kodlashni o'rganish kerakligini aytishni to'xtatishimiz kerakligini bashorat qilmoqda. Oshkor bo'lgan bir audioyozuvda, ["AWS" bosh direktori Mett Garman](https://www.businessinsider.com/aws-ceo-developers-stop-coding-ai-takes-over-2024-8) yaqin kelajakda aksariyat dasturchilar kod yozishni to'xtatishini aytgan. U buni dasturiy ta'minot ishlab chiquvchilarining yakuni deb bilmaydi; shunchaki ularning ishi o'zgaradi.
+
+Ikkinchi tomondan esa, ham texnik, ham hissiy sabablarga ko'ra (odamlar o'z o'rnini boshqa narsa egallashi mumkinligini tan olishni yoqtirmaydi) SI hech qachon ularning o'rnini bosa olmasligiga amin bo'lgan ko'plab dasturiy ta'minot muhandislari turibdi.
+
+Dasturiy ta'minot muhandisligi ko'plab vazifalardan iborat. SI ba'zilarini boshqalariga qaraganda yaxshiroq bajaradi. ["McKinsey"](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/unleashing-developer-productivity-with-generative-ai) tadqiqotchilari SI dasturchilarga dokumentatsiyalashda ikki baravar, kod generatsiyasi va kod refaktoringida esa 25-50% samaraliroq bo'lishga yordam berishi mumkinligini aniqladilar. Juda murakkab vazifalarda esa minimal samaradorlik o'sishi kuzatilgan (1-9-rasm). SI kodlash vositalari dasturchilari bilan suhbatlarimda, ko'pchilik SI'ning backend ishlab chiqishga qaraganda frontend ishlab chiqishda ancha yaxshiroq ekanligini payqaganliklarini aytishdi.
+
+![Grafikda AI yordamida dasturchilarning turli vazifalardagi unumdorligi o'sishi ko'rsatilgan. Hujjatlashtirish kabi oddiy vazifalarda unumdorlik keskin oshgan. Kod generatsiyasi va refaktoringda o'sish o'rtacha darajada. Juda murakkab vazifalarda esa unumdorlikning o'sishi minimal darajada bo'lgan.](/ai-engineering/1.9-figure.png)
+
+<div className='text-center text-sm italic'>1-9-rasm. SI dasturchilarga, ayniqsa, oddiy vazifalarda sezilarli darajada samaraliroq bo'lishga yordam berishi mumkin, ammo bu juda murakkab vazifalarda kamroq naf beradi. Ma'lumotlar "McKinsey"dan olingan.</div>
+
+SI dasturiy ta'minot muhandislarining o'rnini egallaydimi yoki yo'qmi, bundan qat'i nazar, u albatta ularni samaraliroq qila oladi. Bu shuni anglatadiki, kompaniyalar endi kamroq muhandislar bilan ko'proq ishni uddalay oladi. SI, shuningdek, autsorsing sanoatini ham tubdan o'zgartirishi mumkin, chunki autsorsingga beriladigan vazifalar odatda kompaniyaning asosiy biznesidan tashqaridagi soddaroq vazifalar bo'ladi.
+
+
 
 [^1]: **Qiziqarli fakt:** 2024-yil 16-sentabr holatiga ko‘ra, [theresanaiforthat.com](https://theresanaiforthat.com/) veb-saytida 14 688 ta vazifa va 4 803 ta kasb uchun 16 814 ta SI ro‘yxati keltirilgan.
 

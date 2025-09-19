@@ -1,6 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import Link from 'next/link'
-import { ArrowUpIcon, ArrowUpRightIcon, LinkIcon } from 'lucide-react'
+import { LinkIcon } from 'lucide-react'
 import React from 'react'
 
 // Plugins
@@ -12,6 +12,7 @@ import remarkGfm from 'remark-gfm'
 import Callout from '../Callout'
 import CodeBlock from '../CodeBlock'
 import VideoEmbed from '../VideoEmbed'
+import LinkifyChildren from './LinkifyChildren'
 
 interface MDXContentProps {
   source: string
@@ -120,51 +121,12 @@ const components = {
     </h6>
   ),
   p: (props: any) => {
-    // Handle links inside paragraphs
-    const children = React.Children.map(props.children, (child) => {
-      // Check if the child is a link
-      if (child && typeof child === 'object' && child.type === 'a') {
-        const { href, children: linkChildren, ...linkProps } = child.props
-        const isExternal = href?.startsWith('http') || href?.startsWith('https')
-
-        if (isExternal) {
-          return (
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400 [&:has(code)]:!no-underline [&>span>code]:!text-sky-500"
-              {...linkProps}
-            >
-              <span>{linkChildren}</span>
-              <ArrowUpRightIcon
-                width={14}
-                height={14}
-                className="!stroke-sky-500 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:!stroke-sky-400"
-              />
-            </a>
-          )
-        } else {
-          return (
-            <Link
-              href={href || '#'}
-              className="font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
-              {...linkProps}
-            >
-              {linkChildren}
-            </Link>
-          )
-        }
-      }
-      return child
-    })
-
     return (
       <p
         className="!m-0 !mt-6 [&>a]:font-normal [&>a]:text-sky-500 [&>a]:underline [&>a]:transition-colors [&>a]:duration-200 [&>a]:hover:text-sky-400"
         {...props}
       >
-        {children}
+        <LinkifyChildren>{props.children}</LinkifyChildren>
       </p>
     )
   },
@@ -179,13 +141,13 @@ const components = {
     if (props.id && props.id.includes('user-content')) {
       return (
         <li className="[&_p]:!italic [&>p]:!mt-6" {...props}>
-          {props.children}
+          <LinkifyChildren>{props.children}</LinkifyChildren>
         </li>
       )
     }
     return (
       <li className="[&>p]:!m-0" {...props}>
-        {props.children}
+        <LinkifyChildren>{props.children}</LinkifyChildren>
       </li>
     )
   },
