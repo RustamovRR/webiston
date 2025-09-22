@@ -1,0 +1,55 @@
+# SI muhandislik steki (texnologiyalar to'plami)
+
+SI muhandisligining jadal o'sishi, shuningdek, aql bovar qilmas darajada shov-shuv va _FOMO_ (ortda qolib ketish qo'rquvi)ni keltirib chiqardi. Har kuni taqdim etilayotgan yangi vositalar, texnikalar, modellar va dasturlarning soni odamni esankiratib qo'yishi mumkin. Doimiy o'zgarib turadigan qumlarga yetib olishga urinish o'rniga, keling, SI muhandisligining fundamental qurilish bloklarini ko'rib chiqamiz.
+
+SI muhandisligini tushunish uchun uning _ML_ muhandisligidan kelib chiqqanini anglash muhimdir. Biror kompaniya fundamental modellar bilan tajriba o'tkazishni boshlaganda, bu sa'y-harakatlarga uning mavjud _ML_ jamoasi boshchilik qilishi tabiiydir. Ba'zi kompaniyalar SI muhandisligiga _ML_ muhandisligi bilan bir xil munosabatda bo'lishadi (1-12-rasm).
+
+![1-12-rasm. Ko'pgina kompaniyalar SI muhandisligi va _ML_ muhandisligini bir soyabon ostiga qo'yishadi, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.](/ai-engineering/1.12-figure.png)
+
+<div className='text-center text-sm italic'>1-12-rasm. Ko'pgina kompaniyalar SI muhandisligi va _ML_ muhandisligini bir soyabon ostiga qo'yishadi, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.</div>
+
+Ba'zi kompaniyalarda esa SI muhandisligi uchun alohida ish e'lonlari mavjud (1-13-rasm).
+
+Tashkilotlar SI muhandislari va _ML_ muhandislarini qanday joylashtirishidan qat'i nazar, ularning rollari sezilarli darajada bir-biriga mos keladi. Mavjud _ML_ muhandislari o'zlarining ish imkoniyatlarini kengaytirish uchun SI muhandisligini o'z ko'nikmalari ro'yxatiga qo'shishlari mumkin. Shu bilan birga, oldindan _ML_ tajribasiga ega bo'lmagan SI muhandislari ham bor.
+
+SI muhandisligini va uning an'anaviy _ML_ muhandisligidan qanday farq qilishini juda yaxshi tushunib olish uchun, keyingi bo'limda SI dasturlarini yaratish jarayonining turli qatlamlari tahlil qilinadi va har bir qatlamning SI muhandisligi va _ML_ muhandisligida qanday rol o'ynashiga nazar tashlanadi.
+
+![-13-rasm. Ba'zi kompaniyalarda SI muhandisligi uchun alohida ish e'lonlari mavjud, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.](/ai-engineering/1.13-figure.png)
+
+<div className='text-center text-sm italic'>1-13-rasm. Ba'zi kompaniyalarda SI muhandisligi uchun alohida ish e'lonlari mavjud, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.</div>
+
+## SI stekining uch qatlami
+
+Har qanday SI dasturi stekida uchta qatlam mavjud: dasturni ishlab chiqish, modelni ishlab chiqish va infratuzilma. SI dasturini ishlab chiqayotganda, siz odatda yuqori qatlamdan boshlab, zaruratga qarab pastga tushib borasiz:
+
+#### 1. Dasturni ishlab chiqish
+
+Modellar tayyor holatda bo'lgani uchun, har kim ulardan dasturlar ishlab chiqishda foydalanishi mumkin. Bu so'nggi ikki yil ichida eng ko'p kuzatilgan harakat va hali ham jadal rivojlanayotgan qatlamdir. Dasturni ishlab chiqish modelni yaxshi promptlar va kerakli kontekst bilan ta'minlashni o'z ichiga oladi. Bu qatlam puxta baholashni talab qiladi. Yaxshi dasturlar, shuningdek, yaxshi interfeyslarni ham talab qiladi.
+
+#### 2. Modelni ishlab chiqish
+
+Bu qatlam modellarni ishlab chiqish uchun vositalarni ta'minlaydi, jumladan, modellashtirish, o'qitish, qo'shimcha sozlash (`finetuning`) va `inference` optimizatsiyasi uchun freymvorklarni. Ma'lumotlar modelni ishlab chiqishning markazida bo'lgani uchun, bu qatlam ma'lumotlar to'plami muhandisligini (`dataset engineering`) ham o'z ichiga oladi. Modelni ishlab chiqish ham puxta baholashni talab qiladi.
+
+#### 3. Infratuzilma
+
+Stekning eng quyi qismida infratuzilma joylashgan bo'lib, u modelga xizmat ko'rsatish (`model serving`), ma'lumotlar va hisoblash resurslarini boshqarish hamda monitoring uchun vositalarni o'z ichiga oladi.
+
+Ushbu uch qatlamning tuzilishini va har birining qanday vazifalarni o'z ichiga olishini 1-14-rasmda ko'rib chiqamiz.
+
+![1-14-rasm. SI muhandislik stekining uch qatlami.](/ai-engineering/1.14-figure.png)
+
+<div className='text-center text-sm italic'>1-14-rasm. SI muhandislik stekining uch qatlami.</div>
+
+Fundamental modellar paydo bo'lishi bilan sohadagi manzara qanday o'zgarganini his qilish uchun, 2024-yil mart oyida men GitHub'dan kamida 500 yulduzchaga ega bo'lgan SI'ga oid barcha repozitoriylarni tahlil qilib chiqdim. GitHub'ning bugungi kundagi keng qamrovini hisobga olsak, bu ma'lumotlar ekotizimni tushunish uchun ishonchli ko'rsatkich bo'la oladi, deb ishonaman. Tahlilimga, shuningdek, dasturlar va modellar uchun repozitoriylarni ham kiritdim — ular mos ravishda dasturni ishlab chiqish va modelni ishlab chiqish qatlamlarining mahsulotidir. Natijada men jami 920 ta repozitoriy topdim. 1-15-rasmda har bir toifadagi repozitoriylar sonining oylar kesimida qanday o'sib borgani ko'rsatilgan.
+
+![1-15-rasm. Vaqt o'tishi bilan toifalar bo'yicha repozitoriylarning jamlangan soni.](/ai-engineering/1.15-figure.png)
+
+<div className='text-center text-sm italic'>1-15-rasm. Vaqt o'tishi bilan toifalar bo'yicha repozitoriylarning jamlangan soni.</div>
+
+Ma'lumotlar shuni ko'rsatadiki, `Stable Diffusion` va `ChatGPT` taqdim etilganidan so'ng, 2023-yilda SI vositalari sonida keskin sakrash yuz bergan. 2023-yilda eng katta o'sish "dasturlar" va "dasturlarni ishlab chiqish" toifalarida kuzatildi. Infratuzilma qatlamida ham o'sish bo'ldi, biroq u boshqa qatlamlardagi o'sishdan ancha past edi. Bu kutilgan holat. Garchi modellar va dasturlar o'zgargan bo'lsa-da, asosiy infratuzilma ehtiyojlari — resurslarni boshqarish, xizmat ko'rsatish, monitoring va hokazolar — o'zgarishsiz qolmoqda.
+
+### O'zgarmas tamoyillar
+
+Bu bizni keyingi muhim nuqtaga olib keladi. Fundamental modellar atrofidagi hayajon va ijodkorlik misli ko'rilmagan darajada bo'lsa-da, SI dasturlarini yaratishning ko'plab asosiy tamoyillari o'z kuchida qolmoqda. Korporativ qo'llanish holatlari uchun SI dasturlari avvalgidek biznes muammolarini hal qilishi kerak va shuning uchun biznes metrikalarini _ML_ metrikalariga (va aksincha) bog'lash hali ham dolzarb. Siz avvalgidek tizimli eksperimentlar o'tkazishingiz kerak. Klassik _ML_ muhandisligida siz turli giperparametrlar bilan tajriba o'tkazgan bo'lsangiz, fundamental modellar bilan turli modellar, promptlar, qidiruv algoritmlari, generatsiya parametrlari (`sampling variables`) va boshqalar bilan tajriba o'tkazasiz. (Generatsiya parametrlari 2-bobda muhokama qilinadi.) Biz hali ham modellarni tezroq va arzonroq ishlashiga intilamiz. Va hali ham qayta aloqa halqasini (`feedback loop`) yo'lga qo'yish muhim, toki amaliyotdagi ma'lumotlar yordamida dasturlarimizni doimiy takomillashtirib bora olamiz.
+
+Bu shuni anglatadiki, _ML_ muhandislari so'nggi o'n yil davomida to'plagan bilim va tajribalarning aksariyati bugun ham o'z qadrini yo'qotmagan. Bu jamoaviy tajriba har kimning SI dasturlarini yaratishni boshlashini osonlashtiradi. Biroq, ushbu mustahkam tamoyillar poydevori ustiga qurilgan SI muhandisligiga xos bo'lgan ko'plab yangiliklar ham mavjud va biz ularni ushbu kitobda chuqur o'rganamiz.

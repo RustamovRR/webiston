@@ -23,6 +23,10 @@
       "planning-ai-applications": {
         "title": "SI dasturlarini rejalashtirish",
         "path": "1-introduction-to-building-ai-applications-with-foundation-models/planning-ai-applications/page"
+      },
+      "ai-engineering-stack": {
+        "title": "SI muhandislik steki (texnologiyalar to'plami)",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/ai-engineering-stack/page"
       }
     }
   }
