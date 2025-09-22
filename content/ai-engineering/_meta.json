@@ -19,6 +19,10 @@
       "foundation-model-use-cases": {
         "title": "Fundamental modellar foydalanish usullari",
         "path": "1-introduction-to-building-ai-applications-with-foundation-models/foundation-model-use-cases/page"
+      },
+      "planning-ai-applications": {
+        "title": "SI dasturlarini rejalashtirish",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/planning-ai-applications/page"
       }
     }
   }
