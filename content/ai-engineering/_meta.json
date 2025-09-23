@@ -27,6 +27,10 @@
       "ai-engineering-stack": {
         "title": "SI muhandislik steki (texnologiyalar to'plami)",
         "path": "1-introduction-to-building-ai-applications-with-foundation-models/ai-engineering-stack/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/summary/page"
       }
     }
   }

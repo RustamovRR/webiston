@@ -161,6 +161,53 @@ Ko'plab moslashtirish texnikalarining mavjudligi ham baholashni qiyinlashtiradi.
 
 _"5-shot" modelga 5 ta namuna ko'rsatilganini, "CoT@32" esa "Chain of Thought" yondashuvi bilan 32 ta namuna ko'rsatilganini bildiradi._
 
+#### Prompt muhandisligi va kontekstni qurish
+
+Prompt muhandisligi — bu SI modellarini, ularning og'irliklarini (`weights`) o'zgartirmasdan, faqat kiruvchi ma'lumotning o'zi orqali kerakli xususiyatlarni namoyon etishga undashdir. `Gemini`'ni baholash voqeasi prompt muhandisligining model samaradorligiga qanchalik katta ta'sir qilishini yaqqol ko'rsatib beradi. Boshqa bir prompt muhandisligi texnikasini qo'llash orqali `Gemini Ultra`'ning _MMLU_ bo'yicha samaradorligi 83.7% dan 90.04% ga ko'tarildi.
+
+Faqat promptlar yordamida modelni aql bovar qilmas ishlarni bajarishga majbur qilish mumkin. To'g'ri ko'rsatmalar modelni siz xohlagan vazifani, siz tanlagan formatda bajarishga unday oladi. Prompt muhandisligi shunchaki modelga nima qilish kerakligini aytish emas. Bu, shuningdek, modelga berilgan vazifani bajarishi uchun zarur bo'lgan kontekst va vositalarni taqdim etish hamdir. Uzun kontekstli murakkab vazifalar uchun, model o'z tarixini kuzatib borishi uchun unga xotirani boshqarish tizimini ham taqdim etishingiz kerak bo'lishi mumkin. 5-bobda prompt muhandisligi, 6-bobda esa kontekstni qurish muhokama qilinadi.
+
+#### SI interfeysi
+
+SI interfeysi (`AI Interface`) oxirgi foydalanuvchilarning sizning SI dasturlaringiz bilan ishlashi uchun interfeys yaratishni anglatadi. Fundamental modellardan oldin, faqat SI modellarini ishlab chiqish uchun yetarli resurslarga ega bo'lgan tashkilotlargina SI dasturlarini yarata olardi. Bu dasturlar ko'pincha tashkilotlarning mavjud mahsulotlariga ichki o'rnatilgan (`embedded`) bo'lardi. Masalan, firibgarlikni aniqlash "Stripe", "Venmo" va "PayPal"ga ichki o'rnatilgan edi. Tavsiya tizimlari esa "Netflix", "TikTok" va "Spotify" kabi ijtimoiy tarmoqlar va media dasturlarining bir qismi edi.
+
+Fundamental modellar bilan esa, har kim SI dasturlarini yarata oladi. Siz o'z SI dasturlaringizni mustaqil mahsulot sifatida taqdim etishingiz yoki ularni boshqa mahsulotlarga, jumladan, boshqa odamlar tomonidan ishlab chiqilgan mahsulotlarga ichki o'rnatishingiz mumkin. Masalan, "ChatGPT" va "Perplexity" mustaqil mahsulotlardir, "GitHub Copilot" esa odatda VSCode'da plagin sifatida, "Grammarly" esa "Google Docs" uchun brauzer kengaytmasi sifatida ishlatiladi. Midjourney'ni esa ham uning mustaqil veb-dasturi orqali, ham uning Discord'dagi integratsiyasi orqali ishlatish mumkin.
+
+Mustaqil SI dasturlari uchun interfeyslarni ta'minlaydigan yoki SI'ni mavjud mahsulotlarga oson integratsiya qilish imkonini beradigan vositalarga ehtiyoj bor. Quyida, SI dasturlari uchun ommalashib borayotgan interfeyslarning ba'zilari keltirilgan:
+
+- Mustaqil veb, desktop va mobil dasturlar.[^4]
+- Foydalanuvchilarga veb-saytlarni ko'zdan kechirish paytida SI modellariga tezda so'rov yuborish imkonini beradigan brauzer kengaytmalari.
+- Slack, Discord, WeChat va WhatsApp kabi chat dasturlariga integratsiya qilingan chatbotlar.
+- VSCode, Shopify va Microsoft 365 kabi ko'plab mahsulotlar dasturchilarga SI'ni o'z mahsulotlariga plaginlar va qo'shimchalar sifatida integratsiya qilish imkonini beruvchi _API_'larni taqdim etadi. Bu _API_'lardan, shuningdek, 6-bobda muhokama qilinadi, SI agentlari butun dunyo bilan ishlashi uchun ham foydalanish mumkin.
+
+Garchi chat interfeysi eng ko'p qo'llanilsa-da, SI interfeyslari ovozga asoslangan (masalan, ovozli yordamchilarda) yoki mujassamlangan (masalan, to'ldirilgan va virtual reallikda) bo'lishi ham mumkin.
+
+Bu yangi SI interfeyslari, shuningdek, foydalanuvchi fikr-mulohazalarini yig'ish va ajratib olishning yangi usullarini ham anglatadi. Suhbat interfeysi foydalanuvchilarga tabiiy tilda fikr-mulohaza berishni ancha osonlashtiradi, ammo bu fikr-mulohazani ajratib olish qiyinroq. Foydalanuvchi fikr-mulohazalari dizayni 10-bobda muhokama qilinadi.
+
+Dasturlarni ishlab chiqishning turli toifalari SI muhandisligi bilan qanday o'zgarganining qisqacha xulosasi 1-6-jadvalda ko'rsatilgan.
+
+| Toifa | An'anaviy _ML_ bilan ishlash | Fundamental modellar bilan ishlash |
+| :--- | :--- | :--- |
+| **SI interfeysi** | Kamroq muhim | Muhim |
+| **Prompt muhandisligi** | Qo'llanilmaydi | Muhim |
+| **Baholash** | Muhim | Muhimroq |
+
+<div className='text-center text-sm italic'>1-6-jadval. Dasturlarni ishlab chiqishdagi turli toifalarning SI muhandisligi va _ML_ muhandisligi uchun ahamiyati.</div>
+
+## SI muhandisligi va Full-stack muhandisligi farqlari
+
+Dasturlarni ishlab chiqishga, ayniqsa, interfeyslarga bo'lgan e'tiborning ortishi SI muhandisligini full-stack ishlab chiqishga yaqinlashtiradi.[^5] Interfeyslarning ahamiyati ortib borayotgani SI vositalari dizaynida ko'proq frontend muhandislarini jalb qilishga qaratilgan o'zgarishlarga olib kelmoqda. An'anaviy _ML_ muhandisligi asosan Python'ga yo'naltirilgan edi. Fundamental modellardan oldin eng mashhur _ML_ freymvorklari asosan Python _API_'larini qo'llab-quvvatlardi. Bugungi kunda Python hali ham ommabop, ammo [LangChain.js](https://github.com/langchain-ai/langchainjs), [Transformers.js](https://github.com/huggingface/transformers.js), ["OpenAI"ning Node kutubxonasi](https://github.com/openai/openai-node) va ["Vercel"ning AI SDK'si](https://github.com/vercel/ai) kabi JavaScript _API_'larini qo'llab-quvvatlash ham ortib bormoqda.
+
+Garchi ko'plab SI muhandislari an'anaviy _ML_ sohasidan kelgan bo'lsalar-da, tobora ko'proq mutaxassislar veb-ishlab chiqish yoki full-stack sohalaridan kelmoqda. Full-stack muhandislarining an'anaviy _ML_ muhandislaridan ustunligi ularning g'oyalarni tezda demoga aylantirish, fikr-mulohazalarni olish va iteratsiya qilish qobiliyatidir.
+
+An'anaviy _ML_ muhandisligida siz odatda ma'lumotlarni yig'ish va modelni o'qitishdan boshlaysiz. Mahsulotni yaratish esa eng oxirida keladi. Biroq, bugungi kunda SI modellarining tayyor holatda mavjudligi tufayli, avval mahsulotni yaratishdan boshlash va faqat mahsulot istiqbolli ekanligini ko'rsatgandan keyingina ma'lumotlar va modellarga sarmoya kiritish mumkin (1-16-rasm).
+
+![1-16-rasm. Yangi SI muhandislik ish jarayoni tez iteratsiya qila oladiganlarni rag'batlantiradi. Rasm “The Rise of the AI Engineer” ([Shawn Wang, 2023](https://www.latent.space/p/ai-engineer)) maqolasidan qayta yaratilgan.](/ai-engineering/1.16-figure.png)
+
+<div className='text-center text-sm italic'>1-16-rasm. Yangi SI muhandislik ish jarayoni tez iteratsiya qila oladiganlarni rag'batlantiradi. Rasm “The Rise of the AI Engineer” ([Shawn Wang, 2023](https://www.latent.space/p/ai-engineer)) maqolasidan qayta yaratilgan.</div>
+
+An'anaviy _ML_ muhandisligida modelni ishlab chiqish va mahsulotni ishlab chiqish ko'pincha bir-biridan uzilgan jarayonlar bo'lib, ko'plab tashkilotlarda _ML_ muhandislari mahsulotga oid qarorlarda kamdan-kam ishtirok etishadi. Biroq, fundamental modellar bilan, SI muhandislari mahsulotni yaratishda ancha faolroq ishtirok etishga moyil.
+
 ### Izohlar
 
 [^1]: Bir "Fortune 500" kompaniyasining SI rahbari menga aytganidek: uning jamoasi 10 ta `GPU` bilan ishlashni biladi, lekin ular 1000 ta `GPU` bilan ishlashni bilishmaydi.
@@ -169,3 +216,6 @@ _"5-shot" modelga 5 ta namuna ko'rsatilganini, "CoT@32" esa "Chain of Thought" y
 
 [^3]: Agar siz "oldindan o'qitish" va "keyingi o'qitish" atamalarini ijodkorlikdan yiroq deb hisoblasangiz, siz yolg'iz emassiz. SI tadqiqot hamjamiyati ko'p narsada zo'r, lekin nom berishda emas. Biz allaqachon "katta til modellari" atamasi "katta" so'zining noaniqligi tufayli ilmiy atama bo'la olmasligi haqida gaplashgan edik. Va men odamlarning "X — sizga kerak bo'lgan yagona narsa" sarlavhasi bilan maqolalar chop etishni bas qilishlarini juda xohlardim.
 
+[^4]: `Streamlit`, `Gradio` va `Plotly Dash` SI veb-dasturlarini yaratish uchun keng tarqalgan vositalardir.
+
+[^5]: Anton Bacaj menga aytganidek: “SI muhandisligi — bu shunchaki stek'iga SI modellari qo'shilgan dasturiy ta'minot muhandisligidir.”
