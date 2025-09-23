@@ -76,7 +76,7 @@ const components = {
     </h3>
   ),
   h4: (props: any) => (
-    <h4 id={props.id} className="group m-0 mt-8 flex cursor-default items-center gap-2" {...props}>
+    <h4 id={props.id} className="group m-0 mt-8 flex cursor-default items-center gap-2 text-lg" {...props}>
       {props.children}
       {props.id && (
         <Link
@@ -231,6 +231,8 @@ const components = {
   th: (props: any) => (
     <th {...props} className="border border-[#ddd] p-3 text-left text-sm font-semibold tracking-wide" />
   ),
+
+  blockquote: (props: any) => <blockquote {...props} className="[&_p]:font-normal" />,
 }
 
 export default async function MDXContent({ source }: MDXContentProps) {
