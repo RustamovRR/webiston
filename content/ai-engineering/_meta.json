@@ -33,5 +33,16 @@
         "path": "1-introduction-to-building-ai-applications-with-foundation-models/summary/page"
       }
     }
+  },
+  "2-understanding-foundation-models": {
+    "title": "2. Fundamental modellarni tushunish",
+    "path": "2-understanding-foundation-models/page",
+    "hasIndex": true,
+    "children": {
+      "training-data": {
+        "title": "O'qitish ma'lumotlari",
+        "path": "2-understanding-foundation-models/training-data/page"
+      }
+    }
   }
 }
