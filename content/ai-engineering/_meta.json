@@ -42,6 +42,10 @@
       "training-data": {
         "title": "O'qitish ma'lumotlari",
         "path": "2-understanding-foundation-models/training-data/page"
+      },
+      "modeling": {
+        "title": "Modellashtirish",
+        "path": "2-understanding-foundation-models/modeling/page"
       }
     }
   }

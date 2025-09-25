@@ -1,0 +1,89 @@
+# Modellashtirish
+
+Modelni o'qitishdan oldin, dasturchilar model qanday ko'rinishda bo'lishi kerakligini hal qilishlari kerak. U qanday arxitekturaga amal qilishi kerak? Unda qancha parametr bo'lishi kerak? Bu qarorlar nafaqat modelning imkoniyatlariga, balki uning keyingi dasturlar uchun foydalanishga yaroqliligiga (`usability`) ham ta'sir qiladi.[^5] Masalan, 7 milliard parametrli modelni joriy etish 175 milliard parametrli modelni joriy etishdan ancha osonroq bo'ladi. Xuddi shunday, `transformer` modelini kechikish (`latency`) uchun optimallashtirish boshqa arxitekturani optimallashtirishdan juda farq qiladi. Keling, bu qarorlar ortidagi omillarni o'rganamiz.
+
+## Model arxitekturasi
+
+Ushbu kitob yozilayotgan vaqtda, tilga asoslangan fundamental modellar uchun eng hukmron arxitektura bu diqqat mexanizmiga (`attention mechanism`) asoslangan `transformer` arxitekturasidir ([Vaswani va boshq., 2017](https://arxiv.org/abs/1706.03762)). U avvalgi arxitekturalarning ko'plab cheklovlarini bartaraf etadi, bu esa uning ommalashishiga hissa qo'shgan. Biroq, `transformer` arxitekturasining ham o'z cheklovlari bor. Ushbu bo'lim `transformer` arxitekturasini va uning muqobillarini tahlil qiladi. U turli arxitekturalarning texnik tafsilotlariga kirib borgani uchun, bu qism texnik jihatdan zich bo'lishi mumkin. Agar biror qismi haddan tashqari mayda detallarga kirib ketayotgandek tuyulsa, bemalol o'tkazib yuborishingi mumkin.
+
+### `Transformer` arxitekturasi
+
+`Transformer`'ni tushunish uchun, keling, u hal qilish uchun yaratilgan muammoga nazar tashlaymiz. `Transformer` arxitekturasi [`seq2seq` (ketma-ketlikdan-ketma-ketlikka) arxitekturasining](https://arxiv.org/abs/1409.3215) muvaffaqiyati ortidan ommalashdi. 2014-yilda taqdim etilgan vaqtida, `seq2seq` o'sha paytdagi qiyin vazifalar — mashina tarjimasi va qisqacha bayon qilishda sezilarli yaxshilanishni ta'minlagan edi. 2016-yilda ["Google" `seq2seq`'ni "Google Translate"ga joriy etdi](https://research.google/blog/a-neural-network-for-machine-translation-at-production-scale/) va bu yangilanish ularga "mashina tarjimasi sifatidagi bugungi kungacha bo'lgan eng katta yaxshilanishlarni" berganini da'vo qildi. Bu `seq2seq`'ga katta qiziqish uyg'otdi va uni matn ketma-ketliklari bilan bog'liq vazifalar uchun asosiy arxitekturaga aylantirdi.
+
+#### `Seq2seq` arxitekturasi
+
+Umumiy olganda, `seq2seq` kirish ma'lumotlarini qayta ishlaydigan kodlovchi (`encoder`) va chiqish ma'lumotlarini generatsiya qiladigan dekoderdan (`decoder`) iborat. Ham kirish, ham chiqish tokenlar ketma-ketligi bo'lganligi tufayli, nom ham shundan kelib chiqqan. `Seq2seq` o'zining kodlovchisi va dekoderi sifatida `RNN`'lardan (qaytalanuvchi neyron to'rlar) foydalanadi. Eng oddiy shaklida, kodlovchi kirish tokenlarini ketma-ket qayta ishlaydi va kirish ma'lumotini ifodalovchi yakuniy yashirin holatni (`final hidden state`) chiqaradi. Keyin dekoder ham kirishning yakuniy yashirin holatiga, ham oldin generatsiya qilingan tokenga asoslanib, chiqish tokenlarini ketma-ket generatsiya qiladi. `Seq2seq` arxitekturasining vizualizatsiyasi 2-4-rasmning yuqori yarmida ko'rsatilgan.
+
+![2-4-rasm. `Seq2seq` arxitekturasi `transformer` arxitekturasi bilan taqqoslanganda. `Transformer` arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.](/ai-engineering/2.4-figure.png)
+
+<div className='text-center text-sm italic'>2-4-rasm. `Seq2seq` arxitekturasi `transformer` arxitekturasi bilan taqqoslanganda. `Transformer` arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.</div>
+
+#### `Transformer`'ning afzalliklari
+
+Vaswani va boshqalar (2017) `seq2seq`'ning ikkita muammosini hal qiladi. Birinchidan, oddiy `seq2seq` dekoderi chiqish tokenlarini faqat kirishning yakuniy yashirin holatidan foydalanib generatsiya qiladi. Intuitiv ravishda, bu kitob haqidagi savollarga kitobning qisqacha mazmunidan foydalanib javob berishga o'xshaydi. Bu generatsiya qilingan natijalar sifatini cheklaydi. Ikkinchidan, `RNN` kodlovchi va dekoderi ham kirishni qayta ishlash, ham chiqishni generatsiya qilish ketma-ket amalga oshirilishini anglatadi, bu esa uni uzun ketma-ketliklar uchun sekinlashtiradi. Agar kirish ma'lumoti 200 token uzunligida bo'lsa, `seq2seq` keyingisiga o'tishdan oldin har bir kirish tokenining qayta ishlanishini kutishi kerak.[^6]
+
+`Transformer` arxitekturasi bu ikkala muammoni ham diqqat mexanizmi (`attention mechanism`) yordamida hal qiladi. Diqqat mexanizmi modelga har bir chiqish tokenini generatsiya qilishda turli kirish tokenlarining muhimligini "tortish" imkonini beradi. Bu kitobning istalgan sahifasiga murojaat qilib javoblar generatsiya qilishga o'xshaydi. `Transformer` arxitekturasining soddalashtirilgan vizualizatsiyasi 2-4-rasmning pastki yarmida ko'rsatilgan.
+
+<Callout>
+#### Eslatma
+
+Garchi diqqat mexanizmi ko'pincha `transformer` modeli bilan bog'lansa-da, u `transformer` maqolasidan uch yil oldin taqdim etilgan. Diqqat mexanizmidan boshqa arxitekturalar bilan ham foydalanish mumkin. "Google" 2016-yilda o'zining `GNMT` (Google Neyron Mashina Tarjimasi) modeli uchun diqqat mexanizmini `seq2seq` arxitekturasi bilan birga ishlatgan. Biroq, faqat `transformer` maqolasi diqqat mexanizmini `RNN`'larsiz ham ishlatish mumkinligini ko'rsatganidan keyingina u keng ommalashdi.[^7]
+</Callout>
+
+`Transformer` arxitekturasi `RNN`'lardan butunlay voz kechadi. `Transformer`'lar bilan kirish tokenlarini parallel ravishda qayta ishlash mumkin, bu esa kirishni qayta ishlashni sezilarli darajada tezlashtiradi. Garchi `transformer` ketma-ket kirish to'sig'ini olib tashlasa-da, `transformer`'ga asoslangan avtoregressiv til modellari hali ham ketma-ket chiqish to'sig'iga ega.
+
+#### `Transformer`'da `inference` jarayoni
+
+Shu sababli, `transformer`'ga asoslangan til modellari uchun _inference_ ikki bosqichdan iborat:
+
+1.  **Oldindan to'ldirish (`Prefill`)**
+    Model kirish tokenlarini parallel ravishda qayta ishlaydi. Bu bosqich birinchi chiqish tokenini generatsiya qilish uchun zarur bo'lgan oraliq holatni yaratadi. Bu oraliq holat barcha kirish tokenlari uchun kalit (`key`) va qiymat (`value`) vektorlarini o'z ichiga oladi.
+
+2.  **Dekodlash (`Decode`)**
+    Model bir vaqtning o'zida bitta chiqish tokenini generatsiya qiladi.
+
+Keyinroq 9-bobda o'rganiladiganidek, oldindan to'ldirishning parallellashtirilishi mumkin bo'lgan tabiati va dekodlashning ketma-ket jihati til modeli _inference_'ini arzonroq va tezroq qilish uchun ko'plab optimallashtirish texnikalariga turtki beradi.
+
+#### Diqqat mexanizmi
+
+`Transformer` arxitekturasining yuragi — bu diqqat mexanizmidir. Bu mexanizmni tushunish `transformer` modellari qanday ishlashini tushunish uchun zarur. Ichki tomondan, diqqat mexanizmi kalit, qiymat va so'rov (`query`) vektorlaridan foydalanadi:
+
+- **So'rov vektori (Q)** har bir dekodlash qadamida dekoderning joriy holatini ifodalaydi. O'sha kitob xulosasi misoliga qaytsak, bu so'rov vektorini xulosa yaratish uchun ma'lumot izlayotgan odam deb o'ylash mumkin.
+- **Har bir kalit vektori (K)** oldingi tokenni ifodalaydi. Agar har bir oldingi token kitobdagi bir sahifa bo'lsa, har bir kalit vektori sahifa raqamiga o'xshaydi. Shuni unutmangki, ma'lum bir dekodlash qadamida oldingi tokenlar ham kirish tokenlarini, ham oldin generatsiya qilingan tokenlarni o'z ichiga oladi.
+- **Har bir qiymat vektori (V)** model tomonidan o'rganilgan oldingi tokenning haqiqiy qiymatini ifodalaydi. Har bir qiymat vektori sahifaning mazmuniga o'xshaydi.
+
+Diqqat mexanizmi biror kirish tokeniga qancha diqqat qaratish kerakligini so'rov vektori va uning kalit vektori o'rtasida skalyar ko'paytmani ([`dot product`](https://en.wikipedia.org/wiki/Dot_product)) bajarish orqali hisoblaydi. Yuqori ball model kitobning xulosasini generatsiya qilishda o'sha sahifa mazmunidan (uning qiymat vektoridan) ko'proq foydalanishini anglatadi. Kalit, qiymat va so'rov vektorlari bilan diqqat mexanizmining vizualizatsiyasi 2-5-rasmda ko'rsatilgan. Ushbu vizualizatsiyada so'rov vektori keyingi tokenni generatsiya qilish uchun oldingi `How, are, you, ?, ¿` tokenlaridan ma'lumot qidirmoqda.
+
+![2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.](/ai-engineering/2.5-figure.png)
+
+<div className='text-center text-sm italic'>2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.</div>
+
+Har bir oldingi token mos keladigan kalit va qiymat vektoriga ega bo'lgani uchun, ketma-ketlik qanchalik uzun bo'lsa, shuncha ko'p kalit va qiymat vektorlarini hisoblash va saqlash kerak bo'ladi. Bu `transformer` modellari uchun kontekst uzunligini kengaytirish bunchalik qiyin bo'lishining sabablaridan biridir. Kalit va qiymat vektorlarini qanday qilib samarali hisoblash va saqlash masalasi 7 va 9-boblarda yana ko'rib chiqiladi.
+
+Keling, diqqat funksiyasi qanday ishlashini ko'rib chiqamiz. `x` kirish ma'lumoti berilganda, kalit, qiymat va so'rov vektorlari kirish ma'lumotiga kalit, qiymat va so'rov matritsalarini qo'llash orqali hisoblanadi. `Wₖ`, `Wᵥ` va `Wᵩ`'ni kalit, qiymat va so'rov matritsalari deb olaylik. Kalit, qiymat va so'rov vektorlari quyidagicha hisoblanadi:
+
+``` js
+K = xWₖ
+V = xWᵥ
+Q = xWᵩ
+```
+
+So'rov, kalit va qiymat matritsalari modelning yashirin o'lchamiga (`hidden dimension`) mos keladigan o'lchamlarga ega. Masalan, `Llama 2-7B`'da ([Touvron va boshq., 2023](https://arxiv.org/abs/2307.09288)) modelning yashirin o'lchami 4096 ga teng, ya'ni bu matritsalarning har biri `4096` × `4096` o'lchamiga ega. Har bir hosil bo'lgan `K`, `V`, `Q` vektori `4096` o'lchamiga ega bo'ladi.[^8]
+
+Diqqat mexanizmi deyarli har doim ko'p boshli (`multi-headed`) bo'ladi. Bir nechta boshlar modelga bir vaqtning o'zida oldingi tokenlarning turli guruhlariga diqqat qaratish imkonini beradi. Ko'p boshli diqqat bilan, so'rov, kalit va qiymat vektorlari kichikroq vektorlarga bo'linadi, ularning har biri bitta diqqat boshiga to'g'ri keladi. `Llama 2-7B` misolida, u `32` ta diqqat boshiga ega bo'lgani uchun, har bir `K`, `V` va `Q` vektori `128` o'lchamdagi `32` ta vektorga bo'linadi. Buning sababi `4096 / 32 = 128`.
+
+``` js
+Attention(Q, K, V) = softmax( (QKᵀ) / √d ) * V
+```
+
+Keyin barcha diqqat boshlarining natijalari birlashtiriladi (`concatenated`). Chiqish proeksiya matritsasi (`output projection matrix`) bu birlashtirilgan natijaga, u modelning keyingi hisoblash bosqichiga uzatilishidan oldin, yana bir o'zgartirishni qo'llash uchun ishlatiladi. Chiqish proeksiya matritsasi modelning yashirin o'lchami bilan bir xil o'lchamga ega.
+
+### Izohlar
+
+[^5]: Modelni o'qitish bilan bog'liq _ML_ asoslari ushbu kitob doirasidan tashqarida. Biroq, muhokamaga tegishli bo'lganda, men ba'zi tushunchalarni kiritib boraman. Masalan, o'z-o'zini nazorat qilish (`self-supervision`) — bunda model o'z yorliqlarini ma'lumotlarning o'zidan generatsiya qiladi — 1-bobda yoritilgan, xatoni teskari tarqatish (`backpropagation`) — model parametrlari o'qitish paytida xatolikka asoslanib qanday yangilanishi — esa 7-bobda muhokama qilinadi.
+
+[^6]: `RNN`'lar o'zlarining rekursiv tuzilishi tufayli, ayniqsa, yo'qolib boruvchi (`vanishing`) va portlovchi (`exploding`) gradientlarga moyil. Gradientlar ko'plab qadamlar orqali tarqalishi kerak va agar ular kichik bo'lsa, takroriy ko'paytirish ularning nolga qarab kichrayishiga olib keladi, bu esa modelning o'rganishini qiyinlashtiradi. Aksincha, agar gradientlar katta bo'lsa, ular har bir qadamda eksponensial ravishda o'sib boradi, bu esa o'rganish jarayonida beqarorlikka olib keladi.
+
+[^7]: Bahdanau va boshq., [“Neural Machine Translation by Jointly Learning to Align and Translate”](https://arxiv.org/abs/1409.0473).
+
+[^8]: Kirish tokenlari to'plam (`batch`) bo'lib qayta ishlanganligi sababli, haqiqiy kirish vektori `N` × `T` × `4096` shakliga ega bo'ladi, bu yerda `N` — to'plam hajmi va `T` — ketma-ketlik uzunligi. Xuddi shunday, har bir hosil bo'lgan `K`, `V`, `Q` vektori `N` × `T` × `4096` o'lchamiga ega bo'ladi.
