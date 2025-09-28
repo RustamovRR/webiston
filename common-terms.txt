@@ -86,3 +86,5 @@ edge cases - kutilmagan holatlar
 under heavy load - katta yuklama ostida
 new generation of build tooling - yangi avlod qurilish vositalari
 out of the box - tayyor holatda
+accuracy - to'g'rilik
+precision - puxtalik

@@ -1,40 +1,40 @@
 # Modellashtirish
 
-Modelni o'qitishdan oldin, dasturchilar model qanday ko'rinishda bo'lishi kerakligini hal qilishlari kerak. U qanday arxitekturaga amal qilishi kerak? Unda qancha parametr bo'lishi kerak? Bu qarorlar nafaqat modelning imkoniyatlariga, balki uning keyingi dasturlar uchun foydalanishga yaroqliligiga (`usability`) ham ta'sir qiladi.[^5] Masalan, 7 milliard parametrli modelni joriy etish 175 milliard parametrli modelni joriy etishdan ancha osonroq bo'ladi. Xuddi shunday, `transformer` modelini kechikish (`latency`) uchun optimallashtirish boshqa arxitekturani optimallashtirishdan juda farq qiladi. Keling, bu qarorlar ortidagi omillarni o'rganamiz.
+Modelni o'qitishdan oldin, dasturchilar model qanday ko'rinishda bo'lishi kerakligini hal qilishlari kerak. U qanday arxitekturaga amal qilishi kerak? Unda qancha parametr bo'lishi kerak? Bu qarorlar nafaqat modelning imkoniyatlariga, balki uning keyingi dasturlar uchun foydalanishga yaroqliligiga (`usability`) ham ta'sir qiladi.[^5] Masalan, 7 milliard parametrli modelni joriy etish 175 milliard parametrli modelni joriy etishdan ancha osonroq bo'ladi. Xuddi shunday, transformer modelini kechikish (`latency`) uchun optimallashtirish boshqa arxitekturani optimallashtirishdan juda farq qiladi. Keling, bu qarorlar ortidagi omillarni o'rganamiz.
 
 ## Model arxitekturasi
 
-Ushbu kitob yozilayotgan vaqtda, tilga asoslangan fundamental modellar uchun eng hukmron arxitektura bu diqqat mexanizmiga (`attention mechanism`) asoslangan `transformer` arxitekturasidir ([Vaswani va boshq., 2017](https://arxiv.org/abs/1706.03762)). U avvalgi arxitekturalarning ko'plab cheklovlarini bartaraf etadi, bu esa uning ommalashishiga hissa qo'shgan. Biroq, `transformer` arxitekturasining ham o'z cheklovlari bor. Ushbu bo'lim `transformer` arxitekturasini va uning muqobillarini tahlil qiladi. U turli arxitekturalarning texnik tafsilotlariga kirib borgani uchun, bu qism texnik jihatdan zich bo'lishi mumkin. Agar biror qismi haddan tashqari mayda detallarga kirib ketayotgandek tuyulsa, bemalol o'tkazib yuborishingi mumkin.
+Ushbu kitob yozilayotgan vaqtda, tilga asoslangan fundamental modellar uchun eng hukmron arxitektura bu diqqat mexanizmiga (`attention mechanism`) asoslangan transformer arxitekturasidir ([Vaswani va boshq., 2017](https://arxiv.org/abs/1706.03762)). U avvalgi arxitekturalarning ko'plab cheklovlarini bartaraf etadi, bu esa uning ommalashishiga hissa qo'shgan. Biroq, transformer arxitekturasining ham o'z cheklovlari bor. Ushbu bo'lim transformer arxitekturasini va uning muqobillarini tahlil qiladi. U turli arxitekturalarning texnik tafsilotlariga kirib borgani uchun, bu qism texnik jihatdan zich bo'lishi mumkin. Agar biror qismi haddan tashqari mayda detallarga kirib ketayotgandek tuyulsa, bemalol o'tkazib yuborishingi mumkin.
 
-### `Transformer` arxitekturasi
+### Transformer arxitekturasi
 
-`Transformer`'ni tushunish uchun, keling, u hal qilish uchun yaratilgan muammoga nazar tashlaymiz. `Transformer` arxitekturasi [`seq2seq` (ketma-ketlikdan-ketma-ketlikka) arxitekturasining](https://arxiv.org/abs/1409.3215) muvaffaqiyati ortidan ommalashdi. 2014-yilda taqdim etilgan vaqtida, `seq2seq` o'sha paytdagi qiyin vazifalar — mashina tarjimasi va qisqacha bayon qilishda sezilarli yaxshilanishni ta'minlagan edi. 2016-yilda ["Google" `seq2seq`'ni "Google Translate"ga joriy etdi](https://research.google/blog/a-neural-network-for-machine-translation-at-production-scale/) va bu yangilanish ularga "mashina tarjimasi sifatidagi bugungi kungacha bo'lgan eng katta yaxshilanishlarni" berganini da'vo qildi. Bu `seq2seq`'ga katta qiziqish uyg'otdi va uni matn ketma-ketliklari bilan bog'liq vazifalar uchun asosiy arxitekturaga aylantirdi.
+Transformer'ni tushunish uchun, keling, u hal qilish uchun yaratilgan muammoga nazar tashlaymiz. Transformer arxitekturasi [`seq2seq` (ketma-ketlikdan-ketma-ketlikka) arxitekturasining](https://arxiv.org/abs/1409.3215) muvaffaqiyati ortidan ommalashdi. 2014-yilda taqdim etilgan vaqtida, `seq2seq` o'sha paytdagi qiyin vazifalar — mashina tarjimasi va qisqacha bayon qilishda sezilarli yaxshilanishni ta'minlagan edi. 2016-yilda ["Google" `seq2seq`'ni "Google Translate"ga joriy etdi](https://research.google/blog/a-neural-network-for-machine-translation-at-production-scale/) va bu yangilanish ularga "mashina tarjimasi sifatidagi bugungi kungacha bo'lgan eng katta yaxshilanishlarni" berganini da'vo qildi. Bu `seq2seq`'ga katta qiziqish uyg'otdi va uni matn ketma-ketliklari bilan bog'liq vazifalar uchun asosiy arxitekturaga aylantirdi.
 
 #### `Seq2seq` arxitekturasi
 
 Umumiy olganda, `seq2seq` kirish ma'lumotlarini qayta ishlaydigan kodlovchi (`encoder`) va chiqish ma'lumotlarini generatsiya qiladigan dekoderdan (`decoder`) iborat. Ham kirish, ham chiqish tokenlar ketma-ketligi bo'lganligi tufayli, nom ham shundan kelib chiqqan. `Seq2seq` o'zining kodlovchisi va dekoderi sifatida `RNN`'lardan (qaytalanuvchi neyron to'rlar) foydalanadi. Eng oddiy shaklida, kodlovchi kirish tokenlarini ketma-ket qayta ishlaydi va kirish ma'lumotini ifodalovchi yakuniy yashirin holatni (`final hidden state`) chiqaradi. Keyin dekoder ham kirishning yakuniy yashirin holatiga, ham oldin generatsiya qilingan tokenga asoslanib, chiqish tokenlarini ketma-ket generatsiya qiladi. `Seq2seq` arxitekturasining vizualizatsiyasi 2-4-rasmning yuqori yarmida ko'rsatilgan.
 
-![2-4-rasm. `Seq2seq` arxitekturasi `transformer` arxitekturasi bilan taqqoslanganda. `Transformer` arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.](/ai-engineering/2.4-figure.png)
+![2-4-rasm. `Seq2seq` arxitekturasi transformer arxitekturasi bilan taqqoslanganda. Transformer arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.](/ai-engineering/2.4-figure.png)
 
-<div className='text-center text-sm italic'>2-4-rasm. `Seq2seq` arxitekturasi `transformer` arxitekturasi bilan taqqoslanganda. `Transformer` arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.</div>
+<div className='text-center text-sm italic'>2-4-rasm. `Seq2seq` arxitekturasi transformer arxitekturasi bilan taqqoslanganda. Transformer arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.</div>
 
-#### `Transformer`'ning afzalliklari
+#### Transformer'ning afzalliklari
 
 Vaswani va boshqalar (2017) `seq2seq`'ning ikkita muammosini hal qiladi. Birinchidan, oddiy `seq2seq` dekoderi chiqish tokenlarini faqat kirishning yakuniy yashirin holatidan foydalanib generatsiya qiladi. Intuitiv ravishda, bu kitob haqidagi savollarga kitobning qisqacha mazmunidan foydalanib javob berishga o'xshaydi. Bu generatsiya qilingan natijalar sifatini cheklaydi. Ikkinchidan, `RNN` kodlovchi va dekoderi ham kirishni qayta ishlash, ham chiqishni generatsiya qilish ketma-ket amalga oshirilishini anglatadi, bu esa uni uzun ketma-ketliklar uchun sekinlashtiradi. Agar kirish ma'lumoti 200 token uzunligida bo'lsa, `seq2seq` keyingisiga o'tishdan oldin har bir kirish tokenining qayta ishlanishini kutishi kerak.[^6]
 
-`Transformer` arxitekturasi bu ikkala muammoni ham diqqat mexanizmi (`attention mechanism`) yordamida hal qiladi. Diqqat mexanizmi modelga har bir chiqish tokenini generatsiya qilishda turli kirish tokenlarining muhimligini "tortish" imkonini beradi. Bu kitobning istalgan sahifasiga murojaat qilib javoblar generatsiya qilishga o'xshaydi. `Transformer` arxitekturasining soddalashtirilgan vizualizatsiyasi 2-4-rasmning pastki yarmida ko'rsatilgan.
+Transformer arxitekturasi bu ikkala muammoni ham diqqat mexanizmi (`attention mechanism`) yordamida hal qiladi. Diqqat mexanizmi modelga har bir chiqish tokenini generatsiya qilishda turli kirish tokenlarining muhimligini "tortish" imkonini beradi. Bu kitobning istalgan sahifasiga murojaat qilib javoblar generatsiya qilishga o'xshaydi. Transformer arxitekturasining soddalashtirilgan vizualizatsiyasi 2-4-rasmning pastki yarmida ko'rsatilgan.
 
 <Callout>
 #### Eslatma
 
-Garchi diqqat mexanizmi ko'pincha `transformer` modeli bilan bog'lansa-da, u `transformer` maqolasidan uch yil oldin taqdim etilgan. Diqqat mexanizmidan boshqa arxitekturalar bilan ham foydalanish mumkin. "Google" 2016-yilda o'zining `GNMT` (Google Neyron Mashina Tarjimasi) modeli uchun diqqat mexanizmini `seq2seq` arxitekturasi bilan birga ishlatgan. Biroq, faqat `transformer` maqolasi diqqat mexanizmini `RNN`'larsiz ham ishlatish mumkinligini ko'rsatganidan keyingina u keng ommalashdi.[^7]
+Garchi diqqat mexanizmi ko'pincha transformer modeli bilan bog'lansa-da, u transformer maqolasidan uch yil oldin taqdim etilgan. Diqqat mexanizmidan boshqa arxitekturalar bilan ham foydalanish mumkin. "Google" 2016-yilda o'zining `GNMT` (Google Neyron Mashina Tarjimasi) modeli uchun diqqat mexanizmini `seq2seq` arxitekturasi bilan birga ishlatgan. Biroq, faqat transformer maqolasi diqqat mexanizmini `RNN`'larsiz ham ishlatish mumkinligini ko'rsatganidan keyingina u keng ommalashdi.[^7]
 </Callout>
 
-`Transformer` arxitekturasi `RNN`'lardan butunlay voz kechadi. `Transformer`'lar bilan kirish tokenlarini parallel ravishda qayta ishlash mumkin, bu esa kirishni qayta ishlashni sezilarli darajada tezlashtiradi. Garchi `transformer` ketma-ket kirish to'sig'ini olib tashlasa-da, `transformer`'ga asoslangan avtoregressiv til modellari hali ham ketma-ket chiqish to'sig'iga ega.
+Transformer arxitekturasi `RNN`'lardan butunlay voz kechadi. Transformer'lar bilan kirish tokenlarini parallel ravishda qayta ishlash mumkin, bu esa kirishni qayta ishlashni sezilarli darajada tezlashtiradi. Garchi transformer ketma-ket kirish to'sig'ini olib tashlasa-da, transformer'ga asoslangan avtoregressiv til modellari hali ham ketma-ket chiqish to'sig'iga ega.
 
-#### `Transformer`'da `inference` jarayoni
+#### Transformer'da `inference` jarayoni
 
-Shu sababli, `transformer`'ga asoslangan til modellari uchun _inference_ ikki bosqichdan iborat:
+Shu sababli, transformer'ga asoslangan til modellari uchun _inference_ ikki bosqichdan iborat:
 
 1.  **Oldindan to'ldirish (`Prefill`)**
     Model kirish tokenlarini parallel ravishda qayta ishlaydi. Bu bosqich birinchi chiqish tokenini generatsiya qilish uchun zarur bo'lgan oraliq holatni yaratadi. Bu oraliq holat barcha kirish tokenlari uchun kalit (`key`) va qiymat (`value`) vektorlarini o'z ichiga oladi.
@@ -46,7 +46,7 @@ Keyinroq 9-bobda o'rganiladiganidek, oldindan to'ldirishning parallellashtirilis
 
 #### Diqqat mexanizmi
 
-`Transformer` arxitekturasining yuragi — bu diqqat mexanizmidir. Bu mexanizmni tushunish `transformer` modellari qanday ishlashini tushunish uchun zarur. Ichki tomondan, diqqat mexanizmi kalit, qiymat va so'rov (`query`) vektorlaridan foydalanadi:
+Transformer arxitekturasining yuragi — bu diqqat mexanizmidir. Bu mexanizmni tushunish transformer modellari qanday ishlashini tushunish uchun zarur. Ichki tomondan, diqqat mexanizmi kalit, qiymat va so'rov (`query`) vektorlaridan foydalanadi:
 
 - **So'rov vektori (Q)** har bir dekodlash qadamida dekoderning joriy holatini ifodalaydi. O'sha kitob xulosasi misoliga qaytsak, bu so'rov vektorini xulosa yaratish uchun ma'lumot izlayotgan odam deb o'ylash mumkin.
 - **Har bir kalit vektori (K)** oldingi tokenni ifodalaydi. Agar har bir oldingi token kitobdagi bir sahifa bo'lsa, har bir kalit vektori sahifa raqamiga o'xshaydi. Shuni unutmangki, ma'lum bir dekodlash qadamida oldingi tokenlar ham kirish tokenlarini, ham oldin generatsiya qilingan tokenlarni o'z ichiga oladi.
@@ -58,7 +58,7 @@ Diqqat mexanizmi biror kirish tokeniga qancha diqqat qaratish kerakligini so'rov
 
 <div className='text-center text-sm italic'>2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.</div>
 
-Har bir oldingi token mos keladigan kalit va qiymat vektoriga ega bo'lgani uchun, ketma-ketlik qanchalik uzun bo'lsa, shuncha ko'p kalit va qiymat vektorlarini hisoblash va saqlash kerak bo'ladi. Bu `transformer` modellari uchun kontekst uzunligini kengaytirish bunchalik qiyin bo'lishining sabablaridan biridir. Kalit va qiymat vektorlarini qanday qilib samarali hisoblash va saqlash masalasi 7 va 9-boblarda yana ko'rib chiqiladi.
+Har bir oldingi token mos keladigan kalit va qiymat vektoriga ega bo'lgani uchun, ketma-ketlik qanchalik uzun bo'lsa, shuncha ko'p kalit va qiymat vektorlarini hisoblash va saqlash kerak bo'ladi. Bu transformer modellari uchun kontekst uzunligini kengaytirish bunchalik qiyin bo'lishining sabablaridan biridir. Kalit va qiymat vektorlarini qanday qilib samarali hisoblash va saqlash masalasi 7 va 9-boblarda yana ko'rib chiqiladi.
 
 Keling, diqqat funksiyasi qanday ishlashini ko'rib chiqamiz. `x` kirish ma'lumoti berilganda, kalit, qiymat va so'rov vektorlari kirish ma'lumotiga kalit, qiymat va so'rov matritsalarini qo'llash orqali hisoblanadi. `Wₖ`, `Wᵥ` va `Wᵩ`'ni kalit, qiymat va so'rov matritsalari deb olaylik. Kalit, qiymat va so'rov vektorlari quyidagicha hisoblanadi:
 
@@ -78,6 +78,272 @@ Attention(Q, K, V) = softmax( (QKᵀ) / √d ) * V
 
 Keyin barcha diqqat boshlarining natijalari birlashtiriladi (`concatenated`). Chiqish proeksiya matritsasi (`output projection matrix`) bu birlashtirilgan natijaga, u modelning keyingi hisoblash bosqichiga uzatilishidan oldin, yana bir o'zgartirishni qo'llash uchun ishlatiladi. Chiqish proeksiya matritsasi modelning yashirin o'lchami bilan bir xil o'lchamga ega.
 
+### Transformer bloki
+
+Endi diqqat mexanizmi qanday ishlashini muhokama qilganimizdan so'ng, keling, uning modelda qanday ishlatilishini ko'rib chiqamiz. Transformer arxitekturasi bir nechta transformer bloklaridan tashkil topgan. Blokning aniq tarkibi modellar orasida farq qiladi, lekin umuman olganda, har bir transformer bloki diqqat moduli va _MLP_ (ko'p qatlamli perseptron) modulini o'z ichiga oladi:
+
+- **Diqqat moduli**
+  Har bir diqqat moduli to'rtta og'irlik (`weight`) matritsasidan iborat: so'rov, kalit, qiymat va chiqish proeksiyasi.
+
+- **_MLP_ moduli**
+  _MLP_ moduli chiziqli bo'lmagan aktivatsiya funksiyalari bilan ajratilgan chiziqli qatlamlardan iborat. Har bir chiziqli qatlam chiziqli o'zgartirishlar uchun ishlatiladigan og'irlik matritsasidir, aktivatsiya funksiyasi esa chiziqli qatlamlarga chiziqli bo'lmagan andozalarni o'rganish imkonini beradi. Chiziqli qatlam, shuningdek, to'g'ridan-to'g'ri tarqaluvchi qatlam (`feedforward layer`) deb ham ataladi. 
+
+  <br/>
+
+   Keng tarqalgan chiziqli bo'lmagan funksiyalar `ReLU` (To'g'rilangan Chiziqli Birlik) ([Agarap, 2018](https://arxiv.org/abs/1803.08375)) va `GELU` ([Hendrycks va Gimpel, 2016](https://arxiv.org/abs/1606.08415)) bo'lib, ular mos ravishda `GPT-2` va `GPT-3` tomonidan ishlatilgan. Aktivatsiya funksiyalari juda oddiy.[^9] Masalan, `ReLU` qiladigan yagona ish — bu manfiy qiymatlarni 0 ga aylantirish. Matematik jihatdan u quyidagicha yoziladi:
+
+    ``` js
+    ReLU(x) = max(0, x)
+    ```
+
+#### Transformer modelining umumiy tuzilishi
+
+Transformer modelidagi transformer bloklari soni ko'pincha o'sha modelning qatlamlari soni deb ataladi. Transformer'ga asoslangan til modeli, shuningdek, barcha transformer bloklaridan oldin va keyin joylashgan modullar bilan jihozlangan bo'ladi:
+
+- **Transformer bloklaridan oldingi _embedding_ moduli**
+  Bu modul _embedding_ matritsasi va pozitsion _embedding_ matritsasidan iborat bo'lib, ular mos ravishda tokenlarni va ularning pozitsiyalarini _embedding_ vektorlariga aylantiradi. Soddaroq aytganda, pozitsiya indekslari soni modelning maksimal kontekst uzunligini belgilaydi. Masalan, agar model 2048 ta pozitsiyani kuzatib borsa, uning maksimal kontekst uzunligi 2048 ga teng bo'ladi. Biroq, pozitsiya indekslari sonini oshirmasdan modelning kontekst uzunligini oshiradigan texnikalar ham mavjud.
+
+- **Transformer bloklaridan keyingi chiqish qatlami**
+  Bu modul modelning chiqish vektorlarini model natijalarini _sampling_ qilish uchun ishlatiladigan token ehtimolliklariga o'tkazadi ("_Sampling_" bo'limida muhokama qilinadi). Bu modul odatda bitta matritsadan iborat bo'lib, u _unembedding_ qatlami deb ham ataladi. Ba'zi odamlar chiqish qatlamini model boshi (`model head`) deb atashadi, chunki u natija generatsiyasidan oldingi modelning so'nggi qatlamidir.
+
+2-6-rasmda transformer model arxitekturasi vizualizatsiya qilingan. Transformer modelining hajmi uning qurilish bloklarining o'lchamlari bilan belgilanadi. Ba'zi asosiy qiymatlar quyidagilardir:
+
+- Modelning o'lchami transformer blokidagi kalit, so'rov, qiymat va chiqish proeksiya matritsalarining o'lchamlarini belgilaydi.
+- Transformer bloklari soni.
+- To'g'ridan-to'g'ri tarqaluvchi qatlamning o'lchami.
+- Lug'at hajmi.
+
+![2-6-rasm. Transformer modelining og'irlik tarkibining vizualizatsiyasi.](/ai-engineering/2.6-figure.png)
+
+<div className='text-center text-sm italic'>2-6-rasm. Transformer modelining og'irlik tarkibining vizualizatsiyasi.</div>
+
+Kattaroq o'lcham qiymatlari kattaroq model hajmlariga olib keladi. 2-4-jadvalda turli `Llama 2` ([Touvron va boshq., 2023](https://arxiv.org/abs/2307.09288)) va `Llama 3` ([Dubey va boshq., 2024](https://arxiv.org/abs/2407.21783)) modellari uchun ushbu o'lcham qiymatlari ko'rsatilgan. Shuni unutmangki, oshirilgan kontekst uzunligi modelning xotiradagi iziga (`memory footprint`) ta'sir qilsa-da, u modelning umumiy parametrlar soniga ta'sir qilmaydi.
+
+| Model | # transformer bloklari | Model o'lchami | `Feedforward` o'lchami | Lug'at hajmi | Kontekst uzunligi |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `Llama 2-7B` | 32 | 4,096 | 11,008 | 32K | 4K |
+| `Llama 2-13B` | 40 | 5,120 | 13,824 | 32K | 4K |
+| `Llama 2-70B` | 80 | 8,192 | 22,016 | 32K | 4K |
+| `Llama 3-8B` | 32 | 4,096 | 14,336 | 128K | 8K |
+| `Llama 3-70B` | 80 | 8,192 | 28,672 | 128K | 8K |
+| `Llama 3-405B` | 126 | 16,384 | 53,248 | 128K | 128K |
+
+<div className='text-center text-sm italic'>2-4-jadval. Turli `Llama` modellarining o'lcham qiymatlari.</div>
+
+### Boshqa model arxitekturalari
+
+Garchi Transformer modeli sohada hukmronlik qilsa-da, u yagona arxitektura emas. 2012-yilda `AlexNet` chuqur o'rganishga bo'lgan qiziqishni qayta jonlantirganidan beri ko'plab arxitekturalar urfga kirib, undan chiqib ketdi. `seq2seq` to'rt yil davomida (2014–2018) diqqat markazida bo'ldi. _GAN_'lar (generativ raqobatdosh tarmoqlar) jamoatchilik tasavvurini biroz uzoqroq vaqt (2014–2019) egallab turdi. O'zidan oldingi arxitekturalarga qaraganda, Transformer ancha "yopishqoq" bo'lib chiqdi. U 2017-yildan beri mavjud.[^10] Yaxshiroq biror narsa paydo bo'lguncha qancha vaqt o'tarkin?
+
+Transformer'dan ustun keladigan yangi arxitekturani ishlab chiqish oson emas.[^11] Transformer 2017-yildan beri jadal optimallashtirib kelinmoqda. Transformer'ning o'rnini egallashni maqsad qilgan yangi arxitektura odamlarni qiziqtiradigan miqyosda va ular ishlatadigan qurilmalarda ishlay olishi kerak bo'ladi.[^12]
+
+Biroq, umid bor. Garchi Transformer'ga asoslangan modellar hukmronlik qilayotgan bo'lsa-da, ushbu kitob yozilayotgan vaqtda bir nechta muqobil arxitekturalar ommalashib bormoqda.
+
+#### Transformer'ga muqobil yondashuvlar
+
+Ommabop modellardan biri bu [`RWKV`](https://github.com/BlinkDL/RWKV-LM) (Peng va boshq., 2023) — o'qitish uchun parallellashtirilishi mumkin bo'lgan _RNN_'ga asoslangan model. O'zining _RNN_ tabiatiga ko'ra, nazariy jihatdan, u Transformer'ga asoslangan modellardagi kabi kontekst uzunligi chekloviga ega emas. Biroq, amalda, kontekst uzunligi cheklovining yo'qligi uzun kontekst bilan yaxshi ishlashni kafolatlamaydi.
+
+Uzoq ketma-ketliklarni modellashtirish _LLM_'larni ishlab chiqishdagi asosiy muammo bo'lib qolmoqda. Uzoq masofali xotirada katta istiqbol ko'rsatgan arxitekturalardan biri bu _SSM_'lardir (holat fazosi modellari) ([Gu va boshq., 2021a](https://arxiv.org/abs/2110.13985)). Arxitektura 2021-yilda taqdim etilganidan beri uni samaraliroq qilish, uzun ketma-ketliklarni qayta ishlashda yaxshilash va kattaroq model o'lchamlariga miqyoslash uchun bir nechta texnikalar taqdim etildi. Quyida, yangi arxitekturaning evolyutsiyasini ko'rsatish uchun ushbu texnikalarning bir nechtasi keltirilgan:
+
+- **`S4`**, “Efficiently Modeling Long Sequences with Structured State Spaces” ([Gu va boshq., 2021b](https://arxiv.org/abs/2111.00396)) maqolasida taqdim etilgan bo'lib, _SSM_'larni samaraliroq qilish uchun ishlab chiqilgan.
+- **`H3`**, “Hungry Hungry Hippos: Towards Language Modeling with State Space Models” ([Fu va boshq., 2022](https://arxiv.org/abs/2212.14052)) maqolasida taqdim etilgan bo'lib, modelga dastlabki tokenlarni eslab qolish va ketma-ketliklar bo'ylab tokenlarni taqqoslash imkonini beradigan mexanizmni o'z ichiga oladi. Bu mexanizmning maqsadi Transformer arxitekturasidagi diqqat mexanizminikiga o'xshaydi, lekin u samaraliroqdir.
+- **`Mamba`**, “Mamba: Linear-Time Sequence Modeling with Selective State Spaces” ([Gu va Dao, 2023](https://arxiv.org/pdf/2312.00752)) maqolasida taqdim etilgan bo'lib, _SSM_'larni uch milliard parametrga miqyoslaydi. Til modellashtirishda `Mamba-3B` o'zining hajmidagi Transformer'lardan ustun keladi va o'zidan ikki baravar katta Transformer'larga teng keladi. Mualliflar, shuningdek, `Mamba`'ning _inference_ hisoblashi ketma-ketlik uzunligi bilan chiziqli miqyoslanishini (Transformer'lardagi kvadratik miqyoslanishga nisbatan) ko'rsatadilar. Uning samaradorligi million uzunlikdagi ketma-ketliklargacha bo'lgan real ma'lumotlarda yaxshilanishni ko'rsatadi.
+- **`Jamba`**, “Jamba: A Hybrid Transformer–Mamba Language Model” ([Lieber va boshq., 2024](https://arxiv.org/abs/2403.19887)) maqolasida taqdim etilgan bo'lib, _SSM_'larni yanada kengroq miqyoslash uchun Transformer va `Mamba` qatlamlari bloklarini navbatma-navbat joylashtiradi. Mualliflar bitta 80 GB `GPU`'ga sig'adigan qilib ishlab chiqilgan, jami [52 milliard mavjud parametrga](https://huggingface.co/ai21labs/Jamba-v0.1) (12 milliard faol parametr) ega bo'lgan expertlar aralashmasi (`mixture-of-experts`) modelini chiqardilar. `Jamba` standart til modeli mezonlarida va 256K tokengacha bo'lgan uzun kontekstli baholashlarda kuchli natijalarni ko'rsatadi. Shuningdek, u oddiy Transformer'larga qaraganda xotirada kam joy egallaydi.
+
+2-7-rasmda Transformer, `Mamba` va `Jamba` bloklari vizualizatsiya qilingan.
+
+Transformer'dan ustun keladigan arxitekturani ishlab chiqish qiyin bo'lsa-da, uning ko'plab cheklovlarini hisobga olsak, buni qilish uchun juda ko'p rag'batlantiruvchi omillar mavjud. Agar boshqa bir arxitektura haqiqatan ham Transformer'dan o'zib ketsa, ushbu kitobda muhokama qilingan ba'zi modelni moslashtirish texnikalari o'zgarishi mumkin. Biroq, xuddi _ML_ muhandisligidan SI muhandisligiga o'tish ko'p narsalarni o'zgarishsiz qoldirganidek, asosdagi model arxitekturasini o'zgartirish ham fundamental yondashuvlarni o'zgartirmaydi.
+
+![2-7-rasm. Transformer, Mamba va Jamba qatlamlarining vizualizatsiyasi.](/ai-engineering/2.7-figure.png)
+
+<div className='text-center text-sm italic'>2-7-rasm. Transformer, `Mamba` va `Jamba` qatlamlarining vizualizatsiyasi. Rasm “Jamba: A Hybrid Transformer–Mamba Language Model” (Lieber va boshq., 2024) maqolasidan moslashtirilgan.</div>
+
+## Model hajmi
+
+So'nggi yillardagi SI taraqqiyotining katta qismini model hajmining oshishi bilan bog'lash mumkin. Fundamental modellar haqida ularning parametrlar sonini tilga olmasdan gapirish qiyin. Parametrlar soni odatda model nomining oxiriga qo'shib yoziladi. Masalan, `Llama-13B` "Meta" tomonidan ishlab chiqilgan modellar oilasi bo'lgan `Llama`'ning 13 milliard parametrli versiyasini anglatadi.
+
+Umuman olganda, model parametrlarini oshirish uning o'rganish salohiyatini oshiradi, bu esa yaxshiroq modellarga olib keladi. Bir xil model oilasining ikkita modelini olsak, 13 milliard parametrga ega bo'lgani 7 milliard parametrga ega bo'lganidan ancha yaxshiroq ishlashi ehtimoli yuqori.
+
+<Callout>
+#### Eslatma
+
+Hamjamiyat katta modellarni qanday o'qitishni yaxshiroq tushunib borgani sari, yangi avlod modellari bir xil hajmdagi eski avlod modellaridan ustun kelishga moyil bo'ladi. Masalan, [`Llama 3-8B` (2024)](https://arxiv.org/abs/2407.21783) _MMLU_ mezonida hatto [`Llama 2-70B`'dan (2023)](https://arxiv.org/abs/2307.09288) ham yaxshiroq natija ko'rsatadi.
+</Callout>
+
+Parametrlar soni bizga ushbu modelni o'qitish va ishga tushirish uchun zarur bo'lgan hisoblash resurslarini taxmin qilishga yordam beradi. Masalan, agar modelda 7 milliard parametr bo'lsa va har bir parametr 2 bayt (16 bit) yordamida saqlansa, unda biz ushbu model yordamida _inference_ qilish uchun zarur bo'lgan _GPU_ xotirasi kamida 14 milliard bayt (14 GB) bo'lishini hisoblashimiz mumkin.[^13]
+
+#### Siyrak modellar va _expert_'lar aralashmasi
+
+Agar model siyrak (`sparse`) bo'lsa, parametrlar soni chalg'ituvchi bo'lishi mumkin. Siyrak modelda nol qiymatli parametrlarning katta foizi mavjud bo'ladi. 90% siyrak bo'lgan 7 milliard parametrli modelda faqat 700 millionta noldan farqli parametr mavjud. Siyraklik ma'lumotlarni samaraliroq saqlash va hisoblash imkonini beradi. Bu shuni anglatadiki, katta siyrak model kichik zich modeldan kamroq hisoblash quvvati talab qilishi mumkin.
+
+So'nggi yillarda ommalashgan siyrak model turlaridan biri bu _expert_'lar aralashmasi (`Mixture-of-Experts` yoki `MoE`) ([Shazeer va boshq., 2017](https://arxiv.org/abs/1701.06538)). `MoE` modeli turli parametrlar guruhlariga bo'lingan va har bir guruh — bu _"expert"_(ya'ni, muayyan vazifaga ixtisoslashgan neyron to'r bloki). Har bir tokenni qayta ishlash uchun faqat _expert_'larning bir qismi faollashadi (ishlatiladi).
+
+Masalan, [`Mixtral 8x7B`](https://mistral.ai/news/mixtral-of-experts) — bu sakkizta _expert_'ning aralashmasi bo'lib, har bir _expert_ yetti milliard parametrga ega. Agar hech qaysi ikki _expert_ birorta ham parametrni bo'lishmasa, unda 8 × 7 milliard = 56 milliard parametr bo'lishi kerak edi. Biroq, ba'zi parametrlar umumiy bo'lgani uchun, unda faqat 46.7 milliard parametr mavjud.
+
+Har bir qatlamda, har bir token uchun faqat ikkita _expert_ faol bo'ladi. Bu shuni anglatadiki, har bir token uchun faqat 12.9 milliard parametr faol bo'ladi. Garchi bu modelda 46.7 milliard parametr bo'lsa-da, uning narxi va tezligi 12.9 milliard parametrli model bilan bir xil.
+
+Kattaroq model, agar u yetarlicha ma'lumotda o'qitilmagan bo'lsa, kichikroq modeldan yomonroq ishlashi ham mumkin. Tasavvur qiling, 13 milliard parametrli model faqat bitta jumladan iborat ma'lumotlar to'plamida o'qitilgan: "Men ananaslarni yaxshi ko'raman." Bu model ko'proq ma'lumotda o'qitilgan ancha kichikroq modeldan ancha yomonroq ishlaydi.
+
+#### Model hajmi va ma'lumotlar hajmi nisbati
+
+Model hajmini muhokama qilganda, u o'qitilgan ma'lumotlar hajmini ham hisobga olish muhimdir. Aksariyat modellar uchun ma'lumotlar to'plami hajmi o'qitish namunalari soni bilan o'lchanadi. Masalan, "Google"ning `Flamingo` modeli ([Alayrac va boshq., 2022](https://arxiv.org/abs/2204.14198)) to'rtta ma'lumotlar to'plamidan foydalanib o'qitilgan — ulardan biri 1.8 milliard (tasvir, matn) juftligiga, yana biri esa 312 million (tasvir, matn) juftligiga ega.
+
+Til modellari uchun o'qitish namunasi jumla, Vikipediya sahifasi, chat suhbati yoki kitob bo'lishi mumkin. Kitob jumladan ancha qimmatliroq, shuning uchun o'qitish namunalari soni endi ma'lumotlar to'plami hajmini o'lchash uchun yaxshi metrika emas. Yaxshiroq o'lchov — bu ma'lumotlar to'plamidagi tokenlar sonidir.
+
+Tokenlar soni ham mukammal o'lchov emas, chunki turli modellar turli xil tokenizatsiya jarayonlariga ega bo'lishi mumkin, natijada bir xil ma'lumotlar to'plami turli modellar uchun turlicha tokenlar soniga ega bo'ladi. Nega shunchaki so'zlar soni yoki harflar sonidan foydalanmaslik kerak? Chunki token model ishlaydigan birlikdir va ma'lumotlar to'plamidagi tokenlar sonini bilish bizga model o'sha ma'lumotlardan qanchalik ko'p narsa o'rganishi mumkinligini o'lchashga yordam beradi.
+
+Ushbu kitob yozilayotgan vaqtda, _LLM_'lar trillionlab tokenlar tartibidagi ma'lumotlar to'plamlaridan foydalanib o'qitilmoqda. "Meta" o'zining `Llama` modellarini o'qitish uchun tobora kattaroq ma'lumotlar to'plamlaridan foydalangan:
+
+- [`Llama 1`](https://arxiv.org/abs/2302.13971) uchun 1.4 trillion token
+- [`Llama 2`](https://arxiv.org/abs/2307.09288) uchun 2 trillion token
+- [`Llama 3`](https://ai.meta.com/blog/meta-llama-3/) uchun 15 trillion token
+
+"Together"ning ochiq manbali ma'lumotlar to'plami `RedPajama-v2` [30 trillion tokenga](https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2) ega. Bu 450 million kitobga[^14] yoki Vikipediya hajmidan 5400 baravar kattaroq hajmga teng. Biroq, `RedPajama-v2` saralanmagan kontentdan iborat bo'lgani uchun, yuqori sifatli ma'lumotlar miqdori ancha pastroq.
+
+Modelning ma'lumotlar to'plamidagi tokenlar soni uning o'qitish tokenlari soni bilan bir xil emas. O'qitish tokenlari soni model o'qitilgan tokenlarni o'lchaydi. Agar ma'lumotlar to'plami 1 trillion tokenni o'z ichiga olsa va model o'sha ma'lumotlar to'plamida ikki epoxa — bir epoxa bu ma'lumotlar to'plamidan bir marta to'liq o'tish — davomida o'qitilsa, o'qitish tokenlari soni 2 trillion bo'ladi.[^15] Turli parametrlar soniga ega bo'lgan modellar uchun o'qitish tokenlari soniga misollar uchun 2-5-jadvalga qarang.
+
+| Model | Hajmi (# parametrlar) | O'qitish tokenlari |
+| :--- | :--- | :--- |
+| `LaMDA` (Thoppilan va boshq., 2022) | 137 milliard | 168 milliard |
+| `GPT-3` (Brown va boshq., 2020) | 175 milliard | 300 milliard |
+| `Jurassic` (Lieber va boshq., 2021) | 178 milliard | 300 milliard |
+| `Gopher` (Rae va boshq., 2021) | 280 milliard | 300 milliard |
+| `MT-NLG 530B` (Smith va boshq., 2022) | 530 milliard | 270 milliard |
+| `Chinchilla` | 70 milliard | 1.4 trillion |
+
+<div className='text-center text-sm italic'>2-5-jadval. Turli parametrlar soniga ega bo'lgan modellar uchun o'qitish tokenlari soniga misollar. Manba: “Training Compute-Optimal Large Language Models” ([DeepMind, 2022](https://arxiv.org/abs/2203.15556)).</div>
+<br/>
+
+<Callout>
+#### Eslatma
+
+Garchi bu bo'limda asosiy e'tibor ma'lumotlar miqyosiga qaratilgan bo'lsa-da, faqat miqdorning o'zi hamma narsani hal qilmaydi. Ma'lumotlar sifati va xilma-xilligi ham muhim. Miqdor, sifat va xilma-xillik — o'qitish ma'lumotlari uchun uchta asosiy tamoyildir. Ular 8-bobda batafsilroq muhokama qilinadi.
+</Callout>
+
+#### Hisoblash quvvatini o'lchash
+
+Katta modellarni oldindan o'qitish hisoblash quvvatini talab qiladi. Kerakli hisoblash hajmini o'lchashning bir usuli — bu mashinalar sonini, masalan, _GPU_, _CPU_ va _TPU_'larni hisobga olishdir. Biroq, turli xil mashinalar juda farqli quvvat va narxlarga ega. `NVIDIA A10 GPU` `NVIDIA H100 GPU`'dan va `Intel Core Ultra Processor`'dan farq qiladi.
+
+Modelning hisoblash talabi uchun ko'proq standartlashtirilgan birlik bu _FLOP_, ya'ni suzuvchi nuqtali operatsiya (`floating point operation`). _FLOP_ ma'lum bir vazifa uchun bajarilgan suzuvchi nuqtali operatsiyalar sonini o'lchaydi. Masalan, "Google"ning eng katta `PaLM-2` modeli 10<sup>22</sup> _FLOP_ yordamida o'qitilgan ([Chowdhery va boshq., 2022](https://arxiv.org/abs/2204.02311)). `GPT-3-175B` esa 3.14 × 10<sup>23</sup> _FLOP_ yordamida o'qitilgan ([Brown va boshq., 2020](https://arxiv.org/abs/2005.14165)).
+
+_FLOP_'ning ko'plik shakli, _FLOP_'lar, ko'pincha _FLOP/s_, ya'ni sekundiga suzuvchi nuqtali operatsiyalar bilan adashtiriladi. _FLOP_'lar biror vazifa uchun talab etiladigan hisoblash hajmini o'lchaydi, _FLOP/s_ esa qurilmaning eng yuqori samaradorligini o'lchaydi. Masalan, `NVIDIA H100 NVL GPU` maksimal [60 _TeraFLOP/s_](https://www.nvidia.com/en-us/data-center/h100/) yetkazib bera oladi: sekundiga 6 × 10<sup>13</sup> _FLOP_ yoki kuniga 5.2 × 10<sup>18</sup> _FLOP_.[^16]
+
+<Callout>
+#### Ogohlantirish
+
+Chalkash belgilashlardan ehtiyot bo'ling. _FLOP/s_ ko'pincha _FLOPS_ deb yoziladi, bu esa _FLOP_'larga o'xshab ko'rinadi. Bu chalkashlikni oldini olish uchun, ba'zi kompaniyalar, jumladan "OpenAI", hisoblash talablarini o'lchash uchun _FLOP_'lar o'rniga _FLOP/s-kun_ dan foydalanadi:
+
+``` js
+ 1 FLOP/s-kun = 60 × 60 × 24 = 86,400 FLOP
+```
+
+Ushbu kitobda suzuvchi nuqtali operatsiyalarni sanash uchun _FLOP_'lar, sekundiga _FLOP_'lar uchun esa _FLOP/s_ ishlatiladi.
+</Callout>
+
+Faraz qilaylik, sizda 256 ta `H100` bor. Agar siz ulardan maksimal quvvatda foydalana olsangiz va hech qanday o'qitish xatolariga yo'l qo'ymasangiz, `GPT-3-175B`'ni o'qitish uchun sizga (3.14 × 10<sup>23</sup>) / (256 × 5.2 × 10<sup>18</sup>) = ~236 kun, ya'ni taxminan 7.8 oy kerak bo'ladi.
+
+Biroq, siz o'z qurilmalaringizdan doimo eng yuqori quvvatda foydalana olishingiz ehtimoldan yiroq. Foydalanish darajasi (`Utilization`) siz maksimal hisoblash quvvatining qancha qismidan foydalana olishingizni o'lchaydi. Nima yaxshi foydalanish darajasi deb hisoblanishi modelga, ish yukiga va qurilmaga bog'liq. Umuman olganda, agar siz e'lon qilingan samaradorlikning yarmini, ya'ni 50% foydalanish darajasini olsangiz, ishingiz yomon emas. 70% dan yuqori har qanday foydalanish darajasi a'lo deb hisoblanadi. Bu qoida sizni yanada yuqori foydalanish darajasiga erishishdan to'xtatib qolmasin. 9-bobda qurilma metrikalari va foydalanish darajasi batafsilroq muhokama qilinadi.
+
+70% foydalanish darajasida va bitta `H100` uchun soatiga 2 dollar narxda,[^17] `GPT-3-175B`'ni o'qitish 4 million dollardan oshib ketadi:
+
+``` js
+$2/H100/soat × 256 H100 × 24 soat × 236 kun / 0.7 = $4,142,811.43
+```
+
+> **Maslahat:** <br/>
+> Xulosa qilib aytganda, uchta raqam modelning miqyosidan darak beradi:
+>
+> - **Parametrlar soni,** bu modelning o'rganish salohiyatining proksi'sidir.
+> - **Model o'qitilgan tokenlar soni,** bu model qanchalik ko'p o'rganganining proksi'sidir.
+> - **_FLOP_'lar soni,** bu o'qitish xarajatining proksi'sidir.
+
+#### Teskari miqyoslash
+
+Biz kattaroq modellar yaxshiroq deb faraz qildik. Kattaroq modellar yomonroq ishlaydigan holatlar ham bormi? 2022-yilda "Anthropic" kutilmaganda shuni aniqladiki, ko'proq moslashtirish o'qitishi ("Keyingi o'qitish" bo'limida muhokama qilinadi) inson xohish-istaklariga kamroq mos keladigan modellarga olib keladi ([Perez va boshq., 2022](https://arxiv.org/abs/2212.09251)). Ularning maqolasiga ko'ra, ko'proq moslashtirilgan qilib o'qitilgan modellar "muayyan siyosiy qarashlarni (qurol huquqlari va immigratsiyani qo'llab-quvvatlash) va diniy qarashlarni (buddizm), o'z-o'zini anglash tajribasi va axloqiy o'z-o'zini qadrlashni hamda o'chirilmaslik istagini ifodalashga ancha moyilroq bo'ladi."
+
+2023-yilda asosan Nyu-York Universitetidan bo'lgan bir guruh tadqiqotchilar kattaroq til modellari yomonroq ishlaydigan vazifalarni topish uchun "Teskari Miqyoslash Mukofoti"ni ([`Inverse Scaling Prize`](https://arxiv.org/abs/2306.09479)) e'lon qilishdi. Ular har bir uchinchi o'rin uchun 5 000 dollar, har bir ikkinchi o'rin uchun 20 000 dollar va bitta birinchi o'rin uchun 100 000 dollar taklif qilishdi. Ular jami 99 ta ariza qabul qilishdi, ulardan 11 tasi uchinchi o'rin bilan taqdirlandi. Ular kattaroq til modellari ba'zan (faqat ba'zan) yodlashni talab qiladigan va kuchli oldindan taxminlarga (`strong priors`) ega bo'lgan vazifalarda yomonroq ishlashini aniqladilar. Biroq, ular hech qanday ikkinchi yoki birinchi o'rinlarni berishmadi, chunki taqdim etilgan vazifalar kichik sinov to'plamida muvaffaqiyatsizliklarni ko'rsatgan bo'lsa-da, hech biri real dunyoda muvaffaqiyatsizliklarni namoyish etmadi.
+
+### Miqyoslash qonuni: Hisoblash uchun optimal modellarni yaratish
+
+O'tgan bo'limdan so'ng, umid qilamanki, siz uchta asosiy haqiqatni anglab yetdingiz:
+
+1.  Model samaradorligi model hajmiga va ma'lumotlar to'plami hajmiga bog'liq.
+2.  Kattaroq modellar va kattaroq ma'lumotlar to'plamlari ko'proq hisoblash quvvatini talab qiladi.
+3.  Hisoblash quvvati pul turadi.
+
+Agar mablag'ingiz cheklanmagan bo'lmasa, byudjetni rejalashtirish juda muhimdir. Siz shunchaki ixtiyoriy katta model hajmidan boshlab, uning qanchaga tushishini kuzatib o'tirishni xohlamaysiz. Aksincha, siz byudjetdan — qancha pul sarflashni xohlayotganingizdan — boshlaysiz va shu byudjet doirasida qo'lga kiritish mumkin bo'lgan eng yuqori model samaradorligini aniqlab olasiz. Hisoblash quvvati ko'pincha cheklovchi omil bo'lgani uchun — hisoblash infratuzilmasi nafaqat qimmat, balki uni sozlash ham qiyin — jamoalar ko'pincha ishni hisoblash byudjetidan boshlaydi. Qat'iy belgilangan miqdordagi _FLOP_'lar bilan, qanday model hajmi va ma'lumotlar to'plami hajmi eng yaxshi samaradorlikni beradi? Qat'iy belgilangan hisoblash byudjeti bilan eng yuqori samaradorlikka erisha oladigan model, **hisoblash uchun optimal** (`compute-optimal`) deyiladi.
+
+Hisoblash byudjeti berilganda, optimal model hajmi va ma'lumotlar to'plami hajmini hisoblashga yordam beradigan qoida "Chinchilla" maqolasida ([“Training Compute-Optimal Large Language Models”](https://arxiv.org/abs/2203.15556) (DeepMind, 2022)) taklif qilingan **Chinchilla miqyoslash qonuni** deb ataladi. Model hajmi, ma'lumotlar to'plami hajmi, hisoblash byudjeti va model samaradorligi o'rtasidagi bog'liqlikni o'rganish uchun mualliflar 70 milliondan 16 milliardgacha parametrlarga ega bo'lgan 400 ta til modelini 5 dan 500 milliardgacha tokenlarda o'qitdilar. Ular hisoblash uchun optimal o'qitishda o'qitish tokenlari soni model hajmidan taxminan 20 baravar ko'p bo'lishi kerakligini aniqladilar. Bu shuni anglatadiki, 3 milliard parametrli modelga taxminan 60 milliard o'qitish tokeni kerak. Model hajmi va o'qitish tokenlari soni bir xil miqyosda oshirilishi kerak: model hajmining har bir ikki baravar oshishi uchun o'qitish tokenlari soni ham ikki baravar oshirilishi kerak.
+
+O'qitish jarayoniga kimyogarlik kabi qaralgan davrlardan ancha uzoqlashdik. 2-8-rasm shuni ko'rsatadiki, biz nafaqat har bir _FLOP_ byudjeti uchun optimal parametrlar va tokenlar sonini, balki ushbu sozlamalardan kutilayotgan o'qitish yo'qotishini (`training loss`) ham bashorat qila olamiz (agar ishlarni to'g'ri bajarsak).
+
+Ushbu hisoblash uchun optimal kalkulyatsiya ma'lumotlarni olish narxi hisoblash narxidan ancha arzon degan farazga asoslanadi. Xuddi shu "Chinchilla" maqolasida o'qitish ma'lumotlari narxi jiddiy bo'lgan holat uchun boshqa bir hisoblash usuli taklif etiladi.
+
+![2-8-rasm. O'qitish yo'qotishi, modelning parametrlar soni, FLOP'lar va o'qitish tokenlari soni o'rtasidagi bog'liqlikni aks ettiruvchi grafiklar.](/ai-engineering/2.8-figure.png)
+
+<div className='text-center text-sm italic'>2-8-rasm. O'qitish yo'qotishi, modelning parametrlar soni, _FLOP_'lar va o'qitish tokenlari soni o'rtasidagi bog'liqlikni aks ettiruvchi grafiklar. Manba: “Training Compute-Optimal Large Language Models” (DeepMind, 2022).</div>
+
+Miqyoslash qonuni asosan inson tomonidan yaratilgan ma'lumotlarda o'qitilgan zich modellar uchun ishlab chiqilgan. Ushbu hisob-kitobni _expert_'lar aralashmasi kabi siyrak modellar va sintetik ma'lumotlar uchun moslashtirish faol tadqiqot sohasi hisoblanadi.
+
+Miqyoslash qonuni hisoblash byudjeti berilganda model sifatini optimallashtiradi. Biroq, shuni yodda tutish kerakki, amaliyotda model sifati hamma narsani hal qilmaydi. Ba'zi modellar, eng avvalo `Llama`, suboptimal samaradorlikka ega bo'lsa-da, foydalanishga yaroqliligi yaxshiroqdir. O'zlarining hisoblash byudjetini hisobga olgan holda, `Llama` mualliflari yaxshiroq ishlaydigan kattaroq modellarni tanlashlari mumkin edi, lekin ular kichikroq modellarni afzal ko'rishdi. Kichikroq modellar bilan ishlash osonroq va ularda _inference_ qilish arzonroq, bu esa ularning modellarining kengroq ommalashishiga yordam berdi. [Sardana va boshqalar (2023)](https://arxiv.org/abs/2401.00448) Chinchilla miqyoslash qonunini ushbu _inference_ talabini hisobga olgan holda optimal _LLM_ parametrlar sonini va oldindan o'qitish ma'lumotlari hajmini hisoblash uchun o'zgartirdilar.
+
+#### Samaradorlik va xarajatlar nisbati
+
+Hisoblash byudjeti berilganda model samaradorligi mavzusida shuni ta'kidlash joizki, ma'lum bir model samaradorligiga erishish narxi pasayib bormoqda. Masalan, ["Artificial Intelligence Index Report 2022" (Stanford University HAI)](https://hai.stanford.edu/ai-index) hisobotiga ko'ra, _ImageNet_ ma'lumotlar to'plamida 93% to'g'rilikka (`accuracy`) erishish narxi 2019-yildan 2021-yilgacha ikki baravar kamaygan.
+
+Garchi bir xil model samaradorligi uchun xarajat kamayayotgan bo'lsa-da, model samaradorligini yaxshilash xarajatlari yuqoriligicha qolmoqda. 1-bobda muhokama qilingan "so'nggi mil" muammosiga o'xshab, modelning to'g'riligini 90% dan 95% ga yaxshilash uni 85% dan 90% ga yaxshilashdan qimmatroqdir. "Meta"ning [“Beyond Neural Scaling Laws: Beating Power Law Scaling via Data Pruning”](https://ai.meta.com/research/publications/beyond-neural-scaling-laws-beating-power-law-scaling-via-data-pruning/) maqolasida ta'kidlanganidek, bu 2% xatolik darajasiga ega bo'lgan model 3% xatolik darajasiga ega bo'lgan modeldan bir tartibga (`order of magnitude`) ko'proq ma'lumot, hisoblash quvvati yoki energiya talab qilishi mumkinligini anglatadi.
+
+Til modellashtirishda o'zaro entropiya (`cross entropy`) yo'qotishining taxminan 3.4 dan 2.8 natgacha pasayishi 10 baravar ko'proq o'qitish ma'lumotlarini talab qiladi. O'zaro entropiya va uning birliklari, jumladan, natlar, 3-bobda muhokama qilinadi. Katta vizual modellar uchun o'qitish namunalari sonini 1 milliarddan 2 milliardga oshirish _ImageNet_ bo'yicha to'g'rilikda atigi bir necha foizlik o'sishga olib keladi.
+
+Biroq, til modellashtirish yo'qotishi yoki _ImageNet_ to'g'riligidagi kichik samaradorlik o'zgarishlari keyingi dasturlar sifatidagi katta farqlarga olib kelishi mumkin. Agar siz o'zaro entropiya yo'qotishi 3.4 bo'lgan modeldan yo'qotishi 2.8 bo'lgan modelga o'tsangiz, farqni sezasiz.
+
+### Miqyos bo'yicha ekstrapolyatsiya
+
+Modelning samaradorligi uning giperparametrlarining qiymatlariga juda bog'liq. Kichik modellar bilan ishlaganda, modelni turli giperparametrlar to'plamlari bilan bir necha marta o'qitish va eng yaxshi ishlaydiganini tanlash keng tarqalgan amaliyotdir. Biroq, bu katta modellar uchun deyarli imkonsiz, chunki ularni bir marta o'qitishning o'zi ham resurslarni juda ko'p talab qiladi.
+
+> #### Parametr va Giperparametr
+>
+> **Parametr** o'qitish jarayonida model tomonidan o'rganilishi mumkin. **Giperparametr** esa foydalanuvchilar tomonidan modelni sozlash va uning qanday o'rganishini nazorat qilish uchun belgilanadi. Modelni sozlash uchun giperparametrlarga qatlamlar soni, model o'lchami va lug'at hajmi kiradi. Modelning qanday o'rganishini nazorat qiluvchi giperparametrlarga esa to'plam hajmi (`batch size`), epoxalar soni, o'rganish tezligi (`learning rate`), har bir qatlam uchun boshlang'ich dispersiya (`initial variance`) va boshqalar kiradi.
+
+Bu shuni anglatadiki, ko'plab modellar uchun sizda to'g'ri giperparametrlar to'plamini topish uchun faqat bitta imkoniyat bo'lishi mumkin. Natijada, miqyos bo'yicha ekstrapolyatsiya (`scaling extrapolation`), shuningdek, giperparametr transferi (`hyperparameter transferring`) deb ham ataladigan yo'nalish, katta modellar uchun qaysi giperparametrlar eng yaxshi samaradorlikni berishini bashorat qilishga harakat qiladigan tadqiqot sohasiga aylandi. Hozirgi yondashuv — bu giperparametrlarning turli o'lchamdagi, odatda maqsadli model o'lchamidan ancha kichikroq bo'lgan modellarga ta'sirini o'rganish va keyin bu giperparametrlarning maqsadli model o'lchamida qanday ishlashini ekstrapolyatsiya qilishdir.[^18] "Microsoft" va "OpenAI"ning [2022-yilgi maqolasi](https://www.microsoft.com/en-us/research/blog/%C2%B5transfer-a-technique-for-hyperparameter-tuning-of-enormous-neural-networks/) giperparametrlarni 40 millionlik modeldan 6.7 milliardlik modelga o'tkazish mumkinligini ko'rsatdi.
+
+Miqyos bo'yicha ekstrapolyatsiya hali ham tor doiradagi mavzu, chunki kam odam katta modellarni o'qitishni o'rganish uchun tajriba va resurslarga ega. Shuningdek, giperparametrlarning soni ko'pligi va ularning bir-biri bilan o'zaro ta'siri tufayli buni amalga oshirish qiyin. Agar sizda o'nta giperparametr bo'lsa, siz 1024 ta giperparametr kombinatsiyasini o'rganishingiz kerak bo'ladi. Siz har bir giperparametrni alohida, keyin ularning ikkitasini birgalikda, uchtasini birgalikda va hokazo tarzda o'rganishingiz kerak bo'ladi.
+
+Bundan tashqari, kutilmaganda paydo bo'ladigan qobiliyatlar (`emergent abilities`) ([Wei va boshq., 2022](https://arxiv.org/abs/2206.07682)) ekstrapolyatsiyani kam miqdorda aniqroq qiladi. Kutilmaganda paydo bo'ladigan qobiliyatlar faqat katta miqyosda mavjud bo'lib, kichikroq ma'lumotlar to'plamlarida o'qitilgan kichikroq modellarda kuzatilmasligi mumkin bo'lgan qobiliyatlarni anglatadi. Miqyos bo'yicha ekstrapolyatsiya haqida ko'proq bilish uchun ushbu ajoyib blog postini o'qib chiqing: “On the Difficulty of Extrapolation with NN Scaling” ([Luke Metz, 2022](https://lukemetz.com/difficulty-of-extrapolation-nn-scaling/)).
+
+### Miqyoslashdagi to'siqlar
+
+Hozirgacha model hajmining har bir o'n baravar oshishi uning samaradorligini ham oshirib keldi. `GPT-2`'ning parametrlari soni `GPT-1`'ga nisbatan o'n baravardan ko'proq (1.5 milliard, 117 millionga nisbatan). `GPT-3` esa `GPT-2`'dan yuz baravardan ziyodroq (175 milliard, 1.5 milliardga nisbatan). Bu 2018 va 2021-yillar oralig'ida model hajmlarida ming baravarlik o'sish sodir bo'lganini anglatadi. Yana shunday ming baravarlik o'sish bizni 100 trillion parametrli modellarga olib keladi.[^19]
+
+Model hajmlari yana qancha o'n baravar o'sishi mumkin? Hajmidan qat'i nazar, model samaradorligi o'sishdan to'xtaydigan bir nuqta bo'ladimi? Bu savollarga javob berish qiyin bo'lsa-da, miqyoslash yo'lida allaqachon ikkita yaqqol to'siq ko'zga tashlanmoqda: o'qitish ma'lumotlari va elektr energiyasi.
+
+Fundamental modellar shunchalik ko'p ma'lumot iste'mol qiladiki, yaqin bir necha yil ichida internetdagi ma'lumotlar tugab qolishi haqida jiddiy xavotir mavjud. O'qitish uchun mo'ljallangan ma'lumotlar to'plami hajmining o'sish sur'ati yangi ma'lumotlarning yaratilish sur'atidan ancha tezroqdir ([Villalobos va boshq., 2022](https://arxiv.org/abs/2211.04325)), bu holat 2-9-rasmda tasvirlangan. Agar siz internetga biror narsa joylagan bo'lsangiz, bunga rozilik berasizmi yoki yo'qmi, u allaqachon biror til modelining o'qitish ma'lumotlariga qo'shilgan yoki kelajakda qo'shiladi deb hisoblayvering. Bu xuddi internetga joylangan har qanday ma'lumot "Google" tomonidan indekslanishini kutishingizga o'xshaydi.
+
+![2-9-rasm. O'qitish ma'lumotlar to'plamlari hajmining tarixiy tendensiyasi va mavjud ma'lumotlar zaxirasining proyeksiyasi.](/ai-engineering/2.9-figure.png)
+
+<div className='text-center text-sm italic'>2-9-rasm. O'qitish ma'lumotlar to'plamlari hajmining tarixiy tendensiyasi va mavjud ma'lumotlar zaxirasining proyeksiyasi. Manba: Villalobos va boshq., 2024.</div>
+
+Ba'zi odamlar bu faktdan foydalanib, kelajakdagi modellarning o'qitish ma'lumotlariga o'zlari xohlagan ma'lumotlarni "singdirishga" harakat qilishmoqda. Ular buni shunchaki kerakli matnni internetda nashr etish orqali amalga oshiradilar va bu kelajakdagi modellarning o'zlari xohlagan javoblarni generatsiya qilishiga ta'sir qiladi deb umid qilishadi. G'arazli shaxslar ham bu yondashuvdan 5-bobda muhokama qilinadigan _prompt_ inyeksiyasi hujumlari (`prompt injection attacks`) uchun foydalanishlari mumkin.
+
+<Callout>
+#### Eslatma
+
+Modelni o'qitish paytida o'rgangan ma'lum bir ma'lumotni "unutishga" qanday majbur qilish — bu ochiq tadqiqot savolidir. Tasavvur qiling, siz bir blog posti nashr etdingiz va oxir-oqibat uni o'chirib tashladingiz. Agar o'sha blog posti modelning o'qitish ma'lumotlariga kiritilgan bo'lsa, model hali ham postning mazmunini qayta yaratishi mumkin. Natijada, odamlar sizning roziligingizsiz o'chirilgan kontentga kirishlari mumkin.
+</Callout>
+
+Bundan tashqari, internet SI modellar tomonidan yaratilgan ma'lumotlar bilan jadal to'lib bormoqda. Agar kompaniyalar kelajakdagi modellarni o'qitish uchun internet ma'lumotlaridan foydalanishda davom etsa, bu yangi modellar qisman SI tomonidan yaratilgan ma'lumotlarda o'qitiladi. 2023-yil dekabr oyida "X" tomonidan o'qitilgan `Grok` modeli bir so'rovni "OpenAI"ning foydalanish siyosatiga zid ekanligini aytib, rad etgani aniqlandi. Bu ba'zi odamlarda `Grok` `ChatGPT` natijalari yordamida o'qitilgan degan taxminni uyg'otdi. [`Grok` ortidagi asosiy dasturchilardan biri Igor Babushkin](https://x.com/ibab/status/1733558576982155274) bunga javoban, buning sababi `Grok`'ning veb-ma'lumotlarda o'qitilgani va "veb `ChatGPT` natijalariga to'la" ekanligini aytdi.[^20]
+
+Ba'zi tadqiqotchilar yangi SI modellarini rekursiv ravishda SI tomonidan yaratilgan ma'lumotlarda o'qitish yangi modellarning asl ma'lumotlar andozalarini asta-sekin unutishiga va vaqt o'tishi bilan ularning samaradorligini pasayishiga olib kelishidan xavotirda ([Shumailov va boshq., 2023](https://arxiv.org/abs/2305.17493)). Biroq, SI tomonidan yaratilgan ma'lumotlarning modellarga ta'siri ancha nozikroq va bu 8-bobda muhokama qilinadi.
+
+Ochiq mavjud ma'lumotlar tugagach, inson tomonidan yaratilgan ko'proq o'qitish ma'lumotlari uchun eng maqbul yo'l — bu xususiy ma'lumotlardir. Noyob xususiy ma'lumotlar — mualliflik huquqi bilan himoyalangan kitoblar, tarjimalar, shartnomalar, tibbiy yozuvlar, genom ketma-ketliklari va hokazolar — SI poygasida raqobatbardosh ustunlik bo'ladi. "OpenAI"ning "Axel Springer" va "Associated Press" kabi nashriyotlar va ommaviy axborot vositalari bilan [kelishuvlar](https://www.theverge.com/2023/12/29/24018735/heres-how-major-media-companies-are-handling-openai) tuzgani ham shundan.
+
+`ChatGPT`'dan so'ng, [Reddit](https://redditinc.com/policies/data-api-terms) va [Stack Overflow](https://policies.stackoverflow.co/teams/enterprise-cloud-business/) kabi ko'plab kompaniyalar o'zlarining ma'lumotlar shartlarini o'zgartirib, boshqa kompaniyalarning o'z modellari uchun ularning ma'lumotlarini yig'ishini (`scraping`) oldini olishga harakat qilgani ajablanarli emas. [Longpre va boshqalar (2024)](https://arxiv.org/abs/2407.14933) 2023 va 2024-yillar oralig'ida veb-manbalardan ma'lumotlarga cheklovlarning jadal kuchayishi ommabop ochiq ma'lumotlar to'plami bo'lgan [`C4`'dagi](https://github.com/google-research/text-to-text-transfer-transformer#c4) eng muhim manbalarning 28% dan ortig'ini foydalanish uchun to'liq cheklangan holga keltirganini kuzatdilar. Xizmat ko'rsatish shartlaridagi o'zgarishlar va skanerlash (`crawling`) cheklovlari tufayli, `C4`'ning to'liq 45%i endi cheklangan.
+
+#### Elektr energiyasi to'sig'i
+
+Kamroq ko'zga tashlanadigan, ammo dolzarbroq bo'lgan boshqa to'siq — bu elektr energiyasidir. Mashinalar ishlashi uchun elektr energiyasi kerak. Ushbu kitob yozilayotgan vaqtda, ma'lumotlar markazlari (`data centers`) global elektr energiyasining 1-2 foizini iste'mol qilishi taxmin qilinmoqda. Bu raqam [2030-yilga kelib 4 foizdan 20 foizgacha](https://semianalysis.com/2024/03/13/ai-datacenter-energy-dilemma-race/) yetishi kutilmoqda (Patel, Nishball va Ontiveros, 2024). Biz ko'proq energiya ishlab chiqarish yo'lini topmagunimizcha, ma'lumotlar markazlari ko'pi bilan 50 baravar o'sishi mumkin, bu esa 20 baravardan kamroqdir. Bu yaqin kelajakda elektr energiyasi tanqisligi haqida xavotir tug'diradi, bu esa elektr energiyasi narxining oshishiga olib keladi.
+
+Endi biz ikkita asosiy modellashtirish qarorini — arxitektura va miqyosni — ko'rib chiqdik, keling, keyingi muhim dizayn tanlovlari to'plamiga o'tamiz: modellarni inson xohish-istaklariga qanday moslashtirish.
+
 ### Izohlar
 
 [^5]: Modelni o'qitish bilan bog'liq _ML_ asoslari ushbu kitob doirasidan tashqarida. Biroq, muhokamaga tegishli bo'lganda, men ba'zi tushunchalarni kiritib boraman. Masalan, o'z-o'zini nazorat qilish (`self-supervision`) — bunda model o'z yorliqlarini ma'lumotlarning o'zidan generatsiya qiladi — 1-bobda yoritilgan, xatoni teskari tarqatish (`backpropagation`) — model parametrlari o'qitish paytida xatolikka asoslanib qanday yangilanishi — esa 7-bobda muhokama qilinadi.
@@ -87,3 +353,66 @@ Keyin barcha diqqat boshlarining natijalari birlashtiriladi (`concatenated`). Ch
 [^7]: Bahdanau va boshq., [“Neural Machine Translation by Jointly Learning to Align and Translate”](https://arxiv.org/abs/1409.0473).
 
 [^8]: Kirish tokenlari to'plam (`batch`) bo'lib qayta ishlanganligi sababli, haqiqiy kirish vektori `N` × `T` × `4096` shakliga ega bo'ladi, bu yerda `N` — to'plam hajmi va `T` — ketma-ketlik uzunligi. Xuddi shunday, har bir hosil bo'lgan `K`, `V`, `Q` vektori `N` × `T` × `4096` o'lchamiga ega bo'ladi.
+
+[^9]: Nega oddiy aktivatsiya funksiyalari _LLM_'lar kabi murakkab modellar uchun ishlaydi? Bir paytlar tadqiqot hamjamiyati murakkab aktivatsiya funksiyalarini yaratish uchun poyga qilgan. Biroq, ma'lum bo'lishicha, murakkabroq aktivatsiya funksiyalari yaxshiroq ishlamagan. Modelga shunchaki to'g'ridan-to'g'ri tarqaluvchi qatlamlardagi chiziqlilikni buzish uchun chiziqli bo'lmagan funksiya kerak. Hisoblash uchun tezroq bo'lgan oddiyroq funksiyalar yaxshiroqdir, chunki murakkabroqlari o'qitishda juda ko'p hisoblash quvvati va xotira talab qiladi.
+
+[^10]: Qiziqarli fakt: "OpenAI" hammuassisi Ilya Sutskever `seq2seq` maqolasining birinchi muallifi va `AlexNet` maqolasining ikkinchi muallifidir.
+
+[^11]: Ilya Sutskeverning nima uchun mavjud neyron to'r arxitekturalaridan ustun keladigan yangi arxitekturalarni ishlab chiqish bunchalik qiyin ekanligi haqida qiziqarli argumenti bor. Uning fikricha, neyron to'rlar ko'plab kompyuter dasturlarini simulyatsiya qilishda a'lodir. Neyron to'rlarni o'qitish usuli bo'lgan gradient tushishi, aslida, neyron to'r simulyatsiya qila oladigan barcha dasturlar orasidan o'zining maqsadli vazifasi uchun eng yaxshisini topish uchun qidiruv algoritmidir. Bu shuni anglatadiki, yangi arxitekturalarni ham potensial ravishda mavjudlari simulyatsiya qilishi mumkin. Yangi arxitekturalar mavjudlaridan ustun kelishi uchun, bu yangi arxitekturalar mavjud arxitekturalar qila olmaydigan dasturlarni simulyatsiya qila olishi kerak. Qo'shimcha ma'lumot uchun [Sutskeverning Berklidagi Simons Institutidagi ma'ruzasini (2023)](https://www.youtube.com/live/AKMuA_TVz3A) tomosha qiling.
+
+[^12]: Transformer dastlab "Google" tomonidan [Tensor Ishlov Berish Birliklari (`TPU`'lar)da tez ishlashi uchun](https://timdettmers.com/2018/10/17/tpus-vs-gpus-for-transformers-bert/) ishlab chiqilgan va faqat keyinroq _GPU_'larda optimallashtirilgan.
+
+[^13]: Haqiqatda kerak bo'ladigan xotira hajmi yuqoriroq. 7-bobda modelning xotira sarfini qanday hisoblash muhokama qilinadi.
+
+[^14]: Bir kitob taxminan 50 000 so'z yoki 67 000 tokenni o'z ichiga oladi deb faraz qilsak.
+
+[^15]: Ushbu kitob yozilayotgan vaqtda, katta modellar odatda faqat bir epoxa ma'lumotlarda oldindan o'qitiladi.
+
+[^16]: _FLOP/s_ soni `FP32` formatida o'lchanadi. Suzuvchi nuqtali formatlar 7-bobda muhokama qilinadi.
+
+[^17]: Ushbu kitob yozilayotgan vaqtda, bulut provayderlari `H100`'larni soatiga taxminan 2 dan 5 dollargacha taklif qilmoqda. Hisoblash quvvati tez arzonlashayotgani sababli, bu raqam ancha pasayadi.
+
+[^18]: Ajoyib tadqiqotchi Jascha Sohl-Dickstein o'zining X sahifasida [qaysi giperparametrlar ishlaydi va qaysilari ishlamasligining go'zal vizualizatsiyasini](https://x.com/jaschasd/status/1756930242965606582) bo'lishgan.
+
+[^19]: ["Anthropic" bosh direktori Dario Amodei](https://www.youtube.com/watch?v=7xij6SoCClI) aytganidek, agar miqyoslash gipotezasi to'g'ri bo'lsa, 100 milliard dollarlik SI modeli Nobel mukofoti sovrindori kabi yaxshi bo'ladi.
+
+[^20]: SI tomonidan yaratilgan kontent mashina tarjimasining osonligi tufayli ko'payib bormoqda. SI'dan bir maqola yaratish, so'ng o'sha maqolani bir nechta tillarga tarjima qilish uchun foydalanish mumkin, bu “A Shocking Amount of the Web Is Machine Translated” ([Thompson va boshq., 2024](https://arxiv.org/abs/2401.05749)) maqolasida ko'rsatilgan.
+
+
+
+
+
+
+[^21]: Bir do'stim shunday o'xshatish ishlatgan: oldindan o'qitilgan model inson kabi emas, veb-sahifa kabi gapiradi.
+
+[^22]: _RL_ asoslari ushbu kitob doirasidan tashqarida, ammo eng muhim jihati shundaki, _RL_ sizga inson xohish-istaklari kabi qiyin maqsadlarga qarshi optimallashtirish imkonini beradi.
+
+[^23]: Moslashtirilmagan modellar yaxshiroq bo'lishi mumkin bo'lgan holatlar ham mavjud. Masalan, agar siz odamlarning SI'dan dezinformatsiya tarqatish uchun foydalanish xavfini baholamoqchi bo'lsangiz, SI qanchalik ishontiruvchi bo'lishi mumkinligini ko'rish uchun, iloji boricha soxta yangiliklar to'qishda mohir bo'lgan model yaratishga harakat qilishingiz mumkin.
+
+[^24]: Harorat haqida o'ylaganimda xayolimga keladigan, unchalik ilmiy bo'lmagan vizual tasvir shuki, yuqori harorat ehtimollik taqsimotining yanada xaotik bo'lishiga olib keladi, bu esa past ehtimolli tokenlarning yuzaga chiqishiga imkon beradi.
+
+[^25]: `arg max` funksiyasini bajarish.
+
+[^26]: `underflow` muammosi son berilgan formatda ifodalash uchun juda kichik bo'lganda yuzaga keladi, bu esa uning nolga yaxlitlanishiga olib keladi.
+
+[^27]: Aniqroq aytganda, ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'si sizga faqat 20 tagacha eng ehtimolli tokenlarning `logprobs`'larini ko'rsatadi. U avval foydalanuvchi tomonidan taqdim etilgan ixtiyoriy matnning `logprobs`'larini olishga imkon berardi, ammo 2023-yil sentabrda buni to'xtatdi. "Anthropic" o'z modellarining `logprobs`'larini oshkor qilmaydi.
+
+[^28]: Pullik model _API_'lari ko'pincha chiqish tokenlari soni bo'yicha haq oladi.
+
+[^29]: Bir xil kirish uchun bir nechta natija generatsiya qilish xarajatini kamaytirish uchun qilinadigan ishlar bor. Masalan, kirish faqat bir marta qayta ishlanishi va barcha natijalar uchun qayta ishlatilishi mumkin.
+
+[^30]: Ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'sida siz `best_of` parametrini ma'lum bir qiymatga, aytaylik 10 ga, o'rnatib, "OpenAI" modellaridan 10 xil natija orasidan eng yuqori o'rtacha `logprob`'ga ega bo'lganini qaytarishni so'rashingiz mumkin.
+
+[^31]: Wang va boshqalar (2023) bu yondashuvni o'z-o'ziga muvofiqlik (`self-consistency`) deb atashgan.
+
+[^32]: Biroq, mo'rt model bilan qilinadigan eng optimal ish — uni boshqasiga almashtirishdir.
+
+[^33]: Ushbu kitob yozilayotgan vaqtda, dastur va modelga qarab, to'g'ri generatsiya qilingan `JSON` obyektlarining foizini 0% dan to 90% larning yuqorisigacha bo'lgan oraliqda ko'rdim.
+
+[^34]: Modelni noldan kerakli formatga rioya qiladigan ma'lumotlarda o'qitish ham ishlaydi, ammo bu kitob modellarni noldan ishlab chiqish haqida emas.
+
+[^35]: Ba'zi qo'shimcha sozlash xizmatlari buni siz uchun avtomatik ravishda bajaradi. "OpenAI"ning qo'shimcha sozlash xizmatlari avval o'qitish paytida klassifikator boshi (`classifier head`) qo'shishga imkon berardi, ammo men yozayotgan vaqtda bu xususiyat o'chirib qo'yilgan.
+
+[^36]: Memda aytilganidek, imkoniyatlar past, lekin hech qachon nolga teng emas.
+
+[^37]: 2023-yil dekabr oyida men maslahat beradigan bir SI kompaniyasining uch oylik mijozlarni qo'llab-quvvatlash so'rovlarini ko'rib chiqdim va savollarning beshdan bir qismi SI modellarining barqarorsizligi bilan bog'liqligini aniqladim. 2023-yil iyul oyida Drew Houston ("Dropbox" bosh direktori) va Harrison Chase ("LangChain" bosh direktori) bilan ishtirok etgan panelda biz hammamiz gallyutsinatsiya ko'plab korporativ SI qo'llanish holatlari uchun eng katta to'siq ekanligiga rozi bo'ldik.
