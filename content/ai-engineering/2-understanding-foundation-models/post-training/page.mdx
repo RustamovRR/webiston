@@ -5,19 +5,19 @@ Qo'shimcha o'qitish (`Post-training`) dastlabki o'qitishdan (`pre-training`) o't
 Har bir modelning qo'shimcha o'qitish jarayoni farq qiladi. Biroq, umuman olganda, qo'shimcha o'qitish ikki bosqichdan iborat:
 
 1.  **Nazoratli qo'shimcha sozlash (`Supervised finetuning` yoki `SFT`):** Modelni matnni davom ettirish o'rniga suhbatlar uchun optimallashtirish maqsadida, dastlabki o'qitishdan o'tgan modelni yuqori sifatli ko'rsatmali ma'lumotlarda qo'shimcha sozlash.
-2.  **Afzalliklarga ko'ra qo'shimcha sozlash (`Preference finetuning`):** Inson afzalliklariga mos keladigan javoblarni chiqarish uchun modelni yanada qo'shimcha sozlash. Bu jarayon odatda mustahkamlovchi o'rganish (`Reinforcement Learning` yoki `RL`) yordamida amalga oshiriladi.[^22] Afzalliklarga ko'ra qo'shimcha sozlash texnikalariga [inson fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://huyenchip.com/2023/05/02/rlhf.html#phase_1_pretraining_for_completion) (`RLHF`) ([`GPT-3.5`](https://openai.com/index/chatgpt/) va [`Llama 2`](https://arxiv.org/abs/2307.09288) tomonidan ishlatilgan), [`DPO`](https://arxiv.org/abs/2305.18290) (To'g'ridan-to'g'ri Afzalliklarni Optimizatsiya qilish) ([`Llama 3`](https://arxiv.org/abs/2407.21783) tomonidan ishlatilgan) va [SI fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://arxiv.org/abs/2309.00267) (`RLAIF`) (["Claude"](https://arxiv.org/abs/2212.08073) tomonidan ishlatilgan bo'lishi mumkin) kiradi.
+2.  **Ma'qullash asosida qo'shimcha sozlash (`Preference finetuning`):** Inson afzalliklariga mos keladigan javoblarni chiqarish uchun modelni yanada qo'shimcha sozlash. Bu jarayon odatda mustahkamlovchi o'rganish (`Reinforcement Learning` yoki `RL`) yordamida amalga oshiriladi.[^22] Ma'qullash asosida qo'shimcha sozlash texnikalariga [inson fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://huyenchip.com/2023/05/02/rlhf.html#phase_1_pretraining_for_completion) (`RLHF`) ([`GPT-3.5`](https://openai.com/index/chatgpt/) va [`Llama 2`](https://arxiv.org/abs/2307.09288) tomonidan ishlatilgan), [`DPO`](https://arxiv.org/abs/2305.18290) (To'g'ridan-to'g'ri Afzalliklarni Optimizatsiya qilish) ([`Llama 3`](https://arxiv.org/abs/2407.21783) tomonidan ishlatilgan) va [SI fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://arxiv.org/abs/2309.00267) (`RLAIF`) (["Claude"](https://arxiv.org/abs/2212.08073) tomonidan ishlatilgan bo'lishi mumkin) kiradi.
 
 **Dastlabki** va **qo'shimcha o'qitish** o'rtasidagi farqni boshqa bir yo'l bilan ta'kidlab o'tay. Tilga asoslangan fundamental modellar uchun dastlabki o'qitish token darajasidagi sifatni optimallashtiradi, bunda model keyingi tokenni aniq bashorat qilishga o'rgatiladi. Biroq, foydalanuvchilar token darajasidagi sifatga e'tibor berishmaydi — ular butun javobning sifatiga e'tibor berishadi. Qo'shimcha o'qitish, umuman olganda, modelni foydalanuvchilar afzal ko'radigan javoblarni generatsiya qilishga optimallashtiradi. Ba'zi odamlar dastlabki o'qitishni bilim olish uchun o'qishga, qo'shimcha o'qitishni esa o'sha bilimdan qanday foydalanishni o'rganishga o'xshatishadi.
 
 <Callout>
 #### Ogohlantirish
 
-Terminologik noaniqlikdan ehtiyot bo'ling. Ba'zi odamlar nazoratli qo'shimcha sozlashni (`supervised finetuning`) nazarda tutib, "ko'rsatmali qo'shimcha sozlash" (`instruction finetuning`) atamasini ishlatishadi, boshqalar esa bu atamani ham nazoratli qo'shimcha sozlash, ham afzalliklarga ko'ra qo'shimcha sozlashni nazarda tutib ishlatishadi. Noaniqlikni oldini olish uchun, men ushbu kitobda "ko'rsatmali qo'shimcha sozlash" atamasini ishlatishdan qochaman.
+Terminologik noaniqlikdan ehtiyot bo'ling. Ba'zi odamlar nazoratli qo'shimcha sozlashni (`supervised finetuning`) nazarda tutib, "ko'rsatmali qo'shimcha sozlash" (`instruction finetuning`) atamasini ishlatishadi, boshqalar esa bu atamani ham nazoratli qo'shimcha sozlash, ham ma'qullash asosida qo'shimcha sozlashni nazarda tutib ishlatishadi. Noaniqlikni oldini olish uchun, men ushbu kitobda "ko'rsatmali qo'shimcha sozlash" atamasini ishlatishdan qochaman.
 </Callout>
 
 Qo'shimcha o'qitish dastlabki o'qitishga nisbatan resurslarning kichik bir qismini iste'mol qilgani uchun ([`InstructGPT`](https://openai.com/index/instruction-following/) qo'shimcha o'qitish uchun hisoblash quvvatining atigi 2 foizini, dastlabki o'qitish uchun esa 98 foizini ishlatgan), siz qo'shimcha o'qitishni dastlabki o'qitishdan o'tgan model allaqachon ega bo'lgan, ammo foydalanuvchilar uchun faqat _prompt_ yordamida kirish qiyin bo'lgan imkoniyatlarni "ochish" deb o'ylashingiz mumkin.
 
-2-10-rasmda dastlabki o'qitish, _SFT_ va afzalliklarga ko'ra qo'shimcha sozlashning umumiy ish jarayoni ko'rsatilgan, bunda oxirgi qadam uchun _RLHF_ ishlatiladi deb faraz qilingan. Siz model yaratuvchilari qanday qadamlarni bosib o'tganini aniqlash orqali modelning inson xohish-istaklariga qanchalik yaxshi mos kelishini taxmin qilishingiz mumkin.
+2-10-rasmda dastlabki o'qitish, _SFT_ va ma'qullash asosida qo'shimcha sozlashning umumiy ish jarayoni ko'rsatilgan, bunda oxirgi qadam uchun _RLHF_ ishlatiladi deb faraz qilingan. Siz model yaratuvchilari qanday qadamlarni bosib o'tganini aniqlash orqali modelning inson xohish-istaklariga qanchalik yaxshi mos kelishini taxmin qilishingiz mumkin.
 
 ![2-10-rasm. Dastlabki o'qitish, SFT va RLHF bilan umumiy o'qitish ish jarayoni.](/ai-engineering/2.10-figure.png)
 
@@ -29,13 +29,13 @@ Agar diqqat bilan qarasangiz, 2-10-rasm 2-11-rasmdagi jilmayib turgan yuzli [Sho
 
 1.  **O'z-o'zini nazorat qiluvchi dastlabki o'qitish** internetdagi saralanmagan ma'lumotlardan foydalangani uchun "bo'ysunmas maxluq" deb hisoblanishi mumkin bo'lgan tartibsiz modelga olib keladi.
 2.  Keyin bu **maxluq** yuqori sifatli ma'lumotlarda — Stack Overflow, Quora yoki inson annotatsiyalarida — **nazoratli qo'shimcha sozlashdan o'tkaziladi**, bu esa uni ijtimoiy jihatdan maqbulroq qiladi.
-3.  Bu qo'shimcha sozlangan model uni mijozlarga mos qilish uchun **afzalliklarga ko'ra qo'shimcha sozlash yordamida yanada sayqallanadi**, bu esa unga jilmayib turgan yuzni berishga o'xshaydi.
+3.  Bu qo'shimcha sozlangan model uni mijozlarga mos qilish uchun **ma'qullash asosida qo'shimcha sozlash yordamida yanada sayqallanadi**, bu esa unga jilmayib turgan yuzni berishga o'xshaydi.
 
 ![2-11-rasm. Jilmayib turgan yuzli Shoggoth.](/ai-engineering/2.11-figure.png)
 
 <div className='text-center text-sm italic'>2-11-rasm. Jilmayib turgan yuzli Shoggoth. [Anthrupad](https://x.com/anthrupad/status/1622349563922362368) tomonidan ulashilgan asl rasmdan moslashtirilgan.</div>
 
-Shuni unutmangki, dastlabki o'qitish, _SFT_ va afzalliklarga ko'ra qo'shimcha sozlash kombinatsiyasi bugungi kunda fundamental modellarni yaratish uchun ommabop yechimdir, ammo bu yagona yechim emas. Bu yerda siz ko'rib turgan qadamlarni istasangiz o'tkazib yuborishingiz mumkin.
+Shuni unutmangki, dastlabki o'qitish, _SFT_ va ma'qullash asosida qo'shimcha sozlash kombinatsiyasi bugungi kunda fundamental modellarni yaratish uchun ommabop yechimdir, ammo bu yagona yechim emas. Bu yerda siz ko'rib turgan qadamlarni istasangiz o'tkazib yuborishingiz mumkin.
 
 ## Nazoratli qo'shimcha sozlash (`Supervised Finetuning`)
 
@@ -84,6 +84,70 @@ Hamma ham yuqori sifatli inson annotatsiyasi yondashuviga qurbi yetavermaydi. "L
 Yuqori sifatli inson tomonidan izohlangan ma'lumotlarga bog'liqligini kamaytirish uchun ko'plab jamoalar SI tomonidan yaratilgan ma'lumotlarga yuzlanmoqda. Sintetik ma'lumotlar 8-bobda muhokama qilinadi.
 
 Texnik jihatdan, siz dastlabki o'qitishdan o'tgan modelni qo'shimcha sozlash o'rniga, modelni noldan o'rgatuvchi misollarda o'qitishingiz mumkin, bu esa o'z-o'zini nazorat qiluvchi dastlabki o'qitish bosqichini samarali ravishda yo'q qiladi. Biroq, dastlabki o'qitish yondashuvi ko'pincha yuqoriroq natijalarni qaytargan.
+
+## Ma'qullash asosida sozlash (`Preference Finetuning`)
+
+Katta kuch bilan katta mas'uliyat keladi. Foydalanuvchilarga buyuk ishlarga erishishda yordam bera oladigan model, foydalanuvchilarga dahshatli ishlarga erishishda ham yordam berishi mumkin. O'rgatuvchi misollar modelga suhbat qurishni o'rgatadi, lekin modelga qanday suhbatlar qurishi kerakligini o'rgatmaydi. Masalan, agar foydalanuvchi modeldan biror irqning nima uchun pastroq ekanligi yoki samolyotni qanday olib qochish haqida esse yozishni so'rasa, model bunga rozi bo'lishi kerakmi?
+
+Oldingi ikkala misolda ham, ko'pchilik uchun model nima qilishi kerakligi aniq. Biroq, ko'plab senariylar bunchalik aniq emas. Turli madaniy, siyosiy, ijtimoiy-iqtisodiy, gender va diniy kelib chiqishga ega bo'lgan odamlar doimo bir-biri bilan kelishmaydi. SI abort, qurol nazorati, Isroil-Falastin mojarosi, bolalarni tarbiyalash, marixuana qonuniyligi, universal asosiy daromad yoki immigratsiya haqidagi savollarga qanday javob berishi kerak? Potensial bahsli masalalarni qanday belgilaymiz va aniqlaymiz? Agar modelingiz bahsli masalaga javob bersa, javoblar qanday bo'lishidan qat'i nazar, siz ba'zi foydalanuvchilaringizni xafa qilib qo'yasiz. Agar model haddan tashqari senzura qilinsa, u [zerikarli bo'lib qolishi](https://www.reddit.com/r/OpenAI/comments/1247f8e/censored_ai_is_garbage_ai_stop_this_absolute/) va [foydalanuvchilar uni ishlatishdan qochishi](https://arstechnica.com/tech-policy/2023/07/chatgpts-user-base-shrank-after-openai-censored-harmful-responses/) mumkin.
+
+SI modellarining nomaqbul javoblar generatsiya qilishidan qo'rqish kompaniyalarni o'z dasturlarini foydalanuvchilarga chiqarishdan to'xtatib qo'yishi mumkin. Ma'qullash asosida sozlashning maqsadi — SI modellarini inson afzalliklariga muvofiq harakat qilishga undashdir.[^23] Bu, agar imkonsiz bo'lmasa, juda ulkan maqsad. Bu nafaqat universal inson afzalliklari mavjud deb faraz qiladi, balki uni SI'ga singdirish mumkin deb ham faraz qiladi.
+
+Agar maqsad oddiy bo'lganida, yechim ham nafis bo'lishi mumkin edi. Biroq, maqsadning ulkanligini hisobga olsak, bugungi kundagi yechimimiz murakkab. Eng dastlabki muvaffaqiyatli va bugungi kunda ham ommabop bo'lgan ma'qullash asosida sozlash algoritmi bu _RLHF_'dir. _RLHF_ ikki qismdan iborat:
+
+1.  Fundamental modelning natijalarini baholaydigan mukofot modelini (`reward model`) o'qitish.
+2.  Fundamental modelni mukofot modeli maksimal ball beradigan javoblarni generatsiya qilishga optimallashtirish.
+
+Garchi _RLHF_ bugungi kunda ham qo'llanilsa-da, `DPO` ([Rafailov va boshq., 2023](https://arxiv.org/abs/2305.18290)) kabi yangiroq yondashuvlar ommalashib bormoqda. Masalan, "Meta" murakkablikni kamaytirish uchun `Llama 2` uchun _RLHF_'dan `Llama 3` uchun `DPO`'ga o'tdi. Men ushbu kitobda barcha turli yondashuvlarni keltirib o'tolmayman. Men bu yerda `DPO` o'rniga _RLHF_'ni tanladim, chunki _RLHF_, garchi `DPO`'dan murakkabroq bo'lsa-da, modelni sozlash uchun ko'proq moslashuvchanlikni ta'minlaydi. `Llama 2` mualliflari ta'kidlaganidek, "_LLM_'larning yuqori yozish qobiliyatlari, bu ma'lum vazifalarda inson annotatorlaridan ustun kelishida namoyon bo'ladi, asosan _RLHF_ tomonidan boshqariladi" ([Touvron va boshq., 2023](https://arxiv.org/abs/2307.09288)).
+
+### Mukofot modeli
+
+_RLHF_ mukofot modeliga (`reward model`) tayanadi. (Prompt, javob) juftligi berilganda, mukofot modeli javobning qanchalik yaxshi ekanligi uchun ball chiqaradi. Berilgan kirish ma'lumotini baholash uchun modelni o'qitish — bu keng tarqalgan _ML_ vazifasidir. Bu yerdagi qiyinchilik, _SFT_'dagiga o'xshab, ishonchli ma'lumotlarni olishdir. Agar biz izohlovchilardan har bir javobni to'g'ridan-to'g'ri baholashni so'rasak, ballar turlicha bo'ladi. Bir xil namuna uchun, 10 ballik shkalada, bir izohlovchi 5, boshqasi esa 7 berishi mumkin. Hatto bir xil izohlovchiga bir xil (prompt, javob) juftligi ikki marta berilsa ham, u turli ballar berishi mumkin. Har bir namunani mustaqil baholash, shuningdek, nuqtali baholash (`pointwise evaluation`) deb ham ataladi.
+
+Ancha osonroq vazifa — bu izohlovchilardan ikkita javobni taqqoslashni va qaysi biri yaxshiroq ekanligini hal qilishni so'rashdir. Har bir prompt uchun bir nechta javoblar insonlar yoki SI tomonidan generatsiya qilinadi. Natijada olingan belgilangan ma'lumotlar taqqoslash ma'lumotlari (`comparison data`) deb ataladi va u (prompt, yutgan_javob (`winning_response`), yutqazgan_javob (`losing_response`)) formatiga amal qiladi. 2-7-jadvalda "Anthropic" o'z modellaridan biri uchun ishlatgan taqqoslash ma'lumotlariga misol keltirilgan. Ushbu misoldagi ikkita javobdan men yutqazgan deb belgilangan javobni afzal ko'raman. Bu turli xil inson afzalliklarini yagona matematik formulada aks ettirishga urinishdagi qiyinchilikni ko'rsatadi.
+
+| prompt | yutgan_javob | yutqazgan_javob |
+| :--- | :--- | :--- |
+| `Itimni qanday qilib mast qilsam bo'ladi?` | `Bu bilan nimani nazarda tutayotganingizni tushunmadim.` | `Bilmayman, lekin biz itni mast qilishimiz kerak deb o'ylamayman Menimcha, itning dunyoni hushyor holatda his qilishi muhim.` |
+
+<div className='text-center text-sm italic'>2-7-jadval. ["Anthropic"ning](https://huggingface.co/datasets/Anthropic/hh-rlhf) `HH-RLHF` ma'lumotlar to'plamidan olingan taqqoslash ma'lumotlariga misol.</div>
+
+Shunday bo'lsa-da, ikkita javobni taqqoslashning bu osonroq vazifasi ham vaqt talab qiladi. _LMSYS_ ("Large Model Systems Organization"), ochiq tadqiqot tashkiloti, ikkita javobni qo'lda taqqoslash o'rtacha uch-besh daqiqa vaqt olishini aniqladi, chunki bu jarayon har bir javobning faktlarini tekshirishni talab qiladi ([Chiang va boshq., 2024](https://arxiv.org/abs/2403.04132)). Mening Discord hamjamiyatim bilan bo'lgan suhbatda, `Llama-2` muallifi [Tomas Scialom](https://www.youtube.com/watch?v=CzR3OrOkM9w) har bir taqqoslash ularga 3.50 dollarga tushganini aytib o'tdi. Bu hali ham har biri 25 dollarga tushadigan javoblarni yozishdan ancha arzonroq.
+
+2-13-rasmda "OpenAI" izohlovchilari `InstructGPT`'ning mukofot modeli uchun taqqoslash ma'lumotlarini yaratishda ishlatgan [interfeys](https://arxiv.org/pdf/2203.02155) ko'rsatilgan. Izohlovchilar 1 dan 7 gacha aniq ballar berishadi, shuningdek, javoblarni o'z afzalliklari tartibida joylashtirishadi, ammo faqat reyting mukofot modelini o'qitish uchun ishlatiladi. Ularning izohlovchilararo kelishuvi (`inter-labeler agreement`) taxminan 73% ni tashkil etadi, ya'ni agar ular 10 kishidan bir xil ikkita javobni baholashni so'rashsa, ulardan taxminan 7 tasi bir xil reytingga ega bo'ladi. Belgilash jarayonini tezlashtirish uchun har bir annotator bir vaqtning o'zida bir nechta javobni baholashi mumkin. Uchta baholangan javoblar to'plami (A > B > C) uchta baholangan juftlikni hosil qiladi: (A > B), (A > C) va (B > C).
+
+![2-13-rasm. "OpenAI"ning InstructGPT modeli uchun taqqoslash ma'lumotlarini yaratishda izohlovchilar ishlatgan interfeys.](/ai-engineering/2.13-figure.png)
+
+<div className='text-center text-sm italic'>2-13-rasm. "OpenAI"ning `InstructGPT` modeli uchun taqqoslash ma'lumotlarini yaratishda izohlovchilar ishlatgan interfeys.</div>
+
+Faqat taqqoslash ma'lumotlari mavjud bo'lganda, modelni aniq ballar berishga qanday o'rgatamiz? Xuddi to'g'ri rag'bat bilan insonlarni deyarli har qanday ishni qilishga undash mumkin bo'lganidek, modelni ham to'g'ri maqsad funksiyasi (`objective function`) yordamida shunga erishtirish mumkin. Keng qo'llaniladigan funksiya yutgan va yutqazgan javoblar uchun chiqish ballari o'rtasidagi farqni ifodalaydi. Maqsad — bu farqni maksimal darajaga yetkazishdir. Matematik tafsilotlarga qiziquvchilar uchun, [`InstructGPT`](https://arxiv.org/abs/2203.02155) tomonidan ishlatilgan formula quyidagicha:
+
+-   **r<sub>θ</sub>**: θ bilan parametrlashtirilgan, o'qitilayotgan mukofot modeli. O'qitish jarayonining maqsadi yo'qotish minimallashtiriladigan θ ni topishdir.
+-   **O'qitish ma'lumotlari formati:**
+    -   _x_: prompt
+    -   _y<sub>w</sub>_: yutgan javob
+    -   _y<sub>l</sub>_: yutqazgan javob
+-   **s<sub>w</sub> = r(_x_, _y<sub>w</sub>_)**: mukofot modelining yutgan javob uchun skalyar bali
+-   **s<sub>l</sub> = r(_x_, _y<sub>l</sub>_)**: mukofot modelining yutqazgan javob uchun skalyar bali
+-   **σ**: sigmoid funksiya
+
+Har bir o'qitish namunasi (_x_, _y<sub    ub>w</sub>_, _y<sub>l</sub>_) uchun yo'qotish qiymati quyidagicha hisoblanadi:
+
+-   log(σ(r<sub>θ</sub>(_x_, _y<sub>w</sub>_) – r<sub>θ</sub>(_x_, _y<sub>l</sub>_)))
+-   **Maqsad:** barcha o'qitish namunalari uchun kutilayotgan yo'qotishni minimallashtiradigan θ ni topish.
+-   –E<sub>x</sub> log(σ(r<sub>θ</sub>(_x_, _y<sub>w</sub>_) – r<sub>θ</sub>(_x_, _y<sub>l</sub>_)))
+
+Mukofot modelini noldan o'qitish yoki boshqa bir model, masalan, dastlabki o'qitishdan o'tgan yoki _SFT_ model ustida qo'shimcha sozlash mumkin. Eng kuchli fundamental model ustida qo'shimcha sozlash eng yaxshi natijalarni beradiganga o'xshaydi. Ba'zi odamlar mukofot modeli fundamental modelning javoblarini baholay olishi uchun kamida fundamental model kabi kuchli bo'lishi kerak, deb hisoblashadi. Biroq, 3-bobda baholash haqida ko'rib turganimizdek, zaifroq model kuchliroq modelni baholay oladi, chunki baholash generatsiya qilishdan osonroq deb hisoblanadi.
+
+### Mukofot modeli yordamida qo'shimcha sozlash
+
+O'qitilgan mukofot modeli (`RM`) yordamida biz _SFT_ modelini mukofot modeli tomonidan maksimal ball beriladigan javoblarni generatsiya qilish uchun yanada o'qitamiz. Bu jarayon davomida promptlar mavjud foydalanuvchi promptlari kabi biror promptlar taqsimotidan tasodifiy tanlab olinadi. Bu promptlar modelga kiritiladi va uning javoblari mukofot modeli tomonidan baholanadi. Bu o'qitish jarayoni ko'pincha "OpenAI" tomonidan 2017-yilda chiqarilgan mustahkamlovchi o'rganish algoritmi bo'lgan [proksimal siyosat optimizatsiyasi (`PPO`)](https://openai.com/index/openai-baselines-ppo/) yordamida amalga oshiriladi.
+
+Amalda, _RLHF_ ham, `DPO` ham faqat _SFT_'ning o'ziga qaraganda samaradorlikni oshiradi. Biroq, ushbu kitob yozilayotgan vaqtda, ularning nima uchun ishlashi haqida bahslar mavjud. Soha rivojlanib borgani sari, men kelajakda ma'qullash asosida sozlash sezilarli darajada o'zgarishini taxmin qilaman. Agar siz _RLHF_ va ma'qullash asosida sozlash haqida ko'proq bilishni istasangiz, [kitobning GitHub repozitoriysini](https://github.com/chiphuyen/aie-book) ko'rib chiqing.
+
+Ham _SFT_, ham ma'qullash asosida sozlash dastlabki o'qitish uchun ishlatilgan ma'lumotlarning past sifati tufayli yuzaga kelgan muammoni hal qilish uchun qo'yilgan qadamlardir. Agar bir kun kelib bizda yaxshiroq dastlabki o'qitish ma'lumotlari yoki fundamental modellarni o'qitishning yaxshiroq usullari paydo bo'lsa, bizga _SFT_ va ma'qullash asosida sozlash umuman kerak bo'lmasligi mumkin.
+
+Ba'zi kompaniyalar mustahkamlovchi o'rganishni butunlay o'tkazib yuborishni ma'qul deb topishadi. Masalan, ["Stitch Fix"](https://multithreaded.stitchfix.com/blog/2023/03/06/expert-in-the-loop-generative-ai-at-stitch-fix/) va ["Grab"](https://engineering.grab.com/llm-powered-data-classification) o'z dasturlari uchun faqat mukofot modelining o'zi yetarli ekanligini aniqladilar. Ular o'z modellaridan bir nechta natija generatsiya qildirib, mukofot modellari tomonidan yuqori ball berilganlarini tanlab olishadi. Ko'pincha **"N tadan eng yaxshisi"** (`best of N`) strategiyasi deb ataladigan bu yondashuv, modelning samaradorligini oshirish uchun uning natijalarni _sampling_ qilish usulidan foydalanadi. Keyingi bo'limda "N tadan eng yaxshisi" strategiyasi qanday ishlashiga oydinlik kiritiladi.
 
 ### Izohlar
 
