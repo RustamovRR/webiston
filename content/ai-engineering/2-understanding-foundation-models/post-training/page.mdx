@@ -1,0 +1,122 @@
+# Qo'shimcha o'qitish
+
+Qo'shimcha o'qitish (`Post-training`) dastlabki o'qitishdan (`pre-training`) o'tgan modeldan boshlanadi. Aytaylik, siz o'z-o'zini nazorat qilish yordamida fundamental modelni dastlabki o'qitishdan o'tkazdingiz. Bugungi kunda dastlabki o'qitishning ishlash usuli tufayli, bunday modelda odatda ikkita muammo bo'ladi. Birinchidan, o'z-o'zini nazorat qilish modelni suhbatlar uchun emas, balki matnni davom ettirish uchun optimallashtiradi.[^21] Agar bu tushunarsiz bo'lsa, xavotir olmang, “Nazoratli qo'shimcha sozlash” bo'limida misollar bo'ladi. Ikkinchidan, agar model internetdan saralanmagan holda yig'ilgan ma'lumotlarda dastlabki o'qitishdan o'tgan bo'lsa, uning natijalari irqchilik, jinsiy kamsitish, qo'pollik yoki shunchaki noto'g'ri bo'lishi mumkin. Qo'shimcha o'qitishning maqsadi — bu ikkala muammoni ham hal qilishdir.
+
+Har bir modelning qo'shimcha o'qitish jarayoni farq qiladi. Biroq, umuman olganda, qo'shimcha o'qitish ikki bosqichdan iborat:
+
+1.  **Nazoratli qo'shimcha sozlash (`Supervised finetuning` yoki `SFT`):** Modelni matnni davom ettirish o'rniga suhbatlar uchun optimallashtirish maqsadida, dastlabki o'qitishdan o'tgan modelni yuqori sifatli ko'rsatmali ma'lumotlarda qo'shimcha sozlash.
+2.  **Afzalliklarga ko'ra qo'shimcha sozlash (`Preference finetuning`):** Inson afzalliklariga mos keladigan javoblarni chiqarish uchun modelni yanada qo'shimcha sozlash. Bu jarayon odatda mustahkamlovchi o'rganish (`Reinforcement Learning` yoki `RL`) yordamida amalga oshiriladi.[^22] Afzalliklarga ko'ra qo'shimcha sozlash texnikalariga [inson fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://huyenchip.com/2023/05/02/rlhf.html#phase_1_pretraining_for_completion) (`RLHF`) ([`GPT-3.5`](https://openai.com/index/chatgpt/) va [`Llama 2`](https://arxiv.org/abs/2307.09288) tomonidan ishlatilgan), [`DPO`](https://arxiv.org/abs/2305.18290) (To'g'ridan-to'g'ri Afzalliklarni Optimizatsiya qilish) ([`Llama 3`](https://arxiv.org/abs/2407.21783) tomonidan ishlatilgan) va [SI fikr-mulohazalari asosida mustahkamlovchi o'rganish](https://arxiv.org/abs/2309.00267) (`RLAIF`) (["Claude"](https://arxiv.org/abs/2212.08073) tomonidan ishlatilgan bo'lishi mumkin) kiradi.
+
+**Dastlabki** va **qo'shimcha o'qitish** o'rtasidagi farqni boshqa bir yo'l bilan ta'kidlab o'tay. Tilga asoslangan fundamental modellar uchun dastlabki o'qitish token darajasidagi sifatni optimallashtiradi, bunda model keyingi tokenni aniq bashorat qilishga o'rgatiladi. Biroq, foydalanuvchilar token darajasidagi sifatga e'tibor berishmaydi — ular butun javobning sifatiga e'tibor berishadi. Qo'shimcha o'qitish, umuman olganda, modelni foydalanuvchilar afzal ko'radigan javoblarni generatsiya qilishga optimallashtiradi. Ba'zi odamlar dastlabki o'qitishni bilim olish uchun o'qishga, qo'shimcha o'qitishni esa o'sha bilimdan qanday foydalanishni o'rganishga o'xshatishadi.
+
+<Callout>
+#### Ogohlantirish
+
+Terminologik noaniqlikdan ehtiyot bo'ling. Ba'zi odamlar nazoratli qo'shimcha sozlashni (`supervised finetuning`) nazarda tutib, "ko'rsatmali qo'shimcha sozlash" (`instruction finetuning`) atamasini ishlatishadi, boshqalar esa bu atamani ham nazoratli qo'shimcha sozlash, ham afzalliklarga ko'ra qo'shimcha sozlashni nazarda tutib ishlatishadi. Noaniqlikni oldini olish uchun, men ushbu kitobda "ko'rsatmali qo'shimcha sozlash" atamasini ishlatishdan qochaman.
+</Callout>
+
+Qo'shimcha o'qitish dastlabki o'qitishga nisbatan resurslarning kichik bir qismini iste'mol qilgani uchun ([`InstructGPT`](https://openai.com/index/instruction-following/) qo'shimcha o'qitish uchun hisoblash quvvatining atigi 2 foizini, dastlabki o'qitish uchun esa 98 foizini ishlatgan), siz qo'shimcha o'qitishni dastlabki o'qitishdan o'tgan model allaqachon ega bo'lgan, ammo foydalanuvchilar uchun faqat _prompt_ yordamida kirish qiyin bo'lgan imkoniyatlarni "ochish" deb o'ylashingiz mumkin.
+
+2-10-rasmda dastlabki o'qitish, _SFT_ va afzalliklarga ko'ra qo'shimcha sozlashning umumiy ish jarayoni ko'rsatilgan, bunda oxirgi qadam uchun _RLHF_ ishlatiladi deb faraz qilingan. Siz model yaratuvchilari qanday qadamlarni bosib o'tganini aniqlash orqali modelning inson xohish-istaklariga qanchalik yaxshi mos kelishini taxmin qilishingiz mumkin.
+
+![2-10-rasm. Dastlabki o'qitish, SFT va RLHF bilan umumiy o'qitish ish jarayoni.](/ai-engineering/2.10-figure.png)
+
+<div className='text-center text-sm italic'>2-10-rasm. Dastlabki o'qitish, _SFT_ va _RLHF_ bilan umumiy o'qitish ish jarayoni.</div>
+
+#### "Shoggoth" metaforasi
+
+Agar diqqat bilan qarasangiz, 2-10-rasm 2-11-rasmdagi jilmayib turgan yuzli [Shoggoth](https://en.wikipedia.org/wiki/Shoggoth) maxluqini tasvirlaydigan memga juda o'xshaydi:
+
+1.  **O'z-o'zini nazorat qiluvchi dastlabki o'qitish** internetdagi saralanmagan ma'lumotlardan foydalangani uchun "bo'ysunmas maxluq" deb hisoblanishi mumkin bo'lgan tartibsiz modelga olib keladi.
+2.  Keyin bu **maxluq** yuqori sifatli ma'lumotlarda — Stack Overflow, Quora yoki inson annotatsiyalarida — **nazoratli qo'shimcha sozlashdan o'tkaziladi**, bu esa uni ijtimoiy jihatdan maqbulroq qiladi.
+3.  Bu qo'shimcha sozlangan model uni mijozlarga mos qilish uchun **afzalliklarga ko'ra qo'shimcha sozlash yordamida yanada sayqallanadi**, bu esa unga jilmayib turgan yuzni berishga o'xshaydi.
+
+![2-11-rasm. Jilmayib turgan yuzli Shoggoth.](/ai-engineering/2.11-figure.png)
+
+<div className='text-center text-sm italic'>2-11-rasm. Jilmayib turgan yuzli Shoggoth. [Anthrupad](https://x.com/anthrupad/status/1622349563922362368) tomonidan ulashilgan asl rasmdan moslashtirilgan.</div>
+
+Shuni unutmangki, dastlabki o'qitish, _SFT_ va afzalliklarga ko'ra qo'shimcha sozlash kombinatsiyasi bugungi kunda fundamental modellarni yaratish uchun ommabop yechimdir, ammo bu yagona yechim emas. Bu yerda siz ko'rib turgan qadamlarni istasangiz o'tkazib yuborishingiz mumkin.
+
+## Nazoratli qo'shimcha sozlash (`Supervised Finetuning`)
+
+1-bobda muhokama qilinganidek, dastlabki o'qitishdan o'tgan model suhbat qurishdan ko'ra matnni davom ettirish uchun optimallashtirilgan bo'lishi ehtimoli yuqori. Agar siz modelga "Pitsa qanday tayyorlanadi" deb kiritsangiz, model bu jumlani davom ettirishda davom etadi, chunki modelda bu suhbat bo'lishi kerakligi haqida tushuncha yo'q. Quyidagi uchta variantdan har biri to'g'ri davom bo'lishi mumkin:
+
+1.  Savolga ko'proq kontekst qo'shish: "olti kishilik oila uchun?"
+2.  Keyingi savollarni qo'shish: "Qanday masalliqlar kerak? Qancha vaqt ketadi?"
+3.  Pitsa qanday tayyorlanishi haqida ko'rsatmalar berish.
+
+Agar maqsad foydalanuvchilarga munosib javob berish bo'lsa, to'g'ri variant 3-chi bo'ladi.
+
+Biz bilamizki, model o'zining o'qitish ma'lumotlariga taqlid qiladi. Modelni munosib javoblar generatsiya qilishga undash uchun siz unga munosib javoblarga misollar ko'rsatishingiz mumkin. Bunday misollar (prompt, javob) formatiga amal qiladi va o'rgatuvchi misollar (`demonstration data`) deb ataladi. Ba'zi odamlar bu jarayonni xulq-atvorni klonlash (`behavior cloning`) deb atashadi: siz model o'zini qanday tutishi kerakligini misol tariqasida ifoda etasiz va model bu xulq-atvorni klonlaydi.
+
+Turli xil so'rovlar turli xil javoblarni talab qilgani uchun, sizning o'rgatuvchi misollaringiz modelingiz bajarishini xohlagan so'rovlar doirasini, masalan, savol-javob, qisqacha bayon qilish va tarjimani o'z ichiga olishi kerak. 2-12-rasmda "OpenAI" o'zining [`InstructGPT`](https://openai.com/index/instruction-following/) modelini qo'shimcha sozlash uchun ishlatgan vazifalar turlarining taqsimoti ko'rsatilgan. E'tibor bering, bu taqsimot multimodal vazifalarni o'z ichiga olmaydi, chunki `InstructGPT` faqat matn bilan ishlaydigan modeldir.
+
+![2-12-rasm. InstructGPT'ni qo'shimcha sozlash uchun ishlatilgan promptlar taqsimoti.](/ai-engineering/2.12-figure.png)
+
+<div className='text-center text-sm italic'>2-12-rasm. `InstructGPT`'ni qo'shimcha sozlash uchun ishlatilgan promptlar taqsimoti. Grafik "OpenAI" maqolasidagi raqamlar asosida yaratilgan.</div>
+
+Insonlarning o'rganishi uchun yaxshi o'qituvchilar muhim bo'lganidek, SI'larning aqlli suhbatlar olib borishni o'rganishi uchun ham yaxshi izohlovchilar (`labelers`) muhimdir. Ko'pincha kam yoki hech qanday sohaviy bilim talab qilmaydigan an'anaviy ma'lumotlarni belgilashdan farqli o'laroq, o'rgatuvchi misollar murakkab promptlardan tashkil topishi mumkin, ularning javoblari tanqidiy fikrlash, axborot yig'ish va foydalanuvchi so'rovlarining o'rinliligi haqida mulohaza yuritishni talab qiladi. 2-6-jadvalda `InstructGPT` uchun izohlovchilar tomonidan yaratilgan (prompt, javob) juftliklariga misollar keltirilgan.
+
+| Prompt | Izohlovchining javobi |
+| :--- | :--- |
+| `"Serendipity" so'zi tasodifiy voqealarning baxtli yoki foydali tarzda yuz berishi va rivojlanishini anglatadi. Bu so'zni gapda ishlating.` | `Margaret bilan to'qnash kelish va Tom bilan tanishish baxtli tasodifning (serendipity) bir zarbasi edi.` |
+| `Quyidagi matnni o'qing va oxiridagi uchta savolga javob bering.`<br/><br/>`[UZUNLIGI TUFAYLI QISQARTIRILGAN - Gender tengligi himoyachisi, Adliya sudyasi Rut Bader Ginsburg 87 yoshida vafot etdi haqidagi maqola]`<br/><br/>`1. …`<br/>`2. …`<br/>`3. Nima uchun Ginsburgning o'limi sud va mamlakat uchun chuqur oqibatlarga olib keladi?` | `1. …`<br/>`2. …`<br/>`3. Rut Bader Ginsburg liberal qanotning yetakchisi edi va sud yangi muddatni boshlash arafasida bo'lgani uchun, bosh sudya endi bahsli ishlarda hal qiluvchi ovozga ega emas.` |
+| `ELI5: Stressli yoki tushkunlikka tushiradigan tajribalar paytida ko'kragimizdagi "tashvish tuguni"ning sababi nima?` | `Tomog'ingizdagi tashvish tuguni havo oqimini maksimal darajada oshirish uchun ovoz yorig'ini (glottis) kengaytirib turadigan mushaklar tarangligi tufayli yuzaga keladi. Ko'krakdagi siqilish yoki yurak og'rig'i hissi esa adashgan nerv (vagus nerve) tufayli paydo bo'ladi, u organlarga qonni tezroq haydash, ovqat hazm qilishni to'xtatish hamda adrenalin va kortizol ishlab chiqarishni buyuradi.` |
+
+<div className='text-center text-sm italic'>2-6-jadval. [`InstructGPT`](https://arxiv.org/abs/2203.02155) uchun ishlatilgan o'rgatuvchi misollarga namunalar.</div>
+
+Shu sababli, kompaniyalar o'rgatuvchi misollarni generatsiya qilish uchun ko'pincha yuqori ma'lumotli izohlovchilarni yollashadi. `InstructGPT` uchun o'rgatuvchi misollarni belgilaganlar orasida [~90%i kamida kollej darajasiga ega](https://arxiv.org/pdf/2203.02155) va uchdan biridan ko'prog'i magistr darajasiga ega. Agar tasvirdagi obyektlarni belgilash bir necha soniya vaqt olsa, bitta (prompt, javob) juftligini yaratish 30 daqiqagacha vaqt olishi mumkin, ayniqsa, qisqacha bayon qilish kabi uzun kontekstlarni o'z ichiga olgan vazifalar uchun. Agar bitta (prompt, javob) juftligi 10 dollar tursa, "OpenAI" `InstructGPT` uchun ishlatgan 13 000 juftlik 130 000 dollarga tushgan bo'lardi. Bu hali ma'lumotlarni loyihalash (qaysi vazifalar va promptlarni kiritish), izohlovchilarni yollash va ma'lumotlar sifatini nazorat qilish xarajatlarini o'z ichiga olmaydi.
+
+### Ma'lumotlarni yig'ishga muqobil yondashuvlar
+
+Hamma ham yuqori sifatli inson annotatsiyasi yondashuviga qurbi yetavermaydi. "LAION", notijorat tashkiloti, butun dunyo bo'ylab 13 500 nafar ko'ngillini safarbar qilib, 10 000 ta suhbat generatsiya qildi, ular 35 xil tilda 161 443 ta xabardan iborat bo'lib, 461 292 ta sifat reytingi bilan izohlangan. Ma'lumotlar ko'ngillilar tomonidan yaratilgani uchun, tarafkashliklar uchun unchalik ko'p nazorat bo'lmagan. Nazariy jihatdan, modellarga inson afzalliklarini o'rgatadigan izohlovchilar insoniyat populyatsiyasini aks ettirishi kerak. "LAION" uchun izohlovchilarning demografiyasi esa bir tomonlama. Masalan, o'z-o'zini hisobot qilish so'rovnomasida ko'ngilli izohlovchilarning 90%i o'zini erkak deb tanishtirgan ([Köpf va boshq., 2023](https://arxiv.org/abs/2304.07327)).
+
+"DeepMind" o'zining `Gopher` modelini o'qitish uchun internet ma'lumotlaridan suhbatlarni filtrlash uchun [oddiy evristik usullardan](https://arxiv.org/abs/2112.11446) foydalangan. Ular o'zlarining evristik usullari ishonchli tarzda yuqori sifatli dialoglarni berishini da'vo qilishgan. Aniqroq aytganda, ular quyidagi formatga o'xshash matnlarni qidirishgan:
+
+``` js
+[A]: [Qisqa paragraf]
+[B]: [Qisqa paragraf]
+[A]: [Qisqa paragraf]
+[B]: [Qisqa paragraf]
+…
+```
+
+Yuqori sifatli inson tomonidan izohlangan ma'lumotlarga bog'liqligini kamaytirish uchun ko'plab jamoalar SI tomonidan yaratilgan ma'lumotlarga yuzlanmoqda. Sintetik ma'lumotlar 8-bobda muhokama qilinadi.
+
+Texnik jihatdan, siz dastlabki o'qitishdan o'tgan modelni qo'shimcha sozlash o'rniga, modelni noldan o'rgatuvchi misollarda o'qitishingiz mumkin, bu esa o'z-o'zini nazorat qiluvchi dastlabki o'qitish bosqichini samarali ravishda yo'q qiladi. Biroq, dastlabki o'qitish yondashuvi ko'pincha yuqoriroq natijalarni qaytargan.
+
+### Izohlar
+
+[^21]: Bir do'stim shunday o'xshatish ishlatgan: oldindan o'qitilgan model inson kabi emas, veb-sahifa kabi gapiradi.
+
+[^22]: _RL_ asoslari ushbu kitob doirasidan tashqarida, ammo eng muhim jihati shundaki, _RL_ sizga inson xohish-istaklari kabi qiyin maqsadlarga qarshi optimallashtirish imkonini beradi.
+
+[^23]: Moslashtirilmagan modellar yaxshiroq bo'lishi mumkin bo'lgan holatlar ham mavjud. Masalan, agar siz odamlarning SI'dan dezinformatsiya tarqatish uchun foydalanish xavfini baholamoqchi bo'lsangiz, SI qanchalik ishontiruvchi bo'lishi mumkinligini ko'rish uchun, iloji boricha soxta yangiliklar to'qishda mohir bo'lgan model yaratishga harakat qilishingiz mumkin.
+
+[^24]: Harorat haqida o'ylaganimda xayolimga keladigan, unchalik ilmiy bo'lmagan vizual tasvir shuki, yuqori harorat ehtimollik taqsimotining yanada xaotik bo'lishiga olib keladi, bu esa past ehtimolli tokenlarning yuzaga chiqishiga imkon beradi.
+
+[^25]: `arg max` funksiyasini bajarish.
+
+[^26]: `underflow` muammosi son berilgan formatda ifodalash uchun juda kichik bo'lganda yuzaga keladi, bu esa uning nolga yaxlitlanishiga olib keladi.
+
+[^27]: Aniqroq aytganda, ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'si sizga faqat 20 tagacha eng ehtimolli tokenlarning `logprobs`'larini ko'rsatadi. U avval foydalanuvchi tomonidan taqdim etilgan ixtiyoriy matnning `logprobs`'larini olishga imkon berardi, ammo 2023-yil sentabrda buni to'xtatdi. "Anthropic" o'z modellarining `logprobs`'larini oshkor qilmaydi.
+
+[^28]: Pullik model _API_'lari ko'pincha chiqish tokenlari soni bo'yicha haq oladi.
+
+[^29]: Bir xil kirish uchun bir nechta natija generatsiya qilish xarajatini kamaytirish uchun qilinadigan ishlar bor. Masalan, kirish faqat bir marta qayta ishlanishi va barcha natijalar uchun qayta ishlatilishi mumkin.
+
+[^30]: Ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'sida siz `best_of` parametrini ma'lum bir qiymatga, aytaylik 10 ga, o'rnatib, "OpenAI" modellaridan 10 xil natija orasidan eng yuqori o'rtacha `logprob`'ga ega bo'lganini qaytarishni so'rashingiz mumkin.
+
+[^31]: Wang va boshqalar (2023) bu yondashuvni o'z-o'ziga muvofiqlik (`self-consistency`) deb atashgan.
+
+[^32]: Biroq, mo'rt model bilan qilinadigan eng optimal ish — uni boshqasiga almashtirishdir.
+
+[^33]: Ushbu kitob yozilayotgan vaqtda, dastur va modelga qarab, to'g'ri generatsiya qilingan `JSON` obyektlarining foizini 0% dan to 90% larning yuqorisigacha bo'lgan oraliqda ko'rdim.
+
+[^34]: Modelni noldan kerakli formatga rioya qiladigan ma'lumotlarda o'qitish ham ishlaydi, ammo bu kitob modellarni noldan ishlab chiqish haqida emas.
+
+[^35]: Ba'zi qo'shimcha sozlash xizmatlari buni siz uchun avtomatik ravishda bajaradi. "OpenAI"ning qo'shimcha sozlash xizmatlari avval o'qitish paytida klassifikator boshi (`classifier head`) qo'shishga imkon berardi, ammo men yozayotgan vaqtda bu xususiyat o'chirib qo'yilgan.
+
+[^36]: Memda aytilganidek, imkoniyatlar past, lekin hech qachon nolga teng emas.
+
+[^37]: 2023-yil dekabr oyida men maslahat beradigan bir SI kompaniyasining uch oylik mijozlarni qo'llab-quvvatlash so'rovlarini ko'rib chiqdim va savollarning beshdan bir qismi SI modellarining barqarorsizligi bilan bog'liqligini aniqladim. 2023-yil iyul oyida Drew Houston ("Dropbox" bosh direktori) va Harrison Chase ("LangChain" bosh direktori) bilan ishtirok etgan panelda biz hammamiz gallyutsinatsiya ko'plab korporativ SI qo'llanish holatlari uchun eng katta to'siq ekanligiga rozi bo'ldik.
