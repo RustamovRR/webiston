@@ -50,6 +50,10 @@
       "post-training": {
         "title": "Qo'shimcha o'qitish",
         "path": "2-understanding-foundation-models/post-training/page"
+      },
+      "sampling": {
+        "title": "Sampling",
+        "path": "2-understanding-foundation-models/sampling/page"
       }
     }
   }

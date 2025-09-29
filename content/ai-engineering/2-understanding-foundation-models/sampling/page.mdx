@@ -1,0 +1,134 @@
+# Sampling
+
+Model o'z natijalarini _sampling_ (ya'ni, ehtimolliklar taqsimoti asosida natijani tanlab olish) deb nomlanuvchi jarayon orqali quradi. Ushbu bo'lim turli _sampling_ strategiyalari va _sampling_ parametrlarini, jumladan, harorat (`temperature`), `top-k` va `top-p`'ni muhokama qiladi. Keyin u model samaradorligini oshirish uchun bir nechta natijani qanday _sampling_ qilishni o'rganadi. Shuningdek, biz _sampling_ jarayonini modellarni ma'lum formatlar va cheklovlarga rioya qiladigan javoblarni generatsiya qilishga undash uchun qanday o'zgartirish mumkinligini ko'rib chiqamiz.
+
+_Sampling_ SI natijalarini ehtimoliy qiladi. Bu ehtimoliy tabiatni tushunish SI'ning barqarorsizlik va gallyutsinatsiya kabi xatti-harakatlarini boshqarish uchun muhimdir. Ushbu bo'lim bu ehtimoliy tabiat nimani anglatishi va u bilan qanday ishlash kerakligini chuqur o'rganish bilan yakunlanadi.
+
+## _Sampling_ asoslari
+
+Kirish ma'lumoti berilganda, neyron to'r avval ehtimoliy natijalarning ehtimolliklarini hisoblab, keyin natija chiqaradi. Tasniflash modeli uchun ehtimoliy natijalar — bu mavjud sinflardir. Misol uchun, agar model elektron pochtaning spam yoki spam emasligini tasniflashga o'qitilgan bo'lsa, faqat ikkita ehtimoliy natija mavjud: spam va spam emas. Model ushbu ikki natijaning har birining ehtimolligini hisoblaydi — masalan, elektron pochtaning spam bo'lish ehtimoli 90%, spam bo'lmaslik ehtimoli esa 10%. Keyin siz ushbu chiqish ehtimolliklariga asoslanib qaror qabul qilishingiz mumkin. Masalan, agar siz spam ehtimoli 50% dan yuqori bo'lgan har qanday elektron pochta spam deb belgilanishi kerak deb qaror qilsangiz, 90% spam ehtimoliga ega bo'lgan elektron pochta spam deb belgilanadi.
+
+Til modeli uchun, keyingi tokenni generatsiya qilish uchun, model avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi, bu 2-14-rasmda ko'rsatilgan.
+
+![2-14-rasm. Keyingi tokenni generatsiya qilish uchun til modeli avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi.](/ai-engineering/2.14-figure.png)
+
+<div className='text-center text-sm italic'>2-14-rasm. Keyingi tokenni generatsiya qilish uchun til modeli avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi.</div>
+
+Turli ehtimolliklarga ega bo'lgan ehtimoliy natijalar bilan ishlaganda, keng tarqalgan strategiya eng yuqori ehtimollikka ega bo'lgan natijani tanlashdir. Har doim eng ehtimolli natijani tanlash **ochko'z _sampling_** (`greedy sampling`) deb ataladi. Bu ko'pincha tasniflash vazifalari uchun ishlaydi. Masalan, agar model elektron pochtaning spam bo'lmasligidan ko'ra spam bo'lish ehtimoli yuqoriroq deb hisoblasa, uni spam deb belgilash mantiqan to'g'ri. Biroq, til modeli uchun ochko'z _sampling_ zerikarli natijalar yaratadi. Tasavvur qiling, siz qanday savol berishingizdan qat'i nazar, doimo eng keng tarqalgan so'zlar bilan javob beradigan modelni.
+
+Har doim keyingi eng ehtimolli tokenni tanlash o'rniga, model keyingi tokenni barcha mumkin bo'lgan qiymatlar bo'yicha ehtimollik taqsimotiga muvofiq _sampling_ qilishi mumkin. 2-14-rasmda ko'rsatilganidek, "Mening sevimli rangim ..." konteksti berilganda, agar "qizil"ning keyingi token bo'lish ehtimoli 30% va "yashil"ning ehtimoli 50% bo'lsa, "qizil" 30% hollarda, "yashil" esa 50% hollarda tanlanadi.
+
+Model bu ehtimolliklarni qanday hisoblaydi? Kirish ma'lumoti berilganda, neyron to'r _logit_ vektorini (ehtimollikka aylantirilmagan "xom" ballar vektorini) chiqaradi. Har bir _logit_ bitta ehtimoliy qiymatga mos keladi. Til modeli misolida, har bir _logit_ model lug'atidagi bitta tokenga mos keladi. _Logit_ vektorining o'lchami lug'at hajmiga teng. _Logit_ vektorining vizualizatsiyasi 2-15-rasmda ko'rsatilgan.
+
+![2-15-rasm. Har bir kirish uchun til modeli logit vektorini hosil qiladi. Har bir logit lug'atdagi bir tokenga mos keladi.](/ai-engineering/2.15-figure.png)
+
+<div className='text-center text-sm italic'>2-15-rasm. Har bir kirish uchun til modeli _logit_ vektorini hosil qiladi. Har bir _logit_ lug'atdagi bir tokenga mos keladi.</div>
+
+Kattaroq _logit_'lar yuqori ehtimolliklarga mos kelsa-da, _logit_'lar ehtimolliklarni ifodalamaydi. _Logit_'lar yig'indisi birga teng emas. _Logit_'lar hatto manfiy bo'lishi ham mumkin, ehtimolliklar esa manfiy bo'lmasligi kerak. _Logit_'larni ehtimolliklarga aylantirish uchun ko'pincha `softmax` qatlami ishlatiladi. Aytaylik, model N hajmli lug'atga ega va _logit_ vektori _[_x_<sub>1</sub>, _x_<sub>2</sub>, ..., _x_<sub>N</sub>]_ bo'lsin. _i_-chi token uchun ehtimollik, _p_<sub>i</sub>, quyidagicha hisoblanadi:
+
+``` js
+pᵢ = softmax(xᵢ) = eˣᵢ / (Σⱼ eˣⱼ)
+```
+
+## _Sampling_ strategiyalari
+
+To'g'ri _sampling_ strategiyasi modelni sizning dasturingizga mosroq javoblar generatsiya qilishga undashi mumkin. Masalan, bir _sampling_ strategiyasi modelni ijodiyroq javoblar generatsiya qilishga majbur qilsa, boshqasi uning generatsiyalarini bashorat qilinadiganroq qilishi mumkin. Modellarni ma'lum xususiyatlarga ega javoblar tomon "yo'naltirish" uchun ko'plab turli _sampling_ strategiyalari taqdim etilgan. Siz o'zingizning _sampling_ strategiyangizni ham ishlab chiqishingiz mumkin, garchi bu odatda modelning _logit_'lariga kirishni talab qilsa ham. Keling, ularning qanday ishlashini ko'rish uchun bir nechta keng tarqalgan _sampling_ strategiyalarini ko'rib chiqamiz.
+
+### Harorat (`Temperature`)
+
+Keyingi tokenni ehtimollik taqsimotiga ko'ra _sampling_ qilishning bir muammosi shundaki, model kamroq ijodkor (`creative`) bo'lishi mumkin. Oldingi misolda, "qizil", "yashil", "binafsha" kabi keng tarqalgan ranglar eng yuqori ehtimolliklarga ega. Til modelining javobi besh yoshli bolanikiga o'xshab qoladi: "Mening sevimli rangim yashil". "The" (inglizcha artikl) kabi so'zlarning ehtimoli past bo'lgani uchun, modelning "Mening sevimli rangim — bahor tongida sokin ko'lning rangi" kabi ijodiy jumla generatsiya qilish ehtimoli past bo'ladi.
+
+Mumkin bo'lgan qiymatlarning ehtimolliklarini qayta taqsimlash uchun siz harorat (`temperature`) bilan _sampling_ qilishingiz mumkin. Intuitiv ravishda, yuqori harorat keng tarqalgan tokenlarning ehtimolliklarini pasaytiradi va natijada kamroq uchraydigan tokenlarning ehtimolliklarini oshiradi. Bu modellarga ijodiyroq javoblar yaratish imkonini beradi.
+
+Harorat — bu `softmax` transformatsiyasidan oldin _logit_'larni sozlash uchun ishlatiladigan doimiy qiymat. _Logit_'lar haroratga bo'linadi. Berilgan _T_ harorati uchun, _i_-chi token uchun sozlangan _logit_ `xᵢ / T` bo'ladi. Keyin `softmax` xᵢ o'rniga ushbu sozlangan _logit_'ga qo'llaniladi.
+
+
+Haroratning ehtimolliklarga ta'sirini o'rganish uchun oddiy bir misolni ko'rib chiqamiz. Tasavvur qiling, bizda faqat ikkita ehtimoliy natijaga ega bo'lgan model bor: A va B. Oxirgi qatlamdan hisoblangan _logit_'lar [1, 2]. A uchun _logit_ 1, B uchun esa 2.
+
+- **Haroratsiz** (bu 1 ga teng haroratni ishlatish bilan bir xil), `softmax` ehtimolliklari [0.27, 0.73] bo'ladi. Model 73% hollarda B ni tanlaydi.
+- **Harorat = 0.5** bo'lganda, ehtimolliklar [0.12, 0.88] bo'ladi. Endi model 88% hollarda B ni tanlaydi.
+
+Harorat qanchalik yuqori bo'lsa, modelning eng yaqqol qiymatni (eng yuqori _logit_'ga ega qiymatni) tanlash ehtimoli shunchalik past bo'ladi, bu esa model natijalarini ijodiyroq, lekin potensial ravishda kamroq izchil qiladi. Harorat qanchalik past bo'lsa, modelning eng yaqqol qiymatni tanlash ehtimoli shunchalik yuqori bo'ladi, bu esa model natijasini izchilroq, lekin potensial ravishda zerikarliroq qiladi.[^24]
+
+2-16-rasmda turli haroratlarda A va B tokenlari uchun `softmax` ehtimolliklari ko'rsatilgan. Harorat 0 ga yaqinlashgan sari, modelning B tokenini tanlash ehtimoli 1 ga yaqinlashadi. Bizning misolimizda, 0.1 dan past harorat uchun model deyarli har doim B ni chiqaradi. Harorat oshgan sari, A tokenining tanlanish ehtimoli ortadi, B tokenining tanlanish ehtimoli esa kamayadi. Model provayderlari odatda haroratni 0 va 2 oralig'ida cheklashadi. Agar siz o'z modelingizga ega bo'lsangiz, istalgan manfiy bo'lmagan haroratdan foydalanishingiz mumkin. Ijodiy qo'llanish holatlari uchun ko'pincha 0.7 harorat tavsiya etiladi, chunki u ijodkorlik va bashorat qilinuvchanlik o'rtasidagi muvozanatni ta'minlaydi, lekin siz tajriba o'tkazib, o'zingiz uchun eng yaxshi ishlaydigan haroratni topishingiz mumkin.
+
+![2-16-rasm. A va B tokenlarining logitlari [1, 2] bo'lganda, turli haroratlardagi softmax ehtimolliklari.](/ai-engineering/2.16-figure.png)
+
+<div className='text-center text-sm italic'>2-16-rasm. A va B tokenlarining _logit_'lari [1, 2] bo'lganda, turli haroratlardagi `softmax` ehtimolliklari. Harorat qiymatini belgilamasdan, ya'ni 1 ga teng haroratdan foydalanganda, B ning `softmax` ehtimoli 73% bo'lardi.</div>
+
+Model natijalari izchilroq bo'lishi uchun haroratni 0 ga o'rnatish keng tarqalgan amaliyotdir. Texnik jihatdan, harorat hech qachon 0 bo'la olmaydi — _logit_'larni 0 ga bo'lish mumkin emas. Amalda esa, biz haroratni 0 ga o'rnatganimizda, model shunchaki _logit_ sozlamasi va `softmax` hisob-kitobini qilmasdan, eng katta _logit_'ga ega bo'lgan tokenni tanlaydi.[^25]
+
+> **Maslahat** <br/>
+> SI modeli bilan ishlashdagi keng tarqalgan nosozliklarni tuzatish (`debugging`) usullaridan biri — bu modelning berilgan kirish ma'lumotlari uchun hisoblagan ehtimolliklariga qarashdir. Masalan, agar ehtimolliklar tasodifiy ko'rinsa, demak, model hali ko'p narsa o'rganmagan.
+
+Ko'pgina model provayderlari o'z modellari tomonidan generatsiya qilingan ehtimolliklarni [_logprobs_](https://cookbook.openai.com/examples/using_logprobs) sifatida qaytaradi. _Logprobs_, ya'ni logarifmik ehtimolliklar (`log probabilities`), logarifmik shkaladagi ehtimolliklardir. Neyron to'rning ehtimolliklari bilan ishlaganda logarifmik shkalaga afzallik beriladi, chunki u [`underflow`](https://en.wikipedia.org/wiki/Arithmetic_underflow) muammosini kamaytirishga yordam beradi.[^26] Til modeli 100 000 hajmli lug'at bilan ishlayotgan bo'lishi mumkin, bu esa ko'plab tokenlar uchun ehtimolliklar mashina tomonidan ifodalash uchun juda kichik bo'lishi mumkinligini anglatadi. Kichik sonlar 0 ga yaxlitlanishi mumkin. Logarifmik shkala bu muammoni kamaytirishga yordam beradi.
+
+2-17-rasmda _logit_'lar, ehtimolliklar va _logprobs_'larning qanday hisoblanishi ish jarayoni ko'rsatilgan.
+
+![2-17-rasm. Logitlar, ehtimolliklar va logprobs'larning qanday hisoblanishi.](/ai-engineering/2.17-figure.png)
+
+<div className='text-center text-sm italic'>2-17-rasm. _Logit_'lar, ehtimolliklar va _logprobs_'larning qanday hisoblanishi.</div>
+
+Kitob davomida ko'rib turganingizdek, _logprobs_ dasturlarni yaratish (ayniqsa, tasniflash uchun), dasturlarni baholash va modellarning ichki ishlashini tushunish uchun foydalidir. Biroq, ushbu kitob yozilayotgan vaqtda, ko'plab model provayderlari o'z modellarining _logprobs_'larini oshkor qilmaydi, yoki agar oshkor qilsalar ham, _logprobs_ _API_'si cheklangan bo'ladi.[^27] Cheklangan _logprobs_ _API_'si, ehtimol, xavfsizlik sabablari bilan bog'liq, chunki modelning oshkor qilingan _logprobs_'lari boshqalarga modelni nusxalashni osonlashtiradi.
+
+### `Top-k`
+
+`Top-k` — bu model javoblarining xilma-xilligini haddan tashqari yo'qotmasdan, hisoblash yukini kamaytirish uchun mo'ljallangan _sampling_ strategiyasidir. Esingizda bo'lsa, `softmax` qatlami barcha mumkin bo'lgan qiymatlar bo'yicha ehtimollik taqsimotini hisoblash uchun ishlatilardi. `Softmax` barcha mumkin bo'lgan qiymatlar ustidan ikki marta o'tishni talab qiladi: biri `Σⱼeˣʲ` eksponensial yig'indini bajarish uchun va biri har bir qiymat uchun `eˣⁱ / (Σⱼeˣʲ)` ni bajarish uchun. Katta lug'atga ega bo'lgan til modeli uchun bu jarayon hisoblash jihatidan qimmatga tushadi.
+
+Bu muammoni chetlab o'tish uchun, model _logit_'larni hisoblab bo'lgach, biz eng yuqori **k** ta _logit_'ni tanlab olamiz va `softmax`'ni faqat shu eng yuqori **k** ta _logit_ ustida bajaramiz. Dasturingiz qanchalik xilma-xil bo'lishini xohlayotganingizga qarab, **k** qiymati 50 dan 500 gacha bo'lishi mumkin — bu modelning lug'at hajmidan ancha kichikdir. Keyin model shu eng yuqori qiymatlar orasidan _sampling_ qiladi. Kichikroq **k** qiymati matnni bashorat qilinadiganroq, lekin kamroq qiziqarli qiladi, chunki model ehtimoliy so'zlarning kichikroq to'plami bilan cheklanib qoladi.
+
+### `Top-p`
+
+`Top-k` _sampling_'ida ko'rib chiqiladigan qiymatlar soni **k** ga qat'iy belgilangan. Biroq, bu son vaziyatga qarab o'zgarishi kerak. Masalan, "Musiqani yoqtirasizmi? Faqat ha yoki yo'q deb javob bering." prompti berilganda, ko'rib chiqiladigan qiymatlar soni ikkita bo'lishi kerak: ha va yo'q. "Hayotning ma'nosi nima?" prompti berilganda esa, ko'rib chiqiladigan qiymatlar soni ancha kattaroq bo'lishi kerak.
+
+`Top-p`, shuningdek, yadroviy _sampling_ (`nucleus sampling`) deb ham ataladi, _sampling_ uchun qiymatlarni yanada dinamikroq tanlash imkonini beradi. `Top-p` _sampling_'ida model eng ehtimoliy keyingi qiymatlarning ehtimolliklarini kamayish tartibida yig'ib boradi va yig'indi **p** ga yetganda to'xtaydi. Faqat shu yig'ma ehtimollik ichidagi qiymatlar ko'rib chiqiladi. Til modellarida `top-p` (yadroviy) _sampling_ uchun keng tarqalgan qiymatlar odatda 0.9 dan 0.95 gacha bo'ladi. Masalan, `top-p` qiymatining 0.9 bo'lishi, model yig'ma ehtimolligi 90% dan oshadigan eng kichik qiymatlar to'plamini ko'rib chiqishini anglatadi.
+
+Aytaylik, barcha tokenlarning ehtimolliklari 2-18-rasmda ko'rsatilganidek. Agar `top-p` 90% bo'lsa, faqat "ha" va "balki" ko'rib chiqiladi, chunki ularning yig'ma ehtimolligi 90% dan katta. Agar `top-p` 99% bo'lsa, unda "ha", "balki" va "yo'q" ko'rib chiqiladi.
+
+![2-18-rasm. Token ehtimolliklariga misol.](/ai-engineering/2.18-figure.png)
+
+<div className='text-center text-sm italic'>2-18-rasm. Token ehtimolliklariga misol.</div>
+
+`Top-k`'dan farqli o'laroq, `top-p` `softmax` hisoblash xarajatlarini har doim ham kamaytirmaydi. Uning afzalligi shundaki, u har bir kontekst uchun faqat eng munosib qiymatlar to'plamiga e'tibor qaratgani sababli, natijalarning kontekstga yanada mosroq bo'lishiga imkon beradi. Nazariy jihatdan, `top-p` _sampling_'ining jiddiy ustunliklari yo'qdek tuyuladi. Biroq, amalda, `top-p` _sampling_'i o'zini a'lo darajada namoyon etdi, bu esa uning keng ommalashishiga sabab bo'ldi.
+
+Bunga bog'liq bo'lgan yana bir _sampling_ strategiyasi bu `min-p` bo'lib, unda siz _sampling_ jarayonida ko'rib chiqilishi uchun token erishishi kerak bo'lgan minimal ehtimollikni belgilaysiz.
+
+### To'xtatish shartlari
+
+Avtoregressiv til modeli tokenlar ketma-ketligini birin-ketin generatsiya qilish orqali yaratadi. Uzun natija ko'proq vaqt sarflaydi, ko'proq hisoblash quvvati (ya'ni, pul) talab qiladi va ba'zan foydalanuvchilarning g'ashiga tegishi mumkin. Shu sababli, model uchun generatsiyani yakunlash shartini belgilash maqsadga muvofiq.
+
+Eng oson usullardan biri — bu modeldan belgilangan miqdordagi tokenlardan so'ng generatsiyani to'xtatishni so'rashdir. Buning kamchiligi shundaki, natija katta ehtimol bilan gapning o'rtasida uzilib qoladi. Yana bir usul — bu to'xtash tokenlari (`stop tokens`) yoki to'xtash so'zlaridan (`stop words`) foydalanish. Masalan, siz modeldan ketma-ketlikning tugash tokenini (`end-of-sequence token`) uchratganda generatsiyani to'xtatishni so'rashingiz mumkin. To'xtatish shartlari kechikish (_latency_) va xarajatlarni kamaytirishda ancha qo'l keladi.
+
+Vaqtidan oldin to'xtatishning salbiy tomoni shundaki, agar siz modellardan ma'lum bir formatdagi natijalarni generatsiya qilishni xohlasangiz, muddatidan oldin to'xtash natijalarning noto'g'ri formatlanishiga (`malformatted`) olib kelishi mumkin. Masalan, agar siz modeldan `JSON` generatsiya qilishni so'rasangiz, vaqtidan oldin to'xtash natijaviy `JSON`'da yopuvchi qavslar kabi elementlarning tushib qolishiga sabab bo'lishi mumkin, bu esa generatsiya qilingan `JSON`'ni tahlil qilishni (`parsing`) qiyinlashtiradi.
+
+[^28]: Pullik model _API_'lari ko'pincha chiqish tokenlari soni bo'yicha haq oladi.
+
+### Izohlar
+
+[^24]: Harorat haqida o'ylaganimda xayolimga keladigan, unchalik ilmiy bo'lmagan vizual tasvir shuki, yuqori harorat ehtimollik taqsimotining yanada xaotik bo'lishiga olib keladi, bu esa past ehtimolli tokenlarning yuzaga chiqishiga imkon beradi.
+
+[^25]: `arg max` funksiyasini bajarish.
+
+[^26]: `underflow` muammosi son berilgan formatda ifodalash uchun juda kichik bo'lganda yuzaga keladi, bu esa uning nolga yaxlitlanishiga olib keladi.
+
+[^27]: Aniqroq aytganda, ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'si sizga faqat 20 tagacha eng ehtimolli tokenlarning _logprobs_'larini ko'rsatadi. U avval foydalanuvchi tomonidan taqdim etilgan ixtiyoriy matnning _logprobs_'larini olishga imkon berardi, ammo 2023-yil sentabrda buni to'xtatdi. "Anthropic" o'z modellarining _logprobs_'larini oshkor qilmaydi.
+
+[^28]: Pullik model _API_'lari ko'pincha chiqish tokenlari soni bo'yicha haq oladi.
+
+[^29]: Bir xil kirish uchun bir nechta natija generatsiya qilish xarajatini kamaytirish uchun qilinadigan ishlar bor. Masalan, kirish faqat bir marta qayta ishlanishi va barcha natijalar uchun qayta ishlatilishi mumkin.
+
+[^30]: Ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'sida siz `best_of` parametrini ma'lum bir qiymatga, aytaylik 10 ga, o'rnatib, "OpenAI" modellaridan 10 xil natija orasidan eng yuqori o'rtacha `logprob`'ga ega bo'lganini qaytarishni so'rashingiz mumkin.
+
+[^31]: Wang va boshqalar (2023) bu yondashuvni o'z-o'ziga muvofiqlik (`self-consistency`) deb atashgan.
+
+[^32]: Biroq, mo'rt model bilan qilinadigan eng optimal ish — uni boshqasiga almashtirishdir.
+
+[^33]: Ushbu kitob yozilayotgan vaqtda, dastur va modelga qarab, to'g'ri generatsiya qilingan `JSON` obyektlarining foizini 0% dan to 90% larning yuqorisigacha bo'lgan oraliqda ko'rdim.
+
+[^34]: Modelni noldan kerakli formatga rioya qiladigan ma'lumotlarda o'qitish ham ishlaydi, ammo bu kitob modellarni noldan ishlab chiqish haqida emas.
+
+[^35]: Ba'zi qo'shimcha sozlash xizmatlari buni siz uchun avtomatik ravishda bajaradi. "OpenAI"ning qo'shimcha sozlash xizmatlari avval o'qitish paytida klassifikator boshi (`classifier head`) qo'shishga imkon berardi, ammo men yozayotgan vaqtda bu xususiyat o'chirib qo'yilgan.
+
+[^36]: Memda aytilganidek, imkoniyatlar past, lekin hech qachon nolga teng emas.
+
+[^37]: 2023-yil dekabr oyida men maslahat beradigan bir SI kompaniyasining uch oylik mijozlarni qo'llab-quvvatlash so'rovlarini ko'rib chiqdim va savollarning beshdan bir qismi SI modellarining barqarorsizligi bilan bog'liqligini aniqladim. 2023-yil iyul oyida Drew Houston ("Dropbox" bosh direktori) va Harrison Chase ("LangChain" bosh direktori) bilan ishtirok etgan panelda biz hammamiz gallyutsinatsiya ko'plab korporativ SI qo'llanish holatlari uchun eng katta to'siq ekanligiga rozi bo'ldik.
