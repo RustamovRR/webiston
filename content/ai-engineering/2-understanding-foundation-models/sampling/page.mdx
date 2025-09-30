@@ -63,13 +63,13 @@ Model natijalari izchilroq bo'lishi uchun haroratni 0 ga o'rnatish keng tarqalga
 
 Ko'pgina model provayderlari o'z modellari tomonidan generatsiya qilingan ehtimolliklarni [_logprobs_](https://cookbook.openai.com/examples/using_logprobs) sifatida qaytaradi. _Logprobs_, ya'ni logarifmik ehtimolliklar (`log probabilities`), logarifmik shkaladagi ehtimolliklardir. Neyron to'rning ehtimolliklari bilan ishlaganda logarifmik shkalaga afzallik beriladi, chunki u [`underflow`](https://en.wikipedia.org/wiki/Arithmetic_underflow) muammosini kamaytirishga yordam beradi.[^26] Til modeli 100 000 hajmli lug'at bilan ishlayotgan bo'lishi mumkin, bu esa ko'plab tokenlar uchun ehtimolliklar mashina tomonidan ifodalash uchun juda kichik bo'lishi mumkinligini anglatadi. Kichik sonlar 0 ga yaxlitlanishi mumkin. Logarifmik shkala bu muammoni kamaytirishga yordam beradi.
 
-2-17-rasmda _logit_'lar, ehtimolliklar va _logprobs_'larning qanday hisoblanishi ish jarayoni ko'rsatilgan.
+2-17-rasmda _logit_'lar, ehtimolliklar va _logprob_'larning qanday hisoblanishi ish jarayoni ko'rsatilgan.
 
 ![2-17-rasm. Logitlar, ehtimolliklar va logprobs'larning qanday hisoblanishi.](/ai-engineering/2.17-figure.png)
 
-<div className='text-center text-sm italic'>2-17-rasm. _Logit_'lar, ehtimolliklar va _logprobs_'larning qanday hisoblanishi.</div>
+<div className='text-center text-sm italic'>2-17-rasm. _Logit_'lar, ehtimolliklar va _logprob_'larning qanday hisoblanishi.</div>
 
-Kitob davomida ko'rib turganingizdek, _logprobs_ dasturlarni yaratish (ayniqsa, tasniflash uchun), dasturlarni baholash va modellarning ichki ishlashini tushunish uchun foydalidir. Biroq, ushbu kitob yozilayotgan vaqtda, ko'plab model provayderlari o'z modellarining _logprobs_'larini oshkor qilmaydi, yoki agar oshkor qilsalar ham, _logprobs_ _API_'si cheklangan bo'ladi.[^27] Cheklangan _logprobs_ _API_'si, ehtimol, xavfsizlik sabablari bilan bog'liq, chunki modelning oshkor qilingan _logprobs_'lari boshqalarga modelni nusxalashni osonlashtiradi.
+Kitob davomida ko'rib turganingizdek, _logprob_ dasturlarni yaratish (ayniqsa, tasniflash uchun), dasturlarni baholash va modellarning ichki ishlashini tushunish uchun foydalidir. Biroq, ushbu kitob yozilayotgan vaqtda, ko'plab model provayderlari o'z modellarining _logprob_'larini oshkor qilmaydi, yoki agar oshkor qilsalar ham, _logprob_ _API_'si cheklangan bo'ladi.[^27] Cheklangan _logprob_ _API_'si, ehtimol, xavfsizlik sabablari bilan bog'liq, chunki modelning oshkor qilingan _logprob_'lari boshqalarga modelni nusxalashni osonlashtiradi.
 
 ### `Top-k`
 
@@ -99,9 +99,165 @@ Avtoregressiv til modeli tokenlar ketma-ketligini birin-ketin generatsiya qilish
 
 Eng oson usullardan biri — bu modeldan belgilangan miqdordagi tokenlardan so'ng generatsiyani to'xtatishni so'rashdir. Buning kamchiligi shundaki, natija katta ehtimol bilan gapning o'rtasida uzilib qoladi. Yana bir usul — bu to'xtash tokenlari (`stop tokens`) yoki to'xtash so'zlaridan (`stop words`) foydalanish. Masalan, siz modeldan ketma-ketlikning tugash tokenini (`end-of-sequence token`) uchratganda generatsiyani to'xtatishni so'rashingiz mumkin. To'xtatish shartlari kechikish (_latency_) va xarajatlarni kamaytirishda ancha qo'l keladi.
 
-Vaqtidan oldin to'xtatishning salbiy tomoni shundaki, agar siz modellardan ma'lum bir formatdagi natijalarni generatsiya qilishni xohlasangiz, muddatidan oldin to'xtash natijalarning noto'g'ri formatlanishiga (`malformatted`) olib kelishi mumkin. Masalan, agar siz modeldan `JSON` generatsiya qilishni so'rasangiz, vaqtidan oldin to'xtash natijaviy `JSON`'da yopuvchi qavslar kabi elementlarning tushib qolishiga sabab bo'lishi mumkin, bu esa generatsiya qilingan `JSON`'ni tahlil qilishni (`parsing`) qiyinlashtiradi.
+Vaqtidan oldin to'xtatishning salbiy tomoni shundaki, agar siz modellardan ma'lum bir formatdagi natijalarni generatsiya qilishni xohlasangiz, muddatidan oldin to'xtash natijalarning noto'g'ri formatlanishiga (`malformatted`) olib kelishi mumkin. Masalan, agar siz modeldan _JSON_ generatsiya qilishni so'rasangiz, vaqtidan oldin to'xtash natijaviy _JSON_'da yopuvchi qavslar kabi elementlarning tushib qolishiga sabab bo'lishi mumkin, bu esa generatsiya qilingan _JSON_'ni tahlil qilishni (`parsing`) qiyinlashtiradi.
 
-[^28]: Pullik model _API_'lari ko'pincha chiqish tokenlari soni bo'yicha haq oladi.
+## _Inference_ bosqichida kengaytirilgan hisoblash
+
+Oldingi bo'limda model keyingi tokenni qanday _sampling_ qilishi mumkinligi muhokama qilindi. Ushbu bo'limda esa model butun natijani qanday _sampling_ qilishi mumkinligi muhokama qilinadi.
+
+Model javobining sifatini oshirishning oddiy usullaridan biri bu **_inference_ bosqichida kengaytirilgan hisoblash** (`test time compute`) strategiyasidir: har bir so'rov uchun faqat bitta javob generatsiya qilish o'rniga, siz yaxshi javoblar ehtimolini oshirish uchun bir nechta javob generatsiya qilasiz. _Inference_ bosqichida kengaytirilgan hisoblashni amalga oshirishning bir usuli — bu ushbu bobda avvalroq muhokama qilingan "N tadan eng yaxshisi" (`best of N`) texnikasidir — siz tasodifiy ravishda bir nechta natija generatsiya qilasiz va eng yaxshi ishlaydiganini tanlaysiz. Biroq, bir nechta natijani qanday generatsiya qilish borasida strategikroq yondashishingiz ham mumkin. Masalan, barcha natijalarni mustaqil ravishda generatsiya qilish o'rniga (bu ko'plab kamroq istiqbolli nomzodlarni o'z ichiga olishi mumkin), siz ketma-ketlik generatsiyasining har bir qadamida belgilangan miqdordagi eng istiqbolli nomzodlarni (nur yoki `beam`) generatsiya qilish uchun nurli qidiruvdan ([`beam search`](https://en.wikipedia.org/wiki/Beam_search)) foydalanishingiz mumkin.
+
+_Inference_ bosqichida kengaytirilgan hisoblash samaradorligini oshirishning oddiy strategiyasi — bu natijalarning xilma-xilligini oshirishdir, chunki xilma-xilroq variantlar to'plami yaxshiroq nomzodlarni berishi ehtimoli yuqoriroq. Agar siz turli xil variantlarni generatsiya qilish uchun bir xil modeldan foydalansangiz, uning natijalarini xilma-xillashtirish uchun modelning _sampling_ parametrlarini o'zgartirib turish ko'pincha yaxshi amaliyotdir.
+
+Garchi siz odatda bir nechta natijani _sampling_ qilish orqali model samaradorligida biroz yaxshilanishni kutishingiz mumkin bo'lsa-da, bu qimmatga tushadi. O'rtacha hisobda, ikkita natija generatsiya qilish bitta natija generatsiya qilishdan taxminan ikki baravar qimmatroqqa tushadi.[^29]
+
+<Callout>
+#### Ogohlantirish
+
+Men mavjud adabiyotlarga mos kelish uchun **_inference_ bosqichida kengaytirilgan hisoblash** (`test time compute`) atamasini ishlataman, garchi bir nechta dastlabki taqrizchilar bu atama chalg'ituvchi ekanligiga e'tiroz bildirishgan bo'lsa ham. SI tadqiqotlarida "sinov vaqti" (`test time`) odatda _inference_'ni anglatadi, chunki tadqiqotchilar asosan faqat modelni sinash uchun _inference_ qilishadi. Biroq, bu texnikani umuman olganda amaliyotdagi modellarga ham qo'llash mumkin. U **_inference_ bosqichida kengaytirilgan hisoblash** deb ataladi, chunki siz _sampling_ qilishingiz mumkin bo'lgan natijalar soni har bir _inference_ chaqiruviga qancha hisoblash quvvati ajrata olishingiz bilan belgilanadi.
+</Callout>
+
+Eng yaxshi natijani tanlash uchun, siz foydalanuvchilarga bir nechta natijani ko'rsatib, ularga o'zlari uchun eng yaxshi ishlaydiganini tanlash imkonini berishingiz yoki eng yaxshisini tanlash usulini ishlab chiqishingiz mumkin. Tanlash usullaridan biri — bu eng yuqori ehtimollikka ega bo'lgan natijani tanlashdir. Til modelining natijasi — bu tokenlar ketma-ketligi va har bir token model tomonidan hisoblangan ehtimollikka ega. Natijaning ehtimolligi — bu natijadagi barcha tokenlar ehtimolliklarining ko'paytmasidir.
+
+["I", "love", "food"] tokenlar ketma-ketligini ko'rib chiqaylik. Agar "I" uchun ehtimollik 0.2, "I" berilganda "love" uchun ehtimollik 0.1 va "I" va "love" berilganda "food" uchun ehtimollik 0.3 bo'lsa, ketma-ketlikning ehtimolligi: `0.2 × 0.1 × 0.3 = 0.006` bo'ladi. Matematik jihatdan buni quyidagicha ifodalash mumkin:
+
+``` md
+p(I love food) = p(I) × p(I | love) × p(food | I, love)
+```
+
+Esingizda bo'lsa, ehtimolliklar bilan logarifmik shkalada ishlash osonroq. Ko'paytmaning logarifmi logarifmlar yig'indisiga teng, shuning uchun tokenlar ketma-ketligining _logprob_'i ketma-ketlikdagi barcha tokenlar _logprob_'larining yig'indisiga teng:
+
+``` md
+logprob(I love food) = logprob(I) + logprob(I | love) + logprob(food | I, love)
+```
+
+Qo'shishda, uzunroq ketma-ketliklar umumiy _logprob_'i pastroq bo'lishi ehtimoli yuqori (chunki _logprob_ qiymatlari odatda manfiy bo'ladi, chunki 0 va 1 orasidagi qiymatlarning logarifmi manfiydir). Qisqa ketma-ketliklarga moyillikni oldini olish uchun, siz ketma-ketlik yig'indisini uning uzunligiga bo'lish orqali o'rtacha _logprob_'dan foydalanishingiz mumkin. Bir nechta natijani _sampling_ qilganingizdan so'ng, siz eng yuqori o'rtacha _logprob_'ga ega bo'lganini tanlaysiz. Ushbu kitob yozilayotgan vaqtda, "OpenAI" _API_'si aynan shu usuldan foydalanadi.[^30]
+
+### Tanlov uchun mukofot modellaridan foydalanish
+
+Yana bir tanlov usuli — bu oldingi bo'limda muhokama qilinganidek, har bir natijani baholash uchun mukofot modelidan (`reward model`) foydalanishdir. Esingizda bo'lsa, ["Stitch Fix"](https://multithreaded.stitchfix.com/blog/2023/03/06/expert-in-the-loop-generative-ai-at-stitch-fix/) ham, ["Grab"](https://engineering.grab.com/llm-powered-data-classification) ham o'zlarining mukofot modellari yoki verifikatorlari (`verifiers`) tomonidan yuqori ball berilgan natijalarni tanlashadi. ["Nextdoor"](https://engblog.nextdoor.com/let-ai-entertain-you-increasing-user-engagement-with-generative-ai-and-rejection-sampling-50a402264f56?gi=f36ef5807864) mukofot modelidan foydalanish ularning dasturi samaradorligini oshirishda asosiy omil bo'lganini aniqladi (2023).
+
+"OpenAI" ham o'z modellariga matematik masalalarning eng yaxshi yechimlarini tanlashda yordam berish uchun verifikatorlarni o'qitgan ([Cobbe va boshq., 2021](https://arxiv.org/pdf/2110.14168)). Ular verifikatordan foydalanish model samaradorligini sezilarli darajada oshirganini aniqladilar. Aslida, verifikatorlardan foydalanish model hajmini 30 baravar oshirish bilan deyarli bir xil samaradorlik o'sishiga olib kelgan. Bu shuni anglatadiki, verifikatordan foydalanadigan 100 million parametrli model verifikatordan foydalanmaydigan 3 milliard parametrli model bilan bir xil darajada ishlay oladi.
+
+"DeepMind" _inference_ bosqichida kengaytirilgan hisoblashning (`test time compute`) qiymatini yanada isbotlab, _inference_ bosqichida kengaytirilgan hisoblashni miqyoslash (masalan, _inference_ paytida ko'proq natija generatsiya qilish uchun ko'proq hisoblash quvvati ajratish) model parametrlarini miqyoslashdan ko'ra samaraliroq bo'lishi mumkinligini ta'kidlaydi ([Snell va boshq., 2024](https://arxiv.org/abs/2408.03314)). Xuddi shu maqolada qiziqarli bir savol o'rtaga tashlanadi: Agar _LLM_'ga qat'iy belgilangan, ammo sezilarli miqdordagi _inference_ vaqti hisoblash quvvatidan foydalanishga ruxsat berilsa, u qiyin bir prompt bo'yicha o'z samaradorligini qanchalik oshira oladi?
+
+"OpenAI" tajribasida ko'proq natijalarni _sampling_ qilish yaxshiroq samaradorlikka olib keldi, ammo faqat ma'lum bir nuqtagacha. Bu tajribada o'sha nuqta 400 ta natija edi. Bu nuqtadan o'tgach, samaradorlik pasayadi (2-19-rasm). Ular _sampling_ qilingan natijalar soni ortgan sari, verifikatorni aldashi mumkin bo'lgan zararli (`adversarial`) natijalarni topish ehtimoli ham ortadi, deb taxmin qilishdi. Biroq, Stenford tajribasi boshqa bir xulosani ko'rsatdi. “Monkey Business” ([Brown va boshq., 2024](https://scalingintelligence.stanford.edu/blogs/monkeys/)) tadqiqoti shuni ko'rsatadiki, namunalar soni 1 dan 10 000 gacha ortgan sari yechilgan masalalar soni ko'pincha log-chiziqli ravishda ortadi. Garchi _inference_ bosqichida kengaytirilgan hisoblashni cheksiz miqyoslash mumkinmi yoki yo'qligi haqida o'ylash qiziqarli bo'lsa-da, menimcha, amaliyotda hech kim har bir kirish uchun 400 yoki 10 000 xil natijani _sampling_ qilmaydi. Xarajatlar juda katta bo'lib ketardi.
+
+![2-19-rasm. "OpenAI" (2021) ko'proq natijalarni sampling qilish yaxshiroq samaradorlikka olib kelishini, lekin bu faqat 400 ta natijagacha ishlashini aniqladi.](/ai-engineering/2.19-figure.png)
+
+<div className='text-center text-sm italic'>2-19-rasm. ["OpenAI"](https://arxiv.org/abs/2110.14168) (2021) ko'proq natijalarni _sampling_ qilish yaxshiroq samaradorlikka olib kelishini, lekin bu faqat 400 ta natijagacha ishlashini aniqladi.</div>
+
+Siz, shuningdek, eng yaxshi javobni tanlash uchun dasturga xos evristik usullardan foydalanishingiz mumkin. Masalan, agar dasturingiz qisqaroq javoblardan foyda ko'rsa, siz eng qisqa nomzodni tanlashingiz mumkin. Agar dasturingiz tabiiy tilni _SQL_ so'rovlariga o'girsa, siz modeldan to'g'ri _SQL_ so'rovini generatsiya qilmaguncha natijalar generatsiya qilishda davom etishini so'rashingiz mumkin.
+
+_Inference_ bosqichida kengaytirilgan hisoblashning ayniqsa qiziqarli bir qo'llanilishi — bu kechikish (_latency_) muammosini yengib o'tishdir. Ba'zi so'rovlar uchun, ayniqsa, fikrlar zanjiri (`chain-of-thought`) so'rovlari uchun, model javobni yakunlash uchun uzoq vaqt sarflashi mumkin. "TIFIN" kompaniyasining SI rahbari Kittipat Kampa menga aytishicha, uning jamoasi o'z modelidan bir nechta javobni parallel ravishda generatsiya qilishni so'raydi va foydalanuvchiga birinchi bo'lib yakunlangan va to'g'ri bo'lgan javobni ko'rsatadi.
+
+### Ko'pchilik ovozi bilan tanlash
+
+Bir nechta natijalar to'plami orasidan eng ko'p uchragan natijani tanlash, ayniqsa, aniq javoblar kutiladigan vazifalar uchun foydali bo'lishi mumkin.[^31] Masalan, matematik masala berilganda, model uni bir necha marta yechishi va eng ko'p uchragan javobni o'zining yakuniy yechimi sifatida tanlashi mumkin. Xuddi shunday, ko'p tanlovli savol uchun model eng ko'p uchragan javob variantini tanlashi mumkin. "Google" `Gemini`'ni _MMLU_ mezonida baholaganda aynan shunday qilgan. Ular har bir savol uchun 32 ta natijani _sampling_ qilishgan. Bu modelga har bir savol uchun faqat bitta natija bilan erishishi mumkin bo'lganidan yuqoriroq ball olish imkonini bergan.
+
+Agar model kirishdagi kichik o'zgarishlarga o'z natijalarini keskin o'zgartirmasa, u **mustahkam** (`robust`) hisoblanadi. Model qanchalik mo'rt (`less robust`) bo'lsa, siz bir nechta natijani _sampling_ qilishdan shunchalik ko'p foyda ko'rasiz.[^32] Bir loyihada biz mahsulot tasviridan ma'lum bir ma'lumotni ajratib olish uchun SI'dan foydalandik. Biz shuni aniqladikki, bir xil tasvir uchun modelimiz ma'lumotni faqat yarim hollarda o'qiy oldi. Qolgan yarim hollarda esa, model tasvir juda xira yoki matn o'qish uchun juda kichik ekanligini aytdi. Biroq, har bir tasvir bilan uch marta urinib ko'rish orqali, model aksariyat tasvirlar uchun to'g'ri ma'lumotni ajratib olishga muvaffaq bo'ldi.
+
+## Strukturalashgan natijalar
+
+Amaliyotda ko'pincha modellardan ma'lum formatlarga rioya qiladigan natijalarni generatsiya qilish talab etiladi. Strukturalashgan natijalar (`Structured outputs`) quyidagi ikki holat uchun juda muhimdir:
+
+#### 1. Strukturalashgan natijalarni talab qiladigan vazifalar
+
+Bu holatdagi eng keng tarqalgan vazifalar toifasi — bu semantik tahlildir (`semantic parsing`). Semantik tahlil tabiiy tilni strukturalashgan, mashina o'qiy oladigan formatga o'tkazishni o'z ichiga oladi. Matndan-_SQL_'ga (`Text-to-SQL`) — bu semantik tahlilning bir misoli bo'lib, unda natijalar to'g'ri _SQL_ so'rovlari bo'lishi shart. Semantik tahlil foydalanuvchilarga _API_'lar bilan tabiiy til (masalan, ingliz tili) yordamida ishlash imkonini beradi. Masalan, matndan-`PostgreSQL`'ga o'girish foydalanuvchilarga `PostgreSQL`'da yozish o'rniga, "So'nggi 6 oy ichidagi o'rtacha oylik daromad qancha" kabi inglizcha so'rovlar yordamida `Postgres` ma'lumotlar bazasidan so'rov qilish imkonini beradi.
+
+Quyida `GPT-4o`'ga matndan-_regex_'ga o'girish vazifasini bajarish uchun berilgan promptga misol keltirilgan. Natijalar `GPT-4o` tomonidan generatsiya qilingan haqiqiy natijalardir:
+
+``` mdx
+Tizim prompti:
+`Biror element berilganda, bu element yozilishi mumkin bo'lgan barcha usullarni ifodalovchi regex yarating. Faqat regex'ni qaytaring.`
+
+Misol:
+"AQSH telefon raqami -> \+?1?\s?(\()?(\d{3})(?(1)\))[-.\s]?(\d{3})[-.\s]?(\d{4})`
+
+Foydalanuvchi prompti:
+`Elektron pochta manzili ->`
+
+GPT-4o:
+`[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`
+
+Foydalanuvchi prompti:
+`Sanalar ->`
+
+GPT-4o:
+`(?:\d{1,2}[\/\-\.])(?:\d{1,2}[\/\-\.])?\d{2,4}`
+```
+
+Bu holatdagi boshqa vazifalar toifalariga tasniflash kiradi, bunda natijalar to'g'ri sinflar bo'lishi shart.
+
+#### 2. Natijalari keyingi dasturlar tomonidan ishlatiladigan vazifalar
+
+Bu holatda, vazifaning o'zi natijalarning strukturalashgan bo'lishini talab qilmaydi, lekin natijalar boshqa dasturlar tomonidan ishlatilgani uchun, ular o'sha dasturlar tomonidan tahlil qilinadigan (`parsable`) bo'lishi kerak.
+Masalan, agar siz elektron pochta yozish uchun SI modelidan foydalansangiz, xatning o'zi strukturalashgan bo'lishi shart emas. Biroq, ushbu xatdan foydalanadigan keyingi dastur uning ma'lum bir formatda bo'lishini talab qilishi mumkin — masalan, `{"title": [SARLAVHA], "body": [XAT MATNI]}` kabi maxsus kalitlarga ega bo'lgan _JSON_ hujjati.
+Bu, ayniqsa, 6-bobda muhokama qilinadigan agentlik ish jarayonlari (`agentic workflows`) uchun muhim, chunki ularda modelning natijalari ko'pincha model ishlatishi mumkin bo'lgan vositalarga kirish ma'lumoti sifatida uzatiladi.
+
+### Strukturalashgan natijalarni ta'minlash
+
+Strukturalashgan natijalarni qo'llab-quvvatlaydigan freymvorklarga [`guidance`](https://github.com/guidance-ai/guidance), [`outlines`](https://github.com/dottxt-ai/outlines), [`instructor`](https://github.com/567-labs/instructor) va [`llama.cpp`](https://github.com/ggml-org/llama.cpp/discussions/177) kiradi. Har bir model provayderi ham o'z modellarining strukturalashgan natijalarni generatsiya qilish qobiliyatini yaxshilash uchun o'z texnikalaridan foydalanishi mumkin. "OpenAI" o'zining matn generatsiyasi _API_'sida [_JSON_ rejimini](https://platform.openai.com/docs/guides/structured-outputs#json-mode) joriy etgan birinchi model provayderi bo'ldi. Shuni unutmangki, _API_'ning _JSON_ rejimi odatda faqat natijalarning to'g'ri _JSON_ ekanligini kafolatlaydi — _JSON_ obyektlarining mazmunini emas. Aks holda to'g'ri bo'lgan generatsiya qilingan _JSON_'lar ham, agar generatsiya juda erta to'xtasa, masalan, maksimal chiqish tokeni uzunligiga yetganda, uzilib qolishi va shu sababli tahlil qilib bo'lmaydigan (`not parsable`) bo'lishi mumkin. Biroq, agar maksimal token uzunligi juda uzun qilib belgilansa, modelning javoblari ham juda sekin, ham qimmat bo'lib qoladi.
+
+2-20-rasmda `guidance`'dan foydalanib, natijalarni ma'lum bir variantlar to'plami va _regex_ bilan cheklangan holda generatsiya qilishning ikkita misoli ko'rsatilgan.
+
+![2-20-rasm. Cheklangan natijalarni generatsiya qilish uchun guidance'dan foydalanish.](/ai-engineering/2.20-figure.png)
+
+<div className='text-center text-sm italic'>2-20-rasm. Cheklangan natijalarni generatsiya qilish uchun `guidance`'dan foydalanish.</div>
+
+### Strukturalashgan natijalarga erishish yondashuvlari
+
+Siz modelni SI stekining turli qatlamlarida strukturalashgan natijalarni generatsiya qilishga yo'naltirishingiz mumkin: _prompting_, keyingi ishlov berish (`post-processing`), _inference_ bosqichida kengaytirilgan hisoblash (`test time compute`), cheklangan _sampling_ (`constrained sampling`) va _finetuning_. Dastlabki uchtasi ko'proq "bog'lam"ga o'xshaydi. Ular model allaqachon strukturalashgan natijalarni generatsiya qilishda ancha yaxshi bo'lsa va shunchaki kichik bir turtkiga muhtoj bo'lsa, eng yaxshi holatda ishlaydi. Jiddiyroq "muolaja" uchun esa sizga cheklangan _sampling_ va _finetuning_ kerak bo'ladi.
+
+_Inference_ bosqichida kengaytirilgan hisoblash avvalgi bo'limda muhokama qilindi — kutilgan formatga mos keladigan natija topilmaguncha generatsiya qilishda davom etish. Ushbu bo'lim qolgan to'rtta yondashuvga e'tibor qaratadi.
+
+### _Prompting_
+
+**Prompt orqali yo'naltirish** — bu strukturalashgan natijalarga erishish yo'lidagi birinchi qadamdir. Siz modelga istalgan formatda natija generatsiya qilish bo'yicha ko'rsatma berishingiz mumkin. Biroq, modelning bu ko'rsatmaga amal qila olishi uning ko'rsatmalarga amal qilish qobiliyatiga (4-bobda muhokama qilinadi) va ko'rsatmaning aniqligiga (5-bobda muhokama qilinadi) bog'liq. Garchi modellar ko'rsatmalarga amal qilishda tobora yaxshilanib borayotgan bo'lsa-da, ularning har doim ham ko'rsatmalaringizga rioya qilishiga kafolat yo'q.[^33] Hatto bir necha foizlik noto'g'ri natijalar ham ko'plab dasturlar uchun qabul qilib bo'lmas holat bo'lishi mumkin.
+
+To'g'ri natijalar foizini oshirish uchun, ba'zilar dastlabki _prompt_ natijasini tekshirish va/yoki tuzatish uchun SI'dan foydalanadilar. Bu 3-bobda muhokama qilingan "SI — hakam" yondashuvining bir namunasidir. Bu shuni anglatadiki, har bir natija uchun kamida ikkita model so'rovi bo'ladi: biri natijani generatsiya qilish uchun va biri uni tekshirish uchun. Garchi qo'shimcha tekshiruv qatlami natijalarning to'g'riligini sezilarli darajada yaxshilashi mumkin bo'lsa-da, qo'shimcha tekshiruv so'rovlari keltirib chiqaradigan ortiqcha xarajat va kechikish (_latency_) bu yondashuvni ba'zilar uchun haddan tashqari qimmat qilib qo'yishi mumkin.
+
+### Keyingi ishlov berish
+
+Keyingi ishlov berish (`Post-processing`) oddiy va arzon, ammo hayratlanarli darajada yaxshi ishlashi mumkin. Dars bergan vaqtlarimda talabalar bir xil xatolarni takrorlashga moyil ekanliklarini payqaganman. Fundamental modellar bilan ishlay boshlaganimda ham xuddi shu narsani kuzatdim. Model so'rovlar bo'ylab o'xshash xatolarni takrorlashga moyil bo'ladi. Bu shuni anglatadiki, agar siz model qiladigan umumiy xatolarni topsangiz, ularni tuzatish uchun skript yozishingiz mumkin. Masalan, agar generatsiya qilingan _JSON_ obyektida yopuvchi qavs yetishmayotgan bo'lsa, o'sha qavsni qo'lda qo'shing. LinkedIn'ning himoyaviy _YAML_ parseri to'g'ri _YAML_ natijalari foizini 90% dan 99.99% gacha oshirdi ([Bottaro va Ramgopal, 2020](https://www.linkedin.com/blog/engineering/generative-ai/musings-on-building-a-generative-ai-product?_l=en_US)).
+
+> **Maslahat:** <br/>
+> _JSON_ va _YAML_ keng tarqalgan matn formatlaridir. LinkedIn ularning asosiy modeli `GPT-4` ikkalasi bilan ham ishlashini aniqladi, lekin ular o'zlarining natija formati sifatida _YAML_'ni tanladilar, chunki u kamroq yoziladigan va shuning uchun _JSON_'ga qaraganda kamroq chiqish tokenlarini talab qiladi (Bottaro va Ramgopal, 2020).
+
+Keyingi ishlov berish faqat xatolarni tuzatish oson bo'lganda ishlaydi. Bu odatda model natijalari allaqachon asosan to'g'ri formatlangan bo'lib, vaqti-vaqti bilan kichik xatolar uchraganda sodir bo'ladi.
+
+### Cheklangan _sampling_
+
+Cheklangan _sampling_ (`Constrained sampling`) — bu matn generatsiyasini ma'lum bir cheklovlarga tomon yo'naltirish texnikasidir. U odatda strukturalashgan natijalar vositalari tomonidan qo'llaniladi.
+
+Umumiy olganda, biror tokenni generatsiya qilish uchun model cheklovlarga mos keladigan qiymatlar orasidan _sampling_ qiladi. Esingizda bo'lsa, tokenni generatsiya qilish uchun modelingiz avval _logit_ vektorini chiqaradi, har bir _logit_ bitta ehtimoliy tokenga mos keladi. Cheklangan _sampling_ bu _logit_ vektorini filtrlash orqali faqat cheklovlarga mos keladigan tokenlarni saqlab qoladi. Keyin u shu to'g'ri tokenlar orasidan _sampling_ qiladi. Bu jarayon 2-21-rasmda ko'rsatilgan.
+
+![2-21-rasm. Faqat to'g'ri natijalar orasidan sampling qilish uchun cheklovlarga mos kelmaydigan logitlarni filtrlash.](/ai-engineering/2.21-figure.png)
+
+<div className='text-center text-sm italic'>2-21-rasm. Faqat to'g'ri natijalar orasidan _sampling_ qilish uchun cheklovlarga mos kelmaydigan _logit_'larni filtrlash.</div>
+
+2-21-rasmdagi misolda cheklovni filtrlash oson. Biroq, aksariyat holatlar bunchalik oddiy emas. Sizga har bir qadamda nimaga ruxsat berilgani va nimaga ruxsat berilmaganini belgilaydigan grammatika (`grammar`) kerak bo'ladi. Masalan, _JSON_ grammatikasi `{` belgisidan keyin, agar u `{"key": "{{string}}"}` kabi satrning bir qismi bo'lmasa, yana bir `{` kelishi mumkin emasligini belgilaydi.
+
+Bu grammatikani yaratish va uni _sampling_ jarayoniga kiritish oson ish emas. Har bir natija formati — _JSON_, _YAML_, _regex_, _CSV_ va hokazolar — o'z grammatikasini talab qilgani uchun, cheklangan _sampling_ kamroq umumlashtiriladigan (`less generalizable`) yondashuvdir. Uning qo'llanilishi tashqi vositalar yoki sizning jamoangiz tomonidan qo'llab-quvvatlanadigan grammatikali formatlar bilan cheklangan. Grammatikani tekshirish, shuningdek, generatsiya kechikishini oshirishi ham mumkin ([Brandon T. Willard, 2024](https://blog.dottxt.ai/how-fast-cfg.html)).
+
+Ba'zilar cheklangan _sampling_'ga qarshi, chunki ular cheklangan _sampling_ uchun zarur bo'lgan resurslarni modellarni ko'rsatmalarga amal qilishda yaxshiroq bo'lishga o'rgatishga sarflash afzalroq, deb hisoblashadi.
+
+### _Finetuning_
+
+Modelni siz xohlagan formatga rioya qiladigan misollarda qo'shimcha sozlash (`finetuning`) — bu modellarni ushbu formatda natija generatsiya qilishga undashning eng samarali va umumiy yondashuvidir.[^34] U istalgan kutilayotgan format bilan ishlay oladi. Garchi oddiy _finetuning_ model har doim kutilgan formatni chiqarishini kafolatlamasa-da, u _prompting_'ga qaraganda ancha ishonchliroqdir.
+
+Muayyan vazifalar uchun, siz _finetuning_'dan oldin model arxitekturasini o'zgartirish orqali natija formatini kafolatlashingiz mumkin. Masalan, tasniflash uchun, model faqat oldindan belgilangan sinflardan birini chiqarishiga ishonch hosil qilish uchun, siz fundamental model arxitekturasiga klassifikator boshi (`classifier head`) qo'shishingiz mumkin. Arxitektura 2-22-rasmdagidek ko'rinadi.[^35] Bu yondashuv, shuningdek, xususiyatlarga asoslangan transfer (`feature-based transfer`) deb ham ataladi va 7-bobda boshqa transferli o'rganish (`transfer learning`) texnikalari bilan birga batafsilroq muhokama qilinadi.
+
+![2-22-rasm. Modelni klassifikatorga aylantirish uchun asosiy modelga klassifikator boshi qo'shish.](/ai-engineering/2.22-figure.png)
+
+<div className='text-center text-sm italic'>2-22-rasm. Modelni klassifikatorga aylantirish uchun asosiy modelga klassifikator boshi qo'shish. Ushbu misolda klassifikator uchta sinf bilan ishlaydi.</div>
+
+_Finetuning_ davomida siz butun modelni boshidan oxirigacha (`end-to-end`) yoki modelning bir qismini, masalan, ushbu klassifikator boshini qayta o'qitishingiz mumkin. Boshidan oxirigacha o'qitish ko'proq resurs talab qiladi, lekin yaxshiroq samaradorlikni va'da qiladi.
+
+Bizga strukturalashgan natijalar uchun texnikalar kerakligining sababi — bu modelning o'zi strukturalashgan natijalarni generatsiya qilishga qodir emas degan farazdir. Biroq, modellar qudratliroq bo'lib borgani sari, ularning ko'rsatmalarga amal qilishda yaxshilanib borishini kutishimiz mumkin. Taxminimcha, kelajakda minimal _prompting_ bilan modellardan aynan bizga kerak bo'lgan narsani chiqarib olish osonlashadi va bu texnikalar kamroq ahamiyatga ega bo'lib qoladi.
+
+[^34]: Modelni noldan kerakli formatga rioya qiladigan ma'lumotlarda o'qitish ham ishlaydi, ammo bu kitob modellarni noldan ishlab chiqish haqida emas.
+[^35]: Ba'zi _finetuning_ xizmatlari buni siz uchun avtomatik ravishda bajaradi. "OpenAI"ning _finetuning_ xizmatlari avval o'qitish paytida klassifikator boshi qo'shishga imkon berardi, ammo men yozayotgan vaqtda bu xususiyat o'chirib qo'yilgan.
 
 ### Izohlar
 
@@ -123,7 +279,7 @@ Vaqtidan oldin to'xtatishning salbiy tomoni shundaki, agar siz modellardan ma'lu
 
 [^32]: Biroq, mo'rt model bilan qilinadigan eng optimal ish — uni boshqasiga almashtirishdir.
 
-[^33]: Ushbu kitob yozilayotgan vaqtda, dastur va modelga qarab, to'g'ri generatsiya qilingan `JSON` obyektlarining foizini 0% dan to 90% larning yuqorisigacha bo'lgan oraliqda ko'rdim.
+[^33]: Ushbu kitob yozilayotgan vaqtda, dastur va modelga qarab, to'g'ri generatsiya qilingan _JSON_ obyektlarining foizini 0% dan to 90% larning yuqorisigacha bo'lgan oraliqda ko'rdim.
 
 [^34]: Modelni noldan kerakli formatga rioya qiladigan ma'lumotlarda o'qitish ham ishlaydi, ammo bu kitob modellarni noldan ishlab chiqish haqida emas.
 
