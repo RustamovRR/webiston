@@ -54,6 +54,10 @@
       "sampling": {
         "title": "Sampling",
         "path": "2-understanding-foundation-models/sampling/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "2-understanding-foundation-models/summary/page"
       }
     }
   }
