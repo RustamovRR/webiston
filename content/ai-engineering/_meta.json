@@ -60,5 +60,9 @@
         "path": "2-understanding-foundation-models/summary/page"
       }
     }
+  },
+  "3-evaluation-methodology": {
+    "title": "3. Fundamental modellarni tushunish",
+    "path": "3-evaluation-methodology/page"
   }
 }

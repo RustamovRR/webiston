@@ -18,7 +18,7 @@ Dastlabki paytlarda til modeli faqat bitta tilni o'z ichiga olardi. Biroq, bugun
 
 Til modelining asosiy birligi — bu token. Token — bu modelga qarab, belgi, so'z yoki so'zning bir qismi (masalan, `-tion` kabi) bo'lishi mumkin.[^1] Masalan, `ChatGPT` ortida turgan model — `GPT-4` — “I can't wait to build AI applications” iborasini 1-1-rasmda ko'rsatilganidek, to'qqizta tokenga ajratadi. E'tibor bering, bu misolda “can't” so'zi ikkita tokenga — `can` va `'t`'ga ajratilgan. Turli `OpenAI` modellarining matnni qanday tokenlarga ajratishini `OpenAI` veb-saytida ko'rishingiz mumkin.
 
-![GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish](/ai-engineering/1.1-figure.png)
+![GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish](/ai-engineering/1-chapter/1.1-figure.png)
 <div className='text-center text-sm'>_1-1 rasm. GPT-4 modeli "I can't wait to build AI applications" iborasini tokenlarga ajratish_</div>
 
 Asl matnni tokenlarga ajratish jarayoni **tokenizatsiya** deb ataladi. `GPT-4` uchun o'rtacha bitta token [so'z uzunligining taxminan ¾ qismiga](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them) teng. Demak, 100 ta token taxminan 75 ta so'zga to'g'ri keladi.
@@ -51,7 +51,7 @@ Avtoregressiv til modeli ketma-ketlikdagi keyingi tokenni faqat o'zidan oldingi 
 
 1-2-rasmda til modellarining bu ikki turi ko'rsatilgan.
 
-![1-2-rasm. Avtoregressiv til modeli va niqoblangan til modeli](/ai-engineering/1.2-figure.png)
+![1-2-rasm. Avtoregressiv til modeli va niqoblangan til modeli](/ai-engineering/1-chapter/1.2-figure.png)
 
 <div className='text-center text-sm'>_1-2 rasm. Avtoregressiv til modeli va niqoblangan til modeli_</div>
 
@@ -140,7 +140,7 @@ Fundamental modellar SI tadqiqotlarining an'anaviy tuzilishida yangi bir bosqich
 
 Birdan ortiq ma'lumot modalligi bilan ishlay oladigan model **multimodal model** deb ham ataladi. Generativ multimodal model esa **katta multimodal model** (`LMM`) deyiladi. Agar til modeli keyingi tokenni faqat matnli tokenlarga asoslanib generatsiya qilsa, multimodal model keyingi tokenni ham matn, ham tasvir tokenlariga, ya'ni model qo'llab-quvvatlaydigan barcha modalliklarga asoslanib generatsiya qiladi (1-3-rasm).
 
-![](/ai-engineering/1.3-figure.png)
+![](/ai-engineering/1-chapter/1.3-figure.png)
 
 <div className='text-center text-sm italic'>1-3-rasm. Multimodal model keyingi tokenni ham matn, ham vizual tokenlardan olingan ma'lumotlar asosida generatsiya qila oladi</div>
 
@@ -164,7 +164,7 @@ Fundamental modellar o'zlarining miqyosi va o'qitilish usuli tufayli juda keng d
 
 Tasavvur qiling, siz bir chakana savdo kompaniyasi bilan ularning veb-sayti uchun mahsulot tavsiflarini generatsiya qiladigan dastur ustida ishlayapsiz. Tayyor holatidagi model to'g'ri tavsiflarni generatsiya qilishi mumkin, lekin brendning o'ziga xos ovozini (`voice`) aks ettira olmasligi yoki brendning asosiy g'oyalarini (`messaging`) ta'kidlay olmasligi mumkin. Generatsiya qilingan tavsiflar hatto marketing nutqi va siyqasi chiqqan iboralarga (`cliches`) to'la bo'lishi ham mumkin.
 
-![Super-NaturalInstructions mezonidagi vazifalar doirasi (Wang va boshq., 2022)](/ai-engineering/1.4-figure.png)
+![Super-NaturalInstructions mezonidagi vazifalar doirasi (Wang va boshq., 2022)](/ai-engineering/1-chapter/1.4-figure.png)
 
 <div className='text-center text-sm italic'>1-4-rasm. _Super-NaturalInstructions_ mezonidagi vazifalar doirasi (Wang va boshq., 2022).</div>
 
@@ -198,7 +198,7 @@ Masalan, SI endi insonlar kabi, ba'zan esa ulardan ham yaxshiroq yoza olgani uch
 
 ["Goldman Sachs Research"](https://www.goldmansachs.com/insights/articles/ai-investment-forecast-to-approach-200-billion-globally-by-2025.html) hisob-kitoblariga ko'ra, 2025-yilga kelib SI investitsiyalari AQSHda 100 milliard dollarga, global miqyosda esa 200 milliard dollarga yaqinlashishi mumkin.[^8] SI ko'pincha raqobatbardosh ustunlik sifatida tilga olinadi. "FactSet" tadqiqotiga ko'ra, 2023-yilning ikkinchi choragida _S&P 500_ kompaniyalarining har uchdan biri o'zlarining daromadlari haqidagi hisobotlarida SI'ni tilga olgan — bu ko'rsatkich o'tgan yilgiga nisbatan uch baravar ko'pdir. 1-5-rasmda 2018-yildan 2023-yilgacha bo'lgan davrda o'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni ko'rsatilgan.
 
-![O'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan](/ai-engineering/1.5-figure.png)
+![O'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan](/ai-engineering/1-chapter/1.5-figure.png)
 
 <div className='text-center text-sm italic'>1-5-rasm. O'z daromadlari haqidagi hisobotlarida SI'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan.</div>
 
@@ -218,7 +218,7 @@ Dunyo bu imkoniyatni tezda qabul qildi. Sun'iy intellekt muhandisligi eng tez, b
 
 LinkedIn'ning 2023-yil avgust oyidagi so'rovnomasi shuni ko'rsatadiki, o'z profiliga “Generativ SI,” “ChatGPT,” “Prompt Muhandisligi,” va “Prompt Yaratish” kabi atamalarni qo'shgan mutaxassislar soni har oy o'rtacha 75% ga oshgan. "ComputerWorld" esa “SI'ni o'zini tutishga o'rgatish — eng tez o'sayotgan karyera ko'nikmasi” deb e'lon qildi.
 
-![Ochiq manbali SI muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda](/ai-engineering/1.6-figure.png)
+![Ochiq manbali SI muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda](/ai-engineering/1-chapter/1.6-figure.png)
 
 <div className='text-center text-sm italic'>1-6-rasm. Ochiq manbali SI muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda.</div>
 

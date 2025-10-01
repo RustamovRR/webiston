@@ -19,7 +19,7 @@ Qo'shimcha o'qitish dastlabki o'qitishga nisbatan resurslarning kichik bir qismi
 
 2-10-rasmda dastlabki o'qitish, _SFT_ va ma'qullash asosida qo'shimcha sozlashning umumiy ish jarayoni ko'rsatilgan, bunda oxirgi qadam uchun _RLHF_ ishlatiladi deb faraz qilingan. Siz model yaratuvchilari qanday qadamlarni bosib o'tganini aniqlash orqali modelning inson xohish-istaklariga qanchalik yaxshi mos kelishini taxmin qilishingiz mumkin.
 
-![2-10-rasm. Dastlabki o'qitish, SFT va RLHF bilan umumiy o'qitish ish jarayoni.](/ai-engineering/2.10-figure.png)
+![2-10-rasm. Dastlabki o'qitish, SFT va RLHF bilan umumiy o'qitish ish jarayoni.](/ai-engineering/2-chapter/2.10-figure.png)
 
 <div className='text-center text-sm italic'>2-10-rasm. Dastlabki o'qitish, _SFT_ va _RLHF_ bilan umumiy o'qitish ish jarayoni.</div>
 
@@ -31,7 +31,7 @@ Agar diqqat bilan qarasangiz, 2-10-rasm 2-11-rasmdagi jilmayib turgan yuzli [Sho
 2.  Keyin bu **maxluq** yuqori sifatli ma'lumotlarda — Stack Overflow, Quora yoki inson annotatsiyalarida — **nazoratli qo'shimcha sozlashdan o'tkaziladi**, bu esa uni ijtimoiy jihatdan maqbulroq qiladi.
 3.  Bu qo'shimcha sozlangan model uni mijozlarga mos qilish uchun **ma'qullash asosida qo'shimcha sozlash yordamida yanada sayqallanadi**, bu esa unga jilmayib turgan yuzni berishga o'xshaydi.
 
-![2-11-rasm. Jilmayib turgan yuzli Shoggoth.](/ai-engineering/2.11-figure.png)
+![2-11-rasm. Jilmayib turgan yuzli Shoggoth.](/ai-engineering/2-chapter/2.11-figure.png)
 
 <div className='text-center text-sm italic'>2-11-rasm. Jilmayib turgan yuzli Shoggoth. [Anthrupad](https://x.com/anthrupad/status/1622349563922362368) tomonidan ulashilgan asl rasmdan moslashtirilgan.</div>
 
@@ -51,7 +51,7 @@ Biz bilamizki, model o'zining o'qitish ma'lumotlariga taqlid qiladi. Modelni mun
 
 Turli xil so'rovlar turli xil javoblarni talab qilgani uchun, sizning o'rgatuvchi misollaringiz modelingiz bajarishini xohlagan so'rovlar doirasini, masalan, savol-javob, qisqacha bayon qilish va tarjimani o'z ichiga olishi kerak. 2-12-rasmda "OpenAI" o'zining [`InstructGPT`](https://openai.com/index/instruction-following/) modelini qo'shimcha sozlash uchun ishlatgan vazifalar turlarining taqsimoti ko'rsatilgan. E'tibor bering, bu taqsimot multimodal vazifalarni o'z ichiga olmaydi, chunki `InstructGPT` faqat matn bilan ishlaydigan modeldir.
 
-![2-12-rasm. InstructGPT'ni qo'shimcha sozlash uchun ishlatilgan promptlar taqsimoti.](/ai-engineering/2.12-figure.png)
+![2-12-rasm. InstructGPT'ni qo'shimcha sozlash uchun ishlatilgan promptlar taqsimoti.](/ai-engineering/2-chapter/2.12-figure.png)
 
 <div className='text-center text-sm italic'>2-12-rasm. `InstructGPT`'ni qo'shimcha sozlash uchun ishlatilgan promptlar taqsimoti. Grafik "OpenAI" maqolasidagi raqamlar asosida yaratilgan.</div>
 
@@ -116,7 +116,7 @@ Shunday bo'lsa-da, ikkita javobni taqqoslashning bu osonroq vazifasi ham vaqt ta
 
 2-13-rasmda "OpenAI" izohlovchilari `InstructGPT`'ning mukofot modeli uchun taqqoslash ma'lumotlarini yaratishda ishlatgan [interfeys](https://arxiv.org/pdf/2203.02155) ko'rsatilgan. Izohlovchilar 1 dan 7 gacha aniq ballar berishadi, shuningdek, javoblarni o'z afzalliklari tartibida joylashtirishadi, ammo faqat reyting mukofot modelini o'qitish uchun ishlatiladi. Ularning izohlovchilararo kelishuvi (`inter-labeler agreement`) taxminan 73% ni tashkil etadi, ya'ni agar ular 10 kishidan bir xil ikkita javobni baholashni so'rashsa, ulardan taxminan 7 tasi bir xil reytingga ega bo'ladi. Belgilash jarayonini tezlashtirish uchun har bir annotator bir vaqtning o'zida bir nechta javobni baholashi mumkin. Uchta baholangan javoblar to'plami (A > B > C) uchta baholangan juftlikni hosil qiladi: (A > B), (A > C) va (B > C).
 
-![2-13-rasm. "OpenAI"ning InstructGPT modeli uchun taqqoslash ma'lumotlarini yaratishda izohlovchilar ishlatgan interfeys.](/ai-engineering/2.13-figure.png)
+![2-13-rasm. "OpenAI"ning InstructGPT modeli uchun taqqoslash ma'lumotlarini yaratishda izohlovchilar ishlatgan interfeys.](/ai-engineering/2-chapter/2.13-figure.png)
 
 <div className='text-center text-sm italic'>2-13-rasm. "OpenAI"ning `InstructGPT` modeli uchun taqqoslash ma'lumotlarini yaratishda izohlovchilar ishlatgan interfeys.</div>
 

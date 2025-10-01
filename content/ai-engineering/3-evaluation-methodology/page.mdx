@@ -1,0 +1,70 @@
+# 3-bob. Baholash metodologiyasi
+
+SI qanchalik ko'p ishlatilsa, halokatli nosozliklar uchun imkoniyat ham shunchalik ko'p bo'ladi. Fundamental modellar paydo bo'lgan qisqa vaqt ichida biz allaqachon ko'plab nosozliklarga guvoh bo'ldik. Bir kishi chatbot tomonidan ruhlantirilganidan so'ng o'z joniga qasd qildi. Advokatlar SI tomonidan to'qib chiqarilgan soxta dalillarni sudga taqdim etishdi. "Air Canada" o'zining SI chatboti yo'lovchiga yolg'on ma'lumot bergani uchun zararni qoplashga majbur bo'ldi. SI natijalarini sifat nazoratidan o'tkazish usuli bo'lmasa, ko'plab dasturlar uchun SI'ning xavfi uning foydasidan ustun kelishi mumkin.
+
+Jamoalar SI'ni joriy etishga shoshilar ekan, ko'pchilik SI dasturlarini hayotga tatbiq etishdagi eng katta to'siq baholash ekanligini tezda anglab yetadi. Ba'zi dasturlar uchun baholashni yo'lga qo'yish ishlab chiqish harakatlarining asosiy qismini egallashi mumkin.[^1]
+
+Baholashning muhimligi va murakkabligi tufayli, ushbu kitobda unga ikkita bob ajratilgan. Ushbu bobda erkin natijali (`open-ended`) modellarni baholash uchun ishlatiladigan turli baholash usullari, bu usullar qanday ishlashi va ularning cheklovlari yoritiladi. Keyingi bob esa ushbu usullardan dasturingiz uchun modellarni tanlash va dasturingizni baholash uchun baholash jarayonlari ketma-ketligini (`evaluation pipeline`) qurishga qaratilgan.
+
+Garchi men baholashni alohida boblarda muhokama qilsam-da, uni alohida emas, balki butun tizim kontekstida ko'rib chiqish kerak. Baholash xavflarni yumshatish va imkoniyatlarni ochishni maqsad qiladi. Xavflarni yumshatish uchun, avvalo, tizimingiz qayerda ishdan chiqishi mumkinligini aniqlab olishingiz va baholashingizni shu nuqtalar atrofida qurishingiz kerak. Ko'pincha, bu tizimingizdagi nosozliklarni ko'rish imkoniyatini oshirish uchun uni qayta loyihalashni talab qilishi mumkin. Tizimingiz qayerda ishdan chiqishini aniq tushunmasdan turib, hech qanday baholash metrikalari yoki vositalari tizimni mustahkam (`robust`) qila olmaydi.
+
+### Baholashdagi qiyinchiliklar
+
+Baholash usullariga sho'ng'ishdan oldin, fundamental modellarni baholashdagi qiyinchiliklarni tan olish muhimdir. Baholash qiyin bo'lgani uchun, ko'pchilik og'zaki gaplarga[^2] (masalan, kimdir X model yaxshi deydi) yoki natijalarni ko'z bilan chamalashga[^3] qanoat qiladi. Bu esa yanada ko'proq xavf tug'diradi va dastur iteratsiyasini sekinlashtiradi. Buning o'rniga, natijalarni ishonchliroq qilish uchun biz tizimli baholashga sarmoya kiritishimiz kerak.
+
+Ko'pgina fundamental modellar til modeli komponentiga ega bo'lgani uchun, ushbu bobda til modellarini baholash uchun ishlatiladigan metrikalar, jumladan, o'zaro entropiya (`cross entropy`) va `perplexity` qisqacha ko'rib chiqiladi. Bu metrikalar til modellarini o'qitish va qo'shimcha sozlashni yo'naltirish uchun muhim ahamiyatga ega va ko'plab baholash usullarida tez-tez ishlatiladi.
+
+Fundamental modellarni baholash ayniqsa qiyin, chunki ular erkin natijalidir va men bu muammolarni qanday hal qilish bo'yicha eng yaxshi amaliyotlarni yoritib beraman. Ko'pgina dasturlar uchun inson baholovchilaridan foydalanish zaruriy variant bo'lib qolmoqda. Biroq, inson annotatsiyalari qanchalik sekin va qimmat bo'lishi mumkinligini hisobga olsak, maqsad jarayonni avtomatlashtirishdir. Ushbu kitobda avtomatik baholashga e'tibor qaratiladi, u ham aniq (`exact`), ham subyektiv (`subjective`) baholashni o'z ichiga oladi.
+
+Subyektiv baholashning yuksalayotgan yulduzi — bu "SI — hakam" (`AI as a judge`) yondashuvi, ya'ni SI javoblarini baholash uchun SI'dan foydalanish. U subyektivdir, chunki ball SI hakam qaysi model va `prompt`'dan foydalanishiga bog'liq. Garchi bu yondashuv sohada jadal ommalashayotgan bo'lsa-da, u SI bu muhim vazifa uchun yetarlicha ishonchli emas deb hisoblaydiganlar tomonidan kuchli qarshilikka ham uchramoqda. Men ushbu muhokamaga chuqurroq kirib borishdan ayniqsa hayajondaman va umid qilamanki, siz ham shunday bo'lasiz.
+
+
+### Izohlar
+
+[^1]: 2023-yil dekabr oyida "OpenAI" hammuassisi Greg Brokman shunday deb tvit qoldirdi: "Baholashlar, ajablanarlisi, ko'pincha sizga kerak bo'lgan yagona narsadir."
+
+[^2]: "a16z"ning 2023-yilgi tadqiqoti shuni ko'rsatdiki, 70 nafar qaror qabul qiluvchilardan 6 tasi modellarni og'zaki gaplar asosida baholagan.
+
+[^3]: Shuningdek, "vibe check" (kayfiyatni tekshirish) deb ham ataladi.
+
+[^4]: 2024-yil sentabr oyida "OpenAI"ning `GPT-o1` modeli chiqqanda, Filds medali sohibi Terrens Tao bu model bilan ishlash tajribasini "o'rtamiyona, lekin butunlay qobiliyatsiz bo'lmagan aspirant" bilan ishlashga qiyosladi. Uning taxminicha, SI "qobiliyatli aspirant" darajasiga yetishi uchun yana bir yoki ikki iteratsiya kifoya qilishi mumkin. Uning bahosiga javoban, ko'pchilik hazillashib, agar biz allaqachon SI modellarini baholash uchun eng yorqin insoniy aqllarga muhtoj bo'lgan nuqtaga kelgan bo'lsak, kelajakdagi modellarni baholashga malakali odamimiz qolmaydi, deyishdi.
+
+[^5]: Men "LLM", "GPT", "generative" va "transformer" kalit so'zlari yordamida kamida 500 yulduzchaga ega bo'lgan barcha repozitoriylarni qidirdim. Shuningdek, o'z veb-saytim https://huyenchip.com orqali yetishmayotgan repozitoriylar uchun kraudsorsing qildim.
+
+[^6]: Garchi kuchli korrelyatsiya mavjud bo'lsa-da, til modellashtirish samaradorligi keyingi dasturlar samaradorligini to'liq tushuntirib bera olmaydi. Bu faol tadqiqot sohasi.
+
+[^7]: 1-bobda muhokama qilinganidek, token belgi, so'z yoki so'zning bir qismi bo'lishi mumkin. Klod Shennon 1951-yilda entropiyani taqdim etganida, u ishlagan tokenlar belgilar edi. Mana, entropiya uning o'z so'zlari bilan: "Entropiya — bu ma'lum ma'noda, tildagi matnning har bir harfi uchun o'rtacha qancha axborot ishlab chiqarilishini o'lchaydigan statistik parametr. Agar til eng samarali usulda ikkilik raqamlarga (0 yoki 1) tarjima qilinsa, entropiya asl tilning har bir harfiga talab qilinadigan o'rtacha ikkilik raqamlar sonidir."
+
+[^8]: Ko'pchilikning log asos 2 dan ko'ra natural logarifmni afzal ko'rishining bir sababi shundaki, natural logarifm uning matematikasini osonlashtiradigan ma'lum xususiyatlarga ega. Masalan, natural logarifm ln(x) ning hosilasi 1/x ga teng.
+
+[^9]: Agar siz _SFT_ (nazoratli qo'shimcha sozlash) va _RLHF_ (inson fikr-mulohazalari asosida mustahkamlovchi o'rganish) nima ekanligiga ishonchingiz komil bo'lmasa, 2-bobga qayta murojaat qiling.
+
+[^10]: Kvantlash (`Quantization`) 7-bobda muhokama qilinadi.
+
+[^11]: Muammo shundaki, ko'plab murakkab vazifalarning o'lchanadigan maqsadlari bo'lsa-da, SI murakkab vazifalarni boshidan oxirigacha bajarishda unchalik yaxshi emas, shuning uchun SI yechimning bir qismini bajarish uchun ishlatilishi mumkin. Ba'zan, yechimning bir qismini baholash yakuniy natijani baholashdan qiyinroq bo'ladi. Tasavvur qiling, siz kimningdir shaxmat o'ynash qobiliyatini baholamoqchisiz. Faqat bitta yurishni baholashdan ko'ra, o'yinning yakuniy natijasini (g'alaba/mag'lubiyat/durang) baholash osonroq.
+
+[^12]: Shuningdek, siz "mushuklar" va "mushuk" yoki "bo'lmaydi" va "bo'midi" ikki alohida token deb hisoblanishini xohlaysizmi yoki yo'qligiga qarab, biroz ishlov berishni xohlashingiz mumkin.
+
+[^13]: Garchi 10 000 elementli vektor fazosi yuqori o'lchamli tuyulsa-da, u xom ma'lumotlarning o'lchamidan ancha past. Shuning uchun, _embedding_ murakkab ma'lumotlarning pastroq o'lchamli fazodagi tasviri hisoblanadi.
+
+[^14]: Shuningdek, `word2vec` (Mikolov va boshq., “Efficient Estimation of Word Representations in Vector Space”, arXiv, v3, 2013-yil 7-sentabr) va `GloVe` (Pennington va boshq., “GloVe: Global Vectors for Word Representation”, Stenford Universiteti Tabiiy Tilni Qayta Ishlash Guruhi (blog), 2014) kabi hujjat _embedding_'laridan farqli o'laroq, so'z _embedding_'larini generatsiya qiladigan modellar ham mavjud.
+
+[^15]: "SI hakam" atamasini SI'ning sudda hakam sifatida ishlatilishi qo'llanish holati bilan adashtirmaslik kerak.
+
+[^16]: 2017-yilda men `NeurIPS` seminarida _MEWR_ (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini hech qachon davom ettirmadim.
+
+[^17]: Ba'zi hollarda, baholash byudjetning asosiy qismini, hatto javob generatsiyasidan ham ko'proqni egallashi mumkin.
+
+[^18]: "Spot-checking" _sampling_ bilan bir xil.
+
+[^19]: Saito va boshqalar (2023) insonlar ham uzunroq javoblarni afzal ko'rishlarini, ammo ancha kamroq darajada ekanligini aniqladilar.
+
+[^20]: Bu texnika ba'zan o'z-o'zini tanqid qilish (`self-critique`) yoki o'z-o'zidan so'rash (`self-ask`) deb ataladi.
+
+[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan -2.5 va 1.0 oralig'ida. Bu SI hakamlar bilan mezonlarning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
+
+[^22]: Masalan, Likert shkalasidan foydalanish.
+
+[^23]: Garchi Chatbot Arena Elo reyting algoritmidan foydalanishni to'xtatgan bo'lsa-da, uning ishlab chiquvchilari bir muncha vaqt o'zlarining model reytinglarini "Elo ballari" deb atashda davom etishdi. Ular natijaviy Bredli-Terri ballarini Elo ballariga o'xshatish uchun miqyoslashdi. Miqyoslash ancha murakkab. Har bir ball 400 ga (Elo'da ishlatiladigan shkala) ko'paytiriladi va 1000 ga (boshlang'ich Elo bali) qo'shiladi. Keyin bu ball `Llama-13b` modeli 800 ballga ega bo'lishi uchun qayta miqyoslanadi.
+
+[^24]: Chatbot Arena ommalashgani sari, uni aldashga urinishlar ham ko'payib bormoqda. Garchi hech kim menga reytingni aldashga uringanini tan olmagan bo'lsa-da, bir nechta model ishlab chiquvchilari o'z raqobatchilari uni aldashga harakat qilishiga amin ekanliklarini aytishdi.

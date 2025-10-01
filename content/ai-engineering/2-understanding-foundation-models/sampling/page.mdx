@@ -10,7 +10,7 @@ Kirish ma'lumoti berilganda, neyron to'r avval ehtimoliy natijalarning ehtimolli
 
 Til modeli uchun, keyingi tokenni generatsiya qilish uchun, model avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi, bu 2-14-rasmda ko'rsatilgan.
 
-![2-14-rasm. Keyingi tokenni generatsiya qilish uchun til modeli avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi.](/ai-engineering/2.14-figure.png)
+![2-14-rasm. Keyingi tokenni generatsiya qilish uchun til modeli avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi.](/ai-engineering/2-chapter/2.14-figure.png)
 
 <div className='text-center text-sm italic'>2-14-rasm. Keyingi tokenni generatsiya qilish uchun til modeli avval lug'atdagi barcha tokenlar bo'yicha ehtimollik taqsimotini hisoblaydi.</div>
 
@@ -20,7 +20,7 @@ Har doim keyingi eng ehtimolli tokenni tanlash o'rniga, model keyingi tokenni ba
 
 Model bu ehtimolliklarni qanday hisoblaydi? Kirish ma'lumoti berilganda, neyron to'r _logit_ vektorini (ehtimollikka aylantirilmagan "xom" ballar vektorini) chiqaradi. Har bir _logit_ bitta ehtimoliy qiymatga mos keladi. Til modeli misolida, har bir _logit_ model lug'atidagi bitta tokenga mos keladi. _Logit_ vektorining o'lchami lug'at hajmiga teng. _Logit_ vektorining vizualizatsiyasi 2-15-rasmda ko'rsatilgan.
 
-![2-15-rasm. Har bir kirish uchun til modeli logit vektorini hosil qiladi. Har bir logit lug'atdagi bir tokenga mos keladi.](/ai-engineering/2.15-figure.png)
+![2-15-rasm. Har bir kirish uchun til modeli logit vektorini hosil qiladi. Har bir logit lug'atdagi bir tokenga mos keladi.](/ai-engineering/2-chapter/2.15-figure.png)
 
 <div className='text-center text-sm italic'>2-15-rasm. Har bir kirish uchun til modeli _logit_ vektorini hosil qiladi. Har bir _logit_ lug'atdagi bir tokenga mos keladi.</div>
 
@@ -52,7 +52,7 @@ Harorat qanchalik yuqori bo'lsa, modelning eng yaqqol qiymatni (eng yuqori _logi
 
 2-16-rasmda turli haroratlarda A va B tokenlari uchun `softmax` ehtimolliklari ko'rsatilgan. Harorat 0 ga yaqinlashgan sari, modelning B tokenini tanlash ehtimoli 1 ga yaqinlashadi. Bizning misolimizda, 0.1 dan past harorat uchun model deyarli har doim B ni chiqaradi. Harorat oshgan sari, A tokenining tanlanish ehtimoli ortadi, B tokenining tanlanish ehtimoli esa kamayadi. Model provayderlari odatda haroratni 0 va 2 oralig'ida cheklashadi. Agar siz o'z modelingizga ega bo'lsangiz, istalgan manfiy bo'lmagan haroratdan foydalanishingiz mumkin. Ijodiy qo'llanish holatlari uchun ko'pincha 0.7 harorat tavsiya etiladi, chunki u ijodkorlik va bashorat qilinuvchanlik o'rtasidagi muvozanatni ta'minlaydi, lekin siz tajriba o'tkazib, o'zingiz uchun eng yaxshi ishlaydigan haroratni topishingiz mumkin.
 
-![2-16-rasm. A va B tokenlarining logitlari [1, 2] bo'lganda, turli haroratlardagi softmax ehtimolliklari.](/ai-engineering/2.16-figure.png)
+![2-16-rasm. A va B tokenlarining logitlari [1, 2] bo'lganda, turli haroratlardagi softmax ehtimolliklari.](/ai-engineering/2-chapter/2.16-figure.png)
 
 <div className='text-center text-sm italic'>2-16-rasm. A va B tokenlarining _logit_'lari [1, 2] bo'lganda, turli haroratlardagi `softmax` ehtimolliklari. Harorat qiymatini belgilamasdan, ya'ni 1 ga teng haroratdan foydalanganda, B ning `softmax` ehtimoli 73% bo'lardi.</div>
 
@@ -65,7 +65,7 @@ Ko'pgina model provayderlari o'z modellari tomonidan generatsiya qilingan ehtimo
 
 2-17-rasmda _logit_'lar, ehtimolliklar va _logprob_'larning qanday hisoblanishi ish jarayoni ko'rsatilgan.
 
-![2-17-rasm. Logitlar, ehtimolliklar va logprobs'larning qanday hisoblanishi.](/ai-engineering/2.17-figure.png)
+![2-17-rasm. Logitlar, ehtimolliklar va logprobs'larning qanday hisoblanishi.](/ai-engineering/2-chapter/2.17-figure.png)
 
 <div className='text-center text-sm italic'>2-17-rasm. _Logit_'lar, ehtimolliklar va _logprob_'larning qanday hisoblanishi.</div>
 
@@ -85,7 +85,7 @@ Bu muammoni chetlab o'tish uchun, model _logit_'larni hisoblab bo'lgach, biz eng
 
 Aytaylik, barcha tokenlarning ehtimolliklari 2-18-rasmda ko'rsatilganidek. Agar `top-p` 90% bo'lsa, faqat "ha" va "balki" ko'rib chiqiladi, chunki ularning yig'ma ehtimolligi 90% dan katta. Agar `top-p` 99% bo'lsa, unda "ha", "balki" va "yo'q" ko'rib chiqiladi.
 
-![2-18-rasm. Token ehtimolliklariga misol.](/ai-engineering/2.18-figure.png)
+![2-18-rasm. Token ehtimolliklariga misol.](/ai-engineering/2-chapter/2.18-figure.png)
 
 <div className='text-center text-sm italic'>2-18-rasm. Token ehtimolliklariga misol.</div>
 
@@ -143,7 +143,7 @@ Yana bir tanlov usuli — bu oldingi bo'limda muhokama qilinganidek, har bir nat
 
 "OpenAI" tajribasida ko'proq natijalarni _sampling_ qilish yaxshiroq samaradorlikka olib keldi, ammo faqat ma'lum bir nuqtagacha. Bu tajribada o'sha nuqta 400 ta natija edi. Bu nuqtadan o'tgach, samaradorlik pasayadi (2-19-rasm). Ular _sampling_ qilingan natijalar soni ortgan sari, verifikatorni aldashi mumkin bo'lgan zararli (`adversarial`) natijalarni topish ehtimoli ham ortadi, deb taxmin qilishdi. Biroq, Stenford tajribasi boshqa bir xulosani ko'rsatdi. “Monkey Business” ([Brown va boshq., 2024](https://scalingintelligence.stanford.edu/blogs/monkeys/)) tadqiqoti shuni ko'rsatadiki, namunalar soni 1 dan 10 000 gacha ortgan sari yechilgan masalalar soni ko'pincha log-chiziqli ravishda ortadi. Garchi _inference_ bosqichida kengaytirilgan hisoblashni cheksiz miqyoslash mumkinmi yoki yo'qligi haqida o'ylash qiziqarli bo'lsa-da, menimcha, amaliyotda hech kim har bir kirish uchun 400 yoki 10 000 xil natijani _sampling_ qilmaydi. Xarajatlar juda katta bo'lib ketardi.
 
-![2-19-rasm. "OpenAI" (2021) ko'proq natijalarni sampling qilish yaxshiroq samaradorlikka olib kelishini, lekin bu faqat 400 ta natijagacha ishlashini aniqladi.](/ai-engineering/2.19-figure.png)
+![2-19-rasm. "OpenAI" (2021) ko'proq natijalarni sampling qilish yaxshiroq samaradorlikka olib kelishini, lekin bu faqat 400 ta natijagacha ishlashini aniqladi.](/ai-engineering/2-chapter/2.19-figure.png)
 
 <div className='text-center text-sm italic'>2-19-rasm. ["OpenAI"](https://arxiv.org/abs/2110.14168) (2021) ko'proq natijalarni _sampling_ qilish yaxshiroq samaradorlikka olib kelishini, lekin bu faqat 400 ta natijagacha ishlashini aniqladi.</div>
 
@@ -201,7 +201,7 @@ Strukturalashgan natijalarni qo'llab-quvvatlaydigan freymvorklarga [`guidance`](
 
 2-20-rasmda `guidance`'dan foydalanib, natijalarni ma'lum bir variantlar to'plami va _regex_ bilan cheklangan holda generatsiya qilishning ikkita misoli ko'rsatilgan.
 
-![2-20-rasm. Cheklangan natijalarni generatsiya qilish uchun guidance'dan foydalanish.](/ai-engineering/2.20-figure.png)
+![2-20-rasm. Cheklangan natijalarni generatsiya qilish uchun guidance'dan foydalanish.](/ai-engineering/2-chapter/2.20-figure.png)
 
 <div className='text-center text-sm italic'>2-20-rasm. Cheklangan natijalarni generatsiya qilish uchun `guidance`'dan foydalanish.</div>
 
@@ -232,7 +232,7 @@ Cheklangan _sampling_ (`Constrained sampling`) — bu matn generatsiyasini ma'lu
 
 Umumiy olganda, biror tokenni generatsiya qilish uchun model cheklovlarga mos keladigan qiymatlar orasidan _sampling_ qiladi. Esingizda bo'lsa, tokenni generatsiya qilish uchun modelingiz avval _logit_ vektorini chiqaradi, har bir _logit_ bitta ehtimoliy tokenga mos keladi. Cheklangan _sampling_ bu _logit_ vektorini filtrlash orqali faqat cheklovlarga mos keladigan tokenlarni saqlab qoladi. Keyin u shu to'g'ri tokenlar orasidan _sampling_ qiladi. Bu jarayon 2-21-rasmda ko'rsatilgan.
 
-![2-21-rasm. Faqat to'g'ri natijalar orasidan sampling qilish uchun cheklovlarga mos kelmaydigan logitlarni filtrlash.](/ai-engineering/2.21-figure.png)
+![2-21-rasm. Faqat to'g'ri natijalar orasidan sampling qilish uchun cheklovlarga mos kelmaydigan logitlarni filtrlash.](/ai-engineering/2-chapter/2.21-figure.png)
 
 <div className='text-center text-sm italic'>2-21-rasm. Faqat to'g'ri natijalar orasidan _sampling_ qilish uchun cheklovlarga mos kelmaydigan _logit_'larni filtrlash.</div>
 
@@ -248,7 +248,7 @@ Modelni siz xohlagan formatga rioya qiladigan misollarda qo'shimcha sozlash (`fi
 
 Muayyan vazifalar uchun, siz _finetuning_'dan oldin model arxitekturasini o'zgartirish orqali natija formatini kafolatlashingiz mumkin. Masalan, tasniflash uchun, model faqat oldindan belgilangan sinflardan birini chiqarishiga ishonch hosil qilish uchun, siz fundamental model arxitekturasiga klassifikator boshi (`classifier head`) qo'shishingiz mumkin. Arxitektura 2-22-rasmdagidek ko'rinadi.[^35] Bu yondashuv, shuningdek, xususiyatlarga asoslangan transfer (`feature-based transfer`) deb ham ataladi va 7-bobda boshqa transferli o'rganish (`transfer learning`) texnikalari bilan birga batafsilroq muhokama qilinadi.
 
-![2-22-rasm. Modelni klassifikatorga aylantirish uchun asosiy modelga klassifikator boshi qo'shish.](/ai-engineering/2.22-figure.png)
+![2-22-rasm. Modelni klassifikatorga aylantirish uchun asosiy modelga klassifikator boshi qo'shish.](/ai-engineering/2-chapter/2.22-figure.png)
 
 <div className='text-center text-sm italic'>2-22-rasm. Modelni klassifikatorga aylantirish uchun asosiy modelga klassifikator boshi qo'shish. Ushbu misolda klassifikator uchta sinf bilan ishlaydi.</div>
 
@@ -277,7 +277,7 @@ Model barqarorsizligi (`inconsistency`) ikki holatda namoyon bo'ladi:
 
 2-23-rasmda men `ChatGPT`'dan esselarni baholash uchun foydalanishga uringanim misoli ko'rsatilgan. Bir xil prompt uni ikki marta ishga tushirganimda menga ikki xil ball berdi: 3/5 va 5/5.
 
-![2-23-rasm. Bir xil kirish bir xil modelda turli xil natijalarni keltirib chiqarishi mumkin.](/ai-engineering/2.23-figure.png)
+![2-23-rasm. Bir xil kirish bir xil modelda turli xil natijalarni keltirib chiqarishi mumkin.](/ai-engineering/2-chapter/2.23-figure.png)
 
 <div className='text-center text-sm italic'>2-23-rasm. Bir xil kirish bir xil modelda turli xil natijalarni keltirib chiqarishi mumkin.</div>
 
@@ -311,13 +311,13 @@ Tasavvur qiling, siz modelga "Chip Huyen kim?" degan prompt berasiz va model gen
 
 2-24-rasmda `LLaVA-v1.5-7B` modelining o'z-o'zini aldashiga misol ko'rsatilgan. Men modeldan rasmdagi mahsulot yorlig'ida ko'rsatilgan tarkibini aniqlashni so'radim, bu shampun idishi edi. O'z javobida model rasmdagi mahsulot sut idishi ekanligiga o'zini ishontiradi, so'ngra mahsulot yorlig'idan olingan tarkiblar ro'yxatiga sutni qo'shishda davom etadi.
 
-![2-24-rasm. LLaVA-v1.5-7B modelining o'z-o'zini aldashiga misol.](/ai-engineering/2.24-figure.png)
+![2-24-rasm. LLaVA-v1.5-7B modelining o'z-o'zini aldashiga misol.](/ai-engineering/2-chapter/2.24-figure.png)
 
 <div className='text-center text-sm italic'>2-24-rasm. `LLaVA-v1.5-7B` modelining o'z-o'zini aldashiga misol.</div>
 
 Zhang va boshqalar (2023) bu hodisani **qor ko'chkisi kabi gallyutsinatsiyalar** ([`snowballing hallucinations`](https://arxiv.org/abs/2305.13534)) deb atashadi. Bir marta noto'g'ri taxmin qilgandan so'ng, model o'zining dastlabki xatosini oqlash uchun gallyutsinatsiya qilishda davom etishi mumkin. Qizig'i shundaki, mualliflar dastlabki noto'g'ri taxminlar modelning aks holda to'g'ri javob bera oladigan savollarda ham xato qilishiga sabab bo'lishi mumkinligini ko'rsatishgan (2-25-rasm).
 
-![2-25-rasm. Dastlabki noto'g'ri taxmin modelning, hatto bu to'g'ri emasligini bilsa ham, 9677 soni 13 ga bo'linadi deb da'vo qilishiga sabab bo'lishi mumkin.](/ai-engineering/2.25-figure.png)
+![2-25-rasm. Dastlabki noto'g'ri taxmin modelning, hatto bu to'g'ri emasligini bilsa ham, 9677 soni 13 ga bo'linadi deb da'vo qilishiga sabab bo'lishi mumkin.](/ai-engineering/2-chapter/2.25-figure.png)
 
 <div className='text-center text-sm italic'>2-25-rasm. Dastlabki noto'g'ri taxmin modelning, hatto bu to'g'ri emasligini bilsa ham, 9677 soni 13 ga bo'linadi deb da'vo qilishiga sabab bo'lishi mumkin.</div>
 
@@ -329,7 +329,7 @@ Ikkinchi gipoteza shundan iboratki, gallyutsinatsiya modelning ichki bilimlari v
 
 O'sha ma'ruzada Shulman "OpenAI" _RLHF_'ning gallyutsinatsiyalarni kamaytirishga yordam berishini aniqlaganini aytib o'tdi. Biroq, `InstructGPT` maqolasi _RLHF_ gallyutsinatsiyani yomonlashtirganini ko'rsatadi (2-26-rasm). Garchi _RLHF_ `InstructGPT` uchun gallyutsinatsiyalarni yomonlashtirganga o'xshasa-da, u boshqa jihatlarni yaxshiladi va umuman olganda, inson izohlovchilari faqat _SFT_ modeliga qaraganda _RLHF_ modelini afzal ko'rishdi.
 
-![2-26-rasm. Ham RLHF, ham SFT ishlatadigan model (InstructGPT) uchun gallyutsinatsiya faqat SFT ishlatadigan xuddi shu modelga nisbatan yomonroq (Ouyang va boshq., 2022).](/ai-engineering/2.26-figure.png)
+![2-26-rasm. Ham RLHF, ham SFT ishlatadigan model (InstructGPT) uchun gallyutsinatsiya faqat SFT ishlatadigan xuddi shu modelga nisbatan yomonroq (Ouyang va boshq., 2022).](/ai-engineering/2-chapter/2.26-figure.png)
 
 <div className='text-center text-sm italic'>2-26-rasm. Ham _RLHF_, ham _SFT_ ishlatadigan model (`InstructGPT`) uchun gallyutsinatsiya faqat _SFT_ ishlatadigan xuddi shu modelga nisbatan yomonroq ([Ouyang va boshq., 2022](https://arxiv.org/abs/2203.02155)).</div>
 

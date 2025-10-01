@@ -14,7 +14,7 @@ Transformer'ni tushunish uchun, keling, u hal qilish uchun yaratilgan muammoga n
 
 Umumiy olganda, `seq2seq` kirish ma'lumotlarini qayta ishlaydigan kodlovchi (`encoder`) va chiqish ma'lumotlarini generatsiya qiladigan dekoderdan (`decoder`) iborat. Ham kirish, ham chiqish tokenlar ketma-ketligi bo'lganligi tufayli, nom ham shundan kelib chiqqan. `Seq2seq` o'zining kodlovchisi va dekoderi sifatida `RNN`'lardan (qaytalanuvchi neyron to'rlar) foydalanadi. Eng oddiy shaklida, kodlovchi kirish tokenlarini ketma-ket qayta ishlaydi va kirish ma'lumotini ifodalovchi yakuniy yashirin holatni (`final hidden state`) chiqaradi. Keyin dekoder ham kirishning yakuniy yashirin holatiga, ham oldin generatsiya qilingan tokenga asoslanib, chiqish tokenlarini ketma-ket generatsiya qiladi. `Seq2seq` arxitekturasining vizualizatsiyasi 2-4-rasmning yuqori yarmida ko'rsatilgan.
 
-![2-4-rasm. `Seq2seq` arxitekturasi transformer arxitekturasi bilan taqqoslanganda. Transformer arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.](/ai-engineering/2.4-figure.png)
+![2-4-rasm. `Seq2seq` arxitekturasi transformer arxitekturasi bilan taqqoslanganda. Transformer arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.](/ai-engineering/2-chapter/2.4-figure.png)
 
 <div className='text-center text-sm italic'>2-4-rasm. `Seq2seq` arxitekturasi transformer arxitekturasi bilan taqqoslanganda. Transformer arxitekturasi uchun strelkalar dekoderning har bir chiqish tokenini generatsiya qilishda qaysi tokenlarga diqqat qaratishini ko'rsatadi.</div>
 
@@ -54,7 +54,7 @@ Transformer arxitekturasining yuragi — bu diqqat mexanizmidir. Bu mexanizmni t
 
 Diqqat mexanizmi biror kirish tokeniga qancha diqqat qaratish kerakligini so'rov vektori va uning kalit vektori o'rtasida skalyar ko'paytmani ([`dot product`](https://en.wikipedia.org/wiki/Dot_product)) bajarish orqali hisoblaydi. Yuqori ball model kitobning xulosasini generatsiya qilishda o'sha sahifa mazmunidan (uning qiymat vektoridan) ko'proq foydalanishini anglatadi. Kalit, qiymat va so'rov vektorlari bilan diqqat mexanizmining vizualizatsiyasi 2-5-rasmda ko'rsatilgan. Ushbu vizualizatsiyada so'rov vektori keyingi tokenni generatsiya qilish uchun oldingi `How, are, you, ?, ¿` tokenlaridan ma'lumot qidirmoqda.
 
-![2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.](/ai-engineering/2.5-figure.png)
+![2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.](/ai-engineering/2-chapter/2.5-figure.png)
 
 <div className='text-center text-sm italic'>2-5-rasm. Diqqat mexanizmining amaldagi misoli va uning mashhur "transformer" maqolasi, “Attention Is All You Need” (Vaswani va boshq., 2017) dan olingan yuqori darajali vizualizatsiyasi.</div>
 
@@ -113,7 +113,7 @@ Transformer modelidagi transformer bloklari soni ko'pincha o'sha modelning qatla
 - To'g'ridan-to'g'ri tarqaluvchi qatlamning o'lchami.
 - Lug'at hajmi.
 
-![2-6-rasm. Transformer modelining og'irlik tarkibining vizualizatsiyasi.](/ai-engineering/2.6-figure.png)
+![2-6-rasm. Transformer modelining og'irlik tarkibining vizualizatsiyasi.](/ai-engineering/2-chapter/2.6-figure.png)
 
 <div className='text-center text-sm italic'>2-6-rasm. Transformer modelining og'irlik tarkibining vizualizatsiyasi.</div>
 
@@ -153,7 +153,7 @@ Uzoq ketma-ketliklarni modellashtirish _LLM_'larni ishlab chiqishdagi asosiy mua
 
 Transformer'dan ustun keladigan arxitekturani ishlab chiqish qiyin bo'lsa-da, uning ko'plab cheklovlarini hisobga olsak, buni qilish uchun juda ko'p rag'batlantiruvchi omillar mavjud. Agar boshqa bir arxitektura haqiqatan ham Transformer'dan o'zib ketsa, ushbu kitobda muhokama qilingan ba'zi modelni moslashtirish texnikalari o'zgarishi mumkin. Biroq, xuddi _ML_ muhandisligidan SI muhandisligiga o'tish ko'p narsalarni o'zgarishsiz qoldirganidek, asosdagi model arxitekturasini o'zgartirish ham fundamental yondashuvlarni o'zgartirmaydi.
 
-![2-7-rasm. Transformer, Mamba va Jamba qatlamlarining vizualizatsiyasi.](/ai-engineering/2.7-figure.png)
+![2-7-rasm. Transformer, Mamba va Jamba qatlamlarining vizualizatsiyasi.](/ai-engineering/2-chapter/2.7-figure.png)
 
 <div className='text-center text-sm italic'>2-7-rasm. Transformer, `Mamba` va `Jamba` qatlamlarining vizualizatsiyasi. Rasm “Jamba: A Hybrid Transformer–Mamba Language Model” (Lieber va boshq., 2024) maqolasidan moslashtirilgan.</div>
 
@@ -278,7 +278,7 @@ O'qitish jarayoniga kimyogarlik kabi qaralgan davrlardan ancha uzoqlashdik. 2-8-
 
 Ushbu hisoblash uchun optimal kalkulyatsiya ma'lumotlarni olish narxi hisoblash narxidan ancha arzon degan farazga asoslanadi. Xuddi shu "Chinchilla" maqolasida o'qitish ma'lumotlari narxi jiddiy bo'lgan holat uchun boshqa bir hisoblash usuli taklif etiladi.
 
-![2-8-rasm. O'qitish yo'qotishi, modelning parametrlar soni, FLOP'lar va o'qitish tokenlari soni o'rtasidagi bog'liqlikni aks ettiruvchi grafiklar.](/ai-engineering/2.8-figure.png)
+![2-8-rasm. O'qitish yo'qotishi, modelning parametrlar soni, FLOP'lar va o'qitish tokenlari soni o'rtasidagi bog'liqlikni aks ettiruvchi grafiklar.](/ai-engineering/2-chapter/2.8-figure.png)
 
 <div className='text-center text-sm italic'>2-8-rasm. O'qitish yo'qotishi, modelning parametrlar soni, _FLOP_'lar va o'qitish tokenlari soni o'rtasidagi bog'liqlikni aks ettiruvchi grafiklar. Manba: “Training Compute-Optimal Large Language Models” (DeepMind, 2022).</div>
 
@@ -318,7 +318,7 @@ Model hajmlari yana qancha o'n baravar o'sishi mumkin? Hajmidan qat'i nazar, mod
 
 Fundamental modellar shunchalik ko'p ma'lumot iste'mol qiladiki, yaqin bir necha yil ichida internetdagi ma'lumotlar tugab qolishi haqida jiddiy xavotir mavjud. O'qitish uchun mo'ljallangan ma'lumotlar to'plami hajmining o'sish sur'ati yangi ma'lumotlarning yaratilish sur'atidan ancha tezroqdir ([Villalobos va boshq., 2022](https://arxiv.org/abs/2211.04325)), bu holat 2-9-rasmda tasvirlangan. Agar siz internetga biror narsa joylagan bo'lsangiz, bunga rozilik berasizmi yoki yo'qmi, u allaqachon biror til modelining o'qitish ma'lumotlariga qo'shilgan yoki kelajakda qo'shiladi deb hisoblayvering. Bu xuddi internetga joylangan har qanday ma'lumot "Google" tomonidan indekslanishini kutishingizga o'xshaydi.
 
-![2-9-rasm. O'qitish ma'lumotlar to'plamlari hajmining tarixiy tendensiyasi va mavjud ma'lumotlar zaxirasining proyeksiyasi.](/ai-engineering/2.9-figure.png)
+![2-9-rasm. O'qitish ma'lumotlar to'plamlari hajmining tarixiy tendensiyasi va mavjud ma'lumotlar zaxirasining proyeksiyasi.](/ai-engineering/2-chapter/2.9-figure.png)
 
 <div className='text-center text-sm italic'>2-9-rasm. O'qitish ma'lumotlar to'plamlari hajmining tarixiy tendensiyasi va mavjud ma'lumotlar zaxirasining proyeksiyasi. Manba: Villalobos va boshq., 2024.</div>
 
