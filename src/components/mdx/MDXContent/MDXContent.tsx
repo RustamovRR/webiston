@@ -5,8 +5,10 @@ import React from 'react'
 
 // Plugins
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeKatex from 'rehype-katex'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
 
 // Custom components
 import Callout from '../Callout'
@@ -242,8 +244,8 @@ export default async function MDXContent({ source }: MDXContentProps) {
       components={components}
       options={{
         mdxOptions: {
-          remarkPlugins: [remarkGfm],
-          rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
+          remarkPlugins: [remarkGfm, remarkMath],
+          rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }], rehypeKatex],
         },
       }}
     />
