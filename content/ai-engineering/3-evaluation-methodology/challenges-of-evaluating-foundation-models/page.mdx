@@ -1,0 +1,79 @@
+# Fundamental modellarni baholashdagi qiyinchiliklar
+
+_ML_ modellarini baholash har doim qiyin bo'lgan. Fundamental modellar paydo bo'lishi bilan esa, baholash yanada murakkablashdi. Fundamental modellarni baholash an'anaviy _ML_ modellarini baholashdan ko'ra qiyinroq ekanligining bir nechta sabablari bor.
+
+Birinchidan, SI modellar qanchalik aqlli bo'lib borsa, ularni baholash shunchalik qiyinlashadi. Ko'pchilik birinchi sinf o'quvchisining matematik yechimi noto'g'ri ekanligini ayta oladi. Lekin doktorlik darajasidagi matematik yechim uchun buni qila oladiganlar kam.[^4] Agar kitob xulosasi bema'ni bo'lsa, uning yomon ekanligini aytish oson, lekin xulosa izchil bo'lsa, buni qilish ancha qiyinroq. Xulosa sifatini tekshirish uchun, avval kitobni o'qib chiqishingiz kerak bo'lishi mumkin. Bu bizni bir natijaga olib keladi: murakkab vazifalar uchun baholash ancha ko'p vaqt talab qilishi mumkin. Siz endi javobni shunchaki qanday eshitilishiga qarab baholay olmaysiz. Sizga faktlarni tekshirish, mulohaza yuritish va hatto sohaviy bilimlarni jalb qilish ham kerak bo'ladi.
+
+Ikkinchidan, fundamental modellarning erkin natijali tabiati modelni etalon javoblarga (`ground truths`) solishtirib baholashning an'anaviy yondashuviga putur yetkazadi. An'anaviy _ML_ bilan, aksariyat vazifalar yopiq turdagi (`close-ended`) bo'ladi. Masalan, tasniflash modeli faqat kutilgan toifalar orasidan natija chiqarishi mumkin. Tasniflash modelini baholash uchun siz uning natijalarini kutilgan natijalarga solishtirishingiz mumkin. Agar kutilgan natija X toifasi bo'lsa-yu, modelning natijasi Y toifasi bo'lsa, demak model xato qilgan. Biroq, erkin natijali vazifa uchun, berilgan bir kirish ma'lumotiga juda ko'p to'g'ri javoblar bo'lishi mumkin. Solishtirish uchun to'g'ri natijalarning to'liq ro'yxatini tuzishning iloji yo'q.
+
+Uchinchidan, aksariyat fundamental modellar "qora quti" sifatida ko'riladi, bunga sabab yo model provayderlari model tafsilotlarini oshkor qilmaslikni tanlagani, yoki dastur yaratuvchilarida ularni tushunish uchun tajriba yetishmasligidir. Model arxitekturasi, o'qitish ma'lumotlari va o'qitish jarayoni kabi tafsilotlar modelning kuchli va zaif tomonlari haqida ko'p narsani ochib berishi mumkin. Bu tafsilotlarsiz, siz modelni faqat uning natijalarini kuzatish orqali baholay olasiz.
+
+Ayni paytda, ochiq mavjud bo'lgan baholash mezonlari (`benchmarks`) fundamental modellarni baholash uchun yetarli emasligi isbotlandi. Ideal holatda, baholash mezonlari model imkoniyatlarining to'liq doirasini qamrab olishi kerak. SI rivojlangani sari, mezonlar ham yetib olish uchun rivojlanishi kerak. Agar model mukammal ballga erishsa, mezon o'sha model uchun "to'yingan" bo'ladi. Fundamental modellar bilan, mezonlar tez to'yinmoqda. [`GLUE`](https://arxiv.org/abs/1804.07461) (General Language Understanding Evaluation) mezoni 2018-yilda chiqdi va atigi bir yilda to'yindi, bu esa 2019-yilda [`SuperGLUE`](https://arxiv.org/abs/1905.00537)ning joriy etilishini taqozo etdi. Xuddi shunday, [`NaturalInstructions`](https://arxiv.org/abs/2104.08773) (2021) [`Super-NaturalInstructions`](https://arxiv.org/abs/2204.07705) (2022) bilan almashtirildi. Ko'plab dastlabki fundamental modellar tayangan kuchli mezon bo'lgan [`MMLU`](https://arxiv.org/abs/2009.03300) (2020) esa, asosan, [`MMLU-Pro`](https://arxiv.org/abs/2406.01574) (2024) bilan almashtirildi.
+
+Va nihoyat, eng muhimi, umumiy maqsadli modellar uchun baholash doirasi kengaydi. Maxsus vazifali modellar bilan baholash modelning o'zi o'qitilgan vazifadagi samaradorligini o'lchashni o'z ichiga oladi. Biroq, umumiy maqsadli modellar bilan baholash nafaqat modelning ma'lum vazifalardagi samaradorligini baholash, balki model qila oladigan yangi vazifalarni kashf etish haqida hamdir va bular inson imkoniyatlaridan tashqariga chiqadigan vazifalarni ham o'z ichiga olishi mumkin. Baholash SI'ning salohiyati va cheklovlarini o'rganishdek qo'shimcha mas'uliyatni o'z zimmasiga oladi.
+
+Yaxshi xabar shundaki, baholashdagi yangi qiyinchiliklar ko'plab yangi usullar va mezonlarning paydo bo'lishiga turtki bo'ldi. 3-1-rasmda ko'rsatilishicha, _LLM_ baholashiga oid nashr etilgan maqolalar soni 2023-yilning birinchi yarmida har oy eksponensial ravishda o'sgan — oyiga 2 ta maqoladan deyarli 35 ta maqolagacha.
+
+![3-1-rasm. Vaqt o'tishi bilan LLM'larni baholashga oid maqolalar tendensiyasi.](/ai-engineering/3-chapter/3.1-figure.png)
+
+<div className='text-center text-sm italic'>3-1-rasm. Vaqt o'tishi bilan _LLM_'larni baholashga oid maqolalar tendensiyasi. Rasm [Chang va boshqalar (2023)](https://arxiv.org/abs/2307.03109) ishidan olingan.</div>
+
+GitHub'dagi yulduzchalar soni bo'yicha [eng yaxshi 1000 ta SI bilan bog'liq repozitoriylarni](https://huyenchip.com/llama-police) o'z tahlilimda men baholashga bag'ishlangan 50 dan ortiq repozitoriy topdim (2024-yil may holatiga ko'ra).[^5] Baholash repozitoriylari sonini ularning yaratilish sanasi bo'yicha chizganda, o'sish egri chizig'i eksponensial ko'rinishga ega bo'ladi (3-2-rasm).
+
+Yomon xabar shundaki, baholashga bo'lgan qiziqishning ortishiga qaramay, u SI muhandislik jarayonlari ketma-ketligining qolgan qismiga bo'lgan qiziqishdan ortda qolmoqda. ["DeepMind"dan Balduzzi va boshqalar](https://arxiv.org/abs/1806.02643) o'z maqolalarida ta'kidlaganidek, "baholashlarni ishlab chiqish algoritmlarni ishlab chiqishga nisbatan juda kam bo'lgan tizimli ravishda e'tiborga tushgan." Maqolaga ko'ra, tajriba natijalari deyarli faqat algoritmlarni yaxshilash uchun ishlatiladi va baholashni yaxshilash uchun kamdan-kam ishlatiladi. Baholashga sarmoyalarning yetishmasligini tan olgan holda, ["Anthropic"](https://www.anthropic.com/news/evaluating-ai-systems) siyosatchilarni ham yangi baholash metodologiyalarini ishlab chiqish, ham mavjud baholashlarning mustahkamligini tahlil qilish uchun hukumat moliyalashtirishini va grantlarni oshirishga chaqirdi.
+
+![3-2-rasm. GitHub'dagi 1000 ta eng mashhur SI repozitoriylari orasida ochiq manbali baholash repozitoriylari soni.](/ai-engineering/3-chapter/3.2-figure.png)
+
+<div className='text-center text-sm italic'>3-2-rasm. GitHub'dagi 1000 ta eng mashhur SI repozitoriylari orasida ochiq manbali baholash repozitoriylari soni.</div>
+
+Baholashga qilingan sarmoya SI sohasidagi boshqa yo'nalishlardan qanchalik ortda qolayotganini yanada yaqqolroq ko'rsatish uchun, baholash uchun vositalar soni modellashtirish va o'qitish hamda SI orkestratsiyasi uchun vositalar soniga nisbatan ancha kam (3-3-rasm).
+
+Yetarli sarmoya kiritilmasligi yetarli infratuzilmaning yo'qligiga olib keladi, bu esa odamlarga tizimli baholashlarni amalga oshirishni qiyinlashtiradi. O'zlarining SI dasturlarini qanday baholayotganlari haqida so'ralganda, ko'pchilik menga natijalarni shunchaki ko'z bilan chamalashlarini aytishdi. Ko'pchilikda modellarni baholash uchun ishlatadigan kichik bir "ishonchli" promptlar to'plami bor. Bu promptlarni saralash jarayoni esa tartibsiz (`ad hoc`) bo'lib, odatda dasturning ehtojlariga emas, balki saralovchining shaxsiy tajribasiga asoslanadi. Loyihani boshlashda bu tartibsiz yondashuv bilan bir amallasa bo'lar, lekin dastur iteratsiyasi uchun bu yetarli bo'lmaydi. Ushbu kitobning asosiy maqsadi — baholashga aynan tizimli yondashishni o'rgatishdir.
+
+![3-3-rasm. GitHub'dagi 1000 ta eng mashhur SI repozitoriylari ro'yxatimdan olingan ma'lumotlarga ko'ra, baholash ochiq manbali vositalar soni bo'yicha SI muhandisligining boshqa jihatlaridan ortda qolmoqda.](/ai-engineering/3-chapter/3.3-figure.png)
+
+<div className='text-center text-sm italic'>3-3-rasm. GitHub'dagi 1000 ta eng mashhur SI repozitoriylari ro'yxatimdan olingan ma'lumotlarga ko'ra, baholash ochiq manbali vositalar soni bo'yicha SI muhandisligining boshqa jihatlaridan ortda qolmoqda.</div>
+
+### Izohlar
+
+[^4]: 2024-yil sentabr oyida "OpenAI"ning `GPT-o1` modeli chiqqanda, [Filds medali sohibi Terrens Tao](https://mathstodon.xyz/@tao/113132502735585408) bu model bilan ishlash tajribasini "o'rtamiyona, lekin butunlay qobiliyatsiz bo'lmagan aspirant" bilan ishlashga qiyosladi. Uning taxminicha, SI "qobiliyatli aspirant" darajasiga yetishi uchun yana bir yoki ikki iteratsiya kifoya qilishi mumkin. Uning bahosiga javoban, ko'pchilik hazillashib, agar biz allaqachon SI modellarini baholash uchun eng yorqin insoniy aqllarga muhtoj bo'lgan nuqtaga kelgan bo'lsak, kelajakdagi modellarni baholashga malakali odamimiz qolmaydi, deyishdi.
+
+[^5]: Men "LLM", "GPT", "generative" va "transformer" kalit so'zlari yordamida kamida 500 yulduzchaga ega bo'lgan barcha repozitoriylarni qidirdim. Shuningdek, o'z veb-saytim [https://huyenchip.com](https://huyenchip.com/llama-police) orqali yetishmayotgan repozitoriylar uchun kraudsorsing qildim.
+
+[^6]: Garchi kuchli korrelyatsiya mavjud bo'lsa-da, til modellashtirish samaradorligi keyingi dasturlar samaradorligini to'liq tushuntirib bera olmaydi. Bu faol tadqiqot sohasi.
+
+[^7]: 1-bobda muhokama qilinganidek, token belgi, so'z yoki so'zning bir qismi bo'lishi mumkin. Klod Shennon 1951-yilda entropiyani taqdim etganida, u ishlagan tokenlar belgilar edi. Mana, entropiya uning o'z so'zlari bilan: "Entropiya — bu ma'lum ma'noda, tildagi matnning har bir harfi uchun o'rtacha qancha axborot ishlab chiqarilishini o'lchaydigan statistik parametr. Agar til eng samarali usulda ikkilik raqamlarga (0 yoki 1) tarjima qilinsa, entropiya asl tilning har bir harfiga talab qilinadigan o'rtacha ikkilik raqamlar sonidir."
+
+[^8]: Ko'pchilikning log asos 2 dan ko'ra natural logarifmni afzal ko'rishining bir sababi shundaki, natural logarifm uning matematikasini osonlashtiradigan ma'lum xususiyatlarga ega. Masalan, natural logarifm ln(x) ning hosilasi 1/x ga teng.
+
+[^9]: Agar siz _SFT_ (nazoratli qo'shimcha sozlash) va _RLHF_ (inson fikr-mulohazalari asosida mustahkamlovchi o'rganish) nima ekanligiga ishonchingiz komil bo'lmasa, 2-bobga qayta murojaat qiling.
+
+[^10]: Kvantlash (`Quantization`) 7-bobda muhokama qilinadi.
+
+[^11]: Muammo shundaki, ko'plab murakkab vazifalarning o'lchanadigan maqsadlari bo'lsa-da, SI murakkab vazifalarni boshidan oxirigacha bajarishda unchalik yaxshi emas, shuning uchun SI yechimning bir qismini bajarish uchun ishlatilishi mumkin. Ba'zan, yechimning bir qismini baholash yakuniy natijani baholashdan qiyinroq bo'ladi. Tasavvur qiling, siz kimningdir shaxmat o'ynash qobiliyatini baholamoqchisiz. Faqat bitta yurishni baholashdan ko'ra, o'yinning yakuniy natijasini (g'alaba/mag'lubiyat/durang) baholash osonroq.
+
+[^12]: Shuningdek, siz "mushuklar" va "mushuk" yoki "bo'lmaydi" va "bo'midi" ikki alohida token deb hisoblanishini xohlaysizmi yoki yo'qligiga qarab, biroz ishlov berishni xohlashingiz mumkin.
+
+[^13]: Garchi 10 000 elementli vektor fazosi yuqori o'lchamli tuyulsa-da, u xom ma'lumotlarning o'lchamidan ancha past. Shuning uchun, _embedding_ murakkab ma'lumotlarning pastroq o'lchamli fazodagi tasviri hisoblanadi.
+
+[^14]: Shuningdek, `word2vec` (Mikolov va boshq., “Efficient Estimation of Word Representations in Vector Space”, arXiv, v3, 2013-yil 7-sentabr) va `GloVe` (Pennington va boshq., “GloVe: Global Vectors for Word Representation”, Stenford Universiteti Tabiiy Tilni Qayta Ishlash Guruhi (blog), 2014) kabi hujjat _embedding_'laridan farqli o'laroq, so'z _embedding_'larini generatsiya qiladigan modellar ham mavjud.
+
+[^15]: "SI hakam" atamasini SI'ning sudda hakam sifatida ishlatilishi qo'llanish holati bilan adashtirmaslik kerak.
+
+[^16]: 2017-yilda men `NeurIPS` seminarida _MEWR_ (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini hech qachon davom ettirmadim.
+
+[^17]: Ba'zi hollarda, baholash byudjetning asosiy qismini, hatto javob generatsiyasidan ham ko'proqni egallashi mumkin.
+
+[^18]: "Spot-checking" _sampling_ bilan bir xil.
+
+[^19]: Saito va boshqalar (2023) insonlar ham uzunroq javoblarni afzal ko'rishlarini, ammo ancha kamroq darajada ekanligini aniqladilar.
+
+[^20]: Bu texnika ba'zan o'z-o'zini tanqid qilish (`self-critique`) yoki o'z-o'zidan so'rash (`self-ask`) deb ataladi.
+
+[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan -2.5 va 1.0 oralig'ida. Bu SI hakamlar bilan mezonlarning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
+
+[^22]: Masalan, Likert shkalasidan foydalanish.
+
+[^23]: Garchi Chatbot Arena Elo reyting algoritmidan foydalanishni to'xtatgan bo'lsa-da, uning ishlab chiquvchilari bir muncha vaqt o'zlarining model reytinglarini "Elo ballari" deb atashda davom etishdi. Ular natijaviy Bredli-Terri ballarini Elo ballariga o'xshatish uchun miqyoslashdi. Miqyoslash ancha murakkab. Har bir ball 400 ga (Elo'da ishlatiladigan shkala) ko'paytiriladi va 1000 ga (boshlang'ich Elo bali) qo'shiladi. Keyin bu ball `Llama-13b` modeli 800 ballga ega bo'lishi uchun qayta miqyoslanadi.
+
+[^24]: Chatbot Arena ommalashgani sari, uni aldashga urinishlar ham ko'payib bormoqda. Garchi hech kim menga reytingni aldashga uringanini tan olmagan bo'lsa-da, bir nechta model ishlab chiquvchilari o'z raqobatchilari uni aldashga harakat qilishiga amin ekanliklarini aytishdi.

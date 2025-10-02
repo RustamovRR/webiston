@@ -63,6 +63,13 @@
   },
   "3-evaluation-methodology": {
     "title": "3. Fundamental modellarni tushunish",
-    "path": "3-evaluation-methodology/page"
+    "path": "3-evaluation-methodology/page",
+    "hasIndex": true,
+    "children": {
+      "challenges-of-evaluating-foundation-models": {
+        "title": "Fundamental modellarni baholashdagi qiyinchiliklar",
+        "path": "3-evaluation-methodology/challenges-of-evaluating-foundation-models/page"
+      }
+    }
   }
 }
