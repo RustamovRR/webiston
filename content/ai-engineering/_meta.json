@@ -69,6 +69,10 @@
       "challenges-of-evaluating-foundation-models": {
         "title": "Fundamental modellarni baholashdagi qiyinchiliklar",
         "path": "3-evaluation-methodology/challenges-of-evaluating-foundation-models/page"
+      },
+      "understanding-language-modeling-metrics": {
+        "title": "Til modellashtirish metrikalarini tushunish",
+        "path": "3-evaluation-methodology/understanding-language-modeling-metrics/page"
       }
     }
   }
