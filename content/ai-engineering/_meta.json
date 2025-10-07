@@ -73,6 +73,10 @@
       "understanding-language-modeling-metrics": {
         "title": "Til modellashtirish metrikalarini tushunish",
         "path": "3-evaluation-methodology/understanding-language-modeling-metrics/page"
+      },
+      "exact-evaluation": {
+        "title": "Aniq baholash",
+        "path": "3-evaluation-methodology/exact-evaluation/page"
       }
     }
   }

@@ -126,7 +126,7 @@ _Perplexity_ _SFT_ va _RLHF_ kabi texnikalar yordamida qo'shimcha o'qitishdan o'
 
 </Callout>
 
-Esingizda bo'lsa, modelning biror matnga nisbatan _perplexity_'si bu model uchun ushbu matnni bashorat qilish qanchalik qiyin ekanligini o'lchaydi. Berilgan model uchun _perplexity_ model o'qitish paytida ko'rgan va yodlab olgan matnlar uchun eng past bo'ladi. Shuning uchun, _perplexity_'dan biror matn modelning o'qitish ma'lumotlarida bo'lgan yoki bo'lmaganini aniqlash uchun foydalanish mumkin. Bu ma'lumotlar ifloslanishini (`data contamination`) aniqlash uchun foydalidir — agar modelning biror mezon (`benchmark`) ma'lumotlaridagi _perplexity_'si past bo'lsa, bu mezon ehtimol modelning o'qitish ma'lumotlariga kiritilgan, bu esa modelning ushbu mezondagi samaradorligini kamroq ishonchli qiladi. Bundan, shuningdek, o'qitish ma'lumotlaridagi takrorlanishlarni olib tashlash (`deduplication`) uchun ham foydalanish mumkin: masalan, yangi ma'lumotlarni mavjud o'qitish ma'lumotlar to'plamiga faqat yangi ma'lumotlarning _perplexity_'si yuqori bo'lgandagina qo'shish.
+Esingizda bo'lsa, modelning biror matnga nisbatan _perplexity_'si bu model uchun ushbu matnni bashorat qilish qanchalik qiyin ekanligini o'lchaydi. Berilgan model uchun _perplexity_ model o'qitish paytida ko'rgan va yodlab olgan matnlar uchun eng past bo'ladi. Shuning uchun, _perplexity_'dan biror matn modelning o'qitish ma'lumotlarida bo'lgan yoki bo'lmaganini aniqlash uchun foydalanish mumkin. Bu ma'lumotlar ifloslanishini (`data contamination`) aniqlash uchun foydalidir — agar modelning biror benchmark ma'lumotlaridagi _perplexity_'si past bo'lsa, bu benchmark ehtimol modelning o'qitish ma'lumotlariga kiritilgan, bu esa modelning ushbu benchmark'dagi samaradorligini kamroq ishonchli qiladi. Bundan, shuningdek, o'qitish ma'lumotlaridagi takrorlanishlarni olib tashlash (`deduplication`) uchun ham foydalanish mumkin: masalan, yangi ma'lumotlarni mavjud o'qitish ma'lumotlar to'plamiga faqat yangi ma'lumotlarning _perplexity_'si yuqori bo'lgandagina qo'shish.
 
 _Perplexity_ bashorat qilib bo'lmaydigan matnlar, masalan, g'ayrioddiy g'oyalarni ifodalovchi ("mening itim bo'sh vaqtlarida kvant fizikasidan dars beradi") yoki bema'ni ("uy mushuk bor ko'z") matnlar uchun eng yuqori bo'ladi. Shuning uchun, _perplexity_'dan g'ayritabiiy matnlarni aniqlash uchun foydalanish mumkin.
 
@@ -156,31 +156,3 @@ P(x_1, x_2, \dots, x_n)^{-\frac{1}{n}} = \left( \frac{1}{P(x_1, x_2, \dots, x_n)
 [^9]: Agar siz _SFT_ (nazoratli qo'shimcha sozlash) va _RLHF_ (inson fikr-mulohazalari asosida mustahkamlovchi o'rganish) nima ekanligiga ishonchingiz komil bo'lmasa, 2-bobga qayta murojaat qiling.
 
 [^10]: Kvantlash (`Quantization`) 7-bobda muhokama qilinadi.
-
-[^11]: Muammo shundaki, ko'plab murakkab vazifalarning o'lchanadigan maqsadlari bo'lsa-da, SI murakkab vazifalarni boshidan oxirigacha bajarishda unchalik yaxshi emas, shuning uchun SI yechimning bir qismini bajarish uchun ishlatilishi mumkin. Ba'zan, yechimning bir qismini baholash yakuniy natijani baholashdan qiyinroq bo'ladi. Tasavvur qiling, siz kimningdir shaxmat o'ynash qobiliyatini baholamoqchisiz. Faqat bitta yurishni baholashdan ko'ra, o'yinning yakuniy natijasini (g'alaba/mag'lubiyat/durang) baholash osonroq.
-
-[^12]: Shuningdek, siz "mushuklar" va "mushuk" yoki "bo'lmaydi" va "bo'midi" ikki alohida token deb hisoblanishini xohlaysizmi yoki yo'qligiga qarab, biroz ishlov berishni xohlashingiz mumkin.
-
-[^13]: Garchi 10 000 elementli vektor fazosi yuqori o'lchamli tuyulsa-da, u xom ma'lumotlarning o'lchamidan ancha past. Shuning uchun, _embedding_ murakkab ma'lumotlarning pastroq o'lchamli fazodagi tasviri hisoblanadi.
-
-[^14]: Shuningdek, `word2vec` (Mikolov va boshq., “Efficient Estimation of Word Representations in Vector Space”, arXiv, v3, 2013-yil 7-sentabr) va `GloVe` (Pennington va boshq., “GloVe: Global Vectors for Word Representation”, Stenford Universiteti Tabiiy Tilni Qayta Ishlash Guruhi (blog), 2014) kabi hujjat _embedding_'laridan farqli o'laroq, so'z _embedding_'larini generatsiya qiladigan modellar ham mavjud.
-
-[^15]: "SI hakam" atamasini SI'ning sudda hakam sifatida ishlatilishi qo'llanish holati bilan adashtirmaslik kerak.
-
-[^16]: 2017-yilda men `NeurIPS` seminarida _MEWR_ (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini hech qachon davom ettirmadim.
-
-[^17]: Ba'zi hollarda, baholash byudjetning asosiy qismini, hatto javob generatsiyasidan ham ko'proqni egallashi mumkin.
-
-[^18]: "Spot-checking" _sampling_ bilan bir xil.
-
-[^19]: Saito va boshqalar (2023) insonlar ham uzunroq javoblarni afzal ko'rishlarini, ammo ancha kamroq darajada ekanligini aniqladilar.
-
-[^20]: Bu texnika ba'zan o'z-o'zini tanqid qilish (`self-critique`) yoki o'z-o'zidan so'rash (`self-ask`) deb ataladi.
-
-[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan -2.5 va 1.0 oralig'ida. Bu SI hakamlar bilan mezonlarning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
-
-[^22]: Masalan, Likert shkalasidan foydalanish.
-
-[^23]: Garchi Chatbot Arena Elo reyting algoritmidan foydalanishni to'xtatgan bo'lsa-da, uning ishlab chiquvchilari bir muncha vaqt o'zlarining model reytinglarini "Elo ballari" deb atashda davom etishdi. Ular natijaviy Bredli-Terri ballarini Elo ballariga o'xshatish uchun miqyoslashdi. Miqyoslash ancha murakkab. Har bir ball 400 ga (Elo'da ishlatiladigan shkala) ko'paytiriladi va 1000 ga (boshlang'ich Elo bali) qo'shiladi. Keyin bu ball `Llama-13b` modeli 800 ballga ega bo'lishi uchun qayta miqyoslanadi.
-
-[^24]: Chatbot Arena ommalashgani sari, uni aldashga urinishlar ham ko'payib bormoqda. Garchi hech kim menga reytingni aldashga uringanini tan olmagan bo'lsa-da, bir nechta model ishlab chiquvchilari o'z raqobatchilari uni aldashga harakat qilishiga amin ekanliklarini aytishdi.

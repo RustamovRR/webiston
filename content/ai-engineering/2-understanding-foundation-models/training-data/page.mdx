@@ -20,7 +20,7 @@ Garchi til va sohaga xos fundamental modellarni noldan o'qitish mumkin bo'lsa-da
 
 ### Umumiy va maxsus ma'lumotlar balansi
 
-Ba'zilar hayron bo'lishi mumkin: nima uchun modelni mavjud bo'lgan barcha ma'lumotlarda — ham umumiy, ham ixtisoslashgan — o'qitmaslik kerak, shunda model hamma narsani qila oladi-ku? Ko'pchilik shunday qiladi. Biroq, ko'proq ma'lumotlarda o'qitish ko'pincha ko'proq hisoblash resurslarini talab qiladi va har doim ham yaxshiroq natijalarga olib kelavermaydi. Masalan, kamroq miqdordagi yuqori sifatli ma'lumotlarda o'qitilgan model ko'p miqdordagi past sifatli ma'lumotlarda o'qitilgan modeldan ustun kelishi mumkin. [Gunasekar va boshqalar (2023)](https://arxiv.org/abs/2306.11644) 7 milliard tokenli yuqori sifatli kodlash ma'lumotlaridan foydalanib, bir nechta muhim kodlash mezonlarida (`benchmarks`) ancha kattaroq modellardan ustun turadigan 1.3 milliard parametrli modelni o'qita oldilar. Ma'lumotlar sifatining ta'siri 8-bobda batafsilroq muhokama qilinadi.
+Ba'zilar hayron bo'lishi mumkin: nima uchun modelni mavjud bo'lgan barcha ma'lumotlarda — ham umumiy, ham ixtisoslashgan — o'qitmaslik kerak, shunda model hamma narsani qila oladi-ku? Ko'pchilik shunday qiladi. Biroq, ko'proq ma'lumotlarda o'qitish ko'pincha ko'proq hisoblash resurslarini talab qiladi va har doim ham yaxshiroq natijalarga olib kelavermaydi. Masalan, kamroq miqdordagi yuqori sifatli ma'lumotlarda o'qitilgan model ko'p miqdordagi past sifatli ma'lumotlarda o'qitilgan modeldan ustun kelishi mumkin. [Gunasekar va boshqalar (2023)](https://arxiv.org/abs/2306.11644) 7 milliard tokenli yuqori sifatli kodlash ma'lumotlaridan foydalanib, bir nechta muhim kodlash benchmark'larida ancha kattaroq modellardan ustun turadigan 1.3 milliard parametrli modelni o'qita oldilar. Ma'lumotlar sifatining ta'siri 8-bobda batafsilroq muhokama qilinadi.
 
 ## Ko'p tilli modellar
 
@@ -59,11 +59,11 @@ Boshqa ko'plab tillar, garchi bugungi kunda so'zlashuvchilar soni ko'p bo'lsa-da
 
 <div className='text-center text-sm italic'>2-2-jadval. "Common Crawl"da kam ifodalangan tillarga misollar. Oxirgi qator, ingliz tili, taqqoslash uchun keltirilgan. "Common Crawl"dagi foizlar Lai va boshqalarning (2023) ishidan olingan.</div>
 
-Internet ma'lumotlarida ingliz tilining hukmronligini hisobga olsak, ko'plab tadqiqotlarga ko'ra, umumiy maqsadli modellarning boshqa tillarga qaraganda ingliz tilida ancha yaxshiroq ishlashi ajablanarli emas. Masalan, 57 ta fanni qamrab olgan 14 000 ta ko'p tanlovli masalalardan iborat _MMLU_ mezonida `GPT-4` telugu kabi kam ifodalangan tillarga qaraganda [ingliz tilida ancha yaxshiroq natija](https://openai.com/index/gpt-4-research/) ko'rsatgan (2-1-rasm) ("OpenAI", 2023).
+Internet ma'lumotlarida ingliz tilining hukmronligini hisobga olsak, ko'plab tadqiqotlarga ko'ra, umumiy maqsadli modellarning boshqa tillarga qaraganda ingliz tilida ancha yaxshiroq ishlashi ajablanarli emas. Masalan, 57 ta fanni qamrab olgan 14 000 ta ko'p tanlovli masalalardan iborat _MMLU_ benchmark'ida `GPT-4` telugu kabi kam ifodalangan tillarga qaraganda [ingliz tilida ancha yaxshiroq natija](https://openai.com/index/gpt-4-research/) ko'rsatgan (2-1-rasm) ("OpenAI", 2023).
 
-![2-1-rasm. _MMLU_ mezonida `GPT-4` boshqa har qanday tilga qaraganda ingliz tilida yaxshiroq ishlaydi. Boshqa tillardagi _MMLU_ testini olish uchun "OpenAI" savollarni "Azure AI Translator" yordamida tarjima qilgan.](/ai-engineering/2-chapter/2.1-figure.png)
+![2-1-rasm. _MMLU_ benchmark'ida `GPT-4` boshqa har qanday tilga qaraganda ingliz tilida yaxshiroq ishlaydi. Boshqa tillardagi _MMLU_ testini olish uchun "OpenAI" savollarni "Azure AI Translator" yordamida tarjima qilgan.](/ai-engineering/2-chapter/2.1-figure.png)
 
-<div className='text-center text-sm italic'>2-1-rasm. _MMLU_ mezonida `GPT-4` boshqa har qanday tilga qaraganda ingliz tilida yaxshiroq ishlaydi. Boshqa tillardagi _MMLU_ testini olish uchun "OpenAI" savollarni "Azure AI Translator" yordamida tarjima qilgan.</div>
+<div className='text-center text-sm italic'>2-1-rasm. _MMLU_ benchmark'ida `GPT-4` boshqa har qanday tilga qaraganda ingliz tilida yaxshiroq ishlaydi. Boshqa tillardagi _MMLU_ testini olish uchun "OpenAI" savollarni "Azure AI Translator" yordamida tarjima qilgan.</div>
 
 Xuddi shunday, "Project Euler"dagi oltita matematik masala bo'yicha sinovdan o'tkazilganda, Yennie Jun `GPT-4`'ning ingliz tilidagi masalalarni arman yoki fors tillariga qaraganda uch baravardan ko'proq yecha olganini aniqladi.[^2]  `GPT-4` birma va amxar tillaridagi barcha oltita savolda muvaffaqiyatsizlikka uchradi (2-2-rasm).
 
@@ -73,7 +73,7 @@ Xuddi shunday, "Project Euler"dagi oltita matematik masala bo'yicha sinovdan o't
 
 ### Kamchilik sabablari va yechimlari
 
-Kam ifodalanganlik bu past samaradorlikning asosiy sababidir. `GPT-4`'ning _MMLU_ mezonlarida eng yomon natijalarni ko'rsatgan uchta til — telugu, maratxi va panjob — ayni paytda "Common Crawl"da eng kam ifodalangan tillar qatoriga kiradi. Biroq, kam ifodalanganlik yagona sabab emas. Tilning tuzilishi va u o'zida mujassam etgan madaniyat ham model uchun tilni o'rganishni qiyinlashtirishi mumkin.
+Kam ifodalanganlik bu past samaradorlikning asosiy sababidir. `GPT-4`'ning _MMLU_ benchmark'larida eng yomon natijalarni ko'rsatgan uchta til — telugu, maratxi va panjob — ayni paytda "Common Crawl"da eng kam ifodalangan tillar qatoriga kiradi. Biroq, kam ifodalanganlik yagona sabab emas. Tilning tuzilishi va u o'zida mujassam etgan madaniyat ham model uchun tilni o'rganishni qiyinlashtirishi mumkin.
 
 _LLM_'lar odatda tarjimada yaxshi ekanligini hisobga olsak, biz shunchaki barcha so'rovlarni boshqa tillardan ingliz tiliga tarjima qilib, javoblarni olib, so'ng ularni asl tilga qayta tarjima qila olamizmi? Ko'pchilik haqiqatan ham bu yondashuvga amal qiladi, ammo bu ideal emas. Birinchidan, bu kam ifodalangan tillarni tarjima qilish uchun yetarlicha tushuna oladigan modelni talab qiladi. Ikkinchidan, tarjima ma'lumot yo'qotilishiga olib kelishi mumkin. Masalan, vyetnam tili kabi ba'zi tillarda ikki suhbatdosh o'rtasidagi munosabatni bildiruvchi olmoshlar mavjud. Ingliz tiliga tarjima qilinganda, bu olmoshlarning barchasi "I" va "you" deb tarjima qilinadi, bu esa munosabat haqidagi ma'lumotning yo'qolishiga sabab bo'ladi.
 
@@ -93,7 +93,7 @@ Bu muammoni hal qilish uchun ko'plab modellar ingliz tilidan boshqa tillarga e't
 
 <div className='text-center text-sm italic'>2-3-rasm. `C4` ma'lumotlar to'plamidagi sohalarning taqsimoti. "Washington Post" statistikasi asosida qayta yaratilgan. Ushbu tahlilning bir kamchiligi shundaki, u faqat kiritilgan toifalarni ko'rsatadi, yetishmayotgan toifalarni emas.</div>
 
-Ushbu kitob yozilayotgan vaqtda, vizual ma'lumotlardagi sohalar taqsimoti bo'yicha hali ko'p tahlillar mavjud emas. Bu, ehtimol, tasvirlarni matnlarga qaraganda tasniflash qiyinroq bo'lgani uchundir.[^5] Biroq, siz modelning sohalarini uning mezon natijalaridan xulosa qilishingiz mumkin. 2-3-jadvalda ikkita model — `CLIP` va `Open CLIP` — [turli mezonlarda qanday ishlashi](https://laion.ai/blog/laion-5b/) ko'rsatilgan. Bu mezonlar ushbu ikki modelning qushlar, gullar, mashinalar va yana bir nechta toifalarda qanchalik yaxshi ishlashini ko'rsatadi, ammo dunyo bu bir nechta toifadan ancha kattaroq va murakkabroqdir.
+Ushbu kitob yozilayotgan vaqtda, vizual ma'lumotlardagi sohalar taqsimoti bo'yicha hali ko'p tahlillar mavjud emas. Bu, ehtimol, tasvirlarni matnlarga qaraganda tasniflash qiyinroq bo'lgani uchundir.[^5] Biroq, siz modelning sohalarini uning benchmark natijalaridan xulosa qilishingiz mumkin. 2-3-jadvalda ikkita model — `CLIP` va `Open CLIP` — [turli benchmark'larda qanday ishlashi](https://laion.ai/blog/laion-5b/) ko'rsatilgan. Bu benchmark'lar ushbu ikki modelning qushlar, gullar, mashinalar va yana bir nechta toifalarda qanchalik yaxshi ishlashini ko'rsatadi, ammo dunyo bu bir nechta toifadan ancha kattaroq va murakkabroqdir.
 
 | Ma'lumotlar to'plami | `CLIP`<br/><small>`ViT-B/32` ("OpenAI") To'g'riligi</small> | `Open CLIP`<br/><small>`ViT-B/32` (Cade) To'g'riligi</small> |
 | :--- | :--- | :--- |

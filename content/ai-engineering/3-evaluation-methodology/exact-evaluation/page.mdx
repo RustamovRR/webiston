@@ -1,0 +1,81 @@
+# Aniq baholash
+
+Modellar samaradorligini baholashda aniq (`exact`) va subyektiv (`subjective`) baholashni farqlash muhimdir. Aniq baholash hech qanday noaniqliksiz xulosa chiqaradi. Masalan, agar ko'p tanlovli savolning javobi A bo'lsa va siz B ni tanlasangiz, javobingiz noto'g'ri. Bunda hech qanday noaniqlik yo'q. Boshqa tomondan, esseni baholash subyektivdir. Essening bali uni kim baholashiga bog'liq. Bir xil odam, agar bir muncha vaqt o'tib ikki marta so'ralsa, bir xil essega turli ballar berishi mumkin. Aniq baholash yo'riqnomalari bilan esseni baholash aniqroq bo'lishi mumkin. Keyingi bo'limda ko'rib o'tadigan "SI — hakam" yondashuvi subyektivdir. Baholash natijasi hakam modelga va promptga qarab o'zgarishi mumkin.
+
+Men aniq ballar beradigan ikkita baholash yondashuvini yoritib beraman: funksional to'g'rilik (`functional correctness`) va etalon ma'lumotlarga nisbatan o'xshashlikni o'lchash. Shuni unutmangki, ushbu bo'lim yopiq turdagi (`close-ended`) javoblarga (masalan, tasniflash) emas, balki erkin natijali (`open-ended`) javoblarni (ixtiyoriy matn generatsiyasi) baholashga qaratilgan. Bu fundamental modellar yopiq turdagi vazifalar uchun ishlatilmayotgani uchun emas. Aslida, ko'plab fundamental model tizimlari kamida bitta tasniflash komponentiga ega, odatda niyatni tasniflash (`intent classification`) yoki ballash (`scoring`) uchun. Ushbu bo'lim erkin natijali baholashga e'tibor qaratadi, chunki yopiq turdagi baholash allaqachon yaxshi tushunilgan.
+
+## Funksional to'g'rilik
+
+Funksional to'g'rilikni baholash (`Functional correctness evaluation`) tizimni u mo'ljallangan funksionallikni bajarayotganiga qarab baholashni anglatadi. Masalan, agar siz modeldan veb-sayt yaratishni so'rasangiz, generatsiya qilingan veb-sayt sizning talablaringizga javob beradimi? Agar siz modeldan ma'lum bir restoranda joy band qilishni so'rasangiz, model buni uddalaydimi?
+
+Funksional to'g'rilik har qanday dastur samaradorligini baholash uchun eng asosiy metrikadir, chunki u sizning dasturingiz o'ziga yuklatilgan vazifani bajarayotganini o'lchaydi. Biroq, funksional to'g'rilikni o'lchash har doim ham oson emas va uni osonlikcha avtomatlashtirib bo'lmaydi.
+
+### Kod generatsiyasida funksional to'g'rilik
+
+Kod generatsiyasi — bu funksional to'g'rilikni o'lchashni avtomatlashtirish mumkin bo'lgan vazifaga bir misoldir. Kodlashda funksional to'g'rilik ba'zan bajarilish aniqligi (`execution accuracy`) deb ham ataladi. Aytaylik, siz modeldan ikki son, `num1` va `num2`'ning eng katta umumiy bo'luvchisini (`gcd`) topadigan `gcd(num1, num2)` Python funksiyasini yozishni so'radingiz. Keyin generatsiya qilingan kodni Python interpretatoriga kiritib, kodning to'g'riligini va agar to'g'ri bo'lsa, u berilgan (`num1`, `num2`) juftligi uchun to'g'ri natija chiqarishini tekshirish mumkin. Masalan, (`num1=15`, `num2=20`) juftligi berilganda, agar `gcd(15, 20)` funksiyasi to'g'ri javob bo'lgan 5 ni qaytarmasa, siz funksiyaning noto'g'ri ekanligini bilasiz.
+
+SI kod yozish uchun ishlatilishidan ancha oldin ham, kodning funksional to'g'riligini avtomatik tekshirish dasturiy ta'minot muhandisligida standart amaliyot bo'lgan. Kod odatda [_unit testlar_](https://en.wikipedia.org/wiki/Unit_testing) yordamida tekshiriladi, bunda kod kutilgan natijalarni generatsiya qilishiga ishonch hosil qilish uchun turli senariylarda ishga tushiriladi. Funksional to'g'rilikni baholash — bu LeetCode va HackerRank kabi kodlash platformalarining taqdim etilgan yechimlarni tekshirish usulidir.
+
+SI'ning kod generatsiyasi qobiliyatlarini baholash uchun ["OpenAI"ning `HumanEval`](https://huggingface.co/openai_humaneval/datasets) va ["Google"ning `MBPP`](https://github.com/google-research/google-research/tree/master/mbpp) (Mostly Basic Python Problems Dataset) kabi ommabop benchmark'lar o'z metrikalari sifatida funksional to'g'rilikdan foydalanadi. Matndan-_SQL_'ga (tabiiy tillardan _SQL_ so'rovlarini generatsiya qilish) uchun `Spider` ([Yu va boshq., 2018](https://yale-lily.github.io/spider)), `BIRD-SQL` (Big Bench for Large-scale Database Grounded Text-to-SQL Evaluation) ([Li va boshq., 2023](https://bird-bench.github.io/)) va `WikiSQL` ([Zhong va boshq., 2017](https://arxiv.org/abs/1709.00103)) kabi benchmark'lar ham funksional to'g'rilikka tayanadi.
+
+Benchmark muammosi test holatlari to'plami bilan birga keladi. Har bir test holati kod ishlashi kerak bo'lgan senariydan va o'sha senariy uchun kutilgan natijadan iborat. Quyida, `HumanEval`'dagi muammo va uning test holatlariga misol:
+
+``` python
+`Muammo`
+
+    from typing import List
+    
+    def has_close_elements(numbers: List[float], threshold: float) -> bool:
+        """ Berilgan sonlar ro'yxatida, istalgan ikkita son bir-biriga berilgan chegaradan yaqinroq ekanligini tekshiring.
+        >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+        False
+        >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+        True
+        """
+
+`Test holatlari (har bir assert ko'rsatmasi bitta test holatini ifodalaydi)`
+
+    def check(candidate):
+        assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True
+        assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False
+        assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True
+        assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False
+        assert candidate([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True
+        assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True
+        assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False
+```
+
+Modelni baholashda har bir muammo uchun **k** deb belgilangan bir nechta kod namunalari generatsiya qilinadi. Agar model generatsiya qilgan **k** ta kod namunasidan birortasi o'sha muammoning barcha test holatlaridan o'tsa, model muammoni yechgan hisoblanadi. Yakuniy ball, **pass@k** deb ataladi va u yechilgan muammolarning barcha muammolarga nisbatidir. Agar 10 ta muammo bo'lsa va model **k = 3** bo'lganda 5 tasini yechsa, unda o'sha modelning **pass@3** bali 50% bo'ladi. Model qancha ko'p kod namunasi generatsiya qilsa, uning har bir muammoni yechish imkoniyati shuncha ko'p bo'ladi, demak, yakuniy ball ham shuncha yuqori bo'ladi. Bu shuni anglatadiki, kutilganidek, **pass@1** bali **pass@3**'dan pastroq, u esa, o'z navbatida, **pass@10**'dan pastroq bo'lishi kerak.
+
+Funksional to'g'riligini avtomatik baholash mumkin bo'lgan yana bir vazifalar toifasi — bu o'yin botlaridir. Agar siz _Tetris_ o'ynash uchun bot yaratsangiz, botning qanchalik yaxshi ekanligini u olgan ball orqali bilib olishingiz mumkin. O'lchanadigan maqsadlarga ega bo'lgan vazifalarni odatda funksional to'g'rilik yordamida baholash mumkin. Masalan, agar siz SI'dan energiya sarfini optimallashtirish uchun ish yuklamalaringizni rejalashtirishni so'rasangiz, SI'ning samaradorligini u qancha energiya tejagani bilan o'lchash mumkin.[^11]
+
+
+### Izohlar
+
+[^11]: Muammo shundaki, ko'plab murakkab vazifalarning o'lchanadigan maqsadlari bo'lsa-da, SI murakkab vazifalarni boshidan oxirigacha bajarishda unchalik yaxshi emas, shuning uchun SI yechimning bir qismini bajarish uchun ishlatilishi mumkin. Ba'zan, yechimning bir qismini baholash yakuniy natijani baholashdan qiyinroq bo'ladi. Tasavvur qiling, siz kimningdir shaxmat o'ynash qobiliyatini baholamoqchisiz. Faqat bitta yurishni baholashdan ko'ra, o'yinning yakuniy natijasini (g'alaba/mag'lubiyat/durang) baholash osonroq.
+
+[^12]: Shuningdek, siz "mushuklar" va "mushuk" yoki "bo'lmaydi" va "bo'midi" ikki alohida token deb hisoblanishini xohlaysizmi yoki yo'qligiga qarab, biroz ishlov berishni xohlashingiz mumkin.
+
+[^13]: Garchi 10 000 elementli vektor fazosi yuqori o'lchamli tuyulsa-da, u xom ma'lumotlarning o'lchamidan ancha past. Shuning uchun, _embedding_ murakkab ma'lumotlarning pastroq o'lchamli fazodagi tasviri hisoblanadi.
+
+[^14]: Shuningdek, `word2vec` (Mikolov va boshq., “Efficient Estimation of Word Representations in Vector Space”, arXiv, v3, 2013-yil 7-sentabr) va `GloVe` (Pennington va boshq., “GloVe: Global Vectors for Word Representation”, Stenford Universiteti Tabiiy Tilni Qayta Ishlash Guruhi (blog), 2014) kabi hujjat _embedding_'laridan farqli o'laroq, so'z _embedding_'larini generatsiya qiladigan modellar ham mavjud.
+
+[^15]: "SI hakam" atamasini SI'ning sudda hakam sifatida ishlatilishi qo'llanish holati bilan adashtirmaslik kerak.
+
+[^16]: 2017-yilda men `NeurIPS` seminarida _MEWR_ (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini hech qachon davom ettirmadim.
+
+[^17]: Ba'zi hollarda, baholash byudjetning asosiy qismini, hatto javob generatsiyasidan ham ko'proqni egallashi mumkin.
+
+[^18]: "Spot-checking" _sampling_ bilan bir xil.
+
+[^19]: Saito va boshqalar (2023) insonlar ham uzunroq javoblarni afzal ko'rishlarini, ammo ancha kamroq darajada ekanligini aniqladilar.
+
+[^20]: Bu texnika ba'zan o'z-o'zini tanqid qilish (`self-critique`) yoki o'z-o'zidan so'rash (`self-ask`) deb ataladi.
+
+[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan -2.5 va 1.0 oralig'ida. Bu SI hakamlar bilan benchmark'ning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
+
+[^22]: Masalan, Likert shkalasidan foydalanish.
+
+[^23]: Garchi Chatbot Arena Elo reyting algoritmidan foydalanishni to'xtatgan bo'lsa-da, uning ishlab chiquvchilari bir muncha vaqt o'zlarining model reytinglarini "Elo ballari" deb atashda davom etishdi. Ular natijaviy Bredli-Terri ballarini Elo ballariga o'xshatish uchun miqyoslashdi. Miqyoslash ancha murakkab. Har bir ball 400 ga (Elo'da ishlatiladigan shkala) ko'paytiriladi va 1000 ga (boshlang'ich Elo bali) qo'shiladi. Keyin bu ball `Llama-13b` modeli 800 ballga ega bo'lishi uchun qayta miqyoslanadi.
+
+[^24]: Chatbot Arena ommalashgani sari, uni aldashga urinishlar ham ko'payib bormoqda. Garchi hech kim menga reytingni aldashga uringanini tan olmagan bo'lsa-da, bir nechta model ishlab chiquvchilari o'z raqobatchilari uni aldashga harakat qilishiga amin ekanliklarini aytishdi.
