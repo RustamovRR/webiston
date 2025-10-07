@@ -162,7 +162,7 @@ Matematik jihatdan, A generatsiya qilingan javobning _embedding_'i, B esa etalon
 
 bunda:
 -   `A ⋅ B` — A va B ning skalyar ko'paytmasi (`dot product`).
--   `||A||` — A ning Yevklid normasi (shuningdek, `L² norm` deb ham ataladi). Agar A [0.11, 0.02, 0.54] bo'lsa, 
+-   `||A||` — A ning Yevklid normasi (shuningdek, `L² norm` deb ham ataladi). Agar A `[0.11, 0.02, 0.54]` bo'lsa, 
 
 ``` math
 \|A\| = \sqrt{0.11^2 + 0.02^2 + 0.54^2}
@@ -174,6 +174,45 @@ Semantik matn o'xshashligi uchun metrikalarga [`BERTScore`](https://arxiv.org/ab
 Semantik matn o'xshashligi leksik o'xshashlik kabi keng qamrovli etalon javoblar to'plamini talab qilmaydi. Biroq, semantik o'xshashlikning ishonchliligi asosdagi _embedding_ algoritmining sifatiga bog'liq. Agar ularning _embedding_'lari yomon bo'lsa, bir xil ma'noga ega bo'lgan ikkita matn ham past semantik o'xshashlik baliga ega bo'lishi mumkin. Bu o'lchovning yana bir kamchiligi shundaki, asosdagi _embedding_ algoritmini ishga tushirish jiddiy hisoblash quvvati va vaqt talab qilishi mumkin.
 
 "SI — hakam" yondashuvini muhokama qilishdan oldin, keling, _embedding_'ga qisqacha kirish qilib o'tamiz. _Embedding_ tushunchasi semantik o'xshashlikning markazida yotadi va u biz kitob davomida o'rganadigan ko'plab mavzular, jumladan, 6-bobdagi vektorli qidiruv (`vector search`) va 8-bobdagi ma'lumotlardagi takrorlanishlarni olib tashlash (`data deduplication`) uchun asos bo'lib xizmat qiladi.
+
+## _Embedding_'larga kirish
+
+Kompyuterlar sonlar bilan ishlagani uchun, model o'zining kirish ma'lumotlarini kompyuterlar qayta ishlay oladigan raqamli tasvirlarga aylantirishi kerak. **_Embedding_** — bu asl ma'lumotning ma'nosini o'zida aks ettirishni maqsad qilgan raqamli tasvirdir.
+
+_Embedding_ bu — vektor. Masalan, "mushuk gilamda o'tiribdi" jumlasi `[0.11, 0.02, 0.54]` kabi ko'rinishdagi _embedding_ vektori yordamida ifodalanishi mumkin. Bu yerda men misol sifatida kichik bir vektordan foydalandim. Aslida, _embedding_ vektorining o'lchami (_embedding_ vektoridagi elementlar soni) odatda 100 dan 10 000 gacha bo'ladi.[^13]
+
+Aynan _embedding_'lar hosil qilish uchun o'qitilgan modellarga ochiq manbali `BERT`, `CLIP` (Kontrastiv Til-Tasvir Dastlabki O'qitish) va [`Sentence Transformers`](https://github.com/UKPLab/sentence-transformers) kabi modellar kiradi. Shuningdek, _API_ sifatida taqdim etiladigan xususiy _embedding_ modellari ham mavjud.[^14] 3-2-jadvalda ba'zi ommabop modellarning _embedding_ o'lchamlari ko'rsatilgan.
+
+| Model | _Embedding_ o'lchami |
+| :--- | :--- |
+| ["Google"ning `BERT`](https://arxiv.org/abs/1810.04805) | `BERT base`: 768<br/>`BERT large`: 1024 |
+| ["OpenAI"ning `CLIP`](https://openai.com/index/clip/) | Tasvir: 512<br/>Matn: 512 |
+| ["OpenAI" `Embeddings` _API_'si](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | `text-embedding-3-small`: 1536<br/>`text-embedding-3-large`: 3072 |
+| ["Cohere"ning `Embed v3`](https://cohere.com/blog/introducing-embed-v3) | `embed-english-v3.0`: 1024<br/>`embed-english-light-3.0`: 384 |
+
+<div className='text-center text-sm italic'>3-2-jadval. Keng tarqalgan modellar tomonidan ishlatiladigan _embedding_ o'lchamlari.</div>
+
+Modellar odatda o'zlarining kirish ma'lumotlarini avval vektor tasvirlariga aylantirishni talab qilgani uchun, `GPT` seriyasi va `Llama` seriyasi kabi ko'plab _ML_ modellari ham _embedding_'lar generatsiya qilish bosqichini o'z ichiga oladi. "Transformer arxitekturasi" bo'limida Transformer modelidagi _embedding_ qatlami vizualizatsiya qilingan. Agar siz ushbu modellarning oraliq qatlamlariga kira olsangiz, ulardan _embedding_'larni ajratib olish uchun foydalanishingiz mumkin. Biroq, bu _embedding_'larning sifati ixtisoslashgan _embedding_ modellari tomonidan generatsiya qilingan _embedding_'lar kabi yaxshi bo'lmasligi mumkin.
+
+_Embedding_ algoritmining maqsadi — asl ma'lumotning mohiyatini aks ettiruvchi _embedding_'lar hosil qilishdir. Buni qanday tekshiramiz? `[0.11, 0.02, 0.54]` vektori asl "mushuk gilamda o'tiribdi" matniga hech o'xshamaydi-ku.
+
+Umumiy olganda, agar o'xshashroq matnlar kosinusli o'xshashlik yoki shunga o'xshash metrikalar bilan o'lchanganda yaqinroq _embedding_'larga ega bo'lsa, _embedding_ algoritmi yaxshi hisoblanadi. "Mushuk gilamda o'tiribdi" jumlasining _embedding_'i "it o'tloqda o'ynayapti" jumlasining _embedding_'iga "SI tadqiqotlari juda qiziqarli" jumlasining _embedding_'idan ko'ra yaqinroq bo'lishi kerak.
+
+Siz, shuningdek, _embedding_'lar sifatini ularning sizning vazifangiz uchun foydaliligiga qarab baholashingiz mumkin. _Embedding_'lar tasniflash, mavzularni modellashtirish, tavsiya tizimlari va _RAG_ kabi ko'plab vazifalarda ishlatiladi. _Embedding_ sifatini bir nechta vazifalar bo'yicha o'lchaydigan benchmarklarga misol qilib _MTEB_, ya'ni Keng Qamrovli Matn _Embedding_ Benchmark'ini (`Massive Text Embedding Benchmark`) ([Muennighoff va boshq., 2023](https://arxiv.org/abs/2210.07316)) keltirish mumkin.
+
+Men misol sifatida matnlardan foydalanyapman, lekin har qanday ma'lumot _embedding_ tasvirlariga ega bo'lishi mumkin. Masalan, ["Criteo"](https://arxiv.org/abs/1607.07326) va ["Coveo"](https://docs.coveo.com/en/l9gg3565/coveo-for-commerce/product-embeddings-and-vectors) kabi elektron tijorat yechimlarida mahsulotlar uchun _embedding_'lar mavjud. ["Pinterest"da](https://oars-workshop.github.io/2021/andrew.pdf) esa tasvirlar, grafiklar, so'rovlar va hatto foydalanuvchilar uchun ham _embedding_'lar bor.
+
+#### Multimodal _embedding_'lar
+
+Yangi bir yo'nalish — bu turli modallikdagi ma'lumotlar uchun qo'shma _embedding_'lar yaratishdir. `CLIP` ([Radford va boshq., 2021](https://arxiv.org/abs/2103.00020)) turli modallikdagi — matn va tasvirlardagi — ma'lumotlarni qo'shma _embedding_ fazosiga o'tkaza olgan birinchi yirik modellardan biri edi. `ULIP` (til, tasvirlar va nuqtalar bulutining yagona tasviri) ([Xue va boshq., 2022](https://arxiv.org/abs/2212.05171)) matn, tasvirlar va 3D nuqtalar bulutining yagona tasvirlarini yaratishni maqsad qiladi. `ImageBind` ([Girdhar va boshq., 2023](https://arxiv.org/abs/2305.05665)) esa oltita turli modallik, jumladan, matn, tasvirlar va audio bo'ylab qo'shma _embedding_ o'rganadi.
+
+3-6-rasmda `CLIP`'ning arxitekturasi vizualizatsiya qilingan. `CLIP` (tasvir, matn) juftliklari yordamida o'qitiladi. Tasvirga mos keladigan matn bu tasvir bilan bog'liq bo'lgan izoh yoki sharh bo'lishi mumkin. Har bir (tasvir, matn) juftligi uchun `CLIP` matnni matn _embedding_'iga aylantirish uchun matn kodlovchisidan (`text encoder`) va tasvirni tasvir _embedding_'iga aylantirish uchun tasvir kodlovchisidan (`image encoder`) foydalanadi. Keyin u bu ikkala _embedding_'ni ham qo'shma _embedding_ fazosiga proeksiya qiladi. O'qitish maqsadi — bu qo'shma fazoda biror tasvirning _embedding_'ini unga mos keladigan matnning _embedding_'iga yaqinlashtirishdir.
+
+![3-6-rasm. CLIP'ning arxitekturasi (Radford va boshq., 2021).](/ai-engineering/3-chapter/3.6-figure.png)
+
+<div className='text-center text-sm italic'>3-6-rasm. `CLIP`'ning arxitekturasi (Radford va boshq., 2021).</div>
+
+Turli modallikdagi ma'lumotlarni ifodalay oladigan qo'shma _embedding_ fazosi **multimodal _embedding_ fazosi** deb ataladi. Matn-tasvir qo'shma _embedding_ fazosida, baliq tutayotgan odam tasvirining _embedding_'i "moda namoyishi" matnining _embedding_'idan ko'ra "baliqchi" matnining _embedding_'iga yaqinroq bo'lishi kerak. Bu qo'shma _embedding_ fazosi turli modallikdagi _embedding_'larni taqqoslash va birlashtirish imkonini beradi. Masalan, bu matnga asoslangan tasvir qidiruvini amalga oshirish imkoniyatini mavjud qiladi. Biror matn berilganda, u sizga ushbu matnga eng yaqin bo'lgan tasvirlarni topishga yordam beradi.
 
 
 ### Izohlar
