@@ -1,4 +1,4 @@
-# Aniq baholash
+C# Aniq baholash
 
 Modellar samaradorligini baholashda aniq (`exact`) va subyektiv (`subjective`) baholashni farqlash muhimdir. Aniq baholash hech qanday noaniqliksiz xulosa chiqaradi. Masalan, agar ko'p tanlovli savolning javobi A bo'lsa va siz B ni tanlasangiz, javobingiz noto'g'ri. Bunda hech qanday noaniqlik yo'q. Boshqa tomondan, esseni baholash subyektivdir. Essening bali uni kim baholashiga bog'liq. Bir xil odam, agar bir muncha vaqt o'tib ikki marta so'ralsa, bir xil essega turli ballar berishi mumkin. Aniq baholash yo'riqnomalari bilan esseni baholash aniqroq bo'lishi mumkin. Keyingi bo'limda ko'rib o'tadigan "SI — hakam" yondashuvi subyektivdir. Baholash natijasi hakam modelga va promptga qarab o'zgarishi mumkin.
 
@@ -48,6 +48,132 @@ Benchmark muammosi test holatlari to'plami bilan birga keladi. Har bir test hola
 Modelni baholashda har bir muammo uchun **k** deb belgilangan bir nechta kod namunalari generatsiya qilinadi. Agar model generatsiya qilgan **k** ta kod namunasidan birortasi o'sha muammoning barcha test holatlaridan o'tsa, model muammoni yechgan hisoblanadi. Yakuniy ball, **pass@k** deb ataladi va u yechilgan muammolarning barcha muammolarga nisbatidir. Agar 10 ta muammo bo'lsa va model **k = 3** bo'lganda 5 tasini yechsa, unda o'sha modelning **pass@3** bali 50% bo'ladi. Model qancha ko'p kod namunasi generatsiya qilsa, uning har bir muammoni yechish imkoniyati shuncha ko'p bo'ladi, demak, yakuniy ball ham shuncha yuqori bo'ladi. Bu shuni anglatadiki, kutilganidek, **pass@1** bali **pass@3**'dan pastroq, u esa, o'z navbatida, **pass@10**'dan pastroq bo'lishi kerak.
 
 Funksional to'g'riligini avtomatik baholash mumkin bo'lgan yana bir vazifalar toifasi — bu o'yin botlaridir. Agar siz _Tetris_ o'ynash uchun bot yaratsangiz, botning qanchalik yaxshi ekanligini u olgan ball orqali bilib olishingiz mumkin. O'lchanadigan maqsadlarga ega bo'lgan vazifalarni odatda funksional to'g'rilik yordamida baholash mumkin. Masalan, agar siz SI'dan energiya sarfini optimallashtirish uchun ish yuklamalaringizni rejalashtirishni so'rasangiz, SI'ning samaradorligini u qancha energiya tejagani bilan o'lchash mumkin.[^11]
+
+## Etalon ma'lumotlarga nisbatan o'xshashlikni o'lchash
+
+Agar sizni qiziqtirgan vazifani funksional to'g'rilik yordamida avtomatik baholab bo'lmasa, keng tarqalgan yondashuvlardan biri — bu SI natijalarini etalon ma'lumotlarga (`reference data`) nisbatan baholashdir. Masalan, agar siz modeldan biror jumlani fransuz tilidan ingliz tiliga tarjima qilishni so'rasangiz, siz generatsiya qilingan inglizcha tarjimani to'g'ri inglizcha tarjimaga nisbatan baholashingiz mumkin.
+
+Etalon ma'lumotlardagi har bir misol (kirish, etalon javoblar) formatiga amal qiladi. Bir kirish ma'lumoti bir nechta etalon javobga ega bo'lishi mumkin, masalan, bir fransuzcha jumlaning bir nechta ehtimoliy inglizcha tarjimasi. Etalon javoblar, shuningdek, etalon haqiqatlar (`ground truths`) yoki kanonik javoblar (`canonical responses`) deb ham ataladi. Etalonlarni talab qiladigan metrikalar etalonga asoslangan (`reference-based`), talab qilmaydiganlar esa etalonsiz (`reference-free`) deyiladi.
+
+Bu baholash yondashuvi etalon ma'lumotlarni talab qilgani uchun, u etalon ma'lumotlarning qancha miqdorda va qanchalik tez generatsiya qilinishi bilan cheklanadi. Etalon ma'lumotlar odatda insonlar tomonidan va tobora ko'proq SI'lar tomonidan generatsiya qilinadi. Etalon sifatida inson tomonidan yaratilgan ma'lumotlardan foydalanish, biz inson samaradorligini oltin standart deb bilishimizni va SI samaradorligi inson samaradorligiga nisbatan o'lchanishini anglatadi. Inson tomonidan yaratilgan ma'lumotlarni generatsiya qilish qimmat va ko'p vaqt talab qilishi mumkin, bu esa ko'pchilikni buning o'rniga etalon ma'lumotlarni generatsiya qilish uchun SI'dan foydalanishga undaydi. SI tomonidan yaratilgan ma'lumotlar hali ham inson tekshiruvini talab qilishi mumkin, ammo uni ko'rib chiqish uchun zarur bo'lgan mehnat etalon ma'lumotlarni noldan yaratish uchun zarur bo'lgan mehnatdan ancha kam.
+
+Etalon javoblarga qanchalik o'xshash bo'lsa, generatsiya qilingan javoblar shunchalik yaxshi hisoblanadi. Ikkita erkin matn o'rtasidagi o'xshashlikni o'lchashning to'rtta usuli mavjud:
+
+1.  **Baholovchidan xulosa so'rash:** ikkita matn bir xil yoki yo'qligi haqida xulosa chiqarishni so'rash.
+2.  **Aniq moslik (`Exact match`):** generatsiya qilingan javob etalon javoblardan biriga aniq mos keladimi yoki yo'qmi.
+3.  **Leksik o'xshashlik (`Lexical similarity`):** generatsiya qilingan javob etalon javoblarga tashqi ko'rinishidan qanchalik o'xshashligi.
+4.  **Semantik o'xshashlik (`Semantic similarity`):** generatsiya qilingan javobning ma'no jihatdan (semantik jihatdan) etalon javoblarga qanchalik yaqinligi.
+
+Ikkita javobni inson baholovchilari yoki SI baholovchilari taqqoslashi mumkin. SI baholovchilari tobora ommalashib bormoqda va keyingi bo'limning diqqat markazida bo'ladi.
+
+Ushbu bo'lim qo'lda ishlab chiqilgan metrikalarga e'tibor qaratadi: aniq moslik, leksik o'xshashlik va semantik o'xshashlik. Aniq moslik bo'yicha ballar ikkilik (mos keladi yoki yo'q), qolgan ikkitasi esa sirpanuvchi shkalada (masalan, 0 va 1 yoki -1 va 1 oralig'ida) bo'ladi. "SI — hakam" yondashuvining qo'llash osonligi va moslashuvchanligiga qaramay, qo'lda ishlab chiqilgan o'xshashlik o'lchovlari o'zlarining aniq tabiati tufayli sohada hali ham keng qo'llaniladi.
+
+<Callout>
+### Eslatma
+
+Ushbu bo'limda generatsiya qilingan natija sifatini baholash uchun o'xshashlik o'lchovlaridan qanday foydalanish mumkinligi muhokama qilinadi. Biroq, siz o'xshashlik o'lchovlaridan boshqa ko'plab qo'llanish holatlari uchun ham foydalanishingiz mumkin, jumladan, lekin ular bilan cheklanmagan holda:
+- **Qidiruv va topish:** so'rovga o'xshash elementlarni topish.
+- **Reytinglash:** elementlarni so'rovga qanchalik o'xshashligiga qarab tartiblash.
+- **Klasterlash:** elementlarni bir-biriga qanchalik o'xshashligiga qarab guruhlash.
+- **Anomaliyalarni aniqlash:** qolganlariga eng kam o'xshash bo'lgan elementlarni aniqlash.
+- **Ma'lumotlardagi takrorlanishlarni olib tashlash:** boshqa elementlarga juda o'xshash bo'lgan elementlarni olib tashlash.
+
+Ushbu bo'limda muhokama qilingan texnikalar kitob davomida yana qayta tilga olinadi.
+
+</Callout>
+
+### Aniq moslik
+
+Agar generatsiya qilingan javob etalon javoblardan biriga aniq mos kelsa, bu **aniq moslik** (`exact match`) hisoblanadi. Aniq moslik oddiy matematik masalalar, umumiy bilimga oid so'rovlar va viktorina uslubidagi savollar kabi qisqa, aniq javoblar kutiladigan vazifalar uchun ishlaydi. Quyida, qisqa, aniq javoblarga ega bo'lgan kirish ma'lumotlariga misollar keltirilgan:
+
+- "2 + 3 nechi?"
+- "Nobel mukofotini qo'lga kiritgan birinchi ayol kim bo'lgan?"
+- "Mening joriy hisobimdagi qoldiq qancha?"
+- "Bo'sh joyni to'ldiring: Parij Fransiyaga qanday bo'lsa, ___ Angliyaga shunday."
+
+Formatlash muammolarini hisobga oladigan moslashtirishning turlari ham mavjud. Bir turi — bu etalon javobni o'z ichiga olgan har qanday natijani mos kelgan deb qabul qilish. "2 + 3 nechi?" savolini ko'rib chiqaylik. Etalon javob — "5". Bu tur "5" ni o'z ichiga olgan barcha natijalarni, jumladan, "Javob 5" va "2 + 3 javobi 5 ga teng" kabilarni ham qabul qiladi.
+
+Biroq, bu tur ba'zan noto'g'ri yechimning qabul qilinishiga olib kelishi mumkin. "Anna Frank qaysi yili tug'ilgan?" savolini ko'rib chiqaylik. Anna Frank 1929-yil 12-iyunda tug'ilgan, shuning uchun to'g'ri javob 1929. Agar model "1929-yil 12-sentabr" deb chiqarsa, to'g'ri yil natijada mavjud, ammo natija faktik jihatdan noto'g'ri.
+
+Oddiy vazifalardan tashqari, aniq moslik kamdan-kam hollarda ishlaydi. Asl fransuzcha "Comment ça va?" jumlasi berilganda, "How are you?", "How is everything?" va "How are you doing?" kabi bir nechta ehtimoliy inglizcha tarjimalar mavjud. Agar etalon ma'lumotlarda faqat shu uchta tarjima bo'lsa va model "How is it going?" deb generatsiya qilsa, modelning javobi noto'g'ri deb belgilanadi. Asl matn qanchalik uzun va murakkab bo'lsa, ehtimoliy tarjimalar shunchalik ko'p bo'ladi. Bir kirish ma'lumoti uchun ehtimoliy javoblarning to'liq to'plamini yaratishning iloji yo'q. Murakkab vazifalar uchun leksik o'xshashlik va semantik o'xshashlik yaxshiroq ishlaydi.
+
+### Leksik o'xshashlik
+
+Leksik o'xshashlik (`Lexical similarity`) ikkita matnning qanchalik bir-biriga mos kelishini, ya'ni qancha umumiy qismga ega ekanligini o'lchaydi. Buni amalga oshirish uchun avvalo har bir matnni kichikroq tokenlarga ajratib olish kerak.
+
+Eng oddiy shaklda, leksik o'xshashlikni ikkita matnda qancha umumiy token borligini sanash orqali o'lchash mumkin. Misol uchun, "Mening mushuklarim sichqonlarni qo'rqitadi" etalon javobini va ikkita generatsiya qilingan javobni ko'rib chiqaylik:
+
+- **A javob:** "Mening mushuklarim sichqonlarni yeydi"
+- **B javob:** "Mushuklar va sichqonlar doim urishadi"
+
+Har bir token so'z deb faraz qilaylik. Agar siz faqat alohida so'zlarning mos kelishini sanasangiz, A javob etalon javobdagi 5 ta so'zdan 4 tasini o'z ichiga oladi (o'xshashlik bali 80%), B javob esa faqat 3 tasini o'z ichiga oladi (o'xshashlik bali 60%). Shuning uchun, A javob etalon javobga ko'proq o'xshash hisoblanadi.
+
+#### Taxminiy moslik va tahrirlash masofasi
+
+Leksik o'xshashlikni o'lchashning bir usuli — bu taxminiy satr mosligi (`approximate string matching`), so'zlashuv tilida noaniq moslik (`fuzzy matching`) deb ham ataladi. U bir matndan ikkinchisiga o'tish uchun qancha tahrir kerakligini sanash orqali ikkita matn o'rtasidagi o'xshashlikni o'lchaydi, bu son tahrirlash masofasi (`edit distance`) deb ataladi. Odatdagi uchta tahrirlash amali quyidagilardir:
+
+- **O'chirish:** "brad" -> "bad"
+- **Qo'shish:** "bad" -> "bard"
+- **Almashtirish:** "bad" -> "bed"
+
+Ba'zi noaniq moslashtirgichlar, shuningdek, transpozitsiyani, ya'ni ikkita harfning o'rnini almashtirishni (masalan, "mats" -> "mast") ham bitta tahrir deb hisoblaydi. Biroq, ba'zi noaniq moslashtirgichlar har bir transpozitsiyani ikkita tahrirlash amali — bitta o'chirish va bitta qo'shish — deb hisoblaydi.
+
+Masalan, "bad" so'zi "bard"ga bir tahrir masofasida, "cash"ga esa uch tahrir masofasida joylashgan, shuning uchun "bad" so'zi "cash"ga qaraganda "bard"ga ko'proq o'xshash hisoblanadi.
+
+#### N-gramm o'xshashligi
+
+Leksik o'xshashlikni o'lchashning yana bir usuli — bu n-gramm o'xshashligi (`n-gram similarity`) bo'lib, u alohida tokenlar o'rniga tokenlar ketma-ketligi, ya'ni n-grammlarning mos kelishiga asoslanib o'lchanadi. 1-gramm (unigramma) — bu bitta token. 2-gramm (bigramma) — bu ikkita tokenlar to'plami. "Mening mushuklarim sichqonlarni qo'rqitadi" jumlasi to'rtta bigrammadan iborat: "mening mushuklarim", "mushuklarim sichqonlarni", "sichqonlarni qo'rqitadi". Siz etalon javoblardagi n-grammlarning necha foizi generatsiya qilingan javobda ham mavjudligini o'lchaysiz.[^12]
+
+Leksik o'xshashlik uchun keng tarqalgan metrikalar `BLEU`, `ROUGE`, `METEOR++`, `TER` va `CIDEr`'dir. Ular mos kelishning aynan qanday hisoblanishi bilan farqlanadi. Fundamental modellardan oldin `BLEU`, `ROUGE` va ularning turdoshlari, ayniqsa, tarjima vazifalari uchun keng tarqalgan edi. Fundamental modellar paydo bo'lganidan beri kamroq benchmarklar leksik o'xshashlikdan foydalanadi. Ushbu metrikalardan foydalanadigan benchmarklarga misol qilib `WMT`, `COCO Captions` va `GEMv2`'ni keltirish mumkin.
+
+#### Leksik o'xshashlikning kamchiliklari
+
+Bu usulning bir kamchiligi shundaki, u etalon javoblarning keng qamrovli to'plamini saralashni talab qiladi. Agar etalon to'plamda unga o'xshash birorta ham javob bo'lmasa, yaxshi javob past o'xshashlik balini olishi mumkin. Ba'zi benchmark misollarida, ["Adept"](https://www.adept.ai/blog/fuyu-8b?utm_source=substack&amp;utm_medium=email) o'zining `Fuyu` modeli yomon ishlaganini aniqladi, bunga sabab model natijalarining noto'g'ri ekanligi emas, balki etalon ma'lumotlarda ba'zi to'g'ri javoblarning yetishmasligi edi. 3-5-rasmda tasvirga izoh berish vazifasiga misol keltirilgan, unda `Fuyu` to'g'ri izoh generatsiya qilgan, ammo past ball olgan.
+
+Nafaqat bu, balki etalonlar ham noto'g'ri bo'lishi mumkin. Masalan, mashina tarjimasi uchun baholash metrikalarini o'rganishga qaratilgan `WMT 2023 Metrics` musobaqasi tashkilotchilari o'z ma'lumotlarida ko'plab yomon etalon tarjimalarni topganliklarini xabar qilishdi. Past sifatli etalon ma'lumotlar — bu inson xulosasi bilan bog'liqlik (`correlation to human judgment`) bo'yicha etalonsiz metrikalarning etalonga asoslangan metrikalar uchun kuchli raqobatchi bo'lishining sabablaridan biridir ([Freitag va boshq., 2023](https://aclanthology.org/2023.wmt-1.51/)).
+
+Bu o'lchovning yana bir kamchiligi shundaki, yuqori leksik o'xshashlik ballari har doim ham yaxshiroq javoblarni anglatmaydi. Masalan, kod generatsiyasi benchmarki bo'lgan `HumanEval`'da "OpenAI" noto'g'ri va to'g'ri yechimlar uchun `BLEU` ballari o'xshash ekanligini aniqladi. Bu `BLEU` ballari uchun optimallashtirish funksional to'g'rilik uchun optimallashtirish bilan bir xil emasligini ko'rsatadi ([Chen va boshq., 2021](https://arxiv.org/abs/2107.03374)).
+
+![3-5-rasm. Fuyu to'g'ri variantni generatsiya qilgan, ammo etalon izohlarning cheklanganligi sababli past ball olgan misol.](/ai-engineering/3-chapter/3.5-figure.png)
+
+<div className='text-center text-sm italic'>3-5-rasm. `Fuyu` to'g'ri variantni generatsiya qilgan, ammo etalon izohlarning cheklanganligi sababli past ball olgan misol.</div>
+
+### Semantik o'xshashlik
+
+Leksik o'xshashlik ikkita matnning bir xil ma'noga ega ekanligini emas, balki tashqi ko'rinishidan o'xshashligini o'lchaydi. "What's up?" va "How are you?" jumlalarini ko'rib chiqaylik. Leksik jihatdan ular farq qiladi — ularda ishlatilgan so'zlar va harflarda deyarli umumiy qism yo'q. Biroq, semantik jihatdan ular yaqin. Aksincha, o'xshash ko'rinishdagi matnlar butunlay boshqa narsalarni anglatishi mumkin. "Keling, ovqatlanamiz, buvi" (_Let's eat, grandma_) va "Keling, buvini yeymiz" (_Let's eat grandma_) ikki mutlaqo farqli narsani anglatadi.
+
+Semantik o'xshashlik (`Semantic similarity`) semantikadagi, ya'ni ma'nodagi o'xshashlikni hisoblashni maqsad qiladi. Bu avvalo matnni _embedding_ deb ataladigan raqamli tasvirga aylantirishni talab qiladi. Masalan, "mushuk gilamda o'tiribdi" jumlasi `[0.11, 0.02, 0.54]` kabi ko'rinishdagi _embedding_ yordamida ifodalanishi mumkin. Shu sababli, semantik o'xshashlik _embedding_ o'xshashligi (`embedding similarity`) deb ham ataladi.
+
+“_Embedding_'larga kirish” bo'limida _embedding_'lar qanday ishlashi muhokama qilinadi. Hozircha, matnlarni _embedding_'larga aylantirish usulingiz bor deb faraz qilaylik. Ikkita _embedding_ o'rtasidagi o'xshashlikni kosinusli o'xshashlik (`cosine similarity`) kabi metrikalar yordamida hisoblash mumkin. Bir-biriga aynan o'xshash ikkita _embedding_ 1 ga teng o'xshashlik baliga ega. Ikkita qarama-qarshi _embedding_ esa -1 ga teng o'xshashlik baliga ega.
+
+Men matn misollaridan foydalanayapman, lekin semantik o'xshashlikni tasvir va audio kabi istalgan ma'lumot modalligining _embedding_'lari uchun ham hisoblash mumkin. Matn uchun semantik o'xshashlik ba'zan semantik matn o'xshashligi (`semantic textual similarity`) deb ham ataladi.
+
+<Callout>
+### Ogohlantirish
+
+Garchi men semantik o'xshashlikni aniq baholash toifasiga kiritgan bo'lsam-da, uni subyektiv deb hisoblash mumkin, chunki turli _embedding_ algoritmlari turli _embedding_'lar hosil qilishi mumkin. Biroq, ikkita _embedding_ berilganda, ular o'rtasidagi o'xshashlik bali aniq hisoblanadi.
+</Callout>
+
+Matematik jihatdan, A generatsiya qilingan javobning _embedding_'i, B esa etalon javobning _embedding_'i bo'lsin. A va B o'rtasidagi kosinusli o'xshashlik quyidagicha hisoblanadi:
+
+``` math
+\frac{A \cdot B}{\|A\| \|B\|}
+```
+
+bunda:
+-   `A ⋅ B` — A va B ning skalyar ko'paytmasi (`dot product`).
+-   `||A||` — A ning Yevklid normasi (shuningdek, `L² norm` deb ham ataladi). Agar A [0.11, 0.02, 0.54] bo'lsa, 
+
+``` math
+\|A\| = \sqrt{0.11^2 + 0.02^2 + 0.54^2}
+```
+bo'ladi.
+
+Semantik matn o'xshashligi uchun metrikalarga [`BERTScore`](https://arxiv.org/abs/1904.09675) (_embedding_'lar `BERT` tomonidan generatsiya qilinadi) va [`MoverScore`](https://aclanthology.org/D19-1053/) (_embedding_'lar algoritmlar aralashmasi tomonidan generatsiya qilinadi) kiradi.
+
+Semantik matn o'xshashligi leksik o'xshashlik kabi keng qamrovli etalon javoblar to'plamini talab qilmaydi. Biroq, semantik o'xshashlikning ishonchliligi asosdagi _embedding_ algoritmining sifatiga bog'liq. Agar ularning _embedding_'lari yomon bo'lsa, bir xil ma'noga ega bo'lgan ikkita matn ham past semantik o'xshashlik baliga ega bo'lishi mumkin. Bu o'lchovning yana bir kamchiligi shundaki, asosdagi _embedding_ algoritmini ishga tushirish jiddiy hisoblash quvvati va vaqt talab qilishi mumkin.
+
+"SI — hakam" yondashuvini muhokama qilishdan oldin, keling, _embedding_'ga qisqacha kirish qilib o'tamiz. _Embedding_ tushunchasi semantik o'xshashlikning markazida yotadi va u biz kitob davomida o'rganadigan ko'plab mavzular, jumladan, 6-bobdagi vektorli qidiruv (`vector search`) va 8-bobdagi ma'lumotlardagi takrorlanishlarni olib tashlash (`data deduplication`) uchun asos bo'lib xizmat qiladi.
 
 
 ### Izohlar
