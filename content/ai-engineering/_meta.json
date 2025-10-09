@@ -77,6 +77,10 @@
       "exact-evaluation": {
         "title": "Aniq baholash",
         "path": "3-evaluation-methodology/exact-evaluation/page"
+      },
+      "ai-as-judge": {
+        "title": "SI-baholovchi",
+        "path": "3-evaluation-methodology/ai-as-judge/page"
       }
     }
   }
