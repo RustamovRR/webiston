@@ -126,11 +126,122 @@ aks ettiradi.`
 
 SI-baholovchi — bu shunchaki model emas, u ham modelni, ham promptni o'z ichiga olgan tizimdir. Modelni, promptni yoki modelning _sampling_ parametrlarini o'zgartirish boshqa bir baholovchiga olib keladi.
 
+## SI-baholovchining cheklovlari
+
+"SI-baholovchi" yondashuvining ko'plab afzalliklariga qaramay, ko'plab jamoalar bu yondashuvni qabul qilishga ikkilanishadi. SI'ni SI'ni baholash uchun ishlatish mantiqsizdek tuyuladi. SI'ning ehtimoliy tabiati uni baholovchi sifatida harakat qilish uchun haddan tashqari ishonchsiz qilib ko'rsatadi. SI-baholovchilar dasturga jiddiy xarajatlar va kechikish qo'shishi mumkin. Ushbu cheklovlarni hisobga olgan holda, ba'zi jamoalar "SI-baholovchi" yondashuvini, ayniqsa, amaliyotda o'z tizimlarini baholashning boshqa hech qanday usuli bo'lmaganda, zaxira varianti sifatida ko'rishadi.
+
+### Barqarorsizlik
+
+Baholash usuli ishonchli bo'lishi uchun uning natijalari barqaror bo'lishi kerak. Ammo SI-baholovchilar, barcha SI dasturlari singari, ehtimoliydir. Bir xil baholovchi, bir xil kirish ma'lumotiga, agar har xil prompt berilsa, har xil ballar chiqarishi mumkin. Hatto bir xil baholovchi, bir xil ko'rsatma bilan prompt berilganda ham, agar ikki marta ishga tushirilsa, har xil ballar chiqarishi mumkin. Bu barqarorsizlik baholash natijalarini qayta yaratishni yoki ularga ishonishni qiyinlashtiradi.
+
+SI-baholovchini barqarorroq qilish mumkin. 2-bobda buni _sampling_ parametrlari yordamida qanday qilish muhokama qilingan. [Zheng va boshqalar (2023)](https://arxiv.org/abs/2306.05685) promptga baholash misollarini kiritish `GPT-4`'ning barqarorligini 65% dan 77.5% gacha oshirishi mumkinligini ko'rsatishdi. Biroq, ular yuqori barqarorlik yuqori aniqlikni anglatmasligini tan olishdi — baholovchi doimiy ravishda bir xil xatolarni qilishi mumkin. Bundan tashqari, ko'proq misollarni kiritish promptlarni uzaytiradi, uzunroq promptlar esa yuqori _inference_ xarajatlarini anglatadi. Zheng va boshqalarning tajribasida, o'z promptlariga ko'proq misollar kiritish ularning `GPT-4` xarajatlarining to'rt baravar oshishiga sabab bo'lgan.
+
+### Mezonlarning noaniqligi
+
+Ko'pgina inson tomonidan ishlab chiqilgan metrikalardan farqli o'laroq, "SI-baholovchi" mezonlari standartlashtirilmagan, bu esa ularni noto'g'ri talqin qilish va suiiste'mol qilishni osonlashtiradi. Ushbu kitob yozilayotgan vaqtda, ochiq manbali `MLflow`, `Ragas` va `LlamaIndex` vositalarining barchasida generatsiya qilingan natijaning berilgan kontekstga qanchalik sodiq (`faithful`) ekanligini o'lchash uchun o'rnatilgan "haqiqatga moslik" (`faithfulness`) mezoni mavjud, ammo ularning ko'rsatmalari va ballash tizimlari bir-biridan farq qiladi. 3-4-jadvalda ko'rsatilganidek, `MLflow` 1 dan 5 gacha bo'lgan ballash tizimidan, `Ragas` 0 va 1 dan foydalanadi, `LlamaIndex`'ning prompti esa baholovchidan HA va YO'Q deb chiqarishni so'raydi.
+
+<br/>
+
+| Vosita | Prompt [qisqalik uchun qisman qisqartirilgan] | Ballash tizimi |
+| :--- | :--- | :--- |
+| [`MLflow`](https://github.com/mlflow/mlflow/blob/5cdae7c4321015620032d02a3b84fb6127247392/mlflow/metrics/genai/prompts/v1.py) | `Haqiqatga moslik faqat taqdim etilgan natija va taqdim etilgan kontekst bilan baholanadi, iltimos, haqiqatga moslikni baholashda taqdim etilgan kirishni butunlay e'tiborsiz qoldiring. Haqiqatga moslik taqdim etilgan natijaning qanchalik katta qismi taqdim etilgan kontekst bilan faktik jihatdan mos kelishini baholaydi.…`<br/><br/>`Haqiqatga moslik: Quyida turli ballar uchun tafsilotlar keltirilgan:`<br/>`- 1-ball: Natijadagi da'volarning hech birini taqdim etilgan kontekstdan xulosa qilib bo'lmaydi.`<br/>-` 2-ball: …` | 1–5 |
+| [`Ragas`](https://github.com/explodinggradients/ragas/blob/b276f59c0d4eb4795dc28966bfbce14d5aacd140/src/ragas/metrics/_faithfulness.py#L93C1-L94C1) | `Sizning vazifangiz — berilgan kontekstga asoslanib, bir qator bayonotlarning haqiqatga mosligini baholash. Har bir bayonot uchun, agar bayonotni kontekstga asoslanib tekshirish mumkin bo'lsa, 1 hukmini yoki agar bayonotni kontekstga asoslanib tekshirish mumkin bo'lmasa, 0 hukmini qaytarishingiz kerak.` | 0 va 1 |
+| [`LlamaIndex`](https://github.com/run-llama/llama_index/blob/main/llama-index-core/llama_index/core/evaluation/faithfulness.py) | `Iltimos, berilgan ma'lumot qismi kontekst tomonidan qo'llab-quvvatlanadimi yoki yo'qligini ayting.`<br/>`Siz HA yoki YO'Q bilan javob berishingiz kerak.`<br/>`Agar kontekstning biror qismi ma'lumotni qo'llab-quvvatlasa, hatto kontekstning aksariyati aloqador bo'lmasa ham, HA deb javob bering. Quyida ba'zi misollar keltirilgan.`<br/><br/>`Ma'lumot: Olmali pirog odatda ikki qavatli bo'ladi.`<br/>`Kontekst: Olmali pirog mevali pirogdir… U odatda ikki qavatli bo'ladi, xamir ham nachinkaning ustida, ham ostida bo'ladi ...`<br/>`Javob: HA` | HA va YO'Q |
+
+<div className='text-center text-sm italic'>3-4-jadval. Turli xil vositalar bir xil mezonlar uchun juda farqli standart promptlarga ega bo'lishi mumkin.</div>
+
+Bu uchta vosita tomonidan chiqarilgan haqiqatga moslik ballari taqqoslanadigan bo'lmaydi. Agar biror (kontekst, javob) juftligi berilganda, `MLflow` 3 ga teng haqiqatga moslik balini bersa, `Ragas` 1 ni chiqarsa va `LlamaIndex` YO'Q deb chiqarsa, siz qaysi balldan foydalanardingiz?
+
+Dastur vaqt o'tishi bilan rivojlanadi, lekin uni baholash usuli ideal holda o'zgarmas bo'lishi kerak. Shunday qilib, baholash metrikalaridan dasturning o'zgarishlarini kuzatish uchun foydalanish mumkin. Biroq, SI-baholovchilar ham SI dasturlaridir, bu esa ularning ham vaqt o'tishi bilan o'zgarishi mumkinligini anglatadi.
+
+Tasavvur qiling, o'tgan oy dasturingizning izchillik bali 90% edi, bu oy esa bu ball 92%. Bu sizning dasturingizning izchilligi yaxshilanganini anglatadimi? Agar siz ikkala holatda ham ishlatilgan SI-baholovchilar aynan bir xil ekanligiga amin bo'lmasangiz, bu savolga javob berish qiyin. Balki bu oydagi baholovchining prompti o'tgan oydagidan farq qilgandir? Balki siz biroz yaxshiroq ishlaydigan promptga o'tgandirsiz yoki bir hamkasbingiz o'tgan oydagi promptdagi xatoni tuzatgandir va bu oydagi baholovchi yumshoqroqdir.
+
+Agar dastur va SI-baholovchi turli jamoalar tomonidan boshqarilsa, bu ayniqsa chalkash bo'lishi mumkin. SI-baholovchi jamoasi dastur jamoasini xabardor qilmasdan baholovchilarni o'zgartirishi mumkin. Natijada, dastur jamoasi baholash natijalaridagi o'zgarishlarni baholovchilardagi o'zgarishlarga emas, balki dasturdagi o'zgarishlarga noto'g'ri bog'lashi mumkin.
+
+> **Maslahat:**<br/>
+> Agar siz baholovchi uchun ishlatilgan model va promptni ko'ra olmasangiz, hech qanday SI-baholovchiga ishonmang.
+
+Baholash usullarini standartlashtirish vaqt talab etadi. Soha rivojlanib, ko'proq himoya mexanizmlari (`guardrails`) joriy etilgani sari, umid qilamanki, kelajakdagi SI-baholovchilar ancha standartlashtirilgan va ishonchli bo'lib boradi.
+
+### Xarajatlar va kechikishning ortishi
+
+Siz SI-baholovchilardan dasturlarni ham tajriba paytida, ham amaliyotda baholash uchun foydalanishingiz mumkin. Ko'pgina jamoalar xavflarni kamaytirish uchun amaliyotda SI-baholovchilardan himoya mexanizmi sifatida foydalanadilar va foydalanuvchilarga faqat SI-baholovchi tomonidan yaxshi deb topilgan generatsiya qilingan javoblarni ko'rsatadilar.
+
+Javoblarni baholash uchun qudratli modellardan foydalanish qimmatga tushishi mumkin. Agar siz ham javoblarni generatsiya qilish, ham baholash uchun `GPT-4`'dan foydalansangiz, siz ikki baravar ko'p `GPT-4` chaqiruvlarini amalga oshirasiz, bu esa _API_ xarajatlaringizni taxminan ikki baravar oshiradi. Agar sizda uchta mezonni — aytaylik, umumiy javob sifati, faktik izchillik va toksiklikni — baholash uchun uchta alohida baholash prompti bo'lsa, bu umumiy API chaqiruvlari sonini to'rttaga yetkazadi, ya'ni xarajatlaringiz to'rt baravar ortadi.[^17]
+
+Siz xarajatlarni baholovchi sifatida zaifroq modellardan foydalanish orqali kamaytirishingiz mumkin ("Qaysi modellar baholovchi sifatida harakat qila oladi?" bo'limiga qarang). Shuningdek, siz tanlab tekshirish (`spot-checking`) orqali ham xarajatlarni kamaytirishingiz mumkin: ya'ni, javoblarning faqat bir qismini baholash.[^18] Tanlab tekshirish ba'zi nosozliklarni o'tkazib yuborishingiz mumkinligini anglatadi. Siz baholaydigan namunalar foizi qanchalik katta bo'lsa, baholash natijalaringizga bo'lgan ishonchingiz shunchalik yuqori bo'ladi, lekin xarajatlar ham shunchalik yuqori bo'ladi. Xarajat va ishonch o'rtasidagi to'g'ri muvozanatni topish sinov va xatolarni talab qilishi mumkin. Bu jarayon 4-bobda batafsilroq muhokama qilinadi. Barcha omillarni hisobga olganda, SI-baholovchilar inson baholovchilardan ancha arzonroqdir.
+
+SI-baholovchilarni amaliyot jarayonlari ketma-ketligiga (`production pipeline`) joriy etish kechikishni oshirishi mumkin. Agar siz javoblarni foydalanuvchilarga qaytarishdan oldin baholasangiz, tanlovga duch kelasiz: kamaytirilgan xavf, lekin ortgan kechikish. Qo'shimcha kechikish bu variantni qat'iy kechikish talablariga ega bo'lgan dasturlar uchun imkonsiz qilib qo'yishi mumkin.
+
+### SI-baholovchining tarafkashliklari
+
+Inson baholovchilarida tarafkashliklar (`biases`) bo'lganidek, SI-baholovchilarda ham bor. Turli SI-baholovchilar turli xil tarafkashliklarga ega. Ushbu bo'limda ularning eng keng tarqalganlaridan ba'zilari muhokama qilinadi. SI-baholovchilaringizning tarafkashliklaridan xabardor bo'lish ularning ballarini to'g'ri talqin qilishga va hatto bu tarafkashliklarni yumshatishga yordam beradi.
+
+SI-baholovchilar o'ziga yon bosishga (`self-bias`) moyil bo'ladi, bunda model boshqa modellar tomonidan generatsiya qilingan javoblarga qaraganda o'zining javoblarini afzal ko'radi. Modelga eng ehtimoliy javobni generatsiya qilishga yordam beradigan o'sha mexanizm bu javobga yuqori ball ham beradi. [Zheng va boshqalarning 2023-yilgi tajribasida](https://arxiv.org/abs/2306.05685), `GPT-4` o'ziga 10% yuqoriroq g'alaba ko'rsatkichi bilan yon bosgan, `Claude-v1` esa o'ziga 25% yuqoriroq g'alaba ko'rsatkichi bilan yon bosgan.
+
+Ko'pgina SI modellarida birinchi pozitsiyaga moyillik (`first-position bias`) mavjud. SI-baholovchi juftlik taqqoslashida birinchi javobni yoki variantlar ro'yxatidagi birinchisini afzal ko'rishi mumkin. Buni bir xil testni har xil tartibda yoki puxta ishlab chiqilgan promptlar bilan bir necha marta takrorlash orqali yumshatish mumkin. SI'ning pozitsiyaga moyilligi insonlarnikiga teskari. Insonlar o'zlari [oxirgi ko'rgan javobni](https://www.interconnects.ai/p/evaluating-open-llms) afzal ko'rishga moyil bo'lib, bu so'nggi taassurot ta'siri (`recency bias`) deb ataladi.
+
+Ba'zi SI-baholovchilar ko'p so'zlilikka moyillikka (`verbosity bias`) ega bo'lib, sifatidan qat'i nazar, uzunroq javoblarni afzal ko'rishadi. [Wu va Aji (2023)](https://arxiv.org/abs/2307.03025) ham `GPT-4`, ham `Claude-1` qisqaroq, to'g'ri javoblarga (~50 so'z) qaraganda faktik xatolarga ega bo'lgan uzunroq javoblarni (~100 so'z) afzal ko'rishini aniqladilar. [Saito va boshqalar (2023)](https://arxiv.org/pdf/2310.10076) bu tarafkashlikni ijodiy vazifalar uchun o'rganib, uzunlik farqi yetarlicha katta bo'lganda (masalan, bir javob ikkinchisidan ikki baravar uzun bo'lganda), baholovchi deyarli har doim uzunrog'ini afzal ko'rishini aniqladilar.[^19] Biroq, ham Zheng va boshqalar (2023), ham Saito va boshqalar (2023) `GPT-4`'ning bu tarafkashlikka `GPT-3.5`'ga qaraganda kamroq moyil ekanligini aniqladilar, bu esa modellar kuchaygan sari bu tarafkashlik yo'qolishi mumkinligini ko'rsatadi.
+
+Bu barcha tarafkashliklar ustiga, SI-baholovchilar barcha SI dasturlari bilan bir xil cheklovlarga ega, jumladan, maxfiylik va intellektual mulk (`IP`) masalalari. Agar siz baholovchi sifatida xususiy modeldan foydalansangiz, siz o'z ma'lumotlaringizni ushbu modelga yuborishingiz kerak bo'ladi. Agar model provayderi o'zining o'qitish ma'lumotlarini oshkor qilmasa, siz baholovchining tijorat maqsadlarida foydalanish uchun xavfsiz ekanligiga amin bo'la olmaysiz.
+
+"SI-baholovchi" yondashuvining cheklovlariga qaramay, uning ko'plab afzalliklari meni uning qo'llanilishi o'sishda davom etishiga ishontiradi. Biroq, SI-baholovchilar aniq baholash usullari va/yoki inson baholashi bilan to'ldirilishi kerak.
+
+## Qaysi modellar baholovchi sifatida harakat qila oladi?
+
+Baholovchi baholanayotgan modeldan kuchliroq, zaifroq yoki u bilan bir xil bo'lishi mumkin. Har bir holatning o'z afzalliklari va kamchiliklari bor.
+
+### Kuchliroq baholovchi
+
+Bir qarashda, kuchliroq baholovchi mantiqan to'g'ri ko'rinadi. Axir, imtihon oluvchi imtihon topshiruvchidan bilimdonroq bo'lishi kerak emasmi? Kuchliroq modellar nafaqat yaxshiroq xulosalar chiqara oladi, balki ular zaifroq modellarni yaxshiroq javoblar generatsiya qilishga yo'naltirish orqali ularni takomillashtirishga ham yordam berishi mumkin.
+
+Sizda savol tug'ilishi mumkin: agar sizda allaqachon kuchliroq modeldan foydalanish imkoniyati bo'lsa, javoblarni generatsiya qilish uchun nega zaifroq model bilan ovora bo'lish kerak? Javob — xarajat va kechikishdadir. Barcha javoblarni generatsiya qilish uchun kuchliroq modeldan foydalanishga byudjetingiz yetmasligi mumkin, shuning uchun siz undan javoblarning bir qismini baholash uchun foydalanasiz. Masalan, siz javoblarni generatsiya qilish uchun arzon ichki modelingizdan foydalanib, javoblarning 1 foizini baholash uchun `GPT-4`'dan foydalanishingiz mumkin.
+
+Kuchliroq model dasturingiz uchun juda sekin bo'lishi ham mumkin. Siz javoblarni generatsiya qilish uchun tezkor modeldan foydalanishingiz, kuchliroq, lekin sekinroq model esa fon rejimida baholashni amalga oshirishi mumkin. Agar kuchli model zaif modelning javobini yomon deb hisoblasa, tuzatish choralari ko'rilishi mumkin, masalan, javobni kuchli modelniki bilan yangilash. Shuni unutmangki, teskari holat ham keng tarqalgan. Siz javoblarni generatsiya qilish uchun kuchli modeldan foydalanasiz, zaifroq model esa fon rejimida baholashni amalga oshiradi.
+
+Kuchliroq modelni baholovchi sifatida ishlatish bizni ikkita muammo bilan yuzma-yuz qoldiradi. Birinchidan, eng kuchli modelning o'zi munosib baholovchisiz qoladi. Ikkinchidan, qaysi model eng kuchli ekanligini aniqlash uchun bizga muqobil baholash usuli kerak bo'ladi.
+
+### O'z-o'zini baholash
+
+Modelni o'zini baholash uchun ishlatish, ya'ni o'z-o'zini baholash (`self-evaluation`) yoki o'z-o'zini tanqid qilish (`self-critique`), aldamchilikka o'xshab eshitiladi, ayniqsa, o'ziga yon bosish (`self-bias`) tufayli. Biroq, o'z-o'zini baholash aqli rasolikni tekshirish (`sanity checks`) uchun g'oyatda yaxshi bo'lishi mumkin. Agar model o'z javobini noto'g'ri deb hisoblasa, demak, u unchalik ishonchli bo'lmasligi mumkin. Aqli rasolikni tekshirishdan tashqari, modeldan o'zini baholashni so'rash uni o'z javoblarini qayta ko'rib chiqishga va yaxshilashga undashi mumkin ([Press va boshq., 2022; Gou va boshq., 2023; Valmeekamet va boshq., 2023](https://arxiv.org/abs/2210.03350)).[^20] Quyidagi misol o'z-o'zini baholash qanday ko'rinishda bo'lishi mumkinligini ko'rsatadi:
+
+``` md
+`Prompt [foydalanuvchidan]`: 10+3 nechi?
+`Birinchi javob [SI'dan]`: 30
+`O'z-o'zini tanqid [SI'dan]`: Bu javob to'g'rimi?
+`Yakuniy javob [SI'dan]`: Yo'q, to'g'ri emas. To'g'ri javob 13.
+```
+
+### Zaifroq baholovchi
+
+Ochiq qolayotgan savollardan biri — baholovchi baholanayotgan modeldan zaifroq bo'lishi mumkinmi. Ba'zilar baholash generatsiya qilishdan ko'ra osonroq vazifa, deb ta'kidlashadi. Har kim biror qo'shiqning yaxshi yoki yomonligi haqida o'z fikriga ega bo'lishi mumkin, lekin hamma ham qo'shiq yoza olmaydi. Demak, zaifroq modellar kuchliroq modellarning natijalarini baholay olishi kerak.
+
+[Zheng va boshqalar (2023)](https://arxiv.org/abs/2306.05685) kuchliroq modellar inson afzalliklari bilan yaxshiroq bog'liqlikka ega ekanligini aniqladilar, bu esa odamlarni o'zlari qurbi yetadigan eng kuchli modellarni tanlashga undaydi. Biroq, bu tajriba umumiy maqsadli baholovchilar bilan cheklangan edi. Meni hayajonga solayotgan tadqiqot yo'nalishlaridan biri — bu kichik, ixtisoslashgan baholovchilardir. Ixtisoslashgan baholovchilar maxsus mezonlardan foydalangan holda va maxsus ballash tizimlariga rioya qilgan holda, maxsus xulosalar chiqarishga o'qitiladi. Kichik, ixtisoslashgan baholovchi maxsus xulosalar uchun kattaroq, umumiy maqsadli baholovchilardan ko'ra ishonchliroq bo'lishi mumkin.
+
+SI-baholovchilardan foydalanishning ko'plab usullari mavjud bo'lgani uchun, ixtisoslashgan SI-baholovchilar ham ko'p bo'lishi mumkin. Bu yerda men uchta ixtisoslashgan baholovchiga misollar keltirib o'taman: mukofot modellari, etalonga asoslangan baholovchilar va afzallik modellari:
+
+- **Mukofot modeli (`Reward model`):**
+  Mukofot modeli (prompt, javob) juftligini qabul qiladi va promptga nisbatan javobning qanchalik yaxshi ekanligini baholaydi. Mukofot modellari ko'p yillar davomida _RLHF_'da muvaffaqiyatli ishlatilib kelinmoqda. [`Cappy`](https://arxiv.org/abs/2311.06720) "Google" (2023) tomonidan ishlab chiqilgan mukofot modeliga bir misoldir. (Prompt, javob) juftligi berilganda, `Cappy` javobning qanchalik to'g'ri ekanligini bildiruvchi 0 va 1 oralig'ida ball chiqaradi. `Cappy` 360 million parametrga ega yengil baholovchi bo'lib, umumiy maqsadli fundamental modellardan ancha kichikdir.
+
+- **Etalonga asoslangan baholovchi (`Reference-based judge`):**
+  Etalonga asoslangan baholovchi generatsiya qilingan javobni bir yoki bir nechta etalon javoblarga nisbatan baholaydi. Bu baholovchi o'xshashlik balini yoki sifat balini (generatsiya qilingan javob etalon javoblarga nisbatan qanchalik yaxshi ekanligi) chiqarishi mumkin. Masalan, `BLEURT` ([Sellam va boshq., 2020](https://arxiv.org/abs/2004.04696)) (nomzod javob, etalon javob) juftligini qabul qiladi va nomzod va etalon javob o'rtasidagi o'xshashlik balini chiqaradi.[^21] `Prometheus` ([Kim va boshq., 2023](https://arxiv.org/abs/2310.08491)) esa (prompt, generatsiya qilingan javob, etalon javob, baholash mezoni)ni qabul qiladi va etalon javob 5 ball oladi deb faraz qilib, 1 dan 5 gacha bo'lgan sifat balini chiqaradi.
+
+- **Afzallik modeli (`Preference model`):**
+  Afzallik modeli (prompt, 1-javob, 2-javob)ni kirish sifatida qabul qiladi va berilgan prompt uchun ikki javobdan qaysi biri yaxshiroq (foydalanuvchilar tomonidan afzal ko'rilgan) ekanligini chiqaradi. Bu, ehtimol, ixtisoslashgan baholovchilar uchun eng qiziqarli yo'nalishlardan biridir. Inson afzalliklarini bashorat qila olish ko'plab imkoniyatlarni ochadi. 2-bobda muhokama qilinganidek, afzallik ma'lumotlari SI modellarini inson afzalliklariga moslashtirish uchun muhim ahamiyatga ega va uni olish qiyin hamda qimmat. Yaxshi inson afzalliklari bashoratchisiga ega bo'lish, umuman olganda, baholashni osonlashtirishi va modellarni ishlatish uchun xavfsizroq qilishi mumkin. Afzallik modellarini yaratish bo'yicha ko'plab tashabbuslar mavjud, jumladan, `PandaLM` ([Wang va boshq., 2023](https://arxiv.org/abs/2306.05087)) va `JudgeLM` ([Zhu va boshq., 2023](https://arxiv.org/abs/2310.17631)). 3-9-rasmda `PandaLM` qanday ishlashiga misol ko'rsatilgan. U nafaqat qaysi javob yaxshiroq ekanligini chiqaradi, balki o'zining asoslanishini ham tushuntiradi.
+
+![3-9-rasm. PandaLM'ning inson prompti va ikkita generatsiya qilingan javob berilgandagi natijasiga misol.](/ai-engineering/3-chapter/3.9-figure.png)
+
+<div className='text-center text-sm italic'>3-9-rasm. `PandaLM`'ning inson `prompt`'i va ikkita generatsiya qilingan javob berilgandagi natijasiga misol. Rasm Wang va boshqalar (2023) ishidan olingan, o'qish uchun biroz o'zgartirilgan. Asl rasm Apache License 2.0 litsenziyasi ostida mavjud.</div>
+
+O'zining cheklovlariga qaramay, "SI-baholovchi" yondashuvi ko'p qirrali va qudratlidir. Baholovchi sifatida arzonroq modellardan foydalanish uni yanada foydaliroq qiladi. Dastlab shubha bilan qaragan ko'plab hamkasblarim amaliyotda unga ko'proq tayana boshladilar.
+
+"SI-baholovchi" yondashuvi qiziqarli va biz muhokama qiladigan keyingi yondashuv ham xuddi shunday jozibador. U maftunkor soha bo'lgan o'yin dizaynidan ilhomlangan.
+
 ### Izohlar 
 
 [^15]: "SI-baholovchi" atamasini SI'ning sudda hakam sifatida ishlatilishi qo'llanish holati bilan adashtirmaslik kerak.
 
-[^16]: 2017-yilda men `NeurIPS` seminarida _MEWR_ (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini hech qachon davom ettirmadim.
+[^16]: 2017-yilda men `NeurIPS` seminarida [_MEWR_](https://x.com/chipro/status/937384141791698944) (Machine translation Evaluation metric Without Reference text) — mashina tarjimalarini avtomatik baholash uchun kuchliroq til modellaridan foydalanadigan baholash usulini taqdim etganman. Afsuski, ba'zi bir hayotiy sabablarga ko'ra bu tadqiqot yo'nalishini ortiq davom ettirmadim.
 
 [^17]: Ba'zi hollarda, baholash byudjetning asosiy qismini, hatto javob generatsiyasidan ham ko'proqni egallashi mumkin.
 
@@ -140,7 +251,7 @@ SI-baholovchi — bu shunchaki model emas, u ham modelni, ham promptni o'z ichig
 
 [^20]: Bu texnika ba'zan o'z-o'zini tanqid qilish (`self-critique`) yoki o'z-o'zidan so'rash (`self-ask`) deb ataladi.
 
-[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan -2.5 va 1.0 oralig'ida. Bu SI-baholovchilar bilan benchmark'ning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
+[^21]: `BLEURT` ballar diapazoni chalkash. U taxminan [-2.5 va 1.0 oralig'ida](https://github.com/google-research/bleurt/issues/1). Bu SI-baholovchilar bilan benchmark'ning noaniqligi muammosini ko'rsatadi: ballar diapazoni ixtiyoriy bo'lishi mumkin.
 
 [^22]: Masalan, Likert shkalasidan foydalanish.
 
