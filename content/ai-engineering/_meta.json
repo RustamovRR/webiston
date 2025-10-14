@@ -91,5 +91,16 @@
         "path": "3-evaluation-methodology/summary/page"
       }
     }
+  },
+  "4-evaluate-ai-systems": {
+    "title": "4. SI tizimlarini baholash",
+    "path": "4-evaluate-ai-systems/page",
+    "hasIndex": true,
+    "children": {
+      "challenges-of-evaluating-foundation-models": {
+        "title": "Fundamental modellarni baholashdagi qiyinchiliklar",
+        "path": "4-evaluate-ai-systems/challenges-of-evaluating-foundation-models/page"
+      }
+    }
   }
 }
