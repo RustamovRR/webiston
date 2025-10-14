@@ -62,7 +62,7 @@
     }
   },
   "3-evaluation-methodology": {
-    "title": "3. Fundamental modellarni tushunish",
+    "title": "3. Baholash metodologiyasi",
     "path": "3-evaluation-methodology/page",
     "hasIndex": true,
     "children": {
@@ -81,6 +81,14 @@
       "ai-as-judge": {
         "title": "SI-baholovchi",
         "path": "3-evaluation-methodology/ai-as-judge/page"
+      },
+      "ranking-models-with-comparative-evaluation": {
+        "title": "Modellarni qiyosiy baholash bilan reytinglash",
+        "path": "3-evaluation-methodology/ranking-models-with-comparative-evaluation/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "3-evaluation-methodology/summary/page"
       }
     }
   }
