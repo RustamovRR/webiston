@@ -97,9 +97,9 @@
     "path": "4-evaluate-ai-systems/page",
     "hasIndex": true,
     "children": {
-      "challenges-of-evaluating-foundation-models": {
-        "title": "Fundamental modellarni baholashdagi qiyinchiliklar",
-        "path": "4-evaluate-ai-systems/challenges-of-evaluating-foundation-models/page"
+      "evaluation-criteria": {
+        "title": "Baholash mezonlari",
+        "path": "4-evaluate-ai-systems/evaluation-criteria/page"
       }
     }
   }

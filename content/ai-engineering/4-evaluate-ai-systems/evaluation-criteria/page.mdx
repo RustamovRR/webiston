@@ -1,0 +1,124 @@
+# Baholash mezonlari
+
+Qaysi biri yomonroq — hech qachon joriy etilmagan dasturmi yoki joriy etilgan-u, lekin hech kim uning ishlayotganini bilmaydigan dasturmi? Konferensiyalarda bu savolni berganimda, ko'pchilik ikkinchisini aytdi. Joriy etilgan, ammo baholab bo'lmaydigan dastur yomonroqdir. Uni qo'llab-quvvatlash xarajat talab qiladi, lekin agar uni olib tashlamoqchi bo'lsangiz, bu yanada qimmatroqqa tushishi mumkin.
+
+Afsuski, sarmoyadan olinadigan daromadi shubhali bo'lgan SI dasturlari ancha keng tarqalgan. Bu nafaqat dasturni baholash qiyin bo'lgani uchun, balki dastur yaratuvchilari o'z dasturlarining qanday ishlatilayotganidan bexabar bo'lgani uchun ham sodir bo'ladi. Ishlatilgan avtomobillar sotiladigan bir kompaniyaning _ML_ muhandisi menga aytishicha, uning jamoasi egasi tomonidan berilgan texnik xususiyatlarga asoslanib, avtomobil qiymatini bashorat qiladigan model yaratgan. Model joriy etilganidan bir yil o'tgach, foydalanuvchilarga bu xususiyat yoqqanga o'xshardi, lekin u model bashoratlari aniq yoki yo'qligini umuman bilmasdi. `ChatGPT` isitmasi boshlanganda, kompaniyalar mijozlarni qo'llab-quvvatlash chatbotlarini joriy etishga shoshilishdi. Ularning ko'pchiligi hali ham bu chatbotlar foydalanuvchi bilan ishlash qulayligini yaxshilashga yordam beradimi yoki zarar yetkazadimi, bunga ishonchlari komil emas.
+
+Dastur yaratishga vaqt, pul va resurslar sarflashdan oldin, bu dastur qanday baholanishini tushunib olish muhimdir. Men bu yondashuvni **baholashga asoslangan ishlab chiqish** (`evaluation-driven development`) deb atayman. Bu nom dasturiy ta'minot muhandisligidagi testga asoslangan ishlab chiqishdan ([`test-driven development`](https://en.wikipedia.org/wiki/Test-driven_development)) ilhomlangan bo'lib, u kod yozishdan oldin testlar yozish usulini anglatadi. SI muhandisligida esa, baholashga asoslangan ishlab chiqish — bu ishga kirishishdan oldin baholash mezonlarini aniqlab olish demakdir.
+
+### Baholashga asoslangan ishlab chiqish
+
+Garchi ba'zi kompaniyalar so'nggi shov-shuvlar ortidan quvsa-da, oqilona biznes qarorlari hali ham shov-shuvga emas, balki sarmoyadan olinadigan daromadga asoslanib qabul qilinadi. Dasturlar joriy etilishi uchun o'z qiymatini namoyon etishi kerak. Natijada, amaliyotdagi eng keng tarqalgan korporativ dasturlar — bu aniq baholash mezonlariga ega bo'lganlardir:
+
+- **Tavsiya tizimlari** keng tarqalgan, chunki ularning muvaffaqiyatini jalb etishning yoki xarid qilish darajasining (`purchase-through rates`) ortishi bilan baholash mumkin.[^1]
+- **Firibgarlikni aniqlash tizimining** muvaffaqiyati oldi olingan firibgarliklardan qancha pul tejalgani bilan o'lchanishi mumkin.
+- **Kodlash** keng tarqalgan generativ SI qo'llanish holatidir, chunki boshqa generatsiya vazifalaridan farqli o'laroq, generatsiya qilingan kodni funksional to'g'rilik yordamida baholash mumkin.
+- Garchi fundamental modellar erkin natijali (`open-ended`) bo'lsa-da, ularning ko'plab qo'llanish holatlari niyatni tasniflash (`intent classification`), hissiyot tahlili (`sentiment analysis`), keyingi harakatni bashorat qilish (`next-action prediction`) kabi yopiq turdagidir (`close-ended`). Tasniflash vazifalarini baholash erkin natijali vazifalarni baholashdan ancha osonroq.
+
+Garchi baholashga asoslangan ishlab chiqish yondashuvi biznes nuqtai nazaridan mantiqan to'g'ri bo'lsa-da, faqat natijalarini o'lchash mumkin bo'lgan dasturlarga e'tibor qaratish, yo'qolgan kalitni (tunda) fonus ostidan qidirishga o'xshaydi. Buni qilish osonroq, lekin bu kalitni topamiz degani emas. Biz ularni baholashning oson yo'li yo'qligi sababli, ko'plab potensial o'yin qoidalarini o'zgartiruvchi (`game-changing`) dasturlarni qo'ldan boy berayotgan bo'lishimiz mumkin.
+
+Menimcha, baholash — SI'ni joriy etishdagi eng katta to'siq. Ishonchli baholash jarayonlari ketma-ketligini yarata olish ko'plab yangi dasturlarga yo'l ochadi.
+
+### Asosiy baholash mezonlari
+
+Shu sababli, SI dasturi dasturga xos bo'lgan baholash mezonlari ro'yxati bilan boshlanishi kerak. Umuman olganda, siz mezonlarni quyidagi guruhlar bo'yicha o'ylashingiz mumkin: sohaga xos qobiliyat, generatsiya qobiliyati, ko'rsatmalarga amal qilish qobiliyati hamda xarajat va kechikish.
+
+Tasavvur qiling, siz modeldan yuridik shartnomani qisqacha bayon qilishni so'raysiz. Yuqori darajada, sohaga xos qobiliyat metrikalari sizga modelning yuridik shartnomalarni tushunishda qanchalik yaxshi ekanligini aytadi. Generatsiya qobiliyati metrikalari xulosaning qanchalik mazmunan bog'langan yoki haqiqatga mos ekanligini o'lchaydi. Ko'rsatmalarga amal qilish qobiliyati xulosaning so'ralgan formatda ekanligini, masalan, sizning uzunlik cheklovlaringizga mos kelishini aniqlaydi. Xarajat va kechikish metrikalari esa bu xulosa sizga qanchaga tushishini va uni qancha kutishingiz kerakligini aytadi.
+
+Oxirgi bob baholash yondashuvi bilan boshlandi va berilgan yondashuv qanday mezonlarni baholay olishini muhokama qildi. Ushbu bo'lim esa boshqa bir nuqtai nazardan yondashadi: berilgan mezon uchun, uni baholashda qanday yondashuvlardan foydalanishingiz mumkin?
+
+## Sohaga xos qobiliyat
+
+Kodlash agentini yaratish uchun sizga kod yoza oladigan model kerak. Lotin tilidan ingliz tiliga tarjima qiladigan dastur yaratish uchun esa sizga ham lotin, ham ingliz tilini tushunadigan model kerak. Kodlash va inglizcha-lotincha tushunish — bular sohaga xos qobiliyatlardir. Modelning sohaga xos qobiliyatlari uning konfiguratsiyasi (masalan, model arxitekturasi va hajmi) va o'qitish ma'lumotlari bilan cheklangan. Agar model o'zining o'qitish jarayonida hech qachon lotin tilini ko'rmagan bo'lsa, u lotin tilini tushuna olmaydi. Dasturingiz talab qiladigan qobiliyatlarga ega bo'lmagan modellar siz uchun ishlamaydi.
+
+Model zarur qobiliyatlarga ega yoki yo'qligini baholash uchun siz sohaga xos benchmark'larga, xoh ochiq, xoh xususiy bo'lsin, tayanishishingiz mumkin. Kod generatsiyasi, koddagi xatolarni tuzatish, boshlang'ich sinf matematikasi, ilmiy bilimlar, sog'lom fikr, mulohaza yuritish, huquqiy bilimlar, vositalardan foydalanish, o'yin o'ynash va hokazo kabi cheksizdek tuyulgan qobiliyatlarni baholash uchun minglab ochiq benchmark'lar joriy etilgan. Ro'yxat davom etadi.
+
+Sohaga xos qobiliyatlar odatda aniq baholash (`exact evaluation`) yordamida baholanadi. Kodlash bilan bog'liq qobiliyatlar odatda 3-bobda muhokama qilinganidek, funksional to'g'rilik yordamida baholanadi. Garchi funksional to'g'rilik muhim bo'lsa-da, u sizni qiziqtiradigan yagona jihat bo'lmasligi mumkin. Sizni samaradorlik va xarajat ham qiziqtirishi mumkin. Masalan, ishlaydigan, lekin haddan tashqari ko'p yoqilg'i sarflaydigan mashinani xohlarmidingiz? Xuddi shunday, agar sizning matndan-_SQL_'ga modelingiz tomonidan generatsiya qilingan _SQL_ so'rovi to'g'ri bo'lsa-yu, lekin ishlashi uchun juda ko'p vaqt yoki xotira talab qilsa, u yaroqsiz bo'lishi mumkin.
+
+Samaradorlikni ishlash vaqti (`runtime`) yoki xotira sarfini o'lchash orqali aniq baholash mumkin. [`BIRD-SQL`](https://bird-bench.github.io/) (Li va boshq., 2023) nafaqat generatsiya qilingan so'rovning bajarilish aniqligini (`execution accuracy`), balki uning samaradorligini ham hisobga oladigan benchmark'ga bir misoldir. Uning samaradorligi generatsiya qilingan so'rovning ishlash vaqtini etalon haqiqat _SQL_ so'rovining ishlash vaqti bilan taqqoslash orqali o'lchanadi.
+
+Sizni kodning o'qilishi (`code readability`) ham qiziqtirishi mumkin. Agar generatsiya qilingan kod ishlasa-yu, lekin uni hech kim tushuna olmasa, kodni qo'llab-quvvatlash yoki uni tizimga kiritish qiyin bo'ladi. Kodning o'qilishini aniq baholashning yaqqol usuli yo'q, shuning uchun siz "SI-baholovchi"lardan foydalanish kabi subyektiv baholashga tayanishga majbur bo'lishingiz mumkin.
+
+Kodlash bilan bog'liq bo'lmagan sohaviy qobiliyatlar ko'pincha ko'p tanlovli savollar kabi yopiq turdagi vazifalar bilan baholanadi. Yopiq turdagi natijalarni tekshirish va qayta yaratish osonroq. Masalan, agar siz modelning matematika qobiliyatini baholamoqchi bo'lsangiz, erkin natijali yondashuv — bu modeldan berilgan masalaning yechimini generatsiya qilishni so'rashdir. Yopiq turdagi yondashuv esa — modelga bir nechta variant berib, undan to'g'risini tanlashni so'rashdir. Agar kutilgan javob C varianti bo'lsa-yu, model A variantini chiqarsa, demak, model xato qilgan.
+
+Bu aksariyat ochiq benchmark'lar amal qiladigan yondashuvdir. 2024-yil aprel oyida "Eleuther"ning [`lm-evaluation-harness`'idagi](https://github.com/EleutherAI/lm-evaluation-harness/blob/master/docs/task_table.md) vazifalarning 75 foizi ko'p tanlovli edi, jumladan, UC [Berkeley'ning _MMLU_ (2020)](https://arxiv.org/abs/2009.03300), ["Microsoft"ning `AGIEval` (2023)](https://arxiv.org/abs/2304.06364) va [`AI2 Reasoning Challenge` (`ARC-C`) (2018)](https://huggingface.co/datasets/allenai/ai2_arc). O'z maqolalarida `AGIEval` mualliflari barqaror bo'lmagan baholashdan qochish uchun erkin natijali vazifalarni ataylab istisno qilganliklarini tushuntirishgan.
+
+Quyida _MMLU_ benchmark'idagi ko'p tanlovli savolga bir misol:
+
+- Savol: Hukumatning monopoliyalarga qarshi kurashishi va ularni tartibga solishining sabablaridan biri shuki,
+    
+    - (A) Ishlab chiqaruvchi profitsiti yo'qotiladi va iste'molchi profitsiti olinadi.
+    - (B) Monopoliya narxlari ishlab chiqarish samaradorligini ta'minlaydi, lekin jamiyatga taqsimlash samaradorligi hisobiga tushadi.
+    - (C) Monopoliya firmalari jiddiy tadqiqot va ishlanmalar bilan shug'ullanmaydi.
+    - (D) Yuqori narxlar va pastroq ishlab chiqarish darajalari bilan iste'molchi profitsiti yo'qotiladi.
+    - To'g'ri javob: (D)
+
+Ko'p tanlovli savol (`MCQ`, _multiple-choice question_) bitta yoki bir nechta to'g'ri javobga ega bo'lishi mumkin. Keng tarqalgan metrika — bu to'g'rilik (`accuracy`), ya'ni model nechta savolga to'g'ri javob bergani. Ba'zi vazifalar model samaradorligini baholash uchun ball tizimidan foydalanadi — qiyinroq savollar ko'proq ballga ega bo'ladi. Bir nechta to'g'ri variant bo'lganda ham ball tizimidan foydalanishingiz mumkin. Model to'g'ri topgan har bir variant uchun bir ball oladi.
+
+Tasniflash — bu ko'p tanlovning maxsus holi bo'lib, unda barcha savollar uchun tanlovlar bir xil bo'ladi. Masalan, tvit hissiyotini tasniflash vazifasi uchun har bir savol bir xil uchta tanlovga ega: SALBIY, IJOBIY va NEYTRAL. Tasniflash vazifalari uchun metrikalar, to'g'rilikdan tashqari, `F1-mezon`, puxtalik (`precision`) va qamrovni (`recall`) o'z ichiga oladi.
+
+Ko'p tanlovli savollar ommabop, chunki ularni yaratish, tekshirish va tasodifiy asosga (`random baseline`) nisbatan baholash oson. Agar har bir savolda to'rtta variant bo'lsa va faqat bitta to'g'ri variant bo'lsa, tasodifiy asosdagi to'g'rilik 25% bo'ladi. 25% dan yuqori ballar odatda, garchi har doim ham bo'lmasa-da, modelning tasodifiydan yaxshiroq ishlayotganini anglatadi.
+
+Ko'p tanlovli savollardan foydalanishning bir kamchiligi shundaki, savollar va variantlarning taqdim etilishidagi kichik o'zgarishlar bilan modelning samaradorligi o'zgarishi mumkin. [Alzahrani va boshqalar (2024)](https://arxiv.org/abs/2402.01781) savol va javob o'rtasida qo'shimcha bo'sh joy qo'shilishi yoki "Tanlovlar:" kabi qo'shimcha ko'rsatma iborasining qo'shilishi modelning o'z javoblarini o'zgartirishiga sabab bo'lishi mumkinligini aniqladilar. Modellarning promptlarga sezgirligi va _prompting_'ning eng yaxshi amaliyotlari 5-bobda muhokama qilinadi.
+
+Yopiq turdagi benchmark'larning keng tarqalganligiga qaramay, ular fundamental modellarni baholash uchun yaxshi usul ekanligi noaniq. Ko'p tanlovli savollar yaxshi javoblarni yomon javoblardan farqlash qobiliyatini (tasniflashni) sinaydi, bu esa yaxshi javoblarni generatsiya qilish qobiliyatidan farq qiladi. Ko'p tanlovli savollar bilimlarni ("model Parij Fransiyaning poytaxti ekanligini biladimi?") va mulohaza yuritishni ("model biznes xarajatlari jadvalidan qaysi bo'lim eng ko'p sarflayotganini xulosa qila oladimi?") baholash uchun eng mos keladi. Ular qisqacha bayon qilish, tarjima va esse yozish kabi generatsiya qobiliyatlarini baholash uchun ideal emas. Keling, keyingi bo'limda generatsiya qobiliyatlarini qanday baholash mumkinligini muhokama qilamiz.
+
+### Izohlar
+
+[^1]: Tavsiyalar xaridlarni oshirishi mumkin, ammo xaridlarning oshishi har doim ham yaxshi tavsiyalar tufayli bo'lavermaydi. Reklama kampaniyalari va yangi mahsulotlarning chiqarilishi kabi boshqa omillar ham xaridlarni oshirishi mumkin. Ta'sirni farqlash uchun A/B test o'tkazish muhim. Bu qayd uchun Vittorio Cretella'ga rahmat.
+
+[^2]: 2019-yilda "OpenAI"ning `GPT-2` modeli bunchalik ko'p shov-shuvga sabab bo'lishining bir sababi shundaki, u o'zidan oldingi har qanday til modeliga qaraganda ancha ravonroq va izchilroq matnlarni generatsiya qila olgan.
+
+[^3]: Bu yerdagi promptda xatolik bor, chunki u Liu va boshqalarning (2023) xatolikka ega bo'lgan maqolasidan so'zma-so'z ko'chirilgan. Bu insonlarning promptlar bilan ishlashda xato qilishlari qanchalik oson ekanligini ko'rsatadi.
+
+[^4]: Matnli mantiqiy xulosa (`Textual entailment`), shuningdek, tabiiy til xulosasi (`natural language inference` yoki `NLI`) deb ham ataladi.
+
+[^5]: "Anthropic"da kontent moderatsiyasi uchun `Claude`'dan foydalanish bo'yicha yaxshi qo'llanma bor.
+
+[^6]: Strukturalashgan natijalar 2-bobda chuqur muhokama qilinadi.
+
+[^7]: Odamlar fundamental modellardan qanday ko'rsatmalar uchun foydalanayotgani taqsimoti bo'yicha hali ko'p keng qamrovli tadqiqotlar mavjud emas. _LMSYS_ "Chatbot Arena"dagi bir million suhbat bo'yicha tadqiqot nashr etdi, ammo bu suhbatlar real hayotiy dasturlarga asoslanmagan. Men model provayderlari va _API_ provayderlaridan tadqiqotlarni kutyapman.
+
+[^8]: Bilim qismi murakkab, chunki rol o'ynaydigan model Jeki Chan bilmaydigan narsalarni aytmasligi kerak. Masalan, agar Jeki Chan vyetnam tilida gapirmasa, siz rol o'ynaydigan modelning vyetnam tilida gapirmasligini tekshirishingiz kerak. "Salbiy bilim" tekshiruvi o'yinlar uchun juda muhim. Siz NPC'ning o'yinchilarga tasodifan spoylerlar berishini xohlamaysiz.
+
+[^9]: Biroq, elektr energiyasi xarajati foydalanishga qarab farq qilishi mumkin.
+
+[^10]: O'qitish ma'lumotlarini ochiq qilish uchun yana bir argument shuki, modellar ehtimol jamoatchilik tomonidan yaratilgan internetdan olingan ma'lumotlarda o'qitilgani uchun, jamoatchilik modellarining o'qitish ma'lumotlariga kirish huquqiga ega bo'lishi kerak.
+
+[^11]: Ruh jihatdan, bu cheklov "Elastic" litsenziyasiga o'xshaydi, u kompaniyalarga "Elastic"ning ochiq manbali versiyasini `host` qilingan xizmat sifatida taklif qilishni va "Elasticsearch" platformasi bilan raqobatlashishni taqiqlaydi.
+
+[^12]: Modelning litsenziyasi ruxsat bersa ham, uning natijasidan boshqa modellarni yaxshilash uchun foydalanib bo'lmasligi mumkin. `ChatGPT` natijalarida o'qitilgan X modelini ko'rib chiqaylik. X'ning bunga ruxsat beruvchi litsenziyasi bo'lishi mumkin, lekin agar `ChatGPT`'da bo'lmasa, unda X `ChatGPT`'ning foydalanish shartlarini buzgan bo'ladi va shuning uchun X'dan foydalanib bo'lmaydi. Shu sababli modelning ma'lumotlar shajarasini (`data lineage`) bilish juda muhim.
+
+[^13]: Masalan, ushbu kitob yozilayotgan vaqtda, siz `GPT-4` modellariga faqat "OpenAI" yoki "Azure" orqali kira olasiz. Ba'zilar "OpenAI"ning xususiy modellari ustiga xizmatlar ko'rsata olish "Microsoft"ning "OpenAI"ga sarmoya kiritishining asosiy sabablaridan biri, deb ta'kidlashi mumkin.
+
+[^14]: Qizig'i shundaki, ma'lumotlar maxfiyligiga qat'iy talablarga ega bo'lgan ba'zi kompaniyalar menga aytishicha, garchi ular odatda uchinchi tomon xizmatlariga ma'lumot yubora olmasalar ham, ular o'z ma'lumotlarini `GCP`, `AWS` va `Azure`'da `host` qilingan modellarga yuborishga rozidirlar. Bu kompaniyalar uchun ma'lumotlar maxfiyligi siyosati ko'proq qaysi xizmatlarga ishonishlari mumkinligi haqida. Ular yirik bulut provayderlariga ishonishadi, lekin boshqa startaplarga ishonishmaydi.
+
+[^15]: Bu voqea bir nechta nashrlar, jumladan, "TechRadar" tomonidan xabar qilingan (qarang: “Samsung Workers Made a Major Error by Using ChatGPT”, Lewis Maddison (2023-yil aprel)).
+
+[^16]: Dunyo bo'ylab qoidalar rivojlanib borayotgani sababli, modellar va o'qitish ma'lumotlarining tekshiriladigan (`auditable`) axborotiga bo'lgan talablar ortishi mumkin. Tijorat modellari sertifikatlar taqdim eta olishi va kompaniyalarni bu harakatdan qutqarishi mumkin.
+
+[^17]: Foydalanuvchilar modellarning ochiq manbali bo'lishini xohlashadi, chunki ochiqlik ko'proq ma'lumot va ko'proq imkoniyatlarni anglatadi, lekin bundan model yaratuvchilariga nima foyda? Ko'pgina kompaniyalar _inference_ va _finetuning_ xizmatlarini taqdim etish orqali ochiq manbali modellardan foyda ko'rish uchun paydo bo'ldi. Bu yomon narsa emas. Ko'p odamlar ochiq manbali modellardan foydalanish uchun bu xizmatlarga muhtoj. Ammo, model yaratuvchilari nuqtai nazaridan, nega faqat boshqalar pul ishlashi uchun modellarni yaratishga millionlab, balki milliardlab sarmoya kiritish kerak? "Meta" ochiq manbali modellarni faqat o'z raqobatchilarini ("Google", "Microsoft"/"OpenAI") jilovlab turish uchun qo'llab-quvvatlaydi, deb ta'kidlash mumkin. Ham "Mistral", ham "Cohere"ning ochiq manbali modellari bor, lekin ularning _API_'lari ham bor. Qaysidir nuqtada, "Mistral" va "Cohere" modellari ustiga qurilgan _inference_ xizmatlari ularning raqobatchilariga aylanadi. Ochiq manba jamiyat uchun yaxshiroq degan argument bor va balki bu rag'bat sifatida yetarlidir. Jamiyat uchun yaxshilikni istaydigan odamlar ochiq manbani ilgari surishda davom etadilar va balki ochiq manbaning g'alaba qozonishiga yordam beradigan yetarli jamoaviy ezgulik bo'lar. Men albatta shunga umid qilaman.
+
+[^18]: API xarajatlaridan eng ko'p zarar ko'radigan kompaniyalar, ehtimol, eng yirik kompaniyalar emas. Eng yirik kompaniyalar xizmat ko'rsatuvchilar uchun qulay shartlarni kelishib olish uchun yetarlicha muhim bo'lishi mumkin.
+
+[^19]: Bu dasturiy ta'minot infratuzilmasidagi hamjamiyat tomonidan keng sinovdan o'tgan eng mashhur vositalardan doimo foydalanish falsafasiga o'xshaydi.
+
+[^20]: Men "Hugging Face"ning Discord'ida nima uchun ular ma'lum benchmarklarni tanlaganlari haqida savol berganimda, Lyuis Tanstall ular o'sha paytdagi mashhur modellar ishlatgan benchmarklar tomonidan yo'naltirilganligini aytdi. "Hugging Face" jamoasiga bunchalik ajoyib darajada javob beruvchanligi va hamjamiyatga qo'shgan ulkan hissalari uchun rahmat.
+
+[^21]: Men ushbu kitobni yozayotganimda, peshqadamlar jadvallari o'zlarining benchmark tanlash va jamlash jarayoni haqida ancha shaffofroq bo'lib qolganini mamnuniyat bilan xabar qilaman. O'zlarining yangi peshqadamlar jadvalini ishga tushirganda, "Hugging Face" benchmarklar korrelyatsiyasining ajoyib tahlilini (2024) bo'lishdi.
+
+[^22]: Atigi bir necha yil ichida benchmarklar maktab darajasidagi savollardan aspirantura darajasidagi savollarga o'tishi kerak bo'lganini ko'rish ham juda ajoyib, ham qo'rqinchli.
+
+[^23]: O'yin sanoatida tugamaydigan o'yin konsepsiyasi mavjud, unda o'yinchilar mavjud barcha darajalarni o'zlashtirgan sari yangi darajalar protsedurali ravishda generatsiya qilinishi mumkin. Modellar darajasi oshgan sari qiyinroq muammolar protsedurali ravishda generatsiya qilinadigan tugamaydigan benchmark yaratish juda ajoyib bo'lardi.
+
+[^24]: Boshqalarning tajribasi haqida o'qish foydali, ammo latifani universal haqiqatdan ajratib olish o'zimizga bog'liq. Bir xil model yangilanishi ba'zi dasturlarning yomonlashishiga va ba'zilarining yaxshilanishiga olib kelishi mumkin. Masalan, `GPT-3.5-turbo-0301`'dan `GPT-3.5-turbo-1106`'ga o'tish "Voiceflow"ning niyatni tasniflash vazifasida 10% pasayishga, lekin "GoDaddy"ning mijozlarni qo'llab-quvvatlash chatbotida yaxshilanishga olib keldi.
+
+[^25]: Agar ochiq mavjud ball bo'lsa, ball qanchalik ishonchli ekanligini tekshiring.
+
+[^26]: `HELM` maqolasida umumiy xarajat tijorat _API_'lari uchun 38 000 dollar va ochiq modellar uchun 19 500 _GPU_ soati ekanligi xabar qilingan. Agar bir soatlik _GPU_ narxi 2.15 dan 3.18 dollargacha bo'lsa, umumiy xarajat 80 000–100 000 dollarni tashkil etadi.
+
+[^27]: Bir do'stim hazillashib aytdi: "Benchmark ommaga e'lon qilinishi bilan o'z foydasini yo'qotadi."
+
+[^28]: Buning sababi, 10 ning kvadrat ildizi taxminan 3.3 ga teng.
+
+[^29]: Masalan, agar tarjima bo'yicha benchmark va matematika bo'yicha benchmark o'rtasida hech qanday korrelyatsiya bo'lmasa, siz modelning tarjima qobiliyatini yaxshilash uning matematika qobiliyatiga hech qanday ta'sir qilmaydi, deb xulosa qilishingiz mumkin.

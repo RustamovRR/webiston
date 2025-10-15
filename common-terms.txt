@@ -88,3 +88,4 @@ new generation of build tooling - yangi avlod qurilish vositalari
 out of the box - tayyor holatda
 accuracy - to'g'rilik
 precision - puxtalik
+sentiment analysis - hissiyot tahlili
