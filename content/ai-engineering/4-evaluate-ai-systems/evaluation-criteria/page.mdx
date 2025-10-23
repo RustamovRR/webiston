@@ -105,7 +105,7 @@ Qiziqarli bir tadqiqot savoli shuki, SI modellari qanday dalillarni ishontiruvch
 > 1. Tor doiradagi bilimlarni o'z ichiga olgan so'rovlar. Masalan, u _IMO_ (Xalqaro Matematika Olimpiadasi) haqida so'raganimdan ko'ra, _VMO_ (Vyetnam Matematika Olimpiadasi) haqida so'raganimda gallyutsinatsiyaga ko'proq moyil edi, chunki _VMO_ _IMO_'ga qaraganda ancha kamroq tilga olinadi.
 > 2. **Mavjud bo'lmagan narsalar haqida so'raydigan so'rovlar.** Masalan, agar men modeldan "X narsa Y haqida nima degan?" deb so'rasam, agar X hech qachon Y haqida hech narsa demagan bo'lsa, modelning gallyutsinatsiya qilish ehtimoli X biror narsa degan holatdagidan ko'ra yuqoriroq bo'ladi.
 
-Hozircha, sizda biror natijani solishtirib baholash uchun kontekst allaqachon mavjud deb faraz qilaylik — bu kontekst yo foydalanuvchilar tomonidan taqdim etilgan, yo siz tomondan topib olingan (kontekstni qidirib topish 6-bobda muhokama qilinadi). Eng oddiy baholash yondashuvi — bu "SI-baholovchi". 3-bobda muhokama qilinganidek, SI-baholovchilardan istalgan narsani, jumladan, faktik izchillikni ham baholashni so'rash mumkin. [Liu va boshqalar (2023)](https://arxiv.org/pdf/2303.16634) hamda [Luo va boshqalar (2023)](https://arxiv.org/abs/2303.15621) `GPT-3.5` va `GPT-4` faktik izchillikni o'lchashda avvalgi usullardan ustun kelishi mumkinligini ko'rsatishdi. [“TruthfulQA: Measuring How Models Mimic Human Falsehoods”](https://arxiv.org/abs/2109.07958) (Lin va boshq., 2022) maqolasi shuni ko'rsatadiki, ularning qo'shimcha sozlangan modeli `GPT-judge` biror bayonotning insonlar tomonidan haqqoniy deb hisoblanishini 90-96% aniqlik bilan bashorat qila oladi. Quyida, Liu va boshqalar (2023) xulosaning asl hujjatga nisbatan faktik izchilligini baholash uchun ishlatgan prompt:[^3]
+Hozircha, sizda biror natijani solishtirib baholash uchun kontekst allaqachon mavjud deb faraz qilaylik — bu kontekst yo foydalanuvchilar tomonidan taqdim etilgan, yo siz tomondan topib olingan (kontekstni qidirib topish 6-bobda muhokama qilinadi). Eng oddiy baholash yondashuvi — bu "SI-baholovchi". 3-bobda muhokama qilinganidek, SI-baholovchilardan istalgan narsani, jumladan, faktik izchillikni ham baholashni so'rash mumkin. [Liu va boshqalar (2023)](https://arxiv.org/pdf/2303.16634) hamda [Luo va boshqalar (2023)](https://arxiv.org/abs/2303.15621) `GPT-3.5` va `GPT-4` faktik izchillikni o'lchashda avvalgi usullardan ustun kelishi mumkinligini ko'rsatishdi. [“TruthfulQA: Measuring How Models Mimic Human Falsehoods”](https://arxiv.org/abs/2109.07958) (Lin va boshq., 2022) maqolasi shuni ko'rsatadiki, ularning qo'shimcha sozlangan modeli `GPT-judge` biror bayonotning insonlar tomonidan haqqoniy deb hisoblanishini 90-96% aniqlik bilan bashorat qila oladi. Quyida, _Liu va boshqalar (2023)_ xulosaning asl hujjatga nisbatan faktik izchilligini baholash uchun ishlatgan prompt:[^3]
 
 ``` md
 Faktik Izchillik: Xulosa manba matn tomonidan qo'llab-quvvatlanmaydigan
@@ -218,8 +218,97 @@ Ko'rsatmalarga amal qilish qobiliyatini aniqlash yoki o'lchash oson emas, chunki
 <Callout>
 #### Ogohlantirish
  
- Modelning qanchalik yaxshi ishlashi uning ko'rsatmalarining sifatiga bog'liq, bu esa SI modellarini baholashni qiyinlashtiradi. Model yomon ishlaganda, bunga yo modelning yomonligi, yo ko'rsatmaning yomonligi sabab bo'lishi mumkin.
+Modelning qanchalik yaxshi ishlashi uning ko'rsatmalarining sifatiga bog'liq, bu esa SI modellarini baholashni qiyinlashtiradi. Model yomon ishlaganda, bunga yo modelning yomonligi, yo ko'rsatmaning yomonligi sabab bo'lishi mumkin.
 </Callout>
+
+### Ko'rsatmalarga amal qilish mezonlari
+
+Turli benchmark'lar ko'rsatmalarga amal qilish qobiliyati nimani o'z ichiga olishi haqida turli tushunchalarga ega. Bu yerda muhokama qilinadigan ikkita benchmark — [`IFEval`](https://arxiv.org/abs/2311.07911) va [`INFOBench`](https://arxiv.org/html/2401.03601v1) — modellarning keng doiradagi ko'rsatmalarga amal qilish qobiliyatini o'lchaydi. Ular sizga modelning ko'rsatmalaringizga amal qilish qobiliyatini qanday baholash haqida g'oyalar beradi: qanday mezonlardan foydalanish, baholash to'plamiga qanday ko'rsatmalarni kiritish va qanday baholash usullari mos kelishi.
+
+"Google"ning `IFEval` (Instruction-Following Evaluation) benchmarki modelning kutilgan formatga rioya qilgan holda natijalar chiqara olishiga e'tibor qaratadi. _Zhou va boshqalar (2023)_ avtomatik ravishda tekshirilishi mumkin bo'lgan 25 turdagi ko'rsatmalarni aniqladilar, masalan, kalit so'zlarni kiritish, uzunlik cheklovlari, bandlar soni va _JSON_ formati. Agar siz modeldan "ephemeral" so'zini ishlatadigan jumla yozishni so'rasangiz, siz natijada bu so'z bor yoki yo'qligini tekshiradigan dastur yozishingiz mumkin; demak, bu ko'rsatma avtomatik tekshiriladigan. Ball — bu barcha ko'rsatmalar ichidan to'g'ri bajarilgan ko'rsatmalarning ulushidir. Ushbu ko'rsatma turlarining tushuntirishlari 4-2-jadvalda ko'rsatilgan.
+
+| Ko'rsatma guruhi | Ko'rsatma | Ta'rif |
+| :--- | :--- | :--- |
+| **Kalit so'zlar** | Kalit so'zlarni kiriting | Javobingizga `{keyword1}`, `{keyword2}` kalit so'zlarini kiriting. |
+| **Kalit so'zlar** | Kalit so'z chastotasi | Javobingizda `{word}` so'zi `{N}` marta paydo bo'lishi kerak. |
+| **Kalit so'zlar** | Taqiqlangan so'zlar | Javobga `{forbidden words}` kalit so'zlarini kiritmang. |
+| **Kalit so'zlar** | Harf chastotasi | Javobingizda `{letter}` harfi `{N}` marta paydo bo'lishi kerak. |
+| **Til** | Javob tili | BUTUN javobingiz `{language}` tilida bo'lishi kerak; boshqa tilga ruxsat berilmaydi. |
+| **Uzunlik cheklovlari** | Paragraflar soni | Javobingiz `{N}` ta paragrafni o'z ichiga olishi kerak. Paragraflarni markdown ajratgichi bilan ajrating: *** |
+| **Uzunlik cheklovlari** | So'zlar soni | Kamida/taxminan/ko'pi bilan `{N}` so'z bilan javob bering. |
+| **Uzunlik cheklovlari** | Gaplar soni | Kamida/taxminan/ko'pi bilan `{N}` gap bilan javob bering. |
+| **Uzunlik cheklovlari** | Paragraflar soni + i-chi paragrafdagi birinchi so'z | `{N}` ta paragraf bo'lishi kerak. Paragraflar va faqat paragraflar bir-biridan ikki qator tashlash bilan ajratiladi. `{i}`-chi paragraf `{first_word}` so'zi bilan boshlanishi kerak. |
+| **Aniqlanadigan kontent** | Postskriptum | Javobingiz oxirida, iltimos, `{postscript marker}` bilan boshlanadigan postskriptumni aniq qo'shing. |
+| **Aniqlanadigan kontent** | O'rinbosar belgilar soni | Javob kamida `{N}` ta kvadrat qavslar bilan ifodalangan o'rinbosar belgilarni, masalan, [manzil]ni o'z ichiga olishi kerak. |
+| **Aniqlanadigan format** | Ro'yxat bandlari soni | Javobingiz aynan `{N}` ta ro'yxat bandini o'z ichiga olishi kerak. Markdown ro'yxat bandlaridan foydalaning, masalan: * Bu bir band. |
+| **Aniqlanadigan format** | Sarlavha | Javobingiz qo'sh burchakli qavslar ichiga olingan sarlavhani, masalan, `<<quvonch she'ri>>`ni o'z ichiga olishi kerak. |
+| **Aniqlanadigan format** | Tanlov qilish | Quyidagi variantlardan biri bilan javob bering: `{options}`. |
+| **Aniqlanadigan format** | Ajratilgan bo'limlarning minimal soni | Javobingizda kamida `{N}` ta bo'limni markdown bilan ajrating, ya'ni *ajratilgan bo'lim*. |
+| **Aniqlanadigan format** | Bir nechta bo'limlar | Javobingiz `{N}` ta bo'limga ega bo'lishi kerak. Har bir bo'limning boshlanishini `{section_splitter}` X bilan belgilang. |
+| **Aniqlanadigan format** | _JSON_ formati | Butun natija _JSON_ formatiga o'ralgan bo'lishi kerak. |
+
+<div className='text-center text-sm italic'>4-2-jadval. Modellarning ko'rsatmalarga amal qilish qobiliyatini baholash uchun _Zhou va boshqalar_ tomonidan taklif qilingan avtomatik tekshiriladigan ko'rsatmalar. Jadval CC BY 4.0 litsenziyasi ostida mavjud bo'lgan `IFEval` maqolasidan olingan.</div>
+
+_Qin va boshqalar (2024)_ tomonidan yaratilgan `INFOBench` esa, ko'rsatmalarga amal qilish nimani anglatishi haqida ancha kengroq nuqtai nazarga ega. `IFEval` kabi modelning kutilgan formatga amal qilish qobiliyatini baholashdan tashqari, `INFOBench` shuningdek, modelning mazmun cheklovlariga (masalan, "faqat iqlim o'zgarishini muhokama qiling"), lingvistik ko'rsatmalarga (masalan, "Viktoriya davri ingliz tilisidan foydalaning") va uslub qoidalariga (masalan, "hurmatli ohangdan foydalaning") amal qilish qobiliyatini ham baholaydi. Biroq, bu kengaytirilgan ko'rsatma turlarini tekshirishni osonlikcha avtomatlashtirib bo'lmaydi. Agar siz modelga "yosh auditoriyaga mos tildan foydalaning" deb ko'rsatma bersangiz, natija haqiqatan ham yosh auditoriyaga mos ekanligini qanday qilib avtomatik tekshirasiz?
+
+Tekshirish uchun `INFOBench` mualliflari har bir ko'rsatma uchun mezonlar ro'yxatini tuzdilar, ularning har biri ha/yo'q savoli sifatida shakllantirilgan. Masalan, "Mehmonxona mehmonlariga mehmonxona haqida sharhlar yozishga yordam beradigan so'rovnoma tuzing" ko'rsatmasiga berilgan natijani uchta ha/yo'q savoli yordamida tekshirish mumkin:
+
+1.  Generatsiya qilingan matn so'rovnomami?
+2.  Generatsiya qilingan so'rovnoma mehmonxona mehmonlari uchun mo'ljallanganmi?
+3.  Generatsiya qilingan so'rovnoma mehmonxona mehmonlariga sharhlar yozish uchun foydalimi?
+
+Agar modelning natijasi ushbu ko'rsatma uchun barcha mezonlarga javob bersa, model ko'rsatmani muvaffaqiyatli bajargan hisoblanadi. Bu ha/yo'q savollarining har biriga inson yoki SI-baholovchi javob berishi mumkin. Agar ko'rsatma uchta mezonga ega bo'lsa va baholovchi model natijasi ulardan ikkitasiga javob beradi deb topsa, modelning ushbu ko'rsatma uchun bali 2/3 bo'ladi. Modelning ushbu benchmark'dagi yakuniy bali — bu model to'g'ri bajargan mezonlar sonining barcha ko'rsatmalar uchun umumiy mezonlar soniga bo'linganidir.
+
+O'z tajribalarida `INFOBench` mualliflari `GPT-4`'ning ancha ishonchli va tejamkor baholovchi ekanligini aniqladilar. `GPT-4` inson ekspertlari kabi aniq emas, lekin u "Amazon Mechanical Turk" orqali yollangan annotatorlardan ko'ra aniqroq. Ular o'z benchmark'larini SI-baholovchilar yordamida avtomatik tekshirish mumkin degan xulosaga kelishdi.
+
+`IFEval` va `INFOBench` kabi benchmark'lar sizga turli modellarning ko'rsatmalarga amal qilishda qanchalik yaxshi ekanligi haqida tasavvur berish uchun foydalidir. Garchi ikkalasi ham real dunyo ko'rsatmalarini aks ettiruvchi ko'rsatmalarni kiritishga harakat qilgan bo'lsa-da, ular baholaydigan ko'rsatmalar to'plamlari farq qiladi va ular shubhasiz ko'plab keng qo'llaniladigan ko'rsatmalarni o'tkazib yuborishadi.[^7] Bu benchmark'larda yaxshi ishlaydigan model sizning ko'rsatmalaringizda ham yaxshi ishlashiga kafolat yo'q.
+
+> **Maslahat:**<br/>
+> Siz o'z modelingizning ko'rsatmalaringizga amal qilish qobiliyatini o'z mezonlaringiz yordamida baholash uchun o'zingizning shaxsiy benchmark'ingizni yaratishingiz kerak. Agar sizga modeldan _YAML_ chiqarish kerak bo'lsa, benchmark'ingizga _YAML_ ko'rsatmalarini kiriting. Agar siz modelning "Til modeli sifatida..." kabi gaplarni aytmasligini xohlasangiz, modelni aynan shu ko'rsatma bo'yicha baholang.
+
+### Rol ijro etish
+
+Real dunyo ko'rsatmalarining eng keng tarqalgan turlaridan biri bu rol ijro etishdir (`roleplaying`) — ya'ni, modeldan xayoliy bir personaj yoki shaxsiyatni o'z zimmasiga olishni so'rash. Rol ijro etish ikki maqsadga xizmat qilishi mumkin:
+
+1.  Foydalanuvchilar bilan muloqot qilish uchun biror personaj rolini o'ynash, odatda, o'yinlar yoki interaktiv hikoyalardagi kabi ko'ngilochar maqsadlarda.
+2.  5-bobda muhokama qilinganidek, model natijalarining sifatini yaxshilash uchun prompt muhandisligi texnikasi sifatida rol ijro etish.
+
+Har qanday maqsadda bo'lmasin, rol ijro etish juda keng tarqalgan. _LMSYS_'ning o'zlarining `Vicuna` demosi va "Chatbot Arena"dan olingan bir million suhbat tahlili ([Zheng va boshq., 2023](https://arxiv.org/abs/2309.11998)) shuni ko'rsatadiki, rol ijro etish ularning sakkizinchi eng keng tarqalgan qo'llanish holatidir (4-4-rasm). Rol ijro etish, ayniqsa, o'yinlardagi SI bilan quvvatlantirilgan NPC'lar (o'yinchi bo'lmagan personajlar), SI hamrohlar va yozish yordamchilari uchun muhimdir.
+
+![4-4-rasm. LMSYS'ning bir million suhbat ma'lumotlar to'plamidagi eng keng tarqalgan 10 ta ko'rsatma turi.](/ai-engineering/4-chapter/4.4-figure.png)
+
+<div className='text-center text-sm italic'>4-4-rasm. _LMSYS_'ning bir million suhbat ma'lumotlar to'plamidagi eng keng tarqalgan 10 ta ko'rsatma turi.</div>
+
+Rol ijro etish qobiliyatini baholashni avtomatlashtirish qiyin. Rol ijro etish qobiliyatini baholash uchun benchmark'larga `RoleLLM` ([Wang va boshq., 2023](https://arxiv.org/abs/2310.00746)) va `CharacterEval` ([Tu va boshq., 2024](https://arxiv.org/abs/2401.01275)) kiradi. `CharacterEval` inson annotatorlaridan foydalangan va har bir rol ijro etish jihatini besh ballik shkalada baholash uchun mukofot modelini (`reward model`) o'qitgan. `RoleLLM` esa modelning biror shaxsiyatni taqlid qilish qobiliyatini ham puxta ishlab chiqilgan o'xshashlik ballari (generatsiya qilingan natijalar kutilgan natijalarga qanchalik o'xshashligi) yordamida, ham SI-baholovchilar yordamida baholaydi.
+
+Agar dasturingizdagi SI ma'lum bir rolni o'ynashi kerak bo'lsa, modelingiz o'z rolida qolayotganini baholashga ishonch hosil qiling. Rolga qarab, siz model natijalarini baholash uchun evristik usullar yaratishingiz mumkin. Masalan, agar rol ko'p gapirmaydigan odam bo'lsa, bir evristik usul model natijalarining o'rtacha uzunligi bo'lishi mumkin. Bundan tashqari, eng oson avtomatik baholash yondashuvi — bu "SI-baholovchi". Siz rol o'ynaydigan SI'ni ham uslub, ham bilim bo'yicha baholashingiz kerak. Masalan, agar model Jeki Chan kabi gapirishi kerak bo'lsa, uning natijalari Jeki Channing uslubini aks ettirishi va Jeki Channing bilimlariga asoslanib generatsiya qilinishi kerak.[^8]
+
+Turli rollar uchun SI-baholovchilar turli promptlarni talab qiladi. SI-baholovchi prompti qanday ko'rinishda bo'lishi haqida tasavvur berish uchun, mana bu `RoleLLM` SI-baholovchisi tomonidan modellarni ma'lum bir rolni o'ynash qobiliyatiga qarab reytinglash uchun ishlatilgan promptning boshlanishi. To'liq prompt uchun, iltimos, _Wang va boshqalarning (2023)_ ishiga qarang.
+
+``` md
+"Tizim Ko'rsatmasi":
+
+`Siz rol ijro etish samaradorligini taqqoslovchi yordamchisiz. Siz
+modellarni ularning javoblaridagi rol xususiyatlari va matn sifatiga
+qarab reytinglashingiz kerak. Keyin reytinglar Python lug'atlari va
+ro'yxatlari yordamida chiqariladi.`
+
+"Foydalanuvchi Prompti":
+
+`Quyidagi modellar ‘‘{rol_nomi}’’ rolini o'ynashi kerak. ‘‘{rol_nomi}’’ning
+rol tavsifi ‘‘{rol_tavsifi_va_iboralar}’’. Men quyidagi modellarni
+pastdagi ikkita mezon asosida reytinglashim kerak:`
+
+1. `Qaysi birida rolga xos nutq uslubi yaqqolroq va u rol tavsifiga
+ko'proq mos gapiradi. Nutq uslubi qanchalik o'ziga xos bo'lsa, shuncha
+yaxshi.`
+2. `Qaysi birining natijasi rolga oid ko'proq bilim va xotiralarni o'z
+ichiga oladi; qanchalik boy bo'lsa, shuncha yaxshi. (Agar savolda etalon
+javoblar bo'lsa, unda rolga xos bilim va xotiralar etalon javobga
+asoslanadi.)`
+```
+
+
 
 
 ### Izohlar
