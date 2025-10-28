@@ -308,7 +308,40 @@ javoblar bo'lsa, unda rolga xos bilim va xotiralar etalon javobga
 asoslanadi.)`
 ```
 
+## Xarajat va Kechikish
 
+Yuqori sifatli natijalar generatsiya qiladigan, lekin ishlashi uchun juda sekin va qimmat bo'lgan model foydasiz bo'ladi. Modellarni baholashda model sifati, kechikish (_latency_) va xarajat o'rtasidagi muvozanatni saqlash muhim. Ko'pgina kompaniyalar, agar ular yaxshiroq xarajat va kechikishni ta'minlasa, pastroq sifatli modellarni tanlashadi. Xarajat va kechikishni optimallashtirish 9-bobda batafsil muhokama qilinadi, shuning uchun bu bo'lim qisqa bo'ladi.
+
+Bir nechta maqsadlar uchun optimallashtirish [Pareto optimizatsiyasi](https://en.wikipedia.org/wiki/Multi-objective_optimization) deb nomlanuvchi faol tadqiqot sohasi hisoblanadi. Bir nechta maqsadlar uchun optimallashtirishda, qaysi maqsadlarda murosaga kelishingiz mumkin va qaysilarida yo'qligini aniq bilish muhim. Masalan, agar kechikish siz murosaga kela olmaydigan narsa bo'lsa, turli modellar uchun kechikish kutilmalaridan boshlaysiz, kechikish talablaringizga javob bermaydigan barcha modellarni filtrlaysiz va keyin qolganlar orasidan eng yaxshisini tanlaysiz.
+
+Fundamental modellar uchun kechikishning bir nechta metrikalari mavjud, jumladan, lekin ular bilan cheklanmagan holda, birinchi tokengacha bo'lgan vaqt (`TTFT`), har bir token uchun vaqt (`TPOT`), tokenlar orasidagi vaqt, har bir so'rov uchun vaqt va hokazo. Siz uchun qaysi kechikish metrikalari ahamiyatliroq ekanligini tushunish muhim.
+
+Kechikish nafaqat asosdagi modelga, balki har bir promptga va _sampling_ parametrlariga ham bog'liq. Avtoregressiv til modellari odatda natijalarni tokenma-token generatsiya qiladi. U qancha ko'p token generatsiya qilishi kerak bo'lsa, umumiy kechikish shunchalik yuqori bo'ladi. Siz foydalanuvchilar tomonidan kuzatiladigan umumiy kechikishni puxta _prompting_ orqali, masalan, modelga qisqa bo'lishni buyurish, generatsiya uchun to'xtash shartini belgilash (2-bobda muhokama qilingan) yoki boshqa optimallashtirish texnikalari (9-bobda muhokama qilingan) yordamida nazorat qilishingiz mumkin.
+
+> **Maslahat:** <br/>
+> Modellarni kechikish asosida baholashda, nima majburiy va nima shunchaki "bo'lsa yaxshi bo'lardi" ekanligini aniq farqlab oling. Agar siz foydalanuvchilardan pastroq kechikishni xohlaysizmi, deb so'rasangiz, hech kim hech qachon "yo'q" demaydi. Lekin shuni unutmangki, yuqori kechikish ko'p hollarda foydalanuvchining hafsalasini pir qilsa-da, uni dasturdan yuz o'girishga majbur qiladigan "qizil chiziq" emas. 
+
+Agar siz model _API_'laridan foydalansangiz, ular odatda tokenlar bo'yicha haq oladi. Siz qancha ko'p kirish va chiqish tokenlaridan foydalansangiz, shuncha qimmatga tushadi. Shu sababli, ko'plab dasturlar xarajatlarni boshqarish uchun kirish va chiqish tokenlari sonini kamaytirishga harakat qiladi.
+
+Agar siz modellarni o'zingiz ishlatsangiz, muhandislik xarajatlaridan tashqari, sizning asosiy xarajatingiz — bu hisoblash quvvatidir. O'zlaridagi qurilmalardan maksimal darajada foydalanish uchun ko'pchilik o'z qurilmalariga sig'adigan eng katta modellarni tanlaydi. Masalan, _GPU_'lar odatda 16 GB, 24 GB, 48 GB va 80 GB xotiraga ega bo'ladi. Shuning uchun, ko'plab ommabop modellar aynan shu xotira konfiguratsiyalarini to'liq egallaydiganlardir. Bugungi kunda ko'plab modellarning 7 milliard yoki 65 milliard parametrga ega ekanligi tasodif emas.
+
+Agar siz model _API_'laridan foydalansangiz, miqyos oshgani sari har bir token uchun xarajatingiz odatda unchalik o'zgarmaydi. Biroq, agar modellarni o'z serverlaringizda ishlatsangiz, miqyos oshgani sari har bir token uchun xarajatingiz ancha arzonlashishi mumkin. Agar siz kuniga maksimal 1 milliard token xizmat ko'rsata oladigan klasterga allaqachon sarmoya kiritgan bo'lsangiz, kuniga 1 million token xizmat ko'rsatasizmi yoki 1 milliard tokenmi, hisoblash xarajati o'zgarmaydi.[^9] Shuning uchun, turli miqyoslarda kompaniyalar model _API_'laridan foydalanish yoki modellarni o'zlari ishlatish qanchalik mantiqiyroq ekanligini qayta baholashlari kerak bo'ladi.
+
+4-3-jadvalda dasturingiz uchun modellarni baholashda ishlatishingiz mumkin bo'lgan mezonlar ko'rsatilgan. Miqyos (`scale`) qatori, ayniqsa, model _API_'larini baholashda muhim, chunki sizga o'z miqyosingizni qo'llab-quvvatlay oladigan model _API_ xizmati kerak bo'ladi.
+
+| Mezon | Metrika | Benchmark | Qat'iy talab | Ideal |
+| :--- | :--- | :--- | :--- | :--- |
+| **Xarajat** | Har bir chiqish tokeni uchun narx | X | < $30.00 /<br/>1M token | < $15.00 /<br/>1M token |
+| **Miqyos** | `TPM` (daqiqasiga tokenlar) | X | > 1M TPM | > 1M TPM |
+| **Kechikish** | Birinchi tokengacha bo'lgan vaqt (P90) | Ichki foydalanuvchi promptlari ma'lumotlar to'plami | < 200ms | < 100ms |
+| **Kechikish** | Umumiy so'rov uchun vaqt (P90) | Ichki foydalanuvchi promptlari ma'lumotlar to'plami | < 1m | < 30s |
+| **Umumiy model sifati** | `Elo` bali | "Chatbot Arena" reytingi | > 1200 | > 1250 |
+| **Kod generatsiyasi qobiliyati** | `pass@1` | `HumanEval` | > 90% | > 95% |
+| **Faktik izchillik** | Ichki `GPT` metrikasi | Ichki gallyutsinatsiya ma'lumotlar to'plami | > 0.8 | > 0.9 |
+
+<div className='text-center text-sm italic'>4-3-jadval. Tasavvuriy bir dastur uchun modellarni tanlashda ishlatiladigan mezonlarga misol.</div>
+
+Endi sizda o'z mezonlaringiz bor, keling, keyingi qadamga o'tamiz va ulardan dasturingiz uchun eng yaxshi modelni tanlashda foydalanamiz.
 
 
 ### Izohlar
