@@ -1,0 +1,81 @@
+# Model tanlash
+
+Oxir-oqibat, sizni qaysi model eng zo'r ekanligi aslida qiziqtirmaydi. Sizni qaysi model aynan sizning dasturlaringiz uchun eng yaxshi ekanligi qiziqtiradi. Dasturingiz uchun mezonlarni aniqlab olganingizdan so'ng, siz modellarni aynan shu mezonlar asosida baholashingiz kerak.
+
+Dasturni ishlab chiqish jarayonida, turli moslashtirish texnikalaridan o'tib borar ekansiz, siz model tanlashni qayta-qayta amalga oshirishingizga to'g'ri keladi. Masalan, prompt muhandisligi loyihaning umuman amalga oshirish mumkinligini baholash uchun eng kuchli modeldan boshlanishi va keyin kichikroq modellar ham ishlaydimi yoki yo'qligini ko'rish uchun orqaga qarab ishlashi mumkin. Agar siz _finetuning_ qilishga qaror qilsangiz, kodingizni sinab ko'rish uchun kichik modeldan boshlashingiz va keyin qurilmangiz cheklovlariga (masalan, bitta _GPU_) sig'adigan eng katta model tomon harakat qilishingiz mumkin.
+
+Umuman olganda, har bir texnika uchun tanlov jarayoni odatda ikki bosqichni o'z ichiga oladi:
+
+1.  Erishish mumkin bo'lgan eng yaxshi samaradorlikni aniqlash.
+2.  Modellarni xarajat-samaradorlik o'qlari bo'ylab joylashtirish va pulingizga arziydigan eng yaxshi samaradorlikni beradigan modelni tanlash.
+
+Biroq, haqiqiy tanlov jarayoni ancha nozikroq. Keling, uning qanday ko'rinishda bo'lishini o'rganamiz.
+
+## Model tanlash ish jarayoni
+
+Modellarni ko'rib chiqayotganda, qat'iy atributlar (o'zgartirishingiz imkonsiz yoki amaliy jihatdan mumkin bo'lmagan xususiyatlar) va yumshoq atributlarni (o'zgartirishingiz mumkin bo'lgan va o'zgartirishga tayyor bo'lgan xususiyatlar) farqlash muhimdir.
+
+**Qat'iy atributlar** ko'pincha model provayderlari tomonidan qabul qilingan qarorlar (litsenziyalar, o'qitish ma'lumotlari, model hajmi) yoki sizning o'zingizning siyosatingiz (maxfiylik, nazorat) natijasidir. Ba'zi qo'llanish holatlari uchun qat'iy atributlar potensial modellar havzasini sezilarli darajada qisqartirishi mumkin.
+
+**Yumshoq atributlar** — bu to'g'rilik, toksiklik yoki faktik izchillik kabi takomillashtirilishi mumkin bo'lgan atributlardir. Ma'lum bir atributni qanchalik yaxshilashingiz mumkinligini taxmin qilishda, optimistik bo'lish va realist bo'lish o'rtasidagi muvozanatni topish qiyin bo'lishi mumkin. Menda bir necha dastlabki promptlar uchun modelning to'g'riligi 20% atrofida bo'lgan holatlar bo'lgan. Biroq, vazifani ikki bosqichga ajratganimdan so'ng, to'g'rilik 70% ga sakragan. Shu bilan birga, bir necha hafta sozlashdan keyin ham model mening vazifam uchun yaroqsiz bo'lib qolgan va men o'sha modeldan voz kechishga majbur bo'lgan holatlarim ham bo'lgan.
+
+Nimani qat'iy va nimani yumshoq atribut deb belgilashingiz ham modelga, ham sizning qo'llanish holatingizga bog'liq. Masalan, agar siz modelni tezroq ishlashi uchun optimallashtirish imkoniga ega bo'lsangiz, kechikish yumshoq atributdir. Agar siz boshqa birovning serverida ishlaydigan modeldan foydalansangiz, u qat'iy atributdir.
+
+Yuqori darajada, baholash ish jarayoni to'rt bosqichdan iborat (4-5-rasmga qarang):
+
+1.  Qat'iy atributlari sizga to'g'ri kelmaydigan modellarni saralab tashlash. Sizning qat'iy atributlar ro'yxatingiz ko'p jihatdan o'zingizning ichki siyosatingizga, tijorat _API_'laridan foydalanishni yoki o'z modelingizni ishlatishni xohlashingizga bog'liq.
+2.  Tajriba o'tkazish uchun eng istiqbolli modellarni saralab olish maqsadida, ochiq mavjud bo'lgan ma'lumotlardan, masalan, benchmark natijalari va peshqadamlar jadvallari reytingidan foydalanish. Bunda model sifati, kechikish va xarajat kabi turli maqsadlarni muvozanatlash kerak.
+3.  Eng yaxshi modelni topish uchun o'zingizning shaxsiy baholash jarayonlari ketma-ketligingiz bilan tajribalar o'tkazish. Bu yerda ham barcha maqsadlaringizni muvozanatlash talab etiladi.
+4.  Nosozliklarni aniqlash va dasturingizni yaxshilash uchun fikr-mulohazalarni yig'ish maqsadida modelingizni amaliyotda doimiy ravishda kuzatib borish.
+
+![4-5-rasm. Dasturingiz uchun modellarni baholash bo'yicha baholash ish jarayonining umumiy ko'rinishi.](/ai-engineering/4-chapter/4.5-figure.png)
+
+<div className='text-center text-sm italic'>4-5-rasm. Dasturingiz uchun modellarni baholash bo'yicha baholash ish jarayonining umumiy ko'rinishi.</div>
+
+Bu to'rt bosqich bir-birini takrorlab turuvchi, ya'ni iterativ jarayondir. Har bir keyingi bosqichda olingan yangi ma'lumotlar sizni avvalgi qadamdagi qaroringizni qayta ko'rib chiqishga undashi mumkin. Tasavvur qiling, siz dastlab ochiq manbali modellarni ishlatishga qaror qildingiz. Biroq, ochiq va xususiy baholashlardan so'ng, ochiq manbali modellar siz kutgan samaradorlik darajasini bera olmasligini anglab yetasiz va natijada tijorat _API_'lariga o'tishga majbur bo'lasiz.
+
+Monitoring va foydalanuvchi fikr-mulohazalarini yig'ish masalalari 10-bobda batafsil ko'rib chiqiladi. Ushbu bobning qolgan qismida esa biz dastlabki uchta bosqichga e'tibor qaratamiz. Ishni aksariyat jamoalar qayta-qayta duch keladigan savoldan boshlaymiz: model _API_'laridan foydalangan ma'qulmi yoki modellarni o'z serverlarida ishlatgan afzalmi? Shundan so'ng, son-sanoqsiz ochiq benchmark'lar olamida qanday adashib qolmaslik va nima uchun ularga ko'r-ko'rona ishonib bo'lmasligi haqida so'z yuritamiz. Bu muhokamalar bobning so'nggi, asosiy qismi uchun zamin yaratadi. Zero, ochiq benchmark'larga to'liq tayanish mumkin bo'lmagan sharoitda, siz o'zingiz ishonadigan promptlar va metrikalar asosida shaxsiy baholash jarayonlari ketma-ketligini loyihalashingizga to'g'ri keladi.
+
+
+### Izohlar
+
+
+[^10]: O'qitish ma'lumotlarini ochiq qilish uchun yana bir argument shuki, modellar ehtimol jamoatchilik tomonidan yaratilgan internetdan olingan ma'lumotlarda o'qitilgani uchun, jamoatchilik modellarining o'qitish ma'lumotlariga kirish huquqiga ega bo'lishi kerak.
+
+[^11]: Ruh jihatdan, bu cheklov "Elastic" litsenziyasiga o'xshaydi, u kompaniyalarga "Elastic"ning ochiq manbali versiyasini `host` qilingan xizmat sifatida taklif qilishni va "Elasticsearch" platformasi bilan raqobatlashishni taqiqlaydi.
+
+[^12]: Modelning litsenziyasi ruxsat bersa ham, uning natijasidan boshqa modellarni yaxshilash uchun foydalanib bo'lmasligi mumkin. `ChatGPT` natijalarida o'qitilgan X modelini ko'rib chiqaylik. X'ning bunga ruxsat beruvchi litsenziyasi bo'lishi mumkin, lekin agar `ChatGPT`'da bo'lmasa, unda X `ChatGPT`'ning foydalanish shartlarini buzgan bo'ladi va shuning uchun X'dan foydalanib bo'lmaydi. Shu sababli modelning ma'lumotlar shajarasini (`data lineage`) bilish juda muhim.
+
+[^13]: Masalan, ushbu kitob yozilayotgan vaqtda, siz `GPT-4` modellariga faqat "OpenAI" yoki "Azure" orqali kira olasiz. Ba'zilar "OpenAI"ning xususiy modellari ustiga xizmatlar ko'rsata olish "Microsoft"ning "OpenAI"ga sarmoya kiritishining asosiy sabablaridan biri, deb ta'kidlashi mumkin.
+
+[^14]: Qizig'i shundaki, ma'lumotlar maxfiyligiga qat'iy talablarga ega bo'lgan ba'zi kompaniyalar menga aytishicha, garchi ular odatda uchinchi tomon xizmatlariga ma'lumot yubora olmasalar ham, ular o'z ma'lumotlarini `GCP`, `AWS` va `Azure`'da `host` qilingan modellarga yuborishga rozidirlar. Bu kompaniyalar uchun ma'lumotlar maxfiyligi siyosati ko'proq qaysi xizmatlarga ishonishlari mumkinligi haqida. Ular yirik bulut provayderlariga ishonishadi, lekin boshqa startaplarga ishonishmaydi.
+
+[^15]: Bu voqea bir nechta nashrlar, jumladan, "TechRadar" tomonidan xabar qilingan (qarang: “Samsung Workers Made a Major Error by Using ChatGPT”, Lewis Maddison (2023-yil aprel)).
+
+[^16]: Dunyo bo'ylab qoidalar rivojlanib borayotgani sababli, modellar va o'qitish ma'lumotlarining tekshiriladigan (`auditable`) axborotiga bo'lgan talablar ortishi mumkin. Tijorat modellari sertifikatlar taqdim eta olishi va kompaniyalarni bu harakatdan qutqarishi mumkin.
+
+[^17]: Foydalanuvchilar modellarning ochiq manbali bo'lishini xohlashadi, chunki ochiqlik ko'proq ma'lumot va ko'proq imkoniyatlarni anglatadi, lekin bundan model yaratuvchilariga nima foyda? Ko'pgina kompaniyalar _inference_ va _finetuning_ xizmatlarini taqdim etish orqali ochiq manbali modellardan foyda ko'rish uchun paydo bo'ldi. Bu yomon narsa emas. Ko'p odamlar ochiq manbali modellardan foydalanish uchun bu xizmatlarga muhtoj. Ammo, model yaratuvchilari nuqtai nazaridan, nega faqat boshqalar pul ishlashi uchun modellarni yaratishga millionlab, balki milliardlab sarmoya kiritish kerak? "Meta" ochiq manbali modellarni faqat o'z raqobatchilarini ("Google", "Microsoft"/"OpenAI") jilovlab turish uchun qo'llab-quvvatlaydi, deb ta'kidlash mumkin. Ham "Mistral", ham "Cohere"ning ochiq manbali modellari bor, lekin ularning _API_'lari ham bor. Qaysidir nuqtada, "Mistral" va "Cohere" modellari ustiga qurilgan _inference_ xizmatlari ularning raqobatchilariga aylanadi. Ochiq manba jamiyat uchun yaxshiroq degan argument bor va balki bu rag'bat sifatida yetarlidir. Jamiyat uchun yaxshilikni istaydigan odamlar ochiq manbani ilgari surishda davom etadilar va balki ochiq manbaning g'alaba qozonishiga yordam beradigan yetarli jamoaviy ezgulik bo'lar. Men albatta shunga umid qilaman.
+
+[^18]: API xarajatlaridan eng ko'p zarar ko'radigan kompaniyalar, ehtimol, eng yirik kompaniyalar emas. Eng yirik kompaniyalar xizmat ko'rsatuvchilar uchun qulay shartlarni kelishib olish uchun yetarlicha muhim bo'lishi mumkin.
+
+[^19]: Bu dasturiy ta'minot infratuzilmasidagi hamjamiyat tomonidan keng sinovdan o'tgan eng mashhur vositalardan doimo foydalanish falsafasiga o'xshaydi.
+
+[^20]: Men "Hugging Face"ning Discord'ida nima uchun ular ma'lum benchmarklarni tanlaganlari haqida savol berganimda, Lyuis Tanstall ular o'sha paytdagi mashhur modellar ishlatgan benchmarklar tomonidan yo'naltirilganligini aytdi. "Hugging Face" jamoasiga bunchalik ajoyib darajada javob beruvchanligi va hamjamiyatga qo'shgan ulkan hissalari uchun rahmat.
+
+[^21]: Men ushbu kitobni yozayotganimda, peshqadamlar jadvallari o'zlarining benchmark tanlash va jamlash jarayoni haqida ancha shaffofroq bo'lib qolganini mamnuniyat bilan xabar qilaman. O'zlarining yangi peshqadamlar jadvalini ishga tushirganda, "Hugging Face" benchmarklar korrelyatsiyasining ajoyib tahlilini (2024) bo'lishdi.
+
+[^22]: Atigi bir necha yil ichida benchmarklar maktab darajasidagi savollardan aspirantura darajasidagi savollarga o'tishi kerak bo'lganini ko'rish ham juda ajoyib, ham qo'rqinchli.
+
+[^23]: O'yin sanoatida tugamaydigan o'yin konsepsiyasi mavjud, unda o'yinchilar mavjud barcha darajalarni o'zlashtirgan sari yangi darajalar protsedurali ravishda generatsiya qilinishi mumkin. Modellar darajasi oshgan sari qiyinroq muammolar protsedurali ravishda generatsiya qilinadigan tugamaydigan benchmark yaratish juda ajoyib bo'lardi.
+
+[^24]: Boshqalarning tajribasi haqida o'qish foydali, ammo latifani universal haqiqatdan ajratib olish o'zimizga bog'liq. Bir xil model yangilanishi ba'zi dasturlarning yomonlashishiga va ba'zilarining yaxshilanishiga olib kelishi mumkin. Masalan, `GPT-3.5-turbo-0301`'dan `GPT-3.5-turbo-1106`'ga o'tish "Voiceflow"ning niyatni tasniflash vazifasida 10% pasayishga, lekin "GoDaddy"ning mijozlarni qo'llab-quvvatlash chatbotida yaxshilanishga olib keldi.
+
+[^25]: Agar ochiq mavjud ball bo'lsa, ball qanchalik ishonchli ekanligini tekshiring.
+
+[^26]: `HELM` maqolasida umumiy xarajat tijorat _API_'lari uchun 38 000 dollar va ochiq modellar uchun 19 500 _GPU_ soati ekanligi xabar qilingan. Agar bir soatlik _GPU_ narxi 2.15 dan 3.18 dollargacha bo'lsa, umumiy xarajat 80 000–100 000 dollarni tashkil etadi.
+
+[^27]: Bir do'stim hazillashib aytdi: "Benchmark ommaga e'lon qilinishi bilan o'z foydasini yo'qotadi."
+
+[^28]: Buning sababi, 10 ning kvadrat ildizi taxminan 3.3 ga teng.
+
+[^29]: Masalan, agar tarjima bo'yicha benchmark va matematika bo'yicha benchmark o'rtasida hech qanday korrelyatsiya bo'lmasa, siz modelning tarjima qobiliyatini yaxshilash uning matematika qobiliyatiga hech qanday ta'sir qilmaydi, deb xulosa qilishingiz mumkin.
