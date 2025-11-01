@@ -36,6 +36,165 @@ Bu to'rt bosqich bir-birini takrorlab turuvchi, ya'ni iterativ jarayondir. Har b
 
 Monitoring va foydalanuvchi fikr-mulohazalarini yig'ish masalalari 10-bobda batafsil ko'rib chiqiladi. Ushbu bobning qolgan qismida esa biz dastlabki uchta bosqichga e'tibor qaratamiz. Ishni aksariyat jamoalar qayta-qayta duch keladigan savoldan boshlaymiz: model _API_'laridan foydalangan ma'qulmi yoki modellarni o'z serverlarida ishlatgan afzalmi? Shundan so'ng, son-sanoqsiz ochiq benchmark'lar olamida qanday adashib qolmaslik va nima uchun ularga ko'r-ko'rona ishonib bo'lmasligi haqida so'z yuritamiz. Bu muhokamalar bobning so'nggi, asosiy qismi uchun zamin yaratadi. Zero, ochiq benchmark'larga to'liq tayanish mumkin bo'lmagan sharoitda, siz o'zingiz ishonadigan promptlar va metrikalar asosida shaxsiy baholash jarayonlari ketma-ketligini loyihalashingizga to'g'ri keladi.
 
+## O'zi yaratishmi yoki sotib olishmi?
+
+Har qanday texnologiyadan foydalanishda kompaniyalar uchun doimiy savol — uni o'zi yaratish kerakmi yoki sotib olish kerakmi. Aksariyat kompaniyalar fundamental modellarni noldan yaratmasligi sababli, savol quyidagicha qo'yiladi: tijorat model _API_'laridan foydalanish kerakmi yoki **ochiq manbali** (`open source`) modelni o'zingiz ishlatishingiz kerakmi. Bu savolning javobi sizning nomzod modellar havzangizni sezilarli darajada qisqartirishi mumkin.
+
+Keling, avval modellar haqida gap ketganda "**ochiq manba**" aynan nimani anglatishini ko'rib chiqamiz, so'ngra bu ikki yondashuvning afzalliklari va kamchiliklarini muhokama qilamiz.
+
+### Ochiq manba, ochiq parametrlar va model litsenziyalari
+
+"**Ochiq manbali model**" atamasi bahsli bo'lib qoldi. Dastlab, bu atama odamlar yuklab olishi va ishlatishi mumkin bo'lgan har qanday modelni anglatardi. Ko'pgina qo'llanish holatlari uchun modelni yuklab olishning o'zi yetarli. Biroq, ba'zi odamlar model samaradorligi asosan u qanday ma'lumotlarda o'qitilganiga bog'liq bo'lgani uchun, model faqat uning o'qitish ma'lumotlari ham ommaga ochiq bo'lgandagina "ochiq" deb hisoblanishi kerak, deb ta'kidlashadi.
+
+Ochiq ma'lumotlar modeldan yanada moslashuvchan foydalanish imkonini beradi, masalan, modelni model arxitekturasi, o'qitish jarayoni yoki o'qitish ma'lumotlarining o'ziga o'zgartirishlar kiritib, noldan qayta o'qitish. Ochiq ma'lumotlar, shuningdek, modelni tushunishni osonlashtiradi. Ba'zi qo'llanish holatlari, shuningdek, audit maqsadlarida o'qitish ma'lumotlariga kirishni talab qiladi, masalan, modelning buzilgan yoki noqonuniy olingan ma'lumotlarda o'qitilmaganiga ishonch hosil qilish uchun.[^10]
+
+Ma'lumotlarning ham ochiq yoki yo'qligini bildirish uchun, ochiq ma'lumotlar bilan birga kelmaydigan modellar uchun **"ochiq parametrli"** (`open weight`) atamasi, ochiq ma'lumotlar bilan birga keladigan modellar uchun esa "ochiq model" (`open model`) atamasi ishlatiladi.
+
+<Callout>
+#### Eslatma
+
+Ba'zi odamlar "**ochiq manba**" atamasi faqat to'liq ochiq modellar uchun saqlanishi kerak, deb ta'kidlashadi. Ushbu kitobda, soddalik uchun, men **ochiq manba** deganda, o'qitish ma'lumotlarining mavjudligi va litsenziyalaridan qat'i nazar, parametrlari (`weights`) ommaga ochiq bo'lgan barcha modellarni nazarda tutaman.
+</Callout>
+
+Ushbu kitob yozilayotgan vaqtda, ochiq manbali modellarning aksariyati faqat ochiq parametrli (`open weight`) hisoblanadi. Model yaratuvchilari o'qitish ma'lumotlarini ataylab yashirishlari mumkin, chunki bu ma'lumotlar ularni jamoatchilik tanqidi va ehtimoliy sud da'volariga duchor qilishi mumkin.
+
+Ochiq manbali modellarning yana bir muhim atributi — bu ularning litsenziyalaridir. Fundamental modellardan oldin ham, `MIT`, `Apache 2.0`, `GNU General Public License` (`GPL`), `BSD` (Berkely Software Distribution), `Creative Commons` va hokazo kabi turli xil litsenziyalar bilan ochiq manba dunyosi yetarlicha chalkash edi. Ochiq manbali modellar litsenziyalash vaziyatini yanada yomonlashtirdi. Ko'pgina modellar o'zlarining noyob litsenziyalari ostida chiqariladi. Masalan, "Meta" `Llama 2`'ni ["Llama 2 Community License Agreement"](https://ai.meta.com/llama/license/) ostida va `Llama 3`'ni ["Llama 3 Community License Agreement"](https://www.llama.com/llama3/license/) ostida chiqardi. "Hugging Face" o'zining `BigCode` modelini ["BigCode Open RAIL-M v1"](https://huggingface.co/spaces/bigcode/bigcode-model-license-agreement) litsenziyasi ostida chiqardi. Biroq, umid qilamanki, vaqt o'tishi bilan hamjamiyat ba'zi standart litsenziyalarga yaqinlashadi. "Google"ning [`Gemma`](https://github.com/google-deepmind/gemma/blob/main/LICENSE) va [`Mistral-7B`](https://huggingface.co/docs/transformers/en/model_doc/mistral#license) modellari ham `Apache 2.0` litsenziyasi ostida chiqarildi.
+
+Har bir litsenziyaning o'z shartlari bor, shuning uchun har bir litsenziyani o'z ehtiyojlaringiz uchun baholash sizga bog'liq. Biroq, mana, menimcha, har kim so'rashi kerak bo'lgan bir nechta savollar:
+
+- **Litsenziya tijorat maqsadlarida foydalanishga ruxsat beradimi?** "Meta"ning birinchi `Llama` modeli chiqqanda, u [notijorat litsenziyasi](https://ai.meta.com/blog/large-language-model-llama-meta-ai/) ostida edi.
+- **Agar u tijorat maqsadlarida foydalanishga ruxsat bersa, biror cheklovlar bormi?** `Llama-2` va `Llama-3` litsenziyalari oylik 700 milliondan ortiq faol foydalanuvchiga ega bo'lgan dasturlar "Meta"dan maxsus litsenziya talab qilishini belgilaydi.[^11]
+- **Litsenziya model natijalaridan boshqa modellarni o'qitish yoki takomillashtirish uchun foydalanishga ruxsat beradimi?** Mavjud modellar tomonidan generatsiya qilingan sintetik ma'lumotlar kelajakdagi modellarni o'qitish uchun muhim ma'lumot manbaidir (8-bobda boshqa ma'lumotlar sintezi mavzulari bilan birga muhokama qilinadi). Ma'lumotlar sintezining bir qo'llanish holati — bu model distillatsiyasi (`model distillation`): shogirdga (odatda ancha kichikroq model) ustozning (odatda ancha kattaroq model) xulq-atvorini taqlid qilishni o'rgatish. "Mistral" dastlab bunga ruxsat bermagan, ammo keyinroq o'z [litsenziyasini](https://x.com/arthurmensch/status/1734470462451732839) o'zgartirgan. Ushbu kitob yozilayotgan vaqtda, `Llama` litsenziyalari hali ham bunga ruxsat bermaydi.[^12]
+
+Ba'zi odamlar cheklangan litsenziyalarga ega bo'lgan ochiq manbali modellarni nazarda tutib, "cheklangan parametrli" (`restricted weight`) atamasini ishlatishadi. Biroq, men bu atamani noaniq deb bilaman, chunki barcha oqilona litsenziyalarda cheklovlar mavjud (masalan, siz modeldan genotsid sodir etish uchun foydalana olmasligingiz kerak).
+
+### Ochiq manbali modellar va model _API_'larini taqqoslash
+
+Model foydalanuvchilar uchun ochiq bo'lishi uchun, biror qurilma uni o'zida ishga tushirib, xizmat ko'rsatishi kerak. Modelni ishlatadigan, foydalanuvchi so'rovlarini qabul qiladigan, so'rovlar uchun javoblar generatsiya qilish uchun modelni ishga tushiradigan va bu javoblarni foydalanuvchilarga qaytaradigan xizmat **_inference_ xizmati** (`inference service`) deb ataladi. Foydalanuvchilar ishlaydigan interfeys esa **model _API_'si** deb ataladi (4-6-rasm). Model _API_'si atamasi odatda _inference_ xizmatining _API_'sini anglatadi, ammo boshqa model xizmatlari uchun ham _API_'lar mavjud, masalan, _finetuning_ _API_'lari va baholash _API_'lari. 9-bobda _inference_ xizmatlarini qanday optimallashtirish muhokama qilinadi.
+
+![4-6-rasm. Inference xizmati modelni ishga tushiradi va foydalanuvchilarga modelga kirish uchun interfeys taqdim etadi.](/ai-engineering/4-chapter/4.6-figure.png)
+
+<div className='text-center text-sm italic'>4-6-rasm. _Inference_ xizmati modelni ishga tushiradi va foydalanuvchilarga modelga kirish uchun interfeys taqdim etadi.</div>
+
+Modelni ishlab chiqqandan so'ng, ishlab chiquvchi uni ochiq manbali qilishni, _API_ orqali ochiq qilishni yoki ikkalasini ham tanlashi mumkin. Ko'plab model ishlab chiquvchilari ayni paytda model xizmatlari provayderlari hamdir. "Cohere" va "Mistral" ba'zi modellarni ochiq manbali qiladi va ba'zilari uchun _API_'lar taqdim etadi. "OpenAI" odatda o'zining tijorat modellari bilan tanilgan, ammo ular ham ochiq manbali modellar chiqargan (`GPT-2`, `CLIP`). Odatda, model provayderlari zaifroq modellarni ochiq manbali qiladi va o'zlarining eng yaxshi modellarini pullik devorlar (`paywalls`) ortida, yo _API_'lar orqali, yo o'z mahsulotlarini quvvatlantirish uchun saqlaydi.
+
+Model _API_'lari model provayderlari ("OpenAI" va "Anthropic" kabi), bulut xizmatlari provayderlari ("Azure" va "GCP" [Google Cloud Platform] kabi) yoki uchinchi tomon _API_ provayderlari ("Databricks Mosaic", "Anyscale" va hokazo) orqali mavjud bo'lishi mumkin. Bir xil model turli xil xususiyatlar, cheklovlar va narxlar bilan turli _API_'lar orqali mavjud bo'lishi mumkin. Masalan, `GPT-4` ham "OpenAI", ham "Azure" _API_'lari orqali mavjud. Turli _API_'lar orqali taqdim etilgan bir xil modelning samaradorligida biroz farqlar bo'lishi mumkin, chunki turli _API_'lar ushbu modelni optimallashtirish uchun turli texnikalardan foydalanishi mumkin, shuning uchun model _API_'lari o'rtasida o'tishda puxta testlar o'tkazganingizga ishonch hosil qiling.
+
+Tijorat modellari faqat ularning ishlab chiquvchilari tomonidan litsenziyalangan _API_'lar orqali ochiqdir.[^13] Ochiq manbali modellar esa istalgan _API_ provayderi tomonidan qo'llab-quvvatlanishi mumkin, bu sizga o'zingiz uchun eng yaxshi ishlaydigan provayderni tanlash imkonini beradi. Tijorat model provayderlari uchun modellar ularning raqobatbardosh ustunligidir. O'z modellariga ega bo'lmagan _API_ provayderlari uchun esa, _API_'lar ularning raqobatbardosh ustunligidir. Bu shuni anglatadiki, _API_ provayderlari yaxshiroq narxlar bilan yaxshiroq _API_'lar taklif qilishga ko'proq intilishi mumkin.
+
+Kattaroq modellar uchun miqyoslanadigan _inference_ xizmatlarini yaratish oson ish bo'lmagani uchun, ko'plab kompaniyalar ularni o'zlari yaratishni xohlamaydi. Bu ochiq manbali modellar ustiga qurilgan ko'plab uchinchi tomon _inference_ va _finetuning_ xizmatlarining yaratilishiga olib keldi. `AWS`, `Azure` va `GCP` kabi yirik bulut provayderlarining barchasi ommabop ochiq manbali modellarga _API_ orqali kirishni ta'minlaydi. Ko'plab startaplar ham xuddi shunday qilmoqda.
+
+<Callout>
+#### Eslatma
+
+Shuningdek, o'z xizmatlarini sizning xususiy tarmoqlaringiz ichida joriy eta oladigan tijorat _API_ provayderlari ham mavjud. Ushbu muhokamada men bu xususiy joriy etilgan tijorat _API_'lariga mustaqil ishlatadigan modellar kabi munosabatda bo'laman.
+</Callout>
+
+Modelni o'zingiz ishlatish yoki model _API_'sidan foydalanish haqidagi savolning javobi qo'llanish holatiga bog'liq. Shuningdek, bir xil qo'llanish holati vaqt o'tishi bilan o'zgarishi mumkin. Ushbu, ko'rib chiqilishi kerak bo'lgan yettita yo'nalish: ma'lumotlar maxfiyligi, ma'lumotlar shajarasi, samaradorlik, funksionallik, xarajatlar, nazorat va qurilmada joriy etish.
+
+#### Ma'lumotlar maxfiyligi
+
+Ma'lumotlarini tashkilot tashqarisiga chiqara olmaydigan va maxfiylikka oid qat'iy siyosatga amal qiladigan kompaniyalar uchun tashqi provayderlar tomonidan taqdim etiladigan model _API_'laridan foydalanish mutlaqo nomaqbuldir.[^14] Bunga yorqin misollardan biri sifatida Samsung xodimlarining kompaniyaga tegishli maxfiy ma'lumotlarni `ChatGPT`'ga kiritib, oqibatda tijoriy sirlarni bexosdan fosh qilib qo'ygan holatini keltirish mumkin.[^15] Samsung ushbu ma'lumot sizib chiqishini qanday aniqlagani va fosh bo'lgan axborot kompaniyaga qarshi qay tarzda ishlatilgani noma'lum. Shunga qaramay, voqea shu qadar jiddiy tus olganki, Samsung 2023-yil may oyida `ChatGPT`'dan [foydalanishni taqiqlab qo'ydi](https://www.bloomberg.com/news/articles/2023-05-02/samsung-bans-chatgpt-and-other-generative-ai-use-by-staff-after-leak).
+
+Ba'zi mamlakatlarda muayyan turdagi ma'lumotlarni davlat chegarasidan tashqariga yuborishni taqiqlovchi qonunlar mavjud. Agar model _API_ provayderi bunday mijozlarga xizmat ko'rsatishni istasa, u o'sha mamlakatlar hududida o'z serverlarini o'rnatishiga to'g'ri keladi.
+
+Agar siz model _API_'sidan foydalansangiz, _API_ provayderi sizning ma'lumotlaringizdan o'z modellarini o'qitish uchun foydalanishi xavfi mavjud. Garchi aksariyat model _API_ provayderlari bunday qilmasliklarini da'vo qilishsa-da, ularning siyosati o'zgarishi mumkin. 2023-yil avgust oyida Zoom kompaniyasi o'zining foydalanish shartlarini bildirmasdan o'zgartirgani ma'lum bo'lgach, [jiddiy noroziliklarga](https://techcrunch.com/2023/08/08/zoom-data-mining-for-ai-terms-gdpr-eprivacy/) duch keldi. Yangi shartlarga ko'ra, Zoom foydalanuvchilar tomonidan yaratilgan ma'lumotlardan, jumladan, mahsulotdan foydalanish statistikasi va diagnostika ma'lumotlaridan o'zining _AI_ modellarini o'qitish uchun foydalanish huquqini olgan edi.
+
+Xo'sh, kimningdir sizning ma'lumotlaringizdan o'z modellarini o'qitish uchun foydalanishining nimasi yomon? Bu sohadagi tadqiqotlar hali kam bo'lsa-da, ba'zi ilmiy ishlar _AI_ modellari o'zlarining o'qitish namunalarini "yodlab qolishi" mumkinligini ko'rsatmoqda. Masalan, ["Hugging Face" kompaniyasining `StarCoder` modeli](https://x.com/dhuynh95/status/1713917852162424915) o'zining o'qitish to'plamining 8 foizini yodlab qolgani aniqlangan. Bunday yodlab qolingan namunalar 5-bobda ko'rsatib o'tilganidek, tasodifan boshqa foydalanuvchilarga sizib chiqishi yoki yomon niyatli shaxslar tomonidan ataylab suiiste'mol qilinishi mumkin.
+
+#### Ma'lumotlarning kelib chiqishi va mualliflik huquqi
+
+Ma'lumotlarning kelib chiqishi va mualliflik huquqi bilan bog'liq xavotirlar kompaniyalarni turli yo'nalishlarga undashi mumkin: ba'zilari ochiq manbali modellarga yuzlanadi, boshqalari xususiy modellarni tanlaydi, ayrimlari esa har ikkisidan ham voz kechadi.
+
+Aksariyat modellar qanday ma'lumotlar asosida o'qitilgani haqida shaffoflik deyarli yo'q. [`Gemini`'ning texnik hisobotida](https://storage.googleapis.com/deepmind-media/gemini/gemini_1_report.pdf) Google modelning samaradorligi haqida batafsil to'xtalgan, biroq uni o'qitishda ishlatilgan ma'lumotlar haqida “ma'lumotlarni boyitishga jalb qilingan barcha xodimlarga kamida mahalliy yashash uchun yetarli ish haqi to'lanadi” degan jumladan boshqa hech narsa demagan. ["OpenAI"ning texnik direktori (`CTO`)](https://x.com/JoannaStern/status/1768306032466428291) o'z modellarini o'qitish uchun qanday ma'lumotlardan foydalanilgani haqidagi savolga qoniqarli javob bera olmadi.
+
+Bundan tashqari, _AI_ sohasidagi Intellektual Mulk (`IP`) qonunchiligi faol rivojlanish bosqichida. Garchi 2024-yilda [AQSh Patent va Savdo Belgilari Idorasi (`_USPTO_`)](https://www.uspto.gov/subscription-center/2024/uspto-issues-inventorship-guidance-and-examples-ai-assisted-inventions) “_AI_ yordamida yaratilgan ixtirolar to'g'ridan-to'g'ri patentlashdan mahrum etilmaydi” deb aniqlik kiritgan bo'lsa-da, _AI_ ilovasining patentga loyiqligi “innovatsiyaga inson tomonidan qo'shilgan hissa patent olish uchun yetarlicha salmoqli ekanligiga” bog'liq. Shuningdek, agar model mualliflik huquqi bilan himoyalangan ma'lumotlar asosida o'qitilgan bo'lsa va siz bu modeldan o'z mahsulotingizni yaratishda foydalansangiz, o'z mahsulotingizning Intellektual Mulkini himoya qila olishingiz ham dargumon. Faoliyati o'z Intellektual Mulkiga bog'liq bo'lgan ko'plab kompaniyalar, masalan, o'yin va kino studiyalari, _AI_ atrofidagi Intellektual Mulk qonunlariga aniqlik kiritilmaguncha, o'z mahsulotlarini yaratishda [_AI_'dan foydalanishga ikkilanmoqda](https://www.theverge.com/23444685/generative-ai-copyright-infringement-legal-fair-use-training-data) (James Vincent, The Verge, 2022-yil 15-noyabr).
+
+Ma'lumotlarning kelib chiqishi bilan bog'liq xavotirlar ba'zi kompaniyalarni o'qitish ma'lumotlari ommaga e'lon qilingan to'liq ochiq modellarga yuzlanishga undadi. Buning sababi shundaki, bu yondashuv hamjamiyatga ma'lumotlarni tekshirish va ulardan foydalanish xavfsiz ekanligiga ishonch hosil qilish imkonini beradi, degan qarash mavjud. Bu nazariyada qanchalik jozibali eshitilmasin, amalda biror bir kompaniya uchun fundamental modellarni o'qitishda ishlatiladigan ulkan hajmdagi ma'lumotlar to'plamini sinchkovlik bilan tekshirib chiqish deyarli imkonsiz vazifadir.
+
+Aynan shu xavotirlar sababli, ko'plab kompaniyalar buning o'rniga tijoriy modellarni tanlaydi. Ochiq manbali modellar, odatda, tijoriy modellarga qaraganda cheklangan huquqiy resurslarga ega bo'ladi. Agar siz mualliflik huquqini buzadigan ochiq manbali modeldan foydalansangiz, huquqi buzilgan tomon model ishlab chiquvchilarini emas, katta ehtimol bilan aynan sizni sudga beradi. Biroq, agar siz tijoriy modeldan foydalansangiz, model provayderlari bilan imzolaydigan shartnomalaringiz sizni ma'lumotlarning kelib chiqishi bilan bog'liq xatarlardan potensial himoya qilishi mumkin.[^16]
+
+#### Samaradorlik
+
+Turli benchmarklar ochiq manbali va xususiy modellar o'rtasidagi farq qisqarib borayotganini ko'rsatmoqda. 4-7-rasmda `MMLU` benchmarki bo'yicha bu farqning vaqt o'tishi bilan qanday kamayib borayotganini ko'rish mumkin. Ushbu tendensiya ko'pchilikni kun kelib eng kuchli xususiy model bilan bir xil, balki undan ham yaxshiroq ishlaydigan ochiq manbali model paydo bo'lishiga ishonishga undadi.
+
+Men ochiq manbali modellar xususiy modellarga yetib olishini qanchalik istasam-da, mavjud rag'batlantirish tizimi bunga yo'l qo'ymaydi deb o'ylayman. Tasavvur qiling, sizda eng kuchli model bor: siz uni boshqalar foyda ko'rishi uchun ochiq manbali qilarmidingiz yoki undan o'zingiz foyda ko'rishga harakat qilarmidingiz?[^17] Kompaniyalar uchun o'zlarining eng kuchli modellarini _API_'lar ortida saqlab, nisbatan kuchsizroq modellarini ochiq manbali qilish odatiy holdir.
+
+![`MMLU` benchmarki bo'yicha ochiq manbali va xususiy modellar o'rtasidagi farqning qisqarishi. Muallif: Maxime Labonne.](/ai-engineering/4-chapter/4.7-figure.png)
+
+<div className='text-center text-sm italic'>`MMLU` benchmarki bo'yicha ochiq manbali va xususiy modellar o'rtasidagi farqning qisqarishi. Muallif: Maxime Labonne.</div>
+
+Shu sababli, yaqin kelajakda eng kuchli ochiq manbali model eng kuchli xususiy modellardan ortda qolishi ehtimoli yuqori. Biroq, eng kuchli modellarni talab qilmaydigan ko'plab amaliy vaziyatlar uchun ochiq manbali modellar yetarli bo'lishi mumkin.
+
+Ochiq manbali modellarning ortda qolishiga sabab bo'lishi mumkin bo'lgan yana bir omil shuki, tijoriy modellardan farqli o'laroq, ochiq manbali model yaratuvchilari o'z modellarini takomillashtirish uchun foydalanuvchilardan fikr-mulohazalar ololmaydilar. Model ochiq manbali qilinganidan so'ng, uning yaratuvchilari modelning amalda qanday ishlatilayotgani va real sharoitlarda qanchalik yaxshi ishlayotgani haqida hech qanday ma'lumotga ega bo'lmay qoladilar.
+
+#### Funksionallik
+
+Modelni muayyan bir amaliy vaziyatda ishlashi uchun uning atrofida ko'plab qo'shimcha funksional imkoniyatlar yaratilishi kerak. Quyida shunday funksiyalarga bir nechta misollar keltirilgan:
+
+-   **Kengayuvchanlik:** _Inference_ xizmatining ilovangiz yuklamasini (trafikni) maqbul kechikish va xarajatlarni saqlagan holda qo'llab-quvvatlay olishini ta'minlash.
+
+-   **Funksiyalarni chaqirish:** Modelga tashqi vositalardan foydalanish imkoniyatini berish. Bu, 6-bobda muhokama qilinganidek, _RAG_ va agentga asoslangan yondashuvlar uchun juda muhim.
+
+-   **Strukturalashgan natijalar:** Masalan, modellardan natijalarni `_JSON_` formatida yaratishni so'rash.
+
+-   **Natijalarni nazorat qilish mexanizmlari:** Yaratilgan javoblardagi xatarlarni kamaytirish, masalan, javoblarda irqchilik yoki jinsiy kamsitish holatlari yo'qligiga ishonch hosil qilish.
+
+Bu funksiyalarning ko'pini amaliyotga tatbiq etish ancha murakkab va ko'p vaqt talab qiladigan jarayon bo'lgani uchun, ko'plab kompaniyalar o'zlariga kerakli funksiyalarni tayyor holatida taqdim etadigan _API_ provayderlariga murojaat qiladi.
+
+Model _API_'sidan foydalanishning salbiy tomoni shundaki, siz _API_ taqdim etadigan funksiyalar bilangina cheklanib qolasiz. Ko'pgina amaliy vaziyatlar uchun zarur bo'lgan funksiyalardan biri bu _logprobs_ (tokenlarning logarifmik ehtimolliklari)'dir. Ular klassifikatsiya vazifalari, baholash va model xatti-harakatini tahlil qilish uchun juda foydalidir. Biroq, tijoriy model ishlab chiquvchilari boshqalarning _logprobs_'dan foydalanib o'z modellarini qayta yaratishidan (nusxalashidan) qo'rqib, bu ma'lumotni taqdim etishga ikkilanishi mumkin. Aslida, ko'plab model _API_'lari _logprobs_'ni umuman taqdim etmaydi yoki faqat cheklangan qisminigina ochib beradi.
+
+Shuningdek, siz tijoriy modelni faqatgina model provayderi ruxsat bergan taqdirdagina _finetuning_ qila olasiz. Tasavvur qiling, promptlar yordamida model samaradorligini maksimal darajaga olib chiqdingiz va endi uni _finetuning_ qilmoqchisiz. Agar bu model xususiy bo'lsa va model provayderining _finetuning_ _API_'si bo'lmasa, siz buni qila olmaysiz. Biroq, agar u ochiq manbali model bo'lsa, siz ushbu modelda _finetuning_ xizmatini taklif qiladigan biror servis topishingiz yoki buni o'zingiz amalga oshirishingiz mumkin. Yodda tutingki, 7-bobda muhokama qilinganidek, _finetuning_'ning bir necha turlari mavjud, masalan, qisman _finetuning_ va to'liq _finetuning_. Tijoriy model provayderi _finetuning_'ning barcha turlarini emas, balki faqat ayrimlarini qo'llab-quvvatlashi mumkin.
+
+#### _API_ va muhandislik xarajatlarini taqqoslash
+
+Model _API_'lari har bir foydalanish uchun haq oladi, bu esa yuqori yuklamalarda ularning narxi imkonsiz darajada qimmatlashib ketishiga olib kelishi mumkin. Muayyan miqyosga yetganda, _API_'lar tufayli katta mablag' yo'qotayotgan kompaniya o'z modellarini o'zida joylashtirish haqida o'ylab ko'rishi mumkin.[^18]
+
+Biroq, modelni o'zingiz joylashtirib joriy etish salmoqli vaqt, malakali mutaxassislar va muhandislik kuchini talab etadi. Siz modelni optimallashtirishingiz, _inference_ xizmatini zaruratga qarab kengaytirishingiz va qo'llab-quvvatlashingiz, shuningdek, modelingiz uchun nazorat mexanizmlarini joriy qilishingiz kerak bo'ladi. _API_'lar qimmat, lekin muhandislik xarajatlari undan ham oshib tushishi mumkin.
+
+Boshqa tomondan olib qaraganda, begona _API_'dan foydalanish ularning _SLA_'siga (xizmat ko'rsatish darajasi to'g'risidagi kelishuv) bog'liqlikni anglatadi. Agar bu _API_'lar ishonchli bo'lmasa — bu holat faoliyatini endi boshlagan startaplarda ko'p uchraydi — siz o'zingizning muhandislik kuchingizni ushbu _API_'ning beqaror ishlashiga qarshi himoya mexanizmlarini yaratishga sarflashingizga to'g'ri keladi.
+
+Umuman olganda, siz foydalanish va sozlash uchun qulay bo'lgan modelni tanlaganingiz ma'qul. Odatda, xususiy modellar bilan ish boshlash va ularni kengaytirish osonroq, lekin ochiq modellarni moslashtirish osonroq bo'lishi mumkin, chunki ularning tarkibiy qismlaridan foydalanish imkoniyati kengroq.
+
+Ochiq yoki xususiy model tanlashingizdan qat'i nazar, ushbu modelning standart _API_'ga amal qilishi muhim, bu esa kelajakda modellarni almashtirishni osonlashtiradi. Ko'pgina model ishlab chiquvchilari o'z modellarini eng mashhur modellarning _API_'siga taqlid qiladigan qilib yaratishga harakat qilishadi. Ushbu matn yozilayotgan vaqtda, ko'plab _API_ provayderlari "OpenAI"ning _API_'sidan andoza olmoqda.
+
+Shuningdek, kuchli hamjamiyat tomonidan qo'llab-quvvatlanadigan modellarni tanlaganingiz afzal. Model qanchalik ko'p imkoniyatlarga ega bo'lsa, uning o'ziga xos nozik jihatlari va "qiliqlari" ham shuncha ko'p bo'ladi. Katta foydalanuvchilar hamjamiyatiga ega modelni tanlasangiz, siz duch kelgan har qanday muammoga boshqalar ham allaqachon duch kelgan va ehtimol o'z yechimlarini internetda e'lon qilgan bo'lishi mumkin.[^19]
+
+#### Nazorat, foydalanish imkoniyati va shaffoflik
+
+["a16z"ning 2024-yildagi tadqiqoti](https://a16z.com/generative-ai-enterprise-2024/) shuni ko'rsatadiki, korxonalarning ochiq manbali modellarga qiziqishining ikki asosiy sababi bu — nazorat va moslashtirish imkoniyatidir (4-8-rasmga qarang).
+
+![Korxonalarning ochiq manbali modellarga qiziqish sabablari. Manba: a16z'ning 2024-yildagi tadqiqoti.](/ai-engineering/4-chapter/4.8-figure.png)
+
+<div className='text-center text-sm italic'>Korxonalarning ochiq manbali modellarga qiziqish sabablari. Manba: a16z'ning 2024-yildagi tadqiqoti.</div>
+
+Agar biznesingiz modelga bog'liq bo'lsa, uning ustidan ma'lum darajada nazoratga ega bo'lishni istashingiz tabiiy, va _API_ provayderlari har doim ham siz xohlagan darajadagi nazoratni taqdim etmasligi mumkin. Boshqa birov tomonidan taqdim etiladigan xizmatdan foydalanganda, siz ularning foydalanish shartlariga va so'rovlar limitiga bo'ysunasiz. Siz faqat provayder tomonidan taqdim etilgan imkoniyatlardan foydalana olasiz va shu sababli modelni kerakli tarzda sozlay olmasligingiz mumkin.
+
+Model provayderlari o'z foydalanuvchilarini va o'zlarini potentsial sud da'volaridan himoya qilish uchun irqchilikka oid hazillarni aytish yoki real insonlarning suratlarini yaratish kabi so'rovlarni bloklaydigan himoya mexanizmlarini qo'llaydilar. Xususiy modellar bu borada haddan tashqari senzura qilishga moyilroq bo'ladi. Bu himoya mexanizmlari aksariyat amaliy vaziyatlar uchun foydali bo'lsa-da, ayrim holatlar uchun cheklovchi omil bo'lishi mumkin. Masalan, agar ilovangiz real yuzlarni yaratishni talab qilsa (masalan, musiqiy klip ishlab chiqarishga yordam berish uchun), real yuzlarni yaratishdan bosh tortadigan model ish bermaydi. Men maslahat beradigan ["Convai"](https://convai.com/) kompaniyasi 3D muhit bilan muloqotga kirisha oladigan, jumladan, jismlarni ko'tara oladigan 3D _AI_ personajlarini yaratadi. Tijoriy modellar bilan ishlashda ular shunday muammoga duch kelishdiki, modellar doimiy ravishda: _“Sun'iy intellekt modeli sifatida menda jismoniy qobiliyatlar yo'q”_, deb javob qaytaravergan. Oxir-oqibat, "Convai" ochiq manbali modellarni _finetuning_ qilishga majbur bo'ldi.
+
+Shuningdek, tijoriy modeldan foydalanish imkoniyatini yo'qotish xavfi ham mavjud, agar butun tizimingizni uning atrofida qurgan bo'lsangiz, bu juda jiddiy oqibatlarga olib kelishi mumkin. Siz ochiq manbali modellarda qila olganingiz kabi, tijoriy modelni biror versiyada "muzlatib qo'ya olmaysiz".[^20] Tarixiy jihatdan, tijoriy modellar o'zgarishlar, versiyalar va kelgusi rejalar borasida shaffoflikka ega emas. Modellar tez-tez yangilanadi, lekin barcha o'zgarishlar ham oldindan e'lon qilinmaydi yoki umuman e'lon qilinmasligi mumkin. Sizning promptlaringiz kutilmaganda ishlamay qolishi mumkin va siz buning sababini bilmay qolasiz. Oldindan aytib bo'lmaydigan o'zgarishlar, shuningdek, tijoriy modellarni qat'iy tartibga solinadigan sohalardagi ilovalar uchun yaroqsiz qilib qo'yadi. Biroq, menimcha, model o'zgarishlaridagi bu tarixiy shaffoflikning yo'qligi shunchaki tez rivojlanayotgan sohaning bexosdan yuzaga kelgan oqibati bo'lishi mumkin. Umid qilamanki, soha yetuklashgani sari bu holat o'zgaradi.
+
+Afsuski, kamroq uchraydigan, ammo mavjud bo'lgan yana bir holat shuki, model provayderi sizning amaliy vaziyatingizni, sohangizni yoki mamlakatingizni qo'llab-quvvatlashni to'xtatishi mumkin, yoki sizning mamlakatingiz model provayderingiz faoliyatini taqiqlab qo'yishi mumkin, masalan, [Italiya 2023-yilda "OpenAI" faoliyatini qisqa muddatga taqiqlagan edi](https://www.cnbc.com/2023/04/04/italy-has-banned-chatgpt-heres-what-other-countries-are-doing.html). Shuningdek, model provayderi butunlay bankrot bo'lishi yoki faoliyatini to'xtatishi ham mumkin.
+
+#### Qurilmaning o'zida ishga tushirish
+
+Agar modelni bevosita qurilmaning o'zida ishga tushirishni maqsad qilgan bo'lsangiz, uchinchi tomon _API_'laridan foydalanish haqida gap bo'lishi ham mumkin emas. Ko'plab amaliy vaziyatlarda modelni lokal, ya'ni qurilmaning o'zida ishga tushirish afzalroqdir. Buning sababi, sizning amaliy vaziyatingiz ishonchli internet aloqasi mavjud bo'lmagan hududlarga mo'ljallangan bo'lishi mumkin. Yoki bu maxfiylik bilan bog'liq bo'lishi mumkin: masalan, siz sun'iy intellekt yordamchisiga barcha ma'lumotlaringizdan foydalanishga ruxsat berishni istaysiz, ammo bu ma'lumotlarning qurilmangizdan chiqib ketishini xohlamaysiz. 4-4-jadvalda model _API_'laridan foydalanish va modellarni mustaqil ravishda ishlatishning afzalliklari va kamchiliklari umumlashtirilgan.
+
+| | **Model _API_'laridan foydalanish** | **Modellarni mustaqil ravishda ishlatish** |
+|---------------|----------------------|--------------------------|
+| **Ma'lumotlar** | • _Ma'lumotlaringizni model provayderlariga yuborishga to'g'ri keladi, bu esa jamoangiz maxfiy axborotni bexosdan fosh qilishiga olib kelishi mumkin_ | • Ma'lumotlaringizni tashqariga yuborish shart emas <br/><br/> • _Ma'lumotlarning kelib chiqishi / o'qitish ma'lumotlarining mualliflik huquqi uchun tekshiruv va nazorat mexanizmlari kamroq_ |
+| **Samaradorlik** | • _Eng yuqori samaradorlikka ega model, ehtimol, yopiq manbali bo'ladi_ | • _Eng yaxshi ochiq manbali modellar, ehtimol, tijoriy modellardan biroz ortda qoladi_  |
+| **Funksionallik** | • Kengayuvchanlik, funksiyalarni chaqirish, strukturalashgan natijalarni qo'llab-quvvatlash ehtimoli yuqori <br/><br/> _`logprobs`'ni taqdim etish ehtimoli past_ | • _Funksiyalarni chaqirish va strukturalashgan natijalar uchun qo'llab-quvvatlash yo'q yoki cheklangan_ <br/><br/> • Klassifikatsiya, baholash va tahlil qilish uchun foydali bo'lgan _logprobs_ va oraliq natijalardan foydalanish mumkin |
+| **Xarajatlar** | • _API xarajatlari_ | • _Malakali mutaxassislar, vaqt, optimallashtirish, ishlatish va qo'llab-quvvatlash uchun muhandislik kuchi_ (model hosting xizmatlaridan foydalanish orqali kamaytirilishi mumkin)  |
+| **_Finetuning_** | • _Faqat model provayderlari ruxsat bergan modellarni `finetuning` qila olasiz_  | • Modellarni _finetuning_ qilish, kvantlash va optimallashtirish mumkin (agar ularning litsenziyalari ruxsat bersa), _lekin buni amalga oshirish qiyin bo'lishi mumkin_ |
+| **Nazorat, foydalanish imkoniyati va shaffoflik** | • _So'rovlar limiti_ <br/><br/> • _Modeldan foydalanish imkoniyatini yo'qotish xavfi_ <br/><br/> • _Model o'zgarishlari va versiyalarida shaffoflikning yo'qligi_ | • Ochiq manbali modellardagi o'zgarishlarni tekshirish osonroq <br/><br/> • Modelni "muzlatib qo'yib", undan doimiy foydalanishni ta'minlash mumkin, _lekin model _API_'larini yaratish va qo'llab-quvvatlash mas'uliyati o'zingizda bo'ladi_ |
+| **Noodatiy vaziyatlar** | _Internet aloqasisiz qurilmada ishlay olmaydi_ | Qurilmada ishlay oladi, _lekin yana, buni amalga oshirish qiyin bo'lishi mumkin_ |
+
+
+<div className='text-center text-sm italic'>4-4-jadval. Model _API_'laridan foydalanish va modellarni mustaqil ravishda ishlatishning afzalliklari va kamchiliklari (kamchiliklar kursivda berilgan).</div>
+
+Umid qilamizki, har bir yondashuvning afzallik va kamchiliklari sizga tijoriy _API_'dan foydalanish yoki modelni mustaqil ravishda ishlatish borasida qaror qabul qilishingizga yordam beradi. Bu qaror mavjud variantlar doirasini ancha qisqartiradi. Shundan so'ng, ommaga ochiq bo'lgan model samaradorligi ma'lumotlaridan foydalanib, tanlovingizni yanada aniqlashtirishingiz mumkin.
+
 
 ### Izohlar
 
