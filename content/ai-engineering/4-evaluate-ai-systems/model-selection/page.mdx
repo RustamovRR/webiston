@@ -195,6 +195,152 @@ Agar modelni bevosita qurilmaning o'zida ishga tushirishni maqsad qilgan bo'lsan
 
 Umid qilamizki, har bir yondashuvning afzallik va kamchiliklari sizga tijoriy _API_'dan foydalanish yoki modelni mustaqil ravishda ishlatish borasida qaror qabul qilishingizga yordam beradi. Bu qaror mavjud variantlar doirasini ancha qisqartiradi. Shundan so'ng, ommaga ochiq bo'lgan model samaradorligi ma'lumotlaridan foydalanib, tanlovingizni yanada aniqlashtirishingiz mumkin.
 
+## Ommaviy benchmarklarni tahlil qilish
+
+Modellarning turli qobiliyatlarini baholash uchun mo'ljallangan minglab benchmarklar (standartlashtirilgan sinovlar to'plami) mavjud. Birgina [Google'ning `BIG-bench` (2022)](https://github.com/google/BIG-bench/blob/main/bigbench/benchmark_tasks/README.md) to'plamining o'zida 214 ta benchmark mavjud. _AI_'ning amaliy qo'llanilish sohalari soni jadal o'sgani sari, benchmarklar soni ham shunga mos ravishda tez sur'atda ko'payib bormoqda. Bundan tashqari, _AI_ modellari takomillashgani sari, eski benchmarklar o'z ahamiyatini yo'qotadi, bu esa yangi benchmarklarni joriy etish zaruratini tug'diradi.
+
+Modelni bir nechta benchmarklar bo'yicha baholashga yordam beradigan vosita _evaluation harness_ (baholash vositalari to'plami) deb ataladi. Ushbu matn yozilayotgan vaqtda, [EleutherAI'ning `lm-evaluation-harness`](https://github.com/EleutherAI/lm-evaluation-harness/blob/master/docs/task_table.md) vositasi 400 dan ortiq benchmarkni qo'llab-quvvatlaydi. ["OpenAI"ning `evals`](https://github.com/openai/evals) vositasi esa mavjud 500 ga yaqin benchmarkning istalganini ishga tushirishga va "OpenAI" modellarini baholash uchun yangi benchmarklarni ro'yxatdan o'tkazishga imkon beradi. Ularning benchmarklari keng qamrovli qobiliyatlarni baholaydi: matematik amallarni bajarish va boshqotirmalarni yechishdan tortib, so'zlarni ifodalovchi `ASCII` san'atini aniqlashgacha.
+
+### Benchmarklarni tanlash va natijalarni umumlashtirish
+
+Benchmark natijalari amaliy vazifalaringiz uchun istiqbolli modellarni saralab olishga yordam beradi. Modellarning reytingini tuzish uchun benchmark natijalarini jamlab, umumlashtirish orqali reyting jadvali (leaderboard) yaratiladi. Bu jarayonda ikki muhim savol tug'iladi:
+
+-   Reyting jadvaliga qaysi benchmarklarni kiritish kerak?
+-   Modellarning reytingini tuzish uchun bu benchmark natijalarini qanday umumlashtirish kerak?
+
+Mavjud benchmarklarning soni shu qadar ko'pki, ularning barchasini ko'rib chiqishning o'zi imkonsiz, eng yaxshi modelni aniqlash uchun ularning natijalarini umumlashtirish haqida esa gapirmasa ham bo'ladi. Tasavvur qiling, siz kod yaratish vazifasi uchun A va B modellarini solishtirayapsiz. Agar A model kodlashga oid benchmarkda B modeldan yaxshiroq, lekin toksiklik benchmarkida yomonroq natija ko'rsatsa, qaysi birini tanlaysiz? Xuddi shunday, bir model kodlashga oid bitta benchmarkda yaxshiroq, ammo boshqasida yomonroq natija ko'rsatsa, qaysi birini tanlaysiz?
+
+Ommaviy benchmarklar asosida o'z reyting jadvalingizni yaratishda ilhom olish uchun, mavjud ommaviy reyting jadvallarining qanday ishlashini o'rganish foydalidir.
+
+#### Ommaviy reyting jadvallari
+
+Ko'pgina ommaviy reyting jadvallari modellarni ma'lum bir benchmarklar to'plamidagi jamlanma samaradorligiga qarab tartiblaydi. Bu reyting jadvallari juda katta yordam beradi, biroq ularni har tomonlama qamrovli deb bo'lmaydi. Birinchidan, _compute_ (hisoblash quvvatlari) cheklovi tufayli — ya'ni modelni biror benchmarkda baholash uchun hisoblash quvvatlari kerak bo'ladi — aksariyat reyting jadvallari o'z ichiga faqat oz sonli benchmarklarni ola oladi. Ba'zi reyting jadvallari muhim, lekin ko'p resurs talab qiladigan (qimmat) benchmarkni chetlab o'tishi mumkin. Masalan, `HELM` (`Holistic Evaluation of Language Models`) Lite versiyasi uni [ishga tushirish qimmat](https://crfm.stanford.edu/2023/12/19/helm-lite.html) bo'lgani uchun ma'lumot qidirishga oid benchmarkni (`MS MARCO` — `Microsoft Machine Reading Comprehension`) o'z ichiga olmagan. "Hugging Face" esa [katta hisoblash quvvatlarini](https://discord.com/channels/879548962464493619/922424173916196955/1166444804981399572) talab qilgani sababli `HumanEval`'dan voz kechgan — bu benchmark uchun juda ko'p _completion_ (matnni yakunlash variantlari) yaratish kerak bo'ladi.
+
+["Hugging Face" 2023-yilda o'zining Ochiq _LLM_ reyting jadvalini](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) ilk bor ishga tushirganda, u to'rtta benchmarkdan iborat edi. Yil oxiriga kelib, ular bu sonni oltitaga yetkazishdi. Oz sonli benchmarklar to'plami fundamental modellarning keng qamrovli imkoniyatlari va turli zaif tomonlarini to'liq aks ettirish uchun mutlaqo yetarli emas.
+
+Bundan tashqari, reyting jadvali ishlab chiquvchilari odatda benchmarklarni tanlashga puxta yondashsalar-da, ularning qaror qabul qilish jarayoni foydalanuvchilar uchun har doim ham tushunarli bo'lavermaydi. Turli reyting jadvallari ko'pincha turlicha benchmarklarga ega bo'ladi, bu esa ularning reytinglarini solishtirish va tahlil qilishni qiyinlashtiradi. Masalan, 2023-yil oxirida "Hugging Face" o'zining Ochiq _LLM_ reyting jadvalini yangilab, modellarni tartiblash uchun oltita turli benchmarkning o'rtacha ko'rsatkichidan foydalanishni boshladi:
+
+-   **`ARC-C` ([Clark va boshq., 2018](https://arxiv.org/abs/1803.05457)):** Boshlang'ich sinf darajasidagi murakkab ilmiy savollarni yechish qobiliyatini o'lchash.
+
+-   **`MMLU` ([Hendrycks va boshq., 2020](https://arxiv.org/abs/2009.03300)):** 57 ta fanni, jumladan, elementar matematika, AQSh tarixi, informatika va huquqni o'z ichiga olgan sohalardagi bilim va mantiqiy fikrlash qobiliyatlarini o'lchash.
+
+-   **`HellaSwag` ([Zellers va boshq., 2019](https://arxiv.org/abs/1905.07830)):** Gapni yoki hikoya/videodagi sahnani yakunlashni bashorat qilish qobiliyatini o'lchash. Maqsad — sog'lom fikr va kundalik faoliyatni tushunishni sinash.
+
+-   **`TruthfulQA` ([Lin va boshq., 2021](https://arxiv.org/abs/2109.07958)):** Modelning faktlarni tushunishiga e'tibor qaratgan holda, nafaqat aniq, balki haqiqatga mos va chalg'itmaydigan javoblar yaratish qobiliyatini o'lchash.
+
+-   **`WinoGrande` ([Sakaguchi va boshq., 2019](https://arxiv.org/abs/1907.10641)):** Til modellari uchun qiyin bo'lishi mo'ljallangan, yuqori darajadagi sog'lom fikrlashni talab qiluvchi, olmoshlarning bog'liqligiga oid murakkab muammolarni yechish qobiliyatini o'lchash.
+
+-   **`GSM-8K` ([Grade School Math, OpenAI, 2021](https://github.com/openai/grade-school-math)):** Boshlang'ich sinf o'quv dasturlarida uchraydigan turli xil matematik masalalarni yechish qobiliyatini o'lchash.
+
+Taxminan o'sha vaqtlarda, [Stanford'ning `HELM` reyting jadvali](https://crfm.stanford.edu/helm/lite/latest/#/leaderboard) o'nta benchmarkdan foydalangan, ulardan faqat ikkitasi (`MMLU` va `GSM-8K`) "Hugging Face" reyting jadvalida mavjud edi. Qolgan sakkizta benchmark quyidagilar edi:
+
+-   Musobaqa darajasidagi matematika uchun benchmark ([`MATH`](https://arxiv.org/abs/2103.03874))
+-   Huquq ([`LegalBench`](https://hazyresearch.stanford.edu/legalbench/)), tibbiyot ([`MedQA`](https://arxiv.org/abs/2009.13081)) va tarjima ([`WMT 2014`](https://huggingface.co/papers/trending)) sohalarining har biri uchun bittadan benchmark
+-   O'qib tushunish uchun ikkita benchmark — kitob yoki uzun hikoya asosida savollarga javob berish ([`NarrativeQA`](https://arxiv.org/abs/1712.07040) va [`OpenBookQA`](https://arxiv.org/abs/1809.02789))
+-   Umumiy savol-javob uchun ikkita benchmark ([`Natural Questions`](https://research.google/pubs/natural-questions-a-benchmark-for-question-answering-research/), ikki xil shartda: kiritilayotgan ma'lumotda Vikipediya sahifalari bilan va ularsiz)
+
+"Hugging Face" bu benchmarklarni tanlash sababini shunday izohlagan: "ular turli sohalarda keng qamrovli mantiqiy fikrlash va umumiy bilimlarni sinovdan o'tkazadi".[^20] `HELM` veb-saytida esa ularning benchmarklar ro'yxati "Hugging Face" reyting jadvalining "soddaligidan ilhomlangani", biroq kengroq doiradagi senariylarni qamrab olishi aytilgan.
+
+Ommaviy reyting jadvallari, umuman olganda, qamrov va benchmarklar soni o'rtasidagi muvozanatni saqlashga harakat qiladi. Ular odatda mantiqiy fikrlash, faktlarga moslik hamda matematika va fan kabi sohaga xos qobiliyatlarni o'z ichiga olgan keng imkoniyatlarni qamrab oladigan kichik bir benchmarklar to'plamini tanlashga intiladi.
+
+Yuzaki qaraganda, bu to'g'ri yondashuvdek tuyuladi. Biroq, "qamrov" nima ekanligi yoki nima uchun u aynan oltita yoki o'nta benchmark bilan cheklanishi haqida aniqlik yo'q. Masalan, nima uchun tibbiyot va huquqqa oid vazifalar `HELM` Lite'ga kiritilgan-u, umumiy fan kiritilmagan? Nima uchun `HELM` Lite'da ikkita matematika testi bor-u, kodlash bo'yicha hech qanday test yo'q? Nega ikkalasida ham matnni qisqartirish, vositalardan foydalanish, toksiklikni aniqlash, rasm qidirish va hokazolar uchun testlar mavjud emas? Bu savollar ommaviy reyting jadvallarini tanqid qilish maqsadida emas, balki modellarni reytinglash uchun benchmarklarni tanlash vazifasi qanchalik murakkab ekanligini ko'rsatish uchun berilmoqda. Agar reyting jadvali ishlab chiquvchilari o'z benchmarklarini tanlash jarayonini tushuntirib bera olmayotgan bo'lsa, buning sababi shunchaki bu ishning haqiqatan ham murakkabligida bo'lishi mumkin.
+
+Benchmark tanlashda ko'pincha e'tibordan chetda qoladigan muhim jihat — bu benchmarklar korrelyatsiyasidir. Bu muhim, chunki agar ikkita benchmark bir-biri bilan to'liq korrelyatsiyada bo'lsa, ularning ikkalasini ham qo'shishning hojati yo'q. Bir-biriga kuchli bog'liq bo'lgan benchmarklar mavjud noxolisliklarni bo'rttirib ko'rsatishi mumkin.[^21]
+
+<Callout>
+#### Eslatma
+
+Men ushbu kitobni yozayotgan vaqtda, ko'plab benchmarklar o'z ahamiyatini yo'qotdi yoki yo'qotish arafasida edi. 2024-yil iyun oyida, o'z reyting jadvalining so'nggi yangilanishidan bir yil ham o'tmay, "Hugging Face" uni yana yangiladi va bu safar ancha qiyinroq hamda amaliyroq qobiliyatlarga e'tibor qaratadigan butunlay yangi benchmarklar to'plamini taqdim etdi. Masalan, [`GSM-8K` o'rniga `MATH lvl 5`](https://x.com/polynoamial/status/1803812369237528825) kiritildi, u musobaqa darajasidagi [`MATH`](https://arxiv.org/abs/2103.03874) benchmarkining eng qiyin savollaridan iborat. `MMLU` esa `MMLU-PRO` ([Wang va boshq., 2024](https://arxiv.org/abs/2406.01574)) bilan almashtirildi. Shuningdek, ular quyidagi benchmarklarni ham qo'shishdi:
+
+-   `GPQA` ([Rein va boshq., 2023](https://arxiv.org/abs/2311.12022)): magistratura darajasidagi savol-javob benchmarki[^22]
+-   `MuSR` ([Sprague va boshq., 2023](https://arxiv.org/abs/2310.16049)): fikrlar zanjiriga asoslangan, ko'p bosqichli mantiqiy fikrlash benchmarki
+-   `BBH` (`BIG-bench Hard`) ([Srivastava va boshq., 2023](https://arxiv.org/abs/2206.04615)): yana bir mantiqiy fikrlash benchmarki
+-   `IFEval` ([Zhou va boshq., 2023](https://arxiv.org/abs/2311.07911)): ko'rsatmalarga amal qilish benchmarki
+
+Shubhasiz, bu benchmarklar ham tez orada o'z ahamiyatini yo'qotadi. Biroq, eskirgan bo'lsa ham, aniq benchmarklarni muhokama qilish, benchmarklarni baholash va tahlil qilish uchun namuna sifatida hali ham foydali bo'lishi mumkin.[^23]
+</Callout>
+
+4-5-jadvalda "Hugging Face" reyting jadvalida qo'llanilgan oltita benchmark o'rtasidagi o'zaro bog'liqlik (korrelyatsiya) ko'rsatkichlari keltirilgan. Bu ko'rsatkichlar 2024-yil yanvar oyida Balázs Galambosi tomonidan hisoblangan. `WinoGrande`, `MMLU` va `ARC-C` benchmarklari bir-biri bilan kuchli bog'liqlikka ega, bu mantiqan to'g'ri, chunki ularning barchasi mantiqiy fikrlash qobiliyatini sinaydi. `TruthfulQA` esa boshqa benchmarklar bilan o'rtacha darajada bog'liq, bu esa modelning mantiqiy fikrlash va matematik qobiliyatlarini yaxshilash uning haqiqatga mosligini har doim ham oshirmasligini ko'rsatadi.
+
+| | `ARC-C` | `HellaSwag` | `MMLU` | `TruthfulQA` | `WinoGrande` | `GSM-8K` |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **`ARC-C`** | 1.0000 | 0.4812 | **0.8672** | 0.4809 | **0.8856** | 0.7438 |
+| **`HellaSwag`** | 0.4812 | 1.0000 | 0.6105 | 0.4809 | 0.4842 | 0.3547 |
+| **`MMLU`** | 0.8672 | 0.6105 | 1.0000 | 0.5507 | **0.9011** | 0.7936 |
+| **`TruthfulQA`** | 0.4809 | 0.4228 | 0.5507 | 1.0000 | 0.4550 | 0.5009 |
+| **`WinoGrande`** | **0.8856** | 0.4842 | **0.9011** | 0.4550 | 1.0000 | 0.7979 |
+| **`GSM-8K`** | 0.7438 | 0.3547 | 0.7936 | 0.5009 | 0.7979 | 1.0000 |
+
+<div className='text-center text-sm italic'>4-5-jadval. "Hugging Face" reyting jadvalida qo'llanilgan oltita benchmark o'rtasidagi korrelyatsiya, 2024-yil yanvar oyida hisoblangan.</div>
+
+Modellarni reytinglash uchun tanlangan barcha benchmarklarning natijalari umumlashtirilishi kerak. Ushbu matn yozilayotgan vaqtda, "Hugging Face" modelning yakuniy reyting ballini olish uchun uning barcha benchmarklardagi natijalarining o'rtacha arifmetigini hisoblaydi. O'rtacha arifmetikni hisoblash barcha benchmark ballarini bir xil deb hisoblashni anglatadi, ya'ni `TruthfulQA` bo'yicha 80% natijaga erishish `GSM-8K` bo'yicha 80% natijaga erishishdan ancha qiyinroq bo'lishi mumkin bo'lsa ham, ikkala 80% lik natijaga bir xil qaraladi. Bu, shuningdek, barcha benchmarklarga bir xil vazn berishni anglatadi, vaholanki, ba'zi vazifalar uchun haqiqatga moslik boshlang'ich sinf matematik masalalarini yecha olishdan ancha muhimroq bo'lishi mumkin.
+
+[`HELM` mualliflari](https://crfm.stanford.edu/2023/12/19/helm-lite.html) esa, aksincha, o'rtacha arifmetikdan voz kechib, buning o'rniga "o'rtacha g'alaba koeffitsienti"ni tanlashgan. Ular buni "bir modelning boshqa modeldan yaxshiroq natija ko'rsatgan holatlarining senariylar bo'yicha o'rtacha ulushi" deb ta'riflashgan.
+
+Ommaviy reyting jadvallari modellarning umumiy samaradorligi haqida tasavvur olish uchun foydali bo'lsa-da, reyting jadvali aynan qanday qobiliyatlarni o'lchashga harakat qilayotganini tushunish muhim. Ommaviy reyting jadvalida yuqori o'rinni egallagan model, katta ehtimol bilan, lekin har doim ham emas, sizning ilovangiz uchun yaxshi natija ko'rsatadi. Agar sizga kod yaratish uchun model kerak bo'lsa, tarkibida kod yaratish benchmarki bo'lmagan ommaviy reyting jadvali sizga unchalik yordam bera olmasligi mumkin.
+
+#### Ommaviy benchmarklar asosida shaxsiy reyting jadvallarini tuzish
+
+Muayyan bir ilova uchun modellarni baholayotganda, siz aslida modellarni o'zingizning baholash mezonlaringiz asosida tartiblaydigan shaxsiy reyting jadvalini yaratayotgan bo'lasiz. Birinchi qadam — ilovangiz uchun muhim bo'lgan qobiliyatlarni baholaydigan benchmarklar ro'yxatini tuzishdir. Agar kodlash agentini yaratmoqchi bo'lsangiz, kodlashga oid benchmarklarni ko'rib chiqing. Agar yozuvchi yordamchisini yaratsangiz, ijodiy yozishga oid benchmarklarni o'rganing. Yangi benchmarklar doimiy ravishda joriy etilib, eskilarining o'z ahamiyatini yo'qotib borishi sababli, siz eng so'nggi benchmarklarni izlashingiz lozim. Benchmarkning qanchalik ishonchli ekanligini baholashga ishonch hosil qiling. Har kim benchmark yaratishi va e'lon qilishi mumkinligi sababli, ko'plab benchmarklar siz kutgan narsani o'lchamasligi mumkin.
+
+> ##### "OpenAI" modellarining sifati pasayib boryaptimi?
+>
+> Har safar "OpenAI" o'z modellarini yangilaganida, odamlar ularning sifati yomonlashib borayotgandek tuyulayotganidan shikoyat qilishadi. Masalan, Stanford va UC Berkeley ([Chen va boshq., 2023](https://arxiv.org/abs/2307.09009)) tomonidan o'tkazilgan tadqiqot shuni ko'rsatdiki, 4-9-rasmda ko'rsatilganidek, 2023-yil mart va iyun oylari oralig'ida ko'plab benchmarklar bo'yicha ham `GPT-3.5`, ham `GPT-4` modellarining samaradorligi sezilarli darajada o'zgargan.
+> 
+> ![`GPT-3.5` va `GPT-4` modellarining 2023-yil mart va iyun oylari orasida ayrim benchmarklardagi samaradorligining o'zgarishi (Chen va boshq., 2023).](/ai-engineering/4-chapter/4.9-figure.png)
+>
+><div className='text-center text-sm italic'>`GPT-3.5` va `GPT-4` modellarining 2023-yil mart va iyun oylari orasida ayrim benchmarklardagi samaradorligining o'zgarishi (Chen va boshq., 2023).</div>
+>
+> "OpenAI" ataylab yomonroq modellarni chiqarmaydi deb faraz qilsak, bu kabi tasavvurning sababi nima bo'lishi mumkin? Buning bir ehtimoliy sababi shundaki, baholashning o'zi murakkab va hech kim, hatto "OpenAI"ning o'zi ham, model yaxshilanayotganini yoki yomonlashayotganini aniq bilmaydi. Baholash haqiqatan ham murakkab bo'lsa-da, men "OpenAI" butunlay ko'r-ko'rona harakat qilishiga shubha qilaman.[^24] Agar ikkinchi sabab to'g'ri bo'lsa, bu umuman olganda eng yaxshi model sizning ilovangiz uchun eng yaxshi model bo'lmasligi mumkin degan fikrni yanada mustahkamlaydi.
+
+Barcha modellarning ham hamma benchmarklardagi natijalari ommaga ochiq emas. Agar sizni qiziqtirayotgan modelning siz tanlagan benchmarkdagi natijasi ommaga e'lon qilinmagan bo'lsa, baholashni o'zingiz amalga oshirishingizga to'g'ri keladi.[^25] Yaxshiyamki, bu ishda sizga _evaluation harness_ (baholash vositalari to'plami) yordam berishi mumkin. Benchmarklarni ishga tushirish qimmatga tushishi mumkin. Masalan, Stanford o'zining [to'liq `HELM` to'plamida](https://arxiv.org/abs/2211.09110) 30 ta modelni baholash uchun taxminan \$80,000–\$100,000 sarflagan.[^26] Siz qancha ko'p modelni baholamoqchi bo'lsangiz va qancha ko'p benchmarkdan foydalansangiz, xarajatlar shuncha ortib boradi.
+
+Bir to'plam benchmarklarni tanlab olib, sizni qiziqtirgan modellarning ushbu benchmarklardagi natijalarini qo'lga kiritganingizdan so'ng, modellarni reytinglash uchun bu natijalarni umumlashtirishingiz kerak bo'ladi. Barcha benchmark natijalari ham bir xil o'lchov birligi yoki shkalada bo'lmaydi. Bir benchmark **to'g'rilik**'dan foydalansa, boshqasi `F1` ko'rsatkichidan, yana biri esa `BLEU` bahosidan foydalanishi mumkin. Har bir benchmark siz uchun qanchalik muhim ekanligini o'ylab ko'rishingiz va ularning natijalariga shunga yarasha vazn berishingiz kerak bo'ladi.
+
+Ommaviy benchmarklar yordamida modellarni baholar ekansiz, yodda tutingki, bu jarayonning maqsadi — o'zingizning shaxsiy benchmarklaringiz va metrikalaringiz yordamida yanada chuqurroq tajribalar o'tkazish uchun modellarning kichik bir guruhini saralab olishdir. Buning sababi nafaqat ommaviy benchmarklarning sizning ilovangiz ehtiyojlarini mukammal darajada aks ettira olmasligi, balki ularning katta ehtimol bilan "ifloslangan" (_contaminated_) bo'lishidadir. Ommaviy benchmarklar qanday qilib "ifloslanishi" va ma'lumotlarning "ifloslanishi" bilan qanday kurashish kerakligi keyingi bo'limning mavzusi bo'ladi.
+
+### Ommaviy benchmarklarda ma'lumotlarning ifloslanishi
+
+Ma'lumotlarning ifloslanishi shu qadar keng tarqalgan hodisaki, uning "ma'lumotlarning sizib chiqishi", "test to'plamida o'qitish" yoki shunchaki "firibgarlik" kabi ko'plab nomlari mavjud. Ma'lumotlarning ifloslanishi model o'zi baholanadigan ma'lumotlarning aynan o'zida o'qitilganda yuz beradi. Bunday holda, model shunchaki o'qitish paytida ko'rgan javoblarini yodlab olgan bo'lishi mumkin, bu esa uning baholashda haqqoniy natijasidan yuqoriroq ball to'plashiga olib keladi. Masalan, `MMLU` benchmarkida o'qitilgan model, amalda foydali bo'lmasa-da, yuqori `MMLU` ballarini qo'lga kiritishi mumkin.
+
+Stenford universiteti doktoranti Rylan Schaeffer buni o'zining 2023-yilda chop etilgan [“Pretraining on the Test Set Is All You Need”](https://arxiv.org/abs/2309.08632)(“Test to'plamida dastlabki o'qitish — sizga kerak bo'lgan yagona narsa”) nomli hajviy maqolasida ajoyib tarzda namoyish etgan. Faqatgina bir nechta benchmark ma'lumotlarida o'qitish orqali, uning bir million parametrli modeli deyarli mukammal natijalarga erisha oldi va bu benchmarklarning barchasida o'zidan ancha katta modellardan ustun keldi.
+
+#### Ma'lumotlarning ifloslanishi qanday yuz beradi
+
+Garchi ayrimlar chalg'ituvchi darajada yuqori ballarga erishish uchun benchmark ma'lumotlarida ataylab o'qitishsa-da, aksariyat ma'lumotlarning ifloslanishi bexosdan yuz beradi. Bugungi kunda ko'plab modellar internetdan yig'ilgan (_scraped_) ma'lumotlar asosida o'qitiladi va bu ma'lumot yig'ish jarayoni ommaga ochiq benchmarklardan tasodifan ma'lumotlarni tortib olishi mumkin. Modelni o'qitishdan oldin e'lon qilingan benchmark ma'lumotlari, katta ehtimol bilan, modelning o'qitish ma'lumotlari tarkibiga kirib qolgan bo'ladi.[^27] Mavjud benchmarklarning bunchalik tez o'z ahamiyatini yo'qotishining va model ishlab chiquvchilarining o'z yangi modellarini baholash uchun yangi benchmarklar yaratish zaruratini his qilishlarining sabablaridan biri ham shudir.
+
+Ma'lumotlarning ifloslanishi bilvosita ham yuz berishi mumkin, masalan, baholash va o'qitish ma'lumotlari bir xil manbadan olinganda. Masalan, siz modelning matematik qobiliyatlarini yaxshilash uchun o'qitish ma'lumotlariga matematika darsliklarini kiritishingiz mumkin, boshqa birov esa modelning qobiliyatlarini baholash uchun benchmark yaratishda aynan o'sha darsliklardagi savollardan foydalangan bo'lishi mumkin.
+
+Ma'lumotlarning ifloslanishi yaxshi niyatlarda ataylab ham amalga oshirilishi mumkin. Aytaylik, siz foydalanuvchilaringiz uchun imkon qadar eng yaxshi modelni yaratmoqchisiz. Dastlab, siz modelning o'qitish ma'lumotlaridan benchmark ma'lumotlarini chiqarib tashlaysiz va shu benchmarklar asosida eng yaxshi modelni tanlab olasiz. Biroq, yuqori sifatli benchmark ma'lumotlari modelning samaradorligini oshirishi mumkinligi sababli, siz tanlab olingan eng yaxshi modelingizni foydalanuvchilarga taqdim etishdan oldin uni benchmark ma'lumotlarida o'qitishni davom ettirasiz. Natijada, taqdim etilgan model "ifloslangan" bo'ladi va foydalanuvchilaringiz uni ifloslangan benchmarklarda baholay olmaydilar, lekin bu baribir to'g'ri qaror bo'lishi mumkin.
+
+#### Ma'lumotlarning ifloslanishi bilan ishlash
+
+Ma'lumotlarning ifloslanishining keng tarqalganligi baholash benchmarklarining ishonchliligiga jiddiy putur yetkazadi. Modelning advokatlik imtihonlarida yuqori natija ko'rsatishi uning yuridik maslahat berishga usta ekanligini anglatmaydi. Buning sababi shunchaki ushbu modelning ko'plab advokatlik imtihoni savollarida o'qitilgani bo'lishi mumkin.
+
+Ma'lumotlarning ifloslanishi muammosini hal qilish uchun avval ifloslanishni aniqlash, so'ngra esa ma'lumotlaringizni tozalash kerak. Ifloslanishni _n-gram overlapping_ va _perplexity_ kabi evristik usullar yordamida aniqlash mumkin:
+
+-   **_N-gram overlapping_** (ketma-ket kelgan n-ta so'z yoki belgilardan iborat qismlarning mos tushishi):
+    Masalan, agar baholash namunasidagi 13 ta tokendan iborat ketma-ketlik o'qitish ma'lumotlarida ham mavjud bo'lsa, model bu baholash namunasini o'qitish paytida ko'rgan bo'lishi ehtimoli yuqori. Bunday baholash namunasi ifloslangan deb hisoblanadi.
+
+-   **_Perplexity_** (model uchun matnni bashorat qilish qanchalik kutilmagan yoki qiyin ekanligini o'lchovchi ko'rsatkich):
+    Eslatib o'tamiz, _perplexity_ model uchun berilgan matnni bashorat qilish qanchalik qiyin ekanligini o'lchaydi. Agar modelning baholash ma'lumotlaridagi _perplexity_'si g'ayrioddiy darajada past bo'lsa, ya'ni model matnni osonlik bilan bashorat qila olsa, model bu ma'lumotni avval o'qitish paytida ko'rgan bo'lishi mumkin.
+
+_N-gram overlapping_ yondashuvi aniqroq, lekin uni ishga tushirish ko'p vaqt talab qiladigan va qimmat bo'lishi mumkin, chunki siz har bir benchmark namunasini butun o'qitish ma'lumotlari bilan solishtirib chiqishingiz kerak. Shuningdek, o'qitish ma'lumotlaridan foydalanish imkoni bo'lmasa, bu usulni qo'llab bo'lmaydi. _Perplexity_ yondashuvi esa unchalik aniq emas, lekin ancha kam resurs talab qiladi.
+
+Ilgari _ML_ darsliklarida baholash namunalarini o'qitish ma'lumotlaridan olib tashlash tavsiya etilardi. Maqsad — turli modellarni solishtirish imkoniyatiga ega bo'lish uchun baholash benchmarklarini standartlashtirilgan holda saqlash edi. Biroq, fundamental modellar davrida aksariyat odamlar o'qitish ma'lumotlarini nazorat qila olmaydi. O'qitish ma'lumotlarini nazorat qila olgan taqdirimizda ham, barcha benchmark ma'lumotlarini olib tashlashni xohlamasligimiz mumkin, chunki yuqori sifatli benchmark ma'lumotlari modelning umumiy samaradorligini oshirishga yordam beradi. Bundan tashqari, modellar o'qitilganidan keyin yaratiladigan benchmarklar doim bo'ladi, shuning uchun ifloslangan baholash namunalari ham doim mavjud bo'ladi.
+
+Model ishlab chiquvchilari orasida keng tarqalgan amaliyot — o'z modellarini o'qitishdan avval, ular uchun muhim bo'lgan benchmarklarni o'qitish ma'lumotlaridan olib tashlashdir. Ideal holda, modelning biror benchmarkdagi samaradorligi haqida hisobot berilganda, ushbu benchmark ma'lumotlarining qancha foizi o'qitish ma'lumotlari tarkibida borligini hamda modelning ham umumiy benchmarkda, ham uning faqat toza (ifloslanmagan) namunalaridagi natijalarini ko'rsatib o'tish maqsadga muvofiqdir. Afsuski, ifloslanishni aniqlash va bartaraf etish zahmat talab qilgani bois, ko'pchilik bu bosqichni shunchaki o'tkazib yuborishni ma'qul ko'radi.
+
+"OpenAI" `GPT-3`'ning keng tarqalgan benchmarklar bilan ifloslanishini tahlil qilar ekan, o'qitish ma'lumotlari tarkibida kamida 40% qismi mavjud bo'lgan 13 ta benchmarkni aniqladi ([Brown va boshq., 2020](https://arxiv.org/abs/2005.14165)). Faqat toza namunalar yordamida baholash va butun benchmark yordamida baholash o'rtasidagi samaradorlikning nisbiy farqi 4-10-rasmda ko'rsatilgan.
+
+![`GPT-3` samaradorligidagi nisbiy farq: faqat toza namunalar bo'yicha baholash natijalarining butun benchmark bo'yicha baholash natijalariga nisbati.](/ai-engineering/4-chapter/4.10-figure.png)
+
+<div className='text-center text-sm italic'>`GPT-3` samaradorligidagi nisbiy farq: faqat toza namunalar bo'yicha baholash natijalarining butun benchmark bo'yicha baholash natijalariga nisbati.</div>
+
+Ma'lumotlarning ifloslanishiga qarshi kurashish maqsadida, "Hugging Face" kabi reyting jadvallarini yurituvchilar [keskin farq qiluvchi natijalarni (_outliers_)](https://www.interconnects.ai/p/how-the-open-source-llm-ecosystem) aniqlash uchun modellarning muayyan benchmarkdagi samaradorligining standart og'ishlarini grafikda ko'rsatadilar. Ommaviy benchmarklar o'z ma'lumotlarining bir qismini maxfiy saqlashi va model ishlab chiquvchilariga modellarni ushbu maxfiy, nazorat uchun ajratilgan ma'lumotlar (_private hold-out data_) asosida avtomatik baholash imkonini beradigan vositani taqdim etishi lozim.
+
+Ommaviy benchmarklar yomon modellarni saralab tashlashga yordam beradi, lekin ular sizning ilovangiz uchun eng yaxshi modellarni topishga yordam bermaydi. Ommaviy benchmarklar yordamida nomzodlarni istiqbolli modellar to'plamigacha qisqartirgandan so'ng, ilovangiz uchun eng munosibini topish maqsadida o'zingizning shaxsiy baholash jarayonlar zanjiringizni ishga tushirishingiz kerak bo'ladi. Shaxsiy baholash jarayonlar zanjirini qanday loyihalash keyingi mavzumiz bo'ladi.
+
 
 ### Izohlar
 
