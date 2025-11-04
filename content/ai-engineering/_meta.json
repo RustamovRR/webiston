@@ -104,6 +104,10 @@
       "model_selection": {
         "title": "Model tanlash",
         "path": "4-evaluate-ai-systems/model-selection/page"
+      },
+      "design-your-pipeline-evaluation": {
+        "title": "Baholash jarayonlar zanjirini loyihalash",
+        "path": "4-evaluate-ai-systems/design-your-pipeline-evaluation/page"
       }
     }
   }

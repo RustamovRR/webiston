@@ -339,7 +339,7 @@ Model ishlab chiquvchilari orasida keng tarqalgan amaliyot — o'z modellarini o
 
 Ma'lumotlarning ifloslanishiga qarshi kurashish maqsadida, "Hugging Face" kabi reyting jadvallarini yurituvchilar [keskin farq qiluvchi natijalarni (_outliers_)](https://www.interconnects.ai/p/how-the-open-source-llm-ecosystem) aniqlash uchun modellarning muayyan benchmarkdagi samaradorligining standart og'ishlarini grafikda ko'rsatadilar. Ommaviy benchmarklar o'z ma'lumotlarining bir qismini maxfiy saqlashi va model ishlab chiquvchilariga modellarni ushbu maxfiy, nazorat uchun ajratilgan ma'lumotlar (_private hold-out data_) asosida avtomatik baholash imkonini beradigan vositani taqdim etishi lozim.
 
-Ommaviy benchmarklar yomon modellarni saralab tashlashga yordam beradi, lekin ular sizning ilovangiz uchun eng yaxshi modellarni topishga yordam bermaydi. Ommaviy benchmarklar yordamida nomzodlarni istiqbolli modellar to'plamigacha qisqartirgandan so'ng, ilovangiz uchun eng munosibini topish maqsadida o'zingizning shaxsiy baholash jarayonlar zanjiringizni ishga tushirishingiz kerak bo'ladi. Shaxsiy baholash jarayonlar zanjirini qanday loyihalash keyingi mavzumiz bo'ladi.
+Ommaviy benchmarklar yomon modellarni saralab tashlashga yordam beradi, lekin ular sizning ilovangiz uchun eng yaxshi modellarni topishga yordam bermaydi. Ommaviy benchmarklar yordamida nomzodlarni istiqbolli modellar to'plamigacha qisqartirgandan so'ng, ilovangiz uchun eng munosibini topish maqsadida o'zingizning shaxsiy baholash jarayonlar zanjiringizni (_evaluation pipeline_) ishga tushirishingiz kerak bo'ladi. Shaxsiy baholash jarayonlar zanjirini qanday loyihalash keyingi mavzumiz bo'ladi.
 
 
 ### Izohlar
@@ -380,7 +380,3 @@ Ommaviy benchmarklar yomon modellarni saralab tashlashga yordam beradi, lekin ul
 [^26]: `HELM` maqolasida umumiy xarajat tijorat _API_'lari uchun 38 000 dollar va ochiq modellar uchun 19 500 _GPU_ soati ekanligi xabar qilingan. Agar bir soatlik _GPU_ narxi 2.15 dan 3.18 dollargacha bo'lsa, umumiy xarajat 80 000–100 000 dollarni tashkil etadi.
 
 [^27]: Bir do'stim hazillashib aytdi: "Benchmark ommaga e'lon qilinishi bilan o'z foydasini yo'qotadi."
-
-[^28]: Buning sababi, 10 ning kvadrat ildizi taxminan 3.3 ga teng.
-
-[^29]: Masalan, agar tarjima bo'yicha benchmark va matematika bo'yicha benchmark o'rtasida hech qanday korrelyatsiya bo'lmasa, siz modelning tarjima qobiliyatini yaxshilash uning matematika qobiliyatiga hech qanday ta'sir qilmaydi, deb xulosa qilishingiz mumkin.
