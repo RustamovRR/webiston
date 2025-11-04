@@ -101,7 +101,7 @@
         "title": "Baholash mezonlari",
         "path": "4-evaluate-ai-systems/evaluation-criteria/page"
       },
-      "model_selection": {
+      "model-selection": {
         "title": "Model tanlash",
         "path": "4-evaluate-ai-systems/model-selection/page"
       },
@@ -110,5 +110,10 @@
         "path": "4-evaluate-ai-systems/design-your-pipeline-evaluation/page"
       }
     }
+  },
+  "5-prompt-engineering": {
+    "title": "5. Prompt muhandisligi",
+    "path": "5-prompt-engineering/page",
+    "hasIndex": true
   }
 }
