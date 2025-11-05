@@ -114,6 +114,12 @@
   "5-prompt-engineering": {
     "title": "5. Prompt muhandisligi",
     "path": "5-prompt-engineering/page",
-    "hasIndex": true
+    "hasIndex": true,
+    "children": {
+      "introduction-to-prompting": {
+        "title": "Promptlar bilan tanishuv",
+        "path": "5-prompt-engineering/introduction-to-prompting/page"
+      }
+    }
   }
 }
