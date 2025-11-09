@@ -119,6 +119,10 @@
       "introduction-to-prompting": {
         "title": "Promptlar bilan tanishuv",
         "path": "5-prompt-engineering/introduction-to-prompting/page"
+      },
+      "prompt-engineering-best-practises": {
+        "title": "Prompt muhandisligining eng yaxshi amaliyotlari",
+        "path": "5-prompt-engineering/prompt-engineering-best-practises/page"
       }
     }
   }
