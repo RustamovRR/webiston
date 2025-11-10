@@ -1,0 +1,18 @@
+# Himoyaviy prompt muhandisligi
+
+Ilovangiz ommaga taqdim etilishi bilan undan ham oddiy foydalanuvchilar, ham uni ekspluatatsiya qilishga (suiiste'mol qilishga) urinishi mumkin bo'lgan yomon niyatli hujumchilar foydalanishi mumkin. Ilova ishlab chiquvchisi sifatida siz himoyalanishingiz kerak bo'lgan prompt hujumlarining uchta asosiy turi mavjud:
+
+1.  **Promptni "sug'urib olish" (_Prompt extraction_):** Ilovani nusxalash yoki undan o'z manfaati yo'lida foydalanish maqsadida ilovaning promptini, jumladan, tizim promptini ham qo'lga kiritish.
+2.  **"Qobiqni buzib o'tish" (_Jailbreaking_) va prompt inyeksiyasi (_prompt injection_):** Modelni yomon ishlarni qilishga majburlash.
+3.  **Ma'lumotni "sug'urib olish" (_Information extraction_):** Modelni o'zining o'qitish ma'lumotlarini yoki kontekstida ishlatilgan axborotni fosh qilishga majburlash.
+
+Prompt hujumlari ilovalar uchun bir nechta xavf-xatarlarni keltirib chiqaradi; ularning ba'zilari boshqalariga qaraganda ancha vayronkorroqdir. Quyida ulardan bir nechtasi keltirilgan:[^12]
+
+-   **Masofadan kod yoki vositani ishga tushirish:** Kuchli vositalardan foydalanish imkoniga ega bo'lgan ilovalarda yomon niyatli shaxslar ruxsat etilmagan kod yoki vositani ishga tushirib yuborishi mumkin. Tasavvur qiling, kimdir tizimingizni barcha foydalanuvchilaringizning maxfiy ma'lumotlarini fosh qiladigan _SQL_ so'rovini bajarishga yoki mijozlaringizga ruxsatsiz elektron xatlar yuborishga majbur qilish yo'lini topdi. Yana bir misol, aytaylik, siz ilmiy tajriba o'tkazishda yordam berish uchun SI'dan foydalanasiz, bu esa tajriba kodini yaratish va o'sha kodni kompyuteringizda ishga tushirishni o'z ichiga oladi. Hujumchi tizimingizni buzish uchun modelni zararli kod yaratishga majburlash yo'llarini topishi mumkin.[^13]
+-   **Ma'lumotlarning sizib chiqishi:** Yomon niyatli shaxslar tizimingiz va foydalanuvchilaringiz haqidagi shaxsiy ma'lumotlarni "sug'urib olishi" mumkin.
+-   **Ijtimoiy zararlar:** SI modellar hujumchilarga qurol yasash, soliqlardan bo'yin tovlash va shaxsiy ma'lumotlarni o'g'irlash kabi xavfli yoki jinoiy faoliyatlar haqida bilim va qo'llanmalar olishga yordam beradi.
+-   **Dezinformatsiya:** Hujumchilar o'z maqsadlarini qo'llab-quvvatlash uchun modellarni dezinformatsiya (yolg'on axborot) chiqarishga manipulyatsiya qilishlari mumkin.
+-   **Xizmatning uzilishi va buzilishi:** Bunga kirish huquqiga ega bo'lmasligi kerak bo'lgan foydalanuvchiga kirish huquqini berish, yomon ishlarga yuqori baho qo'yish yoki tasdiqlanishi kerak bo'lgan kredit arizasini rad etish kiradi. Modelga barcha savollarga javob berishdan bosh tortishni buyuradigan zararli ko'rsatma xizmatning uzilishiga olib kelishi mumkin.
+-   **Brend obro'siga putur yetishi:** Logotipingiz yonida siyosiy jihatdan noto'g'ri va toksik bayonotlarning paydo bo'lishi PR inqiroziga olib kelishi mumkin, masalan, Google SI qidiruvi foydalanuvchilarni [tosh yeyishga](https://www.cnet.com/tech/services-and-software/glue-in-pizza-eat-rocks-googles-ai-search-is-mocked-for-bizarre-answers/) undagan (2024) yoki Microsoft'ning Tay nomli chatboti [irqchilikka oid fikrlarni](https://spectrum.ieee.org/in-2016-microsofts-racist-chatbot-revealed-the-dangers-of-online-conversation) aytgan (2016) holatlardagi kabi. Garchi odamlar ilovangizni haqoratomuz qilish sizning maqsadingiz bo'lmaganini tushunishsa-da, ular baribir bu xatolarni sizning xavfsizlikka beparvoligingiz yoki shunchaki layoqatsizligingiz bilan bog'lashlari mumkin.
+
+SI qobiliyatlari ortib borgani sari, bu xavf-xatarlar ham tobora jiddiy tus olmoqda. Keling, bu xatarlar har bir prompt hujumi turida qanday yuzaga kelishi mumkinligini muhokama qilamiz.
