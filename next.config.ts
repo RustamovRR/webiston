@@ -14,7 +14,7 @@ const withMDX = createMDX({
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-const nextConfig:NextConfig = {
+const nextConfig: NextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   transpilePackages: ['next-mdx-remote'],
@@ -32,7 +32,31 @@ const nextConfig:NextConfig = {
       },
     ]
   },
- 
+  webpack: (config, { isServer }) => {
+    // Cesium configuration
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+
+    // Copy Cesium static files
+    config.module.rules.push({
+      test: /\.js$/,
+      include: /node_modules\/cesium/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
+    })
+
+    return config
+  },
 }
 
 export default withMDX(withNextIntl(nextConfig))

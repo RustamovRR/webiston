@@ -35,3 +35,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Cesium 
+static files
+/public/cesium
+/public/historical-basemaps
