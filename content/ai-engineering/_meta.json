@@ -127,6 +127,10 @@
       "defensive-prompt-engineering": {
         "title": "Himoyaviy prompt muhandisligi",
         "path": "5-prompt-engineering/defensive-prompt-engineering/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "5-prompt-engineering/summary/page"
       }
     }
   }

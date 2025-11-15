@@ -155,3 +155,47 @@ Maqolada tasodifiy yaratilgan belgilar ketma-ketligidan foydalanilgan, lekin siz
 `RULER` ([Hsieh va boshq., 2024](https://arxiv.org/abs/2404.06654)) kabi shunga o'xshash sinovlar, shuningdek, modelning uzun promptlarni qayta ishlashda qanchalik usta ekanligini baholash uchun ham ishlatilishi mumkin. Agar kontekst uzaygani sari modelning samaradorligi tobora yomonlashib borsa, unda siz promptlaringizni qisqartirish yo'lini topishingiz kerak bo'ladi.
 
 Tizim prompti, foydalanuvchi prompti, misollar va kontekst — bular promptning asosiy tarkibiy qismlaridir. Endi biz prompt nima ekanligi va prompting nima uchun ishlashini muhokama qilib bo'lganimizdan so'ng, keling, samarali promptlar yozishning eng yaxshi amaliyotlarini ko'rib chiqamiz.
+
+#### Izohlar
+
+[^2]: 2023-yil oxirida Stanford o'zining `HELM Lite` benchmarkidan chidamlilik metrikasini olib tashladi.
+
+[^3]: Odatda, kutilgan chat andozasidan chetga chiqishlar modelning ishlash samaradorligi yomonlashishiga olib keladi. Biroq, kamdan-kam hollarda bo'lsa-da, bu holat modelning yaxshiroq ishlashiga ham sabab bo'lishi mumkin, bu haqda Reddit'dagi bir muhokamada aytib o'tilgan.
+
+[^4]: Agar GitHub va Reddit'da yetarlicha vaqt o'tkazsangiz, chat andozalarining mos kelmasligi bilan bog'liq ko'plab muammolarga duch kelasiz, masalan, mana bu holat kabi. Bir safar _finetuning_ bilan bog'liq muammoni tuzatishga bir kunimni sarflaganman va yakunda anglab yetgandimki, bunga men ishlatgan kutubxona modelning yangi versiyasi uchun chat andozasini yangilamagani sabab bo'lgan ekan.
+
+[^5]: Foydalanuvchilar andoza bilan bog'liq xatolarga yo'l qo'ymasligi uchun ko'plab model _API_'lari shunday loyihalashtirilganki, foydalanuvchilarning o'zlari maxsus andoza tokenlarini yozishiga hojat qolmaydi.
+
+[^6]: Garchi Google 2024-yil fevral oyida 10 million tokenlik kontekst uzunligi bilan tajribalar o'tkazayotganini e'lon qilgan bo'lsa-da, bu raqam hali ommaga taqdim etilmagani uchun uni jadvalga kiritmadim.
+
+[^7]: Shreya Shankar shifokor qabuliga borish uchun o'tkazgan amaliy NIAH sinovi haqida ajoyib maqola yozgan (2024).
+
+[^8]: Eslatib o'tamiz, 2-bobda muhokama qilinganidek, til modelining o'zi foydalanuvchi tomonidan kiritilgan ma'lumot va o'zining generatsiyasi o'rtasidagi farqni ajrata olmaydi.
+
+[^9]: Bu parallel qayta ishlash misoli Anthropic'ning prompt muhandisligi qo'llanmasidan olingan.
+
+[^10]: Modelning promptlar yozish qobiliyati, ehtimol, uning internetda ulashilgan promptlar asosida o'qitilgani tufayli kuchaygan.
+
+[^11]: Hamel Husain bu falsafani o'zining “Show Me the Prompt” (14-fevral, 2024-yil) nomli blog postida ajoyib tarzda tizimlashtirgan.
+
+[^12]: Brend obro'siga putur yetkazishi va dezinformatsiyaga olib kelishi mumkin bo'lgan javoblar 4-bobda qisqacha muhokama qilingan.
+
+[^13]: Shunday masofadan kod ijro etish xavflaridan biri 2023-yilda LangChain'da aniqlangan. GitHub'dagi 814 va 1026-sonli masalalarga qarang.
+
+[^14]: Mashhur promptlar ro'yxatlari qatoriga `f/awesome-chatgpt-prompts` (inglizcha promptlar) va `PlexPt/awesome-chatgpt-prompts-zh` (xitoycha promptlar) kiradi. Yangi modellar chiqishi bilan ulardagi promptlar qancha vaqt o'z dolzarbligini saqlab qolishi haqida hech qanday tasavvurga ega emasman.
+
+[^15]: Balki xususiy promptlarni xuddi kitob kabi patentlash mumkindir, lekin biror pretsedent bo'lmaguncha, bu haqda biror nima deyish qiyin.
+
+[^16]: Men modellarning imloviy xatolarni tushunish qobiliyatini sinab ko'rdim va `ChatGPT` ham, Claude ham mening so'rovlarimdagi “el qeada” iborasini tushuna olganidan hayratda qoldim.
+
+[^17]: Iltimos, mendan UwU nimaligini tushuntirishni so'ramang.
+
+[^18]: _SQL_ jadvallarini tozalash haqida gapirganda, `xkcd`'ning mana bu klassik komiksini eslamaslikning iloji yo'q: “Bir onaning "qahramonliklari"”.
+
+[^19]: Modeldan biror matnni takrorlashni so'rash — takrorlanuvchi token hujumlarining bir turidir. Yana bir turi — biror matnni ko'p marta takrorlaydigan promptdan foydalanish. Dropbox'da bu hujum turi haqida ajoyib blog posti bor: “Bye Bye Bye...: ChatGPT modellariga qilingan takrorlanuvchi token hujumlarining evolyutsiyasi” (Breitenbach va Wood, 2024).
+
+[^20]: “(Ishlab chiqarishdagi) til modellaridan o'qitish ma'lumotlarini keng miqyosda sug'urib olish” (Nasr va boshq., 2023) maqolasida hujumni qo'zg'atuvchi promptlarni qo'lda yaratish o'rniga, ular boshlang'ich ma'lumotlar korpusidan (Vikipediyadan olingan 100 MB ma'lumot) boshlab, shu korpusdan tasodifiy promptlarni tanlab olishgan. Ular "sug'urib olish"ni "agar model o'qitish to'plamida so'zma-so'z mavjud bo'lgan kamida 50 token uzunlikdagi qism-satrni o'z ichiga olgan matnni chiqarsa" muvaffaqiyatli deb hisoblashgan.
+
+[^21]: Buning sababi, ehtimol, kattaroq modellar ma'lumotlardan yaxshiroq o'rganishidir.
+
+[^22]: Mas'uliyati yuqori bo'lgan ko'plab sohalar hali ham internetni to'liq qabul qilmaganini hisobga olsak, ularning SI'ni qabul qilishiga hali ancha vaqt bor.
