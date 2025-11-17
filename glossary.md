@@ -90,3 +90,8 @@ out of the box - tayyor holatda
 accuracy - to'g'rilik
 precision - puxtalik
 sentiment analysis - hissiyot tahlili
+rag (Retrieval-Augmented Generation) - qidiruv bilan boyitilgan generatsiya
+machine learning - mashinaviy ta'lim
+deployment - joriy etish
+use cases - ishlatilish senariylari
+host - o'zingiz ishlatish, o'z serverlarida ishga tushirish
