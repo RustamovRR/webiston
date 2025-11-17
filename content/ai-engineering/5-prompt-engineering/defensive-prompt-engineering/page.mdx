@@ -262,3 +262,25 @@ Murakkab algoritmlar esa faqat joriy kiritilgan ma'lumotni emas, balki butun suh
 Shuningdek, ham kirish, ham chiqish ma'lumotlari uchun maxsus nazorat vositalarini (_guardrails_) o'rnatish lozim. Kirish ma'lumotlari uchun bloklanadigan kalit so'zlar ro'yxatini tuzish, kiritilayotgan ma'lumotlarni ma'lum prompt hujumi andozalari bilan solishtirish yoki shubhali so'rovlarni aniqlaydigan modeldan foydalanish mumkin. Biroq, zararsiz ko'ringan kirish ma'lumotlari zararli natijalarga olib kelishi mumkin, shuning uchun chiqish ma'lumotlari uchun ham nazorat vositalariga ega bo'lish muhim. Masalan, nazorat vositasi javobda _PII_ (shaxsni identifikatsiya qiluvchi ma'lumotlar) yoki toksik ma'lumotlar bor-yo'qligini tekshirishi mumkin. Nazorat vositalari haqida 10-bobda batafsilroq so'z yuritiladi.
 
 Yomon niyatli shaxslarni nafaqat ularning alohida kiritgan ma'lumotlari va olgan javoblariga qarab, balki ularning tizimdan foydalanish uslubiga qarab ham aniqlash mumkin. Masalan, agar biror foydalanuvchi qisqa vaqt ichida bir-biriga o'xshash ko'plab so'rovlar yuborayotgan bo'lsa, bu foydalanuvchi xavfsizlik filtrlarini chetlab o'tadigan promptni izlayotgan bo'lishi mumkin.
+
+#### Izohlar
+
+[^12]: Brend obro'siga putur yetkazishi va dezinformatsiyaga olib kelishi mumkin bo'lgan javoblar [4-bobda](/books/ai-engineering/4-evaluate-ai-systems) qisqacha muhokama qilingan.
+
+[^13]: Shunday masofadan kod ijro etish xavflaridan biri 2023-yilda LangChain'da aniqlangan. GitHub'dagi [814](https://github.com/langchain-ai/langchain/issues/814) va [1026](https://github.com/langchain-ai/langchain/issues/1026)-sonli masalalarga qarang.
+
+[^14]: Mashhur promptlar ro'yxatlari qatoriga [`f/awesome-chatgpt-prompts`](https://github.com/f/awesome-chatgpt-prompts) (inglizcha promptlar) va [`PlexPt/awesome-chatgpt-prompts-zh`](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) (xitoycha promptlar) kiradi. Yangi modellar chiqishi bilan ulardagi promptlar qancha vaqt o'z dolzarbligini saqlab qolishi haqida hech qanday tasavvurga ega emasman.
+
+[^15]: Balki xususiy promptlarni xuddi kitob kabi patentlash mumkindir, lekin bu borada sud amaliyotida biror misol bo'lmaguncha, bu haqda biror nima deyish qiyin.
+
+[^16]: Men modellarning imloviy xatolarni tushunish qobiliyatini sinab ko'rdim va `ChatGPT` ham, `Claude` ham mening so'rovlarimdagi “el qeada” iborasini tushuna olganidan hayratda qoldim.
+
+[^17]: Iltimos, mendan UwU nimaligini tushuntirishni so'ramang.
+
+[^18]: _SQL_ jadvallarini tozalash haqida gapirganda, `xkcd`'ning mana bu klassik komiksini eslamaslikning iloji yo'q: [“Bir onaning "qahramonliklari"”](https://xkcd.com/327/).
+
+[^19]: Modeldan biror matnni takrorlashni so'rash — takrorlanuvchi token hujumlarining bir turidir. Yana bir turi — biror matnni ko'p marta takrorlaydigan promptdan foydalanish. Dropbox'da bu hujum turi haqida ajoyib blog posti bor: “Bye Bye Bye...: ChatGPT modellariga qilingan takrorlanuvchi token hujumlarining evolyutsiyasi” ([Breitenbach va Wood, 2024](https://dropbox.tech/machine-learning/bye-bye-bye-evolution-of-repeated-token-attacks-on-chatgpt-models)).
+
+[^20]: “(Ishlab chiqarishdagi) til modellaridan o'qitish ma'lumotlarini keng miqyosda sug'urib olish” (Nasr va boshq., 2023) maqolasida hujumni qo'zg'atuvchi promptlarni qo'lda yaratish o'rniga, ular boshlang'ich ma'lumotlar korpusidan (Vikipediyadan olingan 100 MB ma'lumot) boshlab, shu korpusdan tasodifiy promptlarni tanlab olishgan. Ular "sug'urib olish"ni "agar model o'qitish to'plamida so'zma-so'z mavjud bo'lgan kamida 50 token uzunlikdagi qism-satrni o'z ichiga olgan matnni chiqarsa" muvaffaqiyatli deb hisoblashgan.
+
+[^21]: Buning sababi, ehtimol, kattaroq modellar ma'lumotlardan yaxshiroq o'rganishidir.
