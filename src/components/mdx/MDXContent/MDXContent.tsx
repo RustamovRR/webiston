@@ -165,7 +165,7 @@ const components = {
     if (isVideoLink) {
       return <VideoEmbed url={src} title={alt} />
     }
-    return <img className="m-0 mt-8 w-full rounded-md shadow-lg" src={src} alt={alt || ''} {...props} />
+    return <img className="m-0 mt-8 mb-4 w-full rounded-md shadow-lg" src={src} alt={alt || ''} {...props} />
   },
   // Inline code with badge style
   code: ({ className, children, ...props }: any) => {
@@ -229,7 +229,7 @@ const components = {
   ),
 
   table: (props: any) => (
-    <div className="mb-0 w-full overflow-x-auto pb-0">
+    <div className="-mb-4 w-full overflow-x-auto">
       <table {...props} className="min-w-full" />
     </div>
   ),

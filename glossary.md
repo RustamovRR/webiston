@@ -75,8 +75,8 @@ search engine crawlers - qidiruv tizimi botlari
 development - ishlab chiqish
 production - foydalanish
 stream - uzluksiz uzatish, oqim
-user experience - foydalanuvchi bilan ishlash qulayligi
-developer experience - dasturchi bilan ishlash qulayligi
+user experience - foydalanuvchi tajribasi
+developer experience - dasturchi tajribasi
 resumability - davom ettiruvchanlik qobiliyati
 serialization - seriyalashtirish
 deserialization - deseriyalashtirish
