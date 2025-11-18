@@ -95,3 +95,5 @@ machine learning - mashinaviy ta'lim
 deployment - joriy etish
 use cases - ishlatilish senariylari
 host - o'zingiz ishlatish, o'z serverlarida ishga tushirish
+pre-training - dastlabki o'qitish
+post-training - qo'shimcha o'qitish 
