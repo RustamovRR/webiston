@@ -228,11 +228,17 @@ const components = {
     />
   ),
 
-  table: (props: any) => <table {...props} className="w-full" />,
+  table: (props: any) => (
+    <div className="my-6 w-full overflow-x-auto">
+      <table {...props} className="min-w-full" />
+    </div>
+  ),
 
   th: (props: any) => (
-    <th {...props} className="border border-[#ddd] p-3 text-left text-sm font-semibold tracking-wide" />
+    <th {...props} className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide" />
   ),
+
+  td: (props: any) => <td {...props} className="border border-[#ddd] py-3 text-sm" />,
 
   blockquote: (props: any) => <blockquote {...props} className="[&_p]:font-normal" />,
 }
