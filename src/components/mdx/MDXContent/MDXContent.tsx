@@ -238,7 +238,11 @@ const components = {
     <th {...props} className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide" />
   ),
 
-  td: (props: any) => <td {...props} className="border border-[#ddd] py-3 text-sm" />,
+  td: (props: any) => (
+    <td {...props} className="border border-[#ddd] px-3 py-3 text-sm">
+      <LinkifyChildren>{props.children}</LinkifyChildren>
+    </td>
+  ),
 
   blockquote: (props: any) => <blockquote {...props} className="[&_p]:font-normal" />,
 }

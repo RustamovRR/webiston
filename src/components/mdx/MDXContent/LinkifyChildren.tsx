@@ -10,9 +10,9 @@ const ExternalLink = ({ href, children }: { href: string; children: React.ReactN
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group inline-flex items-center font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400 [&:has(code)]:!no-underline [&>code]:!text-sky-500 [&>span>code]:!text-sky-500"
+      className="group inline-flex items-center !font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400 [&:has(code)]:!no-underline [&>code]:!text-sky-500 [&>span>code]:!text-sky-500"
     >
-      <span>{children}</span>
+      <span className="!font-normal">{children}</span>
       <ArrowUpRightIcon
         width={14}
         height={14}
@@ -40,7 +40,7 @@ const LinkifyChildren = ({ children }: { children: React.ReactNode }) => {
       return (
         <Link
           href={href || '#'}
-          className="font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
+          className="!font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
           {...linkProps}
         >
           {linkChildren}
