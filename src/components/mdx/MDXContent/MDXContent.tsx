@@ -229,7 +229,7 @@ const components = {
   ),
 
   table: (props: any) => (
-    <div className="my-6 w-full overflow-x-auto">
+    <div className="mb-0 w-full overflow-x-auto pb-0">
       <table {...props} className="min-w-full" />
     </div>
   ),

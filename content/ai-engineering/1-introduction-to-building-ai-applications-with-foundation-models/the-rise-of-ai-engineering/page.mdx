@@ -103,19 +103,19 @@ O'z-o'zini nazorat qilish ma'lumotlarni belgilashdagi bu to'siqni yengib o'tishg
 
 | Kirish (kontekst) | Chiqish (keyingi token) |
 | :--- | :--- |
-| `<BOS>` | I |
-| `<BOS>`, I | love |
-| `<BOS>`, I, love | street |
-| `<BOS>`, I, love, street | food |
-| `<BOS>`, I, love, street, food | . |
-| `<BOS>`, I, love, street, food, . | `<EOS>` |
+| `<BOS>` | `I` |
+| `<BOS>, I` | `love` |
+| `<BOS>, I, love` | `street` |
+| `<BOS>, I, love, street` | `food` |
+| `<BOS>, I, love, street, food` | `.` |
+| `<BOS>, I, love, street, food, .` | `<EOS>` |
 
 <div className='text-center text-sm italic'>1-1 jadval. _"I love street food."_ jumlasidan til modellashtirish uchun olingan o'qitish namunalari.</div>
 
 1-1-jadvalda `<BOS>` va `<EOS>` ketma-ketlikning boshlanishi va tugashini bildiradi. Bu belgilar til modelining bir nechta ketma-ketliklar bilan ishlashi uchun zarur. Har bir belgi odatda model tomonidan bitta maxsus token sifatida qabul qilinadi. Ketma-ketlikning tugash belgisi ayniqsa muhim, chunki u til modellariga o'z javoblarini qachon tugatish kerakligini bilishga yordam beradi.[^5]
 
 <Callout>
-### Eslatma
+#### Eslatma
 
 O'z-o'zini nazorat qilish (_self-supervision_) nazoratsiz o'qitishdan (_unsupervision_) farq qiladi. O'z-o'zini nazorat qilishda belgilar kiruvchi ma'lumotlarning o'zidan chiqarib olinsa, nazoratsiz o'qitishda esa belgilarga umuman hojat yo'q.
 </Callout>
@@ -144,25 +144,25 @@ Birdan ortiq ma'lumot modalligi bilan ishlay oladigan model **multimodal model**
 
 <div className='text-center text-sm italic'>1-3-rasm. Multimodal model keyingi tokenni ham matn, ham vizual tokenlardan olingan ma'lumotlar asosida generatsiya qila oladi</div>
 
-Til modellari singari, multimodal modellar ham miqyoslash uchun ma'lumotlarga muhtoj. O'z-o'zini nazorat qilish yondashuvi multimodal modellar uchun ham ishlaydi. Masalan, OpenAI o'zining til-tasvir modeli bo'lgan `CLIP`'ni o'qitish uchun o'z-o'zini nazorat qilishning tabiiy til nazorati (`natural language supervision`) deb nomlangan bir turidan foydalangan ([OpenAI, 2021](https://openai.com/index/clip/)). Ular har bir tasvir uchun yorliqlarni mustaqil yaratish o'rniga, internetda birga uchraydigan (tasvir, matn) juftliklarini topdilar. Ular mustaqil belgilash xarajatlarisiz 400 million (tasvir, matn) juftligidan iborat ma'lumotlar to'plamini yarata oldilar, bu esa _ImageNet_'dan 400 baravar kattaroq edi. Bu ma'lumotlar to'plami `CLIP`'ning qo'shimcha o'qitishni talab qilmasdan, bir nechta tasvir tasnifi vazifalariga umumlashtira oladigan birinchi modelga aylanishiga imkon berdi.
+Til modellari singari, multimodal modellar ham miqyoslash uchun ma'lumotlarga muhtoj. O'z-o'zini nazorat qilish yondashuvi multimodal modellar uchun ham ishlaydi. Masalan, OpenAI o'zining til-tasvir modeli bo'lgan `CLIP`'ni o'qitish uchun o'z-o'zini nazorat qilishning tabiiy til nazorati (_natural language supervision_) deb nomlangan bir turidan foydalangan ([OpenAI, 2021](https://openai.com/index/clip/)). Ular har bir tasvir uchun yorliqlarni mustaqil yaratish o'rniga, internetda birga uchraydigan (tasvir, matn) juftliklarini topdilar. Ular mustaqil belgilash xarajatlarisiz 400 million (tasvir, matn) juftligidan iborat ma'lumotlar to'plamini yarata oldilar, bu esa _ImageNet_'dan 400 baravar kattaroq edi. Bu ma'lumotlar to'plami `CLIP`'ning qo'shimcha o'qitishni talab qilmasdan, bir nechta tasvir tasnifi vazifalariga umumlashtira oladigan birinchi modelga aylanishiga imkon berdi.
 
 <Callout>
-### Eslatma
+#### Eslatma
 
 Ushbu kitobda fundamental modellar atamasi ham katta til modellari, ham katta multimodal modellarni anglatadi.
 </Callout>
 
-Shuni ta'kidlash joizki, `CLIP` generativ model emas — u erkin natijalar generatsiya qilishga o'rgatilmagan. `CLIP` — bu ham matnlar, ham tasvirlarning qo'shma embedding'larini hosil qilishga o'rgatilgan embedding modelidir (embedding — bu so'z yoki tasvir kabi murakkab ma'lumotni ma'nosini saqlagan holda ixcham raqamli ko'rinishga, ya'ni vektorga o'tkazish jarayoni). “Embedding'larga kirish” bo'limida embedding'lar batafsil muhokama qilinadi. Hozircha, embedding'larni asl ma'lumotlarning ma'nosini o'zida aks ettirishga harakat qiladigan vektorlar deb tasavvur qilishingiz mumkin. `CLIP` kabi multimodal embedding modellari `Flamingo`, `LLaVA` va `Gemini` (avvalgi `Bard`) singari generativ multimodal modellarning asosini, ya'ni tayanchini tashkil etadi.
+Shuni ta'kidlash joizki, `CLIP` generativ model emas — u erkin natijalar generatsiya qilishga o'rgatilmagan. `CLIP` — bu ham matnlar, ham tasvirlarning qo'shma _embedding_'larini hosil qilishga o'rgatilgan _embedding_ modelidir (_embedding_ — bu so'z yoki tasvir kabi murakkab ma'lumotni ma'nosini saqlagan holda ixcham raqamli ko'rinishga, ya'ni vektorga o'tkazish jarayoni). “_Embedding_'larga kirish” bo'limida _embedding_'lar batafsil muhokama qilinadi. Hozircha, _embedding_'larni asl ma'lumotlarning ma'nosini o'zida aks ettirishga harakat qiladigan vektorlar deb tasavvur qilishingiz mumkin. `CLIP` kabi multimodal _embedding_ modellari `Flamingo`, `LLaVA` va `Gemini` (avvalgi `Bard`) singari generativ multimodal modellarning asosini, ya'ni tayanchini tashkil etadi.
 
 ### Maxsus vazifali modellardan umumiy maqsadli modellarga
 
 Fundamental modellar, shuningdek, maxsus vazifali modellardan umumiy maqsadli modellarga o'tish davrini ham anglatadi. Ilgari modellar ko'pincha hissiyot tahlili (_sentiment analysis_) yoki tarjima kabi maxsus vazifalar uchun ishlab chiqilardi. Hissiyot tahlili uchun o'qitilgan model tarjima qila olmasdi va aksincha.
 
-Fundamental modellar o'zlarining miqyosi va o'qitilish usuli tufayli juda keng doiradagi vazifalarni bajara oladi. Tayyor holatida, umumiy maqsadli modellar ko'plab vazifalarni nisbatan yaxshi bajara oladi. _LLM_ ham hissiyot tahlilini, ham tarjimani bajara oladi. Biroq, ko'p hollarda umumiy maqsadli modelni biror maxsus vazifa uchun uning samaradorligini maksimal darajaga chiqarish maqsadida biroz o'zgartirish (_tweak_) mumkin.
+Fundamental modellar o'zlarining miqyosi va o'qitilish usuli tufayli juda keng doiradagi vazifalarni bajara oladi. Tayyor holatida, umumiy maqsadli modellar ko'plab vazifalarni nisbatan yaxshi bajara oladi. _LLM_ ham hissiyot tahlilini, ham tarjimani bajara oladi. Biroq, ko'p hollarda umumiy maqsadli modelni biror maxsus vazifa uchun uning samaradorligini maksimal darajaga chiqarish maqsadida biroz o'zgartirish (_tweak_ qilish) mumkin.
 
 1-4-rasmda fundamental modellarni baholash uchun _Super-NaturalInstructions_ benchmarkida ishlatiladigan vazifalar ko'rsatilgan va bu fundamental model qanday turdagi vazifalarni bajara olishi haqida tasavvur beradi ([Wang va boshq., 2022](https://arxiv.org/abs/2204.07705)).
 
-Tasavvur qiling, siz bir chakana savdo kompaniyasi bilan ularning veb-sayti uchun mahsulot tavsiflarini generatsiya qiladigan dastur ustida ishlayapsiz. Tayyor holatidagi model to'g'ri tavsiflarni generatsiya qilishi mumkin, lekin brendning o'ziga xos ovozini (`voice`) aks ettira olmasligi yoki brendning asosiy g'oyalarini (_messaging_) ta'kidlay olmasligi mumkin. Generatsiya qilingan tavsiflar hatto marketing nutqi va siyqasi chiqqan iboralarga (_cliches_) to'la bo'lishi ham mumkin.
+Tasavvur qiling, siz bir chakana savdo kompaniyasi bilan ularning veb-sayti uchun mahsulot tavsiflarini generatsiya qiladigan dastur ustida ishlayapsiz. Tayyor holatidagi model to'g'ri tavsiflarni generatsiya qilishi mumkin, lekin brendning o'ziga xos ovozini (_voice_) aks ettira olmasligi yoki brendning asosiy g'oyalarini (_messaging_) ta'kidlay olmasligi mumkin. Generatsiya qilingan tavsiflar hatto marketing nutqi va siyqasi chiqqan iboralarga (_cliches_) to'la bo'lishi ham mumkin.
 
 ![Super-NaturalInstructions benchmarkidagi vazifalar doirasi (Wang va boshq., 2022)](/ai-engineering/1-chapter/1.4-figure.png)
 
@@ -176,7 +176,7 @@ Modeldan o'zingiz istagan natijani olish uchun qo'llashingiz mumkin bo'lgan bir 
 
 Prompt muhandisligi, _RAG_ va  _finetuning_ qilish — bular modelni o'z ehtiyojlaringizga moslashtirish uchun ishlatishingiz mumkin bo'lgan, sun'iy intellekt muhandisligidagi uchta eng keng tarqalgan texnikadir. Kitobning qolgan qismida ularning barchasi batafsil muhokama qilinadi.
 
-Mavjud qudratli modelni o'z vazifangizga moslashtirish, odatda, vazifangiz uchun modelni noldan yaratishdan ancha osonroqdir — masalan, 1 million namuna va olti oyga qarshi o'nta namuna va bir dam olish kuni. Fundamental modellar _SI_ dasturlarini ishlab chiqishni arzonlashtiradi va mahsulotni bozorga chiqarish vaqtini (_time to market_) qisqartiradi. Modelni moslashtirish uchun aniq qancha ma'lumot kerakligi siz qo'llaydigan texnikaga bog'liq. Ushbu kitob har bir texnikani muhokama qilganda bu savolga ham to'xtalib o'tadi. Shunga qaramay, maxsus vazifali modellarning ham ko'plab afzalliklari bor, masalan, ular ancha kichikroq bo'lishi mumkin, bu esa ulardan foydalanishni tezroq va arzonroq qiladi.
+Mavjud qudratli modelni o'z vazifangizga moslashtirish, odatda, noldan yangi model yaratishdan ancha oson. Tasavvur qiling: bir tomonda 1 million namuna va olti oylik mehnat, ikkinchi tomonda esa atigi o'nta namuna va bir dam olish kuni. Fundamental modellar _SI_ ilovalarini yaratish xarajatlarini kamaytiradi va yechimni bozorga olib chiqish muddatini (_time to market_) sezilarli darajada qisqartiradi. Modelni moslashtirish uchun qancha ma'lumot kerakligi esa siz tanlagan usulga bog'liq bo'ladi. Ushbu kitobda har bir usulni muhokama qilar ekanmiz, bu savolga ham alohida to'xtalib o'tamiz. Shunga qaramay, muayyan vazifaga ixtisoslashgan modellarning ham o'ziga yarasha afzalliklari ko'p: masalan, ular ancha ixcham bo'lishi mumkin, bu esa ulardan foydalanishni tezroq va arzonroq qiladi.
 
 O'z modelingizni yaratish yoki mavjudidan foydalanish — bu jamoalar o'zlari javob topishlari kerak bo'lgan klassik "sotib olish yoki o'zi yaratish" masalasidir. Kitob davomidagi muhokamalar bu qarorni qabul qilishga yordam beradi.
 
@@ -194,29 +194,29 @@ Masalan, _SI_ endi insonlar kabi, ba'zan esa ulardan ham yaxshiroq yoza olgani u
 
 ### 2-omil: _SI_ sohasiga investitsiyalarning ortishi
 
-`ChatGPT`'ning muvaffaqiyati ham venchur kapitalistlar, ham korporatsiyalar tomonidan _SI_ sohasiga kiritilayotgan investitsiyalarning keskin ortishiga turtki bo'ldi. _SI_ dasturlarini yaratish arzonlashib, bozorga chiqish tezlashgani sari, _SI_'ga kiritilgan sarmoyadan olinadigan daromad ham jozibadorroq bo'lib bormoqda. Kompaniyalarning barchasi o'z mahsulotlari va jarayonlariga _SI_'ni joriy etishga shoshilmoqda. "Scribd" kompaniyasining amaliy tadqiqotlar bo'yicha katta menejeri Mett Rossning menga aytishicha, uning ishlatilish senariylari uchun taxminiy _SI_ xarajatlari 2022-yil aprelidan 2023-yil apreligacha bo'lgan davrda 100 baravarga kamaygan.
+`ChatGPT`'ning muvaffaqiyati ham venchur kapitalistlar, ham korporatsiyalar tomonidan _SI_ sohasiga kiritilayotgan investitsiyalarning keskin ortishiga turtki bo'ldi. _SI_ dasturlarini yaratish arzonlashib, bozorga chiqish tezlashgani sari, _SI_'ga kiritilgan sarmoyadan olinadigan daromad ham jozibadorroq bo'lib bormoqda. Kompaniyalarning barchasi o'z mahsulotlari va jarayonlariga _SI_'ni joriy etishga shoshilmoqda. Scribd kompaniyasining amaliy tadqiqotlar bo'yicha katta menejeri Mett Rossning menga aytishicha, uning ishlatilish senariylari uchun taxminiy _SI_ xarajatlari 2022-yil aprelidan 2023-yil apreligacha bo'lgan davrda 100 baravarga kamaygan.
 
-["Goldman Sachs Research"](https://www.goldmansachs.com/insights/articles/ai-investment-forecast-to-approach-200-billion-globally-by-2025.html) hisob-kitoblariga ko'ra, 2025-yilga kelib _SI_ investitsiyalari AQSHda 100 milliard dollarga, global miqyosda esa 200 milliard dollarga yaqinlashishi mumkin.[^8] _SI_ ko'pincha raqobatbardosh ustunlik sifatida tilga olinadi. "FactSet" tadqiqotiga ko'ra, 2023-yilning ikkinchi choragida _S&P 500_ kompaniyalarining har uchdan biri o'zlarining daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan — bu ko'rsatkich o'tgan yilgiga nisbatan uch baravar ko'pdir. 1-5-rasmda 2018-yildan 2023-yilgacha bo'lgan davrda o'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni ko'rsatilgan.
+["Goldman Sachs Research"](https://www.goldmansachs.com/insights/articles/ai-investment-forecast-to-approach-200-billion-globally-by-2025.html) hisob-kitoblariga ko'ra, 2025-yilga kelib _SI_ investitsiyalari AQSHda 100 milliard dollarga, global miqyosda esa 200 milliard dollarga yaqinlashishi mumkin.[^8] _SI_ ko'pincha raqobatbardosh ustunlik sifatida tilga olinadi. [FactSet](https://insight.factset.com/highest-number-of-sp-500-companies-citing-ai-on-q2-earnings-calls-in-over-10-years) tadqiqotiga ko'ra, 2023-yilning ikkinchi choragida _S&P 500_ kompaniyalarining har uchdan biri o'zlarining daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan — bu ko'rsatkich o'tgan yilgiga nisbatan uch baravar ko'pdir. 1-5-rasmda 2018-yildan 2023-yilgacha bo'lgan davrda o'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni ko'rsatilgan.
 
-![O'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan](/ai-engineering/1-chapter/1.5-figure.png)
+![O'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar FactSetdan olingan](/ai-engineering/1-chapter/1.5-figure.png)
 
-<div className='text-center text-sm italic'>1-5-rasm. O'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar "FactSet"dan olingan.</div>
+<div className='text-center text-sm italic'>1-5-rasm. O'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan _S&P 500_ kompaniyalari soni 2023-yilda rekord darajaga yetdi. Ma'lumotlar FactSet'dan olingan.</div>
 
-"WallStreetZen" ma'lumotlariga ko'ra, o'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan kompaniyalarning aksiya narxlari tilga olmaganlarga qaraganda ko'proq o'sgan: [2.4% ga nisbatan o'rtacha 4.6% o'sdi](https://www.theregister.com/2023/09/18/mention_ai_in_earnings_calls/). Bu sabab-oqibat bog'liqligimi (_SI_ bu kompaniyalarni muvaffaqiyatliroq qilmoqda) yoki shunchaki korrelyatsiyami (kompaniyalar yangi texnologiyalarga tez moslashgani uchun muvaffaqiyatli), bu hali noaniq.
+WallStreetZen ma'lumotlariga ko'ra, o'z daromadlari haqidagi hisobotlarida _SI_'ni tilga olgan kompaniyalarning aksiya narxlari tilga olmaganlarga qaraganda ko'proq o'sgan: [2.4% ga nisbatan o'rtacha 4.6% o'sdi](https://www.theregister.com/2023/09/18/mention_ai_in_earnings_calls/). Bu sabab-oqibat bog'liqligimi (_SI_ bu kompaniyalarni muvaffaqiyatliroq qilmoqda) yoki shunchaki korrelyatsiyami (kompaniyalar yangi texnologiyalarga tez moslashgani uchun muvaffaqiyatli), bu hali noaniq.
 
 ### 3-omil: _SI_ dasturlarini yaratish uchun kirish to'sig'ining pastligi
 
-"OpenAI" va boshqa model provayderlari tomonidan ommalashtirilgan "xizmat sifatida taqdim etiluvchi model" yondashuvi _SI_'dan foydalanib dasturlar yaratishni ancha osonlashtiradi. Bu yondashuvda modellar foydalanuvchi so'rovlarini qabul qiluvchi va model natijalarini qaytaruvchi _API_'lar orqali taqdim etiladi. Bu _API_'larsiz _SI_ modelidan foydalanish ushbu modelni host qilish va xizmat ko'rsatish uchun maxsus infratuzilmani talab qiladi. _API_'lar esa sizga oddiy _API_ chaqiruvlari orqali qudratli modellardan foydalanish imkonini beradi.
+OpenAI va boshqa model provayderlari tomonidan ommalashtirilgan "xizmat sifatida taqdim etiluvchi model" yondashuvi _SI_'dan foydalanib dasturlar yaratishni ancha osonlashtiradi. Bu yondashuvda modellar foydalanuvchi so'rovlarini qabul qiluvchi va model natijalarini qaytaruvchi _API_'lar orqali taqdim etiladi. Bu _API_'larsiz _SI_ modelidan foydalanish ushbu modelni o'z serverlarida ishga tushirish va xizmat ko'rsatish uchun maxsus infratuzilmani talab qiladi. _API_'lar esa sizga oddiy _API_ chaqiruvlari orqali qudratli modellardan foydalanish imkonini beradi.
 
 Nafaqat bu, _SI_ minimal darajada kod yozish bilan ham dasturlar yaratish imkonini beradi. Birinchidan, _SI_ siz uchun kod yoza oladi, bu esa dasturiy ta'minot muhandisligi bo'yicha tajribasi bo'lmagan odamlarga o'z g'oyalarini tezda kodga aylantirish va ularni foydalanuvchilarga taqdim etish imkonini beradi. Ikkinchidan, siz bu modellar bilan biror dasturlash tilidan foydalanish o'rniga, oddiy ingliz tilida ishlashingiz mumkin. _Endi har kim, ha, istalgan odam _SI_ dasturlarini yarata oladi_.
 
 ### _SI_ muhandisligining portlashi
 
-Fundamental modellarni ishlab chiqish uchun talab etiladigan resurslar tufayli, bu jarayon faqat yirik korporatsiyalar (Google, Meta, Microsoft, Baidu, Tencent), hukumatlar ([Yaponiya](https://www.nii.ac.jp/en/news/release/2023/1020.html), [BAA](https://www.ft.com/content/ab36d481-9e7c-4d18-855d-7d313db0db0d)) va ambitsiyali, yaxshi moliyalashtirilgan startaplar (OpenAI, Anthropic, Mistral) uchungina mumkin. 2022-yil sentabr oyidagi intervyusida ["OpenAI" bosh direktori Sem Altman](https://greylock.com/greymatter/sam-altman-ai-for-the-next-era/) aksariyat odamlar uchun eng katta imkoniyat bu modellarni maxsus dasturlarga moslashtirish bo'lishini aytgan.
+Fundamental modellarni ishlab chiqish uchun talab etiladigan resurslar tufayli, bu jarayon faqat yirik korporatsiyalar (Google, Meta, Microsoft, Baidu, Tencent), hukumatlar ([Yaponiya](https://www.nii.ac.jp/en/news/release/2023/1020.html), [BAA](https://www.ft.com/content/ab36d481-9e7c-4d18-855d-7d313db0db0d)) va ambitsiyali, yaxshi moliyalashtirilgan startaplar (OpenAI, Anthropic, Mistral) uchungina mumkin. 2022-yil sentabr oyidagi intervyusida [OpenAI bosh direktori Sem Altman](https://greylock.com/greymatter/sam-altman-ai-for-the-next-era/) aksariyat odamlar uchun eng katta imkoniyat bu modellarni maxsus dasturlarga moslashtirish bo'lishini aytgan.
 
 Dunyo bu imkoniyatni tezda qabul qildi. Sun'iy intellekt muhandisligi eng tez, balki eng jadal rivojlanayotgan muhandislik yo'nalishi sifatida maydonga chiqdi. Sun'iy intellekt muhandisligi uchun vositalar avvalgi har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq ommalashmoqda. Atigi ikki yil ichida to'rtta ochiq manbali _SI_ muhandislik vositasi (`AutoGPT`, `Stable Diffusion web UI`, `LangChain`, `Ollama`) GitHub'da Bitcoin'dan ko'ra ko'proq yulduzcha to'plab ulgurdi. Ular yulduzchalar soni bo'yicha hatto eng mashhur veb-ishlab chiqish freymvorklari, jumladan React va Vue'ni ham ortda qoldirish arafasida. 1-6-rasmda _SI_ muhandislik vositalarining GitHub yulduzchalari o'sishi Bitcoin, Vue va React bilan taqqoslangan.
 
-LinkedIn'ning 2023-yil avgust oyidagi so'rovnomasi shuni ko'rsatadiki, o'z profiliga “Generativ _SI_,” “ChatGPT,” “Prompt Muhandisligi,” va “Prompt Yaratish” kabi atamalarni qo'shgan mutaxassislar soni har oy o'rtacha 75% ga oshgan. "ComputerWorld" esa “SI'ni o'zini tutishga o'rgatish — eng tez o'sayotgan karyera ko'nikmasi” deb e'lon qildi.
+LinkedIn'ning 2023-yil avgust oyidagi so'rovnomasi shuni ko'rsatadiki, o'z profiliga “Generativ _SI_,” “ChatGPT,” “Prompt Muhandisligi,” va “Prompt Yaratish” kabi atamalarni qo'shgan mutaxassislar soni har oy o'rtacha 75% ga oshgan. ComputerWorld esa “SI'ni o'zini tutishga o'rgatish — eng tez o'sayotgan karyera ko'nikmasi” deb e'lon qildi.
 
 ![Ochiq manbali _SI_ muhandislik vositalari GitHub yulduzchalari soniga ko'ra boshqa har qanday dasturiy ta'minot muhandisligi vositalariga qaraganda tezroq o'smoqda](/ai-engineering/1-chapter/1.6-figure.png)
 
@@ -226,7 +226,7 @@ LinkedIn'ning 2023-yil avgust oyidagi so'rovnomasi shuni ko'rsatadiki, o'z profi
 
 > Fundamental modellar asosida dasturlar yaratish jarayonini tasvirlash uchun ko'plab atamalar qo'llanilmoqda, jumladan, _ML_ muhandisligi, _MLOps_, _AIOps_, _LLMOps_ va hokazo. Xo'sh, nima uchun men bu kitob uchun aynan sun'iy intellekt muhandisligi atamasini tanladim?
 >
-> Men _ML_ muhandisligi atamasini tanlamadim, chunki “SI muhandisligi _ML_ muhandisligiga qarshi” bo'limida muhokama qilinishidek, fundamental modellar bilan ishlash an'anaviy _ML_ modellari bilan ishlashdan bir nechta muhim jihatlari bilan farq qiladi. _ML_ muhandisligi atamasi bu farqni to'liq ifodalash uchun yetarli bo'lmaydi. Shunday bo'lsa-da, _ML_ muhandisligi ikkala jarayonni ham qamrab oluvchi ajoyib umumiy atamadir.
+> Men _ML_ muhandisligi atamasini tanlamadim, chunki [“SI muhandisligi va _ML_ muhandisligi farqlari”](/books/ai-engineering/1-introduction-to-building-ai-applications-with-foundation-models/ai-engineering-stack#si-muhandisligi-va-ml-muhandisligi-farqlari) bo'limida muhokama qilinganidek, fundamental modellar bilan ishlash an'anaviy _ML_ modellari bilan ishlashdan bir nechta muhim jihatlari bilan farq qiladi. _ML_ muhandisligi atamasi bu farqni to'liq ifodalash uchun yetarli bo'lmaydi. Shunday bo'lsa-da, _ML_ muhandisligi ikkala jarayonni ham qamrab oluvchi ajoyib umumiy atamadir.
 >
 > Men “Ops” bilan tugaydigan atamalarning barchasidan voz kechdim, chunki jarayonda operatsion qismlar mavjud bo'lsa-da, asosiy e'tibor fundamental modellarni siz xohlagandek ishlashi uchun sozlashga (ya'ni, muhandislikka) qaratilgan.
 >
