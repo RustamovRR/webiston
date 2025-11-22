@@ -88,11 +88,11 @@ _ML_ modellarini ishlab chiqish bunga alohida ixtisoslashgan _ML_ bilimlarini ta
 
 Fundamental modellarning mavjudligi bilan, _ML_ bilimlari endi _SI_ dasturlarini yaratish uchun majburiy shart emas. Men gradient tushishi haqida o'rganishga umuman qiziqmaydigan ko'plab ajoyib va muvaffaqiyatli _SI_ dasturlari yaratuvchilarini uchratdim. Biroq, _ML_ bilimlari hali ham o'ta qimmatlidir, chunki u siz foydalanishingiz mumkin bo'lgan vositalar to'plamini kengaytiradi va model kutilganidek ishlamaganda muammolarni bartaraf etishga yordam beradi.
 
-> #### O'qitish, dastlabki o'qitish, _finetuning_ qilish va qo'shimcha o'qitish o'rtasidagi farqlar
+> #### O'qitish, dastlabki o'qitish, _finetuning_ qilish va yakuniy o'qitish o'rtasidagi farqlar
 >
 > O'qitish har doim model og'irliklarini (_weights_) o'zgartirishni o'z ichiga oladi, lekin model og'irliklariga kiritilgan har qanday o'zgartirish ham o'qitish degani emas. Masalan, kvantlash (_quantization_) — model og'irliklarining aniqligini pasaytirish jarayoni — texnik jihatdan modelning og'irlik qiymatlarini o'zgartirsa-da, o'qitish deb hisoblanmaydi.
 >
-> "O'qitish" atamasi ko'pincha dastlabki o'qitish (_pre-training_), _finetuning_ qilish va qo'shimcha o'qitish (_post-training_) o'rnida ishlatilishi mumkin, bular o'qitishning turli bosqichlarini anglatadi:
+> "O'qitish" atamasi ko'pincha dastlabki o'qitish (_pre-training_), _finetuning_ qilish va yakuniy o'qitish (_post-training_) o'rnida ishlatilishi mumkin, bular o'qitishning turli bosqichlarini anglatadi:
 >
 > - **Dastlabki o'qitish (_Pre-training_):**
 >   Dastlabki o'qitish modelni noldan o'qitishni anglatadi — bunda model og'irliklari tasodifiy qiymatlar bilan boshlanadi. _LLM_'lar uchun dastlabki o'qitish ko'pincha modelni matnni davom ettirishga o'rgatishni o'z ichiga oladi. Barcha o'qitish bosqichlari ichida dastlabki o'qitish, shubhasiz, eng ko'p resurs talab qiladigan jarayondir. `InstructGPT` modeli uchun dastlabki o'qitish [umumiy hisoblash va ma'lumotlar resurslarining 98 foizigacha qismini](https://openai.com/index/instruction-following/) egallaydi. Dastlabki o'qitish, shuningdek, uzoq vaqt talab etadi. Bu jarayondagi kichik bir xato jiddiy moliyaviy yo'qotishlarga olib kelishi va loyihani ancha orqaga surib yuborishi mumkin. Resurs talabchanligi tufayli, bu jarayon sanoqlilar shug'ullanadigan san'atga aylanib qolgan. Biroq, katta modellarni dastlabki o'qitish bo'yicha tajribaga ega bo'lgan mutaxassislarga talab juda yuqori.[^2]
@@ -100,10 +100,10 @@ Fundamental modellarning mavjudligi bilan, _ML_ bilimlari endi _SI_ dasturlarini
 > - **_Finetuning_ qilish:**
 >   _Finetuning_ qilish oldindan o'qitilgan modelni o'qitishda davom etishni anglatadi — bunda model og'irliklari avvalgi o'qitish jarayonidan olinadi. Model dastlabki o'qitishdan ma'lum bilimlarga ega bo'lgani uchun, _finetuning_ qilish odatda dastlabki o'qitishga qaraganda kamroq resurs (masalan, ma'lumotlar va hisoblash quvvati) talab qiladi.
 >
-> - **Qo'shimcha o'qitish (_Post-training_):**
->   Ko'pchilik qo'shimcha o'qitish deganda modelni dastlabki o'qitish bosqichidan keyin o'qitish jarayonini tushunadi. Konseptual jihatdan, qo'shimcha o'qitish va _finetuning_ qilish bir xil narsa va ularni bir-birining o'rnida ishlatsa bo'ladi. Biroq, ba'zida odamlar ularni turli maqsadlarni bildirish uchun farqli ishlatishlari mumkin. Agar bu jarayon model yaratuvchilari tomonidan amalga oshirilsa, odatda qo'shimcha o'qitish deyiladi. Masalan, OpenAI modelni ommaga taqdim etishdan oldin uning ko'rsatmalarga yaxshiroq amal qilishini ta'minlash uchun uni qo'shimcha o'qitishdan o'tkazishi mumkin. Agar bu jarayon dastur yaratuvchilari tomonidan amalga oshirilsa, bu _finetuning_ qilish deyiladi. Masalan, siz OpenAI modelini (u o'zi ham qo'shimcha o'qitishdan o'tgan bo'lishi mumkin) o'z ehtiyojlaringizga moslashtirish uchun _finetuning_ qilishingiz mumkin.
+> - **Yakuniy (_Post-training_):**
+>   Ko'pchilik yakuniy o'qitish deganda modelni dastlabki o'qitish bosqichidan keyin o'qitish jarayonini tushunadi. Konseptual jihatdan, yakuniy o'qitish va _finetuning_ qilish bir xil narsa va ularni bir-birining o'rnida ishlatsa bo'ladi. Biroq, ba'zida odamlar ularni turli maqsadlarni bildirish uchun farqli ishlatishlari mumkin. Agar bu jarayon model yaratuvchilari tomonidan amalga oshirilsa, odatda yakuniy o'qitish deyiladi. Masalan, OpenAI modelni ommaga taqdim etishdan oldin uning ko'rsatmalarga yaxshiroq amal qilishini ta'minlash uchun uni yakuniy o'qitishdan o'tkazishi mumkin. Agar bu jarayon dastur yaratuvchilari tomonidan amalga oshirilsa, bu _finetuning_ qilish deyiladi. Masalan, siz OpenAI modelini (u o'zi ham yakuniy o'qitishdan o'tgan bo'lishi mumkin) o'z ehtiyojlaringizga moslashtirish uchun _finetuning_ qilishingiz mumkin.
 >
-> Dastlabki o'qitish va qo'shimcha o'qitish bir spektrni tashkil etadi.[^3] Ularning jarayonlari va vositalari juda o'xshash. Ularning farqlari 2 va 7-boblarda batafsilroq o'rganiladi.
+> Dastlabki o'qitish va yakuniy o'qitish bir spektrni tashkil etadi.[^3] Ularning jarayonlari va vositalari juda o'xshash. Ularning farqlari 2 va 7-boblarda batafsilroq o'rganiladi.
 >
 > Ba'zi odamlar "o'qitish" atamasini prompt muhandisligiga nisbatan ishlatishadi, bu esa noto'g'ri. Men ["Business Insider"da](https://www.businessinsider.com/i-trained-ai-chatbot-on-my-journals-inner-child-2022-12) bir maqolani o'qidim, unda muallif `ChatGPT`'ni o'zining yoshligini taqlid qilishga "o'rgatganini" aytgan. U buni o'zining bolalik kundaliklarini `ChatGPT`'ga kiritish orqali amalga oshirgan. So'zlashuv tilida, muallifning "o'qitish" so'zini ishlatishi to'g'ri, chunki u modelga biror narsa qilishni o'rgatmoqda. Ammo texnik jihatdan, agar siz modelga nima qilish kerakligini unga kiritiladigan kontekst orqali o'rgatsangiz, siz prompt muhandisligi bilan shug'ullanayotgan bo'lasiz. Xuddi shunday, men odamlarning aslida prompt muhandisligi bilan shug'ullanayotgan bo'lsalar-da, "_finetuning_ qilish" atamasini ishlatganini ham ko'rganman.
 
@@ -214,7 +214,7 @@ An'anaviy _ML_ muhandisligida modelni ishlab chiqish va mahsulotni ishlab chiqis
 
 [^2]: Va ularga [aql bovar qilmas darajada katta maosh](https://www.nytimes.com/2018/04/19/technology/artificial-intelligence-salaries-openai.html) taklif qilinadi.
 
-[^3]: Agar siz "dastlabki o'qitish" va "qo'shimcha o'qitish" atamalarini ijodkorlikdan yiroq deb hisoblasangiz, siz yolg'iz emassiz. _SI_ tadqiqot hamjamiyati ko'p narsada zo'r, lekin nom berishda emas. Biz allaqachon "katta til modellari" atamasi "katta" so'zining noaniqligi tufayli ilmiy atama bo'la olmasligi haqida gaplashgan edik. Va men odamlarning "X — sizga kerak bo'lgan yagona narsa" sarlavhasi bilan maqolalar chop etishni bas qilishlarini juda xohlardim.
+[^3]: Agar siz "dastlabki o'qitish" va "yakuniy o'qitish" atamalarini ijodkorlikdan yiroq deb hisoblasangiz, siz yolg'iz emassiz. _SI_ tadqiqot hamjamiyati ko'p narsada zo'r, lekin nom berishda emas. Biz allaqachon "katta til modellari" atamasi "katta" so'zining noaniqligi tufayli ilmiy atama bo'la olmasligi haqida gaplashgan edik. Va men odamlarning "X — sizga kerak bo'lgan yagona narsa" sarlavhasi bilan maqolalar chop etishni bas qilishlarini juda xohlardim.
 
 [^4]: `Streamlit`, `Gradio` va `Plotly Dash` _SI_ veb-dasturlarini yaratish uchun keng tarqalgan vositalardir.
 

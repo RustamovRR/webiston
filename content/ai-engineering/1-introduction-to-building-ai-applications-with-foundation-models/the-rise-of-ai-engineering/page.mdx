@@ -83,7 +83,7 @@ Yana bir misol, quyidagi prompt berilganda:
 
 Til modeli uni “Ehtimoliy spam” deb to'ldirishi mumkin, bu esa o'z navbatida til modelini spam-klassifikatorga aylantiradi.
 
-To'ldirish qudratli bo'lsa-da, bu suhbat qurish bilan bir xil narsa emas. Masalan, agar siz to'ldiruvchi mashinaga savol bersangiz, u savolga javob berish o'rniga, sizning gapingizni yana bir savol qo'shish orqali to'ldirishi mumkin. ["Qo'shimcha o'qitish" (_Post-Training_)](/books/ai-engineering/2-understanding-foundation-models/post-training) bo'limida modelni foydalanuvchi so'roviga qanday qilib munosib javob berishga o'rgatish muhokama qilinadi.
+To'ldirish qudratli bo'lsa-da, bu suhbat qurish bilan bir xil narsa emas. Masalan, agar siz to'ldiruvchi mashinaga savol bersangiz, u savolga javob berish o'rniga, sizning gapingizni yana bir savol qo'shish orqali to'ldirishi mumkin. ["Yakuniy o'qitish" (_Post-Training_)](/books/ai-engineering/2-understanding-foundation-models/post-training) bo'limida modelni foydalanuvchi so'roviga qanday qilib munosib javob berishga o'rgatish muhokama qilinadi.
 
 ### O'z-o'zini nazorat qilish (Self-supervision)
 
@@ -144,7 +144,7 @@ Birdan ortiq ma'lumot modalligi bilan ishlay oladigan model **multimodal model**
 
 <div className='text-center text-sm italic'>1-3-rasm. Multimodal model keyingi tokenni ham matn, ham vizual tokenlardan olingan ma'lumotlar asosida generatsiya qila oladi</div>
 
-Til modellari singari, multimodal modellar ham miqyoslash uchun ma'lumotlarga muhtoj. O'z-o'zini nazorat qilish yondashuvi multimodal modellar uchun ham ishlaydi. Masalan, OpenAI o'zining til-tasvir modeli bo'lgan `CLIP`'ni o'qitish uchun o'z-o'zini nazorat qilishning tabiiy til nazorati (_natural language supervision_) deb nomlangan bir turidan foydalangan ([OpenAI, 2021](https://openai.com/index/clip/)). Ular har bir tasvir uchun yorliqlarni mustaqil yaratish o'rniga, internetda birga uchraydigan (tasvir, matn) juftliklarini topdilar. Ular mustaqil belgilash xarajatlarisiz 400 million (tasvir, matn) juftligidan iborat ma'lumotlar to'plamini yarata oldilar, bu esa _ImageNet_'dan 400 baravar kattaroq edi. Bu ma'lumotlar to'plami `CLIP`'ning qo'shimcha o'qitishni talab qilmasdan, bir nechta tasvir tasnifi vazifalariga umumlashtira oladigan birinchi modelga aylanishiga imkon berdi.
+Til modellari singari, multimodal modellar ham miqyoslash uchun ma'lumotlarga muhtoj. O'z-o'zini nazorat qilish yondashuvi multimodal modellar uchun ham ishlaydi. Masalan, OpenAI o'zining til-tasvir modeli bo'lgan `CLIP`'ni o'qitish uchun o'z-o'zini nazorat qilishning tabiiy til nazorati (_natural language supervision_) deb nomlangan bir turidan foydalangan ([OpenAI, 2021](https://openai.com/index/clip/)). Ular har bir tasvir uchun yorliqlarni mustaqil yaratish o'rniga, internetda birga uchraydigan (tasvir, matn) juftliklarini topdilar. Ular mustaqil belgilash xarajatlarisiz 400 million (tasvir, matn) juftligidan iborat ma'lumotlar to'plamini yarata oldilar, bu esa _ImageNet_'dan 400 baravar kattaroq edi. Bu ma'lumotlar to'plami `CLIP`'ning yakuniy o'qitishni talab qilmasdan, bir nechta tasvir tasnifi vazifalariga umumlashtira oladigan birinchi modelga aylanishiga imkon berdi.
 
 <Callout>
 #### Eslatma
@@ -170,7 +170,7 @@ Tasavvur qiling, siz bir chakana savdo kompaniyasi bilan ularning veb-sayti uchu
 
 ### Modelni vazifaga moslashtirish
 
-Modeldan o'zingiz istagan natijani olish uchun qo'llashingiz mumkin bo'lgan bir nechta texnikalar mavjud. Masalan, siz kerakli mahsulot tavsiflariga oid misollar bilan boyitilgan batafsil ko'rsatmalar ishlab chiqishingiz mumkin. Bu yondashuv prompt muhandisligi (_prompt engineering_) deb ataladi. Yoki modelni mijozlarning fikr-mulohazalari bazasiga ulashingiz mumkin, model esa bu ma'lumotlardan dastak sifatida foydalanib, yanada yaxshiroq tavsiflar generatsiya qiladi. Ko'rsatmalarni ma'lumotlar bazasi bilan to'ldirish qidiruv bilan boyitilgan generatsiya (_Retrieval-Augmented Generation_, _RAG_) deb nomlanadi. Shuningdek, siz modelni yuqori sifatli mahsulot tavsiflari to'plamida _finetuning_ qilish, ya'ni qo'shimcha o'qitish imkoniga ham egasiz.
+Modeldan o'zingiz istagan natijani olish uchun qo'llashingiz mumkin bo'lgan bir nechta texnikalar mavjud. Masalan, siz kerakli mahsulot tavsiflariga oid misollar bilan boyitilgan batafsil ko'rsatmalar ishlab chiqishingiz mumkin. Bu yondashuv prompt muhandisligi (_prompt engineering_) deb ataladi. Yoki modelni mijozlarning fikr-mulohazalari bazasiga ulashingiz mumkin, model esa bu ma'lumotlardan dastak sifatida foydalanib, yanada yaxshiroq tavsiflar generatsiya qiladi. Ko'rsatmalarni ma'lumotlar bazasi bilan to'ldirish qidiruv bilan boyitilgan generatsiya (_Retrieval-Augmented Generation_, _RAG_) deb nomlanadi. Shuningdek, siz modelni yuqori sifatli mahsulot tavsiflari to'plamida _finetuning_ qilish, ya'ni yakuniy o'qitish imkoniga ham egasiz.
 
 ### Tayyor modeldan foydalanish yoki o'zi yaratish?
 

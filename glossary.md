@@ -96,4 +96,4 @@ deployment - joriy etish
 use cases - ishlatilish senariylari
 host - o'zingiz ishlatish, o'z serverlarida ishga tushirish
 pre-training - dastlabki o'qitish
-post-training - qo'shimcha o'qitish 
+post-training - yakuniy o'qitish 
