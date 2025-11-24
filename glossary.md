@@ -97,3 +97,5 @@ use cases - ishlatilish senariylari
 host - o'zingiz ishlatish, o'z serverlarida ishga tushirish
 pre-training - dastlabki o'qitish
 post-training - yakuniy o'qitish 
+AI as a judge - SI-baholovchi
+post-processing - yakuniy ishlov berish
