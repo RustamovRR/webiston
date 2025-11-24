@@ -99,3 +99,6 @@ pre-training - dastlabki o'qitish
 post-training - yakuniy o'qitish 
 AI as a judge - SI-baholovchi
 post-processing - yakuniy ishlov berish
+evaluation pipeline - baholash jarayonlar zanjiri
+open-ended - erkin natijali
+close-ended - cheklangan natijali
