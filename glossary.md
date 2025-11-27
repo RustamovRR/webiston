@@ -102,3 +102,11 @@ post-processing - yakuniy ishlov berish
 evaluation pipeline - baholash jarayonlar zanjiri
 open-ended - erkin natijali
 close-ended - cheklangan natijali
+factual consistency - faktik izchillik
+leaderboard - reyting jadvali
+code readibility - kodning o'qilishi osonligi
+coherence - mazmunan bog'langanlik
+faithfulness - ishonchlilik
+relevance - aloqadorlik
+AI-powered - SI'ga asoslangan
+biases - noxolislik

@@ -10,7 +10,7 @@ _SI_-baholovchilar inson baholovchilarga nisbatan tez, ishlatishga oson va ancha
 
 Siz _SI_ modellaridan biror natijani istalgan mezonlar asosida baholashni so'rashingiz mumkin: to'g'rilik, takrorlanuvchanlik, toksiklik, foydalilik, gallyutsinatsiyalar va hokazo. Bu xuddi biror odamdan har qanday narsa haqida o'z fikrini so'rashingizga o'xshaydi. Siz "Ammo odamlarning fikrlariga har doim ham ishonib bo'lmaydi-ku" deb o'ylashingiz mumkin. Bu to'g'ri va siz _SI_'ning xulosalariga ham har doim ishona olmaysiz. Biroq, har bir _SI_ modeli ommaviy fikrlarning yig'indisi bo'lgani uchun, _SI_ modellarining ommaviy fikrlarni aks ettiruvchi xulosalar chiqarishi mumkin. To'g'ri model uchun to'g'ri prompt bilan siz keng doiradagi mavzularda ancha yaxshi xulosalarga ega bo'lishingiz mumkin.
 
-Tadqiqotlar shuni ko'rsatdiki, ma'lum bir _SI_-baholovchilar inson baholovchilari bilan kuchli bog'liqlikka ega. 2023-yilda [Zheng va boshqalar](https://arxiv.org/abs/2306.05685) o'zlarining `MT-Bench` benchmarkida `GPT-4` va insonlar o'rtasidagi kelishuv 85% ga yetganini aniqladilar, bu hatto insonlar o'rtasidagi kelishuvdan (81%) ham yuqoridir. `AlpacaEval` mualliflari ([Dubois va boshq., 2023](https://arxiv.org/abs/2404.04475)) ham o'zlarining _SI_-baholovchilari insonlar tomonidan baholanadigan _LMSYS_'ning "Chat Arena" peshqadamlar jadvali bilan deyarli mukammal (0.98) korrelyatsiyaga ega ekanligini aniqladilar.
+Tadqiqotlar shuni ko'rsatdiki, ma'lum bir _SI_-baholovchilar inson baholovchilari bilan kuchli bog'liqlikka ega. 2023-yilda [Zheng va boshqalar](https://arxiv.org/abs/2306.05685) o'zlarining `MT-Bench` benchmarkida `GPT-4` va insonlar o'rtasidagi kelishuv 85% ga yetganini aniqladilar, bu hatto insonlar o'rtasidagi kelishuvdan (81%) ham yuqoridir. `AlpacaEval` mualliflari ([Dubois va boshq., 2023](https://arxiv.org/abs/2404.04475)) ham o'zlarining _SI_-baholovchilari insonlar tomonidan baholanadigan _LMSYS_'ning `Chat Arena` reyting jadvali bilan deyarli mukammal (0.98) korrelyatsiyaga ega ekanligini aniqladilar.
 
 _SI_ nafaqat javobni baholay oladi, balki o'z qarorini tushuntirib ham bera oladi, bu esa ayniqsa baholash natijalaringizni tekshirmoqchi bo'lganingizda foydali bo'lishi mumkin. 3-7-rasmda `GPT-4`'ning o'z xulosasini tushuntirayotganiga misol keltirilgan.
 
@@ -62,23 +62,23 @@ Umumiy maqsadli _SI_-baholovchidan biror javobni istalgan mezon asosida baholash
 
 | _SI_ Vositalari | O'rnatilgan mezonlar |
 | :--- | :--- |
-| [`Azure AI Studio`](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/observability) | Asoslanganlik, relevantlik, izchillik, ravonlik, o'xshashlik |
-| [`MLflow.metrics`](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.metrics.html#generative-ai-metrics) | Ishonchlilik, relevantlik |
-| [`LangChain Criteria Evaluation`](https://python.langchain.com/v0.1/docs/guides/productionization/evaluation/string/criteria_eval_chain/) | Qisqalik, relevantlik, to'g'rilik, izchillik, zararlilik, yovuz niyatlilik, foydalilik, bahslilik, misoginiya, befarqlik, jinoiylik |
-| [`Ragas`](https://docs.ragas.io/en/latest/concepts/metrics/index.html) | Ishonchlilik, javobning relevantligi |
+| [`Azure AI Studio`](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/observability) | Asoslanganlik, aloqadorlik, izchillik, ravonlik, o'xshashlik |
+| [`MLflow.metrics`](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.metrics.html#generative-ai-metrics) | Ishonchlilik, aloqadorlik |
+| [`LangChain Criteria Evaluation`](https://python.langchain.com/v0.1/docs/guides/productionization/evaluation/string/criteria_eval_chain/) | Qisqalik, aloqadorlik, to'g'rilik, izchillik, zararlilik, yovuz niyatlilik, foydalilik, bahslilik, misoginiya, befarqlik, jinoiylik |
+| [`Ragas`](https://docs.ragas.io/en/latest/concepts/metrics/index.html) | Ishonchlilik, javobning aloqadorligi |
 
 <div className='text-center text-sm italic'>3-3-jadval. 2024-yil sentabr holatiga ko'ra, ba'zi _SI_ vositalari tomonidan taklif qilinadigan ichki o'rnatilgan _SI_-baholovchi mezonlariga misollar. Shuni unutmangki, bu vositalar rivojlangani sari, bu o'rnatilgan mezonlar ham o'zgaradi.</div>
 
-_SI_-baholovchi mezonlari standartlashtirilmaganligini yodda tutish muhim. `Azure AI Studio`'ning relevantlik ballari `MLflow`'ning relevantlik ballaridan juda farq qilishi mumkin. Bu ballar baholovchining asosiy modeliga va promptiga bog'liq.
+_SI_-baholovchi mezonlari standartlashtirilmaganligini yodda tutish muhim. `Azure AI Studio`'ning aloqadorlik ballari `MLflow`'ning aloqadorlik ballaridan juda farq qilishi mumkin. Bu ballar baholovchining asosiy modeliga va promptiga bog'liq.
 
 ### _SI_-baholovchi uchun prompt yozish
 
 _SI_-baholovchi uchun prompt yozish har qanday _SI_ dasturi uchun prompt yozishga o'xshaydi. Umuman olganda, baholovchining prompti quyidagilarni aniq tushuntirishi kerak:
 
-- **Model bajarishi kerak bo'lgan vazifa,** masalan, generatsiya qilingan javob va savol o'rtasidagi relevantlikni baholash.
+- **Model bajarishi kerak bo'lgan vazifa,** masalan, generatsiya qilingan javob va savol o'rtasidagi aloqadorlikni baholash.
 - **Model baholash uchun amal qilishi kerak bo'lgan mezonlar,** masalan, "Sizning asosiy e'tiboringiz generatsiya qilingan javob etalon haqiqat javobiga ko'ra berilgan savolni hal qilish uchun yetarli ma'lumotni o'z ichiga oladimi yoki yo'qligini aniqlashga qaratilishi kerak". Ko'rsatma qanchalik batafsil bo'lsa, shuncha yaxshi.
 - **Baholash tizimi,** u quyidagilardan biri bo'lishi mumkin:
-    - **Tasniflash,** masalan, yaxshi/yomon yoki relevant/relevant emas/neytral.
+    - **Tasniflash,** masalan, yaxshi/yomon yoki aloqador/aloqador emas/neytral.
     - **Diskret raqamli qiymatlar,** masalan, 1 dan 5 gacha. Diskret raqamli qiymatlarni tasniflashning maxsus holi deb hisoblash mumkin, bunda har bir sinf semantik talqin o'rniga raqamli talqinga ega.
     - **Uzluksiz raqamli qiymatlar,** masalan, 0 va 1 oralig'ida, masalan, o'xshashlik darajasini baholamoqchi bo'lganingizda.
 
@@ -89,11 +89,11 @@ _SI_-baholovchi uchun prompt yozish har qanday _SI_ dasturi uchun prompt yozishg
 
 Misollar bilan boyitilgan promptlar yaxshiroq ishlashi isbotlangan. Agar siz 1 dan 5 gacha bo'lgan baholash tizimidan foydalansangiz, 1, 2, 3, 4 yoki 5 ballga ega bo'lgan javob qanday ko'rinishda bo'lishiga misollar keltiring va iloji bo'lsa, nima uchun javob ma'lum bir ball olganini ham tushuntiring. Promptlash uchun eng yaxshi amaliyotlar 5-bobda muhokama qilinadi.
 
-Quyida `Azure AI Studio` tomonidan [_relevantlik_](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/observability) mezoni uchun ishlatilgan promptning bir qismi keltirilgan. U vazifani, mezonlarni, baholash tizimini, past ballga ega bo'lgan kirish ma'lumotiga misolni va nima uchun bu kirish ma'lumoti past ballga ega ekanligining asoslanishini tushuntiradi. Promptning bir qismi qisqalik uchun olib tashlangan.
+Quyida `Azure AI Studio` tomonidan [_aloqadorlik_](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/observability) mezoni uchun ishlatilgan promptning bir qismi keltirilgan. U vazifani, mezonlarni, baholash tizimini, past ballga ega bo'lgan kirish ma'lumotiga misolni va nima uchun bu kirish ma'lumoti past ballga ega ekanligining asoslanishini tushuntiradi. Promptning bir qismi qisqalik uchun olib tashlangan.
 
 ``` md
 `Sizning vazifangiz — generatsiya qilingan javob va savol o'rtasidagi
-relevantlikni etalon haqiqat javobiga asoslanib, 1 dan 5 gacha
+aloqadorlikni etalon haqiqat javobiga asoslanib, 1 dan 5 gacha
 bo'lgan oraliqda baholash va iltimos, baholash sababini ham taqdim eting.
 
 Sizning asosiy e'tiboringiz generatsiya qilingan javob etalon haqiqat
@@ -169,17 +169,17 @@ Siz xarajatlarni baholovchi sifatida zaifroq modellardan foydalanish orqali kama
 
 _SI_-baholovchilarni real amaliyotdagi jarayonlar zanjiriga (_production pipeline_) joriy etish kechikishni oshirishi mumkin. Agar siz javoblarni foydalanuvchilarga qaytarishdan oldin baholasangiz, tanlovga duch kelasiz: kamaytirilgan xavf, lekin ortgan kechikish. Qo'shimcha kechikish bu variantni qat'iy kechikish talablariga ega bo'lgan dasturlar uchun imkonsiz qilib qo'yishi mumkin.
 
-### _SI_-baholovchining tarafkashliklari
+### _SI_-baholovchining noxolisliklari
 
-Inson baholovchilarida tarafkashliklar (_biases_) bo'lganidek, _SI_-baholovchilarda ham bor. Turli _SI_-baholovchilar turli xil tarafkashliklarga ega. Ushbu bo'limda ularning eng keng tarqalganlaridan ba'zilari muhokama qilinadi. _SI_-baholovchilaringizning tarafkashliklaridan xabardor bo'lish ularning ballarini to'g'ri talqin qilishga va hatto bu tarafkashliklarni yumshatishga yordam beradi.
+Inson baholovchilarida noxolisliklar (_biases_) bo'lganidek, _SI_-baholovchilarda ham bor. Turli _SI_-baholovchilar turli xil noxolisliklarga ega. Ushbu bo'limda ularning eng keng tarqalganlaridan ba'zilari muhokama qilinadi. _SI_-baholovchilaringizning noxolisliklaridan xabardor bo'lish ularning ballarini to'g'ri talqin qilishga va hatto bu noxolisliklarni yumshatishga yordam beradi.
 
 _SI_-baholovchilar o'ziga yon bosishga (_self-bias_) moyil bo'ladi, bunda model boshqa modellar tomonidan generatsiya qilingan javoblarga qaraganda o'zining javoblarini afzal ko'radi. Modelga eng ehtimoliy javobni generatsiya qilishga yordam beradigan o'sha mexanizm bu javobga yuqori ball ham beradi. [Zheng va boshqalarning 2023-yilgi tajribasida](https://arxiv.org/abs/2306.05685), `GPT-4` o'ziga 10% yuqoriroq g'alaba ko'rsatkichi bilan yon bosgan, `Claude-v1` esa o'ziga 25% yuqoriroq g'alaba ko'rsatkichi bilan yon bosgan.
 
 Ko'pgina _SI_ modellarida birinchi pozitsiyaga moyillik (_first-position bias_) mavjud. _SI_-baholovchi juftlik taqqoslashida birinchi javobni yoki variantlar ro'yxatidagi birinchisini afzal ko'rishi mumkin. Buni bir xil testni har xil tartibda yoki puxta ishlab chiqilgan promptlar bilan bir necha marta takrorlash orqali yumshatish mumkin. _SI_'ning pozitsiyaga moyilligi insonlarnikiga teskari. Insonlar o'zlari [oxirgi ko'rgan javobni](https://www.interconnects.ai/p/evaluating-open-llms) afzal ko'rishga moyil bo'lib, bu so'nggi taassurot ta'siri (_recency bias_) deb ataladi.
 
-Ba'zi _SI_-baholovchilar ko'p so'zlilikka moyillikka (_verbosity bias_) ega bo'lib, sifatidan qat'i nazar, uzunroq javoblarni afzal ko'rishadi. [Wu va Aji (2023)](https://arxiv.org/abs/2307.03025) ham `GPT-4`, ham `Claude-1` qisqaroq, to'g'ri javoblarga (~50 so'z) qaraganda faktik xatolarga ega bo'lgan uzunroq javoblarni (~100 so'z) afzal ko'rishini aniqladilar. [Saito va boshqalar (2023)](https://arxiv.org/pdf/2310.10076) bu tarafkashlikni ijodiy vazifalar uchun o'rganib, uzunlik farqi yetarlicha katta bo'lganda (masalan, bir javob ikkinchisidan ikki baravar uzun bo'lganda), baholovchi deyarli har doim uzunrog'ini afzal ko'rishini aniqladilar.[^19] Biroq, ham Zheng va boshqalar (2023), ham Saito va boshqalar (2023) `GPT-4`'ning bu tarafkashlikka `GPT-3.5`'ga qaraganda kamroq moyil ekanligini aniqladilar, bu esa modellar kuchaygan sari bu tarafkashlik yo'qolishi mumkinligini ko'rsatadi.
+Ba'zi _SI_-baholovchilar ko'p so'zlilikka moyillikka (_verbosity bias_) ega bo'lib, sifatidan qat'i nazar, uzunroq javoblarni afzal ko'rishadi. [Wu va Aji (2023)](https://arxiv.org/abs/2307.03025) ham `GPT-4`, ham `Claude-1` qisqaroq, to'g'ri javoblarga (~50 so'z) qaraganda faktik xatolarga ega bo'lgan uzunroq javoblarni (~100 so'z) afzal ko'rishini aniqladilar. [Saito va boshqalar (2023)](https://arxiv.org/pdf/2310.10076) bu noxolislikni ijodiy vazifalar uchun o'rganib, uzunlik farqi yetarlicha katta bo'lganda (masalan, bir javob ikkinchisidan ikki baravar uzun bo'lganda), baholovchi deyarli har doim uzunrog'ini afzal ko'rishini aniqladilar.[^19] Biroq, ham Zheng va boshqalar (2023), ham Saito va boshqalar (2023) `GPT-4`'ning bu noxolislikka `GPT-3.5`'ga qaraganda kamroq moyil ekanligini aniqladilar, bu esa modellar kuchaygan sari bu noxolislik yo'qolishi mumkinligini ko'rsatadi.
 
-Bu barcha tarafkashliklar ustiga, _SI_-baholovchilar barcha _SI_ dasturlari bilan bir xil cheklovlarga ega, jumladan, maxfiylik va intellektual mulk (_IP_) masalalari. Agar siz baholovchi sifatida xususiy modeldan foydalansangiz, siz o'z ma'lumotlaringizni ushbu modelga yuborishingiz kerak bo'ladi. Agar model provayderi o'zining o'qitish ma'lumotlarini oshkor qilmasa, siz baholovchining tijorat maqsadlarida foydalanish uchun xavfsiz ekanligiga amin bo'la olmaysiz.
+Bu barcha noxolisliklar ustiga, _SI_-baholovchilar barcha _SI_ dasturlari bilan bir xil cheklovlarga ega, jumladan, maxfiylik va intellektual mulk (_IP_) masalalari. Agar siz baholovchi sifatida xususiy modeldan foydalansangiz, siz o'z ma'lumotlaringizni ushbu modelga yuborishingiz kerak bo'ladi. Agar model provayderi o'zining o'qitish ma'lumotlarini oshkor qilmasa, siz baholovchining tijorat maqsadlarida foydalanish uchun xavfsiz ekanligiga amin bo'la olmaysiz.
 
 _SI_-baholovchi yondashuvining cheklovlariga qaramay, uning ko'plab afzalliklari meni uning qo'llanilishi o'sishda davom etishiga ishontiradi. Biroq, _SI_-baholovchilar aniq baholash usullari va/yoki inson baholashi bilan to'ldirilishi kerak.
 
