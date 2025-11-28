@@ -1,10 +1,10 @@
 # Baholash jarayonlar zanjirini loyihalash
 
-SI ilovaning muvaffaqiyati ko'p jihatdan yaxshi natijani yomondan farqlay olish qobiliyatiga bog'liq. Buning uchun sizga ishonchli baholash jarayonlar zanjiri kerak bo'ladi. Baholash usullari va texnikalarining soni shiddat bilan ortib borayotgan bir paytda, o'z baholash jarayonlar zanjiringiz uchun ularning eng maqbul majmuasini tanlash ancha chalkash bo'lishi mumkin. Ushbu bo'limda ochiq turdagi vazifalarni baholashga e'tibor qaratiladi. Cheklangan natijali vazifalarni baholash osonroq, va ushbu bo'limda tasvirlangan jarayonni tushungan holda, ular uchun zarur bo'lgan jarayonlar zanjirini ham anglab olish mumkin.
+_SI_ ilovaning muvaffaqiyati ko'p jihatdan yaxshi natijani yomondan farqlay olish qobiliyatiga bog'liq. Buning uchun sizga ishonchli baholash jarayonlar zanjiri kerak bo'ladi. Baholash usullari va texnikalarining soni shiddat bilan ortib borayotgan bir paytda, o'z baholash jarayonlar zanjiringiz uchun ularning eng maqbul majmuasini tanlash ancha chalkash bo'lishi mumkin. Ushbu bo'limda ochiq turdagi vazifalarni baholashga e'tibor qaratiladi. Cheklangan natijali vazifalarni baholash osonroq, va ushbu bo'limda tasvirlangan jarayonni tushungan holda, ular uchun zarur bo'lgan jarayonlar zanjirini ham anglab olish mumkin.
 
 ## 1-qadam. Tizimdagi barcha komponentlarni baholash
 
-Haqiqiy hayotdagi SI ilovalar murakkab. Har bir ilova ko'plab komponentlardan iborat bo'lishi mumkin va bir vazifa bir necha muloqot aylanishidan (_turn_) keyin yakunlanishi mumkin. Baholash turli darajalarda amalga oshirilishi mumkin: har bir vazifa, har bir muloqot aylanishi va har bir oraliq natija bo'yicha.
+Haqiqiy hayotdagi _SI_ ilovalar murakkab. Har bir ilova ko'plab komponentlardan iborat bo'lishi mumkin va bir vazifa bir necha muloqot aylanishidan (_turn_) keyin yakunlanishi mumkin. Baholash turli darajalarda amalga oshirilishi mumkin: har bir vazifa, har bir muloqot aylanishi va har bir oraliq natija bo'yicha.
 
 Siz ham yakuniy (_end-to-end_) natijani, ham har bir komponentning oraliq natijasini mustaqil ravishda baholashingiz kerak. Tasavvur qiling, bir ilova shaxsning rezyumesidan (PDF formatida) uning hozirgi ish beruvchisini ajratib oladi va bu ikki bosqichda ishlaydi:
 
@@ -15,26 +15,26 @@ Agar model hozirgi ish beruvchini to'g'ri ajratib ololmasa, bunga har ikki bosqi
 
 Agar o'rinli bo'lsa, ilovangizni ham har bir muloqot aylanishi, ham har bir vazifa bo'yicha baholang. Bir muloqot aylanishi bir nechta qadam va xabarlardan iborat bo'lishi mumkin. Agar tizim bitta natijani yaratish uchun bir nechta qadamni amalga oshirsa ham, bu baribir bitta muloqot aylanishi hisoblanadi.
 
-Generativ SI ilovalar, ayniqsa chatbotga o'xshashlari, foydalanuvchi va ilova o'rtasida vazifani bajarish uchun suhbat shaklidagi o'zaro muloqotga imkon beradi. Tasavvur qiling, siz Python kodingiz nima uchun ishlamayotganini aniqlash va tuzatish uchun SI modeldan foydalanmoqchisiz. Model javoban sizning qurilmangiz yoki siz ishlatayotgan Python versiyasi haqida qo'shimcha ma'lumot so'raydi. Faqatgina siz bu ma'lumotni taqdim etganingizdan so'nggina model xatolikni tuzatishga yordam bera oladi.
+Generativ _SI_ ilovalar, ayniqsa chatbotga o'xshashlari, foydalanuvchi va ilova o'rtasida vazifani bajarish uchun suhbat shaklidagi o'zaro muloqotga imkon beradi. Tasavvur qiling, siz Python kodingiz nima uchun ishlamayotganini aniqlash va tuzatish uchun _SI_ modeldan foydalanmoqchisiz. Model javoban sizning qurilmangiz yoki siz ishlatayotgan Python versiyasi haqida qo'shimcha ma'lumot so'raydi. Faqatgina siz bu ma'lumotni taqdim etganingizdan so'nggina model xatolikni tuzatishga yordam bera oladi.
 
 Muloqot aylanishiga asoslangan baholash har bir natijaning sifatini baholaydi. Vazifaga asoslangan baholash esa tizimning vazifani yakunlagan-yakunlamaganini baholaydi. Ilova xatolikni tuzatishga yordam berdimi? Vazifani yakunlash uchun nechta muloqot aylanishi kerak bo'ldi? Tizimning muammoni ikki muloqot aylanishida hal qilishi bilan yigirma muloqot aylanishida hal qilishi o'rtasida katta farq bor.
 
 Foydalanuvchilarni aslida qiziqtiradigan narsa model ularga o'z vazifalarini bajarishda yordam bera olishi ekanligini hisobga olsak, vazifaga asoslangan baholash muhimroqdir. Biroq, vazifaga asoslangan baholashning qiyin bir jihati shundaki, vazifalar o'rtasidagi chegaralarni aniqlash qiyin bo'lishi mumkin. `ChatGPT` bilan bo'lgan suhbatingizni tasavvur qiling. Siz bir vaqtning o'zida bir nechta savol berishingiz mumkin. Yangi so'rov yuborganingizda, bu mavjud vazifaning davomimi yoki yangi vazifami?
 
-Vazifaga asoslangan baholashning bir misoli [`BIG-bench` benchmarklar to'plamidagi](https://arxiv.org/abs/2206.04615), klassik “Yigirmata savol” o'yinidan ilhomlangan `twenty_questions` benchmarkidir. Modelning bir nusxasi (Alice) olma, mashina yoki kompyuter kabi biror tushunchani tanlaydi. Modelning boshqa bir nusxasi (Bob) esa bu tushunchani aniqlashga harakat qilib, Alice'ga bir qator savollar beradi. Alice faqat “ha” yoki “yo'q” deb javob bera oladi. Natija Bob'ning tushunchani muvaffaqiyatli topa olganiga va buning uchun nechta savol sarflaganiga qarab belgilanadi. Quyida ushbu vazifadagi bo'lishi mumkin bo'lgan suhbatga misol keltirilgan, u [`BIG-bench`'ning GitHub repozitoriysidan](https://github.com/google/BIG-bench/blob/main/bigbench/benchmark_tasks/twenty_questions/README.md) olingan:
+Vazifaga asoslangan baholashning bir misoli [`BIG-bench` benchmarklar to'plamidagi](https://arxiv.org/abs/2206.04615), klassik “Yigirmata savol” o'yinidan ilhomlangan `twenty_questions` benchmarkidir. Modelning bir nusxasi (Alisa) olma, mashina yoki kompyuter kabi biror tushunchani tanlaydi. Modelning boshqa bir nusxasi (Bob) esa bu tushunchani aniqlashga harakat qilib, Alisaga bir qator savollar beradi. Alisa faqat “ha” yoki “yo'q” deb javob bera oladi. Natija Bobning tushunchani muvaffaqiyatli topa olganiga va buning uchun nechta savol sarflaganiga qarab belgilanadi. Quyida ushbu vazifadagi bo'lishi mumkin bo'lgan suhbatga misol keltirilgan, u [`BIG-bench`'ning GitHub repozitoriysidan](https://github.com/google/BIG-bench/blob/main/bigbench/benchmark_tasks/twenty_questions/README.md) olingan:
 
 ``` md
-Bob: "Bu tushuncha hayvonmi?"
-Alice: "Yo'q."
-Bob: "Bu tushuncha o'simlikmi?"
-Alice: "Ha."
-Bob: "U okeanda o'sadimi?"
-Alice: "Yo'q."
-Bob: "U daraxtda o'sadimi?"
-Alice: "Ha."
-Bob: "Bu olmami?"
+`Bob:` "Bu tushuncha hayvonmi?"
+`Alisa:` "Yo'q."
+`Bob:` "Bu tushuncha o'simlikmi?"
+`Alisa:` "Ha."
+`Bob:` "U okeanda o'sadimi?"
+`Alisa:` "Yo'q."
+`Bob:` "U daraxtda o'sadimi?"
+`Alisa:` "Ha."
+`Bob:` "Bu olmami?"
 
-    `[Bob'ning taxmini to'g'ri chiqdi va vazifa yakunlandi.]`
+    `[Bobning taxmini to'g'ri chiqdi va vazifa yakunlandi.]`
 ```
 
 ## 2-qadam. Baholash yo'riqnomasini ishlab chiqish
@@ -45,21 +45,21 @@ Baholash yo'riqnomasini tuzishda nafaqat ilova nima qilishi kerakligini, balki u
 
 ### Baholash mezonlarini belgilash
 
-Ko'pincha, baholashning eng qiyin qismi natijaning yaxshi ekanligini aniqlash emas, balki "yaxshi" degani aslida nimani anglatishini tushunishdir. Generativ SI ilovalarini bir yil davomida amaliyotga tatbiq etish tajribasiga nazar tashlab, [LinkedIn kompaniyasi](https://www.linkedin.com/feed/update/urn:li:activity:7189260630053261313/) duch kelgan ilk to'siq aynan baholash yo'riqnomasini ishlab chiqish bo'lganini ma'lum qildi. To'g'ri javob har doim ham yaxshi javob bo'lavermaydi. Masalan, ularning SI asosidagi "Ishga layoqatni baholash" ilovasi uchun "Siz bu ishga umuman to'g'ri kelmaysiz" degan javob to'g'ri bo'lishi mumkin, lekin foydali emas, shu sababli u yomon javob hisoblanadi. Yaxshi javob ushbu ish talablari va nomzodning tajribasi o'rtasidagi farqni hamda nomzod bu farqni bartaraf etish uchun nima qilishi mumkinligini tushuntirib berishi kerak.
+Ko'pincha, baholashning eng qiyin qismi natijaning yaxshi ekanligini aniqlash emas, balki "yaxshi" degani aslida nimani anglatishini tushunishdir. Generativ _SI_ ilovalarini bir yil davomida amaliyotga tatbiq etish tajribasiga nazar tashlab, [LinkedIn kompaniyasi](https://www.linkedin.com/feed/update/urn:li:activity:7189260630053261313/) duch kelgan ilk to'siq aynan baholash yo'riqnomasini ishlab chiqish bo'lganini ma'lum qildi. To'g'ri javob har doim ham yaxshi javob bo'lavermaydi. Masalan, ularning _SI_ asosidagi "Ishga layoqatni baholash" ilovasi uchun "Siz bu ishga umuman to'g'ri kelmaysiz" degan javob to'g'ri bo'lishi mumkin, lekin foydali emas, shu sababli u yomon javob hisoblanadi. Yaxshi javob ushbu ish talablari va nomzodning tajribasi o'rtasidagi farqni hamda nomzod bu farqni bartaraf etish uchun nima qilishi mumkinligini tushuntirib berishi kerak.
 
 Ilovangizni yaratishdan oldin, yaxshi javobni nima "yaxshi" qilishini o'ylab ko'ring. [LangChain'ning "State of AI 2023"](https://blog.langchain.com/langchain-state-of-ai-2023/) hisobotiga ko'ra, ularning foydalanuvchilari ilovani baholash uchun o'rtacha 2.3 xil turdagi fikr-mulohazadan (mezondan) foydalanganlar. Masalan, mijozlarni qo'llab-quvvatlash ilovasi uchun yaxshi javob uchta mezon yordamida ta'riflanishi mumkin:
 
--   **Muvofiqlik:** javob foydalanuvchi so'roviga mos keladi.
+-   **Aloqadorlik:** javob foydalanuvchi so'roviga mos keladi.
 -   **Faktik izchillik:** javob kontekstga faktlar jihatidan mos keladi.
 -   **Xavfsizlik:** javob toksik emas.
 
-Ushbu mezonlarni ishlab chiqish uchun siz test so'rovlari, ideal holda, real foydalanuvchi so'rovlari bilan tajriba qilib ko'rishingiz kerak bo'ladi. Bu test so'rovlarining har biri uchun o'zingiz mustail yoki SI modellar yordamida bir nechta javob yarating va ularning yaxshi yoki yomon ekanligini aniqlang.
+Ushbu mezonlarni ishlab chiqish uchun siz test so'rovlari, ideal holda, real foydalanuvchi so'rovlari bilan tajriba qilib ko'rishingiz kerak bo'ladi. Bu test so'rovlarining har biri uchun o'zingiz mustaqil yoki _SI_ modellar yordamida bir nechta javob yarating va ularning yaxshi yoki yomon ekanligini aniqlang.
 
 ### Baholash mezonlari jadvalini misollar bilan tuzish
 
 Har bir mezon uchun baholash tizimini tanlang: u ikkilik (0 va 1), 1 dan 5 gacha, 0 va 1 oralig'ida yoki boshqacha bo'ladimi? Masalan, javobning berilgan kontekstga faktik izchilligini baholash uchun ba'zi jamoalar ikkilik baholash tizimidan foydalanadilar: faktik noizchillik uchun 0 va faktik izchillik uchun 1. Ba'zi jamoalar uchta qiymatdan foydalanadilar: zidlik uchun -1, mantiqiy kelib chiqish (bir fikrning ikkinchisidan kelib chiqishi) uchun 1 va neytral holat uchun 0. Qaysi baholash tizimidan foydalanish sizning ma'lumotlaringiz va ehtiyojlaringizga bog'liq.
 
-Ushbu baholash tizimi asosida misollar bilan baholash mezonlari jadvalini tuzing. 1 ball olgan javob qanday ko'rinishda bo'ladi va nima uchun u 1 ballga loyiq? Baholash mezonlari jadvalingizni odamlar: o'zingiz, hamkasblaringiz, do'stlaringiz va hokazolar yordamida sinovdan o'tkazing. Agar odamlar bu mezonlar jadvaliga amal qilishga qiynalsa, uni bir ma'noli qilish uchun takomillashtirishingiz kerak bo'ladi. Bu jarayon ko'plab muhokamalar va o'zgartirishlarni talab qilishi mumkin, lekin bu zarur. Aniq yo'riqnoma — ishonchli baholash jarayonlar zanjirining negizidir. Shuningdek, 8-bobda muhokama qilinganidek, ushbu yo'riqnomadan keyinchalik o'qitish ma'lumotlariga izoh berish uchun ham qayta foydalanish mumkin.
+Ushbu baholash tizimi asosida misollar bilan rubrika (_rubric_) yarating. 1 ball olgan javob qanday ko'rinishda bo'ladi va nima uchun u 1 ballga loyiq? Rubrikangizni insonlar: o'zingiz, hamkasblaringiz, do'stlaringiz va boshqalar yordamida tekshirib ko'ring. Agar insonlar rubrikaga amal qilishda qiynalsa, uni noaniqliklardan xoli qilish uchun takomillashtirishingiz kerak. Bu jarayon ko'p bor qayta ishlashni talab qilishi mumkin, ammo bu zarur. Aniq yo'riqnoma — ishonchli baholash jarayonlar zanjirining negizidir. Shuningdek, 8-bobda muhokama qilinganidek, ushbu yo'riqnomadan keyinchalik o'qitish ma'lumotlariga izoh berish uchun ham qayta foydalanish mumkin.
 
 ### Baholash metrikalarini biznes metrikalari bilan bog'lash
 
@@ -73,9 +73,9 @@ Masalan, agar mijozlarni qo'llab-quvvatlash chatbotingizning faktik izchilligi 8
 
 Baholash metrikalarining biznes metrikalariga ta'sirini tushunish rejalashtirish uchun foydalidir. Agar ma'lum bir metrikani yaxshilashdan qancha foyda olishingizni bilsangiz, o'sha metrikani takomillashtirishga resurslar kiritish uchun o'zingizga ishonchingiz ortadi.
 
-Shuningdek, **foydalilik bo'sag'asini** aniqlash ham foydalidir: ilova foydali bo'lishi uchun qanday natijalarga erishishi kerak? Masalan, siz chatbotingiz foydali bo'lishi uchun uning faktik izchillik darajasi kamida 50% bo'lishi kerak, deb belgilashingiz mumkin. Bundan past har qanday ko'rsatkich uni hatto mijozlarning umumiy so'rovlari uchun ham yaroqsiz qilib qo'yadi.
+Shuningdek, **foydalilik chegarasini** (_usefulness threshold_) aniqlash ham foydalidir: ilova foydali bo'lishi uchun qanday natijalarga erishishi kerak? Masalan, siz chatbotingiz foydali bo'lishi uchun uning faktik izchillik darajasi kamida 50% bo'lishi kerak, deb belgilashingiz mumkin. Bundan past har qanday ko'rsatkich uni hatto mijozlarning umumiy so'rovlari uchun ham yaroqsiz qilib qo'yadi.
 
-SI baholash metrikalarini ishlab chiqishdan oldin, avvalo siz ko'zlayotgan biznes metrikalarini tushunib olish juda muhim. Ko'pgina ilovalar foydalanuvchilarni jalb qilish va ushlab qolish metrikalariga, masalan, kunlik, haftalik yoki oylik faol foydalanuvchilar soniga (_DAU_, _WAU_, _MAU_) e'tibor qaratadi. Boshqalari esa jalb qilishlik metrikalariga, masalan, bir oyda foydalanuvchi tomonidan boshlangan suhbatlar soni yoki har bir tashrif davomiyligiga ustuvorlik beradi — foydalanuvchi ilovada qancha uzoq qolsa, uning ketib qolish ehtimoli shuncha kamayadi. Qaysi metrikalarga ustuvorlik berishni tanlash go'yo foydani ijtimoiy mas'uliyat bilan muvozanatlashdek tuyulishi mumkin. Foydalanuvchilarni jalb qilish va ushlab qolish hamda jalb qilishlik metrikalariga urg'u berish yuqori daromadga olib kelishi mumkin bo'lsa-da, bu mahsulotning qaramlikka olib keluvchi xususiyatlarga yoki ekstremal kontentga ustuvorlik berishiga ham sabab bo'lishi mumkin, bu esa foydalanuvchilar uchun zararlidir.
+_SI_ baholash metrikalarini ishlab chiqishdan oldin, avvalo siz ko'zlayotgan biznes metrikalarini tushunib olish juda muhim. Ko'pgina ilovalar foydalanuvchilarni jalb qilish va ushlab qolish metrikalariga, masalan, kunlik, haftalik yoki oylik faol foydalanuvchilar soniga (_DAU_, _WAU_, _MAU_) e'tibor qaratadi. Boshqalari esa jalb qilishlik metrikalariga, masalan, bir oyda foydalanuvchi tomonidan boshlangan suhbatlar soni yoki har bir tashrif davomiyligiga ustuvorlik beradi — foydalanuvchi ilovada qancha uzoq qolsa, uning ketib qolish ehtimoli shuncha kamayadi. Qaysi metrikalarga ustuvorlik berishni tanlash go'yo foydani ijtimoiy mas'uliyat bilan muvozanatlashdek tuyulishi mumkin. Foydalanuvchilarni jalb qilish va ushlab qolish hamda jalb qilishlik metrikalariga urg'u berish yuqori daromadga olib kelishi mumkin bo'lsa-da, bu mahsulotning qaramlikka olib keluvchi xususiyatlarga yoki ekstremal kontentga ustuvorlik berishiga ham sabab bo'lishi mumkin, bu esa foydalanuvchilar uchun zararlidir.
 
 ## 3-qadam. Baholash usullari va ma'lumotlarini belgilash
 
@@ -83,19 +83,19 @@ Endi siz o'z mezonlaringiz va baholash jadvallarini ishlab chiqqaningizdan so'ng
 
 ### Baholash usullarini tanlash
 
-Turli mezonlar turli baholash usullarini talab qilishi mumkin. Masalan, toksiklikni aniqlash uchun kichik, ixtisoslashtirilgan toksiklik klassifikatoridan, javob va foydalanuvchining asl savoli o'rtasidagi muvofiqlikni o'lchash uchun semantik o'xshashlikdan, javob va butun kontekst o'rtasidagi faktik izchillikni o'lchash uchun esa SI-baholovchidan foydalanishingiz mumkin. Bir ma'noli baholash mezonlari jadvali va misollar ixtisoslashtirilgan baholovchilar va SI-baholovchilarning muvaffaqiyatli ishlashi uchun hal qiluvchi ahamiyatga ega bo'ladi.
+Turli mezonlar turli baholash usullarini talab qilishi mumkin. Masalan, toksiklikni aniqlash uchun kichik, ixtisoslashtirilgan toksiklik klassifikatoridan, javob va foydalanuvchining asl savoli o'rtasidagi muvofiqlikni o'lchash uchun semantik o'xshashlikdan, javob va butun kontekst o'rtasidagi faktik izchillikni o'lchash uchun esa _SI_-baholovchidan foydalanishingiz mumkin. Ixtisoslashgan baholovchilar va _SI_-baholovchilar muvaffaqiyatli bo'lishi uchun noaniqlikdan xoli baholash rubrikasi va misollar hal qiluvchi ahamiyatga ega bo'ladi.
 
-Bir xil mezon uchun turli baholash usullarini aralashtirib ishlatish ham mumkin. Masalan, sizda ma'lumotlaringizning 100%i bo'yicha past sifatli signallar beradigan arzon klassifikator va ma'lumotlarning 1%i bo'yicha yuqori sifatli signallar beradigan qimmat SI-baholovchi bo'lishi mumkin. Bu xarajatlarni me'yorida ushlab turgan holda, ilovangizga ma'lum darajada ishonch hosil qilish imkonini beradi.
+Bir xil mezon uchun turli baholash usullarini aralashtirib ishlatish ham mumkin. Masalan, sizda ma'lumotlaringizning 100%i bo'yicha past sifatli signallar beradigan arzon klassifikator va ma'lumotlarning 1%i bo'yicha yuqori sifatli signallar beradigan qimmat _SI_-baholovchi bo'lishi mumkin. Bu xarajatlarni me'yorida ushlab turgan holda, ilovangizga ma'lum darajada ishonch hosil qilish imkonini beradi.
 
-Qachonki _logprobs_ mavjud bo'lsa, ulardan foydalaning. _Logprobs_ modelning yaratilgan token bo'yicha qanchalik "ishonchi komil" ekanligini o'lchash uchun ishlatilishi mumkin. Bu ayniqsa klassifikatsiya uchun foydalidir. Masalan, agar siz modeldan uchta klassdan birini chiqarishni so'rasangiz va modelning bu uch klass uchun _logprobs_'i 30 dan 40% gacha oraliqda bo'lsa, bu model o'z bashorati haqida ishonchi komil emasligini anglatadi. Biroq, agar modelning bir klass uchun ehtimolligi 95% bo'lsa, bu model o'z bashoratiga juda ishonayotganini bildiradi. _Logprobs_'dan, shuningdek, modelning yaratilgan matn uchun _perplexity_'sini baholashda ham foydalanish mumkin, bu esa o'z navbatida ravonlik va faktik izchillik kabi ko'rsatkichlarni o'lchash uchun ishlatiladi.
+Qachonki _logprobs_ mavjud bo'lsa, ulardan foydalaning. _Logprobs_ modelning yaratilgan token bo'yicha qanchalik "ishonchi komil" ekanligini o'lchash uchun ishlatilishi mumkin. Bu ayniqsa klassifikatsiya uchun foydalidir. Masalan, agar siz modeldan uchta klassdan birini chiqarishni so'rasangiz va modelning bu uch klass uchun _logprobs_'i 30 dan 40% gacha oraliqda bo'lsa, bu model o'z prognozi haqida ishonchi komil emasligini anglatadi. Biroq, agar modelning bir klass uchun ehtimolligi 95% bo'lsa, bu model o'z prognoziga juda ishonayotganini bildiradi. _Logprobs_'dan, shuningdek, modelning yaratilgan matn uchun _perplexity_'sini baholashda ham foydalanish mumkin, bu esa o'z navbatida ravonlik va faktik izchillik kabi ko'rsatkichlarni o'lchash uchun ishlatiladi.
 
-Iloji boricha avtomatik metriklardan foydalaning, lekin zarur bo'lganda, hatto amaliyot jarayonida ham, inson tomonidan baholashga qaytishdan qo'rqmang. Inson-ekspertlar tomonidan model sifatini qo'lda baholash — SI sohasida uzoq vaqtdan beri mavjud bo'lgan amaliyotdir. Ochiq turdagi javoblarni baholashdagi qiyinchiliklarni hisobga olgan holda, ko'plab jamoalar o'z ilovalarini rivojlantirishda yo'l ko'rsatuvchi "Qutb yulduzi" metrikasi sifatida inson tomonidan baholashga qaramoqda. Har kuni siz inson-ekspertlar yordamida ilovangizning o'sha kundagi natijalarining bir qismini baholab, uning samaradorligidagi har qanday o'zgarishlarni yoki foydalanishdagi g'ayrioddiy holatlarni aniqlashingiz mumkin. Masalan, [LinkedIn](https://www.linkedin.com/blog/engineering/generative-ai/musings-on-building-a-generative-ai-product) o'zining SI tizimlari bilan bo'ladigan kunlik 500 tagacha suhbatni qo'lda baholash jarayonini ishlab chiqqan.
+Avtomatik metrikalardan imkon qadar ko'proq foydalaning, lekin hatto real amaliyotda ham insoniy baholashga murojaat qilishdan qo'rqmang. Inson-ekspertlar tomonidan model sifatini qo'lda baholash — _SI_ sohasida uzoq vaqtdan beri mavjud bo'lgan amaliyotdir. Ochiq turdagi javoblarni baholashdagi qiyinchiliklarni hisobga olgan holda, ko'plab jamoalar o'z ilovalarini rivojlantirishda yo'l ko'rsatuvchi "Qutb yulduzi" metrikasi sifatida inson tomonidan baholashga qaramoqda. Har kuni siz inson-ekspertlar yordamida ilovangizning o'sha kundagi natijalarining bir qismini baholab, uning samaradorligidagi har qanday o'zgarishlarni yoki foydalanishdagi g'ayrioddiy holatlarni aniqlashingiz mumkin. Masalan, [LinkedIn](https://www.linkedin.com/blog/engineering/generative-ai/musings-on-building-a-generative-ai-product) o'zining _SI_ tizimlari bilan bo'ladigan kunlik 500 tagacha suhbatni qo'lda baholash jarayonini ishlab chiqqan.
 
-Baholash usullarini nafaqat tajriba bosqichida, balki amaliyot jarayonida ham qo'llashni ko'rib chiqing. Tajriba paytida sizda ilovangiz natijalarini solishtirish uchun etalon ma'lumotlar bo'lishi mumkin, amaliyot jarayonida esa etalon ma'lumotlar darhol mavjud bo'lmasligi mumkin. Biroq, amaliyot jarayonida sizda haqiqiy foydalanuvchilar bor. Foydalanuvchilardan qanday turdagi fikr-mulohazalar olishni xohlashingiz, foydalanuvchi fikr-mulohazalari boshqa baholash metrikalari bilan qanday bog'liqligi va ilovangizni yaxshilash uchun foydalanuvchi fikr-mulohazalaridan qanday foydalanish haqida o'ylab ko'ring. Foydalanuvchi fikr-mulohazalarini qanday yig'ish 10-bobda muhokama qilinadi.
+Baholash usullarini nafaqat tajriba bosqichida, balki real amaliyotda ham qo'llashni ko'rib chiqing. Tajriba paytida sizda ilovangiz natijalarini solishtirish uchun etalon ma'lumotlar bo'lishi mumkin, real amaliyotda esa etalon ma'lumotlar darhol mavjud bo'lmasligi mumkin. Biroq, real amaliyotda sizda haqiqiy foydalanuvchilar bor. Foydalanuvchilardan qanday turdagi fikr-mulohazalar olishni xohlashingiz, foydalanuvchi fikr-mulohazalari boshqa baholash metrikalari bilan qanday bog'liqligi va ilovangizni yaxshilash uchun foydalanuvchi fikr-mulohazalaridan qanday foydalanish haqida o'ylab ko'ring. Foydalanuvchi fikr-mulohazalarini qanday yig'ish 10-bobda muhokama qilinadi.
 
 ### Baholash ma'lumotlariga izoh berish
 
-Ilovangizni baholash uchun izohlangan misollar to'plamini saralab, shakllantiring. Sizga ham muloqot aylanishiga, ham vazifaga asoslangan baholash uchun tizimingizning har bir komponentini va har bir mezonni baholash uchun izohlangan ma'lumotlar kerak bo'ladi. Iloji bo'lsa, amaldagi, real ma'lumotlardan (_production data_) foydalaning. Agar ilovangizda siz foydalanishingiz mumkin bo'lgan tabiiy izohlar mavjud bo'lsa, bu a'lo. Agar bo'lmasa, ma'lumotlaringizga izoh berish uchun insonlardan yoki SI'dan foydalanishingiz mumkin. 8-bobda SI tomonidan yaratilgan ma'lumotlar muhokama qilinadi. Bu bosqichning muvaffaqiyati, shuningdek, baholash mezonlari jadvalining aniqligiga ham bog'liq. Agar keyinchalik _finetuning_ qilishni tanlasangiz, baholash uchun yaratilgan izoh berish yo'riqnomasidan _finetuning_ uchun o'rgatuvchi ma'lumotlarni yaratishda qayta foydalanish mumkin.
+Ilovangizni baholash uchun izohlangan misollar to'plamini saralab, shakllantiring. Sizga ham muloqot aylanishiga, ham vazifaga asoslangan baholash uchun tizimingizning har bir komponentini va har bir mezonni baholash uchun izohlangan ma'lumotlar kerak bo'ladi. Iloji bo'lsa, amaldagi, real ma'lumotlardan (_production data_) foydalaning. Agar ilovangizda siz foydalanishingiz mumkin bo'lgan tabiiy izohlar mavjud bo'lsa, bu a'lo. Agar bo'lmasa, ma'lumotlaringizga izoh berish uchun insonlardan yoki _SI_'dan foydalanishingiz mumkin. 8-bobda _SI_ tomonidan yaratilgan ma'lumotlar muhokama qilinadi. Bu bosqichning muvaffaqiyati, shuningdek, baholash mezonlari jadvalining aniqligiga ham bog'liq. Agar keyinchalik _finetuning_ qilishni tanlasangiz, baholash uchun yaratilgan izoh berish yo'riqnomasidan _finetuning_ uchun o'rgatuvchi ma'lumotlarni yaratishda qayta foydalanish mumkin.
 
 #### Ma'lumotlarni qismlarga ajratish (_slicing_)
 
@@ -135,7 +135,7 @@ Baholash natijalari nafaqat tizimni alohida baholash, balki tizimlarni o'zaro so
 
 > **Maslahat**
 >
-> ["OpenAI"](https://platform.openai.com/docs/guides/prompt-engineering/strategy-test-changes-systematically) bir tizimning yaxshiroq ekanligiga ishonch hosil qilish uchun, natijalar farqiga qarab, zarur bo'lgan baholash namunalari sonining taxminiy hisob-kitobini taklif qilgan (4-7-jadvalga qarang). Foydali bir qoida shundaki, natijalar farqidagi har 3 barobar kamayish uchun zarur bo'lgan namunalar soni 10 barobar ortadi.[^28]
+> [OpenAI](https://platform.openai.com/docs/guides/prompt-engineering/strategy-test-changes-systematically) bir tizimning yaxshiroq ekanligiga ishonch hosil qilish uchun, natijalar farqiga qarab, zarur bo'lgan baholash namunalari sonining taxminiy hisob-kitobini taklif qilgan (4-7-jadvalga qarang). Foydali qoida shuki, ballar farqining har 3 baravar kamayishi uchun kerakli namunalar soni 10 baravar ortadi.[^28]
 
 | Natijalardagi farq | 95% ishonch uchun zarur bo'lgan namunalar soni |
 | :--- | :--- |
@@ -144,13 +144,13 @@ Baholash natijalari nafaqat tizimni alohida baholash, balki tizimlarni o'zaro so
 | 3% | ~1,000 |
 | 1% | ~10,000 |
 
-<div className='text-center text-sm italic'>4-7-jadval. Bir tizimning yaxshiroq ekanligiga 95% ishonch hosil qilish uchun zarur bo'lgan baholash namunalari sonining taxminiy hisob-kitobi. Qiymatlar "OpenAI"dan olingan.</div>
+<div className='text-center text-sm italic'>4-7-jadval. Bir tizimning yaxshiroq ekanligiga 95% ishonch hosil qilish uchun zarur bo'lgan baholash namunalari sonining taxminiy hisob-kitobi. Qiymatlar OpenAI'dan olingan.</div>
 
 Ma'lumot uchun, [Eleuther'ning `lm-evaluation-harness`](https://github.com/EleutherAI/lm-evaluation-harness/blob/master/docs/task_table.md) vositasidagi baholash benchmarklari orasida namunalarning mediana soni 1,000 tani, o'rtacha soni esa 2,159 tani tashkil etadi. ["Inverse Scaling" mukofoti](https://irmckenzie.co.uk/round1) tashkilotchilari 300 ta namuna mutlaq minimum ekanligini va ular kamida 1,000 ta namunani afzal ko'rishlarini ta'kidlashgan, ayniqsa, agar namunalar sintez qilinayotgan bo'lsa ([McKenzie va boshq., 2023](https://arxiv.org/abs/2306.09479)).
 
 ### Baholash jarayonlar zanjiringizni baholash
 
-Baholash jarayonlar zanjiringizni baholash ham uning ishonchliligini oshirishga, ham uni yanada samaraliroq qilish yo'llarini topishga yordam beradi. Ishonchlilik, ayniqsa, SI-baholovchi kabi subyektiv baholash usullarida juda muhimdir.
+Baholash jarayonlar zanjiringizni baholash ham uning ishonchliligini oshirishga, ham uni yanada samaraliroq qilish yo'llarini topishga yordam beradi. Ishonchlilik, ayniqsa, _SI_-baholovchi kabi subyektiv baholash usullarida juda muhimdir.
 
 Baholash jarayonlar zanjiringizning sifati haqida o'zingizga berishingiz kerak bo'lgan ba'zi savollar:
 
@@ -158,10 +158,10 @@ Baholash jarayonlar zanjiringizning sifati haqida o'zingizga berishingiz kerak b
     Yaxshiroq javoblar haqiqatan ham yuqoriroq ball olyaptimi? Yaxshiroq baholash metrikalari yaxshiroq biznes natijalariga olib kelyaptimi?
 
 -   **Baholash jarayonlar zanjiringiz qanchalik ishonchli?**
-    Agar bir xil jarayonlar zanjirini ikki marta ishga tushirsangiz, har xil natijalar olasizmi? Agar jarayonlar zanjirini turli baholash ma'lumotlar to'plamlari bilan bir necha marta ishga tushirsangiz, baholash natijalaridagi o'zgaruvchanlik (_variance_) qanday bo'ladi? Siz baholash jarayonlar zanjiringizda takrorlanuvchanlikni oshirish va o'zgaruvchanlikni kamaytirishni maqsad qilishingiz kerak. Baholash konfiguratsiyalaringizda izchil bo'ling. Masalan, agar SI-baholovchidan foydalansangiz, uning _temperature_ (tasodifiylik darajasi) parametrini 0 ga o'rnatganingizga ishonch hosil qiling.
+    Agar bir xil jarayonlar zanjirini ikki marta ishga tushirsangiz, har xil natijalar olasizmi? Agar jarayonlar zanjirini turli baholash ma'lumotlar to'plamlari bilan bir necha marta ishga tushirsangiz, baholash natijalaridagi o'zgaruvchanlik (_variance_) qanday bo'ladi? Siz baholash jarayonlar zanjiringizda takrorlanuvchanlikni oshirish va o'zgaruvchanlikni kamaytirishni maqsad qilishingiz kerak. Baholash konfiguratsiyalaringizda izchil bo'ling. Masalan, agar _SI_-baholovchidan foydalansangiz, uning _temperature_ (tasodifiylik darajasi) parametrini 0 ga o'rnatganingizga ishonch hosil qiling.
 
 -   **Metrikalaringiz o'zaro qanchalik bog'liq (korrelyatsiyada)?**
-    ["Benchmarklarni tanlash va natijalarni umumlashtirish"](/books/ai-engineering/4-evaluate-ai-systems/model-selection#benchmarklarni-tanlash-va-natijalarni-umumlashtirish) bo'limida muhokama qilinganidek, agar ikkita metrika bir-biri bilan to'liq korrelyatsiyada bo'lsa, sizga ularning ikkalasi ham kerak emas. Boshqa tomondan, agar ikkita metrika umuman korrelyatsiyada bo'lmasa, bu yo modelingiz haqida qiziqarli bir tushunchani anglatadi yoki metrikalaringiz shunchaki ishonchli emasligini bildiradi.[^29]
+    ["Benchmarklarni tanlash va natijalarni umumlashtirish"](/books/ai-engineering/4-evaluate-ai-systems/model-selection#benchmarklarni-tanlash-va-natijalarni-umumlashtirish) bo'limida muhokama qilinganidek, agar ikkita metrika bir-biri bilan to'liq bog'liq bo'lsa, sizga ularning ikkalasi ham kerak emas. Boshqa tomondan, agar ikkita metrika umuman bog'liq bo'lmasa, bu yo modelingiz haqida qiziqarli bir tushunchani anglatadi yoki metrikalaringiz shunchaki ishonchli emasligini bildiradi.[^29]
 
 -   **Baholash jarayonlar zanjiringiz ilovangizga qancha xarajat va kechikish qo'shmoqda?**
     Agar ehtiyotkorlik bilan amalga oshirilmasa, baholash ilovangizga sezilarli darajada kechikish va xarajat qo'shishi mumkin. Ba'zi jamoalar kechikishni kamaytirish umidida baholashdan voz kechishga qaror qilishadi. Bu xavfli tavakkaldir.
@@ -171,7 +171,7 @@ Baholash jarayonlar zanjiringizning sifati haqida o'zingizga berishingiz kerak b
 
 Sizning ehtiyojlaringiz va foydalanuvchilar xatti-harakatlari o'zgargani sari, baholash mezonlaringiz ham o'zgarib boradi va siz o'z baholash jarayonlar zanjiringizni doimiy takomillashtirib borishingiz kerak bo'ladi. Sizga baholash mezonlarini yangilash, baholash mezonlari jadvalini o'zgartirish hamda misollarni qo'shish yoki olib tashlash kerak bo'lishi mumkin. Takomillashtirib borish zarur bo'lsa-da, siz o'z baholash jarayonlar zanjiringizdan ma'lum darajadagi barqarorlikni kutishingiz kerak. Agar baholash jarayoni doimiy o'zgarib tursa, siz baholash natijalaridan ilovangizni rivojlantirishda yo'naltiruvchi vosita sifatida foydalana olmaysiz.
 
-Baholash jarayonlar zanjiringizni takomillashtirib borar ekansiz, tajribalarni to'g'ri kuzatib borishga ishonch hosil qiling: baholash jarayonida o'zgarishi mumkin bo'lgan barcha o'zgaruvchilarni, jumladan, baholash ma'lumotlari, mezonlar jadvali hamda SI-baholovchilar uchun ishlatiladigan prompt va _sampling_ (namuna olish) konfiguratsiyalarini qayd etib boring.
+Baholash jarayonlar zanjiringizni takomillashtirib borar ekansiz, tajribalarni to'g'ri kuzatib borishga ishonch hosil qiling: baholash jarayonida o'zgarishi mumkin bo'lgan barcha o'zgaruvchilarni, jumladan, baholash ma'lumotlari, mezonlar jadvali hamda _SI_-baholovchilar uchun ishlatiladigan prompt va _sampling_ (namuna olish) konfiguratsiyalarini qayd etib boring.
 
 
 ### Izohlar
@@ -180,4 +180,4 @@ Baholash jarayonlar zanjiringizni takomillashtirib borar ekansiz, tajribalarni t
 
 [^28]: Buning sababi, 10 ning kvadrat ildizi taxminan 3.3 ga teng.
 
-[^29]: Masalan, agar tarjima bo'yicha benchmark va matematika bo'yicha benchmark o'rtasida hech qanday korrelyatsiya bo'lmasa, siz modelning tarjima qobiliyatini yaxshilash uning matematika qobiliyatiga hech qanday ta'sir qilmaydi, deb xulosa qilishingiz mumkin.
+[^29]: Masalan, agar tarjima bo'yicha benchmark va matematika bo'yicha benchmark o'rtasida hech qanday bog'liqlik bo'lmasa, siz modelning tarjima qobiliyatini yaxshilash uning matematika qobiliyatiga hech qanday ta'sir qilmaydi, deb xulosa qilishingiz mumkin.
