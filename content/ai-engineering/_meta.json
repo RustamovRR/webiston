@@ -108,6 +108,10 @@
       "design-your-pipeline-evaluation": {
         "title": "Baholash jarayonlar zanjirini loyihalash",
         "path": "4-evaluate-ai-systems/design-your-pipeline-evaluation/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "4-evaluate-ai-systems/summary/page"
       }
     }
   },
