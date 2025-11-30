@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import mediumZoom from 'medium-zoom'
 
 interface ImageViewerProps {
@@ -26,7 +26,7 @@ export default function ImageViewer({ src, alt }: ImageViewerProps) {
   }, [])
 
   return (
-    <div className="relative m-0 w-full overflow-hidden rounded-lg shadow-lg">
+    <span className="relative block w-full overflow-hidden rounded-lg shadow-lg">
       <Image
         ref={imgRef}
         src={src}
@@ -38,6 +38,6 @@ export default function ImageViewer({ src, alt }: ImageViewerProps) {
         style={{ width: '100%', height: 'auto' }}
         priority={false}
       />
-    </div>
+    </span>
   )
 }

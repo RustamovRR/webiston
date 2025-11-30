@@ -1,5 +1,4 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import Link from 'next/link'
 import React from 'react'
 
 // Plugins
@@ -15,6 +14,7 @@ import VideoEmbed from '../VideoEmbed'
 import ImageViewer from '../ImageViewer'
 import HeadingLink from './HeadingLink'
 import CustomLink from './CustomLink'
+import CustomParagraph from './CustomParagraph'
 
 interface MDXContentProps {
   source: string
@@ -61,7 +61,7 @@ const components = {
       {props.children}
     </HeadingLink>
   ),
-  p: (props: any) => <p className="!m-0 !mt-6" {...props} />,
+  p: (props: any) => <CustomParagraph {...props} />,
   ul: (props: any) => {
     return (
       <ul className="m-0 mt-6 list-disc pl-4" {...props}>
@@ -134,7 +134,8 @@ const components = {
       )
     }
 
-    return <div className="w-full" {...props} />
+    // Use span with block display to avoid <p> nesting issues
+    return <span className="block w-full" {...props} />
   },
 
   // Handle video tag directly
