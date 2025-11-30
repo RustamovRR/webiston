@@ -1,14 +1,14 @@
 # Prompt muhandisligining eng yaxshi amaliyotlari
 
-Prompt muhandisligi, ayniqsa, kuchsizroq modellar bilan ishlaganda, haddan tashqari "hacky" (noan'anaviy, aylanma yo'llarni izlash) tus olishi mumkin. Prompt muhandisligining ilk davrlarida "Questions:" o'rniga "Q:" deb yozish yoki modellarni "to'g'ri javob uchun $300 choychaqa" va'dasi bilan yaxshiroq javob berishga undash kabi maslahatlarga to'la ko'plab qo'llanmalar paydo bo'ldi. Garchi bu maslahatlar ba'zi modellar uchun foydali bo'lishi mumkin bo'lsa-da, modellar ko'rsatmalarga amal qilishda ustamon va prompt o'zgarishlariga chidamliroq bo'lib borgani sari, ular o'z ahamiyatini yo'qotib boradi.
+Prompt muhandisligi, ayniqsa kuchsizroq modellar uchun, aql bovar qilmas darajada "nayrangbozlikka" (_hacky_) aylanib ketishi mumkin. Prompt muhandisligining ilk davrlarida "Questions:" o'rniga "Q:" deb yozish yoki modellarni "to'g'ri javob uchun $300 choychaqa" va'dasi bilan yaxshiroq javob berishga undash kabi maslahatlarga to'la ko'plab qo'llanmalar paydo bo'ldi. Garchi bu maslahatlar ba'zi modellar uchun foydali bo'lishi mumkin bo'lsa-da, modellar ko'rsatmalarga amal qilishda ustamon va prompt o'zgarishlariga chidamliroq bo'lib borgani sari, ular o'z ahamiyatini yo'qotib boradi.
 
-Ushbu bo'limda keng doiradagi modellar bilan ishlashi isbotlangan va yaqin kelajakda ham o'z dolzarbligini saqlab qolishi ehtimoli yuqori bo'lgan umumiy usullarga e'tibor qaratiladi. Ular ["OpenAI"](https://platform.openai.com/docs/guides/prompt-engineering/six-strategies-for-getting-better-results), ["Anthropic"](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview), ["Meta"](https://www.llama.com/docs/how-to-guides/prompting/) va ["Google"](https://services.google.com/fh/files/misc/gemini-for-google-workspace-prompting-guide-101.pdf) kabi model ishlab chiquvchilari tomonidan yaratilgan prompt muhandisligi qo'llanmalaridan hamda generativ SI ilovalarini muvaffaqiyatli joriy etgan jamoalar tomonidan ulashilgan eng yaxshi amaliyotlardan saralab olingan. Shuningdek, bu kompaniyalar ko'pincha siz andoza olishingiz mumkin bo'lgan oldindan tayyorlangan promptlar kutubxonalarini ham taqdim etishadi — ["Anthropic"](https://docs.claude.com/en/resources/prompt-library/library), ["Google"](https://console.cloud.google.com/appeal?project=uplifted-air-476614-r8) va ["OpenAI"ga](https://platform.openai.com/docs/examples) qarang.
+Ushbu bo'limda keng doiradagi modellar bilan ishlashi isbotlangan va yaqin kelajakda ham o'z dolzarbligini saqlab qolishi ehtimoli yuqori bo'lgan umumiy usullarga e'tibor qaratiladi. Ular [OpenAI](https://platform.openai.com/docs/guides/prompt-engineering/six-strategies-for-getting-better-results), [Anthropic](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview), [Meta](https://www.llama.com/docs/how-to-guides/prompting/) va [Google](https://services.google.com/fh/files/misc/gemini-for-google-workspace-prompting-guide-101.pdf) kabi model ishlab chiquvchilari tomonidan yaratilgan prompt muhandisligi qo'llanmalaridan hamda generativ _SI_ ilovalarini muvaffaqiyatli joriy etgan jamoalar tomonidan ulashilgan eng yaxshi amaliyotlardan saralab olingan. Shuningdek, bu kompaniyalar ko'pincha siz andoza olishingiz mumkin bo'lgan oldindan tayyorlangan promptlar kutubxonalarini ham taqdim etishadi — [Anthropic](https://docs.claude.com/en/resources/prompt-library/library), [Google](https://console.cloud.google.com/appeal?project=uplifted-air-476614-r8) va [OpenAI'ga](https://platform.openai.com/docs/examples) razm soling.
 
-Ushbu umumiy amaliyotlardan tashqari, har bir modelning o'ziga xos "qiliqlari" bo'lishi mumkinki, ular maxsus prompt hiylalariga javob beradi. Biror model bilan ishlayotganda, aynan o'sha modelga xos bo'lgan prompt muhandisligi qo'llanmalarini izlashingiz kerak.
+Ushbu umumiy amaliyotlardan tashqari, har bir modelning o'ziga xos "qiliqlari" bo'lishi mumkinki, ular maxsus prompt hiylalariga o'zgacha javob qaytaradi. Biror model bilan ishlayotganda, aynan o'sha modelga xos bo'lgan prompt muhandisligi qo'llanmalarini izlashingiz kerak.
 
 ## Aniq va tushunarli ko'rsatmalar yozing
 
-SI bilan muloqot qilish insonlar bilan muloqot qilish bilan bir xil: aniqlik yordam beradi. Quyida aniq ko'rsatmalar yozish bo'yicha bir nechta maslahatlar keltirilgan.
+_SI_ bilan muloqot qilish insonlar bilan muloqot qilish bilan bir xil: aniqlik yordam beradi. Quyida aniq ko'rsatmalar yozish bo'yicha bir nechta maslahatlar keltirilgan.
 
 ### Modeldan nima xohlayotganingizni noaniqliklarsiz tushuntiring
 
@@ -26,11 +26,11 @@ Personaj modelga javoblar yaratishda qanday nuqtai nazardan foydalanishi kerakli
 
 ### Misollar keltiring
 
-Misollar modeldan qanday javob kutayotganingiz borasidagi noaniqliklarni kamaytirishi mumkin. Tasavvur qiling, siz yosh bolalar bilan suhbatlashadigan bot yaratyapsiz. "Rojdestvoda Santa menga sovg'alar olib keladimi?" degan savolga model Santa Klaus to'qima personaj ekanligini va shu sababli hech kimga Rojdestvo sovg'alarini olib kela olmasligini aytishi mumkin. Bunday javob botingizni foydalanuvchilaringizga sevdirib qo'ymaydi.
+Misollar modeldan qanday javob kutayotganingiz borasidagi noaniqliklarni kamaytirishi mumkin. Tasavvur qiling, siz yosh bolalar bilan suhbatlashadigan bot yaratyapsiz. "Rojdestvoda Santa menga sovg'alar olib keladimi?" degan savolga model Santa Klaus to'qima personaj ekanligini va shu sababli hech kimga Rojdestvo sovg'alarini olib kela olmasligini aytishi mumkin. Bunday javob botingiz foydalanuvchilariga manzur kelmasligi aniq.
 
 Buning oldini olish uchun siz modelga to'qima personajlar haqidagi savollarga qanday javob berish kerakligiga misollar keltirishingiz mumkin, masalan, 5-1-jadvalda ko'rsatilganidek, tish parilari mavjud deb aytish orqali.
 
-| | Foydalanuvchi prompti | SI javobi |
+| | Foydalanuvchi prompti | _SI_ javobi |
 | :--- | :--- | :--- |
 | **Misolsiz** | Rojdestvoda Santa menga sovg'alar olib keladimi? | Santa Klaus — bu bolalar ishonadigan to'qima personaj bo'lib, o'zining chanasi, bug'ulari va Rojdestvo oqshomidagi sovg'a ulashish sayohati haqidagi hikoyalari bilan Rojdestvoga sehr va hayajon olib keladi. Ko'pgina ota-onalar bu ishonchni qo'llab-quvvatlaydilar, chunki u bolalar uchun qo'shimcha qiziqarlilik va hayrat qatlamini qo'shadi. |
 | **Misol bilan** | S: Tish parisi haqiqiymi?<br/>J: Albatta! Bugun kechqurun tishingni yostig'ing ostiga qo'y. Tish parisi kelib, senga biror narsa qoldirib ketishi mumkin.<br/><br/>S: Rojdestvoda Santa menga sovg'alar olib keladimi? | Ha, albatta! Santa unga ishongan va yil davomida yaxshi bola bo'lgan bolalarga sovg'alar olib kelishni yaxshi ko'radi. Faqatgina sen juda ham yaxshi bola bo'lishing, bir nechta pechenye qoldirishing kerak, shunda Rojdestvo tongida archa tagida sovg'alarni topib uyg'onishing mumkin! |
@@ -72,7 +72,7 @@ Siz modelga kerakli kontekstni o'zingiz taqdim etishingiz yoki unga kontekstni y
 >
 > Modelni faqat kontekst bilan cheklash ancha murakkab vazifa. "Faqat taqdim etilgan kontekstdan foydalanib javob bering" kabi aniq ko'rsatmalar, shuningdek, u javob bera olmasligi kerak bo'lgan savollarga oid misollar yordam berishi mumkin. Siz shuningdek, modelga o'z javobini taqdim etilgan manbaning aynan qayeridan olganini iqtibos keltirishni buyurishingiz ham mumkin. Bu yondashuv modelni faqat kontekst tomonidan qo'llab-quvvatlanadigan javoblarni yaratishga undashi mumkin.
 >
-> Biroq, model barcha ko'rsatmalarga amal qilishiga hech qanday kafolat yo'qligi sababli, birgina _prompting_'ning o'zi kerakli natijani ishonchli tarzda ta'minlay olmasligi mumkin. Modelni o'zingizning ma'lumotlar manbangizda _finetuning_ qilish yana bir variant, lekin dastlabki o'qitish ma'lumotlari (_pre-training data_) baribir uning javoblariga "sizib chiqishi" mumkin. Eng xavfsiz usul — bu modelni faqat ruxsat etilgan bilimlar manbasida o'qitishdir, garchi bu aksariyat amaliy vaziyatlar uchun imkonsiz bo'lsa ham. Bundan tashqari, bunday manba yuqori sifatli modelni o'qitish uchun juda cheklangan bo'lishi ham mumkin.
+> Biroq, model barcha ko'rsatmalarga amal qilishiga hech qanday kafolat yo'qligi sababli, birgina promptlashning o'zi kerakli natijani ishonchli tarzda ta'minlay olmasligi mumkin. Modelni o'zingizning ma'lumotlar manbangizda _finetuning_ qilish yana bir variant, lekin dastlabki o'qitish ma'lumotlari (_pre-training data_) baribir uning javoblariga "sizib chiqishi" mumkin. Eng xavfsiz usul — bu modelni faqat ruxsat etilgan bilimlar manbasida o'qitishdir, garchi bu aksariyat ishlatilish senariylari uchun imkonsiz bo'lsa ham. Bundan tashqari, bunday manba yuqori sifatli modelni o'qitish uchun juda cheklangan bo'lishi ham mumkin.
 
 ## Murakkab vazifalarni soddaroq kichik vazifalarga ajrating
 
@@ -81,15 +81,15 @@ Bir nechta bosqichlarni talab qiladigan murakkab vazifalar uchun, ularni kichik 
 1.  **Niyatni aniqlash:** so'rovning asl maqsadini (niyatini) aniqlash.
 2.  **Javobni yaratish:** shu niyatga asoslanib, modelga qanday javob berish kerakligini ko'rsatish. Agar o'nta ehtimoliy niyat bo'lsa, sizga o'nta turli xil prompt kerak bo'ladi.
 
-["OpenAI"ning prompt muhandisligi qo'llanmasidan](https://platform.openai.com/docs/guides/prompt-engineering/strategy-split-complex-tasks-into-simpler-subtasks) olingan quyidagi misolda niyatni aniqlash prompti va bitta niyat (nosozliklarni bartaraf etish) uchun mo'ljallangan prompt ko'rsatilgan. Qisqaroq bo'lishi uchun promptlar biroz o'zgartirilgan:
+[OpenAI'ning prompt muhandisligi qo'llanmasidan](https://platform.openai.com/docs/guides/prompt-engineering/strategy-split-complex-tasks-into-simpler-subtasks) olingan quyidagi misolda niyatni aniqlash prompti va bitta niyat (nosozliklarni bartaraf etish) uchun mo'ljallangan prompt ko'rsatilgan. Qisqaroq bo'lishi uchun promptlar biroz o'zgartirilgan:
 
-``` md
-Prompt 1 (Niyatni aniqlash)
+``` txt
+"Prompt 1 (Niyatni aniqlash)"
 
 TIZIM
 `Sizga mijozlarga xizmat ko'rsatish so'rovlari taqdim etiladi. Har bir so'rovni 
 birlamchi va ikkilamchi toifaga ajrating. Natijani json formatida, 
-"primary" va "secondary" kalitlari bilan taqdim eting.`
+birlamchi va ikkilamchi kalitlari bilan taqdim eting.`
 
 `Birlamchi toifalar: To'lovlar, Texnik Yordam, Hisobni Boshqarish yoki Umumiy Ma'lumot.`
 
@@ -153,7 +153,7 @@ Ilovangizni takomillashtirish ustida ishlar ekansiz, promptingiz tezda murakkabl
 
 ## Modelga "o'ylash" uchun vaqt bering
 
-Siz modelni biror savol haqida, yaxshiroq so'z topa olmaganim uchun aytaman, "o'ylash" uchun ko'proq vaqt sarflashga **"fikrlar zanjiri"** (_Chain-of-Thought_ yoki _CoT_) va **o'z-o'zini tanqid qilish** (_self-critique_) promptlari yordamida undashingiz mumkin.
+Siz modelni biror savol haqida, yaxshiroq so'z topa olmaganim uchun aytaman, "o'ylash" uchun ko'proq vaqt sarflashga **fikrlar zanjiri** (_Chain-of-Thought_ yoki _CoT_) va **o'z-o'zini tanqid qilish** (_self-critique_) promptlari yordamida undashingiz mumkin.
 
 "Fikrlar zanjiri" — bu modeldan muammoni yechishda tizimliroq yondashuvga undash maqsadida, undan aniq qilib bosqichma-bosqich fikrlashni so'rash demakdir. _CoT_ ko'plab modellar uchun birdek yaxshi ishlaydigan dastlabki promptlash usullaridan biridir. U `ChatGPT` paydo bo'lishidan deyarli bir yil oldin, "Fikrlar Zanjiri Promptlashi Katta Til Modellarida Mantiqiy Fikrlashni Yuzaga Keltiradi" (_"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"_) ([Wei va boshq., 2022](https://arxiv.org/abs/2201.11903)) nomli maqolada taqdim etilgan. 5-6-rasmda _CoT_ turli o'lchamdagi modellarning (`LaMDA`, `GPT-3` va `PaLM`) turli benchmarklardagi samaradorligini qanday oshirgani ko'rsatilgan. [LinkedIn](https://www.linkedin.com/blog/engineering/generative-ai/musings-on-building-a-generative-ai-product) _CoT_ shuningdek, modellarning gallyutsinatsiyalarini ham kamaytirishini aniqlagan.
 
@@ -178,7 +178,7 @@ Promptni qismlarga ajratish kabi, _CoT_ va o'z-o'zini tanqid qilish ham foydalan
 
 ## Promptlaringizni doimiy takomillashtirib boring
 
-Prompt muhandisligi uzluksiz sinov va moslashtirishni talab qiladi. Modelni yaxshiroq tushuna borganingiz sari, promptlaringizni qanday yozish bo'yicha ham yaxshiroq g'oyalarga ega bo'lasiz. Masalan, agar siz modeldan eng yaxshi videoo'yinni tanlashni so'rasangiz, u fikrlar turlicha ekanligini va hech bir videoo'yin mutlaq eng yaxshi deb hisoblana olmasligini aytishi mumkin. Bu javobni ko'rgach, siz promptingizni qayta ko'rib chiqib, fikrlar turlicha bo'lsa ham, modeldan biror o'yinni tanlashni so'rashingiz mumkin.
+Prompt muhandisligi uzluksiz sinov va moslashtirishni talab qiladi. Modelni yaxshiroq tushuna borganingiz sari, promptlaringizni qanday yozish bo'yicha ham yaxshiroq g'oyalarga ega bo'lasiz. Masalan, agar siz modeldan eng yaxshi video o'yinni tanlashni so'rasangiz, u fikrlar turlicha ekanligini va hech bir video o'yin mutlaq eng yaxshi deb hisoblana olmasligini aytishi mumkin. Bu javobni ko'rgach, siz promptingizni qayta ko'rib chiqib, fikrlar turlicha bo'lsa ham, modeldan biror o'yinni tanlashni so'rashingiz mumkin.
 
 Har bir modelning o'ziga xos "qiliqlari" bor. Bir model raqamlarni yaxshiroq tushunishi, boshqasi esa rol o'ynashda ustamon bo'lishi mumkin. Bir model tizim ko'rsatmalarini promptning boshida afzal ko'rsa, boshqasi ularni oxirida afzal ko'rishi mumkin. Modelingiz bilan "tanishib chiqish" uchun u bilan tajriba qilib ko'ring. Turli xil promptlarni sinab ko'ring. Agar mavjud bo'lsa, model ishlab chiquvchisi tomonidan taqdim etilgan promptlash bo'yicha qo'llanmani o'qing. Boshqa odamlarning onlayn tajribalarini qidirib ko'ring. Agar mavjud bo'lsa, modelning _playground_'idan (tajriba maydonchasidan) foydalaning. Turli modellarda bir xil promptni ishlatib, ularning javoblari qanday farq qilishini ko'ring — bu sizga o'z modelingizni yaxshiroq tushunishga yordam beradi.
 
@@ -190,13 +190,13 @@ Har bir vazifa uchun tuzish mumkin bo'lgan promptlar soni cheksizdir. Prompt muh
 
 Butun prompt muhandisligi ish jarayonini avtomatlashtirishni maqsad qilgan vositalar qatoriga `OpenPrompt` ([Ding va boshq., 2021](https://arxiv.org/abs/2111.01998)) va `DSPy` ([Khattab va boshq., 2023](https://arxiv.org/abs/2310.03714)) kiradi. Umumiy olganda, siz o'z vazifangiz uchun kiritiladigan va chiqariladigan ma'lumotlar formatlarini, baholash metrikalarini va baholash ma'lumotlarini belgilaysiz. Bu kabi promptni optimallashtirish vositalari baholash ma'lumotlarida baholash metrikalarini maksimal darajaga olib chiquvchi prompt yoki promptlar zanjirini avtomatik ravishda topadi. Funksional jihatdan, bu vositalar klassik _ML_ modellari uchun optimal giperparametrlarni avtomatik ravishda topadigan _autoML_ (avtomatlashtirilgan _ML_) vositalariga o'xshaydi.
 
-Prompt yaratishni avtomatlashtirishning keng tarqalgan yondashuvlaridan biri — SI modellardan foydalanishdir. SI modellarning o'zi ham prompt yozish qobiliyatiga ega.[^10] Eng oddiy holatda, siz modeldan ilovangiz uchun prompt yaratishni so'rashingiz mumkin, masalan: "Kollej insholarini 1 dan 5 gacha baholaydigan ilova uchun qisqa va lo'nda prompt yozishga yordam ber". Siz shuningdek, SI modellardan promptingizni tanqid qilish va takomillashtirishni yoki kontekstual misollar yaratishni ham so'rashingiz mumkin. 5-7-rasmda [`Claude 3.5 Sonnet`](https://www.anthropic.com/news/claude-3-5-sonnet) (Anthropic, 2024) tomonidan yozilgan prompt ko'rsatilgan.
+Prompt yaratishni avtomatlashtirishning keng tarqalgan yondashuvlaridan biri — _SI_ modellardan foydalanishdir. _SI_ modellarning o'zi ham prompt yozish qobiliyatiga ega.[^10] Eng oddiy holatda, siz modeldan ilovangiz uchun prompt yaratishni so'rashingiz mumkin, masalan: "Kollej insholarini 1 dan 5 gacha baholaydigan ilova uchun qisqa va lo'nda prompt yozishga yordam ber". Siz shuningdek, _SI_ modellardan promptingizni tanqid qilish va takomillashtirishni yoki kontekstual misollar yaratishni ham so'rashingiz mumkin. 5-7-rasmda [`Claude 3.5 Sonnet`](https://www.anthropic.com/news/claude-3-5-sonnet) (_Anthropic, 2024_) tomonidan yozilgan prompt ko'rsatilgan.
 
-DeepMind'ning `Promptbreeder` ([Fernando va boshq., 2023](https://arxiv.org/abs/2309.16797)) va Stanford'ning `TextGrad` ([Yuksekgonul va boshq., 2024](https://arxiv.org/abs/2406.07496)) vositalari SI yordamida promptni optimallashtiradigan vositalarga ikkita misoldir. `Promptbreeder` promptlarni tanlab "ko'paytirish" uchun evolyutsion strategiyadan foydalanadi. U dastlabki promptdan boshlaydi va SI model yordamida ushbu promptning mutatsiyalarini (o'zgartirilgan variantlarini) yaratadi. Prompt mutatsiyasi jarayoni bir to'plam "mutator" promptlar tomonidan boshqariladi. Keyin u eng istiqbolli mutatsiyaning o'zidan yangi mutatsiyalar yaratadi va bu jarayon sizning mezonlaringizga javob beradigan prompt topilguncha davom etadi. 5-8-rasmda `Promptbreeder`ning umumiy ishlash prinsipi ko'rsatilgan.
+DeepMind'ning `Promptbreeder` ([Fernando va boshq., 2023](https://arxiv.org/abs/2309.16797)) va Stanford'ning `TextGrad` ([Yuksekgonul va boshq., 2024](https://arxiv.org/abs/2406.07496)) vositalari _SI_ yordamida promptni optimallashtiradigan vositalarga ikkita misoldir. `Promptbreeder` promptlarni tanlab "ko'paytirish" uchun evolyutsion strategiyadan foydalanadi. U dastlabki promptdan boshlaydi va _SI_ model yordamida ushbu promptning mutatsiyalarini (o'zgartirilgan variantlarini) yaratadi. Prompt mutatsiyasi jarayoni bir to'plam "mutator" promptlar tomonidan boshqariladi. Keyin u eng istiqbolli mutatsiyaning o'zidan yangi mutatsiyalar yaratadi va bu jarayon sizning mezonlaringizga javob beradigan prompt topilguncha davom etadi. 5-8-rasmda `Promptbreeder`ning umumiy ishlash prinsipi ko'rsatilgan.
 
-![SI modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.](/ai-engineering/5-chapter/5.7-figure.png)
+![_SI_ modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.](/ai-engineering/5-chapter/5.7-figure.png)
 
-<div className='text-center text-sm italic'>5-7-rasm. SI modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.</div>
+<div className='text-center text-sm italic'>5-7-rasm. _SI_ modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.</div>
 
 ![Dastlabki promptdan boshlab, `Promptbreeder` ushbu promptning mutatsiyalarini yaratadi va eng istiqbollilarini tanlab oladi. Tanlanganlar yana mutatsiyaga uchraydi va hokazo.](/ai-engineering/5-chapter/5.8-figure.png)
 
@@ -264,7 +264,7 @@ class Prompt(BaseModel):
 Sizning prompt shabloningiz, shuningdek, promptdan qanday foydalanish kerakligi haqida boshqa ma'lumotlarni ham o'z ichiga olishi mumkin, masalan:
 
 -   Model _endpoint_'ining URL manzili
--   _Temperature_ yoki _top-p_ kabi ideal _sampling_ parametrlari
+-   `Temperature` yoki `top-p` kabi ideal _sampling_ parametrlari
 -   Kiritiladigan ma'lumotlar sxemasi
 -   Kutilayotgan natija sxemasi (strukturalashgan natijalar uchun)
 
@@ -289,7 +289,7 @@ output:
 
 Agar prompt fayllari sizning _git_ repozitoriysingizning bir qismi bo'lsa, bu promptlarni _git_ yordamida versiyalash mumkin. Bu yondashuvning kamchiligi shundaki, agar bir nechta ilova bir xil promptdan foydalansa va bu prompt yangilansa, unga bog'liq bo'lgan barcha ilovalar avtomatik ravishda ushbu yangi promptga o'tishga majbur bo'ladi. Boshqacha aytganda, agar siz promptlaringizni kodingiz bilan birga _git_'da versiyalasangiz, biror jamoa uchun o'z ilovasida promptning eski versiyasida qolishni tanlash juda qiyin bo'ladi.
 
-Ko'pgina jamoalar har bir promptni alohida versiyalaydigan maxsus promptlar katalogidan foydalanadilar, bu esa turli ilovalarga turli prompt versiyalaridan foydalanish imkonini beradi. Promptlar katalogi, shuningdek, har bir promptni tegishli metama'lumotlar bilan ta'minlashi va promptlarni qidirish imkoniyatini berishi kerak. Yaxshi ishlab chiqilgan promptlar katalogi hatto biror promptga bog'liq bo'lgan ilovalarni kuzatib borishi va o'sha promptning yangi versiyalari haqida ilova egalarini xabardor qilishi ham mumkin.
+Ko'plab jamoalar har bir promptni alohida versiyalaydigan maxsus promptlar katalogidan foydalanadilar, bu esa turli ilovalarga turli prompt versiyalaridan foydalanish imkonini beradi. Promptlar katalogi, shuningdek, har bir promptni tegishli metama'lumotlar bilan ta'minlashi va promptlarni qidirish imkoniyatini berishi kerak. Yaxshi ishlab chiqilgan promptlar katalogi hatto biror promptga bog'liq bo'lgan ilovalarni kuzatib borishi va o'sha promptning yangi versiyalari haqida ilova egalarini xabardor qilishi ham mumkin.
 
 #### Izohlar
 

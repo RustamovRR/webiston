@@ -110,3 +110,4 @@ faithfulness - ishonchlilik
 relevance - aloqadorlik
 AI-powered - SI'ga asoslangan
 biases - noxolislik
+weights - og'irliklar
