@@ -7,7 +7,6 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/shared/Providers'
 import NextTopLoader from 'nextjs-toploader'
 
-const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -460,9 +459,6 @@ export default async function RootLayout({
             </noscript>
           </>
         )}
-
-        {/* OpenReplay - Production only */}
-        {!isDevelopment && <OpenReplayNoSSR />}
       </body>
     </html>
   )
