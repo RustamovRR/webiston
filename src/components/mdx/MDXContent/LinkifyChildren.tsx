@@ -2,7 +2,7 @@ import { ArrowUpRightIcon } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-const isExternalLink = (href: string) => href.startsWith('http') || href.startsWith('https')
+const isExternalLink = (href: string) => href?.startsWith('http') || href?.startsWith('https')
 
 const ExternalLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
   return (
@@ -22,11 +22,29 @@ const ExternalLink = ({ href, children }: { href: string; children: React.ReactN
   )
 }
 
-// Reusable helper to transform anchor children into internal/external links
-const LinkifyChildren = ({ children }: { children: React.ReactNode }) => {
-  const mapped = React.Children.map(children, (child) => {
-    if (child && typeof child === 'object' && (child as any).type === 'a') {
-      const { href, children: linkChildren, ...linkProps } = (child as any).props || {}
+// Recursively process children to find and transform anchor tags
+const processChildren = (children: React.ReactNode): React.ReactNode => {
+  return React.Children.map(children, (child) => {
+    // Handle string children - check if it contains HTML
+    if (typeof child === 'string') {
+      return child
+    }
+
+    // If not a valid element, return as is
+    if (!React.isValidElement(child)) {
+      return child
+    }
+
+    const element = child as React.ReactElement<any>
+
+    // Skip heading anchor links (aria-hidden)
+    if (element.type === 'a' && (element.props['aria-hidden'] === 'true' || element.props['aria-hidden'] === true)) {
+      return element
+    }
+
+    // Transform anchor tags
+    if (element.type === 'a') {
+      const { href, children: linkChildren, ...linkProps } = element.props || {}
       const external = isExternalLink(href)
 
       if (external) {
@@ -47,10 +65,22 @@ const LinkifyChildren = ({ children }: { children: React.ReactNode }) => {
         </Link>
       )
     }
-    return child
-  })
 
-  return <>{mapped}</>
+    // Recursively process children of other elements
+    if (element.props && element.props.children) {
+      return React.cloneElement(element, {
+        ...element.props,
+        children: processChildren(element.props.children),
+      })
+    }
+
+    return element
+  })
+}
+
+// Reusable helper to transform anchor children into internal/external links
+const LinkifyChildren = ({ children }: { children: React.ReactNode }) => {
+  return <>{processChildren(children)}</>
 }
 
 export default LinkifyChildren

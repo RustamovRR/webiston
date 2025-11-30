@@ -1,10 +1,8 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import Link from 'next/link'
-import { LinkIcon } from 'lucide-react'
 import React from 'react'
 
 // Plugins
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeKatex from 'rehype-katex'
 import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
@@ -14,6 +12,8 @@ import remarkMath from 'remark-math'
 import Callout from '../Callout'
 import CodeBlock from '../CodeBlock'
 import VideoEmbed from '../VideoEmbed'
+import ImageViewer from '../ImageViewer'
+import HeadingLink from './HeadingLink'
 import LinkifyChildren from './LinkifyChildren'
 
 interface MDXContentProps {
@@ -25,102 +25,41 @@ const components = {
   Callout,
   CodeBlock,
   VideoEmbed,
+  ImageViewer,
 
   // Headings with anchor links
   h1: (props: any) => (
-    <h1 id={props.id} className="group flex !cursor-default items-center gap-2 max-sm:text-2xl" {...props}>
+    <HeadingLink level={1} id={props.id} className="max-sm:text-2xl">
       {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-5 w-5 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h1>
+    </HeadingLink>
   ),
   h2: (props: any) => {
-    if (props.id === 'footnote-label') {
-      return null
-    }
+    if (props.id === 'footnote-label') return null
     return (
-      <h2 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
+      <HeadingLink level={2} id={props.id} className="m-0 mt-8">
         {props.children}
-        {props.id && (
-          <Link
-            href={`#${props.id}`}
-            aria-hidden="true"
-            tabIndex={-1}
-            className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-          >
-            <LinkIcon className="h-5 w-5 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-          </Link>
-        )}
-      </h2>
+      </HeadingLink>
     )
   },
   h3: (props: any) => (
-    <h3 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
+    <HeadingLink level={3} id={props.id} className="m-0 mt-8">
       {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-4 w-4 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h3>
+    </HeadingLink>
   ),
   h4: (props: any) => (
-    <h4 id={props.id} className="group m-0 mt-8 flex cursor-default items-center gap-2 text-lg" {...props}>
+    <HeadingLink level={4} id={props.id} className="m-0 mt-8 text-lg">
       {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-3 w-3 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h4>
+    </HeadingLink>
   ),
   h5: (props: any) => (
-    <h5 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
+    <HeadingLink level={5} id={props.id} className="m-0 mt-8">
       {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-2 w-2 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h5>
+    </HeadingLink>
   ),
   h6: (props: any) => (
-    <h6 id={props.id} className="group m-0 mt-8 flex items-center gap-2" {...props}>
+    <HeadingLink level={6} id={props.id} className="m-0 mt-8">
       {props.children}
-      {props.id && (
-        <Link
-          href={`#${props.id}`}
-          aria-hidden="true"
-          tabIndex={-1}
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          <LinkIcon className="h-2 w-2 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100" />
-        </Link>
-      )}
-    </h6>
+    </HeadingLink>
   ),
   p: (props: any) => {
     return (
@@ -165,7 +104,7 @@ const components = {
     if (isVideoLink) {
       return <VideoEmbed url={src} title={alt} />
     }
-    return <img className="m-0 mt-8 mb-4 w-full rounded-md shadow-lg" src={src} alt={alt || ''} {...props} />
+    return <ImageViewer src={src} alt={alt || ''} />
   },
   // Inline code with badge style
   code: ({ className, children, ...props }: any) => {
@@ -212,7 +151,12 @@ const components = {
       )
     }
 
-    return <div className="w-full" {...props} />
+    // For regular divs, apply LinkifyChildren to handle links
+    return (
+      <div className="w-full" {...props}>
+        <LinkifyChildren>{props.children}</LinkifyChildren>
+      </div>
+    )
   },
 
   // Handle video tag directly
@@ -220,6 +164,59 @@ const components = {
 
   // Handle iframe for embedded videos
   iframe: (props: any) => <iframe className="absolute inset-0 h-full w-full object-cover" {...props} />,
+
+  // Handle anchor tags directly
+  a: ({ href, children, ...props }: any) => {
+    // Skip heading anchor links (they have aria-hidden)
+    if (props['aria-hidden'] === 'true' || props['aria-hidden'] === true) {
+      return (
+        <a href={href} {...props}>
+          {children}
+        </a>
+      )
+    }
+
+    const isExternal = href?.startsWith('http') || href?.startsWith('https')
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center !font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400"
+          {...props}
+        >
+          <span className="!font-normal">{children}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-arrow-up-right !stroke-sky-500 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:!stroke-sky-400"
+          >
+            <path d="M7 7h10v10" />
+            <path d="M7 17 17 7" />
+          </svg>
+        </a>
+      )
+    }
+
+    return (
+      <Link
+        href={href || '#'}
+        className="!font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
+        {...props}
+      >
+        {children}
+      </Link>
+    )
+  },
 
   sup: (props: any) => (
     <sup
@@ -255,7 +252,7 @@ export default async function MDXContent({ source }: MDXContentProps) {
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm, remarkMath],
-          rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }], rehypeKatex],
+          rehypePlugins: [rehypeSlug, rehypeKatex],
         },
       }}
     />

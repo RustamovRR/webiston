@@ -442,3 +442,19 @@ td {
     @apply bg-background text-foreground;
   }
 }
+
+/* Medium Zoom Styles */
+.medium-zoom-overlay {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(8px);
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image {
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image--opened {
+  cursor: zoom-out !important;
+  z-index: 10000 !important;
+}

@@ -1,6 +1,7 @@
 export { default as MDXContent } from './MDXContent'
 export { default as CodeBlock } from './CodeBlock'
 export { default as VideoEmbed } from './VideoEmbed'
+export { default as ImageViewer } from './ImageViewer'
 export { default as Callout } from './Callout'
 export { default as TutorialLanding } from './TutorialLanding'
 export { default as TutorialContent } from './TutorialContent'
