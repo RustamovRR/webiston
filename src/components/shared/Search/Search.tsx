@@ -10,7 +10,7 @@ import { searchEngine } from '@/lib/search/flexsearch'
 export default function Search() {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const debounceTimer = useRef<NodeJS.Timeout>()
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])

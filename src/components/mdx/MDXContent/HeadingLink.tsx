@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import { LinkIcon } from 'lucide-react'
 
@@ -9,7 +10,7 @@ interface HeadingLinkProps {
 }
 
 export default function HeadingLink({ id, children, level, className = '' }: HeadingLinkProps) {
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements
+  const Tag = `h${level}` as keyof React.JSX.IntrinsicElements
 
   const iconSizes = {
     1: 'h-5 w-5',

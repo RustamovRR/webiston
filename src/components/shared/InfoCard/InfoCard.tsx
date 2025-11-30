@@ -31,7 +31,8 @@ const InfoCard: React.FC<InfoCardProps> = ({
       <div className="p-6">
         <div className="mb-4 flex items-center gap-3">
           <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg', iconBgColor)}>
-            {React.cloneElement(icon as React.ReactElement, { className: cn('h-5 w-5', iconColor) })}
+            {React.isValidElement(icon) &&
+              React.cloneElement(icon, { className: cn('h-5 w-5', iconColor) } as React.HTMLAttributes<HTMLElement>)}
           </div>
           <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">{title}</h3>
         </div>
