@@ -211,9 +211,9 @@ export async function getTutorialInfo(tutorialId: string) {
 // Tutorial sarlavhasini olish
 export function getTutorialTitle(tutorialId: string): string {
   const titles: Record<string, string> = {
-    'fluent-react': 'Fluent React',
-    'javascript-definitive-guide': 'JavaScript Definitive Guide',
-    'ai-engineering': 'AI Engineering',
+    'ai-engineering': 'AI Engineering: Fundamental Modellar bilan Ilovalar Yaratish',
+    'javascript-definitive-guide': 'JavaScript: The Definitive Guide, 7th Edition',
+    'fluent-react': 'Fluent React: Zamonaviy React Dasturlash',
   }
 
   return titles[tutorialId] || tutorialId
@@ -222,20 +222,23 @@ export function getTutorialTitle(tutorialId: string): string {
 // Tutorial tavsifini olish
 function getTutorialDescription(tutorialId: string): string {
   const descriptions: Record<string, string> = {
-    'fluent-react': "React'ni chuqur o'rganish uchun to'liq qo'llanma",
-    'javascript-definitive-guide': "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma",
-    'ai-engineering': "AI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma",
+    'ai-engineering':
+      "Sun'iy intellekt muhandisligi bo'yicha keng qamrovli qo'llanma. Fundamental modellar, prompt muhandisligi, baholash metodologiyasi va zamonaviy AI texnologiyalarini professional darajada o'zlashtirish uchun to'liq resurs.",
+    'javascript-definitive-guide':
+      "JavaScript bo'yicha klassik asarning to'liq o'zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg'or xususiyatlarigacha — barchasi bitta qo'llanmada.",
+    'fluent-react':
+      "React'ning fundamental konsepsiyalariga chuqur sho'ng'ish. Komponentlar mantig'idan tortib, ilg'or arxitektura pattern'larigacha — React'ni professional darajada o'zlashtirish uchun to'liq qo'llanma.",
   }
 
-  return descriptions[tutorialId] || "Dasturlash bo'yicha qo'llanma"
+  return descriptions[tutorialId] || "Dasturlash bo'yicha professional qo'llanma"
 }
 
 // Tutorial rasmini olish
 export function getTutorialImage(tutorialId: string): string {
   const images: Record<string, string> = {
-    'fluent-react': '/fluent-react/book-logo.jpeg',
-    'javascript-definitive-guide': '/javascript-definitive-guide/book-logo.jpeg',
     'ai-engineering': '/ai-engineering/book-logo.jpeg',
+    'javascript-definitive-guide': '/javascript-definitive-guide/book-logo.jpeg',
+    'fluent-react': '/fluent-react/book-logo.jpeg',
   }
 
   return images[tutorialId] || '/assets/default-cover.png'
@@ -244,12 +247,12 @@ export function getTutorialImage(tutorialId: string): string {
 // Tutorial mualliflik huquqi matnini olish
 function getCopyrightText(tutorialId: string): string {
   const copyrights: Record<string, string> = {
+    'ai-engineering':
+      "Ushbu kitobning o'zbekcha tarjimasi: AI Engineering, Chip Huyen. Mualliflik huquqi 2024 Chip Huyen. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
     'javascript-definitive-guide':
       "Ushbu kitobning o'zbekcha tarjimasi: JavaScript: The Definitive Guide, 7-nashr, David Flanagan. Mualliflik huquqi 2020 David Flanagan. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
     'fluent-react':
       "Ushbu kitobning o'zbekcha tarjimasi: Fluent React, Tejas Kumar. Mualliflik huquqi 2024 Tejas Kumar. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
-    'ai-engineering':
-      "Ushbu kitobning o'zbekcha tarjimasi: AI Engineering, CHip Huyen. Mualliflik huquqi 2024 CHip Huyen. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
   }
   return copyrights[tutorialId] || ''
 }
@@ -257,11 +260,11 @@ function getCopyrightText(tutorialId: string): string {
 // Barcha tutoriallar ro'yxatini olish
 export async function getAllTutorials() {
   try {
-    // Static qilib qo'yamiz, chunki bizda faqat bitta tutorial bor
-    const fluentReact = await getTutorialInfo('fluent-react')
-    const javascriptDefinitiveGuide = await getTutorialInfo('javascript-definitive-guide')
+    // Eng yangi kitobni birinchi o'ringa qo'yamiz
     const aiEngineering = await getTutorialInfo('ai-engineering')
-    return [fluentReact, javascriptDefinitiveGuide, aiEngineering]
+    const javascriptDefinitiveGuide = await getTutorialInfo('javascript-definitive-guide')
+    const fluentReact = await getTutorialInfo('fluent-react')
+    return [aiEngineering, javascriptDefinitiveGuide, fluentReact]
   } catch (error) {
     console.error('Error getting all tutorials:', error)
     return []

@@ -14,7 +14,8 @@
     "toolsSectionTitle": "Dasturchi vositalari",
     "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
     "jsSectionTitle": "JavaScript: To'liq qo'llanma",
-    "jsSectionDescription": "JavaScript bo‘yicha klassik asarning to‘liq o‘zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg‘or xususiyatlarigacha — barchasi bitta qo‘llanmada"
+    "jsSectionDescription": "JavaScript bo‘yicha klassik asarning to‘liq o‘zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg‘or xususiyatlarigacha — barchasi bitta qo‘llanmada",
+    "aiSectionDescription": "SI muhandisligi bo‘yicha keng qamrovli qo‘llanma. Asosiy modellardan tortib prompt muhandisligi, baholash metodologiyalari va zamonaviy SI texnologiyalarigacha — barchasini professional darajada o‘zlashtiring. Bu qo‘llanma sizga sun’iy intellekt bilan qurish uchun to‘liq va ishonchli manba bo‘lib xizmat qiladi"
   },
   "Metadata": {
     "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",

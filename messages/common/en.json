@@ -14,7 +14,8 @@
     "toolsSectionTitle": "Developer Tools",
     "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
     "jsSectionTitle": "JavaScript: The Definitive Guide",
-    "jsSectionDescription": "The complete Uzbek translation of the classic masterpiece on JavaScript. From the foundational principles to the most advanced features—everything you need in a single guide."
+    "jsSectionDescription": "The complete Uzbek translation of the classic masterpiece on JavaScript. From the foundational principles to the most advanced features—everything you need in a single guide.",
+    "aiSectionDescription": "A comprehensive guide to AI engineering. Master fundamental models, prompt engineering, evaluation methodologies, and modern AI technologies at a professional level—your complete resource for building with AI."
   },
   "Metadata": {
     "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
