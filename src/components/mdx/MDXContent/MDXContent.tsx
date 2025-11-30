@@ -97,7 +97,7 @@ const components = {
     if (!match) {
       return (
         <code
-          className="relative rounded-sm border border-slate-200 bg-slate-100 px-[0.3rem] py-[0.2rem] text-[0.9em] font-normal text-rose-500 dark:border-[#ffffff1a] dark:bg-[#ffffff1a] dark:text-white"
+          className="relative rounded-sm border border-slate-200 bg-slate-100 px-[0.3rem] py-[0.2rem] text-[0.9em] font-normal !whitespace-nowrap text-rose-500 dark:border-[#ffffff1a] dark:bg-[#ffffff1a] dark:text-white [a_&]:text-inherit"
           {...props}
         >
           {children}

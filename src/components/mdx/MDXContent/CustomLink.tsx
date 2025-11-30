@@ -11,9 +11,9 @@ export default function CustomLink({ href, children, ...props }: CustomLinkProps
   // Skip heading anchor links (they have aria-hidden)
   if (props['aria-hidden'] === 'true' || props['aria-hidden'] === true) {
     return (
-      <a href={href} {...props}>
+      <Link href={href || '#'} {...props}>
         {children}
-      </a>
+      </Link>
     )
   }
 
