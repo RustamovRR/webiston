@@ -14,7 +14,7 @@ import CodeBlock from '../CodeBlock'
 import VideoEmbed from '../VideoEmbed'
 import ImageViewer from '../ImageViewer'
 import HeadingLink from './HeadingLink'
-import LinkifyChildren from './LinkifyChildren'
+import CustomLink from './CustomLink'
 
 interface MDXContentProps {
   source: string
@@ -61,16 +61,7 @@ const components = {
       {props.children}
     </HeadingLink>
   ),
-  p: (props: any) => {
-    return (
-      <p
-        className="!m-0 !mt-6 [&>a]:font-normal [&>a]:text-sky-500 [&>a]:underline [&>a]:transition-colors [&>a]:duration-200 [&>a]:hover:text-sky-400"
-        {...props}
-      >
-        <LinkifyChildren>{props.children}</LinkifyChildren>
-      </p>
-    )
-  },
+  p: (props: any) => <p className="!m-0 !mt-6" {...props} />,
   ul: (props: any) => {
     return (
       <ul className="m-0 mt-6 list-disc pl-4" {...props}>
@@ -80,17 +71,9 @@ const components = {
   },
   li: (props: any) => {
     if (props.id && props.id.includes('user-content')) {
-      return (
-        <li className="[&_p]:!italic [&>p]:!mt-6" {...props}>
-          <LinkifyChildren>{props.children}</LinkifyChildren>
-        </li>
-      )
+      return <li className="[&_p]:!italic [&>p]:!mt-6" {...props} />
     }
-    return (
-      <li className="[&>p]:!m-0" {...props}>
-        <LinkifyChildren>{props.children}</LinkifyChildren>
-      </li>
-    )
+    return <li className="[&>p]:!m-0" {...props} />
   },
   img: ({ src, alt, ...props }: any) => {
     const isVideoLink =
@@ -151,12 +134,7 @@ const components = {
       )
     }
 
-    // For regular divs, apply LinkifyChildren to handle links
-    return (
-      <div className="w-full" {...props}>
-        <LinkifyChildren>{props.children}</LinkifyChildren>
-      </div>
-    )
+    return <div className="w-full" {...props} />
   },
 
   // Handle video tag directly
@@ -166,57 +144,7 @@ const components = {
   iframe: (props: any) => <iframe className="absolute inset-0 h-full w-full object-cover" {...props} />,
 
   // Handle anchor tags directly
-  a: ({ href, children, ...props }: any) => {
-    // Skip heading anchor links (they have aria-hidden)
-    if (props['aria-hidden'] === 'true' || props['aria-hidden'] === true) {
-      return (
-        <a href={href} {...props}>
-          {children}
-        </a>
-      )
-    }
-
-    const isExternal = href?.startsWith('http') || href?.startsWith('https')
-
-    if (isExternal) {
-      return (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group inline-flex items-center !font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400"
-          {...props}
-        >
-          <span className="!font-normal">{children}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-arrow-up-right !stroke-sky-500 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:!stroke-sky-400"
-          >
-            <path d="M7 7h10v10" />
-            <path d="M7 17 17 7" />
-          </svg>
-        </a>
-      )
-    }
-
-    return (
-      <Link
-        href={href || '#'}
-        className="!font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
-        {...props}
-      >
-        {children}
-      </Link>
-    )
-  },
+  a: (props: any) => <CustomLink {...props} />,
 
   sup: (props: any) => (
     <sup
@@ -235,11 +163,7 @@ const components = {
     <th {...props} className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide" />
   ),
 
-  td: (props: any) => (
-    <td {...props} className="border border-[#ddd] px-3 py-3 text-sm">
-      <LinkifyChildren>{props.children}</LinkifyChildren>
-    </td>
-  ),
+  td: (props: any) => <td {...props} className="border border-[#ddd] px-3 py-3 text-sm" />,
 
   blockquote: (props: any) => <blockquote {...props} className="[&_p]:font-normal" />,
 }
