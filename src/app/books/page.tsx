@@ -261,12 +261,21 @@ export default async function BooksPage() {
           <div className="mb-8">
             <h1 className="mb-4 text-3xl font-bold">Dasturlash Kitoblari</h1>
             <p className="text-muted-foreground text-lg">
-              O'zbek tilida professional dasturlash kitoblari to'plami. JavaScript, React.js, Node.js va boshqa IT
-              texnologiyalar bo'yicha bepul kitoblar. Har bir kitob boshlang'ich darajadan professional darajagacha
-              mo'ljallangan va amaliy misollar bilan boyitilgan.
+              Dunyoning yetakchi mutaxassislari tomonidan yozilgan dasturlash kitoblarining professional o'zbekcha
+              tarjimalari. Zamonaviy texnologiyalar, fundamental konsepsiyalar va amaliy yondashuvlar — barchasi bir
+              joyda, to'liq bepul va yuqori sifatda.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {['JavaScript', 'React.js', 'Web Development', 'Bepul', "O'zbek tilida"].map((tag) => (
+              {[
+                'AI Engineering',
+                'JavaScript',
+                'React.js',
+                'Web Development',
+                'Machine Learning',
+                'Professional',
+                'Bepul',
+                "O'zbek tilida",
+              ].map((tag) => (
                 <span
                   key={tag}
                   className="rounded-full border border-zinc-300 bg-zinc-100/80 px-3 py-1 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
@@ -303,7 +312,7 @@ export default async function BooksPage() {
                       </div>
                       <div className="flex flex-1 flex-col px-6">
                         <h3 className="mb-2 text-xl font-semibold">{tutorial?.title}</h3>
-                        <p className="text-muted-foreground line-clamp-3 flex-grow pb-4">{tutorial?.description}</p>
+                        <p className="text-muted-foreground flex-grow pb-4">{tutorial?.description}</p>
                         <div className="mt-auto flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
                           <div className="text-sm text-zinc-500 dark:text-zinc-400">
                             📚 {tutorial?.navigation?.length || 0} ta bo'lim

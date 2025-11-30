@@ -59,6 +59,34 @@ export const REACT_CHAPTERS = [
   },
 ]
 
+export const AI_ENGINEERING_CHAPTERS = [
+  {
+    href: '/books/ai-engineering/1-introduction-to-building-ai-applications-with-foundation-models',
+    title: 'Fundamental modellar asosida SI ilovalarini yaratish',
+    description: 'SI muhandisligining yuksalishi va fundamental modellar bilan ilovalar yaratish asoslari.',
+  },
+  {
+    href: '/books/ai-engineering/2-understanding-foundation-models',
+    title: 'Fundamental modellar mohiyati',
+    description: "O'qitish ma'lumotlari, modellashtirish, yakuniy o'qitish va sampling jarayonlari.",
+  },
+  {
+    href: '/books/ai-engineering/3-evaluation-methodology',
+    title: 'Baholash metodologiyasi',
+    description: 'Fundamental modellarni baholash metodologiyasi, metrikalar va SI-baholovchi.',
+  },
+  {
+    href: '/books/ai-engineering/4-evaluate-ai-systems',
+    title: 'SI tizimlarini baholash',
+    description: 'Baholash mezonlari, model tanlash va baholash jarayonlar zanjirini loyihalash.',
+  },
+  {
+    href: '/books/ai-engineering/5-prompt-engineering',
+    title: 'Prompt muhandisligi',
+    description: 'Promptlar bilan tanishuv, eng yaxshi amaliyotlar va himoyaviy prompt muhandisligi.',
+  },
+]
+
 export const JAVASCRIPT_CHAPTERS = [
   {
     href: '/books/javascript-definitive-guide/1-introduction-to-javascript',

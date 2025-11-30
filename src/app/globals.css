@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'leaflet/dist/leaflet.css';
+@import 'katex/dist/katex.min.css';
 
 @custom-variant dark (&:is(.dark *));
 @plugin "@tailwindcss/typography";
@@ -440,4 +441,57 @@ td {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Medium Zoom Styles */
+.medium-zoom-overlay {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(8px);
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image {
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image--opened {
+  cursor: zoom-out !important;
+  z-index: 10000 !important;
+}
+
+/* Footnote scroll margin - for proper anchor positioning */
+[id^='user-content-fn-'],
+[id^='user-content-fnref-'] {
+  scroll-margin-top: 80px;
+}
+
+/* Heading scroll margin - for proper anchor positioning */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 80px;
+}
+
+/* Footnote backref - ko'k rang */
+.data-footnote-backref,
+a[data-footnote-backref] {
+  color: #0ea5e9 !important;
+  text-decoration: none !important;
+}
+
+.data-footnote-backref:hover,
+a[data-footnote-backref]:hover {
+  color: #38bdf8 !important;
+}
+
+/* Link ichidagi code elementi - link rangida bo'lsin */
+a code {
+  color: inherit !important;
+}
+
+a:hover code {
+  color: inherit !important;
 }

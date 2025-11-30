@@ -1,0 +1,158 @@
+---
+title: Til modellashtirish metrikalarini tushunish
+description: "Til modellashtirish metrikalari: entropiya, o'zaro entropiya, perplexity, BPC, BPB. Statistik ma'lumotlar, ehtimollik taqsimoti, logitlar va softmax. Metrikalarni talqin qilish va amaliy qo'llash."
+keywords: til modellashtirish metrikalari, language modeling metrics, entropiya, entropy, o'zaro entropiya, cross entropy, perplexity, BPC, bits-per-character, BPB, bits-per-byte, statistik ma'lumotlar, statistical information, ehtimollik taqsimoti, probability distribution, logitlar, logits, softmax, KL divergensiyasi, KL divergence, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi, fundamental modellar, fundamental models
+author: Webiston.uz
+---
+
+# Til modellashtirish metrikalarini tushunish
+
+Fundamental modellar til modellaridan kelib chiqqan. Ko'pgina fundamental modellar hali ham o'zlarining asosiy komponentlari sifatida til modellariga ega. Bunday modellar uchun til modeli komponentining samaradorligi odatda fundamental modelning keyingi dasturlardagi samaradorligi bilan yaxshi bog'liqdir ([Liu va boshq., 2023](https://proceedings.mlr.press/v202/liu23ao.html)). Shu sababli, til modellashtirish metrikalarini umumiy tushunish keyingi dasturlar samaradorligini anglashda ancha qo'l kelishi mumkin.[^6]
+
+1-bobda muhokama qilinganidek, til modellashtirish o'nlab yillar davomida mavjud bo'lib, Klod Shennonning 1951-yildagi "Prediction and Entropy of Printed English" nomli maqolasi orqali ommalashgan. Til modellarini ishlab chiqishni yo'naltirish uchun ishlatiladigan metrikalar o'shandan beri unchalik o'zgarmadi. Aksariyat avtoregressiv til modellari o'zaro entropiya yoki uning qarindoshi bo'lgan _perplexity_ yordamida o'qitiladi. Maqolalar va model hisobotlarini o'qiyotganda, siz **bir belgiga to'g'ri keladigan bitlar** (_bits-per-character_, _BPC_) va **bir baytga to'g'ri keladigan bitlar** (_bits-per-byte_, _BPB_) atamalariga ham duch kelishingiz mumkin; ikkalasi ham o'zaro entropiyaning bir turidir.
+
+Bu to'rtta metrika — o'zaro entropiya, _perplexity_, _BPC_ va _BPB_ — bir-biri bilan chambarchas bog'liq. Agar siz birining qiymatini bilsangiz, kerakli ma'lumotlar bilan qolgan uchtasini hisoblashingiz mumkin. Garchi men ularni til modellashtirish metrikalari deb atasam ham, ular tokenlar ketma-ketligini generatsiya qiladigan har qanday model, jumladan, matn bo'lmagan tokenlar uchun ham ishlatilishi mumkin.
+
+Eslatma uchun, til modeli tillar haqidagi statistik ma'lumotlarni (biror tokenning berilgan kontekstda paydo bo'lish ehtimoli qanchalik ekanligi) o'zida kodlaydi. Statistik jihatdan, "Men __ ichishni yaxshi ko'raman" konteksti berilganda, keyingi so'z "ko'mir"dan ko'ra "choy" bo'lishi ehtimoli yuqoriroq. Model qanchalik ko'p statistik ma'lumotni o'zlashtira olsa, u keyingi tokenni prognoz qilishda shunchalik yaxshi bo'ladi.
+
+_ML_ tilida aytganda, til modeli o'zining o'qitish ma'lumotlari taqsimotini o'rganadi. Bu model qanchalik yaxshi o'rgansa, u o'qitish ma'lumotlarida keyin nima kelishini prognoz qilishda shunchalik yaxshi bo'ladi va uning o'qitishdagi o'zaro entropiyasi shunchalik past bo'ladi. Har qanday _ML_ modelida bo'lgani kabi, sizni uning nafaqat o'qitish ma'lumotlaridagi, balki amaliyotdagi ma'lumotlaringizdagi samaradorligi ham qiziqtiradi. Umuman olganda, sizning ma'lumotlaringiz modelning o'qitish ma'lumotlariga qanchalik yaqin bo'lsa, model sizning ma'lumotlaringizda shunchalik yaxshi ishlay oladi.
+
+Kitobning qolgan qismiga qaraganda, bu bo'limda matematika ko'proq. Agar bu sizga tushunarsiz tuyulsa, matematik qismini bemalol o'tkazib yuborishingiz va e'tiborni ushbu metrikalarni qanday talqin qilish haqidagi muhokamaga qaratishingiz mumkin. Hatto til modellarini o'qitmayotgan yoki _finetuning_ qilmayotgan bo'lsangiz ham, ushbu metrikalarni tushunish ilovangiz uchun qaysi modellardan foydalanishni baholashda yordam beradi. Ushbu metrikalar, kitob davomida muhokama qilinganidek, ba'zi baholash va ma'lumotlarni takrorlanishdan tozalash (_deduplication_) texnikalari uchun vaqti-vaqti bilan ishlatilishi mumkin.
+
+## Entropiya
+
+Entropiya biror token o'rtacha qancha axborot berishini o'lchaydi. Entropiya qanchalik yuqori bo'lsa, har bir token shunchalik ko'p axborot beradi va tokenni ifodalash uchun shunchalik ko'p bit kerak bo'ladi.[^7]
+
+Buni tasvirlash uchun oddiy bir misoldan foydalanamiz. Tasavvur qiling, siz 3-4-rasmda ko'rsatilganidek, kvadrat ichidagi pozitsiyalarni tasvirlash uchun bir til yaratmoqchisiz. Agar sizning tilingizda faqat ikkita token bo'lsa (3-4-rasmdagi (a) da ko'rsatilgan), har bir token sizga pozitsiyaning yuqori yoki pastda ekanligini ayta oladi. Faqat ikkita token bo'lgani uchun, ularni ifodalash uchun bir bit yetarli. Shuning uchun, bu tilning entropiyasi 1 ga teng.
+
+![3-4-rasm. Kvadrat ichidagi pozitsiyalarni tasvirlaydigan ikkita til.](/ai-engineering/3-chapter/3.4-figure.png)
+
+<div className='text-center text-sm italic'>3-4-rasm. Kvadrat ichidagi pozitsiyalarni tasvirlaydigan ikkita til. Chapdagi (a) tilga nisbatan, o'ngdagi (b) tokenlar ko'proq axborot beradi, lekin ularni ifodalash uchun ko'proq bit kerak bo'ladi.</div>
+
+Agar sizning tilingizda to'rtta token bo'lsa (3-4-rasmdagi (b) da ko'rsatilgan), har bir token sizga aniqroq pozitsiyani berishi mumkin: yuqori-chap, yuqori-o'ng, pastki-chap yoki pastki-o'ng. Biroq, endi to'rtta token bo'lgani uchun, ularni ifodalash uchun sizga ikki bit kerak bo'ladi. Bu tilning entropiyasi 2 ga teng. Bu til yuqori entropiyaga ega, chunki har bir token ko'proq axborot beradi, lekin har bir tokenni ifodalash uchun ko'proq bit talab etiladi.
+
+Intuitiv ravishda, entropiya biror tilda keyin nima kelishini prognoz qilish qanchalik qiyin ekanligini o'lchaydi. Tilning entropiyasi qanchalik past bo'lsa (tilning bir tokeni qanchalik kam axborot bersa), o'sha til shunchalik prognozli bo'ladi. Oldingi misolimizda, faqat ikkita tokenli tilni to'rtta tokenli tilga qaraganda prognoz qilish osonroq (siz to'rtta ehtimoliy token o'rniga faqat ikkitasi orasidan prognoz qilishingiz kerak). Bu xuddi siz mening keyin nima deyishimni mukammal prognoz olsangiz, mening aytganlarim hech qanday yangi axborot bermasligiga o'xshaydi.
+
+## O'zaro entropiya
+
+Biror ma'lumotlar to'plamida til modelini o'qitayotganingizda, maqsadingiz modelni ushbu o'qitish ma'lumotlarining taqsimotini o'rganishga majbur qilishdir. Boshqacha aytganda, maqsadingiz modelni o'qitish ma'lumotlarida keyin nima kelishini prognoz qilishga undashdir. Til modelining biror ma'lumotlar to'plamidagi o'zaro entropiyasi til modeli uchun ushbu ma'lumotlar to'plamida keyin nima kelishini prognoz qilish qanchalik qiyin ekanligini o'lchaydi.
+
+Modelning o'qitish ma'lumotlaridagi o'zaro entropiyasi ikkita xususiyatga bog'liq:
+
+1.  **O'qitish ma'lumotlarining prognozliligi,** bu o'qitish ma'lumotlarining entropiyasi bilan o'lchanadi.
+2.  **Til modeli tomonidan o'zlashtirilgan taqsimotning** o'qitish ma'lumotlarining haqiqiy taqsimotidan **qanchalik farq qilishi**.
+
+Entropiya va o'zaro entropiya bir xil matematik belgi — $H$ dan foydalanadi. Aytaylik, $P$ — o'qitish ma'lumotlarining haqiqiy taqsimoti, $Q$ esa til modeli tomonidan o'rganilgan taqsimot bo'lsin. Shunga ko'ra, quyidagilar o'rinli:
+
+- O'qitish ma'lumotlarining entropiyasi: $H(P)$.
+- $Q$ ning $P$ ga nisbatan og'ishi Kullback-Leibler (KL) divergensiyasi yordamida o'lchanishi mumkin, bu matematik jihatdan quyidagicha ifodalanadi: $D_{KL}(P || Q)$.
+- Modelning o'qitish ma'lumotlariga nisbatan o'zaro entropiyasi esa quyidagicha bo'ladi: $H(P, Q) = H(P) + D_{KL}(P || Q)$.
+
+O'zaro entropiya simmetrik emas. $Q$ ning $P$ ga nisbatan o'zaro entropiyasi — $H(P, Q)$ — $P$ ning $Q$ ga nisbatan o'zaro entropiyasidan — $H(Q, P)$ dan farq qiladi.
+
+Til modeli o'qitish ma'lumotlariga nisbatan o'zaro entropiyasini minimallashtirish uchun o'qitiladi. Agar til modeli o'qitish ma'lumotlaridan mukammal o'rgansa, modelning o'zaro entropiyasi o'qitish ma'lumotlarining entropiyasi bilan aynan bir xil bo'ladi. Bunda $Q$ ning $P$ ga nisbatan KL divergensiyasi 0 ga teng bo'ladi. Modelning o'zaro entropiyasini uning o'qitish ma'lumotlari entropiyasiga yaqinlashishi (approksimatsiyasi) deb tasavvur qilishingiz mumkin.
+
+## Bir belgiga to'g'ri keladigan bitlar va bir baytga to'g'ri keladigan bitlar
+
+Entropiya va o'zaro entropiyaning birliklaridan biri bu bitdir. Agar til modelining o'zaro entropiyasi 6 bit bo'lsa, bu til modeli har bir tokenni ifodalash uchun 6 bitga muhtojligini anglatadi.
+
+Turli modellar turli xil tokenizatsiya usullariga ega bo'lgani uchun — masalan, bir model token sifatida so'zlardan foydalansa, boshqasi belgilardan foydalanadi — bir tokenga to'g'ri keladigan bitlar sonini modellar bo'yicha o'zaro taqqoslab bo'lmaydi. Ba'zilar buning o'rniga **belgiga nisbatan bitlar** (_bits-per-character_, _BPC_) sonidan foydalanadilar. Agar bir tokenga to'g'ri keladigan bitlar soni 6 bo'lsa va o'rtacha har bir token 2 ta belgidan iborat bo'lsa, _BPC_ $6/2 = 3$ bo'ladi.
+
+_BPC_ bilan bog'liq bir murakkablik turli xil belgilarni kodlash sxemalaridan kelib chiqadi. Masalan, _ASCII_ bilan har bir belgi 7 bit yordamida kodlanadi, ammo `UTF-8` bilan bir belgi 8 dan 32 bitgacha bo'lgan oraliqda kodlanishi mumkin. Standartlashtirilganroq metrika **bir baytga to'g'ri keladigan bitlar** (_bits-per-byte_, _BPB_) bo'ladi — bu til modeliga asl o'qitish ma'lumotlarining bir baytini ifodalash uchun kerak bo'lgan bitlar soni. Agar _BPC_ 3 bo'lsa va har bir belgi 7 bit yoki bir baytning $7/8$ qismi bo'lsa, u holda _BPB_ $3 / (\frac{7}{8}) = 3.43$ bo'ladi.
+
+O'zaro entropiya bizga til modelining matnni siqishda qanchalik samarali bo'lishini aytib beradi. Agar til modelining _BPB_ ko'rsatkichi 3.43 bo'lsa, ya'ni u har bir asl baytni (8 bit) 3.43 bit yordamida ifodalay olsa, bu til modeli asl o'qitish matnini uning asl hajmining yarmidan kamrog'igacha siqishi mumkin.
+
+## _Perplexity_
+
+_Perplexity_ — bu entropiya va o'zaro entropiyaning eksponensial ko'rinishidir. _Perplexity_ ko'pincha _PPL_ deb qisqartiriladi. Haqiqiy taqsimoti _P_ bo'lgan ma'lumotlar to'plami berilganda, uning _perplexity_'si quyidagicha aniqlanadi:
+
+$$
+PPL(P) = 2^{H(P)}
+$$
+
+Bu ma'lumotlar to'plamidagi til modelining (_o'rganilgan taqsimoti $Q$ bilan_) _perplexity_'si esa quyidagicha aniqlanadi:
+
+$$
+PPL(P, Q) = 2^{H(P, Q)}
+$$
+
+Agar o'zaro entropiya model uchun keyingi tokenni prognoz qilish qanchalik qiyin ekanligini o'lchasa, _perplexity_ keyingi tokenni prognoz qilishda u qanchalik noaniqlikka ega ekanligini o'lchaydi. Yuqoriroq noaniqlik keyingi token uchun ko'proq ehtimoliy variantlar mavjudligini anglatadi.
+
+3-4 (b)-rasmdagi kabi, 4 ta pozitsiya tokenini mukammal kodlashga o'qitilgan til modelini ko'rib chiqaylik. Bu til modelining o'zaro entropiyasi 2 bit. Agar bu til modeli kvadratdagi pozitsiyani prognoz qilishga harakat qilsa, u $2^2 = 4$ ta ehtimoliy variant orasidan tanlashi kerak. Shunday qilib, bu til modelining _perplexity_'si 4 ga teng.
+
+Hozirgacha men entropiya va o'zaro entropiya birligi sifatida _bitdan_ foydalanayotgan edim. Har bir bit 2 ta noyob qiymatni ifodalashi mumkin, shuning uchun oldingi _perplexity_ tenglamasida asos 2 ga teng.
+
+`TensorFlow` va `PyTorch` kabi ommabop _ML_ freymvorklari entropiya va o'zaro entropiya birligi sifatida **natdan** (natural logarifm) foydalanadi. _Nat_ [asos sifatida _e_](https://en.wikipedia.org/wiki/E_(mathematical_constant)) ni, ya'ni natural logarifm asosini ishlatadi.[^8] Agar siz birlik sifatida _natdan_ foydalansangiz, _perplexity_ $e$ ning eksponensial ko'rinishi bo'ladi:
+
+$$
+PPL(P, Q) = e^{H(P, Q)}
+$$
+
+Bit va nat atrofidagi chalkashliklar tufayli, ko'pchilik o'z til modellarining samaradorligi haqida hisobot berganda, o'zaro entropiya o'rniga _perplexity_'ni ma'lum qiladi.
+
+## _Perplexity_'ni talqin qilish va ishlatilish senariylari
+
+Muhokama qilinganidek, o'zaro entropiya, _perplexity_, _BPC_ va _BPB_ — bular til modellarining prognozlash aniqligi o'lchovlarining bir turidir. Model matnni qanchalik prognoz qila olsa, ushbu metrikalar shunchalik past bo'ladi. Ushbu kitobda men standart til modellashtirish metrikasi sifatida _perplexity_'dan foydalanaman. Esingizda bo'lsin, model berilgan ma'lumotlar to'plamida keyin nima kelishini prognoz qilishda qanchalik ko'p noaniqlikka ega bo'lsa, _perplexity_ shunchalik yuqori bo'ladi.
+
+_Perplexity_ uchun qanday qiymat yaxshi hisoblanishi ma'lumotlarning o'ziga va _perplexity_'ning aynan qanday hisoblanishiga, masalan, model qancha oldingi tokenlarga kirish imkoniga ega ekanligiga bog'liq. Quyida bir nechta umumiy qoidalar keltirilgan:
+
+- **Ko'proq strukturalashgan ma'lumotlar kutilayotgan _perplexity_'ni pasaytiradi:**
+  Ko'proq strukturalashgan ma'lumotlar ko'proq prognozli bo'ladi. Masalan, _HTML_ kodi kundalik matndan ko'ra ko'proq prognozli. Agar siz `<head>` kabi ochuvchi _HTML_ tegini ko'rsangiz, yaqin atrofda yopuvchi `</head>` tegi bo'lishi kerakligini prognoz qilishingiz mumkin. Shuning uchun, modelning _HTML_ kodidagi kutilayotgan _perplexity_'si uning kundalik matndagi kutilayotgan _perplexity_'sidan pastroq bo'lishi kerak.
+
+- **Lug'at qanchalik katta bo'lsa, _perplexity_ shunchalik yuqori bo'ladi:**
+  Intuitiv ravishda, ehtimoliy tokenlar qancha ko'p bo'lsa, model uchun keyingi tokenni prognoz qilish shunchalik qiyin bo'ladi. Masalan, modelning bolalar kitobidagi _perplexity_'si, ehtimol, xuddi shu modelning "Urush va Tinchlik" asaridagi _perplexity_'sidan pastroq bo'ladi. Bir xil ma'lumotlar to'plami uchun, aytaylik, ingliz tilida, belgiga asoslangan _perplexity_ (keyingi belgini prognoz qilish) so'zga asoslangan _perplexity_'dan (keyingi so'zni prognoz qilish) pastroq bo'ladi, chunki ehtimoliy belgilar soni ehtimoliy so'zlar sonidan kamroq.
+
+- **Kontekst uzunligi qanchalik uzun bo'lsa, _perplexity_ shunchalik past bo'ladi:**
+  Model qanchalik ko'p kontekstga ega bo'lsa, u keyingi tokenni prognoz qilishda shunchalik kam noaniqlikka ega bo'ladi. 1951-yilda Klod Shennon o'z modelining o'zaro entropiyasini 10 tagacha oldingi tokenga asoslanib keyingi tokenni prognoz qilish orqali baholagan. Ushbu kitob yozilayotgan vaqtda, modelning _perplexity_'si odatda 500 dan 10 000 gacha oldingi tokenga asoslanib hisoblanishi mumkin va ehtimol undan ham ko'proq, bu modelning maksimal kontekst uzunligi bilan cheklanadi.
+
+Ma'lumot uchun, _perplexity_ qiymatlarining 3 yoki undan ham past bo'lishi odatiy hol emas. Agar faraziy bir tildagi barcha tokenlar bir xil yuz berish ehtimoliga ega bo'lsa, 3 ga teng _perplexity_ bu modelning keyingi tokenni to'g'ri prognoz qilish ehtimoli 3 dan 1 ekanligini anglatadi. Modelning lug'ati 10 minglab va 100 minglab tartibda ekanligini hisobga olsak, bu ko'rsatkichlar aql bovar qilmas darajada.
+
+Til modellarini o'qitishni yo'naltirishdan tashqari, _perplexity_ _SI_ muhandislik ish jarayonining ko'p qismlarida foydalidir. Birinchidan, _perplexity_ model imkoniyatlarining yaxshi proksisidir. Agar model keyingi tokenni prognoz qilishda yomon bo'lsa, uning keyingi vazifalardagi samaradorligi ham, ehtimol, yomon bo'ladi. OpenAI'ning `GPT-2` hisoboti shuni ko'rsatadiki, kattaroq modellar, ular ayni paytda qudratliroq modellar hamdir, bir qator ma'lumotlar to'plamlarida doimiy ravishda pastroq _perplexity_ beradi (3-1-jadval). Afsuski, kompaniyalarning o'z modellari haqida tobora sirliroq bo'lish tendensiyasiga ergashib, ko'pchilik o'z modellarining _perplexity_'sini ma'lum qilishni to'xtatgan.
+
+| | `LAMBADA` (PPL) | `LAMBADA` (ACC) | `CBT-CN` (ACC) | `CBT-NE` (ACC) | `WikiText2` (PPL) | `PTB` (PPL) | `enwiki8` (BPB) | `text8` (BPC) | `WikiText103` (PPL) | `IBW` (PPL) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **SOTA** | 99.8 | 59.23 | 85.7 | 82.3 | 39.14 | 46.54 | 0.99 | 1.08 | 18.3 | 21.8 |
+| **117M** | 35.13 | 45.99 | 87.65 | 83.4 | 29.41 | 65.85 | 1.16 | 1.17 | 37.50 | 75.20 |
+| **345M** | 15.60 | 55.48 | 92.35 | 87.1 | 22.76 | 47.33 | 1.01 | 1.06 | 26.37 | 55.72 |
+| **762M** | 10.87 | 60.12 | 93.45 | 88.0 | 19.93 | 40.31 | 0.97 | 1.02 | 22.05 | 44.575 |
+| **1542M** | 8.63 | 63.24 | 93.30 | 89.05 | 18.34 | 35.76 | 0.93 | 0.98 | 17.48 | 42.16 |
+
+<div className='text-center text-sm italic'>3-1-jadval. Kattaroq `GPT-2` modellari turli ma'lumotlar to'plamlarida doimiy ravishda pastroq _perplexity_ beradi. Manba: ["OpenAI", 2018.](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)</div>
+
+<Callout>
+#### Ogohlantirish
+
+_Perplexity_ _SFT_ va _RLHF_ kabi texnikalar yordamida yakuniy o'qitishdan o'tgan modellarni baholash uchun unchalik yaxshi proksi bo'lmasligi mumkin.[^9] Yakuniy o'qitish modellarga vazifalarni bajarishni o'rgatish haqidadir. Model vazifalarni bajarishda yaxshilanib borgani sari, u keyingi tokenlarni prognoz qilishda yomonlashishi mumkin. Til modelining _perplexity_'si odatda yakuniy o'qitishdan keyin ortadi. Ba'zi odamlar yakuniy o'qitish entropiyani "yiqitadi" (_collapses entropy_) deyishadi. Xuddi shunday, kvantlash (_quantization_) — modelning sonli aniqligini va u bilan birga xotiradagi izini (_memory footprint_) kamaytiradigan texnika — ham modelning _perplexity_'sini kutilmagan tarzda o'zgartirishi mumkin.[^10]
+
+</Callout>
+
+Eslatma uchun, modelning biror matnga nisbatan _perplexity_'si bu model uchun ushbu matnni prognoz qilish qanchalik qiyin ekanligini o'lchaydi. Berilgan model uchun _perplexity_ model o'qitish paytida ko'rgan va yodlab olgan matnlar uchun eng past bo'ladi. Shuning uchun, _perplexity_'dan biror matn modelning o'qitish ma'lumotlarida bo'lgan yoki bo'lmaganini aniqlash uchun foydalanish mumkin. Bu ma'lumotlar ifloslanishini (_data contamination_) aniqlash uchun foydalidir — agar modelning biror benchmark ma'lumotlaridagi _perplexity_'si past bo'lsa, bu benchmark ehtimol modelning o'qitish ma'lumotlariga kiritilgan, bu esa modelning ushbu benchmarkdagi samaradorligini kamroq ishonchli qiladi. Bundan, shuningdek, o'qitish ma'lumotlaridagi takrorlanishlarni olib tashlash uchun ham foydalanish mumkin: masalan, yangi ma'lumotlarni mavjud o'qitish ma'lumotlar to'plamiga faqat yangi ma'lumotlarning _perplexity_'si yuqori bo'lgandagina qo'shish.
+
+_Perplexity_ prognoz qilib bo'lmaydigan matnlar, masalan, g'ayrioddiy g'oyalarni ifodalovchi ("mening itim bo'sh vaqtlarida kvant fizikasidan dars beradi") yoki ma'nisiz ("uy mushuk bor ko'z") matnlar uchun eng yuqori bo'ladi. Shuning uchun, _perplexity_'dan g'ayritabiiy matnlarni aniqlash uchun foydalanish mumkin.
+
+_Perplexity_ va unga bog'liq metrikalar bizga asosdagi til modelining samaradorligini tushunishga yordam beradi, bu esa o'z navbatida modelning keyingi vazifalardagi samaradorligini tushunish uchun proksi bo'lib xizmat qiladi. Bobning qolgan qismida modelning keyingi vazifalardagi samaradorligini to'g'ridan-to'g'ri qanday o'lchash muhokama qilinadi.
+
+> #### Til modeli yordamida matnning _perplexity_'sini qanday hisoblash mumkin
+>
+> Modelning biror matnga nisbatan _perplexity_'si model uchun o'sha matnni prognoz qilish qanchalik qiyin ekanligini o'lchaydi. $X$ til modeli va $[x_1, x_2, \dots, x_n]$ tokenlar ketma-ketligi berilganda, $X$ ning bu ketma-ketlik uchun _perplexity_'si:
+>
+$$
+P(x_1, x_2, \dots, x_n)^{-\frac{1}{n}} = \left( \frac{1}{P(x_1, x_2, \dots, x_n)} \right)^{\frac{1}{n}} = \left( \prod_{i=1}^{n} \frac{1}{P(x_i | x_1, \dots, x_{i-1})} \right)^{\frac{1}{n}}
+$$
+>
+> bu yerda $P(x_i | x_1, \dots, x_{i-1})$ $X$ ning oldingi $x_1, \dots, x_{i-1}$ tokenlari berilganda $x_i$ tokeniga belgilaydigan ehtimolligini bildiradi.
+>
+> _Perplexity_'ni hisoblash uchun siz til modelining har bir keyingi token uchun belgilaydigan ehtimolliklariga (yoki _logprobs_'lariga) kirish huquqiga ega bo'lishingiz kerak. Afsuski, 2-bobda muhokama qilinganidek, hamma tijoriy modellar ham o'z modellarining _logprobs_'larini oshkor qilmaydi.
+
+
+### Izohlar 
+
+[^6]: Garchi kuchli korrelyatsiya mavjud bo'lsa-da, til modellashtirish samaradorligi keyingi dasturlar samaradorligini to'liq tushuntirib bera olmaydi. Bu faol tadqiqot sohasi.
+
+[^7]: 1-bobda muhokama qilinganidek, token belgi, so'z yoki so'zning bir qismi bo'lishi mumkin. Klod Shennon 1951-yilda entropiyani taqdim etganida, u ishlagan tokenlar belgilar edi. Mana, entropiya [uning o'z so'zlari](https://www.princeton.edu/~wbialek/rome/refs/shannon_51.pdf) bilan: "Entropiya — bu ma'lum ma'noda, tildagi matnning har bir harfi uchun o'rtacha qancha axborot ishlab chiqarilishini o'lchaydigan statistik parametr. Agar til eng samarali usulda ikkilik raqamlarga (0 yoki 1) tarjima qilinsa, entropiya asl tilning har bir harfiga talab qilinadigan o'rtacha ikkilik raqamlar sonidir."
+
+[^8]: Ko'pchilikning log asos 2 dan ko'ra natural logarifmni afzal ko'rishining bir sababi shundaki, natural logarifm uning matematikasini osonlashtiradigan ma'lum xususiyatlarga ega. Masalan, natural logarifm ln(x) ning hosilasi 1/x ga teng.
+
+[^9]: Agar siz _SFT_ (nazoratli _finetuning_) va _RLHF_ (inson fikr-mulohazalari asosida mustahkamlovchi o'rganish) nima ekanliklariga tushunganingizga ishonchingiz komil bo'lmasa, [2-bobga](/books/ai-engineering/2-understanding-foundation-models) qayta murojaat qiling.
+
+[^10]: Kvantlash (_Quantization_) 7-bobda muhokama qilinadi.

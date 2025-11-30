@@ -1,0 +1,309 @@
+---
+title: Prompt muhandisligining eng yaxshi amaliyotlari
+description: "Prompt muhandisligining eng yaxshi amaliyotlari: aniq ko'rsatmalar, personaj qabul qilish, misollar keltirish, natija formatini belgilash. OpenAI, Anthropic, Meta, Google qo'llanmalari va isbotlangan usullar."
+keywords: prompt muhandisligi eng yaxshi amaliyotlari, prompt engineering best practices, aniq ko'rsatmalar, clear instructions, personaj, persona, misollar, examples, natija formati, output format, OpenAI, Anthropic, Claude, Meta, Llama, Google, Gemini, prompt qo'llanmalari, prompt guides, samarali promptlar, effective prompts, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi
+author: Webiston.uz
+---
+
+# Prompt muhandisligining eng yaxshi amaliyotlari
+
+Prompt muhandisligi, ayniqsa kuchsizroq modellar uchun, aql bovar qilmas darajada "nayrangbozlikka" (_hacky_) aylanib ketishi mumkin. Prompt muhandisligining ilk davrlarida "Questions:" o'rniga "Q:" deb yozish yoki modellarni "to'g'ri javob uchun $300 choychaqa" va'dasi bilan yaxshiroq javob berishga undash kabi maslahatlarga to'la ko'plab qo'llanmalar paydo bo'ldi. Garchi bu maslahatlar ba'zi modellar uchun foydali bo'lishi mumkin bo'lsa-da, modellar ko'rsatmalarga amal qilishda ustamon va prompt o'zgarishlariga chidamliroq bo'lib borgani sari, ular o'z ahamiyatini yo'qotib boradi.
+
+Ushbu bo'limda keng doiradagi modellar bilan ishlashi isbotlangan va yaqin kelajakda ham o'z dolzarbligini saqlab qolishi ehtimoli yuqori bo'lgan umumiy usullarga e'tibor qaratiladi. Ular [OpenAI](https://platform.openai.com/docs/guides/prompt-engineering/six-strategies-for-getting-better-results), [Anthropic](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview), [Meta](https://www.llama.com/docs/how-to-guides/prompting/) va [Google](https://services.google.com/fh/files/misc/gemini-for-google-workspace-prompting-guide-101.pdf) kabi model ishlab chiquvchilari tomonidan yaratilgan prompt muhandisligi qo'llanmalaridan hamda generativ _SI_ ilovalarini muvaffaqiyatli joriy etgan jamoalar tomonidan ulashilgan eng yaxshi amaliyotlardan saralab olingan. Shuningdek, bu kompaniyalar ko'pincha siz andoza olishingiz mumkin bo'lgan oldindan tayyorlangan promptlar kutubxonalarini ham taqdim etishadi — [Anthropic](https://docs.claude.com/en/resources/prompt-library/library), [Google](https://console.cloud.google.com/appeal?project=uplifted-air-476614-r8) va [OpenAI'ga](https://platform.openai.com/docs/examples) razm soling.
+
+Ushbu umumiy amaliyotlardan tashqari, har bir modelning o'ziga xos "qiliqlari" bo'lishi mumkinki, ular maxsus prompt hiylalariga o'zgacha javob qaytaradi. Biror model bilan ishlayotganda, aynan o'sha modelga xos bo'lgan prompt muhandisligi qo'llanmalarini izlashingiz kerak.
+
+## Aniq va tushunarli ko'rsatmalar yozing
+
+_SI_ bilan muloqot qilish insonlar bilan muloqot qilish bilan bir xil: aniqlik yordam beradi. Quyida aniq ko'rsatmalar yozish bo'yicha bir nechta maslahatlar keltirilgan.
+
+### Modeldan nima xohlayotganingizni noaniqliklarsiz tushuntiring
+
+Agar modeldan inshoni baholashni xohlasangiz, qanday baholash tizimidan foydalanmoqchi ekanligingizni tushuntiring. U 1 dan 5 gachami yoki 1 dan 10 gachami? Agar model biror insho bo'yicha ikkilanib qolsa, u qo'lidan kelgancha biror baho qo'yishini xohlaysizmi yoki "Bilmayman" deb javob berishinimi?
+
+Promptni takomillashtirish jarayonida, ularning oldini olish uchun promptga o'zgartirishlar kiritishni talab qiladigan nomaqbul xatti-harakatlarni kuzatishingiz mumkin. Masalan, agar model kasrli baholar (4.5) chiqarsa va siz buni xohlamasangiz, promptingizni yangilab, modelga faqat butun sonli baholar chiqarishni ayting.
+
+### Modelga ma'lum bir personajni (persona) qabul qilishni so'rang
+
+Personaj modelga javoblar yaratishda qanday nuqtai nazardan foydalanishi kerakligini tushunishga yordam beradi. "Men tovuqlarni yaxshi ko'raman. Tovuqlar momiq va mazali tuxum beradi" degan insho berilsa, model tayyor holatida unga 5 dan 2 baho qo'yishi mumkin. Biroq, agar siz modeldan birinchi sinf o'qituvchisi personajini qabul qilishni so'rasangiz, insho 4 baho olishi mumkin. 5-5-rasmga qarang.
+
+![Modelga ma'lum bir personajni qabul qilishni so'rash, unga so'rovlaringizga javob berishda to'g'ri nuqtai nazardan foydalanishga yordam beradi.](/ai-engineering/5-chapter/5.5-figure.png)
+
+<div className='text-center text-sm italic'>5-5-rasm. Modelga ma'lum bir personajni qabul qilishni so'rash, unga so'rovlaringizga javob berishda to'g'ri nuqtai nazardan foydalanishga yordam beradi.</div>
+
+### Misollar keltiring
+
+Misollar modeldan qanday javob kutayotganingiz borasidagi noaniqliklarni kamaytirishi mumkin. Tasavvur qiling, siz yosh bolalar bilan suhbatlashadigan bot yaratyapsiz. "Rojdestvoda Santa menga sovg'alar olib keladimi?" degan savolga model Santa Klaus to'qima personaj ekanligini va shu sababli hech kimga Rojdestvo sovg'alarini olib kela olmasligini aytishi mumkin. Bunday javob botingiz foydalanuvchilariga manzur kelmasligi aniq.
+
+Buning oldini olish uchun siz modelga to'qima personajlar haqidagi savollarga qanday javob berish kerakligiga misollar keltirishingiz mumkin, masalan, 5-1-jadvalda ko'rsatilganidek, tish parilari mavjud deb aytish orqali.
+
+| | Foydalanuvchi prompti | _SI_ javobi |
+| :--- | :--- | :--- |
+| **Misolsiz** | Rojdestvoda Santa menga sovg'alar olib keladimi? | Santa Klaus — bu bolalar ishonadigan to'qima personaj bo'lib, o'zining chanasi, bug'ulari va Rojdestvo oqshomidagi sovg'a ulashish sayohati haqidagi hikoyalari bilan Rojdestvoga sehr va hayajon olib keladi. Ko'pgina ota-onalar bu ishonchni qo'llab-quvvatlaydilar, chunki u bolalar uchun qo'shimcha qiziqarlilik va hayrat qatlamini qo'shadi. |
+| **Misol bilan** | S: Tish parisi haqiqiymi?<br/>J: Albatta! Bugun kechqurun tishingni yostig'ing ostiga qo'y. Tish parisi kelib, senga biror narsa qoldirib ketishi mumkin.<br/><br/>S: Rojdestvoda Santa menga sovg'alar olib keladimi? | Ha, albatta! Santa unga ishongan va yil davomida yaxshi bola bo'lgan bolalarga sovg'alar olib kelishni yaxshi ko'radi. Faqatgina sen juda ham yaxshi bola bo'lishing, bir nechta pechenye qoldirishing kerak, shunda Rojdestvo tongida archa tagida sovg'alarni topib uyg'onishing mumkin! |
+
+<div className='text-center text-sm italic'>5-1-jadval. Misol keltirish modelni siz xohlagan javobga undashi mumkin. [Claude'ning prompt muhandisligi qo'llanmasidan](https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8/edit?gid=150872633#gid=150872633) ilhomlanilgan.</div>
+
+Bu oddiy tuyulishi mumkin, lekin agar siz kiritilayotgan tokenlar hajmidan xavotirda bo'lsangiz, kamroq token ishlatadigan misol formatlarini tanlang. Masalan, agar ikkalasining ham samaradorligi bir xil bo'lsa, 5-2-jadvaldagi birinchi promptdan ko'ra ikkinchi promptni afzal ko'rish kerak.
+
+| Prompt | Tokenlar soni<br/>(`GPT-4`) |
+| :--- | :--- |
+| Quyidagi narsani yeyiladigan yoki yeyilmaydigan deb belgilang.<br/><br/>no'xat --> yeyiladigan<br/>quti --> yeyilmaydigan<br/>pizza --> | 28 |
+
+<div className='text-center text-sm italic'>5-2-jadval. Ba'zi misol formatlari boshqalariga qaraganda qimmatroq (ko'proq resurs talab qiladi).</div>
+
+### Natija formatini aniq belgilang
+
+Agar modeldan qisqa va lo'nda javob kutayotgan bo'lsangiz, unga bu haqda ayting. Uzun javoblar nafaqat qimmatga tushadi (model _API_'lari har bir token uchun haq oladi), balki kechikishni ham oshiradi. Agar model o'z javobini "Ushbu inshoning mazmuniga asoslanib, men unga ... baho qo'ygan bo'lardim" kabi kirish so'zlari bilan boshlashga moyil bo'lsa, sizga bunday kirish so'zlari kerak emasligini aniq ko'rsating.
+
+Model natijalarining to'g'ri formatda bo'lishini ta'minlash, ayniqsa, ular aniq formatlarni talab qiladigan keyingi bosqich ilovalari tomonidan ishlatilganda juda muhim. Agar modeldan _JSON_ formatida natija yaratishni xohlasangiz, _JSON_ ichidagi kalitlar nima bo'lishi kerakligini aniq belgilang. Zarur bo'lsa, misollar keltiring.
+
+Klassifikatsiya kabi strukturalashgan natijalarni talab qiladigan vazifalar uchun, modelga strukturalashgan natijalar boshlanishi kerakligini bildirish maqsadida promptlar oxirini belgilash uchun markerlardan foydalaning.[^8] 5-3-jadvalda ko'rsatilganidek, markerlar bo'lmasa, model kiritilgan ma'lumotga qo'shimchalar qo'shishda davom etishi mumkin. Kiritilayotgan ma'lumotlaringizda uchrashi ehtimoli past bo'lgan markerlarni tanlaganingizga ishonch hosil qiling. Aks holda, model chalkashib ketishi mumkin.
+
+| Prompt | Modelning natijasi | |
+| :--- | :--- | :--- |
+| Quyidagi narsani yeyiladigan yoki yeyilmaydigan deb belgilang.<br/><br/>ananasli pitsa --> yeyiladigan<br/>karton --> yeyilmaydigan<br/>tovuq | go'shtli tako --> yeyiladigan | ❌ |
+| Quyidagi narsani yeyiladigan yoki yeyilmaydigan deb belgilang.<br/><br/>ananasli pitsa --> yeyiladigan<br/>karton --> yeyilmaydigan<br/>tovuq --> | yeyiladigan | ✅ |
+
+<div className='text-center text-sm italic'>5-3-jadval. Kiritilgan ma'lumotning oxirini belgilovchi aniq markerlar bo'lmasa, model strukturalashgan natijalar yaratish o'rniga unga qo'shimchalar qo'shishda davom etishi mumkin.</div>
+
+## Yetarli darajada kontekst taqdim eting
+
+Xuddi imtihonda qo'shimcha ma'lumotnomalar talabalarga yaxshiroq natija ko'rsatishga yordam bergani kabi, yetarli darajadagi kontekst ham modellarning samaradorligini oshirishi mumkin. Agar modeldan biror ilmiy maqola haqidagi savollarga javob berishini xohlasangiz, o'sha maqolani kontekstga kiritish model javoblarini sezilarli darajada yaxshilaydi. Kontekst, shuningdek, gallyutsinatsiyalarni ham kamaytirishi mumkin. Agar modelga kerakli ma'lumot taqdim etilmasa, u o'zining ichki bilimiga tayanishiga to'g'ri keladi, bu esa ishonchsiz bo'lishi va gallyutsinatsiyalarga olib kelishi mumkin.
+
+Siz modelga kerakli kontekstni o'zingiz taqdim etishingiz yoki unga kontekstni yig'ish uchun vositalar berishingiz mumkin. Berilgan so'rov uchun kerakli kontekstni yig'ish jarayoni **kontekstni shakllantirish** (_context construction_) deb ataladi. Kontekstni shakllantirish vositalari qatoriga ma'lumotlarni qidirib topish (_data retrieval_), masalan, _RAG_ jarayonlar zanjirida, va veb-qidiruv kiradi. Bu vositalar 6-bobda muhokama qilinadi.
+
+> #### Model bilimini faqat kontekst bilan qanday cheklash mumkin
+>
+> Ko'pgina holatlarda, modelning javob berish uchun faqat kontekstda taqdim etilgan ma'lumotlardan foydalanishi maqsadga muvofiqdir. Bu, ayniqsa, rol o'ynash va boshqa simulyatsiyalarda keng tarqalgan. Masalan, agar siz modeldan Skyrim o'yinidagi biror personajni o'ynashini xohlasangiz, bu personaj faqat Skyrim olami haqida bilishi va "Starbucks'dagi sevimli ichimligingiz qaysi?" kabi savollarga javob bera olmasligi kerak.
+>
+> Modelni faqat kontekst bilan cheklash ancha murakkab vazifa. "Faqat taqdim etilgan kontekstdan foydalanib javob bering" kabi aniq ko'rsatmalar, shuningdek, u javob bera olmasligi kerak bo'lgan savollarga oid misollar yordam berishi mumkin. Siz shuningdek, modelga o'z javobini taqdim etilgan manbaning aynan qayeridan olganini iqtibos keltirishni buyurishingiz ham mumkin. Bu yondashuv modelni faqat kontekst tomonidan qo'llab-quvvatlanadigan javoblarni yaratishga undashi mumkin.
+>
+> Biroq, model barcha ko'rsatmalarga amal qilishiga hech qanday kafolat yo'qligi sababli, birgina promptlashning o'zi kerakli natijani ishonchli tarzda ta'minlay olmasligi mumkin. Modelni o'zingizning ma'lumotlar manbangizda _finetuning_ qilish yana bir variant, lekin dastlabki o'qitish ma'lumotlari (_pre-training data_) baribir uning javoblariga "sizib chiqishi" mumkin. Eng xavfsiz usul — bu modelni faqat ruxsat etilgan bilimlar manbasida o'qitishdir, garchi bu aksariyat ishlatilish senariylari uchun imkonsiz bo'lsa ham. Bundan tashqari, bunday manba yuqori sifatli modelni o'qitish uchun juda cheklangan bo'lishi ham mumkin.
+
+## Murakkab vazifalarni soddaroq kichik vazifalarga ajrating
+
+Bir nechta bosqichlarni talab qiladigan murakkab vazifalar uchun, ularni kichik vazifalarga bo'lib chiqing. Butun vazifa uchun bitta ulkan prompt tuzish o'rniga, har bir kichik vazifaning o'z prompti bo'ladi. Keyin bu kichik vazifalar bir-biriga zanjir qilib bog'lanadi. Keling, mijozlarni qo'llab-quvvatlash chatbotini misol qilib olaylik. Mijoz so'roviga javob berish jarayonini ikki bosqichga ajratish mumkin:
+
+1.  **Niyatni aniqlash:** so'rovning asl maqsadini (niyatini) aniqlash.
+2.  **Javobni yaratish:** shu niyatga asoslanib, modelga qanday javob berish kerakligini ko'rsatish. Agar o'nta ehtimoliy niyat bo'lsa, sizga o'nta turli xil prompt kerak bo'ladi.
+
+[OpenAI'ning prompt muhandisligi qo'llanmasidan](https://platform.openai.com/docs/guides/prompt-engineering/strategy-split-complex-tasks-into-simpler-subtasks) olingan quyidagi misolda niyatni aniqlash prompti va bitta niyat (nosozliklarni bartaraf etish) uchun mo'ljallangan prompt ko'rsatilgan. Qisqaroq bo'lishi uchun promptlar biroz o'zgartirilgan:
+
+``` txt
+"Prompt 1 (Niyatni aniqlash)"
+
+TIZIM
+`Sizga mijozlarga xizmat ko'rsatish so'rovlari taqdim etiladi. Har bir so'rovni 
+birlamchi va ikkilamchi toifaga ajrating. Natijani json formatida, 
+birlamchi va ikkilamchi kalitlari bilan taqdim eting.`
+
+`Birlamchi toifalar: To'lovlar, Texnik Yordam, Hisobni Boshqarish yoki Umumiy Ma'lumot.`
+
+`To'lovlar uchun ikkilamchi toifalar:`
+- `Obunani bekor qilish yoki yangilash`
+- ...
+    
+`Texnik Yordam uchun ikkilamchi toifalar:`
+- `Nosozliklarni bartaraf etish`
+- ...
+
+`Hisobni Boshqarish uchun ikkilamchi toifalar:`
+- ...
+
+`Umumiy Ma'lumot uchun ikkilamchi toifalar:`
+- ... 
+
+FOYDALANUVCHI     
+`Internetimni qayta ishlatishim kerak.`
+
+`Prompt 2 (Nosozliklarni bartaraf etish so'roviga javob)`
+
+TIZIM
+`Sizga texnik yordam kontekstida nosozliklarni bartaraf etishni talab 
+qiladigan mijoz so'rovlari taqdim etiladi. Foydalanuvchiga quyidagilar 
+orqali yordam bering:`
+
+- `Router'ga ulangan va undan chiquvchi barcha kabellar ulanganligini 
+tekshirishni so'rang. Vaqt o'tishi bilan kabellarning bo'shab qolishi 
+keng tarqalgan holat ekanligini eslatib o'ting.`
+- `Agar barcha kabellar ulangan bo'lsa-yu, muammo davom etsa, ulardan 
+qaysi router modelidan foydalanayotganini so'rang.`
+- `Agar qurilmani qayta ishga tushirib, 5 daqiqa kutgandan keyin ham 
+mijozning muammosi hal bo'lmasa, {"IT support requested"} natijasini 
+chiqarish orqali ularni IT-qo'llab-quvvatlash xizmatiga ulang.`
+- `Agar foydalanuvchi ushbu mavzuga aloqador bo'lmagan savollar berishni 
+boshlasa, nosozliklarni bartaraf etish haqidagi joriy suhbatni 
+yakunlashni xohlash-xohlamasligini tasdiqlang va ularning so'rovini 
+quyidagi sxemaga muvofiq tasniflang:`
+
+`<yuqoridagi birlamchi/ikkilamchi tasniflash sxemasini shu yerga qo'ying>`
+
+FOYDALANUVCHI
+`Internetimni qayta ishlatishim kerak.`
+```
+
+Ushbu misolni ko'rib, sizda savol tug'ilishi mumkin: nima uchun niyatni aniqlash promptini yana ikkiga — biri birlamchi toifa uchun, ikkinchisi ikkilamchi toifa uchun — ajratib yubormadik? Har bir kichik vazifa qanchalik mayda bo'lishi kerakligi har bir amaliy vaziyatga hamda siz rozi bo'lgan samaradorlik, xarajat va kechikish o'rtasidagi murosaga bog'liq. Optimal bo'linish va zanjirni topish uchun tajriba qilib ko'rishingiz kerak bo'ladi.
+
+Garchi modellar murakkab ko'rsatmalarni tushunishda tobora ustamon bo'lib borayotgan bo'lsa-da, ular baribir soddaroq ko'rsatmalar bilan yaxshiroq ishlaydi. Promptni qismlarga ajratish nafaqat samaradorlikni oshiradi, balki bir qancha qo'shimcha afzalliklarni ham taqdim etadi:
+
+-   **Monitoring:** Siz nafaqat yakuniy natijani, balki barcha oraliq natijalarni ham kuzatib borishingiz mumkin.
+-   **Xatoliklarni tuzatish:** Muammo tug'dirayotgan bosqichni alohida ajratib olib, boshqa bosqichlardagi model xatti-harakatini o'zgartirmagan holda, uni mustaqil ravishda tuzatishingiz mumkin.
+-   **Parallel bajarish:** Vaqtni tejash uchun, imkon bo'lganda, mustaqil bosqichlarni parallel ravishda bajaring. Tasavvur qiling, siz modeldan uch xil o'qish darajasi: birinchi sinf, sakkizinchi sinf va kollejning birinchi kursi uchun uch xil hikoya versiyasini yaratishni so'rayapsiz. Bu uch versiyaning barchasini bir vaqtning o'zida yaratish mumkin, bu esa natija kechikishini sezilarli darajada kamaytiradi.[^9]
+-   **Kamroq mehnat:** Murakkab promptlarga qaraganda sodda promptlar yozish osonroq.
+
+Promptni qismlarga ajratishning bir kamchiligi shundaki, u foydalanuvchilar sezadigan kechikishni oshirishi mumkin, ayniqsa, foydalanuvchilar oraliq natijalarni ko'rmaydigan vazifalarda. Oraliq bosqichlar qancha ko'p bo'lsa, foydalanuvchilar yakuniy bosqichda yaratilgan birinchi natija tokenini ko'rish uchun shuncha uzoqroq kutishlariga to'g'ri keladi.
+
+Promptni qismlarga ajratish odatda ko'proq model so'rovlarini o'z ichiga oladi, bu esa xarajatlarni oshirishi mumkin. Biroq, ikkita alohida promptning narxi bitta asl promptning narxidan ikki barobar ko'p bo'lmasligi ham mumkin. Buning sababi, aksariyat model _API_'lari kiritilgan va chiqarilgan har bir token uchun haq oladi, kichikroq promptlar esa ko'pincha kamroq token talab qiladi. Bundan tashqari, siz soddaroq bosqichlar uchun arzonroq modellardan foydalanishingiz mumkin. Masalan, mijozlarni qo'llab-quvvatlash sohasida niyatni aniqlash uchun kuchsizroq modeldan, foydalanuvchiga javob yaratish uchun esa kuchliroq modeldan foydalanish keng tarqalgan amaliyotdir. Xarajatlar oshgan taqdirda ham, yaxshilangan samaradorlik va ishonchlilik buni oqlashi mumkin.
+
+Ilovangizni takomillashtirish ustida ishlar ekansiz, promptingiz tezda murakkablashib ketishi mumkin. Sizga batafsilroq ko'rsatmalar berish, ko'proq misollar qo'shish va maxsus holatlarni hisobga olish kerak bo'lishi mumkin. [GoDaddy](https://www.godaddy.com/resources/news/llm-from-the-trenches-10-lessons-learned-operationalizing-models-at-godaddy) (2024) o'zining mijozlarni qo'llab-quvvatlash chatboti uchun yaratilgan prompt birgina takomillashtirish bosqichidan so'ng 1500 dan ortiq tokenga yetib, "shishib ketganini" aniqladi. Promptni turli kichik vazifalarga mo'ljallangan kichikroq promptlarga ajratgandan so'ng, ular o'z modellari yaxshiroq ishlaganini va ayni paytda token xarajatlari ham kamayganini kuzatishdi.
+
+## Modelga "o'ylash" uchun vaqt bering
+
+Siz modelni biror savol haqida, yaxshiroq so'z topa olmaganim uchun aytaman, "o'ylash" uchun ko'proq vaqt sarflashga **fikrlar zanjiri** (_Chain-of-Thought_ yoki _CoT_) va **o'z-o'zini tanqid qilish** (_self-critique_) promptlari yordamida undashingiz mumkin.
+
+"Fikrlar zanjiri" — bu modeldan muammoni yechishda tizimliroq yondashuvga undash maqsadida, undan aniq qilib bosqichma-bosqich fikrlashni so'rash demakdir. _CoT_ ko'plab modellar uchun birdek yaxshi ishlaydigan dastlabki promptlash usullaridan biridir. U `ChatGPT` paydo bo'lishidan deyarli bir yil oldin, "Fikrlar Zanjiri Promptlashi Katta Til Modellarida Mantiqiy Fikrlashni Yuzaga Keltiradi" (_"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"_) ([Wei va boshq., 2022](https://arxiv.org/abs/2201.11903)) nomli maqolada taqdim etilgan. 5-6-rasmda _CoT_ turli o'lchamdagi modellarning (`LaMDA`, `GPT-3` va `PaLM`) turli benchmarklardagi samaradorligini qanday oshirgani ko'rsatilgan. [LinkedIn](https://www.linkedin.com/blog/engineering/generative-ai/musings-on-building-a-generative-ai-product) _CoT_ shuningdek, modellarning gallyutsinatsiyalarini ham kamaytirishini aniqlagan.
+
+![_CoT_ `LaMDA`, `GPT-3` va `PaLM` modellarining `MAWPS`, `SVAMP` va `GSM-8K` benchmarklaridagi samaradorligini oshirdi.](/ai-engineering/5-chapter/5.6-figure.png)
+
+<div className='text-center text-sm italic'>5-6-rasm. _CoT_ `LaMDA`, `GPT-3` va `PaLM` modellarining `MAWPS` (Matnli matematik masalalarni yechish), `SVAMP` va `GSM-8K` benchmarklaridagi samaradorligini oshirdi. Wei va boshqalar (2022) maqolasidan olingan skrinshot. Ushbu rasm CC BY 4.0 litsenziyasi ostida.</div>
+
+_CoT_'ni amalga oshirishning eng oddiy usuli — promptingizga "bosqichma-bosqich o'yla" yoki "qaroringni tushuntirib ber" degan jumlalarni qo'shishdir. Shunda model qanday qadamlar qo'yish kerakligini o'zi ishlab chiqadi. Yoki bo'lmasa, siz model bajarishi kerak bo'lgan qadamlarni o'zingiz belgilashingiz yoki promptingizga bu qadamlar qanday bo'lishi kerakligiga oid misollarni kiritishingiz mumkin. 5-4-jadvalda bir xil asl prompt uchun _CoT_ javoblarining to'rtta varianti ko'rsatilgan. Qaysi variant eng yaxshi ishlashi ilovaga bog'liq.
+
+| Asl so'rov | Qaysi hayvon tezroq: mushuklarmi yoki itlar? |
+| :--- | :--- |
+| **Nol misolli _CoT_** | Qaysi hayvon tezroq: mushuklarmi yoki itlar? **Javob berishdan oldin bosqichma-bosqich o'ylab ko'r.** |
+| **Nol misolli _CoT_** | Qaysi hayvon tezroq: mushuklarmi yoki itlar? **Javob berishdan oldin o'z mulohazalaringni tushuntirib ber.** |
+| **Nol misolli _CoT_** | Qaysi hayvon tezroq: mushuklarmi yoki itlar? **Javob topish uchun quyidagi qadamlarga amal qil:**<br/><br/>1. **Eng tez it zotining tezligini aniqla.**<br/>2. **Eng tez mushuk zotining tezligini aniqla.**<br/>3. **Qaysi biri tezroq ekanligini aniqla.** |
+| **Bir misolli _CoT_**<br/>(promptga bitta misol kiritilgan) | **Qaysi hayvon tezroq: akulalarmi yoki delfinlar?**<br/><br/>1. **Eng tez akula zoti — qisqa suzgichli mako akulasi bo'lib, u soatiga 74 km tezlikka erisha oladi.**<br/>2. **Eng tez delfin zoti — oddiy delfin bo'lib, u soatiga 60 km tezlikka erisha oladi.**<br/>3. **Xulosa: akulalar tezroq.**<br/><br/>Qaysi hayvon tezroq: mushuklarmi yoki itlar? |
+
+<div className='text-center text-sm italic'>5-4-jadval. Bir xil asl so'rov uchun bir nechta _CoT_ prompt variantlari. _CoT_ qo'shimchalari qalin harflar bilan belgilangan.</div>
+
+**O'z-o'zini tanqid qilish** — bu modeldan o'zining natijalarini tekshirishni so'rash demakdir. Bu, shuningdek, 3-bobda muhokama qilinganidek, _self-eval_ (o'z-o'zini baholash) deb ham ataladi. _CoT_ kabi, o'z-o'zini tanqid qilish ham modelni muammoga tanqidiy yondashishga undaydi.
+
+Promptni qismlarga ajratish kabi, _CoT_ va o'z-o'zini tanqid qilish ham foydalanuvchilar sezadigan kechikishni oshirishi mumkin. Foydalanuvchi birinchi natija tokenini ko'rishidan oldin, model bir nechta oraliq bosqichlarni bajarishi mumkin. Bu, ayniqsa, modelni qadamlarni o'zi ishlab chiqishga undaganingizda qiyinlashadi. Natijada paydo bo'lgan qadamlar ketma-ketligini bajarish uzoq vaqt talab qilishi mumkin, bu esa kechikishning oshishiga va xarajatlarning imkonsiz darajada ko'payib ketishiga olib kelishi mumkin.
+
+## Promptlaringizni doimiy takomillashtirib boring
+
+Prompt muhandisligi uzluksiz sinov va moslashtirishni talab qiladi. Modelni yaxshiroq tushuna borganingiz sari, promptlaringizni qanday yozish bo'yicha ham yaxshiroq g'oyalarga ega bo'lasiz. Masalan, agar siz modeldan eng yaxshi video o'yinni tanlashni so'rasangiz, u fikrlar turlicha ekanligini va hech bir video o'yin mutlaq eng yaxshi deb hisoblana olmasligini aytishi mumkin. Bu javobni ko'rgach, siz promptingizni qayta ko'rib chiqib, fikrlar turlicha bo'lsa ham, modeldan biror o'yinni tanlashni so'rashingiz mumkin.
+
+Har bir modelning o'ziga xos "qiliqlari" bor. Bir model raqamlarni yaxshiroq tushunishi, boshqasi esa rol o'ynashda ustamon bo'lishi mumkin. Bir model tizim ko'rsatmalarini promptning boshida afzal ko'rsa, boshqasi ularni oxirida afzal ko'rishi mumkin. Modelingiz bilan "tanishib chiqish" uchun u bilan tajriba qilib ko'ring. Turli xil promptlarni sinab ko'ring. Agar mavjud bo'lsa, model ishlab chiquvchisi tomonidan taqdim etilgan promptlash bo'yicha qo'llanmani o'qing. Boshqa odamlarning onlayn tajribalarini qidirib ko'ring. Agar mavjud bo'lsa, modelning _playground_'idan (tajriba maydonchasidan) foydalaning. Turli modellarda bir xil promptni ishlatib, ularning javoblari qanday farq qilishini ko'ring — bu sizga o'z modelingizni yaxshiroq tushunishga yordam beradi.
+
+Turli promptlar bilan tajriba qilar ekansiz, o'zgarishlarni tizimli ravishda sinovdan o'tkazganingizga ishonch hosil qiling. Promptlaringizni versiyalang. Tajribalarni kuzatib borish vositasidan foydalaning. Turli promptlarning samaradorligini solishtira olish uchun baholash metrikalari va baholash ma'lumotlarini standartlashtiring. Har bir promptni butun tizim kontekstida baholang. Biror prompt kichik vazifada modelning samaradorligini oshirishi, lekin butun tizimning samaradorligini yomonlashtirishi ham mumkin.
+
+## Prompt muhandisligi vositalarini baholash
+
+Har bir vazifa uchun tuzish mumkin bo'lgan promptlar soni cheksizdir. Prompt muhandisligini qo'lda bajarish ko'p vaqt talab qiladi. Optimal promptni topish esa juda mushkul. Prompt muhandisligiga yordam berish va uni avtomatlashtirish uchun ko'plab vositalar ishlab chiqilgan.
+
+Butun prompt muhandisligi ish jarayonini avtomatlashtirishni maqsad qilgan vositalar qatoriga `OpenPrompt` ([Ding va boshq., 2021](https://arxiv.org/abs/2111.01998)) va `DSPy` ([Khattab va boshq., 2023](https://arxiv.org/abs/2310.03714)) kiradi. Umumiy olganda, siz o'z vazifangiz uchun kiritiladigan va chiqariladigan ma'lumotlar formatlarini, baholash metrikalarini va baholash ma'lumotlarini belgilaysiz. Bu kabi promptni optimallashtirish vositalari baholash ma'lumotlarida baholash metrikalarini maksimal darajaga olib chiquvchi prompt yoki promptlar zanjirini avtomatik ravishda topadi. Funksional jihatdan, bu vositalar klassik _ML_ modellari uchun optimal giperparametrlarni avtomatik ravishda topadigan _autoML_ (avtomatlashtirilgan _ML_) vositalariga o'xshaydi.
+
+Prompt yaratishni avtomatlashtirishning keng tarqalgan yondashuvlaridan biri — _SI_ modellardan foydalanishdir. _SI_ modellarning o'zi ham prompt yozish qobiliyatiga ega.[^10] Eng oddiy holatda, siz modeldan ilovangiz uchun prompt yaratishni so'rashingiz mumkin, masalan: "Kollej insholarini 1 dan 5 gacha baholaydigan ilova uchun qisqa va lo'nda prompt yozishga yordam ber". Siz shuningdek, _SI_ modellardan promptingizni tanqid qilish va takomillashtirishni yoki kontekstual misollar yaratishni ham so'rashingiz mumkin. 5-7-rasmda [`Claude 3.5 Sonnet`](https://www.anthropic.com/news/claude-3-5-sonnet) (_Anthropic, 2024_) tomonidan yozilgan prompt ko'rsatilgan.
+
+DeepMind'ning `Promptbreeder` ([Fernando va boshq., 2023](https://arxiv.org/abs/2309.16797)) va Stanford'ning `TextGrad` ([Yuksekgonul va boshq., 2024](https://arxiv.org/abs/2406.07496)) vositalari _SI_ yordamida promptni optimallashtiradigan vositalarga ikkita misoldir. `Promptbreeder` promptlarni tanlab "ko'paytirish" uchun evolyutsion strategiyadan foydalanadi. U dastlabki promptdan boshlaydi va _SI_ model yordamida ushbu promptning mutatsiyalarini (o'zgartirilgan variantlarini) yaratadi. Prompt mutatsiyasi jarayoni bir to'plam "mutator" promptlar tomonidan boshqariladi. Keyin u eng istiqbolli mutatsiyaning o'zidan yangi mutatsiyalar yaratadi va bu jarayon sizning mezonlaringizga javob beradigan prompt topilguncha davom etadi. 5-8-rasmda `Promptbreeder`ning umumiy ishlash prinsipi ko'rsatilgan.
+
+![_SI_ modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.](/ai-engineering/5-chapter/5.7-figure.png)
+
+<div className='text-center text-sm italic'>5-7-rasm. _SI_ modellar siz uchun promptlar yoza oladi, buni `Claude 3.5 Sonnet` tomonidan yaratilgan ushbu prompt misolida ko'rish mumkin.</div>
+
+![Dastlabki promptdan boshlab, `Promptbreeder` ushbu promptning mutatsiyalarini yaratadi va eng istiqbollilarini tanlab oladi. Tanlanganlar yana mutatsiyaga uchraydi va hokazo.](/ai-engineering/5-chapter/5.8-figure.png)
+
+<div className='text-center text-sm italic'>5-8-rasm. Dastlabki promptdan boshlab, `Promptbreeder` ushbu promptning mutatsiyalarini yaratadi va eng istiqbollilarini tanlab oladi. Tanlanganlar yana mutatsiyaga uchraydi va hokazo.</div>
+
+Ko'pgina vositalar prompt muhandisligining ma'lum bir qismlariga yordam berishga qaratilgan. Masalan, [`Guidance`](https://github.com/guidance-ai/guidance), [`Outlines`](https://github.com/outlines-dev) va [`Instructor`](https://github.com/567-labs/instructor) kabi vositalar modellarni strukturalashgan natijalar yaratishga yo'naltiradi. Ba'zi vositalar esa qaysi prompt varianti eng yaxshi ishlashini aniqlash uchun promptingizni o'zgartirib ko'radi, masalan, biror so'zni uning sinonimi bilan almashtirish yoki promptni qayta yozish orqali.
+
+Agar to'g'ri ishlatilsa, prompt muhandisligi vositalari tizimingiz samaradorligini sezilarli darajada oshirishi mumkin. Biroq, keraksiz xarajatlar va bosh og'riqlarining oldini olish uchun ularning aslida qanday ishlashidan xabardor bo'lish muhimdir.
+
+Birinchidan, prompt muhandisligi vositalari ko'pincha yashirin model _API_ chaqiruvlarini yaratadi, agar nazorat qilinmasa, bu sizning _API_ hisoblaringizni tezda "quritib qo'yishi" mumkin. Masalan, biror vosita ayni bir promptning bir nechta variantini yaratishi va keyin har bir variantni sizning baholash to'plamingizda baholashi mumkin. Har bir prompt varianti uchun bitta _API_ chaqiruvi deb hisoblasak, 30 ta baholash namunasi va o'nta prompt varianti 300 ta _API_ chaqiruvini anglatadi.
+
+Ko'pincha, bitta prompt uchun bir nechta _API_ chaqiruvi talab qilinadi: biri javob yaratish uchun, biri javobni tekshirish uchun (masalan, javob yaroqli _JSON_ formatidami?) va yana biri javobni baholash uchun. Agar siz vositaga prompt zanjirlarini erkin tuzish imkonini bersangiz, _API_ chaqiruvlari soni yanada oshib ketishi mumkin, natijada zanjirlar haddan tashqari uzayib, qimmatga tushishi mumkin.
+
+Ikkinchidan, vosita ishlab chiquvchilari ham xato qilishlari mumkin. Vosita ishlab chiquvchisi [ma'lum bir model uchun noto'g'ri shablonni ishlatishi](https://github.com/huggingface/transformers/issues/25304#issuecomment-1728111915), promptni [xom matnlar o'rniga tokenlarni birlashtirish](https://hamel.dev/notes/llm/finetuning/tokenizer_gotchas.html) orqali tuzishi yoki o'zining prompt shablonlarida imloviy xatolarga yo'l qo'yishi mumkin. 5-9-rasmda [LangChain'ning standart tanqid promptidagi](https://github.com/langchain-ai/langchain/commit/7c6009b76f04628b1617cec07c7d0bb766ca1009) imloviy xatolar ko'rsatilgan.
+
+![LangChain'ning standart promptidagi imloviy xatolar belgilangan.](/ai-engineering/5-chapter/5.9-figure.png)
+<div className='text-center text-sm italic'>5-9-rasm. LangChain'ning standart promptidagi imloviy xatolar belgilangan.</div>
+
+Bundan tashqari, har qanday prompt muhandisligi vositasi ogohlantirishsiz o'zgarishi mumkin. Ular boshqa prompt shablonlariga o'tishlari yoki o'zlarining standart promptlarini qayta yozishlari mumkin. Siz qancha ko'p vositadan foydalansangiz, tizimingiz shunchalik murakkablashadi va xatolar ehtimoli ortadi.
+
+"Hamma narsani sodda tut" tamoyiliga amal qilgan holda, _ishni hech qanday vositasiz, o'z promptingizni o'zingiz yozishdan boshlashni xohlashingiz mumkin_. Bu sizga asosiy modelni va o'z talablaringizni yaxshiroq tushunish imkonini beradi.
+
+Agar prompt muhandisligi vositasidan foydalansangiz, u tomonidan yaratilgan promptlar mantiqqa to'g'ri kelishini tekshirish uchun ularni doimo ko'zdan kechiring va u qancha _API_ chaqiruvi yaratayotganini kuzatib boring.[^11] Vosita ishlab chiquvchilari qanchalik daho bo'lmasin, ular ham hamma kabi xato qilishlari mumkin.
+
+## Promptlarni tartiblash va versiyalash
+
+Promptlarni koddan ajratib saqlash — bu yaxshi amaliyotdir va hozir buning sababini ko'rib chiqamiz. Masalan, siz o'z promptlaringizni `prompts.py` fayliga joylashtirib, modelga so'rov yaratayotganda shu promptlarga murojaat qilishingiz mumkin. Bu taxminan quyidagicha ko'rinishda bo'lishi mumkin:
+
+``` python
+file: prompts.py
+GPT4o_ENTITY_EXTRACTION_PROMPT = [SIZNING PROMPTINGIZ]
+
+file: application.py
+from prompts import GPT4o_ENTITY_EXTRACTION_PROMPT
+def query_openai(model_name, user_prompt):
+    completion = client.chat.completions.create(
+    model=model_name,
+    messages=[
+        {"role": "system", "content": GPT4o_ENTITY_EXTRACTION_PROMPT},
+        {"role": "user", "content": user_prompt}
+    ]
+)
+```
+
+Bu yondashuv bir nechta afzalliklarga ega:
+
+-   **Qayta foydalanish imkoniyati:** Bir nechta ilova bir xil promptdan qayta foydalanishi mumkin.
+-   **Testlash:** Kod va promptlarni alohida-alohida testlash mumkin. Masalan, kodni turli promptlar bilan sinab ko'rish mumkin.
+-   **O'qish uchun qulaylik:** Promptlarni koddan ajratish har ikkisini ham o'qishni osonlashtiradi.
+-   **Hamkorlik:** Bu yondashuv soha mutaxassislariga kodga chalg'imasdan, promptlarni ishlab chiqishda hamkorlik qilish va yordam berish imkonini beradi.
+
+Agar sizda bir nechta ilovaga tegishli ko'plab promptlar bo'lsa, har bir prompt qaysi model va amaliy vazifa uchun mo'ljallanganligini bilib turish uchun unga metama'lumotlar qo'shib qo'yish foydalidir. Shuningdek, siz promptlarni modellar, ilovalar va hokazolar bo'yicha qidirish imkonini beradigan tarzda tartiblashni ham xohlashingiz mumkin. Masalan, har bir promptni quyidagicha Python obyektiga "o'rashingiz" mumkin:
+
+``` python
+from pydantic import BaseModel
+
+class Prompt(BaseModel):
+    model_name: str
+    date_created: datetime
+    prompt_text: str
+    application: str
+    creator: str
+```
+
+Sizning prompt shabloningiz, shuningdek, promptdan qanday foydalanish kerakligi haqida boshqa ma'lumotlarni ham o'z ichiga olishi mumkin, masalan:
+
+-   Model _endpoint_'ining URL manzili
+-   `Temperature` yoki `top-p` kabi ideal _sampling_ parametrlari
+-   Kiritiladigan ma'lumotlar sxemasi
+-   Kutilayotgan natija sxemasi (strukturalashgan natijalar uchun)
+
+Bir nechta vositalar promptlarni saqlash uchun maxsus `.prompt` fayl formatlarini taklif qilgan. [Google Firebase'ning Dotprompt](https://genkit.dev/docs/dotprompt/), [Humanloop](https://humanloop.com/docs/getting-started/overview), [Continue Dev](https://docs.continue.dev/customize/deep-dives/prompts) va [Promptfile'ga](https://github.com/promptfile/promptfile) qarang. Quyida Firebase Dotprompt fayliga misol keltirilgan:
+
+``` python
+---
+model: vertexai/gemini-1.5-flash
+input:
+    schema:
+    theme: string
+output:
+    format: json
+    schema:
+    name: string
+    price: integer
+    ingredients(array): string
+---
+
+`{{theme}} mavzusidagi restoranda topilishi mumkin bo'lgan menyu bandini yarating.`
+```
+
+Agar prompt fayllari sizning _git_ repozitoriysingizning bir qismi bo'lsa, bu promptlarni _git_ yordamida versiyalash mumkin. Bu yondashuvning kamchiligi shundaki, agar bir nechta ilova bir xil promptdan foydalansa va bu prompt yangilansa, unga bog'liq bo'lgan barcha ilovalar avtomatik ravishda ushbu yangi promptga o'tishga majbur bo'ladi. Boshqacha aytganda, agar siz promptlaringizni kodingiz bilan birga _git_'da versiyalasangiz, biror jamoa uchun o'z ilovasida promptning eski versiyasida qolishni tanlash juda qiyin bo'ladi.
+
+Ko'plab jamoalar har bir promptni alohida versiyalaydigan maxsus promptlar katalogidan foydalanadilar, bu esa turli ilovalarga turli prompt versiyalaridan foydalanish imkonini beradi. Promptlar katalogi, shuningdek, har bir promptni tegishli metama'lumotlar bilan ta'minlashi va promptlarni qidirish imkoniyatini berishi kerak. Yaxshi ishlab chiqilgan promptlar katalogi hatto biror promptga bog'liq bo'lgan ilovalarni kuzatib borishi va o'sha promptning yangi versiyalari haqida ilova egalarini xabardor qilishi ham mumkin.
+
+#### Izohlar
+
+[^8]: Eslatib o'tamiz, [2-bobda](/books/ai-engineering/2-understanding-foundation-models) muhokama qilinganidek, til modelining o'zi foydalanuvchi tomonidan kiritilgan ma'lumot va o'zining generatsiyasi o'rtasidagi farqni ajrata olmaydi.
+
+[^9]: Bu parallel qayta ishlash misoli [Anthropic'ning prompt muhandisligi qo'llanmasidan](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/chain-prompts#parallel-processing) olingan.
+
+[^10]: Modelning promptlar yozish qobiliyati, ehtimol, uning internetda ulashilgan promptlar asosida o'qitilgani tufayli kuchaygan.
+
+[^11]: Hamel Husain bu falsafani o'zining [“Show Me the Prompt”](https://hamel.dev/blog/posts/prompt/) (14-fevral, 2024-yil) nomli blog postida ajoyib tarzda tizimlashtirgan.

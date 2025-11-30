@@ -82,6 +82,8 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
               <Image
                 src={qrUrl}
                 alt="Generated QR Code"
+                width={300}
+                height={300}
                 className="mx-auto max-w-full"
                 style={{
                   maxWidth: '300px',
@@ -99,7 +101,13 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                     height: `${customization.logoSize}%`,
                   }}
                 >
-                  <Image src={customization.logo} alt="QR Logo" className="h-full w-full rounded object-contain" />
+                  <Image
+                    src={customization.logo}
+                    alt="QR Logo"
+                    width={100}
+                    height={100}
+                    className="h-full w-full rounded object-contain"
+                  />
                 </div>
               )}
             </div>

@@ -1,0 +1,228 @@
+---
+title: SI muhandislik steki
+description: "AI engineering stack: dasturni ishlab chiqish, modelni ishlab chiqish va infratuzilma qatlamlari. ML muhandisligi va AI muhandisligi farqlari, texnologiyalar to'plami, vositalar ekotizimi va zamonaviy AI stack tuzilishi. GitHub statistikasi va sohaning rivojlanishi."
+keywords: AI engineering stack, sun'iy intellekt muhandisligi steki, AI muhandisligi steki, SI muhandisligi steki AI stack, texnologiyalar to'plami, technology stack, dasturni ishlab chiqish, application development, modelni ishlab chiqish, model development, infratuzilma, infrastructure, ML muhandisligi, ML engineering, AI muhandisligi, AI engineering, SI muhandisligi, farqlar, differences, vositalar, tools, ekotizim, ecosystem, GitHub, statistika, statistics, qatlamlar, layers, arxitektura, architecture
+author: Webiston.uz
+---
+
+# _SI_ muhandislik steki (texnologiyalar to'plami)
+
+_SI_ muhandisligining jadal o'sishi, shuningdek, aql bovar qilmas darajada shov-shuv va _FOMO_ (imkoniyatni qo'ldan boy berish qo'rquvi)ni keltirib chiqardi. Har kuni taqdim etilayotgan yangi vositalar, texnikalar, modellar va ilovalarning soni odamni shunchaki shoshirib qo'yishi mumkin. Poydevori mustahkam bo'lmagan, doimiy o'zgarib turadigan bu "ko'chma qumlar" ortidan quvish o'rniga, keling, _SI_ muhandisligining fundamental qurilish bloklarini ko'rib chiqamiz.
+
+_SI_ muhandisligini tushunish uchun uning _ML_ muhandisligidan kelib chiqqanini anglash muhimdir. Biror kompaniya fundamental modellar bilan tajriba o'tkazishni boshlaganda, bu sa'y-harakatlarga uning mavjud _ML_ jamoasi boshchilik qilishi tabiiydir. Ba'zi kompaniyalar _SI_ muhandisligiga _ML_ muhandisligi bilan bir xil munosabatda bo'lishadi (1-12-rasm).
+
+![1-12-rasm. Ko'pgina kompaniyalar _SI_ muhandisligi va _ML_ muhandisligini bir soyabon ostiga qo'yishadi, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.](/ai-engineering/1-chapter/1.12-figure.png)
+
+<div className='text-center text-sm italic'>1-12-rasm. Ko'pgina kompaniyalar _SI_ muhandisligi va _ML_ muhandisligini bir soyabon ostiga qo'yishadi, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.</div>
+
+Ba'zi kompaniyalarda esa _SI_ muhandisligi uchun alohida ish e'lonlari mavjud (1-13-rasm).
+
+Tashkilotlar _SI_ muhandislari va _ML_ muhandislarini qanday joylashtirishidan qat'i nazar, ularning rollari sezilarli darajada bir-biriga mos keladi. Mavjud _ML_ muhandislari o'zlarining ish imkoniyatlarini kengaytirish uchun _SI_ muhandisligini o'z ko'nikmalari ro'yxatiga qo'shishlari mumkin. Shu bilan birga, oldindan _ML_ tajribasiga ega bo'lmagan _SI_ muhandislari ham bor.
+
+_SI_ muhandisligini va uning an'anaviy _ML_ muhandisligidan qanday farq qilishini juda yaxshi tushunib olish uchun, keyingi bo'limda _SI_ dasturlarini yaratish jarayonining turli qatlamlari tahlil qilinadi va har bir qatlamning _SI_ muhandisligi va _ML_ muhandisligida qanday rol o'ynashiga nazar tashlanadi.
+
+![-13-rasm. Ba'zi kompaniyalarda _SI_ muhandisligi uchun alohida ish e'lonlari mavjud, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.](/ai-engineering/1-chapter/1.13-figure.png)
+
+<div className='text-center text-sm italic'>1-13-rasm. Ba'zi kompaniyalarda _SI_ muhandisligi uchun alohida ish e'lonlari mavjud, bu 2023-yil 17-dekabrdagi LinkedIn'dagi ish e'lonlari sarlavhalarida ko'rinadi.</div>
+
+## _SI_ stekining uch qatlami
+
+Har qanday _SI_ dasturi stekida uchta qatlam mavjud: dasturni ishlab chiqish, modelni ishlab chiqish va infratuzilma. _SI_ dasturini ishlab chiqayotganda, siz odatda yuqori qatlamdan boshlab, zaruratga qarab pastga tushib borasiz:
+
+#### 1. Dasturni ishlab chiqish
+
+Modellar tayyor holatda bo'lgani uchun, har kim ulardan dasturlar ishlab chiqishda foydalanishi mumkin. Bu so'nggi ikki yil ichida eng ko'p kuzatilgan harakat va hali ham jadal rivojlanayotgan qatlamdir. Dasturni ishlab chiqish modelni yaxshi promptlar va kerakli kontekst bilan ta'minlashni o'z ichiga oladi. Bu qatlam puxta baholashni talab qiladi. Yaxshi dasturlar, shuningdek, yaxshi interfeyslarni ham talab qiladi.
+
+#### 2. Modelni ishlab chiqish
+
+Bu qatlam modellarni ishlab chiqish uchun vositalarni ta'minlaydi, jumladan, modellashtirish, o'qitish, _finetuning_ qilish  va _inference_ optimizatsiyasi uchun freymvorklarni. Ma'lumotlar modelni ishlab chiqishning markazida bo'lgani uchun, bu qatlam ma'lumotlar to'plami muhandisligini (_dataset engineering_) ham o'z ichiga oladi. Modelni ishlab chiqish ham puxta baholashni talab qiladi.
+
+#### 3. Infratuzilma
+
+Stekning eng quyi qismida infratuzilma joylashgan bo'lib, u modelga xizmat ko'rsatish (_model serving_), ma'lumotlar va hisoblash resurslarini boshqarish hamda monitoring uchun vositalarni o'z ichiga oladi.
+
+Ushbu uch qatlamning tuzilishini va har birining qanday vazifalarni o'z ichiga olishini 1-14-rasmda ko'rib chiqamiz.
+
+![1-14-rasm. _SI_ muhandislik stekining uch qatlami.](/ai-engineering/1-chapter/1.14-figure.png)
+
+<div className='text-center text-sm italic'>1-14-rasm. _SI_ muhandislik stekining uch qatlami.</div>
+
+Fundamental modellar paydo bo'lishi bilan sohadagi manzara qanday o'zgarganini his qilish uchun, 2024-yil mart oyida men GitHub'dan kamida 500 yulduzchaga ega bo'lgan _SI_'ga oid barcha repozitoriylarni tahlil qilib chiqdim. GitHub'ning bugungi kundagi keng qamrovini hisobga olsak, bu ma'lumotlar ekotizimni tushunish uchun ishonchli ko'rsatkich bo'la oladi, deb ishonaman. Tahlilimga, shuningdek, dasturlar va modellar uchun repozitoriylarni ham kiritdim — ular mos ravishda dasturni ishlab chiqish va modelni ishlab chiqish qatlamlarining mahsulotidir. Natijada men jami 920 ta repozitoriy jamladim. 1-15-rasmda har bir toifadagi repozitoriylar sonining oylar kesimida qanday o'sib borgani ko'rsatilgan.
+
+![1-15-rasm. Vaqt o'tishi bilan toifalar bo'yicha repozitoriylarning jamlangan soni.](/ai-engineering/1-chapter/1.15-figure.png)
+
+<div className='text-center text-sm italic'>1-15-rasm. Vaqt o'tishi bilan toifalar bo'yicha repozitoriylarning jamlangan soni.</div>
+
+Ma'lumotlar shuni ko'rsatadiki, `Stable Diffusion` va `ChatGPT` taqdim etilganidan so'ng, 2023-yilda _SI_ vositalari sonida keskin sakrash yuz bergan. 2023-yilda eng katta o'sish "dasturlar" va "dasturlarni ishlab chiqish" toifalarida kuzatildi. Infratuzilma qatlamida ham o'sish bo'ldi, biroq u boshqa qatlamlardagi o'sishdan ancha past edi. Bu kutilgan holat. Garchi modellar va dasturlar o'zgargan bo'lsa-da, asosiy infratuzilma ehtiyojlari — resurslarni boshqarish, xizmat ko'rsatish, monitoring va hokazolar — o'zgarishsiz qolmoqda.
+
+### O'zgarmas tamoyillar
+
+Bu bizni keyingi muhim nuqtaga olib keladi. Fundamental modellar atrofidagi hayajon va ijodkorlik misli ko'rilmagan darajada bo'lsa-da, _SI_ dasturlarini yaratishning ko'plab asosiy tamoyillari o'z kuchida qolmoqda. Korporativ ishlatilish senariylari uchun _SI_ dasturlari avvalgidek biznes muammolarini hal qilishi kerak va shuning uchun biznes metrikalarini _ML_ metrikalariga (va aksincha) bog'lash hali ham dolzarb. Siz avvalgidek tizimli eksperimentlar o'tkazishingiz kerak. Klassik _ML_ muhandisligida siz turli giperparametrlar bilan tajriba o'tkazgan bo'lsangiz, fundamental modellar bilan turli modellar, promptlar, qidiruv algoritmlari, _sampling_ o'zgaruvchilari  va boshqalar bilan tajriba o'tkazasiz. (_sampling_ o'zgaruvchilari [2-bobda](/books/ai-engineering/2-understanding-foundation-models) muhokama qilinadi.) Biz hali ham modellarni tezroq va arzonroq ishlashiga intilamiz. Va hali ham teskari aloqa mexanizmini (_feedback loop_) yo'lga qo'yish muhim, toki amaliyotdagi ma'lumotlar yordamida dasturlarimizni doimiy takomillashtirib bora olamiz.
+
+Bu shuni anglatadiki, _ML_ muhandislari so'nggi o'n yil davomida to'plagan bilim va tajribalarning aksariyati bugun ham o'z qadrini yo'qotmagan. Bu jamoaviy tajriba har kimning _SI_ dasturlarini yaratishni boshlashini osonlashtiradi. Biroq, ushbu mustahkam tamoyillar poydevori ustiga qurilgan _SI_ muhandisligiga xos bo'lgan ko'plab yangiliklar ham mavjud va biz ularni ushbu kitobda chuqur o'rganamiz.
+
+## _SI_ muhandisligi va _ML_ muhandisligi farqlari
+
+_SI_ dasturlarini joriy etishning o'zgarmas tamoyillari mavjudligi kishiga dalda bersa-da, nimalar o'zgarganini tushunish ham muhimdir. Bu o'zlarining mavjud platformalarini yangi _SI_ ishlatilish senariylariga moslashtirishni istagan jamoalar uchun va yangi bozorda raqobatbardosh bo'lib qolish uchun qaysi ko'nikmalarni o'rganishga qiziqqan dasturchilar uchun foydalidir.
+
+Yuqori darajada qaraganda, bugungi kunda fundamental modellar yordamida dasturlar yaratish an'anaviy _ML_ muhandisligidan uchta asosiy jihati bilan farq qiladi:
+
+1.  **Model yaratishdan ko'ra modeldan foydalanish.** Fundamental modellarsiz, siz o'z dasturlaringiz uchun o'z modelingizni o'qitishingiz kerak edi. _SI_ muhandisligida esa kimdir siz uchun o'qitgan modeldan foydalanasiz. Bu shuni anglatadiki, _SI_ muhandisligi modellashtirish va o'qitishga kamroq, modelni moslashtirishga esa ko'proq e'tibor qaratadi.
+
+2.  **Resurs talabchanligi.** _SI_ muhandisligi an'anaviy _ML_ muhandisligiga qaraganda kattaroq, ko'proq hisoblash resurslarini iste'mol qiladigan va yuqori kechikishga ega bo'lgan modellar bilan ishlaydi. Bu samarali o'qitish va _inference_ optimizatsiyasi uchun bosimning kuchliroq ekanligini anglatadi. Hisoblash resurslarini ko'p talab qiladigan modellarning natijalaridan biri shuki, ko'plab kompaniyalar endi avvalgidan ko'ra ko'proq _GPU_'larga muhtoj va kattaroq hisoblash klasterlari bilan ishlaydi, bu esa _GPU_'lar va katta klasterlar bilan ishlashni biladigan muhandislarga talabning ortganini bildiradi.[^1]
+
+3.  **Natijalarning tabiati.** _SI_ muhandisligi erkin natijalar (_open-ended outputs_) yarata oladigan modellar bilan ishlaydi. Erkin natijalar modellarga ko'proq vazifalar uchun ishlatilish moslashuvchanligini beradi, lekin ularni baholashni ham qiyinlashtiradi. Bu esa baholashni _SI_ muhandisligida ancha kattaroq muammoga aylantiradi.
+
+Qisqacha aytganda, _SI_ muhandisligi _ML_ muhandisligidan shunisi bilan farq qiladiki, u e'tiborni modelni noldan yaratishga emas, balki mavjud modellarni moslashtirish va baholashga qaratadi. Men ushbu bobda modelni moslashtirishni bir necha bor tilga oldim, shuning uchun keyingi bo'limga o'tishdan oldin, bu tushunchani bir xil anglayotganimizga ishonch hosil qilmoqchiman. Umuman olganda, modelni moslashtirish texnikalarini model og'irliklarini (_weights_) yangilashni talab qilishi yoki qilmasligiga qarab ikki toifaga bo'lish mumkin.
+
+#### Modelni moslashtirish yondashuvlari
+
+- **Promptga asoslangan texnikalar,** jumladan, prompt muhandisligi, model og'irliklarini yangilamasdan modelni moslashtiradi. Siz modelni o'zini o'zgartirish o'rniga, unga ko'rsatmalar va kontekst berish orqali moslashtirasiz. Prompt muhandisligini boshlash osonroq va u kamroq ma'lumot talab qiladi. Ko'plab muvaffaqiyatli dasturlar faqat prompt muhandisligi yordamida yaratilgan. Uning qo'llash osonligi sizga ko'proq modellar bilan tajriba o'tkazish imkonini beradi, bu esa dasturlaringiz uchun kutilmaganda yaxshi ishlaydigan modelni topish imkoniyatingizni oshiradi. Biroq, prompt muhandisligi murakkab vazifalar yoki qat'iy samaradorlik talablariga ega dasturlar uchun yetarli bo'lmasligi mumkin.
+
+- **_Finetuning_ qilish,** aksincha, model og'irliklarini yangilashni talab qiladi. Siz modelni uning o'ziga o'zgartirishlar kiritish orqali moslashtirasiz. Umuman olganda, _finetuning_ qilish texnikalari murakkabroq va ko'proq ma'lumot talab qiladi, lekin ular modelingizning sifati, kechikishi va xarajatini sezilarli darajada yaxshilashi mumkin. Ko'p narsalarni model og'irliklarini o'zgartirmasdan amalga oshirib bo'lmaydi, masalan, modelni o'qitish paytida duch kelmagan yangi vazifaga moslashtirish.
+
+Endi, keling, dasturni ishlab chiqish va modelni ishlab chiqish qatlamlariga chuqurroq nazar tashlab, har biri _SI_ muhandisligi bilan qanday o'zgarganini ko'rib chiqamiz. Biz mavjud _ML_ muhandislari ko'proq tanish bo'lgan narsadan boshlaymiz. Ushbu bo'lim _SI_ dasturini ishlab chiqishda ishtirok etadigan turli jarayonlarning umumiy sharhini beradi. Bu jarayonlar qanday ishlashi esa ushbu kitob davomida muhokama qilinadi.
+
+### Modelni ishlab chiqish
+
+Modelni ishlab chiqish — bu an'anaviy _ML_ muhandisligi bilan eng ko'p bog'lanadigan qatlamdir. U uchta asosiy mas'uliyatni o'z ichiga oladi: modellashtirish va o'qitish, ma'lumotlar to'plami muhandisligi hamda _inference_ optimizatsiyasi. Baholash ham talab etiladi, lekin ko'pchilik unga birinchi bo'lib dasturni ishlab chiqish qatlamida duch kelgani uchun, men baholashni keyingi bo'limda muhokama qilaman.
+
+#### Modellashtirish va o'qitish
+
+Modellashtirish va o'qitish model arxitekturasini ishlab chiqish, uni o'qitish va _finetuning_ qilish jarayonini anglatadi. Bu toifadagi vositalarga misol qilib Google'ning `TensorFlow`, Hugging Face'ning `Transformers` va Meta'ning `PyTorch` freymvorklarini keltirish mumkin.
+
+_ML_ modellarini ishlab chiqish bunga alohida ixtisoslashgan _ML_ bilimlarini talab qiladi. Bu turli xil _ML_ algoritmlarini (masalan, klasterlash, logistik regressiya, qaror daraxtlari va kollaborativ filtrlash) va neyron to'r arxitekturalarini (masalan, to'g'ridan-to'g'ri tarqaluvchi (_feedforward_), qaytalanuvchi (_recurrent_), konvolyutsion (_convolutional_) va _transformer_) bilishni talab qiladi. Shuningdek, u modelning qanday o'rganishini, jumladan, gradient tushishi (_gradient descent_), yo'qotish funksiyasi (_loss function_), regulyarizatsiya (_regularization_) kabi tushunchalarni anglashni ham talab qiladi.
+
+Fundamental modellarning mavjudligi bilan, _ML_ bilimlari endi _SI_ dasturlarini yaratish uchun majburiy shart emas. Men gradient tushishi haqida o'rganishga umuman qiziqmaydigan ko'plab ajoyib va muvaffaqiyatli _SI_ dasturlari yaratuvchilarini uchratdim. Biroq, _ML_ bilimlari hali ham o'ta qimmatlidir, chunki u siz foydalanishingiz mumkin bo'lgan vositalar to'plamini kengaytiradi va model kutilganidek ishlamaganda muammolarni bartaraf etishga yordam beradi.
+
+> #### O'qitish, dastlabki o'qitish, _finetuning_ qilish va yakuniy o'qitish o'rtasidagi farqlar
+>
+> O'qitish har doim model og'irliklarini (_weights_) o'zgartirishni o'z ichiga oladi, lekin model og'irliklariga kiritilgan har qanday o'zgartirish ham o'qitish degani emas. Masalan, kvantlash (_quantization_) — model og'irliklarining aniqligini pasaytirish jarayoni — texnik jihatdan modelning og'irlik qiymatlarini o'zgartirsa-da, o'qitish deb hisoblanmaydi.
+>
+> "O'qitish" atamasi ko'pincha dastlabki o'qitish (_pre-training_), _finetuning_ qilish va yakuniy o'qitish (_post-training_) o'rnida ishlatilishi mumkin, bular o'qitishning turli bosqichlarini anglatadi:
+>
+> - **Dastlabki o'qitish (_Pre-training_):**
+>   Dastlabki o'qitish modelni noldan o'qitishni anglatadi — bunda model og'irliklari tasodifiy qiymatlar bilan boshlanadi. _LLM_'lar uchun dastlabki o'qitish ko'pincha modelni matnni davom ettirishga o'rgatishni o'z ichiga oladi. Barcha o'qitish bosqichlari ichida dastlabki o'qitish, shubhasiz, eng ko'p resurs talab qiladigan jarayondir. `InstructGPT` modeli uchun dastlabki o'qitish [umumiy hisoblash va ma'lumotlar resurslarining 98 foizigacha qismini](https://openai.com/index/instruction-following/) egallaydi. Dastlabki o'qitish, shuningdek, uzoq vaqt talab etadi. Bu jarayondagi kichik bir xato jiddiy moliyaviy yo'qotishlarga olib kelishi va loyihani ancha orqaga surib yuborishi mumkin. Resurs talabchanligi tufayli, bu jarayon sanoqlilar shug'ullanadigan san'atga aylanib qolgan. Biroq, katta modellarni dastlabki o'qitish bo'yicha tajribaga ega bo'lgan mutaxassislarga talab juda yuqori.[^2]
+>
+> - **_Finetuning_ qilish:**
+>   _Finetuning_ qilish oldindan o'qitilgan modelni o'qitishda davom etishni anglatadi — bunda model og'irliklari avvalgi o'qitish jarayonidan olinadi. Model dastlabki o'qitishdan ma'lum bilimlarga ega bo'lgani uchun, _finetuning_ qilish odatda dastlabki o'qitishga qaraganda kamroq resurs (masalan, ma'lumotlar va hisoblash quvvati) talab qiladi.
+>
+> - **Yakuniy (_Post-training_):**
+>   Ko'pchilik yakuniy o'qitish deganda modelni dastlabki o'qitish bosqichidan keyin o'qitish jarayonini tushunadi. Konseptual jihatdan, yakuniy o'qitish va _finetuning_ qilish bir xil narsa va ularni bir-birining o'rnida ishlatsa bo'ladi. Biroq, ba'zida odamlar ularni turli maqsadlarni bildirish uchun farqli ishlatishlari mumkin. Agar bu jarayon model yaratuvchilari tomonidan amalga oshirilsa, odatda yakuniy o'qitish deyiladi. Masalan, OpenAI modelni ommaga taqdim etishdan oldin uning ko'rsatmalarga yaxshiroq amal qilishini ta'minlash uchun uni yakuniy o'qitishdan o'tkazishi mumkin. Agar bu jarayon dastur yaratuvchilari tomonidan amalga oshirilsa, bu _finetuning_ qilish deyiladi. Masalan, siz OpenAI modelini (u o'zi ham yakuniy o'qitishdan o'tgan bo'lishi mumkin) o'z ehtiyojlaringizga moslashtirish uchun _finetuning_ qilishingiz mumkin.
+>
+> Dastlabki o'qitish va yakuniy o'qitish bir spektrni tashkil etadi.[^3] Ularning jarayonlari va vositalari juda o'xshash. Ularning farqlari 2 va 7-boblarda batafsilroq o'rganiladi.
+>
+> Ba'zi odamlar "o'qitish" atamasini prompt muhandisligiga nisbatan ishlatishadi, bu esa noto'g'ri. Men ["Business Insider"da](https://www.businessinsider.com/i-trained-ai-chatbot-on-my-journals-inner-child-2022-12) bir maqolani o'qidim, unda muallif `ChatGPT`'ni o'zining yoshligini taqlid qilishga "o'rgatganini" aytgan. U buni o'zining bolalik kundaliklarini `ChatGPT`'ga kiritish orqali amalga oshirgan. So'zlashuv tilida, muallifning "o'qitish" so'zini ishlatishi to'g'ri, chunki u modelga biror narsa qilishni o'rgatmoqda. Ammo texnik jihatdan, agar siz modelga nima qilish kerakligini unga kiritiladigan kontekst orqali o'rgatsangiz, siz prompt muhandisligi bilan shug'ullanayotgan bo'lasiz. Xuddi shunday, men odamlarning aslida prompt muhandisligi bilan shug'ullanayotgan bo'lsalar-da, "_finetuning_ qilish" atamasini ishlatganini ham ko'rganman.
+
+#### Ma'lumotlar to'plami muhandisligi
+
+Ma'lumotlar to'plami muhandisligi (_Dataset engineering_) _SI_ modellarini o'qitish va moslashtirish uchun zarur bo'lgan ma'lumotlarni saralash, generatsiya qilish va belgilashni anglatadi.
+
+An'anaviy _ML_ muhandisligida aksariyat ishlatilish senariylari cheklangan natijali (_close-ended_) bo'ladi — ya'ni, modelning natijasi faqat oldindan belgilangan qiymatlar orasida bo'lishi mumkin. Masalan, faqat ikkita ehtimoliy natijaga — “spam” va “spam emas”ga — ega bo'lgan spam tasnifi cheklangan natijali vazifadir. Fundamental modellar esa, aksincha, erkin turdagi (_open-ended_) natijalar beradi. Erkin turdagi so'rovlarni belgilash cheklangan natijali so'rovlarni belgilashdan ancha qiyinroq — insho yozishdan ko'ra elektron pochtaning spam ekanligini aniqlash osonroq. Shu sababli, ma'lumotlarni belgilash — _SI_ muhandisligi oldida turgan jiddiy sinovlardan biridir.
+
+Yana bir farq shundaki, an'anaviy _ML_ muhandisligi ko'proq jadvalli ma'lumotlar bilan ishlasa, fundamental modellar strukturalashmagan ma'lumotlar bilan ishlaydi. _SI_ muhandisligida ma'lumotlar bilan ishlash ko'proq takrorlanishlarni olib tashlash (_deduplication_), tokenizatsiya, kontekstni qidirib topish (_context retrieval_) va sifat nazorati, jumladan, maxfiy ma'lumotlar va toksik ma'lumotlarni olib tashlash bilan bog'liq. Ma'lumotlar to'plami muhandisligi 8-bobning asosiy mavzusidir.
+
+Ko'pchilikning ta'kidlashicha, modellar endi shunchaki oddiy xomashyoga (_commodities_) aylanib ulgurdi. Shu bois, raqobat ustunligini aynan ma'lumotlar belgilab beradi va bu ma'lumotlar to'plami muhandisligini har qachongidan ham muhimroq qiladi. Sizga qancha ma'lumot kerakligi siz qo'llaydigan moslashtirish texnikasiga bog'liq. Modelni noldan o'qitish odatda _finetuning_ qilishdan ko'ra ko'proq ma'lumot talab qilsa, _finetuning_ esa o'z navbatida prompt muhandisligiga qaraganda kattaroq hajmni so'raydi.
+
+Qancha ma'lumot kerakligidan qat'i nazar, ma'lumotlar bo'yicha tajriba modelni o'rganishda foydalidir, chunki uning o'qitish ma'lumotlari o'sha modelning kuchli va zaif tomonlari haqida muhim ishoralar beradi.
+
+#### _Inference_ optimizatsiyasi
+
+_Inference_ (ya'ni, o'qitilgan modeldan yangi ma'lumotlar asosida natija olish jarayoni) optimizatsiyasi modellarni tezroq va arzonroq qilishni anglatadi. _Inference_ optimizatsiyasi _ML_ muhandisligi uchun har doim muhim bo'lgan. Foydalanuvchilar hech qachon tezroq modellarga yo'q demaydi, kompaniyalar esa arzonroq _inference_'dan doim foyda ko'rishi mumkin. Biroq, fundamental modellar miqyosi kengayib, yanada yuqori _inference_ xarajatlari va kechikishiga olib kelgani sari, _inference_ optimizatsiyasi yanada muhimroq bo'lib bormoqda.
+
+Fundamental modellar bilan bog'liq qiyinchiliklardan biri shundaki, ular ko'pincha avtoregressivdir — ya'ni, tokenlar ketma-ket generatsiya qilinadi. Agar modelga bitta token generatsiya qilish uchun 10 ms vaqt ketsa, 100 ta tokenli natijani generatsiya qilish uchun bir soniya, undan ham uzunroq natijalar uchun esa yanada ko'proq vaqt kerak bo'ladi. Foydalanuvchilarning tobora sabrsiz bo'lib borayotganini hisobga olsak, _SI_ dasturlarining kechikishini odatiy internet dasturi uchun kutiladigan [100 ms darajasiga tushirish](https://www.forbes.com/sites/adrianbridgwater/2020/12/03/location-location-partition-how-to-beat-latency-as-cloud-grows/) ulkan muammodir. _Inference_ optimizatsiyasi ham sanoatda, ham akademik doiralarda faol tadqiqot sohasiga aylandi.
+
+Modelni ishlab chiqishning turli toifalari _SI_ muhandisligi bilan qanday o'zgarganining qisqacha xulosasi 1-4-jadvalda ko'rsatilgan.
+
+| Toifa | An'anaviy _ML_ bilan ishlash | Fundamental modellar bilan ishlash |
+| :--- | :--- | :--- |
+| **Modellashtirish va o'qitish** | Modelni noldan o'qitish uchun _ML_ bilimlari talab etiladi | _ML_ bilimlari majburiy emas, lekin bo'lsa yaxshi (Ko'pchilik bu fikrga qo'shilmasligi va _ML_ bilimlari majburiy ekanligini aytishi mumkin.) |
+| **Ma'lumotlar to'plami muhandisligi** | Ko'proq xususiyat muhandisligi (_feature engineering_) bilan bog'liq, ayniqsa jadvalli ma'lumotlarda | Xususiyat muhandisligi kamroq, ko'proq ma'lumotlardagi takrorlanishlarni olib tashlash, tokenizatsiya, kontekstni qidirib topish va sifat nazorati bilan bog'liq |
+| **_Inference_ optimizatsiyasi** | Muhim | Yanada muhimroq |
+
+<div className='text-center text-sm italic'>1-4-jadval. Modelni ishlab chiqishning turli mas'uliyatlari fundamental modellar bilan qanday o'zgargani.</div>
+
+_Inference_ optimizatsiyasi texnikalari, jumladan, kvantlash (_quantization_), distillash (_distillation_) va parallellashtirish (_parallelism_), 7-bobdan 9-bobgacha muhokama qilinadi.
+
+### Dasturni ishlab chiqish
+
+An'anaviy _ML_ muhandisligida jamoalar o'zlarining xususiy modellari yordamida dasturlar yaratishardi va bunda model sifati asosiy farqlovchi omil edi. Fundamental modellar bilan esa, ko'plab jamoalar bir xil modeldan foydalanganligi sababli, farqlanishga dasturni ishlab chiqish jarayoni orqali erishish kerak.
+
+Dasturni ishlab chiqish qatlami quyidagi mas'uliyatlardan iborat: baholash, prompt muhandisligi va _SI_ interfeysi.
+
+#### Baholash
+
+Baholash — bu xavflarni yumshatish va imkoniyatlarni ochish demakdir. Baholash butun modelni moslashtirish jarayonida zarur. U modellarni tanlash, yutuqlarni o'lchash, dasturning joriy etishga tayyor yoki tayyor emasligini aniqlash hamda amaliyotdagi muammolar va takomillashtirish imkoniyatlarini aniqlash uchun kerak.
+
+Garchi baholash _ML_ muhandisligida har doim muhim bo'lgan bo'lsa-da, fundamental modellar bilan u yanada muhimroqdir va buning ko'plab sabablari bor. Fundamental modellarni baholashdagi qiyinchiliklar [3-bobda](/books/ai-engineering/3-evaluation-methodology) muhokama qilinadi. Qisqacha aytganda, bu qiyinchiliklar asosan fundamental modellarning erkin natijali (_open-ended_) tabiati va kengaytirilgan imkoniyatlaridan kelib chiqadi. Masalan, firibgarlikni aniqlash kabi cheklangan natijali _ML_ vazifalarida, odatda, modelingiz natijalarini solishtirishingiz mumkin bo'lgan kutilgan etalon javoblar (_ground truths_) mavjud bo'ladi. Agar modelning natijasi kutilgan natijadan farq qilsa, siz modelning xato qilganini bilasiz. Chatbotlar kabi vazifalarda esa, har bir prompt uchun shunchalik ko'p ehtimoliy javoblar mavjudki, modelning javobini solishtirish uchun etalon javoblarning to'liq ro'yxatini tuzishning iloji yo'q.
+
+Ko'plab moslashtirish texnikalarining mavjudligi ham baholashni qiyinlashtiradi. Bir texnika bilan yomon ishlaydigan tizim boshqasi bilan ancha yaxshiroq ishlashi mumkin. Google 2023-yil dekabr oyida `Gemini`'ni ishga tushirganda, ular `Gemini`'ning _MMLU_ benchmarkida ([Hendrycks va boshq., 2020](https://arxiv.org/abs/2009.03300)) `ChatGPT`'dan yaxshiroq ekanligini da'vo qilishdi. Google `Gemini`'ni [`CoT@32`](https://storage.googleapis.com/deepmind-media/gemini/gemini_1_report.pdf) deb nomlangan prompt muhandisligi texnikasi yordamida baholagan edi. Bu texnikada `Gemini`'ga 32 ta misol ko'rsatilgan, `ChatGPT`'ga esa atigi 5 ta misol ko'rsatilgan. Ikkalasiga ham beshtadan misol ko'rsatilganda esa, `ChatGPT` yaxshiroq natija ko'rsatgan (1-5-jadval).
+
+|                        | `Gemini Ultra`                  | `Gemini Pro`                   | `GPT-4`                                       | `GPT-3.5`             | `PaLM 2-L`            | `Claude 2`            | `Inflection-2`        | `Grok 1`             | `Llama-2`            |
+| :--------------------- | :------------------------------ | :------------------------------ | :--------------------------------------------- | :-------------------- | :-------------------- | :-------------------- | :-------------------- | :------------------- | :------------------- |
+| **_MMLU_ samaradorligi** | **90.04%**<br/>`CoT@32` | 79.13%<br/>`CoT@8` | 87.29%<br/>`CoT@32`<br/><small>(_API_ orqali)</small> | <br/>70.0%<br/><small>5-shot</small> | 78.4%<br/><small>5-shot</small> | 78.5%<br/><small>5-shot</small> | 79.6%<br/><small>5-shot CoT</small> | 73.0%<br/><small>5-shot</small> | 68.0% |  |
+|  | 83.7%<br/><small>5-shot</small> | 71.8%<br/><small>5-shot</small> | 86.4%<br/><small>5-shot</small><br/><small>(reported)</small>            |                      |                      |                      |                      |                      |                      |
+
+
+<div className='text-center text-sm italic'>1-5-jadval. Turli promptlar modellarning juda farqli ishlashiga sabab bo'lishi mumkin, buni `Gemini`'ning texnik hisobotida (2023-yil dekabr) ko'rish mumkin.</div>
+
+_"5-shot" modelga 5 ta namuna ko'rsatilganini, "CoT@32" esa "Chain of Thought" yondashuvi bilan 32 ta namuna ko'rsatilganini bildiradi._
+
+#### Prompt muhandisligi va kontekstni qurish
+
+Prompt muhandisligi — bu _SI_ modellarini, ularning og'irliklarini (_weights_) o'zgartirmasdan, faqat kiruvchi ma'lumotning o'zi orqali kerakli xususiyatlarni namoyon etishga undashdir. `Gemini`'ni baholash voqeasi prompt muhandisligining model samaradorligiga qanchalik katta ta'sir qilishini yaqqol ko'rsatib beradi. Boshqa bir prompt muhandisligi texnikasini qo'llash orqali `Gemini Ultra`'ning _MMLU_ bo'yicha samaradorligi 83.7% dan 90.04% ga ko'tarildi.
+
+Faqat promptlar yordamida modelni aql bovar qilmas ishlarni bajarishga majbur qilish mumkin. To'g'ri ko'rsatmalar modelni siz xohlagan vazifani, siz tanlagan formatda bajarishga unday oladi. Prompt muhandisligi shunchaki modelga nima qilish kerakligini aytish emas. Bu, shuningdek, modelga berilgan vazifani bajarishi uchun zarur bo'lgan kontekst va vositalarni taqdim etish hamdir. Uzun kontekstli murakkab vazifalar uchun, model o'z tarixini kuzatib borishi uchun unga xotirani boshqarish tizimini ham taqdim etishingiz kerak bo'lishi mumkin. 5-bobda prompt muhandisligi, 6-bobda esa kontekstni qurish muhokama qilinadi.
+
+#### _SI_ interfeysi
+
+_SI_ interfeysi (_AI Interface_) — bu foydalanuvchilarning _SI_ ilovangiz bilan ishlashi uchun interfeys yaratishni anglatadi. Fundamental modellar paydo bo'lishidan avval, faqat o'z modellarini ishlab chiqishga yetadigan ulkan resursi bor kompaniyalargina _SI_ dasturlarini yarata olardi. Bu dasturlar ko'pincha tashkilotlarning mavjud mahsulotlariga singdirib yuborilardi. Masalan, firibgarlikni aniqlash tizimlari Stripe, Venmo va PayPal xizmatlarining ajralmas qismi edi. Tavsiya tizimlari (_recommender systems_) esa Netflix, TikTok va Spotify kabi ijtimoiy tarmoqlar va media platformalarining negizini tashkil etardi.
+
+Fundamental modellar sharofati bilan endi istagan odam _SI_ ilovalarini yarata oladi. Siz o'z ilovangizni mustaqil mahsulot sifatida taqdim etishingiz yoki ularni boshqa mahsulotlarga, jumladan, o'zgalar yaratgan tizimlarga ham integratsiya qilishingiz mumkin. Masalan, `ChatGPT` va `Perplexity` — mustaqil mahsulotlardir, `GitHub Copilot` esa ko'pincha VSCode muhitida plagin sifatida, Grammarly esa Google Docs uchun brauzer kengaytmasi sifatida ishlatiladi. Midjourney'ni esa ham uning mustaqil veb-dasturi orqali, ham uning Discord'dagi integratsiyasi orqali ishlatish mumkin.
+
+Mustaqil _SI_ dasturlari uchun interfeyslarni ta'minlaydigan yoki _SI_'ni mavjud mahsulotlarga oson integratsiya qilish imkonini beradigan vositalarga ehtiyoj bor. Quyida, _SI_ dasturlari uchun ommalashib borayotgan interfeyslarning ba'zilari keltirilgan:
+
+- Mustaqil veb, desktop va mobil dasturlar.[^4]
+- Foydalanuvchilarga veb-saytlarni ko'zdan kechirish paytida _SI_ modellariga tezda so'rov yuborish imkonini beradigan brauzer kengaytmalari.
+- Slack, Discord, WeChat va WhatsApp kabi chat dasturlariga integratsiya qilingan chatbotlar.
+- VSCode, Shopify va Microsoft 365 kabi ko'plab mahsulotlar dasturchilarga _SI_'ni o'z mahsulotlariga plaginlar va qo'shimchalar sifatida integratsiya qilish imkonini beruvchi _API_'larni taqdim etadi. Bu _API_'lardan, shuningdek, 6-bobda muhokama qilinadi, _SI_ agentlari butun dunyo bilan ishlashi uchun ham foydalanish mumkin.
+
+Garchi chat interfeysi eng ko'p qo'llanilsa-da, _SI_ interfeyslari ovozga asoslangan (masalan, ovozli yordamchilarda) yoki mujassamlangan (masalan, to'ldirilgan va virtual reallikda) bo'lishi ham mumkin.
+
+Bu yangi _SI_ interfeyslari, shuningdek, foydalanuvchi fikr-mulohazalarini yig'ish va ajratib olishning yangi usullarini ham anglatadi. Suhbat interfeysi foydalanuvchilarga tabiiy tilda fikr-mulohaza berishni ancha osonlashtiradi, ammo bu fikr-mulohazani ajratib olish qiyinroq. Foydalanuvchi fikr-mulohazalari dizayni 10-bobda muhokama qilinadi.
+
+Dasturlarni ishlab chiqishning turli toifalari _SI_ muhandisligi bilan qanday o'zgarganining qisqacha xulosasi 1-6-jadvalda ko'rsatilgan.
+
+| Toifa | An'anaviy _ML_ bilan ishlash | Fundamental modellar bilan ishlash |
+| :--- | :--- | :--- |
+| **_SI_ interfeysi** | Kamroq muhim | Muhim |
+| **Prompt muhandisligi** | Qo'llanilmaydi | Muhim |
+| **Baholash** | Muhim | Muhimroq |
+
+<div className='text-center text-sm italic'>1-6-jadval. Dasturlarni ishlab chiqishdagi turli toifalarning _SI_ muhandisligi va _ML_ muhandisligi uchun ahamiyati.</div>
+
+## _SI_ muhandisligi va Full-stack muhandisligi farqlari
+
+Dasturlarni ishlab chiqishga, ayniqsa, interfeyslarga bo'lgan e'tiborning ortishi _SI_ muhandisligini full-stack ishlab chiqishga yaqinlashtiradi.[^5] Interfeyslarning ahamiyati ortib borayotgani _SI_ vositalari dizaynida ko'proq frontend muhandislarini jalb qilishga qaratilgan o'zgarishlarga olib kelmoqda. An'anaviy _ML_ muhandisligi asosan Python'ga yo'naltirilgan edi. Fundamental modellardan oldin eng mashhur _ML_ freymvorklari asosan Python _API_'larini qo'llab-quvvatlardi. Bugungi kunda Python hali ham ommabop, ammo [LangChain.js](https://github.com/langchain-ai/langchainjs), [Transformers.js](https://github.com/huggingface/transformers.js), [OpenAI'ning Node kutubxonasi](https://github.com/openai/openai-node) va [Vercel'ning _AI_ _SDK_'si](https://github.com/vercel/ai) kabi JavaScript _API_'larini qo'llab-quvvatlash ham ortib bormoqda.
+
+Garchi ko'plab _SI_ muhandislari an'anaviy _ML_ sohasidan kelgan bo'lsalar-da, tobora ko'proq mutaxassislar veb-ishlab chiqish yoki full-stack sohalaridan kelmoqda. Full-stack muhandislarining an'anaviy _ML_ muhandislaridan ustunligi ularning g'oyalarni tezda demoga aylantirish, fikr-mulohazalarni olish va iteratsiya qilish qobiliyatidir.
+
+An'anaviy _ML_ muhandisligida ishni odatda ma'lumot yig'ish va modelni o'qitishdan boshlaysiz. Mahsulotni yaratish esa eng oxirida keladi. Biroq, bugungi kunda _SI_ modellarining tayyor holatda mavjudligi tufayli, ishni avval mahsulotni yaratishdan boshlash, ma'lumotlar va modellarga esa faqat mahsulot o'zini oqlaganidan (_shows promise_) keyingina sarmoya kiritish imkoniyati paydo bo'ldi. Bu jarayon 1-16-rasmda tasvirlangan.
+
+![1-16-rasm. Yangi _SI_ muhandislik ish jarayoni tez iteratsiya qila oladiganlarni rag'batlantiradi. Rasm “The Rise of the AI Engineer” ([Shawn Wang, 2023](https://www.latent.space/p/ai-engineer)) maqolasidan qayta yaratilgan.](/ai-engineering/1-chapter/1.16-figure.png)
+
+<div className='text-center text-sm italic'>1-16-rasm. Yangi _SI_ muhandislik ish jarayoni tez iteratsiya qila oladiganlarni rag'batlantiradi. Rasm “The Rise of the AI Engineer” ([Shawn Wang, 2023](https://www.latent.space/p/ai-engineer)) maqolasidan qayta yaratilgan.</div>
+
+An'anaviy _ML_ muhandisligida modelni ishlab chiqish va mahsulotni ishlab chiqish ko'pincha bir-biridan uzilgan jarayonlar bo'lib, ko'plab tashkilotlarda _ML_ muhandislari mahsulotga oid qarorlarda kamdan-kam ishtirok etishadi. Biroq, fundamental modellar bilan, _SI_ muhandislari mahsulotni yaratishda ancha faolroq ishtirok etishga moyil.
+
+### Izohlar
+
+[^1]: Bir "Fortune 500" kompaniyasining _SI_ rahbari menga aytganidek: uning jamoasi 10 ta _GPU_ bilan ishlashni biladi, lekin 1000 ta _GPU_ bilan esa ishlashni bilishmaydilar.
+
+[^2]: Va ularga [aql bovar qilmas darajada katta maosh](https://www.nytimes.com/2018/04/19/technology/artificial-intelligence-salaries-openai.html) taklif qilinadi.
+
+[^3]: Agar siz "dastlabki o'qitish" va "yakuniy o'qitish" atamalarini ijodkorlikdan yiroq deb hisoblasangiz, siz yolg'iz emassiz. _SI_ tadqiqot hamjamiyati ko'p narsada zo'r, lekin nom berishda emas. Biz allaqachon "katta til modellari" atamasi "katta" so'zining noaniqligi tufayli ilmiy atama bo'la olmasligi haqida gaplashgan edik. Va men odamlarning "X — sizga kerak bo'lgan yagona narsa" sarlavhasi bilan maqolalar chop etishni bas qilishlarini juda xohlardim.
+
+[^4]: `Streamlit`, `Gradio` va `Plotly Dash` _SI_ veb-dasturlarini yaratish uchun keng tarqalgan vositalardir.
+
+[^5]: Anton Bacaj menga aytganidek: “SI muhandisligi — bu shunchaki stek'iga _SI_ modellari qo'shilgan dasturiy ta'minot muhandisligidir.”

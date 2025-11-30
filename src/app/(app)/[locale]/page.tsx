@@ -1,6 +1,6 @@
 import { CircleIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
 import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
-import { JAVASCRIPT_CHAPTERS, REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
+import { AI_ENGINEERING_CHAPTERS, JAVASCRIPT_CHAPTERS, REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
 import { getTutorialImage } from '@/lib/mdx'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -241,6 +241,28 @@ export default async function HomePage() {
         </header>
 
         <section className="group mx-auto flex w-full max-w-[1536px] flex-col gap-8">
+          <SectionTitle
+            title="AI Engineering"
+            href="/books/ai-engineering"
+            description={tHome('aiSectionDescription')}
+            icon={
+              <Image
+                src={getTutorialImage('ai-engineering')}
+                alt="AI Engineering"
+                width={40}
+                height={40}
+                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
+              />
+            }
+          />
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+            {AI_ENGINEERING_CHAPTERS.map((card, index) => (
+              <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
+            ))}
+          </div>
+        </section>
+
+        <section className="group mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
           <SectionTitle
             title="JavaScript: The Definitive Guide, 7th Edition"
             href="/books/javascript-definitive-guide"

@@ -5,6 +5,7 @@ event - event
 layout - joylashuv
 framework - freymvork
 open source - ochiq manbali
+open weight - ochiq parametrli
 Separation of concerns - ma'suliyatlarni ajratish
 Single source of truth - Yagona ishonch manbai
 status quo - Amaldagi vaziyat
@@ -74,8 +75,8 @@ search engine crawlers - qidiruv tizimi botlari
 development - ishlab chiqish
 production - foydalanish
 stream - uzluksiz uzatish, oqim
-user experience - foydalanuvchi bilan ishlash qulayligi
-developer experience - dasturchi bilan ishlash qulayligi
+user experience - foydalanuvchi tajribasi
+developer experience - dasturchi tajribasi
 resumability - davom ettiruvchanlik qobiliyati
 serialization - seriyalashtirish
 deserialization - deseriyalashtirish
@@ -86,3 +87,27 @@ edge cases - kutilmagan holatlar
 under heavy load - katta yuklama ostida
 new generation of build tooling - yangi avlod qurilish vositalari
 out of the box - tayyor holatda
+accuracy - to'g'rilik
+precision - puxtalik
+sentiment analysis - hissiyot tahlili
+rag (Retrieval-Augmented Generation) - qidiruv bilan boyitilgan generatsiya
+machine learning - mashinaviy ta'lim
+deployment - joriy etish
+use cases - ishlatilish senariylari
+host - o'zingiz ishlatish, o'z serverlarida ishga tushirish
+pre-training - dastlabki o'qitish
+post-training - yakuniy o'qitish 
+AI as a judge - SI-baholovchi
+post-processing - yakuniy ishlov berish
+evaluation pipeline - baholash jarayonlar zanjiri
+open-ended - erkin natijali
+close-ended - cheklangan natijali
+factual consistency - faktik izchillik
+leaderboard - reyting jadvali
+code readibility - kodning o'qilishi osonligi
+coherence - mazmunan bog'langanlik
+faithfulness - ishonchlilik
+relevance - aloqadorlik
+AI-powered - SI'ga asoslangan
+biases - noxolislik
+weights - og'irliklar

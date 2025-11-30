@@ -1,0 +1,22 @@
+---
+title: Xulosa
+description: "3-bob xulosasi: baholash metodologiyasi, til modellashtirish metrikalari, aniq va subyektiv baholash, AI-baholovchi, qiyosiy baholash. Avtomatik baholash yondashuvlari va baholash jarayonlari ketma-ketligi."
+keywords: xulosa, summary, 3-bob xulosasi, chapter 3 summary, baholash metodologiyasi, evaluation methodology, til modellashtirish metrikalari, language modeling metrics, perplexity, o'zaro entropiya, cross entropy, aniq baholash, exact evaluation, subyektiv baholash, subjective evaluation, AI-baholovchi, AI as a judge, qiyosiy baholash, comparative evaluation, avtomatik baholash, automatic evaluation, baholash jarayonlari, evaluation pipelines, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi
+author: Webiston.uz
+---
+
+# Xulosa
+
+_SI_ modellar qanchalik kuchayib borsa, halokatli nosozliklar ehtimoli shunchalik ortadi, bu esa baholashni yanada muhimroq qiladi. Ayni paytda, erkin natijali (_open-ended_), qudratli modellarni baholash qiyin. Bu qiyinchiliklar ko'plab jamoalarni inson baholashiga yuzlanishga majbur qiladi. Boshlang'ich tekshiruvlar (_sanity checks_) uchun jarayonda insonlarning bo'lishi har doim foydali va ko'p hollarda inson baholashi juda muhim. Biroq, ushbu bobda avtomatik baholashning turli yondashuvlariga e'tibor qaratiladi.
+
+Bob fundamental modellarni an'anaviy _ML_ modellariga qaraganda nima uchun baholash qiyinroq ekanligi haqidagi muhokama bilan boshlandi. Garchi ko'plab yangi baholash texnikalari ishlab chiqilayotgan bo'lsa-da, baholashga qilingan sarmoyalar hali ham model va dasturlarni ishlab chiqishga qilingan sarmoyalardan ortda qolmoqda.
+
+Ko'pgina fundamental modellar til modeli komponentiga ega bo'lgani uchun, biz _perplexity_ va o'zaro entropiyani o'z ichiga olgan til modellashtirish metrikalariga chuqurroq nazar tashladik. Men suhbatlashgan ko'plab odamlar bu metrikalarni chalkash deb bilishadi, shuning uchun men ushbu metrikalarni qanday talqin qilish va ulardan baholash hamda ma'lumotlarga ishlov berishda qanday foydalanish haqida bo'lim kiritdim.
+
+Keyin, ushbu bobda e'tiborni erkin natijali javoblarni baholashning turli yondashuvlariga, jumladan, funksional to'g'rilik, o'xshashlik ballari va _SI_-baholovchiga qaratib o'tdik. Dastlabki ikkita baholash yondashuvi aniq (_exact_), _SI_-baholovchi yondashuvi esa subyektivdir.
+
+Aniq baholashdan farqli o'laroq, subyektiv metrikalar baholovchiga juda bog'liq. Ularning ballarini qanday baholovchilar ishlatilayotgani kontekstida talqin qilish kerak. Turli _SI_-baholovchilar tomonidan bir xil sifatni o'lchashga qaratilgan ballar taqqoslanadigan bo'lmasligi mumkin. _SI_-baholovchilar, barcha _SI_ dasturlari singari, takomillashtirilishi kerak, ya'ni ularning xulosalari o'zgaradi. Bu ularni vaqt o'tishi bilan dasturning o'zgarishlarini kuzatish uchun benchmark sifatida ishonchsiz qiladi. Garchi istiqbolli bo'lsa-da, _SI_-baholovchilar aniq baholash, inson baholashi yoki ikkalasi bilan to'ldirilishi kerak.
+
+Modellarni baholashda siz har bir modelni mustaqil ravishda baholashingiz va keyin ularni ballari bo'yicha reytinglashingiz mumkin. Yoki bo'lmasa, siz ularni qiyosiy signallar yordamida reytinglashingiz mumkin: ikki modeldan qaysi biri yaxshiroq? Qiyosiy baholash sportda, ayniqsa shaxmatda keng tarqalgan va _SI_ baholashida ommalashib bormoqda. Ham qiyosiy baholash, ham yakuniy o'qitishni moslashtirish jarayoni afzallik signallariga muhtoj, ularni yig'ish esa qimmat. Bu afzallik modellarini ishlab chiqishga turtki bo'ldi: foydalanuvchilar qaysi javobni afzal ko'rishini bashorat qiladigan ixtisoslashgan _SI_-baholovchilar.
+
+Garchi til modellashtirish metrikalari va qo'lda ishlab chiqilgan o'xshashlik o'lchovlari ancha vaqtdan beri mavjud bo'lsa-da, _SI_-baholovchi va qiyosiy baholash faqat fundamental modellar paydo bo'lishi bilan ommalashdi. Ko'pgina jamoalar ularni o'zlarining baholash jarayonlari zanjiriga (_evaluation pipelines_) qanday kiritishni o'rganmoqda. Erkin natijali dasturlarni baholash uchun ishonchli baholash jarayonlari ketma-ketligini qanday qurish — keyingi bobning mavzusidir.

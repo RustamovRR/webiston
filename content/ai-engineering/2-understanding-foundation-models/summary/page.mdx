@@ -1,0 +1,22 @@
+---
+title: Xulosa
+description: "2-bob xulosasi: fundamental modellarni tushunish, o'qitish ma'lumotlari, model arxitekturasi, yakuniy o'qitish va sampling. Transformer, miqyoslash qonunlari, ehtimollik tabiati va tizimli SI muhandisligi asoslari."
+keywords: xulosa, summary, 2-bob xulosasi, chapter 2 summary, fundamental modellar, fundamental models, o'qitish ma'lumotlari, training data, model arxitekturasi, model architecture, Transformer, yakuniy o'qitish, post-training, sampling, miqyoslash qonunlari, scaling laws, ehtimollik tabiati, probabilistic nature, tizimli SI muhandisligi, systematic AI engineering, baholash, evaluation, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi
+author: Webiston.uz
+---
+
+# Xulosa
+
+Ushbu bobda fundamental modelni yaratishdagi asosiy loyihalash qarorlari muhokama qilindi. Aksariyat odamlar modelni noldan o'qitish o'rniga tayyor fundamental modellardan foydalanishlarini hisobga olib, men qaysi modellarni ishlatish va ulardan qanday foydalanishni hal qilishga yordam beradigan modellashtirish omillari foydasiga mayda-chuyda o'qitish tafsilotlarini o'tkazib yubordim.
+
+Model samaradorligiga ta'sir qiluvchi hal qiluvchi omil — bu uning o'qitish ma'lumotlaridir. Katta modellar katta hajmdagi o'qitish ma'lumotlarini talab qiladi, ularni olish esa qimmat va ko'p vaqt talab qilishi mumkin. Shu sababli, model provayderlari ko'pincha mavjud bo'lgan har qanday ma'lumotlardan foydalanishadi. Bu esa o'qitish ma'lumotlarida mavjud bo'lgan ko'plab vazifalarda yaxshi ishlaydigan, lekin siz xohlagan maxsus vazifani o'z ichiga olmasligi mumkin bo'lgan modellarni keltirib chiqaradi. Ushbu bobda nima uchun maxsus tillarga, ayniqsa kam resursli tillarga va maxsus sohalarga mo'ljallangan modellarni ishlab chiqish uchun o'qitish ma'lumotlarini saralash ko'pincha zarur ekanligi ko'rib chiqildi.
+
+Ma'lumotlarni topgandan so'ng, modelni ishlab chiqish boshlanishi mumkin. Garchi modelni o'qitish ko'pincha sarlavhalarda ustunlik qilsa-da, undan oldingi muhim qadam — bu modelni arxitekturalashdir. Bobda model arxitekturasi va model hajmi kabi modellashtirish tanlovlari ko'rib chiqildi. Tilga asoslangan fundamental modellar uchun hukmron arxitektura — bu Transformer'dir. Ushbu bobda Transformer arxitekturasi hal qilish uchun ishlab chiqilgan muammolar, shuningdek, uning cheklovlari o'rganildi.
+
+Modelning miqyosini uchta asosiy raqam bilan o'lchash mumkin: parametrlar soni, o'qitish tokenlari soni va o'qitish uchun zarur bo'lgan _FLOP_'lar soni. Modelni o'qitish uchun zarur bo'lgan hisoblash hajmiga ta'sir qiluvchi ikki jihat — bu model hajmi va ma'lumotlar hajmidir. Miqyoslash qonuni hisoblash byudjeti berilganda optimal parametrlar sonini va tokenlar sonini aniqlashga yordam beradi. Ushbu bobda, shuningdek, miqyoslashdagi to'siqlar ham ko'rib chiqildi. Hozirda modelni kattalashtirish odatda uni yaxshiroq qiladi. Ammo bu qachongacha davom etadi?
+
+Dastlabki o'qitish paytidagi past sifatli o'qitish ma'lumotlari va o'z-o'zini nazorat qilish tufayli, natijaviy model foydalanuvchilar xohlagan narsaga mos kelmaydigan natijalar chiqarishi mumkin. Bu muammo yakuniy o'qitish orqali hal qilinadi, u ikki bosqichdan iborat: nazoratli _finetuning_ va afzalliklarga asoslangan _finetuning_. Inson afzalliklari xilma-xil va ularni yagona matematik formulada aks ettirish imkonsiz, shuning uchun mavjud yechimlar mukammallikdan yiroq.
+
+Ushbu bobda, shuningdek, mening sevimli mavzularimdan birini qamrab olindi: _sampling_ — modelning chiqish tokenlarini generatsiya qilish jarayoni. _Sampling_ SI modellarini ehtimollikka asoslangan qiladi. Aynan shu ehtimollik tabiati `ChatGPT` va `Gemini` kabi modellarni ijodiy vazifalar uchun ajoyib va suhbatlashish uchun maroqli qiladi. Biroq, bu ehtimollik tabiatini nomuvofiqlik va gallyutsinatsiyalarga ham sabab bo'ladi.
+
+SI modellari bilan ishlash o'z ish jarayonlaringizni ularning ehtimollik tabiati atrofida qurishni talab qiladi. Ushbu kitobning qolgan qismida _SI_ muhandisligini, agar deterministik qilib bo'lmasa ham, hech bo'lmaganda tizimli qilish yo'llari o'rganiladi. Tizimli _SI_ muhandisligi sari birinchi qadam — bu muvaffaqiyatsizliklar va kutilmagan o'zgarishlarni aniqlashga yordam beradigan mustahkam baholash jarayonlar zanjirini (_evaluation pipeline_) yo'lga qo'yishdir. Fundamental modellar uchun baholash shu qadar muhimki, men keyingi bobdan boshlab unga ikkita bobni bag'ishladim.

@@ -1,0 +1,141 @@
+{
+  "praise": {
+    "title": "E'tiroflar",
+    "path": "praise/page"
+  },
+  "preface": {
+    "title": "So'zboshi",
+    "path": "preface/page"
+  },
+  "1-introduction-to-building-ai-applications-with-foundation-models": {
+    "title": "1. Fundamental modellar asosida SI ilovalarini yaratish",
+    "path": "1-introduction-to-building-ai-applications-with-foundation-models/page",
+    "hasIndex": true,
+    "children": {
+      "the-rise-of-ai-engineering": {
+        "title": "Sun'iy intellekt muhandisligining yuksalishi",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/the-rise-of-ai-engineering/page"
+      },
+      "foundation-model-use-cases": {
+        "title": "Fundamental modellar: Ishlatilish senariylari",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/foundation-model-use-cases/page"
+      },
+      "planning-ai-applications": {
+        "title": "SI ilovalarini rejalashtirish",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/planning-ai-applications/page"
+      },
+      "ai-engineering-stack": {
+        "title": "SI muhandislik steki (texnologiyalar to'plami)",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/ai-engineering-stack/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "1-introduction-to-building-ai-applications-with-foundation-models/summary/page"
+      }
+    }
+  },
+  "2-understanding-foundation-models": {
+    "title": "2. Fundamental modellar mohiyati",
+    "path": "2-understanding-foundation-models/page",
+    "hasIndex": true,
+    "children": {
+      "training-data": {
+        "title": "O'qitish ma'lumotlari",
+        "path": "2-understanding-foundation-models/training-data/page"
+      },
+      "modeling": {
+        "title": "Modellashtirish",
+        "path": "2-understanding-foundation-models/modeling/page"
+      },
+      "post-training": {
+        "title": "Yakuniy o'qitish",
+        "path": "2-understanding-foundation-models/post-training/page"
+      },
+      "sampling": {
+        "title": "Sampling",
+        "path": "2-understanding-foundation-models/sampling/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "2-understanding-foundation-models/summary/page"
+      }
+    }
+  },
+  "3-evaluation-methodology": {
+    "title": "3. Baholash metodologiyasi",
+    "path": "3-evaluation-methodology/page",
+    "hasIndex": true,
+    "children": {
+      "challenges-of-evaluating-foundation-models": {
+        "title": "Fundamental modellarni baholashdagi qiyinchiliklar",
+        "path": "3-evaluation-methodology/challenges-of-evaluating-foundation-models/page"
+      },
+      "understanding-language-modeling-metrics": {
+        "title": "Til modellashtirish metrikalarini tushunish",
+        "path": "3-evaluation-methodology/understanding-language-modeling-metrics/page"
+      },
+      "exact-evaluation": {
+        "title": "Aniq baholash",
+        "path": "3-evaluation-methodology/exact-evaluation/page"
+      },
+      "ai-as-judge": {
+        "title": "SI-baholovchi",
+        "path": "3-evaluation-methodology/ai-as-judge/page"
+      },
+      "ranking-models-with-comparative-evaluation": {
+        "title": "Modellarni qiyosiy baholash bilan reytinglash",
+        "path": "3-evaluation-methodology/ranking-models-with-comparative-evaluation/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "3-evaluation-methodology/summary/page"
+      }
+    }
+  },
+  "4-evaluate-ai-systems": {
+    "title": "4. SI tizimlarini baholash",
+    "path": "4-evaluate-ai-systems/page",
+    "hasIndex": true,
+    "children": {
+      "evaluation-criteria": {
+        "title": "Baholash mezonlari",
+        "path": "4-evaluate-ai-systems/evaluation-criteria/page"
+      },
+      "model-selection": {
+        "title": "Model tanlash",
+        "path": "4-evaluate-ai-systems/model-selection/page"
+      },
+      "design-your-pipeline-evaluation": {
+        "title": "Baholash jarayonlar zanjirini loyihalash",
+        "path": "4-evaluate-ai-systems/design-your-pipeline-evaluation/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "4-evaluate-ai-systems/summary/page"
+      }
+    }
+  },
+  "5-prompt-engineering": {
+    "title": "5. Prompt muhandisligi",
+    "path": "5-prompt-engineering/page",
+    "hasIndex": true,
+    "children": {
+      "introduction-to-prompting": {
+        "title": "Promptlar bilan tanishuv",
+        "path": "5-prompt-engineering/introduction-to-prompting/page"
+      },
+      "prompt-engineering-best-practises": {
+        "title": "Prompt muhandisligining eng yaxshi amaliyotlari",
+        "path": "5-prompt-engineering/prompt-engineering-best-practises/page"
+      },
+      "defensive-prompt-engineering": {
+        "title": "Himoyaviy prompt muhandisligi",
+        "path": "5-prompt-engineering/defensive-prompt-engineering/page"
+      },
+      "summary": {
+        "title": "Xulosa",
+        "path": "5-prompt-engineering/summary/page"
+      }
+    }
+  }
+}

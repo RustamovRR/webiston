@@ -1,0 +1,48 @@
+---
+title: Fundamental modellarni baholashdagi qiyinchiliklar
+description: "Fundamental modellarni baholash qiyinchiliklari: erkin natijali javoblar, qora quti modellari, to'yingan benchmarklar. GLUE, SuperGLUE, MMLU, MMLU-Pro. Baholashga sarmoyalar va ochiq manbali vositalar tahlili."
+keywords: baholash qiyinchiliklari, evaluation challenges, fundamental modellar, fundamental models, erkin natijali, open-ended, qora quti, black box, benchmarklar, benchmarks, GLUE, SuperGLUE, MMLU, MMLU-Pro, to'yingan benchmarklar, saturated benchmarks, baholashga sarmoyalar, evaluation investments, ochiq manbali vositalar, open-source tools, GitHub, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi
+author: Webiston.uz
+---
+
+# Fundamental modellarni baholashdagi qiyinchiliklar
+
+_ML_ modellarini baholash har doim qiyin bo'lgan. Fundamental modellar paydo bo'lishi bilan esa, baholash yanada murakkablashdi. Fundamental modellarni baholash an'anaviy _ML_ modellarini baholashdan ko'ra qiyinroq ekanligining bir nechta sabablari bor.
+
+Birinchidan, _SI_ modellar qanchalik aqlli bo'lib borgani sari, ularni baholash shunchalik qiyinlashadi. Ko'pchilik birinchi sinf o'quvchisining matematik yechimi noto'g'ri ekanligini ayta oladi. Lekin doktorlik darajasidagi matematik yechim uchun buni qila oladiganlar kam.[^4] Agar kitob xulosasi bema'ni bo'lsa, uning yomon ekanligini aytish oson, lekin xulosa izchil bo'lsa, buni qilish ancha qiyinroq. Xulosa sifatini tekshirish uchun, avval kitobni o'qib chiqishingiz kerak bo'lishi mumkin. Bu bizni bir natijaga olib keladi: murakkab vazifalar uchun baholash ancha ko'p vaqt talab qilishi mumkin. Siz endi javobni shunchaki qanday eshitilishiga qarab baholay olmaysiz. Sizga faktlarni tekshirish, mulohaza yuritish va hatto sohaviy bilimlarni jalb qilish ham kerak bo'ladi.
+
+Ikkinchidan, fundamental modellarning erkin natijali tabiati modelni etalon javoblar (_ground truths_) asosida baholashning an'anaviy yondashuvini samarasiz qiladi. An'anaviy _ML_ bilan, aksariyat vazifalar cheklangan natijali (_close-ended_) bo'ladi. Masalan, tasniflash modeli faqat kutilgan toifalar orasidan javob qaytara oladi. Tasniflash modelini baholash uchun uning natijalarini kutilgan natijalar bilan solishtirish mumkin. Agar kutilgan natija X toifasi bo'lsa-yu, modelning natijasi Y toifasi bo'lsa, demak model xato qilgan. Biroq, erkin natijali vazifa uchun, berilgan bitta kirish ma'lumotiga juda ko'p to'g'ri javoblar bo'lishi mumkin. Solishtirish uchun barcha to'g'ri javoblarning to'liq ro'yxatini tuzib chiqishning imkoni yo'q.
+
+Uchinchidan, aksariyat fundamental modellarga "qora quti" sifatida qaraladi. Buning sababi yo model provayderlari model tafsilotlarini oshkor qilmaslikni tanlashadi, yoki ilova ishlab chiquvchilari ularni tushunish uchun yetarli tajribaga ega bo'lmaydilar. Model arxitekturasi, o'qitish ma'lumotlari va o'qitish jarayoni kabi tafsilotlar modelning kuchli va zaif tomonlari haqida ko'p narsani ochib berishi mumkin. Bu tafsilotlarsiz, siz modelni faqat uning natijalarini kuzatish orqali baholay olasiz.
+
+Shu bilan birga, ommaga taqdim etilgan baholash benchmarklari fundamental modellarni baholash uchun yetarli emasligi ma'lum bo'ldi. Ideal holda, baholash benchmarklari model imkoniyatlarining to'liq ko'lamini qamrab olishi kerak. _SI_ rivojlanib borar ekan, benchmarklar ham unga yetib olish uchun rivojlanishi zarur. Model mukammal ballga erishganda, benchmark ushbu model uchun **to'yingan** (_saturated_) bo'ladi. Fundamental modellar bilan, benchmarklar tezda to'yinib bormoqda. [GLUE](https://arxiv.org/abs/1804.07461) (_General Language Understanding Evaluation_) benchmarki 2018-yilda chiqdi va atigi bir yilda to'yinib qoldi, bu esa 2019-yilda [_SuperGLUE_](https://arxiv.org/abs/1905.00537)ning joriy etilishini taqozo etdi. Xuddi shunday, [_NaturalInstructions_](https://arxiv.org/abs/2104.08773) (2021) o'rnini [_Super-NaturalInstructions_](https://arxiv.org/abs/2204.07705) (2022) egalladi. Ko'plab dastlabki fundamental modellar tayangan kuchli benchmark bo'lgan [_MMLU_](https://arxiv.org/abs/2009.03300) (2020) esa, asosan, [_MMLU-Pro_](https://arxiv.org/abs/2406.01574) (2024) bilan almashtirildi.
+
+Va nihoyat, eng muhimi, umumiy maqsadli modellar uchun baholash doirasi kengaydi. Maxsus vazifali modellar bilan baholash modelning o'zi o'qitilgan vazifadagi samaradorligini o'lchashni o'z ichiga oladi. Biroq, umumiy maqsadli modellar bilan baholash nafaqat modelning ma'lum vazifalardagi samaradorligini baholash, balki model qila oladigan yangi vazifalarni kashf etish haqida hamdir va bular inson imkoniyatlaridan tashqariga chiqadigan vazifalarni ham o'z ichiga olishi mumkin. Baholash _SI_'ning salohiyati va cheklovlarini o'rganishdek qo'shimcha mas'uliyatni o'z zimmasiga oladi.
+
+Yaxshi xabar shundaki, baholashdagi yangi qiyinchiliklar ko'plab yangi usullar va benchmarklarning paydo bo'lishiga turtki bo'ldi. 3-1-rasmda ko'rsatilishicha, _LLM_ baholashiga oid nashr etilgan maqolalar soni 2023-yilning birinchi yarmida har oy eksponensial ravishda o'sgan — oyiga 2 ta maqoladan deyarli 35 ta maqolagacha.
+
+![3-1-rasm. Vaqt o'tishi bilan LLM'larni baholashga oid maqolalar tendensiyasi.](/ai-engineering/3-chapter/3.1-figure.png)
+
+<div className='text-center text-sm italic'>3-1-rasm. Vaqt o'tishi bilan _LLM_'larni baholashga oid maqolalar tendensiyasi. Rasm [Chang va boshqalar (2023)](https://arxiv.org/abs/2307.03109) ishidan olingan.</div>
+
+GitHub'dagi yulduzchalar soni bo'yicha saralangan [eng yaxshi 1000 ta _SI_ bilan bog'liq repozitoriylarni](https://huyenchip.com/llama-police) shaxsan tahlil qilganimda, baholashga bag'ishlangan 50 dan ortiq repozitoriyni topdim (2024-yil may holatiga ko'ra).[^5] Baholash repozitoriylari sonini ularning yaratilgan sanasi bo'yicha chizib chiqqanda, o'sish egri chizig'i eksponensial ko'rinishga ega bo'ladi (3-2-rasm).
+
+Yomon xabar shundaki, baholashga bo'lgan qiziqishning ortishiga qaramay, u _SI_ muhandisligi jarayonlari zanjirining qolgan qismiga bo'lgan qiziqishdan ortda qolmoqda. [DeepMind'dan Balduzzi va boshqalar](https://arxiv.org/abs/1806.02643) o'z maqolalarida ta'kidlaganidek, "algoritmlarni ishlab chiqishga nisbatan baholash usullarini ishlab chiqishga tizimli e'tibor kam qaratilgan." Maqolaga ko'ra, tajriba natijalari deyarli faqat algoritmlarni yaxshilash uchun ishlatiladi va baholashni yaxshilash uchun kamdan-kam ishlatiladi. Baholashga sarmoyalarning yetishmasligini tan olgan holda, [Anthropic](https://www.anthropic.com/news/evaluating-ai-systems) siyosatchilarni yangi baholash metodologiyalarini ishlab chiqish va mavjud baholashlarning mustahkamligini tahlil qilish uchun davlat tomonidan moliyalashtirish va grantlarni ko'paytirishga chaqirdi.
+
+![3-2-rasm. GitHub'dagi 1000 ta eng mashhur _SI_ repozitoriylari orasida ochiq manbali baholash repozitoriylari soni.](/ai-engineering/3-chapter/3.2-figure.png)
+
+<div className='text-center text-sm italic'>3-2-rasm. GitHub'dagi 1000 ta eng mashhur _SI_ repozitoriylari orasida ochiq manbali baholash repozitoriylari soni.</div>
+
+Baholashga qilingan sarmoya _SI_ sohasidagi boshqa yo'nalishlardan qanchalik ortda qolayotganini yanada yaqqolroq ko'rsatish uchun, baholash uchun vositalar soni modellashtirish va o'qitish hamda _SI_ orkestratsiyasi uchun vositalar soniga nisbatan ancha kam (3-3-rasm).
+
+Sarmoyaning yetarli emasligi infratuzilmaning yetarli bo'lmasligiga olib keladi, bu esa odamlarga tizimli baholashni amalga oshirishni qiyinlashtiradi. O'zlarining _SI_ ilovalarini qanday baholayotganliklari so'ralganda, ko'pchilik menga natijalarni shunchaki ko'z bilan chamalab ko'rishlarini aytishdi. Ko'pchilikda modellarni baholash uchun foydalanadigan kichik "navbatchi" promptlar to'plami bor. Ushbu promptlarni saralash jarayoni vaziyatga qarab amalga oshiriladi va odatda ilovaning ehtiyojlariga emas, balki saralovchining shaxsiy tajribasiga asoslanadi. Loyihani endi boshlayotganda bu "vaziyatga qarab" yondashuv bilan qutulib qolishingiz mumkin, ammo ilovani takomillashtirib borish uchun bu yetarli bo'lmaydi. Ushbu kitob baholashga tizimli yondashishga qaratilgan.
+
+![3-3-rasm. GitHub'dagi 1000 ta eng mashhur _SI_ repozitoriylari ro'yxatimdan olingan ma'lumotlarga ko'ra, baholash ochiq manbali vositalar soni bo'yicha _SI_ muhandisligining boshqa jihatlaridan ortda qolmoqda.](/ai-engineering/3-chapter/3.3-figure.png)
+
+<div className='text-center text-sm italic'>3-3-rasm. GitHub'dagi 1000 ta eng mashhur _SI_ repozitoriylari ro'yxatimdan olingan ma'lumotlarga ko'ra, baholash ochiq manbali vositalar soni bo'yicha _SI_ muhandisligining boshqa jihatlaridan ortda qolmoqda.</div>
+
+### Izohlar
+
+[^4]: 2024-yil sentabr oyida OpenAI'ning `GPT-o1` modeli chiqqanda, [Filds medali sohibi Terrens Tao](https://mathstodon.xyz/@tao/113132502735585408) bu model bilan ishlash tajribasini "o'rtamiyona, lekin butunlay qobiliyatsiz bo'lmagan aspirant" bilan ishlashga qiyosladi. Uning taxminicha, _SI_ "qobiliyatli aspirant" darajasiga yetishi uchun yana bir yoki ikki takomillashtirish kifoya qilishi mumkin. Uning bahosiga javoban, ko'pchilik hazillashib, agar biz allaqachon _SI_ modellarini baholash uchun eng yorqin insoniy aqllarga muhtoj bo'lgan nuqtaga kelgan bo'lsak, kelajakdagi modellarni baholashga malakali odamimiz qolmaydi, deyishdi.
+
+[^5]: Men "LLM", "GPT", "generative" va "transformer" kalit so'zlari yordamida kamida 500 yulduzchaga ega bo'lgan barcha repozitoriylarni qidirdim. Shuningdek, o'z veb-saytim [https://huyenchip.com](https://huyenchip.com/llama-police) orqali yetishmayotgan repozitoriylar uchun kraudsorsing qildim.

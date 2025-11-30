@@ -1,0 +1,22 @@
+---
+title: Prompt muhandisligi
+description: "Prompt muhandisligi: modeldan kerakli natijani olish uchun ko'rsatmalar yaratish. Kontekstual o'rganish, nol misolli va kam misolli yondashuvlar, eng yaxshi amaliyotlar, himoyaviy prompt muhandisligi va prompt hujumlaridan himoyalanish."
+keywords: prompt muhandisligi, prompt engineering, promptlar, prompts, ko'rsatmalar, instructions, kontekstual o'rganish, in-context learning, nol misolli o'rganish, zero-shot learning, kam misolli o'rganish, few-shot learning, eng yaxshi amaliyotlar, best practices, himoyaviy prompt muhandisligi, defensive prompt engineering, prompt hujumlari, prompt attacks, jailbreaking, qobiqni buzib o'tish, prompt inyeksiyasi, prompt injection, SI muhandisligi, AI muhandisligi, sun'iy intellekt muhandisligi, 5-bob, chapter 5
+author: Webiston.uz
+---
+
+# 5-bob. Prompt muhandisligi
+
+Prompt muhandisligi — bu modeldan kerakli natijani olishga undaydigan ko'rsatmani (instruksiyani) yaratish jarayonidir. Prompt muhandisligi modelni moslashtirishning eng oson va eng keng tarqalgan usulidir. _Finetuning_'dan farqli o'laroq, prompt muhandisligi modelning og'irliklarini (_weights_) o'zgartirmagan holda uning xatti-harakatini yo'naltiradi. Fundamental modellarning kuchli bazaviy imkoniyatlari tufayli, ko'pchilik faqatgina prompt muhandisligining o'zidan foydalanib, ularni turli ilovalar uchun muvaffaqiyatli moslashtira oldi. _Finetuning_ kabi ko'proq resurs talab qiladigan usullarga o'tishdan oldin, promptlardan maksimal darajada foydalanib ko'rishingiz kerak.
+
+Prompt muhandisligining qo'llash osonligi odamlarni uning ortida jiddiy narsa yo'qdek o'ylashga undab, chalg'itishi mumkin.[^1] Bir qarashda, prompt muhandisligi go'yo biror natija chiqquncha shunchaki so'zlar bilan "o'ynash"dek tuyuladi. Garchi prompt muhandisligi haqiqatan ham ko'plab "o'ynash"larni o'z ichiga olsa-da, u shuningdek ko'plab qiziqarli muammolar va zukkolik bilan topilgan yechimlarni ham qamrab oladi. Siz prompt muhandisligini insondan _SI_'ga muloqot sifatida tasavvur qilishingiz mumkin: _SI_ modellari bilan o'zingiz xohlagan narsani qildirish uchun muloqot qilasiz. Har kim ham muloqot qila oladi, lekin hamma ham samarali muloqot qila olmaydi. Xuddi shunday, prompt yozish oson, lekin samarali promptlar yaratish oson emas.
+
+Ba'zi odamlar "prompt muhandisligi" atamasi muhandislik fani deb atalish uchun yetarlicha pishiqlik va qat'iylikka ega emas, deb hisoblashadi. Biroq, bunday bo'lishi shart emas. Promptlar bilan bog'liq tajribalar har qanday _ML_ tajribasi kabi, tizimli eksperimentlar va baholash bilan, bir xil qat'iylikda o'tkazilishi kerak.
+
+Men suhbatlashgan OpenAI'dagi tadqiqot menejerlaridan biri prompt muhandisligining ahamiyatini mukammal tarzda quyidagicha umumlashtirdi: "Muammo prompt muhandisligida emas. Bu — ega bo'lish uchun haqiqiy va foydali ko'nikma. Muammo — odamlar faqat prompt muhandisligini bilganida boshlanadi." Amaliyotga tayyor _SI_ ilovalarini yaratish uchun sizga shunchaki prompt muhandisligidan ko'proq narsa kerak. Sizga tajribalarni kuzatib borish, baholash va ma'lumotlar to'plamini shakllantirish uchun statistika, muhandislik va klassik _ML_ bilimlari zarur.
+
+Ushbu bob samarali promptlar yozishni hamda ilovalaringizni prompt hujumlaridan himoya qilishni o'z ichiga oladi. Promptlar yordamida yaratishingiz mumkin bo'lgan barcha qiziqarli ilovalarga sho'ng'ishdan oldin, keling, avval asoslardan, jumladan, prompt o'zi nima ekanligi va prompt muhandisligining eng yaxshi amaliyotlaridan boshlaylik.
+
+#### Izohlar 
+
+[^1]: Prompt muhandisligi o'zining qisqa faoliyati davomida aqlbovar qilmas darajada katta norozilik keltirib chiqarishga ulgurdi. Prompt muhandisligi arzimagan mashg'ulot ekani haqidagi shikoyatlar minglab qo'llab-quvvatlovchi izohlarni to'pladi; masalan, [1](https://www.kdnuggets.com/why-prompt-engineering-is-a-fad), [2](https://news.ycombinator.com/item?id=35665168), [3](https://www.reddit.com/r/ChatGPT/comments/1529r45/wtf_is_with_people_saying_prompt_engineer_like/), [4](https://www.reddit.com/r/ChatGPT/comments/12wxn1w/prompt_engineering_is_easy_as_shit_and_anybody/)-havolalarga qarang. Odamlarga navbatdagi kitobimda prompt muhandisligi haqida bob borligini aytganimda, ko'pchilik bunga mensimay qaradi.

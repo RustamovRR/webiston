@@ -25,14 +25,19 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
 
   const books = [
     {
-      id: 'fluent-react',
-      title: 'Fluent React',
-      description: "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.",
+      id: 'ai-engineering',
+      title: 'AI Engineering',
+      description: "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
     },
     {
       id: 'javascript-definitive-guide',
       title: 'JavaScript The Definitive Guide',
       description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
+    },
+    {
+      id: 'fluent-react',
+      title: 'Fluent React',
+      description: "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.",
     },
   ]
 
