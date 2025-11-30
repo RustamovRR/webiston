@@ -32,7 +32,8 @@
     },
     "processing": "Processing...",
     "resultWillAppear": "Result will appear here.",
-    "backToTools": "Back to Tools"
+    "backToTools": "Back to Tools",
+    "clear": "Clear"
   },
   "Filters": {
     "allTools": "All Tools",

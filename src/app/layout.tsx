@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/shared/Providers'
+import NextTopLoader from 'nextjs-toploader'
 
 const OpenReplayNoSSR = dynamic(() => import('@/lib/config/openreplay'))
 const inter = Inter({ subsets: ['latin'] })
@@ -396,6 +397,7 @@ export default async function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       </head>
       <body className={inter.className}>
+        <NextTopLoader color="#3b82f6" height={2} showSpinner={false} />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem storageKey="theme">
           {children}
           <Toaster />

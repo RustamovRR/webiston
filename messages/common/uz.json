@@ -32,7 +32,8 @@
     },
     "processing": "Ishlanmoqda...",
     "resultWillAppear": "Natija shu yerda ko'rinadi.",
-    "backToTools": "Orqaga qaytish"
+    "backToTools": "Orqaga qaytish",
+    "clear": "Tozalash"
   },
   "Filters": {
     "allTools": "Barcha vositalar",
