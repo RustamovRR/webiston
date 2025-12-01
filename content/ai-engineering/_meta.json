@@ -137,5 +137,11 @@
         "path": "5-prompt-engineering/summary/page"
       }
     }
+  },
+  "6-rag-and-agents": {
+    "title": "6. RAG va Agentlar",
+    "path": "6-rag-and-agents/page",
+    "hasIndex": true,
+    "children": {}
   }
 }
