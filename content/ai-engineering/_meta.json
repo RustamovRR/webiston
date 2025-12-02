@@ -142,6 +142,11 @@
     "title": "6. RAG va Agentlar",
     "path": "6-rag-and-agents/page",
     "hasIndex": true,
-    "children": {}
+    "children": {
+      "rag": {
+        "title": "RAG",
+        "path": "6-rag-and-agents/rag/page"
+      }
+    }
   }
 }

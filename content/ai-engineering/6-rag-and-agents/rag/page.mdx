@@ -1,0 +1,163 @@
+# Qidiruv bilan boyitilgan generatsiya (_RAG_)
+
+Qidiruv bilan boyitilgan generatsiya (_RAG_) — bu tashqi xotira manbalaridan tegishli ma'lumotlarni qidirib topish orqali modelning generatsiya qobiliyatini kuchaytiradigan texnikadir. Tashqi xotira manbasi sifatida ichki ma'lumotlar bazasi, foydalanuvchining avvalgi chat sessiyalari yoki internet xizmat qilishi mumkin.
+
+"Qidirib-yaratish" (_retrieve-then-generate_) andozasi ilk bor [Chen va boshqalar (2017)](https://arxiv.org/abs/1704.00051) tomonidan "Reading Wikipedia to Answer Open-Domain Questions" maqolasida taqdim etilgan. Ushbu ishda tizim avval savolga eng aloqador bo'lgan beshta Wikipedia sahifasini qidirib topadi, so'ngra model[^1] (6-1-rasmda ko'rsatilganidek) javobni shakllantirish uchun ushbu sahifalardagi ma'lumotlardan foydalanadi (yoki ularni "o'qiydi").
+
+![6-1-rasm. "Qidirib-yaratish" andozasi. Model bu yerda hujjat o'quvchi (document reader) deb atalgan.](/ai-engineering/6-chapter/6.1-figure.png)
+<div className='text-center text-sm italic'>6-1-rasm. "Qidirib-yaratish" andozasi. Model bu yerda hujjat o'quvchi (document reader) deb atalgan.</div>
+
+_Retrieval-augmented generation_ atamasi "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" ([Lewis va boshqalar, 2020](https://arxiv.org/abs/2005.11401)) maqolasida ilmiy muomalaga kiritilgan. Maqola mualliflari _RAG_'ni barcha mavjud bilimlarni to'g'ridan-to'g'ri modelga sig'dirib bo'lmaydigan, chuqur bilim talab qiluvchi vazifalar uchun yechim sifatida taklif qilishgan. _RAG_ yordamida faqat so'rovga eng aloqador bo'lgan va qidiruvchi (_retriever_) tomonidan aniqlangan ma'lumotlargina ajratib olinadi va modelga uzatiladi. Lewis va uning hamkasblari tegishli ma'lumotlarga ega bo'lish modelga batafsilroq javoblar yaratishga yordam berishini va gallyutsinatsiyalarni kamaytirishini aniqladilar.[^2]
+
+Misol uchun, "Acme'ning `fancy-printer-A300` modeli 100pps tezlikda chop eta oladimi?" degan so'rov berilganda, agar modelga `fancy-printer-A300`'ning texnik xususiyatlari taqdim etilsa, u ancha yaxshiroq javob bera oladi.[^3]
+
+Siz _RAG_'ni barcha so'rovlar uchun bir xil umumiy kontekstni ishlatish o'rniga, har bir so'rov uchun maxsus kontekstni shakllantirish texnikasi deb tushunishingiz mumkin. Bu foydalanuvchi ma'lumotlarini boshqarishda qo'l keladi, chunki u sizga ma'lum bir foydalanuvchiga tegishli ma'lumotlarni faqat shu foydalanuvchi bilan bog'liq so'rovlarga qo'shish imkonini beradi.
+
+Fundamental modellar uchun kontekstni shakllantirish — bu klassik _ML_ modellaridagi **belgilarni shakllantirish** (_feature engineering_) jarayonining o'zginasidir. Ular ayni bir maqsadga xizmat qiladi: modelga kiruvchi ma'lumotni qayta ishlash uchun zarur bo'lgan axborotni taqdim etish.
+
+Fundamental modellarning ilk davrlarida _RAG_ eng keng tarqalgan andozalardan biri sifatida maydonga chiqdi. Uning asosiy vazifasi modellarning kontekst cheklovlarini yengib o'tish edi. Ko'pchilik yetarlicha uzun kontekst _RAG_'ning davrini tugatadi deb hisoblaydi. Men bu fikrga qo'shilmayman. Birinchidan, modelning kontekst uzunligi qanchalik katta bo'lmasin, undan ham uzunroq kontekstni talab qiladigan ilovalar har doim topiladi. Boz ustiga, mavjud ma'lumotlar hajmi vaqt o'tishi bilan faqat o'sib boradi. Odamlar yangi ma'lumotlarni yaratadilar va qo'shadilar, lekin kamdan-kam hollarda o'chiradilar. Kontekst uzunligi tez kengaymoqda, ammo turli xil ilovalarning ma'lumotlarga bo'lgan ehtiyojlarini qondirish uchun yetarli darajada tez emas.[^4]
+
+Ikkinchidan, uzun kontekstni qayta ishlay oladigan model bu kontekstdan har doim ham unumli foydalanavermayd(["Kontekst hajmi va undan foydalanish samaradorligi"](/books/ai-engineering/5-prompt-engineering/introduction-to-prompting#kontekst-hajmi-va-undan-foydalanish-samaradorligi) bo'limida muhokama qilinganidek). Kontekst qanchalik uzun bo'lsa, modelning e'tiborni noto'g'ri qismga qaratish ehtimoli shunchalik ortadi. Har bir qo'shimcha kontekst tokeni ortiqcha xarajat va potensial qo'shimcha kechikishni (_latency_) keltirib chiqaradi. _RAG_ modelga har bir so'rov uchun faqat eng kerakli ma'lumotlardan foydalanish imkonini beradi, bu esa kiruvchi tokenlar sonini kamaytiradi va ayni paytda modelning ishlash samaradorligini oshirishi mumkin.
+
+Kontekst uzunligini kengaytirishga qaratilgan sa'y-harakatlar modellarni kontekstdan samaraliroq foydalanishga o'rgatish ishlari bilan parallel ravishda ketmoqda. Agar biror model provayderi modelga kontekstning eng muhim qismlarini ajratib olishga yordam beradigan qidiruvga o'xshash (_retrieval-like_) yoki e'tiborga asoslangan (_attention-like_) mexanizmni joriy qilsa, men bundan ajablanmagan bo'lardim.
+
+<Callout>
+#### Eslatma
+
+Anthropic ta'kidlashicha, `Claude` modellari uchun agar "bilimlar bazangiz 200 000 tokendan (taxminan 500 sahifa material) kichik bo'lsa, siz shunchaki butun bazani modelga beriladigan prompt ichiga kiritishingiz mumkin, bunda _RAG_ yoki shunga o'xshash usullarga hojat qolmaydi" ([Anthropic, 2024](https://www.anthropic.com/engineering/contextual-retrieval)). Boshqa model ishlab chiquvchilari ham o'z modellari uchun _RAG_ va uzun kontekst o'rtasidagi tanlov bo'yicha shunday ko'rsatmalar berishsa, ajoyib ish bo'lar edi.
+</Callout>
+
+## _RAG_ arxitekturasi
+
+_RAG_ tizimi ikki tarkibiy qismdan iborat: tashqi xotira manbalaridan ma'lumotlarni qidirib topuvchi **qidiruvchi** (_retriever_) va topilgan ma'lumotlarga asoslanib javob shakllantiruvchi **generator**. 6-2-rasmda _RAG_ tizimining yuqori darajadagi arxitekturasi tasvirlangan.
+
+![6-2-rasm. Asosiy RAG arxitekturasi.](/ai-engineering/6-chapter/6.2-figure.png)
+<div className='text-center text-sm italic'>6-2-rasm. Asosiy RAG arxitekturasi.</div>
+
+Asl _RAG_ maqolasida [Lewis va uning jamoasi](https://arxiv.org/abs/2005.11401) qidiruvchi va generativ modelni birgalikda o'qitishgan. Bugungi kunda esa bu ikki qism ko'pincha alohida o'qitiladi va ko'plab jamoalar o'z _RAG_ tizimlarini tayyor qidiruvchilar va modellardan foydalangan holda quradilar. Biroq, butun _RAG_ tizimini boshdan-oyoq (_end-to-end_) _finetuning_ qilish uning samaradorligini sezilarli darajada oshirishi mumkin.
+
+_RAG_ tizimining muvaffaqiyati uning qidiruvchisi sifatiga bog'liq. Qidiruvchi ikkita asosiy funksiyani bajaradi: **indekslash** (_indexing_) va **so'rov yuborish** (_querying_). Indekslash ma'lumotlarni keyinchalik tez qidirib topish imkonini beradigan tarzda qayta ishlashni o'z ichiga oladi. Unga aloqador ma'lumotlarni olish uchun so'rov yuborish jarayoni esa so'rov yuborish deb ataladi. Ma'lumotlarni qanday indekslash ularni keyinchalik qanday qidirib topmoqchi ekanligingizga bog'liq.
+
+Asosiy tarkibiy qismlarni ko'rib chiqdik, endi keling, _RAG_ tizimi qanday ishlashini bir misol yordamida tahlil qilaylik. Soddalik uchun, tashqi xotirani kompaniyaning eslatmalari, shartnomalari va majlis bayonnomalari kabi hujjatlar bazasi deb tasavvur qilamiz. Bir hujjat 10 tokendan yoki 1 million tokendan iborat bo'lishi mumkin. Butun boshli hujjatlarni shunchaki qidirib olish kontekstingizning haddan tashqari uzayib ketishiga olib kelishi mumkin. Buning oldini olish uchun har bir hujjatni kichikroq, boshqarish oson bo'lgan **bo'laklarga** (_chunks_) ajratishingiz mumkin. Bo'laklash (_chunking_) strategiyalari ushbu bobda keyinroq muhokama qilinadi. Hozircha barcha hujjatlar ishlashga yaroqli bo'laklarga ajratilgan deb faraz qilamiz. Har bir so'rov uchun bizning maqsadimiz — aynan shu so'rovga eng aloqador ma'lumot bo'laklarini qidirib topishdir. Topilgan ma'lumot bo'laklarini foydalanuvchi prompti bilan birlashtirib, yakuniy promptni hosil qilish uchun ko'pincha kichik yakuniy ishlov berish (_post-processing_) talab etiladi. So'ngra ushbu yakuniy prompt generativ modelga uzatiladi.
+
+<Callout>
+#### Eslatma
+
+Ushbu bobda men "hujjat" va "bo'lak" tushunchalarini ifodalash uchun "hujjat" atamasidan foydalanaman, chunki texnik jihatdan hujjatning bir bo'lagi ham o'z-o'zidan hujjat hisoblanadi. Men buni kitobdagi terminologiyani klassik _NLP_ va axborot qidiruvi (_IR_) atamalari bilan muvofiqlashtirish maqsadida qilyapman
+</Callout>
+
+## Qidiruv algoritmlari
+
+Qidiruv faqat _RAG_'ga xos narsa emas. Axborot qidiruvi (_Information retrieval_) — bu bir asrlik tarixga ega g'oya.[^5] U qidiruv tizimlari, tavsiya tizimlari, loglar tahlili va boshqalarning umurtqa pog'onasidir. An'anaviy qidiruv tizimlari uchun ishlab chiqilgan ko'plab algoritmlar _RAG_ uchun ham ishlatilishi mumkin. Misol uchun, axborot qidiruvi — bu bir necha sahifada to'liq yoritib berish imkonsiz bo'lgan, ortida ulkan industriya turgan sermahsul tadqiqot yo'nalishidir. Shu sababli, bu bo'limda faqat asosiy chizgilarga to'xtalamiz. Axborot qidiruvi bo'yicha chuqurroq manbalarni ushbu kitobning [GitHub repozitoriysidan](https://github.com/chiphuyen/aie-book) topishingiz mumkin.
+
+<Callout>
+#### Eslatma
+
+Qidiruv (_retrieval_) odatda bitta ma'lumotlar bazasi yoki tizim bilan cheklanadi, izlash (_search_) esa turli tizimlar bo'ylab qidiruvni o'z ichiga oladi. Ushbu bobda qidiruv va izlash atamalari bir-birining o'rnida ishlatiladi.
+</Callout>
+
+Mohiyatan, qidiruv hujjatlarni berilgan so'rovga aloqadorligiga qarab darajalash (_ranking_) orqali ishlaydi. Qidiruv algoritmlari aloqadorlik ballari qanday hisoblanishiga qarab farqlanadi. Men ikkita keng tarqalgan qidiruv mexanizmidan boshlayman: **atamalarga asoslangan qidiruv** (_term-based retrieval_) va **_embedding_'ga asoslangan qidiruv** (_embedding-based retrieval_).
+
+> #### Siyrak va zich qidiruv
+>
+> Adabiyotlarda qidiruv algoritmlarining quyidagi toifalarga bo'linganiga duch kelishingiz mumkin: siyrak (_sparse_) va zich (_dense_). Biroq, ushbu kitobda atamalarga asoslangan va _embedding_'ga asoslangan tasniflash tanlandi.
+>
+> Siyrak qidiruvchilar ma'lumotlarni siyrak vektorlar yordamida ifodalaydi. Siyrak vektor — bu qiymatlarining aksariyati 0 dan iborat bo'lgan vektordir. Atamalarga asoslangan qidiruv siyrak hisoblanadi, chunki har bir atamani siyrak _one-hot_ vektor (faqat bitta qiymati 1, qolgan hammasi 0 bo'lgan vektor) yordamida ifodalash mumkin. Vektor o'lchami lug'at uzunligiga teng bo'ladi. 1 qiymati lug'atdagi atama indeksiga mos keladigan indeksda joylashadi.
+>
+> Agar bizda `{"food": 0, "banana": 1, "slug": 2}` ko'rinishidagi oddiy lug'at bo'lsa, u holda "food", "banana" va "slug" so'zlarining _one-hot_ vektorlari mos ravishda `[1, 0, 0]`, `[0, 1, 0]` va `[0, 0, 1]` bo'ladi.
+>
+> Zich qidiruvchilar ma'lumotlarni zich vektorlar yordamida ifodalaydi. Zich vektor — bu qiymatlarining aksariyati 0 bo'lmagan vektordir. _Embedding_'ga asoslangan qidiruv odatda zich hisoblanadi, chunki _embedding_'lar asosan zich vektorlardir. Biroq, siyrak _embedding_'lar ham mavjud. Misol uchun, `SPLADE` (_Sparse Lexical and Expansion_) — bu siyrak _embedding_'lar yordamida ishlaydigan qidiruv algoritmidir ([Formal va boshqalar, 2021](https://arxiv.org/abs/2107.05720)). U `BERT` tomonidan yaratilgan _embedding_'lardan foydalanadi, lekin ko'pchilik _embedding_ qiymatlarini 0 ga tushirish uchun regulyarizatsiyani qo'llaydi. Siyraklik _embedding_ amallarini samaraliroq qiladi.
+>
+> Siyrak va zich bo'linishi `SPLADE`'ni atamalarga asoslangan algoritmlar bilan bir guruhga tushib qolishiga sabab bo'ladi, garchi `SPLADE`'ning ishlash tamoyillari, kuchli va zaif tomonlari atamalarga asoslangan qidiruvdan ko'ra ko'proq zich _embedding_ qidiruviga o'xshash bo'lsa-da. Atamalarga asoslangan va _embedding_'ga asoslangan tasniflash esa bu noto'g'ri guruhlashning oldini oladi.
+
+### Atamalarga asoslangan qidiruv
+
+So'rov berilganda, unga aloqador hujjatlarni topishning eng to'g'ridan-to'g'ri yo'li — bu kalit so'zlardan foydalanishdir. Ba'zilar bu yondashuvni **leksik qidiruv** (_lexical retrieval_) deb ham atashadi. Masalan, "SI muhandisligi" degan so'rov berilsa, model tarkibida "SI muhandisligi" iborasi qatnashgan barcha hujjatlarni qidirib topadi. Biroq, bu yondashuvda ikkita muammo mavjud:
+
+- Berilgan atama juda ko'p hujjatlarda uchrashi mumkin va modelingizda ularning barchasini kontekst sifatida qamrab olish uchun yetarli joy bo'lmasligi mumkin. Bu o'rinda qo'llaniladigan evristika — atama eng ko'p marta takrorlangan hujjatlarni tanlab olishdir. Bunda, atama hujjatda qancha ko'p uchrasa, ushbu hujjat shu atamaga shunchalik aloqador degan taxminga asoslaniladi. Atamaning hujjatda necha marta uchrashishi **atama chastotasi** (_term frequency — TF_) deb ataladi.
+
+- Prompt uzun bo'lishi va ko'plab atamalarni o'z ichiga olishi mumkin. Ularning ba'zilari boshqalariga qaraganda muhimroqdir. Masalan, "Easy-to-follow recipes for Vietnamese food to cook at home" (Uyda tayyorlash uchun oson vetnamcha taom retseptlari) prompti to'qqizta atamani o'z ichiga oladi: _easy-to-follow, recipes, for, vietnamese, food, to, cook, at, home_. Siz bu yerda _for_ (uchun) va _at_ (-da) kabi yordamchi so'zlarga emas, balki _vietnamese_ (vetnamcha) va _recipes_ (retseptlar) kabi axborotga boy atamalarga e'tibor qaratishni xohlaysiz. Demak, sizga muhim atamalarni aniqlab olish usuli kerak bo'ladi. <br/>
+Intuitiv qoida shundaki, atama qancha ko'p hujjatda uchrasa, u shunchalik kam axborot tashiydi. "For" va "at" kabi so'zlar aksariyat hujjatlarda uchrashi tabiiy, shuning uchun ular kamroq ma'lumot beradi. Demak, atamaning muhimligi u qatnashgan hujjatlar soniga teskari proporsionaldir. Ushbu metrika **hujjatning teskari chastotasi** (_inverse document frequency — IDF_) deb ataladi. Biror atama uchun _IDF_'ni hisoblashda ushbu atama qatnashgan barcha hujjatlar sanaladi, so'ngra hujjatlarning umumiy soni shu sanoqqa bo'linadi. Agar jami 10 ta hujjat bo'lib, ulardan 5 tasida berilgan atama mavjud bo'lsa, u holda bu atamaning _IDF_ qiymati $10 / 5 = 2$ ga teng bo'ladi. Atamaning _IDF_ qiymati qancha yuqori bo'lsa, u shunchalik muhim hisoblanadi.
+
+_TF-IDF_ — bu ikki metrikani: atama chastotasi (_TF_) va hujjatning teskari chastotasini (_IDF_) o'zida birlashtirgan algoritmdir. Matematik jihatdan, $D$ hujjati uchun $Q$ so'rovi bo'yicha _TF-IDF_ bali quyidagicha hisoblanadi:
+
+- Aytaylik, $t_1, t_2, ..., t_k$ — $Q$ so'rovidagi atamalar bo'lsin.
+- Berilgan $t$ atama uchun, ushbu atamaning $D$ hujjatidagi chastotasi $f(t, D)$ ga teng.
+- $N$ — hujjatlarning umumiy soni, $C(t)$ esa $t$ atamasini o'z ichiga olgan hujjatlar soni bo'lsin. $t$ atamasining _IDF_ qiymatini quyidagicha yozish mumkin: $$ IDF(t) = log\frac{N}{C(t)} $$
+- Soddalashtirilgan holda, $D$ hujjatining $Q$ so'roviga nisbatan _TF-IDF_ bali quyidagicha aniqlanadi: 
+
+$$(D, Q) = \sum_{i=1}^{q} IDF(t_i) \cdot f(t_i, D)$$
+
+Atamalarga asoslangan qidiruvning ikkita keng tarqalgan yechimi — bu Elasticsearch va `BM25`. [Lucene](https://github.com/apache/lucene) asosida qurilgan [Elasticsearch](https://github.com/elastic/elasticsearch) (Shay Banon, 2010) **teskari indeks** (_inverted index_) deb ataluvchi ma'lumotlar tuzilmasidan foydalanadi. Bu atamalarni ular qatnashgan hujjatlarga bog'laydigan lug'atdir. Ushbu lug'at atama bo'yicha hujjatlarni tezkor qidirib topish imkonini beradi. Indeks, shuningdek, atama chastotasi va hujjatlar sanog'i (bu atama nechta hujjatda borligi) kabi qo'shimcha ma'lumotlarni ham saqlashi mumkin, bu esa _TF-IDF_ ballarini hisoblashda asqotadi. 6-1-jadvalda teskari indeks tasvirlangan.
+
+| Atama | Hujjatlar soni | (Hujjat indeksi, atama chastotasi) ushbu atamani o'z ichiga olgan barcha hujjatlar uchun |
+| :--- | :--- | :--- |
+| banana | 2 | (10, 3), (5, 2) |
+| machine | 4 | (1, 5), (10, 1), (38, 9), (42, 5) |
+| learning | 3 | (1, 5), (38, 7), (42, 5) |
+| ... | ... | ... |
+
+<div className='text-center text-sm italic'>6-1-jadval. Teskari indeksning soddalashtirilgan misoli.</div>
+
+[`Okapi BM25`](https://en.wikipedia.org/wiki/Okapi_BM25) ("Best Matching" algoritmining 25-avlodi) 1980-yillarda Robertson va boshqalar tomonidan ishlab chiqilgan. Uning baholash tizimi _TF-IDF_'ning modifikatsiyasidir. Oddiy _TF-IDF_ bilan taqqoslaganda, `BM25` atama chastotasi ballarini hujjat uzunligiga qarab normallashtiradi. Uzunroq hujjatlar ma'lum bir atamani o'z ichiga olish ehtimoli yuqoriroq va tabiiy ravishda yuqori atama chastotasi qiymatlariga ega bo'ladi.[^6]
+
+`BM25` va uning variatsiyalari (`BM25+`, `BM25F`) sanoatda hamon keng qo'llaniladi va keyingi bo'limda muhokama qilinadigan _embedding_'ga asoslangan qidiruv kabi zamonaviy, murakkabroq algoritmlarni taqqoslash uchun kuchli tayanch nuqtasi (_baseline_) bo'lib xizmat qiladi.[^7]
+
+Men yuqorida batafsil to'xtalmagan jarayonlardan biri bu — **tokenizatsiya** (_tokenization_), ya'ni so'rovni alohida atamalarga ajratish jarayonidir. Eng oddiy usul — so'rovni so'zlarga bo'lish va har bir so'zga alohida atama sifatida qarashdir. Biroq, bu ko'p so'zli atamalarning alohida so'zlarga bo'linib ketishiga va asl ma'nosini yo'qotishiga olib kelishi mumkin. Masalan, "hot dog" atamasi "hot" (issiq) va "dog" (it) so'zlariga ajratilishi mumkin. Bunday holda, ularning hech biri asl atamaning ma'nosini saqlab qolmaydi. Bu muammoni yumshatishning bir yo'li — eng keng tarqalgan _n-gram_'larga atama sifatida qarashdir. Agar "hot dog" bigrammasi (ikki so'zli birikma) keng tarqalgan bo'lsa, unga yagona atama sifatida munosabatda bo'linadi.
+
+Qo'shimchasiga, siz barcha belgilarni kichik harflarga o'tkazishni, tinish belgilarini olib tashlashni va stop-so'zlarni ("the", "and", "is" va h.k.) chiqarib tashlashni xohlashingiz mumkin. Atamalarga asoslangan qidiruv yechimlari ko'pincha bularni avtomatik tarzda bajaradi. [NLTK](https://www.nltk.org/) (Natural Language Toolkit), [spaCy](https://github.com/explosion/spaCy) va [Stanford CoreNLP](https://github.com/stanfordnlp/CoreNLP) kabi klassik _NLP_ paketlari ham tokenizatsiya funksiyalarini taklif etadi.
+
+4-bobda ikki matn o'rtasidagi leksik o'xshashlikni ularning _n-gram_ kesishuviga asoslanib o'lchash muhokama qilingan edi. Hujjatlarni ularning so'rov bilan _n-gram_ kesishuvi darajasiga qarab qidirib topa olamizmi? Ha, albatta. Bu yondashuv so'rov va hujjatlar o'xshash uzunlikka ega bo'lganda eng yaxshi natija beradi. Agar hujjatlar so'rovdan ancha uzun bo'lsa, ularda so'rovdagi _n-gram_'larning uchrash ehtimoli ortadi, bu esa ko'plab hujjatlarning bir xil darajadagi yuqori o'xshashlik ballariga ega bo'lishiga olib keladi. Bu esa haqiqatdan ham aloqador hujjatlarni kamroq aloqadorlaridan ajratib olishni qiyinlashtiradi.
+
+### _Embedding_'ga asoslangan qidiruv
+
+Atamalarga asoslangan qidiruv aloqadorlikni semantik emas, balki leksik darajada hisoblaydi. 3-bobda ta'kidlanganidek, matnning tashqi ko'rinishi har doim ham uning ma'nosini to'liq aks ettirmaydi. Bu esa maqsadingizga aloqasi bo'lmagan hujjatlarning qaytarilishiga olib kelishi mumkin. Masalan, "transformer arxitekturasi" deb so'rov berish elektr qurilmasi yoki "Transformers" filmi haqidagi hujjatlarni qaytarishi mumkin. Aksincha, _embedding_'ga asoslangan qidiruvchilar hujjatlarni ularning ma'nosi so'rovga qanchalik yaqinligiga qarab darajalashni maqsad qiladi. Bu yondashuv **semantik qidiruv** deb ham ataladi.
+
+_Embedding_'ga asoslangan qidiruvda indekslash jarayoni qo'shimcha vazifaga ega: asl ma'lumot bo'laklarini _embedding_'larga aylantirish. Yaratilgan _embedding_'lar saqlanadigan baza **vektorli ma'lumotlar bazasi** deb ataladi. So'rov yuborish jarayoni esa, 6-3-rasmda ko'rsatilganidek, ikki bosqichdan iborat:
+
+1.  **_Embedding_ modeli:** so'rovni indekslash paytida ishlatilgan ayni o'sha _embedding_ modeli yordamida _embedding_'ga aylantiradi.
+2.  **Qidiruvchi:** _embedding_'lari so'rov _embedding_'iga eng yaqin bo'lgan $k$ ta ma'lumot bo'lagini olib keladi (bu yaqinlik qidiruvchi tomonidan aniqlanadi). Olib kelinadigan ma'lumot bo'laklari soni — $k$, ishlatilish senariysi, generativ model va so'rovga bog'liq.
+
+![6-3-rasm. Embedding'ga asoslangan yoki semantik qidiruvchi qanday ishlashining yuqori darajadagi ko'rinishi.](/ai-engineering/6-chapter/6.3-figure.png)
+<div className='text-center text-sm italic'>6-3-rasm. Embedding'ga asoslangan yoki semantik qidiruvchi qanday ishlashining yuqori darajadagi ko'rinishi.</div>
+
+Bu yerda ko'rsatilgan _embedding_'ga asoslangan qidiruv jarayoni soddalashtirilgan. Real hayotdagi semantik qidiruv tizimlari barcha topilgan nomzodlarni qayta darajalash uchun **qayta darajalovchi** (_reranker_) va kechikishni kamaytirish uchun keshlar kabi boshqa tarkibiy qismlarni ham o'z ichiga olishi mumkin.[^8]
+
+_Embedding_'ga asoslangan qidiruv bilan biz yana 3-bobda muhokama qilingan _embedding_'larga duch kelamiz. Eslatib o'tamiz, _embedding_ — bu odatda asl ma'lumotlarning muhim xususiyatlarini saqlab qolishga qaratilgan vektor. Agar _embedding_ modeli yomon bo'lsa, _embedding_'ga asoslangan qidiruvchi ishlamaydi.
+
+_Embedding_'ga asoslangan qidiruv, shuningdek, yangi tarkibiy qismni — vektorli ma'lumotlar bazalarini ham joriy etadi. Vektorli ma'lumotlar bazasi vektorlarni saqlaydi. Biroq, saqlash — bu vektorli bazaning eng oson qismi. Qiyin qismi — bu **vektorli qidiruv**. So'rov _embedding_'i berilganda, vektorli baza o'zidagi so'rovga yaqin vektorlarni topish va qaytarish uchun javobgardir. Vektorli qidiruv tez va samarali bo'lishi uchun vektorlar maxsus usulda indekslanishi va saqlanishi kerak.
+
+Generativ _SI_ ilovalari tayanadigan boshqa ko'plab mexanizmlar singari, vektorli qidiruv ham faqat generativ _SI_'ga xos emas. Vektorli qidiruv _embedding_'lardan foydalanadigan har qanday ilovada: qidiruv, tavsiya tizimlari, ma'lumotlarni tashkil etish, axborot qidiruvi, klasterlash, firibgarlikni aniqlash va boshqalarda keng tarqalgan.
+
+Vektorli qidiruv odatda **eng yaqin qo'shnini qidirish** muammosi sifatida qaraladi. Masalan, so'rov berilganda, $k$ ta eng yaqin vektorni topish talab etiladi. Buning eng sodda yechimi — **$k$-eng yaqin qo'shnilar** ($k$-NN) bo'lib, u quyidagicha ishlaydi:
+
+1.  Kosinus o'xshashligi kabi metrikalar yordamida so'rov _embedding_'i va bazadagi barcha vektorlar o'rtasidagi o'xshashlik ballarini hisoblash.
+2.  Barcha vektorlarni o'xshashlik ballari bo'yicha darajalash.
+3.  Eng yuqori o'xshashlik balliga ega $k$ ta vektorni qaytarish.
+
+Ushbu sodda yechim natijalarning aniq bo'lishini ta'minlaydi, ammo u hisoblash jihatidan og'ir va sekin ishlaydi. Undan faqat kichik ma'lumotlar to'plamlari uchun foydalanish maqsadga muvofiq.
+
+Katta to'plamlar uchun vektorli qidiruv odatda **taxminiy eng yaqin qo'shni** (_ANN_) algoritmi yordamida amalga oshiriladi. Vektorli qidiruvning ahamiyati yuqoriligi sababli, u uchun ko'plab algoritm va kutubxonalar ishlab chiqilgan. Mashhur vektorli qidiruv kutubxonalariga `FAISS` (Facebook AI Similarity Search) ([Johnson va boshqalar, 2017](https://arxiv.org/abs/1702.08734)), Google'ning `ScaNN` (Scalable Nearest Neighbors) ([Sun va boshqalar, 2020](https://research.google/blog/announcing-scann-efficient-vector-similarity-search/)), [Spotify'ning `Annoy`](https://github.com/spotify/annoy) (Bernhardsson, 2013) va [`Hnswlib`](https://github.com/nmslib/hnswlib) ([Hierarchical Navigable Small World](https://github.com/nmslib/hnswlib)) (Malkov va Yashunin, 2016) kiradi.
+
+Aksariyat ilova dasturchilari vektorli qidiruvni o'zlari noldan amalga oshirmaydilar, shuning uchun men turli yondashuvlar haqida faqat qisqacha umumiy ma'lumot berib o'taman. Bu ma'lumotlar yechimlarni baholash jarayonida sizga asqotishi mumkin.
+
+Umuman olganda, vektorli ma'lumotlar bazalari vektorlarni savatchalarga (_buckets_), daraxtlarga yoki graflarga ajratadi. Vektorli qidiruv algoritmlari o'xshash vektorlarning bir-biriga yaqin joylashish ehtimolini oshirish uchun qo'llaydigan evristikalariga ko'ra farqlanadi. Vektorlar, shuningdek, kvantlanishi (aniqligi kamaytirilishi) yoki siyraklashtirilishi mumkin. Bundan ko'zlangan maqsad shuki, kvantlangan va siyrak vektorlar bilan ishlash hisoblash jihatidan kamroq resurs talab qiladi. Vektorli qidiruvni chuqurroq o'rganishni istaganlar uchun Zilliz kompaniyasi bu mavzuda ajoyib maqolalar seriyasini taqdim etgan. Quyida ba'zi muhim vektorli qidiruv algoritmlari keltirilgan:
+
+**`LSH` (Locality-sensitive hashing — Joylashuvga sezgir xeshlashtirish) (Indyk va Motwani, 1999)**
+Bu nafaqat vektorlar bilan ishlaydigan kuchli va ko'p qirrali algoritmdir. U o'xshashlik qidiruvini tezlashtirish uchun o'xshash vektorlarni bitta savatchaga xeshlashtirishni o'z ichiga oladi, bunda samaradorlik evaziga aniqlikdan biroz voz kechiladi. U `FAISS` va `Annoy` kutubxonalarida joriy etilgan.
+
+**`HNSW` (Hierarchical Navigable Small World — Ierarxik navigatsiyalanuvchi kichik dunyo) (Malkov va Yashunin, 2016)**
+`HNSW` ko'p qavatli graf tuzadi, unda tugunlar vektorlarni, qirralar esa o'xshash vektorlarni bog'laydi. Bu graf qirralari bo'ylab harakatlanish orqali eng yaqin qo'shnilarni qidirish imkonini beradi. Mualliflar tomonidan qilingan tatbiq ochiq kodli bo'lib, u shuningdek `FAISS` va `Milvus`'da ham mavjud.
+
+**`Product Quantization` (Ko'paytmani kvantlash) (Jégou va boshqalar, 2011)**
+Bu usul har bir vektorni bir nechta kichik vektorlarga (subvektorlarga) ajratish orqali ancha sodda, quyi o'lchamli ko'rinishga keltirish asosida ishlaydi. Masofalar keyinchalik shu quyi o'lchamli ko'rinishlar yordamida hisoblanadi, bu esa ishlashni ancha tezlashtiradi. `Product Quantization` `FAISS`ning asosiy tarkibiy qismi hisoblanadi va deyarli barcha mashhur vektorli qidiruv kutubxonalari tomonidan qo'llab-quvvatlanadi.
+
+**`IVF` (Inverted file index — Teskari fayl indeksi) (Sivic va Zisserman, 2003)**
+`IVF` o'xshash vektorlarni bitta klasterga yig'ish uchun `K-means` klasterlashdan foydalanadi. Bazadagi vektorlar soniga qarab, har bir klasterda o'rtacha 100 dan 10 000 gacha vektor bo'lishi belgilanadi. So'rov paytida `IVF` so'rov _embedding_'iga eng yaqin klaster markazlarini (centroid) topadi va shu klasterlardagi vektorlar nomzod qo'shnilarga aylanadi. `Product Quantization` bilan birgalikda `IVF` `FAISS`ning o'zagini tashkil qiladi.
+
+**`Annoy` (Approximate Nearest Neighbors Oh Yeah) (Bernhardsson, 2013)**
+`Annoy` — daraxtga asoslangan yondashuv. U bir nechta binar daraxtlarni quradi, har bir daraxt tasodifiy mezonlar (masalan, tasodifiy chiziq tortish va vektorlarni shu chiziq bo'yicha ikki tarmoqqa ajratish) asosida vektorlarni klasterlarga bo'ladi. Qidiruv paytida nomzod qo'shnilarni yig'ish uchun shu daraxtlar bo'ylab harakatlaniladi. Spotify o'z tatbiqini ochiq manbaga chiqargan.
+
+Bulardan tashqari Microsoft'ning `SPTAG` (Space Partition Tree And Graph) va `FLANN` (Fast Library for Approximate Nearest Neighbors) kabi boshqa algoritmlar ham mavjud.
+
+Garchi vektorli ma'lumotlar bazalari _RAG_'ning yuksalishi bilan alohida toifa sifatida paydo bo'lgan bo'lsa-da, vektorlarni saqlay oladigan har qanday bazani vektorli baza deyish mumkin. Ko'plab an'anaviy ma'lumotlar bazalari vektor saqlash va vektorli qidiruv imkoniyatlarini o'zlariga qo'shgan yoki kelajakda qo'shishni rejalashtirmoqda.
