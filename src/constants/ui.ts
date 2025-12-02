@@ -20,6 +20,7 @@ import {
   MapPin,
   Globe2,
   Server,
+  DollarSign,
 } from 'lucide-react'
 
 export interface Tool {
@@ -92,6 +93,14 @@ export const TOOLS_LIST: Tool[] = [
     href: '/tools/color-converter',
     icon: Palette,
     color: 'bg-pink-500/20',
+    category: 'converters',
+    audience: 'general',
+  },
+  {
+    tKey: 'currencyConverter',
+    href: '/tools/currency-converter',
+    icon: DollarSign,
+    color: 'bg-emerald-500/20',
     category: 'converters',
     audience: 'general',
   },

@@ -39,6 +39,8 @@ import cameraRecorderUz from './tools/camera-recorder/uz.json'
 import cameraRecorderEn from './tools/camera-recorder/en.json'
 import microphoneTestUz from './tools/microphone-test/uz.json'
 import microphoneTestEn from './tools/microphone-test/en.json'
+import currencyConverterUz from './tools/currency-converter/uz.json'
+import currencyConverterEn from './tools/currency-converter/en.json'
 
 // Merge all translations
 export const uz = {
@@ -61,6 +63,7 @@ export const uz = {
   ...ipInfoUz,
   ...cameraRecorderUz,
   ...microphoneTestUz,
+  ...currencyConverterUz,
 }
 
 export const en = {
@@ -83,6 +86,7 @@ export const en = {
   ...ipInfoEn,
   ...cameraRecorderEn,
   ...microphoneTestEn,
+  ...currencyConverterEn,
 }
 
 // Export default for Next.js i18n

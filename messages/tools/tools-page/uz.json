@@ -43,6 +43,10 @@
       "title": "Rang O'giruvchi",
       "description": "HEX, RGB, HSL formatlar orasida rang konvertatsiyasi"
     },
+    "currencyConverter": {
+      "title": "Valyuta Konverteri",
+      "description": "75+ valyuta, CBU rasmiy kurslar, tarixiy grafiklar"
+    },
     "hashGenerator": { "title": "Hash Yaratuvchi", "description": "MD5, SHA1, SHA256, SHA512 hash yaratish vositasi" },
     "uuidGenerator": { "title": "UUID Yaratuvchi", "description": "Noyob identifikatorlar (UUID) yaratish vositasi" },
     "qrGenerator": { "title": "QR Kod Yaratuvchi", "description": "Matn va URL lar uchun QR kodlar yaratish" },

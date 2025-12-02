@@ -40,6 +40,10 @@
     "urlEncoder": { "title": "URL Encoder/Decoder", "description": "A tool to encode and decode URLs and text." },
     "jwtDecoder": { "title": "JWT Decoder", "description": "Decode and analyze JSON Web Tokens (JWT)." },
     "colorConverter": { "title": "Color Converter", "description": "Convert colors between HEX, RGB, HSL formats." },
+    "currencyConverter": {
+      "title": "Currency Converter",
+      "description": "75+ currencies, official CBU rates, historical charts"
+    },
     "hashGenerator": {
       "title": "Hash Generator",
       "description": "A tool to generate MD5, SHA1, SHA256, SHA512 hashes."
