@@ -226,3 +226,81 @@ Xulosa qilib aytganda, _RAG_ tizimining sifati ham komponentma-komponent, ham bo
 1. Qidiruv sifatini baholash.
 2. Yakuniy _RAG_ natijalarini baholash.
 3. _Embedding_'larni baholash (_embedding_'ga asoslangan qidiruv uchun).
+
+### Qidiruv algoritmlarini birlashtirish
+
+Turli qidiruv algoritmlarining o'ziga xos ustunliklarini inobatga olgan holda, real loyihalardagi qidiruv tizimlari odatda bir nechta yondashuvlarni birlashtiradi. Atamalarga asoslangan qidiruv va _embedding_'ga asoslangan qidiruvni birlashtirish **gibrid qidiruv** deb ataladi.
+
+Turli algoritmlar ketma-ketlikda qo'llanilishi mumkin. Avvaliga, atamalarga asoslangan tizim kabi arzon va kamroq aniqlikdagi qidiruvchi nomzodlarni yig'ib keladi. So'ngra, $k$-eng yaqin qo'shnilar kabi aniqroq, ammo qimmatroq mexanizm ushbu nomzodlar orasidan eng yaxshilarini topadi. Bu ikkinchi bosqich **qayta darajalash** (_reranking_) deb ham ataladi.
+
+Masalan, "transformer" atamasi berilganda, siz ular elektr qurilmasi, neyron arxitektura yoki kino haqida ekanligidan qat'i nazar, tarkibida "transformer" so'zi qatnashgan barcha hujjatlarni chaqirib olishingiz mumkin. Keyin esa, ushbu hujjatlar orasidan aynan sizning "transformer" so'rovingizga aloqador bo'lganlarini topish uchun vektorli qidiruvdan foydalanasiz. Yana bir misol sifatida "X ga qilingan eng ko'p savdo uchun kim javobgar?" degan so'rovni olaylik. Avvaliga siz X kalit so'zidan foydalanib, X bilan bog'liq barcha hujjatlarni topishingiz mumkin. So'ngra, "Eng ko'p savdo uchun kim javobgar?" mazmuniga aloqador kontekstni qidirib topish uchun vektorli qidiruvni ishga solasiz.
+
+Turli algoritmlar parallel ravishda, **ansambl** sifatida ham ishlatilishi mumkin. Eslatib o'tamiz, qidiruvchi hujjatlarni so'rovga aloqadorlik ballari bo'yicha darajalash orqali ishlaydi. Siz bir vaqtning o'zida nomzodlarni olish uchun bir nechta qidiruvchilardan foydalanishingiz, so'ngra yakuniy darajalashni hosil qilish uchun ushbu turli natijalarni birlashtirishingiz mumkin.
+
+Turli darajalashlarni birlashtirish algoritmi [**teskari darajalarni birlashtirish**](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) (_RRF_ — _Reciprocal Rank Fusion_) deb ataladi (Cormack va boshqalar, 2009). U har bir hujjatga qidiruvchi tomonidan belgilangan o'rniga (darajasiga) qarab ball beradi. Mantiqan olganda, agar u birinchi o'rinda tursa, uning bali $1/1 = 1$ bo'ladi. Agar ikkinchi o'rinda tursa, bali $1/2 = 0.5$ bo'ladi. U qancha yuqori o'rinda tursa, bali shuncha yuqori bo'ladi.
+
+Hujjatning yakuniy bali uning barcha qidiruvchilardagi ballari yig'indisiga teng. Agar hujjat bir qidiruvchi tomonidan birinchi, boshqasi tomonidan ikkinchi o'ringa qo'yilgan bo'lsa, uning bali $1 + 0.5 = 1.5$ bo'ladi. Bu misol _RRF_'ning o'ta soddalashtirilgan ko'rinishidir, ammo u asosiy mohiyatni ochib beradi. $D$ hujjati uchun haqiqiy formula murakkabroq va quyidagicha ko'rinishga ega:
+
+$$ score(D) = \sum_{i=1}^{n} \frac{1}{k + r_i(D)} $$
+
+Bu yerda:
+- $n$ — darajalangan ro'yxatlar soni; har bir ro'yxat bitta qidiruvchi tomonidan yaratiladi.
+- $r_i(D)$ — $i$-qidiruvchi bo'yicha hujjatning o'rni (darajasi).
+- $k$ — nolga bo'lishning oldini olish va quyi o'rinlardagi hujjatlarning ta'sirini nazorat qilish uchun o'zgarmas son (konstanta). $k$ uchun tipik qiymat — 60.
+
+## Qidiruvni optimallashtirish
+
+Vazifaga qarab, ma'lum taktikalar tegishli hujjatlarning qidirib topilish imkoniyatini oshirishi mumkin. Bu yerda muhokama qilinadigan to'rtta taktika: **bo'laklash strategiyasi** (_chunking strategy_), **qayta darajalash** (_reranking_), **so'rovni qayta yozish** (_query rewriting_) va **kontekstual qidiruv** (_contextual retrieval_).
+
+### Bo'laklash strategiyasi
+
+Ma'lumotlaringiz qanday indekslanishi ularni keyinchalik qanday qidirib olishni rejalashtirayotganingizga bog'liq. O'tgan bo'limda turli xil qidiruv algoritmlari va ularga mos indekslash strategiyalari yoritildi. U yerdagi muhokama hujjatlar allaqachon boshqarish oson bo'lgan bo'laklarga ajratilgan degan farazga asoslangan edi. Ushbu bo'limda men turli xil **bo'laklash** (_chunking_) strategiyalarini ko'rib chiqaman. Bu juda muhim masala, chunki siz qo'llaydigan bo'laklash strategiyasi qidiruv tizimingiz samaradorligiga sezilarli ta'sir ko'rsatishi mumkin.
+
+Eng oddiy strategiya — hujjatlarni ma'lum bir birlik asosida teng uzunlikdagi bo'laklarga ajratishdir. Keng tarqalgan birliklar — bu belgilar, so'zlar, gaplar va paragraflardir. Masalan, siz har bir hujjatni 2,048 belgi yoki 512 so'zdan iborat bo'laklarga bo'lishingiz mumkin. Shuningdek, har bir hujjatni shunday bo'lishingiz mumkinki, har bir bo'lak belgilangan sondagi gaplarni (masalan, 20 ta gap) yoki paragraflarni (masalan, har bir paragraf o'z-o'zidan bitta bo'lak) o'z ichiga olsin.
+
+Hujjatlarni, har bir bo'lak sizning maksimal bo'lak o'lchamingizga sig'maguncha, tobora kichikroq birliklardan foydalangan holda **rekursiv** tarzda ham bo'lishingiz mumkin. Masalan, hujjatni bo'limlarga ajratishdan boshlaysiz. Agar bo'lim juda uzun bo'lsa, uni paragraflarga bo'lasiz. Agar paragraf hamon juda uzun bo'lsa, uni gaplarga bo'lasiz. Bu o'zaro bog'liq matnlarning tasodifan uzilib qolish ehtimolini kamaytiradi.
+
+Maxsus turdagi hujjatlar ijodiy bo'laklash strategiyalarini talab qilishi mumkin. Masalan, turli dasturlash tillari uchun maxsus ishlab chiqilgan ajratgichlar ([_splitters_](https://github.com/grantjenks/py-tree-sitter-languages#license)) mavjud. Savol-javob hujjatlari savol va javob juftligi bo'yicha bo'linishi mumkin, bunda har bir juftlik bitta bo'lakni tashkil qiladi. Xitoy tili matnlari ingliz tili matnlaridan farqli ravishda bo'laklanishi kerak bo'lishi mumkin.
+
+Agar hujjat bir-biri bilan kesishmaydigan (_without overlap_) bo'laklarga ajratilsa, bo'laklar muhim kontekstning o'rtasidan uzilib qolishi, bu esa muhim ma'lumotlarning yo'qolishiga olib kelishi mumkin. "I left my wife a note" (Men xotinimga xat qoldirdim) matnini ko'rib chiqaylik. Agar u "I left my wife" (Men xotinimni tashlab ketdim) va "a note" (xat) deb bo'linsa, bu ikki bo'lakning hech biri asl matnning asosiy mazmunini yetkazib bermaydi. **Ustma-ust tushish** (_overlapping_) muhim chegara ma'lumotlarining kamida bitta bo'lakka kiritilishini ta'minlaydi. Agar bo'lak o'lchamini 2,048 belgi qilib belgilasangiz, ustma-ust tushish o'lchamini ehtimol 20 belgi qilib olishingiz mumkin.
+
+Bo'lak o'lchami generativ modelning maksimal kontekst uzunligidan oshmasligi kerak. _Embedding_'ga asoslangan yondashuv uchun bo'lak o'lchami _embedding_ modelining kontekst limitidan ham oshmasligi lozim.
+
+Hujjatlarni generativ modelning tokenizatori tomonidan aniqlanadigan **tokenlar** yordamida ham bo'laklashingiz mumkin. Aytaylik, siz generativ model sifatida `Llama 3`'dan foydalanmoqchisiz. Unda siz avval hujjatlarni `Llama 3`'ning tokenizatori yordamida tokenlarga ajratasiz. So'ngra tokenlarni chegara sifatida ishlatib, hujjatlarni bo'laklarga bo'lishingiz mumkin. Tokenlar bo'yicha bo'laklash quyi oqim modellari bilan ishlashni osonlashtiradi. Biroq, bu yondashuvning kamchiligi shundaki, agar siz boshqa tokenizatorga ega bo'lgan boshqa generativ modelga o'tsangiz, ma'lumotlaringizni qayta indekslashingizga to'g'ri keladi.
+
+Qaysi strategiyani tanlashingizdan qat'i nazar, bo'lak o'lchamlari muhim ahamiyatga ega. Kichikroq bo'lak o'lchami xilma-xil ma'lumotlarni olish imkonini beradi. Kichikroq bo'laklar model kontekstiga ko'proq sondagi bo'laklarni sig'dira olishingizni anglatadi. Agar bo'lak o'lchamini ikki baravar kichraytirsangiz, ikki baravar ko'p bo'lakni sig'dira olasiz. Ko'proq bo'laklar modelni kengroq qamrovli ma'lumotlar bilan ta'minlashi mumkin, bu esa modelga yaxshiroq javob yaratish imkonini beradi.
+
+Biroq, kichik bo'lak o'lchamlari muhim ma'lumotlarning yo'qolishiga sabab bo'lishi mumkin. Tasavvur qiling, hujjatda $X$ mavzusi haqida muhim ma'lumotlar bor, lekin $X$ faqat hujjatning birinchi yarmida tilga olingan. Agar siz ushbu hujjatni ikki bo'lakka bo'lsangiz, ikkinchi yarmi qidirib topilganda $X$ haqidagi kontekst tushib qolishi va model uning ma'lumotlaridan foydalana olmasligi mumkin.
+
+Kichik bo'lak o'lchamlari hisoblash yuklamasini (_computational overhead_) ham oshirishi mumkin. Bu, ayniqsa, _embedding_'ga asoslangan qidiruv uchun jiddiy muammodir. Bo'lak o'lchamini ikki baravar kamaytirish — indekslash uchun ikki baravar ko'p bo'lak va yaratish hamda saqlash uchun ikki baravar ko'p _embedding_ vektorlari deganidir. Vektorli qidiruv fazoingiz ikki baravar kattalashadi, bu esa so'rov tezligini pasaytirishi mumkin.
+
+Universal eng yaxshi bo'lak o'lchami yoki ustma-ust tushish o'lchami mavjud emas. Siz o'zingiz uchun nima eng yaxshi ishlashini tajriba qilib topishingiz kerak.
+
+### Qayta darajalash
+
+Qidiruvchi tomonidan taqdim etilgan dastlabki hujjatlar tartibini aniqlikni oshirish maqsadida **qayta darajalash** (_reranking_) mumkin. Qayta darajalash, ayniqsa, model kontekstiga sig'dirish yoki kiruvchi tokenlar sonini qisqartirish maqsadida qidirib topilgan hujjatlar sonini kamaytirish zarur bo'lganda juda qo'l keladi.
+
+Qayta darajalashning keng tarqalgan andozalaridan biri yuqorida keltirilgan ["Qidiruv algoritmlarini birlashtirish"](/books/ai-engineering/6-rag-and-agents/rag#qidiruv-algoritmlarini-birlashtirish) mavzusida  muhokama qilingan edi. Bunda arzon, ammo aniqligi pastroq qidiruvchi dastlabki nomzodlarni yig'ib keladi, so'ngra aniqroq, lekin qimmatroq mexanizm ushbu nomzodlarni qayta darajalab chiqadi.
+
+Hujjatlar vaqt omiliga asoslanib, yangiroq ma'lumotlarga yuqori og'irlik berish orqali ham qayta darajalanishi mumkin. Bu yangiliklar agregatsiyasi, elektron pochta orqali muloqot (masalan, xatlaringiz bo'yicha savollarga javob beradigan chatbot) yoki fond bozori tahlili kabi vaqtga sezgir ilovalar uchun foydalidir.
+
+Kontekstni qayta darajalash an'anaviy qidiruvdagi qayta darajalashdan shu bilan farq qiladiki, unda elementlarning aniq joylashuvi unchalik hal qiluvchi ahamiyatga ega emas. Qidiruv tizimlarida natijaning o'rni (masalan, birinchi yoki beshinchi bo'lib chiqishi) o'ta muhimdir. Kontekstni qayta darajalashda ham hujjatlar tartibi ahamiyatga ega, chunki bu modelning ularni qayta ishlash sifatiga ta'sir ko'rsatadi. ["Kontekst uzunligi va kontekst samaradorligi"](/books/ai-engineering/5-prompt-engineering/introduction-to-prompting#kontekst-hajmi-va-undan-foydalanish-samaradorligi) mavzusida muhokama qilinganidek, modellar kontekstning boshi va oxirida joylashgan hujjatlarni yaxshiroq tushunishi mumkin. Biroq, modomiki hujjat kontekst ichiga kiritilgan ekan, uning tartibi qidiruv tizimlaridagi darajalashga nisbatan kamroq ahamiyat kasb etadi.
+
+### So'rovni qayta yozish
+
+So'rovni qayta yozish (_query rewriting_) — **so'rovni qayta shakllantirish** (_query reformulation_), **so'rovni normallashtirish** (_query normalization_) va ba'zan **so'rovni kengaytirish** (_query expansion_) deb ham ataladi. Quyidagi suhbatni ko'rib chiqaylik:
+
+> **Foydalanuvchi:** John Doe bizdan oxirgi marta qachon biror narsa sotib olgan edi?
+>
+> **_SI_:** John bizdan oxirgi marta ikki hafta oldin, 2030-yil 3-yanvarda "Fruity Fedora" shlyapasini sotib olgan.
+>
+> **Foydalanuvchi:** Emily Doe-chi?
+
+Oxirgi savol, "Emily Doe-chi?", kontekstsiz mavhumdir. Agar siz ushbu so'rovdan hujjatlarni qidirishda so'zma-so'z foydalansangiz, katta ehtimol bilan aloqasi bo'lmagan natijalarni olasiz. Siz ushbu so'rovni foydalanuvchi aslida nimani so'rayotganini aks ettiradigan qilib qayta yozishingiz kerak. Yangi so'rov o'z-o'zidan ma'noga ega bo'lishi lozim. Ushbu holatda, so'rov "Emily Doe bizdan oxirgi marta qachon biror narsa sotib olgan edi?" deb qayta yozilishi kerak.
+
+Men so'rovni qayta yozishni 253-betdagi "_RAG_" bo'limiga kiritgan bo'lsam-da, bu usul faqat _RAG_'ga xos emas. An'anaviy qidiruv tizimlarida so'rovni qayta yozish ko'pincha evristikalar yordamida amalga oshiriladi. _SI_ ilovalarida so'rovni qayta yozish boshqa _SI_ modellari yordamida, "Quyidagi suhbatni inobatga olgan holda, foydalanuvchining oxirgi kiruvchi ma'lumotini u aslida nimani so'rayotganini aks ettiradigan qilib qayta yozing" kabi prompt orqali ham bajarilishi mumkin. 6-4-rasmda ChatGPT ushbu prompt yordamida so'rovni qanday qayta yozgani ko'rsatilgan.
+
+![6-4-rasm. So'rovlarni qayta yozish uchun boshqa generativ modellardan foydalanishingiz mumkin.](/ai-engineering/6-chapter/6.4-figure.png)
+<div className='text-center text-sm italic'>6-4-rasm. So'rovlarni qayta yozish uchun boshqa generativ modellardan foydalanishingiz mumkin.</div>
+
+So'rovni qayta yozish, ayniqsa, **shaxsni aniqlashtirish** (_identity resolution_) yoki boshqa bilimlarni jalb qilish kerak bo'lganda murakkablashishi mumkin. Masalan, agar foydalanuvchi "Uning xotini-chi?" deb so'rasa, avval uning xotini kimligini bilish uchun ma'lumotlar bazangizga murojaat qilishingiz kerak bo'ladi. Agar sizda bu ma'lumot bo'lmasa, qayta yozuvchi model noto'g'ri javobga yetaklovchi biror ismni gallyutsinatsiya qilish o'rniga, ushbu so'rovni yechib bo'lmasligini tan olishi kerak.
