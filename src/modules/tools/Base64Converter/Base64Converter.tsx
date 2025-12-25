@@ -11,7 +11,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { InfoSection, ControlPanel } from './components'
 
 // Utils & Hooks
-import { useBase64Converter } from '@/hooks/tools/useBase64Converter'
+import { useBase64Converter } from './hooks/useBase64Converter'
 
 const Base64Converter = () => {
   const t = useTranslations('Base64ConverterPage')

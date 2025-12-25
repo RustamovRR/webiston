@@ -13,7 +13,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { InfoSection, ControlPanel } from './components'
 
 // Utils & Hooks
-import { useJsonFormatter } from '@/hooks/tools/useJsonFormatter'
+import { useJsonFormatter } from './hooks/useJsonFormatter'
 
 const JsonFormatter = () => {
   const t = useTranslations('JsonFormatterPage')

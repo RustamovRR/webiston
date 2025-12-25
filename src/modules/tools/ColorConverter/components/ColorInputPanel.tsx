@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import { TerminalInput, type TerminalInputAction } from '@/components/shared/TerminalInput'
-import type { ColorFormats } from '@/hooks/tools/useColorConverter'
+import type { ColorFormats } from '../hooks/useColorConverter'
 
 interface ColorInputPanelProps {
   inputColor: string

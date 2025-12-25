@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
 import { cn } from '@/lib'
-import { QrSize, QrErrorLevel, QrPreset } from '@/hooks/tools/useQrGenerator'
+import { QrSize, QrErrorLevel, QrPreset } from '../hooks/useQrGenerator'
 
 interface ControlPanelProps {
   qrSize: QrSize
@@ -151,7 +151,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                   'flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors',
                   errorLevel === level.value
                     ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
-                    : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                    : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
                 )}
               >
                 <input
@@ -189,14 +189,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       'flex items-center justify-between rounded-lg border p-3 transition-colors',
                       isActive
                         ? 'border-blue-500 bg-blue-500/10 dark:border-blue-400 dark:bg-blue-400/10'
-                        : 'border-zinc-300 bg-zinc-100/30 hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50',
+                        : 'border-zinc-300 bg-zinc-100/30 hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50'
                     )}
                   >
                     <div className="min-w-0 flex-1">
                       <div
                         className={cn(
                           'text-sm font-medium',
-                          isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-800 dark:text-zinc-200',
+                          isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-800 dark:text-zinc-200'
                         )}
                       >
                         {preset.label}
@@ -204,7 +204,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       <div
                         className={cn(
                           'text-xs',
-                          isActive ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-400',
+                          isActive ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-400'
                         )}
                       >
                         {preset.description}
@@ -216,7 +216,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       size="sm"
                       className={cn(
                         'ml-2',
-                        isActive && 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600',
+                        isActive && 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
                       )}
                     >
                       {isActive ? t('selected') : t('load')}

@@ -4,7 +4,7 @@ import React from 'react'
 import { useTranslations } from 'next-intl'
 import { ToolHeader } from '@/components/shared'
 import { ControlPanel, OutputPanel, CurrentIpPanel, SampleIpsPanel, InfoSection } from './components'
-import { useIPInfo } from '@/hooks/tools/useIPInfo'
+import { useIPInfo } from './hooks/useIPInfo'
 
 export default function IpInfo() {
   const t = useTranslations('IpInfoPage.ToolHeader')

@@ -93,7 +93,7 @@ export const parseColorInput = (input: string): { r: number; g: number; b: numbe
 
   // Lab format: lab(l% a b)
   const labMatch = cleanInput.match(
-    /^lab\s*\(\s*([0-9]*\.?[0-9]+)%?\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/,
+    /^lab\s*\(\s*([0-9]*\.?[0-9]+)%?\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/
   )
   if (labMatch) {
     const l = parseFloat(labMatch[1])
@@ -116,7 +116,7 @@ export const parseColorInput = (input: string): { r: number; g: number; b: numbe
 
   // OKLab format: oklab(l a b)
   const oklabMatch = cleanInput.match(
-    /^oklab\s*\(\s*([0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/,
+    /^oklab\s*\(\s*([0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s+([+-]?[0-9]*\.?[0-9]+)\s*\)$/
   )
   if (oklabMatch) {
     const l = parseFloat(oklabMatch[1])

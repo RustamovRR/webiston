@@ -23,7 +23,7 @@ const ButtonLink: FC<IProps> = ({ children, variant = 'primary', className, isNe
       'bg-transparent text-zinc-900 border border-zinc-300 hover:bg-zinc-100 hover:border-zinc-400 dark:text-white dark:border-white/20 dark:hover:bg-white/10 dark:hover:border-white/30':
         variant === 'outline',
     },
-    className,
+    className
   )
 
   return isNextLink ? (

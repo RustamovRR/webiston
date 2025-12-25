@@ -114,7 +114,7 @@ export default function TableOfContents({ slug }: IProps) {
               'group relative overflow-y-auto rounded-md',
               heading.level === 2 && 'font-semibold',
               heading.level === 3 && 'ml-3',
-              heading.level === 4 && 'ml-6',
+              heading.level === 4 && 'ml-6'
             )}
           >
             <Link
@@ -122,7 +122,7 @@ export default function TableOfContents({ slug }: IProps) {
               className={cn(
                 'block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200',
                 'text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white',
-                activeId === heading.id && 'font-semibold text-black dark:text-white',
+                activeId === heading.id && 'font-semibold text-black dark:text-white'
               )}
               style={{
                 wordBreak: 'break-word',

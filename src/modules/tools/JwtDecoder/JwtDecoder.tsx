@@ -1,6 +1,6 @@
 'use client'
 
-import { useJwtDecoder } from '@/hooks/tools/useJwtDecoder'
+import { useJwtDecoder } from './hooks/useJwtDecoder'
 import { useTranslations } from 'next-intl'
 import { ToolHeader } from '@/components/shared/ToolHeader'
 import {

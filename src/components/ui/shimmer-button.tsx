@@ -28,7 +28,7 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
     const getVariantStyles = () => {
       switch (variant) {
@@ -105,7 +105,7 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
           // Interactive states
           'transform-gpu hover:scale-[1.02] active:translate-y-px active:scale-[0.98]',
 
-          className,
+          className
         )}
         style={
           {
@@ -115,7 +115,7 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
             '--speed': shimmerDuration,
             '--cut': shimmerSize,
             '--bg': actualBackground,
-            ...((props as any).style || {}),
+            ...(props as any).style,
           } as CSSProperties
         }
         ref={ref}
@@ -136,7 +136,7 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
         <div className="pointer-events-none absolute inset-0 rounded-lg shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]" />
       </button>
     )
-  },
+  }
 )
 
 ShimmerButton.displayName = 'ShimmerButton'

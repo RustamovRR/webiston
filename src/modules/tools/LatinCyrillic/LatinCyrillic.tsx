@@ -17,7 +17,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { InfoSection } from './components'
 
 // Utils & Hooks
-import { useLatinCyrillic } from '@/hooks/tools/useLatinCyrillic'
+import { useLatinCyrillic } from './hooks/useLatinCyrillic'
 
 export default function LatinCyrillicPage() {
   const t = useTranslations('LatinCyrillicPage')

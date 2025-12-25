@@ -47,7 +47,7 @@ const StrengthPanel: React.FC<StrengthPanelProps> = ({ password, passwordStrengt
                   ? 'bg-yellow-500'
                   : passwordStrength.level <= 4
                     ? 'bg-blue-500'
-                    : 'bg-green-500',
+                    : 'bg-green-500'
             )}
           ></div>
           <span className="text-xs text-zinc-500 dark:text-zinc-500">{passwordStrength.text}</span>
@@ -91,7 +91,7 @@ const StrengthPanel: React.FC<StrengthPanelProps> = ({ password, passwordStrengt
                     ? 'bg-yellow-400'
                     : passwordStrength.level <= 4
                       ? 'bg-blue-400'
-                      : 'bg-green-400',
+                      : 'bg-green-400'
             )}
             style={{ width: `${(passwordStrength.level / 5) * 100}%` }}
           ></div>

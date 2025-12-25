@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
-import { useUuidGenerator } from '@/hooks'
+import { useUuidGenerator } from './hooks/useUuidGenerator'
 import { ConfigPanel, InputPanel, ResultsPanel, StatsPanel, InfoPanel } from './components'
 
 const UuidGenerator = () => {

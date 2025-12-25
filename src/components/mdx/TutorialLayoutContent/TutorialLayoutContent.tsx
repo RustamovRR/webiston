@@ -54,7 +54,7 @@ export default function TutorialLayoutContent({
     const findPathRecursively = (
       nodes: TutorialNavigation[],
       pathSegments: string[],
-      currentPath: string,
+      currentPath: string
     ): BreadcrumbItemType[] => {
       if (pathSegments.length === 0) {
         return []
@@ -199,7 +199,7 @@ export default function TutorialLayoutContent({
           'prose prose-slate dark:prose-invert',
           'dark:prose-headings:text-white prose-headings:scroll-mt-28',
           'prose-a:font-semibold prose-a:no-underline prose-pre:m-0',
-          'max-w-none pt-6',
+          'max-w-none pt-6'
         )}
       >
         {children}

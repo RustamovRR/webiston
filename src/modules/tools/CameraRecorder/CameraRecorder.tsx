@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { ToolHeader } from '@/components/shared'
-import { useCameraRecorder } from '@/hooks/tools/useCameraRecorder'
+import { useCameraRecorder } from './hooks/useCameraRecorder'
 import {
   ControlPanel,
   VideoPreviewPanel,

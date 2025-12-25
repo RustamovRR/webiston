@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 import { RefreshCw, Clock, Shuffle, Hash, FileText, Settings, Dice6 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { UuidVersion, UuidFormat } from '@/hooks'
+import { UuidVersion, UuidFormat } from '../hooks/useUuidGenerator'
 import { cn } from '@/lib'
 
 interface ConfigPanelProps {
@@ -131,7 +131,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     'text-xs font-medium',
                     currentVersionInfo.security === 'High' && 'text-green-400',
                     currentVersionInfo.security === 'Medium' && 'text-yellow-400',
-                    currentVersionInfo.security === 'None' && 'text-red-400',
+                    currentVersionInfo.security === 'None' && 'text-red-400'
                   )}
                 >
                   {currentVersionInfo.security}
@@ -190,7 +190,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     'h-8 px-2 text-xs transition-colors',
                     count === sample.value
                       ? 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700'
-                      : 'hover:bg-zinc-100 dark:hover:bg-zinc-800',
+                      : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
                   )}
                 >
                   {sample.label}

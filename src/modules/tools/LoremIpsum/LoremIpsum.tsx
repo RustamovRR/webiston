@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ToolHeader, StatsDisplay } from '@/components/shared'
 import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { ConfigPanel, InfoSection, HelpSection } from './components'
-import { useLoremIpsum } from '@/hooks/tools'
+import { useLoremIpsum } from './hooks/useLoremIpsum'
 import { useTranslations } from 'next-intl'
 
 export default function LoremIpsumPage() {

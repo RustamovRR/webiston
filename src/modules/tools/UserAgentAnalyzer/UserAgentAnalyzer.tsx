@@ -12,7 +12,7 @@ import { CopyButton } from '@/components/shared/CopyButton'
 import { StatsDisplay } from '@/components/shared/StatsDisplay'
 
 // Utils & Hooks
-import { useUserAgentAnalyzer } from '@/hooks/tools/useUserAgentAnalyzer'
+import { useUserAgentAnalyzer } from './hooks/useUserAgentAnalyzer'
 
 // Icons
 import { Monitor, Smartphone, Download, RotateCcw, Search, User } from 'lucide-react'

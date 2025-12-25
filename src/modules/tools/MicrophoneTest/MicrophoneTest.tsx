@@ -4,7 +4,7 @@ import { Mic } from 'lucide-react'
 import { ToolHeader, StatsDisplay } from '@/components/shared'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
-import { useMicrophoneTest } from '@/hooks/tools/useMicrophoneTest'
+import { useMicrophoneTest } from './hooks/useMicrophoneTest'
 import { ControlPanel, AudioPreviewPanel, RecordedAudioPanel, InfoSection, AudioPreviewModal } from './components'
 
 export default function MicrophoneTest() {

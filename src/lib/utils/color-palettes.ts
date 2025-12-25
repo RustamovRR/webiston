@@ -75,7 +75,7 @@ export const generateTailwindShades = (baseColor: string) => {
 // Generate color palette
 export const generatePalette = (
   baseColor: string,
-  type: 'monochromatic' | 'analogous' | 'complementary' = 'monochromatic',
+  type: 'monochromatic' | 'analogous' | 'complementary' = 'monochromatic'
 ): string[] => {
   const rgb = hexToRgb(baseColor)
   if (!rgb) return []

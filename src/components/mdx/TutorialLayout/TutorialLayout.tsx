@@ -45,13 +45,13 @@ export default function TutorialLayout({
       <aside
         className={cn(
           'sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] transition-all duration-500 ease-in-out max-lg:hidden',
-          isSidebarOpen ? 'border-border w-72 border-r' : 'w-0 border-r-transparent',
+          isSidebarOpen ? 'border-border w-72 border-r' : 'w-0 border-r-transparent'
         )}
       >
         <div
           className={cn(
             'h-full overflow-hidden py-6 pl-4 transition-opacity duration-200',
-            isSidebarOpen ? 'opacity-100' : 'opacity-0 delay-150',
+            isSidebarOpen ? 'opacity-100' : 'opacity-0 delay-150'
           )}
         >
           <Sidebar tutorialId={tutorialId} navigationItems={navigationItems} />
@@ -64,7 +64,7 @@ export default function TutorialLayout({
             'absolute top-[21px] left-[calc(100%+0.3rem)] h-10 w-10 cursor-pointer transition-all duration-500 ease-in-out',
             {
               '!left-[calc(100%-0.5rem)] translate-x-4': !isSidebarOpen,
-            },
+            }
           )}
         >
           {isSidebarOpen ? <PanelsTopLeft /> : <PanelTop />}

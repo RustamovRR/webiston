@@ -4,7 +4,7 @@ import { Play, Download, Trash2, Volume2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
-import { RecordedAudio } from '@/hooks/tools/useMicrophoneTest'
+import { RecordedAudio } from '../hooks/useMicrophoneTest'
 
 interface AudioGridItemProps {
   audio: RecordedAudio

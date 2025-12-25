@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { AudioGridItem } from './AudioGridItem'
-import { RecordedAudio } from '@/hooks/tools/useMicrophoneTest'
+import { RecordedAudio } from '../hooks/useMicrophoneTest'
 
 interface RecordedAudioPanelProps {
   recordedAudios: RecordedAudio[]

@@ -39,7 +39,7 @@ function transliteratePureUzbek(text: string): string {
         i += 2
         continue
       }
-      if ((i === 0 || /[\s\(\-\"\'«]/.test(normalizedText[i - 1])) && nextChar.toLowerCase() === 'e') {
+      if ((i === 0 || /[\s(\-"'«]/.test(normalizedText[i - 1])) && nextChar.toLowerCase() === 'e') {
         cyrillicText += isUpperCase(char) ? 'Е' : 'е'
         i += 2
         continue
@@ -48,7 +48,7 @@ function transliteratePureUzbek(text: string): string {
       i++
       continue
     }
-    if (char.toLowerCase() === 'e' && (i === 0 || /[\s\(\-\"\'«]/.test(normalizedText[i - 1]))) {
+    if (char.toLowerCase() === 'e' && (i === 0 || /[\s(\-"'«]/.test(normalizedText[i - 1]))) {
       cyrillicText += isUpperCase(char) ? 'Э' : 'э'
       i++
       continue
@@ -177,7 +177,7 @@ function transliteratePureCyrillic(text: string): string {
         latinChar = 'ya'
         break
       case 'е':
-        if (i === 0 || /[\s\(\-\"\'«]/.test(text[i - 1])) {
+        if (i === 0 || /[\s(\-"'«]/.test(text[i - 1])) {
           latinChar = 'ye'
         } else {
           latinChar = 'e'
@@ -254,7 +254,7 @@ const protectionRegex = new RegExp(
     // Apostrof bilan tutashmagan aniq so'zlar (oldi/ketida apostrof bo'lmasin)
     `(^|[^${APOST_CLASS}])\\b(${NON_TRANSLITERATABLE_WORDS.join('|')})\\b(?=$|[^${APOST_CLASS}])`,
   ].join('|'),
-  'gi',
+  'gi'
 )
 
 // SIZNING toCyrillic FUNKSIYANGIZ - O'ZGARTIRILMAGAN

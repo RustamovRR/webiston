@@ -11,7 +11,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel/DualTextPanel'
 import { InfoSection, ControlPanel } from './components'
 
 // Utils & Hooks
-import { useUrlEncoder } from '@/hooks/tools/useUrlEncoder'
+import { useUrlEncoder } from './hooks/useUrlEncoder'
 
 const UrlEncoder = () => {
   const t = useTranslations('UrlEncoderPage')

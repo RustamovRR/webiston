@@ -2,7 +2,7 @@ import React from 'react'
 import { Palette } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { TerminalInput, type TerminalInputAction } from '@/components/shared/TerminalInput'
-import type { ColorFormats } from '@/hooks/tools/useColorConverter'
+import type { ColorFormats } from '../hooks/useColorConverter'
 import ColorFormatItem from './ColorFormatItem'
 
 interface ColorFormatsPanelProps {
@@ -35,7 +35,7 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({ colorFormats }) =
               oklchValues: colorFormats.oklchValues,
             },
             null,
-            2,
+            2
           )
         : '',
       disabled: !colorFormats?.isValid,

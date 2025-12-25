@@ -12,7 +12,7 @@ import {
   ModeInfoPanel,
   InfoSection,
 } from './components'
-import { useScreenResolution } from '@/hooks/tools'
+import { useScreenResolution } from './hooks/useScreenResolution'
 
 export default function ScreenResolution() {
   const t = useTranslations('ScreenResolutionPage.ToolHeader')

@@ -103,7 +103,7 @@ const CollapsibleCustomizationPanel: React.FC<CollapsibleCustomizationPanelProps
       <div
         className={cn(
           'transition-all duration-500 ease-in-out',
-          isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 overflow-hidden opacity-0',
+          isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 overflow-hidden opacity-0'
         )}
       >
         <div className="border-x border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">

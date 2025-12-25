@@ -98,7 +98,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
         onLinkClick()
       }
     },
-    [router, tutorialId, onLinkClick, findParentPaths, navigationItems, handleAccordionToggle],
+    [router, tutorialId, onLinkClick, findParentPaths, navigationItems, handleAccordionToggle]
   )
 
   // Find active item path
@@ -115,7 +115,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
       }
       return null
     },
-    [pathname, tutorialId],
+    [pathname, tutorialId]
   )
 
   // Derive initial open accordions from active path so SSR and hydration match (no flicker)
@@ -173,7 +173,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
                     {
                       'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black !no-underline dark:border-[#878787] dark:bg-[#022248] dark:text-white [&[data-state=open]>svg]:text-white dark:[&[data-state=open]>svg]:text-white':
                         isActive,
-                    },
+                    }
                   )}
                 >
                   <Link
@@ -191,7 +191,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
                       if (sidebarRef.current) {
                         sessionStorage.setItem(
                           `sidebarScrollPosition_${tutorialId}`,
-                          sidebarRef.current.scrollTop.toString(),
+                          sidebarRef.current.scrollTop.toString()
                         )
                       }
                     }}
@@ -220,7 +220,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
                 {
                   'border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white':
                     isActive,
-                },
+                }
               )}
             >
               <span className="pr-4" title={item.title}>
@@ -242,7 +242,7 @@ const Sidebar = memo(({ tutorialId, navigationItems, onLinkClick }: SidebarProps
       handleAccordionToggle,
       findParentPaths,
       onLinkClick,
-    ],
+    ]
   )
 
   // Show loading state if no navigation items

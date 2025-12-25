@@ -11,7 +11,7 @@ import {
   ConnectionInfoPanel,
   InfoSection,
 } from './components'
-import { useDeviceInfo } from '@/hooks/tools'
+import { useDeviceInfo } from './hooks/useDeviceInfo'
 
 export default function DeviceInfoPage() {
   const t = useTranslations('DeviceInfoPage.ToolHeader')

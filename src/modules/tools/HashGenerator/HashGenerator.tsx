@@ -12,7 +12,7 @@ import { DualTextPanel } from '@/components/shared/DualTextPanel'
 import { ControlPanel, AlgorithmSelector, DetailedResults, InfoSection } from './components'
 
 // Utils & Hooks
-import { useHashGenerator } from '@/hooks/tools/useHashGenerator'
+import { useHashGenerator } from './hooks/useHashGenerator'
 
 const HashGenerator = () => {
   const t = useTranslations('HashGeneratorPage')

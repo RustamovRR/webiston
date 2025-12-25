@@ -7,7 +7,7 @@ import { ToolHeader } from '@/components/shared/ToolHeader'
 import { Button } from '@/components/ui/button'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { CopyButton } from '@/components/shared/CopyButton'
-import { useKeycodeInfo, type KeyInfo, type CommonKey } from '@/hooks/tools/useKeycodeInfo'
+import { useKeycodeInfo, type KeyInfo, type CommonKey } from './hooks/useKeycodeInfo'
 
 export default function KeycodeInfo() {
   const {

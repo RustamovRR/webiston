@@ -6,7 +6,7 @@ import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { AudioVisualizer } from './AudioVisualizer'
-import { AudioStats, AudioInfo } from '@/hooks/tools/useMicrophoneTest'
+import { AudioStats, AudioInfo } from '../hooks/useMicrophoneTest'
 
 interface AudioPreviewPanelProps {
   isListening: boolean

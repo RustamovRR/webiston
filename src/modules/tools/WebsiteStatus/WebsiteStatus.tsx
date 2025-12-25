@@ -16,7 +16,7 @@ import { ToolHeader, DualTextPanel, StatsDisplay, CopyButton } from '@/component
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { useWebsiteStatus } from '@/hooks/tools'
+import { useWebsiteStatus } from './hooks/useWebsiteStatus'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { CodeHighlight } from '@/components/ui/code-highlight'
 

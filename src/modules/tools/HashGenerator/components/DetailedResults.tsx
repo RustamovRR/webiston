@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl'
 import { Hash } from 'lucide-react'
 import { TerminalInput } from '@/components/shared/TerminalInput'
 import { CopyButton } from '@/components/shared/CopyButton'
-import { HashAlgorithm } from '@/hooks/tools/useHashGenerator'
+import { HashAlgorithm } from '../hooks/useHashGenerator'
 
 interface HashResult {
   algorithm: string

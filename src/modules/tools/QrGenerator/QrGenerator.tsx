@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
 import { ControlPanel, QrDisplay, InfoSection } from './components'
 import CollapsibleCustomizationPanel from './components/CollapsibleCustomizationPanel'
-import { useQrGenerator } from '@/hooks/tools/useQrGenerator'
+import { useQrGenerator } from './hooks/useQrGenerator'
 
 const QrGenerator = () => {
   const t = useTranslations('QrGeneratorPage.ToolHeader')

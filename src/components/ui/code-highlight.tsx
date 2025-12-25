@@ -32,11 +32,11 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
   const highlightJSON = (json: string) => {
     return json
       .replace(
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
         (match) => {
           let cls = 'text-blue-600 dark:text-blue-400' // numbers
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
+          if (match.startsWith('"')) {
+            if (match.endsWith(':')) {
               cls = 'text-purple-600 dark:text-purple-400' // keys
             } else {
               cls = 'text-green-600 dark:text-green-400' // strings
@@ -47,7 +47,7 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
             cls = 'text-red-600 dark:text-red-400' // null
           }
           return `<span class="${cls}">${match}</span>`
-        },
+        }
       )
       .replace(/([{}[\],])/g, '<span class="text-gray-600 dark:text-gray-400">$1</span>') // punctuation
   }
@@ -79,7 +79,7 @@ export function CodeHighlight({ code, language = 'text', className, showLineNumb
     return js
       .replace(
         /\b(function|var|let|const|if|else|for|while|return|import|export|from|class|extends)\b/g,
-        '<span class="text-purple-600 dark:text-purple-400">$1</span>',
+        '<span class="text-purple-600 dark:text-purple-400">$1</span>'
       ) // keywords
       .replace(/"([^"]*)"/g, '"<span class="text-green-600 dark:text-green-400">$1</span>"') // strings
       .replace(/'([^']*)'/g, '\'<span class="text-green-600 dark:text-green-400">$1</span>\'') // strings

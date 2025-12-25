@@ -98,7 +98,7 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
             ref={ref}
             className={cn(
               'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none',
-              className,
+              className
             )}
             {...props}
           >
@@ -108,6 +108,6 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
         </NavigationMenuLink>
       </li>
     )
-  },
+  }
 )
 ListItem.displayName = 'ListItem'

@@ -3,9 +3,9 @@ import { Copy, Check, Download, Eye } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib'
-import { QrSize, QrErrorLevel } from '@/hooks/tools/useQrGenerator'
+import { QrSize, QrErrorLevel } from '../hooks/useQrGenerator'
 
-import type { QrCustomization } from '@/hooks/tools/useQrGenerator'
+import type { QrCustomization } from '../hooks/useQrGenerator'
 import Image from 'next/image'
 
 interface QrDisplayProps {
@@ -195,7 +195,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 className={cn(
                   'flex-1',
                   copied &&
-                    'border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400',
+                    'border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
                 )}
               >
                 {copied ? (

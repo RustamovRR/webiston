@@ -134,7 +134,7 @@ async function processBookDirectory(
   dirPath: string,
   bookName: string,
   documents: SearchDocument[],
-  currentPath: string,
+  currentPath: string
 ) {
   try {
     const files = fs.readdirSync(dirPath, { withFileTypes: true })
@@ -185,7 +185,7 @@ async function processBookDirectory(
 
           // Add main page document
           documents.push({
-            id: `book-${bookName}-${newPath.replace(/[\/\\]/g, '-').replace('.mdx', '')}`,
+            id: `book-${bookName}-${newPath.replace(/[/\\]/g, '-').replace('.mdx', '')}`,
             title: pageTitle,
             content: cleanContent.substring(0, 200) + (cleanContent.length > 200 ? '...' : ''),
             url: urlPath,
@@ -218,7 +218,7 @@ async function processBookDirectory(
               .trim()
 
             documents.push({
-              id: `book-${bookName}-${newPath.replace(/[\/\\]/g, '-').replace('.mdx', '')}-section-${index}`,
+              id: `book-${bookName}-${newPath.replace(/[/\\]/g, '-').replace('.mdx', '')}-section-${index}`,
               title: section.title,
               content: sectionContent.substring(0, 200) + (sectionContent.length > 200 ? '...' : ''),
               url: `${urlPath}#${section.anchor}`,

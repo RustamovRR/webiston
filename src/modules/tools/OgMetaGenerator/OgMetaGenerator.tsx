@@ -12,7 +12,7 @@ import {
   ValidationPanel,
   InfoSection,
 } from './components'
-import { useOgMetaGenerator } from '@/hooks/tools'
+import { useOgMetaGenerator } from './hooks/useOgMetaGenerator'
 
 export default function OgMetaGenerator() {
   const t = useTranslations('OgMetaGeneratorPage.ToolHeader')
@@ -36,7 +36,7 @@ export default function OgMetaGenerator() {
       onSuccess: (message) => console.log(message),
       onError: (error) => console.error(error),
     },
-    tAll,
+    tAll
   )
 
   const [outputFormat, setOutputFormat] = useState('raw')

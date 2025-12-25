@@ -207,7 +207,7 @@ src/modules/tools/
     │   ├── ControlPanel.tsx
     │   ├── OutputDisplay.tsx
     │   └── InfoSection.tsx
-    ├── hooks/                   # Tool-specific hooks (optional)
+    ├── hooks/                   # Tool-specific hooks ✅ COLOCATED
     │   └── use[ToolName].ts
     ├── utils/                   # Tool utilities (optional)
     │   └── calculations.ts
@@ -217,6 +217,8 @@ src/modules/tools/
 Example Tools:
 ├── LatinCyrillic/               # Latin-Cyrillic converter
 │   ├── LatinCyrillic.tsx
+│   ├── hooks/
+│   │   └── useLatinCyrillic.ts  # ✅ Hook inside module
 │   ├── components/
 │   │   ├── ConverterPanel.tsx
 │   │   ├── OutputDisplay.tsx
@@ -226,6 +228,8 @@ Example Tools:
 │
 ├── JsonFormatter/               # JSON formatter
 │   ├── JsonFormatter.tsx
+│   ├── hooks/
+│   │   └── useJsonFormatter.ts  # ✅ Hook inside module
 │   └── components/
 │       ├── EditorPanel.tsx
 │       ├── FormattedOutput.tsx
@@ -261,22 +265,31 @@ Example Tools:
 
 ```
 src/hooks/
-├── index.ts                     # Barrel exports
-└── tools/                       # Tool-specific hooks
-    ├── useLatinCyrillic.ts      # Latin-Cyrillic logic
-    ├── useJsonFormatter.ts      # JSON formatting logic
-    ├── useHashGenerator.ts      # Hash generation logic
-    ├── usePasswordGenerator.ts  # Password generation logic
-    ├── useColorConverter.ts     # Color conversion logic
-    └── ...
+├── index.ts                     # Global hooks only (useDebounce, etc.)
+└── [No tools/ folder - hooks are now colocated with their modules]
+
+# Tool-specific hooks are now inside their respective modules:
+src/modules/tools/[ToolName]/hooks/
+├── use[ToolName].ts             # Main hook for the tool
+└── index.ts                     # Barrel export
 ```
 
 **Hook Patterns:**
+- **Colocation**: Hooks live with their feature/module
 - Encapsulate business logic
 - Manage local state
 - Handle side effects
 - Return data and actions
-- Reusable across components
+
+**Example:**
+```
+src/modules/tools/LatinCyrillic/
+├── LatinCyrillic.tsx
+├── hooks/
+│   └── useLatinCyrillic.ts      # Hook is inside the module
+├── components/
+└── index.ts
+```
 
 ---
 

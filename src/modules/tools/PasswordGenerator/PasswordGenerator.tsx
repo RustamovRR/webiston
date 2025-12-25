@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { ToolHeader, DualTextPanel } from '@/components/shared'
 import { ConfigPanel, StrengthPanel, InfoSection } from './components'
-import { usePasswordGenerator } from '@/hooks'
+import { usePasswordGenerator } from './hooks/usePasswordGenerator'
 
 const PasswordGenerator = () => {
   const t = useTranslations('PasswordGeneratorPage.ToolHeader')
@@ -34,7 +34,7 @@ const PasswordGenerator = () => {
       onError: (error) => console.error(error),
     },
     tPresets,
-    tStrength,
+    tStrength
   )
 
   const getCharacterTypes = () => {

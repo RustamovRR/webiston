@@ -99,13 +99,13 @@ export function DualTextPanel({
           isTerminal
             ? 'border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80'
             : 'bg-zinc-100 dark:bg-zinc-900/80',
-          showShadow && 'shadow-2xl',
+          showShadow && 'shadow-2xl'
         )}
       >
         <section
           className={cn(
             'flex h-16 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800',
-            isTerminal ? 'bg-zinc-100/50 dark:bg-zinc-800/50' : '',
+            isTerminal ? 'bg-zinc-100/50 dark:bg-zinc-800/50' : ''
           )}
         >
           <div className="flex items-center gap-2">
@@ -188,7 +188,7 @@ export function DualTextPanel({
         <section
           className={cn(
             'flex items-center justify-between border-t border-zinc-200 px-4 py-3 dark:border-zinc-800',
-            isTerminal && 'bg-zinc-100/30 dark:bg-zinc-800/30',
+            isTerminal && 'bg-zinc-100/30 dark:bg-zinc-800/30'
           )}
         >
           <div className="flex items-center">{!isSource && targetFooterComponent}</div>

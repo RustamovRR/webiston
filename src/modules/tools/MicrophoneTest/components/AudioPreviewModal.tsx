@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { RecordedAudio } from '@/hooks/tools/useMicrophoneTest'
+import { RecordedAudio } from '../hooks/useMicrophoneTest'
 
 interface AudioPreviewModalProps {
   audio: RecordedAudio | null

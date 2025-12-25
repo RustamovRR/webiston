@@ -56,7 +56,7 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
               disabled && 'cursor-not-allowed opacity-50',
               isActive
                 ? 'scale-[1.02] transform text-white shadow-lg'
-                : 'text-zinc-600 hover:bg-zinc-500/10 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100',
+                : 'text-zinc-600 hover:bg-zinc-500/10 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100'
             )}
             style={
               isActive
@@ -78,7 +78,7 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
               <div
                 className={cn(
                   'absolute -inset-1 rounded-md opacity-0 blur transition-opacity duration-500 group-hover:opacity-100',
-                  `bg-gradient-to-r ${colors.shimmerGlow}`,
+                  `bg-gradient-to-r ${colors.shimmerGlow}`
                 )}
               />
             )}

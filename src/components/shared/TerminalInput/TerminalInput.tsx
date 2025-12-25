@@ -213,7 +213,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         styles.border,
         styles.bg,
         showShadow && 'shadow-lg hover:shadow-xl',
-        className,
+        className
       )}
       style={variant === 'dynamic' ? dynamicStyles : {}}
     >
@@ -222,7 +222,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         className={cn(
           'flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800',
           styles.header,
-          headerClassName,
+          headerClassName
         )}
       >
         <div className="flex items-center gap-2">
@@ -234,7 +234,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
                 className={cn(
                   'h-3 w-3 rounded-full transition-all duration-200',
                   dot.color,
-                  animate && 'hover:scale-110',
+                  animate && 'hover:scale-110'
                 )}
               />
             ))}
@@ -302,7 +302,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         <div
           className={cn(
             'flex items-center justify-end border-t border-zinc-200 px-4 py-3 dark:border-zinc-800',
-            styles.footer,
+            styles.footer
           )}
         >
           <StatsDisplay stats={stats} />

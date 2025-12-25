@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { useTranslations } from 'next-intl'
-import { AudioDevice } from '@/hooks/tools/useMicrophoneTest'
+import { AudioDevice } from '../hooks/useMicrophoneTest'
 
 interface ControlPanelProps {
   audioDevices: AudioDevice[]

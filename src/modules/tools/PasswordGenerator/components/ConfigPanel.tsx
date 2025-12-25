@@ -153,7 +153,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
                 settings.includeUppercase
                   ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
-                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
               )}
             >
               <input
@@ -170,7 +170,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
                 settings.includeLowercase
                   ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
-                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
               )}
             >
               <input
@@ -187,7 +187,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
                 settings.includeNumbers
                   ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
-                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
               )}
             >
               <input
@@ -204,7 +204,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
                 settings.includeSymbols
                   ? 'border-green-500 bg-green-500/10 text-green-600 dark:text-green-300'
-                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
               )}
             >
               <input
@@ -223,7 +223,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               'flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors',
               settings.excludeSimilar
                 ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-300'
-                : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200',
+                : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200'
             )}
           >
             <input

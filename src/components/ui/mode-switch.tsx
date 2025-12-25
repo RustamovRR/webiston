@@ -52,9 +52,9 @@ export const ModeSwitch: React.FC<ModeSwitchProps> = ({
                 ? cn(
                     UI_PATTERNS.SWITCH_BUTTON_ACTIVE,
                     `bg-gradient-to-r ${colors.primary}`,
-                    'hover:from-blue-600 hover:to-indigo-700', // Dynamic hover will be added
+                    'hover:from-blue-600 hover:to-indigo-700' // Dynamic hover will be added
                   )
-                : cn(UI_PATTERNS.SWITCH_BUTTON_INACTIVE, 'hover:bg-zinc-700/50'),
+                : cn(UI_PATTERNS.SWITCH_BUTTON_INACTIVE, 'hover:bg-zinc-700/50')
             )}
             style={
               isActive

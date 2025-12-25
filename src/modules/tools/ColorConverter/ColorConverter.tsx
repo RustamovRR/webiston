@@ -13,7 +13,7 @@ import ColorHistory from './components/ColorHistory'
 import GradientGenerator from './components/GradientGenerator'
 
 // Utils & Hooks
-import { useColorConverter } from '@/hooks'
+import { useColorConverter } from './hooks/useColorConverter'
 
 const ColorConverter = () => {
   const t = useTranslations('ColorConverterPage')

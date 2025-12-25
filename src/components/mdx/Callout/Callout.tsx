@@ -61,7 +61,7 @@ export default function Callout({ children, type = 'info', title, icon, classNam
       className={cn(
         'my-6 rounded-lg border p-4 py-6 pr-12 shadow-sm [&_h2]:!mt-0 [&_h3]:!mt-0 dark:[&_h3_a]:!text-white [&_h4]:!mt-0 dark:[&_h4_a]:!text-white',
         styles.containerClass,
-        className,
+        className
       )}
     >
       <div className="flex items-start space-x-3">

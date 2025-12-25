@@ -61,7 +61,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
   const updatePosition = (index: number, position: number) => {
     setColors((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, position: Math.max(0, Math.min(100, position)) } : item)),
+      prev.map((item, i) => (i === index ? { ...item, position: Math.max(0, Math.min(100, position)) } : item))
     )
   }
 

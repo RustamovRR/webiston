@@ -15,7 +15,7 @@ import { CodeHighlight } from '@/components/ui/code-highlight'
 import { ToolHeader, SectionTitle, StatsDisplay } from '@/components/shared'
 
 // Utils & Hooks
-import { useHttpStatus } from '@/hooks/tools'
+import { useHttpStatus } from './hooks/useHttpStatus'
 
 const HttpStatus = () => {
   const {
@@ -260,7 +260,7 @@ Content-Length: 123`}
                             path: '/api/example',
                           },
                           null,
-                          2,
+                          2
                         )}
                         language="json"
                       />

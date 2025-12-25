@@ -19,7 +19,7 @@ const SimpleCard: FC<IProps> = ({ title, description, href, className, disabled,
     {
       'pointer-events-none opacity-50': disabled,
     },
-    className,
+    className
   )
 
   const content = (

@@ -27,7 +27,7 @@ export const CodeBlockSkeleton = ({ codeString, className }: CodeBlockSkeletonPr
             key={i}
             className={cn(
               'mb-2.5 animate-pulse rounded bg-gray-200 transition-all duration-300 dark:bg-gray-700',
-              isEmpty && 'animate-none opacity-0',
+              isEmpty && 'animate-none opacity-0'
             )}
             style={{
               width: isEmpty ? '40%' : `${widthEm}em`,
