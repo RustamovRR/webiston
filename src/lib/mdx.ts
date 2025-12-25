@@ -1,9 +1,9 @@
-import { serialize } from 'next-mdx-remote/serialize'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import rehypeRaw from 'rehype-raw'
-import rehypeSlug from 'rehype-slug'
-import remarkGfm from 'remark-gfm'
-import path from 'path'
+import { serialize } from "next-mdx-remote/serialize"
+import rehypeAutolinkHeadings from "rehype-autolink-headings"
+import rehypeRaw from "rehype-raw"
+import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
+import path from "path"
 
 /**
  * Serializes markdown content to MDX
@@ -17,19 +17,19 @@ export async function serializeMarkdown(content: string) {
         rehypePlugins: [
           rehypeRaw, // Allow HTML in markdown
           rehypeSlug,
-          [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+          [rehypeAutolinkHeadings, { behavior: "wrap" }]
         ],
         // Do not use MDX-specific features for regular markdown
-        format: 'md',
-        development: process.env.NODE_ENV === 'development',
+        format: "md",
+        development: process.env.NODE_ENV === "development"
       },
-      parseFrontmatter: true, // Frontmatter'ni parse qilish
+      parseFrontmatter: true // Frontmatter'ni parse qilish
     })
   } catch (mdError) {
-    console.error('Error parsing markdown:', mdError)
+    console.error("Error parsing markdown:", mdError)
     // Fallback to simpler parsing if needed
     return await serialize(content, {
-      parseFrontmatter: true, // Frontmatter'ni parse qilish
+      parseFrontmatter: true // Frontmatter'ni parse qilish
     })
   }
 }
@@ -43,13 +43,19 @@ export async function serializeMdx(content: string) {
     return await serialize(content, {
       mdxOptions: {
         remarkPlugins: [remarkGfm],
-        rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }]],
-        development: process.env.NODE_ENV === 'development',
+        rehypePlugins: [
+          rehypeSlug,
+          [rehypeAutolinkHeadings, { behavior: "wrap" }]
+        ],
+        development: process.env.NODE_ENV === "development"
       },
-      parseFrontmatter: true, // Frontmatter'ni parse qilish
+      parseFrontmatter: true // Frontmatter'ni parse qilish
     })
   } catch (mdxError) {
-    console.error('Error parsing MDX, falling back to markdown parser:', mdxError)
+    console.error(
+      "Error parsing MDX, falling back to markdown parser:",
+      mdxError
+    )
     // If MDX parsing fails, try with markdown parser
     return await serialize(content, {
       mdxOptions: {
@@ -57,11 +63,11 @@ export async function serializeMdx(content: string) {
         rehypePlugins: [
           rehypeRaw, // Allow HTML in markdown
           rehypeSlug,
-          [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+          [rehypeAutolinkHeadings, { behavior: "wrap" }]
         ],
-        format: 'md',
+        format: "md"
       },
-      parseFrontmatter: true, // Frontmatter'ni parse qilish
+      parseFrontmatter: true // Frontmatter'ni parse qilish
     })
   }
 }
@@ -71,10 +77,10 @@ export async function serializeMdx(content: string) {
  */
 export async function serializeContent(content: string, isMarkdown: boolean) {
   if (isMarkdown) {
-    console.log('Using plain markdown parser for .md file')
+    console.log("Using plain markdown parser for .md file")
     return serializeMarkdown(content)
   } else {
-    console.log('Using MDX parser')
+    console.log("Using MDX parser")
     return serializeMdx(content)
   }
 }
@@ -94,39 +100,51 @@ export interface TutorialNavigation {
 }
 
 // Meta fayldan navigatsiya ma'lumotlarini olish
-export async function getTutorialNavigation(tutorialId: string): Promise<TutorialNavigation[]> {
+export async function getTutorialNavigation(
+  tutorialId: string
+): Promise<TutorialNavigation[]> {
   try {
-    const { promises: fs } = await import('fs')
-    const metaPath = path.resolve(process.cwd(), 'content', tutorialId, '_meta.json')
+    const { promises: fs } = await import("fs")
+    const metaPath = path.resolve(
+      process.cwd(),
+      "content",
+      tutorialId,
+      "_meta.json"
+    )
 
     // Fayl mavjudligini tekshirish
     await fs.access(metaPath)
 
     // JSON faylni o'qish
-    const fileContent = await fs.readFile(metaPath, 'utf8')
+    const fileContent = await fs.readFile(metaPath, "utf8")
     const metaData = JSON.parse(fileContent)
 
     return convertMetaToNavigation(metaData)
   } catch (error) {
-    console.error('Error loading tutorial navigation:', error)
-    console.error('Tried path:', path.resolve(process.cwd(), 'content', tutorialId, '_meta.json'))
+    console.error("Error loading tutorial navigation:", error)
+    console.error(
+      "Tried path:",
+      path.resolve(process.cwd(), "content", tutorialId, "_meta.json")
+    )
     return []
   }
 }
 
 // Meta ma'lumotlarini navigatsiya strukturasiga o'tkazish
-function convertMetaToNavigation(metaData: Record<string, any>): TutorialNavigation[] {
+function convertMetaToNavigation(
+  metaData: Record<string, any>
+): TutorialNavigation[] {
   const navigation: TutorialNavigation[] = []
 
   for (const [key, value] of Object.entries(metaData)) {
-    if (typeof value === 'object' && value.title) {
+    if (typeof value === "object" && value.title) {
       // Path'dan '/page' qismini olib tashlash
-      const cleanPath = value.path ? value.path.replace(/\/page$/, '') : key
+      const cleanPath = value.path ? value.path.replace(/\/page$/, "") : key
 
       const item: TutorialNavigation = {
         title: value.title,
         path: cleanPath,
-        hasIndex: value.hasIndex || false,
+        hasIndex: value.hasIndex || false
       }
 
       // Agar children bo'lsa, recursively convert qilish
@@ -142,23 +160,26 @@ function convertMetaToNavigation(metaData: Record<string, any>): TutorialNavigat
 }
 
 // MDX fayl content'ini olish
-export async function getMDXContent(tutorialId: string, contentPath: string): Promise<string | null> {
+export async function getMDXContent(
+  tutorialId: string,
+  contentPath: string
+): Promise<string | null> {
   try {
-    const { promises: fs } = await import('fs')
+    const { promises: fs } = await import("fs")
     let filePath: string | null = null
 
     // Path bo'sh bo'lsa yoki "/" bo'lsa, asosiy page.mdx faylni olish
-    if (!contentPath || contentPath === '' || contentPath === '/') {
-      filePath = path.join(process.cwd(), 'content', tutorialId, 'page.mdx')
+    if (!contentPath || contentPath === "" || contentPath === "/") {
+      filePath = path.join(process.cwd(), "content", tutorialId, "page.mdx")
     } else {
       // Content path'ni tozalash
-      const cleanPath = contentPath.replace(/^\//, '').replace(/\/$/, '')
+      const cleanPath = contentPath.replace(/^\//, "").replace(/\/$/, "")
 
       // Turli variantlarni sinab ko'rish
       const possiblePaths = [
-        path.join(process.cwd(), 'content', tutorialId, cleanPath, 'page.mdx'),
-        path.join(process.cwd(), 'content', tutorialId, cleanPath + '.mdx'),
-        path.join(process.cwd(), 'content', tutorialId, cleanPath, 'index.mdx'),
+        path.join(process.cwd(), "content", tutorialId, cleanPath, "page.mdx"),
+        path.join(process.cwd(), "content", tutorialId, cleanPath + ".mdx"),
+        path.join(process.cwd(), "content", tutorialId, cleanPath, "index.mdx")
       ]
 
       for (const possiblePath of possiblePaths) {
@@ -173,15 +194,15 @@ export async function getMDXContent(tutorialId: string, contentPath: string): Pr
 
       if (!filePath) {
         console.error(`MDX file not found for path: ${contentPath}`)
-        console.error('Tried paths:', possiblePaths)
+        console.error("Tried paths:", possiblePaths)
         return null
       }
     }
 
-    const content = await fs.readFile(filePath, 'utf8')
+    const content = await fs.readFile(filePath, "utf8")
     return content
   } catch (error) {
-    console.error('Error reading MDX file:', error)
+    console.error("Error reading MDX file:", error)
     return null
   }
 }
@@ -198,12 +219,12 @@ export async function getTutorialInfo(tutorialId: string) {
       description: getTutorialDescription(tutorialId),
       image: getTutorialImage(tutorialId),
       copyright: getCopyrightText(tutorialId),
-      navigation,
+      navigation
     }
 
     return tutorialInfo
   } catch (error) {
-    console.error('Error getting tutorial info:', error)
+    console.error("Error getting tutorial info:", error)
     return null
   }
 }
@@ -211,9 +232,11 @@ export async function getTutorialInfo(tutorialId: string) {
 // Tutorial sarlavhasini olish
 export function getTutorialTitle(tutorialId: string): string {
   const titles: Record<string, string> = {
-    'ai-engineering': 'AI Engineering: Fundamental Modellar bilan Ilovalar Yaratish',
-    'javascript-definitive-guide': 'JavaScript: The Definitive Guide, 7th Edition',
-    'fluent-react': 'Fluent React: Zamonaviy React Dasturlash',
+    "ai-engineering":
+      "AI Engineering: Fundamental Modellar bilan Ilovalar Yaratish",
+    "javascript-definitive-guide":
+      "JavaScript: The Definitive Guide, 7th Edition",
+    "fluent-react": "Fluent React: Zamonaviy React Dasturlash"
   }
 
   return titles[tutorialId] || tutorialId
@@ -222,59 +245,64 @@ export function getTutorialTitle(tutorialId: string): string {
 // Tutorial tavsifini olish
 function getTutorialDescription(tutorialId: string): string {
   const descriptions: Record<string, string> = {
-    'ai-engineering':
+    "ai-engineering":
       "Sun'iy intellekt muhandisligi bo'yicha keng qamrovli qo'llanma. Fundamental modellar, prompt muhandisligi, baholash metodologiyasi va zamonaviy AI texnologiyalarini professional darajada o'zlashtirish uchun to'liq resurs.",
-    'javascript-definitive-guide':
+    "javascript-definitive-guide":
       "JavaScript bo'yicha klassik asarning to'liq o'zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg'or xususiyatlarigacha — barchasi bitta qo'llanmada.",
-    'fluent-react':
-      "React'ning fundamental konsepsiyalariga chuqur sho'ng'ish. Komponentlar mantig'idan tortib, ilg'or arxitektura pattern'larigacha — React'ni professional darajada o'zlashtirish uchun to'liq qo'llanma.",
+    "fluent-react":
+      "React'ning fundamental konsepsiyalariga chuqur sho'ng'ish. Komponentlar mantig'idan tortib, ilg'or arxitektura pattern'larigacha — React'ni professional darajada o'zlashtirish uchun to'liq qo'llanma."
   }
 
-  return descriptions[tutorialId] || "Dasturlash bo'yicha professional qo'llanma"
+  return (
+    descriptions[tutorialId] || "Dasturlash bo'yicha professional qo'llanma"
+  )
 }
 
 // Tutorial rasmini olish
 export function getTutorialImage(tutorialId: string): string {
   const images: Record<string, string> = {
-    'ai-engineering': '/ai-engineering/book-logo.jpeg',
-    'javascript-definitive-guide': '/javascript-definitive-guide/book-logo.jpeg',
-    'fluent-react': '/fluent-react/book-logo.jpeg',
+    "ai-engineering": "/ai-engineering/book-logo.jpeg",
+    "javascript-definitive-guide":
+      "/javascript-definitive-guide/book-logo.jpeg",
+    "fluent-react": "/fluent-react/book-logo.jpeg"
   }
 
-  return images[tutorialId] || '/assets/default-cover.png'
+  return images[tutorialId] || "/assets/default-cover.png"
 }
 
 // Tutorial mualliflik huquqi matnini olish
 function getCopyrightText(tutorialId: string): string {
   const copyrights: Record<string, string> = {
-    'ai-engineering':
+    "ai-engineering":
       "Ushbu kitobning o'zbekcha tarjimasi: AI Engineering, Chip Huyen. Mualliflik huquqi 2024 Chip Huyen. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
-    'javascript-definitive-guide':
+    "javascript-definitive-guide":
       "Ushbu kitobning o'zbekcha tarjimasi: JavaScript: The Definitive Guide, 7-nashr, David Flanagan. Mualliflik huquqi 2020 David Flanagan. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
-    'fluent-react':
-      "Ushbu kitobning o'zbekcha tarjimasi: Fluent React, Tejas Kumar. Mualliflik huquqi 2024 Tejas Kumar. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan.",
+    "fluent-react":
+      "Ushbu kitobning o'zbekcha tarjimasi: Fluent React, Tejas Kumar. Mualliflik huquqi 2024 Tejas Kumar. O'Reilly Media, Inc. tomonidan nashr etilgan. Ruxsat bilan foydalanilgan."
   }
-  return copyrights[tutorialId] || ''
+  return copyrights[tutorialId] || ""
 }
 
 // Barcha tutoriallar ro'yxatini olish
 export async function getAllTutorials() {
   try {
     // Eng yangi kitobni birinchi o'ringa qo'yamiz
-    const aiEngineering = await getTutorialInfo('ai-engineering')
-    const javascriptDefinitiveGuide = await getTutorialInfo('javascript-definitive-guide')
-    const fluentReact = await getTutorialInfo('fluent-react')
+    const aiEngineering = await getTutorialInfo("ai-engineering")
+    const javascriptDefinitiveGuide = await getTutorialInfo(
+      "javascript-definitive-guide"
+    )
+    const fluentReact = await getTutorialInfo("fluent-react")
     return [aiEngineering, javascriptDefinitiveGuide, fluentReact]
   } catch (error) {
-    console.error('Error getting all tutorials:', error)
+    console.error("Error getting all tutorials:", error)
     return []
   }
 }
 
 // Barcha darslik sahifalarining yo'llarini (paths) olish
 export async function getAllTutorialPaths() {
-  const { promises: fs } = await import('fs')
-  const contentDir = path.join(process.cwd(), 'content')
+  const { promises: fs } = await import("fs")
+  const contentDir = path.join(process.cwd(), "content")
   const tutorials = await fs.readdir(contentDir, { withFileTypes: true })
   const allPaths: { slug: string[] }[] = []
 
@@ -285,21 +313,28 @@ export async function getAllTutorialPaths() {
       allPaths.push({ slug: [tutorialId] })
 
       const tutorialDir = path.join(contentDir, tutorialId)
-      const filesAndDirs = await fs.readdir(tutorialDir, { withFileTypes: true })
+      const filesAndDirs = await fs.readdir(tutorialDir, {
+        withFileTypes: true
+      })
 
-      const processDirectory = async (currentDir: string, basePath: string[]) => {
+      const processDirectory = async (
+        currentDir: string,
+        basePath: string[]
+      ) => {
         const items = await fs.readdir(currentDir, { withFileTypes: true })
         for (const item of items) {
           const itemPath = path.join(currentDir, item.name)
           if (item.isDirectory()) {
             await processDirectory(itemPath, [...basePath, item.name])
-          } else if (item.name.endsWith('.mdx') || item.name.endsWith('.md')) {
+          } else if (item.name.endsWith(".mdx") || item.name.endsWith(".md")) {
             let slugPath = [...basePath]
-            if (item.name !== 'page.mdx' && item.name !== 'index.mdx') {
-              slugPath.push(item.name.replace(/\.mdx?$/, ''))
+            if (item.name !== "page.mdx" && item.name !== "index.mdx") {
+              slugPath.push(item.name.replace(/\.mdx?$/, ""))
             }
             // Duplikatlarni tekshirish
-            if (!allPaths.some((p) => p.slug.join('/') === slugPath.join('/'))) {
+            if (
+              !allPaths.some((p) => p.slug.join("/") === slugPath.join("/"))
+            ) {
               allPaths.push({ slug: slugPath })
             }
           }
@@ -310,7 +345,9 @@ export async function getAllTutorialPaths() {
   }
 
   // Asosiy darslik sahifalarini qo'shish (duplikatlarsiz)
-  const uniquePaths = Array.from(new Set(allPaths.map((p) => JSON.stringify(p)))).map((s) => JSON.parse(s))
+  const uniquePaths = Array.from(
+    new Set(allPaths.map((p) => JSON.stringify(p)))
+  ).map((s) => JSON.parse(s))
 
   return uniquePaths
 }

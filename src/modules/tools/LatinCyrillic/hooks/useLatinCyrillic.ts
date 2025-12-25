@@ -1,18 +1,20 @@
-'use client'
+"use client"
 
-import { useState, useMemo, useCallback } from 'react'
-import { useDebounceValue } from 'usehooks-ts'
-import { useTranslations } from 'next-intl'
-import { toCyrillic, toLatin } from '@/lib/transliteration'
+import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
+import { useDebounceValue } from "usehooks-ts"
+import { toCyrillic, toLatin } from "@/lib/transliteration"
 
-export type Direction = 'latin-to-cyrillic' | 'cyrillic-to-latin'
+export type Direction = "latin-to-cyrillic" | "cyrillic-to-latin"
 
 // Sample data constants
 export const SAMPLE_TEXTS = {
-  LATIN_GREETING: "Assalomu alaykum! Bu Lotin-Kirill o'giruvchi vositasi.",
-  CYRILLIC_GREETING: 'Ассалому алайкум! Бу Лотин-Кирилл ўгирувчи воситаси.',
-  LATIN_PARAGRAPH: "O'zbekiston Respublikasi mustaqil davlat hisoblanadi. Uning poytaxti Toshkent shahri.",
-  CYRILLIC_PARAGRAPH: 'Ўзбекистон Республикаси мустақил давлат ҳисобланади. Унинг пойтахти Тошкент шаҳри.',
+  LATIN_GREETING: "Assalomu alaykum! Bu Lotin˝-Kirill o'giruvchi vositasi.",
+  CYRILLIC_GREETING: "Ассалому алайкум! Бу Лотин-Кирилл ўгирувчи воситаси.",
+  LATIN_PARAGRAPH:
+    "O'zbekiston Respublikasi mustaqil davlat hisoblanadi. Uning poytaxti Toshkent shahri.",
+  CYRILLIC_PARAGRAPH:
+    "Ўзбекистон Республикаси мустақил давлат ҳисобланади. Унинг пойтахти Тошкент шаҳри."
 }
 
 interface UseLatinCyrillicResult {
@@ -36,25 +38,30 @@ interface UseLatinCyrillicResult {
 }
 
 export const useLatinCyrillic = (): UseLatinCyrillicResult => {
-  const t = useTranslations('LatinCyrillicPage')
-  const [direction, setDirection] = useState<Direction>('latin-to-cyrillic')
-  const [sourceText, setSourceText] = useState('')
+  const t = useTranslations("LatinCyrillicPage")
+  const [direction, setDirection] = useState<Direction>("latin-to-cyrillic")
+  const [sourceText, setSourceText] = useState("")
 
   const [debouncedText] = useDebounceValue(sourceText, 100)
 
   const convertedText = useMemo(() => {
-    if (!debouncedText.trim()) return ''
+    if (!debouncedText.trim()) return ""
 
     try {
-      return direction === 'latin-to-cyrillic' ? toCyrillic(debouncedText) : toLatin(debouncedText)
+      return direction === "latin-to-cyrillic"
+        ? toCyrillic(debouncedText)
+        : toLatin(debouncedText)
     } catch (error) {
-      console.error('Transliteration error:', error)
-      return ''
+      console.error("Transliteration error:", error)
+      return ""
     }
   }, [debouncedText, direction])
 
   const handleSwap = useCallback(() => {
-    const newDirection: Direction = direction === 'latin-to-cyrillic' ? 'cyrillic-to-latin' : 'latin-to-cyrillic'
+    const newDirection: Direction =
+      direction === "latin-to-cyrillic"
+        ? "cyrillic-to-latin"
+        : "latin-to-cyrillic"
 
     setDirection(newDirection)
 
@@ -65,7 +72,7 @@ export const useLatinCyrillic = (): UseLatinCyrillicResult => {
   }, [direction, convertedText])
 
   const handleClear = useCallback(() => {
-    setSourceText('')
+    setSourceText("")
   }, [])
 
   const loadSample = useCallback((sampleKey: keyof typeof SAMPLE_TEXTS) => {
@@ -73,25 +80,46 @@ export const useLatinCyrillic = (): UseLatinCyrillicResult => {
     setSourceText(sampleText)
 
     // Auto-detect direction based on sample text
-    if (sampleKey.includes('LATIN')) {
-      setDirection('latin-to-cyrillic')
-    } else if (sampleKey.includes('CYRILLIC')) {
-      setDirection('cyrillic-to-latin')
+    if (sampleKey.includes("LATIN")) {
+      setDirection("latin-to-cyrillic")
+    } else if (sampleKey.includes("CYRILLIC")) {
+      setDirection("cyrillic-to-latin")
     }
   }, [])
 
   // Computed values
-  const sourceLang = direction === 'latin-to-cyrillic' ? t('latin') : t('cyrillic')
-  const targetLang = direction === 'latin-to-cyrillic' ? t('cyrillic') : t('latin')
+  const sourceLang =
+    direction === "latin-to-cyrillic" ? t("latin") : t("cyrillic")
+
+  const targetLang =
+    direction === "latin-to-cyrillic" ? t("cyrillic") : t("latin")
   const sourcePlaceholder =
-    direction === 'latin-to-cyrillic' ? t('inputPlaceholderLatin') : t('inputPlaceholderCyrillic')
+    direction === "latin-to-cyrillic"
+      ? t("inputPlaceholderLatin")
+      : t("inputPlaceholderCyrillic")
 
   const samples = useMemo(
     () => [
-      { key: 'LATIN_GREETING', label: t('samples.latinGreeting'), value: SAMPLE_TEXTS.LATIN_GREETING },
-      { key: 'CYRILLIC_GREETING', label: t('samples.cyrillicGreeting'), value: SAMPLE_TEXTS.CYRILLIC_GREETING },
-      { key: 'LATIN_PARAGRAPH', label: t('samples.latinParagraph'), value: SAMPLE_TEXTS.LATIN_PARAGRAPH },
-      { key: 'CYRILLIC_PARAGRAPH', label: t('samples.cyrillicParagraph'), value: SAMPLE_TEXTS.CYRILLIC_PARAGRAPH },
+      {
+        key: "LATIN_GREETING",
+        label: t("samples.latinGreeting"),
+        value: SAMPLE_TEXTS.LATIN_GREETING
+      },
+      {
+        key: "CYRILLIC_GREETING",
+        label: t("samples.cyrillicGreeting"),
+        value: SAMPLE_TEXTS.CYRILLIC_GREETING
+      },
+      {
+        key: "LATIN_PARAGRAPH",
+        label: t("samples.latinParagraph"),
+        value: SAMPLE_TEXTS.LATIN_PARAGRAPH
+      },
+      {
+        key: "CYRILLIC_PARAGRAPH",
+        label: t("samples.cyrillicParagraph"),
+        value: SAMPLE_TEXTS.CYRILLIC_PARAGRAPH
+      }
     ],
     [t]
   )
@@ -113,6 +141,6 @@ export const useLatinCyrillic = (): UseLatinCyrillicResult => {
     sourceLang,
     targetLang,
     sourcePlaceholder,
-    samples,
+    samples
   }
 }

@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import Image from 'next/image'
-import { useEffect, useRef } from 'react'
-import mediumZoom from 'medium-zoom'
+import Image from "next/image"
+import { useEffect, useRef } from "react"
+import mediumZoom from "medium-zoom"
 
 interface ImageViewerProps {
   src: string
@@ -15,8 +15,8 @@ export default function ImageViewer({ src, alt }: ImageViewerProps) {
   useEffect(() => {
     if (imgRef.current) {
       const zoom = mediumZoom(imgRef.current, {
-        background: 'rgba(0, 0, 0, 0.9)',
-        margin: 24,
+        background: "rgba(0, 0, 0, 0.9)",
+        margin: 24
       })
 
       return () => {
@@ -30,12 +30,12 @@ export default function ImageViewer({ src, alt }: ImageViewerProps) {
       <Image
         ref={imgRef}
         src={src}
-        alt={alt || ''}
+        alt={alt || ""}
         width={0}
         height={0}
         sizes="100vw"
         className="!m-0 !mb-2 h-auto w-full cursor-zoom-in rounded-lg"
-        style={{ width: '100%', height: 'auto' }}
+        style={{ width: "100%", height: "auto" }}
         priority={false}
       />
     </span>

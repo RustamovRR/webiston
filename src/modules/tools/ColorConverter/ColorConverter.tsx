@@ -1,40 +1,54 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState } from "react"
+import { useTranslations } from "next-intl"
 
 // Shared Components
-import { ToolHeader } from '@/components/shared/ToolHeader'
+import { ToolHeader } from "@/components/shared/ToolHeader"
 
 // Local Components
-import { ControlPanel, ColorInputPanel, ColorFormatsPanel, ColorPalette, InfoSection } from './components'
-import TailwindShades from './components/TailwindShades'
-import ColorHistory from './components/ColorHistory'
-import GradientGenerator from './components/GradientGenerator'
+import {
+  ControlPanel,
+  ColorInputPanel,
+  ColorFormatsPanel,
+  ColorPalette,
+  InfoSection
+} from "./components"
+import TailwindShades from "./components/TailwindShades"
+import ColorHistory from "./components/ColorHistory"
+import GradientGenerator from "./components/GradientGenerator"
 
 // Utils & Hooks
-import { useColorConverter } from './hooks/useColorConverter'
+import { useColorConverter } from "./hooks/useColorConverter"
 
 const ColorConverter = () => {
-  const t = useTranslations('ColorConverterPage')
-  const [paletteType, setPaletteType] = useState<'monochromatic' | 'analogous' | 'complementary'>('monochromatic')
+  const t = useTranslations("ColorConverterPage")
+  const [paletteType, setPaletteType] = useState<
+    "monochromatic" | "analogous" | "complementary"
+  >("monochromatic")
 
-  const { inputColor, setInputColor, colorFormats, generatePalette, generateTailwindShades, getColorName } =
-    useColorConverter({
-      onSuccess: (message) => {
-        console.log('Success:', message)
-      },
-      onError: (error) => {
-        console.error('Error:', error)
-      },
-    })
+  const {
+    inputColor,
+    setInputColor,
+    colorFormats,
+    generatePalette,
+    generateTailwindShades,
+    getColorName
+  } = useColorConverter({
+    onSuccess: (message) => {
+      console.log("Success:", message)
+    },
+    onError: (error) => {
+      console.error("Error:", error)
+    }
+  })
 
   const handleRandomColor = () => {
     const randomColor =
-      '#' +
+      "#" +
       Math.floor(Math.random() * 16777215)
         .toString(16)
-        .padStart(6, '0')
+        .padStart(6, "0")
     setInputColor(randomColor)
   }
 
@@ -47,12 +61,14 @@ const ColorConverter = () => {
       type: paletteType,
       colors: palette,
       formats: colorFormats,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }
 
-    const blob = new Blob([JSON.stringify(paletteData, null, 2)], { type: 'application/json' })
+    const blob = new Blob([JSON.stringify(paletteData, null, 2)], {
+      type: "application/json"
+    })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     a.href = url
     a.download = `color-palette-${paletteType}-${Date.now()}.json`
     a.click()
@@ -65,10 +81,10 @@ const ColorConverter = () => {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title={t('ToolHeader.title') || 'Color Converter va Palette Generator'}
+        title={t("ToolHeader.title") || "Color Converter va Palette Generator"}
         description={
-          t('ToolHeader.description') ||
-          'HEX, RGB, HSL formatlar orasida rang konvertatsiyasi va palette generatsiya vositasi'
+          t("ToolHeader.description") ||
+          "HEX, RGB, HSL formatlar orasida rang konvertatsiyasi va palette generatsiya vositasi"
         }
       />
 
@@ -110,12 +126,19 @@ const ColorConverter = () => {
 
       {/* Tailwind Shades */}
       <div className="mt-6">
-        <TailwindShades baseColor={inputColor} shades={tailwindShades} isValid={colorFormats?.isValid || false} />
+        <TailwindShades
+          baseColor={inputColor}
+          shades={tailwindShades}
+          isValid={colorFormats?.isValid || false}
+        />
       </div>
 
       {/* Gradient Generator */}
       <div className="mt-6">
-        <GradientGenerator baseColor={inputColor} isValid={colorFormats?.isValid || false} />
+        <GradientGenerator
+          baseColor={inputColor}
+          isValid={colorFormats?.isValid || false}
+        />
       </div>
 
       {/* Information Section */}

@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ShimmerButton } from '@/components/ui/shimmer-button'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
-import { MapPin, RefreshCw, Search, Download } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { StatsDisplay } from "@/components/shared/StatsDisplay"
+import { MapPin, RefreshCw, Search, Download } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface ControlPanelProps {
   ipAddress: string
@@ -34,9 +34,9 @@ export default function ControlPanel({
   onLoadCurrentIP,
   onClear,
   onDownload,
-  hasCurrentIP,
+  hasCurrentIP
 }: ControlPanelProps) {
-  const t = useTranslations('IpInfoPage.ControlPanel')
+  const t = useTranslations("IpInfoPage.ControlPanel")
 
   return (
     <div className="space-y-6">
@@ -50,7 +50,7 @@ export default function ControlPanel({
           disabled={!hasCurrentIP}
         >
           <MapPin className="mr-2 h-4 w-4" />
-          {t('currentIpButton')}
+          {t("currentIpButton")}
         </Button>
         <Button
           onClick={onClear}
@@ -59,7 +59,7 @@ export default function ControlPanel({
           className="border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <RefreshCw className="mr-2 h-4 w-4" />
-          {t('clearButton')}
+          {t("clearButton")}
         </Button>
         {canDownload && (
           <Button
@@ -69,7 +69,7 @@ export default function ControlPanel({
             className="border-green-500/50 text-green-400 hover:bg-green-500/10 dark:border-green-400/50 dark:text-green-300 dark:hover:bg-green-400/10"
           >
             <Download className="mr-2 h-4 w-4" />
-            {t('downloadButton')}
+            {t("downloadButton")}
           </Button>
         )}
       </div>
@@ -83,7 +83,9 @@ export default function ControlPanel({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="ml-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">{t('title')}</span>
+          <span className="ml-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            {t("title")}
+          </span>
         </div>
 
         {/* Input Content */}
@@ -91,7 +93,7 @@ export default function ControlPanel({
           <div className="space-y-4">
             <div>
               <Input
-                placeholder={t('inputPlaceholder')}
+                placeholder={t("inputPlaceholder")}
                 value={ipAddress}
                 onChange={(e) => onIpAddressChange(e.target.value)}
                 className="border-zinc-300 bg-zinc-50/50 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-800/50"
@@ -112,7 +114,7 @@ export default function ControlPanel({
                 className="bg-gradient-to-r from-blue-600 to-purple-600 disabled:text-white"
               >
                 <Search className="mr-2 h-4 w-4" />
-                {isLoading ? t('loadingStatus') : t('analyzeButton')}
+                {isLoading ? t("loadingStatus") : t("analyzeButton")}
               </ShimmerButton>
             </div>
           </div>

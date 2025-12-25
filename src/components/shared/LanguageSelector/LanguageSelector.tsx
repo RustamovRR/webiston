@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Globe, ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import dynamic from 'next/dynamic'
+import { Globe, ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import dynamic from "next/dynamic"
 
 // Skeleton loading component
 const LanguageSelectorSkeleton = () => (
@@ -25,10 +25,13 @@ const LanguageSelectorSkeleton = () => (
 )
 
 // Dynamic import to avoid SSR issues
-const LanguageSelectorContent = dynamic(() => import('./LanguageSelectorContent'), {
-  ssr: false,
-  loading: () => <LanguageSelectorSkeleton />,
-})
+const LanguageSelectorContent = dynamic(
+  () => import("./LanguageSelectorContent"),
+  {
+    ssr: false,
+    loading: () => <LanguageSelectorSkeleton />
+  }
+)
 
 export default function LanguageSelector() {
   return <LanguageSelectorContent />

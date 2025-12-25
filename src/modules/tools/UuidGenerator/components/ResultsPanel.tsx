@@ -1,9 +1,9 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { Download, Hash } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { StatsDisplay, CopyButton } from '@/components/shared'
-import { cn } from '@/lib'
+import React from "react"
+import { useTranslations } from "next-intl"
+import { Download, Hash } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { StatsDisplay, CopyButton } from "@/components/shared"
+import { cn } from "@/lib"
 
 interface UuidItem {
   id: string
@@ -19,8 +19,13 @@ interface ResultsPanelProps {
   onDownloadJson: () => void
 }
 
-const ResultsPanel: React.FC<ResultsPanelProps> = ({ uuids, outputStats, onDownloadTxt, onDownloadJson }) => {
-  const t = useTranslations('UuidGeneratorPage.ResultsPanel')
+const ResultsPanel: React.FC<ResultsPanelProps> = ({
+  uuids,
+  outputStats,
+  onDownloadTxt,
+  onDownloadJson
+}) => {
+  const t = useTranslations("UuidGeneratorPage.ResultsPanel")
 
   const canDownload = uuids.length > 0
 
@@ -34,26 +39,43 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({ uuids, outputStats, onDownl
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className={cn('h-2 w-2 rounded-full', uuids.length > 0 ? 'bg-green-500' : 'bg-zinc-500')}></div>
+            <div
+              className={cn(
+                "h-2 w-2 rounded-full",
+                uuids.length > 0 ? "bg-green-500" : "bg-zinc-500"
+              )}
+            ></div>
             <span className="text-xs text-zinc-500 dark:text-zinc-400">
-              {uuids.length > 0 ? t('statusGenerated') : t('statusEmpty')}
+              {uuids.length > 0 ? t("statusGenerated") : t("statusEmpty")}
             </span>
           </div>
 
           {/* Download Buttons */}
           {canDownload && (
             <div className="flex items-center gap-2">
-              <Button onClick={onDownloadTxt} variant="outline" size="sm" className="h-8">
+              <Button
+                onClick={onDownloadTxt}
+                variant="outline"
+                size="sm"
+                className="h-8"
+              >
                 <Download size={14} className="mr-1" />
-                {t('downloadTxt')}
+                {t("downloadTxt")}
               </Button>
-              <Button onClick={onDownloadJson} variant="outline" size="sm" className="h-8">
+              <Button
+                onClick={onDownloadJson}
+                variant="outline"
+                size="sm"
+                className="h-8"
+              >
                 <Download size={14} className="mr-1" />
-                {t('downloadJson')}
+                {t("downloadJson")}
               </Button>
             </div>
           )}
@@ -62,13 +84,17 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({ uuids, outputStats, onDownl
 
       {/* Panel Content */}
       <div className="p-6">
-        {uuids.length > 0 && <StatsDisplay stats={outputStats} className="mb-6" />}
+        {uuids.length > 0 && (
+          <StatsDisplay stats={outputStats} className="mb-6" />
+        )}
 
         {uuids.length === 0 ? (
           <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700">
             <div className="text-center">
               <Hash className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-600" />
-              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('emptyMessage')}</p>
+              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                {t("emptyMessage")}
+              </p>
             </div>
           </div>
         ) : (
@@ -79,9 +105,11 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({ uuids, outputStats, onDownl
                 className="group flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-100/30 p-3 transition-colors hover:bg-zinc-100/50 dark:border-zinc-800 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="font-mono text-sm break-all text-zinc-800 dark:text-zinc-200">{item.uuid}</div>
+                  <div className="font-mono text-sm break-all text-zinc-800 dark:text-zinc-200">
+                    {item.uuid}
+                  </div>
                   <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {t('itemNumber')}
+                    {t("itemNumber")}
                     {index + 1} • {item.version.toUpperCase()} • {item.format}
                   </div>
                 </div>

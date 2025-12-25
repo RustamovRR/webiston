@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { motion } from 'framer-motion'
-import { cn } from '@/lib'
-import { useEffect, useRef } from 'react'
+import { motion } from "framer-motion"
+import { cn } from "@/lib"
+import { useEffect, useRef } from "react"
 
 const PASTE_THRESHOLD = 25
 
@@ -28,7 +28,7 @@ function SmartStream({ text, className }: SmartStreamProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className={cn('whitespace-pre-wrap', className)}
+        className={cn("whitespace-pre-wrap", className)}
       >
         {text}
       </motion.p>
@@ -36,7 +36,7 @@ function SmartStream({ text, className }: SmartStreamProps) {
   } else {
     const words = text.split(/(\s+)/)
     return (
-      <p className={cn('whitespace-pre-wrap', className)}>
+      <p className={cn("whitespace-pre-wrap", className)}>
         {words.map((word, i) => (
           <motion.span
             key={i}

@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
 // import { useGetTutorialContentPath } from '@/hooks/queries'
-import { cn } from '@/lib'
-import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+import { cn } from "@/lib"
+import Link from "next/link"
+import { useCallback, useEffect, useState } from "react"
 
 interface Heading {
   id: string
@@ -18,18 +18,20 @@ interface IProps {
 
 export default function TableOfContents({ slug }: IProps) {
   const [headings, setHeadings] = useState<Heading[]>([])
-  const [activeId, setActiveId] = useState<string>('')
+  const [activeId, setActiveId] = useState<string>("")
 
   // const { contentResponse, isLoading, isFetching } = useGetTutorialContentPath(slug)
 
   // Function to get all headings
   const getHeadings = useCallback(() => {
-    const elements = Array.from(document.querySelectorAll('article h2, article h3, article h4'))
+    const elements = Array.from(
+      document.querySelectorAll("article h2, article h3, article h4")
+    )
     return elements.map((element) => ({
       id: element.id,
-      text: element.textContent || '',
+      text: element.textContent || "",
       level: Number(element.tagName.charAt(1)),
-      element: element as HTMLElement,
+      element: element as HTMLElement
     }))
   }, [])
 
@@ -67,8 +69,8 @@ export default function TableOfContents({ slug }: IProps) {
     updateActiveHeading()
 
     // Add scroll listener
-    window.addEventListener('scroll', updateActiveHeading, { passive: true })
-    return () => window.removeEventListener('scroll', updateActiveHeading)
+    window.addEventListener("scroll", updateActiveHeading, { passive: true })
+    return () => window.removeEventListener("scroll", updateActiveHeading)
   }, [getActiveHeading, getHeadings])
 
   // Initial heading setup
@@ -84,11 +86,11 @@ export default function TableOfContents({ slug }: IProps) {
         const element = document.getElementById(hash)
         if (element) {
           // Use scrollIntoView with instant behavior
-          element.scrollIntoView({ behavior: 'instant' })
+          element.scrollIntoView({ behavior: "instant" })
           // Backup method if scrollIntoView doesn't work as expected
           window.scrollTo({
             top: element.offsetTop - 100,
-            behavior: 'instant',
+            behavior: "instant"
           })
         }
       }
@@ -103,7 +105,9 @@ export default function TableOfContents({ slug }: IProps) {
   return (
     <div className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
       <div className="sticky top-0 z-10">
-        <div className="bg-background pb-2 text-sm font-semibold">Ushbu sahifada</div>
+        <div className="bg-background pb-2 text-sm font-semibold">
+          Ushbu sahifada
+        </div>
         <div className="from-background pointer-events-none h-2 bg-gradient-to-b to-transparent" />
       </div>
       <ul className="space-y-1 text-sm">
@@ -111,21 +115,22 @@ export default function TableOfContents({ slug }: IProps) {
           <li
             key={`${heading.id} ${heading.level} ${heading.text}`}
             className={cn(
-              'group relative overflow-y-auto rounded-md',
-              heading.level === 2 && 'font-semibold',
-              heading.level === 3 && 'ml-3',
-              heading.level === 4 && 'ml-6'
+              "group relative overflow-y-auto rounded-md",
+              heading.level === 2 && "font-semibold",
+              heading.level === 3 && "ml-3",
+              heading.level === 4 && "ml-6"
             )}
           >
             <Link
               href={`#${heading.id}`}
               className={cn(
-                'block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200',
-                'text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white',
-                activeId === heading.id && 'font-semibold text-black dark:text-white'
+                "block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200",
+                "text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white",
+                activeId === heading.id &&
+                  "font-semibold text-black dark:text-white"
               )}
               style={{
-                wordBreak: 'break-word',
+                wordBreak: "break-word"
               }}
               onClick={(e) => {
                 e.preventDefault()
@@ -134,10 +139,10 @@ export default function TableOfContents({ slug }: IProps) {
                   // Use instant scroll behavior
                   window.scrollTo({
                     top: element.offsetTop - 100,
-                    behavior: 'instant',
+                    behavior: "instant"
                   })
                   setActiveId(heading.id)
-                  window.history.pushState(null, '', `#${heading.id}`)
+                  window.history.pushState(null, "", `#${heading.id}`)
                 }
               }}
             >

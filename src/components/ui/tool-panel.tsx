@@ -1,14 +1,14 @@
-import React from 'react'
-import { cn } from '@/lib'
-import { UI_PATTERNS, MACOS_DOTS, TEXT_STYLES } from '@/constants/ui-constants'
-import { StatsDisplay } from '@/components/shared/StatsDisplay'
+import React from "react"
+import { cn } from "@/lib"
+import { UI_PATTERNS, MACOS_DOTS, TEXT_STYLES } from "@/constants/ui-constants"
+import { StatsDisplay } from "@/components/shared/StatsDisplay"
 
 interface ToolPanelProps {
   title: string
   children: React.ReactNode
   actions?: React.ReactNode
   stats?: Array<{ label: string; value: number }>
-  variant?: 'terminal' | 'simple'
+  variant?: "terminal" | "simple"
   className?: string
   minHeight?: string
   maxHeight?: string
@@ -19,13 +19,15 @@ export const ToolPanel: React.FC<ToolPanelProps> = ({
   children,
   actions,
   stats,
-  variant = 'simple',
+  variant = "simple",
   className,
-  minHeight = '400px',
-  maxHeight = '500px',
+  minHeight = "400px",
+  maxHeight = "500px"
 }) => {
-  const isTerminal = variant === 'terminal'
-  const panelPattern = isTerminal ? UI_PATTERNS.TERMINAL_PANEL : UI_PATTERNS.INPUT_PANEL
+  const isTerminal = variant === "terminal"
+  const panelPattern = isTerminal
+    ? UI_PATTERNS.TERMINAL_PANEL
+    : UI_PATTERNS.INPUT_PANEL
 
   return (
     <div className={cn(panelPattern.container, className)}>
@@ -38,13 +40,17 @@ export const ToolPanel: React.FC<ToolPanelProps> = ({
               {MACOS_DOTS.map((dot, index) => (
                 <div
                   key={index}
-                  className={cn('h-3 w-3 cursor-pointer rounded-full transition-colors', dot.color, dot.hover)}
+                  className={cn(
+                    "h-3 w-3 cursor-pointer rounded-full transition-colors",
+                    dot.color,
+                    dot.hover
+                  )}
                 />
               ))}
             </div>
           )}
 
-          <span className={cn(TEXT_STYLES.SUBTITLE, 'ml-2')}>{title}</span>
+          <span className={cn(TEXT_STYLES.SUBTITLE, "ml-2")}>{title}</span>
         </div>
 
         {/* Actions */}
@@ -67,7 +73,7 @@ export const ToolPanel: React.FC<ToolPanelProps> = ({
 }
 
 // Specialized input panel for text areas
-interface TextInputPanelProps extends Omit<ToolPanelProps, 'children'> {
+interface TextInputPanelProps extends Omit<ToolPanelProps, "children"> {
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -114,7 +120,7 @@ export const TextInputPanel: React.FC<TextInputPanelProps> = ({
 }
 
 // Specialized output panel for displaying results
-interface OutputPanelProps extends Omit<ToolPanelProps, 'children'> {
+interface OutputPanelProps extends Omit<ToolPanelProps, "children"> {
   content: string
   error?: string
   emptyStateIcon?: React.ReactNode
@@ -145,13 +151,17 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
           </div>
         ) : content ? (
           <div>
-            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-50">{content}</pre>
+            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-50">
+              {content}
+            </pre>
             {additionalContent}
           </div>
         ) : (
           <div className="flex h-full items-center justify-center p-8 text-center">
             <div className="text-zinc-500">
-              {emptyStateIcon && <div className="mx-auto mb-4 opacity-50">{emptyStateIcon}</div>}
+              {emptyStateIcon && (
+                <div className="mx-auto mb-4 opacity-50">{emptyStateIcon}</div>
+              )}
               <p className="text-sm">{emptyStateMessage}</p>
               <p className="mt-2 text-xs opacity-75">Ma'lumot kiriting</p>
             </div>

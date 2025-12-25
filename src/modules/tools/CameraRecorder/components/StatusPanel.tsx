@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
 
 interface Camera {
   deviceId: string
@@ -33,22 +33,22 @@ export function StatusPanel({
   videoInfo,
   recordingInfo,
   selectedCamera,
-  cameras,
+  cameras
 }: StatusPanelProps) {
-  const t = useTranslations('CameraRecorderPage.StatusPanel')
+  const t = useTranslations("CameraRecorderPage.StatusPanel")
 
   const formatRecordingStatus = (status: string) => {
     switch (status) {
-      case 'recording':
-        return t('status.recording')
-      case 'stopping':
-        return t('status.stopping')
-      case 'stopped':
-        return t('status.stopped')
-      case 'idle':
-        return t('status.idle')
-      case 'acquiring_media':
-        return t('status.acquiring_media')
+      case "recording":
+        return t("status.recording")
+      case "stopping":
+        return t("status.stopping")
+      case "stopped":
+        return t("status.stopped")
+      case "idle":
+        return t("status.idle")
+      case "acquiring_media":
+        return t("status.acquiring_media")
       default:
         return status
     }
@@ -65,11 +65,15 @@ export function StatusPanel({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="flex min-w-0 items-center gap-3">
           <div
-            className={`h-3 w-3 flex-shrink-0 rounded-full ${isRecording ? 'animate-pulse bg-red-500' : 'bg-green-500'}`}
+            className={`h-3 w-3 flex-shrink-0 rounded-full ${isRecording ? "animate-pulse bg-red-500" : "bg-green-500"}`}
           ></div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">{t('status.label')}</div>
-            <div className="text-sm text-zinc-800 dark:text-zinc-100">{formatRecordingStatus(status)}</div>
+            <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">
+              {t("status.label")}
+            </div>
+            <div className="text-sm text-zinc-800 dark:text-zinc-100">
+              {formatRecordingStatus(status)}
+            </div>
           </div>
         </div>
 
@@ -77,7 +81,9 @@ export function StatusPanel({
           <div className="flex min-w-0 items-center gap-3">
             <div className="h-3 w-3 flex-shrink-0 rounded-full bg-blue-500"></div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">{t('quality.label')}</div>
+              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">
+                {t("quality.label")}
+              </div>
               <div className="text-sm text-zinc-800 dark:text-zinc-100">
                 {videoInfo.width}×{videoInfo.height} @ {videoInfo.frameRate}fps
               </div>
@@ -89,8 +95,12 @@ export function StatusPanel({
           <div className="flex min-w-0 items-center gap-3">
             <div className="h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-red-500"></div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">{t('duration.label')}</div>
-              <div className="font-mono text-sm text-red-600 dark:text-red-100">{recordingInfo.formattedDuration}</div>
+              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">
+                {t("duration.label")}
+              </div>
+              <div className="font-mono text-sm text-red-600 dark:text-red-100">
+                {recordingInfo.formattedDuration}
+              </div>
             </div>
           </div>
         )}
@@ -99,12 +109,18 @@ export function StatusPanel({
           <div className="flex min-w-0 items-center gap-3">
             <div className="h-3 w-3 flex-shrink-0 rounded-full bg-purple-500"></div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">{t('camera.label')}</div>
+              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-300">
+                {t("camera.label")}
+              </div>
               <div
                 className="truncate text-sm text-zinc-800 dark:text-zinc-100"
-                title={cameras.find((c) => c.deviceId === selectedCamera)?.label || t('camera.selected')}
+                title={
+                  cameras.find((c) => c.deviceId === selectedCamera)?.label ||
+                  t("camera.selected")
+                }
               >
-                {cameras.find((c) => c.deviceId === selectedCamera)?.label || t('camera.selected')}
+                {cameras.find((c) => c.deviceId === selectedCamera)?.label ||
+                  t("camera.selected")}
               </div>
             </div>
           </div>
@@ -114,9 +130,9 @@ export function StatusPanel({
       {isRecording && (
         <div className="mt-3 border-t border-zinc-300 pt-3 dark:border-zinc-700">
           <div className="flex flex-col gap-1 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between dark:text-zinc-400">
-            <span>{t('recording.format')}</span>
+            <span>{t("recording.format")}</span>
             <span>
-              {t('recording.quality')} {recordingInfo.qualityLabel}
+              {t("recording.quality")} {recordingInfo.qualityLabel}
             </span>
           </div>
         </div>

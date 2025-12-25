@@ -1,6 +1,6 @@
-import { FC, ReactNode } from 'react'
-import { cn } from '@/lib'
-import Link from 'next/link'
+import { FC, ReactNode } from "react"
+import { cn } from "@/lib"
+import Link from "next/link"
 
 interface IProps {
   icon: ReactNode
@@ -11,12 +11,21 @@ interface IProps {
   href: string
 }
 
-const SectionTitle: FC<IProps> = ({ icon, title, description, className, disabled, href }) => {
-  const classNames = cn('flex gap-4', { 'opacity-70': disabled }, className)
+const SectionTitle: FC<IProps> = ({
+  icon,
+  title,
+  description,
+  className,
+  disabled,
+  href
+}) => {
+  const classNames = cn("flex gap-4", { "opacity-70": disabled }, className)
 
   return (
     <div className={classNames}>
-      <div className="mt-1 shrink-0 transition-transform duration-700 ease-in-out">{icon}</div>
+      <div className="mt-1 shrink-0 transition-transform duration-700 ease-in-out">
+        {icon}
+      </div>
       <div>
         <h3 className="gradient-text text-xl font-semibold">
           <Link href={href}>{title} </Link>

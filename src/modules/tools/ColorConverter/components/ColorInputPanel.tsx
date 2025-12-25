@@ -1,7 +1,10 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { TerminalInput, type TerminalInputAction } from '@/components/shared/TerminalInput'
-import type { ColorFormats } from '../hooks/useColorConverter'
+import React from "react"
+import { useTranslations } from "next-intl"
+import {
+  TerminalInput,
+  type TerminalInputAction
+} from "@/components/shared/TerminalInput"
+import type { ColorFormats } from "../hooks/useColorConverter"
 
 interface ColorInputPanelProps {
   inputColor: string
@@ -10,29 +13,34 @@ interface ColorInputPanelProps {
   getColorName: (color: string) => string
 }
 
-const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputColor, colorFormats, getColorName }) => {
-  const t = useTranslations('ColorConverterPage.ColorInput')
+const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
+  inputColor,
+  setInputColor,
+  colorFormats,
+  getColorName
+}) => {
+  const t = useTranslations("ColorConverterPage.ColorInput")
 
   const presetColors = [
-    { color: '#3b82f6', name: "Ko'k" },
-    { color: '#ef4444', name: 'Qizil' },
-    { color: '#10b981', name: 'Yashil' },
-    { color: '#f59e0b', name: 'Sariq' },
-    { color: '#8b5cf6', name: 'Binafsha' },
-    { color: '#ec4899', name: 'Pushti' },
-    { color: '#06b6d4', name: 'Turkuaz' },
-    { color: '#84cc16', name: 'Yashil-sariq' },
-    { color: '#f97316', name: "To'q sariq" },
-    { color: '#6366f1', name: 'Indigo' },
-    { color: '#14b8a6', name: "Dengiz ko'ki" },
-    { color: '#f43f5e', name: 'Qizil-pushti' },
+    { color: "#3b82f6", name: "Ko'k" },
+    { color: "#ef4444", name: "Qizil" },
+    { color: "#10b981", name: "Yashil" },
+    { color: "#f59e0b", name: "Sariq" },
+    { color: "#8b5cf6", name: "Binafsha" },
+    { color: "#ec4899", name: "Pushti" },
+    { color: "#06b6d4", name: "Turkuaz" },
+    { color: "#84cc16", name: "Yashil-sariq" },
+    { color: "#f97316", name: "To'q sariq" },
+    { color: "#6366f1", name: "Indigo" },
+    { color: "#14b8a6", name: "Dengiz ko'ki" },
+    { color: "#f43f5e", name: "Qizil-pushti" }
   ]
 
   const actions: TerminalInputAction[] = []
 
   const statusText = colorFormats?.isValid
-    ? t('validFormat') || "To'g'ri format"
-    : t('invalidFormat') || "Noto'g'ri format"
+    ? t("validFormat") || "To'g'ri format"
+    : t("invalidFormat") || "Noto'g'ri format"
 
   const statusComponent = colorFormats?.isValid ? (
     <span className="flex items-center gap-1 text-xs text-green-500 dark:text-green-400">
@@ -53,26 +61,30 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
         <div className="space-y-4">
           <div className="flex items-center gap-4">
             <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t('color') || 'Rang:'}
+              {t("color") || "Rang:"}
             </label>
             <div className="relative">
               <input
                 type="color"
-                value={colorFormats?.isValid ? colorFormats.hex.slice(0, 7) : inputColor.slice(0, 7)}
+                value={
+                  colorFormats?.isValid
+                    ? colorFormats.hex.slice(0, 7)
+                    : inputColor.slice(0, 7)
+                }
                 onChange={(e) => {
                   const newColor = e.target.value
                   if (colorFormats?.opacity && colorFormats.opacity < 1) {
                     // Keep existing opacity
                     const alpha = Math.round(colorFormats.opacity * 255)
                       .toString(16)
-                      .padStart(2, '0')
+                      .padStart(2, "0")
                     setInputColor(`${newColor}${alpha}`)
                   } else {
                     setInputColor(newColor)
                   }
                 }}
                 className="h-16 w-24 cursor-pointer rounded-lg border-2 border-zinc-300 bg-transparent transition-all hover:border-zinc-400 focus:border-blue-500 dark:border-zinc-600 dark:hover:border-zinc-500"
-                title={t('colorPicker') || 'Rang tanlash'}
+                title={t("colorPicker") || "Rang tanlash"}
               />
             </div>
             <input
@@ -88,7 +100,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
           {colorFormats?.isValid && (
             <div className="flex items-center gap-4">
               <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('opacity') || 'Shaffoflik'}:
+                {t("opacity") || "Shaffoflik"}:
               </label>
               <div className="flex flex-1 items-center gap-3">
                 <input
@@ -102,7 +114,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                     const { r, g, b } = colorFormats.rgbValues
                     if (opacity === 1) {
                       // Use HEX format for full opacity
-                      const hex = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+                      const hex = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
                       setInputColor(hex)
                     } else {
                       // Use RGBA format for transparency
@@ -113,7 +125,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                   style={{
                     background: `linear-gradient(to right, 
                       rgba(${colorFormats.rgbValues.r}, ${colorFormats.rgbValues.g}, ${colorFormats.rgbValues.b}, 0) 0%, 
-                      rgba(${colorFormats.rgbValues.r}, ${colorFormats.rgbValues.g}, ${colorFormats.rgbValues.b}, 1) 100%)`,
+                      rgba(${colorFormats.rgbValues.r}, ${colorFormats.rgbValues.g}, ${colorFormats.rgbValues.b}, 1) 100%)`
                   }}
                 />
                 <span className="min-w-[50px] font-mono text-sm text-zinc-600 dark:text-zinc-400">
@@ -135,26 +147,30 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
               />
               <div className="flex-1">
                 <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                  {t('colorInfo') || "Rang ma'lumotlari"}
+                  {t("colorInfo") || "Rang ma'lumotlari"}
                 </h3>
                 {getColorName(inputColor) && (
                   <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {t('colorName') || 'Rang nomi'}: {getColorName(inputColor)}
+                    {t("colorName") || "Rang nomi"}: {getColorName(inputColor)}
                   </p>
                 )}
                 <div className="mt-2 grid grid-cols-3 gap-2 text-xs text-zinc-500 dark:text-zinc-500">
                   <div>
                     <span className="font-medium">RGB:</span>
                     <br />
-                    {colorFormats.rgbValues.r}, {colorFormats.rgbValues.g}, {colorFormats.rgbValues.b}
+                    {colorFormats.rgbValues.r}, {colorFormats.rgbValues.g},{" "}
+                    {colorFormats.rgbValues.b}
                   </div>
                   <div>
                     <span className="font-medium">HSL:</span>
                     <br />
-                    {colorFormats.hslValues.h}°, {colorFormats.hslValues.s}%, {colorFormats.hslValues.l}%
+                    {colorFormats.hslValues.h}°, {colorFormats.hslValues.s}%,{" "}
+                    {colorFormats.hslValues.l}%
                   </div>
                   <div>
-                    <span className="font-medium">{t('opacity') || 'Shaffoflik'}:</span>
+                    <span className="font-medium">
+                      {t("opacity") || "Shaffoflik"}:
+                    </span>
                     <br />
                     {Math.round(colorFormats.opacity * 100)}%
                   </div>
@@ -167,7 +183,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
         {/* Preset Colors */}
         <div>
           <h3 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {t('presetColors') || 'Tayyor ranglar:'}
+            {t("presetColors") || "Tayyor ranglar:"}
           </h3>
           <div className="grid grid-cols-6 gap-3">
             {presetColors.map((preset, index) => (
@@ -176,8 +192,8 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                 onClick={() => setInputColor(preset.color)}
                 className={`group relative h-10 w-10 rounded-lg border-2 transition-all hover:scale-110 hover:shadow-lg ${
                   inputColor.toLowerCase() === preset.color.toLowerCase()
-                    ? 'border-blue-500 ring-2 ring-blue-500/30 dark:border-blue-400 dark:ring-blue-400/30'
-                    : 'border-zinc-300 hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500'
+                    ? "border-blue-500 ring-2 ring-blue-500/30 dark:border-blue-400 dark:ring-blue-400/30"
+                    : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500"
                 }`}
                 style={{ backgroundColor: preset.color }}
                 title={`${preset.name} (${preset.color})`}
@@ -207,8 +223,8 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
     const glowColor = `rgba(${r}, ${g}, ${b}, ${Math.min(opacity * 0.15, 0.25)})`
 
     return {
-      '--ambient-color': ambientColor,
-      '--glow-color': glowColor,
+      "--ambient-color": ambientColor,
+      "--glow-color": glowColor
     } as React.CSSProperties
   }
 
@@ -222,7 +238,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
             style={{
               ...getAmbientStyles(),
               background: `radial-gradient(circle at 30% 20%, var(--ambient-color) 0%, transparent 50%), 
-                          radial-gradient(circle at 70% 80%, var(--ambient-color) 0%, transparent 50%)`,
+                          radial-gradient(circle at 70% 80%, var(--ambient-color) 0%, transparent 50%)`
             }}
             className="absolute inset-0 transition-all duration-700 ease-out"
           />
@@ -235,7 +251,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
                           var(--glow-color) 0%, 
                           transparent 25%, 
                           transparent 75%, 
-                          var(--glow-color) 100%)`,
+                          var(--glow-color) 100%)`
             }}
             className="absolute inset-0 opacity-60 blur-sm transition-all duration-700 ease-out dark:opacity-40"
           />
@@ -244,28 +260,28 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
           <div
             style={{
               ...getAmbientStyles(),
-              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`,
+              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`
             }}
             className="absolute inset-x-0 top-0 h-px opacity-80 transition-all duration-700 ease-out"
           />
           <div
             style={{
               ...getAmbientStyles(),
-              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`,
+              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`
             }}
             className="absolute inset-y-0 left-0 w-px opacity-80 transition-all duration-700 ease-out"
           />
           <div
             style={{
               ...getAmbientStyles(),
-              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`,
+              background: `linear-gradient(to bottom, var(--glow-color), transparent, var(--glow-color))`
             }}
             className="absolute inset-y-0 right-0 w-px opacity-80 transition-all duration-700 ease-out"
           />
           <div
             style={{
               ...getAmbientStyles(),
-              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`,
+              background: `linear-gradient(to right, var(--glow-color), transparent, var(--glow-color))`
             }}
             className="absolute inset-x-0 bottom-0 h-px opacity-80 transition-all duration-700 ease-out"
           />
@@ -274,14 +290,14 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({ inputColor, setInputC
 
       <div className="relative z-10">
         <TerminalInput
-          title={t('title') || 'Rang Tanlash'}
+          title={t("title") || "Rang Tanlash"}
           titleRight={statusComponent}
           actions={actions}
           customContent={customContent}
           showShadow={true}
           animate={true}
           className="h-[484px]"
-          variant={colorFormats?.isValid ? 'dynamic' : 'error'}
+          variant={colorFormats?.isValid ? "dynamic" : "error"}
           dynamicColor={colorFormats?.isValid ? inputColor : undefined}
           dynamicOpacity={colorFormats?.opacity}
         />

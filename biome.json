@@ -1,12 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true,
+    "ignoreUnknown": false,
     "includes": [
       "**/src/**/*",
       "**/scripts/**/*",
@@ -14,7 +14,7 @@
       "!**/node_modules",
       "!**/.next",
       "!**/public",
-      "!**/content/**/*",
+      "!**/content",
       "!**/*.mdx",
       "!**/*.md",
       "!**/*.css"
@@ -22,27 +22,60 @@
   },
   "formatter": {
     "enabled": true,
+    "formatWithErrors": false,
+    "attributePosition": "auto",
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 120
-  },
-  "linter": {
-    "enabled": false
+    "lineWidth": 80,
+    "lineEnding": "lf"
   },
   "assist": {
+    "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": {
+          "level": "on"
+        }
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "recommended": true,
+        "noStaticElementInteractions": "off",
+        "useSemanticElements": "off",
+        "useButtonType": "off"
+      },
+      "correctness": {
+        "recommended": true,
+        "useExhaustiveDependencies": "warn",
+        "noChildrenProp": "off",
+        "noUnusedFunctionParameters": "warn"
+      },
+      "style": {
+        "noDefaultExport": "off",
+        "noNonNullAssertion": "off",
+        "useImportType": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
       }
     }
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single",
+      "quoteStyle": "double",
       "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
       "semicolons": "asNeeded",
-      "trailingCommas": "es5",
-      "arrowParentheses": "always"
+      "trailingCommas": "none"
     }
   },
   "json": {

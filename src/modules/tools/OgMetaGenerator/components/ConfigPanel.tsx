@@ -1,28 +1,31 @@
-'use client'
+"use client"
 
-import { Settings, Eye } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { GradientTabs } from '@/components/ui'
+import { Settings, Eye } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { GradientTabs } from "@/components/ui"
 
 interface ConfigPanelProps {
   activeTab: string
   onTabChange: (tab: string) => void
 }
 
-const ConfigPanel: React.FC<ConfigPanelProps> = ({ activeTab, onTabChange }) => {
-  const t = useTranslations('OgMetaGeneratorPage.ConfigPanel')
+const ConfigPanel: React.FC<ConfigPanelProps> = ({
+  activeTab,
+  onTabChange
+}) => {
+  const t = useTranslations("OgMetaGeneratorPage.ConfigPanel")
 
   const tabOptions = [
     {
-      value: 'form',
-      label: t('form'),
-      icon: <Settings size={16} />,
+      value: "form",
+      label: t("form"),
+      icon: <Settings size={16} />
     },
     {
-      value: 'preview',
-      label: t('preview'),
-      icon: <Eye size={16} />,
-    },
+      value: "preview",
+      label: t("preview"),
+      icon: <Eye size={16} />
+    }
   ]
 
   return (
@@ -34,17 +37,27 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ activeTab, onTabChange }) => 
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">{t('status')}</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-500">
+            {t("status")}
+          </span>
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('workMode')}</h3>
-        <GradientTabs options={tabOptions} value={activeTab} onChange={onTabChange} />
+        <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          {t("workMode")}
+        </h3>
+        <GradientTabs
+          options={tabOptions}
+          value={activeTab}
+          onChange={onTabChange}
+        />
       </div>
     </div>
   )

@@ -1,1 +1,1 @@
-export { default } from './DeviceInfo'
+export { default } from "./DeviceInfo"

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Check, Copy } from 'lucide-react'
+import React, { useState } from "react"
+import { Check, Copy } from "lucide-react"
 
 interface ColorFormatItemProps {
   title: string
@@ -9,7 +9,13 @@ interface ColorFormatItemProps {
   onCopy?: (value: string) => void
 }
 
-const ColorFormatItem: React.FC<ColorFormatItemProps> = ({ title, value, description, colorClass, onCopy }) => {
+const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
+  title,
+  value,
+  description,
+  colorClass,
+  onCopy
+}) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async (e?: React.MouseEvent) => {
@@ -23,7 +29,7 @@ const ColorFormatItem: React.FC<ColorFormatItemProps> = ({ title, value, descrip
       // Reset copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      console.error('Failed to copy:', error)
+      console.error("Failed to copy:", error)
     }
   }
 
@@ -43,11 +49,19 @@ const ColorFormatItem: React.FC<ColorFormatItemProps> = ({ title, value, descrip
           className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-200 text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
           title="Copy to clipboard"
         >
-          {copied ? <Check size={14} className="text-green-600 dark:text-green-400" /> : <Copy size={14} />}
+          {copied ? (
+            <Check size={14} className="text-green-600 dark:text-green-400" />
+          ) : (
+            <Copy size={14} />
+          )}
         </button>
       </div>
-      <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">{value}</div>
-      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{description}</div>
+      <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">
+        {value}
+      </div>
+      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        {description}
+      </div>
     </div>
   )
 }

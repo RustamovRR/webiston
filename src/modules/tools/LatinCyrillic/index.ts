@@ -1,1 +1,1 @@
-export { default } from './LatinCyrillic'
+export { default } from "./LatinCyrillic"

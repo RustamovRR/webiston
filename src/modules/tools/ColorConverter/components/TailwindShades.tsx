@@ -1,9 +1,9 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { Copy, Check } from 'lucide-react'
-import { TerminalInput } from '@/components/shared/TerminalInput'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib'
+import React from "react"
+import { useTranslations } from "next-intl"
+import { Copy, Check } from "lucide-react"
+import { TerminalInput } from "@/components/shared/TerminalInput"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib"
 
 interface TailwindShadesProps {
   baseColor: string
@@ -16,8 +16,12 @@ interface TailwindShadesProps {
   isValid: boolean
 }
 
-const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isValid }) => {
-  const t = useTranslations('ColorConverterPage.TailwindShades')
+const TailwindShades: React.FC<TailwindShadesProps> = ({
+  baseColor,
+  shades,
+  isValid
+}) => {
+  const t = useTranslations("ColorConverterPage.TailwindShades")
   const [copiedShade, setCopiedShade] = React.useState<number | null>(null)
   const [copiedExport, setCopiedExport] = React.useState<string | null>(null)
 
@@ -27,7 +31,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
       setCopiedShade(shade)
       setTimeout(() => setCopiedShade(null), 2000)
     } catch (err) {
-      console.error('Copy failed:', err)
+      console.error("Copy failed:", err)
     }
   }
 
@@ -37,7 +41,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
       setCopiedExport(exportType)
       setTimeout(() => setCopiedExport(null), 2000)
     } catch (err) {
-      console.error('Copy failed:', err)
+      console.error("Copy failed:", err)
     }
   }
 
@@ -77,12 +81,16 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
 
                 {/* Shade number */}
                 <div className="mt-2 text-center">
-                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">{shade}</span>
+                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                    {shade}
+                  </span>
                 </div>
 
                 {/* Hex code */}
                 <div className="mt-1 text-center">
-                  <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">{hex}</span>
+                  <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                    {hex}
+                  </span>
                 </div>
               </div>
             ))}
@@ -91,7 +99,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
           {/* Export options */}
           <div className="mt-6 space-y-3">
             <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t('exportOptions') || 'Export variantlari:'}
+              {t("exportOptions") || "Export variantlari:"}
             </h4>
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -100,12 +108,16 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const cssVars = shades.map(({ shade, hex }) => `  --color-primary-${shade}: ${hex};`).join('\n')
-                  copyExportToClipboard(`:root {\n${cssVars}\n}`, 'css')
+                  const cssVars = shades
+                    .map(
+                      ({ shade, hex }) => `  --color-primary-${shade}: ${hex};`
+                    )
+                    .join("\n")
+                  copyExportToClipboard(`:root {\n${cssVars}\n}`, "css")
                 }}
                 className="cursor-pointer justify-start text-left"
               >
-                {copiedExport === 'css' ? (
+                {copiedExport === "css" ? (
                   <Check size={14} className="mr-2 text-green-500" />
                 ) : (
                   <Copy size={14} className="mr-2" />
@@ -118,12 +130,17 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const tailwindConfig = shades.map(({ shade, hex }) => `        '${shade}': '${hex}',`).join('\n')
-                  copyExportToClipboard(`      primary: {\n${tailwindConfig}\n      },`, 'tailwind')
+                  const tailwindConfig = shades
+                    .map(({ shade, hex }) => `        '${shade}': '${hex}',`)
+                    .join("\n")
+                  copyExportToClipboard(
+                    `      primary: {\n${tailwindConfig}\n      },`,
+                    "tailwind"
+                  )
                 }}
                 className="cursor-pointer justify-start text-left"
               >
-                {copiedExport === 'tailwind' ? (
+                {copiedExport === "tailwind" ? (
                   <Check size={14} className="mr-2 text-green-500" />
                 ) : (
                   <Copy size={14} className="mr-2" />
@@ -136,12 +153,14 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const scssVars = shades.map(({ shade, hex }) => `$primary-${shade}: ${hex};`).join('\n')
-                  copyExportToClipboard(scssVars, 'scss')
+                  const scssVars = shades
+                    .map(({ shade, hex }) => `$primary-${shade}: ${hex};`)
+                    .join("\n")
+                  copyExportToClipboard(scssVars, "scss")
                 }}
                 className="cursor-pointer justify-start text-left"
               >
-                {copiedExport === 'scss' ? (
+                {copiedExport === "scss" ? (
                   <Check size={14} className="mr-2 text-green-500" />
                 ) : (
                   <Copy size={14} className="mr-2" />
@@ -153,7 +172,9 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
         </div>
       ) : (
         <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
-          <p className="text-sm">{t('noValidColor') || "To'g'ri rang kiriting"}</p>
+          <p className="text-sm">
+            {t("noValidColor") || "To'g'ri rang kiriting"}
+          </p>
         </div>
       )}
     </div>
@@ -161,10 +182,10 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({ baseColor, shades, isVa
 
   return (
     <TerminalInput
-      title={t('title') || 'Tailwind Shades'}
+      title={t("title") || "Tailwind Shades"}
       subtitle={isValid ? `Base: ${baseColor}` : undefined}
       customContent={customContent}
-      variant={isValid ? 'success' : 'error'}
+      variant={isValid ? "success" : "error"}
       showShadow={true}
       animate={true}
     />

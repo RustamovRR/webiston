@@ -1,7 +1,7 @@
-export { default as ControlPanel } from './ControlPanel'
-export { default as OutputPanel } from './OutputPanel'
-export { default as CurrentIpPanel } from './CurrentIpPanel'
-export { default as SampleIpsPanel } from './SampleIpsPanel'
-export { default as InfoSection } from './InfoSection'
-export { default as MapView } from './MapView'
-export { default as SecurityAnalysis } from './SecurityAnalysis'
+export { default as ControlPanel } from "./ControlPanel"
+export { default as OutputPanel } from "./OutputPanel"
+export { default as CurrentIpPanel } from "./CurrentIpPanel"
+export { default as SampleIpsPanel } from "./SampleIpsPanel"
+export { default as InfoSection } from "./InfoSection"
+export { default as MapView } from "./MapView"
+export { default as SecurityAnalysis } from "./SecurityAnalysis"

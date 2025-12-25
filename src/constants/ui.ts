@@ -19,8 +19,8 @@ import {
   User,
   MapPin,
   Globe2,
-  Server,
-} from 'lucide-react'
+  Server
+} from "lucide-react"
 
 export interface Tool {
   tKey: string
@@ -28,7 +28,7 @@ export interface Tool {
   icon: any
   color: string
   category: string
-  audience: 'general' | 'developer'
+  audience: "general" | "developer"
 }
 
 export interface ToolCategory {
@@ -40,142 +40,142 @@ export interface ToolCategory {
 
 export const TOOLS_LIST: Tool[] = [
   {
-    tKey: 'qrGenerator',
-    href: '/tools/qr-generator',
+    tKey: "qrGenerator",
+    href: "/tools/qr-generator",
     icon: QrCode,
-    color: 'bg-yellow-500/20',
-    category: 'generators',
-    audience: 'general',
+    color: "bg-yellow-500/20",
+    category: "generators",
+    audience: "general"
   },
   {
-    tKey: 'latinCyrillic',
-    href: '/tools/latin-cyrillic',
+    tKey: "latinCyrillic",
+    href: "/tools/latin-cyrillic",
     icon: RotateCcw,
-    color: 'bg-blue-500/20',
-    category: 'converters',
-    audience: 'general',
+    color: "bg-blue-500/20",
+    category: "converters",
+    audience: "general"
   },
   {
-    tKey: 'jsonFormatter',
-    href: '/tools/json-formatter',
+    tKey: "jsonFormatter",
+    href: "/tools/json-formatter",
     icon: FileText,
-    color: 'bg-green-500/20',
-    category: 'converters',
-    audience: 'developer',
+    color: "bg-green-500/20",
+    category: "converters",
+    audience: "developer"
   },
   {
-    tKey: 'base64Converter',
-    href: '/tools/base64-converter',
+    tKey: "base64Converter",
+    href: "/tools/base64-converter",
     icon: Hash,
-    color: 'bg-purple-500/20',
-    category: 'converters',
-    audience: 'developer',
+    color: "bg-purple-500/20",
+    category: "converters",
+    audience: "developer"
   },
   {
-    tKey: 'urlEncoder',
-    href: '/tools/url-encoder',
+    tKey: "urlEncoder",
+    href: "/tools/url-encoder",
     icon: Link,
-    color: 'bg-orange-500/20',
-    category: 'converters',
-    audience: 'developer',
+    color: "bg-orange-500/20",
+    category: "converters",
+    audience: "developer"
   },
   {
-    tKey: 'jwtDecoder',
-    href: '/tools/jwt-decoder',
+    tKey: "jwtDecoder",
+    href: "/tools/jwt-decoder",
     icon: Key,
-    color: 'bg-red-500/20',
-    category: 'converters',
-    audience: 'developer',
+    color: "bg-red-500/20",
+    category: "converters",
+    audience: "developer"
   },
   {
-    tKey: 'colorConverter',
-    href: '/tools/color-converter',
+    tKey: "colorConverter",
+    href: "/tools/color-converter",
     icon: Palette,
-    color: 'bg-pink-500/20',
-    category: 'converters',
-    audience: 'general',
+    color: "bg-pink-500/20",
+    category: "converters",
+    audience: "general"
   },
   {
-    tKey: 'hashGenerator',
-    href: '/tools/hash-generator',
+    tKey: "hashGenerator",
+    href: "/tools/hash-generator",
     icon: Hash,
-    color: 'bg-indigo-500/20',
-    category: 'generators',
-    audience: 'developer',
+    color: "bg-indigo-500/20",
+    category: "generators",
+    audience: "developer"
   },
   {
-    tKey: 'uuidGenerator',
-    href: '/tools/uuid-generator',
+    tKey: "uuidGenerator",
+    href: "/tools/uuid-generator",
     icon: Shuffle,
-    color: 'bg-teal-500/20',
-    category: 'generators',
-    audience: 'developer',
+    color: "bg-teal-500/20",
+    category: "generators",
+    audience: "developer"
   },
   {
-    tKey: 'passwordGenerator',
-    href: '/tools/password-generator',
+    tKey: "passwordGenerator",
+    href: "/tools/password-generator",
     icon: Lock,
-    color: 'bg-cyan-500/20',
-    category: 'generators',
-    audience: 'general',
+    color: "bg-cyan-500/20",
+    category: "generators",
+    audience: "general"
   },
   {
-    tKey: 'deviceInfo',
-    href: '/tools/device-info',
+    tKey: "deviceInfo",
+    href: "/tools/device-info",
     icon: Monitor,
-    color: 'bg-slate-500/20',
-    category: 'analyzers',
-    audience: 'general',
+    color: "bg-slate-500/20",
+    category: "analyzers",
+    audience: "general"
   },
   {
-    tKey: 'ogMetaGenerator',
-    href: '/tools/og-meta-generator',
+    tKey: "ogMetaGenerator",
+    href: "/tools/og-meta-generator",
     icon: Share2,
-    color: 'bg-blue-500/20',
-    category: 'generators',
-    audience: 'developer',
+    color: "bg-blue-500/20",
+    category: "generators",
+    audience: "developer"
   },
   {
-    tKey: 'screenResolution',
-    href: '/tools/screen-resolution',
+    tKey: "screenResolution",
+    href: "/tools/screen-resolution",
     icon: Ruler,
-    color: 'bg-purple-600/20',
-    category: 'analyzers',
-    audience: 'general',
+    color: "bg-purple-600/20",
+    category: "analyzers",
+    audience: "general"
   },
   {
-    tKey: 'loremIpsum',
-    href: '/tools/lorem-ipsum',
+    tKey: "loremIpsum",
+    href: "/tools/lorem-ipsum",
     icon: FileType,
-    color: 'bg-gray-500/20',
-    category: 'generators',
-    audience: 'general',
+    color: "bg-gray-500/20",
+    category: "generators",
+    audience: "general"
   },
 
   {
-    tKey: 'ipInfo',
-    href: '/tools/ip-info',
+    tKey: "ipInfo",
+    href: "/tools/ip-info",
     icon: MapPin,
-    color: 'bg-red-600/20',
-    category: 'analyzers',
-    audience: 'general',
+    color: "bg-red-600/20",
+    category: "analyzers",
+    audience: "general"
   },
   {
-    tKey: 'cameraRecorder',
-    href: '/tools/camera-recorder',
+    tKey: "cameraRecorder",
+    href: "/tools/camera-recorder",
     icon: Camera,
-    color: 'bg-emerald-500/20',
-    category: 'utilities',
-    audience: 'general',
+    color: "bg-emerald-500/20",
+    category: "utilities",
+    audience: "general"
   },
   {
-    tKey: 'microphoneTest',
-    href: '/tools/microphone-test',
+    tKey: "microphoneTest",
+    href: "/tools/microphone-test",
     icon: Mic,
-    color: 'bg-blue-600/20',
-    category: 'utilities',
-    audience: 'general',
-  },
+    color: "bg-blue-600/20",
+    category: "utilities",
+    audience: "general"
+  }
   // {
   //   tKey: 'keycodeInfo',
   //   href: '/tools/keycode-info',
@@ -211,32 +211,36 @@ export const TOOLS_LIST: Tool[] = [
   // },
 ]
 
-export const TOOL_CATEGORIES: Omit<ToolCategory, 'title' | 'description'>[] = [
+export const TOOL_CATEGORIES: Omit<ToolCategory, "title" | "description">[] = [
   {
-    id: 'converters',
-    tools: TOOLS_LIST.filter((tool) => tool.category === 'converters'),
+    id: "converters",
+    tools: TOOLS_LIST.filter((tool) => tool.category === "converters")
   },
   {
-    id: 'generators',
-    tools: TOOLS_LIST.filter((tool) => tool.category === 'generators'),
+    id: "generators",
+    tools: TOOLS_LIST.filter((tool) => tool.category === "generators")
   },
   {
-    id: 'analyzers',
-    tools: TOOLS_LIST.filter((tool) => tool.category === 'analyzers'),
+    id: "analyzers",
+    tools: TOOLS_LIST.filter((tool) => tool.category === "analyzers")
   },
   {
-    id: 'utilities',
-    tools: TOOLS_LIST.filter((tool) => tool.category === 'utilities'),
-  },
+    id: "utilities",
+    tools: TOOLS_LIST.filter((tool) => tool.category === "utilities")
+  }
 ]
 
 // Filter options for the UI
 export const FILTER_OPTIONS = [
-  { value: 'all', icon: Globe },
-  { value: 'converters', icon: RotateCcw },
-  { value: 'generators', icon: Shuffle },
-  { value: 'analyzers', icon: Monitor },
-  { value: 'utilities', icon: FileText },
+  { value: "all", icon: Globe },
+  { value: "converters", icon: RotateCcw },
+  { value: "generators", icon: Shuffle },
+  { value: "analyzers", icon: Monitor },
+  { value: "utilities", icon: FileText }
 ]
 
-export const AUDIENCE_FILTERS = [{ value: 'all' }, { value: 'general' }, { value: 'developer' }]
+export const AUDIENCE_FILTERS = [
+  { value: "all" },
+  { value: "general" },
+  { value: "developer" }
+]

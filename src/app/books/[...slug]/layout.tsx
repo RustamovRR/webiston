@@ -1,7 +1,12 @@
-import { TutorialLayout } from '@/components/mdx'
-import { getMDXContent, getTutorialNavigation, getTutorialTitle, serializeContent } from '@/lib/mdx'
-import { notFound } from 'next/navigation'
-import NavigationStoreInitializer from '@/components/mdx/NavigationStoreInitializer'
+import { TutorialLayout } from "@/components/mdx"
+import {
+  getMDXContent,
+  getTutorialNavigation,
+  getTutorialTitle,
+  serializeContent
+} from "@/lib/mdx"
+import { notFound } from "next/navigation"
+import NavigationStoreInitializer from "@/components/mdx/NavigationStoreInitializer"
 
 export default async function TutorialsLayout({ children, params }: any) {
   const { slug } = await params
@@ -11,13 +16,13 @@ export default async function TutorialsLayout({ children, params }: any) {
   }
 
   const tutorialId = slug[0]
-  const currentPath = slug.slice(1).join('/')
+  const currentPath = slug.slice(1).join("/")
 
   // Fetch navigation and title on the server
   const navigationItems = await getTutorialNavigation(tutorialId)
   const tutorialTitle = getTutorialTitle(tutorialId)
 
-  let pageTitle = ''
+  let pageTitle = ""
 
   // Only fetch content and title for actual content pages, not the landing page
   if (currentPath) {
@@ -31,14 +36,17 @@ export default async function TutorialsLayout({ children, params }: any) {
         pageTitle = h1Title
       } else {
         const serializedContent = await serializeContent(contentText, false)
-        pageTitle = (serializedContent.frontmatter?.title as string) || ''
+        pageTitle = (serializedContent.frontmatter?.title as string) || ""
       }
     }
   }
 
   return (
     <>
-      <NavigationStoreInitializer tutorialId={tutorialId} navigationItems={navigationItems} />
+      <NavigationStoreInitializer
+        tutorialId={tutorialId}
+        navigationItems={navigationItems}
+      />
       <TutorialLayout
         params={await params}
         pageTitle={pageTitle}

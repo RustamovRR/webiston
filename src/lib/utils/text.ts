@@ -15,7 +15,7 @@ export const countWords = (text: string): number => {
  */
 export const countLines = (text: string): number => {
   if (!text) return 0
-  return text.split('\n').length
+  return text.split("\n").length
 }
 
 /**
@@ -26,7 +26,7 @@ export const countLines = (text: string): number => {
 export const getTextStats = (text: string) => ({
   characters: text.length,
   words: countWords(text),
-  lines: countLines(text),
+  lines: countLines(text)
 })
 
 /**
@@ -36,7 +36,11 @@ export const getTextStats = (text: string) => ({
  * @param suffix - Suffix to add when truncated (default: '...')
  * @returns Truncated text
  */
-export const truncateText = (text: string, maxLength: number, suffix = '...'): string => {
+export const truncateText = (
+  text: string,
+  maxLength: number,
+  suffix = "..."
+): string => {
   if (text.length <= maxLength) return text
   return text.slice(0, maxLength - suffix.length) + suffix
 }
@@ -48,8 +52,8 @@ export const truncateText = (text: string, maxLength: number, suffix = '...'): s
  */
 export const cleanText = (text: string): string => {
   return text
-    .replace(/\r\n/g, '\n') // Normalize line endings
-    .replace(/\r/g, '\n') // Handle legacy Mac line endings
+    .replace(/\r\n/g, "\n") // Normalize line endings
+    .replace(/\r/g, "\n") // Handle legacy Mac line endings
     .trim()
 }
 

@@ -1,10 +1,18 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { RefreshCw, Clock, Shuffle, Hash, FileText, Settings, Dice6 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { UuidVersion, UuidFormat } from '../hooks/useUuidGenerator'
-import { cn } from '@/lib'
+import React from "react"
+import { useTranslations } from "next-intl"
+import {
+  RefreshCw,
+  Clock,
+  Shuffle,
+  Hash,
+  FileText,
+  Settings,
+  Dice6
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ShimmerButton, GradientTabs } from "@/components/ui"
+import { UuidVersion, UuidFormat } from "../hooks/useUuidGenerator"
+import { cn } from "@/lib"
 
 interface ConfigPanelProps {
   count: number
@@ -37,11 +45,11 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   onLoadSample,
   hasResults,
   getVersionInfo,
-  getFormatInfo,
+  getFormatInfo
 }) => {
-  const t = useTranslations('UuidGeneratorPage.ConfigPanel')
-  const tVersion = useTranslations('UuidGeneratorPage.VersionSelector')
-  const tFormat = useTranslations('UuidGeneratorPage.FormatSelector')
+  const t = useTranslations("UuidGeneratorPage.ConfigPanel")
+  const tVersion = useTranslations("UuidGeneratorPage.VersionSelector")
+  const tFormat = useTranslations("UuidGeneratorPage.FormatSelector")
 
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 1
@@ -50,43 +58,43 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
   const versionOptions = [
     {
-      value: 'v4',
-      label: tVersion('v4'),
-      icon: <Shuffle size={16} />,
+      value: "v4",
+      label: tVersion("v4"),
+      icon: <Shuffle size={16} />
     },
     {
-      value: 'v1',
-      label: tVersion('v1'),
-      icon: <Clock size={16} />,
+      value: "v1",
+      label: tVersion("v1"),
+      icon: <Clock size={16} />
     },
     {
-      value: 'nil',
-      label: tVersion('nil'),
-      icon: <Hash size={16} />,
-    },
+      value: "nil",
+      label: tVersion("nil"),
+      icon: <Hash size={16} />
+    }
   ]
 
   const formatOptions = [
     {
-      value: 'standard',
-      label: tFormat('standard'),
-      icon: <Hash size={16} />,
+      value: "standard",
+      label: tFormat("standard"),
+      icon: <Hash size={16} />
     },
     {
-      value: 'compact',
-      label: tFormat('compact'),
-      icon: <FileText size={16} />,
+      value: "compact",
+      label: tFormat("compact"),
+      icon: <FileText size={16} />
     },
     {
-      value: 'brackets',
-      label: tFormat('brackets'),
-      icon: <Settings size={16} />,
+      value: "brackets",
+      label: tFormat("brackets"),
+      icon: <Settings size={16} />
     },
     {
-      value: 'uppercase',
-      label: tFormat('uppercase'),
-      icon: <Dice6 size={16} />,
-    },
+      value: "uppercase",
+      label: tFormat("uppercase"),
+      icon: <Dice6 size={16} />
+    }
   ]
 
   const currentVersionInfo = getVersionInfo(version)
@@ -102,11 +110,15 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">{t('status')}</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            {t("status")}
+          </span>
         </div>
       </div>
 
@@ -115,7 +127,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* UUID Version */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('versionLabel')}</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              {t("versionLabel")}
+            </label>
             <GradientTabs
               options={versionOptions}
               value={version}
@@ -123,21 +137,28 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               toolCategory="generators"
             />
             <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">{currentVersionInfo.description}</div>
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                {currentVersionInfo.description}
+              </div>
               <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">Xavfsizlik:</span>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Xavfsizlik:
+                </span>
                 <span
                   className={cn(
-                    'text-xs font-medium',
-                    currentVersionInfo.security === 'High' && 'text-green-400',
-                    currentVersionInfo.security === 'Medium' && 'text-yellow-400',
-                    currentVersionInfo.security === 'None' && 'text-red-400'
+                    "text-xs font-medium",
+                    currentVersionInfo.security === "High" && "text-green-400",
+                    currentVersionInfo.security === "Medium" &&
+                      "text-yellow-400",
+                    currentVersionInfo.security === "None" && "text-red-400"
                   )}
                 >
                   {currentVersionInfo.security}
                 </span>
                 {currentVersionInfo.recommended && (
-                  <span className="rounded bg-green-900/30 px-1.5 py-0.5 text-xs text-green-400">Tavsiya</span>
+                  <span className="rounded bg-green-900/30 px-1.5 py-0.5 text-xs text-green-400">
+                    Tavsiya
+                  </span>
                 )}
               </div>
             </div>
@@ -145,7 +166,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           {/* UUID Format */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('formatLabel')}</label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              {t("formatLabel")}
+            </label>
             <GradientTabs
               options={formatOptions}
               value={format}
@@ -153,8 +176,12 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               toolCategory="generators"
             />
             <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">{currentFormatInfo.description}</div>
-              <div className="mt-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">{currentFormatInfo.example}</div>
+              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                {currentFormatInfo.description}
+              </div>
+              <div className="mt-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                {currentFormatInfo.example}
+              </div>
             </div>
           </div>
         </div>
@@ -164,7 +191,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div className="flex flex-wrap items-center gap-4">
             {/* Count */}
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('countLabel')}</label>
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t("countLabel")}
+              </label>
               <input
                 type="number"
                 min="1"
@@ -174,23 +203,27 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 disabled={isGenerating}
                 className="w-20 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-colors focus:border-zinc-400 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-600"
               />
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">{t('countRange')}</span>
+              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                {t("countRange")}
+              </span>
             </div>
 
             {/* Sample selections */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">{t('sampleLabel')}</span>
+              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                {t("sampleLabel")}
+              </span>
               {sampleCounts.map((sample) => (
                 <Button
                   key={sample.value}
                   onClick={() => onLoadSample(sample.value)}
-                  variant={count === sample.value ? 'default' : 'ghost'}
+                  variant={count === sample.value ? "default" : "ghost"}
                   size="sm"
                   className={cn(
-                    'h-8 px-2 text-xs transition-colors',
+                    "h-8 px-2 text-xs transition-colors",
                     count === sample.value
-                      ? 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700'
-                      : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      ? "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+                      : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   )}
                 >
                   {sample.label}
@@ -201,15 +234,22 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           <div className="flex items-center gap-3">
             {/* Generate */}
-            <ShimmerButton onClick={onGenerate} disabled={isGenerating} size="sm">
-              <RefreshCw size={16} className={cn('mr-2', isGenerating && 'animate-spin')} />
-              {isGenerating ? t('generating') : t('generateButton')}
+            <ShimmerButton
+              onClick={onGenerate}
+              disabled={isGenerating}
+              size="sm"
+            >
+              <RefreshCw
+                size={16}
+                className={cn("mr-2", isGenerating && "animate-spin")}
+              />
+              {isGenerating ? t("generating") : t("generateButton")}
             </ShimmerButton>
 
             {/* Clear */}
             {hasResults && (
               <Button onClick={onClear} variant="outline" size="sm">
-                {t('clearButton')}
+                {t("clearButton")}
               </Button>
             )}
           </div>

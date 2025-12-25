@@ -1,1 +1,1 @@
-export { default } from './HashGenerator'
+export { default } from "./HashGenerator"

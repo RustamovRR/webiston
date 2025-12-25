@@ -1,10 +1,10 @@
-import { getMDXContent, getTutorialNavigation } from '@/lib/mdx'
-import { flattenNavigation, processContentForVideos } from '@/lib/content'
-import MDXContent from '../MDXContent'
-import ContentMeta from '../ContentMeta'
-import ErrorContent from '../ErrorContent'
-import { Pagination } from './Pagination'
-import matter from 'gray-matter'
+import { getMDXContent, getTutorialNavigation } from "@/lib/mdx"
+import { flattenNavigation, processContentForVideos } from "@/lib/content"
+import MDXContent from "../MDXContent"
+import ContentMeta from "../ContentMeta"
+import ErrorContent from "../ErrorContent"
+import { Pagination } from "./Pagination"
+import matter from "gray-matter"
 
 interface TutorialContentProps {
   slug: string[]
@@ -13,7 +13,7 @@ interface TutorialContentProps {
 export default async function TutorialContent({ slug }: TutorialContentProps) {
   try {
     // Current path is everything after the tutorial ID
-    const currentPath = slug.slice(1).join('/')
+    const currentPath = slug.slice(1).join("/")
     const tutorialId = slug[0]
 
     // Load navigation data
@@ -23,7 +23,7 @@ export default async function TutorialContent({ slug }: TutorialContentProps) {
     const contentText = await getMDXContent(tutorialId, currentPath)
 
     if (!contentText) {
-      throw new Error('Kontent topilmadi')
+      throw new Error("Kontent topilmadi")
     }
 
     // Parse frontmatter and content from the raw string using gray-matter
@@ -49,12 +49,17 @@ export default async function TutorialContent({ slug }: TutorialContentProps) {
         <ContentMeta updatedAt={updatedAt} />
 
         {/* Pagination */}
-        <Pagination currentPath={currentPath} tutorialId={slug[0]} flattenedNavigation={flattenedNavigation} />
+        <Pagination
+          currentPath={currentPath}
+          tutorialId={slug[0]}
+          flattenedNavigation={flattenedNavigation}
+        />
       </>
     )
   } catch (err) {
-    console.error('Error loading content:', err)
-    const errorMessage = err instanceof Error ? err.message : 'Kontent yuklashda xatolik yuz berdi'
+    console.error("Error loading content:", err)
+    const errorMessage =
+      err instanceof Error ? err.message : "Kontent yuklashda xatolik yuz berdi"
     return <ErrorContent message={errorMessage} />
   }
 }

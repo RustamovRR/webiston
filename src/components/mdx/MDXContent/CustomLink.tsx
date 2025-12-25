@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { ArrowUpRightIcon } from 'lucide-react'
+import Link from "next/link"
+import { ArrowUpRightIcon } from "lucide-react"
 
 interface CustomLinkProps {
   href?: string
@@ -7,17 +7,21 @@ interface CustomLinkProps {
   [key: string]: any
 }
 
-export default function CustomLink({ href, children, ...props }: CustomLinkProps) {
+export default function CustomLink({
+  href,
+  children,
+  ...props
+}: CustomLinkProps) {
   // Skip heading anchor links (they have aria-hidden)
-  if (props['aria-hidden'] === 'true' || props['aria-hidden'] === true) {
+  if (props["aria-hidden"] === "true" || props["aria-hidden"] === true) {
     return (
-      <Link href={href || '#'} {...props}>
+      <Link href={href || "#"} {...props}>
         {children}
       </Link>
     )
   }
 
-  const isExternal = href?.startsWith('http') || href?.startsWith('https')
+  const isExternal = href?.startsWith("http") || href?.startsWith("https")
 
   if (isExternal) {
     return (
@@ -40,7 +44,7 @@ export default function CustomLink({ href, children, ...props }: CustomLinkProps
 
   return (
     <Link
-      href={href || '#'}
+      href={href || "#"}
       className="!font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
       {...props}
     >

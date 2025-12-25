@@ -1,9 +1,9 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { Palette, Copy, Check, Plus, Minus, RotateCcw } from 'lucide-react'
-import { TerminalInput } from '@/components/shared/TerminalInput'
-import { Button } from '@/components/ui/button'
-import { hexToRgb, rgbToHex, hslToRgb, rgbToHsl } from '@/lib/utils'
+import React from "react"
+import { useTranslations } from "next-intl"
+import { Palette, Copy, Check, Plus, Minus, RotateCcw } from "lucide-react"
+import { TerminalInput } from "@/components/shared/TerminalInput"
+import { Button } from "@/components/ui/button"
+import { hexToRgb, rgbToHex, hslToRgb, rgbToHsl } from "@/lib/utils"
 
 interface GradientColor {
   color: string
@@ -15,13 +15,18 @@ interface GradientGeneratorProps {
   isValid: boolean
 }
 
-const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isValid }) => {
-  const t = useTranslations('ColorConverterPage.GradientGenerator')
-  const [gradientType, setGradientType] = React.useState<'linear' | 'radial' | 'conic'>('linear')
+const GradientGenerator: React.FC<GradientGeneratorProps> = ({
+  baseColor,
+  isValid
+}) => {
+  const t = useTranslations("ColorConverterPage.GradientGenerator")
+  const [gradientType, setGradientType] = React.useState<
+    "linear" | "radial" | "conic"
+  >("linear")
   const [direction, setDirection] = React.useState(90) // degrees for linear
   const [colors, setColors] = React.useState<GradientColor[]>([
     { color: baseColor, position: 0 },
-    { color: '#ffffff', position: 100 },
+    { color: "#ffffff", position: 100 }
   ])
   const [copiedItem, setCopiedItem] = React.useState<string | null>(null)
 
@@ -38,16 +43,19 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
       setCopiedItem(item)
       setTimeout(() => setCopiedItem(null), 2000)
     } catch (err) {
-      console.error('Copy failed:', err)
+      console.error("Copy failed:", err)
     }
   }
 
   const addColor = () => {
     if (colors.length >= 5) return // Max 5 colors
 
-    const newPosition = colors.length > 0 ? Math.round((colors[colors.length - 1].position + 100) / 2) : 50
+    const newPosition =
+      colors.length > 0
+        ? Math.round((colors[colors.length - 1].position + 100) / 2)
+        : 50
 
-    setColors((prev) => [...prev, { color: '#000000', position: newPosition }])
+    setColors((prev) => [...prev, { color: "#000000", position: newPosition }])
   }
 
   const removeColor = (index: number) => {
@@ -56,12 +64,18 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
   }
 
   const updateColor = (index: number, color: string) => {
-    setColors((prev) => prev.map((item, i) => (i === index ? { ...item, color } : item)))
+    setColors((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, color } : item))
+    )
   }
 
   const updatePosition = (index: number, position: number) => {
     setColors((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, position: Math.max(0, Math.min(100, position)) } : item))
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, position: Math.max(0, Math.min(100, position)) }
+          : item
+      )
     )
   }
 
@@ -79,7 +93,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
       randomColors.push({
         color: hex,
-        position: Math.round((100 / (numColors - 1)) * i),
+        position: Math.round((100 / (numColors - 1)) * i)
       })
     }
 
@@ -89,14 +103,16 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
   const generateCSS = () => {
     const sortedColors = [...colors].sort((a, b) => a.position - b.position)
-    const colorStops = sortedColors.map((c) => `${c.color} ${c.position}%`).join(', ')
+    const colorStops = sortedColors
+      .map((c) => `${c.color} ${c.position}%`)
+      .join(", ")
 
     switch (gradientType) {
-      case 'linear':
+      case "linear":
         return `linear-gradient(${direction}deg, ${colorStops})`
-      case 'radial':
+      case "radial":
         return `radial-gradient(circle, ${colorStops})`
-      case 'conic':
+      case "conic":
         return `conic-gradient(from ${direction}deg, ${colorStops})`
       default:
         return `linear-gradient(${direction}deg, ${colorStops})`
@@ -105,32 +121,32 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
   const generateTailwindCSS = () => {
     const sortedColors = [...colors].sort((a, b) => a.position - b.position)
-    const fromColor = sortedColors[0]?.color || '#000000'
-    const toColor = sortedColors[sortedColors.length - 1]?.color || '#ffffff'
+    const fromColor = sortedColors[0]?.color || "#000000"
+    const toColor = sortedColors[sortedColors.length - 1]?.color || "#ffffff"
 
     // Convert to Tailwind color names (simplified)
     const getColorName = (hex: string) => {
       const rgb = hexToRgb(hex)
-      if (!rgb) return 'gray-500'
+      if (!rgb) return "gray-500"
 
       const { r, g, b } = rgb
       const brightness = (r * 299 + g * 587 + b * 114) / 1000
 
-      if (brightness > 200) return 'gray-100'
-      if (brightness < 50) return 'gray-900'
-      return 'gray-500'
+      if (brightness > 200) return "gray-100"
+      if (brightness < 50) return "gray-900"
+      return "gray-500"
     }
 
     const directionClass =
       direction === 0
-        ? 'bg-gradient-to-t'
+        ? "bg-gradient-to-t"
         : direction === 90
-          ? 'bg-gradient-to-r'
+          ? "bg-gradient-to-r"
           : direction === 180
-            ? 'bg-gradient-to-b'
+            ? "bg-gradient-to-b"
             : direction === 270
-              ? 'bg-gradient-to-l'
-              : 'bg-gradient-to-br'
+              ? "bg-gradient-to-l"
+              : "bg-gradient-to-br"
 
     return `${directionClass} from-[${fromColor}] to-[${toColor}]`
   }
@@ -151,16 +167,18 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Type Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('type') || 'Turi:'}</label>
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  {t("type") || "Turi:"}
+                </label>
                 <div className="flex gap-1">
-                  {(['linear', 'radial', 'conic'] as const).map((type) => (
+                  {(["linear", "radial", "conic"] as const).map((type) => (
                     <button
                       key={type}
                       onClick={() => setGradientType(type)}
                       className={`rounded-md px-3 py-1 text-xs transition-colors ${
                         gradientType === type
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400'
+                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                          : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400"
                       }`}
                     >
                       {type}
@@ -172,7 +190,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
               {/* Direction Control */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  {t('direction') || "Yo'nalish:"} {direction}°
+                  {t("direction") || "Yo'nalish:"} {direction}°
                 </label>
                 <input
                   type="range"
@@ -187,11 +205,16 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
               {/* Random Button */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  {t('actions') || 'Amallar:'}
+                  {t("actions") || "Amallar:"}
                 </label>
-                <Button onClick={generateRandomGradient} variant="outline" size="sm" className="w-full">
+                <Button
+                  onClick={generateRandomGradient}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
                   <RotateCcw size={14} className="mr-2" />
-                  {t('random') || 'Tasodifiy'}
+                  {t("random") || "Tasodifiy"}
                 </Button>
               </div>
             </div>
@@ -201,11 +224,16 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                {t('colorStops') || 'Rang nuqtalari:'}
+                {t("colorStops") || "Rang nuqtalari:"}
               </h4>
-              <Button onClick={addColor} variant="outline" size="sm" disabled={colors.length >= 5}>
+              <Button
+                onClick={addColor}
+                variant="outline"
+                size="sm"
+                disabled={colors.length >= 5}
+              >
                 <Plus size={14} className="mr-1" />
-                {t('addColor') || "Rang qo'shish"}
+                {t("addColor") || "Rang qo'shish"}
               </Button>
             </div>
 
@@ -232,7 +260,9 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
                       min="0"
                       max="100"
                       value={colorStop.position}
-                      onChange={(e) => updatePosition(index, parseInt(e.target.value) || 0)}
+                      onChange={(e) =>
+                        updatePosition(index, parseInt(e.target.value) || 0)
+                      }
                       className="w-16 rounded border border-zinc-300 px-2 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
                     />
                     <span className="text-sm text-zinc-500">%</span>
@@ -255,7 +285,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
           {/* Export Options */}
           <div className="space-y-3">
             <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t('exportOptions') || 'Export variantlari:'}
+              {t("exportOptions") || "Export variantlari:"}
             </h4>
 
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -263,10 +293,10 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(generateCSS(), 'css')}
+                onClick={() => copyToClipboard(generateCSS(), "css")}
                 className="justify-start text-left"
               >
-                {copiedItem === 'css' ? (
+                {copiedItem === "css" ? (
                   <Check size={14} className="mr-2 text-green-500" />
                 ) : (
                   <Copy size={14} className="mr-2" />
@@ -278,10 +308,12 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(generateTailwindCSS(), 'tailwind')}
+                onClick={() =>
+                  copyToClipboard(generateTailwindCSS(), "tailwind")
+                }
                 className="justify-start text-left"
               >
-                {copiedItem === 'tailwind' ? (
+                {copiedItem === "tailwind" ? (
                   <Check size={14} className="mr-2 text-green-500" />
                 ) : (
                   <Copy size={14} className="mr-2" />
@@ -292,7 +324,9 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
             {/* CSS Code Preview */}
             <div className="rounded-lg bg-zinc-100 p-3 dark:bg-zinc-800">
-              <code className="font-mono text-sm text-zinc-800 dark:text-zinc-200">background: {generateCSS()};</code>
+              <code className="font-mono text-sm text-zinc-800 dark:text-zinc-200">
+                background: {generateCSS()};
+              </code>
             </div>
           </div>
         </>
@@ -300,7 +334,9 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
         <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
           <div className="text-center">
             <Palette size={32} className="mx-auto mb-2 opacity-50" />
-            <p className="text-sm">{t('noValidColor') || "To'g'ri rang kiriting"}</p>
+            <p className="text-sm">
+              {t("noValidColor") || "To'g'ri rang kiriting"}
+            </p>
           </div>
         </div>
       )}
@@ -309,10 +345,10 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({ baseColor, isVali
 
   return (
     <TerminalInput
-      title={t('title') || 'Gradient Generator'}
+      title={t("title") || "Gradient Generator"}
       subtitle={isValid ? `Base: ${baseColor}` : undefined}
       customContent={customContent}
-      variant={isValid ? 'info' : 'default'}
+      variant={isValid ? "info" : "default"}
       showShadow={true}
       animate={true}
       minHeight="400px"

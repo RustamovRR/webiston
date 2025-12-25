@@ -1,13 +1,18 @@
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { Upload, Download, FileText, X, ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import React from "react"
+import { useTranslations } from "next-intl"
+import { Upload, Download, FileText, X, ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ShimmerButton, GradientTabs } from "@/components/ui"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 
 interface ControlPanelProps {
-  activeTab: 'text' | 'file'
-  setActiveTab: (tab: 'text' | 'file') => void
+  activeTab: "text" | "file"
+  setActiveTab: (tab: "text" | "file") => void
   isGenerating: boolean
   canDownload: boolean
   sampleTexts: readonly { readonly label: string; readonly value: string }[]
@@ -28,13 +33,21 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onSampleSelect,
   onClear,
   onDownloadTxt,
-  onDownloadJson,
+  onDownloadJson
 }) => {
-  const t = useTranslations('HashGeneratorPage.ControlPanel')
+  const t = useTranslations("HashGeneratorPage.ControlPanel")
 
   const tabOptions = [
-    { value: 'text', label: t('textHash') || 'Matn Hash', icon: <FileText size={16} /> },
-    { value: 'file', label: t('fileHash') || 'Fayl Hash', icon: <Upload size={16} /> },
+    {
+      value: "text",
+      label: t("textHash") || "Matn Hash",
+      icon: <FileText size={16} />
+    },
+    {
+      value: "file",
+      label: t("fileHash") || "Fayl Hash",
+      icon: <Upload size={16} />
+    }
   ]
 
   return (
@@ -45,7 +58,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <GradientTabs
             value={activeTab}
             options={tabOptions}
-            onChange={(tab) => setActiveTab(tab as 'text' | 'file')}
+            onChange={(tab) => setActiveTab(tab as "text" | "file")}
           />
         </div>
 
@@ -62,7 +75,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <Button variant="outline" size="sm" asChild disabled={isGenerating}>
             <label htmlFor="file-upload" className="cursor-pointer">
               <Upload size={16} className="mr-2" />
-              {t('uploadFile') || 'Fayl yuklash'}
+              {t("uploadFile") || "Fayl yuklash"}
             </label>
           </Button>
 
@@ -71,13 +84,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <FileText size={16} className="mr-2" />
-                {t('sampleHash') || 'Namuna Hash'}
+                {t("sampleHash") || "Namuna Hash"}
                 <ChevronDown size={16} className="ml-2" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {sampleTexts.map((sample, index) => (
-                <DropdownMenuItem key={index} onClick={() => onSampleSelect(sample.value)}>
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => onSampleSelect(sample.value)}
+                >
                   {sample.label}
                 </DropdownMenuItem>
               ))}
@@ -87,7 +103,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           {/* Clear Button */}
           <Button variant="ghost" size="sm" onClick={onClear}>
             <X size={16} className="mr-2" />
-            {t('clear') || 'Tozalash'}
+            {t("clear") || "Tozalash"}
           </Button>
 
           {/* Download Buttons */}
@@ -99,18 +115,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
           >
             <Download size={16} className="mr-2" />
-            {t('downloadTxt') || 'TXT yuklab olish'}
+            {t("downloadTxt") || "TXT yuklab olish"}
           </ShimmerButton>
 
           <ShimmerButton
             onClick={onDownloadJson}
             disabled={!canDownload || isGenerating}
-            variant={canDownload ? 'default' : 'outline'}
+            variant={canDownload ? "default" : "outline"}
             size="sm"
             className="border-input border !bg-white hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
           >
             <Download size={16} className="mr-2" />
-            {t('downloadJson') || 'JSON yuklab olish'}
+            {t("downloadJson") || "JSON yuklab olish"}
           </ShimmerButton>
         </div>
       </div>

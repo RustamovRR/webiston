@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { cn } from '@/lib'
-import { motion, MotionProps } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { cn } from "@/lib"
+import { motion, MotionProps } from "motion/react"
+import { useEffect, useRef, useState } from "react"
 
 interface TypingAnimationProps extends MotionProps {
   children: string
@@ -18,15 +18,15 @@ export function TypingAnimation({
   className,
   duration = 100,
   delay = 0,
-  as: Component = 'div',
+  as: Component = "div",
   startOnView = false,
   ...props
 }: TypingAnimationProps) {
   const MotionComponent = motion.create(Component, {
-    forwardMotionProps: true,
+    forwardMotionProps: true
   })
 
-  const [displayedText, setDisplayedText] = useState<string>('')
+  const [displayedText, setDisplayedText] = useState<string>("")
   const [started, setStarted] = useState(false)
   const elementRef = useRef<HTMLElement | null>(null)
 
@@ -78,7 +78,10 @@ export function TypingAnimation({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn('text-4xl leading-[5rem] font-bold tracking-[-0.02em]', className)}
+      className={cn(
+        "text-4xl leading-[5rem] font-bold tracking-[-0.02em]",
+        className
+      )}
       {...props}
     >
       {displayedText}

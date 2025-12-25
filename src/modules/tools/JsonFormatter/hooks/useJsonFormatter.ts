@@ -1,30 +1,30 @@
-'use client'
+"use client"
 
-import { useState, useMemo, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState, useMemo, useCallback } from "react"
+import { useTranslations } from "next-intl"
 
 // Sample JSON data moved to constants
 export const SAMPLE_JSON_DATA = {
   foydalanuvchi: {
     id: 1,
-    ism: 'Ali Valiyev',
-    email: 'ali@example.com',
+    ism: "Ali Valiyev",
+    email: "ali@example.com",
     yosh: 30,
     manzil: {
-      viloyat: 'Toshkent',
-      tuman: 'Chilonzor',
+      viloyat: "Toshkent",
+      tuman: "Chilonzor",
       "ko'cha": "Amir Temur ko'chasi",
-      uy: '15',
+      uy: "15"
     },
-    telefon: ['+998901234567', '+998712345678'],
+    telefon: ["+998901234567", "+998712345678"],
     faol: true,
-    "ro'yxatdanOtganSana": '2024-01-15T10:30:00Z',
+    "ro'yxatdanOtganSana": "2024-01-15T10:30:00Z",
     sozlamalar: {
-      til: 'uz',
+      til: "uz",
       xabarNomalar: true,
-      "qorong'uRejim": false,
-    },
-  },
+      "qorong'uRejim": false
+    }
+  }
 }
 
 interface JsonResult {
@@ -35,76 +35,83 @@ interface JsonResult {
 }
 
 export const useJsonFormatter = () => {
-  const t = useTranslations('JsonFormatterPage.Errors')
-  const [inputJson, setInputJson] = useState('')
-  const [indentation, setIndentation] = useState('2')
+  const t = useTranslations("JsonFormatterPage.Errors")
+  const [inputJson, setInputJson] = useState("")
+  const [indentation, setIndentation] = useState("2")
   const [showLineNumbers, setShowLineNumbers] = useState(true)
   const [isMinified, setIsMinified] = useState(false)
 
   const jsonResult = useMemo((): JsonResult => {
     if (!inputJson.trim()) {
-      return { formatted: '', error: '', isValid: false, minified: '' }
+      return { formatted: "", error: "", isValid: false, minified: "" }
     }
 
     try {
       const parsed = JSON.parse(inputJson)
       const formatted = JSON.stringify(parsed, null, parseInt(indentation))
       const minified = JSON.stringify(parsed)
-      return { formatted, error: '', isValid: true, minified }
+      return { formatted, error: "", isValid: true, minified }
     } catch (error) {
-      let errorMessage = t('invalidJsonFormat')
+      let errorMessage = t("invalidJsonFormat")
 
       if (error instanceof SyntaxError) {
         const message = error.message
-        if (message.includes('Unexpected token')) {
-          errorMessage = t('unexpectedToken')
-        } else if (message.includes('Unexpected end')) {
-          errorMessage = t('unexpectedEnd')
-        } else if (message.includes('property name')) {
-          errorMessage = t('propertyName')
-        } else if (message.includes('Unexpected string')) {
-          errorMessage = t('unexpectedString')
+        if (message.includes("Unexpected token")) {
+          errorMessage = t("unexpectedToken")
+        } else if (message.includes("Unexpected end")) {
+          errorMessage = t("unexpectedEnd")
+        } else if (message.includes("property name")) {
+          errorMessage = t("propertyName")
+        } else if (message.includes("Unexpected string")) {
+          errorMessage = t("unexpectedString")
         } else {
-          errorMessage = `${t('jsonError')} ${message}`
+          errorMessage = `${t("jsonError")} ${message}`
         }
       }
 
       return {
-        formatted: '',
+        formatted: "",
         error: errorMessage,
         isValid: false,
-        minified: '',
+        minified: ""
       }
     }
   }, [inputJson, indentation, t])
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const handleFileUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
 
-    // File type validation
-    const validTypes = ['application/json', 'text/plain', 'text/json']
-    if (!validTypes.includes(file.type) && !file.name.endsWith('.json') && !file.name.endsWith('.txt')) {
-      alert('Faqat JSON yoki TXT fayllarni yuklash mumkin.')
-      return
-    }
+      // File type validation
+      const validTypes = ["application/json", "text/plain", "text/json"]
+      if (
+        !validTypes.includes(file.type) &&
+        !file.name.endsWith(".json") &&
+        !file.name.endsWith(".txt")
+      ) {
+        alert("Faqat JSON yoki TXT fayllarni yuklash mumkin.")
+        return
+      }
 
-    // File size validation (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      alert("Fayl hajmi 10MB dan kichik bo'lishi kerak.")
-      return
-    }
+      // File size validation (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert("Fayl hajmi 10MB dan kichik bo'lishi kerak.")
+        return
+      }
 
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const content = event.target?.result as string
-      setInputJson(content)
-    }
-    reader.onerror = () => {
-      alert("Faylni o'qishda xatolik yuz berdi.")
-    }
-    reader.readAsText(file)
-  }, [])
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const content = event.target?.result as string
+        setInputJson(content)
+      }
+      reader.onerror = () => {
+        alert("Faylni o'qishda xatolik yuz berdi.")
+      }
+      reader.readAsText(file)
+    },
+    []
+  )
 
   const loadSampleJson = useCallback(() => {
     setInputJson(JSON.stringify(SAMPLE_JSON_DATA, null, 2))
@@ -114,19 +121,24 @@ export const useJsonFormatter = () => {
     if (!jsonResult.isValid) return
 
     const content = isMinified ? jsonResult.minified : jsonResult.formatted
-    const blob = new Blob([content], { type: 'application/json' })
+    const blob = new Blob([content], { type: "application/json" })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     a.href = url
-    a.download = `json-${isMinified ? 'minified' : 'formatted'}-${Date.now()}.json`
+    a.download = `json-${isMinified ? "minified" : "formatted"}-${Date.now()}.json`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-  }, [jsonResult.isValid, jsonResult.formatted, jsonResult.minified, isMinified])
+  }, [
+    jsonResult.isValid,
+    jsonResult.formatted,
+    jsonResult.minified,
+    isMinified
+  ])
 
   const clearInput = useCallback(() => {
-    setInputJson('')
+    setInputJson("")
   }, [])
 
   const toggleMinify = useCallback(() => {
@@ -152,6 +164,6 @@ export const useJsonFormatter = () => {
     downloadResult,
     clearInput,
     toggleMinify,
-    toggleLineNumbers,
+    toggleLineNumbers
   }
 }

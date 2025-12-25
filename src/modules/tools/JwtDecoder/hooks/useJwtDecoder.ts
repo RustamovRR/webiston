@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
+import { useState, useMemo, useCallback } from "react"
+import { useTranslations } from "next-intl"
 
 interface JWTPayload {
   [key: string]: any
@@ -31,7 +31,7 @@ interface TokenInfo {
 
 interface JwtDecoderState {
   inputText: string
-  viewMode: 'decoded' | 'raw'
+  viewMode: "decoded" | "raw"
   showSignature: boolean
   isProcessing: boolean
   result: DecodedJWT | null
@@ -39,11 +39,11 @@ interface JwtDecoderState {
 }
 
 export const useJwtDecoder = () => {
-  const tErrors = useTranslations('JwtDecoderPage.ErrorDisplay')
-  const tFileErrors = useTranslations('JwtDecoderPage.FileErrors')
+  const tErrors = useTranslations("JwtDecoderPage.ErrorDisplay")
+  const tFileErrors = useTranslations("JwtDecoderPage.FileErrors")
 
-  const [inputText, setInputText] = useState('')
-  const [viewMode, setViewMode] = useState<'decoded' | 'raw'>('decoded')
+  const [inputText, setInputText] = useState("")
+  const [viewMode, setViewMode] = useState<"decoded" | "raw">("decoded")
   const [showSignature, setShowSignature] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -51,23 +51,23 @@ export const useJwtDecoder = () => {
   const samples = useMemo(
     () => [
       {
-        key: 'standard',
-        label: 'Standart JWT Token',
+        key: "standard",
+        label: "Standart JWT Token",
         value:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaSBWYWxpeWV2IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MDA5MzkwMjIsImlzcyI6IndlYmlzdG9uLnV6IiwiYXVkIjoidXNlcnMifQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY',
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaSBWYWxpeWV2IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MDA5MzkwMjIsImlzcyI6IndlYmlzdG9uLnV6IiwiYXVkIjoidXNlcnMifQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY"
       },
       {
-        key: 'expired',
-        label: 'Muddati tugagan JWT',
+        key: "expired",
+        label: "Muddati tugagan JWT",
         value:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlRlc3QgVXNlciIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjQyNjIyfQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY',
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlRlc3QgVXNlciIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjQyNjIyfQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY"
       },
       {
-        key: 'complex',
-        label: 'Murakkab Payload bilan',
+        key: "complex",
+        label: "Murakkab Payload bilan",
         value:
-          'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjEyMzQ1Njc4OTAifQ.eyJzdWIiOiJ1c2VyXzEyMzQ1IiwibmFtZSI6IkZheXpvbiAoZmF5em9uQHdlYmlzdG9uLnV6KSIsImVtYWlsIjoiZmF5em9uQHdlYmlzdG9uLnV6IiwiaWF0IjoxNjA5NDU5MjAwLCJleHAiOjE3MDA5MzkwMjIsIm5iZiI6MTYwOTQ1OTIwMCwiaXNzIjoid2ViaXN0b24udXoiLCJhdWQiOiJtb2JpbGUtYXBwIiwic2NvcGUiOiJyZWFkIHdyaXRlIiwidXNlcl9yb2xlIjoiYWRtaW4ifQ.signature_part_here',
-      },
+          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjEyMzQ1Njc4OTAifQ.eyJzdWIiOiJ1c2VyXzEyMzQ1IiwibmFtZSI6IkZheXpvbiAoZmF5em9uQHdlYmlzdG9uLnV6KSIsImVtYWlsIjoiZmF5em9uQHdlYmlzdG9uLnV6IiwiaWF0IjoxNjA5NDU5MjAwLCJleHAiOjE3MDA5MzkwMjIsIm5iZiI6MTYwOTQ1OTIwMCwiaXNzIjoid2ViaXN0b24udXoiLCJhdWQiOiJtb2JpbGUtYXBwIiwic2NvcGUiOiJyZWFkIHdyaXRlIiwidXNlcl9yb2xlIjoiYWRtaW4ifQ.signature_part_here"
+      }
     ],
     []
   )
@@ -77,38 +77,42 @@ export const useJwtDecoder = () => {
     if (!inputText.trim()) return null
 
     try {
-      const parts = inputText.trim().split('.')
+      const parts = inputText.trim().split(".")
       if (parts.length !== 3) {
         return {
           header: {},
           payload: {},
-          signature: '',
+          signature: "",
           isValid: false,
-          error: tErrors('threeParts'),
+          error: tErrors("threeParts")
         }
       }
 
       const [headerPart, payloadPart, signature] = parts
 
       // Decode header
-      const header = JSON.parse(atob(headerPart.replace(/-/g, '+').replace(/_/g, '/')))
+      const header = JSON.parse(
+        atob(headerPart.replace(/-/g, "+").replace(/_/g, "/"))
+      )
 
       // Decode payload
-      const payload = JSON.parse(atob(payloadPart.replace(/-/g, '+').replace(/_/g, '/')))
+      const payload = JSON.parse(
+        atob(payloadPart.replace(/-/g, "+").replace(/_/g, "/"))
+      )
 
       return {
         header,
         payload,
         signature,
-        isValid: true,
+        isValid: true
       }
     } catch (error) {
       return {
         header: {},
         payload: {},
-        signature: '',
+        signature: "",
         isValid: false,
-        error: tErrors('invalidFormat'),
+        error: tErrors("invalidFormat")
       }
     }
   }, [inputText, tErrors])
@@ -129,7 +133,7 @@ export const useJwtDecoder = () => {
       issuedAt: iat ? new Date(iat * 1000) : null,
       notBefore: nbf ? new Date(nbf * 1000) : null,
       algorithm: result.header.alg,
-      tokenType: result.header.typ,
+      tokenType: result.header.typ
     }
   }, [result])
 
@@ -141,14 +145,17 @@ export const useJwtDecoder = () => {
 
       // File size validation (10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert(tFileErrors('fileSizeError'))
+        alert(tFileErrors("fileSizeError"))
         return
       }
 
       // File type validation
-      const allowedTypes = ['text/plain', 'application/json']
-      if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|json)$/)) {
-        alert(tFileErrors('fileTypeError'))
+      const allowedTypes = ["text/plain", "application/json"]
+      if (
+        !allowedTypes.includes(file.type) &&
+        !file.name.match(/\.(txt|json)$/)
+      ) {
+        alert(tFileErrors("fileTypeError"))
         return
       }
 
@@ -162,12 +169,15 @@ export const useJwtDecoder = () => {
           setIsProcessing(false)
         }
         reader.onerror = () => {
-          alert(tFileErrors('fileReadError'))
+          alert(tFileErrors("fileReadError"))
           setIsProcessing(false)
         }
         reader.readAsText(file)
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : tFileErrors('fileUploadError')
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : tFileErrors("fileUploadError")
         alert(errorMessage)
         setIsProcessing(false)
       }
@@ -181,15 +191,15 @@ export const useJwtDecoder = () => {
 
     try {
       const content = JSON.stringify(result.header, null, 2)
-      const blob = new Blob([content], { type: 'application/json' })
+      const blob = new Blob([content], { type: "application/json" })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = url
-      a.download = 'jwt-header.json'
+      a.download = "jwt-header.json"
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      alert(tFileErrors('downloadError'))
+      alert(tFileErrors("downloadError"))
     }
   }, [result, tFileErrors])
 
@@ -198,15 +208,15 @@ export const useJwtDecoder = () => {
 
     try {
       const content = JSON.stringify(result.payload, null, 2)
-      const blob = new Blob([content], { type: 'application/json' })
+      const blob = new Blob([content], { type: "application/json" })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = url
-      a.download = 'jwt-payload.json'
+      a.download = "jwt-payload.json"
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      alert(tFileErrors('downloadError'))
+      alert(tFileErrors("downloadError"))
     }
   }, [result, tFileErrors])
 
@@ -217,7 +227,7 @@ export const useJwtDecoder = () => {
 
   // Clear input
   const handleClear = useCallback(() => {
-    setInputText('')
+    setInputText("")
   }, [])
 
   // Toggle signature visibility
@@ -235,14 +245,14 @@ export const useJwtDecoder = () => {
     () => ({
       characters: inputText.length,
       words: inputText.split(/\s+/).filter((word) => word.length > 0).length,
-      lines: inputText.split('\n').length,
+      lines: inputText.split("\n").length
     }),
     [inputText]
   )
 
   // Calculate parts count
   const partsCount = useMemo(() => {
-    return inputText.trim() ? inputText.split('.').length : 0
+    return inputText.trim() ? inputText.split(".").length : 0
   }, [inputText])
 
   return {
@@ -270,6 +280,6 @@ export const useJwtDecoder = () => {
     partsCount,
 
     // Sample data
-    samples,
+    samples
   }
 }

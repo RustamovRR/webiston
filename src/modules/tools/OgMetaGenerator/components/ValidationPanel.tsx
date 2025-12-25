@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { CheckCircle, AlertTriangle, XCircle, TrendingUp } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { CheckCircle, AlertTriangle, XCircle, TrendingUp } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface MetaData {
   title: string
@@ -21,7 +21,7 @@ interface ValidationPanelProps {
 }
 
 const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
-  const t = useTranslations('OgMetaGeneratorPage.ValidationPanel')
+  const t = useTranslations("OgMetaGeneratorPage.ValidationPanel")
 
   // Calculate SEO Score
   const calculateSeoScore = () => {
@@ -39,7 +39,10 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
     // Description validation (25 points)
     if (metaData.description) {
-      if (metaData.description.length >= 120 && metaData.description.length <= 160) {
+      if (
+        metaData.description.length >= 120 &&
+        metaData.description.length <= 160
+      ) {
         score += 25
       } else if (metaData.description.length > 0) {
         score += 12
@@ -48,18 +51,18 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
     // Image validation (20 points)
     if (metaData.image) {
-      if (metaData.image.startsWith('https://')) {
+      if (metaData.image.startsWith("https://")) {
         score += 20
-      } else if (metaData.image.startsWith('http://')) {
+      } else if (metaData.image.startsWith("http://")) {
         score += 10
       }
     }
 
     // URL validation (15 points)
     if (metaData.url) {
-      if (metaData.url.startsWith('https://')) {
+      if (metaData.url.startsWith("https://")) {
         score += 15
-      } else if (metaData.url.startsWith('http://')) {
+      } else if (metaData.url.startsWith("http://")) {
         score += 7
       }
     }
@@ -75,86 +78,87 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
   const seoScore = calculateSeoScore()
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 dark:text-green-400'
-    if (score >= 60) return 'text-yellow-600 dark:text-yellow-400'
-    return 'text-red-600 dark:text-red-400'
+    if (score >= 80) return "text-green-600 dark:text-green-400"
+    if (score >= 60) return "text-yellow-600 dark:text-yellow-400"
+    return "text-red-600 dark:text-red-400"
   }
 
   const getScoreIcon = (score: number) => {
     if (score >= 80) return <CheckCircle size={20} className="text-green-500" />
-    if (score >= 60) return <AlertTriangle size={20} className="text-yellow-500" />
+    if (score >= 60)
+      return <AlertTriangle size={20} className="text-yellow-500" />
     return <XCircle size={20} className="text-red-500" />
   }
 
   const validationChecks = [
     {
-      label: t('titleLength'),
+      label: t("titleLength"),
       status:
         metaData.title.length >= 30 && metaData.title.length <= 60
-          ? 'perfect'
+          ? "perfect"
           : metaData.title.length > 0
-            ? 'warning'
-            : 'error',
+            ? "warning"
+            : "error",
       message:
         metaData.title.length >= 30 && metaData.title.length <= 60
-          ? `${t('perfectLength')} (30-60 chars)`
+          ? `${t("perfectLength")} (30-60 chars)`
           : metaData.title.length > 60
-            ? `${t('tooLong')} (over 60 chars)`
+            ? `${t("tooLong")} (over 60 chars)`
             : metaData.title.length > 0
-              ? `${t('tooShort')} (under 30 chars)`
-              : t('titleRequired'),
+              ? `${t("tooShort")} (under 30 chars)`
+              : t("titleRequired")
     },
     {
-      label: t('descriptionLength'),
+      label: t("descriptionLength"),
       status:
         metaData.description.length >= 120 && metaData.description.length <= 160
-          ? 'perfect'
+          ? "perfect"
           : metaData.description.length > 0
-            ? 'warning'
-            : 'error',
+            ? "warning"
+            : "error",
       message:
         metaData.description.length >= 120 && metaData.description.length <= 160
-          ? `${t('perfectLength')} (120-160 chars)`
+          ? `${t("perfectLength")} (120-160 chars)`
           : metaData.description.length > 160
-            ? `${t('tooLong')} (over 160 chars)`
+            ? `${t("tooLong")} (over 160 chars)`
             : metaData.description.length > 0
-              ? `${t('tooShort')} (under 120 chars)`
-              : t('descriptionRequired'),
+              ? `${t("tooShort")} (under 120 chars)`
+              : t("descriptionRequired")
     },
     {
-      label: t('imageUrl'),
-      status: metaData.image.startsWith('https://')
-        ? 'perfect'
-        : metaData.image.startsWith('http://')
-          ? 'warning'
+      label: t("imageUrl"),
+      status: metaData.image.startsWith("https://")
+        ? "perfect"
+        : metaData.image.startsWith("http://")
+          ? "warning"
           : metaData.image.length > 0
-            ? 'warning'
-            : 'error',
-      message: metaData.image.startsWith('https://')
-        ? t('secureHttpsImage')
-        : metaData.image.startsWith('http://')
-          ? t('useHttps')
+            ? "warning"
+            : "error",
+      message: metaData.image.startsWith("https://")
+        ? t("secureHttpsImage")
+        : metaData.image.startsWith("http://")
+          ? t("useHttps")
           : metaData.image.length > 0
-            ? t('invalidFormat')
-            : 'Image URL required',
+            ? t("invalidFormat")
+            : "Image URL required"
     },
     {
-      label: t('pageUrl'),
-      status: metaData.url.startsWith('https://')
-        ? 'perfect'
-        : metaData.url.startsWith('http://')
-          ? 'warning'
+      label: t("pageUrl"),
+      status: metaData.url.startsWith("https://")
+        ? "perfect"
+        : metaData.url.startsWith("http://")
+          ? "warning"
           : metaData.url.length > 0
-            ? 'warning'
-            : 'error',
-      message: metaData.url.startsWith('https://')
-        ? t('secureHttpsUrl')
-        : metaData.url.startsWith('http://')
-          ? t('useHttps')
+            ? "warning"
+            : "error",
+      message: metaData.url.startsWith("https://")
+        ? t("secureHttpsUrl")
+        : metaData.url.startsWith("http://")
+          ? t("useHttps")
           : metaData.url.length > 0
-            ? t('invalidFormat')
-            : 'Page URL required',
-    },
+            ? t("invalidFormat")
+            : "Page URL required"
+    }
   ]
 
   return (
@@ -166,11 +170,15 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-blue-500" />
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">{t('status')}</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-500">
+            {t("status")}
+          </span>
         </div>
       </div>
 
@@ -181,14 +189,24 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="flex items-center gap-3">
               {getScoreIcon(seoScore)}
               <div>
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('seoScore')}</div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">{t('metaOptimization')}</div>
+                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  {t("seoScore")}
+                </div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {t("metaOptimization")}
+                </div>
               </div>
             </div>
             <div className="text-right">
-              <div className={`text-2xl font-bold ${getScoreColor(seoScore)}`}>{seoScore}/100</div>
+              <div className={`text-2xl font-bold ${getScoreColor(seoScore)}`}>
+                {seoScore}/100
+              </div>
               <div className="text-xs text-zinc-500 dark:text-zinc-500">
-                {seoScore >= 80 ? t('excellent') : seoScore >= 60 ? t('good') : t('needsWork')}
+                {seoScore >= 80
+                  ? t("excellent")
+                  : seoScore >= 60
+                    ? t("good")
+                    : t("needsWork")}
               </div>
             </div>
           </div>
@@ -197,7 +215,11 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
           <div className="mt-3 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
             <div
               className={`h-2 rounded-full transition-all ${
-                seoScore >= 80 ? 'bg-green-500' : seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                seoScore >= 80
+                  ? "bg-green-500"
+                  : seoScore >= 60
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
               }`}
               style={{ width: `${seoScore}%` }}
             />
@@ -206,7 +228,9 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
         {/* Validation Checks */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('validationChecks')}</h4>
+          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("validationChecks")}
+          </h4>
           <div className="space-y-2">
             {validationChecks.map((check, index) => (
               <div
@@ -214,18 +238,26 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
                 className="flex items-center justify-between rounded-lg bg-zinc-50/50 p-3 dark:bg-zinc-800/50"
               >
                 <div className="flex items-center gap-3">
-                  {check.status === 'perfect' && <CheckCircle size={16} className="text-green-500" />}
-                  {check.status === 'warning' && <AlertTriangle size={16} className="text-yellow-500" />}
-                  {check.status === 'error' && <XCircle size={16} className="text-red-500" />}
+                  {check.status === "perfect" && (
+                    <CheckCircle size={16} className="text-green-500" />
+                  )}
+                  {check.status === "warning" && (
+                    <AlertTriangle size={16} className="text-yellow-500" />
+                  )}
+                  {check.status === "error" && (
+                    <XCircle size={16} className="text-red-500" />
+                  )}
                   <div>
-                    <div className="teext-zin-700 text-sm font-medium dark:text-zinc-300">{check.label}</div>
+                    <div className="teext-zin-700 text-sm font-medium dark:text-zinc-300">
+                      {check.label}
+                    </div>
                     <div
                       className={`text-xs ${
-                        check.status === 'perfect'
-                          ? 'text-green-600 dark:text-green-400'
-                          : check.status === 'warning'
-                            ? 'text-yellow-600 dark:text-yellow-400'
-                            : 'text-red-600 dark:text-red-400'
+                        check.status === "perfect"
+                          ? "text-green-600 dark:text-green-400"
+                          : check.status === "warning"
+                            ? "text-yellow-600 dark:text-yellow-400"
+                            : "text-red-600 dark:text-red-400"
                       }`}
                     >
                       {check.message}
@@ -239,12 +271,14 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
         {/* Quick Tips */}
         <div className="rounded-lg bg-blue-50/50 p-4 dark:bg-blue-900/20">
-          <div className="mb-2 text-sm font-medium text-blue-700 dark:text-blue-300">{t('quickTips')}</div>
+          <div className="mb-2 text-sm font-medium text-blue-700 dark:text-blue-300">
+            {t("quickTips")}
+          </div>
           <ul className="space-y-1 text-xs text-blue-600 dark:text-blue-400">
-            <li>{t('tip1')}</li>
-            <li>{t('tip2')}</li>
-            <li>{t('tip3')}</li>
-            <li>{t('tip4')}</li>
+            <li>{t("tip1")}</li>
+            <li>{t("tip2")}</li>
+            <li>{t("tip3")}</li>
+            <li>{t("tip4")}</li>
           </ul>
         </div>
       </div>

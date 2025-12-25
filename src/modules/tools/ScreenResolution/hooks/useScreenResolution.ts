@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from "react"
 
 export interface ScreenInfo {
   width: number
@@ -40,16 +40,18 @@ const SAMPLE_SCREEN_INFO: ScreenInfo = {
   colorDepth: 24,
   pixelDepth: 24,
   pixelRatio: 2.0,
-  orientation: 'Landscape',
+  orientation: "Landscape",
   innerWidth: 1200,
   innerHeight: 800,
   outerWidth: 1200,
   outerHeight: 900,
   scrollX: 0,
-  scrollY: 150,
+  scrollY: 150
 }
 
-export const useScreenResolution = (options: UseScreenResolutionOptions = {}) => {
+export const useScreenResolution = (
+  options: UseScreenResolutionOptions = {}
+) => {
   const [screenInfo, setScreenInfo] = useState<ScreenInfo | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -65,13 +67,13 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
       colorDepth: screen.colorDepth,
       pixelDepth: screen.pixelDepth,
       pixelRatio: window.devicePixelRatio,
-      orientation: screen.width > screen.height ? 'Landscape' : 'Portrait',
+      orientation: screen.width > screen.height ? "Landscape" : "Portrait",
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
       outerWidth: window.outerWidth,
       outerHeight: window.outerHeight,
       scrollX: window.scrollX,
-      scrollY: window.scrollY,
+      scrollY: window.scrollY
     }
   }, [])
 
@@ -81,7 +83,7 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
       setScreenInfo(info)
       onSuccess?.("Ekran ma'lumotlari yangilandi")
     } catch (error) {
-      console.error('Screen info error:', error)
+      console.error("Screen info error:", error)
       onError?.("Ekran ma'lumotlarini olishda xatolik yuz berdi")
     }
   }, [getScreenInfo, onSuccess, onError])
@@ -93,10 +95,10 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
         onSuccess?.("Fullscreen rejimiga o'tildi")
       } else {
         await document.exitFullscreen()
-        onSuccess?.('Fullscreen rejimidan chiqildi')
+        onSuccess?.("Fullscreen rejimidan chiqildi")
       }
     } catch (err) {
-      console.error('Fullscreen error:', err)
+      console.error("Fullscreen error:", err)
       onError?.("Fullscreen rejimini o'zgartirishda xatolik yuz berdi")
     }
   }, [onSuccess, onError])
@@ -120,17 +122,17 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
       browser: {
         userAgent: navigator.userAgent,
         platform: navigator.platform,
-        language: navigator.language,
-      },
+        language: navigator.language
+      }
     }
 
     const jsonString = JSON.stringify(data, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
+    const blob = new Blob([jsonString], { type: "application/json" })
     const url = URL.createObjectURL(blob)
 
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     a.href = url
-    a.download = `screen-resolution-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`
+    a.download = `screen-resolution-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.json`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -143,22 +145,22 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
     const { width, height } = info
     const maxDimension = Math.max(width, height)
 
-    if (maxDimension <= 768) return 'Mobile'
-    if (maxDimension <= 1024) return 'Tablet'
-    if (maxDimension <= 1920) return 'Desktop'
-    return 'Large Desktop'
+    if (maxDimension <= 768) return "Mobile"
+    if (maxDimension <= 1024) return "Tablet"
+    if (maxDimension <= 1920) return "Desktop"
+    return "Large Desktop"
   }, [])
 
   const getResolutionCategory = useCallback((info: ScreenInfo): string => {
     const { width, height } = info
     const pixels = width * height
 
-    if (pixels >= 3840 * 2160) return '4K UHD'
-    if (pixels >= 2560 * 1440) return '2K QHD'
-    if (pixels >= 1920 * 1080) return 'Full HD'
-    if (pixels >= 1366 * 768) return 'HD'
-    if (pixels >= 1024 * 768) return 'XGA'
-    return 'Lower Resolution'
+    if (pixels >= 3840 * 2160) return "4K UHD"
+    if (pixels >= 2560 * 1440) return "2K QHD"
+    if (pixels >= 1920 * 1080) return "Full HD"
+    if (pixels >= 1366 * 768) return "HD"
+    if (pixels >= 1024 * 768) return "XGA"
+    return "Lower Resolution"
   }, [])
 
   const getAspectRatio = useCallback((info: ScreenInfo): string => {
@@ -178,7 +180,7 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
         totalPixels: info.width * info.height,
         isFullscreen,
         viewportRatio: Math.round((info.innerWidth / info.width) * 100),
-        isRetina: info.pixelRatio > 1,
+        isRetina: info.pixelRatio > 1
       }
     },
     [getDeviceType, getResolutionCategory, getAspectRatio, isFullscreen]
@@ -186,21 +188,21 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
 
   const getResolutionCategories = useCallback(
     () => [
-      { name: '4K UHD', resolution: '3840×2160', active: false },
-      { name: '2K QHD', resolution: '2560×1440', active: false },
-      { name: 'Full HD', resolution: '1920×1080', active: false },
-      { name: 'HD', resolution: '1366×768', active: false },
-      { name: 'XGA', resolution: '1024×768', active: false },
+      { name: "4K UHD", resolution: "3840×2160", active: false },
+      { name: "2K QHD", resolution: "2560×1440", active: false },
+      { name: "Full HD", resolution: "1920×1080", active: false },
+      { name: "HD", resolution: "1366×768", active: false },
+      { name: "XGA", resolution: "1024×768", active: false }
     ],
     []
   )
 
   const getDeviceTypes = useCallback(
     () => [
-      { name: 'Mobile', range: '≤ 768px', active: false },
-      { name: 'Tablet', range: '769px - 1024px', active: false },
-      { name: 'Desktop', range: '1025px - 1920px', active: false },
-      { name: 'Large Desktop', range: '> 1920px', active: false },
+      { name: "Mobile", range: "≤ 768px", active: false },
+      { name: "Tablet", range: "769px - 1024px", active: false },
+      { name: "Desktop", range: "1025px - 1920px", active: false },
+      { name: "Large Desktop", range: "> 1920px", active: false }
     ],
     []
   )
@@ -214,17 +216,17 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
 
       return [
         {
-          label: translations?.('megapixels') || 'megapiksel',
-          value: pixelsInMillions,
+          label: translations?.("megapixels") || "megapiksel",
+          value: pixelsInMillions
         },
         {
-          label: translations?.('width') || 'kenglik',
-          value: screenInfo.width,
+          label: translations?.("width") || "kenglik",
+          value: screenInfo.width
         },
         {
-          label: translations?.('height') || 'balandlik',
-          value: screenInfo.height,
-        },
+          label: translations?.("height") || "balandlik",
+          value: screenInfo.height
+        }
       ]
     },
     [screenInfo]
@@ -243,7 +245,7 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
           ? {
               ...prev,
               scrollX: window.scrollX,
-              scrollY: window.scrollY,
+              scrollY: window.scrollY
             }
           : null
       )
@@ -259,16 +261,16 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
     setIsLoading(false)
 
     // Event listeners
-    window.addEventListener('resize', updateScreenInfo)
-    window.addEventListener('scroll', handleScroll)
-    window.addEventListener('orientationchange', updateScreenInfo)
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    window.addEventListener("resize", updateScreenInfo)
+    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("orientationchange", updateScreenInfo)
+    document.addEventListener("fullscreenchange", handleFullscreenChange)
 
     return () => {
-      window.removeEventListener('resize', updateScreenInfo)
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('orientationchange', updateScreenInfo)
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      window.removeEventListener("resize", updateScreenInfo)
+      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("orientationchange", updateScreenInfo)
+      document.removeEventListener("fullscreenchange", handleFullscreenChange)
     }
   }, [getScreenInfo])
 
@@ -285,14 +287,16 @@ export const useScreenResolution = (options: UseScreenResolutionOptions = {}) =>
     downloadScreenInfo,
 
     // Computed
-    getScreenAnalysis: () => (screenInfo ? getScreenAnalysis(screenInfo) : null),
+    getScreenAnalysis: () =>
+      screenInfo ? getScreenAnalysis(screenInfo) : null,
     getResolutionCategories,
     getDeviceTypes,
     getStats,
 
     // Utilities
-    getDeviceType: () => (screenInfo ? getDeviceType(screenInfo) : 'Unknown'),
-    getResolutionCategory: () => (screenInfo ? getResolutionCategory(screenInfo) : 'Unknown'),
-    getAspectRatio: () => (screenInfo ? getAspectRatio(screenInfo) : 'Unknown'),
+    getDeviceType: () => (screenInfo ? getDeviceType(screenInfo) : "Unknown"),
+    getResolutionCategory: () =>
+      screenInfo ? getResolutionCategory(screenInfo) : "Unknown",
+    getAspectRatio: () => (screenInfo ? getAspectRatio(screenInfo) : "Unknown")
   }
 }

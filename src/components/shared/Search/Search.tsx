@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
-import { Input } from '@/components/ui/input'
-import { ISearchHit } from '@/types/common'
-import { SearchIcon } from 'lucide-react'
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
-import SearchDialog from './SearchDialog'
-import { searchEngine } from '@/lib/search/flexsearch'
+import { Input } from "@/components/ui/input"
+import { ISearchHit } from "@/types/common"
+import { SearchIcon } from "lucide-react"
+import { RefObject, useCallback, useEffect, useRef, useState } from "react"
+import SearchDialog from "./SearchDialog"
+import { searchEngine } from "@/lib/search/flexsearch"
 
 export default function Search() {
   const [open, setOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
 
@@ -32,7 +32,7 @@ export default function Search() {
         const results = await searchEngine.search(value)
         setGroupedHits(results)
       } catch (error) {
-        console.error('Search failed:', error)
+        console.error("Search failed:", error)
         setGroupedHits([])
       } finally {
         setLoading(false)
@@ -41,19 +41,19 @@ export default function Search() {
   }
 
   const clearSearch = useCallback(() => {
-    setQuery('')
+    setQuery("")
     setGroupedHits([])
   }, [])
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((open) => !open)
       }
     }
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
   }, [])
 
   useEffect(() => {
@@ -69,7 +69,10 @@ export default function Search() {
 
   return (
     <>
-      <div className="relative cursor-pointer rounded-xl bg-[#F2F2F7] dark:bg-[#151515]" onClick={() => setOpen(true)}>
+      <div
+        className="relative cursor-pointer rounded-xl bg-[#F2F2F7] dark:bg-[#151515]"
+        onClick={() => setOpen(true)}
+      >
         <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
         <Input
           ref={inputRef as RefObject<HTMLInputElement>}

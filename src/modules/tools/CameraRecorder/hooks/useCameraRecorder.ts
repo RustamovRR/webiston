@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
-import { useReactMediaRecorder } from 'react-media-recorder'
-import { useTranslations } from 'next-intl'
+import { useState, useRef, useEffect, useCallback } from "react"
+import { useReactMediaRecorder } from "react-media-recorder"
+import { useTranslations } from "next-intl"
 
 export interface CameraDevice {
   deviceId: string
@@ -15,7 +15,7 @@ export interface VideoInfo {
 
 export interface CapturedMedia {
   id: string
-  type: 'screenshot' | 'video'
+  type: "screenshot" | "video"
   url: string
   filename: string
   timestamp: Date
@@ -29,14 +29,14 @@ interface UseCameraRecorderOptions {
 }
 
 export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
-  const t = useTranslations('CameraRecorderPage.Hook.messages')
+  const t = useTranslations("CameraRecorderPage.Hook.messages")
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const [cameras, setCameras] = useState<CameraDevice[]>([])
-  const [selectedCamera, setSelectedCamera] = useState<string>('')
-  const [error, setError] = useState<string>('')
+  const [selectedCamera, setSelectedCamera] = useState<string>("")
+  const [error, setError] = useState<string>("")
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null)
   const [isStreaming, setIsStreaming] = useState(false)
   const [isCameraActive, setIsCameraActive] = useState(false)
@@ -44,8 +44,13 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const [previewMedia, setPreviewMedia] = useState<CapturedMedia | null>(null)
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null)
   const [recordingDuration, setRecordingDuration] = useState<number>(0)
-  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(null)
-  const [videoQuality, setVideoQuality] = useState<{ width: number; height: number }>({ width: 1280, height: 720 })
+  const [recordingStartTime, setRecordingStartTime] = useState<number | null>(
+    null
+  )
+  const [videoQuality, setVideoQuality] = useState<{
+    width: number
+    height: number
+  }>({ width: 1280, height: 720 })
 
   const { onSuccess, onError } = options
 
@@ -58,19 +63,19 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     resumeRecording,
     mediaBlobUrl,
     previewStream,
-    clearBlobUrl,
+    clearBlobUrl
   } = useReactMediaRecorder({
     video: {
       deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
       width: { ideal: videoQuality.width },
       height: { ideal: videoQuality.height },
-      frameRate: { ideal: 30 },
+      frameRate: { ideal: 30 }
     },
     audio: true, // Enable audio recording
     askPermissionOnMount: false, // Don't auto-request permission
     onStart: () => {
       setRecordingStartTime(Date.now())
-      onSuccess?.(t('recordingStarted'))
+      onSuccess?.(t("recordingStarted"))
     },
     onStop: (blobUrl: string) => {
       const finalDuration = recordingDuration
@@ -79,36 +84,38 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
 
       if (blobUrl) {
         const timestamp = new Date()
-        const filename = `video-${timestamp.toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+        const filename = `video-${timestamp.toISOString().slice(0, 19).replace(/:/g, "-")}.webm`
 
         // Get blob size
         fetch(blobUrl).then((response) => {
           const media: CapturedMedia = {
             id: Date.now().toString(),
-            type: 'video',
+            type: "video",
             url: blobUrl,
             filename,
             timestamp,
             duration: finalDuration,
-            size: response.headers.get('content-length')
-              ? parseInt(response.headers.get('content-length')!)
-              : undefined,
+            size: response.headers.get("content-length")
+              ? parseInt(response.headers.get("content-length")!)
+              : undefined
           }
           setCapturedMedia((prev) => [media, ...prev])
         })
 
-        onSuccess?.(t('recordingSaved'))
+        onSuccess?.(t("recordingSaved"))
       }
-    },
+    }
   })
 
   // Recording duration timer
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
 
-    if (status === 'recording' && recordingStartTime) {
+    if (status === "recording" && recordingStartTime) {
       interval = setInterval(() => {
-        setRecordingDuration(Math.floor((Date.now() - recordingStartTime) / 1000))
+        setRecordingDuration(
+          Math.floor((Date.now() - recordingStartTime) / 1000)
+        )
       }, 1000)
     } else {
       setRecordingDuration(0)
@@ -122,16 +129,20 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const getCameraDevices = useCallback(async () => {
     try {
       // Request permission first
-      const permissionStream = await navigator.mediaDevices.getUserMedia({ video: true })
+      const permissionStream = await navigator.mediaDevices.getUserMedia({
+        video: true
+      })
       // Stop the permission stream immediately, we just needed permission
       permissionStream.getTracks().forEach((track) => track.stop())
 
       const devices = await navigator.mediaDevices.enumerateDevices()
       const videoDevices = devices
-        .filter((device) => device.kind === 'videoinput')
+        .filter((device) => device.kind === "videoinput")
         .map((device) => ({
           deviceId: device.deviceId,
-          label: device.label || `${t('cameraDeviceLabel')} ${device.deviceId.slice(0, 8)}`,
+          label:
+            device.label ||
+            `${t("cameraDeviceLabel")} ${device.deviceId.slice(0, 8)}`
         }))
 
       setCameras(videoDevices)
@@ -139,26 +150,26 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         setSelectedCamera(videoDevices[0].deviceId)
       }
 
-      onSuccess?.(`${videoDevices.length} ${t('camerasFound')}`)
+      onSuccess?.(`${videoDevices.length} ${t("camerasFound")}`)
     } catch (err) {
-      const errorMessage = t('cameraAccessDenied')
+      const errorMessage = t("cameraAccessDenied")
       setError(errorMessage)
       onError?.(errorMessage)
-      console.error('Error getting camera devices:', err)
+      console.error("Error getting camera devices:", err)
     }
   }, [onSuccess, onError])
 
   const startCamera = useCallback(async () => {
     try {
-      setError('')
+      setError("")
 
       const constraints: MediaStreamConstraints = {
         video: {
           deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
           width: { ideal: videoQuality.width },
           height: { ideal: videoQuality.height },
-          frameRate: { ideal: 30 },
-        },
+          frameRate: { ideal: 30 }
+        }
       }
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
@@ -173,7 +184,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       const info: VideoInfo = {
         width: settings.width || videoQuality.width,
         height: settings.height || videoQuality.height,
-        frameRate: settings.frameRate || 30,
+        frameRate: settings.frameRate || 30
       }
 
       setVideoInfo(info)
@@ -189,22 +200,22 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         try {
           await videoRef.current.play()
         } catch (playError) {
-          console.log('Autoplay issue, but camera should work:', playError)
+          console.log("Autoplay issue, but camera should work:", playError)
         }
       }
 
-      onSuccess?.(`${t('cameraStarted')}: ${info.width}x${info.height}`)
+      onSuccess?.(`${t("cameraStarted")}: ${info.width}x${info.height}`)
     } catch (err) {
-      const errorMessage = t('cameraStartError')
+      const errorMessage = t("cameraStartError")
       setError(errorMessage)
       onError?.(errorMessage)
-      console.error('Error starting camera:', err)
+      console.error("Error starting camera:", err)
     }
   }, [selectedCamera, videoQuality, onSuccess, onError])
 
   const stopCamera = useCallback(() => {
     // Stop any ongoing recording first
-    if (status === 'recording') {
+    if (status === "recording") {
       stopRecording()
     }
 
@@ -213,7 +224,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       const stream = videoRef.current.srcObject as MediaStream
       stream.getTracks().forEach((track) => {
         track.stop()
-        console.log('Stopped track:', track.kind, track.label)
+        console.log("Stopped track:", track.kind, track.label)
       })
       videoRef.current.srcObject = null
     }
@@ -227,21 +238,21 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     setIsStreaming(false)
     setIsCameraActive(false)
     setVideoInfo(null)
-    setError('')
+    setError("")
     clearBlobUrl()
-    onSuccess?.(t('cameraStopped'))
+    onSuccess?.(t("cameraStopped"))
   }, [status, stopRecording, clearBlobUrl, cameraStream, onSuccess])
 
   const takeScreenshot = useCallback(() => {
     if (!videoRef.current || !canvasRef.current || !isCameraActive) {
-      onError?.(t('screenshotRequired'))
+      onError?.(t("screenshotRequired"))
       return
     }
 
     try {
       const video = videoRef.current
       const canvas = canvasRef.current
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext("2d")
 
       canvas.width = video.videoWidth
       canvas.height = video.videoHeight
@@ -253,37 +264,41 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
           if (blob) {
             const url = URL.createObjectURL(blob)
             const timestamp = new Date()
-            const filename = `screenshot-${timestamp.toISOString().slice(0, 19).replace(/:/g, '-')}.png`
+            const filename = `screenshot-${timestamp.toISOString().slice(0, 19).replace(/:/g, "-")}.png`
 
             const media: CapturedMedia = {
               id: Date.now().toString(),
-              type: 'screenshot',
+              type: "screenshot",
               url,
               filename,
               timestamp,
-              size: blob.size,
+              size: blob.size
             }
 
             setCapturedMedia((prev) => [media, ...prev])
-            onSuccess?.(t('screenshotTaken'))
+            onSuccess?.(t("screenshotTaken"))
           }
-        }, 'image/png')
+        }, "image/png")
       }
     } catch (err) {
-      onError?.(t('screenshotError'))
-      console.error('Error taking screenshot:', err)
+      onError?.(t("screenshotError"))
+      console.error("Error taking screenshot:", err)
     }
   }, [isCameraActive, onSuccess, onError])
 
   const downloadMedia = useCallback(
     (media: CapturedMedia) => {
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = media.url
       a.download = media.filename
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      onSuccess?.(media.type === 'screenshot' ? t('screenshotDownloaded') : t('videoDownloaded'))
+      onSuccess?.(
+        media.type === "screenshot"
+          ? t("screenshotDownloaded")
+          : t("videoDownloaded")
+      )
     },
     [onSuccess]
   )
@@ -294,7 +309,11 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         const mediaToDelete = prev.find((m) => m.id === mediaId)
         if (mediaToDelete) {
           URL.revokeObjectURL(mediaToDelete.url)
-          onSuccess?.(mediaToDelete.type === 'screenshot' ? t('screenshotDeleted') : t('videoDeleted'))
+          onSuccess?.(
+            mediaToDelete.type === "screenshot"
+              ? t("screenshotDeleted")
+              : t("videoDeleted")
+          )
         }
         return prev.filter((m) => m.id !== mediaId)
       })
@@ -319,10 +338,10 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const getSampleData = useCallback(() => {
     return {
       cameras: [
-        { deviceId: 'sample1', label: 'Front Camera' },
-        { deviceId: 'sample2', label: 'Back Camera' },
+        { deviceId: "sample1", label: "Front Camera" },
+        { deviceId: "sample2", label: "Back Camera" }
       ],
-      videoInfo: { width: 1280, height: 720, frameRate: 30 },
+      videoInfo: { width: 1280, height: 720, frameRate: 30 }
     }
   }, [])
 
@@ -344,31 +363,31 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
 
   const refreshCameras = useCallback(async () => {
     try {
-      onSuccess?.(t('camerasRefreshing'))
+      onSuccess?.(t("camerasRefreshing"))
 
       // Clear current cameras list
       setCameras([])
-      setSelectedCamera('')
+      setSelectedCamera("")
 
       // Refresh cameras list
       await getCameraDevices()
 
-      onSuccess?.(t('camerasRefreshed'))
+      onSuccess?.(t("camerasRefreshed"))
     } catch (err) {
-      onError?.(t('camerasRefreshError'))
-      console.error('Error refreshing cameras:', err)
+      onError?.(t("camerasRefreshError"))
+      console.error("Error refreshing cameras:", err)
     }
   }, [onSuccess, onError, getCameraDevices])
 
   const downloadRecording = useCallback(() => {
     if (mediaBlobUrl) {
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = mediaBlobUrl
-      a.download = `camera-recording-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`
+      a.download = `camera-recording-${new Date().toISOString().slice(0, 19).replace(/:/g, "-")}.webm`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      onSuccess?.(t('recordingDownloaded'))
+      onSuccess?.(t("recordingDownloaded"))
     }
   }, [mediaBlobUrl, onSuccess])
 
@@ -376,11 +395,12 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     return {
       isActive: isCameraActive,
       recordingStatus: status,
-      screenshotCount: capturedMedia.filter((m) => m.type === 'screenshot').length,
-      videoCount: capturedMedia.filter((m) => m.type === 'video').length,
+      screenshotCount: capturedMedia.filter((m) => m.type === "screenshot")
+        .length,
+      videoCount: capturedMedia.filter((m) => m.type === "video").length,
       totalMedia: capturedMedia.length,
       hasPreview: !!previewMedia,
-      videoInfo,
+      videoInfo
     }
   }, [isCameraActive, status, capturedMedia, previewMedia, videoInfo])
 
@@ -403,20 +423,26 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   const formatRecordingDuration = useCallback((seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }, [])
 
   const getCurrentRecordingInfo = useCallback(() => {
     return {
-      isRecording: status === 'recording',
+      isRecording: status === "recording",
       duration: recordingDuration,
       formattedDuration: formatRecordingDuration(recordingDuration),
       quality: videoQuality,
       qualityLabel: `${videoQuality.width}×${videoQuality.height}`,
       frameRate: videoInfo?.frameRate || 30,
-      status: status,
+      status: status
     }
-  }, [status, recordingDuration, formatRecordingDuration, videoQuality, videoInfo])
+  }, [
+    status,
+    recordingDuration,
+    formatRecordingDuration,
+    videoQuality,
+    videoInfo
+  ])
 
   // Auto-initialize camera devices on mount - only once
   useEffect(() => {
@@ -436,7 +462,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     mediaBlobUrl,
     previewStream,
     cameraStream,
-    isRecording: status === 'recording',
+    isRecording: status === "recording",
     capturedMedia,
     previewMedia,
     startCamera,
@@ -461,6 +487,6 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     videoQuality,
     updateVideoQuality,
     formatRecordingDuration,
-    getCurrentRecordingInfo,
+    getCurrentRecordingInfo
   }
 }

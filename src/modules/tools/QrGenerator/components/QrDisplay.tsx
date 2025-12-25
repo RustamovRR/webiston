@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { Copy, Check, Download, Eye } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib'
-import { QrSize, QrErrorLevel } from '../hooks/useQrGenerator'
+import React, { useState } from "react"
+import { Copy, Check, Download, Eye } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib"
+import { QrSize, QrErrorLevel } from "../hooks/useQrGenerator"
 
-import type { QrCustomization } from '../hooks/useQrGenerator'
-import Image from 'next/image'
+import type { QrCustomization } from "../hooks/useQrGenerator"
+import Image from "next/image"
 
 interface QrDisplayProps {
   qrUrl: string
@@ -31,10 +31,10 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
   inputText,
   customization,
   stats,
-  onDownload,
+  onDownload
 }) => {
-  const t = useTranslations('QrGeneratorPage.QrDisplay')
-  const tDataTypes = useTranslations('QrGeneratorPage.DataTypes')
+  const t = useTranslations("QrGeneratorPage.QrDisplay")
+  const tDataTypes = useTranslations("QrGeneratorPage.DataTypes")
 
   const [copied, setCopied] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
@@ -47,7 +47,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      console.error('Copy failed:', error)
+      console.error("Copy failed:", error)
     }
   }
 
@@ -60,11 +60,15 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">{t('status')}</span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            {t("status")}
+          </span>
         </div>
       </div>
 
@@ -74,8 +78,10 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
           <div
             className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30"
             style={{
-              backgroundColor: customization?.backgroundColor || '#ffffff',
-              borderRadius: customization?.borderRadius ? `${customization.borderRadius}px` : '8px',
+              backgroundColor: customization?.backgroundColor || "#ffffff",
+              borderRadius: customization?.borderRadius
+                ? `${customization.borderRadius}px`
+                : "8px"
             }}
           >
             <div className="relative">
@@ -86,9 +92,11 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 height={300}
                 className="mx-auto max-w-full"
                 style={{
-                  maxWidth: '300px',
-                  height: 'auto',
-                  borderRadius: customization?.borderRadius ? `${customization.borderRadius * 0.5}px` : '4px',
+                  maxWidth: "300px",
+                  height: "auto",
+                  borderRadius: customization?.borderRadius
+                    ? `${customization.borderRadius * 0.5}px`
+                    : "4px"
                 }}
               />
 
@@ -98,7 +106,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-1 shadow-lg"
                   style={{
                     width: `${customization.logoSize}%`,
-                    height: `${customization.logoSize}%`,
+                    height: `${customization.logoSize}%`
                   }}
                 >
                   <Image
@@ -114,7 +122,8 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
 
             <div className="mt-3 text-center">
               <div className="text-xs text-zinc-600 dark:text-zinc-500">
-                {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish • {inputType}
+                {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish •{" "}
+                {inputType}
               </div>
 
               {/* Customization Info */}
@@ -123,18 +132,23 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                   <span
                     className="rounded px-2 py-1"
                     style={{
-                      backgroundColor: customization.foregroundColor + '20',
-                      color: customization.foregroundColor,
+                      backgroundColor: customization.foregroundColor + "20",
+                      color: customization.foregroundColor
                     }}
                   >
-                    {customization.gradientEnabled ? 'Gradient' : 'Solid'}
+                    {customization.gradientEnabled ? "Gradient" : "Solid"}
                   </span>
                   <span
                     className="rounded px-2 py-1"
                     style={{
                       backgroundColor:
-                        customization.backgroundColor === '#ffffff' ? '#f3f4f6' : customization.backgroundColor + '40',
-                      color: customization.backgroundColor === '#ffffff' ? '#374151' : customization.backgroundColor,
+                        customization.backgroundColor === "#ffffff"
+                          ? "#f3f4f6"
+                          : customization.backgroundColor + "40",
+                      color:
+                        customization.backgroundColor === "#ffffff"
+                          ? "#374151"
+                          : customization.backgroundColor
                     }}
                   >
                     {customization.cornerStyle}
@@ -142,8 +156,8 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                   {customization.logo && (
                     <span
                       style={{
-                        backgroundColor: customization.foregroundColor + '20',
-                        color: customization.foregroundColor,
+                        backgroundColor: customization.foregroundColor + "20",
+                        color: customization.foregroundColor
                       }}
                       className="rounded px-2 py-1"
                     >
@@ -155,13 +169,13 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
 
               <div className="mt-2 flex justify-center gap-2 text-xs">
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.characters} {t('stats.characters')}
+                  {stats.characters} {t("stats.characters")}
                 </span>
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.words} {t('stats.words')}
+                  {stats.words} {t("stats.words")}
                 </span>
                 <span className="rounded bg-zinc-300 px-2 py-1 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-                  {stats.lines} {t('stats.lines')}
+                  {stats.lines} {t("stats.lines")}
                 </span>
               </div>
             </div>
@@ -172,10 +186,17 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
         <div className="space-y-4">
           <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
             <div className="mb-3 flex items-center justify-between">
-              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('contentTitle')}</h4>
-              <Button onClick={() => setShowPreview(!showPreview)} variant="ghost" size="sm" className="h-6 px-2">
+              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {t("contentTitle")}
+              </h4>
+              <Button
+                onClick={() => setShowPreview(!showPreview)}
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2"
+              >
                 <Eye size={14} className="mr-1" />
-                {showPreview ? t('hideContent') : t('showContent')}
+                {showPreview ? t("hideContent") : t("showContent")}
               </Button>
             </div>
 
@@ -193,20 +214,20 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 variant="outline"
                 size="sm"
                 className={cn(
-                  'flex-1',
+                  "flex-1",
                   copied &&
-                    'border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
+                    "border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400"
                 )}
               >
                 {copied ? (
                   <>
                     <Check size={14} className="mr-1" />
-                    {t('copied')}
+                    {t("copied")}
                   </>
                 ) : (
                   <>
                     <Copy size={14} className="mr-1" />
-                    {t('copyText')}
+                    {t("copyText")}
                   </>
                 )}
               </Button>
@@ -218,35 +239,39 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 className="flex-1 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               >
                 <Download size={14} className="mr-1" />
-                {t('downloadQr')}
+                {t("downloadQr")}
               </Button>
             </div>
           </div>
 
           {/* QR Info */}
           <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
-            <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('technicalInfo')}</h4>
+            <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              {t("technicalInfo")}
+            </h4>
             <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
               <div className="flex justify-between">
-                <span>{t('format')}</span>
+                <span>{t("format")}</span>
                 <span className="font-mono">PNG</span>
               </div>
               <div className="flex justify-between">
-                <span>{t('size')}</span>
+                <span>{t("size")}</span>
                 <span className="font-mono">
                   {qrSize}x{qrSize}px
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>{t('errorCorrection')}</span>
+                <span>{t("errorCorrection")}</span>
                 <span className="font-mono">{errorLevel}</span>
               </div>
               <div className="flex justify-between">
-                <span>{t('dataType')}</span>
-                <span className="font-mono">{tDataTypes(inputType.toLowerCase())}</span>
+                <span>{t("dataType")}</span>
+                <span className="font-mono">
+                  {tDataTypes(inputType.toLowerCase())}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span>{t('margin')}</span>
+                <span>{t("margin")}</span>
                 <span className="font-mono">10px</span>
               </div>
             </div>

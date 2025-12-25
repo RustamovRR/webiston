@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from 'react'
-import { getColorByName } from '@/constants/color-names'
+import { useState, useMemo, useCallback } from "react"
+import { getColorByName } from "@/constants/color-names"
 import {
   parseColorInput,
   isValidColor,
@@ -14,8 +14,8 @@ import {
   generateTailwindShades,
   generatePalette,
   isValidHex,
-  addToColorHistory,
-} from '@/lib/utils'
+  addToColorHistory
+} from "@/lib/utils"
 
 export interface ColorFormats {
   hex: string
@@ -43,7 +43,11 @@ interface UseColorConverterProps {
   onError?: (error: string) => void
 }
 
-export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError }: UseColorConverterProps = {}) => {
+export const useColorConverter = ({
+  initialColor = "#3b82f6",
+  onSuccess,
+  onError
+}: UseColorConverterProps = {}) => {
   const [inputColor, setInputColorState] = useState(initialColor)
 
   // Enhanced setInputColor with history tracking
@@ -65,14 +69,14 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
         onError?.("Noto'g'ri rang formati")
         return {
           hex: inputColor.toUpperCase(),
-          rgb: '',
-          hsl: '',
-          rgba: '',
-          hsla: '',
-          lab: '',
-          lch: '',
-          oklab: '',
-          oklch: '',
+          rgb: "",
+          hsl: "",
+          rgba: "",
+          hsla: "",
+          lab: "",
+          lch: "",
+          oklab: "",
+          oklch: "",
           rgbValues: { r: 0, g: 0, b: 0, a: 1 },
           hslValues: { h: 0, s: 0, l: 0, a: 1 },
           labValues: { l: 0, a: 0, b: 0 },
@@ -80,7 +84,7 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
           oklabValues: { l: 0, a: 0, b: 0 },
           oklchValues: { l: 0, c: 0, h: 0 },
           opacity: 1,
-          isValid: false,
+          isValid: false
         }
       }
 
@@ -96,7 +100,7 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
         a < 1
           ? `#${rgbToHex(r, g, b).slice(1)}${Math.round(a * 255)
               .toString(16)
-              .padStart(2, '0')}`
+              .padStart(2, "0")}`
           : rgbToHex(r, g, b)
 
       const result: ColorFormats = {
@@ -116,13 +120,13 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
         oklabValues: oklab,
         oklchValues: oklch,
         opacity: a,
-        isValid: true,
+        isValid: true
       }
 
-      onSuccess?.('Rang muvaffaqiyatli konvertatsiya qilindi')
+      onSuccess?.("Rang muvaffaqiyatli konvertatsiya qilindi")
       return result
     } catch (error) {
-      onError?.('Rang konvertatsiyasida xatolik yuz berdi')
+      onError?.("Rang konvertatsiyasida xatolik yuz berdi")
       return null
     }
   }, [
@@ -135,7 +139,7 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
     oklabToOklch,
     rgbToHex,
     onSuccess,
-    onError,
+    onError
   ])
 
   // Set color from different formats
@@ -153,22 +157,22 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
   // Get color name (basic implementation)
   const getColorName = useCallback((hex: string): string => {
     const colorNames: Record<string, string> = {
-      '#FF0000': 'Qizil',
-      '#00FF00': 'Yashil',
-      '#0000FF': "Ko'k",
-      '#FFFF00': 'Sariq',
-      '#FF00FF': 'Binafsha',
-      '#00FFFF': 'Turkuaz',
-      '#000000': 'Qora',
-      '#FFFFFF': 'Oq',
-      '#808080': 'Kulrang',
-      '#FFA500': "To'q sariq",
-      '#800080': 'Binafsha',
-      '#008000': "To'q yashil",
+      "#FF0000": "Qizil",
+      "#00FF00": "Yashil",
+      "#0000FF": "Ko'k",
+      "#FFFF00": "Sariq",
+      "#FF00FF": "Binafsha",
+      "#00FFFF": "Turkuaz",
+      "#000000": "Qora",
+      "#FFFFFF": "Oq",
+      "#808080": "Kulrang",
+      "#FFA500": "To'q sariq",
+      "#800080": "Binafsha",
+      "#008000": "To'q yashil"
     }
 
     // Return color name if found, otherwise return empty string
-    return colorNames[hex.toUpperCase()] || ''
+    return colorNames[hex.toUpperCase()] || ""
   }, [])
 
   return {
@@ -185,7 +189,7 @@ export const useColorConverter = ({ initialColor = '#3b82f6', onSuccess, onError
       hexToRgb,
       rgbToHsl,
       hslToRgb,
-      rgbToHex,
-    },
+      rgbToHex
+    }
   }
 }

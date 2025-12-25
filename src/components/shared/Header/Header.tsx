@@ -1,44 +1,46 @@
-import React from 'react'
+import React from "react"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'
-import { cn } from '@/lib'
-import Logo from './Logo'
-import MobileMenuButton from './MobileMenuButton'
-import LanguageSelector from '../LanguageSelector/LanguageSelector'
-import Search from '../Search'
-import ThemeToggle from '../ThemeToggle'
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+  NavigationMenuTrigger
+} from "@/components/ui/navigation-menu"
+import { cn } from "@/lib"
+import Logo from "./Logo"
+import MobileMenuButton from "./MobileMenuButton"
+import LanguageSelector from "../LanguageSelector/LanguageSelector"
+import Search from "../Search"
+import ThemeToggle from "../ThemeToggle"
+import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 interface HeaderProps {
   showLanguageSelector?: boolean
 }
 
 export default function Header({ showLanguageSelector = true }: HeaderProps) {
-  const t = useTranslations('Header')
+  const t = useTranslations("Header")
 
   const books = [
     {
-      id: 'ai-engineering',
-      title: 'AI Engineering',
-      description: "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
+      id: "ai-engineering",
+      title: "AI Engineering",
+      description:
+        "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma."
     },
     {
-      id: 'javascript-definitive-guide',
-      title: 'JavaScript The Definitive Guide',
-      description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
+      id: "javascript-definitive-guide",
+      title: "JavaScript The Definitive Guide",
+      description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma."
     },
     {
-      id: 'fluent-react',
-      title: 'Fluent React',
-      description: "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar.",
-    },
+      id: "fluent-react",
+      title: "Fluent React",
+      description:
+        "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar."
+    }
   ]
 
   return (
@@ -50,12 +52,16 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]">
-                  <Link href="/books">{t('books')}</Link>
+                  <Link href="/books">{t("books")}</Link>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">
                     {books.map((book) => (
-                      <ListItem key={book.id} href={`/books/${book.id}`} title={book.title}>
+                      <ListItem
+                        key={book.id}
+                        href={`/books/${book.id}`}
+                        title={book.title}
+                      >
                         {book.description}
                       </ListItem>
                     ))}
@@ -67,7 +73,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
                   asChild
                   className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]"
                 >
-                  <Link href="/tools">{t('tools')}</Link>
+                  <Link href="/tools">{t("tools")}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -89,25 +95,28 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
   )
 }
 
-const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
-  ({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none',
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm leading-none font-medium">{title}</div>
-            <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
-          </a>
-        </NavigationMenuLink>
-      </li>
-    )
-  }
-)
-ListItem.displayName = 'ListItem'
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm leading-none font-medium">{title}</div>
+          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+})
+ListItem.displayName = "ListItem"

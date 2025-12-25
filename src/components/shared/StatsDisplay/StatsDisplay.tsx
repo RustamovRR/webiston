@@ -1,4 +1,4 @@
-import { NumberTicker } from '@/components/ui/number-ticker'
+import { NumberTicker } from "@/components/ui/number-ticker"
 
 interface StatItem {
   label: string
@@ -10,7 +10,7 @@ interface StatsDisplayProps {
   className?: string
 }
 
-export function StatsDisplay({ stats, className = '' }: StatsDisplayProps) {
+export function StatsDisplay({ stats, className = "" }: StatsDisplayProps) {
   return (
     <div className={`flex gap-4 text-sm text-zinc-500 ${className}`}>
       {stats.map((stat, index) => (

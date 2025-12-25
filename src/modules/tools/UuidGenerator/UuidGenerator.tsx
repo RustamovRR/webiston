@@ -1,14 +1,20 @@
-'use client'
+"use client"
 
-import { useTranslations } from 'next-intl'
-import { ToolHeader, DualTextPanel } from '@/components/shared'
-import { useUuidGenerator } from './hooks/useUuidGenerator'
-import { ConfigPanel, InputPanel, ResultsPanel, StatsPanel, InfoPanel } from './components'
+import { useTranslations } from "next-intl"
+import { ToolHeader, DualTextPanel } from "@/components/shared"
+import { useUuidGenerator } from "./hooks/useUuidGenerator"
+import {
+  ConfigPanel,
+  InputPanel,
+  ResultsPanel,
+  StatsPanel,
+  InfoPanel
+} from "./components"
 
 const UuidGenerator = () => {
-  const t = useTranslations('UuidGeneratorPage.ToolHeader')
-  const tInput = useTranslations('UuidGeneratorPage.InputPanel')
-  const tResults = useTranslations('UuidGeneratorPage.ResultsPanel')
+  const t = useTranslations("UuidGeneratorPage.ToolHeader")
+  const tInput = useTranslations("UuidGeneratorPage.InputPanel")
+  const tResults = useTranslations("UuidGeneratorPage.ResultsPanel")
 
   const {
     uuids,
@@ -28,19 +34,19 @@ const UuidGenerator = () => {
     downloadAsJson,
     loadSampleCount,
     getVersionInfo,
-    getFormatInfo,
+    getFormatInfo
   } = useUuidGenerator({
     onSuccess: (message) => {
-      console.log('Success:', message)
+      console.log("Success:", message)
     },
     onError: (error) => {
-      console.error('Error:', error)
-    },
+      console.error("Error:", error)
+    }
   })
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       {/* Configuration Panel */}
       <ConfigPanel
@@ -63,10 +69,10 @@ const UuidGenerator = () => {
       {/* Dual Panel Layout */}
       <DualTextPanel
         sourceText={`Count: ${count}\nVersion: ${version}\nFormat: ${format}`}
-        convertedText={uuids.map((uuid) => uuid.uuid).join('\n')}
+        convertedText={uuids.map((uuid) => uuid.uuid).join("\n")}
         sourcePlaceholder="UUID sozlamalari bu yerda ko'rsatiladi"
-        sourceLabel={tInput('title')}
-        targetLabel={tResults('title')}
+        sourceLabel={tInput("title")}
+        targetLabel={tResults("title")}
         onSourceChange={() => {}} // Read-only for UUID generator
         onClear={handleClear}
         showSwapButton={false}

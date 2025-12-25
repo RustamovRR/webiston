@@ -1,11 +1,13 @@
-import React from 'react'
-import { RefreshCw, Download, Circle, Palette, Zap } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { ShimmerButton, GradientTabs } from '@/components/ui'
+import React from "react"
+import { RefreshCw, Download, Circle, Palette, Zap } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { ShimmerButton, GradientTabs } from "@/components/ui"
 
 interface ControlPanelProps {
-  paletteType: 'monochromatic' | 'analogous' | 'complementary'
-  setPaletteType: (type: 'monochromatic' | 'analogous' | 'complementary') => void
+  paletteType: "monochromatic" | "analogous" | "complementary"
+  setPaletteType: (
+    type: "monochromatic" | "analogous" | "complementary"
+  ) => void
   onRandomColor: () => void
   onDownloadPalette: () => void
   isValid: boolean
@@ -16,26 +18,26 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   setPaletteType,
   onRandomColor,
   onDownloadPalette,
-  isValid,
+  isValid
 }) => {
-  const t = useTranslations('ColorConverterPage.ControlPanel')
+  const t = useTranslations("ColorConverterPage.ControlPanel")
 
   const paletteOptions = [
     {
-      value: 'monochromatic',
-      label: t('monochromatic') || 'Monoxromatik',
-      icon: <Circle size={16} className="text-blue-500 dark:text-blue-400" />,
+      value: "monochromatic",
+      label: t("monochromatic") || "Monoxromatik",
+      icon: <Circle size={16} className="text-blue-500 dark:text-blue-400" />
     },
     {
-      value: 'analogous',
-      label: t('analogous') || 'Analogik',
-      icon: <Palette size={16} className="text-green-500 dark:text-green-400" />,
+      value: "analogous",
+      label: t("analogous") || "Analogik",
+      icon: <Palette size={16} className="text-green-500 dark:text-green-400" />
     },
     {
-      value: 'complementary',
-      label: t('complementary') || 'Komplementar',
-      icon: <Zap size={16} className="text-purple-500 dark:text-purple-400" />,
-    },
+      value: "complementary",
+      label: t("complementary") || "Komplementar",
+      icon: <Zap size={16} className="text-purple-500 dark:text-purple-400" />
+    }
   ]
 
   return (
@@ -43,13 +45,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-4">
           <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {t('paletteType') || 'Palette turi:'}
+            {t("paletteType") || "Palette turi:"}
           </span>
 
           <GradientTabs
             options={paletteOptions}
             value={paletteType}
-            onChange={(value) => setPaletteType(value as 'monochromatic' | 'analogous' | 'complementary')}
+            onChange={(value) =>
+              setPaletteType(
+                value as "monochromatic" | "analogous" | "complementary"
+              )
+            }
           />
 
           <ShimmerButton
@@ -59,7 +65,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
           >
             <RefreshCw size={16} className="mr-2" />
-            {t('randomColor') || 'Tasodifiy rang'}
+            {t("randomColor") || "Tasodifiy rang"}
           </ShimmerButton>
         </div>
 
@@ -72,7 +78,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
             >
               <Download size={16} className="mr-2" />
-              {t('downloadPalette') || 'Palette yuklab olish'}
+              {t("downloadPalette") || "Palette yuklab olish"}
             </ShimmerButton>
           )}
         </div>

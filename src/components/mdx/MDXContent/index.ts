@@ -1,1 +1,1 @@
-export { default } from './MDXContent'
+export { default } from "./MDXContent"

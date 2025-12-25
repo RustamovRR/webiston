@@ -1,2 +1,2 @@
-export * from './mobileMenuStore'
-export * from './navigationStore'
+export * from "./mobileMenuStore"
+export * from "./navigationStore"

@@ -1,33 +1,37 @@
-import { Inter } from 'next/font/google'
-import Footer from '@/components/shared/Footer/Footer'
-import Header from '@/components/shared/Header/Header'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { Inter } from "next/font/google"
+import Footer from "@/components/shared/Footer/Footer"
+import Header from "@/components/shared/Header/Header"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages, getTranslations } from "next-intl/server"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
 
-const inter = Inter({ subsets: ['latin'] })
-const locales = ['uz', 'en']
+const inter = Inter({ subsets: ["latin"] })
+const locales = ["uz", "en"]
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'Metadata' })
+  const t = await getTranslations({ locale, namespace: "Metadata" })
 
   return {
-    metadataBase: new URL('https://webiston.uz'),
+    metadataBase: new URL("https://webiston.uz"),
     title: {
-      default: 'Webiston - Veb texnologiyalar dunyosiga teran nigoh',
-      template: '%s | Webiston',
+      default: "Webiston - Veb texnologiyalar dunyosiga teran nigoh",
+      template: "%s | Webiston"
     },
-    description: t('description'),
-    keywords: t('keywords'),
+    description: t("description"),
+    keywords: t("keywords")
     // ... other metadata from root layout should be here
   }
 }
 
 export default async function LocaleLayout({
   children,
-  params,
+  params
 }: {
   children: React.ReactNode
   params: Promise<{ locale: string }>

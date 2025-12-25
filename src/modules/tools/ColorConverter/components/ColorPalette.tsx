@@ -1,11 +1,11 @@
-import React from 'react'
-import { Palette, Copy, Check } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import React from "react"
+import { Palette, Copy, Check } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface ColorPaletteProps {
   isValid: boolean
   generatedPalette: string[]
-  paletteType: 'monochromatic' | 'analogous' | 'complementary'
+  paletteType: "monochromatic" | "analogous" | "complementary"
   getColorName: (color: string) => string
   onColorSelect: (color: string) => void
 }
@@ -15,9 +15,9 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
   generatedPalette,
   paletteType,
   getColorName,
-  onColorSelect,
+  onColorSelect
 }) => {
-  const t = useTranslations('ColorConverterPage.ColorPalette')
+  const t = useTranslations("ColorConverterPage.ColorPalette")
   const [copiedColor, setCopiedColor] = React.useState<string | null>(null)
 
   const copyToClipboard = async (color: string) => {
@@ -26,7 +26,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
       setCopiedColor(color)
       setTimeout(() => setCopiedColor(null), 2000)
     } catch (err) {
-      console.error('Copy failed:', err)
+      console.error("Copy failed:", err)
     }
   }
 
@@ -36,14 +36,14 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
 
   const getPaletteTitle = () => {
     switch (paletteType) {
-      case 'monochromatic':
-        return t('monochromatic') || 'Monoxromatik palette'
-      case 'analogous':
-        return t('analogous') || 'Analogik palette'
-      case 'complementary':
-        return t('complementary') || 'Komplementar palette'
+      case "monochromatic":
+        return t("monochromatic") || "Monoxromatik palette"
+      case "analogous":
+        return t("analogous") || "Analogik palette"
+      case "complementary":
+        return t("complementary") || "Komplementar palette"
       default:
-        return 'Color Palette'
+        return "Color Palette"
     }
   }
 
@@ -83,9 +83,13 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
             </div>
 
             <div className="mt-2 text-center">
-              <div className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">{color}</div>
+              <div className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                {color}
+              </div>
               {getColorName(color) && (
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">{getColorName(color)}</div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                  {getColorName(color)}
+                </div>
               )}
             </div>
           </div>
@@ -94,7 +98,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
 
       <div className="mt-4 text-center">
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          {t('clickToCopy') || 'Rangni nusxalash uchun bosing'}
+          {t("clickToCopy") || "Rangni nusxalash uchun bosing"}
         </p>
       </div>
     </div>

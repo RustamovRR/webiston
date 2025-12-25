@@ -1,13 +1,26 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Keyboard, Copy, RotateCcw, Play, Square, Info, Monitor, Command } from 'lucide-react'
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { Button } from '@/components/ui/button'
-import { ShimmerButton } from '@/components/ui/shimmer-button'
-import { CopyButton } from '@/components/shared/CopyButton'
-import { useKeycodeInfo, type KeyInfo, type CommonKey } from './hooks/useKeycodeInfo'
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  Keyboard,
+  Copy,
+  RotateCcw,
+  Play,
+  Square,
+  Info,
+  Monitor,
+  Command
+} from "lucide-react"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+import { Button } from "@/components/ui/button"
+import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { CopyButton } from "@/components/shared/CopyButton"
+import {
+  useKeycodeInfo,
+  type KeyInfo,
+  type CommonKey
+} from "./hooks/useKeycodeInfo"
 
 export default function KeycodeInfo() {
   const {
@@ -21,25 +34,25 @@ export default function KeycodeInfo() {
     simulateKey,
     getLocationName,
     formatKeyInfo,
-    getCommonKeysByCategory,
+    getCommonKeysByCategory
   } = useKeycodeInfo()
 
   const getKeyDisplayValue = (key: string): string => {
-    if (key === ' ') return 'Space'
-    if (key === 'ArrowUp') return '↑'
-    if (key === 'ArrowDown') return '↓'
-    if (key === 'ArrowLeft') return '←'
-    if (key === 'ArrowRight') return '→'
+    if (key === " ") return "Space"
+    if (key === "ArrowUp") return "↑"
+    if (key === "ArrowDown") return "↓"
+    if (key === "ArrowLeft") return "←"
+    if (key === "ArrowRight") return "→"
     return key
   }
 
-  const getCategoryIcon = (category: CommonKey['category']) => {
+  const getCategoryIcon = (category: CommonKey["category"]) => {
     switch (category) {
-      case 'navigation':
+      case "navigation":
         return <Monitor className="h-4 w-4" />
-      case 'function':
+      case "function":
         return <Command className="h-4 w-4" />
-      case 'special':
+      case "special":
         return <Keyboard className="h-4 w-4" />
       default:
         return <Info className="h-4 w-4" />
@@ -70,11 +83,17 @@ export default function KeycodeInfo() {
                 <div className="h-3 w-3 rounded-full bg-green-500"></div>
               </div>
               <div className="flex-1 text-center">
-                <span className="font-mono text-sm text-zinc-300">Klaviatura Tinglash</span>
+                <span className="font-mono text-sm text-zinc-300">
+                  Klaviatura Tinglash
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <div className={`h-2 w-2 rounded-full ${isListening ? 'bg-green-500' : 'bg-zinc-500'}`}></div>
-                <span className="text-xs text-zinc-400">{isListening ? 'FAOL' : "O'CHIQ"}</span>
+                <div
+                  className={`h-2 w-2 rounded-full ${isListening ? "bg-green-500" : "bg-zinc-500"}`}
+                ></div>
+                <span className="text-xs text-zinc-400">
+                  {isListening ? "FAOL" : "O'CHIQ"}
+                </span>
               </div>
             </div>
 
@@ -83,21 +102,23 @@ export default function KeycodeInfo() {
                 <div className="text-center">
                   <div className="mb-2 text-sm text-zinc-400">
                     {isListening
-                      ? 'Klaviaturadan biror tugmani bosing...'
-                      : 'Klaviatura kodlarini aniqlash uchun rejimni yoqing'}
+                      ? "Klaviaturadan biror tugmani bosing..."
+                      : "Klaviatura kodlarini aniqlash uchun rejimni yoqing"}
                   </div>
 
                   {/* Listening Status */}
                   <div
                     className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 ${
                       isListening
-                        ? 'border border-green-500/20 bg-green-500/10 text-green-400'
-                        : 'border border-zinc-700 bg-zinc-800/50 text-zinc-400'
+                        ? "border border-green-500/20 bg-green-500/10 text-green-400"
+                        : "border border-zinc-700 bg-zinc-800/50 text-zinc-400"
                     }`}
                   >
                     <Keyboard className="h-4 w-4" />
                     <span className="font-mono text-sm">
-                      {isListening ? 'Tinglash rejimi yoniq' : "Tinglash rejimi o'chiq"}
+                      {isListening
+                        ? "Tinglash rejimi yoniq"
+                        : "Tinglash rejimi o'chiq"}
                     </span>
                   </div>
                 </div>
@@ -105,19 +126,30 @@ export default function KeycodeInfo() {
                 {/* Control Buttons */}
                 <div className="flex gap-2">
                   {!isListening ? (
-                    <ShimmerButton onClick={startListening} className="flex-1 bg-green-600 hover:bg-green-700">
+                    <ShimmerButton
+                      onClick={startListening}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                    >
                       <Play className="mr-2 h-4 w-4" />
                       Tinglashni Boshlash
                     </ShimmerButton>
                   ) : (
-                    <Button onClick={stopListening} variant="destructive" className="flex-1">
+                    <Button
+                      onClick={stopListening}
+                      variant="destructive"
+                      className="flex-1"
+                    >
                       <Square className="mr-2 h-4 w-4" />
                       To'xtatish
                     </Button>
                   )}
 
                   {keyHistory.length > 0 && (
-                    <Button onClick={clearHistory} variant="outline" className="border-zinc-700 hover:bg-zinc-800">
+                    <Button
+                      onClick={clearHistory}
+                      variant="outline"
+                      className="border-zinc-700 hover:bg-zinc-800"
+                    >
                       <RotateCcw className="h-4 w-4" />
                     </Button>
                   )}
@@ -141,7 +173,9 @@ export default function KeycodeInfo() {
                   <div className="h-3 w-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="flex-1 text-center">
-                  <span className="font-mono text-sm text-zinc-300">Tugma Ma'lumotlari</span>
+                  <span className="font-mono text-sm text-zinc-300">
+                    Tugma Ma'lumotlari
+                  </span>
                 </div>
                 <CopyButton text={formatKeyInfo(keyInfo)} />
               </div>
@@ -171,35 +205,47 @@ export default function KeycodeInfo() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
                     <div className="mb-1 text-xs text-zinc-400">Key</div>
-                    <div className="font-mono text-zinc-100">"{keyInfo.key}"</div>
+                    <div className="font-mono text-zinc-100">
+                      "{keyInfo.key}"
+                    </div>
                   </div>
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
                     <div className="mb-1 text-xs text-zinc-400">Code</div>
-                    <div className="font-mono text-zinc-100">{keyInfo.code}</div>
+                    <div className="font-mono text-zinc-100">
+                      {keyInfo.code}
+                    </div>
                   </div>
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
                     <div className="mb-1 text-xs text-zinc-400">KeyCode</div>
-                    <div className="font-mono text-blue-400">{keyInfo.keyCode}</div>
+                    <div className="font-mono text-blue-400">
+                      {keyInfo.keyCode}
+                    </div>
                   </div>
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
                     <div className="mb-1 text-xs text-zinc-400">Which</div>
-                    <div className="font-mono text-zinc-100">{keyInfo.which}</div>
+                    <div className="font-mono text-zinc-100">
+                      {keyInfo.which}
+                    </div>
                   </div>
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
                     <div className="mb-1 text-xs text-zinc-400">Location</div>
-                    <div className="text-zinc-100">{getLocationName(keyInfo.location)}</div>
+                    <div className="text-zinc-100">
+                      {getLocationName(keyInfo.location)}
+                    </div>
                   </div>
                   <div className="rounded-lg border border-zinc-700/50 bg-zinc-800/50 p-3">
-                    <div className="mb-1 text-xs text-zinc-400">Modifikatorlar</div>
+                    <div className="mb-1 text-xs text-zinc-400">
+                      Modifikatorlar
+                    </div>
                     <div className="text-zinc-100">
                       {[
-                        keyInfo.ctrlKey && 'Ctrl',
-                        keyInfo.altKey && 'Alt',
-                        keyInfo.shiftKey && 'Shift',
-                        keyInfo.metaKey && 'Meta',
+                        keyInfo.ctrlKey && "Ctrl",
+                        keyInfo.altKey && "Alt",
+                        keyInfo.shiftKey && "Shift",
+                        keyInfo.metaKey && "Meta"
                       ]
                         .filter(Boolean)
-                        .join(' + ') || "Yo'q"}
+                        .join(" + ") || "Yo'q"}
                     </div>
                   </div>
                 </div>
@@ -208,7 +254,9 @@ export default function KeycodeInfo() {
                 <div className="mt-4 border-t border-zinc-800 pt-4">
                   <div className="flex gap-4 text-sm text-zinc-500">
                     <span className="flex items-center gap-1">
-                      <span className="font-mono text-blue-400">{keyInfo.keyCode}</span>
+                      <span className="font-mono text-blue-400">
+                        {keyInfo.keyCode}
+                      </span>
                       <span>KeyCode</span>
                     </span>
                     <span className="flex items-center gap-1">
@@ -216,7 +264,9 @@ export default function KeycodeInfo() {
                       <span>Tugma</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <span className="text-zinc-100">{new Date(keyInfo.timestamp).toLocaleTimeString()}</span>
+                      <span className="text-zinc-100">
+                        {new Date(keyInfo.timestamp).toLocaleTimeString()}
+                      </span>
                       <span>Vaqt</span>
                     </span>
                   </div>
@@ -243,7 +293,9 @@ export default function KeycodeInfo() {
                 <div className="h-3 w-3 rounded-full bg-green-500"></div>
               </div>
               <div className="flex-1 text-center">
-                <span className="font-mono text-sm text-zinc-300">Umumiy Tugmalar</span>
+                <span className="font-mono text-sm text-zinc-300">
+                  Umumiy Tugmalar
+                </span>
               </div>
             </div>
 
@@ -259,12 +311,21 @@ export default function KeycodeInfo() {
                   >
                     <div className="mb-1 flex items-center gap-2">
                       {getCategoryIcon(key.category)}
-                      <span className="font-medium text-zinc-100 group-hover:text-white">{key.name}</span>
+                      <span className="font-medium text-zinc-100 group-hover:text-white">
+                        {key.name}
+                      </span>
                     </div>
                     <div className="mb-1 text-xs text-zinc-400">
-                      KeyCode: <span className="font-mono text-blue-400">{key.keyCode}</span>
+                      KeyCode:{" "}
+                      <span className="font-mono text-blue-400">
+                        {key.keyCode}
+                      </span>
                     </div>
-                    {key.description && <div className="text-xs text-zinc-500">{key.description}</div>}
+                    {key.description && (
+                      <div className="text-xs text-zinc-500">
+                        {key.description}
+                      </div>
+                    )}
                   </motion.button>
                 ))}
               </div>
@@ -287,7 +348,9 @@ export default function KeycodeInfo() {
                   <div className="h-3 w-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="flex-1 text-center">
-                  <span className="font-mono text-sm text-zinc-300">Tugmalar Tarixi</span>
+                  <span className="font-mono text-sm text-zinc-300">
+                    Tugmalar Tarixi
+                  </span>
                 </div>
               </div>
 
@@ -308,19 +371,25 @@ export default function KeycodeInfo() {
                           </div>
                           <div>
                             <div className="text-sm text-zinc-100">
-                              {key.code} <span className="font-mono text-blue-400">({key.keyCode})</span>
+                              {key.code}{" "}
+                              <span className="font-mono text-blue-400">
+                                ({key.keyCode})
+                              </span>
                             </div>
-                            {(key.ctrlKey || key.altKey || key.shiftKey || key.metaKey) && (
+                            {(key.ctrlKey ||
+                              key.altKey ||
+                              key.shiftKey ||
+                              key.metaKey) && (
                               <div className="text-xs text-zinc-400">
-                                +{' '}
+                                +{" "}
                                 {[
-                                  key.ctrlKey && 'Ctrl',
-                                  key.altKey && 'Alt',
-                                  key.shiftKey && 'Shift',
-                                  key.metaKey && 'Meta',
+                                  key.ctrlKey && "Ctrl",
+                                  key.altKey && "Alt",
+                                  key.shiftKey && "Shift",
+                                  key.metaKey && "Meta"
                                 ]
                                   .filter(Boolean)
-                                  .join(' + ')}
+                                  .join(" + ")}
                               </div>
                             )}
                           </div>
@@ -340,16 +409,24 @@ export default function KeycodeInfo() {
                 <div className="mt-4 border-t border-zinc-800 pt-4">
                   <div className="flex gap-4 text-sm text-zinc-500">
                     <span className="flex items-center gap-1">
-                      <span className="font-mono text-blue-400">{keyHistory.length}</span>
+                      <span className="font-mono text-blue-400">
+                        {keyHistory.length}
+                      </span>
                       <span>Jami tugmalar</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <span className="text-zinc-100">{keyHistory[0]?.key || "Yo'q"}</span>
+                      <span className="text-zinc-100">
+                        {keyHistory[0]?.key || "Yo'q"}
+                      </span>
                       <span>Oxirgi</span>
                     </span>
                     <span className="flex items-center gap-1">
                       <span className="text-zinc-100">
-                        {keyHistory[0] ? new Date(keyHistory[0].timestamp).toLocaleTimeString() : '--:--'}
+                        {keyHistory[0]
+                          ? new Date(
+                              keyHistory[0].timestamp
+                            ).toLocaleTimeString()
+                          : "--:--"}
                       </span>
                       <span>Vaqt</span>
                     </span>
@@ -397,7 +474,9 @@ export default function KeycodeInfo() {
                   <div>Tugmaning fizik pozitsiyasi (KeyA, Enter)</div>
                 </div>
                 <div className="rounded-lg border border-purple-500/20 bg-purple-500/10 p-3">
-                  <div className="mb-1 font-medium text-purple-400">KeyCode</div>
+                  <div className="mb-1 font-medium text-purple-400">
+                    KeyCode
+                  </div>
                   <div>Raqamli identifikator (65, 13, 112)</div>
                 </div>
               </div>
@@ -410,22 +489,28 @@ export default function KeycodeInfo() {
               </h4>
               <div className="space-y-2 text-sm text-zinc-400">
                 <p>
-                  <strong className="text-zinc-300">1.</strong> "Tinglashni Boshlash" tugmasini bosing
+                  <strong className="text-zinc-300">1.</strong> "Tinglashni
+                  Boshlash" tugmasini bosing
                 </p>
                 <p>
-                  <strong className="text-zinc-300">2.</strong> Klaviaturadan har qanday tugmani bosing
+                  <strong className="text-zinc-300">2.</strong> Klaviaturadan
+                  har qanday tugmani bosing
                 </p>
                 <p>
-                  <strong className="text-zinc-300">3.</strong> Tugma haqida batafsil ma'lumot ko'ring
+                  <strong className="text-zinc-300">3.</strong> Tugma haqida
+                  batafsil ma'lumot ko'ring
                 </p>
                 <p>
-                  <strong className="text-zinc-300">4.</strong> Umumiy tugmalar ro'yxatidan test qiling
+                  <strong className="text-zinc-300">4.</strong> Umumiy tugmalar
+                  ro'yxatidan test qiling
                 </p>
                 <p>
-                  <strong className="text-zinc-300">5.</strong> Ma'lumotlarni nusxalang
+                  <strong className="text-zinc-300">5.</strong> Ma'lumotlarni
+                  nusxalang
                 </p>
                 <p>
-                  <strong className="text-zinc-300">6.</strong> Tugmalar tarixini kuzating
+                  <strong className="text-zinc-300">6.</strong> Tugmalar
+                  tarixini kuzating
                 </p>
               </div>
             </div>

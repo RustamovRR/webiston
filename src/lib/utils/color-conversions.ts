@@ -32,21 +32,21 @@ export const hslToRgb = (h: number, s: number, l: number) => {
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
-    b: Math.round(b * 255),
+    b: Math.round(b * 255)
   }
 }
 
 // Convert hex to RGB (supports both 3 and 6 digit hex)
 export const hexToRgb = (hex: string) => {
   // Remove # if present
-  hex = hex.replace('#', '')
+  hex = hex.replace("#", "")
 
   // Convert 3-digit hex to 6-digit
   if (hex.length === 3) {
     hex = hex
-      .split('')
+      .split("")
       .map((char) => char + char)
-      .join('')
+      .join("")
   }
 
   const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -54,7 +54,7 @@ export const hexToRgb = (hex: string) => {
     ? {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        b: parseInt(result[3], 16)
       }
     : null
 }
@@ -94,7 +94,7 @@ export const rgbToHsl = (r: number, g: number, b: number) => {
   return {
     h: Math.round(h * 360),
     s: Math.round(s * 100),
-    l: Math.round(l * 100),
+    l: Math.round(l * 100)
   }
 }
 
@@ -102,7 +102,7 @@ export const rgbToHsl = (r: number, g: number, b: number) => {
 export const rgbToHex = (r: number, g: number, b: number): string => {
   const componentToHex = (c: number) => {
     const hex = c.toString(16)
-    return hex.length === 1 ? '0' + hex : hex
+    return hex.length === 1 ? "0" + hex : hex
   }
   return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
 }

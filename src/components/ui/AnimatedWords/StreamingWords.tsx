@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { motion } from 'framer-motion'
-import { cn } from '@/lib'
-import { useEffect, useRef, useState } from 'react'
+import { motion } from "framer-motion"
+import { cn } from "@/lib"
+import { useEffect, useRef, useState } from "react"
 
 interface StreamingWordsProps {
   text: string
@@ -56,7 +56,7 @@ function StreamingWords({ text, className }: StreamingWordsProps) {
     prevTextRef.current = text
   }, [text])
 
-  return <p className={cn('whitespace-pre-wrap', className)}>{displayedText}</p>
+  return <p className={cn("whitespace-pre-wrap", className)}>{displayedText}</p>
 }
 
 export default StreamingWords

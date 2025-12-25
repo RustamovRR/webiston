@@ -3,16 +3,16 @@
  */
 export function formatTutorialName(id: string): string {
   return id
-    .split('-')
+    .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+    .join(" ")
 }
 
 /**
  * Process video syntax in markdown content
  */
 export function processContentForVideos(content: string): string {
-  if (!content) return ''
+  if (!content) return ""
 
   try {
     // Process custom !video[] syntax - we replace these with regular markdown image syntax
@@ -21,14 +21,17 @@ export function processContentForVideos(content: string): string {
 
     // First try custom !video[] syntax
     const customVideoRegex = /!video\[(.*?)\]\((.*?)\)/g
-    processedContent = processedContent.replace(customVideoRegex, (match, alt, url) => {
-      // Convert to standard markdown image with the same URL
-      return `![${alt || 'Video'}](${url})`
-    })
+    processedContent = processedContent.replace(
+      customVideoRegex,
+      (match, alt, url) => {
+        // Convert to standard markdown image with the same URL
+        return `![${alt || "Video"}](${url})`
+      }
+    )
 
     return processedContent
   } catch (error) {
-    console.error('Error processing videos:', error)
+    console.error("Error processing videos:", error)
     return content
   }
 }
@@ -40,14 +43,18 @@ export function isMarkdownContent(slug: string[]): boolean {
   // Check the original path for .md extensions
   const lastSlugPart = slug[slug.length - 1]
   return (
-    lastSlugPart?.endsWith('.md') || lastSlugPart?.includes('/article.md') || slug.some((part) => part.endsWith('.md'))
+    lastSlugPart?.endsWith(".md") ||
+    lastSlugPart?.includes("/article.md") ||
+    slug.some((part) => part.endsWith(".md"))
   )
 }
 
 /**
  * Flatten nested navigation into a flat array
  */
-export function flattenNavigation(navigationData: any[]): { title: string; path: string; fullPath: string }[] {
+export function flattenNavigation(
+  navigationData: any[]
+): { title: string; path: string; fullPath: string }[] {
   const flattenedNavigation: {
     title: string
     path: string
@@ -65,7 +72,7 @@ export function flattenNavigation(navigationData: any[]): { title: string; path:
         flattenedNavigation.push({
           title: item.title,
           path: item.path,
-          fullPath: item.fullPath || item.path,
+          fullPath: item.fullPath || item.path
         })
       }
 

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import {
   Breadcrumb,
@@ -6,16 +6,26 @@ import {
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib'
-import { type TutorialNavigation } from '@/lib/mdx'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { PanelLeftClose, PanelLeftOpen, PanelsTopLeft, PanelTop } from 'lucide-react'
-import React from 'react'
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib"
+import { type TutorialNavigation } from "@/lib/mdx"
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelsTopLeft,
+  PanelTop
+} from "lucide-react"
+import React from "react"
 
 interface BreadcrumbItemType {
   title: string
@@ -36,15 +46,15 @@ export default function TutorialLayoutContent({
   lastUpdated,
   navigationItems,
   tutorialTitle,
-  pageTitle,
+  pageTitle
 }: TutorialLayoutContentProps) {
   const { slug } = useParams<{ slug: string[] }>()
   const tutorialId = slug?.[0]
 
   const getBreadcrumbItems = () => {
     const items: BreadcrumbItemType[] = [
-      { title: 'Bosh sahifa', path: '/books', hasIndex: true },
-      { title: tutorialTitle, path: `/books/${tutorialId}`, hasIndex: true },
+      { title: "Bosh sahifa", path: "/books", hasIndex: true },
+      { title: tutorialTitle, path: `/books/${tutorialId}`, hasIndex: true }
     ]
 
     if (!navigationItems || !slug || slug.length <= 1) {
@@ -71,18 +81,25 @@ export default function TutorialLayoutContent({
       const breadcrumbPart: BreadcrumbItemType = {
         title: currentNode.title,
         path: newPath,
-        hasIndex: currentNode.hasIndex || !!currentNode.list?.length,
+        hasIndex: currentNode.hasIndex || !!currentNode.list?.length
       }
 
       if (restSegments.length > 0 && currentNode.list) {
-        return [breadcrumbPart, ...findPathRecursively(currentNode.list, restSegments, newPath)]
+        return [
+          breadcrumbPart,
+          ...findPathRecursively(currentNode.list, restSegments, newPath)
+        ]
       }
 
       return [breadcrumbPart]
     }
 
     const pagePathSegments = slug.slice(1)
-    const breadcrumbTrail = findPathRecursively(navigationItems, pagePathSegments, `/books/${tutorialId}`)
+    const breadcrumbTrail = findPathRecursively(
+      navigationItems,
+      pagePathSegments,
+      `/books/${tutorialId}`
+    )
 
     const finalItems = [...items, ...breadcrumbTrail]
 
@@ -94,7 +111,7 @@ export default function TutorialLayoutContent({
         finalItems.push({
           title: pageTitle,
           path: lastItem.path, // Path is not really used as it won't be a link
-          hasIndex: false,
+          hasIndex: false
         })
       }
     }
@@ -137,7 +154,10 @@ export default function TutorialLayoutContent({
       <>
         <BreadcrumbItem>
           {firstItem.hasIndex ? (
-            <Link href={firstItem.path} className="hover:text-foreground text-sm font-medium transition-colors">
+            <Link
+              href={firstItem.path}
+              className="hover:text-foreground text-sm font-medium transition-colors"
+            >
               {firstItem.title}
             </Link>
           ) : (
@@ -155,7 +175,10 @@ export default function TutorialLayoutContent({
               {middleItems.map((item) => (
                 <DropdownMenuItem key={item.path}>
                   {item.hasIndex ? (
-                    <Link href={item.path} className="w-full text-sm font-medium">
+                    <Link
+                      href={item.path}
+                      className="w-full text-sm font-medium"
+                    >
                       {item.title}
                     </Link>
                   ) : (
@@ -176,7 +199,9 @@ export default function TutorialLayoutContent({
               {lastItem.title}
             </Link>
           ) : (
-            <BreadcrumbPage className="text-foreground font-medium">{lastItem.title}</BreadcrumbPage>
+            <BreadcrumbPage className="text-foreground font-medium">
+              {lastItem.title}
+            </BreadcrumbPage>
           )}
         </BreadcrumbItem>
       </>
@@ -188,7 +213,9 @@ export default function TutorialLayoutContent({
       <section className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Breadcrumb className="max-w-4/5">
-            <BreadcrumbList className="flex-nowrap whitespace-nowrap">{renderBreadcrumbItems()}</BreadcrumbList>
+            <BreadcrumbList className="flex-nowrap whitespace-nowrap">
+              {renderBreadcrumbItems()}
+            </BreadcrumbList>
           </Breadcrumb>
         </div>
       </section>
@@ -196,10 +223,10 @@ export default function TutorialLayoutContent({
       {/* Main Article Content */}
       <article
         className={cn(
-          'prose prose-slate dark:prose-invert',
-          'dark:prose-headings:text-white prose-headings:scroll-mt-28',
-          'prose-a:font-semibold prose-a:no-underline prose-pre:m-0',
-          'max-w-none pt-6'
+          "prose prose-slate dark:prose-invert",
+          "dark:prose-headings:text-white prose-headings:scroll-mt-28",
+          "prose-a:font-semibold prose-a:no-underline prose-pre:m-0",
+          "max-w-none pt-6"
         )}
       >
         {children}

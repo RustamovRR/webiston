@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { Check, Copy } from 'lucide-react'
-import { useCopyToClipboard } from 'usehooks-ts'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Check, Copy } from "lucide-react"
+import { useCopyToClipboard } from "usehooks-ts"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 interface CopyButtonProps {
   text: string
   disabled?: boolean
-  size?: 'sm' | 'default' | 'lg'
-  variant?: 'default' | 'secondary' | 'ghost' | 'outline'
+  size?: "sm" | "default" | "lg"
+  variant?: "default" | "secondary" | "ghost" | "outline"
   className?: string
   onCopy?: () => void
 }
@@ -17,10 +17,10 @@ interface CopyButtonProps {
 export function CopyButton({
   text,
   disabled = false,
-  size = 'sm',
-  variant = 'ghost',
-  className = '',
-  onCopy,
+  size = "sm",
+  variant = "ghost",
+  className = "",
+  onCopy
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
   const [_, copy] = useCopyToClipboard()
@@ -34,7 +34,7 @@ export function CopyButton({
       onCopy?.()
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      console.error('Nusxalashda xatolik:', error)
+      console.error("Nusxalashda xatolik:", error)
     }
   }
 
@@ -47,7 +47,11 @@ export function CopyButton({
       className={`${className} cursor-pointer transition-colors`}
       aria-label="Nusxalash"
     >
-      {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+      {copied ? (
+        <Check size={18} className="text-green-500" />
+      ) : (
+        <Copy size={18} />
+      )}
     </Button>
   )
 }

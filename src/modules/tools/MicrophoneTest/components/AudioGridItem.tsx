@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { Play, Download, Trash2, Volume2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { RecordedAudio } from '../hooks/useMicrophoneTest'
+import { Play, Download, Trash2, Volume2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
+import { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface AudioGridItemProps {
   audio: RecordedAudio
@@ -13,19 +13,24 @@ interface AudioGridItemProps {
   onDelete: () => void
 }
 
-export function AudioGridItem({ audio, onPreview, onDownload, onDelete }: AudioGridItemProps) {
-  const t = useTranslations('MicrophoneTestPage.RecordedAudioPanel')
+export function AudioGridItem({
+  audio,
+  onPreview,
+  onDownload,
+  onDelete
+}: AudioGridItemProps) {
+  const t = useTranslations("MicrophoneTestPage.RecordedAudioPanel")
 
   const formatFileSize = (bytes: number) => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
+    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i]
   }
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs.toString().padStart(2, '0')}`
+    return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
   return (
@@ -42,7 +47,9 @@ export function AudioGridItem({ audio, onPreview, onDownload, onDelete }: AudioG
             <Volume2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">{audio.name}</p>
+            <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              {audio.name}
+            </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               {formatDuration(audio.duration)} • {formatFileSize(audio.size)}
             </p>
@@ -58,7 +65,7 @@ export function AudioGridItem({ audio, onPreview, onDownload, onDelete }: AudioG
             className="flex-1 border-zinc-200 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-700"
           >
             <Play className="mr-1 h-3 w-3" />
-            {t('actions.preview')}
+            {t("actions.preview")}
           </Button>
           <Button
             size="sm"
