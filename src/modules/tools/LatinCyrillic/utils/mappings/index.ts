@@ -1,10 +1,14 @@
 // Barrel export for all character mappings
 
 export {
+  getRussianTimeNameInUzbek,
+  isRussianTimeName,
+  RUSSIAN_MONTHS_TO_UZBEK
+} from "./month-names"
+export {
   isRussianOnlyChar,
   RUSSIAN_CYRILLIC_TO_LATIN
 } from "./russian-cyrillic-to-latin"
-
 export {
   UZBEK_CYRILLIC_TO_LATIN_SINGLE,
   UZBEK_CYRILLIC_TO_LATIN_SPECIAL

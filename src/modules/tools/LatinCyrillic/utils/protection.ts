@@ -18,14 +18,14 @@ function buildProtectionRegex(): RegExp {
     "```[\\s\\S]*?```",
     // Inline code (single backticks)
     "`[^`]+?`",
+    // HTML tags: <tag>, </tag>, <tag attr="value">
+    "<\\/?[a-zA-Z][a-zA-Z0-9]*(?:\\s[^>]*)?\\/?>",
     // Email addresses
     "\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b",
     // URLs
     "\\b(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*",
-    // Hyphenated technical terms (COVID-19, Wi-Fi, etc.)
-    "\\b[A-Za-z]+-[A-Za-z0-9]+\\b",
-    // Alphanumeric codes (4G, 5G, H2O, etc.)
-    "\\b\\d+[A-Za-z]+\\b|\\b[A-Za-z]+\\d+[A-Za-z]*\\b",
+    // Technical terms with hyphen+number (COVID-19, etc.)
+    "\\b[A-Za-z]+-\\d+\\b",
     // Protected words (case-insensitive, whole words only)
     `\\b(${NON_TRANSLITERATABLE_WORDS.join("|")})\\b`
   ]

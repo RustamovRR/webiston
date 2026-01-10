@@ -12,6 +12,7 @@ import type { CharacterMapping, DigraphMapping } from "../../types"
 export const UZBEK_LATIN_TO_CYRILLIC_SINGLE: CharacterMapping = {
   a: "а",
   b: "б",
+  c: "с", // 'c' → 'с' (for foreign words like "practice")
   d: "д",
   e: "е",
   f: "ф",
@@ -31,6 +32,7 @@ export const UZBEK_LATIN_TO_CYRILLIC_SINGLE: CharacterMapping = {
   t: "т",
   u: "у",
   v: "в",
+  w: "в", // 'w' → 'в' (for foreign words)
   x: "х",
   y: "й",
   z: "з"

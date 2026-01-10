@@ -134,12 +134,43 @@ export function transliterateLatinToCyrillic(text: string): string {
         continue
       }
 
-      // Apostrophe between vowels → hard sign (ъ)
-      if (isLatinVowel(prevChar) || isLatinVowel(nextCharLower)) {
-        result += "ъ"
-      } else {
-        result += "'"
+      // Check for 'y + vowel pattern (like 'ya, 'ye, 'yo, 'yu)
+      // This is Russian soft sign + iotated vowel: ья, ье, ьё, ью
+      const afterNext = normalized[i + 2]?.toLowerCase() || ""
+      if (nextCharLower === "y" && "aeou".includes(afterNext)) {
+        result += "ь"
+        i++
+        continue
       }
+
+      // O'zbek: Apostrophe after vowel → hard sign (ъ)
+      // Examples: a'lo, ma'no, she'r, e'tibor
+      // This covers both vowel+'+vowel and vowel+'+consonant
+      if (isLatinVowel(prevChar)) {
+        result += "ъ"
+        i++
+        continue
+      }
+
+      // Rus: Apostrophe at end of word → soft sign (ь)
+      // Example: ochen' → очень
+      const isEndOfWord = !nextChar || /[\s.,!?;:-]/.test(nextChar)
+      if (isEndOfWord) {
+        result += "ь"
+        i++
+        continue
+      }
+
+      // Rus: Apostrophe before vowel after consonant → soft sign (ь)
+      // Example: p'esa → пьеса
+      if (!isLatinVowel(prevChar) && isLatinVowel(nextCharLower)) {
+        result += "ь"
+        i++
+        continue
+      }
+
+      // Default: keep as apostrophe
+      result += "'"
       i++
       continue
     }

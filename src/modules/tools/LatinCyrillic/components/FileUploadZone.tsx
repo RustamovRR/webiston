@@ -69,6 +69,7 @@ export function FileUploadZone({
 
     return (
       <div className="relative h-12 w-12">
+        {/** biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
         <svg className="h-12 w-12 -rotate-90">
           <circle
             cx="24"
