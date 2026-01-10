@@ -1,39 +1,43 @@
 # Lefthook configuration for Webiston
 # https://github.com/evilmartians/lefthook
+#
+# Best Practice Git Hooks:
+# - pre-commit: Fast checks (lint, format) on staged files
+# - commit-msg: Validate commit message format
+# - pre-push: Full validation (typecheck, tests) before push
 
-# Pre-commit hooks - FAST validation
 pre-commit:
   parallel: true
   commands:
-    # OXC linting - 50-100x faster than ESLint
     oxlint:
       glob: "*.{js,ts,jsx,tsx}"
-      run: pnpm oxlint {staged_files}
+      run: pnpm oxlint {staged_files} --quiet
+      skip:
+        - merge
+        - rebase
       
-    # Biome formatting - 35x faster than Prettier
     biome-format:
       glob: "*.{js,ts,jsx,tsx,json}"
       run: pnpm biome format --write {staged_files}
       stage_fixed: true
+      skip:
+        - merge
+        - rebase
 
-# Commit message validation
 commit-msg:
   commands:
     commitlint:
       run: pnpm commitlint --edit {1}
 
-# Pre-push hooks - Full validation before push
 pre-push:
   parallel: true
   commands:
-    # TypeScript type checking
     typecheck:
-      run: pnpm tsc --noEmit
+      run: pnpm typecheck
       
-    # Full lint check
-    lint-all:
-      run: pnpm oxlint src/
+    test:
+      run: pnpm test
 
-# Skip hooks for emergency:
+# Skip all hooks for emergency:
 # git commit --no-verify -m "hotfix: emergency"
 # git push --no-verify
