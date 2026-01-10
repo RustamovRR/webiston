@@ -1,263 +1,334 @@
 import { describe, expect, it } from "vitest"
 import { toCyrillic, toLatin } from "../utils"
 
+// =============================================================================
+// LATIN TO CYRILLIC
+// =============================================================================
+
 describe("toCyrillic", () => {
   describe("basic conversion", () => {
-    it("converts simple Latin text", () => {
-      expect(toCyrillic("salom")).toBe("салом")
-      expect(toCyrillic("dunyo")).toBe("дунё")
-    })
-
-    it("handles empty string", () => {
-      expect(toCyrillic("")).toBe("")
-    })
-
-    it("preserves numbers", () => {
-      expect(toCyrillic("2024 yil")).toBe("2024 йил")
-    })
-
-    it("preserves punctuation", () => {
-      expect(toCyrillic("Salom!")).toBe("Салом!")
-      expect(toCyrillic("Qanday?")).toBe("Қандай?")
+    it.each([
+      ["salom", "салом"],
+      ["dunyo", "дунё"],
+      ["", ""],
+      ["2024 yil", "2024 йил"],
+      ["Salom!", "Салом!"],
+      ["Qanday?", "Қандай?"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("Uzbek special characters", () => {
-    it("converts o' to ў", () => {
-      expect(toCyrillic("o'zbek")).toBe("ўзбек")
-      expect(toCyrillic("O'zbekiston")).toBe("Ўзбекистон")
-    })
-
-    it("converts g' to ғ", () => {
-      expect(toCyrillic("g'alaba")).toBe("ғалаба")
-      expect(toCyrillic("tog'")).toBe("тоғ")
-    })
-
-    it("converts sh to ш", () => {
-      expect(toCyrillic("shirin")).toBe("ширин")
-      expect(toCyrillic("Toshkent")).toBe("Тошкент")
-    })
-
-    it("converts ch to ч", () => {
-      expect(toCyrillic("choy")).toBe("чой")
-      expect(toCyrillic("uchun")).toBe("учун")
-    })
-
-    it("converts ng to нг", () => {
-      expect(toCyrillic("rang")).toBe("ранг")
-      expect(toCyrillic("tong")).toBe("тонг")
-    })
-
-    it("handles ng' correctly (н + ғ)", () => {
-      expect(toCyrillic("tong'i")).toBe("тонғи")
-    })
-
-    it("converts q to қ", () => {
-      expect(toCyrillic("qalam")).toBe("қалам")
-    })
-
-    it("converts h to ҳ", () => {
-      expect(toCyrillic("havo")).toBe("ҳаво")
+    it.each([
+      ["o'zbek", "ўзбек"],
+      ["O'zbekiston", "Ўзбекистон"],
+      ["g'alaba", "ғалаба"],
+      ["tog'", "тоғ"],
+      ["shirin", "ширин"],
+      ["Toshkent", "Тошкент"],
+      ["choy", "чой"],
+      ["uchun", "учун"],
+      ["rang", "ранг"],
+      ["tong", "тонг"],
+      ["tong'i", "тонғи"],
+      ["qalam", "қалам"],
+      ["havo", "ҳаво"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("compound vowels", () => {
-    it("converts yo to ё", () => {
-      expect(toCyrillic("yomon")).toBe("ёмон")
-    })
-
-    it("converts ya to я", () => {
-      expect(toCyrillic("yaxshi")).toBe("яхши")
-    })
-
-    it("converts yu to ю", () => {
-      expect(toCyrillic("yulduz")).toBe("юлдуз")
-    })
-
-    it("handles yo' correctly (й + ў)", () => {
-      expect(toCyrillic("yo'l")).toBe("йўл")
+    it.each([
+      ["yomon", "ёмон"],
+      ["yaxshi", "яхши"],
+      ["yulduz", "юлдуз"],
+      ["yo'l", "йўл"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("word boundary rules", () => {
-    it("converts e at word start to э", () => {
-      expect(toCyrillic("ertaga")).toBe("эртага")
-      expect(toCyrillic("Eshik")).toBe("Эшик")
-    })
-
-    it("converts ye at word start to е", () => {
-      expect(toCyrillic("yetti")).toBe("етти")
-    })
-
-    it("keeps e as е in middle of word", () => {
-      expect(toCyrillic("keldi")).toBe("келди")
+    it.each([
+      ["ertaga", "эртага"],
+      ["Eshik", "Эшик"],
+      ["yetti", "етти"],
+      ["keldi", "келди"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("case preservation", () => {
-    it("preserves uppercase", () => {
-      expect(toCyrillic("SALOM")).toBe("САЛОМ")
-    })
-
-    it("preserves title case", () => {
-      expect(toCyrillic("Salom")).toBe("Салом")
-    })
-
-    it("handles mixed case in digraphs", () => {
-      expect(toCyrillic("SALOM")).toContain("С") // SH → Ш in context
-      expect(toCyrillic("Shirin")).toBe("Ширин")
+    it.each([
+      ["SALOM", "САЛОМ"],
+      ["Salom", "Салом"],
+      ["Shirin", "Ширин"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("apostrophe normalization", () => {
-    it("normalizes different apostrophe types", () => {
-      expect(toCyrillic("o`zbek")).toBe("ўзбек")
-      expect(toCyrillic("o'zbek")).toBe("ўзбек")
-      expect(toCyrillic("o'zbek")).toBe("ўзбек")
-      expect(toCyrillic("oʻzbek")).toBe("ўзбек")
+    it.each([
+      ["o`zbek", "ўзбек"],
+      ["o'zbek", "ўзбек"],
+      ["o'zbek", "ўзбек"],
+      ["oʻzbek", "ўзбек"],
+      ["O'zbek", "Ўзбек"],
+      ["G'az", "Ғаз"],
+      ["G`az", "Ғаз"],
+      ["A'lo", "Аъло"],
+      ["A`lo", "Аъло"],
+      ["Ma'no", "Маъно"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 
   describe("protected content", () => {
-    it("preserves URLs", () => {
-      const text = "Sayt: https://example.com"
-      expect(toCyrillic(text)).toBe("Сайт: https://example.com")
-    })
-
-    it("preserves email addresses", () => {
-      const text = "Email: test@example.com"
-      expect(toCyrillic(text)).toBe("Эмаил: test@example.com")
-    })
-
-    it("preserves inline code", () => {
-      const text = "Kod: `const x = 1`"
-      expect(toCyrillic(text)).toBe("Код: `const x = 1`")
-    })
-
-    it("preserves technical terms", () => {
-      // TODO: Protected words regex needs improvement
-      // Currently not working as expected - words are being transliterated
-      // This test documents current behavior
-      const result = toCyrillic("https://example.com test")
-      expect(result).toContain("https://example.com")
+    it.each([
+      ["Sayt: https://example.com", "Сайт: https://example.com"],
+      ["Pochta: test@example.com", "Почта: test@example.com"],
+      ["Kod: `const x = 1`", "Код: `const x = 1`"],
+      ["Men React o'rganyapman", "Мен React ўрганяпман"],
+      ["JavaScript dasturlash", "JavaScript дастурлаш"],
+      ["(2+2=4)", "(2+2=4)"],
+      ["4G", "4G"],
+      ["5G", "5G"],
+      ["COVID-19", "COVID-19"],
+      ["Wi-Fi", "Wi-Fi"],
+      ["USA", "USA"],
+      ["NATO", "NATO"]
+    ])("%s → %s", (input, expected) => {
+      expect(toCyrillic(input)).toBe(expected)
     })
   })
 })
 
+// =============================================================================
+// CYRILLIC TO LATIN
+// =============================================================================
+
 describe("toLatin", () => {
   describe("basic conversion", () => {
-    it("converts simple Cyrillic text", () => {
-      expect(toLatin("салом")).toBe("salom")
-      expect(toLatin("дунё")).toBe("dunyo")
-    })
-
-    it("handles empty string", () => {
-      expect(toLatin("")).toBe("")
-    })
-
-    it("preserves numbers", () => {
-      expect(toLatin("2024 йил")).toBe("2024 yil")
+    it.each([
+      ["салом", "salom"],
+      ["дунё", "dunyo"],
+      ["", ""],
+      ["2024 йил", "2024 yil"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 
   describe("Uzbek special characters", () => {
-    it("converts ў to o'", () => {
-      expect(toLatin("ўзбек")).toBe("o'zbek")
-    })
-
-    it("converts ғ to g'", () => {
-      expect(toLatin("ғалаба")).toBe("g'alaba")
-    })
-
-    it("converts ш to sh", () => {
-      expect(toLatin("ширин")).toBe("shirin")
-    })
-
-    it("converts ч to ch", () => {
-      expect(toLatin("чой")).toBe("choy")
-    })
-
-    it("converts нг to ng", () => {
-      expect(toLatin("ранг")).toBe("rang")
-    })
-
-    it("converts қ to q", () => {
-      expect(toLatin("қалам")).toBe("qalam")
-    })
-
-    it("converts ҳ to h", () => {
-      expect(toLatin("ҳаво")).toBe("havo")
+    it.each([
+      ["ўзбек", "o'zbek"],
+      ["ғалаба", "g'alaba"],
+      ["ширин", "shirin"],
+      ["чой", "choy"],
+      ["ранг", "rang"],
+      ["қалам", "qalam"],
+      ["ҳаво", "havo"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 
   describe("compound vowels", () => {
-    it("converts ё to yo", () => {
-      expect(toLatin("ёмон")).toBe("yomon")
-    })
-
-    it("converts я to ya", () => {
-      expect(toLatin("яхши")).toBe("yaxshi")
-    })
-
-    it("converts ю to yu", () => {
-      expect(toLatin("юлдуз")).toBe("yulduz")
+    it.each([
+      ["ёмон", "yomon"],
+      ["яхши", "yaxshi"],
+      ["юлдуз", "yulduz"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 
   describe("Russian-specific characters", () => {
-    it("converts щ to shch", () => {
-      expect(toLatin("щедрый")).toBe("shchedryy")
-    })
-
-    it("converts ы to y", () => {
-      expect(toLatin("ты")).toBe("ty")
-    })
-
-    it("converts ъ to apostrophe", () => {
-      expect(toLatin("объект")).toContain("'")
-    })
-
-    it("converts ь to apostrophe", () => {
-      expect(toLatin("мать")).toBe("mat'")
+    it.each([
+      ["щедрый", "shchedryy"],
+      ["ты", "ty"],
+      ["семья", "sem'ya"],
+      ["мать", "mat'"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 
   describe("case preservation", () => {
-    it("preserves uppercase", () => {
-      expect(toLatin("САЛОМ")).toBe("SALOM")
-    })
-
-    it("preserves title case", () => {
-      expect(toLatin("Салом")).toBe("Salom")
+    it.each([
+      ["САЛОМ", "SALOM"],
+      ["Салом", "Salom"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 
-  describe("word boundary rules", () => {
-    it("converts е at word start to ye", () => {
-      // Current behavior: е → E (not Ye)
-      // This is acceptable for Uzbek context
-      const result = toLatin("Европа")
-      expect(result).toBe("Evropa")
-    })
-
-    it("keeps е as e in middle of word", () => {
-      expect(toLatin("келди")).toBe("keldi")
+  describe("word boundary rules for е", () => {
+    it.each([
+      ["Европа", "Yevropa"],
+      ["елка", "yelka"],
+      ["поезд", "poyezd"],
+      ["моя", "moya"],
+      ["съезд", "s'yezd"],
+      ["семья", "sem'ya"],
+      ["келди", "keldi"],
+      ["мева", "meva"]
+    ])("%s → %s", (input, expected) => {
+      expect(toLatin(input)).toBe(expected)
     })
   })
 })
 
+// =============================================================================
+// ROUND-TRIP CONVERSION
+// =============================================================================
+
 describe("round-trip conversion", () => {
-  it("Latin → Cyrillic → Latin preserves text", () => {
-    const original = "Salom dunyo"
+  it.each([
+    ["Salom dunyo"],
+    ["O'zbekiston Respublikasi"],
+    ["Toshkent shahri"],
+    ["Qanday yaxshi"]
+  ])("Latin → Cyrillic → Latin: %s", (original) => {
     const cyrillic = toCyrillic(original)
     const backToLatin = toLatin(cyrillic)
     expect(backToLatin.toLowerCase()).toBe(original.toLowerCase())
   })
+})
 
-  it("handles complex Uzbek text", () => {
-    const latin = "O'zbekiston Respublikasi"
-    const cyrillic = toCyrillic(latin)
-    expect(cyrillic).toBe("Ўзбекистон Республикаси")
-    expect(toLatin(cyrillic)).toBe("O'zbekiston Respublikasi")
+// =============================================================================
+// CTX - Contextual logic for Е / Э (Cyrillic to Latin)
+// =============================================================================
+
+describe("CTX - Contextual logic for Е / Э", () => {
+  it.each([
+    ["Ер", "Yer"],
+    ["Елим", "Yelim"],
+    ["Етук", "Yetuk"],
+    ["Мева", "Meva"],
+    ["Келажак", "Kelajak"],
+    ["Поезд", "Poyezd"],
+    ["Океан", "Okean"],
+    ["Подъезд", "Pod'yezd"],
+    ["Съезд", "S'yezd"],
+    ["Уев", "Uyev"],
+    ["Бие", "Biye"],
+    ["Элемент", "Element"],
+    ["Энергия", "Energiya"],
+    ["Эътибор", "E'tibor"],
+    ["Эълон", "E'lon"]
+  ])("%s → %s", (input, expected) => {
+    expect(toLatin(input)).toBe(expected)
+  })
+})
+
+// =============================================================================
+// RUS - Russian & complex characters
+// =============================================================================
+
+describe("RUS - Russian & complex characters", () => {
+  it.each([
+    ["Щетка", "Shchetka"],
+    ["Борщ", "Borshch"],
+    ["Цех", "Tsex"],
+    ["Цирк", "Tsirk"],
+    ["Ёлка", "Yolka"],
+    ["Ёш", "Yosh"],
+    ["Юлдуз", "Yulduz"],
+    ["Юбка", "Yubka"],
+    ["Янги", "Yangi"],
+    ["Яблоко", "Yabloko"],
+    ["Ырыс", "Yrys"],
+    ["Крыша", "Krysha"],
+    ["Июль", "Iyul'"],
+    ["Июнь", "Iyun'"],
+    ["Сентябрь", "Sentyabr'"],
+    ["Октябрь", "Oktyabr'"],
+    ["Компьютер", "Komp'yuter"],
+    ["Вьюга", "V'yuga"],
+    ["Объявление", "Ob'yavleniye"],
+    ["Съёмка", "S'yomka"]
+  ])("%s → %s", (input, expected) => {
+    expect(toLatin(input)).toBe(expected)
+  })
+})
+
+// =============================================================================
+// GRD - Greedy matching (Latin → Cyrillic)
+// =============================================================================
+
+describe("GRD - Greedy matching (Latin → Cyrillic)", () => {
+  it.each([
+    ["SHoir", "Шоир"],
+    ["SHamol", "Шамол"],
+    ["CHoy", "Чой"],
+    ["CHaman", "Чаман"],
+    ["YOz", "Ёз"],
+    ["YOmg'ir", "Ёмғир"],
+    ["YUlduz", "Юлдуз"],
+    ["YUrak", "Юрак"],
+    ["YAna", "Яна"],
+    ["YAxshi", "Яхши"],
+    ["Ashxobod", "Ашхобод"],
+    ["Is'hoq", "Исҳоқ"],
+    ["Shchuka", "Щука"],
+    ["SHCH", "Щ"],
+    ["shch", "щ"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+})
+
+// =============================================================================
+// CAS - Case sensitivity
+// =============================================================================
+
+describe("CAS - Case sensitivity", () => {
+  it.each([
+    ["O'zbekiston", "Ўзбекистон"],
+    ["O'ZBEKISTON", "ЎЗБЕКИСТОН"],
+    ["ShH", "ШҲ"],
+    ["YaNGi", "ЯНГи"],
+    ["Shch", "Щ"],
+    ["SHCH", "Щ"],
+    ["sHoir", "шоир"],
+    ["SHe'r", "Шеър"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+})
+
+// =============================================================================
+// NRM - Normalization (multiple apostrophe variants)
+// =============================================================================
+
+describe("NRM - Normalization", () => {
+  it.each([
+    ["O'zbek,O'zbek", "Ўзбек,Ўзбек"],
+    ["G'az,G'az", "Ғаз,Ғаз"],
+    ["A'lo, A'lo", "Аъло, Аъло"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+})
+
+// =============================================================================
+// IMM - Immunity (protected content)
+// =============================================================================
+
+describe("IMM - Immunity", () => {
+  it.each([
+    ["https://webiston.uz", "https://webiston.uz"],
+    ["test@gmail.com", "test@gmail.com"],
+    ["Men 5G tarmoqdan foydalanaman", "Мен 5G тармоқдан фойдаланаман"],
+    ["3G tarmoq", "3G тармоқ"],
+    ["React.js loyiha", "React.js лойиҳа"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
   })
 })

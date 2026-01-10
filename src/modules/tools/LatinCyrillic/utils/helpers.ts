@@ -7,11 +7,17 @@ import { APOSTROPHE_VARIANTS } from "../constants"
 
 /**
  * Normalize all apostrophe variants to standard apostrophe
- * Handles: ` ´ ' ' ʻ ʼ ʿ ˈ ′ → '
+ * Handles: ` ´ ' ' ʻ ʼ ʿ ˈ ′ ' → '
  */
 export function normalizeApostrophes(text: string): string {
-  const pattern = new RegExp(`[${APOSTROPHE_VARIANTS.join("")}]`, "g")
-  return text.replace(pattern, "'")
+  // Simple character-by-character replacement for reliability
+  let result = text
+  for (const variant of APOSTROPHE_VARIANTS) {
+    if (variant !== "'") {
+      result = result.split(variant).join("'")
+    }
+  }
+  return result
 }
 
 /**
@@ -67,32 +73,46 @@ export function isLatinVowel(char: string): boolean {
 }
 
 /**
- * Check if character is a vowel (Cyrillic - Uzbek)
+ * Check if character is a vowel (Cyrillic - Uzbek + Russian)
  */
 export function isCyrillicVowel(char: string): boolean {
-  return "аеёиоуўэюяАЕЁИОУЎЭЮЯ".includes(char)
+  return "аеёиоуўэюяыАЕЁИОУЎЭЮЯЫ".includes(char)
+}
+
+/**
+ * Check if character is a consonant (Cyrillic)
+ */
+export function isCyrillicConsonant(char: string): boolean {
+  return "бвгджзйклмнпрстфхцчшщБВГДЖЗЙКЛМНПРСТФХЦЧШЩғқҳҒҚҲ".includes(char)
 }
 
 /**
  * Check if position is at word boundary
+ * Word boundary = start of text, or after space/punctuation
  */
 export function isWordBoundary(text: string, index: number): boolean {
   if (index === 0) return true
   if (index >= text.length) return true
-  return /[\s(\-"'«»„"".,!?;:]/.test(text[index - 1])
+
+  const prevChar = text[index - 1]
+  // Word boundary characters
+  return /[\s(\-"'«»„"".,!?;:[\]{}]/.test(prevChar)
 }
 
 /**
- * Create a placeholder for protected content
+ * Check if previous character is a vowel (for Cyrillic е handling)
  */
-export function createPlaceholder(index: number): string {
-  return `\u0000${index}\u0000`
+export function isPrevCharVowel(text: string, index: number): boolean {
+  if (index === 0) return false
+  const prevChar = text[index - 1]
+  return isCyrillicVowel(prevChar)
 }
 
 /**
- * Extract index from placeholder
+ * Check if previous character is ъ or ь (hard/soft sign)
  */
-export function extractPlaceholderIndex(placeholder: string): number | null {
-  const match = placeholder.match(/\u0000(\d+)\u0000/)
-  return match ? parseInt(match[1], 10) : null
+export function isPrevCharSign(text: string, index: number): boolean {
+  if (index === 0) return false
+  const prevChar = text[index - 1]
+  return "ъьЪЬ".includes(prevChar)
 }
