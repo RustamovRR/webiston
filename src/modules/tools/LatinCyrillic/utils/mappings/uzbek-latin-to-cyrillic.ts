@@ -57,10 +57,7 @@ export const UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS: DigraphMapping = {
   yo: "ё",
   yu: "ю",
   ya: "я",
-  ye: "е", // Only at word beginning
-
-  // Foreign loan words
-  ts: "ц"
+  ye: "е" // Only at word beginning
 }
 
 /**

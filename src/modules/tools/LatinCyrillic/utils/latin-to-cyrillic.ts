@@ -111,8 +111,8 @@ export function transliterateLatinToCyrillic(text: string): string {
       continue
     }
 
-    // === STANDARD DIGRAPHS ===
-    if (["sh", "ch", "ng", "ts"].includes(lowerTwo)) {
+    // === STANDARD DIGRAPHS (excluding 'ts' - rare in Uzbek, causes issues in compound words) ===
+    if (["sh", "ch", "ng"].includes(lowerTwo)) {
       const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo]
       if (isUpperCase(char) && isUpperCase(nextChar)) {
         result += cyrillic.toUpperCase()
