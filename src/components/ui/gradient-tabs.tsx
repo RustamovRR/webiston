@@ -1,7 +1,13 @@
 "use client"
 
-import { cn } from "@/lib"
+/**
+ * GradientTabs Component
+ * Animated tab switcher with gradient backgrounds
+ * Uses CSS transitions for smooth, performant animations on all devices
+ */
+
 import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { cn } from "@/lib"
 
 export interface TabOption {
   value: string
@@ -18,14 +24,14 @@ export interface GradientTabsProps {
   disabled?: boolean
 }
 
-export const GradientTabs: React.FC<GradientTabsProps> = ({
+export function GradientTabs({
   options,
   value,
   onChange,
   toolCategory = "converters",
   size = "md",
   disabled = false
-}) => {
+}: GradientTabsProps) {
   const colors =
     TOOL_COLORS[toolCategory.toUpperCase() as keyof typeof TOOL_COLORS]
 
@@ -43,6 +49,7 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
 
   return (
     <div
+      role="tablist"
       className={cn(
         "gap-1",
         UI_PATTERNS.SWITCH_CONTAINER,
@@ -55,58 +62,55 @@ export const GradientTabs: React.FC<GradientTabsProps> = ({
         return (
           <button
             key={option.value}
+            role="tab"
+            aria-selected={isActive}
             onClick={() => !disabled && onChange(option.value)}
             disabled={disabled}
             className={cn(
-              "group relative cursor-pointer overflow-hidden rounded-md font-medium transition-all duration-300 ease-in-out",
+              "group relative cursor-pointer overflow-hidden rounded-md font-medium",
+              // Smooth CSS transition - works great on all devices
+              "transition-all duration-200 ease-out",
               sizeClasses[size],
               disabled && "cursor-not-allowed opacity-50",
               isActive
-                ? "scale-[1.02] transform text-white shadow-lg"
-                : "text-zinc-600 hover:bg-zinc-500/10 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100"
+                ? "text-white shadow-lg"
+                : [
+                    "text-zinc-600 hover:bg-zinc-500/10",
+                    "dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100"
+                  ]
             )}
-            style={
-              isActive
-                ? ({
-                    background: colors.shimmerBg
-                  } as React.CSSProperties)
-                : undefined
-            }
+            style={isActive ? { background: colors.shimmerBg } : undefined}
           >
-            {/* Shimmer effect for active tab */}
-            {isActive && (
-              <div className="absolute inset-0 rounded-md">
-                <div className="absolute inset-0 animate-[shimmer_2s_ease-in-out_infinite] rounded-md bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </div>
-            )}
-
-            {/* Glow effect for active tab */}
+            {/* Shimmer effect for active tab - CSS only */}
             {isActive && (
               <div
-                className={cn(
-                  "absolute -inset-1 rounded-md opacity-0 blur transition-opacity duration-500 group-hover:opacity-100",
-                  `bg-gradient-to-r ${colors.shimmerGlow}`
-                )}
+                className="absolute inset-0 animate-shimmer rounded-md bg-linear-to-r from-transparent via-white/10 to-transparent"
+                aria-hidden="true"
               />
             )}
 
-            <div className="relative z-10 flex items-center gap-2">
+            {/* Content */}
+            <span className="relative z-10 flex items-center gap-2">
               {option.icon && (
                 <span
                   className={cn(
-                    "transition-colors",
+                    "transition-colors duration-200",
                     isActive ? "text-white" : "text-zinc-400"
                   )}
+                  aria-hidden="true"
                 >
                   {option.icon}
                 </span>
               )}
-              <span className="font-medium">{option.label}</span>
-            </div>
+              <span>{option.label}</span>
+            </span>
 
-            {/* Inner shadow for depth on active tab */}
+            {/* Inner highlight for depth */}
             {isActive && (
-              <div className="pointer-events-none absolute inset-0 rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]" />
+              <div
+                className="pointer-events-none absolute inset-0 rounded-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
+                aria-hidden="true"
+              />
             )}
           </button>
         )

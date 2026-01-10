@@ -2,15 +2,17 @@
 
 /**
  * File Upload Modal Component
- * Professional modal for file upload with progress tracking
- * Uses BaseModal for consistent animations
+ * Professional modal for file upload with smooth progress tracking
+ * Uses Framer Motion for animations
  */
 
+import { motion } from "framer-motion"
 import {
   AlertCircle,
   CheckCircle2,
   FileText,
   FileType,
+  Loader2,
   Upload
 } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -44,6 +46,36 @@ interface FileUploadModalProps {
   onDragLeave: (e: React.DragEvent) => void
   onDragOver: (e: React.DragEvent) => void
   onDrop: (e: React.DragEvent) => void
+}
+
+// Smooth linear progress bar with Framer Motion
+function ProgressBar({ percentage }: { percentage: number }) {
+  return (
+    <div className="w-full space-y-2">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <motion.div
+          className="h-full rounded-full bg-linear-to-r from-blue-500 to-indigo-500"
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{
+            duration: 0.5,
+            ease: "easeOut"
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-zinc-500">{percentage}%</span>
+        <motion.div
+          className="flex items-center gap-1 text-blue-500"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+        >
+          <Loader2 className="h-3 w-3 animate-spin" />
+          <span>Processing...</span>
+        </motion.div>
+      </div>
+    </div>
+  )
 }
 
 export function FileUploadModal({
@@ -86,7 +118,6 @@ export function FileUploadModal({
   const getProgressStatus = () => {
     if (!progress.statusKey) return ""
 
-    // Handle page progress with interpolation
     if (progress.statusKey === "readingPage") {
       return t("progress.readingPage", {
         current: progress.current,
@@ -101,44 +132,6 @@ export function FileUploadModal({
   const getErrorMessage = () => {
     if (!error) return ""
     return t(`errors.${error}`)
-  }
-
-  // Circular progress component
-  const CircularProgress = ({ percentage }: { percentage: number }) => {
-    const circumference = 2 * Math.PI * 40
-    const strokeDashoffset = circumference - (percentage / 100) * circumference
-
-    return (
-      <div className="relative h-24 w-24">
-        <svg className="h-24 w-24 -rotate-90" aria-hidden="true">
-          <title>Progress</title>
-          <circle
-            cx="48"
-            cy="48"
-            r="40"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="6"
-            className="text-zinc-200 dark:text-zinc-700"
-          />
-          <circle
-            cx="48"
-            cy="48"
-            r="40"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="6"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            className="text-blue-500 transition-all duration-300"
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-xl font-bold">
-          {percentage}%
-        </span>
-      </div>
-    )
   }
 
   return (
@@ -166,7 +159,7 @@ export function FileUploadModal({
         {/* Upload Zone */}
         <div
           className={cn(
-            "relative rounded-lg border-2 border-dashed p-10 transition-all duration-200",
+            "relative rounded-lg border-2 border-dashed p-8 transition-all duration-200",
             isDragging
               ? "border-blue-500 bg-blue-500/10"
               : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600",
@@ -182,18 +175,30 @@ export function FileUploadModal({
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             {/* Icon based on status */}
             {status === "error" ? (
-              <AlertCircle className="h-16 w-16 text-red-500" />
+              <AlertCircle className="h-12 w-12 text-red-500" />
             ) : status === "success" ? (
-              <CheckCircle2 className="h-16 w-16 text-green-500" />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              >
+                <CheckCircle2 className="h-12 w-12 text-green-500" />
+              </motion.div>
             ) : isProcessing ? (
-              <CircularProgress percentage={progress.percentage} />
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="flex h-12 w-12 items-center justify-center"
+              >
+                <FileText className="h-10 w-10 text-blue-500" />
+              </motion.div>
             ) : isDragging ? (
-              <FileType className="h-16 w-16 text-blue-500" />
+              <FileType className="h-12 w-12 text-blue-500" />
             ) : (
-              <Upload className="h-16 w-16 text-zinc-400" />
+              <Upload className="h-12 w-12 text-zinc-400" />
             )}
 
-            {/* Status text */}
+            {/* Status content */}
             {error ? (
               <div className="space-y-3">
                 <p className="text-sm font-medium text-red-500">{t("error")}</p>
@@ -209,20 +214,30 @@ export function FileUploadModal({
                 </Button>
               </div>
             ) : status === "success" && fileName ? (
-              <div className="space-y-1">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-1"
+              >
                 <p className="text-sm font-medium text-green-600 dark:text-green-400">
                   {t("success")}
                 </p>
-                <p className="text-xs text-zinc-500">{fileName}</p>
-              </div>
+                <p className="max-w-xs truncate text-xs text-zinc-500">
+                  {fileName}
+                </p>
+              </motion.div>
             ) : isProcessing ? (
-              <div className="space-y-2">
+              <div className="w-full max-w-xs space-y-3">
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
                   {getProgressStatus()}
                 </p>
-                {progress.total > 0 && progress.statusKey === "readingPage" && (
+                <ProgressBar percentage={progress.percentage} />
+                {progress.statusKey === "readingPage" && progress.total > 0 && (
                   <p className="text-xs text-zinc-500">
-                    {progress.current} / {progress.total}
+                    {t("progress.pageCount", {
+                      current: progress.current,
+                      total: progress.total
+                    })}
                   </p>
                 )}
               </div>
@@ -246,21 +261,21 @@ export function FileUploadModal({
 
         {/* Supported formats */}
         {!isProcessing && status !== "success" && (
-          <div className="mt-4 flex items-center justify-center gap-3 text-xs text-zinc-500">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500">
             <span>{t("supportedFormats")}:</span>
-            <div className="flex items-center gap-2">
-              <span className="rounded bg-zinc-100 px-2 py-1 font-mono dark:bg-zinc-800">
+            <div className="flex items-center gap-1.5">
+              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
                 .txt
               </span>
-              <span className="rounded bg-zinc-100 px-2 py-1 font-mono dark:bg-zinc-800">
+              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
                 .pdf
               </span>
-              <span className="rounded bg-zinc-100 px-2 py-1 font-mono dark:bg-zinc-800">
+              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
                 .docx
               </span>
             </div>
-            <span className="text-zinc-400">|</span>
-            <span>{t("maxSize")} 10MB</span>
+            <span className="text-zinc-400">•</span>
+            <span>{t("maxSize")} 200MB</span>
           </div>
         )}
       </BaseModalBody>

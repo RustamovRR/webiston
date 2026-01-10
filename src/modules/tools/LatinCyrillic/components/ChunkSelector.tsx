@@ -3,107 +3,123 @@
 /**
  * Chunk Selector Component
  * Horizontal scrollable list for selecting text chunks
+ * Uses CSS transitions for smooth, performant animations
  */
 
-import { Check, Download, FileText } from "lucide-react"
+import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ShimmerButton } from "@/components/ui"
-import { Button } from "@/components/ui/button"
+
 import { cn } from "@/lib"
 
-import type { DownloadFormat, TextChunk } from "../types"
+import type { TextChunk } from "../types"
 
 interface ChunkSelectorProps {
   chunks: TextChunk[]
   selectedChunkId: number | null
   onSelectChunk: (chunkId: number | null) => void
-  onDownloadAll: (format: DownloadFormat) => void
-  isProcessing: boolean
+}
+
+// Format character count
+function formatCharCount(count: number): string {
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}k`
+  }
+  return count.toString()
+}
+
+// Individual chunk button with CSS-based selection animation
+function ChunkButton({
+  isSelected,
+  onClick,
+  label,
+  charCount
+}: {
+  isSelected: boolean
+  onClick: () => void
+  label: string
+  charCount: number
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative shrink-0 cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium",
+        "transition-all duration-200 ease-out",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        isSelected
+          ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md"
+          : [
+              // Light mode
+              "border border-zinc-200 bg-white text-zinc-700 shadow-sm",
+              "hover:border-zinc-300 hover:bg-zinc-50",
+              // Dark mode
+              "dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+              "dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
+            ]
+      )}
+    >
+      <span className="flex items-center gap-1.5">
+        {label}
+        <span
+          className={cn("text-xs", isSelected ? "opacity-80" : "opacity-60")}
+        >
+          ({formatCharCount(charCount)})
+        </span>
+      </span>
+    </button>
+  )
 }
 
 export function ChunkSelector({
   chunks,
   selectedChunkId,
-  onSelectChunk,
-  onDownloadAll,
-  isProcessing
+  onSelectChunk
 }: ChunkSelectorProps) {
   const t = useTranslations("LatinCyrillicPage.chunks")
 
   if (chunks.length <= 1) return null
 
-  // Format character count
-  const formatCharCount = (count: number) => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`
-    }
-    return count.toString()
-  }
+  const totalCharCount = chunks.reduce((sum, c) => sum + c.charCount, 0)
 
   return (
-    <div className="mb-4 rounded-lg border bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900/50">
+    <nav
+      aria-label={t("title")}
+      className="mb-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900/50"
+    >
       {/* Header */}
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FileText className="h-4 w-4 text-zinc-500" />
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {t("title")} ({chunks.length})
-          </span>
-        </div>
-
-        {/* Download all button */}
-        <ShimmerButton
-          size="sm"
-          variant="outline"
-          onClick={() => onDownloadAll("docx")}
-          disabled={isProcessing}
-        >
-          <Download className="mr-1.5 h-3.5 w-3.5" />
-          {t("downloadAll")}
-        </ShimmerButton>
+      <div className="mb-3 flex items-center gap-2">
+        <FileText className="h-4 w-4 text-zinc-500" aria-hidden="true" />
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          {t("title")} ({chunks.length})
+        </span>
       </div>
 
       {/* Chunk buttons - horizontal scroll */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div
+        className="flex gap-2 overflow-x-auto pb-1"
+        role="tablist"
+        aria-label={t("title")}
+      >
         {/* All chunks button */}
-        <Button
-          variant={selectedChunkId === null ? "default" : "outline"}
-          size="sm"
+        <ChunkButton
+          isSelected={selectedChunkId === null}
           onClick={() => onSelectChunk(null)}
-          className={cn(
-            "shrink-0 gap-1.5",
-            selectedChunkId === null &&
-              "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-          )}
-        >
-          {selectedChunkId === null && <Check className="h-3.5 w-3.5" />}
-          {t("all")}
-          <span className="text-xs opacity-70">
-            ({formatCharCount(chunks.reduce((sum, c) => sum + c.charCount, 0))})
-          </span>
-        </Button>
+          label={t("all")}
+          charCount={totalCharCount}
+        />
 
         {/* Individual chunk buttons */}
         {chunks.map((chunk) => (
-          <Button
+          <ChunkButton
             key={chunk.id}
-            variant={selectedChunkId === chunk.id ? "default" : "outline"}
-            size="sm"
+            isSelected={selectedChunkId === chunk.id}
             onClick={() => onSelectChunk(chunk.id)}
-            className={cn(
-              "shrink-0 gap-1.5",
-              selectedChunkId === chunk.id &&
-                "bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
-            )}
-          >
-            {selectedChunkId === chunk.id && <Check className="h-3.5 w-3.5" />}
-            {t("chunk", { number: chunk.id + 1 })}
-            <span className="text-xs opacity-70">
-              ({formatCharCount(chunk.charCount)})
-            </span>
-          </Button>
+            label={t("chunk", { number: chunk.id + 1 })}
+            charCount={chunk.charCount}
+          />
         ))}
       </div>
-    </div>
+    </nav>
   )
 }

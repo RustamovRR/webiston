@@ -61,6 +61,11 @@ export interface UseFileTransliterateResult {
     chunks: TextChunk[],
     format: DownloadFormat
   ) => Promise<void>
+  downloadCurrent: (
+    text: string,
+    format: DownloadFormat,
+    isAll?: boolean
+  ) => Promise<void>
   selectChunk: (chunkId: number | null) => void
   reset: () => void
 

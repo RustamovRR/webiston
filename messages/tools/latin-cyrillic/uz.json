@@ -48,22 +48,28 @@
         "readingTxt": "TXT fayl o'qilmoqda...",
         "loadingPdfLibrary": "PDF kutubxonasi yuklanmoqda...",
         "readingPage": "Sahifa {current}/{total} o'qilmoqda...",
+        "pageCount": "{current} / {total} sahifa",
         "loadingDocxLibrary": "DOCX kutubxonasi yuklanmoqda...",
         "readingDocx": "DOCX fayl o'qilmoqda...",
         "docxReady": "DOCX tayyor",
         "processingChunks": "Matn qayta ishlanmoqda...",
         "creatingDocx": "DOCX yaratilmoqda...",
         "formattingDocx": "Hujjat formatlanmoqda...",
+        "creatingPdf": "PDF yaratilmoqda...",
+        "formattingPdf": "PDF formatlanmoqda...",
+        "writingPdf": "PDF yozilmoqda...",
+        "savingPdf": "PDF saqlanmoqda...",
         "downloaded": "Yuklab olindi!",
         "ready": "Tayyor!"
       },
       "errors": {
-        "fileTooLarge": "Fayl hajmi juda katta. Maksimum: 10MB",
+        "fileTooLarge": "Fayl hajmi juda katta. Maksimum: 200MB",
         "unsupportedFormat": "Qo'llab-quvvatlanmaydigan format. Faqat: .txt, .pdf, .docx",
         "txtReadError": "TXT faylni o'qishda xatolik",
         "unknownFormat": "Noma'lum fayl formati",
         "unknownError": "Noma'lum xatolik yuz berdi",
-        "docxExportError": "DOCX yaratishda xatolik"
+        "docxExportError": "DOCX yaratishda xatolik",
+        "pdfExportError": "PDF yaratishda xatolik"
       },
       "success": "Muvaffaqiyatli yuklandi!",
       "error": "Xatolik!",
@@ -73,7 +79,11 @@
       "title": "Yuklab olish",
       "asTxt": "TXT formatda",
       "asDocx": "Word formatda",
-      "processing": "Tayyorlanmoqda..."
+      "asPdf": "PDF formatda",
+      "processing": "Tayyorlanmoqda...",
+      "currentChunk": "Joriy qism ({number})",
+      "currentAll": "Joriy (hammasi)",
+      "downloadAll": "Hammasini yuklash"
     },
     "chunks": {
       "title": "Bo'limlar",

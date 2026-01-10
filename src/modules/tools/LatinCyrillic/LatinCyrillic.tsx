@@ -31,7 +31,11 @@ import {
   InfoSection
 } from "./components"
 import { useFileTransliterate, useLatinCyrillic } from "./hooks"
-import type { SampleTextKey, TransliterationDirection } from "./types"
+import type {
+  DownloadFormat,
+  SampleTextKey,
+  TransliterationDirection
+} from "./types"
 
 /**
  * Main component for Latin-Cyrillic transliteration tool
@@ -77,6 +81,21 @@ export function LatinCyrillicPage() {
   // Handle chunk selection
   const handleChunkSelect = (chunkId: number | null) => {
     fileHandler.selectChunk(chunkId)
+  }
+
+  // Handle download current (chunk or all based on selection)
+  const handleDownloadCurrent = async (format: DownloadFormat) => {
+    await fileHandler.downloadCurrent(
+      convertedText,
+      format,
+      fileHandler.selectedChunkId === null
+    )
+  }
+
+  // Handle download all chunks - downloads the full converted text
+  const handleDownloadAll = async (format: DownloadFormat) => {
+    // Download full converted text, not source chunks
+    await fileHandler.downloadCurrent(convertedText, format, true)
   }
 
   // Tab options for direction selection
@@ -185,12 +204,14 @@ export function LatinCyrillicPage() {
               {t("clear")}
             </Button>
 
-            {/* Download Menu */}
+            {/* Download Menu - enhanced with chunk options */}
             <DownloadMenu
-              onDownloadTxt={() => fileHandler.downloadAsText(convertedText)}
-              onDownloadDocx={() => fileHandler.downloadAsDocx(convertedText)}
+              onDownloadCurrent={handleDownloadCurrent}
+              onDownloadAll={handleDownloadAll}
               disabled={!convertedText}
               isProcessing={fileHandler.isProcessing}
+              hasChunks={fileHandler.hasMultipleChunks}
+              selectedChunkId={fileHandler.selectedChunkId}
             />
           </div>
         </div>
@@ -202,10 +223,6 @@ export function LatinCyrillicPage() {
           chunks={fileHandler.chunks}
           selectedChunkId={fileHandler.selectedChunkId}
           onSelectChunk={handleChunkSelect}
-          onDownloadAll={(format) =>
-            fileHandler.downloadAllChunks(fileHandler.chunks, format)
-          }
-          isProcessing={fileHandler.isProcessing}
         />
       )}
 

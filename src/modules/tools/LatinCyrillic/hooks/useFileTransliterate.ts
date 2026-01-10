@@ -1,10 +1,12 @@
 /**
  * Hook for file upload and download functionality
  * Supports TXT, PDF, DOCX upload and TXT/DOCX download
- * Includes chunked processing for large files
+ * Uses Zustand store for persistence across locale changes
  */
 
 import { useState } from "react"
+
+import { useTransliterationStore } from "../stores"
 import type {
   DownloadFormat,
   FileProcessingStatus,
@@ -13,8 +15,8 @@ import type {
   UseFileTransliterateResult
 } from "../types"
 
-// Max file size: 10MB
-const MAX_FILE_SIZE = 10 * 1024 * 1024
+// Max file size: 200MB (PDFs with images can be large, but we only extract text)
+const MAX_FILE_SIZE = 200 * 1024 * 1024
 
 // Supported extensions
 const SUPPORTED_EXTENSIONS = [".txt", ".pdf", ".docx"]
@@ -30,14 +32,34 @@ const INITIAL_PROGRESS: ProcessingProgress = {
   statusKey: ""
 }
 
+// Normalize text - clean up excessive whitespace while preserving structure
+function normalizeText(text: string): string {
+  return (
+    text
+      // Normalize line endings
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      // Remove excessive blank lines (more than 2 consecutive)
+      .replace(/\n{3,}/g, "\n\n")
+      // Trim whitespace from each line
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n")
+      // Final trim
+      .trim()
+  )
+}
+
 // Split text into chunks
 function splitIntoChunks(text: string): TextChunk[] {
-  if (text.length <= CHUNK_SIZE) {
+  const normalizedText = normalizeText(text)
+
+  if (normalizedText.length <= CHUNK_SIZE) {
     return [
       {
         id: 0,
-        text,
-        charCount: text.length,
+        text: normalizedText,
+        charCount: normalizedText.length,
         label: "all"
       }
     ]
@@ -47,25 +69,25 @@ function splitIntoChunks(text: string): TextChunk[] {
   let currentIndex = 0
   let chunkId = 0
 
-  while (currentIndex < text.length) {
+  while (currentIndex < normalizedText.length) {
     let endIndex = currentIndex + CHUNK_SIZE
 
     // Try to break at paragraph or sentence boundary
-    if (endIndex < text.length) {
+    if (endIndex < normalizedText.length) {
       // Look for paragraph break
-      const paragraphBreak = text.lastIndexOf("\n\n", endIndex)
+      const paragraphBreak = normalizedText.lastIndexOf("\n\n", endIndex)
       if (paragraphBreak > currentIndex + CHUNK_SIZE * 0.7) {
         endIndex = paragraphBreak + 2
       } else {
         // Look for sentence break
-        const sentenceBreak = text.lastIndexOf(". ", endIndex)
+        const sentenceBreak = normalizedText.lastIndexOf(". ", endIndex)
         if (sentenceBreak > currentIndex + CHUNK_SIZE * 0.7) {
           endIndex = sentenceBreak + 2
         }
       }
     }
 
-    const chunkText = text.slice(currentIndex, endIndex)
+    const chunkText = normalizedText.slice(currentIndex, endIndex).trim()
     chunks.push({
       id: chunkId,
       text: chunkText,
@@ -83,14 +105,23 @@ function splitIntoChunks(text: string): TextChunk[] {
 export function useFileTransliterate(
   onTextLoaded?: (text: string) => void
 ): UseFileTransliterateResult {
+  // Get persisted state from store
+  const {
+    fileName,
+    chunks,
+    selectedChunkId,
+    setFileName,
+    setChunks,
+    setSelectedChunkId,
+    reset: resetStore
+  } = useTransliterationStore()
+
+  // Local UI state (not persisted)
   const [isProcessing, setIsProcessing] = useState(false)
   const [status, setStatus] = useState<FileProcessingStatus>("idle")
   const [progress, setProgress] = useState<ProcessingProgress>(INITIAL_PROGRESS)
   const [error, setError] = useState<string | null>(null)
-  const [fileName, setFileName] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
-  const [chunks, setChunks] = useState<TextChunk[]>([])
-  const [selectedChunkId, setSelectedChunkId] = useState<number | null>(null)
 
   // Update progress helper
   const updateProgress = (
@@ -112,9 +143,7 @@ export function useFileTransliterate(
     setStatus("idle")
     setProgress(INITIAL_PROGRESS)
     setError(null)
-    setFileName(null)
-    setChunks([])
-    setSelectedChunkId(null)
+    resetStore()
   }
 
   // Auto-clear error after timeout
@@ -122,7 +151,6 @@ export function useFileTransliterate(
     setError(errorKey)
     setStatus("error")
 
-    // Auto-clear after timeout
     setTimeout(() => {
       setError(null)
       setStatus("idle")
@@ -171,22 +199,28 @@ export function useFileTransliterate(
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
 
     const totalPages = pdf.numPages
-    let fullText = ""
+    const pageTexts: string[] = []
 
     for (let i = 1; i <= totalPages; i++) {
       updateProgress(i, totalPages, "readingPage")
 
       const page = await pdf.getPage(i)
       const content = await page.getTextContent()
+
+      // Extract text preserving line structure
       const pageText = content.items
         .map((item: any) => item.str)
         .join(" ")
         .replace(/\s+/g, " ")
+        .trim()
 
-      fullText += `${pageText}\n\n`
+      if (pageText) {
+        pageTexts.push(pageText)
+      }
     }
 
-    return fullText.trim()
+    // Join pages with single paragraph break
+    return pageTexts.join("\n\n")
   }
 
   // Read DOCX file
@@ -253,7 +287,7 @@ export function useFileTransliterate(
       } else {
         setSelectedChunkId(null)
         if (onTextLoaded) {
-          onTextLoaded(text)
+          onTextLoaded(textChunks[0].text)
         }
       }
 
@@ -276,7 +310,7 @@ export function useFileTransliterate(
 
     if (chunkId === null) {
       // Select all - combine all chunks
-      const fullText = chunks.map((c) => c.text).join("")
+      const fullText = chunks.map((c) => c.text).join("\n\n")
       if (onTextLoaded) {
         onTextLoaded(fullText)
       }
@@ -364,12 +398,33 @@ export function useFileTransliterate(
     allChunks: TextChunk[],
     format: DownloadFormat
   ) => {
-    const fullText = allChunks.map((c) => c.text).join("\n\n---\n\n")
+    const fullText = allChunks.map((c) => c.text).join("\n\n")
+    const baseName = `${fileName || "document"}_full`
 
     if (format === "txt") {
-      downloadAsText(fullText, `${fileName || "document"}_full`)
+      downloadAsText(fullText, baseName)
     } else {
-      await downloadAsDocx(fullText, `${fileName || "document"}_full`)
+      await downloadAsDocx(fullText, baseName)
+    }
+  }
+
+  // Download current selection (chunk or all)
+  const downloadCurrent = async (
+    text: string,
+    format: DownloadFormat,
+    isAll = false
+  ) => {
+    const suffix = isAll
+      ? "_full"
+      : selectedChunkId !== null
+        ? `_part${selectedChunkId + 1}`
+        : ""
+    const baseName = `${fileName || "transliterated"}${suffix}`
+
+    if (format === "txt") {
+      downloadAsText(text, baseName)
+    } else {
+      await downloadAsDocx(text, baseName)
     }
   }
 
@@ -415,6 +470,7 @@ export function useFileTransliterate(
     downloadAsText,
     downloadAsDocx,
     downloadAllChunks,
+    downloadCurrent,
     selectChunk,
     reset,
     isDragging,

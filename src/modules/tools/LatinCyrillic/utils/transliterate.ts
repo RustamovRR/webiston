@@ -285,6 +285,27 @@ function transliterateCyrillicToLatin(text: string): string {
 // =============================================================================
 
 /**
+ * Detect if text contains predominantly Cyrillic characters
+ * Returns true if Cyrillic characters are more than Latin
+ */
+export function isCyrillicText(text: string): boolean {
+  if (!text || text.length < 2) return false
+
+  // Cyrillic Unicode range: U+0400 to U+04FF
+  const cyrillicRegex = /[\u0400-\u04FF]/g
+  // Latin Unicode range: basic Latin letters
+  const latinRegex = /[a-zA-Z]/g
+
+  const cyrillicMatches = text.match(cyrillicRegex) || []
+  const latinMatches = text.match(latinRegex) || []
+
+  // If there are Cyrillic characters and they outnumber Latin
+  return (
+    cyrillicMatches.length > 0 && cyrillicMatches.length >= latinMatches.length
+  )
+}
+
+/**
  * Convert Latin text to Cyrillic (Uzbek)
  * Handles: URLs, emails, code blocks, technical terms protection
  */

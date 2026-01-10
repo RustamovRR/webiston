@@ -1,8 +1,8 @@
 "use client"
 
 import { useRef } from "react"
-import { useNavigationStore } from "@/stores/navigationStore"
 import type { TutorialNavigation } from "@/lib/mdx"
+import { useNavigationStore } from "@/stores/navigationStore"
 
 interface NavigationStoreInitializerProps {
   tutorialId: string

@@ -1,7 +1,7 @@
 "use client"
 
-import { useInView, useMotionValue, useSpring } from "motion/react"
-import { ComponentPropsWithoutRef, useEffect, useRef } from "react"
+import { useInView, useMotionValue, useSpring } from "framer-motion"
+import { type ComponentPropsWithoutRef, useEffect, useRef } from "react"
 
 import { cn } from "@/lib"
 
@@ -24,10 +24,19 @@ export function NumberTicker({
 }: NumberTickerProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const motionValue = useMotionValue(direction === "down" ? value : startValue)
+
+  // Dynamic spring config based on value difference
+  // Larger differences = faster animation
+  const diff = Math.abs(value - startValue)
+  const stiffness = diff > 10000 ? 300 : diff > 1000 ? 200 : 100
+  const damping = diff > 10000 ? 40 : diff > 1000 ? 50 : 60
+
   const springValue = useSpring(motionValue, {
-    damping: 60,
-    stiffness: 100
+    damping,
+    stiffness,
+    mass: 0.5
   })
+
   const isInView = useInView(ref, { once: true, margin: "0px" })
 
   useEffect(() => {
@@ -38,6 +47,11 @@ export function NumberTicker({
       return () => clearTimeout(timer)
     }
   }, [motionValue, isInView, delay, value, direction, startValue])
+
+  // Update on value change (not just initial)
+  useEffect(() => {
+    motionValue.set(direction === "down" ? startValue : value)
+  }, [value, direction, startValue, motionValue])
 
   useEffect(
     () =>

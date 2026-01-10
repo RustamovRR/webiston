@@ -1,33 +1,70 @@
 /**
  * Custom hook for Latin-Cyrillic transliteration
- * Manages state, conversion logic, and UI helpers
+ * Features:
+ * - Auto-detect script (Cyrillic/Latin) and switch direction
+ * - Zustand store for direction persistence
+ * - Debounced conversion for performance
  *
  * Note: React 19+ with React Compiler handles memoization automatically
- * No need for useMemo/useCallback - compiler optimizes re-renders
  */
 
 import { useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useRef } from "react"
 import { useDebounceValue } from "usehooks-ts"
+
 import { SAMPLE_TEXTS } from "../constants"
+import { useTransliterationStore } from "../stores"
 import type {
   SampleItem,
   SampleTextKey,
   TransliterationDirection,
   UseLatinCyrillicResult
 } from "../types"
-import { toCyrillic, toLatin } from "../utils"
+import { isCyrillicText, toCyrillic, toLatin } from "../utils"
 
 const DEBOUNCE_DELAY = 100
+// Minimum characters before auto-detect kicks in
+const AUTO_DETECT_THRESHOLD = 3
 
 export function useLatinCyrillic(): UseLatinCyrillicResult {
   const t = useTranslations("LatinCyrillicPage")
 
-  const [direction, setDirection] =
-    useState<TransliterationDirection>("latin-to-cyrillic")
-  const [sourceText, setSourceText] = useState("")
+  // Track if user manually changed direction
+  const userChangedDirection = useRef(false)
+
+  // Get state from store
+  const { direction, sourceText, setDirection, setSourceText, reset } =
+    useTransliterationStore()
 
   const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
+
+  // Auto-detect script and switch direction
+  useEffect(() => {
+    // Skip if user manually changed direction or text is too short
+    if (
+      userChangedDirection.current ||
+      sourceText.length < AUTO_DETECT_THRESHOLD
+    ) {
+      return
+    }
+
+    const isCyrillic = isCyrillicText(sourceText)
+    const expectedDirection: TransliterationDirection = isCyrillic
+      ? "cyrillic-to-latin"
+      : "latin-to-cyrillic"
+
+    // Only switch if different from current
+    if (direction !== expectedDirection) {
+      setDirection(expectedDirection)
+    }
+  }, [sourceText, direction, setDirection])
+
+  // Reset manual flag when text is cleared
+  useEffect(() => {
+    if (sourceText === "") {
+      userChangedDirection.current = false
+    }
+  }, [sourceText])
 
   // Converted text - React Compiler handles memoization
   const convertedText = (() => {
@@ -43,8 +80,15 @@ export function useLatinCyrillic(): UseLatinCyrillicResult {
     }
   })()
 
+  // Action: manually set direction (marks as user-changed)
+  const handleSetDirection = (newDirection: TransliterationDirection) => {
+    userChangedDirection.current = true
+    setDirection(newDirection)
+  }
+
   // Action: swap direction and use converted text as new source
   const handleSwap = () => {
+    userChangedDirection.current = true
     const newDirection: TransliterationDirection =
       direction === "latin-to-cyrillic"
         ? "cyrillic-to-latin"
@@ -57,13 +101,15 @@ export function useLatinCyrillic(): UseLatinCyrillicResult {
     }
   }
 
-  // Action: clear source text
+  // Action: clear all state
   const handleClear = () => {
-    setSourceText("")
+    userChangedDirection.current = false
+    reset()
   }
 
   // Action: load sample text
   const loadSample = (sampleKey: SampleTextKey) => {
+    userChangedDirection.current = true
     const sampleText = SAMPLE_TEXTS[sampleKey]
     setSourceText(sampleText)
 
@@ -117,7 +163,7 @@ export function useLatinCyrillic(): UseLatinCyrillicResult {
     direction,
     sourceText,
     convertedText,
-    setDirection,
+    setDirection: handleSetDirection,
     setSourceText,
     handleSwap,
     handleClear,

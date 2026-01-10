@@ -48,22 +48,28 @@
         "readingTxt": "Reading TXT file...",
         "loadingPdfLibrary": "Loading PDF library...",
         "readingPage": "Reading page {current}/{total}...",
+        "pageCount": "{current} / {total} pages",
         "loadingDocxLibrary": "Loading DOCX library...",
         "readingDocx": "Reading DOCX file...",
         "docxReady": "DOCX ready",
         "processingChunks": "Processing text...",
         "creatingDocx": "Creating DOCX...",
         "formattingDocx": "Formatting document...",
+        "creatingPdf": "Creating PDF...",
+        "formattingPdf": "Formatting PDF...",
+        "writingPdf": "Writing PDF...",
+        "savingPdf": "Saving PDF...",
         "downloaded": "Downloaded!",
         "ready": "Ready!"
       },
       "errors": {
-        "fileTooLarge": "File is too large. Maximum: 10MB",
+        "fileTooLarge": "File is too large. Maximum: 200MB",
         "unsupportedFormat": "Unsupported format. Only: .txt, .pdf, .docx",
         "txtReadError": "Error reading TXT file",
         "unknownFormat": "Unknown file format",
         "unknownError": "An unknown error occurred",
-        "docxExportError": "Error creating DOCX"
+        "docxExportError": "Error creating DOCX",
+        "pdfExportError": "Error creating PDF"
       },
       "success": "Successfully uploaded!",
       "error": "Error!",
@@ -73,7 +79,11 @@
       "title": "Download",
       "asTxt": "As TXT file",
       "asDocx": "As Word file",
-      "processing": "Preparing..."
+      "asPdf": "As PDF file",
+      "processing": "Preparing...",
+      "currentChunk": "Current section ({number})",
+      "currentAll": "Current (all)",
+      "downloadAll": "Download all"
     },
     "chunks": {
       "title": "Sections",
