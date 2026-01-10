@@ -1,11 +1,11 @@
 "use client"
 
-import { X, Download } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
+import { Download, X } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 
 interface CapturedMedia {
   id: string

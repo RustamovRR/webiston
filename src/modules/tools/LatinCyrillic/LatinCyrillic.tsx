@@ -6,19 +6,14 @@
  * Also supports Russian Cyrillic to Latin conversion
  */
 
-import {
-  ArrowLeftRight,
-  ChevronDown,
-  Download,
-  FileText,
-  X
-} from "lucide-react"
+import { ArrowLeftRight, ChevronDown, FileText, Upload, X } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 
 // Shared Components
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
-import { GradientTabs, ShimmerButton } from "@/components/ui"
+import { GradientTabs } from "@/components/ui"
 // UI Components
 import { Button } from "@/components/ui/button"
 import {
@@ -29,16 +24,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 // Local imports
-import { InfoSection } from "./components"
-import { useLatinCyrillic } from "./hooks"
+import {
+  ChunkSelector,
+  DownloadMenu,
+  FileUploadModal,
+  InfoSection
+} from "./components"
+import { useFileTransliterate, useLatinCyrillic } from "./hooks"
 import type { SampleTextKey, TransliterationDirection } from "./types"
 
 /**
  * Main component for Latin-Cyrillic transliteration tool
- * Follows dumb component pattern - all logic in useLatinCyrillic hook
+ * Follows dumb component pattern - all logic in hooks
  */
 export function LatinCyrillicPage() {
   const t = useTranslations("LatinCyrillicPage")
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
 
   const {
     direction,
@@ -55,34 +56,27 @@ export function LatinCyrillicPage() {
     loadSample
   } = useLatinCyrillic()
 
-  // Download result as text file
-  const handleDownload = () => {
-    if (!convertedText) return
+  // File upload hook - auto-close modal on success
+  const fileHandler = useFileTransliterate((text) => {
+    setSourceText(text)
+    // Close modal after short delay to show success state
+    setTimeout(() => setIsUploadModalOpen(false), 800)
+  })
 
-    const content = [
-      t("downloadFile.title"),
-      "",
-      `${t("downloadFile.createdAt")}: ${new Date().toLocaleString()}`,
-      `${t("downloadFile.direction")}: ${sourceLang} → ${targetLang}`,
-      "",
-      t("downloadFile.sourceText"),
-      sourceText,
-      "",
-      t("downloadFile.convertedText"),
-      convertedText,
-      "",
-      "---",
-      "",
-      t("downloadFile.generatedBy")
-    ].join("\n")
+  // Handle file selection
+  const handleFileSelect = async (file: File) => {
+    await fileHandler.uploadFile(file)
+  }
 
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `transliteration-${Date.now()}.txt`
-    link.click()
-    URL.revokeObjectURL(url)
+  // Handle clear - reset both text and file state
+  const handleFullClear = () => {
+    handleClear()
+    fileHandler.reset()
+  }
+
+  // Handle chunk selection
+  const handleChunkSelect = (chunkId: number | null) => {
+    fileHandler.selectChunk(chunkId)
   }
 
   // Tab options for direction selection
@@ -99,11 +93,15 @@ export function LatinCyrillicPage() {
     }
   ]
 
-  // Status indicator
+  // Status indicator with file info
   const statusComponent = sourceText.length > 0 && (
     <span className="flex items-center gap-1 text-xs text-blue-400">
       <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-      {t("statusReady")}
+      {fileHandler.fileName ? (
+        <span className="max-w-32 truncate">{fileHandler.fileName}</span>
+      ) : (
+        t("statusReady")
+      )}
     </span>
   )
 
@@ -150,6 +148,16 @@ export function LatinCyrillicPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2">
+            {/* File Upload Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              <Upload size={16} className="mr-2" />
+              {t("fileUpload.button")}
+            </Button>
+
             {/* Sample Texts Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -172,24 +180,34 @@ export function LatinCyrillicPage() {
             </DropdownMenu>
 
             {/* Clear Button */}
-            <Button variant="ghost" size="sm" onClick={handleClear}>
+            <Button variant="ghost" size="sm" onClick={handleFullClear}>
               <X size={16} className="mr-2" />
               {t("clear")}
             </Button>
 
-            {/* Download Button */}
-            <ShimmerButton
-              onClick={handleDownload}
+            {/* Download Menu */}
+            <DownloadMenu
+              onDownloadTxt={() => fileHandler.downloadAsText(convertedText)}
+              onDownloadDocx={() => fileHandler.downloadAsDocx(convertedText)}
               disabled={!convertedText}
-              variant={convertedText ? "default" : "outline"}
-              size="sm"
-            >
-              <Download size={16} className="mr-2" />
-              {t("download")}
-            </ShimmerButton>
+              isProcessing={fileHandler.isProcessing}
+            />
           </div>
         </div>
       </div>
+
+      {/* Chunk Selector - shows when file has multiple chunks */}
+      {fileHandler.hasMultipleChunks && (
+        <ChunkSelector
+          chunks={fileHandler.chunks}
+          selectedChunkId={fileHandler.selectedChunkId}
+          onSelectChunk={handleChunkSelect}
+          onDownloadAll={(format) =>
+            fileHandler.downloadAllChunks(fileHandler.chunks, format)
+          }
+          isProcessing={fileHandler.isProcessing}
+        />
+      )}
 
       {/* Text Panels */}
       <DualTextPanel
@@ -200,7 +218,7 @@ export function LatinCyrillicPage() {
         targetLabel={t("targetResult", { targetLang })}
         onSourceChange={setSourceText}
         onSwap={handleSwap}
-        onClear={handleClear}
+        onClear={handleFullClear}
         swapButtonTitle={t("swapDirection")}
         statusComponent={statusComponent}
         targetEmptyState={targetEmptyState}
@@ -210,6 +228,23 @@ export function LatinCyrillicPage() {
 
       {/* Information Section */}
       <InfoSection />
+
+      {/* File Upload Modal */}
+      <FileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onFileSelect={handleFileSelect}
+        isDragging={fileHandler.isDragging}
+        isProcessing={fileHandler.isProcessing}
+        status={fileHandler.status}
+        progress={fileHandler.progress}
+        error={fileHandler.error}
+        fileName={fileHandler.fileName}
+        onDragEnter={fileHandler.handleDragEnter}
+        onDragLeave={fileHandler.handleDragLeave}
+        onDragOver={fileHandler.handleDragOver}
+        onDrop={fileHandler.handleDrop}
+      />
     </div>
   )
 }
