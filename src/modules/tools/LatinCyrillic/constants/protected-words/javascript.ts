@@ -136,5 +136,11 @@ export const JAVASCRIPT_KEYWORDS = [
   "hooks",
   "hoc",
   "provider",
-  "consumer"
+  "consumer",
+  // SEO/HTML meta
+  "title",
+  "description",
+  "keywords",
+  "viewport",
+  "charset"
 ] as const

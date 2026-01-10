@@ -174,5 +174,6 @@ export const PROGRAMMING_TERMS = [
   "void",
   "nan",
   "true",
-  "false"
+  "false",
+  "variable"
 ] as const

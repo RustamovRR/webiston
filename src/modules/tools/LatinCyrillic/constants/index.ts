@@ -7,3 +7,4 @@ export {
   WORD_BOUNDARY_CHARS
 } from "./protected-words"
 export { SAMPLE_TEXTS } from "./samples"
+export { UZBEK_SUFFIXES } from "./uzbek-suffixes"

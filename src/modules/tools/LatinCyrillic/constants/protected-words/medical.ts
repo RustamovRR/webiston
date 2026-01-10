@@ -54,7 +54,6 @@ export const MEDICAL_SCIENTIFIC = [
   "h2o",
   "co2",
   "nacl",
-  "mol",
   "mmol",
   "mcg",
   // Physics

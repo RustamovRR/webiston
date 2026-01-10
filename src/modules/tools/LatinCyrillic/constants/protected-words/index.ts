@@ -4,7 +4,6 @@
  */
 
 export { BRANDS_AND_PLATFORMS } from "./brands"
-export { FILE_EXTENSIONS } from "./file-extensions"
 export { FRAMEWORKS_AND_TOOLS } from "./frameworks"
 export { INTERNATIONAL_ACRONYMS } from "./international"
 export { JAVASCRIPT_KEYWORDS } from "./javascript"
@@ -14,7 +13,6 @@ export { TECHNOLOGY_TERMS } from "./technology"
 
 // Combine all protected words
 import { BRANDS_AND_PLATFORMS } from "./brands"
-import { FILE_EXTENSIONS } from "./file-extensions"
 import { FRAMEWORKS_AND_TOOLS } from "./frameworks"
 import { INTERNATIONAL_ACRONYMS } from "./international"
 import { JAVASCRIPT_KEYWORDS } from "./javascript"
@@ -23,7 +21,6 @@ import { PROGRAMMING_TERMS } from "./programming"
 import { TECHNOLOGY_TERMS } from "./technology"
 
 export const NON_TRANSLITERATABLE_WORDS = [
-  ...FILE_EXTENSIONS,
   ...FRAMEWORKS_AND_TOOLS,
   ...PROGRAMMING_TERMS,
   ...JAVASCRIPT_KEYWORDS,

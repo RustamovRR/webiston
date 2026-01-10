@@ -156,13 +156,16 @@ export function transliterateCyrillicToLatin(text: string): string {
       // Special handling for ь (soft sign)
       if (lowerChar === "ь") {
         const nextLower = nextChar.toLowerCase()
-        // ь before vowel (е, ё, ю, я, а, о, у, и) → apostrophe
-        if ("еёюяаоуи".includes(nextLower)) {
+        // ь before iotated vowel (е, ё, ю, я) → apostrophe
+        // семья → sem'ya, вьюга → v'yuga, компьютер → komp'yuter
+        if ("еёюя".includes(nextLower)) {
           result += "'"
-        } else {
-          // Soft sign at end of word or before consonant → apostrophe
-          result += "'"
+          i++
+          continue
         }
+        // ь at end of word or before consonant → apostrophe
+        // мать → mat', очень → ochen'
+        result += "'"
         i++
         continue
       }

@@ -124,6 +124,7 @@ export const TECHNOLOGY_TERMS = [
   "vmware",
   "hyperv",
   // Tech Acronyms (excluding very short)
+  "seo",
   "nlp",
   "llm",
   "api",
@@ -181,5 +182,6 @@ export const TECHNOLOGY_TERMS = [
   "hex",
   "gzip",
   "brotli",
-  "zstd"
+  "zstd",
+  "qr"
 ] as const

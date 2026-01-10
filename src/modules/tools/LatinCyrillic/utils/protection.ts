@@ -3,13 +3,22 @@
  * Preserves URLs, emails, code blocks, and technical terms from transliteration
  */
 
-import { NON_TRANSLITERATABLE_WORDS } from "../constants"
+import { NON_TRANSLITERATABLE_WORDS, UZBEK_SUFFIXES } from "../constants"
 
 const PLACEHOLDER_PREFIX = "\u0000"
 const PLACEHOLDER_SUFFIX = "\u0000"
 
 function createPlaceholder(index: number): string {
   return `${PLACEHOLDER_PREFIX}${index}${PLACEHOLDER_SUFFIX}`
+}
+
+// Create regex pattern for protected words with optional Uzbek suffixes
+function buildProtectedWordsPattern(): string {
+  const sortedWords = [...NON_TRANSLITERATABLE_WORDS].sort(
+    (a, b) => b.length - a.length
+  )
+  const suffixPattern = `(?:${UZBEK_SUFFIXES.join("|")})?`
+  return `\\b(${sortedWords.join("|")})${suffixPattern}\\b`
 }
 
 function buildProtectionRegex(): RegExp {
@@ -22,12 +31,18 @@ function buildProtectionRegex(): RegExp {
     "<\\/?[a-zA-Z][a-zA-Z0-9]*(?:\\s[^>]*)?\\/?>",
     // Email addresses
     "\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b",
+    // Social media handles (@username, @user_name, @user123)
+    "@[a-zA-Z_][a-zA-Z0-9_]*",
     // URLs
     "\\b(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*",
-    // Technical terms with hyphen+number (COVID-19, etc.)
-    "\\b[A-Za-z]+-\\d+\\b",
-    // Protected words (case-insensitive, whole words only)
-    `\\b(${NON_TRANSLITERATABLE_WORDS.join("|")})\\b`
+    // File names with extensions (config.json, backup_v2.tar.gz)
+    "\\b[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9]+)+\\b",
+    // Technical terms with hyphen+number at END (COVID-19, v2.3, NOT Tez-tibbiy)
+    "\\b[A-Za-z]+-\\d+(?:\\.\\d+)*\\b",
+    // HTML heading tags (h1-h6)
+    "\\bh[1-6]\\b",
+    // Protected words with optional Uzbek suffixes
+    buildProtectedWordsPattern()
   ]
   return new RegExp(patterns.join("|"), "gi")
 }
