@@ -1,1 +1,2 @@
-export { default as InfoSection } from "./InfoSection"
+// Barrel export for components
+export { InfoSection } from "./InfoSection"

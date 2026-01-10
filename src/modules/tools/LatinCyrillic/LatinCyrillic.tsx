@@ -1,18 +1,26 @@
 "use client"
 
-import React from "react"
+/**
+ * Latin-Cyrillic Transliteration Tool
+ * Converts text between Uzbek Latin and Cyrillic scripts
+ * Also supports Russian Cyrillic to Latin conversion
+ */
+
 import {
-  FileText,
   ArrowLeftRight,
-  X,
   ChevronDown,
-  Download
+  Download,
+  FileText,
+  X
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
+// Shared Components
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 // UI Components
 import { Button } from "@/components/ui/button"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,18 +28,18 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 
-// Shared Components
-import { ToolHeader } from "@/components/shared/ToolHeader"
-import { DualTextPanel } from "@/components/shared/DualTextPanel"
-
-// Local Components
+// Local imports
 import { InfoSection } from "./components"
+import { useLatinCyrillic } from "./hooks"
+import type { SampleTextKey, TransliterationDirection } from "./types"
 
-// Utils & Hooks
-import { useLatinCyrillic } from "./hooks/useLatinCyrillic"
-
-export default function LatinCyrillicPage() {
+/**
+ * Main component for Latin-Cyrillic transliteration tool
+ * Follows dumb component pattern - all logic in useLatinCyrillic hook
+ */
+export function LatinCyrillicPage() {
   const t = useTranslations("LatinCyrillicPage")
+
   const {
     direction,
     sourceText,
@@ -47,7 +55,8 @@ export default function LatinCyrillicPage() {
     loadSample
   } = useLatinCyrillic()
 
-  const downloadResult = () => {
+  // Download result as text file
+  const handleDownload = () => {
     if (!convertedText) return
 
     const content = [
@@ -67,36 +76,38 @@ export default function LatinCyrillicPage() {
       t("downloadFile.generatedBy")
     ].join("\n")
 
-    const blob = new Blob([content], { type: "text/plain" })
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `latin-cyrillic-${Date.now()}.txt`
-    a.click()
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `transliteration-${Date.now()}.txt`
+    link.click()
     URL.revokeObjectURL(url)
   }
 
+  // Tab options for direction selection
   const tabOptions = [
     {
-      value: "latin-to-cyrillic",
+      value: "latin-to-cyrillic" as TransliterationDirection,
       label: t("latinToCyrillic"),
       icon: <ArrowLeftRight size={16} />
     },
     {
-      value: "cyrillic-to-latin",
+      value: "cyrillic-to-latin" as TransliterationDirection,
       label: t("cyrillicToLatin"),
       icon: <ArrowLeftRight size={16} className="rotate-180" />
     }
   ]
 
-  const statusComponent =
-    sourceText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-400"></div>
-        {t("statusReady")}
-      </span>
-    ) : null
+  // Status indicator
+  const statusComponent = sourceText.length > 0 && (
+    <span className="flex items-center gap-1 text-xs text-blue-400">
+      <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+      {t("statusReady")}
+    </span>
+  )
 
+  // Empty state for target panel
   const targetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
       <div className="text-zinc-500">
@@ -107,12 +118,13 @@ export default function LatinCyrillicPage() {
     </div>
   )
 
-  const targetFooterComponent = convertedText ? (
+  // Footer for target panel
+  const targetFooterComponent = convertedText && (
     <div className="text-xs text-zinc-400">
       <span className="text-zinc-500">{t("alphabet")}:</span>{" "}
       <span className="text-zinc-300">{targetLang}</span>
     </div>
-  ) : null
+  )
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
@@ -121,21 +133,24 @@ export default function LatinCyrillicPage() {
         description={t("ToolHeader.description")}
       />
 
-      {/* Boshqaruv paneli */}
+      {/* Control Panel */}
       <div className="mb-6 rounded-lg border p-4 backdrop-blur-sm dark:border-none dark:bg-zinc-900/60">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          {/* Direction Tabs */}
           <div className="flex flex-wrap items-center gap-4">
-            {/* Gradient Tabs for Direction Selection */}
             <GradientTabs
               options={tabOptions}
               value={direction}
-              onChange={(value) => setDirection(value as any)}
+              onChange={(value) =>
+                setDirection(value as TransliterationDirection)
+              }
               toolCategory="converters"
             />
           </div>
 
+          {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Sample Data */}
+            {/* Sample Texts Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -148,7 +163,7 @@ export default function LatinCyrillicPage() {
                 {samples.map((sample) => (
                   <DropdownMenuItem
                     key={sample.key}
-                    onClick={() => loadSample(sample.key as any)}
+                    onClick={() => loadSample(sample.key as SampleTextKey)}
                   >
                     {sample.label}
                   </DropdownMenuItem>
@@ -156,14 +171,15 @@ export default function LatinCyrillicPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Clear Button */}
             <Button variant="ghost" size="sm" onClick={handleClear}>
               <X size={16} className="mr-2" />
               {t("clear")}
             </Button>
 
-            {/* Download */}
+            {/* Download Button */}
             <ShimmerButton
-              onClick={downloadResult}
+              onClick={handleDownload}
               disabled={!convertedText}
               variant={convertedText ? "default" : "outline"}
               size="sm"
@@ -175,6 +191,7 @@ export default function LatinCyrillicPage() {
         </div>
       </div>
 
+      {/* Text Panels */}
       <DualTextPanel
         sourceText={sourceText}
         convertedText={convertedText}
@@ -191,6 +208,7 @@ export default function LatinCyrillicPage() {
         showShadow
       />
 
+      {/* Information Section */}
       <InfoSection />
     </div>
   )

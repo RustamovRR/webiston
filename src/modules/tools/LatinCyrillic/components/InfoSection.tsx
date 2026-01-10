@@ -1,17 +1,21 @@
-import React from "react"
+"use client"
+
 import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import SectionTitle from "@/components/shared/SectionTitle"
 import InfoCard from "@/components/shared/InfoCard/InfoCard"
-import { getInfoCardsData } from "../constants/infoCardsData"
+import SectionTitle from "@/components/shared/SectionTitle"
+import { getInfoCardsData } from "../constants"
 
-const InfoSection: React.FC = () => {
+/**
+ * Information section displaying alphabet details, rules, and tips
+ * Pure presentational component - no business logic
+ */
+export function InfoSection() {
   const t = useTranslations("LatinCyrillicPage")
   const infoCards = getInfoCardsData(t)
 
   return (
-    <div className="mt-12">
+    <section className="mt-12">
       <SectionTitle
         href=""
         icon={<FileText className="h-6 w-6" />}
@@ -33,8 +37,6 @@ const InfoSection: React.FC = () => {
           </InfoCard>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
-
-export default InfoSection

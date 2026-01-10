@@ -1,7 +1,7 @@
-import React from "react"
-import { FileText, ArrowLeftRight } from "lucide-react"
+import { ArrowLeftRight, FileText } from "lucide-react"
+import type { TranslationFunction } from "../types"
 
-export const getInfoCardsData = (t: any) => [
+export const getInfoCardsData = (t: TranslationFunction) => [
   {
     icon: <FileText />,
     title: t("Info.latinAlphabet.title"),

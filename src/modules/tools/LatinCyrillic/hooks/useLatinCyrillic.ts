@@ -1,49 +1,37 @@
 "use client"
 
+/**
+ * Custom hook for Latin-Cyrillic transliteration
+ * Manages state, conversion logic, and UI helpers
+ */
+
 import { useTranslations } from "next-intl"
 import { useCallback, useMemo, useState } from "react"
 import { useDebounceValue } from "usehooks-ts"
-import { toCyrillic, toLatin } from "@/lib/transliteration"
+import { SAMPLE_TEXTS } from "../constants"
+import type {
+  SampleItem,
+  SampleTextKey,
+  TransliterationDirection,
+  UseLatinCyrillicResult
+} from "../types"
+import { toCyrillic, toLatin } from "../utils"
 
-export type Direction = "latin-to-cyrillic" | "cyrillic-to-latin"
+// Debounce delay in milliseconds
+const DEBOUNCE_DELAY = 100
 
-// Sample data constants
-export const SAMPLE_TEXTS = {
-  LATIN_GREETING: "Assalomu alaykum! Bu Lotin˝-Kirill o'giruvchi vositasi.",
-  CYRILLIC_GREETING: "Ассалому алайкум! Бу Лотин-Кирилл ўгирувчи воситаси.",
-  LATIN_PARAGRAPH:
-    "O'zbekiston Respublikasi mustaqil davlat hisoblanadi. Uning poytaxti Toshkent shahri.",
-  CYRILLIC_PARAGRAPH:
-    "Ўзбекистон Республикаси мустақил давлат ҳисобланади. Унинг пойтахти Тошкент шаҳри."
-}
-
-interface UseLatinCyrillicResult {
-  // State
-  direction: Direction
-  sourceText: string
-  convertedText: string
-
-  // Actions
-  setDirection: (direction: Direction) => void
-  setSourceText: (text: string) => void
-  handleSwap: () => void
-  handleClear: () => void
-  loadSample: (sampleKey: keyof typeof SAMPLE_TEXTS) => void
-
-  // Computed
-  sourceLang: string
-  targetLang: string
-  sourcePlaceholder: string
-  samples: Array<{ key: string; label: string; value: string }>
-}
-
-export const useLatinCyrillic = (): UseLatinCyrillicResult => {
+export function useLatinCyrillic(): UseLatinCyrillicResult {
   const t = useTranslations("LatinCyrillicPage")
-  const [direction, setDirection] = useState<Direction>("latin-to-cyrillic")
+
+  // Core state
+  const [direction, setDirection] =
+    useState<TransliterationDirection>("latin-to-cyrillic")
   const [sourceText, setSourceText] = useState("")
 
-  const [debouncedText] = useDebounceValue(sourceText, 100)
+  // Debounced text for performance
+  const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
 
+  // Computed: converted text
   const convertedText = useMemo(() => {
     if (!debouncedText.trim()) return ""
 
@@ -57,48 +45,62 @@ export const useLatinCyrillic = (): UseLatinCyrillicResult => {
     }
   }, [debouncedText, direction])
 
+  // Action: swap direction and use converted text as new source
   const handleSwap = useCallback(() => {
-    const newDirection: Direction =
+    const newDirection: TransliterationDirection =
       direction === "latin-to-cyrillic"
         ? "cyrillic-to-latin"
         : "latin-to-cyrillic"
 
     setDirection(newDirection)
 
-    // If we have converted text, use it as new source text
     if (convertedText) {
       setSourceText(convertedText)
     }
   }, [direction, convertedText])
 
+  // Action: clear source text
   const handleClear = useCallback(() => {
     setSourceText("")
   }, [])
 
-  const loadSample = useCallback((sampleKey: keyof typeof SAMPLE_TEXTS) => {
+  // Action: load sample text
+  const loadSample = useCallback((sampleKey: SampleTextKey) => {
     const sampleText = SAMPLE_TEXTS[sampleKey]
     setSourceText(sampleText)
 
-    // Auto-detect direction based on sample text
+    // Auto-detect direction based on sample type
     if (sampleKey.includes("LATIN")) {
       setDirection("latin-to-cyrillic")
-    } else if (sampleKey.includes("CYRILLIC")) {
+    } else if (
+      sampleKey.includes("CYRILLIC") ||
+      sampleKey.includes("RUSSIAN")
+    ) {
       setDirection("cyrillic-to-latin")
     }
   }, [])
 
-  // Computed values
-  const sourceLang =
-    direction === "latin-to-cyrillic" ? t("latin") : t("cyrillic")
+  // Computed: UI labels
+  const sourceLang = useMemo(
+    () => (direction === "latin-to-cyrillic" ? t("latin") : t("cyrillic")),
+    [direction, t]
+  )
 
-  const targetLang =
-    direction === "latin-to-cyrillic" ? t("cyrillic") : t("latin")
-  const sourcePlaceholder =
-    direction === "latin-to-cyrillic"
-      ? t("inputPlaceholderLatin")
-      : t("inputPlaceholderCyrillic")
+  const targetLang = useMemo(
+    () => (direction === "latin-to-cyrillic" ? t("cyrillic") : t("latin")),
+    [direction, t]
+  )
 
-  const samples = useMemo(
+  const sourcePlaceholder = useMemo(
+    () =>
+      direction === "latin-to-cyrillic"
+        ? t("inputPlaceholderLatin")
+        : t("inputPlaceholderCyrillic"),
+    [direction, t]
+  )
+
+  // Computed: sample items for dropdown
+  const samples: SampleItem[] = useMemo(
     () => [
       {
         key: "LATIN_GREETING",
