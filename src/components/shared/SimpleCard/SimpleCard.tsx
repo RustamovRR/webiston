@@ -1,7 +1,8 @@
-import { FC, ReactNode } from "react"
-import { cn } from "@/lib"
-import { Link as I18nLink } from "@/i18n/navigation"
+import { cn } from "@webiston/ui"
 import Link from "next/link"
+import type { FC, ReactNode } from "react"
+import { Link as I18nLink } from "@/i18n/navigation"
+
 interface IProps {
   title: string
   description: string

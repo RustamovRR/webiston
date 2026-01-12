@@ -1,33 +1,95 @@
-export * from "./typing-animation"
-export * from "./number-ticker"
-export * from "./AnimatedWords"
-export * from "./shimmer-button"
-export * from "./code-highlight"
+// Re-export from @webiston/ui package
+// This maintains backward compatibility with existing imports
 
-export { Button } from "./button"
 export {
+  // Primitives
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  AuroraText,
+  Badge,
+  // Composites
+  BaseModal,
+  BaseModalBody,
+  BaseModalDescription,
+  BaseModalFooter,
+  BaseModalHeader,
+  BaseModalTitle,
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  Button,
+  badgeVariants,
+  buttonVariants,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from "./card"
-export { CodeHighlight } from "./code-highlight"
-export { NumberTicker } from "./number-ticker"
-export { ShimmerButton } from "./shimmer-button"
-export { Textarea } from "./textarea"
-export {
+  CardTitle,
+  CodeHighlight,
+  CopyButton,
+  // Utils
+  cn,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+  GradientTabs,
+  InfoCard,
+  Input,
+  ModeSwitch,
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+  NumberTicker,
+  navigationMenuTriggerStyle,
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
   SelectTrigger,
-  SelectValue
-} from "./select"
-export { StreamingWords, SmartStream } from "./AnimatedWords"
-
-// New professional components
-export { ModeSwitch } from "./mode-switch"
-export { ToolPanel, TextInputPanel, OutputPanel } from "./tool-panel"
-export { GradientTabs } from "./gradient-tabs"
-export { AuroraText } from "./aurora-text"
+  SelectValue,
+  Separator,
+  ShimmerButton,
+  Skeleton,
+  StatsDisplay,
+  Textarea,
+  Toaster,
+  TypingAnimation
+} from "@webiston/ui"

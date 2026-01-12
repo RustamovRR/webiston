@@ -6,16 +6,17 @@
  * Semantic HTML with proper ARIA attributes
  */
 
+import {
+  Button,
+  CopyButton,
+  cn,
+  ShimmerButton,
+  StatsDisplay
+} from "@webiston/ui"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeftRight, FileText, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-import { CopyButton } from "@/components/shared/CopyButton"
-import { StatsDisplay } from "@/components/shared/StatsDisplay"
-import { ShimmerButton } from "@/components/ui"
-import { Button } from "@/components/ui/button"
 import { MACOS_DOTS } from "@/constants/ui-constants"
-import { cn } from "@/lib"
 import { countWords } from "@/lib/utils"
 
 interface DualTextPanelProps {

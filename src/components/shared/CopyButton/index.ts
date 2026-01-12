@@ -1,1 +1,1 @@
-export { CopyButton } from "./CopyButton"
+export { CopyButton } from "@webiston/ui"

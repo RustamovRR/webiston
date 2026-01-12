@@ -2,7 +2,7 @@
 
 import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-import InfoCard from "@/components/shared/InfoCard/InfoCard"
+import { InfoCard } from "@/components/shared/InfoCard"
 import SectionTitle from "@/components/shared/SectionTitle"
 import { getInfoCardsData } from "../constants"
 
@@ -33,7 +33,11 @@ export function InfoSection() {
             iconBgColor={card.iconBgColor}
             iconColor={card.iconColor}
           >
-            {card.content}
+            <ul className="list-disc list-inside space-y-1">
+              {card.items.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
           </InfoCard>
         ))}
       </div>

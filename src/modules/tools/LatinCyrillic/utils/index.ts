@@ -1,9 +1,10 @@
-// Public API - only export what's needed externally
+// Re-export from @webiston/transliteration package
+// This is the single source of truth
 
-export { detectScript, isCyrillicText, isLatinText } from "./detect-script"
 export {
-  isUpperCase,
-  normalizeApostrophes,
-  preserveCase
-} from "./helpers"
-export { toCyrillic, toLatin } from "./transliterate"
+  detectScript,
+  isCyrillicText,
+  isLatinText,
+  toCyrillic,
+  toLatin
+} from "@webiston/transliteration"

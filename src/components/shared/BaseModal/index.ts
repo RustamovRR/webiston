@@ -5,4 +5,4 @@ export {
   BaseModalFooter,
   BaseModalHeader,
   BaseModalTitle
-} from "./BaseModal"
+} from "@webiston/ui"

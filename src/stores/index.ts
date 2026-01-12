@@ -1,2 +1,2 @@
-export * from "./mobileMenuStore"
-export * from "./navigationStore"
+export { useMobileMenuStore } from "./mobileMenuStore"
+export { useNavigationStore } from "./navigationStore"

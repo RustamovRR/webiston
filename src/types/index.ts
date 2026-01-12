@@ -1,50 +1,40 @@
 // Common types
-export * from "./common"
-export * from "./tools"
+export type {
+  ConversionMode,
+  FileUploadResult,
+  IClassName,
+  ISearchHit,
+  ProcessedFile,
+  StatItem,
+  TLocale,
+  ToolConfig,
+  ToolResult,
+  TransliterationMode
+} from "./common"
 
-// UI component types
-export * from "./ui"
+// Tool types
+export type {
+  Base64ConversionOptions,
+  Base64Result,
+  ColorFormat,
+  ColorValue,
+  HashAlgorithm,
+  HashGeneratorOptions,
+  JsonFormatterOptions,
+  JwtPayload,
+  PasswordOptions,
+  QrGeneratorOptions,
+  QrPreset,
+  UrlEncoderOptions,
+  UrlInfo,
+  UrlResult
+} from "./tools"
 
-// Common tool types
-export interface ToolResult<T = string> {
-  output: T
-  error: string
-  isValid?: boolean
-}
-
-export interface FileUploadResult {
-  content: string
-  error?: string
-}
-
-// Conversion modes
-export type ConversionMode = "encode" | "decode"
-export type TransliterationMode = "latin-to-cyrillic" | "cyrillic-to-latin"
-
-// Base64 specific types
-export interface Base64Result extends ToolResult {
-  mode: ConversionMode
-}
-
-// Statistics types
-export interface StatItem {
-  label: string
-  value: number
-}
-
-// File processing types
-export interface ProcessedFile {
-  name: string
-  size: number
-  type: string
-  content?: string
-  base64?: string
-}
-
-// Tool configuration types
-export interface ToolConfig {
-  name: string
-  description: string
-  features: string[]
-  supportedFormats?: string[]
-}
+// UI types
+export type {
+  ButtonSize,
+  ButtonVariant,
+  InputType,
+  ModalProps,
+  ToastMessage
+} from "./ui"

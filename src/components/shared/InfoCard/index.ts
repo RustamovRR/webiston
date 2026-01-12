@@ -1,1 +1,1 @@
-export { default } from "./InfoCard"
+export { InfoCard, InfoCard as default } from "@webiston/ui"

@@ -1,17 +1,29 @@
-export * from "./BaseModal"
-export * from "./ButtonLink"
+// App-specific shared components
+
+// Re-export pure composites from @webiston/ui for convenience
+export {
+  BaseModal,
+  BaseModalBody,
+  BaseModalDescription,
+  BaseModalFooter,
+  BaseModalHeader,
+  BaseModalTitle,
+  CopyButton,
+  InfoCard,
+  StatsDisplay
+} from "@webiston/ui"
 export { default as ButtonLink } from "./ButtonLink"
-export * from "./CopyButton"
-export * from "./DualTextPanel"
-export * from "./Footer"
-export * from "./Header"
-export * from "./Header"
-export { default as InfoCard } from "./InfoCard"
+export { DualTextPanel } from "./DualTextPanel"
+export { default as Footer } from "./Footer"
+export { Header } from "./Header"
 export { default as Search } from "./Search"
-export * from "./SectionTitle"
 export { default as SectionTitle } from "./SectionTitle"
 export { default as SimpleCard } from "./SimpleCard"
-export * from "./StatsDisplay"
-export * from "./TerminalInput"
+export {
+  TerminalInput,
+  type TerminalInputAction,
+  type TerminalInputProps
+} from "./TerminalInput"
 export { default as ThemeToggle } from "./ThemeToggle"
-export * from "./ToolHeader"
+export { ToolHeader } from "./ToolHeader"
+export { OutputPanel, TextInputPanel, ToolPanel } from "./ToolPanel"

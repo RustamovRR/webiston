@@ -1,15 +1,11 @@
 "use client"
 
-import React from "react"
+import { Button, CopyButton, cn, StatsDisplay, Textarea } from "@webiston/ui"
+import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 import { useTranslations } from "next-intl"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { CopyButton } from "@/components/shared/CopyButton"
-import { StatsDisplay } from "@/components/shared/StatsDisplay"
+import type React from "react"
 import { MACOS_DOTS } from "@/constants/ui-constants"
-import { cn } from "@/lib"
 
 export interface TerminalInputAction {
   type: "clear" | "copy" | "download" | "custom"

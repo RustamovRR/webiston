@@ -1,0 +1,38 @@
+{
+  "name": "latin-cyrillic-extension",
+  "displayName": "Latin Converter - Webiston",
+  "version": "1.0.0",
+  "description": "O'zbek lotin-kirill konverteri. Matnni tez va oson o'zgartiring.",
+  "author": "Webiston Team <info@webiston.uz>",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package",
+    "clean": "rm -rf .plasmo build"
+  },
+  "dependencies": {
+    "@webiston/transliteration": "workspace:*",
+    "@webiston/ui": "workspace:*",
+    "plasmo": "^0.90.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/chrome": "^0.1.33",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
+  },
+  "manifest": {
+    "host_permissions": [
+      "<all_urls>"
+    ],
+    "permissions": [
+      "activeTab",
+      "contextMenus",
+      "storage"
+    ]
+  }
+}
