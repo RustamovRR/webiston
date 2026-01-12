@@ -23,6 +23,7 @@ pre-commit:
       skip:
         - merge
         - rebase
+      fail_text: "Biome formatting failed. Run 'pnpm format' to fix."
 
 commit-msg:
   commands:

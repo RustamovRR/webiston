@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest"
-import {
-  detectScript,
-  isCyrillicText,
-  isLatinText
-} from "../src/detect-script"
+import { detectScript, isCyrillicText, isLatinText } from "../src/detect-script"
 
 describe("detectScript", () => {
   it("detects Latin text", () => {

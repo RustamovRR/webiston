@@ -9,6 +9,8 @@
     "ignoreUnknown": false,
     "includes": [
       "**/src/**/*",
+      "**/packages/**/*",
+      "**/apps/**/*",
       "**/scripts/**/*",
       "**/messages/**/*",
       "!**/node_modules",

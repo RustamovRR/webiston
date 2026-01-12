@@ -1,29 +1,18 @@
 "use client"
 
 import {
-  Globe2,
-  CheckCircle,
-  XCircle,
-  Clock,
   AlertTriangle,
-  Search,
-  RefreshCw,
+  CheckCircle,
+  Globe2,
   Monitor,
+  Shield,
   Wifi,
-  Shield
+  XCircle
 } from "lucide-react"
-import {
-  ToolHeader,
-  DualTextPanel,
-  StatsDisplay,
-  CopyButton
-} from "@/components/shared"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { useWebsiteStatus } from "./hooks/useWebsiteStatus"
-import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { CopyButton, StatsDisplay, ToolHeader } from "@/components/shared"
 import { CodeHighlight } from "@/components/ui/code-highlight"
+import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { useWebsiteStatus } from "./hooks/useWebsiteStatus"
 
 export default function WebsiteStatus() {
   const {
@@ -35,11 +24,9 @@ export default function WebsiteStatus() {
     handleInputChange,
     checkCurrentInput,
     loadSample,
-    clearAll,
     downloadResults,
     getStats,
-    getStatusText,
-    getResponseTimeCategory
+    getStatusText
   } = useWebsiteStatus()
 
   const getStatusIcon = (status: string) => {
@@ -102,6 +89,7 @@ export default function WebsiteStatus() {
             <div className="p-6">
               <div className="space-y-4">
                 <div className="space-y-3">
+                  {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
                   <label className="text-sm font-medium text-zinc-300">
                     Website URL manzili:
                   </label>
