@@ -1,12 +1,17 @@
 {
-  "extends": "plasmo/templates/tsconfig.base",
+  "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
     "jsx": "react-jsx",
-    "paths": {
-      "~/*": ["./src/*"]
-    },
-    "baseUrl": "."
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
-  "include": [".plasmo/index.d.ts", "./**/*.ts", "./**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [".wxt/wxt.d.ts", "entrypoints/**/*", "components/**/*", "*.ts"]
 }

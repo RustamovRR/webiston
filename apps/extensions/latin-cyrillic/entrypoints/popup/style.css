@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
-@theme {
-  --color-primary: #0ea5e9;
-  --color-primary-hover: #0284c7;
-}
-
 :root {
   --background: #ffffff;
   --foreground: #111111;
@@ -15,6 +8,7 @@
   --border: #e5e5e5;
   --input: #ffffff;
   --ring: #0ea5e9;
+  --primary: #0ea5e9;
 }
 
 .dark {
