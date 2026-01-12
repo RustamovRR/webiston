@@ -38,12 +38,16 @@
     }
   },
   "ignorePatterns": [
-    "node_modules",
-    ".next",
-    "public",
-    "content",
-    "*.mdx",
-    "*.md",
-    "*.json"
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.output/**",
+    "**/.wxt/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/public/**",
+    "**/content/**",
+    "**/*.mdx",
+    "**/*.md",
+    "**/*.json"
   ]
 }

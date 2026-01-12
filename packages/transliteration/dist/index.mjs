@@ -103,7 +103,7 @@ var BRANDS_AND_PLATFORMS = [
   "twitch",
   "netflix",
   "spotify"
-]
+];
 
 // src/constants/protected-words/frameworks.ts
 var FRAMEWORKS_AND_TOOLS = [
@@ -232,7 +232,7 @@ var FRAMEWORKS_AND_TOOLS = [
   "nginx",
   "apache",
   "caddy"
-]
+];
 
 // src/constants/protected-words/international.ts
 var INTERNATIONAL_ACRONYMS = [
@@ -310,7 +310,7 @@ var INTERNATIONAL_ACRONYMS = [
   "eth",
   "usdt",
   "usdc"
-]
+];
 
 // src/constants/protected-words/javascript.ts
 var JAVASCRIPT_KEYWORDS = [
@@ -454,7 +454,7 @@ var JAVASCRIPT_KEYWORDS = [
   "keywords",
   "viewport",
   "charset"
-]
+];
 
 // src/constants/protected-words/medical.ts
 var MEDICAL_SCIENTIFIC = [
@@ -546,7 +546,7 @@ var MEDICAL_SCIENTIFIC = [
   "doi",
   "isbn",
   "issn"
-]
+];
 
 // src/constants/protected-words/programming.ts
 var PROGRAMMING_TERMS = [
@@ -723,7 +723,7 @@ var PROGRAMMING_TERMS = [
   "true",
   "false",
   "variable"
-]
+];
 
 // src/constants/protected-words/technology.ts
 var TECHNOLOGY_TERMS = [
@@ -908,7 +908,7 @@ var TECHNOLOGY_TERMS = [
   "brotli",
   "zstd",
   "qr"
-]
+];
 
 // src/constants/protected-words/index.ts
 var NON_TRANSLITERATABLE_WORDS = [
@@ -919,7 +919,7 @@ var NON_TRANSLITERATABLE_WORDS = [
   ...TECHNOLOGY_TERMS,
   ...INTERNATIONAL_ACRONYMS,
   ...MEDICAL_SCIENTIFIC
-]
+];
 var APOSTROPHE_VARIANTS = [
   "`",
   // ` Grave accent
@@ -943,7 +943,7 @@ var APOSTROPHE_VARIANTS = [
   // ʹ Modifier letter prime
   "'"
   // ' Standard apostrophe (target)
-]
+];
 
 // src/constants/uzbek-suffixes.ts
 var UZBEK_SUFFIXES = [
@@ -982,55 +982,87 @@ var UZBEK_SUFFIXES = [
   "lari",
   "larini",
   "lariga"
-]
+];
+
+// src/detect-script.ts
+var CYRILLIC_RANGE = /[\u0400-\u04FF]/;
+var LATIN_RANGE = /[a-zA-Z]/;
+function detectScript(text) {
+  if (!text || text.trim().length === 0) {
+    return "unknown";
+  }
+  let latinCount = 0;
+  let cyrillicCount = 0;
+  for (const char of text) {
+    if (LATIN_RANGE.test(char)) {
+      latinCount++;
+    } else if (CYRILLIC_RANGE.test(char)) {
+      cyrillicCount++;
+    }
+  }
+  const total = latinCount + cyrillicCount;
+  if (total === 0) {
+    return "unknown";
+  }
+  if (latinCount > 0 && cyrillicCount > 0) {
+    const latinRatio = latinCount / total;
+    const cyrillicRatio = cyrillicCount / total;
+    if (latinRatio >= 0.2 && cyrillicRatio >= 0.2) {
+      return "mixed";
+    }
+  }
+  if (cyrillicCount > latinCount) {
+    return "cyrillic";
+  }
+  return "latin";
+}
+function isLatinText(text) {
+  return detectScript(text) === "latin";
+}
 
 // src/helpers.ts
 function normalizeApostrophes(text) {
-  let result = text
+  let result = text;
   for (const variant of APOSTROPHE_VARIANTS) {
     if (variant !== "'") {
-      result = result.split(variant).join("'")
+      result = result.split(variant).join("'");
     }
   }
-  return result
+  return result;
 }
 function isUpperCase(char) {
-  return char === char.toUpperCase() && char !== char.toLowerCase()
+  return char === char.toUpperCase() && char !== char.toLowerCase();
 }
 function isLowerCase(char) {
-  return char === char.toLowerCase() && char !== char.toUpperCase()
+  return char === char.toLowerCase() && char !== char.toUpperCase();
 }
 function preserveCase(source, target) {
-  if (target.length === 0) return target
-  if (source.length === 0) return target
+  if (target.length === 0) return target;
+  if (source.length === 0) return target;
   if (target.length === 1) {
-    return isUpperCase(source[0]) ? target.toUpperCase() : target.toLowerCase()
+    return isUpperCase(source[0]) ? target.toUpperCase() : target.toLowerCase();
   }
-  const firstUpper = isUpperCase(source[0])
-  const allUpper =
-    source.length > 1 &&
-    [...source].every((c) => isUpperCase(c) || !isLowerCase(c))
+  const firstUpper = isUpperCase(source[0]);
+  const allUpper = source.length > 1 && [...source].every((c) => isUpperCase(c) || !isLowerCase(c));
   if (allUpper) {
-    return target.toUpperCase()
+    return target.toUpperCase();
   }
   if (firstUpper) {
-    return target.charAt(0).toUpperCase() + target.slice(1).toLowerCase()
+    return target.charAt(0).toUpperCase() + target.slice(1).toLowerCase();
   }
-  return target.toLowerCase()
+  return target.toLowerCase();
 }
 function isLatinVowel(char) {
-  return "aeiouAEIOU".includes(char)
+  return "aeiouAEIOU".includes(char);
 }
 function isCyrillicVowel(char) {
-  return "\u0430\u0435\u0451\u0438\u043E\u0443\u045E\u044D\u044E\u044F\u044B\u0410\u0415\u0401\u0418\u041E\u0423\u040E\u042D\u042E\u042F\u042B".includes(
-    char
-  )
+  return "\u0430\u0435\u0451\u0438\u043E\u0443\u045E\u044D\u044E\u044F\u044B\u0410\u0415\u0401\u0418\u041E\u0423\u040E\u042D\u042E\u042F\u042B".includes(char);
 }
 function isWordBoundary(text, index) {
-  if (index === 0) return true
-  if (index >= text.length) return true
-  const prevChar = text[index - 1]
-  return /[\s(\-"'«»„"".,!?;:[\]{}]/.test(prevChar)
+  if (index === 0) return true;
+  if (index >= text.length) return true;
+  const prevChar = text[index - 1];
+  return /[\s(\-"'«»„"".,!?;:[\]{}]/.test(prevChar);
 }
 
 // src/mappings/month-names.ts
@@ -1049,18 +1081,16 @@ var RUSSIAN_MONTHS_TO_UZBEK = {
   \u043D\u043E\u044F\u0431\u0440\u044C: "noyabr",
   \u0434\u0435\u043A\u0430\u0431\u0440\u044C: "dekabr",
   // Days of week
-  \u043F\u043E\u043D\u0435\u0434\u0435\u043B\u044C\u043D\u0438\u043A:
-    "dushanba",
+  \u043F\u043E\u043D\u0435\u0434\u0435\u043B\u044C\u043D\u0438\u043A: "dushanba",
   \u0432\u0442\u043E\u0440\u043D\u0438\u043A: "seshanba",
   \u0441\u0440\u0435\u0434\u0430: "chorshanba",
   \u0447\u0435\u0442\u0432\u0435\u0440\u0433: "payshanba",
   \u043F\u044F\u0442\u043D\u0438\u0446\u0430: "juma",
   \u0441\u0443\u0431\u0431\u043E\u0442\u0430: "shanba",
-  \u0432\u043E\u0441\u043A\u0440\u0435\u0441\u0435\u043D\u044C\u0435:
-    "yakshanba"
-}
+  \u0432\u043E\u0441\u043A\u0440\u0435\u0441\u0435\u043D\u044C\u0435: "yakshanba"
+};
 function getRussianTimeNameInUzbek(word) {
-  return RUSSIAN_MONTHS_TO_UZBEK[word.toLowerCase()] || null
+  return RUSSIAN_MONTHS_TO_UZBEK[word.toLowerCase()] || null;
 }
 
 // src/mappings/russian-cyrillic-to-latin.ts
@@ -1088,17 +1118,10 @@ var RUSSIAN_CYRILLIC_TO_LATIN = {
   \u044E: "yu",
   \u044F: "ya"
   // Note: "е" is handled specially - "ye" at start/after vowel, "e" after consonant
-}
-var RUSSIAN_ONLY_CHARS = [
-  "\u044B",
-  "\u0449",
-  "\u044C",
-  "\u042B",
-  "\u0429",
-  "\u042C"
-]
+};
+var RUSSIAN_ONLY_CHARS = ["\u044B", "\u0449", "\u044C", "\u042B", "\u0429", "\u042C"];
 function isRussianOnlyChar(char) {
-  return RUSSIAN_ONLY_CHARS.includes(char)
+  return RUSSIAN_ONLY_CHARS.includes(char);
 }
 
 // src/mappings/uzbek-cyrillic-to-latin.ts
@@ -1131,7 +1154,7 @@ var UZBEK_CYRILLIC_TO_LATIN_SINGLE = {
   \u0493: "g'",
   \u04B3: "h",
   \u045E: "o'"
-}
+};
 var UZBEK_CYRILLIC_TO_LATIN_SPECIAL = {
   // Compound vowels
   \u0451: "yo",
@@ -1145,7 +1168,7 @@ var UZBEK_CYRILLIC_TO_LATIN_SPECIAL = {
   \u044A: "'",
   \u044D: "e"
   // Always 'e', context handled separately
-}
+};
 
 // src/mappings/uzbek-latin-to-cyrillic.ts
 var UZBEK_LATIN_TO_CYRILLIC_SINGLE = {
@@ -1177,7 +1200,7 @@ var UZBEK_LATIN_TO_CYRILLIC_SINGLE = {
   x: "\u0445",
   y: "\u0439",
   z: "\u0437"
-}
+};
 var UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS = {
   // Special Uzbek digraphs with apostrophe
   "g'": "\u0493",
@@ -1192,267 +1215,266 @@ var UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS = {
   ya: "\u044F",
   ye: "\u0435"
   // Only at word beginning
-}
+};
 
 // src/cyrillic-to-latin.ts
 function extractCyrillicWord(text, startIndex) {
-  let word = ""
-  let i = startIndex
+  let word = "";
+  let i = startIndex;
   while (i < text.length && /[\u0400-\u04FF]/.test(text[i])) {
-    word += text[i]
-    i++
+    word += text[i];
+    i++;
   }
-  return word
+  return word;
 }
 function shouldEBeYe(text, index) {
   if (isWordBoundary(text, index)) {
-    return true
+    return true;
   }
-  const prevChar = text[index - 1]
+  const prevChar = text[index - 1];
   if (isCyrillicVowel(prevChar)) {
-    return true
+    return true;
   }
   if ("\u044A\u044C\u042A\u042C".includes(prevChar)) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 function applyCaseAware(char, target, text, index) {
   if (!isUpperCase(char)) {
-    return target.toLowerCase()
+    return target.toLowerCase();
   }
-  const nextChar = text[index + 1]
+  const nextChar = text[index + 1];
   if (nextChar && isUpperCase(nextChar)) {
-    return target.toUpperCase()
+    return target.toUpperCase();
   }
-  const prevChar = text[index - 1]
+  const prevChar = text[index - 1];
   if (prevChar && isUpperCase(prevChar) && !/[\s-]/.test(prevChar)) {
-    return target.toUpperCase()
+    return target.toUpperCase();
   }
-  return target.charAt(0).toUpperCase() + target.slice(1).toLowerCase()
+  return target.charAt(0).toUpperCase() + target.slice(1).toLowerCase();
 }
 function transliterateCyrillicToLatin(text) {
-  let result = ""
-  let i = 0
+  let result = "";
+  let i = 0;
   while (i < text.length) {
-    const char = text[i]
-    const nextChar = text[i + 1] || ""
-    const lowerChar = char.toLowerCase()
-    const lowerNext = nextChar.toLowerCase()
+    const char = text[i];
+    const nextChar = text[i + 1] || "";
+    const lowerChar = char.toLowerCase();
+    const lowerNext = nextChar.toLowerCase();
     if (/[\u0400-\u04FF]/.test(char) && isWordBoundary(text, i)) {
-      const word = extractCyrillicWord(text, i)
-      const uzbekEquivalent = getRussianTimeNameInUzbek(word)
+      const word = extractCyrillicWord(text, i);
+      const uzbekEquivalent = getRussianTimeNameInUzbek(word);
       if (uzbekEquivalent) {
         if (word === word.toUpperCase()) {
-          result += uzbekEquivalent.toUpperCase()
+          result += uzbekEquivalent.toUpperCase();
         } else if (isUpperCase(word[0])) {
-          result +=
-            uzbekEquivalent.charAt(0).toUpperCase() + uzbekEquivalent.slice(1)
+          result += uzbekEquivalent.charAt(0).toUpperCase() + uzbekEquivalent.slice(1);
         } else {
-          result += uzbekEquivalent
+          result += uzbekEquivalent;
         }
-        i += word.length
-        continue
+        i += word.length;
+        continue;
       }
     }
     if (lowerChar === "\u043D" && lowerNext === "\u0433") {
       if (isUpperCase(char) && isUpperCase(nextChar)) {
-        result += "NG"
+        result += "NG";
       } else if (isUpperCase(char)) {
-        result += "Ng"
+        result += "Ng";
       } else {
-        result += "ng"
+        result += "ng";
       }
-      i += 2
-      continue
+      i += 2;
+      continue;
     }
     if (lowerChar === "\u044A") {
-      result += "'"
-      i++
-      continue
+      result += "'";
+      i++;
+      continue;
     }
     if (lowerChar === "\u0435") {
       if (shouldEBeYe(text, i)) {
-        result += applyCaseAware(char, "ye", text, i)
+        result += applyCaseAware(char, "ye", text, i);
       } else {
-        result += preserveCase(char, "e")
+        result += preserveCase(char, "e");
       }
-      i++
-      continue
+      i++;
+      continue;
     }
     if (isRussianOnlyChar(char)) {
       if (lowerChar === "\u044C") {
-        const nextLower = nextChar.toLowerCase()
+        const nextLower = nextChar.toLowerCase();
         if ("\u0435\u0451\u044E\u044F".includes(nextLower)) {
-          result += "'"
-          i++
-          continue
+          result += "'";
+          i++;
+          continue;
         }
-        result += "'"
-        i++
-        continue
+        result += "'";
+        i++;
+        continue;
       }
-      const latinChar2 = RUSSIAN_CYRILLIC_TO_LATIN[lowerChar]
+      const latinChar2 = RUSSIAN_CYRILLIC_TO_LATIN[lowerChar];
       if (latinChar2) {
-        result += applyCaseAware(char, latinChar2, text, i)
+        result += applyCaseAware(char, latinChar2, text, i);
       } else {
-        result += char
+        result += char;
       }
-      i++
-      continue
+      i++;
+      continue;
     }
-    const specialChar = UZBEK_CYRILLIC_TO_LATIN_SPECIAL[lowerChar]
+    const specialChar = UZBEK_CYRILLIC_TO_LATIN_SPECIAL[lowerChar];
     if (specialChar) {
-      result += applyCaseAware(char, specialChar, text, i)
-      i++
-      continue
+      result += applyCaseAware(char, specialChar, text, i);
+      i++;
+      continue;
     }
-    const latinChar = UZBEK_CYRILLIC_TO_LATIN_SINGLE[lowerChar]
+    const latinChar = UZBEK_CYRILLIC_TO_LATIN_SINGLE[lowerChar];
     if (latinChar) {
-      result += preserveCase(char, latinChar)
+      result += preserveCase(char, latinChar);
     } else {
-      result += char
+      result += char;
     }
-    i++
+    i++;
   }
-  return normalizeApostrophes(result)
+  return normalizeApostrophes(result);
 }
 
 // src/latin-to-cyrillic.ts
 function transliterateLatinToCyrillic(text) {
-  const normalized = normalizeApostrophes(text)
-  let result = ""
-  let i = 0
+  const normalized = normalizeApostrophes(text);
+  let result = "";
+  let i = 0;
   while (i < normalized.length) {
-    const char = normalized[i]
-    const nextChar = normalized[i + 1] || ""
-    const twoChars = char + nextChar
-    const lowerChar = char.toLowerCase()
-    const lowerTwo = twoChars.toLowerCase()
-    const fourChars = normalized.substring(i, i + 4).toLowerCase()
+    const char = normalized[i];
+    const nextChar = normalized[i + 1] || "";
+    const twoChars = char + nextChar;
+    const lowerChar = char.toLowerCase();
+    const lowerTwo = twoChars.toLowerCase();
+    const fourChars = normalized.substring(i, i + 4).toLowerCase();
     if (fourChars === "shch") {
-      const original = normalized.substring(i, i + 4)
+      const original = normalized.substring(i, i + 4);
       if (original === original.toUpperCase()) {
-        result += "\u0429"
+        result += "\u0429";
       } else {
-        result += preserveCase(char, "\u0449")
+        result += preserveCase(char, "\u0449");
       }
-      i += 4
-      continue
+      i += 4;
+      continue;
     }
     if (lowerChar === "y") {
-      const nextTwo = normalized.substring(i + 1, i + 3).toLowerCase()
+      const nextTwo = normalized.substring(i + 1, i + 3).toLowerCase();
       if (nextTwo === "o'") {
-        result += preserveCase(char, "\u0439")
-        i++
-        continue
+        result += preserveCase(char, "\u0439");
+        i++;
+        continue;
       }
       if (nextChar.toLowerCase() === "o") {
-        result += preserveCase(char, "\u0451")
-        i += 2
-        continue
+        result += preserveCase(char, "\u0451");
+        i += 2;
+        continue;
       }
       if (nextChar.toLowerCase() === "a") {
-        result += preserveCase(char, "\u044F")
-        i += 2
-        continue
+        result += preserveCase(char, "\u044F");
+        i += 2;
+        continue;
       }
       if (nextChar.toLowerCase() === "u") {
-        result += preserveCase(char, "\u044E")
-        i += 2
-        continue
+        result += preserveCase(char, "\u044E");
+        i += 2;
+        continue;
       }
       if (nextChar.toLowerCase() === "e") {
-        result += preserveCase(char, "\u0435")
-        i += 2
-        continue
+        result += preserveCase(char, "\u0435");
+        i += 2;
+        continue;
       }
-      result += preserveCase(char, "\u0439")
-      i++
-      continue
+      result += preserveCase(char, "\u0439");
+      i++;
+      continue;
     }
     if (lowerChar === "e" && isWordBoundary(normalized, i)) {
-      result += preserveCase(char, "\u044D")
-      i++
-      continue
+      result += preserveCase(char, "\u044D");
+      i++;
+      continue;
     }
     if (lowerTwo === "g'" || lowerTwo === "o'") {
-      const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo]
-      result += preserveCase(char, cyrillic)
-      i += 2
-      continue
+      const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo];
+      result += preserveCase(char, cyrillic);
+      i += 2;
+      continue;
     }
     if (lowerTwo === "ng" && normalized[i + 2] === "'") {
-      result += preserveCase(char, "\u043D")
-      i++
-      continue
+      result += preserveCase(char, "\u043D");
+      i++;
+      continue;
     }
     if (["sh", "ch", "ng"].includes(lowerTwo)) {
-      const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo]
+      const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo];
       if (isUpperCase(char) && isUpperCase(nextChar)) {
-        result += cyrillic.toUpperCase()
+        result += cyrillic.toUpperCase();
       } else {
-        result += preserveCase(char, cyrillic)
+        result += preserveCase(char, cyrillic);
       }
-      i += 2
-      continue
+      i += 2;
+      continue;
     }
     if (char === "'") {
-      const prevChar = i > 0 ? normalized[i - 1].toLowerCase() : ""
-      const nextCharLower = nextChar.toLowerCase()
+      const prevChar = i > 0 ? normalized[i - 1].toLowerCase() : "";
+      const nextCharLower = nextChar.toLowerCase();
       if (nextCharLower === "h" && !isLatinVowel(prevChar)) {
-        i++
-        continue
+        i++;
+        continue;
       }
-      const afterNext = normalized[i + 2]?.toLowerCase() || ""
+      const afterNext = normalized[i + 2]?.toLowerCase() || "";
       if (nextCharLower === "y" && "aeou".includes(afterNext)) {
-        result += "\u044C"
-        i++
-        continue
+        result += "\u044C";
+        i++;
+        continue;
       }
       if (isLatinVowel(prevChar)) {
-        result += "\u044A"
-        i++
-        continue
+        result += "\u044A";
+        i++;
+        continue;
       }
-      const isEndOfWord = !nextChar || /[\s.,!?;:-]/.test(nextChar)
+      const isEndOfWord = !nextChar || /[\s.,!?;:-]/.test(nextChar);
       if (isEndOfWord) {
-        result += "\u044C"
-        i++
-        continue
+        result += "\u044C";
+        i++;
+        continue;
       }
       if (!isLatinVowel(prevChar) && isLatinVowel(nextCharLower)) {
-        result += "\u044C"
-        i++
-        continue
+        result += "\u044C";
+        i++;
+        continue;
       }
-      result += "'"
-      i++
-      continue
+      result += "'";
+      i++;
+      continue;
     }
-    const cyrillicChar = UZBEK_LATIN_TO_CYRILLIC_SINGLE[lowerChar]
+    const cyrillicChar = UZBEK_LATIN_TO_CYRILLIC_SINGLE[lowerChar];
     if (cyrillicChar) {
-      result += preserveCase(char, cyrillicChar)
+      result += preserveCase(char, cyrillicChar);
     } else {
-      result += char
+      result += char;
     }
-    i++
+    i++;
   }
-  return result
+  return result;
 }
 
 // src/protection.ts
-var PLACEHOLDER_PREFIX = "\0"
-var PLACEHOLDER_SUFFIX = "\0"
+var PLACEHOLDER_PREFIX = "\0";
+var PLACEHOLDER_SUFFIX = "\0";
 function createPlaceholder(index) {
-  return `${PLACEHOLDER_PREFIX}${index}${PLACEHOLDER_SUFFIX}`
+  return `${PLACEHOLDER_PREFIX}${index}${PLACEHOLDER_SUFFIX}`;
 }
 function buildProtectedWordsPattern() {
   const sortedWords = [...NON_TRANSLITERATABLE_WORDS].sort(
     (a, b) => b.length - a.length
-  )
-  const suffixPattern = `(?:${UZBEK_SUFFIXES.join("|")})?`
-  return `\\b(${sortedWords.join("|")})${suffixPattern}\\b`
+  );
+  const suffixPattern = `(?:${UZBEK_SUFFIXES.join("|")})?`;
+  return `\\b(${sortedWords.join("|")})${suffixPattern}\\b`;
 }
 function buildProtectionRegex() {
   const patterns = [
@@ -1476,57 +1498,64 @@ function buildProtectionRegex() {
     "\\bh[1-6]\\b",
     // Protected words with optional Uzbek suffixes
     buildProtectedWordsPattern()
-  ]
-  return new RegExp(patterns.join("|"), "gi")
+  ];
+  return new RegExp(patterns.join("|"), "gi");
 }
-var protectionRegex = buildProtectionRegex()
+var protectionRegex = buildProtectionRegex();
 function protectContent(text) {
-  const protectedParts = []
+  const protectedParts = [];
   const maskedText = text.replace(protectionRegex, (match) => {
-    const index = protectedParts.length
-    protectedParts.push(match)
-    return createPlaceholder(index)
-  })
-  return { maskedText, protectedParts }
+    const index = protectedParts.length;
+    protectedParts.push(match);
+    return createPlaceholder(index);
+  });
+  return { maskedText, protectedParts };
 }
 function restoreContent(text, protectedParts) {
   const placeholderRegex = new RegExp(
     `${PLACEHOLDER_PREFIX}(\\d+)${PLACEHOLDER_SUFFIX}`,
     "g"
-  )
+  );
   return text.replace(placeholderRegex, (_, indexStr) => {
-    return protectedParts[parseInt(indexStr, 10)] || ""
-  })
+    return protectedParts[parseInt(indexStr, 10)] || "";
+  });
 }
 
 // src/transliterate.ts
 function isCyrillicText(text) {
-  if (!text || text.length < 2) return false
-  const cyrillicRegex = /[\u0400-\u04FF]/g
-  const latinRegex = /[a-zA-Z]/g
-  const cyrillicMatches = text.match(cyrillicRegex) || []
-  const latinMatches = text.match(latinRegex) || []
-  return (
-    cyrillicMatches.length > 0 && cyrillicMatches.length >= latinMatches.length
-  )
+  if (!text || text.length < 2) return false;
+  const cyrillicRegex = /[\u0400-\u04FF]/g;
+  const latinRegex = /[a-zA-Z]/g;
+  const cyrillicMatches = text.match(cyrillicRegex) || [];
+  const latinMatches = text.match(latinRegex) || [];
+  return cyrillicMatches.length > 0 && cyrillicMatches.length >= latinMatches.length;
 }
 function toCyrillic(text) {
-  if (!text) return ""
-  const { maskedText, protectedParts } = protectContent(text)
-  const transliterated = transliterateLatinToCyrillic(maskedText)
-  return restoreContent(transliterated, protectedParts)
+  if (!text) return "";
+  const { maskedText, protectedParts } = protectContent(text);
+  const transliterated = transliterateLatinToCyrillic(maskedText);
+  return restoreContent(transliterated, protectedParts);
 }
 function toLatin(text) {
-  if (!text) return ""
-  const { maskedText, protectedParts } = protectContent(text)
-  const transliterated = transliterateCyrillicToLatin(maskedText)
-  return restoreContent(transliterated, protectedParts)
+  if (!text) return "";
+  const { maskedText, protectedParts } = protectContent(text);
+  const transliterated = transliterateCyrillicToLatin(maskedText);
+  return restoreContent(transliterated, protectedParts);
 }
 export {
   APOSTROPHE_VARIANTS,
   NON_TRANSLITERATABLE_WORDS,
   UZBEK_SUFFIXES,
+  detectScript,
   isCyrillicText,
+  isCyrillicVowel,
+  isLatinText,
+  isLatinVowel,
+  isLowerCase,
+  isUpperCase,
+  isWordBoundary,
+  normalizeApostrophes,
+  preserveCase,
   toCyrillic,
   toLatin
-}
+};

@@ -22,7 +22,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "ext:dev": "pnpm --filter latin-cyrillic-extension dev",
+    "ext:build": "pnpm --filter latin-cyrillic-extension build",
+    "ext:zip": "pnpm --filter latin-cyrillic-extension zip",
+    "packages:build": "pnpm --filter '@webiston/*' build"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
