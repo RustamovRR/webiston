@@ -7,15 +7,17 @@ let shadowRoot: ShadowRoot | null = null
 let isEnabled = true
 let selectedText = ""
 let selectionRect: DOMRect | null = null
+let currentTheme: "light" | "dark" = "light"
 
 export default defineContentScript({
   matches: ["<all_urls>"],
   main() {
     // Load settings
     browser.storage.local
-      .get("quickConvertEnabled")
+      .get(["quickConvertEnabled", "theme"])
       .then((result: Record<string, unknown>) => {
         isEnabled = result.quickConvertEnabled !== false
+        updateTheme(result.theme as string)
       })
 
     browser.storage.onChanged.addListener(
@@ -24,12 +26,14 @@ export default defineContentScript({
           isEnabled = changes.quickConvertEnabled.newValue !== false
           if (!isEnabled) cleanup()
         }
+        if (changes.theme) {
+          updateTheme(changes.theme.newValue as string)
+        }
       }
     )
 
     // Selection event
     document.addEventListener("mouseup", handleMouseUp)
-    document.addEventListener("selectionchange", handleSelectionChange)
     document.addEventListener("mousedown", handleClickOutside)
     document.addEventListener("scroll", cleanup, true)
 
@@ -54,18 +58,25 @@ export default defineContentScript({
   }
 })
 
+function updateTheme(theme: string | undefined) {
+  if (theme === "dark") {
+    currentTheme = "dark"
+  } else if (theme === "light") {
+    currentTheme = "light"
+  } else {
+    // System preference
+    currentTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+  }
+}
+
 function handleMouseUp(e: MouseEvent) {
   const target = e.target as Node
   const host = document.getElementById("webiston-ext-host")
 
-  // Ignore clicks inside our shadow host
   if (host?.contains(target)) return
-
-  // Also check if click is on shadow elements
-  if (triggerIcon || popover) {
-    // If we have UI showing, don't process new selections immediately
-    return
-  }
+  if (popover) return
 
   setTimeout(() => {
     if (!isEnabled) return
@@ -74,7 +85,7 @@ function handleMouseUp(e: MouseEvent) {
     const text = selection?.toString().trim()
 
     if (!text || text.length < 2) {
-      cleanup()
+      if (triggerIcon && !popover) cleanup()
       return
     }
 
@@ -87,44 +98,29 @@ function handleMouseUp(e: MouseEvent) {
   }, 10)
 }
 
-function handleSelectionChange() {
-  const selection = window.getSelection()
-  if (!selection || selection.toString().trim().length < 2) {
-    // Don't cleanup immediately - user might be adjusting selection
-  }
-}
-
 function handleClickOutside(e: MouseEvent) {
   const target = e.target as Node
   const host = document.getElementById("webiston-ext-host")
 
-  // Don't cleanup if clicking inside our UI
   if (host?.contains(target)) return
-
-  // Only cleanup if we have popover showing (not trigger)
-  if (popover) {
-    cleanup()
-  }
+  if (triggerIcon || popover) cleanup()
 }
 
 // ============================================
-// TRIGGER ICON (DeepL Style - Small W Button)
+// TRIGGER ICON
 // ============================================
 function showTriggerIcon() {
   cleanup()
   if (!selectionRect) return
 
-  // Create shadow host
   const host = document.createElement("div")
   host.id = "webiston-ext-host"
   shadowRoot = host.attachShadow({ mode: "closed" })
 
-  // Inject styles
   const styles = document.createElement("style")
-  styles.textContent = getTriggerStyles()
+  styles.textContent = getStyles()
   shadowRoot.appendChild(styles)
 
-  // Create trigger icon
   triggerIcon = document.createElement("button")
   triggerIcon.className = "wc-trigger"
   triggerIcon.innerHTML = `
@@ -135,11 +131,10 @@ function showTriggerIcon() {
   triggerIcon.title = "Lotin ↔ Kirill"
   triggerIcon.addEventListener("click", handleTriggerClick)
 
-  // Position: right side of selection
-  const left = selectionRect.right + 6
-  const top = selectionRect.top + selectionRect.height / 2 - 14
+  const left = selectionRect.right + 8
+  const top = selectionRect.top + selectionRect.height / 2 - 16
 
-  triggerIcon.style.left = `${Math.min(left, window.innerWidth - 40)}px`
+  triggerIcon.style.left = `${Math.min(left, window.innerWidth - 44)}px`
   triggerIcon.style.top = `${Math.max(top, 8)}px`
 
   shadowRoot.appendChild(triggerIcon)
@@ -150,66 +145,74 @@ function handleTriggerClick(e: MouseEvent) {
   e.stopPropagation()
   e.preventDefault()
 
-  // Flag to prevent mouseup from interfering
   const rect = selectionRect
   const text = selectedText
+  const currentShadowRoot = shadowRoot
+  const host = document.getElementById("webiston-ext-host")
 
-  // Small delay to let mouseup pass
-  setTimeout(() => {
-    selectionRect = rect
-    selectedText = text
-    showPopover()
-  }, 50)
+  if (triggerIcon) {
+    triggerIcon.remove()
+    triggerIcon = null
+  }
+
+  selectionRect = rect
+  selectedText = text
+  shadowRoot = currentShadowRoot
+
+  showPopoverInPlace(host)
 }
 
 // ============================================
-// POPOVER (Dual Panel - Like DeepL)
+// POPOVER
 // ============================================
-function showPopover() {
-  if (!selectionRect) return
+function showPopoverInPlace(existingHost: HTMLElement | null) {
+  if (!selectionRect || !selectedText) return
 
-  // Remove trigger icon but keep shadowRoot
-  triggerIcon?.remove()
-  triggerIcon = null
-
-  // If shadowRoot doesn't exist, create new host
   if (!shadowRoot) {
+    if (existingHost) existingHost.remove()
     const host = document.createElement("div")
     host.id = "webiston-ext-host"
     shadowRoot = host.attachShadow({ mode: "closed" })
     document.body.appendChild(host)
   }
 
-  // Detect script and convert
+  // Add styles if not present
+  if (!shadowRoot.querySelector("style")) {
+    const styles = document.createElement("style")
+    styles.textContent = getStyles()
+    shadowRoot.appendChild(styles)
+  }
+
   const isCyrillic = isCyrillicText(selectedText)
   const converted = isCyrillic
     ? toLatin(selectedText)
     : toCyrillic(selectedText)
 
-  // Create popover
   popover = document.createElement("div")
-  popover.className = "wc-popover"
+  popover.className = `wc-popover ${currentTheme === "dark" ? "dark" : ""}`
   popover.innerHTML = `
     <div class="wc-header">
       <div class="wc-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 7l6 10 6-10M15 7l3 5 3-5"/>
-        </svg>
+        <div class="wc-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M3 7l6 10 6-10M15 7l3 5 3-5"/>
+          </svg>
+        </div>
         <span>Latin Converter</span>
       </div>
-      <button class="wc-close" data-action="close">
+      <button class="wc-close" data-action="close" title="Yopish">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
       </button>
     </div>
     
-    <div class="wc-panels">
-      <div class="wc-panel wc-panel-input">
+    <div class="wc-body">
+      <div class="wc-panel">
         <div class="wc-panel-header">
           <span class="wc-label">${isCyrillic ? "Кирилл" : "Lotin"}</span>
         </div>
-        <textarea class="wc-textarea" data-type="input" spellcheck="false">${escapeHtml(selectedText)}</textarea>
+        <textarea class="wc-textarea wc-input" data-type="input" spellcheck="false">${escapeHtml(selectedText)}</textarea>
       </div>
       
       <div class="wc-divider">
@@ -220,7 +223,7 @@ function showPopover() {
         </button>
       </div>
       
-      <div class="wc-panel wc-panel-output">
+      <div class="wc-panel">
         <div class="wc-panel-header">
           <span class="wc-label">${isCyrillic ? "Lotin" : "Кирилл"}</span>
           <button class="wc-copy" data-action="copy" title="Nusxalash">
@@ -228,9 +231,10 @@ function showPopover() {
               <rect width="14" height="14" x="8" y="8" rx="2"/>
               <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
             </svg>
+            <span>Nusxalash</span>
           </button>
         </div>
-        <textarea class="wc-textarea" data-type="output" readonly spellcheck="false">${escapeHtml(converted)}</textarea>
+        <textarea class="wc-textarea wc-output" data-type="output" readonly spellcheck="false">${escapeHtml(converted)}</textarea>
       </div>
     </div>
     
@@ -248,26 +252,8 @@ function showPopover() {
     </div>
   `
 
-  // Add popover styles (if not already added)
-  if (!shadowRoot.querySelector("#wc-popover-styles")) {
-    const popoverStyles = document.createElement("style")
-    popoverStyles.id = "wc-popover-styles"
-    popoverStyles.textContent = getPopoverStyles()
-    shadowRoot.appendChild(popoverStyles)
-  }
-
-  // Add trigger styles too (for consistency)
-  if (!shadowRoot.querySelector("#wc-trigger-styles")) {
-    const triggerStyles = document.createElement("style")
-    triggerStyles.id = "wc-trigger-styles"
-    triggerStyles.textContent = getTriggerStyles()
-    shadowRoot.appendChild(triggerStyles)
-  }
-
-  // Position popover
   positionPopover()
 
-  // Event listeners
   popover.addEventListener("click", handlePopoverClick)
   popover
     .querySelector('[data-type="input"]')
@@ -279,18 +265,17 @@ function showPopover() {
 function positionPopover() {
   if (!popover || !selectionRect) return
 
-  const popoverWidth = 360
-  const popoverHeight = 320
+  const popoverWidth = 380
+  const popoverHeight = 360
 
   let left = selectionRect.left + selectionRect.width / 2 - popoverWidth / 2
   let top = selectionRect.bottom + 12
 
-  // Boundary checks
-  if (left < 12) left = 12
-  if (left + popoverWidth > window.innerWidth - 12) {
-    left = window.innerWidth - popoverWidth - 12
+  if (left < 16) left = 16
+  if (left + popoverWidth > window.innerWidth - 16) {
+    left = window.innerWidth - popoverWidth - 16
   }
-  if (top + popoverHeight > window.innerHeight - 12) {
+  if (top + popoverHeight > window.innerHeight - 16) {
     top = selectionRect.top - popoverHeight - 12
   }
 
@@ -333,14 +318,12 @@ function handleInputChange(e: Event) {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  // Detect and convert
   const isCyrillic = isCyrillicText(text)
   const converted = isCyrillic ? toLatin(text) : toCyrillic(text)
   outputEl.value = converted
 
-  // Update labels
-  const inputLabel = popover?.querySelector(".wc-panel-input .wc-label")
-  const outputLabel = popover?.querySelector(".wc-panel-output .wc-label")
+  const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
+  const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
   if (inputLabel) inputLabel.textContent = isCyrillic ? "Кирилл" : "Lotin"
   if (outputLabel) outputLabel.textContent = isCyrillic ? "Lotin" : "Кирилл"
 }
@@ -353,14 +336,14 @@ function copyOutput(button: HTMLElement) {
 
   navigator.clipboard.writeText(output.value)
 
-  // Success feedback
   button.classList.add("success")
-  const originalSvg = button.innerHTML
-  button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`
+  const span = button.querySelector("span")
+  const originalText = span?.textContent
+  if (span) span.textContent = "Nusxalandi!"
 
   setTimeout(() => {
     button.classList.remove("success")
-    button.innerHTML = originalSvg
+    if (span) span.textContent = originalText || "Nusxalash"
   }, 1500)
 }
 
@@ -377,7 +360,6 @@ function swapPanels() {
   inputEl.value = outputEl.value
   outputEl.value = temp
 
-  // Trigger reconversion
   inputEl.dispatchEvent(new Event("input"))
 }
 
@@ -394,15 +376,13 @@ function changeDirection(action: string) {
   const converted = action === "to-latin" ? toLatin(text) : toCyrillic(text)
   outputEl.value = converted
 
-  // Update active button
   popover?.querySelectorAll(".wc-dir-btn").forEach((btn) => {
     const btnEl = btn as HTMLButtonElement
     btn.classList.toggle("active", btnEl.dataset.action === action)
   })
 
-  // Update labels
-  const inputLabel = popover?.querySelector(".wc-panel-input .wc-label")
-  const outputLabel = popover?.querySelector(".wc-panel-output .wc-label")
+  const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
+  const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
   if (action === "to-latin") {
     if (inputLabel) inputLabel.textContent = "Кирилл"
     if (outputLabel) outputLabel.textContent = "Lotin"
@@ -419,37 +399,7 @@ function replaceOriginal() {
   if (!outputEl) return
 
   const newText = outputEl.value
-  const activeElement = document.activeElement as HTMLElement
-
-  // Try to replace in editable elements
-  if (
-    activeElement instanceof HTMLInputElement ||
-    activeElement instanceof HTMLTextAreaElement
-  ) {
-    const start = activeElement.selectionStart ?? 0
-    const end = activeElement.selectionEnd ?? 0
-    activeElement.value =
-      activeElement.value.slice(0, start) +
-      newText +
-      activeElement.value.slice(end)
-    activeElement.setSelectionRange(
-      start + newText.length,
-      start + newText.length
-    )
-    activeElement.dispatchEvent(new Event("input", { bubbles: true }))
-  } else if (activeElement.isContentEditable) {
-    const selection = window.getSelection()
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-      range.deleteContents()
-      range.insertNode(document.createTextNode(newText))
-      range.collapse(false)
-    }
-  } else {
-    // Fallback: copy to clipboard
-    navigator.clipboard.writeText(newText)
-  }
-
+  navigator.clipboard.writeText(newText)
   cleanup()
 }
 
@@ -472,113 +422,142 @@ function escapeHtml(text: string): string {
 // ============================================
 // STYLES
 // ============================================
-function getTriggerStyles(): string {
+function getStyles(): string {
   return `
+    /* CSS Variables */
+    :host {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --muted: #f5f5f5;
+      --muted-fg: #737373;
+      --border: #e5e5e5;
+      --input-bg: #fafafa;
+      --primary: #0ea5e9;
+      --primary-hover: #0284c7;
+      --success: #10b981;
+      --radius: 12px;
+    }
+
+    /* Trigger Button */
     .wc-trigger {
       position: fixed;
       z-index: 2147483647;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       color: white;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4), 0 0 0 1px rgba(255,255,255,0.1);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4), 0 0 0 1px rgba(255,255,255,0.1);
       animation: wcPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
       transition: transform 0.15s, box-shadow 0.15s;
     }
     .wc-trigger:hover {
       transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.5), 0 0 0 1px rgba(255,255,255,0.2);
+      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.5);
     }
     .wc-trigger:active {
       transform: scale(0.95);
     }
     .wc-trigger svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
     @keyframes wcPop {
       0% { transform: scale(0); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-  `
-}
 
-function getPopoverStyles(): string {
-  return `
+    /* Popover */
     .wc-popover {
       position: fixed;
       z-index: 2147483647;
-      width: 360px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      width: 380px;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.05);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 13px;
-      animation: wcSlide 0.2s ease;
+      font-size: 14px;
+      animation: wcSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
     }
-    @keyframes wcSlide {
-      0% { opacity: 0; transform: translateY(-8px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .wc-popover.dark {
+      --bg: #0a0a0a;
+      --fg: #fafafa;
+      --muted: #1a1a1a;
+      --muted-fg: #a3a3a3;
+      --border: #262626;
+      --input-bg: #171717;
     }
-    
+    @keyframes wcSlide {
+      0% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     /* Header */
     .wc-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid #f3f4f6;
-      background: #fafafa;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--muted);
     }
     .wc-logo {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: #0ea5e9;
+      gap: 10px;
+      color: var(--fg);
       font-weight: 600;
-      font-size: 13px;
+      font-size: 14px;
     }
-    .wc-logo svg {
-      width: 18px;
-      height: 18px;
+    .wc-logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wc-logo-icon svg {
+      width: 16px;
+      height: 16px;
+      color: white;
     }
     .wc-close {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border: none;
-      background: none;
-      color: #9ca3af;
+      background: transparent;
+      color: var(--muted-fg);
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.15s;
     }
     .wc-close:hover {
-      background: #f3f4f6;
-      color: #374151;
+      background: var(--border);
+      color: var(--fg);
     }
     .wc-close svg {
       width: 16px;
       height: 16px;
     }
-    
-    /* Panels */
-    .wc-panels {
-      display: flex;
-      flex-direction: column;
+
+    /* Body */
+    .wc-body {
+      padding: 16px;
     }
     .wc-panel {
-      padding: 12px 16px;
+      margin-bottom: 0;
     }
     .wc-panel-header {
       display: flex;
@@ -589,29 +568,30 @@ function getPopoverStyles(): string {
     .wc-label {
       font-size: 11px;
       font-weight: 600;
-      color: #6b7280;
+      color: var(--muted-fg);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .wc-copy {
-      width: 24px;
-      height: 24px;
-      border: none;
-      background: none;
-      color: #9ca3af;
-      cursor: pointer;
-      border-radius: 6px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted-fg);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
       transition: all 0.15s;
     }
     .wc-copy:hover {
-      background: #f3f4f6;
-      color: #0ea5e9;
+      background: var(--muted);
+      color: var(--primary);
     }
     .wc-copy.success {
-      color: #10b981;
+      color: var(--success);
     }
     .wc-copy svg {
       width: 14px;
@@ -619,12 +599,12 @@ function getPopoverStyles(): string {
     }
     .wc-textarea {
       width: 100%;
-      height: 72px;
-      padding: 10px 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #f9fafb;
-      color: #111827;
+      height: 80px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--input-bg);
+      color: var(--fg);
       font-size: 14px;
       line-height: 1.5;
       resize: none;
@@ -633,26 +613,30 @@ function getPopoverStyles(): string {
     }
     .wc-textarea:focus {
       outline: none;
-      border-color: #0ea5e9;
+      border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
     }
-    .wc-panel-output .wc-textarea {
-      background: #f0f9ff;
-      border-color: #bae6fd;
+    .wc-output {
+      background: rgba(14, 165, 233, 0.05);
+      border-color: rgba(14, 165, 233, 0.2);
     }
-    
+    .wc-popover.dark .wc-output {
+      background: rgba(14, 165, 233, 0.1);
+      border-color: rgba(14, 165, 233, 0.3);
+    }
+
     /* Divider */
     .wc-divider {
       display: flex;
       justify-content: center;
-      padding: 4px 0;
+      padding: 10px 0;
     }
     .wc-swap {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      color: #6b7280;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted-fg);
       cursor: pointer;
       border-radius: 50%;
       display: flex;
@@ -661,60 +645,60 @@ function getPopoverStyles(): string {
       transition: all 0.15s;
     }
     .wc-swap:hover {
-      background: #f3f4f6;
-      color: #0ea5e9;
-      border-color: #0ea5e9;
+      background: var(--muted);
+      color: var(--primary);
+      border-color: var(--primary);
     }
     .wc-swap svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
-    
+
     /* Footer */
     .wc-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      border-top: 1px solid #f3f4f6;
-      background: #fafafa;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--muted);
     }
     .wc-direction {
       display: flex;
-      gap: 4px;
+      gap: 6px;
     }
     .wc-dir-btn {
-      padding: 6px 10px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      color: #6b7280;
-      font-size: 11px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted-fg);
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 8px;
       transition: all 0.15s;
     }
     .wc-dir-btn:hover {
-      border-color: #0ea5e9;
-      color: #0ea5e9;
+      border-color: var(--primary);
+      color: var(--primary);
     }
     .wc-dir-btn.active {
-      background: #0ea5e9;
-      border-color: #0ea5e9;
+      background: var(--primary);
+      border-color: var(--primary);
       color: white;
     }
     .wc-replace {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
+      gap: 8px;
+      padding: 10px 16px;
       border: none;
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       color: white;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 10px;
       transition: all 0.15s;
     }
     .wc-replace:hover {
@@ -725,57 +709,6 @@ function getPopoverStyles(): string {
     .wc-replace svg {
       width: 14px;
       height: 14px;
-    }
-    
-    /* Dark Mode */
-    @media (prefers-color-scheme: dark) {
-      .wc-popover {
-        background: #1f2937;
-        border-color: #374151;
-      }
-      .wc-header, .wc-footer {
-        background: #111827;
-        border-color: #374151;
-      }
-      .wc-close { color: #6b7280; }
-      .wc-close:hover { background: #374151; color: #d1d5db; }
-      .wc-label { color: #9ca3af; }
-      .wc-textarea {
-        background: #111827;
-        border-color: #374151;
-        color: #f9fafb;
-      }
-      .wc-textarea:focus {
-        border-color: #0ea5e9;
-      }
-      .wc-panel-output .wc-textarea {
-        background: #0c2d4a;
-        border-color: #0369a1;
-      }
-      .wc-copy { color: #6b7280; }
-      .wc-copy:hover { background: #374151; }
-      .wc-swap {
-        background: #1f2937;
-        border-color: #374151;
-        color: #9ca3af;
-      }
-      .wc-swap:hover {
-        background: #374151;
-      }
-      .wc-dir-btn {
-        background: #1f2937;
-        border-color: #374151;
-        color: #9ca3af;
-      }
-      .wc-dir-btn:hover {
-        border-color: #0ea5e9;
-        color: #0ea5e9;
-      }
-      .wc-dir-btn.active {
-        background: #0ea5e9;
-        border-color: #0ea5e9;
-        color: white;
-      }
     }
   `
 }
