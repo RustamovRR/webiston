@@ -1,22 +1,27 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { Hash, Upload } from 'lucide-react'
+import { useState } from "react"
+import { useTranslations } from "next-intl"
+import { Hash, Upload } from "lucide-react"
 
 // Shared Components
-import { ToolHeader } from '@/components/shared/ToolHeader'
-import { DualTextPanel } from '@/components/shared/DualTextPanel'
+import { ToolHeader } from "@/components/shared/ToolHeader"
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
 
 // Local Components
-import { ControlPanel, AlgorithmSelector, DetailedResults, InfoSection } from './components'
+import {
+  ControlPanel,
+  AlgorithmSelector,
+  DetailedResults,
+  InfoSection
+} from "./components"
 
 // Utils & Hooks
-import { useHashGenerator } from '@/hooks/tools/useHashGenerator'
+import { useHashGenerator } from "./hooks/useHashGenerator"
 
 const HashGenerator = () => {
-  const t = useTranslations('HashGeneratorPage')
-  const [activeTab, setActiveTab] = useState<'text' | 'file'>('text')
+  const t = useTranslations("HashGeneratorPage")
+  const [activeTab, setActiveTab] = useState<"text" | "file">("text")
 
   const {
     inputText,
@@ -31,30 +36,36 @@ const HashGenerator = () => {
     handleFileUpload,
     downloadHashes,
     downloadAsJson,
-    getAlgorithmInfo,
+    getAlgorithmInfo
   } = useHashGenerator({
     onSuccess: (message) => console.log(message),
-    onError: (error) => console.error(error),
+    onError: (error) => console.error(error)
   })
 
-  const handleFileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUploadChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0]
     if (file) {
       handleFileUpload(file)
-      setActiveTab('text')
+      setActiveTab("text")
     }
   }
 
   const canDownload = hashResults.length > 0
   const hashOutputText =
-    hashResults.length > 0 ? hashResults.map((result) => `${result.algorithm}: ${result.hash}`).join('\n\n') : ''
+    hashResults.length > 0
+      ? hashResults
+          .map((result) => `${result.algorithm}: ${result.hash}`)
+          .join("\n\n")
+      : ""
 
   // Status component
   const statusComponent =
     inputText.length > 0 ? (
       <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
         <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-        {t('InputPanel.readyToHash') || 'Hash yaratishga tayyor'}
+        {t("InputPanel.readyToHash") || "Hash yaratishga tayyor"}
       </span>
     ) : null
 
@@ -63,9 +74,12 @@ const HashGenerator = () => {
     <div className="flex h-full items-center justify-center p-8 text-center">
       <div className="text-zinc-500 dark:text-zinc-400">
         <Hash size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">{t('ResultsPanel.noResults') || "Hash natijalari bu yerda ko'rsatiladi"}</p>
+        <p className="text-sm">
+          {t("ResultsPanel.noResults") ||
+            "Hash natijalari bu yerda ko'rsatiladi"}
+        </p>
         <p className="mt-2 text-xs opacity-75">
-          {t('ResultsPanel.instruction') || 'Matn kiriting va algoritm tanlang'}
+          {t("ResultsPanel.instruction") || "Matn kiriting va algoritm tanlang"}
         </p>
       </div>
     </div>
@@ -75,23 +89,26 @@ const HashGenerator = () => {
   const targetFooterComponent =
     hashResults.length > 0 ? (
       <div className="text-xs text-zinc-500 dark:text-zinc-400">
-        <span>{t('ResultsPanel.hashCount') || 'Hash soni'}:</span>{' '}
-        <span className="text-zinc-700 dark:text-zinc-300">{hashResults.length}</span>
+        <span>{t("ResultsPanel.hashCount") || "Hash soni"}:</span>{" "}
+        <span className="text-zinc-700 dark:text-zinc-300">
+          {hashResults.length}
+        </span>
       </div>
     ) : null
 
   // Custom source content for file upload
   const customSourceContent =
-    activeTab === 'file' ? (
+    activeTab === "file" ? (
       <div className="flex h-full items-center justify-center">
         <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-zinc-300 p-8 transition-colors hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500">
           <Upload size={48} className="text-zinc-400 dark:text-zinc-500" />
           <div className="text-center">
             <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t('InputPanel.selectFile') || 'Faylni tanlang'}
+              {t("InputPanel.selectFile") || "Faylni tanlang"}
             </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-500">
-              {t('InputPanel.supportedFormats') || 'TXT, JSON, CSV, MD, XML, LOG (10MB gacha)'}
+              {t("InputPanel.supportedFormats") ||
+                "TXT, JSON, CSV, MD, XML, LOG (10MB gacha)"}
             </p>
           </div>
           <input
@@ -107,9 +124,9 @@ const HashGenerator = () => {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
       <ToolHeader
-        title={t('ToolHeader.title') || 'Hash Generator'}
+        title={t("ToolHeader.title") || "Hash Generator"}
         description={
-          t('ToolHeader.description') ||
+          t("ToolHeader.description") ||
           "MD5, SHA256, SHA512 va boshqa kriptografik hash algoritmlar bilan ma'lumotlarni hash qilish"
         }
       />
@@ -140,13 +157,16 @@ const HashGenerator = () => {
       <DualTextPanel
         sourceText={inputText}
         convertedText={hashOutputText}
-        sourcePlaceholder={t('InputPanel.textPlaceholder') || "Hash qilmoqchi bo'lgan matnni kiriting..."}
-        sourceLabel={
-          activeTab === 'text'
-            ? t('InputPanel.textInput') || 'Matn Kirish'
-            : t('InputPanel.fileInput') || 'Fayl Hash Kirish'
+        sourcePlaceholder={
+          t("InputPanel.textPlaceholder") ||
+          "Hash qilmoqchi bo'lgan matnni kiriting..."
         }
-        targetLabel={t('ResultsPanel.title') || 'Hash Natijalari'}
+        sourceLabel={
+          activeTab === "text"
+            ? t("InputPanel.textInput") || "Matn Kirish"
+            : t("InputPanel.fileInput") || "Fayl Hash Kirish"
+        }
+        targetLabel={t("ResultsPanel.title") || "Hash Natijalari"}
         onSourceChange={setInputText}
         onClear={handleClear}
         showSwapButton={false}
@@ -159,7 +179,10 @@ const HashGenerator = () => {
 
       {/* Detailed Results */}
       <div className="mt-6">
-        <DetailedResults hashResults={hashResults} getAlgorithmInfo={getAlgorithmInfo} />
+        <DetailedResults
+          hashResults={hashResults}
+          getAlgorithmInfo={getAlgorithmInfo}
+        />
       </div>
 
       {/* Info Section */}

@@ -1,7 +1,11 @@
-import Header from '@/components/shared/Header/Header'
-import Footer from '@/components/shared/Footer/Footer'
+import Header from "@/components/shared/Header/Header"
+import Footer from "@/components/shared/Footer/Footer"
 
-export default function BooksLayout({ children }: { children: React.ReactNode }) {
+export default function BooksLayout({
+  children
+}: {
+  children: React.ReactNode
+}) {
   return (
     <div className="flex min-h-screen flex-col">
       <Header showLanguageSelector={false} />

@@ -1,9 +1,15 @@
 // Button variant types
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-export type ButtonSize = 'default' | 'sm' | 'lg' | 'icon'
+export type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link"
+export type ButtonSize = "default" | "sm" | "lg" | "icon"
 
 // Input types
-export type InputType = 'text' | 'email' | 'url' | 'number' | 'password'
+export type InputType = "text" | "email" | "url" | "number" | "password"
 
 // Modal types
 export interface ModalProps {
@@ -16,7 +22,7 @@ export interface ModalProps {
 // Toast types
 export interface ToastMessage {
   id: string
-  type: 'success' | 'error' | 'warning' | 'info'
+  type: "success" | "error" | "warning" | "info"
   title: string
   description?: string
   duration?: number

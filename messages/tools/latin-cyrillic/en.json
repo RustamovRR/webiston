@@ -34,6 +34,65 @@
       "latinParagraph": "Latin Paragraph",
       "cyrillicParagraph": "Cyrillic Paragraph"
     },
+    "fileUpload": {
+      "button": "Upload File",
+      "modalTitle": "Upload File",
+      "modalDescription": "Upload PDF, DOCX or TXT file",
+      "dropzone": "Drop file here or",
+      "selectFile": "Select File",
+      "supportedFormats": "Supported formats",
+      "maxSize": "maximum",
+      "close": "Close",
+      "cancel": "Cancel",
+      "progress": {
+        "readingTxt": "Reading TXT file...",
+        "loadingPdfLibrary": "Loading PDF library...",
+        "readingPage": "Reading page {current}/{total}...",
+        "pageCount": "{current} / {total} pages",
+        "loadingDocxLibrary": "Loading DOCX library...",
+        "readingDocx": "Reading DOCX file...",
+        "docxReady": "DOCX ready",
+        "processingChunks": "Processing text...",
+        "creatingDocx": "Creating DOCX...",
+        "formattingDocx": "Formatting document...",
+        "creatingPdf": "Creating PDF...",
+        "formattingPdf": "Formatting PDF...",
+        "writingPdf": "Writing PDF...",
+        "savingPdf": "Saving PDF...",
+        "downloaded": "Downloaded!",
+        "ready": "Ready!"
+      },
+      "errors": {
+        "fileTooLarge": "File is too large. Maximum: 200MB",
+        "unsupportedFormat": "Unsupported format. Only: .txt, .pdf, .docx",
+        "txtReadError": "Error reading TXT file",
+        "unknownFormat": "Unknown file format",
+        "unknownError": "An unknown error occurred",
+        "docxExportError": "Error creating DOCX",
+        "pdfExportError": "Error creating PDF"
+      },
+      "success": "Successfully uploaded!",
+      "error": "Error!",
+      "retry": "Try again"
+    },
+    "downloadMenu": {
+      "title": "Download",
+      "asTxt": "As TXT file",
+      "asDocx": "As Word file",
+      "asPdf": "As PDF file",
+      "processing": "Preparing...",
+      "currentChunk": "Current section ({number})",
+      "currentAll": "Current (all)",
+      "downloadAll": "Download all"
+    },
+    "chunks": {
+      "title": "Sections",
+      "all": "All",
+      "chunk": "Section {number}",
+      "characters": "{count} characters",
+      "downloadAll": "Download all",
+      "selected": "Selected"
+    },
     "Info": {
       "title": "About Latin-Cyrillic Alphabet",
       "description": "Information required for writing in the Uzbek language.",

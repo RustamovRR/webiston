@@ -1,1 +1,1 @@
-export { default } from './UuidGenerator'
+export { default } from "./UuidGenerator"

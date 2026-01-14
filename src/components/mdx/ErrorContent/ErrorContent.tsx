@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface ErrorContentProps {
   message?: string
@@ -11,9 +11,9 @@ interface ErrorContentProps {
 }
 
 export default function ErrorContent({
-  message = 'Kontent yuklashda xatolik yuz berdi',
+  message = "Kontent yuklashda xatolik yuz berdi",
   statusCode = 500,
-  onRetry,
+  onRetry
 }: ErrorContentProps) {
   const router = useRouter()
 
@@ -29,7 +29,9 @@ export default function ErrorContent({
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-24 text-center">
       <div className="space-y-4">
-        <h1 className="text-4xl font-bold">{statusCode && `${statusCode} - `}Xatolik</h1>
+        <h1 className="text-4xl font-bold">
+          {statusCode && `${statusCode} - `}Xatolik
+        </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400">{message}</p>
         <div className="flex flex-row gap-4 pt-4">
           <Button onClick={handleRetry} variant="outline">

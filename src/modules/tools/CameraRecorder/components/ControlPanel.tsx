@@ -1,10 +1,16 @@
-'use client'
+"use client"
 
-import { Camera, CameraOff, RefreshCw } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ShimmerButton } from '@/components/ui'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useTranslations } from 'next-intl'
+import { Camera, CameraOff, RefreshCw } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ShimmerButton } from "@/components/ui"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
+import { useTranslations } from "next-intl"
 
 interface Camera {
   deviceId: string
@@ -24,9 +30,9 @@ interface ControlPanelProps {
 }
 
 const QUALITY_OPTIONS = [
-  { value: 'hd', label: 'HD (1280×720)', width: 1280, height: 720 },
-  { value: 'fhd', label: 'Full HD (1920×1080)', width: 1920, height: 1080 },
-  { value: 'sd', label: 'SD (640×480)', width: 640, height: 480 },
+  { value: "hd", label: "HD (1280×720)", width: 1280, height: 720 },
+  { value: "fhd", label: "Full HD (1920×1080)", width: 1920, height: 1080 },
+  { value: "sd", label: "SD (640×480)", width: 640, height: 480 }
 ]
 
 export function ControlPanel({
@@ -38,9 +44,9 @@ export function ControlPanel({
   onStopCamera,
   onRefreshCameras,
   onSwitchCamera,
-  onQualityChange,
+  onQualityChange
 }: ControlPanelProps) {
-  const t = useTranslations('CameraRecorderPage.ControlPanel')
+  const t = useTranslations("CameraRecorderPage.ControlPanel")
 
   return (
     <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
@@ -51,14 +57,16 @@ export function ControlPanel({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t('title')}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {t("title")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div
-            className={`h-2 w-2 rounded-full ${isCameraActive ? 'bg-green-500' : 'bg-zinc-400 dark:bg-zinc-500'}`}
+            className={`h-2 w-2 rounded-full ${isCameraActive ? "bg-green-500" : "bg-zinc-400 dark:bg-zinc-500"}`}
           ></div>
           <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {isCameraActive ? t('status.active') : t('status.inactive')}
+            {isCameraActive ? t("status.active") : t("status.inactive")}
           </span>
         </div>
       </div>
@@ -67,11 +75,15 @@ export function ControlPanel({
         <div className="grid gap-4 md:grid-cols-4">
           <div>
             <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
-              {t('camera.label')}
+              {t("camera.label")}
             </label>
-            <Select value={selectedCamera} onValueChange={onSwitchCamera} disabled={cameras.length === 0}>
+            <Select
+              value={selectedCamera}
+              onValueChange={onSwitchCamera}
+              disabled={cameras.length === 0}
+            >
               <SelectTrigger className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-                <SelectValue placeholder={t('camera.placeholder')} />
+                <SelectValue placeholder={t("camera.placeholder")} />
               </SelectTrigger>
               <SelectContent>
                 {cameras.map((camera) => (
@@ -85,7 +97,7 @@ export function ControlPanel({
 
           <div>
             <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
-              {t('quality.label')}
+              {t("quality.label")}
             </label>
             <Select value={selectedQuality} onValueChange={onQualityChange}>
               <SelectTrigger className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800">
@@ -108,7 +120,7 @@ export function ControlPanel({
               className="w-full border-zinc-300 dark:border-zinc-700"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              {t('camera.refresh')}
+              {t("camera.refresh")}
             </Button>
           </div>
 
@@ -120,12 +132,16 @@ export function ControlPanel({
                 className="flex-1"
               >
                 <Camera className="mr-2 h-4 w-4" />
-                {t('buttons.startCamera')}
+                {t("buttons.startCamera")}
               </ShimmerButton>
             ) : (
-              <Button onClick={onStopCamera} variant="destructive" className="flex-1">
+              <Button
+                onClick={onStopCamera}
+                variant="destructive"
+                className="flex-1"
+              >
                 <CameraOff className="mr-2 h-4 w-4" />
-                {t('buttons.stopCamera')}
+                {t("buttons.stopCamera")}
               </Button>
             )}
           </div>

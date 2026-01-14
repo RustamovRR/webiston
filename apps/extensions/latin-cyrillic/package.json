@@ -1,0 +1,30 @@
+{
+  "name": "latin-cyrillic-extension",
+  "displayName": "Latin Converter - Webiston",
+  "version": "1.0.0",
+  "description": "O'zbek lotin-kirill konverteri. Matnni tez va oson o'zgartiring.",
+  "author": "Webiston Team <info@webiston.uz>",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "clean": "rm -rf .wxt .output"
+  },
+  "dependencies": {
+    "@webiston/transliteration": "workspace:*",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "@wxt-dev/module-react": "^1.1.5",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "wxt": "^0.20.13"
+  }
+}

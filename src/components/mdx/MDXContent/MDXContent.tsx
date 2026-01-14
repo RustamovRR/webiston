@@ -1,20 +1,20 @@
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import React from 'react'
+import { MDXRemote } from "next-mdx-remote/rsc"
+import React from "react"
 
 // Plugins
-import rehypeKatex from 'rehype-katex'
-import rehypeSlug from 'rehype-slug'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
+import rehypeKatex from "rehype-katex"
+import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
+import remarkMath from "remark-math"
 
 // Custom components
-import Callout from '../Callout'
-import CodeBlock from '../CodeBlock'
-import VideoEmbed from '../VideoEmbed'
-import ImageViewer from '../ImageViewer'
-import HeadingLink from './HeadingLink'
-import CustomLink from './CustomLink'
-import CustomParagraph from './CustomParagraph'
+import Callout from "../Callout"
+import CodeBlock from "../CodeBlock"
+import VideoEmbed from "../VideoEmbed"
+import ImageViewer from "../ImageViewer"
+import HeadingLink from "./HeadingLink"
+import CustomLink from "./CustomLink"
+import CustomParagraph from "./CustomParagraph"
 
 interface MDXContentProps {
   source: string
@@ -34,7 +34,7 @@ const components = {
     </HeadingLink>
   ),
   h2: (props: any) => {
-    if (props.id === 'footnote-label') return null
+    if (props.id === "footnote-label") return null
     return (
       <HeadingLink level={2} id={props.id} className="m-0 mt-8">
         {props.children}
@@ -70,28 +70,28 @@ const components = {
     )
   },
   li: (props: any) => {
-    if (props.id && props.id.includes('user-content')) {
+    if (props.id && props.id.includes("user-content")) {
       return <li className="[&_p]:!italic [&>p]:!mt-6" {...props} />
     }
     return <li className="[&>p]:!m-0" {...props} />
   },
   img: ({ src, alt, ...props }: any) => {
     const isVideoLink =
-      src?.endsWith('.mp4') ||
-      src?.endsWith('.webm') ||
-      src?.endsWith('.mov') ||
-      src?.includes('youtu.be') ||
-      src?.includes('youtube.com') ||
-      src?.includes('/video/upload/')
+      src?.endsWith(".mp4") ||
+      src?.endsWith(".webm") ||
+      src?.endsWith(".mov") ||
+      src?.includes("youtu.be") ||
+      src?.includes("youtube.com") ||
+      src?.includes("/video/upload/")
 
     if (isVideoLink) {
       return <VideoEmbed url={src} title={alt} />
     }
-    return <ImageViewer src={src} alt={alt || ''} />
+    return <ImageViewer src={src} alt={alt || ""} />
   },
   // Inline code with badge style
   code: ({ className, children, ...props }: any) => {
-    const match = /language-(\w+)/.exec(className || '')
+    const match = /language-(\w+)/.exec(className || "")
 
     // If it's inline code (not a code block)
     if (!match) {
@@ -106,7 +106,7 @@ const components = {
     }
 
     // For code blocks with syntax highlighting
-    const codeString = String(children).replace(/\n$/, '')
+    const codeString = String(children).replace(/\n$/, "")
     if (!codeString) return null
 
     return (
@@ -117,20 +117,38 @@ const components = {
   },
 
   pre: (props: any) => {
-    return <pre className="w-full bg-inherit !p-0 dark:[&_pre]:!bg-[#0A0A0A]" {...props} />
+    return (
+      <pre
+        className="w-full bg-inherit !p-0 dark:[&_pre]:!bg-[#0A0A0A]"
+        {...props}
+      />
+    )
   },
 
   // Handle video container divs produced by our custom processing
   div: (props: any) => {
     // Check if this is a video container
-    if (props.className === 'video-container' || props.class === 'video-container') {
-      return <VideoEmbed url={props['data-video-url'] || ''} title={props['data-video-title'] || 'Video'} />
+    if (
+      props.className === "video-container" ||
+      props.class === "video-container"
+    ) {
+      return (
+        <VideoEmbed
+          url={props["data-video-url"] || ""}
+          title={props["data-video-title"] || "Video"}
+        />
+      )
     }
 
     // Check for video wrapper class (support both class and className)
-    if (props.className === 'video-wrapper' || props.class === 'video-wrapper') {
+    if (
+      props.className === "video-wrapper" ||
+      props.class === "video-wrapper"
+    ) {
       return (
-        <div className="relative my-6 aspect-video w-full overflow-hidden rounded-lg shadow-lg">{props.children}</div>
+        <div className="relative my-6 aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+          {props.children}
+        </div>
       )
     }
 
@@ -139,10 +157,17 @@ const components = {
   },
 
   // Handle video tag directly
-  video: (props: any) => <VideoEmbed url={props.src} title={props.children || 'Video'} />,
+  video: (props: any) => (
+    <VideoEmbed url={props.src} title={props.children || "Video"} />
+  ),
 
   // Handle iframe for embedded videos
-  iframe: (props: any) => <iframe className="absolute inset-0 h-full w-full object-cover" {...props} />,
+  iframe: (props: any) => (
+    <iframe
+      className="absolute inset-0 h-full w-full object-cover"
+      {...props}
+    />
+  ),
 
   // Handle anchor tags directly
   a: (props: any) => <CustomLink {...props} />,
@@ -161,12 +186,19 @@ const components = {
   ),
 
   th: (props: any) => (
-    <th {...props} className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide" />
+    <th
+      {...props}
+      className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide"
+    />
   ),
 
-  td: (props: any) => <td {...props} className="border border-[#ddd] px-3 py-3 text-sm" />,
+  td: (props: any) => (
+    <td {...props} className="border border-[#ddd] px-3 py-3 text-sm" />
+  ),
 
-  blockquote: (props: any) => <blockquote {...props} className="[&_p]:font-normal" />,
+  blockquote: (props: any) => (
+    <blockquote {...props} className="[&_p]:font-normal" />
+  )
 }
 
 export default async function MDXContent({ source }: MDXContentProps) {
@@ -177,8 +209,8 @@ export default async function MDXContent({ source }: MDXContentProps) {
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm, remarkMath],
-          rehypePlugins: [rehypeSlug, rehypeKatex],
-        },
+          rehypePlugins: [rehypeSlug, rehypeKatex]
+        }
       }}
     />
   )

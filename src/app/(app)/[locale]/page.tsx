@@ -1,25 +1,34 @@
-import { CircleIcon, ArrowRightIcon, ToolsIcon } from '@/assets/icons'
-import { ButtonLink, SimpleCard, SectionTitle } from '@/components/shared'
-import { AI_ENGINEERING_CHAPTERS, JAVASCRIPT_CHAPTERS, REACT_CHAPTERS, TOOLS_LIST } from '@/constants'
-import { getTutorialImage } from '@/lib/mdx'
-import Image from 'next/image'
-import { getTranslations } from 'next-intl/server'
-import { Metadata } from 'next'
+import { CircleIcon, ArrowRightIcon, ToolsIcon } from "@/assets/icons"
+import { ButtonLink, SimpleCard, SectionTitle } from "@/components/shared"
+import {
+  AI_ENGINEERING_CHAPTERS,
+  JAVASCRIPT_CHAPTERS,
+  REACT_CHAPTERS,
+  TOOLS_LIST
+} from "@/constants"
+import { getTutorialImage } from "@/lib/mdx"
+import Image from "next/image"
+import { getTranslations } from "next-intl/server"
+import { Metadata } from "next"
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'HomePage.Metadata' })
+  const t = await getTranslations({ locale, namespace: "HomePage.Metadata" })
 
-  const title = t('title')
-  const description = t('description')
-  const keywords = t('keywords')
+  const title = t("title")
+  const description = t("description")
+  const keywords = t("keywords")
 
   // Locale-specific enhanced keywords
   const enhancedKeywords =
-    locale === 'uz'
+    locale === "uz"
       ? [
           // O'zbek tilida homepage uchun maxsus keywordlar
-          'webiston bosh sahifa',
+          "webiston bosh sahifa",
           "o'zbek dasturchilari platformasi",
           "dasturlash kitoblari o'zbek",
           "react kitob o'zbek",
@@ -28,9 +37,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
           "backend o'rganish",
           "web development o'zbek",
           "dasturlash o'rganish o'zbek tilida",
-          'bepul dasturlash kurslari',
-          'dasturlash vositalari',
-          'foydali vositalar dasturchilar',
+          "bepul dasturlash kurslari",
+          "dasturlash vositalari",
+          "foydali vositalar dasturchilar",
           "typing test o'zbek",
           "monkeytype o'zbek",
           "online tools o'zbek",
@@ -40,83 +49,89 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
           "web utilities o'zbek",
           "it ta'lim o'zbek",
           "software development o'zbek",
-          'webiston tools',
+          "webiston tools",
           "online dasturlash o'zbek",
-          'tech education uzbekistan',
+          "tech education uzbekistan",
           "o'zbek tech community",
           "coding platform o'zbek",
           "software tools o'zbek",
-          keywords,
-        ].join(', ')
+          keywords
+        ].join(", ")
       : [
           // English keywords
-          'webiston homepage',
-          'uzbek developers platform',
-          'programming platform uzbekistan',
-          'react book uzbek',
-          'javascript tutorial uzbek',
-          'frontend development uzbek',
-          'backend development uzbek',
-          'web development uzbekistan',
-          'learn programming uzbek',
-          'free programming courses',
-          'developer tools uzbek',
-          'coding resources uzbek',
-          'tech services uzbekistan',
-          'programming books uzbek language',
-          'online tools uzbek',
-          'productivity platform uzbek',
-          'typing test uzbek',
-          'monkeytype uzbek',
-          'developer utilities uzbek',
-          'tech community uzbekistan',
-          'programming education uzbek',
-          'software development uzbekistan',
-          'uzbek tech ecosystem',
-          'coding bootcamp uzbek',
-          'tech learning platform',
-          keywords,
-        ].join(', ')
+          "webiston homepage",
+          "uzbek developers platform",
+          "programming platform uzbekistan",
+          "react book uzbek",
+          "javascript tutorial uzbek",
+          "frontend development uzbek",
+          "backend development uzbek",
+          "web development uzbekistan",
+          "learn programming uzbek",
+          "free programming courses",
+          "developer tools uzbek",
+          "coding resources uzbek",
+          "tech services uzbekistan",
+          "programming books uzbek language",
+          "online tools uzbek",
+          "productivity platform uzbek",
+          "typing test uzbek",
+          "monkeytype uzbek",
+          "developer utilities uzbek",
+          "tech community uzbekistan",
+          "programming education uzbek",
+          "software development uzbekistan",
+          "uzbek tech ecosystem",
+          "coding bootcamp uzbek",
+          "tech learning platform",
+          keywords
+        ].join(", ")
 
   return {
     title,
     description,
     keywords: enhancedKeywords,
     alternates: {
-      canonical: locale === 'uz' ? 'https://webiston.uz' : `https://webiston.uz/${locale}`,
+      canonical:
+        locale === "uz"
+          ? "https://webiston.uz"
+          : `https://webiston.uz/${locale}`,
       languages: {
-        uz: 'https://webiston.uz',
-        en: 'https://webiston.uz/en',
-        'x-default': 'https://webiston.uz',
-      },
+        uz: "https://webiston.uz",
+        en: "https://webiston.uz/en",
+        "x-default": "https://webiston.uz"
+      }
     },
     openGraph: {
       title,
       description,
-      type: 'website',
-      locale: locale === 'uz' ? 'uz_UZ' : 'en_US',
-      url: locale === 'uz' ? 'https://webiston.uz' : `https://webiston.uz/${locale}`,
-      siteName: 'Webiston',
+      type: "website",
+      locale: locale === "uz" ? "uz_UZ" : "en_US",
+      url:
+        locale === "uz"
+          ? "https://webiston.uz"
+          : `https://webiston.uz/${locale}`,
+      siteName: "Webiston",
       images: [
         {
-          url: 'https://webiston.uz/logo.png',
+          url: "https://webiston.uz/logo.png",
           width: 1200,
           height: 630,
           alt:
-            locale === 'uz'
+            locale === "uz"
               ? "Webiston - O'zbek Dasturchilari uchun Professional Platforma"
-              : 'Webiston - Professional Platform for Uzbek Developers',
-          type: 'image/png',
-        },
-      ],
+              : "Webiston - Professional Platform for Uzbek Developers",
+          type: "image/png"
+        }
+      ]
     },
     twitter: {
-      card: 'summary_large_image',
-      site: '@webiston_uz',
-      creator: '@webiston_uz',
+      card: "summary_large_image",
+      site: "@webiston_uz",
+      creator: "@webiston_uz",
       title,
       description,
-      images: ['https://webiston.uz/logo.png'],
+      images: ["https://webiston.uz/logo.png"]
     },
     robots: {
       index: true,
@@ -124,78 +139,83 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       googleBot: {
         index: true,
         follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1
+      }
     },
-    category: 'education',
-    classification: 'Programming Education',
-    referrer: 'origin-when-cross-origin',
+    category: "education",
+    classification: "Programming Education",
+    referrer: "origin-when-cross-origin",
     formatDetection: {
       email: false,
       address: false,
-      telephone: false,
-    },
+      telephone: false
+    }
   }
 }
 
 export default async function HomePage() {
-  const tHome = await getTranslations('HomePage')
-  const tTools = await getTranslations('Tools')
+  const tHome = await getTranslations("HomePage")
+  const tTools = await getTranslations("Tools")
 
   // Homepage-specific structured data
   const homepageSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: 'Webiston - Homepage',
-    description: "O'zbek dasturchilari uchun keng qamrovli xizmatlar va resurslar platformasi",
-    url: 'https://webiston.uz',
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Webiston - Homepage",
+    description:
+      "O'zbek dasturchilari uchun keng qamrovli xizmatlar va resurslar platformasi",
+    url: "https://webiston.uz",
     mainEntity: {
-      '@type': 'Organization',
-      name: 'Webiston',
-      description: "O'zbek dasturchilari uchun professional xizmatlar platformasi",
+      "@type": "Organization",
+      name: "Webiston",
+      description:
+        "O'zbek dasturchilari uchun professional xizmatlar platformasi",
       serviceType: [
-        'Programming Education',
-        'Developer Tools',
-        'Online Utilities',
-        'Productivity Services',
-        'Text Processing',
-        'Code Generation',
-        'Typing Tests',
+        "Programming Education",
+        "Developer Tools",
+        "Online Utilities",
+        "Productivity Services",
+        "Text Processing",
+        "Code Generation",
+        "Typing Tests"
       ],
-      areaServed: 'Uzbekistan',
-      audience: 'Developers, Programmers, Students',
+      areaServed: "Uzbekistan",
+      audience: "Developers, Programmers, Students"
     },
     breadcrumb: {
-      '@type': 'BreadcrumbList',
+      "@type": "BreadcrumbList",
       itemListElement: [
         {
-          '@type': 'ListItem',
+          "@type": "ListItem",
           position: 1,
-          name: 'Home',
-          item: 'https://webiston.uz',
-        },
-      ],
+          name: "Home",
+          item: "https://webiston.uz"
+        }
+      ]
     },
     potentialAction: [
       {
-        '@type': 'ReadAction',
-        target: 'https://webiston.uz/books',
-        name: 'Read Programming Books',
+        "@type": "ReadAction",
+        target: "https://webiston.uz/books",
+        name: "Read Programming Books"
       },
       {
-        '@type': 'UseAction',
-        target: 'https://webiston.uz/tools',
-        name: 'Use Developer Tools',
-      },
-    ],
+        "@type": "UseAction",
+        target: "https://webiston.uz/tools",
+        name: "Use Developer Tools"
+      }
+    ]
   }
 
   return (
     <>
       {/* Homepage Structured Data */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageSchema) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageSchema) }}
+      />
 
       {/* Main Content */}
       <div className="w-full px-16 pb-16 max-sm:px-6">
@@ -212,11 +232,11 @@ export default async function HomePage() {
           <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
 
           <h1 className="animate-fadeInText // Light mode gradient dark:bg-gradient-text // Dark mode klass o‘z holicha max-xl:text-dynamic bg-gradient-to-r from-neutral-600 to-neutral-900 bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
-            {tHome('title')}
+            {tHome("title")}
           </h1>
 
           <p className="animate-fadeInText max-w-[750px] text-center text-xl text-zinc-600 md:w-full! dark:text-zinc-400">
-            {tHome('description')}
+            {tHome("description")}
           </p>
 
           <div className="mt-10 flex gap-4 max-sm:flex-col">
@@ -226,13 +246,13 @@ export default async function HomePage() {
               variant="secondary"
               className="group border-zinc-300 bg-white text-black hover:bg-zinc-100"
             >
-              {tHome('startLearning')}
+              {tHome("startLearning")}
               <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
                 <ArrowRightIcon />
               </span>
             </ButtonLink>
             <ButtonLink href="/tools" variant="outline" className="group">
-              {tHome('usefulTools')}
+              {tHome("usefulTools")}
               <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
                 <ToolsIcon className="h-4 w-4" />
               </span>
@@ -244,10 +264,10 @@ export default async function HomePage() {
           <SectionTitle
             title="AI Engineering"
             href="/books/ai-engineering"
-            description={tHome('aiSectionDescription')}
+            description={tHome("aiSectionDescription")}
             icon={
               <Image
-                src={getTutorialImage('ai-engineering')}
+                src={getTutorialImage("ai-engineering")}
                 alt="AI Engineering"
                 width={40}
                 height={40}
@@ -257,7 +277,13 @@ export default async function HomePage() {
           />
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
             {AI_ENGINEERING_CHAPTERS.map((card, index) => (
-              <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
+              <SimpleCard
+                key={index}
+                isNextLink
+                href={card.href}
+                title={card.title}
+                description={card.description}
+              />
             ))}
           </div>
         </section>
@@ -266,10 +292,10 @@ export default async function HomePage() {
           <SectionTitle
             title="JavaScript: The Definitive Guide, 7th Edition"
             href="/books/javascript-definitive-guide"
-            description={tHome('jsSectionDescription')}
+            description={tHome("jsSectionDescription")}
             icon={
               <Image
-                src={getTutorialImage('javascript-definitive-guide')}
+                src={getTutorialImage("javascript-definitive-guide")}
                 alt="JavaScript: The Definitive Guide, 7th Edition"
                 width={40}
                 height={40}
@@ -279,7 +305,13 @@ export default async function HomePage() {
           />
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
             {JAVASCRIPT_CHAPTERS.map((card, index) => (
-              <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
+              <SimpleCard
+                key={index}
+                isNextLink
+                href={card.href}
+                title={card.title}
+                description={card.description}
+              />
             ))}
           </div>
         </section>
@@ -288,10 +320,10 @@ export default async function HomePage() {
           <SectionTitle
             title="Fluent React"
             href="/books/fluent-react"
-            description={tHome('reactSectionDescription')}
+            description={tHome("reactSectionDescription")}
             icon={
               <Image
-                src={getTutorialImage('fluent-react')}
+                src={getTutorialImage("fluent-react")}
                 alt="Fluent React"
                 width={40}
                 height={40}
@@ -302,7 +334,13 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
             {REACT_CHAPTERS.map((card, index) => (
-              <SimpleCard key={index} isNextLink href={card.href} title={card.title} description={card.description} />
+              <SimpleCard
+                key={index}
+                isNextLink
+                href={card.href}
+                title={card.title}
+                description={card.description}
+              />
             ))}
           </div>
         </section>
@@ -310,9 +348,11 @@ export default async function HomePage() {
         <section className="group mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
           <SectionTitle
             href="/tools"
-            title={tHome('toolsSectionTitle')}
-            description={tHome('toolsSectionDescription')}
-            icon={<ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />}
+            title={tHome("toolsSectionTitle")}
+            description={tHome("toolsSectionDescription")}
+            icon={
+              <ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />
+            }
           />
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

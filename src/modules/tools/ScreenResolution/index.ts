@@ -1,1 +1,1 @@
-export { default } from './ScreenResolution'
+export { default } from "./ScreenResolution"

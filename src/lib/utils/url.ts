@@ -1,4 +1,4 @@
-import { UrlInfo } from '@/types'
+import { UrlInfo } from "@/types"
 
 /**
  * Validate URL format
@@ -7,7 +7,7 @@ import { UrlInfo } from '@/types'
  */
 export const isValidUrl = (url: string): boolean => {
   try {
-    new URL(url.startsWith('http') ? url : `https://${url}`)
+    new URL(url.startsWith("http") ? url : `https://${url}`)
     return true
   } catch {
     return false
@@ -23,14 +23,14 @@ export const analyzeUrl = (url: string): UrlInfo | null => {
   if (!url?.trim()) return null
 
   try {
-    const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`)
+    const urlObj = new URL(url.startsWith("http") ? url : `https://${url}`)
     return {
       protocol: urlObj.protocol,
       hostname: urlObj.hostname,
-      pathname: urlObj.pathname !== '/' ? urlObj.pathname : undefined,
+      pathname: urlObj.pathname !== "/" ? urlObj.pathname : undefined,
       search: urlObj.search || undefined,
       hash: urlObj.hash || undefined,
-      isValidUrl: true,
+      isValidUrl: true
     }
   } catch {
     return { isValidUrl: false }
@@ -44,7 +44,7 @@ export const analyzeUrl = (url: string): UrlInfo | null => {
  */
 export const extractDomain = (url: string): string | null => {
   try {
-    const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`)
+    const urlObj = new URL(url.startsWith("http") ? url : `https://${url}`)
     return urlObj.hostname
   } catch {
     return null
@@ -57,7 +57,7 @@ export const extractDomain = (url: string): string | null => {
  * @returns Boolean indicating if URL is email link
  */
 export const isEmailUrl = (url: string): boolean => {
-  return url.startsWith('mailto:')
+  return url.startsWith("mailto:")
 }
 
 /**
@@ -68,7 +68,7 @@ export const isEmailUrl = (url: string): boolean => {
 export const isSecureUrl = (url: string): boolean => {
   try {
     const urlObj = new URL(url)
-    return urlObj.protocol === 'https:'
+    return urlObj.protocol === "https:"
   } catch {
     return false
   }
@@ -80,10 +80,10 @@ export const isSecureUrl = (url: string): boolean => {
  * @returns Normalized URL
  */
 export const normalizeUrl = (url: string): string => {
-  if (!url?.trim()) return ''
+  if (!url?.trim()) return ""
 
   const trimmed = url.trim()
-  if (trimmed.includes('://')) {
+  if (trimmed.includes("://")) {
     return trimmed
   }
 
@@ -97,7 +97,7 @@ export const normalizeUrl = (url: string): string => {
  */
 export const extractQueryParams = (url: string): Record<string, string> => {
   try {
-    const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`)
+    const urlObj = new URL(url.startsWith("http") ? url : `https://${url}`)
     const params: Record<string, string> = {}
 
     urlObj.searchParams.forEach((value, key) => {

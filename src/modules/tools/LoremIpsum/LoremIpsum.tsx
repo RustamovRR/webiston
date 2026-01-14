@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { Copy, Check } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ToolHeader, StatsDisplay } from '@/components/shared'
-import { DualTextPanel } from '@/components/shared/DualTextPanel'
-import { ConfigPanel, InfoSection, HelpSection } from './components'
-import { useLoremIpsum } from '@/hooks/tools'
-import { useTranslations } from 'next-intl'
+import { Copy, Check } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ToolHeader, StatsDisplay } from "@/components/shared"
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { ConfigPanel, InfoSection, HelpSection } from "./components"
+import { useLoremIpsum } from "./hooks/useLoremIpsum"
+import { useTranslations } from "next-intl"
 
 export default function LoremIpsumPage() {
-  const t = useTranslations('LoremIpsumPage.ToolHeader')
-  const tPanel = useTranslations('LoremIpsumPage.MainPanel')
+  const t = useTranslations("LoremIpsumPage.ToolHeader")
+  const tPanel = useTranslations("LoremIpsumPage.MainPanel")
 
   const {
     generatedText,
@@ -24,12 +24,12 @@ export default function LoremIpsumPage() {
     loadSample,
     updateSettings,
     handleCopy,
-    downloadText,
+    downloadText
   } = useLoremIpsum()
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       <ConfigPanel
         settings={settings}
@@ -51,9 +51,9 @@ export default function LoremIpsumPage() {
       <DualTextPanel
         sourceText={generatedText}
         convertedText={textInfo}
-        sourcePlaceholder={tPanel('sourcePlaceholder')}
-        sourceLabel={tPanel('sourceLabel')}
-        targetLabel={tPanel('targetLabel')}
+        sourcePlaceholder={tPanel("sourcePlaceholder")}
+        sourceLabel={tPanel("sourceLabel")}
+        targetLabel={tPanel("targetLabel")}
         onSourceChange={(text) => {
           // Allow manual editing if needed
         }}
@@ -64,7 +64,11 @@ export default function LoremIpsumPage() {
           generatedText && (
             <div className="flex items-center gap-2">
               <Button onClick={handleCopy} variant="ghost" size="sm">
-                {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                {copied ? (
+                  <Check size={16} className="text-green-500" />
+                ) : (
+                  <Copy size={16} />
+                )}
               </Button>
             </div>
           )

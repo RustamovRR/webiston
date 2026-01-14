@@ -1,1 +1,1 @@
-export { default } from './IpInfo'
+export { default } from "./IpInfo"

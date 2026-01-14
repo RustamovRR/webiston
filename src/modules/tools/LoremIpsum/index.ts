@@ -1,1 +1,1 @@
-export { default } from './LoremIpsum'
+export { default } from "./LoremIpsum"

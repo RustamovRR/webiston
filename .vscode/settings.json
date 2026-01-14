@@ -1,1 +1,37 @@
-{}
+{
+  "typescript.autoClosingTags": false,
+  
+  // Biome - default formatter
+  "editor.defaultFormatter": "biomejs.biome",
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  
+  // Format on save
+  "editor.formatOnSave": true,
+  
+  // Biome - organize imports on save
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  },
+  
+  // Disable other formatters for JS/TS
+  "prettier.enable": false,
+  "eslint.enable": false
+}

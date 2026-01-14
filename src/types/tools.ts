@@ -1,4 +1,4 @@
-import { ConversionMode } from './common'
+import { ConversionMode } from "./common"
 
 // Tool specific types
 
@@ -6,7 +6,7 @@ import { ConversionMode } from './common'
 export interface Base64ConversionOptions {
   mode: ConversionMode
   handleImages?: boolean
-  outputFormat?: 'text' | 'dataurl'
+  outputFormat?: "text" | "dataurl"
 }
 
 export interface Base64Result {
@@ -46,11 +46,11 @@ export interface UrlInfo {
 }
 
 // Hash Generator
-export type HashAlgorithm = 'md5' | 'sha1' | 'sha256' | 'sha512'
+export type HashAlgorithm = "md5" | "sha1" | "sha256" | "sha512"
 
 export interface HashGeneratorOptions {
   algorithm: HashAlgorithm
-  encoding?: 'hex' | 'base64'
+  encoding?: "hex" | "base64"
 }
 
 // Password Generator
@@ -64,7 +64,7 @@ export interface PasswordOptions {
 }
 
 // Color Converter
-export type ColorFormat = 'hex' | 'rgb' | 'hsl' | 'hsv'
+export type ColorFormat = "hex" | "rgb" | "hsl" | "hsv"
 
 export interface ColorValue {
   format: ColorFormat
@@ -87,7 +87,7 @@ export interface JwtPayload {
 export interface QrGeneratorOptions {
   text: string
   size: number
-  errorCorrection: 'L' | 'M' | 'Q' | 'H'
+  errorCorrection: "L" | "M" | "Q" | "H"
   margin: number
   darkColor: string
   lightColor: string

@@ -1,1 +1,1 @@
-export { default } from './OgMetaGenerator'
+export { default } from "./OgMetaGenerator"

@@ -1,0 +1,44 @@
+# Lefthook configuration for Webiston
+# https://github.com/evilmartians/lefthook
+#
+# Best Practice Git Hooks:
+# - pre-commit: Fast checks (lint, format) on staged files
+# - commit-msg: Validate commit message format
+# - pre-push: Full validation (typecheck, tests) before push
+
+pre-commit:
+  parallel: true
+  commands:
+    oxlint:
+      glob: "*.{js,ts,jsx,tsx}"
+      run: pnpm oxlint {staged_files} --quiet
+      skip:
+        - merge
+        - rebase
+      
+    biome-format:
+      glob: "*.{js,ts,jsx,tsx,json}"
+      run: pnpm biome format --write {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase
+      fail_text: "Biome formatting failed. Run 'pnpm format' to fix."
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  commands:
+    typecheck:
+      run: pnpm typecheck
+      
+    test:
+      run: pnpm test
+
+# Skip all hooks for emergency:
+# git commit --no-verify -m "hotfix: emergency"
+# git push --no-verify

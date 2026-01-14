@@ -1,13 +1,16 @@
-import React from 'react'
-import { Download } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { CodeHighlight } from '@/components/ui'
-import { TerminalInput, type TerminalInputAction } from '@/components/shared/TerminalInput'
+import React from "react"
+import { Download } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { CodeHighlight } from "@/components/ui"
+import {
+  TerminalInput,
+  type TerminalInputAction
+} from "@/components/shared/TerminalInput"
 
 interface TokenPartsProps {
   header: any
   payload: any
-  viewMode: 'decoded' | 'raw'
+  viewMode: "decoded" | "raw"
   inputText: string
   handleDownloadHeader: () => void
   handleDownloadPayload: () => void
@@ -21,14 +24,14 @@ const TokenParts: React.FC<TokenPartsProps> = ({
   inputText,
   handleDownloadHeader,
   handleDownloadPayload,
-  formatJSON,
+  formatJSON
 }) => {
-  const t = useTranslations('JwtDecoderPage.TokenParts')
+  const t = useTranslations("JwtDecoderPage.TokenParts")
 
   // Header actions
   const headerActions: TerminalInputAction[] = [
     {
-      type: 'custom',
+      type: "custom",
       component: (
         <button
           onClick={handleDownloadHeader}
@@ -37,18 +40,18 @@ const TokenParts: React.FC<TokenPartsProps> = ({
         >
           <Download size={18} />
         </button>
-      ),
+      )
     },
     {
-      type: 'copy',
-      text: formatJSON(header),
-    },
+      type: "copy",
+      text: formatJSON(header)
+    }
   ]
 
   // Payload actions
   const payloadActions: TerminalInputAction[] = [
     {
-      type: 'custom',
+      type: "custom",
       component: (
         <button
           onClick={handleDownloadPayload}
@@ -57,26 +60,32 @@ const TokenParts: React.FC<TokenPartsProps> = ({
         >
           <Download size={18} />
         </button>
-      ),
+      )
     },
     {
-      type: 'copy',
-      text: formatJSON(payload),
-    },
+      type: "copy",
+      text: formatJSON(payload)
+    }
   ]
 
   // Header custom content
   const headerCustomContent = (
     <div className="p-4 transition-all duration-200">
-      {viewMode === 'decoded' ? (
+      {viewMode === "decoded" ? (
         <div className="animate-in fade-in duration-300">
-          <CodeHighlight code={formatJSON(header)} language="json" showLineNumbers={false} />
+          <CodeHighlight
+            code={formatJSON(header)}
+            language="json"
+            showLineNumbers={false}
+          />
         </div>
       ) : (
         <div className="animate-in fade-in duration-300">
-          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">{t('rawData')}</div>
+          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            {t("rawData")}
+          </div>
           <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
-            {inputText.split('.')[0]}
+            {inputText.split(".")[0]}
           </pre>
         </div>
       )}
@@ -86,15 +95,21 @@ const TokenParts: React.FC<TokenPartsProps> = ({
   // Payload custom content
   const payloadCustomContent = (
     <div className="p-4 transition-all duration-200">
-      {viewMode === 'decoded' ? (
+      {viewMode === "decoded" ? (
         <div className="animate-in fade-in duration-300">
-          <CodeHighlight code={formatJSON(payload)} language="json" showLineNumbers={false} />
+          <CodeHighlight
+            code={formatJSON(payload)}
+            language="json"
+            showLineNumbers={false}
+          />
         </div>
       ) : (
         <div className="animate-in fade-in duration-300">
-          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">{t('rawData')}</div>
+          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            {t("rawData")}
+          </div>
           <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
-            {inputText.split('.')[1]}
+            {inputText.split(".")[1]}
           </pre>
         </div>
       )}
@@ -105,7 +120,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Header Panel */}
       <TerminalInput
-        title={t('header')}
+        title={t("header")}
         readOnly={true}
         actions={headerActions}
         customContent={headerCustomContent}
@@ -117,7 +132,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
 
       {/* Payload Panel */}
       <TerminalInput
-        title={t('payload')}
+        title={t("payload")}
         readOnly={true}
         actions={payloadActions}
         customContent={payloadCustomContent}

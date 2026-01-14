@@ -1,12 +1,17 @@
-'use client'
+"use client"
 
-import { ISearchHit } from '@/types'
-import { useRouter } from 'next/navigation'
-import { CustomSearchBox, GroupedHit, NoResults } from './SearchComponents'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { AnimatePresence, motion } from 'framer-motion'
-import { FileSearch } from 'lucide-react'
-import { useMobileMenuStore } from '@/stores'
+import { ISearchHit } from "@/types"
+import { useRouter } from "next/navigation"
+import { CustomSearchBox, GroupedHit, NoResults } from "./SearchComponents"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog"
+import { AnimatePresence, motion } from "framer-motion"
+import { FileSearch } from "lucide-react"
+import { useMobileMenuStore } from "@/stores"
 
 interface SearchDialogProps {
   open: boolean
@@ -25,7 +30,7 @@ export default function SearchDialog({
   hits,
   loading,
   onSearch,
-  onClearSearch,
+  onClearSearch
 }: SearchDialogProps) {
   const router = useRouter()
   const closeMobileMenu = useMobileMenuStore((state) => state.close)
@@ -67,7 +72,12 @@ export default function SearchDialog({
             )}
 
             {showNoResults && (
-              <motion.div key="no-results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="no-results"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <NoResults query={query} />
               </motion.div>
             )}
@@ -81,14 +91,24 @@ export default function SearchDialog({
                 className="flex h-full flex-col items-center justify-center text-center"
               >
                 <FileSearch className="h-10 w-10 text-gray-300 dark:text-gray-700" />
-                <p className="mt-3 text-sm text-gray-500">Qidiruv orqali kerakli mavzuni tezda toping.</p>
+                <p className="mt-3 text-sm text-gray-500">
+                  Qidiruv orqali kerakli mavzuni tezda toping.
+                </p>
               </motion.div>
             )}
 
             {hasResults && (
-              <motion.div key="results" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <motion.div
+                key="results"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
                 {hits.map((groupedHits, index) => (
-                  <GroupedHit key={groupedHits[0]?.objectID || index} hits={groupedHits} onHitClick={handleHitClick} />
+                  <GroupedHit
+                    key={groupedHits[0]?.objectID || index}
+                    hits={groupedHits}
+                    onHitClick={handleHitClick}
+                  />
                 ))}
               </motion.div>
             )}

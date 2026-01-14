@@ -1,22 +1,26 @@
-import React from 'react'
-import { FileText } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+"use client"
 
-import SectionTitle from '@/components/shared/SectionTitle'
-import InfoCard from '@/components/shared/InfoCard/InfoCard'
-import { getInfoCardsData } from '../constants/infoCardsData'
+import { FileText } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { InfoCard } from "@/components/shared/InfoCard"
+import SectionTitle from "@/components/shared/SectionTitle"
+import { getInfoCardsData } from "../constants"
 
-const InfoSection: React.FC = () => {
-  const t = useTranslations('LatinCyrillicPage')
+/**
+ * Information section displaying alphabet details, rules, and tips
+ * Pure presentational component - no business logic
+ */
+export function InfoSection() {
+  const t = useTranslations("LatinCyrillicPage")
   const infoCards = getInfoCardsData(t)
 
   return (
-    <div className="mt-12">
+    <section className="mt-12">
       <SectionTitle
         href=""
         icon={<FileText className="h-6 w-6" />}
-        title={t('Info.title')}
-        description={t('Info.description')}
+        title={t("Info.title")}
+        description={t("Info.description")}
       />
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -29,12 +33,14 @@ const InfoSection: React.FC = () => {
             iconBgColor={card.iconBgColor}
             iconColor={card.iconColor}
           >
-            {card.content}
+            <ul className="list-disc list-inside space-y-1">
+              {card.items.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
           </InfoCard>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
-
-export default InfoSection

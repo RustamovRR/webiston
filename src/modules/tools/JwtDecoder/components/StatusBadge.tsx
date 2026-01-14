@@ -1,5 +1,5 @@
-import React from 'react'
-import { CheckCircle, AlertCircle } from 'lucide-react'
+import React from "react"
+import { CheckCircle, AlertCircle } from "lucide-react"
 
 interface StatusBadgeProps {
   isValid: boolean

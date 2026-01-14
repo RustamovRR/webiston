@@ -1,1 +1,1 @@
-export { default } from './HttpStatus'
+export { default } from "./HttpStatus"

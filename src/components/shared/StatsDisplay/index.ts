@@ -1,1 +1,1 @@
-export { StatsDisplay } from './StatsDisplay'
+export { StatsDisplay } from "@webiston/ui"

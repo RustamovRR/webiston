@@ -1,15 +1,21 @@
-'use client'
+"use client"
 
-import { Mic } from 'lucide-react'
-import { ToolHeader, StatsDisplay } from '@/components/shared'
-import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { useMicrophoneTest } from '@/hooks/tools/useMicrophoneTest'
-import { ControlPanel, AudioPreviewPanel, RecordedAudioPanel, InfoSection, AudioPreviewModal } from './components'
+import { Mic } from "lucide-react"
+import { ToolHeader, StatsDisplay } from "@/components/shared"
+import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
+import { useMicrophoneTest } from "./hooks/useMicrophoneTest"
+import {
+  ControlPanel,
+  AudioPreviewPanel,
+  RecordedAudioPanel,
+  InfoSection,
+  AudioPreviewModal
+} from "./components"
 
 export default function MicrophoneTest() {
-  const t = useTranslations('MicrophoneTestPage.ToolHeader')
-  const tSample = useTranslations('MicrophoneTestPage.SampleMicrophones')
+  const t = useTranslations("MicrophoneTestPage.ToolHeader")
+  const tSample = useTranslations("MicrophoneTestPage.SampleMicrophones")
 
   const {
     audioDevices,
@@ -36,17 +42,17 @@ export default function MicrophoneTest() {
     closePreview,
     formatDuration,
     getAudioQuality,
-    getStats,
+    getStats
   } = useMicrophoneTest({
-    onSuccess: (message: string) => console.log('Success:', message),
-    onError: (error: string) => console.error('Error:', error),
+    onSuccess: (message: string) => console.log("Success:", message),
+    onError: (error: string) => console.error("Error:", error)
   })
 
   const audioQuality = getAudioQuality(audioStats.level)
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       <div className="mb-8">
         <StatsDisplay stats={getStats()} />
@@ -118,7 +124,9 @@ export default function MicrophoneTest() {
               <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
               <div className="h-3 w-3 rounded-full bg-green-500"></div>
             </div>
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-400">{tSample('title')}</span>
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-400">
+              {tSample("title")}
+            </span>
           </div>
 
           <div className="p-6">
@@ -126,28 +134,46 @@ export default function MicrophoneTest() {
               <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-blue-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">{tSample('standard.name')}</span>
+                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {tSample("standard.name")}
+                  </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">{tSample('standard.description')}</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">{tSample('standard.tip')}</p>
+                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  {tSample("standard.description")}
+                </p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {tSample("standard.tip")}
+                </p>
               </div>
 
               <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-green-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">{tSample('usb.name')}</span>
+                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {tSample("usb.name")}
+                  </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">{tSample('usb.description')}</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">{tSample('usb.tip')}</p>
+                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  {tSample("usb.description")}
+                </p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {tSample("usb.tip")}
+                </p>
               </div>
 
               <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-purple-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">{tSample('bluetooth.name')}</span>
+                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                    {tSample("bluetooth.name")}
+                  </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">{tSample('bluetooth.description')}</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">{tSample('bluetooth.tip')}</p>
+                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  {tSample("bluetooth.description")}
+                </p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                  {tSample("bluetooth.tip")}
+                </p>
               </div>
             </div>
           </div>

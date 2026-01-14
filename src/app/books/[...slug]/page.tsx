@@ -1,6 +1,15 @@
-import { ErrorContent, TutorialContent, TutorialLanding } from '@/components/mdx'
-import { getTutorialInfo, getMDXContent, serializeContent, getAllTutorialPaths } from '@/lib/mdx'
-import { notFound } from 'next/navigation'
+import {
+  ErrorContent,
+  TutorialContent,
+  TutorialLanding
+} from "@/components/mdx"
+import {
+  getTutorialInfo,
+  getMDXContent,
+  serializeContent,
+  getAllTutorialPaths
+} from "@/lib/mdx"
+import { notFound } from "next/navigation"
 
 export async function generateStaticParams() {
   const paths = await getAllTutorialPaths()
@@ -13,8 +22,8 @@ export async function generateMetadata({ params }: any): Promise<any> {
 
   if (!slug || slug.length === 0) {
     return {
-      title: 'Not Found | Webiston',
-      description: 'The page you are looking for does not exist.',
+      title: "Not Found | Webiston",
+      description: "The page you are looking for does not exist."
     }
   }
 
@@ -28,25 +37,29 @@ export async function generateMetadata({ params }: any): Promise<any> {
     // Agar bu tutorial landing page bo'lsa
     if (slug.length === 1) {
       return {
-        title: `${tutorialInfo?.title || 'Darslik'} | Webiston`,
-        description: tutorialInfo?.description || "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
+        title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
+        description:
+          tutorialInfo?.description ||
+          "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
         openGraph: {
-          title: `${tutorialInfo?.title || 'Darslik'} | Webiston`,
-          description: tutorialInfo?.description || "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
+          title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
+          description:
+            tutorialInfo?.description ||
+            "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
           url: `https://webiston.uz/books/${tutorialId}`,
           images: [
             {
-              url: `/api/og?title=${encodeURIComponent(tutorialInfo?.title || 'Tutorial')}&path=books/${tutorialId}`,
+              url: `/api/og?title=${encodeURIComponent(tutorialInfo?.title || "Tutorial")}&path=books/${tutorialId}`,
               width: 1200,
-              height: 630,
-            },
-          ],
-        },
+              height: 630
+            }
+          ]
+        }
       }
     }
 
     // Agar bu tutorial content page bo'lsa - frontmatter'dan metadata olish
-    const currentPath = slug.slice(1).join('/')
+    const currentPath = slug.slice(1).join("/")
     const contentText = await getMDXContent(tutorialId, currentPath)
 
     if (contentText) {
@@ -58,66 +71,72 @@ export async function generateMetadata({ params }: any): Promise<any> {
       const title =
         frontmatter.title ||
         slug[slug.length - 1]
-          .split('-')
+          .split("-")
           .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ')
+          .join(" ")
 
-      const description = frontmatter.description || `Keng qamrovli darsligimizda ${title} haqida batafsil o'rganing.`
-      const keywords = frontmatter.keywords || ''
+      const description =
+        frontmatter.description ||
+        `Keng qamrovli darsligimizda ${title} haqida batafsil o'rganing.`
+      const keywords = frontmatter.keywords || ""
 
       return {
-        title: `${title} | ${tutorialInfo?.title || 'Darslik'} | Webiston`,
+        title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
         description,
         keywords:
-          keywords && typeof keywords === 'string' ? keywords.split(',').map((k: string) => k.trim()) : undefined,
-        authors: frontmatter.author ? [{ name: frontmatter.author }] : undefined,
+          keywords && typeof keywords === "string"
+            ? keywords.split(",").map((k: string) => k.trim())
+            : undefined,
+        authors: frontmatter.author
+          ? [{ name: frontmatter.author }]
+          : undefined,
         openGraph: {
-          title: `${title} | ${tutorialInfo?.title || 'Darslik'} | Webiston`,
+          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
           description,
-          url: `https://webiston.uz/books/${slug.join('/')}`,
+          url: `https://webiston.uz/books/${slug.join("/")}`,
           images: [
             {
-              url: `/api/og?title=${encodeURIComponent(title)}&path=books/${slug.join('/')}`,
+              url: `/api/og?title=${encodeURIComponent(title)}&path=books/${slug.join("/")}`,
               width: 1200,
-              height: 630,
-            },
-          ],
+              height: 630
+            }
+          ]
         },
         twitter: {
-          card: 'summary_large_image',
-          title: `${title} | ${tutorialInfo?.title || 'Darslik'} | Webiston`,
-          description,
-        },
+          card: "summary_large_image",
+          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+          description
+        }
       }
     }
 
     // Fallback agar content topilmasa
     const fallbackTitle = slug[slug.length - 1]
-      .split('-')
+      .split("-")
       .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
+      .join(" ")
 
     return {
-      title: `${fallbackTitle} | ${tutorialInfo?.title || 'Darslik'} | Webiston`,
+      title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
       description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
       openGraph: {
-        title: `${fallbackTitle} | ${tutorialInfo?.title || 'Darslik'} | Webiston`,
+        title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
         description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
-        url: `https://webiston.uz/books/${slug.join('/')}`,
+        url: `https://webiston.uz/books/${slug.join("/")}`,
         images: [
           {
-            url: `/api/og?title=${encodeURIComponent(fallbackTitle)}&path=books/${slug.join('/')}`,
+            url: `/api/og?title=${encodeURIComponent(fallbackTitle)}&path=books/${slug.join("/")}`,
             width: 1200,
-            height: 630,
-          },
-        ],
-      },
+            height: 630
+          }
+        ]
+      }
     }
   } catch (error) {
-    console.error('Error generating metadata:', error)
+    console.error("Error generating metadata:", error)
     return {
-      title: 'Error | Webiston',
-      description: 'An error occurred while loading this page.',
+      title: "Error | Webiston",
+      description: "An error occurred while loading this page."
     }
   }
 }
@@ -158,7 +177,7 @@ export default async function TutorialPage({ params }: any) {
       </div>
     )
   } catch (error) {
-    console.error('Error in tutorial page:', error)
+    console.error("Error in tutorial page:", error)
     return <ErrorContent />
   }
 }

@@ -1,13 +1,18 @@
-import React from 'react'
-import { Download, Upload, Link, Globe, ChevronDown, X } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
-import { ShimmerButton, GradientTabs } from '@/components/ui'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import React from "react"
+import { Download, Upload, Link, Globe, ChevronDown, X } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
+import { ShimmerButton, GradientTabs } from "@/components/ui"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 
 interface ControlPanelProps {
-  mode: 'encode' | 'decode'
-  setMode: (mode: 'encode' | 'decode') => void
+  mode: "encode" | "decode"
+  setMode: (mode: "encode" | "decode") => void
   isProcessing: boolean
   handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
   samples: Array<{ key: string; label: string; value: string }>
@@ -28,13 +33,13 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   handleClear,
   canDownload,
   downloadResult,
-  handleModeSwitch,
+  handleModeSwitch
 }) => {
-  const t = useTranslations('UrlEncoderPage.ControlPanel')
+  const t = useTranslations("UrlEncoderPage.ControlPanel")
 
   const tabOptions = [
-    { value: 'encode', label: t('encode'), icon: <Link size={16} /> },
-    { value: 'decode', label: t('decode'), icon: <Globe size={16} /> },
+    { value: "encode", label: t("encode"), icon: <Link size={16} /> },
+    { value: "decode", label: t("decode"), icon: <Globe size={16} /> }
   ]
 
   return (
@@ -66,7 +71,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <Button variant="outline" size="sm" asChild disabled={isProcessing}>
             <label htmlFor="file-upload" className="cursor-pointer">
               <Upload size={16} className="mr-2" />
-              {t('fileUpload')}
+              {t("fileUpload")}
             </label>
           </Button>
 
@@ -74,13 +79,16 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
                 <Link size={16} className="mr-2" />
-                {t('sampleUrl')}
+                {t("sampleUrl")}
                 <ChevronDown size={16} className="ml-2" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {samples.map((sample) => (
-                <DropdownMenuItem key={sample.key} onClick={() => loadSampleText(sample.value)}>
+                <DropdownMenuItem
+                  key={sample.key}
+                  onClick={() => loadSampleText(sample.value)}
+                >
                   {sample.label}
                 </DropdownMenuItem>
               ))}
@@ -89,17 +97,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
           <Button variant="ghost" size="sm" onClick={handleClear}>
             <X size={16} className="mr-2" />
-            {t('clear')}
+            {t("clear")}
           </Button>
 
           <ShimmerButton
             onClick={downloadResult}
             disabled={!canDownload || isProcessing}
-            variant={canDownload ? 'default' : 'outline'}
+            variant={canDownload ? "default" : "outline"}
             size="sm"
           >
             <Download size={16} className="mr-2" />
-            {t('download')}
+            {t("download")}
           </ShimmerButton>
         </div>
       </div>

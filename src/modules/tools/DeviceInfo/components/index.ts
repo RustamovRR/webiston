@@ -1,7 +1,7 @@
-export { default as ControlPanel } from './ControlPanel'
-export { default as BrowserInfoPanel } from './BrowserInfoPanel'
-export { default as SystemInfoPanel } from './SystemInfoPanel'
-export { default as ScreenInfoPanel } from './ScreenInfoPanel'
-export { default as DeviceInfoPanel } from './DeviceInfoPanel'
-export { default as ConnectionInfoPanel } from './ConnectionInfoPanel'
-export { default as InfoSection } from './InfoSection'
+export { default as ControlPanel } from "./ControlPanel"
+export { default as BrowserInfoPanel } from "./BrowserInfoPanel"
+export { default as SystemInfoPanel } from "./SystemInfoPanel"
+export { default as ScreenInfoPanel } from "./ScreenInfoPanel"
+export { default as DeviceInfoPanel } from "./DeviceInfoPanel"
+export { default as ConnectionInfoPanel } from "./ConnectionInfoPanel"
+export { default as InfoSection } from "./InfoSection"

@@ -1,29 +1,29 @@
-'use client'
+"use client"
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react"
 
 interface VideoEmbedProps {
   url: string
   title?: string
 }
 
-export default function VideoEmbed({ url, title = 'Video' }: VideoEmbedProps) {
+export default function VideoEmbed({ url, title = "Video" }: VideoEmbedProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Determine if it's a YouTube video
-  const isYouTube = url.includes('youtu.be') || url.includes('youtube.com')
+  const isYouTube = url.includes("youtu.be") || url.includes("youtube.com")
 
-  let youtubeId = ''
+  let youtubeId = ""
   if (isYouTube) {
-    if (url.includes('youtu.be/')) {
-      youtubeId = url.split('youtu.be/')[1]?.split('?')[0]
-    } else if (url.includes('youtube.com/watch')) {
+    if (url.includes("youtu.be/")) {
+      youtubeId = url.split("youtu.be/")[1]?.split("?")[0]
+    } else if (url.includes("youtube.com/watch")) {
       const urlObj = new URL(url)
-      youtubeId = urlObj.searchParams.get('v') || ''
-    } else if (url.includes('youtube.com/embed/')) {
-      youtubeId = url.split('youtube.com/embed/')[1]?.split('?')[0]
+      youtubeId = urlObj.searchParams.get("v") || ""
+    } else if (url.includes("youtube.com/embed/")) {
+      youtubeId = url.split("youtube.com/embed/")[1]?.split("?")[0]
     }
   }
 
@@ -34,17 +34,17 @@ export default function VideoEmbed({ url, title = 'Video' }: VideoEmbedProps) {
 
       const handleLoaded = () => setIsLoading(false)
       const handleError = () => {
-        console.error('Video failed to load:', url)
+        console.error("Video failed to load:", url)
         setError(true)
         setIsLoading(false)
       }
 
-      video.addEventListener('loadeddata', handleLoaded)
-      video.addEventListener('error', handleError)
+      video.addEventListener("loadeddata", handleLoaded)
+      video.addEventListener("error", handleError)
 
       return () => {
-        video.removeEventListener('loadeddata', handleLoaded)
-        video.removeEventListener('error', handleError)
+        video.removeEventListener("loadeddata", handleLoaded)
+        video.removeEventListener("error", handleError)
       }
     }
   }, [isYouTube, url])

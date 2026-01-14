@@ -1,0 +1,38 @@
+{
+  "name": "@webiston/transliteration",
+  "version": "1.0.0",
+  "description": "Uzbek Latin-Cyrillic transliteration library",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  },
+  "keywords": [
+    "transliteration",
+    "uzbek",
+    "cyrillic",
+    "latin"
+  ],
+  "author": "Webiston Team",
+  "license": "MIT"
+}

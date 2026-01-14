@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import * as React from "react"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 // Get the props type from the provider itself
 type ThemeProviderProps = React.ComponentProps<typeof NextThemesProvider>

@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { ToolHeader } from '@/components/shared'
+import React from "react"
+import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
+import { ToolHeader } from "@/components/shared"
 import {
   ControlPanel,
   OutputPanel,
   ResolutionCategoriesPanel,
   DeviceTypesPanel,
   ModeInfoPanel,
-  InfoSection,
-} from './components'
-import { useScreenResolution } from '@/hooks/tools'
+  InfoSection
+} from "./components"
+import { useScreenResolution } from "./hooks/useScreenResolution"
 
 export default function ScreenResolution() {
-  const t = useTranslations('ScreenResolutionPage.ToolHeader')
-  const tStats = useTranslations('ScreenResolutionPage.ControlPanel')
+  const t = useTranslations("ScreenResolutionPage.ToolHeader")
+  const tStats = useTranslations("ScreenResolutionPage.ControlPanel")
 
   const {
     screenInfo,
@@ -29,7 +29,7 @@ export default function ScreenResolution() {
     getScreenAnalysis,
     getResolutionCategories,
     getDeviceTypes,
-    getStats,
+    getStats
   } = useScreenResolution()
 
   const analysis = screenInfo ? getScreenAnalysis() : null
@@ -37,7 +37,7 @@ export default function ScreenResolution() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       <div className="relative grid gap-6 lg:grid-cols-2">
         <div className="">
@@ -53,7 +53,7 @@ export default function ScreenResolution() {
         </div>
 
         <div>
-          {' '}
+          {" "}
           <OutputPanel screenInfo={screenInfo} analysis={analysis} />
         </div>
       </div>
@@ -70,7 +70,10 @@ export default function ScreenResolution() {
           currentCategory={analysis?.resolutionCategory}
         />
 
-        <DeviceTypesPanel deviceTypes={getDeviceTypes()} currentDeviceType={analysis?.deviceType} />
+        <DeviceTypesPanel
+          deviceTypes={getDeviceTypes()}
+          currentDeviceType={analysis?.deviceType}
+        />
 
         <ModeInfoPanel isFullscreen={isFullscreen} analysis={analysis as any} />
       </motion.div>

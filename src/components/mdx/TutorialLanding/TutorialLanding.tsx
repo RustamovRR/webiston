@@ -1,5 +1,5 @@
-import { formatTutorialName } from '@/lib'
-import Link from 'next/link'
+import { formatTutorialName } from "@/lib"
+import Link from "next/link"
 
 interface TutorialLandingProps {
   tutorialId: string
@@ -11,20 +11,31 @@ interface TutorialLandingProps {
   navigationItems: any[]
 }
 
-export default function TutorialLanding({ tutorialId, tutorialData, navigationItems }: TutorialLandingProps) {
+export default function TutorialLanding({
+  tutorialId,
+  tutorialData,
+  navigationItems
+}: TutorialLandingProps) {
   const formattedTitle = formatTutorialName(tutorialId)
 
   return (
     <div className="w-full">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold">{tutorialData?.title || formattedTitle}</h1>
-        {tutorialData?.description && <p className="text-muted-foreground text-lg">{tutorialData.description}</p>}
+        <h1 className="mb-2 text-3xl font-bold">
+          {tutorialData?.title || formattedTitle}
+        </h1>
+        {tutorialData?.description && (
+          <p className="text-muted-foreground text-lg">
+            {tutorialData.description}
+          </p>
+        )}
       </div>
 
       <div className="bg-card mb-8 rounded-md border p-8 pt-0">
         <h2 className="mb-4 text-xl font-semibold">Boshlash</h2>
         <p className="text-muted-foreground mb-4">
-          Ushbu darslikka xush kelibsiz! O'rganishni boshlash uchun yon panel navigatsiyasidan mavzuni tanlang.
+          Ushbu darslikka xush kelibsiz! O'rganishni boshlash uchun yon panel
+          navigatsiyasidan mavzuni tanlang.
         </p>
 
         {navigationItems && navigationItems.length > 0 ? (
@@ -47,7 +58,9 @@ export default function TutorialLanding({ tutorialId, tutorialData, navigationIt
         ) : null}
         {tutorialData?.copyright && (
           <div className="mt-12 border-t pt-6">
-            <p className="text-muted-foreground text-sm">{tutorialData.copyright}</p>
+            <p className="text-muted-foreground text-sm">
+              {tutorialData.copyright}
+            </p>
           </div>
         )}
       </div>

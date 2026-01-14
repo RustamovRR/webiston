@@ -10,9 +10,12 @@ export const rgbToLab = (r: number, g: number, b: number) => {
   let bNorm = b / 255
 
   // Apply gamma correction
-  rNorm = rNorm > 0.04045 ? Math.pow((rNorm + 0.055) / 1.055, 2.4) : rNorm / 12.92
-  gNorm = gNorm > 0.04045 ? Math.pow((gNorm + 0.055) / 1.055, 2.4) : gNorm / 12.92
-  bNorm = bNorm > 0.04045 ? Math.pow((bNorm + 0.055) / 1.055, 2.4) : bNorm / 12.92
+  rNorm =
+    rNorm > 0.04045 ? Math.pow((rNorm + 0.055) / 1.055, 2.4) : rNorm / 12.92
+  gNorm =
+    gNorm > 0.04045 ? Math.pow((gNorm + 0.055) / 1.055, 2.4) : gNorm / 12.92
+  bNorm =
+    bNorm > 0.04045 ? Math.pow((bNorm + 0.055) / 1.055, 2.4) : bNorm / 12.92
 
   // Convert to XYZ using sRGB matrix
   let x = rNorm * 0.4124564 + gNorm * 0.3575761 + bNorm * 0.1804375
@@ -53,7 +56,8 @@ export const rgbToOklab = (r: number, g: number, b: number) => {
   const bNorm = b / 255
 
   // Linear RGB to OKLab (simplified)
-  const l = Math.round((0.2126 * rNorm + 0.7152 * gNorm + 0.0722 * bNorm) * 100) / 100
+  const l =
+    Math.round((0.2126 * rNorm + 0.7152 * gNorm + 0.0722 * bNorm) * 100) / 100
   const a = Math.round((rNorm - gNorm) * 0.5 * 100) / 100
   const bOk = Math.round((rNorm + gNorm - 2 * bNorm) * 0.25 * 100) / 100
 
@@ -96,12 +100,13 @@ export const labToRgb = (l: number, a: number, b: number) => {
   // Apply gamma correction
   r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r
   g = g > 0.0031308 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : 12.92 * g
-  bRgb = bRgb > 0.0031308 ? 1.055 * Math.pow(bRgb, 1 / 2.4) - 0.055 : 12.92 * bRgb
+  bRgb =
+    bRgb > 0.0031308 ? 1.055 * Math.pow(bRgb, 1 / 2.4) - 0.055 : 12.92 * bRgb
 
   return {
     r: Math.max(0, Math.min(255, Math.round(r * 255))),
     g: Math.max(0, Math.min(255, Math.round(g * 255))),
-    b: Math.max(0, Math.min(255, Math.round(bRgb * 255))),
+    b: Math.max(0, Math.min(255, Math.round(bRgb * 255)))
   }
 }
 
@@ -124,7 +129,7 @@ export const oklabToRgb = (l: number, a: number, b: number) => {
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
-    b: Math.round(bRgb * 255),
+    b: Math.round(bRgb * 255)
   }
 }
 
