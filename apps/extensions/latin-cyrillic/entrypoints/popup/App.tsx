@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
 import { useCallback, useEffect, useState } from "react"
 
@@ -12,6 +13,7 @@ function SunIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Sun icon"
     >
       <circle cx="12" cy="12" r="4" strokeWidth={2} />
       <path
@@ -29,6 +31,7 @@ function MoonIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Moon icon"
     >
       <path
         strokeWidth={2}
@@ -47,6 +50,7 @@ function CloseIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Close icon"
     >
       <path
         strokeLinecap="round"
@@ -65,6 +69,7 @@ function SwapIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Swap icon"
     >
       <path
         strokeLinecap="round"
@@ -83,6 +88,7 @@ function CheckIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Check icon"
     >
       <path
         strokeLinecap="round"
@@ -101,6 +107,7 @@ function CopyIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Copy icon"
     >
       <path
         strokeLinecap="round"
@@ -119,6 +126,7 @@ function CursorIcon() {
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
+      aria-label="Cursor icon"
     >
       <path
         strokeLinecap="round"
@@ -144,7 +152,7 @@ export default function App() {
       .get(["quickConvertEnabled", "theme"])
       .then((result) => {
         setFloatingEnabled(result.quickConvertEnabled !== false)
-        if (result.theme) setTheme(result.theme)
+        if (result.theme) setTheme(result.theme as Theme)
       })
   }, [])
 
@@ -228,13 +236,14 @@ export default function App() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-sky-400 to-sky-600 flex items-center justify-center">
             <svg
               className="w-5 h-5 text-white"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2.5"
+              aria-label="Logo"
             >
               <path d="M3 7l6 10 6-10M15 7l3 5 3-5" />
             </svg>

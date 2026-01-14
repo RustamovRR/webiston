@@ -53,7 +53,7 @@ export default defineBackground(() => {
         type: "REPLACE_SELECTION",
         text: result
       })
-    } catch (e) {
+    } catch {
       // Content script yuklanmagan bo'lsa, clipboard'ga nusxalash
       console.log("Content script not ready, copying to clipboard")
     }
@@ -72,7 +72,7 @@ export default defineBackground(() => {
         await browser.tabs.sendMessage(tab.id, {
           type: "CONVERT_SELECTION"
         })
-      } catch (e) {
+      } catch {
         console.log("Content script not ready")
       }
     }
