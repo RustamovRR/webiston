@@ -93,56 +93,42 @@
       "downloadAll": "Download all",
       "selected": "Selected"
     },
-    "Info": {
-      "title": "About Latin-Cyrillic Alphabet",
-      "description": "Information required for writing in the Uzbek language.",
-      "latinAlphabet": {
-        "title": "Latin Alphabet",
-        "description": "The writing system officially used in Uzbekistan since 1992.",
-        "letterCount": "Number of letters",
-        "specialChars": "Special characters",
-        "feature": "Feature",
-        "featureDesc": "Convenient for typing on a computer"
-      },
-      "cyrillicAlphabet": {
-        "title": "Cyrillic Alphabet",
-        "description": "Used during the Soviet era and still applied in some fields.",
-        "letterCount": "Number of letters",
-        "specialChars": "Special characters",
-        "feature": "Feature",
-        "featureDesc": "Similar to the Russian language"
-      },
-      "rules": {
-        "title": "Conversion Rules",
-        "latinToCyrillic": "Latin → Cyrillic:",
-        "cyrillicToLatin": "Cyrillic → Latin:",
-        "accuracy": "Automatic conversion works with 99.9% accuracy."
-      },
-      "history": {
-        "title": "Historical Information",
-        "period1": "1928-1940: Latin alphabet",
-        "period2": "1940-1992: Cyrillic alphabet",
-        "period3": "1992-present: Latin alphabet",
-        "note": "After gaining independence, Uzbekistan returned to the Latin alphabet."
-      },
-      "usage": {
-        "title": "Usage Areas",
-        "latin": "Latin:",
-        "latinDesc": "Official documents, education",
-        "cyrillic": "Cyrillic:",
-        "cyrillicDesc": "Literature, archives",
-        "mixed": "Mixed:",
-        "mixedDesc": "Internet, social media",
-        "note": "Both alphabets have their place and are important."
-      },
-      "tips": {
-        "title": "Useful Tips",
-        "tip1": "• Enter the full text, then convert",
-        "tip2": "• Use sample texts",
-        "tip3": "• Check the result",
-        "tip4": "• Can be saved as a file",
-        "note": "Prepare the text carefully for professional results."
-      }
+    "info": {
+      "latinTitle": "Latin Alphabet",
+      "latinDescription": "Officially adopted on September 2, 1993, by the decree of the President of the Republic of Uzbekistan.",
+      "latinItem1": "29 letters: A, B, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, O', G', Sh, Ch, Ng",
+      "latinItem2": "Complies with international standards, convenient for computer typing",
+      "latinItem3": "Since 2021, all official documents are only in Latin script",
+
+      "cyrillicTitle": "Cyrillic Alphabet",
+      "cyrillicDescription": "Writing system used during the Soviet Union period between 1940-1992.",
+      "cyrillicItem1": "35 letters: А, Б, В, Г, Д, Е, Ё, Ж, З, И, Й, К, Л, М, Н, О, П, Р, С, Т, У, Ф, Х, Ц, Ч, Ш, Ъ, Ь, Э, Ю, Я, Ў, Қ, Ғ, Ҳ",
+      "cyrillicItem2": "Similar to Russian, many literary works are in this script",
+      "cyrillicItem3": "Currently found in archival documents and classical literature",
+
+      "historyTitle": "Historical Changes",
+      "historyDescription": "Uzbek writing changed 4 times in 100 years: Arabic, Latin, Cyrillic, and Latin again.",
+      "historyItem1": "1928-1940: First Latin alphabet (Yanalif)",
+      "historyItem2": "1940-1992: Cyrillic alphabet (52 years)",
+      "historyItem3": "1993-present: Modern Latin alphabet (30+ years)",
+
+      "usageTitle": "Usage Areas",
+      "usageDescription": "Both alphabets are actively used in various fields and have their own significance.",
+      "usageItem1": "Latin: Education, government documents, internet, business",
+      "usageItem2": "Cyrillic: Classical literature, archives, older generation",
+      "usageItem3": "Mixed: Social media, personal correspondence",
+
+      "featuresTitle": "Converter Features",
+      "featuresDescription": "Professional conversion tool developed based on modern technologies.",
+      "featuresItem1": "99.9% accuracy - using special algorithms",
+      "featuresItem2": "Fast processing - large texts in seconds",
+      "featuresItem3": "File upload - supports PDF, DOCX, TXT formats",
+
+      "statisticsTitle": "Useful Statistics",
+      "statisticsDescription": "Interesting numbers and facts about the Uzbek language and alphabets.",
+      "statisticsItem1": "35+ million people speak Uzbek",
+      "statisticsItem2": "95% of Uzbekistan's population knows Latin script",
+      "statisticsItem3": "10,000+ books published annually in Latin script"
     }
   }
 }

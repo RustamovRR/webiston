@@ -1,25 +1,21 @@
 import {
-  RotateCcw,
+  Camera,
   FileText,
+  FileType,
+  Globe,
   Hash,
   Key,
-  QrCode,
-  Palette,
-  Lock,
   Link,
-  Globe,
-  Shuffle,
-  Monitor,
-  Camera,
-  Mic,
-  Keyboard,
-  Share2,
-  FileType,
-  Ruler,
-  User,
+  Lock,
   MapPin,
-  Globe2,
-  Server
+  Mic,
+  Monitor,
+  Palette,
+  QrCode,
+  RotateCcw,
+  Ruler,
+  Share2,
+  Shuffle
 } from "lucide-react"
 
 export interface Tool {
@@ -40,19 +36,19 @@ export interface ToolCategory {
 
 export const TOOLS_LIST: Tool[] = [
   {
-    tKey: "qrGenerator",
-    href: "/tools/qr-generator",
-    icon: QrCode,
-    color: "bg-yellow-500/20",
-    category: "generators",
-    audience: "general"
-  },
-  {
     tKey: "latinCyrillic",
     href: "/tools/latin-cyrillic",
     icon: RotateCcw,
     color: "bg-blue-500/20",
     category: "converters",
+    audience: "general"
+  },
+  {
+    tKey: "qrGenerator",
+    href: "/tools/qr-generator",
+    icon: QrCode,
+    color: "bg-yellow-500/20",
+    category: "generators",
     audience: "general"
   },
   {

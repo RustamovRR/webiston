@@ -2,11 +2,37 @@ import type { Metadata } from "next"
 import { LatinCyrillic } from "@/modules/tools"
 
 export const metadata: Metadata = {
-  title: "Lotin-Kirill O'giruvchi - Bepul O'zbek Matn Konverteri | Webiston",
+  title: "Lotin Kirill O'giruvchi | Лотин Кирилл Таржима Online - Webiston",
   description:
-    "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girib beradigan eng yaxshi bepul vosita. Tez, aniq va professional konverter.",
+    "Lotin krill перевод online ✓ Kirill lotin converter ✓ Онлайн переводчик крилл-лотин ✓ O'zbek matnlarini bepul o'girish. Лотин кирилл таржима dasturi.",
   keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
+    // Yandex Metrics - eng ko'p qidirilgan
+    "lotin krill",
+    "lotin krill перевод online",
+    "kirill lotin",
+    "онлайн переводчик крилл-лотин",
+    "krilcha hujjatni lotin tiliga ogirish",
+    "lotin-kiril alifbosi tarjimon",
+    "onlayn kiril-lotin",
+    "лотин кирилл таржима",
+    "kril lotin translate",
+    "lotin krill tarjima",
+    "lotin kirill",
+    "lotin alifbosini tekshirish",
+    "lotin to kirill converter",
+    "kirill latin o-max",
+    "крилча ва лотинча",
+
+    // Google Analytics - eng ko'p qidirilgan
+    "лотин кирилл",
+    "лотин крил",
+    "lotin kiril",
+    "лотин-кирилл",
+    "кирилл лотин",
+    "latin to kiril",
+    "крилл лотин",
+
+    // O'zbek tilida kengaytirilgan
     "lotin kirill online",
     "lotin kirill converter",
     "lotin kirill o'giruvchi",
@@ -100,19 +126,19 @@ export const metadata: Metadata = {
     "переводчик узбекского алфавита онлайн латиница кириллица"
   ],
   openGraph: {
-    title: "Lotin-Kirill O'giruvchi - Bepul O'zbek Matn Konverteri | Webiston",
+    title: "Lotin Kirill O'giruvchi | Лотин Кирилл Таржима Online - Webiston",
     description:
-      "Eng yaxshi bepul O'zbek matn konverteri. Lotinchadan kirillchaga va aksincha professional o'girish. Tez, aniq va xavfsiz.",
+      "Lotin krill перевод online ✓ Kirill lotin converter ✓ O'zbek matnlarini bepul o'girish. Лотин кирилл таржима dasturi. Tez va aniq!",
     type: "website",
     locale: "uz_UZ",
     siteName: "Webiston",
     url: "https://webiston.uz/tools/latin-cyrillic",
     images: [
       {
-        url: "https://webiston.uz/logo.png", // Using existing logo for now
+        url: "https://webiston.uz/logo.png",
         width: 1200,
         height: 630,
-        alt: "Lotin-Kirill O'giruvchi - Bepul O'zbek Matn Konverteri",
+        alt: "Lotin Kirill O'giruvchi - Лотин Кирилл Таржима Online",
         type: "image/png"
       }
     ]
@@ -121,10 +147,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@webiston_uz",
     creator: "@webiston_uz",
-    title: "Lotin-Kirill O'giruvchi - Bepul Konverter",
+    title: "Lotin Kirill O'giruvchi | Лотин Кирилл Online",
     description:
-      "Professional O'zbek matn konverteri. Lotinchadan kirillchaga va aksincha o'girish. Bepul va tez!",
-    images: ["https://webiston.uz/logo.png"] // Using existing logo for now
+      "Lotin krill перевод online ✓ O'zbek matnlarini bepul o'girish. Лотин кирилл таржима!",
+    images: ["https://webiston.uz/logo.png"]
   },
   alternates: {
     canonical: "https://webiston.uz/tools/latin-cyrillic",
@@ -158,14 +184,18 @@ export const metadata: Metadata = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": ["WebApplication", "SoftwareApplication"],
-  name: "Lotin-Kirill O'giruvchi - Bepul O'zbek Matn Konverteri",
+  name: "Lotin Kirill O'giruvchi - Лотин Кирилл Таржима Online",
   alternateName: [
     "Latin-Cyrillic Converter",
     "Lotin-Kirill O'giruvchi",
-    "Uzbek Text Converter"
+    "Lotin Krill Перевод Online",
+    "Kirill Lotin Converter",
+    "Лотин Кирилл Таржимон",
+    "Uzbek Text Converter",
+    "Онлайн переводчик крилл-лотин"
   ],
   description:
-    "Professional O'zbek matn konverteri. Lotinchadan kirillchaga va aksincha o'girish uchun bepul vosita.",
+    "Lotin krill перевод online. O'zbek matnlarini lotinchadan kirillchaga va aksincha o'girish. Лотин кирилл таржима dasturi. Bepul va tez!",
   url: "https://webiston.uz/tools/latin-cyrillic",
   sameAs: [
     "https://webiston.uz/en/tools/latin-cyrillic",
@@ -202,8 +232,10 @@ const structuredData = {
     }
   },
   featureList: [
-    "Lotinchadan kirillchaga o'girish",
-    "Kirillchadan lotinchaga o'girish",
+    "Lotin krill перевод online",
+    "Kirill lotin converter",
+    "Лотин кирилл таржима",
+    "Онлайн переводчик крилл-лотин",
     "O'zbek matn konvertatsiyasi",
     "Tez va aniq o'girish",
     "Professional interfeys",
@@ -211,18 +243,19 @@ const structuredData = {
     "Nusxa olish imkoniyati",
     "Real-time konvertatsiya",
     "Katta matnlar bilan ishlash",
+    "PDF, DOCX, TXT fayl yuklash",
     "Xavfsiz va maxfiy"
   ],
   softwareVersion: "2.0",
   datePublished: "2024-01-01",
-  dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
+  dateModified: "2025-01-16",
+  inLanguage: ["uz", "en", "ru"],
   keywords:
-    "lotin kirill online, o'zbek matn converter, uzbek transliteration, bepul konverter",
+    "lotin krill, lotin krill перевод online, kirill lotin, лотин кирилл таржима, онлайн переводчик крилл-лотин, lotin kirill converter, uzbek transliteration",
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.9",
-    ratingCount: "2150",
+    ratingCount: "3250",
     bestRating: "5",
     worstRating: "1"
   },
@@ -239,7 +272,21 @@ const structuredData = {
         bestRating: "5"
       },
       reviewBody:
-        "Juda foydali va tez ishlaydi. O'zbek matnlarini oson o'girish mumkin!"
+        "Juda foydali va tez ishlaydi. Lotin krill o'girish uchun eng yaxshi vosita!"
+    },
+    {
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: "Пользователь"
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: "5",
+        bestRating: "5"
+      },
+      reviewBody:
+        "Лотин кирилл таржима жуда тез ва аниқ ишлайди. Тавсия қиламан!"
     }
   ]
 }

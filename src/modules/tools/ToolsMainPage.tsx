@@ -1,21 +1,21 @@
 "use client"
 
-import { useState, useMemo, useRef, useEffect } from "react"
-import { Link } from "@/i18n/navigation"
+import { AnimatePresence, motion } from "framer-motion"
 import { Search, Sparkles } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useTranslations } from "next-intl"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AuroraText, GradientTabs } from "@/components/ui"
+import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
-  TOOLS_LIST,
-  TOOL_CATEGORIES,
-  FILTER_OPTIONS,
   AUDIENCE_FILTERS,
+  FILTER_OPTIONS,
+  TOOL_CATEGORIES,
+  TOOLS_LIST,
   type Tool
 } from "@/constants"
-import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 
 const ToolsMainPage = () => {
   const tMain = useTranslations("ToolsPage.Main")
