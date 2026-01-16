@@ -49,7 +49,7 @@ export function InfoSection() {
               key={index}
               className="group border-zinc-200 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
             >
-              <div className="p-6">
+              <div className="px-6">
                 {/* Header: Icon + Title */}
                 <div className="mb-4 flex items-center gap-3">
                   <div
