@@ -1,5 +1,8 @@
-import { CircleIcon, ArrowRightIcon, ToolsIcon } from "@/assets/icons"
-import { ButtonLink, SimpleCard, SectionTitle } from "@/components/shared"
+import type { Metadata } from "next"
+import Image from "next/image"
+import { getTranslations } from "next-intl/server"
+import { ArrowRightIcon, CircleIcon, ToolsIcon } from "@/assets/icons"
+import { ButtonLink, SectionTitle, SimpleCard } from "@/components/shared"
 import {
   AI_ENGINEERING_CHAPTERS,
   JAVASCRIPT_CHAPTERS,
@@ -7,9 +10,6 @@ import {
   TOOLS_LIST
 } from "@/constants"
 import { getTutorialImage } from "@/lib/mdx"
-import Image from "next/image"
-import { getTranslations } from "next-intl/server"
-import { Metadata } from "next"
 
 export async function generateMetadata({
   params

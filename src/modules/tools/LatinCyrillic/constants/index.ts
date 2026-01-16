@@ -23,7 +23,8 @@ export const getInfoCardsData = (t: (key: string) => string) => [
     description: t("info.latinDescription"),
     items: [t("info.latinItem1"), t("info.latinItem2"), t("info.latinItem3")],
     iconBgColor: "bg-blue-500/20",
-    iconColor: "text-blue-400"
+    iconColor: "text-blue-400",
+    dotColor: "bg-blue-400"
   },
   {
     icon: "Type",
@@ -35,7 +36,30 @@ export const getInfoCardsData = (t: (key: string) => string) => [
       t("info.cyrillicItem3")
     ],
     iconBgColor: "bg-purple-500/20",
-    iconColor: "text-purple-400"
+    iconColor: "text-purple-400",
+    dotColor: "bg-purple-400"
+  },
+  {
+    icon: "History",
+    title: t("info.historyTitle"),
+    description: t("info.historyDescription"),
+    items: [
+      t("info.historyItem1"),
+      t("info.historyItem2"),
+      t("info.historyItem3")
+    ],
+    iconBgColor: "bg-amber-500/20",
+    iconColor: "text-amber-400",
+    dotColor: "bg-amber-400"
+  },
+  {
+    icon: "Globe",
+    title: t("info.usageTitle"),
+    description: t("info.usageDescription"),
+    items: [t("info.usageItem1"), t("info.usageItem2"), t("info.usageItem3")],
+    iconBgColor: "bg-emerald-500/20",
+    iconColor: "text-emerald-400",
+    dotColor: "bg-emerald-400"
   },
   {
     icon: "Zap",
@@ -47,6 +71,20 @@ export const getInfoCardsData = (t: (key: string) => string) => [
       t("info.featuresItem3")
     ],
     iconBgColor: "bg-green-500/20",
-    iconColor: "text-green-400"
+    iconColor: "text-green-400",
+    dotColor: "bg-green-400"
+  },
+  {
+    icon: "BarChart3",
+    title: t("info.statisticsTitle"),
+    description: t("info.statisticsDescription"),
+    items: [
+      t("info.statisticsItem1"),
+      t("info.statisticsItem2"),
+      t("info.statisticsItem3")
+    ],
+    iconBgColor: "bg-rose-500/20",
+    iconColor: "text-rose-400",
+    dotColor: "bg-rose-400"
   }
 ]
