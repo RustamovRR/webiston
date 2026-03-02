@@ -88,16 +88,6 @@ export const useUserAgentAnalyzer = (
 
   const { onSuccess, onError } = options
 
-  // Initialize with current browser's User Agent
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const ua = navigator.userAgent
-      setCurrentUA(ua)
-      setUserAgent(ua)
-      parseUserAgent(ua)
-    }
-  }, [parseUserAgent])
-
   const parseUserAgent = useCallback(
     (ua: string): ParsedUserAgent | null => {
       if (!ua.trim()) {
@@ -287,6 +277,17 @@ export const useUserAgentAnalyzer = (
     },
     [onError]
   )
+
+  // Initialize with current browser's User Agent
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const ua = navigator.userAgent
+      setCurrentUA(ua)
+      setUserAgent(ua)
+      parseUserAgent(ua)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const analyzeUserAgent = useCallback(() => {
     if (!userAgent.trim()) {

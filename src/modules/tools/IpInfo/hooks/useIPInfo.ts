@@ -297,10 +297,6 @@ export const useIPInfo = () => {
   const [error, setError] = useState<string>("")
   const [currentProviderIndex, setCurrentProviderIndex] = useState(0)
 
-  useEffect(() => {
-    getCurrentIP()
-  }, [getCurrentIP])
-
   const getCurrentIP = async () => {
     try {
       // Use a free IP service to get user's current IP
@@ -319,6 +315,11 @@ export const useIPInfo = () => {
       }
     }
   }
+
+  useEffect(() => {
+    getCurrentIP()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const isValidIP = (ip: string): boolean => {
     const ipv4Regex =

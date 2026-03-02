@@ -139,7 +139,8 @@ export const useScreenResolution = (
     URL.revokeObjectURL(url)
 
     onSuccess?.("Ekran ma'lumotlari yuklab olindi")
-  }, [screenInfo, onSuccess, onError, getScreenAnalysis])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screenInfo, onSuccess, onError])
 
   const getDeviceType = useCallback((info: ScreenInfo): string => {
     const { width, height } = info
