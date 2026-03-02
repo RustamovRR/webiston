@@ -1,5 +1,5 @@
-import { formatTutorialName } from "@/lib"
 import Link from "next/link"
+import { formatTutorialName } from "@/lib"
 
 interface TutorialLandingProps {
   tutorialId: string
@@ -47,7 +47,7 @@ export default function TutorialLanding({
                   <Link
                     href={`${tutorialId}/${item.path}`}
                     key={index}
-                    className="text-muted-foreground duration-300 hover:text-white"
+                    className="text-muted-foreground duration-300 hover:text-black dark:hover:text-white"
                   >
                     {item.title}
                   </Link>
