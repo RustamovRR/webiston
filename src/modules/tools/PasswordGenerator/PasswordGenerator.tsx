@@ -1,8 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ToolHeader, DualTextPanel } from "@/components/shared"
-import { ConfigPanel, StrengthPanel, InfoSection } from "./components"
+import { DualTextPanel, ToolHeader } from "@/components/shared"
+import { ConfigPanel, InfoSection, StrengthPanel } from "./components"
 import { usePasswordGenerator } from "./hooks/usePasswordGenerator"
 
 const PasswordGenerator = () => {

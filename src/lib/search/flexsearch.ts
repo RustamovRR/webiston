@@ -1,5 +1,5 @@
 import { Index } from "flexsearch"
-import { ISearchHit } from "@/types/common"
+import type { ISearchHit } from "@/types/common"
 
 export interface SearchDocument {
   id: string

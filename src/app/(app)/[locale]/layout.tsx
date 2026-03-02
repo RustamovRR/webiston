@@ -1,12 +1,12 @@
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import Footer from "@/components/shared/Footer/Footer"
-import Header from "@/components/shared/Header/Header"
+import { notFound } from "next/navigation"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations } from "next-intl/server"
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Footer from "@/components/shared/Footer/Footer"
+import Header from "@/components/shared/Header/Header"
 
-const inter = Inter({ subsets: ["latin"] })
+const _inter = Inter({ subsets: ["latin"] })
 const locales = ["uz", "en"]
 
 export async function generateMetadata({

@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
-import { useCopyToClipboard } from "usehooks-ts"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface MetaData {
   title: string
@@ -437,7 +436,7 @@ export const useOgMetaGenerator = (
         return
       }
       if (field === "url" && value && !value.match(/^https?:\/\//)) {
-        value = "https://" + value
+        value = `https://${value}`
       }
 
       setMetaData((prev) => {
@@ -467,7 +466,7 @@ export const useOgMetaGenerator = (
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
         onSuccess?.("Meta taglar nusxalandi")
-      } catch (error) {
+      } catch (_error) {
         onError?.("Nusxalashda xatolik yuz berdi")
       }
     },
@@ -502,7 +501,7 @@ export const useOgMetaGenerator = (
 
         URL.revokeObjectURL(url)
         onSuccess?.("Meta taglar yuklab olindi")
-      } catch (error) {
+      } catch (_error) {
         onError?.("Faylni yuklab olishda xatolik yuz berdi")
       }
     },

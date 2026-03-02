@@ -1,14 +1,13 @@
 "use client"
 
-import { FileText, ArrowLeftRight, ExternalLink, Link } from "lucide-react"
+import { ArrowLeftRight, ExternalLink, FileText, Link } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import { DualTextPanel } from "@/components/shared/DualTextPanel/DualTextPanel"
 // Shared Components
 import { ToolHeader } from "@/components/shared/ToolHeader"
-import { DualTextPanel } from "@/components/shared/DualTextPanel/DualTextPanel"
 
 // Local Components
-import { InfoSection, ControlPanel } from "./components"
+import { ControlPanel, InfoSection } from "./components"
 
 // Utils & Hooks
 import { useUrlEncoder } from "./hooks/useUrlEncoder"

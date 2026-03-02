@@ -1,5 +1,5 @@
-import { socialLinks } from "@/constants"
 import { useTranslations } from "next-intl"
+import { socialLinks } from "@/constants"
 
 export default function Footer() {
   const t = useTranslations("Footer")

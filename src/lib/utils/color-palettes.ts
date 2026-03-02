@@ -2,7 +2,7 @@
  * Color palette generation utilities
  */
 
-import { hexToRgb, rgbToHsl, hslToRgb, rgbToHex } from "./color-conversions"
+import { hexToRgb, hslToRgb, rgbToHex, rgbToHsl } from "./color-conversions"
 
 // Generate Tailwind-style shade system
 export const generateTailwindShades = (baseColor: string) => {
@@ -84,10 +84,11 @@ export const generatePalette = (
   const palette: string[] = []
 
   switch (type) {
-    case "monochromatic":
+    case "monochromatic": {
       // Generate Tailwind-style shades for monochromatic
       const shades = generateTailwindShades(baseColor)
       return shades.map((shade) => shade.hex)
+    }
 
     case "analogous":
       // Generate analogous colors (neighboring hues) - 30° apart
@@ -98,7 +99,7 @@ export const generatePalette = (
       }
       break
 
-    case "complementary":
+    case "complementary": {
       // Generate true complementary color scheme
       const complementaryHue = (hsl.h + 180) % 360
       const splitComp1 = (hsl.h + 150) % 360
@@ -125,6 +126,7 @@ export const generatePalette = (
       palette.push(rgbToHex(newRgb1.r, newRgb1.g, newRgb1.b))
       palette.push(rgbToHex(newRgb2.r, newRgb2.g, newRgb2.b))
       break
+    }
   }
 
   return palette

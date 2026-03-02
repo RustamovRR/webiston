@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import { KeycodeInfo } from "@/modules/tools"
 
 export const metadata: Metadata = {

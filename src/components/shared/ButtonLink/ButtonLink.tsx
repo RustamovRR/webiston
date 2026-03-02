@@ -1,6 +1,6 @@
-import { FC, ReactNode } from "react"
-import { Link as I18nLink } from "@/i18n/navigation"
 import Link from "next/link"
+import type { FC, ReactNode } from "react"
+import { Link as I18nLink } from "@/i18n/navigation"
 import { cn } from "@/lib"
 
 interface IProps {

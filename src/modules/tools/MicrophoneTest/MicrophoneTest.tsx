@@ -1,17 +1,17 @@
 "use client"
 
-import { Mic } from "lucide-react"
-import { ToolHeader, StatsDisplay } from "@/components/shared"
 import { motion } from "framer-motion"
+import { Mic } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useMicrophoneTest } from "./hooks/useMicrophoneTest"
+import { StatsDisplay, ToolHeader } from "@/components/shared"
 import {
-  ControlPanel,
+  AudioPreviewModal,
   AudioPreviewPanel,
-  RecordedAudioPanel,
+  ControlPanel,
   InfoSection,
-  AudioPreviewModal
+  RecordedAudioPanel
 } from "./components"
+import { useMicrophoneTest } from "./hooks/useMicrophoneTest"
 
 export default function MicrophoneTest() {
   const t = useTranslations("MicrophoneTestPage.ToolHeader")

@@ -1,6 +1,6 @@
-import React from "react"
 import { AlertCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 interface ErrorDisplayProps {
   error: string

@@ -1,12 +1,12 @@
+import { notFound } from "next/navigation"
 import { TutorialLayout } from "@/components/mdx"
+import NavigationStoreInitializer from "@/components/mdx/NavigationStoreInitializer"
 import {
   getMDXContent,
   getTutorialNavigation,
   getTutorialTitle,
   serializeContent
 } from "@/lib/mdx"
-import { notFound } from "next/navigation"
-import NavigationStoreInitializer from "@/components/mdx/NavigationStoreInitializer"
 
 export default async function TutorialsLayout({ children, params }: any) {
   const { slug } = await params

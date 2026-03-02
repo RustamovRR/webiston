@@ -1,6 +1,6 @@
-import React from "react"
-import { FileJson, Database } from "lucide-react"
+import { Database, FileJson } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("JsonFormatterPage.Info")

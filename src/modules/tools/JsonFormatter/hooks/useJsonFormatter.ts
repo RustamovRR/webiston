@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
 
 // Sample JSON data moved to constants
 export const SAMPLE_JSON_DATA = {
@@ -48,7 +48,7 @@ export const useJsonFormatter = () => {
 
     try {
       const parsed = JSON.parse(inputJson)
-      const formatted = JSON.stringify(parsed, null, parseInt(indentation))
+      const formatted = JSON.stringify(parsed, null, parseInt(indentation, 10))
       const minified = JSON.stringify(parsed)
       return { formatted, error: "", isValid: true, minified }
     } catch (error) {

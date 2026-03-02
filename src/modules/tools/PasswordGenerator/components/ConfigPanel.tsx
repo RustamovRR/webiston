@@ -1,19 +1,18 @@
 "use client"
 
-import { useState } from "react"
 import {
-  RefreshCw,
+  Check,
+  Copy,
+  Download,
   Eye,
   EyeOff,
-  Download,
-  Copy,
-  Check,
   Key,
+  RefreshCw,
   Shield
 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
 import { cn } from "@/lib"
 
 interface PasswordSettings {
@@ -158,7 +157,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               max="128"
               value={settings.length}
               onChange={(e) =>
-                onUpdateSettings({ length: parseInt(e.target.value) })
+                onUpdateSettings({ length: parseInt(e.target.value, 10) })
               }
               className="w-full accent-blue-500"
             />

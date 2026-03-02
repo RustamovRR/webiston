@@ -1,16 +1,15 @@
 "use client"
 
-import React from "react"
 import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
 import { ToolHeader } from "@/components/shared"
 import {
   ControlPanel,
-  OutputPanel,
-  ResolutionCategoriesPanel,
   DeviceTypesPanel,
+  InfoSection,
   ModeInfoPanel,
-  InfoSection
+  OutputPanel,
+  ResolutionCategoriesPanel
 } from "./components"
 import { useScreenResolution } from "./hooks/useScreenResolution"
 

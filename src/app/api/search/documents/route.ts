@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
-import { SearchDocument } from "@/lib/search/flexsearch"
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 import matter from "gray-matter"
+import { NextResponse } from "next/server"
+import type { SearchDocument } from "@/lib/search/flexsearch"
 
 export async function GET() {
   try {
@@ -163,7 +163,7 @@ async function processBookDirectory(
 
           // Create proper URL path
           let urlPath =
-            `/books/${bookName}/${currentPath ? currentPath + "/" : ""}${file.name.replace(".mdx", "")}`
+            `/books/${bookName}/${currentPath ? `${currentPath}/` : ""}${file.name.replace(".mdx", "")}`
               .replace(/\/+/g, "/") // Remove double slashes
               .replace(/\/$/, "") // Remove trailing slash
 
@@ -315,7 +315,7 @@ function extractKeywords(content: string, title: string): string[] {
     "those"
   ])
 
-  const words = (content + " " + title)
+  const words = `${content} ${title}`
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
@@ -337,8 +337,8 @@ function extractKeywords(content: string, title: string): string[] {
 // Parse content into sections based on headers
 function parseContentSections(
   markdownContent: string,
-  pageTitle: string,
-  urlPath: string
+  _pageTitle: string,
+  _urlPath: string
 ) {
   const sections: Array<{ title: string; content: string; anchor: string }> = []
   const lines = markdownContent.split("\n")

@@ -1,8 +1,9 @@
 "use client"
 
 import { Camera, CameraOff, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 import { ShimmerButton } from "@/components/ui"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { useTranslations } from "next-intl"
 
 interface Camera {
   deviceId: string

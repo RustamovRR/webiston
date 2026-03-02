@@ -1,11 +1,11 @@
-import React from "react"
 import { Download } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { CodeHighlight } from "@/components/ui"
+import type React from "react"
 import {
   TerminalInput,
   type TerminalInputAction
 } from "@/components/shared/TerminalInput"
+import { CodeHighlight } from "@/components/ui"
 
 interface TokenPartsProps {
   header: any

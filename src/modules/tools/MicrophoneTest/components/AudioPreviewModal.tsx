@@ -1,11 +1,11 @@
 "use client"
 
-import { X, Download, Play, Pause } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useRef, useEffect } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Download, Pause, Play, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { RecordedAudio } from "../hooks/useMicrophoneTest"
+import { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
+import type { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface AudioPreviewModalProps {
   audio: RecordedAudio | null
@@ -52,8 +52,8 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
       if (
         !audio.duration &&
         audioElement.duration &&
-        !isNaN(audioElement.duration) &&
-        isFinite(audioElement.duration)
+        !Number.isNaN(audioElement.duration) &&
+        Number.isFinite(audioElement.duration)
       ) {
         setDuration(audioElement.duration)
       }
@@ -69,8 +69,8 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
       if (
         !audio.duration &&
         audioElement.duration &&
-        !isNaN(audioElement.duration) &&
-        isFinite(audioElement.duration)
+        !Number.isNaN(audioElement.duration) &&
+        Number.isFinite(audioElement.duration)
       ) {
         setDuration(audioElement.duration)
       }
@@ -104,7 +104,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
         await audioRef.current.play()
         setIsPlaying(true)
       }
-    } catch (error) {
+    } catch (_error) {
       setIsPlaying(false)
     }
   }
@@ -122,13 +122,13 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
     try {
       audioRef.current.currentTime = newTime
       setCurrentTime(newTime)
-    } catch (error) {
+    } catch (_error) {
       // Silently handle seek errors
     }
   }
 
   const formatTime = (time: number) => {
-    if (!time || !isFinite(time) || isNaN(time)) return "0:00"
+    if (!time || !Number.isFinite(time) || Number.isNaN(time)) return "0:00"
 
     const mins = Math.floor(time / 60)
     const secs = Math.floor(time % 60)
@@ -219,7 +219,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
                     className="absolute top-0 left-0 h-full rounded-full bg-blue-500"
                     style={{
                       width:
-                        duration && duration > 0 && isFinite(duration)
+                        duration && duration > 0 && Number.isFinite(duration)
                           ? `${Math.min((currentTime / duration) * 100, 100)}%`
                           : "0%"
                     }}

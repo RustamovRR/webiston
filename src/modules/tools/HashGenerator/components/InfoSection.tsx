@@ -1,6 +1,6 @@
-import React from "react"
+import { Hash, Shield, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Shield, Zap, Hash } from "lucide-react"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("HashGeneratorPage.Info")

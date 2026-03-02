@@ -1,7 +1,7 @@
-import React from "react"
-import { RefreshCw, Download, Circle, Palette, Zap } from "lucide-react"
+import { Circle, Download, Palette, RefreshCw, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
+import type React from "react"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 
 interface ControlPanelProps {
   paletteType: "monochromatic" | "analogous" | "complementary"

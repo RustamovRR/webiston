@@ -1,10 +1,10 @@
 "use client"
 
-import { Camera, Image, Play, Square } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ShimmerButton } from "@/components/ui"
 import { motion } from "framer-motion"
+import { Camera, Image, Play, Square } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { ShimmerButton } from "@/components/ui"
+import { Button } from "@/components/ui/button"
 import { VideoPreview } from "./VideoPreview"
 
 interface VideoPreviewPanelProps {

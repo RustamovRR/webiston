@@ -1,12 +1,12 @@
 "use client"
 
-import { Copy, Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ToolHeader, StatsDisplay } from "@/components/shared"
-import { DualTextPanel } from "@/components/shared/DualTextPanel"
-import { ConfigPanel, InfoSection, HelpSection } from "./components"
-import { useLoremIpsum } from "./hooks/useLoremIpsum"
+import { Check, Copy } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { StatsDisplay, ToolHeader } from "@/components/shared"
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { Button } from "@/components/ui/button"
+import { ConfigPanel, HelpSection, InfoSection } from "./components"
+import { useLoremIpsum } from "./hooks/useLoremIpsum"
 
 export default function LoremIpsumPage() {
   const t = useTranslations("LoremIpsumPage.ToolHeader")
@@ -54,7 +54,7 @@ export default function LoremIpsumPage() {
         sourcePlaceholder={tPanel("sourcePlaceholder")}
         sourceLabel={tPanel("sourceLabel")}
         targetLabel={tPanel("targetLabel")}
-        onSourceChange={(text) => {
+        onSourceChange={(_text) => {
           // Allow manual editing if needed
         }}
         variant="terminal"

@@ -1,20 +1,18 @@
-import { useState, useMemo, useCallback } from "react"
-import { getColorByName } from "@/constants/color-names"
+import { useCallback, useMemo, useState } from "react"
 import {
-  parseColorInput,
-  isValidColor,
-  hexToRgb,
-  rgbToHsl,
-  hslToRgb,
-  rgbToHex,
-  rgbToLab,
-  labToLch,
-  rgbToOklab,
-  oklabToOklch,
-  generateTailwindShades,
+  addToColorHistory,
   generatePalette,
+  generateTailwindShades,
+  hexToRgb,
+  hslToRgb,
   isValidHex,
-  addToColorHistory
+  labToLch,
+  oklabToOklch,
+  parseColorInput,
+  rgbToHex,
+  rgbToHsl,
+  rgbToLab,
+  rgbToOklab
 } from "@/lib/utils"
 
 export interface ColorFormats {
@@ -125,34 +123,29 @@ export const useColorConverter = ({
 
       onSuccess?.("Rang muvaffaqiyatli konvertatsiya qilindi")
       return result
-    } catch (error) {
+    } catch (_error) {
       onError?.("Rang konvertatsiyasida xatolik yuz berdi")
       return null
     }
-  }, [
-    inputColor,
-    parseColorInput,
-    rgbToHsl,
-    rgbToLab,
-    labToLch,
-    rgbToOklab,
-    oklabToOklch,
-    rgbToHex,
-    onSuccess,
-    onError
-  ])
+  }, [inputColor, onSuccess, onError])
 
   // Set color from different formats
-  const setColorFromRgb = useCallback((r: number, g: number, b: number) => {
-    const hex = rgbToHex(r, g, b)
-    setInputColor(hex)
-  }, [])
+  const setColorFromRgb = useCallback(
+    (r: number, g: number, b: number) => {
+      const hex = rgbToHex(r, g, b)
+      setInputColor(hex)
+    },
+    [setInputColor]
+  )
 
-  const setColorFromHsl = useCallback((h: number, s: number, l: number) => {
-    const rgb = hslToRgb(h, s, l)
-    const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
-    setInputColor(hex)
-  }, [])
+  const setColorFromHsl = useCallback(
+    (h: number, s: number, l: number) => {
+      const rgb = hslToRgb(h, s, l)
+      const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
+      setInputColor(hex)
+    },
+    [setInputColor]
+  )
 
   // Get color name (basic implementation)
   const getColorName = useCallback((hex: string): string => {

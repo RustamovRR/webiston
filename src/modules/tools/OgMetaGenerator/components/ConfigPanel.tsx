@@ -1,6 +1,6 @@
 "use client"
 
-import { Settings, Eye } from "lucide-react"
+import { Eye, Settings } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { GradientTabs } from "@/components/ui"
 

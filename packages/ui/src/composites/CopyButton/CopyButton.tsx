@@ -1,8 +1,8 @@
 "use client"
 
 import { Check, Copy } from "lucide-react"
-import { useCopyToClipboard } from "usehooks-ts"
 import { useState } from "react"
+import { useCopyToClipboard } from "usehooks-ts"
 import { Button } from "../../primitives/button"
 
 interface CopyButtonProps {

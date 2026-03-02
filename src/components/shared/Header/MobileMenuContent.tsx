@@ -2,9 +2,9 @@
 
 import Sidebar from "@/components/mdx/Sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useNavigationStore } from "@/stores/navigationStore"
 import Search from "../Search"
 import { ThemeSwitcher } from "../ThemeSwitcher"
-import { useNavigationStore } from "@/stores/navigationStore"
 
 interface MobileMenuContentProps {
   tutorialId: string

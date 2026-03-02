@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
 
 interface JWTPayload {
   [key: string]: any
@@ -106,7 +106,7 @@ export const useJwtDecoder = () => {
         signature,
         isValid: true
       }
-    } catch (error) {
+    } catch (_error) {
       return {
         header: {},
         payload: {},
@@ -198,7 +198,7 @@ export const useJwtDecoder = () => {
       a.download = "jwt-header.json"
       a.click()
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (_error) {
       alert(tFileErrors("downloadError"))
     }
   }, [result, tFileErrors])
@@ -215,7 +215,7 @@ export const useJwtDecoder = () => {
       a.download = "jwt-payload.json"
       a.click()
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (_error) {
       alert(tFileErrors("downloadError"))
     }
   }, [result, tFileErrors])

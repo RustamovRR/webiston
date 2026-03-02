@@ -1,6 +1,6 @@
-import React from "react"
-import { FileText, Database } from "lucide-react"
+import { Database, FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("Base64ConverterPage.Info")

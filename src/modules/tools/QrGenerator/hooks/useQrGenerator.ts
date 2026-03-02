@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 
 export type QrSize = 150 | 200 | 300 | 400
 export type QrErrorLevel = "L" | "M" | "Q" | "H"
@@ -183,93 +183,88 @@ export const useQrGenerator = ({
       custom: QrCustomization
     ) => {
       if (!text.trim()) return null
+      // Create canvas
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+      if (!ctx) throw new Error("Canvas not supported")
 
-      try {
-        // Create canvas
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
-        if (!ctx) throw new Error("Canvas not supported")
+      canvas.width = size
+      canvas.height = size
 
-        canvas.width = size
-        canvas.height = size
+      // Get base QR image
+      const baseQrUrl = generateQrUrl(text, size, errorLevel, custom)
+      const qrImage = new Image()
+      qrImage.crossOrigin = "anonymous"
 
-        // Get base QR image
-        const baseQrUrl = generateQrUrl(text, size, errorLevel, custom)
-        const qrImage = new Image()
-        qrImage.crossOrigin = "anonymous"
+      return new Promise<string>((resolve, reject) => {
+        qrImage.onload = async () => {
+          try {
+            // Draw background
+            ctx.fillStyle = custom.backgroundColor
+            ctx.fillRect(0, 0, size, size)
 
-        return new Promise<string>((resolve, reject) => {
-          qrImage.onload = async () => {
-            try {
-              // Draw background
-              ctx.fillStyle = custom.backgroundColor
+            // Draw QR code
+            ctx.drawImage(qrImage, 0, 0, size, size)
+
+            // Add gradient overlay if enabled
+            console.log("Gradient enabled:", custom.gradientEnabled)
+            console.log("Gradient end color:", custom.gradientEndColor)
+            if (custom.gradientEnabled && custom.gradientEndColor) {
+              const gradient =
+                custom.gradientDirection === "radial"
+                  ? ctx.createRadialGradient(
+                      size / 2,
+                      size / 2,
+                      0,
+                      size / 2,
+                      size / 2,
+                      size / 2
+                    )
+                  : custom.gradientDirection === "horizontal"
+                    ? ctx.createLinearGradient(0, 0, size, 0)
+                    : custom.gradientDirection === "vertical"
+                      ? ctx.createLinearGradient(0, 0, 0, size)
+                      : ctx.createLinearGradient(0, 0, size, size)
+
+              gradient.addColorStop(0, `${custom.foregroundColor}80`)
+              gradient.addColorStop(1, `${custom.gradientEndColor}80`)
+
+              ctx.globalCompositeOperation = "multiply"
+              ctx.fillStyle = gradient
               ctx.fillRect(0, 0, size, size)
+              ctx.globalCompositeOperation = "source-over"
+            }
 
-              // Draw QR code
-              ctx.drawImage(qrImage, 0, 0, size, size)
+            // Add logo if present
+            if (custom.logo) {
+              const logoImage = new Image()
+              logoImage.crossOrigin = "anonymous"
+              logoImage.onload = () => {
+                const logoSize = (size * custom.logoSize) / 100
+                const logoX = (size - logoSize) / 2
+                const logoY = (size - logoSize) / 2
 
-              // Add gradient overlay if enabled
-              console.log("Gradient enabled:", custom.gradientEnabled)
-              console.log("Gradient end color:", custom.gradientEndColor)
-              if (custom.gradientEnabled && custom.gradientEndColor) {
-                const gradient =
-                  custom.gradientDirection === "radial"
-                    ? ctx.createRadialGradient(
-                        size / 2,
-                        size / 2,
-                        0,
-                        size / 2,
-                        size / 2,
-                        size / 2
-                      )
-                    : custom.gradientDirection === "horizontal"
-                      ? ctx.createLinearGradient(0, 0, size, 0)
-                      : custom.gradientDirection === "vertical"
-                        ? ctx.createLinearGradient(0, 0, 0, size)
-                        : ctx.createLinearGradient(0, 0, size, size)
+                // Draw white background for logo
+                ctx.fillStyle = "white"
+                ctx.fillRect(logoX - 4, logoY - 4, logoSize + 8, logoSize + 8)
 
-                gradient.addColorStop(0, custom.foregroundColor + "80")
-                gradient.addColorStop(1, custom.gradientEndColor + "80")
+                // Draw logo
+                ctx.drawImage(logoImage, logoX, logoY, logoSize, logoSize)
 
-                ctx.globalCompositeOperation = "multiply"
-                ctx.fillStyle = gradient
-                ctx.fillRect(0, 0, size, size)
-                ctx.globalCompositeOperation = "source-over"
-              }
-
-              // Add logo if present
-              if (custom.logo) {
-                const logoImage = new Image()
-                logoImage.crossOrigin = "anonymous"
-                logoImage.onload = () => {
-                  const logoSize = (size * custom.logoSize) / 100
-                  const logoX = (size - logoSize) / 2
-                  const logoY = (size - logoSize) / 2
-
-                  // Draw white background for logo
-                  ctx.fillStyle = "white"
-                  ctx.fillRect(logoX - 4, logoY - 4, logoSize + 8, logoSize + 8)
-
-                  // Draw logo
-                  ctx.drawImage(logoImage, logoX, logoY, logoSize, logoSize)
-
-                  resolve(canvas.toDataURL("image/png"))
-                }
-                logoImage.onerror = () => resolve(canvas.toDataURL("image/png"))
-                logoImage.src = custom.logo
-              } else {
                 resolve(canvas.toDataURL("image/png"))
               }
-            } catch (error) {
-              reject(error)
+              logoImage.onerror = () => resolve(canvas.toDataURL("image/png"))
+              logoImage.src = custom.logo
+            } else {
+              resolve(canvas.toDataURL("image/png"))
             }
+          } catch (error) {
+            reject(error)
           }
-          qrImage.onerror = () => reject(new Error("Failed to load QR image"))
-          qrImage.src = baseQrUrl
-        })
-      } catch (error) {
-        throw error
-      }
+        }
+        qrImage.onerror = () => reject(new Error("Failed to load QR image"))
+        qrImage.src = baseQrUrl
+      })
     },
     [generateQrUrl]
   )

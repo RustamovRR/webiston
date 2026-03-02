@@ -110,7 +110,6 @@ export const TextInputPanel: React.FC<TextInputPanelProps> = ({
             className="flex-1 resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0 focus:outline-none"
             placeholder={placeholder}
             readOnly={readOnly}
-            autoFocus={autoFocus}
           />
         )}
       </div>

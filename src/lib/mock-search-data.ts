@@ -1,4 +1,4 @@
-import { ISearchHit } from "@/types/common"
+import type { ISearchHit } from "@/types/common"
 
 export const MOCK_SEARCH_DATA: ISearchHit[][] = [
   [

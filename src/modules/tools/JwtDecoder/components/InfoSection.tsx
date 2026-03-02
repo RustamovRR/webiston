@@ -1,6 +1,6 @@
-import React from "react"
-import { Shield, Key } from "lucide-react"
+import { Key, Shield } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("JwtDecoderPage.InfoSection")

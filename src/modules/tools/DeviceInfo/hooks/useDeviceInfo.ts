@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useCopyToClipboard } from "usehooks-ts"
 
 // Sample detection results for demo
-const SAMPLE_DEVICE_INFO = {
+const _SAMPLE_DEVICE_INFO = {
   browser: {
     name: "Chrome",
     version: "120.0.6099.109",
@@ -187,7 +187,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
       onError?.("Qurilma ma'lumotlarini yuklashda xatolik yuz berdi")
       setIsLoading(false)
     }
-  }, [])
+  }, [onError, onSuccess])
 
   const handleCopy = useCallback(
     async (text: string, type: string) => {
@@ -331,7 +331,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
       window.removeEventListener("orientationchange", handleOrientationChange)
       window.removeEventListener("resize", handleOrientationChange)
     }
-  }, [])
+  }, [detectDevice, deviceInfo])
 
   return {
     // State

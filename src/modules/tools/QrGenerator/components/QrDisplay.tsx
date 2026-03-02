@@ -1,12 +1,15 @@
-import React, { useState } from "react"
-import { Copy, Check, Download, Eye } from "lucide-react"
+import { Check, Copy, Download, Eye } from "lucide-react"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
+import type React from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib"
-import { QrSize, QrErrorLevel } from "../hooks/useQrGenerator"
-
-import type { QrCustomization } from "../hooks/useQrGenerator"
-import Image from "next/image"
+import type {
+  QrCustomization,
+  QrErrorLevel,
+  QrSize
+} from "../hooks/useQrGenerator"
 
 interface QrDisplayProps {
   qrUrl: string
@@ -132,7 +135,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                   <span
                     className="rounded px-2 py-1"
                     style={{
-                      backgroundColor: customization.foregroundColor + "20",
+                      backgroundColor: `${customization.foregroundColor}20`,
                       color: customization.foregroundColor
                     }}
                   >
@@ -144,7 +147,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                       backgroundColor:
                         customization.backgroundColor === "#ffffff"
                           ? "#f3f4f6"
-                          : customization.backgroundColor + "40",
+                          : `${customization.backgroundColor}40`,
                       color:
                         customization.backgroundColor === "#ffffff"
                           ? "#374151"
@@ -156,7 +159,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                   {customization.logo && (
                     <span
                       style={{
-                        backgroundColor: customization.foregroundColor + "20",
+                        backgroundColor: `${customization.foregroundColor}20`,
                         color: customization.foregroundColor
                       }}
                       className="rounded px-2 py-1"

@@ -1,15 +1,15 @@
+import { notFound } from "next/navigation"
 import {
   ErrorContent,
   TutorialContent,
   TutorialLanding
 } from "@/components/mdx"
 import {
-  getTutorialInfo,
+  getAllTutorialPaths,
   getMDXContent,
-  serializeContent,
-  getAllTutorialPaths
+  getTutorialInfo,
+  serializeContent
 } from "@/lib/mdx"
-import { notFound } from "next/navigation"
 
 export async function generateStaticParams() {
   const paths = await getAllTutorialPaths()

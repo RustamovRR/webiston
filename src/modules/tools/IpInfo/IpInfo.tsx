@@ -1,14 +1,13 @@
 "use client"
 
-import React from "react"
 import { useTranslations } from "next-intl"
 import { ToolHeader } from "@/components/shared"
 import {
   ControlPanel,
-  OutputPanel,
   CurrentIpPanel,
-  SampleIpsPanel,
-  InfoSection
+  InfoSection,
+  OutputPanel,
+  SampleIpsPanel
 } from "./components"
 import { useIPInfo } from "./hooks/useIPInfo"
 

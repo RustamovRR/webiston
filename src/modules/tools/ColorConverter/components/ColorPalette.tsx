@@ -1,6 +1,6 @@
-import React from "react"
-import { Palette, Copy, Check } from "lucide-react"
+import { Check, Copy, Palette } from "lucide-react"
 import { useTranslations } from "next-intl"
+import React from "react"
 
 interface ColorPaletteProps {
   isValid: boolean

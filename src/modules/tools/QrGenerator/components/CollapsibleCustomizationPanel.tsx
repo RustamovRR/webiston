@@ -1,12 +1,13 @@
-import React, { useState } from "react"
 import { ChevronDown, ChevronUp, Palette, Sparkles } from "lucide-react"
+import Image from "next/image"
 import { useTranslations } from "next-intl"
+import type React from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib"
 import QrCustomizationPanel, {
   type QrCustomization
 } from "./QrCustomizationPanel"
-import Image from "next/image"
 
 interface CollapsibleCustomizationPanelProps {
   customization: QrCustomization
@@ -165,7 +166,7 @@ const CollapsibleCustomizationPanel: React.FC<
                           className="rounded-xl border-2 p-4 shadow-inner transition-all duration-500 ease-out"
                           style={{
                             backgroundColor: customization.backgroundColor,
-                            borderColor: customization.foregroundColor + "30",
+                            borderColor: `${customization.foregroundColor}30`,
                             borderRadius: customization.borderRadius
                               ? `${customization.borderRadius + 8}px`
                               : "12px"

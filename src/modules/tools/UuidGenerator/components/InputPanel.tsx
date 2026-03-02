@@ -1,6 +1,6 @@
-import React from "react"
 import { useTranslations } from "next-intl"
-import { UuidVersion, UuidFormat } from "../hooks/useUuidGenerator"
+import type React from "react"
+import type { UuidFormat, UuidVersion } from "../hooks/useUuidGenerator"
 
 interface InputPanelProps {
   count: number

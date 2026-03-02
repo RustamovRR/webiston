@@ -1,7 +1,8 @@
 "use client"
 
-import { FileType, Copy, RefreshCw, Download, Check, Type } from "lucide-react"
+import { Check, Copy, Download, FileType, RefreshCw, Type } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -11,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
 
 type GenerationType = "paragraphs" | "sentences" | "words" | "bytes"
 
@@ -141,7 +141,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               max="1000"
               value={settings.amount}
               onChange={(e) =>
-                updateSettings({ amount: parseInt(e.target.value) || 1 })
+                updateSettings({ amount: parseInt(e.target.value, 10) || 1 })
               }
               className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
             />

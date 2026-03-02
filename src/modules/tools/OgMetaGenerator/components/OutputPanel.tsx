@@ -1,10 +1,10 @@
 "use client"
 
-import { Code, FileText, Download } from "lucide-react"
+import { Code, Download, FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
+import { CopyButton, StatsDisplay } from "@/components/shared"
 import { CodeHighlight, GradientTabs } from "@/components/ui"
-import { StatsDisplay, CopyButton } from "@/components/shared"
+import { Button } from "@/components/ui/button"
 
 interface OutputPanelProps {
   generatedMeta: string

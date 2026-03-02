@@ -1,4 +1,4 @@
-import { UrlInfo } from "@/types"
+import type { UrlInfo } from "@/types"
 
 /**
  * Validate URL format

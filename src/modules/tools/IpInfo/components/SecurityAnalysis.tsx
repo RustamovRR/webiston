@@ -1,12 +1,12 @@
 "use client"
 
 import {
-  Shield,
   AlertTriangle,
   CheckCircle,
-  XCircle,
   Eye,
-  Server
+  Server,
+  Shield,
+  XCircle
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
@@ -130,8 +130,8 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
   } => {
     const metrics = getSecurityMetrics()
     const safeCount = metrics.filter((m) => m.status === "safe").length
-    const warningCount = metrics.filter((m) => m.status === "warning").length
-    const dangerCount = metrics.filter((m) => m.status === "danger").length
+    const _warningCount = metrics.filter((m) => m.status === "warning").length
+    const _dangerCount = metrics.filter((m) => m.status === "danger").length
 
     const score = Math.round((safeCount / metrics.length) * 100)
 

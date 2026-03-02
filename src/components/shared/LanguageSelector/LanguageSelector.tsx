@@ -1,8 +1,8 @@
 "use client"
 
-import { Globe, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ChevronDown, Globe } from "lucide-react"
 import dynamic from "next/dynamic"
+import { Button } from "@/components/ui/button"
 
 // Skeleton loading component
 const LanguageSelectorSkeleton = () => (

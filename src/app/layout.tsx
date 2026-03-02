@@ -1,11 +1,10 @@
 import "./globals.css"
-import { Metadata } from "next"
-import Script from "next/script"
-import dynamic from "next/dynamic"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
+import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
-import NextTopLoader from "nextjs-toploader"
 
 const inter = Inter({ subsets: ["latin"] })
 

@@ -1,6 +1,6 @@
-import React from "react"
-import { Link, Globe } from "lucide-react"
+import { Globe, Link } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("UrlEncoderPage.Info")

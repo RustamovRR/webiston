@@ -1,14 +1,14 @@
 "use client"
 
+import { PanelsTopLeft, PanelTop } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib"
 import type { TutorialNavigation } from "@/lib/mdx"
+import { useNavigationStore } from "@/stores/navigationStore"
 import Sidebar from "../Sidebar"
 import TableOfContents from "../TableOfContents"
 import TutorialLayoutContent from "../TutorialLayoutContent"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { PanelsTopLeft, PanelTop } from "lucide-react"
-import { useNavigationStore } from "@/stores/navigationStore"
 
 interface DocLayoutProps {
   children: React.ReactNode

@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
 import { useCallback, useEffect, useState } from "react"
 

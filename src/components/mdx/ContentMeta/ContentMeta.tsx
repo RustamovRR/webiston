@@ -1,6 +1,3 @@
-import { ArrowUpRightIcon } from "lucide-react"
-import Link from "next/link"
-
 interface ContentMetaProps {
   updatedAt?: string | null
 }

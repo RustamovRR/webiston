@@ -1,12 +1,12 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { Play, Square } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import type { AudioInfo, AudioStats } from "../hooks/useMicrophoneTest"
 import { AudioVisualizer } from "./AudioVisualizer"
-import { AudioStats, AudioInfo } from "../hooks/useMicrophoneTest"
 
 interface AudioPreviewPanelProps {
   isListening: boolean

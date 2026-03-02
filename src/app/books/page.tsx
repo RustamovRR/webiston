@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import { getAllTutorials } from "@/lib/mdx"
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import { getAllTutorials } from "@/lib/mdx"
 
 export const metadata: Metadata = {
   title: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar | Webiston",

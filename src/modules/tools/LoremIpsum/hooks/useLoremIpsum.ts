@@ -1,8 +1,7 @@
-import { useState, useCallback } from "react"
-import { useCopyToClipboard } from "usehooks-ts"
 import { useTranslations } from "next-intl"
+import { useCallback, useState } from "react"
+import { useCopyToClipboard } from "usehooks-ts"
 import {
-  LOREM_WORDS,
   ALTERNATIVE_TEXTS,
   LOREM_SAMPLE_SETTINGS
 } from "@/constants/tool-constants"
@@ -41,7 +40,7 @@ export const useLoremIpsum = () => {
       // Capitalize first word
       sentence[0] = sentence[0].charAt(0).toUpperCase() + sentence[0].slice(1)
 
-      return sentence.join(" ") + "."
+      return `${sentence.join(" ")}.`
     },
     [getRandomWord]
   )
@@ -72,7 +71,7 @@ export const useLoremIpsum = () => {
     let result = ""
 
     switch (settings.generationType) {
-      case "paragraphs":
+      case "paragraphs": {
         const paragraphs = []
         for (let i = 0; i < settings.amount; i++) {
           let paragraph = generateParagraph(words)
@@ -82,15 +81,15 @@ export const useLoremIpsum = () => {
             settings.startWithLorem &&
             settings.textType === "cicero"
           ) {
-            paragraph =
-              "Lorem ipsum " + paragraph.slice(paragraph.indexOf(" ") + 1)
+            paragraph = `Lorem ipsum ${paragraph.slice(paragraph.indexOf(" ") + 1)}`
           }
           paragraphs.push(paragraph)
         }
         result = paragraphs.join("\n\n")
         break
+      }
 
-      case "sentences":
+      case "sentences": {
         const sentences = []
         for (let i = 0; i < settings.amount; i++) {
           let sentence = generateSentence(words)
@@ -99,15 +98,15 @@ export const useLoremIpsum = () => {
             settings.startWithLorem &&
             settings.textType === "cicero"
           ) {
-            sentence =
-              "Lorem ipsum " + sentence.slice(sentence.indexOf(" ") + 1)
+            sentence = `Lorem ipsum ${sentence.slice(sentence.indexOf(" ") + 1)}`
           }
           sentences.push(sentence)
         }
         result = sentences.join(" ")
         break
+      }
 
-      case "words":
+      case "words": {
         const wordList = []
         for (let i = 0; i < settings.amount; i++) {
           if (
@@ -126,14 +125,16 @@ export const useLoremIpsum = () => {
         }
         result = wordList.join(" ")
         break
+      }
 
-      case "bytes":
+      case "bytes": {
         let text = ""
         while (text.length < settings.amount) {
-          text += getRandomWord(words) + " "
+          text += `${getRandomWord(words)} `
         }
         result = text.slice(0, settings.amount)
         break
+      }
     }
 
     // Set the new generated text

@@ -1,9 +1,9 @@
-import React from "react"
-import { useTranslations } from "next-intl"
 import { Hash } from "lucide-react"
-import { TerminalInput } from "@/components/shared/TerminalInput"
+import { useTranslations } from "next-intl"
+import type React from "react"
 import { CopyButton } from "@/components/shared/CopyButton"
-import { HashAlgorithm } from "../hooks/useHashGenerator"
+import { TerminalInput } from "@/components/shared/TerminalInput"
+import type { HashAlgorithm } from "../hooks/useHashGenerator"
 
 interface HashResult {
   algorithm: string
@@ -36,7 +36,7 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
     <div className="p-6">
       <div className="space-y-4">
         {hashResults.map((result) => {
-          const info = getAlgorithmInfo(result.algorithm as HashAlgorithm)
+          const _info = getAlgorithmInfo(result.algorithm as HashAlgorithm)
           return (
             <div
               key={result.algorithm}

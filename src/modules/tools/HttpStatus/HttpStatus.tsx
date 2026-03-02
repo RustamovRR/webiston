@@ -1,29 +1,25 @@
 "use client"
 
-import React from "react"
 import { motion } from "framer-motion"
 import {
-  Search,
+  BookOpen,
   Filter,
   Globe,
-  Code,
   Info,
-  BookOpen,
-  Zap,
-  Shield,
   RefreshCw,
-  Server
+  Search,
+  Server,
+  Shield,
+  Zap
 } from "lucide-react"
-
+// Shared Components
+import { SectionTitle, StatsDisplay, ToolHeader } from "@/components/shared"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 // UI Components
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { CodeHighlight } from "@/components/ui/code-highlight"
-
-// Shared Components
-import { ToolHeader, SectionTitle, StatsDisplay } from "@/components/shared"
+import { Input } from "@/components/ui/input"
 
 // Utils & Hooks
 import { useHttpStatus } from "./hooks/useHttpStatus"

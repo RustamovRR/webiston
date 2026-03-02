@@ -1,22 +1,22 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 
 // Shared Components
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 // Local Components
 import {
-  ControlPanel,
-  ColorInputPanel,
   ColorFormatsPanel,
+  ColorInputPanel,
   ColorPalette,
+  ControlPanel,
   InfoSection
 } from "./components"
-import TailwindShades from "./components/TailwindShades"
 import ColorHistory from "./components/ColorHistory"
 import GradientGenerator from "./components/GradientGenerator"
+import TailwindShades from "./components/TailwindShades"
 
 // Utils & Hooks
 import { useColorConverter } from "./hooks/useColorConverter"

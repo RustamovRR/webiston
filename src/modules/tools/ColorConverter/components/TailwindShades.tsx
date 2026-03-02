@@ -1,9 +1,8 @@
-import React from "react"
+import { Check, Copy } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Copy, Check } from "lucide-react"
+import React from "react"
 import { TerminalInput } from "@/components/shared/TerminalInput"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib"
 
 interface TailwindShadesProps {
   baseColor: string

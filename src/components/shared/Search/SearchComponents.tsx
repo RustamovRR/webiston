@@ -1,9 +1,9 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { ISearchHit } from "@/types"
 import { SearchIcon } from "lucide-react" // Keeping SearchIcon for NoResults
 import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import type { ISearchHit } from "@/types"
 
 interface GroupedHitProps {
   hits: ISearchHit[]
@@ -95,7 +95,6 @@ export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
         onChange={(e) => onChange(e.target.value)}
         placeholder="Mavzular va kodlar orasidan qidiring..."
         className="h-12 w-full rounded-md bg-[#F2F2F7] px-10 font-medium placeholder:text-gray-500 dark:bg-[#151515] dark:placeholder:text-gray-400"
-        autoFocus
       />
     </div>
   )

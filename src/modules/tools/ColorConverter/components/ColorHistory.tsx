@@ -1,18 +1,18 @@
-import React from "react"
+import { Check, Copy, Heart, History, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { History, Heart, Trash2, Copy, Check } from "lucide-react"
+import React from "react"
 import { TerminalInput } from "@/components/shared/TerminalInput"
 import { Button } from "@/components/ui/button"
 import {
-  getColorHistory,
-  getColorFavorites,
   addToColorFavorites,
-  removeFromColorFavorites,
-  isColorFavorite,
-  clearColorHistory,
-  clearColorFavorites,
+  type ColorFavorite,
   type ColorHistoryItem,
-  type ColorFavorite
+  clearColorFavorites,
+  clearColorHistory,
+  getColorFavorites,
+  getColorHistory,
+  isColorFavorite,
+  removeFromColorFavorites
 } from "@/lib/utils"
 
 interface ColorHistoryProps {
@@ -42,7 +42,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
   React.useEffect(() => {
     setHistory(getColorHistory())
     setFavorites(getColorFavorites())
-  }, [currentColor])
+  }, [])
 
   const copyToClipboard = async (color: string) => {
     try {

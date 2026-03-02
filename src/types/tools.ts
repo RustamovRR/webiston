@@ -1,4 +1,4 @@
-import { ConversionMode } from "./common"
+import type { ConversionMode } from "./common"
 
 // Tool specific types
 

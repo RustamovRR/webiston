@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
 
 // Sample URL data constants
 export const SAMPLE_URL_DATA = {
@@ -104,7 +104,7 @@ export const useUrlEncoder = () => {
 
     try {
       let output: string
-      let urlInfo: UrlInfo | undefined = undefined
+      let urlInfo: UrlInfo | undefined
 
       if (mode === "encode") {
         output = encodeURIComponent(inputText)
@@ -138,7 +138,7 @@ export const useUrlEncoder = () => {
 
       return { output: "", error: errorMessage, isValid: false }
     }
-  }, [inputText, mode])
+  }, [inputText, mode, tErrors])
 
   const handleModeSwitch = useCallback(() => {
     const newMode: ConversionMode = mode === "encode" ? "decode" : "encode"
@@ -159,14 +159,14 @@ export const useUrlEncoder = () => {
           try {
             const decoded = decodeURIComponent(inputText)
             newInput = decoded
-          } catch (error) {
+          } catch (_error) {
             // If decoding fails, keep current input
           }
         }
 
         setMode(newMode)
         setInputText(newInput)
-      } catch (error) {
+      } catch (_error) {
         // If conversion fails, just switch mode and keep current input
         setMode(newMode)
       }
@@ -243,7 +243,7 @@ export const useUrlEncoder = () => {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (_error) {
       alert(tErrors("downloadError"))
     }
   }, [result, mode, tErrors])

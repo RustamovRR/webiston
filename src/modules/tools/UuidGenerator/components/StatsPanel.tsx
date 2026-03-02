@@ -1,5 +1,5 @@
-import React from "react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 import { NumberTicker } from "@/components/ui/number-ticker"
 
 interface StatsData {

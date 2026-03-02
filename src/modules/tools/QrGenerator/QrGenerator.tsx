@@ -2,8 +2,8 @@
 
 import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ToolHeader, DualTextPanel } from "@/components/shared"
-import { ControlPanel, QrDisplay, InfoSection } from "./components"
+import { DualTextPanel, ToolHeader } from "@/components/shared"
+import { ControlPanel, InfoSection, QrDisplay } from "./components"
 import CollapsibleCustomizationPanel from "./components/CollapsibleCustomizationPanel"
 import { useQrGenerator } from "./hooks/useQrGenerator"
 
@@ -96,7 +96,7 @@ const QrGenerator = () => {
         sourceText={inputText}
         convertedText={
           customQrUrl
-            ? `${tResults("success")}\n\n${tResults("originalText")}\n${inputText.length > 100 ? inputText.substring(0, 100) + "..." : inputText}\n\n${tResults("size")} ${qrSize}x${qrSize} pixels\n${tResults("errorCorrection")} ${errorLevel}\n${tResults("type")} ${inputType}\n\n${tResults("note")}`
+            ? `${tResults("success")}\n\n${tResults("originalText")}\n${inputText.length > 100 ? `${inputText.substring(0, 100)}...` : inputText}\n\n${tResults("size")} ${qrSize}x${qrSize} pixels\n${tResults("errorCorrection")} ${errorLevel}\n${tResults("type")} ${inputType}\n\n${tResults("note")}`
             : ""
         }
         sourceLabel={tInput("title")}

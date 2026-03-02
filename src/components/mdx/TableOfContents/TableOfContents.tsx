@@ -1,9 +1,9 @@
 "use client"
 
-// import { useGetTutorialContentPath } from '@/hooks/queries'
-import { cn } from "@/lib"
 import Link from "next/link"
 import { useCallback, useEffect, useState } from "react"
+// import { useGetTutorialContentPath } from '@/hooks/queries'
+import { cn } from "@/lib"
 
 interface Heading {
   id: string

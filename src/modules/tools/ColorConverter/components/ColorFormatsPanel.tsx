@@ -1,6 +1,6 @@
-import React from "react"
 import { Palette } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 import {
   TerminalInput,
   type TerminalInputAction

@@ -1,6 +1,6 @@
-import React from "react"
 import { Key } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const SignatureInfo: React.FC = () => {
   const t = useTranslations("JwtDecoderPage.SignatureInfo")

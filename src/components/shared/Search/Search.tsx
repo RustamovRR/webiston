@@ -1,11 +1,11 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { ISearchHit } from "@/types/common"
 import { SearchIcon } from "lucide-react"
-import { RefObject, useCallback, useEffect, useRef, useState } from "react"
-import SearchDialog from "./SearchDialog"
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { Input } from "@/components/ui/input"
 import { searchEngine } from "@/lib/search/flexsearch"
+import type { ISearchHit } from "@/types/common"
+import SearchDialog from "./SearchDialog"
 
 export default function Search() {
   const [open, setOpen] = useState(false)

@@ -1,6 +1,6 @@
-import React from "react"
-import { Clock, Shield, Key } from "lucide-react"
+import { Clock, Key, Shield } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 interface TokenInfoProps {
   tokenInfo: {

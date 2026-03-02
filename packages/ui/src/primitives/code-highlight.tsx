@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import { cn } from "../utils/cn"
 
 interface CodeHighlightProps {
@@ -122,7 +121,7 @@ export function CodeHighlight({
       .replace(/\/\/.*$/gm, '<span class="text-gray-500">$&</span>') // line comments
   }
 
-  const lines = code.split("\n")
+  const _lines = code.split("\n")
   const highlightedCode = highlightCode(code, language)
   const highlightedLines = highlightedCode.split("\n")
 

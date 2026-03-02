@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 export type HashAlgorithm = "MD5" | "SHA1" | "SHA256" | "SHA512"
 
@@ -134,7 +134,7 @@ export const useHashGenerator = ({
           default:
             throw new Error(`Noma'lum algoritm: ${algorithm}`)
         }
-      } catch (error) {
+      } catch (_error) {
         throw new Error(`${algorithm} hash yaratishda xatolik`)
       }
     },
@@ -241,7 +241,7 @@ export const useHashGenerator = ({
       }
 
       // File type validation
-      const fileExtension = "." + file.name.split(".").pop()?.toLowerCase()
+      const fileExtension = `.${file.name.split(".").pop()?.toLowerCase()}`
       if (!ALLOWED_FILE_TYPES.includes(fileExtension)) {
         onError?.(
           `Faqat ${ALLOWED_FILE_TYPES.join(", ")} fayl turlari qo'llab-quvvatlanadi`

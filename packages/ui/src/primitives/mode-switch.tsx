@@ -1,7 +1,7 @@
-import React from "react"
-import { Button } from "./button"
-import { cn } from "../utils/cn"
+import type React from "react"
 import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { cn } from "../utils/cn"
+import { Button } from "./button"
 
 interface ModeSwitchOption {
   value: string

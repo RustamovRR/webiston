@@ -1,6 +1,6 @@
-import React from "react"
-import Link from "next/link"
 import { LinkIcon } from "lucide-react"
+import Link from "next/link"
+import type React from "react"
 
 interface HeadingLinkProps {
   id?: string

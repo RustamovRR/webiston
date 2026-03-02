@@ -1,18 +1,18 @@
 "use client"
 
-import { useJwtDecoder } from "./hooks/useJwtDecoder"
 import { useTranslations } from "next-intl"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 import {
   ControlPanel,
-  TokenInfoCards,
-  InfoSection,
-  SignatureSection,
-  SignatureInfo,
-  TokenParts,
   ErrorDisplay,
-  InputPanel
+  InfoSection,
+  InputPanel,
+  SignatureInfo,
+  SignatureSection,
+  TokenInfoCards,
+  TokenParts
 } from "./components"
+import { useJwtDecoder } from "./hooks/useJwtDecoder"
 
 const JwtDecoder = () => {
   const t = useTranslations("JwtDecoderPage.ToolHeader")

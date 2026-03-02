@@ -1,4 +1,3 @@
-import { cn } from "@/lib"
 import {
   AlertCircle,
   AlertTriangle,
@@ -6,7 +5,8 @@ import {
   Info,
   Lightbulb
 } from "lucide-react"
-import { ReactNode } from "react"
+import type { ReactNode } from "react"
+import { cn } from "@/lib"
 
 type CalloutType = "info" | "warning" | "error" | "success" | "tip" | "note"
 

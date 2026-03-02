@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
-import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { StatsDisplay } from "@/components/shared"
+import { ShimmerButton } from "@/components/ui/shimmer-button"
 
 interface ControlPanelProps {
   isLoading: boolean

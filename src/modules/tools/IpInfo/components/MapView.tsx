@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useTheme } from "next-themes"
-import dynamic from "next/dynamic"
 import { MapPin, Maximize2, Minimize2 } from "lucide-react"
+import dynamic from "next/dynamic"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 
 // Dynamic import to avoid SSR issues
@@ -70,7 +70,10 @@ export default function MapView({
 
   // Check if coordinates are valid
   const hasValidCoordinates =
-    latitude !== 0 && longitude !== 0 && !isNaN(latitude) && !isNaN(longitude)
+    latitude !== 0 &&
+    longitude !== 0 &&
+    !Number.isNaN(latitude) &&
+    !Number.isNaN(longitude)
 
   useEffect(() => {
     setIsClient(true)

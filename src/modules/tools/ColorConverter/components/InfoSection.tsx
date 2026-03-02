@@ -1,6 +1,6 @@
-import React from "react"
-import { Palette, Info } from "lucide-react"
+import { Info, Palette } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoSection: React.FC = () => {
   const t = useTranslations("ColorConverterPage.Info")

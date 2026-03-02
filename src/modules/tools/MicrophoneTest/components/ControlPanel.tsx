@@ -1,6 +1,7 @@
 "use client"
 
 import { Mic, MicOff, RefreshCw } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -10,8 +11,7 @@ import {
   SelectValue
 } from "@/components/ui/select"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { useTranslations } from "next-intl"
-import { AudioDevice } from "../hooks/useMicrophoneTest"
+import type { AudioDevice } from "../hooks/useMicrophoneTest"
 
 interface ControlPanelProps {
   audioDevices: AudioDevice[]

@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react"
 import {
   Download,
-  Upload,
   Hash,
-  Zap,
-  X,
-  Settings,
+  Image,
   QrCode,
-  Image
+  Settings,
+  Upload,
+  X,
+  Zap
 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
 import { cn } from "@/lib"
-import { QrSize, QrErrorLevel, QrPreset } from "../hooks/useQrGenerator"
+import type { QrErrorLevel, QrPreset, QrSize } from "../hooks/useQrGenerator"
 
 interface ControlPanelProps {
   qrSize: QrSize
@@ -59,7 +60,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const t = useTranslations("QrGeneratorPage.ControlPanel")
   const tCategories = useTranslations("QrGeneratorPage.Categories")
   const tSizes = useTranslations("QrGeneratorPage.Sizes")
-  const tErrorLevels = useTranslations("QrGeneratorPage.ErrorLevels")
+  const _tErrorLevels = useTranslations("QrGeneratorPage.ErrorLevels")
 
   const [activeCategory, setActiveCategory] = useState("url")
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null)

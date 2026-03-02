@@ -1,6 +1,6 @@
-import React from "react"
 import { useTranslations } from "next-intl"
-import { HashAlgorithm } from "../hooks/useHashGenerator"
+import type React from "react"
+import type { HashAlgorithm } from "../hooks/useHashGenerator"
 
 interface AlgorithmInfo {
   status: "deprecated" | "weak" | "secure" | "recommended"

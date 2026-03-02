@@ -1,8 +1,8 @@
 "use client"
 
+import mediumZoom from "medium-zoom"
 import Image from "next/image"
 import { useEffect, useRef } from "react"
-import mediumZoom from "medium-zoom"
 
 interface ImageViewerProps {
   src: string

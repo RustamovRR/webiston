@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckCircle, AlertTriangle, XCircle, TrendingUp } from "lucide-react"
+import { AlertTriangle, CheckCircle, TrendingUp, XCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 interface MetaData {
@@ -26,7 +26,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
   // Calculate SEO Score
   const calculateSeoScore = () => {
     let score = 0
-    let maxScore = 100
+    const _maxScore = 100
 
     // Title validation (30 points)
     if (metaData.title) {

@@ -1,5 +1,5 @@
-const fs = require("fs")
-const path = require("path")
+const fs = require("node:fs")
+const path = require("node:path")
 const matter = require("gray-matter")
 
 // Build search index at build time
@@ -60,7 +60,7 @@ async function processBookDirectory(dirPath, bookName, documents, currentPath) {
         const { data: frontmatter, content: markdownContent } = matter(content)
 
         let urlPath =
-          `/books/${bookName}/${currentPath ? currentPath + "/" : ""}${file.name.replace(".mdx", "")}`
+          `/books/${bookName}/${currentPath ? `${currentPath}/` : ""}${file.name.replace(".mdx", "")}`
             .replace(/\/+/g, "/")
             .replace(/\/$/, "")
 
@@ -97,7 +97,7 @@ async function processBookDirectory(dirPath, bookName, documents, currentPath) {
 
         // Main page document
         documents.push({
-          id: `book-${bookName}-${newPath.replace(/[\/\\]/g, "-").replace(".mdx", "")}`,
+          id: `book-${bookName}-${newPath.replace(/[/\\]/g, "-").replace(".mdx", "")}`,
           title: pageTitle,
           content:
             mainContent.substring(0, 300) +
@@ -123,7 +123,7 @@ async function processBookDirectory(dirPath, bookName, documents, currentPath) {
         // Add section documents
         sections.forEach((section, index) => {
           documents.push({
-            id: `book-${bookName}-${newPath.replace(/[\/\\]/g, "-").replace(".mdx", "")}-section-${index}`,
+            id: `book-${bookName}-${newPath.replace(/[/\\]/g, "-").replace(".mdx", "")}-section-${index}`,
             title: section.title,
             content:
               section.content.substring(0, 200) +
@@ -154,7 +154,7 @@ async function processBookDirectory(dirPath, bookName, documents, currentPath) {
 }
 
 // Parse content into sections based on headers
-function parseContentSections(markdownContent, pageTitle, urlPath) {
+function parseContentSections(markdownContent, _pageTitle, _urlPath) {
   const sections = []
   const lines = markdownContent.split("\n")
   let currentSection = null
@@ -283,7 +283,7 @@ function extractKeywords(content, title) {
     "those"
   ])
 
-  const words = (content + " " + title)
+  const words = `${content} ${title}`
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)

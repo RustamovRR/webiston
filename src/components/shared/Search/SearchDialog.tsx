@@ -1,17 +1,17 @@
 "use client"
 
-import { ISearchHit } from "@/types"
+import { AnimatePresence, motion } from "framer-motion"
+import { FileSearch } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { CustomSearchBox, GroupedHit, NoResults } from "./SearchComponents"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
-import { AnimatePresence, motion } from "framer-motion"
-import { FileSearch } from "lucide-react"
 import { useMobileMenuStore } from "@/stores"
+import type { ISearchHit } from "@/types"
+import { CustomSearchBox, GroupedHit, NoResults } from "./SearchComponents"
 
 interface SearchDialogProps {
   open: boolean
@@ -32,10 +32,10 @@ export default function SearchDialog({
   onSearch,
   onClearSearch
 }: SearchDialogProps) {
-  const router = useRouter()
+  const _router = useRouter()
   const closeMobileMenu = useMobileMenuStore((state) => state.close)
 
-  const handleHitClick = (path: string) => {
+  const handleHitClick = (_path: string) => {
     onOpenChange(false) // Close the search dialog
     onClearSearch()
     closeMobileMenu() // Close the mobile menu

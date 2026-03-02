@@ -1,9 +1,9 @@
 "use client"
 
-import { cn } from "@/lib"
-import { useEffect, useRef } from "react"
-import MobileMenuContent from "./MobileMenuContent"
 import { useParams } from "next/navigation"
+import { useEffect, useRef } from "react"
+import { cn } from "@/lib"
+import MobileMenuContent from "./MobileMenuContent"
 
 interface MobileMenuProps {
   isOpen: boolean

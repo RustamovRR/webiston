@@ -1,10 +1,10 @@
 "use client"
 
-import { Play, Download, Trash2, Volume2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import { Download, Play, Trash2, Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { RecordedAudio } from "../hooks/useMicrophoneTest"
+import { Button } from "@/components/ui/button"
+import type { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface AudioGridItemProps {
   audio: RecordedAudio
@@ -24,7 +24,7 @@ export function AudioGridItem({
   const formatFileSize = (bytes: number) => {
     const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i]
+    return `${Math.round((bytes / 1024 ** i) * 100) / 100} ${sizes[i]}`
   }
 
   const formatDuration = (seconds: number) => {

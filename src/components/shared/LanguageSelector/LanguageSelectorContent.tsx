@@ -1,15 +1,15 @@
 "use client"
 
+import { ChevronDown, Globe } from "lucide-react"
 import { useLocale } from "next-intl"
-import { useRouter, usePathname } from "@/i18n/navigation"
-import { Globe, ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+import { usePathname, useRouter } from "@/i18n/navigation"
 
 interface Language {
   code: "uz" | "en"

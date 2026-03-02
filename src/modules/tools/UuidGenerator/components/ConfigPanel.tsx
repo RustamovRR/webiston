@@ -1,18 +1,18 @@
-import React from "react"
-import { useTranslations } from "next-intl"
 import {
-  RefreshCw,
   Clock,
-  Shuffle,
-  Hash,
+  Dice6,
   FileText,
+  Hash,
+  RefreshCw,
   Settings,
-  Dice6
+  Shuffle
 } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type React from "react"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
-import { UuidVersion, UuidFormat } from "../hooks/useUuidGenerator"
 import { cn } from "@/lib"
+import type { UuidFormat, UuidVersion } from "../hooks/useUuidGenerator"
 
 interface ConfigPanelProps {
   count: number
@@ -52,7 +52,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const tFormat = useTranslations("UuidGeneratorPage.FormatSelector")
 
   const handleCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value) || 1
+    const value = parseInt(e.target.value, 10) || 1
     onCountChange(value)
   }
 

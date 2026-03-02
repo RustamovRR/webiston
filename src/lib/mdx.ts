@@ -1,9 +1,9 @@
+import path from "node:path"
 import { serialize } from "next-mdx-remote/serialize"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
-import path from "path"
 
 /**
  * Serializes markdown content to MDX
@@ -104,7 +104,7 @@ export async function getTutorialNavigation(
   tutorialId: string
 ): Promise<TutorialNavigation[]> {
   try {
-    const { promises: fs } = await import("fs")
+    const { promises: fs } = await import("node:fs")
     const metaPath = path.resolve(
       process.cwd(),
       "content",
@@ -165,7 +165,7 @@ export async function getMDXContent(
   contentPath: string
 ): Promise<string | null> {
   try {
-    const { promises: fs } = await import("fs")
+    const { promises: fs } = await import("node:fs")
     let filePath: string | null = null
 
     // Path bo'sh bo'lsa yoki "/" bo'lsa, asosiy page.mdx faylni olish
@@ -178,7 +178,7 @@ export async function getMDXContent(
       // Turli variantlarni sinab ko'rish
       const possiblePaths = [
         path.join(process.cwd(), "content", tutorialId, cleanPath, "page.mdx"),
-        path.join(process.cwd(), "content", tutorialId, cleanPath + ".mdx"),
+        path.join(process.cwd(), "content", tutorialId, `${cleanPath}.mdx`),
         path.join(process.cwd(), "content", tutorialId, cleanPath, "index.mdx")
       ]
 
@@ -301,7 +301,7 @@ export async function getAllTutorials() {
 
 // Barcha darslik sahifalarining yo'llarini (paths) olish
 export async function getAllTutorialPaths() {
-  const { promises: fs } = await import("fs")
+  const { promises: fs } = await import("node:fs")
   const contentDir = path.join(process.cwd(), "content")
   const tutorials = await fs.readdir(contentDir, { withFileTypes: true })
   const allPaths: { slug: string[] }[] = []
@@ -313,7 +313,7 @@ export async function getAllTutorialPaths() {
       allPaths.push({ slug: [tutorialId] })
 
       const tutorialDir = path.join(contentDir, tutorialId)
-      const filesAndDirs = await fs.readdir(tutorialDir, {
+      const _filesAndDirs = await fs.readdir(tutorialDir, {
         withFileTypes: true
       })
 
@@ -327,7 +327,7 @@ export async function getAllTutorialPaths() {
           if (item.isDirectory()) {
             await processDirectory(itemPath, [...basePath, item.name])
           } else if (item.name.endsWith(".mdx") || item.name.endsWith(".md")) {
-            let slugPath = [...basePath]
+            const slugPath = [...basePath]
             if (item.name !== "page.mdx" && item.name !== "index.mdx") {
               slugPath.push(item.name.replace(/\.mdx?$/, ""))
             }

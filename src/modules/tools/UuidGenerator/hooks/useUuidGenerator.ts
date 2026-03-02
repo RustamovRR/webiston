@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 export type UuidVersion = "v4" | "v1" | "nil"
 export type UuidFormat = "standard" | "compact" | "brackets" | "uppercase"
@@ -86,14 +86,11 @@ export const useUuidGenerator = ({
 
   // Generate UUID v4 (random)
   const generateUuidV4 = useCallback((): string => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0
-        const v = c === "x" ? r : (r & 0x3) | 0x8
-        return v.toString(16)
-      }
-    )
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0
+      const v = c === "x" ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
   }, [])
 
   // Generate UUID v1 (timestamp based - simplified)
@@ -118,7 +115,6 @@ export const useUuidGenerator = ({
           return generateUuidV1()
         case "nil":
           return generateNilUuid()
-        case "v4":
         default:
           return generateUuidV4()
       }
@@ -135,7 +131,6 @@ export const useUuidGenerator = ({
         return `{${uuid}}`
       case "uppercase":
         return uuid.toUpperCase()
-      case "standard":
       default:
         return uuid.toLowerCase()
     }
@@ -169,7 +164,7 @@ export const useUuidGenerator = ({
 
       setUuids(newUuids)
       onSuccess?.(`${count} ta UUID muvaffaqiyatli yaratildi`)
-    } catch (error) {
+    } catch (_error) {
       onError?.("UUID yaratishda xatolik yuz berdi")
     } finally {
       setIsGenerating(false)

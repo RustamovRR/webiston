@@ -1,16 +1,15 @@
 "use client"
 
-import { useState } from "react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 import {
-  ConfigPanel,
-  TemplatesPanel,
   FormPanel,
+  InfoSection,
   OutputPanel,
   PreviewPanel,
-  ValidationPanel,
-  InfoSection
+  TemplatesPanel,
+  ValidationPanel
 } from "./components"
 import { useOgMetaGenerator } from "./hooks/useOgMetaGenerator"
 

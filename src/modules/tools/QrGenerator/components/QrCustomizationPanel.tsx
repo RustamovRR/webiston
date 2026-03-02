@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react"
-import { Upload, X, RefreshCw } from "lucide-react"
-import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
+import { RefreshCw, Upload, X } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
+import type React from "react"
+import { useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
 
 export interface QrCustomization {
   foregroundColor: string
@@ -120,7 +121,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
   ]
 
   // Corner style options
-  const cornerOptions = [
+  const _cornerOptions = [
     {
       value: "square",
       label: t("corners.square"),
@@ -144,7 +145,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
   ]
 
   // Pattern style options
-  const patternOptions = [
+  const _patternOptions = [
     {
       value: "square",
       label: t("patterns.square"),
@@ -230,7 +231,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         setLogoUploading(false)
       }
       reader.readAsDataURL(file)
-    } catch (error) {
+    } catch (_error) {
       setLogoUploading(false)
       alert(t("invalidFile"))
     }
@@ -265,7 +266,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
     })
   }
 
-  const statusComponent = (
+  const _statusComponent = (
     <span className="flex items-center gap-1 text-xs text-purple-500 dark:text-purple-400">
       <div className="h-1.5 w-1.5 rounded-full bg-purple-500 dark:bg-purple-400"></div>
       {t("status")}
@@ -555,7 +556,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
               onChange={(e) =>
                 onCustomizationChange({
                   ...customization,
-                  logoSize: parseInt(e.target.value)
+                  logoSize: parseInt(e.target.value, 10)
                 })
               }
               className="w-full"
@@ -578,7 +579,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
             onChange={(e) =>
               onCustomizationChange({
                 ...customization,
-                margin: parseInt(e.target.value)
+                margin: parseInt(e.target.value, 10)
               })
             }
             className="w-full"
@@ -597,7 +598,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
             onChange={(e) =>
               onCustomizationChange({
                 ...customization,
-                borderRadius: parseInt(e.target.value)
+                borderRadius: parseInt(e.target.value, 10)
               })
             }
             className="w-full"

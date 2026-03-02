@@ -1,5 +1,5 @@
 export {
   TerminalInput,
-  type TerminalInputProps,
-  type TerminalInputAction
+  type TerminalInputAction,
+  type TerminalInputProps
 } from "./TerminalInput"

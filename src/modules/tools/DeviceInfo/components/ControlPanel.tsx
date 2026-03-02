@@ -1,9 +1,9 @@
 "use client"
 
-import { RefreshCw, Copy, Download, Check } from "lucide-react"
+import { Check, Copy, Download, RefreshCw } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
 import { ShimmerButton } from "@/components/ui"
+import { Button } from "@/components/ui/button"
 
 interface ControlPanelProps {
   isLoading: boolean

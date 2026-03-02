@@ -1,9 +1,9 @@
 "use client"
 
-import { Globe, ImageIcon, Link2, Settings } from "lucide-react"
+import { Globe, ImageIcon, Link2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { StatsDisplay } from "@/components/shared"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { StatsDisplay } from "@/components/shared"
+import { Textarea } from "@/components/ui/textarea"
 
 interface MetaData {
   title: string

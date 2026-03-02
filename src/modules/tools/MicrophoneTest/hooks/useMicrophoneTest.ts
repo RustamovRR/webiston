@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 export interface AudioDevice {
   deviceId: string
@@ -119,7 +119,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
           // Limit to reasonable length
           if (label.length > 35) {
-            label = label.substring(0, 32) + "..."
+            label = `${label.substring(0, 32)}...`
           }
 
           return {
@@ -140,7 +140,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error getting audio devices:", err)
     }
-  }, [onSuccess, onError, selectedDevice])
+  }, [onSuccess, onError, selectedDevice, t])
 
   // Stop listening
   const stopListening = useCallback(() => {
@@ -178,7 +178,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     })
 
     onSuccess?.(t("microphoneStopped"))
-  }, [isRecording, onSuccess])
+  }, [isRecording, onSuccess, t])
 
   // Start listening to microphone
   const startListening = useCallback(async () => {
@@ -239,7 +239,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error starting microphone:", err)
     }
-  }, [selectedDevice, onSuccess, onError])
+  }, [selectedDevice, onSuccess, onError, t])
 
   // Effect to start/stop audio analysis based on listening state
   useEffect(() => {
@@ -402,7 +402,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
       onSuccess?.(t("audioDownloaded"))
     },
-    [onSuccess]
+    [onSuccess, t]
   )
 
   // Delete audio
@@ -418,7 +418,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
       onSuccess?.(t("audioDeleted"))
     },
-    [onSuccess]
+    [onSuccess, t]
   )
 
   // Clear all recordings
@@ -429,7 +429,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     setRecordedAudios([])
 
     onSuccess?.(t("allAudiosDeleted"))
-  }, [recordedAudios, onSuccess])
+  }, [recordedAudios, onSuccess, t])
 
   // Preview audio
   const openPreview = useCallback((audio: RecordedAudio) => {
@@ -478,7 +478,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     return () => {
       stopListening()
     }
-  }, [])
+  }, [getAudioDevices, stopListening])
 
   return {
     // State

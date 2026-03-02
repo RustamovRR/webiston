@@ -1,28 +1,25 @@
 "use client"
 
-// UI Components
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { CodeHighlight } from "@/components/ui/code-highlight"
-
-// Shared Components
-import { ToolHeader } from "@/components/shared/ToolHeader"
-import { CopyButton } from "@/components/shared/CopyButton"
-import { StatsDisplay } from "@/components/shared/StatsDisplay"
-
-// Utils & Hooks
-import { useUserAgentAnalyzer } from "./hooks/useUserAgentAnalyzer"
-
 // Icons
 import {
-  Monitor,
-  Smartphone,
   Download,
+  Monitor,
   RotateCcw,
   Search,
+  Smartphone,
   User
 } from "lucide-react"
+import { CopyButton } from "@/components/shared/CopyButton"
+import { StatsDisplay } from "@/components/shared/StatsDisplay"
+// Shared Components
+import { ToolHeader } from "@/components/shared/ToolHeader"
+// UI Components
+import { Button } from "@/components/ui/button"
+import { CodeHighlight } from "@/components/ui/code-highlight"
+import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { Textarea } from "@/components/ui/textarea"
+// Utils & Hooks
+import { useUserAgentAnalyzer } from "./hooks/useUserAgentAnalyzer"
 
 export default function UserAgentAnalyzer() {
   const {

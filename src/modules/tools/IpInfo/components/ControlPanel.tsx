@@ -1,11 +1,11 @@
 "use client"
 
+import { Download, MapPin, RefreshCw, Search } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { StatsDisplay } from "@/components/shared/StatsDisplay"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { StatsDisplay } from "@/components/shared/StatsDisplay"
-import { MapPin, RefreshCw, Search, Download } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 interface ControlPanelProps {
   ipAddress: string

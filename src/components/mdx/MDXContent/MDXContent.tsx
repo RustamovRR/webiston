@@ -1,5 +1,4 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
-import React from "react"
 
 // Plugins
 import rehypeKatex from "rehype-katex"
@@ -10,11 +9,11 @@ import remarkMath from "remark-math"
 // Custom components
 import Callout from "../Callout"
 import CodeBlock from "../CodeBlock"
-import VideoEmbed from "../VideoEmbed"
 import ImageViewer from "../ImageViewer"
-import HeadingLink from "./HeadingLink"
+import VideoEmbed from "../VideoEmbed"
 import CustomLink from "./CustomLink"
 import CustomParagraph from "./CustomParagraph"
+import HeadingLink from "./HeadingLink"
 
 interface MDXContentProps {
   source: string
@@ -70,7 +69,7 @@ const components = {
     )
   },
   li: (props: any) => {
-    if (props.id && props.id.includes("user-content")) {
+    if (props.id?.includes("user-content")) {
       return <li className="[&_p]:!italic [&>p]:!mt-6" {...props} />
     }
     return <li className="[&>p]:!m-0" {...props} />

@@ -1,10 +1,10 @@
-import {
-  TelegramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-  EmailIcon
-} from "@/assets/icons"
 import { HandHeartIcon } from "lucide-react"
+import {
+  EmailIcon,
+  LinkedInIcon,
+  TelegramIcon,
+  TwitterIcon
+} from "@/assets/icons"
 
 export const REACT_CHAPTERS = [
   {

@@ -3,13 +3,13 @@
 import { useTranslations } from "next-intl"
 import { ToolHeader } from "@/components/shared"
 import {
-  ControlPanel,
   BrowserInfoPanel,
-  SystemInfoPanel,
-  ScreenInfoPanel,
-  DeviceInfoPanel,
   ConnectionInfoPanel,
-  InfoSection
+  ControlPanel,
+  DeviceInfoPanel,
+  InfoSection,
+  ScreenInfoPanel,
+  SystemInfoPanel
 } from "./components"
 import { useDeviceInfo } from "./hooks/useDeviceInfo"
 

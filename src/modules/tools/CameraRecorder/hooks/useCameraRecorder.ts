@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react"
-import { useReactMediaRecorder } from "react-media-recorder"
 import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useReactMediaRecorder } from "react-media-recorder"
 
 export interface CameraDevice {
   deviceId: string
@@ -96,7 +96,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
             timestamp,
             duration: finalDuration,
             size: response.headers.get("content-length")
-              ? parseInt(response.headers.get("content-length")!)
+              ? parseInt(response.headers.get("content-length")!, 10)
               : undefined
           }
           setCapturedMedia((prev) => [media, ...prev])
@@ -157,7 +157,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error getting camera devices:", err)
     }
-  }, [onSuccess, onError])
+  }, [onSuccess, onError, selectedCamera, t])
 
   const startCamera = useCallback(async () => {
     try {
@@ -211,7 +211,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error starting camera:", err)
     }
-  }, [selectedCamera, videoQuality, onSuccess, onError])
+  }, [selectedCamera, videoQuality, onSuccess, onError, t])
 
   const stopCamera = useCallback(() => {
     // Stop any ongoing recording first
@@ -220,7 +220,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     }
 
     // Stop the camera stream
-    if (videoRef.current && videoRef.current.srcObject) {
+    if (videoRef.current?.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream
       stream.getTracks().forEach((track) => {
         track.stop()
@@ -241,7 +241,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
     setError("")
     clearBlobUrl()
     onSuccess?.(t("cameraStopped"))
-  }, [status, stopRecording, clearBlobUrl, cameraStream, onSuccess])
+  }, [status, stopRecording, clearBlobUrl, cameraStream, onSuccess, t])
 
   const takeScreenshot = useCallback(() => {
     if (!videoRef.current || !canvasRef.current || !isCameraActive) {
@@ -284,7 +284,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(t("screenshotError"))
       console.error("Error taking screenshot:", err)
     }
-  }, [isCameraActive, onSuccess, onError])
+  }, [isCameraActive, onSuccess, onError, t])
 
   const downloadMedia = useCallback(
     (media: CapturedMedia) => {
@@ -300,7 +300,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
           : t("videoDownloaded")
       )
     },
-    [onSuccess]
+    [onSuccess, t]
   )
 
   const deleteMedia = useCallback(
@@ -323,7 +323,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         setPreviewMedia(null)
       }
     },
-    [previewMedia, onSuccess]
+    [previewMedia, onSuccess, t]
   )
 
   const openPreview = useCallback((media: CapturedMedia) => {
@@ -377,7 +377,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       onError?.(t("camerasRefreshError"))
       console.error("Error refreshing cameras:", err)
     }
-  }, [onSuccess, onError, getCameraDevices])
+  }, [onSuccess, onError, getCameraDevices, t])
 
   const downloadRecording = useCallback(() => {
     if (mediaBlobUrl) {
@@ -389,7 +389,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       document.body.removeChild(a)
       onSuccess?.(t("recordingDownloaded"))
     }
-  }, [mediaBlobUrl, onSuccess])
+  }, [mediaBlobUrl, onSuccess, t])
 
   const getCameraStats = useCallback(() => {
     return {
@@ -447,7 +447,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
   // Auto-initialize camera devices on mount - only once
   useEffect(() => {
     getCameraDevices()
-  }, []) // Empty dependency array - run only once
+  }, [getCameraDevices]) // Empty dependency array - run only once
 
   return {
     videoRef,

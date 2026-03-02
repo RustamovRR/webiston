@@ -1,8 +1,8 @@
-import React from "react"
-import { Download, Upload, FileText, ChevronDown, X, Zap } from "lucide-react"
+import { ChevronDown, Download, FileText, Upload, X, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
+import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
-import { ShimmerButton, GradientTabs } from "@/components/ui"
 import {
   DropdownMenu,
   DropdownMenuContent,

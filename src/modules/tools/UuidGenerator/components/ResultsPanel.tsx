@@ -1,8 +1,8 @@
-import React from "react"
-import { useTranslations } from "next-intl"
 import { Download, Hash } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type React from "react"
+import { CopyButton, StatsDisplay } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { StatsDisplay, CopyButton } from "@/components/shared"
 import { cn } from "@/lib"
 
 interface UuidItem {

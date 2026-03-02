@@ -1,17 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { Hash, Upload } from "lucide-react"
-
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
 // Shared Components
 import { ToolHeader } from "@/components/shared/ToolHeader"
-import { DualTextPanel } from "@/components/shared/DualTextPanel"
 
 // Local Components
 import {
-  ControlPanel,
   AlgorithmSelector,
+  ControlPanel,
   DetailedResults,
   InfoSection
 } from "./components"

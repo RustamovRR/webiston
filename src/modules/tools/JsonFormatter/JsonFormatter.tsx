@@ -1,16 +1,14 @@
 "use client"
 
-import { FileJson, X } from "lucide-react"
+import { FileJson } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { CodeHighlight } from "@/components/ui"
-import { Button } from "@/components/ui/button"
-
+import { DualTextPanel } from "@/components/shared/DualTextPanel"
 // Shared Components
 import { ToolHeader } from "@/components/shared/ToolHeader"
-import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { CodeHighlight } from "@/components/ui"
 
 // Local Components
-import { InfoSection, ControlPanel } from "./components"
+import { ControlPanel, InfoSection } from "./components"
 
 // Utils & Hooks
 import { useJsonFormatter } from "./hooks/useJsonFormatter"

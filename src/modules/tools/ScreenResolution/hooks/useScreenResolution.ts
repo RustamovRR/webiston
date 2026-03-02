@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export interface ScreenInfo {
   width: number
@@ -139,7 +139,7 @@ export const useScreenResolution = (
     URL.revokeObjectURL(url)
 
     onSuccess?.("Ekran ma'lumotlari yuklab olindi")
-  }, [screenInfo, onSuccess, onError])
+  }, [screenInfo, onSuccess, onError, getScreenAnalysis])
 
   const getDeviceType = useCallback((info: ScreenInfo): string => {
     const { width, height } = info

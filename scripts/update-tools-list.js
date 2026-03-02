@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require("fs")
-const path = require("path")
+const fs = require("node:fs")
+const path = require("node:path")
 
 // Read the TOOLS_LIST from constants/ui.ts
 const uiConstantsPath = path.join(__dirname, "../src/constants/ui.ts")
@@ -44,4 +44,6 @@ const outputPath = path.join(__dirname, "../tools-list.json")
 fs.writeFileSync(outputPath, JSON.stringify(toolsPages, null, 2))
 
 console.log(`✅ Updated tools-list.json with ${toolsPages.length} tools:`)
-toolsPages.forEach((tool) => console.log(`  - ${tool}`))
+for (const tool of toolsPages) {
+  console.log(`  - ${tool}`)
+}

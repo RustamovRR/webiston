@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export interface ParsedUserAgent {
   browser: {
@@ -96,7 +96,7 @@ export const useUserAgentAnalyzer = (
       setUserAgent(ua)
       parseUserAgent(ua)
     }
-  }, [])
+  }, [parseUserAgent])
 
   const parseUserAgent = useCallback(
     (ua: string): ParsedUserAgent | null => {
@@ -367,7 +367,9 @@ export const useUserAgentAnalyzer = (
       { label: "so'z", value: userAgent.split(/\s+/).length },
       {
         label: "versiya",
-        value: parsedUA?.browser.major ? parseInt(parsedUA.browser.major) : 0
+        value: parsedUA?.browser.major
+          ? parseInt(parsedUA.browser.major, 10)
+          : 0
       }
     ]
   }, [userAgent, parsedUA])

@@ -1,6 +1,7 @@
-import React from "react"
-import { Download, Upload, FileJson, Eye, EyeOff, X } from "lucide-react"
+import { Download, Eye, EyeOff, FileJson, Upload, X } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type React from "react"
+import { ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -9,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
-import { ShimmerButton } from "@/components/ui"
 
 interface ControlPanelProps {
   indentation: string

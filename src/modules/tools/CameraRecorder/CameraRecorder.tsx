@@ -1,19 +1,18 @@
 "use client"
 
-import { useState } from "react"
 import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 import { ToolHeader } from "@/components/shared"
-import { useCameraRecorder } from "./hooks/useCameraRecorder"
 import {
   ControlPanel,
-  VideoPreviewPanel,
-  StatusPanel,
-  MediaPanel,
   InfoSection,
-  VideoPreview,
-  MediaPreviewModal
+  MediaPanel,
+  MediaPreviewModal,
+  StatusPanel,
+  VideoPreviewPanel
 } from "./components"
+import { useCameraRecorder } from "./hooks/useCameraRecorder"
 
 const QUALITY_OPTIONS = [
   { value: "hd", label: "HD (1280×720)", width: 1280, height: 720 },

@@ -1,10 +1,10 @@
-import { getMDXContent, getTutorialNavigation } from "@/lib/mdx"
+import matter from "gray-matter"
 import { flattenNavigation, processContentForVideos } from "@/lib/content"
-import MDXContent from "../MDXContent"
+import { getMDXContent, getTutorialNavigation } from "@/lib/mdx"
 import ContentMeta from "../ContentMeta"
 import ErrorContent from "../ErrorContent"
+import MDXContent from "../MDXContent"
 import { Pagination } from "./Pagination"
-import matter from "gray-matter"
 
 interface TutorialContentProps {
   slug: string[]

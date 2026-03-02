@@ -56,9 +56,9 @@ export const parseColorInput = (
   )
   if (rgbMatch) {
     return {
-      r: parseInt(rgbMatch[1]),
-      g: parseInt(rgbMatch[2]),
-      b: parseInt(rgbMatch[3]),
+      r: parseInt(rgbMatch[1], 10),
+      g: parseInt(rgbMatch[2], 10),
+      b: parseInt(rgbMatch[3], 10),
       a: 1
     }
   }
@@ -69,9 +69,9 @@ export const parseColorInput = (
   )
   if (rgbaMatch) {
     return {
-      r: parseInt(rgbaMatch[1]),
-      g: parseInt(rgbaMatch[2]),
-      b: parseInt(rgbaMatch[3]),
+      r: parseInt(rgbaMatch[1], 10),
+      g: parseInt(rgbaMatch[2], 10),
+      b: parseInt(rgbaMatch[3], 10),
       a: parseFloat(rgbaMatch[4])
     }
   }
@@ -81,9 +81,9 @@ export const parseColorInput = (
     /^hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/
   )
   if (hslMatch) {
-    const h = parseInt(hslMatch[1])
-    const s = parseInt(hslMatch[2])
-    const l = parseInt(hslMatch[3])
+    const h = parseInt(hslMatch[1], 10)
+    const s = parseInt(hslMatch[2], 10)
+    const l = parseInt(hslMatch[3], 10)
     const rgb = hslToRgb(h, s, l)
     return { ...rgb, a: 1 }
   }
@@ -93,9 +93,9 @@ export const parseColorInput = (
     /^hsla\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*,\s*([0-9]*\.?[0-9]+)\s*\)$/
   )
   if (hslaMatch) {
-    const h = parseInt(hslaMatch[1])
-    const s = parseInt(hslaMatch[2])
-    const l = parseInt(hslaMatch[3])
+    const h = parseInt(hslaMatch[1], 10)
+    const s = parseInt(hslaMatch[2], 10)
+    const l = parseInt(hslaMatch[3], 10)
     const a = parseFloat(hslaMatch[4])
     const rgb = hslToRgb(h, s, l)
     return { ...rgb, a }

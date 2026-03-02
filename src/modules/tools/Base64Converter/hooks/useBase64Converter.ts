@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
 
 // Sample Base64 data constants
 export const SAMPLE_BASE64_DATA = {
@@ -196,7 +196,7 @@ export const useBase64Converter = () => {
           const encoded = btoa(unescape(encodeURIComponent(inputText)))
           setInputText(encoded)
         }
-      } catch (error) {
+      } catch (_error) {
         // If conversion fails, keep current input
         // User will see the error in the new mode
       }
@@ -289,7 +289,7 @@ export const useBase64Converter = () => {
         setIsProcessing(false)
       }
     },
-    [mode]
+    [mode, tErrors]
   )
 
   const downloadResult = useCallback(() => {
@@ -307,7 +307,7 @@ export const useBase64Converter = () => {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-    } catch (error) {
+    } catch (_error) {
       alert("Faylni yuklab olishda xatolik yuz berdi.")
     }
   }, [result, mode])

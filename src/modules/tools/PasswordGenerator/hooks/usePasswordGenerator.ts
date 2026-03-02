@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 interface PasswordSettings {
   length: number
@@ -266,7 +266,7 @@ export const usePasswordGenerator = (
 
       setPassword(result)
       onSuccess?.(`${result.length} belgili parol yaratildi`)
-    } catch (error) {
+    } catch (_error) {
       onError?.("Parol yaratishda xatolik yuz berdi")
     }
   }, [settings, onSuccess, onError])
@@ -333,7 +333,7 @@ export const usePasswordGenerator = (
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
       onSuccess?.("Parol nusxalandi")
-    } catch (error) {
+    } catch (_error) {
       onError?.("Nusxalashda xatolik yuz berdi")
     }
   }, [password, onSuccess, onError])
@@ -378,10 +378,10 @@ export const usePasswordGenerator = (
 
       URL.revokeObjectURL(url)
       onSuccess?.("Parol fayl sifatida saqlandi")
-    } catch (error) {
+    } catch (_error) {
       onError?.("Faylni yuklab olishda xatolik yuz berdi")
     }
-  }, [password, settings, tStrength, onSuccess, onError])
+  }, [password, settings, tStrength, onSuccess, onError, getPasswordStrength])
 
   // Load preset settings
   const loadPreset = useCallback(
@@ -413,7 +413,7 @@ export const usePasswordGenerator = (
   const stats = useMemo(() => {
     const textLength = password.length
     const uniqueChars = new Set(password).size
-    const entropy = Math.log2(Math.pow(95, textLength)) // Approximate entropy
+    const entropy = Math.log2(95 ** textLength) // Approximate entropy
     const passwordStrengthLevel = tStrength
       ? getPasswordStrength(password, tStrength).level
       : 0
@@ -424,7 +424,7 @@ export const usePasswordGenerator = (
       entropy: Math.round(entropy),
       strength: passwordStrengthLevel
     }
-  }, [password, tStrength])
+  }, [password, tStrength, getPasswordStrength])
 
   // Input/Output statistics
   const inputStats = useMemo(
@@ -450,7 +450,7 @@ export const usePasswordGenerator = (
     if (settings.length > 0) {
       generatePassword()
     }
-  }, [settings.length, settings.passwordType])
+  }, [settings.length, generatePassword])
 
   // Password display text (masked/visible)
   const passwordDisplayText = useMemo(() => {

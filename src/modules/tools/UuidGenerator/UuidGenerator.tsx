@@ -1,15 +1,15 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ToolHeader, DualTextPanel } from "@/components/shared"
-import { useUuidGenerator } from "./hooks/useUuidGenerator"
+import { DualTextPanel, ToolHeader } from "@/components/shared"
 import {
   ConfigPanel,
+  InfoPanel,
   InputPanel,
   ResultsPanel,
-  StatsPanel,
-  InfoPanel
+  StatsPanel
 } from "./components"
+import { useUuidGenerator } from "./hooks/useUuidGenerator"
 
 const UuidGenerator = () => {
   const t = useTranslations("UuidGeneratorPage.ToolHeader")

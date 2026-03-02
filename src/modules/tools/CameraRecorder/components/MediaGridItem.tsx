@@ -1,11 +1,11 @@
 "use client"
 
-import { Download, Eye, Trash2, Video, Image as ImageIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { Download, Eye, Image as ImageIcon, Trash2, Video } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 interface CapturedMedia {
   id: string
@@ -37,10 +37,10 @@ export function MediaGridItem({
     if (!bytes) return "N/A"
     const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i]
+    return `${Math.round((bytes / 1024 ** i) * 100) / 100} ${sizes[i]}`
   }
 
-  const formatDuration = (seconds?: number) => {
+  const _formatDuration = (seconds?: number) => {
     if (!seconds) return "N/A"
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)

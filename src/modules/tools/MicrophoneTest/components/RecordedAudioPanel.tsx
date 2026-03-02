@@ -1,11 +1,11 @@
 "use client"
 
-import { Volume2, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
+import { Trash2, Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
+import type { RecordedAudio } from "../hooks/useMicrophoneTest"
 import { AudioGridItem } from "./AudioGridItem"
-import { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface RecordedAudioPanelProps {
   recordedAudios: RecordedAudio[]

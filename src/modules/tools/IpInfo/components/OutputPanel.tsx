@@ -1,9 +1,9 @@
 "use client"
 
-import { Search, MapPin, Wifi, Clock, Shield } from "lucide-react"
-import { CodeHighlight } from "@/components/ui/code-highlight"
-import { CopyButton } from "@/components/shared/CopyButton"
+import { Clock, MapPin, Search, Shield, Wifi } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { CopyButton } from "@/components/shared/CopyButton"
+import { CodeHighlight } from "@/components/ui/code-highlight"
 import MapView from "./MapView"
 import SecurityAnalysis from "./SecurityAnalysis"
 

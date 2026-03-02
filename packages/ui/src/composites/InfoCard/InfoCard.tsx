@@ -1,6 +1,6 @@
-import { cn } from "../../utils/cn"
 import React from "react"
 import { Card } from "../../primitives/card"
+import { cn } from "../../utils/cn"
 
 interface InfoCardProps {
   icon: React.ReactNode

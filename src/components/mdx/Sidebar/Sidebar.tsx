@@ -1,16 +1,16 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion"
-import type { TutorialNavigation } from "@/lib/mdx"
 import { cn } from "@/lib"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { TutorialNavigation } from "@/lib/mdx"
 
 interface SidebarProps {
   tutorialId: string
@@ -156,7 +156,7 @@ const Sidebar = memo(
       const parents = findParentPaths(navigationItems, activePath)
       const activeItem = findItemByPath(navigationItems, activePath)
       // If active item itself is an accordion (has children), include it so it's open too
-      if (activeItem && activeItem.list && activeItem.list.length > 0) {
+      if (activeItem?.list && activeItem.list.length > 0) {
         return [...parents, activePath]
       }
       return parents
@@ -189,7 +189,7 @@ const Sidebar = memo(
       if (sidebarRef.current && savedScrollPosition) {
         sidebarRef.current.scrollTop = parseInt(savedScrollPosition, 10)
       }
-    }, [pathname, tutorialId]) // This now correctly depends on the pathname
+    }, [tutorialId]) // This now correctly depends on the pathname
 
     // Memoize the renderNavigationItems function
     const renderNavigationItems = useCallback(
@@ -292,14 +292,10 @@ const Sidebar = memo(
       [
         pathname,
         tutorialId,
-        navigationItems,
-        findActiveItemPath,
-        findParentPaths,
         openAccordionItems,
         handleNavigation,
         handleAccordionToggle,
-        findParentPaths,
-        onLinkClick
+        isHydrated
       ]
     )
 

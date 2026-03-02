@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { AudioStats } from "../hooks/useMicrophoneTest"
+import type { AudioStats } from "../hooks/useMicrophoneTest"
 
 interface AudioVisualizerProps {
   audioStats: AudioStats

@@ -1,9 +1,9 @@
-import React from "react"
+import { Check, Copy, Minus, Palette, Plus, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Palette, Copy, Check, Plus, Minus, RotateCcw } from "lucide-react"
+import React from "react"
 import { TerminalInput } from "@/components/shared/TerminalInput"
 import { Button } from "@/components/ui/button"
-import { hexToRgb, rgbToHex, hslToRgb, rgbToHsl } from "@/lib/utils"
+import { hexToRgb, hslToRgb, rgbToHex } from "@/lib/utils"
 
 interface GradientColor {
   color: string
@@ -125,7 +125,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
     const toColor = sortedColors[sortedColors.length - 1]?.color || "#ffffff"
 
     // Convert to Tailwind color names (simplified)
-    const getColorName = (hex: string) => {
+    const _getColorName = (hex: string) => {
       const rgb = hexToRgb(hex)
       if (!rgb) return "gray-500"
 
@@ -197,7 +197,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                   min="0"
                   max="360"
                   value={direction}
-                  onChange={(e) => setDirection(parseInt(e.target.value))}
+                  onChange={(e) => setDirection(parseInt(e.target.value, 10))}
                   className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-zinc-200 dark:bg-zinc-700"
                 />
               </div>
@@ -261,7 +261,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                       max="100"
                       value={colorStop.position}
                       onChange={(e) =>
-                        updatePosition(index, parseInt(e.target.value) || 0)
+                        updatePosition(index, parseInt(e.target.value, 10) || 0)
                       }
                       className="w-16 rounded border border-zinc-300 px-2 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
                     />

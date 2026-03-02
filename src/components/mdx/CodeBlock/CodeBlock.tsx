@@ -1,11 +1,11 @@
 "use client"
 
-import { cn } from "@/lib"
 import { useTheme } from "next-themes"
-import { ReactNode, useLayoutEffect, useState } from "react"
-import { highlight } from "./highlight"
+import { type ReactNode, useLayoutEffect, useState } from "react"
 import { CopyButton } from "@/components/shared"
+import { cn } from "@/lib"
 import { CodeBlockSkeleton } from "./CodeBlockSkeleton"
+import { highlight } from "./highlight"
 
 export default function CodeBlock({ children }: { children?: any }) {
   const [nodes, setNodes] = useState<ReactNode | string | null>(children)
@@ -33,7 +33,7 @@ export default function CodeBlock({ children }: { children?: any }) {
       }
     }
     void highlightCode()
-  }, [children, theme])
+  }, [children, theme, codeString, resolvedTheme])
 
   if (isLoading) {
     return codeString ? <CodeBlockSkeleton codeString={codeString} /> : null

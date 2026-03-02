@@ -1,6 +1,6 @@
-import React from "react"
-import { useTranslations } from "next-intl"
 import { Hash } from "lucide-react"
+import { useTranslations } from "next-intl"
+import type React from "react"
 
 const InfoPanel: React.FC = () => {
   const t = useTranslations("UuidGeneratorPage.InfoPanel")

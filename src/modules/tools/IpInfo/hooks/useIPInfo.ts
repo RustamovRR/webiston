@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
 import { useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
 
 interface IPInfo {
   ip: string
@@ -136,7 +136,7 @@ const API_PROVIDERS = [
         symbol_native: ""
       },
       connection: {
-        asn: data.asn ? parseInt(data.asn.replace("AS", "")) : 0,
+        asn: data.asn ? parseInt(data.asn.replace("AS", ""), 10) : 0,
         isp: data.org || "",
         domain: "",
         usage_type: data.connection_type || "",
@@ -195,7 +195,9 @@ const API_PROVIDERS = [
         symbol_native: ""
       },
       connection: {
-        asn: data.as ? parseInt(data.as.split(" ")[0].replace("AS", "")) : 0,
+        asn: data.as
+          ? parseInt(data.as.split(" ")[0].replace("AS", ""), 10)
+          : 0,
         isp: data.isp || data.org || "",
         domain: "",
         usage_type: data.hosting ? "hosting" : "isp",
@@ -297,7 +299,7 @@ export const useIPInfo = () => {
 
   useEffect(() => {
     getCurrentIP()
-  }, [])
+  }, [getCurrentIP])
 
   const getCurrentIP = async () => {
     try {
@@ -363,7 +365,6 @@ export const useIPInfo = () => {
         return transformedData
       } catch (err) {
         console.log(`Error with ${provider.name}:`, err)
-        continue
       }
     }
 

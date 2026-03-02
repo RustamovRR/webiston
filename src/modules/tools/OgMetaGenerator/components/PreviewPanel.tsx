@@ -1,8 +1,8 @@
 "use client"
 
-import { Share2, Palette } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { Palette, Share2 } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 
 interface PreviewInfo {
   title: string

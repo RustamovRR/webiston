@@ -1,18 +1,19 @@
-import React, { useState } from "react"
 import {
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
   Eye,
   EyeOff,
   FileText,
-  ChevronDown,
-  Upload,
-  Key,
-  CheckCircle,
   Info,
-  ChevronUp
+  Key,
+  Upload
 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
+import type React from "react"
+import { useState } from "react"
 import { GradientTabs } from "@/components/ui"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
