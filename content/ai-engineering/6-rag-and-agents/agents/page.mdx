@@ -1,1 +1,54 @@
-{/* TODO: Tarjima qilinmagan — Agents (p.275–299) */}
+# Agentlar
+
+Ko'pchilik uchun aqlli agentlar — _SI_'ning yakuniy maqsadi sifatida ko'riladi. Stuart Russell va Peter Norvig'ning klassik kitobi _"Artificial Intelligence: A Modern Approach"_ (Prentice Hall, 1995) _sun'iy intellekt tadqiqoti_ sohasini "ratsional agentlarni o'rganish va loyihalash" deb ta'riflaydi.
+
+Asos modellarning misli ko'rilmagan imkoniyatlari ilgari tasavvur ham qilib bo'lmaydigan agent ilovalariga yo'l ochdi. Bu yangi imkoniyatlar nihoyat bizga yordamchi, hamkasb va murabbiy sifatida xizmat qiladigan mustaqil, aqlli agentlarni yaratish imkonini beradi. Ular veb-sayt yaratishda, ma'lumot yig'ishda, sayohat rejalashtirish, bozor tadqiqoti o'tkazish, mijoz hisobini boshqarish, ma'lumotlarni avtomatik kiritish, intervyuga tayyorgarlik ko'rish, nomzodlarni suhbatdan o'tkazish, bitim muzokarasi va boshqa ko'plab ishlarda yordam bera oladi. Imkoniyatlar cheksiz, bu agentlarning iqtisodiy salohiyati esa ulkan.
+
+<Callout>
+#### Eslatma
+
+_SI_'ga asoslangan agentlar — hali shakllanib ulgurmagan soha. Ularni ta'riflash, ishlab chiqish va baholash uchun mustahkam nazariy asoslar hali yo'q. Ushbu bo'lim mavjud adabiyotlar asosida tizim qurishga urinishdir — soha rivojlangan sari u ham takomillashib boradi. Kitobning qolgan qismiga nisbatan bu bo'lim yanada eksperimental xarakter kasb etadi.
+</Callout>
+
+Ushbu bo'lim agentlarga umumiy nuqtai nazardan yondashib, so'ngra agent imkoniyatlarini belgilovchi ikki asosiy jihatni — **vositalar** va **rejalashtirish**ni ko'rib chiqadi. Agentlar yangi ish usullari bilan birga yangi xato turlarini ham keltirib chiqaradi. Bo'lim oxirida ushbu xatolarni aniqlash maqsadida agentlarni qanday baholash haqida so'z boradi.
+
+Agentlar yangi tushuncha bo'lsa-da, ular ushbu kitobda allaqachon ko'rib chiqilgan tushunchalarga — o'z-o'zini tanqid qilish, fikr zanjiri va strukturalashgan natijalarga — tayanadi.
+
+## Agentlarga umumiy nuqtai nazar
+
+"Agent" atamasi muhandislik sohasida turli kontekstlarda ishlatilgan: dasturiy agent, aqlli agent, foydalanuvchi agenti, suhbat agenti, mustahkamlash orqali o'qitish agenti va boshqalar. Xo'sh, agent o'zi nima?
+
+**Agent — o'z muhitini idrok eta oladigan va shu muhitda harakat qila oladigan har qanday tizim.**[^10] Demak, agentni uning ishlash muhiti (_environment_) va bajarishi mumkin bo'lgan harakatlar to'plami belgilaydi.
+
+Agentning ishlash muhiti uning ishlatilish senariysi bilan aniqlanadi. Agar agent o'yin o'ynash uchun yaratilgan bo'lsa (masalan, _Minecraft_, _Go_, _Dota_), o'sha o'yin uning muhitidir. Agar agent internetdan hujjat yig'ishi kerak bo'lsa, muhit — internet. Agar agent pishirish roboti bo'lsa, muhit — oshxona. O'z-o'zini boshqaradigan avtomobil agenti uchun esa muhit — yo'l tizimi va unga tutash hududlar.
+
+_SI_ agentining bajarishi mumkin bo'lgan harakatlar to'plami unga berilgan vositalar orqali kengayadi. Kundalik hayotda muloqot qiladigan ko'plab generativ _SI_ ilovalari — aslida vositalarga ega agentlar, garchi oddiy bo'lsa ham. ChatGPT — agent. U internetda qidiruv o'tkazishi, Python kodi bajarishi va rasm yaratishi mumkin. _RAG_ tizimlari ham agent, matn qidiruvchilari, rasm qidiruvchilari va SQL bajaruvchilari esa ularning vositalari.
+
+Agentning ishlash muhiti va uning vositalar to'plami o'rtasida kuchli bog'liqlik mavjud. Muhit agentning qaysi vositalardan foydalanishi mumkinligini belgilaydi. Masalan, muhit shaxmat o'yini bo'lsa, agentning yagona mumkin bo'lgan harakatlari — to'g'ri shaxmat yurishlari. Biroq, agentning vositalar to'plami ham u ishlashi mumkin bo'lgan muhitni cheklaydi. Masalan, agar robotning yagona harakati suzish bo'lsa, u suv muhiti bilan cheklanadi.
+
+6-8-rasmda `GPT-4` asosida qurilgan `SWE-agent` ([Yang va boshqalar, 2024](https://arxiv.org/abs/2405.15793)) tasvirlangan. Uning muhiti — terminal va fayl tizimiga ega kompyuter. Harakatlar to'plami esa repozitoriyada navigatsiya, fayllarni qidirish, fayllarni ko'rish va qatorlarni tahrirlashni o'z ichiga oladi.
+
+![6-8-rasm. SWE-agent (Yang va boshqalar, 2024) — muhiti kompyuter, harakatlari navigatsiya, qidiruv va tahrirlashdan iborat kodlash agenti.](/ai-engineering/6-chapter/6.8-figure.png)
+<div className='text-center text-sm italic'>6-8-rasm. SWE-agent (Yang va boshqalar, 2024) — muhiti kompyuter, harakatlari navigatsiya, qidiruv va tahrirlashdan iborat kodlash agenti. CC BY 4.0 litsenziyasi ostidagi asl rasmdan moslashtirilgan.</div>
+
+_SI_ agenti odatda foydalanuvchi tomonidan berilgan vazifalarni bajarish uchun mo'ljallangan. Agent tizimida _SI_ — bu miya: u vazifa va muhitdan olingan fikr-mulohazani qayta ishlaydi, vazifani bajarish uchun harakatlar ketma-ketligini rejalashtiradi va vazifa bajarilgan-bajarilmaganini baholaydi.
+
+"Kitty Vogue" misolidagi jadval ma'lumotlari bilan ishlaydigan _RAG_ tizimiga qaytaylik. Bu — uchta harakatga ega oddiy agent: javob yaratish, _SQL_ so'rovi yaratish va _SQL_ so'rovini bajarish. "Fruity Fedora sotuvini keyingi uch oyga prognoz qiling" degan so'rov berilganda, agent quyidagi harakatlar ketma-ketligini bajarishi mumkin:
+
+1. Vazifani qanday bajarishni o'ylaydi. Kelajakdagi sotuvni bashorat qilish uchun avval so'nggi besh yillik savdo raqamlari kerak degan qarorga keladi. Agentning mulohazasi uning oraliq javobi sifatida ko'rsatiladi.
+2. So'nggi besh yillik savdo raqamlarini olish uchun _SQL_ so'rovini yaratishni ishga tushiradi.
+3. Ushbu so'rovni bajarishni ishga tushiradi.
+4. Vosita natijalarini tahlil qiladi. Ehtimol, yo'qolgan qiymatlar sababli bu raqamlar ishonchli prognoz uchun yetarli emas degan xulosaga keladi. Shu sababli o'tmishdagi marketing kampaniyalari haqida ham ma'lumot kerak deb qaror qiladi.
+5. O'tmishdagi marketing kampaniyalari uchun _SQL_ so'rovlarini yaratishni ishga tushiradi.
+6. _SQL_ so'rovini bajarishni ishga tushiradi.
+7. Yangi ma'lumotlar kelajakdagi sotuvni bashorat qilish uchun yetarli degan xulosaga keladi va prognoz yaratadi.
+8. Vazifa muvaffaqiyatli bajarildi degan xulosaga keladi.
+
+Agent bo'lmagan holatlarga nisbatan agentlar odatda ikki sabab tufayli kuchliroq modellarga muhtoj:
+
+- **Xatolarning to'planishi**: agent ko'pincha vazifani bajarish uchun bir necha bosqichni o'tishi kerak, bosqichlar soni ortgan sari umumiy aniqlik pasayadi. Agar modelning har bir bosqichdagi aniqligi 95% bo'lsa, 10 bosqichdan keyin aniqlik 60% ga, 100 bosqichdan keyin esa atigi 0,6% ga tushadi.
+- **Yuqori mas'uliyat**: vositalarga ega agentlar yanada ta'sirchan vazifalarni bajara oladi, biroq har qanday xato yanada og'ir oqibatlarga olib kelishi mumkin.
+
+Ko'p bosqichli vazifa vaqt va mablag' talab qiladi.[^11] Biroq, agentlar mustaqil ishlasa, ular inson vaqtini sezilarli darajada tejaydi va natijada ularni ishlatish xarajatlari o‘zini oqlaydi.
+
+Berilgan muhitda agentning muvaffaqiyati uning vositalar to'plamiga va _SI_ rejalashtiruvchisining kuchiga bog'liq. Keling, modelning foydalanishi mumkin bo'lgan turli vosita turlarini ko'rib chiqaylik.

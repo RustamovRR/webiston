@@ -91,6 +91,8 @@
 | unique | takrorlanmas | |
 | user experience | foydalanuvchi tajribasi | |
 | work-in-progress | jarayondagi | |
+| structured | strukturalashgan | |
+| unstructured | strukturalashmagan | |
 
 ---
 
@@ -147,6 +149,7 @@
 | host (verb) | o'z serverlarida ishga tushirish | Oddiy | |
 | open weight | ochiq parametrli | Oddiy | |
 | code readability | kodning o'qilishi osonligi | Oddiy | |
+| executor | ishga tushiruvchi, bajaruvchi, ijro etuvchi | Oddiy | |
 
 ---
 

@@ -146,6 +146,10 @@
       "rag": {
         "title": "RAG",
         "path": "6-rag-and-agents/rag/page"
+      },
+      "agents": {
+        "title": "Agentlar",
+        "path": "6-rag-and-agents/agents/page"
       }
     }
   }
