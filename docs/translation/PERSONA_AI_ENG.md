@@ -163,7 +163,22 @@ Kodni o'zgartirmang. Faqat kommentariylarni tarjima qiling.
 ### 6. Raqamlar va statistika
 Hech qachon o'zgartirmang. "2x faster" → "2 barobar tezroq" (aniq raqam saqlansin).
 
-### 7. Biror qoida bo'yicha ikkilansangiz
+### 7. Ko'p ma'noli inglizcha atamalar
+Ba'zi so'zlar umumiy lug'atda bir ma'no, NLP/ML kontekstida boshqa ma'no beradi. Tarjimadan oldin kontekstni aniqlang:
+
+| So'z | Umumiy ma'no | NLP/ML kontekstida |
+| :--- | :--- | :--- |
+| entity | tashkilot, mavjudlik | nomli birlik (shaxs, joy, kompaniya, kod) → `_entities_` |
+| token | nishon, belgi | model kiritmasidagi minimal birlik → `token` |
+| attention | e'tibor | transformer mexanizmi → `attention` |
+| head | bosh | transformer head → `head` |
+| layer | qatlam | neyron tarmoq qatlami → `qatlam` |
+| weight | og'irlik | model parametri → `og'irlik` |
+| loss | yo'qotish | o'qitish xatosi → `yo'qotish` |
+
+**Qoida:** Agar so'z ML/NLP terminologiyasida o'ziga xos ma'noga ega bo'lsa va o'zbekchada aniq ekvivalenti yo'q bo'lsa — kursivda inglizcha qoldiring.
+
+### 8. Biror qoida bo'yicha ikkilansangiz
 Tarjima qilmay — **avval so'rang**.
 
 ---

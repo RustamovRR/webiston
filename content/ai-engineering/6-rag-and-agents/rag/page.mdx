@@ -304,3 +304,49 @@ Men so'rovni qayta yozishni 253-betdagi "_RAG_" bo'limiga kiritgan bo'lsam-da, b
 <div className='text-center text-sm italic'>6-4-rasm. So'rovlarni qayta yozish uchun boshqa generativ modellardan foydalanishingiz mumkin.</div>
 
 So'rovni qayta yozish, ayniqsa, **shaxsni aniqlashtirish** (_identity resolution_) yoki boshqa bilimlarni jalb qilish kerak bo'lganda murakkablashishi mumkin. Masalan, agar foydalanuvchi "Uning xotini-chi?" deb so'rasa, avval uning xotini kimligini bilish uchun ma'lumotlar bazangizga murojaat qilishingiz kerak bo'ladi. Agar sizda bu ma'lumot bo'lmasa, qayta yozuvchi model noto'g'ri javobga yetaklovchi biror ismni gallyutsinatsiya qilish o'rniga, ushbu so'rovni yechib bo'lmasligini tan olishi kerak.
+
+So'rovni qayta yozish, ayniqsa, **shaxsni aniqlashtirish** (_identity resolution_) yoki boshqa bilimlarni jalb qilish kerak bo'lganda murakkablashishi mumkin. Masalan, agar foydalanuvchi "Uning xotini-chi?" deb so'rasa, avval uning xotini kimligini bilish uchun ma'lumotlar bazangizga murojaat qilishingiz kerak bo'ladi. Agar sizda bu ma'lumot bo'lmasa, qayta yozuvchi model noto'g'ri javobga yetaklovchi biror ismni gallyutsinatsiya qilish o'rniga, ushbu so'rovni yechib bo'lmasligini tan olishi kerak.
+
+### Kontekstual qidiruv
+
+**Kontekstual qidiruv** (_contextual retrieval_) g'oyasining mohiyati shuki, har bir bo'lakni tegishli kontekst bilan boyitish orqali uni qidirib topishni osonlashtirish mumkin. Oddiy usul — bo'lakni teglar va kalit so'zlar kabi metadata bilan to'ldirish. Elektron tijoratda mahsulotni uning tavsifi va sharhlari bilan boyitish mumkin. Rasm va videolarni esa sarlavha yoki izoh orqali qidirish mumkin.
+
+Metadata bo'lakdan avtomatik ajratib olingan obyektlar (_entities_) — shaxs ismlari, kompaniya nomlari, mahsulot kodlari kabi nomli birliklarni — ham o'z ichiga olishi mumkin. Agar hujjatingizda `EADDRNOTAVAIL (99)` kabi maxsus xatolik kodi bo'lsa, uni hujjat metadatasiga qo'shish tizimga ushbu kalit so'z bo'yicha qidirishga imkon beradi — hatto hujjat _embedding_'ga aylantirilgan bo'lsa ham.
+
+Har bir bo'lakni u javob bera oladigan **savollar** bilan ham boyitish mumkin. Mijozlarga xizmat ko'rsatishda har bir maqolani tegishli savollar bilan to'ldirish mumkin. Masalan, parolni tiklash haqidagi maqolaga "Parolni qanday tiklash mumkin?", "Parolimni unutdim", "Tizimga kira olmayapman" yoki "Hisobimni topa olmayapman" kabi so'rovlarni qo'shish mumkin.[^9]
+
+Agar hujjat bir nechta bo'lakka bo'lingan bo'lsa, ba'zi bo'laklar qidiruvchiga bo'lakning mazmunini tushunishga yetarli kontekst bermaydi. Buning oldini olish uchun har bir bo'lakni asl hujjatdan olingan kontekst — masalan, hujjatning sarlavhasi va qisqacha mazmuni — bilan boyitish mumkin. Anthropic _SI_ modellaridan foydalanib, bo'lakning asl hujjat bilan aloqasini tushuntiruvchi qisqa kontekst (odatda 50-100 token) yaratgan. Anthropic bu maqsadda quyidagi promptdan foydalangan ([Anthropic, 2024](https://www.anthropic.com/engineering/contextual-retrieval)):
+
+``` txt
+<document>
+{{WHOLE_DOCUMENT}}
+</document>
+
+`Quyida ushbu bo'lakni butun hujjat ichida joylashtirmoqchi bo'lgan qism:`
+
+<chunk>
+{{CHUNK_CONTENT}}
+</chunk>
+
+`Iltimos, bo'lakni qidiruv samaradorligini oshirish maqsadida 
+butun hujjat ichidagi o'rnini ko'rsatuvchi qisqa va lo'nda 
+kontekst bering. Faqat shu qisqa kontekstni yozing, boshqa hech narsa yo'q.`
+```
+
+Har bir bo'lak uchun yaratilgan kontekst bo'lak boshiga qo'shiladi, so'ngra boyitilgan bo'lak qidiruv algoritmi tomonidan indekslanadi. 6-5-rasmda Anthropic qo'llagan jarayon tasvirlangan.
+
+![6-5-rasm. Anthropic har bir bo'lakni qisqa kontekst bilan boyitadi — bu qidiruvchiga berilgan so'rov bo'yicha tegishli bo'laklarni topishni osonlashtiradi.](/ai-engineering/6-chapter/6.5-figure.png)
+<div className='text-center text-sm italic'>6-5-rasm. Anthropic har bir bo'lakni qisqa kontekst bilan boyitadi — bu qidiruvchiga berilgan so'rov bo'yicha tegishli bo'laklarni topishni osonlashtiradi. "Introducing Contextual Retrieval" (Anthropic, 2024) maqolasidan olindi.</div>
+
+> #### Qidiruv yechimlarini baholash
+> 
+> Qidiruv yechimini tanlashda e'tiborga olish kerak bo'lgan asosiy omillar:
+> 
+> - Qanday qidiruv mexanizmlarini qo'llab-quvvatlaydi? Gibrid qidiruvni qo'llab-quvvatlaydimi?
+> - Agar vektorli ma'lumotlar bazasi bo'lsa, qaysi _embedding_ modellari va vektorli qidiruv algoritmlarini qo'llab-quvvatlaydi?
+> - Ma'lumotlarni saqlash va so'rov trafigi jihatidan qanchalik kengayuvchan? Sizning trafik andozalaringizga mos keladimi?
+> - Ma'lumotlarni indekslash qancha vaqt oladi? Bir vaqtning o'zida qancha ma'lumotni (qo'shish/o'chirish) qayta ishlash mumkin?
+> - Turli qidiruv algoritmlari uchun so'rov kechikishi qanday?
+> - Agar boshqariladigan yechim bo'lsa, narxlash tuzilmasi qanday? Hujjat/vektor hajmiga yoki so'rov hajmiga qarab hisoblanadimi?
+> 
+> Bu ro'yxatda kirish nazorati, muvofiqlik, ma'lumotlar tekisligi va boshqaruv tekisligini ajratish kabi korporativ yechimlar bilan bog'liq funksionallik ko'rsatkichlari kiritilmagan.

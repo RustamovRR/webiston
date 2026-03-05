@@ -173,6 +173,7 @@
 | Query normalization | So'rovni normallashtirish | Oddiy | |
 | Identity resolution | Shaxsni aniqlashtirish | Oddiy | |
 | Contextual retrieval | Kontekstual qidiruv | Oddiy | |
+| entities (NLP) | _entities_ | Kursiv | NLP kontekstida: nomli birliklar (shaxs, joy, kompaniya, kod) — "tashkilotlar" emas |
 | Product Quantization | `Ko'paytmani kvantlash` | Code | |
 | HNSW | `HNSW` | Code | |
 | IVF | `IVF` | Code | |
