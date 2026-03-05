@@ -350,3 +350,59 @@ Har bir bo'lak uchun yaratilgan kontekst bo'lak boshiga qo'shiladi, so'ngra boyi
 > - Agar boshqariladigan yechim bo'lsa, narxlash tuzilmasi qanday? Hujjat/vektor hajmiga yoki so'rov hajmiga qarab hisoblanadimi?
 > 
 > Bu ro'yxatda kirish nazorati, muvofiqlik, ma'lumotlar tekisligi va boshqaruv tekisligini ajratish kabi korporativ yechimlar bilan bog'liq funksionallik ko'rsatkichlari kiritilmagan.
+
+## Matndan tashqari _RAG_
+
+Yuqorida matn hujjatlaridan foydalanadigan _RAG_ tizimlari muhokama qilindi. Biroq tashqi ma'lumot manbalari ko'p modalli (_multimodal_) yoki jadval ko'rinishida ham bo'lishi mumkin.
+
+### Ko'p modalli _RAG_
+
+Agar generatoringiz ko'p modalli bo'lsa, kontekst nafaqat matn hujjatlari, balki tashqi manbalardan olingan rasmlar, videolar, audio va boshqalar bilan ham boyitilishi mumkin. Qisqalik uchun misollarda faqat rasmlardan foydalanamiz — ularni istalgan boshqa modallik bilan almashtirish mumkin. Berilgan so'rov asosida qidiruvchi unga aloqador matnlar va rasmlarni birga olib keladi. Masalan, "Pixar'ning 'Up' multfilmidagi uyning rangi qanday?" degan so'rovga javob berish uchun qidiruvchi 6-6-rasmda ko'rsatilganidek, "Up" dagi uy rasmini olib kelishi mumkin.
+
+![6-6-rasm. Ko'p modalli RAG so'rovni matn va rasmlar bilan birga boyitishi mumkin.](/ai-engineering/6-chapter/6.6-figure.png)
+<div className='text-center text-sm italic'>6-6-rasm. Ko'p modalli _RAG_ so'rovni matn va rasmlar bilan birga boyitishi mumkin. (*Mualliflik huquqi sababli "Up" filmidagi haqiqiy rasm ishlatilmagan.)</div>
+
+Agar rasmlarda metadata — sarlavha, teglar, izohlar — mavjud bo'lsa, ularni metadata orqali qidirib topish mumkin. Masalan, rasm izohi so'rovga aloqador deb topilsa, o'sha rasm qidirib olinadi.
+
+Rasmlarni mazmuniga qarab qidirish uchun esa rasmlarni so'rovlar bilan taqqoslash imkoniyati kerak. Agar so'rovlar matn ko'rinishida bo'lsa, matn va rasmlar uchun ham _embedding_ yarata oladigan ko'p modalli _embedding_ modeli zarur. Masalan, `CLIP` ([Radford va boshqalar, 2021](https://arxiv.org/abs/2103.00020)) ko'p modalli _embedding_ modeli sifatida ishlatilsa, qidiruvchi quyidagicha ishlaydi:
+
+1. Barcha ma'lumotlar — matnlar va rasmlar — uchun `CLIP` _embedding_'lari yaratiladi va vektorli ma'lumotlar bazasiga saqlanadi.
+2. Berilgan so'rov uchun uning `CLIP` _embedding_'i yaratiladi.
+3. Vektorli bazada so'rov _embedding_'iga yaqin barcha rasm va matnlar qidirib topiladi.
+
+### Jadval ma'lumotlari bilan _RAG_
+
+Ko'pgina ilovalar faqat matn va rasmlar kabi strukturalashmagan ma'lumotlar bilan emas, balki jadval ma'lumotlari bilan ham ishlaydi. Ko'plab so'rovlarga javob berish uchun ma'lumotlar jadvallaridan ma'lumot olish kerak bo'ladi. Jadval ma'lumotlari yordamida kontekstni boyitish jarayoni klassik _RAG_ jarayonidan sezilarli darajada farq qiladi.
+
+Tasavvur qiling, siz mushuk modasi bilan ixtisoslashgan "Kitty Vogue" nomli elektron tijorat saytida ishlayapsiz. Bu do'konda 6-3-jadvalda ko'rsatilganidek, _Sales_ nomli buyurtmalar jadvali mavjud.
+
+| Buyurtma ID | Vaqt | Mahsulot ID | Mahsulot | Birlik narxi ($) | Miqdor | Jami |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | … | 2044 | Meow Mix Seasoning | 10.99 | 1 | 10.99 |
+| 2 | … | 3492 | Purr & Shake | 25 | 2 | 50 |
+| 3 | … | 2045 | Fruity Fedora | 18 | 1 | 18 |
+| … | … | … | … | … | … | … |
+
+<div className='text-center text-sm italic'>6-3-jadval. "Kitty Vogue" tasavvuriy elektron tijorat saytining buyurtmalar jadvali — Sales.</div>
+
+"So'nggi 7 kunda Fruity Fedora'dan nechta dona sotilgan?" degan savolga javob berish uchun tizim ushbu jadvaldan Fruity Fedora bilan bog'liq barcha buyurtmalarni so'rab, miqdorlarni yig'ishi kerak. Jadval _SQL_ orqali so'raladi deb faraz qilsak, _SQL_ so'rovi quyidagicha ko'rinadi:
+
+``` sql
+SELECT SUM(units) AS total_units_sold
+FROM Sales
+WHERE product_name = 'Fruity Fedora'
+AND timestamp >= DATE_SUB(CURDATE(), INTERVAL 7 DAY);
+```
+
+Ish jarayoni quyidagicha — 6.7-rasmda ko'rsatilgan. Ushbu jarayonni ishga tushirish uchun tizim _SQL_ so'rovini yaratish va bajarish qobiliyatiga ega bo'lishi shart:
+
+1. **Matndan _SQL_'ga** (_Text-to-SQL_): foydalanuvchi so'rovi va jadval sxemalari asosida kerakli _SQL_ so'rovi aniqlanadi. Matndan _SQL_'ga o'tkazish — [2-bobda](/books/ai-engineering/2-understanding-foundation-models) muhokama qilingan semantik tahlilning bir ko'rinishi.
+2. **_SQL_ bajarish**: _SQL_ so'rovi ishga tushiriladi.
+3. **Generatsiya**: _SQL_ natijasi va asl foydalanuvchi so'rovi asosida javob yaratiladi.
+
+![6-7-rasm. Jadval ma'lumotlari bilan kontekstni boyituvchi RAG tizimi.](/ai-engineering/6-chapter/6.7-figure.png)
+<div className='text-center text-sm italic'>6-7-rasm. Jadval ma'lumotlari bilan kontekstni boyituvchi _RAG_ tizimi.</div>
+
+Matndan _SQL_'ga o'tkazish bosqichida, agar mavjud jadvallar sxemalari model kontekstiga sig'masa, qaysi jadvallardan foydalanish kerakligini oldindan aniqlash uchun oraliq qadam kerak bo'lishi mumkin. Bu vazifani yakuniy javobni yaratuvchi generator yoki ixtisoslashgan matndan _SQL_'ga o'tkazuvchi model bajarishi mumkin.
+
+Ushbu bo'limda qidiruvchilar va _SQL_ ishga tushiruvchilari (_executors_) kabi vositalar modelga ko'proq so'rovlarni qayta ishlash va yuqori sifatli javoblar yaratish imkonini berishini ko'rdik. Modelga yanada ko'proq vositalar berish uning imkoniyatlarini yanada kengaytiradimi? Vositalardan foydalanish — keyingi bo'limda muhokama qilinadigan agent andozasining asosiy xususiyatlaridan biridir.

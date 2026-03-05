@@ -16,7 +16,7 @@
 | 3 | Evaluation Methodology | ✅ Tugadi | 5/5 |
 | 4 | Evaluate AI Systems | ✅ Tugadi | 4/4 |
 | 5 | Prompt Engineering | ✅ Tugadi | 4/4 |
-| 6 | RAG and Agents | 🔄 Jarayonda | 1/4 |
+| 6 | RAG and Agents | 🔄 Jarayonda | 2/4 |
 | 7 | Finetuning | ⏳ Kutmoqda | 0/4 |
 | 8 | Dataset Engineering | ⏳ Kutmoqda | 0/4 |
 | 9 | Inference Optimization | ⏳ Kutmoqda | 0/3 |
@@ -29,14 +29,10 @@
 | Subchapter | Fayl yo'li | Holat | Izoh |
 | :--- | :--- | :--- | :--- |
 | Kirish (page.mdx) | `6-rag-and-agents/page.mdx` | ✅ Tugadi | |
-| RAG | `6-rag-and-agents/rag/page.mdx` | 🔄 Chala | "Kontekstual qidiruv" bo'limidan davom etish kerak |
+| RAG | `6-rag-and-agents/rag/page.mdx` | ✅ Tugadi | |
 | Agents | `6-rag-and-agents/agents/page.mdx` | ⏳ Kutmoqda | |
 | Memory | `6-rag-and-agents/memory/page.mdx` | ⏳ Kutmoqda | |
 | Summary | `6-rag-and-agents/summary/page.mdx` | ⏳ Kutmoqda | |
-
-### RAG subchapter — qolgan bo'limlar (kitob p.267–274):
-- [ ] Contextual Retrieval (Kontekstual qidiruv)
-- [ ] RAG Beyond Texts (p.273)
 
 ---
 
@@ -112,5 +108,5 @@ Har bir sessiya yakunida ushbu faylni quyidagi ma'lumotlar bilan yangilang:
 ## So'nggi Yangilanish
 
 - **Sana**: 2026-03-05
-- **Sessiya**: RAG subchapter — "So'rovni qayta yozish" bo'limi bilan yakunlandi
-- **Keyingi vazifa**: RAG → "Kontekstual qidiruv" bo'limidan davom etish (p.271)
+- **Sessiya**: RAG subchapter to'liq tugadi — "Matndan tashqari RAG" bilan yakunlandi
+- **Keyingi vazifa**: Agents subchapter (`6-rag-and-agents/agents/page.mdx`)
