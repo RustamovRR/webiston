@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "prefer-const": "warn",
+    "no-debugger": "error",
+    "no-empty": "warn",
+    "no-extra-boolean-cast": "warn",
+    "no-irregular-whitespace": "error",
+    "no-loss-of-precision": "error",
+    "no-unsafe-negation": "error",
+    "valid-typeof": "error",
+    "no-case-declarations": "warn",
+    "no-delete-var": "error",
+    "no-empty-pattern": "warn",
+    "no-fallthrough": "warn",
+    "no-global-assign": "error",
+    "no-octal": "error",
+    "no-redeclare": "error",
+    "no-self-assign": "warn",
+    "no-shadow-restricted-names": "error",
+    "no-unused-labels": "warn",
+    "no-useless-catch": "warn",
+    "no-useless-escape": "warn",
+    "no-with": "error",
+    "require-yield": "error"
+  },
+  "settings": {
+    "jsx-a11y": {
+      "polymorphicPropName": "as",
+      "components": {
+        "Button": "button",
+        "Link": "a"
+      }
+    }
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.output/**",
+    "**/.wxt/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/public/**",
+    "**/content/**",
+    "**/*.mdx",
+    "**/*.md",
+    "**/*.json"
+  ]
+}

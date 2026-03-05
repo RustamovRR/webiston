@@ -1,1 +1,1 @@
-export { default } from './UserAgentAnalyzer'
+export { default } from "./UserAgentAnalyzer"

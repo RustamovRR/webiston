@@ -1,1 +1,1 @@
-export { DualTextPanel } from './DualTextPanel'
+export { DualTextPanel } from "./DualTextPanel"

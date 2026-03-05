@@ -1,22 +1,22 @@
-'use client'
+"use client"
 
-import { useJwtDecoder } from '@/hooks/tools/useJwtDecoder'
-import { useTranslations } from 'next-intl'
-import { ToolHeader } from '@/components/shared/ToolHeader'
+import { useTranslations } from "next-intl"
+import { ToolHeader } from "@/components/shared/ToolHeader"
 import {
   ControlPanel,
-  TokenInfoCards,
-  InfoSection,
-  SignatureSection,
-  SignatureInfo,
-  TokenParts,
   ErrorDisplay,
+  InfoSection,
   InputPanel,
-} from './components'
+  SignatureInfo,
+  SignatureSection,
+  TokenInfoCards,
+  TokenParts
+} from "./components"
+import { useJwtDecoder } from "./hooks/useJwtDecoder"
 
 const JwtDecoder = () => {
-  const t = useTranslations('JwtDecoderPage.ToolHeader')
-  const tSamples = useTranslations('JwtDecoderPage.Samples')
+  const t = useTranslations("JwtDecoderPage.ToolHeader")
+  const tSamples = useTranslations("JwtDecoderPage.Samples")
 
   const {
     inputText,
@@ -36,31 +36,33 @@ const JwtDecoder = () => {
     formatJSON,
     inputStats,
     partsCount,
-    samples,
+    samples
   } = useJwtDecoder()
 
   // Update sample labels with translations
   const translatedSamples = samples.map((sample) => ({
     ...sample,
     label:
-      sample.key === 'standard'
-        ? tSamples('standard')
-        : sample.key === 'expired'
-          ? tSamples('expired')
-          : sample.key === 'complex'
-            ? tSamples('complex')
-            : sample.label,
+      sample.key === "standard"
+        ? tSamples("standard")
+        : sample.key === "expired"
+          ? tSamples("expired")
+          : sample.key === "complex"
+            ? tSamples("complex")
+            : sample.label
   }))
 
-  const handleFileUploadWrapper = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUploadWrapper = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     handleFileUpload(event)
     // Reset input
-    event.target.value = ''
+    event.target.value = ""
   }
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       {/* Enhanced Control Panel with integrated info */}
       <ControlPanel

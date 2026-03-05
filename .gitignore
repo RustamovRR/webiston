@@ -1,37 +1,131 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
-/.pnp
+# ===================
+# Dependencies
+# ===================
+# All node_modules directories (root and nested)
+node_modules/
+**/node_modules/
+
+# Package manager files
+.pnp
 .pnp.js
 .yarn/install-state.gz
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
 
-# testing
-/coverage
+# ===================
+# Build outputs
+# ===================
+# Next.js
+.next/
+out/
 
-# next.js
-/.next/
-/out/
+# Package builds (all dist/build directories)
+dist/
+build/
+**/dist/
+**/build/
 
-# production
-/build
+# Extension builds
+.output/
+.wxt/
+**/.output/
+**/.wxt/
 
-# misc
+# ===================
+# Testing
+# ===================
+coverage/
+**/coverage/
+.nyc_output/
+
+# ===================
+# Cache
+# ===================
+.turbo/
+.cache/
+**/.cache/
+*.tsbuildinfo
+**/*.tsbuildinfo
+.eslintcache
+
+# ===================
+# Environment
+# ===================
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===================
+# IDE & OS
+# ===================
+# macOS
 .DS_Store
-*.pem
+**/.DS_Store
+.AppleDouble
+.LSOverride
 
-# debug
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.temp
+*.log
+*.sublime-project
+*.sublime-workspace
+
+# ===================
+# Certificates & Keys
+# ===================
+*.pem
+*.key
+*.cert
+*.crt
+
+# ===================
+# Debug logs
+# ===================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# local env files
-.env
-.env*.local
-
-# vercel
+# ===================
+# Vercel
+# ===================
 .vercel
 
-# typescript
-*.tsbuildinfo
+# ===================
+# TypeScript
+# ===================
 next-env.d.ts
+
+# ===================
+# Misc
+# ===================
+*.orig
+.history/

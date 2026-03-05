@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
 interface VideoPreviewProps {
   stream: MediaStream | null
@@ -16,5 +16,13 @@ export function VideoPreview({ stream }: VideoPreviewProps) {
     }
   }, [stream])
 
-  return <video ref={videoRef} autoPlay muted playsInline className="h-full w-full rounded-lg object-cover" />
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+      playsInline
+      className="h-full w-full rounded-lg object-cover"
+    />
+  )
 }

@@ -1,38 +1,39 @@
-'use client'
+"use client"
 
-import { useTheme } from 'next-themes'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useIsMounted } from 'usehooks-ts'
-import { socialLinks } from '@/constants'
+import { useTheme } from "next-themes"
+import { useIsMounted } from "usehooks-ts"
+import { socialLinks } from "@/constants"
 
 const SocialMedia = () => {
   const { theme } = useTheme()
   const isMounted = useIsMounted()
 
-  const icons = [
+  const _icons = [
     {
-      link: 'https://linkedin.com',
-      darkIcon: '/linkedin-dark.svg',
-      lightIcon: '/linkedin-white.svg',
+      link: "https://linkedin.com",
+      darkIcon: "/linkedin-dark.svg",
+      lightIcon: "/linkedin-white.svg"
     },
     {
-      link: 'https://t.me/nolbir_io',
-      darkIcon: '/telegram-dark.svg',
-      lightIcon: '/telegram-white.svg',
+      link: "https://t.me/nolbir_io",
+      darkIcon: "/telegram-dark.svg",
+      lightIcon: "/telegram-white.svg"
     },
     {
-      link: 'https://github.com/nolbir-io',
-      darkIcon: '/github-dark.svg',
-      lightIcon: '/github-white.svg',
-    },
+      link: "https://github.com/nolbir-io",
+      darkIcon: "/github-dark.svg",
+      lightIcon: "/github-white.svg"
+    }
   ]
 
   if (!isMounted())
     return (
       <>
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="skeleton bg-foreground/10 h-[30px] w-[30px] animate-pulse rounded-full"></div>
+          <div
+            key={index}
+            className="skeleton bg-foreground/10 h-[30px] w-[30px] animate-pulse rounded-full"
+          ></div>
         ))}
       </>
     )

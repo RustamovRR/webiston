@@ -37,15 +37,30 @@
       "description": "Encode and decode text and files to/from Base64 format.",
       "keywords": "Base64 encoder, Base64 decoder, Base64 converter, Base64 tool, кодировщик Base64, декодер Base64, конвертер Base64, инструмент Base64, base64 kodlash, base64 dekodlash"
     },
-    "urlEncoder": { "title": "URL Encoder/Decoder", "description": "A tool to encode and decode URLs and text." },
-    "jwtDecoder": { "title": "JWT Decoder", "description": "Decode and analyze JSON Web Tokens (JWT)." },
-    "colorConverter": { "title": "Color Converter", "description": "Convert colors between HEX, RGB, HSL formats." },
+    "urlEncoder": {
+      "title": "URL Encoder/Decoder",
+      "description": "A tool to encode and decode URLs and text."
+    },
+    "jwtDecoder": {
+      "title": "JWT Decoder",
+      "description": "Decode and analyze JSON Web Tokens (JWT)."
+    },
+    "colorConverter": {
+      "title": "Color Converter",
+      "description": "Convert colors between HEX, RGB, HSL formats."
+    },
     "hashGenerator": {
       "title": "Hash Generator",
       "description": "A tool to generate MD5, SHA1, SHA256, SHA512 hashes."
     },
-    "uuidGenerator": { "title": "UUID Generator", "description": "A tool to generate unique identifiers (UUIDs)." },
-    "qrGenerator": { "title": "QR Code Generator", "description": "Generate QR codes for text and URLs." },
+    "uuidGenerator": {
+      "title": "UUID Generator",
+      "description": "A tool to generate unique identifiers (UUIDs)."
+    },
+    "qrGenerator": {
+      "title": "QR Code Generator",
+      "description": "Generate QR codes for text and URLs."
+    },
     "passwordGenerator": {
       "title": "Password Generator",
       "description": "A tool to create secure and strong passwords."
@@ -54,30 +69,63 @@
       "title": "Device Info",
       "description": "Detailed information about your browser, device, and system."
     },
-    "cameraRecorder": { "title": "Camera Recorder", "description": "Test your camera and record a video." },
-    "microphoneTest": { "title": "Microphone Test", "description": "Test your microphone and record audio." },
-    "keycodeInfo": { "title": "Keycode Info", "description": "Identify JavaScript event keycodes." },
+    "cameraRecorder": {
+      "title": "Camera Recorder",
+      "description": "Test your camera and record a video."
+    },
+    "microphoneTest": {
+      "title": "Microphone Test",
+      "description": "Test your microphone and record audio."
+    },
+    "keycodeInfo": {
+      "title": "Keycode Info",
+      "description": "Identify JavaScript event keycodes."
+    },
     "ogMetaGenerator": {
       "title": "Open Graph Meta Generator",
       "description": "Create meta tags for social media platforms."
     },
-    "loremIpsum": { "title": "Lorem Ipsum Generator", "description": "Generate placeholder text and paragraphs." },
+    "loremIpsum": {
+      "title": "Lorem Ipsum Generator",
+      "description": "Generate placeholder text and paragraphs."
+    },
     "screenResolution": {
       "title": "Screen Resolution",
       "description": "Information about your screen size and resolution."
     },
-    "userAgentAnalyzer": { "title": "User Agent Analyzer", "description": "Analyze browser User Agent strings." },
-    "ipInfo": { "title": "IP Info", "description": "Information about your IP address and location." },
+    "userAgentAnalyzer": {
+      "title": "User Agent Analyzer",
+      "description": "Analyze browser User Agent strings."
+    },
+    "ipInfo": {
+      "title": "IP Info",
+      "description": "Information about your IP address and location."
+    },
     "websiteStatus": {
       "title": "Website Status Checker",
       "description": "Check the availability and status of a website."
     },
-    "httpStatus": { "title": "HTTP Status Codes", "description": "All HTTP status codes and their meanings." }
+    "httpStatus": {
+      "title": "HTTP Status Codes",
+      "description": "All HTTP status codes and their meanings."
+    }
   },
   "ToolCategories": {
-    "converters": { "title": "Converters", "description": "Tools for converting data between different formats." },
-    "generators": { "title": "Generators", "description": "Tools for generating various data and codes." },
-    "analyzers": { "title": "Analyzers", "description": "Tools for analyzing and inspecting data." },
-    "utilities": { "title": "Utilities", "description": "Device testing and other useful tools." }
+    "converters": {
+      "title": "Converters",
+      "description": "Tools for converting data between different formats."
+    },
+    "generators": {
+      "title": "Generators",
+      "description": "Tools for generating various data and codes."
+    },
+    "analyzers": {
+      "title": "Analyzers",
+      "description": "Tools for analyzing and inspecting data."
+    },
+    "utilities": {
+      "title": "Utilities",
+      "description": "Device testing and other useful tools."
+    }
   }
 }

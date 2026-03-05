@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
-import { Badge } from '@/components/ui/badge'
-import { ISearchHit } from '@/types'
-import { SearchIcon } from 'lucide-react' // Keeping SearchIcon for NoResults
-import Link from 'next/link'
+import { SearchIcon } from "lucide-react" // Keeping SearchIcon for NoResults
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import type { ISearchHit } from "@/types"
 
 interface GroupedHitProps {
   hits: ISearchHit[]
@@ -18,7 +18,7 @@ export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
       <div className="mb-2 flex items-center gap-2">
         <h4 className="text-lg font-medium">{title}</h4>
         <Badge variant="secondary" className="text-xs">
-          {hits[0]?.contentType === 'article' ? 'maqola' : 'mavzu'}
+          {hits[0]?.contentType === "article" ? "maqola" : "mavzu"}
         </Badge>
       </div>
 
@@ -35,7 +35,10 @@ export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
                 {hit.hierarchy.lvl1}
               </div>
             )}
-            <p className="text-muted-foreground text-sm" dangerouslySetInnerHTML={{ __html: hit.content }} />
+            <p
+              className="text-muted-foreground text-sm"
+              dangerouslySetInnerHTML={{ __html: hit.content }}
+            />
           </Link>
         ))}
       </div>
@@ -70,7 +73,8 @@ export function NoResults({ query }: NoResultsProps) {
       </div>
       <h2 className="mt-4 text-lg font-semibold">Natijalar topilmadi</h2>
       <p className="text-muted-foreground mt-2 text-sm">
-        Ushbu &quot;{query}&quot; bo'yicha natija topilmadi. Boshqa so'z bilan urinib ko'ring.
+        Ushbu &quot;{query}&quot; bo'yicha natija topilmadi. Boshqa so'z bilan
+        urinib ko'ring.
       </p>
     </div>
   )
@@ -91,7 +95,6 @@ export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
         onChange={(e) => onChange(e.target.value)}
         placeholder="Mavzular va kodlar orasidan qidiring..."
         className="h-12 w-full rounded-md bg-[#F2F2F7] px-10 font-medium placeholder:text-gray-500 dark:bg-[#151515] dark:placeholder:text-gray-400"
-        autoFocus
       />
     </div>
   )

@@ -11,8 +11,8 @@ export interface FileUploadResult {
 }
 
 // Conversion modes
-export type ConversionMode = 'encode' | 'decode'
-export type TransliterationMode = 'latin-to-cyrillic' | 'cyrillic-to-latin'
+export type ConversionMode = "encode" | "decode"
+export type TransliterationMode = "latin-to-cyrillic" | "cyrillic-to-latin"
 
 // Statistics types
 export interface StatItem {
@@ -37,7 +37,7 @@ export interface ToolConfig {
   supportedFormats?: string[]
 }
 
-export type TLocale = 'uz' | 'en'
+export type TLocale = "uz" | "en"
 
 export interface IClassName {
   className?: string
@@ -52,7 +52,7 @@ export interface ISearchHit {
     lvl2?: string
     lvl3?: string
   }
-  contentType: 'tutorial' | 'article'
+  contentType: "tutorial" | "article"
   path: string // Reverted back to string
   fullPath: string
   metadata?: {

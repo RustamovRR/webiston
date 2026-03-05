@@ -1,30 +1,29 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { ToolHeader } from '@/components/shared'
-import { useCameraRecorder } from '@/hooks/tools/useCameraRecorder'
+import { motion } from "framer-motion"
+import { useTranslations } from "next-intl"
+import { useState } from "react"
+import { ToolHeader } from "@/components/shared"
 import {
   ControlPanel,
-  VideoPreviewPanel,
-  StatusPanel,
-  MediaPanel,
   InfoSection,
-  VideoPreview,
+  MediaPanel,
   MediaPreviewModal,
-} from './components'
+  StatusPanel,
+  VideoPreviewPanel
+} from "./components"
+import { useCameraRecorder } from "./hooks/useCameraRecorder"
 
 const QUALITY_OPTIONS = [
-  { value: 'hd', label: 'HD (1280×720)', width: 1280, height: 720 },
-  { value: 'fhd', label: 'Full HD (1920×1080)', width: 1920, height: 1080 },
-  { value: 'sd', label: 'SD (640×480)', width: 640, height: 480 },
+  { value: "hd", label: "HD (1280×720)", width: 1280, height: 720 },
+  { value: "fhd", label: "Full HD (1920×1080)", width: 1920, height: 1080 },
+  { value: "sd", label: "SD (640×480)", width: 640, height: 480 }
 ]
 
 export default function CameraRecorderPage() {
-  const t = useTranslations('CameraRecorderPage.ToolHeader')
+  const t = useTranslations("CameraRecorderPage.ToolHeader")
 
-  const [selectedQuality, setSelectedQuality] = useState('hd')
+  const [selectedQuality, setSelectedQuality] = useState("hd")
 
   const {
     videoRef,
@@ -52,10 +51,10 @@ export default function CameraRecorderPage() {
     openPreview,
     closePreview,
     updateVideoQuality,
-    getCurrentRecordingInfo,
+    getCurrentRecordingInfo
   } = useCameraRecorder({
-    onSuccess: (message: string) => console.log('Success:', message),
-    onError: (error: string) => console.error('Error:', error),
+    onSuccess: (message: string) => console.log("Success:", message),
+    onError: (error: string) => console.error("Error:", error)
   })
 
   // Update video quality when dropdown changes
@@ -72,7 +71,7 @@ export default function CameraRecorderPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       {/* Control Panel */}
       <div className="mb-6">

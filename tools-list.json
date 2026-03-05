@@ -1,6 +1,6 @@
 [
-  "qr-generator",
   "latin-cyrillic",
+  "qr-generator",
   "json-formatter",
   "base64-converter",
   "url-encoder",

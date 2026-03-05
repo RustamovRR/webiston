@@ -1,6 +1,7 @@
-// Export all tool hooks
-export * from './tools'
+// Global hooks only
+// Tool-specific hooks are now located in their respective modules:
+// src/modules/tools/[ToolName]/hooks/
 
-// Export types from tools hooks
-export type { ColorFormats } from './tools/useColorConverter'
-export type { GeneratedUuid, UuidVersion, UuidFormat } from './tools/useUuidGenerator'
+// Example imports from modules:
+// import { useLatinCyrillic } from '@/modules/tools/LatinCyrillic/hooks/useLatinCyrillic'
+// import { useJsonFormatter } from '@/modules/tools/JsonFormatter/hooks/useJsonFormatter'

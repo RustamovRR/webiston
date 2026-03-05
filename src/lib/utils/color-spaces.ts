@@ -10,9 +10,9 @@ export const rgbToLab = (r: number, g: number, b: number) => {
   let bNorm = b / 255
 
   // Apply gamma correction
-  rNorm = rNorm > 0.04045 ? Math.pow((rNorm + 0.055) / 1.055, 2.4) : rNorm / 12.92
-  gNorm = gNorm > 0.04045 ? Math.pow((gNorm + 0.055) / 1.055, 2.4) : gNorm / 12.92
-  bNorm = bNorm > 0.04045 ? Math.pow((bNorm + 0.055) / 1.055, 2.4) : bNorm / 12.92
+  rNorm = rNorm > 0.04045 ? ((rNorm + 0.055) / 1.055) ** 2.4 : rNorm / 12.92
+  gNorm = gNorm > 0.04045 ? ((gNorm + 0.055) / 1.055) ** 2.4 : gNorm / 12.92
+  bNorm = bNorm > 0.04045 ? ((bNorm + 0.055) / 1.055) ** 2.4 : bNorm / 12.92
 
   // Convert to XYZ using sRGB matrix
   let x = rNorm * 0.4124564 + gNorm * 0.3575761 + bNorm * 0.1804375
@@ -25,9 +25,9 @@ export const rgbToLab = (r: number, g: number, b: number) => {
   z = z / 1.08883
 
   // Convert XYZ to Lab
-  const fx = x > 0.008856 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116
-  const fy = y > 0.008856 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116
-  const fz = z > 0.008856 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116
+  const fx = x > 0.008856 ? x ** (1 / 3) : 7.787 * x + 16 / 116
+  const fy = y > 0.008856 ? y ** (1 / 3) : 7.787 * y + 16 / 116
+  const fz = z > 0.008856 ? z ** (1 / 3) : 7.787 * z + 16 / 116
 
   const l = Math.round(116 * fy - 16)
   const a = Math.round(500 * (fx - fy))
@@ -53,7 +53,8 @@ export const rgbToOklab = (r: number, g: number, b: number) => {
   const bNorm = b / 255
 
   // Linear RGB to OKLab (simplified)
-  const l = Math.round((0.2126 * rNorm + 0.7152 * gNorm + 0.0722 * bNorm) * 100) / 100
+  const l =
+    Math.round((0.2126 * rNorm + 0.7152 * gNorm + 0.0722 * bNorm) * 100) / 100
   const a = Math.round((rNorm - gNorm) * 0.5 * 100) / 100
   const bOk = Math.round((rNorm + gNorm - 2 * bNorm) * 0.25 * 100) / 100
 
@@ -72,9 +73,9 @@ export const oklabToOklch = (l: number, a: number, b: number) => {
 // Convert Lab to RGB
 export const labToRgb = (l: number, a: number, b: number) => {
   // Convert Lab to XYZ
-  let fy = (l + 16) / 116
-  let fx = a / 500 + fy
-  let fz = fy - b / 200
+  const fy = (l + 16) / 116
+  const fx = a / 500 + fy
+  const fz = fy - b / 200
 
   const delta = 6 / 29
   const deltaSquared = delta * delta
@@ -94,14 +95,14 @@ export const labToRgb = (l: number, a: number, b: number) => {
   let bRgb = x * 0.0557 + y * -0.204 + z * 1.057
 
   // Apply gamma correction
-  r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r
-  g = g > 0.0031308 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : 12.92 * g
-  bRgb = bRgb > 0.0031308 ? 1.055 * Math.pow(bRgb, 1 / 2.4) - 0.055 : 12.92 * bRgb
+  r = r > 0.0031308 ? 1.055 * r ** (1 / 2.4) - 0.055 : 12.92 * r
+  g = g > 0.0031308 ? 1.055 * g ** (1 / 2.4) - 0.055 : 12.92 * g
+  bRgb = bRgb > 0.0031308 ? 1.055 * bRgb ** (1 / 2.4) - 0.055 : 12.92 * bRgb
 
   return {
     r: Math.max(0, Math.min(255, Math.round(r * 255))),
     g: Math.max(0, Math.min(255, Math.round(g * 255))),
-    b: Math.max(0, Math.min(255, Math.round(bRgb * 255))),
+    b: Math.max(0, Math.min(255, Math.round(bRgb * 255)))
   }
 }
 
@@ -124,7 +125,7 @@ export const oklabToRgb = (l: number, a: number, b: number) => {
   return {
     r: Math.round(r * 255),
     g: Math.round(g * 255),
-    b: Math.round(bRgb * 255),
+    b: Math.round(bRgb * 255)
   }
 }
 

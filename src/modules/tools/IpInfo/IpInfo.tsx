@@ -1,14 +1,19 @@
-'use client'
+"use client"
 
-import React from 'react'
-import { useTranslations } from 'next-intl'
-import { ToolHeader } from '@/components/shared'
-import { ControlPanel, OutputPanel, CurrentIpPanel, SampleIpsPanel, InfoSection } from './components'
-import { useIPInfo } from '@/hooks/tools/useIPInfo'
+import { useTranslations } from "next-intl"
+import { ToolHeader } from "@/components/shared"
+import {
+  ControlPanel,
+  CurrentIpPanel,
+  InfoSection,
+  OutputPanel,
+  SampleIpsPanel
+} from "./components"
+import { useIPInfo } from "./hooks/useIPInfo"
 
 export default function IpInfo() {
-  const t = useTranslations('IpInfoPage.ToolHeader')
-  const tStats = useTranslations('IpInfoPage.ControlPanel')
+  const t = useTranslations("IpInfoPage.ToolHeader")
+  const tStats = useTranslations("IpInfoPage.ControlPanel")
 
   const {
     ipAddress,
@@ -25,14 +30,14 @@ export default function IpInfo() {
     getStats,
     samples,
     canDownload,
-    isEmpty,
+    isEmpty
   } = useIPInfo()
 
   const stats = getStats(tStats)
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4">
-      <ToolHeader title={t('title')} description={t('description')} />
+      <ToolHeader title={t("title")} description={t("description")} />
 
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         {/* Left Panel - Input */}
@@ -54,7 +59,11 @@ export default function IpInfo() {
 
           <CurrentIpPanel currentIP={currentIP} />
 
-          <SampleIpsPanel samples={samples} onLoadSample={loadSampleIP} selectedIp={ipAddress} />
+          <SampleIpsPanel
+            samples={samples}
+            onLoadSample={loadSampleIP}
+            selectedIp={ipAddress}
+          />
         </div>
 
         {/* Right Panel - Results */}

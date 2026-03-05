@@ -4,7 +4,7 @@
 @import 'katex/dist/katex.min.css';
 
 @custom-variant dark (&:is(.dark *));
-@plugin "@tailwindcss/typography";
+@plugin '@tailwindcss/typography';
 
 @theme {
   --color-primary-black: rgba(17, 17, 17);

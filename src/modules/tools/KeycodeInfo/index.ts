@@ -1,1 +1,1 @@
-export { default } from './KeycodeInfo'
+export { default } from "./KeycodeInfo"

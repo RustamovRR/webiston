@@ -1,1 +1,1 @@
-export { default } from './TutorialLayoutContent'
+export { default } from "./TutorialLayoutContent"

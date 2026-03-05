@@ -1,5 +1,5 @@
-import { create } from 'zustand'
-import type { TutorialNavigation } from '@/lib/mdx'
+import { create } from "zustand"
+import type { TutorialNavigation } from "@/lib/mdx"
 
 interface NavigationState {
   navigationItems: Record<string, TutorialNavigation[]>
@@ -12,7 +12,7 @@ export const useNavigationStore = create<NavigationState>()((set) => ({
     set((state) => ({
       navigationItems: {
         ...state.navigationItems,
-        [tutorialId]: items,
-      },
-    })),
+        [tutorialId]: items
+      }
+    }))
 }))

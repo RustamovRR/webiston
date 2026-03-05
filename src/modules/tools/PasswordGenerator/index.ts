@@ -1,1 +1,1 @@
-export { default } from './PasswordGenerator'
+export { default } from "./PasswordGenerator"
