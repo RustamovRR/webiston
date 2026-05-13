@@ -178,7 +178,24 @@ Ba'zi so'zlar umumiy lug'atda bir ma'no, NLP/ML kontekstida boshqa ma'no beradi.
 
 **Qoida:** Agar so'z ML/NLP terminologiyasida o'ziga xos ma'noga ega bo'lsa va o'zbekchada aniq ekvivalenti yo'q bo'lsa — kursivda inglizcha qoldiring.
 
-### 8. Biror qoida bo'yicha ikkilansangiz
+### 8. Har bir jumlani to'liq tarjima qiling — hech qachon chala qoldirmang
+
+Bu qoida eng ko'p buziladi. Asl matnda nechta fikr bo'lsa, tarjimada ham shuncha fikr bo'lishi shart.
+
+**Quyidagi xatolardan qoching:**
+
+❌ Bir nechta jumlani bitta qisqa jumlaga siqishtirish
+❌ Muallifning tushuntirish yoki misol keltirgan qismini o'tkazib yuborish
+❌ "va boshqalar", "va hokazo" bilan muhim ro'yxatni asossiz qisqartirish
+❌ Oxirgi xulosaviy yoki kinoyali jumlani tarjima qilmaslik
+❌ Muallifning shaxsiy fikri yoki hazilini olib tashlash
+
+**Har bir paragrafni tarjima qilgandan keyin:**
+1. Asl matn bilan solishtiring — biror fikr tushib qolmadimi?
+2. Asl matnda 5 ta fikr bo'lsa, tarjimada ham 5 ta fikr bo'lsin (jumlalar soni emas, fikrlar soni muhim)
+3. Muallifning hazili, kinoyasi, shaxsiy fikri — bularning barchasi tarjimada saqlansin
+
+### 9. Biror qoida bo'yicha ikkilansangiz
 Tarjima qilmay — **avval so'rang**.
 
 ---

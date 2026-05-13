@@ -35,6 +35,15 @@ Fikrni o'zbek muhandisining miyasida qayta qurib, tabiiy ohangda gapirating.
 - "...ni ta'kidlash joizki"
 - "...shuni ko'rsatadi"
 
+### Har bir jumlani to'liq tarjima qiling
+Asl matnda nechta fikr bo'lsa, tarjimada ham shuncha fikr bo'lishi shart.
+
+❌ Bir nechta jumlani bitta qisqa jumlaga siqishtirish
+❌ Muallifning tushuntirish yoki misol keltirgan qismini o'tkazib yuborish
+❌ Oxirgi xulosaviy jumlani tarjima qilmaslik
+
+Har bir paragrafni tarjima qilgandan keyin asl matn bilan solishtiring.
+
 ### O'zbek tilining boyligi
 Metafora va iboralarni o'rnida ishlating:
 - *"Tayoqning ikki uchi"* → trade-off

@@ -52,3 +52,111 @@ Agent bo'lmagan holatlarga nisbatan agentlar odatda ikki sabab tufayli kuchliroq
 Ko'p bosqichli vazifa vaqt va mablag' talab qiladi.[^11] Biroq, agentlar mustaqil ishlasa, ular inson vaqtini sezilarli darajada tejaydi va natijada ularni ishlatish xarajatlari o‘zini oqlaydi.
 
 Berilgan muhitda agentning muvaffaqiyati uning vositalar to'plamiga va _SI_ rejalashtiruvchisining kuchiga bog'liq. Keling, modelning foydalanishi mumkin bo'lgan turli vosita turlarini ko'rib chiqaylik.
+
+## Vositalar
+
+Tizim agent bo'lishi uchun tashqi vositalarga muhtoj emas. Biroq vositasiz agent imkoniyatlari juda cheklangan bo'ladi. O'z-o'zicha model odatda bitta harakatni bajaradi — masalan, _LLM_ matn yaratadi, rasm generatori rasm yaratadi. Tashqi vositalar esa agentni butunlay boshqa darajaga olib chiqadi.
+
+Vositalar agentga muhitni ham **idrok etish**, ham **o'zgartirish** imkonini beradi. Muhitni idrok etishga yo'naltirilgan harakatlar — faqat o'qish harakatlari (_read-only actions_), muhitni o'zgartirishga yo'naltirilgan harakatlar esa — yozish harakatlari (_write actions_).
+
+Bu bo'lim tashqi vositalarga umumiy nuqtai nazardan yondashadi. Vositalardan qanday foydalanish "Rejalashtirish" bo'limida batafsil ko'rib chiqiladi.
+
+Agentning foydalanishi mumkin bo'lgan vositalar to'plami uning **vositalar arsenali** deyiladi. Vositalar arsenali agentning nima qila olishini belgilagani uchun qaysi va qancha vosita berish kerakligini puxta o'ylab ko'rish zarur.[^11] Ko'p vosita — ko'p imkoniyat. Biroq vositalar ko'paygan sari ularni to'g'ri tushunish va samarali ishlatish qiyinlashadi. To'g'ri vositalar to'plamini topish uchun tajriba-sinov zarur — bu "Vositalarni tanlash" bo'limida batafsil muhokama qilinadi.
+
+Agentning ishlash muhitiga qarab, vositalar juda xilma-xil bo'lishi mumkin. Quyida uchta asosiy kategoriya keltirilgan: bilimni boyitish (ya'ni kontekst qurish), imkoniyatlarni kengaytirish va muhitga ta'sir etish vositalari.
+
+### Bilimni boyitish
+
+Ushbu kitob, umid qilamanki, siz uchun bitta haqiqatni isbotladi: model javob sifati bevosita kontekst sifatiga bog'liq. Bilimni boyitish vositalari — agentning o'z sohasidagi bilimini kengaytiruvchi vositalar. Ularning bir qismi allaqachon ko'rib chiqilgan: matn qidiruvchi, rasm qidiruvchi, _SQL_ bajaruvchi. Boshqa mumkin bo'lgan vositalarga quyidagilar kiradi: ichki xodimlar qidiruvchisi, turli mahsulotlar holatini qaytaruvchi inventar _API_'si, Slack qidiruvchisi, elektron pochta o'quvchisi va boshqalar.
+
+Bunday vositalarning ko'pchiligi modelni tashkilotning xususiy jarayonlari va ma'lumotlari bilan boyitadi. Biroq vositalar modelga ommaviy ma'lumotlarga — ayniqsa internetdagi ma'lumotlarga — ham kirish imkonini beradi.
+
+**Veb-ko'rish** ChatGPT kabi chatbotlarga qo'shilishi kutilgan eng dastlabki va eng ko'p kutilgan imkoniyatlardan biri bo'ldi. Veb-ko'rish modelning "eskirib qolishini" oldini oladi. Model o'qitilgan ma'lumotlar eskirganda, u eskiradi. Agar modelning o'qitish ma'lumotlari o'tgan haftada to'xtatilgan bo'lsa, kontekstda berilmasa, u bu haftagi ma'lumotlarni talab qiladigan savollarga javob bera olmaydi. Veb-ko'rish bo'lmasa, model ob-havo, yangiliklar, yaqinlashib kelayotgan tadbirlar, aksiya narxlari, parvoz holati va boshqalar haqida ma'lumot bera olmaydi.
+
+Men "veb-ko'rish" atamasini internetga kirish imkonini beruvchi barcha vositalar uchun umumiy nom sifatida ishlataman: veb-brauzerlar va maxsus _API_'lar — qidiruv _API_'lari, yangiliklar _API_'lari, GitHub _API_'lari yoki X, LinkedIn, Reddit kabi ijtimoiy tarmoq _API_'lari.
+
+Veb-ko'rish agentingizga dolzarb ma'lumotlarga murojaat qilish va gallyutsinatsiyalarni kamaytirish imkonini beradi. Biroq u agentingizni internetning iflos burchaklariga ham ochib qo'yishi mumkin. Internet _API_'larini ehtiyotkorlik bilan tanlang.
+
+### Imkoniyatlarni kengaytirish
+
+Ikkinchi kategoriya — _SI_ modellarining tug'ma cheklovlarini bartaraf etuvchi vositalar. Ular modelga tez va arzon "kuch qo'shish" usuli. Masalan, _SI_ modellari matematikada zaif ekanligi bilan mashhur. "199 999 ni 292 ga bo'ling" deb so'rasangiz, model ko'pincha xato qiladi. Biroq kalkulyatorga ega model uchun bu hisob — bir zumlik ish. Modelni arifmetikada yaxshi bo'lishga o'qitishga urinish o'rniga, unga kalkulyator berish ancha samaraliroq.
+
+Modelning imkoniyatini sezilarli darajada oshiradigan boshqa oddiy vositalarga quyidagilar kiradi: taqvim, vaqt mintaqasi konvertori, o'lchov birliklari konvertori (masalan, funtdan kilogramga) va model yaxshi bilmaydigan tillarga tarjima qiluvchi tarjimon.
+
+Yanada murakkab, lekin kuchli vositalar — **kod interpretatorlari**. Modelni kodni tushunishga o'qitish o'rniga, unga kod interpretatori berilsa, u kodni bajarishi, natijalarni qaytarishi yoki xatolarni tahlil qilishi mumkin. Bu imkoniyat agentlaringizni kodlash yordamchisi, ma'lumotlar tahlilchisi va hatto tajriba o'tkazib natijalarni hisoblovchi tadqiqot yordamchisi sifatida ishlatish imkonini beradi. Biroq avtomatlashtirilgan kod bajarish kod in'ektsiyasi hujumlari xavfini ham olib keladi — bu "Himoyalovchi prompt muhandisligi" bo'limida muhokama qilingan. Siz va foydalanuvchilaringizni himoya qilish uchun tegishli xavfsizlik choralari muhim.
+
+Tashqi vositalar matn yoki rasm bilan ishlashga mo'ljallangan modelni **multimodal** qilishi mumkin. Masalan, faqat matn yarata oladigan model matndan-rasmga yaratuvchi modelni vosita sifatida ishlatib, ham matn, ham rasm yarata oladi. Matn so'rovi berilganda, agentning _SI_ rejalashtiruvchisi matn yaratishni, rasm yaratishni yoki ikkalasini birga ishga tushirishni hal qiladi. ChatGPT ham matn, ham rasm yarata olishining sababi shu — u DALL-E'ni rasm generatori sifatida ishlatadi. Agentlar shuningdek grafik va diagrammalar yaratish uchun kod interpretatoridan, matematik tenglamalarni ko'rsatish uchun LaTeX kompilyatoridan, HTML koddan veb-sahifalarni ko'rsatish uchun brauzerdan foydalanishi mumkin.
+
+Xuddi shunday, faqat matn kiritishni qayta ishlay oladigan model rasmlarni qayta ishlash uchun rasm tavsiflovchi vositadan, audio qayta ishlash uchun transkripsiya vositasidan foydalanishi mumkin. PDF fayllarni o'qish uchun esa _OCR_ (optik belgilarni tanish) vositasidan foydalanishi mumkin.
+
+Vositalardan foydalanish modelning ishlashini faqat prompt muhandisligi yoki hatto _finetuning_'ga nisbatan sezilarli darajada oshirishi mumkin. Chameleon ([Lu va boshqalar, 2023](https://arxiv.org/abs/2304.09842)) tadqiqoti shuni ko'rsatdiki, 13 ta vosita bilan boyitilgan `GPT-4` asosidagi agent bir qancha etalon testlarda `GPT-4`'ning o'zini ortda qoldiradi. Ushbu agentda ishlatiladigan vositalarga bilim qidiruvchi, so'rov generatori, rasm tavsiflovchi, matn detektori va Bing qidiruvchisi kiradi.
+
+Ilmiy savol-javob etaloni ScienceQA'da Chameleon eng yaxshi nashr etilgan kam misollik natijani 11,37% ga yaxshiladi. Jadval matematik masalalar etaloni TabMWP'da ([Lu va boshqalar, 2022](https://arxiv.org/abs/2209.14610)) esa aniqlikni 17% ga oshirdi.
+
+### Yozish harakatlari
+
+Hozirgacha biz modelga ma'lumot manbalaridan o'qish imkonini beruvchi faqat o'qish harakatlarini ko'rib chiqdik. Biroq vositalar yozish harakatlarini ham bajarishi mumkin — ma'lumot manbalariga o'zgartirishlar kiritish. _SQL_ bajaruvchi ma'lumotlar jadvalini o'qishi (o'qish) va uni o'zgartirishi yoki o'chirishi (yozish) mumkin. Elektron pochta _API_'si xatni o'qishi va unga javob berishi mumkin. Bank _API_'si joriy balansni ko'rsatishi va bank o'tkazmasi amalga oshirishi mumkin.
+
+Yozish harakatlari tizimning imkoniyatlarini kengaytiradi. Ular butun mijozlarga murojaat qilish jarayonini avtomatlashtirishga imkon beradi: potentsial mijozlarni tadqiq qilish, ularning kontaktlarini topish, xatlar tayyorlash, birinchi xatlarni yuborish, javoblarni o'qish, kuzatuv xatlar yuborish, buyurtmalarni ajratib olish, yangi buyurtmalar bilan ma'lumotlar bazasini yangilash va hokazo.
+
+Biroq _SI_'ga hayotimizni avtomatik ravishda o'zgartirish imkonini berish g'oyasi qo'rqinchli. Xuddi stajyorga ishlab chiqarish ma'lumotlar bazasini o'chirish huquqini bermaslik kerak bo'lgani kabi, ishonchsiz _SI_'ga bank o'tkazmasi amalga oshirish huquqini bermaslik kerak. Tizimning imkoniyatlariga va xavfsizlik choralariga ishonch hal qiluvchi ahamiyatga ega. Tizimni zararli harakatlar qilishga undashga urinuvchi yomon niyatli shaxslardan himoya qilish zarur.
+
+Mustaqil _SI_ agentlari haqida guruh oldida gapirganimda, ko'pincha kimdir o'z-o'zini boshqaradigan avtomobillarni eslatadi: "Agar kimdir mashinani boshqarib, sizni o'g'irlasa-chi?" O'z-o'zini boshqaradigan avtomobil misoli jismoniy xavf tufayli yanada ta'sirchan tuyuladi. Biroq _SI_ tizimi jismoniy dunyoda mavjud bo'lmasdan ham zarar yetkazishi mumkin: fond bozorini manipulyatsiya qilishi, mualliflik huquqlarini buzishi, shaxsiy hayotga tajovuz qilishi, noxolisliklarni kuchaytirishi, dezinformatsiya va targ'ibot tarqatishi mumkin — bular "Himoyalovchi prompt muhandisligi" bo'limida muhokama qilingan.
+
+Bularning barchasi asosli tashvishlar, va _SI_'dan foydalanmoqchi bo'lgan har qanday tashkilot xavfsizlikni jiddiy qabul qilishi kerak. Biroq bu _SI_ tizimlariga hech qachon real dunyoda harakat qilish imkonini bermaslik kerak degani emas. Agar odamlarni kosmosga olib chiqadigan mashinaga ishonishga ko'ndira olsak, umid qilamanki, bir kun kelib xavfsizlik choralari mustaqil _SI_ tizimlariga ishonish uchun yetarli bo'ladi. Bundan tashqari, odamlar ham xato qiladi. Shaxsan men o'rtacha notanish odamga qaraganda o'z-o'zini boshqaradigan avtomobilga ko'proq ishongan bo'lardim.
+
+Xuddi to'g'ri vositalar odamlarni ancha samaraliroq qilgani kabi — Excel'siz biznes yuritishni yoki kranlar'siz osmono'par bino qurishni tasavvur qila olasizmi? — vositalar modellarga ko'plab qo'shimcha vazifalarni bajarishga imkon beradi. Ko'plab model provayderlari allaqachon o'z modellari bilan vositalardan foydalanishni qo'llab-quvvatlaydi — bu xususiyat ko'pincha **funksiyani chaqirish** (_function calling_) deb ataladi. Kelajakda keng vositalar to'plami bilan funksiyani chaqirish ko'pchilik modellarda standart imkoniyatga aylanadi deb kutilmoqda.
+
+## Vositalar
+
+Agent bo'lish uchun tizim tashqi vositalarga muhtoj emas. Biroq vositasiz agentning imkoniyatlari juda cheklangan bo'ladi. O'z-o'zicha model odatda bitta harakatni bajaradi — masalan, _LLM_ matn yaratadi, rasm generatori rasm yaratadi. Tashqi vositalar esa agentni butunlay boshqa darajaga ko'taradi.
+
+Vositalar agentga muhitni ham **idrok etish**, ham **o'zgartirish** imkonini beradi. Muhitni idrok etishga yo'naltirilgan harakatlar — faqat o'qish harakatlari (_read-only actions_), muhitni o'zgartirishga yo'naltirilgan harakatlar esa — yozish harakatlari (_write actions_).
+
+Bu bo'lim tashqi vositalarga umumiy nuqtai nazardan yondashadi. Vositalardan qanday foydalanish "Rejalashtirish" bo'limida batafsil ko'rib chiqiladi.
+
+Agentning foydalanishi mumkin bo'lgan barcha vositalar to'plami uning **vositalar arsenali** deyiladi. Vositalar arsenali agentning nima qila olishini to'liq belgilagani uchun qaysi vositalarni va qancha miqdorda berish kerakligini puxta o'ylab ko'rish zarur.[^11] Ko'p vosita — ko'p imkoniyat. Biroq vositalar soni ortgan sari ularni to'g'ri tushunish va samarali ishlatish tobora qiyinlashadi. To'g'ri vositalar to'plamini topish uchun sinov-xato yo'li bilan tajriba o'tkazish kerak — bu masala "Vositalarni tanlash" bo'limida batafsil muhokama qilinadi.
+
+Agentning ishlash muhitiga qarab, vositalar juda xilma-xil bo'lishi mumkin. Quyida e'tiborga olish kerak bo'lgan uchta asosiy kategoriya keltirilgan: bilimni boyitish (ya'ni kontekst qurish), imkoniyatlarni kengaytirish va agentga muhitga ta'sir etish imkonini beruvchi vositalar.
+
+### Bilimni boyitish
+
+Umid qilamanki, ushbu kitob siz uchun bitta haqiqatni allaqachon isbotladi: model javob sifati bevosita kontekst sifatiga bog'liq. Bilimni boyitish vositalari — agentning o'z sohasidagi bilimini kengaytiruvchi vositalar toifasidir. Ularning bir qismi allaqachon ko'rib chiqilgan: matn qidiruvchi, rasm qidiruvchi, _SQL_ bajaruvchi. Boshqa mumkin bo'lgan vositalarga quyidagilar kiradi: ichki xodimlar qidiruvchisi, turli mahsulotlar holatini qaytaruvchi inventar _API_'si, Slack qidiruvchisi, elektron pochta o'quvchisi va boshqalar.
+
+Bunday vositalarning ko'pchiligi modelni tashkilotning xususiy jarayonlari va ichki ma'lumotlari bilan boyitadi. Biroq vositalar modelga ommaviy ma'lumotlarga — ayniqsa internetdagi ma'lumotlarga — ham kirish imkonini beradi.
+
+**Veb-ko'rish** ChatGPT kabi chatbotlarga qo'shilishi kutilgan eng dastlabki va eng ko'p intiqib kutilgan imkoniyatlardan biri bo'ldi. Veb-ko'rish modelning "eskirib qolishini" oldini oladi. Model o'qitilgan ma'lumotlar muddati o'tganda, model ham eskiradi. Agar modelning o'qitish ma'lumotlari o'tgan haftada to'xtatilgan bo'lsa va bu ma'lumotlar kontekstda berilmasa, model joriy haftadagi voqealar haqidagi savollarga javob bera olmaydi. Veb-ko'rish bo'lmasa, model ob-havo, yangiliklar, yaqinlashib kelayotgan tadbirlar, aksiya narxlari, parvoz holati va shunga o'xshash dolzarb ma'lumotlar haqida hech narsa ayta olmaydi.
+
+Men "veb-ko'rish" atamasini internetga kirish imkonini beruvchi barcha vositalar uchun umumiy nom sifatida ishlataman: veb-brauzerlar va maxsus _API_'lar — qidiruv _API_'lari, yangiliklar _API_'lari, GitHub _API_'lari yoki X, LinkedIn, Reddit kabi ijtimoiy tarmoq _API_'lari.
+
+Veb-ko'rish agentingizga dolzarb ma'lumotlarga murojaat qilish va gallyutsinatsiyalarni kamaytirish imkonini beradi. Biroq u agentingizni internetning iflos burchaklariga ham ochib qo'yishi mumkin. Internet _API_'larini ehtiyotkorlik bilan tanlang.
+
+### Imkoniyatlarni kengaytirish
+
+Ikkinchi kategoriya — _SI_ modellarining tug'ma cheklovlarini bartaraf etuvchi vositalar. Bu vositalar modelga ishlash samaradorligini oshirishning eng oson va tejamkor yo'lidir. Masalan, _SI_ modellari matematikada zaif ekanligi bilan mashhur. "199 999 ni 292 ga bo'ling" deb so'rasangiz, model ko'pincha xato qiladi. Biroq kalkulyatorga ega model uchun bu hisob — bir zumlik ish. Modelni arifmetikada yaxshi bo'lishga o'qitishga resurs sarflash o'rniga, unga kalkulyator berish ancha samarali va arzonroq yechimdir.
+
+Modelning imkoniyatini sezilarli darajada oshiradigan boshqa oddiy vositalarga quyidagilar kiradi: taqvim, vaqt mintaqasi konvertori, o'lchov birliklari konvertori (masalan, funtdan kilogramga) va model yaxshi bilmaydigan tillarga tarjima qiluvchi tarjimon.
+
+Yanada murakkab, lekin nihoyatda kuchli vositalar — **kod interpretatorlari**. Modelni kodni tushunishga o'qitish o'rniga, unga kod interpretatori berilsa, u kodni bajarishi, natijalarni qaytarishi yoki bajarilmagan kodning xato sababini tahlil qilishi mumkin. Bu imkoniyat agentlaringizni kodlash yordamchisi, ma'lumotlar tahlilchisi va hatto tajriba o'tkazib natijalarni hisoblab beruvchi tadqiqot yordamchisi sifatida ishlatish imkonini beradi. Biroq avtomatlashtirilgan kod bajarish kod in'ektsiyasi hujumlari xavfini ham birga olib keladi — bu masala "Himoyalovchi prompt muhandisligi" bo'limida batafsil muhokama qilingan. Siz va foydalanuvchilaringizni himoya qilish uchun tegishli xavfsizlik choralarini ko'rish shart.
+
+Tashqi vositalar faqat matn yoki faqat rasm bilan ishlaydigan modelni **multimodal** qilishi mumkin. Masalan, faqat matn yarata oladigan model matndan-rasmga yaratuvchi modelni vosita sifatida ulasa, endi u ham matn, ham rasm yarata oladi. Matn so'rovi berilganda, agentning _SI_ rejalashtiruvchisi matn yaratishni, rasm yaratishni yoki ikkalasini birga ishga tushirishni mustaqil hal qiladi. ChatGPT ham matn, ham rasm yarata olishining sababi aynan shu — u DALL-E'ni rasm generatori sifatida ishlatadi. Agentlar shuningdek grafik va diagrammalar yaratish uchun kod interpretatoridan, matematik tenglamalarni to'g'ri ko'rsatish uchun LaTeX kompilyatoridan, HTML koddan veb-sahifalarni render qilish uchun brauzerdan foydalanishi mumkin.
+
+Xuddi shunday, faqat matn kiritishni qayta ishlay oladigan model rasmlarni qayta ishlash uchun rasm tavsiflovchi vositadan, audio fayllarni qayta ishlash uchun transkripsiya vositasidan foydalanishi mumkin. PDF hujjatlarni o'qish uchun esa _OCR_ (optik belgilarni tanish) vositasidan foydalanishi mumkin.
+
+Vositalardan foydalanish modelning ishlash samaradorligini faqat prompt muhandisligi yoki hatto _finetuning_'ga nisbatan sezilarli darajada oshirishi mumkin. Chameleon ([Lu va boshqalar, 2023](https://arxiv.org/abs/2304.09842)) tadqiqoti buni yaqqol ko'rsatdi: 13 ta vosita bilan boyitilgan `GPT-4` asosidagi agent bir qancha etalon testlarda `GPT-4`'ning o'zini ortda qoldirdi. Ushbu agentda ishlatiladigan vositalarga bilim qidiruvchi, so'rov generatori, rasm tavsiflovchi, matn detektori va Bing qidiruvchisi kiradi.
+
+Ilmiy savol-javob etaloni ScienceQA'da Chameleon eng yaxshi nashr etilgan kam misollik natijani 11,37% ga yaxshiladi. Jadval matematik masalalar etaloni TabMWP'da ([Lu va boshqalar, 2022](https://arxiv.org/abs/2209.14610)) esa aniqlikni 17% ga oshirdi.
+
+### Yozish harakatlari
+
+Hozirgacha biz modelga ma'lumot manbalaridan ma'lumot o'qish imkonini beruvchi faqat o'qish harakatlarini ko'rib chiqdik. Biroq vositalar yozish harakatlarini ham bajarishi mumkin — ya'ni ma'lumot manbalariga o'zgartirishlar kiritishi mumkin. _SQL_ bajaruvchi ma'lumotlar jadvalini o'qishi (o'qish harakati) va uni o'zgartirishi yoki butunlay o'chirishi (yozish harakati) mumkin. Elektron pochta _API_'si xatni o'qishi va unga javob yozishi mumkin. Bank _API_'si joriy balansni ko'rsatishi va bank o'tkazmasi amalga oshirishi mumkin.
+
+Yozish harakatlari tizimning imkoniyatlarini tubdan kengaytiradi. Ular, masalan, butun mijozlarga murojaat qilish jarayonini to'liq avtomatlashtirishga imkon beradi: potentsial mijozlarni tadqiq qilish, ularning kontaktlarini topish, xatlar tayyorlash, birinchi xatlarni yuborish, javoblarni o'qish, kuzatuv xatlar yuborish, buyurtmalarni ajratib olish, yangi buyurtmalar bilan ma'lumotlar bazasini yangilash va hokazo — bularning barchasini inson aralashuvisiz.
+
+Biroq _SI_'ga hayotimizni avtomatik ravishda o'zgartirish imkonini berish g'oyasi dahshatli. Xuddi yangi stajyorga ishlab chiqarish ma'lumotlar bazasini o'chirish huquqini bermaslik kerak bo'lgani kabi, ishonchliligini isbotlamagan _SI_'ga bank o'tkazmasi amalga oshirish huquqini bermaslik kerak. Tizimning imkoniyatlariga va xavfsizlik choralariga ishonch — bu yerda hal qiluvchi omil. Tizimni zararli harakatlar qilishga undashga urinuvchi yomon niyatli shaxslardan ishonchli himoya qilish zarur.
+
+Mustaqil _SI_ agentlari haqida guruh oldida gapirganimda, ko'pincha kimdir o'z-o'zini boshqaradigan avtomobillarni eslatadi: "Agar kimdir mashinani boshqarib, sizni o'g'irlasa-chi?" O'z-o'zini boshqaradigan avtomobil misoli jismoniy xavf tufayli yanada ta'sirchan tuyuladi. Biroq _SI_ tizimi jismoniy dunyoda mavjud bo'lmasdan ham katta zarar yetkazishi mumkin: fond bozorini manipulyatsiya qilishi, mualliflik huquqlarini buzishi, shaxsiy hayotga tajovuz qilishi, noxolisliklarni kuchaytirishi, dezinformatsiya va targ'ibot tarqatishi mumkin — bularning barchasi "Himoyalovchi prompt muhandisligi" bo'limida muhokama qilingan.
+
+Bularning barchasi asosli tashvishlar, va _SI_'dan foydalanmoqchi bo'lgan har qanday tashkilot xavfsizlikni jiddiy qabul qilishi shart. Biroq bu _SI_ tizimlariga hech qachon real dunyoda harakat qilish imkonini bermaslik kerak degani emas. Agar odamlarni kosmosga olib chiqadigan mashinaga ishonishga ko'ndira olsak, umid qilamanki, bir kun kelib xavfsizlik choralari mustaqil _SI_ tizimlariga to'liq ishonish uchun yetarli darajaga yetadi. Bundan tashqari, odamlar ham xato qiladi. Shaxsan men o'rtacha notanish odamga qaraganda o'z-o'zini boshqaradigan avtomobilga ko'proq ishongan bo'lardim.
+
+Xuddi to'g'ri vositalar odamlarni ancha samaraliroq qilgani kabi — Excel'siz biznes yuritishni yoki qurilish kranlarisiz osmono'par bino qurishni tasavvur qila olasizmi? — vositalar modellarga yanada ko'proq va murakkab vazifalarni bajarishga imkon beradi. Ko'plab model provayderlari allaqachon o'z modellari bilan vositalardan foydalanishni qo'llab-quvvatlaydi — bu xususiyat ko'pincha _funksiyani chaqirish_ (_function calling_) deb ataladi. Kelajakda keng vositalar to'plami bilan _funksiyani chaqirish_ ko'pchilik modellarda standart imkoniyatga aylanadi deb kutilmoqda.
