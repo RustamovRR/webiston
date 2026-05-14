@@ -1,80 +1,80 @@
-# Project Structure
+---
+inclusion: always
+---
 
-## Root Level Organization
-- **Configuration files** at root (package.json, tsconfig.json, etc.)
-- **Source code** in `src/` directory
-- **Content** in `content/` directory (MDX files)
-- **Public assets** in `public/` directory
-- **Scripts** in `scripts/` directory
-- **Internationalization** messages in `messages/` directory
+# Webiston — Project Structure
 
-## Source Directory (`src/`)
+## Monorepo Layout
 
-### App Router Structure (`src/app/`)
 ```
-src/app/
-├── (app)/[locale]/          # Internationalized app routes
-├── api/                     # API routes
-├── books/                   # Book content pages
-├── globals.css              # Global styles
-├── layout.tsx               # Root layout
-└── manifest.ts              # PWA manifest
+webiston/
+├── src/                          # Next.js app (main application)
+│   ├── app/
+│   │   ├── (app)/[locale]/       # i18n routes (uz/en/ru)
+│   │   ├── api/                  # API routes (search, etc.)
+│   │   └── books/                # Book reader pages
+│   ├── components/
+│   │   ├── shared/               # App-specific shared components
+│   │   ├── ui/                   # Re-exports from @webiston/ui
+│   │   └── mdx/                  # MDX rendering components
+│   ├── modules/tools/            # Developer tools (feature modules)
+│   │   └── {ToolName}/           # Each tool is self-contained
+│   ├── lib/                      # Content processing, search, utils
+│   ├── hooks/                    # Custom React hooks
+│   ├── stores/                   # Zustand stores
+│   ├── types/                    # TypeScript types
+│   ├── constants/                # App constants (tools, navigation, UI)
+│   └── i18n/                     # next-intl config
+├── content/                      # MDX book content
+│   ├── ai-engineering/
+│   ├── fluent-react/
+│   └── javascript-definitive-guide/
+├── messages/                     # i18n translations
+│   ├── common/{uz,en,ru}.json
+│   └── tools/{tool-name}/{uz,en,ru}.json
+├── packages/
+│   ├── transliteration/          # @webiston/transliteration
+│   └── ui/                       # @webiston/ui
+├── apps/extensions/
+│   └── latin-cyrillic/           # Chrome extension (WXT)
+├── public/                       # Static assets
+└── scripts/                      # Build scripts (sitemap, search index)
 ```
 
-### Component Architecture (`src/components/`)
-- **`shared/`** - Reusable components (Header, Footer, Search, etc.)
-- **`ui/`** - Base UI components (shadcn/ui components)
-- **`mdx/`** - MDX-specific components (CodeBlock, Callout, etc.)
-- **`index.ts`** - Barrel exports for clean imports
+## Tool Module Structure
 
-### Library Functions (`src/lib/`)
-- **`utils/`** - Utility functions and helpers
-- **`config/`** - Configuration files
-- **`search/`** - Search functionality
-- **Common utilities** - transliteration, content processing, etc.
-
-### Other Directories
-- **`src/hooks/`** - Custom React hooks
-- **`src/stores/`** - Zustand state management
-- **`src/types/`** - TypeScript type definitions
-- **`src/constants/`** - Application constants
-- **`src/modules/`** - Feature-specific modules (tools)
-- **`src/i18n/`** - Internationalization configuration
-
-## Content Structure (`content/`)
 ```
-content/
-├── fluent-react/            # React tutorial content
-└── javascript-definitive-guide/  # JavaScript guide content
+src/modules/tools/{ToolName}/
+├── components/       # Dumb UI components
+├── hooks/            # Business logic
+├── stores/           # Zustand (if needed)
+├── types/            # Types
+├── constants/        # Constants
+├── utils/            # Pure helpers
+├── {ToolName}.tsx    # Main composition component
+└── index.ts          # Named exports only
 ```
-- Each content section has nested folders with `page.mdx` files
-- `_meta.json` files for navigation configuration
 
-## Asset Organization (`public/`)
-- **Static assets** organized by feature/book
-- **Icons and favicons** at root level
-- **Generated files** (sitemap.xml, search-index.json)
+## Key Path Aliases
 
-## Key Conventions
+| Alias | Resolves to |
+|-------|------------|
+| `@/*` | `src/*` |
+| `@/components` | `src/components/` |
+| `@/lib` | `src/lib/` |
+| `@/hooks` | `src/hooks/` |
+| `@/stores` | `src/stores/` |
+| `@/types` | `src/types/` |
+| `@/constants` | `src/constants/` |
+| `@/modules` | `src/modules/` |
 
-### File Naming
-- **Components**: PascalCase (e.g., `ButtonLink.tsx`)
-- **Utilities**: camelCase (e.g., `transliteration.ts`)
-- **Pages**: lowercase with hyphens (e.g., `page.mdx`)
-- **Types**: PascalCase interfaces/types
+## File Naming
 
-### Import Patterns
-- Use barrel exports (`index.ts`) for clean imports
-- Path aliases configured: `@/*` maps to `src/*`
-- Component imports: `@/components`, `@/lib`, `@/hooks`, etc.
-
-### Code Organization
-- **Feature-based** organization in modules
-- **Shared components** for reusable UI elements
-- **Type definitions** centralized in `src/types/`
-- **Constants** separated by domain (UI, tools, navigation)
-
-### Internationalization Structure
-- Messages organized by feature in `messages/` directory
-- Nested structure: `messages/tools/[tool-name]/[locale].json`
-- Common messages in `messages/common/[locale].json`
+| Type | Convention |
+|------|-----------|
+| Components | PascalCase — `ToolHeader.tsx` |
+| Hooks | camelCase — `useClipboard.ts` |
+| Stores | camelCase + Store — `mobileMenuStore.ts` |
+| Utils/lib | camelCase — `transliteration.ts` |
+| Pages/routes | lowercase — `page.tsx`, `layout.tsx` |
+| MDX content | lowercase-hyphen — `page.mdx` |
