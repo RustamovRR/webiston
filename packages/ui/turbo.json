@@ -1,0 +1,12 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "lint": {
+      "inputs": ["src/**/*.{ts,tsx}", "package.json"]
+    },
+    "typecheck": {
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json"]
+    }
+  }
+}

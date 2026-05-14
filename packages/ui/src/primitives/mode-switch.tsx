@@ -1,5 +1,5 @@
 import type React from "react"
-import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { TOOL_COLORS, UI_PATTERNS } from "../constants"
 import { cn } from "../utils/cn"
 import { Button } from "./button"
 

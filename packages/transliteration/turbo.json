@@ -1,0 +1,24 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["src/**", "package.json", "tsconfig.json"],
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "inputs": ["src/**/*.{ts,tsx}", "package.json"]
+    },
+    "typecheck": {
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json"]
+    },
+    "test": {
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "__tests__/**/*.{ts,tsx}",
+        "package.json",
+        "vitest.config.ts"
+      ]
+    }
+  }
+}

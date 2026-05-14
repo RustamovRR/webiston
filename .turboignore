@@ -1,0 +1,4 @@
+packages/transliteration/dist
+packages/ui/dist
+.next
+node_modules

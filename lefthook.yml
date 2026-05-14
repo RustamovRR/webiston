@@ -15,7 +15,7 @@ pre-commit:
       skip:
         - merge
         - rebase
-      
+
     biome-format:
       glob: "*.{js,ts,jsx,tsx,json}"
       run: pnpm biome format --write {staged_files}
@@ -34,10 +34,10 @@ pre-push:
   parallel: true
   commands:
     typecheck:
-      run: pnpm typecheck
-      
+      run: pnpm turbo typecheck
+
     test:
-      run: pnpm test
+      run: pnpm turbo test
 
 # Skip all hooks for emergency:
 # git commit --no-verify -m "hotfix: emergency"

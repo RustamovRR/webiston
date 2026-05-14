@@ -12,6 +12,8 @@ export {
   InfoCard,
   StatsDisplay
 } from "./composites"
+// Constants (design tokens)
+export { TOOL_COLORS, UI_PATTERNS } from "./constants"
 
 // Primitives (Shadcn/ui base components)
 export {

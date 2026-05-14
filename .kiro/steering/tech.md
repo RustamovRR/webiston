@@ -2,14 +2,20 @@
 
 ## Framework & Runtime
 
-- **Next.js 15.3.3** - React framework with App Router
-- **React 19.1.0** - UI library
-- **TypeScript 5.8.3** - Type-safe JavaScript
+- **Next.js 16.2.6** - React framework with App Router
+- **React 19.2.6** - UI library
+- **TypeScript 6.0.3** - Type-safe JavaScript
 - **Node.js** - Runtime environment
+
+## Monorepo & Build
+
+- **Turborepo 2.9.x** - Monorepo task orchestration with caching
+- **pnpm 10.x** - Package manager with workspaces
+- **Turbopack** - Next.js dev server bundler
 
 ## Styling & UI
 
-- **Tailwind CSS 4.1.8** - Utility-first CSS framework
+- **Tailwind CSS 4.3.x** - Utility-first CSS framework
 - **Radix UI** - Headless UI components
 - **Framer Motion** - Animation library
 - **Lucide React** - Icon library
@@ -31,7 +37,7 @@
 
 - **Zustand** - Lightweight state management
 - **usehooks-ts** - React hooks collection
-- **clsx & tailwind-merge** - Conditional styling
+- **clsx & tailwind-merge** - Conditional styling (via @webiston/ui)
 
 ## Development Tools
 
@@ -50,31 +56,54 @@
 
 ```bash
 # Development
-pnpm dev              # Start development server with Turbopack
-pnpm build            # Build for production
+pnpm dev              # Start Next.js dev server (Turbopack, port 9999)
 pnpm start            # Start production server
 
-# Code Quality
-pnpm lint             # Run OXC linter (ultra-fast)
+# Build (Turborepo cached)
+pnpm build            # Build all (packages → app, with caching)
+pnpm packages:build   # Build only @webiston/* packages
+
+# Code Quality (Turborepo cached)
+pnpm lint             # Run OXC linter across all workspaces
 pnpm lint:fix         # Auto-fix lint issues
 pnpm format           # Format code with Biome
-pnpm format:check     # Check formatting without changes
-pnpm typecheck        # TypeScript type checking
+pnpm format:check     # Check formatting (cached)
+pnpm typecheck        # TypeScript type checking (cached)
+pnpm check            # Biome check (lint + format)
 
-# Content Management
-pnpm update-tools     # Update tools list
-pnpm postbuild        # Post-build tasks (sitemap, search index)
+# Testing
+pnpm test             # Run all tests (cached)
+pnpm test:watch       # Watch mode
+pnpm test:coverage    # Coverage report
+
+# Extensions
+pnpm ext:dev          # Dev Chrome extension
+pnpm ext:build        # Build Chrome extension
+pnpm ext:zip          # Package extension for store
+
+# Maintenance
+pnpm clean            # Clean all build outputs
+pnpm update-tools     # Regenerate tools list
 ```
 
 ## Git Hooks (Lefthook)
 
 - **pre-commit**: OXC lint + Biome format (parallel, staged files only)
 - **commit-msg**: Commitlint validation
-- **pre-push**: TypeScript check + full lint
+- **pre-push**: TypeScript check + tests (parallel, Turborepo cached)
 
 ## Build Process
 
-1. Next.js build with standalone output
-2. Tools list generation
-3. Sitemap generation with next-sitemap
-4. Search index building
+1. Turborepo builds packages first (`^build` dependency)
+2. Next.js build with standalone output
+3. Tools list generation
+4. Sitemap generation with next-sitemap
+5. Search index building
+
+## Workspace Packages
+
+| Package | Scope | Purpose |
+|---------|-------|---------|
+| `@webiston/transliteration` | `packages/transliteration` | Uzbek Latin-Cyrillic conversion |
+| `@webiston/ui` | `packages/ui` | Shared UI components (Shadcn + Radix) |
+| `latin-cyrillic-extension` | `apps/extensions/latin-cyrillic` | Chrome extension |

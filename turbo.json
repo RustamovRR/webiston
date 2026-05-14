@@ -1,0 +1,32 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "package.json", "tsconfig.json"],
+      "outputs": [".next/**", "dist/**", ".output/**"],
+      "env": ["NODE_ENV", "NEXT_PUBLIC_*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json"]
+    },
+    "format:check": {
+      "inputs": ["src/**/*.{ts,tsx,js,jsx,json}", "package.json"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**/*.{ts,tsx}", "__tests__/**/*.{ts,tsx}", "package.json", "vitest.config.ts"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}
