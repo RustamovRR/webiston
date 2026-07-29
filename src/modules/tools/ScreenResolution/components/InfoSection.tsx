@@ -15,6 +15,7 @@ const InfoSection: React.FC = () => {
     >
       <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
         <svg
+          aria-hidden="true"
           className="h-5 w-5 text-cyan-500 dark:text-cyan-400"
           fill="none"
           viewBox="0 0 24 24"
@@ -72,6 +73,7 @@ const InfoSection: React.FC = () => {
       <div className="mt-6 rounded-lg border border-zinc-300/30 bg-zinc-100/30 p-4 dark:border-zinc-700/30 dark:bg-zinc-800/30">
         <h4 className="mb-3 flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
           <svg
+            aria-hidden="true"
             className="h-4 w-4 text-cyan-500 dark:text-cyan-400"
             fill="none"
             viewBox="0 0 24 24"
@@ -149,6 +151,7 @@ const InfoSection: React.FC = () => {
         <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4">
           <div className="mb-2 flex items-center gap-2">
             <svg
+              aria-hidden="true"
               className="h-4 w-4 text-blue-600 dark:text-blue-400"
               fill="none"
               viewBox="0 0 24 24"
@@ -173,6 +176,7 @@ const InfoSection: React.FC = () => {
         <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
           <div className="mb-2 flex items-center gap-2">
             <svg
+              aria-hidden="true"
               className="h-4 w-4 text-green-600 dark:text-green-400"
               fill="none"
               viewBox="0 0 24 24"

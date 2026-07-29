@@ -132,10 +132,14 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Amount Setting */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <label
+              htmlFor="configpanel-amount"
+              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+            >
               {t("amount")}: {settings.amount}
             </label>
             <Input
+              id="configpanel-amount"
               type="number"
               min="1"
               max="1000"
@@ -152,14 +156,20 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           {/* Text Type */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <label
+              htmlFor="configpanel-texttype"
+              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+            >
               {t("textType")}
             </label>
             <Select
               value={settings.textType}
               onValueChange={(value) => updateSettings({ textType: value })}
             >
-              <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+              <SelectTrigger
+                id="configpanel-texttype"
+                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

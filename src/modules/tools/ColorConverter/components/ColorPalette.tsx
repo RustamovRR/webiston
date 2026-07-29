@@ -56,9 +56,11 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
         {generatedPalette.map((color, index) => (
-          <div
+          <button
             key={index}
-            className="group relative cursor-pointer transition-all duration-200 hover:scale-105"
+            type="button"
+            aria-label={`Copy ${color}`}
+            className="group focus-visible:ring-ring relative cursor-pointer rounded-lg transition-all duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
             onClick={() => copyToClipboard(color)}
           >
             <div
@@ -92,7 +94,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
                 </div>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </div>
 

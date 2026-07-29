@@ -132,7 +132,8 @@
     },
     "AudioPreviewModal": {
       "title": "Audio Preview",
-      "download": "Download"
+      "download": "Download",
+      "seek": "Seek through audio"
     },
     "Loading": {
       "text": "Loading microphone test..."

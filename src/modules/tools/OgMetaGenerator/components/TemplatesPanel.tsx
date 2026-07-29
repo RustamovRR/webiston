@@ -56,8 +56,7 @@ const TemplatesPanel: React.FC<TemplatesPanelProps> = ({
           {presetTemplates.map((template, index) => (
             <div
               key={index}
-              className="cursor-pointer rounded-lg border border-zinc-200 bg-zinc-100/50 p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-100/70 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/70"
-              onClick={() => onLoadTemplate(template.data)}
+              className="rounded-lg border border-zinc-200 bg-zinc-100/50 p-4 transition-colors hover:border-zinc-300 hover:bg-zinc-100/70 dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/70"
             >
               <div className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
                 {template.label}
@@ -65,7 +64,12 @@ const TemplatesPanel: React.FC<TemplatesPanelProps> = ({
               <div className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
                 {template.description}
               </div>
-              <Button variant="outline" size="sm" className="mt-3 w-full">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3 w-full"
+                onClick={() => onLoadTemplate(template.data)}
+              >
                 {t("loadButton")}
               </Button>
             </div>

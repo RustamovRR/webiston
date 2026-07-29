@@ -161,6 +161,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="mb-2 flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500">
                 <svg
+                  aria-hidden="true"
                   width="12"
                   height="12"
                   viewBox="0 0 24 24"
@@ -215,6 +216,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="mb-2 flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600">
                 <svg
+                  aria-hidden="true"
                   width="12"
                   height="12"
                   viewBox="0 0 24 24"
@@ -269,6 +271,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="mb-2 flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
                 <svg
+                  aria-hidden="true"
                   width="12"
                   height="12"
                   viewBox="0 0 24 24"

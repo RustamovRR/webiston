@@ -109,6 +109,36 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
     }
   }
 
+  // Keyboard equivalent of clicking the scrub bar. A progress bar you can seek
+  // with is a slider, so it needs arrow/Home/End support and slider ARIA — not
+  // just an onClick, which leaves it unreachable without a mouse.
+  const seekTo = (time: number) => {
+    if (!audioRef.current || !duration || duration <= 0) return
+    const clamped = Math.max(0, Math.min(time, duration))
+    try {
+      audioRef.current.currentTime = clamped
+      setCurrentTime(clamped)
+    } catch {
+      // seeking can throw while metadata is still loading; ignore
+    }
+  }
+
+  const handleSeekKeys = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!duration || duration <= 0) return
+    const step = duration / 20
+    const map: Record<string, number> = {
+      ArrowRight: currentTime + step,
+      ArrowUp: currentTime + step,
+      ArrowLeft: currentTime - step,
+      ArrowDown: currentTime - step,
+      Home: 0,
+      End: duration
+    }
+    if (!(e.key in map)) return
+    e.preventDefault()
+    seekTo(map[e.key])
+  }
+
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!audioRef.current || !duration || duration <= 0) return
 
@@ -212,8 +242,15 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
               {/* Progress Bar */}
               <div className="space-y-2">
                 <div
-                  className="relative h-2 cursor-pointer rounded-full bg-zinc-200 dark:bg-zinc-700"
+                  role="slider"
+                  tabIndex={0}
+                  aria-label={t("seek")}
+                  aria-valuemin={0}
+                  aria-valuemax={Math.round(duration || 0)}
+                  aria-valuenow={Math.round(currentTime || 0)}
+                  className="focus-visible:ring-ring relative h-2 cursor-pointer rounded-full bg-zinc-200 focus-visible:ring-2 focus-visible:outline-none dark:bg-zinc-700"
                   onClick={handleSeek}
+                  onKeyDown={handleSeekKeys}
                 >
                   <div
                     className="absolute top-0 left-0 h-full rounded-full bg-blue-500"
@@ -236,6 +273,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
 
             {/* Hidden Audio Element */}
             {audio && (
+              // biome-ignore lint/a11y/useMediaCaption: plays audio the user just recorded in the browser; no caption track can exist for content created milliseconds ago.
               <audio
                 key={audio.id}
                 ref={audioRef}

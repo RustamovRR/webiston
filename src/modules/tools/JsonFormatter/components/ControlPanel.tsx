@@ -77,11 +77,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="json-indentation"
+              className="text-sm text-zinc-700 dark:text-zinc-300"
+            >
               {t("indentation")}
-            </span>
+            </label>
             <Select value={indentation} onValueChange={setIndentation}>
-              <SelectTrigger className="w-20 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <SelectTrigger
+                id="json-indentation"
+                className="w-20 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

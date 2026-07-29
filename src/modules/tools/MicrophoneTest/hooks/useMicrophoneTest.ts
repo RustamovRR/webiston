@@ -100,7 +100,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       const permissionStream = await navigator.mediaDevices.getUserMedia({
         audio: true
       })
-      permissionStream.getTracks().forEach((track) => track.stop())
+      permissionStream.getTracks().forEach((track) => {
+        track.stop()
+      })
 
       const devices = await navigator.mediaDevices.enumerateDevices()
       const audioInputs = devices
@@ -152,7 +154,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
     // Stop all tracks
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop()
+      })
       streamRef.current = null
     }
 

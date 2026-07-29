@@ -127,9 +127,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* UUID Version */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("versionLabel")}
-            </label>
+            </span>
             <GradientTabs
               options={versionOptions}
               value={version}
@@ -166,9 +166,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           {/* UUID Format */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("formatLabel")}
-            </label>
+            </span>
             <GradientTabs
               options={formatOptions}
               value={format}
@@ -191,10 +191,14 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div className="flex flex-wrap items-center gap-4">
             {/* Count */}
             <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="configpanel-countlabel"
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("countLabel")}
               </label>
               <input
+                id="configpanel-countlabel"
                 type="number"
                 min="1"
                 max="1000"

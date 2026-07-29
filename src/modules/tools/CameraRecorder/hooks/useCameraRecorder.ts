@@ -133,7 +133,9 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
         video: true
       })
       // Stop the permission stream immediately, we just needed permission
-      permissionStream.getTracks().forEach((track) => track.stop())
+      permissionStream.getTracks().forEach((track) => {
+        track.stop()
+      })
 
       const devices = await navigator.mediaDevices.enumerateDevices()
       const videoDevices = devices
@@ -231,7 +233,9 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
 
     // Clean up camera stream state
     if (cameraStream) {
-      cameraStream.getTracks().forEach((track) => track.stop())
+      cameraStream.getTracks().forEach((track) => {
+        track.stop()
+      })
       setCameraStream(null)
     }
 

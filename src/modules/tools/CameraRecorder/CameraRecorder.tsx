@@ -114,6 +114,8 @@ export default function CameraRecorderPage() {
           />
 
           {/* Hidden elements for screenshot functionality */}
+          {/* biome-ignore lint/a11y/useMediaCaption: hidden off-screen element used only as a
+              frame source for the screenshot canvas — it is never played and has no audio track. */}
           <video ref={videoRef} className="hidden" />
           <canvas ref={canvasRef} className="hidden" />
         </div>

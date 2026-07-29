@@ -122,9 +122,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Password Type Selection */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("passwordType")}
-            </label>
+            </span>
             <GradientTabs
               options={passwordTypeOptions}
               value={settings.passwordType}
@@ -147,11 +147,15 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           {/* Length Setting */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="configpanel-passwordlength"
+              className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
               {t("passwordLength")}{" "}
               <span className="text-blue-400">{settings.length}</span>
             </label>
             <input
+              id="configpanel-passwordlength"
               type="range"
               min="4"
               max="128"
@@ -172,9 +176,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
         {/* Character Options */}
         <div className="mt-6 space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             {t("characterTypes")}
-          </label>
+          </span>
           <div className="grid gap-3 md:grid-cols-2">
             <label
               className={cn(
@@ -276,9 +280,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
         {/* Preset Settings */}
         <div className="mt-6 space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             {t("quickSettings")}
-          </label>
+          </span>
           <div className="grid gap-2 md:grid-cols-3 lg:grid-cols-5">
             {presetSettings.map((preset, index) => (
               <div

@@ -64,6 +64,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="mb-4 rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800/50">
                 <svg
+                  aria-hidden="true"
                   className="h-12 w-12 text-zinc-500"
                   fill="none"
                   viewBox="0 0 24 24"

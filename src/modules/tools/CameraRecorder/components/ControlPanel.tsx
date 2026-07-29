@@ -12,14 +12,14 @@ import {
   SelectValue
 } from "@/components/ui/select"
 
-interface Camera {
+interface ICamera {
   deviceId: string
   label: string
 }
 
 interface ControlPanelProps {
   isCameraActive: boolean
-  cameras: Camera[]
+  cameras: ICamera[]
   selectedCamera: string
   selectedQuality: string
   onStartCamera: () => void
@@ -74,7 +74,10 @@ export function ControlPanel({
       <div className="p-6">
         <div className="grid gap-4 md:grid-cols-4">
           <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <label
+              htmlFor="controlpanel-camera-label"
+              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+            >
               {t("camera.label")}
             </label>
             <Select
@@ -82,7 +85,10 @@ export function ControlPanel({
               onValueChange={onSwitchCamera}
               disabled={cameras.length === 0}
             >
-              <SelectTrigger className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <SelectTrigger
+                id="controlpanel-camera-label"
+                className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+              >
                 <SelectValue placeholder={t("camera.placeholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -96,11 +102,17 @@ export function ControlPanel({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <label
+              htmlFor="controlpanel-quality-label"
+              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+            >
               {t("quality.label")}
             </label>
             <Select value={selectedQuality} onValueChange={onQualityChange}>
-              <SelectTrigger className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+              <SelectTrigger
+                id="controlpanel-quality-label"
+                className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

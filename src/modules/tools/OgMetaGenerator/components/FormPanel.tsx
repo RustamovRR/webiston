@@ -71,10 +71,14 @@ const FormPanel: React.FC<FormPanelProps> = ({
 
           <div className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-titlelabel"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("titleLabel")}
               </label>
               <Input
+                id="formpanel-titlelabel"
                 value={metaData.title}
                 onChange={(e) => onUpdateField("title", e.target.value)}
                 placeholder={t("titlePlaceholder")}
@@ -136,10 +140,14 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-desclabel"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("descLabel")}
               </label>
               <Textarea
+                id="formpanel-desclabel"
                 value={metaData.description}
                 onChange={(e) => onUpdateField("description", e.target.value)}
                 placeholder={t("descPlaceholder")}
@@ -203,11 +211,15 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-imagelabel"
+                className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 <ImageIcon size={16} />
                 {t("imageLabel")}
               </label>
               <Input
+                id="formpanel-imagelabel"
                 value={metaData.image}
                 onChange={(e) => onUpdateField("image", e.target.value)}
                 placeholder={t("imagePlaceholder")}
@@ -216,11 +228,15 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-urllabel"
+                className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 <Link2 size={16} />
                 {t("urlLabel")}
               </label>
               <Input
+                id="formpanel-urllabel"
                 value={metaData.url}
                 onChange={(e) => onUpdateField("url", e.target.value)}
                 placeholder={t("urlPlaceholder")}
@@ -229,10 +245,14 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-sitenamelabel"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("siteNameLabel")}
               </label>
               <Input
+                id="formpanel-sitenamelabel"
                 value={metaData.siteName}
                 onChange={(e) => onUpdateField("siteName", e.target.value)}
                 placeholder={t("siteNamePlaceholder")}
@@ -244,14 +264,20 @@ const FormPanel: React.FC<FormPanelProps> = ({
           {/* Advanced Settings - Compact Layout */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-contenttype"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("contentType")}
               </label>
               <Select
                 value={metaData.type}
                 onValueChange={(value) => onUpdateField("type", value)}
               >
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                <SelectTrigger
+                  id="formpanel-contenttype"
+                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -270,14 +296,20 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-twittercard"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("twitterCard")}
               </label>
               <Select
                 value={metaData.twitterCard}
                 onValueChange={(value) => onUpdateField("twitterCard", value)}
               >
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                <SelectTrigger
+                  id="formpanel-twittercard"
+                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -294,14 +326,20 @@ const FormPanel: React.FC<FormPanelProps> = ({
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-language"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("language")}
               </label>
               <Select
                 value={metaData.locale}
                 onValueChange={(value) => onUpdateField("locale", value)}
               >
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                <SelectTrigger
+                  id="formpanel-language"
+                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -314,14 +352,20 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-imagesize"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("imageSize")}
               </label>
               <Select
                 value={metaData.imageSize || "1200x630"}
                 onValueChange={(value) => onUpdateField("imageSize", value)}
               >
-                <SelectTrigger className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50">
+                <SelectTrigger
+                  id="formpanel-imagesize"
+                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -340,10 +384,14 @@ const FormPanel: React.FC<FormPanelProps> = ({
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-twittersite"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("twitterSite")}
               </label>
               <Input
+                id="formpanel-twittersite"
                 value={metaData.twitterSite}
                 onChange={(e) => onUpdateField("twitterSite", e.target.value)}
                 placeholder="@your_site"
@@ -352,10 +400,14 @@ const FormPanel: React.FC<FormPanelProps> = ({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="formpanel-twittercreator"
+                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("twitterCreator")}
               </label>
               <Input
+                id="formpanel-twittercreator"
                 value={metaData.twitterCreator}
                 onChange={(e) =>
                   onUpdateField("twitterCreator", e.target.value)

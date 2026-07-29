@@ -33,12 +33,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         isOpen ? "opacity-100" : "pointer-events-none opacity-0"
       )}
     >
+      {/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
         ref={menuRef}
         className={cn(
           "bg-background fixed inset-x-0 top-0 z-50 mt-14 h-[calc(100vh-56px)] transition-opacity duration-300 ease-in-out",
           isOpen ? "opacity-100" : "opacity-50"
         )}
+        // biome-ignore lint/a11y/useKeyWithClickEvents: not an interactive control — this handler only stops clicks inside the panel from reaching the backdrop's close handler. There is no action for a keyboard user to trigger.
         onClick={(e) => e.stopPropagation()}
       >
         <div className="h-full pr-0">

@@ -133,9 +133,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Category Selection */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("categoryLabel")}
-            </label>
+            </span>
             <GradientTabs
               options={categoryOptions}
               value={activeCategory}
@@ -151,9 +151,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
           {/* QR Size */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("sizeLabel")}
-            </label>
+            </span>
             <GradientTabs
               options={sizeOptions}
               value={qrSize.toString()}
@@ -170,9 +170,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
         {/* Error Level */}
         <div className="mt-6 space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             {t("errorLevelLabel")}
-          </label>
+          </span>
           <div className="grid gap-2 md:grid-cols-4">
             {errorLevels.map((level) => (
               <label
@@ -204,9 +204,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         {/* Preset Selection */}
         {groupedPresets[activeCategory] && (
           <div className="mt-6 space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("presetsLabel")}
-            </label>
+            </span>
             <div className="grid gap-2 md:grid-cols-2">
               {groupedPresets[activeCategory].map(
                 (preset: QrPreset, index: number) => {

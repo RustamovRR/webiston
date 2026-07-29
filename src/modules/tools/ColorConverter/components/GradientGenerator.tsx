@@ -167,9 +167,9 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Type Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   {t("type") || "Turi:"}
-                </label>
+                </span>
                 <div className="flex gap-1">
                   {(["linear", "radial", "conic"] as const).map((type) => (
                     <button
@@ -189,10 +189,14 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
 
               {/* Direction Control */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <label
+                  htmlFor="gradientgenerator-direction"
+                  className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
                   {t("direction") || "Yo'nalish:"} {direction}°
                 </label>
                 <input
+                  id="gradientgenerator-direction"
                   type="range"
                   min="0"
                   max="360"
@@ -204,9 +208,9 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
 
               {/* Random Button */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   {t("actions") || "Amallar:"}
-                </label>
+                </span>
                 <Button
                   onClick={generateRandomGradient}
                   variant="outline"

@@ -88,10 +88,11 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
         className="group relative cursor-pointer transition-all duration-200 hover:scale-105"
       >
         {/* Color square */}
-        <div
-          className="aspect-square w-full rounded-lg border-2 border-zinc-200 shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:border-zinc-700 dark:group-hover:border-zinc-500"
+        <button
+          type="button"
+          className="focus-visible:ring-ring aspect-square w-full rounded-lg border-2 border-zinc-200 shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none dark:border-zinc-700 dark:group-hover:border-zinc-500"
           style={{ backgroundColor: hex }}
-          title={`${name || hex} - Click to select`}
+          aria-label={`${name || hex} - select`}
           onClick={() => onColorSelect(hex)}
         />
 

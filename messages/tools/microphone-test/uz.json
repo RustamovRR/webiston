@@ -132,7 +132,8 @@
     },
     "AudioPreviewModal": {
       "title": "Audio Eshitish",
-      "download": "Yuklab olish"
+      "download": "Yuklab olish",
+      "seek": "Ovoz bo'ylab siljitish"
     },
     "Loading": {
       "text": "Mikrofon test yuklanmoqda..."

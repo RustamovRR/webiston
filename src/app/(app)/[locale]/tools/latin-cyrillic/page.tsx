@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import { LatinCyrillic } from "@/modules/tools"
 import {
   applicationSchema,

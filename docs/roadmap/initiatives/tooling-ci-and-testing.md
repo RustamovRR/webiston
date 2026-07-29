@@ -37,13 +37,31 @@ bypasses it silently. Every other phase here is undone by one bypassed push.
 
 ## Phase 2 — `[ ]` Make the linters mean something
 
-- `[ ]` **Clear the 81 `pnpm check` errors.** Pre-existing — **verified identical
-  on Biome 2.4.15**, so the 2.5.6 upgrade did not cause them. This gate has never
-  passed. Breakdown: `noLabelWithoutControl` 42 · `noSvgWithoutTitle` 16 ·
-  `useKeyWithClickEvents` 9 · `organizeImports` 5 · `useIterableCallbackReturn` 4 ·
-  `useMediaCaption` 3 · 2 others. **Mostly a11y** — this is the accessibility
-  work that `design-system.md` deliberately excludes.
-  The 5 `organizeImports` are auto-fixable with `pnpm format`.
+- `[~]` **Clear the `pnpm check` errors — 81 → 59.** Pre-existing — **verified
+  identical on Biome 2.4.15**, so the 2.5.6 upgrade did not cause them; this gate
+  has never passed.
+
+  **Policy: fix them, do not relax the rules.** They are real defects, not linter
+  noise. Exactly one rule earned an exception, and it got *targeted suppressions
+  with written reasons* rather than being switched off in `biome.json` — so a new
+  violation of it still fails.
+
+  | Rule | Was | Now | Action |
+  | ---- | --: | --: | ------ |
+  | `noSvgWithoutTitle` | 16 | **0** | 17 decorative SVGs → `aria-hidden="true"`. A `<title>` would make screen readers announce text the adjacent heading already states; `aria-hidden` is the correct fix and Biome documents it as accepted. |
+  | `useMediaCaption` | 3 | **0** | Suppressed with reasons. Two are *hidden* elements — a `<video className="hidden">` used only as a screenshot frame source, and a hidden `<audio>` playing sound the user recorded seconds earlier. No caption track can exist for either. |
+  | `useKeyWithClickEvents` | 9 | **6** | `<div onClick>` → `<button type="button">`. Adding `onKeyDown` to a div silences the rule while leaving the element unfocusable — the element type *is* the bug. |
+  | `noLabelWithoutControl` | 42 | 42 | Not started — the largest remaining block. |
+
+- `[ ]` **`VideoEmbed` cannot accept captions.** It takes `{url, title}` only, so
+  a book chapter embedding video has no way to supply a track. Add a `captions`
+  prop, then remove the suppression in
+  `src/components/mdx/VideoEmbed/VideoEmbed.tsx`. The suppression there is a
+  placeholder, not a verdict that captions are unnecessary.
+- `[ ]` **Two pre-existing `<explanation>` placeholder suppressions** —
+  `packages/ui/src/primitives/breadcrumb.tsx:54` and
+  `src/modules/tools/LatinCyrillic/components/FileUploadZone.tsx:72`. Biome warns
+  on a suppression with no stated reason. Give them one or delete them.
 - `[ ]` **Decide oxlint's fate.** Today it lints with 27 core rules and **no
   plugins** (`oxlint.json` has no `plugins` key), so react / react-hooks / nextjs
   / jsx-a11y never run — and it exits 0 even with 25 warnings. Either enable the

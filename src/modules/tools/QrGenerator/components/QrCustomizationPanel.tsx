@@ -277,9 +277,9 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
     <div className="space-y-6">
       {/* Preset Styles */}
       <div className="space-y-3">
-        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           {t("presetStyles")}
-        </label>
+        </span>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
           {presetStyles.map((preset) => (
             <button
@@ -311,11 +311,15 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       {/* Color Settings */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="qrcustomizationpanel-foregroundcolor"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             {t("foregroundColor")}
           </label>
           <div className="flex items-center gap-3">
             <input
+              id="qrcustomizationpanel-foregroundcolor"
               type="color"
               value={customization.foregroundColor}
               onChange={(e) =>
@@ -342,11 +346,15 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         </div>
 
         <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="qrcustomizationpanel-backgroundcolor"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             {t("backgroundColor")}
           </label>
           <div className="flex items-center gap-3">
             <input
+              id="qrcustomizationpanel-backgroundcolor"
               type="color"
               value={customization.backgroundColor}
               onChange={(e) =>
@@ -399,9 +407,9 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         {customization.gradientEnabled && (
           <div className="space-y-4 rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
             <div className="space-y-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {t("gradientDirection")}
-              </label>
+              </span>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                 {gradientOptions.map((option) => (
                   <button
@@ -428,11 +436,15 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="qrcustomizationpanel-gradientendcolor"
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("gradientEndColor")}:
               </label>
               <div className="flex items-center gap-3">
                 <input
+                  id="qrcustomizationpanel-gradientendcolor"
                   type="color"
                   value={
                     customization.gradientEndColor ||
@@ -472,6 +484,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-amber-100 p-1 dark:bg-amber-800/50">
             <svg
+              aria-hidden="true"
               className="h-4 w-4 text-amber-600 dark:text-amber-400"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -496,11 +509,15 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
 
       {/* Logo Upload */}
       <div className="space-y-3">
-        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label
+          htmlFor="qrcustomizationpanel-logoupload"
+          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
           {t("logoUpload")}
         </label>
         <div className="flex items-center gap-3">
           <input
+            id="qrcustomizationpanel-logoupload"
             ref={fileInputRef}
             type="file"
             accept="image/*"
@@ -545,10 +562,14 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
 
         {customization.logo && (
           <div className="space-y-3">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="qrcustomizationpanel-logosize"
+              className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
               {t("logoSize")} ({customization.logoSize}%)
             </label>
             <input
+              id="qrcustomizationpanel-logosize"
               type="range"
               min="10"
               max="40"
@@ -568,10 +589,14 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       {/* Numeric Settings */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="qrcustomizationpanel-margin"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             {t("margin")} ({customization.margin}px)
           </label>
           <input
+            id="qrcustomizationpanel-margin"
             type="range"
             min="0"
             max="50"
@@ -587,10 +612,14 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         </div>
 
         <div className="space-y-3">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="qrcustomizationpanel-borderradius"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             {t("borderRadius")} ({customization.borderRadius}px)
           </label>
           <input
+            id="qrcustomizationpanel-borderradius"
             type="range"
             min="0"
             max="20"

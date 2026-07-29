@@ -60,11 +60,15 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
       <div className="space-y-4">
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="colorinputpanel-color"
+              className="min-w-15 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
               {t("color") || "Rang:"}
             </label>
             <div className="relative">
               <input
+                id="colorinputpanel-color"
                 type="color"
                 value={
                   colorFormats?.isValid
@@ -99,11 +103,15 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
           {/* Opacity Slider */}
           {colorFormats?.isValid && (
             <div className="flex items-center gap-4">
-              <label className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="colorinputpanel-opacity"
+                className="min-w-[60px] text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 {t("opacity") || "Shaffoflik"}:
               </label>
               <div className="flex flex-1 items-center gap-3">
                 <input
+                  id="colorinputpanel-opacity"
                   type="range"
                   min="0"
                   max="1"

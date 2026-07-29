@@ -39,23 +39,24 @@ const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
   }
 
   return (
-    <div
+    <button
+      type="button"
       onClick={handleItemClick}
-      className="group cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-all hover:bg-zinc-100 hover:shadow-sm active:scale-[0.98] dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70"
+      aria-label={`${title}: ${value} — copy`}
+      className="group focus-visible:ring-ring w-full cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-left transition-all hover:bg-zinc-100 hover:shadow-sm focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70"
     >
       <div className="mb-2 flex items-center justify-between">
         <h3 className={`font-semibold ${colorClass}`}>{title}</h3>
-        <button
-          onClick={handleCopy}
-          className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-200 text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
-          title="Copy to clipboard"
+        <span
+          aria-hidden="true"
+          className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-200 text-zinc-600 opacity-0 transition-all group-hover:opacity-100 dark:bg-zinc-700 dark:text-zinc-300"
         >
           {copied ? (
             <Check size={14} className="text-green-600 dark:text-green-400" />
           ) : (
             <Copy size={14} />
           )}
-        </button>
+        </span>
       </div>
       <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">
         {value}
@@ -63,7 +64,7 @@ const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
       <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
         {description}
       </div>
-    </div>
+    </button>
   )
 }
 

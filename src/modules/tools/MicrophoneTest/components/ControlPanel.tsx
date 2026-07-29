@@ -62,7 +62,10 @@ export function ControlPanel({
       <div className="p-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <div className="md:col-span-2 lg:col-span-1">
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <label
+              htmlFor="controlpanel-microphone-label"
+              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+            >
               {t("microphone.label")}
             </label>
             <Select
@@ -70,7 +73,10 @@ export function ControlPanel({
               onValueChange={onSwitchMicrophone}
               disabled={audioDevices.length === 0}
             >
-              <SelectTrigger className="h-10 w-full border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50 focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:focus:border-zinc-600">
+              <SelectTrigger
+                id="controlpanel-microphone-label"
+                className="h-10 w-full border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50 focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:focus:border-zinc-600"
+              >
                 <SelectValue placeholder={t("microphone.placeholder")} />
               </SelectTrigger>
               <SelectContent
@@ -95,9 +101,9 @@ export function ControlPanel({
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
               {t("quality.label")}
-            </label>
+            </span>
             <div className="flex h-10 items-center rounded-lg border border-zinc-300 bg-white px-3 dark:border-zinc-700 dark:bg-zinc-800">
               <div
                 className={`mr-2 h-2 w-2 rounded-full ${

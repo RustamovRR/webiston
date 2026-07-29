@@ -51,9 +51,11 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({
           {/* Tailwind-style shade grid */}
           <div className="grid grid-cols-11 gap-2">
             {shades.map(({ shade, hex }) => (
-              <div
+              <button
                 key={shade}
-                className="group relative cursor-pointer transition-all duration-200 hover:scale-105"
+                type="button"
+                aria-label={`Copy ${hex}`}
+                className="group focus-visible:ring-ring relative cursor-pointer rounded-lg transition-all duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
                 onClick={() => copyToClipboard(hex, shade)}
               >
                 {/* Color square */}
@@ -91,7 +93,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({
                     {hex}
                   </span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
