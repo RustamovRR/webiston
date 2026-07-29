@@ -15,6 +15,7 @@ const withMDX = createMDX({
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig:NextConfig = {
+  experimental: { useTypeScriptCli: true },
   reactCompiler: true,
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],

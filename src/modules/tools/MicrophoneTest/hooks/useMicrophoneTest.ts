@@ -222,7 +222,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       const info: AudioInfo = {
         sampleRate: settings.sampleRate || 44100,
         channelCount: settings.channelCount || 2,
-        echoCancellation: settings.echoCancellation || false,
+        // Spec allows echoCancellation to report a mode string ("all",
+        // "remote-only") instead of `true`; any reported mode means it is on.
+        echoCancellation: Boolean(settings.echoCancellation),
         noiseSuppression: settings.noiseSuppression || false,
         autoGainControl: settings.autoGainControl || false
       }

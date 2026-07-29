@@ -86,7 +86,11 @@ ehthumbs_vista.db
 
 # IDEs
 .idea/
-.vscode/
+# Personal editor state is ignored, but shared project config is committed:
+# settings.json pins Biome as the formatter for everyone on the repo.
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 *.swp
 *.swo
 *.swn
