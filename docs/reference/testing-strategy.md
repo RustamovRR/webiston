@@ -1,5 +1,22 @@
 # Testing Strategy
 
+> **Status check (verified 2026-07-29, branch `dev`).** Most of this document is
+> the *target*, not the current state. What is actually true today:
+>
+> - **6 test files exist, all in `packages/transliteration/__tests__/`.**
+>   `src/` — every tool, hook, store, and util — has **zero** tests.
+> - `pnpm test` runs `vitest run`; `vitest.config.ts` already includes
+>   `src/**/*.test.{ts,tsx}`, so new tests are picked up with no config work.
+> - The **only** automated gate is the Lefthook `pre-push` hook (typecheck +
+>   test). There is **no CI** — no `.github/workflows`, no `vercel.json`. The
+>   "Pull request checks / Main branch commits" line under *CI/CD Integration*
+>   below is aspirational, not a description of reality.
+> - `pnpm typecheck` excludes `apps/extensions/**` (`tsconfig.json:27`).
+>
+> Where to start: the tool business-logic hooks (`useQrGenerator`,
+> `useOgMetaGenerator`, `usePasswordGenerator`, …) are pure-ish and the highest
+> value per test written. See `docs/roadmap/backlog.md`.
+
 ## Overview
 
 This document outlines the testing strategy for Webiston project, following industry best practices and the Testing Trophy approach.
