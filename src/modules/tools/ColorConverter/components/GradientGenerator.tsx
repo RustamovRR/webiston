@@ -177,7 +177,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                       onClick={() => setGradientType(type)}
                       className={`rounded-md px-3 py-1 text-xs transition-colors ${
                         gradientType === type
-                          ? "bg-info text-info"
+                          ? "bg-info/15 text-info"
                           : "bg-muted text-muted-foreground hover:bg-zinc-200"
                       }`}
                     >

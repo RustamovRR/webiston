@@ -275,7 +275,7 @@ const CollapsibleCustomizationPanel: React.FC<
                             <span className="font-medium text-muted-foreground">
                               {t("logo")}:
                             </span>
-                            <span className="rounded bg-success px-2 py-0.5 font-mono text-success">
+                            <span className="rounded bg-success/15 px-2 py-0.5 font-mono text-success">
                               {customization.logoSize}%
                             </span>
                           </div>
@@ -316,12 +316,12 @@ const CollapsibleCustomizationPanel: React.FC<
                 </span>
               )}
               {customization.logo && (
-                <span className="rounded bg-success px-2 py-0.5 text-success">
+                <span className="rounded bg-success/15 px-2 py-0.5 text-success">
                   {t("logo")}
                 </span>
               )}
               {customization.gradientEnabled && (
-                <span className="rounded bg-info px-2 py-0.5 text-info">
+                <span className="rounded bg-info/15 px-2 py-0.5 text-info">
                   {t("gradient")}
                 </span>
               )}

@@ -98,7 +98,7 @@ export function InfoSection() {
               </li>
             </ul>
 
-            <div className="mt-4 rounded-lg bg-info p-3">
+            <div className="mt-4 rounded-lg bg-info/10 p-3">
               <div className="text-sm text-info">
                 <strong>{t("note.title")}</strong> {t("note.content")}
               </div>

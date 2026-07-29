@@ -480,9 +480,9 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       </div>
 
       {/* Note: Corner and Pattern styles are not supported by QR API */}
-      <div className="rounded-lg bg-warning p-4">
+      <div className="rounded-lg bg-warning/10 p-4">
         <div className="flex items-start gap-3">
-          <div className="rounded-full bg-warning p-1">
+          <div className="rounded-full bg-warning/10 p-1">
             <svg
               aria-hidden="true"
               className="h-4 w-4 text-warning"
@@ -527,7 +527,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
 
           {customization.logo ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 rounded-lg border border-success bg-success px-3 py-2">
+              <div className="flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-3 py-2">
                 <Image
                   src={customization.logo}
                   alt="Logo"
@@ -541,7 +541,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                 onClick={handleRemoveLogo}
                 variant="outline"
                 size="sm"
-                className="text-destructive hover:bg-destructive hover:text-red-700"
+                className="text-destructive hover:bg-destructive/10 hover:text-red-700"
               >
                 <X size={16} className="mr-1" />
                 {t("removeLogo")}

@@ -55,12 +55,12 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
               <span
                 className={`rounded px-2 py-0.5 text-xs ${
                   info.status === "deprecated"
-                    ? "bg-destructive text-destructive"
+                    ? "bg-destructive/15 text-destructive"
                     : info.status === "weak"
-                      ? "bg-warning text-warning"
+                      ? "bg-warning/15 text-warning"
                       : info.status === "secure"
-                        ? "bg-info text-info"
-                        : "bg-success text-success"
+                        ? "bg-info/15 text-info"
+                        : "bg-success/15 text-success"
                 }`}
               >
                 {tInfo(`recommendations.${info.status}`)}

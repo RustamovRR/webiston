@@ -44,7 +44,7 @@ const JsonFormatter = () => {
         </span>
       ) : (
         <span className="flex items-center gap-1 text-xs text-destructive">
-          <div className="h-1.5 w-1.5 rounded-full bg-destructive"></div>
+          <div className="h-1.5 w-1.5 rounded-full bg-destructive/10"></div>
           {t("Panel.errorExists")}
         </span>
       )
@@ -75,9 +75,9 @@ const JsonFormatter = () => {
   const targetContent =
     jsonResult.error && !jsonResult.isValid ? (
       <div className="p-4">
-        <div className="rounded-lg border border-destructive bg-destructive p-4">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-destructive"></div>
+            <div className="h-2 w-2 rounded-full bg-destructive/10"></div>
             <strong className="text-sm text-destructive">
               {t("Panel.errorTitle")}
             </strong>

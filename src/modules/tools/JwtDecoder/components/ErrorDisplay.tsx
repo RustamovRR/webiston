@@ -10,7 +10,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   const t = useTranslations("JwtDecoderPage.ErrorDisplay")
 
   return (
-    <div className="mb-6 rounded-lg border border-destructive bg-destructive p-4">
+    <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 p-4">
       <div className="flex items-center gap-2 text-destructive">
         <AlertCircle size={20} />
         <span className="font-semibold">{t("title")}</span>

@@ -85,6 +85,44 @@ const MALFORMED = [
   /\b(?:backdrop-)?blur-(?:xs|sm|md|lg|xl|2xl|3xl)\/\d{1,3}\b/g
 ]
 
+const STATUSES = ["success", "warning", "info", "destructive", "primary"]
+
+/** A solid status background with same-status text on top is invisible.
+ *
+ *  Real regression, 2026-07-29: collapsing `bg-amber-50 dark:bg-amber-950/30`
+ *  to `bg-warning` turned every warning callout into amber text on solid amber.
+ *  A tint must keep an opacity modifier (`bg-warning/10`); only a SOLID surface
+ *  may drop it, and that pairs with `text-*-foreground`, never `text-warning`.
+ *
+ *  ⚠️ KNOWN LIMIT: this compares within ONE class string. It catches
+ *  `className="bg-success text-success"`, but not a component that splits the
+ *  pair across properties — e.g. Callout's `containerClass` / `textClass`, where
+ *  the same bug hid. Widening it to a line window produced false positives on
+ *  legitimate `bg-primary text-primary-foreground` buttons, so the precise
+ *  version was kept. Review split-class components by eye. */
+function invisibleText() {
+  const hits = []
+  for (const f of targetFiles()) {
+    let src
+    try {
+      src = readFileSync(join(ROOT, f), "utf8")
+    } catch {
+      continue
+    }
+    for (const m of src.matchAll(/"([^"\n]*)"/g)) {
+      const cls = m[1]
+      for (const s of STATUSES) {
+        const solidBg = new RegExp(`(?<![\\w/-])bg-${s}(?![\\w/-])`).test(cls)
+        const sameText = new RegExp(`(?<![\\w/-])text-${s}(?![\\w/-])`).test(
+          cls
+        )
+        if (solidBg && sameText) hits.push([f, s, cls.slice(0, 70)])
+      }
+    }
+  }
+  return hits
+}
+
 function malformedClasses() {
   const hits = []
   for (const f of targetFiles()) {
@@ -111,6 +149,23 @@ if (mode !== "--report") {
       `✗ ${broken.length} malformed Tailwind class(es) — these generate no CSS and render unstyled:\n`
     )
     for (const [f, c] of broken) console.error(`    ${f}: ${c}`)
+    process.exit(1)
+  }
+
+  const invisible = invisibleText()
+  if (invisible.length) {
+    console.error(
+      `✗ ${invisible.length} element(s) put text on a background of the SAME status colour — the text is invisible:\n`
+    )
+    for (const [f, s, cls] of invisible) {
+      console.error(`    ${f}: bg-${s} + text-${s}  in  "${cls}…"`)
+    }
+    console.error(
+      "\n  A tint keeps its opacity (bg-warning/10 + text-warning)."
+    )
+    console.error(
+      "  A solid surface pairs with the on-colour (bg-primary + text-primary-foreground)."
+    )
     process.exit(1)
   }
 }

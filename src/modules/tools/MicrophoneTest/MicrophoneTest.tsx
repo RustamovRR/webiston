@@ -105,7 +105,7 @@ export default function MicrophoneTest() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-xl border border-destructive bg-destructive/80 p-4 backdrop-blur-sm"
+          className="mt-6 rounded-xl border border-destructive/30 bg-destructive/80 p-4 backdrop-blur-sm"
         >
           <p className="text-sm text-destructive">{error}</p>
         </motion.div>

@@ -154,7 +154,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
           onClick={() => setActiveTab("history")}
           className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             activeTab === "history"
-              ? "bg-info text-info"
+              ? "bg-info/15 text-info"
               : "text-muted-foreground hover:bg-muted"
           }`}
         >
@@ -166,7 +166,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
           onClick={() => setActiveTab("favorites")}
           className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             activeTab === "favorites"
-              ? "bg-destructive text-destructive"
+              ? "bg-destructive/15 text-destructive"
               : "text-muted-foreground hover:bg-muted"
           }`}
         >

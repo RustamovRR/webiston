@@ -6,7 +6,7 @@ const SignatureInfo: React.FC = () => {
   const t = useTranslations("JwtDecoderPage.SignatureInfo")
 
   return (
-    <div className="mt-6 rounded-lg border border-warning bg-warning/50 p-4">
+    <div className="mt-6 rounded-lg border border-warning/30 bg-warning/50 p-4">
       <div className="flex items-start gap-3">
         <Key size={20} className="mt-0.5 flex-shrink-0 text-warning" />
         <div>

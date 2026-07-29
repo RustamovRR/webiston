@@ -54,12 +54,12 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
                   <span
                     className={`rounded px-2 py-1 text-xs ${
                       result.status === "deprecated"
-                        ? "bg-destructive text-destructive"
+                        ? "bg-destructive/15 text-destructive"
                         : result.status === "weak"
-                          ? "bg-warning text-warning"
+                          ? "bg-warning/15 text-warning"
                           : result.status === "secure"
-                            ? "bg-info text-info"
-                            : "bg-success text-success"
+                            ? "bg-info/15 text-info"
+                            : "bg-success/15 text-success"
                     }`}
                   >
                     {tInfo(`descriptions.${result.status}`)}

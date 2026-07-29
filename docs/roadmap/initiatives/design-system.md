@@ -229,8 +229,45 @@ they render with no background in light mode (e.g.
 `GradientGenerator.tsx` colour inputs, `ChunkSelector.tsx`). Not caused by the
 sweep; needs a per-case design decision, not a rule.
 
-### `[ ]` Phase E — book reader + MDX components
-Last, because the book pages are read-mostly and visually simplest.
+### `[x]` Phase E — book reader + MDX components · **shipped 2026-07-29**
+
+`src/components/mdx/**` and `src/app/**` converted. `Callout` was rewritten by
+hand: its five variants are now translucent washes of their status token
+(`bg-warning/10 border-warning/30` + `text-warning`), and `tip` — which has no
+status of its own — uses the brand accent.
+
+**Final position, whole repo:**
+
+| Metric | Session start | Now |
+| ------ | ------------: | --: |
+| Hardcoded colour | 5,401 | **2,600** |
+| `dark:` variants | 1,967 | **570** |
+| Semantic token usage | 170 | **1,658** |
+
+Of the 2,600 remaining, **629 are the four parked `__` tools** (blocked on the
+owner decision) and **195 are `src/constants/color-names.ts`**, which is colour
+*data* for the converter tool, not styling. The real remaining surface is smaller
+than the headline number suggests.
+
+> ### ⚠️ A third sweep bug — and the gate it produced
+>
+> Collapsing status hues ignored **shade**, so `bg-amber-50` (a pale tint) became
+> `bg-warning` (the solid amber). Every warning callout rendered amber text on an
+> amber block — invisible. 55 occurrences across 19 files, plus a badge in
+> `books/page.tsx`.
+>
+> Fixed three ways: the converter's `classify()` is now shade-aware
+> (`bg-*-50 → bg-<status>/10`, `border-*-200 → border-<status>/30`); the 55
+> existing cases were repaired by reading each one's *original* shade out of git;
+> and `pnpm tokens` now fails when a class string puts `text-<status>` on a solid
+> `bg-<status>`.
+>
+> **The gate has a known blind spot**, stated in the script: it compares within
+> one class string, so a component that splits the pair across properties (as
+> `Callout` did, via `containerClass`/`textClass`) slips past. Widening it to a
+> line window produced false positives on legitimate
+> `bg-primary text-primary-foreground` buttons. A manual sweep for that shape
+> found no further real cases.
 
 ---
 

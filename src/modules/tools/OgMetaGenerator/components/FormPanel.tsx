@@ -84,11 +84,11 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 placeholder={t("titlePlaceholder")}
                 className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
                   metaData.title.length > 70
-                    ? "border-destructive"
+                    ? "border-destructive/40"
                     : metaData.title.length > 50
-                      ? "border-warning"
+                      ? "border-warning/40"
                       : metaData.title.length > 0
-                        ? "border-success"
+                        ? "border-success/40"
                         : ""
                 }`}
               />
@@ -153,11 +153,11 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 placeholder={t("descPlaceholder")}
                 className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
                   metaData.description.length > 200
-                    ? "border-destructive"
+                    ? "border-destructive/40"
                     : metaData.description.length > 160
-                      ? "border-warning"
+                      ? "border-warning/40"
                       : metaData.description.length > 0
-                        ? "border-success"
+                        ? "border-success/40"
                         : ""
                 }`}
               />

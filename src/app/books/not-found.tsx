@@ -6,7 +6,7 @@ export default function NotFound() {
     <div className="flex min-h-screen flex-col items-center justify-center py-24 text-center">
       <div className="space-y-4">
         <h1 className="text-4xl font-bold">Darslik topilmadi</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-lg text-muted-foreground">
           Kechirasiz, siz izlayotgan darslik mavjud emas.
         </p>
         <div className="pt-4">

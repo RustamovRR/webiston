@@ -18,25 +18,25 @@ const InfoSection: React.FC = () => {
         <ul className="space-y-2 text-sm">
           <li className="flex items-center justify-between">
             <span className="text-destructive">MD5</span>
-            <span className="rounded bg-destructive px-2 py-1 text-xs text-destructive">
+            <span className="rounded bg-destructive/15 px-2 py-1 text-xs text-destructive">
               {t("recommendations.deprecated") || "Ishlatmang"}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-warning">SHA1</span>
-            <span className="rounded bg-warning px-2 py-1 text-xs text-warning">
+            <span className="rounded bg-warning/15 px-2 py-1 text-xs text-warning">
               {t("recommendations.weak") || "Legacy uchun"}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-info">SHA256</span>
-            <span className="rounded bg-info px-2 py-1 text-xs text-info">
+            <span className="rounded bg-info/15 px-2 py-1 text-xs text-info">
               {t("recommendations.secure") || "Tavsiya etiladi"}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-success">SHA512</span>
-            <span className="rounded bg-success px-2 py-1 text-xs text-success">
+            <span className="rounded bg-success/15 px-2 py-1 text-xs text-success">
               {t("recommendations.recommended") || "Eng yaxshi"}
             </span>
           </li>

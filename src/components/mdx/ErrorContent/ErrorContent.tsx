@@ -32,7 +32,7 @@ export default function ErrorContent({
         <h1 className="text-4xl font-bold">
           {statusCode && `${statusCode} - `}Xatolik
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">{message}</p>
+        <p className="text-lg text-muted-foreground">{message}</p>
         <div className="flex flex-row gap-4 pt-4">
           <Button onClick={handleRetry} variant="outline">
             Qayta urinib ko'rish

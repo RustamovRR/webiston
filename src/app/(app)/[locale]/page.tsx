@@ -236,7 +236,7 @@ export default async function HomePage() {
             {tHome("title")}
           </h1>
 
-          <p className="animate-fadeInText max-w-[750px] text-center text-xl text-zinc-600 md:w-full! dark:text-zinc-400">
+          <p className="animate-fadeInText max-w-[750px] text-center text-xl text-muted-foreground md:w-full!">
             {tHome("description")}
           </p>
 

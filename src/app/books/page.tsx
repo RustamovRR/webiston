@@ -290,7 +290,7 @@ export default async function BooksPage() {
               ].map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-zinc-300 bg-zinc-100/80 px-3 py-1 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
+                  className="rounded-full border border-border bg-muted/80 px-3 py-1 text-sm text-muted-foreground"
                 >
                   {tag}
                 </span>
@@ -317,7 +317,7 @@ export default async function BooksPage() {
                     href={`/books/${tutorial?.id}`}
                     className="group block h-full"
                   >
-                    <Card className="relative flex h-full flex-col overflow-hidden border-zinc-200 bg-white/80 transition-all duration-200 group-hover:border-zinc-300 group-hover:bg-white group-hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/80 dark:group-hover:border-zinc-600 dark:group-hover:bg-zinc-800/80">
+                    <Card className="relative flex h-full flex-col overflow-hidden border-border bg-card/80 transition-all duration-200 group-hover:border-border group-hover:bg-card group-hover:shadow-xl">
                       <div className="relative w-full pt-[50%]">
                         {tutorial?.image && (
                           <Image
@@ -336,11 +336,11 @@ export default async function BooksPage() {
                         <p className="text-muted-foreground flex-grow pb-4">
                           {tutorial?.description}
                         </p>
-                        <div className="mt-auto flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
-                          <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                        <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
+                          <div className="text-sm text-muted-foreground">
                             📚 {tutorial?.navigation?.length || 0} ta bo'lim
                           </div>
-                          <div className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 dark:bg-green-900 dark:text-green-200">
+                          <div className="inline-block rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
                             Bepul
                           </div>
                         </div>
@@ -378,12 +378,12 @@ export default async function BooksPage() {
                   ].map((item) => (
                     <div
                       key={item.title}
-                      className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                      className="rounded-lg border border-border bg-muted p-4"
                     >
-                      <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-100">
+                      <h3 className="mb-2 font-semibold text-foreground">
                         {item.icon} {item.title}
                       </h3>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      <p className="text-sm text-muted-foreground">
                         {item.text}
                       </p>
                     </div>

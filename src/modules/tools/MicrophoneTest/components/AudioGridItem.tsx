@@ -43,7 +43,7 @@ export function AudioGridItem({
       {/* Audio Info */}
       <div className="p-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-info">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-info/15">
             <Volume2 className="h-5 w-5 text-info" />
           </div>
           <div className="min-w-0 flex-1">
@@ -79,7 +79,7 @@ export function AudioGridItem({
             size="sm"
             variant="outline"
             onClick={onDelete}
-            className="border-destructive text-destructive hover:bg-destructive"
+            className="border-destructive/30 text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="h-3 w-3" />
           </Button>

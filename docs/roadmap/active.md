@@ -27,7 +27,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
-| Design tokens | 🟡 | A–D shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). **5,401 → 2,696** hits · `dark:` 1,967 → **619** · tokens 170 → **1,608**. Phase E (book reader/MDX) open |
+| Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
@@ -39,14 +39,12 @@ restructured into `initiatives/`. Branch `refactor`._
 
 ## In progress
 
-- `[~]` **Design system** — Phases A–D shipped. 3-layer tokens, brand hue
-  **217°**, `pnpm contrast` 32/32 both schemes, `pnpm tokens` ratchet live (and
-  now also rejects malformed classes). Phase C: **45/48** shared files
-  token-clean; the 3 left are documented exceptions (syntax highlighter,
-  shimmer effect, theme-invariant CTA).
-  Phase D: all 17 routed tools converted — 1,142 pairs across 108 files, with a
-  rebuilt converter that is unit-tested against every past failure case.
-  **Next: Phase E — book reader + MDX components.**
+- `[x]` **Design system — all 5 phases shipped.** 3-layer tokens, brand hue
+  **217°** (Uzbek flag blue), `pnpm contrast` 32/32 in both schemes, and a
+  `pnpm tokens` ratchet that now also rejects malformed classes and
+  same-colour-on-same-colour text. **5,401 → 2,600** hardcoded hits.
+  Remaining work is blocked or out of scope: 629 in the parked tools, 195 in
+  `color-names.ts` (colour data, not styling).
   → `initiatives/design-system.md`
 - `[x]` **Code structure Phase 1 — done.** `packages/ui` `@/` imports 3 → 0, and
   the `TOOL_COLORS`/`UI_PATTERNS` duplication is closed: one definition in
@@ -58,7 +56,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[ ]` | **Phase 1 — delete the fabricated ratings** |
-| [Design system](initiatives/design-system.md) | `[~]` | **Phase E — book reader + MDX** (A–D shipped) |
+| [Design system](initiatives/design-system.md) | `[x]` | all phases shipped — see archive candidate |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |

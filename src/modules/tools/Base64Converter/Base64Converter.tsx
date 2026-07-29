@@ -83,9 +83,9 @@ const Base64Converter = () => {
   const targetContent =
     result.error && !result.isValid ? (
       <div className="p-4">
-        <div className="rounded-lg border border-destructive bg-destructive p-4">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-destructive"></div>
+            <div className="h-2 w-2 rounded-full bg-destructive/10"></div>
             <strong className="text-sm text-destructive">
               {t("Panel.conversionError")}
             </strong>

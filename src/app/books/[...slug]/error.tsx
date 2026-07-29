@@ -20,7 +20,7 @@ export default function BookChapterError({
     <div className="flex min-h-screen flex-col items-center justify-center py-24 text-center">
       <div className="space-y-4">
         <h1 className="text-4xl font-bold">Kontent yuklashda xatolik</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
+        <p className="text-lg text-muted-foreground">
           Kechirasiz, kontent yuklashda xatolik yuz berdi.
         </p>
         <div className="flex flex-row gap-4 pt-4">

@@ -170,11 +170,11 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
   const getStatusBg = (status: string) => {
     switch (status) {
       case "safe":
-        return "bg-success border-success"
+        return "bg-success/10 border-success/30"
       case "warning":
-        return "bg-warning border-warning"
+        return "bg-warning/10 border-warning/30"
       case "danger":
-        return "bg-destructive border-destructive"
+        return "bg-destructive/10 border-destructive/30"
       default:
         return "bg-muted border-border"
     }
