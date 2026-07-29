@@ -1,0 +1,98 @@
+/* Element-level base styles: resets, typography, tables, breakpoints. */
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  .bg-gradient-radial {
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  }
+}
+
+.prose code::before,
+.prose code::after {
+  content: '';
+}
+
+/* Font family is a TOKEN (--font-sans, defined in the @theme block below), not
+   a hardcoded !important rule. This block previously forced system-ui with
+   !important, which silently overrode the Inter face loaded in layout.tsx — so
+   Inter was downloaded on every page and never rendered. */
+body {
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
+}
+
+body,
+html,
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-content p {
+  margin-top: 1.5em;
+  line-height: 1.75em;
+}
+
+figcaption {
+  font-size: 0.85rem;
+  line-height: 1.5rem;
+  display: block;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+code.text-\[\.9em\] {
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th {
+  text-align: left !important;
+}
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left !important;
+}
+
+@media screen and (max-width: 1200px) {
+  .home-content .hide-medium {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .home-content p {
+    font-size: 0.9rem;
+  }
+  .home-content .hide-small {
+    display: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}

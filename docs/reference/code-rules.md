@@ -205,7 +205,9 @@ and `content/` — those are never auto-formatted.
 
 Full spec: **`design-system.md`**. The hard rules:
 
-- One source of truth for color: the token block in `src/app/globals.css`.
+- One source of truth for color: **`src/styles/tokens.css`**. `globals.css` is
+  an import list only — it owns the ORDER, the `styles/` files own the content.
+  `:root` must stay before `.dark` (equal specificity; source order decides).
 - **No raw hex and no Tailwind palette classes in components.** Semantic tokens
   only: `bg-background`, `bg-card`, `text-foreground`, `text-muted-foreground`,
   `border-border`, `bg-primary`, `text-destructive`.

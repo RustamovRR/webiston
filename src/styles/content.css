@@ -1,0 +1,84 @@
+/* Long-form content chrome: image zoom, footnotes, heading anchors, and the
+   Shiki dual-theme switch. All of it targets markup we do not author
+   directly (MDX output, third-party widgets), which is why it is global CSS
+   rather than utilities. */
+
+/* Medium Zoom Styles */
+.medium-zoom-overlay {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(8px);
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image {
+  z-index: 9999 !important;
+}
+
+.medium-zoom-image--opened {
+  cursor: zoom-out !important;
+  z-index: 10000 !important;
+}
+
+/* Footnote scroll margin - for proper anchor positioning */
+[id^='user-content-fn-'],
+[id^='user-content-fnref-'] {
+  scroll-margin-top: 80px;
+}
+
+/* Heading scroll margin - for proper anchor positioning */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 80px;
+}
+
+/* Footnote backref - ko'k rang */
+.data-footnote-backref,
+a[data-footnote-backref] {
+  color: #0ea5e9 !important;
+  text-decoration: none !important;
+}
+
+.data-footnote-backref:hover,
+a[data-footnote-backref]:hover {
+  color: #38bdf8 !important;
+}
+
+/* Link ichidagi code elementi - link rangida bo'lsin */
+a code {
+  color: inherit !important;
+}
+
+a:hover code {
+  color: inherit !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Shiki dual-theme output
+
+   The highlighter runs on the SERVER (src/components/mdx/CodeBlock), so it
+   cannot know the visitor's theme. Instead it emits both at once: the light
+   colour as an inline `color`, the dark one as a `--shiki-dark` custom
+   property on the same element. These two rules are the entire theme switch —
+   no client JavaScript is involved, and no `dark:` utility can express it
+   because the value lives in a property Shiki wrote inline.
+
+   The background is forced transparent so the block sits on `bg-card` and
+   stays inside the design system, rather than introducing a third surface
+   colour from the Shiki theme.
+--------------------------------------------------------------------------- */
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}

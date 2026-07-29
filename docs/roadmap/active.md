@@ -70,6 +70,20 @@ the 8 dead-key deletion below.
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
 
+- `[x]` **`globals.css` split by concern (609 → a 21-line entry + 4 files).**
+  `src/styles/tokens.css` (design system — the four token blocks were at lines
+  9/309/404/472 with ~350 lines of unrelated rules between them),
+  `base.css`, `background-pattern.css` (180 lines for ONE component),
+  `content.css` (MDX chrome + Shiki). **Proved behaviour-preserving:** the
+  compiled CSS holds the same 2,271 rules, 0 added, 0 removed — only the token
+  block moved earlier, and nothing it jumped over declares a custom property.
+  `scripts/contrast-check.mjs` repointed at the new path.
+- `[x]` **`pnpm contrast` could pass while checking nothing.** A pair that failed
+  to parse was counted as `SKIP`, printed, and ignored — so a moved or reformatted
+  token block would have reported "✓ All contrast requirements pass (32 skipped)"
+  and exited **0**. A skip is now a failure. Verified with an injected regression:
+  exit 1 with the token block mangled, exit 0 restored.
+
 ## Shipped
 
 - `[x]` **Dependency upgrade & tooling hardening** — all 4 workspaces to latest,

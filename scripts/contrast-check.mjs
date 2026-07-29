@@ -2,7 +2,7 @@
 /**
  * WCAG contrast checker for the design tokens.
  *
- * Parses the token blocks out of src/app/globals.css, resolves var() chains,
+ * Parses the token blocks out of src/styles/tokens.css, resolves var() chains,
  * converts OKLCH → sRGB, and verifies every foreground/background pair against
  * WCAG 2.1 in BOTH colour schemes.
  *
@@ -15,7 +15,10 @@
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 
-const CSS = join(process.cwd(), "src", "app", "globals.css")
+// The token blocks live in src/styles/tokens.css — globals.css is now just an
+// import list. If tokens ever move again, this is the one line to update, and
+// the parse below will fail loudly rather than silently checking nothing.
+const CSS = join(process.cwd(), "src", "styles", "tokens.css")
 
 /* ---------- OKLCH → sRGB → WCAG luminance ---------- */
 
@@ -150,9 +153,28 @@ for (const [label, scope] of [
   }
 }
 
+// A SKIP is an UNCHECKED pair, so it must not count as success.
+//
+// Until now `skipped` was only printed. That made the whole gate able to report
+// "✓ All contrast requirements pass (32 skipped)" and exit 0 while verifying
+// nothing at all — exactly what would have happened when the token block moved
+// to src/styles/tokens.css if `blockBody` had not thrown first. A check that can
+// pass vacuously is worse than no check, because it is trusted.
+if (skipped > 0) {
+  console.error(
+    `\n✗ ${skipped} pair(s) were SKIPPED — those tokens were never verified.`
+  )
+  console.error(
+    "  Either they are no longer plain oklch() values, or the token block was not parsed."
+  )
+  console.error(
+    `  Parsed ${Object.keys(light).length} light tokens from ${CSS}.`
+  )
+}
+
 console.log(
-  failures === 0
-    ? `\n✓ All contrast requirements pass${skipped ? ` (${skipped} skipped)` : ""}.`
-    : `\n✗ ${failures} contrast failure(s).`
+  failures === 0 && skipped === 0
+    ? "\n✓ All contrast requirements pass."
+    : `\n✗ ${failures} contrast failure(s), ${skipped} unverified.`
 )
-process.exit(failures === 0 ? 0 : 1)
+process.exit(failures === 0 && skipped === 0 ? 0 : 1)
