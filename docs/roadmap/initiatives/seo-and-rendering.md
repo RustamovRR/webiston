@@ -126,6 +126,26 @@ this locale", derived from `routing.localePrefix`, instead of 17 hand-written co
 - `[ ]` **Shiki gets the wrong language.** `CodeBlock.tsx:29` hardcodes `"ts"` for
   **every** block, so JS/JSON/bash/CSS are all mis-highlighted.
 
+### Rendering-strategy decisions (Next 16.2.12) — checked against `node_modules`, not memory
+
+| API | Verdict | Why |
+| --- | --- | --- |
+| `generateStaticParams` + `setRequestLocale` | **applied** | 266 routes prerendered |
+| `dynamicParams = false` (`/books/[...slug]`) | **applied** | fixed corpus; unknown URLs 404 without invoking the page |
+| `dynamic = "force-static"` (`/api/search/documents`) | **applied** | reads nothing from the request; was re-walking `content/` per call. Now `○` |
+| `runtime = "nodejs"` + immutable `Cache-Control` (`/api/og`) | **applied** | must stay `ƒ` — it reads `searchParams` |
+| `cacheComponents: true` (the Next 16 successor to `ppr`/`dynamicIO`) | **rejected** | it inverts the default to dynamic-unless-`"use cache"`. It exists for a static shell with per-request holes. This site has **no per-request data** and already prerenders 266 of 268 routes — adopting it is pure migration risk for zero gain |
+| `"use cache"` / `cacheLife` / `cacheTag` | **unavailable** | gated on `cacheComponents`; verified in `next/dist/server/use-cache/cache-life.js:72` — throws "only available with the `cacheComponents` config" |
+| `connection()`, `after()` | **not needed** | nothing to opt into dynamic, no post-response work |
+| `optimizePackageImports` | **already covered** | `lucide-react` is in Next's built-in default list (`next/dist/server/config.js`) |
+| ISR (`revalidate`) | **not needed** | content changes only at build |
+
+⚠️ **Found while measuring, not yet fixed:** the search corpus exists **twice** and
+the two copies disagree — `public/search-index.json` has **1,078** documents
+(1.05 MB, from `scripts/build-search-index.js`) while `/api/search/documents`
+returns **1,090** (682 KB, built by the route itself). Two implementations of the
+same index. Folded into the Phase 5 item below.
+
 ## Phase 4 — `[ ]` Payload
 
 - `[ ]` **Header logo is 209 KB at 1120×1120**, rendered at 50×50 on every page
@@ -144,8 +164,11 @@ this locale", derived from `routing.localePrefix`, instead of 17 hand-written co
 
 - `[ ]` `TechArticle` for chapters, `BreadcrumbList`, `ItemList` for the books index.
 - `[ ]` Per-route metadata audit — which pages still fall back to the generic title.
-- `[ ]` `scripts/build-search-index.js` indexes a hardcoded single-entry stub and
-  swallows errors, instead of reading the 17 slugs from `tools-list.json`.
+- `[ ]` **One search index, not two.** `scripts/build-search-index.js` indexes a
+  hardcoded single-entry stub and swallows errors instead of reading the 17 slugs
+  from `tools-list.json`; separately, `src/app/api/search/documents/route.ts`
+  builds the *same* corpus with different code. Measured 2026-07-29: 1,078 docs
+  vs 1,090 — they already disagree. One should generate, the other should read it.
 
 ---
 

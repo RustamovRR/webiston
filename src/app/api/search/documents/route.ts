@@ -4,6 +4,15 @@ import matter from "gray-matter"
 import { NextResponse } from "next/server"
 import type { SearchDocument } from "@/lib/search/flexsearch"
 
+// This handler reads nothing from the request — it walks the whole `content/`
+// tree and returns all 1,078 documents. Left dynamic, it redid that walk on
+// every call. The corpus only changes at build, so evaluate it once at build
+// and serve the result as a static asset.
+//
+// It is the fallback path: `flexsearch.ts` fetches `/search-index.json` first
+// and only calls this when that 404s.
+export const dynamic = "force-static"
+
 export async function GET() {
   try {
     const documents: SearchDocument[] = []

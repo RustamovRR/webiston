@@ -40,6 +40,13 @@ export async function generateStaticParams() {
   return paths
 }
 
+// The book corpus is fixed at build time — `content/**` is read by
+// `generateStaticParams`, which emits every landing page and every chapter.
+// With the default (`true`), an unknown URL is *rendered* just to discover the
+// content is missing. `false` makes Next 404 it without invoking the page at
+// all, which both costs less and closes an unbounded render surface.
+export const dynamicParams = false
+
 // Dinamik metadata yaratish.
 //
 // Every branch sets its own `alternates.canonical`. Without it these pages
