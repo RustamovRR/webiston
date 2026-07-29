@@ -82,14 +82,40 @@ docs/
     README.md                ← template + numbering + index
     0001-hybrid-monorepo-src-at-root.md
     0002-design-tokens-single-source.md
+    0003-typescript-7-with-experimental-next-cli.md
+    0004-no-feature-sliced-design.md
 
   roadmap/                   ← state (read every session)
-    active.md                ← CURRENT: what is in progress + next
-    backlog.md               ← future, prioritized, not started
+    active.md                ← CURRENT: tracker — in progress + next (THIN)
+    backlog.md               ← standalone future items + owner decisions (THIN)
+    initiatives/             ← execution plans for multi-session work
+      README.md              ← the convention + index
+      design-system.md       ← Phases A–E, token migration
+      seo-and-rendering.md   ← SEO integrity + rendering performance
+      code-structure.md      ← boundaries, shim layer, module shape, types
+      content-and-i18n.md    ← uz/en parity, glossary, message bundles
+      tooling-ci-and-testing.md ← CI, gates, first tests in src/
 
   archive/                   ← completed-work logs (read-only)
     README.md
+    2026-07_dependency-upgrade-and-tooling.md
 ```
+
+### Where does a piece of work go?
+
+```
+small item, ≤3 lines          → roadmap/backlog.md
+multi-phase, needs an order   → roadmap/initiatives/<name>.md  (+1 pointer line)
+started                       → roadmap/active.md "In progress" (one line)
+all phases done               → archive/YYYY-MM_<name>.md, initiative file deleted
+a decision with a trade-off   → adr/NNNN-*.md
+```
+
+**Why `initiatives/` exists:** `backlog.md` is a list of *items*. A five-phase
+migration is not an item — pasting it in buries the twenty small items that do
+belong there. Each initiative file is the **execution plan** for one `reference/`
+spec: the reference says what good looks like, the initiative says how we get
+there and in what order.
 
 ---
 

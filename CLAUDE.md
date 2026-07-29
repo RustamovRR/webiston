@@ -72,9 +72,16 @@ MDX · Biome (format) + oxlint (lint) · Vitest · pnpm.
 
 ## Session workflow
 
-1. **Start:** read `docs/roadmap/active.md` (current state + next). Update it at
-   the START and END of every session — thin lines, `[ ] [~] [x] [!] [>]`, done
-   items name **what + where**.
+1. **Start:** read `docs/roadmap/active.md` (thin tracker: snapshot, in progress,
+   next). It links the initiative you are working on — **open that file next**,
+   not the whole `docs/` tree. Update both at the START and END of every session:
+   thin lines, `[ ] [~] [x] [!] [>]`, done items name **what + where**.
+   - Multi-phase work lives in `docs/roadmap/initiatives/` — one file per body of
+     work, each the execution plan for one `reference/` spec. **Never paste a
+     multi-phase plan into `backlog.md`.**
+   - When every phase of an initiative is `[x]`: move it to
+     `docs/archive/YYYY-MM_<name>.md`, delete the initiative file, and leave one
+     line under *Shipped* in `active.md`.
 2. **The doc map is `docs/README.md`** — open the task-relevant doc on demand,
    not everything upfront:
    - structure, boundaries, **which branch you are on** → `docs/reference/architecture.md`

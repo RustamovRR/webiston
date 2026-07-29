@@ -35,3 +35,5 @@
 | --- | ----- | ------ |
 | [0001](0001-hybrid-monorepo-src-at-root.md) | Hybrid monorepo — `src/` stays at the repo root | Accepted |
 | [0002](0002-design-tokens-single-source.md) | One token block as the single source of colour | Accepted |
+| [0003](0003-typescript-7-with-experimental-next-cli.md) | TypeScript 7 with Next's experimental TypeScript CLI | Accepted |
+| [0004](0004-no-feature-sliced-design.md) | We do not adopt Feature-Sliced Design | Accepted |

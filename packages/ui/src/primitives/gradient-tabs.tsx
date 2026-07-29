@@ -6,7 +6,7 @@
  * Uses CSS transitions for smooth, performant animations on all devices
  */
 
-import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { TOOL_COLORS, UI_PATTERNS } from "../constants/ui-patterns"
 import { cn } from "../utils/cn"
 
 export interface TabOption {

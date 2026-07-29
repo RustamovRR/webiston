@@ -44,4 +44,6 @@ and where it now lives (backlog item, ADR, issue).
 
 ## Index
 
-_(empty — nothing has shipped through this system yet)_
+| Archive | Initiative | Shipped |
+| ------- | ---------- | ------- |
+| [2026-07_dependency-upgrade-and-tooling.md](2026-07_dependency-upgrade-and-tooling.md) | Dependency upgrade & tooling hardening | 2026-07-29 |

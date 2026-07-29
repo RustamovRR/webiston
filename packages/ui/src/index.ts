@@ -12,7 +12,8 @@ export {
   InfoCard,
   StatsDisplay
 } from "./composites"
-
+// Design constants (owned here; the app re-exports them from src/constants)
+export { TOOL_COLORS, UI_PATTERNS } from "./constants/ui-patterns"
 // Primitives (Shadcn/ui base components)
 export {
   Accordion,
@@ -93,6 +94,5 @@ export {
   Toaster,
   TypingAnimation
 } from "./primitives"
-
 // Utils
 export { cn } from "./utils"
