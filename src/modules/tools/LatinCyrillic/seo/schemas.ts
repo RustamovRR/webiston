@@ -56,8 +56,8 @@ export const applicationSchema = {
     logo: {
       "@type": "ImageObject",
       url: `${BASE_URL}/logo.png`,
-      width: 512,
-      height: 512
+      width: 1120,
+      height: 1120
     }
   },
   featureList: [

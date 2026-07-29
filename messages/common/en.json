@@ -37,7 +37,8 @@
     "clear": "Clear",
     "error": "Error",
     "toggleTheme": "Toggle theme",
-    "enterData": "Enter some data"
+    "enterData": "Enter some data",
+    "loading": "Loading..."
   },
   "Search": {
     "title": "Search the site",

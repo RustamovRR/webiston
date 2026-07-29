@@ -18,7 +18,16 @@ const OG_BRAND = {
   muted: "#b1e7f6" // --brand-200
 } as const
 
-const SIZE = { width: 1200, height: 630 }
+// The image is a pure function of its query string, so a given URL never
+// changes. Without this Next serves `max-age=0, must-revalidate` and every
+// crawler hit re-runs the Satori layout + PNG encode for all 229 book pages.
+const SIZE = {
+  width: 1200,
+  height: 630,
+  headers: {
+    "cache-control": "public, immutable, no-transform, max-age=31536000"
+  }
+}
 
 /** Long chapter titles must not overflow the card. */
 const MAX_TITLE = 90

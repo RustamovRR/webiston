@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import Image from "next/image"
-import { getTranslations } from "next-intl/server"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 import { ArrowRightIcon, CircleIcon, ToolsIcon } from "@/assets/icons"
 import { ButtonLink, SectionTitle, SimpleCard } from "@/components/shared"
 import {
@@ -11,7 +11,7 @@ import {
   TOOLS_LIST
 } from "@/constants"
 import { getTutorialImage } from "@/lib/mdx"
-import { localeAlternates, localeUrl } from "@/lib/seo"
+import { localeAlternates, localeUrl, ogCardUrl } from "@/lib/seo"
 
 export async function generateMetadata({
   params
@@ -19,6 +19,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   const t = await getTranslations({ locale, namespace: "HomePage.Metadata" })
 
   const title = t("title")
@@ -104,16 +105,17 @@ export async function generateMetadata({
       locale: locale === "uz" ? "uz_UZ" : "en_US",
       url: localeUrl(locale, "/"),
       siteName: "Webiston",
+      // `/logo.png` is 1120×1120 but was declared 1200×630 here — the generated
+      // card actually is that size. See `ogCardUrl`.
       images: [
         {
-          url: "https://webiston.uz/logo.png",
+          url: ogCardUrl(title, ""),
           width: 1200,
           height: 630,
           alt:
             locale === "uz"
               ? "Webiston - O'zbek Dasturchilari uchun Professional Platforma"
-              : "Webiston - Professional Platform for Uzbek Developers",
-          type: "image/png"
+              : "Webiston - Professional Platform for Uzbek Developers"
         }
       ]
     },
@@ -123,7 +125,7 @@ export async function generateMetadata({
       creator: "@webiston_uz",
       title,
       description,
-      images: ["https://webiston.uz/logo.png"]
+      images: [ogCardUrl(title, "")]
     },
     robots: {
       index: true,

@@ -5,6 +5,7 @@ import Script from "next/script"
 import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
+import { ogCardUrl } from "@/lib/seo"
 
 // `cyrillic` is required, not optional: the product ships Cyrillic Uzbek
 // (the transliteration tool and book content both render it). With a latin-only
@@ -185,7 +186,7 @@ export const metadata: Metadata = {
     countryName: "Uzbekistan",
     images: [
       {
-        url: "/logo.png",
+        url: ogCardUrl("Webiston", ""),
         width: 1200,
         height: 630,
         alt: "Webiston - O'zbek Dasturchilari uchun Professional Platforma",
@@ -204,16 +205,15 @@ export const metadata: Metadata = {
     title: "Webiston - O'zbek Dasturchilari uchun Professional Platforma",
     description:
       "O'zbek dasturchilari uchun keng qamrovli xizmatlar. Dasturlash kitoblari, foydali vositalar va professional resurslar.",
-    images: ["/logo.png"]
+    images: [ogCardUrl("Webiston", "")]
   },
-  alternates: {
-    canonical: "https://webiston.uz",
-    languages: {
-      uz: "https://webiston.uz",
-      en: "https://webiston.uz/en",
-      "x-default": "https://webiston.uz"
-    }
-  },
+  // No site-wide `alternates` here on purpose.
+  //
+  // A root-level `canonical: "https://webiston.uz"` is inherited by every page
+  // that does not set its own — which is how 229 book chapters ended up
+  // declaring themselves duplicates of the homepage. Each route now owns its
+  // canonical (`localeAlternates` for localised pages, an explicit one for
+  // `/books/**`), and a page that forgets simply gets none, which is safe.
   robots: {
     index: true,
     follow: true,

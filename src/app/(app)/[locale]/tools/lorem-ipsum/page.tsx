@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { setRequestLocale } from "next-intl/server"
 import { withLocale } from "@/lib/seo"
 import { LoremIpsum } from "@/modules/tools"
 
@@ -174,8 +175,8 @@ const structuredData = {
     logo: {
       "@type": "ImageObject",
       url: "https://webiston.uz/logo.png",
-      width: 512,
-      height: 512
+      width: 1120,
+      height: 1120
     }
   },
   featureList: [
@@ -327,6 +328,7 @@ export default async function LoremIpsumPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = (await params) || { locale: "uz" }
+  setRequestLocale(locale)
 
   // Generate locale-specific schemas
   const faqSchema = generateFAQSchema(locale)
@@ -363,5 +365,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   return withLocale(baseMetadata, locale, "/tools/lorem-ipsum")
 }

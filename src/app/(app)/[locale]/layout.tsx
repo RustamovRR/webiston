@@ -1,13 +1,23 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { notFound } from "next/navigation"
-import { NextIntlClientProvider } from "next-intl"
-import { getMessages, getTranslations } from "next-intl/server"
+import { hasLocale, NextIntlClientProvider } from "next-intl"
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale
+} from "next-intl/server"
 import Footer from "@/components/shared/Footer/Footer"
 import Header from "@/components/shared/Header/Header"
+import { routing } from "@/i18n/routing"
 
 const _inter = Inter({ subsets: ["latin"] })
-const locales = ["uz", "en"]
+
+// Enumerating the locales is half of the static-rendering opt-in; the other
+// half is `setRequestLocale` below, in this layout AND in every page.
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
 
 export async function generateMetadata({
   params
@@ -15,6 +25,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   const t = await getTranslations({ locale, namespace: "Metadata" })
 
   return {
@@ -37,7 +48,12 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  if (!locales.includes(locale)) notFound()
+  if (!hasLocale(routing.locales, locale)) notFound()
+
+  // Without this, `useTranslations` inside Header/Footer resolves the locale
+  // through `headers()`, which opts the whole tree into dynamic rendering.
+  // It must run BEFORE any child renders — i.e. here in the layout body.
+  setRequestLocale(locale)
 
   const messages = await getMessages()
 

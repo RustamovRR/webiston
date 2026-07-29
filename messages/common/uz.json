@@ -37,7 +37,8 @@
     "clear": "Tozalash",
     "error": "Xatolik",
     "toggleTheme": "Mavzuni o'zgartirish",
-    "enterData": "Ma'lumot kiriting"
+    "enterData": "Ma'lumot kiriting",
+    "loading": "Yuklanmoqda..."
   },
   "Search": {
     "title": "Sayt bo'yicha qidiruv",

@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { setRequestLocale } from "next-intl/server"
 import { withLocale } from "@/lib/seo"
-import { CameraRecorder } from "@/modules/tools"
+import { CameraRecorderClient } from "./CameraRecorderClient"
 
 const baseMetadata: Metadata = {
   title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
@@ -226,8 +227,8 @@ const structuredData = {
     logo: {
       "@type": "ImageObject",
       url: "https://webiston.uz/logo.png",
-      width: 512,
-      height: 512
+      width: 1120,
+      height: 1120
     }
   },
   featureList: [
@@ -377,6 +378,7 @@ export default async function CameraRecorderPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = (await params) || { locale: "uz" }
+  setRequestLocale(locale)
 
   // Generate locale-specific schemas
   const faqSchema = generateFAQSchema(locale)
@@ -402,7 +404,7 @@ export default async function CameraRecorderPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <CameraRecorder />
+      <CameraRecorderClient />
     </>
   )
 }
@@ -413,5 +415,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   return withLocale(baseMetadata, locale, "/tools/camera-recorder")
 }

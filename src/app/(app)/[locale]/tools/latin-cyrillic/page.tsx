@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { setRequestLocale } from "next-intl/server"
 import { withLocale } from "@/lib/seo"
 import { LatinCyrillic } from "@/modules/tools"
 import {
@@ -16,6 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  setRequestLocale(locale)
   return withLocale(latinCyrillicMetadata, locale, "/tools/latin-cyrillic")
 }
 
@@ -25,6 +27,7 @@ export default async function LatinCyrillicPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = (await params) || { locale: "uz" }
+  setRequestLocale(locale)
 
   const faqSchema = generateFAQSchema(locale)
   const breadcrumbSchema = generateBreadcrumbSchema(locale)

@@ -45,18 +45,38 @@ export function localeAlternates(
   }
 }
 
+/** A generated 1200×630 share card — see `src/app/api/og/route.tsx`. */
+export function ogCardUrl(title: string, path: string): string {
+  return `/api/og?title=${encodeURIComponent(title)}&path=${encodeURIComponent(path)}`
+}
+
+const OG_CARD_SIZE = { width: 1200, height: 630 }
+
 /**
- * Overlay the locale-dependent fields onto a page's static metadata.
+ * Overlay the locale- and path-dependent fields onto a page's static metadata.
  *
- * Tool pages carry ~140 lines of hand-written metadata each. Only three parts
- * actually vary by locale — the canonical, the OpenGraph URL, and the
- * OpenGraph locale — so this patches those instead of re-authoring the rest.
+ * Tool pages carry ~140 lines of hand-written metadata each; almost none of it
+ * varies. What does: the canonical, the OpenGraph URL, the OpenGraph locale —
+ * and the share card.
+ *
+ * On the card: every page previously pointed OpenGraph at `/logo.png` while
+ * declaring it `1200×630`. The file is actually **1120×1120**, so social
+ * platforms laid out a wide card and got a square image. Routing through
+ * `/api/og` makes the declared size true, gives each page a titled card
+ * instead of the same logo, and drops a 209 KB PNG from every share fetch.
+ * Only pages whose `title` is a plain string get one — a templated title
+ * object has no single text to draw.
  */
 export function withLocale(
   base: Metadata,
   locale: string,
   path: string
 ): Metadata {
+  const titleText = typeof base.title === "string" ? base.title : undefined
+  const card = titleText
+    ? [{ url: ogCardUrl(titleText, path), ...OG_CARD_SIZE, alt: titleText }]
+    : undefined
+
   return {
     ...base,
     alternates: localeAlternates(locale, path),
@@ -66,7 +86,12 @@ export function withLocale(
       locale: OG_LOCALE[locale] ?? OG_LOCALE[routing.defaultLocale],
       alternateLocale: routing.locales
         .filter((l) => l !== locale)
-        .map((l) => OG_LOCALE[l])
+        .map((l) => OG_LOCALE[l]),
+      ...(card && { images: card })
+    },
+    twitter: base.twitter && {
+      ...base.twitter,
+      ...(titleText && { images: [ogCardUrl(titleText, path)] })
     }
   }
 }

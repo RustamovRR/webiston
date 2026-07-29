@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { getAllTutorials } from "@/lib/mdx"
+import { ogCardUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
   // No "| Webiston" suffix — the root layout applies a `%s | Webiston` template.
@@ -79,13 +80,14 @@ export const metadata: Metadata = {
     locale: "uz_UZ",
     siteName: "Webiston",
     url: "https://webiston.uz/books",
+    // `/logo.png` is 1120×1120 but was declared 1200×630 — the generated card
+    // actually is that size. See `ogCardUrl`.
     images: [
       {
-        url: "https://webiston.uz/logo.png",
+        url: ogCardUrl("Dasturlash Kitoblari", "/books"),
         width: 1200,
         height: 630,
-        alt: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar",
-        type: "image/png"
+        alt: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar"
       }
     ]
   },
@@ -96,7 +98,7 @@ export const metadata: Metadata = {
     title: "Dasturlash Kitoblari - Bepul O'zbek IT Kitoblar",
     description:
       "Professional dasturlash kitoblari o'zbek tilida. JavaScript, React va boshqa IT kitoblar bepul!",
-    images: ["https://webiston.uz/logo.png"]
+    images: [ogCardUrl("Dasturlash Kitoblari", "/books")]
   },
   alternates: {
     canonical: "https://webiston.uz/books",
