@@ -12,7 +12,7 @@ interface StatsDisplayProps {
 
 export function StatsDisplay({ stats, className = "" }: StatsDisplayProps) {
   return (
-    <div className={`flex gap-4 text-sm text-zinc-500 ${className}`}>
+    <div className={`flex gap-4 text-sm text-muted-foreground ${className}`}>
       {stats.map((stat, index) => (
         <span key={index} className="flex items-center gap-1">
           <NumberTicker value={stat.value} />

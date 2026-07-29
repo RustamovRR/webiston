@@ -24,7 +24,7 @@ const SimpleCard: FC<IProps> = ({
   ...props
 }) => {
   const classNames = cn(
-    "relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-border hover:bg-zinc-50 select-none dark:hover:bg-zinc-900/50",
+    "relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-border hover:bg-accent select-none",
     {
       "pointer-events-none opacity-50": disabled
     },

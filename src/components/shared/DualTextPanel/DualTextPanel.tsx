@@ -110,7 +110,7 @@ export function DualTextPanel({
         className={cn(
           "relative flex w-full flex-col overflow-hidden rounded-xl",
           isTerminal
-            ? "border border-border bg-card/80 backdrop-blur-sm/50/80"
+            ? "border border-border bg-card/80 backdrop-blur-sm"
             : "bg-muted/80",
           showShadow && "shadow-2xl"
         )}
@@ -119,7 +119,7 @@ export function DualTextPanel({
         <header
           className={cn(
             "flex h-14 shrink-0 items-center justify-between border-b border-border px-4",
-            isTerminal ? "bg-muted/50/50" : ""
+            isTerminal ? "bg-muted/50" : ""
           )}
         >
           <div className="flex items-center gap-2">
@@ -156,7 +156,7 @@ export function DualTextPanel({
                       onClick={onClear}
                       variant="ghost"
                       size="sm"
-                      className="text-muted-foreground hover:text-zinc-800 dark:hover:text-zinc-200"
+                      className="text-muted-foreground hover:text-foreground"
                       aria-label={tCommon("clear")}
                     >
                       <X size={18} aria-hidden="true" />
@@ -188,7 +188,7 @@ export function DualTextPanel({
               <textarea
                 value={sourceText}
                 onChange={(e) => onSourceChange(e.target.value)}
-                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-muted-foreground"
+                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
                 placeholder={sourcePlaceholder}
                 disabled={isLoading}
                 aria-label={sourceLabel}
@@ -205,10 +205,7 @@ export function DualTextPanel({
               {customTargetContent ? (
                 customTargetContent
               ) : error ? (
-                <div
-                  className="p-4 text-red-500 dark:text-red-400"
-                  role="alert"
-                >
+                <div className="p-4 text-destructive" role="alert">
                   {error}
                 </div>
               ) : isLoading ? (
@@ -232,7 +229,7 @@ export function DualTextPanel({
         <footer
           className={cn(
             "flex shrink-0 items-center justify-between border-t border-border px-4 py-2.5",
-            isTerminal && "bg-muted/30/30"
+            isTerminal && "bg-muted/30"
           )}
         >
           <div className="flex items-center">
@@ -259,7 +256,7 @@ export function DualTextPanel({
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-muted/90/90! dark:hover:bg-zinc-800/90"
+              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90"
               title={swapButtonTitle}
               disabled={isLoading}
               aria-label={swapButtonTitle || "Swap"}

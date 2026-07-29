@@ -18,15 +18,12 @@ const InfoCard: React.FC<InfoCardProps> = ({
   description,
   children,
   className,
-  iconBgColor = "bg-blue-500/20",
-  iconColor = "text-blue-400"
+  iconBgColor = "bg-primary/10",
+  iconColor = "text-primary"
 }) => {
   return (
     <Card
-      className={cn(
-        "border-border bg-card/80 backdrop-blur-sm/30/60",
-        className
-      )}
+      className={cn("border-border bg-card/80 backdrop-blur-sm", className)}
     >
       <div className="p-6">
         <div className="mb-4 flex items-center gap-3">
@@ -41,14 +38,12 @@ const InfoCard: React.FC<InfoCardProps> = ({
                 className: cn("h-5 w-5", iconColor)
               } as React.HTMLAttributes<HTMLElement>)}
           </div>
-          <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">
-            {title}
-          </h3>
+          <h3 className="text-xl font-semibold text-foreground">{title}</h3>
         </div>
         <p className="mb-4 leading-relaxed text-muted-foreground">
           {description}
         </p>
-        <div className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+        <div className="space-y-2 text-sm text-muted-foreground">
           {children}
         </div>
       </div>

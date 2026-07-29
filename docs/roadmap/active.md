@@ -27,7 +27,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
-| Design tokens | 🟡 | A+B shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). C in progress: **5,401 → 5,167** hits; 28/48 shared files clean; tokens 170 → 303 |
+| Design tokens | 🟡 | A+B+C shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). **5,401 → 5,090** hits; **45/48** shared files clean; tokens 170 → **360**. D–E (tool modules) open |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
@@ -38,10 +38,12 @@ restructured into `initiatives/`. Branch `refactor`._
 
 ## In progress
 
-- `[~]` **Design system** — A + B shipped, C in progress. 3-layer tokens, brand
-  hue **217°**, `pnpm contrast` 32/32 both schemes, `pnpm tokens` ratchet live.
-  Phase C so far: **−234 hits**, 28/48 shared files token-clean.
-  **Next: the 20-file remainder** (singles needing judgement, not a rule).
+- `[~]` **Design system** — Phases A, B and C shipped. 3-layer tokens, brand hue
+  **217°**, `pnpm contrast` 32/32 both schemes, `pnpm tokens` ratchet live (and
+  now also rejects malformed classes). Phase C: **45/48** shared files
+  token-clean; the 3 left are documented exceptions (syntax highlighter,
+  shimmer effect, theme-invariant CTA).
+  **Next: Phase D — tool modules, one per commit, routed tools first.**
   → `initiatives/design-system.md`
 - `[x]` **Code structure Phase 1 — done.** `packages/ui` `@/` imports 3 → 0, and
   the `TOOL_COLORS`/`UI_PATTERNS` duplication is closed: one definition in

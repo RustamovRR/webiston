@@ -124,7 +124,7 @@ export function BaseModal({
                       className={cn(
                         "absolute top-4 right-4 z-10 rounded-full p-1.5",
                         "text-muted-foreground hover:text-foreground hover:bg-accent",
-                        "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        "focus-visible:ring-ring transition-colors focus-visible:ring-2 focus-visible:outline-none"
                       )}
                       aria-label="Close"
                     >

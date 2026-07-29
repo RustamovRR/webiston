@@ -37,7 +37,7 @@ export default function LanguageSelectorContent() {
         <Button
           variant="ghost"
           size="sm"
-          className="flex cursor-pointer items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="flex cursor-pointer items-center gap-2 hover:bg-accent"
         >
           <Globe size={16} />
           <span className="font-medium">{locale.toUpperCase()}</span>

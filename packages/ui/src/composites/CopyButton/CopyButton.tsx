@@ -48,7 +48,7 @@ export function CopyButton({
       aria-label="Nusxalash"
     >
       {copied ? (
-        <Check size={18} className="text-green-500" />
+        <Check size={18} className="text-success" />
       ) : (
         <Copy size={18} />
       )}

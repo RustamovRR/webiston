@@ -75,8 +75,7 @@ export function GradientTabs({
               isActive
                 ? "text-white shadow-lg"
                 : [
-                    "text-muted-foreground hover:bg-zinc-500/10",
-                    " dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100"
+                    "text-muted-foreground hover:bg-accent hover:text-foreground"
                   ]
             )}
             style={isActive ? { background: colors.shimmerBg } : undefined}
@@ -95,7 +94,7 @@ export function GradientTabs({
                 <span
                   className={cn(
                     "transition-colors duration-200",
-                    isActive ? "text-white" : "text-zinc-400"
+                    isActive ? "text-white" : "text-muted-foreground"
                   )}
                   aria-hidden="true"
                 >

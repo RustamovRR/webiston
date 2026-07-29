@@ -14,7 +14,7 @@ export default function Footer() {
             title={label}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-current opacity-70 transition-all duration-300 hover:text-gray-900 hover:opacity-100 dark:hover:text-gray-100"
+            className="flex items-center gap-1 text-current opacity-70 transition-all duration-300 hover:text-foreground hover:opacity-100"
           >
             {icon}
           </a>

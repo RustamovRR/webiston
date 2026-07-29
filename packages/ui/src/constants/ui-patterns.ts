@@ -10,11 +10,17 @@
 // them to semantic tokens is design Phase C, and mixing a move with a rewrite
 // would make both unreviewable. See docs/roadmap/active.md.
 
-// Color themes for different tool categories with shimmer-like gradients
+// Color themes for different tool categories with shimmer-like gradients.
+//
+// NOTE: `primaryHover` stores its `hover:` prefixes inline, per class. Tailwind
+// only generates utilities it can see as literal strings in source, so building
+// them at runtime (`hover:${colors.primaryHover}`) yields no CSS at all — and a
+// single prefix would only apply to the first class of the gradient anyway.
 export const TOOL_COLORS = {
   CONVERTERS: {
     primary: "from-indigo-500 via-purple-500 to-cyan-500",
-    primaryHover: "from-indigo-600 via-purple-600 to-cyan-600",
+    primaryHover:
+      "hover:from-indigo-600 hover:via-purple-600 hover:to-cyan-600",
     accent: "indigo-500",
     accentHover: "indigo-600",
     light: "indigo-400",
@@ -26,7 +32,7 @@ export const TOOL_COLORS = {
   },
   GENERATORS: {
     primary: "from-emerald-500 via-teal-500 to-blue-500",
-    primaryHover: "from-emerald-600 via-teal-600 to-blue-600",
+    primaryHover: "hover:from-emerald-600 hover:via-teal-600 hover:to-blue-600",
     accent: "emerald-500",
     accentHover: "emerald-600",
     light: "emerald-400",
@@ -38,7 +44,8 @@ export const TOOL_COLORS = {
   },
   UTILITIES: {
     primary: "from-violet-500 via-pink-500 to-orange-500",
-    primaryHover: "from-violet-600 via-pink-600 to-orange-600",
+    primaryHover:
+      "hover:from-violet-600 hover:via-pink-600 hover:to-orange-600",
     accent: "violet-500",
     accentHover: "violet-600",
     light: "violet-400",

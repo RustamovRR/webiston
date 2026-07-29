@@ -48,7 +48,7 @@ const SocialMedia = () => {
           title={label}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-current transition-colors hover:text-gray-900 dark:hover:text-gray-100"
+          className="flex items-center gap-1 text-current transition-colors hover:text-foreground"
         >
           {icon}
         </a>

@@ -72,8 +72,48 @@ function measure() {
 
 const total = (c) => Object.values(c).reduce((a, b) => a + b, 0)
 
+/** Tailwind classes that are syntactically broken and therefore generate NO CSS.
+ *
+ *  Real regression, 2026-07-29: a mechanical light/dark collapse left orphaned
+ *  opacity suffixes behind — `bg-muted/50/50`, `backdrop-blur-sm/30/60`. Those
+ *  silently render unstyled. Nothing caught it: the count stayed flat, typecheck
+ *  cannot see inside a string, and the build succeeds. So the ratchet checks it. */
+const MALFORMED = [
+  // two opacity modifiers on one utility: bg-muted/50/50
+  /\b[a-z-]+-[a-z0-9-]+\/\d{1,3}\/\d{1,3}\b/g,
+  // an opacity modifier on a utility that takes none: backdrop-blur-sm/30
+  /\b(?:backdrop-)?blur-(?:xs|sm|md|lg|xl|2xl|3xl)\/\d{1,3}\b/g
+]
+
+function malformedClasses() {
+  const hits = []
+  for (const f of targetFiles()) {
+    let src
+    try {
+      src = readFileSync(join(ROOT, f), "utf8")
+    } catch {
+      continue
+    }
+    for (const re of MALFORMED) {
+      for (const m of src.matchAll(re)) hits.push([f, m[0]])
+    }
+  }
+  return hits
+}
+
 const mode = process.argv[2]
 const current = measure()
+
+if (mode !== "--report") {
+  const broken = malformedClasses()
+  if (broken.length) {
+    console.error(
+      `✗ ${broken.length} malformed Tailwind class(es) — these generate no CSS and render unstyled:\n`
+    )
+    for (const [f, c] of broken) console.error(`    ${f}: ${c}`)
+    process.exit(1)
+  }
+}
 
 if (mode === "--report") {
   const rows = Object.entries(current)

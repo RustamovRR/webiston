@@ -147,10 +147,32 @@ token-clean.** Semantic-token usage 170 → 303.
 > detector that found these lives in the session notes; the durable check is:
 > after any conversion, no line may keep an unconverted palette class while its
 > `dark:` sibling was removed.
-- `[ ]` **Remainder (20 files).** These are *singles* — a palette class with no
-  dark partner — so each needs a judgement call rather than a mechanical rule:
-  `ToolPanel` 12 · `ButtonLink` 9 · `DualTextPanel` 8 · `LanguageSelector` 7 ·
-  `SearchComponents` 5 · `mode-switch` 5 · `InfoCard` 5 · 13 more.
+- `[x]` **Remainder converted by hand — 45 / 48 files in scope are now
+  token-clean.** Done one `className` at a time, as the lesson above requires.
+  Covered: `ToolPanel`, `DualTextPanel`, `LanguageSelector(+Content)`,
+  `SearchComponents`, `SearchDialog`, `Search`, `SimpleCard`, `Footer`,
+  `SocialMedia`, `Header`, `InfoCard`, `BaseModal`, `StatsDisplay`, `CopyButton`,
+  `mode-switch`, `gradient-tabs`.
+
+**Two real bugs surfaced during the hand pass** — neither was a styling nit:
+
+- **5 malformed Tailwind classes** left by the earlier mechanical sweep:
+  `bg-muted/50/50`, `backdrop-blur-sm/30/60`, `hover:bg-muted/90/90!`. Removing a
+  `dark:` half orphaned its opacity suffix onto the class before it. These
+  generate **no CSS at all**, so the elements silently rendered unstyled — and
+  nothing caught it: the hit count stayed flat, typecheck cannot see inside a
+  string, and the build succeeded. `pnpm tokens` now fails on this shape.
+- **`mode-switch` hovered to the wrong colour.** The active tab's gradient is
+  per-category (`colors.primary`), but its hover was a hardcoded blue/indigo, so
+  hovering a green "generators" tab turned it blue. `TOOL_COLORS.primaryHover`
+  already existed with the right ramp and had **zero consumers**.
+
+> **Tailwind gotcha worth remembering:** the first fix for that bug —
+> `` `hover:${colors.primaryHover}` `` — was wrong twice over. It prefixes only
+> the *first* class of a multi-class gradient, and Tailwind only generates
+> utilities it can see as **literal strings in source**, so a runtime-built class
+> name yields no CSS. `primaryHover` now stores its `hover:` prefixes inline, per
+> class. Verified by grepping the production CSS for all three category ramps.
 
 **Documented exceptions — deliberately NOT converted:**
 
