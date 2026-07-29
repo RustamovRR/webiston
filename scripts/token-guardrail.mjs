@@ -40,15 +40,32 @@ const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g
  *  least one intervening directory, so a file sitting directly in src/ (e.g.
  *  src/middleware.ts) silently escapes the ratchet. List the trees and filter
  *  by extension here instead. */
+/** If discovery collapses, every check below silently passes on an empty set.
+ *  The repo has ~429 `.ts`/`.tsx` files under these trees; anything near zero
+ *  means the pathspec, the git invocation or the cwd broke — not that the
+ *  codebase shrank. Fail loudly instead of reporting a clean bill of health. */
+const MIN_SCANNED = 100
+
 function targetFiles() {
   const out = execFileSync("git", ["ls-files", "src/", "packages/", "apps/"], {
     cwd: ROOT,
     encoding: "utf8"
   })
-  return out
+  const files = out
     .split("\n")
     .filter((f) => /\.tsx?$/.test(f))
     .filter((f) => !f.includes("/node_modules/"))
+
+  if (files.length < MIN_SCANNED) {
+    console.error(
+      `✗ Only ${files.length} source file(s) found — expected at least ${MIN_SCANNED}.`
+    )
+    console.error(
+      "  File discovery is broken, so this gate would pass without checking anything."
+    )
+    process.exit(1)
+  }
+  return files
 }
 
 function countFile(path) {

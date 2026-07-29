@@ -40,8 +40,23 @@ function bundleDirs(dir, acc = []) {
   return acc
 }
 
+/** Same reasoning as MIN_SCANNED in token-guardrail.mjs: with zero bundles this
+ *  script reports "✓ uz/en parity across 0 message bundles" and exits 0. There
+ *  are 19 today; a collapse means discovery broke, not that the strings did. */
+const MIN_BUNDLES = 10
+
 let failures = 0
 const bundles = bundleDirs(MESSAGES)
+
+if (bundles.length < MIN_BUNDLES) {
+  console.error(
+    `✗ Only ${bundles.length} message bundle(s) found under ${MESSAGES} — expected at least ${MIN_BUNDLES}.`
+  )
+  console.error(
+    "  Bundle discovery is broken, so this gate would pass without checking anything."
+  )
+  process.exit(1)
+}
 
 for (const dir of bundles) {
   const sets = Object.fromEntries(

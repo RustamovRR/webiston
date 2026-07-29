@@ -7,9 +7,25 @@ import { useEffect, useRef } from "react"
 interface ImageViewerProps {
   src: string
   alt: string
+  /** Intrinsic pixel size, measured on the server by `getPublicImageSize`.
+   *  Absent for remote or unreadable images — then we fall back to the old
+   *  no-reservation behaviour rather than inventing a ratio. */
+  width?: number
+  height?: number
 }
 
-export default function ImageViewer({ src, alt }: ImageViewerProps) {
+// Fallback only. Real dimensions arrive as props; `width={0} height={0}` with
+// `sizes="100vw"` is Next's escape hatch for "unknown intrinsic size", and it
+// reserves NO aspect ratio — which is why every book figure used to shift the
+// page as it decoded.
+const UNKNOWN = 0
+
+export default function ImageViewer({
+  src,
+  alt,
+  width,
+  height
+}: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
@@ -31,8 +47,8 @@ export default function ImageViewer({ src, alt }: ImageViewerProps) {
         ref={imgRef}
         src={src}
         alt={alt || ""}
-        width={0}
-        height={0}
+        width={width ?? UNKNOWN}
+        height={height ?? UNKNOWN}
         sizes="100vw"
         className="!m-0 !mb-2 h-auto w-full cursor-zoom-in rounded-lg"
         style={{ width: "100%", height: "auto" }}

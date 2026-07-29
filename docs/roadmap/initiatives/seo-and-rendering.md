@@ -165,10 +165,22 @@ same index. Folded into the Phase 5 item below.
 
 ## Phase 4 — `[ ]` Payload
 
-- `[ ]` **Header logo is 209 KB at 1120×1120**, rendered at 50×50 on every page
-  (`Logo.tsx:7`, `public/logo.png`). Ship a 100×100 WebP.
-- `[ ]` **CLS on every book figure.** `src/components/mdx/ImageViewer/ImageViewer.tsx:33`
-  passes `width={0} height={0}` — no aspect ratio is reserved.
+- `[x]` **Header logo: 209 KB → 5.5 KB (−97.4%) on every page.** `Logo.tsx`
+  pointed at `public/logo.png`, which is 1120×1120, to paint a 50 px mark — and
+  `images.unoptimized: true` means Next served it byte-for-byte. Added
+  `public/logo-100.png` (same artwork, 100×100 = 2× for retina). `logo.png` is
+  untouched and still correct for share cards and JSON-LD. Verified in the
+  browser network log: only `logo-100.png` is requested.
+  *(WebP was the plan; `sips` on this machine can read WebP but not write it, so
+  this is PNG. Revisit if a WebP encoder is ever added.)*
+- `[x]` **CLS on book figures fixed with measured dimensions, not guesses.**
+  `ImageViewer` passed `width={0} height={0}` — Next's escape hatch for "unknown
+  intrinsic size", which reserves no aspect ratio. The files are on disk at build
+  time, so `src/lib/image-size.ts` now reads the real size straight from the
+  PNG/JPEG header (zero dependencies, first 64 KB only) and `MDXContent` passes
+  it down. Verified: **94 of 94** images measured, 0 failures, and the served
+  HTML has **0** images left at `width="0"` (e.g. `1622×476`, `1616×966`).
+  Traversal (`..`) and remote URLs return `null` rather than touching the disk.
 - `[ ]` **Whole message bundle to the client.** `src/app/(app)/[locale]/layout.tsx:39`
   calls `getMessages()` with no namespace filter and passes everything to the
   client provider — all 19 tool namespaces on every localised page.

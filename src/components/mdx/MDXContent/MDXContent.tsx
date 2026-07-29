@@ -5,7 +5,7 @@ import rehypeKatex from "rehype-katex"
 import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-
+import { getPublicImageSize } from "@/lib/image-size"
 // Custom components
 import Callout from "../Callout"
 import CodeBlock from "../CodeBlock"
@@ -86,7 +86,20 @@ const components = {
     if (isVideoLink) {
       return <VideoEmbed url={src} title={alt} />
     }
-    return <ImageViewer src={src} alt={alt || ""} />
+
+    // Measured here, on the server, because the files are on disk at build time
+    // — passing them down is what lets the browser reserve the right box and
+    // stops all 90 book figures from shifting the layout as they decode.
+    const size = getPublicImageSize(src)
+
+    return (
+      <ImageViewer
+        src={src}
+        alt={alt || ""}
+        width={size?.width}
+        height={size?.height}
+      />
+    )
   },
   // Inline code with badge style
   code: ({ className, children, ...props }: any) => {
