@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { FileSearch } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ export default function SearchDialog({
   onSearch,
   onClearSearch
 }: SearchDialogProps) {
+  const t = useTranslations("Search")
   const _router = useRouter()
   const closeMobileMenu = useMobileMenuStore((state) => state.close)
 
@@ -50,7 +52,7 @@ export default function SearchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[450px] max-h-[90vh] flex-col overflow-hidden p-0 sm:max-w-[600px]">
         <DialogHeader className="border-b px-4 pt-4 pb-3">
-          <DialogTitle>Sayt bo'yicha qidiruv</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
 
         <div className="px-4 pt-4">
@@ -65,9 +67,9 @@ export default function SearchDialog({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex h-full items-center justify-center text-sm text-gray-500"
+                className="flex h-full items-center justify-center text-sm text-muted-foreground"
               >
-                Qidirilmoqda...
+                {t("loading")}
               </motion.div>
             )}
 
@@ -90,9 +92,9 @@ export default function SearchDialog({
                 exit={{ opacity: 0, y: 10 }}
                 className="flex h-full flex-col items-center justify-center text-center"
               >
-                <FileSearch className="h-10 w-10 text-gray-300 dark:text-gray-700" />
-                <p className="mt-3 text-sm text-gray-500">
-                  Qidiruv orqali kerakli mavzuni tezda toping.
+                <FileSearch className="h-10 w-10 text-muted-foreground/40" />
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("initialHint")}
                 </p>
               </motion.div>
             )}

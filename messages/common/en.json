@@ -34,7 +34,23 @@
     "processing": "Processing...",
     "resultWillAppear": "Result will appear here.",
     "backToTools": "Back to Tools",
-    "clear": "Clear"
+    "clear": "Clear",
+    "error": "Error",
+    "toggleTheme": "Toggle theme",
+    "enterData": "Enter some data"
+  },
+  "Search": {
+    "title": "Search the site",
+    "placeholder": "Search...",
+    "dialogPlaceholder": "Search across topics and code...",
+    "loading": "Searching...",
+    "initialHint": "Use search to find the topic you need, fast.",
+    "noResultsTitle": "No results found",
+    "noResultsHint": "Nothing matched \"{query}\". Try a different word.",
+    "contentType": {
+      "article": "article",
+      "topic": "topic"
+    }
   },
   "Filters": {
     "allTools": "All Tools",

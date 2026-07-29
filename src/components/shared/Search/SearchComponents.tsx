@@ -2,6 +2,7 @@
 
 import { SearchIcon } from "lucide-react" // Keeping SearchIcon for NoResults
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { Badge } from "@/components/ui/badge"
 import type { ISearchHit } from "@/types"
 
@@ -11,6 +12,7 @@ interface GroupedHitProps {
 }
 
 export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
+  const t = useTranslations("Search")
   const title = hits[0]?.hierarchy.lvl0
 
   return (
@@ -18,7 +20,9 @@ export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
       <div className="mb-2 flex items-center gap-2">
         <h4 className="text-lg font-medium">{title}</h4>
         <Badge variant="secondary" className="text-xs">
-          {hits[0]?.contentType === "article" ? "maqola" : "mavzu"}
+          {hits[0]?.contentType === "article"
+            ? t("contentType.article")
+            : t("contentType.topic")}
         </Badge>
       </div>
 
@@ -31,7 +35,7 @@ export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
             className="group hover:bg-accent -ml-2 block cursor-pointer rounded p-2 transition-colors"
           >
             {hit.hierarchy.lvl1 && (
-              <div className="mb-1 text-sm font-medium text-gray-800 group-hover:text-sky-500 dark:text-gray-200">
+              <div className="mb-1 text-sm font-medium text-foreground group-hover:text-primary">
                 {hit.hierarchy.lvl1}
               </div>
             )}
@@ -51,6 +55,7 @@ interface NoResultsProps {
 }
 
 export function NoResults({ query }: NoResultsProps) {
+  const t = useTranslations("Search")
   if (!query || query.trim().length === 0) {
     return null
   }
@@ -58,7 +63,11 @@ export function NoResults({ query }: NoResultsProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <div className="text-muted-foreground h-12 w-12">
+        {/* Decorative only: the <h2> below states "no results" in words, so a
+            <title> here would make screen readers announce it twice. */}
         <svg
+          aria-hidden="true"
+          focusable="false"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -71,10 +80,9 @@ export function NoResults({ query }: NoResultsProps) {
           <circle cx="12" cy="13" r="3" />
         </svg>
       </div>
-      <h2 className="mt-4 text-lg font-semibold">Natijalar topilmadi</h2>
+      <h2 className="mt-4 text-lg font-semibold">{t("noResultsTitle")}</h2>
       <p className="text-muted-foreground mt-2 text-sm">
-        Ushbu &quot;{query}&quot; bo'yicha natija topilmadi. Boshqa so'z bilan
-        urinib ko'ring.
+        {t("noResultsHint", { query })}
       </p>
     </div>
   )
@@ -86,6 +94,7 @@ interface CustomSearchBoxProps {
 }
 
 export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
+  const t = useTranslations("Search")
   return (
     <div className="relative">
       <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
@@ -93,8 +102,8 @@ export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Mavzular va kodlar orasidan qidiring..."
-        className="h-12 w-full rounded-md bg-[#F2F2F7] px-10 font-medium placeholder:text-gray-500 dark:bg-[#151515] dark:placeholder:text-gray-400"
+        placeholder={t("dialogPlaceholder")}
+        className="h-12 w-full rounded-md bg-muted px-10 font-medium placeholder:text-muted-foreground"
       />
     </div>
   )

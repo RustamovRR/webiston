@@ -1,15 +1,15 @@
 "use client"
 
 import { SearchIcon } from "lucide-react"
-import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
-import { Input } from "@/components/ui/input"
+import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { searchEngine } from "@/lib/search/flexsearch"
 import type { ISearchHit } from "@/types/common"
 import SearchDialog from "./SearchDialog"
 
 export default function Search() {
+  const t = useTranslations("Search")
   const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
   const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
@@ -69,21 +69,27 @@ export default function Search() {
 
   return (
     <>
-      <div
-        className="relative cursor-pointer rounded-xl bg-[#F2F2F7] dark:bg-[#151515]"
+      {/* A button, not a div+onClick. This control opens a dialog, so it needs
+          to be reachable and activatable by keyboard — a div gives no focus, no
+          Enter/Space, and no role. The previous markup also nested a readOnly
+          <Input> here, which put a focusable field in the tab order that did
+          nothing when focused; a span carries the same look with none of that. */}
+      <button
+        type="button"
         onClick={() => setOpen(true)}
+        className="focus-visible:ring-ring relative flex h-9 w-full cursor-pointer items-center rounded-xl bg-muted pr-12 pl-10 text-left focus-visible:ring-2 focus-visible:outline-none"
       >
-        <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-        <Input
-          ref={inputRef as RefObject<HTMLInputElement>}
-          placeholder="Qidirish..."
-          className="cursor-pointer pr-12 pl-10"
-          readOnly
+        <SearchIcon
+          aria-hidden="true"
+          className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2"
         />
-        <kbd className="absolute top-1/2 right-3 -translate-y-1/2 rounded-[4px] border border-[#F2F2F7] px-2 py-0.5 text-xs select-none dark:border-[#2C2C2E]">
+        <span className="text-muted-foreground text-base md:text-sm">
+          {t("placeholder")}
+        </span>
+        <kbd className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg border border-border px-2 py-0.5 text-xs select-none">
           Ctrl K
         </kbd>
-      </div>
+      </button>
       <SearchDialog
         open={open}
         onOpenChange={setOpen}

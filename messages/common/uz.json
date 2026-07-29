@@ -34,7 +34,23 @@
     "processing": "Ishlanmoqda...",
     "resultWillAppear": "Natija shu yerda ko'rinadi.",
     "backToTools": "Orqaga qaytish",
-    "clear": "Tozalash"
+    "clear": "Tozalash",
+    "error": "Xatolik",
+    "toggleTheme": "Mavzuni o'zgartirish",
+    "enterData": "Ma'lumot kiriting"
+  },
+  "Search": {
+    "title": "Sayt bo'yicha qidiruv",
+    "placeholder": "Qidirish...",
+    "dialogPlaceholder": "Mavzular va kodlar orasidan qidiring...",
+    "loading": "Qidirilmoqda...",
+    "initialHint": "Qidiruv orqali kerakli mavzuni tezda toping.",
+    "noResultsTitle": "Natijalar topilmadi",
+    "noResultsHint": "Ushbu \"{query}\" bo'yicha natija topilmadi. Boshqa so'z bilan urinib ko'ring.",
+    "contentType": {
+      "article": "maqola",
+      "topic": "mavzu"
+    }
   },
   "Filters": {
     "allTools": "Barcha vositalar",

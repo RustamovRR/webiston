@@ -71,14 +71,14 @@
     "Errors": {
       "invalidUrlFormat": "Invalid URL format. Check the syntax.",
       "conversionError": "Conversion error",
-      "urlDecodeError": "Error decoding URL. Check format correctness.",
-      "urlEncodeError": "Error occurred while encoding URL.",
       "fileSizeError": "File size must be less than 10MB.",
       "fileReadError": "Error occurred while reading file content.",
       "fileTypeError": "Only text files can be uploaded.",
       "fileUploadError": "Error occurred while uploading file.",
       "downloadError": "Error occurred while downloading file.",
-      "textTooLong": "Text is too long (maximum 1MB)."
+      "textTooLong": "Text is too long (maximum 1MB).",
+      "decodeError": "Error decoding URL. Check format correctness.",
+      "encodeError": "Error occurred while encoding URL."
     },
     "Samples": {
       "simpleUrl": "Simple URL",

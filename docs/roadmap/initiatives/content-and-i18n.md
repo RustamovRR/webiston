@@ -6,19 +6,40 @@
 > **Locales are `uz` + `en` only.** Russian is not supported —
 > `src/i18n/routing.ts:5` and `src/middleware.ts:5` both list exactly
 > `["uz", "en"]`. Any doc claiming `ru` is wrong.
+>
+> **Scope rule: `/books` is the only i18n-exempt surface.** The book chapters
+> under `content/` are a hand-translated layer — the prose *is* the translation,
+> so it does not go through next-intl. **Everywhere else — tools, shared
+> components, navigation, aria-labels, placeholders, error text — must use
+> next-intl.** A user-facing string typed directly into a component outside
+> `/books` is a bug, not a shortcut.
 
 ---
 
 ## Phase 1 — `[ ]` Correctness (broken strings ship today)
 
-- `[ ]` **uz/en key parity is broken in `url-encoder`.** A deep key-set diff of
-  every `messages/*/uz.json` against its `en.json` found **2 keys in uz missing
-  from en** (`decodeError`, `encodeError`) and **10 dead en-only keys**. All 12
-  are in `tools/url-encoder`; every other namespace is in parity. A missing key
-  is a runtime `undefined`, not a TODO.
-- `[ ]` **Add a key-parity check to the gate.** A small script diffing key sets
-  per namespace, wired into CI. This would have caught the above automatically —
-  and it is the reason to write it rather than just fix the two keys.
+- `[x]` **Fixed the `url-encoder` runtime bug — 2026-07-29.** `useUrlEncoder.ts:133,136`
+  calls `tErrors("decodeError")` / `("encodeError")`. uz had those names; **en had
+  the same strings under `urlDecodeError` / `urlEncodeError`**, so every English
+  user hit a broken message on any encode/decode failure. Renamed in
+  `messages/tools/url-encoder/en.json`.
+- `[x]` **Added the parity gate — `pnpm i18n`** (`scripts/i18n-parity.mjs`).
+  Walks every message bundle and fails on any key present in one locale and not
+  the other. Nothing else catches this class: typecheck cannot see inside JSON
+  and the build succeeds regardless. Verified it fails by deleting a key.
+- `[!]` **8 dead `en`-only keys block the gate.** Verified unused by grep:
+  `Info.formatExample.exampleText` / `exampleEncoded` (the component calls
+  `title`, `spacesAndSymbols`, `plainText`, `encodedUrl`, `queryParameters` —
+  all present in both), and `Info.urlStructure.*` ×6 (the code calls
+  `Panel.urlStructure`, a different path). Harmless at runtime but they keep
+  `pnpm i18n` red. **Deleting them needs approval.**
+
+- `[x]` **Moved 12 hardcoded strings into `messages/common/*` — 2026-07-29.**
+  New `Search` namespace (8 keys) + `Common.error` / `toggleTheme` / `enterData`,
+  both locales, verified in parity. Covered `ToolPanel` ("Xatolik", the Uzbek
+  default-prop empty state), `Search`, `SearchDialog`, `SearchComponents`
+  (including the `{query}` interpolation in the no-results hint) and
+  `ThemeToggle`'s `aria-label`.
 - `[ ]` **Deduplicate the locale list.** `src/middleware.ts:5` hardcodes
   `["uz","en"]` instead of importing `routing` from `src/i18n/routing.ts:5`,
   which declares the same list. Two sources of truth for the locale set means

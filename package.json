@@ -29,7 +29,8 @@
     "ext:zip": "pnpm --filter latin-cyrillic-extension zip",
     "packages:build": "pnpm --filter '@webiston/*' build",
     "tokens": "node scripts/token-guardrail.mjs",
-    "contrast": "node scripts/contrast-check.mjs"
+    "contrast": "node scripts/contrast-check.mjs",
+    "i18n": "node scripts/i18n-parity.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

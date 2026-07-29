@@ -2,11 +2,13 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { Moon, Sun } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
 
 export default function ThemeToggle() {
+  const t = useTranslations("Common")
   const { theme, setTheme } = useTheme()
 
   const handleToggle = () => {
@@ -19,7 +21,7 @@ export default function ThemeToggle() {
       size="icon"
       onClick={handleToggle}
       className="relative h-9 w-9 cursor-pointer overflow-hidden"
-      aria-label="Mavzuni o'zgartirish"
+      aria-label={t("toggleTheme")}
     >
       <AnimatePresence initial={false} mode="wait">
         <motion.div
