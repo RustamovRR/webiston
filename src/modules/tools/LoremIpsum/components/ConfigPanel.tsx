@@ -72,9 +72,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -98,10 +98,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         {/* Quick Start */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="font-medium text-zinc-800 dark:text-zinc-200">
-              {t("quickStart")}
-            </h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <h3 className="font-medium text-foreground">{t("quickStart")}</h3>
+            <p className="text-sm text-muted-foreground">
               {t("quickStartDesc")}
             </p>
           </div>
@@ -147,7 +145,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               onChange={(e) =>
                 updateSettings({ amount: parseInt(e.target.value, 10) || 1 })
               }
-              className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+              className="border-border bg-muted/50"
             />
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
               {t("amountRange")}
@@ -168,7 +166,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             >
               <SelectTrigger
                 id="configpanel-texttype"
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -192,7 +190,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 onChange={(e) =>
                   updateSettings({ startWithLorem: e.target.checked })
                 }
-                className="rounded border-zinc-300 bg-zinc-50 accent-blue-500 dark:border-zinc-700 dark:bg-zinc-800"
+                className="rounded border-border bg-muted accent-blue-500"
               />
               <label
                 htmlFor="startWithLorem"

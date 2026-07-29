@@ -105,9 +105,9 @@ export default function MicrophoneTest() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-xl border border-red-200 bg-red-50/80 p-4 backdrop-blur-sm dark:border-red-500/20 dark:bg-red-500/10"
+          className="mt-6 rounded-xl border border-destructive bg-destructive/80 p-4 backdrop-blur-sm"
         >
-          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <p className="text-sm text-destructive">{error}</p>
         </motion.div>
       )}
 
@@ -116,9 +116,9 @@ export default function MicrophoneTest() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80"
+          className="mt-8 rounded-xl border border-border bg-card/80 backdrop-blur-sm"
         >
-          <div className="flex items-center gap-2 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
             <div className="flex gap-1.5">
               <div className="h-3 w-3 rounded-full bg-red-500"></div>
               <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
@@ -131,14 +131,14 @@ export default function MicrophoneTest() {
 
           <div className="p-6">
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
+              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-blue-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="font-medium text-foreground">
                     {tSample("standard.name")}
                   </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("standard.description")}
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">
@@ -146,14 +146,14 @@ export default function MicrophoneTest() {
                 </p>
               </div>
 
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
+              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-green-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="font-medium text-foreground">
                     {tSample("usb.name")}
                   </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("usb.description")}
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">
@@ -161,14 +161,14 @@ export default function MicrophoneTest() {
                 </p>
               </div>
 
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
+              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
                 <div className="mb-2 flex items-center gap-2">
                   <Mic className="h-4 w-4 text-purple-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="font-medium text-foreground">
                     {tSample("bluetooth.name")}
                   </span>
                 </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("bluetooth.description")}
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">

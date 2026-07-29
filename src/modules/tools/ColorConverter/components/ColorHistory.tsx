@@ -90,7 +90,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
         {/* Color square */}
         <button
           type="button"
-          className="focus-visible:ring-ring aspect-square w-full rounded-lg border-2 border-zinc-200 shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none dark:border-zinc-700 dark:group-hover:border-zinc-500"
+          className="focus-visible:ring-ring aspect-square w-full rounded-lg border-2 border-border shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none dark:group-hover:border-zinc-500"
           style={{ backgroundColor: hex }}
           aria-label={`${name || hex} - select`}
           onClick={() => onColorSelect(hex)}
@@ -139,9 +139,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
             {hex}
           </div>
           {name && (
-            <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-              {name}
-            </div>
+            <div className="truncate text-xs text-muted-foreground">{name}</div>
           )}
         </div>
       </div>
@@ -156,8 +154,8 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
           onClick={() => setActiveTab("history")}
           className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             activeTab === "history"
-              ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-              : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              ? "bg-info text-info"
+              : "text-muted-foreground hover:bg-muted"
           }`}
         >
           <History size={16} />
@@ -168,8 +166,8 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
           onClick={() => setActiveTab("favorites")}
           className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             activeTab === "favorites"
-              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
-              : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              ? "bg-destructive text-destructive"
+              : "text-muted-foreground hover:bg-muted"
           }`}
         >
           <Heart size={16} />
@@ -187,7 +185,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={handleClearHistory}
-                className="text-red-600 hover:text-red-700 dark:text-red-400"
+                className="text-destructive hover:text-red-700"
               >
                 <Trash2 size={14} className="mr-2" />
                 {t("clearHistory") || "Tarixni tozalash"}
@@ -201,7 +199,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
               {history.map((item) => renderColorItem(item.hex, item.name))}
             </div>
           ) : (
-            <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
+            <div className="flex h-32 items-center justify-center text-muted-foreground">
               <div className="text-center">
                 <History size={32} className="mx-auto mb-2 opacity-50" />
                 <p className="text-sm">{t("noHistory") || "Hali tarix yo'q"}</p>
@@ -218,7 +216,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFavorites}
-                className="text-red-600 hover:text-red-700 dark:text-red-400"
+                className="text-destructive hover:text-red-700"
               >
                 <Trash2 size={14} className="mr-2" />
                 {t("clearFavorites") || "Sevimlilarni tozalash"}
@@ -234,7 +232,7 @@ const ColorHistory: React.FC<ColorHistoryProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
+            <div className="flex h-32 items-center justify-center text-muted-foreground">
               <div className="text-center">
                 <Heart size={32} className="mx-auto mb-2 opacity-50" />
                 <p className="text-sm">

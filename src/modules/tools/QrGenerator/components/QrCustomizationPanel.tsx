@@ -285,7 +285,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
             <button
               key={preset.name}
               onClick={() => handleApplyPreset(preset)}
-              className="group relative rounded-lg border border-zinc-300 p-3 text-left transition-all hover:border-purple-400 hover:bg-purple-50 dark:border-zinc-600 dark:hover:border-purple-500 dark:hover:bg-purple-900/20"
+              className="group relative rounded-lg border border-border p-3 text-left transition-all hover:border-purple-400 hover:bg-purple-50 dark:hover:border-purple-500 dark:hover:bg-purple-900/20"
             >
               <div className="mb-2 flex items-center gap-2">
                 <div
@@ -295,11 +295,11 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                     borderColor: preset.style.backgroundColor
                   }}
                 />
-                <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                <span className="text-sm font-medium text-foreground">
                   {preset.label}
                 </span>
               </div>
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+              <div className="text-xs text-muted-foreground">
                 {preset.style.gradientEnabled ? t("gradient") : "Solid"} •{" "}
                 {t(`corners.${preset.style.cornerStyle}`)}
               </div>
@@ -328,7 +328,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                   foregroundColor: e.target.value
                 })
               }
-              className="h-10 w-16 cursor-pointer rounded-lg border-2 border-zinc-300 bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:border-zinc-600 dark:hover:border-zinc-500"
+              className="h-10 w-16 cursor-pointer rounded-lg border-2 border-border bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:hover:border-zinc-500"
             />
             <input
               type="text"
@@ -339,7 +339,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                   foregroundColor: e.target.value
                 })
               }
-              className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm text-zinc-900 transition-colors focus:border-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-purple-400"
+              className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground transition-colors focus:border-purple-500 focus:outline-none dark:focus:border-purple-400"
               placeholder="#000000"
             />
           </div>
@@ -363,7 +363,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                   backgroundColor: e.target.value
                 })
               }
-              className="h-10 w-16 cursor-pointer rounded-lg border-2 border-zinc-300 bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:border-zinc-600 dark:hover:border-zinc-500"
+              className="h-10 w-16 cursor-pointer rounded-lg border-2 border-border bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:hover:border-zinc-500"
             />
             <input
               type="text"
@@ -374,7 +374,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                   backgroundColor: e.target.value
                 })
               }
-              className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm text-zinc-900 transition-colors focus:border-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-purple-400"
+              className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground transition-colors focus:border-purple-500 focus:outline-none dark:focus:border-purple-400"
               placeholder="#ffffff"
             />
           </div>
@@ -394,7 +394,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                 gradientEnabled: e.target.checked
               })
             }
-            className="h-4 w-4 rounded border-zinc-300 text-purple-600 focus:ring-purple-500 dark:border-zinc-600"
+            className="h-4 w-4 rounded border-border text-purple-600 focus:ring-purple-500"
           />
           <label
             htmlFor="gradientEnabled"
@@ -405,7 +405,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
         </div>
 
         {customization.gradientEnabled && (
-          <div className="space-y-4 rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800/50">
+          <div className="space-y-4 rounded-lg bg-muted p-4">
             <div className="space-y-3">
               <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {t("gradientDirection")}
@@ -423,7 +423,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                     className={`flex flex-col items-center gap-2 rounded-lg border p-3 text-center transition-all ${
                       customization.gradientDirection === option.value
                         ? "border-purple-500 bg-purple-50 text-purple-700 dark:border-purple-400 dark:bg-purple-900/20 dark:text-purple-300"
-                        : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-800/50"
+                        : "border-border text-muted-foreground hover:border-zinc-400 hover:bg-muted dark:hover:border-zinc-500"
                     }`}
                   >
                     <div className="text-purple-500 dark:text-purple-400">
@@ -456,7 +456,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                       gradientEndColor: e.target.value
                     })
                   }
-                  className="h-10 w-16 cursor-pointer rounded-lg border-2 border-zinc-300 bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:border-zinc-600 dark:hover:border-zinc-500"
+                  className="h-10 w-16 cursor-pointer rounded-lg border-2 border-border bg-transparent transition-all hover:border-zinc-400 focus:border-purple-500 dark:hover:border-zinc-500"
                 />
                 <input
                   type="text"
@@ -470,7 +470,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                       gradientEndColor: e.target.value
                     })
                   }
-                  className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm text-zinc-900 transition-colors focus:border-purple-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-purple-400"
+                  className="flex-1 rounded-lg border border-border bg-card px-3 py-2 font-mono text-sm text-foreground transition-colors focus:border-purple-500 focus:outline-none dark:focus:border-purple-400"
                   placeholder="#000000"
                 />
               </div>
@@ -480,12 +480,12 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       </div>
 
       {/* Note: Corner and Pattern styles are not supported by QR API */}
-      <div className="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
+      <div className="rounded-lg bg-warning p-4">
         <div className="flex items-start gap-3">
-          <div className="rounded-full bg-amber-100 p-1 dark:bg-amber-800/50">
+          <div className="rounded-full bg-warning p-1">
             <svg
               aria-hidden="true"
-              className="h-4 w-4 text-amber-600 dark:text-amber-400"
+              className="h-4 w-4 text-warning"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -497,10 +497,10 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
             </svg>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            <h4 className="text-sm font-medium text-warning">
               {t("advancedStylingTitle")}
             </h4>
-            <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+            <p className="mt-1 text-xs text-warning">
               {t("advancedStylingDescription")}
             </p>
           </div>
@@ -527,13 +527,13 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
 
           {customization.logo ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 rounded-lg border border-green-300 bg-green-50 px-3 py-2 dark:border-green-600 dark:bg-green-900/20">
+              <div className="flex items-center gap-2 rounded-lg border border-success bg-success px-3 py-2">
                 <Image
                   src={customization.logo}
                   alt="Logo"
                   className="h-6 w-6 rounded object-cover"
                 />
-                <span className="text-sm text-green-700 dark:text-green-300">
+                <span className="text-sm text-success">
                   {t("logoUploaded")}
                 </span>
               </div>
@@ -541,7 +541,7 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
                 onClick={handleRemoveLogo}
                 variant="outline"
                 size="sm"
-                className="text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+                className="text-destructive hover:bg-destructive hover:text-red-700"
               >
                 <X size={16} className="mr-1" />
                 {t("removeLogo")}
@@ -636,18 +636,18 @@ const QrCustomizationPanel: React.FC<QrCustomizationPanelProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
+      <div className="flex items-center justify-between border-t border-border pt-4">
         <Button
           onClick={handleResetToDefault}
           variant="outline"
           size="sm"
-          className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+          className="text-muted-foreground hover:text-foreground"
         >
           <RefreshCw size={16} className="mr-2" />
           {t("resetToDefault")}
         </Button>
 
-        <div className="text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="text-xs text-muted-foreground">
           {isValid ? t("customizationReady") : t("enterValidFirst")}
         </div>
       </div>

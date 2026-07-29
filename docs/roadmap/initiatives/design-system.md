@@ -192,12 +192,42 @@ token-clean.** Semantic-token usage 170 → 303.
 - `src/constants/color-names.ts` (165) — colour *data* for the converter tool,
   not styling.
 
-### `[ ]` Phase D — tools, one module per commit
-**Routed tools first** — the four `__`-prefixed tools are unreachable in
-production, and whether they are worth touching depends on the parked-tools
-decision in `../backlog.md`. They are also the four worst offenders
-(122 / 122 / 101 / 83 hardcoded-colour hits), so doing them first would be the
-worst possible use of the effort.
+### `[x]` Phase D — routed tool modules · **shipped 2026-07-29**
+
+All 17 routed tools converted: **1,142 light/dark pairs collapsed across 108
+files**. The four `__`-prefixed parked tools were deliberately excluded — they
+are unreachable in production and whether they are worth touching depends on the
+parked-tools decision in `../backlog.md`.
+
+| Metric | Phase C end | Phase D end |
+| ------ | ----------: | ----------: |
+| Hardcoded colour | 5,090 | **2,696** |
+| `dark:` variants | 1,867 | **619** |
+| Semantic token usage | 360 | **1,608** |
+
+**This time the sweep was mechanical AND safe**, because the converter was
+rebuilt to fix the two defects that caused the Phase C regressions:
+
+1. **Pairs match within a single class string**, never across a file. The old
+   file-level match is what orphaned `ToolHeader`'s `dark:text-zinc-400`.
+2. **Whole class tokens are rewritten**, not regex-substituted inside them — so
+   `/opacity` survives exactly once and `dark:`/`hover:` prefixes are never
+   matched by accident. That is what produced `bg-muted/50/50`.
+3. **A theme-invariance guard**: if the light and dark halves name the *same*
+   colour (`bg-white` + `dark:bg-white`), the pair is deliberate and is left
+   alone. That is the ButtonLink bug, encoded as a rule.
+
+It was unit-tested against all four historical failure cases before running, then
+verified after: **0 orphaned `dark:` tokens introduced, 0 malformed classes**,
+full gate green. The 10 unpaired `dark:` classes that remain are **pre-existing**
+— confirmed against `git show HEAD:` — elements that never had a light-mode
+background at all.
+
+### `[ ]` Phase D-2 — the pre-existing dark-only classes
+10 elements carry `dark:bg-*` / `dark:border-*` with **no light counterpart**, so
+they render with no background in light mode (e.g.
+`GradientGenerator.tsx` colour inputs, `ChunkSelector.tsx`). Not caused by the
+sweep; needs a per-case design decision, not a rule.
 
 ### `[ ]` Phase E — book reader + MDX components
 Last, because the book pages are read-mostly and visually simplest.

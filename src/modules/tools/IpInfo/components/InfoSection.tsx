@@ -10,32 +10,30 @@ export default function InfoSection() {
   return (
     <div className="mt-12 space-y-8">
       <div className="flex flex-col items-center text-center">
-        <h2 className="mb-4 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+        <h2 className="mb-4 text-3xl font-bold text-foreground">
           {t("title")}
         </h2>
-        <p className="mx-auto max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+        <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
           {t("description")}
         </p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {/* Geolocation Features */}
-        <div className="rounded-xl border border-zinc-200 bg-white/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
-          <h3 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="rounded-xl border border-border bg-card/50 p-8">
+          <h3 className="mb-6 text-xl font-semibold text-foreground">
             {t("geolocationTitle")}
           </h3>
-          <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-            {t("geolocationDesc")}
-          </p>
-          <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mb-6 text-muted-foreground">{t("geolocationDesc")}</p>
+          <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-3">
-              <code className="rounded bg-blue-500/20 px-2 py-1 text-blue-600 dark:text-blue-300">
+              <code className="rounded bg-blue-500/20 px-2 py-1 text-info">
                 Mamlakat
               </code>
               <span>{t("geolocationItems.country")}</span>
             </li>
             <li className="flex items-center gap-3">
-              <code className="rounded bg-green-500/20 px-2 py-1 text-green-600 dark:text-green-300">
+              <code className="rounded bg-green-500/20 px-2 py-1 text-success">
                 Mintaqa
               </code>
               <span>{t("geolocationItems.region")}</span>
@@ -56,14 +54,14 @@ export default function InfoSection() {
         </div>
 
         {/* Network Analysis */}
-        <div className="rounded-xl border border-zinc-200 bg-white/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
-          <h3 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="rounded-xl border border-border bg-card/50 p-8">
+          <h3 className="mb-6 text-xl font-semibold text-foreground">
             {t("networkAnalysisTitle")}
           </h3>
-          <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+          <p className="mb-6 text-muted-foreground">
             {t("networkAnalysisDesc")}
           </p>
-          <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-3">
               <code className="rounded bg-cyan-500/20 px-2 py-1 text-cyan-600 dark:text-cyan-300">
                 ISP
@@ -71,13 +69,13 @@ export default function InfoSection() {
               <span>{t("networkItems.isp")}</span>
             </li>
             <li className="flex items-center gap-3">
-              <code className="rounded bg-yellow-500/20 px-2 py-1 text-yellow-600 dark:text-yellow-300">
+              <code className="rounded bg-yellow-500/20 px-2 py-1 text-warning">
                 ASN
               </code>
               <span>{t("networkItems.asn")}</span>
             </li>
             <li className="flex items-center gap-3">
-              <code className="rounded bg-red-500/20 px-2 py-1 text-red-600 dark:text-red-300">
+              <code className="rounded bg-red-500/20 px-2 py-1 text-destructive">
                 IP Turi
               </code>
               <span>{t("networkItems.ipType")}</span>
@@ -92,14 +90,12 @@ export default function InfoSection() {
         </div>
 
         {/* Country Information */}
-        <div className="rounded-xl border border-zinc-200 bg-white/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
-          <h3 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="rounded-xl border border-border bg-card/50 p-8">
+          <h3 className="mb-6 text-xl font-semibold text-foreground">
             {t("countryInfoTitle")}
           </h3>
-          <p className="mb-6 text-zinc-600 dark:text-zinc-400">
-            {t("countryInfoDesc")}
-          </p>
-          <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mb-6 text-muted-foreground">{t("countryInfoDesc")}</p>
+          <ul className="space-y-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-3">
               <code className="rounded bg-pink-500/20 px-2 py-1 text-pink-600 dark:text-pink-300">
                 Valyuta
@@ -119,7 +115,7 @@ export default function InfoSection() {
               <span>{t("countryItems.phoneCode")}</span>
             </li>
             <li className="flex items-center gap-3">
-              <code className="rounded bg-emerald-500/20 px-2 py-1 text-emerald-600 dark:text-emerald-300">
+              <code className="rounded bg-emerald-500/20 px-2 py-1 text-success">
                 EU Holati
               </code>
               <span>{t("countryItems.euStatus")}</span>
@@ -129,44 +125,40 @@ export default function InfoSection() {
       </div>
 
       {/* API Information */}
-      <div className="rounded-xl border border-zinc-200 bg-white/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
-        <h3 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      <div className="rounded-xl border border-border bg-card/50 p-8">
+        <h3 className="mb-6 text-xl font-semibold text-foreground">
           {t("apiIntegrationTitle")}
         </h3>
-        <p className="mb-8 text-zinc-600 dark:text-zinc-400">
-          {t("apiIntegrationDesc")}
-        </p>
+        <p className="mb-8 text-muted-foreground">{t("apiIntegrationDesc")}</p>
 
         <div className="mt-2 grid gap-6 md:grid-cols-2">
-          <div className="rounded-lg border border-zinc-200/50 bg-zinc-100/30 p-6 dark:border-zinc-700/50 dark:bg-zinc-800/30">
-            <h4 className="mb-3 font-semibold text-zinc-800 dark:text-zinc-200">
+          <div className="rounded-lg border border-border/50 bg-muted/30 p-6">
+            <h4 className="mb-3 font-semibold text-foreground">
               {t("realTimeDataTitle")}
             </h4>
-            <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mb-3 text-sm text-muted-foreground">
               {t("realTimeDataDesc")}
             </p>
-            <code className="text-xs text-green-600 dark:text-green-300">
+            <code className="text-xs text-success">
               {t("realTimeDataCode")}
             </code>
           </div>
 
-          <div className="rounded-lg border border-zinc-200/50 bg-zinc-100/30 p-6 dark:border-zinc-700/50 dark:bg-zinc-800/30">
-            <h4 className="mb-3 font-semibold text-zinc-800 dark:text-zinc-200">
+          <div className="rounded-lg border border-border/50 bg-muted/30 p-6">
+            <h4 className="mb-3 font-semibold text-foreground">
               {t("dataAccuracyTitle")}
             </h4>
-            <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mb-3 text-sm text-muted-foreground">
               {t("dataAccuracyDesc")}
             </p>
-            <code className="text-xs text-blue-600 dark:text-blue-300">
-              {t("dataAccuracyCode")}
-            </code>
+            <code className="text-xs text-info">{t("dataAccuracyCode")}</code>
           </div>
 
-          <div className="rounded-lg border border-zinc-200/50 bg-zinc-100/30 p-6 dark:border-zinc-700/50 dark:bg-zinc-800/30">
-            <h4 className="mb-3 font-semibold text-zinc-800 dark:text-zinc-200">
+          <div className="rounded-lg border border-border/50 bg-muted/30 p-6">
+            <h4 className="mb-3 font-semibold text-foreground">
               {t("ipSupportTitle")}
             </h4>
-            <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mb-3 text-sm text-muted-foreground">
               {t("ipSupportDesc")}
             </p>
             <code className="text-xs text-purple-600 dark:text-purple-300">
@@ -174,11 +166,11 @@ export default function InfoSection() {
             </code>
           </div>
 
-          <div className="rounded-lg border border-zinc-200/50 bg-zinc-100/30 p-6 dark:border-zinc-700/50 dark:bg-zinc-800/30">
-            <h4 className="mb-3 font-semibold text-zinc-800 dark:text-zinc-200">
+          <div className="rounded-lg border border-border/50 bg-muted/30 p-6">
+            <h4 className="mb-3 font-semibold text-foreground">
               {t("jsonExportTitle")}
             </h4>
-            <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mb-3 text-sm text-muted-foreground">
               {t("jsonExportDesc")}
             </p>
             <code className="text-xs text-orange-600 dark:text-orange-300">
@@ -189,16 +181,16 @@ export default function InfoSection() {
       </div>
 
       {/* Use Cases */}
-      <div className="rounded-xl border border-zinc-200 bg-white/50 p-8 dark:border-zinc-800 dark:bg-zinc-900/50">
-        <h3 className="mb-6 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+      <div className="rounded-xl border border-border bg-card/50 p-8">
+        <h3 className="mb-6 text-xl font-semibold text-foreground">
           {t("useCasesTitle")}
         </h3>
         <div className="grid gap-8 md:grid-cols-2">
           <div>
-            <h4 className="mb-4 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="mb-4 font-semibold text-foreground">
               {t("webDevTitle")}
             </h4>
-            <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>• {t("webDevItems.geoTargeting")}</li>
               <li>• {t("webDevItems.fraudDetection")}</li>
               <li>• {t("webDevItems.personalization")}</li>
@@ -206,10 +198,10 @@ export default function InfoSection() {
             </ul>
           </div>
           <div>
-            <h4 className="mb-4 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="mb-4 font-semibold text-foreground">
               {t("analyticsTitle")}
             </h4>
-            <ul className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>• {t("analyticsItems.trafficAnalysis")}</li>
               <li>• {t("analyticsItems.marketResearch")}</li>
               <li>• {t("analyticsItems.cdnOptimization")}</li>
@@ -220,22 +212,22 @@ export default function InfoSection() {
       </div>
 
       {/* Final Tips */}
-      <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-8 dark:border-blue-400/20 dark:bg-blue-400/5">
-        <h4 className="mb-4 font-semibold text-blue-800 dark:text-blue-200">
+      <div className="rounded-xl border border-info/20 bg-info/5 p-8">
+        <h4 className="mb-4 font-semibold text-info">
           {t("professionalTipsTitle")}
         </h4>
         <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <p className="text-sm text-blue-700 dark:text-blue-100">
+            <p className="text-sm text-info">
               <strong>{t("privacyNoticeTitle")}</strong>{" "}
               {t("privacyNoticeDesc")}
             </p>
           </div>
           <div>
-            <p className="text-sm text-blue-700 dark:text-blue-100">
+            <p className="text-sm text-info">
               <strong>{t("accuracyNoticeTitle")}</strong>{" "}
               {t("accuracyNoticeDesc")}
-              <code className="mx-1 rounded bg-blue-500/20 px-1 text-blue-600 dark:text-blue-300">
+              <code className="mx-1 rounded bg-blue-500/20 px-1 text-info">
                 {t("accuracyNoticeCode")}
               </code>
               {t("accuracyNoticeDesc2")}

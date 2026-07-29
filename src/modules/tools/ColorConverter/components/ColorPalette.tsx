@@ -48,8 +48,8 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
   }
 
   return (
-    <div className="animate-in slide-in-from-bottom-2 fade-in mt-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-200 hover:shadow-md dark:border-zinc-800/30 dark:bg-zinc-900/60">
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+    <div className="animate-in slide-in-from-bottom-2 fade-in mt-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-200 hover:shadow-md">
+      <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
         <Palette size={18} className="text-indigo-500 dark:text-indigo-400" />
         {getPaletteTitle()}
       </h3>
@@ -64,7 +64,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
             onClick={() => copyToClipboard(color)}
           >
             <div
-              className="h-20 w-full rounded-lg border-2 border-zinc-200 shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:border-zinc-700 dark:group-hover:border-zinc-500"
+              className="h-20 w-full rounded-lg border-2 border-border shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:group-hover:border-zinc-500"
               style={{ backgroundColor: color }}
               title={`Copy ${color}`}
             />
@@ -89,7 +89,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
                 {color}
               </div>
               {getColorName(color) && (
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                <div className="text-xs text-muted-foreground">
                   {getColorName(color)}
                 </div>
               )}
@@ -99,7 +99,7 @@ const ColorPalette: React.FC<ColorPaletteProps> = ({
       </div>
 
       <div className="mt-4 text-center">
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs text-muted-foreground">
           {t("clickToCopy") || "Rangni nusxalash uchun bosing"}
         </p>
       </div>

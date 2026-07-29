@@ -32,8 +32,8 @@ export function AudioPreviewPanel({
   const t = useTranslations("MicrophoneTestPage.AudioPreviewPanel")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -105,34 +105,34 @@ export function AudioPreviewPanel({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+            className="rounded-lg border border-border bg-muted/50 p-4"
           >
-            <h4 className="mb-3 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="mb-3 font-semibold text-foreground">
               {t("audioInfo.title")}
             </h4>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   {t("audioInfo.sampleRate")}:
                 </span>
-                <span className="ml-2 text-zinc-900 dark:text-zinc-100">
+                <span className="ml-2 text-foreground">
                   {audioInfo.sampleRate} Hz
                 </span>
               </div>
               <div>
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   {t("audioInfo.channels")}:
                 </span>
-                <span className="ml-2 text-zinc-900 dark:text-zinc-100">
+                <span className="ml-2 text-foreground">
                   {audioInfo.channelCount}
                 </span>
               </div>
               <div>
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   {t("audioInfo.echoCancellation")}:
                 </span>
                 <span
-                  className={`ml-2 ${audioInfo.echoCancellation ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
+                  className={`ml-2 ${audioInfo.echoCancellation ? "text-success" : "text-destructive"}`}
                 >
                   {audioInfo.echoCancellation
                     ? t("audioInfo.enabled")
@@ -140,11 +140,11 @@ export function AudioPreviewPanel({
                 </span>
               </div>
               <div>
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   {t("audioInfo.noiseSuppression")}:
                 </span>
                 <span
-                  className={`ml-2 ${audioInfo.noiseSuppression ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
+                  className={`ml-2 ${audioInfo.noiseSuppression ? "text-success" : "text-destructive"}`}
                 >
                   {audioInfo.noiseSuppression
                     ? t("audioInfo.enabled")

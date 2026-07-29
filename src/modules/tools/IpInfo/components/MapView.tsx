@@ -98,7 +98,7 @@ export default function MapView({
         <div className="flex h-full items-center justify-center">
           <div className="text-center">
             <MapPin className="mx-auto mb-2 h-8 w-8 text-zinc-400" />
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               {!isClient
                 ? "Xarita yuklanmoqda..."
                 : "Koordinatalar mavjud emas"}
@@ -132,10 +132,10 @@ export default function MapView({
     >
       {/* Loading overlay */}
       {mapLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-muted">
           <div className="text-center">
             <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500"></div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               Xarita yuklanmoqda...
             </p>
           </div>
@@ -146,7 +146,7 @@ export default function MapView({
       <Button
         variant="outline"
         size="sm"
-        className="absolute top-2 right-2 z-20 bg-white/90 backdrop-blur-sm dark:bg-zinc-800/90"
+        className="absolute top-2 right-2 z-20 bg-card/90 backdrop-blur-sm"
         onClick={() => setIsFullscreen(!isFullscreen)}
       >
         {isFullscreen ? (

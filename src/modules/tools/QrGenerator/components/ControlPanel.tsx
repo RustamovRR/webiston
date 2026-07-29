@@ -107,9 +107,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   }))
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -122,9 +122,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -142,8 +140,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={setActiveCategory}
               toolCategory="generators"
             />
-            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
                 {tCategories(`descriptions.${activeCategory}`)}
               </div>
             </div>
@@ -160,8 +158,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               onChange={(value) => onSizeChange(Number(value) as QrSize)}
               toolCategory="generators"
             />
-            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
                 {tSizes("description")}
               </div>
             </div>
@@ -180,8 +178,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 className={cn(
                   "flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-colors",
                   errorLevel === level.value
-                    ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-300"
-                    : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                    ? "border-green-500 bg-green-500/10 text-success"
+                    : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
                 )}
               >
                 <input
@@ -223,17 +221,15 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       className={cn(
                         "flex items-center justify-between rounded-lg border p-3 transition-colors",
                         isActive
-                          ? "border-blue-500 bg-blue-500/10 dark:border-blue-400 dark:bg-blue-400/10"
-                          : "border-zinc-300 bg-zinc-100/30 hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
+                          ? "border-info bg-info/10"
+                          : "border-border bg-muted/30 hover:bg-muted/50"
                       )}
                     >
                       <div className="min-w-0 flex-1">
                         <div
                           className={cn(
                             "text-sm font-medium",
-                            isActive
-                              ? "text-blue-700 dark:text-blue-300"
-                              : "text-zinc-800 dark:text-zinc-200"
+                            isActive ? "text-info" : "text-foreground"
                           )}
                         >
                           {preset.label}
@@ -241,9 +237,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         <div
                           className={cn(
                             "text-xs",
-                            isActive
-                              ? "text-blue-600 dark:text-blue-400"
-                              : "text-zinc-600 dark:text-zinc-400"
+                            isActive ? "text-info" : "text-muted-foreground"
                           )}
                         >
                           {preset.description}
@@ -255,8 +249,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         size="sm"
                         className={cn(
                           "ml-2",
-                          isActive &&
-                            "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                          isActive && "bg-info text-white hover:bg-info"
                         )}
                       >
                         {isActive ? t("selected") : t("load")}

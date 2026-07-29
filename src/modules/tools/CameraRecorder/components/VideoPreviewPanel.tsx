@@ -33,8 +33,8 @@ export function VideoPreviewPanel({
   const t = useTranslations("CameraRecorderPage.VideoPreview")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -68,15 +68,15 @@ export function VideoPreviewPanel({
       </div>
 
       <div className="p-6">
-        <div className="aspect-video overflow-hidden rounded-lg border border-zinc-300 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
+        <div className="aspect-video overflow-hidden rounded-lg border border-border bg-muted">
           {isCameraActive ? (
             <VideoPreview stream={cameraStream} />
           ) : (
-            <div className="flex h-full items-center justify-center text-zinc-500 dark:text-zinc-400">
+            <div className="flex h-full items-center justify-center text-muted-foreground">
               <div className="text-center">
                 <Camera className="mx-auto mb-4 h-16 w-16 opacity-50" />
                 <p className="text-lg">{t("placeholder.title")}</p>
-                <p className="mt-2 text-sm text-zinc-400 dark:text-zinc-500">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {t("placeholder.subtitle")}
                 </p>
               </div>
@@ -94,7 +94,7 @@ export function VideoPreviewPanel({
             <Button
               onClick={onTakeScreenshot}
               variant="outline"
-              className="border-zinc-300 dark:border-zinc-700"
+              className="border-border"
               disabled={!isCameraActive}
             >
               <Image className="mr-2 h-4 w-4" />

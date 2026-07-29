@@ -31,8 +31,8 @@ const StrengthPanel: React.FC<StrengthPanelProps> = ({
   if (!password) return null
 
   return (
-    <div className="mt-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="mt-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -63,23 +63,19 @@ const StrengthPanel: React.FC<StrengthPanelProps> = ({
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-lg border border-zinc-200 bg-zinc-100/30 p-4 text-center dark:border-zinc-700 dark:bg-zinc-800/30">
-          <div className="text-2xl font-bold text-blue-500 dark:text-blue-400">
-            {stats.characters}
-          </div>
+        <div className="rounded-lg border border-border bg-muted/30 p-4 text-center">
+          <div className="text-2xl font-bold text-info">{stats.characters}</div>
           <div className="text-xs text-zinc-500 dark:text-zinc-500">
             {t("characters")}
           </div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-zinc-100/30 p-4 text-center dark:border-zinc-700 dark:bg-zinc-800/30">
-          <div className="text-2xl font-bold text-green-500 dark:text-green-400">
-            {stats.unique}
-          </div>
+        <div className="rounded-lg border border-border bg-muted/30 p-4 text-center">
+          <div className="text-2xl font-bold text-success">{stats.unique}</div>
           <div className="text-xs text-zinc-500 dark:text-zinc-500">
             {t("unique")}
           </div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-zinc-100/30 p-4 text-center dark:border-zinc-700 dark:bg-zinc-800/30">
+        <div className="rounded-lg border border-border bg-muted/30 p-4 text-center">
           <div className="text-2xl font-bold text-purple-500 dark:text-purple-400">
             {stats.entropy}
           </div>
@@ -87,7 +83,7 @@ const StrengthPanel: React.FC<StrengthPanelProps> = ({
             {t("entropy")}
           </div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-zinc-100/30 p-4 text-center dark:border-zinc-700 dark:bg-zinc-800/30">
+        <div className="rounded-lg border border-border bg-muted/30 p-4 text-center">
           <div className={cn("text-2xl font-bold", passwordStrength.color)}>
             {passwordStrength.level}/5
           </div>

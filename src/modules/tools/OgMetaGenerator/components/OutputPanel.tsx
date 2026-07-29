@@ -43,8 +43,8 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
   const currentLanguage = outputFormat === "formatted" ? "html" : "xml"
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -116,12 +116,9 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
             </div>
           </>
         ) : (
-          <div className="rounded-lg border border-zinc-200 bg-zinc-100/50 p-8 text-center dark:border-zinc-700 dark:bg-zinc-800/50">
-            <Code
-              size={48}
-              className="mx-auto mb-4 text-zinc-400 dark:text-zinc-600"
-            />
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
+            <Code size={48} className="mx-auto mb-4 text-muted-foreground" />
+            <div className="text-sm text-muted-foreground">
               {t("emptyTitle")}, {t("emptyDesc")}
             </div>
           </div>
@@ -130,7 +127,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
 
       {/* Stats Display */}
       {currentOutput && (
-        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+        <div className="mt-6 border-t border-border pt-6">
           <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
             {t("outputStats")}
           </h4>

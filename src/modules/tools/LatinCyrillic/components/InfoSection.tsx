@@ -47,7 +47,7 @@ export function InfoSection() {
           return (
             <Card
               key={index}
-              className="group border-zinc-200 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800/50 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
+              className="group border-border bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-border hover:shadow-lg"
             >
               <div className="px-6">
                 {/* Header: Icon + Title */}
@@ -59,13 +59,13 @@ export function InfoSection() {
                       <IconComponent className={`h-5 w-5 ${card.iconColor}`} />
                     )}
                   </div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {card.title}
                   </h3>
                 </div>
 
                 {/* Description */}
-                <p className="mb-5 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
                   {card.description}
                 </p>
 
@@ -74,7 +74,7 @@ export function InfoSection() {
                   {card.items.map((item, i) => (
                     <li
                       key={i}
-                      className="flex items-start gap-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300"
+                      className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground"
                     >
                       <span
                         className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${card.dotColor}`}

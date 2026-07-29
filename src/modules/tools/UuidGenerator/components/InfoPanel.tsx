@@ -9,18 +9,18 @@ const InfoPanel: React.FC = () => {
   const tFormatInfo = useTranslations("UuidGeneratorPage.FormatInfo")
 
   return (
-    <div className="mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+    <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
         <Hash size={20} className="text-blue-400" />
         {t("title")}
       </h3>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("versionsTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
               <strong>UUID v4 (Random):</strong> {tVersionInfo("v4.details")}
@@ -47,10 +47,10 @@ const InfoPanel: React.FC = () => {
         </div>
 
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("useCasesTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
               <strong>Database Primary Keys:</strong> {tUseCases("database")}
@@ -74,7 +74,7 @@ const InfoPanel: React.FC = () => {
           </ul>
 
           <div className="mt-4 rounded-lg bg-blue-500/10 p-3 dark:bg-blue-500/20">
-            <div className="text-sm text-blue-600 dark:text-blue-400">
+            <div className="text-sm text-info">
               <strong>{t("importantNote")}</strong> {t("collisionNote")}
             </div>
           </div>
@@ -87,10 +87,10 @@ const InfoPanel: React.FC = () => {
           <div className="mb-2 font-medium text-blue-400">
             {tFormatInfo("standard.name")}
           </div>
-          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 text-sm text-muted-foreground">
             {tFormatInfo("standard.description")}
           </div>
-          <div className="font-mono text-xs text-zinc-600 dark:text-zinc-500">
+          <div className="font-mono text-xs text-muted-foreground">
             550e8400-e29b-41d4-a716-446655440000
           </div>
         </div>
@@ -99,10 +99,10 @@ const InfoPanel: React.FC = () => {
           <div className="mb-2 font-medium text-green-400">
             {tFormatInfo("compact.name")}
           </div>
-          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 text-sm text-muted-foreground">
             {tFormatInfo("compact.description")}
           </div>
-          <div className="font-mono text-xs text-zinc-600 dark:text-zinc-500">
+          <div className="font-mono text-xs text-muted-foreground">
             550e8400e29b41d4a716446655440000
           </div>
         </div>
@@ -111,10 +111,10 @@ const InfoPanel: React.FC = () => {
           <div className="mb-2 font-medium text-purple-400">
             {tFormatInfo("brackets.name")}
           </div>
-          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 text-sm text-muted-foreground">
             {tFormatInfo("brackets.description")}
           </div>
-          <div className="font-mono text-xs text-zinc-600 dark:text-zinc-500">
+          <div className="font-mono text-xs text-muted-foreground">
             550e8400-e29b-41d4-a716-446655440000
           </div>
         </div>
@@ -123,10 +123,10 @@ const InfoPanel: React.FC = () => {
           <div className="mb-2 font-medium text-orange-400">
             {tFormatInfo("uppercase.name")}
           </div>
-          <div className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-2 text-sm text-muted-foreground">
             {tFormatInfo("uppercase.description")}
           </div>
-          <div className="font-mono text-xs text-zinc-600 dark:text-zinc-500">
+          <div className="font-mono text-xs text-muted-foreground">
             550E8400-E29B-41D4-A716-446655440000
           </div>
         </div>

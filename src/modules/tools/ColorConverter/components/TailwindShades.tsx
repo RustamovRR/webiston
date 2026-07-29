@@ -60,7 +60,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({
               >
                 {/* Color square */}
                 <div
-                  className="aspect-square w-full rounded-lg border-2 border-zinc-200 shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:border-zinc-700 dark:group-hover:border-zinc-500"
+                  className="aspect-square w-full rounded-lg border-2 border-border shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:group-hover:border-zinc-500"
                   style={{ backgroundColor: hex }}
                   title={`Copy ${hex}`}
                 />
@@ -89,7 +89,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({
 
                 {/* Hex code */}
                 <div className="mt-1 text-center">
-                  <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="font-mono text-xs text-muted-foreground">
                     {hex}
                   </span>
                 </div>
@@ -172,7 +172,7 @@ const TailwindShades: React.FC<TailwindShadesProps> = ({
           </div>
         </div>
       ) : (
-        <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
+        <div className="flex h-32 items-center justify-center text-muted-foreground">
           <p className="text-sm">
             {t("noValidColor") || "To'g'ri rang kiriting"}
           </p>

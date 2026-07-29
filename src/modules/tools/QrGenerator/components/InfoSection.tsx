@@ -5,18 +5,18 @@ import type React from "react"
 const InfoSection: React.FC = () => {
   const t = useTranslations("QrGeneratorPage.InfoSection")
   return (
-    <div className="mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+    <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
         <QrCode size={20} className="text-purple-400" />
         {t("title")}
       </h3>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("qrTypesTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
               <strong>{t("qrTypes.url.title")}</strong>{" "}
@@ -51,10 +51,10 @@ const InfoSection: React.FC = () => {
         </div>
 
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("professionalTipsTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
               {t("tips.tip1")}
@@ -89,28 +89,28 @@ const InfoSection: React.FC = () => {
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg bg-blue-500/10 p-4">
           <div className="mb-2 font-medium text-blue-400">150x150 px</div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("sizeDescriptions.150")}
           </div>
         </div>
 
         <div className="rounded-lg bg-green-500/10 p-4">
           <div className="mb-2 font-medium text-green-400">200x200 px</div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("sizeDescriptions.200")}
           </div>
         </div>
 
         <div className="rounded-lg bg-orange-500/10 p-4">
           <div className="mb-2 font-medium text-orange-400">300x300 px</div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("sizeDescriptions.300")}
           </div>
         </div>
 
         <div className="rounded-lg bg-purple-500/10 p-4">
           <div className="mb-2 font-medium text-purple-400">400x400 px</div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("sizeDescriptions.400")}
           </div>
         </div>

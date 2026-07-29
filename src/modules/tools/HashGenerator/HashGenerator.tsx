@@ -62,8 +62,8 @@ const HashGenerator = () => {
   // Status component
   const statusComponent =
     inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
+      <span className="flex items-center gap-1 text-xs text-info">
+        <div className="h-1.5 w-1.5 rounded-full bg-info"></div>
         {t("InputPanel.readyToHash") || "Hash yaratishga tayyor"}
       </span>
     ) : null
@@ -71,7 +71,7 @@ const HashGenerator = () => {
   // Target empty state
   const targetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500 dark:text-zinc-400">
+      <div className="text-muted-foreground">
         <Hash size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">
           {t("ResultsPanel.noResults") ||
@@ -87,7 +87,7 @@ const HashGenerator = () => {
   // Target footer component
   const targetFooterComponent =
     hashResults.length > 0 ? (
-      <div className="text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="text-xs text-muted-foreground">
         <span>{t("ResultsPanel.hashCount") || "Hash soni"}:</span>{" "}
         <span className="text-zinc-700 dark:text-zinc-300">
           {hashResults.length}
@@ -99,8 +99,8 @@ const HashGenerator = () => {
   const customSourceContent =
     activeTab === "file" ? (
       <div className="flex h-full items-center justify-center">
-        <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-zinc-300 p-8 transition-colors hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500">
-          <Upload size={48} className="text-zinc-400 dark:text-zinc-500" />
+        <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-border p-8 transition-colors hover:border-zinc-400 dark:hover:border-zinc-500">
+          <Upload size={48} className="text-muted-foreground" />
           <div className="text-center">
             <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("InputPanel.selectFile") || "Faylni tanlang"}

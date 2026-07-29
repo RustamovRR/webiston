@@ -46,8 +46,8 @@ const Base64Converter = () => {
   // Status component
   const statusComponent =
     inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
+      <span className="flex items-center gap-1 text-xs text-info">
+        <div className="h-1.5 w-1.5 rounded-full bg-info"></div>
         {mode === "encode"
           ? t("Panel.readyToEncode")
           : t("Panel.readyToDecode")}
@@ -73,7 +73,7 @@ const Base64Converter = () => {
 
   // Target footer component
   const targetFooterComponent = displayOutput ? (
-    <div className="text-xs text-zinc-600 dark:text-zinc-400">
+    <div className="text-xs text-muted-foreground">
       <span className="text-zinc-500">{t("Panel.fileSize")}</span>{" "}
       <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
     </div>
@@ -83,16 +83,14 @@ const Base64Converter = () => {
   const targetContent =
     result.error && !result.isValid ? (
       <div className="p-4">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800/30 dark:bg-red-900/20">
+        <div className="rounded-lg border border-destructive bg-destructive p-4">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-red-500 dark:bg-red-400"></div>
-            <strong className="text-sm text-red-700 dark:text-red-400">
+            <div className="h-2 w-2 rounded-full bg-destructive"></div>
+            <strong className="text-sm text-destructive">
               {t("Panel.conversionError")}
             </strong>
           </div>
-          <p className="font-mono text-sm text-red-600 dark:text-red-300">
-            {result.error}
-          </p>
+          <p className="font-mono text-sm text-destructive">{result.error}</p>
         </div>
       </div>
     ) : null

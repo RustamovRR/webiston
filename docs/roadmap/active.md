@@ -18,32 +18,35 @@ restructured into `initiatives/`. Branch `refactor`._
 | Area | State | Evidence |
 | ---- | :---: | -------- |
 | Dependencies | ✅ | all latest; `pnpm outdated` → 1 (`hast`, deprecated, 0 imports) |
-| Build & gates | ✅ | 6 of 7 gates green; hooks 0.16s / 2.39s |
+| Build & gates | ✅ | **all 9 gates green**; hooks 0.16s / 2.39s |
 | Repo hygiene | ✅ | `git ls-files -i -c` → 0 |
-| Package boundaries | 🟡 | `packages/ui` `@/` imports 3 → **0**; re-export not yet written |
+| Package boundaries | ✅ | `packages/ui` `@/` imports 3 → **0**; one definition, re-exported |
 | `pnpm check` | ✅ | **81 → 0 errors.** First time this gate has ever passed |
 | i18n parity | ⚠️ | `pnpm i18n` gate added; red on 8 dead `en`-only keys pending approval |
 | SEO integrity | ❌ | 18 files emit **fabricated** ratings + invented reviews |
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
-| Design tokens | 🟡 | A+B+C shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). **5,401 → 5,090** hits; **45/48** shared files clean; tokens 170 → **360**. D–E (tool modules) open |
+| Design tokens | 🟡 | A–D shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). **5,401 → 2,696** hits · `dark:` 1,967 → **619** · tokens 170 → **1,608**. Phase E (book reader/MDX) open |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
-**Gate (real exit codes, 2026-07-29):** `packages:build 0` · `typecheck 0` ·
-`lint 0` · `test 0 (207)` · `build 0` · `ext:build 0` · **`check 1`**
+**Gate (real exit codes, 2026-07-29):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0 (207)` · `tokens 0` · `contrast 0` · `packages:build 0` · `build 0` ·
+`ext:build 0` — **`i18n 1`**, blocked on the 8 dead-key deletion below.
 
 ---
 
 ## In progress
 
-- `[~]` **Design system** — Phases A, B and C shipped. 3-layer tokens, brand hue
+- `[~]` **Design system** — Phases A–D shipped. 3-layer tokens, brand hue
   **217°**, `pnpm contrast` 32/32 both schemes, `pnpm tokens` ratchet live (and
   now also rejects malformed classes). Phase C: **45/48** shared files
   token-clean; the 3 left are documented exceptions (syntax highlighter,
   shimmer effect, theme-invariant CTA).
-  **Next: Phase D — tool modules, one per commit, routed tools first.**
+  Phase D: all 17 routed tools converted — 1,142 pairs across 108 files, with a
+  rebuilt converter that is unit-tested against every past failure case.
+  **Next: Phase E — book reader + MDX components.**
   → `initiatives/design-system.md`
 - `[x]` **Code structure Phase 1 — done.** `packages/ui` `@/` imports 3 → 0, and
   the `TOOL_COLORS`/`UI_PATTERNS` duplication is closed: one definition in
@@ -55,8 +58,8 @@ restructured into `initiatives/`. Branch `refactor`._
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[ ]` | **Phase 1 — delete the fabricated ratings** |
-| [Design system](initiatives/design-system.md) | `[~]` | **Phase C — shared surfaces** (A + B shipped) |
-| [Code structure](initiatives/code-structure.md) | `[~]` | Phase 1 — finish the re-export |
+| [Design system](initiatives/design-system.md) | `[~]` | **Phase E — book reader + MDX** (A–D shipped) |
+| [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
 
@@ -74,8 +77,9 @@ restructured into `initiatives/`. Branch `refactor`._
 open item with an external consequence that grows over time — fabricated
 structured data risks a Google manual action for as long as it stays indexed.
 
-**Then the brand colour.** One decision unblocks the largest initiative in the
-repo; every UI change made before it adds to a 4,987-item pile.
+**Then Phase E** (book reader + MDX) closes the design-system sweep. The brand
+colour is decided (hue 217°) and the ratchet holds the line, so remaining UI work
+no longer adds to the pile.
 
 ---
 

@@ -139,18 +139,18 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
       return {
         score,
         level: t("levels.high"),
-        color: "text-green-600 dark:text-green-400"
+        color: "text-success"
       }
     if (score >= 60)
       return {
         score,
         level: t("levels.medium"),
-        color: "text-yellow-600 dark:text-yellow-400"
+        color: "text-warning"
       }
     return {
       score,
       level: t("levels.low"),
-      color: "text-red-600 dark:text-red-400"
+      color: "text-destructive"
     }
   }
 
@@ -170,13 +170,13 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
   const getStatusBg = (status: string) => {
     switch (status) {
       case "safe":
-        return "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
+        return "bg-success border-success"
       case "warning":
-        return "bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800"
+        return "bg-warning border-warning"
       case "danger":
-        return "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
+        return "bg-destructive border-destructive"
       default:
-        return "bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800"
+        return "bg-muted border-border"
     }
   }
 
@@ -186,16 +186,16 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
   return (
     <div className="space-y-4">
       {/* Security Score */}
-      <div className="rounded-lg border border-zinc-200/50 bg-zinc-100/30 p-4 dark:border-zinc-700/50 dark:bg-zinc-800/30">
+      <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-            <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+            <Shield className="h-5 w-5 text-info" />
+            <span className="font-semibold text-foreground">
               {t("securityRating")}
             </span>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+            <div className="text-2xl font-bold text-foreground">
               {securityScore.score}%
             </div>
             <div className={`text-sm font-medium ${securityScore.color}`}>
@@ -216,18 +216,18 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <IconComponent className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
+                  <IconComponent className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <div className="font-medium text-zinc-800 dark:text-zinc-200">
+                    <div className="font-medium text-foreground">
                       {metric.label}
                     </div>
-                    <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                    <div className="text-xs text-muted-foreground">
                       {metric.description}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
+                  <span className="font-medium text-foreground">
                     {metric.value}
                   </span>
                   {getStatusIcon(metric.status)}
@@ -240,14 +240,14 @@ export default function SecurityAnalysis({ ipInfo }: SecurityAnalysisProps) {
 
       {/* Additional Security Info */}
       {ipInfo.security && (
-        <div className="rounded-lg border border-blue-200/50 bg-blue-50/30 p-3 dark:border-blue-800/50 dark:bg-blue-900/20">
+        <div className="rounded-lg border border-info/50 bg-info/30 p-3">
           <div className="flex items-start gap-2">
-            <Shield className="mt-0.5 h-4 w-4 text-blue-500 dark:text-blue-400" />
+            <Shield className="mt-0.5 h-4 w-4 text-info" />
             <div className="text-sm">
-              <div className="mb-1 font-medium text-blue-800 dark:text-blue-200">
+              <div className="mb-1 font-medium text-info">
                 {t("additionalInfo")}
               </div>
-              <div className="space-y-1 text-blue-700 dark:text-blue-300">
+              <div className="space-y-1 text-info">
                 {ipInfo.security?.proxy_type && (
                   <div>
                     {t("additionalDetails.proxyType")}{" "}

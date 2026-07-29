@@ -19,8 +19,8 @@ const DeviceTypesPanel: React.FC<DeviceTypesPanelProps> = ({
   const t = useTranslations("ScreenResolutionPage.DeviceTypes")
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white/50 p-6 dark:border-zinc-800 dark:bg-zinc-900/50">
-      <h3 className="mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+    <div className="rounded-lg border border-border bg-card/50 p-6">
+      <h3 className="mb-4 text-lg font-semibold text-foreground">
         {t("title")}
       </h3>
       <div className="space-y-3">
@@ -29,8 +29,8 @@ const DeviceTypesPanel: React.FC<DeviceTypesPanelProps> = ({
             key={index}
             className={`flex items-center justify-between rounded-lg p-3 transition-colors ${
               currentDeviceType === device.name
-                ? "border border-green-500/30 bg-green-500/20 dark:border-green-400/30 dark:bg-green-400/20"
-                : "bg-zinc-100/50 dark:bg-zinc-800/30"
+                ? "border border-success/30 bg-success/20"
+                : "bg-muted/50"
             }`}
           >
             <div>
@@ -42,7 +42,7 @@ const DeviceTypesPanel: React.FC<DeviceTypesPanelProps> = ({
               </div>
             </div>
             {currentDeviceType === device.name && (
-              <div className="h-2 w-2 rounded-full bg-green-500 dark:bg-green-400"></div>
+              <div className="h-2 w-2 rounded-full bg-success"></div>
             )}
           </div>
         ))}

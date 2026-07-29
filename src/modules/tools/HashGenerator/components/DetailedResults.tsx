@@ -40,29 +40,26 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
           return (
             <div
               key={result.algorithm}
-              className="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+              className="rounded-lg border border-border bg-muted/50 p-4"
             >
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Hash
-                    size={20}
-                    className="text-zinc-500 dark:text-zinc-400"
-                  />
-                  <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  <Hash size={20} className="text-muted-foreground" />
+                  <span className="text-lg font-semibold text-foreground">
                     {result.algorithm}
                   </span>
-                  <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                  <span className="text-sm text-muted-foreground">
                     ({result.length} {t("characters") || "belgi"})
                   </span>
                   <span
                     className={`rounded px-2 py-1 text-xs ${
                       result.status === "deprecated"
-                        ? "bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400"
+                        ? "bg-destructive text-destructive"
                         : result.status === "weak"
-                          ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/50 dark:text-yellow-400"
+                          ? "bg-warning text-warning"
                           : result.status === "secure"
-                            ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
-                            : "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400"
+                            ? "bg-info text-info"
+                            : "bg-success text-success"
                     }`}
                   >
                     {tInfo(`descriptions.${result.status}`)}
@@ -70,7 +67,7 @@ const DetailedResults: React.FC<DetailedResultsProps> = ({
                 </div>
                 <CopyButton text={result.hash} />
               </div>
-              <div className="rounded bg-zinc-100 p-3 font-mono text-sm text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+              <div className="rounded bg-muted p-3 font-mono text-sm text-foreground">
                 {result.hash}
               </div>
             </div>

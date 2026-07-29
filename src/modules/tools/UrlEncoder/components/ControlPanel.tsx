@@ -43,7 +43,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-lg border border-zinc-200 bg-white/80 p-4 backdrop-blur-sm dark:border-none dark:bg-zinc-900/60">
+    <div className="mb-6 rounded-lg border border-zinc-200 bg-card/80 p-4 backdrop-blur-sm dark:border-none">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-4">
           <GradientTabs

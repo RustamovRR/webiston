@@ -79,10 +79,10 @@ export function AudioVisualizer({
 
       {/* Audio level display */}
       <div className="mt-2 flex items-center justify-between text-sm">
-        <span className="text-zinc-600 dark:text-zinc-400">
+        <span className="text-muted-foreground">
           Level: {Math.round(audioStats.level)}%
         </span>
-        <span className="text-zinc-600 dark:text-zinc-400">
+        <span className="text-muted-foreground">
           Peak: {Math.round(audioStats.peak)}%
         </span>
       </div>

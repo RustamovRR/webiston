@@ -35,7 +35,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
       component: (
         <button
           onClick={handleDownloadHeader}
-          className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-all duration-200 hover:scale-105 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-zinc-700 dark:hover:text-zinc-200"
           aria-label="Download Header"
         >
           <Download size={18} />
@@ -55,7 +55,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
       component: (
         <button
           onClick={handleDownloadPayload}
-          className="cursor-pointer rounded-full p-2.5 text-zinc-500 transition-all duration-200 hover:scale-105 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-zinc-700 dark:hover:text-zinc-200"
           aria-label="Download Payload"
         >
           <Download size={18} />
@@ -81,10 +81,10 @@ const TokenParts: React.FC<TokenPartsProps> = ({
         </div>
       ) : (
         <div className="animate-in fade-in duration-300">
-          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <div className="mb-3 text-xs font-medium text-muted-foreground">
             {t("rawData")}
           </div>
-          <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
+          <pre className="rounded bg-muted p-3 font-mono text-sm break-all whitespace-pre-wrap text-foreground transition-colors duration-200">
             {inputText.split(".")[0]}
           </pre>
         </div>
@@ -105,10 +105,10 @@ const TokenParts: React.FC<TokenPartsProps> = ({
         </div>
       ) : (
         <div className="animate-in fade-in duration-300">
-          <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <div className="mb-3 text-xs font-medium text-muted-foreground">
             {t("rawData")}
           </div>
-          <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
+          <pre className="rounded bg-muted p-3 font-mono text-sm break-all whitespace-pre-wrap text-foreground transition-colors duration-200">
             {inputText.split(".")[1]}
           </pre>
         </div>

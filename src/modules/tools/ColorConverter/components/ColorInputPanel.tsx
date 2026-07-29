@@ -43,13 +43,13 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
     : t("invalidFormat") || "Noto'g'ri format"
 
   const statusComponent = colorFormats?.isValid ? (
-    <span className="flex items-center gap-1 text-xs text-green-500 dark:text-green-400">
-      <div className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400"></div>
+    <span className="flex items-center gap-1 text-xs text-success">
+      <div className="h-1.5 w-1.5 rounded-full bg-success"></div>
       {statusText}
     </span>
   ) : (
-    <span className="flex items-center gap-1 text-xs text-red-500 dark:text-red-400">
-      <div className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-400"></div>
+    <span className="flex items-center gap-1 text-xs text-destructive">
+      <div className="h-1.5 w-1.5 rounded-full bg-destructive"></div>
       {statusText}
     </span>
   )
@@ -87,7 +87,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
                     setInputColor(newColor)
                   }
                 }}
-                className="h-16 w-24 cursor-pointer rounded-lg border-2 border-zinc-300 bg-transparent transition-all hover:border-zinc-400 focus:border-blue-500 dark:border-zinc-600 dark:hover:border-zinc-500"
+                className="h-16 w-24 cursor-pointer rounded-lg border-2 border-border bg-transparent transition-all hover:border-zinc-400 focus:border-blue-500 dark:hover:border-zinc-500"
                 title={t("colorPicker") || "Rang tanlash"}
               />
             </div>
@@ -95,7 +95,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
               type="text"
               value={inputColor}
               onChange={(e) => setInputColor(e.target.value)}
-              className="flex-1 rounded-lg border border-zinc-300 bg-white px-4 py-3 font-mono text-sm text-zinc-900 transition-colors focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-blue-400"
+              className="flex-1 rounded-lg border border-border bg-card px-4 py-3 font-mono text-sm text-foreground transition-colors focus:border-info focus:outline-none"
               placeholder="lab(65% 18 17), lch(65% 25 29), oklab(0.7 0.1 0.1), oklch(0.7 0.15 29), red, qizil"
             />
           </div>
@@ -136,7 +136,7 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
                       rgba(${colorFormats.rgbValues.r}, ${colorFormats.rgbValues.g}, ${colorFormats.rgbValues.b}, 1) 100%)`
                   }}
                 />
-                <span className="min-w-[50px] font-mono text-sm text-zinc-600 dark:text-zinc-400">
+                <span className="min-w-[50px] font-mono text-sm text-muted-foreground">
                   {Math.round(colorFormats.opacity * 100)}%
                 </span>
               </div>
@@ -146,19 +146,19 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
 
         {/* Color Preview */}
         {colorFormats?.isValid && (
-          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
+          <div className="rounded-lg border border-border bg-muted p-4">
             <div className="flex items-center gap-4">
               <div
-                className="h-20 w-20 rounded-xl border-2 border-zinc-300 shadow-lg dark:border-zinc-600"
+                className="h-20 w-20 rounded-xl border-2 border-border shadow-lg"
                 style={{ backgroundColor: inputColor }}
                 title={inputColor}
               />
               <div className="flex-1">
-                <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
+                <h3 className="font-semibold text-foreground">
                   {t("colorInfo") || "Rang ma'lumotlari"}
                 </h3>
                 {getColorName(inputColor) && (
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-muted-foreground">
                     {t("colorName") || "Rang nomi"}: {getColorName(inputColor)}
                   </p>
                 )}
@@ -200,8 +200,8 @@ const ColorInputPanel: React.FC<ColorInputPanelProps> = ({
                 onClick={() => setInputColor(preset.color)}
                 className={`group relative h-10 w-10 rounded-lg border-2 transition-all hover:scale-110 hover:shadow-lg ${
                   inputColor.toLowerCase() === preset.color.toLowerCase()
-                    ? "border-blue-500 ring-2 ring-blue-500/30 dark:border-blue-400 dark:ring-blue-400/30"
-                    : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500"
+                    ? "border-info ring-2 ring-info/30"
+                    : "border-border hover:border-zinc-400 dark:hover:border-zinc-500"
                 }`}
                 style={{ backgroundColor: preset.color }}
                 title={`${preset.name} (${preset.color})`}

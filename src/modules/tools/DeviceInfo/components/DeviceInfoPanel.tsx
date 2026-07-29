@@ -19,8 +19,8 @@ const DeviceInfoPanel: React.FC<DeviceInfoPanelProps> = ({ deviceInfo }) => {
   const t = useTranslations("DeviceInfoPage.DeviceInfo")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -48,22 +48,18 @@ const DeviceInfoPanel: React.FC<DeviceInfoPanelProps> = ({ deviceInfo }) => {
       <div className="p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("deviceType")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
-              {deviceInfo.type}
-            </div>
+            <div className="mt-1 text-foreground">{deviceInfo.type}</div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("touchScreen")}
             </div>
             <div
               className={`mt-1 flex items-center gap-2 ${
-                deviceInfo.touchSupport
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
+                deviceInfo.touchSupport ? "text-success" : "text-destructive"
               }`}
             >
               <div
@@ -75,22 +71,20 @@ const DeviceInfoPanel: React.FC<DeviceInfoPanelProps> = ({ deviceInfo }) => {
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("maxTouchPoints")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
+            <div className="mt-1 text-foreground">
               {deviceInfo.maxTouchPoints}
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("mobileDevice")}
             </div>
             <div
               className={`mt-1 flex items-center gap-2 ${
-                deviceInfo.isMobile
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-zinc-600 dark:text-zinc-400"
+                deviceInfo.isMobile ? "text-success" : "text-muted-foreground"
               }`}
             >
               <div

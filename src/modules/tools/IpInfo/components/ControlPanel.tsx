@@ -46,7 +46,7 @@ export default function ControlPanel({
           onClick={onLoadCurrentIP}
           variant="outline"
           size="sm"
-          className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 dark:border-blue-400/50 dark:text-blue-300 dark:hover:bg-blue-400/10"
+          className="border-info/50 text-info hover:bg-info/10"
           disabled={!hasCurrentIP}
         >
           <MapPin className="mr-2 h-4 w-4" />
@@ -56,7 +56,7 @@ export default function ControlPanel({
           onClick={onClear}
           variant="outline"
           size="sm"
-          className="border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="border-border hover:bg-muted"
         >
           <RefreshCw className="mr-2 h-4 w-4" />
           {t("clearButton")}
@@ -66,7 +66,7 @@ export default function ControlPanel({
             onClick={onDownload}
             variant="outline"
             size="sm"
-            className="border-green-500/50 text-green-400 hover:bg-green-500/10 dark:border-green-400/50 dark:text-green-300 dark:hover:bg-green-400/10"
+            className="border-success/50 text-success hover:bg-success/10"
           >
             <Download className="mr-2 h-4 w-4" />
             {t("downloadButton")}
@@ -75,15 +75,15 @@ export default function ControlPanel({
       </div>
 
       {/* Terminal Input Panel */}
-      <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+      <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
         {/* Terminal Header */}
-        <div className="flex items-center gap-2 border-b border-zinc-200 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900/50">
+        <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-4 py-3">
           <div className="flex gap-1.5">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="ml-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <span className="ml-2 text-sm font-medium text-muted-foreground">
             {t("title")}
           </span>
         </div>
@@ -96,11 +96,11 @@ export default function ControlPanel({
                 placeholder={t("inputPlaceholder")}
                 value={ipAddress}
                 onChange={(e) => onIpAddressChange(e.target.value)}
-                className="border-zinc-300 bg-zinc-50/50 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50 font-mono text-sm"
               />
               {error && (
-                <p className="mt-2 flex items-center gap-2 text-sm text-red-500 dark:text-red-400">
-                  <div className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-400"></div>
+                <p className="mt-2 flex items-center gap-2 text-sm text-destructive">
+                  <div className="h-1.5 w-1.5 rounded-full bg-destructive"></div>
                   {error}
                 </p>
               )}

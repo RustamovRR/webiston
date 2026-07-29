@@ -51,7 +51,7 @@ export function MediaGridItem({
     if (media.type === "screenshot") {
       if (imageError) {
         return (
-          <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+          <div className="flex h-full items-center justify-center bg-muted">
             <ImageIcon className="h-8 w-8 text-zinc-400" />
           </div>
         )
@@ -73,7 +73,7 @@ export function MediaGridItem({
 
     // Video thumbnail
     return (
-      <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+      <div className="flex h-full items-center justify-center bg-muted">
         <Video className="h-8 w-8 text-green-500" />
       </div>
     )
@@ -84,7 +84,7 @@ export function MediaGridItem({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="group relative overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+      className="group relative overflow-hidden rounded-lg border border-border bg-card"
     >
       {/* Thumbnail */}
       <div className="aspect-video w-full overflow-hidden">

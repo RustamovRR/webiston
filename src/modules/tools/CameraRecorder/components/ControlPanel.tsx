@@ -49,8 +49,8 @@ export function ControlPanel({
   const t = useTranslations("CameraRecorderPage.ControlPanel")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -87,7 +87,7 @@ export function ControlPanel({
             >
               <SelectTrigger
                 id="controlpanel-camera-label"
-                className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+                className="border-border bg-card"
               >
                 <SelectValue placeholder={t("camera.placeholder")} />
               </SelectTrigger>
@@ -111,7 +111,7 @@ export function ControlPanel({
             <Select value={selectedQuality} onValueChange={onQualityChange}>
               <SelectTrigger
                 id="controlpanel-quality-label"
-                className="border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+                className="border-border bg-card"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -129,7 +129,7 @@ export function ControlPanel({
             <Button
               onClick={onRefreshCameras}
               variant="outline"
-              className="w-full border-zinc-300 dark:border-zinc-700"
+              className="w-full border-border"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
               {t("camera.refresh")}

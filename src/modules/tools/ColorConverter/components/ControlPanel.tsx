@@ -26,12 +26,12 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     {
       value: "monochromatic",
       label: t("monochromatic") || "Monoxromatik",
-      icon: <Circle size={16} className="text-blue-500 dark:text-blue-400" />
+      icon: <Circle size={16} className="text-info" />
     },
     {
       value: "analogous",
       label: t("analogous") || "Analogik",
-      icon: <Palette size={16} className="text-green-500 dark:text-green-400" />
+      icon: <Palette size={16} className="text-success" />
     },
     {
       value: "complementary",
@@ -41,7 +41,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-lg border border-zinc-200 bg-white/80 p-4 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+    <div className="mb-6 rounded-lg border border-border bg-card/80 p-4 backdrop-blur-sm">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-4">
           <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -62,7 +62,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             onClick={onRandomColor}
             variant="outline"
             size="sm"
-            className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
+            className="border-input border !bg-white text-zinc-700 hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800 dark:text-zinc-300"
           >
             <RefreshCw size={16} className="mr-2" />
             {t("randomColor") || "Tasodifiy rang"}
@@ -75,7 +75,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               onClick={onDownloadPalette}
               variant="outline"
               size="sm"
-              className="border-input border !bg-white text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 dark:border-none dark:!bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-zinc-100"
+              className="border-input border !bg-white text-zinc-700 hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800 dark:text-zinc-300"
             >
               <Download size={16} className="mr-2" />
               {t("downloadPalette") || "Palette yuklab olish"}

@@ -38,13 +38,13 @@ const JsonFormatter = () => {
   const statusComponent =
     inputJson.length > 0 ? (
       jsonResult.isValid ? (
-        <span className="flex items-center gap-1 text-xs text-green-500 dark:text-green-400">
-          <div className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400"></div>
+        <span className="flex items-center gap-1 text-xs text-success">
+          <div className="h-1.5 w-1.5 rounded-full bg-success"></div>
           {t("Panel.validFormat")}
         </span>
       ) : (
-        <span className="flex items-center gap-1 text-xs text-red-500 dark:text-red-400">
-          <div className="h-1.5 w-1.5 rounded-full bg-red-500 dark:bg-red-400"></div>
+        <span className="flex items-center gap-1 text-xs text-destructive">
+          <div className="h-1.5 w-1.5 rounded-full bg-destructive"></div>
           {t("Panel.errorExists")}
         </span>
       )
@@ -65,7 +65,7 @@ const JsonFormatter = () => {
 
   // Target footer component
   const targetFooterComponent = displayJson ? (
-    <div className="text-xs text-zinc-600 dark:text-zinc-400">
+    <div className="text-xs text-muted-foreground">
       <span className="text-zinc-500">{t("Panel.fileSize")}</span>{" "}
       <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
     </div>
@@ -75,14 +75,14 @@ const JsonFormatter = () => {
   const targetContent =
     jsonResult.error && !jsonResult.isValid ? (
       <div className="p-4">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800/30 dark:bg-red-900/20">
+        <div className="rounded-lg border border-destructive bg-destructive p-4">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-red-500 dark:bg-red-400"></div>
-            <strong className="text-sm text-red-700 dark:text-red-400">
+            <div className="h-2 w-2 rounded-full bg-destructive"></div>
+            <strong className="text-sm text-destructive">
               {t("Panel.errorTitle")}
             </strong>
           </div>
-          <p className="font-mono text-sm text-red-600 dark:text-red-300">
+          <p className="font-mono text-sm text-destructive">
             {jsonResult.error}
           </p>
         </div>

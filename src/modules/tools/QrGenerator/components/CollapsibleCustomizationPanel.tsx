@@ -37,10 +37,10 @@ const CollapsibleCustomizationPanel: React.FC<
   return (
     <div className="my-6">
       {/* Toggle Header */}
-      <div className="rounded-t-xl border border-b-0 border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+      <div className="rounded-t-xl border border-b-0 border-border bg-card/80 backdrop-blur-sm">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+          className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted"
         >
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ const CollapsibleCustomizationPanel: React.FC<
                   }}
                 />
                 {customization.logo && (
-                  <div className="h-4 w-4 rounded border border-zinc-300 bg-zinc-100 p-0.5 dark:border-zinc-600 dark:bg-zinc-800">
+                  <div className="h-4 w-4 rounded border border-border bg-muted p-0.5">
                     <Image
                       src={customization.logo}
                       alt="Logo"
@@ -100,20 +100,14 @@ const CollapsibleCustomizationPanel: React.FC<
             )}
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="text-xs text-muted-foreground">
                 {isExpanded ? t("hide") : t("show")} {t("customization")}
               </span>
               <div className="transition-transform duration-200">
                 {isExpanded ? (
-                  <ChevronUp
-                    size={16}
-                    className="text-zinc-500 dark:text-zinc-400"
-                  />
+                  <ChevronUp size={16} className="text-muted-foreground" />
                 ) : (
-                  <ChevronDown
-                    size={16}
-                    className="text-zinc-500 dark:text-zinc-400"
-                  />
+                  <ChevronDown size={16} className="text-muted-foreground" />
                 )}
               </div>
             </div>
@@ -130,7 +124,7 @@ const CollapsibleCustomizationPanel: React.FC<
             : "max-h-0 overflow-hidden opacity-0"
         )}
       >
-        <div className="border-x border-b border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+        <div className="border-x border-b border-border bg-card/80 backdrop-blur-sm">
           {isExpanded && (
             <div className="grid gap-6 p-6 lg:grid-cols-3">
               {/* Customization Controls */}
@@ -146,7 +140,7 @@ const CollapsibleCustomizationPanel: React.FC<
               <div className="lg:col-span-1">
                 <div className="sticky top-[72px] z-10">
                   {qrUrl && isValid ? (
-                    <div className="group rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50/80 to-zinc-100/60 p-5 shadow-sm backdrop-blur-sm transition-all duration-500 hover:shadow-md dark:border-zinc-700 dark:from-zinc-800/60 dark:to-zinc-900/40">
+                    <div className="group rounded-xl border border-border bg-gradient-to-br from-zinc-50/80 to-zinc-100/60 p-5 shadow-sm backdrop-blur-sm transition-all duration-500 hover:shadow-md dark:from-zinc-800/60 dark:to-zinc-900/40">
                       {/* Header with animated icon */}
                       <div className="mb-4 flex items-center gap-2">
                         <div className="rounded-lg bg-purple-100 p-2 transition-colors group-hover:bg-purple-200 dark:bg-purple-900/30 dark:group-hover:bg-purple-800/40">
@@ -155,7 +149,7 @@ const CollapsibleCustomizationPanel: React.FC<
                             className="text-purple-600 dark:text-purple-400"
                           />
                         </div>
-                        <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                        <h4 className="text-sm font-semibold text-foreground">
                           {t("livePreview")}
                         </h4>
                       </div>
@@ -231,9 +225,9 @@ const CollapsibleCustomizationPanel: React.FC<
                       </div>
 
                       {/* Enhanced Quick Info with animations */}
-                      <div className="mt-4 space-y-2 rounded-lg bg-white/60 p-3 backdrop-blur-sm dark:bg-zinc-800/60">
+                      <div className="mt-4 space-y-2 rounded-lg bg-card/60 p-3 backdrop-blur-sm">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                          <span className="font-medium text-muted-foreground">
                             {t("style")}:
                           </span>
                           <span className="rounded bg-zinc-200 px-2 py-0.5 font-mono text-zinc-700 transition-colors dark:bg-zinc-700 dark:text-zinc-300">
@@ -242,7 +236,7 @@ const CollapsibleCustomizationPanel: React.FC<
                         </div>
 
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                          <span className="font-medium text-muted-foreground">
                             {t("colors")}:
                           </span>
                           <div className="flex items-center gap-1.5">
@@ -265,7 +259,7 @@ const CollapsibleCustomizationPanel: React.FC<
 
                         {customization.gradientEnabled && (
                           <div className="animate-in fade-in flex items-center justify-between text-xs duration-300">
-                            <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                            <span className="font-medium text-muted-foreground">
                               {t("gradient")}:
                             </span>
                             <span className="rounded bg-purple-100 px-2 py-0.5 font-mono text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
@@ -278,10 +272,10 @@ const CollapsibleCustomizationPanel: React.FC<
 
                         {customization.logo && (
                           <div className="animate-in fade-in flex items-center justify-between text-xs duration-300">
-                            <span className="font-medium text-zinc-600 dark:text-zinc-400">
+                            <span className="font-medium text-muted-foreground">
                               {t("logo")}:
                             </span>
-                            <span className="rounded bg-green-100 px-2 py-0.5 font-mono text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                            <span className="rounded bg-success px-2 py-0.5 font-mono text-success">
                               {customization.logoSize}%
                             </span>
                           </div>
@@ -289,8 +283,8 @@ const CollapsibleCustomizationPanel: React.FC<
                       </div>
                     </div>
                   ) : (
-                    <div className="flex h-64 items-center justify-center rounded-xl border-2 border-dashed border-zinc-300 bg-gradient-to-br from-zinc-50/50 to-zinc-100/30 backdrop-blur-sm transition-all duration-300 hover:border-zinc-400 dark:border-zinc-600 dark:from-zinc-800/30 dark:to-zinc-900/20 dark:hover:border-zinc-500">
-                      <div className="text-center text-zinc-500 dark:text-zinc-400">
+                    <div className="flex h-64 items-center justify-center rounded-xl border-2 border-dashed border-border bg-gradient-to-br from-zinc-50/50 to-zinc-100/30 backdrop-blur-sm transition-all duration-300 hover:border-zinc-400 dark:from-zinc-800/30 dark:to-zinc-900/20 dark:hover:border-zinc-500">
+                      <div className="text-center text-muted-foreground">
                         <div className="mb-3 rounded-full bg-zinc-200/50 p-3 dark:bg-zinc-700/50">
                           <Palette size={24} className="mx-auto opacity-60" />
                         </div>
@@ -312,9 +306,9 @@ const CollapsibleCustomizationPanel: React.FC<
 
       {/* Quick Actions (when collapsed) */}
       {!isExpanded && hasCustomizations && (
-        <div className="rounded-b-xl border border-t-0 border-zinc-200 bg-zinc-50/80 px-4 py-2 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-800/50">
+        <div className="rounded-b-xl border border-t-0 border-border bg-muted/80 px-4 py-2 backdrop-blur-sm">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>{t("activeCustomizations")}</span>
               {customization.foregroundColor !== "#000000" && (
                 <span className="rounded bg-purple-100 px-2 py-0.5 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300">
@@ -322,12 +316,12 @@ const CollapsibleCustomizationPanel: React.FC<
                 </span>
               )}
               {customization.logo && (
-                <span className="rounded bg-green-100 px-2 py-0.5 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                <span className="rounded bg-success px-2 py-0.5 text-success">
                   {t("logo")}
                 </span>
               )}
               {customization.gradientEnabled && (
-                <span className="rounded bg-blue-100 px-2 py-0.5 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+                <span className="rounded bg-info px-2 py-0.5 text-info">
                   {t("gradient")}
                 </span>
               )}
@@ -355,7 +349,7 @@ const CollapsibleCustomizationPanel: React.FC<
               }}
               variant="ghost"
               size="sm"
-              className="h-6 px-2 text-xs text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+              className="h-6 px-2 text-xs text-muted-foreground hover:text-zinc-700 dark:hover:text-zinc-200"
             >
               {t("reset")}
             </Button>

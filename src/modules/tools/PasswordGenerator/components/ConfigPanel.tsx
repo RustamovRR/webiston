@@ -96,9 +96,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -135,8 +135,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               }
               toolCategory="generators"
             />
-            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
                 {settings.passwordType === "random" && tTypes("randomDesc")}
                 {settings.passwordType === "memorable" &&
                   tTypes("memorableDesc")}
@@ -184,8 +184,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
                 settings.includeUppercase
-                  ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-300"
-                  : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  ? "border-green-500 bg-green-500/10 text-success"
+                  : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
               )}
             >
               <input
@@ -203,8 +203,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
                 settings.includeLowercase
-                  ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-300"
-                  : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  ? "border-green-500 bg-green-500/10 text-success"
+                  : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
               )}
             >
               <input
@@ -222,8 +222,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
                 settings.includeNumbers
-                  ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-300"
-                  : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  ? "border-green-500 bg-green-500/10 text-success"
+                  : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
               )}
             >
               <input
@@ -241,8 +241,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className={cn(
                 "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
                 settings.includeSymbols
-                  ? "border-green-500 bg-green-500/10 text-green-600 dark:text-green-300"
-                  : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  ? "border-green-500 bg-green-500/10 text-success"
+                  : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
               )}
             >
               <input
@@ -262,8 +262,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             className={cn(
               "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
               settings.excludeSimilar
-                ? "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-300"
-                : "border-zinc-300 text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                ? "border-blue-500 bg-blue-500/10 text-info"
+                : "border-border text-muted-foreground hover:border-zinc-400 hover:text-foreground dark:hover:border-zinc-600"
             )}
           >
             <input
@@ -287,12 +287,12 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {presetSettings.map((preset, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-zinc-100/30 p-3 transition-colors hover:bg-zinc-100/50 dark:border-zinc-700 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
+                className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
-                <div className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                <div className="text-sm font-medium text-foreground">
                   {preset.label}
                 </div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                <div className="text-xs text-muted-foreground">
                   {preset.description}
                 </div>
                 <Button

@@ -24,10 +24,10 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white/80 p-8 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+      <div className="rounded-xl border border-border bg-card/80 p-8 backdrop-blur-sm">
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-          <div className="text-lg text-zinc-600 dark:text-zinc-400">
+          <div className="text-lg text-muted-foreground">
             {t("loadingTitle")}
           </div>
         </div>
@@ -36,8 +36,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -59,10 +59,10 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
       <div className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h3 className="font-medium text-zinc-800 dark:text-zinc-200">
+            <h3 className="font-medium text-foreground">
               {t("deviceInfoTitle")}
             </h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               {t("deviceInfoDesc")}
             </p>
           </div>

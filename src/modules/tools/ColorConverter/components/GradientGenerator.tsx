@@ -158,7 +158,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
           {/* Gradient Preview */}
           <div className="space-y-4">
             <div
-              className="h-32 w-full rounded-lg border-2 border-zinc-200 shadow-lg dark:border-zinc-700"
+              className="h-32 w-full rounded-lg border-2 border-border shadow-lg"
               style={{ background: generateCSS() }}
               title="Gradient Preview"
             />
@@ -177,8 +177,8 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                       onClick={() => setGradientType(type)}
                       className={`rounded-md px-3 py-1 text-xs transition-colors ${
                         gradientType === type
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                          : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400"
+                          ? "bg-info text-info"
+                          : "bg-muted text-muted-foreground hover:bg-zinc-200"
                       }`}
                     >
                       {type}
@@ -248,14 +248,14 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                     type="color"
                     value={colorStop.color}
                     onChange={(e) => updateColor(index, e.target.value)}
-                    className="h-10 w-16 cursor-pointer rounded border border-zinc-300 dark:border-zinc-600"
+                    className="h-10 w-16 cursor-pointer rounded border border-border"
                   />
 
                   <input
                     type="text"
                     value={colorStop.color}
                     onChange={(e) => updateColor(index, e.target.value)}
-                    className="flex-1 rounded border border-zinc-300 px-3 py-2 font-mono text-sm dark:border-zinc-600 dark:bg-zinc-800"
+                    className="flex-1 rounded border border-border px-3 py-2 font-mono text-sm dark:bg-zinc-800"
                   />
 
                   <div className="flex items-center gap-2">
@@ -267,7 +267,7 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
                       onChange={(e) =>
                         updatePosition(index, parseInt(e.target.value, 10) || 0)
                       }
-                      className="w-16 rounded border border-zinc-300 px-2 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800"
+                      className="w-16 rounded border border-border px-2 py-2 text-sm dark:bg-zinc-800"
                     />
                     <span className="text-sm text-zinc-500">%</span>
                   </div>
@@ -327,15 +327,15 @@ const GradientGenerator: React.FC<GradientGeneratorProps> = ({
             </div>
 
             {/* CSS Code Preview */}
-            <div className="rounded-lg bg-zinc-100 p-3 dark:bg-zinc-800">
-              <code className="font-mono text-sm text-zinc-800 dark:text-zinc-200">
+            <div className="rounded-lg bg-muted p-3">
+              <code className="font-mono text-sm text-foreground">
                 background: {generateCSS()};
               </code>
             </div>
           </div>
         </>
       ) : (
-        <div className="flex h-32 items-center justify-center text-zinc-500 dark:text-zinc-400">
+        <div className="flex h-32 items-center justify-center text-muted-foreground">
           <div className="text-center">
             <Palette size={32} className="mx-auto mb-2 opacity-50" />
             <p className="text-sm">

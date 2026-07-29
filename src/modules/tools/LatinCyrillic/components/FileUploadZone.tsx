@@ -106,7 +106,7 @@ export function FileUploadZone({
         "relative rounded-lg border-2 border-dashed p-6 transition-all duration-200",
         isDragging
           ? "border-blue-500 bg-blue-500/10"
-          : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600",
+          : "border-border hover:border-zinc-400 dark:hover:border-zinc-600",
         status === "error" && "border-red-500 bg-red-500/10",
         status === "success" && "border-green-500 bg-green-500/10",
         isProcessing && "pointer-events-none",
@@ -148,14 +148,14 @@ export function FileUploadZone({
           </div>
         ) : status === "success" && fileName ? (
           <div className="space-y-1">
-            <p className="text-sm font-medium text-green-600 dark:text-green-400">
+            <p className="text-sm font-medium text-success">
               Muvaffaqiyatli yuklandi!
             </p>
             <p className="text-xs text-zinc-500">{fileName}</p>
           </div>
         ) : isProcessing ? (
           <div className="space-y-1">
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+            <p className="text-sm font-medium text-info">
               {progress.statusKey || "Yuklanmoqda..."}
             </p>
             {progress.total > 0 && progress.current > 0 && (
@@ -171,7 +171,7 @@ export function FileUploadZone({
         ) : (
           <>
             <div className="space-y-1">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 Faylni shu yerga tashlang yoki
               </p>
             </div>
@@ -186,16 +186,10 @@ export function FileUploadZone({
               Fayl tanlash
             </Button>
             <div className="flex items-center gap-2 text-xs text-zinc-400">
-              <span className="rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
-                .txt
-              </span>
-              <span className="rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
-                .pdf
-              </span>
-              <span className="rounded bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
-                .docx
-              </span>
-              <span className="text-zinc-300 dark:text-zinc-600">|</span>
+              <span className="rounded bg-muted px-1.5 py-0.5">.txt</span>
+              <span className="rounded bg-muted px-1.5 py-0.5">.pdf</span>
+              <span className="rounded bg-muted px-1.5 py-0.5">.docx</span>
+              <span className="text-muted-foreground">|</span>
               <span>max 10MB</span>
             </div>
           </>

@@ -21,10 +21,10 @@ const SignatureSection: React.FC<SignatureSectionProps> = ({ signature }) => {
 
   const customContent = (
     <div className="p-4 transition-all duration-200">
-      <div className="mb-3 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+      <div className="mb-3 text-xs font-medium text-muted-foreground">
         {t("description")}
       </div>
-      <pre className="rounded bg-zinc-100 p-3 font-mono text-sm break-all whitespace-pre-wrap text-zinc-800 transition-colors duration-200 dark:bg-zinc-800/50 dark:text-zinc-200">
+      <pre className="rounded bg-muted p-3 font-mono text-sm break-all whitespace-pre-wrap text-foreground transition-colors duration-200">
         {signature}
       </pre>
     </div>

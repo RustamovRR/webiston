@@ -41,10 +41,10 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   const t = useTranslations("JsonFormatterPage.ControlPanel")
 
   return (
-    <div className="mb-6 rounded-lg border border-zinc-200 bg-white/80 p-4 backdrop-blur-sm dark:border-none dark:bg-zinc-900/60">
+    <div className="mb-6 rounded-lg border border-zinc-200 bg-card/80 p-4 backdrop-blur-sm dark:border-none">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <span className="text-sm font-medium text-muted-foreground">
             {t("actions")}
           </span>
           <input
@@ -86,7 +86,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <Select value={indentation} onValueChange={setIndentation}>
               <SelectTrigger
                 id="json-indentation"
-                className="w-20 border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+                className="w-20 border-border bg-card"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -101,7 +101,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             variant="ghost"
             size="sm"
             onClick={toggleLineNumbers}
-            className="text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+            className="text-muted-foreground hover:text-foreground"
             title={
               showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers")
             }
@@ -116,7 +116,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             className={`text-sm transition-colors ${
               isMinified
                 ? "text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300"
-                : "text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                : "text-muted-foreground hover:text-foreground"
             }`}
             title={isMinified ? t("formattedView") : t("minifiedView")}
           >

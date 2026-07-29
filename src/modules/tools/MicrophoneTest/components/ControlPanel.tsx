@@ -37,8 +37,8 @@ export function ControlPanel({
   const t = useTranslations("MicrophoneTestPage.ControlPanel")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -75,12 +75,12 @@ export function ControlPanel({
             >
               <SelectTrigger
                 id="controlpanel-microphone-label"
-                className="h-10 w-full border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50 focus:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:focus:border-zinc-600"
+                className="h-10 w-full border-border bg-card text-foreground hover:bg-muted focus:border-zinc-400 dark:focus:border-zinc-600"
               >
                 <SelectValue placeholder={t("microphone.placeholder")} />
               </SelectTrigger>
               <SelectContent
-                className="max-w-[300px] border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+                className="max-w-[300px] border-border bg-card"
                 position="popper"
                 side="bottom"
                 align="start"
@@ -89,7 +89,7 @@ export function ControlPanel({
                   <SelectItem
                     key={device.deviceId}
                     value={device.deviceId}
-                    className="max-w-[280px] truncate text-zinc-900 hover:bg-zinc-100 focus:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
+                    className="max-w-[280px] truncate text-foreground hover:bg-muted focus:bg-muted"
                   >
                     <span className="truncate" title={device.label}>
                       {device.label}
@@ -104,7 +104,7 @@ export function ControlPanel({
             <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
               {t("quality.label")}
             </span>
-            <div className="flex h-10 items-center rounded-lg border border-zinc-300 bg-white px-3 dark:border-zinc-700 dark:bg-zinc-800">
+            <div className="flex h-10 items-center rounded-lg border border-border bg-card px-3">
               <div
                 className={`mr-2 h-2 w-2 rounded-full ${
                   audioQuality.text === "Ajoyib"
@@ -126,7 +126,7 @@ export function ControlPanel({
             <Button
               onClick={onRefreshDevices}
               variant="outline"
-              className="w-full border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-700"
+              className="w-full border-border hover:bg-muted"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
               {t("buttons.refresh")}

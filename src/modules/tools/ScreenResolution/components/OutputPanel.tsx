@@ -39,8 +39,8 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
       transition={{ delay: 0.1 }}
       className="space-y-6"
     >
-      <div className="relative overflow-hidden rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-        <div className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+      <div className="relative overflow-hidden rounded-lg border border-border bg-card/80 backdrop-blur-sm">
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3">
           <div className="flex gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
@@ -53,7 +53,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
             <div
               className={`h-2 w-2 rounded-full ${screenInfo ? "bg-green-500" : "bg-zinc-500"}`}
             ></div>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs text-muted-foreground">
               {screenInfo ? t("dataAvailable") : t("noData")}
             </span>
           </div>
@@ -62,7 +62,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
         <div className="p-6">
           {!screenInfo ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="mb-4 rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800/50">
+              <div className="mb-4 rounded-lg bg-muted p-4">
                 <svg
                   aria-hidden="true"
                   className="h-12 w-12 text-zinc-500"
@@ -89,26 +89,26 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
             <div className="space-y-6">
               {/* Asosiy ma'lumotlar */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+                <h3 className="text-lg font-semibold text-foreground">
                   {t("screenInfoTitle")}
                 </h3>
 
                 {/* Ekran o'lchami */}
-                <div className="rounded-lg bg-zinc-100/50 p-4 dark:bg-zinc-800/30">
+                <div className="rounded-lg bg-muted/50 p-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      <div className="text-2xl font-bold text-info">
                         {screenInfo.width} × {screenInfo.height}
                       </div>
-                      <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                      <div className="text-sm text-muted-foreground">
                         {t("screenSize")}
                       </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      <div className="text-2xl font-bold text-success">
                         {analysis?.resolutionCategory}
                       </div>
-                      <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                      <div className="text-sm text-muted-foreground">
                         {t("resolutionType")}
                       </div>
                     </div>
@@ -116,7 +116,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                 </div>
 
                 {/* Viewport ma'lumotlari */}
-                <div className="rounded-lg bg-zinc-100/50 p-4 dark:bg-zinc-800/30">
+                <div className="rounded-lg bg-muted/50 p-4">
                   <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {t("viewportInfoTitle")}
                   </h4>
@@ -141,56 +141,56 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                 </div>
 
                 {/* Qo'shimcha ma'lumotlar */}
-                <div className="rounded-lg bg-zinc-100/50 p-4 dark:bg-zinc-800/30">
+                <div className="rounded-lg bg-muted/50 p-4">
                   <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {t("technicalInfoTitle")}
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("pixelRatio")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {screenInfo.pixelRatio}x
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("aspectRatio")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {analysis?.aspectRatio}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("orientation")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {screenInfo.orientation}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("colorDepth")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {screenInfo.colorDepth} bit
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("deviceType")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {analysis?.deviceType}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600 dark:text-zinc-400">
+                      <span className="text-muted-foreground">
                         {t("retinaDisplay")}:
                       </span>
-                      <span className="text-zinc-800 dark:text-zinc-200">
+                      <span className="text-foreground">
                         {analysis?.isRetina ? t("yes") : t("no")}
                       </span>
                     </div>
@@ -199,7 +199,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
 
                 {/* Scroll pozitsiyasi */}
                 {(screenInfo.scrollX > 0 || screenInfo.scrollY > 0) && (
-                  <div className="rounded-lg bg-zinc-100/50 p-4 dark:bg-zinc-800/30">
+                  <div className="rounded-lg bg-muted/50 p-4">
                     <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                       {t("scrollPositionTitle")}
                     </h4>

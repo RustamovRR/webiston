@@ -73,12 +73,12 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl bg-white dark:bg-zinc-900"
+          className="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl bg-card"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-700">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className="flex items-center justify-between border-b border-border p-4">
+            <h3 className="text-lg font-semibold text-foreground">
               {media.type === "screenshot"
                 ? t("screenshotPreview")
                 : t("videoPreview")}
@@ -98,7 +98,7 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
           <div className="p-4">
             {media.type === "screenshot" ? (
               imageError ? (
-                <div className="flex h-64 w-96 items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                <div className="flex h-64 w-96 items-center justify-center bg-muted">
                   <p className="text-zinc-500">{t("failedToLoad")}</p>
                 </div>
               ) : (
@@ -117,7 +117,7 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
             ) : (
               <div className="relative">
                 {videoLoading && (
-                  <div className="flex h-64 w-96 items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                  <div className="flex h-64 w-96 items-center justify-center bg-muted">
                     <div className="flex items-center gap-2">
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
                       <p className="text-zinc-500">{t("loadingVideo")}</p>
@@ -125,7 +125,7 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
                   </div>
                 )}
                 {videoError ? (
-                  <div className="flex h-64 w-96 items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                  <div className="flex h-64 w-96 items-center justify-center bg-muted">
                     <p className="text-zinc-500">{t("failedToLoadVideo")}</p>
                   </div>
                 ) : (

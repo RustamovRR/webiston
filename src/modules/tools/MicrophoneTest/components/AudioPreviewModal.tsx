@@ -191,12 +191,12 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="relative w-full max-w-md overflow-hidden rounded-xl bg-white dark:bg-zinc-900"
+          className="relative w-full max-w-md overflow-hidden rounded-xl bg-card"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-700">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className="flex items-center justify-between border-b border-border p-4">
+            <h3 className="text-lg font-semibold text-foreground">
               {t("title")}
             </h3>
             <div className="flex items-center gap-2">
@@ -214,10 +214,10 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
           <div className="p-6">
             {/* Audio Info */}
             <div className="mb-6 text-center">
-              <h4 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
+              <h4 className="text-lg font-medium text-foreground">
                 {audio.name}
               </h4>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 {audio.format} • {Math.round(audio.size / 1024)} KB
               </p>
             </div>
@@ -264,7 +264,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
                 </div>
 
                 {/* Time Display */}
-                <div className="flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{formatTime(currentTime)}</span>
                   <span>{formatTime(duration)}</span>
                 </div>

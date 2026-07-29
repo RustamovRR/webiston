@@ -22,8 +22,8 @@ const ScreenInfoPanel: React.FC<ScreenInfoPanelProps> = ({ screenInfo }) => {
   const t = useTranslations("DeviceInfoPage.ScreenInfo")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -51,42 +51,40 @@ const ScreenInfoPanel: React.FC<ScreenInfoPanelProps> = ({ screenInfo }) => {
       <div className="p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("screenSize")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
+            <div className="mt-1 text-foreground">
               {screenInfo.width} × {screenInfo.height} px
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("availableSize")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
+            <div className="mt-1 text-foreground">
               {screenInfo.availWidth} × {screenInfo.availHeight} px
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("colorDepth")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
+            <div className="mt-1 text-foreground">
               {screenInfo.colorDepth} bit
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("pixelRatio")}
             </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
-              {screenInfo.pixelRatio}x
-            </div>
+            <div className="mt-1 text-foreground">{screenInfo.pixelRatio}x</div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("orientation")}
             </div>
-            <div className="mt-1 text-zinc-900 capitalize dark:text-zinc-100">
+            <div className="mt-1 text-foreground capitalize">
               {screenInfo.orientation}
             </div>
           </div>

@@ -41,8 +41,8 @@ const FormPanel: React.FC<FormPanelProps> = ({
   const t = useTranslations("OgMetaGeneratorPage.FormPanel")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -84,11 +84,11 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 placeholder={t("titlePlaceholder")}
                 className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
                   metaData.title.length > 70
-                    ? "border-red-300 dark:border-red-700"
+                    ? "border-destructive"
                     : metaData.title.length > 50
-                      ? "border-yellow-300 dark:border-yellow-700"
+                      ? "border-warning"
                       : metaData.title.length > 0
-                        ? "border-green-300 dark:border-green-700"
+                        ? "border-success"
                         : ""
                 }`}
               />
@@ -153,11 +153,11 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 placeholder={t("descPlaceholder")}
                 className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
                   metaData.description.length > 200
-                    ? "border-red-300 dark:border-red-700"
+                    ? "border-destructive"
                     : metaData.description.length > 160
-                      ? "border-yellow-300 dark:border-yellow-700"
+                      ? "border-warning"
                       : metaData.description.length > 0
-                        ? "border-green-300 dark:border-green-700"
+                        ? "border-success"
                         : ""
                 }`}
               />
@@ -223,7 +223,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.image}
                 onChange={(e) => onUpdateField("image", e.target.value)}
                 placeholder={t("imagePlaceholder")}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               />
             </div>
 
@@ -240,7 +240,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.url}
                 onChange={(e) => onUpdateField("url", e.target.value)}
                 placeholder={t("urlPlaceholder")}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               />
             </div>
 
@@ -256,7 +256,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.siteName}
                 onChange={(e) => onUpdateField("siteName", e.target.value)}
                 placeholder={t("siteNamePlaceholder")}
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               />
             </div>
           </div>
@@ -276,7 +276,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
               >
                 <SelectTrigger
                   id="formpanel-contenttype"
-                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                  className="border-border bg-muted/50"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -308,7 +308,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
               >
                 <SelectTrigger
                   id="formpanel-twittercard"
-                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                  className="border-border bg-muted/50"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -338,7 +338,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
               >
                 <SelectTrigger
                   id="formpanel-language"
-                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                  className="border-border bg-muted/50"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -364,7 +364,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
               >
                 <SelectTrigger
                   id="formpanel-imagesize"
-                  className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                  className="border-border bg-muted/50"
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -395,7 +395,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.twitterSite}
                 onChange={(e) => onUpdateField("twitterSite", e.target.value)}
                 placeholder="@your_site"
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               />
             </div>
 
@@ -413,7 +413,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                   onUpdateField("twitterCreator", e.target.value)
                 }
                 placeholder="@author"
-                className="border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50"
+                className="border-border bg-muted/50"
               />
             </div>
           </div>
@@ -421,7 +421,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
       </div>
 
       {/* Stats Display */}
-      <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-800">
+      <div className="mt-6 border-t border-border pt-6">
         <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
           {t("inputStats")}
         </h4>

@@ -23,8 +23,8 @@ const ConnectionInfoPanel: React.FC<ConnectionInfoPanelProps> = ({
   if (!connectionInfo) return null
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -52,38 +52,30 @@ const ConnectionInfoPanel: React.FC<ConnectionInfoPanelProps> = ({
       <div className="p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("connectionType")}
             </div>
-            <div className="mt-1 text-zinc-900 capitalize dark:text-zinc-100">
+            <div className="mt-1 text-foreground capitalize">
               {connectionInfo.effectiveType}
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              {t("speed")}
-            </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
+            <div className="text-sm text-muted-foreground">{t("speed")}</div>
+            <div className="mt-1 text-foreground">
               {connectionInfo.downlink}
             </div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              {t("latency")}
-            </div>
-            <div className="mt-1 text-zinc-900 dark:text-zinc-100">
-              {connectionInfo.rtt}
-            </div>
+            <div className="text-sm text-muted-foreground">{t("latency")}</div>
+            <div className="mt-1 text-foreground">{connectionInfo.rtt}</div>
           </div>
           <div>
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+            <div className="text-sm text-muted-foreground">
               {t("dataSaver")}
             </div>
             <div
               className={`mt-1 flex items-center gap-2 ${
-                connectionInfo.saveData
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
+                connectionInfo.saveData ? "text-success" : "text-destructive"
               }`}
             >
               <div

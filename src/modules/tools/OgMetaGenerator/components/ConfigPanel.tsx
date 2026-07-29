@@ -29,8 +29,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>

@@ -64,7 +64,7 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({
 
   const emptyState = (
     <div className="flex h-[380px] items-center justify-center p-8 text-center">
-      <div className="text-zinc-500 dark:text-zinc-400">
+      <div className="text-muted-foreground">
         <Palette size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">
           {t("enterValidColor") || "To'g'ri HEX rang kiriting..."}
@@ -84,13 +84,13 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({
           value: colorFormats.hex,
           description:
             t("hexDescription") || "Web dasturlashda eng keng tarqalgan",
-          colorClass: "text-blue-600 dark:text-blue-400"
+          colorClass: "text-info"
         },
         {
           title: "RGB",
           value: colorFormats.rgb,
           description: `R: ${colorFormats.rgbValues.r}, G: ${colorFormats.rgbValues.g}, B: ${colorFormats.rgbValues.b}`,
-          colorClass: "text-green-600 dark:text-green-400"
+          colorClass: "text-success"
         },
         {
           title: "HSL",
@@ -120,13 +120,13 @@ const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({
           title: "LCH",
           value: colorFormats.lch,
           description: `L: ${colorFormats.lchValues.l}, C: ${colorFormats.lchValues.c}, H: ${colorFormats.lchValues.h}°`,
-          colorClass: "text-rose-600 dark:text-rose-400"
+          colorClass: "text-destructive"
         },
         {
           title: "OKLab",
           value: colorFormats.oklab,
           description: `L: ${colorFormats.oklabValues.l}, a: ${colorFormats.oklabValues.a}, b: ${colorFormats.oklabValues.b}`,
-          colorClass: "text-emerald-600 dark:text-emerald-400"
+          colorClass: "text-success"
         },
         {
           title: "OKLCH",

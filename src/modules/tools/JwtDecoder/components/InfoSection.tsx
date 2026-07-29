@@ -20,8 +20,8 @@ const InfoSection: React.FC = () => {
   return (
     <>
       {/* JWT Examples Section */}
-      <div className="animate-in slide-in-from-bottom-2 fade-in mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-200 dark:border-zinc-800/30 dark:bg-zinc-900/60">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+      <div className="animate-in slide-in-from-bottom-2 fade-in mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-200">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
           <Key
             size={20}
             className="text-indigo-400 transition-transform duration-200"
@@ -29,8 +29,8 @@ const InfoSection: React.FC = () => {
           {t("structure")}
         </h3>
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-zinc-300/30 bg-zinc-100/50 p-4 dark:border-zinc-700/30 dark:bg-zinc-800/30">
-            <div className="mb-3 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          <div className="rounded-lg border border-border/30 bg-muted/50 p-4">
+            <div className="mb-3 text-xs font-medium text-muted-foreground">
               {t("format")}
             </div>
             <div className="space-y-3">
@@ -53,8 +53,8 @@ const InfoSection: React.FC = () => {
             </div>
           </div>
 
-          <div className="rounded-lg border border-zinc-300/30 bg-zinc-100/50 p-4 dark:border-zinc-700/30 dark:bg-zinc-800/30">
-            <div className="mb-3 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+          <div className="rounded-lg border border-border/30 bg-muted/50 p-4">
+            <div className="mb-3 text-xs font-medium text-muted-foreground">
               {t("parts")}
             </div>
             <div className="space-y-3">
@@ -76,18 +76,18 @@ const InfoSection: React.FC = () => {
       </div>
 
       {/* JWT About Section */}
-      <div className="animate-in slide-in-from-bottom-3 fade-in mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm transition-all duration-700 hover:shadow-md dark:border-zinc-800/30 dark:bg-zinc-900/60">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+      <div className="animate-in slide-in-from-bottom-3 fade-in mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-700 hover:shadow-md">
+        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
           <Shield size={20} className="text-indigo-400" />
           {t("about")}
         </h3>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="flex items-center gap-2 font-semibold text-foreground">
               <div className="h-2 w-2 rounded-full bg-blue-400"></div>
               {t("whatIsJwt")}
             </h4>
-            <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-1 text-sm text-muted-foreground">
               <li>{t("whatIsJwtDescription1")}</li>
               <li>{t("whatIsJwtDescription2")}</li>
               <li>{t("whatIsJwtDescription3")}</li>
@@ -95,11 +95,11 @@ const InfoSection: React.FC = () => {
             </ul>
           </div>
           <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="flex items-center gap-2 font-semibold text-foreground">
               <div className="h-2 w-2 rounded-full bg-green-400"></div>
               {t("standardFields")}
             </h4>
-            <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-1 text-sm text-muted-foreground">
               <li>{t("issuer")}</li>
               <li>{t("subject")}</li>
               <li>{t("expiration")}</li>
@@ -107,11 +107,11 @@ const InfoSection: React.FC = () => {
             </ul>
           </div>
           <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-zinc-800 dark:text-zinc-200">
+            <h4 className="flex items-center gap-2 font-semibold text-foreground">
               <div className="h-2 w-2 rounded-full bg-purple-400"></div>
               {t("security")}
             </h4>
-            <ul className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-1 text-sm text-muted-foreground">
               <li>{t("securityDescription1")}</li>
               <li>{t("securityDescription2")}</li>
               <li>{t("securityDescription3")}</li>

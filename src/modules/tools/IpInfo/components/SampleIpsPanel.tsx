@@ -24,8 +24,8 @@ export default function SampleIpsPanel({
   const tSamples = useTranslations("IpInfoPage.SampleIps")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="border-b border-zinc-200 bg-zinc-50/50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900/50">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="border-b border-border bg-muted/50 px-4 py-3">
         <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           {t("sampleIpsTitle")}
         </h3>
@@ -55,27 +55,27 @@ export default function SampleIpsPanel({
                 onClick={() => onLoadSample(sample)}
                 className={`w-full rounded-lg border p-3 text-left transition-all ${
                   isSelected
-                    ? "border-blue-500/50 bg-blue-50/50 dark:border-blue-400/50 dark:bg-blue-900/20"
-                    : "border-zinc-200/50 bg-zinc-100/30 hover:border-zinc-300 hover:bg-zinc-100/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50"
+                    ? "border-info/50 bg-info/50"
+                    : "border-border/50 bg-muted/30 hover:border-border hover:bg-muted/50"
                 }`}
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span
-                    className={`font-medium ${isSelected ? "text-blue-700 dark:text-blue-300" : "text-zinc-800 dark:text-zinc-200"}`}
+                    className={`font-medium ${isSelected ? "text-info" : "text-foreground"}`}
                   >
                     {tSamples(`${sampleKey}.name`)}
                   </span>
                   <Globe
-                    className={`h-3 w-3 ${isSelected ? "text-blue-600 dark:text-blue-400" : "text-blue-500 dark:text-blue-400"}`}
+                    className={`h-3 w-3 ${isSelected ? "text-info" : "text-info"}`}
                   />
                 </div>
                 <p
-                  className={`text-xs ${isSelected ? "text-blue-600 dark:text-blue-400" : "text-zinc-600 dark:text-zinc-500"}`}
+                  className={`text-xs ${isSelected ? "text-info" : "text-muted-foreground"}`}
                 >
                   {tSamples(`${sampleKey}.description`)}
                 </p>
                 <div
-                  className={`mt-2 font-mono text-sm ${isSelected ? "text-blue-700 dark:text-blue-300" : "text-zinc-600 dark:text-zinc-400"}`}
+                  className={`mt-2 font-mono text-sm ${isSelected ? "text-info" : "text-muted-foreground"}`}
                 >
                   {sample.ip}
                 </div>

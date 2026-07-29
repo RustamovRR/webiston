@@ -7,8 +7,8 @@ const InfoSection: React.FC = () => {
   const t = useTranslations("DeviceInfoPage.InfoSection")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -31,10 +31,10 @@ const InfoSection: React.FC = () => {
       <div className="p-6">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+            <h4 className="mb-3 font-medium text-foreground">
               {t("usagePlacesTitle")}
             </h4>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-violet-500"></div>
                 <strong>{t("usagePlaces.webDev.title")}</strong>{" "}
@@ -64,10 +64,10 @@ const InfoSection: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+            <h4 className="mb-3 font-medium text-foreground">
               {t("professionalTipsTitle")}
             </h4>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-violet-500"></div>
                 {t("tips.tip1")}

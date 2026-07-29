@@ -30,9 +30,9 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
   const canDownload = uuids.length > 0
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -51,7 +51,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                 uuids.length > 0 ? "bg-green-500" : "bg-zinc-500"
               )}
             ></div>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs text-muted-foreground">
               {uuids.length > 0 ? t("statusGenerated") : t("statusEmpty")}
             </span>
           </div>
@@ -89,10 +89,10 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
         )}
 
         {uuids.length === 0 ? (
-          <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700">
+          <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-border">
             <div className="text-center">
-              <Hash className="mx-auto h-12 w-12 text-zinc-400 dark:text-zinc-600" />
-              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              <Hash className="mx-auto h-12 w-12 text-muted-foreground" />
+              <p className="mt-2 text-sm text-muted-foreground">
                 {t("emptyMessage")}
               </p>
             </div>
@@ -102,13 +102,13 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
             {uuids.map((item, index) => (
               <div
                 key={item.id}
-                className="group flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-100/30 p-3 transition-colors hover:bg-zinc-100/50 dark:border-zinc-800 dark:bg-zinc-800/30 dark:hover:bg-zinc-800/50"
+                className="group flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 transition-colors hover:bg-muted/50"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="font-mono text-sm break-all text-zinc-800 dark:text-zinc-200">
+                  <div className="font-mono text-sm break-all text-foreground">
                     {item.uuid}
                   </div>
-                  <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <div className="text-xs text-muted-foreground">
                     {t("itemNumber")}
                     {index + 1} • {item.version.toUpperCase()} • {item.format}
                   </div>

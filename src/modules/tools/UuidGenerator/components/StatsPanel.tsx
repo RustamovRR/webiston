@@ -21,42 +21,38 @@ const StatsPanel: React.FC<StatsPanelProps> = ({ stats, isVisible }) => {
   if (!isVisible) return null
 
   return (
-    <div className="mt-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <h3 className="mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+    <div className="mt-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <h3 className="mb-4 text-lg font-semibold text-foreground">
         {tPanel("title")}
       </h3>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div className="text-center">
-          <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="text-3xl font-bold text-foreground">
             <NumberTicker value={stats.total} />
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            {t("totalLabel")}
-          </div>
+          <div className="text-sm text-muted-foreground">{t("totalLabel")}</div>
         </div>
         <div className="text-center">
-          <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="text-3xl font-bold text-foreground">
             <NumberTicker value={stats.unique} />
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("uniqueLabel")}
           </div>
         </div>
         <div className="text-center">
-          <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="text-3xl font-bold text-foreground">
             <NumberTicker value={stats.duplicates} />
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("duplicatesLabel")}
           </div>
         </div>
         <div className="text-center">
-          <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="text-3xl font-bold text-foreground">
             <NumberTicker value={stats.bytes} />
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            {t("bytesLabel")}
-          </div>
+          <div className="text-sm text-muted-foreground">{t("bytesLabel")}</div>
         </div>
       </div>
     </div>

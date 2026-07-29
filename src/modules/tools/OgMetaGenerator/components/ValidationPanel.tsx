@@ -78,9 +78,9 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
   const seoScore = calculateSeoScore()
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600 dark:text-green-400"
-    if (score >= 60) return "text-yellow-600 dark:text-yellow-400"
-    return "text-red-600 dark:text-red-400"
+    if (score >= 80) return "text-success"
+    if (score >= 60) return "text-warning"
+    return "text-destructive"
   }
 
   const getScoreIcon = (score: number) => {
@@ -162,8 +162,8 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
   ]
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -235,7 +235,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             {validationChecks.map((check, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between rounded-lg bg-zinc-50/50 p-3 dark:bg-zinc-800/50"
+                className="flex items-center justify-between rounded-lg bg-muted/50 p-3"
               >
                 <div className="flex items-center gap-3">
                   {check.status === "perfect" && (
@@ -254,10 +254,10 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
                     <div
                       className={`text-xs ${
                         check.status === "perfect"
-                          ? "text-green-600 dark:text-green-400"
+                          ? "text-success"
                           : check.status === "warning"
-                            ? "text-yellow-600 dark:text-yellow-400"
-                            : "text-red-600 dark:text-red-400"
+                            ? "text-warning"
+                            : "text-destructive"
                       }`}
                     >
                       {check.message}
@@ -270,11 +270,11 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
         </div>
 
         {/* Quick Tips */}
-        <div className="rounded-lg bg-blue-50/50 p-4 dark:bg-blue-900/20">
-          <div className="mb-2 text-sm font-medium text-blue-700 dark:text-blue-300">
+        <div className="rounded-lg bg-info/50 p-4">
+          <div className="mb-2 text-sm font-medium text-info">
             {t("quickTips")}
           </div>
-          <ul className="space-y-1 text-xs text-blue-600 dark:text-blue-400">
+          <ul className="space-y-1 text-xs text-info">
             <li>{t("tip1")}</li>
             <li>{t("tip2")}</li>
             <li>{t("tip3")}</li>

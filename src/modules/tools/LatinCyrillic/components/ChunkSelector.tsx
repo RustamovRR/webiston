@@ -85,7 +85,7 @@ export function ChunkSelector({
   return (
     <nav
       aria-label={t("title")}
-      className="mb-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900/50"
+      className="mb-4 rounded-lg border border-border bg-muted p-3"
     >
       {/* Header */}
       <div className="mb-3 flex items-center gap-2">

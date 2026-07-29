@@ -7,18 +7,18 @@ const InfoSection: React.FC = () => {
   const t = useTranslations("PasswordGeneratorPage.InfoSection")
 
   return (
-    <div className="mt-8 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-zinc-900 dark:text-zinc-100">
+    <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
         <Shield size={20} className="text-green-400" />
         {t("title")}
       </h3>
 
       <div className="grid gap-6 md:grid-cols-2">
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("securityRulesTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500"></div>
               <div>
@@ -59,10 +59,10 @@ const InfoSection: React.FC = () => {
         </div>
 
         <div>
-          <h4 className="mb-3 font-medium text-zinc-800 dark:text-zinc-200">
+          <h4 className="mb-3 font-medium text-foreground">
             {t("professionalTipsTitle")}
           </h4>
-          <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
               {t("tip1")}
@@ -86,7 +86,7 @@ const InfoSection: React.FC = () => {
           </ul>
 
           <div className="mt-4 rounded-lg bg-green-500/10 p-3">
-            <div className="text-sm text-green-600 dark:text-green-400">
+            <div className="text-sm text-success">
               <strong>{t("recommendation")}</strong> {t("recommendationText")}
             </div>
           </div>
@@ -96,30 +96,24 @@ const InfoSection: React.FC = () => {
       {/* Password Type Info */}
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg bg-blue-500/10 p-4">
-          <div className="mb-2 font-medium text-blue-600 dark:text-blue-400">
-            {t("randomTitle")}
-          </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            {t("randomDesc")}
-          </div>
+          <div className="mb-2 font-medium text-info">{t("randomTitle")}</div>
+          <div className="text-sm text-muted-foreground">{t("randomDesc")}</div>
         </div>
 
         <div className="rounded-lg bg-purple-500/10 p-4">
           <div className="mb-2 font-medium text-purple-600 dark:text-purple-400">
             {t("memorableTitle")}
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             {t("memorableDesc")}
           </div>
         </div>
 
         <div className="rounded-lg bg-green-500/10 p-4">
-          <div className="mb-2 font-medium text-green-600 dark:text-green-400">
+          <div className="mb-2 font-medium text-success">
             {t("strongTitle")}
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            {t("strongDesc")}
-          </div>
+          <div className="text-sm text-muted-foreground">{t("strongDesc")}</div>
         </div>
       </div>
     </div>

@@ -55,8 +55,8 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
   }
 
   return (
-    <div className="mt-6 rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+    <div className="mt-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -69,9 +69,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -79,7 +77,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
         {/* QR Code Display */}
         <div className="flex justify-center">
           <div
-            className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30"
+            className="rounded-lg border border-border bg-muted/30 p-4"
             style={{
               backgroundColor: customization?.backgroundColor || "#ffffff",
               borderRadius: customization?.borderRadius
@@ -124,7 +122,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
             </div>
 
             <div className="mt-3 text-center">
-              <div className="text-xs text-zinc-600 dark:text-zinc-500">
+              <div className="text-xs text-muted-foreground">
                 {qrSize}x{qrSize} pixels • {errorLevel} xato tuzatish •{" "}
                 {inputType}
               </div>
@@ -187,7 +185,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
 
         {/* Content Preview & Actions */}
         <div className="space-y-4">
-          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
+          <div className="rounded-lg border border-border bg-muted/30 p-4">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 {t("contentTitle")}
@@ -205,7 +203,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
 
             {showPreview && (
               <div className="rounded bg-zinc-200/50 p-3 dark:bg-zinc-800/50">
-                <pre className="text-xs break-all whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">
+                <pre className="text-xs break-all whitespace-pre-wrap text-muted-foreground">
                   {inputText}
                 </pre>
               </div>
@@ -218,8 +216,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 size="sm"
                 className={cn(
                   "flex-1",
-                  copied &&
-                    "border-green-500 bg-green-500/10 text-green-600 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400"
+                  copied && "border-success bg-success/10 text-success"
                 )}
               >
                 {copied ? (
@@ -239,7 +236,7 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
                 onClick={onDownload}
                 variant="default"
                 size="sm"
-                className="flex-1 bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                className="flex-1 bg-info text-white hover:bg-info"
               >
                 <Download size={14} className="mr-1" />
                 {t("downloadQr")}
@@ -248,11 +245,11 @@ const QrDisplay: React.FC<QrDisplayProps> = ({
           </div>
 
           {/* QR Info */}
-          <div className="rounded-lg border border-zinc-300 bg-zinc-100/30 p-4 dark:border-zinc-700 dark:bg-zinc-800/30">
+          <div className="rounded-lg border border-border bg-muted/30 p-4">
             <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {t("technicalInfo")}
             </h4>
-            <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex justify-between">
                 <span>{t("format")}</span>
                 <span className="font-mono">PNG</span>

@@ -162,7 +162,7 @@ export function FileUploadModal({
             "relative rounded-lg border-2 border-dashed p-8 transition-all duration-200",
             isDragging
               ? "border-blue-500 bg-blue-500/10"
-              : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600",
+              : "border-border hover:border-zinc-400 dark:hover:border-zinc-600",
             status === "error" && "border-red-500 bg-red-500/10",
             status === "success" && "border-green-500 bg-green-500/10",
             isProcessing && "pointer-events-none"
@@ -219,7 +219,7 @@ export function FileUploadModal({
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-1"
               >
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">
+                <p className="text-sm font-medium text-success">
                   {t("success")}
                 </p>
                 <p className="max-w-xs truncate text-xs text-zinc-500">
@@ -228,7 +228,7 @@ export function FileUploadModal({
               </motion.div>
             ) : isProcessing ? (
               <div className="w-full max-w-xs space-y-3">
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                <p className="text-sm font-medium text-info">
                   {getProgressStatus()}
                 </p>
                 <ProgressBar percentage={progress.percentage} />
@@ -247,9 +247,7 @@ export function FileUploadModal({
               </p>
             ) : (
               <>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {t("dropzone")}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("dropzone")}</p>
                 <ShimmerButton onClick={handleClick} disabled={isProcessing}>
                   <FileText className="mr-2 h-4 w-4" />
                   {t("selectFile")}
@@ -264,13 +262,13 @@ export function FileUploadModal({
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500">
             <span>{t("supportedFormats")}:</span>
             <div className="flex items-center gap-1.5">
-              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
+              <span className="rounded bg-muted px-2 py-0.5 font-mono">
                 .txt
               </span>
-              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
+              <span className="rounded bg-muted px-2 py-0.5 font-mono">
                 .pdf
               </span>
-              <span className="rounded bg-zinc-100 px-2 py-0.5 font-mono dark:bg-zinc-800">
+              <span className="rounded bg-muted px-2 py-0.5 font-mono">
                 .docx
               </span>
             </div>

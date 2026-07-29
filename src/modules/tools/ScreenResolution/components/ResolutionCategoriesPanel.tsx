@@ -19,8 +19,8 @@ const ResolutionCategoriesPanel: React.FC<ResolutionCategoriesPanelProps> = ({
   const t = useTranslations("ScreenResolutionPage.ResolutionCategories")
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white/50 p-6 dark:border-zinc-800 dark:bg-zinc-900/50">
-      <h3 className="mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+    <div className="rounded-lg border border-border bg-card/50 p-6">
+      <h3 className="mb-4 text-lg font-semibold text-foreground">
         {t("title")}
       </h3>
       <div className="space-y-3">
@@ -29,8 +29,8 @@ const ResolutionCategoriesPanel: React.FC<ResolutionCategoriesPanelProps> = ({
             key={index}
             className={`flex items-center justify-between rounded-lg p-3 transition-colors ${
               currentCategory === category.name
-                ? "border border-blue-500/30 bg-blue-500/20 dark:border-blue-400/30 dark:bg-blue-400/20"
-                : "bg-zinc-100/50 dark:bg-zinc-800/30"
+                ? "border border-info/30 bg-info/20"
+                : "bg-muted/50"
             }`}
           >
             <div>
@@ -42,7 +42,7 @@ const ResolutionCategoriesPanel: React.FC<ResolutionCategoriesPanelProps> = ({
               </div>
             </div>
             {currentCategory === category.name && (
-              <div className="h-2 w-2 rounded-full bg-blue-500 dark:bg-blue-400"></div>
+              <div className="h-2 w-2 rounded-full bg-info"></div>
             )}
           </div>
         ))}

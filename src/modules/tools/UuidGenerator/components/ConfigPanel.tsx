@@ -101,9 +101,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const currentFormatInfo = getFormatInfo(format)
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+    <div className="mb-6 rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       {/* Panel Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
@@ -116,9 +116,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -136,12 +134,12 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               onChange={(value) => onVersionChange(value as UuidVersion)}
               toolCategory="generators"
             />
-            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
                 {currentVersionInfo.description}
               </div>
               <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="text-xs text-muted-foreground">
                   Xavfsizlik:
                 </span>
                 <span
@@ -175,11 +173,11 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               onChange={(value) => onFormatChange(value as UuidFormat)}
               toolCategory="generators"
             />
-            <div className="rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50">
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="text-xs text-muted-foreground">
                 {currentFormatInfo.description}
               </div>
-              <div className="mt-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="mt-1 font-mono text-xs text-muted-foreground">
                 {currentFormatInfo.example}
               </div>
             </div>
@@ -205,16 +203,16 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 value={count}
                 onChange={handleCountChange}
                 disabled={isGenerating}
-                className="w-20 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-colors focus:border-zinc-400 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-600"
+                className="w-20 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition-colors focus:border-zinc-400 focus:outline-none disabled:opacity-50 dark:focus:border-zinc-600"
               />
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="text-xs text-muted-foreground">
                 {t("countRange")}
               </span>
             </div>
 
             {/* Sample selections */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+              <span className="text-sm text-muted-foreground">
                 {t("sampleLabel")}
               </span>
               {sampleCounts.map((sample) => (
@@ -226,8 +224,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   className={cn(
                     "h-8 px-2 text-xs transition-colors",
                     count === sample.value
-                      ? "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-                      : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      ? "bg-info text-white hover:bg-info"
+                      : "hover:bg-muted"
                   )}
                 >
                   {sample.label}

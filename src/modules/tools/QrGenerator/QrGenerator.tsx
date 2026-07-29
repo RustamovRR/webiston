@@ -52,8 +52,8 @@ const QrGenerator = () => {
   // Status component
   const statusComponent =
     inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
+      <span className="flex items-center gap-1 text-xs text-info">
+        <div className="h-1.5 w-1.5 rounded-full bg-info"></div>
         {tInput("status")}
       </span>
     ) : null

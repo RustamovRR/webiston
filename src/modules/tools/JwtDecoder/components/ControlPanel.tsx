@@ -54,7 +54,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   ]
 
   return (
-    <div className="mb-6 rounded-lg border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60">
+    <div className="mb-6 rounded-lg border border-border bg-card/80 backdrop-blur-sm">
       <div className="p-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -71,7 +71,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               variant="ghost"
               size="sm"
               onClick={() => setShowInfo(!showInfo)}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              className="text-info hover:text-info"
             >
               <Info size={16} className="mr-1" />
               {showInfo ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -120,7 +120,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           <div className="flex items-center gap-3">
             {/* Status Badge */}
             {isValid && (
-              <div className="flex items-center gap-1 text-green-600 dark:text-green-500">
+              <div className="flex items-center gap-1 text-success">
                 <CheckCircle size={16} />
                 <span className="text-sm">{t("validJwt")}</span>
               </div>
@@ -144,23 +144,17 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${showInfo ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}
         >
-          <div className="mt-4 rounded-lg border border-blue-200/50 bg-blue-50/30 p-3 dark:border-blue-800/20 dark:bg-blue-900/10">
+          <div className="mt-4 rounded-lg border border-info/50 bg-info/30 p-3">
             <div className="space-y-2 text-sm">
               <p>
-                <strong className="text-blue-700 dark:text-blue-300">
-                  {tInfo("decoded")}:
-                </strong>{" "}
-                <span className="text-blue-600/90 dark:text-blue-200/90">
+                <strong className="text-info">{tInfo("decoded")}:</strong>{" "}
+                <span className="text-info/90">
                   {tInfo("decodedDescription")}
                 </span>
               </p>
               <p>
-                <strong className="text-blue-700 dark:text-blue-300">
-                  {tInfo("raw")}:
-                </strong>{" "}
-                <span className="text-blue-600/90 dark:text-blue-200/90">
-                  {tInfo("rawDescription")}
-                </span>
+                <strong className="text-info">{tInfo("raw")}:</strong>{" "}
+                <span className="text-info/90">{tInfo("rawDescription")}</span>
               </p>
             </div>
           </div>

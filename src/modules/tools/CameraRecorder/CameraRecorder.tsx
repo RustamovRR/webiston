@@ -137,9 +137,9 @@ export default function CameraRecorderPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-xl border border-red-200 bg-red-50/80 p-4 backdrop-blur-sm dark:border-red-500/20 dark:bg-red-500/10"
+          className="mt-6 rounded-xl border border-destructive bg-destructive/80 p-4 backdrop-blur-sm"
         >
-          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <p className="text-sm text-destructive">{error}</p>
         </motion.div>
       )}
 
