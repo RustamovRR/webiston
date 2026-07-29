@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { ScreenResolution } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "ScreenResolutionPage"
 
 const baseMetadata: Metadata = {
   title: "Ekran O'lchami - Bepul Screen Resolution Detector",
@@ -360,7 +365,9 @@ export default async function ScreenResolutionPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <ScreenResolution />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <ScreenResolution />
+      </LocaleMessages>
     </>
   )
 }

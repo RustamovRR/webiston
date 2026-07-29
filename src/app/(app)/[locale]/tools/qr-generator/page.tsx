@@ -1,9 +1,14 @@
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { QrGenerator } from "@/modules/tools"
 
 // Locale-based metadata generation
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "QrGeneratorPage"
 
 const baseMetadata: Metadata = {
   title: "QR Kod Yaratish - Bepul QR Kod Generator Onlayn",
@@ -373,7 +378,9 @@ export default async function QrGeneratorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <QrGenerator />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <QrGenerator />
+      </LocaleMessages>
     </>
   )
 }

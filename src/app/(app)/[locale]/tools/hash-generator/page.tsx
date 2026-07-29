@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { HashGenerator } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "HashGeneratorPage"
 
 const baseMetadata: Metadata = {
   title: "Hash Generator - Bepul MD5, SHA256, SHA512 Hash Yaratish",
@@ -363,7 +368,9 @@ export default async function HashGeneratorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <HashGenerator />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <HashGenerator />
+      </LocaleMessages>
     </>
   )
 }

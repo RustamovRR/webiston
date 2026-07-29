@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { CameraRecorderClient } from "./CameraRecorderClient"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "CameraRecorderPage"
 
 const baseMetadata: Metadata = {
   title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
@@ -404,7 +409,9 @@ export default async function CameraRecorderPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <CameraRecorderClient />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <CameraRecorderClient />
+      </LocaleMessages>
     </>
   )
 }

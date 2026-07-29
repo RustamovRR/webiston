@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { JsonFormatter } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "JsonFormatterPage"
 
 const baseMetadata: Metadata = {
   title: "JSON Formatter - Bepul JSON Formatlash va Tekshirish",
@@ -324,7 +329,9 @@ export default async function JsonFormatterPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <JsonFormatter />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <JsonFormatter />
+      </LocaleMessages>
     </>
   )
 }

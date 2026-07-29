@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { LatinCyrillic } from "@/modules/tools"
 import {
@@ -10,6 +11,10 @@ import {
   howToSchema,
   latinCyrillicMetadata
 } from "@/modules/tools/LatinCyrillic/seo"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "LatinCyrillicPage"
 
 export async function generateMetadata({
   params
@@ -58,7 +63,9 @@ export default async function LatinCyrillicPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
       />
 
-      <LatinCyrillic />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <LatinCyrillic />
+      </LocaleMessages>
     </>
   )
 }

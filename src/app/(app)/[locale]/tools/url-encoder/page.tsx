@@ -1,7 +1,12 @@
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { UrlEncoder } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "UrlEncoderPage"
 
 const baseMetadata: Metadata = {
   title: "URL Encoder/Decoder - Bepul URL Encode/Decode",
@@ -320,7 +325,9 @@ export default async function UrlEncoderPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <UrlEncoder />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <UrlEncoder />
+      </LocaleMessages>
     </>
   )
 }

@@ -27,7 +27,7 @@ canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 | Canonical / hreflang | ✅ | every page self-canonicals; verified in served HTML for `/`, `/en`, tools, books |
 | OG share cards | ✅ | `/api/og` implemented (`next/og`) — was a 404 on all 229 book pages |
 | Static rendering | ✅ | **0 → 266 routes prerendered.** 34 tool pages (17 × 2 locales) + 228 book chapters + home + index pages. Only `/api/og` stays `ƒ` — it reads `searchParams`. `cacheComponents`/PPR deliberately rejected, see initiative |
-| Payload | ⚠️ | search index on dialog-open (**measured**: 0 requests on page load) · logo **209 KB → 5.5 KB** · CLS fixed with real measured dimensions (94/94). Left: message-bundle filtering, heavy-dep dynamic imports, `images.unoptimized` |
+| Payload | ⚠️ | search index on dialog-open (**0** requests on page load) · logo **209 KB → 5.5 KB** · **CLS measured 0** · tool-page HTML **−43%** via scoped i18n. Left: `images.unoptimized` (**25 MB of raw book figures**) |
 | Soft 404s | ✅ | `/books/**` returned 200 for non-existent chapters *and* any unknown book id; both now 404 |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
@@ -94,13 +94,15 @@ the 8 dead-key deletion below.
 
 ## Next up
 
-**Finish SEO Phase 4.** The logo and CLS items are done. What is left:
-the whole message bundle going to the client on localised pages (`/books`
-already sends only 2 namespaces — do the same for `[locale]`), heavy deps
-(`pdfjs-dist`, `mammoth`, `docx`, `katex`, `leaflet`) that are not dynamically
-imported, and the `images.unoptimized: true` decision — **25 MB of book figures
-are served raw** because of it. ⚠️ Next 16's Turbopack build no longer prints
-per-route sizes; measure with `@next/bundle-analyzer` before and after.
+**Phase 4 is nearly done — what remains is one decision, not code.**
+`images.unoptimized: true` (`next.config.ts:26`) means the **25 MB of book
+figures in `public/` are served raw**; one chapter ships several MB of PNG. That
+now dwarfs every other payload item on the site. Owner's call — see `backlog.md`.
+
+The heavy-dep item turned out to be a non-issue: `pdfjs-dist`, `mammoth`, `docx`
+and `leaflet` are **already** lazily chunked. Measured in the browser — a tool
+page loads 756 KB of JS and **none** of those chunks. `katex` and `shiki` no
+longer reach the client at all.
 
 Note the `<html lang>` trade-off is now settled by evidence: static rendering
 won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the

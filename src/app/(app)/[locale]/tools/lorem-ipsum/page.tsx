@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { LoremIpsum } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "LoremIpsumPage"
 
 const baseMetadata: Metadata = {
   title: "Lorem Ipsum Generator - Bepul Placeholder Matn Yaratuvchi",
@@ -354,7 +359,9 @@ export default async function LoremIpsumPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <LoremIpsum />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <LoremIpsum />
+      </LocaleMessages>
     </>
   )
 }

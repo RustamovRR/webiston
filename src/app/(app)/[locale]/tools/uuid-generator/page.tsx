@@ -1,7 +1,12 @@
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { UuidGenerator } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "UuidGeneratorPage"
 
 const baseMetadata: Metadata = {
   title: "UUID Generator - Bepul Noyob Identifikator Yaratuvchi",
@@ -364,7 +369,9 @@ export default async function UuidGeneratorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <UuidGenerator />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <UuidGenerator />
+      </LocaleMessages>
     </>
   )
 }

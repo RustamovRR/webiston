@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { IpInfo } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "IpInfoPage"
 
 const baseMetadata: Metadata = {
   title: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool",
@@ -353,7 +358,9 @@ export default async function IpInfoPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <IpInfo />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <IpInfo />
+      </LocaleMessages>
     </>
   )
 }

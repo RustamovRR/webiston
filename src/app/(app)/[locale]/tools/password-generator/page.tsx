@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { PasswordGenerator } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "PasswordGeneratorPage"
 
 const baseMetadata: Metadata = {
   title: "Password Generator - Bepul Xavfsiz Parol Yaratish",
@@ -352,7 +357,9 @@ export default async function PasswordGeneratorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <PasswordGenerator />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <PasswordGenerator />
+      </LocaleMessages>
     </>
   )
 }

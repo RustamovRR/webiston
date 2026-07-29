@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { JwtDecoder } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "JwtDecoderPage"
 
 const baseMetadata: Metadata = {
   title: "JWT Decoder - Bepul JWT Token Dekoder",
@@ -326,7 +331,9 @@ export default async function JwtDecoderPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <JwtDecoder />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <JwtDecoder />
+      </LocaleMessages>
     </>
   )
 }

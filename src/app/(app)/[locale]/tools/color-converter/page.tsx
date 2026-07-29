@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { ColorConverter } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "ColorConverterPage"
 
 const baseMetadata: Metadata = {
   title: "Color Converter - Bepul Rang Konverter va Palette Generator",
@@ -330,7 +335,9 @@ export default async function ColorConverterPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <ColorConverter />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <ColorConverter />
+      </LocaleMessages>
     </>
   )
 }

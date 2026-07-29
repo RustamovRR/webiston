@@ -13,6 +13,16 @@ import { routing } from "@/i18n/routing"
 
 const _inter = Inter({ subsets: ["latin"] })
 
+// Only the chrome's namespaces go to the client from HERE. `Header` and
+// `Footer` are Server Components; the client components they render are
+// `Search` and `ThemeToggle`, which use exactly these two.
+//
+// This used to pass the ENTIRE bundle — all 19 tool namespaces, 91 KB of Uzbek
+// strings — into the HTML of every localised page, so /tools/json-formatter
+// shipped the camera recorder's and QR generator's strings too. Each tool page
+// now provides its own namespace via `<LocaleMessages>`.
+const CHROME_NAMESPACES = ["Search", "Common"] as const
+
 // Enumerating the locales is half of the static-rendering opt-in; the other
 // half is `setRequestLocale` below, in this layout AND in every page.
 export function generateStaticParams() {
@@ -56,9 +66,12 @@ export default async function LocaleLayout({
   setRequestLocale(locale)
 
   const messages = await getMessages()
+  const chromeMessages = Object.fromEntries(
+    CHROME_NAMESPACES.map((ns) => [ns, messages[ns]])
+  )
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={chromeMessages}>
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">{children}</main>

@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { OgMetaGenerator } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "OgMetaGeneratorPage"
 
 const baseMetadata: Metadata = {
   title: "OG Meta Generator - Bepul Open Graph Meta Tag Tool",
@@ -357,7 +362,9 @@ export default async function OgMetaGeneratorPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <OgMetaGenerator />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <OgMetaGenerator />
+      </LocaleMessages>
     </>
   )
 }

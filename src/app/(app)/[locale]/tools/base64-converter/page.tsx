@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { Base64Converter } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "Base64ConverterPage"
 
 const baseMetadata: Metadata = {
   title: "Base64 Converter - Bepul Base64 Encode/Decode",
@@ -324,7 +329,9 @@ export default async function Base64ConverterPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <Base64Converter />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <Base64Converter />
+      </LocaleMessages>
     </>
   )
 }

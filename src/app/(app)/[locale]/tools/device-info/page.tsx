@@ -1,8 +1,13 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { DeviceInfo } from "@/modules/tools"
+
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "DeviceInfoPage"
 
 const baseMetadata: Metadata = {
   title: "Qurilma Ma'lumotlari - Bepul Device Information Tool",
@@ -356,7 +361,9 @@ export default async function DeviceInfoPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <DeviceInfo />
+      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <DeviceInfo />
+      </LocaleMessages>
     </>
   )
 }

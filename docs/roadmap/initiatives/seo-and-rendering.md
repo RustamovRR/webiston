@@ -181,9 +181,22 @@ same index. Folded into the Phase 5 item below.
   it down. Verified: **94 of 94** images measured, 0 failures, and the served
   HTML has **0** images left at `width="0"` (e.g. `1622×476`, `1616×966`).
   Traversal (`..`) and remote URLs return `null` rather than touching the disk.
-- `[ ]` **Whole message bundle to the client.** `src/app/(app)/[locale]/layout.tsx:39`
-  calls `getMessages()` with no namespace filter and passes everything to the
-  client provider — all 19 tool namespaces on every localised page.
+- `[x]` **Message bundle scoped per subtree. `/tools/json-formatter` HTML
+  176,817 → 100,723 bytes (−43%).** The localised layout passed the whole bundle
+  — all 19 tool namespaces, 91 KB of Uzbek strings — to the client provider, so
+  the JSON formatter page shipped the camera recorder's, QR generator's and
+  transliterator's strings. Now the layout sends only the chrome's two
+  (`Search`, `Common`) and each tool page wraps itself in `<LocaleMessages>`
+  with its own.
+  - **Nested providers replace, they do not merge** — so each subtree's list must
+    name everything it needs, `Common` included.
+  - Safe to automate because nothing uses a dynamic namespace: verified every
+    `TOOL_NAMESPACE` exists in the bundles, and every tool module calls exactly
+    the one namespace its page provides.
+  - Verified by request, not by reading: **all 34 tool URLs** (17 tools × 2
+    locales) return 200 with zero `MISSING_MESSAGE`/`IntlError`, and each page's
+    HTML now contains only its own namespace. All 266 routes still prerender —
+    `LocaleMessages` reads the locale `setRequestLocale` already pinned.
 - `[ ]` **Dynamic-import the heavy deps** — `pdfjs-dist`, `mammoth`, `docx`,
   `katex`, `shiki`, `leaflet`, `flexsearch`. ⚠️ The Next 16 Turbopack build **no
   longer prints per-route sizes**, so measure with `@next/bundle-analyzer`
