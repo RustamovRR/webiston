@@ -6,7 +6,15 @@ module.exports = {
   // A sitemap lists indexable *pages*. /manifest.webmanifest is a PWA metadata
   // file that next-sitemap auto-discovers from the app router — submitting it
   // just spends crawl budget on something Google will never index.
-  exclude: ['/api/*', '/_next/*', '/manifest.webmanifest'],
+  //
+  // `/uz/*` is excluded because it is not a real URL. `localePrefix` is
+  // "as-needed" (src/i18n/routing.ts), so the default locale is served
+  // unprefixed and the middleware 307-redirects /uz/x -> /x. Those paths only
+  // appear here because `generateStaticParams` prerenders the tools pages under
+  // /uz, and next-sitemap auto-discovers the prerender manifest. Listing a
+  // redirecting URL in a sitemap earns a "Page with redirect" error in Search
+  // Console and contradicts the canonical each page declares.
+  exclude: ['/api/*', '/_next/*', '/manifest.webmanifest', '/uz', '/uz/*'],
 
   // Do NOT stamp <lastmod> with the build time.
   //

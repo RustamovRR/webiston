@@ -62,10 +62,16 @@ export default function Search() {
     }
   }, [open, clearSearch])
 
-  // Initialize search engine when component mounts
+  // Build the index when the dialog OPENS, not when the page mounts.
+  //
+  // `public/search-index.json` is 1.05 MB. Loading it on mount meant every
+  // visitor on every route downloaded and indexed it, including the ~all of them
+  // who never search. Opening the dialog gives us the time before the first
+  // keystroke, and `searchEngine.search()` initialises on demand anyway, so a
+  // fast typist is still correct — just briefly slower.
   useEffect(() => {
-    searchEngine.initialize().catch(console.error)
-  }, [])
+    if (open) searchEngine.initialize().catch(console.error)
+  }, [open])
 
   return (
     <>

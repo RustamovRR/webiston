@@ -67,23 +67,59 @@ this locale", derived from `routing.localePrefix`, instead of 17 hand-written co
   navigation between the two roots — or (b) accept `lang="uz"` until next-intl
   can resolve a locale statically above the segment.
 
-## Phase 3 — `[ ]` Rendering (the biggest measurable win)
+## Phase 3 — `[~]` Rendering (the biggest measurable win)
 
-> Start here by deciding the `<html lang>` / root-layout question deferred from
-> Phase 2 — it and `setRequestLocale` are the same decision.
-
-- `[ ]` **Nothing is statically prerendered.** Every route in the build output is
-  `ƒ` (server-rendered on demand); only `/_not-found` and `/manifest.webmanifest`
-  are static. **Cause:** next-intl requires `setRequestLocale(locale)` in every
-  locale layout/page to permit static generation, and there are **zero
-  occurrences** in `src/` (`grep -rn "setRequestLocale" src/`). On a
-  226-chapter content site this is the single largest performance item.
-  Note `src/app/books/[...slug]/page.tsx:14` *already has* `generateStaticParams` —
-  it is being defeated by the missing opt-in.
-- `[ ]` **1.05 MB search index on every page load.** `public/search-index.json`
-  is 1,097,642 bytes and `src/components/shared/Search/Search.tsx:67` initialises
-  it in a mount effect — on every page, including pages that never open search.
-  Move it into the dialog-open path.
+- `[x]` **Static prerendering is on. 0 → 266 prerendered routes.** Build output
+  went from every route `ƒ` to `●`/`○` everywhere except the two API routes,
+  which are correctly dynamic.
+  - `setRequestLocale` in `[locale]/layout.tsx`, `books/layout.tsx`, and **every
+    page** (layout alone is not enough — `/[locale]` stayed `ƒ` until the page
+    itself called it), plus `generateStaticParams` on `[locale]`.
+  - Root cause of the dynamic-ness was not the pages: `Header` and `Footer` are
+    Server Components calling `useTranslations`, which resolves the locale
+    through `headers()`. Both are shared by the localised tree *and* `/books`.
+  - **Two latent bugs only prerendering could expose**, both pre-existing:
+    1. `react-media-recorder` → `extendable-media-recorder-wav-encoder` calls
+       `new Worker(...)` at **module scope**, so importing the camera tool
+       crashed any server render. A `CameraRecorderClient` wrapper with
+       `ssr: false` already existed for exactly this — it was never wired up;
+       the page imported `CameraRecorder` from `@/modules/tools` directly.
+    2. `/books/**` had **no `NextIntlClientProvider`**, so `Search` and
+       `ThemeToggle` (client components in the shared Header) threw
+       "context … was not found" on all 229 chapters. The server render of that
+       subtree failed and React recovered on the client, which is why it never
+       looked broken. Fixed with a provider pinned to `routing.defaultLocale`
+       carrying **only the `Search` + `Common` namespaces** — `/books` stays
+       Uzbek-only (no `/en/books`; verified 404).
+- `[x]` **1.05 MB search index no longer loads on every page.** It was fetched
+  in a mount effect in `Search.tsx`; now it initialises when the dialog *opens*.
+  `searchEngine.search()` already self-initialises, so a fast typist is still
+  correct. **Measured in the browser**, not inferred: a book page load requested
+  `/search-index.json` before, and records no such request after; opening the
+  dialog and typing "virtual dom" fetches it and returns highlighted hits.
+- `[x]` **Soft 404s fixed — `/books/**` returned HTTP 200 for pages that do not
+  exist.** Two independent instances of the same shape, both found by looking at
+  the rendered body instead of the status line:
+  1. A missing chapter `throw`-ed inside a `try`, was caught, and rendered
+     `<ErrorContent>` at **200**. Now `notFound()`.
+  2. `getTutorialInfo()` built an info object for **any** id (`getTutorialTitle`
+     falls back to the raw string), so `/books/<anything>` rendered an empty
+     landing page at **200** — an unbounded indexable URL space. A book now
+     exists iff its `content/<id>/_meta.json` does, with an id-shape guard before
+     any filesystem access.
+  - Root cause of both: `notFound()` signals by **throwing**, and both call sites
+    sat inside a `try/catch` that swallowed it. Guarded with `unstable_rethrow`.
+    A repo sweep confirms these were the only two `catch` blocks in `src/` that
+    could swallow a `notFound()`/`redirect()`.
+  - Verified: real chapters/books `200`; `/books/fluent-react/introduction`,
+    `/books/no-such-book`, `/books/NoSuchBook` → **404**.
+- `[x]` **Sitemap regression from static rendering, caught in review.**
+  `generateStaticParams` prerenders the tools pages under `/uz/*`, and
+  next-sitemap auto-discovers the prerender manifest — so **18 `/uz/*` URLs**
+  entered `sitemap.xml`. Those 307-redirect (localePrefix is "as-needed"), and a
+  redirecting URL in a sitemap is a Search Console error that contradicts the
+  canonical each page declares. Excluded in `next-sitemap.config.js`;
+  286 → **267 URLs, 0 duplicates, 0 `/uz/`**.
 - `[ ]` **Code is highlighted in the browser.** `src/components/mdx/CodeBlock/CodeBlock.tsx:1`
   is `'use client'`, so server HTML ships grey skeletons instead of code — bad for
   LCP *and* indexability. `MDXContent` is already an async Server Component.

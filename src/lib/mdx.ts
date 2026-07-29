@@ -207,9 +207,28 @@ export async function getMDXContent(
   }
 }
 
+/** A book id is a directory name under `content/`. Anything else is a URL
+ *  someone typed — reject it before it reaches the filesystem. */
+const BOOK_ID = /^[a-z0-9][a-z0-9-]*$/
+
 // Tutorial ma'lumotlarini olish
 export async function getTutorialInfo(tutorialId: string) {
   try {
+    // This used to build an info object for ANY id: `getTutorialTitle` falls
+    // back to the raw string, so /books/anything rendered an empty landing page
+    // with HTTP 200 — a soft 404 over an unbounded URL space. A book exists iff
+    // its `_meta.json` does.
+    if (!BOOK_ID.test(tutorialId)) return null
+
+    const { promises: fs } = await import("node:fs")
+    try {
+      await fs.access(
+        path.resolve(process.cwd(), "content", tutorialId, "_meta.json")
+      )
+    } catch {
+      return null
+    }
+
     const navigation = await getTutorialNavigation(tutorialId)
 
     // Tutorial asosiy ma'lumotlari

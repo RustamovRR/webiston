@@ -149,7 +149,16 @@ export async function generateMetadata({
   }
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  // Every page needs its own `setRequestLocale`, not just the layout — without
+  // it this was the one route left rendering on demand.
+  const { locale } = await params
+  setRequestLocale(locale)
+
   const tHome = await getTranslations("HomePage")
   const tTools = await getTranslations("Tools")
 

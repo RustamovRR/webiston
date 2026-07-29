@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, unstable_rethrow } from "next/navigation"
 import {
   ErrorContent,
   TutorialContent,
@@ -202,6 +202,11 @@ export default async function TutorialPage({ params }: BookPageProps) {
       </div>
     )
   } catch (error) {
+    // `notFound()` signals by throwing, so this catch was swallowing it and
+    // returning `<ErrorContent />` with HTTP 200 — an unknown book id rendered
+    // an empty landing page instead of a 404.
+    unstable_rethrow(error)
+
     console.error("Error in tutorial page:", error)
     return <ErrorContent />
   }
