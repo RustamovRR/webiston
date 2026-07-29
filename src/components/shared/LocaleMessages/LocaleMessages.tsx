@@ -30,6 +30,18 @@ export async function LocaleMessages({
   const locale = await getLocale()
   const messages = await getMessages()
 
+  // Naming a namespace that does not exist is silent otherwise: the provider
+  // gets `{ Foo: undefined }`, next-intl falls back to printing the key path,
+  // and the page still renders and still returns 200. Fail the render — and
+  // therefore the prerender, and therefore the build — instead.
+  const missing = namespaces.filter((ns) => messages[ns] === undefined)
+  if (missing.length) {
+    throw new Error(
+      `LocaleMessages: namespace(s) not found in the ${locale} bundle: ${missing.join(", ")}. ` +
+        "Check messages/ — a typo here ships as visible key paths, not an error."
+    )
+  }
+
   const picked = Object.fromEntries(namespaces.map((ns) => [ns, messages[ns]]))
 
   return (

@@ -74,6 +74,15 @@
 
 ## Standalone items (not part of any initiative)
 
+- `[ ]` **No gate catches a missing i18n namespace at a route.** `pnpm i18n`
+  checks uz/en *parity*, and `LocaleMessages` now throws for a namespace that
+  does not exist. Neither catches a namespace that exists but was never
+  *provided* to a route: next-intl prints the key path instead of throwing, the
+  page returns **200**, and only the browser console complains. That is exactly
+  how `/tools` broke on 2026-07-29 and survived a status-code sweep. A real check
+  needs the route → client-component → namespace graph, or a headless-browser
+  pass asserting zero console errors per route.
+
 - `[ ]` **Root `README.md` is unedited create-next-app boilerplate** — offers
   `npm`/`yarn`/`bun` against a pnpm-only repo and points at `localhost:3000`
   when `package.json:11` uses port 9999. **[unverified]**

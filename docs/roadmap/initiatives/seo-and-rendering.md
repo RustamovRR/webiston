@@ -197,6 +197,15 @@ same index. Folded into the Phase 5 item below.
     locales) return 200 with zero `MISSING_MESSAGE`/`IntlError`, and each page's
     HTML now contains only its own namespace. All 266 routes still prerender —
     `LocaleMessages` reads the locale `setRequestLocale` already pinned.
+  - ⚠️ **A status check cannot catch this class of bug.** Scoping the layout
+    initially broke `/tools`: `ToolsMainPage` is a Client Component calling
+    `Tools`, `ToolsPage.Main`, `ToolCategories` and `Filters`, none of which the
+    chrome provider carries. The page still returned **200** and still rendered,
+    because next-intl falls back to printing the key path. Only the browser
+    console showed it. Fixed by naming those namespaces on the page, and
+    `LocaleMessages` now **throws** when asked for a namespace that is not in the
+    bundle — so it fails the prerender, and therefore the build. Verified with an
+    injected typo: build exit 1 with the message, exit 0 restored.
 - `[ ]` **Dynamic-import the heavy deps** — `pdfjs-dist`, `mammoth`, `docx`,
   `katex`, `shiki`, `leaflet`, `flexsearch`. ⚠️ The Next 16 Turbopack build **no
   longer prints per-route sizes**, so measure with `@next/bundle-analyzer`

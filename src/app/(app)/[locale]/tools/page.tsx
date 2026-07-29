@@ -1,8 +1,22 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
 import { ToolsMainPage } from "@/modules/tools"
+
+// `ToolsMainPage` is a CLIENT component and calls four namespaces —
+// `Tools`, `ToolsPage.Main`, `ToolCategories`, `Filters`. Scoping the layout
+// provider to the chrome broke this page until they were named here: it still
+// returned HTTP 200 and still rendered, because next-intl falls back to the key
+// path instead of throwing. Only the browser console showed it.
+const INDEX_NAMESPACES = [
+  "Tools",
+  "ToolsPage",
+  "ToolCategories",
+  "Filters",
+  "Common"
+] as const
 
 const baseMetadata: Metadata = {
   title: "Bepul Onlayn Vositalar - Professional Developer Tools",
@@ -360,7 +374,9 @@ export default async function ToolsPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <ToolsMainPage />
+      <LocaleMessages namespaces={INDEX_NAMESPACES}>
+        <ToolsMainPage />
+      </LocaleMessages>
     </>
   )
 }
