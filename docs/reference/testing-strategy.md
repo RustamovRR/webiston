@@ -23,21 +23,40 @@ This document outlines the testing strategy for Webiston project, following indu
 
 ## Testing Philosophy
 
-We follow the **Testing Trophy** model (Kent C. Dodds):
+We follow the **Testing Trophy** (Kent C. Dodds), **not** the Testing Pyramid.
+
+> ⚠️ **This document previously claimed "Trophy" while drawing a pyramid**
+> (unit as the widest layer). That is the Trophy upside-down, and it pointed the
+> whole strategy at the wrong layer. Corrected 2026-07-29.
 
 ```
-    ▲ E2E Tests (few)
-   ▲▲▲ Integration Tests (more)
-  ▲▲▲▲▲ Unit Tests (most)
- ▲▲▲▲▲▲▲ Static Analysis (TypeScript, Linting)
+      ╱‾‾‾╲        E2E              — few; only critical journeys
+     ╱─────╲
+    │       │      INTEGRATION      — THE FAT LAYER: most of your effort
+    │       │
+     ╲_____╱       Unit             — pure logic only
+   ▔▔▔▔▔▔▔▔▔▔▔     Static analysis  — TypeScript + Biome, free on every save
 ```
+
+**Why the Trophy and not the Pyramid, for this repo specifically:**
+a React component that renders state, calls a hook, formats output and writes to
+a store is not a unit — it is a small system, and its bugs live in how the pieces
+connect, not inside any one of them. The Pyramid is the right shape for a backend
+with heavy domain logic; the Trophy is the right shape for a frontend. Webiston is
+a frontend, so integration tests earn the most confidence per line written.
+
+**The one exception in this repo:** `packages/transliteration` is pure,
+dependency-free domain logic with thousands of edge cases — that package is a
+*pyramid*, and its 207 unit tests are correct exactly as they are. Shape the tests
+to the code, not to a slogan.
 
 ## Test Types
 
 ### 1. Static Analysis (Foundation)
-- **TypeScript**: Type checking (`pnpm typecheck`)
-- **OXLint**: Fast linting (`pnpm lint`)
-- **Biome**: Code formatting (`pnpm format:check`)
+- **TypeScript**: type checking (`pnpm typecheck`) — TS 7, runs in ~0.4s
+- **Biome**: formatting **and** linting (`pnpm check`) — the primary linter
+- **oxlint**: secondary linter (`pnpm lint`); see `roadmap/backlog.md` — running
+  two linters over the same files is redundant and is queued for a decision
 
 ### 2. Unit Tests
 Test individual functions in isolation.
@@ -72,12 +91,21 @@ Test complete user flows.
 
 ## Coverage Goals
 
-| Type | Target | Priority |
-|------|--------|----------|
-| Utility functions | 90%+ | High |
-| Hooks | 80%+ | Medium |
-| Components | 70%+ | Medium |
-| E2E | Critical paths | Low |
+Coverage is a **smoke detector, not a score**. A number does not tell you the
+tests are good; it only tells you where there are none at all. Chase the
+percentage and you get tests written to touch lines rather than to catch bugs.
+
+| Layer | Target | Priority | Why |
+|------|------|----------|-----|
+| `packages/transliteration` | 90%+ | High | pure logic, huge edge-case surface, ships to 2 products |
+| `src/lib/` utils | 90%+ | High | pure, and every tool depends on them |
+| Tool business-logic hooks | 70%+ | High | where the actual bugs are |
+| Components (integration) | behaviour, not % | High | test what a user does, via RTL |
+| Presentational components | none | — | testing these tests React, not you |
+| E2E | ~5 critical journeys | Medium | book reading, search, one tool round-trip |
+
+**Current reality (2026-07-29):** 207 tests, all in `packages/transliteration`.
+`src/` has zero. The first tests to write are listed in `roadmap/backlog.md`.
 
 ## Testing Tools
 
