@@ -24,7 +24,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
   return (
     <Card
       className={cn(
-        "border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/30 dark:bg-zinc-900/60",
+        "border-border bg-card/80 backdrop-blur-sm/30/60",
         className
       )}
     >
@@ -45,7 +45,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
             {title}
           </h3>
         </div>
-        <p className="mb-4 leading-relaxed text-zinc-600 dark:text-zinc-400">
+        <p className="mb-4 leading-relaxed text-muted-foreground">
           {description}
         </p>
         <div className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">

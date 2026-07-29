@@ -50,14 +50,12 @@ export default function LanguageSelectorContent() {
           <DropdownMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            className={`flex cursor-pointer items-center gap-2 ${locale === language.code ? "bg-zinc-100 dark:bg-zinc-800" : ""}`}
+            className={`flex cursor-pointer items-center gap-2 ${locale === language.code ? "bg-muted" : ""}`}
           >
             <span className="text-sm">{language.flag}</span>
             <span className="font-medium">{language.code}</span>
             {locale === language.code && (
-              <span className="ml-auto text-xs text-green-600 dark:text-green-400">
-                ✓
-              </span>
+              <span className="ml-auto text-xs text-success">✓</span>
             )}
           </DropdownMenuItem>
         ))}

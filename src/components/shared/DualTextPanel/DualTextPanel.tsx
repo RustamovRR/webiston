@@ -86,7 +86,7 @@ export function DualTextPanel({
 
   const DefaultTargetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
+      <div className="text-muted-foreground">
         <FileText
           size={48}
           className="mx-auto mb-4 opacity-50"
@@ -110,16 +110,16 @@ export function DualTextPanel({
         className={cn(
           "relative flex w-full flex-col overflow-hidden rounded-xl",
           isTerminal
-            ? "border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80"
-            : "bg-zinc-100 dark:bg-zinc-900/80",
+            ? "border border-border bg-card/80 backdrop-blur-sm/50/80"
+            : "bg-muted/80",
           showShadow && "shadow-2xl"
         )}
       >
         {/* Header */}
         <header
           className={cn(
-            "flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800",
-            isTerminal ? "bg-zinc-100/50 dark:bg-zinc-800/50" : ""
+            "flex h-14 shrink-0 items-center justify-between border-b border-border px-4",
+            isTerminal ? "bg-muted/50/50" : ""
           )}
         >
           <div className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export function DualTextPanel({
             )}
             <h2
               id={panelId}
-              className="ml-2 text-base font-medium text-zinc-900 dark:text-zinc-100"
+              className="ml-2 text-base font-medium text-foreground"
             >
               {label}
             </h2>
@@ -156,7 +156,7 @@ export function DualTextPanel({
                       onClick={onClear}
                       variant="ghost"
                       size="sm"
-                      className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      className="text-muted-foreground hover:text-zinc-800 dark:hover:text-zinc-200"
                       aria-label={tCommon("clear")}
                     >
                       <X size={18} aria-hidden="true" />
@@ -188,7 +188,7 @@ export function DualTextPanel({
               <textarea
                 value={sourceText}
                 onChange={(e) => onSourceChange(e.target.value)}
-                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-muted-foreground"
                 placeholder={sourcePlaceholder}
                 disabled={isLoading}
                 aria-label={sourceLabel}
@@ -212,12 +212,12 @@ export function DualTextPanel({
                   {error}
                 </div>
               ) : isLoading ? (
-                <div className="flex h-full items-center justify-center p-4 text-zinc-500 dark:text-zinc-400">
+                <div className="flex h-full items-center justify-center p-4 text-muted-foreground">
                   <span aria-live="polite">{tCommon("processing")}</span>
                 </div>
               ) : convertedText ? (
                 <div className="p-4">
-                  <pre className="whitespace-pre-wrap wrap-break-word font-mono text-sm text-zinc-900 dark:text-zinc-100">
+                  <pre className="whitespace-pre-wrap wrap-break-word font-mono text-sm text-foreground">
                     {convertedText}
                   </pre>
                 </div>
@@ -231,8 +231,8 @@ export function DualTextPanel({
         {/* Footer */}
         <footer
           className={cn(
-            "flex shrink-0 items-center justify-between border-t border-zinc-200 px-4 py-2.5 dark:border-zinc-800",
-            isTerminal && "bg-zinc-100/30 dark:bg-zinc-800/30"
+            "flex shrink-0 items-center justify-between border-t border-border px-4 py-2.5",
+            isTerminal && "bg-muted/30/30"
           )}
         >
           <div className="flex items-center">
@@ -259,7 +259,7 @@ export function DualTextPanel({
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-zinc-300 bg-white/90! shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-100/90 dark:border-zinc-700 dark:bg-zinc-900/90! dark:hover:bg-zinc-800/90"
+              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-muted/90/90! dark:hover:bg-zinc-800/90"
               title={swapButtonTitle}
               disabled={isLoading}
               aria-label={swapButtonTitle || "Swap"}
@@ -267,7 +267,7 @@ export function DualTextPanel({
               {swapIcon || (
                 <ArrowLeftRight
                   size={20}
-                  className="text-zinc-600 dark:text-zinc-300"
+                  className="text-muted-foreground"
                   aria-hidden="true"
                 />
               )}

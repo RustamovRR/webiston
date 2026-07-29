@@ -24,7 +24,7 @@ const SimpleCard: FC<IProps> = ({
   ...props
 }) => {
   const classNames = cn(
-    "relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-zinc-200 hover:bg-zinc-50 select-none dark:border-zinc-800 dark:hover:bg-zinc-900/50",
+    "relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-border hover:bg-zinc-50 select-none dark:hover:bg-zinc-900/50",
     {
       "pointer-events-none opacity-50": disabled
     },
@@ -34,10 +34,8 @@ const SimpleCard: FC<IProps> = ({
   const content = (
     <div className="flex flex-col items-center p-6 text-center">
       <div className="text-center">
-        <h3 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {title}
-        </h3>
-        <p className="text-zinc-600 dark:text-zinc-400">{description}</p>
+        <h3 className="mb-2 text-xl font-semibold text-foreground">{title}</h3>
+        <p className="text-muted-foreground">{description}</p>
       </div>
     </div>
   )

@@ -26,7 +26,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
-| Design tokens | 🟡 | Phase A+B shipped: 3-layer system, brand hue 217°, all 32 contrast pairs PASS, ratchet gate live. Sweep (C–E) open: **5,401** hits / 159 files |
+| Design tokens | 🟡 | A+B shipped (3-layer, hue 217°, 32/32 contrast PASS, ratchet live). C in progress: **5,401 → 5,167** hits; 28/48 shared files clean; tokens 170 → 303 |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
@@ -37,13 +37,15 @@ restructured into `initiatives/`. Branch `refactor`._
 
 ## In progress
 
-- `[~]` **Design system** — Phases A + B shipped. Token block is now 3-layer with
-  brand hue **217°** (from the Uzbek flag blue); `pnpm contrast` verifies all 32
-  pairs in both schemes; `pnpm tokens` ratchets drift at 5,401/159 files.
-  **Next: Phase C — shared surfaces.** → `initiatives/design-system.md`
-- `[~]` **Code structure** — Phase 1 half-landed: `packages/ui` boundary is clean,
-  but `TOOL_COLORS`/`UI_PATTERNS` exist in **two** places until the re-export is
-  written. → `initiatives/code-structure.md`
+- `[~]` **Design system** — A + B shipped, C in progress. 3-layer tokens, brand
+  hue **217°**, `pnpm contrast` 32/32 both schemes, `pnpm tokens` ratchet live.
+  Phase C so far: **−234 hits**, 28/48 shared files token-clean.
+  **Next: the 20-file remainder** (singles needing judgement, not a rule).
+  → `initiatives/design-system.md`
+- `[x]` **Code structure Phase 1 — done.** `packages/ui` `@/` imports 3 → 0, and
+  the `TOOL_COLORS`/`UI_PATTERNS` duplication is closed: one definition in
+  `@webiston/ui`, re-exported by `src/constants/ui-constants.ts`.
+  → `initiatives/code-structure.md`
 
 ## Initiatives
 

@@ -21,9 +21,9 @@
   `../constants/ui-patterns`. `TOOL_COLORS`/`UI_PATTERNS` moved to
   `packages/ui/src/constants/ui-patterns.ts` because packages/ui is their real
   owner (2 of 3 consumers). Verified: `grep -rn '"@/' packages/` → **0**.
-- `[ ]` **Re-export the moved constants from `src/constants/ui-constants.ts`** so
-  `ToolPanel.tsx` and `src/constants/index.ts` keep working without duplication.
-  ⚠️ Currently **both copies exist** — this phase is not finished.
+- `[x]` **Re-exported the moved constants from `src/constants/ui-constants.ts`** —
+  duplication closed. Verified: `grep "export const TOOL_COLORS|UI_PATTERNS"`
+  returns exactly one definition, in `packages/ui/src/constants/ui-patterns.ts`.
 - `[ ]` **A boundary gate.** Nothing prevents `packages/* → src/`; it already
   happened 3 times. A dependency-cruiser config with a baseline would make
   `architecture.md § 2` enforced rather than aspirational.

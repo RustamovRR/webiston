@@ -105,8 +105,8 @@ export function BaseModal({
               <motion.div
                 className={cn(
                   "fixed top-1/2 left-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2",
-                  "rounded-xl border border-zinc-200 bg-white shadow-2xl",
-                  "dark:border-zinc-800 dark:bg-zinc-900",
+                  "rounded-xl border border-border bg-card shadow-2xl",
+                  "",
                   "max-h-[90vh] overflow-hidden",
                   sizeVariants[size],
                   className
@@ -123,8 +123,8 @@ export function BaseModal({
                     <button
                       className={cn(
                         "absolute top-4 right-4 z-10 rounded-full p-1.5",
-                        "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100",
-                        "dark:text-zinc-400 dark:hover:text-zinc-100 dark:hover:bg-zinc-800",
+                        "text-muted-foreground hover:text-foreground hover:bg-zinc-100",
+                        " dark:hover:text-zinc-100 dark:hover:bg-zinc-800",
                         "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                       )}
                       aria-label="Close"
@@ -147,12 +147,7 @@ export function BaseModal({
 // Header component
 export function BaseModalHeader({ children, className }: BaseModalHeaderProps) {
   return (
-    <div
-      className={cn(
-        "border-b border-zinc-200 px-6 py-4 dark:border-zinc-800",
-        className
-      )}
-    >
+    <div className={cn("border-b border-border px-6 py-4", className)}>
       {children}
     </div>
   )
@@ -168,10 +163,7 @@ export function BaseModalTitle({
 }) {
   return (
     <DialogPrimitive.Title
-      className={cn(
-        "text-lg font-semibold text-zinc-900 dark:text-zinc-100",
-        className
-      )}
+      className={cn("text-lg font-semibold text-foreground", className)}
     >
       {children}
     </DialogPrimitive.Title>
@@ -188,7 +180,7 @@ export function BaseModalDescription({
 }) {
   return (
     <DialogPrimitive.Description
-      className={cn("mt-1 text-sm text-zinc-500 dark:text-zinc-400", className)}
+      className={cn("mt-1 text-sm text-muted-foreground", className)}
     >
       {children}
     </DialogPrimitive.Description>
@@ -207,7 +199,7 @@ export function BaseModalFooter({ children, className }: BaseModalFooterProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-2 border-t border-zinc-200 px-6 py-4 dark:border-zinc-800",
+        "flex items-center justify-end gap-2 border-t border-border px-6 py-4",
         className
       )}
     >

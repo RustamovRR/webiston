@@ -104,16 +104,44 @@ Companion: `pnpm contrast` (`scripts/contrast-check.mjs`) parses the shipped
 **Re-run it after any token change** — this is what keeps the numbers in this
 file honest rather than aspirational.
 
-### `[ ]` Phase C — shared surfaces
+### `[~]` Phase C — shared surfaces
 **Why third:** these are consumed by every tool, so fixing them moves the most
 call sites per edit.
 
-- `packages/ui/src/constants/ui-patterns.ts` — `GLASS_PANEL`, `INPUT_PANEL`,
-  `TERMINAL_PANEL` are **dark-only** (`bg-zinc-900/80` with no light variant), and
-  they ship to every tool. *(Moved here from `src/constants/ui-constants.ts`
-  during the code-structure initiative; the values were moved verbatim on purpose.)*
-- `src/constants/ui-constants.ts` — `TEXT_STYLES` renders body text at **2.56:1**.
-- `packages/ui/src/primitives/*` · `src/components/shared/*`
+**Progress: 5,401 → 5,167 hits (−234). 28 of 48 shared/ui files are now fully
+token-clean.** Semantic-token usage 170 → 303.
+
+- `[x]` `packages/ui/src/constants/ui-patterns.ts` — the panels were **dark-only**
+  (`bg-zinc-900/80` with no light variant) and shipped to every tool. Now
+  `bg-card` / `bg-muted` / `border-border`, with **no `dark:` variant needed**.
+- `[x]` `src/constants/ui-constants.ts` — `TEXT_STYLES` was dark-only, so body
+  text rendered ~2.6:1 on a light card. Now semantic, verified ≥4.5:1 on both
+  surfaces in both schemes. **Also closed the code-structure Phase 1 duplication**
+  by re-exporting `TOOL_COLORS`/`UI_PATTERNS` from `@webiston/ui` — there is now
+  exactly one definition.
+- `[x]` `TerminalInput.tsx` — **64 → 0**. Its 5 variants were light/dark pairs
+  (40 palette classes); status tokens collapsed them to opacity modifiers with
+  zero `dark:` variants. This is the reference example for the rest of Phase C.
+- `[x]` Pair sweep across `shared/` + `packages/ui` — 26 light/dark pairs
+  collapsed mechanically (`text-zinc-900 dark:text-zinc-100` → `text-foreground`,
+  `text-green-600 dark:text-green-400` → `text-success`, …).
+- `[ ]` **Remainder (20 files).** These are *singles* — a palette class with no
+  dark partner — so each needs a judgement call rather than a mechanical rule:
+  `ToolPanel` 12 · `ButtonLink` 9 · `DualTextPanel` 8 · `LanguageSelector` 7 ·
+  `SearchComponents` 5 · `mode-switch` 5 · `InfoCard` 5 · 13 more.
+
+**Documented exceptions — deliberately NOT converted:**
+
+- `code-highlight.tsx` (42) — a **syntax highlighter**. Green there means "string
+  literal", not "success"; mapping it to status tokens would be semantically
+  wrong and would make code colours shift with the brand.
+- `shimmer-button.tsx` (16) — a decorative brand effect.
+- `TOOL_COLORS` — per-category accent *gradients*. Flattening them erases a
+  deliberate visual system; the spec permits brand colour in a named constant.
+- `MACOS_DOTS` — macOS traffic lights **are** red/yellow/green; they signal
+  nothing and must not follow the brand.
+- `src/constants/color-names.ts` (165) — colour *data* for the converter tool,
+  not styling.
 
 ### `[ ]` Phase D — tools, one module per commit
 **Routed tools first** — the four `__`-prefixed tools are unreachable in
