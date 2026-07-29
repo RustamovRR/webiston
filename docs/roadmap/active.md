@@ -21,7 +21,8 @@ restructured into `initiatives/`. Branch `refactor`._
 | Build & gates | ✅ | 6 of 7 gates green; hooks 0.16s / 2.39s |
 | Repo hygiene | ✅ | `git ls-files -i -c` → 0 |
 | Package boundaries | 🟡 | `packages/ui` `@/` imports 3 → **0**; re-export not yet written |
-| `pnpm check` | ❌ | 81 errors, mostly a11y — never passed, pre-dates the upgrade |
+| `pnpm check` | ✅ | **81 → 0 errors.** First time this gate has ever passed |
+| i18n parity | ⚠️ | `pnpm i18n` gate added; red on 8 dead `en`-only keys pending approval |
 | SEO integrity | ❌ | 18 files emit **fabricated** ratings + invented reviews |
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |

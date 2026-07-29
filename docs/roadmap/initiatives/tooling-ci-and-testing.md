@@ -37,9 +37,9 @@ bypasses it silently. Every other phase here is undone by one bypassed push.
 
 ## Phase 2 — `[ ]` Make the linters mean something
 
-- `[~]` **Clear the `pnpm check` errors — 81 → 59.** Pre-existing — **verified
-  identical on Biome 2.4.15**, so the 2.5.6 upgrade did not cause them; this gate
-  has never passed.
+- `[x]` **`pnpm check` passes — 81 → 0 errors, 2026-07-29.** Pre-existing —
+  **verified identical on Biome 2.4.15**, so the 2.5.6 upgrade did not cause
+  them. This gate had never passed in the project's history; it does now.
 
   **Policy: fix them, do not relax the rules.** They are real defects, not linter
   noise. Exactly one rule earned an exception, and it got *targeted suppressions
@@ -48,10 +48,33 @@ bypasses it silently. Every other phase here is undone by one bypassed push.
 
   | Rule | Was | Now | Action |
   | ---- | --: | --: | ------ |
-  | `noSvgWithoutTitle` | 16 | **0** | 17 decorative SVGs → `aria-hidden="true"`. A `<title>` would make screen readers announce text the adjacent heading already states; `aria-hidden` is the correct fix and Biome documents it as accepted. |
+  | `noLabelWithoutControl` | 42 | **0** | Two *opposite* fixes, classified per site: **28** genuinely labelled one control → gained `htmlFor` + a stable `id` derived from the label's own `t()` key. **14** were group headings where `<label>` is simply the wrong element → `<span>`. |
+  | `noSvgWithoutTitle` | 16 | **0** | 17 decorative SVGs → `aria-hidden="true"`. A `<title>` would make screen readers announce text the adjacent heading already states; Biome documents `aria-hidden` as the accepted fix. |
+  | `useKeyWithClickEvents` | 9 | **0** | `<div onClick>` → `<button type="button">` where the markup allowed it. Adding `onKeyDown` to a div silences the rule while leaving the element unfocusable — the element type *is* the bug. |
+  | `useIterableCallbackReturn` | 4 | **0** | `forEach((t) => t.stop())` implicitly returns `stop()`'s result; braces make it a statement. |
   | `useMediaCaption` | 3 | **0** | Suppressed with reasons. Two are *hidden* elements — a `<video className="hidden">` used only as a screenshot frame source, and a hidden `<audio>` playing sound the user recorded seconds earlier. No caption track can exist for either. |
-  | `useKeyWithClickEvents` | 9 | **6** | `<div onClick>` → `<button type="button">`. Adding `onKeyDown` to a div silences the rule while leaving the element unfocusable — the element type *is* the bug. |
-  | `noLabelWithoutControl` | 42 | 42 | Not started — the largest remaining block. |
+  | `noShadowRestrictedNames` | 1 | **0** | `export default function Error()` shadowed the global `Error`; renamed `BookChapterError` (a default export's name is free). |
+  | `noRedeclare` | 1 | **0** | Resolved by the label pass. |
+
+  **Where `<button>` was impossible, the fix was structural, not a suppression:**
+
+  - `ColorFormatItem` — the card's `onClick` and its inner copy button ran the
+    *same* handler. Nesting `<button>` in `<button>` is invalid HTML, so the card
+    became the button and the inner control became a visual `<span>` indicator.
+  - `TemplatesPanel` — same nesting problem; the click moved onto the `<Button>`
+    that was already there. One obvious affordance beats a secretly-clickable card.
+  - `AudioPreviewModal` — a scrub bar you can seek is a **slider**, not a button.
+    Given `role="slider"`, `tabIndex`, `aria-valuemin/max/now`, and arrow /
+    Home / End key handling.
+  - `MobileMenu` — the only genuine suppression: its handler *only* calls
+    `stopPropagation()` so clicks inside the panel don't reach the backdrop's
+    close handler. There is no action for a keyboard user to trigger.
+
+  **Two real bugs surfaced while doing this**, neither caught by any gate:
+  a duplicate `id="file-upload"` shared by two inputs in `JsonFormatter`
+  (the label activated the wrong one), and Radix `<Select>` rejecting `id` —
+  it belongs on `<SelectTrigger>`. Both fixed; a global check now verifies every
+  `htmlFor` resolves to exactly one `id`.
 
 - `[ ]` **`VideoEmbed` cannot accept captions.** It takes `{url, title}` only, so
   a book chapter embedding video has no way to supply a track. Add a `captions`
