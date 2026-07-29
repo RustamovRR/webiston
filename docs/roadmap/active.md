@@ -26,7 +26,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
 | Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
-| Design tokens | ❌ | 3.3% token share (170 semantic vs 4,987 palette) |
+| Design tokens | 🟡 | Phase A+B shipped: 3-layer system, brand hue 217°, all 32 contrast pairs PASS, ratchet gate live. Sweep (C–E) open: **5,401** hits / 159 files |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
@@ -37,6 +37,10 @@ restructured into `initiatives/`. Branch `refactor`._
 
 ## In progress
 
+- `[~]` **Design system** — Phases A + B shipped. Token block is now 3-layer with
+  brand hue **217°** (from the Uzbek flag blue); `pnpm contrast` verifies all 32
+  pairs in both schemes; `pnpm tokens` ratchets drift at 5,401/159 files.
+  **Next: Phase C — shared surfaces.** → `initiatives/design-system.md`
 - `[~]` **Code structure** — Phase 1 half-landed: `packages/ui` boundary is clean,
   but `TOOL_COLORS`/`UI_PATTERNS` exist in **two** places until the re-export is
   written. → `initiatives/code-structure.md`
@@ -46,7 +50,7 @@ restructured into `initiatives/`. Branch `refactor`._
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[ ]` | **Phase 1 — delete the fabricated ratings** |
-| [Design system](initiatives/design-system.md) | `[!]` | Phase A — **blocked on the brand-colour decision** |
+| [Design system](initiatives/design-system.md) | `[~]` | **Phase C — shared surfaces** (A + B shipped) |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 1 — finish the re-export |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |

@@ -53,6 +53,17 @@ pre-commit:
         - merge
         - rebase
 
+    - name: tokens
+      # Per-file ratchet on hardcoded colour. Without this, the design-token
+      # migration is undone by the next feature that ships a bg-zinc-900.
+      # Baseline: scripts/token-baseline.json
+      run: pnpm tokens
+      timeout: "60s"
+      fail_text: "Hardcoded colour added. Use semantic tokens — see docs/reference/design-system.md."
+      skip:
+        - merge
+        - rebase
+
 commit-msg:
   jobs:
     - name: commitlint

@@ -1,11 +1,21 @@
 # Initiative — Design system & token migration
 
-**Spec:** `../../reference/design-system.md` · **Status:** `[!]` blocked on the
-brand-colour decision (`../backlog.md`) · **Size:** the largest initiative in the repo.
+**Spec:** `../../reference/design-system.md` · **Status:** `[~]` Phases A + B
+shipped 2026-07-29; C–E open · **Size:** the largest initiative in the repo.
 
-> **Why this is blocked and stays blocked.** Phase A sets the token *values*.
-> Phases C–E rewrite ~5,000 call sites to consume those tokens. Doing C before A
-> means rewriting them twice. One decision — the brand hue — unblocks everything.
+> **Phase A set the token values, Phase B locked them in.** Phases C–E now
+> rewrite ~5,400 call sites to consume those tokens. The order mattered: doing C
+> before A would have meant rewriting every call site twice.
+
+## Brand hue — decided 2026-07-29
+
+**217°**, derived from the Uzbek flag blue `#0099B5` (= `oklch(0.63 0.112 216.9)`).
+Chosen over the default indigo (~260°) because it is distinctive for a developer
+platform and harmonises with the cyan/teal already in `TOOL_COLORS`.
+
+The full ramp is fitted to the sRGB gamut — max in-gamut chroma × 0.97 per
+lightness step, so no value is silently clipped by the browser. Verify any change
+with `pnpm contrast`.
 
 ---
 
@@ -27,10 +37,35 @@ best argument for doing Phase A before anything else.
 
 ## Phases
 
-### `[!]` Phase A — the token block
-**Blocked on:** the brand hue. **File:** `src/app/globals.css` (~50 lines).
+### `[x]` Phase A — the token block · **shipped 2026-07-29**
 
-Defects to fix, all verified:
+`src/app/globals.css` now carries a **three-layer** token system
+(primitive `--brand-*` → semantic → Tailwind utility), plus status tokens
+(`--success`/`--warning`/`--info`) that previously did not exist, which is why
+components reached for `text-green-600` directly.
+
+**Measured results** (`pnpm contrast`, both schemes, 32 pairs):
+
+| Pair | Before | After | Need |
+| ---- | ------ | ----- | ---- |
+| `--ring` on `--background` (light) | **2.59:1 FAIL** | **4.22:1 PASS** | 3 |
+| `--ring` on `--card` (light) | — | 4.05:1 PASS | 3 |
+| `--card` vs `--background` (light) | **1.000:1** (none) | **1.043:1** | >1 |
+| `--primary-foreground` on `--primary` (light) | 17.16:1 (grey) | 5.82:1 (brand) | 4.5 |
+| `--primary-foreground` on `--primary` (dark) | — | 8.19:1 | 4.5 |
+| every other pair | — | PASS | — |
+
+Also fixed: the font conflict. `body { font-family: … !important }` was silently
+overriding the Inter face loaded in `layout.tsx`, so Inter was downloaded on
+every page and never rendered. Font is now the `--font-sans` token, and Inter
+loads `latin + latin-ext + cyrillic` (it was latin-only, so Cyrillic Uzbek fell
+back to a system font mid-paragraph).
+
+> ⚠️ The audit reported `--ring` at 1.55:1. The measured value was **2.59:1** —
+> still a failure, but the audit's number was wrong. Numbers in this file come
+> from `scripts/contrast-check.mjs`.
+
+<details><summary>Original defect list (all now fixed)</summary>
 
 - `globals.css:370` `--background: oklch(1 0 0)` and `:372` `--card: oklch(1 0 0)`
   are **identical in light mode** — there is no surface separation. (Dark mode is
@@ -45,28 +80,29 @@ Defects to fix, all verified:
   so no Cyrillic) and applied at `:408`, then overridden by an `!important` rule
   at `globals.css:49`. It is downloaded on every page and never rendered.
 
-**Target structure** — Tailwind v4 convention is a three-layer token hierarchy,
-CSS-first via `@theme`, OKLCH throughout:
+</details>
 
-```
-primitive   --brand-500: oklch(…)        raw values, no meaning
-semantic    --color-primary: var(--brand-500)    purpose-driven
-component   --color-btn-bg: var(--color-primary) variant-specific
-```
+**Exit condition — met:** `--card ≠ --background` in both modes · `--primary`
+chroma > 0 · `--ring` ≥ 3:1 in both modes · one font, one source of truth.
 
-**Exit condition:** `--card ≠ --background` in both modes · `--primary` chroma > 0 ·
-`--ring` ≥ 3:1 measured in both modes · one font, one source of truth.
+### `[x]` Phase B — the `pnpm tokens` ratchet gate · **shipped 2026-07-29**
 
-### `[ ]` Phase B — the `pnpm tokens` ratchet gate
-**Depends on:** A. **Why before C:** without a gate, the next feature re-adds
-hardcoded colour and phases C–E silently undo themselves.
+`scripts/token-guardrail.mjs` counts palette-class + hex hits **per file**
+against `scripts/token-baseline.json` and exits non-zero on any per-file
+increase. Per-file, not global — a global total lets one file regress while
+another improves, and the regression ships.
 
-A script that counts palette-class + hex hits **per file** against a frozen
-baseline and exits non-zero on any per-file increase. Not a global count — a
-global count lets one file get worse while another improves.
+- **Baseline frozen at 5,401 hits across 159 files.**
+- Wired into `lefthook.yml` pre-commit.
+- `--update` refuses to record a regression unless `--force` is passed, so the
+  ratchet only turns one way.
+- **Verified it actually fails:** adding `bg-blue-500 text-red-700` to
+  `SectionTitle.tsx` produced `2 → 4 (+2)` and exit 1.
 
-**Exit condition:** `pnpm tokens` exists, is wired into `lefthook.yml` pre-commit,
-and fails on a deliberately-added `bg-blue-500`.
+Companion: `pnpm contrast` (`scripts/contrast-check.mjs`) parses the shipped
+`globals.css`, resolves `var()` chains, and checks all 32 pairs in both schemes.
+**Re-run it after any token change** — this is what keeps the numbers in this
+file honest rather than aspirational.
 
 ### `[ ]` Phase C — shared surfaces
 **Why third:** these are consumed by every tool, so fixing them moves the most

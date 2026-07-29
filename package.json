@@ -26,7 +26,9 @@
     "ext:dev": "pnpm --filter latin-cyrillic-extension dev",
     "ext:build": "pnpm --filter latin-cyrillic-extension build",
     "ext:zip": "pnpm --filter latin-cyrillic-extension zip",
-    "packages:build": "pnpm --filter '@webiston/*' build"
+    "packages:build": "pnpm --filter '@webiston/*' build",
+    "tokens": "node scripts/token-guardrail.mjs",
+    "contrast": "node scripts/contrast-check.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

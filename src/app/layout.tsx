@@ -6,7 +6,16 @@ import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
 
-const inter = Inter({ subsets: ["latin"] })
+// `cyrillic` is required, not optional: the product ships Cyrillic Uzbek
+// (the transliteration tool and book content both render it). With a latin-only
+// subset those glyphs fell back to a system font mid-paragraph.
+// Exposed as a CSS variable so `--font-sans` in globals.css owns the cascade —
+// see the token block there.
+const inter = Inter({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  display: "swap",
+  variable: "--font-inter"
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://webiston.uz"),
@@ -405,7 +414,9 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body className={inter.className}>
+      {/* .variable (not .className) — it defines --font-inter, which
+          --font-sans consumes; `font-sans` is applied on body in globals.css. */}
+      <body className={inter.variable}>
         <NextTopLoader color="#3b82f6" height={2} showSpinner={false} />
         <ThemeProvider
           attribute="class"

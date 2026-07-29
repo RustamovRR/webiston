@@ -27,10 +27,10 @@
 
 ## Needs a decision from the owner (blocking — do not guess)
 
-- `[!]` **The brand colour.** `globals.css:376` `--primary: oklch(0.205 0 0)` —
-  zero chroma, so every primary button on the site is black-or-white. **This one
-  decision unblocks the entire design-system initiative.** Must pass WCAG AA on
-  both backgrounds.
+- `[x]` **The brand colour — decided 2026-07-29: hue 217°**, derived from the
+  Uzbek flag blue `#0099B5`. Ramp fitted to the sRGB gamut; all 32 contrast pairs
+  pass WCAG AA in both schemes (`pnpm contrast`).
+  → `initiatives/design-system.md`
 - `[!]` **The four parked tools.** `__http-status`, `__keycode-info`,
   `__user-agent-analyzer`, `__website-status` sit behind `_`-prefixed (private)
   route folders, so they are unreachable in production — ~3,800 LOC that still
