@@ -34,22 +34,21 @@ const PALETTE_RE = new RegExp(
 // A raw hex colour literal.
 const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g
 
-/** Files the rule applies to: component/source code only. */
+/** Files the rule applies to: component/source code only.
+ *
+ *  NOTE: do NOT filter with a `src/**\/*.ts` pathspec. Git's `**` requires at
+ *  least one intervening directory, so a file sitting directly in src/ (e.g.
+ *  src/middleware.ts) silently escapes the ratchet. List the trees and filter
+ *  by extension here instead. */
 function targetFiles() {
-  const out = execFileSync(
-    "git",
-    [
-      "ls-files",
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "packages/**/*.ts",
-      "packages/**/*.tsx",
-      "apps/**/*.ts",
-      "apps/**/*.tsx"
-    ],
-    { cwd: ROOT, encoding: "utf8" }
-  )
-  return out.split("\n").filter(Boolean)
+  const out = execFileSync("git", ["ls-files", "src/", "packages/", "apps/"], {
+    cwd: ROOT,
+    encoding: "utf8"
+  })
+  return out
+    .split("\n")
+    .filter((f) => /\.tsx?$/.test(f))
+    .filter((f) => !f.includes("/node_modules/"))
 }
 
 function countFile(path) {

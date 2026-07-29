@@ -123,8 +123,7 @@ export function BaseModal({
                     <button
                       className={cn(
                         "absolute top-4 right-4 z-10 rounded-full p-1.5",
-                        "text-muted-foreground hover:text-foreground hover:bg-zinc-100",
-                        " dark:hover:text-zinc-100 dark:hover:bg-zinc-800",
+                        "text-muted-foreground hover:text-foreground hover:bg-accent",
                         "transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                       )}
                       aria-label="Close"

@@ -123,14 +123,41 @@ token-clean.** Semantic-token usage 170 → 303.
   (40 palette classes); status tokens collapsed them to opacity modifiers with
   zero `dark:` variants. This is the reference example for the rest of Phase C.
 - `[x]` Pair sweep across `shared/` + `packages/ui` — 26 light/dark pairs
-  collapsed mechanically (`text-zinc-900 dark:text-zinc-100` → `text-foreground`,
+  collapsed (`text-zinc-900 dark:text-zinc-100` → `text-foreground`,
   `text-green-600 dark:text-green-400` → `text-success`, …).
+
+> ### ⚠️ Do NOT repeat the mechanical sweep — it shipped 4 real regressions
+>
+> The sweep matched pairs at **file level** and replaced with `\blight\b`, which
+> was wrong twice over. Self-review caught it; the gate did not, because a
+> *removed* `dark:` and an *unconverted* light class both keep the token count
+> flat. Concretely:
+>
+> 1. **Greedy ordering orphaned dark variants.** The rule
+>    `text-zinc-500 + dark:text-zinc-400` fired first and stripped *every*
+>    `dark:text-zinc-400` in a file — including ones whose real partner was
+>    `text-zinc-600`. `ToolHeader.tsx` shipped a tool-page description as
+>    **dark grey on a dark background**.
+> 2. **`\b` matched inside variant prefixes.** `\bbg-white\b` also matches the
+>    `bg-white` inside `dark:bg-white` and `dark:hover:bg-white/10`, so
+>    `ButtonLink`'s intentionally theme-invariant white CTA became `bg-card` —
+>    **black text on a dark surface**.
+>
+> **For the remaining 20 files: convert by hand, one className at a time.** The
+> detector that found these lives in the session notes; the durable check is:
+> after any conversion, no line may keep an unconverted palette class while its
+> `dark:` sibling was removed.
 - `[ ]` **Remainder (20 files).** These are *singles* — a palette class with no
   dark partner — so each needs a judgement call rather than a mechanical rule:
   `ToolPanel` 12 · `ButtonLink` 9 · `DualTextPanel` 8 · `LanguageSelector` 7 ·
   `SearchComponents` 5 · `mode-switch` 5 · `InfoCard` 5 · 13 more.
 
 **Documented exceptions — deliberately NOT converted:**
+
+- `ButtonLink` `primary`/`secondary` — theme-**invariant** hero CTAs (a white pill
+  with black text, a dark pill with white text, identical in both schemes).
+  Semantic tokens are exactly wrong here: `bg-card` flips with the scheme and
+  would put black text on a dark surface.
 
 - `code-highlight.tsx` (42) — a **syntax highlighter**. Green there means "string
   literal", not "success"; mapping it to status tokens would be semantically

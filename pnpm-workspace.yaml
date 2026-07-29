@@ -2,3 +2,69 @@ packages:
   - "packages/*"
   - "apps/*"
   - "apps/extensions/*"
+
+# ---------------------------------------------------------------------------
+# Post-install scripts
+#
+# pnpm 11 does not run a dependency's install scripts unless it is listed here,
+# and it FAILS the install if any are left undecided. A postinstall script runs
+# arbitrary code on your machine, so each one is an explicit decision.
+#
+# `true`  = we need the native binary this script fetches/builds.
+# `false` = unused here, or it has a working pure-JS fallback.
+# ---------------------------------------------------------------------------
+allowBuilds:
+  # Native bundler binary. Required: tsup (packages/transliteration) and vitest
+  # both execute it — without it, packages:build and pnpm test fail.
+  esbuild: true
+  # Native transform binary pulled in by tsup.
+  '@swc/core': true
+  # Downloads the lefthook binary that backs .git/hooks. Without it every git
+  # hook silently no-ops — which is the failure mode we already fixed once.
+  lefthook: true
+  # Next's image optimizer. next.config.ts sets images.unoptimized: true, so
+  # nothing calls it. Skipping avoids a large platform-specific download.
+  sharp: false
+  # Native file watcher with a pure-JS fallback; only used by dev watch modes.
+  '@parcel/watcher': false
+  # Less preprocessor, a transitive optional of vite. This project styles with
+  # Tailwind v4 + PostCSS only — there is no .less file in the repo.
+  less: false
+
+# ---------------------------------------------------------------------------
+# Supply-chain policy
+#
+# pnpm 11 refuses to install packages published within the last 24 hours — the
+# window in which a compromised-maintainer attack is usually caught and the bad
+# version unpublished. It is a good default and we keep it. It is stated
+# explicitly here so the behaviour is identical on every pnpm version instead of
+# depending on whichever version a contributor or CI happens to run.
+#
+# See `packageManager` in package.json — that pins pnpm itself. Before it
+# existed, a local pnpm 10 and a corepack pnpm 11 disagreed about this policy,
+# and the result was an install loop that looked like a broken node_modules.
+# ---------------------------------------------------------------------------
+minimumReleaseAge: 1440
+
+# Vetted exceptions — 2026-07-29.
+#
+# The dependency upgrade of 2026-07-29 moved every workspace to latest, which
+# pulled these 10 in while they were still inside the 24h window. They were
+# accepted deliberately, after the full gate passed (typecheck, lint, test,
+# build, ext:build).
+#
+# ⚠️ THIS LIST IS TEMPORARY. Every entry ages out of the window on its own.
+# Delete the whole block once `pnpm install` succeeds without it — stale entries
+# here would silently exempt those packages from the policy forever.
+# Tracked in docs/roadmap/initiatives/tooling-ci-and-testing.md.
+minimumReleaseAgeExclude:
+  - baseline-browser-mapping
+  - electron-to-chromium
+  - enhanced-resolve
+  - framer-motion
+  - jsdom
+  - motion
+  - motion-dom
+  - nypm
+  - pdfjs-dist
+  - wxt

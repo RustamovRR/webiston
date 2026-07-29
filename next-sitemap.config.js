@@ -3,27 +3,49 @@ module.exports = {
   siteUrl: 'https://webiston.uz',
   generateRobotsTxt: true,
   generateIndexSitemap: false,
-  exclude: ['/api/*', '/_next/*'],
+  // A sitemap lists indexable *pages*. /manifest.webmanifest is a PWA metadata
+  // file that next-sitemap auto-discovers from the app router — submitting it
+  // just spends crawl budget on something Google will never index.
+  exclude: ['/api/*', '/_next/*', '/manifest.webmanifest'],
+
+  // Do NOT stamp <lastmod> with the build time.
+  //
+  // The default (true) writes `new Date()` into every entry, so each build
+  // rewrote all 268 URLs — a 268-insertion/268-deletion diff on every commit,
+  // for no information gain. Worse, it told Google that every page changed on
+  // every deploy; once a lastmod proves unreliable Google stops trusting it at
+  // all, so the field was actively harmful.
+  //
+  // Omitting lastmod is better than lying about it. To reintroduce it, derive
+  // the value from real content — the MDX file's git commit date — not the clock.
+  autoLastmod: false,
+
   additionalPaths: async (config) => {
+    // Deduplicate by URL. `/` and `/tools` were previously pushed twice: once as
+    // static paths, then again by the locale loop, whose empty-string locale
+    // reproduces the same two URLs. A sitemap must not list a URL twice.
+    const seen = new Set()
     const paths = []
+    const add = async (url) => {
+      const normalized = url.replace(/\/+/g, '/').replace(/\/$/, '') || '/'
+      if (seen.has(normalized)) return
+      seen.add(normalized)
+      paths.push(await config.transform(config, normalized))
+    }
 
-    // Add static paths
-    paths.push(
-      await config.transform(config, '/'),
-      await config.transform(config, '/tools'),
-      await config.transform(config, '/books'),
-    )
+    await add('/')
+    await add('/tools')
+    await add('/books')
 
-    // Add locale paths
+    // Locale paths. '' is the default locale (uz), which is served unprefixed.
     const locales = ['', 'en']
+    const toolsPages = require('./tools-list.json')
+
     for (const locale of locales) {
-      paths.push(await config.transform(config, `/${locale}`), await config.transform(config, `/${locale}/tools`))
-
-      // Add tools pages for each locale - from JSON file
-      const toolsPages = require('./tools-list.json')
-
+      await add(`/${locale}`)
+      await add(`/${locale}/tools`)
       for (const tool of toolsPages) {
-        paths.push(await config.transform(config, `/${locale}/tools/${tool}`))
+        await add(`/${locale}/tools/${tool}`)
       }
     }
 
@@ -52,8 +74,8 @@ module.exports = {
               urlPath = urlPath.replace('/page', '')
             }
 
-            const transformedPath = await config.transform(config, urlPath)
-            paths.push(transformedPath)
+            // Route through add() so book URLs are deduplicated too.
+            await add(urlPath)
           }
         }
       }

@@ -20,8 +20,18 @@ bypasses it silently. Every other phase here is undone by one bypassed push.
 - `[ ]` Must include the extension — `pnpm typecheck` **excludes**
   `apps/extensions/**` (`tsconfig.json:27`), so the extension is typechecked by
   nothing today.
-- `[ ]` **Pin the package manager** — no `packageManager` or `engines` field in
-  `package.json`, so CI and contributors can silently use a different pnpm.
+- `[x]` **Pinned the package manager — 2026-07-29.** `packageManager: "pnpm@11.15.1"`.
+  This was not hypothetical: a local pnpm 10.18.1 and a corepack pnpm 11.15.1
+  disagreed about the `minimumReleaseAge` supply-chain policy, so `pnpm install`
+  failed the policy check, never built the link layer, and every subsequent
+  command re-triggered the install. It presented as "broken node_modules" and
+  cost hours. Also recorded the policy explicitly in `pnpm-workspace.yaml`
+  (`minimumReleaseAge: 1440`) plus `allowBuilds` decisions, so behaviour no
+  longer depends on which pnpm someone runs.
+- `[ ]` **Empty `minimumReleaseAgeExclude`.** 10 packages from the 2026-07-29
+  upgrade were still inside the 24h publish window and are temporarily exempt.
+  Each ages out on its own — delete the block once `pnpm install` passes without
+  it, or those packages stay exempt from the policy forever.
 
 **Exit:** a PR with a deliberate type error fails CI.
 
@@ -56,6 +66,21 @@ Order by value-per-test (pure logic, high blast radius):
 - `[ ]` `useQrGenerator` (570 lines) · `useOgMetaGenerator` (597) · `useMicrophoneTest` (515)
 - `[ ]` Per the Trophy: once the units are covered, **integration tests are the fat
   layer** — render a whole tool with React Testing Library and drive it as a user.
+
+## Phase 3b — `[ ]` Close the gap the token ratchet cannot see
+
+`pnpm tokens` counts hardcoded colour. It is **blind to a whole class of
+regression**: removing a `dark:` variant while leaving its light partner
+unconverted keeps the count flat but breaks dark mode. That is exactly how 4
+regressions shipped on 2026-07-29 (see `design-system.md`).
+
+- `[ ]` Add an `orphaned-dark` check to `scripts/token-guardrail.mjs`: fail when
+  a file contains a light palette class whose `dark:` sibling was removed
+  relative to the baseline.
+- `[ ]` Fix already applied to the same script: it used a
+  `git ls-files 'src/**/*.ts'` pathspec, and git's `**` requires an intervening
+  directory — so `src/middleware.ts` was **invisible to the gate**. Now lists
+  trees and filters by extension. Coverage verified 427/427.
 
 ## Phase 4 — `[ ]` Build warnings (each is a real defect)
 
