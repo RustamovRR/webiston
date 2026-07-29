@@ -104,24 +104,26 @@ const components = {
       )
     }
 
-    // For code blocks with syntax highlighting
+    // For code blocks with syntax highlighting.
+    // `match[1]` is the fence's language — it was extracted here and then
+    // thrown away, while CodeBlock hardcoded "ts". Every block in `content/`
+    // was highlighted as TypeScript: 298 `js`, 19 `html`, 4 `shell`/`bash`.
     const codeString = String(children).replace(/\n$/, "")
     if (!codeString) return null
 
     return (
       <div className="prose m-0 mt-6 w-full max-w-none">
-        <CodeBlock>{codeString}</CodeBlock>
+        <CodeBlock lang={match[1]}>{codeString}</CodeBlock>
       </div>
     )
   },
 
+  // No `dark:[&_pre]:!bg-[#0A0A0A]` here any more. That forced a hardcoded
+  // surface in dark mode only, so the block sat on `bg-card` in light and on a
+  // raw hex in dark. Shiki's own background is neutralised in globals.css, so
+  // both themes now show the same tokenised card surface.
   pre: (props: any) => {
-    return (
-      <pre
-        className="w-full bg-inherit !p-0 dark:[&_pre]:!bg-[#0A0A0A]"
-        {...props}
-      />
-    )
+    return <pre className="w-full bg-inherit !p-0" {...props} />
   },
 
   // Handle video container divs produced by our custom processing

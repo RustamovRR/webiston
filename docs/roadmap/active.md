@@ -64,7 +64,7 @@ the 8 dead-key deletion below.
 
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
-| [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phase 3 rest — **server-side Shiki** (+ its hardcoded `"ts"`) |
+| [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
 | [Design system](initiatives/design-system.md) | `[x]` | all phases shipped — see archive candidate |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
@@ -80,10 +80,12 @@ the 8 dead-key deletion below.
 
 ## Next up
 
-**Finish SEO Phase 3 — server-side Shiki.** `CodeBlock.tsx` is `'use client'`,
-so 226 chapters of prerendered HTML ship grey skeletons where the code should
-be — bad for LCP *and* for indexing the thing the site is actually about. Same
-file hardcodes `"ts"` as the language for **every** block.
+**SEO Phase 4 — payload.** Everything renders statically now, so what is left is
+the weight each page ships: a 209 KB logo drawn at 50×50, `width={0} height={0}`
+on every book figure (CLS), the whole message bundle to the client on localised
+pages, and heavy deps (`pdfjs-dist`, `mammoth`, `docx`, `katex`, `leaflet`) that
+are not dynamically imported. ⚠️ Next 16's Turbopack build no longer prints
+per-route sizes — measure with `@next/bundle-analyzer` before and after.
 
 Note the `<html lang>` trade-off is now settled by evidence: static rendering
 won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the
@@ -91,6 +93,11 @@ won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the
 
 **Two decisions still blocking work:**
 
+0. **Three unreferenced items awaiting a yes/no** —
+   `src/components/mdx/CodeBlock/CodeBlockSkeleton.tsx` (orphaned by server-side
+   highlighting), `const _inter = Inter(...)` in `(app)/[locale]/layout.tsx:14`
+   (a second Inter download the root layout already does properly), and the 8
+   keys below.
 1. **8 dead `en`-only keys** in `messages/tools/url-encoder/en.json`
    (`Info.formatExample.exampleText`, `exampleEncoded`, `Info.urlStructure.*` ×6).
    Re-verified unused: `InfoSection.tsx` references neither group. This is the

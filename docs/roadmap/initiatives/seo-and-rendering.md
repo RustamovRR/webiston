@@ -67,7 +67,7 @@ this locale", derived from `routing.localePrefix`, instead of 17 hand-written co
   navigation between the two roots — or (b) accept `lang="uz"` until next-intl
   can resolve a locale statically above the segment.
 
-## Phase 3 — `[~]` Rendering (the biggest measurable win)
+## Phase 3 — `[x]` Rendering (the biggest measurable win) — shipped 2026-07-29
 
 - `[x]` **Static prerendering is on. 0 → 266 prerendered routes.** Build output
   went from every route `ƒ` to `●`/`○` everywhere except the two API routes,
@@ -120,11 +120,28 @@ this locale", derived from `routing.localePrefix`, instead of 17 hand-written co
   redirecting URL in a sitemap is a Search Console error that contradicts the
   canonical each page declares. Excluded in `next-sitemap.config.js`;
   286 → **267 URLs, 0 duplicates, 0 `/uz/`**.
-- `[ ]` **Code is highlighted in the browser.** `src/components/mdx/CodeBlock/CodeBlock.tsx:1`
-  is `'use client'`, so server HTML ships grey skeletons instead of code — bad for
-  LCP *and* indexability. `MDXContent` is already an async Server Component.
-- `[ ]` **Shiki gets the wrong language.** `CodeBlock.tsx:29` hardcodes `"ts"` for
-  **every** block, so JS/JSON/bash/CSS are all mis-highlighted.
+- `[x]` **Code is highlighted on the server.** `CodeBlock` is no longer
+  `'use client'` — it is an async Server Component, so for `/books/**` the
+  highlighting happens at **build** time. Verified: **143 of 228** prerendered
+  chapters now contain `class="shiki"` markup in their static HTML (the other 85
+  contain no code fences), **0** skeleton placeholders remain, and no JS chunk
+  references shiki — it left the client bundle entirely.
+  - **How it can be server-side at all:** the old version needed `useTheme()`.
+    Shiki's dual-theme mode replaces that — `themes: {light, dark}` +
+    `defaultColor: "light"` emits the light colour inline and the dark one as a
+    `--shiki-dark` custom property on the same element, and two rules in
+    `globals.css` switch them. Verified in the browser: the same span computes
+    `#AF00DB` in light and `#C586C0` in dark, with no JavaScript involved.
+  - Also removed `dark:[&_pre]:!bg-[#0A0A0A]` from `MDXContent`'s `pre` mapper —
+    it forced a raw hex surface in dark mode while light mode used `bg-card`.
+    Both themes now use the same token.
+- `[x]` **Shiki gets the right language.** `CodeBlock` hardcoded `"ts"` while
+  `MDXContent` was already extracting `language-(\w+)` and discarding it — so
+  **every** fence in `content/` was highlighted as TypeScript: 298 `js`, 19
+  `html`, 8 `jsx`, 4 `shell`/`bash`, 1 `reg`, 1 `mdx`. The language is now passed
+  through, with a `text` fallback so an unknown grammar cannot throw mid-build.
+  Verified on an `html` chapter: 284 HTML-tag tokens where there were none.
+- `[!]` `CodeBlockSkeleton.tsx` is now unreferenced — **deletion needs approval.**
 
 ### Rendering-strategy decisions (Next 16.2.12) — checked against `node_modules`, not memory
 

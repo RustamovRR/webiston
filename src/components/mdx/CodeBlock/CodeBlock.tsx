@@ -1,57 +1,36 @@
-"use client"
-
-import { useTheme } from "next-themes"
-import { type ReactNode, useLayoutEffect, useState } from "react"
 import { CopyButton } from "@/components/shared"
-import { cn } from "@/lib"
-import { CodeBlockSkeleton } from "./CodeBlockSkeleton"
 import { highlight } from "./highlight"
 
-export default function CodeBlock({ children }: { children?: any }) {
-  const [nodes, setNodes] = useState<ReactNode | string | null>(children)
-  const { theme, resolvedTheme } = useTheme()
-  const [isLoading, setIsLoading] = useState(true)
+interface CodeBlockProps {
+  children?: string
+  /** The fence's language, e.g. ```js. Falls back to plain text when absent. */
+  lang?: string
+}
 
+/**
+ * A Server Component: the code is highlighted where the page is rendered, which
+ * for `/books/**` means at BUILD time.
+ *
+ * It used to be `'use client'` and highlight in `useLayoutEffect`, so the
+ * prerendered HTML carried a grey skeleton and Shiki shipped to the browser.
+ * On a content site that is the worst of both — slower LCP, and the code (the
+ * thing the site is actually about) was invisible to crawlers.
+ *
+ * `CopyButton` stays the only client island here.
+ */
+export default async function CodeBlock({ children, lang }: CodeBlockProps) {
   const codeString = String(children || "").trim()
+  if (!codeString) return null
 
-  useLayoutEffect(() => {
-    setIsLoading(true)
-
-    const currentTheme = theme === "system" ? resolvedTheme : theme
-    if (!currentTheme || !codeString) {
-      setNodes(null)
-      setIsLoading(false)
-      return
-    }
-
-    async function highlightCode() {
-      try {
-        const highlighted = await highlight(children, "ts", theme)
-        setNodes(highlighted)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    void highlightCode()
-  }, [children, theme, codeString, resolvedTheme])
-
-  if (isLoading) {
-    return codeString ? <CodeBlockSkeleton codeString={codeString} /> : null
-  }
+  const nodes = await highlight(codeString, lang ?? "")
 
   return (
-    <div
-      className={cn(
-        "group relative rounded-lg border bg-white py-2 dark:border-[#2C2C2E] dark:bg-[#0A0A0A]"
-      )}
-    >
-      {codeString && (
-        <div className={cn("absolute top-2 right-2 z-10")}>
-          <CopyButton text={codeString} />
-        </div>
-      )}
+    <div className="group relative rounded-lg border border-border bg-card py-2">
+      <div className="absolute top-2 right-2 z-10">
+        <CopyButton text={codeString} />
+      </div>
 
-      <div className={cn("overflow-auto rounded-lg")}>{nodes}</div>
+      <div className="overflow-auto rounded-lg">{nodes}</div>
     </div>
   )
 }

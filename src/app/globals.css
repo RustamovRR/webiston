@@ -580,3 +580,30 @@ a code {
 a:hover code {
   color: inherit !important;
 }
+
+/* ---------------------------------------------------------------------------
+   Shiki dual-theme output
+
+   The highlighter runs on the SERVER (src/components/mdx/CodeBlock), so it
+   cannot know the visitor's theme. Instead it emits both at once: the light
+   colour as an inline `color`, the dark one as a `--shiki-dark` custom
+   property on the same element. These two rules are the entire theme switch —
+   no client JavaScript is involved, and no `dark:` utility can express it
+   because the value lives in a property Shiki wrote inline.
+
+   The background is forced transparent so the block sits on `bg-card` and
+   stays inside the design system, rather than introducing a third surface
+   colour from the Shiki theme.
+--------------------------------------------------------------------------- */
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
