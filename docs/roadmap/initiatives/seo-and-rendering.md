@@ -1,7 +1,7 @@
 # Initiative — SEO integrity & rendering performance
 
-**Spec:** `../../reference/seo-performance.md` · **Status:** `[ ]` not started ·
-**Priority:** the P0 block below is the highest-urgency work in the repo.
+**Spec:** `../../reference/seo-performance.md` · **Status:** `[~]` Phases 1–2
+shipped (one item deferred) · **Next:** Phase 3 — static rendering.
 
 > **Why SEO and rendering are one initiative.** They touch the same files —
 > `layout.tsx`, `generateMetadata`, the `[locale]` layout. Splitting them means
@@ -9,44 +9,68 @@
 
 ---
 
-## Phase 1 — `[ ]` Integrity (do this first, it is a policy risk)
+## Phase 1 — `[x]` Integrity (shipped 2026-07-29)
 
-Google can issue a **manual action** for fabricated structured data, and the risk
-grows the longer it stays indexed. This phase is small and mechanical.
+- `[x]` **Fabricated ratings and reviews deleted** — 18 files, 416 lines removed.
+  `aggregateRating` blocks (up to `ratingCount: "15000"`) plus three invented
+  `Review` authors ("Foydalanuvchi", "Пользователь"). Removed with a brace-matched
+  codemod, not a line regex, because the blocks are nested object literals.
+  `SoftwareApplication` / `FAQPage` / `HowTo` / `BreadcrumbList` kept — they
+  describe real features.
+- `[x]` **`inLanguage: ["uz","en","ru"]` → `["uz","en"]`** in
+  `src/modules/tools/LatinCyrillic/seo/schemas.ts` — `ru` is not a routed locale,
+  so the schema advertised a language the site does not serve.
+- **Exit verified:** `grep -rni "aggregaterating|ratingvalue|ratingcount|reviewrating"`
+  over the whole repo → **0**, and the 5 JSON-LD blocks served on
+  `/tools/json-formatter` all parse and none contains a rating.
 
-- `[ ]` **Delete the fabricated ratings and reviews.** 18 files emit invented
-  `aggregateRating` and hand-written reviews with invented author names.
-  Verified: `grep -rln aggregateRating src/ | wc -l` → **18**.
-  Examples: `src/app/(app)/[locale]/tools/page.tsx:227-233` (`ratingValue: "4.8"`,
-  `ratingCount: "15000"`) · `src/modules/tools/LatinCyrillic/seo/schemas.ts:87-108`
-  (`"4.9"`, 3,250 ratings, plus two invented reviews).
-  **Keep** `SoftwareApplication` / `FAQPage` / `HowTo` — those describe real features.
-  **Exit:** `grep -rn "aggregateRating\|ratingValue" src/` returns nothing.
+## Phase 2 — `[x]` Canonical & locale correctness (shipped 2026-07-29)
 
-## Phase 2 — `[ ]` Canonical & locale correctness
+New shared helper: **`src/lib/seo.ts`** — `SITE_URL`, `localeUrl`,
+`localeAlternates`, `withLocale`. One definition of "what URL is this page in
+this locale", derived from `routing.localePrefix`, instead of 17 hand-written copies.
 
-Every item here is a page actively telling Google the wrong thing.
-
-- `[ ]` **Book chapters canonical to the homepage.** `src/app/layout.tsx:200-207`
-  sets a site-wide `canonical: "https://webiston.uz"`; `src/app/books/[...slug]/page.tsx`
-  never overrides it — so **229 chapter pages declare themselves duplicates of `/`**.
-- `[ ]` **`/en` is canonicalised away.** All 17 routed tool pages export a *static*
-  `metadata` with a hardcoded Uzbek-URL canonical
-  (e.g. `.../tools/json-formatter/page.tsx:95`), so every English page points at
-  its Uzbek twin. Convert to `generateMetadata({ params })` and derive the
-  canonical from the locale.
-- `[ ]` **`<html lang>` is hardcoded `"uz"`** — `src/app/layout.tsx:394` — while
-  `:200-206` advertises an `en` alternate. The root layout sits above `[locale]`,
-  so read the locale from the request, not from `params`.
-- `[ ]` **`/api/og` does not exist.** `src/app/books/[...slug]/page.tsx:52,99,128`
-  point every OpenGraph image at `/api/og?…`; the only API route is
-  `src/app/api/search/`. **Every book share card is a 404.** Implement with
-  `ImageResponse` from `next/og` (built into Next 16, no new dependency), or
-  point at a static image.
-- `[ ]` **37 titles render as `… | Webiston | Webiston`** — `layout.tsx:13-16`
-  applies a `%s | Webiston` template while 37 page titles already end in it.
+- `[x]` **Book chapters no longer canonical to the homepage.**
+  `src/app/books/[...slug]/page.tsx` now sets `alternates.canonical` in every
+  branch. Verified served: `/books/fluent-react/introduction` →
+  `<link rel="canonical" href="https://webiston.uz/books/fluent-react/introduction">`.
+- `[x]` **`/en` self-canonicals.** All 17 routed tool pages + the tools index
+  converted from `export const metadata` to
+  `generateMetadata({ params }) → withLocale(...)`. Verified served:
+  `/en/tools/json-formatter` → canonical `…/en/tools/json-formatter`,
+  `og:url` matching, `og:locale` `en_US`, `og:locale:alternate` `uz_UZ`, and a
+  reciprocal `uz` / `en` / `x-default` hreflang set.
+- `[x]` **`/api/og` implemented** — `src/app/api/og/route.tsx`, `ImageResponse`
+  from `next/og`, no new dependency. Renders a 1200×630 brand card; verified
+  `200 image/png`, and confirmed it renders Cyrillic. `path` is validated
+  against a path-shaped regex before being drawn (it comes from the query string).
+- `[x]` **Title doubling fixed.** Page titles no longer carry a `| Webiston`
+  suffix that the root template appends again; the homepage uses
+  `title: { absolute }`. Verified served: `/` → `Webiston | Dasturchilar uchun
+  bepul kurslar va vositalar` (was `… | Webiston` twice).
+- `[x]` **`any` removed from the books route** — `params: any` /
+  `Promise<any>` became `BookPageProps` / `Promise<Metadata>`. That change alone
+  surfaced **5 real type errors**: MDX frontmatter is untyped, so `title`,
+  `description`, `keywords` and `author` were all being interpolated unchecked.
+  Narrowed with an `asString(value: unknown)` guard.
+- `[>]` **`<html lang>` is still hardcoded `"uz"`** (`src/app/layout.tsx`).
+  **Deferred on purpose — do not "fix" this in isolation.** The only way to read
+  the locale in the root layout is `getLocale()` from `next-intl/server`, which
+  resolves through `headers()`
+  (`next-intl/dist/…/server/react-server/RequestLocale.js`) and therefore opts
+  the entire tree into dynamic rendering. The root layout renders *before* the
+  `[locale]` layout could call `setRequestLocale`, so the cached path is not
+  available to it. Cost of the bug: 19 English pages carry `lang="uz"`. Cost of
+  this fix: **every route stays dynamic, including all 229 book pages.** Solve it
+  with Phase 3, where the real options are (a) multiple root layouts — moving
+  `<html>` into `[locale]` and `books` separately, at the price of a hard
+  navigation between the two roots — or (b) accept `lang="uz"` until next-intl
+  can resolve a locale statically above the segment.
 
 ## Phase 3 — `[ ]` Rendering (the biggest measurable win)
+
+> Start here by deciding the `<html lang>` / root-layout question deferred from
+> Phase 2 — it and `setRequestLocale` are the same decision.
 
 - `[ ]` **Nothing is statically prerendered.** Every route in the build output is
   `ƒ` (server-rendered on demand); only `/_not-found` and `/manifest.webmanifest`

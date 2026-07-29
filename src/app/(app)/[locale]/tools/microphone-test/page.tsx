@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { MicrophoneTest } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Mikrofon Test - Bepul Audio Sifat va Yozish Tool | Webiston",
+const baseMetadata: Metadata = {
+  title: "Mikrofon Test - Bepul Audio Sifat va Yozish Tool",
   description:
     "Eng yaxshi bepul mikrofon test vositasi. Audio sifatini tekshiring, real-time visualizatsiya ko'ring va professional audio yozing.",
   keywords: [
@@ -157,14 +158,6 @@ export const metadata: Metadata = {
       "Professional mikrofon test. Audio sifatini tekshiring, real-time visualizatsiya ko'ring. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/microphone-test",
-    languages: {
-      uz: "https://webiston.uz/tools/microphone-test",
-      en: "https://webiston.uz/en/tools/microphone-test",
-      "x-default": "https://webiston.uz/tools/microphone-test"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -256,31 +249,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords:
-    "mikrofon test, microphone test, audio quality, bepul mikrofon test",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    ratingCount: "2250",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Mikrofon sifatini tekshirish uchun juda foydali vosita. Real-time visualizatsiya ajoyib!"
-    }
-  ]
+  keywords: "mikrofon test, microphone test, audio quality, bepul mikrofon test"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -432,4 +401,13 @@ export default async function MicrophoneTestPage({
       <MicrophoneTest />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/microphone-test")
 }

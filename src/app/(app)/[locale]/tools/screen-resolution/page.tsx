@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { ScreenResolution } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Ekran O'lchami - Bepul Screen Resolution Detector | Webiston",
+const baseMetadata: Metadata = {
+  title: "Ekran O'lchami - Bepul Screen Resolution Detector",
   description:
     "Eng yaxshi bepul screen resolution detector. Ekran o'lchami, rezolutsiya va displey ma'lumotlarini real vaqtda ko'rish. Monitor testi va viewport o'lchami.",
   keywords: [
@@ -116,14 +117,6 @@ export const metadata: Metadata = {
       "Professional screen resolution detector. Ekran o'lchami va displey ma'lumotlarini real vaqtda ko'ring!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/screen-resolution",
-    languages: {
-      uz: "https://webiston.uz/tools/screen-resolution",
-      en: "https://webiston.uz/en/tools/screen-resolution",
-      "x-default": "https://webiston.uz/tools/screen-resolution"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -216,30 +209,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "ekran o'lchami, screen resolution, monitor testi, bepul screen detector",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.6",
-    ratingCount: "1200",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Ekran o'lchami va rezolutsiya haqida ma'lumot olish uchun juda foydali vosita. Aniq va tez!"
-    }
-  ]
+    "ekran o'lchami, screen resolution, monitor testi, bepul screen detector"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -391,4 +361,13 @@ export default async function ScreenResolutionPage({
       <ScreenResolution />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/screen-resolution")
 }

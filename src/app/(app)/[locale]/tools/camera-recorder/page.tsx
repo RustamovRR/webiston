@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { CameraRecorder } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool | Webiston",
+const baseMetadata: Metadata = {
+  title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
   description:
     "Eng yaxshi bepul kamera yozuvchi. Video yozing, screenshot oling va kamerangizni sinab ko'ring. Professional kamera test va yozish vositasi.",
   keywords: [
@@ -160,14 +161,6 @@ export const metadata: Metadata = {
       "Professional kamera yozuvchi. Video yozing, screenshot oling va kamerangizni sinab ko'ring. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/camera-recorder",
-    languages: {
-      uz: "https://webiston.uz/tools/camera-recorder",
-      en: "https://webiston.uz/en/tools/camera-recorder",
-      "x-default": "https://webiston.uz/tools/camera-recorder"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -260,30 +253,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "kamera yozuvchi, video recording, camera test, bepul camera recorder",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1850",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Kamera test va video yozish uchun juda foydali vosita. Oson va professional!"
-    }
-  ]
+    "kamera yozuvchi, video recording, camera test, bepul camera recorder"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -435,4 +405,13 @@ export default async function CameraRecorderPage({
       <CameraRecorder />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/camera-recorder")
 }

@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { ToolsMainPage } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Bepul Onlayn Vositalar - Professional Developer Tools | Webiston",
+const baseMetadata: Metadata = {
+  title: "Bepul Onlayn Vositalar - Professional Developer Tools",
   description:
     "Eng yaxshi bepul onlayn vositalar to'plami. QR generator, JSON formatter, Base64 converter, URL encoder va boshqa professional developer tools.",
   keywords: [
@@ -92,14 +93,6 @@ export const metadata: Metadata = {
     description:
       "Professional developer tools to'plami. QR generator, JSON formatter va boshqa foydali vositalar. Bepul!",
     images: ["https://webiston.uz/logo.png"]
-  },
-  alternates: {
-    canonical: "https://webiston.uz/tools",
-    languages: {
-      uz: "https://webiston.uz/tools",
-      en: "https://webiston.uz/en/tools",
-      "x-default": "https://webiston.uz/tools"
-    }
   },
   robots: {
     index: true,
@@ -224,14 +217,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "bepul vositalar, developer tools, onlayn tools, webiston",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "15000",
-    bestRating: "5",
-    worstRating: "1"
-  }
+  keywords: "bepul vositalar, developer tools, onlayn tools, webiston"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -375,4 +361,13 @@ export default async function ToolsPage({
       <ToolsMainPage />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools")
 }

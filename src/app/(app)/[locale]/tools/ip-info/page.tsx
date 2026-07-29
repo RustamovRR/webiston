@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { IpInfo } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool | Webiston",
+const baseMetadata: Metadata = {
+  title: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool",
   description:
     "Eng yaxshi bepul IP analyzer. IP manzil, geolokatsiya, ISP va xavfsizlik ma'lumotlarini tahlil qiling. Professional IP lookup va network analysis vositasi.",
   keywords: [
@@ -113,14 +114,6 @@ export const metadata: Metadata = {
       "Professional IP analyzer. IP manzil, geolokatsiya va ISP ma'lumotlarini tahlil qiling. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/ip-info",
-    languages: {
-      uz: "https://webiston.uz/tools/ip-info",
-      en: "https://webiston.uz/en/tools/ip-info",
-      "x-default": "https://webiston.uz/tools/ip-info"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -209,30 +202,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "ip ma'lumotlari, ip geolocation, ip analyzer, bepul ip checker",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "2200",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "IP manzil va geolokatsiya ma'lumotlarini olish uchun juda foydali vosita. Aniq va tez ishlaydi!"
-    }
-  ]
+  keywords: "ip ma'lumotlari, ip geolocation, ip analyzer, bepul ip checker"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -384,4 +354,13 @@ export default async function IpInfoPage({
       <IpInfo />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/ip-info")
 }

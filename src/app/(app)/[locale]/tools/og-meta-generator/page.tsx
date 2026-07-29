@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { OgMetaGenerator } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "OG Meta Generator - Bepul Open Graph Meta Tag Tool | Webiston",
+const baseMetadata: Metadata = {
+  title: "OG Meta Generator - Bepul Open Graph Meta Tag Tool",
   description:
     "Eng yaxshi bepul OG meta generator. Open Graph va Twitter Card meta teglarini yaratish. SEO va ijtimoiy tarmoq uchun professional vosita.",
   keywords: [
@@ -114,14 +115,6 @@ export const metadata: Metadata = {
       "Professional OG meta generator. Open Graph va Twitter Card meta teglarini yaratish. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/og-meta-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/og-meta-generator",
-      en: "https://webiston.uz/en/tools/og-meta-generator",
-      "x-default": "https://webiston.uz/tools/og-meta-generator"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -212,30 +205,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "og meta generator, open graph generator, meta tag generator, bepul meta generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1750",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Meta teglar yaratish uchun juda foydali vosita. SEO va ijtimoiy tarmoq uchun ajoyib!"
-    }
-  ]
+    "og meta generator, open graph generator, meta tag generator, bepul meta generator"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -388,4 +358,13 @@ export default async function OgMetaGeneratorPage({
       <OgMetaGenerator />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/og-meta-generator")
 }

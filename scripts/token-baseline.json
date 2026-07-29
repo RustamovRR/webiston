@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-07-29",
-  "total": 2600,
+  "total": 2605,
   "files": {
     "apps/extensions/latin-cyrillic/entrypoints/content.ts": 23,
     "apps/extensions/latin-cyrillic/entrypoints/popup/App.tsx": 6,
@@ -12,6 +12,7 @@
     "src/app/(app)/[locale]/page.tsx": 4,
     "src/app/(app)/[locale]/tools/camera-recorder/CameraRecorderClient.tsx": 4,
     "src/app/(app)/[locale]/tools/microphone-test/MicrophoneTestClient.tsx": 1,
+    "src/app/api/og/route.tsx": 5,
     "src/app/books/page.tsx": 3,
     "src/app/layout.tsx": 3,
     "src/app/manifest.ts": 2,

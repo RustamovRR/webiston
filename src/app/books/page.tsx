@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card"
 import { getAllTutorials } from "@/lib/mdx"
 
 export const metadata: Metadata = {
-  title: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar | Webiston",
+  // No "| Webiston" suffix — the root layout applies a `%s | Webiston` template.
+  title: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar",
   description:
     "Eng yaxshi dasturlash kitoblari o'zbek tilida bepul. JavaScript, React, Node.js va boshqa IT texnologiyalar bo'yicha professional kitoblar to'plami.",
   keywords: [

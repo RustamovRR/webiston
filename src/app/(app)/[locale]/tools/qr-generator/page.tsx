@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { QrGenerator } from "@/modules/tools"
 
 // Locale-based metadata generation
 
-export const metadata: Metadata = {
-  title: "QR Kod Yaratish - Bepul QR Kod Generator Onlayn | Webiston",
+const baseMetadata: Metadata = {
+  title: "QR Kod Yaratish - Bepul QR Kod Generator Onlayn",
   description:
     "QR kod yaratish uchun eng yaxshi bepul vosita. URL, matn, kontakt, WiFi, SMS uchun QR kodlar yarating. Tez, oson va professional QR generator.",
   keywords: [
@@ -139,14 +140,6 @@ export const metadata: Metadata = {
       "Professional QR kod generator. URL, matn, kontakt, WiFi uchun QR kodlar yarating. Bepul va tez!",
     images: ["https://webiston.uz/logo.png"] // Using existing logo for now
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/qr-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/qr-generator",
-      en: "https://webiston.uz/en/tools/qr-generator",
-      "x-default": "https://webiston.uz/tools/qr-generator"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -229,30 +222,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "qr kod yaratish, qr generator, bepul qr kod, online qr generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1250",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Juda oson va tez QR kod yaratish imkoniyati. Professional va bepul!"
-    }
-  ]
+  keywords: "qr kod yaratish, qr generator, bepul qr kod, online qr generator"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -404,4 +374,13 @@ export default async function QrGeneratorPage({
       <QrGenerator />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/qr-generator")
 }

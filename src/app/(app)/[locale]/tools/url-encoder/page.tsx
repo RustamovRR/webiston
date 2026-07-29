@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { UrlEncoder } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "URL Encoder/Decoder - Bepul URL Encode/Decode | Webiston",
+const baseMetadata: Metadata = {
+  title: "URL Encoder/Decoder - Bepul URL Encode/Decode",
   description:
     "Eng yaxshi bepul URL encoder/decoder. URL manzillarni encode va decode qiling. Percent encoding va URI formatting.",
   keywords: [
@@ -89,14 +90,6 @@ export const metadata: Metadata = {
       "Professional URL encoder/decoder. URL manzillarni encode va decode qiling. Bepul va tez!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/url-encoder",
-    languages: {
-      uz: "https://webiston.uz/tools/url-encoder",
-      en: "https://webiston.uz/en/tools/url-encoder",
-      "x-default": "https://webiston.uz/tools/url-encoder"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -176,30 +169,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "url encoder, url decoder, url encode, bepul url encoder",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.5",
-    ratingCount: "1600",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "URL encode va decode qilish uchun juda foydali vosita. Tez va aniq ishlaydi!"
-    }
-  ]
+  keywords: "url encoder, url decoder, url encode, bepul url encoder"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -351,4 +321,13 @@ export default async function UrlEncoderPage({
       <UrlEncoder />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/url-encoder")
 }

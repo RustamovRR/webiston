@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { JsonFormatter } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "JSON Formatter - Bepul JSON Formatlash va Tekshirish | Webiston",
+const baseMetadata: Metadata = {
+  title: "JSON Formatter - Bepul JSON Formatlash va Tekshirish",
   description:
     "Eng yaxshi bepul JSON formatter. JSON ma'lumotlarini formatlash, tekshirish va tuzatish. Professional va tez JSON vositasi.",
   keywords: [
@@ -92,14 +93,6 @@ export const metadata: Metadata = {
       "Professional JSON formatter. JSON ma'lumotlarini formatlash, tekshirish va tuzatish. Bepul va tez!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/json-formatter",
-    languages: {
-      uz: "https://webiston.uz/tools/json-formatter",
-      en: "https://webiston.uz/en/tools/json-formatter",
-      "x-default": "https://webiston.uz/tools/json-formatter"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -180,30 +173,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "json formatter, json formatlash, json validator, bepul json formatter",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.7",
-    ratingCount: "2800",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "JSON ma'lumotlarini formatlash va tekshirish uchun juda foydali vosita. Tez va aniq ishlaydi!"
-    }
-  ]
+    "json formatter, json formatlash, json validator, bepul json formatter"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -355,4 +325,13 @@ export default async function JsonFormatterPage({
       <JsonFormatter />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/json-formatter")
 }

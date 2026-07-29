@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { Base64Converter } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Base64 Converter - Bepul Base64 Encode/Decode | Webiston",
+const baseMetadata: Metadata = {
+  title: "Base64 Converter - Bepul Base64 Encode/Decode",
   description:
     "Eng yaxshi bepul Base64 converter. Matn va fayllarni Base64 ga encode/decode qiling. Tez, xavfsiz va professional vosita.",
   keywords: [
@@ -92,14 +93,6 @@ export const metadata: Metadata = {
       "Professional Base64 converter. Matn va fayllarni Base64 ga encode/decode qiling. Bepul va tez!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/base64-converter",
-    languages: {
-      uz: "https://webiston.uz/tools/base64-converter",
-      en: "https://webiston.uz/en/tools/base64-converter",
-      "x-default": "https://webiston.uz/tools/base64-converter"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -180,30 +173,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "base64 converter, base64 encode, base64 decode, bepul base64 converter",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.6",
-    ratingCount: "1900",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Base64 encode va decode qilish uchun juda foydali vosita. Tez va xavfsiz ishlaydi!"
-    }
-  ]
+    "base64 converter, base64 encode, base64 decode, bepul base64 converter"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -355,4 +325,13 @@ export default async function Base64ConverterPage({
       <Base64Converter />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/base64-converter")
 }

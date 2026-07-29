@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import {
   ErrorContent,
@@ -10,20 +11,52 @@ import {
   getTutorialInfo,
   serializeContent
 } from "@/lib/mdx"
+import { SITE_URL } from "@/lib/seo"
+
+interface BookPageProps {
+  params: Promise<{ slug: string[] }>
+}
+
+/** MDX frontmatter comes from hand-authored `.mdx` files, so every field is
+ *  unknown until it has been checked. Typing it `any` hid four real holes here:
+ *  a numeric or missing `title` would have been interpolated as-is. */
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value : undefined
+}
+
+/** Share card for a chapter. Rendered by `src/app/api/og/route.tsx`. */
+function ogImage(title: string, path: string) {
+  return [
+    {
+      url: `/api/og?title=${encodeURIComponent(title)}&path=${encodeURIComponent(path)}`,
+      width: 1200,
+      height: 630
+    }
+  ]
+}
 
 export async function generateStaticParams() {
   const paths = await getAllTutorialPaths()
   return paths
 }
 
-// Dinamik metadata yaratish
-export async function generateMetadata({ params }: any): Promise<any> {
+// Dinamik metadata yaratish.
+//
+// Every branch sets its own `alternates.canonical`. Without it these pages
+// inherit the site-wide `canonical: "https://webiston.uz"` from the root layout,
+// which told Google that all 229 chapters were duplicates of the homepage.
+// Titles carry no "| Webiston" suffix — the root layout's `%s | Webiston`
+// template appends it.
+export async function generateMetadata({
+  params
+}: BookPageProps): Promise<Metadata> {
   const { slug } = await params
 
   if (!slug || slug.length === 0) {
     return {
-      title: "Not Found | Webiston",
-      description: "The page you are looking for does not exist."
+      title: "Not Found",
+      description: "The page you are looking for does not exist.",
+      robots: { index: false, follow: false }
     }
   }
 
@@ -36,24 +69,21 @@ export async function generateMetadata({ params }: any): Promise<any> {
 
     // Agar bu tutorial landing page bo'lsa
     if (slug.length === 1) {
+      const title = tutorialInfo?.title || "Darslik"
+      const description =
+        tutorialInfo?.description ||
+        "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing."
+      const path = `/books/${tutorialId}`
+
       return {
-        title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
-        description:
-          tutorialInfo?.description ||
-          "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
+        title,
+        description,
+        alternates: { canonical: `${SITE_URL}${path}` },
         openGraph: {
-          title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
-          description:
-            tutorialInfo?.description ||
-            "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
-          url: `https://webiston.uz/books/${tutorialId}`,
-          images: [
-            {
-              url: `/api/og?title=${encodeURIComponent(tutorialInfo?.title || "Tutorial")}&path=books/${tutorialId}`,
-              width: 1200,
-              height: 630
-            }
-          ]
+          title,
+          description,
+          url: `${SITE_URL}${path}`,
+          images: ogImage(title, path)
         }
       }
     }
@@ -67,44 +97,39 @@ export async function generateMetadata({ params }: any): Promise<any> {
       const serializedContent = await serializeContent(contentText, false)
 
       // Frontmatter'dan metadata olish
-      const frontmatter = serializedContent.frontmatter || {}
+      const frontmatter: Record<string, unknown> =
+        serializedContent.frontmatter || {}
       const title =
-        frontmatter.title ||
+        asString(frontmatter.title) ??
         slug[slug.length - 1]
           .split("-")
           .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ")
 
       const description =
-        frontmatter.description ||
+        asString(frontmatter.description) ??
         `Keng qamrovli darsligimizda ${title} haqida batafsil o'rganing.`
-      const keywords = frontmatter.keywords || ""
+      const keywords = asString(frontmatter.keywords)
+      const author = asString(frontmatter.author)
+
+      const pageTitle = `${title} | ${tutorialInfo?.title || "Darslik"}`
+      const path = `/books/${slug.join("/")}`
 
       return {
-        title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+        title: pageTitle,
         description,
-        keywords:
-          keywords && typeof keywords === "string"
-            ? keywords.split(",").map((k: string) => k.trim())
-            : undefined,
-        authors: frontmatter.author
-          ? [{ name: frontmatter.author }]
-          : undefined,
+        keywords: keywords?.split(",").map((k) => k.trim()),
+        authors: author ? [{ name: author }] : undefined,
+        alternates: { canonical: `${SITE_URL}${path}` },
         openGraph: {
-          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+          title: pageTitle,
           description,
-          url: `https://webiston.uz/books/${slug.join("/")}`,
-          images: [
-            {
-              url: `/api/og?title=${encodeURIComponent(title)}&path=books/${slug.join("/")}`,
-              width: 1200,
-              height: 630
-            }
-          ]
+          url: `${SITE_URL}${path}`,
+          images: ogImage(title, path)
         },
         twitter: {
           card: "summary_large_image",
-          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+          title: pageTitle,
           description
         }
       }
@@ -116,32 +141,32 @@ export async function generateMetadata({ params }: any): Promise<any> {
       .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ")
 
+    const pageTitle = `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"}`
+    const description = `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`
+    const path = `/books/${slug.join("/")}`
+
     return {
-      title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
-      description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
+      title: pageTitle,
+      description,
+      alternates: { canonical: `${SITE_URL}${path}` },
       openGraph: {
-        title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
-        description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
-        url: `https://webiston.uz/books/${slug.join("/")}`,
-        images: [
-          {
-            url: `/api/og?title=${encodeURIComponent(fallbackTitle)}&path=books/${slug.join("/")}`,
-            width: 1200,
-            height: 630
-          }
-        ]
+        title: pageTitle,
+        description,
+        url: `${SITE_URL}${path}`,
+        images: ogImage(fallbackTitle, path)
       }
     }
   } catch (error) {
     console.error("Error generating metadata:", error)
     return {
-      title: "Error | Webiston",
-      description: "An error occurred while loading this page."
+      title: "Error",
+      description: "An error occurred while loading this page.",
+      robots: { index: false, follow: false }
     }
   }
 }
 
-export default async function TutorialPage({ params }: any) {
+export default async function TutorialPage({ params }: BookPageProps) {
   const { slug } = await params
 
   if (!slug || slug.length === 0) {

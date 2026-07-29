@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { UuidGenerator } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "UUID Generator - Bepul Noyob Identifikator Yaratuvchi | Webiston",
+const baseMetadata: Metadata = {
+  title: "UUID Generator - Bepul Noyob Identifikator Yaratuvchi",
   description:
     "Eng yaxshi bepul UUID generator. UUID v4, v1, NIL formatlar. Noyob identifikatorlar yaratish, database, API va dasturlash uchun.",
   keywords: [
@@ -125,14 +126,6 @@ export const metadata: Metadata = {
       "Professional UUID generator. UUID v4, v1, NIL formatlar bilan noyob identifikatorlar yaratish. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/uuid-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/uuid-generator",
-      en: "https://webiston.uz/en/tools/uuid-generator",
-      "x-default": "https://webiston.uz/tools/uuid-generator"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -220,31 +213,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords:
-    "uuid generator, noyob identifikator, uuid v4, bepul uuid generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1650",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "UUID yaratish uchun juda foydali vosita. Turli formatlar va versiyalar bilan ajoyib ishlaydi!"
-    }
-  ]
+  keywords: "uuid generator, noyob identifikator, uuid v4, bepul uuid generator"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -396,4 +365,13 @@ export default async function UuidGeneratorPage({
       <UuidGenerator />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/uuid-generator")
 }

@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { HashGenerator } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Hash Generator - Bepul MD5, SHA256, SHA512 Hash Yaratish | Webiston",
+const baseMetadata: Metadata = {
+  title: "Hash Generator - Bepul MD5, SHA256, SHA512 Hash Yaratish",
   description:
     "Eng yaxshi bepul hash generator. MD5, SHA1, SHA256, SHA512 kriptografik hash yaratish. Parol, fayl va matn uchun xavfsiz hash.",
   keywords: [
@@ -124,14 +125,6 @@ export const metadata: Metadata = {
       "Professional hash generator. MD5, SHA1, SHA256, SHA512 kriptografik hash yaratish. Bepul va xavfsiz!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/hash-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/hash-generator",
-      en: "https://webiston.uz/en/tools/hash-generator",
-      "x-default": "https://webiston.uz/tools/hash-generator"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -219,30 +212,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "hash generator, md5 hash, sha256 hash, bepul hash generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.7",
-    ratingCount: "2100",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Hash yaratish uchun juda foydali va xavfsiz vosita. MD5, SHA256 algoritmlari ajoyib ishlaydi!"
-    }
-  ]
+  keywords: "hash generator, md5 hash, sha256 hash, bepul hash generator"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -394,4 +364,13 @@ export default async function HashGeneratorPage({
       <HashGenerator />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/hash-generator")
 }

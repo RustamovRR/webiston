@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { LoremIpsum } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Lorem Ipsum Generator - Bepul Placeholder Matn Yaratuvchi | Webiston",
+const baseMetadata: Metadata = {
+  title: "Lorem Ipsum Generator - Bepul Placeholder Matn Yaratuvchi",
   description:
     "Eng yaxshi bepul Lorem Ipsum generator. Placeholder matn, dummy text va dizayn uchun namuna matnlar yaratish. Professional lorem ipsum vositasi.",
   keywords: [
@@ -110,14 +111,6 @@ export const metadata: Metadata = {
       "Professional Lorem Ipsum generator. Placeholder matn va dummy text yaratish. Bepul va oson!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/lorem-ipsum",
-    languages: {
-      uz: "https://webiston.uz/tools/lorem-ipsum",
-      en: "https://webiston.uz/en/tools/lorem-ipsum",
-      "x-default": "https://webiston.uz/tools/lorem-ipsum"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -210,30 +203,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "lorem ipsum generator, placeholder matn, dummy text, bepul lorem ipsum",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.7",
-    ratingCount: "1350",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Dizayn va veb ishlar uchun placeholder matn yaratish uchun juda foydali vosita. Oson va tez!"
-    }
-  ]
+    "lorem ipsum generator, placeholder matn, dummy text, bepul lorem ipsum"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -385,4 +355,13 @@ export default async function LoremIpsumPage({
       <LoremIpsum />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/lorem-ipsum")
 }

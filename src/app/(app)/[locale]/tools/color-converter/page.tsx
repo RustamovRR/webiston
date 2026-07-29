@@ -1,8 +1,9 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { ColorConverter } from "@/modules/tools"
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   title:
     "Color Converter - Bepul Rang Konverter va Palette Generator | Webiston",
   description:
@@ -99,14 +100,6 @@ export const metadata: Metadata = {
       "Professional color converter. HEX, RGB, HSL ranglarni konvertatsiya qiling va palette yarating. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/color-converter",
-    languages: {
-      uz: "https://webiston.uz/tools/color-converter",
-      en: "https://webiston.uz/en/tools/color-converter",
-      "x-default": "https://webiston.uz/tools/color-converter"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -188,31 +181,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords:
-    "color converter, rang konverter, hex to rgb, bepul color converter",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.6",
-    ratingCount: "1800",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Ranglarni konvertatsiya qilish va palette yaratish uchun juda foydali vosita. Dizaynerlar uchun ajoyib!"
-    }
-  ]
+  keywords: "color converter, rang konverter, hex to rgb, bepul color converter"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -363,4 +332,13 @@ export default async function ColorConverterPage({
       <ColorConverter />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/color-converter")
 }

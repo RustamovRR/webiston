@@ -11,6 +11,7 @@ import {
   TOOLS_LIST
 } from "@/constants"
 import { getTutorialImage } from "@/lib/mdx"
+import { localeAlternates, localeUrl } from "@/lib/seo"
 
 export async function generateMetadata({
   params
@@ -89,29 +90,19 @@ export async function generateMetadata({
         ].join(", ")
 
   return {
-    title,
+    // `absolute` opts out of the root layout's `%s | Webiston` template — the
+    // homepage title already leads with the brand, so the template appended it
+    // twice ("Webiston | … | Webiston").
+    title: { absolute: title },
     description,
     keywords: enhancedKeywords,
-    alternates: {
-      canonical:
-        locale === "uz"
-          ? "https://webiston.uz"
-          : `https://webiston.uz/${locale}`,
-      languages: {
-        uz: "https://webiston.uz",
-        en: "https://webiston.uz/en",
-        "x-default": "https://webiston.uz"
-      }
-    },
+    alternates: localeAlternates(locale, "/"),
     openGraph: {
       title,
       description,
       type: "website",
       locale: locale === "uz" ? "uz_UZ" : "en_US",
-      url:
-        locale === "uz"
-          ? "https://webiston.uz"
-          : `https://webiston.uz/${locale}`,
+      url: localeUrl(locale, "/"),
       siteName: "Webiston",
       images: [
         {

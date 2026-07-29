@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { PasswordGenerator } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Password Generator - Bepul Xavfsiz Parol Yaratish | Webiston",
+const baseMetadata: Metadata = {
+  title: "Password Generator - Bepul Xavfsiz Parol Yaratish",
   description:
     "Eng yaxshi bepul password generator. Xavfsiz va kuchli parollar yaratish. Turli uzunlik va belgilar bilan professional parol vositasi.",
   keywords: [
@@ -112,14 +113,6 @@ export const metadata: Metadata = {
       "Professional password generator. Xavfsiz va kuchli parollar yaratish. Bepul va oson!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/password-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/password-generator",
-      en: "https://webiston.uz/en/tools/password-generator",
-      "x-default": "https://webiston.uz/tools/password-generator"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -208,30 +201,7 @@ const structuredData = {
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
   keywords:
-    "password generator, parol yaratuvchi, xavfsiz parol, bepul password generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    ratingCount: "2800",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Xavfsiz parollar yaratish uchun juda foydali vosita. Turli sozlamalar bilan ajoyib!"
-    }
-  ]
+    "password generator, parol yaratuvchi, xavfsiz parol, bepul password generator"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -383,4 +353,13 @@ export default async function PasswordGeneratorPage({
       <PasswordGenerator />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/password-generator")
 }

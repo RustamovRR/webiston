@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { JwtDecoder } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "JWT Decoder - Bepul JWT Token Dekoder | Webiston",
+const baseMetadata: Metadata = {
+  title: "JWT Decoder - Bepul JWT Token Dekoder",
   description:
     "Eng yaxshi bepul JWT decoder. JWT tokenlarni decode qiling va ma'lumotlarini ko'ring. Professional JWT analyzer va debugger.",
   keywords: [
@@ -91,14 +92,6 @@ export const metadata: Metadata = {
       "Professional JWT decoder. JWT tokenlarni decode qiling va ma'lumotlarini ko'ring. Bepul va tez!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/jwt-decoder",
-    languages: {
-      uz: "https://webiston.uz/tools/jwt-decoder",
-      en: "https://webiston.uz/en/tools/jwt-decoder",
-      "x-default": "https://webiston.uz/tools/jwt-decoder"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -182,30 +175,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords: "jwt decoder, jwt token decoder, jwt dekoder, bepul jwt decoder",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.7",
-    ratingCount: "2100",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "JWT tokenlarni decode qilish uchun juda foydali vosita. Xavfsiz va tez ishlaydi!"
-    }
-  ]
+  keywords: "jwt decoder, jwt token decoder, jwt dekoder, bepul jwt decoder"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -357,4 +327,13 @@ export default async function JwtDecoderPage({
       <JwtDecoder />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/jwt-decoder")
 }

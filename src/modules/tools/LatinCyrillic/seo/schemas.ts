@@ -81,31 +81,10 @@ export const applicationSchema = {
   softwareVersion: "2.0",
   datePublished: "2024-01-01",
   dateModified: new Date().toISOString().split("T")[0],
-  inLanguage: ["uz", "en", "ru"],
-  keywords: ALL_KEYWORDS.slice(0, 50).join(", "),
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    ratingCount: "3250",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Foydalanuvchi" },
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-      reviewBody:
-        "Juda foydali va tez ishlaydi. Lotin krill o'girish uchun eng yaxshi vosita! PDF fayllarni ham o'giradi."
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Пользователь" },
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-      reviewBody:
-        "Лотин кирилл таржима жуда тез ва аниқ ишлайди. DOCX файлларни ҳам қўллаб-қувватлайди. Тавсия қиламан!"
-    }
-  ]
+  // uz + en only — `ru` is not a routed locale (src/i18n/routing.ts), so
+  // advertising it here told Google about a language the site does not serve.
+  inLanguage: ["uz", "en"],
+  keywords: ALL_KEYWORDS.slice(0, 50).join(", ")
 }
 
 // FAQ Schema Generator

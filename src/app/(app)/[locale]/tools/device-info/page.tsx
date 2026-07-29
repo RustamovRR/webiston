@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
+import { withLocale } from "@/lib/seo"
 import { DeviceInfo } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Qurilma Ma'lumotlari - Bepul Device Information Tool | Webiston",
+const baseMetadata: Metadata = {
+  title: "Qurilma Ma'lumotlari - Bepul Device Information Tool",
   description:
     "Eng yaxshi bepul device info tool. Brauzer, qurilma va operatsion tizim haqida batafsil ma'lumot oling. Screen resolution, user agent va boshqalar.",
   keywords: [
@@ -117,14 +118,6 @@ export const metadata: Metadata = {
       "Professional device info tool. Brauzer, qurilma va tizim haqida batafsil ma'lumot. Bepul!",
     images: ["https://webiston.uz/logo.png"]
   },
-  alternates: {
-    canonical: "https://webiston.uz/tools/device-info",
-    languages: {
-      uz: "https://webiston.uz/tools/device-info",
-      en: "https://webiston.uz/en/tools/device-info",
-      "x-default": "https://webiston.uz/tools/device-info"
-    }
-  },
   robots: {
     index: true,
     follow: true,
@@ -212,31 +205,7 @@ const structuredData = {
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
   inLanguage: ["uz", "en"],
-  keywords:
-    "device info, qurilma ma'lumotlari, browser info, bepul device info",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.7",
-    ratingCount: "1400",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Qurilma va brauzer haqida ma'lumot olish uchun juda foydali vosita. Batafsil va aniq!"
-    }
-  ]
+  keywords: "device info, qurilma ma'lumotlari, browser info, bepul device info"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -388,4 +357,13 @@ export default async function DeviceInfoPage({
       <DeviceInfo />
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return withLocale(baseMetadata, locale, "/tools/device-info")
 }

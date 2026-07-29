@@ -8,8 +8,8 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-29 — dependency + tooling initiative shipped; roadmap
-restructured into `initiatives/`. Branch `refactor`._
+_Last updated: 2026-07-29 — design system shipped (5 phases); SEO integrity +
+canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 
 ---
 
@@ -23,22 +23,30 @@ restructured into `initiatives/`. Branch `refactor`._
 | Package boundaries | ✅ | `packages/ui` `@/` imports 3 → **0**; one definition, re-exported |
 | `pnpm check` | ✅ | **81 → 0 errors.** First time this gate has ever passed |
 | i18n parity | ⚠️ | `pnpm i18n` gate added; red on 8 dead `en`-only keys pending approval |
-| SEO integrity | ❌ | 18 files emit **fabricated** ratings + invented reviews |
-| Canonical / hreflang | ❌ | 229 book pages + every `/en` page canonical to the wrong URL |
-| Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale` anywhere |
+| SEO integrity | ✅ | fabricated ratings + invented reviews **deleted** (18 files, 416 lines); repo-wide grep → 0 |
+| Canonical / hreflang | ✅ | every page self-canonicals; verified in served HTML for `/`, `/en`, tools, books |
+| OG share cards | ✅ | `/api/og` implemented (`next/og`) — was a 404 on all 229 book pages |
+| Static rendering | ❌ | **0 routes prerendered** — no `setRequestLocale`; blocked with the `<html lang>` decision |
 | Payload | ❌ | 1.05 MB search index + 209 KB logo eager on every page |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
 | CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
 
 **Gate (real exit codes, 2026-07-29):** `check 0` · `typecheck 0` · `lint 0` ·
-`test 0 (207)` · `tokens 0` · `contrast 0` · `packages:build 0` · `build 0` ·
-`ext:build 0` — **`i18n 1`**, blocked on the 8 dead-key deletion below.
+`test 0 (207)` · `tokens 0` · `contrast 0` · `build 0` — **`i18n 1`**, blocked on
+the 8 dead-key deletion below.
 
 ---
 
 ## In progress
 
+- `[x]` **SEO Phases 1–2 shipped.** Fabricated `aggregateRating` + invented
+  reviews deleted from 18 files; canonical/hreflang made locale-correct via a new
+  `src/lib/seo.ts` (`withLocale`), so `/en` and all 229 book pages stop pointing
+  at the wrong URL; `/api/og` implemented. Verified in **served HTML**, not just
+  in source. One item deferred with a written reason: `<html lang>` — see the
+  initiative.
+  → `initiatives/seo-and-rendering.md`
 - `[x]` **Design system — all 5 phases shipped.** 3-layer tokens, brand hue
   **217°** (Uzbek flag blue), `pnpm contrast` 32/32 in both schemes, and a
   `pnpm tokens` ratchet that now also rejects malformed classes and
@@ -55,7 +63,7 @@ restructured into `initiatives/`. Branch `refactor`._
 
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
-| [SEO & rendering](initiatives/seo-and-rendering.md) | `[ ]` | **Phase 1 — delete the fabricated ratings** |
+| [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | **Phase 3 — static rendering + the `<html lang>` decision** |
 | [Design system](initiatives/design-system.md) | `[x]` | all phases shipped — see archive candidate |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
@@ -71,13 +79,19 @@ restructured into `initiatives/`. Branch `refactor`._
 
 ## Next up
 
-**SEO integrity (Phase 1) first.** It is small, mechanical, and it is the only
-open item with an external consequence that grows over time — fabricated
-structured data risks a Google manual action for as long as it stays indexed.
+**SEO Phase 3 — static rendering.** The largest measurable win left: 0 of ~250
+routes are prerendered today. It starts with an owner decision, not code — see
+the `<html lang>` note in the initiative. Reading the locale in the root layout
+costs static rendering site-wide, so the two must be settled together.
 
-**Then Phase E** (book reader + MDX) closes the design-system sweep. The brand
-colour is decided (hue 217°) and the ratchet holds the line, so remaining UI work
-no longer adds to the pile.
+**Two decisions still blocking work:**
+
+1. **8 dead `en`-only keys** in `messages/tools/url-encoder/en.json`
+   (`Info.formatExample.exampleText`, `exampleEncoded`, `Info.urlStructure.*` ×6).
+   Re-verified unused: `InfoSection.tsx` references neither group. This is the
+   only red gate (`pnpm i18n` → 1). Deleting needs an explicit yes.
+2. **The four parked `__` tools** — 629 of the 2,600 remaining hardcoded-colour
+   hits sit in code that has no route.
 
 ---
 
