@@ -14,14 +14,16 @@
    4. `rgba(0,0,0,.2)` / `rgba(255,255,255,.5)` — raw colour, outside the token
       system, needing a `.dark` override for every rule.
 
-   The replacement is deliberately STATIC in the backdrop and animates only
-   content entrance. On a reading platform the decoration should recede; the
-   motion budget belongs to the words. Static backdrop also means nothing
-   competes with LCP.
+   The replacement keeps motion but changes its role. The old lines were a
+   4-second EVENT you waited out. Here the grid drifts continuously at ~1.3px/s
+   — slow enough that it never competes with reading, present enough that the
+   page feels alive — and the only timed motion is a ~0.6s content entrance.
+   Decoration recedes; the motion budget belongs to the words.
 
-   No JS: the homepage is a Server Component and one of the 266 prerendered
-   routes. Reaching for framer-motion here would force `'use client'` on a page
-   whose animation needs are entirely declarative. */
+   No JS anywhere in this file: the homepage is a Server Component and one of the
+   prerendered routes. framer-motion would force `'use client'` on a page whose
+   animation needs are entirely declarative, and the header fade below would
+   otherwise need a scroll listener. */
 
 /* ---------------------------------------------------------------------------
    Motion primitives
@@ -79,51 +81,288 @@
    Hero backdrop — static, token-driven, no `.dark` override needed
    --------------------------------------------------------------------------- */
 
+/* Layout constants the hero and the site header MUST agree on. `--header-height`
+   is consumed by Header.tsx too (via `h-(--header-height)`), so the backdrop can
+   never drift out of sync with the bar it reaches behind — which is what a
+   hardcoded `4rem` in two files eventually does.
+   `--hero-tile` is the grid pitch; the drift keyframe below derives its distance
+   from it so the seamless loop cannot be broken by changing the tile size. */
+:root {
+  --header-height: 4rem;
+  /* The grid pitch. Was 4rem, which at 64px/cell read as graph paper rather than
+     structure. nextjs.org — the reference this hero grew out of — spaces its
+     lines ~500px apart: a handful of deliberate architectural rules, not a mesh.
+     `clamp` keeps the cells generous on a wide screen without collapsing to two
+     lines on a phone. The drift keyframe derives its distance from this value,
+     so the seamless loop survives any change here. */
+  --hero-tile: clamp(7rem, 10vw, 14rem);
+}
+
 .hero {
   position: relative;
   isolation: isolate;
 }
 
-/* The grid. `--border` is the decorative boundary token, which is exactly what
-   a background rule is, so this needs no per-scheme colour. */
-.hero::before {
-  content: '';
+/* The backdrop is a real element, not a pseudo-element, for two reasons:
+
+   1. It must extend UPWARD behind the sticky site header. The hero's own top
+      edge sits at document y = --header-height, so a backdrop pinned to
+      `inset: 0` starts exactly where the header ends — which is what produced
+      the hard horizontal seam: flat dark above the line, tinted below it.
+   2. The mask has to stay still while the grid inside it moves. `transform` on
+      an element moves its mask with it, so a drifting masked pseudo-element
+      would drag its own fade-out across the screen. Mask on the parent, motion
+      on the child, and the fade stays anchored. */
+.hero-backdrop {
   position: absolute;
-  inset: 0;
   z-index: -1;
-  background-image:
-    linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 4rem 4rem;
-  /* Fades the grid to nothing before it reaches any edge. Unmasked, the lines
-     collide with the viewport border and the hero reads as a spreadsheet. */
+  inset-inline: 0;
+  /* Reach up behind the header so the light is continuous across it. */
+  top: calc(-1 * var(--header-height));
+  bottom: 0;
+  overflow: hidden;
+  /* Fades everything to nothing before it reaches an edge. Unmasked, the grid
+     collides with the viewport border and the hero reads as a spreadsheet. */
+  /* Fades everything out before it reaches an edge — including the TOP, which is
+     the part that matters for the header. Centred at 55% rather than 42% and
+     starting its falloff early, so the strip behind the header carries almost no
+     decoration and therefore nothing for the header to fail to match. */
   -webkit-mask-image: radial-gradient(
-    ellipse 90% 65% at 50% 38%,
-    #000 25%,
+    ellipse 80% 62% at 50% 55%,
+    #000 15%,
     transparent 78%
   );
   mask-image: radial-gradient(
-    ellipse 90% 65% at 50% 38%,
-    #000 25%,
+    ellipse 80% 62% at 50% 55%,
+    #000 15%,
     transparent 78%
   );
 }
 
-/* A single soft brand wash behind the headline, anchored to the top edge so it
-   reads as light entering the page rather than a blob floating in it. */
-.hero::after {
-  content: '';
+/* The grid itself. Oversized on every side so that when it drifts, no edge of
+   the tiling is ever exposed inside the masked window. */
+.hero-grid {
   position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 65%;
-  z-index: -1;
-  background: radial-gradient(
-    ellipse 55% 100% at 50% 0%,
-    color-mix(in oklab, var(--brand-500) 14%, transparent),
-    transparent 72%
+  inset: calc(-2 * var(--hero-tile));
+  background-image:
+    linear-gradient(to right, var(--hero-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hero-line) 1px, transparent 1px);
+  background-size: var(--hero-tile) var(--hero-tile);
+}
+
+/* --------------------------------------------------------------------------
+   The beam: a wave of light that travels ALONG the grid lines.
+
+   This is the one effect worth taking from the Aceternity-style "beams and
+   grid" blocks, and it needs no library. The trick is two nested elements and
+   a mask:
+
+     .hero-beam       masked to the grid pattern itself, so only line pixels
+                      can ever show. It lives INSIDE .hero-grid, which is what
+                      keeps the mask aligned with the lines — both share the
+                      same origin and both inherit the drift transform, so the
+                      light cannot slide out of register with the grid.
+     .hero-beam-band  a wide diagonal gradient that translates across. It is
+                      the only thing moving, and it moves by `transform`, so
+                      the whole effect stays on the compositor.
+
+   `mask-composite: add` is what makes the two mask layers (verticals and
+   horizontals) union instead of intersect — without it the mask resolves to
+   just the crossing points and you get travelling dots, not lines. Verified
+   supported before relying on it (`CSS.supports('mask-composite','add')`).
+   -------------------------------------------------------------------------- */
+.hero-beam {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image:
+    linear-gradient(to right, #000 1px, transparent 1px),
+    linear-gradient(to bottom, #000 1px, transparent 1px);
+  mask-image:
+    linear-gradient(to right, #000 1px, transparent 1px),
+    linear-gradient(to bottom, #000 1px, transparent 1px);
+  -webkit-mask-size: var(--hero-tile) var(--hero-tile);
+  mask-size: var(--hero-tile) var(--hero-tile);
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+.hero-beam-band {
+  position: absolute;
+  /* Wider and taller than the parent so the band is fully off-stage at both
+     ends of its travel — otherwise it pops in and out at the edges. */
+  inset: -50%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    color-mix(in oklab, var(--brand-400) 85%, transparent) 50%,
+    transparent 58%
   );
 }
+
+/* One slow pass. `linear` on purpose: an eased sweep reads as a UI transition,
+   a constant one reads as light moving across a surface. 16s is long enough
+   that it registers as an event rather than a loop you are watching. */
+@keyframes beam-sweep {
+  from {
+    transform: translate3d(-55%, -55%, 0);
+  }
+  to {
+    transform: translate3d(55%, 55%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-beam-band {
+    animation: beam-sweep 16s linear infinite;
+  }
+}
+
+/* No beam at all for a reduced-motion user — a travelling highlight is exactly
+   the kind of moving focus 2.3.3 is about, and the grid still reads fine
+   without it. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-beam {
+    display: none;
+  }
+}
+
+/* The drift. Translating by EXACTLY one tile makes the loop seamless — at 100%
+   the pattern is pixel-identical to 0%, so `infinite` has no visible restart.
+   Any other distance would jump.
+
+   `transform` only, so this runs on the compositor and never repaints. The
+   obvious alternative — animating `background-position` — repaints the whole
+   layer every frame, which is the usual reason "animated grid" backgrounds
+   burn battery. 48s per tile is ~1.3px/s: readable as flow, never as movement
+   competing with the text. */
+@keyframes grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(
+      calc(-1 * var(--hero-tile)),
+      calc(-1 * var(--hero-tile)),
+      0
+    );
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-grid {
+    animation: grid-drift 48s linear infinite;
+  }
+}
+
+/* Brand light — a slow "aurora" rather than a wash pinned to the top edge.
+
+   The previous version anchored two gradients at `top: 0`, which is precisely
+   what made the header look detached: the header sits over that exact strip, so
+   it was the one band of the page WITHOUT the tint, and no amount of
+   translucency on the bar could match a colour it did not have. Moving the light
+   down to sit behind the headline leaves the top strip plain `--background`,
+   which the header already is.
+
+   Two soft radial blobs on slightly different periods. Both are pure
+   `radial-gradient` — no `filter: blur()`, which would cost a full-layer
+   re-blur; a gradient is soft by construction and free.
+
+   Kept deliberately faint (10%/8%): `--brand-500` is a saturated cyan-teal
+   (`#17A3BF`), and anything stronger over near-black stops reading as light and
+   starts reading as a stain — the exact failure of the first attempt. */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-aurora::before,
+.hero-aurora::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.hero-aurora::before {
+  width: 70%;
+  height: 55%;
+  left: 8%;
+  top: 18%;
+  background: radial-gradient(
+    closest-side circle,
+    color-mix(in oklab, var(--brand-500) 10%, transparent),
+    transparent
+  );
+}
+
+.hero-aurora::after {
+  width: 55%;
+  height: 45%;
+  right: 6%;
+  top: 34%;
+  background: radial-gradient(
+    closest-side circle,
+    color-mix(in oklab, var(--brand-400) 8%, transparent),
+    transparent
+  );
+}
+
+/* Different periods and directions so the two never lock into a visible rhythm.
+   `transform` only — composited, no repaint. The scale component is what keeps
+   it from reading as two sliding circles. */
+@keyframes aurora-a {
+  0%,
+  100% {
+    transform: translate3d(-6%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, -5%, 0) scale(1.12);
+  }
+}
+
+@keyframes aurora-b {
+  0%,
+  100% {
+    transform: translate3d(4%, 3%, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-5%, -3%, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-aurora::before {
+    animation: aurora-a 34s ease-in-out infinite;
+  }
+
+  .hero-aurora::after {
+    animation: aurora-b 46s ease-in-out infinite;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Site header — why there is NO scroll animation here
+   ---------------------------------------------------------------------------
+
+   The obvious fix for the seam was a scroll-driven fade: header transparent at
+   the top so the hero's light reads continuously, gaining its surface as you
+   scroll. It was implemented and REJECTED after measuring it.
+
+   `animation-timeline: scroll()` reported `timelineProgress: 0%` at scrollY 0,
+   16, 32, 48, 64 AND 200 — the timeline never advanced, because `scroll()`
+   resolves to the nearest scrollable ancestor and `base.css` makes `body`/`html`
+   a `min-height: 100vh` flex column, so the scroller it latched onto has no
+   scrollable overflow of its own. With `both` fill that pins the header at the
+   `from` keyframe permanently: transparent forever, with page content sliding
+   under unreadable navigation.
+
+   That failure mode is strictly worse than the cosmetic seam it was fixing, and
+   the fallback direction is wrong — an inert timeline should fail toward "solid
+   and readable", never toward "invisible". Rather than pin the timeline to
+   `scroll(root block)` and depend on a feature whose failure mode is broken
+   navigation, the seam is solved in the header's own styling instead: a frosted
+   translucent bar (see Header.tsx). The hero's light passes through it at every
+   scroll position, with no timeline, no JS, and nothing to fall back from. */
 
 /* ---------------------------------------------------------------------------
    Retained from background-pattern.css
@@ -147,4 +386,13 @@
   .animate-shimmer {
     animation: none;
   }
+}
+
+/* The header's hairline is the last visible edge between it and the hero. On
+   every other route it is a useful divider between the bar and scrolling
+   content; on the homepage it is the seam. `:has()` scopes the removal to pages
+   that actually carry a `.hero`, with no JS and no scroll state — the frosted
+   blur still separates the bar from content once anything scrolls under it. */
+body:has(.hero) [data-site-header] {
+  border-bottom-color: transparent;
 }

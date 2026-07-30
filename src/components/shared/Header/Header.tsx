@@ -44,8 +44,25 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
   ]
 
   return (
-    <div className="bg-background/95 sticky top-0 z-50 border-b border-border backdrop-blur-sm">
-      <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
+    // Frosted, not near-opaque. At `bg-background/95` this bar was effectively
+    // solid and carried no tint, so where the homepage hero's brand light began
+    // — exactly at the header's bottom edge — there was a hard horizontal seam:
+    // flat dark above the line, teal below it.
+    //
+    // At 65% with a real blur the light passes through continuously, so the seam
+    // disappears at every scroll position with no scroll listener and no
+    // scroll-driven timeline (see the note in hero.css for why the timeline
+    // approach was measured and rejected). The heavier blur is what keeps
+    // navigation readable once content scrolls underneath — it is doing the work
+    // the missing 30% of opacity used to do.
+    <div
+      data-site-header
+      className="sticky top-0 z-50 border-b border-border bg-background/65 backdrop-blur-xl"
+    >
+      {/* `h-(--header-height)` rather than `h-16`: hero.css reaches its backdrop
+          up behind this bar by exactly this value, and two hardcoded `4rem`s in
+          separate files is precisely the pair that drifts. */}
+      <div className="mx-auto flex h-(--header-height) w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <section className="flex items-center gap-6">
           <Logo />
           <NavigationMenu>

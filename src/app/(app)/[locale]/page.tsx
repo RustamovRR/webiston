@@ -247,6 +247,22 @@ export default async function HomePage({
             scroll. ~78vh leaves the top of the first section showing, which is
             the cheapest possible scroll affordance. */}
         <header className="hero mx-auto flex min-h-[78svh] w-full max-w-5xl flex-col items-center justify-center gap-6 py-24 text-center">
+          {/* Two nested elements, not one pseudo-element: the mask lives on the
+              outer one and the drift on the inner, because a `transform` would
+              otherwise drag the mask's fade-out across the screen with it.
+              Purely decorative, so it is hidden from assistive tech. */}
+          <div className="hero-backdrop" aria-hidden="true">
+            {/* The beam is nested INSIDE the grid so it inherits the same drift
+                transform and origin — that is what keeps the travelling light
+                registered to the lines instead of sliding across them. */}
+            <div className="hero-grid">
+              <div className="hero-beam">
+                <div className="hero-beam-band" />
+              </div>
+            </div>
+            <div className="hero-aurora" />
+          </div>
+
           {/* Eyebrow: answers "what IS this?" before the headline has to. The
               old hero opened with a metaphor, so a first-time visitor could not
               tell a book library from an agency. */}
@@ -268,7 +284,7 @@ export default async function HomePage({
               comments written inside the class string — Tailwind has no comment
               syntax there, so all eight shipped to production as real classes. */}
           <h1
-            className="rise max-w-4xl text-balance bg-gradient-to-br from-foreground via-foreground to-muted-foreground bg-clip-text font-extrabold text-5xl text-transparent tracking-[-0.02em] leading-[1.05] sm:text-6xl lg:text-7xl"
+            className="rise max-w-4xl text-balance bg-gradient-to-b from-foreground to-foreground/80 bg-clip-text font-extrabold text-5xl text-transparent tracking-[-0.02em] leading-[1.05] sm:text-6xl lg:text-7xl"
             style={{ "--i": 1 } as CSSProperties}
           >
             {tHome("title")}

@@ -182,6 +182,12 @@
      background, 3.02:1 vs card. Both are asserted by `pnpm contrast`. */
   --border: oklch(0.905 0.008 217);
   --border-strong: oklch(0.655 0.012 217);
+  /* Decorative ONLY, and deliberately outside the 1.4.11 story: the homepage
+     hero's grid. `--border` measures 1.32:1 here, which made the grid — and
+     therefore its drift animation — effectively invisible; motion you cannot see
+     is motion you did not add. This sits between `--border` and `--border-strong`
+     so the structure reads without the hero turning into a wireframe. */
+  --hero-line: oklch(0.845 0.01 217);
   --input: oklch(0.885 0.01 217);
   --ring: var(--brand-600); /* 4.22:1 bg · 4.05:1 card — WCAG needs 3:1 */
 
@@ -235,6 +241,7 @@
 
   --border: oklch(1 0 0 / 12%); /* decorative only — see the light block */
   --border-strong: oklch(1 0 0 / 34%); /* 3.02:1 bg · 3.13:1 card */
+  --hero-line: oklch(1 0 0 / 22%); /* 12% was invisible — see the light block */
   --input: oklch(1 0 0 / 16%);
   --ring: var(--brand-500); /* 6.60:1 bg · 5.97:1 card */
 

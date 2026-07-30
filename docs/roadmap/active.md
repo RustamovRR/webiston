@@ -8,9 +8,10 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-30 — homepage composition reviewed from scratch: the
-nextjs.org motif replaced, a `--border-strong` token added, and a second vacuous
-gate closed. Branch `refactor/infrastructure`._
+_Last updated: 2026-07-30 — homepage reviewed from scratch (Phases 6–7): motif
+replaced with a drifting grid, header seam fixed, `--border-strong` added, a
+second vacuous gate closed, and the light-mode hero CTA made visible.
+Branch `refactor/infrastructure`._
 
 ---
 
@@ -34,7 +35,13 @@ gate closed. Branch `refactor/infrastructure`._
 | Soft 404s | ✅ | `/books/**` returned 200 for non-existent chapters *and* any unknown book id; both now 404 |
 | Boundary contrast | ✅ | **NEW `--border-strong`.** `--border` measures **1.32:1** light / **1.33:1** dark — WCAG 1.4.11 needs **3:1** for a boundary that identifies a component. Solved: 3.16/3.02. `--border` documented decorative-only |
 | `pnpm contrast` (again) | ✅ | **Was vacuous on the one token that mattered.** `--border` absent from `PAIRS` *and* unparseable (alpha) → would have `SKIP`ped. Gate now composites alpha in gamma-encoded sRGB. **32 → 36 pairs** |
-| Homepage | ✅ | Search overlap **−25px → +8px gap**. nextjs.org motif (180 lines, ~4s unguarded motion) → static grid + CSS `view()` reveal, **zero JS**. 8 junk classes were shipping in the `<h1>`. Cards had **no background** (alpha 0) |
+| Homepage | ✅ | Search overlap **−25px → +8px gap**. nextjs.org motif (180 lines, ~4s unguarded motion) → drifting grid + CSS `view()` reveal, **zero JS**. 8 junk classes were shipping in the `<h1>`. Cards had **no background** (alpha 0). Header seam fixed via a frosted bar after a scroll-driven fade measured **inert** (`timelineProgress: 0%` at every scrollY) |
+| Light-mode CTA | ✅ | The hero's primary button was **a white pill on a white page** — `ButtonLink` pinned `bg-white text-black` in both schemes. `bg-foreground text-background` flips together: **17.4:1 / 18.7:1** |
+| Hero copy | ⚠️ | Headline replaced: "Veb texnologiyalar dunyosiga teran nigoh" → "Dasturlashni o'z tilingizda o'rganing"; description 197 → 127 chars. **Owner's voice — confirm or revert** |
+| Header seam | ✅ | Phase 7's frosted bar treated the symptom. Root cause: the glow was anchored at `top: 0` — the exact strip the header covers — so the header was the one band WITHOUT the tint. Light moved down; hairline scoped off hero pages with `:has()` |
+| Hero grid | ✅ | `4rem` (64px, graph paper) → `clamp(7rem, 10vw, 14rem)`. nextjs.org spaces its rules ~500px |
+| Hero motion | ✅ | Drift was running all along but **invisible**: `--border` is 1.32:1, so the lines were. New `--hero-line` token + a beam masked TO the grid (`mask-composite: add`) that lights the lines as it passes. **Zero JS** — 0 framer-motion refs in the homepage HTML |
+| Missing i18n key | ✅ | `JwtDecoderPage.InputPanel.clear` added to both locales — the dev overlay's "1 Issue". Build `MISSING_MESSAGE` **2 → 0** |
 | Reduced motion | ✅ | The only `prefers-reduced-motion` block on the site belonged to **Sonner**; zero of our own animations were guarded. Now gated, verified in compiled CSS |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ⚠️ | **79** across 5 files — suite 207 → **286**. `src/` had zero. Found **3 real bugs**: `rgbToHex` emitting invalid CSS, `truncateText` exceeding its own limit, and the password generator on `Math.random()` |
@@ -73,7 +80,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–5 + **Phase 6 (homepage + `--border-strong`)** shipped |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–9 shipped — **Phase 9: grid beam + `--hero-line`** |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
@@ -102,15 +109,19 @@ the 8 dead-key deletion below.
 
 ## Next up
 
-**Homepage — what is left is copy, not code.** The structure, tokens, motion and
-typography are done. Two things still owed, both the owner's voice:
+**Homepage — awaiting one confirmation, then it is done.** The hero copy was
+rewritten and needs the owner's yes or a revert. Exact strings to restore are in
+git; the new pair is in `messages/common/{uz,en}.json` under `HomePage.title` /
+`HomePage.description`.
 
-- The **headline** is a mood, not a value proposition: "Veb texnologiyalar
-  dunyosiga teran nigoh" does not tell a first-time visitor whether this is a
-  book library, a blog or an agency. The eyebrow now carries that load, which is
-  a patch, not a fix.
-- The **description** is 197 characters over 3 sentences and repeats "Webiston",
-  which the logo already says 40px above.
+**A hero visual was considered and declined, with reasons.** The covers exist
+(400×525, 53–75 KB each) but: `images.unoptimized: true` makes a hero image the
+worst possible LCP placement; the same three covers already appear ~200px below
+in the first section, so a split hero would duplicate them; and halving the
+column width forces more line breaks in Uzbek, which is long. A centred,
+text-first hero is also the correct pattern when the offer is a *collection*
+rather than one product with a screenshot. Revisit only after `unoptimized` is
+resolved — and then with the real book covers, not an abstract illustration.
 
 **41 cards is still too many for a homepage.** Every book section dumps its full
 top-level chapter list. Showing 4–6 per book with a "hammasi" link would make the

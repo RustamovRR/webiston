@@ -26,7 +26,8 @@
       "placeholder": "JWT tokenni bu yerga kiriting... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
       "characters": "belgi",
       "parts": "qism",
-      "lines": "qator"
+      "lines": "qator",
+      "clear": "Tozalash"
     },
     "ErrorDisplay": {
       "title": "Xatolik",

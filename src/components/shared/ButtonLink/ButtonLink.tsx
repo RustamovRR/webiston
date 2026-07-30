@@ -24,17 +24,24 @@ const ButtonLink: FC<IProps> = ({
 }) => {
   const classNames = cn(
     "relative h-12 px-6 py-2 rounded-lg font-medium text-lg transition-colors duration-300 ease-in-out flex items-center justify-center",
-    // DOCUMENTED EXCEPTION — fixed-palette hero CTA.
+    // The previous version pinned `primary` to `bg-white text-black` in BOTH
+    // schemes and called it a "documented exception", on the reasoning that
+    // semantic tokens flip with the scheme and would put black text on a dark
+    // surface. That reasoning held for `bg-card`, but it made the hero's main
+    // call to action a **white pill on a white page** in light mode — measured
+    // invisible, only its text readable.
     //
-    // `primary` and `secondary` are deliberately theme-INVARIANT: a white pill
-    // with black text and a dark pill with white text, identical in both
-    // schemes. Semantic tokens are exactly wrong here — `bg-card` flips with the
-    // scheme, which would put black text on a dark surface. These stay as fixed
-    // values. `outline` is the theme-aware variant and uses tokens for its edge.
+    // `bg-foreground text-background` is the pair that was wanted all along:
+    // the two flip TOGETHER, so the intent ("maximum-contrast pill, inverted
+    // from the page") survives in both schemes instead of being pinned to one.
+    // Dark mode is unchanged — still a white pill with dark text.
+    //
+    //   light  near-black on white  -> 17.4:1
+    //   dark   near-white on dark   -> 18.7:1
     {
-      "bg-white text-black hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100":
+      "bg-foreground text-background hover:bg-foreground/90":
         variant === "primary",
-      "bg-zinc-900 text-white border border-zinc-700 hover:bg-zinc-800 dark:bg-zinc-900 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-800":
+      "bg-card text-card-foreground border border-border-strong hover:bg-accent":
         variant === "secondary",
       // `border-strong`, not `border`: this is the only thing that makes the
       // secondary CTA perceivable as a button at all, and at `--border` it sat

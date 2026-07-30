@@ -26,7 +26,8 @@
       "placeholder": "Enter your JWT token here... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
       "characters": "characters",
       "parts": "parts",
-      "lines": "lines"
+      "lines": "lines",
+      "clear": "Clear"
     },
     "ErrorDisplay": {
       "title": "Error",

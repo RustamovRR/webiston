@@ -371,6 +371,187 @@ HTML files, homepage still `●` SSG**. `i18n 1` — unchanged, still the 8 dead
 
 ---
 
+## Phase 7 — `[x]` Hero backdrop, header seam, light-mode CTA (2026-07-30)
+
+Owner reported the header looked "detached from the green". Three separate
+defects behind that one observation, plus one of my own from Phase 6.
+
+- `[x]` **The seam was real.** The header computed to
+  `oklab(0.145 … / 0.95)` — effectively solid, carrying no tint — while the
+  hero's brand light began *exactly* at its bottom edge. Flat dark above the
+  line, teal below, `0.12` border between.
+
+- `[x]` **The "green" was the brand colour behaving correctly.** `--brand-500`
+  resolves to `lab(61.2 -27.7 -25.2)` — negative on both the green and blue
+  axes, i.e. `#17A3BF`. That is right for the Uzbek flag blue at hue 217°. The
+  defect was *perceptual*: one saturated cyan wash at 14% over near-black, as
+  the only coloured thing on the page, reads as a stain rather than as light.
+  Split into two layers (7% wide atmosphere + 9% tight core at the top edge) for
+  **less** total brand alpha and a result that reads as light entering the page.
+
+- `[x]` **A scroll-driven header fade was built, measured, and REJECTED.**
+  `animation-timeline: scroll()` reported `timelineProgress: 0%` at scrollY 0,
+  16, 32, 48, 64 **and** 200 — the timeline never advanced, because `scroll()`
+  resolves to the nearest scrollable ancestor and `base.css` makes `body`/`html`
+  a `min-height: 100vh` flex column. With `both` fill that pins the header at the
+  `from` keyframe forever: **transparent permanently, page content sliding under
+  unreadable navigation**. Strictly worse than the cosmetic seam it fixed, and
+  the failure direction is wrong — an inert timeline must fail toward "solid and
+  readable". Replaced with a frosted bar (`bg-background/65 backdrop-blur-xl`):
+  the light passes through at every scroll position, no timeline, no JS, nothing
+  to fall back from. The rejected approach and the numbers are recorded in
+  `hero.css` so it does not get re-attempted.
+
+- `[x]` **Grid now drifts, and the loop is provably seamless.** Translating by
+  exactly one tile (`--hero-tile`) means 100% is pixel-identical to 0%, so
+  `infinite` has no visible restart; the keyframe derives its distance from the
+  token so changing the tile size cannot break it. 48s/tile ≈ **1.3px/s**.
+  `transform` only — the obvious alternative (`background-position`) repaints the
+  layer every frame, which is why animated-grid backgrounds usually cost battery.
+  Required splitting the backdrop into two elements: **mask on the parent, motion
+  on the child**, because a `transform` drags the element's own mask with it and
+  the fade-out would have travelled across the screen.
+
+- `[x]` **Light mode: the hero's primary CTA was invisible.** `ButtonLink`
+  pinned `primary` to `bg-white text-black` in *both* schemes under a comment
+  calling it a "documented exception" — reasoning that semantic tokens flip with
+  the scheme. True for `bg-card`, but it made the main call to action **a white
+  pill on a white page**; only its text was readable. `bg-foreground
+  text-background` is the pair that was wanted: the two flip *together*, so the
+  intent ("maximum-contrast pill, inverted from the page") survives both schemes.
+  **17.4:1 light · 18.7:1 dark.** Dark mode is visually unchanged.
+  The homepage is `ButtonLink`'s only consumer, so the blast radius was one file.
+
+- `[x]` **`--header-height` is now a shared token.** `Header.tsx` uses
+  `h-(--header-height)` and the backdrop reaches up by exactly that value —
+  verified `reachesBehindHeaderBy: 64px`. Two hardcoded `4rem`s in separate files
+  is the pair that drifts.
+
+- `[x]` **Headline no longer fades at the end.** The Phase 6 diagonal gradient
+  (`to-br … to-muted-foreground`) dimmed the last word of a two-line Uzbek
+  headline. Now a shallow vertical `from-foreground to-foreground/80`.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML files**.
+Verified in both schemes; `header-solidify` confirmed absent from compiled CSS.
+
+---
+
+## Phase 8 — `[x]` Seam (properly), grid scale, aurora (2026-07-30)
+
+Phase 7 claimed the seam was fixed. It was not — the owner's screenshots at a
+wider viewport still showed it in both schemes. Phase 7 treated the symptom.
+
+- `[x]` **The seam's actual cause was the glow's POSITION, not the header's
+  opacity.** The brand light was anchored at `top: 0` — the exact strip the
+  sticky header covers — so the header was the one band of the page *without*
+  the tint. No amount of translucency on the bar can match a colour it does not
+  have; the frosted bar in Phase 7 only softened it. The reference the hero grew
+  out of makes this obvious: nextjs.org's header has a boundary line too, and it
+  does not read as detached, because their hero top is **uniformly dark** and the
+  decoration starts below it.
+  Fixed by moving the light down behind the headline and pulling the mask's
+  falloff in (`ellipse 80% 62% at 50% 55%`), leaving the top strip plain
+  `--background` — which the header already is.
+- `[x]` **Header hairline scoped off hero pages.** `body:has(.hero)
+  [data-site-header] { border-bottom-color: transparent }` — the last visible
+  edge. On every other route the divider is useful, so `:has()` scopes it rather
+  than removing it globally. No JS, no scroll state; the frosted blur still
+  separates the bar from content once anything scrolls under it.
+- `[x]` **Grid pitch was graph paper.** `4rem` = 64px/cell read as a mesh, not as
+  structure — the owner flagged it as "too small" independently. nextjs.org
+  spaces its rules ~500px apart: a handful of deliberate architectural lines.
+  Now `clamp(7rem, 10vw, 14rem)` — generous on a wide screen, not collapsed to
+  two lines on a phone. The drift keyframe derives its distance from the token,
+  so the seamless loop survives the change.
+- `[x]` **Aurora replaces the static top wash.** Two soft radial blobs behind the
+  headline on different periods (34s / 46s) and directions, so they never lock
+  into a visible rhythm. Pure `radial-gradient` — no `filter: blur()`, which
+  would force a full-layer re-blur; a gradient is soft by construction and free.
+  Held at 10%/8%: `--brand-500` is a saturated `#17A3BF`, and anything stronger
+  over near-black stops reading as light and starts reading as a stain, which was
+  the original complaint.
+- `[x]` **`JwtDecoderPage.InputPanel.clear` added to both locales** (`Tozalash` /
+  `Clear`) — this was the "1 Issue" in the owner's dev overlay. `MISSING_MESSAGE`
+  count in the build log: **2 → 0**. It had been invisible to `pnpm i18n` because
+  the key was absent from *both* bundles, so parity held; and invisible in the UI
+  because `InputPanel.tsx:35` reads `t("clear") || "Clear"`.
+
+**Aceternity UI — evaluated, declined as a source.** Fetched and reviewed: 21
+hero blocks, and per the page itself "most blocks leverage Framer Motion".
+Several are canvas/shader-based (dither backgrounds, flickering lights) or
+pointer-driven (mousemove, spotlight). Three reasons they are the wrong genre
+here, none of them "the animation is bad":
+  1. Every one of them forces `'use client'` on a page that is currently a
+     prerendered Server Component.
+  2. They are SaaS-landing-page grammar — spotlights and beams sell a product
+     demo. This is a reading platform; the hero's job is to get out of the way.
+  3. They are widely used, so they read as template rather than as identity.
+The genuinely good ideas in that set are cheap without the library: the mesh /
+aurora gradient is now implemented in ~40 lines of CSS with zero JS, and grid +
+drift covers the "beams and grid" concept.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML**,
+**0 `MISSING_MESSAGE`**. Verified in both schemes. `i18n 1` — unchanged, the 8
+dead `url-encoder` keys only.
+
+---
+
+## Phase 9 — `[x]` The grid beam, and why the drift was invisible (2026-07-30)
+
+Owner said no animation had been added to the grid. The drift WAS running —
+`playState: running`, transform advancing, 2.67px/s. It was invisible for a
+different reason, and that reason is the real finding:
+
+- `[x]` **The grid lines themselves were invisible, so their motion was too.**
+  `--border` measures **1.32:1** against the page in light mode (12% white in
+  dark). Motion you cannot see is motion you did not add. Added a dedicated
+  **`--hero-line`** — `oklch(0.845 0.01 217)` light / `oklch(1 0 0 / 22%)` dark —
+  sitting between `--border` and `--border-strong`, so the structure reads
+  without the hero becoming a wireframe. Explicitly decorative and outside the
+  1.4.11 story, unlike `--border-strong`.
+
+- `[x]` **A beam that travels ALONG the grid lines** — the one idea worth taking
+  from the Aceternity-style "beams and grid" blocks, implemented with no library
+  and no JS:
+
+      .hero-grid          drifts (existing)
+        .hero-beam        masked TO the grid pattern — only line pixels can show
+          .hero-beam-band a wide diagonal gradient; the only moving part
+
+  Two details are load-bearing:
+  1. **The beam is nested inside `.hero-grid`.** Both share an origin and both
+     inherit the drift transform, so the light cannot slide out of register with
+     the lines it is supposed to be lighting.
+  2. **`mask-composite: add`.** Two mask layers (verticals + horizontals) default
+     to intersecting, which resolves to just the crossing points — travelling
+     *dots*, not lines. `add` unions them. Verified supported
+     (`CSS.supports('mask-composite','add')` → true) before relying on it.
+
+  16s, `linear` on purpose: an eased sweep reads as a UI transition, a constant
+  one reads as light crossing a surface. Fully removed (`display: none`) under
+  `prefers-reduced-motion` — a travelling highlight is exactly the moving focus
+  2.3.3 covers, and the grid reads fine static.
+
+- `[x]` **Confirmed the whole composition still ships zero JS.** `hero-grid`,
+  `hero-beam`, `hero-beam-band` and `hero-aurora` are all in the prerendered
+  static HTML; `framer-motion`/`IntersectionObserver` references in the homepage
+  HTML: **0**. Drift + beam + aurora + entrance + scroll-reveal, all CSS.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML**,
+**0 `MISSING_MESSAGE`**. Verified in both schemes with the beam pinned mid-sweep.
+
+> **Note on the dev overlay.** The remaining "2 Issues" are React 19 warnings
+> about the JSON-LD `<script>` rendered inside the page component
+> ("Scripts inside React components are never executed when rendering on the
+> client"). Pre-existing and benign for its purpose: the tag IS present in the
+> prerendered HTML, which is what crawlers read — verified. Worth silencing for
+> noise reasons, not correctness. Not tracked as a defect.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors
