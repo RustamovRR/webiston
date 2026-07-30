@@ -10,16 +10,57 @@
 
 ---
 
-## Phase 1 — `[ ]` CI (nothing else is real without it)
+## Phase 1 — `[~]` CI (nothing else is real without it)
 
-There is **no `.github/` at all**. Lefthook is the only gate, and `--no-verify`
-bypasses it silently. Every other phase here is undone by one bypassed push.
+- `[x]` **`.github/workflows/ci.yml` added — 2026-07-30.** One job, one Node
+  version (24, matching the dev machine — a CI/local runtime mismatch is how
+  "works on my machine" gets manufactured). Runs **all ten** gates in
+  fail-fast order: static checks first (seconds), builds last (minutes).
+  `check` · `lint` · `typecheck` · `test` · `tokens` · `contrast` · `i18n` ·
+  `packages:build` · `build` · `ext:build`.
+  - **corepack, never a pinned pnpm version in the workflow.** `packageManager`
+    in package.json is the single source of truth; hardcoding a version here is
+    how the pnpm 10-vs-11 `minimumReleaseAge` disagreement happened.
+  - `--frozen-lockfile`, so a stale lockfile fails instead of silently resolving.
+  - Verified: the workflow references only scripts that exist, contains no tabs,
+    and **`pnpm build` succeeds with no `.env`** (tested by moving it aside — all
+    five env vars are `NEXT_PUBLIC_*` and optional). CI has no `.env`.
+- `[x]` **Extension included** — `pnpm typecheck` excludes `apps/extensions/**`
+  (`tsconfig.json`), so `ext:build` is the only gate that compiles it at all.
+  Ordered after `packages:build`, since `@webiston/transliteration` feeds both.
+- `[x]` **A fresh clone could not build at all — found while answering "is CI
+  redundant with Vercel?" (2026-07-30).** `@webiston/transliteration` resolves to
+  `./dist/*`, `**/dist/` is gitignored (0 files tracked), and **nothing** built it
+  on install: the package has no `prepare`/`postinstall`, the root `prepare` only
+  installs lefthook, and there is no `vercel.json`. Proved by moving `dist` aside:
 
-- `[ ]` One workflow, single Node 22 job (a matrix buys a solo project nothing):
-  `check` · `lint` · `typecheck` · `test` · `build` · `ext:build` · `packages:build`.
-- `[ ]` Must include the extension — `pnpm typecheck` **excludes**
-  `apps/extensions/**` (`tsconfig.json:27`), so the extension is typechecked by
-  nothing today.
+      pnpm build -> exit 1
+      Module not found: Can't resolve '@webiston/transliteration'
+
+  Fixed in three places, because one was not enough:
+  1. `"prebuild": "pnpm packages:build"` — covers any host that only knows
+     `pnpm build` (Vercel). Build order belongs in the manifest, not a dashboard.
+  2. `"prepare": "lefthook install && pnpm packages:build"` — covers a fresh
+     `pnpm install`.
+  3. **`packages:build` as the second CI step, before the static gates** — this
+     is the one that actually matters. `prebuild` only guards `build`, and
+     `pnpm typecheck` **also** needs dist: on a dist-less tree `tsc --noEmit`
+     exits 1 with "Cannot find module '@webiston/transliteration'". CI runs
+     typecheck at step 5 and build at step 10, so the first version of this
+     workflow would have gone red at typecheck on its very first run.
+     `prepare` is not a sufficient guarantee either — `pnpm install` prints
+     "Already up to date" and **skips `prepare`** when the tree is unchanged
+     (verified: 259 ms, no prepare, dist still missing; `--force` did run it).
+  - Verified by replaying all 11 workflow steps in order against a deliberately
+    dist-less tree: every step exits 0 except the known `i18n`.
+- `[!]` **The first CI run will be RED on `i18n`** — the 8 dead `en`-only keys in
+  `messages/tools/url-encoder/en.json`, still awaiting approval to delete. All
+  nine other gates pass locally. This is a real failure, not a config problem, so
+  it is not being hidden.
+- `[ ]` **Unverified: the GitHub Action major versions** (`actions/checkout@v5`,
+  `actions/setup-node@v6`). Chosen from memory and **not** confirmed against the
+  marketplace from this machine. If the first run fails at the very first step
+  with "Unable to resolve action", pin them down a major.
 - `[x]` **Pinned the package manager — 2026-07-29.** `packageManager: "pnpm@11.15.1"`.
   This was not hypothetical: a local pnpm 10.18.1 and a corepack pnpm 11.15.1
   disagreed about the `minimumReleaseAge` supply-chain policy, so `pnpm install`
@@ -100,8 +141,24 @@ already includes `src/**/*.test.{ts,tsx}`.
 
 Order by value-per-test (pure logic, high blast radius):
 
-- `[ ]` `src/lib/utils/color-conversions.ts` — `hexToRgb`, `rgbToHsl`, `hslToRgb`,
-  `rgbToHex`, `isValidHex`. Pure, and consumed by shipped UI.
+- `[x]` **`src/lib/utils/color-conversions.ts` — 16 tests, 2026-07-30.**
+  `src/` had zero tests; the suite is now **223 passing across 7 files** (was 207
+  across 6). Covers `hexToRgb`, `rgbToHex`, `rgbToHsl`, `hslToRgb`, `isValidHex`,
+  including round-trips and the documented asymmetry that `isValidHex` requires a
+  leading `#` while `hexToRgb` does not.
+  - **The tests earned their keep immediately — they found a live, UI-reachable
+    bug.** `rgbToHex` never clamped or rounded, so `c.toString(16)` produced
+    invalid CSS outside 0–255: a fraction inserted a literal `.`, a negative
+    value a `-`, and 300 produced **seven** hex digits. `parseColorInput` does not
+    clamp channels either, so typing `rgb(300, 0, 0)` into the Color Converter
+    displayed that 7-digit string to the user as the HEX result. Fixed with
+    clamp + round; every in-range input is unchanged.
+  - Verified the tests actually catch it: reinstating the original implementation
+    fails exactly 2 of 223 (`exit 1`), restoring passes (`exit 0`).
+  - **`pnpm tokens` now skips `*.test.ts`.** A test for a colour utility must
+    contain hex literals — this file legitimately holds 19 — and the ratchet was
+    flagging them as styling violations. Scope fix, not a weakening: verified it
+    still exits 1 on a component containing `bg-zinc-900`.
 - `[ ]` `usePasswordGenerator` — also the file with the `Math.random()` defect, so
   the test pins the fix.
 - `[ ]` `useQrGenerator` (570 lines) · `useOgMetaGenerator` (597) · `useMicrophoneTest` (515)

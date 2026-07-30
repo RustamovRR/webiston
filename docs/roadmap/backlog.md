@@ -74,14 +74,14 @@
 
 ## Standalone items (not part of any initiative)
 
-- `[ ]` **No gate catches a missing i18n namespace at a route.** `pnpm i18n`
-  checks uz/en *parity*, and `LocaleMessages` now throws for a namespace that
-  does not exist. Neither catches a namespace that exists but was never
-  *provided* to a route: next-intl prints the key path instead of throwing, the
-  page returns **200**, and only the browser console complains. That is exactly
-  how `/tools` broke on 2026-07-29 and survived a status-code sweep. A real check
-  needs the route → client-component → namespace graph, or a headless-browser
-  pass asserting zero console errors per route.
+- `[x]` **Namespace coverage is now gated — 2026-07-30.** `pnpm i18n` grew a
+  second check: every namespace a Client Component calls must be provided by some
+  provider. It would have caught the `/tools` regression that survived a
+  34-URL status-code sweep. Verified with an injected regression (removed two
+  namespaces → exit 1 naming both; restored → clean). Current coverage 23/23.
+  **Remaining limitation:** it proves a namespace is provided *somewhere*, not
+  that it is provided on the *right route*. Closing that needs the
+  route → component graph or a headless-browser pass per route.
 
 - `[ ]` **Root `README.md` is unedited create-next-app boilerplate** — offers
   `npm`/`yarn`/`bun` against a pnpm-only repo and points at `localhost:3000`

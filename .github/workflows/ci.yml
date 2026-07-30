@@ -1,0 +1,105 @@
+name: CI
+
+# Every gate in this repo already exists as a pnpm script and runs in a git hook.
+# The problem CI solves is that `git push --no-verify` skips all of them silently,
+# and hooks only ever run on the machine that has them installed. This is the
+# copy nobody can bypass.
+#
+# Deliberately ONE job on ONE Node version. A matrix buys a solo project nothing
+# but minutes — this codebase ships to one Node runtime, not to a range.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+
+# A second push to the same branch makes the first run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # corepack reads `packageManager` from package.json, so CI runs the exact
+      # pnpm the repo pins (11.15.1). This is not ceremony: a local pnpm 10 and a
+      # corepack pnpm 11 once disagreed about the `minimumReleaseAge` policy,
+      # which presented as broken node_modules and cost hours. Never install pnpm
+      # by version here — let the manifest decide.
+      - name: Enable corepack
+        run: corepack enable
+
+      # Node 24 matches the development machine. A CI/local runtime mismatch is
+      # how "works on my machine" is manufactured; the point of this job is to
+      # reproduce local, not to explore version space.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # --frozen-lockfile makes a stale lockfile a build failure rather than a
+      # silent resolution. Note pnpm-workspace.yaml sets `minimumReleaseAge: 1440`
+      # — if this step ever fails on a freshly published package, that policy is
+      # working, not broken.
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # MUST come before typecheck, not with the builds at the bottom.
+      #
+      # `@webiston/transliteration` resolves to `./dist/*` and `**/dist/` is
+      # gitignored, so a fresh checkout has no dist and `tsc --noEmit` fails with
+      # "Cannot find module '@webiston/transliteration'". Measured on a simulated
+      # fresh clone: typecheck exit 1, build exit 1.
+      #
+      # The root `prepare` script also builds it, but that is NOT a guarantee:
+      # `pnpm install` short-circuits with "Already up to date" when the tree is
+      # unchanged and then skips `prepare` entirely (verified locally — 259ms, no
+      # prepare, dist still missing). Explicit ordering here does not depend on
+      # that behaviour.
+      - name: Build workspace packages
+        run: pnpm packages:build
+
+      # ---- Fast static gates next: they fail in seconds, so a broken PR gets
+      # ---- an answer before the build burns four minutes.
+      - name: Format + lint (biome)
+        run: pnpm check
+
+      - name: Lint (oxlint)
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Tests
+        run: pnpm test
+
+      # ---- Project-specific gates. Each of these caught a real defect that no
+      # ---- standard tool sees — see the header comment in each script.
+      - name: Design tokens (no hardcoded colour, no invisible text)
+        run: pnpm tokens
+
+      - name: WCAG contrast of the token pairs
+        run: pnpm contrast
+
+      - name: i18n parity + client namespace coverage
+        run: pnpm i18n
+
+      # ---- Builds last: slowest, and only meaningful once the above pass.
+      # `pnpm build` also runs `prebuild` -> `packages:build` on its own, so this
+      # holds for any host (Vercel included) that only knows `pnpm build`.
+      - name: Build app
+        run: pnpm build
+
+      # `pnpm typecheck` excludes apps/extensions (tsconfig.json), so this is the
+      # ONLY gate that compiles the Chrome extension at all.
+      - name: Build Chrome extension
+        run: pnpm ext:build

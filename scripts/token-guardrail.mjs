@@ -55,6 +55,12 @@ function targetFiles() {
     .split("\n")
     .filter((f) => /\.tsx?$/.test(f))
     .filter((f) => !f.includes("/node_modules/"))
+    // Test files are excluded BY DESIGN, not for convenience. This ratchet is
+    // about styling discipline in shipped components; a test for a colour
+    // utility must contain hex literals to test anything at all
+    // (color-conversions.test.ts legitimately holds 19). Counting them
+    // manufactures false positives, and a gate that cries wolf gets --force'd.
+    .filter((f) => !/\.test\.tsx?$/.test(f))
 
   if (files.length < MIN_SCANNED) {
     console.error(

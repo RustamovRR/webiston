@@ -86,13 +86,85 @@ for (const dir of bundles) {
   }
 }
 
+/* ------------------------------------------------------------------------- *
+ * Check 2 — every namespace a CLIENT component needs is provided by some
+ * `NextIntlClientProvider`.
+ *
+ * This exists because of a real regression on 2026-07-29. Scoping the localised
+ * layout's provider to the chrome namespaces broke `/tools`: `ToolsMainPage` is
+ * a Client Component calling `Tools`, `ToolsPage`, `ToolCategories` and
+ * `Filters`, and nothing provided them any more. The page still returned
+ * **HTTP 200** and still rendered — next-intl prints the key path instead of
+ * throwing — so a status-code sweep over all 34 tool URLs passed. Only the
+ * browser console showed it.
+ *
+ * Deliberate limitation: this proves each namespace is provided SOMEWHERE, not
+ * that it is provided on the right route. That is still weaker than a
+ * per-route check, but it is exactly the signal that was missing.
+ * ------------------------------------------------------------------------- */
+
+/** Never `glob()` inside src/app — `[locale]` is a glob character class, so the
+ *  pattern silently matches nothing. Walk the tree instead. */
+function walkFiles(dir, acc = []) {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, e.name)
+    if (e.isDirectory()) {
+      if (!e.name.startsWith("__")) walkFiles(p, acc)
+    } else if (/\.tsx?$/.test(e.name)) {
+      acc.push(p)
+    }
+  }
+  return acc
+}
+
+const NS_CALL = /useTranslations\("([^".]+)/g
+const NS_LIST = /(?:CHROME|CLIENT|INDEX)_NAMESPACES = \[(.*?)\]/gs
+const NS_SINGLE = /TOOL_NAMESPACE = "([^"]+)"/g
+
+const required = new Set()
+const provided = new Set()
+
+for (const file of walkFiles(join(ROOT, "src"))) {
+  const src = readFileSync(file, "utf8")
+
+  // Only CLIENT components need a provider; Server Components read the request
+  // config directly.
+  if (src.split("\n")[0].includes('"use client"')) {
+    for (const m of src.matchAll(NS_CALL)) required.add(m[1])
+  }
+
+  for (const m of src.matchAll(NS_LIST)) {
+    for (const q of m[1].matchAll(/"([^"]+)"/g)) provided.add(q[1])
+  }
+  for (const m of src.matchAll(NS_SINGLE)) provided.add(m[1])
+}
+
+const unprovided = [...required].filter((ns) => !provided.has(ns)).sort()
+
+if (unprovided.length) {
+  console.error(
+    `\n✗ ${unprovided.length} namespace(s) are used by a Client Component but provided by no provider:`
+  )
+  for (const ns of unprovided) console.error(`    ${ns}`)
+  console.error(
+    "\n  A page missing its namespace still returns 200 and still renders — next-intl"
+  )
+  console.error(
+    "  prints the key path. Add it to the route's <LocaleMessages namespaces={...}>."
+  )
+  failures += unprovided.length
+}
+
 if (failures) {
   console.error(
-    `\n✗ ${failures} key(s) out of parity. Every user-facing string ships in uz AND en, in the same commit.`
+    `\n✗ ${failures} i18n problem(s). Every user-facing string ships in uz AND en, in the same commit.`
   )
   process.exit(1)
 }
 
 console.log(
   `✓ uz/en parity across ${bundles.length} message bundles — no missing keys.`
+)
+console.log(
+  `✓ all ${required.size} client namespaces are provided (${provided.size} provided in total).`
 )

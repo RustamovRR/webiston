@@ -99,10 +99,21 @@ export const rgbToHsl = (r: number, g: number, b: number) => {
 }
 
 // Convert RGB to HEX
+//
+// Clamps and rounds, because this function's contract is "return a hex colour"
+// and it could not previously keep it. `c.toString(16)` on anything outside
+// 0–255, or on a fraction, produced invalid CSS — a fractional channel yielded
+// a literal "." inside the string, a negative one a "-", and 300 produced seven
+// hex digits instead of six.
+//
+// Not theoretical: `parseColorInput` does not clamp channels, so typing
+// `rgb(300, 0, 0)` into the Color Converter displayed that 7-digit value as the
+// HEX result. Exact cases are pinned in color-conversions.test.ts. Every
+// in-range input is unchanged by this.
 export const rgbToHex = (r: number, g: number, b: number): string => {
   const componentToHex = (c: number) => {
-    const hex = c.toString(16)
-    return hex.length === 1 ? `0${hex}` : hex
+    const byte = Math.round(Math.min(255, Math.max(0, c || 0)))
+    return byte.toString(16).padStart(2, "0")
   }
   return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
 }

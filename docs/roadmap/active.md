@@ -30,8 +30,8 @@ canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 | Payload | ⚠️ | search index on dialog-open (**0** requests on page load) · logo **209 KB → 5.5 KB** · **CLS measured 0** · tool-page HTML **−43%** via scoped i18n. Left: `images.unoptimized` (**25 MB of raw book figures**) |
 | Soft 404s | ✅ | `/books/**` returned 200 for non-existent chapters *and* any unknown book id; both now 404 |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
-| Tests in `src/` | ❌ | 0 (207 tests exist, all in `packages/transliteration`) |
-| CI | ❌ | none — Lefthook only, and `--no-verify` bypasses it |
+| Tests in `src/` | ⚠️ | **16** (`color-conversions`) — suite 207 → **223**. First tests in `src/` ever; they found a live UI bug on day one |
+| CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
 
 **Gate (real exit codes, 2026-07-29):** `check 0` · `typecheck 0` · `lint 0` ·
 `test 0 (207)` · `tokens 0` · `contrast 0` · `build 0` — **`i18n 1`**, blocked on
@@ -67,7 +67,7 @@ the 8 dead-key deletion below.
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
 | [Design system](initiatives/design-system.md) | `[x]` | all phases shipped — see archive candidate |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
-| [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[ ]` | Phase 1 — add CI |
+| [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
 
 - `[x]` **`globals.css` split by concern (609 → a 21-line entry + 4 files).**
