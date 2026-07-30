@@ -447,12 +447,6 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
   }, [])
 
   // Format duration
-  const formatDuration = useCallback((seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }, [])
-
   // Get audio quality rating
   const getAudioQuality = useCallback(
     (level: number) => {
@@ -514,7 +508,6 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     closePreview,
 
     // Utilities
-    formatDuration,
     getAudioQuality,
     getStats
   }

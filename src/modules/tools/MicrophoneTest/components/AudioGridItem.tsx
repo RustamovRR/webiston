@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { Download, Play, Trash2, Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
+import { formatDuration, formatFileSize } from "@/lib/utils/format"
 import type { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface AudioGridItemProps {
@@ -20,19 +21,6 @@ export function AudioGridItem({
   onDelete
 }: AudioGridItemProps) {
   const t = useTranslations("MicrophoneTestPage.RecordedAudioPanel")
-
-  const formatFileSize = (bytes: number) => {
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return `${Math.round((bytes / 1024 ** i) * 100) / 100} ${sizes[i]}`
-  }
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}

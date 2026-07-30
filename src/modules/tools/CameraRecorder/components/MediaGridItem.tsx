@@ -6,6 +6,7 @@ import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { formatFileSize } from "@/lib/utils/format"
 import type { CapturedMedia } from "../hooks/useCameraRecorder"
 
 interface MediaGridItemProps {
@@ -23,21 +24,6 @@ export function MediaGridItem({
 }: MediaGridItemProps) {
   const t = useTranslations("CameraRecorderPage.MediaPanel")
   const [imageError, setImageError] = useState(false)
-
-  const formatFileSize = (bytes?: number) => {
-    if (!bytes) return "N/A"
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return `${Math.round((bytes / 1024 ** i) * 100) / 100} ${sizes[i]}`
-  }
-
-  const _formatDuration = (seconds?: number) => {
-    if (!seconds) return "N/A"
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
-
   const renderThumbnail = () => {
     if (media.type === "screenshot") {
       if (imageError) {

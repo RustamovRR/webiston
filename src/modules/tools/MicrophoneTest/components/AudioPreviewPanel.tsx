@@ -5,6 +5,7 @@ import { Play, Square } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { formatDuration } from "@/lib/utils/format"
 import type { AudioInfo, AudioStats } from "../hooks/useMicrophoneTest"
 import { AudioVisualizer } from "./AudioVisualizer"
 
@@ -16,7 +17,6 @@ interface AudioPreviewPanelProps {
   audioInfo: AudioInfo | null
   onStartRecording: () => void
   onStopRecording: () => void
-  formatDuration: (seconds: number) => string
 }
 
 export function AudioPreviewPanel({
@@ -26,8 +26,7 @@ export function AudioPreviewPanel({
   audioStats,
   audioInfo,
   onStartRecording,
-  onStopRecording,
-  formatDuration
+  onStopRecording
 }: AudioPreviewPanelProps) {
   const t = useTranslations("MicrophoneTestPage.AudioPreviewPanel")
 

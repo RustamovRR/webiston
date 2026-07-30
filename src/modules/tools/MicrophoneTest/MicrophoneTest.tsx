@@ -40,7 +40,6 @@ export default function MicrophoneTest() {
     clearAllRecordings,
     openPreview,
     closePreview,
-    formatDuration,
     getAudioQuality,
     getStats
   } = useMicrophoneTest({
@@ -84,7 +83,6 @@ export default function MicrophoneTest() {
             audioInfo={audioInfo}
             onStartRecording={startRecording}
             onStopRecording={stopRecording}
-            formatDuration={formatDuration}
           />
         </div>
 

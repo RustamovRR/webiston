@@ -50,7 +50,31 @@ optional fields let a drifted copy compile cleanly.
   **not** duplicates: `DeviceInfo` and `ScreenResolution` are different tools with
   genuinely different shapes (`pixelDepth`, `innerWidth`, `innerHeight` exist only
   in the latter). Sharing them across tools would breach the module boundary.
-- Net: **28 lines deleted, 7 added**, one definition per domain type.
+- `[x]` **Duplicated FORMATTERS, and they had drifted into visible UI
+  inconsistency.** Five copies of `formatDuration` / `formatFileSize` across two
+  tools. Measured, not inferred:
+
+      formatDuration(65)  ->  "01:05"  (useMicrophoneTest)
+                          ->  "1:05"   (AudioGridItem)
+      formatFileSize(0)   ->  "NaN undefined"
+
+  Both `formatDuration` variants render **inside the same tool**, so a
+  recording's duration appeared one way in the list and another in the player,
+  and a column of durations did not align. `formatFileSize(0)` printed literal
+  `NaN undefined` because `Math.log(0)` is `-Infinity` and indexed the unit array
+  out of bounds — the MicrophoneTest copy had no zero guard, the CameraRecorder
+  copy did.
+  - Consolidated into **`src/lib/utils/format.ts`**, 15 tests. Also fixed while
+    there: fractional seconds leaked a decimal (`"01:30.5"`), negatives produced
+    `"-1:-5"`, `NaN` produced `"NaN:NaN"`, and an hour printed `"60:00"` instead
+    of `1:00:00`. Only the drift and the zero case were user-reachable today; the
+    rest is hardening on a now-shared helper.
+  - Verified the tests catch it: reinstating the drifted variant fails 5 of 296.
+  - `formatDuration` was also being **prop-drilled** — hook → MicrophoneTest →
+    AudioPreviewPanel — for a pure function. Both the prop and the hook's
+    re-export are gone; components import it directly.
+- Net: **28 lines deleted, 7 added** for the types, plus five formatter copies
+  reduced to one. One definition per concept.
 - Same reasoning applied to the 12 `ControlPanelProps` and 4 `ConfigPanelProps`:
   left alone. Each is a component's own local props, not a shared concept.
 
