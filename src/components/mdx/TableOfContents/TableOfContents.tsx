@@ -52,6 +52,49 @@ interface IProps {
  *  passed the upper third of the viewport. */
 const ACTIVE_LINE_DIVISOR = 3
 
+/** Breathing room kept above/below the active row inside the rail. */
+const RAIL_SCROLL_PADDING = 32
+
+/**
+ * Keep the highlighted row inside the rail's own scroll box.
+ *
+ * A long chapter has more headings than the rail is tall — 27 on
+ * `2-understanding-foundation-models/modeling`, against a
+ * `max-h-[calc(100vh-8rem)]` box — so once the reader passes the middle of the
+ * page the highlight is somewhere below the fold of a panel that never moves.
+ *
+ * Deliberately NOT `row.scrollIntoView()`: that walks every scrollable ancestor
+ * and would drag the PAGE as well, fighting the reader's own scroll. This
+ * touches one element's `scrollTop` and nothing else, and only when the row has
+ * actually left the box.
+ */
+function keepRowVisible(row: HTMLElement, box: HTMLElement | null) {
+  if (!box) return
+
+  const rowTop =
+    row.getBoundingClientRect().top -
+    box.getBoundingClientRect().top +
+    box.scrollTop
+  const rowBottom = rowTop + row.offsetHeight
+  const viewTop = box.scrollTop
+  const viewBottom = viewTop + box.clientHeight
+
+  let next: number | null = null
+  if (rowTop < viewTop + RAIL_SCROLL_PADDING) {
+    next = rowTop - RAIL_SCROLL_PADDING
+  } else if (rowBottom > viewBottom - RAIL_SCROLL_PADDING) {
+    next = rowBottom - box.clientHeight + RAIL_SCROLL_PADDING
+  }
+  if (next === null) return
+
+  box.scrollTo({
+    top: Math.max(0, next),
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth"
+  })
+}
+
 function collectHeadings(): Heading[] {
   return (
     Array.from(
@@ -86,6 +129,7 @@ export default function TableOfContents({ slug: _slug }: IProps) {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>("")
   const listRef = useRef<HTMLUListElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
   const [marker, setMarker] = useState<{ top: number; height: number } | null>(
     null
   )
@@ -127,6 +171,7 @@ export default function TableOfContents({ slug: _slug }: IProps) {
     // `offsetTop` is safe here precisely because the `ul` is the offset parent
     // (it is `relative`) — the trap that broke the old scroll handler.
     setMarker(row ? { top: row.offsetTop, height: row.offsetHeight } : null)
+    if (row) keepRowVisible(row, boxRef.current)
   }, [activeId, headings])
 
   useEffect(() => {
@@ -152,7 +197,10 @@ export default function TableOfContents({ slug: _slug }: IProps) {
   }
 
   return (
-    <div className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
+    <div
+      ref={boxRef}
+      className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto"
+    >
       <div className="sticky top-0 z-10">
         {/* Same mono/accent kicker the landing page and homepage dividers use,
             instead of a lone bold sentence. */}
@@ -162,18 +210,29 @@ export default function TableOfContents({ slug: _slug }: IProps) {
         </div>
         <div className="pointer-events-none h-2 bg-gradient-to-b from-background to-transparent" />
       </div>
-      {/* `relative` so the marker below can be positioned against this list —
-          and so `row.offsetTop` in the effect is measured from here. */}
-      <ul ref={listRef} className="relative border-border border-l text-sm">
-        {/* ONE marker for the whole rail. It slides and resizes to the active
-            row instead of each row owning a border that blinks on and off, so
-            changing section reads as movement rather than two colour fades.
-            No radius: a rounded 2px bar on the rail's own edge is what drew the
-            stray arc before. `motion-reduce` respects the OS setting — the bar
-            still lands in the right place, it just does not travel. */}
+      {/* `relative` so both bars below position against this list — and so
+          `row.offsetTop` in the effect is measured from here. */}
+      <ul ref={listRef} className="relative text-sm">
+        {/* TRACK and MARKER are two absolutely-positioned bars with IDENTICAL
+            geometry (`left-0 w-0.5 rounded-full`), so the active bar sits dead
+            centre on the rail by construction.
+            The previous version drew the track as the `ul`'s 1px `border-l` and
+            the marker as a 2px bar nudged over it with `-ml-px`. A 2px bar can
+            never be centred on a 1px border without half-pixel maths, which is
+            exactly why it looked like it was hanging off the line. Two elements
+            with the same left/width cannot drift. */}
         <span
           aria-hidden="true"
-          className="-ml-px pointer-events-none absolute left-0 w-0.5 bg-primary transition-all duration-300 ease-out motion-reduce:transition-none"
+          className="pointer-events-none absolute top-0 bottom-0 left-0 w-0.5 rounded-full bg-border"
+        />
+        {/* ONE marker for the whole rail: it slides and resizes to the active
+            row rather than each row owning a border that blinks on and off, so
+            changing section reads as movement instead of two colour fades.
+            `motion-reduce` respects the OS setting — the bar still lands in the
+            right place, it just does not travel. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 w-0.5 rounded-full bg-primary transition-all duration-300 ease-out motion-reduce:transition-none"
           style={{
             top: marker?.top ?? 0,
             height: marker?.height ?? 0,

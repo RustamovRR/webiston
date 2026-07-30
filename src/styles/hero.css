@@ -95,6 +95,19 @@
    from it so the seamless loop cannot be broken by changing the tile size. */
 :root {
   --header-height: 4rem;
+  /* The reading column's measure, and the reason collapsing the book sidebar no
+     longer re-wraps the prose.
+
+     With the sidebar OPEN, the content column measures 864px at the 1536px
+     container cap (1536 − 64 padding − 288 sidebar − 256 rail − 16 gutter − 48
+     reading gutter). Pinning the measure to exactly that means closing the
+     sidebar cannot widen the text at all — the extra space becomes margin, the
+     line breaks never move, and a width animation that used to reflow every
+     paragraph on every frame now just slides the column.
+     It is also simply better typography: 1,152px of prose (the old collapsed
+     width) is roughly 150 characters per line, about double the readable
+     maximum. */
+  --reading-measure: 54rem;
   /* The grid pitch. Was 4rem, which at 64px/cell read as graph paper rather than
      structure. nextjs.org — the reference this hero grew out of — spaces its
      lines ~500px apart: a handful of deliberate architectural rules, not a mesh.
@@ -856,5 +869,57 @@ body:has(.hero) [data-site-header] {
   .search-dot {
     animation: search-dot 1.2s ease-in-out infinite;
     animation-delay: calc(var(--i, 0) * 140ms);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Theme switch — one circular reveal instead of 1,600 colour fades
+   --------------------------------------------------------------------------- */
+
+/* `Providers.tsx` sets next-themes' `disableTransitionOnChange`, which injects
+   `* { transition: none !important }` for the duration of a theme swap. That is
+   the right call on a token-driven site — without it every element carrying
+   `transition-colors` would animate its own colour at once and the page would
+   smear through an intermediate state — but it also means no CSS transition can
+   ever animate the switch itself.
+
+   The View Transitions API sidesteps that entirely: the browser snapshots the
+   old page, paints the new one, and we animate BETWEEN the two snapshots. One
+   composited animation, no per-element transitions, so the flag above stays on
+   and costs nothing.
+
+   Scoped to `[data-theme-revealing]`, which `ThemeToggle` sets for the duration
+   of the swap and deletes afterwards — otherwise every future route-level view
+   transition would inherit this circular wipe. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The default cross-fade would run UNDER the wipe and muddy it. */
+  html[data-theme-revealing]::view-transition-old(root),
+  html[data-theme-revealing]::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* The outgoing theme stays put and the incoming one is revealed over it, so
+     the circle reads as the new theme arriving rather than the old one
+     dissolving. */
+  html[data-theme-revealing]::view-transition-old(root) {
+    z-index: 1;
+  }
+
+  html[data-theme-revealing]::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-reveal 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes theme-reveal {
+    from {
+      clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y));
+    }
+    to {
+      clip-path: circle(
+        var(--theme-reveal-r) at var(--theme-reveal-x) var(--theme-reveal-y)
+      );
+    }
   }
 }

@@ -1272,6 +1272,141 @@ that is the `images.unoptimized: true` decision still open in `active.md`.
 
 ---
 
+## Phase 18c — `[x]` Reader shell: rail marker, collapse, theme, loader (2026-07-30)
+
+Owner rejected 18b's rail marker and reported five more things. All five were
+real.
+
+### The rail marker, third attempt — and why the first two failed
+
+- `[x]` **The marker could never be centred on the rail.** The track was the
+  `ul`'s **1px** `border-l`; the marker was a **2px** bar nudged over it with
+  `-ml-px`. A 2px bar cannot be centred on a 1px border without half-pixel
+  maths, which is exactly why it looked like it was hanging off the line.
+  Track and marker are now two absolutely-positioned bars with **identical**
+  geometry (`left-0 w-0.5 rounded-full`), so they are concentric by
+  construction — verified: both `left: 1292`, both `width: 2`.
+  `rounded-full` on both is the "sal border berib, sifatli chiziq" the owner
+  asked for.
+- `[x]` **Hovering the active row greyed out its own indicator.**
+  `hover:border-border-strong` and `border-primary` are different variants, so
+  `tailwind-merge` cannot dedupe them and the hover rule wins in the cascade.
+  Rows now carry no border at all — there is nothing left to override.
+- `[x]` **Changing section read as a jump, not movement.** One row's border
+  appearing while another's disappears is two colour fades. Now a single bar
+  animates `top`/`height` (300ms). Verified against a **two-line** heading —
+  the case in the owner's screenshot: marker `top: 276px, height: 52px` against
+  a 52px row, `alignsTop 0` / `alignsBottom 0`.
+- `[x]` **The rail did not follow the reader on a long chapter.** 27 headings
+  against a `max-h-[calc(100vh-8rem)]` box means the highlight ends up below the
+  panel's fold. New `keepRowVisible()` scrolls **only the rail's own box**, and
+  only when the row has actually left it. Deliberately not
+  `row.scrollIntoView()` — that walks every scrollable ancestor and would drag
+  the page, fighting the reader's own scroll. Verified: at page end the computed
+  target was **317** = exactly the rail's max scroll, and applying it brought the
+  row into view.
+
+### The collapse
+
+- `[x]` **The button matched nothing when collapsed.**
+  `left-[calc(100%-0.5rem)] translate-x-4` put it 8px into the gutter then
+  pushed it 16px back. Now `-left-2.5`, which is half the difference between the
+  40px control and its 20px icon — so the ICON'S left edge lands on the
+  container's content edge. Verified: icon left **64** = logo left **64**.
+- `[x]` **The prose re-wrapped for the whole animation.** Root cause was not the
+  duration: the content column genuinely grew 864px → 1,152px, so every
+  paragraph reflowed on every frame, and on top of that the inner div was
+  swapping `translate-x-4`, `pl-12`→`pl-8` and a `max-w` at the same time on a
+  separate 500ms transform transition.
+  Fixed by capping the column at a new `--reading-measure: 54rem` — which is
+  *exactly* the width it already has with the sidebar open — so the extra space
+  becomes margin and **the line breaks never move**. Measured across a collapse:
+  paragraph `816 × 168` → `816 × 168`, byte-identical, with the aside going
+  288 → 0. All the transform/padding churn deleted; nothing left to animate in
+  the content column.
+  It is also better typography: 1,152px of prose is ~150 characters per line.
+- `[x]` `transition-all duration-500` → `transition-[width,border-color]
+  duration-300` on the aside. `all` asks the browser to watch every animatable
+  property on an element whose width change already forces a layout pass per
+  frame.
+
+### Header chrome
+
+- `[x]` **The progress bar was `#3b82f6`** — Tailwind's `blue-500`, not our 217°
+  brand hue. The one piece of chrome that appears on **every navigation** was
+  painted in someone else's blue. Now `var(--primary)`: the library injects
+  `background:${color}` into a `<style>` tag, so a custom property resolves
+  normally and it follows the token through both schemes.
+- `[x]` **The theme toggle's first click did nothing visible.** The handler read
+  `theme`, but `ThemeProvider` runs `enableSystem`, so `theme` is the string
+  `"system"` until the reader chooses. `"system" === "light"` is false → it set
+  `"light"`, which for anyone on a light OS was the scheme already showing. Now
+  branches on `resolvedTheme`.
+- `[x]` **The icon was wrong before mount.** `useTheme()` returns `undefined` on
+  the server and first client render, so the Moon rendered regardless — a
+  visible flip on hydration for light-mode readers. Both icons are now always in
+  the DOM, chosen by CSS off the `.dark` class `next-themes` sets in its
+  blocking script before first paint. No state, no mismatch.
+- `[x]` **framer-motion removed from the site header.** `AnimatePresence` +
+  `motion.div` were animating a 20px icon on every route. Chapter JS
+  **340 → 299 KB gz**, and framer-motion is now in **zero** eager chunks on a
+  book page.
+
+**Environment note that cost time twice:** the Browser pane does not tick CSS
+transitions or `scroll-behavior: smooth`. Computed styles stay frozen at the
+start value while the inline style already holds the target, which reads exactly
+like a broken layout. Verify settled geometry by injecting
+`*{transition:none!important}` first, or the measurement lies.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML, chapter JS **299 KB gz**.
+
+---
+
+## Phase 18d — `[x]` Theme switch as a view transition (2026-07-30)
+
+- `[x]` **Why 18c's icon cross-fade was instant, and why that was unfixable in
+  CSS.** `Providers.tsx` sets next-themes' `disableTransitionOnChange`, which
+  injects `* { transition: none !important }` for the duration of the swap. It
+  kills the rotate/scale pair — and killed the framer-motion version before it,
+  which means that dependency was being carried for an animation that never ran.
+  The flag is correct: this site is token-driven, so without it ~1,600 elements
+  would each run their own `transition-colors` at once and the page would smear
+  through an intermediate colour.
+  So the answer is not to animate 1,600 things better — it is to animate **one**
+  thing. `document.startViewTransition()` snapshots the old page, paints the
+  new one, and a `clip-path` circle wipes between the two snapshots: a single
+  composited animation, origin anchored on the button, radius sized by
+  `Math.hypot` to the furthest corner.
+  Verified live: `data-theme-revealing` set during the swap, origin
+  `x: 1510 / y: 32` = the button's centre, `r: 1741.7` = the far corner,
+  `dark → light`, attribute cleaned up afterwards.
+  `flushSync` is load-bearing — `startViewTransition` snapshots when its
+  callback returns, so a plain `setTheme` would land after the snapshot and the
+  wipe would reveal the OLD theme.
+  Degrades by design: no `startViewTransition` (Firefox) or
+  `prefers-reduced-motion: reduce` → plain `setTheme`, the previous behaviour.
+
+- `[!] **A claim of mine, retracted.** 18c recorded that the toggle's *first
+  click did nothing visible* because `theme` is `"system"` under `enableSystem`.
+  Checked instead of assumed: with `defaultTheme="dark"` and empty storage,
+  next-themes resolves `theme` to **"dark"**, not `"system"` (verified on a
+  fresh load with a light OS), and our UI exposes no System option for a reader
+  to pick — so that branch is unreachable today. `resolvedTheme` is still the
+  right value for a binary toggle, and becomes load-bearing the moment
+  `defaultTheme` changes or a System option is added, but it fixed no observable
+  bug. The component comment says so.
+  **The markup defect WAS real:** `useTheme()` returns `undefined` on the server
+  and first client render, so `theme === "light" ? <Sun/> : <Moon/>` rendered
+  the Moon regardless — a visible icon flip on hydration for every light-mode
+  reader. Both icons are in the DOM now and CSS picks off a class set before
+  first paint.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors
