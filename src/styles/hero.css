@@ -873,7 +873,7 @@ body:has(.hero) [data-site-header] {
 }
 
 /* ---------------------------------------------------------------------------
-   Theme switch — one circular reveal instead of 1,600 colour fades
+   Theme switch — one quiet cross-fade instead of 1,600 colour fades
    --------------------------------------------------------------------------- */
 
 /* `Providers.tsx` sets next-themes' `disableTransitionOnChange`, which injects
@@ -881,45 +881,24 @@ body:has(.hero) [data-site-header] {
    the right call on a token-driven site — without it every element carrying
    `transition-colors` would animate its own colour at once and the page would
    smear through an intermediate state — but it also means no CSS transition can
-   ever animate the switch itself.
+   ever animate the switch itself. That is why the icon cross-fade before this,
+   and the framer-motion version before that, were both instant.
 
-   The View Transitions API sidesteps that entirely: the browser snapshots the
-   old page, paints the new one, and we animate BETWEEN the two snapshots. One
-   composited animation, no per-element transitions, so the flag above stays on
-   and costs nothing.
+   The View Transitions API sidesteps it: the browser snapshots the old page,
+   paints the new one, and cross-fades BETWEEN the two snapshots. One composited
+   animation, no per-element transitions, so the flag above stays on.
 
-   Scoped to `[data-theme-revealing]`, which `ThemeToggle` sets for the duration
-   of the swap and deletes afterwards — otherwise every future route-level view
-   transition would inherit this circular wipe. */
+   A plain fade, deliberately. The first attempt wiped a `clip-path` circle out
+   from the button across the whole viewport; the owner called it gaudy and was
+   right — a colour scheme is a preference, not an event, and a full-screen
+   reveal announces it far louder than it deserves. All that is left here is a
+   duration: the browser's own default is 250ms, which drags on something this
+   ordinary. */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The default cross-fade would run UNDER the wipe and muddy it. */
   html[data-theme-revealing]::view-transition-old(root),
   html[data-theme-revealing]::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
-  }
-
-  /* The outgoing theme stays put and the incoming one is revealed over it, so
-     the circle reads as the new theme arriving rather than the old one
-     dissolving. */
-  html[data-theme-revealing]::view-transition-old(root) {
-    z-index: 1;
-  }
-
-  html[data-theme-revealing]::view-transition-new(root) {
-    z-index: 2;
-    animation: theme-reveal 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes theme-reveal {
-    from {
-      clip-path: circle(0 at var(--theme-reveal-x) var(--theme-reveal-y));
-    }
-    to {
-      clip-path: circle(
-        var(--theme-reveal-r) at var(--theme-reveal-x) var(--theme-reveal-y)
-      );
-    }
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
   }
 }

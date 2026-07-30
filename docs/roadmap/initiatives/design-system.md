@@ -1407,6 +1407,49 @@ like a broken layout. Verify settled geometry by injecting
 
 ---
 
+## Phase 18e — `[x]` Collapse removed, shell to the server, quiet theme fade (2026-07-30)
+
+- `[x]` **Sidebar collapse deleted — owner approved.** Once `--reading-measure`
+  capped the reading column the toggle bought the reader nothing: the prose
+  could not get wider, so it only hid the navigation. No major docs site
+  (Next.js, Tailwind, Stripe, MDN) ships one on desktop for that reason. Gone:
+  `useState`, the button, two transitions, `PanelsTopLeft`/`PanelTop`, and the
+  `Button` import.
+
+- `[x]` **`TutorialLayout` is now a SERVER component.** Two things had been
+  keeping the whole reader shell across the client boundary: the collapse state
+  above, and a `useEffect` pushing `navigationItems` into the Zustand store —
+  which was **duplicate work**. `books/[...slug]/layout.tsx` already renders
+  `<NavigationStoreInitializer tutorialId navigationItems />` as this
+  component's immediate sibling, same two arguments, same store key. One of the
+  two was always redundant, and the redundant one was the one costing us the
+  boundary.
+  Verified in the route's client reference manifest: **16 → 15** client
+  modules, `TutorialLayout` no longer among them. Chapter JS **299 → 298 KB gz**
+  (the shell was mostly markup; the win here is architectural, not bytes).
+
+- `[x]` **The circular theme wipe is gone.** Owner called it gaudy and was
+  right — a colour scheme is a preference, not an event, and a full-viewport
+  `clip-path` reveal announces it far louder than it deserves. The View
+  Transition stays, because it is the only thing that CAN animate the swap while
+  `disableTransitionOnChange` is on, but it is now the browser's plain
+  cross-fade shortened to **180ms** (default 250ms drags on something this
+  ordinary). Verified live: `circularWipeStillInCSS: false`,
+  `crossFadeDuration: 0.18s`, `dark → light`, attribute cleaned up after.
+
+- `[x]` **The icons.** They deliberately do NOT run their own keyframes on the
+  theme change — they ride the page's cross-fade, so the whole change is one
+  animation instead of the icon doing something separate from the page it sits
+  on. The control's own motion is a hover nudge (`group-hover:rotate-45` on the
+  sun, `-rotate-12` on the moon), which is *not* suppressed by
+  `disableTransitionOnChange` because it is driven by hover rather than by the
+  class swap — the first bit of motion this button has ever actually shown.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML, chapter JS **298 KB gz**.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors
