@@ -848,6 +848,56 @@ tokens **−96**. /tools and /books verified in browser (screenshots, dark).
 
 ---
 
+## Phase 15 — `[x]` Header hover, categorical colour, filter flicker (2026-07-30)
+
+Owner rejected Phase 14's /tools result as visually flat and reported a header
+hover defect. All four complaints were valid.
+
+- `[x]` **Header hover: grey text on a grey surface.** The nav links carried
+  hardcoded `text-[#8A8A8E] dark:text-[#8D8D93]` on the INNER `<Link>`. Because
+  that Link is a child of `NavigationMenuTrigger`, its own colour won and the
+  trigger's `hover:text-accent-foreground` never reached it — so hovering lit
+  `--accent` (a dark surface) behind text still pinned at `#8D8D93`. Colour now
+  lives on the trigger (`text-muted-foreground` → `hover:text-foreground`) and
+  the Link inherits. Two more hardcoded hex pairs gone.
+
+- `[x]` **The flatness was MY doing: I collapsed 17 tool colours into one.**
+  `TOOLS_LIST[].color` held a per-tool palette (`bg-blue-500/20`, yellow, green,
+  purple…) and Phase 14 replaced every one with a single `bg-primary/12`. The
+  owner was right that the old page looked richer. But the old palette was also
+  meaningless — 17 ad-hoc hues including blue three times.
+  Resolution: colour by **CATEGORY**, from the `--chart-1..4` tokens that
+  already exist in `tokens.css` with separate light/dark values. Four hues, one
+  per category, in a new `CATEGORY_ACCENTS` constant. The icon chip and the
+  active filter chip share a hue, so colour now ENCODES category — verified:
+  selecting "Generatorlar" turns the chip and all six icons `chart-2` green.
+  This is the documented categorical/chart exception, in a named constant, and
+  it answers the owner's question — the brand accent stays for brand elements;
+  category colour is data colour, a different job. **Brand hue unchanged.**
+
+- `[x]` **Chips had no `cursor: pointer`.** They are `<button>`s, which do not
+  get it by default. Added; verified `cursor: pointer` on all five.
+
+- `[x]` **The filter flicker, root-caused.** `AnimatePresence mode="popLayout"`
+  with `initial={hasAnimated.current ? false : …}`: after first mount, incoming
+  cards had NO enter animation while outgoing ones still ran a 0.2s exit tween.
+  That mismatch — items appearing instantly while their neighbours faded out and
+  the layout reflowed — was the flicker.
+  **framer-motion removed from this page entirely** (22 import sites remain
+  elsewhere, all legitimate). Replaced with the site's own CSS entrance:
+  a new `.grid-rise` (35ms stagger — `.rise`'s 110ms would take 1.9s across 17
+  cards) on a grid whose `key` folds in the active filters, so React remounts
+  and the pass replays. **No exit animation at all**, which is the point.
+  Verified after a real click: 17 → 6 cards, entrance `state: running,
+  elapsed: 0`, delays 0 / 35 / 70ms.
+
+- Token gate: **−100 hits vs baseline.**
+
+**Gate:** all 7 green · build 0 · 269 prerendered HTML · 0 MISSING_MESSAGE.
+Verified in the browser with a real filter click.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

@@ -822,3 +822,36 @@ body:has(.hero) [data-site-header] {
     animation: none !important;
   }
 }
+
+/* Grid entrance for many items — `.rise`'s 110ms stagger is right for a hero's
+   six elements but would take 1.9s across 17 tool cards. 35ms keeps the
+   sequence readable and lands the whole grid inside ~0.9s.
+   Used by /tools, where the key changes on filter so the pass replays. */
+@media (prefers-reduced-motion: no-preference) {
+  .grid-rise {
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+}
+
+/* Search dialog's loading dots — a bounce on the same stagger idiom as
+   `.grid-rise`. Only motion in the dialog; the entrance itself is Radix's. */
+@keyframes search-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translate3d(0, 0, 0);
+  }
+  40% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .search-dot {
+    animation: search-dot 1.2s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 140ms);
+  }
+}

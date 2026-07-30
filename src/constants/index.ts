@@ -52,6 +52,8 @@ export {
 // UI design constants
 export {
   ANIMATIONS,
+  CATEGORY_ACCENT_NEUTRAL,
+  CATEGORY_ACCENTS,
   getToolColor,
   MACOS_DOTS,
   TEXT_STYLES,

@@ -83,7 +83,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–14 shipped — homepage + **/tools + /books** in one language. 14: the REAL hover bug (v4 `translate` property vs transform-only transition lists), tools page de-palettized (**−96 hits**) |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–15 shipped — homepage + /tools + /books. 15: header hover hex removed, **categorical colour via `--chart-*`** (`CATEGORY_ACCENTS`), filter flicker root-caused (framer-motion → CSS), tokens **−100** |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |

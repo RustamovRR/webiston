@@ -84,3 +84,43 @@ export const getToolColor = (toolId: string) => {
     TOOL_COLORS.CONVERTERS
   )
 }
+
+/**
+ * Per-CATEGORY accent classes for tool cards and filter chips.
+ *
+ * Colour here is DATA, not decoration — it encodes which category a tool
+ * belongs to, so the icon chip and the filter chip agree at a glance. That is
+ * the documented exception in `design-system.md`: categorical/chart colour in a
+ * named constant rather than inline.
+ *
+ * Built on `--chart-1..4`, which already exist in `tokens.css` with separate
+ * light/dark values, so these need no `dark:` variants. Deliberately FOUR hues
+ * (one per category), not seventeen: `TOOLS_LIST[].color` used to carry an
+ * ad-hoc per-tool palette — 17 raw Tailwind classes including blue three times
+ * — which was colourful but meaningless.
+ */
+export const CATEGORY_ACCENTS: Record<string, { chip: string; icon: string }> =
+  {
+    converters: {
+      chip: "border-chart-1/40 bg-chart-1/12 text-chart-1",
+      icon: "bg-chart-1/12 text-chart-1"
+    },
+    generators: {
+      chip: "border-chart-2/40 bg-chart-2/12 text-chart-2",
+      icon: "bg-chart-2/12 text-chart-2"
+    },
+    analyzers: {
+      chip: "border-chart-3/40 bg-chart-3/12 text-chart-3",
+      icon: "bg-chart-3/12 text-chart-3"
+    },
+    utilities: {
+      chip: "border-chart-4/40 bg-chart-4/12 text-chart-4",
+      icon: "bg-chart-4/12 text-chart-4"
+    }
+  }
+
+/** Fallback for the "all" chip and any unmapped category. */
+export const CATEGORY_ACCENT_NEUTRAL = {
+  chip: "border-primary/40 bg-primary/12 text-primary",
+  icon: "bg-primary/12 text-primary"
+}

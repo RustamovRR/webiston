@@ -27,22 +27,46 @@ class SearchEngine {
     })
   }
 
+  /**
+   * Single-flight guard. Without it, `warm()` on hover followed by
+   * `initialize()` on open would fetch and index the 1.07 MB payload TWICE.
+   */
+  private pending: Promise<void> | null = null
+
+  /**
+   * Start loading without awaiting — call on hover/focus of the search trigger.
+   * By the time the dialog opens the index is usually built, so the entrance
+   * animation gets a clear main thread. This is the fix for the visible flicker
+   * on first open: indexing ~1000 documents is a long synchronous task, and it
+   * used to start at the exact moment the dialog began animating in.
+   */
+  warm() {
+    void this.initialize()
+  }
+
   async initialize() {
     if (this.initialized) return
+    // Coalesce concurrent callers (hover + open, or two rapid ⌘K presses).
+    if (this.pending) return this.pending
+    this.pending = this.doInitialize().finally(() => {
+      this.pending = null
+    })
+    return this.pending
+  }
 
+  private async doInitialize() {
     try {
       // Try to load static index first
       const staticResponse = await fetch("/search-index.json")
       if (staticResponse.ok) {
         const documents: SearchDocument[] = await staticResponse.json()
-        this.addDocuments(documents)
-        console.log(`Loaded ${documents.length} documents from static index`)
+        await this.addDocuments(documents)
       } else {
         // Fallback to API
         const response = await fetch("/api/search/documents")
         if (response.ok) {
           const documents: SearchDocument[] = await response.json()
-          this.addDocuments(documents)
+          await this.addDocuments(documents)
         } else {
           // Final fallback: hardcoded documents
           this.addFallbackDocuments()
@@ -56,13 +80,27 @@ class SearchEngine {
     }
   }
 
-  private addDocuments(documents: SearchDocument[]) {
-    documents.forEach((doc) => {
-      this.documents.set(doc.id, doc)
-      // Title va content'ni birlashtirb index qilamiz
-      const searchText = `${doc.title} ${doc.content} ${doc.tags?.join(" ") || ""}`
-      this.index.add(doc.id, searchText)
-    })
+  /**
+   * Indexes in chunks, yielding to the browser between them.
+   *
+   * `index.add()` over ~1000 documents in one synchronous `forEach` is a single
+   * long task — long enough to drop the frames the search dialog needs for its
+   * entrance. Yielding every CHUNK keeps each task short, so animation and
+   * indexing interleave instead of competing.
+   */
+  private async addDocuments(documents: SearchDocument[]) {
+    const CHUNK = 150
+    for (let i = 0; i < documents.length; i += CHUNK) {
+      for (const doc of documents.slice(i, i + CHUNK)) {
+        this.documents.set(doc.id, doc)
+        // Title va content'ni birlashtirb index qilamiz
+        const searchText = `${doc.title} ${doc.content} ${doc.tags?.join(" ") || ""}`
+        this.index.add(doc.id, searchText)
+      }
+      if (i + CHUNK < documents.length) {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      }
+    }
   }
 
   private addFallbackDocuments() {

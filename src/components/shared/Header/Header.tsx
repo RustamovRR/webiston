@@ -68,7 +68,12 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]">
+                {/* No colour on the inner Link: it is a CHILD of the trigger,
+                    so its own `text-*` would win and the trigger's
+                    `hover:text-accent-foreground` would never reach it — which
+                    is exactly what produced grey text on the grey hover
+                    surface. Colour lives on the trigger; the Link inherits. */}
+                <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-muted-foreground transition-colors duration-300 hover:text-foreground data-[state=open]:text-foreground">
                   <Link href="/books">{t("books")}</Link>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -88,7 +93,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   asChild
-                  className="relative cursor-pointer bg-transparent text-[#8A8A8E] dark:text-[#8D8D93]"
+                  className="relative cursor-pointer bg-transparent text-muted-foreground transition-colors duration-300 hover:text-foreground"
                 >
                   <Link href="/tools">{t("tools")}</Link>
                 </NavigationMenuLink>

@@ -1,12 +1,13 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
 import { Search } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { type CSSProperties, useMemo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import {
   AUDIENCE_FILTERS,
+  CATEGORY_ACCENT_NEUTRAL,
+  CATEGORY_ACCENTS,
   FILTER_OPTIONS,
   TOOL_CATEGORIES,
   TOOLS_LIST,
@@ -23,11 +24,6 @@ const ToolsMainPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedAudience, setSelectedAudience] = useState("all")
-  const hasAnimated = useRef(false)
-
-  useEffect(() => {
-    hasAnimated.current = true
-  }, [])
 
   const allTools = useMemo(() => TOOLS_LIST, [])
 
@@ -68,6 +64,13 @@ const ToolsMainPage = () => {
       ? "bg-primary/12 text-primary"
       : "bg-muted text-muted-foreground"
 
+  // Colour by CATEGORY, from the `--chart-*` tokens. Restores the visual
+  // variety the previous design had via 17 ad-hoc per-tool Tailwind classes,
+  // but makes it MEAN something: the icon chip and the active filter chip share
+  // a hue, so category is readable without reading the label.
+  const accentFor = (category: string) =>
+    CATEGORY_ACCENTS[category] ?? CATEGORY_ACCENT_NEUTRAL
+
   // The homepage card language verbatim: border-strong boundary, depth
   // gradient, PLAIN `transition` (Tailwind v4's `-translate-y-*` is the
   // `translate` property — a hand-written transform-only list leaves the lift
@@ -78,7 +81,9 @@ const ToolsMainPage = () => {
       className="group flex h-full flex-col rounded-lg border border-border-strong bg-gradient-to-b from-card to-card/60 p-4 transition duration-300 ease-out hover:-translate-y-1 hover:border-input hover:from-accent hover:to-accent/70 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
       <div className="flex items-start justify-between">
-        <span className="flex size-10 items-center justify-center rounded-md bg-primary/12 text-primary">
+        <span
+          className={`flex size-10 items-center justify-center rounded-md ${accentFor(tool.category).icon}`}
+        >
           <tool.icon className="size-5" />
         </span>
         <span
@@ -102,17 +107,15 @@ const ToolsMainPage = () => {
   )
 
   return (
-    <motion.div
-      className="mx-auto w-full max-w-7xl px-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      <motion.div
-        className="mb-8 flex flex-col items-center justify-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05 }}
+    // framer-motion removed from this page. The filter grid used
+    // `AnimatePresence mode="popLayout"` with `initial={hasAnimated ? false : …}`
+    // — so after first mount incoming cards had NO enter animation while
+    // outgoing ones still animated away: that mismatch was the flicker. The
+    // site's own CSS entrance replays instead, keyed on the filter (below).
+    <div className="mx-auto w-full max-w-[1536px] px-4 sm:px-6 lg:px-8">
+      <div
+        className="rise mb-8 flex flex-col items-center justify-center"
+        style={{ "--i": 0 } as CSSProperties}
       >
         {/* Same identity system as the homepage dividers: accent pixel +
             mono label + count. Replaces a pulsing blue Sparkles icon and the
@@ -128,15 +131,10 @@ const ToolsMainPage = () => {
         <p className="mx-auto mt-3 max-w-2xl text-center text-lg text-muted-foreground">
           {tMain("description")}
         </p>
-      </motion.div>
+      </div>
 
       {/* Category Filters */}
-      <motion.div
-        className="mb-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-      >
+      <div className="rise mb-6" style={{ "--i": 1 } as CSSProperties}>
         <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByCategory")}
         </h3>
@@ -156,9 +154,9 @@ const ToolsMainPage = () => {
                 key={option.value}
                 type="button"
                 onClick={() => setSelectedCategory(option.value)}
-                className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
+                className={`flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
                   active
-                    ? "border-primary/40 bg-primary/12 text-primary"
+                    ? accentFor(option.value).chip
                     : "border-border-strong bg-card/60 text-muted-foreground hover:border-input hover:bg-accent hover:text-foreground"
                 }`}
               >
@@ -171,15 +169,10 @@ const ToolsMainPage = () => {
             )
           })}
         </div>
-      </motion.div>
+      </div>
 
       {/* Audience Filters */}
-      <motion.div
-        className="mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15 }}
-      >
+      <div className="rise mb-8" style={{ "--i": 2 } as CSSProperties}>
         <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByAudience")}
         </h3>
@@ -191,9 +184,9 @@ const ToolsMainPage = () => {
                 key={filter.value}
                 type="button"
                 onClick={() => setSelectedAudience(filter.value)}
-                className={`rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
+                className={`cursor-pointer rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
                   active
-                    ? "border-primary/40 bg-primary/12 text-primary"
+                    ? CATEGORY_ACCENT_NEUTRAL.chip
                     : "border-border-strong bg-card/60 text-muted-foreground hover:border-input hover:bg-accent hover:text-foreground"
                 }`}
               >
@@ -202,15 +195,10 @@ const ToolsMainPage = () => {
             )
           })}
         </div>
-      </motion.div>
+      </div>
 
       {/* Search */}
-      <motion.div
-        className="mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
+      <div className="rise mb-8" style={{ "--i": 3 } as CSSProperties}>
         <div className="relative mx-auto max-w-md">
           <Search className="-translate-y-1/2 absolute top-1/2 left-3 size-5 text-muted-foreground" />
           <Input
@@ -221,102 +209,59 @@ const ToolsMainPage = () => {
             className="border-border-strong bg-card/60 pl-10 transition-colors duration-300 focus-visible:border-input"
           />
         </div>
-      </motion.div>
+      </div>
 
       {/* Results count */}
-      <motion.div
-        className="mb-6 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.25 }}
+      <div
+        className="rise mb-6 text-center"
+        style={{ "--i": 4 } as CSSProperties}
       >
         <p className="font-mono text-muted-foreground text-xs">
           {tMain("resultsFound", { count: filteredTools.length })}
         </p>
-      </motion.div>
+      </div>
 
       {/* Tools Grid */}
-      <motion.div
-        className="space-y-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.3 }}
-      >
+      <div className="space-y-8">
         {filteredTools.length === 0 ? (
-          <motion.div
-            className="py-12 text-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="rise py-12 text-center">
             <p className="text-lg text-muted-foreground">
               {tMain("noResults")}
             </p>
             <p className="mt-2 text-muted-foreground/70 text-sm">
               {tMain("noResultsHint")}
             </p>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
+          // The `key` folds the active filters in, so React remounts the grid
+          // on every filter change and the CSS entrance replays — a staggered
+          // fade-up in, nothing animating out. No exit animation is the point:
+          // an exit tween on items that are being replaced in the same frame is
+          // what read as a flicker.
+          <div
+            key={`${selectedCategory}-${selectedAudience}-${searchQuery}`}
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
-            <AnimatePresence mode="popLayout">
-              {filteredTools.map((tool, index) => (
-                <motion.div
-                  key={tool.href}
-                  layout
-                  initial={
-                    hasAnimated.current
-                      ? false
-                      : { opacity: 0, y: 20, scale: 0.95 }
-                  }
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    transition: {
-                      duration: hasAnimated.current ? 0.2 : 0.4,
-                      delay: hasAnimated.current ? 0 : index * 0.1,
-                      ease: "easeOut"
-                    }
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.9,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <ToolCard tool={tool} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+            {filteredTools.map((tool, index) => (
+              <div
+                key={tool.href}
+                className="grid-rise"
+                style={{ "--i": index } as CSSProperties}
+              >
+                <ToolCard tool={tool} />
+              </div>
+            ))}
+          </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Statistics */}
       {!searchQuery &&
         selectedCategory === "all" &&
         selectedAudience === "all" && (
-          <motion.div
-            className="mt-16 text-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
+          <div className="mt-16 text-center">
             <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.5 }}
-              >
+              <div className="reveal">
                 <div className="font-bold text-3xl text-foreground tabular-nums">
                   {TOOL_CATEGORIES.reduce(
                     (acc, cat) => acc + cat.tools.length,
@@ -326,24 +271,16 @@ const ToolsMainPage = () => {
                 <div className="text-muted-foreground text-sm">
                   {tMain("totalTools")}
                 </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.6 }}
-              >
+              </div>
+              <div className="reveal">
                 <div className="font-bold text-3xl text-foreground tabular-nums">
                   {TOOL_CATEGORIES.length}
                 </div>
                 <div className="text-muted-foreground text-sm">
                   {tMain("categories")}
                 </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.7 }}
-              >
+              </div>
+              <div className="reveal">
                 <div className="font-bold text-3xl text-foreground tabular-nums">
                   {
                     TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter(
@@ -354,12 +291,8 @@ const ToolsMainPage = () => {
                 <div className="text-muted-foreground text-sm">
                   {tMain("generalTools")}
                 </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.8 }}
-              >
+              </div>
+              <div className="reveal">
                 <div className="font-bold text-3xl text-foreground tabular-nums">
                   {
                     TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter(
@@ -370,11 +303,11 @@ const ToolsMainPage = () => {
                 <div className="text-muted-foreground text-sm">
                   {tMain("developerTools")}
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         )}
-    </motion.div>
+    </div>
   )
 }
 

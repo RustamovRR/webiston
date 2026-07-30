@@ -70,7 +70,8 @@
     "contentType": {
       "article": "maqola",
       "topic": "mavzu"
-    }
+    },
+    "hints": "↑↓ tanlash · ⏎ ochish · esc yopish"
   },
   "Filters": {
     "allTools": "Barcha vositalar",

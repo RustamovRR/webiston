@@ -79,14 +79,23 @@ export default function Search() {
 
   // Build the index when the dialog OPENS, not when the page mounts.
   //
-  // `public/search-index.json` is 1.05 MB. Loading it on mount meant every
+  // `public/search-index.json` is 1.07 MB. Loading it on mount meant every
   // visitor on every route downloaded and indexed it, including the ~all of them
   // who never search. Opening the dialog gives us the time before the first
   // keystroke, and `searchEngine.search()` initialises on demand anyway, so a
   // fast typist is still correct — just briefly slower.
+  //
+  // This stays as the fallback for ⌘K users who never touch the button; the
+  // real work usually starts earlier, on hover/focus (see `warmSearch`).
   useEffect(() => {
     if (open) searchEngine.initialize().catch(console.error)
   }, [open])
+
+  // Prefetch on INTENT. Indexing ~1000 documents is a long task, and starting
+  // it at the moment the dialog begins animating in is what produced the
+  // visible flicker on first open. Hover/focus buys us a few hundred
+  // milliseconds; `initialize()` is single-flight, so calling it twice is free.
+  const warmSearch = () => searchEngine.warm()
 
   return (
     <>
@@ -98,6 +107,8 @@ export default function Search() {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        onPointerEnter={warmSearch}
+        onFocus={warmSearch}
         aria-keyshortcuts={isMac ? "Meta+K" : "Control+K"}
         className="focus-visible:ring-ring flex h-9 w-56 cursor-pointer items-center gap-2 rounded-xl bg-muted px-3 text-left focus-visible:ring-2 focus-visible:outline-none"
       >

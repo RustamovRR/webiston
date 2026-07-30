@@ -70,7 +70,8 @@
     "contentType": {
       "article": "article",
       "topic": "topic"
-    }
+    },
+    "hints": "↑↓ select · ⏎ open · esc close"
   },
   "Filters": {
     "allTools": "All Tools",
