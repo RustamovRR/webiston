@@ -552,6 +552,106 @@ different reason, and that reason is the real finding:
 
 ---
 
+## Phase 10 — `[x]` Load-in flash + the text scrim (2026-07-30)
+
+Two owner observations, one of which was a perception problem rather than a bug.
+
+- `[x]` **"The beam looks like it goes over the text" — z-order was already
+  correct.** `elementsFromPoint` at the headline's centre returns `H1.rise`
+  **first**; the backdrop is genuinely behind it. But z-order is not legibility:
+  a lit line passing directly behind a headline competes with it and reads as
+  crossing over. Fixed with a **scrim** — a radial gradient built from
+  `--background`, so it darkens in dark mode and lightens in light mode with no
+  second rule, pulling the backdrop's energy down over the content area. This is
+  also why nextjs.org keeps its rules faint and away from the text.
+  **Paint order is load-bearing and comes from DOM order, not z-index:**
+  `grid → scrim → aurora`. The scrim dims the grid and beam; the aurora sits
+  after it so the brand glow behind the headline is not flattened too. Putting
+  the scrim last would have killed the glow.
+
+- `[x]` **Refresh now brings the lines in, the way nextjs.org does.** This is
+  what the original `background-pattern.css` was reaching for and got wrong: it
+  animated the lines to a *displaced* final position, so they never arrived
+  anywhere deliberate and the resting layout was an accident. Here the resting
+  state is fixed and the arrival is separated into two throwaway layers:
+  - `grid-in` — a 0.9s opacity ramp on the grid itself, running alongside the
+    perpetual `grid-drift`. No conflict: one drives `opacity`, the other
+    `transform`.
+  - `.hero-flash-v` / `.hero-flash-h` — copies of the grid in a bright brand
+    tint. **Splitting the axes and offsetting them** is what produces the read of
+    *parallel* lines rather than one global flicker.
+
+  **First attempt was too weak and was replaced (see below).**
+  - Both sit inside `.hero-grid`, inheriting its drift and origin so they stay
+    registered to the real lines.
+  - `opacity: 0` is the BASE state, with the animation declared only under
+    `no-preference` — a reduced-motion user gets no flash and there is nothing
+    to override.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML**.
+`hero-flash-v`, `hero-flash-h`, `hero-scrim` all confirmed in the static HTML.
+
+> **The hero is done.** It now has six layers with distinct jobs — structure
+> (grid), arrival (grid-in + flash), depth (aurora), life (beam), focus (scrim),
+> content entrance (rise) — and all of it is CSS on a prerendered Server
+> Component. A seventh layer is where this tips into the Aceternity problem.
+> Remaining polish, in order of actual value:
+> 1. **View Transitions.** `next@16.2.12` exposes `experimental.viewTransition`
+>    (currently `false`), and `document.startViewTransition` is available in the
+>    target browser. Smooth homepage → chapter navigation is a bigger perceived-
+>    quality win than anything further in the hero. Config change affecting ALL
+>    navigation, so it needs its own decision and its own testing pass.
+> 2. **Noise/grain overlay** — ~10 lines, kills gradient banding, adds tactile
+>    quality. Cheap and safe.
+
+---
+
+## Phase 10b — `[x]` The arrival actually reads now (2026-07-30)
+
+Owner: "on refresh nothing happens, the lines just appear." Correct, and the
+Phase 10 version deserved that. Two mistakes, both mine:
+
+- `[x]` **It only faded; it never drew.** A 400ms opacity ramp on a 1px line is
+  not an event the eye registers — which is exactly why it looked like the grid
+  "was just there". The request was lines that FILL IN, and that is a different
+  animation. Now the lines scale into place:
+  `.hero-flash-v` does `scaleY(0 → 1)` from `transform-origin: top` (verticals
+  grow downward) and `.hero-flash-h` does `scaleX(0 → 1)` from `left`
+  (horizontals grow rightward).
+  Why scale is safe on a repeating gradient: vertical lines are uniform along Y,
+  so `scaleY` never moves their X positions — they stay registered to the real
+  grid while growing. Same for `scaleX` on the horizontals. And being `transform`
+  it stays on the compositor; a mask wipe would repaint every frame.
+  Scale completes at 55%, the bright layer fades over the remaining 45%, handing
+  off to the resting grey grid underneath. 2.1s, `ease-out`, 180ms stagger so the
+  verticals land and then the horizontals cross them.
+- `[x]` **I shipped the scrim in the SAME change as the arrival**, so the thing
+  meant to protect the headline was dimming the animation exactly where the eye
+  is. Scrim eased back (48%→42% radius, 72%→88% centre but falling off much
+  faster) and the flash brightened 65% → 90%, so the arrival reads through it
+  while the resting state keeps its legibility.
+- `[x]` **Verified on a real page load, not just pinned.** Caught at
+  `elapsedMs: 0`, `state: running`, with `transform: matrix(1,0,0,0,0,0)`
+  (`scaleY(0)`) on the verticals and `matrix(0,0,0,1,0,0)` (`scaleX(0)`) on the
+  horizontals — genuinely starting from nothing. Pinned at 30%: verticals
+  `scaleY(0.732)`, horizontals `scaleX(0.558)`, i.e. the stagger is real.
+  Compiled CSS confirms the animations sit inside
+  `@media (prefers-reduced-motion: no-preference)` while `opacity: 0` is the
+  ungated base — so a reduced-motion user gets no arrival and nothing to
+  override.
+
+**Process note for future sessions.** The owner asked for this repeatedly and got
+descriptions of what I had built instead of a yes/no on what they wanted. When a
+request is restated more than twice, the honest reading is that the delivered
+thing does not match the ask — the answer is to say so and change the
+implementation, not to re-explain it.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML**.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

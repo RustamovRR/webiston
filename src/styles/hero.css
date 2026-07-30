@@ -249,9 +249,27 @@
   }
 }
 
+/* Two animations on one element, and they do not fight: `grid-in` drives opacity,
+   `grid-drift` drives transform. */
 @media (prefers-reduced-motion: no-preference) {
   .hero-grid {
-    animation: grid-drift 48s linear infinite;
+    animation:
+      grid-in 1.6s ease-out both,
+      grid-drift 48s linear infinite;
+  }
+}
+
+/* The load-in. This is what the original `background-pattern.css` was reaching
+   for and got wrong: it animated the lines to a DISPLACED final position, so
+   they never arrived anywhere deliberate. Here the grid simply resolves into
+   place, and the brightness overshoot is a separate throwaway layer (below)
+   rather than something the resting state has to recover from. */
+@keyframes grid-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -395,4 +413,147 @@
    blur still separates the bar from content once anything scrolls under it. */
 body:has(.hero) [data-site-header] {
   border-bottom-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Load-in flash — the "lines arrive bright, then settle to grey" pass
+   --------------------------------------------------------------------------
+
+   Two throwaway layers, verticals and horizontals, each a copy of the grid in a
+   bright brand tint that fades to nothing. Splitting the axes and offsetting
+   them by 160ms is what produces the read of *parallel* lines sweeping in
+   rather than a single global flicker.
+
+   They live inside `.hero-grid`, so they inherit its drift and origin and stay
+   registered to the real lines. They also inherit `grid-in`'s opacity ramp,
+   which is fine — both are fading in at once.
+
+   `opacity: 0` is the BASE state and the animation is declared only under
+   `no-preference`. So a reduced-motion user gets no flash at all, with nothing
+   to override — a bright pulse across the viewport is precisely what 2.3.3 is
+   about.
+   -------------------------------------------------------------------------- */
+.hero-flash-v,
+.hero-flash-h {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* Brighter than the first attempt at 65%: the scrim below dims the middle of the
+   viewport deliberately, so the arrival has to be strong enough to read THROUGH
+   it or the whole effect is invisible where the eye actually is. */
+.hero-flash-v {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--brand-400) 90%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: var(--hero-tile) 100%;
+  /* Vertical lines grow DOWNWARD from the top edge. */
+  transform-origin: top;
+}
+
+.hero-flash-h {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--brand-400) 90%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 100% var(--hero-tile);
+  /* Horizontal lines grow RIGHTWARD from the left edge. */
+  transform-origin: left;
+}
+
+/* The lines DRAW themselves in — they do not simply fade up.
+
+   The previous version only ramped opacity, which is why a refresh looked like
+   the grid "was just there": a 400ms fade on a 1px line is not an event the eye
+   registers. Scaling is what makes it read as drawing.
+
+   Why `scale` is safe on a repeating gradient: vertical lines are uniform along
+   Y, so `scaleY` never moves their X positions — they stay registered to the
+   real grid while growing. Same for `scaleX` on the horizontals. And because
+   this is `transform`, it stays on the compositor; a mask wipe would repaint
+   every frame.
+
+   The scale finishes at 55% and the bright layer then fades out over the
+   remaining 45%, handing off to the resting grey grid underneath. */
+@keyframes draw-down {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes draw-right {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+/* The 180ms offset is the whole point: the verticals land, then the horizontals
+   cross them. Simultaneous, it is one flicker; staggered, it reads as a grid
+   being constructed. `ease-out` so the lines decelerate into place. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-flash-v {
+    animation: draw-down 2.1s ease-out both;
+  }
+
+  .hero-flash-h {
+    animation: draw-right 2.1s ease-out 0.18s both;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Scrim — the decoration recedes where the words are
+   --------------------------------------------------------------------------
+
+   The beam is genuinely BEHIND the text: `elementsFromPoint` at the headline's
+   centre returns the `h1` first. But z-order is not the same as legibility — a
+   lit line passing directly behind a headline still competes with it, and reads
+   as crossing over.
+
+   This is the standard fix, and it is why nextjs.org keeps its rules faint and
+   away from the text: pull the backdrop's energy down over the content area.
+   Built from `--background` so it darkens in dark mode and lightens in light
+   mode with no second rule.
+
+   Paint order is load-bearing and comes from DOM order, not z-index: grid and
+   beam are dimmed by this, and `.hero-aurora` sits AFTER it so the brand glow
+   behind the headline survives. Putting the scrim last would flatten the glow
+   too.
+   -------------------------------------------------------------------------- */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 42% 36% at 50% 47%,
+    color-mix(in oklab, var(--background) 88%, transparent) 0%,
+    color-mix(in oklab, var(--background) 55%, transparent) 45%,
+    transparent 74%
+  );
 }

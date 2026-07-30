@@ -259,7 +259,15 @@ export default async function HomePage({
               <div className="hero-beam">
                 <div className="hero-beam-band" />
               </div>
+              {/* Throwaway load-in layers: the axes are split and offset so the
+                  lines read as arriving in parallel rather than as one flicker. */}
+              <div className="hero-flash-v" />
+              <div className="hero-flash-h" />
             </div>
+            {/* Order matters and is not z-index: the scrim dims the grid and beam
+                behind the text, and the aurora sits AFTER it so the brand glow
+                behind the headline is not flattened too. */}
+            <div className="hero-scrim" />
             <div className="hero-aurora" />
           </div>
 

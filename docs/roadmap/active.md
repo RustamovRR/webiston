@@ -40,6 +40,8 @@ Branch `refactor/infrastructure`._
 | Hero copy | ⚠️ | Headline replaced: "Veb texnologiyalar dunyosiga teran nigoh" → "Dasturlashni o'z tilingizda o'rganing"; description 197 → 127 chars. **Owner's voice — confirm or revert** |
 | Header seam | ✅ | Phase 7's frosted bar treated the symptom. Root cause: the glow was anchored at `top: 0` — the exact strip the header covers — so the header was the one band WITHOUT the tint. Light moved down; hairline scoped off hero pages with `:has()` |
 | Hero grid | ✅ | `4rem` (64px, graph paper) → `clamp(7rem, 10vw, 14rem)`. nextjs.org spaces its rules ~500px |
+| Hero legibility | ✅ | "Beam looks like it's over the text" — z-order was already correct (`elementsFromPoint` → `H1` first). Perception, not a bug. Fixed with a `--background`-derived scrim; paint order `grid → scrim → aurora` keeps the glow |
+| Refresh animation | ✅ | Lines **draw** in on load — `scaleY`/`scaleX` from top/left, 180ms stagger, 2.1s. The first attempt only *faded* (invisible on a 1px line) and the scrim shipped in the same change was dimming it. Verified on a real load: caught at `scaleY(0)`, `state: running` |
 | Hero motion | ✅ | Drift was running all along but **invisible**: `--border` is 1.32:1, so the lines were. New `--hero-line` token + a beam masked TO the grid (`mask-composite: add`) that lights the lines as it passes. **Zero JS** — 0 framer-motion refs in the homepage HTML |
 | Missing i18n key | ✅ | `JwtDecoderPage.InputPanel.clear` added to both locales — the dev overlay's "1 Issue". Build `MISSING_MESSAGE` **2 → 0** |
 | Reduced motion | ✅ | The only `prefers-reduced-motion` block on the site belonged to **Sonner**; zero of our own animations were guarded. Now gated, verified in compiled CSS |
@@ -80,7 +82,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–9 shipped — **Phase 9: grid beam + `--hero-line`** |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–10b shipped — **10b: the arrival draws in.** Hero complete |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
