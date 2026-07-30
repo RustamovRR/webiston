@@ -133,9 +133,14 @@ reasoning are in `code-rules.md § 4` and `seo-performance.md § 2`.
 
 Other framework facts worth knowing before you change config:
 
-- `output: "standalone"` — the deploy artifact is self-contained. Note this makes
-  `next start` refuse to run (`⚠ "next start" does not work with "output:
-  standalone"`); serve the build with `node .next/standalone/server.js`.
+- `output: "standalone"` — the deploy artifact is self-contained. Two traps that
+  have already cost a wrong bug report:
+  1. `next start` **refuses to run** (`⚠ "next start" does not work with
+     "output: standalone"`) — it still serves, but say so before trusting it.
+  2. The standalone tree does **not** include `.next/static`, so a bare
+     `node .next/standalone/**/server.js` **404s every client chunk** and
+     nothing hydrates. Copy `.next/static` in first, or verify UI against
+     `next start` on a spare port instead.
 - `images.unoptimized: true` — Next's image optimizer is **off**; sizing and
   compression are your responsibility (`seo-performance.md § 4`).
 - `pageExtensions` includes `md`/`mdx`.

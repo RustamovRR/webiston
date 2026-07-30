@@ -1199,6 +1199,79 @@ surfaced it. Fixed, and the file now carries a warning not to do it again.
 
 ---
 
+## Phase 18b — `[x]` Self-review of Phase 18, ToC rail, image loading (2026-07-30)
+
+Owner asked for a senior review of Phase 18's own code, plus two specific items.
+
+### What the self-review found in my own work
+
+- `[x]` **The ToC active indicator was drawing a curved arc.** `border-l-2` on a
+  `rounded-md` link makes the border follow the radius, so the "you are here"
+  mark read as a stray teal bracket floating beside the text. Replaced with the
+  standard docs-rail pattern: the `ul` owns a continuous `border-l`, each row
+  sits on it with `-ml-px border-l-2` and **no radius**, and indentation is
+  `pl-3/6/9` rather than `ml-*` — a margin would push rows off the shared edge
+  and break the line.
+- `[x]` `Pagination` rendered an empty `<span />` as a grid placeholder that the
+  "next" card's `sm:col-start-2` already made unnecessary.
+- `[x]` `load.ts` wrapped a module type in `Awaited<>`, a no-op on a non-promise.
+
+### A false alarm I raised and then disproved — recorded deliberately
+
+I reported that the rail came up **empty after client-side navigation**. It does
+not. Two measurement faults produced that claim:
+
+1. The `output: "standalone"` server I was testing against **404s every client
+   chunk** — `.next/static` is not copied into the standalone tree (documented,
+   and on us). Nothing hydrated, so every client component looked broken.
+2. My probe matched `innerText.includes("Ushbu sahifada")` against an element
+   carrying `uppercase`, so it was comparing against `USHBU SAHIFADA`.
+
+Settled by experiment rather than argument: rebuilt **without** the `key`, served
+the normal build, navigated client-side — the rail updated correctly
+(`tocAfterNav` === `articleHeadings`, `stale: false`). The `key` is **kept**, but
+on honest grounds now stated at the call site: it is not fixing an observed bug,
+it removes an unstated dependency on Next currently remounting the subtree, and
+`cacheComponents` would break exactly that assumption because it preserves state
+across navigation via React `<Activity>`.
+
+Also corrected: I initially "fixed" this with a `[route]` effect dependency and a
+`biome-ignore`. Biome was right — nothing in the effect body reads the route, so
+the dependency was a lie. `key` expresses the actual intent.
+
+**Note for `architecture.md`:** `next start` refuses to run under `output:
+standalone`, and the standalone server needs `.next/static` copied in manually.
+Verify UI against `next start` on a spare port, or copy static first.
+
+### Images
+
+- `[x]` **Figures now have a loading state.** The box was always the right size
+  (`getPublicImageSize` measures on the server; CLS is 0), but until the bytes
+  arrived it was an empty hole in the prose — and `public/` is **26 MB** across
+  106 files, with one chapter (`modeling`) pulling **1,549 KB** of PNG across 6
+  figures. A `bg-muted` skeleton with the existing `animate-shimmer` now fills
+  the reserved box and the image fades in over 500ms.
+  `imgRef.current.complete` is checked on mount because a cached figure paints
+  before React attaches `onLoad`, which would strand the skeleton over a picture
+  that is already visible; `onError` clears it too.
+- **Deliberately NOT `placeholder="blur"`.** Verified in
+  `next/dist/shared/lib/get-img-props.js`: for a string `src`, `placeholder="blur"`
+  **throws** without `blurDataURL`, and generating 106 real LQIPs needs `sharp`
+  plus a build step. `blurDataURL` becomes a CSS `background-image`, so it *would*
+  work despite `images.unoptimized` — it is a good next step, but it adds a
+  dependency and belongs in a decision, not a drive-by.
+
+**Measured answer to "are the images in the bundle?" — no.** Zero base64-inlined
+rasters in any chunk; `.next/static/media` (1.5 MB) is **fonts only**. `public/`
+is served as static files, one request per figure, only on the page that uses it.
+Bundle size and JS payload are unaffected. The real cost is per-page bytes, and
+that is the `images.unoptimized: true` decision still open in `active.md`.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

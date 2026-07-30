@@ -71,7 +71,11 @@ export function Pagination({
       aria-label="Bo'limlar orasida o'tish"
       className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2"
     >
-      {prevPage ? (
+      {/* No empty placeholder cell. The "next" card below carries
+          `sm:col-start-2`, so it lands in the right-hand column on its own —
+          the `<span />` the first draft rendered here was an extra DOM node
+          doing nothing. */}
+      {prevPage && (
         <Link href={prevPage.href} prefetch className={cardBase}>
           <span className={kicker}>
             <ChevronLeftIcon
@@ -84,8 +88,6 @@ export function Pagination({
             {prevPage.title}
           </span>
         </Link>
-      ) : (
-        <span />
       )}
 
       {nextPage && (

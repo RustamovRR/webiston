@@ -417,7 +417,15 @@ export default async function RootLayout({
       {/* .variable (not .className) — it defines --font-inter, which
           --font-sans consumes; `font-sans` is applied on body in globals.css. */}
       <body className={inter.variable}>
-        <NextTopLoader color="#3b82f6" height={2} showSpinner={false} />
+        {/* `var(--primary)`, not `#3b82f6`. That hex is Tailwind's `blue-500`
+            and it is NOT our brand hue (217°) — the one piece of chrome that
+            appears on every single navigation was the one piece painted in
+            someone else's blue.
+            The library injects `background:${color}` and
+            `box-shadow: 0 0 10px ${color}, 0 0 5px ${color}` into a <style>
+            tag, so a custom property resolves normally and the bar now follows
+            the token through both schemes with no second value to maintain. */}
+        <NextTopLoader color="var(--primary)" height={2} showSpinner={false} />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

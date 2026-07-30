@@ -18,9 +18,11 @@
  * Same intent signal as before (`onPointerEnter`/`onFocus`), so by the time the
  * dialog opens the chunk is usually already there.
  */
-let pending: Promise<
-  Awaited<typeof import("./flexsearch")>["searchEngine"]
-> | null = null
+// `typeof import(...)` is already the module's type; the `Awaited<>` the first
+// draft wrapped it in was a no-op on a non-promise.
+type SearchEngine = typeof import("./flexsearch")["searchEngine"]
+
+let pending: Promise<SearchEngine> | null = null
 
 export function loadSearchEngine() {
   pending ??= import("./flexsearch").then((m) => m.searchEngine)

@@ -112,7 +112,16 @@ export default function TutorialLayout({
         {/* `pl-3` matches the left rail's own row inset exactly, so the two
             rails are inset the same amount from their respective page edges. */}
         <div className="h-full py-6 pr-4 pl-3">
-          <TableOfContents slug={slug} />
+          {/* Keyed by route because the ToC's state IS per-route.
+              Honest scope: this is NOT fixing an observed bug — measured on a
+              production build, the rail updates correctly across client-side
+              navigation without it, because Next currently remounts this
+              subtree. It is here because that is an unstated dependency on
+              framework behaviour, and `cacheComponents` (stable in 16.2) would
+              change it: it preserves component state across navigation via
+              React `<Activity>`, at which point a mount-only effect would keep
+              serving the previous chapter's headings. */}
+          <TableOfContents key={slug.join("/")} slug={slug} />
         </div>
       </nav>
     </div>
