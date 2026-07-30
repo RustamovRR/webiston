@@ -271,9 +271,16 @@ export default async function BooksPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
 
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="mb-4 text-3xl font-bold">Dasturlash Kitoblari</h1>
+        <div className="mx-auto w-full max-w-[1536px] px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            {/* Same identity system as the homepage: accent pixel + mono path. */}
+            <div className="mb-4 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em]">
+              <span className="size-[5px] rounded-[1.5px] bg-primary" />
+              <span className="text-foreground">/books</span>
+            </div>
+            <h1 className="mb-4 font-bold text-4xl tracking-[-0.03em]">
+              Dasturlash Kitoblari
+            </h1>
             <p className="text-muted-foreground text-lg">
               Dunyoning yetakchi mutaxassislari tomonidan yozilgan dasturlash
               kitoblarining professional o'zbekcha tarjimalari. Zamonaviy
@@ -320,7 +327,11 @@ export default async function BooksPage() {
                     href={`/books/${tutorial?.id}`}
                     className="group block h-full"
                   >
-                    <Card className="relative flex h-full flex-col overflow-hidden border-border bg-card/80 transition-all duration-200 group-hover:border-border group-hover:bg-card group-hover:shadow-xl">
+                    {/* Homepage card language: strong boundary, depth
+                        gradient, smooth lift. Plain `transition` on purpose —
+                        Tailwind v4's translate utilities set the `translate`
+                        property, which transform-only lists do not cover. */}
+                    <Card className="relative flex h-full flex-col overflow-hidden rounded-lg border-border-strong bg-gradient-to-b from-card to-card/60 transition duration-300 ease-out group-hover:-translate-y-1 group-hover:border-input group-hover:from-accent group-hover:to-accent/70 group-hover:shadow-lg">
                       <div className="relative w-full pt-[50%]">
                         {tutorial?.image && (
                           <Image
@@ -340,8 +351,9 @@ export default async function BooksPage() {
                           {tutorial?.description}
                         </p>
                         <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
-                          <div className="text-sm text-muted-foreground">
-                            📚 {tutorial?.navigation?.length || 0} ta bo'lim
+                          <div className="font-mono text-[11px] text-muted-foreground">
+                            {tutorial?.navigation?.length || 0} bo'lim ·{" "}
+                            {tutorial?.id}
                           </div>
                           <div className="inline-block rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
                             Bepul
@@ -411,7 +423,7 @@ export default async function BooksPage() {
                 Yangiliklar uchun bizni kuzatib boring:
                 <a
                   href="https://twitter.com/webiston_uz"
-                  className="ml-1 text-blue-600 hover:underline"
+                  className="ml-1 text-primary transition-colors duration-300 hover:underline"
                 >
                   @webiston_uz
                 </a>
@@ -435,7 +447,7 @@ export default async function BooksPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+            className="inline-flex items-center rounded-lg bg-foreground px-4 py-2 text-background transition-colors duration-300 hover:bg-foreground/90"
           >
             Bosh sahifaga qaytish
           </Link>

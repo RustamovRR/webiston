@@ -652,6 +652,202 @@ implementation, not to re-explain it.
 
 ---
 
+## Phase 11 — `[x]` The brand exploration adopted, selectively (2026-07-30)
+
+The owner had a full redesign made a week earlier ("Webiston.uz UIUX redesign",
+Claude-designed, 16 files + brand boards). This phase ports what earns its
+place and records what was declined.
+
+**Adopted:**
+
+- `[x]` **Logo: the "Terminal" mark** (direction 02 of 5, over Pishtoq/arch and
+  Ochiq kitob/book) — the final `Webiston.dc.html` header already used it, and
+  it is the only direction that says *developer*: a bold `w` with a cursor
+  pixel, wordmark `webiston.uz` whose i-dot is the same accent square. Rebuilt
+  as **pure markup** in `Logo.tsx`: zero image requests (the old PNG was
+  priority-loaded on every page), crisp at any DPI, accent follows `--primary`
+  through both schemes. The reference's dotless-`ı` trick was dropped — a
+  normal `i` with the dot covered keeps copy/search/screen-readers sane.
+  `/logo.png` stays canonical for share cards. **Favicon still shows the old
+  mark — pending, needs image generation.**
+- `[x]` **Header↔hero alignment.** The hero used `px-16` while the header used
+  `px-4/6/8`, so the headline started ~32px right of the logo and the surfaces
+  read as unrelated — the owner spotted it from a screenshot. Page wrapper now
+  shares the header's exact padding scale and the hero shares its `max-w-[1536px]`.
+  Verified: logo left **32px** = h1 left **32px**.
+- `[x]` **The palette is now a live loop** (was: one query typed once). Types
+  "react" → 3 real book rows → deletes → types "yarat" (uz) / "gener" (en) → 3
+  real generator tools → repeats. One 14s CSS clock, two spans on ONE keyframe
+  track (the second delayed 7s, `fill both` holding it empty), result sets
+  crossfading on the same clock. Still zero JS, still prerendered. All queries
+  are 5 chars by construction ("react"/"yarat"/"gener") so one `steps(5)`
+  cadence serves every segment — recorded as a constraint in the component.
+- `[x]` **Traffic lights restored via `MACOS_DOTS`.** Phase 10's removal argued
+  "our UI has no window chrome" — wrong about our own codebase: the tool panels
+  already draw macOS dots from `src/constants/ui-constants.ts:74`. Reusing the
+  constant also keeps the token gate green (0 new hex).
+- `[x]` **Animated gradient on the headline accent** ("teran nigoh") — a slow
+  7s pan across a brand ramp, `background-size: 220%` so hue drifts without a
+  hard edge crossing glyphs. Reduced motion: static gradient.
+- `[x]` **Rain replaces the diagonal beam.** Both lit grid lines — two systems
+  doing one job. The rain (3 streaks falling along real column lines, masked to
+  vertical-line pixels, nested in the drifting grid for registration) is
+  continuous ambience where the beam was a 16s event, and it matches the
+  reference's identity. Periods 9.5/13/16.5s — deliberately non-harmonic so the
+  streaks never fall in visible unison.
+- `[x]` **Copy reverted to the owner's original.** The palette now answers
+  "what is this site" visually, so the headline no longer has to — which was
+  the entire case for my rewrite. `titleLead`/`titleAccent` split so the accent
+  is a translatable unit, not a substring.
+- `[x]` **Outline CTA got a surface** (`bg-background/60 backdrop-blur-sm`) —
+  at full transparency the hero grid ran straight through the label.
+- `[x]` **Scrim tracks the text column on lg** (ellipse at 27% x) — centred, it
+  was dimming the empty middle while the headline sat over live grid.
+
+**Declined, with reasons** (same standard as the Aceternity review):
+mousemove parallax (client JS per frame, dead on touch), the marquee, the hard
+infinite caret blink (ours fades 1↔0.15 — and the finite-caret rule from
+Phase 9 was consciously reversed: next to *live* typing a dead caret reads as
+broken), Bricolage Grotesque (a second font for a logo), `#5b8cff` accent (the
+reference brands a different hue; owner confirmed ours stays), and the
+reference's fabricated palette results ("parol yaratuvchi" query showing AI
+Engineering chapters — ours only ever shows true matches).
+
+**Broken in passing and fixed:** the rain rewrite swallowed `grid-drift` +
+`grid-in` (caught by grep before any visual check — the keyframes sat between
+the beam block and the aurora); restored verbatim.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0` · `build 0` · **269 prerendered HTML** ·
+0 `MISSING_MESSAGE` · `logo-100.png` gone from the homepage HTML. Verified in
+both schemes; loop verified at t=10s (query B "yarat" typed, results B visible,
+A at zero).
+
+---
+
+## Phase 12 — `[x]` Hero micro-polish from owner review (2026-07-30)
+
+Five observations from the owner's screenshots, each measured before touching:
+
+- `[x]` **Title→description gap was 20px under tight leading** — descenders
+  nearly touched the paragraph. Now 28px measured, and `leading-[1.02]` eased
+  to `1.06` (it existed to serve the old 3-line centred layout).
+- `[x]` **"Too bright" was WEIGHT, not colour.** The gradient tops out at
+  `--foreground` either way; `font-extrabold` (800) at 64px is what shouted.
+  Now `font-bold` (700) — the reference itself uses 600.
+- `[x]` **The two-edge gulf was the fr-unit stretch.** `1.05fr/.95fr` columns
+  grow with the container, so at wide viewports the text hugged the left edge,
+  the palette the right, ~230px of dead middle. Now
+  `minmax(0,680px)/minmax(0,560px)` — capped columns, seam measured **96px**,
+  spare width falls right where the backdrop fills it, and the left edge stays
+  on the logo's gutter (32px = 32px re-verified).
+- `[x]` **The palette floats** — ±6px, 9s, the one idea kept from the
+  reference's `wbFloat`. Period chosen off every other clock on the page
+  (7/14/21/48s) so nothing locks into step. Reduced motion: static.
+- `[x]` **The loop grew to THREE queries** (owner asked for more variety):
+  `react` → books · `yarat`/`gener` → generators · `o'gir`/`conve` →
+  converters. The third pair was verified honest before shipping: it matches
+  exactly Lotin-Kirill/Base64/Rang O'giruvchi (uz) and the three Converter
+  titles (en), and both are 5 chars so the `steps(5)` cadence holds. CSS clock
+  went 14s→21s; spans/sets are addressed by `:nth-child`, so a fourth query is
+  one delay rule + a longer duration, not a component change.
+
+**Gate:** all 7 green · build 0 · **269 prerendered HTML** · 0 MISSING_MESSAGE ·
+loop pinned at t=17.5s shows segment 3 only (`o'gir` typed, converters visible,
+others at zero) · both schemes screenshotted.
+
+> Next per the owner: **the card sections below the hero.**
+
+---
+
+## Phase 13 — `[x]` The hover bug's root cause + motion pacing (2026-07-30)
+
+Owner: "cards jump instantly on hover" and "the title snaps in on refresh."
+Both were real, and both were MY defects from earlier phases.
+
+- `[x]` **Hover was dead because of `animation-fill-mode: both`.** A finished
+  animation in its fill phase keeps applying its keyframe values at ANIMATION
+  priority, which overrides transition-driven values of the same property. So
+  `.reveal`'s retained `transform: none` sat on every card forever and
+  `hover:-translate-y-*` never moved — background and shadow transitioned,
+  transform stayed frozen: the "instant jump" feel. Fix: `backwards` fill —
+  before the range it holds the hidden `from`; after completion nothing
+  applies, and the natural state equals the `to` keyframe, so release is
+  seamless. **Rule for this codebase: never `both`/`forwards` fill on an
+  animation whose properties must stay interactive afterwards.**
+- `[x]` **The h1 snapped because it lost its `--i` in the two-column
+  restructure** — delay 0, arrived with the eyebrow. Restored slot 1; palette
+  moved to slot 4 (it entered at 80ms and read as a pop). Whole entrance
+  slowed 0.6s/80ms → **0.8s/110ms**, travel 1.25rem → 1.5rem.
+- `[x]` **Aurora moved but imperceptibly** (±6% over 34s ≈ 4px/s). Now ±12%
+  on 26s/38s — ambient but visibly alive within ten seconds.
+- `[x]` **Cards + dividers polished:** depth gradient `from-card to-card/60`
+  (the reference's one good card idea, tokenized), p-5→p-4, hover lift −1,
+  border-color in the transition set, 300ms. Dividers gained the logo's accent
+  pixel + counts ("Kitoblar · 03"). Book headers gained a mono meta row
+  ("11 bo'lim · fluent-react") and a colour-transitioned title link.
+- `[x]` **Reference's lower page evaluated and declined as a structure.** It is
+  a marketing landing ("nega webiston" bento, $0 card, ONE featured book, CTA
+  band) — conversion grammar for first-time visitors. Ours is a library page:
+  all three books with real chapters serves the returning reader, which is the
+  actual audience. Its two good details (card depth, mono kickers) were taken.
+- `[x]` **`@media print` guard.** Discovered via a pane whose view timelines
+  never tick: with `backwards` fill, unticked timelines hold content at
+  opacity 0. Print is the real-world case — scroll timelines do not run on
+  paper, so every unrevealed card would print blank. `animation: none` under
+  print for `.reveal`/`.rise`.
+
+**Verification note.** The browser pane's ViewTimeline is inert (frozen at one
+value across all scroll positions — geometry correct, ticking absent), so
+scroll-reveal and the released hover cannot be demonstrated there. Verified
+instead in the compiled CSS (`backwards` present in the `.reveal` rule) and by
+the spec mechanism; the owner's own screenshots show reveals completing
+correctly in real Chrome.
+
+**Gate:** all 7 green · build 0 · 269 prerendered HTML · 0 MISSING_MESSAGE.
+
+---
+
+## Phase 14 — `[x]` The REAL hover bug, /tools, /books (2026-07-30)
+
+Owner reported the hover jump a SECOND time — Phase 13's fill-mode fix was a
+real bug but not this bug. The actual cause, proven in compiled CSS:
+
+- `[x]` **Tailwind v4 compiles `-translate-y-*` to the `translate` PROPERTY,
+  not `transform`.** Verified: `.hover\:-translate-y-1:hover { translate: … }`.
+  My hand-written `transition-[transform,box-shadow,…]` lists therefore never
+  covered the lift — the value changed with no transition at all: teleport.
+  Fixed at both sites (HomeSections `cardBase`, `SimpleCard`) with the STOCK
+  `transition` utility, whose v4 property list includes translate/scale/rotate,
+  colors, shadow AND the gradient custom properties — which also enabled a
+  smooth `hover:from-accent hover:to-accent/70` depth-gradient swap.
+  **Rule: never hand-write a transition property list for Tailwind translate
+  utilities; use `transition` / `transition-transform` (v4 covers `translate`).**
+
+- `[x]` **/tools page brought into the design system** — it was the old
+  language wholesale: zinc/blue/green palette classes, a pulsing blue Sparkles,
+  AuroraText, GradientTabs, `hover:scale-[1.02] transition-all`. Now: mono
+  kicker (`▪ /tools · 17`), chip filters with icons + LIVE per-category counts
+  (the reference's tools-page idea), tokenized audience chips, homepage card
+  language with smooth lift, tokenized search/stats/empty-state.
+  framer-motion KEPT — `AnimatePresence mode="popLayout"` for filter
+  enter/exit is real interactivity, the legitimate use of the dependency.
+  Token gate: **−96 hardcoded hits vs baseline** (was −18 before this phase).
+
+- `[x]` **/books page aligned** — cards got the strong boundary + depth
+  gradient + smooth lift (was weak `border-border`, no motion), mono kicker
+  `▪ /books`, mono meta (`31 bo'lim · ai-engineering`), two stray `blue-600`
+  links → tokens, container aligned to the site gutter.
+
+- Reference `Tools.dc.html`/`Books.dc.html` mined: took the category-count
+  chips; left the per-category colour system (would add 4 accent hues against
+  ADR'd single-accent brand) and the rest of its inline-styled chrome.
+
+**Gate:** all 7 green · build 0 · 269 prerendered HTML · 0 MISSING_MESSAGE ·
+tokens **−96**. /tools and /books verified in browser (screenshots, dark).
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

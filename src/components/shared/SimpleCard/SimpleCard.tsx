@@ -33,9 +33,10 @@ const SimpleCard: FC<IProps> = ({
     // that IDENTIFIES an interactive component, and this is that boundary.
     // `--border` stays the decorative token for rules and dividers.
     "group relative select-none overflow-hidden rounded-lg border border-border-strong bg-card",
-    // Transition only what is composited. The old rule was `transition-all`,
-    // which also animates colour, shadow, border AND size on every hover.
-    "transition-[transform,box-shadow,background-color] duration-200 ease-out",
+    // Plain `transition`: Tailwind v4 compiles `-translate-y-*` to the
+    // `translate` property, which a hand-written `transition-[transform,…]`
+    // list does not cover — the lift was changing with no transition at all.
+    "transition duration-300 ease-out",
     "hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg",
     // The card is a link, so it must show a focus ring — hover-only feedback
     // leaves keyboard users with no indication of where they are.

@@ -1,12 +1,9 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
-import { Search, Sparkles } from "lucide-react"
+import { Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AuroraText, GradientTabs } from "@/components/ui"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
   AUDIENCE_FILTERS,
@@ -64,55 +61,43 @@ const ToolsMainPage = () => {
     return tCategories(`${category}.title`)
   }
 
-  const getAudienceColor = (audience: string) => {
-    return audience === "developer"
-      ? "bg-blue-500/20 text-blue-400 dark:bg-blue-500/20 dark:text-blue-400"
-      : "bg-green-500/20 text-green-400 dark:bg-green-500/20 dark:text-green-400"
-  }
+  // Token pairs, not blue/green palette classes: developer reads in the brand
+  // accent, general in the neutral chip — both scheme-proof with no dark:.
+  const getAudienceColor = (audience: string) =>
+    audience === "developer"
+      ? "bg-primary/12 text-primary"
+      : "bg-muted text-muted-foreground"
 
+  // The homepage card language verbatim: border-strong boundary, depth
+  // gradient, PLAIN `transition` (Tailwind v4's `-translate-y-*` is the
+  // `translate` property — a hand-written transform-only list leaves the lift
+  // untransitioned), mono category meta, brand-tinted icon chip.
   const ToolCard = ({ tool }: { tool: Tool }) => (
-    <Link href={tool.href} className="group">
-      <Card className="relative h-full border-zinc-200 bg-white/80 transition-all duration-200 hover:scale-[1.02] hover:border-zinc-300 hover:bg-white hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/80 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/80">
-        <div className="p-6">
-          {/* Audience badge - top left */}
-          <div className="absolute top-4 left-4">
-            <Badge
-              variant="secondary"
-              className={`border-0 text-xs ${getAudienceColor(tool.audience)}`}
-            >
-              {tool.audience === "developer"
-                ? tMain("audienceDeveloper")
-                : tMain("audienceGeneral")}
-            </Badge>
-          </div>
-
-          {/* Category badge - top right */}
-          <div className="absolute top-4 right-4">
-            <Badge
-              variant="secondary"
-              className="border-zinc-300 bg-zinc-100/80 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
-            >
-              {getCategoryLabel(tool.category)}
-            </Badge>
-          </div>
-
-          <div className="mt-6 mb-4 flex items-center gap-3">
-            <div
-              className={`flex h-12 w-12 items-center justify-center rounded-lg ${tool.color} opacity-80 transition-opacity group-hover:opacity-100`}
-            >
-              <tool.icon size={24} className="dark:text-white" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg leading-tight font-semibold text-zinc-900 transition-colors group-hover:text-zinc-800 dark:text-zinc-100 dark:group-hover:text-white">
-                {tTools(`${tool.tKey}.title`)}
-              </h3>
-            </div>
-          </div>
-          <p className="line-clamp-2 text-sm text-zinc-600 transition-colors group-hover:text-zinc-500 dark:text-zinc-400 dark:group-hover:text-zinc-300">
-            {tTools(`${tool.tKey}.description`)}
-          </p>
-        </div>
-      </Card>
+    <Link
+      href={tool.href}
+      className="group flex h-full flex-col rounded-lg border border-border-strong bg-gradient-to-b from-card to-card/60 p-4 transition duration-300 ease-out hover:-translate-y-1 hover:border-input hover:from-accent hover:to-accent/70 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+    >
+      <div className="flex items-start justify-between">
+        <span className="flex size-10 items-center justify-center rounded-md bg-primary/12 text-primary">
+          <tool.icon className="size-5" />
+        </span>
+        <span
+          className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] ${getAudienceColor(tool.audience)}`}
+        >
+          {tool.audience === "developer"
+            ? tMain("audienceDeveloper")
+            : tMain("audienceGeneral")}
+        </span>
+      </div>
+      <h3 className="mt-3 font-semibold text-base text-foreground leading-snug">
+        {tTools(`${tool.tKey}.title`)}
+      </h3>
+      <p className="mt-1.5 line-clamp-2 text-pretty text-muted-foreground text-sm leading-relaxed">
+        {tTools(`${tool.tKey}.description`)}
+      </p>
+      <span className="mt-3 font-mono text-[11px] text-muted-foreground">
+        {getCategoryLabel(tool.category)}
+      </span>
     </Link>
   )
 
@@ -129,13 +114,18 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.05 }}
       >
-        <div className="mb-4 flex items-center justify-center gap-2">
-          <Sparkles className="h-8 w-8 animate-pulse text-blue-400" />
-          <h1 className="relative text-4xl font-bold">
-            <AuroraText>{tMain("title")}</AuroraText>
-          </h1>
+        {/* Same identity system as the homepage dividers: accent pixel +
+            mono label + count. Replaces a pulsing blue Sparkles icon and the
+            AuroraText gradient — both off-token, neither ours. */}
+        <div className="mb-4 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em]">
+          <span className="size-[5px] rounded-[1.5px] bg-primary" />
+          <span className="text-foreground">/tools</span>
+          <span className="text-muted-foreground">· {TOOLS_LIST.length}</span>
         </div>
-        <p className="mx-auto max-w-2xl text-center text-lg text-zinc-600 dark:text-zinc-400">
+        <h1 className="text-center font-bold text-4xl text-foreground tracking-[-0.03em]">
+          {tMain("title")}
+        </h1>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-lg text-muted-foreground">
           {tMain("description")}
         </p>
       </motion.div>
@@ -147,23 +137,39 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
       >
-        <h3 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+        <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByCategory")}
         </h3>
-        <div className="flex justify-center">
-          <GradientTabs
-            options={FILTER_OPTIONS.map((option) => ({
-              value: option.value,
-              label: tFilters(
-                option.value === "all" ? "allTools" : option.value
-              ),
-              icon: <option.icon size={16} />
-            }))}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            toolCategory="utilities"
-            size="md"
-          />
+        {/* Chip row with live counts (the reference's tools page idea). The
+            selected chip is brand-tinted, not a gradient — GradientTabs was the
+            old language and the only gradient control on the page. */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {FILTER_OPTIONS.map((option) => {
+            const count =
+              option.value === "all"
+                ? TOOLS_LIST.length
+                : TOOLS_LIST.filter((tool) => tool.category === option.value)
+                    .length
+            const active = selectedCategory === option.value
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setSelectedCategory(option.value)}
+                className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
+                  active
+                    ? "border-primary/40 bg-primary/12 text-primary"
+                    : "border-border-strong bg-card/60 text-muted-foreground hover:border-input hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                <option.icon className="size-4" />
+                {tFilters(option.value === "all" ? "allTools" : option.value)}
+                <span className="font-mono text-[10px] opacity-70">
+                  {count}
+                </span>
+              </button>
+            )
+          })}
         </div>
       </motion.div>
 
@@ -174,23 +180,27 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.15 }}
       >
-        <h3 className="mb-3 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+        <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByAudience")}
         </h3>
         <div className="flex justify-center gap-2">
-          {AUDIENCE_FILTERS.map((filter) => (
-            <button
-              key={filter.value}
-              onClick={() => setSelectedAudience(filter.value)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                selectedAudience === filter.value
-                  ? "bg-blue-600 text-white dark:bg-blue-600 dark:text-white"
-                  : "bg-zinc-200 text-zinc-700 hover:bg-zinc-300 hover:text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
-              }`}
-            >
-              {tFilters(filter.value)}
-            </button>
-          ))}
+          {AUDIENCE_FILTERS.map((filter) => {
+            const active = selectedAudience === filter.value
+            return (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => setSelectedAudience(filter.value)}
+                className={`rounded-full border px-3.5 py-1.5 text-sm transition duration-300 ease-out ${
+                  active
+                    ? "border-primary/40 bg-primary/12 text-primary"
+                    : "border-border-strong bg-card/60 text-muted-foreground hover:border-input hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                {tFilters(filter.value)}
+              </button>
+            )
+          })}
         </div>
       </motion.div>
 
@@ -202,16 +212,13 @@ const ToolsMainPage = () => {
         transition={{ duration: 0.4, delay: 0.2 }}
       >
         <div className="relative mx-auto max-w-md">
-          <Search
-            size={20}
-            className="absolute top-1/2 left-3 -translate-y-1/2 transform text-zinc-500 dark:text-zinc-400"
-          />
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 size-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder={tMain("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="border-zinc-300 bg-white/50 pl-10 text-zinc-900 placeholder:text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+            className="border-border-strong bg-card/60 pl-10 transition-colors duration-300 focus-visible:border-input"
           />
         </div>
       </motion.div>
@@ -223,7 +230,7 @@ const ToolsMainPage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.25 }}
       >
-        <p className="text-sm text-zinc-500 dark:text-zinc-500">
+        <p className="font-mono text-muted-foreground text-xs">
           {tMain("resultsFound", { count: filteredTools.length })}
         </p>
       </motion.div>
@@ -242,10 +249,10 @@ const ToolsMainPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="text-lg text-zinc-600 dark:text-zinc-400">
+            <p className="text-lg text-muted-foreground">
               {tMain("noResults")}
             </p>
-            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-500">
+            <p className="mt-2 text-muted-foreground/70 text-sm">
               {tMain("noResultsHint")}
             </p>
           </motion.div>
@@ -310,13 +317,13 @@ const ToolsMainPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.5 }}
               >
-                <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+                <div className="font-bold text-3xl text-foreground tabular-nums">
                   {TOOL_CATEGORIES.reduce(
                     (acc, cat) => acc + cat.tools.length,
                     0
                   )}
                 </div>
-                <div className="text-zinc-600 dark:text-zinc-400">
+                <div className="text-muted-foreground text-sm">
                   {tMain("totalTools")}
                 </div>
               </motion.div>
@@ -325,10 +332,10 @@ const ToolsMainPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.6 }}
               >
-                <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+                <div className="font-bold text-3xl text-foreground tabular-nums">
                   {TOOL_CATEGORIES.length}
                 </div>
-                <div className="text-zinc-600 dark:text-zinc-400">
+                <div className="text-muted-foreground text-sm">
                   {tMain("categories")}
                 </div>
               </motion.div>
@@ -337,14 +344,14 @@ const ToolsMainPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.7 }}
               >
-                <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+                <div className="font-bold text-3xl text-foreground tabular-nums">
                   {
                     TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter(
                       (tool) => tool.audience === "general"
                     ).length
                   }
                 </div>
-                <div className="text-zinc-600 dark:text-zinc-400">
+                <div className="text-muted-foreground text-sm">
                   {tMain("generalTools")}
                 </div>
               </motion.div>
@@ -353,14 +360,14 @@ const ToolsMainPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.8 }}
               >
-                <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+                <div className="font-bold text-3xl text-foreground tabular-nums">
                   {
                     TOOL_CATEGORIES.flatMap((cat) => cat.tools).filter(
                       (tool) => tool.audience === "developer"
                     ).length
                   }
                 </div>
-                <div className="text-zinc-600 dark:text-zinc-400">
+                <div className="text-muted-foreground text-sm">
                   {tMain("developerTools")}
                 </div>
               </motion.div>

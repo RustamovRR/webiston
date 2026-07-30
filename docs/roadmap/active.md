@@ -37,7 +37,8 @@ Branch `refactor/infrastructure`._
 | `pnpm contrast` (again) | ✅ | **Was vacuous on the one token that mattered.** `--border` absent from `PAIRS` *and* unparseable (alpha) → would have `SKIP`ped. Gate now composites alpha in gamma-encoded sRGB. **32 → 36 pairs** |
 | Homepage | ✅ | Search overlap **−25px → +8px gap**. nextjs.org motif (180 lines, ~4s unguarded motion) → drifting grid + CSS `view()` reveal, **zero JS**. 8 junk classes were shipping in the `<h1>`. Cards had **no background** (alpha 0). Header seam fixed via a frosted bar after a scroll-driven fade measured **inert** (`timelineProgress: 0%` at every scrollY) |
 | Light-mode CTA | ✅ | The hero's primary button was **a white pill on a white page** — `ButtonLink` pinned `bg-white text-black` in both schemes. `bg-foreground text-background` flips together: **17.4:1 / 18.7:1** |
-| Hero copy | ⚠️ | Headline replaced: "Veb texnologiyalar dunyosiga teran nigoh" → "Dasturlashni o'z tilingizda o'rganing"; description 197 → 127 chars. **Owner's voice — confirm or revert** |
+| Hero copy | ✅ | **Reverted to the owner's original** — the palette visual now answers "what is this site", which was the whole case for the rewrite. Split into `titleLead`/`titleAccent` |
+| Logo | ✅ | "Terminal" mark from the brand exploration, pure markup — PNG request gone from every page. **Favicon still old — needs image generation** |
 | Header seam | ✅ | Phase 7's frosted bar treated the symptom. Root cause: the glow was anchored at `top: 0` — the exact strip the header covers — so the header was the one band WITHOUT the tint. Light moved down; hairline scoped off hero pages with `:has()` |
 | Hero grid | ✅ | `4rem` (64px, graph paper) → `clamp(7rem, 10vw, 14rem)`. nextjs.org spaces its rules ~500px |
 | Hero legibility | ✅ | "Beam looks like it's over the text" — z-order was already correct (`elementsFromPoint` → `H1` first). Perception, not a bug. Fixed with a `--background`-derived scrim; paint order `grid → scrim → aurora` keeps the glow |
@@ -82,7 +83,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–10b shipped — **10b: the arrival draws in.** Hero complete |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–14 shipped — homepage + **/tools + /books** in one language. 14: the REAL hover bug (v4 `translate` property vs transform-only transition lists), tools page de-palettized (**−96 hits**) |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |

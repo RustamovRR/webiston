@@ -5,9 +5,18 @@
       "description": "Dasturlashni o'rganish uchun zamonaviy platforma. O'zbek va ingliz tillarida React bo'yicha yuqori sifatli, bepul kurslar va dasturchilar uchun foydali vositalar.",
       "keywords": "bepul kurslar, dasturlash, React, JavaScript, dasturchi vositalari, kod o'rganish, o'zbek IT, bepul ta'lim, дастурлаш, бесплатные курсы"
     },
-    "title": "Dasturlashni o'z tilingizda o'rganing",
-    "description": "React, JavaScript va AI muhandisligi bo'yicha fundamental kitoblar — to'liq o'zbek tilida. Bepul, reklamasiz va har doim ochiq.",
-    "eyebrow": "Bepul · O'zbek tilida · Ochiq manba",
+    "titleLead": "Veb texnologiyalar dunyosiga",
+    "titleAccent": "teran nigoh",
+    "description": "Bepul, yuqori sifatli kitoblar va dasturchilar uchun kundalik vositalar — React, JavaScript va sun'iy intellektgacha. Bilim olish uchun barcha resurslar bir joyda.",
+    "eyebrowBadge": "Yangi",
+    "eyebrowText": "AI Engineering kitobi — o'zbek tilida",
+    "palette": {
+      "label": "Kitoblar",
+      "hints": "↑↓ tanlash · ⏎ ochish · esc yopish",
+      "labelTools": "Vositalar",
+      "queryTools": "yarat",
+      "queryConverters": "o'gir"
+    },
     "stats": {
       "chapters": "bo'lim",
       "books": "kitob",
@@ -21,7 +30,11 @@
     "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
     "jsSectionTitle": "JavaScript: To'liq qo'llanma",
     "jsSectionDescription": "JavaScript bo‘yicha klassik asarning to‘liq o‘zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg‘or xususiyatlarigacha — barchasi bitta qo‘llanmada",
-    "aiSectionDescription": "SI muhandisligi bo‘yicha keng qamrovli qo‘llanma. Asosiy modellardan tortib prompt muhandisligi, baholash metodologiyalari va zamonaviy SI texnologiyalarigacha — barchasini professional darajada o‘zlashtiring. Bu qo‘llanma sizga sun’iy intellekt bilan qurish uchun to‘liq va ishonchli manba bo‘lib xizmat qiladi"
+    "aiSectionDescription": "SI muhandisligi bo‘yicha keng qamrovli qo‘llanma. Asosiy modellardan tortib prompt muhandisligi, baholash metodologiyalari va zamonaviy SI texnologiyalarigacha — barchasini professional darajada o‘zlashtiring. Bu qo‘llanma sizga sun’iy intellekt bilan qurish uchun to‘liq va ishonchli manba bo‘lib xizmat qiladi",
+    "sectionBooks": "Kitoblar",
+    "sectionTools": "Foydali vositalar",
+    "allChapters": "Barcha bo'limlar",
+    "allTools": "Barcha vositalar"
   },
   "Metadata": {
     "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
@@ -71,6 +84,8 @@
     "utilities": "Yordamchilar"
   },
   "Footer": {
-    "allRightsReserved": "Barcha huquqlar himoyalangan."
+    "allRightsReserved": "Barcha huquqlar himoyalangan.",
+    "tagline": "Zamonaviy veb texnologiyalar bo'yicha bepul kitoblar va dasturchilar uchun kundalik vositalar — o'zbek tilida.",
+    "allTools": "Barcha vositalar"
   }
 }

@@ -46,7 +46,13 @@ const ButtonLink: FC<IProps> = ({
       // `border-strong`, not `border`: this is the only thing that makes the
       // secondary CTA perceivable as a button at all, and at `--border` it sat
       // at 1.35:1 against the page — measured, and below WCAG 1.4.11's 3:1.
-      "bg-transparent text-foreground border border-border-strong hover:bg-accent hover:border-input":
+      //
+      // `bg-background/60 backdrop-blur-sm`, not `bg-transparent`: on the
+      // homepage this button sits on the hero grid, and at full transparency
+      // the lines ran straight through the label — the button read as an
+      // empty frame. A translucent wash keeps the backdrop visible as texture
+      // while giving the control its own surface.
+      "bg-background/60 backdrop-blur-sm text-foreground border border-border-strong hover:bg-accent hover:border-input":
         variant === "outline"
     },
     className

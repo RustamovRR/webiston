@@ -16,6 +16,20 @@ export { default as ButtonLink } from "./ButtonLink"
 export { DualTextPanel } from "./DualTextPanel"
 export { default as Footer } from "./Footer"
 export { Header } from "./Header"
+export type {
+  HeroPaletteGroup,
+  HeroPaletteRow
+} from "./HeroPalette/HeroPalette"
+export { HeroPalette } from "./HeroPalette/HeroPalette"
+export type {
+  BookSectionChapter,
+  ToolCardData
+} from "./HomeSections/HomeSections"
+export {
+  BookSection,
+  SectionDivider,
+  ToolsSection
+} from "./HomeSections/HomeSections"
 export { default as Search } from "./Search"
 export { default as SectionTitle } from "./SectionTitle"
 export { default as SimpleCard } from "./SimpleCard"

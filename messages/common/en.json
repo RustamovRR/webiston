@@ -5,9 +5,18 @@
       "description": "A modern platform for learning programming. High-quality, free courses on React and useful tools for developers in Uzbek and English.",
       "keywords": "free courses, programming, React, JavaScript, developer tools, learn to code, Uzbek IT, free education"
     },
-    "title": "Learn programming in your own language",
-    "description": "Foundational books on React, JavaScript and AI engineering — fully translated into Uzbek. Free, ad-free, and always open.",
-    "eyebrow": "Free · In Uzbek · Open source",
+    "titleLead": "A deep dive into the world of",
+    "titleAccent": "web technologies",
+    "description": "Free, high-quality books and everyday tools for developers — from React and JavaScript to artificial intelligence. Everything you need to learn, in one place.",
+    "eyebrowBadge": "New",
+    "eyebrowText": "The AI Engineering book — in Uzbek",
+    "palette": {
+      "label": "Books",
+      "hints": "↑↓ select · ⏎ open · esc close",
+      "labelTools": "Tools",
+      "queryTools": "gener",
+      "queryConverters": "conve"
+    },
     "stats": {
       "chapters": "chapters",
       "books": "books",
@@ -21,7 +30,11 @@
     "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
     "jsSectionTitle": "JavaScript: The Definitive Guide",
     "jsSectionDescription": "The complete Uzbek translation of the classic masterpiece on JavaScript. From the foundational principles to the most advanced features—everything you need in a single guide.",
-    "aiSectionDescription": "A comprehensive guide to AI engineering. Master fundamental models, prompt engineering, evaluation methodologies, and modern AI technologies at a professional level—your complete resource for building with AI."
+    "aiSectionDescription": "A comprehensive guide to AI engineering. Master fundamental models, prompt engineering, evaluation methodologies, and modern AI technologies at a professional level—your complete resource for building with AI.",
+    "sectionBooks": "Books",
+    "sectionTools": "Useful tools",
+    "allChapters": "All chapters",
+    "allTools": "All tools"
   },
   "Metadata": {
     "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
@@ -71,6 +84,8 @@
     "utilities": "Utilities"
   },
   "Footer": {
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "tagline": "Free books on modern web technologies and everyday developer tools — in Uzbek.",
+    "allTools": "All tools"
   }
 }

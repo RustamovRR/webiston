@@ -1,11 +1,24 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
 import type { Metadata } from "next"
-import Image from "next/image"
+import Link from "next/link"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import type { CSSProperties } from "react"
 import { ArrowRightIcon, ToolsIcon } from "@/assets/icons"
-import { ButtonLink, SectionTitle, SimpleCard } from "@/components/shared"
-import { BOOK_SECTIONS, TOOLS_LIST } from "@/constants"
+import type { HeroPaletteGroup } from "@/components/shared"
+import {
+  BookSection,
+  ButtonLink,
+  HeroPalette,
+  SectionDivider,
+  ToolsSection
+} from "@/components/shared"
+import {
+  BOOK_SECTIONS,
+  HERO_PALETTE_QUERY,
+  HERO_TOPICS,
+  REACT_CHAPTERS,
+  TOOLS_LIST
+} from "@/constants"
 import {
   getAllTutorialPaths,
   getAllTutorials,
@@ -181,6 +194,54 @@ export default async function HomePage({
     { value: TOOLS_LIST.length, labelKey: "stats.tools" }
   ] as const
 
+  // The palette's results must be REAL matches — a mocked search that invents
+  // hits is a screenshot of a product that does not exist. Half A types
+  // "react" (110 pages under `content/fluent-react`, zero tools — hence a
+  // books-only group). Half B types the locale's generator query ("yarat" /
+  // "gener"), which genuinely matches the three generator tools shown. Both
+  // queries are 5 characters — the CSS cadence is steps(5).
+  // Tool rows share one builder: title from the Tools namespace, meta from the
+  // tool's own category slug — lowercase mono, authentic to a dev palette and
+  // needing no translation.
+  const toolRows = (tKeys: string[], fallbackCategory: string) =>
+    tKeys.map((tKey) => ({
+      title: tTools(`${tKey}.title`),
+      meta:
+        TOOLS_LIST.find((tool) => tool.tKey === tKey)?.category ??
+        fallbackCategory
+    }))
+  const heroPaletteGroups: HeroPaletteGroup[] = [
+    {
+      query: HERO_PALETTE_QUERY,
+      label: tHome("palette.label"),
+      rows: [
+        { title: "Fluent React", meta: `${REACT_CHAPTERS.length} bo'lim` },
+        ...REACT_CHAPTERS.slice(0, 2).map((c) => ({
+          title: c.title,
+          meta: "Fluent React"
+        }))
+      ]
+    },
+    {
+      query: tHome("palette.queryTools"),
+      label: tHome("palette.labelTools"),
+      rows: toolRows(
+        ["qrGenerator", "passwordGenerator", "hashGenerator"],
+        "generators"
+      )
+    },
+    {
+      // "o'gir" / "conve" — verified to match exactly these three titles in
+      // each locale, and 5 characters like the others.
+      query: tHome("palette.queryConverters"),
+      label: tHome("palette.labelTools"),
+      rows: toolRows(
+        ["latinCyrillic", "base64Converter", "colorConverter"],
+        "converters"
+      )
+    }
+  ]
+
   // Homepage-specific structured data
   const homepageSchema = {
     "@context": "https://schema.org",
@@ -239,25 +300,39 @@ export default async function HomePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageSchema) }}
       />
 
-      {/* Main Content */}
-      <div className="w-full px-16 pb-16 max-sm:px-6">
+      {/* Main Content.
+          `px-4 sm:px-6 lg:px-8` — the SAME padding scale as the header's inner
+          container, on purpose: the hero previously used `px-16`, so its left
+          edge sat ~32px right of the logo and the two surfaces read as
+          unrelated. One shared gutter, one vertical line down the page. */}
+      <div className="w-full px-4 pb-16 sm:px-6 lg:px-8">
         {/* The hero is no longer `min-h-screen`. At exactly 100vh nothing below
             the fold was even hinted, so the 41 cards that are the actual
             substance of this page were invisible until the user guessed to
             scroll. ~78vh leaves the top of the first section showing, which is
             the cheapest possible scroll affordance. */}
-        <header className="hero mx-auto flex min-h-[78svh] w-full max-w-5xl flex-col items-center justify-center gap-6 py-24 text-center">
+        {/* Two columns, not centred. Three reasons this beats the centred
+            version it replaces: a long Uzbek headline gets a consistent scan
+            start instead of a moving one; there is room for a visual that shows
+            the PRODUCT rather than decoration; and the palette answers "what is
+            this site" so the headline no longer has to, which is why the
+            evocative original copy is back. */}
+        {/* `max-w-[1536px]` matches the header container and every section
+            below, so the headline starts exactly under the logo. */}
+        <header className="hero mx-auto w-full max-w-[1536px] py-12 lg:py-16">
           {/* Two nested elements, not one pseudo-element: the mask lives on the
               outer one and the drift on the inner, because a `transform` would
               otherwise drag the mask's fade-out across the screen with it.
               Purely decorative, so it is hidden from assistive tech. */}
           <div className="hero-backdrop" aria-hidden="true">
-            {/* The beam is nested INSIDE the grid so it inherits the same drift
-                transform and origin — that is what keeps the travelling light
-                registered to the lines instead of sliding across them. */}
+            {/* Rain is nested INSIDE the grid so it inherits the same drift
+                transform and origin — that is what keeps the falling light
+                registered to the column lines instead of sliding across them. */}
             <div className="hero-grid">
-              <div className="hero-beam">
-                <div className="hero-beam-band" />
+              <div className="hero-rain">
+                <span className="hero-streak" />
+                <span className="hero-streak" />
+                <span className="hero-streak" />
               </div>
               {/* Throwaway load-in layers: the axes are split and offset so the
                   lines read as arriving in parallel rather than as one flicker. */}
@@ -271,144 +346,168 @@ export default async function HomePage({
             <div className="hero-aurora" />
           </div>
 
-          {/* Eyebrow: answers "what IS this?" before the headline has to. The
-              old hero opened with a metaphor, so a first-time visitor could not
-              tell a book library from an agency. */}
-          <p
-            className="rise flex items-center gap-2 rounded-full border border-border-strong bg-card/60 px-3 py-1 text-muted-foreground text-xs backdrop-blur-sm"
-            style={{ "--i": 0 } as CSSProperties}
-          >
-            <span className="size-1.5 rounded-full bg-primary" />
-            {tHome("eyebrow")}
-          </p>
+          {/* Fixed-max columns, not `1.05fr/.95fr`: fr columns stretch with the
+              container, so on a wide screen the text hugged the left edge, the
+              palette hugged the right, and the middle was a gulf. Capped
+              columns keep the composition COMPACT — text, a ~90px seam, the
+              palette — with any spare width falling to the right, where the
+              backdrop fills it. The left edge stays on the logo's gutter. */}
+          <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,680px)_minmax(0,560px)] lg:gap-20 xl:gap-24">
+            <div>
+              {/* An announcement slot, not a static badge — it is a real link, so
+                  the newest book gets an entry point from the first thing the eye
+                  lands on. Previously this was inert text. */}
+              <Link
+                href="/books/ai-engineering"
+                className="rise group mb-6 inline-flex items-center gap-2.5 rounded-full border border-border-strong bg-card/60 py-1.5 pr-4 pl-1.5 text-xs backdrop-blur-sm transition-colors hover:border-input hover:bg-accent"
+                style={{ "--i": 0 } as CSSProperties}
+              >
+                <span className="rounded-full bg-primary/15 px-2.5 py-0.5 font-mono text-primary">
+                  {tHome("eyebrowBadge")}
+                </span>
+                <span className="text-muted-foreground">
+                  {tHome("eyebrowText")}
+                </span>
+                <span className="text-muted-foreground transition-transform duration-300 ease-out group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
 
-          {/* `text-balance` evens the line lengths instead of leaving one orphan
-              word — it is why "teran nigoh" no longer strands on its own line.
-              Tracking is negative because display type at 72px set at `normal`
-              looks loose; `leading-[1.05]` replaces `line-height: 1` which was
-              clipping Uzbek descenders and apostrophes.
-              The eight junk classes that used to be here (`//`, `Light`, `mode`,
-              `gradient`, `Dark`, `klass`, `o‘z`, `holicha`) came from `//`
-              comments written inside the class string — Tailwind has no comment
-              syntax there, so all eight shipped to production as real classes. */}
-          <h1
-            className="rise max-w-4xl text-balance bg-gradient-to-b from-foreground to-foreground/80 bg-clip-text font-extrabold text-5xl text-transparent tracking-[-0.02em] leading-[1.05] sm:text-6xl lg:text-7xl"
-            style={{ "--i": 1 } as CSSProperties}
-          >
-            {tHome("title")}
-          </h1>
+              {/* `titleLead` / `titleAccent` are two keys rather than one string
+                  with markup spliced in: the accent span has to be a translatable
+                  unit, and "teran nigoh" is not the same substring position as
+                  "web technologies". */}
+              <h1
+                className="rise text-balance font-bold text-5xl tracking-[-0.035em] leading-[1.06] sm:text-6xl lg:text-[64px]"
+                style={{ "--i": 1 } as CSSProperties}
+              >
+                <span className="bg-gradient-to-b from-foreground to-foreground/85 bg-clip-text text-transparent">
+                  {tHome("titleLead")}
+                </span>{" "}
+                <span className="hero-accent">{tHome("titleAccent")}</span>
+              </h1>
 
-          <p
-            className="rise max-w-2xl text-pretty text-lg text-muted-foreground leading-relaxed sm:text-xl"
-            style={{ "--i": 2 } as CSSProperties}
-          >
-            {tHome("description")}
-          </p>
+              <p
+                className="rise mt-7 max-w-xl text-pretty text-lg text-muted-foreground leading-relaxed"
+                style={{ "--i": 2 } as CSSProperties}
+              >
+                {tHome("description")}
+              </p>
 
-          <div
-            className="rise mt-4 flex flex-col items-center gap-4 sm:flex-row"
-            style={{ "--i": 3 } as CSSProperties}
-          >
-            <ButtonLink
-              isNextLink
-              href="/books"
-              variant="primary"
-              className="group"
-            >
-              {tHome("startLearning")}
-              <span className="ml-2 transition-transform duration-300 ease-out group-hover:translate-x-1">
-                <ArrowRightIcon />
-              </span>
-            </ButtonLink>
-            <ButtonLink href="/tools" variant="outline" className="group">
-              {tHome("usefulTools")}
-              <span className="ml-2 transition-transform duration-300 ease-out group-hover:scale-110">
-                <ToolsIcon className="h-4 w-4" />
-              </span>
-            </ButtonLink>
-          </div>
-
-          {/* Proof row. The highest-leverage thing missing from this page: the
-              library's actual scale was nowhere on it. These are derived from
-              the content tree and the routed tool list, not typed in, so they
-              cannot drift away from the truth. */}
-          <dl
-            className="rise mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
-            style={{ "--i": 4 } as CSSProperties}
-          >
-            {HOME_STATS.map(({ value, labelKey }) => (
-              <div key={labelKey} className="flex items-baseline gap-1.5">
-                <dt className="font-semibold text-foreground text-xl tabular-nums">
-                  {value}
-                </dt>
-                <dd className="text-muted-foreground text-sm">
-                  {tHome(labelKey)}
-                </dd>
+              <div
+                className="rise mt-8 flex flex-col gap-4 sm:flex-row"
+                style={{ "--i": 3 } as CSSProperties}
+              >
+                <ButtonLink
+                  isNextLink
+                  href="/books"
+                  variant="primary"
+                  className="group"
+                >
+                  {tHome("startLearning")}
+                  <span className="ml-2 transition-transform duration-300 ease-out group-hover:translate-x-1">
+                    <ArrowRightIcon />
+                  </span>
+                </ButtonLink>
+                <ButtonLink href="/tools" variant="outline" className="group">
+                  {tHome("usefulTools")}
+                  <span className="ml-2 transition-transform duration-300 ease-out group-hover:scale-110">
+                    <ToolsIcon className="h-4 w-4" />
+                  </span>
+                </ButtonLink>
               </div>
-            ))}
-          </dl>
+
+              {/* Proof row. The highest-leverage thing missing from this page: the
+                  library's actual scale was nowhere on it. These are derived from
+                  the content tree and the routed tool list, not typed in, so they
+                  cannot drift away from the truth. */}
+              <dl
+                className="rise mt-9 flex flex-wrap items-center gap-x-8 gap-y-3"
+                style={{ "--i": 4 } as CSSProperties}
+              >
+                {HOME_STATS.map(({ value, labelKey }) => (
+                  <div key={labelKey} className="flex items-baseline gap-1.5">
+                    <dt className="font-semibold text-foreground text-xl tabular-nums">
+                      {value}
+                    </dt>
+                    <dd className="text-muted-foreground text-sm">
+                      {tHome(labelKey)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/* Named in a constant, not inline: these are the technologies the
+                  library actually covers, and they are the same list a future
+                  filter or SEO keyword set would need. */}
+              <div
+                className="rise mt-6 flex flex-wrap gap-2"
+                style={{ "--i": 5 } as CSSProperties}
+              >
+                {HERO_TOPICS.map((topic) => (
+                  <span
+                    key={topic}
+                    className="rounded-md border border-border bg-card/50 px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Hidden below `lg`: at phone width this would push the CTAs a full
+                screen down, and a 320px-wide screenshot of a search palette is
+                unreadable anyway. The real palette is in the header on every
+                breakpoint. */}
+            <div
+              className="rise hidden lg:block"
+              style={{ "--i": 4 } as CSSProperties}
+            >
+              <HeroPalette
+                groups={heroPaletteGroups}
+                hints={tHome("palette.hints")}
+              />
+            </div>
+          </div>
         </header>
 
-        {/* Three byte-identical section blocks collapsed into one loop. They
-            differed only in book id, title and data array — and had already
-            drifted: the React section carried a stray `8` class and an extra
-            blank line, which is exactly how copy-pasted markup rots. */}
+        <SectionDivider label={tHome("sectionBooks")} count="03" />
+
+        {/* One component per book: header with the real cover, the first five
+            chapters, and an explicit "all chapters" door. The previous layout
+            rendered every top-level chapter of every book — 24 identical cards
+            in which a 5-chapter book weighed the same as an 11-chapter one. */}
         {BOOK_SECTIONS.map(({ id, title, chapters, descriptionKey }) => (
-          <section
+          <BookSection
             key={id}
-            className="group mx-auto mt-16 flex w-full max-w-[1536px] flex-col gap-8"
-          >
-            <SectionTitle
-              title={title}
-              href={`/books/${id}`}
-              description={tHome(descriptionKey)}
-              icon={
-                <Image
-                  src={getTutorialImage(id)}
-                  alt={title}
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
-                />
-              }
-            />
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {chapters.map((card) => (
-                <SimpleCard
-                  key={card.href}
-                  isNextLink
-                  className="reveal"
-                  href={card.href}
-                  title={card.title}
-                  description={card.description}
-                />
-              ))}
-            </div>
-          </section>
+            id={id}
+            title={title}
+            description={tHome(descriptionKey)}
+            coverSrc={getTutorialImage(id)}
+            bookHref={`/books/${id}`}
+            chapters={chapters.slice(0, 5)}
+            moreLabel={tHome("allChapters")}
+            meta={`${chapters.length} ${tHome("stats.chapters")} · ${id}`}
+          />
         ))}
 
-        <section className="group mx-auto mt-16 flex w-full max-w-[1536px] flex-col gap-8">
-          <SectionTitle
-            href="/tools"
-            title={tHome("toolsSectionTitle")}
-            description={tHome("toolsSectionDescription")}
-            icon={
-              <ToolsIcon className="h-10 w-10 duration-300 ease-in-out group-hover:scale-110" />
-            }
-          />
+        <SectionDivider
+          label={tHome("sectionTools")}
+          count={String(TOOLS_LIST.length)}
+        />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {TOOLS_LIST.map((tool) => (
-              <SimpleCard
-                key={tool.href}
-                className="reveal"
-                href={tool.href}
-                title={tTools(`${tool.tKey}.title`)}
-                description={tTools(`${tool.tKey}.description`)}
-              />
-            ))}
-          </div>
-        </section>
+        <ToolsSection
+          tools={TOOLS_LIST.slice(0, 7).map((tool) => ({
+            title: tTools(`${tool.tKey}.title`),
+            description: tTools(`${tool.tKey}.description`),
+            href: tool.href,
+            category: tool.category,
+            icon: <tool.icon className="size-4" />
+          }))}
+          moreLabel={tHome("allTools")}
+          moreMeta={`${TOOLS_LIST.length} ${tHome("stats.tools")}`}
+          toolsHref="/tools"
+        />
       </div>
     </>
   )

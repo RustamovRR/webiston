@@ -216,3 +216,28 @@ export const BOOK_SECTIONS = [
     descriptionKey: "reactSectionDescription"
   }
 ] as const
+
+/**
+ * The technologies the library actually covers, shown as chips under the hero.
+ *
+ * A constant rather than inline JSX: this is the same list a future tool filter
+ * or keyword set would need, and it is content, not markup. Proper nouns, so no
+ * `messages/` entry — these read identically in uz and en.
+ */
+export const HERO_TOPICS = [
+  "React",
+  "JavaScript",
+  "TypeScript",
+  "AI Engineering",
+  "Next.js"
+] as const
+
+/**
+ * The query typed in the hero's ⌘K still.
+ *
+ * Deliberately NOT translated: it is what a user types into a search box, and it
+ * has to stay a fixed length because the CSS typing effect derives its step
+ * count from `query.length`. Chosen because it genuinely matches content — 110
+ * pages under `content/fluent-react` — so the mocked results are real.
+ */
+export const HERO_PALETTE_QUERY = "react"
