@@ -159,8 +159,34 @@ Order by value-per-test (pure logic, high blast radius):
     contain hex literals — this file legitimately holds 19 — and the ratchet was
     flagging them as styling violations. Scope fix, not a weakening: verified it
     still exits 1 on a component containing `bg-zinc-900`.
-- `[ ]` `usePasswordGenerator` — also the file with the `Math.random()` defect, so
-  the test pins the fix.
+- `[x]` **`usePasswordGenerator` — extracted, secured, 20 tests. 2026-07-30.**
+  Generation lived inside a `useCallback`, which made it both untestable and
+  quietly insecure: **every character came from `Math.random()`**, which is not a
+  CSPRNG. For a password generator that is the product being wrong, not a style
+  nit. Moved to `utils/generate-password.ts` — pure, `crypto.getRandomValues`,
+  and **rejection sampling rather than `% n`** (modulo on a 32-bit draw is biased
+  whenever the range does not divide 2³², so low letters came up more often).
+  - `RandomInt` is injectable, so tests are deterministic where they need to be
+    and use the real CSPRNG where that is the thing under test. One test stubs
+    `Math.random` and asserts it is **never called**.
+  - Hook went 480 → 336 lines; `PasswordSettings`, `CHAR_SETS` and
+    `MEMORABLE_WORDS` now have one definition instead of two.
+  - "Strong" now actually guarantees one character per enabled class and cannot
+    exceed the requested length; the memorable padding loop can no longer spin
+    when no alphabet is enabled.
+- `[x]` **`src/lib/utils/text.ts` — 15 tests, and a second real bug. 2026-07-30.**
+  `truncateText(text, maxLength)` returned **more** characters than its limit:
+  `maxLength - suffix.length` goes negative, and a negative end index in
+  `String.slice` counts from the end of the string, so
+  `truncateText("abcdef", 2)` produced an 8-character result. Clamped. Verified
+  the test catches it: reverting fails exactly 2 of 286.
+- `[x]` **`src/lib/utils/url.ts` — 16 tests.** Pins the deliberate asymmetry that
+  `isValidUrl("webiston.uz")` is true while `isSecureUrl("webiston.uz")` is false,
+  and that `extractQueryParams` keeps the **last** value of a repeated key.
+- `[x]` **`src/lib/seo.ts` — 12 tests.** The canonical/hreflang rules that fixed
+  229 book chapters and every `/en` page are now pinned, including the
+  `title: { template }` case where no share card can be generated.
+- **Suite: 207 → 286 tests, 6 → 11 files.** `src/` had zero at session start.
 - `[ ]` `useQrGenerator` (570 lines) · `useOgMetaGenerator` (597) · `useMicrophoneTest` (515)
 - `[ ]` Per the Trophy: once the units are covered, **integration tests are the fat
   layer** — render a whole tool with React Testing Library and drive it as a user.

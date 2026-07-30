@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-
-interface PasswordSettings {
-  length: number
-  includeUppercase: boolean
-  includeLowercase: boolean
-  includeNumbers: boolean
-  includeSymbols: boolean
-  excludeSimilar: boolean
-  passwordType: "random" | "memorable" | "strong"
-}
+import {
+  generatePassword as generate,
+  NoCharactersSelectedError,
+  type PasswordSettings
+} from "../utils/generate-password"
 
 interface PasswordStrength {
   level: number
@@ -19,51 +14,6 @@ interface PasswordStrength {
 interface UsePasswordGeneratorProps {
   onSuccess?: (message: string) => void
   onError?: (error: string) => void
-}
-
-// Sample data constants
-const MEMORABLE_WORDS = [
-  "Computer",
-  "Security",
-  "Password",
-  "Digital",
-  "Network",
-  "System",
-  "Data",
-  "Server",
-  "Cloud",
-  "Mobile",
-  "Website",
-  "Application",
-  "Software",
-  "Hardware",
-  "Internet",
-  "Protocol",
-  "Crypto",
-  "Secure",
-  "Strong",
-  "Safe",
-  "Tech",
-  "Code",
-  "User",
-  "Admin",
-  "Login",
-  "Access",
-  "Guard",
-  "Shield",
-  "Vault",
-  "Key",
-  "Lock",
-  "Token"
-]
-
-// Character sets
-const CHAR_SETS = {
-  uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  lowercase: "abcdefghijklmnopqrstuvwxyz",
-  numbers: "0123456789",
-  symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
-  similar: "il1Lo0O"
 }
 
 // Preset configurations - these will be replaced with translations in the component
@@ -154,119 +104,19 @@ export const usePasswordGenerator = (
     passwordType: "random"
   })
 
-  // Generate password with improved logic
+  // Generation lives in utils/generate-password.ts: it is pure, it is unit
+  // tested, and it draws from crypto.getRandomValues instead of Math.random.
+  // This callback only wires it to state and messaging.
   const generatePassword = useCallback(() => {
-    let result = ""
-
     try {
-      if (settings.passwordType === "memorable") {
-        // Memorable password: Word1Word2123!
-        const word1 =
-          MEMORABLE_WORDS[Math.floor(Math.random() * MEMORABLE_WORDS.length)]
-        const word2 =
-          MEMORABLE_WORDS[Math.floor(Math.random() * MEMORABLE_WORDS.length)]
-        const number = Math.floor(Math.random() * 1000)
-          .toString()
-          .padStart(3, "0")
-        const symbol = settings.includeSymbols
-          ? "!@#$%^&*"[Math.floor(Math.random() * 8)]
-          : ""
-
-        result = `${word1}${word2}${number}${symbol}`
-
-        // Adjust length if needed
-        if (result.length > settings.length) {
-          result = result.substring(0, settings.length)
-        } else if (result.length < settings.length) {
-          // Add random chars to reach desired length
-          let chars = ""
-          if (settings.includeUppercase) chars += CHAR_SETS.uppercase
-          if (settings.includeLowercase) chars += CHAR_SETS.lowercase
-          if (settings.includeNumbers) chars += CHAR_SETS.numbers
-          if (settings.includeSymbols) chars += CHAR_SETS.symbols
-
-          while (result.length < settings.length && chars) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length))
-          }
-        }
-      } else {
-        // Random/Strong password generation
-        let chars = ""
-
-        if (settings.includeUppercase) chars += CHAR_SETS.uppercase
-        if (settings.includeLowercase) chars += CHAR_SETS.lowercase
-        if (settings.includeNumbers) chars += CHAR_SETS.numbers
-        if (settings.includeSymbols) chars += CHAR_SETS.symbols
-
-        if (settings.excludeSimilar) {
-          chars = chars
-            .split("")
-            .filter((char) => !CHAR_SETS.similar.includes(char))
-            .join("")
-        }
-
-        if (!chars) {
-          onError?.("Kamida bitta belgi turi tanlanishi kerak")
-          return
-        }
-
-        // Enhanced generation for strong passwords
-        if (settings.passwordType === "strong") {
-          // Ensure at least one character from each selected type
-          const requiredChars = []
-          if (settings.includeUppercase)
-            requiredChars.push(
-              CHAR_SETS.uppercase[
-                Math.floor(Math.random() * CHAR_SETS.uppercase.length)
-              ]
-            )
-          if (settings.includeLowercase)
-            requiredChars.push(
-              CHAR_SETS.lowercase[
-                Math.floor(Math.random() * CHAR_SETS.lowercase.length)
-              ]
-            )
-          if (settings.includeNumbers)
-            requiredChars.push(
-              CHAR_SETS.numbers[
-                Math.floor(Math.random() * CHAR_SETS.numbers.length)
-              ]
-            )
-          if (settings.includeSymbols)
-            requiredChars.push(
-              CHAR_SETS.symbols[
-                Math.floor(Math.random() * CHAR_SETS.symbols.length)
-              ]
-            )
-
-          // Fill remaining with random chars
-          for (let i = requiredChars.length; i < settings.length; i++) {
-            requiredChars.push(
-              chars.charAt(Math.floor(Math.random() * chars.length))
-            )
-          }
-
-          // Shuffle the array
-          for (let i = requiredChars.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[requiredChars[i], requiredChars[j]] = [
-              requiredChars[j],
-              requiredChars[i]
-            ]
-          }
-
-          result = requiredChars.join("")
-        } else {
-          // Standard random generation
-          for (let i = 0; i < settings.length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length))
-          }
-        }
-      }
-
+      const result = generate(settings)
       setPassword(result)
       onSuccess?.(`${result.length} belgili parol yaratildi`)
-    } catch (_error) {
+    } catch (error) {
+      if (error instanceof NoCharactersSelectedError) {
+        onError?.("Kamida bitta belgi turi tanlanishi kerak")
+        return
+      }
       onError?.("Parol yaratishda xatolik yuz berdi")
     }
   }, [settings, onSuccess, onError])

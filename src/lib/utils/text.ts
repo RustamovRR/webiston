@@ -42,6 +42,16 @@ export const truncateText = (
   suffix = "..."
 ): string => {
   if (text.length <= maxLength) return text
+
+  // `slice(0, maxLength - suffix.length)` goes NEGATIVE once maxLength is
+  // shorter than the suffix, and a negative end index counts from the end of the
+  // string — so the function returned MORE than it was asked for:
+  //   truncateText("abcdef", 2) -> "abcde..." (8 chars, limit was 2)
+  //   truncateText("abcdef", 0) -> "abc..."   (6 chars, limit was 0)
+  // Clamping keeps the one promise the name makes: never exceed maxLength.
+  if (maxLength <= 0) return ""
+  if (maxLength <= suffix.length) return text.slice(0, maxLength)
+
   return text.slice(0, maxLength - suffix.length) + suffix
 }
 

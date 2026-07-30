@@ -30,7 +30,7 @@ canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 | Payload | ⚠️ | search index on dialog-open (**0** requests on page load) · logo **209 KB → 5.5 KB** · **CLS measured 0** · tool-page HTML **−43%** via scoped i18n. Left: `images.unoptimized` (**25 MB of raw book figures**) |
 | Soft 404s | ✅ | `/books/**` returned 200 for non-existent chapters *and* any unknown book id; both now 404 |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
-| Tests in `src/` | ⚠️ | **16** (`color-conversions`) — suite 207 → **223**. First tests in `src/` ever; they found a live UI bug on day one |
+| Tests in `src/` | ⚠️ | **79** across 5 files — suite 207 → **286**. `src/` had zero. Found **3 real bugs**: `rgbToHex` emitting invalid CSS, `truncateText` exceeding its own limit, and the password generator on `Math.random()` |
 | CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
 
 **Gate (real exit codes, 2026-07-29):** `check 0` · `typecheck 0` · `lint 0` ·
@@ -94,7 +94,12 @@ the 8 dead-key deletion below.
 
 ## Next up
 
-**Phase 4 is nearly done — what remains is one decision, not code.**
+**Testing — continue the Trophy.** The pure layer is covered (286 tests). Next:
+the three large hooks the initiative names — `useQrGenerator` (570 lines),
+`useOgMetaGenerator` (597), `useMicrophoneTest` (515) — and then the fat layer,
+rendering a whole tool with React Testing Library and driving it as a user.
+
+**SEO Phase 4 is nearly done — what remains is one decision, not code.**
 `images.unoptimized: true` (`next.config.ts:26`) means the **25 MB of book
 figures in `public/` are served raw**; one chapter ships several MB of PNG. That
 now dwarfs every other payload item on the site. Owner's call — see `backlog.md`.
