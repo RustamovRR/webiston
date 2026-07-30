@@ -36,7 +36,10 @@ const ButtonLink: FC<IProps> = ({
         variant === "primary",
       "bg-zinc-900 text-white border border-zinc-700 hover:bg-zinc-800 dark:bg-zinc-900 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-800":
         variant === "secondary",
-      "bg-transparent text-foreground border border-border hover:bg-accent hover:border-input":
+      // `border-strong`, not `border`: this is the only thing that makes the
+      // secondary CTA perceivable as a button at all, and at `--border` it sat
+      // at 1.35:1 against the page — measured, and below WCAG 1.4.11's 3:1.
+      "bg-transparent text-foreground border border-border-strong hover:bg-accent hover:border-input":
         variant === "outline"
     },
     className

@@ -271,6 +271,106 @@ than the headline number suggests.
 
 ---
 
+## Phase 6 — `[x]` Homepage composition + the boundary token (2026-07-30)
+
+Started as "fix the search placeholder overlap", surfaced a token gap and a
+second vacuous gate.
+
+- `[x]` **Search field: placeholder overlapped the `Ctrl K` badge by a measured
+  25px.** Cause: the icon and the `kbd` were both `absolute`, leaving the label
+  the only element in flow — nothing constrained its width, so it slid under the
+  badge at the 149px the header actually gives that button. Now a real flex row
+  (`gap-2`, `truncate`, `ml-auto` badge): measured **+8px gap**. Also
+  platform-correct — `⌘K` on Mac, `Ctrl K` elsewhere, resolved after mount
+  (`navigator` does not exist on the server) with width reserved for both so the
+  swap cannot shift the header.
+
+- `[x]` **NEW `--border-strong` token — the Radix step-6/step-7 split.**
+  `--border` was the only boundary token, and it measures **1.32:1** (light) /
+  **1.33:1** (dark) against the page. WCAG 1.4.11 wants **3:1** for the boundary
+  that *identifies* a component — which is what a card-that-is-a-link and an
+  outline button have. Solved rather than guessed:
+
+      light  oklch(0.655 0.012 217)   -> 3.16:1 bg · 3.03:1 card
+      dark   oklch(1 0 0 / 34%)       -> 3.02:1 bg · 3.12:1 card
+
+  `--border` stays as-is and is now documented as **decorative only** (rules,
+  dividers, hairlines) — 1.4.11 does not govern those. Additive change, so no
+  existing `border-border` usage moved.
+
+- `[x]` **`pnpm contrast` was vacuous on exactly this token — twice over.**
+  `--border` was **absent from `PAIRS`**, and it *could not* have been checked
+  anyway: the dark value is `oklch(1 0 0 / 12%)` and `resolve()`'s regex rejected
+  any value carrying alpha, so it would have been reported `SKIP`. The gate has
+  claimed "32/32 PASS" all along while the one token governing 1.4.11 sat
+  unexamined. Now: `resolve()` returns alpha, a new `contrastOver()` composites
+  translucent tokens over their backdrop **in gamma-encoded sRGB** (what a
+  browser does — compositing in linear light would overstate every ratio), and
+  `--border-strong` is asserted on both `--background` and `--card`.
+  **36 pairs, exit 0.**
+
+- `[x]` **`SimpleCard` had no background at all** — measured `alpha 0`, so 41
+  homepage cards were outlines rather than objects. Now `bg-card` +
+  `border-border-strong`, left-aligned (a 4-column grid needs a predictable
+  return point per scan line; centred text moves it per card), a
+  `focus-visible` ring (it is a link and had hover-only feedback), and
+  `transition-[transform,box-shadow,background-color]` instead of
+  `transition-all`.
+
+- `[x]` **The nextjs.org motif is gone** — `background-pattern.css` (180 lines
+  for one component) replaced by `src/styles/hero.css`. Four measured reasons,
+  not taste:
+  1. It animated to a **displaced** resting position (`translateY(100%)`,
+     `opacity: .3`) — the layout at rest was wherever the lines drifted to.
+  2. Hardcoded percentages (`left: 15/35/65/85%`) unrelated to the content grid,
+     so a dashed line crossed the headline.
+  3. ~4s of motion (2s delay + 2s duration) still moving after the reader had
+     started, and **the only `prefers-reduced-motion` block on the whole site
+     belonged to the Sonner toast library** — zero of our own animations were
+     guarded (WCAG 2.3.3).
+  4. `rgba(0,0,0,.2)` / `rgba(255,255,255,.5)` — raw colour needing a `.dark`
+     override per rule.
+
+  Replacement: a **static** token-driven grid (radial-masked so it never reaches
+  an edge) + one brand wash; motion only on content entrance.
+
+- `[x]` **Motion is correctly gated — verified in the compiled CSS, not assumed.**
+  `.rise` sits inside `@media (prefers-reduced-motion: no-preference)`; `.reveal`
+  inside **both** that and `@supports (animation-timeline: view())`. The nesting
+  is load-bearing: the hidden `from` state only exists where the browser can
+  finish the animation, so an unsupported browser or a reduced-motion user gets
+  content at natural `opacity: 1` — never permanently hidden, which is the
+  classic way scroll-reveal breaks.
+
+- `[x]` **Scroll reveal with zero JS.** `animation-timeline: view()` (verified
+  supported: `CSS.supports` → `true`). framer-motion was rejected deliberately:
+  the homepage is a Server Component and one of the prerendered routes, so
+  `whileInView` would mean `'use client'` **plus** 41 IntersectionObservers, 41
+  state updates and 41 re-renders for decoration. CSS does it with none. The
+  dependency stays where it earns its keep — the 27 interactive sites.
+
+- `[x]` **8 junk CSS classes were shipping to production.** The `<h1>` carried
+  `//`, `Light`, `mode`, `gradient`, `Dark`, `klass`, `o'z`, `holicha` — someone
+  wrote `//` comments *inside* a `className` string and Tailwind has no comment
+  syntax there. Confirmed gone from the built HTML.
+
+- `[x]` **Hero typography + hierarchy.** `text-balance` (no orphaned "teran
+  nigoh"), `tracking-[-0.02em]` (72px display type at `normal` reads loose),
+  `leading-[1.05]` replacing `line-height: 1` which clipped Uzbek descenders and
+  apostrophes, and `p-6` removed from the `h1`. Hero dropped from **exactly
+  100vh** — which hinted nothing below it — to `78svh`, so the first cards peek.
+  Added an eyebrow (the old hero opened with a metaphor, so a first-time visitor
+  could not tell a book library from an agency) and a **proof row derived from the
+  content tree** — `225 bo'lim · 3 kitob · 17 vosita`, computed from
+  `getAllTutorialPaths()`/`TOOLS_LIST`, never typed in, so it cannot go stale.
+
+**Gate (real exit codes, 2026-07-30):** `check 0` · `lint 0` · `typecheck 0` ·
+`test 0` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0` · **269 prerendered
+HTML files, homepage still `●` SSG**. `i18n 1` — unchanged, still the 8 dead
+`en`-only keys awaiting approval.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

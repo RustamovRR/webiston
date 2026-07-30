@@ -8,8 +8,9 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-29 — design system shipped (5 phases); SEO integrity +
-canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
+_Last updated: 2026-07-30 — homepage composition reviewed from scratch: the
+nextjs.org motif replaced, a `--border-strong` token added, and a second vacuous
+gate closed. Branch `refactor/infrastructure`._
 
 ---
 
@@ -31,12 +32,17 @@ canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 | Static rendering | ✅ | **0 → 266 routes prerendered.** 34 tool pages (17 × 2 locales) + 228 book chapters + home + index pages. Only `/api/og` stays `ƒ` — it reads `searchParams`. `cacheComponents`/PPR deliberately rejected, see initiative |
 | Payload | ⚠️ | search index on dialog-open (**0** requests on page load) · logo **209 KB → 5.5 KB** · **CLS measured 0** · tool-page HTML **−43%** via scoped i18n. Left: `images.unoptimized` (**25 MB of raw book figures**) |
 | Soft 404s | ✅ | `/books/**` returned 200 for non-existent chapters *and* any unknown book id; both now 404 |
+| Boundary contrast | ✅ | **NEW `--border-strong`.** `--border` measures **1.32:1** light / **1.33:1** dark — WCAG 1.4.11 needs **3:1** for a boundary that identifies a component. Solved: 3.16/3.02. `--border` documented decorative-only |
+| `pnpm contrast` (again) | ✅ | **Was vacuous on the one token that mattered.** `--border` absent from `PAIRS` *and* unparseable (alpha) → would have `SKIP`ped. Gate now composites alpha in gamma-encoded sRGB. **32 → 36 pairs** |
+| Homepage | ✅ | Search overlap **−25px → +8px gap**. nextjs.org motif (180 lines, ~4s unguarded motion) → static grid + CSS `view()` reveal, **zero JS**. 8 junk classes were shipping in the `<h1>`. Cards had **no background** (alpha 0) |
+| Reduced motion | ✅ | The only `prefers-reduced-motion` block on the site belonged to **Sonner**; zero of our own animations were guarded. Now gated, verified in compiled CSS |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ⚠️ | **79** across 5 files — suite 207 → **286**. `src/` had zero. Found **3 real bugs**: `rgbToHex` emitting invalid CSS, `truncateText` exceeding its own limit, and the password generator on `Math.random()` |
 | CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
 
-**Gate (real exit codes, 2026-07-29):** `check 0` · `typecheck 0` · `lint 0` ·
-`test 0 (207)` · `tokens 0` · `contrast 0` · `build 0` — **`i18n 1`**, blocked on
+**Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
+`test 0` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0` — **269 prerendered
+HTML files, homepage still `●` SSG**. **`i18n 1`**, unchanged: still blocked on
 the 8 dead-key deletion below.
 
 ---
@@ -67,7 +73,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[x]` | all phases shipped — see archive candidate |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–5 + **Phase 6 (homepage + `--border-strong`)** shipped |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
@@ -96,10 +102,24 @@ the 8 dead-key deletion below.
 
 ## Next up
 
-**Testing — continue the Trophy.** The pure layer is covered (286 tests). Next:
-the three large hooks the initiative names — `useQrGenerator` (570 lines),
-`useOgMetaGenerator` (597), `useMicrophoneTest` (515) — and then the fat layer,
-rendering a whole tool with React Testing Library and driving it as a user.
+**Homepage — what is left is copy, not code.** The structure, tokens, motion and
+typography are done. Two things still owed, both the owner's voice:
+
+- The **headline** is a mood, not a value proposition: "Veb texnologiyalar
+  dunyosiga teran nigoh" does not tell a first-time visitor whether this is a
+  book library, a blog or an agency. The eyebrow now carries that load, which is
+  a patch, not a fix.
+- The **description** is 197 characters over 3 sentences and repeats "Webiston",
+  which the logo already says 40px above.
+
+**41 cards is still too many for a homepage.** Every book section dumps its full
+top-level chapter list. Showing 4–6 per book with a "hammasi" link would make the
+page scannable, but it changes navigation, so it needs a decision first.
+
+**Testing — continue the Trophy.** The pure layer is covered (307 tests). Next:
+`useOgMetaGenerator` (601 lines) and `useMicrophoneTest` (521) — both need pure
+logic pulled out of their `useCallback`s before they can be tested at all — then
+the fat layer, driving a whole tool with React Testing Library as a user.
 
 **SEO Phase 4 is nearly done — what remains is one decision, not code.**
 `images.unoptimized: true` (`next.config.ts:26`) means the **25 MB of book
@@ -128,6 +148,23 @@ won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the
    only red gate (`pnpm i18n` → 1). Deleting needs an explicit yes.
 2. **The four parked `__` tools** — 629 of the 2,600 remaining hardcoded-colour
    hits sit in code that has no route.
+3. **`src/styles/background-pattern.css` is now orphaned** (3,624 bytes). Its
+   import is replaced by `hero.css` and the only remaining mentions are two
+   comments. Deleting needs an explicit yes.
+4. **Duplicate animation dependency.** `framer-motion` **and** `motion` are both
+   declared at `12.43.0` — `motion` is the renamed same package. 27 imports use
+   `framer-motion`; **one** uses `motion/react`
+   (`packages/ui/src/primitives/typing-animation.tsx:3`). Consolidating means
+   picking one and dropping the other from `package.json`.
+
+**Found in passing, not fixed (needs its own decision):**
+
+- **`JwtDecoderPage.InputPanel.clear` is missing from BOTH locales** — surfaced
+  as `MISSING_MESSAGE` twice in the build log.
+  `JwtDecoder/components/InputPanel.tsx:35` reads `t("clear") || "Clear"`, so the
+  `||` hides it behind an English fallback. **The `pnpm i18n` gate cannot catch
+  this**: it compares uz against en, and a key absent from both is "in parity".
+  A third check — every `t("…")` call resolves in at least one bundle — would.
 
 ---
 

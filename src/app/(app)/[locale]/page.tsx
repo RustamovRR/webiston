@@ -2,15 +2,15 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-import { ArrowRightIcon, CircleIcon, ToolsIcon } from "@/assets/icons"
+import type { CSSProperties } from "react"
+import { ArrowRightIcon, ToolsIcon } from "@/assets/icons"
 import { ButtonLink, SectionTitle, SimpleCard } from "@/components/shared"
+import { BOOK_SECTIONS, TOOLS_LIST } from "@/constants"
 import {
-  AI_ENGINEERING_CHAPTERS,
-  JAVASCRIPT_CHAPTERS,
-  REACT_CHAPTERS,
-  TOOLS_LIST
-} from "@/constants"
-import { getTutorialImage } from "@/lib/mdx"
+  getAllTutorialPaths,
+  getAllTutorials,
+  getTutorialImage
+} from "@/lib/mdx"
 import { localeAlternates, localeUrl, ogCardUrl } from "@/lib/seo"
 
 export async function generateMetadata({
@@ -162,6 +162,25 @@ export default async function HomePage({
   const tHome = await getTranslations("HomePage")
   const tTools = await getTranslations("Tools")
 
+  // Derived at build time from the content tree and the routed tool list, never
+  // typed in — a hand-written "226 chapters" is a claim that silently goes stale
+  // the first time a chapter is added. This page is prerendered, so the walk
+  // costs nothing at runtime.
+  const [tutorialPaths, tutorials] = await Promise.all([
+    getAllTutorialPaths(),
+    getAllTutorials()
+  ])
+  const HOME_STATS = [
+    // One entry per book is also in `tutorialPaths`, so subtract them to count
+    // chapters rather than chapters-plus-landing-pages.
+    {
+      value: tutorialPaths.length - tutorials.length,
+      labelKey: "stats.chapters"
+    },
+    { value: tutorials.length, labelKey: "stats.books" },
+    { value: TOOLS_LIST.length, labelKey: "stats.tools" }
+  ] as const
+
   // Homepage-specific structured data
   const homepageSchema = {
     "@context": "https://schema.org",
@@ -222,133 +241,129 @@ export default async function HomePage({
 
       {/* Main Content */}
       <div className="w-full px-16 pb-16 max-sm:px-6">
-        <header className="background-pattern mt-8 flex h-full min-h-screen w-full flex-col items-center gap-10 p-10 pt-20 text-center max-[471px]:min-h-[120vh] max-lg:px-0">
-          <div className="horizontal-line-1 max-sm:hidden"></div>
-          <div className="horizontal-line-2 max-sm:hidden"></div>
-          <div className="horizontal-line-3 max-sm:hidden"></div>
-          <div className="horizontal-line-4 max-sm:hidden"></div>
+        {/* The hero is no longer `min-h-screen`. At exactly 100vh nothing below
+            the fold was even hinted, so the 41 cards that are the actual
+            substance of this page were invisible until the user guessed to
+            scroll. ~78vh leaves the top of the first section showing, which is
+            the cheapest possible scroll affordance. */}
+        <header className="hero mx-auto flex min-h-[78svh] w-full max-w-5xl flex-col items-center justify-center gap-6 py-24 text-center">
+          {/* Eyebrow: answers "what IS this?" before the headline has to. The
+              old hero opened with a metaphor, so a first-time visitor could not
+              tell a book library from an agency. */}
+          <p
+            className="rise flex items-center gap-2 rounded-full border border-border-strong bg-card/60 px-3 py-1 text-muted-foreground text-xs backdrop-blur-sm"
+            style={{ "--i": 0 } as CSSProperties}
+          >
+            <span className="size-1.5 rounded-full bg-primary" />
+            {tHome("eyebrow")}
+          </p>
 
-          <div className="vertical-line-1 max-sm:hidden"></div>
-          <div className="vertical-line-2 max-sm:hidden"></div>
-
-          <CircleIcon className="animate-fadeIn absolute top-[20%] left-[12%] max-sm:hidden" />
-          <CircleIcon className="animate-fadeIn absolute top-[70%] right-[32%] max-sm:hidden" />
-
-          <h1 className="animate-fadeInText // Light mode gradient dark:bg-gradient-text // Dark mode klass o‘z holicha max-xl:text-dynamic bg-gradient-to-r from-neutral-600 to-neutral-900 bg-clip-text p-6 text-7xl font-extrabold text-transparent max-lg:text-5xl max-md:p-0">
+          {/* `text-balance` evens the line lengths instead of leaving one orphan
+              word — it is why "teran nigoh" no longer strands on its own line.
+              Tracking is negative because display type at 72px set at `normal`
+              looks loose; `leading-[1.05]` replaces `line-height: 1` which was
+              clipping Uzbek descenders and apostrophes.
+              The eight junk classes that used to be here (`//`, `Light`, `mode`,
+              `gradient`, `Dark`, `klass`, `o‘z`, `holicha`) came from `//`
+              comments written inside the class string — Tailwind has no comment
+              syntax there, so all eight shipped to production as real classes. */}
+          <h1
+            className="rise max-w-4xl text-balance bg-gradient-to-br from-foreground via-foreground to-muted-foreground bg-clip-text font-extrabold text-5xl text-transparent tracking-[-0.02em] leading-[1.05] sm:text-6xl lg:text-7xl"
+            style={{ "--i": 1 } as CSSProperties}
+          >
             {tHome("title")}
           </h1>
 
-          <p className="animate-fadeInText max-w-[750px] text-center text-xl text-muted-foreground md:w-full!">
+          <p
+            className="rise max-w-2xl text-pretty text-lg text-muted-foreground leading-relaxed sm:text-xl"
+            style={{ "--i": 2 } as CSSProperties}
+          >
             {tHome("description")}
           </p>
 
-          <div className="mt-10 flex gap-4 max-sm:flex-col">
+          <div
+            className="rise mt-4 flex flex-col items-center gap-4 sm:flex-row"
+            style={{ "--i": 3 } as CSSProperties}
+          >
             <ButtonLink
               isNextLink
               href="/books"
-              variant="secondary"
-              className="group border-zinc-300 bg-white text-black hover:bg-zinc-100"
+              variant="primary"
+              className="group"
             >
               {tHome("startLearning")}
-              <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:translate-x-1">
+              <span className="ml-2 transition-transform duration-300 ease-out group-hover:translate-x-1">
                 <ArrowRightIcon />
               </span>
             </ButtonLink>
             <ButtonLink href="/tools" variant="outline" className="group">
               {tHome("usefulTools")}
-              <span className="ml-2 transform transition-all duration-300 ease-in-out group-hover:scale-110">
+              <span className="ml-2 transition-transform duration-300 ease-out group-hover:scale-110">
                 <ToolsIcon className="h-4 w-4" />
               </span>
             </ButtonLink>
           </div>
+
+          {/* Proof row. The highest-leverage thing missing from this page: the
+              library's actual scale was nowhere on it. These are derived from
+              the content tree and the routed tool list, not typed in, so they
+              cannot drift away from the truth. */}
+          <dl
+            className="rise mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+            style={{ "--i": 4 } as CSSProperties}
+          >
+            {HOME_STATS.map(({ value, labelKey }) => (
+              <div key={labelKey} className="flex items-baseline gap-1.5">
+                <dt className="font-semibold text-foreground text-xl tabular-nums">
+                  {value}
+                </dt>
+                <dd className="text-muted-foreground text-sm">
+                  {tHome(labelKey)}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </header>
 
-        <section className="group mx-auto flex w-full max-w-[1536px] flex-col gap-8">
-          <SectionTitle
-            title="AI Engineering"
-            href="/books/ai-engineering"
-            description={tHome("aiSectionDescription")}
-            icon={
-              <Image
-                src={getTutorialImage("ai-engineering")}
-                alt="AI Engineering"
-                width={40}
-                height={40}
-                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
-              />
-            }
-          />
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-            {AI_ENGINEERING_CHAPTERS.map((card, index) => (
-              <SimpleCard
-                key={index}
-                isNextLink
-                href={card.href}
-                title={card.title}
-                description={card.description}
-              />
-            ))}
-          </div>
-        </section>
+        {/* Three byte-identical section blocks collapsed into one loop. They
+            differed only in book id, title and data array — and had already
+            drifted: the React section carried a stray `8` class and an extra
+            blank line, which is exactly how copy-pasted markup rots. */}
+        {BOOK_SECTIONS.map(({ id, title, chapters, descriptionKey }) => (
+          <section
+            key={id}
+            className="group mx-auto mt-16 flex w-full max-w-[1536px] flex-col gap-8"
+          >
+            <SectionTitle
+              title={title}
+              href={`/books/${id}`}
+              description={tHome(descriptionKey)}
+              icon={
+                <Image
+                  src={getTutorialImage(id)}
+                  alt={title}
+                  width={48}
+                  height={48}
+                  className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
+                />
+              }
+            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {chapters.map((card) => (
+                <SimpleCard
+                  key={card.href}
+                  isNextLink
+                  className="reveal"
+                  href={card.href}
+                  title={card.title}
+                  description={card.description}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
 
-        <section className="group mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
-          <SectionTitle
-            title="JavaScript: The Definitive Guide, 7th Edition"
-            href="/books/javascript-definitive-guide"
-            description={tHome("jsSectionDescription")}
-            icon={
-              <Image
-                src={getTutorialImage("javascript-definitive-guide")}
-                alt="JavaScript: The Definitive Guide, 7th Edition"
-                width={40}
-                height={40}
-                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
-              />
-            }
-          />
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-            {JAVASCRIPT_CHAPTERS.map((card, index) => (
-              <SimpleCard
-                key={index}
-                isNextLink
-                href={card.href}
-                title={card.title}
-                description={card.description}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="group 8 mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
-          <SectionTitle
-            title="Fluent React"
-            href="/books/fluent-react"
-            description={tHome("reactSectionDescription")}
-            icon={
-              <Image
-                src={getTutorialImage("fluent-react")}
-                alt="Fluent React"
-                width={40}
-                height={40}
-                className="h-12 w-12 object-contain duration-300 ease-in-out group-hover:scale-110"
-              />
-            }
-          />
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-            {REACT_CHAPTERS.map((card, index) => (
-              <SimpleCard
-                key={index}
-                isNextLink
-                href={card.href}
-                title={card.title}
-                description={card.description}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section className="group mx-auto mt-12 flex w-full max-w-[1536px] flex-col gap-8">
+        <section className="group mx-auto mt-16 flex w-full max-w-[1536px] flex-col gap-8">
           <SectionTitle
             href="/tools"
             title={tHome("toolsSectionTitle")}
@@ -358,10 +373,11 @@ export default async function HomePage({
             }
           />
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {TOOLS_LIST.map((tool, index) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {TOOLS_LIST.map((tool) => (
               <SimpleCard
-                key={index}
+                key={tool.href}
+                className="reveal"
                 href={tool.href}
                 title={tTools(`${tool.tKey}.title`)}
                 description={tTools(`${tool.tKey}.description`)}

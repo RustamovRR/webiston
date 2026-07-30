@@ -86,13 +86,51 @@ function parseTokens(selector) {
 const light = parseTokens(":root")
 const dark = { ...light, ...parseTokens(".dark") }
 
+// Returns [L, C, H, alpha]. Alpha matters: the dark scheme authors `--border`,
+// `--border-strong` and `--input` as translucent white, and a translucent token
+// has NO contrast ratio of its own — only the composite over a known backdrop
+// does. Before this, those values failed the plain-oklch regex and were reported
+// SKIP, which is why the gate could claim 32/32 while the one token that governs
+// WCAG 1.4.11 sat at 1.33:1 unexamined.
 function resolve(scope, value, depth = 0) {
   if (value == null || depth > 10) return null
   const v = value.replace(/\/\*[\s\S]*?\*\//g, "").trim()
   const ref = v.match(/^var\((--[a-z0-9-]+)\)$/)
   if (ref) return resolve(scope, scope[ref[1]], depth + 1)
-  const m = v.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/)
-  return m ? [+m[1], +m[2], +m[3]] : null
+  const m = v.match(
+    /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?)\s*)?\)$/
+  )
+  if (!m) return null
+  const alpha = m[4] === undefined ? 1 : m[5] === "%" ? +m[4] / 100 : +m[4]
+  return [+m[1], +m[2], +m[3], alpha]
+}
+
+/** sRGB channels (0–1, gamma-encoded) of the colour as it will actually display. */
+const srgbOf = ([L, C, H]) =>
+  oklchToLinearRgb(L, C, H).map((c) => encodeGamma(clamp01(c)))
+
+/**
+ * Luminance of `fg` as the user sees it over `bg`.
+ *
+ * Compositing happens in gamma-encoded sRGB, which is what a browser does for
+ * `background`/`border` alpha — not in linear light. Getting this backwards
+ * would overstate the contrast of every translucent token.
+ */
+function effectiveLuminance(fg, bg) {
+  const a = fg[3] ?? 1
+  if (a >= 1) return luminance(fg)
+  const f = srgbOf(fg)
+  const b = srgbOf(bg)
+  const [r, g, bl] = f.map((c, i) => decodeGamma(c * a + b[i] * (1 - a)))
+  return 0.2126 * r + 0.7152 * g + 0.0722 * bl
+}
+
+/** Contrast of a possibly-translucent `fg` against an opaque `bg`. */
+function contrastOver(fg, bg) {
+  const a = effectiveLuminance(fg, bg)
+  const b = luminance(bg)
+  const [hi, lo] = a > b ? [a, b] : [b, a]
+  return (hi + 0.05) / (lo + 0.05)
 }
 
 /* ---------- the requirements ---------- */
@@ -115,7 +153,14 @@ const PAIRS = [
   ["--warning", "--background", 4.5],
   ["--info", "--background", 4.5],
   ["--ring", "--background", 3],
-  ["--ring", "--card", 3]
+  ["--ring", "--card", 3],
+  // WCAG 1.4.11 non-text contrast: the boundary that identifies an interactive
+  // component. `--border` is deliberately absent — it is decorative separation
+  // (1.32:1 light, 1.33:1 dark) and 1.4.11 does not govern it. Everything the
+  // user must read as an object — a card that is a link, an outline button, a
+  // key cap — uses `--border-strong`, and that IS governed.
+  ["--border-strong", "--background", 3],
+  ["--border-strong", "--card", 3]
 ]
 
 let failures = 0
@@ -136,7 +181,7 @@ for (const [label, scope] of [
       )
       continue
     }
-    const r = contrast(fg, bg)
+    const r = contrastOver(fg, bg)
     const ok = r >= need
     if (!ok) failures++
     console.log(

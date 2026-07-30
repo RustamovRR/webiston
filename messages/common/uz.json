@@ -7,6 +7,12 @@
     },
     "title": "Veb texnologiyalar dunyosiga teran nigoh",
     "description": "Webiston — zamonaviy veb texnologiyalar bo'yicha bepul ta'lim va dasturchilar uchun foydali vositalar to'plami. Bilim olish va rivojlanish uchun barcha kerakli resurslar bir joyda.",
+    "eyebrow": "Bepul · O'zbek tilida · Ochiq manba",
+    "stats": {
+      "chapters": "bo'lim",
+      "books": "kitob",
+      "tools": "vosita"
+    },
     "startLearning": "O'rganishni boshlash",
     "usefulTools": "Foydali vositalar",
     "reactSectionTitle": "Fluent React",

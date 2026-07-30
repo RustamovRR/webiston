@@ -7,6 +7,12 @@
     },
     "title": "A deep dive into the world of web technologies",
     "description": "Webiston — free education and useful tools for modern web technologies. All the resources you need for learning and development in one place.",
+    "eyebrow": "Free · In Uzbek · Open source",
+    "stats": {
+      "chapters": "chapters",
+      "books": "books",
+      "tools": "tools"
+    },
     "startLearning": "Start Learning",
     "usefulTools": "Useful Tools",
     "reactSectionTitle": "Fluent React",

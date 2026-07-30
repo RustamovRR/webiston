@@ -1,0 +1,150 @@
+/* Homepage composition — the hero backdrop and the scroll-reveal used by the
+   book/tool sections.
+
+   Replaces `background-pattern.css`, which carried 180 lines of animated dashed
+   lines copied from nextjs.org. Four measured reasons that motif went:
+
+   1. It animated to a DISPLACED resting position (`translateY(100%)`,
+      `opacity: .3`), so the layout you saw at rest was wherever the lines
+      drifted to — an accident, not a composition.
+   2. Positions were hardcoded percentages (`left: 15/35/65/85%`) unrelated to
+      the content grid, so a dashed line ran straight through the headline.
+   3. ~4s of motion (2s delay + 2s duration) still moving long after the reader
+      had started reading, with no reduced-motion guard anywhere on the site.
+   4. `rgba(0,0,0,.2)` / `rgba(255,255,255,.5)` — raw colour, outside the token
+      system, needing a `.dark` override for every rule.
+
+   The replacement is deliberately STATIC in the backdrop and animates only
+   content entrance. On a reading platform the decoration should recede; the
+   motion budget belongs to the words. Static backdrop also means nothing
+   competes with LCP.
+
+   No JS: the homepage is a Server Component and one of the 266 prerendered
+   routes. Reaching for framer-motion here would force `'use client'` on a page
+   whose animation needs are entirely declarative. */
+
+/* ---------------------------------------------------------------------------
+   Motion primitives
+   --------------------------------------------------------------------------- */
+
+/* `translate3d` + `opacity` only — both composited, so this never triggers
+   layout or paint. Anything animating `top`/`height`/`margin` would. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The easing below is the whole character of the motion: a fast start that
+   settles without bouncing. `linear` and `ease-in-out` both read as cheap at
+   this duration.
+
+   Hero entrance — a single staggered pass, ~0.6s, driven by `--i` on each child.
+   Guarded by `no-preference` rather than fought with a `reduce` override, so the
+   default for a reduced-motion user is simply "no animation": every element is
+   already at its final state and nothing has to be undone. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    /* `backwards` holds the `from` state through the delay so a late child does
+       not flash at full opacity before its turn. */
+    animation: rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+}
+
+/* Scroll reveal for the sections below the fold.
+   Native scroll-driven animation — no IntersectionObserver, no React state, no
+   re-render per element. The nesting is load-bearing: the hidden `from` state
+   only ever applies when the browser BOTH supports the timeline AND the user
+   accepts motion. Put it outside these guards and an unsupported browser would
+   hide the content permanently, which is the classic way scroll-reveal breaks. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-timeline: view();
+      /* Finish well before the element reaches the middle of the screen —
+         reveals that are still running when you read them feel sluggish. */
+      animation-range: entry 5% cover 20%;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero backdrop — static, token-driven, no `.dark` override needed
+   --------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The grid. `--border` is the decorative boundary token, which is exactly what
+   a background rule is, so this needs no per-scheme colour. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  /* Fades the grid to nothing before it reaches any edge. Unmasked, the lines
+     collide with the viewport border and the hero reads as a spreadsheet. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 65% at 50% 38%,
+    #000 25%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 65% at 50% 38%,
+    #000 25%,
+    transparent 78%
+  );
+}
+
+/* A single soft brand wash behind the headline, anchored to the top edge so it
+   reads as light entering the page rather than a blob floating in it. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 65%;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 55% 100% at 50% 0%,
+    color-mix(in oklab, var(--brand-500) 14%, transparent),
+    transparent 72%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Retained from background-pattern.css
+   --------------------------------------------------------------------------- */
+
+/* Still consumed by LanguageSelector.tsx:19 — the only survivor of that file. */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer {
+    animation: none;
+  }
+}

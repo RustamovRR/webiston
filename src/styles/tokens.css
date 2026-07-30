@@ -66,6 +66,7 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -170,7 +171,17 @@
   --accent: var(--brand-100);
   --accent-foreground: var(--brand-800);
 
+  /* TWO boundary tokens, deliberately — the Radix step-6/step-7 split.
+     `--border` is DECORATIVE separation (table rules, dividers, hairlines
+     between rows). At 1.32:1 vs background it is far below WCAG 1.4.11's 3:1,
+     and that is fine: 1.4.11 governs boundaries that *identify a component*,
+     not lines that merely separate content.
+     `--border-strong` is that identifying boundary — the edge of a card that is
+     a link, an outline button, a key cap. Anything the user must perceive as an
+     interactive object uses this one. Solved, not guessed: 3.15:1 vs
+     background, 3.02:1 vs card. Both are asserted by `pnpm contrast`. */
   --border: oklch(0.905 0.008 217);
+  --border-strong: oklch(0.655 0.012 217);
   --input: oklch(0.885 0.01 217);
   --ring: var(--brand-600); /* 4.22:1 bg · 4.05:1 card — WCAG needs 3:1 */
 
@@ -222,7 +233,8 @@
   --accent: oklch(0.29 0.02 217);
   --accent-foreground: var(--brand-200);
 
-  --border: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 12%); /* decorative only — see the light block */
+  --border-strong: oklch(1 0 0 / 34%); /* 3.02:1 bg · 3.13:1 card */
   --input: oklch(1 0 0 / 16%);
   --ring: var(--brand-500); /* 6.60:1 bg · 5.97:1 card */
 

@@ -11,6 +11,7 @@ export {
 } from "./color-names"
 export {
   AI_ENGINEERING_CHAPTERS,
+  BOOK_SECTIONS,
   JAVASCRIPT_CHAPTERS,
   REACT_CHAPTERS,
   socialLinks

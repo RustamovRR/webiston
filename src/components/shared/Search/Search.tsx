@@ -14,6 +14,12 @@ export default function Search() {
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
+  // Resolved after mount, never during render: `navigator` does not exist on the
+  // server, and branching on it in the render body would make the server and
+  // client markup disagree. `false` is the safe first paint — the shortcut
+  // handler below accepts Ctrl *and* Cmd, so the badge is only ever cosmetically
+  // behind, and the badge reserves width for both labels.
+  const [isMac, setIsMac] = useState(false)
 
   const handleSearchChange = (value: string) => {
     setQuery(value)
@@ -43,6 +49,15 @@ export default function Search() {
   const clearSearch = useCallback(() => {
     setQuery("")
     setGroupedHits([])
+  }, [])
+
+  useEffect(() => {
+    // `userAgentData.platform` is the non-deprecated source; `navigator.platform`
+    // is the fallback still needed for Safari and Firefox.
+    const platform =
+      (navigator as Navigator & { userAgentData?: { platform?: string } })
+        .userAgentData?.platform ?? navigator.platform
+    setIsMac(/mac|iphone|ipad|ipod/i.test(platform))
   }, [])
 
   useEffect(() => {
@@ -83,17 +98,27 @@ export default function Search() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="focus-visible:ring-ring relative flex h-9 w-full cursor-pointer items-center rounded-xl bg-muted pr-12 pl-10 text-left focus-visible:ring-2 focus-visible:outline-none"
+        aria-keyshortcuts={isMac ? "Meta+K" : "Control+K"}
+        className="focus-visible:ring-ring flex h-9 w-56 cursor-pointer items-center gap-2 rounded-xl bg-muted px-3 text-left focus-visible:ring-2 focus-visible:outline-none"
       >
         <SearchIcon
           aria-hidden="true"
-          className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2"
+          className="text-muted-foreground size-4 shrink-0"
         />
-        <span className="text-muted-foreground text-base md:text-sm">
+        {/* `truncate` + `min-w-0` is what keeps the label from sliding under the
+            badge. The previous markup positioned the icon and the kbd
+            `absolute` and left this label the only element in flow, so it had
+            nothing to push against and no width to be constrained by — at the
+            149px the header actually gives this button, "Qidirish..." overlapped
+            the badge by a measured 25px. Everything is in flow now. */}
+        <span className="min-w-0 flex-1 truncate text-muted-foreground text-base md:text-sm">
           {t("placeholder")}
         </span>
-        <kbd className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg border border-border px-2 py-0.5 text-xs select-none">
-          Ctrl K
+        {/* Reserve the width both labels can occupy so the post-mount platform
+            swap below cannot shift the header. "Control" is never rendered —
+            `Ctrl` is the wider of the two real labels, `⌘K` the narrower. */}
+        <kbd className="grid shrink-0 min-w-[3.25rem] place-items-center rounded-md border border-border-strong px-1.5 py-0.5 font-sans text-[11px] text-muted-foreground select-none">
+          {isMac ? "⌘K" : "Ctrl K"}
         </kbd>
       </button>
       <SearchDialog

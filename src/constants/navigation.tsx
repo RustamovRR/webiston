@@ -186,3 +186,33 @@ export const socialLinks = [
     label: "Loyihani qo'llab-quvvatlash"
   }
 ]
+
+/**
+ * The book sections rendered on the homepage, in display order.
+ *
+ * The homepage previously repeated three byte-identical `<section>` blocks that
+ * differed only in these four fields — and they had already drifted apart (one
+ * carried a stray `8` class). `id` doubles as the content-tree directory name,
+ * so it drives both the `/books/{id}` href and `getTutorialImage(id)`; there is
+ * no second place to keep in sync.
+ */
+export const BOOK_SECTIONS = [
+  {
+    id: "ai-engineering",
+    title: "AI Engineering",
+    chapters: AI_ENGINEERING_CHAPTERS,
+    descriptionKey: "aiSectionDescription"
+  },
+  {
+    id: "javascript-definitive-guide",
+    title: "JavaScript: The Definitive Guide, 7th Edition",
+    chapters: JAVASCRIPT_CHAPTERS,
+    descriptionKey: "jsSectionDescription"
+  },
+  {
+    id: "fluent-react",
+    title: "Fluent React",
+    chapters: REACT_CHAPTERS,
+    descriptionKey: "reactSectionDescription"
+  }
+] as const
