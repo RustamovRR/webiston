@@ -12,20 +12,7 @@ import {
   SelectValue
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-
-interface MetaData {
-  title: string
-  description: string
-  image: string
-  url: string
-  siteName: string
-  type: string
-  locale: string
-  twitterCard: string
-  twitterSite: string
-  twitterCreator: string
-  imageSize?: string
-}
+import type { MetaData } from "../hooks/useOgMetaGenerator"
 
 interface FormPanelProps {
   metaData: MetaData

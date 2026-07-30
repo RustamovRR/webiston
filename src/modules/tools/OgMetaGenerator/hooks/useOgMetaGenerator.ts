@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-interface MetaData {
+// The single definition. Both FormPanel and ValidationPanel declared their
+// own copy, and ValidationPanel's had already DRIFTED — it was missing
+// `imageSize?`, so that field was invisible to it. Optional fields make such
+// drift compile cleanly, which is why nothing caught it.
+export interface MetaData {
   title: string
   description: string
   image: string

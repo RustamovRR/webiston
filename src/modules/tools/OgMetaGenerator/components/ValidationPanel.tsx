@@ -2,19 +2,7 @@
 
 import { AlertTriangle, CheckCircle, TrendingUp, XCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
-
-interface MetaData {
-  title: string
-  description: string
-  image: string
-  url: string
-  siteName: string
-  type: string
-  locale: string
-  twitterCard: string
-  twitterSite: string
-  twitterCreator: string
-}
+import type { MetaData } from "../hooks/useOgMetaGenerator"
 
 interface ValidationPanelProps {
   metaData: MetaData

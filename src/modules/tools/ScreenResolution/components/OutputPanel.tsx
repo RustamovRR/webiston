@@ -2,20 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
-
-interface ScreenInfo {
-  width: number
-  height: number
-  innerWidth: number
-  innerHeight: number
-  outerWidth: number
-  outerHeight: number
-  pixelRatio: number
-  orientation: string
-  colorDepth: number
-  scrollX: number
-  scrollY: number
-}
+import type { ScreenInfo } from "../hooks/useScreenResolution"
 
 interface Analysis {
   resolutionCategory: string

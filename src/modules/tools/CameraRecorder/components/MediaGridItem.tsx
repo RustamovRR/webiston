@@ -6,16 +6,7 @@ import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-
-interface CapturedMedia {
-  id: string
-  type: "screenshot" | "video"
-  url: string
-  filename: string
-  timestamp: Date
-  duration?: number
-  size?: number
-}
+import type { CapturedMedia } from "../hooks/useCameraRecorder"
 
 interface MediaGridItemProps {
   media: CapturedMedia

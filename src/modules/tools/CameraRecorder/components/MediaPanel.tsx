@@ -3,17 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { Clock } from "lucide-react"
 import { useTranslations } from "next-intl"
+import type { CapturedMedia } from "../hooks/useCameraRecorder"
 import { MediaGridItem } from "./MediaGridItem"
-
-interface CapturedMedia {
-  id: string
-  type: "screenshot" | "video"
-  url: string
-  filename: string
-  timestamp: Date
-  duration?: number
-  size?: number
-}
 
 interface CameraStats {
   screenshotCount: number

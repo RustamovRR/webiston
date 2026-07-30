@@ -28,6 +28,32 @@
   happened 3 times. A dependency-cruiser config with a baseline would make
   `architecture.md § 2` enforced rather than aspirational.
 
+## Phase 1b — `[x]` Duplicated type declarations (2026-07-30)
+
+Found while reviewing the PasswordGenerator extraction. No gate catches any of
+this: TypeScript **merges** identical interfaces declared in the same scope, and
+optional fields let a drifted copy compile cleanly.
+
+- `[x]` **`ConfigPanel.tsx` declared `PasswordSettings` TWICE, verbatim.**
+  Legal TypeScript, silently compiled, invisible to every linter. Both removed;
+  the file now imports the one definition from
+  `PasswordGenerator/utils/generate-password.ts`.
+- `[x]` **`MetaData` had already drifted.** Three copies across OgMetaGenerator —
+  the hook, `FormPanel`, `ValidationPanel` — and **ValidationPanel's was missing
+  `imageSize?`**, so that field was invisible to it. An optional field makes this
+  compile, which is exactly why it went unnoticed. Exported from the hook; both
+  components import it.
+- `[x]` **`CapturedMedia` ×4 → 1.** The hook already exported it; the three
+  CameraRecorder components each kept their own identical copy.
+- `[x]` **`ScreenInfo` ×3 → 2, deliberately.** `ScreenResolution/OutputPanel`'s
+  copy was redundant and now imports from its hook. The remaining two are
+  **not** duplicates: `DeviceInfo` and `ScreenResolution` are different tools with
+  genuinely different shapes (`pixelDepth`, `innerWidth`, `innerHeight` exist only
+  in the latter). Sharing them across tools would breach the module boundary.
+- Net: **28 lines deleted, 7 added**, one definition per domain type.
+- Same reasoning applied to the 12 `ControlPanelProps` and 4 `ConfigPanelProps`:
+  left alone. Each is a component's own local props, not a shared concept.
+
 ## Phase 2 — `[ ]` Collapse the shim layer
 
 `src/components/ui/` is **17 files** of 1-line re-exports from `@webiston/ui`,

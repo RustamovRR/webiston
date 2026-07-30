@@ -21,6 +21,7 @@ canonical correctness shipped (Phases 1–2). Branch `refactor/infrastructure`._
 | Build & gates | ✅ | **all 9 gates green**; hooks 0.16s / 2.39s |
 | Repo hygiene | ✅ | `git ls-files -i -c` → 0 |
 | Package boundaries | ✅ | `packages/ui` `@/` imports 3 → **0**; one definition, re-exported |
+| Duplicated types | ✅ | `PasswordSettings` declared twice in one file · `MetaData` ×3 with one already **drifted** · `CapturedMedia` ×4 → all consolidated. TS merges identical interfaces, so no gate saw any of it |
 | `pnpm check` | ✅ | **81 → 0 errors.** First time this gate has ever passed |
 | i18n parity | ⚠️ | `pnpm i18n` gate added; red on 8 dead `en`-only keys pending approval |
 | SEO integrity | ✅ | fabricated ratings + invented reviews **deleted** (18 files, 416 lines); repo-wide grep → 0 |

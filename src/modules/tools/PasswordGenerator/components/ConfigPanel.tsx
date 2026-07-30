@@ -14,26 +14,10 @@ import { useTranslations } from "next-intl"
 import { GradientTabs, ShimmerButton } from "@/components/ui"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib"
-
-interface PasswordSettings {
-  passwordType: "random" | "memorable" | "strong"
-  length: number
-  includeUppercase: boolean
-  includeLowercase: boolean
-  includeNumbers: boolean
-  includeSymbols: boolean
-  excludeSimilar: boolean
-}
-
-interface PasswordSettings {
-  passwordType: "random" | "memorable" | "strong"
-  length: number
-  includeUppercase: boolean
-  includeLowercase: boolean
-  includeNumbers: boolean
-  includeSymbols: boolean
-  excludeSimilar: boolean
-}
+// One definition, in the module that owns the behaviour. This file declared
+// the same interface TWICE, verbatim — TypeScript merges identical interfaces,
+// so it compiled silently and no gate could see it.
+import type { PasswordSettings } from "../utils/generate-password"
 
 interface PresetSetting {
   label: string
