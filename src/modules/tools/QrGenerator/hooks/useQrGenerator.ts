@@ -1,28 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react"
+import type { QrCustomization, QrErrorLevel, QrPreset, QrSize } from "../types"
+import { buildQrUrl, detectInputType } from "../utils/qr-input"
 
-export type QrSize = 150 | 200 | 300 | 400
-export type QrErrorLevel = "L" | "M" | "Q" | "H"
+// The hook's public surface keeps both names; the implementations now live in
+// utils/qr-input.ts where they are unit tested.
+const generateQrUrl = buildQrUrl
 
-export interface QrPreset {
-  label: string
-  value: string
-  description: string
-  category: "url" | "contact" | "text" | "wifi" | "sms"
-}
-
-export interface QrCustomization {
-  foregroundColor: string
-  backgroundColor: string
-  logo?: string
-  logoSize: number
-  cornerStyle: "square" | "rounded" | "extraRounded" | "circle"
-  patternStyle: "square" | "circle" | "rounded" | "diamond"
-  margin: number
-  borderRadius: number
-  gradientEnabled: boolean
-  gradientDirection: "horizontal" | "vertical" | "diagonal" | "radial"
-  gradientEndColor?: string
-}
+// Re-exported for the components that already import these from here.
+export type { QrCustomization, QrErrorLevel, QrPreset, QrSize }
 
 interface UseQrGeneratorProps {
   onSuccess?: (message: string) => void
@@ -144,31 +129,6 @@ export const useQrGenerator = ({
   })
 
   // Generate QR code URL with customization
-  const generateQrUrl = useCallback(
-    (
-      text: string,
-      size: QrSize,
-      errorCorrectionLevel: QrErrorLevel,
-      custom: QrCustomization
-    ) => {
-      if (!text.trim()) return ""
-
-      const baseUrl = "https://api.qrserver.com/v1/create-qr-code/"
-      const params = new URLSearchParams({
-        size: `${size}x${size}`,
-        data: text,
-        ecc: errorCorrectionLevel,
-        format: "png",
-        margin: custom.margin.toString(),
-        color: custom.foregroundColor.replace("#", ""),
-        bgcolor: custom.backgroundColor.replace("#", "")
-      })
-
-      return `${baseUrl}?${params.toString()}`
-    },
-    []
-  )
-
   // Current QR URL (for preview)
   const qrUrl = useMemo(() => {
     return generateQrUrl(inputText, qrSize, errorLevel, customization)
@@ -455,35 +415,6 @@ export const useQrGenerator = ({
   )
 
   // Detect input type
-  const detectInputType = useCallback((text: string) => {
-    if (!text.trim()) return "empty"
-
-    // URL detection
-    if (text.match(/^https?:\/\//i)) return "url"
-
-    // Email detection
-    if (text.match(/^mailto:/i) || text.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      return "email"
-
-    // Phone detection
-    if (text.match(/^tel:/i) || text.match(/^\+?[\d\s\-()]{7,}$/))
-      return "phone"
-
-    // SMS detection
-    if (text.match(/^sms:/i)) return "sms"
-
-    // WiFi detection
-    if (text.match(/^WIFI:/i)) return "wifi"
-
-    // vCard detection
-    if (text.match(/^BEGIN:VCARD/i)) return "vcard"
-
-    // Location detection
-    if (text.match(/^geo:/i)) return "location"
-
-    return "text"
-  }, [])
-
   // Group presets by category
   const groupedPresets = useMemo(() => {
     return SAMPLE_PRESETS.reduce(

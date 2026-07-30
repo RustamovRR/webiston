@@ -4,20 +4,9 @@ import { useTranslations } from "next-intl"
 import type React from "react"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
+import type { QrCustomization } from "../types"
 
-export interface QrCustomization {
-  foregroundColor: string
-  backgroundColor: string
-  logo?: string
-  logoSize: number
-  cornerStyle: "square" | "rounded" | "extraRounded" | "circle"
-  patternStyle: "square" | "circle" | "rounded" | "diamond"
-  margin: number
-  borderRadius: number
-  gradientEnabled: boolean
-  gradientDirection: "horizontal" | "vertical" | "diagonal" | "radial"
-  gradientEndColor?: string
-}
+export type { QrCustomization }
 
 interface QrCustomizationPanelProps {
   customization: QrCustomization
