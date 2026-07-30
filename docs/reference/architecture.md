@@ -133,11 +133,74 @@ reasoning are in `code-rules.md § 4` and `seo-performance.md § 2`.
 
 Other framework facts worth knowing before you change config:
 
-- `output: "standalone"` — the deploy artifact is self-contained.
+- `output: "standalone"` — the deploy artifact is self-contained. Note this makes
+  `next start` refuse to run (`⚠ "next start" does not work with "output:
+  standalone"`); serve the build with `node .next/standalone/server.js`.
 - `images.unoptimized: true` — Next's image optimizer is **off**; sizing and
   compression are your responsibility (`seo-performance.md § 4`).
 - `pageExtensions` includes `md`/`mdx`.
 - `/docs/:path*` permanently redirects to `/books/:path*`.
+
+---
+
+## 5b. The three rendering questions, answered with evidence (2026-07-30)
+
+Asked directly by the owner. Verified against **next@16.2.12 as installed**, not
+from memory.
+
+### "Should these pages be 0 JS / pure SSR?"
+
+**0 JS is not achievable in the App Router, by design** — not a
+misconfiguration on our side. Even a route made entirely of Server Components
+ships the React runtime, the serialized RSC payload and the client router so
+navigation and hydration can happen. A framework that *can* do 0 JS per page is
+Astro; that is a rewrite, not a refactor, and it would cost us the shared
+app shell, `next-intl`, and the tool routes.
+
+So the achievable goal is **the smallest possible client boundary**, and that is
+what Phase 18 attacked: 383 → 340 KB gz, client modules 30 → 16 on a chapter.
+
+### "Is Next's SSR rendering being used, and is that right?"
+
+These pages are **not SSR**. They are **SSG** — `generateStaticParams` emits
+every book path and `dynamicParams = false` 404s anything else, so all 226
+chapters are HTML on disk at build time (`.next/server/app/books/**.html`, 269
+files). That is the correct model for a fixed MDX corpus: nothing is per-request,
+so per-request rendering would be pure cost. **Do not "add SSR" here.**
+
+### "Are React Server Components used correctly? Are there newer APIs?"
+
+RSC usage is correct in shape — `page.tsx`, `TutorialContent`, `MDXContent`,
+`CodeBlock`, `Pagination`, `HeadingLink`, `CustomLink` are all Server
+Components, and Shiki highlights at build time. The defect was never the
+boundary's *design*, it was **leakage across it** via barrel imports (Phase 18).
+
+Newer APIs, checked against the installed version:
+
+- **`cacheComponents`** is now a **top-level** config key, and `use cache` /
+  `cacheLife` / `cacheTag` became **stable in 16.2** (the `unstable_` prefix is
+  gone). `experimental.ppr` and `experimental_ppr` are **removed** — PPR is
+  `cacheComponents`' default behaviour. `experimental.cacheComponents` and
+  `experimental.dynamicIO` are deprecated aliases.
+  **Verdict for us: it buys nothing on these routes.** PPR streams a static
+  shell while dynamic parts resolve; our routes have no dynamic parts. The one
+  genuinely interesting side effect is that `cacheComponents` makes Next use
+  React `<Activity>` to preserve component state across client navigation —
+  which for a book reader would keep sidebar scroll and accordion state between
+  chapters. That is a global behaviour change on 269 routes and needs its own
+  decision.
+- **`next-mdx-remote` is archived.** The repo was archived **2026-04-09** and its
+  README states it is no longer supported, recommending `mdx-bundler`,
+  `next-mdx-remote-client` or `remote-mdx` — and notes that **RSC users may not
+  need the library at all** and can use the core MDX package directly. We are on
+  `next-mdx-remote@6.0.0` (the RSC entry) with a `transpilePackages` workaround.
+  This is now an unmaintained dependency on the critical path of 226 pages and
+  needs its own migration decision, not a drive-by swap.
+- **`@next/mdx` is configured but unused.** `next.config.ts` wires `withMDX`
+  with `providerImportSource: "@mdx-js/react"` and `pageExtensions` includes
+  `md`/`mdx`, but there are **zero** `.md`/`.mdx` files under `src/app/` and
+  `@mdx-js/react` is imported **nowhere**. Book content is rendered through
+  `next-mdx-remote/rsc` from `content/`, which needs none of it.
 
 ---
 

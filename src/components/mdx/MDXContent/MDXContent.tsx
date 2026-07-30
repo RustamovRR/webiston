@@ -108,8 +108,11 @@ const components = {
     // If it's inline code (not a code block)
     if (!match) {
       return (
+        // `border-border bg-muted`, not `border-slate-200 bg-slate-100` plus
+        // two `dark:` overrides on a raw `#ffffff1a`. The tokens flip with the
+        // scheme, so the pair of dark-mode variants is simply gone.
         <code
-          className="relative rounded-sm border border-slate-200 bg-slate-100 px-[0.3rem] py-[0.2rem] text-[0.9em] font-normal !whitespace-nowrap text-destructive dark:border-[#ffffff1a] dark:bg-[#ffffff1a] [a_&]:text-inherit"
+          className="relative rounded-sm border border-border bg-muted px-[0.3rem] py-[0.2rem] font-normal text-[0.9em] text-destructive !whitespace-nowrap [a_&]:text-inherit"
           {...props}
         >
           {children}
@@ -186,9 +189,12 @@ const components = {
   // Handle anchor tags directly
   a: (props: any) => <CustomLink {...props} />,
 
+  // Footnote markers. `text-primary`, not `text-sky-500` — the brand hue is
+  // 217° and `sky` is not it, so footnote links were a different blue from
+  // every other link on the site.
   sup: (props: any) => (
     <sup
-      className="[&_a]:text-sky-500 [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-sky-400"
+      className="[&_a]:text-primary [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-primary/80"
       {...props}
     />
   ),
@@ -199,15 +205,17 @@ const components = {
     </div>
   ),
 
+  // `border-border`, not `border-[#ddd]`. A light-grey hex on a dark page put
+  // near-white grid lines around every table in dark mode.
   th: (props: any) => (
     <th
       {...props}
-      className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide"
+      className="border border-border py-3 !pl-2.5 text-left font-semibold text-sm tracking-wide"
     />
   ),
 
   td: (props: any) => (
-    <td {...props} className="border border-[#ddd] px-3 py-3 text-sm" />
+    <td {...props} className="border border-border px-3 py-3 text-sm" />
   ),
 
   blockquote: (props: any) => (

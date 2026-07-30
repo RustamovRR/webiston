@@ -7,7 +7,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./primitives/*": "./src/primitives/*.tsx",
-    "./composites/*": "./src/composites/*.tsx",
+    "./composites/*": "./src/composites/*/index.ts",
+    "./constants/*": "./src/constants/*.ts",
+    "./utils": "./src/utils/index.ts",
     "./styles/*": "./styles/*"
   },
   "scripts": {

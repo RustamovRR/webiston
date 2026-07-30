@@ -1093,6 +1093,112 @@ from the file except in the explanatory comment.
 
 ---
 
+## Phase 18 — `[x]` The reading page: payload, correctness, tokens (2026-07-30)
+
+The actual chapter surface (`/books/**`, 226 prerendered pages). Owner asked for
+a deep review with authority to fix architecture, plus answers on SSR/RSC and the
+latest Next APIs. Answers are in `../../reference/architecture.md`; this is what
+changed.
+
+### Payload — barrel imports were the whole story
+
+Measured from the prerendered HTML's own chunk list, gzipped:
+
+| | chunks | JS gzip |
+| --- | --- | --- |
+| before | 17 | **383 KB** |
+| after | 19 | **340 KB** |
+
+Client modules in the chapter route's reference manifest: **30 → 16**.
+
+- `[x]` **`CodeBlock.tsx:1` imported `{ CopyButton }` from `@/components/shared`.**
+  A barrel drags every CLIENT module it re-exports into the importing route's
+  manifest, even from a Server Component. That one line was putting
+  `DualTextPanel` and `TerminalInput` — tool-only UI — on all 226 chapters.
+  Now a deep import. `packages/ui`'s `exports` map had `"./composites/*":
+  "./src/composites/*.tsx"`, which resolved to **files that do not exist** (every
+  composite is a directory); fixed to `*/index.ts`.
+- `[x]` **All 16 `src/components/ui/*` shims re-exported the `@webiston/ui`
+  ROOT barrel.** Repointed at `@webiston/ui/primitives/<name>`, the subpath that
+  was already declared and already resolved.
+- `[x]` **The last leak was a CONSTANTS file.** `src/constants/ui-constants.ts`
+  did `export { TOOL_COLORS, UI_PATTERNS } from "@webiston/ui"`, and it is
+  reached from `@/constants` → `Footer` → every page. Two colour constants were
+  shipping `aurora-text`, `code-highlight`, `gradient-tabs`, `number-ticker`,
+  `select`, `typing-animation` and `BaseModal` to every book chapter. New
+  `"./constants/*"` and `"./utils"` subpaths; lucide's chunk collapsed
+  **111 KB → 15 KB gz** once tree-shaking could see through it.
+- `[x]` **FlexSearch was eager: 74 KB gz on all 269 routes.** `Search.tsx`
+  statically imported `@/lib/search/flexsearch`, which imports the library at
+  module scope AND runs `new SearchEngine()` (→ `new Index()`) as a module side
+  effect. A previous pass made the 1.07 MB *index* load on intent; the *library*
+  never did. New `src/lib/search/load.ts` holds a memoised `import()` and no
+  static import — it has to be its own file or the deferral is defeated.
+  Verified still working: hover → open → type "react" → **15 hit links**, and
+  `flexsearch` appears in **0** eagerly-loaded chunks.
+
+### Correctness
+
+- `[x]` **The table of contents scrolled to the wrong place.** Every link did
+  `preventDefault()` then `window.scrollTo({ top: element.offsetTop - 100 })`.
+  `offsetTop` is measured from the nearest POSITIONED ancestor and
+  `TutorialLayout`'s root is `relative` — measured on a real chapter, a heading's
+  `offsetTop` was **522** while its true document offset was **587**. Net landing
+  error **165px**, and the magic `-100` existed to hide half of it. The headings
+  already carry `scroll-margin-top: 80px`, which native anchor scrolling honours.
+  Deleting the handler fixes it with less code: verified `scrollY` 1685 = expected
+  1685, heading 80px from the top, clearing the 65px header by **15px**, and
+  `location.hash` updated without `pushState`.
+- `[x]` Headings with no `id` were rendered as `href="#"` in the rail — filtered.
+- `[~]` **My own perf suspicion was wrong and is recorded as such.** The scroll
+  handler's per-event `querySelectorAll` measured **0.028ms** on a 7-heading
+  chapter. It was never the bottleneck it looked like; the DOM re-query was
+  removed anyway (a prerendered document cannot change), but no perf claim is
+  made for it.
+
+### Tokens — 123 hits removed since the baseline
+
+- `[x]` `MDXContent`: inline code `border-slate-200 bg-slate-100` + two
+  `dark:[#ffffff1a]` → `border-border bg-muted`; table `border-[#ddd]` (a light
+  grey that drew near-white grid lines in dark mode) → `border-border`; footnote
+  `sup` links `text-sky-500` → `text-primary`.
+- `[x]` `CustomLink`: prose links were the last place on the site painted in
+  Tailwind's `sky` palette — a **different blue** from the 217° brand hue, two
+  blues in the same paragraph. Now `text-primary`, and the external-link icon
+  uses `stroke-current` instead of naming the colour twice more.
+- `[x]` `HeadingLink`: four palette classes + two `dark:` variants → one token
+  pair.
+- `[x]` `Sidebar`: the active row's `border-[#BABABB] bg-[#E9F4FF]` /
+  `dark:border-[#878787] dark:bg-[#022248]` → `border-primary border-l-2
+  bg-accent`; `hover:text-black dark:hover:text-white` ×2 → `hover:text-foreground`
+  (which also removed a nested `dark:hover:[&[data-state=open]>svg]` override —
+  the chevron inherits `currentColor`).
+- `[x]` `Callout`: `dark:[&_h3_a]:!text-white` ×2 → unconditional
+  `!text-foreground`.
+- `[x]` `Pagination` **rewritten**: it carried 16 hardcoded values
+  (`text-[#8D8D93]` ×6, `text-black`/`dark:text-white` ×8) and looked like a
+  caption, when "where do I go next" is the most important control on a reading
+  page. Now two cards in the landing page's language — mono kicker, strong
+  boundary, depth gradient, hover lift — on a 2-col grid instead of
+  `justify-between` with an empty `<div />` spacer, so a first/last chapter's
+  surviving card is not pushed around.
+- `[x]` `ContentMeta`: `border-[#F2F2F7]` + `dark:border-[#151515]` →
+  `border-border`.
+
+### My own mistake, and what it taught
+
+I wrote an arbitrary-variant pattern containing `*` inside a **code comment**.
+Tailwind v4 scans raw file text including comments, harvested it as a real
+utility, and emitted `.…\:\!text-foreground h* a { }` — an invalid selector that
+broke the CSS parse. The production build still exited 0; only the dev server
+surfaced it. Fixed, and the file now carries a warning not to do it again.
+**Lesson worth keeping: `pnpm build` exiting 0 does not prove the CSS parsed.**
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML, 0 `MISSING_MESSAGE`.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

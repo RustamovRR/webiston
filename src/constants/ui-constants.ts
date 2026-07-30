@@ -4,9 +4,17 @@
 // primary consumer — a package may never import app code via `@/`). They are
 // re-exported here so existing app call sites keep working; there is exactly one
 // definition. See docs/adr/0004 and initiatives/code-structure.md.
-export { TOOL_COLORS, UI_PATTERNS } from "@webiston/ui"
+//
+// The DEEP path matters, and it is the whole reason this comment exists.
+// `from "@webiston/ui"` pulls the package's root barrel, and a barrel drags
+// every CLIENT module it re-exports into the importing route's client reference
+// manifest. This file is reached from `@/constants` → `Footer` → every page,
+// so two colour constants were putting `aurora-text`, `code-highlight`,
+// `gradient-tabs`, `number-ticker`, `select`, `typing-animation` and
+// `BaseModal` on all 226 prerendered book chapters. Measured, not theorised.
+export { TOOL_COLORS, UI_PATTERNS } from "@webiston/ui/constants/ui-patterns"
 
-import { TOOL_COLORS } from "@webiston/ui"
+import { TOOL_COLORS } from "@webiston/ui/constants/ui-patterns"
 
 // Tool-specific color mappings.
 //

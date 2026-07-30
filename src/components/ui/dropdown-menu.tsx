@@ -14,4 +14,4 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/dropdown-menu"

@@ -8,10 +8,13 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-30 — design-system sweep now covers every shared surface
-(Phases 6–17): homepage, /tools, /books, the search dialog, and the three book
-landing pages. Phase 17 replaced the last `list-disc` documentation page and
-found a hole in the `pnpm tokens` ratchet. Branch `refactor/infrastructure`._
+_Last updated: 2026-07-30 — design-system sweep now covers every surface
+(Phases 6–18): homepage, /tools, /books, the search dialog, the book landing
+pages, and **the reading page itself**. Phase 18 was mostly payload and
+correctness: barrel imports were putting tool-only UI on 226 chapters, FlexSearch
+was eager on all 269 routes, and the ToC scrolled 165px off. The three rendering
+questions (0 JS? SSR? RSC + newer APIs?) are answered with evidence in
+`reference/architecture.md § 5b`. Branch `refactor/infrastructure`._
 
 ---
 
@@ -51,6 +54,10 @@ found a hole in the `pnpm tokens` ratchet. Branch `refactor/infrastructure`._
 | Book landing pages | ✅ | `/books/<id>` ×3 rewritten. Was a `list-disc` bullet list of **the same links the sidebar already showed**, plus "pick a topic from the sidebar" — zero information of its own. The right rail was **two dead `href="#"` links** (headings had no `id`). Card grid uses **container queries**: at a fixed 1024px viewport, collapsing the sidebar takes the column 344px → **632px** and the layout follows (1 col → 2 × 308px) — a viewport breakpoint cannot see that. **17b:** owner rejected the first cards — the bottom `border-t` drew a rule under one-word titles; cards now match the homepage order exactly and their third line previews the chapter's own first 3 topics |
 | Reader shell alignment | ✅ | Owner: *"chapdagi sidebar header bilan teng emas"* — correct, and measured. Header logo at **x=64**, sidebar rows were at **80** and their text at **92** (a layout `pl-4` stacked on each row's `pl-3`). Now rows at **64**, flush with the logo AND the footer's first link. Both rails inset the same 12px; right rail's right edge = **1536** = the header's |
 | Sticky rails | ✅ | `TutorialLayout` hardcoded `top-[3.5rem]` (56px) while the header measures **65px** — both rails sat **9px underneath the bar**. Now `top-(--header-height)`; verified on a 5,664px chapter at scrollY 1500: `asideTop` = `railTop` = **64**, flush against the border |
+| Reading page payload | ✅ | **Barrel imports were the whole story.** Chapter JS **383 → 340 KB gz**, client modules in the route manifest **30 → 16**. `CodeBlock` imported `CopyButton` from `@/components/shared`; all 16 `components/ui/*` shims re-exported the `@webiston/ui` ROOT barrel; and the last leak was a **constants** file (`ui-constants.ts` → `@webiston/ui`) reached via `Footer` on every page. lucide's chunk **111 → 15 KB** once tree-shaking could see through it. Also: `packages/ui`'s `"./composites/*"` export mapped to files that never existed |
+| FlexSearch eager load | ✅ | **74 KB gz on all 269 routes.** `Search.tsx` statically imported the engine module, which imports the library AND runs `new SearchEngine()` at module scope. New `lib/search/load.ts` (memoised `import()`, no static import). Verified: `flexsearch` in **0** eager chunks, search still returns 15 hits |
+| ToC anchor scrolling | ✅ | Clicks landed **165px off**. The handler used `element.offsetTop`, which is relative to the nearest POSITIONED ancestor — `TutorialLayout`'s root is `relative`, so measured `offsetTop` 522 vs true 587, then `-100` on top. Headings already had `scroll-margin-top: 80px`; deleting the handler lets native anchors do it right. Verified `scrollY` 1685 = expected, clears the header by 15px |
+| Rendering model answered | ✅ | **0 JS is impossible in App Router** (React runtime + RSC payload + router always ship) — Astro is the only 0-JS answer and that's a rewrite. These pages are **SSG, not SSR**, which is correct for a fixed corpus — do not "add SSR". RSC shape was already right; the defect was leakage across the boundary. See `reference/architecture.md § 5b` |
 | `pnpm tokens` blind spot | ⚠️ | `PALETTE_RE` has no `black`/`white`, so `hover:text-black dark:hover:text-white` is **invisible to the ratchet**. **124** such hits repo-wide. Widening the regex moves the ratchet for everything — needs a decision |
 | CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
 
@@ -87,7 +94,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–17b shipped — homepage + /tools + /books + search dialog + **book landing pages + reader-shell alignment**. 17b: owner rejected 17's cards (a `border-t` under one-word titles) → homepage card order exactly, third line previews the chapter's own topics; **sidebar rows 80px → 64px, flush with the header logo and footer**; both sticky rails were **9px under the header** (`top-[3.5rem]` vs a 65px bar) → `top-(--header-height)`. Also found a **`pnpm tokens` blind spot** (no `black`/`white` in `PALETTE_RE` — 124 invisible hits). Next: the **book-reader chrome** (`Sidebar`, `TableOfContents`, `Pagination`, `ContentMeta` — still palette classes + raw `#8D8D93`) |
+| [Design system](initiatives/design-system.md) | `[~]` | **Phase 18 shipped — the reading page.** Chapter JS **383 → 340 KB gz** (barrel imports, then FlexSearch deferred), client modules **30 → 16**, ToC anchor off-by-165px fixed, `Pagination` rewritten, tokens **−123 hits**. Rendering questions answered in `reference/architecture.md § 5b`. Next: `TutorialLayoutContent` → server (229 client lines), then the 4 decisions above. Earlier: Phases 1–17b — homepage + /tools + /books + search dialog + **book landing pages + reader-shell alignment**. 17b: owner rejected 17's cards (a `border-t` under one-word titles) → homepage card order exactly, third line previews the chapter's own topics; **sidebar rows 80px → 64px, flush with the header logo and footer**; both sticky rails were **9px under the header** (`top-[3.5rem]` vs a 65px bar) → `top-(--header-height)`. Also found a **`pnpm tokens` blind spot** (no `black`/`white` in `PALETTE_RE` — 124 invisible hits). Next: the **book-reader chrome** (`Sidebar`, `TableOfContents`, `Pagination`, `ContentMeta` — still palette classes + raw `#8D8D93`) |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
@@ -153,6 +160,37 @@ longer reach the client at all.
 Note the `<html lang>` trade-off is now settled by evidence: static rendering
 won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the
 266 prerendered routes back — see the initiative.
+
+**New from Phase 18 — four things found on the reading page that need an explicit
+yes before I touch them (deletions and dependency swaps are not drive-by work):**
+
+1. **`ContentMeta` renders an empty bordered strip.** Every child is commented
+   out, so its whole contribution to 226 chapter pages is a ~40px hairline. It
+   accepts `updatedAt` and never reads it, and `TutorialContent` computes
+   `frontmatter.updatedAt || new Date().toISOString()` purely to feed it. Delete
+   the component + the prop + the computation, or restore the "improve this page
+   on GitHub" link it used to hold?
+2. **`CustomParagraph.processChildren` is dead code that runs on every
+   paragraph.** It recursively `React.Children.map`s + `cloneElement`s looking
+   for `element.type === "div"`, but `MDXContent`'s components map defines a
+   `div` override, so the child's type is that FUNCTION, never the string.
+   Verified empirically: **0** occurrences of the class it would emit across
+   **79** `<p>` elements in a built chapter. The component can collapse to a
+   one-line `<p>`.
+3. **`next-mdx-remote` is archived** (2026-04-09, "no longer supported") and sits
+   on the critical path of 226 pages. Options: stay pinned, move to
+   `next-mdx-remote-client`, or follow its own README's advice and compile MDX
+   with the core `@mdx-js/mdx` package at build time. Needs its own initiative.
+4. **`@next/mdx` config is dead.** `withMDX` + `providerImportSource:
+   "@mdx-js/react"` + `pageExtensions: md/mdx` — zero `.mdx` files under
+   `src/app/`, `@mdx-js/react` imported nowhere. Removing it also drops
+   `@mdx-js/loader` and `@next/mdx` from `package.json`.
+
+**Also from Phase 18, not started:** `TutorialLayoutContent` is a **229-line
+`'use client'`** component computing breadcrumbs from `useParams()` when the
+layout already has `params` on the server. Moving it server-side means passing
+server JSX through the client `TutorialLayout` as a prop, and keeping only the
+overflow dropdown as an island. Real win, bigger change.
 
 **New from Phase 17 — needs a decision, not code:** widening `PALETTE_RE` in
 `scripts/token-guardrail.mjs` to catch `black`/`white`. It would add **124** hits

@@ -1,1 +1,1 @@
-export { ShimmerButton } from "@webiston/ui"
+export { ShimmerButton } from "@webiston/ui/primitives/shimmer-button"

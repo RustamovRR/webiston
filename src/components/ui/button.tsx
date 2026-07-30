@@ -1,1 +1,1 @@
-export { Button, buttonVariants } from "@webiston/ui"
+export { Button, buttonVariants } from "@webiston/ui/primitives/button"

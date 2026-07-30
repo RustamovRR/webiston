@@ -1,9 +1,41 @@
 "use client"
 
 import Link from "next/link"
-import { useCallback, useEffect, useState } from "react"
-// import { useGetTutorialContentPath } from '@/hooks/queries'
+import { useEffect, useState } from "react"
 import { cn } from "@/lib"
+
+/**
+ * The reading page's right rail — a scroll-spy over the chapter's own headings.
+ *
+ * Client by necessity: it reads the rendered DOM and tracks scroll position.
+ * Everything that did NOT need to be client has been taken out.
+ *
+ * What was removed and why:
+ *
+ * 1. **The click handler.** Every link did `preventDefault()` and then
+ *    `window.scrollTo({ top: element.offsetTop - 100 })`. `offsetTop` is
+ *    measured from the nearest POSITIONED ancestor, and `TutorialLayout`'s root
+ *    is `relative` — measured on a real chapter, a heading's `offsetTop` was
+ *    522 while its true document offset was 587. So the handler landed
+ *    `65 + 100 = 165px` above the target, and the magic `-100` existed to
+ *    paper over the first half of that.
+ *    Meanwhile the headings already carry `scroll-margin-top: 80px` (measured),
+ *    which is exactly what native anchor scrolling honours. Deleting the
+ *    handler makes the browser do it correctly, for free — no JS, no magic
+ *    number, and `history.pushState` comes along for free too.
+ *
+ * 2. **The initial-hash `scrollTo`.** Same wrong arithmetic, plus a 100ms
+ *    `setTimeout` racing the browser's own hash handling. The browser already
+ *    lands on `#id` in prerendered HTML; we only need to know which id is
+ *    active so the rail can highlight it.
+ *
+ * 3. **The per-event DOM query.** The scroll handler re-ran
+ *    `querySelectorAll` + `getBoundingClientRect` on every scroll event. In
+ *    fairness this measured 0.028ms on a 7-heading chapter, so it was never the
+ *    bottleneck it looked like — but there is no reason to re-query a
+ *    prerendered document that cannot change, so it now reads the collected
+ *    list.
+ */
 
 interface Heading {
   id: string
@@ -16,87 +48,58 @@ interface IProps {
   slug: string[]
 }
 
-export default function TableOfContents({ slug }: IProps) {
+/** Where the "you are here" line sits: a heading counts as active once it has
+ *  passed the upper third of the viewport. */
+const ACTIVE_LINE_DIVISOR = 3
+
+function collectHeadings(): Heading[] {
+  return (
+    Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "article h2, article h3, article h4"
+      )
+    )
+      // A heading with no `id` cannot be linked to, so it has no business in a
+      // list of links — it used to render as `href="#"`.
+      .filter((element) => element.id)
+      .map((element) => ({
+        id: element.id,
+        text: element.textContent || "",
+        level: Number(element.tagName.charAt(1)),
+        element
+      }))
+  )
+}
+
+export default function TableOfContents({ slug: _slug }: IProps) {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>("")
 
-  // const { contentResponse, isLoading, isFetching } = useGetTutorialContentPath(slug)
-
-  // Function to get all headings
-  const getHeadings = useCallback(() => {
-    const elements = Array.from(
-      document.querySelectorAll("article h2, article h3, article h4")
-    )
-    return elements.map((element) => ({
-      id: element.id,
-      text: element.textContent || "",
-      level: Number(element.tagName.charAt(1)),
-      element: element as HTMLElement
-    }))
+  useEffect(() => {
+    const collected = collectHeadings()
+    setHeadings(collected)
+    // Trust the browser to have scrolled to the hash already; just adopt it as
+    // the initial highlight.
+    setActiveId(window.location.hash.slice(1) || collected[0]?.id || "")
   }, [])
 
-  // Function to check which heading is currently in view
-  const getActiveHeading = useCallback((headings: Heading[]) => {
-    // Get the middle of the viewport
-    const viewportMiddle = window.innerHeight / 3
+  useEffect(() => {
+    if (headings.length === 0) return
 
-    // Find the first heading that's above the middle of the viewport
-    for (const heading of headings) {
-      const rect = heading.element.getBoundingClientRect()
-      if (rect.top <= viewportMiddle) {
-        continue
+    const update = () => {
+      const line = window.innerHeight / ACTIVE_LINE_DIVISOR
+      let current = headings[0].id
+      for (const heading of headings) {
+        if (heading.element.getBoundingClientRect().top > line) break
+        current = heading.id
       }
-      // Return the previous heading as it's the active one
-      const index = headings.indexOf(heading)
-      return index > 0 ? headings[index - 1].id : headings[0].id
+      setActiveId(current)
     }
 
-    // If we're at the bottom of the page, return the last heading
-    return headings[headings.length - 1]?.id
-  }, [])
-
-  // Update active heading on scroll
-  useEffect(() => {
-    const updateActiveHeading = () => {
-      const currentHeadings = getHeadings()
-      if (currentHeadings.length > 0) {
-        const activeHeadingId = getActiveHeading(currentHeadings)
-        setActiveId(activeHeadingId)
-      }
-    }
-
-    // Initial update
-    updateActiveHeading()
-
-    // Add scroll listener
-    window.addEventListener("scroll", updateActiveHeading, { passive: true })
-    return () => window.removeEventListener("scroll", updateActiveHeading)
-  }, [getActiveHeading, getHeadings])
-
-  // Initial heading setup
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentHeadings = getHeadings()
-      setHeadings(currentHeadings)
-
-      // Check for hash in URL on initial load
-      const hash = window.location.hash.slice(1)
-      if (hash) {
-        setActiveId(hash)
-        const element = document.getElementById(hash)
-        if (element) {
-          // Use scrollIntoView with instant behavior
-          element.scrollIntoView({ behavior: "instant" })
-          // Backup method if scrollIntoView doesn't work as expected
-          window.scrollTo({
-            top: element.offsetTop - 100,
-            behavior: "instant"
-          })
-        }
-      }
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [getHeadings])
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    return () => window.removeEventListener("scroll", update)
+  }, [headings])
 
   if (headings.length === 0) {
     return null
@@ -105,53 +108,45 @@ export default function TableOfContents({ slug }: IProps) {
   return (
     <div className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
       <div className="sticky top-0 z-10">
-        <div className="bg-background pb-2 text-sm font-semibold">
-          Ushbu sahifada
+        {/* Same mono/accent kicker the landing page and homepage dividers use,
+            instead of a lone bold sentence. */}
+        <div className="flex items-center gap-2.5 bg-background pb-2 font-mono text-[11px] uppercase tracking-[0.15em]">
+          <span className="size-[5px] shrink-0 rounded-[1.5px] bg-primary" />
+          <span className="text-foreground">Ushbu sahifada</span>
         </div>
-        <div className="from-background pointer-events-none h-2 bg-gradient-to-b to-transparent" />
+        <div className="pointer-events-none h-2 bg-gradient-to-b from-background to-transparent" />
       </div>
-      <ul className="space-y-1 text-sm">
+      <ul className="space-y-0.5 text-sm">
         {headings.map((heading) => (
           <li
-            key={`${heading.id} ${heading.level} ${heading.text}`}
+            key={heading.id}
             className={cn(
-              "group relative overflow-y-auto rounded-md",
-              heading.level === 2 && "font-semibold",
+              "relative",
               heading.level === 3 && "ml-3",
               heading.level === 4 && "ml-6"
             )}
           >
+            {/* A plain anchor. No `onClick`, no `preventDefault` — see the note
+                at the top of this file. `text-foreground` / `text-muted-
+                foreground`, not `text-black dark:text-white`: the token pair
+                flips with the scheme, so the four `dark:` variants this used to
+                need are gone. */}
             <Link
               href={`#${heading.id}`}
               className={cn(
-                "block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200",
-                "text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white",
+                "block rounded-md py-1 pr-2 pl-2.5 text-sm transition-colors duration-200",
+                "border-transparent border-l-2 text-muted-foreground hover:text-foreground",
                 activeId === heading.id &&
-                  "font-semibold text-black dark:text-white"
+                  "border-primary font-medium text-foreground"
               )}
-              style={{
-                wordBreak: "break-word"
-              }}
-              onClick={(e) => {
-                e.preventDefault()
-                const element = document.getElementById(heading.id)
-                if (element) {
-                  // Use instant scroll behavior
-                  window.scrollTo({
-                    top: element.offsetTop - 100,
-                    behavior: "instant"
-                  })
-                  setActiveId(heading.id)
-                  window.history.pushState(null, "", `#${heading.id}`)
-                }
-              }}
+              style={{ wordBreak: "break-word" }}
             >
               {heading.text}
             </Link>
           </li>
         ))}
       </ul>
-      <div className="from-background pointer-events-none sticky right-0 bottom-0 left-0 h-8 bg-gradient-to-t to-transparent" />
+      <div className="pointer-events-none sticky right-0 bottom-0 left-0 h-8 bg-gradient-to-t from-background to-transparent" />
     </div>
   )
 }

@@ -1,1 +1,1 @@
-export { Input } from "@webiston/ui"
+export { Input } from "@webiston/ui/primitives/input"

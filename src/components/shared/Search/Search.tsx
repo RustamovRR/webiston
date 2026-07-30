@@ -3,7 +3,11 @@
 import { SearchIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { searchEngine } from "@/lib/search/flexsearch"
+// NOT `import { searchEngine } from "@/lib/search/flexsearch"`. That static
+// import put FlexSearch — 74 KB gzipped, measured — into the initial bundle of
+// all 269 routes, and ran the engine's constructor at module evaluation. See
+// `load.ts` for why the indirection has to be its own file.
+import { loadSearchEngine } from "@/lib/search/load"
 import type { ISearchHit } from "@/types/common"
 import SearchDialog from "./SearchDialog"
 
@@ -35,7 +39,8 @@ export default function Search() {
     setLoading(true)
     debounceTimer.current = setTimeout(async () => {
       try {
-        const results = await searchEngine.search(value)
+        const engine = await loadSearchEngine()
+        const results = await engine.search(value)
         setGroupedHits(results)
       } catch (error) {
         console.error("Search failed:", error)
@@ -88,14 +93,22 @@ export default function Search() {
   // This stays as the fallback for ⌘K users who never touch the button; the
   // real work usually starts earlier, on hover/focus (see `warmSearch`).
   useEffect(() => {
-    if (open) searchEngine.initialize().catch(console.error)
+    if (open) {
+      loadSearchEngine()
+        .then((engine) => engine.initialize())
+        .catch(console.error)
+    }
   }, [open])
 
   // Prefetch on INTENT. Indexing ~1000 documents is a long task, and starting
   // it at the moment the dialog begins animating in is what produced the
   // visible flicker on first open. Hover/focus buys us a few hundred
   // milliseconds; `initialize()` is single-flight, so calling it twice is free.
-  const warmSearch = () => searchEngine.warm()
+  const warmSearch = () => {
+    loadSearchEngine()
+      .then((engine) => engine.warm())
+      .catch(console.error)
+  }
 
   return (
     <>

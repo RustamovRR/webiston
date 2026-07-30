@@ -76,7 +76,16 @@ export default function Callout({
   return (
     <div
       className={cn(
-        "my-6 rounded-lg border p-4 py-6 pr-12 shadow-sm [&_h2]:!mt-0 [&_h3]:!mt-0 dark:[&_h3_a]:!text-white [&_h4]:!mt-0 dark:[&_h4_a]:!text-white",
+        // The heading-link overrides are now unconditional `!text-foreground`
+        // instead of `dark:…!text-white`. A dark-only override left callout
+        // heading links inheriting the prose link colour in light mode and
+        // forcing white in dark — the token does both at once.
+        //
+        // Do NOT write an arbitrary-variant pattern with a `*` in a comment
+        // here: Tailwind v4 scans raw file text, comments included, so a
+        // wildcard inside square brackets is harvested as a real utility and
+        // emits an invalid selector that fails the CSS parse.
+        "my-6 rounded-lg border p-4 py-6 pr-12 shadow-sm [&_h2]:!mt-0 [&_h3]:!mt-0 [&_h3_a]:!text-foreground [&_h4]:!mt-0 [&_h4_a]:!text-foreground",
         styles.containerClass,
         className
       )}

@@ -1,1 +1,1 @@
-export { Textarea } from "@webiston/ui"
+export { Textarea } from "@webiston/ui/primitives/textarea"

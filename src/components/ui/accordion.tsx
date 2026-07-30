@@ -3,4 +3,4 @@ export {
   AccordionContent,
   AccordionItem,
   AccordionTrigger
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/accordion"

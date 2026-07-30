@@ -1,4 +1,15 @@
-import { CopyButton } from "@/components/shared"
+// A DEEP import, not `@/components/shared` and not the `@webiston/ui` root.
+//
+// This one line was putting the entire shared-component client graph on all 226
+// prerendered chapters. `CodeBlock` is a Server Component, but a barrel import
+// makes every CLIENT module the barrel re-exports part of this route's client
+// reference manifest — measured, the chapter route was pulling `DualTextPanel`,
+// `TerminalInput`, `aurora-text`, `code-highlight`, `gradient-tabs`,
+// `number-ticker`, `select`, `typing-animation` and `BaseModal`. None of those
+// appear on a book page; several are tool-only UI.
+//
+// `CopyButton` is the only client island the code block actually needs.
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { highlight } from "./highlight"
 
 interface CodeBlockProps {

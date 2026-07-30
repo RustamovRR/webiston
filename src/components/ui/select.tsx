@@ -9,4 +9,4 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/select"

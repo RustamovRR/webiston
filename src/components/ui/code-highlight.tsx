@@ -1,1 +1,1 @@
-export { CodeHighlight } from "@webiston/ui"
+export { CodeHighlight } from "@webiston/ui/primitives/code-highlight"

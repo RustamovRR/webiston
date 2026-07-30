@@ -8,4 +8,4 @@ export {
   NavigationMenuTrigger,
   NavigationMenuViewport,
   navigationMenuTriggerStyle
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/navigation-menu"
