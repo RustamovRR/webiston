@@ -41,18 +41,28 @@ export default function TutorialLayout({
   }, [tutorialId, navigationItems, setNavItems])
 
   return (
-    <div className="relative mx-auto flex min-h-[calc(100vh-3.5rem)] w-full max-w-[1536px] px-4 sm:px-6 lg:px-8">
+    // `--header-height`, not a hardcoded `3.5rem`. The header is 4rem tall
+    // (`Header.tsx` reads the same token) plus a 1px border — 65px measured —
+    // so a `top-[3.5rem]` sticky put both rails **9px UNDERNEATH** the bar they
+    // are supposed to sit below. Two hardcoded heights in two files is exactly
+    // the pair that drifts; this is now one token, read in three places.
+    <div className="relative mx-auto flex min-h-[calc(100vh-var(--header-height))] w-full max-w-[1536px] px-4 sm:px-6 lg:px-8">
       <aside
         className={cn(
-          "sticky top-[3.5rem] left-0 z-30 h-[calc(100vh-3.5rem)] transition-all duration-500 ease-in-out max-lg:hidden",
+          "sticky top-(--header-height) left-0 z-30 h-[calc(100vh-var(--header-height))] transition-all duration-500 ease-in-out max-lg:hidden",
           isSidebarOpen
             ? "border-border w-72 border-r"
             : "w-0 border-r-transparent"
         )}
       >
+        {/* No `pl-4`. The container's own `lg:px-8` already establishes the
+            page's left edge — the same edge the header's logo starts at — and
+            an extra 16px here on top of each nav row's `pl-3` pushed the
+            sidebar's text **28px** right of the logo. That gap is what read as
+            "the sidebar is not level with the header". */}
         <div
           className={cn(
-            "h-full overflow-hidden py-6 pl-4 transition-opacity duration-200",
+            "h-full overflow-hidden py-6 transition-opacity duration-200",
             isSidebarOpen ? "opacity-100" : "opacity-0 delay-150"
           )}
         >
@@ -98,8 +108,10 @@ export default function TutorialLayout({
         </div>
       </section>
 
-      <nav className="sticky top-[3.5rem] hidden h-[calc(100vh-3.5rem)] w-64 flex-shrink-0 max-lg:hidden lg:block">
-        <div className="h-full px-4 py-6">
+      <nav className="sticky top-(--header-height) hidden h-[calc(100vh-var(--header-height))] w-64 flex-shrink-0 max-lg:hidden lg:block">
+        {/* `pl-3` matches the left rail's own row inset exactly, so the two
+            rails are inset the same amount from their respective page edges. */}
+        <div className="h-full py-6 pr-4 pl-3">
           <TableOfContents slug={slug} />
         </div>
       </nav>

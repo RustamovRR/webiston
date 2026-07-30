@@ -818,7 +818,10 @@ body:has(.hero) [data-site-header] {
    content simply does not exist there. Print is the real-world case of that.) */
 @media print {
   .reveal,
-  .rise {
+  .rise,
+  /* `.grid-rise` is `backwards`-filled too, so it had the same failure mode:
+     printing /tools or a book's table of contents produced empty card frames. */
+  .grid-rise {
     animation: none !important;
   }
 }

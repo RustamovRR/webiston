@@ -8,10 +8,10 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-30 — homepage reviewed from scratch (Phases 6–7): motif
-replaced with a drifting grid, header seam fixed, `--border-strong` added, a
-second vacuous gate closed, and the light-mode hero CTA made visible.
-Branch `refactor/infrastructure`._
+_Last updated: 2026-07-30 — design-system sweep now covers every shared surface
+(Phases 6–17): homepage, /tools, /books, the search dialog, and the three book
+landing pages. Phase 17 replaced the last `list-disc` documentation page and
+found a hole in the `pnpm tokens` ratchet. Branch `refactor/infrastructure`._
 
 ---
 
@@ -48,6 +48,10 @@ Branch `refactor/infrastructure`._
 | Reduced motion | ✅ | The only `prefers-reduced-motion` block on the site belonged to **Sonner**; zero of our own animations were guarded. Now gated, verified in compiled CSS |
 | Design tokens | ✅ | **All 5 phases shipped.** 3-layer, hue 217°, 32/32 contrast PASS, ratchet live. **5,401 → 2,600** hits · `dark:` 1,967 → **570** · tokens 170 → **1,658**. Of what's left, 629 = parked tools, 195 = colour *data* |
 | Tests in `src/` | ⚠️ | **79** across 5 files — suite 207 → **286**. `src/` had zero. Found **3 real bugs**: `rgbToHex` emitting invalid CSS, `truncateText` exceeding its own limit, and the password generator on `Math.random()` |
+| Book landing pages | ✅ | `/books/<id>` ×3 rewritten. Was a `list-disc` bullet list of **the same links the sidebar already showed**, plus "pick a topic from the sidebar" — zero information of its own. The right rail was **two dead `href="#"` links** (headings had no `id`). Card grid uses **container queries**: at a fixed 1024px viewport, collapsing the sidebar takes the column 344px → **632px** and the layout follows (1 col → 2 × 308px) — a viewport breakpoint cannot see that. **17b:** owner rejected the first cards — the bottom `border-t` drew a rule under one-word titles; cards now match the homepage order exactly and their third line previews the chapter's own first 3 topics |
+| Reader shell alignment | ✅ | Owner: *"chapdagi sidebar header bilan teng emas"* — correct, and measured. Header logo at **x=64**, sidebar rows were at **80** and their text at **92** (a layout `pl-4` stacked on each row's `pl-3`). Now rows at **64**, flush with the logo AND the footer's first link. Both rails inset the same 12px; right rail's right edge = **1536** = the header's |
+| Sticky rails | ✅ | `TutorialLayout` hardcoded `top-[3.5rem]` (56px) while the header measures **65px** — both rails sat **9px underneath the bar**. Now `top-(--header-height)`; verified on a 5,664px chapter at scrollY 1500: `asideTop` = `railTop` = **64**, flush against the border |
+| `pnpm tokens` blind spot | ⚠️ | `PALETTE_RE` has no `black`/`white`, so `hover:text-black dark:hover:text-white` is **invisible to the ratchet**. **124** such hits repo-wide. Widening the regex moves the ratchet for everything — needs a decision |
 | CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
 
 **Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
@@ -83,7 +87,7 @@ the 8 dead-key deletion below.
 | Initiative | Status | Next phase |
 | ---------- | :----: | ---------- |
 | [SEO & rendering](initiatives/seo-and-rendering.md) | `[~]` | Phases 1–3 shipped → **Phase 4, payload** (209 KB logo, CLS, message bundle) |
-| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–15 shipped — homepage + /tools + /books. 15: header hover hex removed, **categorical colour via `--chart-*`** (`CATEGORY_ACCENTS`), filter flicker root-caused (framer-motion → CSS), tokens **−100** |
+| [Design system](initiatives/design-system.md) | `[~]` | Phases 1–17b shipped — homepage + /tools + /books + search dialog + **book landing pages + reader-shell alignment**. 17b: owner rejected 17's cards (a `border-t` under one-word titles) → homepage card order exactly, third line previews the chapter's own topics; **sidebar rows 80px → 64px, flush with the header logo and footer**; both sticky rails were **9px under the header** (`top-[3.5rem]` vs a 65px bar) → `top-(--header-height)`. Also found a **`pnpm tokens` blind spot** (no `black`/`white` in `PALETTE_RE` — 124 invisible hits). Next: the **book-reader chrome** (`Sidebar`, `TableOfContents`, `Pagination`, `ContentMeta` — still palette classes + raw `#8D8D93`) |
 | [Code structure](initiatives/code-structure.md) | `[~]` | Phase 2 — collapse the `src/components/ui/*` shim layer |
 | [Tooling, CI & testing](initiatives/tooling-ci-and-testing.md) | `[~]` | **Phase 3 — first tests in `src/`** (Phase 1 CI shipped) |
 | [Content & i18n](initiatives/content-and-i18n.md) | `[ ]` | Phase 1 — fix `url-encoder` key parity |
@@ -126,9 +130,10 @@ text-first hero is also the correct pattern when the offer is a *collection*
 rather than one product with a screenshot. Revisit only after `unoptimized` is
 resolved — and then with the real book covers, not an abstract illustration.
 
-**41 cards is still too many for a homepage.** Every book section dumps its full
-top-level chapter list. Showing 4–6 per book with a "hammasi" link would make the
-page scannable, but it changes navigation, so it needs a decision first.
+**~~41 cards is still too many for a homepage.~~** Resolved in Phase 11 — each
+book now shows 5 chapters + an explicit "all chapters" door, and Phase 17 gave
+that door a real destination: `/books/<id>` is now the book's own table of
+contents rather than a bullet list pointing back at the sidebar.
 
 **Testing — continue the Trophy.** The pure layer is covered (307 tests). Next:
 `useOgMetaGenerator` (601 lines) and `useMicrophoneTest` (521) — both need pure
@@ -148,6 +153,12 @@ longer reach the client at all.
 Note the `<html lang>` trade-off is now settled by evidence: static rendering
 won, `lang="uz"` stays on the 19 English pages. Revisiting it means giving the
 266 prerendered routes back — see the initiative.
+
+**New from Phase 17 — needs a decision, not code:** widening `PALETTE_RE` in
+`scripts/token-guardrail.mjs` to catch `black`/`white`. It would add **124** hits
+to the ratchet in one go (`HttpStatus.tsx` 15, `OgMetaGenerator/PreviewPanel.tsx`
+10, `Pagination.tsx` 6, `Sidebar.tsx` 4, …). Some are legitimate — `text-white`
+on a brand-coloured surface — so this is a triage job, not a sweep.
 
 **Two decisions still blocking work:**
 

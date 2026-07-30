@@ -898,6 +898,201 @@ Verified in the browser with a real filter click.
 
 ---
 
+## Phase 16 — `[x]` Search dialog + /books depth (2026-07-30)
+
+- `[x]` **The first-open flicker, root-caused in two parts.**
+  1. `searchEngine.initialize()` fetched **1.07 MB** and then indexed ~1000
+     documents in ONE synchronous `forEach` — a long task starting at the exact
+     moment the dialog began animating in. Second opens skipped it via the
+     `initialized` flag, which is why the owner saw it "only the first time".
+     Fixed three ways: a `warm()` method called on `onPointerEnter`/`onFocus` of
+     the trigger (prefetch on intent), a **single-flight** `pending` promise so
+     hover-then-open cannot fetch twice, and **chunked indexing** (150 docs, then
+     yield) so the work interleaves with animation instead of blocking it.
+     Verified: hover → 1 index request; subsequent focus → still 1.
+  2. `AnimatePresence` was fading + sliding the dialog's inner state WHILE Radix
+     animated the dialog itself — two entrance animations over the same pixels.
+     framer-motion removed from the dialog; verified `getAnimations()` on the
+     content now returns exactly `["enter"]` with **0** inner animated nodes.
+  Also removed a production `console.log` of the document count.
+
+- `[x]` **The "ugly icon" was a CAMERA.** `NoResults` rendered lucide's camera
+  path (`M14.5 4h-5L7 7H4…` + `circle r=3`) for "nothing found", and its `<svg>`
+  had no width/height inside an `h-12 w-12` box, so an unsized inline SVG fell
+  back to its 300×150 default and overflowed. Replaced with an explicitly sized
+  magnifier-with-slash in a chip. The initial state's `FileSearch` at 40% opacity
+  became the **⌘K glyph** in a brand chip — it names what the user just pressed
+  and teaches the shortcut.
+
+- `[x]` **Dialog brought into the system:** mono kicker with accent pixel,
+  `font-mono` query row (it is a picture of the same surface as the hero
+  palette), hit rows with first-letter chips + `⏎` affordance, group headings in
+  the mono/uppercase divider idiom, keyboard-legend footer, `border-border-strong`.
+  Loading state gained three staggered dots (`search-dot`) — real progress
+  feedback while the index builds, where before there was static text.
+  Verified live: typing returned **15 hit links** with real chapter content.
+
+- `[x]` **/books depth pass.** Covers are 400×525 PORTRAIT but sat in a
+  `pt-[50%]` landscape frame with `object-contain`, so every one floated
+  letterboxed. Now at true ratio beside the title. Section headings adopted the
+  mono divider idiom with zero-padded counts; tag chips got the card language;
+  the four "why" boxes moved their emoji into brand chips (they were rendering at
+  heading weight inline, competing with the text) and gained the depth gradient.
+
+**Gate:** all 7 green · build 0 · 269 prerendered HTML · 0 MISSING_MESSAGE ·
+framer-motion sites 22 → **21**.
+
+---
+
+## Phase 17 — `[x]` Book landing pages `/books/<id>` (2026-07-30)
+
+`src/components/mdx/TutorialLanding/TutorialLanding.tsx` — rewritten. The three
+landing pages are the entry point to 225 chapters and were the last surface on
+the site still speaking 2015 documentation.
+
+- `[x]` **The page was pure redundancy.** A bordered "Boshlash" box whose body
+  read *"pick a topic from the sidebar navigation"*, then a `list-disc` bullet
+  list of the **same 7/9/12 links the sidebar was already showing two columns to
+  the left** — in the same order, with no extra information. Zero design-system
+  vocabulary: no cover (the book HAS one — `getTutorialInfo` returned `image` and
+  nothing rendered it), no counts, no card language, no mono/accent identity.
+
+- `[x]` **Two hard-rule violations in one utility string** —
+  `hover:text-black dark:hover:text-white` on every link: a raw palette class
+  AND a `dark:` variant on a colour utility. Now `hover:` on token surfaces only.
+
+- `[x]` **`not-prose` on the root.** This subtree renders inside the
+  `article.prose` wrapper `TutorialLayoutContent` puts around every book page.
+  Prose is right for MDX chapters and wrong for a designed layout — it is what
+  forced the old `p-8 pt-0` (padding-top ZERO on a padded card), fighting an h2
+  margin the card did not control.
+
+- `[x]` **The right rail was a list of dead links.** `TableOfContents` scrapes
+  `article h2, h3, h4` and links to `element.id`; this page's two headings had
+  no `id`, so "Ushbu sahifada" rendered `href="#"` twice. Headings now carry
+  `id="mundarija"` / `id="mualliflik-huquqi"`. Verified: `#mundarija` scrolls to
+  1067px. The count moved OUT of the `h2` into a sibling span — `textContent`
+  has no concept of a flex `gap`, so an inner `<span>· 07</span>` read
+  **"Mundarija· 07"** in the rail while looking correctly spaced on the page.
+
+- `[x]` **CONTAINER queries, not viewport breakpoints — measured, not assumed.**
+  This column sits between a 288px sidebar and a 256px table of contents, so
+  the viewport is not what constrains it. Measured widths: **352px at `lg`**,
+  608px at `xl`, 864px at the 1536px cap. A first pass with `xl:grid-cols-3`
+  measured **192px per card** — too narrow for
+  "1. Fundamental modellar asosida SI ilovalarini yaratish". Two columns is the
+  ceiling here; a third only ever gets ~290px.
+  The proof a viewport breakpoint could not do this: at a FIXED 1024px viewport,
+  collapsing the sidebar took the container 344px → **632px** and the layout
+  responded — header `column` → `row`, h1 30px → 36px, grid 1 col → **2 × 308px**.
+  A `sm:`/`xl:` would have been frozen through that.
+
+- `[x]` **Every number derived from `_meta.json`, never typed in.** 7/9/12
+  sections and 24/76/97 topics; per-card "N mavzu" vs "Alohida sahifa" for front
+  matter. Verified against the meta tree: 5+7+11+14+8+11+11+9 = **76** for the JS
+  book. No invented chapter numbering — the titles already carry "1.", "2.".
+
+- `[x]` **Latent href bug.** Cards linked `${tutorialId}/${item.path}` —
+  RELATIVE, and it only resolved because `/books/<id>` carries no trailing slash.
+  One `/` away from `/books/<id>/<id>/<path>` and a 404. Now absolute. All 28
+  landing-page links across the three books verified **200**.
+
+- `[x]` `navigationItems: any[]` → `TutorialNavigation[]`.
+
+- `[x]` **New:** cover at its real 400×525 ratio (same asset `/books` already
+  ships, so zero new bytes), mono `/books/<id>` kicker, derived stat row with a
+  `Bepul` brand chip, and two CTAs — "O'qishni boshlash" pointing at the book's
+  OWN first entry, plus "Barcha kitoblar".
+
+- `[x]` **Fixed in passing:** `@media print` guarded `.reveal` and `.rise` but
+  not `.grid-rise`, which is `backwards`-filled too — printing /tools or a book's
+  table of contents produced empty card frames.
+
+**Found, not fixed — `pnpm tokens` has a blind spot.** `PALETTE_RE` lists 22
+Tailwind hues but not `black`/`white`, and those classes carry no numeric suffix
+to match anyway. So `hover:text-black dark:hover:text-white` — the exact
+violation removed here — was **invisible to the ratchet**. Repo-wide there are
+**124** `bg|text|border|…-(black|white)` hits the gate cannot see, worst offenders
+`HttpStatus.tsx` (15) and `OgMetaGenerator/PreviewPanel.tsx` (10). Widening the
+regex moves the ratchet for the whole repo — owner's call.
+
+**Also found, not fixed:** the book-reader CHROME still carries the palette
+classes this page shed — `Sidebar.tsx` (2 sites), `TableOfContents.tsx`,
+`Pagination.tsx` and `ContentMeta.tsx` (raw `text-[#8D8D93]`). That is the reader
+surface on all 229 chapter pages, a separate pass. The breadcrumb also overflows
+at 375px (`flex-nowrap whitespace-nowrap` in `TutorialLayoutContent`).
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML, 0 `MISSING_MESSAGE`,
+`list-disc` occurrences in the built landing HTML **1 → 0**.
+
+---
+
+## Phase 17b — `[x]` Owner rejected 17's card + shell alignment (2026-07-30)
+
+Owner's verdict on Phase 17: *"umuman menga yoqmadi … nimaga cardlarda title
+ostida chiziq bor, nimaga kerak"* — plus a specific structural complaint that the
+left sidebar is not level with the header. Both were right.
+
+- `[x]` **The hairline under every card title.** Phase 17 put the meta row at the
+  BOTTOM of the card behind a `border-t`. On a one-word title that drew a rule
+  directly under the word (`E'tiroflar ─────`) and made each card read as a table
+  row. The homepage's `ChapterCard` has no such rule. Cards now follow the
+  homepage order **exactly**: mono accent line → title → two muted lines.
+
+- `[x]` **The cards gained the description slot they were missing.** The homepage
+  card is accent/title/description; this one had accent/title and a hairline to
+  fill the space. The third line is now the chapter's **own first three topics**
+  from `_meta.json`, joined with `·` — real information, and plain text rather
+  than links because nesting an `<a>` inside a card that IS an `<a>` is invalid
+  HTML. "3. Baholash metodologiyasi" now previews *"Fundamental modellarni
+  baholashdagi qiyinchiliklar · Til modellashtirish metrikalarini tushunish ·
+  Aniq baholash"*.
+
+- `[x]` **THE ALIGNMENT BUG — measured, three numbers.** At a 1600px viewport the
+  header's logo starts at **x=64** (the `max-w-[1536px]` container's content
+  edge). The sidebar's rows started at **x=80** and their text at **x=92** —
+  `TutorialLayout` put a `pl-4` on the aside's inner div *on top of* each nav
+  row's own `pl-3`. That 28px offset is what the owner saw. Removing the `pl-4`
+  puts the rows at **64, flush with the logo and with the footer's first link
+  (also 64)**; the remaining 12px is the row's internal text inset, which the
+  active state's `border-l` needs. The right rail was changed `px-4` → `pl-3
+  pr-4` so both rails are inset by the same 12px from their own page edge, and
+  its right edge stays at **1536** = the header's right content edge.
+
+- `[x]` **Both sticky rails were sitting 9px UNDERNEATH the header.**
+  `TutorialLayout` hardcoded `top-[3.5rem]` (56px) and
+  `h-[calc(100vh-3.5rem)]`, but the header is `--header-height` (4rem) **plus a
+  1px border = 65px measured**. Now `top-(--header-height)` and
+  `calc(100vh - var(--header-height))` — one token, read in three places.
+  Verified on a long chapter (`/books/fluent-react/jsx/under-the-hood`, 5,664px
+  document) at scrollY 1500: `asideTop` and `railTop` both **64**,
+  `gapUnderHeader` **−1px** — flush against the border, no sliver, no underlap.
+
+- `[x]` **Top block reviewed as asked.** Cover 120→**144×189** with a
+  `bg-primary/15 blur-2xl` halo — the homepage hero's brand light scoped to one
+  object, and the only decoration on the page. The kicker became a bordered chip
+  (the homepage's eyebrow-badge treatment). `h1` leading tightened to 1.12 and
+  the description gap `mt-4`→`mt-5`, because at that leading 16px read as glued.
+  `Bepul` moved to the END of the meta run — sitting between two `·` separators
+  it read as a third separator.
+
+- `[x]` **"Kitob rasmi sticky bo'lish kerakmi?" — no, and it is documented in the
+  component.** The column already sits between two sticky rails, the page is
+  barely two screens tall, and a cover is identity rather than navigation.
+  Pinning a third element makes the layout feel nailed down and buys the reader
+  nothing.
+
+**Note on the layout change's blast radius:** `TutorialLayout` is the shell for
+all 229 chapter pages, not just the 3 landing pages. Verified after the change:
+build 0, 269 prerendered HTML, sticky correct on a long chapter, `3.5rem` gone
+from the file except in the explanatory comment.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 269 prerendered HTML, 0 `MISSING_MESSAGE`.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors
