@@ -1,15 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { QrCustomization } from "../types"
-import { buildQrUrl, detectInputType } from "./qr-input"
-
-const custom: Pick<
-  QrCustomization,
-  "margin" | "foregroundColor" | "backgroundColor"
-> = {
-  margin: 4,
-  foregroundColor: "#000000",
-  backgroundColor: "#ffffff"
-}
+import { detectInputType } from "./qr-input"
 
 describe("detectInputType", () => {
   it("recognises each payload kind", () => {
@@ -53,39 +43,5 @@ describe("detectInputType", () => {
   it("prefers email over phone for a digits-only address", () => {
     // Order-dependent: the phone pattern would also accept "1234567".
     expect(detectInputType("1234567@example.uz")).toBe("email")
-  })
-})
-
-describe("buildQrUrl", () => {
-  it("returns empty string for blank input rather than requesting a blank QR", () => {
-    expect(buildQrUrl("", 200, "M", custom)).toBe("")
-    expect(buildQrUrl("   ", 200, "M", custom)).toBe("")
-  })
-
-  it("encodes size as WIDTHxHEIGHT and passes the error level through", () => {
-    const url = new URL(buildQrUrl("hello", 300, "H", custom))
-    expect(url.searchParams.get("size")).toBe("300x300")
-    expect(url.searchParams.get("ecc")).toBe("H")
-    expect(url.searchParams.get("format")).toBe("png")
-  })
-
-  it("strips the leading '#' from colours — the service wants bare hex", () => {
-    const url = new URL(buildQrUrl("hello", 200, "M", custom))
-    expect(url.searchParams.get("color")).toBe("000000")
-    expect(url.searchParams.get("bgcolor")).toBe("ffffff")
-  })
-
-  it("percent-encodes the payload so it cannot break the query string", () => {
-    const payload = "https://x.uz/?a=1&b=2#frag"
-    const url = new URL(buildQrUrl(payload, 200, "M", custom))
-    // The round-trip is what matters: whatever escaping is used, the service
-    // must receive the payload byte-for-byte.
-    expect(url.searchParams.get("data")).toBe(payload)
-  })
-
-  it("keeps multi-line payloads intact", () => {
-    const vcard = "BEGIN:VCARD\nFN:Ali\nEND:VCARD"
-    const url = new URL(buildQrUrl(vcard, 200, "M", custom))
-    expect(url.searchParams.get("data")).toBe(vcard)
   })
 })

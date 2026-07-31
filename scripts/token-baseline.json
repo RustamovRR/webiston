@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-07-31",
-  "total": 2399,
+  "total": 2196,
   "files": {
     "apps/extensions/latin-cyrillic/entrypoints/content.ts": 23,
     "apps/extensions/latin-cyrillic/entrypoints/popup/App.tsx": 6,
@@ -95,13 +95,7 @@
     "src/modules/tools/PasswordGenerator/components/InfoSection.tsx": 18,
     "src/modules/tools/PasswordGenerator/components/StrengthPanel.tsx": 30,
     "src/modules/tools/PasswordGenerator/hooks/usePasswordGenerator.ts": 7,
-    "src/modules/tools/QrGenerator/QrGenerator.tsx": 1,
-    "src/modules/tools/QrGenerator/components/CollapsibleCustomizationPanel.tsx": 55,
-    "src/modules/tools/QrGenerator/components/ControlPanel.tsx": 18,
-    "src/modules/tools/QrGenerator/components/InfoSection.tsx": 24,
-    "src/modules/tools/QrGenerator/components/QrCustomizationPanel.tsx": 76,
-    "src/modules/tools/QrGenerator/components/QrDisplay.tsx": 29,
-    "src/modules/tools/QrGenerator/hooks/useQrGenerator.ts": 3,
+    "src/modules/tools/QrGenerator/constants/index.ts": 3,
     "src/modules/tools/ScreenResolution/components/ControlPanel.tsx": 27,
     "src/modules/tools/ScreenResolution/components/DeviceTypesPanel.tsx": 4,
     "src/modules/tools/ScreenResolution/components/InfoSection.tsx": 45,

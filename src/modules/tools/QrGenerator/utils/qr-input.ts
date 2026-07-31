@@ -1,9 +1,9 @@
-import type { QrCustomization, QrErrorLevel, QrSize } from "../types"
-
 /**
- * The two pure pieces of the QR tool: what the user typed, and the URL we ask
- * the QR service for. Both lived inside `useCallback`s in the hook, so neither
- * could be tested.
+ * Classifying what the visitor pasted.
+ *
+ * This file used to also hold `buildQrUrl`, which assembled a request to
+ * `api.qrserver.com`. The code is drawn in the browser now, so there is no URL
+ * to build and no third party to send the payload to.
  */
 
 /** The kinds of payload the tool recognises, for the UI's type badge. */
@@ -50,37 +50,4 @@ export function detectInputType(text: string): QrInputType {
     if (pattern.test(value)) return type
   }
   return "text"
-}
-
-const QR_SERVICE = "https://api.qrserver.com/v1/create-qr-code/"
-
-/**
- * The QR service URL for a payload.
- *
- * Returns "" for blank input so callers can treat "nothing to show" as falsy
- * rather than requesting a QR code of an empty string.
- */
-export function buildQrUrl(
-  text: string,
-  size: QrSize,
-  errorCorrectionLevel: QrErrorLevel,
-  custom: Pick<
-    QrCustomization,
-    "margin" | "foregroundColor" | "backgroundColor"
-  >
-): string {
-  if (!text?.trim()) return ""
-
-  const params = new URLSearchParams({
-    size: `${size}x${size}`,
-    data: text,
-    ecc: errorCorrectionLevel,
-    format: "png",
-    margin: String(custom.margin),
-    // The service wants bare hex, no leading '#'.
-    color: custom.foregroundColor.replace("#", ""),
-    bgcolor: custom.backgroundColor.replace("#", "")
-  })
-
-  return `${QR_SERVICE}?${params.toString()}`
 }

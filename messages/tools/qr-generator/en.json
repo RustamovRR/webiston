@@ -250,6 +250,41 @@
       "fileReadError": "Error occurred while reading file",
       "fileUploadSuccess": "File uploaded successfully",
       "downloadSuccess": "QR code downloaded successfully"
+    },
+    "preview": {
+      "title": "QR code",
+      "empty": "Type something — the code appears here.",
+      "vectorHint": "SVG — for print, scales without limit",
+      "lowContrast": "Colour contrast is low ({ratio}:1). A code like this may fail to scan in print or dim light.",
+      "inverted": "The code is lighter than its background. Most scanners look for dark-on-light — swap the colours."
+    },
+    "style": {
+      "foreground": "Code colour",
+      "background": "Background",
+      "gradientTo": "Gradient second colour",
+      "addGradient": "Add a gradient",
+      "shapes": "Shapes",
+      "dots": "Dot shape",
+      "cornerSquare": "Corner frame",
+      "cornerDot": "Corner centre",
+      "logo": "Logo",
+      "uploadLogo": "Upload a logo",
+      "removeLogo": "Remove",
+      "logoSize": "Logo size — {percent}%",
+      "logoNote": "A logo covers part of the modules, so error correction was raised automatically to the highest level (H).",
+      "logoUnreadable": "That file could not be read as an image. Choose a PNG, JPG, SVG or WEBP.",
+      "cornerRadius": "Corner rounding — {percent}%"
+    },
+    "detected": {
+      "empty": "empty",
+      "url": "link",
+      "email": "email",
+      "phone": "phone",
+      "sms": "SMS",
+      "wifi": "WiFi",
+      "vcard": "contact",
+      "location": "location",
+      "text": "text"
     }
   }
 }

@@ -1,139 +1,124 @@
 "use client"
 
-import { FileText } from "lucide-react"
+/**
+ * QR code generator.
+ *
+ * Preview-first: the code is the answer, so it holds the right-hand column and
+ * stays there while the controls scroll. The previous layout put every
+ * configuration block above it and left the code itself at y=1671 — measured,
+ * on a 720px screen, 2.3 screens below the fold.
+ */
+
+import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
+import { Button } from "@webiston/ui/primitives/button"
+import { Textarea } from "@webiston/ui/primitives/textarea"
+import { X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { DualTextPanel, ToolHeader } from "@/components/shared"
-import { ControlPanel, InfoSection, QrDisplay } from "./components"
-import CollapsibleCustomizationPanel from "./components/CollapsibleCustomizationPanel"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+
+import { QrPreview, StylePanel } from "./components"
+import { CONTENT_TYPES } from "./constants"
 import { useQrGenerator } from "./hooks/useQrGenerator"
+import type { QrContentType } from "./types"
 
 const QrGenerator = () => {
-  const t = useTranslations("QrGeneratorPage.ToolHeader")
-  const tInput = useTranslations("QrGeneratorPage.InputPanel")
-  const tResults = useTranslations("QrGeneratorPage.ResultsPanel")
+  const t = useTranslations("QrGeneratorPage")
   const {
-    inputText,
-    qrUrl,
-    customQrUrl,
-    qrSize,
-    errorLevel,
-    isGenerating,
-    stats,
-    groupedPresets,
-    availableSizes,
-    errorLevels,
-    customization,
-    setInputText,
-    setQrSize,
-    setErrorLevel,
-    setCustomization,
-    handlePresetSelect,
-    handleClear,
-    downloadQr,
-    handleFileUpload,
-    detectInputType
-  } = useQrGenerator({
-    onSuccess: (message) => console.log(message),
-    onError: (error) => console.error(error)
-  })
+    value,
+    setValue,
+    contentType,
+    setContentType,
+    style,
+    updateStyle,
+    reset,
+    containerRef,
+    download,
+    isExporting,
+    hasCode,
+    detectedType,
+    scan
+  } = useQrGenerator()
 
-  const handleFileUploadChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      handleFileUpload(file)
-    }
-  }
-
-  const inputType = detectInputType(inputText)
-  const canDownload = !!customQrUrl
-
-  // Status component
-  const statusComponent =
-    inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-info">
-        <div className="h-1.5 w-1.5 rounded-full bg-info"></div>
-        {tInput("status")}
-      </span>
-    ) : null
-
-  // Target empty state
-  const targetEmptyState = (
-    <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
-        <FileText size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">{tResults("emptyTitle")}</p>
-        <p className="mt-2 text-xs opacity-75">
-          {tResults("emptyDescription")}
-        </p>
-      </div>
-    </div>
-  )
+  const contentOptions = CONTENT_TYPES.map((type) => ({
+    value: type,
+    label: t(`Categories.${type}`)
+  }))
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t("title")} description={t("description")} />
-
-      <ControlPanel
-        qrSize={qrSize}
-        errorLevel={errorLevel}
-        isGenerating={isGenerating}
-        availableSizes={availableSizes}
-        errorLevels={errorLevels}
-        groupedPresets={groupedPresets}
-        canDownload={canDownload}
-        inputText={inputText}
-        onSizeChange={setQrSize}
-        onErrorLevelChange={setErrorLevel}
-        onPresetSelect={handlePresetSelect}
-        onFileUpload={handleFileUploadChange}
-        onClear={handleClear}
-        onDownload={downloadQr}
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
+      <ToolHeader
+        title={t("ToolHeader.title")}
+        description={t("ToolHeader.description")}
       />
 
-      <DualTextPanel
-        sourceText={inputText}
-        convertedText={
-          customQrUrl
-            ? `${tResults("success")}\n\n${tResults("originalText")}\n${inputText.length > 100 ? `${inputText.substring(0, 100)}...` : inputText}\n\n${tResults("size")} ${qrSize}x${qrSize} pixels\n${tResults("errorCorrection")} ${errorLevel}\n${tResults("type")} ${inputType}\n\n${tResults("note")}`
-            : ""
-        }
-        sourceLabel={tInput("title")}
-        targetLabel={tResults("title")}
-        onSourceChange={setInputText}
-        sourcePlaceholder={tInput("placeholder")}
-        onClear={handleClear}
-        showSwapButton={false}
-        isProcessing={isGenerating}
-        variant="terminal"
-        statusComponent={statusComponent}
-        targetEmptyState={targetEmptyState}
-        showShadow={true}
-      />
+      <div className="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <SegmentedControl<QrContentType>
+              label={t("ControlPanel.categoryLabel")}
+              options={contentOptions}
+              value={contentType}
+              onChange={setContentType}
+            />
+            <p className="text-muted-foreground text-sm">
+              {t(`Categories.descriptions.${contentType}`)}
+            </p>
+          </div>
 
-      <CollapsibleCustomizationPanel
-        customization={customization}
-        onCustomizationChange={setCustomization}
-        isValid={!!inputText.trim()}
-        qrUrl={qrUrl}
-        inputText={inputText}
-      />
+          <div className="rounded-xl border border-border bg-card">
+            <div className="flex items-center justify-between border-border border-b px-5 py-3">
+              <div className="flex items-center gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="size-[6px] shrink-0 rounded-[2px] bg-border-strong"
+                />
+                <h2 className="font-medium text-base text-foreground">
+                  {t("InputPanel.title")}
+                </h2>
+              </div>
+              {hasCode && (
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {t(`detected.${detectedType}`)}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={reset}
+                    aria-label={t("ControlPanel.clear")}
+                  >
+                    <X aria-hidden="true" />
+                  </Button>
+                </span>
+              )}
+            </div>
+            <div className="p-5">
+              <Textarea
+                value={value}
+                onChange={(event) => setValue(event.target.value)}
+                placeholder={t("InputPanel.placeholder")}
+                aria-label={t("InputPanel.title")}
+                rows={4}
+                className="resize-y font-mono text-sm"
+              />
+            </div>
+          </div>
 
-      <QrDisplay
-        qrUrl={customQrUrl}
-        qrSize={qrSize}
-        errorLevel={errorLevel}
-        inputType={inputType}
-        inputText={inputText}
-        customization={customization}
-        stats={stats}
-        onDownload={downloadQr}
-      />
+          <StylePanel style={style} onChange={updateStyle} />
+        </div>
 
-      <InfoSection />
+        <QrPreview
+          containerRef={containerRef}
+          hasCode={hasCode}
+          scan={scan}
+          isExporting={isExporting}
+          onDownload={download}
+        />
+      </div>
     </div>
   )
 }
 
 export default QrGenerator
+export { QrGenerator }

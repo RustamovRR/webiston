@@ -1,5 +1,2 @@
-export { default as CollapsibleCustomizationPanel } from "./CollapsibleCustomizationPanel"
-export { default as ControlPanel } from "./ControlPanel"
-export { default as InfoSection } from "./InfoSection"
-export { default as QrCustomizationPanel } from "./QrCustomizationPanel"
-export { default as QrDisplay } from "./QrDisplay"
+export { QrPreview } from "./QrPreview"
+export { StylePanel } from "./StylePanel"
