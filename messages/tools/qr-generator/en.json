@@ -256,7 +256,9 @@
       "empty": "Type something — the code appears here.",
       "vectorHint": "SVG — for print, scales without limit",
       "lowContrast": "Colour contrast is low ({ratio}:1). A code like this may fail to scan in print or dim light.",
-      "inverted": "The code is lighter than its background. Most scanners look for dark-on-light — swap the colours."
+      "inverted": "The code is lighter than its background. Most scanners look for dark-on-light — swap the colours.",
+      "modules": "{count}×{count} modules",
+      "exportFailed": "Could not create the file. Please try again."
     },
     "style": {
       "foreground": "Code colour",
@@ -273,7 +275,16 @@
       "logoSize": "Logo size — {percent}%",
       "logoNote": "A logo covers part of the modules, so error correction was raised automatically to the highest level (H).",
       "logoUnreadable": "That file could not be read as an image. Choose a PNG, JPG, SVG or WEBP.",
-      "cornerRadius": "Corner rounding — {percent}%"
+      "cornerRadius": "Corner rounding — {percent}%",
+      "frame": "Frame",
+      "frameLabel": "Frame caption",
+      "advanced": "Advanced",
+      "quietZone": "Quiet zone — {modules} modules",
+      "quietZoneWarning": "The standard requires {standard} modules. Below that the code can fail to be found at all.",
+      "gradient": {
+        "linear": "Linear",
+        "radial": "Radial"
+      }
     },
     "detected": {
       "empty": "empty",

@@ -256,7 +256,9 @@
       "empty": "Matn kiriting — kod shu yerda paydo bo'ladi.",
       "vectorHint": "SVG — bosma uchun, cheksiz kattalashadi",
       "lowContrast": "Ranglar kontrasti past ({ratio}:1). Bunday kod chop etilganda yoki xira yorug'likda skanerlanmasligi mumkin.",
-      "inverted": "Kod fondan och rangda. Ko'p skanerlar QR kodni qorong'i-ochiq tartibida qidiradi — ranglarni almashtiring."
+      "inverted": "Kod fondan och rangda. Ko'p skanerlar QR kodni qorong'i-ochiq tartibida qidiradi — ranglarni almashtiring.",
+      "modules": "{count}×{count} modul",
+      "exportFailed": "Faylni yaratib bo'lmadi. Qayta urinib ko'ring."
     },
     "style": {
       "foreground": "Kod rangi",
@@ -273,7 +275,16 @@
       "logoSize": "Logo o'lchami — {percent}%",
       "logoNote": "Logo modullarning bir qismini yopadi, shuning uchun xato tuzatish darajasi avtomatik ravishda eng yuqorisiga (H) ko'tarildi.",
       "logoUnreadable": "Bu faylni rasm sifatida o'qib bo'lmadi. PNG, JPG, SVG yoki WEBP tanlang.",
-      "cornerRadius": "Burchak yumaloqligi — {percent}%"
+      "cornerRadius": "Burchak yumaloqligi — {percent}%",
+      "frame": "Ramka",
+      "frameLabel": "Ramka yozuvi",
+      "advanced": "Qo'shimcha",
+      "quietZone": "Oq hoshiya — {modules} modul",
+      "quietZoneWarning": "Standart {standard} modul talab qiladi. Bundan kam bo'lsa kod topilmay qolishi mumkin.",
+      "gradient": {
+        "linear": "Chiziqli",
+        "radial": "Radial"
+      }
     },
     "detected": {
       "empty": "bo'sh",

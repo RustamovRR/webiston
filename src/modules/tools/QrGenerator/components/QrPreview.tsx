@@ -1,38 +1,149 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
-import { cn } from "@webiston/ui/utils"
 import { AlertTriangle, Download, QrCode } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import type { QrDownloadFormat } from "../types"
 import type { ScanVerdict } from "../utils/contrast"
+import type { QrDocument } from "../utils/render"
 
 /**
  * The code, and everything you do with it.
  *
- * Sticky, and on the first screen. Measured on the version this replaces: the
- * QR image sat at y=1671 in a 720px viewport — 2.3 screens below the fold, so
- * a visitor whose entire goal was "see a QR code" had to scroll past every
- * configuration control to find one. The controls now scroll; the answer does
- * not move.
+ * Rendered as real SVG elements from the same model the exporter serialises,
+ * so the preview and the downloaded file are the same picture by construction.
+ * Sticky, and on the first screen: measured on the version this replaces, the
+ * code sat at y=1671 in a 720px viewport — 2.3 screens below the fold.
  */
 
 interface QrPreviewProps {
-  containerRef: React.RefObject<HTMLDivElement | null>
-  hasCode: boolean
+  document: QrDocument | null
   scan: ScanVerdict
   isExporting: boolean
+  exportError: boolean
   onDownload: (format: QrDownloadFormat) => void
 }
 
 const FORMATS: readonly QrDownloadFormat[] = ["svg", "png", "webp"]
 
+function QrArtwork({ doc }: { doc: QrDocument }) {
+  const { model, frame, layout, label } = doc
+
+  return (
+    <svg
+      viewBox={`0 0 ${layout.width} ${layout.height}`}
+      width={layout.width}
+      height={layout.height}
+      className="h-auto w-full max-w-[320px]"
+      role="img"
+      aria-label={label || "QR"}
+    >
+      {model.gradient && (
+        <defs>
+          {model.gradient.type === "radial" ? (
+            <radialGradient id={model.gradient.id}>
+              <stop offset="0" stopColor={model.gradient.from} />
+              <stop offset="1" stopColor={model.gradient.to} />
+            </radialGradient>
+          ) : (
+            <linearGradient id={model.gradient.id} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor={model.gradient.from} />
+              <stop offset="1" stopColor={model.gradient.to} />
+            </linearGradient>
+          )}
+        </defs>
+      )}
+
+      {layout.surface && (
+        <rect
+          x={0}
+          y={0}
+          width={layout.width}
+          height={layout.height}
+          rx={frame.radius * model.extent}
+          fill={doc.surfaceFill}
+          stroke={frame.surface === "outline" ? doc.accent : undefined}
+          strokeWidth={
+            frame.surface === "outline" ? model.extent * 0.012 : undefined
+          }
+        />
+      )}
+
+      <g transform={`translate(${layout.qrX},${layout.qrY})`}>
+        <rect
+          width={model.extent}
+          height={model.extent}
+          rx={model.background.radius}
+          fill={model.background.fill}
+        />
+        {/* Every data module in ONE path: a 57x57 code is 3,000 modules, and
+            three thousand DOM nodes re-created on each keystroke is the
+            difference between instant and janky. */}
+        <path d={model.dataPath} fill={model.ink} />
+        {model.eyeFrames.map((d) => (
+          <path key={d} d={d} fill={model.ink} fillRule="evenodd" />
+        ))}
+        {model.eyeBalls.map((d) => (
+          <path key={d} d={d} fill={model.ink} />
+        ))}
+        {model.logo && (
+          <image
+            href={model.logo.href}
+            x={model.logo.x}
+            y={model.logo.y}
+            width={model.logo.size}
+            height={model.logo.size}
+            preserveAspectRatio="xMidYMid meet"
+          />
+        )}
+      </g>
+
+      {layout.label && (
+        <>
+          {frame.labelOnAccent && (
+            <rect
+              x={layout.label.x}
+              y={layout.label.y}
+              width={layout.label.width}
+              height={layout.label.height}
+              fill={doc.accent}
+            />
+          )}
+          <text
+            x={layout.width / 2}
+            y={layout.label.y + layout.label.height / 2}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontFamily="system-ui, sans-serif"
+            fontWeight={700}
+            fontSize={layout.label.height * 0.46}
+            letterSpacing={layout.label.height * 0.06}
+            fill={frame.labelOnAccent ? doc.onAccent : doc.accent}
+          >
+            {label}
+          </text>
+        </>
+      )}
+
+      {layout.brackets && (
+        <path
+          d={layout.brackets}
+          fill="none"
+          stroke={doc.accent}
+          strokeWidth={model.extent * 0.02}
+          strokeLinecap="round"
+        />
+      )}
+    </svg>
+  )
+}
+
 export function QrPreview({
-  containerRef,
-  hasCode,
+  document,
   scan,
   isExporting,
+  exportError,
   onDownload
 }: QrPreviewProps) {
   const t = useTranslations("QrGeneratorPage.preview")
@@ -48,33 +159,28 @@ export function QrPreview({
           <h2 className="font-medium text-base text-foreground">
             {t("title")}
           </h2>
+          {document && (
+            <span className="ml-auto font-mono text-[11px] text-muted-foreground tabular-nums">
+              {t("modules", { count: document.model.moduleCount })}
+            </span>
+          )}
         </div>
 
         <div className="flex min-h-[380px] items-center justify-center p-6">
-          {/* The renderer appends its SVG here. Kept mounted even when empty
-              so the node exists before the first draw — appending on demand
-              made the first code arrive one frame late, as a visible pop. */}
-          <div
-            ref={containerRef}
-            className={cn(
-              "transition-opacity duration-200",
-              hasCode ? "opacity-100" : "opacity-0"
-            )}
-            aria-hidden={!hasCode}
-          />
-
-          {!hasCode && (
-            <div className="absolute flex flex-col items-center text-muted-foreground">
+          {document ? (
+            <QrArtwork doc={document} />
+          ) : (
+            <div className="flex flex-col items-center text-muted-foreground">
               <QrCode size={44} className="opacity-40" aria-hidden="true" />
               <p className="mt-3 text-sm">{t("empty")}</p>
             </div>
           )}
         </div>
 
-        {/* The warning every competitor shows and we did not. A QR reader is a
-            thresholding algorithm: pale colours and inverted pairs produce a
-            code that looks fine on screen and fails on a printed poster. */}
-        {hasCode && scan.risk !== "ok" && (
+        {/* The warning every competitor shows and we did not. A reader
+            thresholds the image: pale colours and inverted pairs produce a code
+            that looks fine on screen and fails on a printed poster. */}
+        {document && scan.risk !== "ok" && (
           <p
             role="status"
             className="flex items-start gap-2 border-border border-t bg-destructive/10 px-5 py-3 text-destructive text-xs leading-relaxed"
@@ -98,10 +204,10 @@ export function QrPreview({
               key={format}
               type="button"
               size="sm"
-              // SVG first and filled: it is the format that was missing, and
-              // the only one that survives being printed at any size.
+              // SVG first and filled: it is the only format that survives being
+              // printed at any size, and it was the format we did not have.
               variant={format === "svg" ? "default" : "outline"}
-              disabled={!hasCode || isExporting}
+              disabled={!document || isExporting}
               onClick={() => onDownload(format)}
             >
               <Download aria-hidden="true" />
@@ -112,6 +218,12 @@ export function QrPreview({
             {t("vectorHint")}
           </span>
         </div>
+
+        {exportError && (
+          <p role="alert" className="px-5 pb-4 text-destructive text-xs">
+            {t("exportFailed")}
+          </p>
+        )}
       </div>
     </div>
   )
