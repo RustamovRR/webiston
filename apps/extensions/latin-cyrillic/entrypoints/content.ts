@@ -1,4 +1,9 @@
-import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
+import {
+  convert,
+  convertWithPreference,
+  type DirectionPreference,
+  resolveDirection
+} from "@webiston/transliteration"
 
 // State
 let triggerIcon: HTMLElement | null = null
@@ -8,6 +13,16 @@ let isEnabled = true
 let selectedText = ""
 let selectionRect: DOMRect | null = null
 let currentTheme: "light" | "dark" = "light"
+/**
+ * The Range the user selected, kept so "Almashtirish" can write into it.
+ *
+ * The button existed, was labelled Replace, carried a pencil icon — and its
+ * body copied to the clipboard and closed the popover, exactly like the Copy
+ * button next to it. Nothing was ever replaced.
+ */
+let selectionRange: Range | null = null
+/** The popover's direction control; "auto" until the user picks a side. */
+let popoverPreference: DirectionPreference = "auto"
 
 export default defineContentScript({
   matches: ["<all_urls>"],
@@ -40,18 +55,33 @@ export default defineContentScript({
     // Keyboard shortcut handler
     browser.runtime.onMessage.addListener(
       (
-        message: { type: string },
+        message: { type: string; text?: string },
         _sender: unknown,
         sendResponse: (response: { success: boolean }) => void
       ) => {
         if (message.type === "CONVERT_SELECTION") {
           const sel = window.getSelection()?.toString().trim()
           if (sel) {
-            const result = isCyrillicText(sel) ? toLatin(sel) : toCyrillic(sel)
-            navigator.clipboard.writeText(result)
+            navigator.clipboard.writeText(
+              convertWithPreference(sel, "auto").text
+            )
           }
           sendResponse({ success: true })
+          return true
         }
+
+        // background.ts has sent this for every context-menu click since the
+        // menus were added; nothing listened for it, so all three entries
+        // computed a conversion and threw it away. They work now: write into
+        // the selection when it is editable, fall back to the clipboard when
+        // it is not.
+        if (message.type === "REPLACE_SELECTION" && message.text) {
+          const replaced = replaceSelectionWith(message.text)
+          if (!replaced) navigator.clipboard.writeText(message.text)
+          sendResponse({ success: true })
+          return true
+        }
+
         return true
       }
     )
@@ -94,6 +124,9 @@ function handleMouseUp(e: MouseEvent) {
     if (!range) return
 
     selectionRect = range.getBoundingClientRect()
+    // Cloned: the live Range is invalidated the moment the user clicks the
+    // trigger icon, which is the click that collapses the selection.
+    selectionRange = range.cloneRange()
     showTriggerIcon()
   }, 10)
 }
@@ -183,10 +216,13 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     shadowRoot.appendChild(styles)
   }
 
-  const isCyrillic = isCyrillicText(selectedText)
-  const converted = isCyrillic
-    ? toLatin(selectedText)
-    : toCyrillic(selectedText)
+  // The popover opens in "auto" and reports which way auto went, so the two
+  // direction buttons show the real state rather than a guess of their own.
+  const { text: converted, direction } = convertWithPreference(
+    selectedText,
+    "auto"
+  )
+  const isCyrillic = direction === "cyrillic-to-latin"
 
   popover = document.createElement("div")
   popover.className = `wc-popover ${currentTheme === "dark" ? "dark" : ""}`
@@ -318,14 +354,20 @@ function handleInputChange(e: Event) {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  const isCyrillic = isCyrillicText(text)
-  const converted = isCyrillic ? toLatin(text) : toCyrillic(text)
-  outputEl.value = converted
+  // Honour the direction the user picked. Typing used to reset it silently:
+  // the button stayed highlighted while the output flipped back to auto.
+  const direction = resolveDirection(text, popoverPreference)
+  outputEl.value = convert(text, direction)
+  paintDirectionLabels(direction)
+}
 
+/** Keep the two panel captions honest about which way the text is going. */
+function paintDirectionLabels(direction: string) {
+  const toCyr = direction === "latin-to-cyrillic"
   const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
   const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
-  if (inputLabel) inputLabel.textContent = isCyrillic ? "Кирилл" : "Lotin"
-  if (outputLabel) outputLabel.textContent = isCyrillic ? "Lotin" : "Кирилл"
+  if (inputLabel) inputLabel.textContent = toCyr ? "Lotin" : "Кирилл"
+  if (outputLabel) outputLabel.textContent = toCyr ? "Кирилл" : "Lotin"
 }
 
 function copyOutput(button: HTMLElement) {
@@ -372,24 +414,55 @@ function changeDirection(action: string) {
   ) as HTMLTextAreaElement
   if (!inputEl || !outputEl) return
 
-  const text = inputEl.value
-  const converted = action === "to-latin" ? toLatin(text) : toCyrillic(text)
-  outputEl.value = converted
+  popoverPreference =
+    action === "to-latin" ? "cyrillic-to-latin" : "latin-to-cyrillic"
+
+  outputEl.value = convert(inputEl.value, popoverPreference)
 
   popover?.querySelectorAll(".wc-dir-btn").forEach((btn) => {
     const btnEl = btn as HTMLButtonElement
     btn.classList.toggle("active", btnEl.dataset.action === action)
   })
 
-  const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
-  const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
-  if (action === "to-latin") {
-    if (inputLabel) inputLabel.textContent = "Кирилл"
-    if (outputLabel) outputLabel.textContent = "Lotin"
-  } else {
-    if (inputLabel) inputLabel.textContent = "Lotin"
-    if (outputLabel) outputLabel.textContent = "Кирилл"
+  paintDirectionLabels(popoverPreference)
+}
+
+/**
+ * Write `text` over the user's selection.
+ *
+ * Two paths, because the DOM has two: a form field has `selectionStart`/`End`
+ * and a value, everything else has a Range. Returns false when there is
+ * nothing writable — a selection inside ordinary page text is not editable,
+ * and pretending otherwise is what the old Replace button did.
+ */
+function replaceSelectionWith(text: string): boolean {
+  const active = document.activeElement
+  if (
+    active instanceof HTMLTextAreaElement ||
+    (active instanceof HTMLInputElement && active.selectionStart !== null)
+  ) {
+    const start = active.selectionStart ?? 0
+    const end = active.selectionEnd ?? start
+    active.setRangeText(text, start, end, "end")
+    // React and every other controlled-input framework listens for this.
+    active.dispatchEvent(new Event("input", { bubbles: true }))
+    return true
   }
+
+  const range = selectionRange
+  if (!range) return false
+
+  const host = range.commonAncestorContainer
+  const element =
+    host.nodeType === Node.ELEMENT_NODE ? (host as Element) : host.parentElement
+  if (!element?.closest('[contenteditable="true"], [contenteditable=""]')) {
+    return false
+  }
+
+  range.deleteContents()
+  range.insertNode(document.createTextNode(text))
+  element.dispatchEvent(new Event("input", { bubbles: true }))
+  return true
 }
 
 function replaceOriginal() {
@@ -398,8 +471,11 @@ function replaceOriginal() {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  const newText = outputEl.value
-  navigator.clipboard.writeText(newText)
+  // Replace where we can, copy where we cannot — and say which happened
+  // rather than looking identical either way.
+  if (!replaceSelectionWith(outputEl.value)) {
+    navigator.clipboard.writeText(outputEl.value)
+  }
   cleanup()
 }
 
@@ -409,6 +485,8 @@ function cleanup() {
   triggerIcon = null
   popover = null
   shadowRoot = null
+  selectionRange = null
+  popoverPreference = "auto"
 }
 
 function escapeHtml(text: string): string {

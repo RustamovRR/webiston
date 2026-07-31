@@ -5,7 +5,17 @@ import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
 import { withLocale } from "@/lib/seo"
-import { AlphabetTable, ConverterFaq, LatinCyrillic } from "@/modules/tools"
+// Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
+// modules, and every one of them is `'use client'` — so importing through it
+// put Base64Converter, CameraRecorder, QrGenerator and eighteen others into
+// THIS route's client reference manifest. Measured: 62 app client modules
+// before, and the same 62 on every other tool route, because they all import
+// the same barrel.
+import {
+  AlphabetTable,
+  ConverterFaq,
+  LatinCyrillicPage as LatinCyrillic
+} from "@/modules/tools/LatinCyrillic"
 import {
   applicationSchema,
   generateBreadcrumbSchema,

@@ -1,7 +1,11 @@
-import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
+import {
+  convertWithPreference,
+  type DirectionPreference,
+  oppositeDirection,
+  resolveDirection
+} from "@webiston/transliteration"
 import { useCallback, useEffect, useState } from "react"
 
-type Direction = "auto" | "to-cyrillic" | "to-latin"
 type Theme = "light" | "dark" | "system"
 
 // Icons
@@ -140,7 +144,8 @@ function CursorIcon() {
 export default function App() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
-  const [direction, setDirection] = useState<Direction>("auto")
+  // The same three-state preference the web tool and the in-page popover use.
+  const [direction, setDirection] = useState<DirectionPreference>("auto")
   const [copied, setCopied] = useState(false)
   const [floatingEnabled, setFloatingEnabled] = useState(true)
   const [theme, setTheme] = useState<Theme>("system")
@@ -155,20 +160,26 @@ export default function App() {
       })
   }, [])
 
+  // One definition of "is it dark right now". There were two — one inside the
+  // effect and one near the render — and only the second one guarded against
+  // `window` being undefined.
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+
   // Apply theme
   useEffect(() => {
-    const root = document.documentElement
-    const isDark =
-      theme === "dark" ||
-      (theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-
-    root.classList.toggle("dark", isDark)
+    document.documentElement.classList.toggle("dark", isDark)
     chrome.storage.local.set({ theme })
-  }, [theme])
+  }, [theme, isDark])
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"))
+    // Resolve "system" before flipping. Without this the first click on a
+    // light-mode machine went "system" → "light", which is what was already
+    // showing — the button appeared dead until you pressed it twice.
+    setTheme(() => (isDark ? "light" : "dark"))
   }
 
   const toggleFloating = async () => {
@@ -177,20 +188,12 @@ export default function App() {
     await chrome.storage.local.set({ quickConvertEnabled: newValue })
   }
 
-  const convert = useCallback((text: string, dir: Direction) => {
+  const convert = useCallback((text: string, dir: DirectionPreference) => {
     if (!text.trim()) {
       setOutput("")
       return
     }
-    let result: string
-    if (dir === "auto") {
-      result = isCyrillicText(text) ? toLatin(text) : toCyrillic(text)
-    } else if (dir === "to-cyrillic") {
-      result = toCyrillic(text)
-    } else {
-      result = toLatin(text)
-    }
-    setOutput(result)
+    setOutput(convertWithPreference(text, dir).text)
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -199,7 +202,7 @@ export default function App() {
     convert(text, direction)
   }
 
-  const handleDirectionChange = (dir: Direction) => {
+  const handleDirectionChange = (dir: DirectionPreference) => {
     setDirection(dir)
     convert(input, dir)
   }
@@ -211,21 +214,25 @@ export default function App() {
     setTimeout(() => setCopied(false), 1500)
   }
 
+  /**
+   * Swap moves the result into the input and turns the conversion around.
+   *
+   * It used to exchange the two boxes without reconverting, which left the
+   * output pane showing a value that was not a conversion of the input — the
+   * web tool and this popup disagreed about what the same button did.
+   */
   const handleSwap = () => {
+    if (!output) return
+    const next = oppositeDirection(resolveDirection(input, direction))
+    setDirection(next)
     setInput(output)
-    setOutput(input)
+    convert(output, next)
   }
 
   const handleClear = () => {
     setInput("")
     setOutput("")
   }
-
-  const isDark =
-    theme === "dark" ||
-    (theme === "system" &&
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
 
   return (
     <div
@@ -322,12 +329,14 @@ export default function App() {
       >
         {[
           { value: "auto", label: "Avto" },
-          { value: "to-cyrillic", label: "→ Кирилл" },
-          { value: "to-latin", label: "→ Lotin" }
+          { value: "latin-to-cyrillic", label: "→ Кирилл" },
+          { value: "cyrillic-to-latin", label: "→ Lotin" }
         ].map((opt) => (
           <button
             key={opt.value}
-            onClick={() => handleDirectionChange(opt.value as Direction)}
+            onClick={() =>
+              handleDirectionChange(opt.value as DirectionPreference)
+            }
             className="flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-all duration-200"
             style={{
               background:

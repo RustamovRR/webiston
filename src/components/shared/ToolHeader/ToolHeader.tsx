@@ -17,8 +17,8 @@ export function ToolHeader({
   const t = useTranslations("Common")
 
   return (
-    <div className="mb-8">
-      <div className="mb-4">
+    <div className="mb-6 sm:mb-8">
+      <div className="mb-3 sm:mb-4">
         <Button variant="ghost" size="sm" asChild>
           <Link
             href={backUrl}
@@ -29,9 +29,16 @@ export function ToolHeader({
           </Link>
         </Button>
       </div>
+      {/* A 36px heading and an 18px paragraph pushed the tool itself 600px down
+          on a 375px screen — the input was on the first fold and the result was
+          not. The desktop sizes are unchanged. */}
       <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground">{title}</h1>
-        <p className="text-lg text-muted-foreground">{description}</p>
+        <h1 className="mb-3 text-balance font-bold text-2xl text-foreground sm:mb-4 sm:text-4xl">
+          {title}
+        </h1>
+        <p className="text-pretty text-base text-muted-foreground sm:text-lg">
+          {description}
+        </p>
       </div>
     </div>
   )

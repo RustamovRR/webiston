@@ -8,13 +8,14 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-30 — design-system sweep now covers every surface
-(Phases 6–18): homepage, /tools, /books, the search dialog, the book landing
-pages, and **the reading page itself**. Phase 18 was mostly payload and
-correctness: barrel imports were putting tool-only UI on 226 chapters, FlexSearch
-was eager on all 269 routes, and the ToC scrolled 165px off. The three rendering
-questions (0 JS? SSR? RSC + newer APIs?) are answered with evidence in
-`reference/architecture.md § 5b`. Branch `refactor/infrastructure`._
+_Last updated: 2026-07-31 — **the tools pass has started, with
+`/tools/latin-cyrillic`** — the site's most-visited page. This was not a design
+refresh: the engine was producing wrong Uzbek on ordinary words. Nine defect
+classes fixed and covered by tests, the direction policy moved into
+`@webiston/transliteration` so the web tool and all three extension surfaces
+share it, the Chrome extension's context menu (dead since it shipped) made to
+work, and chunking + the six info cards removed with the owner's approval.
+Branch `refactor/infrastructure`._
 
 ---
 
@@ -78,6 +79,18 @@ questions (0 JS? SSR? RSC + newer APIs?) are answered with evidence in
 | Rendering model answered | ✅ | **0 JS is impossible in App Router** (React runtime + RSC payload + router always ship) — Astro is the only 0-JS answer and that's a rewrite. These pages are **SSG, not SSR**, which is correct for a fixed corpus — do not "add SSR". RSC shape was already right; the defect was leakage across the boundary. See `reference/architecture.md § 5b` |
 | `pnpm tokens` blind spot | ⚠️ | `PALETTE_RE` has no `black`/`white`, so `hover:text-black dark:hover:text-white` is **invisible to the ratchet**. **124** such hits repo-wide. Widening the regex moves the ratchet for everything — needs a decision |
 | CI | ✅ | `.github/workflows/ci.yml` — all **10** gates, one job, corepack-pinned pnpm. First run will be red on `i18n` (the 8 dead keys) |
+| Engine: Uzbek orthography | ✅ | **307 tests passed while `ishchi` came out as `ищи`.** Every case in the old suite was a synthetic fragment ("shch", "ShH"), never a word. Fixed and covered by a real corpus: `sh`+`ch` boundary (ishchi → **ишчи**, 4/4 occurrences in the repo's own Uzbek prose were this, 0 were Russian щ) · tutuq belgisi after a consonant (san'at → **санъат**, was саньат) · the `-tsiya` family (informatsiya → **информация**, was информатсия) · `ц` positional (функция → **funksiya**, was funktsiya) · soft sign in loanwords (фильм → **film**, was fil'm, and mid-word it round-tripped to филъм) |
+| Engine: protection layer | ✅ | Measured **10 of 244** everyday Uzbek words and **12 of 66** common loanwords came back still in Latin — `buni`, `bunga`, `bundan`, `o'sha`, `tan`, `tanga`, `sin`, `test`, `format`, `virus`. Three causes: `\b` splits `o'sha` because JS treats the apostrophe as a separator, suffix expansion turns 3-letter entries into common words, and absorbed loanwords were on the list. Now **0 of 244** and **1 of 66** |
+| Engine: robustness | ✅ | ReDoS: 273 KB of prose with unclosed `<div` took **6,605 ms → 34 ms** (`[^>]*` scanned to end-of-input per opener). Placeholder forgery: `React \0 0 \0 salom` returned **"React React salom"** — text could impersonate a placeholder and get another span substituted into it |
+| Engine: direction detection | ✅ | One link made a Cyrillic article count as Latin (`Батафсил: https://gazeta.uz/…` → 8 Cyrillic vs 34 Latin). Detection now votes on MASKED text, so URLs, emails and code — which are never converted — do not choose the direction. Also collapsed two disagreeing detectors into one |
+| Shared conversion policy | ✅ | `resolveDirection` / `convert` / `convertWithPreference` / `oppositeDirection` in the package. Four surfaces had four answers: the web tool only re-detected when the length changed by **>5 characters** (typing Cyrillic never switched; deleting a paragraph silently overrode a manual choice), the popup used a 3-state preference, the popover discarded the user's choice on every keystroke, and swap meant three different things |
+| Extension: dead context menu | ✅ | `background.ts` sent `REPLACE_SELECTION`; `content.ts` listened only for `CONVERT_SELECTION`. **All three right-click entries computed a conversion and threw it away** — since the day they shipped. Now handled: writes into the field or contenteditable, falls back to the clipboard |
+| Extension: "Almashtirish" | ✅ | The Replace button, pencil icon and all, called `clipboard.writeText` and closed — identical to Copy. It now replaces via `setRangeText` / Range surgery, and the theme toggle no longer needs two clicks on a light-mode machine |
+| Tool: data loss | ✅ | "Hammasini yuklash" wrote **only the selected chunk** and named the file `_full`; every chunk downloaded under the SAME name because `_part1` was eaten by the extension-stripping regex. Chunking removed entirely — the engine does 50,000 chars in **9.6 ms** and 1 MB in 148 ms, so it was machinery for a problem that does not exist. The 200 MB limit (also published to Google) is now a tested 10 MB |
+| Tool: client boundary | ✅ | `page.tsx` imported `@/modules/tools`, whose barrel re-exports all 21 tool modules, every one `'use client'`. Measured: **92 → 50** client modules, **22 → 1** tool modules, **664 → 358 KB gz** of JS. HTML grew 24.5 → 28.7 KB gz because the alphabet table and FAQ are now server-rendered. **The other 16 tool routes still import the barrel** |
+| Tool: honesty | ✅ | JSON-LD advertised **99.9% accuracy** (while the engine failed on `ishchi`), a **200 MB** limit no browser can honour, and a **PDF export that does not exist**. The six FAQ answers were emitted as `FAQPage` markup and rendered nowhere — a guidelines violation on the top-traffic URL. FAQ is now visible and reads the same i18n keys the schema does. `<meta keywords>` 144 → 15 entries |
+| Tool: UX | ✅ | Direction is **Avto / → Кирилл / → Lotin**, matching the extension. Drop a file anywhere on the page (the handlers existed, wired only to a 296-line modal that closed itself after 800 ms). ⌘/Ctrl+Enter copies, Esc clears — there were **zero** key handlers before. Empty panel offers paste + sample, measured above the fold at y=474 (they were at y=878, below it). Mobile: panel min-height 400 → 200 and the tool header 36px → 24px, so the input is on the first screen |
+| Tool: dead code | ✅ | Owner approved. `utils/detect-script.ts` (115 lines, 0 importers, and it disagreed with the engine) · `FileUploadZone.tsx` (200 lines, never rendered) · `downloadAllChunks()` · the two Russian samples with no UI path · 16 dead i18n keys |
 
 **Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
 `test 0` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0` — **269 prerendered

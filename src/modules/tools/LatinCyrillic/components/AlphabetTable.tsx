@@ -17,10 +17,12 @@ import { ALPHABET_ROWS, type AlphabetRow, COMPOUND_ROWS } from "../constants"
 function Row({ row, noteLabel }: { row: AlphabetRow; noteLabel?: string }) {
   return (
     <tr className="border-border border-b last:border-0">
-      <td className="py-2.5 pr-3 font-mono text-foreground text-sm">
+      {/* `whitespace-nowrap`: the compound table sits in the narrow column and
+          was breaking "Ya ya" across two lines, which reads as two entries. */}
+      <td className="whitespace-nowrap py-2.5 pr-4 font-mono text-foreground text-sm">
         {row.latin}
       </td>
-      <td className="py-2.5 pr-3 font-mono text-foreground text-sm">
+      <td className="whitespace-nowrap py-2.5 pr-4 font-mono text-foreground text-sm">
         {row.cyrillic}
       </td>
       <td className="py-2.5 text-muted-foreground text-xs leading-relaxed">
@@ -51,7 +53,7 @@ export async function AlphabetTable() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.55fr_1fr]">
         {/* Wide content scrolls inside its own box; the page never does. */}
         <div className="overflow-x-auto rounded-xl border border-border bg-card">
           <table className="w-full min-w-[22rem] border-collapse px-5 text-left">

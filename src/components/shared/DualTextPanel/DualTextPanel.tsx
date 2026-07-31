@@ -208,7 +208,12 @@ export function DualTextPanel({
                   spellCheck={false}
                 />
                 {sourceEmptyState && sourceText.length === 0 && (
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-4">
+                  // Under the placeholder line, not at the bottom of the
+                  // panel: the panel is 500px tall on a desktop and the
+                  // bottom edge sits below the fold, so actions parked there
+                  // were measured at y=878 in a 720px viewport — present in
+                  // the DOM and invisible to the user.
+                  <div className="pointer-events-none absolute inset-x-0 top-12 flex px-4">
                     {sourceEmptyState}
                   </div>
                 )}

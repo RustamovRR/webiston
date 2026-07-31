@@ -88,7 +88,11 @@ export function LatinCyrillicPage() {
         <DirectionTabs
           value={preference}
           onChange={setPreference}
-          resolvedHint={t("direction.resolved", { target: targetLang })}
+          resolvedHint={
+            sourceText
+              ? t("direction.resolved", { target: targetLang })
+              : undefined
+          }
         />
 
         <div className="flex flex-wrap items-center gap-2">
