@@ -1,9 +1,11 @@
 "use client"
 
 import type { DirectionPreference } from "@webiston/transliteration"
-import { cn } from "@webiston/ui/utils"
+import {
+  SegmentedControl,
+  type SegmentedOption
+} from "@webiston/ui/composites/SegmentedControl"
 import { useTranslations } from "next-intl"
-import { useId } from "react"
 
 /**
  * Auto / → Cyrillic / → Latin.
@@ -13,15 +15,12 @@ import { useId } from "react"
  * visible, overridable choice — and it is the model the extension popup has
  * always used, so the two surfaces finally agree.
  *
- * Real `<input type="radio">` elements, visually hidden and styled through the
- * label. The first version used buttons with `role="radio"`, which LOOKS like
- * the right ARIA but is only half of it: the radiogroup pattern also owes the
- * user a roving tabindex and arrow-key movement, and a role alone gives
- * neither. Native inputs give both, plus grouping, plus correct announcement,
- * and they work with JavaScript still loading.
+ * The control itself is `SegmentedControl` from `@webiston/ui`, which is where
+ * the sliding indicator and the radio-group semantics live. This file is only
+ * the three labels and the hint.
  */
 
-const OPTIONS: readonly DirectionPreference[] = [
+const OPTION_VALUES: readonly DirectionPreference[] = [
   "auto",
   "latin-to-cyrillic",
   "cyrillic-to-latin"
@@ -46,37 +45,19 @@ export function DirectionTabs({
   resolvedHint
 }: DirectionTabsProps) {
   const t = useTranslations("LatinCyrillicPage")
-  // Scoped so two of these on one page cannot share a radio group.
-  const name = useId()
+
+  const options: SegmentedOption<DirectionPreference>[] = OPTION_VALUES.map(
+    (option) => ({ value: option, label: t(LABEL_KEY[option]) })
+  )
 
   return (
     <div className="flex items-center gap-3">
-      <fieldset className="inline-flex items-center gap-1 rounded-lg border border-border bg-muted p-1">
-        <legend className="sr-only">{t("direction.label")}</legend>
-
-        {OPTIONS.map((option) => (
-          <label key={option} className="cursor-pointer">
-            <input
-              type="radio"
-              name={name}
-              value={option}
-              checked={value === option}
-              onChange={() => onChange(option)}
-              className="peer sr-only"
-            />
-            <span
-              className={cn(
-                "block rounded-md px-3 py-1.5 font-medium text-sm transition-colors duration-200",
-                "text-muted-foreground peer-hover:text-foreground",
-                "peer-checked:bg-primary peer-checked:text-primary-foreground",
-                "peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-1 peer-focus-visible:ring-offset-muted"
-              )}
-            >
-              {t(LABEL_KEY[option])}
-            </span>
-          </label>
-        ))}
-      </fieldset>
+      <SegmentedControl
+        options={options}
+        value={value}
+        onChange={onChange}
+        label={t("direction.label")}
+      />
 
       {value === "auto" && resolvedHint && (
         <span

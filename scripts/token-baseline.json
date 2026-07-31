@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-07-31",
-  "total": 2486,
+  "total": 2399,
   "files": {
     "apps/extensions/latin-cyrillic/entrypoints/content.ts": 23,
     "apps/extensions/latin-cyrillic/entrypoints/popup/App.tsx": 6,
@@ -72,11 +72,6 @@
     "src/modules/tools/JwtDecoder/components/TokenInfoCards.tsx": 8,
     "src/modules/tools/JwtDecoder/components/TokenParts.tsx": 4,
     "src/modules/tools/KeycodeInfo/KeycodeInfo.tsx": 137,
-    "src/modules/tools/LatinCyrillic/LatinCyrillic.tsx": 7,
-    "src/modules/tools/LatinCyrillic/components/ChunkSelector.tsx": 15,
-    "src/modules/tools/LatinCyrillic/components/FileUploadModal.tsx": 26,
-    "src/modules/tools/LatinCyrillic/components/FileUploadZone.tsx": 21,
-    "src/modules/tools/LatinCyrillic/constants/index.ts": 18,
     "src/modules/tools/LoremIpsum/LoremIpsum.tsx": 1,
     "src/modules/tools/LoremIpsum/components/ConfigPanel.tsx": 20,
     "src/modules/tools/LoremIpsum/components/HelpSection.tsx": 14,

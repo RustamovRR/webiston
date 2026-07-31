@@ -89,7 +89,7 @@ export function LatinCyrillicPage() {
     // biome-ignore lint/a11y/noStaticElementInteractions: a bubbling key
     // handler scoped to the tool, not an interactive element of its own
     <div
-      className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8"
+      className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8"
       onKeyDown={handleKeyDown}
     >
       <ToolHeader

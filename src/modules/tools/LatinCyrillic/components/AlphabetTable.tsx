@@ -1,3 +1,4 @@
+import { cn } from "@webiston/ui/utils"
 import { getTranslations } from "next-intl/server"
 
 import { ALPHABET_ROWS, type AlphabetRow, COMPOUND_ROWS } from "../constants"
@@ -9,24 +10,35 @@ import { ALPHABET_ROWS, type AlphabetRow, COMPOUND_ROWS } from "../constants"
  * rather than a child of it — a child of a `'use client'` tree is a client
  * component whether it needs to be or not, and this one is static markup.
  *
- * It replaces six "info cards" that between them restated the toolbar, listed
- * Ц as part of an alphabet the converter could not produce, and published
- * three statistics with no source.
+ * The first version drew a border on every cell, which in dark mode turned the
+ * whole thing into a grey grid with two glyphs and a lot of empty space in it.
+ * This one keeps ONE hairline per row and lets the letters carry the layout:
+ * the pair is a mono chip, the Cyrillic side is the accent (it is the answer
+ * the reader came for), and the note only appears on the rows that have one.
  */
 
-function Row({ row, noteLabel }: { row: AlphabetRow; noteLabel?: string }) {
+function LetterPair({ row, note }: { row: AlphabetRow; note?: string }) {
   return (
-    <tr className="border-border border-b last:border-0">
-      {/* `whitespace-nowrap`: the compound table sits in the narrow column and
-          was breaking "Ya ya" across two lines, which reads as two entries. */}
-      <td className="whitespace-nowrap py-2.5 pr-4 font-mono text-foreground text-sm">
+    <tr
+      className={cn(
+        "border-border/60 border-b transition-colors last:border-0",
+        "hover:bg-accent/40"
+      )}
+    >
+      <td className="whitespace-nowrap py-3 pl-5 font-mono text-[15px] text-muted-foreground">
         {row.latin}
       </td>
-      <td className="whitespace-nowrap py-2.5 pr-4 font-mono text-foreground text-sm">
+      <td
+        className="w-8 py-3 text-center text-border-strong text-xs"
+        aria-hidden="true"
+      >
+        →
+      </td>
+      <td className="whitespace-nowrap py-3 font-mono text-[15px] text-foreground">
         {row.cyrillic}
       </td>
-      <td className="py-2.5 text-muted-foreground text-xs leading-relaxed">
-        {noteLabel}
+      <td className="py-3 pr-5 pl-6 text-muted-foreground text-xs leading-relaxed">
+        {note}
       </td>
     </tr>
   )
@@ -64,52 +76,37 @@ export async function AlphabetTable({ locale }: { locale: string }) {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.55fr_1fr]">
-        {/* Wide content scrolls inside its own box; the page never does. */}
-        <div className="overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="w-full min-w-[22rem] border-collapse px-5 text-left">
-            <caption className="sr-only">{t("title")}</caption>
-            <thead>
-              <tr className="border-border border-b">
-                <th
-                  scope="col"
-                  className="px-5 py-3 font-medium text-muted-foreground text-xs uppercase tracking-wider"
-                >
-                  {t("latin")}
-                </th>
-                <th
-                  scope="col"
-                  className="py-3 pr-3 font-medium text-muted-foreground text-xs uppercase tracking-wider"
-                >
-                  {t("cyrillic")}
-                </th>
-                <th
-                  scope="col"
-                  className="py-3 pr-5 font-medium text-muted-foreground text-xs uppercase tracking-wider"
-                >
-                  {t("note")}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="[&_td:first-child]:pl-5 [&_td:last-child]:pr-5">
-              {ALPHABET_ROWS.map((row) => (
-                <Row key={row.latin} row={row} noteLabel={noteFor(row)} />
-              ))}
-            </tbody>
-          </table>
+      {/* `items-start`: the second card is half the length of the first, and
+          stretching it left a large empty box under five rows. */}
+      <div className="grid items-start gap-6 lg:grid-cols-[1.6fr_1fr]">
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
+          {/* Wide content scrolls inside its own box; the page never does. */}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[22rem] border-collapse text-left">
+              <caption className="sr-only">{t("title")}</caption>
+              <tbody>
+                {ALPHABET_ROWS.map((row) => (
+                  <LetterPair key={row.latin} row={row} note={noteFor(row)} />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="w-full min-w-[16rem] border-collapse text-left">
-            <caption className="px-5 pt-4 pb-1 text-left font-medium text-foreground text-sm">
-              {t("compoundTitle")}
-            </caption>
-            <tbody className="[&_td:first-child]:pl-5 [&_td:last-child]:pr-5">
-              {COMPOUND_ROWS.map((row) => (
-                <Row key={row.latin} row={row} noteLabel={noteFor(row)} />
-              ))}
-            </tbody>
-          </table>
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
+          <h3 className="border-border/60 border-b px-5 py-3 font-medium text-foreground text-sm">
+            {t("compoundTitle")}
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[16rem] border-collapse text-left">
+              <caption className="sr-only">{t("compoundTitle")}</caption>
+              <tbody>
+                {COMPOUND_ROWS.map((row) => (
+                  <LetterPair key={row.latin} row={row} note={noteFor(row)} />
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>

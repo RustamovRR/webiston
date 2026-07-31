@@ -96,7 +96,7 @@ export default async function LatinCyrillicPage({
         <LatinCyrillic />
       </LocaleMessages>
 
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">
         <AlphabetTable locale={locale} />
         <ConverterFaq locale={locale} />
       </div>

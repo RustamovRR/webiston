@@ -10,6 +10,7 @@ export {
   BaseModalTitle,
   CopyButton,
   InfoCard,
+  SegmentedControl,
   StatsDisplay
 } from "./composites"
 // Design constants (owned here; the app re-exports them from src/constants)

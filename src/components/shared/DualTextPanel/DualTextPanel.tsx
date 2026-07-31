@@ -276,13 +276,16 @@ export function DualTextPanel({
       {showSwapButton && onSwap && (
         <div className="relative lg:absolute lg:left-1/2 lg:top-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
           <div className="flex justify-center lg:justify-start">
+            {/* Disabled with nothing to swap. It used to stay enabled on an
+                empty panel, so the first thing a visitor clicked was a button
+                that silently did nothing. */}
             <ShimmerButton
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90"
+              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90 disabled:cursor-not-allowed disabled:opacity-40"
               title={swapButtonTitle}
-              disabled={isLoading}
+              disabled={isLoading || !convertedText}
               aria-label={swapButtonTitle || "Swap"}
             >
               {swapIcon || (

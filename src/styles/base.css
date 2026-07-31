@@ -64,14 +64,20 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
-th {
-  text-align: left !important;
-}
-td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left !important;
-}
+
+/* The `th` / `td` element rules that used to live here are gone.
+   They set `border: 1px solid #ddd` and `text-align: left !important` on EVERY
+   cell on the site. Two problems:
+
+   1. `#ddd` is a light grey with no dark variant, so in dark mode every table
+      was wrapped in near-white grid lines — the "grid of junk" look.
+   2. Being element rules with `!important`, no component could style its own
+      table without losing.
+
+   The only tables that ever needed them are the 23 book chapters with markdown
+   tables, and those are already styled by their own component with tokens
+   (`border-border`) in `MDXContent.tsx`. Every other table now owns its
+   appearance, which is how the rest of the design system works. */
 
 @media screen and (max-width: 1200px) {
   .home-content .hide-medium {
@@ -94,5 +100,15 @@ td {
   }
   body {
     @apply bg-background text-foreground font-sans;
+  }
+}
+
+
+/* The accordion keyframes animate `height`, which reduced-motion users have
+   asked not to see. Every other animation on the site is already guarded (see
+   hero.css); this keeps that promise for the shared Accordion primitive. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="accordion-content"] {
+    animation: none !important;
   }
 }
