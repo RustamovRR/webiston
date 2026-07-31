@@ -2,133 +2,94 @@
   "LatinCyrillicPage": {
     "ToolHeader": {
       "title": "Lotin-Kirill O'giruvchi",
-      "description": "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'girish vositasi"
+      "description": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi."
     },
-    "download": "Yuklab olish",
     "clear": "Tozalash",
-    "sampleTexts": "Namuna matnlar",
     "swapDirection": "Yo'nalishni almashtirish",
-    "statusReady": "O'girishga tayyor",
-    "sourceInput": "{sourceLang} Matn Kirish",
-    "targetResult": "{targetLang} Natija",
-    "alphabet": "Alifbo",
+    "sourceInput": "{sourceLang} matn",
+    "targetResult": "{targetLang} natija",
     "latin": "Lotin",
     "cyrillic": "Kirill",
-    "latinToCyrillic": "Lotin → Kirill",
-    "cyrillicToLatin": "Kirill → Lotin",
-    "inputPlaceholderLatin": "Matn kiriting...",
-    "inputPlaceholderCyrillic": "Матн киритинг...",
-    "emptyStateTitle": "O'girilgan matn bu yerda ko'rinadi...",
-    "emptyStateDescription": "Matn kiriting yoki namuna yuklang",
-    "downloadFile": {
-      "title": "# Lotin-Kirill O'giruvchi - Natija",
-      "createdAt": "Yaratilgan",
-      "direction": "Yo'nalish",
-      "sourceText": "## Asl matn:",
-      "convertedText": "## O'girilgan matn:",
-      "generatedBy": "Webiston.uz - Lotin-Kirill O'giruvchi tomonidan yaratilgan"
+    "inputPlaceholderLatin": "Matn kiriting yoki fayl tashlang...",
+    "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
+    "shortcutHint": "⌘/Ctrl + Enter — nusxalash · Esc — tozalash",
+    "direction": {
+      "label": "O'girish yo'nalishi",
+      "auto": "Avto",
+      "toCyrillic": "→ Кирилл",
+      "toLatin": "→ Lotin",
+      "resolved": "{target} tomon"
     },
-    "samples": {
-      "latinGreeting": "Lotin salom",
-      "cyrillicGreeting": "Kirill salom",
-      "latinParagraph": "Lotin paragraf",
-      "cyrillicParagraph": "Kirill paragraf"
+    "empty": {
+      "paste": "Nusxadan qo'yish",
+      "sample": "Namunani sinash"
     },
-    "fileUpload": {
-      "button": "Fayl yuklash",
-      "modalTitle": "Fayl yuklash",
-      "modalDescription": "PDF, DOCX yoki TXT faylni yuklang",
-      "dropzone": "Faylni shu yerga tashlang yoki",
-      "selectFile": "Fayl tanlash",
-      "supportedFormats": "Qo'llab-quvvatlanadigan formatlar",
-      "maxSize": "maksimum",
-      "close": "Yopish",
-      "cancel": "Bekor qilish",
+    "file": {
+      "button": "Fayl",
+      "dropHere": "Faylni shu yerga tashlang",
+      "accepts": "TXT · PDF · DOCX",
       "progress": {
-        "readingTxt": "TXT fayl o'qilmoqda...",
-        "loadingPdfLibrary": "PDF kutubxonasi yuklanmoqda...",
-        "readingPage": "Sahifa {current}/{total} o'qilmoqda...",
-        "pageCount": "{current} / {total} sahifa",
-        "loadingDocxLibrary": "DOCX kutubxonasi yuklanmoqda...",
-        "readingDocx": "DOCX fayl o'qilmoqda...",
-        "docxReady": "DOCX tayyor",
-        "processingChunks": "Matn qayta ishlanmoqda...",
-        "creatingDocx": "DOCX yaratilmoqda...",
-        "formattingDocx": "Hujjat formatlanmoqda...",
-        "creatingPdf": "PDF yaratilmoqda...",
-        "formattingPdf": "PDF formatlanmoqda...",
-        "writingPdf": "PDF yozilmoqda...",
-        "savingPdf": "PDF saqlanmoqda...",
-        "downloaded": "Yuklab olindi!",
-        "ready": "Tayyor!"
+        "loadingLibrary": "Kutubxona yuklanmoqda...",
+        "reading": "Fayl o'qilmoqda...",
+        "done": "Tayyor"
       },
       "errors": {
-        "fileTooLarge": "Fayl hajmi juda katta. Maksimum: 200MB",
-        "unsupportedFormat": "Qo'llab-quvvatlanmaydigan format. Faqat: .txt, .pdf, .docx",
-        "txtReadError": "TXT faylni o'qishda xatolik",
-        "unknownFormat": "Noma'lum fayl formati",
-        "unknownError": "Noma'lum xatolik yuz berdi",
-        "docxExportError": "DOCX yaratishda xatolik",
-        "pdfExportError": "PDF yaratishda xatolik"
-      },
-      "success": "Muvaffaqiyatli yuklandi!",
-      "error": "Xatolik!",
-      "retry": "Qayta urinish"
+        "fileTooLarge": "Fayl juda katta. Maksimum: {size} MB",
+        "unsupportedFormat": "Bu format qo'llab-quvvatlanmaydi. Faqat: .txt, .pdf, .docx",
+        "readFailed": "Faylni o'qib bo'lmadi. Boshqa fayl bilan urinib ko'ring.",
+        "exportFailed": "Faylni yaratib bo'lmadi. Qayta urinib ko'ring."
+      }
     },
-    "downloadMenu": {
-      "title": "Yuklab olish",
+    "download": {
+      "label": "Yuklab olish",
+      "preparing": "Tayyorlanmoqda...",
       "asTxt": "TXT formatda",
-      "asDocx": "Word formatda",
-      "asPdf": "PDF formatda",
-      "processing": "Tayyorlanmoqda...",
-      "currentChunk": "Joriy qism ({number})",
-      "currentAll": "Joriy (hammasi)",
-      "downloadAll": "Hammasini yuklash"
+      "asDocx": "Word (DOCX) formatda"
     },
-    "chunks": {
-      "title": "Bo'limlar",
-      "all": "Hammasi",
-      "chunk": "Bo'lim {number}",
-      "characters": "{count} belgi",
-      "downloadAll": "Hammasini yuklab olish",
-      "selected": "Tanlangan"
+    "table": {
+      "kicker": "ALIFBO",
+      "title": "Lotin — Kirill harflar jadvali",
+      "description": "O'zbek lotin alifbosining 29 harfi va ularning kirillcha muqobili. Bir xil o'qilmaydigan qatorlar izohlangan.",
+      "latin": "Lotin",
+      "cyrillic": "Kirill",
+      "note": "Izoh",
+      "compoundTitle": "Qo'shma harflar",
+      "notes": {
+        "e": "So'z boshida — Э, so'z ichida — Е",
+        "hx": "H — ҳ, X — х. Kirillchada bular boshqa-boshqa harf",
+        "sh": "Ikki harf, bitta tovush",
+        "ts": "Ц faqat o'zlashgan so'zlarda: informatsiya → информация. «Ketsin» kabi so'zlarda esa alohida т + с",
+        "apostrophe": "Tutuq belgisi: san'at → санъат"
+      }
     },
-    "info": {
-      "latinTitle": "Lotin Alifbosi",
-      "latinDescription": "1993-yil 2-sentabrda O'zbekiston Respublikasi Prezidentining farmoni bilan rasmiy ravishda qabul qilingan.",
-      "latinItem1": "29 harf: A, B, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, X, Y, Z, O', G', Sh, Ch, Ng",
-      "latinItem2": "Xalqaro standartlarga mos, kompyuterda yozish uchun qulay",
-      "latinItem3": "2021-yildan boshlab barcha rasmiy hujjatlar faqat lotin yozuvida",
-
-      "cyrillicTitle": "Кирилл Алифбоси",
-      "cyrillicDescription": "1940-1992 йиллар орасида Совет Иттифоқи даврида ишлатилган ёзув тизими.",
-      "cyrillicItem1": "35 ҳарф: А, Б, В, Г, Д, Е, Ё, Ж, З, И, Й, К, Л, М, Н, О, П, Р, С, Т, У, Ф, Х, Ц, Ч, Ш, Ъ, Ь, Э, Ю, Я, Ў, Қ, Ғ, Ҳ",
-      "cyrillicItem2": "Рус тилига яқин, кўп адабиётлар шу ёзувда",
-      "cyrillicItem3": "Ҳозирда архив ҳужжатлари ва классик адабиётларда учрайди",
-
-      "historyTitle": "Tarixiy O'zgarishlar",
-      "historyDescription": "O'zbek yozuvi 100 yil ichida 4 marta o'zgardi: arab, lotin, kirill va yana lotin.",
-      "historyItem1": "1928-1940: Birinchi lotin alifbosi (Yanalif)",
-      "historyItem2": "1940-1992: Kirill alifbosi (52 yil)",
-      "historyItem3": "1993-hozir: Zamonaviy lotin alifbosi (30+ yil)",
-
-      "usageTitle": "Qo'llanish Sohalari",
-      "usageDescription": "Ikki alifbo ham turli sohalarda faol ishlatiladi va o'z ahamiyatiga ega.",
-      "usageItem1": "Lotin: Ta'lim, davlat hujjatlari, internet, biznes",
-      "usageItem2": "Kirill: Klassik adabiyot, arxiv, katta yoshdagi kishilar",
-      "usageItem3": "Aralash: Ijtimoiy tarmoqlar, shaxsiy yozishmalar",
-
-      "featuresTitle": "Konverter Imkoniyatlari",
-      "featuresDescription": "Zamonaviy texnologiyalar asosida ishlab chiqilgan professional o'girish vositasi.",
-      "featuresItem1": "99.9% aniqlik - maxsus algoritmlar yordamida",
-      "featuresItem2": "Tezkor ishlash - bir necha soniyada katta matnlar",
-      "featuresItem3": "Fayl yuklash - PDF, DOCX, TXT formatlarini qo'llab-quvvatlaydi",
-
-      "statisticsTitle": "Foydali Statistika",
-      "statisticsDescription": "O'zbek tili va alifbolar haqida qiziqarli raqamlar va faktlar.",
-      "statisticsItem1": "35+ million kishi o'zbek tilida gaplashadi",
-      "statisticsItem2": "O'zbekiston aholisining 95% lotin yozuvini biladi",
-      "statisticsItem3": "Har yili 10,000+ kitob lotin yozuvida nashr etiladi"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "howToUse": {
+          "question": "O'giruvchidan qanday foydalanaman?",
+          "answer": "Matnni chap oynaga qo'ying — natija o'ng tomonda darhol paydo bo'ladi, tugma bosish shart emas. Yo'nalish avtomatik aniqlanadi; kerak bo'lsa «Avto» o'rniga kerakli yo'nalishni tanlang."
+        },
+        "isFree": {
+          "question": "Bepulmi? Ro'yxatdan o'tish kerakmi?",
+          "answer": "Ha, butunlay bepul va ro'yxatdan o'tishsiz. Cheklov yo'q."
+        },
+        "accuracy": {
+          "question": "O'girish qanchalik aniq?",
+          "answer": "O'giruvchi o'zbek imlosining murakkab qoidalarini hisobga oladi: sh + ch chegarasi (ishchi → ишчи), tutuq belgisi (san'at → санъат), -tsiya qo'shimchasi (informatsiya → информация) va so'z boshidagi e → э. Havolalar, elektron pochta, kod va texnik atamalar o'girilmay saqlanadi. Shunga qaramay, kamdan-kam uchraydigan xorijiy nomlarni tekshirib chiqishni tavsiya qilamiz."
+        },
+        "files": {
+          "question": "Fayl yuklay olamanmi?",
+          "answer": "Ha — TXT, PDF va DOCX. Faylni sahifaning istalgan joyiga tashlang yoki «Fayl» tugmasini bosing. Natijani TXT yoki Word (DOCX) ko'rinishida yuklab olasiz. Fayl hajmi 10 MB gacha."
+        },
+        "privacy": {
+          "question": "Matnim qayerga boradi?",
+          "answer": "Hech qayerga. Butun o'girish brauzeringizda bajariladi — matn ham, yuklangan fayl ham serverga jo'natilmaydi."
+        },
+        "difference": {
+          "question": "Nega ba'zi so'zlar o'girilmay qoladi?",
+          "answer": "Havolalar, elektron pochta manzillari, fayl nomlari, kod bo'laklari va React yoki GitHub kabi mahsulot nomlari ataylab o'zgarishsiz qoldiriladi — ular kirillchada ma'nosini yo'qotadi."
+        }
+      }
     }
   }
 }

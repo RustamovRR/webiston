@@ -2,30 +2,15 @@
  * Type definitions barrel export
  */
 
-// File upload/download types
+// Core transliteration types come from the package — one definition, not a
+// re-declaration that can drift.
+export type {
+  DirectionPreference,
+  ScriptType,
+  TransliterationDirection
+} from "@webiston/transliteration"
 export type {
   DownloadFormat,
-  FileProcessingStatus,
-  FileUploadResult,
-  ProcessingProgress,
-  SupportedFileType,
-  TextChunk,
-  UseFileTransliterateResult
+  FileImportStatus,
+  ImportProgress
 } from "./file"
-
-// Hook types
-export type {
-  SampleItem,
-  SampleTextKey,
-  TranslationFunction,
-  UseLatinCyrillicResult
-} from "./hooks"
-// Core transliteration types
-export type {
-  CharacterMapping,
-  DigraphMapping,
-  ScriptType,
-  TransliterationDirection,
-  TransliterationMode,
-  TransliterationOptions
-} from "./transliteration"

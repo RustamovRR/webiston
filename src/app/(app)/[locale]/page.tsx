@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <explanation> */
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
 import type { Metadata } from "next"
 import Link from "next/link"
 import { getTranslations, setRequestLocale } from "next-intl/server"

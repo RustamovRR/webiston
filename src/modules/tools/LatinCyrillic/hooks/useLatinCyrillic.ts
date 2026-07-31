@@ -1,171 +1,78 @@
+"use client"
+
 /**
- * Custom hook for Latin-Cyrillic transliteration
- * Features:
- * - Auto-detect script (Cyrillic/Latin) and switch direction
- * - Zustand store for direction persistence
- * - Debounced conversion for performance
+ * The converter's state: the text, which way it is going, and the result.
  *
- * Note: React 19+ with React Compiler handles memoization automatically
+ * The direction POLICY is not here — it lives in `@webiston/transliteration`
+ * so the extension's popup, its in-page popover and its context menu resolve
+ * direction exactly the way this page does. What used to be here was a private
+ * heuristic that fired only when the text length changed by more than five
+ * characters, so typing Cyrillic never switched direction, replacing a
+ * selection with the same number of characters never switched, and deleting a
+ * paragraph counted as a paste and overrode a direction the user had chosen.
  */
 
-import { useTranslations } from "next-intl"
-import { useEffect, useRef } from "react"
+import {
+  convertWithPreference,
+  type DirectionPreference,
+  oppositeDirection
+} from "@webiston/transliteration"
+import { useState } from "react"
 import { useDebounceValue } from "usehooks-ts"
 
-import { SAMPLE_TEXTS } from "../constants"
 import { useTransliterationStore } from "../stores"
-import type {
-  SampleItem,
-  SampleTextKey,
-  TransliterationDirection,
-  UseLatinCyrillicResult
-} from "../types"
-import { isCyrillicText, toCyrillic, toLatin } from "../utils"
 
-const DEBOUNCE_DELAY = 100
-// Minimum characters before auto-detect kicks in
-const AUTO_DETECT_THRESHOLD = 3
+/**
+ * Long enough to coalesce a burst of keystrokes, short enough to feel live.
+ *
+ * Conversion itself is not the reason for the delay — the engine does 50,000
+ * characters in ~10 ms. Re-rendering a large result into the DOM is. At
+ * ordinary typing speed the result appears to update with the caret.
+ */
+const DEBOUNCE_DELAY = 90
 
-export function useLatinCyrillic(): UseLatinCyrillicResult {
-  const t = useTranslations("LatinCyrillicPage")
+export function useLatinCyrillic() {
+  const preference = useTransliterationStore((s) => s.preference)
+  const setPreference = useTransliterationStore((s) => s.setPreference)
 
-  // Track previous text length to detect paste operations
-  const prevTextLength = useRef(0)
-
-  // Get state from store
-  const { direction, sourceText, setDirection, setSourceText, reset } =
-    useTransliterationStore()
-
+  const [sourceText, setSourceText] = useState("")
   const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
 
-  // Auto-detect script and switch direction
-  useEffect(() => {
-    // Skip if text is too short
-    if (sourceText.length < AUTO_DETECT_THRESHOLD) {
-      prevTextLength.current = sourceText.length
-      return
-    }
+  // React Compiler memoises this; it re-runs only when the text or the
+  // preference changes.
+  const { text: convertedText, direction } = convertWithPreference(
+    debouncedText,
+    preference
+  )
 
-    // Detect if this is a paste operation (large text change)
-    const textLengthDiff = Math.abs(sourceText.length - prevTextLength.current)
-    const isPasteOperation = textLengthDiff > 5
-
-    // Always auto-detect on paste, or when typing normally
-    const isCyrillic = isCyrillicText(sourceText)
-    const expectedDirection: TransliterationDirection = isCyrillic
-      ? "cyrillic-to-latin"
-      : "latin-to-cyrillic"
-
-    // Switch direction if different (always on paste, or when auto-detect matches)
-    if (direction !== expectedDirection && isPasteOperation) {
-      setDirection(expectedDirection)
-    }
-
-    prevTextLength.current = sourceText.length
-  }, [sourceText, direction, setDirection])
-
-  // Converted text - React Compiler handles memoization
-  const convertedText = (() => {
-    if (!debouncedText.trim()) return ""
-
-    try {
-      return direction === "latin-to-cyrillic"
-        ? toCyrillic(debouncedText)
-        : toLatin(debouncedText)
-    } catch (error) {
-      console.error("Transliteration error:", error)
-      return ""
-    }
-  })()
-
-  // Action: manually set direction
-  const handleSetDirection = (newDirection: TransliterationDirection) => {
-    setDirection(newDirection)
+  /**
+   * Swap puts the result in the input and turns the conversion around.
+   *
+   * It also pins the preference to the direction being swapped TO. Leaving it
+   * on "auto" would make the swap a no-op: auto would look at the text it was
+   * just handed and resolve straight back to where it came from.
+   */
+  const swap = () => {
+    if (!convertedText) return
+    setPreference(oppositeDirection(direction))
+    setSourceText(convertedText)
   }
 
-  // Action: swap direction and use converted text as new source
-  const handleSwap = () => {
-    const newDirection: TransliterationDirection =
-      direction === "latin-to-cyrillic"
-        ? "cyrillic-to-latin"
-        : "latin-to-cyrillic"
-
-    setDirection(newDirection)
-
-    if (convertedText) {
-      setSourceText(convertedText)
-    }
-  }
-
-  // Action: clear all state
-  const handleClear = () => {
-    prevTextLength.current = 0
-    reset()
-  }
-
-  // Action: load sample text
-  const loadSample = (sampleKey: SampleTextKey) => {
-    const sampleText = SAMPLE_TEXTS[sampleKey]
-    setSourceText(sampleText)
-
-    if (sampleKey.includes("LATIN")) {
-      setDirection("latin-to-cyrillic")
-    } else if (
-      sampleKey.includes("CYRILLIC") ||
-      sampleKey.includes("RUSSIAN")
-    ) {
-      setDirection("cyrillic-to-latin")
-    }
-  }
-
-  // Computed UI labels
-  const sourceLang =
-    direction === "latin-to-cyrillic" ? t("latin") : t("cyrillic")
-
-  const targetLang =
-    direction === "latin-to-cyrillic" ? t("cyrillic") : t("latin")
-
-  const sourcePlaceholder =
-    direction === "latin-to-cyrillic"
-      ? t("inputPlaceholderLatin")
-      : t("inputPlaceholderCyrillic")
-
-  // Sample items for dropdown
-  const samples: SampleItem[] = [
-    {
-      key: "LATIN_GREETING",
-      label: t("samples.latinGreeting"),
-      value: SAMPLE_TEXTS.LATIN_GREETING
-    },
-    {
-      key: "CYRILLIC_GREETING",
-      label: t("samples.cyrillicGreeting"),
-      value: SAMPLE_TEXTS.CYRILLIC_GREETING
-    },
-    {
-      key: "LATIN_PARAGRAPH",
-      label: t("samples.latinParagraph"),
-      value: SAMPLE_TEXTS.LATIN_PARAGRAPH
-    },
-    {
-      key: "CYRILLIC_PARAGRAPH",
-      label: t("samples.cyrillicParagraph"),
-      value: SAMPLE_TEXTS.CYRILLIC_PARAGRAPH
-    }
-  ]
+  const clear = () => setSourceText("")
 
   return {
-    direction,
     sourceText,
     convertedText,
-    setDirection: handleSetDirection,
+    /** What the user chose — "auto" until they say otherwise. */
+    preference,
+    /** What "auto" resolved to, for the panel labels. */
+    direction,
+    setPreference,
     setSourceText,
-    handleSwap,
-    handleClear,
-    loadSample,
-    sourceLang,
-    targetLang,
-    sourcePlaceholder,
-    samples
+    swap,
+    clear
   }
 }
+
+export type UseLatinCyrillicResult = ReturnType<typeof useLatinCyrillic>
+export type { DirectionPreference }

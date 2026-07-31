@@ -42,6 +42,13 @@ interface DualTextPanelProps {
   customTargetContent?: React.ReactNode
   customSourceContent?: React.ReactNode
   extraHeaderComponent?: React.ReactNode
+  /**
+   * Rendered over the source textarea while it is empty — the place to put the
+   * one or two actions that get a first-time visitor started. It sits ON the
+   * textarea rather than replacing it so a click on the empty space still
+   * focuses the field.
+   */
+  sourceEmptyState?: React.ReactNode
 }
 
 export function DualTextPanel({
@@ -66,7 +73,8 @@ export function DualTextPanel({
   showShadow = false,
   customTargetContent,
   customSourceContent,
-  extraHeaderComponent
+  extraHeaderComponent,
+  sourceEmptyState
 }: DualTextPanelProps) {
   const tCommon = useTranslations("Common")
 
@@ -177,23 +185,34 @@ export function DualTextPanel({
         </header>
 
         {/* Content area */}
+        {/* Below `lg` the panels stack, so a 400px minimum put the result a
+            full screen-height below the input: on a phone you typed into a box
+            whose output you could not see. 200px keeps both in view at
+            375x667 and still grows with the content. */}
         <div
           id={contentId}
-          className="relative min-h-[400px] flex-1 lg:min-h-[500px]"
+          className="relative min-h-[200px] flex-1 sm:min-h-[320px] lg:min-h-[500px]"
         >
           {isSource ? (
             customSourceContent ? (
               <div className="absolute inset-0">{customSourceContent}</div>
             ) : (
-              <textarea
-                value={sourceText}
-                onChange={(e) => onSourceChange(e.target.value)}
-                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
-                placeholder={sourcePlaceholder}
-                disabled={isLoading}
-                aria-label={sourceLabel}
-                spellCheck={false}
-              />
+              <>
+                <textarea
+                  value={sourceText}
+                  onChange={(e) => onSourceChange(e.target.value)}
+                  className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
+                  placeholder={sourcePlaceholder}
+                  disabled={isLoading}
+                  aria-label={sourceLabel}
+                  spellCheck={false}
+                />
+                {sourceEmptyState && sourceText.length === 0 && (
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-4">
+                    {sourceEmptyState}
+                  </div>
+                )}
+              </>
             )
           ) : (
             <div

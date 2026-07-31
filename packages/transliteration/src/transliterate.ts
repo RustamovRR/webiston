@@ -18,24 +18,13 @@ import { protectContent, restoreContent } from "./protection"
 // =============================================================================
 
 /**
- * Detect if text contains predominantly Cyrillic characters
- * Returns true if Cyrillic characters are more than Latin
+ * Detect if text contains predominantly Cyrillic characters.
+ *
+ * One implementation, in detect-script.ts. There used to be two \u2014 this one
+ * counted raw characters, `detectScript` counted them again with different
+ * thresholds, and callers picked whichever name they happened to import.
  */
-export function isCyrillicText(text: string): boolean {
-  if (!text || text.length < 2) return false
-
-  // Cyrillic Unicode range: U+0400 to U+04FF
-  const cyrillicRegex = /[\u0400-\u04FF]/g
-  // Latin Unicode range: basic Latin letters
-  const latinRegex = /[a-zA-Z]/g
-
-  const cyrillicMatches = text.match(cyrillicRegex) || []
-  const latinMatches = text.match(latinRegex) || []
-
-  return (
-    cyrillicMatches.length > 0 && cyrillicMatches.length >= latinMatches.length
-  )
-}
+export { isCyrillicDominant as isCyrillicText } from "./detect-script"
 
 /**
  * Convert Latin text to Cyrillic (Uzbek)

@@ -8,7 +8,12 @@ export { default as IpInfo } from "./IpInfo"
 export { default as JsonFormatter } from "./JsonFormatter"
 export { default as JwtDecoder } from "./JwtDecoder"
 export { default as KeycodeInfo } from "./KeycodeInfo"
-export { default as LatinCyrillic, LatinCyrillicPage } from "./LatinCyrillic"
+export {
+  AlphabetTable,
+  ConverterFaq,
+  default as LatinCyrillic,
+  LatinCyrillicPage
+} from "./LatinCyrillic"
 export { default as LoremIpsum } from "./LoremIpsum"
 export { default as MicrophoneTest } from "./MicrophoneTest"
 export { default as OgMetaGenerator } from "./OgMetaGenerator"
