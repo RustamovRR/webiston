@@ -11,7 +11,7 @@
 import { ProgressBar } from "@webiston/ui/composites/ProgressBar"
 import { Button } from "@webiston/ui/primitives/button"
 import { cn } from "@webiston/ui/utils"
-import { Paperclip, X } from "lucide-react"
+import { BookLock, Paperclip, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
@@ -21,6 +21,7 @@ import {
   DirectionTabs,
   DownloadMenu,
   DropZone,
+  ExceptionsDialog,
   PreservedTerms,
   SourceEmptyActions
 } from "./components"
@@ -38,6 +39,9 @@ export function LatinCyrillicPage() {
     preference,
     direction,
     preservedTerms,
+    exceptions,
+    addException,
+    removeException,
     setPreference,
     setSourceText,
     swap,
@@ -53,6 +57,7 @@ export function LatinCyrillicPage() {
   // The keyboard copy has to acknowledge itself. A silent shortcut is
   // indistinguishable from a shortcut that is not bound.
   const [justCopied, setJustCopied] = useState(false)
+  const [exceptionsOpen, setExceptionsOpen] = useState(false)
   useEffect(() => {
     if (!justCopied) return
     const timer = setTimeout(() => setJustCopied(false), 1600)
@@ -100,7 +105,14 @@ export function LatinCyrillicPage() {
         description={t("ToolHeader.description")}
       />
 
-      <div className="mb-4 flex flex-col gap-3 rounded-xl border border-border bg-card/60 p-3 backdrop-blur-sm md:flex-row md:items-center md:justify-between">
+      {/* A toolbar, not a card.
+          The card treatment put a bordered box around two groups that are not
+          one thing — a direction switch and file actions — and at this width
+          the band between them measured 535px, 44% of the row. An empty CARD
+          reads as "something is missing here"; the same gap on the page reads
+          as ordinary whitespace. The panels below are the only cards now, so
+          the eye has one level of nesting to follow instead of two. */}
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <DirectionTabs
           value={preference}
           onChange={setPreference}
@@ -145,6 +157,24 @@ export function LatinCyrillicPage() {
             disabled={!convertedText}
             isBusy={file.isBusy}
           />
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setExceptionsOpen(true)}
+            aria-label={t("exceptions.button")}
+          >
+            <BookLock className="h-4 w-4" aria-hidden="true" />
+            <span className="ml-2 max-sm:sr-only">
+              {t("exceptions.button")}
+            </span>
+            {exceptions.length > 0 && (
+              <span className="ml-2 rounded-full bg-primary px-1.5 font-mono text-[10px] text-primary-foreground tabular-nums">
+                {exceptions.length}
+              </span>
+            )}
+          </Button>
 
           <Button
             type="button"
@@ -236,6 +266,14 @@ export function LatinCyrillicPage() {
           autoFocusSource
         />
       </DropZone>
+
+      <ExceptionsDialog
+        isOpen={exceptionsOpen}
+        onClose={() => setExceptionsOpen(false)}
+        exceptions={exceptions}
+        onAdd={addException}
+        onRemove={removeException}
+      />
     </div>
   )
 }

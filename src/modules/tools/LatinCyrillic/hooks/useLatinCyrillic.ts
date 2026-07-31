@@ -35,20 +35,26 @@ const DEBOUNCE_DELAY = 90
 export function useLatinCyrillic() {
   const preference = useTransliterationStore((s) => s.preference)
   const setPreference = useTransliterationStore((s) => s.setPreference)
+  const exceptions = useTransliterationStore((s) => s.exceptions)
+  const addException = useTransliterationStore((s) => s.addException)
+  const removeException = useTransliterationStore((s) => s.removeException)
 
   const [sourceText, setSourceText] = useState("")
   const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
 
-  // React Compiler memoises this; it re-runs only when the text or the
-  // preference changes.
+  const options = { preserve: exceptions }
+
+  // React Compiler memoises this; it re-runs only when the text, the
+  // preference or the exception list changes.
   const { text: convertedText, direction } = convertWithPreference(
     debouncedText,
-    preference
+    preference,
+    options
   )
 
   // What the engine left alone, so the UI can say so instead of leaving the
   // user to guess whether an unconverted word is a feature or a bug.
-  const preservedTerms = findPreservedTerms(debouncedText)
+  const preservedTerms = findPreservedTerms(debouncedText, options)
 
   /**
    * Swap puts the result in the input and turns the conversion around.
@@ -74,6 +80,10 @@ export function useLatinCyrillic() {
     direction,
     /** Distinct spans deliberately left unconverted — links, code, terms. */
     preservedTerms,
+    /** The reader's own additions to that list. */
+    exceptions,
+    addException,
+    removeException,
     setPreference,
     setSourceText,
     swap,

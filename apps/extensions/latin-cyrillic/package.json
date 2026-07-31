@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@webiston/transliteration": "workspace:*",
+    "@webiston/ui": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

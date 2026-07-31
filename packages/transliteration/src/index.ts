@@ -27,6 +27,8 @@ export {
   normalizeApostrophes,
   preserveCase
 } from "./helpers"
+export { normaliseUserTerms } from "./protection"
+export type { ConversionOptions } from "./transliterate"
 export { isCyrillicText, toCyrillic, toLatin } from "./transliterate"
 export type {
   CharacterMapping,

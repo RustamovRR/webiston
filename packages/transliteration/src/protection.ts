@@ -129,7 +129,38 @@ function buildProtectedWordsPattern(): string {
   )
 }
 
-function buildProtectionRegex(): RegExp {
+/**
+ * The same treatment as the built-in vocabulary, for words the USER added.
+ *
+ * Every entry is escaped: this list comes from a text field, and `.*` typed
+ * into it must protect the literal characters `.*`, not match the whole
+ * document. Longest first, because alternation is ordered and `Yandex Maps`
+ * must get its chance before `Yandex` takes the prefix and leaves ` Maps`.
+ *
+ * Suffixes apply with no length floor, unlike the built-in list. The floor
+ * exists there because a 3-letter entry is weak evidence of being technical;
+ * an entry someone typed by hand is a deliberate statement, so `Ziyo` earns
+ * `Ziyoda` and `Ziyo'ning` the same way `react` earns `reactda`.
+ */
+function buildUserWordsPattern(terms: readonly string[]): string {
+  const escaped = terms
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .sort((a, b) => b.length - a.length)
+
+  const plainSuffix = `(?:${UZBEK_SUFFIXES.join("|")})`
+  const apostropheSuffix = `[${APOSTROPHES}][a-zA-Z]+`
+  const alternatives = escaped.join("|")
+
+  return (
+    "\\b(?:" +
+    `(?:${alternatives})${plainSuffix}(?:${apostropheSuffix})?` +
+    `|(?:${alternatives})(?:${apostropheSuffix})?` +
+    ")(?!\\w)"
+  )
+}
+
+/** The source of the built-in regex, as a string so user terms can be added. */
+function buildBasePattern(): string {
   const patterns = [
     // Code blocks (triple backticks)
     "```[\\s\\S]*?```",
@@ -161,10 +192,63 @@ function buildProtectionRegex(): RegExp {
     // Protected words with optional Uzbek suffixes
     buildProtectedWordsPattern()
   ]
-  return new RegExp(patterns.join("|"), "gi")
+  return patterns.join("|")
 }
 
-const protectionRegex = buildProtectionRegex()
+const BASE_PATTERN = buildBasePattern()
+const protectionRegex = new RegExp(BASE_PATTERN, "gi")
+
+/**
+ * Bounds on a user-supplied list, so a paste cannot build a pathological regex.
+ *
+ * These are not arbitrary: the built-in vocabulary is ~740 entries and compiles
+ * to a regex the engine handles in linear time (there is a test for that). A
+ * user list is an exception list — brand names, colleagues, a village — and 200
+ * entries is far past what anyone maintains by hand.
+ */
+const MAX_USER_TERMS = 200
+const MAX_USER_TERM_LENGTH = 64
+
+/** Cleaned, bounded, de-duplicated. Invalid entries are dropped, not thrown on. */
+export function normaliseUserTerms(terms: readonly string[]): string[] {
+  const seen = new Set<string>()
+  const cleaned: string[] = []
+
+  for (const raw of terms) {
+    const term = raw.trim()
+    if (!term || term.length > MAX_USER_TERM_LENGTH) continue
+    const key = term.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    cleaned.push(term)
+    if (cleaned.length >= MAX_USER_TERMS) break
+  }
+
+  return cleaned
+}
+
+// One compiled regex per distinct list. Rebuilding on every keystroke would
+// recompile a ~740-alternative pattern for each character typed.
+let userRegexCache: { key: string; regex: RegExp } | null = null
+
+function getProtectionRegex(userTerms: readonly string[]): RegExp {
+  if (userTerms.length === 0) return protectionRegex
+
+  const key = userTerms.join("")
+  if (!userRegexCache || userRegexCache.key !== key) {
+    // User terms FIRST: alternation is ordered, so an entry the user added
+    // beats a built-in pattern that would otherwise claim the same span.
+    userRegexCache = {
+      key,
+      regex: new RegExp(
+        `${buildUserWordsPattern(userTerms)}|${BASE_PATTERN}`,
+        "gi"
+      )
+    }
+  }
+
+  return userRegexCache.regex
+}
 
 export interface ProtectionResult {
   maskedText: string
@@ -174,15 +258,25 @@ export interface ProtectionResult {
 /**
  * Protect special content from transliteration
  * Replaces URLs, emails, code blocks, etc. with placeholders
+ *
+ * `userTerms` are extra words the reader asked to leave alone. No engine knows
+ * every proper noun — every competitor in this space ships a hand-maintained
+ * exception list for exactly this reason — so the vocabulary has to be
+ * extensible from outside the package.
  */
-export function protectContent(text: string): ProtectionResult {
+export function protectContent(
+  text: string,
+  userTerms: readonly string[] = []
+): ProtectionResult {
   const protectedParts: string[] = []
   // See PLACEHOLDER_DELIMITER: the masking scheme is only unforgeable if the
   // delimiter cannot already be in the text.
   const safeText = text.replace(PLACEHOLDER_DELIMITER, "")
+  const regex = getProtectionRegex(normaliseUserTerms(userTerms))
+  regex.lastIndex = 0
 
   const maskedText = safeText.replace(
-    protectionRegex,
+    regex,
     (match: string, offset: number) => {
       if (startsInsideUzbekLetter(safeText, offset)) return match
 

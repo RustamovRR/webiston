@@ -1,49 +1,108 @@
 @import "tailwindcss";
 
+/* Tailwind only scans this extension's own tree, so a class that exists ONLY
+   inside a shared component never reaches the stylesheet. Verified: without
+   this line the built CSS contained no `bg-primary` and no `bg-muted` at all,
+   and SegmentedControl would have shipped unstyled.
+   Scoped to the components actually imported, not all of packages/ui/src —
+   the whole tree costs 67 KB of CSS here against 20 KB for this one. Add a
+   line when the popup adopts another shared component. */
+@source "../../../../../packages/ui/src/composites/SegmentedControl";
+
 @custom-variant dark (&:is(.dark *));
 
-/* Design System Variables - synced with web app */
+/* ==========================================================================
+   Design tokens.
+
+   The values below are the SITE's values, copied from src/styles/tokens.css.
+   They used to be a different palette entirely — `--primary: #0ea5e9`, a sky
+   blue, against the site's teal `oklch(0.745 0.115 217)` — so the extension
+   and the page it links to did not look like the same product.
+
+   This file is still a COPY, and a copy drifts. The real fix is one token file
+   under packages/ui that both surfaces import; `packages/*` is the only thing
+   an extension is allowed to reach, and `@webiston/ui` already exports
+   "./styles/*". That refactor touches the site's global CSS, so it is tracked
+   separately rather than folded in here — see docs/roadmap/active.md.
+   ========================================================================== */
+
 :root {
+  /* LAYER 1: primitives — scheme-independent, never used by a component */
+  --brand-100: oklch(0.945 0.03 217);
+  --brand-200: oklch(0.895 0.058 217);
+  --brand-400: oklch(0.745 0.115 217);
+  --brand-500: oklch(0.66 0.114 217);
+  --brand-700: oklch(0.49 0.085 217);
+  --brand-800: oklch(0.41 0.071 217);
+
   --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0ea5e9;
-  --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
-  --destructive: #ef4444;
-  --border: #e5e5e5;
-  --input: #fafafa;
-  --ring: #0ea5e9;
+
+  /* LAYER 2: semantic (light) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0.012 217);
+  --card: oklch(0.985 0.004 217);
+  --card-foreground: var(--foreground);
+
+  --primary: var(--brand-700);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --muted: oklch(0.965 0.005 217);
+  --muted-foreground: oklch(0.505 0.012 217);
+  --accent: var(--brand-100);
+  --accent-foreground: var(--brand-800);
+
+  --border: oklch(0.905 0.008 217);
+  --border-strong: oklch(0.655 0.012 217);
+  --input: oklch(0.98 0.004 217);
+  --ring: var(--brand-500);
+  --destructive: oklch(0.545 0.19 27);
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #171717;
-  --card-foreground: #fafafa;
-  --popover: #171717;
-  --popover-foreground: #fafafa;
-  --primary: #0ea5e9;
-  --primary-foreground: #ffffff;
-  --secondary: #262626;
-  --secondary-foreground: #fafafa;
-  --muted: #1a1a1a;
-  --muted-foreground: #a3a3a3;
-  --accent: #262626;
-  --accent-foreground: #fafafa;
-  --destructive: #dc2626;
-  --border: #262626;
-  --input: #171717;
-  --ring: #0ea5e9;
+  /* Only LAYER 2 is remapped — that is what makes a correct token need no
+     `dark:` variant. */
+  --background: oklch(0.145 0.008 217);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0.006 217);
+  --card-foreground: var(--foreground);
+
+  --primary: var(--brand-400);
+  --primary-foreground: oklch(0.205 0 0);
+
+  --muted: oklch(0.269 0.008 217);
+  --muted-foreground: oklch(0.72 0.02 217);
+  --accent: oklch(0.29 0.02 217);
+  --accent-foreground: var(--brand-200);
+
+  --border: oklch(1 0 0 / 12%);
+  --border-strong: oklch(1 0 0 / 34%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: var(--brand-500);
+  --destructive: oklch(0.65 0.19 27);
+}
+
+/* Bind the tokens to Tailwind's colour names.
+   Without this block `bg-primary` and `text-muted-foreground` simply do not
+   exist here, which is why every element in the popup carried an inline
+   `style={{ background: "var(--primary)" }}` — and why no shared component
+   from @webiston/ui could be dropped in without arriving unstyled. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-lg: var(--radius);
 }
 
 * {
@@ -52,13 +111,16 @@
   padding: 0;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 380px;
   min-height: 100%;
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--background);
   color: var(--foreground);
   font-size: 14px;
@@ -87,12 +149,12 @@ body {
 
 /* Focus ring */
 *:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
 /* Textarea focus */
 textarea:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent);
 }

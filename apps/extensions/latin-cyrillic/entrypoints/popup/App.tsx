@@ -4,9 +4,20 @@ import {
   oppositeDirection,
   resolveDirection
 } from "@webiston/transliteration"
+import {
+  SegmentedControl,
+  type SegmentedOption
+} from "@webiston/ui/composites/SegmentedControl"
 import { useCallback, useEffect, useState } from "react"
 
 type Theme = "light" | "dark" | "system"
+
+/** The same three choices, in the same order, as the web tool. */
+const DIRECTION_OPTIONS: SegmentedOption<DirectionPreference>[] = [
+  { value: "auto", label: "Avto" },
+  { value: "latin-to-cyrillic", label: "→ Кирилл" },
+  { value: "cyrillic-to-latin", label: "→ Lotin" }
+]
 
 // Icons
 function SunIcon() {
@@ -150,9 +161,14 @@ export default function App() {
   const [floatingEnabled, setFloatingEnabled] = useState(true)
   const [theme, setTheme] = useState<Theme>("system")
 
-  // Load settings
+  // Load settings.
+  //
+  // `browser`, not `chrome`: the background script and the content script both
+  // use WXT's cross-browser `browser` namespace and only this file reached for
+  // the Chrome global — which is untyped here, so these three lines were the
+  // extension's only type errors and would have to be rewritten for Firefox.
   useEffect(() => {
-    chrome.storage.local
+    browser.storage.local
       .get(["quickConvertEnabled", "theme"])
       .then((result) => {
         setFloatingEnabled(result.quickConvertEnabled !== false)
@@ -172,7 +188,7 @@ export default function App() {
   // Apply theme
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark)
-    chrome.storage.local.set({ theme })
+    browser.storage.local.set({ theme })
   }, [theme, isDark])
 
   const toggleTheme = () => {
@@ -185,7 +201,7 @@ export default function App() {
   const toggleFloating = async () => {
     const newValue = !floatingEnabled
     setFloatingEnabled(newValue)
-    await chrome.storage.local.set({ quickConvertEnabled: newValue })
+    await browser.storage.local.set({ quickConvertEnabled: newValue })
   }
 
   const convert = useCallback((text: string, dir: DirectionPreference) => {
@@ -322,37 +338,18 @@ export default function App() {
         </button>
       </div>
 
-      {/* Direction Selector */}
-      <div
-        className="flex gap-1 mb-4 p-1 rounded-xl"
-        style={{ background: "var(--muted)" }}
-      >
-        {[
-          { value: "auto", label: "Avto" },
-          { value: "latin-to-cyrillic", label: "→ Кирилл" },
-          { value: "cyrillic-to-latin", label: "→ Lotin" }
-        ].map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() =>
-              handleDirectionChange(opt.value as DirectionPreference)
-            }
-            className="flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-all duration-200"
-            style={{
-              background:
-                direction === opt.value ? "var(--background)" : "transparent",
-              color:
-                direction === opt.value
-                  ? "var(--foreground)"
-                  : "var(--muted-foreground)",
-              boxShadow:
-                direction === opt.value ? "0 1px 3px rgba(0,0,0,0.08)" : "none"
-            }}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+      {/* Direction Selector — the SAME control the web tool uses.
+          The hand-rolled version here put the highlight on the active option
+          itself, so there was nothing to animate between and the selection
+          jumped from tab to tab. It also had no radio semantics and no
+          keyboard support. Both surfaces now share one implementation. */}
+      <SegmentedControl
+        className="mb-4 w-full"
+        label="Konvertatsiya yo'nalishi"
+        options={DIRECTION_OPTIONS}
+        value={direction}
+        onChange={handleDirectionChange}
+      />
 
       {/* Input Panel */}
       <div className="mb-3">

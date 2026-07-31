@@ -111,6 +111,13 @@ below._
 | macOS traffic lights in the tool panels | ✅ | Three raw palette classes imitating window controls that do not exist, in the first place the eye lands, with a dead `hover` field nobody read. Replaced in `DualTextPanel` (**9 tools**) with the kicker mark the section headings use, carrying one real bit: the accent fills the panel holding the ANSWER. `MACOS_DOTS` stays for `HeroPalette` / `TerminalInput`, where a window chrome is the actual subject |
 | Live counters ran through a spring | ✅ | `StatsDisplay` (14 consumers) drove its numbers with `NumberTicker`, a framer-motion spring — right for a hero stat that counts up once, wrong for a counter that changes per keystroke: it showed numbers that were never true and settled a beat late. Now plain `tabular-nums`. The ticker also wrote `text-black dark:text-white`, which outranked the muted colour of the row it sat in — now `text-foreground` |
 | Preserved terms were invisible | ✅ | The engine deliberately keeps links, e-mail, code and ~740 technical terms, and from the output that is indistinguishable from a bug. New `findPreservedTerms` in the package (deduped, first-seen order, 4 tests) and a footer line in both locales: "O'zgarishsiz saqlandi: React, GitHub, webiston.uz +1" |
+| Control bar was a card around a void | ✅ | A bordered card wrapped two groups that are not one thing (direction switch, file actions); the band between them measured **535px — 44% of the row**. An empty card reads as "something is missing"; the same gap on the page is just whitespace. Card chrome dropped: row **66 → 40px**, panels are the only cards, one nesting level instead of two |
+| Tool `h1` at magazine scale | ✅ | 36px against 16px panel headings — a 2.25× jump on a utility page, a tenth of the first screen spent on a title nobody came to read. `sm:text-4xl` → `sm:text-3xl` in `ToolHeader` (**21 tools**). The h1 stays: it is the page's one indexable heading |
+| Extension popup: same jumping tabs | ✅ | The popup had its OWN hand-rolled direction tabs with the highlight on the active option — the identical defect just fixed on the web, plus no radio semantics and no keyboard support. Now the shared `SegmentedControl`; `@webiston/ui` added as a workspace dep |
+| Extension: Tailwind never scanned the shared package | ✅ | Found while wiring the above: the built CSS contained **no `bg-primary` and no `bg-muted` at all**, so any shared component would have shipped unstyled. Fixed with `@source`, scoped to the one composite — the whole `packages/ui/src` tree costs 67 KB of CSS here vs **18 KB** scoped |
+| Extension colours were a different product | ✅ | `popup/style.css` hardcoded its own palette — `--primary: #0ea5e9`, a sky blue, against the site's teal `oklch(0.745 0.115 217)` — and had **no `@theme` block**, which is why every element carried an inline `style={{background: "var(--primary)"}}`. Values replaced with the site's real oklch tokens and bound to Tailwind's colour names. Still a COPY — see *Next up* |
+| Extension used two browser APIs | ✅ | `background.ts` and `content.ts` use WXT's `browser`; the popup alone reached for the untyped `chrome` global. Those three lines were the extension's **only** type errors (4 → 0) and would have had to be rewritten for Firefox |
+| User exception list | ✅ | The gap every competitor fills and we did not. `protectContent` now takes user terms (escaped — `.*` typed into the field protects those two characters, not the document), threaded through `toCyrillic`/`toLatin`/`convert`/`convertWithPreference`/`findPreservedTerms` as an optional `preserve`. Terms get the same Uzbek suffix treatment as the built-in vocabulary but with **no length floor** — a hand-typed entry is a deliberate statement. Bounded at 200×64 chars, one compiled regex per distinct list. Store at `version: 3` with a migration. 7 tests incl. a linearity assertion; suite **418 → 425** |
 | Mobile toolbar cost a row | ✅ | Three labelled buttons wrapped onto a second row at 375px. Labels are `sr-only` below `sm` (accessible name unchanged): control bar **150 → 110px**, buttons in one row, textarea top **528 → 488** |
 
 **Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
@@ -174,6 +181,46 @@ the 8 dead-key deletion below.
 ---
 
 ## Next up
+
+**One token file, imported by both surfaces.** `apps/extensions/latin-cyrillic/
+entrypoints/popup/style.css` now carries the site's real values, but it carries
+them as a **copy** — and a copy is what let the extension drift to a different
+palette in the first place. The fix is `packages/ui/styles/tokens.css` (the
+package already exports `"./styles/*"`, and `packages/*` is the only thing an
+extension may import), with the app-only tokens — sidebar, chart, hero — left
+in `src/styles/`. It touches the site's global CSS, so it needs its own pass
+with before/after screenshots, not a tail-end of an unrelated change.
+
+**The tool portfolio — measured 2026-07-31, awaiting a decision.**
+21 modules, **27,695 lines**; 17 routed, 4 parked behind `__`. Owner's GA:
+latin-cyrillic is far and away first, qr-generator a distant second, the rest
+near zero. That leaves **23,114 lines serving almost no traffic** — and they are
+not free, because every one of them carries the same five pending fixes, the
+same hardcoded-colour debt, and has to be re-verified on every design change.
+
+The pattern has one explanation: **the site's only moat is the Uzbek language.**
+"json formatter" is an English query answered by entrenched global sites, and a
+developer types it in English regardless of where they live. "lotin kirill" is a
+query only Uzbek speakers make, contested by a handful of small local sites — a
+race we can win, and did. Nineteen of the tools do not use the moat.
+
+Proposal, in three parts:
+
+1. **Invest** in latin-cyrillic and qr-generator only.
+2. **Freeze** the other routed tools: apply the mechanical fixes (barrel import,
+   `/en` locale, width, `GradientTabs`) in one sweep and stop hand-polishing
+   surfaces nobody opens.
+3. **Decide** on the 4 parked tools — `__http-status`, `__keycode-info`,
+   `__user-agent-analyzer`, `__website-status`, **3,848 lines with no route at
+   all**. Route them or delete them; today they are pure carry. Deleting needs
+   an explicit yes.
+
+Then build on the moat. Best candidate found: **raqamni so'z bilan yozish**
+(number → Uzbek words). Every invoice and contract in the country writes the sum
+in words; the top search result today is a *code snippet article* on UzbekDevs,
+not a working tool, which means nothing good ranks. It is small, it is
+Uzbek-only, and it can output in **both scripts** by reusing
+`@webiston/transliteration` — which no competitor can copy without our engine.
 
 **Homepage — awaiting one confirmation, then it is done.** The hero copy was
 rewritten and needs the owner's yes or a revert. Exact strings to restore are in

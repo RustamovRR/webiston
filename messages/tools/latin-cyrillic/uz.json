@@ -18,6 +18,15 @@
       "note": "O'zgarishsiz saqlandi: {terms}",
       "more": "+{count}"
     },
+    "exceptions": {
+      "button": "Istisnolar",
+      "title": "O'z istisnolaringiz",
+      "description": "Bu yerdagi so'zlar hech qachon o'girilmaydi — kompaniya nomi, qishlog'ingiz, hamkasbingizning familiyasi. Ro'yxat faqat shu brauzerda saqlanadi.",
+      "placeholder": "So'z qo'shing...",
+      "add": "Qo'shish",
+      "empty": "Hozircha bo'sh. Yuqoridagi maydonga so'z yozing.",
+      "remove": "{term} — ro'yxatdan o'chirish"
+    },
     "direction": {
       "label": "O'girish yo'nalishi",
       "auto": "Avto",

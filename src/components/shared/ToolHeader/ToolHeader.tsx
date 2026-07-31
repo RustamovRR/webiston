@@ -33,7 +33,12 @@ export function ToolHeader({
           on a 375px screen — the input was on the first fold and the result was
           not. The desktop sizes are unchanged. */}
       <div className="text-center">
-        <h1 className="mb-3 text-balance font-bold text-2xl text-foreground sm:mb-4 sm:text-4xl">
+        {/* 30px, not 36. These are utility pages: the panel headings under it
+            are 16px, so a 36px h1 opened a 2.25x jump and spent a tenth of the
+            first screen on a title nobody came to read. The h1 still has to
+            exist — it is the page's one indexable heading — it just does not
+            need magazine scale. */}
+        <h1 className="mb-3 text-balance font-bold text-2xl text-foreground sm:mb-4 sm:text-3xl">
           {title}
         </h1>
         <p className="text-pretty text-base text-muted-foreground sm:text-lg">

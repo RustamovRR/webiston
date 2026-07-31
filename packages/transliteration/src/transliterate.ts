@@ -27,13 +27,22 @@ import { protectContent, restoreContent } from "./protection"
 export { isCyrillicDominant as isCyrillicText } from "./detect-script"
 
 /**
+ * Words the caller wants left alone, on top of the built-in vocabulary.
+ *
+ * Optional everywhere, so every existing call site keeps working unchanged.
+ */
+export interface ConversionOptions {
+  preserve?: readonly string[]
+}
+
+/**
  * Convert Latin text to Cyrillic (Uzbek)
  * Handles: URLs, emails, code blocks, technical terms protection
  */
-export function toCyrillic(text: string): string {
+export function toCyrillic(text: string, options?: ConversionOptions): string {
   if (!text) return ""
 
-  const { maskedText, protectedParts } = protectContent(text)
+  const { maskedText, protectedParts } = protectContent(text, options?.preserve)
   const transliterated = transliterateLatinToCyrillic(maskedText)
   return restoreContent(transliterated, protectedParts)
 }
@@ -42,10 +51,10 @@ export function toCyrillic(text: string): string {
  * Convert Cyrillic text to Latin (Uzbek + Russian support)
  * Handles: URLs, emails, code blocks, technical terms protection
  */
-export function toLatin(text: string): string {
+export function toLatin(text: string, options?: ConversionOptions): string {
   if (!text) return ""
 
-  const { maskedText, protectedParts } = protectContent(text)
+  const { maskedText, protectedParts } = protectContent(text, options?.preserve)
   const transliterated = transliterateCyrillicToLatin(maskedText)
   return restoreContent(transliterated, protectedParts)
 }

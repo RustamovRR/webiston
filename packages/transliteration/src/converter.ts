@@ -23,7 +23,7 @@
 
 import { isCyrillicDominant } from "./detect-script"
 import { protectContent } from "./protection"
-import { toCyrillic, toLatin } from "./transliterate"
+import { type ConversionOptions, toCyrillic, toLatin } from "./transliterate"
 import type { TransliterationDirection } from "./types"
 
 /**
@@ -56,9 +56,12 @@ export function resolveDirection(
  */
 export function convert(
   text: string,
-  direction: TransliterationDirection
+  direction: TransliterationDirection,
+  options?: ConversionOptions
 ): string {
-  return direction === "latin-to-cyrillic" ? toCyrillic(text) : toLatin(text)
+  return direction === "latin-to-cyrillic"
+    ? toCyrillic(text, options)
+    : toLatin(text, options)
 }
 
 /**
@@ -67,11 +70,12 @@ export function convert(
  */
 export function convertWithPreference(
   text: string,
-  preference: DirectionPreference
+  preference: DirectionPreference,
+  options?: ConversionOptions
 ): { text: string; direction: TransliterationDirection } {
   const direction = resolveDirection(text, preference)
 
-  return { text: convert(text, direction), direction }
+  return { text: convert(text, direction, options), direction }
 }
 
 /**
@@ -87,13 +91,16 @@ export function convertWithPreference(
  * a token stream — a document mentioning `GitHub` forty times should read
  * "GitHub", once.
  */
-export function findPreservedTerms(text: string): string[] {
+export function findPreservedTerms(
+  text: string,
+  options?: ConversionOptions
+): string[] {
   if (!text) return []
 
   const seen = new Set<string>()
   const terms: string[] = []
 
-  for (const part of protectContent(text).protectedParts) {
+  for (const part of protectContent(text, options?.preserve).protectedParts) {
     const key = part.toLowerCase()
     if (seen.has(key)) continue
     seen.add(key)

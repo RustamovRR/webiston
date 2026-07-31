@@ -18,6 +18,15 @@
       "note": "Kept unchanged: {terms}",
       "more": "+{count}"
     },
+    "exceptions": {
+      "button": "Exceptions",
+      "title": "Your own exceptions",
+      "description": "Words listed here are never converted — a company name, your village, a colleague's surname. The list is kept in this browser only.",
+      "placeholder": "Add a word...",
+      "add": "Add",
+      "empty": "Empty for now. Type a word in the field above.",
+      "remove": "Remove {term} from the list"
+    },
     "direction": {
       "label": "Conversion direction",
       "auto": "Auto",
