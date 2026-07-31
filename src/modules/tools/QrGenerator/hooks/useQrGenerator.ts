@@ -20,11 +20,11 @@ import { useCallback, useMemo, useState } from "react"
 
 import {
   DEFAULT_ERROR_LEVEL,
-  DEFAULT_STYLE,
   ERROR_LEVEL_WITH_LOGO,
   RENDER_SIZE
 } from "../constants"
-import type { QrDownloadFormat, QrStyle } from "../types"
+import { useQrDraftStore } from "../stores/qrDraftStore"
+import type { QrDownloadFormat } from "../types"
 import { checkScannability } from "../utils/contrast"
 import { downloadQr } from "../utils/export"
 import { buildMatrix } from "../utils/matrix"
@@ -32,8 +32,16 @@ import { detectInputType } from "../utils/qr-input"
 import { buildDocument, buildQrModel } from "../utils/render"
 
 export function useQrGenerator() {
-  const [value, setValue] = useState("")
-  const [style, setStyle] = useState<QrStyle>(DEFAULT_STYLE)
+  // Draft lives in a module-scope store so a locale switch — which remounts
+  // this whole tree — does not throw the visitor's work away. See the store.
+  const value = useQrDraftStore((state) => state.value)
+  const style = useQrDraftStore((state) => state.style)
+  const setValue = useQrDraftStore((state) => state.setValue)
+  const updateStyle = useQrDraftStore((state) => state.updateStyle)
+  const reset = useQrDraftStore((state) => state.reset)
+
+  // Export state is genuinely per-mount: an in-flight download cannot survive
+  // the component that started it, and a stale error should not either.
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState(false)
 
@@ -90,16 +98,6 @@ export function useQrGenerator() {
     },
     [document]
   )
-
-  const updateStyle = useCallback(
-    (patch: Partial<QrStyle>) => setStyle((prev) => ({ ...prev, ...patch })),
-    []
-  )
-
-  const reset = useCallback(() => {
-    setValue("")
-    setStyle(DEFAULT_STYLE)
-  }, [])
 
   return {
     value,

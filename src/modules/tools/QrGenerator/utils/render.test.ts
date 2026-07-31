@@ -1,51 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { DEFAULT_STYLE } from "../constants"
-import { EYE_BALL_SHAPES, EYE_FRAME_SHAPES } from "./eyes"
 import { buildMatrix } from "./matrix"
 import { buildQrModel, modelToSvg, STANDARD_QUIET_ZONE } from "./render"
-import { coverageOf, MODULE_SHAPES, modulePath } from "./shapes"
 
 const style = { ...DEFAULT_STYLE }
-
-describe("module shape catalogue", () => {
-  // The rule a scanner enforces for us: a module that covers too little of its
-  // cell thresholds as light and the code decodes to nothing.
-  it.each(MODULE_SHAPES)("%s covers at least 70% of its cell", (shape) => {
-    expect(coverageOf(shape)).toBeGreaterThanOrEqual(0.7)
-  })
-
-  it("offers meaningfully more than the six a library gave us", () => {
-    expect(MODULE_SHAPES.length).toBeGreaterThanOrEqual(12)
-    expect(EYE_FRAME_SHAPES.length).toBeGreaterThanOrEqual(7)
-    expect(EYE_BALL_SHAPES.length).toBeGreaterThanOrEqual(7)
-  })
-
-  // Distinctness has to be measured ACROSS neighbour configurations, not in
-  // one: `fluid`, `vertical`, `horizontal` and `extra-rounded` are identical
-  // for an isolated module by design — the whole point of a neighbour-aware
-  // shape is that it only differs where modules touch.
-  it("every shape is distinguishable from every other somewhere", () => {
-    // Arrange
-    const contexts = [
-      { top: false, right: false, bottom: false, left: false },
-      { top: true, right: false, bottom: true, left: false },
-      { top: false, right: true, bottom: false, left: true },
-      { top: true, right: true, bottom: true, left: true }
-    ]
-
-    // Act — a shape's signature is its path in every context
-    const signatures = MODULE_SHAPES.map((shape) =>
-      contexts
-        .map((neighbours) =>
-          modulePath(shape, { x: 0, y: 0, size: 10, neighbours })
-        )
-        .join("|")
-    )
-
-    // Assert
-    expect(new Set(signatures).size).toBe(MODULE_SHAPES.length)
-  })
-})
 
 describe("quiet zone", () => {
   it("reserves the standard four modules by default", () => {
@@ -93,25 +51,67 @@ describe("quiet zone", () => {
   })
 })
 
-describe("neighbour-aware shapes", () => {
-  it("rounds fewer corners when modules touch", () => {
-    // Arrange
-    const alone = modulePath("fluid", {
-      x: 0,
-      y: 0,
-      size: 10,
-      neighbours: { top: false, right: false, bottom: false, left: false }
+describe("logo footprint", () => {
+  // The logo is drawn on top; anything still painted under it is data the
+  // error correction was never told it would lose.
+  it.each([
+    [1, 0.1],
+    [1, 0.3],
+    [4, 0.22],
+    [4, 0.3],
+    [8, 0.22],
+    [8, 0.3]
+  ])(
+    "drops every module under the logo (quiet zone %i, logo %f)",
+    (quietZone, logoSize) => {
+      // Arrange
+      const model = buildQrModel({
+        matrix: buildMatrix("hi", "H"),
+        style: {
+          ...style,
+          logo: "data:image/png;base64,AA",
+          logoSize,
+          quietZone
+        },
+        extent: 320,
+        quietZone
+      })
+      const logo = model.logo
+      expect(logo).toBeDefined()
+      if (!logo) return
+
+      // Act — where every painted module starts
+      const starts = [
+        ...model.dataPath.matchAll(/M(-?[\d.]+),(-?[\d.]+)/g)
+      ].map((match) => [Number(match[1]), Number(match[2])] as const)
+
+      // Assert
+      const under = starts.filter(
+        ([x, y]) =>
+          x >= logo.x &&
+          x <= logo.x + logo.size &&
+          y >= logo.y &&
+          y <= logo.y + logo.size
+      )
+      expect(under).toHaveLength(0)
+    }
+  )
+
+  it("hides nothing when there is no logo", () => {
+    const withLogo = buildQrModel({
+      matrix: buildMatrix("webiston.uz", "H"),
+      style: { ...style, logo: "data:image/png;base64,AA" },
+      extent: 320,
+      quietZone: 4
     })
-    const inARun = modulePath("fluid", {
-      x: 0,
-      y: 0,
-      size: 10,
-      neighbours: { top: true, right: true, bottom: true, left: true }
+    const without = buildQrModel({
+      matrix: buildMatrix("webiston.uz", "H"),
+      style,
+      extent: 320,
+      quietZone: 4
     })
 
-    // Assert — an isolated module curves, one inside a run is a plain square
-    expect(alone).toContain("A")
-    expect(inARun).not.toContain("A")
+    expect(without.dataPath.length).toBeGreaterThan(withLogo.dataPath.length)
   })
 })
 

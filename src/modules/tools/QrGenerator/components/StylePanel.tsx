@@ -11,7 +11,7 @@ import { Input } from "@webiston/ui/primitives/input"
 import { cn } from "@webiston/ui/utils"
 import { ImagePlus, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useRef, useState } from "react"
+import { useId, useRef, useState } from "react"
 
 import {
   DEFAULT_GRADIENT_COLOR,
@@ -107,11 +107,18 @@ function ShapeGroup({
   selectedName: string
   children: React.ReactNode
 }) {
+  // `aria-labelledby` pointing at the VISIBLE label, not an `sr-only`
+  // `<legend>` beside it. The legend version named the group twice — once for
+  // the assistive tree and once in the text — so a screen reader read
+  // "Nuqta shakli, Nuqta shakli".
+  const labelId = useId()
+
   return (
-    <fieldset>
-      <legend className="sr-only">{label}</legend>
+    <fieldset aria-labelledby={labelId}>
       <div className="mb-2 flex items-baseline justify-between gap-3">
-        <span className="text-muted-foreground text-sm">{label}</span>
+        <span id={labelId} className="text-muted-foreground text-sm">
+          {label}
+        </span>
         <span className="font-medium text-foreground text-xs">
           {selectedName}
         </span>
@@ -242,7 +249,7 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
               {MODULE_SHAPES.map((shape) => (
                 <SwatchButton
                   key={shape}
-                  title={shape}
+                  title={tNames(`module.${shape}`)}
                   active={style.dotType === shape}
                   onClick={() => onChange({ dotType: shape })}
                 >
@@ -284,7 +291,7 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
               {EYE_FRAME_SHAPES.map((shape) => (
                 <SwatchButton
                   key={shape}
-                  title={shape}
+                  title={tNames(`eyeFrame.${shape}`)}
                   active={style.cornerSquareType === shape}
                   onClick={() => onChange({ cornerSquareType: shape })}
                 >
@@ -310,7 +317,7 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
               {EYE_BALL_SHAPES.map((shape) => (
                 <SwatchButton
                   key={shape}
-                  title={shape}
+                  title={tNames(`eyeBall.${shape}`)}
                   active={style.cornerDotType === shape}
                   onClick={() => onChange({ cornerDotType: shape })}
                 >
@@ -340,7 +347,7 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
               {FRAMES.map((frame) => (
                 <SwatchButton
                   key={frame.id}
-                  title={frame.id}
+                  title={tNames(`frame.${frame.id}`)}
                   active={style.frame === frame.id}
                   onClick={() => onChange({ frame: frame.id })}
                 >

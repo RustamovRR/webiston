@@ -47,8 +47,14 @@ const QrGenerator = () => {
         description={t("ToolHeader.description")}
       />
 
+      {/* Three cells, placed explicitly, because the reading order differs
+          per breakpoint. Stacked on a phone it has to be input → CODE →
+          controls: measured before this, the code sat at y=1805 on a 375x812
+          screen — 2.2 screens below the input — because the whole style panel
+          came first. Side by side it is input over controls on the left, with
+          the code holding the right column across both rows. */}
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
-        <div className="space-y-6">
+        <div className="lg:col-start-1 lg:row-start-1">
           <div className="rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between border-border border-b px-5 py-3">
               <div className="flex items-center gap-2.5">
@@ -88,17 +94,24 @@ const QrGenerator = () => {
               />
             </div>
           </div>
-
-          <StylePanel style={style} onChange={updateStyle} />
         </div>
 
-        <QrPreview
-          document={document}
-          scan={scan}
-          isExporting={isExporting}
-          exportError={exportError}
-          onDownload={download}
-        />
+        {/* `self-stretch` is what makes the sticky card inside actually stick:
+            `items-start` collapses this cell to its content height, and an
+            element with no travel in its container never moves. */}
+        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch">
+          <QrPreview
+            document={document}
+            scan={scan}
+            isExporting={isExporting}
+            exportError={exportError}
+            onDownload={download}
+          />
+        </div>
+
+        <div className="lg:col-start-1 lg:row-start-2">
+          <StylePanel style={style} onChange={updateStyle} />
+        </div>
       </div>
     </div>
   )

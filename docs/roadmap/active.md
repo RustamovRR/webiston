@@ -129,9 +129,17 @@ below._
 | QR: encode and paint were one memo | ✅ | Measured: encoding is **73%** of the cost (2.563 ms of 3.508 ms on a 250-char vCard) and depends only on the TEXT — so every frame of a colour drag re-encoded an unchanged symbol. Split: a style change is now **26%** of a keystroke (0.887 vs 3.409 ms), and the 8 thumbnails share **one** encode (1.9 ms cold, cached after) |
 | QR: gradient could not be warned about | ✅ | `checkScannability` measured only the FIRST stop, so black → sky-blue passed silently while half the modules painted at **2.6:1**. Verdict is now the worst stop, and it separates "may fail in poor light" from "expect failure" (`severe`). Caught my own `brand` preset in the test — teal-700 at **5.4:1**, the brand hue itself at 2.6 — now 15.1/7.8 |
 | QR: `<defs>` ids collided | ✅ | Found in the browser: the gradient id was `qr-gradient-${type}`, so the "Brend" thumbnail and the preview both emitted `qr-linear-…` — SVG ids are document-global. Id now derives from scope + type + both colours; verified `duplicateDomIds: []` |
+| QR: the catalogue drew 14 of its 16 shapes | ✅ | Owner spotted it: "nuqta" and "juda yumaloq" looked the same. They **were** the same — a corner radius of half the cell IS a circle. Measured with the browser's own rasteriser (`isPointInFill`, 300×300): `extra-rounded` / `dots` differed by **0 cells of 4,421**, and `classy` / `leaf` by **32 of 5,023 (0.6%)**. `extra-rounded` → 0.4 radius (matching `eyes.ts`), `leaf` → the mirror diagonal, and the freed slot became a new silhouette family, `arch`. Closest surviving pair is now `rounded`/`sharp` at **1.75%** |
+| QR: the distinctness test tested strings | ✅ | It passed on both duplicates above, because a circle built by `roundedRect` and one built by `circle()` are different TEXT. Rewritten to compare geometry: every shape is now declared once as a `ShapeSpec`, the path and the coverage figure are both derived from it, and pairs are scored by area + per-corner difference across four neighbour contexts. Threshold calibrated to the measurements (removed pair 1.08%, closest kept pair 3.36% on that metric) |
+| QR: two radii tables that could disagree | ✅ | `modulePath` and `coverageOf` were parallel `switch`es holding the same numbers by hand — so the 70%-coverage safety test could validate a shape the renderer never drew. One table now; `mosaic` measured at **70.2%**, the floor |
+| QR: the logo sat on live modules | ✅ | The footprint dropped `size * logoSize` modules while the image is sized against `extent`, which spans `size + quietZone*2`. Measured on a 21×21 code at quiet zone 8: the logo covered 8.14 modules, 7 were dropped, **5 painted modules were left underneath** — 21 at a 30% logo. Those are bits the error correction never budgeted for losing. Derived from the same geometry now, with a test across 6 quiet-zone/logo-size combinations |
+| QR: locale switch wiped the visitor's work | ✅ | Reported as a reset. Diagnosed, not guessed: a marker on `window` **survived** the switch (`ctx-781836`) while the textarea came back empty — so it is a soft navigation that REMOUNTS the tree, and `useState("")` starts over. Draft moved to a module-scope Zustand store, deliberately **not** persisted (the payload can be a WiFi password, and storage would only add surviving a reload, which was never the complaint). Verified end to end: text, code, module count and the chosen preset all survive, and the UI is in English afterwards |
+| QR: the code was 2.2 screens down on a phone | ✅ | The preview-first layout was desktop-only — stacked, the whole style panel came first, putting the code at **y=1805** on a 375×812 screen. Three explicitly placed grid cells now give input → CODE → controls on mobile and input-over-controls beside the code on desktop: **y=580, 0.71 screens**. It also fixed the sticky rail, which had **0px of travel** because `items-start` collapsed its cell — now 451px, verified pinned at `top: 80` from scrollY 200 to 500 |
+| QR: three small a11y defects | ✅ | The code's `aria-label` was `frameLabel`, which defaults to "SCAN ME" and keeps its value when the frame is off — screen readers announced a caption that was not on screen. Every shape group carried an `sr-only <legend>` **and** a visible label, so its name was read twice; now `aria-labelledby` points at the visible one. Swatch tooltips showed raw ids (`extra-rounded`) beside their own translated names |
+| QR: first integration tests in `src/` | ✅ | `testing-strategy.md` calls integration the fat layer and the whole tree had none. **11 RTL tests** driving the real UI — type, preset, clear, remount, contrast warning — plus 84 unit tests. Suite **473 → 509**. Needed two `vitest.config.ts` lines: next-intl's client barrel imports `next/navigation` without an extension, which Node's ESM resolver rejects, so no component using `useTranslations` could be rendered in a test at all |
 
 **Gate (real exit codes, 2026-07-31):** `check 0` · `typecheck 0` · `lint 0` ·
-`test 0 (473)` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0`. **`i18n 1`**,
+`test 0 (509)` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0`. **`i18n 1`**,
 unchanged: still blocked on the 8 dead-key deletion below — qr-generator and
 latin-cyrillic are both parity-clean.
 
@@ -306,6 +314,15 @@ overflow dropdown as an island. Real win, bigger change.
 to the ratchet in one go (`HttpStatus.tsx` 15, `OgMetaGenerator/PreviewPanel.tsx`
 10, `Pagination.tsx` 6, `Sidebar.tsx` 4, …). Some are legitimate — `text-white`
 on a brand-coloured surface — so this is a triage job, not a sweep.
+
+**Unreferenced in the QR module — found during the audit, NOT deleted:**
+`CONTENT_TYPES` + `QrContentType` in `constants/index.ts` (0 consumers since the
+content-type tabs came out; they are the placeholder for the WiFi/vCard forms),
+`UseQrGeneratorResult` (0 consumers), and `errorLevel` on the hook's return
+(computed and returned, destructured nowhere). Plus the pre-existing dead i18n
+groups: `Sizes`, `ErrorLevels`, `ResultsPanel`, `QrDisplay`, `Presets`,
+`CustomizationPanel`, `Categories`, `DataTypes`, `ControlPanel`, `InfoSection`.
+All need an explicit yes.
 
 **Two decisions still blocking work:**
 

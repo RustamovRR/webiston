@@ -27,7 +27,7 @@ interface QrPreviewProps {
 
 const FORMATS: readonly QrDownloadFormat[] = ["svg", "png", "webp"]
 
-function QrArtwork({ doc }: { doc: QrDocument }) {
+function QrArtwork({ doc, title }: { doc: QrDocument; title: string }) {
   const { model, frame, layout, label } = doc
 
   return (
@@ -37,7 +37,11 @@ function QrArtwork({ doc }: { doc: QrDocument }) {
       height={layout.height}
       className="h-auto w-full max-w-[320px]"
       role="img"
-      aria-label={label || "QR"}
+      // The caption is NOT the name of this image. `frameLabel` defaults to
+      // "SCAN ME" and keeps its value when the frame is switched off, so a
+      // screen reader announced "SCAN ME" for a code that showed no caption
+      // at all.
+      aria-label={title}
     >
       {model.gradient && (
         <defs>
@@ -168,7 +172,7 @@ export function QrPreview({
 
         <div className="flex min-h-[380px] items-center justify-center p-6">
           {document ? (
-            <QrArtwork doc={document} />
+            <QrArtwork doc={document} title={t("title")} />
           ) : (
             <div className="flex flex-col items-center text-muted-foreground">
               <QrCode size={44} className="opacity-40" aria-hidden="true" />

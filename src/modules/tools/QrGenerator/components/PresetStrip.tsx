@@ -2,6 +2,7 @@
 
 import { cn } from "@webiston/ui/utils"
 import { useTranslations } from "next-intl"
+import { useId } from "react"
 
 import type { QrStyle } from "../types"
 import { isPresetActive, PRESETS, presetThumbnails } from "../utils/presets"
@@ -27,12 +28,15 @@ interface PresetStripProps {
 export function PresetStrip({ style, onChange }: PresetStripProps) {
   const t = useTranslations("QrGeneratorPage.presets")
   const thumbnails = presetThumbnails()
+  // Named by the visible label rather than by a duplicate `sr-only` legend.
+  const labelId = useId()
 
   return (
-    <fieldset>
-      <legend className="sr-only">{t("title")}</legend>
+    <fieldset aria-labelledby={labelId}>
       <div className="mb-2 flex items-baseline justify-between gap-3">
-        <span className="text-muted-foreground text-sm">{t("title")}</span>
+        <span id={labelId} className="text-muted-foreground text-sm">
+          {t("title")}
+        </span>
         <span className="text-muted-foreground text-xs">{t("hint")}</span>
       </div>
 
