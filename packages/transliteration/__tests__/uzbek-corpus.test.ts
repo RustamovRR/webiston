@@ -118,8 +118,14 @@ describe("protection leaves ordinary Uzbek alone", () => {
   // learnt about Uzbek homographs, apostrophe-aware boundaries, and the
   // minimum stem length for suffixes.
   it.each([
-    ["o'sha", "ўша"], // 'sha' matched the SHA family across the apostrophe
+    // o' and g' are single LETTERS; `\b` splits them and offered whatever
+    // followed as a standalone token. Found by scanning all 226 Uzbek chapters
+    // in content/ — 22,928 distinct words, three hits, all common.
+    ["o'sha", "ўша"], // 'sha' — the hash family
     ["o'shani", "ўшани"],
+    ["ko'rsa", "кўрса"], // 'rsa' — the cipher
+    ["ko'rsalar", "кўрсалар"],
+    ["o'ram", "ўрам"], // 'ram' — the memory
     ["buni", "буни"], // 'bun' + the accusative suffix
     ["bunga", "бунга"],
     ["bundan", "бундан"],
@@ -163,6 +169,19 @@ describe("protection still holds for things that must not be converted", () => {
       "https://webiston.uz сайтига киринг"
     ],
     ["email: info@webiston.uz", "email: info@webiston.uz"],
+    // A quoted product name is still protected — the o'/g' guard is narrow
+    // enough not to catch an ordinary apostrophe used as a quote.
+    ["'React' kutubxonasi", "'React' кутубхонаси"],
+    // The Uzbek way of attaching a suffix to a foreign word. Whatever follows
+    // the apostrophe is the suffix — the list of endings is not enumerable, so
+    // the rule does not try to enumerate it.
+    ["Google'da", "Google'da"],
+    ["TikTok'gacha", "TikTok'gacha"],
+    ["LLM'larni", "LLM'larni"],
+    // Entry + plain suffix + apostrophe suffix, all three stacked.
+    ["rendering'ning", "rendering'ning"],
+    // A protected word followed by a closing quote keeps the quote.
+    ["Remix' haqida", "Remix' ҳақида"],
     ["`const x = 1` kodi", "`const x = 1` коди"],
     ["config.json faylini oching", "config.json файлини очинг"]
   ])("%s → %s", (input, expected) => {
@@ -227,6 +246,27 @@ describe("masking survives hostile input", () => {
     // Assert — "React" appears once, where the user put it
     expect(result.match(/React/g)).toHaveLength(1)
     expect(result).not.toContain(nul)
+  })
+
+  it("stays linear on text full of -tsiya words", () => {
+    // Arrange — the seam check used to copy the rest of the document for every
+    // "ts" it met. Measured before the window was bounded: 21 ms at 30 KB,
+    // 3.2 s at 480 KB, 49 s at 1.9 MB.
+    const unit = "Informatsiya operatsiya stansiya konstitutsiya. "
+    const small = unit.repeat(600)
+    const large = unit.repeat(4800) // 8x the characters
+
+    // Act
+    let started = performance.now()
+    toCyrillic(small)
+    const smallMs = performance.now() - started
+    started = performance.now()
+    toCyrillic(large)
+    const largeMs = performance.now() - started
+
+    // Assert — linear means ~8x, quadratic means ~64x. 20x leaves room for a
+    // noisy CI box without letting the quadratic version through.
+    expect(largeMs).toBeLessThan(Math.max(smallMs, 1) * 20)
   })
 
   it("stays linear on many unclosed HTML openers", () => {

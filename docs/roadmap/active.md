@@ -15,7 +15,9 @@ classes fixed and covered by tests, the direction policy moved into
 `@webiston/transliteration` so the web tool and all three extension surfaces
 share it, the Chrome extension's context menu (dead since it shipped) made to
 work, and chunking + the six info cards removed with the owner's approval.
-Branch `refactor/infrastructure`._
+Branch `refactor/infrastructure`.
+**Self-review afterwards found four more, two of them mine** — see the rows
+below._
 
 ---
 
@@ -91,6 +93,12 @@ Branch `refactor/infrastructure`._
 | Tool: honesty | ✅ | JSON-LD advertised **99.9% accuracy** (while the engine failed on `ishchi`), a **200 MB** limit no browser can honour, and a **PDF export that does not exist**. The six FAQ answers were emitted as `FAQPage` markup and rendered nowhere — a guidelines violation on the top-traffic URL. FAQ is now visible and reads the same i18n keys the schema does. `<meta keywords>` 144 → 15 entries |
 | Tool: UX | ✅ | Direction is **Avto / → Кирилл / → Lotin**, matching the extension. Drop a file anywhere on the page (the handlers existed, wired only to a 296-line modal that closed itself after 800 ms). ⌘/Ctrl+Enter copies, Esc clears — there were **zero** key handlers before. Empty panel offers paste + sample, measured above the fold at y=474 (they were at y=878, below it). Mobile: panel min-height 400 → 200 and the tool header 36px → 24px, so the input is on the first screen |
 | Tool: dead code | ✅ | Owner approved. `utils/detect-script.ts` (115 lines, 0 importers, and it disagreed with the engine) · `FileUploadZone.tsx` (200 lines, never rendered) · `downloadAllChunks()` · the two Russian samples with no UI path · 16 dead i18n keys |
+| ⚠️ Self-review: my own quadratic | ✅ | The `ts` seam check did `text.slice(i + 1).toLowerCase()` on EVERY "ts", copying the rest of the document each time. Measured: **21 ms at 30 KB, 3.2 s at 480 KB, 49 s at 1.9 MB**, against a flat 0.1 ms/KB for text without "ts". Bounded to a 7-character window — the longest suffix plus one: **48,972 → 252 ms**, and the ms/KB curve is now flat. Regression test asserts 8× input costs under 20× time |
+| ⚠️ Self-review: my own lookbehind | ✅ | I replaced `\b` with `(?<!…)` and shipped a **module-scope** `new RegExp` — on Safari before 16.4 that throws while the module evaluates and the whole page dies. Tried consuming the character instead; that made the vocabulary branch start one position earlier than the URL/email branches and it won the leftmost race, splitting `info@webiston.uz` into `info@webiston.уз`. Settled on `\b` plus a two-character check in the replace callback |
+| Apostrophe as a letter | ✅ | `o'` and `g'` are single LETTERS; `\b` splits them. Scanning **all 226 Uzbek chapters, 22,928 distinct words**, found three protected acronyms exposed this way, all inside common words: `o'sha`→`ўsha` (sha), `ko'rsa`→`кўrsa` (rsa), `o'ram`→`ўram` (ram). Also added the Uzbek convention for foreign words — `Google'da`, `TikTok'gacha`, `LLM'larni`, `rendering'ning` — which had never worked. Corpus partial leaks **0**; protected terms 440 → **740** |
+| /en rendered Uzbek | ✅ | **Site-wide, pre-existing, found while reviewing.** `setRequestLocale` writes into a React.cache value `getRequestConfig` never reads back: on /en, `getLocale()` returns **"uz"** while `params.locale` is "en", so every `getTranslations("…")` served the Uzbek bundle. Confirmed on the prerendered HTML of `/en/tools/json-formatter` too. Fixed on this route by passing the locale explicitly (what `[locale]/layout.tsx` already does for metadata); `LocaleMessages` now takes an optional `locale`. **The other 16 tool pages are still affected** |
+| Radio group that was not one | ✅ | `role="radiogroup"` + `role="radio"` on buttons, with a comment claiming arrow keys "come free". They do not — that pattern also owes a roving tabindex and key handling. Replaced with real `<input type="radio">` in a `<fieldset>`: correct grouping, correct announcement, arrow keys, and it works before hydration |
+| Verified end to end | ✅ | PDF import through the **bundled** worker (`/_next/static/media/pdf.worker…`, **0 third-party requests**) · drop-a-file · swap (labels and the radio flip together) · Esc · ⌘Enter feedback · `/en` in the built HTML · the other five tool pages unaffected by the shared `ToolHeader` / `DualTextPanel` edits |
 
 **Gate (real exit codes, 2026-07-30):** `check 0` · `typecheck 0` · `lint 0` ·
 `test 0` · `tokens 0` · `contrast 0 (36 pairs)` · `build 0` — **269 prerendered

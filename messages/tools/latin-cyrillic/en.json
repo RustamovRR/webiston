@@ -12,6 +12,7 @@
     "cyrillic": "Cyrillic",
     "inputPlaceholderLatin": "Type or drop a file...",
     "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
+    "copied": "Copied!",
     "shortcutHint": "⌘/Ctrl + Enter to copy · Esc to clear",
     "direction": {
       "label": "Conversion direction",

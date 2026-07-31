@@ -24,26 +24,73 @@ const BASE_URL = "https://webiston.uz"
  * carries no "| Webiston" suffix either — the root layout applies a
  * `%s | Webiston` template on top.
  */
+const COPY = {
+  uz: {
+    title: "Lotin-Kirill O'giruvchi",
+    description:
+      "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. TXT, PDF va DOCX fayllarni qo'llab-quvvatlaydi. Bepul, ro'yxatdan o'tishsiz, matn brauzeringizdan chiqmaydi.",
+    social:
+      "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi.",
+    ogLocale: "uz_UZ"
+  },
+  en: {
+    title: "Latin-Cyrillic Converter",
+    description:
+      "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports TXT, PDF and DOCX files. Free, no account, and your text never leaves the browser.",
+    social:
+      "Convert Uzbek text between the Latin and Cyrillic alphabets. Free, and it runs in your browser.",
+    ogLocale: "en_US"
+  }
+} as const
+
+/**
+ * The /en page used to ship the Uzbek title and description verbatim — the
+ * page was in one language and the search result in another. `withLocale`
+ * already fixes the canonical and the hreflang set; this fixes the words.
+ */
+export function getLatinCyrillicMetadata(locale: string): Metadata {
+  const copy = locale === "en" ? COPY.en : COPY.uz
+  const path =
+    locale === "en" ? "/en/tools/latin-cyrillic" : "/tools/latin-cyrillic"
+
+  return {
+    ...latinCyrillicMetadata,
+    title: copy.title,
+    description: copy.description,
+    openGraph: {
+      title: `${copy.title} — Webiston`,
+      description: copy.social,
+      type: "website",
+      locale: copy.ogLocale,
+      siteName: "Webiston",
+      url: `${BASE_URL}${path}`
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@webiston_uz",
+      title: `${copy.title} — Webiston`,
+      description: copy.social
+    }
+  }
+}
+
 export const latinCyrillicMetadata: Metadata = {
-  title: "Lotin-Kirill O'giruvchi",
-  description:
-    "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. TXT, PDF va DOCX fayllarni qo'llab-quvvatlaydi. Bepul, ro'yxatdan o'tishsiz, matn brauzeringizdan chiqmaydi.",
+  title: COPY.uz.title,
+  description: COPY.uz.description,
   keywords: PRIMARY_KEYWORDS,
   openGraph: {
-    title: "Lotin-Kirill O'giruvchi — Webiston",
-    description:
-      "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi.",
+    title: `${COPY.uz.title} — Webiston`,
+    description: COPY.uz.social,
     type: "website",
-    locale: "uz_UZ",
+    locale: COPY.uz.ogLocale,
     siteName: "Webiston",
     url: `${BASE_URL}/tools/latin-cyrillic`
   },
   twitter: {
     card: "summary_large_image",
     site: "@webiston_uz",
-    title: "Lotin-Kirill O'giruvchi — Webiston",
-    description:
-      "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi."
+    title: `${COPY.uz.title} — Webiston`,
+    description: COPY.uz.social
   },
   robots: {
     index: true,

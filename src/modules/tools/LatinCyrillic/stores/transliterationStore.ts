@@ -27,6 +27,13 @@ export const useTransliterationStore = create<TransliterationState>()(
       preference: "auto",
       setPreference: (preference) => set({ preference })
     }),
-    { name: "latin-cyrillic-storage" }
+    {
+      name: "latin-cyrillic-storage",
+      // Bumped because the shape changed: the key used to hold `direction`
+      // (two values) and now holds `preference` (three). Without a version,
+      // zustand merges the old object in and leaves a dead `direction` key in
+      // every returning visitor's localStorage forever.
+      version: 2
+    }
   )
 )

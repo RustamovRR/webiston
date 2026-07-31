@@ -20,8 +20,8 @@ import {
   applicationSchema,
   generateBreadcrumbSchema,
   generateFAQSchema,
-  howToSchema,
-  latinCyrillicMetadata
+  getLatinCyrillicMetadata,
+  howToSchema
 } from "@/modules/tools/LatinCyrillic/seo"
 
 // Only this tool's namespace reaches the client, plus the shared
@@ -46,7 +46,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(latinCyrillicMetadata, locale, "/tools/latin-cyrillic")
+  return withLocale(
+    getLatinCyrillicMetadata(locale),
+    locale,
+    "/tools/latin-cyrillic"
+  )
 }
 
 export default async function LatinCyrillicPage({
@@ -59,7 +63,10 @@ export default async function LatinCyrillicPage({
 
   // The FAQ schema reads the same messages the visible FAQ renders, so the
   // structured data can never describe a page that does not exist.
-  const tFaq = await getTranslations("LatinCyrillicPage.faq")
+  const tFaq = await getTranslations({
+    locale,
+    namespace: "LatinCyrillicPage.faq"
+  })
 
   return (
     <>
@@ -85,13 +92,13 @@ export default async function LatinCyrillicPage({
       {/* The client island is only the converter. The alphabet table and the
           FAQ are Server Components rendered as siblings, so the static two
           thirds of this page cost no JavaScript. */}
-      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
         <LatinCyrillic />
       </LocaleMessages>
 
       <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <AlphabetTable />
-        <ConverterFaq />
+        <AlphabetTable locale={locale} />
+        <ConverterFaq locale={locale} />
       </div>
     </>
   )

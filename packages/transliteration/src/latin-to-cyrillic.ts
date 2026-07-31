@@ -16,6 +16,11 @@ import {
   UZBEK_LATIN_TO_CYRILLIC_SINGLE
 } from "./mappings"
 
+const LONGEST_S_SUFFIX = S_INITIAL_SUFFIXES.reduce(
+  (longest, suffix) => Math.max(longest, suffix.length),
+  0
+)
+
 /**
  * Is the "ts" starting at `index` a stem/suffix seam rather than the letter ц?
  *
@@ -26,7 +31,15 @@ import {
  * informatsiya, operatsiya, protsent, sotsial, tsivilizatsiya.
  */
 function isTsMorphemeSeam(text: string, index: number): boolean {
-  const rest = text.slice(index + 1).toLowerCase()
+  // Bounded window, NOT `text.slice(index + 1)`. The unbounded version copied
+  // and lower-cased the rest of the document on every "ts" it met, which is
+  // quadratic in a text full of -tsiya words: measured 21 ms at 30 KB, 3.2 s
+  // at 480 KB and 49 s at 1.9 MB, against a flat ~0.1 ms/KB for text with no
+  // "ts" at all. The longest suffix is six characters, so seven is everything
+  // the decision can possibly depend on.
+  const rest = text
+    .slice(index + 1, index + 1 + LONGEST_S_SUFFIX + 1)
+    .toLowerCase()
 
   for (const suffix of S_INITIAL_SUFFIXES) {
     if (!rest.startsWith(suffix)) continue
@@ -172,6 +185,17 @@ export function transliterateLatinToCyrillic(text: string): string {
     if (char === "'") {
       const prevChar = i > 0 ? normalized[i - 1].toLowerCase() : ""
       const nextCharLower = nextChar.toLowerCase()
+
+      // Both signs mark something about the LETTER before them. With no letter
+      // there, this is punctuation — an opening or closing quote, or the seam
+      // after a protected span, which by this point is a placeholder rather
+      // than a letter. Without this test `'React'` came back as `ъReactь` and
+      // `Remix'` as `Remixь`.
+      if (!/[a-z]/.test(prevChar)) {
+        result += "'"
+        i++
+        continue
+      }
 
       // 'h after consonant → skip apostrophe, h will become ҳ
       if (nextCharLower === "h" && !isLatinVowel(prevChar)) {

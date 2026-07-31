@@ -449,7 +449,15 @@ function replaceSelectionWith(text: string): boolean {
     return true
   }
 
-  const range = selectionRange
+  // Prefer what is selected RIGHT NOW. `selectionRange` is a clone taken when
+  // the trigger icon appeared, which the context-menu path never goes through
+  // — and by the time the popover's Replace is clicked the live selection may
+  // have moved. Fall back to the clone only when there is no live one.
+  const live = window.getSelection()
+  const range =
+    live && live.rangeCount > 0 && !live.isCollapsed
+      ? live.getRangeAt(0)
+      : selectionRange
   if (!range) return false
 
   const host = range.commonAncestorContainer

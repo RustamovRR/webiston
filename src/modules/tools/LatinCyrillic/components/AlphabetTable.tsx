@@ -32,8 +32,19 @@ function Row({ row, noteLabel }: { row: AlphabetRow; noteLabel?: string }) {
   )
 }
 
-export async function AlphabetTable() {
-  const t = await getTranslations("LatinCyrillicPage.table")
+export async function AlphabetTable({ locale }: { locale: string }) {
+  // The locale is passed in, NOT read from the request.
+  //
+  // `setRequestLocale` writes into a React.cache-scoped value that
+  // `getRequestConfig` never sees here: measured on /en/tools/latin-cyrillic,
+  // `getLocale()` returns "uz" while `params.locale` is "en", so every
+  // `getTranslations("…")` call silently served the Uzbek bundle. Passing the
+  // locale explicitly is the same thing `[locale]/layout.tsx` already does for
+  // metadata, and it is what makes the English file render at all.
+  const t = await getTranslations({
+    locale,
+    namespace: "LatinCyrillicPage.table"
+  })
 
   const noteFor = (row: AlphabetRow) =>
     row.note ? t(`notes.${row.note}`) : undefined

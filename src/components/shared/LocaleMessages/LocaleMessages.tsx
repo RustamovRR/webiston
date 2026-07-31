@@ -6,6 +6,20 @@ interface LocaleMessagesProps {
   /** Every namespace the CLIENT components in this subtree call
    *  `useTranslations` with. A missing one is a runtime error, not a fallback. */
   namespaces: readonly string[]
+  /**
+   * The locale from `params`. PASS IT.
+   *
+   * Without it this falls back to `getLocale()`, which is measurably wrong on
+   * this site: on /en/tools/* it returns "uz" even though `params.locale` is
+   * "en", because `setRequestLocale` writes into a React.cache value that
+   * `getRequestConfig` does not read back here. The result is an English route
+   * rendering the Uzbek bundle — verified on the prerendered HTML of
+   * /en/tools/json-formatter as well, so it is not specific to one tool.
+   *
+   * Optional only so the other tool pages keep building unchanged; each should
+   * start passing it as it is revisited.
+   */
+  locale?: string
   children: ReactNode
 }
 
@@ -23,12 +37,11 @@ interface LocaleMessagesProps {
  */
 export async function LocaleMessages({
   namespaces,
+  locale: explicitLocale,
   children
 }: LocaleMessagesProps) {
-  // Both read the locale the page already pinned with `setRequestLocale`, so
-  // this does not reach for `headers()` and routes stay statically rendered.
-  const locale = await getLocale()
-  const messages = await getMessages()
+  const locale = explicitLocale ?? (await getLocale())
+  const messages = await getMessages({ locale })
 
   // Naming a namespace that does not exist is silent otherwise: the provider
   // gets `{ Foo: undefined }`, next-intl falls back to printing the key path,

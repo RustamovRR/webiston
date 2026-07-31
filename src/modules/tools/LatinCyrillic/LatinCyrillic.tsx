@@ -9,9 +9,10 @@
  */
 
 import { Button } from "@webiston/ui/primitives/button"
+import { cn } from "@webiston/ui/utils"
 import { Paperclip, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
@@ -46,6 +47,15 @@ export function LatinCyrillicPage() {
   const sourceLang = isLatinSource ? t("latin") : t("cyrillic")
   const targetLang = isLatinSource ? t("cyrillic") : t("latin")
 
+  // The keyboard copy has to acknowledge itself. A silent shortcut is
+  // indistinguishable from a shortcut that is not bound.
+  const [justCopied, setJustCopied] = useState(false)
+  useEffect(() => {
+    if (!justCopied) return
+    const timer = setTimeout(() => setJustCopied(false), 1600)
+    return () => clearTimeout(timer)
+  }, [justCopied])
+
   const clearAll = () => {
     clear()
     file.resetFile()
@@ -63,7 +73,10 @@ export function LatinCyrillicPage() {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       if (!convertedText) return
       event.preventDefault()
-      void navigator.clipboard.writeText(convertedText)
+      void navigator.clipboard.writeText(convertedText).then(
+        () => setJustCopied(true),
+        () => {}
+      )
       return
     }
     if (event.key === "Escape" && sourceText) {
@@ -203,8 +216,14 @@ export function LatinCyrillicPage() {
           }
           targetFooterComponent={
             convertedText ? (
-              <span className="font-mono text-[11px] text-muted-foreground">
-                {t("shortcutHint")}
+              <span
+                aria-live="polite"
+                className={cn(
+                  "font-mono text-[11px] transition-colors duration-200",
+                  justCopied ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                {justCopied ? t("copied") : t("shortcutHint")}
               </span>
             ) : null
           }

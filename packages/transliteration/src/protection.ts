@@ -29,18 +29,48 @@ function createPlaceholder(index: number): string {
 }
 
 /**
- * What counts as "inside a word" for protection purposes.
+ * What counts as "still inside a word" on the TRAILING edge.
  *
- * NOT `\b`. In Uzbek Latin the apostrophe is part of a LETTER — `o'` and `g'`
- * are single characters of the alphabet — but JavaScript's `\b` treats it as a
- * separator. That handed the protected-word list a boundary in the middle of
- * `o'sha` ("that"), where it matched the trailing `sha` against the SHA hash
- * family and left the word half-converted: `o'sha` → `ўsha`.
+ * Wider than `\b`, because in Uzbek Latin the apostrophe is part of a LETTER —
+ * `o'` and `g'` are single characters of the alphabet — while JavaScript's
+ * `\b` treats it as a separator. Without this a protected word could match up
+ * to an apostrophe that belongs to the next letter.
  *
  * Every apostrophe variant is listed because protection runs on RAW input,
  * before `normalizeApostrophes` has folded them together.
  */
 const WORD_CHAR = "[\\w'‘’ʻʼʿˈ′ʹ´`]"
+
+/** Every apostrophe shape, for the o'/g' test below. */
+const APOSTROPHES = "'‘’ʻʼʿˈ′ʹ´`"
+
+/**
+ * Does the match at `offset` start in the middle of an Uzbek letter?
+ *
+ * `o'` and `g'` are single letters of the Uzbek alphabet, but JavaScript's
+ * `\b` sees the apostrophe as a separator and offers everything after it as a
+ * standalone token. Scanning this repo's own 226 Uzbek chapters — 22,928
+ * distinct words — found exactly three protected acronyms reachable this way,
+ * and all three sit inside common words:
+ *
+ *   o'sha  ("that")        → `sha` (the hash family) → "ўsha"
+ *   ko'rsa ("if he sees")  → `rsa` (the cipher)      → "кўrsa"
+ *   o'ram  ("a roll")      → `ram` (the memory)      → "ўram"
+ *
+ * The test is deliberately narrow: only an apostrophe preceded by o or g, so a
+ * quoted term like 'React' is still protected. Corpus leaks after this: 0.
+ */
+function startsInsideUzbekLetter(text: string, offset: number): boolean {
+  const previous = text[offset - 1]
+  const beforeThat = text[offset - 2]
+
+  return (
+    previous !== undefined &&
+    APOSTROPHES.includes(previous) &&
+    beforeThat !== undefined &&
+    "ogOG".includes(beforeThat)
+  )
+}
 
 /**
  * Uzbek suffixes only attach to entries this long or longer.
@@ -60,15 +90,55 @@ function buildProtectedWordsPattern(): string {
   const byLengthDesc = (a: string, b: string) => b.length - a.length
   const all = [...NON_TRANSLITERATABLE_WORDS].sort(byLengthDesc)
   const suffixable = all.filter((w) => w.length >= SUFFIXABLE_MIN_LENGTH)
-  const suffix = `(?:${UZBEK_SUFFIXES.join("|")})`
+  const plainSuffix = `(?:${UZBEK_SUFFIXES.join("|")})`
+
+  // Uzbek attaches suffixes to foreign words through an apostrophe —
+  // Google'da, React'ni, GitHub'dan, TikTok'gacha, LLM'larni. Anything after
+  // that apostrophe is the suffix, so this does not consult the suffix list at
+  // all: listing only the known endings left `TikTok'gacha` half-converted as
+  // `TikTokъгача`, and enumerating every Uzbek ending is not a list anyone can
+  // finish.
+  //
+  // It also applies to entries of ANY length, unlike `plainSuffix`. The length
+  // floor exists because a bare 3-letter stem is weak evidence (`bun` + `i`
+  // would eat `buni`); an apostrophe seam is strong evidence on its own, and
+  // the one Uzbek construction that looks like it — o'/g' — is rejected before
+  // it gets here.
+  const apostropheSuffix = `[${APOSTROPHES}][a-zA-Z]+`
 
   // Suffixed form first: alternation is ordered, so `reactda` must get the
   // chance to match `react` + `da` before the bare `react` branch takes it and
   // leaves `da` behind to be transliterated on its own.
+  //
+  // `\b` on the leading edge, deliberately, after trying both alternatives:
+  //
+  //   A lookbehind `(?<!WORD_CHAR)` reads best, but this regex is built at
+  //   MODULE SCOPE — on a browser without lookbehind (Safari before 16.4) the
+  //   `new RegExp` throws while the module is still evaluating and the whole
+  //   tool page dies rather than degrading.
+  //
+  //   Consuming the character instead, `(^|NOT_WORD_CHAR)`, makes this branch
+  //   start matching one position EARLIER than the URL and email branches, so
+  //   it wins the leftmost race against them: `info@webiston.uz` was split at
+  //   the space and came out `info@webiston.уз`.
+  //
+  // `\b`'s one real flaw is that it treats the Uzbek apostrophe as a
+  // separator, which exposed the `sha` inside `o'sha`. That is handled where
+  // it belongs — `sha` is listed in UZBEK_HOMOGRAPHS — and the trailing
+  // lookahead still refuses to match into a following apostrophe.
+  // The trailing guard is `\\w` only, NOT WORD_CHAR: an apostrophe AFTER a
+  // protected word is a closing quote or the seam handled by `suffix` above,
+  // never a continuation of the word. Including it here meant `'React'` (in
+  // quotes) failed to match at all and came out `ъРеасть`.
+  // Both branches end with an OPTIONAL apostrophe seam, because the two stack:
+  // `rendering'ning` is a list entry (`render`) plus a plain suffix (`ing`)
+  // plus an apostrophe suffix (`'ning`). Allowing the seam on only one of them
+  // left `'ning` outside the placeholder, converted on its own as `ънинг`.
   return (
-    `(?<!${WORD_CHAR})` +
-    `(?:(?:${suffixable.join("|")})${suffix}|(?:${all.join("|")}))` +
-    `(?!${WORD_CHAR})`
+    "\\b(?:" +
+    `(?:${suffixable.join("|")})${plainSuffix}(?:${apostropheSuffix})?` +
+    `|(?:${all.join("|")})(?:${apostropheSuffix})?` +
+    ")(?!\\w)"
   )
 }
 
@@ -92,7 +162,9 @@ function buildProtectionRegex(): RegExp {
     // Social media handles (@username, @user_name, @user123)
     "@[a-zA-Z_][a-zA-Z0-9_]*",
     // URLs
-    "\\b(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*",
+    // Non-capturing: with no capture groups anywhere in this regex the replace
+    // callback signature is a fixed (match, offset, string).
+    "\\b(?:https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*",
     // File names with extensions (config.json, backup_v2.tar.gz)
     "\\b[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9]+)+\\b",
     // Technical terms with hyphen+number at END (COVID-19, v2.3, NOT Tez-tibbiy)
@@ -122,11 +194,16 @@ export function protectContent(text: string): ProtectionResult {
   // delimiter cannot already be in the text.
   const safeText = text.replace(PLACEHOLDER_DELIMITER, "")
 
-  const maskedText = safeText.replace(protectionRegex, (match) => {
-    const index = protectedParts.length
-    protectedParts.push(match)
-    return createPlaceholder(index)
-  })
+  const maskedText = safeText.replace(
+    protectionRegex,
+    (match: string, offset: number) => {
+      if (startsInsideUzbekLetter(safeText, offset)) return match
+
+      const index = protectedParts.length
+      protectedParts.push(match)
+      return createPlaceholder(index)
+    }
+  )
 
   return { maskedText, protectedParts }
 }
