@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react"
 
 import { cn } from "../../utils/cn"
 
@@ -58,8 +58,28 @@ export function SegmentedControl<Value extends string>({
   const itemRefs = useRef(new Map<Value, HTMLElement>())
   const [indicator, setIndicator] = useState<Indicator | null>(null)
 
-  // `useLayoutEffect` so the first paint already has the indicator in place —
-  // with `useEffect` it renders at 0 and then slides in, which looks like a bug.
+  /**
+   * Whether a MOVE may animate. The arrival never may.
+   *
+   * The server has no layout, so the markup ships with the indicator at
+   * `translateX(0)` and `opacity: 0` — the browser paints that, and only then
+   * does the layout effect below measure and correct it. A plain CSS
+   * transition treats that correction as a move and slides the highlight in
+   * from the first option, which is why switching locale (a fresh render of
+   * this tree) replayed the animation from "Auto" every single time.
+   *
+   * Enabling transitions one frame after the first measurement separates the
+   * two cases: the position is applied instantly, everything after it slides.
+   * This is the same fix an animation library would apply — framer-motion
+   * spells it `initial={false}` — so pulling one in would buy the behaviour
+   * back at the cost of the bundle, not fix anything CSS cannot.
+   */
+  const [canAnimate, setCanAnimate] = useState(false)
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setCanAnimate(true))
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
   useLayoutEffect(() => {
     const track = trackRef.current
     const active = itemRefs.current.get(value)
@@ -120,7 +140,9 @@ export function SegmentedControl<Value extends string>({
         aria-hidden="true"
         className={cn(
           "pointer-events-none absolute top-1 bottom-1 rounded-md bg-primary shadow-sm",
-          "transition-[transform,width,opacity] duration-300 ease-out",
+          canAnimate
+            ? "transition-[transform,width,opacity] duration-300 ease-out"
+            : "transition-none",
           "motion-reduce:transition-none"
         )}
         style={{

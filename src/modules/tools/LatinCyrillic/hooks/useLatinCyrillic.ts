@@ -15,6 +15,7 @@
 import {
   convertWithPreference,
   type DirectionPreference,
+  findPreservedTerms,
   oppositeDirection
 } from "@webiston/transliteration"
 import { useState } from "react"
@@ -45,6 +46,10 @@ export function useLatinCyrillic() {
     preference
   )
 
+  // What the engine left alone, so the UI can say so instead of leaving the
+  // user to guess whether an unconverted word is a feature or a bug.
+  const preservedTerms = findPreservedTerms(debouncedText)
+
   /**
    * Swap puts the result in the input and turns the conversion around.
    *
@@ -67,6 +72,8 @@ export function useLatinCyrillic() {
     preference,
     /** What "auto" resolved to, for the panel labels. */
     direction,
+    /** Distinct spans deliberately left unconverted — links, code, terms. */
+    preservedTerms,
     setPreference,
     setSourceText,
     swap,

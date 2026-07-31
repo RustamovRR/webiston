@@ -38,13 +38,24 @@ export function DownloadMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={disabled || isBusy}>
+        {/* The label is hidden on phones, not removed: three labelled buttons
+            wrapped the toolbar onto a second row, and on a 375px screen every
+            row above the input is a row the result gets pushed below. The
+            accessible name is unaffected — it comes from the text either way. */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={disabled || isBusy}
+          aria-label={t("label")}
+        >
           {isBusy ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           ) : (
-            <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Download className="h-4 w-4" aria-hidden="true" />
           )}
-          {isBusy ? t("preparing") : t("label")}
+          <span className="ml-2 max-sm:sr-only">
+            {isBusy ? t("preparing") : t("label")}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

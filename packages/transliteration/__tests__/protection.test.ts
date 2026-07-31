@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { toCyrillic } from "../src"
+import { findPreservedTerms, toCyrillic } from "../src"
 
 // =============================================================================
 // IMM - Protected content (immunity)
@@ -54,5 +54,43 @@ describe("Non-protected content", () => {
     ["$500", "$500"]
   ])("%s → %s", (input, expected) => {
     expect(toCyrillic(input)).toBe(expected)
+  })
+})
+
+describe("findPreservedTerms reports what the engine leaves alone", () => {
+  it("names the terms that survive a conversion", () => {
+    // Arrange
+    const input = "React va GitHub haqida webiston.uz saytida o'qing"
+
+    // Act
+    const terms = findPreservedTerms(input)
+
+    // Assert
+    expect(terms).toEqual(["React", "GitHub", "webiston.uz"])
+    expect(toCyrillic(input)).toContain("React")
+  })
+
+  it("de-duplicates case-insensitively, keeping first-seen order", () => {
+    // Arrange
+    const input = "GitHub, github va yana GITHUB"
+
+    // Act
+    const terms = findPreservedTerms(input)
+
+    // Assert
+    expect(terms).toEqual(["GitHub"])
+  })
+
+  it("is empty for ordinary Uzbek prose", () => {
+    // Arrange
+    const input = "Bugun havo juda issiq va quyoshli"
+
+    // Act & Assert
+    expect(findPreservedTerms(input)).toEqual([])
+  })
+
+  it("returns nothing for empty input rather than scanning it", () => {
+    // Arrange & Act & Assert
+    expect(findPreservedTerms("")).toEqual([])
   })
 })

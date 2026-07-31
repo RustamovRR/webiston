@@ -16,7 +16,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeftRight, FileText, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { MACOS_DOTS } from "@/constants/ui-constants"
+import { useEffect, useRef } from "react"
 import { countWords } from "@/lib/utils"
 
 interface DualTextPanelProps {
@@ -49,6 +49,11 @@ interface DualTextPanelProps {
    * focuses the field.
    */
   sourceEmptyState?: React.ReactNode
+  /**
+   * Put the caret in the source field on mount, for tools whose entire job is
+   * paste → read. Honoured on pointer devices only.
+   */
+  autoFocusSource?: boolean
 }
 
 export function DualTextPanel({
@@ -74,9 +79,22 @@ export function DualTextPanel({
   customTargetContent,
   customSourceContent,
   extraHeaderComponent,
-  sourceEmptyState
+  sourceEmptyState,
+  autoFocusSource = false
 }: DualTextPanelProps) {
   const tCommon = useTranslations("Common")
+
+  const sourceRef = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    if (!autoFocusSource) return
+    // Pointer devices only. On a phone, focusing on load raises the on-screen
+    // keyboard over the result panel — the thing the visitor came to see —
+    // before they have typed anything.
+    if (!window.matchMedia("(pointer: fine)").matches) return
+    // `preventScroll`: the field is above the fold on a desktop, and focusing
+    // it must not yank the page away from the heading.
+    sourceRef.current?.focus({ preventScroll: true })
+  }, [autoFocusSource])
 
   const sourceStats = [
     { label: tCommon("stats.characters"), value: sourceText.length },
@@ -130,21 +148,25 @@ export function DualTextPanel({
             isTerminal ? "bg-muted/50" : ""
           )}
         >
-          <div className="flex items-center gap-2">
+          {/* One marker, not three.
+              This slot used to hold the macOS traffic lights — an imitation of
+              close/minimise/zoom buttons that do not exist here, in the first
+              place the eye lands, saying nothing. They were also three raw
+              Tailwind palette classes (red, amber and green at a fixed weight)
+              that never flipped with the colour scheme. It is the kicker mark the
+              section headings use, and it carries one real bit: filled with
+              the accent on the panel that holds the ANSWER. */}
+          <div className="flex items-center gap-2.5">
             {isTerminal && (
-              <div className="flex items-center gap-1.5" aria-hidden="true">
-                {MACOS_DOTS.map((dot, index) => (
-                  <div
-                    key={index}
-                    className={cn("h-3 w-3 rounded-full", dot.color)}
-                  />
-                ))}
-              </div>
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "size-[6px] shrink-0 rounded-[2px]",
+                  isSource ? "bg-border-strong" : "bg-primary"
+                )}
+              />
             )}
-            <h2
-              id={panelId}
-              className="ml-2 text-base font-medium text-foreground"
-            >
+            <h2 id={panelId} className="font-medium text-base text-foreground">
               {label}
             </h2>
           </div>
@@ -199,6 +221,7 @@ export function DualTextPanel({
             ) : (
               <>
                 <textarea
+                  ref={sourceRef}
                   value={sourceText}
                   onChange={(e) => onSourceChange(e.target.value)}
                   className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"

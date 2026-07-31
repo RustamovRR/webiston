@@ -7,4 +7,5 @@
 export { DirectionTabs } from "./DirectionTabs"
 export { DownloadMenu } from "./DownloadMenu"
 export { DropZone } from "./DropZone"
+export { PreservedTerms } from "./PreservedTerms"
 export { SourceEmptyActions } from "./SourceEmptyActions"

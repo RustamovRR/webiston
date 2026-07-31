@@ -14,6 +14,10 @@
     "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
     "copied": "Copied!",
     "shortcutHint": "⌘/Ctrl + Enter to copy · Esc to clear",
+    "preserved": {
+      "note": "Kept unchanged: {terms}",
+      "more": "+{count}"
+    },
     "direction": {
       "label": "Conversion direction",
       "auto": "Auto",

@@ -14,6 +14,10 @@
     "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
     "copied": "Nusxalandi!",
     "shortcutHint": "⌘/Ctrl + Enter — nusxalash · Esc — tozalash",
+    "preserved": {
+      "note": "O'zgarishsiz saqlandi: {terms}",
+      "more": "+{count}"
+    },
     "direction": {
       "label": "O'girish yo'nalishi",
       "auto": "Avto",

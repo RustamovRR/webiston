@@ -21,6 +21,7 @@ import {
   DirectionTabs,
   DownloadMenu,
   DropZone,
+  PreservedTerms,
   SourceEmptyActions
 } from "./components"
 import { SAMPLE_TEXT, SUPPORTED_EXTENSIONS } from "./constants"
@@ -36,6 +37,7 @@ export function LatinCyrillicPage() {
     convertedText,
     preference,
     direction,
+    preservedTerms,
     setPreference,
     setSourceText,
     swap,
@@ -130,9 +132,10 @@ export function LatinCyrillicPage() {
             size="sm"
             onClick={() => fileInput.current?.click()}
             disabled={file.isBusy}
+            aria-label={t("file.button")}
           >
-            <Paperclip className="mr-2 h-4 w-4" aria-hidden="true" />
-            {t("file.button")}
+            <Paperclip className="h-4 w-4" aria-hidden="true" />
+            <span className="ml-2 max-sm:sr-only">{t("file.button")}</span>
           </Button>
 
           <DownloadMenu
@@ -149,9 +152,10 @@ export function LatinCyrillicPage() {
             size="sm"
             onClick={clearAll}
             disabled={!sourceText}
+            aria-label={t("clear")}
           >
-            <X className="mr-2 h-4 w-4" aria-hidden="true" />
-            {t("clear")}
+            <X className="h-4 w-4" aria-hidden="true" />
+            <span className="ml-2 max-sm:sr-only">{t("clear")}</span>
           </Button>
         </div>
       </div>
@@ -208,19 +212,28 @@ export function LatinCyrillicPage() {
             />
           }
           targetFooterComponent={
+            // Priority order, and it is deliberate: the copy acknowledgement
+            // is transient and must win; after that, "why is this word still
+            // in Latin?" is a real question and the shortcut hint is not.
             convertedText ? (
-              <span
-                aria-live="polite"
-                className={cn(
-                  "font-mono text-[11px] transition-colors duration-200",
-                  justCopied ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                {justCopied ? t("copied") : t("shortcutHint")}
-              </span>
+              justCopied ? (
+                <span
+                  aria-live="polite"
+                  className="font-mono text-[11px] text-primary transition-colors duration-200"
+                >
+                  {t("copied")}
+                </span>
+              ) : preservedTerms.length > 0 ? (
+                <PreservedTerms terms={preservedTerms} />
+              ) : (
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {t("shortcutHint")}
+                </span>
+              )
             ) : null
           }
           showShadow
+          autoFocusSource
         />
       </DropZone>
     </div>

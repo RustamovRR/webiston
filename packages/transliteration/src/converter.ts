@@ -22,6 +22,7 @@
  */
 
 import { isCyrillicDominant } from "./detect-script"
+import { protectContent } from "./protection"
 import { toCyrillic, toLatin } from "./transliterate"
 import type { TransliterationDirection } from "./types"
 
@@ -71,6 +72,35 @@ export function convertWithPreference(
   const direction = resolveDirection(text, preference)
 
   return { text: convert(text, direction), direction }
+}
+
+/**
+ * The distinct spans this text will come back with UNCHANGED.
+ *
+ * Preserving links, e-mail addresses, code and known technical terms is the
+ * engine's most useful behaviour and its least visible one: the user sees
+ * `React` survive a conversion and concludes the converter is broken. There is
+ * no way to tell "deliberately left alone" from "missed" by looking at the
+ * output, so the surface has to say it.
+ *
+ * De-duplicated and in first-seen order, because this is copy for a human, not
+ * a token stream — a document mentioning `GitHub` forty times should read
+ * "GitHub", once.
+ */
+export function findPreservedTerms(text: string): string[] {
+  if (!text) return []
+
+  const seen = new Set<string>()
+  const terms: string[] = []
+
+  for (const part of protectContent(text).protectedParts) {
+    const key = part.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    terms.push(part)
+  }
+
+  return terms
 }
 
 /**

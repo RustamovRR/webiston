@@ -12,6 +12,7 @@ export type { DirectionPreference } from "./converter"
 export {
   convert,
   convertWithPreference,
+  findPreservedTerms,
   oppositeDirection,
   resolveDirection
 } from "./converter"

@@ -70,7 +70,10 @@ export function NumberTicker({
     <span
       ref={ref}
       className={cn(
-        "inline-block tracking-wider text-black tabular-nums dark:text-white",
+        // `text-foreground`, not `text-black dark:text-white`: the token
+        // already flips with the scheme, and the hardcoded pair outranked
+        // whatever colour the caller had set on the surrounding row.
+        "inline-block text-foreground tabular-nums tracking-wider",
         className
       )}
       {...props}
