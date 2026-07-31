@@ -101,7 +101,20 @@ export function BaseModal({
             </DialogPrimitive.Overlay>
 
             {/* Content */}
-            <DialogPrimitive.Content asChild>
+            <DialogPrimitive.Content
+              asChild
+              /**
+               * Escape closes it — explicitly, not by inheritance.
+               *
+               * Radix listens for Escape on the document in the CAPTURE phase
+               * and then dismisses only `if (!event.defaultPrevented)`. Measured
+               * on this app, the flag is already true by the time that listener
+               * runs, so the built-in dismissal silently never fired and every
+               * modal on the site could only be closed with the mouse. Handling
+               * it here runs before that check and does not depend on it.
+               */
+              onEscapeKeyDown={() => onClose()}
+            >
               <motion.div
                 className={cn(
                   "fixed top-1/2 left-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2",
