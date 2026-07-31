@@ -42,6 +42,7 @@ export function LatinCyrillicPage() {
     exceptions,
     addException,
     removeException,
+    clearExceptions,
     setPreference,
     setSourceText,
     swap,
@@ -146,8 +147,8 @@ export function LatinCyrillicPage() {
             disabled={file.isBusy}
             aria-label={t("file.button")}
           >
-            <Paperclip className="h-4 w-4" aria-hidden="true" />
-            <span className="ml-2 max-sm:sr-only">{t("file.button")}</span>
+            <Paperclip aria-hidden="true" />
+            <span className="max-sm:sr-only">{t("file.button")}</span>
           </Button>
 
           <DownloadMenu
@@ -165,12 +166,10 @@ export function LatinCyrillicPage() {
             onClick={() => setExceptionsOpen(true)}
             aria-label={t("exceptions.button")}
           >
-            <BookLock className="h-4 w-4" aria-hidden="true" />
-            <span className="ml-2 max-sm:sr-only">
-              {t("exceptions.button")}
-            </span>
+            <BookLock aria-hidden="true" />
+            <span className="max-sm:sr-only">{t("exceptions.button")}</span>
             {exceptions.length > 0 && (
-              <span className="ml-2 rounded-full bg-primary px-1.5 font-mono text-[10px] text-primary-foreground tabular-nums">
+              <span className="rounded-full bg-primary px-1.5 font-mono text-[10px] text-primary-foreground tabular-nums">
                 {exceptions.length}
               </span>
             )}
@@ -184,8 +183,8 @@ export function LatinCyrillicPage() {
             disabled={!sourceText}
             aria-label={t("clear")}
           >
-            <X className="h-4 w-4" aria-hidden="true" />
-            <span className="ml-2 max-sm:sr-only">{t("clear")}</span>
+            <X aria-hidden="true" />
+            <span className="max-sm:sr-only">{t("clear")}</span>
           </Button>
         </div>
       </div>
@@ -273,6 +272,7 @@ export function LatinCyrillicPage() {
         exceptions={exceptions}
         onAdd={addException}
         onRemove={removeException}
+        onClear={clearExceptions}
       />
     </div>
   )

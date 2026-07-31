@@ -25,7 +25,13 @@
       "placeholder": "So'z qo'shing...",
       "add": "Qo'shish",
       "empty": "Hozircha bo'sh. Yuqoridagi maydonga so'z yozing.",
-      "remove": "{term} — ro'yxatdan o'chirish"
+      "remove": "{term} — ro'yxatdan o'chirish",
+      "count": "{count} / {max} so'z",
+      "duplicate": "\"{term}\" allaqachon ro'yxatda.",
+      "full": "Ro'yxat to'ldi — {max} tadan ko'p bo'lmaydi.",
+      "clearAll": "Hammasini tozalash",
+      "clearConfirm": "Ishonchingiz komilmi?",
+      "clearYes": "Ha, tozalansin"
     },
     "direction": {
       "label": "O'girish yo'nalishi",

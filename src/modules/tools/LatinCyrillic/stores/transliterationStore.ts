@@ -32,6 +32,7 @@ interface TransliterationState {
   setPreference: (preference: DirectionPreference) => void
   addException: (term: string) => void
   removeException: (term: string) => void
+  clearExceptions: () => void
 }
 
 export const useTransliterationStore = create<TransliterationState>()(
@@ -55,7 +56,9 @@ export const useTransliterationStore = create<TransliterationState>()(
       removeException: (term) =>
         set((state) => ({
           exceptions: state.exceptions.filter((entry) => entry !== term)
-        }))
+        })),
+
+      clearExceptions: () => set({ exceptions: [] })
     }),
     {
       name: "latin-cyrillic-storage",

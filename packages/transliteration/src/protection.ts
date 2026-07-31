@@ -206,8 +206,8 @@ const protectionRegex = new RegExp(BASE_PATTERN, "gi")
  * user list is an exception list — brand names, colleagues, a village — and 200
  * entries is far past what anyone maintains by hand.
  */
-const MAX_USER_TERMS = 200
-const MAX_USER_TERM_LENGTH = 64
+export const MAX_USER_TERMS = 200
+export const MAX_USER_TERM_LENGTH = 64
 
 /** Cleaned, bounded, de-duplicated. Invalid entries are dropped, not thrown on. */
 export function normaliseUserTerms(terms: readonly string[]): string[] {

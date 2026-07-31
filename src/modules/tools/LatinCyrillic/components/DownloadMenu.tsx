@@ -41,7 +41,12 @@ export function DownloadMenu({
         {/* The label is hidden on phones, not removed: three labelled buttons
             wrapped the toolbar onto a second row, and on a 375px screen every
             row above the input is a row the result gets pushed below. The
-            accessible name is unaffected — it comes from the text either way. */}
+            accessible name is unaffected — it comes from the text either way.
+
+            No margin on the label. `Button` already sets `gap-1.5` at this
+            size, so an `ml-2` on top of it read as a gap-and-a-half between the
+            icon and its own word. `sr-only` is absolutely positioned, so the
+            gap collapses on its own when the label is hidden. */}
         <Button
           variant="outline"
           size="sm"
@@ -49,11 +54,11 @@ export function DownloadMenu({
           aria-label={t("label")}
         >
           {isBusy ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="animate-spin" aria-hidden="true" />
           ) : (
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Download aria-hidden="true" />
           )}
-          <span className="ml-2 max-sm:sr-only">
+          <span className="max-sm:sr-only">
             {isBusy ? t("preparing") : t("label")}
           </span>
         </Button>

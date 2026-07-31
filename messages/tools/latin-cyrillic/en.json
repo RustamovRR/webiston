@@ -25,7 +25,13 @@
       "placeholder": "Add a word...",
       "add": "Add",
       "empty": "Empty for now. Type a word in the field above.",
-      "remove": "Remove {term} from the list"
+      "remove": "Remove {term} from the list",
+      "count": "{count} / {max} words",
+      "duplicate": "\"{term}\" is already on the list.",
+      "full": "The list is full — {max} words at most.",
+      "clearAll": "Clear all",
+      "clearConfirm": "Are you sure?",
+      "clearYes": "Yes, clear it"
     },
     "direction": {
       "label": "Conversion direction",

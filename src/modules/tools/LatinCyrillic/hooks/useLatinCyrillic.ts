@@ -38,6 +38,7 @@ export function useLatinCyrillic() {
   const exceptions = useTransliterationStore((s) => s.exceptions)
   const addException = useTransliterationStore((s) => s.addException)
   const removeException = useTransliterationStore((s) => s.removeException)
+  const clearExceptions = useTransliterationStore((s) => s.clearExceptions)
 
   const [sourceText, setSourceText] = useState("")
   const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
@@ -84,6 +85,7 @@ export function useLatinCyrillic() {
     exceptions,
     addException,
     removeException,
+    clearExceptions,
     setPreference,
     setSourceText,
     swap,
