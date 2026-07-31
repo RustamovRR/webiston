@@ -191,9 +191,15 @@ export function QrPreview({
               aria-hidden="true"
             />
             <span>
+              {/* Two messages, not one: "might fail in poor light" and "expect
+                  it to fail" are different pieces of advice, and telling a
+                  visitor the second when you mean the first teaches them to
+                  ignore the warning. */}
               {scan.risk === "inverted"
                 ? t("inverted")
-                : t("lowContrast", { ratio: scan.ratio })}
+                : scan.severe
+                  ? t("lowContrastSevere", { ratio: scan.ratio })
+                  : t("lowContrast", { ratio: scan.ratio })}
             </span>
           </p>
         )}

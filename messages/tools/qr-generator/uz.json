@@ -258,7 +258,8 @@
       "lowContrast": "Ranglar kontrasti past ({ratio}:1). Bunday kod chop etilganda yoki xira yorug'likda skanerlanmasligi mumkin.",
       "inverted": "Kod fondan och rangda. Ko'p skanerlar QR kodni qorong'i-ochiq tartibida qidiradi — ranglarni almashtiring.",
       "modules": "{count}×{count} modul",
-      "exportFailed": "Faylni yaratib bo'lmadi. Qayta urinib ko'ring."
+      "exportFailed": "Faylni yaratib bo'lmadi. Qayta urinib ko'ring.",
+      "lowContrastSevere": "Kontrast juda past ({ratio}:1). Bu kod ko'p telefonlarda umuman skanerlanmaydi — kod rangini quyuqroq qiling."
     },
     "style": {
       "foreground": "Kod rangi",
@@ -284,7 +285,8 @@
       "gradient": {
         "linear": "Chiziqli",
         "radial": "Radial"
-      }
+      },
+      "frameStyle": "Ramka turi"
     },
     "detected": {
       "empty": "bo'sh",
@@ -296,6 +298,74 @@
       "vcard": "kontakt",
       "location": "joylashuv",
       "text": "matn"
+    },
+    "shapeNames": {
+      "module": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "dots": "Nuqta",
+        "fluid": "Oquvchi",
+        "fluid-soft": "Yumshoq oquvchi",
+        "classy": "Nafis",
+        "classy-rounded": "Nafis yumaloq",
+        "vertical": "Vertikal chiziq",
+        "horizontal": "Gorizontal chiziq",
+        "diamond-soft": "Romb",
+        "leaf": "Barg",
+        "leaf-mirrored": "Teskari barg",
+        "mosaic": "Mozaika",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak"
+      },
+      "eyeFrame": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "circle": "Doira",
+        "leaf": "Barg",
+        "leaf-mirrored": "Teskari barg",
+        "cushion": "Yostiq",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak"
+      },
+      "eyeBall": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "circle": "Doira",
+        "leaf": "Barg",
+        "leaf-mirrored": "Teskari barg",
+        "diamond-soft": "Romb",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak",
+        "bars-v": "Vertikal chiziqlar",
+        "bars-h": "Gorizontal chiziqlar",
+        "dot-grid": "To'rt nuqta"
+      },
+      "frame": {
+        "none": "Ramkasiz",
+        "outline": "Chiziqli",
+        "card": "Kartochka",
+        "label-bottom": "Pastda yozuv",
+        "label-top": "Tepada yozuv",
+        "solid": "To'ldirilgan",
+        "brackets": "Burchak belgilari"
+      }
+    },
+    "presets": {
+      "title": "Tayyor uslublar",
+      "hint": "Bir bosishda",
+      "names": {
+        "classic": "Klassik",
+        "modern": "Zamonaviy",
+        "soft": "Yumshoq",
+        "dotted": "Nuqtali",
+        "elegant": "Nafis",
+        "tech": "Texnologik",
+        "brand": "Brend",
+        "mosaic": "Mozaika"
+      }
     }
   }
 }

@@ -32,6 +32,10 @@ export type ModuleShape =
   | "horizontal"
   | "diamond-soft"
   | "leaf"
+  | "leaf-mirrored"
+  | "mosaic"
+  | "bevel"
+  | "sharp"
 
 export const MODULE_SHAPES: readonly ModuleShape[] = [
   "square",
@@ -45,7 +49,11 @@ export const MODULE_SHAPES: readonly ModuleShape[] = [
   "vertical",
   "horizontal",
   "diamond-soft",
-  "leaf"
+  "leaf",
+  "leaf-mirrored",
+  "mosaic",
+  "bevel",
+  "sharp"
 ]
 
 /** Shapes whose look depends on what is next to them. */
@@ -96,6 +104,23 @@ function roundedRect(
   ]
     .filter(Boolean)
     .join(" ")
+}
+
+/** An octagon: the four corners cut by `cut` instead of rounded. */
+function bevelled(x: number, y: number, size: number, cut: number): string {
+  const right = x + size
+  const bottom = y + size
+  return [
+    `M${round(x + cut)},${round(y)}`,
+    `L${round(right - cut)},${round(y)}`,
+    `L${round(right)},${round(y + cut)}`,
+    `L${round(right)},${round(bottom - cut)}`,
+    `L${round(right - cut)},${round(bottom)}`,
+    `L${round(x + cut)},${round(bottom)}`,
+    `L${round(x)},${round(bottom - cut)}`,
+    `L${round(x)},${round(y + cut)}`,
+    "Z"
+  ].join(" ")
 }
 
 function circle(x: number, y: number, size: number): string {
@@ -184,6 +209,32 @@ export function modulePath(shape: ModuleShape, cell: Cell): string {
     case "leaf":
       return roundedRect(x, y, size, [half, soft * 0.4, half, soft * 0.4])
 
+    case "leaf-mirrored":
+      return roundedRect(x, y, size, [soft * 0.4, half, soft * 0.4, half])
+
+    // A deliberate gap between modules, the way a tiled mosaic reads. The
+    // inset is 8% per side — 0.84^2 = 70.6% coverage, which is the floor, so
+    // this is as sparse as the catalogue is allowed to get.
+    case "mosaic": {
+      const inset = size * 0.08
+      return roundedRect(x + inset, y + inset, size - inset * 2, [
+        size * 0.06,
+        size * 0.06,
+        size * 0.06,
+        size * 0.06
+      ])
+    }
+
+    // Cut corners rather than rounded ones — an octagon reads as engineered
+    // where a circle reads as friendly.
+    case "bevel":
+      return bevelled(x, y, size, size * 0.26)
+
+    // Three corners soft, one square. Gives the code a consistent "grain"
+    // because every module points the same way.
+    case "sharp":
+      return roundedRect(x, y, size, [0, soft, soft, soft])
+
     default:
       return roundedRect(x, y, size, [0, 0, 0, 0])
   }
@@ -222,7 +273,16 @@ export function coverageOf(shape: ModuleShape): number {
     case "diamond-soft":
       return area([0.45, 0.15, 0.45, 0.15])
     case "leaf":
+    case "leaf-mirrored":
       return area([0.5, 0.112, 0.5, 0.112])
+    // Inset on all four sides, then lightly rounded.
+    case "mosaic":
+      return 0.84 * 0.84 - 4 * 0.06 * 0.06 * (1 - Math.PI / 4)
+    // Each cut corner removes a right triangle of legs `cut`.
+    case "bevel":
+      return 1 - (4 * (0.26 * 0.26)) / 2
+    case "sharp":
+      return area([0, 0.28, 0.28, 0.28])
     default:
       return 1
   }

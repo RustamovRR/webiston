@@ -258,7 +258,8 @@
       "lowContrast": "Colour contrast is low ({ratio}:1). A code like this may fail to scan in print or dim light.",
       "inverted": "The code is lighter than its background. Most scanners look for dark-on-light — swap the colours.",
       "modules": "{count}×{count} modules",
-      "exportFailed": "Could not create the file. Please try again."
+      "exportFailed": "Could not create the file. Please try again.",
+      "lowContrastSevere": "Contrast is far too low ({ratio}:1). Most phones will not scan this at all — darken the code colour."
     },
     "style": {
       "foreground": "Code colour",
@@ -284,7 +285,8 @@
       "gradient": {
         "linear": "Linear",
         "radial": "Radial"
-      }
+      },
+      "frameStyle": "Frame style"
     },
     "detected": {
       "empty": "empty",
@@ -296,6 +298,74 @@
       "vcard": "contact",
       "location": "location",
       "text": "text"
+    },
+    "shapeNames": {
+      "module": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "dots": "Dots",
+        "fluid": "Fluid",
+        "fluid-soft": "Soft fluid",
+        "classy": "Classy",
+        "classy-rounded": "Classy rounded",
+        "vertical": "Vertical bars",
+        "horizontal": "Horizontal bars",
+        "diamond-soft": "Diamond",
+        "leaf": "Leaf",
+        "leaf-mirrored": "Leaf mirrored",
+        "mosaic": "Mosaic",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner"
+      },
+      "eyeFrame": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "circle": "Circle",
+        "leaf": "Leaf",
+        "leaf-mirrored": "Leaf mirrored",
+        "cushion": "Cushion",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner"
+      },
+      "eyeBall": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "circle": "Circle",
+        "leaf": "Leaf",
+        "leaf-mirrored": "Leaf mirrored",
+        "diamond-soft": "Diamond",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner",
+        "bars-v": "Vertical bars",
+        "bars-h": "Horizontal bars",
+        "dot-grid": "Four dots"
+      },
+      "frame": {
+        "none": "No frame",
+        "outline": "Outline",
+        "card": "Card",
+        "label-bottom": "Caption below",
+        "label-top": "Caption above",
+        "solid": "Filled",
+        "brackets": "Corner marks"
+      }
+    },
+    "presets": {
+      "title": "Ready-made styles",
+      "hint": "One click",
+      "names": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "soft": "Soft",
+        "dotted": "Dotted",
+        "elegant": "Elegant",
+        "tech": "Tech",
+        "brand": "Brand",
+        "mosaic": "Mosaic"
+      }
     }
   }
 }

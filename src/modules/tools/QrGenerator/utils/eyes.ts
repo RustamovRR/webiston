@@ -22,6 +22,8 @@ export type EyeFrameShape =
   | "leaf"
   | "leaf-mirrored"
   | "cushion"
+  | "bevel"
+  | "sharp"
 
 export type EyeBallShape =
   | "square"
@@ -31,6 +33,11 @@ export type EyeBallShape =
   | "leaf"
   | "leaf-mirrored"
   | "diamond-soft"
+  | "bevel"
+  | "sharp"
+  | "bars-v"
+  | "bars-h"
+  | "dot-grid"
 
 export const EYE_FRAME_SHAPES: readonly EyeFrameShape[] = [
   "square",
@@ -39,7 +46,9 @@ export const EYE_FRAME_SHAPES: readonly EyeFrameShape[] = [
   "circle",
   "leaf",
   "leaf-mirrored",
-  "cushion"
+  "cushion",
+  "bevel",
+  "sharp"
 ]
 
 export const EYE_BALL_SHAPES: readonly EyeBallShape[] = [
@@ -49,7 +58,12 @@ export const EYE_BALL_SHAPES: readonly EyeBallShape[] = [
   "circle",
   "leaf",
   "leaf-mirrored",
-  "diamond-soft"
+  "diamond-soft",
+  "bevel",
+  "sharp",
+  "bars-v",
+  "bars-h",
+  "dot-grid"
 ]
 
 const round = (value: number) => Math.round(value * 1000) / 1000
@@ -110,6 +124,8 @@ function radiiFor(
       return [soft * 1.6, soft * 0.4, soft * 1.6, soft * 0.4]
     case "diamond-soft":
       return [half * 0.85, half * 0.25, half * 0.85, half * 0.25]
+    case "sharp":
+      return [0, soft, soft, soft]
     default:
       return [0, 0, 0, 0]
   }
@@ -134,27 +150,107 @@ export function eyeFramePath(
   const outer = module * 7
   const inner = module * 5
 
-  const outerPath = roundedRectPath(x, y, outer, outer, radiiFor(shape, outer))
-  const innerPath = roundedRectPath(
-    x + module,
-    y + module,
-    inner,
-    inner,
-    radiiFor(shape, inner)
-  )
+  const outerPath =
+    shape === "bevel"
+      ? bevelPath(x, y, outer, outer * 0.24)
+      : roundedRectPath(x, y, outer, outer, radiiFor(shape, outer))
+  const innerPath =
+    shape === "bevel"
+      ? bevelPath(x + module, y + module, inner, inner * 0.24)
+      : roundedRectPath(
+          x + module,
+          y + module,
+          inner,
+          inner,
+          radiiFor(shape, inner)
+        )
 
   return `${outerPath} ${innerPath}`
 }
 
-/** The centre: a solid 3x3 block inset by two modules. */
+/** An octagon, for the shapes that want cut corners rather than round ones. */
+function bevelPath(x: number, y: number, size: number, cut: number): string {
+  const right = x + size
+  const bottom = y + size
+  return [
+    `M${round(x + cut)},${round(y)}`,
+    `L${round(right - cut)},${round(y)}`,
+    `L${round(right)},${round(y + cut)}`,
+    `L${round(right)},${round(bottom - cut)}`,
+    `L${round(right - cut)},${round(bottom)}`,
+    `L${round(x + cut)},${round(bottom)}`,
+    `L${round(x)},${round(bottom - cut)}`,
+    `L${round(x)},${round(y + cut)}`,
+    "Z"
+  ].join(" ")
+}
+
+/**
+ * The centre: a 3x3 block inset by two modules.
+ *
+ * This is the one part of a finder pattern with real freedom. The scanner
+ * locks onto the RING — the 1:1:3:1:1 ratio is measured across the frame — so
+ * the middle can be split into bars or dots without touching detection, which
+ * is why the composite shapes live here and not in the frame catalogue.
+ */
 export function eyeBallPath(
   shape: EyeBallShape,
   { x, y, module }: EyeGeometry
 ): string {
   const extent = module * 3
+  const originX = x + module * 2
+  const originY = y + module * 2
+
+  if (shape === "bevel") {
+    return bevelPath(originX, originY, extent, extent * 0.26)
+  }
+
+  // Three bars, with the gaps as a share of the block so they scale.
+  if (shape === "bars-v" || shape === "bars-h") {
+    const gap = extent * 0.14
+    const band = (extent - gap * 2) / 3
+    return [0, 1, 2]
+      .map((index) => {
+        const offset = index * (band + gap)
+        return shape === "bars-v"
+          ? roundedRectPath(originX + offset, originY, band, extent, [
+              band / 2,
+              band / 2,
+              band / 2,
+              band / 2
+            ])
+          : roundedRectPath(originX, originY + offset, extent, band, [
+              band / 2,
+              band / 2,
+              band / 2,
+              band / 2
+            ])
+      })
+      .join(" ")
+  }
+
+  // A 2x2 of dots — the densest of the composite centres.
+  if (shape === "dot-grid") {
+    const gap = extent * 0.12
+    const dot = (extent - gap) / 2
+    return [0, 1]
+      .flatMap((row) =>
+        [0, 1].map((col) =>
+          roundedRectPath(
+            originX + col * (dot + gap),
+            originY + row * (dot + gap),
+            dot,
+            dot,
+            [dot / 2, dot / 2, dot / 2, dot / 2]
+          )
+        )
+      )
+      .join(" ")
+  }
+
   return roundedRectPath(
-    x + module * 2,
-    y + module * 2,
+    originX,
+    originY,
     extent,
     extent,
     radiiFor(shape, extent)

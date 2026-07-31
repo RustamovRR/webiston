@@ -32,6 +32,7 @@ import { FRAMES } from "../utils/frames"
 import { prepareLogo } from "../utils/logo"
 import { STANDARD_QUIET_ZONE } from "../utils/render"
 import { MODULE_SHAPES, modulePath } from "../utils/shapes"
+import { PresetStrip } from "./PresetStrip"
 
 /**
  * The styling controls.
@@ -88,6 +89,38 @@ function ColorField({
   )
 }
 
+/**
+ * A shape group: its label, and — on the right — the name of whatever is
+ * currently chosen.
+ *
+ * Requested, and correct: a grid of twelve silhouettes tells you what a shape
+ * looks like but not what it is called, so there is no way to say "use the
+ * leaf one" to a colleague, and no way to tell two near-identical swatches
+ * apart at 32px.
+ */
+function ShapeGroup({
+  label,
+  selectedName,
+  children
+}: {
+  label: string
+  selectedName: string
+  children: React.ReactNode
+}) {
+  return (
+    <fieldset>
+      <legend className="sr-only">{label}</legend>
+      <div className="mb-2 flex items-baseline justify-between gap-3">
+        <span className="text-muted-foreground text-sm">{label}</span>
+        <span className="font-medium text-foreground text-xs">
+          {selectedName}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </fieldset>
+  )
+}
+
 function SwatchButton({
   active,
   onClick,
@@ -127,6 +160,7 @@ const PATCH = [
 
 export function StylePanel({ style, onChange }: StylePanelProps) {
   const t = useTranslations("QrGeneratorPage.style")
+  const tNames = useTranslations("QrGeneratorPage.shapeNames")
   const fileRef = useRef<HTMLInputElement>(null)
   const [logoError, setLogoError] = useState(false)
 
@@ -142,6 +176,10 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
 
   return (
     <div className="space-y-5">
+      {/* First, because it is the control that answers "make it look good"
+          without asking the visitor to learn the vocabulary below it. */}
+      <PresetStrip style={style} onChange={onChange} />
+
       <div className="space-y-3">
         <ColorField
           label={t("foreground")}
@@ -197,102 +235,96 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
             {t("shapes")}
           </AccordionTrigger>
           <AccordionContent className="space-y-5 px-4">
-            <fieldset>
-              <legend className="mb-2 text-muted-foreground text-sm">
-                {t("dots")}
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {MODULE_SHAPES.map((shape) => (
-                  <SwatchButton
-                    key={shape}
-                    title={shape}
-                    active={style.dotType === shape}
-                    onClick={() => onChange({ dotType: shape })}
+            <ShapeGroup
+              label={t("dots")}
+              selectedName={tNames(`module.${style.dotType}`)}
+            >
+              {MODULE_SHAPES.map((shape) => (
+                <SwatchButton
+                  key={shape}
+                  title={shape}
+                  active={style.dotType === shape}
+                  onClick={() => onChange({ dotType: shape })}
+                >
+                  <svg
+                    viewBox={`0 0 ${SWATCH} ${SWATCH}`}
+                    className="size-8 fill-foreground"
+                    aria-hidden="true"
                   >
-                    <svg
-                      viewBox={`0 0 ${SWATCH} ${SWATCH}`}
-                      className="size-8 fill-foreground"
-                      aria-hidden="true"
-                    >
-                      <title>{shape}</title>
-                      {PATCH.flatMap((row, r) =>
-                        row.map((on, c) =>
-                          on ? (
-                            <path
-                              key={`${r}-${c}`}
-                              d={modulePath(shape, {
-                                x: c * unit,
-                                y: r * unit,
-                                size: unit,
-                                neighbours: {
-                                  top: Boolean(PATCH[r - 1]?.[c]),
-                                  bottom: Boolean(PATCH[r + 1]?.[c]),
-                                  left: Boolean(row[c - 1]),
-                                  right: Boolean(row[c + 1])
-                                }
-                              })}
-                            />
-                          ) : null
-                        )
-                      )}
-                    </svg>
-                  </SwatchButton>
-                ))}
-              </div>
-            </fieldset>
+                    <title>{shape}</title>
+                    {PATCH.flatMap((row, r) =>
+                      row.map((on, c) =>
+                        on ? (
+                          <path
+                            key={`${r}-${c}`}
+                            d={modulePath(shape, {
+                              x: c * unit,
+                              y: r * unit,
+                              size: unit,
+                              neighbours: {
+                                top: Boolean(PATCH[r - 1]?.[c]),
+                                bottom: Boolean(PATCH[r + 1]?.[c]),
+                                left: Boolean(row[c - 1]),
+                                right: Boolean(row[c + 1])
+                              }
+                            })}
+                          />
+                        ) : null
+                      )
+                    )}
+                  </svg>
+                </SwatchButton>
+              ))}
+            </ShapeGroup>
 
-            <fieldset>
-              <legend className="mb-2 text-muted-foreground text-sm">
-                {t("cornerSquare")}
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {EYE_FRAME_SHAPES.map((shape) => (
-                  <SwatchButton
-                    key={shape}
-                    title={shape}
-                    active={style.cornerSquareType === shape}
-                    onClick={() => onChange({ cornerSquareType: shape })}
+            <ShapeGroup
+              label={t("cornerSquare")}
+              selectedName={tNames(`eyeFrame.${style.cornerSquareType}`)}
+            >
+              {EYE_FRAME_SHAPES.map((shape) => (
+                <SwatchButton
+                  key={shape}
+                  title={shape}
+                  active={style.cornerSquareType === shape}
+                  onClick={() => onChange({ cornerSquareType: shape })}
+                >
+                  <svg
+                    viewBox="0 0 35 35"
+                    className="size-8 fill-foreground"
+                    aria-hidden="true"
                   >
-                    <svg
-                      viewBox="0 0 35 35"
-                      className="size-8 fill-foreground"
-                      aria-hidden="true"
-                    >
-                      <title>{shape}</title>
-                      <path
-                        d={eyeFramePath(shape, { x: 0, y: 0, module: 5 })}
-                        fillRule="evenodd"
-                      />
-                    </svg>
-                  </SwatchButton>
-                ))}
-              </div>
-            </fieldset>
+                    <title>{shape}</title>
+                    <path
+                      d={eyeFramePath(shape, { x: 0, y: 0, module: 5 })}
+                      fillRule="evenodd"
+                    />
+                  </svg>
+                </SwatchButton>
+              ))}
+            </ShapeGroup>
 
-            <fieldset>
-              <legend className="mb-2 text-muted-foreground text-sm">
-                {t("cornerDot")}
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {EYE_BALL_SHAPES.map((shape) => (
-                  <SwatchButton
-                    key={shape}
-                    title={shape}
-                    active={style.cornerDotType === shape}
-                    onClick={() => onChange({ cornerDotType: shape })}
+            <ShapeGroup
+              label={t("cornerDot")}
+              selectedName={tNames(`eyeBall.${style.cornerDotType}`)}
+            >
+              {EYE_BALL_SHAPES.map((shape) => (
+                <SwatchButton
+                  key={shape}
+                  title={shape}
+                  active={style.cornerDotType === shape}
+                  onClick={() => onChange({ cornerDotType: shape })}
+                >
+                  <svg
+                    viewBox="0 0 35 35"
+                    className="size-8 fill-foreground"
+                    aria-hidden="true"
                   >
-                    <svg
-                      viewBox="0 0 35 35"
-                      className="size-8 fill-foreground"
-                      aria-hidden="true"
-                    >
-                      <title>{shape}</title>
-                      <path d={eyeBallPath(shape, { x: 0, y: 0, module: 5 })} />
-                    </svg>
-                  </SwatchButton>
-                ))}
-              </div>
-            </fieldset>
+                    <title>{shape}</title>
+                    <path d={eyeBallPath(shape, { x: 0, y: 0, module: 5 })} />
+                  </svg>
+                </SwatchButton>
+              ))}
+            </ShapeGroup>
           </AccordionContent>
         </AccordionItem>
 
@@ -301,7 +333,10 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
             {t("frame")}
           </AccordionTrigger>
           <AccordionContent className="space-y-3 px-4">
-            <div className="flex flex-wrap gap-2">
+            <ShapeGroup
+              label={t("frameStyle")}
+              selectedName={tNames(`frame.${style.frame}`)}
+            >
               {FRAMES.map((frame) => (
                 <SwatchButton
                   key={frame.id}
@@ -347,7 +382,7 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
                   </svg>
                 </SwatchButton>
               ))}
-            </div>
+            </ShapeGroup>
 
             {style.frame !== "none" && (
               // `htmlFor`, not a wrapping label: `Input` is a component, so a

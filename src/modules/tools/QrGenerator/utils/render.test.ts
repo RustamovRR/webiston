@@ -51,8 +51,7 @@ describe("quiet zone", () => {
   it("reserves the standard four modules by default", () => {
     // Arrange
     const model = buildQrModel({
-      text: "webiston.uz",
-      level: "M",
+      matrix: buildMatrix("webiston.uz", "M"),
       style,
       extent: 320,
       quietZone: STANDARD_QUIET_ZONE
@@ -76,15 +75,13 @@ describe("quiet zone", () => {
   it("scales the margin with the QR version, not with pixels", () => {
     // Arrange — a long payload forces a larger matrix
     const small = buildQrModel({
-      text: "hi",
-      level: "M",
+      matrix: buildMatrix("hi", "M"),
       style,
       extent: 320,
       quietZone: 4
     })
     const large = buildQrModel({
-      text: "x".repeat(400),
-      level: "M",
+      matrix: buildMatrix("x".repeat(400), "M"),
       style,
       extent: 320,
       quietZone: 4
@@ -136,8 +133,7 @@ describe("export", () => {
   it("serialises a self-contained SVG", () => {
     // Arrange
     const model = buildQrModel({
-      text: "webiston.uz",
-      level: "M",
+      matrix: buildMatrix("webiston.uz", "M"),
       style,
       extent: 320,
       quietZone: 4

@@ -1,6 +1,6 @@
 {
   "measuredAt": "2026-07-31",
-  "total": 2196,
+  "total": 2204,
   "files": {
     "apps/extensions/latin-cyrillic/entrypoints/content.ts": 23,
     "apps/extensions/latin-cyrillic/entrypoints/popup/App.tsx": 6,
@@ -96,6 +96,7 @@
     "src/modules/tools/PasswordGenerator/components/StrengthPanel.tsx": 30,
     "src/modules/tools/PasswordGenerator/hooks/usePasswordGenerator.ts": 7,
     "src/modules/tools/QrGenerator/constants/index.ts": 3,
+    "src/modules/tools/QrGenerator/utils/presets.ts": 8,
     "src/modules/tools/ScreenResolution/components/ControlPanel.tsx": 27,
     "src/modules/tools/ScreenResolution/components/DeviceTypesPanel.tsx": 4,
     "src/modules/tools/ScreenResolution/components/InfoSection.tsx": 45,

@@ -46,6 +46,8 @@ export type ScanRisk = "ok" | "low" | "inverted"
 export interface ScanVerdict {
   risk: ScanRisk
   ratio: number
+  /** Below the hard floor: not "might fail in bad light" but "expect failure". */
+  severe: boolean
 }
 
 /** Comfortable for a phone camera in ordinary indoor light. */
@@ -54,23 +56,36 @@ const SAFE_RATIO = 7
 /** Below this, expect failures on cheap sensors and on print. */
 const MINIMUM_RATIO = 4
 
+/**
+ * @param gradientColor The far stop, when the ink is a gradient.
+ *
+ * A gradient is the hole this check used to have: only the first stop was
+ * measured, so black → sky-blue passed silently while half the modules were
+ * painted at 2.6:1. The verdict is the WORST stop, because a reader thresholds
+ * every module independently — it does not average them.
+ */
 export function checkScannability(
   foreground: string,
-  background: string
+  background: string,
+  gradientColor?: string
 ): ScanVerdict {
-  const ratio = Number.parseFloat(
-    contrastRatio(foreground, background).toFixed(1)
-  )
+  const stops = gradientColor ? [foreground, gradientColor] : [foreground]
+
+  // The lightest stop is the one that fails, so it decides the verdict.
+  const worst = stops.reduce((a, b) => (luminance(a) > luminance(b) ? a : b))
+
+  const ratio = Number.parseFloat(contrastRatio(worst, background).toFixed(1))
 
   // Light-on-dark is a separate failure from low contrast, and a worse one:
   // the ratio can be excellent and many readers still refuse, because the
   // finder patterns are matched dark-on-light. Worth its own message.
-  if (luminance(foreground) > luminance(background)) {
-    return { risk: "inverted", ratio }
+  if (luminance(worst) > luminance(background)) {
+    return { risk: "inverted", ratio, severe: true }
   }
 
-  if (ratio < MINIMUM_RATIO) return { risk: "low", ratio }
-  if (ratio < SAFE_RATIO) return { risk: "low", ratio }
+  if (ratio < SAFE_RATIO) {
+    return { risk: "low", ratio, severe: ratio < MINIMUM_RATIO }
+  }
 
-  return { risk: "ok", ratio }
+  return { risk: "ok", ratio, severe: false }
 }
