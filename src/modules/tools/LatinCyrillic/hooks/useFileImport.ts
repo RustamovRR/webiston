@@ -31,6 +31,15 @@ const INITIAL_PROGRESS: ImportProgress = {
 const ERROR_VISIBLE_MS = 6000
 
 /**
+ * How long the finished bar stays on screen after the work is done.
+ *
+ * Without it the bar is unmounted in the same commit that reports 100%, so it
+ * disappears wherever it happened to be — the one moment the user is actually
+ * watching it is the one moment it never shows.
+ */
+const COMPLETION_HOLD_MS = 500
+
+/**
  * Collapse the whitespace a PDF or DOCX extractor leaves behind, without
  * destroying paragraph structure.
  */
@@ -68,20 +77,36 @@ export function useFileImport(onText: (text: string) => void) {
   const [status, setStatus] = useState<FileImportStatus>("idle")
   const [progress, setProgress] = useState<ImportProgress>(INITIAL_PROGRESS)
   const [errorKey, setErrorKey] = useState<string | null>(null)
+  const [isFinishing, setIsFinishing] = useState(false)
 
   // The old version left this timer running: a second upload never cancelled
   // the first one's countdown, and unmounting mid-error set state on a gone
   // component.
   const errorTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(
     () => () => {
       if (errorTimer.current) clearTimeout(errorTimer.current)
+      if (holdTimer.current) clearTimeout(holdTimer.current)
     },
     []
   )
 
+  /** Run the bar to 100 and leave it there just long enough to be seen. */
+  const holdComplete = () => {
+    report(100, "done")
+    setIsFinishing(true)
+    if (holdTimer.current) clearTimeout(holdTimer.current)
+    holdTimer.current = setTimeout(
+      () => setIsFinishing(false),
+      COMPLETION_HOLD_MS
+    )
+  }
+
   const fail = (key: string) => {
     if (errorTimer.current) clearTimeout(errorTimer.current)
+    if (holdTimer.current) clearTimeout(holdTimer.current)
+    setIsFinishing(false)
     setErrorKey(key)
     setStatus("error")
     errorTimer.current = setTimeout(() => {
@@ -170,7 +195,7 @@ export function useFileImport(onText: (text: string) => void) {
       setFileName(file.name)
       onText(normalizeText(raw))
       setStatus("done")
-      report(100, "done")
+      holdComplete()
     } catch (error) {
       // The thrown message is a LIBRARY message, not one of our i18n keys.
       // Passing it through used to render `errors.Invalid PDF structure` to
@@ -193,8 +218,13 @@ export function useFileImport(onText: (text: string) => void) {
     }
 
     setStatus("exporting")
+    // Reset, or the bar opens at whatever the last import left it on and the
+    // first thing the user sees is a jump backwards.
+    setProgress(INITIAL_PROGRESS)
     try {
+      report(10, "loadingLibrary")
       const { Document, Packer, Paragraph, TextRun } = await import("docx")
+      report(45, "reading")
       const doc = new Document({
         sections: [
           {
@@ -211,6 +241,7 @@ export function useFileImport(onText: (text: string) => void) {
       })
       saveBlob(await Packer.toBlob(doc), `${base}.docx`)
       setStatus("done")
+      holdComplete()
     } catch (error) {
       console.error("DOCX export failed:", error)
       fail("exportFailed")
@@ -230,6 +261,12 @@ export function useFileImport(onText: (text: string) => void) {
     progress,
     errorKey,
     isBusy: status === "reading" || status === "exporting",
+    /**
+     * Whether the progress bar should be on screen. Wider than `isBusy` by the
+     * completion hold — the panels must show the result the instant it exists,
+     * but the bar still owes the user the last stretch to 100%.
+     */
+    showProgress: status === "reading" || status === "exporting" || isFinishing,
     maxFileSizeMb: MAX_FILE_SIZE_MB,
     importFile,
     download,

@@ -28,19 +28,6 @@ function createPlaceholder(index: number): string {
   return `${PLACEHOLDER_PREFIX}${index}${PLACEHOLDER_SUFFIX}`
 }
 
-/**
- * What counts as "still inside a word" on the TRAILING edge.
- *
- * Wider than `\b`, because in Uzbek Latin the apostrophe is part of a LETTER —
- * `o'` and `g'` are single characters of the alphabet — while JavaScript's
- * `\b` treats it as a separator. Without this a protected word could match up
- * to an apostrophe that belongs to the next letter.
- *
- * Every apostrophe variant is listed because protection runs on RAW input,
- * before `normalizeApostrophes` has folded them together.
- */
-const WORD_CHAR = "[\\w'‘’ʻʼʿˈ′ʹ´`]"
-
 /** Every apostrophe shape, for the o'/g' test below. */
 const APOSTROPHES = "'‘’ʻʼʿˈ′ʹ´`"
 

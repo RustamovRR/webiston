@@ -68,8 +68,23 @@ export function SegmentedControl<Value extends string>({
     const measure = () => {
       const trackBox = track.getBoundingClientRect()
       const activeBox = active.getBoundingClientRect()
+      const style = getComputedStyle(track)
+
+      // The offset is measured from the CONTENT box, not the border box.
+      //
+      // `getBoundingClientRect()` returns the border box, while an absolutely
+      // positioned child with `left: auto` starts at its static position —
+      // the content-box origin. Subtracting the border and the padding is the
+      // difference between the two, and skipping it shifted the indicator by
+      // exactly that much: measured 5px, which parked the last option's
+      // highlight flush against the track's right edge.
+      const originX =
+        trackBox.left +
+        Number.parseFloat(style.borderLeftWidth) +
+        Number.parseFloat(style.paddingLeft)
+
       setIndicator({
-        left: activeBox.left - trackBox.left,
+        left: activeBox.left - originX,
         width: activeBox.width
       })
     }
@@ -87,9 +102,12 @@ export function SegmentedControl<Value extends string>({
   }, [value])
 
   return (
+    // No border of its own. This control is almost always dropped inside a
+    // bordered card, and a bordered box inside a bordered box is what makes a
+    // toolbar look boxy — the filled track already reads as one unit.
     <fieldset
       className={cn(
-        "relative inline-flex items-center gap-1 rounded-lg border border-border bg-muted p-1",
+        "relative inline-flex items-center gap-0.5 rounded-lg bg-muted p-1",
         className
       )}
       ref={trackRef}
@@ -101,7 +119,7 @@ export function SegmentedControl<Value extends string>({
       <span
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute top-1 bottom-1 rounded-md bg-primary",
+          "pointer-events-none absolute top-1 bottom-1 rounded-md bg-primary shadow-sm",
           "transition-[transform,width,opacity] duration-300 ease-out",
           "motion-reduce:transition-none"
         )}
@@ -140,7 +158,11 @@ export function SegmentedControl<Value extends string>({
                 "transition-colors duration-200",
                 isActive
                   ? "text-primary-foreground"
-                  : "text-muted-foreground peer-hover:text-foreground",
+                  : // The hover background goes on the INACTIVE options only.
+                    // On the active one it would paint over the sliding bar,
+                    // and without it there is no feedback at all about which
+                    // option the pointer is on.
+                    "text-muted-foreground peer-hover:bg-accent/60 peer-hover:text-foreground",
                 "peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-1 peer-focus-visible:ring-offset-muted"
               )}
             >

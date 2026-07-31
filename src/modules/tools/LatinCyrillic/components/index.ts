@@ -7,5 +7,4 @@
 export { DirectionTabs } from "./DirectionTabs"
 export { DownloadMenu } from "./DownloadMenu"
 export { DropZone } from "./DropZone"
-export { FaqAccordion } from "./FaqAccordion"
 export { SourceEmptyActions } from "./SourceEmptyActions"

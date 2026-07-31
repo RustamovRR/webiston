@@ -76,9 +76,7 @@ export async function AlphabetTable({ locale }: { locale: string }) {
         </p>
       </div>
 
-      {/* `items-start`: the second card is half the length of the first, and
-          stretching it left a large empty box under five rows. */}
-      <div className="grid items-start gap-6 lg:grid-cols-[1.6fr_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
         <div className="overflow-hidden rounded-xl border border-border bg-card">
           {/* Wide content scrolls inside its own box; the page never does. */}
           <div className="overflow-x-auto">
@@ -93,19 +91,29 @@ export async function AlphabetTable({ locale }: { locale: string }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <h3 className="border-border/60 border-b px-5 py-3 font-medium text-foreground text-sm">
-            {t("compoundTitle")}
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[16rem] border-collapse text-left">
-              <caption className="sr-only">{t("compoundTitle")}</caption>
-              <tbody>
-                {COMPOUND_ROWS.map((row) => (
-                  <LetterPair key={row.latin} row={row} note={noteFor(row)} />
-                ))}
-              </tbody>
-            </table>
+        {/* Sticky, and this wrapper is why it can be.
+            `position: sticky` needs room to travel inside its containing
+            block, so the grid COLUMN has to stretch to the full row height
+            (this div, which draws nothing) while the card inside it keeps its
+            own five-row height. Making the card itself the grid item — with
+            `items-start` or `self-start` — collapses the column to the card
+            and leaves sticky with zero travel, which is why it looked like it
+            simply did not work. `top-20` clears the 4rem sticky header. */}
+        <div>
+          <div className="overflow-hidden rounded-xl border border-border bg-card lg:sticky lg:top-20">
+            <h3 className="border-border/60 border-b px-5 py-3 font-medium text-foreground text-sm">
+              {t("compoundTitle")}
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[16rem] border-collapse text-left">
+                <caption className="sr-only">{t("compoundTitle")}</caption>
+                <tbody>
+                  {COMPOUND_ROWS.map((row) => (
+                    <LetterPair key={row.latin} row={row} note={noteFor(row)} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

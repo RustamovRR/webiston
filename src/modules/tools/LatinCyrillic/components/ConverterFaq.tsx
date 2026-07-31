@@ -1,7 +1,7 @@
+import { FaqAccordion } from "@webiston/ui/composites/FaqAccordion"
 import { getTranslations } from "next-intl/server"
 
 import { FAQ_KEYS } from "../constants"
-import { FaqAccordion } from "./FaqAccordion"
 
 /**
  * The FAQ, on the page.
@@ -12,8 +12,8 @@ import { FaqAccordion } from "./FaqAccordion"
  * highest-traffic URL. The schema and this component read the SAME i18n keys,
  * so the two cannot drift apart again.
  *
- * This half stays on the server and does the reading; `FaqAccordion` is the
- * client leaf that does the opening and closing.
+ * This half stays on the server and does the reading; the shared
+ * `FaqAccordion` from `@webiston/ui` is the client leaf that opens and closes.
  */
 export async function ConverterFaq({ locale }: { locale: string }) {
   // Explicit locale — see the note in AlphabetTable.

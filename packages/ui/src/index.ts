@@ -1,5 +1,6 @@
 // @webiston/ui - Shared UI components
 
+export type { FaqEntry, ProgressBarProps } from "./composites"
 // Composites (Built from primitives)
 export {
   BaseModal,
@@ -9,7 +10,9 @@ export {
   BaseModalHeader,
   BaseModalTitle,
   CopyButton,
+  FaqAccordion,
   InfoCard,
+  ProgressBar,
   SegmentedControl,
   StatsDisplay
 } from "./composites"

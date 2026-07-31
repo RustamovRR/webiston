@@ -8,6 +8,7 @@
  * so none of it costs the user any JavaScript.
  */
 
+import { ProgressBar } from "@webiston/ui/composites/ProgressBar"
 import { Button } from "@webiston/ui/primitives/button"
 import { cn } from "@webiston/ui/utils"
 import { Paperclip, X } from "lucide-react"
@@ -164,25 +165,17 @@ export function LatinCyrillicPage() {
         </p>
       )}
 
-      {file.isBusy && (
-        <div
-          className="mb-4 h-1 w-full overflow-hidden rounded-full bg-muted"
-          role="progressbar"
-          aria-valuenow={file.progress.percentage}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={
-            file.progress.statusKey
-              ? t(`file.progress.${file.progress.statusKey}`)
-              : t("file.button")
-          }
-        >
-          <div
-            className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
-            style={{ width: `${file.progress.percentage}%` }}
-          />
-        </div>
-      )}
+      {/* Always mounted, so it collapses on its own instead of vanishing. */}
+      <ProgressBar
+        value={file.progress.percentage}
+        active={file.showProgress}
+        className={file.showProgress ? "mb-4" : "mb-0"}
+        label={
+          file.progress.statusKey
+            ? t(`file.progress.${file.progress.statusKey}`)
+            : t("file.button")
+        }
+      />
 
       <DropZone onFile={(dropped) => void file.importFile(dropped)}>
         <DualTextPanel
