@@ -1450,6 +1450,165 @@ like a broken layout. Verify settled geometry by injecting
 
 ---
 
+## Phase 19 — `[x]` Error & empty states audit (2026-07-30)
+
+Owner asked whether anything is left before the per-tool pass. Audited every
+special file and every zero state against the **production build**, not source.
+
+### The finding: the site had no 404 at all
+
+Measured on `next start`, before the fix:
+
+| URL | status | what actually rendered |
+| --- | :---: | --- |
+| `/nonexistent-page` | 404 | Next's built-in "This page could not be found." |
+| `/books/nonexistent-book` | 404 | same |
+| `/books/<book>/nonexistent-chapter` | 404 | same |
+| `/en/nonexistent` | 404 | same |
+| `/tools/nonexistent-tool` | 404 | same |
+
+No header, no footer, no branding, no way back — on **every** unmatched URL.
+
+**Three hand-written files existed and none of them ran.** `dynamicParams =
+false` makes Next reject an unknown param at the **routing** layer, before the
+segment renders, so a segment-level `not-found.tsx` is only reachable when
+`notFound()` is called during a render that actually happens. For a fully
+prerendered corpus that never occurs. The file Next actually looks for —
+`src/app/not-found.tsx` — did not exist.
+
+- `[x]` **`src/app/not-found.tsx`** — branded, in the design system: mono/accent
+  404 chip, the standard heading/description rhythm, two `ButtonLink` CTAs, and
+  three mono deep links plus a ⌘K hint so the page is an exit rather than a dead
+  end. Chrome is assembled locally with the same trick `books/layout.tsx` uses
+  (`setRequestLocale(routing.defaultLocale)` + the two client namespaces),
+  because the root layout carries only `<html>`/`<body>` and the providers.
+  `robots: { index: false, follow: true }` — verified in the served HTML.
+  All five URLs above now render it, with header and footer.
+- `[x]` **`src/app/global-error.tsx`** — there was none, so a root-layout
+  failure showed Next's unstyled default with nothing reported. Deliberately
+  inline-styled and `prefers-color-scheme`-driven: the stylesheet is imported by
+  the very layout whose failure gets you here, and `next-themes` sets `.dark`
+  from a script in that same layout. Surfaces `error.digest`, which is the only
+  handle on a production error.
+
+### Everything else, checked
+
+- `loading.tsx` — **none anywhere, and none needed.** Every route is prerendered,
+  so there is no server wait to cover; client navigation is already covered by
+  `NextTopLoader`.
+- `forbidden.tsx` / `unauthorized.tsx` — Next 16 supports both behind
+  `authInterrupts`. The site has no auth. Correctly absent.
+- `/tools` no-match state — exists (`noResults` + `noResultsHint`, both
+  translated). Plain but honest; folded into the per-tool pass.
+- Search no-results — done in Phase 16.
+- `/books` empty state (📚 + "Kitoblar tez orada") — unreachable: `getAllTutorials`
+  returns three hardcoded books.
+- `ErrorContent` — reachable only from `TutorialContent`'s catch, which cannot
+  fire at runtime because the routes prerender; a throw would fail the build.
+
+**Prerendered HTML 269 → 270** (the new `/_not-found`).
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0`. `i18n 1`, unchanged — still the 8 dead url-encoder keys.
+
+---
+
+## Phase 19b — `[x]` Contextual 404s, centring, innerHTML audit (2026-07-30)
+
+### The 404 is now a ladder, not a single page
+
+Owner's point, and it was right: a mistyped chapter of a book you are already
+reading should not throw you out of the book. Next's own model supports exactly
+that — `not-found.js` renders **between `loading.js` and `page.js`**, i.e.
+*inside* its enclosing layouts (confirmed against the 16.2 docs).
+
+What blocked it was `dynamicParams = false`: unknown params are rejected at the
+ROUTING layer, before the segment renders, so `notFound()` is never reached and
+a segment-level `not-found.tsx` can never run. Flipped to `true` — and note this
+costs no prerendering: all **228** book HTML files are still emitted and the
+route is still `●`. Only the *unknown* path behaves differently.
+
+| URL | renders | chrome kept |
+| --- | --- | --- |
+| `/books/<book>/<bad-chapter>` | `[...slug]/not-found.tsx` | sidebar (7 items), breadcrumb, header, footer — **verified in the DOM** |
+| `/books/<bad-book>` | `books/not-found.tsx` | header + footer; lists the three real books, read from `content/**` |
+| anything else | `app/not-found.tsx` | header + footer |
+
+The split is decided in `[...slug]/layout.tsx`: `notFound()` thrown from a
+LAYOUT bubbles past that layout's own `not-found.tsx` (it would have had to
+render inside the very layout that failed), so an unknown book lands one rung
+up. The layout's `getTutorialInfo` guard is also what keeps
+`dynamicParams = true` bounded — an invented id is rejected after one
+`fs.access`, before any content lookup.
+
+- `[x]` **Fabricated 404 titles removed.** `generateMetadata` title-cased the
+  URL, so `/…/modelingXXX` shipped `<title>ModelingXXX | AI Engineering…</title>`
+  with a canonical URL and an OG image, for a page returning 404. Now returns a
+  not-found metadata object. **Scope, honestly:** Next discards a page's
+  metadata once it 404s, so the served title is the neutral site default rather
+  than "Topilmadi" — the win is that the *fabricated* title is gone, not that a
+  custom one landed. `noindex` is injected by Next on 404 responses; verified
+  present on both book rungs.
+- `[x]` `min-h-screen` removed from all three (they render inside a shell that
+  already owns the viewport, so it pushed the footer a screen down), and
+  `<Link passHref><Button>` — which emits `<a><button>`, interactive content
+  inside interactive content — replaced with `Button asChild`.
+
+### The centring bug
+
+Owner reported the 404 text was not centred, twice. It was: the description sat
+**64px** left of everything else — exactly `(max-w-xl 576 − max-w-md 448) / 2`,
+the signature of an auto margin not resolving. Every other child was full-width,
+so nothing else revealed it.
+
+Fixed structurally rather than by debugging the margin: the container is now
+`flex flex-col items-center`, so the PARENT positions each child and a child's
+own width cap can no longer decide whether it is centred. Measured after:
+all six children's text centres at **800** on a 1600px viewport, **spread 0px**.
+
+### `dangerouslySetInnerHTML` — audited, one real fix
+
+~70 sites. Grouped by where the data comes from:
+
+- **~65 are JSON-LD** (`JSON.stringify(schema)`), every schema a hardcoded
+  module-level `const`. **No injection path today.** The standard hardening —
+  escaping `<` as `<` so a value containing `</script>` cannot break out —
+  is still worth applying, but 60 of the 65 sites are tool pages, so it belongs
+  in the tools pass rather than as a drive-by sweep of every route.
+- **1 is the search result snippet** — the only place a `content/**` string
+  becomes live markup. **Fixed.** `highlightText` now escapes the text FIRST and
+  inserts `<mark>` after, so the only tags that can survive are the two it wrote
+  itself. The query is escaped the same way before building the regex, or a
+  search for `<` would stop matching.
+  Measured against the built index: **1,078 documents, 0** contain a
+  script/img/iframe/handler; the 4 containing `<` at all are MDX component tags
+  like `<Callout type="info"`. The `<script>` occurrences in `content/` are all
+  inside fenced code blocks, which the index builder strips (verified: 3 raw
+  hits → 0 after stripping). So this closed a *class* of hole, not a live one —
+  three lines, no sanitiser dependency.
+- **2 in `code-highlight.tsx`** (a `@webiston/ui` primitive) and **1 in
+  `global-error.tsx`** (a static style literal I wrote).
+
+**Verdict on "do we need DOMPurify?" — no.** Nothing here renders third-party or
+user-submitted HTML; the inputs are our own constants and our own MDX. A
+sanitiser would add a dependency and a false sense of coverage. Escaping at the
+one boundary that handles non-constant text is the proportionate fix.
+
+### Token baseline re-frozen
+
+`pnpm tokens` correctly failed on `global-error.tsx` (+8). That file cannot use
+tokens **by definition** — `tokens.css` is imported by the layout whose failure
+renders it, so a token reference would resolve to nothing and leave black text
+on a black page at the worst possible moment. Followed the gate's own
+instruction: values moved into a named `FALLBACK_PALETTE` constant with the
+reason, then `--update --force`. Baseline **2,605 → 2,486** — this session's
+−123 locked in, +4 documented exception.
+
+**Gate:** `check 0` · `lint 0` · `typecheck 0` · `test 0` · `tokens 0` ·
+`contrast 0` · `build 0` — 228 book HTML unchanged, 0 `MISSING_MESSAGE`.
+
+---
+
 ## What this initiative does NOT cover
 
 - Accessibility beyond colour contrast — the 81 `pnpm check` errors

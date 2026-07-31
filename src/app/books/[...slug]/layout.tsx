@@ -3,11 +3,29 @@ import { TutorialLayout } from "@/components/mdx"
 import NavigationStoreInitializer from "@/components/mdx/NavigationStoreInitializer"
 import {
   getMDXContent,
+  getTutorialInfo,
   getTutorialNavigation,
   getTutorialTitle,
   serializeContent
 } from "@/lib/mdx"
 
+/**
+ * This layout is where the 404 SPLIT is decided, and the split is the whole
+ * point of `dynamicParams = true` on the page.
+ *
+ * - An unknown BOOK (`/books/xyz`) has no chrome to render — there is no
+ *   sidebar, no table of contents, nothing to be "inside". `notFound()` thrown
+ *   from a layout bubbles PAST that layout's own `not-found.tsx`, so it lands
+ *   on `books/not-found.tsx`, which sits inside `books/layout.tsx` and still
+ *   has the site header and footer.
+ * - An unknown CHAPTER of a real book (`/books/ai-engineering/xyz`) is caught
+ *   further in, by `page.tsx`, and renders this segment's `not-found.tsx`
+ *   INSIDE this layout — sidebar, table of contents and all.
+ *
+ * That is the difference between "this book does not exist" and "you are still
+ * in this book, that chapter does not exist", and the reader should be able to
+ * tell them apart without reading the URL.
+ */
 export default async function TutorialsLayout({ children, params }: any) {
   const { slug } = await params
 
@@ -17,6 +35,14 @@ export default async function TutorialsLayout({ children, params }: any) {
 
   const tutorialId = slug[0]
   const currentPath = slug.slice(1).join("/")
+
+  // The bound on the render surface that `dynamicParams = true` would otherwise
+  // open. `getTutorialInfo` returns null unless the id matches `^[a-z0-9-]+$`
+  // AND `content/<id>/_meta.json` exists, so an invented id is rejected here
+  // after one `fs.access`, before any content lookup happens below.
+  if (!(await getTutorialInfo(tutorialId))) {
+    return notFound()
+  }
 
   // Fetch navigation and title on the server
   const navigationItems = await getTutorialNavigation(tutorialId)

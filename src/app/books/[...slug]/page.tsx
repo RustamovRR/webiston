@@ -40,12 +40,29 @@ export async function generateStaticParams() {
   return paths
 }
 
-// The book corpus is fixed at build time — `content/**` is read by
-// `generateStaticParams`, which emits every landing page and every chapter.
-// With the default (`true`), an unknown URL is *rendered* just to discover the
-// content is missing. `false` makes Next 404 it without invoking the page at
-// all, which both costs less and closes an unbounded render surface.
-export const dynamicParams = false
+// `true`, deliberately — and this is a UX decision, not a perf one.
+//
+// Every known path is still prerendered: `generateStaticParams` reads
+// `content/**` and emits all 226 chapters plus the three landing pages, and
+// none of that changes here. What `dynamicParams` controls is only what happens
+// to an UNKNOWN path.
+//
+// With `false`, Next rejected unknown params at the ROUTING layer, before the
+// segment rendered. That sounds cheaper, and it is — but it also means
+// `notFound()` is never reached, so `not-found.tsx` in this segment could never
+// render, and a reader who mistyped one chapter of a book they were already
+// reading was thrown out to a site-wide 404 with no sidebar, no table of
+// contents and no way back into the book.
+//
+// With `true` the segment renders, `notFound()` fires, and Next renders this
+// segment's `not-found.tsx` INSIDE `layout.tsx` — so the book's chrome survives
+// and the message appears where the chapter would have been. The status is
+// still 404.
+//
+// The render surface stays bounded: `layout.tsx` rejects any id that is not a
+// real book before this page runs (see the guard there), so an unknown path
+// costs one cheap render that ends in `notFound()`, not a content lookup.
+export const dynamicParams = true
 
 // Dinamik metadata yaratish.
 //
@@ -59,12 +76,20 @@ export async function generateMetadata({
 }: BookPageProps): Promise<Metadata> {
   const { slug } = await params
 
+  // `generateMetadata` runs independently of the render, so it cannot see that
+  // the page is about to call `notFound()`. Without these two guards a 404
+  // shipped a title claiming the page exists: an unknown chapter got its slug
+  // title-cased into "ModelingXXX | AI Engineering…", and an unknown book got
+  // the bare fallback "Darslik". Next injects `noindex` on a 404 response by
+  // itself; the misleading TITLE is ours to prevent.
+  const NOT_FOUND_METADATA: Metadata = {
+    title: "Topilmadi",
+    description: "Siz izlagan sahifa mavjud emas.",
+    robots: { index: false, follow: true }
+  }
+
   if (!slug || slug.length === 0) {
-    return {
-      title: "Not Found",
-      description: "The page you are looking for does not exist.",
-      robots: { index: false, follow: false }
-    }
+    return NOT_FOUND_METADATA
   }
 
   try {
@@ -73,6 +98,12 @@ export async function generateMetadata({
 
     // Get tutorial info
     const tutorialInfo = await getTutorialInfo(tutorialId)
+
+    // The same guard the layout applies, for the same reason — an invented book
+    // id must not produce a page title that sounds like a real book.
+    if (!tutorialInfo) {
+      return NOT_FOUND_METADATA
+    }
 
     // Agar bu tutorial landing page bo'lsa
     if (slug.length === 1) {
@@ -142,27 +173,11 @@ export async function generateMetadata({
       }
     }
 
-    // Fallback agar content topilmasa
-    const fallbackTitle = slug[slug.length - 1]
-      .split("-")
-      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
-
-    const pageTitle = `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"}`
-    const description = `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`
-    const path = `/books/${slug.join("/")}`
-
-    return {
-      title: pageTitle,
-      description,
-      alternates: { canonical: `${SITE_URL}${path}` },
-      openGraph: {
-        title: pageTitle,
-        description,
-        url: `${SITE_URL}${path}`,
-        images: ogImage(fallbackTitle, path)
-      }
-    }
+    // No content for this path means `TutorialContent` is about to call
+    // `notFound()`. The old fallback here invented a plausible title from the
+    // URL — `/…/modelingXXX` became "ModelingXXX | AI Engineering…", complete
+    // with a canonical URL and an OG image, for a page that returns 404.
+    return NOT_FOUND_METADATA
   } catch (error) {
     console.error("Error generating metadata:", error)
     return {
