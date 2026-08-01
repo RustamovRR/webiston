@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@webiston/ui/primitives/select"
-import { Download, Eye, EyeOff, FileJson, Upload, X } from "lucide-react"
+import { Download, Eye, EyeOff, FileJson, Upload } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRef } from "react"
 
@@ -22,6 +22,12 @@ import type { ViewMode } from "../stores/jsonDraftStore"
  * The card is gone for the reason it went from the converter: a bordered box
  * around two groups that are not one thing reads as "something is missing".
  * The panels below are the cards; this is a row.
+ *
+ * No Tozalash here, on purpose: the suite's rule is that CLEAR SITS ON THE
+ * PANEL IT CLEARS — the converter and the QR page both put the X in the
+ * input panel's header, and `DualTextPanel` already renders it. This bar
+ * briefly carried a second, labelled clear button; two controls for one
+ * action is how a visitor starts wondering whether they do different things.
  *
  * Formatted/Minified is the shared `SegmentedControl` — the same control the
  * converter uses for its direction. It replaces a single ghost button whose
@@ -40,7 +46,6 @@ interface ControlBarProps {
   acceptedFileTypes: string
   onFile: (file: File) => void
   onSample: () => void
-  onClear: () => void
   onDownload: () => void
 }
 
@@ -55,7 +60,6 @@ export function ControlBar({
   acceptedFileTypes,
   onFile,
   onSample,
-  onClear,
   onDownload
 }: ControlBarProps) {
   const t = useTranslations("JsonFormatterPage.ControlPanel")
@@ -88,10 +92,6 @@ export function ControlBar({
         <Button type="button" variant="outline" size="sm" onClick={onSample}>
           <FileJson aria-hidden="true" />
           {t("sampleJson")}
-        </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={onClear}>
-          <X aria-hidden="true" />
-          {t("clear")}
         </Button>
       </div>
 

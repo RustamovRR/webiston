@@ -7,7 +7,7 @@
     "ControlPanel": {
       "actions": "Amallar:",
       "fileUpload": "Fayl yuklash",
-      "sampleJson": "Namuna JSON",
+      "sampleJson": "Namuna",
       "clear": "Tozalash",
       "indentation": "Abzas:",
       "lineNumbers": "Qator №",

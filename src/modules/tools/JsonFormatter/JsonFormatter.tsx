@@ -159,7 +159,6 @@ const JsonFormatter = () => {
         acceptedFileTypes={acceptedFileTypes}
         onFile={readFile}
         onSample={loadSample}
-        onClear={clear}
         onDownload={download}
       />
 

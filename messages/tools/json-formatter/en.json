@@ -7,7 +7,7 @@
     "ControlPanel": {
       "actions": "Actions:",
       "fileUpload": "Upload File",
-      "sampleJson": "Sample JSON",
+      "sampleJson": "Sample",
       "clear": "Clear",
       "indentation": "Indentation:",
       "lineNumbers": "Line #",

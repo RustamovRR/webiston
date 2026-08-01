@@ -96,13 +96,20 @@ function Node({ name, value, depth }: BranchProps) {
         type="button"
         onClick={() => setOpen((previous) => !previous)}
         aria-expanded={open}
-        className="group inline-flex cursor-pointer items-center gap-1 rounded text-left hover:bg-accent/50"
+        // Negative margins mirror the padding, so the hover pill gets air
+        // around the glyphs without moving the text off the tree's grid.
+        className="-mx-1.5 -my-0.5 group inline-flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 text-left hover:bg-accent/50"
       >
         <ChevronRight
           size={12}
           aria-hidden="true"
           className={cn(
-            "shrink-0 text-muted-foreground transition-transform",
+            // `top-px` is an OPTICAL correction, not a layout one: the flex
+            // centring is exact (measured 0.1px), but a monospace brace draws
+            // its visual weight below the geometric centre of its box, so a
+            // perfectly centred chevron reads as sitting high — which is
+            // exactly what the owner's zoomed screenshot showed.
+            "relative top-px shrink-0 text-muted-foreground transition-transform",
             open && "rotate-90"
           )}
         />

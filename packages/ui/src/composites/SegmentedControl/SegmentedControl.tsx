@@ -21,8 +21,20 @@ import { cn } from "../../utils/cn"
  *    `<fieldset>` of visually-hidden inputs gets grouping, announcement, arrow
  *    keys and Home/End from the browser, and works before hydration.
  *
- * Motion is `transform` + `width` on one element, so it is compositor-friendly
- * and needs no animation library.
+ * The label colour is solved by a CLIPPED DUPLICATE, not by a colour
+ * transition — and that distinction is the whole fix for the "text swaps
+ * weirdly" report. With a colour transition, the label and the bar answer to
+ * two different clocks: the new label turned light while the dark bar was
+ * still 100px away, so for ~150ms it was light-on-light and appeared to
+ * blink. Here the light copy of the labels lives INSIDE the sliding bar,
+ * clipped to it, counter-translated so it lines up with the base row — the
+ * bar and its text share one transform, so the reveal is pixel-locked to the
+ * motion by construction. This is how the iOS segmented control does it, and
+ * it is also why framer-motion would not help: the library animates values,
+ * but the fix is architecture — one clock instead of two.
+ *
+ * Motion is `transform` + `width` on two elements sharing one timing, so it
+ * is compositor-friendly and needs no animation library.
  */
 
 export interface SegmentedOption<Value extends string> {
@@ -134,24 +146,9 @@ export function SegmentedControl<Value extends string>({
     >
       <legend className="sr-only">{label}</legend>
 
-      {/* Hidden until measured: a bar at left 0 with width 0 flashing into
-          position on mount reads as a glitch. */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none absolute top-1 bottom-1 rounded-md bg-primary shadow-sm",
-          canAnimate
-            ? "transition-[transform,width,opacity] duration-300 ease-out"
-            : "transition-none",
-          "motion-reduce:transition-none"
-        )}
-        style={{
-          transform: `translateX(${indicator?.left ?? 0}px)`,
-          width: indicator?.width ?? 0,
-          opacity: indicator ? 1 : 0
-        }}
-      />
-
+      {/* Base layer: every label in its resting colour. The active one is
+          covered by the overlay below, so nothing here ever changes colour —
+          which is exactly why nothing can blink. */}
       {options.map((option) => {
         const isActive = option.value === value
 
@@ -174,17 +171,11 @@ export function SegmentedControl<Value extends string>({
             />
             <span
               className={cn(
-                "block whitespace-nowrap rounded-md px-3 py-1.5 font-medium text-sm",
-                // Only the COLOUR transitions here. The background is the
-                // sliding bar behind it, so the two never fight.
-                "transition-colors duration-200",
-                isActive
-                  ? "text-primary-foreground"
-                  : // The hover background goes on the INACTIVE options only.
-                    // On the active one it would paint over the sliding bar,
-                    // and without it there is no feedback at all about which
-                    // option the pointer is on.
-                    "text-muted-foreground peer-hover:bg-accent/60 peer-hover:text-foreground",
+                "block whitespace-nowrap rounded-md px-3 py-1.5 font-medium text-muted-foreground text-sm",
+                // Hover feedback on the INACTIVE options only — the active
+                // one is owned by the bar.
+                !isActive &&
+                  "transition-colors duration-200 peer-hover:bg-accent/60 peer-hover:text-foreground",
                 "peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-1 peer-focus-visible:ring-offset-muted"
               )}
             >
@@ -200,6 +191,55 @@ export function SegmentedControl<Value extends string>({
           </label>
         )
       })}
+
+      {/* The sliding bar, ON TOP of the labels, carrying a clipped light
+          copy of the whole row. Bar and copy translate by +left and -left
+          with the same timing, so whatever the bar covers appears in the
+          active colour — mid-flight included. Hidden until measured: a bar
+          at width 0 flashing into position on mount reads as a glitch. */}
+      <span
+        aria-hidden="true"
+        className={cn(
+          // `left-1` is load-bearing: the bar used to sit FIRST in the DOM and
+          // lean on its static position, but the reveal needs it painted over
+          // the labels, i.e. rendered after them — and the static position of
+          // a last child is past the last label. Pinning it to the content
+          // origin (the track's 4px padding) keeps translateX(left) meaning
+          // what the measurement meant.
+          "pointer-events-none absolute top-1 bottom-1 left-1 overflow-hidden rounded-md bg-primary shadow-sm",
+          canAnimate
+            ? "transition-[transform,width,opacity] duration-300 ease-out"
+            : "transition-none",
+          "motion-reduce:transition-none"
+        )}
+        style={{
+          transform: `translateX(${indicator?.left ?? 0}px)`,
+          width: indicator?.width ?? 0,
+          opacity: indicator ? 1 : 0
+        }}
+      >
+        <span
+          className={cn(
+            "flex h-full w-max items-center gap-0.5",
+            canAnimate
+              ? "transition-transform duration-300 ease-out"
+              : "transition-none",
+            "motion-reduce:transition-none"
+          )}
+          style={{ transform: `translateX(${-(indicator?.left ?? 0)}px)` }}
+        >
+          {/* Same classes as the base row, so the two layers are the same
+              geometry and the copy sits exactly over its original. */}
+          {options.map((option) => (
+            <span
+              key={option.value}
+              className="block whitespace-nowrap px-3 py-1.5 font-medium text-primary-foreground text-sm"
+            >
+              {option.label}
+            </span>
+          ))}
+        </span>
+      </span>
     </fieldset>
   )
 }
