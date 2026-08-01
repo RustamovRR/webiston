@@ -81,6 +81,9 @@ const ChapterCard: FC<ChapterCardProps> = ({
     className={`reveal ${cardBase}`}
     style={{ "--i": revealIndex } as CSSProperties}
   >
+    {/* A bare mono index, nothing else. A hairline flourish was tried here
+        and the owner rejected it on sight — card interiors stay plain; the
+        card's structure comes from type hierarchy, not from added lines. */}
     <span className="font-mono text-[11px] text-primary">
       {String(index + 1).padStart(2, "0")}
     </span>

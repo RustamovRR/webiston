@@ -680,10 +680,36 @@ body:has(.hero) [data-site-header] {
    ONE keyframe track, entered 7s apart. `fill: both` holds a span at width 0
    through its delay, so exactly one query is ever visible. Adding a fourth
    query is: one more child, one more delay rule, and duration 28s. */
+/* TYPING IS UNEVEN ON PURPOSE. The first version used one `steps(5)` segment —
+   five characters at a metronomic 180ms each, which is precisely the rhythm no
+   human hand produces; it read as a screen recording of a robot. Each keyframe
+   below is one keystroke, placed by hand: 115 / 168 / 105 / 252 / 262 ms —
+   a quick burst, a hesitation, a finish. `step-end` holds the width until the
+   next "keystroke" lands, so characters appear discretely, not by sliding.
+
+   DELETION stays even and fast, also on purpose: people do not delete
+   letter-by-thoughtful-letter, they hold backspace — and key repeat IS a
+   metronome. Uneven typing + even deleting is what typing actually looks like. */
 @keyframes type-cycle {
   0% {
     width: 0;
-    animation-timing-function: steps(5);
+    animation-timing-function: step-end;
+  }
+  0.55% {
+    width: 1ch;
+    animation-timing-function: step-end;
+  }
+  1.35% {
+    width: 2ch;
+    animation-timing-function: step-end;
+  }
+  1.85% {
+    width: 3ch;
+    animation-timing-function: step-end;
+  }
+  3.05% {
+    width: 4ch;
+    animation-timing-function: step-end;
   }
   4.3% {
     width: calc(var(--chars) * 1ch);
@@ -725,26 +751,64 @@ body:has(.hero) [data-site-header] {
 .hero-caret {
   display: inline-block;
   width: 2px;
-  height: 1.05em;
+  height: 1em;
   margin-left: 1px;
   background: var(--primary);
-  vertical-align: -0.15em;
+  /* `align-self: center`, because the caret is a FLEX ITEM inside the
+     `items-baseline` query line — `vertical-align` does nothing on flex items,
+     which is why the first fix (1.05em / -0.15em) never took: baseline
+     alignment glued the caret's BOTTOM to the text baseline, hanging the whole
+     bar above it. Measured before: centre 2.7px above the search icon's,
+     5.5px short of the descender zone — the "floating high" the owner saw.
+     Centred in the line box it matches the icon's centre and spans the text
+     the way a native input caret does. */
+  align-self: center;
 }
 
+/* The caret KNOWS when it is typing. A real caret blinks only while idle —
+   every keystroke resets the blink timer, so during typing it burns steady.
+   The free-running 1.1s blink ignored that and blinked straight through the
+   keystrokes, which is a tell no real input field produces.
+
+   7s period, because 21s / 3 queries means every third is identical: solid
+   through the typing window (0–13%), four soft breaths while the visitor
+   reads the results, solid again through the delete window (86–100%) — key
+   repeat is activity too. Still the soft 1 ↔ 0.15 fade, never a hard on/off. */
 @keyframes caret {
   0%,
+  14% {
+    opacity: 1;
+  }
+  19% {
+    opacity: 0.15;
+  }
+  27% {
+    opacity: 1;
+  }
+  37% {
+    opacity: 0.15;
+  }
   45% {
     opacity: 1;
   }
-  55%,
-  100% {
+  55% {
     opacity: 0.15;
+  }
+  63% {
+    opacity: 1;
+  }
+  73% {
+    opacity: 0.15;
+  }
+  81%,
+  100% {
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-caret {
-    animation: caret 1.1s ease-in-out infinite;
+    animation: caret 7s ease-in-out infinite;
   }
 }
 
@@ -765,11 +829,17 @@ body:has(.hero) [data-site-header] {
   opacity: 1;
 }
 
+/* Results WAIT for the query. The previous track started its fade at 0% — the
+   same instant the first character lands — so the answers were ~70% visible
+   before the question was finished, which no real search does. Held at zero
+   until typing completes (4.3%), then a ~0.6s fade: type → a beat → results.
+   That beat is the debounce every actual search box has, played back. */
 @keyframes results-cycle {
-  0% {
+  0%,
+  4.5% {
     opacity: 0;
   }
-  5.5% {
+  7.5% {
     opacity: 1;
   }
   29.5% {

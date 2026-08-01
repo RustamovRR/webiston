@@ -29,10 +29,12 @@ export interface HeroPaletteRow {
 
 export interface HeroPaletteGroup {
   /**
-   * What gets "typed". Keep it 5 characters: the CSS cadence is `steps(5)`
-   * (see hero.css — a longer query still renders, but its keystroke rhythm
-   * drifts). It must also HONESTLY match the rows — a palette that invents
-   * results is a screenshot of a product that does not exist.
+   * What gets "typed". Keep it EXACTLY 5 characters: the typing track in
+   * hero.css is five hand-placed keystroke keyframes with literal 1ch–4ch
+   * widths (uneven on purpose — human rhythm), so a different length would
+   * finish early or late against them. It must also HONESTLY match the rows —
+   * a palette that invents results is a screenshot of a product that does not
+   * exist.
    */
   query: string
   /** Group heading above the results, e.g. "Kitoblar" / "Vositalar". */
