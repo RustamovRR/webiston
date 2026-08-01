@@ -50,8 +50,8 @@ export default function GlobalError({
       <head>
         <title>Xatolik — Webiston</title>
         <meta name="robots" content="noindex" />
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: no stylesheet is guaranteed here — the root layout, which imports it, is what failed */}
         <style
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: no stylesheet is guaranteed here — the root layout, which imports it, is what failed
           dangerouslySetInnerHTML={{
             __html: `
               :root { color-scheme: light dark; }

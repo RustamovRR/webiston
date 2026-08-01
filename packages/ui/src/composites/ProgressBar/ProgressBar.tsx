@@ -83,6 +83,7 @@ export function ProgressBar({
     let current = 0
     let frame = 0
     let previous = performance.now()
+    let lastTarget = targetRef.current
 
     const step = (now: number) => {
       // Clamped: a backgrounded tab hands back a delta of seconds, which would
@@ -91,6 +92,16 @@ export function ProgressBar({
       previous = now
 
       const target = targetRef.current
+      // Within one job real reports only ever grow, so a target that FELL is a
+      // new job starting while the bar is still up — a second file dropped
+      // mid-read or during the completion hold. Without this reset the
+      // monotonic clamp below pins the bar at the old maximum for the whole
+      // of the new job.
+      if (target < lastTarget) {
+        current = 0
+        paint(0)
+      }
+      lastTarget = target
       const ceiling =
         target >= 100 ? 100 : target + (100 - target) * TRICKLE_REACH
       const goal = current < target ? target : ceiling

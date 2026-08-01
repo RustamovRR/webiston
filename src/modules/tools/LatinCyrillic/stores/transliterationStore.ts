@@ -69,10 +69,21 @@ export const useTransliterationStore = create<TransliterationState>()(
       version: 3,
       // A v2 record has no `exceptions` key, and `[...undefined]` throws on
       // the first add. Migration is what keeps returning visitors working.
-      migrate: (persisted) => ({
-        ...(persisted as TransliterationState),
-        exceptions: []
-      })
+      // Rebuilt field-by-field, not spread: a v1 record held `direction`, not
+      // `preference`, so the spread version left `preference: undefined` for
+      // every visitor migrating from v1 — no active segment, and the engine
+      // handed a preference that is not one of its three values.
+      migrate: (persisted) => {
+        const record = persisted as Partial<TransliterationState>
+        return {
+          preference:
+            record.preference === "latin-to-cyrillic" ||
+            record.preference === "cyrillic-to-latin"
+              ? record.preference
+              : "auto",
+          exceptions: Array.isArray(record.exceptions) ? record.exceptions : []
+        }
+      }
     }
   )
 )

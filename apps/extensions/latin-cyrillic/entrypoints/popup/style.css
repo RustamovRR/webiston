@@ -56,6 +56,7 @@
   --input: oklch(0.98 0.004 217);
   --ring: var(--brand-500);
   --destructive: oklch(0.545 0.19 27);
+  --success: oklch(0.542 0.142 150);
 }
 
 .dark {
@@ -79,6 +80,7 @@
   --input: oklch(1 0 0 / 16%);
   --ring: var(--brand-500);
   --destructive: oklch(0.65 0.19 27);
+  --success: oklch(0.8 0.175 150);
 }
 
 /* Bind the tokens to Tailwind's colour names.
@@ -102,6 +104,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --radius-lg: var(--radius);
 }
 

@@ -1,13 +1,18 @@
 "use client"
 
 /**
- * BaseModal - Reusable modal component with Framer Motion animations
- * Built on top of Radix Dialog for accessibility
- * Supports multiple sizes: sm, md, lg, xl, 2xl, full
+ * BaseModal — reusable modal built on Radix Dialog.
+ *
+ * Present/absent animation is Radix's own data-state + tw-animate-css CSS —
+ * the exact pattern every other overlay in the product uses (dropdown-menu,
+ * select, the shadcn dialog primitive). It used to be framer-motion's
+ * AnimatePresence wrapped around the Radix portal: two presence managers
+ * over one subtree, each entitled to keep it mounted, plus the whole of
+ * framer-motion in the bundle for a fade the CSS idiom already provides.
+ * One presence owner, one animation system across every overlay.
  */
 
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import type { ReactNode } from "react"
 
@@ -52,28 +57,6 @@ interface BaseModalFooterProps {
   className?: string
 }
 
-// Animation variants
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 }
-}
-
-const contentVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 10 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { type: "spring" as const, damping: 25, stiffness: 300 }
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.95,
-    y: 10,
-    transition: { duration: 0.15 }
-  }
-}
-
 export function BaseModal({
   isOpen,
   onClose,
@@ -84,61 +67,49 @@ export function BaseModal({
   className
 }: BaseModalProps) {
   return (
-    <DialogPrimitive.Root open={isOpen} onOpenChange={onClose}>
-      <AnimatePresence>
-        {isOpen && (
-          <DialogPrimitive.Portal forceMount>
-            {/* Overlay */}
-            <DialogPrimitive.Overlay asChild>
-              <motion.div
-                className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-                variants={overlayVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                onClick={closeOnOverlayClick ? onClose : undefined}
-              />
-            </DialogPrimitive.Overlay>
-
-            {/* Content */}
-            <DialogPrimitive.Content asChild>
-              <motion.div
+    <DialogPrimitive.Root
+      open={isOpen}
+      // Guarded: onOpenChange also fires with `true`, and handing it `onClose`
+      // directly would close the parent's state during open.
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in" />
+        <DialogPrimitive.Content
+          onInteractOutside={
+            closeOnOverlayClick ? undefined : (event) => event.preventDefault()
+          }
+          className={cn(
+            "-translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 z-50 w-full",
+            "rounded-xl border border-border bg-card shadow-2xl",
+            "max-h-[90vh] overflow-hidden",
+            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in",
+            sizeVariants[size],
+            className
+          )}
+        >
+          {/* Close button */}
+          {showCloseButton && (
+            <DialogPrimitive.Close asChild>
+              <button
+                type="button"
                 className={cn(
-                  "fixed top-1/2 left-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2",
-                  "rounded-xl border border-border bg-card shadow-2xl",
-                  "",
-                  "max-h-[90vh] overflow-hidden",
-                  sizeVariants[size],
-                  className
+                  "absolute top-4 right-4 z-10 rounded-full p-1.5",
+                  "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 )}
-                variants={contentVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                onClick={(e) => e.stopPropagation()}
+                aria-label="Close"
               >
-                {/* Close button */}
-                {showCloseButton && (
-                  <DialogPrimitive.Close asChild>
-                    <button
-                      className={cn(
-                        "absolute top-4 right-4 z-10 rounded-full p-1.5",
-                        "text-muted-foreground hover:text-foreground hover:bg-accent",
-                        "focus-visible:ring-ring transition-colors focus-visible:ring-2 focus-visible:outline-none"
-                      )}
-                      aria-label="Close"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </DialogPrimitive.Close>
-                )}
+                <X className="h-5 w-5" />
+              </button>
+            </DialogPrimitive.Close>
+          )}
 
-                {children}
-              </motion.div>
-            </DialogPrimitive.Content>
-          </DialogPrimitive.Portal>
-        )}
-      </AnimatePresence>
+          {children}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
   )
 }
@@ -146,7 +117,7 @@ export function BaseModal({
 // Header component
 export function BaseModalHeader({ children, className }: BaseModalHeaderProps) {
   return (
-    <div className={cn("border-b border-border px-6 py-4", className)}>
+    <div className={cn("border-border border-b px-6 py-4", className)}>
       {children}
     </div>
   )
@@ -162,7 +133,7 @@ export function BaseModalTitle({
 }) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-lg font-semibold text-foreground", className)}
+      className={cn("font-semibold text-foreground text-lg", className)}
     >
       {children}
     </DialogPrimitive.Title>
@@ -179,7 +150,7 @@ export function BaseModalDescription({
 }) {
   return (
     <DialogPrimitive.Description
-      className={cn("mt-1 text-sm text-muted-foreground", className)}
+      className={cn("mt-1 text-muted-foreground text-sm", className)}
     >
       {children}
     </DialogPrimitive.Description>
@@ -198,7 +169,7 @@ export function BaseModalFooter({ children, className }: BaseModalFooterProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-2 border-t border-border px-6 py-4",
+        "flex items-center justify-end gap-2 border-border border-t px-6 py-4",
         className
       )}
     >

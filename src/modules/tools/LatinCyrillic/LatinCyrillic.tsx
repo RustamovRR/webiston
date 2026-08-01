@@ -10,7 +10,6 @@
 
 import { ProgressBar } from "@webiston/ui/composites/ProgressBar"
 import { Button } from "@webiston/ui/primitives/button"
-import { cn } from "@webiston/ui/utils"
 import { BookLock, Paperclip, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
@@ -79,6 +78,12 @@ export function LatinCyrillicPage() {
    * never steal Escape from the search dialog or anything else on the page.
    */
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Portaled overlays — the exceptions dialog, the download menu — live
+    // outside this div in the DOM but INSIDE it in the React tree, so their
+    // keys bubble here synthetically. Verified: Escape pressed in the
+    // dialog's input wiped the source text. DOM containment, not the React
+    // tree, is the boundary that matters for "focus is inside the tool".
+    if (!event.currentTarget.contains(event.target as Node)) return
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       if (!convertedText) return
       event.preventDefault()
@@ -221,7 +226,14 @@ export function LatinCyrillicPage() {
           }
           sourceLabel={t("sourceInput", { sourceLang })}
           targetLabel={t("targetResult", { targetLang })}
-          onSourceChange={setSourceText}
+          onSourceChange={(text) => {
+            setSourceText(text)
+            // A hand-edited panel no longer holds the file's text, and the
+            // filename chip would keep claiming it does. Only THIS path
+            // resets it: imports call `setSourceText` directly, so the chip
+            // survives the import that created it.
+            if (file.fileName) file.resetFile()
+          }}
           onSwap={swap}
           onClear={clearAll}
           swapButtonTitle={t("swapDirection")}

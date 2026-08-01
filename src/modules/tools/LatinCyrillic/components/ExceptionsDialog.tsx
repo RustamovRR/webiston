@@ -4,7 +4,9 @@ import { MAX_USER_TERM_LENGTH, MAX_USER_TERMS } from "@webiston/transliteration"
 import {
   BaseModal,
   BaseModalBody,
-  BaseModalHeader
+  BaseModalDescription,
+  BaseModalHeader,
+  BaseModalTitle
 } from "@webiston/ui/composites/BaseModal"
 import { Button } from "@webiston/ui/primitives/button"
 import { Input } from "@webiston/ui/primitives/input"
@@ -108,11 +110,13 @@ export function ExceptionsDialog({
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} size="lg">
+      {/* Radix Title/Description, not a bare h2/p: without them the dialog
+          has no accessible name and Radix logs a warning on every open. */}
       <BaseModalHeader>
-        <h2 className="font-semibold text-foreground text-lg">{t("title")}</h2>
-        <p className="mt-1.5 text-pretty text-muted-foreground text-sm leading-relaxed">
+        <BaseModalTitle>{t("title")}</BaseModalTitle>
+        <BaseModalDescription className="mt-1.5 text-pretty leading-relaxed">
           {t("description")}
-        </p>
+        </BaseModalDescription>
       </BaseModalHeader>
 
       <BaseModalBody className="space-y-5">

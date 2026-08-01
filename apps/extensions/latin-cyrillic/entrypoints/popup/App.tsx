@@ -152,6 +152,15 @@ function CursorIcon() {
   )
 }
 
+/**
+ * The manifest binds Command+Shift+L on macOS and Ctrl+Shift+L elsewhere
+ * (wxt.config.ts) — the footer hint must show the binding THIS machine has,
+ * not the Mac one to everyone.
+ */
+const SHORTCUT_LABEL = /mac/i.test(navigator.platform)
+  ? "⌘+Shift+L"
+  : "Ctrl+Shift+L"
+
 export default function App() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
@@ -258,9 +267,9 @@ export default function App() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-sky-400 to-sky-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-white"
+              className="w-5 h-5 text-primary-foreground"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -278,7 +287,7 @@ export default function App() {
               href="https://webiston.uz/tools/latin-cyrillic"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] hover:text-sky-500 transition-colors"
+              className="text-[11px] hover:text-primary transition-colors"
               style={{ color: "var(--muted-foreground)" }}
             >
               webiston.uz
@@ -389,7 +398,7 @@ export default function App() {
         <button
           onClick={handleSwap}
           disabled={!output}
-          className="p-2.5 rounded-full border transition-all duration-200 hover:border-sky-500 hover:text-sky-500 disabled:opacity-30 disabled:hover:border-current disabled:hover:text-current"
+          className="p-2.5 rounded-full border transition-all duration-200 hover:border-ring hover:text-primary disabled:opacity-30 disabled:hover:border-current disabled:hover:text-current"
           style={{
             color: "var(--muted-foreground)",
             borderColor: "var(--border)",
@@ -413,11 +422,9 @@ export default function App() {
           {output && (
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200"
-              style={{
-                background: copied ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                color: copied ? "#10b981" : "var(--muted-foreground)"
-              }}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                copied ? "bg-success/10 text-success" : "text-muted-foreground"
+              }`}
               title="Nusxalash"
             >
               {copied ? <CheckIcon /> : <CopyIcon />}
@@ -429,14 +436,9 @@ export default function App() {
           value={output}
           readOnly
           placeholder="Natija shu yerda ko'rinadi..."
-          className="w-full h-28 p-3.5 text-sm rounded-xl resize-none"
-          style={{
-            background: output ? "rgba(14, 165, 233, 0.05)" : "var(--muted)",
-            border: output
-              ? "1px solid rgba(14, 165, 233, 0.2)"
-              : "1px solid var(--border)",
-            color: "var(--foreground)"
-          }}
+          className={`w-full h-28 p-3.5 text-sm rounded-xl resize-none border text-foreground ${
+            output ? "bg-primary/5 border-primary/25" : "bg-muted border-border"
+          }`}
         />
       </div>
 
@@ -451,7 +453,7 @@ export default function App() {
             className="px-1.5 py-0.5 rounded text-[10px] font-mono"
             style={{ background: "var(--muted)" }}
           >
-            ⌘+Shift+L
+            {SHORTCUT_LABEL}
           </kbd>{" "}
           tanlangan matnni konvertatsiya
         </p>
