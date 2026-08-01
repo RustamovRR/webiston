@@ -1,1 +1,1 @@
-export { default } from "./JsonFormatter"
+export { default, JsonFormatter } from "./JsonFormatter"

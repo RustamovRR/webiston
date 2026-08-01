@@ -17,7 +17,9 @@
       "formatted": "Formatted",
       "minifiedView": "Minified view",
       "formattedView": "Formatted view",
-      "download": "Download"
+      "download": "Download",
+      "viewMode": "View",
+      "tab": "Tab"
     },
     "Panel": {
       "sourceLabel": "JSON Input",
@@ -29,7 +31,8 @@
       "emptyStateTitle": "Formatted JSON will appear here...",
       "emptyStateDescription": "Enter JSON or upload a file",
       "errorTitle": "JSON Format Error",
-      "fileSize": "Size:"
+      "fileSize": "Size:",
+      "errorPosition": "line {line}, column {column}"
     },
     "Info": {
       "title": "About JSON",
@@ -68,7 +71,9 @@
       "jsonError": "JSON error:",
       "fileTypeError": "Only JSON or TXT files can be uploaded.",
       "fileSizeError": "File size must be less than 10MB.",
-      "fileReadError": "Error occurred while reading the file."
+      "fileReadError": "Error occurred while reading the file.",
+      "missingComma": "A comma or a closing bracket is missing.",
+      "missingColon": "A colon (:) is missing after the property name."
     }
   }
 }

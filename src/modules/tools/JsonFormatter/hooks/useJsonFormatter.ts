@@ -1,169 +1,116 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { useCallback, useMemo, useState } from "react"
 
-// Sample JSON data moved to constants
-export const SAMPLE_JSON_DATA = {
-  foydalanuvchi: {
-    id: 1,
-    ism: "Ali Valiyev",
-    email: "ali@example.com",
-    yosh: 30,
-    manzil: {
-      viloyat: "Toshkent",
-      tuman: "Chilonzor",
-      "ko'cha": "Amir Temur ko'chasi",
-      uy: "15"
-    },
-    telefon: ["+998901234567", "+998712345678"],
-    faol: true,
-    "ro'yxatdanOtganSana": "2024-01-15T10:30:00Z",
-    sozlamalar: {
-      til: "uz",
-      xabarNomalar: true,
-      "qorong'uRejim": false
-    }
-  }
-}
+import {
+  ACCEPTED_FILE_TYPES,
+  isAcceptedFile,
+  MAX_FILE_BYTES,
+  SAMPLE_JSON
+} from "../constants"
+import { useJsonDraftStore } from "../stores/jsonDraftStore"
+import { analyseJson, byteSize } from "../utils/json"
 
-interface JsonResult {
-  formatted: string
-  minified: string
-  error: string
-  isValid: boolean
-}
+/**
+ * The formatter's state.
+ *
+ * Two things moved out of here and both were defects, not tidiness:
+ *
+ * - The parse ran inside a `useMemo` that called `useTranslations`, so the
+ *   locale was an input to parsing JSON and the logic could not be tested.
+ *   It is `analyseJson` now, and it has tests.
+ * - File rejection was three `alert()` calls carrying hardcoded Uzbek —
+ *   while `Errors.fileTypeError`, `fileSizeError` and `fileReadError` already
+ *   existed in BOTH message bundles, unused. A browser alert also blocks the
+ *   page and cannot be styled or dismissed by keyboard the way the rest of the
+ *   site's messages can.
+ */
 
-export const useJsonFormatter = () => {
-  const t = useTranslations("JsonFormatterPage.Errors")
-  const [inputJson, setInputJson] = useState("")
-  const [indentation, setIndentation] = useState("2")
-  const [showLineNumbers, setShowLineNumbers] = useState(true)
-  const [isMinified, setIsMinified] = useState(false)
+/** Which rejection to show, or null. Translated by the component. */
+export type FileErrorKey = "fileTypeError" | "fileSizeError" | "fileReadError"
 
-  const jsonResult = useMemo((): JsonResult => {
-    if (!inputJson.trim()) {
-      return { formatted: "", error: "", isValid: false, minified: "" }
-    }
+export function useJsonFormatter() {
+  const input = useJsonDraftStore((state) => state.input)
+  const indent = useJsonDraftStore((state) => state.indent)
+  const view = useJsonDraftStore((state) => state.view)
+  const showLineNumbers = useJsonDraftStore((state) => state.showLineNumbers)
+  const setInput = useJsonDraftStore((state) => state.setInput)
+  const setIndent = useJsonDraftStore((state) => state.setIndent)
+  const setView = useJsonDraftStore((state) => state.setView)
+  const toggleLineNumbers = useJsonDraftStore(
+    (state) => state.toggleLineNumbers
+  )
+  const clear = useJsonDraftStore((state) => state.clear)
 
-    try {
-      const parsed = JSON.parse(inputJson)
-      const formatted = JSON.stringify(parsed, null, parseInt(indentation, 10))
-      const minified = JSON.stringify(parsed)
-      return { formatted, error: "", isValid: true, minified }
-    } catch (error) {
-      let errorMessage = t("invalidJsonFormat")
+  const [fileError, setFileError] = useState<FileErrorKey | null>(null)
 
-      if (error instanceof SyntaxError) {
-        const message = error.message
-        if (message.includes("Unexpected token")) {
-          errorMessage = t("unexpectedToken")
-        } else if (message.includes("Unexpected end")) {
-          errorMessage = t("unexpectedEnd")
-        } else if (message.includes("property name")) {
-          errorMessage = t("propertyName")
-        } else if (message.includes("Unexpected string")) {
-          errorMessage = t("unexpectedString")
-        } else {
-          errorMessage = `${t("jsonError")} ${message}`
-        }
-      }
+  const result = useMemo(() => analyseJson(input, indent), [input, indent])
 
-      return {
-        formatted: "",
-        error: errorMessage,
-        isValid: false,
-        minified: ""
-      }
-    }
-  }, [inputJson, indentation, t])
+  const output = view === "minified" ? result.minified : result.formatted
 
-  const handleFileUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) return
+  const readFile = useCallback(
+    (file: File) => {
+      setFileError(null)
 
-      // File type validation
-      const validTypes = ["application/json", "text/plain", "text/json"]
-      if (
-        !validTypes.includes(file.type) &&
-        !file.name.endsWith(".json") &&
-        !file.name.endsWith(".txt")
-      ) {
-        alert("Faqat JSON yoki TXT fayllarni yuklash mumkin.")
+      if (!isAcceptedFile(file)) {
+        setFileError("fileTypeError")
         return
       }
-
-      // File size validation (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        alert("Fayl hajmi 10MB dan kichik bo'lishi kerak.")
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError("fileSizeError")
         return
       }
 
       const reader = new FileReader()
-      reader.onload = (event) => {
-        const content = event.target?.result as string
-        setInputJson(content)
-      }
-      reader.onerror = () => {
-        alert("Faylni o'qishda xatolik yuz berdi.")
-      }
+      reader.onload = (event) => setInput(String(event.target?.result ?? ""))
+      reader.onerror = () => setFileError("fileReadError")
       reader.readAsText(file)
     },
-    []
+    [setInput]
   )
 
-  const loadSampleJson = useCallback(() => {
-    setInputJson(JSON.stringify(SAMPLE_JSON_DATA, null, 2))
-  }, [])
+  const download = useCallback(() => {
+    if (!result.isValid || !output) return
 
-  const downloadResult = useCallback(() => {
-    if (!jsonResult.isValid) return
-
-    const content = isMinified ? jsonResult.minified : jsonResult.formatted
-    const blob = new Blob([content], { type: "application/json" })
+    const blob = new Blob([output], { type: "application/json" })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `json-${isMinified ? "minified" : "formatted"}-${Date.now()}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, [
-    jsonResult.isValid,
-    jsonResult.formatted,
-    jsonResult.minified,
-    isMinified
-  ])
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `webiston-${view}.json`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    // One frame, so the download has started before the blob is released.
+    requestAnimationFrame(() => URL.revokeObjectURL(url))
+  }, [result.isValid, output, view])
 
-  const clearInput = useCallback(() => {
-    setInputJson("")
-  }, [])
+  const loadSample = useCallback(() => {
+    setFileError(null)
+    setInput(JSON.stringify(SAMPLE_JSON, null, 2))
+  }, [setInput])
 
-  const toggleMinify = useCallback(() => {
-    setIsMinified((prev) => !prev)
-  }, [])
-
-  const toggleLineNumbers = useCallback(() => {
-    setShowLineNumbers((prev) => !prev)
-  }, [])
+  const clearAll = useCallback(() => {
+    setFileError(null)
+    clear()
+  }, [clear])
 
   return {
-    // State
-    inputJson,
-    setInputJson,
-    indentation,
-    setIndentation,
+    input,
+    setInput,
+    indent,
+    setIndent,
+    view,
+    setView,
     showLineNumbers,
-    isMinified,
-    jsonResult,
-    // Actions
-    handleFileUpload,
-    loadSampleJson,
-    downloadResult,
-    clearInput,
-    toggleMinify,
-    toggleLineNumbers
+    toggleLineNumbers,
+    result,
+    output,
+    outputBytes: byteSize(output),
+    fileError,
+    acceptedFileTypes: ACCEPTED_FILE_TYPES,
+    readFile,
+    download,
+    loadSample,
+    clear: clearAll
   }
 }

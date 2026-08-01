@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { type CSSProperties, useMemo, useState } from "react"
+import { type CSSProperties, useMemo } from "react"
 import { Input } from "@/components/ui/input"
 import {
   AUDIENCE_FILTERS,
@@ -15,15 +15,28 @@ import {
 } from "@/constants"
 import { Link } from "@/i18n/navigation"
 
+import { useRouteEntrance, useToolsFilterStore } from "./toolsPageState"
+
 const ToolsMainPage = () => {
   const tMain = useTranslations("ToolsPage.Main")
   const tTools = useTranslations("Tools")
   const tCategories = useTranslations("ToolCategories")
   const tFilters = useTranslations("Filters")
 
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedAudience, setSelectedAudience] = useState("all")
+  // Above the tree: a locale switch remounts this page, and losing the
+  // visitor's query and filters to a language toggle is the same defect the
+  // tools themselves had. See `toolsPageState.ts`.
+  const searchQuery = useToolsFilterStore((s) => s.searchQuery)
+  const selectedCategory = useToolsFilterStore((s) => s.category)
+  const selectedAudience = useToolsFilterStore((s) => s.audience)
+  const setSearchQuery = useToolsFilterStore((s) => s.setSearchQuery)
+  const setSelectedCategory = useToolsFilterStore((s) => s.setCategory)
+  const setSelectedAudience = useToolsFilterStore((s) => s.setAudience)
+
+  // Play the entrance on arrival, not on every re-render of the same route.
+  const animate = useRouteEntrance()
+  const rise = animate ? "rise" : ""
+  const gridRise = animate ? "grid-rise" : ""
 
   const allTools = useMemo(() => TOOLS_LIST, [])
 
@@ -46,7 +59,15 @@ const ToolsMainPage = () => {
       tools = tools.filter((tool) => {
         const title = tTools(`${tool.tKey}.title`).toLowerCase()
         const description = tTools(`${tool.tKey}.description`).toLowerCase()
-        return title.includes(query) || description.includes(query)
+        // The SLUG counts too. Uzbek titles say "Yaratuvchi", not
+        // "generator", so a visitor typing the word that is in the URL and in
+        // every developer's head got **0 results** for "generator" — measured
+        // on the real list. The href carries the English name for free.
+        return (
+          title.includes(query) ||
+          description.includes(query) ||
+          tool.href.toLowerCase().includes(query)
+        )
       })
     }
 
@@ -114,7 +135,7 @@ const ToolsMainPage = () => {
     // site's own CSS entrance replays instead, keyed on the filter (below).
     <div className="mx-auto w-full max-w-[1536px] px-4 sm:px-6 lg:px-8">
       <div
-        className="rise mb-8 flex flex-col items-center justify-center"
+        className={`${rise} mb-8 flex flex-col items-center justify-center`}
         style={{ "--i": 0 } as CSSProperties}
       >
         {/* Same identity system as the homepage dividers: accent pixel +
@@ -134,7 +155,7 @@ const ToolsMainPage = () => {
       </div>
 
       {/* Category Filters */}
-      <div className="rise mb-6" style={{ "--i": 1 } as CSSProperties}>
+      <div className={`${rise} mb-6`} style={{ "--i": 1 } as CSSProperties}>
         <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByCategory")}
         </h3>
@@ -172,7 +193,7 @@ const ToolsMainPage = () => {
       </div>
 
       {/* Audience Filters */}
-      <div className="rise mb-8" style={{ "--i": 2 } as CSSProperties}>
+      <div className={`${rise} mb-8`} style={{ "--i": 2 } as CSSProperties}>
         <h3 className="mb-3 text-center font-medium text-muted-foreground text-sm">
           {tMain("filterByAudience")}
         </h3>
@@ -198,7 +219,7 @@ const ToolsMainPage = () => {
       </div>
 
       {/* Search */}
-      <div className="rise mb-8" style={{ "--i": 3 } as CSSProperties}>
+      <div className={`${rise} mb-8`} style={{ "--i": 3 } as CSSProperties}>
         <div className="relative mx-auto max-w-md">
           <Search className="-translate-y-1/2 absolute top-1/2 left-3 size-5 text-muted-foreground" />
           <Input
@@ -213,7 +234,7 @@ const ToolsMainPage = () => {
 
       {/* Results count */}
       <div
-        className="rise mb-6 text-center"
+        className={`${rise} mb-6 text-center`}
         style={{ "--i": 4 } as CSSProperties}
       >
         <p className="font-mono text-muted-foreground text-xs">
@@ -224,7 +245,7 @@ const ToolsMainPage = () => {
       {/* Tools Grid */}
       <div className="space-y-8">
         {filteredTools.length === 0 ? (
-          <div className="rise py-12 text-center">
+          <div className={`${rise} py-12 text-center`}>
             <p className="text-lg text-muted-foreground">
               {tMain("noResults")}
             </p>
@@ -245,7 +266,7 @@ const ToolsMainPage = () => {
             {filteredTools.map((tool, index) => (
               <div
                 key={tool.href}
-                className="grid-rise"
+                className={gridRise}
                 style={{ "--i": index } as CSSProperties}
               >
                 <ToolCard tool={tool} />

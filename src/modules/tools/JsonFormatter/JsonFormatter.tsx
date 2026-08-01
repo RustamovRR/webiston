@@ -1,138 +1,182 @@
 "use client"
 
-import { FileJson } from "lucide-react"
+/**
+ * JSON formatter and validator.
+ *
+ * Brought onto the same footing as the converter and the QR generator: the
+ * page is `max-w-[1536px]` so its content edge meets the header and footer
+ * (it was `max-w-7xl`, 256px narrower than the chrome above it), colour comes
+ * from tokens rather than from `zinc`/`orange` palette classes, and the
+ * controls are a row instead of a card wrapped around a gap.
+ */
+
+import { CodeHighlight } from "@webiston/ui/primitives/code-highlight"
+import { AlertTriangle, FileJson } from "lucide-react"
 import { useTranslations } from "next-intl"
+
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
-// Shared Components
 import { ToolHeader } from "@/components/shared/ToolHeader"
-import { CodeHighlight } from "@/components/ui"
 
-// Local Components
-import { ControlPanel, InfoSection } from "./components"
-
-// Utils & Hooks
+import { ControlBar, InfoSection } from "./components"
 import { useJsonFormatter } from "./hooks/useJsonFormatter"
+import { formatBytes } from "./utils/json"
 
 const JsonFormatter = () => {
   const t = useTranslations("JsonFormatterPage")
+  const tErrors = useTranslations("JsonFormatterPage.Errors")
   const {
-    inputJson,
-    setInputJson,
-    indentation,
-    setIndentation,
+    input,
+    setInput,
+    indent,
+    setIndent,
+    view,
+    setView,
     showLineNumbers,
-    isMinified,
-    jsonResult,
-    handleFileUpload,
-    loadSampleJson,
-    downloadResult,
-    clearInput,
-    toggleMinify,
-    toggleLineNumbers
+    toggleLineNumbers,
+    result,
+    output,
+    outputBytes,
+    fileError,
+    acceptedFileTypes,
+    readFile,
+    download,
+    loadSample,
+    clear
   } = useJsonFormatter()
 
-  const displayJson = isMinified ? jsonResult.minified : jsonResult.formatted
-  const fileSizeKB = Math.round((displayJson.length / 1024) * 100) / 100
+  const hasInput = input.trim().length > 0
 
-  // Status component for JSON validation
-  const statusComponent =
-    inputJson.length > 0 ? (
-      jsonResult.isValid ? (
-        <span className="flex items-center gap-1 text-xs text-success">
-          <div className="h-1.5 w-1.5 rounded-full bg-success"></div>
-          {t("Panel.validFormat")}
-        </span>
-      ) : (
-        <span className="flex items-center gap-1 text-xs text-destructive">
-          <div className="h-1.5 w-1.5 rounded-full bg-destructive/10"></div>
-          {t("Panel.errorExists")}
-        </span>
-      )
-    ) : null
+  // A filled dot, not a 10%-alpha one. The invalid state used
+  // `bg-destructive/10` — the same value as the panel BACKGROUND behind it, so
+  // the status dot was invisible exactly when it mattered.
+  const status = hasInput ? (
+    <span
+      className={`flex items-center gap-1.5 text-xs ${
+        result.isValid ? "text-success" : "text-destructive"
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        className={`size-1.5 rounded-full ${
+          result.isValid ? "bg-success" : "bg-destructive"
+        }`}
+      />
+      {result.isValid ? t("Panel.validFormat") : t("Panel.errorExists")}
+    </span>
+  ) : null
 
-  // Target empty state
-  const targetEmptyState = (
-    <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
-        <FileJson size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">{t("Panel.emptyStateTitle")}</p>
-        <p className="mt-2 text-xs opacity-75">
-          {t("Panel.emptyStateDescription")}
-        </p>
-      </div>
+  const emptyState = (
+    <div className="flex h-full flex-col items-center justify-center p-8 text-center text-muted-foreground">
+      <FileJson size={44} className="opacity-40" aria-hidden="true" />
+      <p className="mt-3 text-sm">{t("Panel.emptyStateTitle")}</p>
+      <p className="mt-1 text-xs opacity-75">
+        {t("Panel.emptyStateDescription")}
+      </p>
     </div>
   )
 
-  // Target footer component
-  const targetFooterComponent = displayJson ? (
-    <div className="text-xs text-muted-foreground">
-      <span className="text-zinc-500">{t("Panel.fileSize")}</span>{" "}
-      <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
+  const footer = output ? (
+    <div className="font-mono text-muted-foreground text-xs tabular-nums">
+      {t("Panel.fileSize")} {formatBytes(outputBytes)}
     </div>
   ) : null
 
-  // Custom target content for JSON with syntax highlighting
   const targetContent =
-    jsonResult.error && !jsonResult.isValid ? (
+    hasInput && !result.isValid ? (
       <div className="p-4">
-        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-destructive/10"></div>
-            <strong className="text-sm text-destructive">
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 p-4"
+        >
+          <div className="flex items-center gap-2">
+            <AlertTriangle
+              size={14}
+              className="shrink-0 text-destructive"
+              aria-hidden="true"
+            />
+            <strong className="font-medium text-destructive text-sm">
               {t("Panel.errorTitle")}
             </strong>
+            {/* Where to look. The old error said only what was wrong. */}
+            {result.position && (
+              <span className="ml-auto font-mono text-destructive/80 text-xs tabular-nums">
+                {t("Panel.errorPosition", {
+                  line: result.position.line,
+                  column: result.position.column
+                })}
+              </span>
+            )}
           </div>
-          <p className="font-mono text-sm text-destructive">
-            {jsonResult.error}
+          <p className="mt-2 font-mono text-destructive text-sm">
+            {tErrors(result.errorKind ?? "invalidJsonFormat")}
           </p>
+          {/* Only for the failures we could not classify: better a raw engine
+              sentence than nothing, but never in place of a translated one. */}
+          {result.errorKind === "invalidJsonFormat" && result.errorDetail && (
+            <p className="mt-1 font-mono text-destructive/70 text-xs">
+              {tErrors("jsonError")} {result.errorDetail}
+            </p>
+          )}
         </div>
       </div>
-    ) : displayJson ? (
+    ) : output ? (
       <CodeHighlight
-        code={displayJson}
+        code={output}
         language="json"
         showLineNumbers={showLineNumbers}
       />
     ) : null
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
       <ToolHeader
         title={t("ToolHeader.title")}
         description={t("ToolHeader.description")}
       />
 
-      <ControlPanel
-        indentation={indentation}
-        setIndentation={setIndentation}
+      <ControlBar
+        indent={indent}
+        onIndentChange={setIndent}
+        view={view}
+        onViewChange={setView}
         showLineNumbers={showLineNumbers}
-        isMinified={isMinified}
-        isValid={jsonResult.isValid}
-        handleFileUpload={handleFileUpload}
-        loadSampleJson={loadSampleJson}
-        clearInput={clearInput}
-        toggleMinify={toggleMinify}
-        toggleLineNumbers={toggleLineNumbers}
-        downloadResult={downloadResult}
+        onToggleLineNumbers={toggleLineNumbers}
+        canDownload={result.isValid && output.length > 0}
+        acceptedFileTypes={acceptedFileTypes}
+        onFile={readFile}
+        onSample={loadSample}
+        onClear={clear}
+        onDownload={download}
       />
 
+      {/* Inline, dismissable by acting — a `window.alert` blocked the page and
+          carried untranslated Uzbek even though the keys existed. */}
+      {fileError && (
+        <p
+          role="alert"
+          className="mb-4 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-destructive text-sm"
+        >
+          <AlertTriangle size={14} className="shrink-0" aria-hidden="true" />
+          {tErrors(fileError)}
+        </p>
+      )}
+
       <DualTextPanel
-        sourceText={inputJson}
-        convertedText={displayJson}
+        sourceText={input}
+        convertedText={output}
         sourcePlaceholder={t("Panel.sourcePlaceholder")}
         sourceLabel={t("Panel.sourceLabel")}
         targetLabel={
-          isMinified
+          view === "minified"
             ? t("Panel.targetLabelMinified")
             : t("Panel.targetLabelFormatted")
         }
-        onSourceChange={setInputJson}
-        onClear={clearInput}
+        onSourceChange={setInput}
+        onClear={clear}
         showSwapButton={false}
-        showShadow={true}
-        statusComponent={statusComponent}
-        targetEmptyState={targetEmptyState}
-        targetFooterComponent={targetFooterComponent}
+        statusComponent={status}
+        targetEmptyState={emptyState}
+        targetFooterComponent={footer}
         customTargetContent={targetContent}
       />
 
@@ -142,3 +186,4 @@ const JsonFormatter = () => {
 }
 
 export default JsonFormatter
+export { JsonFormatter }

@@ -1,2 +1,2 @@
-export { default as ControlPanel } from "./ControlPanel"
-export { default as InfoSection } from "./InfoSection"
+export { ControlBar } from "./ControlBar"
+export { InfoSection } from "./InfoSection"

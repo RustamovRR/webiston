@@ -1,90 +1,97 @@
-import { Database, FileJson } from "lucide-react"
 import { useTranslations } from "next-intl"
-import type React from "react"
 
-const InfoSection: React.FC = () => {
+/**
+ * The explanatory block under the tool. Kept, because it is the only indexable
+ * prose on the page and this route has to rank for something.
+ *
+ * The two code examples now come from the message bundle. They were hardcoded
+ * here as `"name": "John", "city": "New York"` while
+ * `Info.formatExample.simpleJson` and `nestedJson` sat translated and unused in
+ * BOTH locales — an English placeholder shipped to an Uzbek audience.
+ *
+ * They are read with `t.raw`, and that is required rather than a shortcut: a
+ * message goes through ICU MessageFormat, where `{` opens an argument, so a
+ * JSON snippet is a malformed message. Reading it normally threw
+ * `INVALID_MESSAGE: MALFORMED_ARGUMENT` and rendered the key path instead.
+ * `raw` skips the parser, which is exactly right for a literal code sample.
+ */
+
+/** Kicker + label, the same section identity the rest of the site uses. */
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-5 flex items-center gap-2.5 font-medium text-base text-foreground">
+      <span
+        aria-hidden="true"
+        className="size-[6px] shrink-0 rounded-[2px] bg-primary"
+      />
+      {children}
+    </h2>
+  )
+}
+
+function Example({ title, code }: { title: string; code: string }) {
+  return (
+    // `min-w-0`: a grid item's default `min-width: auto` lets the scrolling
+    // `<pre>` inside push the track wider than the column. Measured at 375px,
+    // the page scrolled 377 — two pixels, but a sideways-scrolling page all
+    // the same.
+    <div className="min-w-0 rounded-lg border border-border bg-muted/40 p-4">
+      <div className="mb-3 font-mono text-[11px] text-muted-foreground">
+        {title}
+      </div>
+      <pre className="overflow-x-auto rounded-md bg-background p-3 font-mono text-foreground text-sm">
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
+export function InfoSection() {
   const t = useTranslations("JsonFormatterPage.Info")
 
-  // JSON examples
-  const simpleJson = `{
-  "name": "John",
-  "age": 30,
-  "city": "New York"
-}`
-
-  const nestedJson = `{
-  "person": {
-    "name": "John",
-    "contacts": {
-      "email": "john@example.com",
-      "phone": "+1234567890"
-    }
-  },
-  "isActive": true
-}`
-
   return (
-    <>
-      {/* Examples Section */}
-      <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-          <FileJson size={20} className="text-indigo-400" />
-          {t("formatExample.title")}
-        </h3>
+    <div className="mt-10 space-y-6">
+      <section className="rounded-xl border border-border bg-card p-6">
+        <SectionHeading>{t("formatExample.title")}</SectionHeading>
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border/30 bg-muted/50 p-4">
-            <div className="mb-3 text-xs font-medium text-muted-foreground">
-              {t("formatExample.simpleObject")}
-            </div>
-            <pre className="block rounded bg-zinc-200/50 p-2 font-mono text-sm text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
-              {simpleJson}
-            </pre>
-          </div>
-          <div className="rounded-lg border border-border/30 bg-muted/50 p-4">
-            <div className="mb-3 text-xs font-medium text-muted-foreground">
-              {t("formatExample.nestedObject")}
-            </div>
-            <pre className="block rounded bg-zinc-200/50 p-2 font-mono text-sm text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
-              {nestedJson}
-            </pre>
-          </div>
+          <Example
+            title={t("formatExample.simpleObject")}
+            code={String(t.raw("formatExample.simpleJson"))}
+          />
+          <Example
+            title={t("formatExample.nestedObject")}
+            code={String(t.raw("formatExample.nestedJson"))}
+          />
         </div>
-      </div>
+      </section>
 
-      {/* Info Section */}
-      <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-          <Database size={20} className="text-indigo-400" />
-          {t("title")}
-        </h3>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-blue-400"></div>
+      <section className="rounded-xl border border-border bg-card p-6">
+        <SectionHeading>{t("title")}</SectionHeading>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="space-y-2">
+            <h3 className="font-medium text-foreground text-sm">
               {t("whatIsJson.title")}
-            </h4>
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            </h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">
               {t("whatIsJson.description")}
             </p>
           </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-green-400"></div>
+          <div className="space-y-2">
+            <h3 className="font-medium text-foreground text-sm">
               {t("features.title")}
-            </h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
+            </h3>
+            <ul className="space-y-1 text-muted-foreground text-sm leading-relaxed">
               <li>{t("features.feature1")}</li>
               <li>{t("features.feature2")}</li>
               <li>{t("features.feature3")}</li>
               <li>{t("features.feature4")}</li>
             </ul>
           </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-purple-400"></div>
+          <div className="space-y-2">
+            <h3 className="font-medium text-foreground text-sm">
               {t("usage.title")}
-            </h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
+            </h3>
+            <ul className="space-y-1 text-muted-foreground text-sm leading-relaxed">
               <li>{t("usage.usage1")}</li>
               <li>{t("usage.usage2")}</li>
               <li>{t("usage.usage3")}</li>
@@ -92,9 +99,7 @@ const InfoSection: React.FC = () => {
             </ul>
           </div>
         </div>
-      </div>
-    </>
+      </section>
+    </div>
   )
 }
-
-export default InfoSection

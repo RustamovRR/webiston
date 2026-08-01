@@ -2,8 +2,34 @@
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { TOOLS_LIST } from "@/constants"
 import { withLocale } from "@/lib/seo"
 import { ToolsMainPage } from "@/modules/tools"
+
+/**
+ * English names for the schema, which is locale-independent by design —
+ * `schema.org` entries are read by crawlers, not by visitors, and the URL is
+ * the English slug either way.
+ */
+const TOOL_SCHEMA_NAMES: Record<string, string> = {
+  latinCyrillic: "Latin-Cyrillic Converter",
+  qrGenerator: "QR Code Generator",
+  jsonFormatter: "JSON Formatter",
+  passwordGenerator: "Password Generator",
+  colorConverter: "Color Converter",
+  base64Converter: "Base64 Converter",
+  jwtDecoder: "JWT Decoder",
+  urlEncoder: "URL Encoder",
+  hashGenerator: "Hash Generator",
+  uuidGenerator: "UUID Generator",
+  ogMetaGenerator: "Open Graph Meta Generator",
+  loremIpsum: "Lorem Ipsum Generator",
+  deviceInfo: "Device Info",
+  screenResolution: "Screen Resolution",
+  ipInfo: "IP Info",
+  cameraRecorder: "Camera Recorder",
+  microphoneTest: "Microphone Test"
+}
 
 // `ToolsMainPage` is a CLIENT component and calls four namespaces —
 // `Tools`, `ToolsPage.Main`, `ToolCategories`, `Filters`. Scoping the layout
@@ -173,55 +199,27 @@ const structuredData = {
       height: 1120
     }
   },
+  // Derived from the list the page actually renders. Hand-written, it had
+  // drifted into three separate untruths: `numberOfItems: 15` against 17
+  // tools, only 6 of them listed, and an order that contradicted the visible
+  // one (QR first here, latin-cyrillic first on screen). Structured data that
+  // disagrees with the page is the kind of thing Google discounts the whole
+  // block for.
   mainEntity: {
     "@type": "ItemList",
     name: "Developer Tools Collection",
     description: "Professional bepul onlayn vositalar to'plami",
-    numberOfItems: 15,
-    itemListElement: [
-      {
-        "@type": "SoftwareApplication",
-        position: 1,
-        name: "QR Generator",
-        url: "https://webiston.uz/tools/qr-generator",
-        applicationCategory: "UtilityApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 2,
-        name: "Latin-Cyrillic Converter",
-        url: "https://webiston.uz/tools/latin-cyrillic",
-        applicationCategory: "UtilityApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 3,
-        name: "JSON Formatter",
-        url: "https://webiston.uz/tools/json-formatter",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 4,
-        name: "Base64 Converter",
-        url: "https://webiston.uz/tools/base64-converter",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 5,
-        name: "URL Encoder",
-        url: "https://webiston.uz/tools/url-encoder",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 6,
-        name: "JWT Decoder",
-        url: "https://webiston.uz/tools/jwt-decoder",
-        applicationCategory: "SecurityApplication"
-      }
-    ]
+    numberOfItems: TOOLS_LIST.length,
+    itemListElement: TOOLS_LIST.map((tool, index) => ({
+      "@type": "SoftwareApplication",
+      position: index + 1,
+      name: TOOL_SCHEMA_NAMES[tool.tKey] ?? tool.tKey,
+      url: `https://webiston.uz${tool.href}`,
+      applicationCategory:
+        tool.audience === "developer"
+          ? "DeveloperApplication"
+          : "UtilityApplication"
+    }))
   },
   potentialAction: {
     "@type": "SearchAction",

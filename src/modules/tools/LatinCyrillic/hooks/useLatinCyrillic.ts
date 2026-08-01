@@ -18,10 +18,9 @@ import {
   findPreservedTerms,
   oppositeDirection
 } from "@webiston/transliteration"
-import { useState } from "react"
 import { useDebounceValue } from "usehooks-ts"
 
-import { useTransliterationStore } from "../stores"
+import { useLatinCyrillicDraftStore, useTransliterationStore } from "../stores"
 
 /**
  * Long enough to coalesce a burst of keystrokes, short enough to feel live.
@@ -40,7 +39,11 @@ export function useLatinCyrillic() {
   const removeException = useTransliterationStore((s) => s.removeException)
   const clearExceptions = useTransliterationStore((s) => s.clearExceptions)
 
-  const [sourceText, setSourceText] = useState("")
+  // Above the tree, so switching language does not throw the text away — see
+  // `stores/draftStore.ts`. Everything else here is per-mount.
+  const sourceText = useLatinCyrillicDraftStore((s) => s.sourceText)
+  const setSourceText = useLatinCyrillicDraftStore((s) => s.setSourceText)
+
   const [debouncedText] = useDebounceValue(sourceText, DEBOUNCE_DELAY)
 
   const options = { preserve: exceptions }
