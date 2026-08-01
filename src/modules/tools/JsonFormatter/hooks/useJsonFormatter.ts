@@ -46,6 +46,8 @@ export function useJsonFormatter() {
 
   const result = useMemo(() => analyseJson(input, indent), [input, indent])
 
+  // The tree is a VIEW of the formatted document, not a third serialisation:
+  // copy and download from tree view give the formatted text.
   const output = view === "minified" ? result.minified : result.formatted
 
   const readFile = useCallback(

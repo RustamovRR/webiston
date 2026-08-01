@@ -104,6 +104,35 @@ describe("analyseJson", () => {
   })
 })
 
+describe("document stats", () => {
+  it("counts keys, items and depth in one walk", () => {
+    // Arrange — 2 top keys + 2 nested = 4 keys; one 3-item array; depth 3
+    const source = '{"a": {"b": [1, 2, 3], "c": true}, "d": null}'
+
+    // Act
+    const stats = analyseJson(source, "2").stats
+
+    // Assert
+    expect(stats).toEqual({ keys: 4, items: 3, depth: 3 })
+  })
+
+  it("grades a bare scalar as depth zero", () => {
+    expect(analyseJson("42", "2").stats).toEqual({
+      keys: 0,
+      items: 0,
+      depth: 0
+    })
+  })
+
+  it("keeps the parsed value for the tree view", () => {
+    expect(analyseJson('{"a": 1}', "2").value).toEqual({ a: 1 })
+  })
+
+  it("offers no stats for invalid input", () => {
+    expect(analyseJson("{oops", "2").stats).toBeUndefined()
+  })
+})
+
 describe("size reporting", () => {
   // Characters and bytes are not the same thing, and JSON is UTF-8. The old
   // footer divided `length` by 1024 and called the result KB, so a Cyrillic or

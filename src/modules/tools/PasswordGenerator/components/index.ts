@@ -1,3 +1,4 @@
-export { default as ConfigPanel } from "./ConfigPanel"
-export { default as InfoSection } from "./InfoSection"
-export { default as StrengthPanel } from "./StrengthPanel"
+export { InfoSection } from "./InfoSection"
+export { PasswordDisplay } from "./PasswordDisplay"
+export { SettingsPanel } from "./SettingsPanel"
+export { StrengthMeter } from "./StrengthMeter"

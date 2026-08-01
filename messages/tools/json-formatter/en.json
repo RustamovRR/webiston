@@ -19,7 +19,8 @@
       "formattedView": "Formatted view",
       "download": "Download",
       "viewMode": "View",
-      "tab": "Tab"
+      "tab": "Tab",
+      "tree": "Tree"
     },
     "Panel": {
       "sourceLabel": "JSON Input",
@@ -32,7 +33,9 @@
       "emptyStateDescription": "Enter JSON or upload a file",
       "errorTitle": "JSON Format Error",
       "fileSize": "Size:",
-      "errorPosition": "line {line}, column {column}"
+      "errorPosition": "line {line}, column {column}",
+      "targetLabelTree": "JSON tree",
+      "stats": "{keys} keys · {depth} levels"
     },
     "Info": {
       "title": "About JSON",
@@ -74,6 +77,10 @@
       "fileReadError": "Error occurred while reading the file.",
       "missingComma": "A comma or a closing bracket is missing.",
       "missingColon": "A colon (:) is missing after the property name."
+    },
+    "Tree": {
+      "keys": "{count} keys",
+      "items": "{count} items"
     }
   }
 }

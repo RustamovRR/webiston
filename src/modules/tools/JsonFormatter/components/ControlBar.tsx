@@ -102,6 +102,7 @@ export function ControlBar({
           onChange={onViewChange}
           options={[
             { value: "formatted", label: t("formatted") },
+            { value: "tree", label: t("tree") },
             { value: "minified", label: t("minified") }
           ]}
         />

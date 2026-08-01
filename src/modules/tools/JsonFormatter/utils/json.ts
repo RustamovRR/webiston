@@ -25,10 +25,23 @@ export interface JsonPosition {
   column: number
 }
 
+/** What the document contains — the readout a serious formatter shows. */
+export interface JsonStats {
+  /** Object keys, counted through the whole document. */
+  keys: number
+  /** Array elements, likewise. */
+  items: number
+  /** Deepest nesting level. A bare scalar is 0. */
+  depth: number
+}
+
 export interface JsonAnalysis {
   formatted: string
   minified: string
   isValid: boolean
+  /** The parsed document itself — what the tree view walks. */
+  value?: unknown
+  stats?: JsonStats
   errorKind?: JsonErrorKind
   /** The engine's own words, kept for the ones we do not classify. */
   errorDetail?: string
@@ -61,7 +74,9 @@ export function analyseJson(source: string, indent: string): JsonAnalysis {
     return {
       formatted: JSON.stringify(parsed, null, indentArgument(indent)),
       minified: JSON.stringify(parsed),
-      isValid: true
+      isValid: true,
+      value: parsed,
+      stats: measure(parsed)
     }
   } catch (error) {
     if (!(error instanceof SyntaxError)) {
@@ -125,6 +140,44 @@ function locate(message: string, source: string): JsonPosition | undefined {
     line: lineBreaks.length,
     column: lineBreaks[lineBreaks.length - 1].length + 1
   }
+}
+
+/**
+ * One walk over the parsed document.
+ *
+ * Recursion depth here equals the document's nesting depth, which
+ * `JSON.parse` has already survived one line earlier — so any input that
+ * reaches this function cannot blow the stack in it.
+ */
+function measure(value: unknown): JsonStats {
+  if (Array.isArray(value)) {
+    let keys = 0
+    let items = value.length
+    let depth = 1
+    for (const entry of value) {
+      const inner = measure(entry)
+      keys += inner.keys
+      items += inner.items
+      depth = Math.max(depth, 1 + inner.depth)
+    }
+    return { keys, items, depth }
+  }
+
+  if (value !== null && typeof value === "object") {
+    const entries = Object.values(value)
+    let keys = entries.length
+    let items = 0
+    let depth = 1
+    for (const entry of entries) {
+      const inner = measure(entry)
+      keys += inner.keys
+      items += inner.items
+      depth = Math.max(depth, 1 + inner.depth)
+    }
+    return { keys, items, depth }
+  }
+
+  return { keys: 0, items: 0, depth: 0 }
 }
 
 /** Size of a result, for the footer. Bytes, not characters — JSON is UTF-8. */

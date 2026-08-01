@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
-import { ControlBar, InfoSection } from "./components"
+import { ControlBar, InfoSection, JsonTree } from "./components"
 import { useJsonFormatter } from "./hooks/useJsonFormatter"
 import { formatBytes } from "./utils/json"
 
@@ -75,9 +75,21 @@ const JsonFormatter = () => {
     </div>
   )
 
+  // The document's own numbers, the way the QR tool shows "29×29 modul":
+  // size, keys, depth — measured, not decorative.
   const footer = output ? (
-    <div className="font-mono text-muted-foreground text-xs tabular-nums">
-      {t("Panel.fileSize")} {formatBytes(outputBytes)}
+    <div className="flex flex-wrap gap-x-4 font-mono text-muted-foreground text-xs tabular-nums">
+      <span>
+        {t("Panel.fileSize")} {formatBytes(outputBytes)}
+      </span>
+      {result.stats && (
+        <span>
+          {t("Panel.stats", {
+            keys: result.stats.keys,
+            depth: result.stats.depth
+          })}
+        </span>
+      )}
     </div>
   ) : null
 
@@ -119,6 +131,8 @@ const JsonFormatter = () => {
           )}
         </div>
       </div>
+    ) : view === "tree" && result.isValid ? (
+      <JsonTree value={result.value} />
     ) : output ? (
       <CodeHighlight
         code={output}
@@ -169,7 +183,9 @@ const JsonFormatter = () => {
         targetLabel={
           view === "minified"
             ? t("Panel.targetLabelMinified")
-            : t("Panel.targetLabelFormatted")
+            : view === "tree"
+              ? t("Panel.targetLabelTree")
+              : t("Panel.targetLabelFormatted")
         }
         onSourceChange={setInput}
         onClear={clear}

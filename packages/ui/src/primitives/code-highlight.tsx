@@ -34,30 +34,32 @@ export function CodeHighlight({
     }
   }
 
+  // Syntax colouring from the `--chart-*` tokens — the palette the design
+  // system reserves for data visualisation, which is what this is. Replaces
+  // five hand-picked hues that each needed a `dark:` twin and answered to
+  // nobody; the tokens flip themselves with the scheme and match the tree
+  // view's colouring in the JSON formatter by construction.
   const highlightJSON = (json: string) => {
     return json
       .replace(
         /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
         (match) => {
-          let cls = "text-blue-600 dark:text-blue-400" // numbers
+          let cls = "text-chart-1" // numbers
           if (match.startsWith('"')) {
             if (match.endsWith(":")) {
-              cls = "text-purple-600 dark:text-purple-400" // keys
+              cls = "text-chart-4" // keys
             } else {
-              cls = "text-green-600 dark:text-green-400" // strings
+              cls = "text-chart-2" // strings
             }
           } else if (/true|false/.test(match)) {
-            cls = "text-orange-600 dark:text-orange-400" // booleans
+            cls = "text-chart-3" // booleans
           } else if (/null/.test(match)) {
-            cls = "text-red-600 dark:text-red-400" // null
+            cls = "text-chart-5" // null
           }
           return `<span class="${cls}">${match}</span>`
         }
       )
-      .replace(
-        /([{}[\],])/g,
-        '<span class="text-gray-600 dark:text-gray-400">$1</span>'
-      ) // punctuation
+      .replace(/([{}[\],])/g, '<span class="text-muted-foreground">$1</span>') // punctuation
   }
 
   const highlightHTML = (html: string) => {

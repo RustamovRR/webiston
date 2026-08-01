@@ -17,7 +17,10 @@
       "copyButton": "Nusxalash",
       "copiedButton": "Nusxalandi!",
       "downloadButton": "Yuklab olish",
-      "loadButton": "Yuklash"
+      "loadButton": "Yuklash",
+      "result": "Yaratilgan parol",
+      "presets": "Tayyor sozlamalar",
+      "lengthLabel": "Uzunlik — {length} belgi"
     },
     "PasswordTypes": {
       "random": "Tasodifiy",
@@ -83,7 +86,20 @@
       "unique": "Noyob belgilar",
       "entropy": "Entropiya (bit)",
       "strength": "Mustahkamlik",
-      "strengthLevel": "Mustahkamlik darajasi:"
+      "strengthLevel": "Mustahkamlik darajasi:",
+      "bits": "{bits} bit",
+      "crackTime": "Sindirish vaqti",
+      "alphabet": "Alifbo hajmi",
+      "assumption": "Baholash offline hujumga nisbatan: soniyasiga 10 milliard urinish. Onlayn hujumlar bundan ming barobar sekin.",
+      "crack": {
+        "instant": "bir zumda",
+        "seconds": "~{value} soniya",
+        "minutes": "~{value} daqiqa",
+        "hours": "~{value} soat",
+        "days": "~{value} kun",
+        "years": "~{value} yil",
+        "centuries": "asrlar"
+      }
     },
     "StrengthLevels": {
       "weak": "Zaif",
@@ -122,6 +138,9 @@
       "memorableDesc": "So'zlar va raqamlardan iborat, eslab qolish oson lekin xavfsiz",
       "strongTitle": "Kuchli Parollar",
       "strongDesc": "Maksimal xavfsizlik uchun, barcha belgi turlarini o'z ichiga oladi"
+    },
+    "Errors": {
+      "noCharacters": "Kamida bitta belgi turini tanlang — hozirgi sozlamalar bilan parol yaratib bo'lmaydi."
     }
   }
 }

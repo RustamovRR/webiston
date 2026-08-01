@@ -1,103 +1,81 @@
 "use client"
 
+/**
+ * Password generator.
+ *
+ * Same architecture as the QR page, on purpose: the RESULT holds the first
+ * screen with its actions on it, the settings scroll under it, and the
+ * right-hand rail carries the measured facts (entropy, crack time) the way
+ * the QR rail carries the code. The version this replaces printed the
+ * password into a read-only textarea labelled "Tool Kirish" and pushed the
+ * strength readout below the fold.
+ */
+
 import { useTranslations } from "next-intl"
-import { DualTextPanel, ToolHeader } from "@/components/shared"
-import { ConfigPanel, InfoSection, StrengthPanel } from "./components"
+
+import { ToolHeader } from "@/components/shared/ToolHeader"
+
+import {
+  InfoSection,
+  PasswordDisplay,
+  SettingsPanel,
+  StrengthMeter
+} from "./components"
 import { usePasswordGenerator } from "./hooks/usePasswordGenerator"
 
 const PasswordGenerator = () => {
-  const t = useTranslations("PasswordGeneratorPage.ToolHeader")
-  const tInput = useTranslations("PasswordGeneratorPage.InputPanel")
-  const tResults = useTranslations("PasswordGeneratorPage.ResultsPanel")
-  const tTypes = useTranslations("PasswordGeneratorPage.PasswordTypes")
-  const tPresets = useTranslations("PasswordGeneratorPage")
-  const tStrength = useTranslations("PasswordGeneratorPage.StrengthLevels")
-
+  const t = useTranslations("PasswordGeneratorPage")
   const {
-    password,
-    showPassword,
-    copied,
     settings,
-    passwordDisplayText,
-    passwordStrength,
-    stats,
-    presetSettings,
-    generatePassword,
-    handleCopy,
-    downloadPassword,
-    loadPreset,
-    togglePasswordVisibility,
-    updateSettings
-  } = usePasswordGenerator(
-    {
-      onSuccess: (message) => console.log(message),
-      onError: (error) => console.error(error)
-    },
-    tPresets,
-    tStrength
-  )
-
-  const getCharacterTypes = () => {
-    const types = []
-    if (settings.includeUppercase) types.push("ABC")
-    if (settings.includeLowercase) types.push("abc")
-    if (settings.includeNumbers) types.push("123")
-    if (settings.includeSymbols) types.push("!@#")
-    return types.join("+") || "Hech qanday"
-  }
-
-  const getPasswordTypeText = () => {
-    switch (settings.passwordType) {
-      case "memorable":
-        return tTypes("memorable")
-      case "strong":
-        return tTypes("strong")
-      default:
-        return tTypes("random")
-    }
-  }
-
-  const passwordInfo = password
-    ? `${tResults("success")}\n\n${tResults("length")} ${password.length} ${tResults("characters")}\n${tResults("type")} ${getPasswordTypeText()}\n${tResults("strength")} ${passwordStrength.text}\n${tResults("entropy")} ${stats.entropy} bit\n\n${tResults("characterTypes")} ${getCharacterTypes()}\n${tResults("uniqueChars")} ${stats.unique}/${stats.characters}`
-    : ""
+    password,
+    error,
+    show,
+    copied,
+    strength,
+    uniqueCharacters,
+    regenerate,
+    updateSettings,
+    toggleShow,
+    copy
+  } = usePasswordGenerator()
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t("title")} description={t("description")} />
-
-      <ConfigPanel
-        settings={settings}
-        password={password}
-        showPassword={showPassword}
-        copied={copied}
-        presetSettings={presetSettings}
-        onUpdateSettings={updateSettings}
-        onGeneratePassword={generatePassword}
-        onTogglePasswordVisibility={togglePasswordVisibility}
-        onCopy={handleCopy}
-        onDownload={downloadPassword}
-        onLoadPreset={(preset) => loadPreset(preset)}
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
+      <ToolHeader
+        title={t("ToolHeader.title")}
+        description={t("ToolHeader.description")}
       />
 
-      <DualTextPanel
-        sourceText={passwordDisplayText}
-        convertedText={passwordInfo}
-        sourceLabel={tInput("title")}
-        targetLabel={tResults("title")}
-        onSourceChange={() => {}} // Read-only
-        sourcePlaceholder={tInput("placeholder")}
-        onClear={() => {}}
-        showSwapButton={false}
-        showClearButton={false}
-        variant="terminal"
-        showShadow={true}
-      />
+      {/* Three cells placed explicitly — the QR page's grid, for the QR
+          page's reason: stacked, the order must be result → facts → controls;
+          side by side, the facts hold the rail across both rows. */}
+      <div className="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
+        <div className="lg:col-start-1 lg:row-start-1">
+          <PasswordDisplay
+            password={password}
+            errorText={error ? t(`Errors.${error}`) : undefined}
+            show={show}
+            copied={copied}
+            onToggleShow={toggleShow}
+            onCopy={copy}
+            onRegenerate={regenerate}
+          />
+        </div>
 
-      <StrengthPanel
-        password={password}
-        passwordStrength={passwordStrength}
-        stats={stats}
-      />
+        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch">
+          <div className="lg:sticky lg:top-20">
+            <StrengthMeter
+              strength={strength}
+              passwordLength={password.length}
+              uniqueCharacters={uniqueCharacters}
+            />
+          </div>
+        </div>
+
+        <div className="lg:col-start-1 lg:row-start-2">
+          <SettingsPanel settings={settings} onChange={updateSettings} />
+        </div>
+      </div>
 
       <InfoSection />
     </div>
@@ -105,3 +83,4 @@ const PasswordGenerator = () => {
 }
 
 export default PasswordGenerator
+export { PasswordGenerator }

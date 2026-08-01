@@ -19,7 +19,8 @@
       "formattedView": "Kengaytirilgan ko'rinish",
       "download": "Yuklab olish",
       "viewMode": "Ko'rinish",
-      "tab": "Tab"
+      "tab": "Tab",
+      "tree": "Daraxt"
     },
     "Panel": {
       "sourceLabel": "JSON Kirish",
@@ -32,7 +33,9 @@
       "emptyStateDescription": "JSON kiriting yoki fayl yuklang",
       "errorTitle": "JSON Format Xatoligi",
       "fileSize": "Hajm:",
-      "errorPosition": "{line}-qator, {column}-belgi"
+      "errorPosition": "{line}-qator, {column}-belgi",
+      "targetLabelTree": "JSON daraxti",
+      "stats": "{keys} kalit · {depth} pog'ona"
     },
     "Info": {
       "title": "JSON haqida ma'lumot",
@@ -74,6 +77,10 @@
       "fileReadError": "Faylni o'qishda xatolik yuz berdi.",
       "missingComma": "Vergul yoki yopuvchi qavs yetishmayapti.",
       "missingColon": "Xususiyat nomidan keyin ikki nuqta (:) qo'yilmagan."
+    },
+    "Tree": {
+      "keys": "{count} kalit",
+      "items": "{count} element"
     }
   }
 }

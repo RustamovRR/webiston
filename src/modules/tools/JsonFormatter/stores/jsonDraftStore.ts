@@ -14,7 +14,7 @@ import { DEFAULT_INDENT, type IndentOption } from "../constants"
  * memory for as long as the tab is open and nowhere else.
  */
 
-export type ViewMode = "formatted" | "minified"
+export type ViewMode = "formatted" | "tree" | "minified"
 
 interface JsonDraftState {
   input: string
