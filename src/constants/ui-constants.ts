@@ -110,25 +110,25 @@ export const getToolColor = (toolId: string) => {
 export const CATEGORY_ACCENTS: Record<string, { chip: string; icon: string }> =
   {
     converters: {
-      chip: "border-chart-1/40 bg-chart-1/12 text-chart-1",
+      chip: "border-chart-1 bg-chart-1/15 font-medium text-chart-1",
       icon: "bg-chart-1/12 text-chart-1"
     },
     generators: {
-      chip: "border-chart-2/40 bg-chart-2/12 text-chart-2",
+      chip: "border-chart-2 bg-chart-2/15 font-medium text-chart-2",
       icon: "bg-chart-2/12 text-chart-2"
     },
     analyzers: {
-      chip: "border-chart-3/40 bg-chart-3/12 text-chart-3",
+      chip: "border-chart-3 bg-chart-3/15 font-medium text-chart-3",
       icon: "bg-chart-3/12 text-chart-3"
     },
     utilities: {
-      chip: "border-chart-4/40 bg-chart-4/12 text-chart-4",
+      chip: "border-chart-4 bg-chart-4/15 font-medium text-chart-4",
       icon: "bg-chart-4/12 text-chart-4"
     }
   }
 
 /** Fallback for the "all" chip and any unmapped category. */
 export const CATEGORY_ACCENT_NEUTRAL = {
-  chip: "border-primary/40 bg-primary/12 text-primary",
+  chip: "border-primary bg-primary/15 font-medium text-primary",
   icon: "bg-primary/12 text-primary"
 }
