@@ -133,7 +133,11 @@ export const PRESETS: readonly QrPreset[] = [
     style: {
       dotType: "bevel",
       cornerSquareType: "bevel",
-      cornerDotType: "bars-v",
+      // Was "bars-v". Machine-decode testing showed striped centres break the
+      // finder's 1:1:3:1:1 profile whenever the stripes run across the scan
+      // direction — the preset decoded at one rotation and failed at 90°/45°.
+      // Bevel keeps the engineered look and decodes at every angle.
+      cornerDotType: "bevel",
       foregroundColor: INK.slate,
       backgroundColor: INK.paper,
       gradientColor: undefined,

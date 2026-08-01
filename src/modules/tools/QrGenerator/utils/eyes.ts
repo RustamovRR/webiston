@@ -188,10 +188,15 @@ function bevelPath(x: number, y: number, size: number, cut: number): string {
 /**
  * The centre: a 3x3 block inset by two modules.
  *
- * This is the one part of a finder pattern with real freedom. The scanner
- * locks onto the RING — the 1:1:3:1:1 ratio is measured across the frame — so
- * the middle can be split into bars or dots without touching detection, which
- * is why the composite shapes live here and not in the frame catalogue.
+ * The freedom here is real but BOUNDED, and the bound was measured, not
+ * assumed: a finder is detected by the 1:1:3:1:1 dark-light ratio along the
+ * scanlines through its centre, and that includes the 3-module dark run in
+ * the middle. An earlier version of this file claimed the ring alone carried
+ * detection and split the centre freely — jsQR failed to decode all three
+ * split centres (bars-v, bars-h, dot-grid), taking the "tech" and "brand"
+ * presets down with them. The rule every composite centre must obey: the
+ * centre ROW and the centre COLUMN of the 3x3 stay solid dark edge to edge.
+ * Texture goes in the corners; the crosshair belongs to the scanner.
  */
 export function eyeBallPath(
   shape: EyeBallShape,
@@ -205,44 +210,72 @@ export function eyeBallPath(
     return bevelPath(originX, originY, extent, extent * 0.26)
   }
 
-  // Three bars, with the gaps as a share of the block so they scale.
+  // Three bars, joined by a perpendicular band through the middle. The band
+  // keeps the centre scanline solid — pure detached bars broke the 1:1:3:1:1
+  // profile on one axis and jsQR refused the whole code. Even with it, a
+  // striped centre is only readable when the stripes run ALONG the scan
+  // direction: measured, bars-h decodes at 0° and fails rotated 90°/45°,
+  // bars-v the mirror image. No preset uses them any more; whether they stay
+  // in the catalogue at all is an open product decision.
   if (shape === "bars-v" || shape === "bars-h") {
     const gap = extent * 0.14
     const band = (extent - gap * 2) / 3
+    const pill: [number, number, number, number] = [
+      band / 2,
+      band / 2,
+      band / 2,
+      band / 2
+    ]
+    const spine =
+      shape === "bars-v"
+        ? roundedRectPath(
+            originX,
+            originY + (extent - band) / 2,
+            extent,
+            band,
+            pill
+          )
+        : roundedRectPath(
+            originX + (extent - band) / 2,
+            originY,
+            band,
+            extent,
+            pill
+          )
     return [0, 1, 2]
       .map((index) => {
         const offset = index * (band + gap)
         return shape === "bars-v"
-          ? roundedRectPath(originX + offset, originY, band, extent, [
-              band / 2,
-              band / 2,
-              band / 2,
-              band / 2
-            ])
-          : roundedRectPath(originX, originY + offset, extent, band, [
-              band / 2,
-              band / 2,
-              band / 2,
-              band / 2
-            ])
+          ? roundedRectPath(originX + offset, originY, band, extent, pill)
+          : roundedRectPath(originX, originY + offset, extent, band, pill)
       })
+      .concat(spine)
       .join(" ")
   }
 
-  // A 2x2 of dots — the densest of the composite centres.
+  // Four dots grown until they fuse across the centre lines — a clover. The
+  // radius is the smallest that keeps the centre row and column solid
+  // (0.25·√2, the reach a corner circle needs to cover the middle), so the
+  // dot identity survives at the corners and the scanner keeps its crosshair.
+  // The lobes overflow the 3x3 block by 0.1·extent; that trims the light gap
+  // around the ball to ~0.7 module in four spots, well inside the ratio
+  // tolerance — verified by machine decode.
   if (shape === "dot-grid") {
-    const gap = extent * 0.12
-    const dot = (extent - gap) / 2
-    return [0, 1]
-      .flatMap((row) =>
-        [0, 1].map((col) =>
-          roundedRectPath(
-            originX + col * (dot + gap),
-            originY + row * (dot + gap),
-            dot,
-            dot,
-            [dot / 2, dot / 2, dot / 2, dot / 2]
-          )
+    const radius = extent * 0.3536
+    const centres: Array<[number, number]> = [
+      [0.25, 0.25],
+      [0.75, 0.25],
+      [0.25, 0.75],
+      [0.75, 0.75]
+    ]
+    return centres
+      .map(([cx, cy]) =>
+        roundedRectPath(
+          originX + cx * extent - radius,
+          originY + cy * extent - radius,
+          radius * 2,
+          radius * 2,
+          [radius, radius, radius, radius]
         )
       )
       .join(" ")

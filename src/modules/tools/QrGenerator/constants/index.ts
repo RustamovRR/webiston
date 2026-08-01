@@ -41,8 +41,17 @@ export const RENDER_SIZE = 320
 const QR_INK = "#000000"
 const QR_PAPER = "#ffffff"
 
-/** Second gradient stop offered by default — the site's brand hue. */
-export const DEFAULT_GRADIENT_COLOR = "#0ea5b7"
+/**
+ * Second gradient stop offered by default.
+ *
+ * The DEEP brand teal, not the interface one: this is the first colour the
+ * "add gradient" button puts on screen, and it must pass the tool's own
+ * contrast check. The obvious pick — the interface teal — measures 2.6:1
+ * against white, so one click used to produce a severe "this will not scan"
+ * warning about a colour the tool itself had chosen. This stop is the same
+ * measured 7.8:1 value the Brend preset uses.
+ */
+export const DEFAULT_GRADIENT_COLOR = "#0d5a6b"
 
 export const DEFAULT_STYLE: QrStyle = {
   foregroundColor: QR_INK,

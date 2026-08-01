@@ -174,11 +174,17 @@ below._
 | Extension: three functional gaps | ✅ | (1) Scrolling INSIDE the popover's own textarea closed the popover — the capture-phase document scroll listener fired on shadow-retargeted events; now ignores scrolls born in the host. (2) Context menu + ⌘⇧L acted invisibly on read-only pages (clipboard write, zero feedback) — a small shadow-DOM toast now says "Almashtirildi"/"Nusxalandi"; Escape also dismisses the popover. (3) The popup footer showed `⌘+Shift+L` to Windows/Linux users whose real binding is `Ctrl+Shift+L` — platform-detected label |
 | latin-cyrillic: integration tests, per the module's own priority list | ✅ | **15 RTL tests** driving the rendered UI: auto-direction both ways + label flips, forced direction, swap pinning the opposite, sample, Escape-clears vs **Escape-in-dialog-must-not-clear** (the regression above), exceptions add/duplicate/preserved-in-result, Cmd+Enter copy ack, locale-remount draft survival, dropped-.txt import with CRLF/blank-line normalisation, chip dropped on edit, unsupported-type rejection. Suite **543 → 558**. jsdom stubs for `matchMedia`/`ResizeObserver` added to `vitest.setup.ts` |
 | Found while gating: a suppression that suppressed nothing | ✅ | `global-error.tsx` had `biome-ignore` one line above an attribute-anchored diagnostic — Biome flagged it "no effect" and the error underneath surfaced as the gate's one red. Comment moved inside the opening tag, directly above the attribute |
+| QR deep audit: machine-decode proof of the whole catalogue | ✅ | jsQR driven against the LIVE preview (serialize → canvas → decode) for every option: **16/16 module shapes, 9/9 eye frames, 8/8 presets after the fix below** — including with a logo (level H absorbed the footprint, 25→33 modules, still decodes) and a frame. The 45°-dense-vCard failure reproduced on plain squares too — decoder-bench limit, not a style defect |
+| QR: split eye centres could not be FOUND by a scanner | ✅ | `bars-v`/`bars-h`/`dot-grid` all failed jsQR outright — the finder's 1:1:3:1:1 ratio includes the 3-module dark CENTRE, which the file's own comment wrongly claimed was free to split. The **"tech" and "brand" presets shipped broken codes.** Fixes: dot-grid rebuilt as four dots fused across the centre lines (lobe radius 0.25·√2 — the minimum that keeps the crosshair solid; decodes at 0°/90°/45°), bars given a perpendicular spine (decode at aligned rotation only — **still rotation-fragile, removal is an open owner decision**), tech preset moved to bevel. The corrected law is now documented in `eyes.ts` |
+| QR: gradient painted each eye its own rainbow | ✅ | `objectBoundingBox` units on a gradient shared by four separate paths gave EVERY eye its own full from→to sweep while the data path swept the whole code once. Both the preview and `modelToSvg` now emit `userSpaceOnUse` over the full extent — verified live (`x1=0 x2=320`, bottom eye now mid-sweep teal), and the two renderers stay pixel-identical by construction |
+| QR: "add gradient" defaulted to a colour the tool itself condemns | ✅ | `DEFAULT_GRADIENT_COLOR` was the interface teal at 2.6:1 — one click produced the severe "will not scan" warning about the tool's own choice. Now the Brend preset's measured 7.8:1 stop; verified live: no warning |
+| QR route: structured data described a tool that does not exist | ✅ | FAQPage schema promised "PNG, JPG" (real: SVG/PNG/WebP, no JPG anywhere), a WiFi form the page deliberately does not have, and a featureList advertising the REMOVED size/error-level controls. All three aligned with reality in both locales' schema strings. The page still carries the old-style inline metadata blob (RU keywords etc.) — the latin-cyrillic-style `seo/` segment is the tracked follow-up |
 
-**Gate (real exit codes, 2026-08-01):** `check 0` · `typecheck 0` · `lint 0` ·
-`test 0 (558)` · `tokens 0` · `contrast 0` · `build 0` · `ext build 0`.
-**`i18n 1`**, unchanged: still blocked on the 8 dead-key deletion below —
-qr-generator and latin-cyrillic are both parity-clean.
+**Gate (real exit codes, 2026-08-01, after the QR audit):** `check 0` ·
+`typecheck 0` · `lint 0` · `test 0 (558)` · `tokens 0` · `contrast 0` ·
+`build 0` · `ext build 0`. **`i18n 1`**, unchanged: still blocked on the 8
+dead-key deletion below — qr-generator and latin-cyrillic are both
+parity-clean.
 
 ---
 

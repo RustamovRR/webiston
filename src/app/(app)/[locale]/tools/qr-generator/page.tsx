@@ -210,19 +210,16 @@ const structuredData = {
       height: 1120
     }
   },
+  // Only features the page actually has. This list used to advertise the
+  // removed size/error-level controls and a JPG download that never existed.
   featureList: [
-    "URL QR kod yaratish",
-    "Matn QR kod yaratish",
-    "Kontakt QR kod yaratish",
-    "WiFi QR kod yaratish",
-    "SMS QR kod yaratish",
-    "Email QR kod yaratish",
-    "Telefon QR kod yaratish",
-    "Turli o'lchamlar",
-    "Xato tuzatish darajalari",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Yuklab olish imkoniyati"
+    "URL, matn, kontakt, WiFi va SMS uchun QR kod yaratish",
+    "16 xil nuqta shakli va 8 tayyor uslub",
+    "Logotip joylashtirish",
+    "Gradient va rang tanlash, kontrast tekshiruvi bilan",
+    "Ramka va yorliq qo'shish",
+    "SVG, PNG, WebP formatlarida yuklab olish",
+    "Bepul va cheksiz foydalanish"
   ],
   // screenshot: 'https://webiston.uz/images/tools/qr-generator-screenshot.png', // TODO: Add screenshot
   softwareVersion: "2.0",
@@ -250,12 +247,12 @@ function generateFAQSchema(locale: string = "uz") {
         {
           question: "QR kod qanday formatda yuklab olish mumkin?",
           answer:
-            "QR kodlarni PNG, JPG formatlarida yuklab olish mumkin. Turli o'lchamlarda ham mavjud."
+            "QR kodlarni SVG, PNG va WebP formatlarida yuklab olish mumkin. SVG vektor format bo'lgani uchun istalgan o'lchamda sifatini yo'qotmaydi."
         },
         {
           question: "WiFi QR kod qanday yaratiladi?",
           answer:
-            "WiFi QR kod yaratish uchun tarmoq nomi (SSID) va parolni kiriting. QR kod avtomatik yaratiladi."
+            "WIFI:T:WPA;S:TarmoqNomi;P:Parol;; ko'rinishidagi standart matnni kiriting — vosita uni WiFi kod sifatida taniydi va QR kod avtomatik yaratiladi."
         }
       ]
     },
@@ -274,12 +271,12 @@ function generateFAQSchema(locale: string = "uz") {
         {
           question: "What formats can I download QR code?",
           answer:
-            "You can download QR codes in PNG, JPG formats. Various sizes are also available."
+            "You can download QR codes as SVG, PNG and WebP. SVG is a vector format, so it stays sharp at any print size."
         },
         {
           question: "How to create WiFi QR code?",
           answer:
-            "Enter network name (SSID) and password to create WiFi QR code. It will connect automatically when scanned."
+            "Enter the standard string WIFI:T:WPA;S:NetworkName;P:Password;; — the tool recognises it as a WiFi payload and generates the QR code automatically."
         }
       ]
     }

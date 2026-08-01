@@ -45,13 +45,31 @@ function QrArtwork({ doc, title }: { doc: QrDocument; title: string }) {
     >
       {model.gradient && (
         <defs>
+          {/* `userSpaceOnUse`, never the default objectBoundingBox: the ink
+              is shared by four separate paths (data + three eyes), and
+              per-element units gave EACH eye its own full from→to sweep —
+              a 7-module rainbow in every corner while the data swept the
+              whole code once. One coordinate space, one sweep. */}
           {model.gradient.type === "radial" ? (
-            <radialGradient id={model.gradient.id}>
+            <radialGradient
+              id={model.gradient.id}
+              gradientUnits="userSpaceOnUse"
+              cx={model.extent / 2}
+              cy={model.extent / 2}
+              r={(model.extent / 2) * Math.SQRT2}
+            >
               <stop offset="0" stopColor={model.gradient.from} />
               <stop offset="1" stopColor={model.gradient.to} />
             </radialGradient>
           ) : (
-            <linearGradient id={model.gradient.id} x1="0" y1="0" x2="1" y2="1">
+            <linearGradient
+              id={model.gradient.id}
+              gradientUnits="userSpaceOnUse"
+              x1={0}
+              y1={0}
+              x2={model.extent}
+              y2={model.extent}
+            >
               <stop offset="0" stopColor={model.gradient.from} />
               <stop offset="1" stopColor={model.gradient.to} />
             </linearGradient>

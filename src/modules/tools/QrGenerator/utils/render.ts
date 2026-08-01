@@ -293,11 +293,15 @@ function escapeXml(value: string): string {
 export function modelToSvg(model: QrModel): string {
   const { extent, background, ink } = model
 
+  // `userSpaceOnUse`, matching QrPreview exactly: per-element units would give
+  // each of the four ink paths (data + three eyes) its own full from→to
+  // sweep. The preview and this file must serialise the SAME geometry or the
+  // download stops being the picture the visitor approved.
   const defs = model.gradient
     ? `<defs>${
         model.gradient.type === "radial"
-          ? `<radialGradient id="${model.gradient.id}">`
-          : `<linearGradient id="${model.gradient.id}" x1="0" y1="0" x2="1" y2="1">`
+          ? `<radialGradient id="${model.gradient.id}" gradientUnits="userSpaceOnUse" cx="${extent / 2}" cy="${extent / 2}" r="${(extent / 2) * Math.SQRT2}">`
+          : `<linearGradient id="${model.gradient.id}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${extent}" y2="${extent}">`
       }<stop offset="0" stop-color="${model.gradient.from}"/><stop offset="1" stop-color="${model.gradient.to}"/>${
         model.gradient.type === "radial"
           ? "</radialGradient>"
