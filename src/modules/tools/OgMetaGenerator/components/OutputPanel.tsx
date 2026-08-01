@@ -51,15 +51,13 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -128,7 +126,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({
       {/* Stats Display */}
       {currentOutput && (
         <div className="mt-6 border-t border-border pt-6">
-          <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h4 className="mb-3 text-sm font-medium text-foreground">
             {t("outputStats")}
           </h4>
           <StatsDisplay stats={outputStats} />

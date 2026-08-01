@@ -25,9 +25,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ alternativeTexts }) => {
         </div>
 
         <div className="rounded-lg border border-orange-500/20 bg-orange-500/10 p-4">
-          <div className="mb-2 font-medium text-orange-600 dark:text-orange-400">
-            {tTypes("bacon")}
-          </div>
+          <div className="mb-2 font-medium text-warning">{tTypes("bacon")}</div>
           <div className="text-sm text-muted-foreground">{t("baconDesc")}</div>
         </div>
 

@@ -42,15 +42,12 @@ export default function MicrophoneTest() {
     closePreview,
     getAudioQuality,
     getStats
-  } = useMicrophoneTest({
-    onSuccess: (message: string) => console.log("Success:", message),
-    onError: (error: string) => console.error("Error:", error)
-  })
+  } = useMicrophoneTest({})
 
   const audioQuality = getAudioQuality(audioStats.level)
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       <div className="mb-8">
@@ -122,7 +119,7 @@ export default function MicrophoneTest() {
               <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
               <div className="h-3 w-3 rounded-full bg-green-500"></div>
             </div>
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-400">
+            <span className="text-sm font-medium text-foreground">
               {tSample("title")}
             </span>
           </div>
@@ -131,7 +128,7 @@ export default function MicrophoneTest() {
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
                 <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-blue-500" />
+                  <Mic className="h-4 w-4 text-info" />
                   <span className="font-medium text-foreground">
                     {tSample("standard.name")}
                   </span>
@@ -139,14 +136,14 @@ export default function MicrophoneTest() {
                 <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("standard.description")}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {tSample("standard.tip")}
                 </p>
               </div>
 
               <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
                 <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-green-500" />
+                  <Mic className="h-4 w-4 text-success" />
                   <span className="font-medium text-foreground">
                     {tSample("usb.name")}
                   </span>
@@ -154,7 +151,7 @@ export default function MicrophoneTest() {
                 <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("usb.description")}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {tSample("usb.tip")}
                 </p>
               </div>
@@ -169,7 +166,7 @@ export default function MicrophoneTest() {
                 <p className="mb-2 text-sm text-muted-foreground">
                   {tSample("bluetooth.description")}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   {tSample("bluetooth.tip")}
                 </p>
               </div>

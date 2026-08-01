@@ -81,15 +81,13 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -113,7 +111,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
         {/* Generation Type */}
         <div className="mb-6 space-y-4">
-          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h3 className="text-sm font-medium text-foreground">
             {t("generationType")}
           </h3>
           <GradientTabs
@@ -132,7 +130,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div>
             <label
               htmlFor="configpanel-amount"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+              className="mb-2 block text-sm font-medium text-foreground"
             >
               {t("amount")}: {settings.amount}
             </label>
@@ -147,7 +145,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               }
               className="border-border bg-muted/50"
             />
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               {t("amountRange")}
             </p>
           </div>
@@ -156,7 +154,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div>
             <label
               htmlFor="configpanel-texttype"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+              className="mb-2 block text-sm font-medium text-foreground"
             >
               {t("textType")}
             </label>
@@ -194,7 +192,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
               />
               <label
                 htmlFor="startWithLorem"
-                className="text-sm text-zinc-700 dark:text-zinc-200"
+                className="text-sm text-foreground"
               >
                 {t("startWithLorem")}
               </label>
@@ -213,7 +211,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="flex items-center gap-2">
               <Button onClick={handleCopy} variant="outline" size="sm">
                 {copied ? (
-                  <Check size={16} className="mr-2 text-green-500" />
+                  <Check size={16} className="mr-2 text-success" />
                 ) : (
                   <Copy size={16} className="mr-2" />
                 )}

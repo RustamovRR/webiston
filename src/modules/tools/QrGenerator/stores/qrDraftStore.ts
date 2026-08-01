@@ -2,6 +2,7 @@ import { create } from "zustand"
 
 import { DEFAULT_STYLE } from "../constants"
 import type { QrStyle } from "../types"
+import { DEFAULT_WIFI, type WifiConfig } from "../utils/wifi"
 
 /**
  * The code being built, held above the component tree.
@@ -30,19 +31,34 @@ import type { QrStyle } from "../types"
  * Clear button empties it, and it dies with the tab.
  */
 
+/** What the input panel is editing: the free-text box, or the WiFi fields. */
+export type QrInputMode = "text" | "wifi"
+
 interface QrDraftState {
   value: string
+  mode: QrInputMode
+  /** The WiFi form's fields — a payload COMPILER, see `utils/wifi.ts`. The
+   *  password lives only here, in memory, like everything else in this store. */
+  wifi: WifiConfig
   style: QrStyle
   setValue: (value: string) => void
+  setMode: (mode: QrInputMode) => void
+  updateWifi: (patch: Partial<WifiConfig>) => void
   updateStyle: (patch: Partial<QrStyle>) => void
   reset: () => void
 }
 
 export const useQrDraftStore = create<QrDraftState>()((set) => ({
   value: "",
+  mode: "text",
+  wifi: DEFAULT_WIFI,
   style: DEFAULT_STYLE,
   setValue: (value) => set({ value }),
+  setMode: (mode) => set({ mode }),
+  updateWifi: (patch) =>
+    set((state) => ({ wifi: { ...state.wifi, ...patch } })),
   updateStyle: (patch) =>
     set((state) => ({ style: { ...state.style, ...patch } })),
-  reset: () => set({ value: "", style: DEFAULT_STYLE })
+  reset: () =>
+    set({ value: "", mode: "text", wifi: DEFAULT_WIFI, style: DEFAULT_STYLE })
 }))

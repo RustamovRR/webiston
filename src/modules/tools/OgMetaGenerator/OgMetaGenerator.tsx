@@ -30,18 +30,12 @@ export default function OgMetaGenerator() {
     clearForm,
     updateField,
     downloadMeta
-  } = useOgMetaGenerator(
-    {
-      onSuccess: (message) => console.log(message),
-      onError: (error) => console.error(error)
-    },
-    tAll
-  )
+  } = useOgMetaGenerator({}, tAll)
 
   const [outputFormat, setOutputFormat] = useState("raw")
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       <TemplatesPanel

@@ -21,19 +21,19 @@ const InfoSection: React.FC = () => {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {tExample("plainText")}
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
-                  hello world & symbols
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
+                  {tExample("exampleText")}
                 </code>
               </div>
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {tExample("encodedUrl")}
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
-                  hello%20world%20%26%20symbols
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
+                  {tExample("exampleEncoded")}
                 </code>
               </div>
             </div>
@@ -45,18 +45,18 @@ const InfoSection: React.FC = () => {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {tExample("plainText")}
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
                   name=Ali Valiyev&city=Toshkent
                 </code>
               </div>
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {tExample("encodedUrl")}
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
                   name%3DAli%20Valiyev%26city%3DToshkent
                 </code>
               </div>

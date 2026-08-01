@@ -30,7 +30,7 @@ const SystemInfoPanel: React.FC<SystemInfoPanelProps> = ({ systemInfo }) => {
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
           <Cpu className="h-5 w-5 text-success" />
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
@@ -41,9 +41,7 @@ const SystemInfoPanel: React.FC<SystemInfoPanelProps> = ({ systemInfo }) => {
             variant="ghost"
           />
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 

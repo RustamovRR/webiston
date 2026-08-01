@@ -1,1 +1,1 @@
-export { default } from "./ColorConverter"
+export { ColorConverter, default } from "./ColorConverter"

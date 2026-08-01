@@ -252,7 +252,7 @@ function generateFAQSchema(locale: string = "uz") {
         {
           question: "WiFi QR kod qanday yaratiladi?",
           answer:
-            "WIFI:T:WPA;S:TarmoqNomi;P:Parol;; ko'rinishidagi standart matnni kiriting — vosita uni WiFi kod sifatida taniydi va QR kod avtomatik yaratiladi."
+            "Kirish turidan WiFi'ni tanlang, tarmoq nomi (SSID) va parolni kiriting — QR kod avtomatik yaratiladi. Skaner qilgan telefon tarmoqqa o'zi ulanadi."
         }
       ]
     },
@@ -276,7 +276,7 @@ function generateFAQSchema(locale: string = "uz") {
         {
           question: "How to create WiFi QR code?",
           answer:
-            "Enter the standard string WIFI:T:WPA;S:NetworkName;P:Password;; — the tool recognises it as a WiFi payload and generates the QR code automatically."
+            "Choose WiFi as the input type, enter the network name (SSID) and password — the QR code is generated automatically. A phone that scans it joins the network by itself."
         }
       ]
     }

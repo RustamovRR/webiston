@@ -319,7 +319,7 @@ export const useIPInfo = () => {
   useEffect(() => {
     getCurrentIP()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getCurrentIP])
 
   const isValidIP = (ip: string): boolean => {
     const ipv4Regex =
@@ -336,14 +336,10 @@ export const useIPInfo = () => {
       const provider = API_PROVIDERS[i]
 
       try {
-        console.log(`Trying provider: ${provider.name}`)
         const response = await fetch(provider.url(ip))
 
         if (!response.ok) {
           if (response.status === 429) {
-            console.log(
-              `Rate limit exceeded for ${provider.name}, trying next provider...`
-            )
             continue
           }
           throw new Error(`HTTP ${response.status}`)
@@ -353,10 +349,6 @@ export const useIPInfo = () => {
 
         // Check for API-specific error responses
         if (data.error || data.status === "fail") {
-          console.log(
-            `API error from ${provider.name}:`,
-            data.error || data.message
-          )
           continue
         }
 
@@ -364,9 +356,7 @@ export const useIPInfo = () => {
         const transformedData = provider.transform(data)
         setCurrentProviderIndex(i)
         return transformedData
-      } catch (err) {
-        console.log(`Error with ${provider.name}:`, err)
-      }
+      } catch (_err) {}
     }
 
     throw new Error("All providers failed")

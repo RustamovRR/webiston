@@ -14,20 +14,26 @@
  * back with real forms behind it, or not at all.
  */
 
+import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
 import { Textarea } from "@webiston/ui/primitives/textarea"
 import { X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
-import { QrPreview, StylePanel } from "./components"
+import { QrPreview, StylePanel, WifiFields } from "./components"
 import { useQrGenerator } from "./hooks/useQrGenerator"
+import type { QrInputMode } from "./stores/qrDraftStore"
 
 const QrGenerator = () => {
   const t = useTranslations("QrGeneratorPage")
   const {
     value,
     setValue,
+    mode,
+    setMode,
+    wifi,
+    updateWifi,
     style,
     updateStyle,
     reset,
@@ -83,15 +89,33 @@ const QrGenerator = () => {
                 </span>
               )}
             </div>
-            <div className="p-5">
-              <Textarea
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                placeholder={t("InputPanel.placeholder")}
-                aria-label={t("InputPanel.title")}
-                rows={4}
-                className="resize-y font-mono text-sm"
+            <div className="space-y-4 p-5">
+              {/* Two modes, not five. URL, text, phone and SMS all live
+                  happily in the free box; WiFi is the one format nobody can
+                  hand-write (reserved-character escaping), so it alone earns
+                  fields. The old five-tab strip that changed only a caption
+                  is exactly what this is not. */}
+              <SegmentedControl<QrInputMode>
+                label={t("InputPanel.mode.label")}
+                value={mode}
+                onChange={setMode}
+                options={[
+                  { value: "text", label: t("InputPanel.mode.text") },
+                  { value: "wifi", label: t("InputPanel.mode.wifi") }
+                ]}
               />
+              {mode === "text" ? (
+                <Textarea
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                  placeholder={t("InputPanel.placeholder")}
+                  aria-label={t("InputPanel.title")}
+                  rows={4}
+                  className="resize-y font-mono text-sm"
+                />
+              ) : (
+                <WifiFields wifi={wifi} onChange={updateWifi} />
+              )}
             </div>
           </div>
         </div>

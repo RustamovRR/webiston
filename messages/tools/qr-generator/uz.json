@@ -54,7 +54,20 @@
     "InputPanel": {
       "title": "QR Kod Kirish",
       "placeholder": "QR kod uchun matn kiriting...\n\nMisol:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Telefon: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Matn: Salom dunyo!",
-      "status": "QR yaratishga tayyor"
+      "status": "QR yaratishga tayyor",
+      "mode": {
+        "label": "Kirish turi",
+        "text": "Matn / havola",
+        "wifi": "WiFi"
+      },
+      "wifi": {
+        "ssid": "Tarmoq nomi (SSID)",
+        "ssidPlaceholder": "Masalan: Uyim_5G",
+        "password": "Parol",
+        "security": "Xavfsizlik turi",
+        "open": "Ochiq",
+        "hidden": "Yashirin tarmoq"
+      }
     },
     "ResultsPanel": {
       "title": "QR Kod Ma'lumotlari",

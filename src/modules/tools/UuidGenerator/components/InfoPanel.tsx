@@ -11,7 +11,7 @@ const InfoPanel: React.FC = () => {
   return (
     <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
       <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-        <Hash size={20} className="text-blue-400" />
+        <Hash size={20} className="text-info" />
         {t("title")}
       </h3>
 
@@ -84,7 +84,7 @@ const InfoPanel: React.FC = () => {
       {/* Format Types Info */}
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg bg-blue-500/10 p-4">
-          <div className="mb-2 font-medium text-blue-400">
+          <div className="mb-2 font-medium text-info">
             {tFormatInfo("standard.name")}
           </div>
           <div className="mb-2 text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ const InfoPanel: React.FC = () => {
         </div>
 
         <div className="rounded-lg bg-green-500/10 p-4">
-          <div className="mb-2 font-medium text-green-400">
+          <div className="mb-2 font-medium text-success">
             {tFormatInfo("compact.name")}
           </div>
           <div className="mb-2 text-sm text-muted-foreground">
@@ -120,7 +120,7 @@ const InfoPanel: React.FC = () => {
         </div>
 
         <div className="rounded-lg bg-orange-500/10 p-4">
-          <div className="mb-2 font-medium text-orange-400">
+          <div className="mb-2 font-medium text-warning">
             {tFormatInfo("uppercase.name")}
           </div>
           <div className="mb-2 text-sm text-muted-foreground">

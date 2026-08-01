@@ -39,7 +39,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="ml-2 text-sm font-medium text-foreground">
             {t("title")}
           </span>
           <div className="ml-auto flex items-center gap-2">
@@ -69,7 +69,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
               <ShimmerButton
                 onClick={onToggleFullscreen}
                 disabled={isLoading}
-                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                className="border-input w-full border !bg-white !text-foreground hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
                 variant="outline"
               >
                 {isFullscreen
@@ -80,14 +80,14 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="grid gap-3 sm:grid-cols-2">
               <ShimmerButton
                 onClick={onLoadSample}
-                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                className="border-input w-full border !bg-white !text-foreground hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
                 variant="outline"
               >
                 {t("demoDataButton")}
               </ShimmerButton>
               <ShimmerButton
                 onClick={onDownload}
-                className="border-input w-full border !bg-white !text-zinc-700 hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
+                className="border-input w-full border !bg-white !text-foreground hover:!bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-zinc-300 dark:hover:!bg-zinc-700"
                 variant="outline"
               >
                 {t("downloadButton")}
@@ -98,7 +98,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           {/* Statistika */}
           {stats.length > 0 && (
             <div className="space-y-3">
-              <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <h4 className="text-sm font-medium text-foreground">
                 {t("mainIndicators")}
               </h4>
               <StatsDisplay stats={stats as any} />

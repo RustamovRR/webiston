@@ -56,7 +56,7 @@ const UrlEncoder = () => {
   // Target empty state
   const targetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
+      <div className="text-muted-foreground">
         <FileText size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">
           {mode === "encode"
@@ -73,8 +73,8 @@ const UrlEncoder = () => {
   // Target footer component
   const targetFooterComponent = displayOutput ? (
     <div className="text-xs text-muted-foreground">
-      <span className="text-zinc-500">{t("Panel.fileSize")}</span>{" "}
-      <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
+      <span className="text-muted-foreground">{t("Panel.fileSize")}</span>{" "}
+      <span className="text-foreground">{fileSizeKB} KB</span>
     </div>
   ) : null
 
@@ -100,53 +100,53 @@ const UrlEncoder = () => {
 
         {/* URL Info Section */}
         <div className="rounded-lg border border-border/30 bg-muted/50 p-4">
-          <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+          <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
             <Link size={16} className="text-indigo-400" />
             {t("Panel.urlStructure")}
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2">
-              <span className="min-w-[80px] font-medium text-zinc-700 dark:text-zinc-300">
-                Protocol:
+              <span className="min-w-[80px] font-medium text-foreground">
+                {t("Info.urlStructure.protocol")}:
               </span>
-              <code className="rounded bg-zinc-200/50 px-2 py-1 text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200">
+              <code className="rounded bg-muted/50 px-2 py-1 text-foreground">
                 {result.urlInfo.protocol}
               </code>
             </div>
             <div className="flex items-center gap-2">
-              <span className="min-w-[80px] font-medium text-zinc-700 dark:text-zinc-300">
-                Hostname:
+              <span className="min-w-[80px] font-medium text-foreground">
+                {t("Info.urlStructure.hostname")}:
               </span>
-              <code className="rounded bg-zinc-200/50 px-2 py-1 text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200">
+              <code className="rounded bg-muted/50 px-2 py-1 text-foreground">
                 {result.urlInfo.hostname}
               </code>
             </div>
             {result.urlInfo.pathname && (
               <div className="flex items-center gap-2">
-                <span className="min-w-[80px] font-medium text-zinc-700 dark:text-zinc-300">
-                  Path:
+                <span className="min-w-[80px] font-medium text-foreground">
+                  {t("Info.urlStructure.path")}:
                 </span>
-                <code className="rounded bg-zinc-200/50 px-2 py-1 text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200">
+                <code className="rounded bg-muted/50 px-2 py-1 text-foreground">
                   {result.urlInfo.pathname}
                 </code>
               </div>
             )}
             {result.urlInfo.search && (
               <div className="flex items-center gap-2">
-                <span className="min-w-[80px] font-medium text-zinc-700 dark:text-zinc-300">
-                  Query:
+                <span className="min-w-[80px] font-medium text-foreground">
+                  {t("Info.urlStructure.query")}:
                 </span>
-                <code className="rounded bg-zinc-200/50 px-2 py-1 text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200">
+                <code className="rounded bg-muted/50 px-2 py-1 text-foreground">
                   {result.urlInfo.search}
                 </code>
               </div>
             )}
             {result.urlInfo.hash && (
               <div className="flex items-center gap-2">
-                <span className="min-w-[80px] font-medium text-zinc-700 dark:text-zinc-300">
-                  Hash:
+                <span className="min-w-[80px] font-medium text-foreground">
+                  {t("Info.urlStructure.hash")}:
                 </span>
-                <code className="rounded bg-zinc-200/50 px-2 py-1 text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-200">
+                <code className="rounded bg-muted/50 px-2 py-1 text-foreground">
                   {result.urlInfo.hash}
                 </code>
               </div>
@@ -166,7 +166,7 @@ const UrlEncoder = () => {
     ) : null
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader
         title={t("ToolHeader.title")}
         description={t("ToolHeader.description")}

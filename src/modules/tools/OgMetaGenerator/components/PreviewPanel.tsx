@@ -29,15 +29,13 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -47,16 +45,16 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
           <button className="rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-info">
             Facebook
           </button>
-          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700">
+          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted">
             Twitter
           </button>
-          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700">
+          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted">
             Telegram
           </button>
-          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700">
+          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted">
             LinkedIn
           </button>
-          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-zinc-200 dark:hover:bg-zinc-700">
+          <button className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted">
             WhatsApp
           </button>
         </div>
@@ -85,7 +83,6 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                       e.currentTarget.style.display = "block"
                     }}
                     onError={(e) => {
-                      console.log("Image failed to load:", previewInfo.image)
                       e.currentTarget.style.display = "none"
                     }}
                   />
@@ -103,7 +100,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                   {previewInfo.description ||
                     "Enter description to see preview..."}
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                <div className="text-xs text-muted-foreground">
                   {previewInfo.url || "https://example.com"}
                 </div>
               </div>
@@ -140,16 +137,12 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                         e.currentTarget.style.display = "block"
                       }}
                       onError={(e) => {
-                        console.log(
-                          "Twitter image failed to load:",
-                          previewInfo.image
-                        )
                         e.currentTarget.style.display = "none"
                       }}
                     />
                   </div>
                 )}
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                <div className="text-xs text-muted-foreground">
                   {previewInfo.url || "https://example.com"}
                 </div>
               </div>
@@ -195,10 +188,6 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                         e.currentTarget.style.display = "block"
                       }}
                       onError={(e) => {
-                        console.log(
-                          "Telegram image failed to load:",
-                          previewInfo.image
-                        )
                         e.currentTarget.style.display = "none"
                       }}
                     />
@@ -242,10 +231,6 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                       e.currentTarget.style.display = "block"
                     }}
                     onError={(e) => {
-                      console.log(
-                        "LinkedIn image failed to load:",
-                        previewInfo.image
-                      )
                       e.currentTarget.style.display = "none"
                     }}
                   />
@@ -259,7 +244,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                   {previewInfo.description ||
                     "Enter description to see preview..."}
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                <div className="text-xs text-muted-foreground">
                   {previewInfo.url || "https://example.com"}
                 </div>
               </div>
@@ -305,10 +290,6 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ previewInfo }) => {
                         e.currentTarget.style.display = "block"
                       }}
                       onError={(e) => {
-                        console.log(
-                          "WhatsApp image failed to load:",
-                          previewInfo.image
-                        )
                         e.currentTarget.style.display = "none"
                       }}
                     />

@@ -36,10 +36,7 @@ const HashGenerator = () => {
     downloadHashes,
     downloadAsJson,
     getAlgorithmInfo
-  } = useHashGenerator({
-    onSuccess: (message) => console.log(message),
-    onError: (error) => console.error(error)
-  })
+  } = useHashGenerator({})
 
   const handleFileUploadChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -89,9 +86,7 @@ const HashGenerator = () => {
     hashResults.length > 0 ? (
       <div className="text-xs text-muted-foreground">
         <span>{t("ResultsPanel.hashCount") || "Hash soni"}:</span>{" "}
-        <span className="text-zinc-700 dark:text-zinc-300">
-          {hashResults.length}
-        </span>
+        <span className="text-foreground">{hashResults.length}</span>
       </div>
     ) : null
 
@@ -99,13 +94,13 @@ const HashGenerator = () => {
   const customSourceContent =
     activeTab === "file" ? (
       <div className="flex h-full items-center justify-center">
-        <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-border p-8 transition-colors hover:border-zinc-400 dark:hover:border-zinc-500">
+        <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-border p-8 transition-colors hover:border-border-strong">
           <Upload size={48} className="text-muted-foreground" />
           <div className="text-center">
-            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <p className="text-sm font-medium text-foreground">
               {t("InputPanel.selectFile") || "Faylni tanlang"}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               {t("InputPanel.supportedFormats") ||
                 "TXT, JSON, CSV, MD, XML, LOG (10MB gacha)"}
             </p>
@@ -121,7 +116,7 @@ const HashGenerator = () => {
     ) : undefined
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader
         title={t("ToolHeader.title") || "Hash Generator"}
         description={

@@ -34,10 +34,8 @@ const DeviceTypesPanel: React.FC<DeviceTypesPanelProps> = ({
             }`}
           >
             <div>
-              <div className="font-medium text-zinc-700 dark:text-zinc-300">
-                {device.name}
-              </div>
-              <div className="text-xs text-zinc-500 dark:text-zinc-500">
+              <div className="font-medium text-foreground">{device.name}</div>
+              <div className="text-xs text-muted-foreground">
                 {device.range}
               </div>
             </div>

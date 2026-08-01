@@ -54,7 +54,20 @@
     "InputPanel": {
       "title": "QR Code Input",
       "placeholder": "Enter text for QR code...\n\nExamples:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Phone: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Text: Hello world!",
-      "status": "Ready to generate QR"
+      "status": "Ready to generate QR",
+      "mode": {
+        "label": "Input type",
+        "text": "Text / link",
+        "wifi": "WiFi"
+      },
+      "wifi": {
+        "ssid": "Network name (SSID)",
+        "ssidPlaceholder": "e.g. Home_5G",
+        "password": "Password",
+        "security": "Security type",
+        "open": "Open",
+        "hidden": "Hidden network"
+      }
     },
     "ResultsPanel": {
       "title": "QR Code Information",

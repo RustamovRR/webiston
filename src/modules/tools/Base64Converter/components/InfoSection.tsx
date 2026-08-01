@@ -15,18 +15,18 @@ const InfoSection: React.FC = () => {
         </h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="mb-2 text-xs text-zinc-500">
+            <p className="mb-2 text-xs text-muted-foreground">
               {t("formatExample.plainText")}
             </p>
-            <code className="block rounded bg-zinc-300/50 p-2 font-mono text-sm text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+            <code className="block rounded bg-zinc-300/50 p-2 font-mono text-sm text-foreground">
               {t("formatExample.exampleText")}
             </code>
           </div>
           <div>
-            <p className="mb-2 text-xs text-zinc-500">
+            <p className="mb-2 text-xs text-muted-foreground">
               {t("formatExample.base64Encoded")}
             </p>
-            <code className="block rounded bg-zinc-300/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+            <code className="block rounded bg-zinc-300/50 p-2 font-mono text-sm break-all text-foreground">
               {t("formatExample.exampleEncoded")}
             </code>
           </div>

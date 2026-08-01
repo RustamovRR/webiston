@@ -28,7 +28,7 @@ export default function LoremIpsumPage() {
   } = useLoremIpsum()
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       <ConfigPanel
@@ -65,7 +65,7 @@ export default function LoremIpsumPage() {
             <div className="flex items-center gap-2">
               <Button onClick={handleCopy} variant="ghost" size="sm">
                 {copied ? (
-                  <Check size={16} className="text-green-500" />
+                  <Check size={16} className="text-success" />
                 ) : (
                   <Copy size={16} />
                 )}

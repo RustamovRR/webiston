@@ -35,18 +35,18 @@ const InfoSection: React.FC = () => {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {t("structureDescription")}:
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
                   header.payload.signature
                 </code>
               </div>
               <div>
-                <div className="mb-1 text-xs text-zinc-500">
+                <div className="mb-1 text-xs text-muted-foreground">
                   {t("example")}:
                 </div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm break-all text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm break-all text-foreground">
                   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
                 </code>
               </div>
@@ -59,14 +59,18 @@ const InfoSection: React.FC = () => {
             </div>
             <div className="space-y-3">
               <div>
-                <div className="mb-1 text-xs text-zinc-500">Header:</div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  Header:
+                </div>
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm text-foreground">
                   {headerExample}
                 </code>
               </div>
               <div>
-                <div className="mb-1 text-xs text-zinc-500">Payload:</div>
-                <code className="block rounded bg-zinc-200/50 p-2 font-mono text-sm text-zinc-700 dark:bg-zinc-900/50 dark:text-zinc-300">
+                <div className="mb-1 text-xs text-muted-foreground">
+                  Payload:
+                </div>
+                <code className="block rounded bg-muted/50 p-2 font-mono text-sm text-foreground">
                   {payloadExample}
                 </code>
               </div>

@@ -110,7 +110,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
@@ -125,7 +125,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="grid gap-6 lg:grid-cols-2">
           {/* UUID Version */}
           <div className="space-y-3">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-foreground">
               {t("versionLabel")}
             </span>
             <GradientTabs
@@ -145,16 +145,16 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <span
                   className={cn(
                     "text-xs font-medium",
-                    currentVersionInfo.security === "High" && "text-green-400",
+                    currentVersionInfo.security === "High" && "text-success",
                     currentVersionInfo.security === "Medium" &&
                       "text-yellow-400",
-                    currentVersionInfo.security === "None" && "text-red-400"
+                    currentVersionInfo.security === "None" && "text-destructive"
                   )}
                 >
                   {currentVersionInfo.security}
                 </span>
                 {currentVersionInfo.recommended && (
-                  <span className="rounded bg-green-900/30 px-1.5 py-0.5 text-xs text-green-400">
+                  <span className="rounded bg-green-900/30 px-1.5 py-0.5 text-xs text-success">
                     Tavsiya
                   </span>
                 )}
@@ -164,7 +164,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
           {/* UUID Format */}
           <div className="space-y-3">
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-sm font-medium text-foreground">
               {t("formatLabel")}
             </span>
             <GradientTabs
@@ -191,7 +191,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="flex items-center gap-3">
               <label
                 htmlFor="configpanel-countlabel"
-                className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="text-sm font-medium text-foreground"
               >
                 {t("countLabel")}
               </label>

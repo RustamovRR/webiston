@@ -44,15 +44,13 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -75,7 +73,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
             <Button onClick={onCopyAll} variant="outline" size="sm">
               {copied === "all" ? (
-                <Check className="mr-2 h-4 w-4 text-green-500" />
+                <Check className="mr-2 h-4 w-4 text-success" />
               ) : (
                 <Copy className="mr-2 h-4 w-4" />
               )}

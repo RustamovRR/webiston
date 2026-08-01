@@ -72,10 +72,9 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
   }
 
   const getScoreIcon = (score: number) => {
-    if (score >= 80) return <CheckCircle size={20} className="text-green-500" />
-    if (score >= 60)
-      return <AlertTriangle size={20} className="text-yellow-500" />
-    return <XCircle size={20} className="text-red-500" />
+    if (score >= 80) return <CheckCircle size={20} className="text-success" />
+    if (score >= 60) return <AlertTriangle size={20} className="text-warning" />
+    return <XCircle size={20} className="text-destructive" />
   }
 
   const validationChecks = [
@@ -158,15 +157,13 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-blue-500" />
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <TrendingUp size={16} className="text-info" />
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
@@ -177,10 +174,10 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
             <div className="flex items-center gap-3">
               {getScoreIcon(seoScore)}
               <div>
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <div className="text-sm font-medium text-foreground">
                   {t("seoScore")}
                 </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                <div className="text-xs text-muted-foreground">
                   {t("metaOptimization")}
                 </div>
               </div>
@@ -189,7 +186,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
               <div className={`text-2xl font-bold ${getScoreColor(seoScore)}`}>
                 {seoScore}/100
               </div>
-              <div className="text-xs text-zinc-500 dark:text-zinc-500">
+              <div className="text-xs text-muted-foreground">
                 {seoScore >= 80
                   ? t("excellent")
                   : seoScore >= 60
@@ -200,7 +197,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-3 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+          <div className="mt-3 h-2 w-full rounded-full bg-muted">
             <div
               className={`h-2 rounded-full transition-all ${
                 seoScore >= 80
@@ -216,7 +213,7 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
 
         {/* Validation Checks */}
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h4 className="text-sm font-medium text-foreground">
             {t("validationChecks")}
           </h4>
           <div className="space-y-2">
@@ -227,16 +224,16 @@ const ValidationPanel: React.FC<ValidationPanelProps> = ({ metaData }) => {
               >
                 <div className="flex items-center gap-3">
                   {check.status === "perfect" && (
-                    <CheckCircle size={16} className="text-green-500" />
+                    <CheckCircle size={16} className="text-success" />
                   )}
                   {check.status === "warning" && (
-                    <AlertTriangle size={16} className="text-yellow-500" />
+                    <AlertTriangle size={16} className="text-warning" />
                   )}
                   {check.status === "error" && (
-                    <XCircle size={16} className="text-red-500" />
+                    <XCircle size={16} className="text-destructive" />
                   )}
                   <div>
-                    <div className="teext-zin-700 text-sm font-medium dark:text-zinc-300">
+                    <div className="teext-zin-700 text-sm font-medium">
                       {check.label}
                     </div>
                     <div

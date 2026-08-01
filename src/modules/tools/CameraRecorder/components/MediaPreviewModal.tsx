@@ -90,7 +90,7 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
             {media.type === "screenshot" ? (
               imageError ? (
                 <div className="flex h-64 w-96 items-center justify-center bg-muted">
-                  <p className="text-zinc-500">{t("failedToLoad")}</p>
+                  <p className="text-muted-foreground">{t("failedToLoad")}</p>
                 </div>
               ) : (
                 <div className="relative">
@@ -111,13 +111,17 @@ export function MediaPreviewModal({ media, onClose }: MediaPreviewModalProps) {
                   <div className="flex h-64 w-96 items-center justify-center bg-muted">
                     <div className="flex items-center gap-2">
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-                      <p className="text-zinc-500">{t("loadingVideo")}</p>
+                      <p className="text-muted-foreground">
+                        {t("loadingVideo")}
+                      </p>
                     </div>
                   </div>
                 )}
                 {videoError ? (
                   <div className="flex h-64 w-96 items-center justify-center bg-muted">
-                    <p className="text-zinc-500">{t("failedToLoadVideo")}</p>
+                    <p className="text-muted-foreground">
+                      {t("failedToLoadVideo")}
+                    </p>
                   </div>
                 ) : (
                   <video

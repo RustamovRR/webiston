@@ -55,7 +55,17 @@
         "spacesAndSymbols": "Bo'shliq va maxsus belgilar",
         "queryParameters": "Query parametrlari",
         "plainText": "Asl holati:",
-        "encodedUrl": "Kodlangan:"
+        "encodedUrl": "Kodlangan:",
+        "exampleText": "salom dunyo & belgilar",
+        "exampleEncoded": "salom%20dunyo%20%26%20belgilar"
+      },
+      "urlStructure": {
+        "title": "URL tuzilishi",
+        "protocol": "Protokol",
+        "hostname": "Host nomi",
+        "path": "Yo'l",
+        "query": "So'rov",
+        "hash": "Hash"
       }
     },
     "Errors": {

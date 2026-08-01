@@ -25,16 +25,14 @@ export default function DeviceInfoPage() {
     copyAllInfo,
     copySection
   } = useDeviceInfo({
-    onSuccess: (message) => {
-      console.log("Success:", message)
-    },
+    onSuccess: (_message) => {},
     onError: (error) => {
       console.error("Error:", error)
     }
   })
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       <ControlPanel

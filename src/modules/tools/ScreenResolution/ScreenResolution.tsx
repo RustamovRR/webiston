@@ -35,7 +35,7 @@ export default function ScreenResolution() {
   const stats = screenInfo ? getStats(tStats) : []
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4">
+    <div className="mx-auto w-full max-w-[1536px] px-4">
       <ToolHeader title={t("title")} description={t("description")} />
 
       <div className="relative grid gap-6 lg:grid-cols-2">

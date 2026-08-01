@@ -14,7 +14,7 @@ export default function CurrentIpPanel({ currentIP }: CurrentIpPanelProps) {
   return (
     <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
       <div className="border-b border-border bg-muted/50 px-4 py-3">
-        <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <h3 className="text-sm font-medium text-foreground">
           {t("yourIpTitle")}
         </h3>
       </div>

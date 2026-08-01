@@ -1,175 +1,128 @@
+"use client"
+
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { Palette } from "lucide-react"
 import { useTranslations } from "next-intl"
-import type React from "react"
-import {
-  TerminalInput,
-  type TerminalInputAction
-} from "@/components/shared/TerminalInput"
+
 import type { ColorFormats } from "../hooks/useColorConverter"
-import ColorFormatItem from "./ColorFormatItem"
+import { ColorFormatItem } from "./ColorFormatItem"
+
+/**
+ * Every representation of the colour, each row one click from the clipboard.
+ * The header's copy button takes ALL of them as JSON — the "give me
+ * everything" path a designer handing off to a developer actually uses.
+ */
 
 interface ColorFormatsPanelProps {
   colorFormats: ColorFormats | null
 }
 
-const ColorFormatsPanel: React.FC<ColorFormatsPanelProps> = ({
-  colorFormats
-}) => {
+/** Row accents cycle through the data-visualisation palette. */
+const ACCENTS = [
+  "text-chart-1",
+  "text-chart-2",
+  "text-chart-3",
+  "text-chart-4",
+  "text-chart-5"
+] as const
+
+export function ColorFormatsPanel({ colorFormats }: ColorFormatsPanelProps) {
   const t = useTranslations("ColorConverterPage.ColorFormats")
 
-  const actions: TerminalInputAction[] = [
-    {
-      type: "copy",
-      text: colorFormats?.isValid
-        ? JSON.stringify(
-            {
-              hex: colorFormats.hex,
-              rgb: colorFormats.rgb,
-              hsl: colorFormats.hsl,
-              rgba: colorFormats.rgba,
-              hsla: colorFormats.hsla,
-              lab: colorFormats.lab,
-              lch: colorFormats.lch,
-              oklab: colorFormats.oklab,
-              oklch: colorFormats.oklch,
-              rgbValues: colorFormats.rgbValues,
-              hslValues: colorFormats.hslValues,
-              labValues: colorFormats.labValues,
-              lchValues: colorFormats.lchValues,
-              oklabValues: colorFormats.oklabValues,
-              oklchValues: colorFormats.oklchValues
-            },
-            null,
-            2
-          )
-        : "",
-      disabled: !colorFormats?.isValid
-    }
-  ]
-
-  const formatCount = 9 // HEX, RGB, HSL, RGBA, HSLA, Lab, LCH, OKLab, OKLCH
-
-  const stats = colorFormats?.isValid
-    ? [
-        { label: t("formats") || "Formatlar", value: formatCount },
-        {
-          label: t("characters") || "Belgilar",
-          value: JSON.stringify(colorFormats).length
-        }
-      ]
-    : [
-        { label: t("formats") || "Formatlar", value: 0 },
-        { label: t("characters") || "Belgilar", value: 0 }
-      ]
-
-  const emptyState = (
-    <div className="flex h-[380px] items-center justify-center p-8 text-center">
-      <div className="text-muted-foreground">
-        <Palette size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">
-          {t("enterValidColor") || "To'g'ri HEX rang kiriting..."}
-        </p>
-        <p className="mt-2 text-xs opacity-75">
-          {t("formatsWillAppear") || "Rang formatlar bu yerda ko'rinadi"}
-        </p>
-      </div>
-    </div>
-  )
-
-  // Color formats data array
-  const colorFormatItems = colorFormats?.isValid
+  const rows = colorFormats
     ? [
         {
           title: "HEX",
           value: colorFormats.hex,
-          description:
-            t("hexDescription") || "Web dasturlashda eng keng tarqalgan",
-          colorClass: "text-info"
+          description: t("hexDescription")
         },
         {
           title: "RGB",
           value: colorFormats.rgb,
-          description: `R: ${colorFormats.rgbValues.r}, G: ${colorFormats.rgbValues.g}, B: ${colorFormats.rgbValues.b}`,
-          colorClass: "text-success"
+          description: `R ${colorFormats.rgbValues.r} · G ${colorFormats.rgbValues.g} · B ${colorFormats.rgbValues.b}`
         },
         {
           title: "HSL",
           value: colorFormats.hsl,
-          description: `H: ${colorFormats.hslValues.h}°, S: ${colorFormats.hslValues.s}%, L: ${colorFormats.hslValues.l}%`,
-          colorClass: "text-purple-600 dark:text-purple-400"
+          description: `H ${colorFormats.hslValues.h}° · S ${colorFormats.hslValues.s}% · L ${colorFormats.hslValues.l}%`
         },
         {
           title: "RGBA",
           value: colorFormats.rgba,
-          description: t("rgbaDescription") || "Alpha kanal bilan RGB",
-          colorClass: "text-teal-600 dark:text-teal-400"
+          description: t("rgbaDescription")
         },
         {
           title: "HSLA",
           value: colorFormats.hsla,
-          description: t("hslaDescription") || "Alpha kanal bilan HSL",
-          colorClass: "text-indigo-600 dark:text-indigo-400"
+          description: t("hslaDescription")
         },
         {
           title: "Lab",
           value: colorFormats.lab,
-          description: `L: ${colorFormats.labValues.l}, a: ${colorFormats.labValues.a}, b: ${colorFormats.labValues.b}`,
-          colorClass: "text-pink-600 dark:text-pink-400"
+          description: `L ${colorFormats.labValues.l} · a ${colorFormats.labValues.a} · b ${colorFormats.labValues.b}`
         },
         {
           title: "LCH",
           value: colorFormats.lch,
-          description: `L: ${colorFormats.lchValues.l}, C: ${colorFormats.lchValues.c}, H: ${colorFormats.lchValues.h}°`,
-          colorClass: "text-destructive"
+          description: `L ${colorFormats.lchValues.l} · C ${colorFormats.lchValues.c} · H ${colorFormats.lchValues.h}°`
         },
         {
           title: "OKLab",
           value: colorFormats.oklab,
-          description: `L: ${colorFormats.oklabValues.l}, a: ${colorFormats.oklabValues.a}, b: ${colorFormats.oklabValues.b}`,
-          colorClass: "text-success"
+          description: `L ${colorFormats.oklabValues.l} · a ${colorFormats.oklabValues.a} · b ${colorFormats.oklabValues.b}`
         },
         {
           title: "OKLCH",
           value: colorFormats.oklch,
-          description: `L: ${colorFormats.oklchValues.l}, C: ${colorFormats.oklchValues.c}, H: ${colorFormats.oklchValues.h}°`,
-          colorClass: "text-cyan-600 dark:text-cyan-400"
+          description: `L ${colorFormats.oklchValues.l} · C ${colorFormats.oklchValues.c} · H ${colorFormats.oklchValues.h}°`
         }
       ]
     : []
 
-  const handleCopySuccess = (value: string) => {
-    console.log("Copied:", value)
-  }
-
-  const formatContent = colorFormats?.isValid && (
-    <div className="max-h-[380px] space-y-3 overflow-y-auto p-4">
-      {colorFormatItems.map((item, index) => (
-        <ColorFormatItem
-          key={index}
-          title={item.title}
-          value={item.value}
-          description={item.description}
-          colorClass={item.colorClass}
-          onCopy={handleCopySuccess}
-        />
-      ))}
-    </div>
-  )
+  const allFormats = colorFormats
+    ? JSON.stringify(
+        Object.fromEntries(
+          rows.map((row) => [row.title.toLowerCase(), row.value])
+        ),
+        null,
+        2
+      )
+    : ""
 
   return (
-    <TerminalInput
-      title={t("title") || "Formatlar va Ma'lumotlar"}
-      actions={actions}
-      showStats={true}
-      stats={stats}
-      statsPosition="footer"
-      customContent={colorFormats?.isValid ? formatContent : emptyState}
-      showShadow={true}
-      animate={true}
-      variant="default"
-      className="h-full"
-    />
+    <div className="rounded-xl border border-border bg-card">
+      <div className="flex items-center justify-between border-border border-b px-5 py-3">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="size-[6px] shrink-0 rounded-[2px] bg-primary"
+          />
+          <h2 className="font-medium text-base text-foreground">
+            {t("title")}
+          </h2>
+        </div>
+        <CopyButton text={allFormats} disabled={!colorFormats} />
+      </div>
+
+      {colorFormats ? (
+        <div className="max-h-[480px] space-y-2.5 overflow-y-auto p-5">
+          {rows.map((row, index) => (
+            <ColorFormatItem
+              key={row.title}
+              title={row.title}
+              value={row.value}
+              description={row.description}
+              accentClass={ACCENTS[index % ACCENTS.length]}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex min-h-[320px] flex-col items-center justify-center p-8 text-center text-muted-foreground">
+          <Palette size={44} className="opacity-40" aria-hidden="true" />
+          <p className="mt-3 text-sm">{t("enterValidColor")}</p>
+          <p className="mt-1 text-xs opacity-75">{t("formatsWillAppear")}</p>
+        </div>
+      )}
+    </div>
   )
 }
-
-export default ColorFormatsPanel

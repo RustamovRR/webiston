@@ -19,7 +19,7 @@ const TokenInfoCards: React.FC<TokenInfoProps> = ({ tokenInfo }) => {
 
   return (
     <div className="animate-in slide-in-from-top-1 fade-in mb-4 rounded-lg border border-border bg-card/80 p-4 backdrop-blur-sm transition-all duration-200 duration-300 hover:shadow-md">
-      <div className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <div className="mb-3 text-sm font-medium text-foreground">
         Token Status
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
@@ -37,7 +37,7 @@ const TokenInfoCards: React.FC<TokenInfoProps> = ({ tokenInfo }) => {
                 tokenInfo.isExpired ? "text-destructive" : "text-success"
               }
             />
-            <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-xs font-medium text-foreground">
               {t("expiration")}
             </span>
           </div>
@@ -56,7 +56,7 @@ const TokenInfoCards: React.FC<TokenInfoProps> = ({ tokenInfo }) => {
         <div className="rounded-lg border border-info/50 bg-info/50 p-3">
           <div className="mb-1 flex items-center gap-2">
             <Shield size={14} className="text-info" />
-            <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-xs font-medium text-foreground">
               {t("algorithm")}
             </span>
           </div>
@@ -71,7 +71,7 @@ const TokenInfoCards: React.FC<TokenInfoProps> = ({ tokenInfo }) => {
         <div className="rounded-lg border border-warning/50 bg-warning/50 p-3">
           <div className="mb-1 flex items-center gap-2">
             <Key size={14} className="text-warning" />
-            <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-xs font-medium text-foreground">
               {t("issued")}
             </span>
           </div>

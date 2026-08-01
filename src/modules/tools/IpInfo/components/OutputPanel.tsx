@@ -247,7 +247,7 @@ export default function OutputPanel({ ipInfo }: OutputPanelProps) {
               </div>
             </div>
           ) : (
-            <div className="flex h-40 items-center justify-center text-zinc-500 dark:text-zinc-500">
+            <div className="flex h-40 items-center justify-center text-muted-foreground">
               <div className="text-center">
                 <Search className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>{t("waitingTitle")}</p>
@@ -261,7 +261,7 @@ export default function OutputPanel({ ipInfo }: OutputPanelProps) {
       {ipInfo && (
         <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
           <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-3">
-            <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <h4 className="text-sm font-medium text-foreground">
               {t("jsonDataTitle")}
             </h4>
             <CopyButton text={JSON.stringify(ipInfo, null, 2)} />

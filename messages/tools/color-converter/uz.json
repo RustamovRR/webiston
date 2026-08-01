@@ -24,7 +24,8 @@
       "format": "Format",
       "length": "Uzunlik",
       "valid": "Yaroqli",
-      "opacity": "Shaffoflik"
+      "opacity": "Shaffoflik",
+      "placeholder": "#0d5a6b, rgb(13, 90, 107), oklch(0.45 0.07 217), teal…"
     },
     "ColorFormats": {
       "title": "Formatlar va Ma'lumotlar",
@@ -60,7 +61,9 @@
       "clearHistory": "Tarixni tozalash",
       "clearFavorites": "Sevimlilarni tozalash",
       "noHistory": "Hali tarix yo'q",
-      "noFavorites": "Hali sevimli ranglar yo'q"
+      "noFavorites": "Hali sevimli ranglar yo'q",
+      "addFavorite": "Sevimlilarga qo'shish",
+      "removeFavorite": "Sevimlilardan olib tashlash"
     },
     "GradientGenerator": {
       "title": "Gradient Generator",
@@ -71,7 +74,13 @@
       "colorStops": "Rang nuqtalari:",
       "addColor": "Rang qo'shish",
       "exportOptions": "Export variantlari:",
-      "noValidColor": "To'g'ri rang kiriting"
+      "noValidColor": "To'g'ri rang kiriting",
+      "types": {
+        "linear": "Chiziqli",
+        "radial": "Radial",
+        "conic": "Konus"
+      },
+      "removeColor": "Rangni olib tashlash"
     },
     "Info": {
       "examples": {

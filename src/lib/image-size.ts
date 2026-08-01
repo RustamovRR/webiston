@@ -89,6 +89,6 @@ export function getPublicImageSize(src: string): ImageSize | null {
   if (!buf) return null
 
   const size = pngSize(buf) ?? jpegSize(buf)
-  if (!size || !size.width || !size.height) return null
+  if (!size?.width || !size.height) return null
   return size
 }

@@ -9,7 +9,7 @@ const InfoSection: React.FC = () => {
   return (
     <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
       <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-        <Zap size={20} className="text-blue-400" />
+        <Zap size={20} className="text-info" />
         {t("title")}
       </h3>
 
@@ -129,7 +129,7 @@ const InfoSection: React.FC = () => {
         </div>
 
         <div className="rounded-lg bg-orange-500/10 p-4">
-          <div className="mb-2 font-medium text-orange-600 dark:text-orange-400">
+          <div className="mb-2 font-medium text-warning">
             {t("metaTypes.schemaTitle")}
           </div>
           <div className="text-sm text-muted-foreground">

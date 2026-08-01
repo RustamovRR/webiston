@@ -69,7 +69,7 @@ export function AudioVisualizer({
 
   return (
     <div
-      className={`rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
+      className={`rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700  ${className}`}
     >
       <canvas
         ref={canvasRef}

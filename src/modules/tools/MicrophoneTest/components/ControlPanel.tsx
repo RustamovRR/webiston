@@ -45,7 +45,7 @@ export function ControlPanel({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
@@ -53,7 +53,7 @@ export function ControlPanel({
           <div
             className={`h-2 w-2 rounded-full ${isListening ? "bg-green-500" : "bg-zinc-500"}`}
           ></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
+          <span className="text-xs text-muted-foreground">
             {isListening ? t("status.active") : t("status.inactive")}
           </span>
         </div>
@@ -64,7 +64,7 @@ export function ControlPanel({
           <div className="md:col-span-2 lg:col-span-1">
             <label
               htmlFor="controlpanel-microphone-label"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+              className="mb-2 block text-sm font-medium text-foreground"
             >
               {t("microphone.label")}
             </label>
@@ -101,7 +101,7 @@ export function ControlPanel({
           </div>
 
           <div>
-            <span className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+            <span className="mb-2 block text-sm font-medium text-foreground">
               {t("quality.label")}
             </span>
             <div className="flex h-10 items-center rounded-lg border border-border bg-card px-3">

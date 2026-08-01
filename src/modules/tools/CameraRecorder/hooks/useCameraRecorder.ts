@@ -201,9 +201,7 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
 
         try {
           await videoRef.current.play()
-        } catch (playError) {
-          console.log("Autoplay issue, but camera should work:", playError)
-        }
+        } catch (_playError) {}
       }
 
       onSuccess?.(`${t("cameraStarted")}: ${info.width}x${info.height}`)
@@ -226,7 +224,6 @@ export const useCameraRecorder = (options: UseCameraRecorderOptions = {}) => {
       const stream = videoRef.current.srcObject as MediaStream
       stream.getTracks().forEach((track) => {
         track.stop()
-        console.log("Stopped track:", track.kind, track.label)
       })
       videoRef.current.srcObject = null
     }

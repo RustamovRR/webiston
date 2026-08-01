@@ -3,7 +3,6 @@ import { NextIntlClientProvider } from "next-intl"
 import { beforeEach, describe, expect, it } from "vitest"
 
 import messages from "../../../../messages/tools/qr-generator/uz.json"
-import { DEFAULT_STYLE } from "./constants"
 import { QrGenerator } from "./QrGenerator"
 import { useQrDraftStore } from "./stores/qrDraftStore"
 
@@ -46,7 +45,7 @@ const input = () => screen.getByRole("textbox", { name: /QR Kod Kirish/i })
 beforeEach(() => {
   // The draft store is module scope on purpose (it survives the locale
   // remount), which means it also survives between tests.
-  useQrDraftStore.setState({ value: "", style: DEFAULT_STYLE })
+  useQrDraftStore.getState().reset()
 })
 
 describe("QR generator", () => {
@@ -127,6 +126,63 @@ describe("QR generator", () => {
     // Assert — the reported bug was that this came back empty
     expect(input()).toHaveValue("https://webiston.uz/salom")
     expect(codeSvg()).not.toBeNull()
+  })
+})
+
+describe("WiFi mode", () => {
+  it("compiles the fields into a scannable WIFI payload", async () => {
+    // Arrange
+    renderTool()
+    fireEvent.click(screen.getByRole("radio", { name: "WiFi" }))
+
+    // Act — the network and its password, through the real fields
+    type(screen.getByRole("textbox", { name: /SSID/i }), "Uyim_5G")
+    type(screen.getByRole("textbox", { name: /^Parol$/i }), "juda;maxfiy")
+
+    // Assert — a code appears and the badge classifies it as WiFi. The badge
+    // label collides with the mode radio's "WiFi", so scope to the badge's
+    // mono styling by role-free text lookup inside the header.
+    expect(codeSvg()).not.toBeNull()
+    const badges = screen.getAllByText("WiFi")
+    expect(badges.length).toBeGreaterThan(1)
+  })
+
+  it("shows no code until the network has a name", () => {
+    // Arrange + Act
+    renderTool()
+    fireEvent.click(screen.getByRole("radio", { name: "WiFi" }))
+
+    // Assert — empty fields must not encode an empty WIFI: shell
+    expect(codeSvg()).toBeNull()
+  })
+
+  it("drops the password field for an open network", () => {
+    // Arrange
+    renderTool()
+    fireEvent.click(screen.getByRole("radio", { name: "WiFi" }))
+    expect(
+      screen.getByRole("textbox", { name: /^Parol$/i })
+    ).toBeInTheDocument()
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: "Ochiq" }))
+
+    // Assert
+    expect(screen.queryByRole("textbox", { name: /^Parol$/i })).toBeNull()
+  })
+
+  it("clear resets the WiFi draft too", () => {
+    // Arrange
+    renderTool()
+    fireEvent.click(screen.getByRole("radio", { name: "WiFi" }))
+    type(screen.getByRole("textbox", { name: /SSID/i }), "Uyim")
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /Tozalash/i }))
+
+    // Assert — back to the text box, fields empty behind the scenes
+    expect(screen.getByRole("radio", { name: /Matn/i })).toBeChecked()
+    expect(useQrDraftStore.getState().wifi.ssid).toBe("")
   })
 })
 

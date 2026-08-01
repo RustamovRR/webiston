@@ -35,7 +35,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
       component: (
         <button
           onClick={handleDownloadHeader}
-          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-zinc-700 dark:hover:text-zinc-200"
+          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-foreground"
           aria-label="Download Header"
         >
           <Download size={18} />
@@ -55,7 +55,7 @@ const TokenParts: React.FC<TokenPartsProps> = ({
       component: (
         <button
           onClick={handleDownloadPayload}
-          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-zinc-700 dark:hover:text-zinc-200"
+          className="cursor-pointer rounded-full p-2.5 text-muted-foreground transition-all duration-200 hover:scale-105 hover:bg-muted hover:text-foreground"
           aria-label="Download Payload"
         >
           <Download size={18} />

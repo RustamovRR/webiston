@@ -33,7 +33,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="ml-2 text-sm font-medium text-foreground">
             {t("title")}
           </span>
           <div className="ml-auto flex items-center gap-2">
@@ -52,7 +52,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
               <div className="mb-4 rounded-lg bg-muted p-4">
                 <svg
                   aria-hidden="true"
-                  className="h-12 w-12 text-zinc-500"
+                  className="h-12 w-12 text-muted-foreground"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -65,10 +65,10 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 text-lg font-medium text-zinc-700 dark:text-zinc-300">
+              <h3 className="mb-2 text-lg font-medium text-foreground">
                 {t("waitingTitle")}
               </h3>
-              <p className="mb-4 text-sm text-zinc-500 dark:text-zinc-500">
+              <p className="mb-4 text-sm text-muted-foreground">
                 {t("waitingDesc")}
               </p>
             </div>
@@ -104,7 +104,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
 
                 {/* Viewport ma'lumotlari */}
                 <div className="rounded-lg bg-muted/50 p-4">
-                  <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  <h4 className="mb-3 text-sm font-medium text-foreground">
                     {t("viewportInfoTitle")}
                   </h4>
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -112,15 +112,15 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                       <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">
                         {screenInfo.innerWidth} × {screenInfo.innerHeight}
                       </div>
-                      <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                      <div className="text-xs text-muted-foreground">
                         {t("innerSize")}
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <div className="text-lg font-semibold text-orange-600 dark:text-orange-400">
+                      <div className="text-lg font-semibold text-warning">
                         {screenInfo.outerWidth} × {screenInfo.outerHeight}
                       </div>
-                      <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                      <div className="text-xs text-muted-foreground">
                         {t("outerSize")}
                       </div>
                     </div>
@@ -129,7 +129,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
 
                 {/* Qo'shimcha ma'lumotlar */}
                 <div className="rounded-lg bg-muted/50 p-4">
-                  <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  <h4 className="mb-3 text-sm font-medium text-foreground">
                     {t("technicalInfoTitle")}
                   </h4>
                   <div className="space-y-2 text-sm">
@@ -187,7 +187,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                 {/* Scroll pozitsiyasi */}
                 {(screenInfo.scrollX > 0 || screenInfo.scrollY > 0) && (
                   <div className="rounded-lg bg-muted/50 p-4">
-                    <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <h4 className="mb-3 text-sm font-medium text-foreground">
                       {t("scrollPositionTitle")}
                     </h4>
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -195,7 +195,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                         <div className="text-lg font-semibold text-cyan-600 dark:text-cyan-400">
                           {screenInfo.scrollX}px
                         </div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                        <div className="text-xs text-muted-foreground">
                           {t("horizontalScroll")}
                         </div>
                       </div>
@@ -203,7 +203,7 @@ const OutputPanel: React.FC<OutputPanelProps> = ({ screenInfo, analysis }) => {
                         <div className="text-lg font-semibold text-pink-600 dark:text-pink-400">
                           {screenInfo.scrollY}px
                         </div>
-                        <div className="text-xs text-zinc-500 dark:text-zinc-500">
+                        <div className="text-xs text-muted-foreground">
                           {t("verticalScroll")}
                         </div>
                       </div>

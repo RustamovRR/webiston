@@ -30,15 +30,25 @@ import { downloadQr } from "../utils/export"
 import { buildMatrix } from "../utils/matrix"
 import { detectInputType } from "../utils/qr-input"
 import { buildDocument, buildQrModel } from "../utils/render"
+import { buildWifiPayload } from "../utils/wifi"
 
 export function useQrGenerator() {
   // Draft lives in a module-scope store so a locale switch — which remounts
   // this whole tree — does not throw the visitor's work away. See the store.
   const value = useQrDraftStore((state) => state.value)
+  const mode = useQrDraftStore((state) => state.mode)
+  const wifi = useQrDraftStore((state) => state.wifi)
   const style = useQrDraftStore((state) => state.style)
   const setValue = useQrDraftStore((state) => state.setValue)
+  const setMode = useQrDraftStore((state) => state.setMode)
+  const updateWifi = useQrDraftStore((state) => state.updateWifi)
   const updateStyle = useQrDraftStore((state) => state.updateStyle)
   const reset = useQrDraftStore((state) => state.reset)
+
+  // What actually gets ENCODED. The WiFi form is a compiler for the WIFI:
+  // format; the text box is everything else. Both feed one pipeline, so the
+  // badge, the contrast check and the export know nothing about modes.
+  const payload = mode === "wifi" ? buildWifiPayload(wifi) : value
 
   // Export state is genuinely per-mount: an in-flight download cannot survive
   // the component that started it, and a stale error should not either.
@@ -49,7 +59,7 @@ export function useQrGenerator() {
   // enough redundancy to survive it. Derived, not asked.
   const errorLevel = style.logo ? ERROR_LEVEL_WITH_LOGO : DEFAULT_ERROR_LEVEL
 
-  const hasCode = value.trim().length > 0
+  const hasCode = payload.trim().length > 0
 
   /**
    * Encoding and painting are memoised SEPARATELY, and the split is worth real
@@ -63,8 +73,8 @@ export function useQrGenerator() {
    * 0.887 ms against 3.409 ms).
    */
   const matrix = useMemo(
-    () => (hasCode ? buildMatrix(value, errorLevel) : null),
-    [value, errorLevel, hasCode]
+    () => (hasCode ? buildMatrix(payload, errorLevel) : null),
+    [payload, errorLevel, hasCode]
   )
 
   const document = useMemo(() => {
@@ -102,6 +112,10 @@ export function useQrGenerator() {
   return {
     value,
     setValue,
+    mode,
+    setMode,
+    wifi,
+    updateWifi,
     style,
     updateStyle,
     reset,
@@ -112,7 +126,7 @@ export function useQrGenerator() {
     errorLevel,
     hasCode,
     /** Detected from the payload, for the badge above the field. */
-    detectedType: detectInputType(value),
+    detectedType: detectInputType(payload),
     /** Whether the current colours will survive a phone camera. */
     scan: checkScannability(
       style.foregroundColor,

@@ -31,7 +31,7 @@ const AlgorithmSelector: React.FC<AlgorithmSelectorProps> = ({
         <div className="h-3 w-3 rounded-full bg-red-500"></div>
         <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
         <div className="h-3 w-3 rounded-full bg-green-500"></div>
-        <span className="ml-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <span className="ml-4 text-sm font-medium text-foreground">
           {t("title") || "Hash Algoritmlari"}
         </span>
       </div>

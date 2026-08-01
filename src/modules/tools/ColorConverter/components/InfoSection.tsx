@@ -1,159 +1,90 @@
-import { Info, Palette } from "lucide-react"
-import { useTranslations } from "next-intl"
-import type React from "react"
+"use client"
 
-const InfoSection: React.FC = () => {
+import { useTranslations } from "next-intl"
+
+/**
+ * The reference section under the tool: format examples and what each format
+ * is for. Example swatches are colour DATA (the documented token exception)
+ * and are painted from their own hex values — the code sample next to a
+ * swatch should be the literal truth about it.
+ */
+
+const EXAMPLE_COLORS = ["#ef4444", "#3b82f6", "#10b981"] as const
+
+const EXAMPLE_FORMATS: ReadonlyArray<{
+  key: "hex" | "rgb" | "hsl"
+  values: readonly string[]
+}> = [
+  { key: "hex", values: ["#EF4444", "#3B82F6", "#10B981"] },
+  {
+    key: "rgb",
+    values: ["rgb(239, 68, 68)", "rgb(59, 130, 246)", "rgb(16, 185, 129)"]
+  },
+  {
+    key: "hsl",
+    values: ["hsl(0, 84%, 60%)", "hsl(217, 91%, 60%)", "hsl(160, 84%, 39%)"]
+  }
+]
+
+const ABOUT_KEYS = ["hex", "rgb", "hsl"] as const
+
+export function InfoSection() {
   const t = useTranslations("ColorConverterPage.Info")
 
   return (
     <>
-      {/* Color Formats Examples */}
-      <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-200 hover:shadow-md">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-          <Palette size={20} className="text-indigo-500 dark:text-indigo-400" />
-          {t("examples.title") || "Rang Format Misollari"}
+      <section className="mt-8 rounded-xl border border-border bg-card p-6">
+        <h3 className="mb-5 font-semibold text-foreground text-lg">
+          {t("examples.title")}
         </h3>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-border bg-muted p-4">
-            <div className="mb-3 text-xs font-medium text-muted-foreground">
-              {t("examples.hex") || "HEX Formatlar"}
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-red-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  #FF0000
-                </code>
+          {EXAMPLE_FORMATS.map((format) => (
+            <div
+              key={format.key}
+              className="rounded-lg border border-border bg-muted/40 p-4"
+            >
+              <div className="mb-3 font-medium text-muted-foreground text-xs">
+                {t(`examples.${format.key}`)}
               </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-blue-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  #0000FF
-                </code>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-green-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  #00FF00
-                </code>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-border bg-muted p-4">
-            <div className="mb-3 text-xs font-medium text-muted-foreground">
-              {t("examples.rgb") || "RGB Formatlar"}
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-red-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  rgb(255, 0, 0)
-                </code>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-blue-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  rgb(0, 0, 255)
-                </code>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-green-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  rgb(0, 255, 0)
-                </code>
+              <div className="space-y-2">
+                {format.values.map((value, index) => (
+                  <div key={value} className="flex items-center gap-2">
+                    <span
+                      aria-hidden="true"
+                      className="size-4 shrink-0 rounded"
+                      style={{ backgroundColor: EXAMPLE_COLORS[index] }}
+                    />
+                    <code className="font-mono text-foreground text-sm">
+                      {value}
+                    </code>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-
-          <div className="rounded-lg border border-border bg-muted p-4">
-            <div className="mb-3 text-xs font-medium text-muted-foreground">
-              {t("examples.hsl") || "HSL Formatlar"}
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-red-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  hsl(0, 100%, 50%)
-                </code>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-blue-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  hsl(240, 100%, 50%)
-                </code>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 rounded bg-green-500" />
-                <code className="text-sm text-zinc-700 dark:text-zinc-300">
-                  hsl(120, 100%, 50%)
-                </code>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* Color Information */}
-      <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-200 hover:shadow-md">
-        <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-          <Info size={20} className="text-indigo-500 dark:text-indigo-400" />
-          {t("about.title") || "Rang formatlar haqida ma'lumot"}
+      <section className="mt-8 rounded-xl border border-border bg-card p-6">
+        <h3 className="mb-5 font-semibold text-foreground text-lg">
+          {t("about.title")}
         </h3>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-blue-400"></div>
-              {t("about.hex.title") || "HEX Format"}
-            </h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>
-                •{" "}
-                {t("about.hex.desc1") || "Web dasturlashda eng keng tarqalgan"}
-              </li>
-              <li>
-                • {t("about.hex.desc2") || "#RRGGBB formatida (6 ta belgi)"}
-              </li>
-              <li>• {t("about.hex.desc3") || "CSS da bevosita ishlatiladi"}</li>
-              <li>• {t("about.hex.desc4") || "16 lik sanoq tizimida"}</li>
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-green-400"></div>
-              {t("about.rgb.title") || "RGB Format"}
-            </h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• {t("about.rgb.desc1") || "Red, Green, Blue qiymatlari"}</li>
-              <li>
-                • {t("about.rgb.desc2") || "0-255 oralig'ida har bir kanal"}
-              </li>
-              <li>• {t("about.rgb.desc3") || "Monitor va ekranlar uchun"}</li>
-              <li>
-                • {t("about.rgb.desc4") || "JavaScript da keng ishlatiladi"}
-              </li>
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h4 className="flex items-center gap-2 font-semibold text-foreground">
-              <div className="h-2 w-2 rounded-full bg-purple-400"></div>
-              {t("about.hsl.title") || "HSL Format"}
-            </h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• {t("about.hsl.desc1") || "Hue, Saturation, Lightness"}</li>
-              <li>• {t("about.hsl.desc2") || "Inson uchun tushunarli"}</li>
-              <li>
-                • {t("about.hsl.desc3") || "CSS3 da qo'llab-quvvatlanadi"}
-              </li>
-              <li>
-                • {t("about.hsl.desc4") || "Rang moslamalari uchun qulay"}
-              </li>
-            </ul>
-          </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {ABOUT_KEYS.map((key) => (
+            <div key={key} className="space-y-2.5">
+              <h4 className="font-semibold text-foreground text-sm">
+                {t(`about.${key}.title`)}
+              </h4>
+              <ul className="space-y-1.5 text-muted-foreground text-sm leading-relaxed">
+                <li>{t(`about.${key}.desc1`)}</li>
+                <li>{t(`about.${key}.desc2`)}</li>
+                <li>{t(`about.${key}.desc3`)}</li>
+                <li>{t(`about.${key}.desc4`)}</li>
+              </ul>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
     </>
   )
 }
-
-export default InfoSection

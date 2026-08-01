@@ -61,7 +61,7 @@ const JwtDecoder = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       {/* Enhanced Control Panel with integrated info */}

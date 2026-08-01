@@ -1,110 +1,69 @@
-import { Check, Copy, Palette } from "lucide-react"
+"use client"
+
 import { useTranslations } from "next-intl"
-import React from "react"
+
+import type { PaletteType } from "../constants"
+import { getColorName } from "../hooks/useColorConverter"
+import { CopySwatch } from "./CopySwatch"
+
+/**
+ * The generated palette. A swatch click copies the hex AND makes it the new
+ * input colour — walking a palette is how a scheme is actually explored.
+ */
 
 interface ColorPaletteProps {
-  isValid: boolean
-  generatedPalette: string[]
-  paletteType: "monochromatic" | "analogous" | "complementary"
-  getColorName: (color: string) => string
+  palette: readonly string[]
+  paletteType: PaletteType
   onColorSelect: (color: string) => void
 }
 
-const ColorPalette: React.FC<ColorPaletteProps> = ({
-  isValid,
-  generatedPalette,
+export function ColorPalette({
+  palette,
   paletteType,
-  getColorName,
   onColorSelect
-}) => {
+}: ColorPaletteProps) {
   const t = useTranslations("ColorConverterPage.ColorPalette")
-  const [copiedColor, setCopiedColor] = React.useState<string | null>(null)
 
-  const copyToClipboard = async (color: string) => {
-    try {
-      await navigator.clipboard.writeText(color)
-      setCopiedColor(color)
-      setTimeout(() => setCopiedColor(null), 2000)
-    } catch (err) {
-      console.error("Copy failed:", err)
-    }
-  }
-
-  if (!isValid || generatedPalette.length === 0) {
-    return null
-  }
-
-  const getPaletteTitle = () => {
-    switch (paletteType) {
-      case "monochromatic":
-        return t("monochromatic") || "Monoxromatik palette"
-      case "analogous":
-        return t("analogous") || "Analogik palette"
-      case "complementary":
-        return t("complementary") || "Komplementar palette"
-      default:
-        return "Color Palette"
-    }
-  }
+  if (palette.length === 0) return null
 
   return (
-    <div className="animate-in slide-in-from-bottom-2 fade-in mt-6 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm transition-all duration-200 hover:shadow-md">
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
-        <Palette size={18} className="text-indigo-500 dark:text-indigo-400" />
-        {getPaletteTitle()}
-      </h3>
+    <section className="mt-6 rounded-xl border border-border bg-card">
+      <div className="flex items-center justify-between border-border border-b px-5 py-3">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="size-[6px] shrink-0 rounded-[2px] bg-primary"
+          />
+          <h2 className="font-medium text-base text-foreground">
+            {t(paletteType)}
+          </h2>
+        </div>
+        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+          {palette.length}
+        </span>
+      </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
-        {generatedPalette.map((color, index) => (
-          <button
-            key={index}
-            type="button"
-            aria-label={`Copy ${color}`}
-            className="group focus-visible:ring-ring relative cursor-pointer rounded-lg transition-all duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
-            onClick={() => copyToClipboard(color)}
-          >
-            <div
-              className="h-20 w-full rounded-lg border-2 border-border shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:group-hover:border-zinc-500"
-              style={{ backgroundColor: color }}
-              title={`Copy ${color}`}
-            />
-
-            {/* Copy feedback */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-              {copiedColor === color ? (
-                <div className="flex items-center gap-1 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white shadow-lg">
-                  <Check size={12} />
-                  Copied!
-                </div>
-              ) : (
-                <div className="flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white shadow-lg">
-                  <Copy size={12} />
-                  Copy
-                </div>
-              )}
-            </div>
-
-            <div className="mt-2 text-center">
-              <div className="font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                {color}
-              </div>
-              {getColorName(color) && (
-                <div className="text-xs text-muted-foreground">
-                  {getColorName(color)}
-                </div>
-              )}
-            </div>
-          </button>
+      <div className="grid grid-cols-3 gap-3 p-5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11">
+        {palette.map((color) => (
+          <CopySwatch
+            key={color}
+            color={color}
+            onSelect={() => onColorSelect(color)}
+            caption={
+              <span className="mt-1.5 block">
+                <span className="block font-mono text-[11px] text-foreground">
+                  {color}
+                </span>
+                {getColorName(color) && (
+                  <span className="block text-[11px] text-muted-foreground">
+                    {getColorName(color)}
+                  </span>
+                )}
+              </span>
+            }
+          />
         ))}
       </div>
-
-      <div className="mt-4 text-center">
-        <p className="text-xs text-muted-foreground">
-          {t("clickToCopy") || "Rangni nusxalash uchun bosing"}
-        </p>
-      </div>
-    </div>
+    </section>
   )
 }
-
-export default ColorPalette

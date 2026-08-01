@@ -36,22 +36,20 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
+          <span className="text-xs text-muted-foreground">{t("status")}</span>
         </div>
       </div>
 
       <div className="space-y-6">
         {/* Basic Information */}
         <div className="space-y-4">
-          <h3 className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
             <Globe size={16} />
             {t("basicInfo")}
           </h3>
@@ -60,7 +58,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-titlelabel"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("titleLabel")}
               </label>
@@ -69,7 +67,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.title}
                 onChange={(e) => onUpdateField("title", e.target.value)}
                 placeholder={t("titlePlaceholder")}
-                className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
+                className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 /50 ${
                   metaData.title.length > 70
                     ? "border-destructive/40"
                     : metaData.title.length > 50
@@ -83,32 +81,30 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 <div
                   className={`text-xs ${
                     metaData.title.length > 70
-                      ? "text-red-500"
+                      ? "text-destructive"
                       : metaData.title.length > 50
-                        ? "text-yellow-500"
+                        ? "text-warning"
                         : metaData.title.length > 0
-                          ? "text-green-500"
-                          : "text-zinc-500 dark:text-zinc-500"
+                          ? "text-success"
+                          : "text-muted-foreground"
                   }`}
                 >
                   {metaData.title.length}/70 {t("titleCounter")}
                 </div>
                 {metaData.title.length > 70 && (
-                  <div className="text-xs text-red-500">
+                  <div className="text-xs text-destructive">
                     {t("tooLongError")}
                   </div>
                 )}
                 {metaData.title.length > 50 && metaData.title.length <= 70 && (
-                  <div className="text-xs text-yellow-500">
-                    {t("gettingLong")}
-                  </div>
+                  <div className="text-xs text-warning">{t("gettingLong")}</div>
                 )}
                 {metaData.title.length > 0 && metaData.title.length <= 50 && (
-                  <div className="text-xs text-green-500">{t("perfect")}</div>
+                  <div className="text-xs text-success">{t("perfect")}</div>
                 )}
               </div>
               {/* Progress bar */}
-              <div className="mt-1 h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+              <div className="mt-1 h-1 w-full rounded-full bg-muted">
                 <div
                   className={`h-1 rounded-full transition-all ${
                     metaData.title.length > 70
@@ -129,7 +125,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-desclabel"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("descLabel")}
               </label>
@@ -138,7 +134,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 value={metaData.description}
                 onChange={(e) => onUpdateField("description", e.target.value)}
                 placeholder={t("descPlaceholder")}
-                className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 dark:bg-zinc-800/50 ${
+                className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 /50 ${
                   metaData.description.length > 200
                     ? "border-destructive/40"
                     : metaData.description.length > 160
@@ -152,34 +148,34 @@ const FormPanel: React.FC<FormPanelProps> = ({
                 <div
                   className={`text-xs ${
                     metaData.description.length > 200
-                      ? "text-red-500"
+                      ? "text-destructive"
                       : metaData.description.length > 160
-                        ? "text-yellow-500"
+                        ? "text-warning"
                         : metaData.description.length > 0
-                          ? "text-green-500"
-                          : "text-zinc-500 dark:text-zinc-500"
+                          ? "text-success"
+                          : "text-muted-foreground"
                   }`}
                 >
                   {metaData.description.length}/200 {t("titleCounter")}
                 </div>
                 {metaData.description.length > 200 && (
-                  <div className="text-xs text-red-500">
+                  <div className="text-xs text-destructive">
                     {t("tooLongError")}
                   </div>
                 )}
                 {metaData.description.length > 160 &&
                   metaData.description.length <= 200 && (
-                    <div className="text-xs text-yellow-500">
+                    <div className="text-xs text-warning">
                       {t("gettingLong")}
                     </div>
                   )}
                 {metaData.description.length > 0 &&
                   metaData.description.length <= 160 && (
-                    <div className="text-xs text-green-500">{t("perfect")}</div>
+                    <div className="text-xs text-success">{t("perfect")}</div>
                   )}
               </div>
               {/* Progress bar */}
-              <div className="mt-1 h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700">
+              <div className="mt-1 h-1 w-full rounded-full bg-muted">
                 <div
                   className={`h-1 rounded-full transition-all ${
                     metaData.description.length > 200
@@ -200,7 +196,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-imagelabel"
-                className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block flex items-center gap-2 text-sm font-medium text-foreground"
               >
                 <ImageIcon size={16} />
                 {t("imageLabel")}
@@ -217,7 +213,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-urllabel"
-                className="mb-2 block flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block flex items-center gap-2 text-sm font-medium text-foreground"
               >
                 <Link2 size={16} />
                 {t("urlLabel")}
@@ -234,7 +230,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-sitenamelabel"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("siteNameLabel")}
               </label>
@@ -253,7 +249,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-contenttype"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("contentType")}
               </label>
@@ -285,7 +281,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-twittercard"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("twitterCard")}
               </label>
@@ -315,7 +311,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-language"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("language")}
               </label>
@@ -341,7 +337,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-imagesize"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("imageSize")}
               </label>
@@ -373,7 +369,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-twittersite"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("twitterSite")}
               </label>
@@ -389,7 +385,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
             <div>
               <label
                 htmlFor="formpanel-twittercreator"
-                className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                className="mb-2 block text-sm font-medium text-foreground"
               >
                 {t("twitterCreator")}
               </label>
@@ -409,7 +405,7 @@ const FormPanel: React.FC<FormPanelProps> = ({
 
       {/* Stats Display */}
       <div className="mt-6 border-t border-border pt-6">
-        <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <h4 className="mb-3 text-sm font-medium text-foreground">
           {t("inputStats")}
         </h4>
         <StatsDisplay stats={inputStats} />

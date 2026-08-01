@@ -1,196 +1,130 @@
+"use client"
+
+import { Button } from "@webiston/ui/primitives/button"
 import { Check, Copy } from "lucide-react"
 import { useTranslations } from "next-intl"
-import React from "react"
-import { TerminalInput } from "@/components/shared/TerminalInput"
-import { Button } from "@/components/ui/button"
+import { useState } from "react"
+
+import { CopySwatch } from "./CopySwatch"
+
+/**
+ * The 50–950 shade scale around the chosen colour, with the three export
+ * shapes a developer pastes into a real project. This is the panel that makes
+ * the tool a working instrument rather than a viewer.
+ */
 
 interface TailwindShadesProps {
   baseColor: string
-  shades: Array<{
-    shade: number
-    hex: string
-    rgb: string
-    hsl: string
-  }>
+  shades: ReadonlyArray<{ shade: number; hex: string }>
   isValid: boolean
 }
 
-const TailwindShades: React.FC<TailwindShadesProps> = ({
+type ExportKind = "css" | "tailwind" | "scss"
+
+export function TailwindShades({
   baseColor,
   shades,
   isValid
-}) => {
+}: TailwindShadesProps) {
   const t = useTranslations("ColorConverterPage.TailwindShades")
-  const [copiedShade, setCopiedShade] = React.useState<number | null>(null)
-  const [copiedExport, setCopiedExport] = React.useState<string | null>(null)
+  const [copiedExport, setCopiedExport] = useState<ExportKind | null>(null)
 
-  const copyToClipboard = async (text: string, shade: number) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopiedShade(shade)
-      setTimeout(() => setCopiedShade(null), 2000)
-    } catch (err) {
-      console.error("Copy failed:", err)
+  if (!isValid || shades.length === 0) return null
+
+  const exports: Record<ExportKind, { label: string; build: () => string }> = {
+    css: {
+      label: "CSS Variables",
+      build: () =>
+        `:root {\n${shades
+          .map(({ shade, hex }) => `  --color-primary-${shade}: ${hex};`)
+          .join("\n")}\n}`
+    },
+    tailwind: {
+      label: "Tailwind Config",
+      build: () =>
+        `primary: {\n${shades
+          .map(({ shade, hex }) => `  '${shade}': '${hex}',`)
+          .join("\n")}\n},`
+    },
+    scss: {
+      label: "SCSS Variables",
+      build: () =>
+        shades.map(({ shade, hex }) => `$primary-${shade}: ${hex};`).join("\n")
     }
   }
 
-  const copyExportToClipboard = async (text: string, exportType: string) => {
+  const copyExport = async (kind: ExportKind) => {
     try {
-      await navigator.clipboard.writeText(text)
-      setCopiedExport(exportType)
-      setTimeout(() => setCopiedExport(null), 2000)
-    } catch (err) {
-      console.error("Copy failed:", err)
+      await navigator.clipboard.writeText(exports[kind].build())
+    } catch {
+      return
     }
+    setCopiedExport(kind)
+    setTimeout(() => setCopiedExport(null), 2000)
   }
-
-  const customContent = (
-    <div className="p-4">
-      {isValid && shades.length > 0 ? (
-        <div className="space-y-4">
-          {/* Tailwind-style shade grid */}
-          <div className="grid grid-cols-11 gap-2">
-            {shades.map(({ shade, hex }) => (
-              <button
-                key={shade}
-                type="button"
-                aria-label={`Copy ${hex}`}
-                className="group focus-visible:ring-ring relative cursor-pointer rounded-lg transition-all duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:outline-none"
-                onClick={() => copyToClipboard(hex, shade)}
-              >
-                {/* Color square */}
-                <div
-                  className="aspect-square w-full rounded-lg border-2 border-border shadow-sm transition-all duration-200 group-hover:border-zinc-400 group-hover:shadow-lg dark:group-hover:border-zinc-500"
-                  style={{ backgroundColor: hex }}
-                  title={`Copy ${hex}`}
-                />
-
-                {/* Copy feedback overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                  {copiedShade === shade ? (
-                    <div className="flex items-center gap-1 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white shadow-lg">
-                      <Check size={12} />
-                      Copied!
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white shadow-lg">
-                      <Copy size={12} />
-                      Copy
-                    </div>
-                  )}
-                </div>
-
-                {/* Shade number */}
-                <div className="mt-2 text-center">
-                  <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                    {shade}
-                  </span>
-                </div>
-
-                {/* Hex code */}
-                <div className="mt-1 text-center">
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {hex}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Export options */}
-          <div className="mt-6 space-y-3">
-            <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t("exportOptions") || "Export variantlari:"}
-            </h4>
-
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              {/* CSS Custom Properties */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const cssVars = shades
-                    .map(
-                      ({ shade, hex }) => `  --color-primary-${shade}: ${hex};`
-                    )
-                    .join("\n")
-                  copyExportToClipboard(`:root {\n${cssVars}\n}`, "css")
-                }}
-                className="cursor-pointer justify-start text-left"
-              >
-                {copiedExport === "css" ? (
-                  <Check size={14} className="mr-2 text-green-500" />
-                ) : (
-                  <Copy size={14} className="mr-2" />
-                )}
-                CSS Variables
-              </Button>
-
-              {/* Tailwind Config */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const tailwindConfig = shades
-                    .map(({ shade, hex }) => `        '${shade}': '${hex}',`)
-                    .join("\n")
-                  copyExportToClipboard(
-                    `      primary: {\n${tailwindConfig}\n      },`,
-                    "tailwind"
-                  )
-                }}
-                className="cursor-pointer justify-start text-left"
-              >
-                {copiedExport === "tailwind" ? (
-                  <Check size={14} className="mr-2 text-green-500" />
-                ) : (
-                  <Copy size={14} className="mr-2" />
-                )}
-                Tailwind Config
-              </Button>
-
-              {/* SCSS Variables */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const scssVars = shades
-                    .map(({ shade, hex }) => `$primary-${shade}: ${hex};`)
-                    .join("\n")
-                  copyExportToClipboard(scssVars, "scss")
-                }}
-                className="cursor-pointer justify-start text-left"
-              >
-                {copiedExport === "scss" ? (
-                  <Check size={14} className="mr-2 text-green-500" />
-                ) : (
-                  <Copy size={14} className="mr-2" />
-                )}
-                SCSS Variables
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex h-32 items-center justify-center text-muted-foreground">
-          <p className="text-sm">
-            {t("noValidColor") || "To'g'ri rang kiriting"}
-          </p>
-        </div>
-      )}
-    </div>
-  )
 
   return (
-    <TerminalInput
-      title={t("title") || "Tailwind Shades"}
-      subtitle={isValid ? `Base: ${baseColor}` : undefined}
-      customContent={customContent}
-      variant={isValid ? "success" : "error"}
-      showShadow={true}
-      animate={true}
-    />
+    <section className="mt-6 rounded-xl border border-border bg-card">
+      <div className="flex items-center justify-between border-border border-b px-5 py-3">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="size-[6px] shrink-0 rounded-[2px] bg-primary"
+          />
+          <h2 className="font-medium text-base text-foreground">
+            {t("title")}
+          </h2>
+        </div>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {baseColor}
+        </span>
+      </div>
+
+      <div className="space-y-5 p-5">
+        <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-6 lg:grid-cols-11">
+          {shades.map(({ shade, hex }) => (
+            <CopySwatch
+              key={shade}
+              color={hex}
+              swatchClassName="aspect-square"
+              caption={
+                <span className="mt-1.5 block">
+                  <span className="block font-medium text-foreground text-xs">
+                    {shade}
+                  </span>
+                  <span className="block font-mono text-[10px] text-muted-foreground">
+                    {hex}
+                  </span>
+                </span>
+              }
+            />
+          ))}
+        </div>
+
+        <div>
+          <span className="mb-2.5 block text-muted-foreground text-sm">
+            {t("exportOptions")}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(exports) as ExportKind[]).map((kind) => (
+              <Button
+                key={kind}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => copyExport(kind)}
+              >
+                {copiedExport === kind ? (
+                  <Check aria-hidden="true" className="text-success" />
+                ) : (
+                  <Copy aria-hidden="true" />
+                )}
+                {exports[kind].label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }
-
-export default TailwindShades

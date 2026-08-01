@@ -248,7 +248,7 @@ export function AudioPreviewModal({ audio, onClose }: AudioPreviewModalProps) {
                   aria-valuemin={0}
                   aria-valuemax={Math.round(duration || 0)}
                   aria-valuenow={Math.round(currentTime || 0)}
-                  className="focus-visible:ring-ring relative h-2 cursor-pointer rounded-full bg-zinc-200 focus-visible:ring-2 focus-visible:outline-none dark:bg-zinc-700"
+                  className="focus-visible:ring-ring relative h-2 cursor-pointer rounded-full bg-muted focus-visible:ring-2 focus-visible:outline-none"
                   onClick={handleSeek}
                   onKeyDown={handleSeekKeys}
                 >

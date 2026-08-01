@@ -32,7 +32,7 @@ const InputPanel: React.FC<InputPanelProps> = ({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
@@ -46,7 +46,7 @@ const InputPanel: React.FC<InputPanelProps> = ({
       <div className="p-6">
         {/* Settings Summary */}
         <div className="mb-6">
-          <h3 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <h3 className="mb-3 text-sm font-medium text-foreground">
             {t("settingsTitle")}
           </h3>
           <div className="flex gap-4 text-sm text-muted-foreground">
@@ -70,7 +70,7 @@ const InputPanel: React.FC<InputPanelProps> = ({
         <div className="space-y-4">
           {/* Version Info */}
           <div className="rounded-lg bg-muted/50 p-4">
-            <h3 className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <h3 className="mb-2 text-sm font-medium text-foreground">
               {t("versionInfoTitle")}
             </h3>
             <div className="space-y-2 text-sm text-muted-foreground">
@@ -91,7 +91,7 @@ const InputPanel: React.FC<InputPanelProps> = ({
 
           {/* Format Info */}
           <div className="rounded-lg bg-muted/50 p-4">
-            <h3 className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <h3 className="mb-2 text-sm font-medium text-foreground">
               {t("formatInfoTitle")}
             </h3>
             <div className="space-y-2 text-sm text-muted-foreground">

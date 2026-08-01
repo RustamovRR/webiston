@@ -90,43 +90,39 @@ const InfoSection: React.FC = () => {
         </h4>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-500">
+            <p className="mb-2 text-xs text-muted-foreground">
               {t("popularResolutions")}
             </p>
             <div className="space-y-2">
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">4K UHD</span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">4K UHD</span>
                 <code className="text-info">3840×2160</code>
               </div>
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">
-                  Full HD
-                </span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">Full HD</span>
                 <code className="text-info">1920×1080</code>
               </div>
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">HD</span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">HD</span>
                 <code className="text-info">1366×768</code>
               </div>
             </div>
           </div>
           <div>
-            <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-500">
+            <p className="mb-2 text-xs text-muted-foreground">
               {t("deviceCategories")}
             </p>
             <div className="space-y-2">
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">Mobile</span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">Mobile</span>
                 <code className="text-success">≤ 768px</code>
               </div>
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">Tablet</span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">Tablet</span>
                 <code className="text-success">769px - 1024px</code>
               </div>
-              <div className="flex justify-between rounded bg-zinc-200/50 p-2 text-sm dark:bg-zinc-900/50">
-                <span className="text-zinc-700 dark:text-zinc-300">
-                  Desktop
-                </span>
+              <div className="flex justify-between rounded bg-muted/50 p-2 text-sm">
+                <span className="text-foreground">Desktop</span>
                 <code className="text-success">1025px+</code>
               </div>
             </div>

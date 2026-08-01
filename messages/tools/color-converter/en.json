@@ -24,7 +24,8 @@
       "format": "Format",
       "length": "Length",
       "valid": "Valid",
-      "opacity": "Opacity"
+      "opacity": "Opacity",
+      "placeholder": "#0d5a6b, rgb(13, 90, 107), oklch(0.45 0.07 217), teal…"
     },
     "ColorFormats": {
       "title": "Formats and Information",
@@ -60,7 +61,9 @@
       "clearHistory": "Clear History",
       "clearFavorites": "Clear Favorites",
       "noHistory": "No history yet",
-      "noFavorites": "No favorite colors yet"
+      "noFavorites": "No favorite colors yet",
+      "addFavorite": "Add to favourites",
+      "removeFavorite": "Remove from favourites"
     },
     "GradientGenerator": {
       "title": "Gradient Generator",
@@ -71,7 +74,13 @@
       "colorStops": "Color Stops:",
       "addColor": "Add Color",
       "exportOptions": "Export Options:",
-      "noValidColor": "Enter a valid color"
+      "noValidColor": "Enter a valid color",
+      "types": {
+        "linear": "Linear",
+        "radial": "Radial",
+        "conic": "Conic"
+      },
+      "removeColor": "Remove colour"
     },
     "Info": {
       "examples": {

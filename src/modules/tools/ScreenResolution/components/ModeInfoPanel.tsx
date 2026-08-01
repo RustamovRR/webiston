@@ -31,9 +31,7 @@ const ModeInfoPanel: React.FC<ModeInfoPanelProps> = ({
               : "bg-muted/50"
           }`}
         >
-          <span className="text-zinc-700 dark:text-zinc-300">
-            {t("fullscreenMode")}
-          </span>
+          <span className="text-foreground">{t("fullscreenMode")}</span>
           <div
             className={`h-2 w-2 rounded-full ${isFullscreen ? "bg-purple-500 dark:bg-purple-400" : "bg-zinc-500"}`}
           ></div>
@@ -47,9 +45,7 @@ const ModeInfoPanel: React.FC<ModeInfoPanelProps> = ({
                 : "bg-muted/50"
             }`}
           >
-            <span className="text-zinc-700 dark:text-zinc-300">
-              {t("retinaDisplay")}
-            </span>
+            <span className="text-foreground">{t("retinaDisplay")}</span>
             <div
               className={`h-2 w-2 rounded-full ${analysis.isRetina ? "bg-warning" : "bg-zinc-500"}`}
             ></div>

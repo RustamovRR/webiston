@@ -57,7 +57,7 @@ export function ControlPanel({
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
@@ -65,7 +65,7 @@ export function ControlPanel({
           <div
             className={`h-2 w-2 rounded-full ${isCameraActive ? "bg-green-500" : "bg-zinc-400 dark:bg-zinc-500"}`}
           ></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
+          <span className="text-xs text-muted-foreground">
             {isCameraActive ? t("status.active") : t("status.inactive")}
           </span>
         </div>
@@ -76,7 +76,7 @@ export function ControlPanel({
           <div>
             <label
               htmlFor="controlpanel-camera-label"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+              className="mb-2 block text-sm font-medium text-foreground"
             >
               {t("camera.label")}
             </label>
@@ -104,7 +104,7 @@ export function ControlPanel({
           <div>
             <label
               htmlFor="controlpanel-quality-label"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+              className="mb-2 block text-sm font-medium text-foreground"
             >
               {t("quality.label")}
             </label>

@@ -29,7 +29,7 @@ export function MediaGridItem({
       if (imageError) {
         return (
           <div className="flex h-full items-center justify-center bg-muted">
-            <ImageIcon className="h-8 w-8 text-zinc-400" />
+            <ImageIcon className="h-8 w-8 text-muted-foreground" />
           </div>
         )
       }
@@ -51,7 +51,7 @@ export function MediaGridItem({
     // Video thumbnail
     return (
       <div className="flex h-full items-center justify-center bg-muted">
-        <Video className="h-8 w-8 text-green-500" />
+        <Video className="h-8 w-8 text-success" />
       </div>
     )
   }

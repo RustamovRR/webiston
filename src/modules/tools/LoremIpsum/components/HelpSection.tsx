@@ -9,7 +9,7 @@ const HelpSection: React.FC = () => {
   return (
     <div className="mt-8 rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
       <h3 className="mb-6 flex items-center gap-2 text-xl font-bold text-foreground">
-        <Settings size={20} className="text-green-400" />
+        <Settings size={20} className="text-success" />
         {t("title")}
       </h3>
 
@@ -92,7 +92,7 @@ const HelpSection: React.FC = () => {
           </ul>
 
           <div className="mt-4 rounded-lg bg-blue-500/10 p-3">
-            <div className="text-sm text-blue-400">
+            <div className="text-sm text-info">
               <strong>{t("noteTitle")}</strong> {t("noteText")}
             </div>
           </div>

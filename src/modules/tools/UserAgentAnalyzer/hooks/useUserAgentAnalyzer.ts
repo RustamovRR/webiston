@@ -287,7 +287,7 @@ export const useUserAgentAnalyzer = (
       parseUserAgent(ua)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [parseUserAgent])
 
   const analyzeUserAgent = useCallback(() => {
     if (!userAgent.trim()) {

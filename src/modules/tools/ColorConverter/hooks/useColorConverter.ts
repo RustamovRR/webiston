@@ -1,11 +1,11 @@
+"use client"
+
 import { useCallback, useMemo, useState } from "react"
+import { COLOR_NAMES } from "@/constants/color-names"
 import {
   addToColorHistory,
   generatePalette,
   generateTailwindShades,
-  hexToRgb,
-  hslToRgb,
-  isValidHex,
   labToLch,
   oklabToOklch,
   parseColorInput,
@@ -14,6 +14,24 @@ import {
   rgbToLab,
   rgbToOklab
 } from "@/lib/utils"
+
+import type { PaletteType } from "../constants"
+import { useColorDraftStore } from "../stores/colorDraftStore"
+
+/**
+ * The converter's state and derived formats.
+ *
+ * What the rewrite removed, each a real defect and not tidiness:
+ *
+ * - `onSuccess`/`onError` callbacks fired INSIDE the `useMemo` — side effects
+ *   in the render phase, wired to `console.log` at the call site.
+ * - A private 12-entry Uzbek colour dictionary, while `COLOR_NAMES` in
+ *   `src/constants/` holds the full registry the rest of the app uses.
+ * - History was written on EVERY keystroke that happened to parse — typing
+ *   "#ff0000" recorded "#ff0" (3-digit hex is legal) on the way. Recording is
+ *   now explicit: presets, the picker, palette clicks and blur record;
+ *   keystrokes never do.
+ */
 
 export interface ColorFormats {
   hex: string
@@ -35,154 +53,119 @@ export interface ColorFormats {
   isValid: boolean
 }
 
-interface UseColorConverterProps {
-  initialColor?: string
-  onSuccess?: (message: string) => void
-  onError?: (error: string) => void
+/** hex → readable name, inverted once from the shared registry. */
+const NAME_BY_HEX: ReadonlyMap<string, string> = new Map(
+  Object.entries(COLOR_NAMES).map(([name, hex]) => [hex.toLowerCase(), name])
+)
+
+export function getColorName(hex: string): string {
+  return NAME_BY_HEX.get(hex.slice(0, 7).toLowerCase()) ?? ""
 }
 
-export const useColorConverter = ({
-  initialColor = "#3b82f6",
-  onSuccess,
-  onError
-}: UseColorConverterProps = {}) => {
-  const [inputColor, setInputColorState] = useState(initialColor)
+export function useColorConverter() {
+  const inputColor = useColorDraftStore((state) => state.inputColor)
+  const paletteType = useColorDraftStore((state) => state.paletteType)
+  const setInputColor = useColorDraftStore((state) => state.setInputColor)
+  const setPaletteType = useColorDraftStore((state) => state.setPaletteType)
 
-  // Enhanced setInputColor with history tracking
-  const setInputColor = useCallback((color: string) => {
-    setInputColorState(color)
-    // Add to history if it's a valid color
-    if (parseColorInput(color)) {
-      addToColorHistory(color)
-    }
-  }, [])
-
-  // Main color formats calculation
   const colorFormats = useMemo((): ColorFormats | null => {
-    try {
-      // Parse input using universal parser
-      const parsedColor = parseColorInput(inputColor)
+    const parsed = parseColorInput(inputColor)
+    if (!parsed) return null
 
-      if (!parsedColor) {
-        onError?.("Noto'g'ri rang formati")
-        return {
-          hex: inputColor.toUpperCase(),
-          rgb: "",
-          hsl: "",
-          rgba: "",
-          hsla: "",
-          lab: "",
-          lch: "",
-          oklab: "",
-          oklch: "",
-          rgbValues: { r: 0, g: 0, b: 0, a: 1 },
-          hslValues: { h: 0, s: 0, l: 0, a: 1 },
-          labValues: { l: 0, a: 0, b: 0 },
-          lchValues: { l: 0, c: 0, h: 0 },
-          oklabValues: { l: 0, a: 0, b: 0 },
-          oklchValues: { l: 0, c: 0, h: 0 },
-          opacity: 1,
-          isValid: false
-        }
-      }
+    const { r, g, b, a } = parsed
+    const hsl = rgbToHsl(r, g, b)
+    const lab = rgbToLab(r, g, b)
+    const lch = labToLch(lab.l, lab.a, lab.b)
+    const oklab = rgbToOklab(r, g, b)
+    const oklch = oklabToOklch(oklab.l, oklab.a, oklab.b)
 
-      const { r, g, b, a } = parsedColor
-      const hsl = rgbToHsl(r, g, b)
-      const lab = rgbToLab(r, g, b)
-      const lch = labToLch(lab.l, lab.a, lab.b)
-      const oklab = rgbToOklab(r, g, b)
-      const oklch = oklabToOklch(oklab.l, oklab.a, oklab.b)
+    const hex =
+      a < 1
+        ? `${rgbToHex(r, g, b)}${Math.round(a * 255)
+            .toString(16)
+            .padStart(2, "0")}`
+        : rgbToHex(r, g, b)
 
-      // Generate HEX with alpha if needed
-      const hexColor =
-        a < 1
-          ? `#${rgbToHex(r, g, b).slice(1)}${Math.round(a * 255)
-              .toString(16)
-              .padStart(2, "0")}`
-          : rgbToHex(r, g, b)
-
-      const result: ColorFormats = {
-        hex: hexColor.toUpperCase(),
-        rgb: `rgb(${r}, ${g}, ${b})`,
-        hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-        rgba: `rgba(${r}, ${g}, ${b}, ${a})`,
-        hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${a})`,
-        lab: `lab(${lab.l}% ${lab.a} ${lab.b})`,
-        lch: `lch(${lch.l}% ${lch.c} ${lch.h})`,
-        oklab: `oklab(${oklab.l} ${oklab.a} ${oklab.b})`,
-        oklch: `oklch(${oklch.l} ${oklch.c} ${oklch.h})`,
-        rgbValues: { r, g, b, a },
-        hslValues: { ...hsl, a },
-        labValues: lab,
-        lchValues: lch,
-        oklabValues: oklab,
-        oklchValues: oklch,
-        opacity: a,
-        isValid: true
-      }
-
-      onSuccess?.("Rang muvaffaqiyatli konvertatsiya qilindi")
-      return result
-    } catch (_error) {
-      onError?.("Rang konvertatsiyasida xatolik yuz berdi")
-      return null
+    return {
+      hex: hex.toUpperCase(),
+      rgb: `rgb(${r}, ${g}, ${b})`,
+      hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+      rgba: `rgba(${r}, ${g}, ${b}, ${a})`,
+      hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${a})`,
+      lab: `lab(${lab.l}% ${lab.a} ${lab.b})`,
+      lch: `lch(${lch.l}% ${lch.c} ${lch.h})`,
+      oklab: `oklab(${oklab.l} ${oklab.a} ${oklab.b})`,
+      oklch: `oklch(${oklch.l} ${oklch.c} ${oklch.h})`,
+      rgbValues: { r, g, b, a },
+      hslValues: { ...hsl, a },
+      labValues: lab,
+      lchValues: lch,
+      oklabValues: oklab,
+      oklchValues: oklch,
+      opacity: a,
+      isValid: true
     }
-  }, [inputColor, onSuccess, onError])
+  }, [inputColor])
 
-  // Set color from different formats
-  const setColorFromRgb = useCallback(
-    (r: number, g: number, b: number) => {
-      const hex = rgbToHex(r, g, b)
-      setInputColor(hex)
+  /**
+   * Bumped on every history WRITE, so the history panel re-reads exactly when
+   * there is something new. Keying its refresh off the current colour missed
+   * the blur-recording: the value does not change at blur, so the write
+   * landed in storage and the panel kept showing the old list.
+   */
+  const [historyVersion, setHistoryVersion] = useState(0)
+
+  /**
+   * A DELIBERATE selection — preset, picker, palette swatch, random — both
+   * sets the colour and records it in the persistent history. Typing goes
+   * through `setInputColor` and records nothing until `recordCurrent` (blur).
+   */
+  const chooseColor = useCallback(
+    (color: string) => {
+      setInputColor(color)
+      if (parseColorInput(color)) {
+        addToColorHistory(color)
+        setHistoryVersion((version) => version + 1)
+      }
     },
     [setInputColor]
   )
 
-  const setColorFromHsl = useCallback(
-    (h: number, s: number, l: number) => {
-      const rgb = hslToRgb(h, s, l)
-      const hex = rgbToHex(rgb.r, rgb.g, rgb.b)
-      setInputColor(hex)
-    },
-    [setInputColor]
+  const recordCurrent = useCallback(() => {
+    if (parseColorInput(inputColor)) {
+      addToColorHistory(inputColor)
+      setHistoryVersion((version) => version + 1)
+    }
+  }, [inputColor])
+
+  const palette = useMemo(
+    () =>
+      colorFormats
+        ? generatePalette(colorFormats.hex.slice(0, 7), paletteType)
+        : [],
+    [colorFormats, paletteType]
   )
 
-  // Get color name (basic implementation)
-  const getColorName = useCallback((hex: string): string => {
-    const colorNames: Record<string, string> = {
-      "#FF0000": "Qizil",
-      "#00FF00": "Yashil",
-      "#0000FF": "Ko'k",
-      "#FFFF00": "Sariq",
-      "#FF00FF": "Binafsha",
-      "#00FFFF": "Turkuaz",
-      "#000000": "Qora",
-      "#FFFFFF": "Oq",
-      "#808080": "Kulrang",
-      "#FFA500": "To'q sariq",
-      "#800080": "Binafsha",
-      "#008000": "To'q yashil"
-    }
-
-    // Return color name if found, otherwise return empty string
-    return colorNames[hex.toUpperCase()] || ""
-  }, [])
+  const tailwindShades = useMemo(
+    () =>
+      colorFormats ? generateTailwindShades(colorFormats.hex.slice(0, 7)) : [],
+    [colorFormats]
+  )
 
   return {
     inputColor,
     setInputColor,
+    chooseColor,
+    recordCurrent,
+    paletteType,
+    setPaletteType: setPaletteType as (type: PaletteType) => void,
     colorFormats,
-    setColorFromRgb,
-    setColorFromHsl,
-    generatePalette,
-    generateTailwindShades,
-    getColorName,
-    isValidHex,
-    utilities: {
-      hexToRgb,
-      rgbToHsl,
-      hslToRgb,
-      rgbToHex
-    }
+    palette,
+    tailwindShades,
+    historyVersion,
+    isValid: colorFormats !== null,
+    colorName: colorFormats ? getColorName(colorFormats.hex) : ""
   }
 }
+
+export type UseColorConverterResult = ReturnType<typeof useColorConverter>

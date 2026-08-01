@@ -246,7 +246,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
 
   const copySection = useCallback(
     (section: keyof DeviceInfo) => {
-      if (!deviceInfo || !deviceInfo[section]) {
+      if (!deviceInfo?.[section]) {
         onError?.("Nusxalash uchun ma'lumot mavjud emas")
         return
       }
@@ -287,37 +287,41 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
     }
   }, [deviceInfo])
 
+  // Detection runs ONCE. The old effect depended on `deviceInfo` while
+  // `detectDevice` wrote a fresh object into it — detect → new state → effect
+  // re-runs → detect again, forever ("Maximum update depth exceeded" on every
+  // visit). `detectDevice` itself is rebuilt per render (its deps are the
+  // caller's inline handlers), so it cannot be a dependency either.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only by design
   useEffect(() => {
     detectDevice()
+  }, [])
 
-    // Listen for online/offline changes
+  useEffect(() => {
+    // Functional updates only — the listeners never need the current object,
+    // so this effect subscribes once instead of resubscribing per change.
     const handleOnlineChange = () => {
-      if (deviceInfo) {
-        setDeviceInfo((prev) =>
-          prev
-            ? {
-                ...prev,
-                system: { ...prev.system, onlineStatus: navigator.onLine }
-              }
-            : null
-        )
-      }
+      setDeviceInfo((prev) =>
+        prev
+          ? {
+              ...prev,
+              system: { ...prev.system, onlineStatus: navigator.onLine }
+            }
+          : null
+      )
     }
 
-    // Listen for orientation changes
     const handleOrientationChange = () => {
-      if (deviceInfo) {
-        const newOrientation =
-          screen.width < screen.height ? "portrait" : "landscape"
-        setDeviceInfo((prev) =>
-          prev
-            ? {
-                ...prev,
-                screen: { ...prev.screen, orientation: newOrientation }
-              }
-            : null
-        )
-      }
+      const newOrientation =
+        screen.width < screen.height ? "portrait" : "landscape"
+      setDeviceInfo((prev) =>
+        prev
+          ? {
+              ...prev,
+              screen: { ...prev.screen, orientation: newOrientation }
+            }
+          : null
+      )
     }
 
     window.addEventListener("online", handleOnlineChange)
@@ -331,7 +335,7 @@ export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
       window.removeEventListener("orientationchange", handleOrientationChange)
       window.removeEventListener("resize", handleOrientationChange)
     }
-  }, [detectDevice, deviceInfo])
+  }, [])
 
   return {
     // State

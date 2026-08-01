@@ -57,7 +57,7 @@ const Base64Converter = () => {
   // Target empty state
   const targetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
+      <div className="text-muted-foreground">
         <FileText size={48} className="mx-auto mb-4 opacity-50" />
         <p className="text-sm">
           {mode === "encode"
@@ -74,8 +74,8 @@ const Base64Converter = () => {
   // Target footer component
   const targetFooterComponent = displayOutput ? (
     <div className="text-xs text-muted-foreground">
-      <span className="text-zinc-500">{t("Panel.fileSize")}</span>{" "}
-      <span className="text-zinc-700 dark:text-zinc-300">{fileSizeKB} KB</span>
+      <span className="text-muted-foreground">{t("Panel.fileSize")}</span>{" "}
+      <span className="text-foreground">{fileSizeKB} KB</span>
     </div>
   ) : null
 
@@ -96,7 +96,7 @@ const Base64Converter = () => {
     ) : null
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader
         title={t("ToolHeader.title")}
         description={t("ToolHeader.description")}

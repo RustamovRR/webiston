@@ -34,10 +34,8 @@ const ResolutionCategoriesPanel: React.FC<ResolutionCategoriesPanelProps> = ({
             }`}
           >
             <div>
-              <div className="font-medium text-zinc-700 dark:text-zinc-300">
-                {category.name}
-              </div>
-              <div className="text-xs text-zinc-500 dark:text-zinc-500">
+              <div className="font-medium text-foreground">{category.name}</div>
+              <div className="text-xs text-muted-foreground">
                 {category.resolution}
               </div>
             </div>

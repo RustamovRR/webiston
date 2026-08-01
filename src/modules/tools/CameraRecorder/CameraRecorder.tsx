@@ -52,10 +52,7 @@ export default function CameraRecorderPage() {
     closePreview,
     updateVideoQuality,
     getCurrentRecordingInfo
-  } = useCameraRecorder({
-    onSuccess: (message: string) => console.log("Success:", message),
-    onError: (error: string) => console.error("Error:", error)
-  })
+  } = useCameraRecorder({})
 
   // Update video quality when dropdown changes
   const handleQualityChange = (qualityValue: string) => {
@@ -70,7 +67,7 @@ export default function CameraRecorderPage() {
   const recordingInfo = getCurrentRecordingInfo()
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
       {/* Control Panel */}

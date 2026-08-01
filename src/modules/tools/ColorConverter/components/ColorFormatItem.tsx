@@ -1,55 +1,52 @@
+"use client"
+
 import { Check, Copy } from "lucide-react"
-import type React from "react"
 import { useState } from "react"
+
+/**
+ * One format row: name, value, sub-detail, click-to-copy. The format's accent
+ * comes from the chart tokens — the data-visualisation palette the design
+ * system reserves for exactly this — never from raw palette classes.
+ */
 
 interface ColorFormatItemProps {
   title: string
   value: string
   description: string
-  colorClass: string
-  onCopy?: (value: string) => void
+  /** A `text-chart-*` class chosen by the caller's cycle. */
+  accentClass: string
 }
 
-const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
+export function ColorFormatItem({
   title,
   value,
   description,
-  colorClass,
-  onCopy
-}) => {
+  accentClass
+}: ColorFormatItemProps) {
   const [copied, setCopied] = useState(false)
 
-  const handleCopy = async (e?: React.MouseEvent) => {
-    e?.stopPropagation() // Prevent event bubbling when clicking copy button
-
+  const copy = async () => {
     try {
       await navigator.clipboard.writeText(value)
-      setCopied(true)
-      onCopy?.(value)
-
-      // Reset copied state after 2 seconds
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error("Failed to copy:", error)
+    } catch {
+      return
     }
-  }
-
-  const handleItemClick = () => {
-    handleCopy()
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
     <button
       type="button"
-      onClick={handleItemClick}
-      aria-label={`${title}: ${value} — copy`}
-      className="group focus-visible:ring-ring w-full cursor-pointer rounded-lg border border-border bg-muted p-3 text-left transition-all hover:bg-muted hover:shadow-sm focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98]"
+      onClick={copy}
+      aria-label={`${title}: ${value}`}
+      className="group w-full cursor-pointer rounded-lg border border-border bg-muted/40 p-3 text-left transition-colors hover:border-border-strong hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className={`font-semibold ${colorClass}`}>{title}</h3>
+      <div className="mb-1.5 flex items-center justify-between">
+        <h3 className={`font-semibold text-sm ${accentClass}`}>{title}</h3>
         <span
           aria-hidden="true"
-          className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-200 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 dark:bg-zinc-700"
+          className="flex size-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
         >
           {copied ? (
             <Check size={14} className="text-success" />
@@ -58,10 +55,8 @@ const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
           )}
         </span>
       </div>
-      <div className="font-mono text-base text-foreground">{value}</div>
-      <div className="mt-1 text-xs text-muted-foreground">{description}</div>
+      <div className="break-all font-mono text-foreground text-sm">{value}</div>
+      <div className="mt-1 text-muted-foreground text-xs">{description}</div>
     </button>
   )
 }
-
-export default ColorFormatItem

@@ -60,14 +60,6 @@ export default function MapView({
   const { theme } = useTheme()
 
   // Debug coordinates
-  console.log("MapView coordinates:", {
-    latitude,
-    longitude,
-    city,
-    country,
-    ip
-  })
-
   // Check if coordinates are valid
   const hasValidCoordinates =
     latitude !== 0 &&
@@ -93,18 +85,18 @@ export default function MapView({
   if (!isClient || !hasValidCoordinates) {
     return (
       <div
-        className={`h-64 w-full rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
+        className={`h-64 w-full rounded-lg border border-zinc-200 bg-muted dark:border-zinc-700  ${className}`}
       >
         <div className="flex h-full items-center justify-center">
           <div className="text-center">
-            <MapPin className="mx-auto mb-2 h-8 w-8 text-zinc-400" />
+            <MapPin className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
               {!isClient
                 ? "Xarita yuklanmoqda..."
                 : "Koordinatalar mavjud emas"}
             </p>
             {!hasValidCoordinates && isClient && (
-              <p className="mt-1 text-xs text-zinc-400">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Lat: {latitude}, Lng: {longitude}
               </p>
             )}
@@ -128,7 +120,7 @@ export default function MapView({
 
   return (
     <div
-      className={`relative ${mapHeight} w-full overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 ${className}`}
+      className={`relative ${mapHeight} w-full overflow-hidden rounded-lg border border-border ${className}`}
     >
       {/* Loading overlay */}
       {mapLoading && (
@@ -173,10 +165,10 @@ export default function MapView({
           <Popup>
             <div className="p-2 text-center">
               <div className="font-semibold text-zinc-900">{ip}</div>
-              <div className="mt-1 text-sm text-zinc-600">
+              <div className="mt-1 text-sm text-muted-foreground">
                 {city}, {country}
               </div>
-              <div className="mt-1 text-xs text-zinc-500">
+              <div className="mt-1 text-xs text-muted-foreground">
                 {latitude.toFixed(4)}, {longitude.toFixed(4)}
               </div>
             </div>

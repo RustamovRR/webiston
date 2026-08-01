@@ -112,7 +112,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             disabled={!canDownload || isGenerating}
             variant="outline"
             size="sm"
-            className="border-input border !bg-white text-zinc-700 hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800 dark:text-zinc-300"
+            className="border-input border !bg-white text-foreground hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800"
           >
             <Download size={16} className="mr-2" />
             {t("downloadTxt") || "TXT yuklab olish"}
@@ -123,7 +123,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             disabled={!canDownload || isGenerating}
             variant={canDownload ? "default" : "outline"}
             size="sm"
-            className="border-input border !bg-white hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800 dark:text-zinc-300"
+            className="border-input border !bg-white hover:bg-muted hover:text-foreground dark:border-none dark:!bg-zinc-800"
           >
             <Download size={16} className="mr-2" />
             {t("downloadJson") || "JSON yuklab olish"}
