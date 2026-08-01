@@ -80,7 +80,8 @@
     },
     "Tree": {
       "keys": "{count} keys",
-      "items": "{count} items"
+      "items": "{count} items",
+      "showMore": "Show {count} more ({remaining} left)"
     }
   }
 }

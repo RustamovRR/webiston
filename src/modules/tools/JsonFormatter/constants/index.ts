@@ -17,6 +17,15 @@ export const DEFAULT_INDENT: IndentOption = "2"
 /** Comfortably larger than any hand-edited config, small enough to parse fast. */
 export const MAX_FILE_BYTES = 10 * 1024 * 1024
 
+/**
+ * Above this, the output renders as plain monospace instead of the highlighted
+ * view. Syntax colour costs one DOM node per token, and on a large document
+ * that DOM — not the parse — is what freezes the tab; measured on 384 KB, the
+ * paste-to-paint block was 878 ms. Past this size the visitor is validating or
+ * minifying, not reading colours.
+ */
+export const HIGHLIGHT_LIMIT_BYTES = 300 * 1024
+
 export const ACCEPTED_FILE_TYPES = ".json,.txt"
 
 const ACCEPTED_MIME = ["application/json", "text/plain", "text/json"]

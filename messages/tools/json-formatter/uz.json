@@ -80,7 +80,8 @@
     },
     "Tree": {
       "keys": "{count} kalit",
-      "items": "{count} element"
+      "items": "{count} element",
+      "showMore": "Yana {count} ta ko'rsatish ({remaining} ta qoldi)"
     }
   }
 }

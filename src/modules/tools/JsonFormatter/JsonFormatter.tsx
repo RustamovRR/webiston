@@ -18,6 +18,7 @@ import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 import { ControlBar, InfoSection, JsonTree } from "./components"
+import { HIGHLIGHT_LIMIT_BYTES } from "./constants"
 import { useJsonFormatter } from "./hooks/useJsonFormatter"
 import { formatBytes } from "./utils/json"
 
@@ -34,6 +35,7 @@ const JsonFormatter = () => {
     showLineNumbers,
     toggleLineNumbers,
     result,
+    hasAnalysis,
     output,
     outputBytes,
     fileError,
@@ -44,12 +46,10 @@ const JsonFormatter = () => {
     clear
   } = useJsonFormatter()
 
-  const hasInput = input.trim().length > 0
-
   // A filled dot, not a 10%-alpha one. The invalid state used
   // `bg-destructive/10` — the same value as the panel BACKGROUND behind it, so
   // the status dot was invisible exactly when it mattered.
-  const status = hasInput ? (
+  const status = hasAnalysis ? (
     <span
       className={`flex items-center gap-1.5 text-xs ${
         result.isValid ? "text-success" : "text-destructive"
@@ -94,7 +94,7 @@ const JsonFormatter = () => {
   ) : null
 
   const targetContent =
-    hasInput && !result.isValid ? (
+    hasAnalysis && !result.isValid ? (
       <div className="p-4">
         <div
           role="alert"
@@ -134,11 +134,19 @@ const JsonFormatter = () => {
     ) : view === "tree" && result.isValid ? (
       <JsonTree value={result.value} />
     ) : output ? (
-      <CodeHighlight
-        code={output}
-        language="json"
-        showLineNumbers={showLineNumbers}
-      />
+      outputBytes > HIGHLIGHT_LIMIT_BYTES ? (
+        // Plain monospace above the limit — see the constant. Same padding
+        // and type as the highlighted view, so only the colour is lost.
+        <pre className="whitespace-pre-wrap wrap-break-word p-4 font-mono text-foreground text-sm">
+          {output}
+        </pre>
+      ) : (
+        <CodeHighlight
+          code={output}
+          language="json"
+          showLineNumbers={showLineNumbers}
+        />
+      )
     ) : null
 
   return (

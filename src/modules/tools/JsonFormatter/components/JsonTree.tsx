@@ -34,12 +34,26 @@ const TYPE_CLASS = {
  */
 const OPEN_DEPTH = 3
 
+/**
+ * A branch with more children than this starts folded REGARDLESS of depth,
+ * and its children arrive in slices. Depth alone was not a guard: a 5,000-item
+ * array at depth 2 opened everything — measured, the view switch took 3.95 s
+ * and put 180,000 nodes in the DOM. Chrome's devtools fold exactly this way.
+ */
+const AUTO_FOLD_CHILDREN = 50
+
+/** How many children one "show more" click reveals on a large branch. */
+const CHUNK = 100
+
 function Primitive({ value }: { value: unknown }) {
   if (value === null) {
     return <span className={TYPE_CLASS.null}>null</span>
   }
   if (typeof value === "string") {
-    return <span className={TYPE_CLASS.string}>"{value}"</span>
+    // `JSON.stringify`, not hand-wrapped quotes: a value containing `"` or a
+    // newline must display in its escaped JSON form, exactly as the formatted
+    // view prints it — the tree is a VIEW of the document, not a paraphrase.
+    return <span className={TYPE_CLASS.string}>{JSON.stringify(value)}</span>
   }
   if (typeof value === "boolean") {
     return <span className={TYPE_CLASS.boolean}>{String(value)}</span>
@@ -59,7 +73,17 @@ function Node({ name, value, depth }: BranchProps) {
   const isArray = Array.isArray(value)
   const isObject = !isArray && value !== null && typeof value === "object"
 
-  const [open, setOpen] = useState(depth < OPEN_DEPTH)
+  // Cheap — no entry array is built for the initial-state decision.
+  const childCount = isArray
+    ? (value as unknown[]).length
+    : isObject
+      ? Object.keys(value as object).length
+      : 0
+
+  const [open, setOpen] = useState(
+    depth < OPEN_DEPTH && childCount <= AUTO_FOLD_CHILDREN
+  )
+  const [visible, setVisible] = useState(CHUNK)
 
   const label =
     name !== undefined ? (
@@ -89,6 +113,9 @@ function Node({ name, value, depth }: BranchProps) {
   const count = isArray
     ? t("items", { count: entries.length })
     : t("keys", { count: entries.length })
+
+  const shown = entries.slice(0, visible)
+  const remaining = entries.length - shown.length
 
   return (
     <div className="py-px">
@@ -135,9 +162,21 @@ function Node({ name, value, depth }: BranchProps) {
               depth — and it doubles as a click target vocabulary: everything
               hanging off one line is one branch. */}
           <div className="ml-[5px] border-border border-l pl-4">
-            {entries.map(([key, entry]) => (
+            {shown.map(([key, entry]) => (
               <Node key={key} name={key} value={entry} depth={depth + 1} />
             ))}
+            {remaining > 0 && (
+              <button
+                type="button"
+                onClick={() => setVisible((previous) => previous + CHUNK)}
+                className="-mx-1.5 my-0.5 cursor-pointer rounded-md px-1.5 py-0.5 font-sans text-[11px] text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+              >
+                {t("showMore", {
+                  count: Math.min(remaining, CHUNK),
+                  remaining
+                })}
+              </button>
+            )}
           </div>
           <span className="ml-[17px] text-muted-foreground">
             {isArray ? "]" : "}"}

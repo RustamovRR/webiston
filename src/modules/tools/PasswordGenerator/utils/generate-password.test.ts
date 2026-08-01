@@ -199,6 +199,34 @@ describe("generatePassword — memorable", () => {
     expect(generatePassword(s)).not.toMatch(/[!@#$%^&*]/)
   })
 
+  it("keeps the number and symbol at every realistic length", () => {
+    // Regression: words used to be picked blind and the overflow sliced, so
+    // length 16 could produce "ProtocolPassword" — two dictionary words and
+    // none of the entropy the meter was reporting.
+    for (let run = 0; run < 50; run++) {
+      const pw = generatePassword(
+        settings({ passwordType: "memorable", length: 16 })
+      )
+      expect(pw).toHaveLength(16)
+      expect(pw).toMatch(/\d{3}/)
+      expect(pw).toMatch(/[!@#$%^&*]/)
+    }
+  })
+
+  it("never doubles the same word", () => {
+    for (let run = 0; run < 50; run++) {
+      const pw = generatePassword(
+        settings({ passwordType: "memorable", length: 20 })
+      )
+      // Words live before the 3-digit number; padding after it could fake a
+      // capitalised fragment, so only the prefix is parsed.
+      const numberAt = pw.search(/\d{3}/)
+      const words = pw.slice(0, numberAt).match(/[A-Z][a-z]+/g) ?? []
+      expect(words.length).toBeGreaterThan(0)
+      expect(new Set(words).size).toBe(words.length)
+    }
+  })
+
   it("does not hang when no alphabet is available to pad with", () => {
     // Regression guard: the padding loop is `while (len < target && alphabet)`.
     // Without the alphabet check this spins forever.

@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useMemo, useState } from "react"
+import { useDebounceValue } from "usehooks-ts"
 
 import {
   ACCEPTED_FILE_TYPES,
@@ -44,7 +45,19 @@ export function useJsonFormatter() {
 
   const [fileError, setFileError] = useState<FileErrorKey | null>(null)
 
-  const result = useMemo(() => analyseJson(input, indent), [input, indent])
+  /**
+   * The textarea stays live; the ANALYSIS trails it. Parse + two stringifies
+   * + the stats walk ran on every keystroke, synchronously — measured on a
+   * 384 KB document, ~94 ms per keystroke and 878 ms on paste, all of it
+   * blocking the caret. 150 ms is above the latin-cyrillic tool's 90 because
+   * the work here is an order heavier.
+   */
+  const [analysedInput] = useDebounceValue(input, 150)
+
+  const result = useMemo(
+    () => analyseJson(analysedInput, indent),
+    [analysedInput, indent]
+  )
 
   // The tree is a VIEW of the formatted document, not a third serialisation:
   // copy and download from tree view give the formatted text.
@@ -106,6 +119,13 @@ export function useJsonFormatter() {
     showLineNumbers,
     toggleLineNumbers,
     result,
+    /**
+     * Whether `result` describes a real document. The component must gate the
+     * valid/invalid readouts on THIS, not on `input`: during the debounce lag
+     * the input is ahead of the analysis, and judging fresh input by a stale
+     * result flashed the error card on the first keystroke.
+     */
+    hasAnalysis: analysedInput.trim().length > 0,
     output,
     outputBytes: byteSize(output),
     fileError,

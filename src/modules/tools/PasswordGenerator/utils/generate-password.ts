@@ -142,13 +142,30 @@ export function generatePassword(
   const alphabet = buildAlphabet(settings)
 
   if (settings.passwordType === "memorable") {
-    const word1 = pick(MEMORABLE_WORDS, rand)
-    const word2 = pick(MEMORABLE_WORDS, rand)
+    // The number and symbol are budgeted FIRST and the words are chosen to
+    // fit around them. The old order picked two words blind and sliced the
+    // overflow — at length 16 that produced "ProtocolPassword": the number
+    // and symbol (13 of the format's ~24 bits) truncated away while the
+    // meter still reported the full floor. It also allowed "CryptoCrypto".
     const number = String(rand(1000)).padStart(3, "0")
     const symbol = settings.includeSymbols ? pick(MEMORABLE_SYMBOLS, rand) : ""
+    const budget = settings.length - number.length - symbol.length
+
+    const shortest = Math.min(...MEMORABLE_WORDS.map((word) => word.length))
+    const firstFits = MEMORABLE_WORDS.filter(
+      (word) => word.length + shortest <= budget
+    )
+    const word1 = pick(firstFits.length ? firstFits : MEMORABLE_WORDS, rand)
+    const secondFits = MEMORABLE_WORDS.filter(
+      (word) => word !== word1 && word.length <= budget - word1.length
+    )
+    const word2 = secondFits.length ? pick(secondFits, rand) : ""
 
     let result = `${word1}${word2}${number}${symbol}`
 
+    // Only a length too small for ANY word + number can still overflow;
+    // there the format has no room to mean anything and truncation is the
+    // honest remainder.
     if (result.length > settings.length) {
       return result.slice(0, settings.length)
     }

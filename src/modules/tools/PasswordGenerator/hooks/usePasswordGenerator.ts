@@ -36,11 +36,24 @@ export function usePasswordGenerator() {
     }
   }, [])
 
+  // The acknowledgement must not outlive the password: regenerate inside the
+  // two-second window and the button kept saying "copied" about a password
+  // that was no longer on screen.
+  useEffect(() => {
+    setCopied(false)
+  }, [password])
+
   const strength = useMemo(() => assessStrength(settings), [settings])
 
   const copy = useCallback(async () => {
     if (!password) return
-    await navigator.clipboard.writeText(password)
+    try {
+      await navigator.clipboard.writeText(password)
+    } catch {
+      // Clipboard refused (permissions, insecure context): no acknowledgement
+      // is the honest signal — saying "copied" about a failed write is worse.
+      return
+    }
     setCopied(true)
     setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
   }, [password])

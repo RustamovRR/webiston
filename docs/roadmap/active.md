@@ -180,11 +180,17 @@ below._
 | QR: "add gradient" defaulted to a colour the tool itself condemns | ✅ | `DEFAULT_GRADIENT_COLOR` was the interface teal at 2.6:1 — one click produced the severe "will not scan" warning about the tool's own choice. Now the Brend preset's measured 7.8:1 stop; verified live: no warning |
 | QR route: structured data described a tool that does not exist | ✅ | FAQPage schema promised "PNG, JPG" (real: SVG/PNG/WebP, no JPG anywhere), a WiFi form the page deliberately does not have, and a featureList advertising the REMOVED size/error-level controls. All three aligned with reality in both locales' schema strings. The page still carries the old-style inline metadata blob (RU keywords etc.) — the latin-cyrillic-style `seo/` segment is the tracked follow-up |
 
-**Gate (real exit codes, 2026-08-01, after the QR audit):** `check 0` ·
-`typecheck 0` · `lint 0` · `test 0 (558)` · `tokens 0` · `contrast 0` ·
-`build 0` · `ext build 0`. **`i18n 1`**, unchanged: still blocked on the 8
-dead-key deletion below — qr-generator and latin-cyrillic are both
-parity-clean.
+| JSON deep audit: the tree view could not carry a real document | ✅ | Measured on a 384 KB, 5,000-item API-shaped payload: **paste blocked the caret for 878 ms, every keystroke 94 ms** (parse + two stringifies + stats ran synchronously per keystroke), and switching to tree view took **3.95 s and put 180,000 nodes in the DOM** — depth-based folding was no guard against a WIDE branch. Fixes: branches >50 children start folded at any depth, children reveal in slices of 100 ("Yana 100 ta ko'rsatish (4900 ta qoldi)", both locales), analysis debounced 150 ms behind the live textarea (`hasAnalysis` gates the badges so fresh input is never judged by a stale result), syntax highlight falls back to plain monospace above 300 KB. Re-measured: paste 22 ms, keystroke 16 ms, tree DOM 464 nodes. 3 RTL tests pin the fold/chunk behaviour |
+| JSON: two small exactness fixes | ✅ | Tree strings render via `JSON.stringify` (a value holding `"` or a newline used to display unescaped — the tree is a view of the document, not a paraphrase); `formatBytes` gained an MB tier (a 10 MB file read "10240 KB") |
+| Password deep audit: the core survives 120 live draws | ✅ | Driven through the real UI: 120/120 unique, **0 violations of the strong-type "one of each class" guarantee**, 88 distinct characters, frequency spread 11–35 around an expected 21.8 — CSPRNG + rejection sampling behaving. The no-classes error and preset strip verified |
+| Password: memorable draws could silently lose their entropy | ✅ | Words were picked blind and the overflow sliced: at length 16 the live page produced **"ProtocolPassword"** — two dictionary words, the number and symbol (13 of the format's ~24 bits) truncated away while the meter reported the full floor — plus "CryptoCrypto682&". Now the number and symbol are budgeted first and the words chosen to fit around them, doubled words excluded; 30/30 live draws keep every part. 2 regression tests |
+| Password: two acknowledgement fixes | ✅ | "Nusxalandi" no longer outlives the password it described (reset on regenerate); a refused clipboard write no longer claims success (try/catch, no ack) |
+
+**Gate (real exit codes, 2026-08-01, after the JSON + password audit):**
+`check 0` · `typecheck 0` · `lint 0` · `test 0 (563)` · `tokens 0` ·
+`contrast 0` · `build 0` · `ext build 0`. **`i18n 1`**, unchanged: still
+blocked on the 8 dead-key deletion below — qr-generator, latin-cyrillic,
+json-formatter and password-generator are all parity-clean.
 
 ---
 

@@ -187,5 +187,9 @@ export function byteSize(text: string): number {
 
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
-  return `${(bytes / 1024).toFixed(bytes < 10240 ? 2 : 0)} KB`
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(bytes < 10240 ? 2 : 0)} KB`
+  }
+  // The tool accepts files up to 10 MB; "10240 KB" is a unit failure.
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
