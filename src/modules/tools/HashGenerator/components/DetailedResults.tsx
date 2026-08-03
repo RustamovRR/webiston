@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 import type React from "react"
 import { CopyButton } from "@/components/shared/CopyButton"
 import { TerminalInput } from "@/components/shared/TerminalInput"
-import type { HashAlgorithm } from "../hooks/useHashGenerator"
+import type { HashAlgorithm } from "../types"
 
 interface HashResult {
   algorithm: string

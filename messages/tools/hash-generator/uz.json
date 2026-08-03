@@ -2,72 +2,122 @@
   "HashGeneratorPage": {
     "ToolHeader": {
       "title": "Hash Generator",
-      "description": "MD5, SHA256, SHA512 va boshqa kriptografik hash algoritmlar bilan ma'lumotlarni hash qilish"
+      "description": "Matn yoki faylning SHA-256, SHA-512, MD5 barmoq izini oling — va yuklab olgan faylingiz e'lon qilingan checksum bilan mos kelishini shu yerda tekshiring. Hammasi brauzeringizda, hech narsa serverga yuborilmaydi."
     },
-    "ControlPanel": {
-      "textHash": "Matn Hash",
-      "fileHash": "Fayl Hash",
-      "uploadFile": "Fayl yuklash",
-      "sampleHash": "Namuna Hash",
+    "controls": {
+      "mode": "Rejim",
+      "modes": {
+        "hash": "Hash",
+        "hmac": "HMAC"
+      },
+      "format": "Format",
+      "formats": {
+        "hex": "Hex",
+        "base64": "Base64"
+      },
+      "upload": "Fayl",
+      "sample": "Namuna",
       "clear": "Tozalash",
-      "downloadTxt": "TXT yuklab olish",
-      "downloadJson": "JSON yuklab olish"
+      "download": "Saqlash",
+      "hmacKey": "Maxfiy kalit",
+      "hmacKeyPlaceholder": "webhook signing secret",
+      "hmacKeyHint": "Kalit brauzeringizdan chiqmaydi va saqlanmaydi."
     },
-    "AlgorithmSelector": {
-      "title": "Hash Algoritmlari"
+    "samples": {
+      "greeting": "Oddiy matn",
+      "uzbek": "O'zbekcha matn",
+      "payload": "Webhook payload"
     },
-    "InputPanel": {
-      "textInput": "Matn Kirish",
-      "fileInput": "Fayl Hash Kirish",
-      "readyToHash": "Hash yaratishga tayyor",
-      "textPlaceholder": "Hash qilmoqchi bo'lgan matnni kiriting...",
-      "selectFile": "Faylni tanlang",
-      "supportedFormats": "TXT, JSON, CSV, MD, XML, LOG (10MB gacha)",
-      "processing": "Ishlanmoqda..."
+    "panel": {
+      "placeholder": "Hash olinadigan matnni yozing yoki faylni shu yerga tashlang...",
+      "textSource": "Matn",
+      "fileSource": "Fayl",
+      "results": "Hash natijalari",
+      "hmacResults": "HMAC natijalari",
+      "bytes": "{count} bayt",
+      "willAppear": "Natijalar shu yerda chiqadi",
+      "hint": "Matn yozing yoki faylni tashlang",
+      "needsKey": "Maxfiy kalit kiriting",
+      "needsKeyHint": "HMAC kalitsiz hisoblanmaydi",
+      "noHmacMd5": "HMAC-MD5 ko'rsatilmaydi: brauzerning Web Crypto API'si MD5'ni umuman qo'llab-quvvatlamaydi."
     },
-    "ResultsPanel": {
-      "title": "Hash Natijalari",
-      "noResults": "Hash natijalari bu yerda ko'rsatiladi",
-      "instruction": "Matn kiriting va algoritm tanlang",
-      "hashCount": "Hash soni"
+    "results": {
+      "bits": "{bits} bit",
+      "broken": "buzilgan",
+      "matched": "mos keldi"
     },
-    "DetailedResults": {
-      "title": "Batafsil Hash Natijalari",
-      "characters": "belgi"
+    "verify": {
+      "title": "Checksum'ni solishtirish",
+      "hint": "Yuklab olgan sahifangizdagi checksum'ni shu yerga qo'ying — qatorni to'liq nusxalasangiz ham bo'ladi. Qaysi algoritm ekanini o'zi aniqlaydi.",
+      "placeholder": "65a8e27d8879283831b664bd8b7f0ad4  yoki  sha256:e3b0c442...",
+      "match": "Mos keldi — {algorithm}",
+      "mismatch": "Mos kelmadi. Bu {algorithm} checksum'i, lekin hozirgi natija boshqa.",
+      "unknown": "Bu tanish checksum shakliga o'xshamadi. Uzunligini tekshiring — nusxalashda bir qism tushib qolgan bo'lishi mumkin."
     },
-    "Info": {
-      "securityLevels": {
-        "title": "Xavfsizlik Darajalari",
-        "deprecated": "Deprecated",
-        "weak": "Zaif",
-        "secure": "Xavfsiz",
-        "verysecure": "Eng xavfsiz"
+    "file": {
+      "dropHere": "Faylni shu yerga tashlang",
+      "accepts": "Istalgan fayl · 20 MB gacha",
+      "hashingBytes": "Faylning baytlari hash qilinmoqda — natija sha256sum bergan qiymat bilan bir xil bo'ladi.",
+      "remove": "Olib tashlash"
+    },
+    "errors": {
+      "tooLarge": "Fayl 20 MB dan katta. Bunday fayl uchun terminaldagi sha256sum tezroq ishlaydi.",
+      "unreadable": "Faylni o'qib bo'lmadi."
+    },
+    "reference": {
+      "title": "Algoritmlar va ular nima uchun kerak",
+      "intro": "Hash — bu istalgan hajmdagi ma'lumotdan olinadigan qat'iy uzunlikdagi barmoq izi. Bir xil bayt ketma-ketligi doim bir xil natija beradi, bitta bayt o'zgarsa natija butunlay boshqacha bo'ladi. Shuning uchun u ma'lumot yo'lda buzilmaganini tekshirishga to'g'ri keladi.",
+      "broken": "buzilgan",
+      "table": {
+        "algorithm": "Algoritm",
+        "bits": "Bit",
+        "length": "Hex uzunligi",
+        "use": "Nima uchun",
+        "chars": "{count} belgi"
       },
-      "recommendations": {
-        "deprecated": "Ishlatmang - eskirgan",
-        "weak": "Zaif - faqat eski holat uchun",
-        "secure": "Tavsiya etiladi",
-        "recommended": "Eng yaxshi tanlov"
+      "algorithms": {
+        "sha256": "Standart tanlov. Fayl checksum'lari, git commit'lari, API imzolari — deyarli hamma joyda shu.",
+        "sha512": "SHA-256 bilan bir xil darajada ishonchli, 64 bitli protsessorlarda ko'pincha tezroq.",
+        "sha384": "Subresource Integrity (SRI) uchun brauzerlar aynan shuni kutadi.",
+        "sha1": "2017-yilda haqiqiy kolliziya e'lon qilingan. Faqat git obyekt ID'lari kabi eski tizimlar bilan ishlash uchun.",
+        "md5": "2004-yildan buzilgan. Faqat eski yuklab olishlarda e'lon qilingan MD5'ni tekshirish uchun qoldirilgan."
       },
-      "descriptions": {
-        "deprecated": "Zaif, faqat demo uchun",
-        "weak": "Zaif, legacy uchun",
-        "secure": "Xavfsiz, ishlatish mumkin",
-        "recommended": "Eng xavfsiz, tavsiya etiladi"
-      },
-      "useCases": {
-        "title": "Foydalanish Sohalari",
-        "passwords": "Parol hashlash",
-        "integrity": "Fayl yaxlitligi",
-        "signatures": "Raqamli imzolar",
-        "blockchain": "Blokcheyn"
-      },
-      "notes": {
-        "title": "Muhim Eslatmalar",
-        "irreversible": "Hash funksiyalar qaytarilmas",
-        "deterministic": "Bir xil input → bir xil hash",
-        "avalanche": "Kichik o'zgarish → butunlay boshqa hash",
-        "recommendation": "SHA256+ algoritmlarni ishlating"
+      "topics": {
+        "verify": {
+          "title": "Yuklab olingan faylni tekshirish",
+          "body": "Sayt faylning SHA-256'sini e'lon qilgan bo'lsa, faylni shu yerga tashlang va e'lon qilingan qatorni yuqoridagi maydonga qo'ying. Mos kelmasa — fayl yo'lda buzilgan yoki boshqa fayl.",
+          "example": "sha256sum ubuntu-24.04.iso"
+        },
+        "passwords": {
+          "title": "Parollar uchun ishlatmang",
+          "body": "SHA-256 tez ishlashi uchun yaratilgan — parolni saralab topmoqchi bo'lgan odamga aynan shu kerak. Parol uchun ataylab sekin qilingan bcrypt, scrypt yoki Argon2 ishlatiladi. Bu vosita ularni bermaydi, chunki brauzerda hisoblanadigan parol hash'i xavfsiz emas.",
+          "example": "bcrypt · scrypt · Argon2id"
+        }
+      }
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "verify": {
+          "question": "Yuklab olgan faylim buzilmaganini qanday tekshiraman?",
+          "answer": "Faylni shu sahifaga tashlang, so'ng saytda e'lon qilingan checksum'ni «Checksum'ni solishtirish» maydoniga qo'ying. Vosita qaysi algoritm ekanini uzunligidan aniqlaydi va mos kelgan-kelmaganini aytadi. sha256sum, shasum va sha256:... shakllarining hammasi tushuniladi."
+        },
+        "passwords": {
+          "question": "Parolni SHA-256 bilan hash qilsam bo'ladimi?",
+          "answer": "Yo'q. SHA-256 va SHA-512 tez ishlash uchun mo'ljallangan, ya'ni zamonaviy videokarta sekundiga milliardlab variantni sinab ko'radi. Parol uchun ataylab sekin qilingan bcrypt, scrypt yoki Argon2id ishlatiladi. Bu vositadagi natijani parol bazasiga yozmang."
+        },
+        "md5": {
+          "question": "MD5 va SHA-1 nega «buzilgan» deb belgilangan?",
+          "answer": "Ikkalasi uchun ham bir xil hash beradigan turli fayllar yasash usuli topilgan: MD5 uchun 2004-yilda, SHA-1 uchun 2017-yilda (SHAttered). Ya'ni ular endi «bu fayl o'zgartirilmaganmi» degan savolga javob bera olmaydi. Ular bu yerda faqat eski tizim e'lon qilgan qiymatni tekshirish uchun qolgan."
+        },
+        "hmac": {
+          "question": "HMAC nima va qachon kerak?",
+          "answer": "HMAC — maxfiy kalit bilan hisoblanadigan hash. Stripe, GitHub va Telegram kabi xizmatlar webhook so'rovlarini shu tarzda imzolaydi: kalitni bilgan odamgina to'g'ri imzoni hisoblay oladi. Kelgan so'rov haqiqatan ham o'sha xizmatdan kelganini tekshirish uchun payload'ni va kalitni kiritib, natijani sarlavhadagi imzo bilan solishtirasiz."
+        },
+        "privacy": {
+          "question": "Fayllarim va kalitim serverga yuboriladimi?",
+          "answer": "Yo'q. Hisoblash to'liq brauzeringizda, Web Crypto API orqali bajariladi — fayl ham, matn ham, HMAC kaliti ham hech qayerga yuborilmaydi va saqlanmaydi. Sahifani yopsangiz hammasi yo'qoladi."
+        }
       }
     }
   }
