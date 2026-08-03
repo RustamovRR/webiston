@@ -30,10 +30,10 @@ interface TokenPartsProps {
   onDownload: (part: "header" | "payload") => void
 }
 
-function JsonBlock({ value }: { value: unknown }) {
+function JsonBlock({ json }: { json: string }) {
   return (
     <pre className="max-h-80 overflow-auto rounded-lg border border-border bg-muted/40 p-3 font-mono text-foreground text-xs leading-relaxed">
-      <code>{JSON.stringify(value, null, 2)}</code>
+      <code>{json}</code>
     </pre>
   )
 }
@@ -48,33 +48,39 @@ export function TokenParts({
 
   return (
     <div className="space-y-6">
-      {(["header", "payload"] as const).map((part) => (
-        <ToolCard
-          key={part}
-          title={t(`${part}.title`)}
-          actions={
-            <>
-              <CopyButton text={JSON.stringify(token[part], null, 2)} />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => onDownload(part)}
-                aria-label={t("download")}
-                title={t("download")}
-              >
-                <Download aria-hidden="true" />
-              </Button>
-            </>
-          }
-          bodyClassName="space-y-3 p-5"
-        >
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {t(`${part}.description`)}
-          </p>
-          <JsonBlock value={token[part]} />
-        </ToolCard>
-      ))}
+      {(["header", "payload"] as const).map((part) => {
+        // Serialised ONCE. It was stringified twice per part per render — once
+        // for the copy button's `text` and once for the block — over a payload
+        // that can carry a large permission array.
+        const json = JSON.stringify(token[part], null, 2)
+        return (
+          <ToolCard
+            key={part}
+            title={t(`${part}.title`)}
+            actions={
+              <>
+                <CopyButton text={json} />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDownload(part)}
+                  aria-label={t("download")}
+                  title={t("download")}
+                >
+                  <Download aria-hidden="true" />
+                </Button>
+              </>
+            }
+            bodyClassName="space-y-3 p-5"
+          >
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {t(`${part}.description`)}
+            </p>
+            <JsonBlock json={json} />
+          </ToolCard>
+        )
+      })}
 
       <ToolCard
         tone="muted"

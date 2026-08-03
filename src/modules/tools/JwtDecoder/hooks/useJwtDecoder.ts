@@ -52,14 +52,21 @@ export function useJwtDecoder() {
    * server computes one sentence and the client another.
    */
   const [now, setNow] = useState<Date | null>(null)
-  useEffect(() => {
-    setNow(new Date())
-  }, [])
 
   const result = useMemo(
     () => (token.trim() ? decodeJwt(token) : null),
     [token]
   )
+
+  // Re-read the clock whenever the TOKEN changes, not only on mount. Set once
+  // on mount, a token pasted ten minutes into a session was judged against a
+  // ten-minute-old `now` — so a token that had just expired still read
+  // "expires in 5 minutes".
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `token` is the
+  // trigger; `now` is what the effect writes
+  useEffect(() => {
+    setNow(new Date())
+  }, [token])
 
   const decoded = result?.ok ? result.token : null
 

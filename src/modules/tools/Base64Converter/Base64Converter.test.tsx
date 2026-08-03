@@ -79,8 +79,10 @@ describe("encoding", () => {
     renderTool()
     type(source(), "Ўзбекистон")
 
-    // Assert — ten characters, twenty bytes
-    expect(screen.getByText("20 bayt")).toBeInTheDocument()
+    // Assert — ten characters, twenty bytes. `formatFileSize` from lib/utils
+    // renders the unit, so this also pins that the tool no longer carries its
+    // own sixth copy of that formatter.
+    expect(screen.getByText("20 B")).toBeInTheDocument()
   })
 })
 

@@ -104,9 +104,7 @@ export const readTiming = (payload: JsonObject, now: Date): TokenTiming => {
     // "not expired" about it reads as "checked, and fine".
     isExpired: expiresAt ? nowSeconds >= expiresAt.seconds : null,
     isNotYetValid: notBefore ? nowSeconds < notBefore.seconds : null,
-    secondsUntilExpiry: expiresAt ? expiresAt.seconds - nowSeconds : null,
-    lifetimeSeconds:
-      issuedAt && expiresAt ? expiresAt.seconds - issuedAt.seconds : null
+    secondsUntilExpiry: expiresAt ? expiresAt.seconds - nowSeconds : null
   }
 }
 

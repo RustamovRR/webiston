@@ -42,8 +42,6 @@ export interface TokenTiming {
   isNotYetValid: boolean | null
   /** Seconds until `exp` (negative once past). `null` without an `exp`. */
   secondsUntilExpiry: number | null
-  /** Total seconds between `iat` and `exp`, when both are present. */
-  lifetimeSeconds: number | null
 }
 
 /** Why a file could not be read — same treatment as a decode failure. */

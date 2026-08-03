@@ -109,7 +109,7 @@ describe("readTiming", () => {
     expect(timing.isExpired).toBe(true)
   })
 
-  it("reports the remaining time and the lifetime", () => {
+  it("reports the remaining time", () => {
     // Arrange
     const timing = readTiming(
       { iat: nowSeconds - 300, exp: nowSeconds + 600 },
@@ -118,7 +118,6 @@ describe("readTiming", () => {
 
     // Assert
     expect(timing.secondsUntilExpiry).toBe(600)
-    expect(timing.lifetimeSeconds).toBe(900)
     expect(timing.isExpired).toBe(false)
   })
 })

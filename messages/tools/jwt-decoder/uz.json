@@ -26,7 +26,6 @@
       "privacy": "Token brauzeringizdan chiqmaydi",
       "algorithm": "Algoritm",
       "type": "Turi",
-      "lifetime": "Umri",
       "absent": "ko'rsatilmagan",
       "unsigned": "Bu tokenning header'ida alg: none yozilgan — ya'ni u umuman imzolanmagan. Agar server header'dagi algoritmga ishonsa, bunday tokenni istalgan odam o'zi yasab yubora oladi. Bu JWT'ning eng eski hujum usuli.",
       "status": {
@@ -40,7 +39,9 @@
         "sub": "kim haqida",
         "aud": "kimga",
         "jti": "ID"
-      }
+      },
+      "issuedAt": "Berilgan",
+      "notBefore": "Kuchga kiradi"
     },
     "Parts": {
       "download": "Yuklab olish",

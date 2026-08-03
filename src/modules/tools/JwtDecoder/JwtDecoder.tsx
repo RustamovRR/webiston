@@ -42,7 +42,8 @@ const JwtDecoder = () => {
     loadSample,
     clear,
     readFile,
-    download
+    download,
+    now
   } = useJwtDecoder()
 
   /**
@@ -97,6 +98,7 @@ const JwtDecoder = () => {
                   token={decoded}
                   timing={timing}
                   unsigned={unsigned}
+                  now={now}
                 />
               ) : (
                 <ToolCard title={t("Summary.title")} bodyClassName="p-5">

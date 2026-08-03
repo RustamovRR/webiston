@@ -2,10 +2,10 @@
 
 import { ArrowLeftRight, FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
-
 import { DropZone } from "@/components/shared/DropZone"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
+import { formatFileSize } from "@/lib/utils"
 
 import { ControlBar } from "./components/ControlBar"
 import { useBase64Converter } from "./hooks/useBase64Converter"
@@ -19,16 +19,8 @@ import { useBase64Converter } from "./hooks/useBase64Converter"
  * variation of a component eight tools already use.
  */
 
-/** Bytes, in the unit a developer would quote them in. */
-const formatBytes = (bytes: number, unit: (key: string) => string) => {
-  if (bytes < 1024) return `${bytes} ${unit("b")}`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} ${unit("kb")}`
-  return `${(bytes / (1024 * 1024)).toFixed(2)} ${unit("mb")}`
-}
-
 const Base64Converter = () => {
   const t = useTranslations("Base64ConverterPage")
-  const tUnits = useTranslations("Base64ConverterPage.units")
   const {
     input,
     setInput,
@@ -180,13 +172,13 @@ const Base64Converter = () => {
                 <span>
                   {t("Panel.sourceSize")}{" "}
                   <span className="font-mono text-foreground tabular-nums">
-                    {formatBytes(result.bytes, tUnits)}
+                    {formatFileSize(result.bytes)}
                   </span>
                 </span>
                 <span>
                   {t("Panel.resultSize")}{" "}
                   <span className="font-mono text-foreground tabular-nums">
-                    {formatBytes(result.outputBytes, tUnits)}
+                    {formatFileSize(result.outputBytes)}
                   </span>
                 </span>
               </div>

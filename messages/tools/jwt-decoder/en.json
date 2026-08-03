@@ -26,7 +26,6 @@
       "privacy": "The token never leaves your browser",
       "algorithm": "Algorithm",
       "type": "Type",
-      "lifetime": "Lifetime",
       "absent": "not stated",
       "unsigned": "This token's header says alg: none, meaning it is not signed at all. If a server trusts the algorithm named in the header, anyone can mint a token like this. It is the oldest JWT attack there is.",
       "status": {
@@ -40,7 +39,9 @@
         "sub": "subject",
         "aud": "audience",
         "jti": "id"
-      }
+      },
+      "issuedAt": "Issued",
+      "notBefore": "Valid from"
     },
     "Parts": {
       "download": "Download",

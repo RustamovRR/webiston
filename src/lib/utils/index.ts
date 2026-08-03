@@ -5,6 +5,7 @@ export {
   encodeBase64,
   encodeBytes
 } from "./base64"
+export { formatDuration, formatFileSize } from "./format"
 // Text utilities
 
 // Color contrast utilities

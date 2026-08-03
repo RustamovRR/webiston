@@ -25,6 +25,8 @@ interface TokenSummaryProps {
   token: DecodedJwt
   timing: TokenTiming | null
   unsigned: boolean
+  /** The clock every answer here is measured against. Never `Date.now()`. */
+  now: Date | null
 }
 
 /** `iss`, `sub`, `aud`, `jti` — the identity claims, when the token has them. */
@@ -32,7 +34,12 @@ const IDENTITY_CLAIMS = REGISTERED_CLAIMS.filter(
   (claim) => !["exp", "nbf", "iat"].includes(claim)
 )
 
-export function TokenSummary({ token, timing, unsigned }: TokenSummaryProps) {
+export function TokenSummary({
+  token,
+  timing,
+  unsigned,
+  now
+}: TokenSummaryProps) {
   const t = useTranslations("JwtDecoderPage.Summary")
   const format = useFormatter()
 
@@ -64,7 +71,7 @@ export function TokenSummary({ token, timing, unsigned }: TokenSummaryProps) {
             {timing?.expiresAt && (
               // Relative time is the answer; the absolute date is the evidence.
               <span className="block font-normal text-muted-foreground">
-                {format.relativeTime(timing.expiresAt.date)} ·{" "}
+                {now && format.relativeTime(timing.expiresAt.date, now)} ·{" "}
                 {format.dateTime(timing.expiresAt.date, {
                   dateStyle: "medium",
                   timeStyle: "short"
@@ -102,18 +109,27 @@ export function TokenSummary({ token, timing, unsigned }: TokenSummaryProps) {
             <dd className="font-mono text-foreground">{typ}</dd>
           </div>
         )}
-        {timing?.lifetimeSeconds !== null &&
-          timing?.lifetimeSeconds !== undefined && (
-            <div className="flex items-baseline justify-between gap-3">
-              <dt className="text-muted-foreground">{t("lifetime")}</dt>
-              <dd className="font-mono text-foreground tabular-nums">
-                {format.relativeTime(
-                  new Date(timing.lifetimeSeconds * 1000),
-                  new Date(0)
-                )}
+        {/* `iat` and `nbf` as real dates. They were computed and then thrown
+            away — a timestamp claim printed as `1516239022` is the one thing
+            on this page a person definitely cannot read. */}
+        {(["issuedAt", "notBefore"] as const).map((key) => {
+          const claim = timing?.[key]
+          if (!claim) return null
+          return (
+            <div
+              key={key}
+              className="flex items-baseline justify-between gap-3"
+            >
+              <dt className="shrink-0 text-muted-foreground">{t(key)}</dt>
+              <dd className="min-w-0 truncate text-foreground text-xs">
+                {format.dateTime(claim.date, {
+                  dateStyle: "medium",
+                  timeStyle: "short"
+                })}
               </dd>
             </div>
-          )}
+          )
+        })}
         {IDENTITY_CLAIMS.map((claim) => {
           const value = token.payload[claim]
           if (typeof value !== "string" && typeof value !== "number")

@@ -245,6 +245,10 @@ below._
 | JWT: honesty on a security tool | ✅ | The schema advertised **"JWT validatsiya"** and **"Xavfsizlik tekshiruvi"** on a page that does not verify signatures and deliberately cannot — verifying needs a secret the tool should never ask for. Removed, and the FAQ now says why in full. New: **`alg: none` is called out** where it appears (the oldest JWT attack; the old tool rendered it as just another algorithm name), the signature stays hidden behind a toggle and is never decoded, and the empty state states that the token never leaves the browser. Five `alert()` calls → inline `role="alert"`. Three sample tokens were **fixed strings whose `exp` had all passed**, so by 2026 every sample — including the one labelled "Standard JWT" — read expired; they are built against the current clock now. `inputStats` counted words and lines of a JWT, which are always 1 and 1 — replaced by the segment count. **9 unit + 9 integration tests**, suite 662 → **680** |
 | ⚠️ JWT: eight files left for approval | ⚠️ | `ControlPanel` (167), `InfoSection` (131), `TokenInfoCards` (91), `InputPanel` (67), `SignatureSection` (47), `StatusBadge` (26), `SignatureInfo` (25), `ErrorDisplay` (23) — 577 lines, all now unreferenced. Not deleted, not folded into this batch. Together with the two Base64 leftovers that is **10 files awaiting one yes** |
 
+| ⚠️ JWT self-review: I wrote a SIXTH copy of `formatFileSize` | ✅ | Found while reviewing tool 7, in tool 6. `Base64Converter.tsx` carried its own `formatBytes` — in a repo whose own record reads "5 copies → `src/lib/utils/format.ts`". Root cause named: **`format.ts` was never re-exported from the `lib/utils` barrel**, so `@/lib/utils` could not reach it and three tools import it by deep path instead. Barrel fixed, duplicate deleted, and the tool's `units` i18n keys went with it (KB/MB are not translated anywhere else either) |
+| JWT self-review: four fixes on my own diff | ✅ | (1) **`now` was set once on MOUNT**, so a token pasted ten minutes into a session was judged against a ten-minute-old clock — a token that had just expired still read "expires in 5 minutes". It re-reads per token now. (2) **`relativeTime` was called without an explicit `now`**, which makes it call `Date.now()` internally — the exact hydration hazard the `now` state exists to remove; the invariant is explicit rather than accidental. (3) **The lifetime row abused `relativeTime` to format a DURATION** (`relativeTime(new Date(seconds*1000), new Date(0))`), which renders "in 24 hours" for a length of time. Row removed and `lifetimeSeconds` removed with it rather than left as dead API — `formatDuration` in `lib/utils` was checked first and is a `mm:ss` clock, wrong for this. (4) **`JSON.stringify` ran twice per part per render**, once for the copy button and once for the block, over a payload that can carry a large permission array |
+| JWT self-review: one addition, `iat` and `nbf` as dates | ✅ | Both claims were parsed, typed and then thrown away. A timestamp printed as `1516239022` is the one thing on that page a person definitely cannot read, and the summary already had `format.dateTime` in hand — so it costs no new machinery. Deliberately NOT added: signature verification (needs a secret this page must never ask for), a live countdown tick, a claims-as-table view instead of raw JSON (developers want the JSON), and history of decoded tokens (they are credentials) |
+
 **Gate (real exit codes, 2026-08-01, after the ColorConverter deep audit):**
 `check 0` · `typecheck 0` · `lint 0` · `test 0 (621)` · `tokens 0 (baseline
 re-locked: +19, all colour DATA in named constants or hex quoted inside
@@ -263,6 +267,10 @@ Re-run after the Base64 self-review: `check 0` · `lint 0` · `typecheck 0` ·
 `test 0 (662)` · `tokens 0` · `i18n 0` · `build 0`.
 Re-run after tool 7 (JWT decoder): `check 0` · `lint 0` · `typecheck 0` ·
 `test 0 (680)` · `tokens 0` · `i18n 0` · `build 0`.
+Re-run after the JWT self-review: same eight, `test 0 (680)`. One flake seen
+and dismissed with evidence: `uzbek-corpus` asserts a 20x linearity bound and
+went to 29x under a concurrent build; `packages/transliteration` is untouched
+this session and the file passes 3/3 on a quiet machine.
 Suite 572 → **621 tests** (+34 unit for the colour maths and exports, +13
 integration + 2 for the tool, driven through the rendered UI).
 

@@ -28,11 +28,6 @@
       "sourceSize": "Manba:",
       "resultSize": "Natija:"
     },
-    "units": {
-      "b": "bayt",
-      "kb": "KB",
-      "mb": "MB"
-    },
     "Download": {
       "encode": "base64-kodlangan",
       "decode": "base64-dekodlangan"

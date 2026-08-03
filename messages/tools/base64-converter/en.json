@@ -28,11 +28,6 @@
       "sourceSize": "Source:",
       "resultSize": "Result:"
     },
-    "units": {
-      "b": "bytes",
-      "kb": "KB",
-      "mb": "MB"
-    },
     "Download": {
       "encode": "base64-encoded",
       "decode": "base64-decoded"
