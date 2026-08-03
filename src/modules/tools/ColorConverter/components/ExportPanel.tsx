@@ -7,11 +7,11 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import {
-  COPIED_FEEDBACK_MS,
   DEFAULT_TOKEN_NAME,
   EXPORT_NOTATIONS,
   EXPORT_TARGETS
 } from "../constants"
+import { useCopyFeedback } from "../hooks/useCopyFeedback"
 import type { ExportNotation, ExportTarget, ShadeStep } from "../types"
 import { buildScaleExport, EXPORT_FILENAME } from "../utils/exports"
 
@@ -40,7 +40,6 @@ export function ExportPanel({ shades, defaultName }: ExportPanelProps) {
   const [target, setTarget] = useState<ExportTarget>("tailwind")
   const [notation, setNotation] = useState<ExportNotation>("hex")
   const [name, setName] = useState(defaultName)
-  const [copied, setCopied] = useState(false)
 
   // The colour changed under us and the visitor has not overridden the stem.
   const [lastDefault, setLastDefault] = useState(defaultName)
@@ -55,15 +54,9 @@ export function ExportPanel({ shades, defaultName }: ExportPanelProps) {
     notation
   })
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(snippet)
-    } catch {
-      return
-    }
-    setCopied(true)
-    setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
-  }
+  // Keyed on the snippet: switching target, notation or colour rewrites what
+  // the button would put in the clipboard, so the tick has to stand down.
+  const { copied, copy } = useCopyFeedback(snippet)
 
   const download = () => {
     const blob = new Blob([snippet], { type: "text/plain" })
@@ -124,7 +117,12 @@ export function ExportPanel({ shades, defaultName }: ExportPanelProps) {
       </pre>
 
       <div className="flex flex-wrap gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={copy}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => void copy(snippet)}
+        >
           {copied ? (
             <Check aria-hidden="true" className="text-success" />
           ) : (

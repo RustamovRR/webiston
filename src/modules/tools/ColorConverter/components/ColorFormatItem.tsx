@@ -1,9 +1,8 @@
 "use client"
 
 import { Check, Copy } from "lucide-react"
-import { useState } from "react"
 
-import { COPIED_FEEDBACK_MS } from "../constants"
+import { useCopyFeedback } from "../hooks/useCopyFeedback"
 
 /**
  * One format row: name, what the format is for, the value, click-to-copy.
@@ -30,22 +29,14 @@ export function ColorFormatItem({
   value,
   description
 }: ColorFormatItemProps) {
-  const [copied, setCopied] = useState(false)
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      return
-    }
-    setCopied(true)
-    setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
-  }
+  // Keyed on the value: these rows are keyed by FORMAT, so one instance serves
+  // every colour the visitor picks and the badge would outlive its own value.
+  const { copied, copy } = useCopyFeedback(value)
 
   return (
     <button
       type="button"
-      onClick={copy}
+      onClick={() => void copy(value)}
       aria-label={`${title}: ${value}`}
       className="group w-full cursor-pointer rounded-lg border border-border bg-muted/40 p-3 text-left transition-colors hover:border-border-strong hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >

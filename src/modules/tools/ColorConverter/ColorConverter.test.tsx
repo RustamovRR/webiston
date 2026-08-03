@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import messages from "../../../../messages/tools/color-converter/uz.json"
 import { ColorConverter } from "./ColorConverter"
@@ -52,6 +52,38 @@ const pickPreset = () =>
 /** The workbench panels are mounted but `hidden`, so the view must be chosen. */
 const showView = (label: string) =>
   fireEvent.click(screen.getByRole("radio", { name: label }))
+
+/**
+ * Upper-case on purpose: storage canonicalises to upper-case hex and every
+ * generated swatch on the page is lower-case, so these three cannot be
+ * confused with a shade or a harmony step.
+ */
+const SAVED = ["#AA1111", "#BB2222", "#CC3333"]
+
+const seedSavedColors = () =>
+  localStorage.setItem(
+    "webiston-color-history",
+    JSON.stringify(
+      SAVED.map((hex, index) => ({ hex, timestamp: 1000 - index }))
+    )
+  )
+
+/** The saved grid, in DOM order. */
+const savedOrder = () =>
+  within(region(/Qurish/i))
+    .getAllByRole("button")
+    .map((button) => button.getAttribute("aria-label") ?? "")
+    .filter((label) => SAVED.includes(label))
+
+/** jsdom ships no clipboard; without one every copy path fails silently. */
+const stubClipboard = () => {
+  const writeText = vi.fn().mockResolvedValue(undefined)
+  Object.defineProperty(navigator, "clipboard", {
+    value: { writeText },
+    configurable: true
+  })
+  return writeText
+}
 
 beforeEach(() => {
   // The draft store is module scope on purpose (it survives the locale
@@ -277,6 +309,27 @@ describe("history and favourites", () => {
     expect(localStorage.getItem("webiston-color-history")).toContain("#EF4444")
   })
 
+  it("does not reshuffle the saved grid the click came from", () => {
+    // Arrange — three saved colours, oldest last
+    seedSavedColors()
+    renderTool()
+    showView("Saqlangan")
+    expect(savedOrder()).toEqual(SAVED)
+
+    // Act — take the LAST one back out of the list
+    fireEvent.click(
+      within(region(/Qurish/i)).getByRole("button", { name: SAVED[2] })
+    )
+
+    // Assert — it becomes the colour, and the grid has not moved. Re-recording
+    // it moved the entry to the front of the history, so the swatch teleported
+    // out from under the pointer: measured live, one clicked at x=418 was at
+    // x=53 when the click finished, still matching `:hover` because a browser
+    // holds that on a moved node until the pointer moves again.
+    expect(textInput()).toHaveValue(SAVED[2])
+    expect(savedOrder()).toEqual(SAVED)
+  })
+
   it("turns the heart off when the colour leaves favourites", () => {
     // Arrange — one recorded colour, favourited
     renderTool()
@@ -296,6 +349,27 @@ describe("history and favourites", () => {
     expect(localStorage.getItem("webiston-color-favorites")).not.toContain(
       "#EF4444"
     )
+  })
+})
+
+describe("copy acknowledgement", () => {
+  it("stops claiming a copy once the value under it has changed", async () => {
+    // Arrange — the scale keys its swatches by SHADE, so `500` is ONE
+    // component instance across every colour the visitor picks
+    const writeText = stubClipboard()
+    renderTool()
+    const shade500 = () =>
+      within(region(/Qurish/i)).getByRole("button", { name: "#0d5a6b" })
+
+    // Act
+    fireEvent.click(shade500())
+    await screen.findByText("Nusxalandi")
+    expect(writeText).toHaveBeenCalledWith("#0d5a6b")
+
+    // Assert — for the rest of the two-second window the badge used to claim
+    // a hex that had never been near the clipboard
+    type(textInput(), "#7c3aed")
+    expect(screen.queryByText("Nusxalandi")).toBeNull()
   })
 })
 

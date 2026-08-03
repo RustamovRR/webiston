@@ -19,6 +19,8 @@ import { Button } from "@webiston/ui/primitives/button"
 import { Textarea } from "@webiston/ui/primitives/textarea"
 import { X } from "lucide-react"
 import { useTranslations } from "next-intl"
+
+import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 import { QrPreview, StylePanel, WifiFields } from "./components"
@@ -61,19 +63,12 @@ const QrGenerator = () => {
           the code holding the right column across both rows. */}
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
         <div className="lg:col-start-1 lg:row-start-1">
-          <div className="rounded-xl border border-border bg-card">
-            <div className="flex items-center justify-between border-border border-b px-5 py-3">
-              <div className="flex items-center gap-2.5">
-                <span
-                  aria-hidden="true"
-                  className="size-[6px] shrink-0 rounded-[2px] bg-border-strong"
-                />
-                <h2 className="font-medium text-base text-foreground">
-                  {t("InputPanel.title")}
-                </h2>
-              </div>
-              {hasCode && (
-                <span className="flex items-center gap-2">
+          <ToolCard
+            tone="muted"
+            title={t("InputPanel.title")}
+            actions={
+              hasCode && (
+                <>
                   <span className="font-mono text-[11px] text-muted-foreground">
                     {t(`detected.${detectedType}`)}
                   </span>
@@ -86,9 +81,11 @@ const QrGenerator = () => {
                   >
                     <X aria-hidden="true" />
                   </Button>
-                </span>
-              )}
-            </div>
+                </>
+              )
+            }
+            bodyClassName="p-0"
+          >
             <div className="space-y-4 p-5">
               {/* Two modes, not five. URL, text, phone and SMS all live
                   happily in the free box; WiFi is the one format nobody can
@@ -117,7 +114,7 @@ const QrGenerator = () => {
                 <WifiFields wifi={wifi} onChange={updateWifi} />
               )}
             </div>
-          </div>
+          </ToolCard>
         </div>
 
         {/* `self-stretch` is what makes the sticky card inside actually stick:

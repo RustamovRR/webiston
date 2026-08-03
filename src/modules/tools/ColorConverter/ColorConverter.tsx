@@ -79,7 +79,15 @@ const ColorConverter = () => {
         {/* Second in the DOM, so on a phone the answer lands immediately under
             the input instead of below three generators. */}
         <div className="lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-stretch">
-          <div className="lg:sticky lg:top-20">
+          {/* The cap is a guard, not a design choice. A sticky element taller
+              than the space below its own `top` offset is PINNED with its
+              bottom past the fold and there is no way to scroll to it.
+              Measured at 1280×720: 640px available, 641px closed — and 881px
+              with "Boshqa rang fazolari" open, which put the copy-link footer
+              241px out of reach. Opening the disclosure is the only thing that
+              can trip it on a normal window; the scroller earns its keep
+              exactly then and never otherwise. */}
+          <div className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
             <ColorSummary
               colorFormats={colorFormats}
               colorName={colorName}
@@ -96,6 +104,15 @@ const ColorConverter = () => {
             tokenName={tokenName}
             palettes={palettes}
             onColorSelect={chooseColor}
+            /* A colour taken back OUT of the saved list is a read, not a new
+               event, so it does not re-record. Recording moves the entry to
+               the front of the history, which reorders the grid the click
+               came from: measured, a swatch clicked at x=418 was at x=53 by
+               the time the click finished, and the browser holds `:hover` on
+               a moved node until the pointer moves again — so the badge sat
+               lit on the first tile and went out on the next twitch. Leaving
+               the saved order alone removes the cause, not the symptom. */
+            onSavedSelect={setInputColor}
             historyVersion={historyVersion}
             isValid={isValid}
           />

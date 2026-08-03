@@ -4,16 +4,16 @@ import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
 import { Check, Copy, Minus, Plus, Shuffle } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import { hslToRgb, rgbToHex } from "@/lib/utils"
 
 import {
-  COPIED_FEEDBACK_MS,
   GRADIENT_TYPES,
   MAX_GRADIENT_STOPS,
   MIN_GRADIENT_STOPS
 } from "../constants"
+import { useCopyFeedback } from "../hooks/useCopyFeedback"
 import { useColorDraftStore } from "../stores/colorDraftStore"
 import type { GradientType } from "../types"
 import {
@@ -38,8 +38,6 @@ interface GradientGeneratorProps {
   isValid: boolean
 }
 
-type CopyKind = "css" | "tailwind"
-
 export function GradientGenerator({
   baseColor,
   isValid
@@ -49,7 +47,9 @@ export function GradientGenerator({
   const updateGradient = useColorDraftStore((state) => state.updateGradient)
   const setStops = useColorDraftStore((state) => state.setStops)
   const addStop = useColorDraftStore((state) => state.addStop)
-  const [copied, setCopied] = useState<CopyKind | null>(null)
+  // Keyed on the draft itself: any edit — type, angle, a stop — rewrites both
+  // snippets, so an outstanding tick is about a string that no longer exists.
+  const { copied, copy } = useCopyFeedback(gradient)
 
   const { type, angle, stops } = gradient
 
@@ -71,16 +71,6 @@ export function GradientGenerator({
 
   const css = buildGradientCss(gradient)
   const tailwind = buildGradientTailwind(gradient)
-
-  const copyValue = async (kind: CopyKind, value: string) => {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      return
-    }
-    setCopied(kind)
-    setTimeout(() => setCopied(null), COPIED_FEEDBACK_MS)
-  }
 
   const randomise = () => {
     const count = MIN_GRADIENT_STOPS + Math.floor(Math.random() * 3)
@@ -242,7 +232,7 @@ export function GradientGenerator({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => copyValue("css", `background: ${css};`)}
+            onClick={() => void copy(`background: ${css};`, "css")}
           >
             {copied === "css" ? (
               <Check aria-hidden="true" className="text-success" />
@@ -255,7 +245,7 @@ export function GradientGenerator({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => copyValue("tailwind", tailwind)}
+            onClick={() => void copy(tailwind, "tailwind")}
           >
             {copied === "tailwind" ? (
               <Check aria-hidden="true" className="text-success" />

@@ -112,3 +112,43 @@ table {
     animation: none !important;
   }
 }
+
+/* `.disclosure` — a native <details> that slides, like the shared Accordion.
+ *
+ * Why a <details> at all, when `FaqAccordion` exists and already animates:
+ * Radix's `AccordionContent` is a `CollapsiblePrimitive.Content` with no
+ * `forceMount`, so CLOSED content is not rendered. Measured on the prerendered
+ * HTML with every <script> stripped (the RSC flight payload otherwise carries
+ * the JSON-LD text and makes the grep lie): /tools/latin-cyrillic ships 6 of 6
+ * FAQ questions and 0 of 6 ANSWERS, while its FAQPage schema publishes all six.
+ * A native <details> keeps the answer in the document, collapsed, with no JS.
+ *
+ * So the animation is the only thing <details> gave up, and modern CSS gives it
+ * back. `calc-size(auto, size)` rather than a global `interpolate-size:
+ * allow-keywords`: same result, scoped to this class instead of changing how
+ * every `auto` on the site animates. Durations mirror the accordion exactly —
+ * 240ms open, 200ms close, same easing — so the two read as one control.
+ *
+ * Behind @supports on purpose: a browser without `::details-content` opens the
+ * disclosure instantly, which is what it did before this rule existed.
+ */
+@supports (selector(::details-content)) and (height: calc-size(auto, size)) {
+  .disclosure::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 200ms cubic-bezier(0.32, 0.72, 0, 1),
+      content-visibility 200ms allow-discrete;
+  }
+  .disclosure[open]::details-content {
+    block-size: calc-size(auto, size);
+    transition-duration: 240ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disclosure::details-content,
+    .disclosure[open]::details-content {
+      transition: none;
+    }
+  }
+}

@@ -14,6 +14,8 @@ export {
 } from "@webiston/ui"
 export { default as ButtonLink } from "./ButtonLink"
 export { DualTextPanel } from "./DualTextPanel"
+export type { FaqItem } from "./Faq"
+export { Faq } from "./Faq"
 export { default as Footer } from "./Footer"
 export { Header } from "./Header"
 export type {

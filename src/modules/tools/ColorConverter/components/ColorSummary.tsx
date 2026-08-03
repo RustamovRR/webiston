@@ -3,17 +3,16 @@
 import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { Link2, Palette } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useState } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 
 import {
   CHECKERBOARD_STYLE,
-  COPIED_FEEDBACK_MS,
   PRIMARY_FORMATS,
   SECONDARY_FORMATS,
   WHITE
 } from "../constants"
+import { useCopyFeedback } from "../hooks/useCopyFeedback"
 import type { ColorFormats } from "../types"
 import type { ContrastReading } from "../utils/contrast"
 import { ColorFormatItem } from "./ColorFormatItem"
@@ -46,7 +45,10 @@ export function ColorSummary({
   const t = useTranslations("ColorConverterPage.ColorFormats")
   const tContrast = useTranslations("ColorConverterPage.Contrast")
   const tInput = useTranslations("ColorConverterPage.ColorInput")
-  const [linkCopied, setLinkCopied] = useState(false)
+  // The link carries `?c=<hex>`, so it changes with the colour.
+  const { copied: linkCopied, copy: copyLink } = useCopyFeedback(
+    colorFormats?.hex
+  )
 
   const allFormats = colorFormats
     ? JSON.stringify(
@@ -60,16 +62,6 @@ export function ColorSummary({
         2
       )
     : ""
-
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href)
-    } catch {
-      return
-    }
-    setLinkCopied(true)
-    setTimeout(() => setLinkCopied(false), COPIED_FEEDBACK_MS)
-  }
 
   if (!colorFormats) {
     return (
@@ -147,7 +139,7 @@ export function ColorSummary({
         ))}
       </div>
 
-      <details className="group">
+      <details className="disclosure group">
         <summary className="cursor-pointer list-none rounded-lg py-1 text-muted-foreground text-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <span className="inline-flex items-center gap-1.5">
             <span
@@ -177,7 +169,7 @@ export function ColorSummary({
         </span>
         <button
           type="button"
-          onClick={copyLink}
+          onClick={() => void copyLink(window.location.href)}
           className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-muted-foreground text-xs transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Link2 size={13} aria-hidden="true" />

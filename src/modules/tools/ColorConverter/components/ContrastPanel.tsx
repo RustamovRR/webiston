@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { useState } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
-import type { ContrastGrades } from "@/lib/utils"
+import { type ContrastGrades, gradeContrast } from "@/lib/utils"
 
 import { BLACK, DEFAULT_COMPARISON_BACKDROP, WHITE } from "../constants"
 import type { ContrastReading, PassingShade } from "../utils/contrast"
@@ -124,6 +124,7 @@ export function ContrastPanel({
   const t = useTranslations("ColorConverterPage.Contrast")
   const [backdrop, setBackdrop] = useState(DEFAULT_COMPARISON_BACKDROP)
   const [comparing, setComparing] = useState(false)
+  const customRatio = hexContrast(color, backdrop)
 
   const labels = {
     aa: t("aa"),
@@ -179,6 +180,7 @@ export function ContrastPanel({
           )}
 
           <details
+            className="disclosure"
             open={comparing}
             onToggle={(event) =>
               setComparing((event.target as HTMLDetailsElement).open)
@@ -200,16 +202,15 @@ export function ContrastPanel({
                   {backdrop}
                 </span>
               </label>
+              {/* One measurement, graded by the same function as the two rows
+                  above. This spelled the five thresholds out by hand — a
+                  second copy of the WCAG table, and five separate calls to
+                  compute one number. `gradeContrast` already owns the policy;
+                  a panel restating it is how the two drift apart. */}
               <GradeRow
                 label={t("customBackdrop")}
-                ratio={hexContrast(color, backdrop)}
-                grades={{
-                  aa: hexContrast(color, backdrop) >= 4.5,
-                  aaLarge: hexContrast(color, backdrop) >= 3,
-                  aaa: hexContrast(color, backdrop) >= 7,
-                  aaaLarge: hexContrast(color, backdrop) >= 4.5,
-                  nonText: hexContrast(color, backdrop) >= 3
-                }}
+                ratio={customRatio}
+                grades={gradeContrast(customRatio)}
                 backdrop={backdrop}
                 color={color}
                 sample={t("sample")}

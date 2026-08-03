@@ -69,11 +69,23 @@ const NEAREST_NAME_LIMIT = 0.12
  * anything else falls back to the nearest name in OKLab, which is the space
  * that makes "nearest" mean what a person means by it.
  */
+/**
+ * Answers are cached because the callers ask in bulk and ask again every
+ * render: twelve preset swatches in the controls card and up to twenty palette
+ * swatches, each one a full 139-entry OKLab scan on any colour that is not
+ * itself a CSS keyword — which is nearly all of them. The registry is frozen at
+ * module load, so a hex has exactly one answer for the life of the page.
+ */
+const NAME_CACHE = new Map<string, string>()
+
 export const getColorName = (hex: string): string => {
   const opaque = hex.slice(0, 7).toLowerCase()
 
   const exact = NAME_BY_HEX.get(opaque)
   if (exact) return exact
+
+  const cached = NAME_CACHE.get(opaque)
+  if (cached !== undefined) return cached
 
   const rgb = hexToRgb(opaque)
   if (!rgb) return ""
@@ -94,7 +106,9 @@ export const getColorName = (hex: string): string => {
     }
   }
 
-  return bestDistance <= NEAREST_NAME_LIMIT ? best : ""
+  const name = bestDistance <= NEAREST_NAME_LIMIT ? best : ""
+  NAME_CACHE.set(opaque, name)
+  return name
 }
 
 /** `Dark Slate Gray` → `dark-slate-gray`, safe as a CSS custom-property stem. */

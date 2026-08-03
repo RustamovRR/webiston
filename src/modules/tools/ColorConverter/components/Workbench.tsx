@@ -36,7 +36,10 @@ interface WorkbenchProps {
   ramp: RampReadability
   tokenName: string
   palettes: ReadonlyArray<{ type: PaletteType; colors: string[] }>
+  /** A NEW pick — palette swatch. Records to history. */
   onColorSelect: (color: string) => void
+  /** A colour taken back out of the saved list. Records nothing. */
+  onSavedSelect: (color: string) => void
   historyVersion: number
   isValid: boolean
 }
@@ -48,6 +51,7 @@ export function Workbench({
   tokenName,
   palettes,
   onColorSelect,
+  onSavedSelect,
   historyVersion,
   isValid
 }: WorkbenchProps) {
@@ -91,7 +95,7 @@ export function Workbench({
       </div>
       <div hidden={view !== "saved"}>
         <ColorHistory
-          onColorSelect={onColorSelect}
+          onColorSelect={onSavedSelect}
           historyVersion={historyVersion}
         />
       </div>

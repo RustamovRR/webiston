@@ -57,7 +57,8 @@
     "error": "Error",
     "toggleTheme": "Toggle theme",
     "enterData": "Enter some data",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "faqTitle": "Frequently asked questions"
   },
   "Search": {
     "title": "Search the site",

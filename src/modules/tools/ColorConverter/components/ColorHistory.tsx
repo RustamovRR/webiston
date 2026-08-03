@@ -13,7 +13,6 @@ import {
   clearColorHistory,
   getColorFavorites,
   getColorHistory,
-  isColorFavorite,
   removeFromColorFavorites
 } from "@/lib/utils"
 
@@ -66,8 +65,14 @@ export function ColorHistory({
     [favorites]
   )
 
+  /**
+   * The set the hearts are DRAWN from decides the write, rather than a second
+   * `localStorage` read asking the same question. Two sources of truth for one
+   * fact is what the docblock above describes going wrong; re-reading storage
+   * here only avoided it because this runs in an event and not in render.
+   */
   const toggleFavorite = (hex: string, name?: string) => {
-    if (isColorFavorite(hex)) removeFromColorFavorites(hex)
+    if (favoriteHexes.has(hex.toLowerCase())) removeFromColorFavorites(hex)
     else addToColorFavorites(hex, name || hex)
     setFavorites(getColorFavorites())
   }

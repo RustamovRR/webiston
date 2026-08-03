@@ -4,6 +4,8 @@ import { Button } from "@webiston/ui/primitives/button"
 import { AlertTriangle, Download, QrCode } from "lucide-react"
 import { useTranslations } from "next-intl"
 
+import { ToolCard } from "@/components/shared/ToolCard"
+
 import type { QrDownloadFormat } from "../types"
 import type { ScanVerdict } from "../utils/contrast"
 import type { QrDocument } from "../utils/render"
@@ -172,22 +174,18 @@ export function QrPreview({
 
   return (
     <div className="lg:sticky lg:top-20">
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="flex items-center gap-2.5 border-border border-b px-5 py-3">
-          <span
-            aria-hidden="true"
-            className="size-[6px] shrink-0 rounded-[2px] bg-primary"
-          />
-          <h2 className="font-medium text-base text-foreground">
-            {t("title")}
-          </h2>
-          {document && (
-            <span className="ml-auto font-mono text-[11px] text-muted-foreground tabular-nums">
+      <ToolCard
+        title={t("title")}
+        className="overflow-hidden"
+        actions={
+          document && (
+            <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
               {t("modules", { count: document.model.moduleCount })}
             </span>
-          )}
-        </div>
-
+          )
+        }
+        bodyClassName="p-0"
+      >
         <div className="flex min-h-[380px] items-center justify-center p-6">
           {document ? (
             <QrArtwork doc={document} title={t("title")} />
@@ -252,7 +250,7 @@ export function QrPreview({
             {t("exportFailed")}
           </p>
         )}
-      </div>
+      </ToolCard>
     </div>
   )
 }

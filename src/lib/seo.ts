@@ -95,3 +95,26 @@ export function withLocale(
     }
   }
 }
+
+/**
+ * `FAQPage` structured data from the SAME array the page renders.
+ *
+ * Every tool route built this inline, and 15 of the 17 published it against a
+ * page that showed no FAQ at all — the schema was the only place the questions
+ * existed. Taking the items as an argument means the visible section and the
+ * markup are one source by construction; they cannot drift apart again.
+ */
+export const faqPageSchema = (
+  items: readonly { question: string; answer: string }[]
+) => ({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: items.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer
+    }
+  }))
+})

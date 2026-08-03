@@ -57,7 +57,8 @@
     "error": "Xatolik",
     "toggleTheme": "Mavzuni o'zgartirish",
     "enterData": "Ma'lumot kiriting",
-    "loading": "Yuklanmoqda..."
+    "loading": "Yuklanmoqda...",
+    "faqTitle": "Ko'p so'raladigan savollar"
   },
   "Search": {
     "title": "Sayt bo'yicha qidiruv",

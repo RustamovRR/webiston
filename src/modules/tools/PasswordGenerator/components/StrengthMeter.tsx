@@ -3,6 +3,8 @@
 import { cn } from "@webiston/ui/utils"
 import { useTranslations } from "next-intl"
 
+import { ToolCard } from "@/components/shared/ToolCard"
+
 import type { StrengthReport } from "../utils/strength"
 
 /**
@@ -49,25 +51,23 @@ export function StrengthMeter({
   const tLevels = useTranslations("PasswordGeneratorPage.StrengthLevels")
 
   return (
-    <div className="rounded-xl border border-border bg-card">
-      <div className="flex items-center gap-2.5 border-border border-b px-5 py-3">
-        <span
-          aria-hidden="true"
-          className="size-[6px] shrink-0 rounded-[2px] bg-border-strong"
-        />
-        <h2 className="font-medium text-base text-foreground">{t("title")}</h2>
-        {strength && (
+    <ToolCard
+      tone="muted"
+      title={t("title")}
+      actions={
+        strength && (
           <span
             className={cn(
-              "ml-auto font-medium text-sm",
+              "font-medium text-sm",
               LEVEL_CLASS[strength.level].text
             )}
           >
             {tLevels(LEVEL_KEY[strength.level])}
           </span>
-        )}
-      </div>
-
+        )
+      }
+      bodyClassName="p-0"
+    >
       <div className="space-y-5 px-5 py-5">
         {/* Five segments, filled to the level. Not a gradient bar: discrete
             steps say "category", which is what the thresholds are. */}
@@ -128,6 +128,6 @@ export function StrengthMeter({
           {t("assumption")}
         </p>
       </div>
-    </div>
+    </ToolCard>
   )
 }

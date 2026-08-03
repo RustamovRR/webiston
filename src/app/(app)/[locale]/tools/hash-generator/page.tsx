@@ -1,8 +1,9 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
 import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
+import { Faq } from "@/components/shared/Faq"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { withLocale } from "@/lib/seo"
+import { faqPageSchema, withLocale } from "@/lib/seo"
 import { HashGenerator } from "@/modules/tools"
 
 // Only this tool's namespace reaches the client, plus the shared
@@ -221,8 +222,14 @@ const structuredData = {
   keywords: "hash generator, md5 hash, sha256 hash, bepul hash generator"
 }
 
-// FAQ Schema for better SERP features (locale-based)
-function generateFAQSchema(locale: string = "uz") {
+/**
+ * This route's questions, in both locales.
+ *
+ * They are returned as DATA rather than as a finished schema: the page
+ * renders them AND publishes them, so one array has to feed both. This route
+ * published a `FAQPage` and showed no FAQ at all until that changed.
+ */
+function getFaqItems(locale: string = "uz") {
   const faqData = {
     uz: {
       questions: [
@@ -274,20 +281,7 @@ function generateFAQSchema(locale: string = "uz") {
     }
   }
 
-  const currentFAQ = faqData[locale as keyof typeof faqData] || faqData.uz
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: currentFAQ.questions.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer
-      }
-    }))
-  }
+  return (faqData[locale as keyof typeof faqData] || faqData.uz).questions
 }
 
 // Breadcrumb Schema (locale-based)
@@ -345,7 +339,8 @@ export default async function HashGeneratorPage({
   setRequestLocale(locale)
 
   // Generate locale-specific schemas
-  const faqSchema = generateFAQSchema(locale)
+  const faqItems = getFaqItems(locale)
+  const faqSchema = faqPageSchema(faqItems)
   const breadcrumbSchema = generateBreadcrumbSchema(locale)
 
   return (
@@ -371,6 +366,10 @@ export default async function HashGeneratorPage({
       <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
         <HashGenerator />
       </LocaleMessages>
+
+      {/* Server-rendered sibling of the client island: the answers reach the
+          HTML, which is what the schema above has always claimed. */}
+      <Faq locale={locale} items={faqItems} />
     </>
   )
 }
