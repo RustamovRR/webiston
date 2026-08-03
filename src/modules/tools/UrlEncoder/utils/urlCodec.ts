@@ -42,6 +42,52 @@ const decodeValue = (text: string) =>
 
 const decodeWhole = (text: string) => decodeURI(text)
 
+/** A percent followed by two hex digits — the only shape an escape has. */
+const ESCAPE = /%[0-9a-fA-F]{2}/
+
+/**
+ * Which direction the visitor almost certainly means.
+ *
+ * The first build made this a decision the visitor had to take BEFORE getting
+ * an answer, and it showed: pasting an already-readable URL into decode mode
+ * returns it unchanged, so the tool looked like it was doing nothing. A URL
+ * tool should say what it thinks and let you disagree — the same call
+ * latin-cyrillic made with its "Avto" direction.
+ *
+ * The rule is not a guess so much as an observation: text containing `%XX` has
+ * been through an encoder, and text that has not cannot be decoded into
+ * anything different.
+ */
+export const detectMode = (text: string): "encode" | "decode" =>
+  ESCAPE.test(text) ? "decode" : "encode"
+
+/**
+ * Which of the two encodings a piece of text wants.
+ *
+ * A complete address — something with a scheme and a host — is almost never
+ * meant to be flattened into a query value; someone pasting one wants their
+ * link back with the spaces fixed. Anything else is a value.
+ */
+export const detectScope = (text: string): UrlScope => {
+  const trimmed = text.trim()
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return "value"
+  try {
+    return new URL(trimmed).host ? "whole" : "value"
+  } catch {
+    return "value"
+  }
+}
+
+/**
+ * Still escaped after one pass — the classic `%2520` case.
+ *
+ * Double encoding happens whenever a URL is encoded by one layer and then by
+ * another (a redirect parameter, a proxy, a form that posts its own action),
+ * and it is the single most common thing a person cannot work out on their
+ * own, because the output still looks like gibberish and nothing says why.
+ */
+export const isStillEncoded = (decoded: string) => ESCAPE.test(decoded)
+
 export const convert = (
   text: string,
   mode: "encode" | "decode",

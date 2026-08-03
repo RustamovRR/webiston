@@ -1,8 +1,8 @@
 {
   "UrlEncoderPage": {
     "ToolHeader": {
-      "title": "URL Kodlovchi — encode va decode",
-      "description": "URL va so'rov parametrlarini to'g'ri kodlang yoki oching. Qiymat va to'liq URL — ikki xil standart, ikkalasi ham bor."
+      "title": "URL Kodlash va Dekodlash",
+      "description": "Havoladagi %20, %3A kabi belgilarni odam o'qiydigan holatga keltiring — yoki aksincha. So'rov parametrlari alohida ajratib ko'rsatiladi."
     },
     "ControlBar": {
       "direction": "Yo'nalish",
@@ -16,7 +16,11 @@
       "upload": "Fayl",
       "sample": "Namuna",
       "clear": "Tozalash",
-      "download": "Yuklab olish"
+      "download": "Yuklab olish",
+      "auto": "Avto",
+      "resolved": "Avto: {mode}",
+      "resolvedEncode": "kodlanmoqda",
+      "resolvedDecode": "ochilmoqda"
     },
     "Panel": {
       "plainInput": "Oddiy matn",
@@ -107,6 +111,12 @@
           "answer": "Yo'q. Kodlash ham, dekodlash ham, URL tahlili ham brauzeringizda bajariladi. Sahifa yuklangandan keyin bu asbob hech qanday tarmoq so'rovi yubormaydi, shuning uchun tokenli havolalar bilan ham xavfsiz ishlatiladi."
         }
       }
+    },
+    "Notice": {
+      "doubleEncoded": "Natijada hali ham % belgilari bor: bu manzil ikki marta kodlangan ko'rinadi.",
+      "decodeAgain": "Yana bir marta ochish",
+      "unchangedDecode": "Bu matnda ochiladigan narsa yo'q — u allaqachon oddiy holatda.",
+      "unchangedEncode": "Bu matnda kodlanishi kerak bo'lgan belgi yo'q — u o'zgarishsiz qoldi."
     }
   }
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
 
 import { ToolCard } from "@/components/shared/ToolCard"
@@ -61,8 +62,12 @@ export function UrlBreakdown({
       </dl>
 
       {query.length > 0 && (
-        <div className="space-y-2 border-border border-t pt-4">
-          <p className="text-muted-foreground text-xs">
+        <div className="border-border border-t pt-4">
+          {/* `mb-3`, not the container's `space-y-2`: at 8px this count sat on
+              top of the first parameter box and read as part of it — reported
+              from a screenshot, and correct. A label needs more air below it
+              than the items it labels have between them. */}
+          <p className="mb-3 text-muted-foreground text-xs">
             {t("params", { count: query.length })}
           </p>
           <dl className="space-y-2">
@@ -72,18 +77,28 @@ export function UrlBreakdown({
                 // so the key alone is not unique and the position is part of
                 // the identity.
                 key={`${pair.key}-${index}`}
-                className="rounded-lg border border-border bg-muted/40 p-2.5"
+                className="flex items-start gap-2 rounded-lg border border-border bg-muted/40 p-2.5"
               >
-                <dt className="break-all font-mono text-muted-foreground text-xs">
-                  {pair.key}
-                </dt>
-                <dd className="mt-0.5 break-all font-mono text-foreground text-sm">
-                  {pair.value || (
-                    <span className="text-muted-foreground italic">
-                      {t("emptyValue")}
-                    </span>
-                  )}
-                </dd>
+                <div className="min-w-0 flex-1">
+                  <dt className="break-all font-mono text-muted-foreground text-xs">
+                    {pair.key}
+                  </dt>
+                  <dd className="mt-1 break-all font-mono text-foreground text-sm">
+                    {pair.value || (
+                      <span className="text-muted-foreground italic">
+                        {t("emptyValue")}
+                      </span>
+                    )}
+                  </dd>
+                </div>
+                {/* One value is usually the reason someone opened the tool —
+                    an id, a token, a redirect target. Copying it should not
+                    mean selecting it out of a wall of text by hand. */}
+                {pair.value && (
+                  <span className="shrink-0">
+                    <CopyButton text={pair.value} />
+                  </span>
+                )}
               </div>
             ))}
           </dl>

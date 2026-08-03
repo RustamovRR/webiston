@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-import type { ConversionMode, UrlScope } from "../types"
+import type { ModePreference, UrlScope } from "../types"
 
 /**
  * What the visitor is currently working on, above the component tree.
@@ -12,25 +12,26 @@ import type { ConversionMode, UrlScope } from "../types"
 
 interface UrlDraftState {
   input: string
-  mode: ConversionMode
-  scope: UrlScope
+  preference: ModePreference
+  /** `null` means "whatever the input looks like"; a value is an override. */
+  scopeOverride: UrlScope | null
   setInput: (input: string) => void
-  setMode: (mode: ConversionMode) => void
-  setScope: (scope: UrlScope) => void
+  setPreference: (preference: ModePreference) => void
+  setScopeOverride: (scope: UrlScope | null) => void
   reset: () => void
 }
 
 const initialState = () => ({
   input: "",
-  mode: "encode" as ConversionMode,
-  // The commonest job by far: escaping one value to put in a query string.
-  scope: "value" as UrlScope
+  // The tool works it out; the control is there to disagree with.
+  preference: "auto" as ModePreference,
+  scopeOverride: null
 })
 
 export const useUrlDraftStore = create<UrlDraftState>()((set) => ({
   ...initialState(),
   setInput: (input) => set({ input }),
-  setMode: (mode) => set({ mode }),
-  setScope: (scope) => set({ scope }),
+  setPreference: (preference) => set({ preference }),
+  setScopeOverride: (scopeOverride) => set({ scopeOverride }),
   reset: () => set(initialState())
 }))

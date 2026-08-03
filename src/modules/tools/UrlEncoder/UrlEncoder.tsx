@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowLeftRight, Link2 } from "lucide-react"
+import { Button } from "@webiston/ui/primitives/button"
+import { ArrowLeftRight, Info, Link2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { DropZone } from "@/components/shared/DropZone"
@@ -23,17 +24,20 @@ const UrlEncoder = () => {
   const {
     input,
     setInput,
+    preference,
+    setPreference,
     mode,
-    setMode,
     scope,
-    setScope,
+    setScopeOverride,
     isProcessing,
     result,
+    notice,
     breakdown,
     fileError,
     samples,
     loadSample,
-    switchMode,
+    swap,
+    decodeAgain,
     clear,
     readFile,
     download,
@@ -74,10 +78,21 @@ const UrlEncoder = () => {
       />
 
       <ControlBar
+        preference={preference}
+        onPreferenceChange={setPreference}
         mode={mode}
-        onModeChange={setMode}
         scope={scope}
-        onScopeChange={setScope}
+        onScopeChange={setScopeOverride}
+        resolvedHint={
+          preference === "auto" && input.trim()
+            ? t("ControlBar.resolved", {
+                mode:
+                  mode === "encode"
+                    ? t("ControlBar.resolvedEncode")
+                    : t("ControlBar.resolvedDecode")
+              })
+            : undefined
+        }
         isProcessing={isProcessing}
         onFile={readFile}
         samples={samples}
@@ -117,7 +132,7 @@ const UrlEncoder = () => {
               isEncoding ? t("Panel.encodedResult") : t("Panel.decodedResult")
             }
             onSourceChange={setInput}
-            onSwap={switchMode}
+            onSwap={swap}
             onClear={clear}
             swapIcon={<ArrowLeftRight size={20} />}
             swapButtonTitle={t("Panel.switchMode")}
@@ -163,6 +178,26 @@ const UrlEncoder = () => {
               ) : null
             }
           />
+
+          {/* The two states a person cannot work out on their own. `unchanged`
+              is the reported bug: decoding text that was never encoded returns
+              it verbatim and reads as "this tool does nothing". */}
+          {notice && (
+            <p className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 text-muted-foreground text-sm">
+              <Info size={15} aria-hidden="true" className="shrink-0" />
+              {t(`Notice.${notice}`)}
+              {notice === "doubleEncoded" && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={decodeAgain}
+                >
+                  {t("Notice.decodeAgain")}
+                </Button>
+              )}
+            </p>
+          )}
 
           {/* Only when the text really parses as a URL — the tool never
               guesses that something is one. */}

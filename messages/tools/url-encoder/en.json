@@ -1,8 +1,8 @@
 {
   "UrlEncoderPage": {
     "ToolHeader": {
-      "title": "URL Encoder — encode and decode",
-      "description": "Encode and decode URLs and query parameters correctly. Value and whole URL are two different standards, and both are here."
+      "title": "URL Encode and Decode",
+      "description": "Turn the %20 and %3A in a link back into something readable — or the other way round. Query parameters are broken out one by one."
     },
     "ControlBar": {
       "direction": "Direction",
@@ -16,7 +16,11 @@
       "upload": "File",
       "sample": "Sample",
       "clear": "Clear",
-      "download": "Download"
+      "download": "Download",
+      "auto": "Auto",
+      "resolved": "Auto: {mode}",
+      "resolvedEncode": "encoding",
+      "resolvedDecode": "decoding"
     },
     "Panel": {
       "plainInput": "Plain text",
@@ -107,6 +111,12 @@
           "answer": "No. Encoding, decoding and the URL breakdown all happen in your browser. After the page has loaded this tool makes no network requests at all, so it is safe to use with links that carry a token."
         }
       }
+    },
+    "Notice": {
+      "doubleEncoded": "The result still contains % escapes: this looks double-encoded.",
+      "decodeAgain": "Decode once more",
+      "unchangedDecode": "There was nothing to decode here — this text is already plain.",
+      "unchangedEncode": "No character here needed encoding — the text is unchanged."
     }
   }
 }

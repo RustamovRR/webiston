@@ -13,17 +13,17 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "URL Kodlovchi — encode va decode",
+    title: "URL Kodlash va Dekodlash",
     description:
-      "URL va so'rov parametrlarini to'g'ri kodlang yoki oching. Qiymat va to'liq URL rejimlari alohida, so'rov satri parametrlarga ajratib ko'rsatiladi. Hammasi brauzeringizda.",
+      "Havoladagi %20, %3A kabi belgilarni odam o'qiydigan holatga keltiring — yoki aksincha. So'rov parametrlari alohida ajratib ko'rsatiladi, ikki marta kodlangan havolalar aniqlanadi. Hammasi brauzeringizda.",
     social:
       "URL kodlash va ochish — qiymat va to'liq URL rejimlari bilan. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "URL Encoder — encode and decode",
+    title: "URL Encode and Decode",
     description:
-      "Encode and decode URLs and query parameters correctly. Value and whole-URL modes are separate, and the query string is broken out parameter by parameter. Everything runs in your browser.",
+      "Turn the %20 and %3A in a link back into something readable — or the other way round. Query parameters are broken out one by one, and double-encoded links are spotted for you. Everything runs in your browser.",
     social:
       "Encode and decode URLs, with separate value and whole-URL modes. Runs in your browser.",
     ogLocale: "en_US"

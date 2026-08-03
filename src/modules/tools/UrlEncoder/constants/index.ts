@@ -4,7 +4,8 @@ import { FILE_SIZE_LIMITS } from "@/constants/tools"
  * Tool-scoped constants.
  */
 
-export const CONVERSION_MODES = ["encode", "decode"] as const
+/** Offered in this order: the tool's own answer first. */
+export const MODE_PREFERENCES = ["auto", "encode", "decode"] as const
 
 /** Value vs whole URL — two standards, not a preference. See `utils/urlCodec`. */
 export const URL_SCOPES = ["value", "whole"] as const
