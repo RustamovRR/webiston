@@ -3,7 +3,7 @@
 import { Button } from "@webiston/ui/primitives/button"
 import { Heart, History, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import {
   addToColorFavorites,
@@ -21,12 +21,16 @@ import { CopySwatch } from "./CopySwatch"
 
 /**
  * The colours this visitor has worked with — the one deliberately PERSISTED
- * piece of this tool (a palette is a project that spans visits; the live
- * draft is not).
+ * piece of this tool (a palette is a project that spans visits; the live draft
+ * is not).
  *
- * The old version read localStorage on mount only, so a colour chosen five
- * seconds ago never appeared until reload. It refreshes on every change of
- * the current colour now.
+ * The heart state is derived from React state, never read from localStorage
+ * during render. It used to call `isColorFavorite()` — a `getItem` plus a
+ * `JSON.parse` — four times per swatch inside the JSX. With the React Compiler
+ * on, that memoised: measured, un-favouriting a colour removed it from storage
+ * while the icon kept reporting `aria-pressed="true"`, because the cached
+ * element had no dependency that changed. Reading mutable globals in render is
+ * the defect; the read count was only the symptom.
  */
 
 interface ColorHistoryProps {
@@ -35,6 +39,8 @@ interface ColorHistoryProps {
   historyVersion: number
 }
 
+type Tab = "history" | "favorites"
+
 export function ColorHistory({
   onColorSelect,
   historyVersion
@@ -42,15 +48,23 @@ export function ColorHistory({
   const t = useTranslations("ColorConverterPage.ColorHistory")
   const [history, setHistory] = useState<ColorHistoryItem[]>([])
   const [favorites, setFavorites] = useState<ColorFavorite[]>([])
-  const [tab, setTab] = useState<"history" | "favorites">("history")
+  const [tab, setTab] = useState<Tab>("history")
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: historyVersion is
-  // the refresh SIGNAL — it is bumped by the hook on every history write, and
-  // this effect re-reads storage exactly then. It is not referenced inside.
+  // `historyVersion` is the refresh SIGNAL: the hook bumps it on every history
+  // write and this effect re-reads storage exactly then. It is deliberately
+  // not referenced in the body. (The suppression must be ONE comment line —
+  // Biome ignores a `biome-ignore` that has other comments between it and the
+  // diagnostic, which is why the three-line version had no effect.)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: refresh signal, not a value read here
   useEffect(() => {
     setHistory(getColorHistory())
     setFavorites(getColorFavorites())
   }, [historyVersion])
+
+  const favoriteHexes = useMemo(
+    () => new Set(favorites.map((item) => item.hex.toLowerCase())),
+    [favorites]
+  )
 
   const toggleFavorite = (hex: string, name?: string) => {
     if (isColorFavorite(hex)) removeFromColorFavorites(hex)
@@ -59,6 +73,7 @@ export function ColorHistory({
   }
 
   const items = tab === "history" ? history : favorites
+
   const clearAll = () => {
     if (tab === "history") {
       clearColorHistory()
@@ -70,16 +85,31 @@ export function ColorHistory({
   }
 
   return (
-    <section className="mt-6 rounded-xl border border-border bg-card">
-      <div className="flex items-center justify-between border-border border-b px-5 py-3">
-        <div className="flex items-center gap-2.5">
-          <span
-            aria-hidden="true"
-            className="size-[6px] shrink-0 rounded-[2px] bg-border-strong"
-          />
-          <h2 className="font-medium text-base text-foreground">
-            {t("title")}
-          </h2>
+    // A workbench panel now, not a card: the ToolCard wrapper moved up to
+    // the Workbench, which owns one card for all four views.
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            size="sm"
+            variant={tab === "history" ? "default" : "outline"}
+            aria-pressed={tab === "history"}
+            onClick={() => setTab("history")}
+          >
+            <History aria-hidden="true" />
+            {t("history")} · {history.length}
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={tab === "favorites" ? "default" : "outline"}
+            aria-pressed={tab === "favorites"}
+            onClick={() => setTab("favorites")}
+          >
+            <Heart aria-hidden="true" />
+            {t("favorites")} · {favorites.length}
+          </Button>
         </div>
         {items.length > 0 && (
           <Button
@@ -95,43 +125,23 @@ export function ColorHistory({
         )}
       </div>
 
-      <div className="space-y-4 p-5">
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            size="sm"
-            variant={tab === "history" ? "default" : "outline"}
-            onClick={() => setTab("history")}
-          >
-            <History aria-hidden="true" />
-            {t("history")} · {history.length}
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant={tab === "favorites" ? "default" : "outline"}
-            onClick={() => setTab("favorites")}
-          >
-            <Heart aria-hidden="true" />
-            {t("favorites")} · {favorites.length}
-          </Button>
+      {items.length === 0 ? (
+        <div className="flex min-h-28 flex-col items-center justify-center text-center text-muted-foreground">
+          {tab === "history" ? (
+            <History size={28} className="opacity-40" aria-hidden="true" />
+          ) : (
+            <Heart size={28} className="opacity-40" aria-hidden="true" />
+          )}
+          <p className="mt-2 text-sm">
+            {tab === "history" ? t("noHistory") : t("noFavorites")}
+          </p>
         </div>
-
-        {items.length === 0 ? (
-          <div className="flex min-h-28 flex-col items-center justify-center text-center text-muted-foreground">
-            {tab === "history" ? (
-              <History size={28} className="opacity-40" aria-hidden="true" />
-            ) : (
-              <Heart size={28} className="opacity-40" aria-hidden="true" />
-            )}
-            <p className="mt-2 text-sm">
-              {tab === "history" ? t("noHistory") : t("noFavorites")}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-5 gap-3 sm:grid-cols-8 lg:grid-cols-12">
-            {items.map((item) => (
-              <div key={item.hex} className="relative">
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(64px,1fr))] gap-3">
+          {items.map((item) => {
+            const isFavorite = favoriteHexes.has(item.hex.toLowerCase())
+            return (
+              <div key={item.hex} className="group/item relative">
                 <CopySwatch
                   color={item.hex}
                   onSelect={() => onColorSelect(item.hex)}
@@ -146,26 +156,23 @@ export function ColorHistory({
                   type="button"
                   onClick={() => toggleFavorite(item.hex, item.name)}
                   aria-label={
-                    isColorFavorite(item.hex)
-                      ? t("removeFavorite")
-                      : t("addFavorite")
+                    isFavorite ? t("removeFavorite") : t("addFavorite")
                   }
-                  aria-pressed={isColorFavorite(item.hex)}
-                  className="absolute top-1 right-1 flex size-5 cursor-pointer items-center justify-center rounded-full bg-background/85 text-muted-foreground opacity-0 transition-opacity hover:text-destructive focus-visible:opacity-100 group-hover:opacity-100 [div:hover>&]:opacity-100"
+                  aria-pressed={isFavorite}
+                  className="absolute top-1 right-1 flex size-5 cursor-pointer items-center justify-center rounded-full bg-background/85 text-muted-foreground opacity-0 transition-opacity hover:text-destructive focus-visible:opacity-100 group-hover/item:opacity-100 aria-pressed:opacity-100"
                 >
                   <Heart
                     size={11}
-                    fill={isColorFavorite(item.hex) ? "currentColor" : "none"}
-                    className={
-                      isColorFavorite(item.hex) ? "text-destructive" : undefined
-                    }
+                    aria-hidden="true"
+                    fill={isFavorite ? "currentColor" : "none"}
+                    className={isFavorite ? "text-destructive" : undefined}
                   />
                 </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+            )
+          })}
+        </div>
+      )}
+    </div>
   )
 }

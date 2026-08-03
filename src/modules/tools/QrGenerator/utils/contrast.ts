@@ -14,31 +14,27 @@
  * comfortable.
  */
 
-/** Relative luminance per WCAG 2.1, which is the same maths a scanner's
- *  thresholding approximates. */
-function luminance(hex: string): number {
-  const clean = hex.replace("#", "")
-  const full =
-    clean.length === 3
-      ? clean
-          .split("")
-          .map((c) => c + c)
-          .join("")
-      : clean
+import {
+  hexToRgb,
+  relativeLuminance,
+  contrastRatio as sharedContrastRatio
+} from "@/lib/utils"
 
-  const channel = (offset: number) => {
-    const value = Number.parseInt(full.slice(offset, offset + 2), 16) / 255
-    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
-  }
-
-  return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4)
+/**
+ * The luminance maths moved to `@/lib/utils` when the colour converter became
+ * its second consumer. This file keeps the QR-specific VERDICT — "will a
+ * scanner cope?" is not the same question as "may a human read this?".
+ */
+const luminance = (hex: string): number => {
+  const rgb = hexToRgb(hex)
+  return rgb ? relativeLuminance(rgb) : 0
 }
 
 export function contrastRatio(foreground: string, background: string): number {
-  const a = luminance(foreground)
-  const b = luminance(background)
-  const [light, dark] = a > b ? [a, b] : [b, a]
-  return (light + 0.05) / (dark + 0.05)
+  const a = hexToRgb(foreground)
+  const b = hexToRgb(background)
+  if (!a || !b) return 1
+  return sharedContrastRatio(a, b)
 }
 
 export type ScanRisk = "ok" | "low" | "inverted"

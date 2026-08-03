@@ -1,5 +1,14 @@
 // Text utilities
 
+// Color contrast utilities
+export type { ContrastGrades, Rgb } from "./color-contrast"
+export {
+  compositeOver,
+  contrastRatio,
+  gradeContrast,
+  relativeLuminance,
+  WCAG_THRESHOLDS
+} from "./color-contrast"
 // Color conversion utilities
 export {
   hexToRgb,
@@ -11,6 +20,7 @@ export {
 // Color palette utilities
 export { generatePalette, generateTailwindShades } from "./color-palettes"
 // Color parser utilities
+export type { ParsedColor } from "./color-parser"
 export { isValidColor, parseColorInput } from "./color-parser"
 
 // Color space utilities

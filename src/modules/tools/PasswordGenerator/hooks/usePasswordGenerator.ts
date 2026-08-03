@@ -39,8 +39,10 @@ export function usePasswordGenerator() {
   // The acknowledgement must not outlive the password: regenerate inside the
   // two-second window and the button kept saying "copied" about a password
   // that was no longer on screen.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: password is the
-  // reset SIGNAL — the effect runs on every new draw, not on its own state.
+  // (One comment line, because Biome ignores a `biome-ignore` with other
+  // comments between it and the diagnostic — the two-line version here had no
+  // effect at all.)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: password is the reset signal, not state this effect reads
   useEffect(() => {
     setCopied(false)
   }, [password])

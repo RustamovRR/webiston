@@ -2,115 +2,185 @@
   "ColorConverterPage": {
     "ToolHeader": {
       "title": "Color Converter and Palette Generator",
-      "description": "A tool for color conversion between HEX, RGB, HSL formats and palette generation"
-    },
-    "ControlPanel": {
-      "paletteType": "Palette type:",
-      "monochromatic": "Monochromatic",
-      "analogous": "Analogous",
-      "complementary": "Complementary",
-      "randomColor": "Random color",
-      "downloadPalette": "Download palette"
+      "description": "Convert between HEX, RGB, HSL and OKLCH, check WCAG contrast and generate palettes"
     },
     "ColorInput": {
       "title": "Color Selection",
-      "color": "Color:",
       "colorPicker": "Color picker",
-      "colorInfo": "Color information",
-      "colorName": "Color name",
-      "presetColors": "Preset colors:",
+      "pickFromScreen": "Pick a color from the screen",
+      "random": "Random",
+      "presetColors": "Preset colors",
       "validFormat": "Valid format",
       "invalidFormat": "Invalid format",
-      "format": "Format",
-      "length": "Length",
-      "valid": "Valid",
       "opacity": "Opacity",
-      "placeholder": "#0d5a6b, rgb(13, 90, 107), oklch(0.45 0.07 217), teal…"
+      "processedLocally": "Computed in your browser",
+      "copyLink": "Copy link",
+      "linkCopied": "Copied",
+      "placeholder": "#0d5a6b, rgb(13 90 107), oklch(0.433 0.073 217), teal…"
     },
     "ColorFormats": {
-      "title": "Formats and Information",
-      "formats": "Formats",
-      "characters": "Characters",
-      "enterValidColor": "Enter a valid HEX color...",
+      "title": "This color",
+      "otherSpaces": "Other color spaces",
+      "enterValidColor": "Enter a valid color...",
       "formatsWillAppear": "Color formats will appear here",
       "hexDescription": "Most widely used in web development",
       "rgbDescription": "For monitors and screens",
       "hslDescription": "Human-readable format",
-      "rgbaDescription": "RGB with alpha channel",
-      "hslaDescription": "HSL with alpha channel",
       "labDescription": "CIE Lab color space",
       "lchDescription": "Lightness, Chroma, Hue",
       "oklabDescription": "Modern perceptual color space",
-      "oklchDescription": "Cylindrical coordinates of OKLab"
+      "oklchDescription": "The standard for Tailwind v4 and modern CSS"
+    },
+    "Workbench": {
+      "title": "Build",
+      "views": {
+        "scale": "Scale 50–950",
+        "palette": "Palette",
+        "gradient": "Gradient",
+        "saved": "Saved"
+      }
+    },
+    "Contrast": {
+      "title": "Contrast (WCAG)",
+      "onWhite": "On white",
+      "onBlack": "On black",
+      "customBackdrop": "On your backdrop",
+      "sample": "Aa Sample text",
+      "aa": "AA (4.5:1)",
+      "aaa": "AAA (7:1)",
+      "aaLarge": "AA large (3:1)",
+      "nonText": "Icon/border (3:1)",
+      "largeTextNote": "Large text means 24px regular, or 18.66px bold and above.",
+      "repairLead": "Fails AA. The nearest step of your own scale that passes:",
+      "otherBackdrop": "Compare against another backdrop",
+      "recommendation": "{text} reads best on this color:",
+      "whiteText": "White text",
+      "blackText": "Black text",
+      "empty": "Enter a valid color to see its contrast"
     },
     "ColorPalette": {
-      "monochromatic": "Monochromatic palette",
-      "analogous": "Analogous palette",
-      "complementary": "Complementary palette",
-      "clickToCopy": "Click to copy color"
+      "monochromatic": "Monochromatic",
+      "analogous": "Analogous",
+      "complementary": "Complementary"
     },
     "TailwindShades": {
-      "title": "Tailwind Shades",
-      "exportOptions": "Export options:",
-      "noValidColor": "Enter a valid color"
+      "readability": "White text passes AA from {white} up; black text down to {black}.",
+      "readabilityNone": "No step on this scale passes AA."
+    },
+    "Export": {
+      "target": "Target",
+      "notation": "Notation",
+      "tokenName": "Token name",
+      "copy": "Copy",
+      "download": "Download",
+      "targets": {
+        "css": "CSS variables",
+        "tailwind": "Tailwind v4 @theme",
+        "scss": "SCSS"
+      },
+      "notations": {
+        "hex": "HEX",
+        "oklch": "OKLCH"
+      }
     },
     "ColorHistory": {
-      "title": "Color History & Favorites",
       "history": "History",
       "favorites": "Favorites",
-      "clearHistory": "Clear History",
-      "clearFavorites": "Clear Favorites",
+      "clearHistory": "Clear history",
+      "clearFavorites": "Clear favorites",
       "noHistory": "No history yet",
       "noFavorites": "No favorite colors yet",
       "addFavorite": "Add to favourites",
       "removeFavorite": "Remove from favourites"
     },
     "GradientGenerator": {
-      "title": "Gradient Generator",
-      "type": "Type:",
-      "direction": "Direction:",
-      "actions": "Actions:",
+      "type": "Type",
+      "direction": "Direction",
       "random": "Random",
-      "colorStops": "Color Stops:",
-      "addColor": "Add Color",
-      "exportOptions": "Export Options:",
-      "noValidColor": "Enter a valid color",
+      "colorStops": "Color stops",
+      "addColor": "Add color",
       "types": {
         "linear": "Linear",
         "radial": "Radial",
         "conic": "Conic"
       },
-      "removeColor": "Remove colour"
+      "stopColor": "Stop {index} color",
+      "stopPosition": "Stop {index} position, percent",
+      "removeColor": "Remove color"
     },
-    "Info": {
-      "examples": {
-        "title": "Color Format Examples",
-        "hex": "HEX Formats",
-        "rgb": "RGB Formats",
-        "hsl": "HSL Formats"
+    "reference": {
+      "title": "Color formats — a reference",
+      "intro": "Every format writes the same color differently. The table below shows one color — #0d5a6b — in all seven notations, so the rows can be compared directly.",
+      "columns": {
+        "format": "Format",
+        "syntax": "CSS syntax",
+        "example": "Example",
+        "purpose": "When to use it"
       },
-      "about": {
-        "title": "About Color Formats",
+      "rows": {
         "hex": {
-          "title": "HEX Format",
-          "desc1": "Most widely used in web development",
-          "desc2": "#RRGGBB format (6 characters)",
-          "desc3": "Used directly in CSS",
-          "desc4": "Hexadecimal number system"
+          "name": "HEX",
+          "syntax": "#RRGGBB[AA]",
+          "example": "#0d5a6b",
+          "purpose": "The most widely used notation on the web. Each channel is two hexadecimal digits; the eight-digit form carries opacity in the last pair. Short and easy to copy, but hard to picture from the digits alone."
         },
         "rgb": {
-          "title": "RGB Format",
-          "desc1": "Red, Green, Blue values",
-          "desc2": "0-255 range for each channel",
-          "desc3": "For monitors and screens",
-          "desc4": "Widely used in JavaScript"
+          "name": "RGB",
+          "syntax": "rgb(R G B [/ A])",
+          "example": "rgb(13 90 107)",
+          "purpose": "The notation closest to how a screen works: how much red, green and blue light, from 0 to 255. Usually what you reach for when doing arithmetic on colors in JavaScript. Modern syntax separates the channels with spaces and puts opacity after a slash."
         },
         "hsl": {
-          "title": "HSL Format",
-          "desc1": "Hue, Saturation, Lightness",
-          "desc2": "Human-readable format",
-          "desc3": "Supported in CSS3",
-          "desc4": "Convenient for color adjustments"
+          "name": "HSL",
+          "syntax": "hsl(H S% L% [/ A])",
+          "example": "hsl(191 78% 24%)",
+          "purpose": "Hue (0–360°), saturation and lightness. It matches how people think about colour, so it is convenient for hand-tuning: raise the lightness and the colour washes out, lower it and it deepens. The drawback is that the same lightness looks different at different hues."
+        },
+        "oklch": {
+          "name": "OKLCH",
+          "syntax": "oklch(L C H [/ A])",
+          "example": "oklch(0.433 0.073 217)",
+          "purpose": "The 2026 standard for design systems. Unlike HSL its lightness is perceptually even: a yellow and a blue at the same L look equally bright to the eye. Tailwind v4 authors its own palette in this notation, which makes it the right choice for token export."
+        },
+        "oklab": {
+          "name": "OKLab",
+          "syntax": "oklab(L a b [/ A])",
+          "example": "oklab(0.433 -0.058 -0.045)",
+          "purpose": "The rectangular coordinates of OKLCH: L is lightness, a and b are the green↔red and blue↔yellow axes. Used to measure how far apart two colours look — this tool finds the nearest colour name in exactly this space."
+        },
+        "lch": {
+          "name": "LCH",
+          "syntax": "lch(L% C H [/ A])",
+          "example": "lch(35% 22 227)",
+          "purpose": "The cylindrical form of CIE Lab, and the generation before OKLCH: the same idea, but lightness is not quite even across some hues. Still seen in older design systems and in print workflows."
+        },
+        "lab": {
+          "name": "Lab",
+          "syntax": "lab(L% a b [/ A])",
+          "example": "lab(35% -15 -16)",
+          "purpose": "The CIE Lab space, standardised in 1976 and device-independent — the same value means the same colour on any display. It remains the working space for colour comparison and colour-management systems."
+        }
+      },
+      "worked": "The hex conversion is doable by hand: in #0d5a6b the pair 0d is 0×16 + 13 = 13, 5a is 5×16 + 10 = 90, and 6b is 6×16 + 11 = 107. That gives rgb(13 90 107)."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "formats": {
+          "question": "Which color formats are supported?",
+          "answer": "HEX (3, 4, 6 and 8 digits), RGB, HSL, Lab, LCH, OKLab, OKLCH and CSS color names. Modern CSS Color 4 syntax is read too — rgb(255 0 0 / 50%) or hsl(200deg 50% 40%). CMYK is not supported: it depends on a print profile and cannot be computed accurately in a browser."
+        },
+        "contrast": {
+          "question": "What does the WCAG contrast check show?",
+          "answer": "It measures the chosen color against white and against black. WCAG 2.1 asks for 4.5:1 (AA) and 7:1 (AAA) for body text, 3:1 for large text, and 3:1 for icons and borders. A translucent color is composited onto each backdrop first, so the number describes what people actually see. When AA fails, the tool offers the nearest step of your own scale that passes."
+        },
+        "privacy": {
+          "question": "Are my colors sent to a server?",
+          "answer": "No. Every conversion runs in your browser. History and favorites are stored only in localStorage on your own device, and you can clear them at any time."
+        },
+        "export": {
+          "question": "How do I get the result into my project?",
+          "answer": "Export the scale as CSS variables, a Tailwind v4 @theme block or SCSS variables, in either HEX or OKLCH notation. You choose the token name, and the snippet is shown in full before you copy it. Gradients come with ready CSS and a Tailwind class."
         }
       }
     }

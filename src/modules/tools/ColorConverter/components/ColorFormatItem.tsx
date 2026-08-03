@@ -3,25 +3,32 @@
 import { Check, Copy } from "lucide-react"
 import { useState } from "react"
 
+import { COPIED_FEEDBACK_MS } from "../constants"
+
 /**
- * One format row: name, value, sub-detail, click-to-copy. The format's accent
- * comes from the chart tokens — the data-visualisation palette the design
- * system reserves for exactly this — never from raw palette classes.
+ * One format row: name, what the format is for, the value, click-to-copy.
+ *
+ * Two lines, not three. Measured at three lines the nine rows came to 984px
+ * against a 657px left column, so the panel needed an inner scrollbar next to
+ * a page that already scrolls. The name and its one-line description share a
+ * row; the value — the thing being copied — gets the emphasis line.
+ *
+ * The names used to cycle through the chart tokens — HEX blue, RGB green, HSL
+ * orange — which encoded nothing. Nine differently coloured labels in a column
+ * read as a legend the visitor then goes looking for a key to. Type hierarchy
+ * carries the structure instead.
  */
 
 interface ColorFormatItemProps {
   title: string
   value: string
   description: string
-  /** A `text-chart-*` class chosen by the caller's cycle. */
-  accentClass: string
 }
 
 export function ColorFormatItem({
   title,
   value,
-  description,
-  accentClass
+  description
 }: ColorFormatItemProps) {
   const [copied, setCopied] = useState(false)
 
@@ -32,7 +39,7 @@ export function ColorFormatItem({
       return
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
   }
 
   return (
@@ -42,11 +49,16 @@ export function ColorFormatItem({
       aria-label={`${title}: ${value}`}
       className="group w-full cursor-pointer rounded-lg border border-border bg-muted/40 p-3 text-left transition-colors hover:border-border-strong hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="mb-1.5 flex items-center justify-between">
-        <h3 className={`font-semibold text-sm ${accentClass}`}>{title}</h3>
+      <div className="flex items-baseline gap-2">
+        <h3 className="shrink-0 font-semibold text-foreground text-sm">
+          {title}
+        </h3>
+        <span className="min-w-0 flex-1 truncate text-muted-foreground text-xs">
+          {description}
+        </span>
         <span
           aria-hidden="true"
-          className="flex size-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+          className="shrink-0 self-center text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
         >
           {copied ? (
             <Check size={14} className="text-success" />
@@ -55,8 +67,9 @@ export function ColorFormatItem({
           )}
         </span>
       </div>
-      <div className="break-all font-mono text-foreground text-sm">{value}</div>
-      <div className="mt-1 text-muted-foreground text-xs">{description}</div>
+      <div className="mt-1 break-all font-mono text-foreground text-sm">
+        {value}
+      </div>
     </button>
   )
 }

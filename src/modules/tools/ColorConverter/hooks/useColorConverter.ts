@@ -1,7 +1,7 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
-import { COLOR_NAMES } from "@/constants/color-names"
+import { useCallback, useEffect, useMemo, useState } from "react"
+
 import {
   addToColorHistory,
   generatePalette,
@@ -15,13 +15,16 @@ import {
   rgbToOklab
 } from "@/lib/utils"
 
-import type { PaletteType } from "../constants"
+import { BLACK, PALETTE_TYPES, WHITE } from "../constants"
 import { useColorDraftStore } from "../stores/colorDraftStore"
+import type { ColorFormats, PaletteType } from "../types"
+import { nearestPassingShade, readContrast, readRamp } from "../utils/contrast"
+import { getColorName, toTokenName } from "../utils/exports"
 
 /**
- * The converter's state and derived formats.
+ * The converter's state and everything derived from it.
  *
- * What the rewrite removed, each a real defect and not tidiness:
+ * What earlier rewrites removed, each a real defect and not tidiness:
  *
  * - `onSuccess`/`onError` callbacks fired INSIDE the `useMemo` — side effects
  *   in the render phase, wired to `console.log` at the call site.
@@ -33,40 +36,29 @@ import { useColorDraftStore } from "../stores/colorDraftStore"
  *   keystrokes never do.
  */
 
-export interface ColorFormats {
-  hex: string
-  rgb: string
-  hsl: string
-  rgba: string
-  hsla: string
-  lab: string
-  lch: string
-  oklab: string
-  oklch: string
-  rgbValues: { r: number; g: number; b: number; a: number }
-  hslValues: { h: number; s: number; l: number; a: number }
-  labValues: { l: number; a: number; b: number }
-  lchValues: { l: number; c: number; h: number }
-  oklabValues: { l: number; a: number; b: number }
-  oklchValues: { l: number; c: number; h: number }
-  opacity: number
-  isValid: boolean
+/** Rounding is presentation. The conversions themselves keep full precision. */
+const round = (value: number, digits: number) => {
+  const factor = 10 ** digits
+  return Math.round(value * factor) / factor
 }
 
-/** hex → readable name, inverted once from the shared registry. */
-const NAME_BY_HEX: ReadonlyMap<string, string> = new Map(
-  Object.entries(COLOR_NAMES).map(([name, hex]) => [hex.toLowerCase(), name])
-)
+/** `oklch(0.4 0.07 217)` → `oklch(0.4 0.07 217 / 0.5)` when translucent. */
+const withAlpha = (notation: string, alpha: number) =>
+  alpha < 1 ? notation.replace(/\)$/, ` / ${round(alpha, 3)})`) : notation
 
-export function getColorName(hex: string): string {
-  return NAME_BY_HEX.get(hex.slice(0, 7).toLowerCase()) ?? ""
-}
+const toHex8 = (hex: string, alpha: number) =>
+  alpha < 1
+    ? `${hex}${Math.round(alpha * 255)
+        .toString(16)
+        .padStart(2, "0")}`
+    : hex
+
+/** The query parameter that makes a colour shareable. */
+const COLOR_PARAM = "c"
 
 export function useColorConverter() {
   const inputColor = useColorDraftStore((state) => state.inputColor)
-  const paletteType = useColorDraftStore((state) => state.paletteType)
   const setInputColor = useColorDraftStore((state) => state.setInputColor)
-  const setPaletteType = useColorDraftStore((state) => state.setPaletteType)
 
   const colorFormats = useMemo((): ColorFormats | null => {
     const parsed = parseColorInput(inputColor)
@@ -78,34 +70,37 @@ export function useColorConverter() {
     const lch = labToLch(lab.l, lab.a, lab.b)
     const oklab = rgbToOklab(r, g, b)
     const oklch = oklabToOklch(oklab.l, oklab.a, oklab.b)
-
-    const hex =
-      a < 1
-        ? `${rgbToHex(r, g, b)}${Math.round(a * 255)
-            .toString(16)
-            .padStart(2, "0")}`
-        : rgbToHex(r, g, b)
+    const hexOpaque = rgbToHex(r, g, b)
 
     return {
-      hex: hex.toUpperCase(),
-      rgb: `rgb(${r}, ${g}, ${b})`,
-      hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-      rgba: `rgba(${r}, ${g}, ${b}, ${a})`,
-      hsla: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${a})`,
-      lab: `lab(${lab.l}% ${lab.a} ${lab.b})`,
-      lch: `lch(${lch.l}% ${lch.c} ${lch.h})`,
-      oklab: `oklab(${oklab.l} ${oklab.a} ${oklab.b})`,
-      oklch: `oklch(${oklch.l} ${oklch.c} ${oklch.h})`,
+      hex: toHex8(hexOpaque, a).toUpperCase(),
+      hexOpaque,
+      // CSS Color 4 space syntax across every row. The panel used to print the
+      // legacy comma form for RGB/HSL and the modern form for the other five,
+      // which reads as two tools sharing a card — and it needed separate RGBA
+      // and HSLA rows to say what one row can say with `/ alpha`.
+      rgb: withAlpha(`rgb(${r} ${g} ${b})`, a),
+      hsl: withAlpha(`hsl(${hsl.h} ${hsl.s}% ${hsl.l}%)`, a),
+      lab: withAlpha(`lab(${lab.l}% ${lab.a} ${lab.b})`, a),
+      lch: withAlpha(`lch(${lch.l}% ${lch.c} ${lch.h})`, a),
+      oklab: withAlpha(
+        `oklab(${round(oklab.l, 3)} ${round(oklab.a, 3)} ${round(oklab.b, 3)})`,
+        a
+      ),
+      oklch: withAlpha(
+        `oklch(${round(oklch.l, 3)} ${round(oklch.c, 3)} ${oklch.h})`,
+        a
+      ),
       rgbValues: { r, g, b, a },
-      hslValues: { ...hsl, a },
-      labValues: lab,
-      lchValues: lch,
-      oklabValues: oklab,
-      oklchValues: oklch,
-      opacity: a,
-      isValid: true
+      hslValues: hsl,
+      opacity: a
     }
   }, [inputColor])
+
+  const contrast = useMemo(
+    () => (colorFormats ? readContrast(colorFormats.rgbValues) : null),
+    [colorFormats]
+  )
 
   /**
    * Bumped on every history WRITE, so the history panel re-reads exactly when
@@ -116,55 +111,140 @@ export function useColorConverter() {
   const [historyVersion, setHistoryVersion] = useState(0)
 
   /**
-   * A DELIBERATE selection — preset, picker, palette swatch, random — both
-   * sets the colour and records it in the persistent history. Typing goes
-   * through `setInputColor` and records nothing until `recordCurrent` (blur).
+   * `addToColorHistory` canonicalises and rejects unparseable input itself, so
+   * the only thing this owes is the refresh signal. The gate here mirrors it so
+   * the panel does not re-read storage for a write that never happened.
+   */
+  const record = useCallback((color: string) => {
+    if (!parseColorInput(color)) return
+    addToColorHistory(color)
+    setHistoryVersion((version) => version + 1)
+  }, [])
+
+  /**
+   * A DELIBERATE selection — preset, picker, palette swatch, random,
+   * eyedropper — both sets the colour and records it in the persistent
+   * history. Typing goes through `setInputColor` and records nothing until
+   * `recordCurrent` (blur).
    */
   const chooseColor = useCallback(
     (color: string) => {
       setInputColor(color)
-      if (parseColorInput(color)) {
-        addToColorHistory(color)
-        setHistoryVersion((version) => version + 1)
-      }
+      record(color)
     },
-    [setInputColor]
+    [setInputColor, record]
   )
 
-  const recordCurrent = useCallback(() => {
-    if (parseColorInput(inputColor)) {
-      addToColorHistory(inputColor)
-      setHistoryVersion((version) => version + 1)
-    }
-  }, [inputColor])
+  const recordCurrent = useCallback(
+    () => record(inputColor),
+    [record, inputColor]
+  )
 
-  const palette = useMemo(
+  /**
+   * Alpha is expressed as an 8-digit hex because that is the tool's canonical
+   * form and it round-trips through the parser. The slider used to be rendered
+   * only when the colour ALREADY had alpha, so from an opaque colour there was
+   * no way to reach a translucent one except by hand-writing `rgba(…)`.
+   */
+  const setOpacity = useCallback(
+    (alpha: number) => {
+      if (!colorFormats) return
+      setInputColor(toHex8(colorFormats.hexOpaque, alpha))
+    },
+    [colorFormats, setInputColor]
+  )
+
+  /**
+   * `?c=<hex>` — shareable, and it survives a refresh.
+   *
+   * `replaceState` rather than a router navigation: a `router.replace` per
+   * keystroke schedules work nobody asked for. The view is deliberately NOT in
+   * the URL — see the note in the store.
+   */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only hydration
+  useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get(COLOR_PARAM)
+    if (!fromUrl) return
+    const candidate = fromUrl.startsWith("#") ? fromUrl : `#${fromUrl}`
+    if (parseColorInput(candidate)) setInputColor(candidate)
+  }, [])
+
+  useEffect(() => {
+    if (!colorFormats) return
+    const url = new URL(window.location.href)
+    url.searchParams.set(COLOR_PARAM, colorFormats.hex.slice(1).toLowerCase())
+    window.history.replaceState(null, "", url)
+  }, [colorFormats])
+
+  /** All three schemes at once — the type switch is gone. */
+  const palettes = useMemo(
     () =>
       colorFormats
-        ? generatePalette(colorFormats.hex.slice(0, 7), paletteType)
-        : [],
-    [colorFormats, paletteType]
+        ? PALETTE_TYPES.map((type) => ({
+            type,
+            colors: generatePalette(colorFormats.hexOpaque, type)
+          }))
+        : ([] as Array<{ type: PaletteType; colors: string[] }>),
+    [colorFormats]
   )
 
   const tailwindShades = useMemo(
     () =>
-      colorFormats ? generateTailwindShades(colorFormats.hex.slice(0, 7)) : [],
+      colorFormats
+        ? generateTailwindShades(colorFormats.hexOpaque).map(
+            ({ shade, hex }) => ({ shade, hex })
+          )
+        : [],
     [colorFormats]
   )
+
+  const rampReadability = useMemo(
+    () => readRamp(tailwindShades),
+    [tailwindShades]
+  )
+
+  /**
+   * Only offered when it is both needed and honest — i.e. the colour fails AA
+   * on both backdrops AND is opaque.
+   *
+   * The scale is generated from the OPAQUE hex, so suggesting one of its steps
+   * to fix a translucent colour would be advice about a different colour: what
+   * a translucent colour needs is more alpha, not a darker shade. Measured on
+   * `transparent`, the unguarded version offered a 21.00:1 "repair".
+   */
+  const passingShade = useMemo(
+    () =>
+      contrast &&
+      colorFormats?.opacity === 1 &&
+      !contrast.whiteGrades.aa &&
+      !contrast.blackGrades.aa
+        ? nearestPassingShade(
+            tailwindShades,
+            contrast.white >= contrast.black ? WHITE : BLACK
+          )
+        : null,
+    [contrast, colorFormats, tailwindShades]
+  )
+
+  const colorName = colorFormats ? getColorName(colorFormats.hex) : ""
 
   return {
     inputColor,
     setInputColor,
     chooseColor,
     recordCurrent,
-    paletteType,
-    setPaletteType: setPaletteType as (type: PaletteType) => void,
+    setOpacity,
     colorFormats,
-    palette,
+    contrast,
+    palettes,
     tailwindShades,
+    rampReadability,
+    passingShade,
     historyVersion,
     isValid: colorFormats !== null,
-    colorName: colorFormats ? getColorName(colorFormats.hex) : ""
+    colorName,
+    /** The stem the export panel starts from. */
+    tokenName: toTokenName(colorName)
   }
 }
 

@@ -76,11 +76,13 @@ export async function GET() {
       {
         id: "tools-color-converter",
         title: "Color Converter",
+        // CMYK was listed here and the tool has never supported it — it
+        // depends on a print profile and cannot be computed in a browser.
         content:
-          "Ranglarni turli formatlar o'rtasida o'tkazish: HEX, RGB, HSL, CMYK.",
+          "Ranglarni HEX, RGB, HSL, Lab va OKLCH formatlari o'rtasida o'tkazish, WCAG kontrastini tekshirish va palette yaratish.",
         url: "/tools/color-converter",
         category: "tools",
-        tags: ["color", "converter", "hex", "rgb", "hsl"]
+        tags: ["color", "converter", "hex", "rgb", "hsl", "oklch", "contrast"]
       },
       {
         id: "tools-hash-generator",

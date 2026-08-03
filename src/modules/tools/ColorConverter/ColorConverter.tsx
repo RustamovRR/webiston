@@ -1,33 +1,33 @@
 "use client"
 
 /**
- * Colour converter and palette generator.
+ * Colour converter, palette generator and contrast checker.
  *
- * Brought onto the suite's footing: `max-w-[1536px]` so the content edge
- * meets the header like every other tool, one toolbar row instead of a card
- * wrapped around two groups, `SegmentedControl` for the palette type the way
- * every tool switches modes, and semantic tokens throughout. The ambient
- * glow layers that used to wrap the input card are gone — card interiors
- * stay plain; the colour itself is the decoration here.
+ * The version this replaces was not too LONG — it was too FLAT: nine bordered
+ * cards of identical weight in one column, so nothing on the page said "this
+ * is the point and that is the depth". Measured, the consequences were real
+ * rather than aesthetic: a toolbar controlling cards ~900px below it, and the
+ * converted values — the reason most visitors arrive — scrolling off the top at
+ * the exact moment a click changed them. On a 375×812 phone the RGB row sat at
+ * y=1,465, 1.8 screens down.
+ *
+ * Three weights now, the same three the QR generator has: controls, a pinned
+ * answer, and one workbench underneath. For a QR code the input and the result
+ * are two objects; for a colour they are ONE, which is why what gets pinned
+ * here is the VALUES and not the picker.
  */
 
-import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
-import { Button } from "@webiston/ui/primitives/button"
-import { Download, Shuffle } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 import {
-  ColorFormatsPanel,
-  ColorHistory,
-  ColorInputPanel,
-  ColorPalette,
-  GradientGenerator,
-  InfoSection,
-  TailwindShades
+  ColorControls,
+  ColorSummary,
+  ContrastPanel,
+  Workbench
 } from "./components"
-import { DEFAULT_COLOR, PALETTE_TYPES, type PaletteType } from "./constants"
+import { DEFAULT_COLOR } from "./constants"
 import { useColorConverter } from "./hooks/useColorConverter"
 
 const ColorConverter = () => {
@@ -37,44 +37,20 @@ const ColorConverter = () => {
     setInputColor,
     chooseColor,
     recordCurrent,
-    paletteType,
-    setPaletteType,
+    setOpacity,
     colorFormats,
-    palette,
+    contrast,
+    palettes,
     tailwindShades,
+    rampReadability,
+    passingShade,
     historyVersion,
     isValid,
-    colorName
+    colorName,
+    tokenName
   } = useColorConverter()
 
-  const randomColor = () => {
-    // Math.random is fine here — a colour suggestion is not a secret.
-    const hex = `#${Math.floor(Math.random() * 0xffffff)
-      .toString(16)
-      .padStart(6, "0")}`
-    chooseColor(hex)
-  }
-
-  const downloadPalette = () => {
-    if (!colorFormats) return
-    const payload = {
-      baseColor: colorFormats.hex,
-      type: paletteType,
-      colors: palette,
-      shades: tailwindShades
-    }
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {
-      type: "application/json"
-    })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `webiston-palette-${paletteType}.json`
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    requestAnimationFrame(() => URL.revokeObjectURL(url))
-  }
+  const baseColor = colorFormats?.hexOpaque ?? DEFAULT_COLOR
 
   return (
     <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
@@ -83,76 +59,57 @@ const ColorConverter = () => {
         description={t("ToolHeader.description")}
       />
 
-      {/* One toolbar row: palette mode on the left, the two actions right. */}
-      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <SegmentedControl<PaletteType>
-          label={t("ControlPanel.paletteType")}
-          value={paletteType}
-          onChange={setPaletteType}
-          options={PALETTE_TYPES.map((type) => ({
-            value: type,
-            label: t(`ControlPanel.${type}`)
-          }))}
-        />
+      {/* The QrGenerator recipe verbatim: `row-span` over a taller left column
+          is what gives the sticky element travel — a cell collapsed to its own
+          content height has nowhere to stick. `grid-cols-1` on mobile is
+          load-bearing too: without an explicit track the single implicit column
+          sizes to content and the document scrolls sideways. */}
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_420px]">
+        <div className="lg:col-start-1 lg:row-start-1">
+          <ColorControls
+            inputColor={inputColor}
+            colorFormats={colorFormats}
+            onInput={setInputColor}
+            onChoose={chooseColor}
+            onCommit={recordCurrent}
+            onOpacityChange={setOpacity}
+          />
+        </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={randomColor}
-          >
-            <Shuffle aria-hidden="true" />
-            {t("ControlPanel.randomColor")}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={!isValid}
-            onClick={downloadPalette}
-          >
-            <Download aria-hidden="true" />
-            {t("ControlPanel.downloadPalette")}
-          </Button>
+        {/* Second in the DOM, so on a phone the answer lands immediately under
+            the input instead of below three generators. */}
+        <div className="lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-stretch">
+          <div className="lg:sticky lg:top-20">
+            <ColorSummary
+              colorFormats={colorFormats}
+              colorName={colorName}
+              contrast={contrast}
+            />
+          </div>
+        </div>
+
+        <div className="lg:col-start-1 lg:row-start-2">
+          <Workbench
+            shades={tailwindShades}
+            baseColor={baseColor}
+            ramp={rampReadability}
+            tokenName={tokenName}
+            palettes={palettes}
+            onColorSelect={chooseColor}
+            historyVersion={historyVersion}
+            isValid={isValid}
+          />
+        </div>
+
+        <div className="lg:col-start-1 lg:row-start-3">
+          <ContrastPanel
+            contrast={contrast}
+            color={colorFormats?.hex ?? DEFAULT_COLOR}
+            passingShade={passingShade}
+            onAdoptShade={chooseColor}
+          />
         </div>
       </div>
-
-      <div className="grid items-start gap-6 lg:grid-cols-2">
-        <ColorInputPanel
-          inputColor={inputColor}
-          colorFormats={colorFormats}
-          colorName={colorName}
-          onInput={setInputColor}
-          onChoose={chooseColor}
-          onCommit={recordCurrent}
-        />
-        <ColorFormatsPanel colorFormats={colorFormats} />
-      </div>
-
-      <ColorPalette
-        palette={palette}
-        paletteType={paletteType}
-        onColorSelect={chooseColor}
-      />
-
-      <TailwindShades
-        baseColor={colorFormats?.hex ?? inputColor}
-        shades={tailwindShades}
-        isValid={isValid}
-      />
-
-      <GradientGenerator
-        baseColor={colorFormats ? colorFormats.hex.slice(0, 7) : DEFAULT_COLOR}
-        isValid={isValid}
-      />
-
-      <ColorHistory
-        onColorSelect={chooseColor}
-        historyVersion={historyVersion}
-      />
-
-      <InfoSection />
     </div>
   )
 }

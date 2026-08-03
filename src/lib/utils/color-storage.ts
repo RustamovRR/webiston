@@ -2,6 +2,9 @@
  * Color history and favorites storage utilities
  */
 
+import { rgbToHex } from "./color-conversions"
+import { parseColorInput } from "./color-parser"
+
 export interface ColorHistoryItem {
   hex: string
   timestamp: number
@@ -19,13 +22,60 @@ const HISTORY_KEY = "webiston-color-history"
 const FAVORITES_KEY = "webiston-color-favorites"
 const MAX_HISTORY_ITEMS = 20
 
+/**
+ * `#RRGGBB`, or `#RRGGBBAA` when the colour is translucent — whatever notation
+ * it was recorded in.
+ *
+ * Writes are canonical now, but records written earlier hold the raw input
+ * string: `addToColorHistory` upper-cases whatever it is handed, so a visitor
+ * who typed `rgba(59, 130, 246, 0.6)` has an entry that literally reads
+ * `RGBA(59, 130, 246, 0.6)`. Those entries are still on real devices, they are
+ * still valid CSS colours, and a swatch captioned with a 24-character string is
+ * what pushed the history grid out through its card. Normalising on READ fixes
+ * every existing device without a migration step.
+ */
+const canonicalHex = (value: string): string | null => {
+  const parsed = parseColorInput(value)
+  if (!parsed) return null
+  const base = rgbToHex(parsed.r, parsed.g, parsed.b)
+  const alpha =
+    parsed.a < 1
+      ? Math.round(parsed.a * 255)
+          .toString(16)
+          .padStart(2, "0")
+      : ""
+  return `${base}${alpha}`.toUpperCase()
+}
+
+/**
+ * Normalises every stored entry and drops the ones that no longer parse, then
+ * de-duplicates — two legacy notations of one colour collapse to one swatch.
+ */
+const normalizeEntries = <Item extends { hex: string }>(
+  entries: unknown
+): Item[] => {
+  if (!Array.isArray(entries)) return []
+  const seen = new Set<string>()
+  const result: Item[] = []
+
+  for (const entry of entries) {
+    if (!entry || typeof entry.hex !== "string") continue
+    const hex = canonicalHex(entry.hex)
+    if (!hex || seen.has(hex)) continue
+    seen.add(hex)
+    result.push({ ...entry, hex })
+  }
+
+  return result
+}
+
 // Color History Functions
 export const getColorHistory = (): ColorHistoryItem[] => {
   if (typeof window === "undefined") return []
 
   try {
     const stored = localStorage.getItem(HISTORY_KEY)
-    return stored ? JSON.parse(stored) : []
+    return stored ? normalizeEntries<ColorHistoryItem>(JSON.parse(stored)) : []
   } catch (error) {
     console.error("Error reading color history:", error)
     return []
@@ -35,17 +85,20 @@ export const getColorHistory = (): ColorHistoryItem[] => {
 export const addToColorHistory = (hex: string, name?: string): void => {
   if (typeof window === "undefined") return
 
+  // The canonical form is decided HERE, once, so no caller can put a raw
+  // `rgba(…)` or a colour name into a field the whole UI reads as a hex.
+  const canonical = canonicalHex(hex)
+  if (!canonical) return
+
   try {
     const history = getColorHistory()
 
     // Remove if already exists (to move to top)
-    const filtered = history.filter(
-      (item) => item.hex.toLowerCase() !== hex.toLowerCase()
-    )
+    const filtered = history.filter((item) => item.hex !== canonical)
 
     // Add to beginning
     const newItem: ColorHistoryItem = {
-      hex: hex.toUpperCase(),
+      hex: canonical,
       timestamp: Date.now(),
       name
     }
@@ -73,7 +126,7 @@ export const getColorFavorites = (): ColorFavorite[] => {
 
   try {
     const stored = localStorage.getItem(FAVORITES_KEY)
-    return stored ? JSON.parse(stored) : []
+    return stored ? normalizeEntries<ColorFavorite>(JSON.parse(stored)) : []
   } catch (error) {
     console.error("Error reading color favorites:", error)
     return []
@@ -87,17 +140,17 @@ export const addToColorFavorites = (
 ): void => {
   if (typeof window === "undefined") return
 
+  const canonical = canonicalHex(hex)
+  if (!canonical) return
+
   try {
     const favorites = getColorFavorites()
 
     // Check if already exists
-    const exists = favorites.some(
-      (item) => item.hex.toLowerCase() === hex.toLowerCase()
-    )
-    if (exists) return
+    if (favorites.some((item) => item.hex === canonical)) return
 
     const newFavorite: ColorFavorite = {
-      hex: hex.toUpperCase(),
+      hex: canonical,
       name,
       category,
       timestamp: Date.now()
@@ -113,11 +166,12 @@ export const addToColorFavorites = (
 export const removeFromColorFavorites = (hex: string): void => {
   if (typeof window === "undefined") return
 
+  const canonical = canonicalHex(hex)
+  if (!canonical) return
+
   try {
     const favorites = getColorFavorites()
-    const filtered = favorites.filter(
-      (item) => item.hex.toLowerCase() !== hex.toLowerCase()
-    )
+    const filtered = favorites.filter((item) => item.hex !== canonical)
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(filtered))
   } catch (error) {
     console.error("Error removing from color favorites:", error)
@@ -125,8 +179,9 @@ export const removeFromColorFavorites = (hex: string): void => {
 }
 
 export const isColorFavorite = (hex: string): boolean => {
-  const favorites = getColorFavorites()
-  return favorites.some((item) => item.hex.toLowerCase() === hex.toLowerCase())
+  const canonical = canonicalHex(hex)
+  if (!canonical) return false
+  return getColorFavorites().some((item) => item.hex === canonical)
 }
 
 export const clearColorFavorites = (): void => {
