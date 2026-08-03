@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl"
 import { useCallback, useMemo, useState } from "react"
-
+import {
+  byteLength,
+  decodeBase64,
+  encodeBase64,
+  encodeBytes
+} from "@/lib/utils"
 import {
   MAX_FILE_BYTES,
   SAMPLE_KEYS,
@@ -12,12 +17,6 @@ import {
 } from "../constants"
 import { useBase64DraftStore } from "../stores/base64DraftStore"
 import type { Base64Sample, FileFailure } from "../types"
-import {
-  byteLength,
-  decodeBase64,
-  encodeBase64,
-  encodeBytes
-} from "../utils/base64"
 
 /**
  * The converter's state and everything derived from it.

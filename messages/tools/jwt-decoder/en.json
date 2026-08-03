@@ -1,100 +1,148 @@
 {
   "JwtDecoderPage": {
     "ToolHeader": {
-      "title": "JWT Token Decoder",
-      "description": "A professional tool for decoding and analyzing JSON Web Tokens"
+      "title": "JWT Decoder — see what is inside a token",
+      "description": "Open a JSON Web Token: header, payload and expiry. Everything runs in your browser and nothing is sent anywhere."
     },
-    "ControlPanel": {
-      "decoded": "Decoded",
-      "raw": "Raw Data",
-      "sampleJwt": "Sample JWT",
-      "fileUpload": "Upload File",
-      "uploading": "Uploading...",
-      "showSignature": "Show Signature",
-      "hideSignature": "Hide Signature",
-      "validJwt": "Valid JWT"
-    },
-    "ViewModeInfo": {
-      "title": "View Modes:",
-      "decoded": "Decoded",
-      "raw": "Raw Data",
-      "decodedDescription": "Shows the header and payload parts of the JWT in JSON format",
-      "rawDescription": "Shows the original Base64 encoded data of the JWT"
-    },
-    "InputPanel": {
-      "title": "JWT Token Input",
-      "placeholder": "Enter your JWT token here... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
-      "characters": "characters",
-      "parts": "parts",
-      "lines": "lines",
-      "clear": "Clear"
-    },
-    "ErrorDisplay": {
-      "title": "Error",
-      "invalidFormat": "Invalid JWT format or corrupted token",
-      "threeParts": "JWT must consist of 3 parts (header.payload.signature)"
-    },
-    "TokenInfo": {
-      "expiration": "Expiration",
-      "expired": "Expired",
-      "valid": "Still valid",
-      "algorithm": "Algorithm",
-      "unknown": "Unknown",
-      "type": "Type",
-      "issued": "Issued",
-      "noData": "No data"
-    },
-    "TokenParts": {
-      "header": "Header",
-      "payload": "Payload",
-      "rawData": "Raw Base64 data:"
-    },
-    "SignatureSection": {
-      "title": "Signature",
-      "description": "JWT token security signature:"
-    },
-    "SignatureInfo": {
-      "title": "What is Signature?",
-      "description1": "Signature is the third part of the JWT token that verifies the authenticity of the token.",
-      "description2": "This part is created by the server with a secret key and guarantees that the token has not been modified.",
-      "description3": "You can manage this secret information using the show/hide signature button."
-    },
-    "InfoSection": {
-      "structure": "JWT Structure",
-      "format": "JWT Format",
-      "structureDescription": "header.payload.signature",
-      "example": "Example",
-      "parts": "Parts",
-      "headerExample": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
-      "payloadExample": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
-      "about": "About JWT",
-      "whatIsJwt": "What is JWT?",
-      "whatIsJwtDescription1": "• JSON Web Token - for secure data transmission",
-      "whatIsJwtDescription2": "• Consists of 3 parts: Header.Payload.Signature",
-      "whatIsJwtDescription3": "• Encoded in Base64 format",
-      "whatIsJwtDescription4": "• Can be digitally signed",
-      "standardFields": "Standard Fields",
-      "issuer": "• iss - Issuer (who issued)",
-      "subject": "• sub - Subject (what about)",
-      "expiration": "• exp - Expiration time",
-      "issuedAt": "• iat - Issued at time",
-      "security": "Security",
-      "securityDescription1": "• Data is verified through Signature",
-      "securityDescription2": "• Always check Expiration time",
-      "securityDescription3": "• Keep Secret key confidential",
-      "securityDescription4": "• Transmit via HTTPS"
+    "Input": {
+      "title": "JWT token",
+      "placeholder": "Paste a JWT here — eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…",
+      "sample": "Sample",
+      "upload": "Load from file",
+      "clear": "Clear",
+      "characters": "Characters:",
+      "segments": "Segments:",
+      "dropHere": "Drop the file here",
+      "accepts": "TXT · JSON"
     },
     "Samples": {
-      "standard": "Standard JWT Token",
-      "expired": "Expired JWT",
-      "complex": "With Complex Payload"
+      "valid": "Valid token",
+      "expired": "Expired token",
+      "unsigned": "Unsigned (alg: none)"
     },
-    "FileErrors": {
-      "fileSizeError": "File size must be less than 10MB.",
-      "fileTypeError": "Only .txt or .json files are accepted.",
-      "fileReadError": "Error occurred while reading the file.",
-      "fileUploadError": "Error occurred while uploading file.",
-      "downloadError": "Error occurred while downloading file."
+    "Summary": {
+      "title": "This token",
+      "empty": "Paste a token — everything inside it appears here",
+      "privacy": "The token never leaves your browser",
+      "algorithm": "Algorithm",
+      "type": "Type",
+      "lifetime": "Lifetime",
+      "absent": "not stated",
+      "unsigned": "This token's header says alg: none, meaning it is not signed at all. If a server trusts the algorithm named in the header, anyone can mint a token like this. It is the oldest JWT attack there is.",
+      "status": {
+        "active": "The token is still valid",
+        "expired": "Expired",
+        "notYet": "Not valid yet (nbf)",
+        "noExpiry": "No expiry claim — this token does not expire on its own"
+      },
+      "claims": {
+        "iss": "issuer",
+        "sub": "subject",
+        "aud": "audience",
+        "jti": "id"
+      }
+    },
+    "Parts": {
+      "download": "Download",
+      "header": {
+        "title": "Header",
+        "description": "States which algorithm signed the token and what kind of token it is. Signed, but not encrypted."
+      },
+      "payload": {
+        "title": "Payload",
+        "description": "The token's contents — its claims. Also not encrypted: anyone can read it, which is why passwords and secrets never go here."
+      },
+      "signature": {
+        "title": "Signature",
+        "description": "The third segment — a signature over the header and payload. This tool neither decodes nor verifies it: verifying needs the server's secret, and a secret should never be typed into a web page.",
+        "show": "Show",
+        "hide": "Hide",
+        "hidden": "Signature hidden"
+      }
+    },
+    "Errors": {
+      "threeParts": "A JWT is three dot-separated segments: header.payload.signature",
+      "notBase64": "The {part} segment is not base64url — part of it may have been lost when copying.",
+      "notJson": "The {part} segment decoded, but what came out was not JSON.",
+      "notObject": "The {part} segment is not a JSON object.",
+      "tooLarge": "That file is too large. A JWT is a few kilobytes at most.",
+      "unsupported": "That file type is not supported. Only .txt and .json.",
+      "unreadable": "The file could not be read."
+    },
+    "reference": {
+      "title": "How a JWT is built",
+      "intro": "A JSON Web Token is three base64url segments separated by dots. The first two are plain JSON: they are signed but NOT encrypted, so anyone holding the token can read what is inside. The signature only proves the token has not been altered.",
+      "parts": {
+        "header": {
+          "title": "Header",
+          "body": "Which algorithm signed it (alg) and what kind of token it is (typ). Sometimes a key id — kid — lives here too."
+        },
+        "payload": {
+          "title": "Payload",
+          "body": "The claims: who, for whom, until when. Plain text, which is why secrets never belong here."
+        },
+        "signature": {
+          "title": "Signature",
+          "body": "A signature over the header and payload, made with a shared secret or a private key. It alone proves the token is genuine."
+        }
+      },
+      "claims": {
+        "title": "Registered claims (RFC 7519)",
+        "claim": "Claim",
+        "name": "Name",
+        "meaning": "Meaning",
+        "rows": {
+          "iss": {
+            "name": "Issuer",
+            "meaning": "Who issued the token — usually the auth server's URL. The receiving side checks it against an allow-list."
+          },
+          "sub": {
+            "name": "Subject",
+            "meaning": "Who the token is about. In most systems an internal user id rather than an email, because emails change."
+          },
+          "aud": {
+            "name": "Audience",
+            "meaning": "Who the token is for. Checked so one service does not accept another service's token."
+          },
+          "exp": {
+            "name": "Expiration Time",
+            "meaning": "After this moment the token must not be accepted. Seconds since the epoch."
+          },
+          "nbf": {
+            "name": "Not Before",
+            "meaning": "The token is not yet in force until this moment. Rarely used."
+          },
+          "iat": {
+            "name": "Issued At",
+            "meaning": "When the token was issued. Together with `exp` it gives the token's lifetime."
+          },
+          "jti": {
+            "name": "JWT ID",
+            "meaning": "A unique id for the token, used to stop the same one being replayed."
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "what": {
+          "question": "Is a JWT encrypted? Can anyone read the payload?",
+          "answer": "A JWT is signed, not encrypted. The header and payload are plain base64url, so anyone holding the token can decode and read them in a second. The signature guarantees exactly one thing: that the token has not been altered in transit. That is why passwords, card numbers and other secrets never go in the payload."
+        },
+        "verify": {
+          "question": "Does this tool verify the signature?",
+          "answer": "No, and that is deliberate. Verifying needs the server's shared secret (for HS256) or its public key (for RS256). Typing a shared secret into a web page is the easiest way to leak it, even if the page sends it nowhere. Verification belongs on the server, in a library."
+        },
+        "expiry": {
+          "question": "How do I know whether a token has expired?",
+          "answer": "The exp claim in the payload is a count of seconds since the epoch. The tool compares it with your browser's clock and says so in one sentence at the top: still valid or expired, and when. If a token carries no exp at all, the tool says \"no expiry claim\" rather than \"valid\" — calling something valid that was never checked would be the wrong answer."
+        },
+        "privacy": {
+          "question": "Is my token sent to a server?",
+          "answer": "No. Decoding happens in your browser, and after the page has loaded this tool makes no network requests at all. The token is not stored either: refresh the page and it is gone."
+        }
+      }
     }
   }
 }

@@ -1,3 +1,10 @@
+export type { Base64Failure, DecodeResult } from "./base64"
+export {
+  byteLength,
+  decodeBase64,
+  encodeBase64,
+  encodeBytes
+} from "./base64"
 // Text utilities
 
 // Color contrast utilities

@@ -1,7 +1,18 @@
-import type { Base64Failure, DecodeResult } from "../types"
+/** Why a decode could not happen — each maps to one translated sentence. */
+export type Base64Failure = "empty" | "alphabet" | "length" | "binary"
+
+export type DecodeResult =
+  | { ok: true; text: string; byteCount: number }
+  | { ok: false; reason: Base64Failure }
 
 /**
  * Base64, as bytes rather than as characters.
+ *
+ * In `lib/utils` at its SECOND consumer: the Base64 converter builds on it and
+ * the JWT decoder needs exactly the same thing — a JWT's three parts are
+ * base64url, and decoding them with a bare `atob` is how that tool turned a
+ * token carrying a non-ASCII `name` claim into mojibake or an "invalid
+ * format" error.
  *
  * What this replaces was `btoa(unescape(encodeURIComponent(text)))` and its
  * mirror. That pair is the classic workaround for `btoa` being Latin-1 only,

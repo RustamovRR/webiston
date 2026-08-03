@@ -1,285 +1,170 @@
+"use client"
+
 import { useTranslations } from "next-intl"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-interface JWTPayload {
-  [key: string]: any
-}
+import {
+  buildSamples,
+  MAX_FILE_BYTES,
+  SAMPLE_KEYS,
+  SUPPORTED_FILE_TYPES
+} from "../constants"
+import { useJwtDraftStore } from "../stores/jwtDraftStore"
+import type { FileFailure } from "../types"
+import { decodeJwt, isUnsigned, readTiming } from "../utils/jwt"
 
-interface JWTHeader {
-  alg?: string
-  typ?: string
-  [key: string]: any
-}
+/**
+ * The decoder's state and everything derived from it.
+ *
+ * What the rewrite removed, each a defect and not tidiness:
+ *
+ * - **`alert()`, five times** — the finding already closed in the JSON
+ *   formatter and the Base64 converter. Errors are values now.
+ * - **Three sample labels hardcoded in Uzbek** inside the hook, then patched
+ *   back to translations by a three-branch ternary in the component. The
+ *   labels come from the bundle and the tokens are built.
+ * - **`FileReader`** with the same `alert`-in-`onerror` shape; `File.text()`
+ *   is a promise and `finally` cannot be skipped.
+ * - **`inputStats`** counted words and lines of a JWT. A token is one string
+ *   with no spaces and no newlines; the numbers were always `1` and `1`.
+ * - **`formatJSON` returned from the hook** — a `JSON.stringify` wrapper
+ *   rebuilt on every render and handed to the view as if it were state.
+ */
 
-interface DecodedJWT {
-  header: JWTHeader
-  payload: JWTPayload
-  signature: string
-  isValid: boolean
-  error?: string
-}
+export function useJwtDecoder() {
+  const t = useTranslations("JwtDecoderPage")
+  const tSamples = useTranslations("JwtDecoderPage.Samples")
 
-interface TokenInfo {
-  isExpired: boolean
-  isNotYetValid: boolean
-  expiresAt: Date | null
-  issuedAt: Date | null
-  notBefore: Date | null
-  algorithm: string | undefined
-  tokenType: string | undefined
-}
+  const token = useJwtDraftStore((state) => state.token)
+  const setToken = useJwtDraftStore((state) => state.setToken)
+  const showSignature = useJwtDraftStore((state) => state.showSignature)
+  const setShowSignature = useJwtDraftStore((state) => state.setShowSignature)
 
-interface JwtDecoderState {
-  inputText: string
-  viewMode: "decoded" | "raw"
-  showSignature: boolean
-  isProcessing: boolean
-  result: DecodedJWT | null
-  tokenInfo: TokenInfo | null
-}
-
-export const useJwtDecoder = () => {
-  const tErrors = useTranslations("JwtDecoderPage.ErrorDisplay")
-  const tFileErrors = useTranslations("JwtDecoderPage.FileErrors")
-
-  const [inputText, setInputText] = useState("")
-  const [viewMode, setViewMode] = useState<"decoded" | "raw">("decoded")
-  const [showSignature, setShowSignature] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [fileError, setFileError] = useState<FileFailure | null>(null)
 
-  // Sample JWT tokens
-  const samples = useMemo(
-    () => [
-      {
-        key: "standard",
-        label: "Standart JWT Token",
-        value:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaSBWYWxpeWV2IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE3MDA5MzkwMjIsImlzcyI6IndlYmlzdG9uLnV6IiwiYXVkIjoidXNlcnMifQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY"
-      },
-      {
-        key: "expired",
-        label: "Muddati tugagan JWT",
-        value:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlRlc3QgVXNlciIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjQyNjIyfQ.4HT8FzQJN_Bd8gI8W9Z5gD5q3rQ2dN3a7Z1k9e6L8rY"
-      },
-      {
-        key: "complex",
-        label: "Murakkab Payload bilan",
-        value:
-          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjEyMzQ1Njc4OTAifQ.eyJzdWIiOiJ1c2VyXzEyMzQ1IiwibmFtZSI6IkZheXpvbiAoZmF5em9uQHdlYmlzdG9uLnV6KSIsImVtYWlsIjoiZmF5em9uQHdlYmlzdG9uLnV6IiwiaWF0IjoxNjA5NDU5MjAwLCJleHAiOjE3MDA5MzkwMjIsIm5iZiI6MTYwOTQ1OTIwMCwiaXNzIjoid2ViaXN0b24udXoiLCJhdWQiOiJtb2JpbGUtYXBwIiwic2NvcGUiOiJyZWFkIHdyaXRlIiwidXNlcl9yb2xlIjoiYWRtaW4ifQ.signature_part_here"
-      }
-    ],
-    []
+  /**
+   * `now` is state, set after mount, and never read during the server render.
+   *
+   * Every expiry answer on this page depends on the current time, and the
+   * server's clock is not the visitor's. Rendering "expires in 3 hours" from
+   * `new Date()` during render is a hydration mismatch by construction — the
+   * server computes one sentence and the client another.
+   */
+  const [now, setNow] = useState<Date | null>(null)
+  useEffect(() => {
+    setNow(new Date())
+  }, [])
+
+  const result = useMemo(
+    () => (token.trim() ? decodeJwt(token) : null),
+    [token]
   )
 
-  // Decode JWT token
-  const result = useMemo((): DecodedJWT | null => {
-    if (!inputText.trim()) return null
+  const decoded = result?.ok ? result.token : null
 
-    try {
-      const parts = inputText.trim().split(".")
-      if (parts.length !== 3) {
-        return {
-          header: {},
-          payload: {},
-          signature: "",
-          isValid: false,
-          error: tErrors("threeParts")
-        }
-      }
+  const timing = useMemo(
+    () => (decoded && now ? readTiming(decoded.payload, now) : null),
+    [decoded, now]
+  )
 
-      const [headerPart, payloadPart, signature] = parts
+  /**
+   * Samples are built against the CURRENT time, so "valid" is valid.
+   *
+   * Built lazily and only on the client: the three that shipped were fixed
+   * strings whose `exp` claims had all passed, so every sample — including the
+   * one labelled "Standard JWT" — reported expired.
+   */
+  const samples = useMemo(() => {
+    const tokens = now ? buildSamples(now) : null
+    return SAMPLE_KEYS.map((key) => ({
+      key,
+      label: tSamples(key),
+      value: tokens?.[key] ?? ""
+    }))
+  }, [now, tSamples])
 
-      // Decode header
-      const header = JSON.parse(
-        atob(headerPart.replace(/-/g, "+").replace(/_/g, "/"))
-      )
+  const loadSample = useCallback(
+    (value: string) => {
+      if (!value) return
+      setToken(value)
+      setFileError(null)
+    },
+    [setToken]
+  )
 
-      // Decode payload
-      const payload = JSON.parse(
-        atob(payloadPart.replace(/-/g, "+").replace(/_/g, "/"))
-      )
+  const clear = useCallback(() => {
+    setToken("")
+    setFileError(null)
+  }, [setToken])
 
-      return {
-        header,
-        payload,
-        signature,
-        isValid: true
-      }
-    } catch (_error) {
-      return {
-        header: {},
-        payload: {},
-        signature: "",
-        isValid: false,
-        error: tErrors("invalidFormat")
-      }
-    }
-  }, [inputText, tErrors])
+  const readFile = useCallback(
+    async (file: File) => {
+      setFileError(null)
 
-  // Calculate token info
-  const tokenInfo = useMemo((): TokenInfo | null => {
-    if (!result?.isValid) return null
-
-    const now = Math.floor(Date.now() / 1000)
-    const exp = result.payload.exp
-    const iat = result.payload.iat
-    const nbf = result.payload.nbf
-
-    return {
-      isExpired: exp ? now > exp : false,
-      isNotYetValid: nbf ? now < nbf : false,
-      expiresAt: exp ? new Date(exp * 1000) : null,
-      issuedAt: iat ? new Date(iat * 1000) : null,
-      notBefore: nbf ? new Date(nbf * 1000) : null,
-      algorithm: result.header.alg,
-      tokenType: result.header.typ
-    }
-  }, [result])
-
-  // File upload handler
-  const handleFileUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0]
-      if (!file) return
-
-      // File size validation (10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        alert(tFileErrors("fileSizeError"))
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError("tooLarge")
         return
       }
-
-      // File type validation
-      const allowedTypes = ["text/plain", "application/json"]
       if (
-        !allowedTypes.includes(file.type) &&
-        !file.name.match(/\.(txt|json)$/)
+        !SUPPORTED_FILE_TYPES.includes(file.type) &&
+        !/\.(txt|json)$/i.test(file.name)
       ) {
-        alert(tFileErrors("fileTypeError"))
+        setFileError("unsupported")
         return
       }
 
       setIsProcessing(true)
-
       try {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const content = e.target?.result as string
-          setInputText(content.trim())
-          setIsProcessing(false)
-        }
-        reader.onerror = () => {
-          alert(tFileErrors("fileReadError"))
-          setIsProcessing(false)
-        }
-        reader.readAsText(file)
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : tFileErrors("fileUploadError")
-        alert(errorMessage)
+        setToken((await file.text()).trim())
+      } catch {
+        setFileError("unreadable")
+      } finally {
         setIsProcessing(false)
       }
     },
-    [tFileErrors]
+    [setToken]
   )
 
-  // Download handlers
-  const handleDownloadHeader = useCallback(() => {
-    if (!result?.isValid) return
-
-    try {
-      const content = JSON.stringify(result.header, null, 2)
-      const blob = new Blob([content], { type: "application/json" })
+  const download = useCallback(
+    (part: "header" | "payload") => {
+      if (!decoded) return
+      const blob = new Blob([JSON.stringify(decoded[part], null, 2)], {
+        type: "application/json"
+      })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = "jwt-header.json"
-      a.click()
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `jwt-${part}.json`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
       URL.revokeObjectURL(url)
-    } catch (_error) {
-      alert(tFileErrors("downloadError"))
-    }
-  }, [result, tFileErrors])
-
-  const handleDownloadPayload = useCallback(() => {
-    if (!result?.isValid) return
-
-    try {
-      const content = JSON.stringify(result.payload, null, 2)
-      const blob = new Blob([content], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = "jwt-payload.json"
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (_error) {
-      alert(tFileErrors("downloadError"))
-    }
-  }, [result, tFileErrors])
-
-  // Load sample text
-  const loadSampleText = useCallback((sampleValue: string) => {
-    setInputText(sampleValue)
-  }, [])
-
-  // Clear input
-  const handleClear = useCallback(() => {
-    setInputText("")
-  }, [])
-
-  // Toggle signature visibility
-  const handleToggleSignature = useCallback(() => {
-    setShowSignature((prev) => !prev)
-  }, [])
-
-  // Format JSON
-  const formatJSON = useCallback((obj: any) => {
-    return JSON.stringify(obj, null, 2)
-  }, [])
-
-  // Calculate input stats
-  const inputStats = useMemo(
-    () => ({
-      characters: inputText.length,
-      words: inputText.split(/\s+/).filter((word) => word.length > 0).length,
-      lines: inputText.split("\n").length
-    }),
-    [inputText]
+    },
+    [decoded]
   )
-
-  // Calculate parts count
-  const partsCount = useMemo(() => {
-    return inputText.trim() ? inputText.split(".").length : 0
-  }, [inputText])
 
   return {
-    // State
-    inputText,
-    setInputText,
-    viewMode,
-    setViewMode,
+    token,
+    setToken,
+    decoded,
+    timing,
+    /** `true` only once a token has been read AND its header says `alg: none`. */
+    unsigned: decoded ? isUnsigned(decoded.header) : false,
+    error:
+      result && !result.ok
+        ? t(`Errors.${result.reason}`, { part: result.part ?? "" })
+        : "",
     showSignature,
+    setShowSignature,
     isProcessing,
-    result,
-    tokenInfo,
-
-    // Handlers
-    handleFileUpload,
-    handleDownloadHeader,
-    handleDownloadPayload,
-    loadSampleText,
-    handleClear,
-    handleToggleSignature,
-    formatJSON,
-
-    // Stats
-    inputStats,
-    partsCount,
-
-    // Sample data
-    samples
+    fileError: fileError ? t(`Errors.${fileError}`, { part: "" }) : "",
+    samples,
+    loadSample,
+    clear,
+    readFile,
+    download,
+    /** Null until mounted; the view renders timing only once it is set. */
+    now
   }
 }
