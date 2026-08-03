@@ -3,290 +3,169 @@
 import { useTranslations } from "next-intl"
 import { useCallback, useMemo, useState } from "react"
 
-// Sample URL data constants
-export const SAMPLE_URL_DATA = {
-  SIMPLE_URL: "https://webiston.uz/tools/url-encoder",
-  COMPLEX_URL:
-    "https://webiston.uz/search?q=hello world&category=tools&lang=uz",
-  QUERY_STRING: "name=Ali Valiyev&age=25&city=Toshkent&email=ali@webiston.uz",
-  EMAIL_QUERY:
-    "mailto:info@webiston.uz?subject=Savolim bor&body=Assalomu alaykum",
-  SOCIAL_SHARE:
-    "https://facebook.com/sharer/sharer.php?u=https://webiston.uz&t=Foydali veb tools"
-}
+import { analyzeUrl } from "@/lib/utils"
 
-type ConversionMode = "encode" | "decode"
+import {
+  MAX_FILE_BYTES,
+  SAMPLE_KEYS,
+  SAMPLE_VALUES,
+  SUPPORTED_FILE_TYPES
+} from "../constants"
+import { useUrlDraftStore } from "../stores/urlDraftStore"
+import type { FileFailure, UrlSample } from "../types"
+import { convert, readQuery } from "../utils/urlCodec"
 
-interface UrlInfo {
-  isValidUrl: boolean
-  protocol?: string
-  hostname?: string
-  pathname?: string
-  search?: string
-  hash?: string
-}
+/**
+ * The encoder's state and everything derived from it.
+ *
+ * What the rewrite removed, each a defect and not tidiness:
+ *
+ * - **`alert()`, three times** — the finding already closed in the JSON
+ *   formatter, the Base64 converter and the JWT decoder.
+ * - **`throw` inside `reader.onerror`**, the third occurrence of the same bug:
+ *   the callback is asynchronous, so the surrounding `try/catch` never sees it
+ *   and `setIsProcessing(false)` never runs. `FileReader` is gone.
+ * - **A private `analyzeUrl`** sitting beside the one `lib/utils/url.ts`
+ *   already exports.
+ * - **`inputStats` / `outputStats`** counted words and lines of a URL. A URL
+ *   has no spaces and no newlines, so both numbers were always 1.
+ * - **Two file limits that disagreed by 10x** — a 10 MB upload accepted, then
+ *   refused by a 1 MB text ceiling after it had been read.
+ * - **`handleModeSwitch` re-ran the conversion by hand**, duplicating the
+ *   maths the memo above it had already done.
+ */
 
-interface UrlResult {
-  output: string
-  error: string
-  isValid: boolean
-  urlInfo?: UrlInfo
-}
-
-const analyzeUrl = (urlString: string): UrlInfo => {
-  try {
-    const url = new URL(urlString)
-    return {
-      isValidUrl: true,
-      protocol: url.protocol,
-      hostname: url.hostname,
-      pathname: url.pathname,
-      search: url.search,
-      hash: url.hash
-    }
-  } catch {
-    return { isValidUrl: false }
-  }
-}
-
-export const useUrlEncoder = () => {
-  const tErrors = useTranslations("UrlEncoderPage.Errors")
+export function useUrlEncoder() {
+  const t = useTranslations("UrlEncoderPage")
   const tSamples = useTranslations("UrlEncoderPage.Samples")
-  const [inputText, setInputText] = useState("")
-  const [mode, setMode] = useState<ConversionMode>("encode")
-  const [isProcessing, setIsProcessing] = useState(false)
 
-  // Dynamic samples based on current mode
-  const samples = useMemo(
-    () => [
-      {
-        key: "SIMPLE_URL",
-        label: tSamples("simpleUrl"),
-        value: SAMPLE_URL_DATA.SIMPLE_URL
-      },
-      {
-        key: "COMPLEX_URL",
-        label: tSamples("complexUrl"),
-        value: SAMPLE_URL_DATA.COMPLEX_URL
-      },
-      {
-        key: "QUERY_STRING",
-        label: tSamples("queryString"),
-        value: SAMPLE_URL_DATA.QUERY_STRING
-      },
-      {
-        key: "EMAIL_QUERY",
-        label: tSamples("emailQuery"),
-        value: SAMPLE_URL_DATA.EMAIL_QUERY
-      },
-      {
-        key: "SOCIAL_SHARE",
-        label: tSamples("socialShare"),
-        value: SAMPLE_URL_DATA.SOCIAL_SHARE
-      }
-    ],
+  const input = useUrlDraftStore((state) => state.input)
+  const setInput = useUrlDraftStore((state) => state.setInput)
+  const mode = useUrlDraftStore((state) => state.mode)
+  const setMode = useUrlDraftStore((state) => state.setMode)
+  const scope = useUrlDraftStore((state) => state.scope)
+  const setScope = useUrlDraftStore((state) => state.setScope)
+
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [fileError, setFileError] = useState<FileFailure | null>(null)
+
+  const samples = useMemo<UrlSample[]>(
+    () =>
+      SAMPLE_KEYS.map((key) => ({
+        key,
+        label: tSamples(key),
+        value: SAMPLE_VALUES[key]
+      })),
     [tSamples]
   )
 
-  const result = useMemo((): UrlResult => {
-    if (!inputText.trim()) {
-      return { output: "", error: "", isValid: false }
-    }
+  const result = useMemo(() => {
+    if (!input.trim()) return { output: "", error: "" }
+    const converted = convert(input, mode, scope)
+    return converted.ok
+      ? { output: converted.output, error: "" }
+      : { output: "", error: t(`Errors.${converted.reason}`) }
+  }, [input, mode, scope, t])
 
-    // Check text length limit (1MB)
-    if (inputText.length > 1024 * 1024) {
-      return {
-        output: "",
-        error: tErrors("textTooLong"),
-        isValid: false
+  /**
+   * The breakdown, computed from whichever side is a readable URL.
+   *
+   * This is the half of the tool the old version had the pieces for and never
+   * finished: it parsed the decoded output, rendered protocol/host/path/search
+   * as four rows, and left the query string as one opaque `?q=hello%20world`
+   * blob — the exact thing a person opened a URL tool to read.
+   */
+  const breakdown = useMemo(() => {
+    const candidate = result.output || input
+    if (!candidate.trim()) return null
+    const info = analyzeUrl(candidate.trim())
+    if (!info?.isValidUrl) return null
+    return { ...info, query: readQuery(info.search ?? "") }
+  }, [result.output, input])
+
+  /**
+   * The arrow takes the RESULT back as input. `setMode` on its own just picks
+   * a direction — two controls, two jobs, the distinction the Base64 tool had
+   * to be corrected on.
+   */
+  const switchMode = useCallback(() => {
+    setMode(mode === "encode" ? "decode" : "encode")
+    if (result.output) setInput(result.output)
+  }, [mode, result.output, setMode, setInput])
+
+  const clear = useCallback(() => {
+    setInput("")
+    setFileError(null)
+  }, [setInput])
+
+  const loadSample = useCallback(
+    (value: string) => {
+      setInput(value)
+      setFileError(null)
+    },
+    [setInput]
+  )
+
+  const readFile = useCallback(
+    async (file: File) => {
+      setFileError(null)
+
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError("tooLarge")
+        return
       }
-    }
-
-    try {
-      let output: string
-      let urlInfo: UrlInfo | undefined
-
-      if (mode === "encode") {
-        output = encodeURIComponent(inputText)
-      } else {
-        output = decodeURIComponent(inputText)
-
-        // Analyze decoded URL if it looks like a URL
-        if (output.startsWith("http") || output.startsWith("mailto:")) {
-          urlInfo = analyzeUrl(output)
-        }
+      if (
+        !SUPPORTED_FILE_TYPES.includes(file.type) &&
+        !/\.(txt|json)$/i.test(file.name)
+      ) {
+        setFileError("unsupported")
+        return
       }
 
-      return {
-        output,
-        error: "",
-        isValid: true,
-        urlInfo
-      }
-    } catch (error) {
-      let errorMessage = tErrors("conversionError")
-
-      if (mode === "decode") {
-        if (error instanceof URIError) {
-          errorMessage = tErrors("invalidUrlFormat")
-        } else {
-          errorMessage = tErrors("decodeError")
-        }
-      } else {
-        errorMessage = tErrors("encodeError")
-      }
-
-      return { output: "", error: errorMessage, isValid: false }
-    }
-  }, [inputText, mode, tErrors])
-
-  const handleModeSwitch = useCallback(() => {
-    const newMode: ConversionMode = mode === "encode" ? "decode" : "encode"
-
-    if (inputText.trim()) {
-      // Try to convert current input to use as input for the opposite mode
-      try {
-        let newInput = inputText
-
-        if (mode === "encode") {
-          // Current mode is encode, switching to decode
-          // Use the encoded result as input for decode mode
-          const encoded = encodeURIComponent(inputText)
-          newInput = encoded
-        } else {
-          // Current mode is decode, switching to encode
-          // Try to decode current input
-          try {
-            const decoded = decodeURIComponent(inputText)
-            newInput = decoded
-          } catch (_error) {
-            // If decoding fails, keep current input
-          }
-        }
-
-        setMode(newMode)
-        setInputText(newInput)
-      } catch (_error) {
-        // If conversion fails, just switch mode and keep current input
-        setMode(newMode)
-      }
-    } else {
-      // If no input text, just switch mode
-      setMode(newMode)
-    }
-  }, [mode, inputText])
-
-  const handleClear = useCallback(() => {
-    setInputText("")
-  }, [])
-
-  const loadSampleText = useCallback((sample: string) => {
-    setInputText(sample)
-  }, [])
-
-  const handleFileUpload = useCallback(
-    async (file: File): Promise<void> => {
       setIsProcessing(true)
-
       try {
-        // File size validation (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(tErrors("fileSizeError"))
-        }
-
-        // File type validation
-        const validTypes = ["text/plain", "application/json", "text/json"]
-        if (
-          !validTypes.includes(file.type) &&
-          !file.name.endsWith(".txt") &&
-          !file.name.endsWith(".json")
-        ) {
-          throw new Error(tErrors("fileTypeError"))
-        }
-
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const content = e.target?.result as string
-          if (content.length > 1024 * 1024) {
-            alert(tErrors("textTooLong"))
-          } else {
-            setInputText(content)
-          }
-          setIsProcessing(false)
-        }
-        reader.onerror = () => {
-          throw new Error(tErrors("fileReadError"))
-        }
-        reader.readAsText(file)
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : tErrors("fileUploadError")
-        alert(errorMessage)
+        setInput((await file.text()).trim())
+      } catch {
+        setFileError("unreadable")
+      } finally {
         setIsProcessing(false)
       }
     },
-    [tErrors]
+    [setInput]
   )
 
-  const downloadResult = useCallback(() => {
-    if (!result.isValid || !result.output) return
-
-    try {
-      const blob = new Blob([result.output], {
-        type: "text/plain; charset=utf-8"
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `url-${mode === "encode" ? "encoded" : "decoded"}-${Date.now()}.txt`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (_error) {
-      alert(tErrors("downloadError"))
-    }
-  }, [result, mode, tErrors])
-
-  const canDownload = Boolean(result.output && result.isValid)
-
-  const inputStats = useMemo(
-    () => ({
-      characters: inputText.length,
-      words: inputText.split(/\s+/).filter((word) => word.length > 0).length,
-      lines: inputText.split("\n").length
-    }),
-    [inputText]
-  )
-
-  const outputStats = useMemo(
-    () => ({
-      characters: result.output.length,
-      words: result.output.split(/\s+/).filter((word) => word.length > 0)
-        .length,
-      lines: result.output.split("\n").length
-    }),
-    [result.output]
-  )
+  const download = useCallback(() => {
+    if (!result.output) return
+    const blob = new Blob([result.output], {
+      type: "text/plain; charset=utf-8"
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${t(`Download.${mode}`)}.txt`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }, [result.output, mode, t])
 
   return {
-    // State
-    inputText,
-    setInputText,
+    input,
+    setInput,
     mode,
     setMode,
+    scope,
+    setScope,
     isProcessing,
     result,
-    // Actions
-    handleModeSwitch,
-    handleClear,
-    handleFileUpload,
-    downloadResult,
-    loadSampleText,
-    // Computed
-    canDownload,
-    inputStats,
-    outputStats,
-    samples
+    breakdown,
+    fileError: fileError ? t(`Errors.${fileError}`) : "",
+    samples,
+    loadSample,
+    switchMode,
+    clear,
+    readFile,
+    download,
+    canDownload: Boolean(result.output)
   }
 }
