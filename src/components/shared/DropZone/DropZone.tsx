@@ -12,19 +12,25 @@
  * crosses into a CHILD element, so a boolean flickers the overlay off and on
  * as the cursor moves across the panels. Counting enter/leave pairs is the
  * standard fix.
+ *
+ * Shared at its SECOND consumer (base64 converter). The strings arrive as
+ * props rather than from a namespace: a presentational component that reads
+ * `LatinCyrillicPage.file` is a shared component only by file location.
  */
 
 import { Upload } from "lucide-react"
-import { useTranslations } from "next-intl"
 import { type ReactNode, useRef, useState } from "react"
 
 interface DropZoneProps {
   onFile: (file: File) => void
+  /** "Drop the file here" — translated by the caller. */
+  label: string
+  /** What the tool accepts, e.g. "TXT · PDF · DOCX". */
+  hint: string
   children: ReactNode
 }
 
-export function DropZone({ onFile, children }: DropZoneProps) {
-  const t = useTranslations("LatinCyrillicPage.file")
+export function DropZone({ onFile, label, hint, children }: DropZoneProps) {
   const [isOver, setIsOver] = useState(false)
   const depth = useRef(0)
 
@@ -68,11 +74,9 @@ export function DropZone({ onFile, children }: DropZoneProps) {
         >
           <div className="flex flex-col items-center gap-3 text-center">
             <Upload className="h-8 w-8 text-primary" />
-            <p className="font-medium text-base text-foreground">
-              {t("dropHere")}
-            </p>
+            <p className="font-medium text-base text-foreground">{label}</p>
             <p className="font-mono text-[11px] text-muted-foreground">
-              {t("accepts")}
+              {hint}
             </p>
           </div>
         </div>

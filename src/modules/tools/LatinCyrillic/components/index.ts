@@ -6,7 +6,6 @@
 // bundle. Naming them here would pull `next-intl/server` into the browser.
 export { DirectionTabs } from "./DirectionTabs"
 export { DownloadMenu } from "./DownloadMenu"
-export { DropZone } from "./DropZone"
 export { ExceptionsDialog } from "./ExceptionsDialog"
 export { PreservedTerms } from "./PreservedTerms"
 export { SourceEmptyActions } from "./SourceEmptyActions"

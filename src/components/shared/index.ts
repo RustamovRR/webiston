@@ -13,6 +13,7 @@ export {
   StatsDisplay
 } from "@webiston/ui"
 export { default as ButtonLink } from "./ButtonLink"
+export { DropZone } from "./DropZone"
 export { DualTextPanel } from "./DualTextPanel"
 export type { FaqItem } from "./Faq"
 export { Faq } from "./Faq"

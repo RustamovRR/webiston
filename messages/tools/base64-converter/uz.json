@@ -1,84 +1,127 @@
 {
   "Base64ConverterPage": {
     "ToolHeader": {
-      "title": "Base64 Konverter va Kodlash",
-      "description": "Matn va fayllarni Base64 formatiga o'girish va aksincha dekodlash vositasi"
+      "title": "Base64 Konverter — kodlash va dekodlash",
+      "description": "Matn va fayllarni Base64 ga o'giring yoki qaytaring. base64url ham qo'llab-quvvatlanadi; hammasi brauzeringizda hisoblanadi."
     },
-    "ControlPanel": {
+    "ControlBar": {
+      "direction": "Yo'nalish",
       "encode": "Kodlash",
       "decode": "Dekodlash",
-      "fileUpload": "Fayl yuklash",
-      "sampleBase64": "Namuna Base64",
+      "urlSafe": "URL uchun xavfsiz (base64url)",
+      "upload": "Fayl",
+      "sample": "Namuna",
       "clear": "Tozalash",
       "download": "Yuklab olish"
     },
     "Panel": {
-      "plainTextInput": "Oddiy Matn Kirish",
-      "base64TextInput": "Base64 Matn Kirish",
-      "base64Result": "Base64 Natija",
-      "decodedResult": "Dekodlangan Natija",
-      "encodePlaceholder": "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang...",
-      "decodePlaceholder": "Dekodlamoqchi bo'lgan Base64 matnni kiriting...",
-      "readyToEncode": "Kodlashga tayyor",
-      "readyToDecode": "Dekodlashga tayyor",
-      "encodedBase64WillAppear": "Kodlangan Base64 bu yerda ko'rinadi...",
-      "decodedTextWillAppear": "Dekodlangan matn bu yerda ko'rinadi...",
+      "plainTextInput": "Oddiy matn",
+      "base64TextInput": "Base64 matn",
+      "base64Result": "Base64 natija",
+      "decodedResult": "Dekodlangan natija",
+      "encodePlaceholder": "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang…",
+      "decodePlaceholder": "Dekodlamoqchi bo'lgan Base64 matnni kiriting…",
+      "encodedBase64WillAppear": "Kodlangan Base64 shu yerda ko'rinadi",
+      "decodedTextWillAppear": "Dekodlangan matn shu yerda ko'rinadi",
       "enterTextOrUpload": "Matn kiriting yoki fayl yuklang",
-      "conversionError": "Konvertatsiya Xatoligi",
-      "switchMode": "Rejimni almashtirish",
-      "fileSize": "Hajm:"
+      "switchMode": "Yo'nalishni almashtirish",
+      "sourceSize": "Manba:",
+      "resultSize": "Natija:"
     },
-    "Info": {
-      "title": "Base64 haqida ma'lumot",
-      "whatIsBase64": {
-        "title": "Base64 nima?",
-        "description": "Base64 - binary ma'lumotlarni matn formatida ifodalash uchun kodlash usuli. 64 ta belgidan foydalanadi: A-Z, a-z, 0-9, +, /"
-      },
-      "features": {
-        "title": "Asosiy xususiyatlari",
-        "feature1": "• 6-bit ga asoslangan kodlash",
-        "feature2": "• Platform mustaqil format",
-        "feature3": "• Matn protokollarda xavfsiz",
-        "feature4": "• Keng qo'llab-quvvatlash"
-      },
-      "usage": {
-        "title": "Qo'llanish sohalari",
-        "usage1": "• Email da rasm yuborish",
-        "usage2": "• Veb sahifada rasm joylash",
-        "usage3": "• API orqali fayl uzatish",
-        "usage4": "• Ma'lumotlarni xavfsiz saqlash"
-      },
-      "formatExample": {
-        "title": "Base64 format misoli",
-        "plainText": "Oddiy matn:",
-        "base64Encoded": "Base64 kodlangan:",
-        "exampleText": "Salom dunyo!",
-        "exampleEncoded": "U2Fsb20gZHVueW8h"
-      }
+    "units": {
+      "b": "bayt",
+      "kb": "KB",
+      "mb": "MB"
+    },
+    "Download": {
+      "encode": "base64-kodlangan",
+      "decode": "base64-dekodlangan"
     },
     "Errors": {
-      "invalidBase64Format": "Noto'g'ri Base64 format. Faqat A-Z, a-z, 0-9, +, / va = belgilardan foydalaning.",
-      "conversionError": "Konvertatsiya xatoligi",
-      "invalidBase64Text": "Noto'g'ri Base64 format. Matn to'g'ri kodlanganligini tekshiring.",
-      "base64DecodeError": "Base64 dekodlashda xatolik. Format to'g'riligini tekshiring.",
-      "textEncodeError": "Matnni kodlashda xatolik yuz berdi.",
-      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
-      "imageReadError": "Rasm faylini o'qishda xatolik yuz berdi.",
-      "fileReadError": "Fayl mazmunini o'qishda xatolik yuz berdi.",
-      "encodeFileTypeError": "Faqat matn va rasm fayllarni yuklash mumkin.",
-      "decodeFileTypeError": "Dekodlash uchun faqat matn fayllarni yuklash mumkin.",
-      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
-      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+      "empty": "Dekodlash uchun Base64 matn kiriting.",
+      "alphabet": "Bu Base64 emas. Faqat A–Z, a–z, 0–9 va +/ (yoki base64url uchun -_) belgilari bo'lishi mumkin.",
+      "length": "Matn tugallanmagan ko'rinadi: Base64 to'rttalik guruhlardan iborat, bittalik qoldiq bo'lishi mumkin emas.",
+      "binary": "Base64 to'g'ri, lekin ichidagi baytlar matn emas — bu rasm, arxiv yoki kalit bo'lishi mumkin. Bu asbob faqat matnni ko'rsata oladi.",
+      "tooLarge": "Fayl juda katta. Chegara — 10 MB.",
+      "unsupported": "Bu fayl turi qo'llab-quvvatlanmaydi. Kodlash uchun matn va rasm fayllari, dekodlash uchun faqat matn fayllari.",
+      "unreadable": "Faylni o'qib bo'lmadi."
     },
     "Samples": {
-      "uzbekGreeting": "O'zbek salomlashuvi",
-      "jsonSample": "JSON namunasi",
-      "urlSample": "URL namunasi",
-      "emailSample": "Email namunasi",
-      "base64Text": "Base64 matn",
-      "base64Json": "Base64 JSON",
-      "base64Url": "Base64 URL",
-      "base64Email": "Base64 Email"
+      "greeting": "O'zbekcha salomlashuv",
+      "json": "JSON namunasi",
+      "url": "URL namunasi",
+      "email": "Email namunasi"
+    },
+    "reference": {
+      "title": "Base64 qanday ishlaydi",
+      "intro": "Base64 — shifrlash emas, o'girish. U ixtiyoriy baytlarni faqat 64 ta belgidan iborat alifboga solib yozadi, shunda ma'lumot faqat matnni tashiy oladigan joydan — email, JSON, URL, HTML atributi — buzilmasdan o'tadi. Ochish uchun kalit kerak emas, shuning uchun u hech qachon maxfiylik vositasi emas.",
+      "cards": {
+        "what": {
+          "title": "Alifbo",
+          "body": "A–Z, a–z, 0–9 va + / — jami 64 ta belgi, ya'ni har bir belgi roppa-rosa 6 bit ma'lumot tashiydi. Uzunlikni to'rttalikka to'ldirish uchun oxiriga = qo'yiladi."
+        },
+        "growth": {
+          "title": "Nega hajm oshadi",
+          "body": "3 bayt (24 bit) roppa-rosa 4 ta Base64 belgisiga aylanadi. Demak natija har doim manbadan taxminan 33% kattaroq — 1 MB rasm 1.37 MB matnga aylanadi."
+        },
+        "urlSafe": {
+          "title": "base64url",
+          "body": "URL va fayl nomlarida + va / maxsus ma'noga ega, shuning uchun ularning o'rniga - va _ ishlatiladigan variant bor. JWT'ning har uchala qismi aynan shu yozuvda. Bu asbob ikkalasini ham o'qiydi."
+        }
+      },
+      "worked": {
+        "caption": "Ali so'zining Base64 ga aylanishi",
+        "step": "Bosqich",
+        "value": "Qiymat",
+        "rows": {
+          "text": {
+            "label": "Matn",
+            "value": "Ali"
+          },
+          "bytes": {
+            "label": "UTF-8 baytlar",
+            "value": "0x41 0x6C 0x69"
+          },
+          "bits": {
+            "label": "24 bit",
+            "value": "01000001 01101100 01101001"
+          },
+          "groups": {
+            "label": "6 bitlik guruhlar",
+            "value": "010000 010110 110001 101001 → 16 22 49 41"
+          },
+          "base64": {
+            "label": "Base64",
+            "value": "QWxp"
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "what": {
+          "question": "Base64 ma'lumotni shifrlaydimi?",
+          "answer": "Yo'q. Base64 — kodlash, shifrlash emas. Uni ochish uchun hech qanday kalit kerak emas va istalgan odam bir soniyada qaytara oladi. Parol, token yoki shaxsiy ma'lumotni Base64 ga o'girib \"yashirish\" — himoya emas."
+        },
+        "urlSafe": {
+          "question": "base64url nima va qachon kerak?",
+          "answer": "Standart alifbodagi + va / belgilari URL, so'rov parametri va fayl nomida maxsus ma'noga ega. base64url ularni - va _ bilan almashtiradi va odatda oxiridagi = to'ldirishni tashlab ketadi. JWT, OAuth va ko'p API'lar shu variantni ishlatadi. Kodlashda \"URL uchun xavfsiz\" belgisini qo'ying; dekodlashda esa ikkala variant ham avtomatik tanib olinadi."
+        },
+        "files": {
+          "question": "Fayllarni ham kodlay olamanmi?",
+          "answer": "Ha. Matn fayllari (.txt, .json va shu kabilar) manba panelga matn sifatida yuklanadi. Rasm fayllari esa matn shakliga ega bo'lmagani uchun to'g'ridan-to'g'ri baytlaridan bir marta kodlanadi va natija panelida chiqadi — ularni CSS yoki HTML ichiga data URI qilib qo'yish uchun shu qiymat kerak. Chegara — 10 MB."
+        },
+        "privacy": {
+          "question": "Ma'lumotim serverga yuboriladimi?",
+          "answer": "Yo'q. Kodlash ham, dekodlash ham, fayl o'qish ham brauzeringizda bajariladi. Sahifa yuklangandan keyin bu asbob hech qanday tarmoq so'rovi yubormaydi, shuning uchun token yoki maxfiy payload bilan ishlash xavfsiz."
+        }
+      }
+    },
+    "file": {
+      "dropHere": "Faylni shu yerga tashlang",
+      "acceptsEncode": "TXT · JSON · PNG · JPG · GIF · WEBP · SVG",
+      "acceptsDecode": "TXT · JSON"
     }
   }
 }

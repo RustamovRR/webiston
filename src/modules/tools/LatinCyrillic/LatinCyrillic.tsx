@@ -13,13 +13,13 @@ import { Button } from "@webiston/ui/primitives/button"
 import { BookLock, Paperclip, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useEffect, useRef, useState } from "react"
+import { DropZone } from "@/components/shared/DropZone"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 import {
   DirectionTabs,
   DownloadMenu,
-  DropZone,
   ExceptionsDialog,
   PreservedTerms,
   SourceEmptyActions
@@ -215,7 +215,11 @@ export function LatinCyrillicPage() {
         }
       />
 
-      <DropZone onFile={(dropped) => void file.importFile(dropped)}>
+      <DropZone
+        onFile={(dropped) => void file.importFile(dropped)}
+        label={t("file.dropHere")}
+        hint={t("file.accepts")}
+      >
         <DualTextPanel
           sourceText={sourceText}
           convertedText={convertedText}

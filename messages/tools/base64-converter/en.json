@@ -1,84 +1,127 @@
 {
   "Base64ConverterPage": {
     "ToolHeader": {
-      "title": "Base64 Converter and Encoder",
-      "description": "A tool to encode text and files to Base64 format and decode them back"
+      "title": "Base64 Converter — encode and decode",
+      "description": "Convert text and files to Base64 and back. base64url is supported too, and everything is computed in your browser."
     },
-    "ControlPanel": {
+    "ControlBar": {
+      "direction": "Direction",
       "encode": "Encode",
       "decode": "Decode",
-      "fileUpload": "Upload File",
-      "sampleBase64": "Sample Base64",
+      "urlSafe": "URL-safe (base64url)",
+      "upload": "File",
+      "sample": "Sample",
       "clear": "Clear",
       "download": "Download"
     },
     "Panel": {
-      "plainTextInput": "Plain Text Input",
-      "base64TextInput": "Base64 Text Input",
-      "base64Result": "Base64 Result",
-      "decodedResult": "Decoded Result",
-      "encodePlaceholder": "Enter text you want to encode or upload a file...",
-      "decodePlaceholder": "Enter Base64 text you want to decode...",
-      "readyToEncode": "Ready to encode",
-      "readyToDecode": "Ready to decode",
-      "encodedBase64WillAppear": "Encoded Base64 will appear here...",
-      "decodedTextWillAppear": "Decoded text will appear here...",
-      "enterTextOrUpload": "Enter text or upload a file",
-      "conversionError": "Conversion Error",
-      "switchMode": "Switch mode",
-      "fileSize": "Size:"
+      "plainTextInput": "Plain text",
+      "base64TextInput": "Base64 text",
+      "base64Result": "Base64 result",
+      "decodedResult": "Decoded result",
+      "encodePlaceholder": "Type the text you want to encode, or upload a file…",
+      "decodePlaceholder": "Paste the Base64 you want to decode…",
+      "encodedBase64WillAppear": "The encoded Base64 will appear here",
+      "decodedTextWillAppear": "The decoded text will appear here",
+      "enterTextOrUpload": "Type something or upload a file",
+      "switchMode": "Switch direction",
+      "sourceSize": "Source:",
+      "resultSize": "Result:"
     },
-    "Info": {
-      "title": "About Base64",
-      "whatIsBase64": {
-        "title": "What is Base64?",
-        "description": "Base64 is an encoding method for representing binary data in text format. It uses 64 characters: A-Z, a-z, 0-9, +, /"
-      },
-      "features": {
-        "title": "Key Features",
-        "feature1": "• 6-bit based encoding",
-        "feature2": "• Platform independent format",
-        "feature3": "• Safe for text protocols",
-        "feature4": "• Wide support"
-      },
-      "usage": {
-        "title": "Usage Areas",
-        "usage1": "• Sending images via email",
-        "usage2": "• Embedding images in web pages",
-        "usage3": "• File transfer via API",
-        "usage4": "• Secure data storage"
-      },
-      "formatExample": {
-        "title": "Base64 format example",
-        "plainText": "Plain text:",
-        "base64Encoded": "Base64 encoded:",
-        "exampleText": "Hello world!",
-        "exampleEncoded": "SGVsbG8gd29ybGQh"
-      }
+    "units": {
+      "b": "bytes",
+      "kb": "KB",
+      "mb": "MB"
+    },
+    "Download": {
+      "encode": "base64-encoded",
+      "decode": "base64-decoded"
     },
     "Errors": {
-      "invalidBase64Format": "Invalid Base64 format. Use only A-Z, a-z, 0-9, +, / and = characters.",
-      "conversionError": "Conversion error",
-      "invalidBase64Text": "Invalid Base64 format. Check that the text is properly encoded.",
-      "base64DecodeError": "Error decoding Base64. Check format correctness.",
-      "textEncodeError": "Error occurred while encoding text.",
-      "fileSizeError": "File size must be less than 10MB.",
-      "imageReadError": "Error occurred while reading image file.",
-      "fileReadError": "Error occurred while reading file content.",
-      "encodeFileTypeError": "Only text and image files can be uploaded.",
-      "decodeFileTypeError": "Only text files can be uploaded for decoding.",
-      "fileUploadError": "Error occurred while uploading file.",
-      "downloadError": "Error occurred while downloading file."
+      "empty": "Paste some Base64 to decode.",
+      "alphabet": "This is not Base64. Only A–Z, a–z, 0–9 and +/ are allowed — or -_ for base64url.",
+      "length": "The input looks truncated: Base64 comes in groups of four, and a remainder of one cannot occur.",
+      "binary": "Valid Base64, but the bytes inside are not text — it may be an image, an archive or a key. This tool can only show text.",
+      "tooLarge": "That file is too large. The limit is 10 MB.",
+      "unsupported": "That file type is not supported. Text and image files for encoding, text files only for decoding.",
+      "unreadable": "The file could not be read."
     },
     "Samples": {
-      "uzbekGreeting": "Uzbek greeting",
-      "jsonSample": "JSON sample",
-      "urlSample": "URL sample",
-      "emailSample": "Email sample",
-      "base64Text": "Base64 text",
-      "base64Json": "Base64 JSON",
-      "base64Url": "Base64 URL",
-      "base64Email": "Base64 Email"
+      "greeting": "Uzbek greeting",
+      "json": "JSON sample",
+      "url": "URL sample",
+      "email": "Email sample"
+    },
+    "reference": {
+      "title": "How Base64 works",
+      "intro": "Base64 is a transformation, not encryption. It rewrites arbitrary bytes using an alphabet of only 64 characters so the data survives anywhere that can carry text — email, JSON, a URL, an HTML attribute. No key is needed to reverse it, which is why it is never a privacy measure.",
+      "cards": {
+        "what": {
+          "title": "The alphabet",
+          "body": "A–Z, a–z, 0–9 plus + and / — 64 characters in total, so each character carries exactly 6 bits. Trailing = signs pad the output to a multiple of four."
+        },
+        "growth": {
+          "title": "Why it grows",
+          "body": "Three bytes (24 bits) become exactly four Base64 characters, so the result is always about 33% larger than the source — a 1 MB image becomes 1.37 MB of text."
+        },
+        "urlSafe": {
+          "title": "base64url",
+          "body": "In URLs and filenames + and / have their own meaning, so a variant swaps them for - and _. All three parts of a JWT use it. This tool reads both."
+        }
+      },
+      "worked": {
+        "caption": "Turning the word Ali into Base64",
+        "step": "Step",
+        "value": "Value",
+        "rows": {
+          "text": {
+            "label": "Text",
+            "value": "Ali"
+          },
+          "bytes": {
+            "label": "UTF-8 bytes",
+            "value": "0x41 0x6C 0x69"
+          },
+          "bits": {
+            "label": "24 bits",
+            "value": "01000001 01101100 01101001"
+          },
+          "groups": {
+            "label": "6-bit groups",
+            "value": "010000 010110 110001 101001 → 16 22 49 41"
+          },
+          "base64": {
+            "label": "Base64",
+            "value": "QWxp"
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "what": {
+          "question": "Does Base64 encrypt my data?",
+          "answer": "No. Base64 is an encoding, not encryption. Reversing it needs no key and anyone can do it in a second. Putting a password, a token or personal data through Base64 to \"hide\" it provides no protection at all."
+        },
+        "urlSafe": {
+          "question": "What is base64url, and when do I need it?",
+          "answer": "The + and / of the standard alphabet have their own meaning in URLs, query parameters and filenames. base64url replaces them with - and _ and usually drops the trailing = padding. JWT, OAuth and many APIs use it. Tick \"URL-safe\" when encoding; when decoding, both variants are recognised automatically."
+        },
+        "files": {
+          "question": "Can I encode files as well?",
+          "answer": "Yes. Text files (.txt, .json and similar) are loaded into the source panel as text. Images have no text form, so they are encoded once directly from their bytes and the result appears in the output panel — which is the value you need to inline them as a data URI in CSS or HTML. The limit is 10 MB."
+        },
+        "privacy": {
+          "question": "Is my data sent to a server?",
+          "answer": "No. Encoding, decoding and file reading all happen in your browser. After the page has loaded this tool makes no network requests at all, so it is safe to use with a token or a confidential payload."
+        }
+      }
+    },
+    "file": {
+      "dropHere": "Drop the file here",
+      "acceptsEncode": "TXT · JSON · PNG · JPG · GIF · WEBP · SVG",
+      "acceptsDecode": "TXT · JSON"
     }
   }
 }
