@@ -19,7 +19,6 @@ export type {
   ColorFormat,
   ColorValue,
   HashAlgorithm,
-  HashGeneratorOptions,
   JsonFormatterOptions,
   JwtPayload,
   PasswordOptions,

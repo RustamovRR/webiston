@@ -1,371 +1,35 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
+ * React equivalent; every payload here is a constant or an i18n string, and
+ * `jsonLd()` escapes `<` so a value can never close the script element. */
 import type { Metadata } from "next"
-import { setRequestLocale } from "next-intl/server"
-import { Faq } from "@/components/shared/Faq"
-import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { faqPageSchema, withLocale } from "@/lib/seo"
-import { OgMetaGenerator } from "@/modules/tools"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 
-// Only this tool's namespace reaches the client, plus the shared
-// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { withLocale } from "@/lib/seo"
+// Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
+// modules and every one of them is `'use client'`.
+import {
+  OgFaq,
+  OgMetaGenerator,
+  OgReference
+} from "@/modules/tools/OgMetaGenerator"
+import {
+  applicationSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  getOgMetaGeneratorMetadata
+} from "@/modules/tools/OgMetaGenerator/seo"
+
+// Only this tool's namespace reaches the client, plus the shared `Common`.
 const TOOL_NAMESPACE = "OgMetaGeneratorPage"
 
-const baseMetadata: Metadata = {
-  title: "OG Meta Generator - Bepul Open Graph Meta Tag Tool",
-  description:
-    "Eng yaxshi bepul OG meta generator. Open Graph va Twitter Card meta teglarini yaratish. SEO va ijtimoiy tarmoq uchun professional vosita.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "og meta generator",
-    "open graph generator",
-    "meta tag generator",
-    "meta tag yaratuvchi",
-    "meta tag yasash",
-    "og tag generator",
-    "og teglar yaratish",
-    "twitter card generator",
-    "twitter card yaratish",
-    "social media meta",
-    "ijtimoiy tarmoq meta",
-    "facebook meta tags",
-    "facebook og tags",
-    "seo meta tags",
-    "seo meta yaratish",
-    "meta description generator",
-    "meta title generator",
-    "bepul meta generator",
-    "onlayn meta generator",
-    "meta vositasi",
-    "meta tool",
-    "web developer tools",
-    "veb dasturchi vositalari",
-    "html meta tags",
-    "website meta tags",
-
-    // Ingliz tilida
-    "og meta generator",
-    "open graph generator",
-    "open graph meta generator",
-    "meta tag generator",
-    "twitter card generator",
-    "social media meta generator",
-    "facebook meta tags generator",
-    "seo meta tag generator",
-    "meta description generator",
-    "meta title generator",
-    "og tag creator",
-    "open graph creator",
-    "social sharing tags",
-    "meta tags maker",
-    "html meta generator",
-    "website meta generator",
-    "free meta generator",
-    "online meta generator",
-    "meta tag tool",
-    "og preview tool",
-    "social media preview",
-    "facebook preview tool",
-    "twitter preview tool",
-    "web developer tools",
-    "seo tools",
-    "marketing tools",
-
-    // Rus tilida
-    "генератор og мета",
-    "генератор open graph",
-    "генератор мета тегов",
-    "twitter card генератор",
-    "социальные мета теги",
-    "facebook мета теги",
-    "seo мета теги",
-    "генератор мета описания",
-    "генератор мета заголовка",
-    "бесплатный мета генератор",
-    "онлайн мета генератор",
-    "инструмент мета тегов",
-    "предварительный просмотр og",
-    "социальный предварительный просмотр",
-    "веб разработчик инструменты",
-
-    // Long-tail keywords
-    "open graph va twitter card meta teglar yaratish",
-    "professional social media meta tags generator free",
-    "генератор мета тегов для социальных сетей онлайн",
-    "webiston meta tools",
-    "seo optimized meta tags generator",
-    "facebook twitter linkedin meta tags creator"
-  ],
-  openGraph: {
-    title: "OG Meta Generator - Bepul Open Graph Meta Tag Tool | Webiston",
-    description:
-      "Eng yaxshi bepul OG meta generator. Open Graph va Twitter Card meta teglarini yaratish. SEO va ijtimoiy tarmoq uchun professional vosita.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools/og-meta-generator",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "OG Meta Generator - Bepul Open Graph Meta Tag Tool",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "OG Meta Generator - Bepul Meta Tag Tool",
-    description:
-      "Professional OG meta generator. Open Graph va Twitter Card meta teglarini yaratish. Bepul!",
-    images: ["https://webiston.uz/logo.png"]
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
-}
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": ["WebApplication", "SoftwareApplication"],
-  name: "OG Meta Generator - Bepul Open Graph Meta Tag Tool",
-  alternateName: [
-    "OG Meta Generator",
-    "Open Graph Generator",
-    "Meta Tag Generator"
-  ],
-  description:
-    "Professional OG meta generator. Open Graph va Twitter Card meta teglarini yaratish uchun bepul vosita.",
-  url: "https://webiston.uz/tools/og-meta-generator",
-  sameAs: [
-    "https://webiston.uz/en/tools/og-meta-generator",
-    "https://webiston.uz/tools/og-meta-generator"
-  ],
-  applicationCategory: ["DeveloperApplication", "UtilityApplication"],
-  operatingSystem: ["Windows", "macOS", "Linux", "Android", "iOS"],
-  browserRequirements: "Requires JavaScript. Requires HTML5.",
-  permissions: "browser",
-  isAccessibleForFree: true,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    validFrom: "2024-01-01"
-  },
-  author: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: "https://webiston.uz/logo.png",
-    sameAs: ["https://github.com/webiston", "https://twitter.com/webiston_uz"]
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://webiston.uz/logo.png",
-      width: 1120,
-      height: 1120
-    }
-  },
-  featureList: [
-    "Open Graph meta teglar yaratish",
-    "Twitter Card qo'llab-quvvatlash",
-    "Facebook meta teglar",
-    "LinkedIn meta teglar",
-    "SEO optimizatsiya",
-    "Ijtimoiy tarmoq preview",
-    "Meta title generator",
-    "Meta description generator",
-    "OG image sozlamalari",
-    "Twitter card turlari",
-    "Template kutubxonasi",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Real-time preview",
-    "HTML kod yaratish",
-    "Copy-paste imkoniyati"
-  ],
-  softwareVersion: "2.0",
-  datePublished: "2024-01-01",
-  dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
-  keywords:
-    "og meta generator, open graph generator, meta tag generator, bepul meta generator"
-}
-
 /**
- * This route's questions, in both locales.
- *
- * They are returned as DATA rather than as a finished schema: the page
- * renders them AND publishes them, so one array has to feed both. This route
- * published a `FAQPage` and showed no FAQ at all until that changed.
+ * `<` inside a JSON string can close the surrounding `<script>` element. Every
+ * value here is a constant or an i18n string, so there is no injection path
+ * today; escaping removes the class of problem rather than the instance.
  */
-function getFaqItems(locale: string = "uz") {
-  const faqData = {
-    uz: {
-      questions: [
-        {
-          question: "Open Graph meta teglar nima va nima uchun kerak?",
-          answer:
-            "Open Graph meta teglar - bu veb sahifangiz ijtimoiy tarmoqlarda qanday ko'rinishini belgilaydigan HTML teglar. Facebook, Twitter va boshqa platformalarda chiroyli preview yaratish uchun kerak."
-        },
-        {
-          question: "Twitter Card va Open Graph orasida qanday farq bor?",
-          answer:
-            "Open Graph Facebook va boshqa platformalar uchun, Twitter Card esa Twitter uchun maxsus meta teglar. Ikkalasi ham ijtimoiy tarmoqlarda yaxshi ko'rinish uchun kerak."
-        },
-        {
-          question: "OG meta generator xavfsizmi?",
-          answer:
-            "Ha, bizning OG meta generator to'liq xavfsiz. Barcha ma'lumotlar brauzeringizda qayta ishlanadi va hech qayerga yuborilmaydi."
-        },
-        {
-          question: "OG meta generator bepulmi?",
-          answer:
-            "Ha, bizning OG meta generator to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi."
-        }
-      ]
-    },
-    en: {
-      questions: [
-        {
-          question: "What are Open Graph meta tags and why are they needed?",
-          answer:
-            "Open Graph meta tags are HTML tags that determine how your web page appears on social networks. Needed to create beautiful previews on Facebook, Twitter and other platforms."
-        },
-        {
-          question:
-            "What is the difference between Twitter Card and Open Graph?",
-          answer:
-            "Open Graph is for Facebook and other platforms, while Twitter Card is specifically for Twitter. Both are needed for good appearance on social networks."
-        },
-        {
-          question: "Is OG meta generator secure?",
-          answer:
-            "Yes, our OG meta generator is completely secure. All data is processed in your browser and not sent anywhere."
-        },
-        {
-          question: "Is OG meta generator free?",
-          answer:
-            "Yes, our OG meta generator is completely free. No limitations or payments required."
-        }
-      ]
-    }
-  }
-
-  return (faqData[locale as keyof typeof faqData] || faqData.uz).questions
-}
-
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar",
-      ogMetaGenerator: "OG Meta Generator"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools",
-      ogMetaGenerator: "OG Meta Generator"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: current.ogMetaGenerator,
-        item: `${baseUrl}/tools/og-meta-generator`
-      }
-    ]
-  }
-}
-
-export default async function OgMetaGeneratorPage({
-  params
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = (await params) || { locale: "uz" }
-  setRequestLocale(locale)
-
-  // Generate locale-specific schemas
-  const faqItems = getFaqItems(locale)
-  const faqSchema = faqPageSchema(faqItems)
-  const breadcrumbSchema = generateBreadcrumbSchema(locale)
-
-  return (
-    <>
-      {/* Main Application Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
-      {/* FAQ Schema for rich snippets */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
-      {/* Breadcrumb Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-
-      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <OgMetaGenerator />
-      </LocaleMessages>
-
-      {/* Server-rendered sibling of the client island: the answers reach the
-          HTML, which is what the schema above has always claimed. */}
-      <Faq locale={locale} items={faqItems} />
-    </>
-  )
+function jsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c")
 }
 
 export async function generateMetadata({
@@ -375,5 +39,53 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(baseMetadata, locale, "/tools/og-meta-generator")
+  return withLocale(
+    getOgMetaGeneratorMetadata(locale),
+    locale,
+    "/tools/og-meta-generator"
+  )
+}
+
+export default async function OgMetaGeneratorPage({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  // The FAQ schema reads the same messages `OgFaq` renders, so the structured
+  // data can never describe a page that does not exist.
+  const tFaq = await getTranslations({
+    locale,
+    namespace: "OgMetaGeneratorPage.faq"
+  })
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(applicationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(generateFAQSchema(tFaq)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(generateBreadcrumbSchema(locale))
+        }}
+      />
+
+      {/* `locale` is load-bearing: without it LocaleMessages falls back to
+          `getLocale()`, which returns "uz" on /en/tools/*. */}
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <OgMetaGenerator />
+      </LocaleMessages>
+      {/* Server Components, siblings of the client island. */}
+      <OgReference locale={locale} />
+      <OgFaq locale={locale} />
+    </>
+  )
 }

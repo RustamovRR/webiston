@@ -48,11 +48,6 @@ export interface UrlInfo {
 // Hash Generator
 export type HashAlgorithm = "md5" | "sha1" | "sha256" | "sha512"
 
-export interface HashGeneratorOptions {
-  algorithm: HashAlgorithm
-  encoding?: "hex" | "base64"
-}
-
 // Password Generator
 export interface PasswordOptions {
   length: number

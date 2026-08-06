@@ -1,417 +1,257 @@
 "use client"
 
-import { Globe, ImageIcon, Link2 } from "lucide-react"
+import { cn } from "@webiston/ui"
+import { Input } from "@webiston/ui/primitives/input"
 import { useTranslations } from "next-intl"
-import { StatsDisplay } from "@/components/shared"
-import { Input } from "@/components/ui/input"
+import { useId } from "react"
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import type { MetaData } from "../hooks/useOgMetaGenerator"
+  DESCRIPTION_IDEAL_MAX,
+  OG_LOCALES,
+  OG_TYPES,
+  TITLE_IDEAL_MAX,
+  TWITTER_CARDS
+} from "../constants"
+import type { MetaDraft, OgType, TwitterCard } from "../types"
+
+/**
+ * The fields, in the order they matter.
+ *
+ * Title, description and image decide what a share card looks like; the rest
+ * is configuration and sits under them. What this replaces was a 417-line
+ * panel with a "Basic info" and a "System settings" accordion, macOS traffic
+ * lights in its header and eleven palette classes.
+ *
+ * The counters are the important detail. The old form **refused keystrokes**
+ * past 70 characters — `updateField` returned early without setting state and
+ * called an `onError` that was wired to nothing, so the field simply stopped
+ * accepting input with no explanation. Long titles are legal; they are just
+ * truncated by the platforms. So everything is typeable and the counter says
+ * where the cut falls.
+ */
 
 interface FormPanelProps {
-  metaData: MetaData
-  inputStats: Array<{ label: string; value: number }>
-  onUpdateField: (field: keyof MetaData, value: string) => void
+  draft: MetaDraft
+  onChange: <Key extends keyof MetaDraft>(
+    field: Key,
+    value: MetaDraft[Key]
+  ) => void
 }
 
-const FormPanel: React.FC<FormPanelProps> = ({
-  metaData,
-  inputStats,
-  onUpdateField
-}) => {
-  const t = useTranslations("OgMetaGeneratorPage.FormPanel")
+export function FormPanel({ draft, onChange }: FormPanelProps) {
+  const t = useTranslations("OgMetaGeneratorPage.form")
+  const ids = useId()
+
+  const field = (name: keyof MetaDraft) => `${ids}-${name}`
 
   return (
-    <div className="rounded-xl border border-border bg-card/80 p-6 backdrop-blur-sm">
-      <div className="mb-6 flex items-center justify-between border-b border-border pb-4">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-red-500"></div>
-            <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-            <div className="h-3 w-3 rounded-full bg-green-500"></div>
-          </div>
-          <span className="text-sm font-medium text-foreground">
+    <div className="space-y-5">
+      <div className="space-y-1.5">
+        <div className="flex items-baseline justify-between gap-3">
+          <label
+            htmlFor={field("title")}
+            className="font-medium text-foreground text-sm"
+          >
             {t("title")}
-          </span>
+          </label>
+          <Counter length={draft.title.trim().length} max={TITLE_IDEAL_MAX} />
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-          <span className="text-xs text-muted-foreground">{t("status")}</span>
-        </div>
+        <Input
+          id={field("title")}
+          value={draft.title}
+          onChange={(event) => onChange("title", event.target.value)}
+          placeholder={t("titlePlaceholder")}
+        />
       </div>
 
-      <div className="space-y-6">
-        {/* Basic Information */}
-        <div className="space-y-4">
-          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <Globe size={16} />
-            {t("basicInfo")}
-          </h3>
-
-          <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="formpanel-titlelabel"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("titleLabel")}
-              </label>
-              <Input
-                id="formpanel-titlelabel"
-                value={metaData.title}
-                onChange={(e) => onUpdateField("title", e.target.value)}
-                placeholder={t("titlePlaceholder")}
-                className={`border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 /50 ${
-                  metaData.title.length > 70
-                    ? "border-destructive/40"
-                    : metaData.title.length > 50
-                      ? "border-warning/40"
-                      : metaData.title.length > 0
-                        ? "border-success/40"
-                        : ""
-                }`}
-              />
-              <div className="mt-1 flex items-center justify-between">
-                <div
-                  className={`text-xs ${
-                    metaData.title.length > 70
-                      ? "text-destructive"
-                      : metaData.title.length > 50
-                        ? "text-warning"
-                        : metaData.title.length > 0
-                          ? "text-success"
-                          : "text-muted-foreground"
-                  }`}
-                >
-                  {metaData.title.length}/70 {t("titleCounter")}
-                </div>
-                {metaData.title.length > 70 && (
-                  <div className="text-xs text-destructive">
-                    {t("tooLongError")}
-                  </div>
-                )}
-                {metaData.title.length > 50 && metaData.title.length <= 70 && (
-                  <div className="text-xs text-warning">{t("gettingLong")}</div>
-                )}
-                {metaData.title.length > 0 && metaData.title.length <= 50 && (
-                  <div className="text-xs text-success">{t("perfect")}</div>
-                )}
-              </div>
-              {/* Progress bar */}
-              <div className="mt-1 h-1 w-full rounded-full bg-muted">
-                <div
-                  className={`h-1 rounded-full transition-all ${
-                    metaData.title.length > 70
-                      ? "bg-red-500"
-                      : metaData.title.length > 50
-                        ? "bg-yellow-500"
-                        : metaData.title.length > 0
-                          ? "bg-green-500"
-                          : "bg-zinc-300"
-                  }`}
-                  style={{
-                    width: `${Math.min((metaData.title.length / 70) * 100, 100)}%`
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-desclabel"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("descLabel")}
-              </label>
-              <Textarea
-                id="formpanel-desclabel"
-                value={metaData.description}
-                onChange={(e) => onUpdateField("description", e.target.value)}
-                placeholder={t("descPlaceholder")}
-                className={`min-h-[100px] border-zinc-300 bg-zinc-50/50 dark:border-zinc-700 /50 ${
-                  metaData.description.length > 200
-                    ? "border-destructive/40"
-                    : metaData.description.length > 160
-                      ? "border-warning/40"
-                      : metaData.description.length > 0
-                        ? "border-success/40"
-                        : ""
-                }`}
-              />
-              <div className="mt-1 flex items-center justify-between">
-                <div
-                  className={`text-xs ${
-                    metaData.description.length > 200
-                      ? "text-destructive"
-                      : metaData.description.length > 160
-                        ? "text-warning"
-                        : metaData.description.length > 0
-                          ? "text-success"
-                          : "text-muted-foreground"
-                  }`}
-                >
-                  {metaData.description.length}/200 {t("titleCounter")}
-                </div>
-                {metaData.description.length > 200 && (
-                  <div className="text-xs text-destructive">
-                    {t("tooLongError")}
-                  </div>
-                )}
-                {metaData.description.length > 160 &&
-                  metaData.description.length <= 200 && (
-                    <div className="text-xs text-warning">
-                      {t("gettingLong")}
-                    </div>
-                  )}
-                {metaData.description.length > 0 &&
-                  metaData.description.length <= 160 && (
-                    <div className="text-xs text-success">{t("perfect")}</div>
-                  )}
-              </div>
-              {/* Progress bar */}
-              <div className="mt-1 h-1 w-full rounded-full bg-muted">
-                <div
-                  className={`h-1 rounded-full transition-all ${
-                    metaData.description.length > 200
-                      ? "bg-red-500"
-                      : metaData.description.length > 160
-                        ? "bg-yellow-500"
-                        : metaData.description.length > 0
-                          ? "bg-green-500"
-                          : "bg-zinc-300"
-                  }`}
-                  style={{
-                    width: `${Math.min((metaData.description.length / 200) * 100, 100)}%`
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-imagelabel"
-                className="mb-2 block flex items-center gap-2 text-sm font-medium text-foreground"
-              >
-                <ImageIcon size={16} />
-                {t("imageLabel")}
-              </label>
-              <Input
-                id="formpanel-imagelabel"
-                value={metaData.image}
-                onChange={(e) => onUpdateField("image", e.target.value)}
-                placeholder={t("imagePlaceholder")}
-                className="border-border bg-muted/50"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-urllabel"
-                className="mb-2 block flex items-center gap-2 text-sm font-medium text-foreground"
-              >
-                <Link2 size={16} />
-                {t("urlLabel")}
-              </label>
-              <Input
-                id="formpanel-urllabel"
-                value={metaData.url}
-                onChange={(e) => onUpdateField("url", e.target.value)}
-                placeholder={t("urlPlaceholder")}
-                className="border-border bg-muted/50"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-sitenamelabel"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("siteNameLabel")}
-              </label>
-              <Input
-                id="formpanel-sitenamelabel"
-                value={metaData.siteName}
-                onChange={(e) => onUpdateField("siteName", e.target.value)}
-                placeholder={t("siteNamePlaceholder")}
-                className="border-border bg-muted/50"
-              />
-            </div>
-          </div>
-
-          {/* Advanced Settings - Compact Layout */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div>
-              <label
-                htmlFor="formpanel-contenttype"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("contentType")}
-              </label>
-              <Select
-                value={metaData.type}
-                onValueChange={(value) => onUpdateField("type", value)}
-              >
-                <SelectTrigger
-                  id="formpanel-contenttype"
-                  className="border-border bg-muted/50"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="website">🌐 {t("typeWebsite")}</SelectItem>
-                  <SelectItem value="article">📰 {t("typeArticle")}</SelectItem>
-                  <SelectItem value="video.other">
-                    🎥 {t("typeVideo")}
-                  </SelectItem>
-                  <SelectItem value="book">📚 {t("typeBook")}</SelectItem>
-                  <SelectItem value="profile">👤 {t("typeProfile")}</SelectItem>
-                  <SelectItem value="music.song">
-                    🎵 {t("typeMusic")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-twittercard"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("twitterCard")}
-              </label>
-              <Select
-                value={metaData.twitterCard}
-                onValueChange={(value) => onUpdateField("twitterCard", value)}
-              >
-                <SelectTrigger
-                  id="formpanel-twittercard"
-                  className="border-border bg-muted/50"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="summary">📄 {t("cardSummary")}</SelectItem>
-                  <SelectItem value="summary_large_image">
-                    🖼️ {t("cardLargeImage")}
-                  </SelectItem>
-                  <SelectItem value="app">📱 {t("cardApp")}</SelectItem>
-                  <SelectItem value="player">▶️ {t("cardPlayer")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div>
-              <label
-                htmlFor="formpanel-language"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("language")}
-              </label>
-              <Select
-                value={metaData.locale}
-                onValueChange={(value) => onUpdateField("locale", value)}
-              >
-                <SelectTrigger
-                  id="formpanel-language"
-                  className="border-border bg-muted/50"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="uz_UZ">🇺🇿 {t("langUzbek")}</SelectItem>
-                  <SelectItem value="en_US">🇺🇸 {t("langEnglish")}</SelectItem>
-                  <SelectItem value="ru_RU">🇷🇺 {t("langRussian")}</SelectItem>
-                  <SelectItem value="tr_TR">🇹🇷 {t("langTurkish")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-imagesize"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("imageSize")}
-              </label>
-              <Select
-                value={metaData.imageSize || "1200x630"}
-                onValueChange={(value) => onUpdateField("imageSize", value)}
-              >
-                <SelectTrigger
-                  id="formpanel-imagesize"
-                  className="border-border bg-muted/50"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1200x630">
-                    📐 1200x630 ({t("recommended")})
-                  </SelectItem>
-                  <SelectItem value="1200x675">📐 1200x675 (16:9)</SelectItem>
-                  <SelectItem value="1080x1080">
-                    📐 1080x1080 ({t("square")})
-                  </SelectItem>
-                  <SelectItem value="800x600">📐 800x600 (4:3)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <div>
-              <label
-                htmlFor="formpanel-twittersite"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("twitterSite")}
-              </label>
-              <Input
-                id="formpanel-twittersite"
-                value={metaData.twitterSite}
-                onChange={(e) => onUpdateField("twitterSite", e.target.value)}
-                placeholder="@your_site"
-                className="border-border bg-muted/50"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="formpanel-twittercreator"
-                className="mb-2 block text-sm font-medium text-foreground"
-              >
-                {t("twitterCreator")}
-              </label>
-              <Input
-                id="formpanel-twittercreator"
-                value={metaData.twitterCreator}
-                onChange={(e) =>
-                  onUpdateField("twitterCreator", e.target.value)
-                }
-                placeholder="@author"
-                className="border-border bg-muted/50"
-              />
-            </div>
-          </div>
+      <div className="space-y-1.5">
+        <div className="flex items-baseline justify-between gap-3">
+          <label
+            htmlFor={field("description")}
+            className="font-medium text-foreground text-sm"
+          >
+            {t("description")}
+          </label>
+          <Counter
+            length={draft.description.trim().length}
+            max={DESCRIPTION_IDEAL_MAX}
+          />
         </div>
+        <textarea
+          id={field("description")}
+          value={draft.description}
+          onChange={(event) => onChange("description", event.target.value)}
+          placeholder={t("descriptionPlaceholder")}
+          rows={3}
+          className="w-full resize-y rounded-lg border border-border bg-input px-3 py-2 text-foreground text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
+        />
       </div>
 
-      {/* Stats Display */}
-      <div className="mt-6 border-t border-border pt-6">
-        <h4 className="mb-3 text-sm font-medium text-foreground">
-          {t("inputStats")}
-        </h4>
-        <StatsDisplay stats={inputStats} />
+      <div className="space-y-1.5">
+        <label
+          htmlFor={field("image")}
+          className="font-medium text-foreground text-sm"
+        >
+          {t("image")}
+        </label>
+        <Input
+          id={field("image")}
+          value={draft.image}
+          onChange={(event) => onChange("image", event.target.value)}
+          placeholder="https://saytingiz.uz/og.png"
+          className="font-mono text-xs"
+          autoComplete="off"
+          spellCheck={false}
+        />
+        <p className="text-muted-foreground text-xs">{t("imageHint")}</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <label
+          htmlFor={field("imageAlt")}
+          className="font-medium text-foreground text-sm"
+        >
+          {t("imageAlt")}
+        </label>
+        <Input
+          id={field("imageAlt")}
+          value={draft.imageAlt}
+          onChange={(event) => onChange("imageAlt", event.target.value)}
+          placeholder={t("imageAltPlaceholder")}
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <label
+          htmlFor={field("url")}
+          className="font-medium text-foreground text-sm"
+        >
+          {t("url")}
+        </label>
+        <Input
+          id={field("url")}
+          value={draft.url}
+          onChange={(event) => onChange("url", event.target.value)}
+          placeholder="https://saytingiz.uz/sahifa"
+          className="font-mono text-xs"
+          autoComplete="off"
+          spellCheck={false}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <label
+            htmlFor={field("siteName")}
+            className="font-medium text-foreground text-sm"
+          >
+            {t("siteName")}
+          </label>
+          <Input
+            id={field("siteName")}
+            value={draft.siteName}
+            onChange={(event) => onChange("siteName", event.target.value)}
+            placeholder="Webiston"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label
+            htmlFor={field("twitterSite")}
+            className="font-medium text-foreground text-sm"
+          >
+            {t("twitterSite")}
+          </label>
+          <Input
+            id={field("twitterSite")}
+            value={draft.twitterSite}
+            onChange={(event) => onChange("twitterSite", event.target.value)}
+            placeholder="@webiston_uz"
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </div>
+
+        <Select
+          id={field("type")}
+          label={t("type")}
+          value={draft.type}
+          onChange={(value) => onChange("type", value as OgType)}
+          options={OG_TYPES.map((value) => ({
+            value,
+            label: t(`types.${value}`)
+          }))}
+        />
+
+        <Select
+          id={field("twitterCard")}
+          label={t("twitterCard")}
+          value={draft.twitterCard}
+          onChange={(value) => onChange("twitterCard", value as TwitterCard)}
+          options={TWITTER_CARDS.map((value) => ({
+            value,
+            label: t(`cards.${value}`)
+          }))}
+        />
+
+        <Select
+          id={field("locale")}
+          label={t("locale")}
+          value={draft.locale}
+          onChange={(value) => onChange("locale", value)}
+          options={OG_LOCALES.map((value) => ({ value, label: value }))}
+        />
       </div>
     </div>
   )
 }
 
-export default FormPanel
+/**
+ * How much of the text survives.
+ *
+ * Muted until the limit is passed, then `warning` — never `destructive`,
+ * because a long title is not an error, it is a title that will be cut.
+ */
+function Counter({ length, max }: { length: number; max: number }) {
+  return (
+    <span
+      className={cn(
+        "font-mono text-xs tabular-nums",
+        length > max ? "text-warning" : "text-muted-foreground"
+      )}
+    >
+      {length} / {max}
+    </span>
+  )
+}
+
+interface SelectProps {
+  id: string
+  label: string
+  value: string
+  onChange: (value: string) => void
+  options: readonly { value: string; label: string }[]
+}
+
+/** A native `<select>`: five options do not need a portal and a listbox. */
+function Select({ id, label, value, onChange, options }: SelectProps) {
+  return (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="font-medium text-foreground text-sm">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-9 w-full rounded-lg border border-border bg-input px-3 text-foreground text-sm outline-none transition-colors focus:border-ring"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}

@@ -1,177 +1,148 @@
 {
   "OgMetaGeneratorPage": {
     "ToolHeader": {
-      "title": "OG Meta Generator",
-      "description": "Ijtimoiy tarmoqlar uchun meta taglar yarating va SEO ni professional darajada yaxshilang"
+      "title": "Open Graph Generator",
+      "description": "Havolangiz Telegramda yoki X'da ulashilganda qanday ko'rinishini shu yerda ko'ring va og: hamda twitter: taglarini tayyor holda oling. Rasm o'lchami brauzeringizda o'lchanadi — hech narsa serverga yuborilmaydi."
     },
-    "ConfigPanel": {
-      "title": "Tool Konfiguratsiya",
-      "status": "Rejim Tanlang",
-      "workMode": "Ish rejimi:",
-      "form": "Ma'lumot Kiritish",
-      "preview": "Ko'rinish"
+    "sample": {
+      "load": "Namuna",
+      "title": "React Hooks: amaliy qo'llanma",
+      "description": "useState va useEffect'dan boshlab custom hook yozishgacha — misollar bilan tushuntirilgan qisqa qo'llanma.",
+      "imageAlt": "Maqola muqovasi: React Hooks qo'llanmasi",
+      "siteName": "Example Blog"
     },
-    "TemplatesPanel": {
-      "title": "Shablonlar",
-      "status": "Tez Tanlov",
-      "readyTemplates": "Tayyor shablonlar:",
-      "loadButton": "Yuklash",
-      "demoData": "Demo Ma'lumot",
+    "form": {
+      "panelTitle": "Ma'lumotlar",
       "clear": "Tozalash",
-      "templates": {
-        "blog": {
-          "label": "Blog maqolasi",
-          "description": "Maqola va blog postlari uchun"
+      "title": "Sarlavha",
+      "titlePlaceholder": "Sahifangiz sarlavhasi",
+      "description": "Tavsif",
+      "descriptionPlaceholder": "Bir-ikki jumlada sahifa nima haqidaligi",
+      "image": "Rasm manzili",
+      "imageHint": "To'liq manzil bo'lishi shart — https:// bilan boshlanadi. Nisbiy yo'l (/og.png) ishlamaydi.",
+      "imageAlt": "Rasm tavsifi (alt)",
+      "imageAltPlaceholder": "Rasmda nima ko'rinadi",
+      "url": "Sahifa manzili",
+      "siteName": "Sayt nomi",
+      "twitterSite": "X (Twitter) hisobi",
+      "type": "Kontent turi",
+      "types": {
+        "website": "Website — oddiy sahifa",
+        "article": "Article — maqola",
+        "book": "Book — kitob",
+        "profile": "Profile — shaxsiy sahifa",
+        "video.other": "Video"
+      },
+      "twitterCard": "Karta turi",
+      "cards": {
+        "summary": "Summary — kichik rasm",
+        "summary_large_image": "Large image — katta rasm",
+        "player": "Player — video/audio"
+      },
+      "locale": "Til (og:locale)"
+    },
+    "preview": {
+      "title": "Ulashish kartasi",
+      "platform": "Platforma",
+      "noTitle": "Sarlavha kiritilmagan",
+      "noDescription": "Tavsif kiritilmagan",
+      "noUrl": "manzil yo'q",
+      "noImage": "Rasm yo'q",
+      "imageFailed": "Rasm ochilmadi",
+      "imageAlt": "Ulashish kartasi rasmi",
+      "truncation": "{platform} sarlavhadan taxminan {title} ta, tavsifdan {description} ta belgini ko'rsatadi — qolgani qirqiladi."
+    },
+    "issues": {
+      "title": "Tekshiruv",
+      "clean": "Hammasi joyida — karta to'liq ko'rinadi.",
+      "measured": "Rasm o'lchandi: {width} × {height} · nisbat {ratio}:1",
+      "titleMissing": "Sarlavha yo'q. Usiz platformalar sahifadagi birinchi mos matnni oladi va bu odatda kerakli matn bo'lmaydi.",
+      "titleLong": "Sarlavha {length} ta belgi. {max} tadan keyin ko'pchilik joyda qirqiladi.",
+      "titleTooLong": "Sarlavha {length} ta belgi — {max} tadan uzun. Hamma platformada qirqiladi.",
+      "descriptionMissing": "Tavsif yo'q. Kartada sarlavha ostidagi qator bo'sh qoladi.",
+      "descriptionLong": "Tavsif {length} ta belgi. {max} tadan keyin qidiruv natijalarida qirqiladi.",
+      "descriptionTooLong": "Tavsif {length} ta belgi — {max} tadan uzun. Kartada yarmi ko'rinmaydi.",
+      "imageMissing": "Rasm yo'q. Rasmsiz karta ikki barobar kichik ko'rinadi va kam bosiladi.",
+      "imageRelative": "Rasm manzili nisbiy. Kraulerlar uni o'z domenidan qidiradi va topa olmaydi — to'liq https:// manzil yozing.",
+      "imageUnreachable": "Rasm ochilmadi. Manzil noto'g'ri bo'lishi yoki sayt boshqa saytdan ochishni taqiqlagan bo'lishi mumkin.",
+      "imageTooSmall": "Rasm {width} × {height} — juda kichik. Tomoni {min} pikseldan kichik rasmni platformalar umuman ko'rsatmaydi.",
+      "imageRatio": "Rasm nisbati {ratio}:1 ({width} × {height}). Karta 1.91:1 ga moslangan, shuning uchun rasmning bir qismi qirqiladi.",
+      "imageAltMissing": "Rasm tavsifi (alt) yo'q. Ekran o'quvchi foydalanuvchi rasmda nima borligini bilmaydi.",
+      "urlMissing": "Sahifa manzili yo'q. og:url kartadagi havola va kanonik manzil sifatida ishlatiladi.",
+      "urlRelative": "Sahifa manzili to'liq emas — https:// bilan boshlanishi kerak.",
+      "largeCardNoImage": "Karta turi «katta rasm», lekin rasm yo'q. Bu holda X kartani kichik shaklda ko'rsatadi."
+    },
+    "output": {
+      "title": "Natija",
+      "format": "Shakl",
+      "formats": {
+        "html": "HTML",
+        "next": "Next.js"
+      },
+      "tags": "{count} ta tag",
+      "copy": "Nusxalash",
+      "download": "Saqlash"
+    },
+    "reference": {
+      "title": "Har bir platforma nimani ko'rsatadi",
+      "intro": "Open Graph — sahifangizni ulashganda qanday ko'rinishini o'zingiz hal qilish usuli. Tagsiz qolsa, platforma sahifadan o'zi biror matn va rasm tanlaydi. Quyidagi raqamlar — matn qirqiladigan taxminiy chegaralar; ular qat'iy qoida emas, lekin sarlavhani shunga qarab yozgan ma'qul.",
+      "chars": "~{count} belgi",
+      "table": {
+        "platform": "Platforma",
+        "title": "Sarlavha",
+        "description": "Tavsif",
+        "note": "Izoh"
+      },
+      "platforms": {
+        "telegram": {
+          "name": "Telegram",
+          "note": "og: taglarini o'qiydi, twitter: ni emas. O'zbek auditoriyasi uchun eng muhimi."
         },
-        "product": {
-          "label": "Mahsulot sahifasi",
-          "description": "E-commerce va mahsulot sahifalari uchun"
+        "x": {
+          "name": "X (Twitter)",
+          "note": "twitter: bo'lmasa og: dan oladi. summary_large_image uchun rasm shart."
         },
-        "video": {
-          "label": "Video kontent",
-          "description": "Video va multimedia kontent uchun"
+        "facebook": {
+          "name": "Facebook",
+          "note": "Faqat og: taglarini o'qiydi. Keshni Sharing Debugger orqali yangilash mumkin."
         },
-        "company": {
-          "label": "Kompaniya sahifasi",
-          "description": "Biznes va korporativ sahifalar uchun"
-        },
-        "event": {
-          "label": "Event sahifasi",
-          "description": "Tadbirlar va konferensiyalar uchun"
+        "linkedin": {
+          "name": "LinkedIn",
+          "note": "og: taglarini o'qiydi va keshni uzoq saqlaydi — Post Inspector orqali yangilanadi."
         }
+      },
+      "image": {
+        "title": "Rasm o'lchami",
+        "body": "{width} × {height} — barcha katta kartalar shu nisbatga (1.91:1) moslangan. Tomoni {min} pikseldan kichik rasm umuman ko'rsatilmaydi. Rasm manzili albatta to'liq bo'lishi kerak: nisbiy yo'l ulashish kartasida rasm ko'rinmasligining eng ko'p uchraydigan sababi."
+      },
+      "cache": {
+        "title": "Nega o'zgarish ko'rinmayapti",
+        "body": "Platformalar birinchi marta o'qigan taglarini keshlaydi — Facebook va LinkedIn uzoq muddatga. Taglarni to'g'rilaganingizdan keyin ham eski karta ko'rinaversa, bu odatda xato emas: Facebook Sharing Debugger yoki LinkedIn Post Inspector'da manzilni qayta tekshirtiring."
       }
     },
-    "FormPanel": {
-      "title": "Ma'lumot Kiritish",
-      "status": "Form",
-      "basicInfo": "Asosiy Ma'lumotlar",
-      "systemSettings": "Tizim Sozlamalari",
-      "inputStats": "Kiritilgan ma'lumotlar",
-      "titleLabel": "Sarlavha *",
-      "titlePlaceholder": "Sahifa sarlavhasi (70 belgigacha)",
-      "titleCounter": "belgi",
-      "descLabel": "Tavsif *",
-      "descPlaceholder": "Sahifa haqida qisqacha tavsif (200 belgigacha)",
-      "imageLabel": "Rasm URL",
-      "imagePlaceholder": "https://example.com/image.jpg",
-      "urlLabel": "Sahifa URL",
-      "urlPlaceholder": "https://example.com",
-      "siteNameLabel": "Sayt Nomi",
-      "siteNamePlaceholder": "Sayt yoki kompaniya nomi",
-      "contentTypeLabel": "Kontent Turi",
-      "twitterCardLabel": "Twitter Card",
-      "twitterSiteLabel": "Twitter Site",
-      "twitterSitePlaceholder": "@username",
-      "twitterCreatorLabel": "Twitter Creator",
-      "twitterCreatorPlaceholder": "@username",
-      "gettingLong": "Uzayib bormoqda",
-      "perfect": "Mukammal!",
-      "tooLongError": "Juda uzun!",
-      "contentType": "Kontent Turi",
-      "twitterCard": "Twitter Karta",
-      "language": "Til",
-      "imageSize": "Rasm O'lchami",
-      "twitterSite": "Twitter Sayt",
-      "twitterCreator": "Twitter Muallif",
-      "typeWebsite": "Veb-sayt",
-      "typeArticle": "Maqola",
-      "typeVideo": "Video",
-      "typeBook": "Kitob",
-      "typeProfile": "Profil",
-      "typeMusic": "Musiqa",
-      "cardSummary": "Qisqacha",
-      "cardLargeImage": "Katta Rasm",
-      "cardApp": "Ilova",
-      "cardPlayer": "Player",
-      "langUzbek": "O'zbek",
-      "langEnglish": "Ingliz",
-      "langRussian": "Rus",
-      "langTurkish": "Turk",
-      "recommended": "Tavsiya etiladi",
-      "square": "Kvadrat"
-    },
-    "OutputPanel": {
-      "title": "Tool Natija",
-      "status": "Meta Taglar",
-      "metaTags": "Meta Taglar",
-      "fullHtml": "To'liq HTML",
-      "outputStats": "Yaratilgan natija",
-      "emptyTitle": "Ma'lumotlarni to'ldiring",
-      "emptyDesc": "meta taglar avtomatik yaratiladi",
-      "downloadTxt": "TXT",
-      "downloadHtml": "HTML",
-      "copyAndEdit": "Nusxalab Tahrirlash",
-      "copySuccess": "✅ Meta taglar nusxalandi!\n\n📝 Endi siz:\n• Istalgan matn editoriga joylashtiring\n• Kerak bo'lsa tahrirlang\n• HTML faylingizda ishlating"
-    },
-    "PreviewPanel": {
-      "title": "Ijtimoiy Tarmoq Ko'rinishi",
-      "status": "Ko'rinish",
-      "facebook": "Facebook / Open Graph",
-      "twitter": "Twitter Card",
-      "facebookPreview": "Facebook Ko'rinishi",
-      "twitterCard": "Twitter Kartasi",
-      "telegramPreview": "Telegram Ko'rinishi",
-      "linkedinPreview": "LinkedIn Ko'rinishi",
-      "whatsappPreview": "WhatsApp Ko'rinishi"
-    },
-    "ValidationPanel": {
-      "title": "Aqlli Validatsiya",
-      "status": "SEO Tahlil",
-      "seoScore": "SEO Ball",
-      "metaOptimization": "Meta tag optimizatsiyasi",
-      "excellent": "Ajoyib",
-      "good": "Yaxshi",
-      "needsWork": "Yaxshilash kerak",
-      "validationChecks": "Validatsiya Tekshiruvlari",
-      "titleLength": "Sarlavha Uzunligi",
-      "descriptionLength": "Tavsif Uzunligi",
-      "imageUrl": "Rasm URL",
-      "pageUrl": "Sahifa URL",
-      "titleRequired": "Sarlavha kiritish shart",
-      "descriptionRequired": "Tavsif kiritish shart",
-      "secureHttpsImage": "Xavfsiz HTTPS rasm",
-      "secureHttpsUrl": "Xavfsiz HTTPS URL",
-      "perfectLength": "Mukammal uzunlik",
-      "tooLong": "Juda uzun",
-      "tooShort": "Juda qisqa",
-      "useHttps": "HTTPS ishlatish tavsiya etiladi",
-      "invalidFormat": "Noto'g'ri format",
-      "quickTips": "💡 Tezkor Maslahatlar",
-      "tip1": "• Sarlavha: Optimal ko'rinish uchun 30-60 belgi",
-      "tip2": "• Tavsif: Eng yaxshi natija uchun 120-160 belgi",
-      "tip3": "• Rasm: Mukammal ijtimoiy ulashish uchun 1200x630px",
-      "tip4": "• Har doim xavfsizlik uchun HTTPS URL ishlatish"
-    },
-    "InfoSection": {
-      "title": "Open Graph Meta nima uchun muhim?",
-      "usagePlacesTitle": "Asosiy foydalanish joylari:",
-      "professionalTipsTitle": "Professional maslahatlar:",
-      "noteTitle": "Eslatma:",
-      "noteText": "Meta taglar to'g'ri sozlangan bo'lsa, ijtimoiy tarmoqlarda sahifangiz professional va ishonchli ko'rinadi, bu esa ko'proq mijoz jalb qilishga yordam beradi.",
-      "usagePlaces": {
-        "social": "Ijtimoiy tarmoqlar: Facebook, LinkedIn, WhatsApp'da chiroyli preview",
-        "twitter": "Twitter Cards: Twitter'da professional ko'rinish",
-        "seo": "SEO yaxshilash: Qidiruv tizimlari uchun batafsil ma'lumot",
-        "ctr": "Klik darajasi: Jozibali preview orqali ko'proq bosish",
-        "brand": "Brand identity: Brendingiz uchun consistent ko'rinish",
-        "impression": "Professional taassurot: Saytingiz haqida ijobiy fikr"
-      },
-      "tips": {
-        "tip1": "Sarlavha 70 belgidan oshmasligi kerak (optimal 50-60)",
-        "tip2": "Tavsif 200 belgidan oshmasligi kerak (optimal 150-160)",
-        "tip3": "Rasm 1200x630 piksel o'lchamida bo'lishi kerak",
-        "tip4": "Har bir sahifa uchun unique meta tag yarating",
-        "tip5": "Preview'ni turli platformalarda sinab ko'ring"
-      },
-      "metaTypes": {
-        "openGraphTitle": "Open Graph",
-        "openGraphDesc": "Facebook, LinkedIn va WhatsApp kabi platformalar uchun asosiy meta taglar",
-        "twitterTitle": "Twitter Cards",
-        "twitterDesc": "Twitter'da chiroyli va professional ko'rinish uchun maxsus formatlar",
-        "seoTitle": "SEO Meta",
-        "seoDesc": "Google va boshqa qidiruv tizimlari uchun optimallashtirilgan taglar",
-        "schemaTitle": "Schema.org",
-        "schemaDesc": "Tuzilgan ma'lumotlar uchun semantik web standartlari"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "whatIsOg": {
+          "question": "Open Graph nima va u menga kerakmi?",
+          "answer": "Open Graph — sahifangiz ijtimoiy tarmoqda ulashilganda qaysi sarlavha, tavsif va rasm ko'rinishini belgilaydigan meta taglar to'plami. Ularsiz platforma sahifadan o'zi biror matn va rasm tanlaydi, natijada kartada menyu matni yoki tasodifiy rasm chiqishi mumkin. Havolangiz Telegramda yoki ijtimoiy tarmoqda tarqaladigan bo'lsa — kerak."
+        },
+        "notUpdating": {
+          "question": "Taglarni yangiladim, lekin karta eski holicha. Nega?",
+          "answer": "Bu deyarli har doim kesh. Platformalar sahifani birinchi marta o'qiganda natijani saqlab qo'yadi: Facebook va LinkedIn ancha uzoq saqlaydi, Telegram esa o'z serverida. Yechim — Facebook Sharing Debugger yoki LinkedIn Post Inspector'da manzilni qayta tekshirtirish. Telegramda odatda manzilga ?v=2 kabi qo'shimcha bilan tekshirib ko'riladi."
+        },
+        "imageSize": {
+          "question": "og:image uchun qanday rasm kerak?",
+          "answer": "1200 × 630 piksel, ya'ni 1.91:1 nisbat — barcha katta kartalar shunga moslangan. Tomoni 200 pikseldan kichik rasmni platformalar umuman ko'rsatmaydi. Eng muhimi: manzil to'liq bo'lsin. /og.png kabi nisbiy yo'l ishlamaydi, chunki krauler uni o'z domenidan qidiradi — bu rasm ko'rinmasligining birinchi sababi. Bu vosita rasmingizni brauzeringizda ochib, haqiqiy o'lchamini o'lchaydi."
+        },
+        "twitterNeeded": {
+          "question": "og: taglari bo'lsa, twitter: taglari ham kerakmi?",
+          "answer": "Ko'p hollarda yo'q. X sarlavha, tavsif va rasmni topa olmasa og: taglaridan oladi, shuning uchun ularni takrorlash faqat ikki joyda sinxron saqlash kerak bo'lgan matn qo'shadi. Haqiqatan kerak bo'ladigani — twitter:card (karta katta yoki kichik ko'rinishi) va hisobingizni ko'rsatuvchi twitter:site. Shuning uchun bu vosita aynan shu ikkitasini yozadi."
+        },
+        "nextjs": {
+          "question": "Next.js loyihamda bu taglarni qayerga qo'yaman?",
+          "answer": "App Router'da meta taglar qo'lda yozilmaydi — page.tsx yoki layout.tsx faylidan metadata obyektini eksport qilasiz, Next esa taglarni o'zi chiqaradi. «Next.js» shaklini tanlasangiz, natija aynan shu obyekt ko'rinishida beriladi va uni faylga ko'chirib qo'yish kifoya. Pages Router yoki oddiy HTML sayt uchun «HTML» shaklini oling va <head> ichiga joylashtiring."
+        }
       }
     }
   }
