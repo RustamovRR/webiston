@@ -91,7 +91,7 @@
     },
     "screenResolution": {
       "title": "Screen Resolution",
-      "description": "Information about your screen size and resolution."
+      "description": "Viewport, the active CSS breakpoint, pixel ratio and aspect ratio"
     },
     "userAgentAnalyzer": {
       "title": "User Agent Analyzer",

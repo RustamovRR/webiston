@@ -1,102 +1,129 @@
 {
   "ScreenResolutionPage": {
     "ToolHeader": {
-      "title": "Ekran O'lchami",
-      "description": "Real vaqtda ekran o'lchami, aniqlik va displey ma'lumotlarini ko'ring"
+      "title": "Ekran o'lchami",
+      "description": "CSS aynan qanday o'lchamni ko'radi. Viewport, oyna va ekran o'lchamlari, hozir qaysi Tailwind breakpointda turganingiz, piksel zichligi va tomonlar nisbati — oyna chetini tortishingiz bilanoq hammasi yangilanadi."
     },
-    "ControlPanel": {
-      "title": "Vosita Kirish",
-      "status": "Tayyor",
-      "loadingStatus": "Yuklanmoqda...",
-      "controlPanelTitle": "Boshqaruv paneli",
-      "refreshButton": "Ma'lumotlarni yangilash",
-      "fullscreenButton": "To'liq ekran rejimi",
-      "exitFullscreenButton": "To'liq ekrandan chiqish",
-      "demoDataButton": "Namuna ma'lumotlar",
-      "downloadButton": "Ma'lumotlarni yuklab olish",
-      "mainIndicators": "Asosiy ko'rsatkichlar",
-      "megapixels": "megapiksel",
-      "width": "kenglik",
-      "height": "balandlik"
+    "controls": {
+      "refresh": "Yangilash",
+      "fullscreen": "To'liq ekran",
+      "exitFullscreen": "To'liq ekrandan chiqish",
+      "download": "JSON saqlash"
     },
-    "OutputPanel": {
-      "title": "Vosita Natijasi",
-      "dataAvailable": "Ma'lumot mavjud",
-      "noData": "Ma'lumot yo'q",
-      "waitingTitle": "Ma'lumot kutilmoqda",
-      "waitingDesc": "Ekran ma'lumotlarini olish uchun yuqoridagi tugmalardan birini bosing",
-      "screenInfoTitle": "Ekran ma'lumotlari",
-      "screenSize": "Ekran o'lchami",
-      "resolutionType": "Aniqlik turi",
-      "viewportInfoTitle": "Ko'rinish oynasi ma'lumotlari",
-      "innerSize": "Ichki o'lchami",
-      "outerSize": "Tashqi o'lchami",
-      "technicalInfoTitle": "Texnik ma'lumotlar",
-      "pixelRatio": "Piksel nisbati",
+    "readout": {
+      "title": "Viewport — hozirgi holat",
+      "cssPixels": "CSS piksel",
+      "breakpoint": "Breakpoint",
       "aspectRatio": "Tomonlar nisbati",
-      "orientation": "Yo'nalish",
-      "colorDepth": "Rang chuqurligi",
-      "deviceType": "Qurilma turi",
-      "retinaDisplay": "Yuqori aniqlikli displey",
+      "pixelRatio": "Piksel zichligi",
+      "orientation": "Orientatsiya"
+    },
+    "breakpoints": {
+      "title": "Tailwind breakpointlari",
+      "explainer": "min-width so'rovlari ustma-ust qo'shiladi: hozir {active} gacha bo'lgan barcha breakpointlar ishlab turibdi, ziddiyat bo'lganda esa {active} g'olib chiqadi."
+    },
+    "measurements": {
+      "title": "Barcha o'lchamlar",
+      "copy": "O'lchamlarni nusxalash",
+      "rows": {
+        "viewport": "Viewport",
+        "window": "Brauzer oynasi",
+        "screen": "Ekran (CSS piksel)",
+        "screenDevice": "Ekran (qurilma piksellari)",
+        "available": "Mavjud maydon",
+        "aspectRatio": "Ekran tomonlar nisbati",
+        "megapixels": "Jami piksellar",
+        "colorDepth": "Rang chuqurligi",
+        "fullscreen": "To'liq ekran"
+      },
+      "hints": {
+        "viewport": "media so'rovlari aynan shuni o'lchaydi",
+        "window": "brauzerning o'z paneli bilan birga",
+        "screen": "monitorning to'liq o'lchami",
+        "screenDevice": "CSS piksel piksel zichligiga ko'paytirilgan",
+        "available": "ekrandan dock yoki vazifalar paneli ayirilgan"
+      }
+    },
+    "presets": {
+      "title": "Keng tarqalgan qurilmalar",
+      "caption": "Ommabop qurilmalarning viewport o'lchami va piksel zichligi",
+      "youAreHere": "siz",
+      "columns": {
+        "device": "Qurilma",
+        "viewport": "Viewport",
+        "dpr": "DPR"
+      }
+    },
+    "mediaQuery": {
+      "title": "Shu o'lcham uchun CSS",
+      "copy": "CSS nusxalash"
+    },
+    "values": {
       "yes": "Ha",
       "no": "Yo'q",
-      "scrollPositionTitle": "Aylantirish pozitsiyasi",
-      "horizontalScroll": "Gorizontal aylantirish",
-      "verticalScroll": "Vertikal aylantirish"
+      "portrait": "Bo'yiga",
+      "landscape": "Eniga"
     },
-    "ResolutionCategories": {
-      "title": "Aniqlik turlari",
-      "categories": {
-        "4K": "4K Ultra Yuqori Aniqlik",
-        "QHD": "To'rt Barobar HD",
-        "FHD": "To'liq HD",
-        "HD": "Yuqori Aniqlik",
-        "SD": "Standart Aniqlik"
+    "reference": {
+      "title": "Qaysi o'lcham xossasini qachon ishlatish kerak",
+      "intro": "To'rt xossa to'rt xil to'rtburchakni o'lchaydi, va noto'g'risini tanlash — sahifa brauzerda to'g'ri ko'rinib, media so'rovda buzilishining eng ko'p uchraydigan sababi.",
+      "columns": {
+        "property": "Xossa",
+        "measures": "Nimani o'lchaydi",
+        "useFor": "Qachon kerak"
+      },
+      "rows": {
+        "screen": {
+          "property": "screen.width / height",
+          "measures": "Monitorning to'liq o'lchami — brauzer umuman hisobga olinmaydi.",
+          "useFor": "Analitika va qurilmani taxminiy toifalash. Layout uchun hech qachon emas."
+        },
+        "avail": {
+          "property": "screen.availWidth / availHeight",
+          "measures": "Ekrandan operatsion tizim band qilgan joy — dock, vazifalar paneli, menyu — ayirilgan qismi.",
+          "useFor": "Oyna aslida qanchalik katta bo'la olishini hisoblash."
+        },
+        "inner": {
+          "property": "innerWidth / innerHeight",
+          "measures": "Sahifa chizilayotgan maydon, scrollbar bilan birga.",
+          "useFor": "Layoutga oid hamma narsa. CSS media so'rovlari aynan shuni o'qiydi."
+        },
+        "outer": {
+          "property": "outerWidth / outerHeight",
+          "measures": "Brauzer oynasining to'liq o'lchami: tablar, manzil satri va ramkalar bilan.",
+          "useFor": "O'zingiz ochgan oynani joylashtirish. Deyarli boshqa hech narsa uchun emas."
+        },
+        "dpr": {
+          "property": "devicePixelRatio",
+          "measures": "Bitta CSS pikselni nechta qurilma piksel bo'yashini.",
+          "useFor": "Rasm o'lchamini tanlash va canvasda aniq chizish."
+        }
       }
     },
-    "DeviceTypes": {
-      "title": "Qurilma turlari",
-      "types": {
-        "Mobile": "Mobil qurilma",
-        "Tablet": "Planshet",
-        "Desktop": "Ish stoli kompyuteri",
-        "Large": "Katta ekranli qurilma"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "screenVsViewport": {
+          "question": "Ekran va viewport o'lchami nega har xil?",
+          "answer": "Ekran — monitoringizning to'liq o'lchami. Viewport esa sahifa chizilayotgan to'rtburchak: brauzer tablari, manzil satri, yon panellar va scrollbar ayirib tashlangan. CSS media so'rovlari viewportni o'lchaydi, shuning uchun dizaynni aynan shu raqamga qarab qilish kerak — oyna chetini tortganingizda o'zgaradigan ham o'sha, ekran o'lchami esa joyida qoladi."
+        },
+        "whyNotMarketing": {
+          "question": "Telefonim 1290×2796 deb sotiladi. Nega bu yerda 430×932 yozilgan?",
+          "answer": "Ikkalasi ham to'g'ri, faqat o'lchov birligi boshqa. Reklamadagi raqam jismoniy qurilma piksellarini sanaydi; CSS esa CSS piksellarda ishlaydi, va o'sha telefonda bitta CSS pikselni uchta qurilma piksel bo'yaydi — piksel zichligi 3. 1290 ÷ 3 = 430. Media so'rovlari, shrift o'lchamlari va stylesheetdagi har qanday uzunlik CSS pikselda hisoblanadi, shuning uchun bu sahifadagi qurilmalar jadvali ham o'shalarni ko'rsatadi."
+        },
+        "breakpoints": {
+          "question": "Nega bir nechta breakpoint bir vaqtda belgilangan?",
+          "answer": "Chunki Tailwind breakpointlari min-width so'rovlari, min-width so'rovlari esa ustma-ust qo'shiladi. Kengligi 1400px bo'lganda sm:, md:, lg: va xl: bir vaqtning o'zida ishlab turadi — lg:flex bilan xl:grid urishmasligining sababi oldingisi to'xtagani emas, keyingisi manba tartibida g'olib chiqishi. Ajratib ko'rsatilgan katak — hal qiluvchi prefiks; qolganlari «o'tilgan» deb belgilangan."
+        },
+        "pixelRatio": {
+          "question": "Piksel zichligi amalda nimani o'zgartiradi?",
+          "answer": "Ikki narsani. Rasmlar: zichlik 2 bo'lganda 400px joy uchun 800px rasm kerak bo'ladi — srcset va 2x deskriptori aynan shuning uchun. Va canvas: elementning width atributini CSS kengligiga zichlikni ko'paytirib qo'ying, so'ng kontekstni shu koeffitsientga masshtablang; aks holda chizganingiz xira chiqadi."
+        },
+        "aspectRatio": {
+          "question": "Tomonlar nisbatim nega chiroyli raqam emas?",
+          "answer": "Chunki ko'p ekranlar aniq 16:9 emas. 1512×982 MacBook displeyi 756:491 ga qisqaradi — matematik jihatdan to'g'ri, lekin hech narsa demaydi. Shuning uchun bu sahifa o'lchangan nisbatni avval standartlarga 1.5% aniqlikda solishtiradi va faqat hech biri yaqin kelmasa kasr yoki o'nli songa qaytadi."
+        }
       }
-    },
-    "ModeInfo": {
-      "title": "Rejim ma'lumotlari",
-      "fullscreenMode": "To'liq ekran rejimi",
-      "retinaDisplay": "Yuqori aniqlikli displey",
-      "viewportRatio": "Ko'rinish oynasi foizi"
-    },
-    "InfoSection": {
-      "title": "Ekran O'lchami va Displey Ma'lumotlari",
-      "realTimeTitle": "Real Vaqt Kuzatuvi",
-      "realTimeDesc": "Ekran o'lchami, ko'rinish oynasi ma'lumotlari va qurilma spetsifikatsiyalarini real vaqtda kuzating. Brauzer oynasi o'lchami va aylantirish pozitsiyasini oniy kuzatish.",
-      "professionalTestingTitle": "Professional Test",
-      "professionalTestingItems": {
-        "responsive": "Moslashuvchan veb-dizayn testlari",
-        "crossDevice": "Turli qurilmalarda muvofiqlik tekshiruvi",
-        "fullscreen": "To'liq ekran rejimi tahlili",
-        "pixelRatio": "Piksel nisbati va yuqori aniqlik aniqlash"
-      },
-      "technicalAnalysisTitle": "Texnik Tahlil",
-      "technicalAnalysisItems": {
-        "resolution": "Aniqlik kategoriyasini aniqlash",
-        "deviceType": "Qurilma turini tasniflash",
-        "aspectRatio": "Tomonlar nisbatini hisoblash",
-        "jsonExport": "JSON formatida eksport qilish"
-      },
-      "resolutionStandardsTitle": "Aniqlik Standartlari va Qurilma Turlari",
-      "popularResolutions": "Mashhur Aniqliklar:",
-      "deviceCategories": "Qurilma Kategoriyalari:",
-      "webDevTitle": "Veb Dasturlash",
-      "webDevDesc": "Moslashuvchan dizayn uchun sinish nuqtalarini to'g'ri sozlang. Mobil-birinchi yondashuvni qo'llang va har xil qurilmalarda sinab ko'ring.",
-      "qaTitle": "Sifat Nazorati",
-      "qaDesc": "Turli brauzerlarni sinash uchun har xil qurilma o'lchamlarini simulyatsiya qiling. Yuqori aniqlikli displeylar uchun alohida sinov o'tkazing.",
-      "proTipTitle": "Professional Maslahat:",
-      "proTipDesc": "Ko'rinish oynasi meta tegini to'g'ri sozlash moslashuvchan dizayn uchun muhim.",
-      "proTipCode": "ishlatishni unutmang."
     }
   }
 }

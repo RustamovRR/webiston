@@ -91,7 +91,7 @@
     },
     "screenResolution": {
       "title": "Ekran O'lchami",
-      "description": "Ekran o'lchami va resolution ma'lumotlari"
+      "description": "Viewport, faol CSS breakpoint, piksel zichligi va tomonlar nisbati"
     },
     "userAgentAnalyzer": {
       "title": "User Agent Tahlil",
