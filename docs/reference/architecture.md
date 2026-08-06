@@ -29,7 +29,7 @@ webiston/
 │   ├── modules/tools/{ToolName}/ # feature modules — one folder per tool
 │   ├── lib/                      # content processing, search, utils
 │   ├── hooks/  stores/  types/  constants/  i18n/
-│   └── middleware.ts             # next-intl locale routing
+│   └── proxy.ts                  # next-intl locale routing (was middleware.ts)
 ├── content/                      # 226 MDX chapters, 3 books, + _meta.json each
 ├── messages/                     # uz/en translation JSON + index.js merger
 ├── packages/

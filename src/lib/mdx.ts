@@ -166,40 +166,56 @@ export async function getMDXContent(
 ): Promise<string | null> {
   try {
     const { promises: fs } = await import("node:fs")
-    let filePath: string | null = null
+
+    // The candidates are tracked RELATIVE to `content/`, and the join back to
+    // an absolute path happens at the single read below.
+    //
+    // Turbopack traces filesystem access statically. When the value handed to
+    // `readFile` is a `let` reassigned inside a loop it cannot tell which
+    // subtree is being read, so it falls back to tracing the WHOLE project
+    // into the server bundle — every source file plus `public/` and `docs/`.
+    // `path.join(process.cwd(), "content", relative)` is the shape its
+    // analyser recognises as scoped ("Dynamic filesystem access causes tracing
+    // of the whole project" build warning).
+    const contentRoot = path.join(process.cwd(), "content")
+
+    let relativePath: string | null = null
 
     // Path bo'sh bo'lsa yoki "/" bo'lsa, asosiy page.mdx faylni olish
     if (!contentPath || contentPath === "" || contentPath === "/") {
-      filePath = path.join(process.cwd(), "content", tutorialId, "page.mdx")
+      relativePath = path.join(tutorialId, "page.mdx")
     } else {
       // Content path'ni tozalash
       const cleanPath = contentPath.replace(/^\//, "").replace(/\/$/, "")
 
       // Turli variantlarni sinab ko'rish
       const possiblePaths = [
-        path.join(process.cwd(), "content", tutorialId, cleanPath, "page.mdx"),
-        path.join(process.cwd(), "content", tutorialId, `${cleanPath}.mdx`),
-        path.join(process.cwd(), "content", tutorialId, cleanPath, "index.mdx")
+        path.join(tutorialId, cleanPath, "page.mdx"),
+        path.join(tutorialId, `${cleanPath}.mdx`),
+        path.join(tutorialId, cleanPath, "index.mdx")
       ]
 
       for (const possiblePath of possiblePaths) {
         try {
-          await fs.access(possiblePath)
-          filePath = possiblePath
+          await fs.access(path.join(contentRoot, possiblePath))
+          relativePath = possiblePath
           break
         } catch {
           // Continue to next path
         }
       }
 
-      if (!filePath) {
+      if (!relativePath) {
         console.error(`MDX file not found for path: ${contentPath}`)
         console.error("Tried paths:", possiblePaths)
         return null
       }
     }
 
-    const content = await fs.readFile(filePath, "utf8")
+    const content = await fs.readFile(
+      path.join(process.cwd(), "content", relativePath),
+      "utf8"
+    )
     return content
   } catch (error) {
     console.error("Error reading MDX file:", error)

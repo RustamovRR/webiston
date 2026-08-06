@@ -1,3 +1,6 @@
+// `proxy.ts`, not `middleware.ts`: Next 16.3 deprecated the middleware file
+// convention and renamed it. The import path stays `next-intl/middleware` —
+// that is the library's own entrypoint, unrelated to Next's file name.
 import createMiddleware from "next-intl/middleware"
 
 export default createMiddleware({

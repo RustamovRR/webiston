@@ -415,8 +415,15 @@ export default async function RootLayout({
         />
       </head>
       {/* .variable (not .className) — it defines --font-inter, which
-          --font-sans consumes; `font-sans` is applied on body in globals.css. */}
-      <body className={inter.variable}>
+          --font-sans consumes; `font-sans` is applied on body in globals.css.
+
+          suppressHydrationWarning: browser extensions stamp attributes onto
+          <body> before React hydrates — `cz-shortcut-listen` (ColorZilla),
+          `bis_register`, `__processed_<uuid>__` — and React reports every one
+          as a server/client mismatch. The flag applies to ONE element only,
+          so the one already on <html> does not cover <body>. It suppresses
+          the attribute diff on this element, not on anything inside it. */}
+      <body className={inter.variable} suppressHydrationWarning>
         {/* `var(--primary)`, not `#3b82f6`. That hex is Tailwind's `blue-500`
             and it is NOT our brand hue (217°) — the one piece of chrome that
             appears on every single navigation was the one piece painted in
