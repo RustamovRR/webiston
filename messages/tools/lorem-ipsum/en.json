@@ -2,110 +2,110 @@
   "LoremIpsumPage": {
     "ToolHeader": {
       "title": "Lorem Ipsum Generator",
-      "description": "Modern tool for creating professional placeholder text and paragraphs"
+      "description": "Filler text for a mock-up — by paragraphs, sentences, words or an exact number of bytes. Alongside the classic Latin list there is an Uzbek one, so you can see how your design holds real Uzbek copy."
     },
-    "ConfigPanel": {
-      "title": "Tool Configuration",
-      "status": "Ready",
-      "quickStart": "Quick Start",
-      "quickStartDesc": "Start with standard Lorem Ipsum or customize settings",
-      "loadSample": "Load Sample",
-      "generationType": "Generation Type:",
-      "amount": "Amount",
-      "amountRange": "1 to 1000",
-      "textType": "Text Type",
-      "startWithLorem": "Start with \"Lorem ipsum\"",
-      "generateText": "Generate New Text",
+    "controls": {
+      "unit": "Count by",
+      "units": {
+        "paragraphs": "Paragraphs",
+        "sentences": "Sentences",
+        "words": "Words",
+        "bytes": "Bytes"
+      },
+      "format": "Shape",
+      "formats": {
+        "plain": "Text",
+        "html": "HTML"
+      },
+      "amount": "How many",
+      "amountBytes": "How many bytes",
+      "bank": "Words",
+      "banks": {
+        "cicero": "Classic Latin",
+        "uzbek": "Uzbek",
+        "bacon": "Bacon",
+        "hipster": "Hipster",
+        "cupcake": "Cupcake",
+        "uzbekCyrillic": "Uzbek (Cyrillic)"
+      },
+      "startWithLorem": "Start with “Lorem ipsum”",
+      "generate": "Regenerate",
+      "clear": "Clear",
+      "download": "Save"
+    },
+    "output": {
+      "empty": "Cleared. Press “Regenerate” for new text.",
       "copy": "Copy",
-      "copied": "Copied!",
-      "download": "Download",
-      "clear": "Clear"
+      "stats": "{words} words · {characters} characters · {bytes} bytes",
+      "title": "Filler text"
     },
-    "GenerationTypes": {
-      "paragraphs": "Paragraphs",
-      "sentences": "Sentences",
-      "words": "Words",
-      "bytes": "Characters"
-    },
-    "TextTypes": {
-      "cicero": "Cicero (Classic)",
-      "bacon": "Bacon Ipsum",
-      "hipster": "Hipster Ipsum",
-      "cupcake": "Cupcake Ipsum",
-      "uzbek": "Uzbek Lorem"
-    },
-    "MainPanel": {
-      "sourcePlaceholder": "Click 'Generate New Text' button above...",
-      "sourceLabel": "Generated Text",
-      "targetLabel": "Text Information"
-    },
-    "TextInfo": {
-      "title": "Generated text information:",
-      "length": "Length",
-      "characters": "characters",
-      "words": "Words",
-      "lines": "Lines",
-      "paragraphs": "Paragraphs",
-      "settings": "Settings:",
-      "type": "Type",
-      "amount": "Amount",
-      "textType": "Text type",
-      "startWithLorem": "Start with Lorem",
-      "yes": "Yes",
-      "no": "No"
-    },
-    "Stats": {
-      "characters": "characters",
-      "words": "words",
-      "lines": "lines",
-      "paragraphs": "paragraphs"
-    },
-    "InfoSection": {
-      "textTypesTitle": "About Text Types",
-      "ciceroDesc": "Original Lorem Ipsum text, the most popular variant for classic design and layout",
-      "baconDesc": "Delicious and fun text variant made from meat and food terms",
-      "hipsterDesc": "Created with modern and trendy words, perfect for creative projects",
-      "cupcakeDesc": "Sweet and fun text type with dessert and candy names",
-      "uzbekDesc": "Special variant created with technology and programming terms in Uzbek language"
-    },
-    "HelpSection": {
-      "title": "Why use Lorem Ipsum?",
-      "usagePlacesTitle": "Main usage areas:",
-      "professionalTipsTitle": "Professional tips:",
-      "noteTitle": "Tip:",
-      "noteText": "Lorem Ipsum allows you to focus on design elements without being distracted by content and helps achieve professional results.",
-      "usagePlaces": {
-        "webDesign": {
-          "title": "Web Design:",
-          "desc": "Creating page layouts"
+    "reference": {
+      "title": "What filler text is for",
+      "intro": "The layout is ready and the copy is not written yet — and in between, the design still has to be tested against something that behaves like real text. That is the point of meaningless text: you do not try to read it, so your attention goes to rhythm and length instead. With one condition — it has to resemble the language you will actually write in.",
+      "wordCount": "{count} words",
+      "table": {
+        "bank": "List",
+        "words": "Size",
+        "use": "When"
+      },
+      "banks": {
+        "cicero": {
+          "name": "Classic Latin",
+          "use": "The default. Taken from Cicero, and the source of the “Lorem ipsum dolor sit amet” everybody recognises."
         },
-        "graphicDesign": {
-          "title": "Graphic Design:",
-          "desc": "Brochure and poster design"
+        "uzbek": {
+          "name": "Uzbek",
+          "use": "Use this when the site is in Uzbek. o' and g' are separate letters written with an apostrophe, and ch and sh take two characters, so Uzbek runs longer than Latin."
         },
-        "typography": {
-          "title": "Typography:",
-          "desc": "Testing font and text appearance"
+        "bacon": {
+          "name": "Bacon",
+          "use": "For a client-facing mock-up where the text must not be mistaken for real copy."
         },
-        "prototyping": {
-          "title": "Prototyping:",
-          "desc": "In project prototypes"
+        "hipster": {
+          "name": "Hipster",
+          "use": "The same purpose, a different register."
         },
-        "testing": {
-          "title": "Testing:",
-          "desc": "Content-independent testing"
+        "cupcake": {
+          "name": "Cupcake",
+          "use": "Short dessert words — handy for names, tags and chips."
         },
-        "placeholder": {
-          "title": "Placeholder:",
-          "desc": "Until real content is ready"
+        "uzbekCyrillic": {
+          "name": "Uzbek (Cyrillic)",
+          "use": "For a site or publication set in Cyrillic. Converted from the Latin list: sh and ch collapse to single letters (ш, ч) and x becomes ҳ, so the text takes a different width."
         }
       },
-      "tips": {
-        "tip1": "Consider the approximate length of real content",
-        "tip2": "Try different text lengths",
-        "tip3": "Test on different screen sizes for responsive design",
-        "tip4": "Choose appropriate text type for your client",
-        "tip5": "Use it to properly structure text hierarchy"
+      "origin": {
+        "title": "Where the text comes from",
+        "body": "“Lorem ipsum” is a passage from Cicero's De finibus bonorum et malorum, written in 45 BC, with the words deliberately garbled. Printers used it as a type specimen from the 1500s, and Letraset sheets brought it back into design in the 1980s. It is, in other words, five centuries of text standing in for text."
+      },
+      "limits": {
+        "title": "When not to use it",
+        "body": "Filler flatters a design, because no sentence in it is ever awkwardly long. Real headlines are. Names do not fit, button labels wrap to two lines. So before you hand a layout over, run at least the main screen with real copy once. And never ship this text — Google will index it."
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "whatIsIt": {
+          "question": "What is lorem ipsum?",
+          "answer": "It is filler text with no meaning but the structure of real writing, taken from a Latin work by Cicero with the words deliberately garbled. The point is that whoever is looking at the design does not start reading — their attention stays on rhythm, spacing and length."
+        },
+        "whyUzbek": {
+          "question": "Why does an Uzbek list matter?",
+          "answer": "Because Latin filler misrepresents the size of Uzbek text. In the Uzbek Latin alphabet, o' and g' are separate letters written with an apostrophe, and ch and sh are two characters each — so the same sentence comes out noticeably longer. A button or a column sized against lorem ipsum overflows once the real Uzbek copy arrives."
+        },
+        "seo": {
+          "question": "What happens if I leave this text on the site?",
+          "answer": "Google indexes it like any other text. Your page then appears in search with meaningless Latin in it, gets ranked against words that have nothing to do with your subject, and looks untrustworthy to whoever opens it. Search the project for “lorem” before you go live."
+        },
+        "howMuch": {
+          "question": "How much text should I generate?",
+          "answer": "As much as the layout is designed to hold. One paragraph for a card, three to five for a blog layout, and the word mode for list items. The byte mode is for a different job: testing a field limit or a file size, where you need exactly that many bytes."
+        },
+        "html": {
+          "question": "What does the HTML shape give me?",
+          "answer": "It wraps each paragraph in a p element, so the result can go straight into a template. In word or sentence mode everything stays inside a single p — splitting ten words across ten paragraphs is not what was asked for."
+        }
       }
     }
   }
