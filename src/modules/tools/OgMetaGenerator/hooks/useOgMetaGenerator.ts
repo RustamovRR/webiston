@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 
 import { useOgDraftStore } from "../stores/ogDraftStore"
 import type { MetaDraft } from "../types"
 import { buildTags, renderHtml, renderNextMetadata } from "../utils/meta"
+import { decodeDraft, encodeDraft } from "../utils/share"
 import { validateDraft } from "../utils/validate"
 import { useImageProbe } from "./useImageProbe"
 
@@ -76,6 +77,33 @@ export function useOgMetaGenerator() {
   const clear = useOgDraftStore((state) => state.clear)
 
   const probe = useImageProbe(draft.image)
+
+  /**
+   * The draft, mirrored into the address bar so the page can be sent to
+   * somebody.
+   *
+   * `history.replaceState`, not a router navigation: this fires on every
+   * keystroke, and asking the router to navigate that often schedules work
+   * nobody asked for — the call the URL encoder and the tools index already
+   * made. `replaceState` also keeps the back button meaning "the page before
+   * this one" rather than "one character ago".
+   */
+  const hydrated = useRef(false)
+
+  useEffect(() => {
+    if (hydrated.current) return
+    hydrated.current = true
+    const incoming = decodeDraft(window.location.search)
+    if (Object.keys(incoming).length > 0) applyImport(incoming)
+  }, [applyImport])
+
+  useEffect(() => {
+    // Only after hydration: writing before the link has been read would erase
+    // the very query string this effect is meant to restore.
+    if (!hydrated.current) return
+    const query = encodeDraft(draft)
+    window.history.replaceState(null, "", `${window.location.pathname}${query}`)
+  }, [draft])
 
   const groups = useMemo(() => buildTags(draft), [draft])
 

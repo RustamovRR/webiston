@@ -52,7 +52,10 @@ export const PLATFORMS: readonly Platform[] = [
   "telegram",
   "x",
   "facebook",
-  "linkedin"
+  "linkedin",
+  "whatsapp",
+  "slack",
+  "discord"
 ]
 
 /**
@@ -109,7 +112,10 @@ export const PLATFORM_LIMITS: Record<
   telegram: { title: 90, description: 200 },
   x: { title: 70, description: 125 },
   facebook: { title: 88, description: 110 },
-  linkedin: { title: 120, description: 130 }
+  linkedin: { title: 120, description: 130 },
+  whatsapp: { title: 65, description: 120 },
+  slack: { title: 120, description: 200 },
+  discord: { title: 90, description: 180 }
 }
 
 /** The questions the page both RENDERS and publishes as structured data. */

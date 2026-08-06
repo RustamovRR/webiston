@@ -11,6 +11,10 @@
       "imageAlt": "Article cover: a guide to React Hooks",
       "siteName": "Example Blog"
     },
+    "share": {
+      "copy": "Link",
+      "copied": "Copied"
+    },
     "import": {
       "open": "Import",
       "title": "Bring in existing tags",
@@ -124,6 +128,18 @@
         "linkedin": {
           "name": "LinkedIn",
           "note": "Reads og: tags and caches them for a long time — refresh via Post Inspector."
+        },
+        "whatsapp": {
+          "name": "WhatsApp",
+          "note": "Reads og: tags only and renders the image small. It may drop images over about 300 KB."
+        },
+        "slack": {
+          "name": "Slack",
+          "note": "Reads og: tags. The one your link most often lands in at work."
+        },
+        "discord": {
+          "name": "Discord",
+          "note": "Reads og: tags and shows a longer description than the others."
         }
       },
       "image": {

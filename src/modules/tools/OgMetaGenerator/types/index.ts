@@ -11,7 +11,14 @@ export type TwitterCard = "summary" | "summary_large_image" | "player"
 export type OutputFormat = "html" | "next"
 
 /** Which social card is being previewed. */
-export type Platform = "facebook" | "x" | "telegram" | "linkedin"
+export type Platform =
+  | "telegram"
+  | "x"
+  | "facebook"
+  | "linkedin"
+  | "whatsapp"
+  | "slack"
+  | "discord"
 
 /**
  * Everything the visitor types. One flat record, all strings — an empty string

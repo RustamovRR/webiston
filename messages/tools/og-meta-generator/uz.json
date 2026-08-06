@@ -11,6 +11,10 @@
       "imageAlt": "Maqola muqovasi: React Hooks qo'llanmasi",
       "siteName": "Example Blog"
     },
+    "share": {
+      "copy": "Havola",
+      "copied": "Nusxalandi"
+    },
     "import": {
       "open": "Import",
       "title": "Mavjud taglarni olib kelish",
@@ -124,6 +128,18 @@
         "linkedin": {
           "name": "LinkedIn",
           "note": "og: taglarini o'qiydi va keshni uzoq saqlaydi — Post Inspector orqali yangilanadi."
+        },
+        "whatsapp": {
+          "name": "WhatsApp",
+          "note": "Faqat og: taglarini o'qiydi va rasmni kichik qilib ko'rsatadi. Rasm 300 KB dan katta bo'lsa umuman ko'rsatmasligi mumkin."
+        },
+        "slack": {
+          "name": "Slack",
+          "note": "og: taglarini o'qiydi. Ish suhbatlarida havola ulashilsa — eng ko'p shu ko'rinadi."
+        },
+        "discord": {
+          "name": "Discord",
+          "note": "og: taglarini o'qiydi va tavsifni boshqalarga qaraganda uzunroq ko'rsatadi."
         }
       },
       "image": {

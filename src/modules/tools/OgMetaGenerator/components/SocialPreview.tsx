@@ -39,7 +39,10 @@ const PLATFORM_LABEL: Record<Platform, string> = {
   telegram: "Telegram",
   x: "X",
   facebook: "Facebook",
-  linkedin: "LinkedIn"
+  linkedin: "LinkedIn",
+  whatsapp: "WhatsApp",
+  slack: "Slack",
+  discord: "Discord"
 }
 
 function truncate(value: string, max: number): string {

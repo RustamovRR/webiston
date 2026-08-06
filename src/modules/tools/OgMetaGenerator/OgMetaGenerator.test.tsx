@@ -34,6 +34,9 @@ const checks = () => screen.getByRole("region", { name: /tekshiruv/i })
 
 beforeEach(() => {
   useOgDraftStore.getState().reset()
+  // The draft is mirrored into the address bar, so a query string left by one
+  // test would be read back as the starting draft of the next.
+  window.history.replaceState(null, "", "/")
 })
 
 describe("the tags it writes", () => {
@@ -250,6 +253,42 @@ describe("the re-scrape links", () => {
       "href",
       "https://t.me/WebpageBot"
     )
+  })
+})
+
+describe("the shareable link", () => {
+  it("mirrors the draft into the address bar", () => {
+    // Arrange & Act — a share card is rarely a solo decision: someone writes
+    // the copy, someone else owns the page.
+    renderTool()
+    type(/^sarlavha/i, "Ulashiladigan sarlavha")
+
+    // Assert
+    expect(window.location.search).toContain("t=Ulashiladigan+sarlavha")
+  })
+
+  it("restores a draft from the query string on arrival", () => {
+    // Arrange — the link a colleague was sent.
+    window.history.replaceState(null, "", "/?t=Kelgan&ty=article&loc=en_US")
+
+    // Act
+    renderTool()
+
+    // Assert
+    expect(field(/^sarlavha/i)).toHaveValue("Kelgan")
+    expect(field(/kontent turi/i)).toHaveValue("article")
+  })
+
+  it("ignores values the form's own options cannot express", () => {
+    // Arrange — the same rule the importer follows.
+    window.history.replaceState(null, "", "/?t=Bor&ty=music.song&loc=uz-UZ")
+
+    // Act
+    renderTool()
+
+    // Assert
+    expect(field(/^sarlavha/i)).toHaveValue("Bor")
+    expect(field(/kontent turi/i)).toHaveValue("website")
   })
 })
 

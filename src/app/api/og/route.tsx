@@ -32,6 +32,25 @@ const SIZE = {
 /** Long chapter titles must not overflow the card. */
 const MAX_TITLE = 90
 
+/**
+ * The breadcrumb line, or nothing.
+ *
+ * `path` arrives from the query string, so it is untrusted: only a
+ * slash-and-word-characters shape is echoed into the image.
+ *
+ * The length bound is `{1,120}` and the empty string is rejected FIRST, which
+ * is the whole fix for a defect visible on the card: `{0,120}` matches an
+ * empty string, and `"".replace(/^\/?/, "/")` is `"/"` — a truthy value, so
+ * the caption fell through to a lone slash instead of the tagline. Every
+ * request without a `path` — which is every one this site makes outside the
+ * book chapters — rendered a bare `/` in the corner.
+ */
+export function normaliseBreadcrumb(raw: string | null): string {
+  const value = raw?.trim() ?? ""
+  if (!value) return ""
+  return /^\/?[\w\-/]{1,120}$/.test(value) ? value.replace(/^\/?/, "/") : ""
+}
+
 export function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl
 
@@ -39,12 +58,7 @@ export function GET(request: NextRequest) {
   const title =
     rawTitle.length > MAX_TITLE ? `${rawTitle.slice(0, MAX_TITLE)}…` : rawTitle
 
-  // `path` is echoed into the image as a breadcrumb. It arrives from the query
-  // string, so treat it as untrusted: keep only a leading-slash path shape.
-  const rawPath = searchParams.get("path") || ""
-  const path = /^\/?[\w\-/]{0,120}$/.test(rawPath)
-    ? rawPath.replace(/^\/?/, "/")
-    : ""
+  const path = normaliseBreadcrumb(searchParams.get("path"))
 
   return new ImageResponse(
     <div

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
-import { ClipboardPaste, Sparkles, X } from "lucide-react"
+import { Check, ClipboardPaste, Link2, Sparkles, X } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useCallback, useState } from "react"
 
@@ -16,6 +16,7 @@ import { RescrapeLinks } from "./components/RescrapeLinks"
 import { SocialPreview } from "./components/SocialPreview"
 import { useOgMetaGenerator } from "./hooks/useOgMetaGenerator"
 import type { MetaDraft } from "./types"
+import { encodeDraft } from "./utils/share"
 
 /**
  * Open Graph / Twitter card generator.
@@ -33,8 +34,10 @@ const OgMetaGenerator = () => {
   const tIssues = useTranslations("OgMetaGeneratorPage.issues")
   const tSample = useTranslations("OgMetaGeneratorPage.sample")
   const tImport = useTranslations("OgMetaGeneratorPage.import")
+  const tShare = useTranslations("OgMetaGeneratorPage.share")
 
   const [importing, setImporting] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   const {
     draft,
@@ -99,6 +102,28 @@ const OgMetaGenerator = () => {
   }, [code, output])
 
   /**
+   * The link to this exact form.
+   *
+   * Built on CLICK, not during render: `window.location.origin` does not exist
+   * on the server, so reading it while rendering gives the server and the
+   * client two different values — a hydration mismatch by construction. The
+   * draft is already mirrored into the address bar, so this only has to add
+   * the origin.
+   */
+  const copyLink = useCallback(() => {
+    const link = `${window.location.origin}${window.location.pathname}${encodeDraft(draft)}`
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
+      })
+      // A refused clipboard write must not claim success — the defect already
+      // fixed in the password generator and the UUID tool.
+      .catch(() => {})
+  }, [draft])
+
+  /**
    * The suite's two keys, scoped by a containment check so an Escape pressed
    * inside a portalled control cannot wipe the form behind it.
    */
@@ -149,6 +174,20 @@ const OgMetaGenerator = () => {
         >
           <Sparkles aria-hidden="true" />
           {tSample("load")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={!hasContent}
+          onClick={copyLink}
+        >
+          {linkCopied ? (
+            <Check aria-hidden="true" className="text-success" />
+          ) : (
+            <Link2 aria-hidden="true" />
+          )}
+          {linkCopied ? tShare("copied") : tShare("copy")}
         </Button>
         <Button
           type="button"
