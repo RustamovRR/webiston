@@ -69,10 +69,10 @@
   cost hours. Also recorded the policy explicitly in `pnpm-workspace.yaml`
   (`minimumReleaseAge: 1440`) plus `allowBuilds` decisions, so behaviour no
   longer depends on which pnpm someone runs.
-- `[ ]` **Empty `minimumReleaseAgeExclude`.** 10 packages from the 2026-07-29
-  upgrade were still inside the 24h publish window and are temporarily exempt.
-  Each ages out on its own — delete the block once `pnpm install` passes without
-  it, or those packages stay exempt from the policy forever.
+- `[x]` **`minimumReleaseAgeExclude` deleted (2026-08-06).** All 10 packages had
+  aged out of the 24h window, and `pnpm install` passes without the block — the
+  exact condition the comment set for removing it. The supply-chain policy now
+  applies to every package again, with no standing exemptions.
 
 **Exit:** a PR with a deliberate type error fails CI.
 

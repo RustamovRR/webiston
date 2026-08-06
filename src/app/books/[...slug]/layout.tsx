@@ -1,3 +1,4 @@
+import matter from "gray-matter"
 import { notFound } from "next/navigation"
 import { TutorialLayout } from "@/components/mdx"
 import NavigationStoreInitializer from "@/components/mdx/NavigationStoreInitializer"
@@ -5,8 +6,7 @@ import {
   getMDXContent,
   getTutorialInfo,
   getTutorialNavigation,
-  getTutorialTitle,
-  serializeContent
+  getTutorialTitle
 } from "@/lib/mdx"
 
 /**
@@ -61,8 +61,9 @@ export default async function TutorialsLayout({ children, params }: any) {
       if (h1Title) {
         pageTitle = h1Title
       } else {
-        const serializedContent = await serializeContent(contentText, false)
-        pageTitle = (serializedContent.frontmatter?.title as string) || ""
+        // Frontmatter only — see the note in this route's `page.tsx` for why
+        // this is `gray-matter` and not a full MDX compile.
+        pageTitle = (matter(contentText).data?.title as string) || ""
       }
     }
   }

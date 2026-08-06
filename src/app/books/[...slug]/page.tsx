@@ -1,3 +1,4 @@
+import matter from "gray-matter"
 import type { Metadata } from "next"
 import { notFound, unstable_rethrow } from "next/navigation"
 import {
@@ -5,12 +6,7 @@ import {
   TutorialContent,
   TutorialLanding
 } from "@/components/mdx"
-import {
-  getAllTutorialPaths,
-  getMDXContent,
-  getTutorialInfo,
-  serializeContent
-} from "@/lib/mdx"
+import { getAllTutorialPaths, getMDXContent, getTutorialInfo } from "@/lib/mdx"
 import { SITE_URL } from "@/lib/seo"
 
 interface BookPageProps {
@@ -131,12 +127,23 @@ export async function generateMetadata({
     const contentText = await getMDXContent(tutorialId, currentPath)
 
     if (contentText) {
-      // Frontmatter'ni parse qilish uchun MDX serialize qilamiz
-      const serializedContent = await serializeContent(contentText, false)
-
-      // Frontmatter'dan metadata olish
-      const frontmatter: Record<string, unknown> =
-        serializedContent.frontmatter || {}
+      // `gray-matter`, not a full MDX compile.
+      //
+      // This used to call `serializeContent(contentText, false)` — remark,
+      // rehype, acorn and JSX codegen over the entire chapter — and then read
+      // **one property**: `.frontmatter`. Everything else was thrown away, for
+      // all 226 chapters, on every build.
+      //
+      // It was also the source of the three "Could not parse expression with
+      // acorn" build errors. `serializeContent` runs WITHOUT `remark-math`, so
+      // KaTeX braces like `^{-\frac{1}{n}}` reached the MDX parser as JSX
+      // expressions. The rendered page never had that problem — `MDXContent`
+      // compiles with `remarkMath` + `rehypeKatex` — so this was a compile
+      // nothing rendered, failing on syntax nothing rendered.
+      //
+      // `TutorialContent` has always read frontmatter this way. Same parser,
+      // same result, no compiler.
+      const frontmatter: Record<string, unknown> = matter(contentText).data
       const title =
         asString(frontmatter.title) ??
         slug[slug.length - 1]

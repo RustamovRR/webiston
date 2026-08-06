@@ -1,17 +1,20 @@
-import createMDX from '@next/mdx'
 import { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
-// MDX configuration with standard plugins
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-    providerImportSource: '@mdx-js/react',
-  },
-})
-
+/**
+ * No `@next/mdx`.
+ *
+ * It was wrapped around this config to compile `.mdx` files at BUILD time —
+ * and this app has none. `find src -name "*.mdx"` returns nothing: all 226
+ * chapters live in `content/`, are read from disk at request time by
+ * `src/lib/mdx.ts`, and are compiled by `next-mdx-remote/rsc` inside
+ * `MDXContent`. The bundler never saw an `.mdx` file.
+ *
+ * What it cost: a Turbopack webpack-loader rule, `pageExtensions` carrying
+ * `md`/`mdx` so Next scanned the app tree for page files that cannot exist,
+ * `@mdx-js/loader` as a dependency, and `providerImportSource: '@mdx-js/react'`
+ * pointing at a package that was never a declared dependency at all.
+ */
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig: NextConfig = {
@@ -49,8 +52,8 @@ const nextConfig: NextConfig = {
      */
     turbopackRustReactCompiler: true
   },
-  // Configure pageExtensions to include md and mdx
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  // `pageExtensions` is gone with @next/mdx — the default is already
+  // ts/tsx/js/jsx, and `md`/`mdx` only ever widened Next's route scan.
   transpilePackages: ['next-mdx-remote'],
   reactStrictMode: true,
   output: 'standalone',
@@ -69,4 +72,4 @@ const nextConfig: NextConfig = {
  
 }
 
-export default withMDX(withNextIntl(nextConfig))
+export default withNextIntl(nextConfig)

@@ -67,25 +67,3 @@ allowBuilds:
 # ---------------------------------------------------------------------------
 minimumReleaseAge: 1440
 
-# Vetted exceptions — 2026-07-29.
-#
-# The dependency upgrade of 2026-07-29 moved every workspace to latest, which
-# pulled these 10 in while they were still inside the 24h window. They were
-# accepted deliberately, after the full gate passed (typecheck, lint, test,
-# build, ext:build).
-#
-# ⚠️ THIS LIST IS TEMPORARY. Every entry ages out of the window on its own.
-# Delete the whole block once `pnpm install` succeeds without it — stale entries
-# here would silently exempt those packages from the policy forever.
-# Tracked in docs/roadmap/initiatives/tooling-ci-and-testing.md.
-minimumReleaseAgeExclude:
-  - baseline-browser-mapping
-  - electron-to-chromium
-  - enhanced-resolve
-  - framer-motion
-  - jsdom
-  - motion
-  - motion-dom
-  - nypm
-  - pdfjs-dist
-  - wxt

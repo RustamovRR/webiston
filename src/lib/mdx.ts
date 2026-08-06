@@ -1,5 +1,6 @@
 import path from "node:path"
 import { serialize } from "next-mdx-remote/serialize"
+import { cache } from "react"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
@@ -99,8 +100,32 @@ export interface TutorialNavigation {
   list?: TutorialNavigation[]
 }
 
+/**
+ * Per-request memoisation for the three loaders below.
+ *
+ * Rendering one chapter calls into this module from three independent places
+ * that cannot see each other: `generateMetadata` in the route's `page.tsx`,
+ * the route's `layout.tsx`, and `TutorialContent`. Each one asked the disk the
+ * same question:
+ *
+ *   getMDXContent          page.tsx:127 · layout.tsx:55 · TutorialContent:24
+ *   getTutorialInfo        page.tsx:96 · page.tsx:210 · layout.tsx:43
+ *   getTutorialNavigation  layout.tsx:48 · TutorialContent:21
+ *
+ * Verified in the dev server's log: two `getMDXContent` calls and two
+ * `getTutorialNavigation` calls landed one millisecond apart inside a single
+ * request. Next dedupes `fetch()` for you; it does not dedupe `fs`.
+ *
+ * `cache()` from React is the documented fix — it keys on the arguments and
+ * lives exactly as long as one request, so nothing goes stale between them and
+ * the build's 226 prerenders do not share a growing map.
+ *
+ * `getAllTutorialPaths` is deliberately NOT wrapped: it runs in
+ * `generateStaticParams`, outside any request scope, exactly once.
+ */
+
 // Meta fayldan navigatsiya ma'lumotlarini olish
-export async function getTutorialNavigation(
+export const getTutorialNavigation = cache(async function getTutorialNavigation(
   tutorialId: string
 ): Promise<TutorialNavigation[]> {
   try {
@@ -128,7 +153,7 @@ export async function getTutorialNavigation(
     )
     return []
   }
-}
+})
 
 // Meta ma'lumotlarini navigatsiya strukturasiga o'tkazish
 function convertMetaToNavigation(
@@ -160,7 +185,7 @@ function convertMetaToNavigation(
 }
 
 // MDX fayl content'ini olish
-export async function getMDXContent(
+export const getMDXContent = cache(async function getMDXContent(
   tutorialId: string,
   contentPath: string
 ): Promise<string | null> {
@@ -221,14 +246,16 @@ export async function getMDXContent(
     console.error("Error reading MDX file:", error)
     return null
   }
-}
+})
 
 /** A book id is a directory name under `content/`. Anything else is a URL
  *  someone typed — reject it before it reaches the filesystem. */
 const BOOK_ID = /^[a-z0-9][a-z0-9-]*$/
 
 // Tutorial ma'lumotlarini olish
-export async function getTutorialInfo(tutorialId: string) {
+export const getTutorialInfo = cache(async function getTutorialInfo(
+  tutorialId: string
+) {
   try {
     // This used to build an info object for ANY id: `getTutorialTitle` falls
     // back to the raw string, so /books/anything rendered an empty landing page
@@ -262,7 +289,7 @@ export async function getTutorialInfo(tutorialId: string) {
     console.error("Error getting tutorial info:", error)
     return null
   }
-}
+})
 
 // Tutorial sarlavhasini olish
 export function getTutorialTitle(tutorialId: string): string {
