@@ -1,4 +1,4 @@
-import type { InfoGroup, NavigatorLike } from "../types"
+import type { InfoGroup, InfoRow, NavigatorLike } from "../types"
 import {
   describeBrowser,
   describeDeviceKind,
@@ -78,6 +78,41 @@ export async function readHints(): Promise<HighEntropyHints> {
   }
 }
 
+/**
+ * The safe-area insets, in CSS pixels.
+ *
+ * The rows that save a mobile developer an afternoon. `env(safe-area-inset-*)`
+ * is the space taken by a notch, a home indicator or a rounded corner — a
+ * layout that ignores it puts a button under the iPhone home bar, and there is
+ * no way to read the values from JavaScript except the way this does it:
+ * apply them as padding to an element nobody sees and ask what the browser
+ * computed. Zero on a desktop, which is a real answer rather than a missing
+ * one.
+ */
+function readSafeArea(): string {
+  const probe = document.createElement("div")
+  probe.style.cssText =
+    "position:fixed;top:0;left:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)"
+  document.body.appendChild(probe)
+  const computed = getComputedStyle(probe)
+  const sides = [
+    computed.paddingTop,
+    computed.paddingRight,
+    computed.paddingBottom,
+    computed.paddingLeft
+  ].map((side) => Math.round(Number.parseFloat(side) || 0))
+  probe.remove()
+
+  return sides.join(" / ")
+}
+
+/** `portrait` or `landscape`, or `null` where the API is absent. */
+function orientationAxis(): string | null {
+  const type = screen.orientation?.type
+  if (!type) return null
+  return type.startsWith("portrait") ? "portrait" : "landscape"
+}
+
 /** `matchMedia` as a plain string, or `null` where the query is unsupported. */
 function media(query: string, whenTrue: string, whenFalse: string): string {
   return window.matchMedia(query).matches ? whenTrue : whenFalse
@@ -127,13 +162,27 @@ export function readGroups(hints: HighEntropyHints): InfoGroup[] {
           key: "viewport",
           value: `${window.innerWidth} × ${window.innerHeight}`
         },
+        {
+          key: "visualViewport",
+          // On a phone `innerHeight` includes the strip under the address bar
+          // that the browser is currently covering; the visual viewport is
+          // what the visitor can actually see, and it shrinks when the
+          // on-screen keyboard opens.
+          value: window.visualViewport
+            ? `${Math.round(window.visualViewport.width)} × ${Math.round(window.visualViewport.height)}`
+            : null
+        },
+        { key: "safeArea", value: readSafeArea() },
         { key: "pixelRatio", value: window.devicePixelRatio },
         { key: "colorDepth", value: `${screen.colorDepth} bit` },
         {
           key: "orientation",
           // `screen.orientation.type` is the real answer; comparing width to
-          // height calls a narrow desktop window "portrait".
-          value: screen.orientation?.type ?? null
+          // height calls a narrow desktop window "portrait". The `-primary` /
+          // `-secondary` half says which way up the device is, which nobody
+          // asked, so the row keeps the axis and the JSON keeps neither more
+          // nor less than what is shown.
+          value: orientationAxis()
         }
       ]
     },
@@ -185,10 +234,42 @@ export function readGroups(hints: HighEntropyHints): InfoGroup[] {
         {
           key: "forcedColors",
           value: window.matchMedia("(forced-colors: active)").matches
+        },
+        // Two signals that belong on this page more than anywhere else: they
+        // are the visitor ASKING not to be tracked, and both are widely
+        // ignored — which is the point the privacy note makes.
+        { key: "doNotTrack", value: navigator.doNotTrack === "1" },
+        {
+          key: "globalPrivacyControl",
+          value:
+            (navigator as Navigator & { globalPrivacyControl?: boolean })
+              .globalPrivacyControl ?? null
         }
       ]
     }
   ]
+}
+
+/**
+ * The same data as a Markdown table.
+ *
+ * The reason anyone copies this page is to paste it into a bug report, and a
+ * 40-line JSON blob in a GitHub issue is worse than a table. Labels are passed
+ * in rather than looked up here: the words live in the message bundles.
+ */
+export function groupsToMarkdown(
+  groups: InfoGroup[],
+  label: (group: string, row?: string) => string,
+  format: (value: InfoRow["value"]) => string
+): string {
+  return groups
+    .map((group) => {
+      const rows = group.rows
+        .map((row) => `| ${label(group.key, row.key)} | ${format(row.value)} |`)
+        .join("\n")
+      return `### ${label(group.key)}\n\n| | |\n| --- | --- |\n${rows}`
+    })
+    .join("\n\n")
 }
 
 /**

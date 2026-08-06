@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import type { InfoGroup } from "../types"
 import {
@@ -26,10 +26,19 @@ import {
  */
 export function useDeviceInfo() {
   const [groups, setGroups] = useState<InfoGroup[] | null>(null)
-  const [hints, setHints] = useState<HighEntropyHints>({})
 
-  const refresh = useCallback((next: HighEntropyHints) => {
-    setGroups(readGroups(next))
+  /**
+   * The hints live in a ref, not in state.
+   *
+   * They are an INPUT to the next read, not something the page renders, and
+   * putting them in state made the listener effect below depend on them — so
+   * every re-read tore down all six subscriptions and added them again. During
+   * a window drag that is a subscribe/unsubscribe pair per animation frame.
+   */
+  const hints = useRef<HighEntropyHints>({})
+
+  const refresh = useCallback(() => {
+    setGroups(readGroups(hints.current))
   }, [])
 
   /**
@@ -42,15 +51,15 @@ export function useDeviceInfo() {
    */
   useEffect(() => {
     let cancelled = false
-    refresh({})
+    refresh()
 
     // The high-entropy hints are async, so they arrive a tick later and the
     // snapshot is rebuilt with them. Without them the OS row still answers,
     // just less precisely — which is the honest state on Firefox and Safari.
     void readHints().then((resolved) => {
       if (cancelled) return
-      setHints(resolved)
-      refresh(resolved)
+      hints.current = resolved
+      refresh()
     })
 
     return () => {
@@ -58,31 +67,40 @@ export function useDeviceInfo() {
     }
   }, [refresh])
 
+  /**
+   * Subscribed once, for the lifetime of the page.
+   *
+   * `refresh` is stable and reads fresh values every time it fires, so there
+   * is nothing here to re-subscribe for. The Network Information change event
+   * is the one that was missing: switching from wifi to 4G, or the browser
+   * downgrading its estimate, changes three rows and fires no window event —
+   * without this the network group was stale until the visitor pressed
+   * refresh, which is exactly the lie the other four listeners exist to avoid.
+   */
   useEffect(() => {
-    if (!groups) return
-
-    const reread = () => refresh(hints)
     const darkQuery = window.matchMedia("(prefers-color-scheme: dark)")
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const connection = (navigator as Navigator & { connection?: EventTarget })
+      .connection
 
-    window.addEventListener("online", reread)
-    window.addEventListener("offline", reread)
-    window.addEventListener("resize", reread)
-    window.addEventListener("orientationchange", reread)
-    darkQuery.addEventListener("change", reread)
-    motionQuery.addEventListener("change", reread)
+    window.addEventListener("online", refresh)
+    window.addEventListener("offline", refresh)
+    window.addEventListener("resize", refresh)
+    window.addEventListener("orientationchange", refresh)
+    darkQuery.addEventListener("change", refresh)
+    motionQuery.addEventListener("change", refresh)
+    connection?.addEventListener("change", refresh)
 
     return () => {
-      window.removeEventListener("online", reread)
-      window.removeEventListener("offline", reread)
-      window.removeEventListener("resize", reread)
-      window.removeEventListener("orientationchange", reread)
-      darkQuery.removeEventListener("change", reread)
-      motionQuery.removeEventListener("change", reread)
+      window.removeEventListener("online", refresh)
+      window.removeEventListener("offline", refresh)
+      window.removeEventListener("resize", refresh)
+      window.removeEventListener("orientationchange", refresh)
+      darkQuery.removeEventListener("change", refresh)
+      motionQuery.removeEventListener("change", refresh)
+      connection?.removeEventListener("change", refresh)
     }
-    // `groups` only decides whether there is anything to keep up to date; the
-    // listeners themselves read fresh values every time they fire.
-  }, [groups, hints, refresh])
+  }, [refresh])
 
   const json = groups ? groupsToJson(groups) : ""
 
@@ -103,10 +121,5 @@ export function useDeviceInfo() {
     URL.revokeObjectURL(url)
   }, [json])
 
-  return {
-    groups,
-    json,
-    refresh: useCallback(() => refresh(hints), [refresh, hints]),
-    download
-  }
+  return { groups, json, refresh, download }
 }

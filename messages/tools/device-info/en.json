@@ -6,8 +6,11 @@
     },
     "controls": {
       "refresh": "Refresh",
-      "copyAll": "Copy all",
-      "download": "Save JSON"
+      "download": "Save JSON",
+      "copyReport": "As a report (Markdown)",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyJson": "As JSON"
     },
     "copyGroup": "Copy this group",
     "groups": {
@@ -47,12 +50,18 @@
       "colorScheme": "Theme",
       "reducedMotion": "Reduced motion",
       "contrast": "Contrast",
-      "forcedColors": "Forced colours"
+      "forcedColors": "Forced colours",
+      "visualViewport": "Visible area",
+      "safeArea": "Safe area (T/R/B/L)",
+      "doNotTrack": "Do Not Track",
+      "globalPrivacyControl": "Global Privacy Control"
     },
     "values": {
       "yes": "Yes",
       "no": "No",
-      "unavailable": "not reported"
+      "unavailable": "not reported",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
     },
     "privacy": {
       "title": "What this page is actually showing you",

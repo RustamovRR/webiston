@@ -6,8 +6,11 @@
     },
     "controls": {
       "refresh": "Yangilash",
-      "copyAll": "Hammasini nusxalash",
-      "download": "JSON saqlash"
+      "download": "JSON saqlash",
+      "copyReport": "Hisobot sifatida (Markdown)",
+      "copy": "Nusxalash",
+      "copied": "Nusxalandi",
+      "copyJson": "JSON sifatida"
     },
     "copyGroup": "Bo'limni nusxalash",
     "groups": {
@@ -47,12 +50,18 @@
       "colorScheme": "Mavzu",
       "reducedMotion": "Harakat kamaytirilgan",
       "contrast": "Kontrast",
-      "forcedColors": "Majburiy ranglar"
+      "forcedColors": "Majburiy ranglar",
+      "visualViewport": "Ko'rinadigan maydon",
+      "safeArea": "Xavfsiz zona (T/O/P/CH)",
+      "doNotTrack": "Do Not Track",
+      "globalPrivacyControl": "Global Privacy Control"
     },
     "values": {
       "yes": "Ha",
       "no": "Yo'q",
-      "unavailable": "brauzer bermaydi"
+      "unavailable": "brauzer bermaydi",
+      "portrait": "Bo'yiga",
+      "landscape": "Eniga"
     },
     "privacy": {
       "title": "Bu sahifa aslida nimani ko'rsatmoqda",

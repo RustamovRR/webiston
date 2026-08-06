@@ -1,4 +1,4 @@
-import { act, render, screen, within } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
 import { describe, expect, it } from "vitest"
 
@@ -95,6 +95,66 @@ describe("values that change while you look", () => {
       value: true,
       configurable: true
     })
+  })
+})
+
+describe("the mobile rows", () => {
+  it("reports the safe area, which no JavaScript API exposes directly", () => {
+    // Arrange & Act — the value that decides whether a button lands under the
+    // iPhone home bar. It is read by applying `env(safe-area-inset-*)` as
+    // padding to a hidden element and asking what the browser computed.
+    renderTool()
+
+    // Assert — zero on a desktop, which is a real answer rather than a
+    // missing one.
+    const display = within(group(/ekran va oyna/i))
+    expect(display.getByText(/xavfsiz zona/i)).toBeInTheDocument()
+    expect(display.getByText("0 / 0 / 0 / 0")).toBeInTheDocument()
+  })
+
+  it("leaves no probe element behind in the document", () => {
+    // Arrange & Act — the probe is appended, measured and removed; one left
+    // per re-read would be a leak on every resize event.
+    renderTool()
+
+    // Assert
+    expect(document.querySelectorAll("body > div[style]").length).toBe(0)
+  })
+})
+
+describe("the copy control", () => {
+  it("is ONE button, not two that look identical", () => {
+    // Arrange & Act — the first version put two bare `CopyButton`s side by
+    // side; both render an icon and no text, so the toolbar showed two
+    // indistinguishable buttons whose only difference was an accessible name.
+    renderTool()
+
+    // Assert
+    expect(
+      screen.getAllByRole("button", { name: /^nusxalash$/i })
+    ).toHaveLength(1)
+  })
+
+  it("offers the data as a Markdown table as well as JSON", () => {
+    // Arrange — the reason anyone copies this page is to paste it into an
+    // issue, and 40 lines of JSON read worse there than a table.
+    renderTool()
+
+    // Act — Radix opens on `pointerdown`, not on `click`, so a plain click
+    // event leaves the menu shut.
+    fireEvent.pointerDown(
+      screen.getByRole("button", { name: /^nusxalash$/i }),
+      {
+        button: 0,
+        ctrlKey: false
+      }
+    )
+
+    // Assert
+    expect(
+      screen.getByRole("menuitem", { name: /markdown/i })
+    ).toBeInTheDocument()
+    expect(screen.getByRole("menuitem", { name: /json/i })).toBeInTheDocument()
   })
 })
 

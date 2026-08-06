@@ -63,7 +63,10 @@ export function InfoGroupCard({ group }: InfoGroupCardProps) {
                 className={
                   row.wide
                     ? "mt-1 break-all font-mono text-foreground text-xs leading-relaxed"
-                    : "min-w-0 truncate text-right font-mono text-foreground text-sm"
+                    : // Wraps rather than truncates: this is a page whose only
+                      // job is showing values, and a language list or a time
+                      // zone cut off with an ellipsis is data withheld.
+                      "min-w-0 break-words text-right font-mono text-foreground text-sm"
                 }
               >
                 {value ?? (

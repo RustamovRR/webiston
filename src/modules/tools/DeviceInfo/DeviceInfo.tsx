@@ -1,14 +1,16 @@
 "use client"
 
-import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { Button } from "@webiston/ui/primitives/button"
 import { Download, RefreshCw } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
+import { CopyMenu } from "./components/CopyMenu"
 import { InfoGroupCard } from "./components/InfoGroupCard"
 import { useDeviceInfo } from "./hooks/useDeviceInfo"
+import type { InfoRow } from "./types"
+import { groupsToMarkdown } from "./utils/snapshot"
 
 /**
  * What this browser says about itself.
@@ -25,7 +27,29 @@ import { useDeviceInfo } from "./hooks/useDeviceInfo"
  */
 const DeviceInfo = () => {
   const t = useTranslations("DeviceInfoPage")
+  const tRows = useTranslations("DeviceInfoPage.rows")
+  const tGroups = useTranslations("DeviceInfoPage.groups")
+  const tValues = useTranslations("DeviceInfoPage.values")
   const { groups, json, refresh, download } = useDeviceInfo()
+
+  /**
+   * The same data as a Markdown table.
+   *
+   * The reason anyone copies this page is to paste it into a bug report, and
+   * a 40-line JSON blob in a GitHub issue is worse to read than a table. The
+   * labels come from here because this is where the translator is.
+   */
+  const markdown = groups
+    ? groupsToMarkdown(
+        groups,
+        (group, row) => (row ? tRows(row) : tGroups(group)),
+        (value: InfoRow["value"]) => {
+          if (value === null || value === "") return "—"
+          if (typeof value === "boolean") return tValues(value ? "yes" : "no")
+          return String(value)
+        }
+      )
+    : ""
 
   return (
     <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
@@ -39,11 +63,7 @@ const DeviceInfo = () => {
           <RefreshCw aria-hidden="true" />
           {t("controls.refresh")}
         </Button>
-        <CopyButton
-          text={json}
-          variant="outline"
-          label={t("controls.copyAll")}
-        />
+        <CopyMenu markdown={markdown} json={json} />
         <Button
           type="button"
           variant="outline"
