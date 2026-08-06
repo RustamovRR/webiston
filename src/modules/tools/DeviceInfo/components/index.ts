@@ -1,7 +1,4 @@
-export { default as BrowserInfoPanel } from "./BrowserInfoPanel"
-export { default as ConnectionInfoPanel } from "./ConnectionInfoPanel"
-export { default as ControlPanel } from "./ControlPanel"
-export { default as DeviceInfoPanel } from "./DeviceInfoPanel"
-export { default as InfoSection } from "./InfoSection"
-export { default as ScreenInfoPanel } from "./ScreenInfoPanel"
-export { default as SystemInfoPanel } from "./SystemInfoPanel"
+// Client components only. The Server Components in this folder (`DeviceFaq`,
+// `PrivacyNote`) are exported from the module root instead, so importing this
+// barrel can never pull `next-intl/server` into a client bundle.
+export { InfoGroupCard } from "./InfoGroupCard"

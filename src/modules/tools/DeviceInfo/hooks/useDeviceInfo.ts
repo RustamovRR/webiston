@@ -1,355 +1,112 @@
+"use client"
+
 import { useCallback, useEffect, useState } from "react"
-import { useCopyToClipboard } from "usehooks-ts"
 
-// Sample detection results for demo
-const _SAMPLE_DEVICE_INFO = {
-  browser: {
-    name: "Chrome",
-    version: "120.0.6099.109",
-    userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-  },
-  system: {
-    platform: "MacIntel",
-    language: "uz-UZ",
-    languages: ["uz-UZ", "en-US", "ru-RU"],
-    timezone: "Asia/Tashkent",
-    cookieEnabled: true,
-    onlineStatus: true
-  },
-  screen: {
-    width: 1920,
-    height: 1080,
-    availWidth: 1920,
-    availHeight: 1050,
-    colorDepth: 24,
-    pixelRatio: 2.0,
-    orientation: "landscape"
-  },
-  device: {
-    type: "Desktop",
-    isMobile: false,
-    isTablet: false,
-    isDesktop: true,
-    touchSupport: false,
-    maxTouchPoints: 0
-  }
-}
+import type { InfoGroup } from "../types"
+import {
+  groupsToJson,
+  type HighEntropyHints,
+  readGroups,
+  readHints
+} from "../utils/snapshot"
 
-export interface DeviceInfo {
-  browser: {
-    name: string
-    version: string
-    userAgent: string
-  }
-  system: {
-    platform: string
-    language: string
-    languages: string[]
-    timezone: string
-    cookieEnabled: boolean
-    onlineStatus: boolean
-  }
-  screen: {
-    width: number
-    height: number
-    availWidth: number
-    availHeight: number
-    colorDepth: number
-    pixelRatio: number
-    orientation: string
-  }
-  device: {
-    type: string
-    isMobile: boolean
-    isTablet: boolean
-    isDesktop: boolean
-    touchSupport: boolean
-    maxTouchPoints: number
-  }
-  memory?: {
-    deviceMemory?: number
-    hardwareConcurrency?: number
-  }
-  connection?: {
-    effectiveType?: string
-    downlink?: number
-    rtt?: number
-    saveData?: boolean
-  }
-}
+/**
+ * The snapshot, and the parts of it that change while you look at it.
+ *
+ * What this replaces burned CPU on every visit: its effect depended on
+ * `deviceInfo` while calling `detectDevice()`, which wrote a fresh object into
+ * it — detect → new state → effect re-runs → detect, until React gave up with
+ * "Maximum update depth exceeded". That loop was fixed in the consistency
+ * sweep; what is new here is that the LIVE values are live for real.
+ *
+ * Four things move without a page load, and each has an event that announces
+ * it: going offline, rotating the device, resizing the window, and switching
+ * the system between light and dark. A page that reports them once and then
+ * lies until you press refresh is worse than one that does not report them.
+ */
+export function useDeviceInfo() {
+  const [groups, setGroups] = useState<InfoGroup[] | null>(null)
+  const [hints, setHints] = useState<HighEntropyHints>({})
 
-interface UseDeviceInfoOptions {
-  onSuccess?: (message: string) => void
-  onError?: (error: string) => void
-}
-
-export const useDeviceInfo = (options: UseDeviceInfoOptions = {}) => {
-  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [copied, setCopied] = useState("")
-  const [_, copy] = useCopyToClipboard()
-
-  const { onSuccess, onError } = options
-
-  const detectDevice = useCallback(() => {
-    try {
-      const ua = navigator.userAgent
-      const platform = navigator.platform
-
-      // Browser detection
-      let browserName = "Unknown"
-      let browserVersion = "Unknown"
-
-      if (ua.includes("Chrome") && !ua.includes("Edg")) {
-        browserName = "Chrome"
-        browserVersion = ua.match(/Chrome\/([0-9.]+)/)?.[1] || ""
-      } else if (ua.includes("Firefox")) {
-        browserName = "Firefox"
-        browserVersion = ua.match(/Firefox\/([0-9.]+)/)?.[1] || ""
-      } else if (ua.includes("Safari") && !ua.includes("Chrome")) {
-        browserName = "Safari"
-        browserVersion = ua.match(/Version\/([0-9.]+)/)?.[1] || ""
-      } else if (ua.includes("Edg")) {
-        browserName = "Edge"
-        browserVersion = ua.match(/Edg\/([0-9.]+)/)?.[1] || ""
-      }
-
-      // Device type detection
-      const isMobile = /Mobi|Android/i.test(ua)
-      const isTablet = /Tablet|iPad/i.test(ua)
-      const isDesktop = !isMobile && !isTablet
-
-      let deviceType = "Desktop"
-      if (isMobile) deviceType = "Mobile"
-      else if (isTablet) deviceType = "Tablet"
-
-      // Screen orientation
-      let orientation = "landscape"
-      if (screen.width < screen.height) orientation = "portrait"
-
-      const info: DeviceInfo = {
-        browser: {
-          name: browserName,
-          version: browserVersion,
-          userAgent: ua
-        },
-        system: {
-          platform: platform,
-          language: navigator.language,
-          languages: Array.from(navigator.languages),
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          cookieEnabled: navigator.cookieEnabled,
-          onlineStatus: navigator.onLine
-        },
-        screen: {
-          width: screen.width,
-          height: screen.height,
-          availWidth: screen.availWidth,
-          availHeight: screen.availHeight,
-          colorDepth: screen.colorDepth,
-          pixelRatio: window.devicePixelRatio,
-          orientation: orientation
-        },
-        device: {
-          type: deviceType,
-          isMobile,
-          isTablet,
-          isDesktop,
-          touchSupport: "ontouchstart" in window,
-          maxTouchPoints: navigator.maxTouchPoints || 0
-        }
-      }
-
-      // Additional APIs if available
-      if ("deviceMemory" in navigator) {
-        info.memory = {
-          deviceMemory: (navigator as any).deviceMemory,
-          hardwareConcurrency: navigator.hardwareConcurrency
-        }
-      }
-
-      if ("connection" in navigator) {
-        const conn = (navigator as any).connection
-        info.connection = {
-          effectiveType: conn.effectiveType,
-          downlink: conn.downlink,
-          rtt: conn.rtt,
-          saveData: conn.saveData
-        }
-      }
-
-      setDeviceInfo(info)
-      setIsLoading(false)
-      onSuccess?.("Qurilma ma'lumotlari muvaffaqiyatli yuklandi")
-    } catch (error) {
-      console.error("Device detection error:", error)
-      onError?.("Qurilma ma'lumotlarini yuklashda xatolik yuz berdi")
-      setIsLoading(false)
-    }
-  }, [onError, onSuccess])
-
-  const handleCopy = useCallback(
-    async (text: string, type: string) => {
-      try {
-        await copy(text)
-        setCopied(type)
-        setTimeout(() => setCopied(""), 2000)
-        onSuccess?.(`${type} ma'lumotlari nusxalandi`)
-      } catch (error) {
-        console.error("Copy failed:", error)
-        onError?.("Nusxalashda xatolik yuz berdi")
-      }
-    },
-    [copy, onSuccess, onError]
-  )
-
-  const downloadDeviceInfo = useCallback(() => {
-    if (!deviceInfo) {
-      onError?.("Yuklab olish uchun ma'lumot mavjud emas")
-      return
-    }
-
-    try {
-      const data = {
-        timestamp: new Date().toISOString(),
-        device_info: deviceInfo,
-        generated_by: "Webiston Device Info Tool",
-        url: window.location.href
-      }
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json"
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `device-info-${new Date().toISOString().split("T")[0]}.json`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-
-      onSuccess?.("Qurilma ma'lumotlari muvaffaqiyatli yuklab olindi")
-    } catch (error) {
-      console.error("Download failed:", error)
-      onError?.("Yuklab olishda xatolik yuz berdi")
-    }
-  }, [deviceInfo, onSuccess, onError])
-
-  const refreshDeviceInfo = useCallback(() => {
-    setIsLoading(true)
-    setTimeout(() => {
-      detectDevice()
-    }, 500)
-  }, [detectDevice])
-
-  const copySection = useCallback(
-    (section: keyof DeviceInfo) => {
-      if (!deviceInfo?.[section]) {
-        onError?.("Nusxalash uchun ma'lumot mavjud emas")
-        return
-      }
-
-      const sectionData = JSON.stringify(deviceInfo[section], null, 2)
-      handleCopy(sectionData, section)
-    },
-    [deviceInfo, handleCopy, onError]
-  )
-
-  const copyAllInfo = useCallback(() => {
-    if (!deviceInfo) {
-      onError?.("Nusxalash uchun ma'lumot mavjud emas")
-      return
-    }
-
-    const allData = JSON.stringify(deviceInfo, null, 2)
-    handleCopy(allData, "all")
-  }, [deviceInfo, handleCopy, onError])
-
-  const getDeviceSpecs = useCallback(() => {
-    if (!deviceInfo) return null
-
-    return {
-      deviceType: deviceInfo.device.type,
-      browserInfo: `${deviceInfo.browser.name} ${deviceInfo.browser.version}`,
-      screenResolution: `${deviceInfo.screen.width}x${deviceInfo.screen.height}`,
-      platform: deviceInfo.system.platform,
-      language: deviceInfo.system.language,
-      isOnline: deviceInfo.system.onlineStatus,
-      touchSupport: deviceInfo.device.touchSupport,
-      memoryInfo: deviceInfo.memory
-        ? `${deviceInfo.memory.deviceMemory}GB RAM, ${deviceInfo.memory.hardwareConcurrency} cores`
-        : null,
-      connectionInfo: deviceInfo.connection
-        ? `${deviceInfo.connection.effectiveType}, ${deviceInfo.connection.downlink}Mbps`
-        : null
-    }
-  }, [deviceInfo])
-
-  // Detection runs ONCE. The old effect depended on `deviceInfo` while
-  // `detectDevice` wrote a fresh object into it — detect → new state → effect
-  // re-runs → detect again, forever ("Maximum update depth exceeded" on every
-  // visit). `detectDevice` itself is rebuilt per render (its deps are the
-  // caller's inline handlers), so it cannot be a dependency either.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only by design
-  useEffect(() => {
-    detectDevice()
+  const refresh = useCallback((next: HighEntropyHints) => {
+    setGroups(readGroups(next))
   }, [])
 
+  /**
+   * Read after mount, never during render.
+   *
+   * Every value here comes from `navigator`, `screen` or `matchMedia`, none of
+   * which exist on the server — and a value read during render would differ
+   * between the server's HTML and the client's, which is a hydration mismatch
+   * by construction.
+   */
   useEffect(() => {
-    // Functional updates only — the listeners never need the current object,
-    // so this effect subscribes once instead of resubscribing per change.
-    const handleOnlineChange = () => {
-      setDeviceInfo((prev) =>
-        prev
-          ? {
-              ...prev,
-              system: { ...prev.system, onlineStatus: navigator.onLine }
-            }
-          : null
-      )
-    }
+    let cancelled = false
+    refresh({})
 
-    const handleOrientationChange = () => {
-      const newOrientation =
-        screen.width < screen.height ? "portrait" : "landscape"
-      setDeviceInfo((prev) =>
-        prev
-          ? {
-              ...prev,
-              screen: { ...prev.screen, orientation: newOrientation }
-            }
-          : null
-      )
-    }
-
-    window.addEventListener("online", handleOnlineChange)
-    window.addEventListener("offline", handleOnlineChange)
-    window.addEventListener("orientationchange", handleOrientationChange)
-    window.addEventListener("resize", handleOrientationChange)
+    // The high-entropy hints are async, so they arrive a tick later and the
+    // snapshot is rebuilt with them. Without them the OS row still answers,
+    // just less precisely — which is the honest state on Firefox and Safari.
+    void readHints().then((resolved) => {
+      if (cancelled) return
+      setHints(resolved)
+      refresh(resolved)
+    })
 
     return () => {
-      window.removeEventListener("online", handleOnlineChange)
-      window.removeEventListener("offline", handleOnlineChange)
-      window.removeEventListener("orientationchange", handleOrientationChange)
-      window.removeEventListener("resize", handleOrientationChange)
+      cancelled = true
     }
-  }, [])
+  }, [refresh])
+
+  useEffect(() => {
+    if (!groups) return
+
+    const reread = () => refresh(hints)
+    const darkQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+
+    window.addEventListener("online", reread)
+    window.addEventListener("offline", reread)
+    window.addEventListener("resize", reread)
+    window.addEventListener("orientationchange", reread)
+    darkQuery.addEventListener("change", reread)
+    motionQuery.addEventListener("change", reread)
+
+    return () => {
+      window.removeEventListener("online", reread)
+      window.removeEventListener("offline", reread)
+      window.removeEventListener("resize", reread)
+      window.removeEventListener("orientationchange", reread)
+      darkQuery.removeEventListener("change", reread)
+      motionQuery.removeEventListener("change", reread)
+    }
+    // `groups` only decides whether there is anything to keep up to date; the
+    // listeners themselves read fresh values every time they fire.
+  }, [groups, hints, refresh])
+
+  const json = groups ? groupsToJson(groups) : ""
+
+  const download = useCallback(() => {
+    if (!json) return
+    // The data, and nothing else — what this replaces added a timestamp, a
+    // `generated_by` line and the page's own URL to a file about the device.
+    const blob = new Blob([`${json}\n`], {
+      type: "application/json;charset=utf-8"
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "device-info.json"
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }, [json])
 
   return {
-    // State
-    deviceInfo,
-    isLoading,
-    copied,
-
-    // Actions
-    refreshDeviceInfo,
-    downloadDeviceInfo,
-    copyAllInfo,
-    copySection,
-
-    // Utilities
-    getDeviceSpecs
+    groups,
+    json,
+    refresh: useCallback(() => refresh(hints), [refresh, hints]),
+    download
   }
 }
