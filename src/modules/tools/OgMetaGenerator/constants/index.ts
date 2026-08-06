@@ -22,6 +22,23 @@ export const OG_TYPES: readonly OgType[] = [
   "video.other"
 ]
 
+/**
+ * The i18n key for each type.
+ *
+ * `og:type` values carry dots — `video.other` — and next-intl reads a dot as
+ * NESTING, so `t("types.video.other")` looks for `types → video → other` and,
+ * finding nothing, renders the key path into the page. It shipped that way for
+ * one build: the select's Video option read
+ * `OgMetaGeneratorPage.form.types.video.other`.
+ */
+export const OG_TYPE_KEY: Record<OgType, string> = {
+  website: "website",
+  article: "article",
+  book: "book",
+  profile: "profile",
+  "video.other": "video"
+}
+
 export const TWITTER_CARDS: readonly TwitterCard[] = [
   "summary",
   "summary_large_image",
@@ -72,6 +89,15 @@ export const DESCRIPTION_HARD_MAX = 200
 export const IMAGE_IDEAL_WIDTH = 1200
 export const IMAGE_IDEAL_HEIGHT = 630
 export const IMAGE_MIN_EDGE = 200
+
+/**
+ * The width above which a platform draws the tall card instead of a thumbnail.
+ *
+ * Facebook's own guidance is the source of the number, and Telegram and
+ * LinkedIn behave the same way — none of the three reads `twitter:card`, so
+ * the image itself is what decides.
+ */
+export const LARGE_CARD_MIN_WIDTH = 600
 export const IMAGE_IDEAL_RATIO = IMAGE_IDEAL_WIDTH / IMAGE_IDEAL_HEIGHT
 export const IMAGE_RATIO_TOLERANCE = 0.35
 

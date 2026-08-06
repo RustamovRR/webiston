@@ -40,7 +40,9 @@ export const applicationSchema = {
     "Har bir platformaning o'z qirqish chegarasi bilan ko'rsatish",
     "Rasmning haqiqiy o'lchami va nisbatini brauzerda o'lchash",
     "Nisbiy manzil va yetib bo'lmaydigan rasmni aniqlash",
-    "Natijani HTML yoki Next.js metadata shaklida olish"
+    "Natijani HTML yoki Next.js metadata shaklida olish",
+    "Mavjud <head> taglarini qo'yib, formaga o'girish",
+    "Facebook, LinkedIn va Telegram keshini yangilash havolalari"
   ],
   inLanguage: ["uz", "en"]
 }

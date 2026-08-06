@@ -8,6 +8,7 @@ import { useId } from "react"
 import {
   DESCRIPTION_IDEAL_MAX,
   OG_LOCALES,
+  OG_TYPE_KEY,
   OG_TYPES,
   TITLE_IDEAL_MAX,
   TWITTER_CARDS
@@ -179,7 +180,9 @@ export function FormPanel({ draft, onChange }: FormPanelProps) {
           onChange={(value) => onChange("type", value as OgType)}
           options={OG_TYPES.map((value) => ({
             value,
-            label: t(`types.${value}`)
+            // `OG_TYPE_KEY`, not the value: a dot in a next-intl key means
+            // nesting, so `types.video.other` resolves to nothing.
+            label: t(`types.${OG_TYPE_KEY[value]}`)
           }))}
         />
 

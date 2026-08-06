@@ -72,6 +72,7 @@ export function useOgMetaGenerator() {
   const setPlatform = useOgDraftStore((state) => state.setPlatform)
   const setOutput = useOgDraftStore((state) => state.setOutput)
   const loadSample = useOgDraftStore((state) => state.loadSample)
+  const applyImport = useOgDraftStore((state) => state.applyImport)
   const clear = useOgDraftStore((state) => state.clear)
 
   const probe = useImageProbe(draft.image)
@@ -103,6 +104,7 @@ export function useOgMetaGenerator() {
     setPlatform,
     setOutput,
     loadSample,
+    applyImport,
     clear
   }
 }

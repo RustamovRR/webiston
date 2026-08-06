@@ -125,6 +125,23 @@ describe("the checks", () => {
   })
 })
 
+describe("a slow image", () => {
+  it("says it is loading instead of reporting that there is none", () => {
+    // Arrange & Act — the owner hit this with a real URL that took a second
+    // to answer: the card said "Rasm yo'q" while the image was still on its
+    // way, so the tool reported an absent picture it was in the middle of
+    // fetching.
+    renderTool()
+    type(/rasm manzili/i, "https://webiston.uz/api/og?title=Salom")
+
+    // Assert
+    const card = screen.getByRole("region", { name: /ulashish kartasi/i })
+    expect(within(card).getByText(/yuklanmoqda/i)).toBeInTheDocument()
+    expect(within(card).queryByText("Rasm yo'q")).toBeNull()
+    expect(checks()).toHaveTextContent(/yuklanmoqda va o'lchanmoqda/i)
+  })
+})
+
 describe("the preview", () => {
   it("truncates the title the way the chosen platform does", () => {
     // Arrange
@@ -141,6 +158,98 @@ describe("the preview", () => {
     // Assert
     expect(onTelegram.length).toBe(90)
     expect(onX.length).toBe(70)
+  })
+})
+
+describe("no message renders as its own key", () => {
+  it("keeps every label out of key-path fallback", () => {
+    // Arrange & Act — next-intl renders the KEY PATH when a message fails to
+    // parse, and two things here made that happen: a dot inside a key
+    // (`types.video.other` reads as nesting, so the Video option printed
+    // `OgMetaGeneratorPage.form.types.video.other` into the select) and a
+    // message containing `<head>`, which ICU treats as a rich-text tag with
+    // no handler. Both shipped; this catches the whole class.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /import/i }))
+
+    // Assert
+    expect(document.body.textContent).not.toContain("OgMetaGeneratorPage.")
+    expect(screen.getByRole("option", { name: "Video" })).toBeInTheDocument()
+  })
+})
+
+describe("importing an existing head", () => {
+  it("fills the form from pasted tags", () => {
+    // Arrange — the workflow nobody starts without: you already have a page,
+    // it shares badly, and you want to fix the tags that are on it.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /import/i }))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/shu yerga qo'ying/i), {
+      target: {
+        value: `<meta property="og:title" content="Mavjud sarlavha">
+                <meta property="og:image" content="https://example.uz/og.png">`
+      }
+    })
+    fireEvent.click(screen.getByRole("button", { name: "O'qish" }))
+
+    // Assert
+    expect(field(/^sarlavha/i)).toHaveValue("Mavjud sarlavha")
+    expect(field(/rasm manzili/i)).toHaveValue("https://example.uz/og.png")
+    expect(screen.getByRole("status")).toHaveTextContent(/2 ta maydon/)
+  })
+
+  it("says so when the paste held nothing it recognises", () => {
+    // Arrange — a form that simply does not change is indistinguishable from
+    // a broken button.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /import/i }))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/shu yerga qo'ying/i), {
+      target: { value: "<p>salom</p>" }
+    })
+    fireEvent.click(screen.getByRole("button", { name: "O'qish" }))
+
+    // Assert
+    expect(screen.getByRole("status")).toHaveTextContent(/topilmadi/i)
+  })
+
+  it("leaves fields the paste did not mention alone", () => {
+    // Arrange
+    renderTool()
+    type(/sayt nomi/i, "Qo'lda yozilgan")
+    fireEvent.click(screen.getByRole("button", { name: /import/i }))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/shu yerga qo'ying/i), {
+      target: { value: '<meta property="og:title" content="Faqat sarlavha">' }
+    })
+    fireEvent.click(screen.getByRole("button", { name: "O'qish" }))
+
+    // Assert — a patch, not a replacement.
+    expect(field(/sayt nomi/i)).toHaveValue("Qo'lda yozilgan")
+  })
+})
+
+describe("the re-scrape links", () => {
+  it("appear only once there is a real URL, carrying that URL", () => {
+    // Arrange & Act
+    renderTool()
+    expect(screen.queryByRole("link", { name: /facebook/i })).toBeNull()
+    type(/sahifa manzili/i, "https://example.uz/blog/post")
+
+    // Assert
+    expect(screen.getByRole("link", { name: /facebook/i })).toHaveAttribute(
+      "href",
+      "https://developers.facebook.com/tools/debug/?q=https%3A%2F%2Fexample.uz%2Fblog%2Fpost"
+    )
+    // Telegram has no web debugger — refreshing a preview means @WebpageBot.
+    expect(screen.getByRole("link", { name: /telegram/i })).toHaveAttribute(
+      "href",
+      "https://t.me/WebpageBot"
+    )
   })
 })
 

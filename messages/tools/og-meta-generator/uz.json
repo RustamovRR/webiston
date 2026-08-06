@@ -2,7 +2,7 @@
   "OgMetaGeneratorPage": {
     "ToolHeader": {
       "title": "Open Graph Generator",
-      "description": "Havolangiz Telegramda yoki X'da ulashilganda qanday ko'rinishini shu yerda ko'ring va og: hamda twitter: taglarini tayyor holda oling. Rasm o'lchami brauzeringizda o'lchanadi — hech narsa serverga yuborilmaydi."
+      "description": "Havolangiz Telegramda yoki X'da ulashilganda qanday ko'rinishini shu yerda ko'ring va og: hamda twitter: taglarini tayyor holda oling. Yozganlaringiz hech qayerga yuborilmaydi; rasm esa o'lchamini bilish uchun faqat brauzeringizda ochiladi."
     },
     "sample": {
       "load": "Namuna",
@@ -10,6 +10,19 @@
       "description": "useState va useEffect'dan boshlab custom hook yozishgacha — misollar bilan tushuntirilgan qisqa qo'llanma.",
       "imageAlt": "Maqola muqovasi: React Hooks qo'llanmasi",
       "siteName": "Example Blog"
+    },
+    "import": {
+      "open": "Import",
+      "title": "Mavjud taglarni olib kelish",
+      "hint": "Sahifangizning head bo'limini yoki faqat meta taglarni shu yerga qo'ying — vosita ularni o'qib, formani to'ldiradi. Hech qanday so'rov yuborilmaydi, hammasi brauzeringizda.",
+      "placeholder": "<meta property=\"og:title\" content=\"...\" />",
+      "action": "O'qish",
+      "close": "Yopish",
+      "found": "{count} ta maydon to'ldirildi.",
+      "nothing": "Bu matnda tanish meta tag topilmadi."
+    },
+    "rescrape": {
+      "hint": "Taglarni yangiladingizmi, lekin eski karta ko'rinyaptimi? Platformaning keshini shu yerdan yangilang:"
     },
     "form": {
       "panelTitle": "Ma'lumotlar",
@@ -31,7 +44,7 @@
         "article": "Article — maqola",
         "book": "Book — kitob",
         "profile": "Profile — shaxsiy sahifa",
-        "video.other": "Video"
+        "video": "Video"
       },
       "twitterCard": "Karta turi",
       "cards": {
@@ -50,12 +63,14 @@
       "noImage": "Rasm yo'q",
       "imageFailed": "Rasm ochilmadi",
       "imageAlt": "Ulashish kartasi rasmi",
+      "imageLoading": "Rasm yuklanmoqda...",
       "truncation": "{platform} sarlavhadan taxminan {title} ta, tavsifdan {description} ta belgini ko'rsatadi — qolgani qirqiladi."
     },
     "issues": {
       "title": "Tekshiruv",
       "clean": "Hammasi joyida — karta to'liq ko'rinadi.",
       "measured": "Rasm o'lchandi: {width} × {height} · nisbat {ratio}:1",
+      "checkingImage": "Rasm yuklanmoqda va o'lchanmoqda...",
       "titleMissing": "Sarlavha yo'q. Usiz platformalar sahifadagi birinchi mos matnni oladi va bu odatda kerakli matn bo'lmaydi.",
       "titleLong": "Sarlavha {length} ta belgi. {max} tadan keyin ko'pchilik joyda qirqiladi.",
       "titleTooLong": "Sarlavha {length} ta belgi — {max} tadan uzun. Hamma platformada qirqiladi.",
@@ -141,7 +156,7 @@
         },
         "nextjs": {
           "question": "Next.js loyihamda bu taglarni qayerga qo'yaman?",
-          "answer": "App Router'da meta taglar qo'lda yozilmaydi — page.tsx yoki layout.tsx faylidan metadata obyektini eksport qilasiz, Next esa taglarni o'zi chiqaradi. «Next.js» shaklini tanlasangiz, natija aynan shu obyekt ko'rinishida beriladi va uni faylga ko'chirib qo'yish kifoya. Pages Router yoki oddiy HTML sayt uchun «HTML» shaklini oling va <head> ichiga joylashtiring."
+          "answer": "App Router'da meta taglar qo'lda yozilmaydi — page.tsx yoki layout.tsx faylidan metadata obyektini eksport qilasiz, Next esa taglarni o'zi chiqaradi. «Next.js» shaklini tanlasangiz, natija aynan shu obyekt ko'rinishida beriladi va uni faylga ko'chirib qo'yish kifoya. Pages Router yoki oddiy HTML sayt uchun «HTML» shaklini oling va sahifaning head bo'limiga joylashtiring."
         }
       }
     }

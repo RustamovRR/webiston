@@ -3,6 +3,7 @@
 import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
+import { CodeHighlight } from "@webiston/ui/primitives/code-highlight"
 import { Download } from "lucide-react"
 import { useTranslations } from "next-intl"
 
@@ -77,9 +78,16 @@ export function OutputPanel({
         />
       </div>
 
-      <pre className="max-h-[26rem] overflow-auto rounded-lg border border-border bg-muted/40 p-4 font-mono text-foreground text-xs leading-relaxed">
-        <code>{code}</code>
-      </pre>
+      {/* The suite's shared highlighter, the same one the JSON formatter
+          prints its output with — a block of meta tags read as a wall of grey
+          otherwise, and the whole point of this panel is that you scan it
+          before pasting. `typescript` for the Next.js shape, `html` for the
+          tags. */}
+      <CodeHighlight
+        code={code}
+        language={format === "next" ? "typescript" : "html"}
+        className="max-h-[26rem] rounded-lg border border-border bg-muted/40 text-xs"
+      />
     </ToolCard>
   )
 }

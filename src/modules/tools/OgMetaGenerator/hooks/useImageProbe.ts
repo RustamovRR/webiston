@@ -35,6 +35,14 @@ export function useImageProbe(url: string, delay = 400): ImageProbe {
       const image = new Image()
       image.onload = () => {
         if (cancelled) return
+        // An SVG with no intrinsic size reports 0 × 0. That is "we cannot
+        // measure this", not "this is smaller than 200 pixels" — reporting it
+        // as a size would have the checks tell an SVG author their image is
+        // too small when it is resolution-independent.
+        if (image.naturalWidth === 0 || image.naturalHeight === 0) {
+          setProbe({ status: "idle" })
+          return
+        }
         setProbe({
           status: "ready",
           width: image.naturalWidth,

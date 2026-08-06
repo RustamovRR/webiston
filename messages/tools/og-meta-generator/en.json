@@ -2,7 +2,7 @@
   "OgMetaGeneratorPage": {
     "ToolHeader": {
       "title": "Open Graph Generator",
-      "description": "See how your link will look when it is shared on Telegram or X, and take the og: and twitter: tags away ready to paste. The image is measured in your own browser — nothing is sent to a server."
+      "description": "See how your link will look when it is shared on Telegram or X, and take the og: and twitter: tags away ready to paste. Nothing you type is sent anywhere; the image is opened in your own browser, only to measure it."
     },
     "sample": {
       "load": "Sample",
@@ -10,6 +10,19 @@
       "description": "From useState and useEffect through to writing your own custom hook — a short guide, explained with examples.",
       "imageAlt": "Article cover: a guide to React Hooks",
       "siteName": "Example Blog"
+    },
+    "import": {
+      "open": "Import",
+      "title": "Bring in existing tags",
+      "hint": "Paste your page's head section, or just the meta tags, and the form fills itself from them. No request is made — it is all parsed in your browser.",
+      "placeholder": "<meta property=\"og:title\" content=\"...\" />",
+      "action": "Read",
+      "close": "Close",
+      "found": "Filled {count} fields.",
+      "nothing": "No meta tags this tool recognises were found in that text."
+    },
+    "rescrape": {
+      "hint": "Updated your tags but still seeing the old card? Refresh the platform's cache here:"
     },
     "form": {
       "panelTitle": "Details",
@@ -31,7 +44,7 @@
         "article": "Article",
         "book": "Book",
         "profile": "Profile",
-        "video.other": "Video"
+        "video": "Video"
       },
       "twitterCard": "Card type",
       "cards": {
@@ -50,12 +63,14 @@
       "noImage": "No image",
       "imageFailed": "Image failed to load",
       "imageAlt": "Share card image",
+      "imageLoading": "Loading the image...",
       "truncation": "{platform} shows roughly {title} characters of the title and {description} of the description — the rest is cut."
     },
     "issues": {
       "title": "Checks",
       "clean": "All good — the card will render in full.",
       "measured": "Image measured: {width} × {height} · ratio {ratio}:1",
+      "checkingImage": "Loading and measuring the image...",
       "titleMissing": "No title. Without one, platforms pick the first text they find on the page, and it is rarely the text you wanted.",
       "titleLong": "The title is {length} characters. Most places cut it after {max}.",
       "titleTooLong": "The title is {length} characters — longer than {max}. Every platform will cut it.",
@@ -141,7 +156,7 @@
         },
         "nextjs": {
           "question": "Where do these tags go in a Next.js project?",
-          "answer": "In the App Router you do not write meta tags by hand — you export a metadata object from page.tsx or layout.tsx and Next renders the tags for you. Pick the “Next.js” shape and the output is that object, ready to paste into the file. For the Pages Router or a plain HTML site, take the “HTML” shape and put it inside <head>."
+          "answer": "In the App Router you do not write meta tags by hand — you export a metadata object from page.tsx or layout.tsx and Next renders the tags for you. Pick the “Next.js” shape and the output is that object, ready to paste into the file. For the Pages Router or a plain HTML site, take the “HTML” shape and put it in the page's head section."
         }
       }
     }

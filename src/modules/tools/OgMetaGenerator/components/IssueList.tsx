@@ -1,6 +1,6 @@
 "use client"
 
-import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react"
+import { AlertTriangle, CheckCircle2, Loader2, XCircle } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import type { ImageProbe, ValidationIssue } from "../types"
@@ -35,6 +35,20 @@ export function IssueList({ issues, probe }: IssueListProps) {
             height: probe.height,
             ratio: (probe.width / probe.height).toFixed(2)
           })}
+        </p>
+      )}
+
+      {/* The checks below cannot judge an image that has not loaded yet, and
+          saying nothing while a slow URL resolves reads as "there is nothing
+          to report". `polite`, so it is announced after the visitor's own
+          typing rather than interrupting it. */}
+      {probe.status === "loading" && (
+        <p
+          className="flex items-center gap-2 text-muted-foreground text-xs"
+          aria-live="polite"
+        >
+          <Loader2 size={14} aria-hidden="true" className="animate-spin" />
+          {t("checkingImage")}
         </p>
       )}
 

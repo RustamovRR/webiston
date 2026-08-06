@@ -23,6 +23,8 @@ interface OgDraftState extends MetaDraft {
   setPlatform: (platform: Platform) => void
   setOutput: (output: OutputFormat) => void
   loadSample: (sample: MetaDraft) => void
+  /** Fields recognised in a pasted `<head>`; anything absent is left alone. */
+  applyImport: (patch: Partial<MetaDraft>) => void
   clear: () => void
   /** Back to defaults, including the settings. Used by the tests. */
   reset: () => void
@@ -54,10 +56,17 @@ const initialState: MetaDraft & { platform: Platform; output: OutputFormat } = {
 
 export const useOgDraftStore = create<OgDraftState>()((set) => ({
   ...initialState,
+  // The assertion is unavoidable: TypeScript cannot narrow a computed key back
+  // to the specific field the generic already proved it is, so `{ [field]:
+  // value }` widens to `{ [x: string]: … }`. The generic on `setField` is what
+  // keeps the CALL SITES honest.
   setField: (field, value) => set({ [field]: value } as Partial<OgDraftState>),
   setPlatform: (platform) => set({ platform }),
   setOutput: (output) => set({ output }),
   loadSample: (sample) => set(sample),
+  // A patch, not a replacement: a paste that only carries og:title must not
+  // wipe the image URL the visitor typed by hand a moment earlier.
+  applyImport: (patch) => set(patch),
   // Clears the WORK. The preview platform and the output format are settings.
   clear: () =>
     set({

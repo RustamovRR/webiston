@@ -35,7 +35,11 @@ export function escapeAttribute(value: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;")
+  // The apostrophe is deliberately NOT escaped. It is harmless inside a
+  // double-quoted attribute, and this site's audience writes Uzbek: `o'` and
+  // `g'` are LETTERS here, so escaping them turns `O'zbekiston` into
+  // `O&#39;zbekiston` in the block the visitor is about to paste into their
+  // own page. Correct, unreadable, and it would be in almost every title.
 }
 
 /** Collapses the whitespace a pasted paragraph brings with it. */
@@ -95,12 +99,14 @@ export function buildTags(draft: MetaDraft): TagGroups {
     key: "twitter:site",
     content: draft.twitterSite.trim()
   })
-  // twitter:title / :description / :image are omitted on purpose when they
-  // would only repeat the Open Graph values: X falls back to og:* by
-  // specification, and duplicating them doubles what has to be kept in sync.
-  if (title && !description) {
-    push(twitter, { attribute: "name", key: "twitter:title", content: title })
-  }
+  // twitter:title / :description / :image are omitted ON PURPOSE: X falls back
+  // to the og:* values, so repeating them only creates a second copy to keep
+  // in sync. `twitter:card` and `twitter:site` are the two that do something
+  // og:* cannot say.
+  //
+  // An earlier version of this function emitted `twitter:title` only when
+  // there was no description, which is a rule with no reason behind it —
+  // written while thinking about two things at once, and removed on review.
 
   return { basic, og, twitter }
 }

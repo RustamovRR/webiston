@@ -1,16 +1,18 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
-import { Sparkles, X } from "lucide-react"
+import { ClipboardPaste, Sparkles, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
 import { FormPanel } from "./components/FormPanel"
+import { ImportPanel } from "./components/ImportPanel"
 import { IssueList } from "./components/IssueList"
 import { OutputPanel } from "./components/OutputPanel"
+import { RescrapeLinks } from "./components/RescrapeLinks"
 import { SocialPreview } from "./components/SocialPreview"
 import { useOgMetaGenerator } from "./hooks/useOgMetaGenerator"
 import type { MetaDraft } from "./types"
@@ -30,6 +32,9 @@ const OgMetaGenerator = () => {
   const tForm = useTranslations("OgMetaGeneratorPage.form")
   const tIssues = useTranslations("OgMetaGeneratorPage.issues")
   const tSample = useTranslations("OgMetaGeneratorPage.sample")
+  const tImport = useTranslations("OgMetaGeneratorPage.import")
+
+  const [importing, setImporting] = useState(false)
 
   const {
     draft,
@@ -44,6 +49,7 @@ const OgMetaGenerator = () => {
     setPlatform,
     setOutput,
     loadSample,
+    applyImport,
     clear
   } = useOgMetaGenerator()
 
@@ -60,7 +66,12 @@ const OgMetaGenerator = () => {
   const sample: MetaDraft = {
     title: tSample("title"),
     description: tSample("description"),
-    image: "https://picsum.photos/1200/630",
+    // This site's own OG endpoint, not a third-party placeholder service. The
+    // header promises the text never leaves the browser; loading the sample
+    // from picsum.photos would have made the tool's own demo the one request
+    // that contradicts it — and it is 1200×630, so it also demonstrates the
+    // image check passing.
+    image: "https://webiston.uz/api/og?title=React%20Hooks",
     imageAlt: tSample("imageAlt"),
     url: "https://example.uz/blog/react-hooks",
     siteName: tSample("siteName"),
@@ -87,12 +98,23 @@ const OgMetaGenerator = () => {
     URL.revokeObjectURL(url)
   }, [code, output])
 
+  /**
+   * The suite's two keys, scoped by a containment check so an Escape pressed
+   * inside a portalled control cannot wipe the form behind it.
+   */
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (!event.currentTarget.contains(event.target as Node)) return
+
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       if (!code) return
       event.preventDefault()
       void navigator.clipboard.writeText(code).catch(() => {})
+      return
+    }
+    // Escape was missing here while every other refactored tool has it.
+    if (event.key === "Escape" && hasContent) {
+      event.preventDefault()
+      clear()
     }
   }
 
@@ -107,6 +129,18 @@ const OgMetaGenerator = () => {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
+        {/* First in the row on purpose: most visits start from a page that
+            already has tags, not from an empty form. */}
+        <Button
+          type="button"
+          variant={importing ? "default" : "outline"}
+          size="sm"
+          aria-expanded={importing}
+          onClick={() => setImporting((open) => !open)}
+        >
+          <ClipboardPaste aria-hidden="true" />
+          {tImport("open")}
+        </Button>
         <Button
           type="button"
           variant="outline"
@@ -127,6 +161,13 @@ const OgMetaGenerator = () => {
           {tForm("clear")}
         </Button>
       </div>
+
+      {importing && (
+        <ImportPanel
+          onImport={applyImport}
+          onClose={() => setImporting(false)}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         <ToolCard
@@ -150,7 +191,13 @@ const OgMetaGenerator = () => {
           </ToolCard>
 
           <ToolCard title={tIssues("title")}>
-            <IssueList issues={issues} probe={probe} />
+            <div className="space-y-3">
+              <IssueList issues={issues} probe={probe} />
+              {/* The FAQ answers "why is my change not showing" with
+                  "re-scrape it" — these are the actual endpoints, with the
+                  visitor's own URL already in them. */}
+              <RescrapeLinks url={draft.url} />
+            </div>
           </ToolCard>
 
           <OutputPanel

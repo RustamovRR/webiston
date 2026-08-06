@@ -4,7 +4,7 @@ import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { ImageOff } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { PLATFORM_LIMITS, PLATFORMS } from "../constants"
+import { LARGE_CARD_MIN_WIDTH, PLATFORM_LIMITS, PLATFORMS } from "../constants"
 import type { ImageProbe, MetaDraft, Platform } from "../types"
 
 /**
@@ -60,9 +60,21 @@ export function SocialPreview({
   const description = truncate(draft.description, limits.description)
   const host = hostOf(draft.url)
   const showImage = probe.status === "ready" && draft.image.trim().length > 0
-  // Telegram and X put the image beside the text on a `summary` card; every
-  // platform stacks it above on a large card.
-  const isLarge = draft.twitterCard !== "summary"
+
+  /**
+   * Whether the card is the tall kind, decided the way each platform decides.
+   *
+   * `twitter:card` is an X tag. The first version of this component used it
+   * for all four previews, which drew a lie: setting it to `summary` shrank
+   * the Telegram card, and Telegram has never read that tag. Everywhere else
+   * the image's own WIDTH decides — a small picture gets a thumbnail beside
+   * the text, a wide one gets the full-width card — so the preview now
+   * answers the same question the platform will.
+   */
+  const isLarge =
+    platform === "x"
+      ? draft.twitterCard !== "summary"
+      : probe.status === "ready" && probe.width >= LARGE_CARD_MIN_WIDTH
 
   return (
     <div className="space-y-4">
@@ -100,6 +112,21 @@ export function SocialPreview({
                 alt={draft.imageAlt || t("imageAlt")}
                 className="size-full object-cover"
               />
+            ) : probe.status === "loading" ? (
+              /* A slow image used to read as "Rasm yo'q" — the tool reported
+                 an absent picture while it was in the middle of fetching one.
+                 A shimmer in the reserved box says "working", and there is no
+                 progress BAR because there is no progress to report: an
+                 `Image()` load has no events between start and finish, and a
+                 bar that invents its own position is a lie about a wait. */
+              <div
+                className="flex size-full items-center justify-center overflow-hidden"
+                aria-live="polite"
+                aria-busy="true"
+              >
+                <span className="sr-only">{t("imageLoading")}</span>
+                <span className="block size-full animate-shimmer bg-gradient-to-r from-transparent via-foreground/10 to-transparent bg-[length:200%_100%]" />
+              </div>
             ) : (
               <div className="flex size-full flex-col items-center justify-center gap-2 text-muted-foreground">
                 <ImageOff size={20} aria-hidden="true" />
