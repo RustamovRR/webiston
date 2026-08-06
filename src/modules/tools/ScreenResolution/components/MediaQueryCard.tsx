@@ -6,16 +6,18 @@ import { useTranslations } from "next-intl"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 
-import type { ScreenMetrics } from "../types"
+import { FRAMEWORKS } from "../constants"
+import type { FrameworkId } from "../types"
 import { mediaQuerySnippet } from "../utils/metrics"
 
 /**
- * The CSS that matches what you are looking at, ready to paste.
+ * The CSS that matches the width in question, ready to paste.
  *
  * This is the step the old tool left to the reader: it printed the numbers and
  * stopped. Someone debugging a layout at this width then has to remember which
  * breakpoint they are in, look up its bounds, and type a range query — three
- * chances to get it wrong before the first test.
+ * chances to get it wrong before the first test. No competitor in this
+ * category generates the query at all.
  *
  * A RANGE query, not a bare `min-width`, because the reason to copy this is
  * "reproduce exactly what I see", and an open-ended query also matches every
@@ -23,17 +25,34 @@ import { mediaQuerySnippet } from "../utils/metrics"
  */
 
 interface MediaQueryCardProps {
-  metrics: ScreenMetrics
+  width: number | null
+  height: number | null
+  pixelRatio: number | null
+  framework: FrameworkId
 }
 
-export function MediaQueryCard({ metrics }: MediaQueryCardProps) {
+export function MediaQueryCard({
+  width,
+  height,
+  pixelRatio,
+  framework
+}: MediaQueryCardProps) {
   const t = useTranslations("ScreenResolutionPage.mediaQuery")
-  const snippet = mediaQuerySnippet(metrics)
+
+  const scale =
+    FRAMEWORKS.find((entry) => entry.id === framework) ?? FRAMEWORKS[0]
+
+  const snippet =
+    width !== null && height !== null && pixelRatio !== null
+      ? mediaQuerySnippet({ width, height, pixelRatio, framework: scale })
+      : ""
 
   return (
     <ToolCard
       title={t("title")}
-      actions={<CopyButton text={snippet} label={t("copy")} />}
+      actions={
+        <CopyButton text={snippet} disabled={!snippet} label={t("copy")} />
+      }
       bodyClassName="p-0"
     >
       <CodeHighlight code={snippet} language="css" />

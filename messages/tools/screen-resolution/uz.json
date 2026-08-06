@@ -2,7 +2,7 @@
   "ScreenResolutionPage": {
     "ToolHeader": {
       "title": "Ekran o'lchami",
-      "description": "CSS aynan qanday o'lchamni ko'radi. Viewport, oyna va ekran o'lchamlari, hozir qaysi Tailwind breakpointda turganingiz, piksel zichligi va tomonlar nisbati — oyna chetini tortishingiz bilanoq hammasi yangilanadi."
+      "description": "CSS aynan qanday o'lchamni ko'radi. Viewport, oyna va ekran o'lchamlari, hozir qaysi breakpointda turganingiz — Tailwind, Bootstrap yoki MUI — piksel zichligi va tomonlar nisbati. Oyna chetini tortishingiz bilanoq hammasi yangilanadi, va o'zingiz turmagan kenglik haqida ham so'rasangiz bo'ladi."
     },
     "controls": {
       "refresh": "Yangilash",
@@ -16,11 +16,14 @@
       "breakpoint": "Breakpoint",
       "aspectRatio": "Tomonlar nisbati",
       "pixelRatio": "Piksel zichligi",
-      "orientation": "Orientatsiya"
+      "orientation": "Orientatsiya",
+      "breakpointPreview": "Breakpoint (tekshiruv)"
     },
     "breakpoints": {
-      "title": "Tailwind breakpointlari",
-      "explainer": "min-width so'rovlari ustma-ust qo'shiladi: hozir {active} gacha bo'lgan barcha breakpointlar ishlab turibdi, ziddiyat bo'lganda esa {active} g'olib chiqadi."
+      "title": "Breakpointlar",
+      "explainer": "min-width so'rovlari ustma-ust qo'shiladi: hozir {active} gacha bo'lgan barcha breakpointlar ishlab turibdi, ziddiyat bo'lganda esa {active} g'olib chiqadi.",
+      "frameworkLabel": "Breakpoint tizimi",
+      "explainerPreview": "{width}px kenglikda {active} gacha bo'lgan barcha breakpointlar ishlaydi, ziddiyat bo'lganda esa {active} g'olib chiqadi."
     },
     "measurements": {
       "title": "Barcha o'lchamlar",
@@ -52,7 +55,8 @@
         "device": "Qurilma",
         "viewport": "Viewport",
         "dpr": "DPR"
-      }
+      },
+      "hint": "Qurilmani tanlang — sahifa o'sha viewport uchun javob beradi."
     },
     "mediaQuery": {
       "title": "Shu o'lcham uchun CSS",
@@ -124,6 +128,14 @@
           "answer": "Chunki ko'p ekranlar aniq 16:9 emas. 1512×982 MacBook displeyi 756:491 ga qisqaradi — matematik jihatdan to'g'ri, lekin hech narsa demaydi. Shuning uchun bu sahifa o'lchangan nisbatni avval standartlarga 1.5% aniqlikda solishtiradi va faqat hech biri yaqin kelmasa kasr yoki o'nli songa qaytadi."
         }
       }
+    },
+    "probe": {
+      "label": "Boshqa kenglikni tekshirish",
+      "placeholder": "masalan 768",
+      "apply": "Tekshirish",
+      "rotate": "Aylantirish",
+      "clear": "O'z oynamga qaytish",
+      "outOfRange": "{min} va {max} piksel oralig'ida kenglik kiriting."
     }
   }
 }

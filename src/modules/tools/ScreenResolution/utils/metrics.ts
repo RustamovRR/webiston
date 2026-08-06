@@ -1,12 +1,35 @@
 import {
   BASE_BREAKPOINT,
   DEVICE_PRESETS,
+  MAX_PROBE_WIDTH,
+  MIN_PROBE_WIDTH,
   NAMED_RATIOS,
   PRESET_TOLERANCE,
   RATIO_TOLERANCE,
   TAILWIND_BREAKPOINTS
 } from "../constants"
-import type { AspectRatio, DevicePreset, ScreenMetrics } from "../types"
+import type {
+  AspectRatio,
+  Breakpoint,
+  DevicePreset,
+  Framework,
+  ScreenMetrics
+} from "../types"
+
+/**
+ * A width the visitor typed, or `null` if it cannot be used.
+ *
+ * Kept here rather than in the input component so the bounds are testable and
+ * the component stays presentational. Rejects rather than clamps: silently
+ * turning "50" into 240 would make the readout disagree with the field, and a
+ * field that argues with you is worse than one that waits.
+ */
+export function parseProbeWidth(raw: string): number | null {
+  const value = Number.parseInt(raw.trim(), 10)
+  if (!Number.isFinite(value)) return null
+  if (value < MIN_PROBE_WIDTH || value > MAX_PROBE_WIDTH) return null
+  return value
+}
 
 /**
  * Reads every measurement in one pass.
@@ -49,15 +72,22 @@ function readOrientation(): "portrait" | "landscape" {
 }
 
 /**
- * The Tailwind prefix that applies at this width.
+ * The prefix that applies at this width, in the given breakpoint scale.
  *
  * Returns the LAST breakpoint whose minimum the width has passed, because
  * `min-width` queries stack: at 1400px, `sm:`, `md:`, `lg:` and `xl:` are all
  * active and `xl:` is the one that wins a conflict.
+ *
+ * The scale is a parameter rather than a constant because the same width sits
+ * in different breakpoints depending on the framework — 1000px is `md` in
+ * Tailwind, `lg` in Bootstrap and `md` in MUI.
  */
-export function activeBreakpoint(viewportWidth: number): string {
+export function activeBreakpoint(
+  viewportWidth: number,
+  breakpoints: readonly Breakpoint[] = TAILWIND_BREAKPOINTS
+): string {
   let active = BASE_BREAKPOINT
-  for (const breakpoint of TAILWIND_BREAKPOINTS) {
+  for (const breakpoint of breakpoints) {
     if (viewportWidth >= breakpoint.min) active = breakpoint.name
   }
   return active
@@ -134,30 +164,42 @@ export function megapixels(width: number, height: number): number {
 }
 
 /**
- * A media query that matches the current viewport, ready to paste.
+ * A media query that matches the given width, ready to paste.
  *
  * The range form (`min-width` AND `max-width`) rather than a bare `min-width`,
  * because the reason to copy this is almost always "reproduce what I am
- * looking at right now", and an open-ended query does not do that.
+ * looking at right now", and an open-ended query also matches every width
+ * above it.
  */
-export function mediaQuerySnippet(metrics: ScreenMetrics): string {
-  const breakpoint = activeBreakpoint(metrics.viewportWidth)
-  const current = TAILWIND_BREAKPOINTS.find((b) => b.name === breakpoint)
-  const next = TAILWIND_BREAKPOINTS.find((b) => b.min > (current?.min ?? 0))
+export function mediaQuerySnippet({
+  width,
+  height,
+  pixelRatio,
+  framework
+}: {
+  width: number
+  height: number
+  pixelRatio: number
+  framework: Framework
+}): string {
+  const breakpoint = activeBreakpoint(width, framework.breakpoints)
+  const current = framework.breakpoints.find((b) => b.name === breakpoint)
+  const next = framework.breakpoints.find((b) => b.min > (current?.min ?? 0))
+  const first = framework.breakpoints[0]?.min ?? 640
 
   const lines = [
-    `/* ${metrics.viewportWidth} x ${metrics.viewportHeight} CSS px, DPR ${metrics.pixelRatio} */`,
+    `/* ${width} x ${height} CSS px, DPR ${pixelRatio} */`,
     current
       ? `@media (min-width: ${current.min}px)${next ? ` and (max-width: ${next.min - 1}px)` : ""} {`
-      : `@media (max-width: ${(TAILWIND_BREAKPOINTS[0]?.min ?? 640) - 1}px) {`,
-    "  /* Tailwind: " + (current ? `${breakpoint}:` : "no prefix") + " */",
+      : `@media (max-width: ${first - 1}px) {`,
+    `  /* ${framework.label}: ${current ? `${breakpoint}:` : "no prefix"} */`,
     "}"
   ]
 
-  if (metrics.pixelRatio > 1) {
+  if (pixelRatio > 1) {
     lines.push(
       "",
-      `@media (min-resolution: ${metrics.pixelRatio}dppx) {`,
+      `@media (min-resolution: ${pixelRatio}dppx) {`,
       "  /* high-density assets */",
       "}"
     )
@@ -169,15 +211,20 @@ export function mediaQuerySnippet(metrics: ScreenMetrics): string {
 /** The whole snapshot as JSON, for copy and download. */
 export function metricsToJson(metrics: ScreenMetrics): string {
   const ratio = describeAspectRatio(metrics.screenWidth, metrics.screenHeight)
+  const deviceWidth = toDevicePixels(metrics.screenWidth, metrics.pixelRatio)
+  const deviceHeight = toDevicePixels(metrics.screenHeight, metrics.pixelRatio)
 
   return JSON.stringify(
     {
       screen: {
         css: `${metrics.screenWidth}x${metrics.screenHeight}`,
-        device: `${toDevicePixels(metrics.screenWidth, metrics.pixelRatio)}x${toDevicePixels(metrics.screenHeight, metrics.pixelRatio)}`,
+        device: `${deviceWidth}x${deviceHeight}`,
         available: `${metrics.availWidth}x${metrics.availHeight}`,
         aspectRatio: ratio.label,
-        megapixels: megapixels(metrics.screenWidth, metrics.screenHeight)
+        // Device pixels, matching the panel. These disagreed until now: the
+        // panel counted device pixels and the export counted CSS pixels, so a
+        // Retina Mac reported 8.3 MP on screen and 2.1 MP in the file.
+        megapixels: megapixels(deviceWidth, deviceHeight)
       },
       viewport: {
         css: `${metrics.viewportWidth}x${metrics.viewportHeight}`,

@@ -1,9 +1,11 @@
-import { act, render, screen, within } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
 import { describe, expect, it } from "vitest"
 
 import commonMessages from "../../../../messages/common/uz.json"
 import toolMessages from "../../../../messages/tools/screen-resolution/uz.json"
+import { LiveReadout } from "./components/LiveReadout"
+import { MeasurementsCard } from "./components/MeasurementsCard"
 import { ScreenResolution } from "./ScreenResolution"
 
 /**
@@ -74,7 +76,7 @@ describe("the breakpoint bar", () => {
     await resizeTo(1400, 900)
 
     // Assert — all six cells are rendered, so the stacking is visible.
-    const bar = within(panel(/tailwind breakpointlari/i))
+    const bar = within(panel(/^breakpointlar$/i))
     for (const name of ["base", "sm", "md", "lg", "xl", "2xl"]) {
       expect(bar.getByText(name)).toBeInTheDocument()
     }
@@ -87,7 +89,7 @@ describe("the breakpoint bar", () => {
     await resizeTo(800, 600)
     // Assert
     expect(
-      within(panel(/tailwind breakpointlari/i)).getByText(/g'olib chiqadi/i)
+      within(panel(/^breakpointlar$/i)).getByText(/g'olib chiqadi/i)
     ).toBeInTheDocument()
   })
 })
@@ -160,6 +162,152 @@ describe("the CSS output", () => {
     expect(css).toContain("max-width: 1023px")
   })
 })
+
+describe("the framework switch", () => {
+  it("re-answers the same width in the chosen scale", async () => {
+    // Arrange — 1000px is Tailwind `md` and Bootstrap `lg`.
+    renderTool()
+    await resizeTo(1000, 800)
+    const bar = () => within(panel(/^breakpointlar$/i))
+    // Tailwind's top cell is `2xl`; Bootstrap's is `xxl`. Only one can be up.
+    expect(bar().getByText("2xl")).toBeInTheDocument()
+
+    // Act
+    await act(async () => {
+      fireEvent.click(screen.getByRole("radio", { name: "Bootstrap 5" }))
+    })
+
+    // Assert — the cells themselves change: Bootstrap has `xxl`, Tailwind
+    // has `2xl`, and only one of them can be on screen.
+    expect(bar().getByText("xxl")).toBeInTheDocument()
+    expect(bar().queryByText("2xl")).not.toBeInTheDocument()
+  })
+
+  it("carries the framework into the generated CSS", async () => {
+    // Arrange
+    renderTool()
+    await resizeTo(1000, 800)
+
+    // Act
+    await act(async () => {
+      fireEvent.click(screen.getByRole("radio", { name: "MUI" }))
+    })
+
+    // Assert — MUI's `md` starts at 900, Tailwind's at 768.
+    const css = panel(/shu o'lcham uchun css/i).textContent ?? ""
+    expect(css).toContain("min-width: 900px")
+    expect(css).toContain("MUI: md:")
+  })
+})
+
+describe("the width probe", () => {
+  it("answers for a width the visitor is not sitting at", async () => {
+    // Arrange
+    renderTool()
+    await resizeTo(1400, 900)
+
+    // Act — ask about a phone width without resizing anything.
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/boshqa kenglikni tekshirish/i), {
+        target: { value: "390" }
+      })
+      fireEvent.click(screen.getByRole("button", { name: /^tekshirish$/i }))
+    })
+
+    // Assert — derived panels follow the probe...
+    const css = panel(/shu o'lcham uchun css/i).textContent ?? ""
+    expect(css).toContain("390 x")
+    expect(css).toContain("max-width: 639px")
+
+    // ...and the readout keeps telling the truth about the real window.
+    expect(
+      within(panel(/viewport — hozirgi holat/i)).getByText("1400", {
+        exact: false
+      })
+    ).toBeInTheDocument()
+  })
+
+  it("refuses a width outside the bounds instead of clamping it", async () => {
+    // Arrange
+    renderTool()
+
+    // Act
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/boshqa kenglikni tekshirish/i), {
+        target: { value: "50" }
+      })
+    })
+
+    // Assert — a field that silently rewrites your input is worse than one
+    // that waits.
+    expect(screen.getByRole("alert")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: /^tekshirish$/i })).toBeDisabled()
+  })
+
+  it("adopts a device's viewport when its row is clicked", async () => {
+    // Arrange
+    renderTool()
+
+    // Act
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /iPad Pro 13/ }))
+    })
+
+    // Assert — 1024x1366, and the state is legible: the device name is now
+    // echoed next to the probe (so it appears twice, row and summary) and the
+    // escape hatch back to the real window exists.
+    const css = panel(/shu o'lcham uchun css/i).textContent ?? ""
+    expect(css).toContain("1024 x 1366")
+    expect(screen.getAllByText(/iPad Pro 13/)).toHaveLength(2)
+    expect(
+      screen.getByRole("button", { name: /o'z oynamga qaytish/i })
+    ).toBeInTheDocument()
+  })
+
+  it("swaps the axes on rotate, which is how landscape gets tested", async () => {
+    // Arrange
+    renderTool()
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /iPhone 15 Pro Max/ }))
+    })
+
+    // Act
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /aylantirish/i }))
+    })
+
+    // Assert — 430x932 becomes 932x430.
+    const css = panel(/shu o'lcham uchun css/i).textContent ?? ""
+    expect(css).toContain("932 x 430")
+  })
+})
+
+describe("before the first measurement", () => {
+  it("renders the labels with the values pending, not an empty page", () => {
+    // Arrange & Act — this is what the server sends. Holding the cards back
+    // until hydration made ~700px appear at once and shoved the reference
+    // table and FAQ down the page.
+    render(
+      <NextIntlClientProvider locale="uz" messages={messages}>
+        <PendingShell />
+      </NextIntlClientProvider>
+    )
+
+    // Assert
+    expect(screen.getByText(/barcha o'lchamlar/i)).toBeInTheDocument()
+    expect(screen.getAllByText("—").length).toBeGreaterThan(5)
+  })
+})
+
+/** The cards as the server renders them: structure, no measurements yet. */
+function PendingShell() {
+  return (
+    <>
+      <LiveReadout metrics={null} preview={null} framework="tailwind" />
+      <MeasurementsCard metrics={null} />
+    </>
+  )
+}
 
 describe("what the rebuild removed", () => {
   it("offers no demo data", () => {

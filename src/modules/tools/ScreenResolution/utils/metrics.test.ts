@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 
+import { FRAMEWORKS } from "../constants"
 import type { ScreenMetrics } from "../types"
 import {
   activeBreakpoint,
@@ -8,6 +9,7 @@ import {
   mediaQuerySnippet,
   megapixels,
   metricsToJson,
+  parseProbeWidth,
   toDevicePixels
 } from "./metrics"
 
@@ -31,6 +33,15 @@ describe("activeBreakpoint", () => {
 
   it("stays at 2xl above the widest breakpoint", () => {
     expect(activeBreakpoint(3840)).toBe("2xl")
+  })
+
+  it("answers differently per framework at the same width", () => {
+    // The whole reason the scale is a parameter: 1000px is `md` in Tailwind,
+    // `lg` in Bootstrap and `md` in MUI — and Bootstrap's lg starts 32px
+    // earlier than Tailwind's, which is exactly where a layout breaks.
+    expect(activeBreakpoint(1000, FRAMEWORKS[0].breakpoints)).toBe("md")
+    expect(activeBreakpoint(1000, FRAMEWORKS[1].breakpoints)).toBe("lg")
+    expect(activeBreakpoint(1000, FRAMEWORKS[2].breakpoints)).toBe("md")
   })
 })
 
@@ -136,10 +147,28 @@ const BASE_METRICS: ScreenMetrics = {
   isFullscreen: false
 }
 
+const TAILWIND = FRAMEWORKS[0]
+const BOOTSTRAP = FRAMEWORKS[1]
+const MUI = FRAMEWORKS[2]
+
+const snippet = (
+  width: number,
+  overrides: {
+    pixelRatio?: number
+    framework?: (typeof FRAMEWORKS)[number]
+  } = {}
+) =>
+  mediaQuerySnippet({
+    width,
+    height: 800,
+    pixelRatio: overrides.pixelRatio ?? 2,
+    framework: overrides.framework ?? TAILWIND
+  })
+
 describe("mediaQuerySnippet", () => {
   it("emits a bounded range for the active breakpoint", () => {
     // Arrange / Act — 1280 is xl, and 2xl starts at 1536.
-    const result = mediaQuerySnippet(BASE_METRICS)
+    const result = snippet(1280)
     // Assert
     expect(result).toContain(
       "@media (min-width: 1280px) and (max-width: 1535px)"
@@ -147,21 +176,53 @@ describe("mediaQuerySnippet", () => {
   })
 
   it("leaves the top breakpoint open-ended", () => {
-    const result = mediaQuerySnippet({ ...BASE_METRICS, viewportWidth: 1600 })
+    const result = snippet(1600)
     expect(result).toContain("@media (min-width: 1536px) {")
     expect(result).not.toContain("max-width")
   })
 
   it("uses a max-width query below the first breakpoint", () => {
-    const result = mediaQuerySnippet({ ...BASE_METRICS, viewportWidth: 390 })
-    expect(result).toContain("@media (max-width: 639px)")
+    expect(snippet(390)).toContain("@media (max-width: 639px)")
   })
 
   it("adds a resolution query only on a high-density display", () => {
-    expect(mediaQuerySnippet(BASE_METRICS)).toContain("min-resolution: 2dppx")
-    expect(mediaQuerySnippet({ ...BASE_METRICS, pixelRatio: 1 })).not.toContain(
-      "min-resolution"
+    expect(snippet(1280)).toContain("min-resolution: 2dppx")
+    expect(snippet(1280, { pixelRatio: 1 })).not.toContain("min-resolution")
+  })
+
+  it("answers in the chosen framework's scale, not Tailwind's", () => {
+    // 1000px: Tailwind md (768–1023), Bootstrap lg (992–1199), MUI md (900–1199).
+    expect(snippet(1000)).toContain("min-width: 768px")
+    expect(snippet(1000, { framework: BOOTSTRAP })).toContain(
+      "min-width: 992px"
     )
+    expect(snippet(1000, { framework: MUI })).toContain("min-width: 900px")
+  })
+
+  it("names the framework in the comment", () => {
+    expect(snippet(1000, { framework: BOOTSTRAP })).toContain(
+      "/* Bootstrap 5: lg: */"
+    )
+  })
+})
+
+describe("parseProbeWidth", () => {
+  it("accepts a width inside the bounds", () => {
+    expect(parseProbeWidth("768")).toBe(768)
+  })
+
+  it("ignores surrounding whitespace", () => {
+    expect(parseProbeWidth("  1024 ")).toBe(1024)
+  })
+
+  it("rejects rather than clamps, so the field never argues with the readout", () => {
+    expect(parseProbeWidth("50")).toBeNull()
+    expect(parseProbeWidth("99999")).toBeNull()
+  })
+
+  it("rejects text", () => {
+    expect(parseProbeWidth("wide")).toBeNull()
+    expect(parseProbeWidth("")).toBeNull()
   })
 })
 

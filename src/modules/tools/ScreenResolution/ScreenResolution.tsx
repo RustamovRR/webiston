@@ -3,6 +3,7 @@
 import { Button } from "@webiston/ui/primitives/button"
 import { Download, Maximize, Minimize, RefreshCw } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useState } from "react"
 
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
@@ -11,9 +12,12 @@ import {
   LiveReadout,
   MeasurementsCard,
   MediaQueryCard,
-  PresetList
+  PresetList,
+  WidthProbe
 } from "./components"
+import { DEFAULT_FRAMEWORK } from "./constants"
 import { useScreenMetrics } from "./hooks/useScreenMetrics"
+import type { FrameworkId, Preview } from "./types"
 
 /**
  * What your CSS sees.
@@ -30,13 +34,27 @@ import { useScreenMetrics } from "./hooks/useScreenMetrics"
  * 1920×1080 data** into a tool whose entire purpose is reporting your real
  * screen.
  *
- * No loading state: reading `window.screen` takes microseconds, so the only
- * frame without data is the server-rendered one.
+ * Two pieces of state live here rather than in the hook, because both are
+ * questions the visitor asks ABOUT the measurements rather than measurements
+ * themselves:
+ *
+ * - `framework` — whose breakpoint scale to answer in.
+ * - `preview` — a width to answer for instead of the real window. The readout
+ *   keeps reporting the real one; only the derived panels follow the preview,
+ *   and they say so.
  */
 const ScreenResolution = () => {
   const t = useTranslations("ScreenResolutionPage")
   const { metrics, json, refresh, toggleFullscreen, download } =
     useScreenMetrics()
+
+  const [framework, setFramework] = useState<FrameworkId>(DEFAULT_FRAMEWORK)
+  const [preview, setPreview] = useState<Preview | null>(null)
+
+  // What the derived panels answer for. `null` until the first measurement,
+  // which is the one frame where the page renders labels without values.
+  const width = preview?.width ?? metrics?.viewportWidth ?? null
+  const height = preview?.height ?? metrics?.viewportHeight ?? null
 
   return (
     <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
@@ -77,22 +95,36 @@ const ScreenResolution = () => {
         </Button>
       </div>
 
-      {metrics ? (
-        <div className="grid grid-cols-1 gap-4">
-          <LiveReadout metrics={metrics} />
-          <BreakpointBar viewportWidth={metrics.viewportWidth} />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <MeasurementsCard metrics={metrics} />
-            <div className="grid grid-cols-1 gap-4">
-              <PresetList
-                viewportWidth={metrics.viewportWidth}
-                viewportHeight={metrics.viewportHeight}
-              />
-              <MediaQueryCard metrics={metrics} />
-            </div>
+      <div className="grid grid-cols-1 gap-4">
+        <LiveReadout
+          metrics={metrics}
+          preview={preview}
+          framework={framework}
+        />
+        <WidthProbe
+          preview={preview}
+          onPreview={setPreview}
+          fallbackHeight={metrics?.viewportHeight ?? 0}
+        />
+        <BreakpointBar
+          width={width}
+          framework={framework}
+          onFrameworkChange={setFramework}
+          isPreview={preview !== null}
+        />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <MeasurementsCard metrics={metrics} />
+          <div className="grid grid-cols-1 gap-4">
+            <PresetList width={width} height={height} onPreview={setPreview} />
+            <MediaQueryCard
+              width={width}
+              height={height}
+              pixelRatio={metrics?.pixelRatio ?? null}
+              framework={framework}
+            />
           </div>
         </div>
-      ) : null}
+      </div>
     </div>
   )
 }

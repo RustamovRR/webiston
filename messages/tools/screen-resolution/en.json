@@ -2,7 +2,7 @@
   "ScreenResolutionPage": {
     "ToolHeader": {
       "title": "Screen resolution",
-      "description": "The size your CSS actually sees. Viewport, window and screen dimensions, the Tailwind breakpoint you are currently in, pixel density and aspect ratio — all of it updates the moment you drag the window edge."
+      "description": "The size your CSS actually sees. Viewport, window and screen dimensions, the breakpoint you are currently in — Tailwind, Bootstrap or MUI — pixel density and aspect ratio. All of it updates the moment you drag the window edge, and you can ask about a width you are not sitting at."
     },
     "controls": {
       "refresh": "Refresh",
@@ -16,11 +16,14 @@
       "breakpoint": "Breakpoint",
       "aspectRatio": "Aspect ratio",
       "pixelRatio": "Pixel ratio",
-      "orientation": "Orientation"
+      "orientation": "Orientation",
+      "breakpointPreview": "Breakpoint (preview)"
     },
     "breakpoints": {
-      "title": "Tailwind breakpoints",
-      "explainer": "min-width queries stack: every breakpoint up to and including {active} is currently matching, and {active} is the one that wins a conflict."
+      "title": "Breakpoints",
+      "explainer": "min-width queries stack: every breakpoint up to and including {active} is currently matching, and {active} is the one that wins a conflict.",
+      "frameworkLabel": "Breakpoint scale",
+      "explainerPreview": "At {width}px, every breakpoint up to and including {active} matches, and {active} is the one that wins a conflict."
     },
     "measurements": {
       "title": "Every measurement",
@@ -52,7 +55,8 @@
         "device": "Device",
         "viewport": "Viewport",
         "dpr": "DPR"
-      }
+      },
+      "hint": "Pick a device to answer for its viewport instead of yours."
     },
     "mediaQuery": {
       "title": "CSS for this size",
@@ -124,6 +128,14 @@
           "answer": "Because most screens are not exactly 16:9. A 1512×982 MacBook display reduces to 756:491, which is arithmetically correct and tells you nothing — so this page matches the measured ratio against the standards first, within 1.5%, and only falls back to a fraction or a decimal when no standard is close enough."
         }
       }
+    },
+    "probe": {
+      "label": "Check another width",
+      "placeholder": "e.g. 768",
+      "apply": "Check",
+      "rotate": "Rotate",
+      "clear": "Back to my window",
+      "outOfRange": "Enter a width between {min} and {max} pixels."
     }
   }
 }

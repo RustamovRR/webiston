@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 
-import type { ScreenMetrics } from "../types"
+import { FRAMEWORKS } from "../constants"
+import type { FrameworkId, Preview, ScreenMetrics } from "../types"
 import { activeBreakpoint, describeAspectRatio } from "../utils/metrics"
 
 /**
@@ -16,41 +17,70 @@ import { activeBreakpoint, describeAspectRatio } from "../utils/metrics"
  * monitor's resolution is trivia by comparison, so it sits underneath as
  * context rather than competing for the same visual weight.
  *
- * It also updates as you drag the window edge, which is the whole trick: a
- * static readout of `screen.width` is what every competing page shows, and it
- * cannot answer the question anyone actually has.
+ * It renders BEFORE the first measurement, with em dashes where the numbers
+ * go. Gating the whole card on `metrics` meant the server sent an empty page
+ * body and ~700px of cards appeared at hydration, shoving the reference table
+ * and the FAQ down the page. Reserving the layout costs nothing and is not a
+ * skeleton — the labels are real, only the values are pending, and they arrive
+ * on the first client tick.
  */
 
+const PENDING = "—"
+
 interface LiveReadoutProps {
-  metrics: ScreenMetrics
+  metrics: ScreenMetrics | null
+  preview: Preview | null
+  framework: FrameworkId
 }
 
-export function LiveReadout({ metrics }: LiveReadoutProps) {
+export function LiveReadout({ metrics, preview, framework }: LiveReadoutProps) {
   const t = useTranslations("ScreenResolutionPage.readout")
   const tValues = useTranslations("ScreenResolutionPage.values")
 
-  const breakpoint = activeBreakpoint(metrics.viewportWidth)
-  const ratio = describeAspectRatio(
-    metrics.viewportWidth,
-    metrics.viewportHeight
-  )
+  const scale =
+    FRAMEWORKS.find((entry) => entry.id === framework) ?? FRAMEWORKS[0]
+
+  // The headline always reports the REAL window. A preview changes what the
+  // derived panels answer for; it must never change what this claims to see.
+  const width = metrics?.viewportWidth
+  const height = metrics?.viewportHeight
+
+  const breakpoint = preview
+    ? activeBreakpoint(preview.width, scale.breakpoints)
+    : width !== undefined
+      ? activeBreakpoint(width, scale.breakpoints)
+      : null
+
+  const ratio =
+    width !== undefined && height !== undefined
+      ? describeAspectRatio(width, height)
+      : null
 
   return (
     <ToolCard title={t("title")}>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <span className="font-mono text-4xl text-foreground tabular-nums sm:text-5xl">
-          {metrics.viewportWidth}
+          {width ?? PENDING}
           <span className="px-2 text-muted-foreground">×</span>
-          {metrics.viewportHeight}
+          {height ?? PENDING}
         </span>
         <span className="text-muted-foreground text-sm">{t("cssPixels")}</span>
       </div>
 
       <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
-        <Fact label={t("breakpoint")} value={breakpoint} />
-        <Fact label={t("aspectRatio")} value={ratio.label} />
-        <Fact label={t("pixelRatio")} value={`${metrics.pixelRatio}×`} />
-        <Fact label={t("orientation")} value={tValues(metrics.orientation)} />
+        <Fact
+          label={preview ? t("breakpointPreview") : t("breakpoint")}
+          value={breakpoint ?? PENDING}
+        />
+        <Fact label={t("aspectRatio")} value={ratio?.label ?? PENDING} />
+        <Fact
+          label={t("pixelRatio")}
+          value={metrics ? `${metrics.pixelRatio}×` : PENDING}
+        />
+        <Fact
+          label={t("orientation")}
+          value={metrics ? tValues(metrics.orientation) : PENDING}
+        />
       </dl>
     </ToolCard>
   )

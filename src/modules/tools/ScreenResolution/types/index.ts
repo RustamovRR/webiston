@@ -37,6 +37,30 @@ export interface Breakpoint {
   min: number
 }
 
+export type FrameworkId = "tailwind" | "bootstrap" | "mui"
+
+/** A CSS framework's breakpoint scale. */
+export interface Framework {
+  id: FrameworkId
+  label: string
+  breakpoints: readonly Breakpoint[]
+}
+
+/**
+ * A width the visitor is asking about instead of their own.
+ *
+ * Kept separate from `ScreenMetrics` on purpose: the readout must never stop
+ * telling the truth about the real window. Everything DERIVED from a width —
+ * the breakpoint, the device match, the media query — answers for this when it
+ * is set, and the page says so.
+ */
+export interface Preview {
+  width: number
+  height: number
+  /** Set when the width came from a device row rather than the input. */
+  source?: string
+}
+
 /** A device to compare the current viewport against. */
 export interface DevicePreset {
   name: string
