@@ -12,6 +12,12 @@ interface CopyButtonProps {
   variant?: "default" | "secondary" | "ghost" | "outline"
   className?: string
   onCopy?: () => void
+  /**
+   * Accessible name. The default is Uzbek because this package predates the
+   * English locale reaching the tools; pass the translated string from any
+   * consumer that has a translator in scope, so `/en` is announced in English.
+   */
+  label?: string
 }
 
 export function CopyButton({
@@ -20,7 +26,8 @@ export function CopyButton({
   size = "sm",
   variant = "ghost",
   className = "",
-  onCopy
+  onCopy,
+  label = "Nusxalash"
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
   const [_, copy] = useCopyToClipboard()
@@ -45,7 +52,7 @@ export function CopyButton({
       size={size}
       variant={variant}
       className={`${className} cursor-pointer transition-colors`}
-      aria-label="Nusxalash"
+      aria-label={label}
     >
       {copied ? (
         <Check size={18} className="text-success" />

@@ -58,7 +58,10 @@ export function DigestList({ outputs, format, matched }: DigestListProps) {
                   </span>
                 )}
               </div>
-              <CopyButton text={output[format]} />
+              {/* The label is passed, not defaulted: `CopyButton`'s built-in
+                  accessible name is Uzbek, so on /en every copy control on
+                  the site announces itself in the wrong language. */}
+              <CopyButton text={output[format]} label={t("copy")} />
             </div>
 
             <p

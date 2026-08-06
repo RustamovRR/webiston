@@ -42,6 +42,7 @@
       "noHmacMd5": "There is no HMAC-MD5 row: the browser's Web Crypto API does not implement MD5 at all."
     },
     "results": {
+      "copy": "Copy",
       "bits": "{bits} bit",
       "broken": "broken",
       "matched": "matched"

@@ -2,120 +2,124 @@
   "UuidGeneratorPage": {
     "ToolHeader": {
       "title": "UUID Generator",
-      "description": "Professional UUID yaratish vositasi. Turli formatlar va versiyalar bilan noyob identifikatorlar yaratish."
+      "description": "UUID v4, v7 va v1 qiymatlarini bittadan yoki 1000 tagacha yarating — va qo'lingizdagi UUID qaysi versiya ekanini, qachon yaratilganini shu yerda aniqlang. Hammasi brauzeringizda, hech narsa serverga yuborilmaydi."
     },
-    "ConfigPanel": {
-      "title": "Tool Konfiguratsiya",
-      "status": "Ready",
-      "versionLabel": "UUID Versiyasi:",
-      "formatLabel": "Format:",
-      "countLabel": "Soni:",
-      "countRange": "(1-1000)",
-      "sampleLabel": "Namuna:",
-      "generateButton": "UUID Yaratish",
-      "generating": "Yaratilmoqda...",
-      "clearButton": "Tozalash"
-    },
-    "VersionSelector": {
-      "v4": "UUID v4",
-      "v1": "UUID v1",
-      "nil": "NIL"
-    },
-    "FormatSelector": {
-      "standard": "Standart",
-      "compact": "Ixcham",
-      "brackets": "Qavsli",
-      "uppercase": "KATTA"
-    },
-    "InputPanel": {
-      "title": "Tool Kirish",
-      "status": "Input",
-      "settingsTitle": "Sozlamalar",
-      "countLabel": "soni",
-      "versionLabel": "versiya",
-      "formatLabel": "format",
-      "versionInfoTitle": "UUID Versiya Ma'lumoti",
-      "formatInfoTitle": "Format Ma'lumoti",
-      "nameLabel": "Nom:",
-      "descriptionLabel": "Tavsif:",
-      "securityLabel": "Xavfsizlik:",
-      "patternLabel": "Pattern:",
-      "exampleLabel": "Misol:"
-    },
-    "ResultsPanel": {
-      "title": "Tool Natija",
-      "statusGenerated": "Generated",
-      "statusEmpty": "Empty",
-      "downloadTxt": "TXT",
-      "downloadJson": "JSON",
-      "emptyMessage": "UUID yaratish uchun yuqoridagi tugmani bosing",
-      "itemNumber": "#",
-      "totalLabel": "Jami UUID",
-      "uniqueLabel": "Noyob UUID",
-      "duplicatesLabel": "Dublikat",
-      "bytesLabel": "Jami Bayt"
-    },
-    "StatsPanel": {
-      "title": "Batafsil Statistika"
-    },
-    "InfoPanel": {
-      "title": "UUID nima va nima uchun ishlatiladi?",
-      "versionsTitle": "UUID versiyalari:",
-      "useCasesTitle": "Qo'llanish sohalari:",
-      "importantNote": "Muhim:",
-      "collisionNote": "UUID v4 ning to'qnashuv ehtimoli 5.3×10⁻³⁶ ga teng, bu amalda noyoblikni kafolatlaydi."
-    },
-    "VersionInfo": {
-      "v4": {
-        "name": "UUID v4 (Random)",
-        "description": "Tasodifiy qiymatlar asosida yaratiladi",
-        "security": "High",
-        "recommended": true,
-        "details": "Tasodifiy qiymatlar asosida, eng xavfsiz va mashhur"
+    "controls": {
+      "version": "Versiya",
+      "versions": {
+        "v4": "v4 tasodifiy",
+        "v7": "v7 tartiblangan",
+        "v1": "v1 vaqt",
+        "nil": "Nil"
       },
-      "v1": {
-        "name": "UUID v1 (Timestamp)",
-        "description": "Vaqt va MAC address asosida yaratiladi",
-        "security": "Medium",
-        "recommended": false,
-        "details": "Vaqt va MAC address asosida, ketma-ketlik saqlaydi"
+      "format": "Format",
+      "formats": {
+        "standard": "Standart",
+        "compact": "Tiresiz",
+        "braces": "Qavsli"
       },
-      "nil": {
-        "name": "NIL UUID",
-        "description": "Barcha noldan iborat UUID",
-        "security": "None",
-        "recommended": false,
-        "details": "Barcha noldan iborat, bo'sh holatni bildiradi"
+      "uppercase": "Katta harf",
+      "count": "Nechta",
+      "generate": "Yangilash",
+      "clear": "Tozalash",
+      "download": "Saqlash",
+      "downloadTxt": "TXT — har qatorda bittadan",
+      "downloadJson": "JSON — massiv"
+    },
+    "results": {
+      "count": "{total} ta · {unique} ta noyob",
+      "copyAll": "Hammasini nusxalash",
+      "copyOne": "Nusxalash",
+      "empty": "Tozalandi. Yangi qiymatlar uchun «Yangilash»ni bosing.",
+      "showMore": "Yana {count} ta ko'rsatish ({remaining} ta qoldi)",
+      "predictable": "Bu versiyada vaqt belgisi bor, ya'ni bitta qiymatni ko'rgan odam qolganlarini taxmin qila oladi. Session token, parolni tiklash havolasi yoki maxfiy havola uchun v4 ishlating."
+    },
+    "inspect": {
+      "title": "UUID'ni tahlil qilish",
+      "hint": "Log'dan yoki bazadan olingan UUID'ni shu yerga qo'ying. Tire bilan, tiresiz, qavs ichida yoki urn:uuid: shaklida bo'lishi mumkin.",
+      "placeholder": "017f22e2-79b0-7cc3-98c4-dc0c0c07398f",
+      "invalid": "Bu UUID emas — 32 ta o'n oltilik belgi kutilgan edi. Nusxalashda bir qism tushib qolgan bo'lishi mumkin.",
+      "versionName": "UUID v{version} — {name}",
+      "versionNames": {
+        "1": "vaqt va node",
+        "2": "DCE Security",
+        "3": "nom asosida, MD5",
+        "4": "tasodifiy",
+        "5": "nom asosida, SHA-1",
+        "6": "qayta tartiblangan vaqt",
+        "7": "Unix vaqti va tasodifiy",
+        "8": "maxsus"
+      },
+      "special": {
+        "nil": "Nil UUID — hammasi nol, «qiymat yo'q» degani",
+        "max": "Max UUID — hammasi f, eng katta mumkin bo'lgan qiymat"
+      },
+      "variant": "Variant",
+      "variants": {
+        "rfc": "RFC 9562 — standart",
+        "ncs": "NCS — Apollo davridan qolgan eski shakl",
+        "microsoft": "Microsoft GUID",
+        "future": "kelajak uchun zaxiralangan"
+      },
+      "created": "Yaratilgan",
+      "canonical": "Kanonik shakl"
+    },
+    "reference": {
+      "title": "Qaysi versiyani tanlash kerak",
+      "intro": "UUID — 128 bitlik identifikator: uni markaziy hisoblagichsiz, boshqa xizmat bilan kelishmasdan yaratasiz va baribir takrorlanmaydi. Savol odatda «UUID nima» emas, «shu ustunga qaysi versiyani yozay» bo'ladi. Buni ikki narsa hal qiladi: qiymatlar yaratilish vaqti bo'yicha tartiblanadimi va nechta biti haqiqatan tasodifiy.",
+      "bits": "{bits} bit",
+      "yes": "Ha",
+      "no": "Yo'q",
+      "table": {
+        "version": "Versiya",
+        "entropy": "Tasodifiy bit",
+        "sortable": "Vaqt bo'yicha tartiblanadimi",
+        "use": "Qachon"
+      },
+      "versions": {
+        "v4": {
+          "name": "v4 — tasodifiy",
+          "use": "Deyarli har qanday holat uchun to'g'ri javob. Faqat tasodifiy bitlardan iborat, shuning uchun undan hech qanday ma'lumot o'qib bo'lmaydi."
+        },
+        "v7": {
+          "name": "v7 — Unix vaqti",
+          "use": "Bazadagi asosiy kalit uchun. Boshida vaqt belgisi turgani uchun yangi qatorlar indeksning oxiriga qo'shiladi; v4 esa indeks bo'ylab sochilib, uni parchalaydi."
+        },
+        "v1": {
+          "name": "v1 — vaqt va node",
+          "use": "Eski tizimlar bilan ishlash uchun. Aslida node sifatida MAC address yozilardi; brauzerda u yo'q, shuning uchun bu yerda tasodifiy node ishlatiladi."
+        },
+        "nil": {
+          "name": "Nil",
+          "use": "«Qiymat yo'q» degani. Ustun NOT NULL bo'lgani uchun biror narsa yozish kerak bo'lganda, yoki testda."
+        }
+      },
+      "secretWarning": "Vaqt belgisi bor versiyalarni (v1, v6, v7) maxfiy token sifatida ishlatmang: bitta qiymatni ko'rgan odam qo'shnilarini taxmin qila oladi. Maxfiy havola yoki session identifikatori kerak bo'lsa — v4, u to'liq 122 bit tasodifiy."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "what": {
+          "question": "UUID nima va u qanday takrorlanmaydi?",
+          "answer": "UUID — 128 bitlik identifikator. Uning kuchi shundaki, uni yaratish uchun markaziy hisoblagich ham, boshqa xizmatlar bilan kelishuv ham kerak emas: har bir server, har bir qurilma o'zi yaratadi va qiymatlar baribir to'qnashmaydi. Shuning uchun taqsimlangan tizimlarda, offlayn ishlaydigan mobil ilovalarda va fayl nomlarida ishlatiladi."
+        },
+        "v4OrV7": {
+          "question": "Bazadagi asosiy kalit uchun v4 yaxshimi yoki v7?",
+          "answer": "Asosiy kalit uchun v7. v4 to'liq tasodifiy bo'lgani uchun har bir yangi qator indeksning tasodifiy joyiga tushadi — bu indeksni parchalaydi va katta jadvalda yozishni sekinlashtiradi. v7 esa boshida vaqt belgisini saqlaydi, shuning uchun qiymatlar yaratilish tartibida o'sadi va yangi qatorlar indeksning oxiriga qo'shiladi. Qiymatning o'zidan yaratilgan vaqtni bilib bo'ladi — agar bu sizga to'g'ri kelmasa, v4'da qoling."
+        },
+        "collision": {
+          "question": "Ikkita bir xil UUID chiqib qolishi mumkinmi?",
+          "answer": "Amalda yo'q. v4'da 122 bit tasodifiy, ya'ni 5 kvintilliondan (5·10^18) ortiq qiymat yaratilgandan keyingina to'qnashuv ehtimoli sezilarli bo'ladi. Bu yerda qiymatlar brauzerning Web Crypto CSPRNG'idan olinadi — Math.random() emas, chunki u tasodifiylik uchun mo'ljallanmagan va uning natijasini oldindan aytish mumkin."
+        },
+        "secret": {
+          "question": "UUID'ni token yoki maxfiy havola sifatida ishlatsam bo'ladimi?",
+          "answer": "v4'ni — ha, unda 122 bit tasodifiy bor va u kriptografik generatordan keladi. v1, v6 va v7'ni — yo'q: ularning boshida vaqt belgisi turadi, ya'ni bitta havolani ko'rgan odam o'sha paytda yaratilgan boshqa qiymatlarni ancha tor doirada taxmin qila oladi. Parolni tiklash havolasi yoki taklif havolasi uchun v4 ishlating."
+        },
+        "privacy": {
+          "question": "Yaratilgan qiymatlar serverga yuboriladimi?",
+          "answer": "Yo'q. Hamma narsa brauzeringizda, Web Crypto API orqali hisoblanadi — na yaratilgan qiymatlar, na tahlil maydoniga qo'ygan UUID'ingiz hech qayerga yuborilmaydi va saqlanmaydi. Sahifani yopsangiz hammasi yo'qoladi."
+        }
       }
-    },
-    "FormatInfo": {
-      "standard": {
-        "name": "Standart Format",
-        "description": "8-4-4-4-12 formatida chiziqlar bilan ajratilgan",
-        "example": "550e8400-e29b-41d4-a716-446655440000"
-      },
-      "compact": {
-        "name": "Ixcham Format",
-        "description": "Chiziqsiz, 32 belgilik ixcham format",
-        "example": "550e8400e29b41d4a716446655440000"
-      },
-      "brackets": {
-        "name": "Qavsli Format",
-        "description": "Jingalak qavslar bilan o'ralgan format",
-        "example": "{550e8400-e29b-41d4-a716-446655440000}"
-      },
-      "uppercase": {
-        "name": "Katta Harflar Format",
-        "description": "Barcha harflar katta bo'lgan format",
-        "example": "550E8400-E29B-41D4-A716-446655440000"
-      }
-    },
-    "UseCases": {
-      "database": "Ma'lumotlar bazasi kalitlari: Auto-increment o'rniga global noyob identifikatorlar",
-      "microservices": "Mikroservislar: Taqsimlangan tizimlarda noyob ID yaratish",
-      "fileNaming": "Fayl nomlash: Fayl va resurslar uchun to'qnashuvdan xoli identifikatorlar",
-      "sessionIds": "Sessiya ID lari: Veb-ilovalarda sessiya kuzatish",
-      "apiKeys": "API kalitlari: Servis autentifikatsiya va avtorizatsiya"
     }
   }
 }

@@ -42,6 +42,7 @@
       "noHmacMd5": "HMAC-MD5 ko'rsatilmaydi: brauzerning Web Crypto API'si MD5'ni umuman qo'llab-quvvatlamaydi."
     },
     "results": {
+      "copy": "Nusxalash",
       "bits": "{bits} bit",
       "broken": "buzilgan",
       "matched": "mos keldi"

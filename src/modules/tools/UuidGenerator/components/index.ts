@@ -1,5 +1,7 @@
-export { default as ConfigPanel } from "./ConfigPanel"
-export { default as InfoPanel } from "./InfoPanel"
-export { default as InputPanel } from "./InputPanel"
-export { default as ResultsPanel } from "./ResultsPanel"
-export { default as StatsPanel } from "./StatsPanel"
+// Client components only. The two Server Components in this folder
+// (`UuidFaq`, `UuidReference`) are exported from the module root instead, so
+// importing this barrel can never pull `next-intl/server` into a client
+// bundle.
+export { ControlBar } from "./ControlBar"
+export { InspectField } from "./InspectField"
+export { UuidList } from "./UuidList"

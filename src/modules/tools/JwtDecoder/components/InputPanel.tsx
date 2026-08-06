@@ -26,7 +26,7 @@ const InputPanel: React.FC<InputPanelProps> = ({
   inputStats,
   partsCount
 }) => {
-  const t = useTranslations("JwtDecoderPage.InputPanel")
+  const t = useTranslations("JwtDecoderPage.Input")
 
   const actions: TerminalInputAction[] = [
     {
