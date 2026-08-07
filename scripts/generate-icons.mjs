@@ -57,77 +57,145 @@ function loadSharp() {
   return require(path.join(store, dir, "node_modules", "sharp"))
 }
 
-// The light branch of `src/app/icon.svg`. A rasteriser resolves no
-// prefers-color-scheme, so every PNG below is the light mark — which is the
-// correct choice anyway: these are composited onto surfaces we do not control.
-const PRIMARY = "#0a6c80" // --primary            light = --brand-700
-const INK = "#fafafa" // --primary-foreground light
+/**
+ * The DARK branch of `src/app/icon.svg` — the badge the owner signed off on.
+ *
+ * A rasteriser resolves no `prefers-color-scheme`, so every PNG here has to
+ * commit to one scheme. Dark is the right commitment: a near-black rounded
+ * badge is unmistakable on the white background Google composites the
+ * Organization logo onto, on an iOS home screen, and in an Android launcher.
+ * The light branch would put a near-white badge on white and leave the border
+ * doing all the work.
+ */
+const CARD = "#141819" // card            dark
+const TINT = "#40bedc" // primary         dark, at 30% in the corner
+const EDGE = "rgb(255 255 255 / 34%)" // border-strong dark
+const INK = "#fafafa" // foreground      dark
+const ACCENT = "#40bedc" // primary       dark
 
 /**
- * The `w` and its cursor pixel, lifted OUT of `src/app/icon.svg` rather than
- * retyped here.
+ * The mark's geometry, lifted OUT of `src/app/icon.svg` rather than retyped.
  *
- * Retyping it is how the favicon and the PNGs end up being different logos six
+ * Retyping it is how the favicon and the PNGs become two different logos six
  * months apart, each edited once. The SVG cannot be rasterised directly — its
- * colours live in a `<style>` block with a `prefers-color-scheme` query that a
- * rasteriser resolves to nothing — so the geometry is extracted and recoloured.
- * If the shape of that file changes enough that these patterns stop matching,
- * this throws instead of silently emitting a badge with no letter on it.
+ * colours live in a `<style>` block with a media query a rasteriser resolves to
+ * nothing — so the geometry is extracted and recoloured.
+ *
+ * Every pattern is anchored on the element's `class`, NOT on its position. An
+ * earlier version matched "the first `<rect>` with x/y/width/height" and "the
+ * first `stroke-width`", which silently started reading the BADGE PLATE as the
+ * accent pixel and the BORDER width as the glyph weight the moment the artwork
+ * grew a border. It threw no error; it just drew the wrong logo.
  */
-function readGlyphGeometry() {
+function readMarkGeometry() {
   const svg = readFileSync(path.join(ROOT, "src/app/icon.svg"), "utf8")
 
-  const stroke = svg.match(/<path[^>]*?\sd="([^"]+)"[^>]*?>/s)
-  const width = svg.match(/stroke-width="([\d.]+)"/)
-  const pixel = svg.match(
-    /<rect[^>]*?\sx="([\d.]+)"[^>]*?y="([\d.]+)"[^>]*?width="([\d.]+)"[^>]*?height="([\d.]+)"/
-  )
-  const radius = svg.match(/rx="([\d.]+)"/)
+  // `.match()` yields the match ARRAY; the element text is entry 0.
+  const element = (tag, cls) =>
+    svg.match(new RegExp(`<${tag}\\b[^>]*class="${cls}"[^>]*>`, "s"))?.[0]
 
-  if (!stroke || !width || !pixel || !radius) {
+  const plateEl = element("rect", "plate")
+  const edgeEl = element("rect", "edge")
+  const pixelEl = element("rect", "pixel")
+  // The letter is a <g class="glyph"> carrying the placement transform, with
+  // Inter's raw outline on the <path> inside it.
+  const glyphGroup = svg.match(/<g\b[^>]*class="glyph"[^>]*>[\s\S]*?<\/g>/)?.[0]
+  const glyphPath = glyphGroup?.match(/<path\b[\s\S]*?\/>/)?.[0]
+
+  const attr = (el, name) => el?.match(new RegExp(`${name}="([^"]+)"`))?.[1]
+
+  const mark = {
+    plate: {
+      size: attr(plateEl, "width"),
+      radius: attr(plateEl, "rx")
+    },
+    edge: {
+      x: attr(edgeEl, "x"),
+      size: attr(edgeEl, "width"),
+      radius: attr(edgeEl, "rx"),
+      width: attr(edgeEl, "stroke-width")
+    },
+    glyph: {
+      transform: attr(glyphGroup, "transform"),
+      path: attr(glyphPath, "d")
+    },
+    pixel: {
+      x: attr(pixelEl, "x"),
+      y: attr(pixelEl, "y"),
+      size: attr(pixelEl, "width"),
+      radius: attr(pixelEl, "rx") ?? "0"
+    }
+  }
+
+  const missing = [
+    !mark.plate.size && 'the badge plate (rect class="plate")',
+    !mark.edge.width && 'the border (rect class="edge")',
+    !mark.glyph.path && 'the letter outline (path inside g class="glyph")',
+    !mark.glyph.transform && "the letter's placement transform",
+    !mark.pixel.x && 'the accent pixel (rect class="pixel")'
+  ].filter(Boolean)
+
+  if (missing.length) {
     throw new Error(
-      "Could not read the mark's geometry out of src/app/icon.svg. That file " +
-        "is the source of truth for the shape; update the patterns here to " +
-        "match it rather than hardcoding a second copy of the artwork."
+      `Could not read ${missing.join(", ")} out of src/app/icon.svg.\n` +
+        "That file is the source of truth for the shape. Fix the class names " +
+        "or these patterns — do NOT hardcode a second copy of the artwork here."
     )
   }
 
-  return {
-    path: stroke[1],
-    strokeWidth: width[1],
-    pixel: { x: pixel[1], y: pixel[2], size: pixel[3] },
-    radius: radius[1]
-  }
+  return mark
 }
 
-const MARK = readGlyphGeometry()
-
-/** The `w` and its cursor pixel, in the 32-unit coordinate space. */
-const glyph = (ink) => `
-  <path d="${MARK.path}" fill="none" stroke="${ink}"
-        stroke-width="${MARK.strokeWidth}" stroke-linecap="round"
-        stroke-linejoin="round" />
-  <rect x="${MARK.pixel.x}" y="${MARK.pixel.y}" width="${MARK.pixel.size}"
-        height="${MARK.pixel.size}" fill="${ink}" />`
+const MARK = readMarkGeometry()
 
 /**
- * The mark, optionally inset inside a larger opaque canvas.
+ * The badge, in the 32-unit coordinate space: plate, corner tint, border,
+ * letter, accent pixel — the same five layers as the SVG, recoloured to the
+ * dark branch because a rasteriser resolves no media query.
  *
- * `scale` is the fraction of the canvas the badge occupies — 1 for a
- * full-bleed icon, 0.8 for the maskable safe zone, 0.78 for the white plate.
+ * `bleed` squares the corners and drops the border, for the surfaces the OS
+ * masks anyway (iOS rounds its own; Android crops to a circle). Keeping our
+ * rounded corners there would leave a dark fringe outside the OS mask.
  */
-function markSvg({ size, scale = 1, plate = null, radius = MARK.radius }) {
+function badge({ bleed = false }) {
+  const { size, radius } = MARK.plate
+  const shape = bleed
+    ? `width="32" height="32"`
+    : `width="${size}" height="${size}" rx="${radius}"`
+
+  const border = bleed
+    ? ""
+    : `<rect x="${MARK.edge.x}" y="${MARK.edge.x}" width="${MARK.edge.size}"
+             height="${MARK.edge.size}" rx="${MARK.edge.radius}" fill="none"
+             stroke="${EDGE}" stroke-width="${MARK.edge.width}" />`
+
+  return `
+    <rect ${shape} fill="${CARD}" />
+    <rect ${shape} fill="url(#tint)" />
+    ${border}
+    <g transform="${MARK.glyph.transform}"><path d="${MARK.glyph.path}" fill="${INK}" /></g>
+    <rect x="${MARK.pixel.x}" y="${MARK.pixel.y}" width="${MARK.pixel.size}"
+          height="${MARK.pixel.size}" rx="${MARK.pixel.radius}" fill="${ACCENT}" />`
+}
+
+/**
+ * The mark, optionally inset inside a larger canvas.
+ *
+ * `scale` is the fraction of the canvas the badge occupies — 1 full-bleed,
+ * 0.7 for the maskable safe zone, 0.78 for the white plate.
+ */
+function markSvg({ size, scale = 1, plate = null, bleed = false }) {
   const inner = 32 * scale
   const offset = (32 - inner) / 2
-  const background = plate
-    ? `<rect width="32" height="32" fill="${plate}" />`
-    : ""
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32">
-  ${background}
+  <linearGradient id="tint" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="${TINT}" stop-opacity="0.3" />
+    <stop offset="0.5" stop-color="${TINT}" stop-opacity="0" />
+  </linearGradient>
+  ${plate ? `<rect width="32" height="32" fill="${plate}" />` : ""}
   <g transform="translate(${offset} ${offset}) scale(${scale})">
-    <rect width="32" height="32" rx="${radius}" fill="${PRIMARY}" />
-    ${glyph(INK)}
+    ${badge({ bleed })}
   </g>
 </svg>`
 }
@@ -172,7 +240,7 @@ const TARGETS = [
     size: 180,
     // Full-bleed and opaque. iOS rounds it for us; our own corners would be
     // cropped into a dark fringe, and any transparency becomes black.
-    svg: () => markSvg({ size: 180, scale: 1, plate: PRIMARY, radius: 0 })
+    svg: () => markSvg({ size: 180, scale: 1, plate: CARD, bleed: true })
   },
   {
     file: "public/icon-192.png",
@@ -189,7 +257,7 @@ const TARGETS = [
     size: 512,
     // Everything inside the central 80% — Android's mask is a circle of radius
     // 40% of the width, and the outer band is discardable by definition.
-    svg: () => markSvg({ size: 512, scale: 0.7, plate: PRIMARY, radius: 0 })
+    svg: () => markSvg({ size: 512, scale: 0.7, plate: CARD, bleed: true })
   },
   {
     file: "public/logo.png",
