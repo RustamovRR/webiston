@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import commonMessages from "../../../../messages/common/uz.json"
 import toolMessages from "../../../../messages/tools/ip-info/uz.json"
+import { resetLookupCache } from "./hooks/useIpLookup"
 import { IpInfo } from "./IpInfo"
 import type { IpLocation, IpLookupResult } from "./types"
 
@@ -47,6 +48,9 @@ const ANSWER: IpLocation = {
 let respondWith: IpLookupResult = { ok: true, data: ANSWER }
 
 beforeEach(() => {
+  // The lookup cache is module scope so it survives a locale remount in the
+  // app; here that would leak one case's answer into the next.
+  resetLookupCache()
   respondWith = { ok: true, data: ANSWER }
   vi.stubGlobal(
     "fetch",
@@ -202,6 +206,146 @@ describe("when the lookup fails", () => {
     // Assert
     expect(screen.queryAllByText("213.230.78.204")).toHaveLength(0)
     expect(screen.getByRole("alert")).toHaveTextContent(/bepul limiti/i)
+  })
+})
+
+describe("caching, the way TanStack Query would do it", () => {
+  it("serves a repeat lookup from cache without touching the network", async () => {
+    // Arrange
+    await renderTool()
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/boshqa manzilni tekshirish/i), {
+        target: { value: "1.1.1.1" }
+      })
+      fireEvent.click(screen.getByRole("button", { name: /^tekshirish$/i }))
+    })
+    const callsAfterFirst = vi.mocked(fetch).mock.calls.length
+
+    // Act — press the same button again, same address.
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /^tekshirish$/i }))
+    })
+
+    // Assert — this used to fire a second request every single time.
+    expect(vi.mocked(fetch).mock.calls.length).toBe(callsAfterFirst)
+    expect(screen.getByText(/keshdan/i)).toBeInTheDocument()
+  })
+
+  it("deduplicates two lookups fired before the first resolves", async () => {
+    // Arrange — a request that stays pending until we release it.
+    let release: (value: unknown) => void = () => {}
+    const gate = new Promise((resolve) => {
+      release = resolve
+    })
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        await gate
+        return { json: async () => respondWith } as Response
+      })
+    )
+    render(
+      <NextIntlClientProvider locale="uz" messages={messages}>
+        <IpInfo />
+      </NextIntlClientProvider>
+    )
+
+    // Act — a second click while the first is still in the air.
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /^o'zimniki$/i }))
+      release(null)
+    })
+
+    // Assert — one request, joined by both callers.
+    expect(vi.mocked(fetch).mock.calls.length).toBe(1)
+  })
+
+  it("skips the cache when the visitor asks for their own address again", async () => {
+    // Arrange — the one repeat that genuinely means something: VPN connected.
+    await renderTool()
+    const callsBefore = vi.mocked(fetch).mock.calls.length
+
+    // Act
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /^o'zimniki$/i }))
+    })
+
+    // Assert
+    expect(vi.mocked(fetch).mock.calls.length).toBe(callsBefore + 1)
+  })
+})
+
+describe("when our own headers carry no public address", () => {
+  it("discovers the address in the browser and asks again", async () => {
+    // Arrange — what `next dev` on localhost does, and what any reverse proxy
+    // that forgets `x-forwarded-for` does in production.
+    const calls: string[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        calls.push(url)
+        if (url.includes("ipify")) {
+          return {
+            ok: true,
+            json: async () => ({ ip: "38.128.66.22" })
+          } as Response
+        }
+        if (url === "/api/ip") {
+          return {
+            json: async () => ({ ok: false, error: { code: "noPublicIp" } })
+          } as Response
+        }
+        return { json: async () => ({ ok: true, data: ANSWER }) } as Response
+      })
+    )
+
+    // Act
+    render(
+      <NextIntlClientProvider locale="uz" messages={messages}>
+        <IpInfo />
+      </NextIntlClientProvider>
+    )
+    await act(async () => {})
+
+    // Assert — three steps, in order: our route, the echo, our route again.
+    expect(calls[0]).toBe("/api/ip")
+    expect(calls[1]).toContain("ipify")
+    expect(calls[2]).toBe("/api/ip?ip=38.128.66.22")
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+  })
+
+  it("does not run the fallback for an address the visitor typed", async () => {
+    // Arrange — `noPublicIp` is a statement about OUR headers, never about a
+    // typed address, so discovering the visitor's own IP would answer the
+    // wrong question.
+    const calls: string[] = []
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string) => {
+        calls.push(url)
+        return {
+          json: async () => ({ ok: false, error: { code: "noPublicIp" } })
+        } as Response
+      })
+    )
+    render(
+      <NextIntlClientProvider locale="uz" messages={messages}>
+        <IpInfo />
+      </NextIntlClientProvider>
+    )
+    await act(async () => {})
+    calls.length = 0
+
+    // Act
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/boshqa manzilni tekshirish/i), {
+        target: { value: "1.1.1.1" }
+      })
+      fireEvent.click(screen.getByRole("button", { name: /^tekshirish$/i }))
+    })
+
+    // Assert
+    expect(calls.some((url) => url.includes("ipify"))).toBe(false)
   })
 })
 

@@ -11,7 +11,8 @@ import {
   DetailGroupCard,
   IpHeadline,
   LocationMap,
-  LookupForm
+  LookupForm,
+  SignalsCard
 } from "./components"
 import { useIpLookup } from "./hooks/useIpLookup"
 import { toGroups, toJson } from "./utils/present"
@@ -46,7 +47,7 @@ const PLACEHOLDERS = {
 
 const IpInfo = () => {
   const t = useTranslations("IpInfoPage")
-  const { data, error, isLoading, lookup } = useIpLookup()
+  const { data, error, isCached, isLoading, lookup } = useIpLookup()
 
   const groups = data ? toGroups(data) : null
   const json = data ? toJson(data) : ""
@@ -86,6 +87,9 @@ const IpInfo = () => {
         {data ? (
           <span className="text-muted-foreground text-xs">
             {t("controls.source", { source: data.source })}
+            {/* Said out loud, because an instant answer with no spinner is
+                otherwise indistinguishable from a broken button. */}
+            {isCached ? ` · ${t("controls.cached")}` : ""}
           </span>
         ) : null}
       </div>
@@ -106,8 +110,12 @@ const IpInfo = () => {
               group={groups?.[2] ?? null}
               placeholderKeys={PLACEHOLDERS.time}
             />
+            <SignalsCard data={data} />
           </div>
-          <div className="grid grid-cols-1 gap-4">
+          {/* `auto` then `1fr`: the network card keeps its natural height and
+              the map card absorbs whatever the taller left column adds, so
+              neither ends in dead space. */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-rows-[auto_1fr]">
             <DetailGroupCard
               groupKey="network"
               group={groups?.[1] ?? null}

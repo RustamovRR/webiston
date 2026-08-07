@@ -6,7 +6,8 @@
     },
     "controls": {
       "download": "Save JSON",
-      "source": "Answered by {source}"
+      "source": "Answered by {source}",
+      "cached": "cached"
     },
     "headline": {
       "title": "Your address",
@@ -22,14 +23,16 @@
       "placeholder": "1.1.1.1 or 2001:4860:4860::8888",
       "submit": "Look up",
       "mine": "Mine again",
-      "examples": "Try:"
+      "examples": "Try:",
+      "retry": "Try again"
     },
     "errors": {
       "invalid": "That is not a valid IPv4 or IPv6 address.",
       "private": "That address is private — 10.x, 172.16–31.x, 192.168.x and the loopback range only exist inside a local network, so no database can place them.",
       "notFound": "No provider could place this address.",
       "rateLimited": "The lookup service is out of free requests for now. Try again in a few minutes.",
-      "network": "The lookup did not go through. Check your connection and try again."
+      "network": "The lookup did not go through. Check your connection and try again.",
+      "noPublicIp": "Your address did not reach us — the server saw a local address instead of yours. That is normal in local development, and in production it means a proxy is not forwarding it."
     },
     "groups": {
       "location": "Location",
@@ -105,6 +108,28 @@
         "changing": {
           "question": "Why does my IP address keep changing?",
           "answer": "Most home and mobile connections get a dynamic address: the provider lends you one from a pool and takes it back when your router reconnects. A fixed address is usually a paid business option. On mobile you may also share one public address with thousands of other subscribers through carrier-grade NAT, which is why two phones on the same network can look identical from the outside."
+        }
+      }
+    },
+    "signals": {
+      "title": "Does your browser agree?",
+      "pending": "Comparing what your browser reports with what your address says…",
+      "summaryAligned": "Everything your browser reports matches your address. Nothing here suggests a VPN or proxy.",
+      "summaryMismatched": "{count} of these disagree. That is a signal, not a verdict — a VPN produces it, and so does travelling or a manually set clock.",
+      "browserSide": "browser",
+      "addressSide": "address",
+      "items": {
+        "timezone": {
+          "label": "Time zone",
+          "mismatch": "Your operating system is set to a different zone than your address resolves to. A VPN moves your address but not your clock, which is why this is the strongest free signal there is."
+        },
+        "offset": {
+          "label": "UTC offset",
+          "mismatch": "The actual hour difference disagrees, not just the zone name. This is the stricter version of the check above — Berlin and Paris share an offset, so a name-only difference means little."
+        },
+        "language": {
+          "label": "Language region",
+          "mismatch": "Your browser asks for content from a different country than your address is in. The weakest of the three: plenty of people browse in a language that is not their country's."
         }
       }
     }

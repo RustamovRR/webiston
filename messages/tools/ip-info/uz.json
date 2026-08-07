@@ -6,7 +6,8 @@
     },
     "controls": {
       "download": "JSON saqlash",
-      "source": "Manba: {source}"
+      "source": "Manba: {source}",
+      "cached": "keshdan"
     },
     "headline": {
       "title": "Sizning manzilingiz",
@@ -22,14 +23,16 @@
       "placeholder": "1.1.1.1 yoki 2001:4860:4860::8888",
       "submit": "Tekshirish",
       "mine": "O'zimniki",
-      "examples": "Sinab ko'ring:"
+      "examples": "Sinab ko'ring:",
+      "retry": "Qayta urinish"
     },
     "errors": {
       "invalid": "Bu to'g'ri IPv4 yoki IPv6 manzil emas.",
       "private": "Bu manzil ichki tarmoqniki — 10.x, 172.16–31.x, 192.168.x va loopback oralig'i faqat lokal tarmoq ichida mavjud, shuning uchun hech qaysi baza uni joylashtira olmaydi.",
       "notFound": "Hech bir xizmat bu manzilni joylashtira olmadi.",
       "rateLimited": "Tekshiruv xizmatining bepul limiti hozircha tugadi. Bir necha daqiqadan so'ng urinib ko'ring.",
-      "network": "So'rov o'tmadi. Internetni tekshirib, qayta urinib ko'ring."
+      "network": "So'rov o'tmadi. Internetni tekshirib, qayta urinib ko'ring.",
+      "noPublicIp": "Manzilingiz bizga yetib kelmadi — server sizniki o'rniga lokal manzilni ko'rdi. Lokal ishlab chiqishda bu odatiy hol; ishlayotgan saytda esa proksi manzilni uzatmayotganini bildiradi."
     },
     "groups": {
       "location": "Joylashuv",
@@ -105,6 +108,28 @@
         "changing": {
           "question": "IP manzilim nega o'zgarib turadi?",
           "answer": "Ko'pchilik uy va mobil ulanishlar dinamik manzil oladi: provayder uni umumiy fonddan vaqtincha beradi va router qayta ulanganda qaytarib oladi. Doimiy manzil odatda pullik biznes xizmati. Mobil tarmoqda esa siz bitta ommaviy manzilni minglab abonent bilan baham ko'rishingiz mumkin (carrier-grade NAT) — shuning uchun bir tarmoqdagi ikki telefon tashqaridan bir xil ko'rinadi."
+        }
+      }
+    },
+    "signals": {
+      "title": "Brauzeringiz rozimi?",
+      "pending": "Brauzeringiz aytayotgan narsa manzilingiz aytayotganiga solishtirilmoqda…",
+      "summaryAligned": "Brauzeringiz bergan hamma narsa manzilingizga mos. Bu yerda VPN yoki proksiga ishora qiladigan narsa yo'q.",
+      "summaryMismatched": "Shulardan {count} tasi mos kelmadi. Bu — hukm emas, signal: VPN ham shunday natija beradi, safar yoki qo'lda o'rnatilgan soat ham.",
+      "browserSide": "brauzer",
+      "addressSide": "manzil",
+      "items": {
+        "timezone": {
+          "label": "Vaqt mintaqasi",
+          "mismatch": "Operatsion tizimingiz manzilingizdan boshqa mintaqaga sozlangan. VPN manzilingizni ko'chiradi, lekin soatingizni emas — shuning uchun bu mavjud bepul signallarning eng kuchlisi."
+        },
+        "offset": {
+          "label": "UTC farqi",
+          "mismatch": "Mintaqa nomi emas, haqiqiy soat farqi mos kelmadi. Bu — yuqoridagi tekshiruvning qattiqroq shakli: Berlin va Parij bir xil farqda, shuning uchun faqat nom farqi ko'p narsa demaydi."
+        },
+        "language": {
+          "label": "Til hududi",
+          "mismatch": "Brauzeringiz manzilingiz joylashgan davlatdan boshqa davlat kontentini so'ramoqda. Uchtasining eng kuchsizi: ko'p odam o'z davlatining tilida bo'lmagan tilda internetdan foydalanadi."
         }
       }
     }

@@ -98,9 +98,12 @@ export function isPrivateAddress(value: string): boolean {
  * client; every later one is a proxy. Reading the whole header — or the last
  * entry — is the common bug, and it yields the address of our own edge.
  *
- * Untrusted by nature: any client can send this header. That is acceptable
- * here because the worst case is looking up an address the visitor chose,
- * which the tool lets them do by typing it anyway.
+ * Spoofable in general, but not on Vercel: it **overwrites** `x-forwarded-for`
+ * at the edge and does not forward an external one, specifically to prevent IP
+ * spoofing (vercel.com/docs/headers/request-headers). Self-hosted behind a
+ * proxy the header is only as trustworthy as that proxy — and the worst case
+ * is still only looking up an address the visitor chose, which the tool lets
+ * them do by typing it anyway.
  */
 export function clientIpFromHeaders(
   get: (name: string) => string | null

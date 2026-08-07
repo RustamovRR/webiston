@@ -2,11 +2,12 @@
 
 import { Button } from "@webiston/ui/primitives/button"
 import { Input } from "@webiston/ui/primitives/input"
-import { Search } from "lucide-react"
+import { RefreshCw, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useId, useState } from "react"
 
 import { SAMPLE_IPS } from "../constants"
+import type { LookupOptions } from "../hooks/useIpLookup"
 import type { IpLookupError } from "../types"
 import { isIpAddress } from "../utils/address"
 
@@ -23,7 +24,7 @@ import { isIpAddress } from "../utils/address"
  */
 
 interface LookupFormProps {
-  onLookup: (ip?: string) => void
+  onLookup: (ip?: string, options?: LookupOptions) => void
   isLoading: boolean
   error: IpLookupError | null
 }
@@ -77,9 +78,12 @@ export function LookupForm({ onLookup, isLoading, error }: LookupFormProps) {
           variant="outline"
           size="sm"
           disabled={isLoading}
+          // The only button that skips the cache. Pressing it twice is what
+          // someone does after connecting a VPN, and a cached answer would be
+          // exactly the wrong reply to that question.
           onClick={() => {
             setDraft("")
-            onLookup()
+            onLookup(undefined, { force: true })
           }}
         >
           {t("mine")}
@@ -114,9 +118,27 @@ export function LookupForm({ onLookup, isLoading, error }: LookupFormProps) {
           {tErrors("invalid")}
         </p>
       ) : error ? (
-        <p role="alert" className="mt-3 text-destructive text-sm">
-          {tErrors(error.code)}
-        </p>
+        <div role="alert" className="mt-3">
+          <p className="text-destructive text-sm">{tErrors(error.code)}</p>
+          {/* Retryable failures get a button. `invalid` and `private` do not:
+              nothing about the address changes by asking again, and offering
+              a retry that cannot succeed is worse than offering none. */}
+          {error.code === "rateLimited" ||
+          error.code === "network" ||
+          error.code === "noPublicIp" ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              disabled={isLoading}
+              onClick={() => onLookup(trimmed || undefined, { force: true })}
+            >
+              <RefreshCw aria-hidden="true" />
+              {t("retry")}
+            </Button>
+          ) : null}
+        </div>
       ) : null}
     </form>
   )

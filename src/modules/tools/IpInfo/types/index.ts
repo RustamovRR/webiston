@@ -48,7 +48,20 @@ export interface IpLocation {
 /** What the route returns for a lookup that failed. */
 export interface IpLookupError {
   /** i18n key under `IpInfoPage.errors`. */
-  code: "invalid" | "private" | "notFound" | "rateLimited" | "network"
+  code:
+    | "invalid"
+    | "private"
+    | "notFound"
+    | "rateLimited"
+    | "network"
+    /**
+     * The request reached us with no usable public address of its own.
+     *
+     * Distinct from `private` on purpose: `private` is a judgement about an
+     * address the visitor TYPED, this is a statement about our own request
+     * headers, and only the second one is worth a client-side fallback.
+     */
+    | "noPublicIp"
   message?: string
 }
 

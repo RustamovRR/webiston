@@ -67,8 +67,21 @@ export function LocationMap({ latitude, longitude }: LocationMapProps) {
   const hasPoint = latitude !== null && longitude !== null
 
   return (
-    <ToolCard title={t("title")} bodyClassName="p-0">
-      <div className="h-[22rem] w-full overflow-hidden rounded-b-xl">
+    // The card stretches and the MAP takes the slack, rather than the card
+    // ending in dead space.
+    //
+    // The two columns are a CSS grid, and a grid stretches its items to the
+    // tallest row by default. The left column carries three panels and the
+    // right two, so the map card was being pulled ~80px taller than its
+    // content and the difference sat empty under the accuracy note. Shrinking
+    // the card would have fixed the gap; growing the map is the better answer,
+    // because a bigger map is the thing a reader wanted more of anyway.
+    <ToolCard
+      title={t("title")}
+      className="flex flex-col"
+      bodyClassName="flex flex-1 flex-col p-0"
+    >
+      <div className="min-h-[18rem] w-full flex-1 overflow-hidden">
         {hasPoint ? (
           <MapContainer
             // Remounting on a new position is deliberate. `MapContainer`
@@ -105,9 +118,10 @@ export function LocationMap({ latitude, longitude }: LocationMapProps) {
         )}
       </div>
 
-      {/* Under the map, always. The number of people who read an IP map as a
-          street address is the reason this sentence is not in a tooltip. */}
-      <p className="border-border border-t px-5 py-3 text-muted-foreground text-xs">
+      {/* Under the map, always, and pinned to the bottom of the card. The
+          number of people who read an IP map as a street address is the reason
+          this sentence is not in a tooltip. */}
+      <p className="shrink-0 rounded-b-xl border-border border-t px-5 py-3 text-muted-foreground text-xs">
         {t("accuracy")}
       </p>
     </ToolCard>
