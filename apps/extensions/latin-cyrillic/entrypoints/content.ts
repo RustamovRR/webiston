@@ -15,11 +15,18 @@ import {
  */
 const TOKENS = {
   light: {
+    // Two surfaces, because the site has two: the shell is --background and
+    // the panels inside it are --card. The popover used to be one flat colour
+    // with grey slabs for its header and footer, which is the inverse of the
+    // site's hierarchy — there, a card is LIGHTER than the page it sits on
+    // and the header is separated by a rule, not by a fill.
+    base: "oklch(1 0 0)",
     bg: "oklch(0.985 0.004 217)",
     fg: "oklch(0.205 0.012 217)",
     muted: "oklch(0.965 0.005 217)",
     mutedFg: "oklch(0.505 0.012 217)",
     border: "oklch(0.905 0.008 217)",
+    borderStrong: "oklch(0.655 0.012 217)",
     inputBg: "oklch(0.98 0.004 217)",
     primary: "oklch(0.49 0.085 217)",
     primaryHover: "oklch(0.41 0.071 217)",
@@ -27,11 +34,13 @@ const TOKENS = {
     success: "oklch(0.542 0.142 150)"
   },
   dark: {
+    base: "oklch(0.145 0.008 217)",
     bg: "oklch(0.205 0.006 217)",
     fg: "oklch(0.985 0 0)",
     muted: "oklch(0.269 0.008 217)",
     mutedFg: "oklch(0.72 0.02 217)",
     border: "oklch(1 0 0 / 12%)",
+    borderStrong: "oklch(1 0 0 / 34%)",
     inputBg: "oklch(1 0 0 / 16%)",
     primary: "oklch(0.745 0.115 217)",
     primaryHover: "oklch(0.66 0.114 217)",
@@ -39,6 +48,25 @@ const TOKENS = {
     success: "oklch(0.8 0.175 150)"
   }
 } as const
+
+/**
+ * The brand badge, as markup.
+ *
+ * Identical in construction to `Logo.tsx` on the site and to `BrandBadge` in
+ * the popup: a card plate, a brand-tinted corner, a border, the letter, and
+ * the cursor pixel. All three surfaces previously drew
+ * `M3 7l6 10 6-10M15 7l3 5 3-5` — a stroked zigzag that `src/app/icon.svg`
+ * records as the rejected sketch, not the mark.
+ *
+ * A `<span>w</span>` rather than Inter's outline is correct HERE and not on
+ * the favicon: this renders in a live browser with a font stack, whereas an
+ * SVG used as an image resolves fonts against the viewer's machine.
+ */
+const BADGE_HTML = `
+  <span class="wc-badge">
+    <span class="wc-badge-letter">w</span>
+    <span class="wc-badge-pixel"></span>
+  </span>`
 
 // State
 let triggerIcon: HTMLElement | null = null
@@ -211,11 +239,10 @@ function showTriggerIcon() {
 
   triggerIcon = document.createElement("button")
   triggerIcon.className = "wc-trigger"
-  triggerIcon.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="M3 7l6 10 6-10M15 7l3 5 3-5"/>
-    </svg>
-  `
+  // The badge IS the button. It already carries a plate and an edge, so it
+  // reads on a white page and a dark one without a coloured square behind it —
+  // which is the same argument `icon.svg` makes for the favicon.
+  triggerIcon.innerHTML = BADGE_HTML
   triggerIcon.title = "Lotin ↔ Kirill"
   triggerIcon.addEventListener("click", handleTriggerClick)
 
@@ -284,12 +311,8 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
   popover.innerHTML = `
     <div class="wc-header">
       <div class="wc-logo">
-        <div class="wc-logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M3 7l6 10 6-10M15 7l3 5 3-5"/>
-          </svg>
-        </div>
-        <span>Latin Converter</span>
+        ${BADGE_HTML}
+        <span>Lotin-Kirill O'giruvchi</span>
       </div>
       <button class="wc-close" data-action="close" title="Yopish">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -301,7 +324,7 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     <div class="wc-body">
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${isCyrillic ? "Кирилл" : "Lotin"}</span>
+          <span class="wc-label">${isCyrillic ? "Kirill matn" : "Lotin matn"}</span>
         </div>
         <textarea class="wc-textarea wc-input" data-type="input" spellcheck="false">${escapeHtml(selectedText)}</textarea>
       </div>
@@ -316,7 +339,7 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
       
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${isCyrillic ? "Lotin" : "Кирилл"}</span>
+          <span class="wc-label">${isCyrillic ? "Lotin natija" : "Kirill natija"}</span>
           <button class="wc-copy" data-action="copy" title="Nusxalash">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect width="14" height="14" x="8" y="8" rx="2"/>
@@ -421,8 +444,12 @@ function paintDirectionLabels(direction: string) {
   const toCyr = direction === "latin-to-cyrillic"
   const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
   const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
-  if (inputLabel) inputLabel.textContent = toCyr ? "Lotin" : "Кирилл"
-  if (outputLabel) outputLabel.textContent = toCyr ? "Кирилл" : "Lotin"
+  // `textContent` replaces the element's children; the status dot is a
+  // `::before` pseudo-element, so it survives this.
+  if (inputLabel) inputLabel.textContent = toCyr ? "Lotin matn" : "Kirill matn"
+  if (outputLabel) {
+    outputLabel.textContent = toCyr ? "Kirill natija" : "Lotin natija"
+  }
 }
 
 function copyOutput(button: HTMLElement) {
@@ -617,11 +644,13 @@ function getStyles(): string {
   return `
     /* CSS Variables — the site's tokens, from the TOKENS table above. */
     :host {
+      --base: ${TOKENS.light.base};
       --bg: ${TOKENS.light.bg};
       --fg: ${TOKENS.light.fg};
       --muted: ${TOKENS.light.muted};
       --muted-fg: ${TOKENS.light.mutedFg};
       --border: ${TOKENS.light.border};
+      --border-strong: ${TOKENS.light.borderStrong};
       --input-bg: ${TOKENS.light.inputBg};
       --primary: ${TOKENS.light.primary};
       --primary-hover: ${TOKENS.light.primaryHover};
@@ -630,35 +659,63 @@ function getStyles(): string {
       --radius: 12px;
     }
 
+    /* The brand badge — the header mark's five layers, in CSS.
+       Sized in em so one rule serves the 32px trigger and the 28px header
+       lockup; only the host's font-size differs. */
+    .wc-badge {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1em;
+      height: 1em;
+      flex: none;
+      border: 1px solid var(--border-strong);
+      border-radius: 0.28em;
+      background:
+        linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), transparent 50%),
+        var(--bg);
+    }
+    .wc-badge-letter {
+      font-weight: 700;
+      font-size: 0.56em;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+    }
+    .wc-badge-pixel {
+      position: absolute;
+      top: 0.11em;
+      right: 0.11em;
+      width: 0.14em;
+      height: 0.14em;
+      border-radius: 0.04em;
+      background: var(--primary);
+    }
+
     /* Trigger Button */
     .wc-trigger {
       position: fixed;
       z-index: 2147483647;
+      font-size: 32px;
       width: 32px;
       height: 32px;
+      padding: 0;
       border: none;
-      border-radius: 10px;
-      background: var(--primary);
-      color: var(--primary-fg);
+      background: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255,255,255,0.1);
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.28));
       animation: wcPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+      transition: transform 0.15s;
     }
     .wc-trigger:hover {
       transform: scale(1.1);
-      background: var(--primary-hover);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
     }
     .wc-trigger:active {
       transform: scale(0.95);
-    }
-    .wc-trigger svg {
-      width: 18px;
-      height: 18px;
     }
     @keyframes wcPop {
       0% { transform: scale(0); opacity: 0; }
@@ -670,7 +727,7 @@ function getStyles(): string {
       position: fixed;
       z-index: 2147483647;
       width: 380px;
-      background: var(--bg);
+      background: var(--base);
       border: 1px solid var(--border);
       border-radius: 16px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
@@ -680,11 +737,13 @@ function getStyles(): string {
       overflow: hidden;
     }
     .wc-popover.dark {
+      --base: ${TOKENS.dark.base};
       --bg: ${TOKENS.dark.bg};
       --fg: ${TOKENS.dark.fg};
       --muted: ${TOKENS.dark.muted};
       --muted-fg: ${TOKENS.dark.mutedFg};
       --border: ${TOKENS.dark.border};
+      --border-strong: ${TOKENS.dark.borderStrong};
       --input-bg: ${TOKENS.dark.inputBg};
       --primary: ${TOKENS.dark.primary};
       --primary-hover: ${TOKENS.dark.primaryHover};
@@ -696,14 +755,17 @@ function getStyles(): string {
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Header */
+    /* Header.
+       No grey slab. The site separates a card's header from its body with a
+       RULE, on one continuous surface — three stacked greys (header, body,
+       footer) is what made this popover read as a different product from the
+       page it links to. */
     .wc-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border);
-      background: var(--muted);
     }
     .wc-logo {
       display: flex;
@@ -713,19 +775,9 @@ function getStyles(): string {
       font-weight: 600;
       font-size: 14px;
     }
-    .wc-logo-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .wc-logo-icon svg {
-      width: 16px;
-      height: 16px;
-      color: var(--primary-fg);
+    /* The badge sizes off font-size; the lockup wants 28px. */
+    .wc-logo .wc-badge {
+      font-size: 28px;
     }
     .wc-close {
       width: 28px;
@@ -753,21 +805,48 @@ function getStyles(): string {
     .wc-body {
       padding: 16px;
     }
+    /* A panel is a card with its caption INSIDE it — the web tool's
+       DualTextPanel anatomy. Before, the caption floated above a bare
+       textarea, so the popover had no panels at all, just labelled inputs.
+       (No backticks in these comments: this whole block is one template
+       literal, and a stray one ends the string mid-stylesheet.) */
     .wc-panel {
-      margin-bottom: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .wc-panel:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 14%, transparent);
     }
     .wc-panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      height: 40px;
+      padding: 0 14px;
     }
+    /* Sentence case with a status dot, matching the web tool's panel captions
+       ("• Lotin matn" / "• Kirill natija"). The uppercase + letter-spacing
+       treatment here belonged to no other surface. */
     .wc-label {
-      font-size: 11px;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--muted-fg);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    }
+    .wc-label::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .wc-panel:last-child .wc-label::before {
+      background: var(--primary);
     }
     .wc-copy {
       display: flex;
@@ -794,32 +873,23 @@ function getStyles(): string {
       width: 14px;
       height: 14px;
     }
+    /* The textarea is the panel's body, not a box inside it — the border and
+       the focus ring belong to .wc-panel above. */
     .wc-textarea {
+      display: block;
       width: 100%;
       height: 80px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--input-bg);
+      padding: 0 14px 14px;
+      border: none;
+      background: transparent;
       color: var(--fg);
       font-size: 14px;
       line-height: 1.5;
       resize: none;
       font-family: inherit;
-      transition: border-color 0.15s, box-shadow 0.15s;
     }
     .wc-textarea:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 14%, transparent);
-    }
-    .wc-output {
-      background: color-mix(in oklab, var(--primary) 6%, transparent);
-      border-color: color-mix(in oklab, var(--primary) 24%, transparent);
-    }
-    .wc-popover.dark .wc-output {
-      background: color-mix(in oklab, var(--primary) 12%, transparent);
-      border-color: color-mix(in oklab, var(--primary) 32%, transparent);
     }
 
     /* Divider */
@@ -833,6 +903,7 @@ function getStyles(): string {
       height: 36px;
       border: 1px solid var(--border);
       background: var(--bg);
+      flex: none;
       color: var(--muted-fg);
       cursor: pointer;
       border-radius: 50%;
@@ -856,9 +927,8 @@ function getStyles(): string {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border-top: 1px solid var(--border);
-      background: var(--muted);
     }
     .wc-direction {
       display: flex;

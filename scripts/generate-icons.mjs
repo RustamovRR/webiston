@@ -30,6 +30,19 @@
  *                         background", and ~20 JSON-LD references already
  *                         point at this exact path — regenerating it in place
  *                         fixes all of them without touching a line of code.
+ *   apps/extensions/latin-cyrillic/public/icon/{16,32,128}.png
+ *                         the Chrome extension's toolbar, menu and store
+ *                         icons, plus the mark the popup and the in-page
+ *                         popover render. They were LEFT BEHIND when the 2026
+ *                         mark shipped — committed at `4477533` and never
+ *                         regenerated — so the browser's extension list wore
+ *                         the July-2025 logo while every other surface had
+ *                         moved on. The extension is a separate build (WXT)
+ *                         and cannot import from `src/`, which is exactly why
+ *                         its icons have to be produced HERE, from the same
+ *                         `icon.svg`, rather than drawn again over there.
+ *                         128 is Chrome's required store/detail size; 16 and
+ *                         32 are the toolbar and the context menu.
  *
  * `sharp` is not a dependency of this repo and must not become one. It is
  * present in the pnpm store as a transitive optional dep of `next`, so it is
@@ -265,7 +278,16 @@ const TARGETS = [
     // The white plate is the requirement, not a preference: Google renders the
     // Organization logo on white, and a mark that assumes a dark page vanishes.
     svg: () => markSvg({ size: 512, scale: 0.78, plate: "#ffffff", radius: 8 })
-  }
+  },
+  // The extension's three sizes — the mark as drawn, same as the favicon.
+  // Chrome composites these onto its own toolbar, which is light in one theme
+  // and dark in the other, so the badge has to carry its own plate and edge.
+  // That is the dark branch's whole argument, already made in `icon.svg`.
+  ...[16, 32, 128].map((size) => ({
+    file: `apps/extensions/latin-cyrillic/public/icon/${size}.png`,
+    size,
+    svg: () => markSvg({ size })
+  }))
 ]
 
 const written = []

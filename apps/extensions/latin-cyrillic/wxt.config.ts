@@ -7,9 +7,12 @@ export default defineConfig({
     plugins: [tailwindcss()]
   }),
   manifest: {
-    name: "Latin Converter - Webiston",
+    // The web tool's own name (`/tools/latin-cyrillic` renders exactly this as
+    // its H1), so the toolbar entry, the context menu and the page a user
+    // arrives from all say one thing. It was "Latin Converter - Webiston".
+    name: "Lotin-Kirill O'giruvchi — Webiston",
     description:
-      "O'zbek lotin-kirill konverteri. Matnni tez va oson o'zgartiring.",
+      "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi.",
     permissions: ["activeTab", "contextMenus", "storage", "clipboardWrite"],
     host_permissions: ["<all_urls>"],
     commands: {

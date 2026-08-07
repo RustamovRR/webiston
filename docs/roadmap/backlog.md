@@ -75,6 +75,38 @@
 
 ## Standalone items (not part of any initiative)
 
+- `[ ]` **Chrome Web Store submission — three blockers, in this order.**
+  The extension builds, typechecks and now matches the site's design system;
+  what is left is the store, not the code.
+  1. **`_locales/{uz,en,ru}/messages.json`.** Every string in the popup, the
+     popover and the context menu is a hardcoded Uzbek literal today (~25 of
+     them). Use Chrome's NATIVE i18n (`browser.i18n.getMessage`, `default_locale`
+     in the manifest, `__MSG_name__` placeholders) rather than next-intl — it is
+     the only mechanism that also localises the STORE LISTING name and
+     description per viewer, which is the larger half of the benefit. Cannot
+     share `messages/**` with the site: different format, and `apps/*` may not
+     import `src/`.
+  2. **A privacy-policy page.** `/maxfiylik` does not exist; the store requires
+     a URL. The honest content is short — `@webiston/transliteration` is pure TS
+     with zero network calls, and `storage` holds only theme + the quick-convert
+     toggle — but it has to be written and shipped in all three locales.
+  3. **Listing assets.** Icon 128 exists; **1–5 screenshots at 1280×800 or
+     640×400 do not**, and they must be captured from a real browser.
+- `[ ]` **`host_permissions: ["<all_urls>"]` is probably removable**
+  (`apps/extensions/latin-cyrillic/wxt.config.ts`). `background.ts` uses
+  `contextMenus`, `tabs.query` and `tabs.sendMessage`; content-script injection
+  is granted by `content_scripts.matches`, not by this. Broad host permissions
+  put a submission on the extended-review track, so removing it is worth the
+  test — load unpacked, exercise all four surfaces, keep it removed only if
+  they all still work. `matches: ["<all_urls>"]` itself stays: converting
+  selected text on any page is the product.
+- `[ ]` **A CTA for the extension on `/tools/latin-cyrillic`.** The site's
+  highest-traffic page is the natural distribution channel, but the link needs
+  the store URL, which only exists after the first submission. Two Server
+  Components, no client JS: one plain bordered row between `AlphabetTable` and
+  `ConverterFaq`, plus an FAQ entry (which lands in the existing `FAQPage`
+  schema for free). Store URL goes in `src/constants/`, not inline.
+
 - `[x]` **Namespace coverage is now gated — 2026-07-30.** `pnpm i18n` grew a
   second check: every namespace a Client Component calls must be provided by some
   provider. It would have caught the `/tools` regression that survived a

@@ -108,11 +108,25 @@
   --radius-lg: var(--radius);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* NO `* { margin: 0; padding: 0 }` here.
+ *
+ * That reset used to sit at this spot and it silently disabled EVERY spacing
+ * utility in the popup. Tailwind v4 puts utilities in `@layer utilities`, and
+ * an UNLAYERED declaration outranks any layered one no matter how specific —
+ * so `* { padding: 0 }` beat `.p-5`, `.px-3`, `.py-1.5` and `.space-y-3`
+ * alike. Measured in the built popup before removing it: `header`, `footer`,
+ * every panel, every textarea and the segmented control's own track all
+ * computed `padding: 0px` while carrying padding classes.
+ *
+ * It is also why this file's components were written with inline
+ * `style={{ … }}` — the utilities appeared not to work, so each one was
+ * worked around individually instead of the cause being found.
+ *
+ * Tailwind's preflight (part of `@import "tailwindcss"`) already applies
+ * `box-sizing: border-box` to everything and zeroes the margins browsers add
+ * to headings, paragraphs and lists — but it does so in `@layer base`, which
+ * utilities are allowed to override. That is the whole difference.
+ */
 
 html,
 body,

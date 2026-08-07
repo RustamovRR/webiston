@@ -153,6 +153,84 @@ function CursorIcon() {
 }
 
 /**
+ * The site's header badge, reproduced with the SAME utility classes rather
+ * than redrawn.
+ *
+ * What was here before was `<path d="M3 7l6 10 6-10M15 7l3 5 3-5" />` — a
+ * stroked zigzag standing in for a `w`. `src/app/icon.svg` records that the
+ * mark was hand-drawn twice and rejected both times for reading as a zigzag
+ * rather than a letter, which is why the real one uses Inter's own outline.
+ * The extension kept the rejected sketch on all three of its surfaces.
+ *
+ * Copying `Logo.tsx`'s classes is not the same kind of duplication: those
+ * classes resolve through the tokens in `style.css`, so the badge follows the
+ * theme here exactly as it does on the site. An `<img>` of `icon/128.png`
+ * would have been the other option and is worse — the PNG is committed to the
+ * dark branch, so it cannot answer to the popup's light mode.
+ */
+function BrandBadge() {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative flex size-9 items-center justify-center rounded-[10px] border border-border-strong bg-gradient-to-br from-primary/30 via-card to-card"
+    >
+      <span className="font-bold text-foreground text-xl leading-none tracking-tight">
+        w
+      </span>
+      <span className="absolute top-1.25 right-1.25 size-1.25 rounded-[1.5px] bg-primary" />
+    </span>
+  )
+}
+
+/** A labelled card, the popup's version of the web tool's `DualTextPanel`. */
+function Panel({
+  label,
+  dotClassName,
+  action,
+  children
+}: {
+  label: string
+  dotClassName: string
+  action: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <section className="rounded-xl border border-border bg-card">
+      <div className="flex h-10 items-center justify-between px-3.5">
+        <span className="flex items-center gap-2 font-medium text-muted-foreground text-xs">
+          <span className={`size-1.5 rounded-full ${dotClassName}`} />
+          {label}
+        </span>
+        {action}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+/** The small ghost button that lives in a panel's label row. */
+function PanelAction({
+  onClick,
+  title,
+  children
+}: {
+  onClick: () => void
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      className="flex items-center gap-1.5 rounded-md px-2 py-1 text-muted-foreground text-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+    >
+      {children}
+    </button>
+  )
+}
+
+/**
  * The manifest binds Command+Shift+L on macOS and Ctrl+Shift+L elsewhere
  * (wxt.config.ts) — the footer hint must show the binding THIS machine has,
  * not the Mac one to everyone.
@@ -259,205 +337,182 @@ export default function App() {
     setOutput("")
   }
 
+  // The captions have to name the alphabets the text is actually going
+  // between, not a fixed pair. The in-page popover already resolves this the
+  // same way (`paintDirectionLabels` in content.ts) and the web tool does too;
+  // the popup was the one surface that always said "Lotin → Kirill", even
+  // while converting the other way.
+  const toCyrillic = resolveDirection(input, direction) === "latin-to-cyrillic"
+  const sourceLabel = toCyrillic ? "Lotin matn" : "Kirill matn"
+  const targetLabel = toCyrillic ? "Kirill natija" : "Lotin natija"
+
   return (
-    <div
-      className="w-[380px] p-5"
-      style={{ background: "var(--background)", color: "var(--foreground)" }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+    <div className="w-[380px] bg-background text-foreground">
+      {/* Header — the site's own chrome: a badge, a wordmark, and a bottom
+          rule. It sits on `background` while the panels below sit on `card`,
+          which is the surface hierarchy every page of the site uses and the
+          one thing this popup was missing. */}
+      <header className="flex items-center justify-between border-border border-b px-5 py-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <svg
-              className="w-5 h-5 text-primary-foreground"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              aria-label="Logo"
-            >
-              <path d="M3 7l6 10 6-10M15 7l3 5 3-5" />
-            </svg>
-          </div>
+          <BrandBadge />
           <div>
+            {/* The web tool's own H1. The extension called itself "Latin
+                Converter" — an English name on an Uzbek product, matching
+                nothing the user had just been reading. */}
             <h1 className="font-semibold text-sm leading-tight">
-              Latin Converter
+              Lotin-Kirill O'giruvchi
             </h1>
             <a
               href="https://webiston.uz/tools/latin-cyrillic"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] hover:text-primary transition-colors"
-              style={{ color: "var(--muted-foreground)" }}
+              className="text-[11px] text-muted-foreground transition-colors hover:text-primary"
             >
               webiston.uz
             </a>
           </div>
         </div>
 
-        {/* Theme Toggle */}
         <button
+          type="button"
           onClick={toggleTheme}
-          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-          style={{ color: "var(--muted-foreground)" }}
+          className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           title={isDark ? "Yorug' rejim" : "Qorong'u rejim"}
         >
           {isDark ? <SunIcon /> : <MoonIcon />}
         </button>
-      </div>
+      </header>
 
-      {/* Quick Convert Toggle */}
-      <div
-        className="flex items-center justify-between mb-4 p-3 rounded-xl"
-        style={{ background: "var(--muted)" }}
-      >
-        <div className="flex items-center gap-2.5">
-          <div
-            style={{
-              color: floatingEnabled
-                ? "var(--primary)"
-                : "var(--muted-foreground)"
-            }}
-          >
-            <CursorIcon />
-          </div>
-          <div>
-            <span className="text-sm font-medium block leading-tight">
-              Tezkor konvertatsiya
-            </span>
+      <div className="space-y-3 p-5">
+        {/* Quick Convert Toggle */}
+        <div className="flex items-center justify-between rounded-xl border border-border bg-card p-3">
+          <div className="flex items-center gap-2.5">
             <span
-              className="text-[11px]"
-              style={{ color: "var(--muted-foreground)" }}
+              className={
+                floatingEnabled ? "text-primary" : "text-muted-foreground"
+              }
             >
-              Matn tanlanganda avtomatik
+              <CursorIcon />
             </span>
+            <div>
+              <span className="block font-medium text-sm leading-tight">
+                Tezkor konvertatsiya
+              </span>
+              <span className="text-[11px] text-muted-foreground">
+                Matn tanlanganda avtomatik
+              </span>
+            </div>
           </div>
-        </div>
-        <button
-          onClick={toggleFloating}
-          className="relative w-11 h-6 rounded-full transition-all duration-200"
-          style={{
-            background: floatingEnabled ? "var(--primary)" : "var(--border)"
-          }}
-        >
-          <span
-            className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-200"
-            style={{ left: floatingEnabled ? "calc(100% - 20px)" : "4px" }}
-          />
-        </button>
-      </div>
-
-      {/* Direction Selector — the SAME control the web tool uses.
-          The hand-rolled version here put the highlight on the active option
-          itself, so there was nothing to animate between and the selection
-          jumped from tab to tab. It also had no radio semantics and no
-          keyboard support. Both surfaces now share one implementation. */}
-      <SegmentedControl
-        className="mb-4 w-full"
-        label="Konvertatsiya yo'nalishi"
-        options={DIRECTION_OPTIONS}
-        value={direction}
-        onChange={handleDirectionChange}
-      />
-
-      {/* Input Panel */}
-      <div className="mb-3">
-        <div className="flex items-center justify-between mb-2">
-          <span
-            className="text-xs font-medium uppercase tracking-wide"
-            style={{ color: "var(--muted-foreground)" }}
+          <button
+            type="button"
+            onClick={toggleFloating}
+            role="switch"
+            aria-checked={floatingEnabled}
+            aria-label="Tezkor konvertatsiya"
+            className={`relative h-6 w-11 rounded-full transition-colors duration-200 ${
+              floatingEnabled ? "bg-primary" : "bg-border-strong"
+            }`}
           >
-            Kirish
-          </span>
-          {input && (
-            <button
-              onClick={handleClear}
-              className="p-1 rounded transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-              style={{ color: "var(--muted-foreground)" }}
-              title="Tozalash"
-            >
-              <CloseIcon />
-            </button>
-          )}
-        </div>
-        <textarea
-          value={input}
-          onChange={handleInputChange}
-          placeholder="Matn kiriting..."
-          className="w-full h-28 p-3.5 text-sm rounded-xl resize-none transition-all duration-200"
-          style={{
-            background: "var(--input)",
-            border: "1px solid var(--border)",
-            color: "var(--foreground)"
-          }}
-        />
-      </div>
-
-      {/* Swap Button */}
-      <div className="flex justify-center mb-3">
-        <button
-          onClick={handleSwap}
-          disabled={!output}
-          className="p-2.5 rounded-full border transition-all duration-200 hover:border-ring hover:text-primary disabled:opacity-30 disabled:hover:border-current disabled:hover:text-current"
-          style={{
-            color: "var(--muted-foreground)",
-            borderColor: "var(--border)",
-            background: "var(--background)"
-          }}
-          title="Almashtirish"
-        >
-          <SwapIcon />
-        </button>
-      </div>
-
-      {/* Output Panel */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span
-            className="text-xs font-medium uppercase tracking-wide"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            Natija
-          </span>
-          {output && (
-            <button
-              onClick={handleCopy}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
-                copied ? "bg-success/10 text-success" : "text-muted-foreground"
+            {/* `primary-foreground`, not a literal white: the knob has to read
+                against `--primary`, which is exactly what that token pair
+                means. (Do not name a raw palette utility here even in prose —
+                Tailwind scans comments too, so an earlier draft of this note
+                emitted a dead rule for the class it was arguing against.) */}
+            {/* `left-1` is not decoration. Without it the knob is `left: auto`
+                and falls back to its STATIC position, which a button centres
+                (`text-align: center` is in every UA stylesheet) — measured at
+                `left: 22px`, so `translate-x-6` put the knob at 46px inside a
+                44px track: entirely outside the switch it belongs to.
+                `SegmentedControl` carries the same note for the same reason. */}
+            <span
+              className={`absolute top-1 left-1 size-4 rounded-full bg-primary-foreground transition-transform duration-200 ${
+                floatingEnabled ? "translate-x-5" : "translate-x-0"
               }`}
-              title="Nusxalash"
-            >
-              {copied ? <CheckIcon /> : <CopyIcon />}
-              {copied ? "Nusxalandi" : "Nusxalash"}
-            </button>
-          )}
+            />
+          </button>
         </div>
-        <textarea
-          value={output}
-          readOnly
-          placeholder="Natija shu yerda ko'rinadi..."
-          className={`w-full h-28 p-3.5 text-sm rounded-xl resize-none border text-foreground ${
-            output ? "bg-primary/5 border-primary/25" : "bg-muted border-border"
-          }`}
+
+        {/* Direction Selector — the SAME control the web tool uses.
+            The hand-rolled version here put the highlight on the active option
+            itself, so there was nothing to animate between and the selection
+            jumped from tab to tab. It also had no radio semantics and no
+            keyboard support. Both surfaces now share one implementation. */}
+        <SegmentedControl
+          className="w-full"
+          label="Konvertatsiya yo'nalishi"
+          options={DIRECTION_OPTIONS}
+          value={direction}
+          onChange={handleDirectionChange}
         />
+
+        {/* Input panel. The label row carries a status dot and the panel's one
+            action, exactly like `DualTextPanel` on the web tool — same
+            anatomy, so the two surfaces read as one product. */}
+        <Panel
+          label={sourceLabel}
+          dotClassName="bg-muted-foreground"
+          action={
+            input ? (
+              <PanelAction onClick={handleClear} title="Tozalash">
+                <CloseIcon />
+              </PanelAction>
+            ) : null
+          }
+        >
+          <textarea
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Matn kiriting..."
+            className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </Panel>
+
+        {/* Swap */}
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={handleSwap}
+            disabled={!output}
+            className="rounded-full border border-border bg-card p-2.5 text-muted-foreground transition-colors hover:border-ring hover:text-primary disabled:pointer-events-none disabled:opacity-30"
+            title="Almashtirish"
+          >
+            <SwapIcon />
+          </button>
+        </div>
+
+        {/* Output panel */}
+        <Panel
+          label={targetLabel}
+          dotClassName="bg-primary"
+          action={
+            output ? (
+              <PanelAction onClick={handleCopy} title="Nusxalash">
+                {copied ? <CheckIcon /> : <CopyIcon />}
+                <span className={copied ? "text-success" : undefined}>
+                  {copied ? "Nusxalandi" : "Nusxalash"}
+                </span>
+              </PanelAction>
+            ) : null
+          }
+        >
+          <textarea
+            value={output}
+            readOnly
+            placeholder="Natija shu yerda ko'rinadi..."
+            className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </Panel>
       </div>
 
-      {/* Footer */}
-      <div className="pt-3" style={{ borderTop: "1px solid var(--border)" }}>
-        <p
-          className="text-[11px] text-center"
-          style={{ color: "var(--muted-foreground)" }}
-        >
+      <footer className="border-border border-t px-5 py-3">
+        <p className="text-center text-[11px] text-muted-foreground">
           Tezkor:{" "}
-          <kbd
-            className="px-1.5 py-0.5 rounded text-[10px] font-mono"
-            style={{ background: "var(--muted)" }}
-          >
+          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
             {SHORTCUT_LABEL}
           </kbd>{" "}
           tanlangan matnni konvertatsiya
         </p>
-      </div>
+      </footer>
     </div>
   )
 }

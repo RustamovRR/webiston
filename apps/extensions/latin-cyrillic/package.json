@@ -1,8 +1,8 @@
 {
   "name": "latin-cyrillic-extension",
-  "displayName": "Latin Converter - Webiston",
+  "displayName": "Lotin-Kirill O'giruvchi — Webiston",
   "version": "1.0.0",
-  "description": "O'zbek lotin-kirill konverteri. Matnni tez va oson o'zgartiring.",
+  "description": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi.",
   "author": "Webiston Team <info@webiston.uz>",
   "type": "module",
   "scripts": {
