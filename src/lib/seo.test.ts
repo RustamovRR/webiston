@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { describe, expect, it } from "vitest"
+import { LOCALES, localeInfo } from "@/i18n/locales"
 import {
   localeAlternates,
   localeUrl,
@@ -82,9 +83,20 @@ describe("withLocale", () => {
   })
 
   it("sets the OpenGraph locale and lists the others as alternates", () => {
+    // Arrange — derived from the served list, not hardcoded. The previous
+    // version asserted `["uz_UZ"]` and broke the day a third locale shipped,
+    // which is a test failing for being out of date rather than for finding
+    // anything.
+    const others = LOCALES.filter((l) => l !== "en").map(
+      (l) => localeInfo(l).ogLocale
+    )
+
+    // Act
     const og = withLocale(base, "en", "/x").openGraph as Record<string, unknown>
+
+    // Assert
     expect(og.locale).toBe("en_US")
-    expect(og.alternateLocale).toEqual(["uz_UZ"])
+    expect(og.alternateLocale).toEqual(others)
     expect(og.url).toBe(`${SITE_URL}/en/x`)
   })
 

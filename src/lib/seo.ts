@@ -1,14 +1,19 @@
 import type { Metadata } from "next"
+import { localeInfo } from "@/i18n/locales"
 import { routing } from "@/i18n/routing"
 
 /** Canonical origin. Also `metadataBase` in `src/app/layout.tsx`. */
 export const SITE_URL = "https://webiston.uz"
 
-/** OpenGraph wants a BCP-47-ish `language_TERRITORY` pair, not a bare locale. */
-const OG_LOCALE: Record<string, string> = {
-  uz: "uz_UZ",
-  en: "en_US"
-}
+/**
+ * OpenGraph wants a BCP-47-ish `language_TERRITORY` pair, not a bare locale.
+ *
+ * Read from the locale catalogue rather than kept as its own map. That map was
+ * the sixth copy of the locale list in this repo, and the quietest: `hreflang`
+ * a few lines below already iterates the real list, so adding a locale gave
+ * every page a correct `hreflang` and a silently wrong `og:locale`.
+ */
+const ogLocale = (locale: string) => localeInfo(locale).ogLocale
 
 /**
  * Absolute URL for `path` in `locale`.
@@ -83,10 +88,10 @@ export function withLocale(
     openGraph: base.openGraph && {
       ...base.openGraph,
       url: localeUrl(locale, path),
-      locale: OG_LOCALE[locale] ?? OG_LOCALE[routing.defaultLocale],
+      locale: ogLocale(locale),
       alternateLocale: routing.locales
         .filter((l) => l !== locale)
-        .map((l) => OG_LOCALE[l]),
+        .map((l) => ogLocale(l)),
       ...(card && { images: card })
     },
     twitter: base.twitter && {
