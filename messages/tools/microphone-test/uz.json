@@ -47,7 +47,13 @@
         "echoCancellation": "Aks-sadoni bostirish",
         "noiseSuppression": "Shovqinni bostirish",
         "autoGainControl": "Avtomatik kuchaytirish"
-      }
+      },
+      "copyReport": "Hisobotni nusxalash",
+      "reportTitle": "Mikrofon diagnostikasi",
+      "reportDevice": "Qurilma",
+      "reportDeviceLabel": "Mikrofon",
+      "reportRequested": "So'ralgan ishlovlar",
+      "reportEnvironment": "Muhit"
     },
     "values": {
       "unavailable": "ma'lumot yo'q",
@@ -70,6 +76,10 @@
         "noSound": {
           "question": "Daraja ko'rsatkichi qimirlamayapti — nima qilish kerak?",
           "answer": "Uchta sababdan biri bo'ladi. Birinchisi — apparat mute: ko'p USB mikrofonlar va noutbuk klaviaturalarida alohida o'chirish tugmasi bor va brauzer buni ko'rmaydi. Ikkinchisi — noto'g'ri qurilma: yuqoridagi ro'yxatdan boshqasini tanlab ko'ring, chunki tizim ko'pincha eng oxirgi ulangan qurilmani standart qilib qo'yadi. Uchinchisi — tizim sozlamalaridagi kirish darajasi nolga tushib qolgan bo'lishi mumkin."
+        },
+        "speakers": {
+          "question": "Mikrofon ishlayapti, lekin meni baribir eshitishmayapti — nega?",
+          "answer": "Bunday holda muammo odatda chiqishda yoki qo'ng'iroq dasturining o'z sozlamasida bo'ladi. Avval yuqoridagi karnay testini o'tkazing: agar ohangni eshitmasangiz, tizimda noto'g'ri chiqish qurilmasi tanlangan (masalan, HDMI monitor yoki uzoqlashgan Bluetooth quloqchin). Agar ohang eshitilsa va bu sahifada daraja ko'rsatkichi ham qimirlayotgan bo'lsa, unda mikrofoningiz butunlay soz — Zoom yoki Meet ichidagi mikrofon tanlovini va ovoz o'chirish tugmasini tekshiring, chunki ular brauzerdan alohida sozlanadi."
         },
         "privacy": {
           "question": "Ovozim qayergadir yuboriladimi?",
@@ -96,6 +106,18 @@
           "answer": "Ular faqat ochiq turgan sahifa xotirasida turadi. Oxirgi 10 tasi ro'yxatda qoladi, undan eskilari avtomatik o'chiriladi. Saqlab qolish uchun yuklab olish tugmasini bosing — fayl WebM yoki brauzeringiz qo'llaydigan boshqa formatda kompyuteringizga tushadi."
         }
       }
+    },
+    "speakers": {
+      "title": "Karnay va quloqchin testi",
+      "intro": "Muammo mikrofonda emas, chiqishda bo'lishi mumkin. Bu test ruxsat so'ramaydi — tugmani bosing va ohangni eshitasizmi, tekshiring. Chap va o'ng alohida, chunki bitta kanal ishlamay qolishi juda ko'p uchraydi.",
+      "channels": {
+        "left": "Chap",
+        "both": "Ikkalasi",
+        "right": "O'ng"
+      },
+      "playing": "{channel} kanalda ohang chalinmoqda…",
+      "volumeNote": "Ohang past ovozda chalinadi, lekin quloqchin taqqan bo'lsangiz avval ovoz darajasini tekshiring.",
+      "unsupported": "Bu brauzer sinov ohangini chala olmaydi."
     }
   }
 }

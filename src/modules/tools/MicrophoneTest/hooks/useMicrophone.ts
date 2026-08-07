@@ -131,11 +131,24 @@ export function useMicrophone() {
     }
   }, [stream])
 
-  /** The monitor is a gain change, not a graph change — no clicks, no rebuild. */
+  /**
+   * The monitor is a gain change, not a graph change — no rebuild, no clicks.
+   *
+   * Ramped rather than assigned. Setting `gain.value` moves the signal from 0
+   * to 1 between one sample and the next, and a step discontinuity in a
+   * waveform is an audible click — through headphones, at monitoring volume,
+   * right against someone's ear. 15ms is below the threshold where the fade
+   * itself is noticeable.
+   */
   useEffect(() => {
     const monitor = monitorRef.current
-    if (!monitor) return
-    monitor.gain.value = isMonitoring ? 1 : 0
+    const context = contextRef.current
+    if (!monitor || !context) return
+
+    const target = isMonitoring ? 1 : 0
+    monitor.gain.cancelScheduledValues(context.currentTime)
+    monitor.gain.setValueAtTime(monitor.gain.value, context.currentTime)
+    monitor.gain.linearRampToValueAtTime(target, context.currentTime + 0.015)
   }, [isMonitoring])
 
   /**

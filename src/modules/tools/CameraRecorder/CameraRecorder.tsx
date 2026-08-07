@@ -66,6 +66,11 @@ export function CameraRecorder() {
     }
   }, [camera.stream])
 
+  /** The device the report should name, matched to what is actually open. */
+  const activeLabel =
+    camera.devices.find((device) => device.deviceId === camera.deviceId)
+      ?.label || null
+
   const clearAll = useCallback(() => {
     snapshots.clear()
     recorder.clear()
@@ -98,6 +103,7 @@ export function CameraRecorder() {
             // Reopening the stream mid-recording would end the recording, so
             // the settings that reopen it are held while one is running.
             locked={recorder.isRecording}
+            failure={camera.failure}
           />
 
           <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr] lg:items-start">
@@ -116,6 +122,7 @@ export function CameraRecorder() {
                 requested={camera.preset}
                 actual={camera.settings}
                 locked={recorder.isRecording}
+                deviceLabel={activeLabel}
               />
               <CaptureGallery
                 snapshots={snapshots.snapshots}

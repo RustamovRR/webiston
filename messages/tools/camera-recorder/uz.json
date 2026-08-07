@@ -36,7 +36,12 @@
         "actual": "Haqiqiy",
         "frameRate": "Kadr chastotasi",
         "facingMode": "Kamera yo'nalishi"
-      }
+      },
+      "copyReport": "Hisobotni nusxalash",
+      "reportTitle": "Kamera diagnostikasi",
+      "reportDevice": "Qurilma",
+      "reportDeviceLabel": "Kamera",
+      "reportEnvironment": "Muhit"
     },
     "values": {
       "unavailable": "ma'lumot yo'q",

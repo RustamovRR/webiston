@@ -5,8 +5,12 @@ import { Button } from "@webiston/ui/primitives/button"
 import { Headphones, Square } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { DeviceSelect } from "@/components/shared/MediaAccessPanel"
+import {
+  DeviceSelect,
+  MediaFailureNotice
+} from "@/components/shared/MediaAccessPanel"
 import type { MediaAccessDevice } from "@/hooks/useMediaAccess"
+import type { MediaFailure } from "@/lib/utils/media"
 
 /**
  * The controls, as a row rather than a card.
@@ -25,6 +29,17 @@ interface MicToolbarProps {
   onStop: () => void
   isMonitoring: boolean
   onMonitorChange: (next: boolean) => void
+  /**
+   * Held while recording.
+   *
+   * Switching device reopens the stream, and the running recorder is bound to
+   * the OLD one — so the take would keep a clock running over a file that
+   * stopped growing, and save silently truncated. Every control that reopens
+   * the stream is locked for the same reason.
+   */
+  locked: boolean
+  /** A switch that failed while the previous device kept working. */
+  failure: MediaFailure | null
 }
 
 export function MicToolbar({
@@ -33,7 +48,9 @@ export function MicToolbar({
   onSelect,
   onStop,
   isMonitoring,
-  onMonitorChange
+  onMonitorChange,
+  locked,
+  failure
 }: MicToolbarProps) {
   const t = useTranslations("MicrophoneTestPage.toolbar")
 
@@ -44,6 +61,7 @@ export function MicToolbar({
         value={deviceId}
         onChange={onSelect}
         kind="microphone"
+        disabled={locked}
       />
 
       <div className="flex flex-wrap items-center gap-2">
@@ -77,6 +95,10 @@ export function MicToolbar({
           {t("stop")}
         </Button>
       </div>
+
+      {failure ? (
+        <MediaFailureNotice failure={failure} kind="microphone" />
+      ) : null}
 
       {isMonitoring ? (
         <p

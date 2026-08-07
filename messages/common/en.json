@@ -80,6 +80,7 @@
       "retry": "Try again",
       "alreadyAllowed": "This site is already allowed",
       "willAsk": "Your browser will ask — that dialog is the browser's, not ours",
+      "stayedOnPrevious": "You are still on the previous device.",
       "failure": {
         "denied": {
           "title": "Permission was refused",

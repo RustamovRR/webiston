@@ -12,7 +12,8 @@ import {
   ListenCard,
   MicToolbar,
   ProcessingCard,
-  RecordingsCard
+  RecordingsCard,
+  SpeakerTestCard
 } from "./components"
 import { MAX_RECORDINGS } from "./constants"
 import { useMicrophone } from "./hooks/useMicrophone"
@@ -42,6 +43,11 @@ export function MicrophoneTest() {
     max: MAX_RECORDINGS
   })
 
+  /** The device the report should name, matched to what is actually open. */
+  const activeLabel =
+    mic.devices.find((device) => device.deviceId === mic.deviceId)?.label ||
+    null
+
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
@@ -55,6 +61,8 @@ export function MicrophoneTest() {
             onStop={mic.stop}
             isMonitoring={mic.isMonitoring}
             onMonitorChange={mic.setIsMonitoring}
+            locked={recorder.isRecording}
+            failure={mic.failure}
           />
 
           <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-start">
@@ -74,7 +82,9 @@ export function MicrophoneTest() {
                 // Reopening the stream mid-recording would end the recording,
                 // so the switches are held while one is running.
                 disabled={recorder.isRecording}
+                deviceLabel={activeLabel}
               />
+              <SpeakerTestCard />
               <RecordingsCard
                 recordings={recorder.recordings}
                 onRemove={recorder.remove}
@@ -84,7 +94,7 @@ export function MicrophoneTest() {
           </div>
         </div>
       ) : (
-        <div className="mt-6">
+        <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:items-start">
           <ToolCard title={t("gate.title")} bodyClassName="p-0">
             <MediaAccessPanel
               status={mic.status}
@@ -96,6 +106,11 @@ export function MicrophoneTest() {
               }}
             />
           </ToolCard>
+          {/* Rendered before permission too, deliberately: it needs none, so
+              it is the one thing on this page that still works for somebody
+              who blocked the microphone and cannot get it back — and "can I
+              hear anything at all" is half of what they came to find out. */}
+          <SpeakerTestCard />
         </div>
       )}
     </div>

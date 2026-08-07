@@ -47,7 +47,13 @@
         "echoCancellation": "Echo cancellation",
         "noiseSuppression": "Noise suppression",
         "autoGainControl": "Automatic gain"
-      }
+      },
+      "copyReport": "Copy report",
+      "reportTitle": "Microphone diagnostics",
+      "reportDevice": "Device",
+      "reportDeviceLabel": "Microphone",
+      "reportRequested": "Requested processing",
+      "reportEnvironment": "Environment"
     },
     "values": {
       "unavailable": "not reported",
@@ -70,6 +76,10 @@
         "noSound": {
           "question": "The level meter does not move — what now?",
           "answer": "It is almost always one of three things. A hardware mute: many USB microphones and laptop keyboards have their own mute switch, and the browser cannot see it. The wrong device: try another entry in the list above, because systems tend to make the most recently connected device the default. Or the input level in your operating system's sound settings has been turned down to zero."
+        },
+        "speakers": {
+          "question": "My microphone works but they still cannot hear me — why?",
+          "answer": "When that happens the fault is usually your output or the call application's own setting. Run the speaker test above first: if you hear no tone, your system is sending audio to the wrong device — an HDMI monitor, or a Bluetooth headset that has drifted out of range. If you do hear the tone and the level meter on this page moves, your microphone is genuinely fine — check the microphone selection and the mute button inside Zoom or Meet, because those are configured separately from the browser."
         },
         "privacy": {
           "question": "Is my audio sent anywhere?",
@@ -96,6 +106,18 @@
           "answer": "Only in the memory of the open page. The last 10 stay in the list and older ones are discarded automatically. Press download to keep one — it saves to your computer as WebM, or whichever container your browser supports."
         }
       }
+    },
+    "speakers": {
+      "title": "Speaker and headphone test",
+      "intro": "The fault may be your output, not your microphone. This test needs no permission — press a button and check whether you hear the tone. Left and right separately, because one dead channel is a very common fault.",
+      "channels": {
+        "left": "Left",
+        "both": "Both",
+        "right": "Right"
+      },
+      "playing": "Playing a tone on the {channel} channel…",
+      "volumeNote": "The tone is deliberately quiet, but check your volume first if you are wearing headphones.",
+      "unsupported": "This browser cannot play the test tone."
     }
   }
 }

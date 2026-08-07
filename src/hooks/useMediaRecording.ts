@@ -80,6 +80,15 @@ export function useMediaRecording({
   const segmentStartRef = useRef(0)
   const recordingsRef = useRef<Recording[]>([])
   recordingsRef.current = recordings
+  /**
+   * Whether this hook is still mounted.
+   *
+   * `onstop` fires asynchronously, and unmounting STOPS a running recorder —
+   * so without this the handler builds a recording on the way out, mints an
+   * object URL that no state will hold and no cleanup will revoke, and leaks a
+   * blob with no owner for the lifetime of the tab.
+   */
+  const mounted = useRef(true)
 
   const mimeTypeRef = useRef<string | null | undefined>(undefined)
   if (mimeTypeRef.current === undefined) {
@@ -112,6 +121,12 @@ export function useMediaRecording({
     }
 
     recorder.onstop = () => {
+      // Nothing downstream of here has anywhere to put its result.
+      if (!mounted.current) {
+        chunksRef.current = []
+        return
+      }
+
       const duration =
         (committedRef.current + (performance.now() - segmentStartRef.current)) /
         1000
@@ -222,7 +237,9 @@ export function useMediaRecording({
 
   /** Everything released on unmount, which is where the old leak lived. */
   useEffect(() => {
+    mounted.current = true
     return () => {
+      mounted.current = false
       const recorder = recorderRef.current
       if (recorder && recorder.state !== "inactive") recorder.stop()
       recorderRef.current = null

@@ -123,23 +123,37 @@ export function useMediaAccess({
       setStatus("starting")
       setFailure(null)
 
+      /**
+       * A failed attempt, resolved against what was already running.
+       *
+       * This is the case that matters most, because the failure lands while
+       * hardware is ON: switching to a camera another application has open
+       * fails, and the stream you were already using is still live. Dropping
+       * to `blocked` would hide the whole toolbar — including the stop button —
+       * over a device that is still recording you.
+       *
+       * So a switch that fails leaves you exactly where you were and says why,
+       * and only a FIRST attempt with nothing to fall back on blocks the page.
+       */
+      const fail = (error: unknown) => {
+        if (!mounted.current) return false
+        setFailure(describeMediaFailure(error))
+        setStatus(previous?.active ? "live" : "blocked")
+        return false
+      }
+
       let opened: MediaStream
       try {
         opened = await navigator.mediaDevices.getUserMedia(
           constraintsRef.current(target)
         )
       } catch (error) {
-        const reason = describeMediaFailure(error)
-
         // An exact device the browser will not satisfy is worth one retry
         // without it: it was almost certainly unplugged between the list being
         // drawn and the button being pressed, and the default device is a
         // better answer than an error panel.
-        if (reason !== "constraints" || !target) {
-          if (!mounted.current) return false
-          setFailure(reason)
-          setStatus("blocked")
-          return false
+        if (describeMediaFailure(error) !== "constraints" || !target) {
+          return fail(error)
         }
 
         try {
@@ -147,10 +161,7 @@ export function useMediaAccess({
             constraintsRef.current(null)
           )
         } catch (retryError) {
-          if (!mounted.current) return false
-          setFailure(describeMediaFailure(retryError))
-          setStatus("blocked")
-          return false
+          return fail(retryError)
         }
       }
 

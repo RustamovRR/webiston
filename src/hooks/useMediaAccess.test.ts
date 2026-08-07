@@ -250,4 +250,47 @@ describe("useMediaAccess", () => {
     })
     expect(result.current.hasDeviceLabels).toBe(true)
   })
+
+  it("stays live on the old device when switching to one that fails", async () => {
+    // Arrange — the first device opens, the second refuses. This is the case
+    // that matters most, because the failure happens while hardware is ON.
+    const first = fakeTrack()
+    getUserMedia.mockResolvedValueOnce(fakeStream(first))
+    const { result } = renderHook(() => useMediaAccess(audioOptions))
+
+    await act(async () => {
+      await result.current.start()
+    })
+
+    getUserMedia.mockRejectedValueOnce(rejection("NotReadableError"))
+
+    // Act
+    await act(async () => {
+      await result.current.select("mic-2")
+    })
+
+    // Assert — the visitor keeps the working microphone and is told why the
+    // other one did not open. Dropping to `blocked` here would hide the whole
+    // toolbar, including its stop button, while the device stayed OPEN: a
+    // camera light with nothing on screen able to turn it off.
+    expect(result.current.failure).toBe("inUse")
+    expect(result.current.isLive).toBe(true)
+    expect(result.current.stream).not.toBeNull()
+    expect(first.stop).not.toHaveBeenCalled()
+  })
+
+  it("does not leave a stream open when the first attempt fails", async () => {
+    // Arrange
+    getUserMedia.mockRejectedValueOnce(rejection("NotAllowedError"))
+    const { result } = renderHook(() => useMediaAccess(audioOptions))
+
+    // Act
+    await act(async () => {
+      await result.current.start()
+    })
+
+    // Assert — nothing was open, so there is nothing to fall back to.
+    expect(result.current.isLive).toBe(false)
+    expect(result.current.stream).toBeNull()
+  })
 })

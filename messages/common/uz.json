@@ -80,6 +80,7 @@
       "retry": "Qayta urinish",
       "alreadyAllowed": "Bu sayt uchun ruxsat allaqachon berilgan",
       "willAsk": "Brauzer ruxsat so'raydi — bu bizning emas, brauzerning oynasi",
+      "stayedOnPrevious": "Avvalgi qurilmada qoldingiz.",
       "failure": {
         "denied": {
           "title": "Ruxsat berilmadi",

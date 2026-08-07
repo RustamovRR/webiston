@@ -52,6 +52,17 @@ export function LevelMeter({ level, idle }: LevelMeterProps) {
   const targetLeft = dbfsToPercent(TARGET_MIN_DBFS)
   const targetWidth = dbfsToPercent(TARGET_MAX_DBFS) - targetLeft
 
+  /**
+   * The reading, floored.
+   *
+   * The initial value is `-Infinity` and stays there until the first animation
+   * frame — `Math.round` leaves it alone, and React renders the ATTRIBUTE
+   * `aria-valuenow="-Infinity"`, which is not a number and which a screen
+   * reader reads out as written. The visible text was already guarded; the
+   * accessible value was not.
+   */
+  const announced = Math.max(SILENCE_DBFS, Math.round(level.rms))
+
   const state = level.clipping
     ? "clipping"
     : level.rms >= TARGET_MIN_DBFS
@@ -75,7 +86,7 @@ export function LevelMeter({ level, idle }: LevelMeterProps) {
         role="meter"
         aria-valuemin={SILENCE_DBFS}
         aria-valuemax={0}
-        aria-valuenow={idle ? SILENCE_DBFS : Math.round(level.rms)}
+        aria-valuenow={idle ? SILENCE_DBFS : announced}
         aria-valuetext={
           idle ? t("silent") : t("dbfs", { value: level.rms.toFixed(1) })
         }

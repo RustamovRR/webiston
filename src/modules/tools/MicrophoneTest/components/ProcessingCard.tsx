@@ -1,10 +1,13 @@
 "use client"
 
 import { cn } from "@webiston/ui"
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
+import { useMemo } from "react"
 
 import { DetailList, type DetailListRow } from "@/components/shared/DetailList"
 import { ToolCard } from "@/components/shared/ToolCard"
+import { environmentReportLines, formatReport } from "@/lib/utils/media"
 
 import type { ProcessingOptions } from "../types"
 
@@ -33,6 +36,8 @@ interface ProcessingCardProps {
   onChange: (next: Partial<ProcessingOptions>) => void
   settings: MediaTrackSettings | null
   disabled: boolean
+  /** Shown in the report, so the reader knows which microphone it describes. */
+  deviceLabel: string | null
 }
 
 const OPTIONS = [
@@ -45,39 +50,80 @@ export function ProcessingCard({
   processing,
   onChange,
   settings,
-  disabled
+  disabled,
+  deviceLabel
 }: ProcessingCardProps) {
   const t = useTranslations("MicrophoneTestPage.processing")
   const tValues = useTranslations("MicrophoneTestPage.values")
 
-  const rows: DetailListRow[] = [
-    {
-      key: "sampleRate",
-      label: t("rows.sampleRate"),
-      value: settings?.sampleRate ? `${settings.sampleRate} Hz` : null
-    },
-    {
-      key: "channelCount",
-      label: t("rows.channelCount"),
-      value: settings?.channelCount
-        ? tValues(settings.channelCount > 1 ? "stereo" : "mono")
-        : null
-    },
-    ...OPTIONS.map((key) => ({
-      key,
-      label: t(`rows.${key}`),
-      // The spec lets `echoCancellation` report a MODE string — "all",
-      // "remote-only" — instead of a boolean, and any reported mode means it
-      // is on. Reading it as a boolean turned those browsers into "off".
-      value:
-        settings && key in settings
-          ? tValues(settings[key] ? "applied" : "notApplied")
+  // Memoised so the report below can depend on it. An array rebuilt every
+  // render is not a dependency — it is a guarantee that whatever depends on it
+  // runs every render too.
+  const rows: DetailListRow[] = useMemo(
+    () => [
+      {
+        key: "sampleRate",
+        label: t("rows.sampleRate"),
+        value: settings?.sampleRate ? `${settings.sampleRate} Hz` : null
+      },
+      {
+        key: "channelCount",
+        label: t("rows.channelCount"),
+        value: settings?.channelCount
+          ? tValues(settings.channelCount > 1 ? "stereo" : "mono")
           : null
-    }))
-  ]
+      },
+      ...OPTIONS.map((key) => ({
+        key,
+        label: t(`rows.${key}`),
+        // The spec lets `echoCancellation` report a MODE string — "all",
+        // "remote-only" — instead of a boolean, and any reported mode means it
+        // is on. Reading it as a boolean turned those browsers into "off".
+        value:
+          settings && key in settings
+            ? tValues(settings[key] ? "applied" : "notApplied")
+            : null
+      }))
+    ],
+    [settings, t, tValues]
+  )
+
+  /**
+   * The report — the paste-into-a-support-ticket block.
+   *
+   * `useMemo`, deliberately, and not the `useState` + `useEffect` this started
+   * as. That version listed `rows` as a dependency; `rows` is a fresh array
+   * every render, so the effect ran every render, and it called `setReport`
+   * with a string containing a fresh timestamp — a value that never settles.
+   * Render, set state, render. A memo cannot do that: recomputing costs a
+   * string, not a render pass.
+   */
+  const report = useMemo(
+    () =>
+      formatReport(t("reportTitle"), [
+        {
+          heading: t("reportDevice"),
+          lines: [
+            `${t("reportDeviceLabel")}: ${deviceLabel || "—"}`,
+            ...rows.map((row) => `${row.label}: ${row.value ?? "—"}`),
+            `${t("reportRequested")}: ${
+              OPTIONS.filter((key) => processing[key]).join(", ") || "—"
+            }`
+          ]
+        },
+        { heading: t("reportEnvironment"), lines: environmentReportLines() }
+      ]),
+    [t, rows, processing, deviceLabel]
+  )
 
   return (
-    <ToolCard title={t("title")} bodyClassName="p-0">
+    <ToolCard
+      title={t("title")}
+      bodyClassName="p-0"
+      actions={
+        <CopyButton text={report} disabled={!report} label={t("copyReport")} />
+      }
+    >
       <div className="space-y-3 p-5">
         <p className="text-muted-foreground text-sm leading-relaxed">
           {t("intro")}

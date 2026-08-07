@@ -37,6 +37,8 @@ export const applicationSchema = {
     "To'lqin va chastota spektri",
     "O'z ovozingizni jonli eshitish",
     "Yozib olish va darhol tinglash",
+    "Karnay va quloqchin testi — chap va o'ng kanal alohida",
+    "Diagnostika hisobotini bir bosishda nusxalash",
     "Aks-sado, shovqin bostirish va avtomatik kuchaytirishni o'chirish",
     "Bir nechta mikrofon orasida almashish",
     "Hamma narsa qurilmada — hech narsa serverga yuborilmaydi"

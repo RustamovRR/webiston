@@ -4,8 +4,12 @@ import { Button } from "@webiston/ui/primitives/button"
 import { FlipHorizontal, Mic, MicOff, Square, Zap } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { DeviceSelect } from "@/components/shared/MediaAccessPanel"
+import {
+  DeviceSelect,
+  MediaFailureNotice
+} from "@/components/shared/MediaAccessPanel"
 import type { MediaAccessDevice } from "@/hooks/useMediaAccess"
+import type { MediaFailure } from "@/lib/utils/media"
 
 import type { CameraCapabilities } from "../types"
 
@@ -38,6 +42,8 @@ interface CameraToolbarProps {
   onZoomChange: (next: number) => void
   /** Held while recording: reopening the stream would end the recording. */
   locked: boolean
+  /** A switch that failed while the previous device kept working. */
+  failure: MediaFailure | null
 }
 
 export function CameraToolbar({
@@ -54,7 +60,8 @@ export function CameraToolbar({
   onTorchChange,
   zoom,
   onZoomChange,
-  locked
+  locked,
+  failure
 }: CameraToolbarProps) {
   const t = useTranslations("CameraRecorderPage.toolbar")
 
@@ -145,6 +152,8 @@ export function CameraToolbar({
           {t("stop")}
         </Button>
       </div>
+
+      {failure ? <MediaFailureNotice failure={failure} kind="camera" /> : null}
     </div>
   )
 }

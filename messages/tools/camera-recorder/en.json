@@ -36,7 +36,12 @@
         "actual": "Actual",
         "frameRate": "Frame rate",
         "facingMode": "Facing"
-      }
+      },
+      "copyReport": "Copy report",
+      "reportTitle": "Camera diagnostics",
+      "reportDevice": "Device",
+      "reportDeviceLabel": "Camera",
+      "reportEnvironment": "Environment"
     },
     "values": {
       "unavailable": "not reported",

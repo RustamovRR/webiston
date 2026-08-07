@@ -209,6 +209,53 @@ export const SILENCE_DBFS = -60
  */
 export const CLIPPING_DBFS = -1
 
+/**
+ * The environment half of a diagnostic report.
+ *
+ * **The premium feature nobody in this category ships free.** When a call fails,
+ * the vendor's support asks for exactly this: browser, platform, whether the
+ * page was secure, which containers the browser can record. People answer it
+ * with five screenshots of five panels, or not at all.
+ *
+ * Shared, because it is identical for both media tools — each appends its own
+ * device rows to it. Plain text rather than JSON: it is going into a support
+ * form or a chat message, and a wall of braces gets deleted before it is read.
+ */
+export function environmentReportLines(): string[] {
+  // Guarded rather than assumed: this is called from a memo, and a memo runs
+  // during render — including a render on the server, if a caller ever places
+  // this panel somewhere that prerenders.
+  if (typeof navigator === "undefined") return []
+
+  return [
+    `User agent: ${navigator.userAgent}`,
+    `Platform: ${navigator.platform || "—"}`,
+    `Language: ${navigator.language}`,
+    `Secure context: ${String(window.isSecureContext)}`,
+    `Media support: ${mediaSupport() ?? "ok"}`,
+    `Audio recording: ${pickRecorderMimeType(AUDIO_MIME_CANDIDATES) ?? "not supported"}`,
+    `Video recording: ${pickRecorderMimeType(VIDEO_MIME_CANDIDATES) ?? "not supported"}`
+  ]
+}
+
+/**
+ * A report, assembled.
+ *
+ * Sections keep the device rows apart from the environment rows, because the
+ * person reading it is scanning for one or the other.
+ */
+export function formatReport(
+  title: string,
+  sections: readonly { heading: string; lines: readonly string[] }[]
+): string {
+  const body = sections
+    .filter((section) => section.lines.length > 0)
+    .map((section) => `## ${section.heading}\n${section.lines.join("\n")}`)
+    .join("\n\n")
+
+  return `# ${title}\n\n${body}\n`
+}
+
 /** dBFS to a 0–100 meter position, linear in decibels the way a meter is. */
 export function dbfsToPercent(dbfs: number): number {
   if (!Number.isFinite(dbfs)) return 0

@@ -10,6 +10,7 @@
  */
 export const FAQ_KEYS = [
   "noSound",
+  "speakers",
   "privacy",
   "permissionBlocked",
   "deviceBusy",

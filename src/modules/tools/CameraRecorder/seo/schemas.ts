@@ -38,6 +38,7 @@ export const applicationSchema = {
     "Ovoz bilan yoki ovozsiz video yozish",
     "Ko'zgu rejimi — ekranda nima ko'rinsa, faylda ham shu",
     "Bir nechta kamera orasida almashish",
+    "Diagnostika hisobotini bir bosishda nusxalash",
     "Hamma narsa qurilmada — hech narsa serverga yuborilmaydi"
   ],
   inLanguage: ["uz", "en"]
