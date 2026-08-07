@@ -71,9 +71,11 @@ Consequences to respect:
   convert for you.
 - If a hero or book cover is the LCP element, it needs `priority`.
 
-Turning the optimizer back on is a real option, but it has deployment
-implications (`output: "standalone"`) — that is an ADR-sized decision, not a
-drive-by change.
+Turning the optimizer back on is a real option and it got cheaper: the
+`output: "standalone"` complication is gone (removed 2026-08-07, see
+`architecture.md`), so the only remaining question is Vercel's Image
+Optimization quota — 5K transformations / 300K cache reads / 100K cache writes
+per month on Hobby. Still an ADR-sized decision, not a drive-by change.
 
 ---
 

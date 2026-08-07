@@ -133,14 +133,18 @@ reasoning are in `code-rules.md § 4` and `seo-performance.md § 2`.
 
 Other framework facts worth knowing before you change config:
 
-- `output: "standalone"` — the deploy artifact is self-contained. Two traps that
-  have already cost a wrong bug report:
-  1. `next start` **refuses to run** (`⚠ "next start" does not work with
-     "output: standalone"`) — it still serves, but say so before trusting it.
-  2. The standalone tree does **not** include `.next/static`, so a bare
-     `node .next/standalone/**/server.js` **404s every client chunk** and
-     nothing hydrates. Copy `.next/static` in first, or verify UI against
-     `next start` on a spare port instead.
+- **No `output: "standalone"` — removed 2026-08-07.** It is a self-hosting
+  option and the only deploy target is Vercel, which builds its own function
+  bundles and ignored the standalone tree. On Next **16.3.0** it also broke the
+  build outright: under Turbopack `collectBuildTraces` never runs, so
+  `.next/next-server.js.nft.json` is not written when Vercel's adapter is
+  active, yet `copyTracedFiles` reads that exact path — `ENOENT` at
+  `onBuildComplete`, every deployment from `665d08a` onward. Next's own source
+  flags the combination ("output: standalone might not be allowed if an adapter
+  with onBuildComplete is configured"). Full reasoning is the comment in
+  `next.config.ts`. Consequences: `next start` works again, `.next` dropped
+  **931 MB → 439 MB**, and the two standalone traps that once cost a wrong bug
+  report (no `.next/static` in the tree, `next start` refusing to run) are gone.
 - `images.unoptimized: true` — Next's image optimizer is **off**; sizing and
   compression are your responsibility (`seo-performance.md § 4`).
 - `pageExtensions` includes `md`/`mdx`.

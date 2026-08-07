@@ -42,9 +42,10 @@
   *sibling* of `(app)/[locale]/` — outside the locale segment, and the middleware
   matcher does not cover them. Uzbek-only forever, or does `/en/books` exist?
   Changes the scope of `seo-and-rendering.md` Phase 2.
-- `[!]` **Image optimization.** `next.config.ts:25` sets `images.unoptimized: true`.
-  A real win for a content site, but interacts with `output: "standalone"` and
-  the deploy target. ADR-sized.
+- `[!]` **Image optimization.** `next.config.ts` sets `images.unoptimized: true`.
+  A real win for a content site. The `output: "standalone"` complication is gone
+  (removed 2026-08-07); what is left to weigh is Vercel's Hobby quota — 5K
+  transformations / 300K cache reads / 100K cache writes per month. ADR-sized.
 - `[x]` **Generated artifacts in git — resolved 2026-07-29 by fixing the cause,
   not by gitignoring.** `public/sitemap.xml` churned 268 insertions + 268
   deletions per build because `next-sitemap` stamps `<lastmod>` with the build

@@ -17,7 +17,9 @@ you do not report a solved problem.
 
 ## Ground truth about this repo
 
-- Next.js 16 App Router, React Compiler ON, `output: "standalone"`.
+- Next.js 16 App Router, React Compiler ON. **No `output: "standalone"`** — it
+  was removed 2026-08-07 (self-hosting-only, and it broke the Vercel build on
+  16.3); do not reintroduce it. See `docs/reference/architecture.md`.
 - **`images.unoptimized: true`** — Next's image optimizer is OFF. Sizing,
   compression, and format are the author's responsibility, and explicit
   `width`/`height` is the only thing preventing CLS.

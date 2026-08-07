@@ -56,7 +56,31 @@ const nextConfig: NextConfig = {
   // ts/tsx/js/jsx, and `md`/`mdx` only ever widened Next's route scan.
   transpilePackages: ['next-mdx-remote'],
   reactStrictMode: true,
-  output: 'standalone',
+  /**
+   * No `output: 'standalone'`.
+   *
+   * It is a SELF-HOSTING option — it bundles a `server.js` plus a traced
+   * `node_modules` so the app can run from a bare Node image. There is no
+   * Dockerfile and no self-host target in this repo; the only deploy target is
+   * Vercel, which builds its own function bundles and ignores the standalone
+   * tree entirely.
+   *
+   * It also BROKE the build on Next 16.3. Under Turbopack, `collectBuildTraces`
+   * never runs (`build/index.js` gates it on `bundler !== Turbopack`), so
+   * `.next/next-server.js.nft.json` is not written when Vercel's adapter is
+   * active — but `writeStandaloneDirectory` → `copyTracedFiles`
+   * (`build/utils.js`) reads that exact path unconditionally:
+   *
+   *   Error: ENOENT: no such file or directory, open
+   *   '/vercel/path0/.next/next-server.js.nft.json'
+   *
+   * Next's own source calls the combination out: "in the future output:
+   * standalone might not be allowed if an adapter with onBuildComplete is
+   * configured". On 16.2.12 the adapter path was not taken and it built fine;
+   * 16.3.0 is where it started failing.
+   *
+   * Removing it also drops ~270 MB of duplicated `node_modules` from `.next`.
+   */
   images: {
     unoptimized: true,
   },
