@@ -74,8 +74,6 @@ export interface DetailRow {
   /** i18n key under `IpInfoPage.rows`. */
   key: string
   value: string | number | boolean | null
-  /** Long values — the ASN organisation string — get a full-width row. */
-  wide?: boolean
 }
 
 export interface DetailGroup {

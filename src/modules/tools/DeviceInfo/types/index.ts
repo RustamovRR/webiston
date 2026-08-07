@@ -19,8 +19,6 @@ export interface InfoRow {
   /** i18n key under `DeviceInfoPage.rows`. */
   key: string
   value: string | number | boolean | null
-  /** Long values — the user-agent string — get their own full-width row. */
-  wide?: boolean
 }
 
 export type GroupKey =

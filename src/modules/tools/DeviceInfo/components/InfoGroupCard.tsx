@@ -3,6 +3,7 @@
 import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
 
+import { DetailList, type DetailListRow } from "@/components/shared/DetailList"
 import { ToolCard } from "@/components/shared/ToolCard"
 
 import type { InfoGroup } from "../types"
@@ -10,10 +11,10 @@ import type { InfoGroup } from "../types"
 /**
  * One group of facts.
  *
- * A definition list, because that is what this is — the old panels used a
- * `<div>` grid, so nothing tied a value to its label for a screen reader.
- * Each panel also carried three fake macOS window buttons and a blue "status"
- * dot; five panels meant fifteen decorative circles on one page.
+ * The table itself is `DetailList`, shared with `ip-info`. The old panels used
+ * a `<div>` grid, so nothing tied a value to its label for a screen reader —
+ * and each carried three fake macOS window buttons and a blue "status" dot,
+ * which across five panels meant fifteen decorative circles on one page.
  *
  * The per-group copy button is kept, because copying just the browser section
  * into a bug report is the actual use.
@@ -34,8 +35,14 @@ export function InfoGroupCard({ group }: InfoGroupCardProps) {
     return String(value)
   }
 
-  const asText = group.rows
-    .map((row) => `${tRows(row.key)}: ${format(row.value) ?? "—"}`)
+  const rows: DetailListRow[] = group.rows.map((row) => ({
+    key: row.key,
+    label: tRows(row.key),
+    value: format(row.value)
+  }))
+
+  const asText = rows
+    .map((row) => `${row.label}: ${row.value ?? "—"}`)
     .join("\n")
 
   return (
@@ -44,43 +51,7 @@ export function InfoGroupCard({ group }: InfoGroupCardProps) {
       actions={<CopyButton text={asText} label={t("copyGroup")} />}
       bodyClassName="p-0"
     >
-      <dl className="divide-y divide-border">
-        {group.rows.map((row) => {
-          const value = format(row.value)
-          return (
-            <div
-              key={row.key}
-              className={
-                row.wide
-                  ? "px-5 py-3"
-                  : "flex items-baseline justify-between gap-4 px-5 py-3"
-              }
-            >
-              <dt className="shrink-0 text-muted-foreground text-sm">
-                {tRows(row.key)}
-              </dt>
-              <dd
-                className={
-                  row.wide
-                    ? "mt-1 break-all font-mono text-foreground text-xs leading-relaxed"
-                    : // Wraps rather than truncates: this is a page whose only
-                      // job is showing values, and a language list or a time
-                      // zone cut off with an ellipsis is data withheld.
-                      "min-w-0 break-words text-right font-mono text-foreground text-sm"
-                }
-              >
-                {value ?? (
-                  // Not omitted: a row that disappears reads as a bug, and
-                  // WHY it is missing is the interesting part.
-                  <span className="text-muted-foreground italic">
-                    {tValues("unavailable")}
-                  </span>
-                )}
-              </dd>
-            </div>
-          )
-        })}
-      </dl>
+      <DetailList rows={rows} emptyLabel={tValues("unavailable")} />
     </ToolCard>
   )
 }

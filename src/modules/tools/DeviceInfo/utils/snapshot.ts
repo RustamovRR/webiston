@@ -136,7 +136,7 @@ export function readGroups(hints: HighEntropyHints): InfoGroup[] {
         // Which SOURCE answered is itself information: it tells you whether
         // the version above is the real one or the frozen user-agent value.
         { key: "source", value: browser.source },
-        { key: "userAgent", value: like.userAgent, wide: true }
+        { key: "userAgent", value: like.userAgent }
       ]
     },
     {

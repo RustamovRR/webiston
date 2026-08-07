@@ -58,7 +58,67 @@
     "toggleTheme": "Mavzuni o'zgartirish",
     "enterData": "Ma'lumot kiriting",
     "loading": "Yuklanmoqda...",
-    "faqTitle": "Ko'p so'raladigan savollar"
+    "faqTitle": "Ko'p so'raladigan savollar",
+    "media": {
+      "kind": {
+        "camera": "kamera",
+        "microphone": "mikrofon"
+      },
+      "prompt": {
+        "camera": {
+          "title": "Kamerangizni shu yerda sinab ko'ring",
+          "body": "Tugmani bosganingizda brauzer kameraga ruxsat so'raydi. Tasvir faqat shu qurilmada qoladi — hech qanday kadr yoki yozuv serverga yuborilmaydi.",
+          "action": "Kamerani yoqish"
+        },
+        "microphone": {
+          "title": "Mikrofoningizni shu yerda sinab ko'ring",
+          "body": "Tugmani bosganingizda brauzer mikrofonga ruxsat so'raydi. Ovoz faqat shu qurilmada qoladi — hech narsa serverga yuborilmaydi.",
+          "action": "Mikrofonni yoqish"
+        }
+      },
+      "starting": "So'ralmoqda...",
+      "retry": "Qayta urinish",
+      "alreadyAllowed": "Bu sayt uchun ruxsat allaqachon berilgan",
+      "willAsk": "Brauzer ruxsat so'raydi — bu bizning emas, brauzerning oynasi",
+      "failure": {
+        "denied": {
+          "title": "Ruxsat berilmadi",
+          "advice": "Brauzer {kind}ga kirishni bloklagan. Manzil qatoridagi qulf belgisini bosing, {kind} uchun ruxsatni «Ruxsat» ga o'zgartiring va sahifani yangilang."
+        },
+        "notFound": {
+          "title": "Qurilma topilmadi",
+          "advice": "Bu kompyuterda ishlaydigan {kind} ko'rinmayapti. Agar u tashqi qurilma bo'lsa, ulanishini tekshiring — ulaganingizdan keyin ro'yxat o'zi yangilanadi."
+        },
+        "inUse": {
+          "title": "Qurilma band",
+          "advice": "{kind} boshqa dastur tomonidan ishlatilmoqda. Zoom, Meet yoki Telegram kabi dasturlarni yoping va qayta urinib ko'ring."
+        },
+        "constraints": {
+          "title": "Bu sozlama qurilmaga to'g'ri kelmadi",
+          "advice": "Tanlangan {kind} so'ralgan sifatni qo'llab-quvvatlamaydi. Pastroq sifatni yoki boshqa qurilmani tanlang."
+        },
+        "insecureContext": {
+          "title": "Xavfsiz ulanish kerak",
+          "advice": "Brauzerlar {kind}ga faqat HTTPS orqali ruxsat beradi. Sahifani https:// manzilidan oching."
+        },
+        "unsupported": {
+          "title": "Brauzer qo'llab-quvvatlamaydi",
+          "advice": "Bu brauzerda {kind}ga kirish uchun kerakli API yo'q. Chrome, Edge, Firefox yoki Safari'ning yangi versiyasida oching."
+        },
+        "unknown": {
+          "title": "Qurilmani ochib bo'lmadi",
+          "advice": "Brauzer sababini aytmadi. Sahifani yangilab, qayta urinib ko'ring; muammo qolsa, boshqa {kind}ni tanlang."
+        }
+      },
+      "deviceLabel": {
+        "camera": "Kamera",
+        "microphone": "Mikrofon"
+      },
+      "unnamedDevice": {
+        "camera": "Kamera {index}",
+        "microphone": "Mikrofon {index}"
+      }
+    }
   },
   "Search": {
     "title": "Sayt bo'yicha qidiruv",

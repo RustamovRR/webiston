@@ -1,418 +1,27 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
+ * React equivalent; every payload here is a constant or an i18n string, and
+ * `jsonLd()` escapes `<` so a value can never close the script element. */
 import type { Metadata } from "next"
-import { setRequestLocale } from "next-intl/server"
-import { Faq } from "@/components/shared/Faq"
-import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { faqPageSchema, withLocale } from "@/lib/seo"
-import { CameraRecorderClient } from "./CameraRecorderClient"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 
-// Only this tool's namespace reaches the client, plus the shared
-// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { withLocale } from "@/lib/seo"
+// Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
+// modules and every one of them is `'use client'`.
+import { CameraFaq, CameraRecorder } from "@/modules/tools/CameraRecorder"
+import {
+  applicationSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  getCameraRecorderMetadata
+} from "@/modules/tools/CameraRecorder/seo"
+
+// Only this tool's namespace reaches the client, plus the shared `Common` —
+// which now also carries the media permission strings both media tools share.
 const TOOL_NAMESPACE = "CameraRecorderPage"
 
-const baseMetadata: Metadata = {
-  title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
-  description:
-    "Eng yaxshi bepul kamera yozuvchi. Video yozing, screenshot oling va kamerangizni sinab ko'ring. Professional kamera test va yozish vositasi.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "kamera yozuvchi",
-    "kamera recorder",
-    "video yozish",
-    "video recording",
-    "screenshot olish",
-    "kamera test",
-    "camera test",
-    "webcam recorder",
-    "webcam test",
-    "kamera sinash",
-    "video recorder",
-    "screen recorder",
-    "bepul video yozish",
-    "onlayn kamera",
-    "kamera vositasi",
-    "camera tool",
-    "video tool",
-    "recording tool",
-    "kamera recorder",
-    "webcam recording",
-    "video capture",
-    "screenshot tool",
-    "kamera screenshot",
-    "video screenshot",
-    "kamera yozib olish",
-    "video yozib olish",
-    "kamera sinov",
-    "webcam sinov",
-    "kamera tekshirish",
-    "video tekshirish",
-    "onlayn video yozish",
-    "brauzer kamera",
-    "web kamera",
-    "kamera preview",
-    "video preview",
-
-    // Ingliz tilida
-    "camera recorder online",
-    "free camera recorder",
-    "webcam recorder online",
-    "video recording tool",
-    "camera test online",
-    "webcam test online",
-    "screen capture tool",
-    "video capture online",
-    "camera recording software",
-    "webcam recording software",
-    "online video recorder",
-    "browser camera recorder",
-    "web camera recorder",
-    "camera screenshot tool",
-    "webcam screenshot",
-    "video recording app",
-    "camera testing tool",
-    "webcam testing tool",
-    "live camera preview",
-    "camera preview tool",
-    "video preview tool",
-    "camera quality test",
-    "webcam quality test",
-    "camera resolution test",
-    "free webcam recorder",
-    "online camera tool",
-    "camera capture tool",
-    "video capture software",
-    "webcam capture tool",
-    "camera recording online",
-    "webcam recording online",
-    "browser video recorder",
-    "html5 camera recorder",
-    "javascript camera recorder",
-    "no download camera recorder",
-    "instant camera recorder",
-    "quick video recorder",
-    "simple camera recorder",
-    "easy webcam recorder",
-
-    // Rus tilida
-    "запись с камеры",
-    "тест камеры онлайн",
-    "запись видео онлайн",
-    "веб камера запись",
-    "тест веб камеры",
-    "скриншот с камеры",
-    "запись с веб камеры",
-    "онлайн рекордер камеры",
-    "бесплатная запись видео",
-    "тестирование камеры",
-    "проверка камеры",
-    "качество камеры тест",
-    "веб камера онлайн",
-    "камера браузер",
-    "запись экрана камера",
-    "камера рекордер онлайн",
-    "веб камера рекордер",
-    "запись видео с камеры",
-    "тест веб камеры онлайн",
-    "проверка веб камеры",
-    "камера тест качество",
-    "веб камера тест",
-    "онлайн камера запись",
-    "браузер камера запись",
-    "html5 камера запись",
-    "javascript камера",
-    "без установки камера",
-    "быстрая запись видео",
-    "простая запись камеры",
-    "легкий рекордер камеры",
-
-    // Long-tail keywords
-    "kamera va video yozish professional tool",
-    "free online camera recorder with screenshot",
-    "тест камеры и запись видео онлайн бесплатно",
-    "webiston camera tools",
-    "professional webcam recording online free",
-    "camera quality test and video recording tool",
-    "онлайн тест веб камеры с записью видео",
-    "бесплатный рекордер камеры без установки программ",
-    "kamera sinash va video yozish bir joyda",
-    "webcam test and record video online free",
-    "тестирование камеры и запись видео в браузере",
-    "professional camera recorder uzbek interface",
-    "uzbek camera recorder with screenshot feature",
-    "узбекский интерфейс камера рекордер онлайн"
-  ],
-  openGraph: {
-    title: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool | Webiston",
-    description:
-      "Eng yaxshi bepul kamera yozuvchi. Video yozing, screenshot oling va kamerangizni sinab ko'ring. Professional kamera test va yozish vositasi.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools/camera-recorder",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "Kamera Yozuvchi - Bepul Video Yozish Tool",
-    description:
-      "Professional kamera yozuvchi. Video yozing, screenshot oling va kamerangizni sinab ko'ring. Bepul!",
-    images: ["https://webiston.uz/logo.png"]
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
-}
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": ["WebApplication", "SoftwareApplication"],
-  name: "Kamera Yozuvchi - Bepul Video Yozish va Screenshot Tool",
-  alternateName: [
-    "Camera Recorder",
-    "Video Recorder",
-    "Webcam Recorder",
-    "Kamera Recorder"
-  ],
-  description:
-    "Professional kamera yozuvchi. Video yozish, screenshot olish va kamera test qilish uchun bepul vosita.",
-  url: "https://webiston.uz/tools/camera-recorder",
-  sameAs: [
-    "https://webiston.uz/en/tools/camera-recorder",
-    "https://webiston.uz/tools/camera-recorder"
-  ],
-  applicationCategory: ["MultimediaApplication", "UtilityApplication"],
-  operatingSystem: ["Windows", "macOS", "Linux", "Android", "iOS"],
-  browserRequirements:
-    "Requires JavaScript. Requires HTML5. Requires Camera Access.",
-  permissions: "camera, microphone",
-  isAccessibleForFree: true,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    validFrom: "2024-01-01"
-  },
-  author: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: "https://webiston.uz/logo.png",
-    sameAs: ["https://github.com/webiston", "https://twitter.com/webiston_uz"]
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://webiston.uz/logo.png",
-      width: 1120,
-      height: 1120
-    }
-  },
-  featureList: [
-    "Video yozish va recording",
-    "Screenshot olish",
-    "Kamera test va preview",
-    "Webcam quality test",
-    "Turli video sifatlari (HD, Full HD)",
-    "Real-time video preview",
-    "Audio recording bilan",
-    "Multiple camera support",
-    "Video va screenshot download",
-    "Media management",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Browser-based recording",
-    "No software installation",
-    "Cross-platform support",
-    "Privacy-focused (local processing)"
-  ],
-  softwareVersion: "2.0",
-  datePublished: "2024-01-01",
-  dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
-  keywords:
-    "kamera yozuvchi, video recording, camera test, bepul camera recorder"
-}
-
-/**
- * This route's questions, in both locales.
- *
- * They are returned as DATA rather than as a finished schema: the page
- * renders them AND publishes them, so one array has to feed both. This route
- * published a `FAQPage` and showed no FAQ at all until that changed.
- */
-function getFaqItems(locale: string = "uz") {
-  const faqData = {
-    uz: {
-      questions: [
-        {
-          question: "Kamera yozuvchi qanday ishlaydi?",
-          answer:
-            "Kamera yozuvchi brauzeringiz orqali kameraga kirish so'raydi, keyin video yozish, screenshot olish va kamera test qilish imkoniyatini beradi."
-        },
-        {
-          question: "Video va screenshot qayerga saqlanadi?",
-          answer:
-            "Barcha video va screenshot'lar sizning qurilmangizda mahalliy saqlanadi. Hech qanday ma'lumot serverga yuborilmaydi."
-        },
-        {
-          question: "Qanday video formatlarini qo'llab-quvvatlaydi?",
-          answer:
-            "WebM formatida video yozish qo'llab-quvvatlanadi. Bu zamonaviy va sifatli format."
-        },
-        {
-          question: "Kamera yozuvchi bepulmi?",
-          answer:
-            "Ha, bizning kamera yozuvchi to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi."
-        }
-      ]
-    },
-    en: {
-      questions: [
-        {
-          question: "How does camera recorder work?",
-          answer:
-            "Camera recorder requests access to your camera through browser, then provides video recording, screenshot and camera testing capabilities."
-        },
-        {
-          question: "Where are videos and screenshots saved?",
-          answer:
-            "All videos and screenshots are saved locally on your device. No data is sent to servers."
-        },
-        {
-          question: "What video formats are supported?",
-          answer:
-            "WebM format video recording is supported. This is a modern and high-quality format."
-        },
-        {
-          question: "Is camera recorder free?",
-          answer:
-            "Yes, our camera recorder is completely free. No limitations or payments required."
-        }
-      ]
-    }
-  }
-
-  return (faqData[locale as keyof typeof faqData] || faqData.uz).questions
-}
-
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar",
-      cameraRecorder: "Kamera Yozuvchi"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools",
-      cameraRecorder: "Camera Recorder"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: current.cameraRecorder,
-        item: `${baseUrl}/tools/camera-recorder`
-      }
-    ]
-  }
-}
-
-export default async function CameraRecorderPage({
-  params
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = (await params) || { locale: "uz" }
-  setRequestLocale(locale)
-
-  // Generate locale-specific schemas
-  const faqItems = getFaqItems(locale)
-  const faqSchema = faqPageSchema(faqItems)
-  const breadcrumbSchema = generateBreadcrumbSchema(locale)
-
-  return (
-    <>
-      {/* Main Application Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
-      {/* FAQ Schema for rich snippets */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
-      {/* Breadcrumb Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-
-      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <CameraRecorderClient />
-      </LocaleMessages>
-
-      {/* Server-rendered sibling of the client island: the answers reach the
-          HTML, which is what the schema above has always claimed. */}
-      <Faq locale={locale} items={faqItems} />
-    </>
-  )
+function jsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c")
 }
 
 export async function generateMetadata({
@@ -422,5 +31,54 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(baseMetadata, locale, "/tools/camera-recorder")
+  return withLocale(
+    getCameraRecorderMetadata(locale),
+    locale,
+    "/tools/camera-recorder"
+  )
+}
+
+export default async function CameraRecorderPage({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  // The FAQ schema reads the same messages `CameraFaq` renders, so the
+  // structured data can never describe a page that does not exist.
+  const tFaq = await getTranslations({
+    locale,
+    namespace: "CameraRecorderPage.faq"
+  })
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(applicationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(generateFAQSchema(tFaq)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(generateBreadcrumbSchema(locale))
+        }}
+      />
+
+      {/* `locale` is load-bearing: without it LocaleMessages falls back to
+          `getLocale()`, which returns "uz" on /en/tools/*. */}
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <CameraRecorder />
+      </LocaleMessages>
+      {/* A Server Component sibling of the client island: the answers are in
+          the HTML, which is what the search queries this page ranks for
+          actually ask. */}
+      <CameraFaq locale={locale} />
+    </>
+  )
 }

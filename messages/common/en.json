@@ -58,7 +58,67 @@
     "toggleTheme": "Toggle theme",
     "enterData": "Enter some data",
     "loading": "Loading...",
-    "faqTitle": "Frequently asked questions"
+    "faqTitle": "Frequently asked questions",
+    "media": {
+      "kind": {
+        "camera": "camera",
+        "microphone": "microphone"
+      },
+      "prompt": {
+        "camera": {
+          "title": "Test your camera here",
+          "body": "Pressing the button asks your browser for camera access. The video stays on this device — no frame or recording is ever sent to a server.",
+          "action": "Turn on the camera"
+        },
+        "microphone": {
+          "title": "Test your microphone here",
+          "body": "Pressing the button asks your browser for microphone access. The audio stays on this device — nothing is sent to a server.",
+          "action": "Turn on the microphone"
+        }
+      },
+      "starting": "Requesting...",
+      "retry": "Try again",
+      "alreadyAllowed": "This site is already allowed",
+      "willAsk": "Your browser will ask — that dialog is the browser's, not ours",
+      "failure": {
+        "denied": {
+          "title": "Permission was refused",
+          "advice": "Your browser is blocking {kind} access. Click the lock icon in the address bar, set {kind} to Allow, and reload the page."
+        },
+        "notFound": {
+          "title": "No device found",
+          "advice": "There is no working {kind} on this computer. If it is an external device, check that it is plugged in — the list updates by itself once it is."
+        },
+        "inUse": {
+          "title": "The device is busy",
+          "advice": "Another application is holding the {kind}. Close Zoom, Meet, Telegram or whatever else has it open, then try again."
+        },
+        "constraints": {
+          "title": "The device cannot do that",
+          "advice": "The selected {kind} does not support the quality that was requested. Pick a lower setting or a different device."
+        },
+        "insecureContext": {
+          "title": "A secure connection is required",
+          "advice": "Browsers only grant {kind} access over HTTPS. Open this page from an https:// address."
+        },
+        "unsupported": {
+          "title": "This browser cannot do it",
+          "advice": "This browser has no API for {kind} access. Open the page in a current Chrome, Edge, Firefox or Safari."
+        },
+        "unknown": {
+          "title": "The device could not be opened",
+          "advice": "The browser did not say why. Reload and try again; if it persists, select a different {kind}."
+        }
+      },
+      "deviceLabel": {
+        "camera": "Camera",
+        "microphone": "Microphone"
+      },
+      "unnamedDevice": {
+        "camera": "Camera {index}",
+        "microphone": "Microphone {index}"
+      }
+    }
   },
   "Search": {
     "title": "Search the site",

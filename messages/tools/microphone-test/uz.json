@@ -1,164 +1,100 @@
 {
   "MicrophoneTestPage": {
-    "ToolHeader": {
-      "title": "Mikrofon Test",
-      "description": "Mikrofoningizni sinab ko'ring, audio yozing va sifatni baholang"
+    "title": "Mikrofon testi",
+    "description": "Mikrofoningiz ishlayaptimi — darajani ko'ring, o'zingizni eshiting, yozib olib tinglang. Ovoz shu qurilmada qoladi.",
+    "gate": {
+      "title": "Mikrofonni sinash"
     },
-    "ControlPanel": {
-      "title": "Audio Sozlamalari",
-      "status": {
-        "active": "Faol",
-        "inactive": "Nofaol"
-      },
-      "microphone": {
-        "label": "Mikrofon:",
-        "placeholder": "Mikrofon tanlang"
-      },
-      "quality": {
-        "label": "Sifat:",
-        "excellent": "Ajoyib",
-        "good": "Yaxshi",
-        "average": "O'rtacha",
-        "poor": "Past"
-      },
-      "buttons": {
-        "refresh": "Yangilash",
-        "startMicrophone": "Mikrofonni Yoqish",
-        "stopMicrophone": "Mikrofonni O'chirish"
+    "toolbar": {
+      "monitor": "O'zimni eshitish",
+      "stop": "To'xtatish",
+      "monitorWarning": "Quloqchin taqing. Karnay orqali mikrofon o'z ovozini qayta eshitadi va qichqiriq (feedback) paydo bo'ladi."
+    },
+    "listen": {
+      "title": "Jonli signal",
+      "waveform": "To'lqin",
+      "spectrum": "Spektr",
+      "viewLabel": "Ko'rinish turi",
+      "silentHint": "Bir necha soniyadan beri signal yo'q. Mikrofonda o'chirish tugmasi yoki qurilmadagi mute tugmasini tekshiring, tizim sozlamalarida kirish darajasini ko'taring yoki yuqoridagi ro'yxatdan boshqa mikrofonni tanlang.",
+      "record": "Yozib olish",
+      "recordHint": "Bir necha soniya gapiring, keyin tinglab ko'ring.",
+      "recordUnavailable": "Bu brauzer yozib olishni qo'llab-quvvatlamaydi.",
+      "stopRecording": "Yozishni tugatish",
+      "pause": "Pauza",
+      "resume": "Davom ettirish",
+      "paused": "pauzada"
+    },
+    "meter": {
+      "label": "Ovoz darajasi",
+      "silent": "Jimlik",
+      "dbfs": "{value} dBFS",
+      "peak": "Cho'qqi:",
+      "clipping": "Juda baland — ovoz buziladi",
+      "inRange": "Daraja yaxshi",
+      "target": "Maqsad: -18 dan -12 dBFS gacha"
+    },
+    "scope": {
+      "waveform": "Ovoz to'lqini",
+      "spectrum": "Chastota spektri"
+    },
+    "processing": {
+      "title": "Brauzer ishlovi",
+      "intro": "Brauzer ovozingizga uchta filtr qo'llaydi. Ular qo'ng'iroqlarda foydali, lekin ovozni o'zgartiradi — o'chirib, farqni eshitib ko'ring.",
+      "restartNote": "Har bir o'zgarish mikrofonni qaytadan ochadi, chunki brauzer filtrlarni faqat yangi oqimda qo'llaydi. Pastdagi jadval — so'ralgan emas, haqiqatda qo'llangan qiymatlar.",
+      "rows": {
+        "sampleRate": "Diskretlash chastotasi",
+        "channelCount": "Kanallar",
+        "echoCancellation": "Aks-sadoni bostirish",
+        "noiseSuppression": "Shovqinni bostirish",
+        "autoGainControl": "Avtomatik kuchaytirish"
       }
     },
-    "AudioPreviewPanel": {
-      "title": "Audio Vizualizatsiya",
-      "status": {
-        "live": "Live",
-        "off": "Off"
-      },
-      "buttons": {
-        "startRecording": "Yozib Olishni Boshlash",
-        "stopRecording": "Yozib Olishni To'xtatish"
-      },
-      "audioInfo": {
-        "title": "Audio Ma'lumotlar",
-        "sampleRate": "Sample Rate",
-        "channels": "Kanallar",
-        "echoCancellation": "Echo Cancellation",
-        "noiseSuppression": "Noise Suppression",
-        "enabled": "Yoqilgan",
-        "disabled": "O'chirilgan"
-      }
+    "values": {
+      "unavailable": "ma'lumot yo'q",
+      "mono": "Mono",
+      "stereo": "Stereo",
+      "applied": "Qo'llangan",
+      "notApplied": "Qo'llanmagan"
     },
-    "RecordedAudioPanel": {
-      "title": "Yozilgan Audiolar",
-      "fileCount": "ta fayl",
-      "empty": {
-        "title": "Hali hech qanday audio yozilmagan",
-        "subtitle": "Mikrofonni yoqib audio yozing"
-      },
-      "stats": {
-        "totalAudios": "Jami audiolar",
-        "totalSize": "Jami hajm"
-      },
-      "actions": {
-        "preview": "Eshitish",
-        "download": "Yuklab olish",
-        "delete": "O'chirish"
-      },
-      "buttons": {
-        "clearAll": "Hammasini o'chirish"
-      }
-    },
-    "InfoSection": {
-      "title": "Ma'lumot",
-      "status": "Yordam",
-      "useCases": {
-        "title": "Asosiy foydalanish joylari:",
-        "contentCreation": {
-          "title": "Kontent Yaratish:",
-          "description": "YouTube, blog va ijtimoiy media uchun"
-        },
-        "podcasting": {
-          "title": "Podcasting:",
-          "description": "Professional podcast yozish va audio sifat"
-        },
-        "streaming": {
-          "title": "Live Streaming:",
-          "description": "Jonli efir va video konferensiya"
-        },
-        "voiceOver": {
-          "title": "Voice-over:",
-          "description": "Ovozli tarjima va narration"
-        },
-        "remoteWork": {
-          "title": "Masofaviy Ish:",
-          "description": "Online uchrashuvlar va konferensiyalar"
-        }
-      },
-      "tips": {
-        "title": "Professional maslahatlar:",
-        "distance": "Mikrofonga 15-20 sm masofada gaplashing",
-        "environment": "Shovqinsiz muhitda audio yozing",
-        "level": "40-70% oralig'ida audio level saqlang",
-        "quality": "HD sifatni tanlang, lekin internet tezligini hisobga oling",
-        "testing": "Yozishdan oldin mikrofon sifatini sinab ko'ring"
-      },
-      "note": {
-        "title": "Eslatma:",
-        "content": "Audio fayllar avtomatik WebM/Opus formatida saqlanadi. Bu format zamonaviy brauzerlarda yaxshi qo'llab-quvvatlanadi va yuqori sifat bilan kichik hajmga ega."
-      }
-    },
-    "SampleMicrophones": {
-      "title": "Mikrofon Turlari",
-      "standard": {
-        "name": "Standart Mikrofon",
-        "description": "Asosiy audio kirish qurilmasi",
-        "tip": "Kompyuteringizning o'rnatilgan mikrofonini sinab ko'ring"
-      },
-      "usb": {
-        "name": "USB Mikrofon",
-        "description": "Tashqi USB audio qurilmasi",
-        "tip": "Yuqori sifatli audio yozish uchun"
-      },
-      "bluetooth": {
-        "name": "Bluetooth Quloqchin",
-        "description": "Simsiz audio qurilmasi",
-        "tip": "Bluetooth ulanishi orqali audio kirish"
-      }
-    },
-    "Errors": {
-      "microphoneAccess": "Mikrofon kirish ruxsati berilmadi",
-      "noMicrophone": "Mikrofon topilmadi",
-      "recordingFailed": "Audio yozishda xatolik yuz berdi",
-      "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
-    },
-    "AudioPreviewModal": {
-      "title": "Audio Eshitish",
+    "recordings": {
+      "title": "Yozuvlar",
+      "empty": "Hali yozuv yo'q. Yuqoridagi «Yozib olish» tugmasini bosing.",
+      "clearAll": "Hammasini o'chirish",
       "download": "Yuklab olish",
-      "seek": "Ovoz bo'ylab siljitish"
+      "delete": "O'chirish",
+      "limit": "Oxirgi {count} ta yozuv saqlanadi va faqat shu brauzer xotirasida turadi — sahifani yopsangiz o'chib ketadi."
     },
-    "Loading": {
-      "text": "Mikrofon test yuklanmoqda..."
-    },
-    "Hook": {
-      "messages": {
-        "devicesFound": "ta audio qurilma topildi",
-        "deviceAccessDenied": "Mikrofon qurilmalariga kirish rad etildi",
-        "microphoneStarted": "Mikrofon ishga tushirildi",
-        "microphoneStartError": "Mikrofonni ishga tushirishda xatolik",
-        "microphoneStopped": "Mikrofon to'xtatildi",
-        "recordingStarted": "Audio yozib olish boshlandi",
-        "recordingError": "Audio yozib olishda xatolik",
-        "audioRecorded": "Audio yozib olindi",
-        "audioDownloaded": "Audio yuklab olindi",
-        "audioDeleted": "Audio o'chirildi",
-        "allAudiosDeleted": "Barcha audiolar o'chirildi",
-        "deviceLabel": "Mikrofon",
-        "qualityExcellent": "Ajoyib",
-        "qualityGood": "Yaxshi",
-        "qualityAverage": "O'rtacha",
-        "qualityPoor": "Past",
-        "statsAudioLevel": "Audio Level",
-        "statsRecorded": "Yozilgan",
-        "statsDuration": "Davomiyligi"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "noSound": {
+          "question": "Daraja ko'rsatkichi qimirlamayapti — nima qilish kerak?",
+          "answer": "Uchta sababdan biri bo'ladi. Birinchisi — apparat mute: ko'p USB mikrofonlar va noutbuk klaviaturalarida alohida o'chirish tugmasi bor va brauzer buni ko'rmaydi. Ikkinchisi — noto'g'ri qurilma: yuqoridagi ro'yxatdan boshqasini tanlab ko'ring, chunki tizim ko'pincha eng oxirgi ulangan qurilmani standart qilib qo'yadi. Uchinchisi — tizim sozlamalaridagi kirish darajasi nolga tushib qolgan bo'lishi mumkin."
+        },
+        "privacy": {
+          "question": "Ovozim qayergadir yuboriladimi?",
+          "answer": "Yo'q. Barcha o'lchov va yozuv brauzeringiz ichida bajariladi; hech qanday audio serverga jo'natilmaydi. Yozuvlar brauzer xotirasidagi vaqtinchalik havolalarda turadi va sahifani yopganingizda yo'qoladi. Bu sahifa uchun hech qanday tahlil xizmati ovozga tegmaydi."
+        },
+        "permissionBlocked": {
+          "question": "Ruxsatni tasodifan rad etdim, endi qanday tiklayman?",
+          "answer": "Brauzer bu javobni sayt uchun eslab qoladi, shuning uchun qayta so'ramaydi. Manzil qatoridagi qulf yoki sozlama belgisini bosing, «Mikrofon» bandini toping va «Ruxsat» ga o'zgartiring, so'ng sahifani yangilang. Chrome'da bu Sozlamalar → Maxfiylik va xavfsizlik → Sayt sozlamalari → Mikrofon bo'limida ham bor."
+        },
+        "deviceBusy": {
+          "question": "«Qurilma band» degan xato chiqdi — nega?",
+          "answer": "Boshqa dastur mikrofonni egallab turibdi. Ba'zi tizimlarda mikrofonni bir vaqtda faqat bitta dastur ochishi mumkin, shuning uchun Zoom, Google Meet, Telegram yoki OBS kabi dasturlarni to'liq yoping — oynani yopish kifoya qilmasligi mumkin, chunki dastur fonda ishlashda davom etadi."
+        },
+        "processing": {
+          "question": "Aks-sado va shovqin bostirishni o'chirish nima beradi?",
+          "answer": "Brauzer standart holatda uchta filtrni yoqadi: aks-sadoni bostirish, shovqinni bostirish va avtomatik kuchaytirish. Ular qo'ng'iroqlar uchun mo'ljallangan va ovozning yuqori chastotalarini yo'qotishi, jimlik paytida darajani ko'tarib yuborishi mumkin. Ularni o'chirib yozib olsangiz, mikrofoningiz aslida qanday eshitilishini bilib olasiz — bu podkast yoki ovoz yozish uchun muhim."
+        },
+        "goodLevel": {
+          "question": "Qanday daraja yaxshi hisoblanadi?",
+          "answer": "Gapirganda o'rtacha daraja -18 dan -12 dBFS gacha bo'lgan yashil zonada tursin, cho'qqi esa 0 ga tegmasin. Bu qiymatlar ovoz yozish sohasida standart: pastroq bo'lsa, qo'ng'iroq dasturi sizni xona shovqini bilan birga kuchaytiradi; balandroq bo'lsa, eng baland joylar kesilib, ovoz buziladi. Cho'qqi ko'rsatkichi shuning uchun alohida chiziqcha bilan belgilanadi."
+        },
+        "recordings": {
+          "question": "Yozuvlarim qayerda saqlanadi?",
+          "answer": "Ular faqat ochiq turgan sahifa xotirasida turadi. Oxirgi 10 tasi ro'yxatda qoladi, undan eskilari avtomatik o'chiriladi. Saqlab qolish uchun yuklab olish tugmasini bosing — fayl WebM yoki brauzeringiz qo'llaydigan boshqa formatda kompyuteringizga tushadi."
+        }
       }
     }
   }

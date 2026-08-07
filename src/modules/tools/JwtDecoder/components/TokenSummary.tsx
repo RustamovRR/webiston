@@ -121,7 +121,7 @@ export function TokenSummary({
               className="flex items-baseline justify-between gap-3"
             >
               <dt className="shrink-0 text-muted-foreground">{t(key)}</dt>
-              <dd className="min-w-0 truncate text-foreground text-xs">
+              <dd className="min-w-0 wrap-break-word text-right text-foreground text-xs">
                 {format.dateTime(claim.date, {
                   dateStyle: "medium",
                   timeStyle: "short"
@@ -143,7 +143,11 @@ export function TokenSummary({
                 <span className="font-mono">{claim}</span>{" "}
                 <span className="text-xs">{t(`claims.${claim}`)}</span>
               </dt>
-              <dd className="min-w-0 truncate font-mono text-foreground">
+              {/* Wraps rather than truncates. `sub` is routinely a UUID or a
+                  URL and is the single claim a reader most often came to
+                  check — an ellipsis through the middle of it is data
+                  withheld, not a tidier row. */}
+              <dd className="min-w-0 wrap-break-word text-right font-mono text-foreground">
                 {String(value)}
               </dd>
             </div>

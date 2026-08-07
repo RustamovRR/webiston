@@ -26,11 +26,11 @@ export function toGroups(data: IpLocation): DetailGroup[] {
     {
       key: "network",
       rows: [
-        { key: "ip", value: data.ip, wide: true },
+        { key: "ip", value: data.ip },
         { key: "type", value: data.type },
         { key: "asn", value: data.asn === null ? null : `AS${data.asn}` },
         { key: "isp", value: data.isp },
-        { key: "org", value: data.org, wide: true },
+        { key: "org", value: data.org },
         { key: "domain", value: data.domain }
       ]
     },

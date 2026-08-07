@@ -1,185 +1,105 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { Mic } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { StatsDisplay, ToolHeader } from "@/components/shared"
+
+import { MediaAccessPanel } from "@/components/shared/MediaAccessPanel"
+import { ToolCard } from "@/components/shared/ToolCard"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+import { useMediaRecording } from "@/hooks/useMediaRecording"
+import { AUDIO_MIME_CANDIDATES } from "@/lib/utils/media"
+
 import {
-  AudioPreviewModal,
-  AudioPreviewPanel,
-  ControlPanel,
-  InfoSection,
-  RecordedAudioPanel
+  ListenCard,
+  MicToolbar,
+  ProcessingCard,
+  RecordingsCard
 } from "./components"
-import { useMicrophoneTest } from "./hooks/useMicrophoneTest"
+import { MAX_RECORDINGS } from "./constants"
+import { useMicrophone } from "./hooks/useMicrophone"
 
-export default function MicrophoneTest() {
-  const t = useTranslations("MicrophoneTestPage.ToolHeader")
-  const tSample = useTranslations("MicrophoneTestPage.SampleMicrophones")
+/**
+ * Composition root.
+ *
+ * The page has two states and the layout says which one it is in. Before a
+ * microphone is open there is one card, and it explains what pressing the
+ * button will do; after, the same slot is the live panel and the controls
+ * appear above it. Nothing is requested until the button is pressed — the
+ * version this replaces fired `getUserMedia` from a mount effect, so the
+ * browser's permission dialog landed on a page nobody had read yet.
+ *
+ * The panels the visitor cannot use yet are simply not rendered. An empty
+ * recordings list beside a dead level meter is four cards of furniture around
+ * a page that has not started.
+ */
+export function MicrophoneTest() {
+  const t = useTranslations("MicrophoneTestPage")
 
-  const {
-    audioDevices,
-    selectedDevice,
-    isListening,
-    isRecording,
-    error,
-    audioInfo,
-    recordedAudios,
-    recordingDuration,
-    previewAudio,
-    audioStats,
-    sampleMicrophones,
-    getAudioDevices,
-    startListening,
-    stopListening,
-    startRecording,
-    stopRecording,
-    switchMicrophone,
-    downloadAudio,
-    deleteAudio,
-    clearAllRecordings,
-    openPreview,
-    closePreview,
-    getAudioQuality,
-    getStats
-  } = useMicrophoneTest({})
-
-  const audioQuality = getAudioQuality(audioStats.level)
+  const mic = useMicrophone()
+  const recorder = useMediaRecording({
+    stream: mic.stream,
+    candidates: AUDIO_MIME_CANDIDATES,
+    prefix: "mikrofon",
+    max: MAX_RECORDINGS
+  })
 
   return (
-    <div className="mx-auto w-full max-w-[1536px] px-4 py-6">
+    <div className="mx-auto w-full max-w-[1400px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
-      <div className="mb-8">
-        <StatsDisplay stats={getStats()} />
-      </div>
-
-      {/* Control Panel */}
-      <div className="mb-6">
-        <ControlPanel
-          audioDevices={audioDevices}
-          selectedDevice={selectedDevice}
-          isListening={isListening}
-          audioQuality={audioQuality}
-          onStartListening={startListening}
-          onStopListening={stopListening}
-          onRefreshDevices={getAudioDevices}
-          onSwitchMicrophone={switchMicrophone}
-        />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Audio Preview Panel */}
-        <div className="sticky top-20 h-fit">
-          <AudioPreviewPanel
-            isListening={isListening}
-            isRecording={isRecording}
-            recordingDuration={recordingDuration}
-            audioStats={audioStats}
-            audioInfo={audioInfo}
-            onStartRecording={startRecording}
-            onStopRecording={stopRecording}
+      {mic.isLive ? (
+        <div className="mt-6 space-y-4">
+          <MicToolbar
+            devices={mic.devices}
+            deviceId={mic.deviceId}
+            onSelect={mic.select}
+            onStop={mic.stop}
+            isMonitoring={mic.isMonitoring}
+            onMonitorChange={mic.setIsMonitoring}
           />
-        </div>
 
-        {/* Recorded Audio Panel */}
-        <div className="h-[600px]">
-          <RecordedAudioPanel
-            recordedAudios={recordedAudios}
-            onPreview={openPreview}
-            onDownload={downloadAudio}
-            onDelete={deleteAudio}
-            onClearAll={clearAllRecordings}
-          />
-        </div>
-      </div>
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+            <ListenCard
+              analyserRef={mic.analyserRef}
+              level={mic.level}
+              isLive={mic.isLive}
+              isSilent={mic.isSilent}
+              recorder={recorder}
+            />
 
-      {/* Error Display */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-xl border border-destructive/30 bg-destructive/80 p-4 backdrop-blur-sm"
-        >
-          <p className="text-sm text-destructive">{error}</p>
-        </motion.div>
-      )}
-
-      {/* Sample Microphones - Show when no devices */}
-      {!isListening && audioDevices.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-8 rounded-xl border border-border bg-card/80 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-            <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-red-500"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500"></div>
-            </div>
-            <span className="text-sm font-medium text-foreground">
-              {tSample("title")}
-            </span>
-          </div>
-
-          <div className="p-6">
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-info" />
-                  <span className="font-medium text-foreground">
-                    {tSample("standard.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-muted-foreground">
-                  {tSample("standard.description")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {tSample("standard.tip")}
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-success" />
-                  <span className="font-medium text-foreground">
-                    {tSample("usb.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-muted-foreground">
-                  {tSample("usb.description")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {tSample("usb.tip")}
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border/50 bg-muted/30 p-4 transition-all hover:border-border hover:bg-muted/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-purple-500" />
-                  <span className="font-medium text-foreground">
-                    {tSample("bluetooth.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-muted-foreground">
-                  {tSample("bluetooth.description")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {tSample("bluetooth.tip")}
-                </p>
-              </div>
+            <div className="grid gap-4">
+              <ProcessingCard
+                processing={mic.processing}
+                onChange={mic.updateProcessing}
+                settings={mic.settings}
+                // Reopening the stream mid-recording would end the recording,
+                // so the switches are held while one is running.
+                disabled={recorder.isRecording}
+              />
+              <RecordingsCard
+                recordings={recorder.recordings}
+                onRemove={recorder.remove}
+                onClear={recorder.clear}
+              />
             </div>
           </div>
-        </motion.div>
+        </div>
+      ) : (
+        <div className="mt-6">
+          <ToolCard title={t("gate.title")} bodyClassName="p-0">
+            <MediaAccessPanel
+              status={mic.status}
+              failure={mic.failure}
+              permission={mic.permission}
+              kind="microphone"
+              onStart={() => {
+                void mic.start()
+              }}
+            />
+          </ToolCard>
+        </div>
       )}
-
-      {/* Info Section */}
-      <InfoSection />
-
-      {/* Audio Preview Modal */}
-      <AudioPreviewModal audio={previewAudio} onClose={closePreview} />
     </div>
   )
 }
+
+export default MicrophoneTest

@@ -3,6 +3,7 @@
 import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
 
+import { DetailList, type DetailListRow } from "@/components/shared/DetailList"
 import { ToolCard } from "@/components/shared/ToolCard"
 
 import type { DetailGroup, DetailRow } from "../types"
@@ -10,8 +11,10 @@ import type { DetailGroup, DetailRow } from "../types"
 /**
  * One group of facts about an address.
  *
- * A definition list, so a screen reader ties each value to its label — the
- * panels this replaces used `<div>` pairs, which associate nothing.
+ * The table itself is `DetailList`, shared with `device-info` — this component
+ * owns only what is specific to this tool: which group it is, how a raw value
+ * becomes a string, and the per-group copy button (copying just the network
+ * section into a bug report is the actual use).
  *
  * A row the provider could not answer is KEPT and says so. Dropping it makes
  * the panel look complete when it is not, and *which* field is missing is
@@ -48,13 +51,20 @@ export function DetailGroupCard({
     return String(value)
   }
 
-  const rows: DetailRow[] =
-    group?.rows ?? placeholderKeys.map((key) => ({ key, value: null }))
+  const rows: DetailListRow[] = group
+    ? group.rows.map((row) => ({
+        key: row.key,
+        label: tRows(row.key),
+        value: format(row.value)
+      }))
+    : placeholderKeys.map((key) => ({
+        key,
+        label: tRows(key),
+        value: null
+      }))
 
   const asText = group
-    ? group.rows
-        .map((row) => `${tRows(row.key)}: ${format(row.value) ?? "—"}`)
-        .join("\n")
+    ? rows.map((row) => `${row.label}: ${row.value ?? "—"}`).join("\n")
     : ""
 
   return (
@@ -65,41 +75,7 @@ export function DetailGroupCard({
       }
       bodyClassName="p-0"
     >
-      <dl className="divide-y divide-border">
-        {rows.map((row) => {
-          const value = format(row.value)
-          return (
-            <div
-              key={row.key}
-              className={
-                row.wide
-                  ? "px-5 py-3"
-                  : "flex items-baseline justify-between gap-4 px-5 py-3"
-              }
-            >
-              <dt className="shrink-0 text-muted-foreground text-sm">
-                {tRows(row.key)}
-              </dt>
-              <dd
-                className={
-                  row.wide
-                    ? "mt-1 break-all font-mono text-foreground text-sm"
-                    : // Wraps rather than truncates: this is a page whose only
-                      // job is showing values, and an organisation name cut off
-                      // with an ellipsis is data withheld.
-                      "min-w-0 break-words text-right font-mono text-foreground text-sm"
-                }
-              >
-                {value ?? (
-                  <span className="text-muted-foreground italic">
-                    {tValues("unavailable")}
-                  </span>
-                )}
-              </dd>
-            </div>
-          )
-        })}
-      </dl>
+      <DetailList rows={rows} emptyLabel={tValues("unavailable")} />
     </ToolCard>
   )
 }
