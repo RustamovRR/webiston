@@ -102,6 +102,62 @@ export function withLocale(
 }
 
 /**
+ * The two labels every tool's breadcrumb trail starts with.
+ *
+ * They lived inline in 18 `generateBreadcrumbSchema` functions as
+ * `isEnglish ? "Home" : "Bosh sahifa"` — a binary that has no answer for a
+ * third locale, so `/ru` got the Uzbek branch.
+ *
+ * Exported because the trail is not only a tool-page shape: the tools INDEX
+ * (`/tools`) is a 2-crumb trail that ends where a tool page's second crumb
+ * points. It needs these exact labels and must not grow a 19th private copy.
+ */
+export const BREADCRUMB_ROOT = {
+  uz: { home: "Bosh sahifa", tools: "Vositalar" },
+  en: { home: "Home", tools: "Tools" },
+  ru: { home: "Главная", tools: "Инструменты" }
+} as const
+
+/**
+ * `BreadcrumbList` for a tool page, with URLs that match the page's canonical.
+ *
+ * The 18 hand-written copies of this all branched `locale === "en" ? "/en" : ""`,
+ * so every `/ru` tool page published a trail pointing at the **Uzbek** URLs
+ * while its own canonical said `/ru/...`. Google discards a breadcrumb whose
+ * terminal URL is not the page it is on, so the rich result was lost across the
+ * whole Russian tree — silently, because the markup itself is valid.
+ *
+ * `localeUrl` is the same function the canonical comes from. That is the point:
+ * the trail cannot disagree with the canonical because they are one derivation.
+ */
+export function toolBreadcrumbSchema(
+  locale: string,
+  slug: string,
+  toolName: string
+) {
+  const labels =
+    BREADCRUMB_ROOT[locale as keyof typeof BREADCRUMB_ROOT] ??
+    BREADCRUMB_ROOT.uz
+
+  const trail = [
+    { name: labels.home, path: "/" },
+    { name: labels.tools, path: "/tools" },
+    { name: toolName, path: `/tools/${slug}` }
+  ]
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: localeUrl(locale, crumb.path)
+    }))
+  }
+}
+
+/**
  * `FAQPage` structured data from the SAME array the page renders.
  *
  * Every tool route built this inline, and 15 of the 17 published it against a

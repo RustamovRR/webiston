@@ -1,5 +1,5 @@
 import "./globals.css"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import NextTopLoader from "nextjs-toploader"
@@ -17,6 +17,42 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter"
 })
+
+/**
+ * The colour the mobile browser paints its own chrome with.
+ *
+ * A `<meta content>` is not CSS: it cannot read a custom property, and there
+ * is no runtime hook to make it token-driven. So these are the sRGB values of
+ * `--background` from `src/styles/tokens.css` (`:182` light, `:252` dark),
+ * kept in one named constant with each key pointing at its token — the same
+ * documented exception `OG_BRAND` takes in `src/app/api/og/route.tsx`.
+ *
+ * It tracks `--background`, NOT the brand colour. The job of `theme-color` is
+ * to make the browser's bar disappear into the page; a teal bar above a white
+ * page reads as a rendering bug, not as branding.
+ */
+export const BROWSER_CHROME = {
+  light: "#ffffff", // --background light — oklch(1 0 0)
+  dark: "#070b0c" // --background dark  — oklch(0.145 0.008 217)
+} as const
+
+/**
+ * `themeColor` lives on the viewport export, not on metadata.
+ *
+ * Next 16 warns when it is found on `metadata`
+ * (`resolve-metadata.js:298-303`) — but the warning is keyed to the property
+ * name, so the previous `other: { "theme-color": … }` slipped past it through
+ * a blind `Object.assign` (`:274`) and shipped a black chrome tint nobody
+ * chose. It was one of THREE declared theme colours: black here, white in
+ * `public/site.webmanifest`, and Tailwind's `blue-500` — not a brand hue at
+ * all — in `src/app/manifest.ts`. All three are now this one pair.
+ */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: BROWSER_CHROME.light },
+    { media: "(prefers-color-scheme: dark)", color: BROWSER_CHROME.dark }
+  ]
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://webiston.uz"),
@@ -195,8 +231,7 @@ export const metadata: Metadata = {
     ]
   },
   other: {
-    "msapplication-TileColor": "#000000",
-    "theme-color": "#000000"
+    "msapplication-TileColor": "#000000"
   },
   twitter: {
     card: "summary_large_image",
@@ -225,20 +260,24 @@ export const metadata: Metadata = {
       "max-snippet": -1
     }
   },
-  icons: {
-    icon: [
-      { type: "image/png", url: "/favicon-32x32.png", sizes: "32x32" },
-      { type: "image/png", url: "/favicon-16x16.png", sizes: "16x16" },
-      { type: "image/x-icon", url: "/favicon.ico", sizes: "48x48" }
-    ],
-    shortcut: "/favicon.ico",
-    apple: {
-      sizes: "180x180",
-      url: "/apple-touch-icon.png",
-      href: "/apple-touch-icon.png"
-    }
-  },
-  manifest: "/site.webmanifest",
+  // NO `icons` KEY HERE — deliberately, and it must stay that way.
+  //
+  // Next resolves file-convention icons (`src/app/icon.svg`, `favicon.ico`,
+  // `apple-icon.png`) behind an `if (!resolvedMetadata.icons)` guard —
+  // `next/dist/lib/metadata/resolve-metadata.js:812`. Setting this key from ANY
+  // layout or page makes that guard false and **every convention icon in the
+  // tree is silently discarded**: no error, no warning, just a document with no
+  // favicon. That is why the icons are not declared here.
+  //
+  // What the convention buys over a hand-written list: Next appends a content
+  // hash to each URL, so a redrawn mark invalidates the browser's separate,
+  // very long-lived favicon cache by itself. Hand-written URLs need a manual
+  // `?v=2` that someone has to remember.
+  //
+  // `manifest` is absent for a related reason: `src/app/manifest.ts` already
+  // wins. `mergeStaticMetadata` assigns the discovered manifest AFTER the
+  // metadata export is merged (`resolve-metadata.js:160`, called at `:311`), so
+  // a `manifest:` value here is overwritten before it reaches the document.
   referrer: "origin-when-cross-origin",
   formatDetection: {
     email: false,
@@ -345,7 +384,10 @@ const websiteSchema = {
     },
     "query-input": "required name=search_term_string"
   },
-  inLanguage: ["uz", "en"],
+  // Kept in step with `LOCALES` in `src/i18n/locales.ts`. It said `["uz","en"]`
+  // for the whole of the Russian launch — the site advertising that it does
+  // not serve a language it does serve.
+  inLanguage: ["uz", "en", "ru"],
   audience: {
     "@type": "Audience",
     audienceType:

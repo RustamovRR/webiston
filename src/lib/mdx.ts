@@ -304,6 +304,29 @@ export function getTutorialTitle(tutorialId: string): string {
   return titles[tutorialId] || tutorialId
 }
 
+/**
+ * The book's name with its subtitle removed — for the `<title>` tag only.
+ *
+ * A chapter's `<title>` was `chapter | full book title | Webiston`, and the
+ * full book title is 40–60 characters of subtitle that repeats on all 226
+ * chapters. Measured before this change: median 104 characters, max 148, and
+ * **226 of 228** over 60. Google truncates around 580px, so every chapter's
+ * SERP line was cut mid-phrase and the brand never rendered at all.
+ *
+ * The subtitle is not lost — it still carries the OpenGraph title and the H1,
+ * where there is no length budget to blow. What the search result needs is the
+ * chapter, the book, and the brand, in that order and inside the budget.
+ */
+export function getTutorialShortTitle(tutorialId: string): string {
+  const shortTitles: Record<string, string> = {
+    "ai-engineering": "AI Engineering",
+    "javascript-definitive-guide": "JavaScript: The Definitive Guide",
+    "fluent-react": "Fluent React"
+  }
+
+  return shortTitles[tutorialId] || getTutorialTitle(tutorialId)
+}
+
 // Tutorial tavsifini olish
 function getTutorialDescription(tutorialId: string): string {
   const descriptions: Record<string, string> = {

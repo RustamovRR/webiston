@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Webiston">
+  <title>Webiston</title>
+  <!--
+    The Terminal mark, redrawn for icon sizes. Source of truth for the shape is
+    src/components/shared/Header/Logo.tsx; this is not a copy of it, and every
+    difference is forced by what survives at 16x16.
+
+    (Token names are written without their leading dashes throughout this
+    comment: a pair of hyphens is illegal inside an XML comment, and an SVG is
+    parsed as XML. Writing `primary` here rather than the real custom-property
+    name is not sloppiness, it is the file format. The CSS below, being element
+    content rather than a comment, spells them normally.)
+
+    1. SOLID BADGE, NOT THE CARD GRADIENT. The header badge is
+       `from-primary/30 via-card to-card` over the `card` token (#f7fbfc) with
+       a 1px `border-strong` edge. Two things break at icon size: a gradient
+       muds into a flat smear, and the border is 1/36 of the badge, which is
+       0.44 device px at 16x16 - invisible. Lose the border and a near-white
+       badge on a white tab strip has no edge at all. So the badge takes the
+       `primary` token as a solid fill and holds all of its contrast
+       internally, which is what lets it read on ANY browser chrome.
+    2. THE `w` IS DRAWN, NOT SET. A text element in an SVG used as an image
+       resolves fonts against whatever is installed locally - Inter is not a
+       system font, so the glyph would fall back differently on every OS with
+       no way to control it. This is a stroked polyline: same letter, same
+       weight, identical everywhere.
+    3. NO WORDMARK. The header's `webiston.uz` lockup cannot survive 16 px.
+       The badge alone is the mark at this size.
+
+    Geometry, scaled from the header's 36px badge to a 32-unit viewBox:
+      corner radius  10/36 -> 8.9, rounded to 8
+      accent pixel    5/36 -> 4.4, rounded to 4, inset 3 from the top-right
+      glyph stroke    3.6 units = 1.8 device px at 16x16 and 3.6 on a retina
+                      panel, comfortably above the ~2-unit floor below which a
+                      stroke renders as sub-pixel grey
+
+    The letter's proportions were chosen by rendering six variants at 16px with
+    nearest-neighbour upscaling and looking at them, not by scaling the header
+    lockup. The header `w` is wide and short, which is right at 36px and turns
+    to mush at 16: the two counters close up and the middle peak disappears, so
+    the mark reads as a blob. This version is taller (travel 11 -> 22 instead of
+    12 -> 21) with a slightly lighter stroke, which is what keeps the counters
+    open. The accent pixel's clearance from the right arm was set the same way:
+    2.2 units, about one device pixel at 16x16, below which the two shapes
+    smear into each other.
+
+    Colours are the sRGB values of the tokens in src/styles/tokens.css. An SVG
+    used as an image cannot read custom properties from the page, so they are
+    literal here - the same documented exception already taken by OG_BRAND in
+    src/app/api/og/route.tsx. Each one names its token beside it.
+
+    The dark-mode branch is polish, NOT load-bearing: Safari has only supported
+    SVG favicons since 26.0 and does not honour this media query at all, so the
+    DEFAULT branch has to work on a dark tab strip by itself. It does - a
+    saturated teal badge with a white glyph reads against both extremes.
+  -->
+  <style>
+    .badge  { fill: #0a6c80 }    /* --primary           light = --brand-700 */
+    .ink    { fill: #fafafa }    /* --primary-foreground light */
+    .glyph  { stroke: #fafafa }  /* --primary-foreground light */
+
+    @media (prefers-color-scheme: dark) {
+      .badge  { fill: #40bedc }    /* --primary           dark = --brand-400 */
+      .ink    { fill: #171717 }    /* --primary-foreground dark */
+      .glyph  { stroke: #171717 }  /* --primary-foreground dark */
+    }
+  </style>
+
+  <rect class="badge" width="32" height="32" rx="8" />
+
+  <!-- The `w`. Stroked rather than outlined so the weight stays even at every
+       size; round joins keep the valleys from turning into dark blobs. -->
+  <path
+    class="glyph"
+    d="M8 11 L12 22 L16 14 L20 22 L24 11"
+    fill="none"
+    stroke-width="3.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- The cursor pixel. Its `rounded-[1.5px]` in the header is 0.13 units
+       here, so it is drawn square. -->
+  <rect class="ink" x="25" y="3" width="4" height="4" />
+</svg>

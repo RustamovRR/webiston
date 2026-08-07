@@ -17,6 +17,7 @@
 
 import type { getTranslations } from "next-intl/server"
 
+import { toolBreadcrumbSchema } from "@/lib/seo"
 import { FAQ_KEYS, MAX_FILE_SIZE_MB } from "../constants"
 
 const BASE_URL = "https://webiston.uz"
@@ -67,7 +68,7 @@ export const applicationSchema = {
     "Havola, e-pochta, kod va texnik atamalarni saqlab qolish",
     "Matn brauzerdan chiqmaydi"
   ],
-  inLanguage: ["uz", "en"]
+  inLanguage: ["uz", "en", "ru"]
 }
 
 /**
@@ -92,37 +93,18 @@ export function generateFAQSchema(t: Translator) {
   }
 }
 
+/** The tool's own name, per locale — the only part of the trail that is not shared. */
+const BREADCRUMB_NAME = {
+  uz: "Lotin-Kirill O'giruvchi",
+  en: "Latin-Cyrillic Converter",
+  ru: "Латиница ↔ кириллица"
+} as const
+
 export function generateBreadcrumbSchema(locale: string = "uz") {
-  const labels =
-    locale === "en"
-      ? { home: "Home", tools: "Tools", tool: "Latin-Cyrillic Converter" }
-      : {
-          home: "Bosh sahifa",
-          tools: "Vositalar",
-          tool: "Lotin-Kirill O'giruvchi"
-        }
-
-  const baseUrl = locale === "en" ? `${BASE_URL}/en` : BASE_URL
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: labels.home, item: baseUrl },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: labels.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: labels.tool,
-        item: `${baseUrl}/tools/latin-cyrillic`
-      }
-    ]
-  }
+  const name =
+    BREADCRUMB_NAME[locale as keyof typeof BREADCRUMB_NAME] ??
+    BREADCRUMB_NAME.uz
+  return toolBreadcrumbSchema(locale, "latin-cyrillic", name)
 }
 
 export const howToSchema = {

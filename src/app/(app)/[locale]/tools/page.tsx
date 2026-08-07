@@ -6,6 +6,8 @@ import { TOOLS_LIST } from "@/constants"
 import { withLocale } from "@/lib/seo"
 import { ToolsMainPage } from "@/modules/tools"
 
+import { generateBreadcrumbSchema, getToolsIndexMetadata } from "./seo"
+
 /**
  * English names for the schema, which is locale-independent by design —
  * `schema.org` entries are read by crawlers, not by visitors, and the URL is
@@ -43,118 +45,6 @@ const INDEX_NAMESPACES = [
   "Filters",
   "Common"
 ] as const
-
-const baseMetadata: Metadata = {
-  title: "Bepul Onlayn Vositalar - Professional Developer Tools",
-  description:
-    "Eng yaxshi bepul onlayn vositalar to'plami. QR generator, JSON formatter, Base64 converter, URL encoder va boshqa professional developer tools.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "bepul vositalar",
-    "onlayn tools",
-    "developer tools",
-    "dasturchi vositalari",
-    "web tools",
-    "veb vositalar",
-    "utility tools",
-    "foydali vositalar",
-    "programming tools",
-    "dasturlash vositalari",
-    "qr generator",
-    "json formatter",
-    "base64 converter",
-    "url encoder",
-    "password generator",
-    "parol yaratish",
-    "latin kirill",
-    "jwt decoder",
-    "color converter",
-    "rang konverter",
-    "webiston tools",
-    "professional tools",
-
-    // Ingliz tilida
-    "free online tools",
-    "developer tools",
-    "web development tools",
-    "programming utilities",
-    "coding tools",
-    "online utilities",
-    "free web tools",
-    "developer utilities",
-    "programming resources",
-    "web developer tools",
-    "online developer tools",
-    "free coding tools",
-    "utility applications",
-    "development resources",
-    "web utilities",
-
-    // Rus tilida
-    "бесплатные онлайн инструменты",
-    "инструменты разработчика",
-    "веб инструменты",
-    "утилиты программирования",
-    "инструменты кодирования",
-    "онлайн утилиты",
-    "бесплатные веб инструменты",
-    "ресурсы разработчика",
-    "программные утилиты",
-
-    // Long-tail keywords
-    "bepul onlayn dasturchi vositalari",
-    "professional web development tools free",
-    "бесплатные профессиональные инструменты разработчика",
-    "webiston developer tools collection",
-    "uzbek developer tools"
-  ],
-  openGraph: {
-    title: "Bepul Onlayn Vositalar - Professional Developer Tools | Webiston",
-    description:
-      "Eng yaxshi bepul onlayn vositalar to'plami. QR generator, JSON formatter, Base64 converter va boshqa professional tools.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Webiston - Bepul Onlayn Vositalar To'plami",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "Bepul Onlayn Vositalar - Professional Tools",
-    description:
-      "Professional developer tools to'plami. QR generator, JSON formatter va boshqa foydali vositalar. Bepul!",
-    images: ["https://webiston.uz/logo.png"]
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
-}
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -229,7 +119,7 @@ const structuredData = {
   softwareVersion: "2.0",
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
+  inLanguage: ["uz", "en", "ru"],
   keywords: "bepul vositalar, developer tools, onlayn tools, webiston"
 }
 
@@ -302,44 +192,6 @@ function generateFAQSchema(locale: string = "uz") {
   }
 }
 
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      }
-    ]
-  }
-}
-
 export default async function ToolsPage({
   params
 }: {
@@ -386,5 +238,5 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(baseMetadata, locale, "/tools")
+  return withLocale(getToolsIndexMetadata(locale), locale, "/tools")
 }

@@ -8,7 +8,17 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-07-31 — **the tools pass has started, with
+_Last updated: 2026-08-07 — **a search-strategy pass**, researched against live
+sources rather than assumed. The headline is a correction: the plan to capture
+CIS traffic through `/ru` **cannot work** — `.uz` is a country-locked ccTLD,
+Search Console's country targeting was removed in 2022, and hreflang does not
+rank. `/ru` is a Russophone-**Uzbekistan** surface. Decisions in
+`../reference/seo-strategy.md` (read its **Refuted** table before re-proposing
+anything); execution in `initiatives/seo-2026.md`. Shipped: book titles, the 18
+locale-broken breadcrumbs, the 4 routes that served Uzbek to all three locales,
+and the whole icon/favicon set for the 2026 mark._
+
+_Previously, 2026-07-31 — **the tools pass has started, with
 `/tools/latin-cyrillic`** — the site's most-visited page. This was not a design
 refresh: the engine was producing wrong Uzbek on ordinary words. Nine defect
 classes fixed and covered by tests, the direction policy moved into

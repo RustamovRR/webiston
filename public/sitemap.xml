@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://webiston.uz/apple-icon.png</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/books</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/books/ai-engineering</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/books/ai-engineering/1-introduction-to-building-ai-applications-with-foundation-models</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -248,6 +249,7 @@
 <url><loc>https://webiston.uz/en/tools/screen-resolution</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/url-encoder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/uuid-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/icon.svg</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/base64-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>

@@ -14,6 +14,8 @@
 
 import type { getTranslations } from "next-intl/server"
 
+import { toolBreadcrumbSchema } from "@/lib/seo"
+
 import { FAQ_KEYS } from "../constants"
 
 const BASE_URL = "https://webiston.uz"
@@ -44,7 +46,7 @@ export const applicationSchema = {
     "Natijani hex yoki Base64 shaklida ko'rsatish",
     "Natijalarni .txt sifatida saqlash"
   ],
-  inLanguage: ["uz", "en"]
+  inLanguage: ["uz", "en", "ru"]
 }
 
 export function generateFAQSchema(t: Translator) {
@@ -59,32 +61,19 @@ export function generateFAQSchema(t: Translator) {
   }
 }
 
-export function generateBreadcrumbSchema(locale: string) {
-  const isEnglish = locale === "en"
-  const baseUrl = isEnglish ? `${BASE_URL}/en` : BASE_URL
+/**
+ * The tool's own name, per locale — the only part of the trail that is not
+ * shared.
+ */
+const BREADCRUMB_NAME = {
+  uz: "Hash Generator",
+  en: "Hash Generator",
+  ru: "Генератор хешей"
+} as const
 
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: isEnglish ? "Home" : "Bosh sahifa",
-        item: baseUrl
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: isEnglish ? "Tools" : "Vositalar",
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Hash Generator",
-        item: `${baseUrl}/tools/hash-generator`
-      }
-    ]
-  }
+export function generateBreadcrumbSchema(locale: string) {
+  const name =
+    BREADCRUMB_NAME[locale as keyof typeof BREADCRUMB_NAME] ??
+    BREADCRUMB_NAME.uz
+  return toolBreadcrumbSchema(locale, "hash-generator", name)
 }

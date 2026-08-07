@@ -46,7 +46,18 @@ module.exports = {
     await add('/books')
 
     // Locale paths. '' is the default locale (uz), which is served unprefixed.
-    const locales = ['', 'en']
+    //
+    // This list is load-bearing only for the UNPREFIXED uz URLs: those are not
+    // in the prerender manifest (they are served through the middleware), so
+    // nothing else would discover them. `/en/*` and `/ru/*` ARE prerendered and
+    // next-sitemap auto-discovers them either way — which is why `ru` being
+    // missing here for the whole Russian launch did not actually drop those 18
+    // URLs from the sitemap, and why adding it changes nothing measurable.
+    //
+    // It is still wrong to leave out, because the omission reads as intent: the
+    // next person to add a locale copies this line. Verified 2026-08-07 —
+    // sitemap.xml carried 18 `/ru` URLs while this said `['', 'en']`.
+    const locales = ['', 'en', 'ru']
     const toolsPages = require('./tools-list.json')
 
     for (const locale of locales) {

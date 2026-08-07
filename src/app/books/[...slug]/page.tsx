@@ -6,7 +6,12 @@ import {
   TutorialContent,
   TutorialLanding
 } from "@/components/mdx"
-import { getAllTutorialPaths, getMDXContent, getTutorialInfo } from "@/lib/mdx"
+import {
+  getAllTutorialPaths,
+  getMDXContent,
+  getTutorialInfo,
+  getTutorialShortTitle
+} from "@/lib/mdx"
 import { SITE_URL } from "@/lib/seo"
 
 interface BookPageProps {
@@ -157,7 +162,18 @@ export async function generateMetadata({
       const keywords = asString(frontmatter.keywords)
       const author = asString(frontmatter.author)
 
-      const pageTitle = `${title} | ${tutorialInfo?.title || "Darslik"}`
+      // Two titles, because the two surfaces have different budgets.
+      //
+      // `<title>` gets ` | Webiston` appended by the root template, so the
+      // book name here is the SHORT one: `chapter | Fluent React | Webiston`
+      // fits where `chapter | Fluent React: Zamonaviy React Dasturlash |
+      // Webiston` did not. Measured before: median 104 chars, max 148, and
+      // 226 of 228 chapters over Google's ~60-character truncation point.
+      //
+      // OpenGraph has no such budget and no template applied — a share card
+      // is read, not truncated — so it keeps the full book title.
+      const pageTitle = `${title} | ${getTutorialShortTitle(tutorialId)}`
+      const socialTitle = `${title} | ${tutorialInfo?.title || "Darslik"}`
       const path = `/books/${slug.join("/")}`
 
       return {
@@ -167,14 +183,14 @@ export async function generateMetadata({
         authors: author ? [{ name: author }] : undefined,
         alternates: { canonical: `${SITE_URL}${path}` },
         openGraph: {
-          title: pageTitle,
+          title: socialTitle,
           description,
           url: `${SITE_URL}${path}`,
           images: ogImage(title, path)
         },
         twitter: {
           card: "summary_large_image",
-          title: pageTitle,
+          title: socialTitle,
           description
         }
       }

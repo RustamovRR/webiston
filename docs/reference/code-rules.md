@@ -222,14 +222,27 @@ Full spec: **`design-system.md`**. The hard rules:
 
 ## 12. Internationalization
 
-- **`uz` and `en` only.** Adding a locale means `src/i18n/routing.ts`,
-  `src/middleware.ts` (incl. the `matcher`), and every file under `messages/`.
-- Every new user-facing string ships in **both** locales in the same commit.
-  A missing key is a runtime error surface, not a TODO.
+- **`uz`, `en`, `ru`.** One source of truth: `LOCALES` in
+  `src/i18n/locales.ts`. Adding a locale is adding it there and shipping its
+  `messages/**` bundles — plus the **two places that cannot derive it**:
+  `src/proxy.ts`'s `matcher` alternation (Next parses `config` statically, so a
+  template literal fails the build; `src/proxy.test.ts` fails when it drifts)
+  and `next-sitemap.config.js`.
+- `/books/**` is **Uzbek-only by design** and lives outside `[locale]`. 226
+  chapters translated into Uzbek; a `/ru/books` would be Uzbek prose under a
+  Russian URL. `inLanguage: "uz"` there is correct, not an oversight.
+- Every new user-facing string ships in **all three** locales in the same
+  commit. A missing key is a runtime error surface, not a TODO. `pnpm i18n`
+  enforces parity across all bundles and fails on a partial one.
 - Uzbek technical terminology comes from `glossary.md` — check it before
   inventing a translation, and add new terms there.
-- `<html lang>` must follow the active locale. It is hardcoded `"uz"` in
-  `src/app/layout.tsx:394` today — a known bug, see the backlog.
+- `<html lang>` is hardcoded `"uz"` in `src/app/layout.tsx` and inherited by all
+  three locales. **This is an accessibility defect, not an SEO one** — Google
+  states plainly that it "uses the visible content of your page to determine its
+  language. We don't use any code-level language information such as `lang`
+  attributes, or the URL." Screen readers do use it. Fixing it needs multiple
+  root layouts (`/books` sits outside `[locale]`), which costs a hard navigation
+  between the two trees — see `../roadmap/backlog.md` before attempting it.
 
 ---
 

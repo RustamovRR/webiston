@@ -1,1 +1,1 @@
-export { default } from "./QrGenerator"
+export { default, QrGenerator } from "./QrGenerator"

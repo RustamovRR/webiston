@@ -62,9 +62,15 @@ polish and perceived craft are part of the spec, not a nice-to-have.
 | Transliteration   | `packages/transliteration`   | `@webiston/transliteration` — pure TS      |
 | Chrome extension  | `apps/extensions/latin-cyrillic` | WXT, Latin↔Cyrillic converter        |
 
-**Locales: `uz` (default) + `en` only.** Russian is **not** supported —
-`src/i18n/routing.ts` and `src/middleware.ts` list exactly `["uz", "en"]`.
-Older steering docs claiming `ru` are wrong.
+**Locales: `uz` (default, served unprefixed) + `en` + `ru`.** One source of
+truth: **`src/i18n/locales.ts`** (`LOCALES`). Everything else derives from it —
+`routing.ts`, the switcher, `og:locale`, hreflang, the i18n gate. The two places
+that cannot derive it are `src/proxy.ts`'s `matcher` (Next parses `config`
+statically, so the alternation is typed by hand and guarded by `proxy.test.ts`)
+and `next-sitemap.config.js`.
+
+`/ru` covers the shell and the 17 tools only — **`/books/**` is Uzbek-only by
+design** and sits outside the `[locale]` segment.
 
 **Stack:** Next.js 16 (App Router, React Compiler ON) · React 19.2 ·
 TypeScript 5.9 strict · Tailwind v4 (CSS-first) + Shadcn · Zustand · next-intl ·

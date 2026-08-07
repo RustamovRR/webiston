@@ -74,8 +74,10 @@ docs/
     code-rules.md            ← THE enforced rules (always loaded via CLAUDE.md)
     architecture.md          ← structure, boundaries, module contract
     design-system.md         ← THE design spec + the measured drift baseline
-    content-i18n.md          ← MDX books, uz/en parity, glossary discipline
+    content-i18n.md          ← MDX books, uz/en/ru parity, glossary discipline
     seo-performance.md       ← metadata, sitemap, 'use client' budget, bundles
+    seo-strategy.md          ← WHERE to aim: locales, CIS, the 2 flagship tools,
+                               what we will NOT do, and a Refuted list
     testing-strategy.md      ← testing spec (+ a status block on what is real)
 
   adr/                       ← Architecture Decision Records (append-only)
@@ -91,7 +93,8 @@ docs/
     initiatives/             ← execution plans for multi-session work
       README.md              ← the convention + index
       design-system.md       ← Phases A–E, token migration
-      seo-and-rendering.md   ← SEO integrity + rendering performance
+      seo-and-rendering.md   ← SEO *mechanics*: canonicals, prerender, payload
+      seo-2026.md            ← SEO *aim*: locale correctness, structure, content
       code-structure.md      ← boundaries, shim layer, module shape, types
       content-and-i18n.md    ← uz/en parity, glossary, message bundles
       tooling-ci-and-testing.md ← CI, gates, first tests in src/

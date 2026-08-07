@@ -8,6 +8,8 @@
 
 import type { getTranslations } from "next-intl/server"
 
+import { toolBreadcrumbSchema } from "@/lib/seo"
+
 import { FAQ_KEYS } from "../constants/faq"
 
 const BASE_URL = "https://webiston.uz"
@@ -41,7 +43,7 @@ export const applicationSchema = {
     "Diagnostika hisobotini bir bosishda nusxalash",
     "Hamma narsa qurilmada — hech narsa serverga yuborilmaydi"
   ],
-  inLanguage: ["uz", "en"]
+  inLanguage: ["uz", "en", "ru"]
 }
 
 export function generateFAQSchema(t: Translator) {
@@ -56,32 +58,17 @@ export function generateFAQSchema(t: Translator) {
   }
 }
 
-export function generateBreadcrumbSchema(locale: string) {
-  const isEnglish = locale === "en"
-  const baseUrl = isEnglish ? `${BASE_URL}/en` : BASE_URL
+/** The tool's own name, per locale — the only part of the trail that is not shared. */
+const BREADCRUMB_NAME = {
+  uz: "Kamera Testi",
+  en: "Camera Test",
+  ru: "Проверка камеры"
+} as const
 
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: isEnglish ? "Home" : "Bosh sahifa",
-        item: baseUrl
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: isEnglish ? "Tools" : "Vositalar",
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: isEnglish ? "Camera Test" : "Kamera Testi",
-        item: `${baseUrl}/tools/camera-recorder`
-      }
-    ]
-  }
+export function generateBreadcrumbSchema(locale: string) {
+  const name =
+    BREADCRUMB_NAME[locale as keyof typeof BREADCRUMB_NAME] ??
+    BREADCRUMB_NAME.uz
+
+  return toolBreadcrumbSchema(locale, "camera-recorder", name)
 }
