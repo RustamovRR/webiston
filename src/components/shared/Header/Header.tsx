@@ -7,7 +7,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger
 } from "@webiston/ui/primitives/navigation-menu"
-import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 // `BOOK_SECTIONS` already carries these ids and titles for the homepage.
 // Header is a Server Component, so its `chapters` arrays never reach the

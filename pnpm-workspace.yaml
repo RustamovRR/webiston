@@ -23,6 +23,18 @@ packages:
 overrides:
   '@types/react': '19.2.18'
   '@types/react-dom': '19.2.4'
+  # GHSA-g7r4-m6w7-qqqr — arbitrary file read via esbuild's own `--serve` dev
+  # server on Windows. Patched in 0.28.1; every dependent here is a
+  # devDependency (tsup, vite, vitest, wxt) so nothing shipped is affected.
+  #
+  # This is an override rather than a version bump because tsup@8.5.1 — the
+  # LATEST release — still hard-pins `esbuild: ^0.27.0`, so there is no upstream
+  # path to a patched version. Verified safe: with this in place the
+  # `@webiston/transliteration` bundles tsup emits are byte-identical to the
+  # 0.27.7 output (sha256 compared), and the full gate passes.
+  #
+  # Revisit when tsup widens its range — then this entry can go.
+  esbuild: '^0.28.1'
 
 # ---------------------------------------------------------------------------
 # Post-install scripts
