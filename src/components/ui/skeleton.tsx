@@ -1,1 +1,1 @@
-export { Skeleton } from "@webiston/ui"
+export { Skeleton } from "@webiston/ui/primitives/skeleton"

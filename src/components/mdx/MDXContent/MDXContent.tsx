@@ -1,20 +1,19 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
-import React from "react"
 
 // Plugins
 import rehypeKatex from "rehype-katex"
 import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
-
+import { getPublicImageSize } from "@/lib/image-size"
 // Custom components
 import Callout from "../Callout"
 import CodeBlock from "../CodeBlock"
-import VideoEmbed from "../VideoEmbed"
 import ImageViewer from "../ImageViewer"
-import HeadingLink from "./HeadingLink"
+import VideoEmbed from "../VideoEmbed"
 import CustomLink from "./CustomLink"
 import CustomParagraph from "./CustomParagraph"
+import HeadingLink from "./HeadingLink"
 
 interface MDXContentProps {
   source: string
@@ -70,7 +69,7 @@ const components = {
     )
   },
   li: (props: any) => {
-    if (props.id && props.id.includes("user-content")) {
+    if (props.id?.includes("user-content")) {
       return <li className="[&_p]:!italic [&>p]:!mt-6" {...props} />
     }
     return <li className="[&>p]:!m-0" {...props} />
@@ -87,7 +86,20 @@ const components = {
     if (isVideoLink) {
       return <VideoEmbed url={src} title={alt} />
     }
-    return <ImageViewer src={src} alt={alt || ""} />
+
+    // Measured here, on the server, because the files are on disk at build time
+    // — passing them down is what lets the browser reserve the right box and
+    // stops all 90 book figures from shifting the layout as they decode.
+    const size = getPublicImageSize(src)
+
+    return (
+      <ImageViewer
+        src={src}
+        alt={alt || ""}
+        width={size?.width}
+        height={size?.height}
+      />
+    )
   },
   // Inline code with badge style
   code: ({ className, children, ...props }: any) => {
@@ -96,8 +108,11 @@ const components = {
     // If it's inline code (not a code block)
     if (!match) {
       return (
+        // `border-border bg-muted`, not `border-slate-200 bg-slate-100` plus
+        // two `dark:` overrides on a raw `#ffffff1a`. The tokens flip with the
+        // scheme, so the pair of dark-mode variants is simply gone.
         <code
-          className="relative rounded-sm border border-slate-200 bg-slate-100 px-[0.3rem] py-[0.2rem] text-[0.9em] font-normal !whitespace-nowrap text-rose-500 dark:border-[#ffffff1a] dark:bg-[#ffffff1a] dark:text-white [a_&]:text-inherit"
+          className="relative rounded-sm border border-border bg-muted px-[0.3rem] py-[0.2rem] font-normal text-[0.9em] text-destructive !whitespace-nowrap [a_&]:text-inherit"
           {...props}
         >
           {children}
@@ -105,24 +120,26 @@ const components = {
       )
     }
 
-    // For code blocks with syntax highlighting
+    // For code blocks with syntax highlighting.
+    // `match[1]` is the fence's language — it was extracted here and then
+    // thrown away, while CodeBlock hardcoded "ts". Every block in `content/`
+    // was highlighted as TypeScript: 298 `js`, 19 `html`, 4 `shell`/`bash`.
     const codeString = String(children).replace(/\n$/, "")
     if (!codeString) return null
 
     return (
       <div className="prose m-0 mt-6 w-full max-w-none">
-        <CodeBlock>{codeString}</CodeBlock>
+        <CodeBlock lang={match[1]}>{codeString}</CodeBlock>
       </div>
     )
   },
 
+  // No `dark:[&_pre]:!bg-[#0A0A0A]` here any more. That forced a hardcoded
+  // surface in dark mode only, so the block sat on `bg-card` in light and on a
+  // raw hex in dark. Shiki's own background is neutralised in globals.css, so
+  // both themes now show the same tokenised card surface.
   pre: (props: any) => {
-    return (
-      <pre
-        className="w-full bg-inherit !p-0 dark:[&_pre]:!bg-[#0A0A0A]"
-        {...props}
-      />
-    )
+    return <pre className="w-full bg-inherit !p-0" {...props} />
   },
 
   // Handle video container divs produced by our custom processing
@@ -172,9 +189,12 @@ const components = {
   // Handle anchor tags directly
   a: (props: any) => <CustomLink {...props} />,
 
+  // Footnote markers. `text-primary`, not `text-sky-500` — the brand hue is
+  // 217° and `sky` is not it, so footnote links were a different blue from
+  // every other link on the site.
   sup: (props: any) => (
     <sup
-      className="[&_a]:text-sky-500 [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-sky-400"
+      className="[&_a]:text-primary [&_a]:underline [&_a]:transition-colors [&_a]:duration-200 [&_a]:hover:text-primary/80"
       {...props}
     />
   ),
@@ -185,15 +205,17 @@ const components = {
     </div>
   ),
 
+  // `border-border`, not `border-[#ddd]`. A light-grey hex on a dark page put
+  // near-white grid lines around every table in dark mode.
   th: (props: any) => (
     <th
       {...props}
-      className="border border-[#ddd] py-3 !pl-2.5 text-left text-sm font-semibold tracking-wide"
+      className="border border-border py-3 !pl-2.5 text-left font-semibold text-sm tracking-wide"
     />
   ),
 
   td: (props: any) => (
-    <td {...props} className="border border-[#ddd] px-3 py-3 text-sm" />
+    <td {...props} className="border border-border px-3 py-3 text-sm" />
   ),
 
   blockquote: (props: any) => (

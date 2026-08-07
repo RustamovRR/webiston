@@ -1,21 +1,13 @@
 "use client"
 
-import { Download, Eye, Trash2, Video, Image as ImageIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { useTranslations } from "next-intl"
+import { Download, Eye, Image as ImageIcon, Trash2, Video } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
-
-interface CapturedMedia {
-  id: string
-  type: "screenshot" | "video"
-  url: string
-  filename: string
-  timestamp: Date
-  duration?: number
-  size?: number
-}
+import { Button } from "@/components/ui/button"
+import { formatFileSize } from "@/lib/utils/format"
+import type { CapturedMedia } from "../hooks/useCameraRecorder"
 
 interface MediaGridItemProps {
   media: CapturedMedia
@@ -32,27 +24,12 @@ export function MediaGridItem({
 }: MediaGridItemProps) {
   const t = useTranslations("CameraRecorderPage.MediaPanel")
   const [imageError, setImageError] = useState(false)
-
-  const formatFileSize = (bytes?: number) => {
-    if (!bytes) return "N/A"
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i]
-  }
-
-  const formatDuration = (seconds?: number) => {
-    if (!seconds) return "N/A"
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
-
   const renderThumbnail = () => {
     if (media.type === "screenshot") {
       if (imageError) {
         return (
-          <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
-            <ImageIcon className="h-8 w-8 text-zinc-400" />
+          <div className="flex h-full items-center justify-center bg-muted">
+            <ImageIcon className="h-8 w-8 text-muted-foreground" />
           </div>
         )
       }
@@ -73,8 +50,8 @@ export function MediaGridItem({
 
     // Video thumbnail
     return (
-      <div className="flex h-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
-        <Video className="h-8 w-8 text-green-500" />
+      <div className="flex h-full items-center justify-center bg-muted">
+        <Video className="h-8 w-8 text-success" />
       </div>
     )
   }
@@ -84,7 +61,7 @@ export function MediaGridItem({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="group relative overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"
+      className="group relative overflow-hidden rounded-lg border border-border bg-card"
     >
       {/* Thumbnail */}
       <div className="aspect-video w-full overflow-hidden">

@@ -1,4 +1,5 @@
 import { cn, StatsDisplay } from "@webiston/ui"
+import { useTranslations } from "next-intl"
 import type React from "react"
 import { MACOS_DOTS, TEXT_STYLES, UI_PATTERNS } from "@/constants/ui-constants"
 
@@ -90,15 +91,18 @@ export const TextInputPanel: React.FC<TextInputPanelProps> = ({
   error,
   ...panelProps
 }) => {
+  const t = useTranslations("Common")
   return (
     <ToolPanel {...panelProps}>
       <div className="absolute inset-0 flex flex-col">
         {error ? (
           <div className="p-4">
-            <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-red-400"></div>
-                <strong className="text-sm text-red-400">Xatolik</strong>
+                <div className="h-2 w-2 rounded-full bg-destructive"></div>
+                <strong className="text-sm text-destructive">
+                  {t("error")}
+                </strong>
               </div>
               <p className={TEXT_STYLES.ERROR}>{error}</p>
             </div>
@@ -107,10 +111,9 @@ export const TextInputPanel: React.FC<TextInputPanelProps> = ({
           <textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="flex-1 resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-50 placeholder:text-zinc-500 focus:ring-0 focus:outline-none"
+            className="flex-1 resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
             placeholder={placeholder}
             readOnly={readOnly}
-            autoFocus={autoFocus}
           />
         )}
       </div>
@@ -131,38 +134,43 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({
   content,
   error,
   emptyStateIcon,
-  emptyStateMessage = "Natija bu yerda ko'rinadi...",
+  emptyStateMessage,
   additionalContent,
   ...panelProps
 }) => {
+  const t = useTranslations("Common")
   return (
     <ToolPanel {...panelProps}>
       <div className="absolute inset-0 h-full w-full overflow-y-auto p-4">
         {error ? (
           <div className="p-4">
-            <div className="rounded-lg border border-red-800/30 bg-red-900/20 p-4">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-red-400"></div>
-                <strong className="text-sm text-red-400">Xatolik</strong>
+                <div className="h-2 w-2 rounded-full bg-destructive"></div>
+                <strong className="text-sm text-destructive">
+                  {t("error")}
+                </strong>
               </div>
               <p className={TEXT_STYLES.ERROR}>{error}</p>
             </div>
           </div>
         ) : content ? (
           <div>
-            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-50">
+            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-foreground">
               {content}
             </pre>
             {additionalContent}
           </div>
         ) : (
           <div className="flex h-full items-center justify-center p-8 text-center">
-            <div className="text-zinc-500">
+            <div className="text-muted-foreground">
               {emptyStateIcon && (
                 <div className="mx-auto mb-4 opacity-50">{emptyStateIcon}</div>
               )}
-              <p className="text-sm">{emptyStateMessage}</p>
-              <p className="mt-2 text-xs opacity-75">Ma'lumot kiriting</p>
+              <p className="text-sm">
+                {emptyStateMessage ?? t("resultWillAppear")}
+              </p>
+              <p className="mt-2 text-xs opacity-75">{t("enterData")}</p>
             </div>
           </div>
         )}

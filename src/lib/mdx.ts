@@ -1,9 +1,10 @@
+import path from "node:path"
 import { serialize } from "next-mdx-remote/serialize"
+import { cache } from "react"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeRaw from "rehype-raw"
 import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
-import path from "path"
 
 /**
  * Serializes markdown content to MDX
@@ -99,12 +100,36 @@ export interface TutorialNavigation {
   list?: TutorialNavigation[]
 }
 
+/**
+ * Per-request memoisation for the three loaders below.
+ *
+ * Rendering one chapter calls into this module from three independent places
+ * that cannot see each other: `generateMetadata` in the route's `page.tsx`,
+ * the route's `layout.tsx`, and `TutorialContent`. Each one asked the disk the
+ * same question:
+ *
+ *   getMDXContent          page.tsx:127 · layout.tsx:55 · TutorialContent:24
+ *   getTutorialInfo        page.tsx:96 · page.tsx:210 · layout.tsx:43
+ *   getTutorialNavigation  layout.tsx:48 · TutorialContent:21
+ *
+ * Verified in the dev server's log: two `getMDXContent` calls and two
+ * `getTutorialNavigation` calls landed one millisecond apart inside a single
+ * request. Next dedupes `fetch()` for you; it does not dedupe `fs`.
+ *
+ * `cache()` from React is the documented fix — it keys on the arguments and
+ * lives exactly as long as one request, so nothing goes stale between them and
+ * the build's 226 prerenders do not share a growing map.
+ *
+ * `getAllTutorialPaths` is deliberately NOT wrapped: it runs in
+ * `generateStaticParams`, outside any request scope, exactly once.
+ */
+
 // Meta fayldan navigatsiya ma'lumotlarini olish
-export async function getTutorialNavigation(
+export const getTutorialNavigation = cache(async function getTutorialNavigation(
   tutorialId: string
 ): Promise<TutorialNavigation[]> {
   try {
-    const { promises: fs } = await import("fs")
+    const { promises: fs } = await import("node:fs")
     const metaPath = path.resolve(
       process.cwd(),
       "content",
@@ -128,7 +153,7 @@ export async function getTutorialNavigation(
     )
     return []
   }
-}
+})
 
 // Meta ma'lumotlarini navigatsiya strukturasiga o'tkazish
 function convertMetaToNavigation(
@@ -160,56 +185,93 @@ function convertMetaToNavigation(
 }
 
 // MDX fayl content'ini olish
-export async function getMDXContent(
+export const getMDXContent = cache(async function getMDXContent(
   tutorialId: string,
   contentPath: string
 ): Promise<string | null> {
   try {
-    const { promises: fs } = await import("fs")
-    let filePath: string | null = null
+    const { promises: fs } = await import("node:fs")
+
+    // The candidates are tracked RELATIVE to `content/`, and the join back to
+    // an absolute path happens at the single read below.
+    //
+    // Turbopack traces filesystem access statically. When the value handed to
+    // `readFile` is a `let` reassigned inside a loop it cannot tell which
+    // subtree is being read, so it falls back to tracing the WHOLE project
+    // into the server bundle — every source file plus `public/` and `docs/`.
+    // `path.join(process.cwd(), "content", relative)` is the shape its
+    // analyser recognises as scoped ("Dynamic filesystem access causes tracing
+    // of the whole project" build warning).
+    const contentRoot = path.join(process.cwd(), "content")
+
+    let relativePath: string | null = null
 
     // Path bo'sh bo'lsa yoki "/" bo'lsa, asosiy page.mdx faylni olish
     if (!contentPath || contentPath === "" || contentPath === "/") {
-      filePath = path.join(process.cwd(), "content", tutorialId, "page.mdx")
+      relativePath = path.join(tutorialId, "page.mdx")
     } else {
       // Content path'ni tozalash
       const cleanPath = contentPath.replace(/^\//, "").replace(/\/$/, "")
 
       // Turli variantlarni sinab ko'rish
       const possiblePaths = [
-        path.join(process.cwd(), "content", tutorialId, cleanPath, "page.mdx"),
-        path.join(process.cwd(), "content", tutorialId, cleanPath + ".mdx"),
-        path.join(process.cwd(), "content", tutorialId, cleanPath, "index.mdx")
+        path.join(tutorialId, cleanPath, "page.mdx"),
+        path.join(tutorialId, `${cleanPath}.mdx`),
+        path.join(tutorialId, cleanPath, "index.mdx")
       ]
 
       for (const possiblePath of possiblePaths) {
         try {
-          await fs.access(possiblePath)
-          filePath = possiblePath
+          await fs.access(path.join(contentRoot, possiblePath))
+          relativePath = possiblePath
           break
         } catch {
           // Continue to next path
         }
       }
 
-      if (!filePath) {
+      if (!relativePath) {
         console.error(`MDX file not found for path: ${contentPath}`)
         console.error("Tried paths:", possiblePaths)
         return null
       }
     }
 
-    const content = await fs.readFile(filePath, "utf8")
+    const content = await fs.readFile(
+      path.join(process.cwd(), "content", relativePath),
+      "utf8"
+    )
     return content
   } catch (error) {
     console.error("Error reading MDX file:", error)
     return null
   }
-}
+})
+
+/** A book id is a directory name under `content/`. Anything else is a URL
+ *  someone typed — reject it before it reaches the filesystem. */
+const BOOK_ID = /^[a-z0-9][a-z0-9-]*$/
 
 // Tutorial ma'lumotlarini olish
-export async function getTutorialInfo(tutorialId: string) {
+export const getTutorialInfo = cache(async function getTutorialInfo(
+  tutorialId: string
+) {
   try {
+    // This used to build an info object for ANY id: `getTutorialTitle` falls
+    // back to the raw string, so /books/anything rendered an empty landing page
+    // with HTTP 200 — a soft 404 over an unbounded URL space. A book exists iff
+    // its `_meta.json` does.
+    if (!BOOK_ID.test(tutorialId)) return null
+
+    const { promises: fs } = await import("node:fs")
+    try {
+      await fs.access(
+        path.resolve(process.cwd(), "content", tutorialId, "_meta.json")
+      )
+    } catch {
+      return null
+    }
+
     const navigation = await getTutorialNavigation(tutorialId)
 
     // Tutorial asosiy ma'lumotlari
@@ -227,7 +289,7 @@ export async function getTutorialInfo(tutorialId: string) {
     console.error("Error getting tutorial info:", error)
     return null
   }
-}
+})
 
 // Tutorial sarlavhasini olish
 export function getTutorialTitle(tutorialId: string): string {
@@ -240,6 +302,29 @@ export function getTutorialTitle(tutorialId: string): string {
   }
 
   return titles[tutorialId] || tutorialId
+}
+
+/**
+ * The book's name with its subtitle removed — for the `<title>` tag only.
+ *
+ * A chapter's `<title>` was `chapter | full book title | Webiston`, and the
+ * full book title is 40–60 characters of subtitle that repeats on all 226
+ * chapters. Measured before this change: median 104 characters, max 148, and
+ * **226 of 228** over 60. Google truncates around 580px, so every chapter's
+ * SERP line was cut mid-phrase and the brand never rendered at all.
+ *
+ * The subtitle is not lost — it still carries the OpenGraph title and the H1,
+ * where there is no length budget to blow. What the search result needs is the
+ * chapter, the book, and the brand, in that order and inside the budget.
+ */
+export function getTutorialShortTitle(tutorialId: string): string {
+  const shortTitles: Record<string, string> = {
+    "ai-engineering": "AI Engineering",
+    "javascript-definitive-guide": "JavaScript: The Definitive Guide",
+    "fluent-react": "Fluent React"
+  }
+
+  return shortTitles[tutorialId] || getTutorialTitle(tutorialId)
 }
 
 // Tutorial tavsifini olish
@@ -301,7 +386,7 @@ export async function getAllTutorials() {
 
 // Barcha darslik sahifalarining yo'llarini (paths) olish
 export async function getAllTutorialPaths() {
-  const { promises: fs } = await import("fs")
+  const { promises: fs } = await import("node:fs")
   const contentDir = path.join(process.cwd(), "content")
   const tutorials = await fs.readdir(contentDir, { withFileTypes: true })
   const allPaths: { slug: string[] }[] = []
@@ -313,7 +398,7 @@ export async function getAllTutorialPaths() {
       allPaths.push({ slug: [tutorialId] })
 
       const tutorialDir = path.join(contentDir, tutorialId)
-      const filesAndDirs = await fs.readdir(tutorialDir, {
+      const _filesAndDirs = await fs.readdir(tutorialDir, {
         withFileTypes: true
       })
 
@@ -327,7 +412,7 @@ export async function getAllTutorialPaths() {
           if (item.isDirectory()) {
             await processDirectory(itemPath, [...basePath, item.name])
           } else if (item.name.endsWith(".mdx") || item.name.endsWith(".md")) {
-            let slugPath = [...basePath]
+            const slugPath = [...basePath]
             if (item.name !== "page.mdx" && item.name !== "index.mdx") {
               slugPath.push(item.name.replace(/\.mdx?$/, ""))
             }

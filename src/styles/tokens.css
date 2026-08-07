@@ -1,0 +1,299 @@
+/* Design tokens — the single source of colour for the whole app.
+   Spec: docs/reference/design-system.md · ADR: docs/adr/0002
+
+   These four blocks used to sit in globals.css at lines 9, 309, 404 and 472,
+   with ~350 lines of unrelated rules between them. Same content, now
+   contiguous and in one file. Order inside the file is load-bearing:
+   `:root` must precede `.dark` — they have equal specificity, so the dark
+   overrides win only by source order. */
+
+@theme {
+  /* The font face loaded by next/font in layout.tsx, exposed as a token so
+     `font-sans` resolves to it. The fallback stack matters: it is what renders
+     during the swap, and what renders if the webfont fails. */
+  --font-sans:
+    var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', sans-serif;
+
+  /* ⚠️ Legacy — used by nothing outside this file (verified by grep across
+     src/, packages/, apps/). Kept because deletions need explicit approval;
+     tracked in docs/roadmap/initiatives/design-system.md. */
+  --color-primary-black: rgba(17, 17, 17);
+  --color-gray-primary: #757a7d;
+  --color-gray-secondary: #adadad;
+
+  --background-image-gradient-text: linear-gradient(to right, white, #757a7d);
+
+  --text-dynamic: calc(5vw + 0.5rem);
+
+  --animate-rotate-once: animate-rotate 700ms ease-in-out forwards;
+
+  @keyframes animate-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* The Accordion primitive has referenced these two since it was added
+     (`data-[state=closed]:animate-accordion-up`), but nothing ever defined
+     them — so every accordion on the site opened and closed instantly. Radix
+     publishes the target height on `--radix-accordion-content-height`, which
+     is what makes an auto-height transition possible at all. */
+  --animate-accordion-down: accordion-down 240ms cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-accordion-up: accordion-up 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  @keyframes accordion-down {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  --animate-aurora: aurora 8s ease-in-out infinite alternate;
+  @keyframes aurora {
+    0% {
+      background-position: 0% 50%;
+      transform: rotate(-5deg) scale(0.9);
+    }
+    25% {
+      background-position: 50% 100%;
+      transform: rotate(5deg) scale(1.1);
+    }
+    50% {
+      background-position: 100% 50%;
+      transform: rotate(-3deg) scale(0.95);
+    }
+    75% {
+      background-position: 50% 0%;
+      transform: rotate(3deg) scale(1.05);
+    }
+    100% {
+      background-position: 0% 50%;
+      transform: rotate(-5deg) scale(0.9);
+    }
+  }
+}
+
+/* ==========================================================================
+   DESIGN TOKENS — the single source of colour for the whole product.
+   Spec: docs/reference/design-system.md · ADR: docs/adr/0002
+   ==========================================================================
+
+   THREE LAYERS (Tailwind v4 convention). Never skip a layer:
+
+     1. PRIMITIVE   --brand-600         raw value, no meaning
+     2. SEMANTIC    --primary           purpose; remapped per colour scheme
+     3. COMPONENT   (Tailwind utility)  bg-primary, text-muted-foreground
+
+   Components consume layer 3 ONLY. A component that names a primitive
+   (--brand-600, bg-cyan-500, #0a6c80) has skipped the layer that makes dark
+   mode automatic — that is why 1,967 `dark:` variants exist in this codebase.
+
+   BRAND HUE = 217°, derived from the Uzbek flag blue #0099B5
+   (= oklch(0.63 0.112 216.9)). Chosen over the default indigo because it is
+   distinctive for a developer platform and harmonises with the cyan/teal
+   already used in TOOL_COLORS.
+
+   EVERY VALUE BELOW IS MEASURED, NOT CHOSEN BY EYE. The ramp is fitted to the
+   sRGB gamut (max in-gamut chroma × 0.97 per lightness), and every
+   foreground/background pair was verified against WCAG 2.1 with a script.
+   Contrast ratios are recorded inline. If you change a value, re-measure —
+   do not assume.
+   ========================================================================== */
+
+:root {
+  /* ---- LAYER 1: primitives (never used directly by components) ---- */
+  --brand-50: oklch(0.975 0.012 217);
+  --brand-100: oklch(0.945 0.03 217);
+  --brand-200: oklch(0.895 0.058 217);
+  --brand-300: oklch(0.83 0.09 217);
+  --brand-400: oklch(0.745 0.115 217);
+  --brand-500: oklch(0.66 0.114 217);
+  --brand-600: oklch(0.575 0.1 217);
+  --brand-700: oklch(0.49 0.085 217);
+  --brand-800: oklch(0.41 0.071 217);
+  --brand-900: oklch(0.345 0.06 217);
+  --brand-950: oklch(0.255 0.044 217);
+
+  --radius: 0.625rem;
+
+  /* ---- LAYER 2: semantic (light) ---- */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0.012 217); /* 17.4:1 on background */
+
+  /* --card MUST differ from --background or there is no surface separation.
+     It was identical (1.000:1) before this block existed. */
+  --card: oklch(0.985 0.004 217); /* 1.043:1 vs background */
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+
+  --primary: var(--brand-700);
+  --primary-foreground: oklch(0.985 0 0); /* 5.82:1 on primary */
+
+  --secondary: oklch(0.96 0.006 217);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.965 0.005 217);
+  --muted-foreground: oklch(0.505 0.012 217); /* 5.85:1 bg · 5.60:1 card */
+  --accent: var(--brand-100);
+  --accent-foreground: var(--brand-800);
+
+  /* TWO boundary tokens, deliberately — the Radix step-6/step-7 split.
+     `--border` is DECORATIVE separation (table rules, dividers, hairlines
+     between rows). At 1.32:1 vs background it is far below WCAG 1.4.11's 3:1,
+     and that is fine: 1.4.11 governs boundaries that *identify a component*,
+     not lines that merely separate content.
+     `--border-strong` is that identifying boundary — the edge of a card that is
+     a link, an outline button, a key cap. Anything the user must perceive as an
+     interactive object uses this one. Solved, not guessed: 3.15:1 vs
+     background, 3.02:1 vs card. Both are asserted by `pnpm contrast`. */
+  --border: oklch(0.905 0.008 217);
+  --border-strong: oklch(0.655 0.012 217);
+  /* Decorative ONLY, and deliberately outside the 1.4.11 story: the homepage
+     hero's grid. `--border` measures 1.32:1 here, which made the grid — and
+     therefore its drift animation — effectively invisible; motion you cannot see
+     is motion you did not add. This sits between `--border` and `--border-strong`
+     so the structure reads without the hero turning into a wireframe. */
+  --hero-line: oklch(0.845 0.01 217);
+  --input: oklch(0.885 0.01 217);
+  --ring: var(--brand-600); /* 4.22:1 bg · 4.05:1 card — WCAG needs 3:1 */
+
+  /* ---- LAYER 2: status (each ≥4.5:1 on BOTH background and card) ---- */
+  --success: oklch(0.542 0.142 150); /* 4.71:1 bg · 4.51:1 card */
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.562 0.113 75); /* 4.71:1 bg · 4.51:1 card */
+  --warning-foreground: oklch(0.985 0 0);
+  --info: oklch(0.55 0.093 217); /* 4.69:1 bg · 4.50:1 card */
+  --info-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.584 0.226 27); /* 4.72:1 bg · 4.53:1 card */
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* ---- charts: categorical, brand-anchored, kept distinguishable ---- */
+  --chart-1: var(--brand-600);
+  --chart-2: oklch(0.6 0.13 150);
+  --chart-3: oklch(0.62 0.14 75);
+  --chart-4: oklch(0.58 0.18 300);
+  --chart-5: oklch(0.6 0.2 27);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  /* Only LAYER 2 is remapped. Primitives are scheme-independent — that is the
+     whole point of the split, and why a correct token needs no `dark:` variant. */
+  --background: oklch(0.145 0.008 217);
+  --foreground: oklch(0.985 0 0); /* 18.7:1 on background */
+
+  --card: oklch(0.205 0.006 217); /* 1.106:1 vs background */
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+
+  --primary: var(--brand-400);
+  --primary-foreground: oklch(0.205 0 0); /* 8.19:1 on primary */
+
+  --secondary: oklch(0.269 0.008 217);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.269 0.008 217);
+  --muted-foreground: oklch(0.72 0.02 217); /* 8.03:1 bg · 7.26:1 card */
+  --accent: oklch(0.29 0.02 217);
+  --accent-foreground: var(--brand-200);
+
+  --border: oklch(1 0 0 / 12%); /* decorative only — see the light block */
+  --border-strong: oklch(1 0 0 / 34%); /* 3.02:1 bg · 3.13:1 card */
+  --hero-line: oklch(1 0 0 / 22%); /* 12% was invisible — see the light block */
+  --input: oklch(1 0 0 / 16%);
+  --ring: var(--brand-500); /* 6.60:1 bg · 5.97:1 card */
+
+  --success: oklch(0.8 0.175 150);
+  --success-foreground: oklch(0.205 0 0);
+  --warning: oklch(0.806 0.162 75);
+  --warning-foreground: oklch(0.205 0 0);
+  --info: oklch(0.814 0.138 217);
+  --info-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.68 0.2 27);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --chart-1: var(--brand-400);
+  --chart-2: oklch(0.78 0.16 150);
+  --chart-3: oklch(0.8 0.15 75);
+  --chart-4: oklch(0.72 0.19 300);
+  --chart-5: oklch(0.7 0.21 27);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}

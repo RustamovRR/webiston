@@ -1,44 +1,99 @@
-# Lefthook configuration for Webiston
-# https://github.com/evilmartians/lefthook
+# Lefthook — Git hooks for Webiston
+# Reference: https://lefthook.dev  ·  schema: node_modules/lefthook/schema.json
 #
-# Best Practice Git Hooks:
-# - pre-commit: Fast checks (lint, format) on staged files
-# - commit-msg: Validate commit message format
-# - pre-push: Full validation (typecheck, tests) before push
+# ---------------------------------------------------------------------------
+# DESIGN RULE: a slow hook gets bypassed with --no-verify, and a hook that gets
+# bypassed is not a gate. So hooks stay in the "you don't notice it" range;
+# anything heavier belongs in CI.
+#
+#   pre-commit  ~0.1s  Biome — format + lint + organize imports, STAGED only
+#   commit-msg  ~1s    commitlint — Conventional Commits
+#   pre-push    ~2s    tsc + vitest + package build, in parallel
+#
+# Measured 2026-07-29: typecheck 0.40s · test 1.57s · biome --staged 0.07s.
+# If a hook ever takes minutes, it is broken — not working hard.
+#
+# ONE linter, not two. Biome does formatting AND linting AND import sorting in
+# a single pass, so `biome check` is all pre-commit needs. The previous config
+# ran `biome format` (formatter only), so Biome's linter never ran in any hook —
+# which is how 81 lint errors accumulated unnoticed. oxlint stays available as
+# `pnpm lint`, but two linters over the same files means two configs and
+# duplicated noise. See docs/roadmap/backlog.md.
+#
+# Emergency bypass:  git commit --no-verify  ·  git push --no-verify
+# Disable entirely:  LEFTHOOK=0 git push
+# ---------------------------------------------------------------------------
+
+min_version: 2.1.10
+
+# Fail loudly if the binary is missing instead of silently skipping every check.
+assert_lefthook_installed: true
+
+# Never wait on an interactive prompt — that is how a hook "hangs forever".
+no_tty: true
+
+output:
+  - meta
+  - summary
+  - failure
 
 pre-commit:
-  parallel: true
-  commands:
-    oxlint:
-      glob: "*.{js,ts,jsx,tsx}"
-      run: pnpm oxlint {staged_files} --quiet
-      skip:
-        - merge
-        - rebase
-      
-    biome-format:
-      glob: "*.{js,ts,jsx,tsx,json}"
-      run: pnpm biome format --write {staged_files}
+  # A single Biome pass; parallelism would only add process overhead.
+  parallel: false
+  jobs:
+    - name: biome
+      # --staged scopes the work to the index, so cost scales with the size of
+      # the change, not the size of the repo. --write applies safe fixes and
+      # stage_fixed re-stages them, so formatting never fails a commit.
+      run: pnpm biome check --write --staged --no-errors-on-unmatched --reporter=summary
       stage_fixed: true
+      timeout: "60s"
+      fail_text: "Biome found problems it cannot fix automatically. Run 'pnpm check' to see them."
       skip:
         - merge
         - rebase
-      fail_text: "Biome formatting failed. Run 'pnpm format' to fix."
+
+    - name: tokens
+      # Per-file ratchet on hardcoded colour. Without this, the design-token
+      # migration is undone by the next feature that ships a bg-zinc-900.
+      # Baseline: scripts/token-baseline.json
+      run: pnpm tokens
+      timeout: "60s"
+      fail_text: "Hardcoded colour added. Use semantic tokens — see docs/reference/design-system.md."
+      skip:
+        - merge
+        - rebase
 
 commit-msg:
-  commands:
-    commitlint:
+  jobs:
+    - name: commitlint
       run: pnpm commitlint --edit {1}
+      timeout: "60s"
+      fail_text: "Commit message must follow Conventional Commits — see commitlint.config.mjs."
 
 pre-push:
   parallel: true
-  commands:
-    typecheck:
+  jobs:
+    - name: typecheck
       run: pnpm typecheck
-      
-    test:
-      run: pnpm test
+      # Generous ceiling relative to the measured 0.4s: if this is ever hit,
+      # something is genuinely wrong and the hook dies instead of hanging.
+      timeout: "120s"
+      fail_text: "tsc failed. Fix the type errors, or push with --no-verify if it is an emergency."
 
-# Skip all hooks for emergency:
-# git commit --no-verify -m "hotfix: emergency"
-# git push --no-verify
+    - name: test
+      run: pnpm test
+      timeout: "180s"
+      fail_text: "Tests failed. Fix them, or push with --no-verify if it is an emergency."
+
+    - name: packages-build
+      # packages/transliteration ships to BOTH the web app and the Chrome
+      # extension, and `pnpm typecheck` does not cover apps/extensions
+      # (tsconfig.json:27). This is the only gate that catches a broken package
+      # build before it reaches the extension.
+      run: pnpm packages:build
+      timeout: "180s"
+      fail_text: "packages:build failed — @webiston/transliteration would ship broken to the extension."
+      skip:
+        - merge
+        - rebase

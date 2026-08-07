@@ -1,69 +1,66 @@
-import React, { useState } from "react"
+"use client"
+
 import { Check, Copy } from "lucide-react"
+
+import { useCopyFeedback } from "../hooks/useCopyFeedback"
+
+/**
+ * One format row: name, what the format is for, the value, click-to-copy.
+ *
+ * Two lines, not three. Measured at three lines the nine rows came to 984px
+ * against a 657px left column, so the panel needed an inner scrollbar next to
+ * a page that already scrolls. The name and its one-line description share a
+ * row; the value — the thing being copied — gets the emphasis line.
+ *
+ * The names used to cycle through the chart tokens — HEX blue, RGB green, HSL
+ * orange — which encoded nothing. Nine differently coloured labels in a column
+ * read as a legend the visitor then goes looking for a key to. Type hierarchy
+ * carries the structure instead.
+ */
 
 interface ColorFormatItemProps {
   title: string
   value: string
   description: string
-  colorClass: string
-  onCopy?: (value: string) => void
 }
 
-const ColorFormatItem: React.FC<ColorFormatItemProps> = ({
+export function ColorFormatItem({
   title,
   value,
-  description,
-  colorClass,
-  onCopy
-}) => {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = async (e?: React.MouseEvent) => {
-    e?.stopPropagation() // Prevent event bubbling when clicking copy button
-
-    try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      onCopy?.(value)
-
-      // Reset copied state after 2 seconds
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error("Failed to copy:", error)
-    }
-  }
-
-  const handleItemClick = () => {
-    handleCopy()
-  }
+  description
+}: ColorFormatItemProps) {
+  // Keyed on the value: these rows are keyed by FORMAT, so one instance serves
+  // every colour the visitor picks and the badge would outlive its own value.
+  const { copied, copy } = useCopyFeedback(value)
 
   return (
-    <div
-      onClick={handleItemClick}
-      className="group cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50 p-3 transition-all hover:bg-zinc-100 hover:shadow-sm active:scale-[0.98] dark:border-zinc-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/70"
+    <button
+      type="button"
+      onClick={() => void copy(value)}
+      aria-label={`${title}: ${value}`}
+      className="group w-full cursor-pointer rounded-lg border border-border bg-muted/40 p-3 text-left transition-colors hover:border-border-strong hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className={`font-semibold ${colorClass}`}>{title}</h3>
-        <button
-          onClick={handleCopy}
-          className="flex h-8 w-8 items-center justify-center rounded-md bg-zinc-200 text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
-          title="Copy to clipboard"
+      <div className="flex items-baseline gap-2">
+        <h3 className="shrink-0 font-semibold text-foreground text-sm">
+          {title}
+        </h3>
+        <span className="min-w-0 flex-1 truncate text-muted-foreground text-xs">
+          {description}
+        </span>
+        <span
+          aria-hidden="true"
+          className="shrink-0 self-center text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
         >
           {copied ? (
-            <Check size={14} className="text-green-600 dark:text-green-400" />
+            <Check size={14} className="text-success" />
           ) : (
             <Copy size={14} />
           )}
-        </button>
+        </span>
       </div>
-      <div className="font-mono text-base text-zinc-900 dark:text-zinc-100">
+      <div className="mt-1 break-all font-mono text-foreground text-sm">
         {value}
       </div>
-      <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        {description}
-      </div>
-    </div>
+    </button>
   )
 }
-
-export default ColorFormatItem

@@ -1,0 +1,111 @@
+/* Long-form content chrome: image zoom, footnotes, heading anchors, and the
+   Shiki dual-theme switch. All of it targets markup we do not author
+   directly (MDX output, third-party widgets), which is why it is global CSS
+   rather than utilities. */
+
+/* Image zoom — `react-medium-image-zoom`, themed.
+
+   The library ships a white overlay (`rgba(255,255,255,1)`) and a black pill
+   button, which is the wrong half of the palette on a site that is dark by
+   default. These are token-driven overrides on its data attributes.
+
+   Nothing here needs `!important` or a `z-index`. The previous rules — for
+   `medium-zoom` — carried `z-index: 9999 !important` on the image ITSELF, at
+   all times rather than only while open, and a second `10000` on top of that.
+   The new zoom renders into a native `<dialog>`, which the browser puts in the
+   top layer: above every stacking context on the page by definition, with no
+   number to pick and nothing to lose a fight with. */
+
+[data-rmiz-modal-overlay='visible'] {
+  background-color: var(--background);
+}
+
+/* The scrim is the page dimmed, not a black sheet: the figure reads against the
+   same surface the prose sits on. */
+[data-rmiz-modal-overlay] {
+  backdrop-filter: blur(8px);
+}
+
+[data-rmiz-btn-zoom],
+[data-rmiz-btn-unzoom] {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
+}
+
+[data-rmiz-btn-zoom]:focus-visible,
+[data-rmiz-btn-unzoom]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* MDX wraps figures in a `<p>`, so the zoom wrapper is a `<span>`. It has to
+   be a block for the image inside it to size to the column. */
+[data-rmiz] {
+  display: block;
+}
+
+/* Footnote scroll margin - for proper anchor positioning */
+[id^='user-content-fn-'],
+[id^='user-content-fnref-'] {
+  scroll-margin-top: 80px;
+}
+
+/* Heading scroll margin - for proper anchor positioning */
+h1[id],
+h2[id],
+h3[id],
+h4[id],
+h5[id],
+h6[id] {
+  scroll-margin-top: 80px;
+}
+
+/* Footnote backref - ko'k rang */
+.data-footnote-backref,
+a[data-footnote-backref] {
+  color: #0ea5e9 !important;
+  text-decoration: none !important;
+}
+
+.data-footnote-backref:hover,
+a[data-footnote-backref]:hover {
+  color: #38bdf8 !important;
+}
+
+/* Link ichidagi code elementi - link rangida bo'lsin */
+a code {
+  color: inherit !important;
+}
+
+a:hover code {
+  color: inherit !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Shiki dual-theme output
+
+   The highlighter runs on the SERVER (src/components/mdx/CodeBlock), so it
+   cannot know the visitor's theme. Instead it emits both at once: the light
+   colour as an inline `color`, the dark one as a `--shiki-dark` custom
+   property on the same element. These two rules are the entire theme switch —
+   no client JavaScript is involved, and no `dark:` utility can express it
+   because the value lives in a property Shiki wrote inline.
+
+   The background is forced transparent so the block sits on `bg-card` and
+   stays inside the design system, rather than introducing a third surface
+   colour from the Shiki theme.
+--------------------------------------------------------------------------- */
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}

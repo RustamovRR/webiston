@@ -1,274 +1,135 @@
 /**
- * Structured Data Schemas for Latin-Cyrillic Converter
- * JSON-LD schemas for better SEO
+ * Structured data for the Latin-Cyrillic converter.
+ *
+ * Two rules this file now follows, both of which it used to break:
+ *
+ * 1. EVERY CLAIM MUST BE TRUE. It advertised "99.9% aniqlik" (an unsourceable
+ *    marketing number, published to Google while the engine was turning
+ *    "ishchi" into "ищи"), a 200 MB upload limit no browser can honour, and a
+ *    PDF export the code has never had. All three are gone.
+ *
+ * 2. FAQ CONTENT LIVES IN ONE PLACE. The six Q&As were hardcoded here and
+ *    rendered NOWHERE — FAQPage markup with no visible counterpart is a Google
+ *    guidelines violation, on the site's highest-traffic URL. They now come
+ *    from the same `messages/tools/latin-cyrillic/*.json` keys that
+ *    `ConverterFaq` renders, so the two cannot drift apart.
  */
 
-import { ALL_KEYWORDS } from "./keywords"
+import type { getTranslations } from "next-intl/server"
+
+import { toolBreadcrumbSchema } from "@/lib/seo"
+import { FAQ_KEYS, MAX_FILE_SIZE_MB } from "../constants"
 
 const BASE_URL = "https://webiston.uz"
 
-// Main Application Schema
+type Translator = Awaited<ReturnType<typeof getTranslations>>
+
 export const applicationSchema = {
   "@context": "https://schema.org",
   "@type": ["WebApplication", "SoftwareApplication"],
-  name: "Lotin Kirill O'giruvchi - Лотин Кирилл Таржима Online",
+  name: "Lotin Kirill O'giruvchi",
   alternateName: [
     "Latin-Cyrillic Converter",
     "Lotin-Kirill O'giruvchi",
-    "Lotin Krill Перевод Online",
     "Kirill Lotin Converter",
     "Лотин Кирилл Таржимон",
-    "Uzbek Text Converter",
-    "Онлайн переводчик крилл-лотин",
-    "Uzbek PDF Converter",
-    "Uzbek DOCX Converter"
+    "Онлайн переводчик кирилл-лотин"
   ],
   description:
-    "Lotin krill перевод online. O'zbek matnlarini lotinchadan kirillchaga va aksincha o'girish. PDF, DOCX, TXT fayl yuklash va o'girish. Лотин кирилл таржима dasturi. Bepul va tez!",
+    "O'zbek matnini lotinchadan kirillchaga va aksincha o'giruvchi bepul vosita. TXT, PDF va DOCX fayllarni qo'llab-quvvatlaydi; o'girish brauzerda bajariladi.",
   url: `${BASE_URL}/tools/latin-cyrillic`,
-  sameAs: [
-    `${BASE_URL}/en/tools/latin-cyrillic`,
-    `${BASE_URL}/tools/latin-cyrillic`
-  ],
-  applicationCategory: ["UtilityApplication", "ProductivityApplication"],
-  operatingSystem: ["Windows", "macOS", "Linux", "Android", "iOS"],
-  browserRequirements: "Requires JavaScript. Requires HTML5.",
-  permissions: "browser",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript",
   isAccessibleForFree: true,
   offers: {
     "@type": "Offer",
     price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    validFrom: "2024-01-01"
+    priceCurrency: "UZS"
   },
   author: {
     "@type": "Organization",
     name: "Webiston",
-    url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
-    sameAs: ["https://github.com/webiston", "https://twitter.com/webiston_uz"]
+    url: BASE_URL
   },
   publisher: {
     "@type": "Organization",
     name: "Webiston",
-    url: BASE_URL,
-    logo: {
-      "@type": "ImageObject",
-      url: `${BASE_URL}/logo.png`,
-      width: 512,
-      height: 512
-    }
+    url: BASE_URL
   },
+  // Only capabilities the code actually has. The previous list promised
+  // "Fayl yuklab olish (PDF, DOCX, TXT)" — there is no PDF export path.
   featureList: [
-    "Lotin krill перевод online",
-    "Kirill lotin converter",
-    "Лотин кирилл таржима",
-    "Онлайн переводчик крилл-лотин",
-    "O'zbek matn konvertatsiyasi",
-    "Tez va aniq o'girish",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Nusxa olish imkoniyati",
-    "Real-time konvertatsiya",
-    "Katta matnlar bilan ishlash",
-    "PDF fayl yuklash va o'girish",
-    "DOCX fayl yuklash va o'girish",
-    "TXT fayl yuklash va o'girish",
-    "Fayl yuklab olish (PDF, DOCX, TXT)",
-    "Xavfsiz va maxfiy"
+    "Lotin → Kirill o'girish",
+    "Kirill → Lotin o'girish",
+    "Yo'nalishni avtomatik aniqlash",
+    "TXT, PDF va DOCX fayldan matn o'qish",
+    "Natijani TXT yoki DOCX ko'rinishida saqlash",
+    "Havola, e-pochta, kod va texnik atamalarni saqlab qolish",
+    "Matn brauzerdan chiqmaydi"
   ],
-  softwareVersion: "2.0",
-  datePublished: "2024-01-01",
-  dateModified: new Date().toISOString().split("T")[0],
-  inLanguage: ["uz", "en", "ru"],
-  keywords: ALL_KEYWORDS.slice(0, 50).join(", "),
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    ratingCount: "3250",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Foydalanuvchi" },
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-      reviewBody:
-        "Juda foydali va tez ishlaydi. Lotin krill o'girish uchun eng yaxshi vosita! PDF fayllarni ham o'giradi."
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Пользователь" },
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-      reviewBody:
-        "Лотин кирилл таржима жуда тез ва аниқ ишлайди. DOCX файлларни ҳам қўллаб-қувватлайди. Тавсия қиламан!"
-    }
-  ]
+  inLanguage: ["uz", "en", "ru"]
 }
 
-// FAQ Schema Generator
-export function generateFAQSchema(locale: string = "uz") {
-  const faqData = {
-    uz: {
-      questions: [
-        {
-          question: "Lotin-kirill o'giruvchi qanday ishlaydi?",
-          answer:
-            "Bizning vositamiz O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha avtomatik o'giradi. Matnni kiritib, tugmani bosish kifoya."
-        },
-        {
-          question: "Lotin-kirill konverteri bepulmi?",
-          answer:
-            "Ha, bizning lotin-kirill o'giruvchi to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi."
-        },
-        {
-          question: "Qanday matnlarni o'girish mumkin?",
-          answer:
-            "Har qanday O'zbek tilidagi matnni o'girish mumkin - qisqa so'zlardan tortib uzun maqolalargacha."
-        },
-        {
-          question: "Konvertatsiya qanchalik aniq?",
-          answer:
-            "Bizning algoritm 99.9% aniqlik bilan ishlaydi va O'zbek tilining barcha xususiyatlarini hisobga oladi."
-        },
-        {
-          question: "PDF, DOCX yoki TXT fayllarni o'girish mumkinmi?",
-          answer:
-            "Ha, siz PDF, DOCX va TXT formatidagi fayllarni yuklashingiz va ularni lotin yoki kirillchaga o'girishingiz mumkin. Natijani xohlagan formatda yuklab olish ham mumkin."
-        },
-        {
-          question: "Fayl yuklash chegarasi qancha?",
-          answer:
-            "Maksimal fayl hajmi 200MB gacha. Katta fayllar avtomatik ravishda bo'limlarga ajratiladi."
-        }
-      ]
-    },
-    en: {
-      questions: [
-        {
-          question: "How does Latin-Cyrillic converter work?",
-          answer:
-            "Our tool automatically converts Uzbek text between Latin and Cyrillic scripts. Simply enter text and click convert."
-        },
-        {
-          question: "Is Latin-Cyrillic converter free?",
-          answer:
-            "Yes, our Latin-Cyrillic converter is completely free. No limitations or payments required."
-        },
-        {
-          question: "What texts can be converted?",
-          answer:
-            "Any Uzbek text can be converted - from short words to long articles."
-        },
-        {
-          question: "How accurate is the conversion?",
-          answer:
-            "Our algorithm works with 99.9% accuracy and considers all Uzbek language features."
-        },
-        {
-          question: "Can I convert PDF, DOCX or TXT files?",
-          answer:
-            "Yes, you can upload PDF, DOCX and TXT files and convert them to Latin or Cyrillic. You can also download the result in your preferred format."
-        },
-        {
-          question: "What is the file upload limit?",
-          answer:
-            "Maximum file size is 200MB. Large files are automatically split into sections."
-        }
-      ]
-    }
-  }
-
-  const currentFAQ = faqData[locale as keyof typeof faqData] || faqData.uz
-
+/**
+ * Reads the SAME keys `ConverterFaq` renders.
+ *
+ * Takes a translator rather than a locale string: the answers are then a
+ * single source of truth, and a question that exists in the schema but not on
+ * the page becomes impossible rather than merely discouraged.
+ */
+export function generateFAQSchema(t: Translator) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: currentFAQ.questions.map((item) => ({
+    mainEntity: FAQ_KEYS.map((key) => ({
       "@type": "Question",
-      name: item.question,
+      name: t(`items.${key}.question`),
       acceptedAnswer: {
         "@type": "Answer",
-        text: item.answer
+        text: t(`items.${key}.answer`)
       }
     }))
   }
 }
 
-// Breadcrumb Schema Generator
+/** The tool's own name, per locale — the only part of the trail that is not shared. */
+const BREADCRUMB_NAME = {
+  uz: "Lotin-Kirill O'giruvchi",
+  en: "Latin-Cyrillic Converter",
+  ru: "Латиница ↔ кириллица"
+} as const
+
 export function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar",
-      latinCyrillic: "Lotin-Kirill O'giruvchi"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools",
-      latinCyrillic: "Latin-Cyrillic Converter"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl = locale === "en" ? `${BASE_URL}/en` : BASE_URL
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? `${BASE_URL}/en` : BASE_URL
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: current.latinCyrillic,
-        item: `${baseUrl}/tools/latin-cyrillic`
-      }
-    ]
-  }
+  const name =
+    BREADCRUMB_NAME[locale as keyof typeof BREADCRUMB_NAME] ??
+    BREADCRUMB_NAME.uz
+  return toolBreadcrumbSchema(locale, "latin-cyrillic", name)
 }
 
-// HowTo Schema - Fayl yuklash uchun
 export const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  name: "O'zbek matnini lotin-kirillga qanday o'girish mumkin",
+  name: "O'zbek matnini lotindan kirillga o'girish",
   description:
-    "PDF, DOCX yoki TXT fayllarni yuklash va lotin-kirill o'girish bo'yicha qo'llanma",
+    "Matnni qo'yish yoki fayl yuklash orqali o'zbek matnini lotin va kirill yozuvlari o'rtasida o'girish.",
   step: [
     {
       "@type": "HowToStep",
-      name: "Fayl yuklash",
-      text: "PDF, DOCX yoki TXT formatidagi faylni yuklang yoki matnni to'g'ridan-to'g'ri kiriting."
+      name: "Matnni qo'ying",
+      text: "Matnni chap oynaga qo'ying yoki TXT, PDF, DOCX faylni sahifaga tashlang."
     },
     {
       "@type": "HowToStep",
-      name: "Yo'nalishni tanlash",
-      text: "Lotin → Kirill yoki Kirill → Lotin yo'nalishini tanlang."
+      name: "Yo'nalishni tekshiring",
+      // No "press convert" step: conversion is live, and telling the user to
+      // press a button that does not exist was the previous version's answer.
+      text: "Yo'nalish avtomatik aniqlanadi. Kerak bo'lsa «Avto» o'rniga kerakli yo'nalishni tanlang."
     },
     {
       "@type": "HowToStep",
-      name: "O'girish",
-      text: "Matn avtomatik ravishda o'giriladi. Katta fayllar bo'limlarga ajratiladi."
-    },
-    {
-      "@type": "HowToStep",
-      name: "Yuklab olish",
-      text: "Natijani PDF, DOCX yoki TXT formatida yuklab oling."
+      name: "Natijani oling",
+      text: `Natija darhol o'ng oynada paydo bo'ladi. Uni nusxalang yoki TXT/DOCX ko'rinishida yuklab oling (fayl hajmi ${MAX_FILE_SIZE_MB} MB gacha).`
     }
   ]
 }

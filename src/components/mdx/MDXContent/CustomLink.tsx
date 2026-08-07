@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { ArrowUpRightIcon } from "lucide-react"
+import Link from "next/link"
 
 interface CustomLinkProps {
   href?: string
@@ -23,20 +23,26 @@ export default function CustomLink({
 
   const isExternal = href?.startsWith("http") || href?.startsWith("https")
 
+  // `text-primary`, not `text-sky-500`. Prose links were the one place on the
+  // site still painted in Tailwind's `sky` palette, which is a different blue
+  // from the 217° brand hue — two blues, side by side, in the same paragraph.
+  //
+  // The icon uses `stroke-current` so it simply inherits the link colour
+  // instead of naming it a second time (and a third for hover).
   if (isExternal) {
     return (
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group inline-flex items-center !font-normal text-sky-500 transition-colors duration-200 hover:text-sky-400"
+        className="group inline-flex items-center !font-normal text-primary transition-colors duration-200 hover:text-primary/80"
         {...props}
       >
         <span className="!font-normal">{children}</span>
         <ArrowUpRightIcon
           width={14}
           height={14}
-          className="!stroke-sky-500 duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:!stroke-sky-400"
+          className="!stroke-current duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
         />
       </a>
     )
@@ -45,7 +51,7 @@ export default function CustomLink({
   return (
     <Link
       href={href || "#"}
-      className="!font-normal text-sky-500 underline transition-colors duration-200 hover:text-sky-400"
+      className="!font-normal text-primary underline transition-colors duration-200 hover:text-primary/80"
       {...props}
     >
       {children}

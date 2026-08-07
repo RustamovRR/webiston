@@ -1,1 +1,1 @@
-export { NumberTicker } from "@webiston/ui"
+export { NumberTicker } from "@webiston/ui/primitives/number-ticker"

@@ -1,30 +1,96 @@
+import matter from "gray-matter"
+import type { Metadata } from "next"
+import { notFound, unstable_rethrow } from "next/navigation"
 import {
   ErrorContent,
   TutorialContent,
   TutorialLanding
 } from "@/components/mdx"
 import {
-  getTutorialInfo,
+  getAllTutorialPaths,
   getMDXContent,
-  serializeContent,
-  getAllTutorialPaths
+  getTutorialInfo,
+  getTutorialShortTitle
 } from "@/lib/mdx"
-import { notFound } from "next/navigation"
+import { SITE_URL } from "@/lib/seo"
+
+interface BookPageProps {
+  params: Promise<{ slug: string[] }>
+}
+
+/** MDX frontmatter comes from hand-authored `.mdx` files, so every field is
+ *  unknown until it has been checked. Typing it `any` hid four real holes here:
+ *  a numeric or missing `title` would have been interpolated as-is. */
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value : undefined
+}
+
+/** Share card for a chapter. Rendered by `src/app/api/og/route.tsx`. */
+function ogImage(title: string, path: string) {
+  return [
+    {
+      url: `/api/og?title=${encodeURIComponent(title)}&path=${encodeURIComponent(path)}`,
+      width: 1200,
+      height: 630
+    }
+  ]
+}
 
 export async function generateStaticParams() {
   const paths = await getAllTutorialPaths()
   return paths
 }
 
-// Dinamik metadata yaratish
-export async function generateMetadata({ params }: any): Promise<any> {
+// `true`, deliberately — and this is a UX decision, not a perf one.
+//
+// Every known path is still prerendered: `generateStaticParams` reads
+// `content/**` and emits all 226 chapters plus the three landing pages, and
+// none of that changes here. What `dynamicParams` controls is only what happens
+// to an UNKNOWN path.
+//
+// With `false`, Next rejected unknown params at the ROUTING layer, before the
+// segment rendered. That sounds cheaper, and it is — but it also means
+// `notFound()` is never reached, so `not-found.tsx` in this segment could never
+// render, and a reader who mistyped one chapter of a book they were already
+// reading was thrown out to a site-wide 404 with no sidebar, no table of
+// contents and no way back into the book.
+//
+// With `true` the segment renders, `notFound()` fires, and Next renders this
+// segment's `not-found.tsx` INSIDE `layout.tsx` — so the book's chrome survives
+// and the message appears where the chapter would have been. The status is
+// still 404.
+//
+// The render surface stays bounded: `layout.tsx` rejects any id that is not a
+// real book before this page runs (see the guard there), so an unknown path
+// costs one cheap render that ends in `notFound()`, not a content lookup.
+export const dynamicParams = true
+
+// Dinamik metadata yaratish.
+//
+// Every branch sets its own `alternates.canonical`. Without it these pages
+// inherit the site-wide `canonical: "https://webiston.uz"` from the root layout,
+// which told Google that all 229 chapters were duplicates of the homepage.
+// Titles carry no "| Webiston" suffix — the root layout's `%s | Webiston`
+// template appends it.
+export async function generateMetadata({
+  params
+}: BookPageProps): Promise<Metadata> {
   const { slug } = await params
 
+  // `generateMetadata` runs independently of the render, so it cannot see that
+  // the page is about to call `notFound()`. Without these two guards a 404
+  // shipped a title claiming the page exists: an unknown chapter got its slug
+  // title-cased into "ModelingXXX | AI Engineering…", and an unknown book got
+  // the bare fallback "Darslik". Next injects `noindex` on a 404 response by
+  // itself; the misleading TITLE is ours to prevent.
+  const NOT_FOUND_METADATA: Metadata = {
+    title: "Topilmadi",
+    description: "Siz izlagan sahifa mavjud emas.",
+    robots: { index: false, follow: true }
+  }
+
   if (!slug || slug.length === 0) {
-    return {
-      title: "Not Found | Webiston",
-      description: "The page you are looking for does not exist."
-    }
+    return NOT_FOUND_METADATA
   }
 
   try {
@@ -34,26 +100,29 @@ export async function generateMetadata({ params }: any): Promise<any> {
     // Get tutorial info
     const tutorialInfo = await getTutorialInfo(tutorialId)
 
+    // The same guard the layout applies, for the same reason — an invented book
+    // id must not produce a page title that sounds like a real book.
+    if (!tutorialInfo) {
+      return NOT_FOUND_METADATA
+    }
+
     // Agar bu tutorial landing page bo'lsa
     if (slug.length === 1) {
+      const title = tutorialInfo?.title || "Darslik"
+      const description =
+        tutorialInfo?.description ||
+        "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing."
+      const path = `/books/${tutorialId}`
+
       return {
-        title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
-        description:
-          tutorialInfo?.description ||
-          "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
+        title,
+        description,
+        alternates: { canonical: `${SITE_URL}${path}` },
         openGraph: {
-          title: `${tutorialInfo?.title || "Darslik"} | Webiston`,
-          description:
-            tutorialInfo?.description ||
-            "Keng qamrovli darsliklarimiz orqali dasturlashni o'rganing.",
-          url: `https://webiston.uz/books/${tutorialId}`,
-          images: [
-            {
-              url: `/api/og?title=${encodeURIComponent(tutorialInfo?.title || "Tutorial")}&path=books/${tutorialId}`,
-              width: 1200,
-              height: 630
-            }
-          ]
+          title,
+          description,
+          url: `${SITE_URL}${path}`,
+          images: ogImage(title, path)
         }
       }
     }
@@ -63,85 +132,86 @@ export async function generateMetadata({ params }: any): Promise<any> {
     const contentText = await getMDXContent(tutorialId, currentPath)
 
     if (contentText) {
-      // Frontmatter'ni parse qilish uchun MDX serialize qilamiz
-      const serializedContent = await serializeContent(contentText, false)
-
-      // Frontmatter'dan metadata olish
-      const frontmatter = serializedContent.frontmatter || {}
+      // `gray-matter`, not a full MDX compile.
+      //
+      // This used to call `serializeContent(contentText, false)` — remark,
+      // rehype, acorn and JSX codegen over the entire chapter — and then read
+      // **one property**: `.frontmatter`. Everything else was thrown away, for
+      // all 226 chapters, on every build.
+      //
+      // It was also the source of the three "Could not parse expression with
+      // acorn" build errors. `serializeContent` runs WITHOUT `remark-math`, so
+      // KaTeX braces like `^{-\frac{1}{n}}` reached the MDX parser as JSX
+      // expressions. The rendered page never had that problem — `MDXContent`
+      // compiles with `remarkMath` + `rehypeKatex` — so this was a compile
+      // nothing rendered, failing on syntax nothing rendered.
+      //
+      // `TutorialContent` has always read frontmatter this way. Same parser,
+      // same result, no compiler.
+      const frontmatter: Record<string, unknown> = matter(contentText).data
       const title =
-        frontmatter.title ||
+        asString(frontmatter.title) ??
         slug[slug.length - 1]
           .split("-")
           .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ")
 
       const description =
-        frontmatter.description ||
+        asString(frontmatter.description) ??
         `Keng qamrovli darsligimizda ${title} haqida batafsil o'rganing.`
-      const keywords = frontmatter.keywords || ""
+      const keywords = asString(frontmatter.keywords)
+      const author = asString(frontmatter.author)
+
+      // Two titles, because the two surfaces have different budgets.
+      //
+      // `<title>` gets ` | Webiston` appended by the root template, so the
+      // book name here is the SHORT one: `chapter | Fluent React | Webiston`
+      // fits where `chapter | Fluent React: Zamonaviy React Dasturlash |
+      // Webiston` did not. Measured before: median 104 chars, max 148, and
+      // 226 of 228 chapters over Google's ~60-character truncation point.
+      //
+      // OpenGraph has no such budget and no template applied — a share card
+      // is read, not truncated — so it keeps the full book title.
+      const pageTitle = `${title} | ${getTutorialShortTitle(tutorialId)}`
+      const socialTitle = `${title} | ${tutorialInfo?.title || "Darslik"}`
+      const path = `/books/${slug.join("/")}`
 
       return {
-        title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+        title: pageTitle,
         description,
-        keywords:
-          keywords && typeof keywords === "string"
-            ? keywords.split(",").map((k: string) => k.trim())
-            : undefined,
-        authors: frontmatter.author
-          ? [{ name: frontmatter.author }]
-          : undefined,
+        keywords: keywords?.split(",").map((k) => k.trim()),
+        authors: author ? [{ name: author }] : undefined,
+        alternates: { canonical: `${SITE_URL}${path}` },
         openGraph: {
-          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+          title: socialTitle,
           description,
-          url: `https://webiston.uz/books/${slug.join("/")}`,
-          images: [
-            {
-              url: `/api/og?title=${encodeURIComponent(title)}&path=books/${slug.join("/")}`,
-              width: 1200,
-              height: 630
-            }
-          ]
+          url: `${SITE_URL}${path}`,
+          images: ogImage(title, path)
         },
         twitter: {
           card: "summary_large_image",
-          title: `${title} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
+          title: socialTitle,
           description
         }
       }
     }
 
-    // Fallback agar content topilmasa
-    const fallbackTitle = slug[slug.length - 1]
-      .split("-")
-      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
-
-    return {
-      title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
-      description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
-      openGraph: {
-        title: `${fallbackTitle} | ${tutorialInfo?.title || "Darslik"} | Webiston`,
-        description: `Keng qamrovli darsligimizda ${fallbackTitle} haqida batafsil o'rganing.`,
-        url: `https://webiston.uz/books/${slug.join("/")}`,
-        images: [
-          {
-            url: `/api/og?title=${encodeURIComponent(fallbackTitle)}&path=books/${slug.join("/")}`,
-            width: 1200,
-            height: 630
-          }
-        ]
-      }
-    }
+    // No content for this path means `TutorialContent` is about to call
+    // `notFound()`. The old fallback here invented a plausible title from the
+    // URL — `/…/modelingXXX` became "ModelingXXX | AI Engineering…", complete
+    // with a canonical URL and an OG image, for a page that returns 404.
+    return NOT_FOUND_METADATA
   } catch (error) {
     console.error("Error generating metadata:", error)
     return {
-      title: "Error | Webiston",
-      description: "An error occurred while loading this page."
+      title: "Error",
+      description: "An error occurred while loading this page.",
+      robots: { index: false, follow: false }
     }
   }
 }
 
-export default async function TutorialPage({ params }: any) {
+export default async function TutorialPage({ params }: BookPageProps) {
   const { slug } = await params
 
   if (!slug || slug.length === 0) {
@@ -177,6 +247,11 @@ export default async function TutorialPage({ params }: any) {
       </div>
     )
   } catch (error) {
+    // `notFound()` signals by throwing, so this catch was swallowing it and
+    // returning `<ErrorContent />` with HTTP 200 — an unknown book id rendered
+    // an empty landing page instead of a 404.
+    unstable_rethrow(error)
+
     console.error("Error in tutorial page:", error)
     return <ErrorContent />
   }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useCallback, useState } from "react"
 
 export interface WebsiteStatusResult {
   url: string
@@ -175,14 +175,14 @@ export function useWebsiteStatus() {
           }
 
           setResult(result)
-        } catch (proxyError) {
+        } catch (_proxyError) {
           // Fallback: Try direct fetch with no-cors mode
           const startTime2 = performance.now()
           const controller = new AbortController()
           const timeoutId = setTimeout(() => controller.abort(), 10000)
 
           try {
-            const directResponse = await fetch(url, {
+            const _directResponse = await fetch(url, {
               method: "HEAD",
               mode: "no-cors",
               signal: controller.signal

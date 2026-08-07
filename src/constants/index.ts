@@ -11,6 +11,9 @@ export {
 } from "./color-names"
 export {
   AI_ENGINEERING_CHAPTERS,
+  BOOK_SECTIONS,
+  HERO_PALETTE_QUERY,
+  HERO_TOPICS,
   JAVASCRIPT_CHAPTERS,
   REACT_CHAPTERS,
   socialLinks
@@ -49,6 +52,8 @@ export {
 // UI design constants
 export {
   ANIMATIONS,
+  CATEGORY_ACCENT_NEUTRAL,
+  CATEGORY_ACCENTS,
   getToolColor,
   MACOS_DOTS,
   TEXT_STYLES,

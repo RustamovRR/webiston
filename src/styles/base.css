@@ -1,0 +1,154 @@
+/* Element-level base styles: resets, typography, tables, breakpoints. */
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  .bg-gradient-radial {
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  }
+}
+
+.prose code::before,
+.prose code::after {
+  content: '';
+}
+
+/* Font family is a TOKEN (--font-sans, defined in the @theme block below), not
+   a hardcoded !important rule. This block previously forced system-ui with
+   !important, which silently overrode the Inter face loaded in layout.tsx — so
+   Inter was downloaded on every page and never rendered. */
+body {
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
+}
+
+body,
+html,
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-content p {
+  margin-top: 1.5em;
+  line-height: 1.75em;
+}
+
+figcaption {
+  font-size: 0.85rem;
+  line-height: 1.5rem;
+  display: block;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+code.text-\[\.9em\] {
+  font-size: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* The `th` / `td` element rules that used to live here are gone.
+   They set `border: 1px solid #ddd` and `text-align: left !important` on EVERY
+   cell on the site. Two problems:
+
+   1. `#ddd` is a light grey with no dark variant, so in dark mode every table
+      was wrapped in near-white grid lines — the "grid of junk" look.
+   2. Being element rules with `!important`, no component could style its own
+      table without losing.
+
+   The only tables that ever needed them are the 23 book chapters with markdown
+   tables, and those are already styled by their own component with tokens
+   (`border-border`) in `MDXContent.tsx`. Every other table now owns its
+   appearance, which is how the rest of the design system works. */
+
+@media screen and (max-width: 1200px) {
+  .home-content .hide-medium {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .home-content p {
+    font-size: 0.9rem;
+  }
+  .home-content .hide-small {
+    display: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+
+/* The accordion keyframes animate `height`, which reduced-motion users have
+   asked not to see. Every other animation on the site is already guarded (see
+   hero.css); this keeps that promise for the shared Accordion primitive. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="accordion-content"] {
+    animation: none !important;
+  }
+}
+
+/* `.disclosure` — a native <details> that slides, like the shared Accordion.
+ *
+ * Why a <details> at all, when `FaqAccordion` exists and already animates:
+ * Radix's `AccordionContent` is a `CollapsiblePrimitive.Content` with no
+ * `forceMount`, so CLOSED content is not rendered. Measured on the prerendered
+ * HTML with every <script> stripped (the RSC flight payload otherwise carries
+ * the JSON-LD text and makes the grep lie): /tools/latin-cyrillic ships 6 of 6
+ * FAQ questions and 0 of 6 ANSWERS, while its FAQPage schema publishes all six.
+ * A native <details> keeps the answer in the document, collapsed, with no JS.
+ *
+ * So the animation is the only thing <details> gave up, and modern CSS gives it
+ * back. `calc-size(auto, size)` rather than a global `interpolate-size:
+ * allow-keywords`: same result, scoped to this class instead of changing how
+ * every `auto` on the site animates. Durations mirror the accordion exactly —
+ * 240ms open, 200ms close, same easing — so the two read as one control.
+ *
+ * Behind @supports on purpose: a browser without `::details-content` opens the
+ * disclosure instantly, which is what it did before this rule existed.
+ */
+@supports (selector(::details-content)) and (height: calc-size(auto, size)) {
+  .disclosure::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 200ms cubic-bezier(0.32, 0.72, 0, 1),
+      content-visibility 200ms allow-discrete;
+  }
+  .disclosure[open]::details-content {
+    block-size: calc-size(auto, size);
+    transition-duration: 240ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disclosure::details-content,
+    .disclosure[open]::details-content {
+      transition: none;
+    }
+  }
+}

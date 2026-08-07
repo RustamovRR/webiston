@@ -1,188 +1,137 @@
 {
   "IpInfoPage": {
     "ToolHeader": {
-      "title": "IP Ma'lumotlari",
-      "description": "IP manzil va geolokatsiya ma'lumotlarini professional tahlil qiling, ISP va xavfsizlik ma'lumotlari"
+      "title": "IP manzil",
+      "description": "Manzilingiz qayerga ishora qiladi va uni kim boshqaradi — davlat, shahar, provayder, ASN va vaqt mintaqasi. Istalgan IPv4 yoki IPv6 manzilni ham tekshirish mumkin. So'rov o'z serverimiz orqali ketadi, ya'ni brauzeringiz manzilingizni uchinchi tomonga bermaydi."
     },
-    "ControlPanel": {
-      "title": "Vosita Kirish",
-      "status": "Tayyor",
-      "loadingStatus": "Tahlil qilinmoqda...",
-      "currentIpButton": "Joriy IP",
-      "clearButton": "Tozalash",
-      "downloadButton": "JSON yuklab olish",
-      "analyzeButton": "Tahlil qilish",
-      "inputPlaceholder": "IP manzilni kiriting (masalan: 8.8.8.8)",
-      "yourIpTitle": "Sizning IP Manzilingiz",
-      "currentIpDesc": "Joriy IP manzil",
-      "sampleIpsTitle": "Namuna IP Manzillar",
-      "stats": {
-        "characters": "Belgilar",
-        "ipVersion": "IP Versiya",
-        "dataAvailable": "Ma'lumot"
-      }
+    "controls": {
+      "download": "JSON saqlash",
+      "source": "Manba: {source}",
+      "cached": "keshdan"
     },
-    "OutputPanel": {
-      "title": "Vosita Natijasi/Chiqish",
-      "dataAvailable": "Tahlil tayyor",
-      "noData": "Ma'lumot yo'q",
-      "waitingTitle": "IP manzil tahlil qilish uchun chap paneldan foydalaning",
-      "locationInfoTitle": "Joylashuv Ma'lumotlari",
-      "networkInfoTitle": "Tarmoq Ma'lumotlari",
-      "additionalInfoTitle": "Qo'shimcha Ma'lumotlar",
-      "jsonDataTitle": "JSON Ma'lumotlar",
-      "mapTitle": "Joylashuv Xaritasi",
-      "securityTitle": "Xavfsizlik Tahlili",
-      "ipAddress": "IP manzil",
-      "ipType": "IP turi",
-      "country": "Mamlakat",
-      "region": "Viloyat/Shtat",
+    "headline": {
+      "title": "Sizning manzilingiz",
+      "copyIp": "IP manzilni nusxalash",
+      "looking": "Aniqlanmoqda…",
+      "isp": "Provayder",
+      "asn": "Tarmoq (ASN)",
+      "type": "Versiya",
+      "timezone": "Vaqt mintaqasi"
+    },
+    "lookup": {
+      "label": "Boshqa manzilni tekshirish",
+      "placeholder": "1.1.1.1 yoki 2001:4860:4860::8888",
+      "submit": "Tekshirish",
+      "mine": "O'zimniki",
+      "examples": "Sinab ko'ring:",
+      "retry": "Qayta urinish"
+    },
+    "errors": {
+      "invalid": "Bu to'g'ri IPv4 yoki IPv6 manzil emas.",
+      "private": "Bu manzil ichki tarmoqniki — 10.x, 172.16–31.x, 192.168.x va loopback oralig'i faqat lokal tarmoq ichida mavjud, shuning uchun hech qaysi baza uni joylashtira olmaydi.",
+      "notFound": "Hech bir xizmat bu manzilni joylashtira olmadi.",
+      "rateLimited": "Tekshiruv xizmatining bepul limiti hozircha tugadi. Bir necha daqiqadan so'ng urinib ko'ring.",
+      "network": "So'rov o'tmadi. Internetni tekshirib, qayta urinib ko'ring.",
+      "noPublicIp": "Manzilingiz bizga yetib kelmadi — server sizniki o'rniga lokal manzilni ko'rdi. Lokal ishlab chiqishda bu odatiy hol; ishlayotgan saytda esa proksi manzilni uzatmayotganini bildiradi."
+    },
+    "groups": {
+      "location": "Joylashuv",
+      "network": "Tarmoq",
+      "time": "Vaqt"
+    },
+    "copyGroup": "Bo'limni nusxalash",
+    "rows": {
+      "country": "Davlat",
+      "region": "Viloyat",
       "city": "Shahar",
-      "coordinates": "Koordinatalar",
-      "isp": "Internet Provayider",
-      "asn": "ASN",
-      "connectionType": "Ulanish turi",
+      "postal": "Pochta indeksi",
       "continent": "Qit'a",
-      "timezone": "Vaqt zonasi",
-      "currency": "Valyuta",
-      "callingCode": "Qo'ng'iroq kodi",
-      "euMember": "EU a'zosi",
+      "coordinates": "Koordinatalar",
+      "isEu": "Yevropa Ittifoqida",
+      "ip": "Manzil",
+      "type": "Versiya",
+      "asn": "ASN",
+      "isp": "Provayder",
+      "org": "Tashkilot",
+      "domain": "Domen",
+      "timezone": "Vaqt mintaqasi",
+      "utcOffset": "UTC farqi",
+      "localTime": "O'sha yerdagi vaqt",
+      "callingCode": "Telefon kodi"
+    },
+    "values": {
       "yes": "Ha",
       "no": "Yo'q",
-      "unknown": "Noma'lum"
+      "unavailable": "xizmat bermadi"
     },
-    "SampleIps": {
-      "google": {
-        "name": "Google DNS",
-        "description": "Google'ning ommaviy DNS serveri"
-      },
-      "cloudflare": {
-        "name": "Cloudflare DNS",
-        "description": "Cloudflare'ning tez DNS serveri"
-      },
-      "open": {
-        "name": "OpenDNS",
-        "description": "Cisco'ning xavfsiz DNS serveri"
-      },
-      "quad9": {
-        "name": "Quad9 DNS",
-        "description": "Quad9'ning xavfsiz DNS serveri"
-      },
-      "ibmquad9": {
-        "name": "IBM Quad9",
-        "description": "IBM'ning ikkinchi Quad9 serveri"
-      },
-      "level3": {
-        "name": "Level3 DNS",
-        "description": "Level3'ning ommaviy DNS serveri"
-      }
+    "map": {
+      "title": "Taxminan shu yerda",
+      "noPoint": "Bu manzil uchun koordinatalar yo'q.",
+      "accuracy": "Eng yaxshi holatda shahar darajasida. Nuqta — tarmoq operatori manzillar blokini ro'yxatdan o'tkazgan joy; u ko'pincha boshqa shahar, ba'zan esa boshqa viloyat bo'lib chiqadi. Bu ko'cha manzili emas va siz o'tirgan joy ham emas."
     },
-    "InfoSection": {
-      "title": "IP Ma'lumotlari Haqida",
-      "description": "Professional IP geolocation va tarmoq tahlil vositasi. IP manzillar asosida joylashuv, ISP va xavfsizlik ma'lumotlarini real-time olish imkoniyati.",
-      "geolocationTitle": "Geolokatsiya Aniqlash",
-      "geolocationDesc": "IP manzil asosida aniq joylashuv va geografik ma'lumotlarni aniqlash:",
-      "geolocationItems": {
-        "country": "Davlat va bayroq ma'lumotlari",
-        "region": "Viloyat va shahar ma'lumotlari",
-        "coordinates": "Kenglik va uzunlik daraja",
-        "timezone": "Mintaqaviy vaqt va UTC offset"
-      },
-      "networkAnalysisTitle": "Tarmoq Tahlili",
-      "networkAnalysisDesc": "Internet provayider va tarmoq tafsilotlarini professional tahlil qilish:",
-      "networkItems": {
-        "isp": "Internet Xizmat Provayderi",
-        "asn": "Avtonom Tizim Raqami",
-        "ipType": "IPv4 yoki IPv6 protokol turi",
-        "connection": "Tarmoq turi va foydalanuvchi klassi"
-      },
-      "countryInfoTitle": "Mamlakat Ma'lumotlari",
-      "countryInfoDesc": "Davlat va mintaqa haqida keng qamrovli ma'lumotlar:",
-      "countryItems": {
-        "currency": "Milliy valyuta va kod",
-        "capital": "Bosh shahar ma'lumotlari",
-        "phoneCode": "Xalqaro qo'ng'iroq kodi",
-        "euStatus": "Yevropa Ittifoqi a'zoligi"
-      },
-      "apiIntegrationTitle": "API Integratsiya va Ma'lumot Manbalari",
-      "apiIntegrationDesc": "IP Ma'lumotlari vositasi professional geolocation API'lar bilan integratsiya qilingan va real-time ma'lumotlar bilan ishlaydi:",
-      "realTimeDataTitle": "Real-time Ma'lumot Olish",
-      "realTimeDataDesc": "Professional IP geolokatsiya xizmati bilan real-time ma'lumot olish imkoniyati.",
-      "realTimeDataCode": "ipapi.co, ipify.org API integratsiyasi",
-      "dataAccuracyTitle": "Ma'lumot Aniqligi",
-      "dataAccuracyDesc": "ISP va tarmoq ma'lumotlari 95%+ aniqlik bilan taqdim etiladi.",
-      "dataAccuracyCode": "Yuqori sifatli geolokatsiya bazasi",
-      "ipSupportTitle": "IPv4 va IPv6 Qo'llab-quvvatlash",
-      "ipSupportDesc": "Ikkala IP protokol versiyasi uchun to'liq qo'llab-quvvatlash mavjud.",
-      "ipSupportCode": "Universal IP protokol qo'llab-quvvatlash",
-      "jsonExportTitle": "JSON Eksport",
-      "jsonExportDesc": "Tahlil natijalarini JSON formatda yuklab olish imkoniyati.",
-      "jsonExportCode": "Strukturaviy ma'lumot eksport funksiyasi",
-      "useCasesTitle": "Foydalanish Holatlari",
-      "webDevTitle": "Veb Dasturlash va Xavfsizlik",
-      "webDevItems": {
-        "geoTargeting": "Geo-targeting va mintaqaviy kontent yetkazib berish",
-        "fraudDetection": "Firibgarlik aniqlash va xavfsizlik monitoring",
-        "personalization": "Foydalanuvchi joylashuviga asoslangan shaxsiylashtirish",
-        "troubleshooting": "Tarmoq muammolarini hal qilish va diagnostika"
-      },
-      "analyticsTitle": "Analitika va Biznes Ma'lumotlari",
-      "analyticsItems": {
-        "trafficAnalysis": "Veb-sayt trafigi geografik tahlili",
-        "marketResearch": "Bozor tadqiqoti va foydalanuvchi demografiyasi",
-        "cdnOptimization": "CDN optimallashtirish va server joylashuvi rejalashtirish",
-        "compliance": "Qonunchilik va tartibga solish talablari"
-      },
-      "professionalTipsTitle": "Professional Maslahatlar",
-      "privacyNoticeTitle": "Maxfiylik Eslatmasi:",
-      "privacyNoticeDesc": "Hech qanday IP manzil ma'lumotlari serverda saqlanmaydi. Barcha ma'lumotlar real-time API orqali olinadi va xavfsizlik ta'minlanadi.",
-      "accuracyNoticeTitle": "Aniqlik Eslatmasi:",
-      "accuracyNoticeDesc": "VPN va proxy serverlar orqali ulangan IP'lar uchun",
-      "accuracyNoticeCode": "haqiqiy joylashuv",
-      "accuracyNoticeDesc2": "ko'rsatilmasligi mumkin."
-    },
-    "SecurityAnalysis": {
-      "securityRating": "Xavfsizlik Reytingi",
-      "additionalInfo": "Qo'shimcha Ma'lumot",
-      "levels": {
-        "high": "Yuqori",
-        "medium": "O'rta",
-        "low": "Past"
-      },
-      "metrics": {
-        "vpnProxy": {
-          "label": "VPN/Proxy",
-          "detected": "Aniqlandi",
-          "notDetected": "Yo'q",
-          "descDetected": "Bu IP VPN yoki Proxy orqali ulangan",
-          "descNotDetected": "To'g'ridan-to'g'ri ulanish"
+    "privacy": {
+      "title": "IP manzil nimani oshkor qiladi va nimani qilmaydi",
+      "points": {
+        "reveals": {
+          "title": "Nimani oshkor qiladi",
+          "body": "Taxminiy hududingizni va, ishonchli tarzda, provayderingiz kimligini. Kirgan har bir saytingiz uni ko'radi — javob sizga shu orqali qaytadi. Qurilma ma'lumotlari sahifasidagi qiymatlar bilan birga esa u kamdan-kam takrorlanadigan «barmoq izi»ga aylanadi."
         },
-        "serverType": {
-          "label": "Server Turi",
-          "dataCenter": "Data Center",
-          "isp": "ISP",
-          "descDataCenter": "Data center yoki hosting provayderidan",
-          "descIsp": "Oddiy internet provayderidan"
+        "hides": {
+          "title": "Nimani qilmaydi",
+          "body": "Ismingizni, uy manzilingizni, qurilmangizni va internetda nima qilayotganingizni bermaydi. IP — odamni emas, tarmoq ulanishini bildiradi. Uni abonentga bog'lay oladigan yagona tomon provayder, ko'p davlatlarda esa buning uchun rasmiy so'rov kerak."
         },
-        "botCrawler": {
-          "label": "Bot/Crawler",
-          "yes": "Ha",
-          "no": "Yo'q",
-          "descBot": "Bot yoki crawler sifatida aniqlangan",
-          "descNotBot": "Oddiy foydalanuvchi"
+        "detection": {
+          "title": "Nega bu yerda VPN tekshiruvi yo'q",
+          "body": "Haqiqiy proksi, VPN va Tor aniqlash tijorat bazasini talab qiladi va uni taklif qiladigan har bir xizmat pul oladi. Bizda u yo'q, shuning uchun bu sahifa bilaman demaydi. Tekshirmasdan «proksi emas» deb yozadigan vosita jim turganidan yomonroq — bu sahifa avval aynan shunday qilardi, hukm esa kodda qattiq yozib qo'yilgan edi."
         }
-      },
-      "additionalDetails": {
-        "proxyType": "Proxy turi:",
-        "crawlerName": "Crawler nomi:",
-        "userType": "Foydalanuvchi turi:"
       }
     },
-    "Errors": {
-      "invalidIpFormat": "Noto'g'ri IP manzil formati",
-      "apiRequestFailed": "IP ma'lumotlarini olishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.",
-      "rateLimitExceeded": "So'rovlar soni chegarasi oshdi. Iltimos, bir necha daqiqa kutib qayta urinib ko'ring.",
-      "networkError": "Tarmoq xatosi. Internet ulanishingizni tekshiring."
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "accuracy": {
+          "question": "Shahar noto'g'ri ko'rsatilyapti. Nega?",
+          "answer": "Chunki IP bo'yicha joylashuv — o'lchov emas, taxmin. Baza manzillar blokini operator uni ro'yxatdan o'tkazgan joyga bog'laydi: mobil tarmoq uchun bu ko'pincha operatorning bosh ofisi, uy interneti uchun esa eng yaqin hududiy tugun. Davlat odatda to'g'ri chiqadi, shahar — yaxshi taxmin, koordinatalar esa o'sha taxminning markazi, sizning joyingiz emas."
+        },
+        "whatItReveals": {
+          "question": "IP manzilim orqali meni topib olish mumkinmi?",
+          "answer": "O'z-o'zidan yo'q. U faqat provayderingizni va taxminiy hududni beradi — aynan shu sahifa ko'rsatadigan narsani. Manzilni abonentga bog'lash uchun faqat provayderda bo'lgan yozuvlar kerak, ko'p davlatlarda esa ularni olish uchun rasmiy so'rov talab qilinadi. IP haqiqatan foydali bo'ladigan joy — kutilmagan davlatdan kirish urinishini payqash."
+        },
+        "vpn": {
+          "question": "Bu VPN ishlatayotganimni ko'rsatadimi?",
+          "answer": "Yo'q, va bilaman deb da'vo qilmaydi. VPN va proksi aniqlash ma'lum chiqish tugunlarining tijorat bazasini talab qiladi; uni taklif qiladigan har bir xizmat pul oladi. Lekin o'zingiz sinab ko'rishingiz mumkin: manzilni avval VPNsiz, keyin VPN bilan tekshiring. Provayder va davlat o'zgarsa, demak trafikni VPN olib o'tmoqda."
+        },
+        "ipv6": {
+          "question": "Manzilim nega 2001:4860:4860::8888 ko'rinishida?",
+          "answer": "Bu — IPv6. 32-bitli IPv4 manzillari tugagani uchun tarmoqlar 128-bitli manzillarga o'tdi; ular o'n oltilik guruhlar bilan yoziladi, :: esa ketma-ket nollar o'rnida turadi. Bu yerda ikkala shakl ham ishlaydi. IPv6 uchun joylashuv ko'pincha aniqroq emas: bloklar yangiroq va bazalar ularni hali to'liq o'rganib ulgurmagan."
+        },
+        "changing": {
+          "question": "IP manzilim nega o'zgarib turadi?",
+          "answer": "Ko'pchilik uy va mobil ulanishlar dinamik manzil oladi: provayder uni umumiy fonddan vaqtincha beradi va router qayta ulanganda qaytarib oladi. Doimiy manzil odatda pullik biznes xizmati. Mobil tarmoqda esa siz bitta ommaviy manzilni minglab abonent bilan baham ko'rishingiz mumkin (carrier-grade NAT) — shuning uchun bir tarmoqdagi ikki telefon tashqaridan bir xil ko'rinadi."
+        }
+      }
+    },
+    "signals": {
+      "title": "Brauzeringiz rozimi?",
+      "pending": "Brauzeringiz aytayotgan narsa manzilingiz aytayotganiga solishtirilmoqda…",
+      "summaryAligned": "Brauzeringiz bergan hamma narsa manzilingizga mos. Bu yerda VPN yoki proksiga ishora qiladigan narsa yo'q.",
+      "summaryMismatched": "Shulardan {count} tasi mos kelmadi. Bu — hukm emas, signal: VPN ham shunday natija beradi, safar yoki qo'lda o'rnatilgan soat ham.",
+      "browserSide": "brauzer",
+      "addressSide": "manzil",
+      "items": {
+        "timezone": {
+          "label": "Vaqt mintaqasi",
+          "mismatch": "Operatsion tizimingiz manzilingizdan boshqa mintaqaga sozlangan. VPN manzilingizni ko'chiradi, lekin soatingizni emas — shuning uchun bu mavjud bepul signallarning eng kuchlisi."
+        },
+        "offset": {
+          "label": "UTC farqi",
+          "mismatch": "Mintaqa nomi emas, haqiqiy soat farqi mos kelmadi. Bu — yuqoridagi tekshiruvning qattiqroq shakli: Berlin va Parij bir xil farqda, shuning uchun faqat nom farqi ko'p narsa demaydi."
+        },
+        "language": {
+          "label": "Til hududi",
+          "mismatch": "Brauzeringiz manzilingiz joylashgan davlatdan boshqa davlat kontentini so'ramoqda. Uchtasining eng kuchsizi: ko'p odam o'z davlatining tilida bo'lmagan tilda internetdan foydalanadi."
+        }
+      }
     }
   }
 }

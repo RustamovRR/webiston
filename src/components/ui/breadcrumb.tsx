@@ -6,4 +6,4 @@ export {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/breadcrumb"

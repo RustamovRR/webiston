@@ -85,6 +85,9 @@ export default function VideoEmbed({ url, title = "Video" }: VideoEmbedProps) {
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
         </div>
       )}
+      {/* biome-ignore lint/a11y/useMediaCaption: this embed takes only {url, title} and has no
+          way to receive a caption track. Adding a `captions` prop is tracked in the backlog —
+          this suppression is a placeholder, not a verdict that captions are unnecessary. */}
       <video
         ref={videoRef}
         src={url}

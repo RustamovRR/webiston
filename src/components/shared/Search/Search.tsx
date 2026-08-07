@@ -1,19 +1,29 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { ISearchHit } from "@/types/common"
 import { SearchIcon } from "lucide-react"
-import { RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useRef, useState } from "react"
+// NOT `import { searchEngine } from "@/lib/search/flexsearch"`. That static
+// import put FlexSearch — 74 KB gzipped, measured — into the initial bundle of
+// all 269 routes, and ran the engine's constructor at module evaluation. See
+// `load.ts` for why the indirection has to be its own file.
+import { loadSearchEngine } from "@/lib/search/load"
+import type { ISearchHit } from "@/types/common"
 import SearchDialog from "./SearchDialog"
-import { searchEngine } from "@/lib/search/flexsearch"
 
 export default function Search() {
+  const t = useTranslations("Search")
   const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
   const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [groupedHits, setGroupedHits] = useState<ISearchHit[][]>([])
+  // Resolved after mount, never during render: `navigator` does not exist on the
+  // server, and branching on it in the render body would make the server and
+  // client markup disagree. `false` is the safe first paint — the shortcut
+  // handler below accepts Ctrl *and* Cmd, so the badge is only ever cosmetically
+  // behind, and the badge reserves width for both labels.
+  const [isMac, setIsMac] = useState(false)
 
   const handleSearchChange = (value: string) => {
     setQuery(value)
@@ -29,7 +39,8 @@ export default function Search() {
     setLoading(true)
     debounceTimer.current = setTimeout(async () => {
       try {
-        const results = await searchEngine.search(value)
+        const engine = await loadSearchEngine()
+        const results = await engine.search(value)
         setGroupedHits(results)
       } catch (error) {
         console.error("Search failed:", error)
@@ -43,6 +54,15 @@ export default function Search() {
   const clearSearch = useCallback(() => {
     setQuery("")
     setGroupedHits([])
+  }, [])
+
+  useEffect(() => {
+    // `userAgentData.platform` is the non-deprecated source; `navigator.platform`
+    // is the fallback still needed for Safari and Firefox.
+    const platform =
+      (navigator as Navigator & { userAgentData?: { platform?: string } })
+        .userAgentData?.platform ?? navigator.platform
+    setIsMac(/mac|iphone|ipad|ipod/i.test(platform))
   }, [])
 
   useEffect(() => {
@@ -62,28 +82,69 @@ export default function Search() {
     }
   }, [open, clearSearch])
 
-  // Initialize search engine when component mounts
+  // Build the index when the dialog OPENS, not when the page mounts.
+  //
+  // `public/search-index.json` is 1.07 MB. Loading it on mount meant every
+  // visitor on every route downloaded and indexed it, including the ~all of them
+  // who never search. Opening the dialog gives us the time before the first
+  // keystroke, and `searchEngine.search()` initialises on demand anyway, so a
+  // fast typist is still correct — just briefly slower.
+  //
+  // This stays as the fallback for ⌘K users who never touch the button; the
+  // real work usually starts earlier, on hover/focus (see `warmSearch`).
   useEffect(() => {
-    searchEngine.initialize().catch(console.error)
-  }, [])
+    if (open) {
+      loadSearchEngine()
+        .then((engine) => engine.initialize())
+        .catch(console.error)
+    }
+  }, [open])
+
+  // Prefetch on INTENT. Indexing ~1000 documents is a long task, and starting
+  // it at the moment the dialog begins animating in is what produced the
+  // visible flicker on first open. Hover/focus buys us a few hundred
+  // milliseconds; `initialize()` is single-flight, so calling it twice is free.
+  const warmSearch = () => {
+    loadSearchEngine()
+      .then((engine) => engine.warm())
+      .catch(console.error)
+  }
 
   return (
     <>
-      <div
-        className="relative cursor-pointer rounded-xl bg-[#F2F2F7] dark:bg-[#151515]"
+      {/* A button, not a div+onClick. This control opens a dialog, so it needs
+          to be reachable and activatable by keyboard — a div gives no focus, no
+          Enter/Space, and no role. The previous markup also nested a readOnly
+          <Input> here, which put a focusable field in the tab order that did
+          nothing when focused; a span carries the same look with none of that. */}
+      <button
+        type="button"
         onClick={() => setOpen(true)}
+        onPointerEnter={warmSearch}
+        onFocus={warmSearch}
+        aria-keyshortcuts={isMac ? "Meta+K" : "Control+K"}
+        className="focus-visible:ring-ring flex h-9 w-56 cursor-pointer items-center gap-2 rounded-xl bg-muted px-3 text-left focus-visible:ring-2 focus-visible:outline-none"
       >
-        <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-        <Input
-          ref={inputRef as RefObject<HTMLInputElement>}
-          placeholder="Qidirish..."
-          className="cursor-pointer pr-12 pl-10"
-          readOnly
+        <SearchIcon
+          aria-hidden="true"
+          className="text-muted-foreground size-4 shrink-0"
         />
-        <kbd className="absolute top-1/2 right-3 -translate-y-1/2 rounded-[4px] border border-[#F2F2F7] px-2 py-0.5 text-xs select-none dark:border-[#2C2C2E]">
-          Ctrl K
+        {/* `truncate` + `min-w-0` is what keeps the label from sliding under the
+            badge. The previous markup positioned the icon and the kbd
+            `absolute` and left this label the only element in flow, so it had
+            nothing to push against and no width to be constrained by — at the
+            149px the header actually gives this button, "Qidirish..." overlapped
+            the badge by a measured 25px. Everything is in flow now. */}
+        <span className="min-w-0 flex-1 truncate text-muted-foreground text-base md:text-sm">
+          {t("placeholder")}
+        </span>
+        {/* Reserve the width both labels can occupy so the post-mount platform
+            swap below cannot shift the header. "Control" is never rendered —
+            `Ctrl` is the wider of the two real labels, `⌘K` the narrower. */}
+        <kbd className="grid shrink-0 min-w-[3.25rem] place-items-center rounded-md border border-border-strong px-1.5 py-0.5 font-sans text-[11px] text-muted-foreground select-none">
+          {isMac ? "⌘K" : "Ctrl K"}
         </kbd>
-      </div>
+      </button>
       <SearchDialog
         open={open}
         onOpenChange={setOpen}

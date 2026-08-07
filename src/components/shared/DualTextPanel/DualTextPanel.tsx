@@ -16,7 +16,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeftRight, FileText, X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { MACOS_DOTS } from "@/constants/ui-constants"
+import { useEffect, useRef } from "react"
 import { countWords } from "@/lib/utils"
 
 interface DualTextPanelProps {
@@ -42,6 +42,18 @@ interface DualTextPanelProps {
   customTargetContent?: React.ReactNode
   customSourceContent?: React.ReactNode
   extraHeaderComponent?: React.ReactNode
+  /**
+   * Rendered over the source textarea while it is empty — the place to put the
+   * one or two actions that get a first-time visitor started. It sits ON the
+   * textarea rather than replacing it so a click on the empty space still
+   * focuses the field.
+   */
+  sourceEmptyState?: React.ReactNode
+  /**
+   * Put the caret in the source field on mount, for tools whose entire job is
+   * paste → read. Honoured on pointer devices only.
+   */
+  autoFocusSource?: boolean
 }
 
 export function DualTextPanel({
@@ -66,9 +78,23 @@ export function DualTextPanel({
   showShadow = false,
   customTargetContent,
   customSourceContent,
-  extraHeaderComponent
+  extraHeaderComponent,
+  sourceEmptyState,
+  autoFocusSource = false
 }: DualTextPanelProps) {
   const tCommon = useTranslations("Common")
+
+  const sourceRef = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => {
+    if (!autoFocusSource) return
+    // Pointer devices only. On a phone, focusing on load raises the on-screen
+    // keyboard over the result panel — the thing the visitor came to see —
+    // before they have typed anything.
+    if (!window.matchMedia("(pointer: fine)").matches) return
+    // `preventScroll`: the field is above the fold on a desktop, and focusing
+    // it must not yank the page away from the heading.
+    sourceRef.current?.focus({ preventScroll: true })
+  }, [autoFocusSource])
 
   const sourceStats = [
     { label: tCommon("stats.characters"), value: sourceText.length },
@@ -86,7 +112,7 @@ export function DualTextPanel({
 
   const DefaultTargetEmptyState = (
     <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
+      <div className="text-muted-foreground">
         <FileText
           size={48}
           className="mx-auto mb-4 opacity-50"
@@ -110,33 +136,37 @@ export function DualTextPanel({
         className={cn(
           "relative flex w-full flex-col overflow-hidden rounded-xl",
           isTerminal
-            ? "border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800/50 dark:bg-zinc-900/80"
-            : "bg-zinc-100 dark:bg-zinc-900/80",
+            ? "border border-border bg-card/80 backdrop-blur-sm"
+            : "bg-muted/80",
           showShadow && "shadow-2xl"
         )}
       >
         {/* Header */}
         <header
           className={cn(
-            "flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800",
-            isTerminal ? "bg-zinc-100/50 dark:bg-zinc-800/50" : ""
+            "flex h-14 shrink-0 items-center justify-between border-b border-border px-4",
+            isTerminal ? "bg-muted/50" : ""
           )}
         >
-          <div className="flex items-center gap-2">
+          {/* One marker, not three.
+              This slot used to hold the macOS traffic lights — an imitation of
+              close/minimise/zoom buttons that do not exist here, in the first
+              place the eye lands, saying nothing. They were also three raw
+              Tailwind palette classes (red, amber and green at a fixed weight)
+              that never flipped with the colour scheme. It is the kicker mark the
+              section headings use, and it carries one real bit: filled with
+              the accent on the panel that holds the ANSWER. */}
+          <div className="flex items-center gap-2.5">
             {isTerminal && (
-              <div className="flex items-center gap-1.5" aria-hidden="true">
-                {MACOS_DOTS.map((dot, index) => (
-                  <div
-                    key={index}
-                    className={cn("h-3 w-3 rounded-full", dot.color)}
-                  />
-                ))}
-              </div>
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "size-[6px] shrink-0 rounded-[2px]",
+                  isSource ? "bg-border-strong" : "bg-primary"
+                )}
+              />
             )}
-            <h2
-              id={panelId}
-              className="ml-2 text-base font-medium text-zinc-900 dark:text-zinc-100"
-            >
+            <h2 id={panelId} className="font-medium text-base text-foreground">
               {label}
             </h2>
           </div>
@@ -156,7 +186,7 @@ export function DualTextPanel({
                       onClick={onClear}
                       variant="ghost"
                       size="sm"
-                      className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      className="text-muted-foreground hover:text-foreground"
                       aria-label={tCommon("clear")}
                     >
                       <X size={18} aria-hidden="true" />
@@ -177,23 +207,40 @@ export function DualTextPanel({
         </header>
 
         {/* Content area */}
+        {/* Below `lg` the panels stack, so a 400px minimum put the result a
+            full screen-height below the input: on a phone you typed into a box
+            whose output you could not see. 200px keeps both in view at
+            375x667 and still grows with the content. */}
         <div
           id={contentId}
-          className="relative min-h-[400px] flex-1 lg:min-h-[500px]"
+          className="relative min-h-[200px] flex-1 sm:min-h-[320px] lg:min-h-[500px]"
         >
           {isSource ? (
             customSourceContent ? (
               <div className="absolute inset-0">{customSourceContent}</div>
             ) : (
-              <textarea
-                value={sourceText}
-                onChange={(e) => onSourceChange(e.target.value)}
-                className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:ring-0 dark:text-zinc-50 dark:placeholder:text-zinc-500"
-                placeholder={sourcePlaceholder}
-                disabled={isLoading}
-                aria-label={sourceLabel}
-                spellCheck={false}
-              />
+              <>
+                <textarea
+                  ref={sourceRef}
+                  value={sourceText}
+                  onChange={(e) => onSourceChange(e.target.value)}
+                  className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
+                  placeholder={sourcePlaceholder}
+                  disabled={isLoading}
+                  aria-label={sourceLabel}
+                  spellCheck={false}
+                />
+                {sourceEmptyState && sourceText.length === 0 && (
+                  // Under the placeholder line, not at the bottom of the
+                  // panel: the panel is 500px tall on a desktop and the
+                  // bottom edge sits below the fold, so actions parked there
+                  // were measured at y=878 in a 720px viewport — present in
+                  // the DOM and invisible to the user.
+                  <div className="pointer-events-none absolute inset-x-0 top-12 flex px-4">
+                    {sourceEmptyState}
+                  </div>
+                )}
+              </>
             )
           ) : (
             <div
@@ -205,19 +252,16 @@ export function DualTextPanel({
               {customTargetContent ? (
                 customTargetContent
               ) : error ? (
-                <div
-                  className="p-4 text-red-500 dark:text-red-400"
-                  role="alert"
-                >
+                <div className="p-4 text-destructive" role="alert">
                   {error}
                 </div>
               ) : isLoading ? (
-                <div className="flex h-full items-center justify-center p-4 text-zinc-500 dark:text-zinc-400">
+                <div className="flex h-full items-center justify-center p-4 text-muted-foreground">
                   <span aria-live="polite">{tCommon("processing")}</span>
                 </div>
               ) : convertedText ? (
                 <div className="p-4">
-                  <pre className="whitespace-pre-wrap wrap-break-word font-mono text-sm text-zinc-900 dark:text-zinc-100">
+                  <pre className="whitespace-pre-wrap wrap-break-word font-mono text-sm text-foreground">
                     {convertedText}
                   </pre>
                 </div>
@@ -231,8 +275,8 @@ export function DualTextPanel({
         {/* Footer */}
         <footer
           className={cn(
-            "flex shrink-0 items-center justify-between border-t border-zinc-200 px-4 py-2.5 dark:border-zinc-800",
-            isTerminal && "bg-zinc-100/30 dark:bg-zinc-800/30"
+            "flex shrink-0 items-center justify-between border-t border-border px-4 py-2.5",
+            isTerminal && "bg-muted/30"
           )}
         >
           <div className="flex items-center">
@@ -255,19 +299,22 @@ export function DualTextPanel({
       {showSwapButton && onSwap && (
         <div className="relative lg:absolute lg:left-1/2 lg:top-1/2 lg:z-10 lg:-translate-x-1/2 lg:-translate-y-1/2">
           <div className="flex justify-center lg:justify-start">
+            {/* Disabled with nothing to swap. It used to stay enabled on an
+                empty panel, so the first thing a visitor clicked was a button
+                that silently did nothing. */}
             <ShimmerButton
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-zinc-300 bg-white/90! shadow-xl backdrop-blur-sm hover:border-indigo-500/50 hover:bg-zinc-100/90 dark:border-zinc-700 dark:bg-zinc-900/90! dark:hover:bg-zinc-800/90"
+              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90 disabled:cursor-not-allowed disabled:opacity-40"
               title={swapButtonTitle}
-              disabled={isLoading}
+              disabled={isLoading || !convertedText}
               aria-label={swapButtonTitle || "Swap"}
             >
               {swapIcon || (
                 <ArrowLeftRight
                   size={20}
-                  className="text-zinc-600 dark:text-zinc-300"
+                  className="text-muted-foreground"
                   aria-hidden="true"
                 />
               )}

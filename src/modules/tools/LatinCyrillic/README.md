@@ -1,105 +1,71 @@
-# Latin-Cyrillic Transliteration Module
+# LatinCyrillic
 
-Converts text between Uzbek Latin and Cyrillic scripts with Russian Cyrillic support.
+The Latin ↔ Cyrillic converter at `/tools/latin-cyrillic`. The site's
+most-visited page.
 
-## Features
+## Where the logic lives
 
-- ✅ Uzbek Latin ↔ Cyrillic conversion
-- ✅ Russian Cyrillic → Latin support
-- ✅ Apostrophe normalization (all variants → `'`)
-- ✅ Protected content (URLs, emails, code blocks)
-- ✅ Case preservation
-- ✅ Technical terms protection
+**Not here.** Conversion and the direction policy are in
+`@webiston/transliteration`, because four surfaces need the same answers:
 
-## Usage
+| Surface | File |
+| ------- | ---- |
+| This tool | `hooks/useLatinCyrillic.ts` |
+| Extension popup | `apps/extensions/latin-cyrillic/entrypoints/popup/App.tsx` |
+| In-page popover | `apps/extensions/latin-cyrillic/entrypoints/content.ts` |
+| Context menu | `apps/extensions/latin-cyrillic/entrypoints/background.ts` |
 
-```typescript
-import { toCyrillic, toLatin } from "@/modules/tools/LatinCyrillic"
+The package exposes exactly four things they share:
 
-// Latin to Cyrillic
-toCyrillic("Salom dunyo!") // → "Салом дунё!"
-toCyrillic("O'zbekiston")  // → "Ўзбекистон"
-
-// Cyrillic to Latin
-toLatin("Салом дунё!")     // → "Salom dunyo!"
-toLatin("Ўзбекистон")      // → "O'zbekiston"
-
-// Russian support
-toLatin("Щедрый")          // → "Shchedryy"
+```ts
+resolveDirection(text, preference)      // "auto" | direction  →  direction
+convert(text, direction)                // the one call that runs it
+convertWithPreference(text, preference) // both of the above, in one step
+oppositeDirection(direction)            // for the swap control
 ```
+
+`preference` is `"auto" | "latin-to-cyrillic" | "cyrillic-to-latin"`. Under
+`"auto"` the text decides, on every change — there is no paste heuristic and no
+memory of the previous answer.
 
 ## Structure
 
 ```
 LatinCyrillic/
-├── components/          # UI components
-│   └── InfoSection.tsx
-├── constants/           # Static data
-│   ├── protected-words.ts
-│   ├── samples.ts
-│   └── info-cards.tsx
-├── hooks/               # React hooks
-│   └── useLatinCyrillic.ts
-├── types/               # TypeScript types
-│   └── index.ts
-├── utils/               # Core logic
-│   ├── transliterate.ts # Main API
-│   ├── helpers.ts       # Utility functions
-│   ├── detect-script.ts # Script detection
-│   └── mappings/        # Character mappings
-├── __tests__/           # Unit tests
-├── LatinCyrillic.tsx    # Main component
-└── index.ts             # Public exports
+├── components/
+│   ├── AlphabetTable.tsx    # SERVER — the Latin↔Cyrillic reference table
+│   ├── ConverterFaq.tsx     # SERVER — the visible FAQ (same keys as the schema)
+│   ├── DirectionTabs.tsx    # Avto / → Кирилл / → Lotin
+│   ├── DownloadMenu.tsx     # TXT · DOCX
+│   ├── DropZone.tsx         # drop a file anywhere on the tool
+│   ├── SourceEmptyActions.tsx
+│   └── index.ts             # CLIENT components only — see the note in it
+├── constants/               # sample text, file limits, the alphabet data
+├── hooks/
+│   ├── useLatinCyrillic.ts  # text + direction + result
+│   └── useFileImport.ts     # TXT/PDF/DOCX in, TXT/DOCX out
+├── seo/                     # metadata + JSON-LD (FAQ reads the i18n messages)
+├── stores/                  # one persisted value: the direction preference
+├── LatinCyrillic.tsx        # the client island
+└── index.ts
 ```
 
-## API
+`AlphabetTable` and `ConverterFaq` are Server Components rendered by
+`page.tsx` as SIBLINGS of the converter, not children of it. A child of a
+`'use client'` tree is a client component whether it needs to be or not, and
+those two are static markup.
 
-### `toCyrillic(text: string): string`
-Converts Latin text to Cyrillic.
+## Two rules that are easy to break here
 
-### `toLatin(text: string): string`
-Converts Cyrillic text to Latin.
+1. **Import the module directly from `page.tsx`, never via `@/modules/tools`.**
+   That barrel re-exports all 21 tool modules and every one of them is
+   `'use client'`. Importing through it put 22 tool modules in this route's
+   client manifest instead of 1, and 664 KB gz of JS instead of 358.
+2. **`components/index.ts` is client-only.** `LatinCyrillic.tsx` imports it, so
+   naming a Server Component there pulls `next-intl/server` into the browser.
 
-### `detectScript(text: string): ScriptType`
-Detects script type: `"latin"`, `"cyrillic"`, `"mixed"`, or `"unknown"`.
+## Engine correctness
 
-## Character Mappings
-
-### Uzbek Special Characters
-| Latin | Cyrillic |
-|-------|----------|
-| o'    | ў        |
-| g'    | ғ        |
-| sh    | ш        |
-| ch    | ч        |
-| ng    | нг       |
-| q     | қ        |
-| h     | ҳ        |
-
-### Russian-Only Characters
-| Cyrillic | Latin |
-|----------|-------|
-| щ        | shch  |
-| ы        | y     |
-| ъ        | '     |
-| ь        | '     |
-
-## Protected Content
-
-These are NOT transliterated:
-- URLs (`https://...`)
-- Emails (`user@example.com`)
-- Code blocks (`` `code` ``)
-- Technical terms (see `constants/protected-words.ts`)
-
-## Apostrophe Handling
-
-All apostrophe variants are normalized to standard `'`:
-- Input: `` ` ´ ' ' ʻ ʼ ʿ ˈ ′ ``
-- Output: `'`
-
-## Testing
-
-```bash
-pnpm test src/modules/tools/LatinCyrillic
-```
+The hard cases live in `packages/transliteration/__tests__/uzbek-corpus.test.ts`.
+When a conversion is reported wrong, the failing word goes in that file first —
+it is the bug report.

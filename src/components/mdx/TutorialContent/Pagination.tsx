@@ -1,23 +1,48 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import Link from "next/link"
 
+/**
+ * Prev/next chapter navigation at the foot of a reading page.
+ *
+ * Rewritten for two reasons. Colour: this file carried 16 hardcoded values —
+ * `text-[#8D8D93]` ×6 plus `text-black`/`dark:text-white` ×8 — so it was styled
+ * per-class in both schemes instead of by token, and the grey was a hex that
+ * appears nowhere in `tokens.css`.
+ *
+ * Form: it was two bare text stacks with a chevron. This is the single most
+ * important control on a reading page — "where do I go next" — and it looked
+ * like a caption. It now uses the same card language as the book landing page's
+ * table of contents: strong boundary, depth gradient, mono kicker, hover lift.
+ * A Server Component, as it was; the only motion is CSS.
+ */
+
 interface PaginationProps {
   currentPath: string
   tutorialId: string
   flattenedNavigation: { title: string; path: string; fullPath: string }[]
 }
 
+// Plain `transition`: Tailwind v4 compiles `-translate-y-*` to the `translate`
+// PROPERTY, which a hand-written `transition-[transform,…]` list does not cover.
+const cardBase =
+  "group/nav flex flex-col gap-1.5 rounded-lg border border-border-strong " +
+  "bg-gradient-to-b from-card to-card/60 p-4 " +
+  "transition duration-300 ease-out " +
+  "hover:-translate-y-0.5 hover:border-input hover:from-accent hover:to-accent/70 hover:shadow-lg " +
+  "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+
+const kicker =
+  "flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.15em]"
+
 export function Pagination({
   currentPath,
   tutorialId,
   flattenedNavigation
 }: PaginationProps) {
-  // Find current page index in flattened navigation
   const currentIndex = flattenedNavigation.findIndex(
     (item) => item.path === currentPath
   )
 
-  // Get prev/next pages
   const prevPage =
     currentIndex > 0
       ? {
@@ -34,50 +59,55 @@ export function Pagination({
         }
       : undefined
 
+  if (!prevPage && !nextPage) {
+    return null
+  }
+
   return (
-    <div className="my-5 flex items-center justify-between gap-8">
-      {prevPage ? (
-        <div className="flex w-1/2 justify-start">
-          <Link
-            className="group flex items-end gap-2"
-            href={prevPage.href}
-            prefetch
-          >
-            <ChevronLeftIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
-            <div className="group flex flex-col">
-              <span className="text-xs font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
-                Oldingi
-              </span>
-              <span className="text-lg font-medium text-black max-sm:text-base dark:text-white">
-                {prevPage.title}
-              </span>
-            </div>
-          </Link>
-        </div>
-      ) : (
-        <div />
+    // A grid, not `justify-between` with an empty `<div />` placeholder: at the
+    // first and last chapter the surviving card now fills its own column
+    // instead of being pushed around by a spacer.
+    <nav
+      aria-label="Bo'limlar orasida o'tish"
+      className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2"
+    >
+      {/* No empty placeholder cell. The "next" card below carries
+          `sm:col-start-2`, so it lands in the right-hand column on its own —
+          the `<span />` the first draft rendered here was an extra DOM node
+          doing nothing. */}
+      {prevPage && (
+        <Link href={prevPage.href} prefetch className={cardBase}>
+          <span className={kicker}>
+            <ChevronLeftIcon
+              aria-hidden="true"
+              className="size-3.5 transition-transform duration-300 ease-out group-hover/nav:-translate-x-0.5"
+            />
+            Oldingi
+          </span>
+          <span className="font-semibold text-base text-foreground leading-snug">
+            {prevPage.title}
+          </span>
+        </Link>
       )}
+
       {nextPage && (
-        <div className="flex w-1/2 justify-end">
-          <Link
-            className="group flex flex-col items-start"
-            href={nextPage.href}
-            prefetch
-          >
-            <span className="text-xs font-normal text-[#8D8D93] transition-all duration-200 group-hover:text-black max-sm:text-sm dark:group-hover:text-white">
-              Keyingi
-            </span>
-            <div className="group flex items-center gap-2">
-              <span className="line-clamp-2 text-lg font-medium text-black max-sm:text-base dark:text-white">
-                {nextPage.title}
-              </span>
-              <div className="justify-self-end">
-                <ChevronRightIcon className="stroke-[1px] text-[#8D8D93] duration-200 group-hover:text-black dark:group-hover:text-white" />
-              </div>
-            </div>
-          </Link>
-        </div>
+        <Link
+          href={nextPage.href}
+          prefetch
+          className={`${cardBase} sm:col-start-2 sm:items-end sm:text-right`}
+        >
+          <span className={kicker}>
+            Keyingi
+            <ChevronRightIcon
+              aria-hidden="true"
+              className="size-3.5 transition-transform duration-300 ease-out group-hover/nav:translate-x-0.5"
+            />
+          </span>
+          <span className="font-semibold text-base text-foreground leading-snug">
+            {nextPage.title}
+          </span>
+        </Link>
       )}
-    </div>
+    </nav>
   )
 }

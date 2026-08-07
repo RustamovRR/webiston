@@ -1,8 +1,17 @@
-import { NextResponse } from "next/server"
-import { SearchDocument } from "@/lib/search/flexsearch"
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 import matter from "gray-matter"
+import { NextResponse } from "next/server"
+import type { SearchDocument } from "@/lib/search/flexsearch"
+
+// This handler reads nothing from the request — it walks the whole `content/`
+// tree and returns all 1,078 documents. Left dynamic, it redid that walk on
+// every call. The corpus only changes at build, so evaluate it once at build
+// and serve the result as a static asset.
+//
+// It is the fallback path: `flexsearch.ts` fetches `/search-index.json` first
+// and only calls this when that 404s.
+export const dynamic = "force-static"
 
 export async function GET() {
   try {
@@ -67,11 +76,13 @@ export async function GET() {
       {
         id: "tools-color-converter",
         title: "Color Converter",
+        // CMYK was listed here and the tool has never supported it — it
+        // depends on a print profile and cannot be computed in a browser.
         content:
-          "Ranglarni turli formatlar o'rtasida o'tkazish: HEX, RGB, HSL, CMYK.",
+          "Ranglarni HEX, RGB, HSL, Lab va OKLCH formatlari o'rtasida o'tkazish, WCAG kontrastini tekshirish va palette yaratish.",
         url: "/tools/color-converter",
         category: "tools",
-        tags: ["color", "converter", "hex", "rgb", "hsl"]
+        tags: ["color", "converter", "hex", "rgb", "hsl", "oklch", "contrast"]
       },
       {
         id: "tools-hash-generator",
@@ -163,7 +174,7 @@ async function processBookDirectory(
 
           // Create proper URL path
           let urlPath =
-            `/books/${bookName}/${currentPath ? currentPath + "/" : ""}${file.name.replace(".mdx", "")}`
+            `/books/${bookName}/${currentPath ? `${currentPath}/` : ""}${file.name.replace(".mdx", "")}`
               .replace(/\/+/g, "/") // Remove double slashes
               .replace(/\/$/, "") // Remove trailing slash
 
@@ -315,7 +326,7 @@ function extractKeywords(content: string, title: string): string[] {
     "those"
   ])
 
-  const words = (content + " " + title)
+  const words = `${content} ${title}`
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
@@ -337,8 +348,8 @@ function extractKeywords(content: string, title: string): string[] {
 // Parse content into sections based on headers
 function parseContentSections(
   markdownContent: string,
-  pageTitle: string,
-  urlPath: string
+  _pageTitle: string,
+  _urlPath: string
 ) {
   const sections: Array<{ title: string; content: string; anchor: string }> = []
   const lines = markdownContent.split("\n")

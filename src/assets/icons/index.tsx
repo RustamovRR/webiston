@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import type { FC } from "react"
 
 interface IProps {
   className?: string
@@ -41,6 +41,7 @@ export const CircleIcon: FC<IProps> = ({ className }) => {
 export const ReactIcon: FC<IProps> = ({ className }) => {
   return (
     <svg
+      aria-hidden="true"
       role="img"
       viewBox="0 0 24 24"
       fill="#61DAFB"
@@ -56,6 +57,7 @@ export const ReactIcon: FC<IProps> = ({ className }) => {
 export const JavascriptIcon: FC<IProps> = ({ className }) => {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       aria-label="JavaScript"
       role="img"
@@ -81,6 +83,7 @@ export const JavascriptIcon: FC<IProps> = ({ className }) => {
 export const ToolsIcon: FC<IProps> = ({ className }) => {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -101,6 +104,7 @@ export const ToolsIcon: FC<IProps> = ({ className }) => {
 export const ArrowRightIcon: FC<IProps> = ({ className }) => {
   return (
     <svg
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -120,6 +124,7 @@ export const ArrowRightIcon: FC<IProps> = ({ className }) => {
 
 export const TelegramIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     width={32}
@@ -132,6 +137,7 @@ export const TelegramIcon = () => (
 
 export const LinkedInIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     width={32}
@@ -144,6 +150,7 @@ export const LinkedInIcon = () => (
 
 export const TwitterIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     width={32}
@@ -156,6 +163,7 @@ export const TwitterIcon = () => (
 
 export const EmailIcon = () => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     width={32}

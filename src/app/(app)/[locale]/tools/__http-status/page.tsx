@@ -1,4 +1,5 @@
-import { Metadata } from "next"
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
+import type { Metadata } from "next"
 import { HttpStatus } from "@/modules/tools"
 
 export const metadata: Metadata = {

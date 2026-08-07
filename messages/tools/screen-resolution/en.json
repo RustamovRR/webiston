@@ -1,102 +1,141 @@
 {
   "ScreenResolutionPage": {
     "ToolHeader": {
-      "title": "Screen Resolution",
-      "description": "View real-time screen dimensions, resolution and display information"
+      "title": "Screen resolution",
+      "description": "The size your CSS actually sees. Viewport, window and screen dimensions, the breakpoint you are currently in — Tailwind, Bootstrap or MUI — pixel density and aspect ratio. All of it updates the moment you drag the window edge, and you can ask about a width you are not sitting at."
     },
-    "ControlPanel": {
-      "title": "Tool Input",
-      "status": "Ready",
-      "loadingStatus": "Loading...",
-      "controlPanelTitle": "Control Panel",
-      "refreshButton": "Refresh Information",
-      "fullscreenButton": "Fullscreen Mode",
-      "exitFullscreenButton": "Exit Fullscreen",
-      "demoDataButton": "Demo Data",
-      "downloadButton": "Download Information",
-      "mainIndicators": "Main Indicators",
-      "megapixels": "megapixels",
-      "width": "width",
-      "height": "height"
+    "controls": {
+      "refresh": "Refresh",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "download": "Save JSON"
     },
-    "OutputPanel": {
-      "title": "Tool Output/Result",
-      "dataAvailable": "Data Available",
-      "noData": "No Data",
-      "waitingTitle": "Waiting for Data",
-      "waitingDesc": "Click one of the buttons above to get screen information",
-      "screenInfoTitle": "Screen Information",
-      "screenSize": "Screen Size",
-      "resolutionType": "Resolution Type",
-      "viewportInfoTitle": "Viewport Information",
-      "innerSize": "Inner Size",
-      "outerSize": "Outer Size",
-      "technicalInfoTitle": "Technical Information",
-      "pixelRatio": "Pixel Ratio",
-      "aspectRatio": "Aspect Ratio",
+    "readout": {
+      "title": "Your viewport, right now",
+      "cssPixels": "CSS pixels",
+      "breakpoint": "Breakpoint",
+      "aspectRatio": "Aspect ratio",
+      "pixelRatio": "Pixel ratio",
       "orientation": "Orientation",
-      "colorDepth": "Color Depth",
-      "deviceType": "Device Type",
-      "retinaDisplay": "Retina Display",
+      "breakpointPreview": "Breakpoint (preview)"
+    },
+    "breakpoints": {
+      "title": "Breakpoints",
+      "explainer": "min-width queries stack: every breakpoint up to and including {active} is currently matching, and {active} is the one that wins a conflict.",
+      "frameworkLabel": "Breakpoint scale",
+      "explainerPreview": "At {width}px, every breakpoint up to and including {active} matches, and {active} is the one that wins a conflict."
+    },
+    "measurements": {
+      "title": "Every measurement",
+      "copy": "Copy measurements",
+      "rows": {
+        "viewport": "Viewport",
+        "window": "Browser window",
+        "screen": "Screen (CSS px)",
+        "screenDevice": "Screen (device px)",
+        "available": "Available area",
+        "aspectRatio": "Screen aspect ratio",
+        "megapixels": "Total pixels",
+        "colorDepth": "Colour depth",
+        "fullscreen": "Fullscreen"
+      },
+      "hints": {
+        "viewport": "what media queries measure",
+        "window": "including the browser's own chrome",
+        "screen": "the whole display",
+        "screenDevice": "CSS pixels multiplied by the pixel ratio",
+        "available": "the display minus the dock or taskbar"
+      }
+    },
+    "presets": {
+      "title": "Common devices",
+      "caption": "Viewport size and pixel ratio for widely used devices",
+      "youAreHere": "you",
+      "columns": {
+        "device": "Device",
+        "viewport": "Viewport",
+        "dpr": "DPR"
+      },
+      "hint": "Pick a device to answer for its viewport instead of yours."
+    },
+    "mediaQuery": {
+      "title": "CSS for this size",
+      "copy": "Copy CSS"
+    },
+    "values": {
       "yes": "Yes",
       "no": "No",
-      "scrollPositionTitle": "Scroll Position",
-      "horizontalScroll": "Horizontal Scroll",
-      "verticalScroll": "Vertical Scroll"
+      "portrait": "Portrait",
+      "landscape": "Landscape"
     },
-    "ResolutionCategories": {
-      "title": "Resolution Types",
-      "categories": {
-        "4K": "4K UHD",
-        "QHD": "QHD",
-        "FHD": "Full HD",
-        "HD": "HD",
-        "SD": "SD"
+    "reference": {
+      "title": "Which size property to use, and when",
+      "intro": "Four properties report four different rectangles, and using the wrong one is why a layout can look right in the browser and wrong in a media query.",
+      "columns": {
+        "property": "Property",
+        "measures": "What it measures",
+        "useFor": "Use it for"
+      },
+      "rows": {
+        "screen": {
+          "property": "screen.width / height",
+          "measures": "The whole display, ignoring the browser entirely.",
+          "useFor": "Analytics and rough device classification. Never for layout."
+        },
+        "avail": {
+          "property": "screen.availWidth / availHeight",
+          "measures": "The display minus space the OS reserves — dock, taskbar, menu bar.",
+          "useFor": "Working out how large a window can actually be."
+        },
+        "inner": {
+          "property": "innerWidth / innerHeight",
+          "measures": "The area the page is drawn in, scrollbar included.",
+          "useFor": "Everything to do with layout. This is what CSS media queries read."
+        },
+        "outer": {
+          "property": "outerWidth / outerHeight",
+          "measures": "The whole browser window, including tabs, address bar and borders.",
+          "useFor": "Positioning a window you opened yourself. Almost nothing else."
+        },
+        "dpr": {
+          "property": "devicePixelRatio",
+          "measures": "How many device pixels paint one CSS pixel.",
+          "useFor": "Choosing image resolution and drawing sharply on a canvas."
+        }
       }
     },
-    "DeviceTypes": {
-      "title": "Device Types",
-      "types": {
-        "Mobile": "Mobile",
-        "Tablet": "Tablet",
-        "Desktop": "Desktop",
-        "Large": "Large Screen"
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "screenVsViewport": {
+          "question": "Why do the screen and viewport sizes differ?",
+          "answer": "The screen is your whole monitor. The viewport is the rectangle the page is drawn into, with the browser's tabs, address bar, any sidebar and the scrollbar taken off. CSS media queries measure the viewport, so that is the number to design against — and it is the one that changes when you drag the window edge while the screen size stays put."
+        },
+        "whyNotMarketing": {
+          "question": "My phone is advertised as 1290×2796. Why does this say 430×932?",
+          "answer": "Both are true, in different units. The advertised number counts physical device pixels; CSS counts CSS pixels, and on that phone three device pixels paint one CSS pixel — the device pixel ratio is 3. 1290 ÷ 3 = 430. Media queries, font sizes and every length in your stylesheet work in CSS pixels, which is why the device table on this page lists those."
+        },
+        "breakpoints": {
+          "question": "Why is more than one breakpoint highlighted?",
+          "answer": "Because Tailwind's breakpoints are min-width queries and min-width queries stack. At 1400px wide, sm:, md:, lg: and xl: are all matching at once — the reason lg:flex and xl:grid do not fight is that the later one wins on source order, not because the earlier one stopped applying. The emphasised cell is the deciding prefix; the rest are marked as passed."
+        },
+        "pixelRatio": {
+          "question": "What does the pixel ratio change in practice?",
+          "answer": "Two things. Images: at a ratio of 2 a 400px-wide slot needs an 800px image to look sharp, which is what srcset and the 2x descriptor are for. And canvas: set the element's width attribute to the CSS width times the ratio, then scale the context by the same factor, or everything you draw comes out soft."
+        },
+        "aspectRatio": {
+          "question": "Why does my aspect ratio not look like a round number?",
+          "answer": "Because most screens are not exactly 16:9. A 1512×982 MacBook display reduces to 756:491, which is arithmetically correct and tells you nothing — so this page matches the measured ratio against the standards first, within 1.5%, and only falls back to a fraction or a decimal when no standard is close enough."
+        }
       }
     },
-    "ModeInfo": {
-      "title": "Mode Information",
-      "fullscreenMode": "Fullscreen Mode",
-      "retinaDisplay": "Retina Display",
-      "viewportRatio": "Viewport Ratio"
-    },
-    "InfoSection": {
-      "title": "Screen Resolution and Display Information",
-      "realTimeTitle": "Real-time Monitoring",
-      "realTimeDesc": "Monitor screen dimensions, viewport information and device specifications in real-time. Instant tracking of browser window size and scroll position.",
-      "professionalTestingTitle": "Professional Testing",
-      "professionalTestingItems": {
-        "responsive": "Responsive web design testing",
-        "crossDevice": "Cross-device compatibility check",
-        "fullscreen": "Fullscreen mode analysis",
-        "pixelRatio": "Pixel ratio and Retina detection"
-      },
-      "technicalAnalysisTitle": "Technical Analysis",
-      "technicalAnalysisItems": {
-        "resolution": "Resolution category detection",
-        "deviceType": "Device type classification",
-        "aspectRatio": "Aspect ratio calculation",
-        "jsonExport": "JSON export functionality"
-      },
-      "resolutionStandardsTitle": "Resolution Standards and Device Types",
-      "popularResolutions": "Popular Resolutions:",
-      "deviceCategories": "Device Categories:",
-      "webDevTitle": "Web Development",
-      "webDevDesc": "Set up breakpoints correctly for responsive design. Apply mobile-first approach and test on various devices.",
-      "qaTitle": "Quality Assurance",
-      "qaDesc": "Simulate different device sizes for cross-browser testing. Test separately for Retina displays.",
-      "proTipTitle": "Professional Tip:",
-      "proTipDesc": "Proper viewport meta tag setup is crucial for responsive design.",
-      "proTipCode": "don't forget to use."
+    "probe": {
+      "label": "Check another width",
+      "placeholder": "e.g. 768",
+      "apply": "Check",
+      "rotate": "Rotate",
+      "clear": "Back to my window",
+      "outOfRange": "Enter a width between {min} and {max} pixels."
     }
   }
 }

@@ -88,10 +88,52 @@ function applyCaseAware(
 }
 
 /**
+ * Is this text Russian rather than Uzbek written in Cyrillic?
+ *
+ * It decides ONE thing: what to do with the soft sign. The two languages want
+ * opposite answers and the letter carries no clue of its own —
+ *   Russian  ochen' , mat'   (the apostrophe stands for a real palatalisation)
+ *   Uzbek    film   , asfalt (Uzbek Latin has no soft sign; it is simply dropped)
+ * and "фильм" and "очень" are orthographically identical patterns. Only the
+ * surrounding LANGUAGE separates them.
+ *
+ * ы and щ are the marker: both exist in Russian and in neither Uzbek alphabet,
+ * and neither can be produced by converting Uzbek text. Uzbek is the default
+ * because this is an Uzbek converter — an isolated "очень" with no other
+ * Russian letter in sight comes out "ochen", which is the right bias here.
+ */
+function isRussianText(text: string): boolean {
+  return /[ыщЫЩ]/.test(text)
+}
+
+/**
+ * ц is "ts" after a vowel and "s" everywhere else.
+ *
+ * This is the standard Uzbek rule and it splits the ц words almost exactly in
+ * half. The flat "ts" mapping got the after-vowel half right —
+ * konstitutsiya, informatsiya, operatsiya, militsiya — and every other ц word
+ * wrong: funktsiya/aktsiya/stantsiya/leksiya for funksiya/aksiya/stansiya, and
+ * tsirk/tsement for sirk/sement. The -ксия / -нсия class is one of the largest
+ * in administrative and technical Uzbek.
+ *
+ * Note the asymmetry this creates, deliberately: Latin "funksiya" cannot be
+ * turned back into "функция", because Uzbek Latin spells "пенсия" the same way
+ * — "pensiya". The ambiguity is in the orthography, not in this code, and no
+ * rule can resolve it. Producing correct Latin is worth more than a round trip
+ * that was only stable because it was consistently wrong.
+ */
+function romaniseTse(text: string, index: number): string {
+  const prev = text[index - 1]
+
+  return prev && isCyrillicVowel(prev) ? "ts" : "s"
+}
+
+/**
  * Transliterate Cyrillic text to Latin (Uzbek + Russian)
  * Handles context-aware rules for "е" and Russian-specific characters
  */
 export function transliterateCyrillicToLatin(text: string): string {
+  const russianMode = isRussianText(text)
   let result = ""
   let i = 0
 
@@ -155,17 +197,15 @@ export function transliterateCyrillicToLatin(text: string): string {
     if (isRussianOnlyChar(char)) {
       // Special handling for ь (soft sign)
       if (lowerChar === "ь") {
-        const nextLower = nextChar.toLowerCase()
-        // ь before iotated vowel (е, ё, ю, я) → apostrophe
-        // семья → sem'ya, вьюга → v'yuga, компьютер → komp'yuter
-        if ("еёюя".includes(nextLower)) {
-          result += "'"
-          i++
-          continue
-        }
-        // ь at end of word or before consonant → apostrophe
-        // мать → mat', очень → ochen'
-        result += "'"
+        // Uzbek Latin has no soft sign. Dropping it is what turns "фильм",
+        // "асфальт", "автомобиль", "мультфильм" into film, asfalt, avtomobil,
+        // multfilm instead of fil'm, asfal't, avtomobil', mul'tfil'm — and it
+        // closes a silent corruption: a mid-word ь used to round-trip back as
+        // ъ, so фильм → fil'm → филъм rewrote the user's document.
+        //
+        // In Russian text the apostrophe is correct and is kept: ochen', mat',
+        // sem'ya, komp'yuter.
+        result += russianMode ? "'" : ""
         i++
         continue
       }
@@ -176,6 +216,13 @@ export function transliterateCyrillicToLatin(text: string): string {
       } else {
         result += char
       }
+      i++
+      continue
+    }
+
+    // === ц: positional, so it cannot go in a flat mapping table ===
+    if (lowerChar === "ц") {
+      result += applyCaseAware(char, romaniseTse(text, i), text, i)
       i++
       continue
     }

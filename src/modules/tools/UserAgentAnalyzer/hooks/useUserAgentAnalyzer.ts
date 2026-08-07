@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 export interface ParsedUserAgent {
   browser: {
@@ -87,16 +87,6 @@ export const useUserAgentAnalyzer = (
   const [currentUA, setCurrentUA] = useState<string>("")
 
   const { onSuccess, onError } = options
-
-  // Initialize with current browser's User Agent
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const ua = navigator.userAgent
-      setCurrentUA(ua)
-      setUserAgent(ua)
-      parseUserAgent(ua)
-    }
-  }, [])
 
   const parseUserAgent = useCallback(
     (ua: string): ParsedUserAgent | null => {
@@ -288,6 +278,17 @@ export const useUserAgentAnalyzer = (
     [onError]
   )
 
+  // Initialize with current browser's User Agent
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const ua = navigator.userAgent
+      setCurrentUA(ua)
+      setUserAgent(ua)
+      parseUserAgent(ua)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parseUserAgent])
+
   const analyzeUserAgent = useCallback(() => {
     if (!userAgent.trim()) {
       onError?.("User Agent stringini kiriting")
@@ -367,7 +368,9 @@ export const useUserAgentAnalyzer = (
       { label: "so'z", value: userAgent.split(/\s+/).length },
       {
         label: "versiya",
-        value: parsedUA?.browser.major ? parseInt(parsedUA.browser.major) : 0
+        value: parsedUA?.browser.major
+          ? parseInt(parsedUA.browser.major, 10)
+          : 0
       }
     ]
   }, [userAgent, parsedUA])

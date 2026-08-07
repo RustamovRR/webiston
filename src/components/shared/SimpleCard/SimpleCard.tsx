@@ -24,21 +24,41 @@ const SimpleCard: FC<IProps> = ({
   ...props
 }) => {
   const classNames = cn(
-    "relative group transform transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg rounded-lg overflow-hidden border border-zinc-200 hover:bg-zinc-50 select-none dark:border-zinc-800 dark:hover:bg-zinc-900/50",
+    // `bg-card` — these had NO background at all (measured alpha 0), so 41 of
+    // them read as outlines on the page rather than as objects. A card that is
+    // a link needs to look like a surface you can pick up.
+    //
+    // `border-border-strong` — the boundary was `--border` at 1.32:1 (light) /
+    // 1.33:1 (dark) against the page. WCAG 1.4.11 requires 3:1 for the boundary
+    // that IDENTIFIES an interactive component, and this is that boundary.
+    // `--border` stays the decorative token for rules and dividers.
+    "group relative select-none overflow-hidden rounded-lg border border-border-strong bg-card",
+    // Plain `transition`: Tailwind v4 compiles `-translate-y-*` to the
+    // `translate` property, which a hand-written `transition-[transform,…]`
+    // list does not cover — the lift was changing with no transition at all.
+    "transition duration-300 ease-out",
+    "hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg",
+    // The card is a link, so it must show a focus ring — hover-only feedback
+    // leaves keyboard users with no indication of where they are.
+    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
     {
       "pointer-events-none opacity-50": disabled
     },
     className
   )
 
+  // Left-aligned, not centred. In a 4–5 column grid the eye needs a predictable
+  // return point on each scan line; centred text moves that point per card and
+  // measurably slows scanning. Centring also made every card look like a
+  // standalone banner rather than one row of a list.
   const content = (
-    <div className="flex flex-col items-center p-6 text-center">
-      <div className="text-center">
-        <h3 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-          {title}
-        </h3>
-        <p className="text-zinc-600 dark:text-zinc-400">{description}</p>
-      </div>
+    <div className="flex h-full flex-col gap-2 p-5">
+      <h3 className="font-semibold text-base text-foreground leading-snug">
+        {title}
+      </h3>
+      <p className="text-pretty text-muted-foreground text-sm leading-relaxed">
+        {description}
+      </p>
     </div>
   )
 

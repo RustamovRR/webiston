@@ -1,15 +1,18 @@
-import { FC, ReactNode } from "react"
-import { Link as I18nLink } from "@/i18n/navigation"
 import Link from "next/link"
+import type { ComponentPropsWithoutRef, FC, ReactNode } from "react"
+import { Link as I18nLink } from "@/i18n/navigation"
 import { cn } from "@/lib"
 
-interface IProps {
+// The rest props are spread onto an anchor, so type them as anchor props.
+// This previously read `[key: string]: any`, which silently widened EVERY prop
+// to `any` — including misspelled ones — so the interface above bought nothing.
+interface IProps
+  extends Omit<ComponentPropsWithoutRef<"a">, "href" | "className"> {
   variant?: "primary" | "secondary" | "outline"
   children: ReactNode
   href: string
   className?: string
   isNextLink?: boolean
-  [key: string]: any // For any other props
 }
 
 const ButtonLink: FC<IProps> = ({
@@ -21,12 +24,39 @@ const ButtonLink: FC<IProps> = ({
 }) => {
   const classNames = cn(
     "relative h-12 px-6 py-2 rounded-lg font-medium text-lg transition-colors duration-300 ease-in-out flex items-center justify-center",
+    // The previous version pinned `primary` to `bg-white text-black` in BOTH
+    // schemes and called it a "documented exception", on the reasoning that
+    // semantic tokens flip with the scheme and would put black text on a dark
+    // surface. That reasoning held for `bg-card`, but it made the hero's main
+    // call to action a **white pill on a white page** in light mode — measured
+    // invisible, only its text readable.
+    //
+    // `bg-foreground text-background` is the pair that was wanted all along:
+    // the two flip TOGETHER, so the intent ("maximum-contrast pill, inverted
+    // from the page") survives in both schemes instead of being pinned to one.
+    // Dark mode is unchanged — still a white pill with dark text.
+    //
+    //   light  near-black on white  -> 17.4:1
+    //   dark   near-white on dark   -> 18.7:1
     {
-      "bg-white text-black hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100":
+      "bg-foreground text-background hover:bg-foreground/90":
         variant === "primary",
-      "bg-zinc-900 text-white border border-zinc-700 hover:bg-zinc-800 dark:bg-zinc-900 dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-800":
+      "bg-card text-card-foreground border border-border-strong hover:bg-accent":
         variant === "secondary",
-      "bg-transparent text-zinc-900 border border-zinc-300 hover:bg-zinc-100 hover:border-zinc-400 dark:text-white dark:border-white/20 dark:hover:bg-white/10 dark:hover:border-white/30":
+      // `border-strong`, not `border`: this is the only thing that makes the
+      // secondary CTA perceivable as a button at all, and at `--border` it sat
+      // at 1.35:1 against the page — measured, and below WCAG 1.4.11's 3:1.
+      //
+      // `bg-card/60 backdrop-blur-sm`, not `bg-background/60` and not
+      // `bg-transparent`. Transparent let the hero grid run straight through
+      // the label. `background/60` fixed that in light mode and did NOTHING
+      // in dark: the wash was the page's own colour, so the pill measured
+      // 1.0:1 against the page — a hole with a border, sitting next to a
+      // crisp white primary. `card` is the one token that is "one step off
+      // the page" in BOTH schemes (1.04:1 light, 1.11:1 dark), so the button
+      // reads as a raised glass surface either way — the same ~5% lift
+      // Linear and Vercel give their dark secondary buttons.
+      "bg-card/60 backdrop-blur-sm text-foreground border border-border-strong hover:bg-accent hover:border-input":
         variant === "outline"
     },
     className

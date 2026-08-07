@@ -1,99 +1,149 @@
 {
   "JwtDecoderPage": {
     "ToolHeader": {
-      "title": "JWT Token Dekoder",
-      "description": "JSON Web Token larni dekodlash va tahlil qilish uchun professional vosita"
+      "title": "JWT Dekoder — token ichida nima bor",
+      "description": "JSON Web Token'ni ochib ko'ring: header, payload va muddati. Hammasi brauzeringizda, hech qayerga yuborilmaydi."
     },
-    "ControlPanel": {
-      "decoded": "Dekodlangan",
-      "raw": "Xom ma'lumot",
-      "sampleJwt": "Namuna JWT",
-      "fileUpload": "Fayl yuklash",
-      "uploading": "Yuklanmoqda...",
-      "showSignature": "Signature ko'rsatish",
-      "hideSignature": "Signature yashirish",
-      "validJwt": "Yaroqli JWT"
-    },
-    "ViewModeInfo": {
-      "title": "Ko'rish rejimlari:",
-      "decoded": "Dekodlangan",
-      "raw": "Xom ma'lumot",
-      "decodedDescription": "JWT ning header va payload qismlarini JSON formatda ko'rsatadi",
-      "rawDescription": "JWT ning asl Base64 formatidagi kodlangan ma'lumotlarini ko'rsatadi"
-    },
-    "InputPanel": {
-      "title": "JWT Token Kirish",
-      "placeholder": "JWT tokenni bu yerga kiriting... (eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
-      "characters": "belgi",
-      "parts": "qism",
-      "lines": "qator"
-    },
-    "ErrorDisplay": {
-      "title": "Xatolik",
-      "invalidFormat": "Noto'g'ri JWT format yoki buzilgan token",
-      "threeParts": "JWT 3 ta qismdan iborat bo'lishi kerak (header.payload.signature)"
-    },
-    "TokenInfo": {
-      "expiration": "Muddat",
-      "expired": "Muddati tugagan",
-      "valid": "Hali amal qiladi",
-      "algorithm": "Algoritm",
-      "unknown": "Noma'lum",
-      "type": "Turi",
-      "issued": "Berilgan",
-      "noData": "Ma'lumot yo'q"
-    },
-    "TokenParts": {
-      "header": "Header",
-      "payload": "Payload",
-      "rawData": "Base64 formatidagi xom ma'lumot:"
-    },
-    "SignatureSection": {
-      "title": "Signature (Imzo)",
-      "description": "JWT tokenning xavfsizlik imzosi:"
-    },
-    "SignatureInfo": {
-      "title": "Signature (Imzo) nima?",
-      "description1": "Signature - JWT tokenning uchinchi qismi bo'lib, tokenning haqiqiyligini tasdiqlaydi.",
-      "description2": "Bu qism server tomonidan maxfiy kalit bilan yaratiladi va tokenning o'zgartirilmaganligini kafolatlaydi.",
-      "description3": "Signatureni ko'rsatish/yashirish tugmasi orqali ushbu maxfiy ma'lumotni boshqarishingiz mumkin."
-    },
-    "InfoSection": {
-      "structure": "JWT Tuzilishi",
-      "format": "JWT Formati",
-      "structureDescription": "header.payload.signature",
-      "example": "Misol",
-      "parts": "Qismlar",
-      "headerExample": "{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}",
-      "payloadExample": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
-      "about": "JWT haqida ma'lumot",
-      "whatIsJwt": "JWT nima?",
-      "whatIsJwtDescription1": "• JSON Web Token - ma'lumotlarni xavfsiz uzatish uchun",
-      "whatIsJwtDescription2": "• 3 qismdan iborat: Header.Payload.Signature",
-      "whatIsJwtDescription3": "• Base64 formatida kodlangan",
-      "whatIsJwtDescription4": "• Digitally signed bo'lishi mumkin",
-      "standardFields": "Standart fieldlar",
-      "issuer": "• iss - Issuer (kim bergan)",
-      "subject": "• sub - Subject (nima haqida)",
-      "expiration": "• exp - Expiration time",
-      "issuedAt": "• iat - Issued at time",
-      "security": "Xavfsizlik",
-      "securityDescription1": "• Signature orqali ma'lumot tekshiriladi",
-      "securityDescription2": "• Expiration time ni doim tekshiring",
-      "securityDescription3": "• Secret key ni maxfiy saqlang",
-      "securityDescription4": "• HTTPS da uzating"
+    "Input": {
+      "title": "JWT token",
+      "placeholder": "JWT tokenni shu yerga qo'ying — eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…",
+      "sample": "Namuna",
+      "upload": "Fayldan yuklash",
+      "clear": "Tozalash",
+      "characters": "Belgilar:",
+      "segments": "Qismlar:",
+      "dropHere": "Faylni shu yerga tashlang",
+      "accepts": "TXT · JSON"
     },
     "Samples": {
-      "standard": "Standart JWT Token",
-      "expired": "Muddati tugagan JWT",
-      "complex": "Murakkab Payload bilan"
+      "valid": "Amal qiladigan token",
+      "expired": "Muddati tugagan token",
+      "unsigned": "Imzosiz (alg: none)"
     },
-    "FileErrors": {
-      "fileSizeError": "Fayl hajmi 10MB dan oshmasligi kerak.",
-      "fileTypeError": "Faqat .txt yoki .json fayllar qabul qilinadi.",
-      "fileReadError": "Faylni o'qishda xatolik yuz berdi.",
-      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
-      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    "Summary": {
+      "title": "Bu token",
+      "empty": "Token qo'ying — ichidagi hammasi shu yerda ko'rinadi",
+      "privacy": "Token brauzeringizdan chiqmaydi",
+      "algorithm": "Algoritm",
+      "type": "Turi",
+      "absent": "ko'rsatilmagan",
+      "unsigned": "Bu tokenning header'ida alg: none yozilgan — ya'ni u umuman imzolanmagan. Agar server header'dagi algoritmga ishonsa, bunday tokenni istalgan odam o'zi yasab yubora oladi. Bu JWT'ning eng eski hujum usuli.",
+      "status": {
+        "active": "Token hali amal qiladi",
+        "expired": "Muddati tugagan",
+        "notYet": "Hali kuchga kirmagan (nbf)",
+        "noExpiry": "Muddat ko'rsatilmagan — bu token o'z-o'zidan eskirmaydi"
+      },
+      "claims": {
+        "iss": "kim bergan",
+        "sub": "kim haqida",
+        "aud": "kimga",
+        "jti": "ID"
+      },
+      "issuedAt": "Berilgan",
+      "notBefore": "Kuchga kiradi"
+    },
+    "Parts": {
+      "download": "Yuklab olish",
+      "header": {
+        "title": "Header",
+        "description": "Tokenning qaysi algoritm bilan imzolanganini va turini aytadi. Bu qism imzolangan, lekin shifrlanmagan."
+      },
+      "payload": {
+        "title": "Payload",
+        "description": "Tokenning mazmuni — da'volar (claims). Bu ham shifrlanmagan: har kim o'qiy oladi, shuning uchun bu yerga parol yoki maxfiy ma'lumot yozilmaydi."
+      },
+      "signature": {
+        "title": "Signature (imzo)",
+        "description": "Uchinchi qism — header va payload ustidan olingan imzo. Bu asbob uni ochmaydi va tekshirmaydi: tekshirish uchun serverning maxfiy kaliti kerak, kalitni esa hech qachon veb-sahifaga kiritmaslik kerak.",
+        "show": "Ko'rsatish",
+        "hide": "Yashirish",
+        "hidden": "Imzo yashirilgan"
+      }
+    },
+    "Errors": {
+      "threeParts": "JWT nuqta bilan ajratilgan uchta qismdan iborat bo'lishi kerak: header.payload.signature",
+      "notBase64": "Tokenning {part} qismi base64url emas — nusxalashda bir qismi tushib qolgan bo'lishi mumkin.",
+      "notJson": "Tokenning {part} qismi ochildi, lekin ichidan JSON chiqmadi.",
+      "notObject": "Tokenning {part} qismi JSON obyekt emas.",
+      "tooLarge": "Fayl juda katta. JWT bir necha kilobaytdan oshmaydi.",
+      "unsupported": "Bu fayl turi qo'llab-quvvatlanmaydi. Faqat .txt va .json.",
+      "unreadable": "Faylni o'qib bo'lmadi."
+    },
+    "reference": {
+      "title": "JWT qanday tuzilgan",
+      "intro": "JSON Web Token — nuqta bilan ajratilgan uchta base64url qism. Birinchi ikkitasi oddiy JSON: ular imzolangan, ammo SHIFRLANMAGAN, ya'ni tokenni qo'lida ushlagan har kim ichidagini o'qiy oladi. Imzo esa faqat tokenning o'zgartirilmaganini isbotlaydi.",
+      "parts": {
+        "header": {
+          "title": "Header",
+          "body": "Qaysi algoritm bilan imzolangan (alg) va nima turdagi token (typ). Ba'zan kalit identifikatori — kid — ham shu yerda bo'ladi."
+        },
+        "payload": {
+          "title": "Payload",
+          "body": "Da'volar: kim, kimga, qachongacha. Ochiq matn, shuning uchun bu yerga hech qachon maxfiy ma'lumot solinmaydi."
+        },
+        "signature": {
+          "title": "Signature",
+          "body": "Header va payload ustidan maxfiy kalit yoki xususiy kalit bilan olingan imzo. Faqat u tokenning haqiqiyligini isbotlaydi."
+        }
+      },
+      "claims": {
+        "title": "Standart da'volar (RFC 7519)",
+        "claim": "Da'vo",
+        "name": "Nomi",
+        "meaning": "Ma'nosi",
+        "rows": {
+          "iss": {
+            "name": "Issuer",
+            "meaning": "Tokenni kim bergan. Odatda auth serverning manzili; qabul qiluvchi tomon uni oq ro'yxat bilan solishtiradi."
+          },
+          "sub": {
+            "name": "Subject",
+            "meaning": "Token kim haqida. Ko'p tizimlarda bu foydalanuvchining ichki ID si — email emas, chunki email o'zgarishi mumkin."
+          },
+          "aud": {
+            "name": "Audience",
+            "meaning": "Token kimga atalgan. Boshqa xizmatning tokenini qabul qilmaslik uchun tekshiriladi."
+          },
+          "exp": {
+            "name": "Expiration Time",
+            "meaning": "Qachondan keyin token qabul qilinmasligi kerak. Epochdan beri o'tgan sekundlar."
+          },
+          "nbf": {
+            "name": "Not Before",
+            "meaning": "Shu vaqtgacha token hali kuchga kirmagan. Kamdan-kam ishlatiladi."
+          },
+          "iat": {
+            "name": "Issued At",
+            "meaning": "Token qachon berilgan. `exp` bilan birga tokenning umrini beradi."
+          },
+          "jti": {
+            "name": "JWT ID",
+            "meaning": "Tokenning noyob identifikatori. Bir tokenni ikki marta ishlatishning oldini olish uchun."
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "what": {
+          "question": "JWT shifrlanganmi? Payload'ni har kim o'qiy oladimi?",
+          "answer": "JWT shifrlanmagan, faqat imzolangan. Header va payload — oddiy base64url, ya'ni tokenni ushlagan har kim ularni bir soniyada ochib o'qiy oladi. Imzo faqat bitta narsani kafolatlaydi: token yo'lda o'zgartirilmagan. Shuning uchun payload'ga parol, karta raqami yoki boshqa maxfiy ma'lumot solinmaydi."
+        },
+        "verify": {
+          "question": "Bu asbob imzoni tekshiradimi?",
+          "answer": "Yo'q, va bu ataylab. Imzoni tekshirish uchun serverning maxfiy kaliti (HS256 uchun) yoki ochiq kaliti (RS256 uchun) kerak. Maxfiy kalitni veb-sahifaga kiritish — kalitni oshkor qilishning eng oson yo'li, hatto sahifa uni hech qayerga yubormasa ham. Tekshirish serverda, kutubxona orqali bajarilishi kerak."
+        },
+        "expiry": {
+          "question": "Token muddati tugaganini qanday bilaman?",
+          "answer": "Payload'dagi exp da'vosi — epochdan beri o'tgan sekundlar. Asbob uni brauzeringiz soati bilan solishtiradi va tepada oddiy jumla bilan aytadi: hali amal qiladi yoki tugagan, qachon. Agar tokenda exp umuman bo'lmasa, asbob \"muddat ko'rsatilmagan\" deydi — \"amal qiladi\" demaydi, chunki tekshirilmagan narsa haqida shunday deyish noto'g'ri bo'lardi."
+        },
+        "privacy": {
+          "question": "Tokenim serverga yuboriladimi?",
+          "answer": "Yo'q. Dekodlash brauzeringizda bajariladi va sahifa yuklangandan keyin bu asbob hech qanday tarmoq so'rovi yubormaydi. Token hech qayerga saqlanmaydi ham: sahifani yangilasangiz, u yo'qoladi."
+        }
+      }
     }
   }
 }

@@ -1,144 +1,93 @@
 "use client"
 
-import { Code, FileText, Download } from "lucide-react"
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
+import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
+import { Button } from "@webiston/ui/primitives/button"
+import { CodeHighlight } from "@webiston/ui/primitives/code-highlight"
+import { Download } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Button } from "@/components/ui/button"
-import { CodeHighlight, GradientTabs } from "@/components/ui"
-import { StatsDisplay, CopyButton } from "@/components/shared"
+
+import { ToolCard } from "@/components/shared/ToolCard"
+
+import { OUTPUT_FORMATS } from "../constants"
+import type { OutputFormat } from "../types"
+
+/**
+ * The block to paste, in the two shapes people paste it into.
+ *
+ * `html` for a `<head>`, and `next` for an App Router `metadata` export —
+ * this site runs on Next and so does a large part of who opens this page, and
+ * hand-translating twelve `<meta>` tags into the `openGraph` object shape is
+ * exactly the mechanical step worth removing. The old panel offered "raw" and
+ * "formatted", where formatted meant the same tags wrapped in a whole
+ * boilerplate HTML document nobody needed.
+ */
 
 interface OutputPanelProps {
-  generatedMeta: string
-  formattedMeta: string
-  outputFormat: string
-  outputStats: Array<{ label: string; value: number }>
-  onFormatChange: (format: string) => void
-  onDownload: (format: "raw" | "formatted") => void
+  code: string
+  format: OutputFormat
+  onFormatChange: (format: OutputFormat) => void
+  tagCount: number
+  onDownload: () => void
+  className?: string
 }
 
-const OutputPanel: React.FC<OutputPanelProps> = ({
-  generatedMeta,
-  formattedMeta,
-  outputFormat,
-  outputStats,
+export function OutputPanel({
+  code,
+  format,
   onFormatChange,
-  onDownload
-}) => {
-  const t = useTranslations("OgMetaGeneratorPage.OutputPanel")
-
-  const formatOptions = [
-    {
-      value: "raw",
-      label: t("metaTags"),
-      icon: <Code size={16} />
-    },
-    {
-      value: "formatted",
-      label: t("fullHtml"),
-      icon: <FileText size={16} />
-    }
-  ]
-
-  const currentOutput =
-    outputFormat === "formatted" ? formattedMeta : generatedMeta
-  const currentLanguage = outputFormat === "formatted" ? "html" : "xml"
+  tagCount,
+  onDownload,
+  className
+}: OutputPanelProps) {
+  const t = useTranslations("OgMetaGeneratorPage.output")
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white/80 p-6 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="mb-6 flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-red-500"></div>
-            <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-            <div className="h-3 w-3 rounded-full bg-green-500"></div>
-          </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {t("title")}
+    <ToolCard
+      className={className}
+      title={t("title")}
+      actions={
+        <>
+          <span className="text-muted-foreground text-xs tabular-nums">
+            {t("tags", { count: tagCount })}
           </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green-500"></div>
-          <span className="text-xs text-zinc-500 dark:text-zinc-500">
-            {t("status")}
-          </span>
-        </div>
-      </div>
-
-      {/* Format Selection */}
-      <div className="mb-6">
-        <GradientTabs
-          options={formatOptions}
-          value={outputFormat}
+          <CopyButton text={code} variant="outline" label={t("copy")} />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onDownload}
+            title={t("download")}
+          >
+            <Download aria-hidden="true" />
+            <span className="sr-only">{t("download")}</span>
+          </Button>
+        </>
+      }
+      bodyClassName="p-5 space-y-4"
+    >
+      <div className="min-w-0 overflow-x-auto">
+        <SegmentedControl<OutputFormat>
+          label={t("format")}
+          value={format}
           onChange={onFormatChange}
+          options={OUTPUT_FORMATS.map((value) => ({
+            value,
+            label: t(`formats.${value}`)
+          }))}
         />
       </div>
 
-      {/* Generated Meta Tags */}
-      <div className="space-y-4">
-        {currentOutput ? (
-          <>
-            <CodeHighlight
-              code={currentOutput}
-              language={currentLanguage}
-              showLineNumbers={true}
-              className="max-h-96 overflow-y-auto"
-            />
-
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3">
-              <CopyButton text={currentOutput} size="sm" variant="outline" />
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(currentOutput)
-                  alert(t("copySuccess"))
-                }}
-                variant="outline"
-                size="sm"
-              >
-                <Code size={16} className="mr-2" />
-                {t("copyAndEdit")}
-              </Button>
-              <Button
-                onClick={() => onDownload("raw")}
-                variant="outline"
-                size="sm"
-              >
-                <Download size={16} className="mr-2" />
-                {t("downloadTxt")}
-              </Button>
-              <Button
-                onClick={() => onDownload("formatted")}
-                variant="outline"
-                size="sm"
-              >
-                <Download size={16} className="mr-2" />
-                {t("downloadHtml")}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="rounded-lg border border-zinc-200 bg-zinc-100/50 p-8 text-center dark:border-zinc-700 dark:bg-zinc-800/50">
-            <Code
-              size={48}
-              className="mx-auto mb-4 text-zinc-400 dark:text-zinc-600"
-            />
-            <div className="text-sm text-zinc-600 dark:text-zinc-400">
-              {t("emptyTitle")}, {t("emptyDesc")}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Stats Display */}
-      {currentOutput && (
-        <div className="mt-6 border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <h4 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            {t("outputStats")}
-          </h4>
-          <StatsDisplay stats={outputStats} />
-        </div>
-      )}
-    </div>
+      {/* The suite's shared highlighter, the same one the JSON formatter
+          prints its output with — a block of meta tags read as a wall of grey
+          otherwise, and the whole point of this panel is that you scan it
+          before pasting. `typescript` for the Next.js shape, `html` for the
+          tags. */}
+      <CodeHighlight
+        code={code}
+        language={format === "next" ? "typescript" : "html"}
+        className="max-h-[26rem] rounded-lg border border-border bg-muted/40 text-xs"
+      />
+    </ToolCard>
   )
 }
-
-export default OutputPanel

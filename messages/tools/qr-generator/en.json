@@ -54,7 +54,20 @@
     "InputPanel": {
       "title": "QR Code Input",
       "placeholder": "Enter text for QR code...\n\nExamples:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Phone: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Text: Hello world!",
-      "status": "Ready to generate QR"
+      "status": "Ready to generate QR",
+      "mode": {
+        "label": "Input type",
+        "text": "Text / link",
+        "wifi": "WiFi"
+      },
+      "wifi": {
+        "ssid": "Network name (SSID)",
+        "ssidPlaceholder": "e.g. Home_5G",
+        "password": "Password",
+        "security": "Security type",
+        "open": "Open",
+        "hidden": "Hidden network"
+      }
     },
     "ResultsPanel": {
       "title": "QR Code Information",
@@ -250,6 +263,122 @@
       "fileReadError": "Error occurred while reading file",
       "fileUploadSuccess": "File uploaded successfully",
       "downloadSuccess": "QR code downloaded successfully"
+    },
+    "preview": {
+      "title": "QR code",
+      "empty": "Type something — the code appears here.",
+      "vectorHint": "SVG — for print, scales without limit",
+      "lowContrast": "Colour contrast is low ({ratio}:1). A code like this may fail to scan in print or dim light.",
+      "inverted": "The code is lighter than its background. Most scanners look for dark-on-light — swap the colours.",
+      "modules": "{count}×{count} modules",
+      "exportFailed": "Could not create the file. Please try again.",
+      "lowContrastSevere": "Contrast is far too low ({ratio}:1). Most phones will not scan this at all — darken the code colour."
+    },
+    "style": {
+      "foreground": "Code colour",
+      "background": "Background",
+      "gradientTo": "Gradient second colour",
+      "addGradient": "Add a gradient",
+      "shapes": "Shapes",
+      "dots": "Dot shape",
+      "cornerSquare": "Corner frame",
+      "cornerDot": "Corner centre",
+      "logo": "Logo",
+      "uploadLogo": "Upload a logo",
+      "removeLogo": "Remove",
+      "logoSize": "Logo size — {percent}%",
+      "logoNote": "A logo covers part of the modules, so error correction was raised automatically to the highest level (H).",
+      "logoUnreadable": "That file could not be read as an image. Choose a PNG, JPG, SVG or WEBP.",
+      "cornerRadius": "Corner rounding — {percent}%",
+      "frame": "Frame",
+      "frameLabel": "Frame caption",
+      "advanced": "Advanced",
+      "quietZone": "Quiet zone — {modules} modules",
+      "quietZoneWarning": "The standard requires {standard} modules. Below that the code can fail to be found at all.",
+      "gradient": {
+        "linear": "Linear",
+        "radial": "Radial"
+      },
+      "frameStyle": "Frame style"
+    },
+    "detected": {
+      "empty": "empty",
+      "url": "link",
+      "email": "email",
+      "phone": "phone",
+      "sms": "SMS",
+      "wifi": "WiFi",
+      "vcard": "contact",
+      "location": "location",
+      "text": "text"
+    },
+    "shapeNames": {
+      "module": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "dots": "Dots",
+        "fluid": "Fluid",
+        "fluid-soft": "Soft fluid",
+        "classy": "Classy",
+        "classy-rounded": "Classy rounded",
+        "vertical": "Vertical bars",
+        "horizontal": "Horizontal bars",
+        "diamond-soft": "Diamond",
+        "leaf": "Leaf",
+        "arch": "Arch",
+        "mosaic": "Mosaic",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner"
+      },
+      "eyeFrame": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "circle": "Circle",
+        "leaf": "Leaf",
+        "leaf-mirrored": "Leaf mirrored",
+        "cushion": "Cushion",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner"
+      },
+      "eyeBall": {
+        "square": "Square",
+        "rounded": "Rounded",
+        "extra-rounded": "Extra rounded",
+        "circle": "Circle",
+        "leaf": "Leaf",
+        "leaf-mirrored": "Leaf mirrored",
+        "diamond-soft": "Diamond",
+        "bevel": "Bevel",
+        "sharp": "Sharp corner",
+        "bars-v": "Vertical bars",
+        "bars-h": "Horizontal bars",
+        "dot-grid": "Four dots"
+      },
+      "frame": {
+        "none": "No frame",
+        "outline": "Outline",
+        "card": "Card",
+        "label-bottom": "Caption below",
+        "label-top": "Caption above",
+        "solid": "Filled",
+        "brackets": "Corner marks"
+      }
+    },
+    "presets": {
+      "title": "Ready-made styles",
+      "hint": "One click",
+      "names": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "soft": "Soft",
+        "dotted": "Dotted",
+        "elegant": "Elegant",
+        "tech": "Tech",
+        "brand": "Brand",
+        "mosaic": "Mosaic"
+      }
     }
   }
 }

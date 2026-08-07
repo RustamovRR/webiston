@@ -2,120 +2,124 @@
   "UuidGeneratorPage": {
     "ToolHeader": {
       "title": "UUID Generator",
-      "description": "Professional UUID generation tool. Create unique identifiers with various formats and versions."
+      "description": "Generate UUID v4, v7 and v1 values, one at a time or up to 1000 at once — and paste a UUID you were handed to read back which version it is and when it was made. Everything runs in your browser; nothing is sent to a server."
     },
-    "ConfigPanel": {
-      "title": "Tool Configuration",
-      "status": "Ready",
-      "versionLabel": "UUID Version:",
-      "formatLabel": "Format:",
-      "countLabel": "Count:",
-      "countRange": "(1-1000)",
-      "sampleLabel": "Sample:",
-      "generateButton": "Generate UUID",
-      "generating": "Generating...",
-      "clearButton": "Clear"
-    },
-    "VersionSelector": {
-      "v4": "UUID v4",
-      "v1": "UUID v1",
-      "nil": "NIL"
-    },
-    "FormatSelector": {
-      "standard": "Standard",
-      "compact": "Compact",
-      "brackets": "Brackets",
-      "uppercase": "UPPER"
-    },
-    "InputPanel": {
-      "title": "Tool Input",
-      "status": "Input",
-      "settingsTitle": "Settings",
-      "countLabel": "count",
-      "versionLabel": "version",
-      "formatLabel": "format",
-      "versionInfoTitle": "UUID Version Info",
-      "formatInfoTitle": "Format Info",
-      "nameLabel": "Name:",
-      "descriptionLabel": "Description:",
-      "securityLabel": "Security:",
-      "patternLabel": "Pattern:",
-      "exampleLabel": "Example:"
-    },
-    "ResultsPanel": {
-      "title": "Tool Output",
-      "statusGenerated": "Generated",
-      "statusEmpty": "Empty",
-      "downloadTxt": "TXT",
-      "downloadJson": "JSON",
-      "emptyMessage": "Click the button above to generate UUIDs",
-      "itemNumber": "#",
-      "totalLabel": "Total UUIDs",
-      "uniqueLabel": "Unique UUIDs",
-      "duplicatesLabel": "Duplicates",
-      "bytesLabel": "Total Bytes"
-    },
-    "StatsPanel": {
-      "title": "Detailed Statistics"
-    },
-    "InfoPanel": {
-      "title": "What is UUID and why is it used?",
-      "versionsTitle": "UUID versions:",
-      "useCasesTitle": "Use cases:",
-      "importantNote": "Important:",
-      "collisionNote": "UUID v4 collision probability is 5.3×10⁻³⁶, which practically guarantees uniqueness."
-    },
-    "VersionInfo": {
-      "v4": {
-        "name": "UUID v4 (Random)",
-        "description": "Generated based on random values",
-        "security": "High",
-        "recommended": true,
-        "details": "Random-based, most secure and popular"
+    "controls": {
+      "version": "Version",
+      "versions": {
+        "v4": "v4 random",
+        "v7": "v7 sortable",
+        "v1": "v1 time",
+        "nil": "Nil"
       },
-      "v1": {
-        "name": "UUID v1 (Timestamp)",
-        "description": "Generated based on time and MAC address",
-        "security": "Medium",
-        "recommended": false,
-        "details": "Time and MAC address based, maintains sequence"
+      "format": "Format",
+      "formats": {
+        "standard": "Standard",
+        "compact": "No dashes",
+        "braces": "Braces"
       },
-      "nil": {
-        "name": "NIL UUID",
-        "description": "UUID consisting of all zeros",
-        "security": "None",
-        "recommended": false,
-        "details": "All zeros, indicates empty state"
+      "uppercase": "Uppercase",
+      "count": "How many",
+      "generate": "Regenerate",
+      "clear": "Clear",
+      "download": "Save",
+      "downloadTxt": "TXT — one per line",
+      "downloadJson": "JSON — array"
+    },
+    "results": {
+      "count": "{total} values · {unique} unique",
+      "copyAll": "Copy all",
+      "copyOne": "Copy",
+      "empty": "Cleared. Press “Regenerate” for a new batch.",
+      "showMore": "Show {count} more ({remaining} remaining)",
+      "predictable": "This version embeds a timestamp, so anyone who sees one value can narrow down the others. Use v4 for session tokens, password-reset links or any secret URL."
+    },
+    "inspect": {
+      "title": "Inspect a UUID",
+      "hint": "Paste a UUID from a log line or a database. Hyphenated, without dashes, in braces or in the urn:uuid: form — all of them work.",
+      "placeholder": "017f22e2-79b0-7cc3-98c4-dc0c0c07398f",
+      "invalid": "That is not a UUID — 32 hexadecimal digits were expected. Part of it may have been lost in the copy.",
+      "versionName": "UUID v{version} — {name}",
+      "versionNames": {
+        "1": "time and node",
+        "2": "DCE Security",
+        "3": "name-based, MD5",
+        "4": "random",
+        "5": "name-based, SHA-1",
+        "6": "reordered time",
+        "7": "Unix time and random",
+        "8": "custom"
+      },
+      "special": {
+        "nil": "Nil UUID — all zeroes, meaning “no value”",
+        "max": "Max UUID — all f, the largest value there is"
+      },
+      "variant": "Variant",
+      "variants": {
+        "rfc": "RFC 9562 — standard",
+        "ncs": "NCS — the legacy Apollo layout",
+        "microsoft": "Microsoft GUID",
+        "future": "reserved for future use"
+      },
+      "created": "Created",
+      "canonical": "Canonical form"
+    },
+    "reference": {
+      "title": "Which version to choose",
+      "intro": "A UUID is a 128-bit identifier you can mint without a central counter and without coordinating with anything else, and it still will not repeat. The real question is rarely “what is a UUID” — it is “which version goes in this column”. Two facts decide it: whether a batch sorts by creation time, and how many of the bits are genuinely random.",
+      "bits": "{bits} bits",
+      "yes": "Yes",
+      "no": "No",
+      "table": {
+        "version": "Version",
+        "entropy": "Random bits",
+        "sortable": "Sorts by time",
+        "use": "When"
+      },
+      "versions": {
+        "v4": {
+          "name": "v4 — random",
+          "use": "The right answer to almost every question. Nothing but random bits, so no information can be read back out of it."
+        },
+        "v7": {
+          "name": "v7 — Unix time",
+          "use": "For a database primary key. The timestamp comes first, so new rows append to the end of the index; v4 scatters across it and fragments it."
+        },
+        "v1": {
+          "name": "v1 — time and node",
+          "use": "For talking to older systems. The node field originally held a MAC address; a browser has no access to one, so a random node is used here."
+        },
+        "nil": {
+          "name": "Nil",
+          "use": "Means “no value”. For a NOT NULL column that needs something in it, and for tests."
+        }
+      },
+      "secretWarning": "Never use a version with a clock in it (v1, v6, v7) as a secret token: anyone who has seen one value can narrow down its neighbours. When you need an unguessable link or session id, use v4 — all 122 of its bits are random."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "what": {
+          "question": "What is a UUID, and why does it not repeat?",
+          "answer": "A UUID is a 128-bit identifier. Its whole value is that minting one needs no central counter and no agreement with anyone else: every server and every device makes its own and they still do not collide. That is why they are used in distributed systems, in mobile apps that work offline, and in file names."
+        },
+        "v4OrV7": {
+          "question": "For a database primary key, is v4 or v7 better?",
+          "answer": "v7. Because v4 is entirely random, each new row lands at a random point in the index — which fragments it and slows writes down on a large table. v7 puts the timestamp first, so values increase in creation order and new rows append to the end of the index. The trade-off is that the value reveals when it was made; if that is a problem for you, stay on v4."
+        },
+        "collision": {
+          "question": "Can two identical UUIDs ever come out?",
+          "answer": "Not in practice. v4 has 122 random bits, so the odds of a collision only become meaningful after more than five quintillion (5·10^18) values. Here they come from the browser's Web Crypto CSPRNG — not Math.random(), which was never built for this and whose output can be predicted."
+        },
+        "secret": {
+          "question": "Can I use a UUID as a token or a secret link?",
+          "answer": "v4, yes — it carries 122 random bits from a cryptographic generator. v1, v6 and v7, no: they start with a timestamp, so someone who has seen one link can narrow the search for other values made around the same moment. Use v4 for password-reset links and invitations."
+        },
+        "privacy": {
+          "question": "Are the generated values sent to a server?",
+          "answer": "No. Everything is computed in your browser through the Web Crypto API — neither the values it generates nor the UUID you paste into the inspector is sent anywhere or stored. Close the page and it is all gone."
+        }
       }
-    },
-    "FormatInfo": {
-      "standard": {
-        "name": "Standard Format",
-        "description": "8-4-4-4-12 format with dashes",
-        "example": "550e8400-e29b-41d4-a716-446655440000"
-      },
-      "compact": {
-        "name": "Compact Format",
-        "description": "No dashes, 32 character format",
-        "example": "550e8400e29b41d4a716446655440000"
-      },
-      "brackets": {
-        "name": "Brackets Format",
-        "description": "Wrapped with curly brackets",
-        "example": "{550e8400-e29b-41d4-a716-446655440000}"
-      },
-      "uppercase": {
-        "name": "Uppercase Format",
-        "description": "Written in uppercase letters",
-        "example": "550E8400-E29B-41D4-A716-446655440000"
-      }
-    },
-    "UseCases": {
-      "database": "Database Primary Keys: Global unique identifiers instead of auto-increment",
-      "microservices": "Microservices: Creating unique IDs in distributed systems",
-      "fileNaming": "File naming: Collision-free identifiers for files and resources",
-      "sessionIds": "Session IDs: Session tracking in web applications",
-      "apiKeys": "API Keys: Service authentication and authorization"
     }
   }
 }

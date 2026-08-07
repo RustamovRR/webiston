@@ -1,26 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import {
-  Keyboard,
-  Copy,
-  RotateCcw,
-  Play,
-  Square,
+  Command,
   Info,
+  Keyboard,
   Monitor,
-  Command
+  Play,
+  RotateCcw,
+  Square
 } from "lucide-react"
+import { CopyButton } from "@/components/shared/CopyButton"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 import { Button } from "@/components/ui/button"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { CopyButton } from "@/components/shared/CopyButton"
-import {
-  useKeycodeInfo,
-  type KeyInfo,
-  type CommonKey
-} from "./hooks/useKeycodeInfo"
+import { type CommonKey, useKeycodeInfo } from "./hooks/useKeycodeInfo"
 
 export default function KeycodeInfo() {
   const {

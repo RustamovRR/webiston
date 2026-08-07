@@ -6,7 +6,7 @@
  * Uses CSS transitions for smooth, performant animations on all devices
  */
 
-import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { TOOL_COLORS, UI_PATTERNS } from "../constants/ui-patterns"
 import { cn } from "../utils/cn"
 
 export interface TabOption {
@@ -75,8 +75,7 @@ export function GradientTabs({
               isActive
                 ? "text-white shadow-lg"
                 : [
-                    "text-zinc-600 hover:bg-zinc-500/10",
-                    "dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100"
+                    "text-muted-foreground hover:bg-accent hover:text-foreground"
                   ]
             )}
             style={isActive ? { background: colors.shimmerBg } : undefined}
@@ -95,7 +94,7 @@ export function GradientTabs({
                 <span
                   className={cn(
                     "transition-colors duration-200",
-                    isActive ? "text-white" : "text-zinc-400"
+                    isActive ? "text-white" : "text-muted-foreground"
                   )}
                   aria-hidden="true"
                 >

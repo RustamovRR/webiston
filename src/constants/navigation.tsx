@@ -1,10 +1,10 @@
-import {
-  TelegramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-  EmailIcon
-} from "@/assets/icons"
 import { HandHeartIcon } from "lucide-react"
+import {
+  EmailIcon,
+  LinkedInIcon,
+  TelegramIcon,
+  TwitterIcon
+} from "@/assets/icons"
 
 export const REACT_CHAPTERS = [
   {
@@ -186,3 +186,58 @@ export const socialLinks = [
     label: "Loyihani qo'llab-quvvatlash"
   }
 ]
+
+/**
+ * The book sections rendered on the homepage, in display order.
+ *
+ * The homepage previously repeated three byte-identical `<section>` blocks that
+ * differed only in these four fields — and they had already drifted apart (one
+ * carried a stray `8` class). `id` doubles as the content-tree directory name,
+ * so it drives both the `/books/{id}` href and `getTutorialImage(id)`; there is
+ * no second place to keep in sync.
+ */
+export const BOOK_SECTIONS = [
+  {
+    id: "ai-engineering",
+    title: "AI Engineering",
+    chapters: AI_ENGINEERING_CHAPTERS,
+    descriptionKey: "aiSectionDescription"
+  },
+  {
+    id: "javascript-definitive-guide",
+    title: "JavaScript: The Definitive Guide, 7th Edition",
+    chapters: JAVASCRIPT_CHAPTERS,
+    descriptionKey: "jsSectionDescription"
+  },
+  {
+    id: "fluent-react",
+    title: "Fluent React",
+    chapters: REACT_CHAPTERS,
+    descriptionKey: "reactSectionDescription"
+  }
+] as const
+
+/**
+ * The technologies the library actually covers, shown as chips under the hero.
+ *
+ * A constant rather than inline JSX: this is the same list a future tool filter
+ * or keyword set would need, and it is content, not markup. Proper nouns, so no
+ * `messages/` entry — these read identically in uz and en.
+ */
+export const HERO_TOPICS = [
+  "React",
+  "JavaScript",
+  "TypeScript",
+  "AI Engineering",
+  "Next.js"
+] as const
+
+/**
+ * The query typed in the hero's ⌘K still.
+ *
+ * Deliberately NOT translated: it is what a user types into a search box, and it
+ * has to stay a fixed length because the CSS typing effect derives its step
+ * count from `query.length`. Chosen because it genuinely matches content — 110
+ * pages under `content/fluent-react` — so the mocked results are real.
+ */
+export const HERO_PALETTE_QUERY = "react"

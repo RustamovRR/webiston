@@ -17,7 +17,10 @@
       "copyButton": "Copy",
       "copiedButton": "Copied!",
       "downloadButton": "Download",
-      "loadButton": "Load"
+      "loadButton": "Load",
+      "result": "Generated password",
+      "presets": "Ready-made settings",
+      "lengthLabel": "Length — {length} characters"
     },
     "PasswordTypes": {
       "random": "Random",
@@ -83,7 +86,20 @@
       "unique": "Unique characters",
       "entropy": "Entropy (bits)",
       "strength": "Strength",
-      "strengthLevel": "Strength level:"
+      "strengthLevel": "Strength level:",
+      "bits": "{bits} bits",
+      "crackTime": "Time to crack",
+      "alphabet": "Alphabet size",
+      "assumption": "Estimated against an offline attack at 10 billion guesses per second. Online attacks are thousands of times slower.",
+      "crack": {
+        "instant": "instantly",
+        "seconds": "~{value} seconds",
+        "minutes": "~{value} minutes",
+        "hours": "~{value} hours",
+        "days": "~{value} days",
+        "years": "~{value} years",
+        "centuries": "centuries"
+      }
     },
     "StrengthLevels": {
       "weak": "Weak",
@@ -122,6 +138,9 @@
       "memorableDesc": "Made of words and numbers, easy to remember but secure",
       "strongTitle": "Strong Passwords",
       "strongDesc": "For maximum security, includes all character types"
+    },
+    "Errors": {
+      "noCharacters": "Select at least one character type — the current settings cannot produce a password."
     }
   }
 }

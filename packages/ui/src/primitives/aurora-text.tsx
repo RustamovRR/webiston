@@ -1,6 +1,7 @@
 "use client"
 
-import React, { memo } from "react"
+import type React from "react"
+import { memo } from "react"
 
 interface AuroraTextProps {
   children: React.ReactNode

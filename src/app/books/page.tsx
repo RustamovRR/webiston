@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
-import { getAllTutorials } from "@/lib/mdx"
-import Link from "next/link"
 import Image from "next/image"
+import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import { getAllTutorials } from "@/lib/mdx"
+import { ogCardUrl } from "@/lib/seo"
 
 export const metadata: Metadata = {
-  title: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar | Webiston",
+  // No "| Webiston" suffix — the root layout applies a `%s | Webiston` template.
+  title: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar",
   description:
     "Eng yaxshi dasturlash kitoblari o'zbek tilida bepul. JavaScript, React, Node.js va boshqa IT texnologiyalar bo'yicha professional kitoblar to'plami.",
   keywords: [
@@ -78,13 +80,14 @@ export const metadata: Metadata = {
     locale: "uz_UZ",
     siteName: "Webiston",
     url: "https://webiston.uz/books",
+    // `/logo.png` is 1120×1120 but was declared 1200×630 — the generated card
+    // actually is that size. See `ogCardUrl`.
     images: [
       {
-        url: "https://webiston.uz/logo.png",
+        url: ogCardUrl("Dasturlash Kitoblari", "/books"),
         width: 1200,
         height: 630,
-        alt: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar",
-        type: "image/png"
+        alt: "Dasturlash Kitoblari - Bepul O'zbek Tilida IT Kitoblar"
       }
     ]
   },
@@ -95,7 +98,7 @@ export const metadata: Metadata = {
     title: "Dasturlash Kitoblari - Bepul O'zbek IT Kitoblar",
     description:
       "Professional dasturlash kitoblari o'zbek tilida. JavaScript, React va boshqa IT kitoblar bepul!",
-    images: ["https://webiston.uz/logo.png"]
+    images: [ogCardUrl("Dasturlash Kitoblari", "/books")]
   },
   alternates: {
     canonical: "https://webiston.uz/books",
@@ -268,9 +271,16 @@ export default async function BooksPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
 
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="mb-4 text-3xl font-bold">Dasturlash Kitoblari</h1>
+        <div className="mx-auto w-full max-w-[1536px] px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            {/* Same identity system as the homepage: accent pixel + mono path. */}
+            <div className="mb-4 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em]">
+              <span className="size-[5px] rounded-[1.5px] bg-primary" />
+              <span className="text-foreground">/books</span>
+            </div>
+            <h1 className="mb-4 font-bold text-4xl tracking-[-0.03em]">
+              Dasturlash Kitoblari
+            </h1>
             <p className="text-muted-foreground text-lg">
               Dunyoning yetakchi mutaxassislari tomonidan yozilgan dasturlash
               kitoblarining professional o'zbekcha tarjimalari. Zamonaviy
@@ -290,7 +300,7 @@ export default async function BooksPage() {
               ].map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-zinc-300 bg-zinc-100/80 px-3 py-1 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-400"
+                  className="rounded-full border border-border-strong bg-card/60 px-3 py-1 font-mono text-muted-foreground text-xs transition-colors duration-300 hover:border-input hover:text-foreground"
                 >
                   {tag}
                 </span>
@@ -300,50 +310,68 @@ export default async function BooksPage() {
 
           {tutorials.length > 0 ? (
             <>
-              <div className="mb-6">
-                <h2 className="mb-2 text-xl font-semibold">
-                  Mavjud Kitoblar ({tutorials.length})
-                </h2>
-                <p className="text-muted-foreground">
-                  Dunyoning yetakchi dasturchilari tomonidan yozilgan
-                  kitoblarning o'zbek tilidagi tarjimalari
-                </p>
+              <div className="mb-6 flex items-center gap-4">
+                <span className="h-px flex-1 bg-border" />
+                <span className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em]">
+                  <span className="size-[5px] rounded-[1.5px] bg-primary" />
+                  <span className="text-foreground">Mavjud kitoblar</span>
+                  <span className="text-muted-foreground">
+                    · {String(tutorials.length).padStart(2, "0")}
+                  </span>
+                </span>
+                <span className="h-px flex-1 bg-border" />
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {tutorials?.map((tutorial) => (
                   <Link
                     key={tutorial?.id}
                     href={`/books/${tutorial?.id}`}
                     className="group block h-full"
                   >
-                    <Card className="relative flex h-full flex-col overflow-hidden border-zinc-200 bg-white/80 transition-all duration-200 group-hover:border-zinc-300 group-hover:bg-white group-hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/80 dark:group-hover:border-zinc-600 dark:group-hover:bg-zinc-800/80">
-                      <div className="relative w-full pt-[50%]">
+                    {/* Homepage card language: strong boundary, depth
+                        gradient, smooth lift. Plain `transition` on purpose —
+                        Tailwind v4's translate utilities set the `translate`
+                        property, which transform-only lists do not cover. */}
+                    <Card className="relative flex h-full flex-col overflow-hidden rounded-lg border-border-strong bg-gradient-to-b from-card to-card/60 p-5 transition duration-300 ease-out group-hover:-translate-y-1 group-hover:border-input group-hover:from-accent group-hover:to-accent/70 group-hover:shadow-lg">
+                      {/* A cover is a PORTRAIT object (these are 400×525). The
+                          previous frame was `pt-[50%]` — a 2:1 landscape box
+                          with `object-contain`, so every cover floated in a
+                          letterboxed void. Now it sits at its real ratio beside
+                          the title, the same treatment the homepage uses. */}
+                      <div className="flex items-start gap-4">
                         {tutorial?.image && (
                           <Image
                             src={tutorial.image}
                             alt={`${tutorial.title} kitobi muqovasi`}
-                            fill
-                            className="object-contain"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            width={72}
+                            height={94}
+                            className="h-[94px] w-[72px] shrink-0 rounded-md border border-border-strong object-cover shadow-md"
+                            sizes="72px"
                           />
                         )}
-                      </div>
-                      <div className="flex flex-1 flex-col px-6">
-                        <h3 className="mb-2 text-xl font-semibold">
-                          {tutorial?.title}
-                        </h3>
-                        <p className="text-muted-foreground flex-grow pb-4">
-                          {tutorial?.description}
-                        </p>
-                        <div className="mt-auto flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-700">
-                          <div className="text-sm text-zinc-500 dark:text-zinc-400">
-                            📚 {tutorial?.navigation?.length || 0} ta bo'lim
-                          </div>
-                          <div className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 dark:bg-green-900 dark:text-green-200">
-                            Bepul
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-foreground text-lg leading-snug">
+                            {tutorial?.title}
+                          </h3>
+                          <div className="mt-1.5 font-mono text-[11px] text-muted-foreground">
+                            {tutorial?.navigation?.length || 0} bo'lim ·{" "}
+                            {tutorial?.id}
                           </div>
                         </div>
+                      </div>
+
+                      <p className="mt-4 line-clamp-3 flex-grow text-pretty text-muted-foreground text-sm leading-relaxed">
+                        {tutorial?.description}
+                      </p>
+
+                      <div className="mt-4 flex items-center justify-between border-border border-t pt-3.5">
+                        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 font-mono text-[10px] text-primary">
+                          Bepul
+                        </span>
+                        <span className="font-mono text-[11px] text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5">
+                          O'qish →
+                        </span>
                       </div>
                     </Card>
                   </Link>
@@ -351,9 +379,16 @@ export default async function BooksPage() {
               </div>
 
               {/* Additional SEO Content */}
-              <div className="prose prose-gray dark:prose-invert mt-12 max-w-none">
-                <h2>Nima uchun bu resursdan foydalanish kerak?</h2>
-                <div className="not-prose grid gap-6 md:grid-cols-2">
+              <div className="mt-16">
+                <div className="mb-6 flex items-center gap-4">
+                  <span className="h-px flex-1 bg-border" />
+                  <span className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em]">
+                    <span className="size-[5px] rounded-[1.5px] bg-primary" />
+                    <span className="text-foreground">Nega Webiston</span>
+                  </span>
+                  <span className="h-px flex-1 bg-border" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {[
                     {
                       icon: "🎯",
@@ -378,12 +413,18 @@ export default async function BooksPage() {
                   ].map((item) => (
                     <div
                       key={item.title}
-                      className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                      className="rounded-lg border border-border-strong bg-gradient-to-b from-card to-card/60 p-4"
                     >
-                      <h3 className="mb-2 font-semibold text-zinc-900 dark:text-zinc-100">
-                        {item.icon} {item.title}
+                      {/* The emoji moved into a brand chip rather than sitting
+                          inline in the heading, where it rendered at heading
+                          weight and fought the text for attention. */}
+                      <span className="flex size-9 items-center justify-center rounded-md bg-primary/12 text-base">
+                        {item.icon}
+                      </span>
+                      <h3 className="mt-3 font-semibold text-base text-foreground">
+                        {item.title}
                       </h3>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      <p className="mt-1.5 text-pretty text-muted-foreground text-sm leading-relaxed">
                         {item.text}
                       </p>
                     </div>
@@ -408,7 +449,7 @@ export default async function BooksPage() {
                 Yangiliklar uchun bizni kuzatib boring:
                 <a
                   href="https://twitter.com/webiston_uz"
-                  className="ml-1 text-blue-600 hover:underline"
+                  className="ml-1 text-primary transition-colors duration-300 hover:underline"
                 >
                   @webiston_uz
                 </a>
@@ -432,7 +473,7 @@ export default async function BooksPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+            className="inline-flex items-center rounded-lg bg-foreground px-4 py-2 text-background transition-colors duration-300 hover:bg-foreground/90"
           >
             Bosh sahifaga qaytish
           </Link>

@@ -182,6 +182,34 @@ export const LONG_TAIL_KEYWORDS = [
 ] as const
 
 // Barcha keywordlarni birlashtirish
+/**
+ * What actually ships in `<meta name="keywords">`.
+ *
+ * `ALL_KEYWORDS` is 144 entries — roughly 3.9 KB added to every render of the
+ * site's most-visited page, for a tag Google has ignored since 2009 and Yandex
+ * dropped years later. The three scripts people really search this tool in are
+ * worth keeping; the long tail is not, and the duplicates in it definitely are
+ * not. The full lists stay exported for reference and for anything that wants
+ * to reason about search demand.
+ */
+export const PRIMARY_KEYWORDS = [
+  "lotin kirill",
+  "kirill lotin",
+  "lotin kirill o'giruvchi",
+  "lotin kirill tarjima",
+  "lotin kirill alifbo jadvali",
+  "kirilchadan lotinchaga",
+  "lotinchadan kirillchaga",
+  "лотин кирилл",
+  "кирилл лотин",
+  "лотин кирилл таржима",
+  "переводчик кирилл латиница узбекский",
+  "uzbek latin cyrillic converter",
+  "uzbek transliteration",
+  "pdf lotin kirill",
+  "docx lotin kirill"
+] as string[]
+
 export const ALL_KEYWORDS = [
   ...YANDEX_KEYWORDS,
   ...GOOGLE_KEYWORDS,

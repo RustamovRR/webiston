@@ -50,9 +50,12 @@ describe("GRD - Greedy matching", () => {
     ["YAxshi", "Яхши"],
     ["Ashxobod", "Ашхобод"],
     ["Is'hoq", "Исҳоқ"],
-    ["Shchuka", "Щука"],
-    ["SHCH", "Щ"],
-    ["shch", "щ"]
+    // 'shch' is deliberately NOT 'щ' — see latin-to-cyrillic.ts. In Uzbek Latin
+    // those four characters are a 'sh' + 'ch' morpheme boundary far more often
+    // than a Russian letter, and the old rule turned 'ishchi' into 'ищи'.
+    ["Shchuka", "Шчука"],
+    ["SHCH", "ШЧ"],
+    ["shch", "шч"]
   ])("%s → %s", (input, expected) => {
     expect(toCyrillic(input)).toBe(expected)
   })
@@ -68,8 +71,8 @@ describe("CAS - Case sensitivity", () => {
     ["O'ZBEKISTON", "ЎЗБЕКИСТОН"],
     ["ShH", "ШҲ"],
     ["YaNGi", "ЯНГи"],
-    ["Shch", "Щ"],
-    ["SHCH", "Щ"],
+    ["Shch", "Шч"],
+    ["SHCH", "ШЧ"],
     ["sHoir", "шоир"],
     ["SHe'r", "Шеър"]
   ])("%s → %s", (input, expected) => {

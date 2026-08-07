@@ -1,91 +1,122 @@
 {
   "UrlEncoderPage": {
     "ToolHeader": {
-      "title": "URL Encoder and Decoder",
-      "description": "A tool to encode and decode URLs and text for safe web usage"
+      "title": "URL Encode and Decode",
+      "description": "Turn the %20 and %3A in a link back into something readable — or the other way round. Query parameters are broken out one by one."
     },
-    "ControlPanel": {
+    "ControlBar": {
+      "direction": "Direction",
       "encode": "Encode",
       "decode": "Decode",
-      "fileUpload": "Upload File",
-      "sampleUrl": "Sample URL",
+      "scope": "Scope",
+      "scopes": {
+        "value": "Value",
+        "whole": "Whole URL"
+      },
+      "upload": "File",
+      "sample": "Sample",
       "clear": "Clear",
-      "download": "Download"
+      "download": "Download",
+      "auto": "Auto",
+      "resolved": "Auto: {mode}",
+      "resolvedEncode": "encoding",
+      "resolvedDecode": "decoding"
     },
     "Panel": {
-      "plainTextInput": "Plain Text Input",
-      "encodedUrlInput": "Encoded URL Input",
-      "encodedUrlResult": "Encoded URL Result",
-      "decodedUrlResult": "Decoded URL Result",
-      "encodePlaceholder": "Enter text you want to encode or upload a file...",
-      "decodePlaceholder": "Enter encoded URL you want to decode...",
-      "readyToEncode": "Ready to encode",
-      "readyToDecode": "Ready to decode",
-      "encodedUrlWillAppear": "Encoded URL will appear here...",
-      "decodedTextWillAppear": "Decoded text will appear here...",
-      "enterTextOrUpload": "Enter text or upload a file",
-      "conversionError": "Conversion Error",
-      "switchMode": "Switch mode",
-      "fileSize": "Size:",
-      "validUrl": "Valid URL",
-      "urlStructure": "URL Structure:"
+      "plainInput": "Plain text",
+      "encodedInput": "Encoded text",
+      "encodedResult": "Encoded result",
+      "decodedResult": "Decoded result",
+      "encodePlaceholder": "Enter a URL or a parameter value…",
+      "decodePlaceholder": "Paste an encoded URL or query string…",
+      "encodedWillAppear": "The encoded result will appear here",
+      "decodedWillAppear": "The decoded result will appear here",
+      "enterUrlOrUpload": "Enter a URL or upload a file",
+      "switchMode": "Switch direction",
+      "inputLength": "Input:",
+      "outputLength": "Result:"
     },
-    "Info": {
-      "title": "About URL Encoding",
-      "whatIsUrlEncoding": {
-        "title": "What is URL Encoding?",
-        "description": "URL Encoding (Percent Encoding) is a method to convert characters with special meaning in URLs into a format that can be transmitted safely over the Internet."
-      },
-      "features": {
-        "title": "Key Features",
-        "feature1": "• Converts special characters to %XX format",
-        "feature2": "• Makes URLs safe for transmission",
-        "feature3": "• Handles spaces and non-ASCII characters",
-        "feature4": "• Standard for web applications"
-      },
-      "usage": {
-        "title": "Usage Areas",
-        "usage1": "• Creating valid URLs with special characters",
-        "usage2": "• Form data submission",
-        "usage3": "• API requests with parameters",
-        "usage4": "• Handling multilingual content in URLs"
-      },
-      "formatExample": {
-        "title": "URL encoding examples",
-        "plainText": "Original:",
-        "encodedUrl": "Encoded:",
-        "spacesAndSymbols": "Spaces and special characters",
-        "queryParameters": "Query parameters",
-        "exampleText": "hello world & symbols",
-        "exampleEncoded": "hello%20world%20%26%20symbols"
-      },
-      "urlStructure": {
-        "title": "URL Structure",
-        "protocol": "Protocol",
-        "hostname": "Hostname",
-        "path": "Path",
-        "query": "Query",
-        "hash": "Hash"
-      }
+    "file": {
+      "dropHere": "Drop the file here",
+      "accepts": "TXT · JSON"
     },
-    "Errors": {
-      "invalidUrlFormat": "Invalid URL format. Check the syntax.",
-      "conversionError": "Conversion error",
-      "urlDecodeError": "Error decoding URL. Check format correctness.",
-      "urlEncodeError": "Error occurred while encoding URL.",
-      "fileSizeError": "File size must be less than 10MB.",
-      "fileReadError": "Error occurred while reading file content.",
-      "fileTypeError": "Only text files can be uploaded.",
-      "fileUploadError": "Error occurred while uploading file.",
-      "downloadError": "Error occurred while downloading file.",
-      "textTooLong": "Text is too long (maximum 1MB)."
+    "Download": {
+      "encode": "url-encoded",
+      "decode": "url-decoded"
     },
     "Samples": {
-      "simpleUrl": "Simple URL",
-      "complexUrl": "Complex URL",
-      "queryString": "Query string",
-      "emailQuery": "Email link",
-      "socialShare": "Social share URL"
+      "link": "Plain link",
+      "spaces": "URL with spaces",
+      "query": "Query string (form)",
+      "mailto": "mailto with parameters",
+      "nested": "URL inside a URL"
+    },
+    "Breakdown": {
+      "title": "URL breakdown",
+      "protocol": "Protocol",
+      "host": "Host",
+      "path": "Path",
+      "hash": "Fragment",
+      "params": "{count} parameters",
+      "emptyValue": "no value"
+    },
+    "Errors": {
+      "malformed": "Broken escape: a lone %, or a % not followed by two hex digits.",
+      "tooLong": "That text is too long. A URL does not exceed a megabyte.",
+      "tooLarge": "That file is too large. The limit is 1 MB.",
+      "unsupported": "That file type is not supported. Only .txt and .json.",
+      "unreadable": "The file could not be read."
+    },
+    "reference": {
+      "title": "How URL encoding works",
+      "intro": "A URL may only contain a limited set of characters. Everything else is written as a percent sign followed by two hex digits: a space becomes %20, and a Cyrillic letter becomes several bytes. What matters is which characters form the structure and therefore must be left alone.",
+      "scopes": {
+        "value": {
+          "title": "Value (encodeURIComponent)",
+          "body": "For a single parameter value or path segment. The separators — : / ? # & = — are encoded too, because here they are text rather than structure. It is the form-data standard, so a space may also appear as +.",
+          "example": "hello world → hello%20world"
+        },
+        "whole": {
+          "title": "Whole URL (encodeURI)",
+          "body": "For a complete address. The characters that make up the structure stay put and only illegal ones — a space, for instance — are encoded. This is what you want when fixing a space in your link.",
+          "example": "https://a.uz/q?s=hello world → https://a.uz/q?s=hello%20world"
+        }
+      },
+      "table": {
+        "title": "Which character changes when",
+        "char": "Character",
+        "asValue": "As a value",
+        "asWhole": "As a whole URL",
+        "space": "space",
+        "note": "The difference is exactly this table: value mode encodes the separators, whole-URL mode preserves them. Running value encoding over a complete link therefore breaks it — the result is only correct when that link is being embedded inside another URL."
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "difference": {
+          "question": "What is the difference between Value and Whole URL?",
+          "answer": "They are two different standards. Value mode (encodeURIComponent) also encodes : / ? # & =, which is right for a single parameter value or path segment. Whole-URL mode (encodeURI) preserves them and encodes only illegal characters. Apply value encoding to a complete link and https://… becomes https%3A%2F%2F… — a string that no longer works as a link, and is only meaningful when embedded as a value inside another URL."
+        },
+        "plus": {
+          "question": "Why does + sometimes become a space?",
+          "answer": "Form data (application/x-www-form-urlencoded) writes a space as +. So in Value mode decoding turns + into a space — which is exactly what query strings copied out of a browser address bar need. A literal plus is encoded as %2B. In Whole-URL mode + is left alone, because in a path it is an ordinary character."
+        },
+        "when": {
+          "question": "When do I need URL encoding?",
+          "answer": "Whenever a value goes inside a URL: a search query, an email address, another link, anything a user typed. An unencoded & or = breaks the parameter boundaries, and a space truncates the link in some places. This is not encryption — it hides nothing; it only separates text from URL structure."
+        },
+        "privacy": {
+          "question": "Is my data sent to a server?",
+          "answer": "No. Encoding, decoding and the URL breakdown all happen in your browser. After the page has loaded this tool makes no network requests at all, so it is safe to use with links that carry a token."
+        }
+      }
+    },
+    "Notice": {
+      "doubleEncoded": "The result still contains % escapes: this looks double-encoded.",
+      "decodeAgain": "Decode once more",
+      "unchangedDecode": "There was nothing to decode here — this text is already plain.",
+      "unchangedEncode": "No character here needed encoding — the text is unchanged."
     }
   }
 }

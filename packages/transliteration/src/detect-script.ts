@@ -3,11 +3,60 @@
  * Detects whether text is Latin, Cyrillic, or mixed
  */
 
+import { protectContent } from "./protection"
 import type { ScriptType } from "./types"
 
 // Unicode ranges for script detection
 const CYRILLIC_RANGE = /[\u0400-\u04FF]/
 const LATIN_RANGE = /[a-zA-Z]/
+
+/**
+ * Count the letters that actually get a VOTE on which script this is.
+ *
+ * The spans `protectContent` masks \u2014 URLs, emails, @handles, code, file names,
+ * technical terms \u2014 are Latin by nature and are never transliterated, so
+ * counting them decides the direction on characters the converter will not
+ * touch. One link was enough to flip a whole Cyrillic article:
+ *
+ *   "\u0411\u0430\u0442\u0430\u0444\u0441\u0438\u043B: https://gazeta.uz/oz/2024/01/01/latin-kirill/"
+ *   \u2192 8 Cyrillic letters vs 34 Latin ones \u2192 classified Latin \u2192 converted the
+ *     wrong way, or not at all.
+ *
+ * Masking first removes exactly those characters (a placeholder is a digit
+ * between two NULs and contributes no letter to either side), so the vote is
+ * taken on the prose the user actually wants converted.
+ *
+ * This is shared by every surface: the web tool, the extension popup, the
+ * context menu and the in-page popover all resolve direction through here.
+ */
+function countScripts(text: string): { latin: number; cyrillic: number } {
+  const { maskedText } = protectContent(text)
+  let latin = 0
+  let cyrillic = 0
+
+  for (const char of maskedText) {
+    if (LATIN_RANGE.test(char)) {
+      latin++
+    } else if (CYRILLIC_RANGE.test(char)) {
+      cyrillic++
+    }
+  }
+
+  return { latin, cyrillic }
+}
+
+/**
+ * Does Cyrillic carry this text? The binary question the converter asks before
+ * picking a direction \u2014 deliberately NOT the same as `detectScript`, which has
+ * a third "mixed" answer that a direction switch cannot act on.
+ */
+export function isCyrillicDominant(text: string): boolean {
+  if (!text || text.length < 2) return false
+
+  const { latin, cyrillic } = countScripts(text)
+
+  return cyrillic > 0 && cyrillic >= latin
+}
 
 // Uzbek-specific Cyrillic characters
 const UZBEK_CYRILLIC = /[ўғқҳЎҒҚҲ]/
@@ -23,16 +72,7 @@ export function detectScript(text: string): ScriptType {
     return "unknown"
   }
 
-  let latinCount = 0
-  let cyrillicCount = 0
-
-  for (const char of text) {
-    if (LATIN_RANGE.test(char)) {
-      latinCount++
-    } else if (CYRILLIC_RANGE.test(char)) {
-      cyrillicCount++
-    }
-  }
+  const { latin: latinCount, cyrillic: cyrillicCount } = countScripts(text)
 
   const total = latinCount + cyrillicCount
 

@@ -1,190 +1,135 @@
 "use client"
 
-import { Mic } from "lucide-react"
-import { ToolHeader, StatsDisplay } from "@/components/shared"
-import { motion } from "framer-motion"
 import { useTranslations } from "next-intl"
-import { useMicrophoneTest } from "./hooks/useMicrophoneTest"
+
+import { MediaAccessPanel } from "@/components/shared/MediaAccessPanel"
+import { ToolCard } from "@/components/shared/ToolCard"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+import { useMediaRecording } from "@/hooks/useMediaRecording"
+import { AUDIO_MIME_CANDIDATES } from "@/lib/utils/media"
+
 import {
-  ControlPanel,
-  AudioPreviewPanel,
-  RecordedAudioPanel,
-  InfoSection,
-  AudioPreviewModal
+  ListenCard,
+  MicToolbar,
+  ProcessingCard,
+  RecordingsCard,
+  SpeakerTestCard
 } from "./components"
+import { MAX_RECORDINGS } from "./constants"
+import { useMicrophone } from "./hooks/useMicrophone"
 
-export default function MicrophoneTest() {
-  const t = useTranslations("MicrophoneTestPage.ToolHeader")
-  const tSample = useTranslations("MicrophoneTestPage.SampleMicrophones")
+/**
+ * Composition root.
+ *
+ * The page has two states and the layout says which one it is in. Before a
+ * microphone is open there is one card, and it explains what pressing the
+ * button will do; after, the same slot is the live panel and the controls
+ * appear above it. Nothing is requested until the button is pressed — the
+ * version this replaces fired `getUserMedia` from a mount effect, so the
+ * browser's permission dialog landed on a page nobody had read yet.
+ *
+ * The panels the visitor cannot use yet are simply not rendered. An empty
+ * recordings list beside a dead level meter is four cards of furniture around
+ * a page that has not started.
+ */
+export function MicrophoneTest() {
+  const t = useTranslations("MicrophoneTestPage")
 
-  const {
-    audioDevices,
-    selectedDevice,
-    isListening,
-    isRecording,
-    error,
-    audioInfo,
-    recordedAudios,
-    recordingDuration,
-    previewAudio,
-    audioStats,
-    sampleMicrophones,
-    getAudioDevices,
-    startListening,
-    stopListening,
-    startRecording,
-    stopRecording,
-    switchMicrophone,
-    downloadAudio,
-    deleteAudio,
-    clearAllRecordings,
-    openPreview,
-    closePreview,
-    formatDuration,
-    getAudioQuality,
-    getStats
-  } = useMicrophoneTest({
-    onSuccess: (message: string) => console.log("Success:", message),
-    onError: (error: string) => console.error("Error:", error)
+  const mic = useMicrophone()
+  const recorder = useMediaRecording({
+    stream: mic.stream,
+    candidates: AUDIO_MIME_CANDIDATES,
+    prefix: "mikrofon",
+    max: MAX_RECORDINGS
   })
 
-  const audioQuality = getAudioQuality(audioStats.level)
+  /** The device the report should name, matched to what is actually open. */
+  const activeLabel =
+    mic.devices.find((device) => device.deviceId === mic.deviceId)?.label ||
+    null
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div className="mx-auto w-full max-w-[1400px] px-4 py-6">
       <ToolHeader title={t("title")} description={t("description")} />
 
-      <div className="mb-8">
-        <StatsDisplay stats={getStats()} />
-      </div>
-
-      {/* Control Panel */}
-      <div className="mb-6">
-        <ControlPanel
-          audioDevices={audioDevices}
-          selectedDevice={selectedDevice}
-          isListening={isListening}
-          audioQuality={audioQuality}
-          onStartListening={startListening}
-          onStopListening={stopListening}
-          onRefreshDevices={getAudioDevices}
-          onSwitchMicrophone={switchMicrophone}
-        />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Audio Preview Panel */}
-        <div className="sticky top-20 h-fit">
-          <AudioPreviewPanel
-            isListening={isListening}
-            isRecording={isRecording}
-            recordingDuration={recordingDuration}
-            audioStats={audioStats}
-            audioInfo={audioInfo}
-            onStartRecording={startRecording}
-            onStopRecording={stopRecording}
-            formatDuration={formatDuration}
+      {mic.isLive ? (
+        <div className="mt-6 space-y-4">
+          <MicToolbar
+            devices={mic.devices}
+            deviceId={mic.deviceId}
+            onSelect={mic.select}
+            onStop={mic.stop}
+            isMonitoring={mic.isMonitoring}
+            onMonitorChange={mic.setIsMonitoring}
+            locked={recorder.isRecording}
+            failure={mic.failure}
           />
-        </div>
 
-        {/* Recorded Audio Panel */}
-        <div className="h-[600px]">
-          <RecordedAudioPanel
-            recordedAudios={recordedAudios}
-            onPreview={openPreview}
-            onDownload={downloadAudio}
-            onDelete={deleteAudio}
-            onClearAll={clearAllRecordings}
-          />
-        </div>
-      </div>
-
-      {/* Error Display */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 rounded-xl border border-red-200 bg-red-50/80 p-4 backdrop-blur-sm dark:border-red-500/20 dark:bg-red-500/10"
-        >
-          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
-        </motion.div>
-      )}
-
-      {/* Sample Microphones - Show when no devices */}
-      {!isListening && audioDevices.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-8 rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80"
-        >
-          <div className="flex items-center gap-2 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-            <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-red-500"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500"></div>
-            </div>
-            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-400">
-              {tSample("title")}
-            </span>
-          </div>
-
-          <div className="p-6">
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-blue-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {tSample("standard.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {tSample("standard.description")}
-                </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  {tSample("standard.tip")}
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-green-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {tSample("usb.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {tSample("usb.description")}
-                </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  {tSample("usb.tip")}
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-zinc-200/50 bg-zinc-50/30 p-4 transition-all hover:border-zinc-300 hover:bg-zinc-50/50 dark:border-zinc-700/50 dark:bg-zinc-800/30 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/50">
-                <div className="mb-2 flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-purple-500" />
-                  <span className="font-medium text-zinc-800 dark:text-zinc-200">
-                    {tSample("bluetooth.name")}
-                  </span>
-                </div>
-                <p className="mb-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {tSample("bluetooth.description")}
-                </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  {tSample("bluetooth.tip")}
-                </p>
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
+            {/* `self-stretch`, then `sticky` on the child — the same pairing
+                the QR tool uses. A grid cell collapses to its content height,
+                and an element with no travel inside its container never
+                sticks. The live signal is what you watch WHILE reading the
+                settings beside it, so it is the panel that should follow. */}
+            <div className="lg:self-stretch">
+              {/* The max-height guard the suite's other sticky panels carry: on a
+                  short laptop window a sticky panel taller than the viewport
+                  can never be scrolled to its own bottom. */}
+              <div className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                <ListenCard
+                  analyserRef={mic.analyserRef}
+                  level={mic.level}
+                  isLive={mic.isLive}
+                  isSilent={mic.isSilent}
+                  recorder={recorder}
+                />
               </div>
             </div>
+
+            <div className="grid gap-4">
+              <ProcessingCard
+                processing={mic.processing}
+                onChange={mic.updateProcessing}
+                settings={mic.settings}
+                // Reopening the stream mid-recording would end the recording,
+                // so the switches are held while one is running.
+                disabled={recorder.isRecording}
+                deviceLabel={activeLabel}
+                // A toggle reopens the microphone. The layout no longer moves
+                // while that happens; this is what says it is happening.
+                isBusy={mic.isBusy}
+              />
+              <SpeakerTestCard />
+              <RecordingsCard
+                recordings={recorder.recordings}
+                onRemove={recorder.remove}
+                onClear={recorder.clear}
+              />
+            </div>
           </div>
-        </motion.div>
+        </div>
+      ) : (
+        <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:items-start">
+          <ToolCard title={t("gate.title")} bodyClassName="p-0">
+            <MediaAccessPanel
+              status={mic.status}
+              failure={mic.failure}
+              permission={mic.permission}
+              kind="microphone"
+              onStart={() => {
+                void mic.start()
+              }}
+            />
+          </ToolCard>
+          {/* Rendered before permission too, deliberately: it needs none, so
+              it is the one thing on this page that still works for somebody
+              who blocked the microphone and cannot get it back — and "can I
+              hear anything at all" is half of what they came to find out. */}
+          <SpeakerTestCard />
+        </div>
       )}
-
-      {/* Info Section */}
-      <InfoSection />
-
-      {/* Audio Preview Modal */}
-      <AudioPreviewModal audio={previewAudio} onClose={closePreview} />
     </div>
   )
 }
+
+export default MicrophoneTest

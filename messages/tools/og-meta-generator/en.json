@@ -1,177 +1,179 @@
 {
   "OgMetaGeneratorPage": {
     "ToolHeader": {
-      "title": "OG Meta Generator",
-      "description": "Create meta tags for social media and improve SEO at a professional level"
+      "title": "Open Graph Generator",
+      "description": "See how your link will look when it is shared on Telegram or X, and take the og: and twitter: tags away ready to paste. Nothing you type is sent anywhere; the image is opened in your own browser, only to measure it."
     },
-    "ConfigPanel": {
-      "title": "Tool Configuration",
-      "status": "Select Mode",
-      "workMode": "Work mode:",
-      "form": "Data Input",
-      "preview": "Preview"
+    "sample": {
+      "load": "Sample",
+      "title": "React Hooks: a practical guide",
+      "description": "From useState and useEffect through to writing your own custom hook — a short guide, explained with examples.",
+      "imageAlt": "Article cover: a guide to React Hooks",
+      "siteName": "Example Blog"
     },
-    "TemplatesPanel": {
-      "title": "Templates",
-      "status": "Quick Selection",
-      "readyTemplates": "Ready templates:",
-      "loadButton": "Load",
-      "demoData": "Demo Data",
+    "share": {
+      "copy": "Link",
+      "copied": "Copied"
+    },
+    "import": {
+      "open": "Import",
+      "title": "Bring in existing tags",
+      "hint": "Paste your page's head section, or just the meta tags, and the form fills itself from them. No request is made — it is all parsed in your browser.",
+      "placeholder": "<meta property=\"og:title\" content=\"...\" />",
+      "action": "Read",
+      "close": "Close",
+      "found": "Filled {count} fields.",
+      "nothing": "No meta tags this tool recognises were found in that text."
+    },
+    "rescrape": {
+      "hint": "Updated your tags but still seeing the old card? Refresh the platform's cache here:"
+    },
+    "form": {
+      "panelTitle": "Details",
       "clear": "Clear",
-      "templates": {
-        "blog": {
-          "label": "Blog Article",
-          "description": "For articles and blog posts"
+      "title": "Title",
+      "titlePlaceholder": "Your page title",
+      "description": "Description",
+      "descriptionPlaceholder": "A sentence or two about what the page is",
+      "image": "Image URL",
+      "imageHint": "Must be an absolute URL starting with https://. A relative path (/og.png) will not work.",
+      "imageAlt": "Image description (alt)",
+      "imageAltPlaceholder": "What the image shows",
+      "url": "Page URL",
+      "siteName": "Site name",
+      "twitterSite": "X (Twitter) account",
+      "type": "Content type",
+      "types": {
+        "website": "Website — an ordinary page",
+        "article": "Article",
+        "book": "Book",
+        "profile": "Profile",
+        "video": "Video"
+      },
+      "twitterCard": "Card type",
+      "cards": {
+        "summary": "Summary — small image",
+        "summary_large_image": "Large image",
+        "player": "Player — video/audio"
+      },
+      "locale": "Language (og:locale)"
+    },
+    "preview": {
+      "title": "Share card",
+      "platform": "Platform",
+      "noTitle": "No title yet",
+      "noDescription": "No description yet",
+      "noUrl": "no URL",
+      "noImage": "No image",
+      "imageFailed": "Image failed to load",
+      "imageAlt": "Share card image",
+      "imageLoading": "Loading the image...",
+      "truncation": "{platform} shows roughly {title} characters of the title and {description} of the description — the rest is cut."
+    },
+    "issues": {
+      "title": "Checks",
+      "clean": "All good — the card will render in full.",
+      "measured": "Image measured: {width} × {height} · ratio {ratio}:1",
+      "checkingImage": "Loading and measuring the image...",
+      "titleMissing": "No title. Without one, platforms pick the first text they find on the page, and it is rarely the text you wanted.",
+      "titleLong": "The title is {length} characters. Most places cut it after {max}.",
+      "titleTooLong": "The title is {length} characters — longer than {max}. Every platform will cut it.",
+      "descriptionMissing": "No description. The line under the title in the card will be empty.",
+      "descriptionLong": "The description is {length} characters. Search results cut it after {max}.",
+      "descriptionTooLong": "The description is {length} characters — longer than {max}. Half of it will not be shown.",
+      "imageMissing": "No image. A card without one renders at half the size and gets far fewer clicks.",
+      "imageRelative": "The image URL is relative. Crawlers resolve it against their own host and find nothing — use a full https:// address.",
+      "imageUnreachable": "The image could not be loaded. The URL may be wrong, or the host may be blocking requests from other sites.",
+      "imageTooSmall": "The image is {width} × {height} — too small. Platforms drop images with an edge below {min} pixels entirely.",
+      "imageRatio": "The image ratio is {ratio}:1 ({width} × {height}). Cards are built for 1.91:1, so part of it will be cropped away.",
+      "imageAltMissing": "No image description (alt). A screen-reader user is told nothing about what the picture shows.",
+      "urlMissing": "No page URL. og:url is the link the card points at and doubles as the canonical address.",
+      "urlRelative": "The page URL is not absolute — it has to start with https://.",
+      "largeCardNoImage": "The card type is “large image” but there is no image. X falls back to the small card, and your choice does nothing."
+    },
+    "output": {
+      "title": "Result",
+      "format": "Shape",
+      "formats": {
+        "html": "HTML",
+        "next": "Next.js"
+      },
+      "tags": "{count} tags",
+      "copy": "Copy",
+      "download": "Save"
+    },
+    "reference": {
+      "title": "What each platform shows",
+      "intro": "Open Graph is how you decide what your page looks like when it is shared. Without the tags, the platform picks some text and some image off the page itself. The numbers below are the approximate points where text gets cut — not hard rules, but worth writing your title against.",
+      "chars": "~{count} chars",
+      "table": {
+        "platform": "Platform",
+        "title": "Title",
+        "description": "Description",
+        "note": "Note"
+      },
+      "platforms": {
+        "telegram": {
+          "name": "Telegram",
+          "note": "Reads og: tags, not twitter:. The one that matters most for an Uzbek audience."
         },
-        "product": {
-          "label": "Product Page",
-          "description": "For e-commerce and product pages"
+        "x": {
+          "name": "X (Twitter)",
+          "note": "Falls back to og: when twitter: is absent. summary_large_image needs an image."
         },
-        "video": {
-          "label": "Video Content",
-          "description": "For video and multimedia content"
+        "facebook": {
+          "name": "Facebook",
+          "note": "Reads og: tags only. The cache can be refreshed through the Sharing Debugger."
         },
-        "company": {
-          "label": "Company Page",
-          "description": "For business and corporate pages"
+        "linkedin": {
+          "name": "LinkedIn",
+          "note": "Reads og: tags and caches them for a long time — refresh via Post Inspector."
         },
-        "event": {
-          "label": "Event Page",
-          "description": "For events and conferences"
+        "whatsapp": {
+          "name": "WhatsApp",
+          "note": "Reads og: tags only and renders the image small. It may drop images over about 300 KB."
+        },
+        "slack": {
+          "name": "Slack",
+          "note": "Reads og: tags. The one your link most often lands in at work."
+        },
+        "discord": {
+          "name": "Discord",
+          "note": "Reads og: tags and shows a longer description than the others."
         }
+      },
+      "image": {
+        "title": "Image size",
+        "body": "{width} × {height} — every large card is built around that 1.91:1 ratio. An image with an edge below {min} pixels is not shown at all. And the URL must be absolute: a relative path is the single commonest reason a share card has no picture."
+      },
+      "cache": {
+        "title": "Why your change is not showing",
+        "body": "Platforms cache the tags they read the first time — Facebook and LinkedIn for a long while. If the old card keeps appearing after you have fixed the tags, that is usually not a bug: re-scrape the URL in the Facebook Sharing Debugger or the LinkedIn Post Inspector."
       }
     },
-    "FormPanel": {
-      "title": "Data Input",
-      "status": "Form",
-      "basicInfo": "Basic Information",
-      "systemSettings": "System Settings",
-      "inputStats": "Input data",
-      "titleLabel": "Title *",
-      "titlePlaceholder": "Page title (up to 70 characters)",
-      "titleCounter": "characters",
-      "descLabel": "Description *",
-      "descPlaceholder": "Brief description about the page (up to 200 characters)",
-      "imageLabel": "Image URL",
-      "imagePlaceholder": "https://example.com/image.jpg",
-      "urlLabel": "Page URL",
-      "urlPlaceholder": "https://example.com",
-      "siteNameLabel": "Site Name",
-      "siteNamePlaceholder": "Site or company name",
-      "contentTypeLabel": "Content Type",
-      "twitterCardLabel": "Twitter Card",
-      "twitterSiteLabel": "Twitter Site",
-      "twitterSitePlaceholder": "@username",
-      "twitterCreatorLabel": "Twitter Creator",
-      "twitterCreatorPlaceholder": "@username",
-      "gettingLong": "Getting long",
-      "perfect": "Perfect!",
-      "tooLongError": "Too long!",
-      "contentType": "Content Type",
-      "twitterCard": "Twitter Card",
-      "language": "Language",
-      "imageSize": "Image Size",
-      "twitterSite": "Twitter Site",
-      "twitterCreator": "Twitter Creator",
-      "typeWebsite": "Website",
-      "typeArticle": "Article",
-      "typeVideo": "Video",
-      "typeBook": "Book",
-      "typeProfile": "Profile",
-      "typeMusic": "Music",
-      "cardSummary": "Summary",
-      "cardLargeImage": "Large Image",
-      "cardApp": "App",
-      "cardPlayer": "Player",
-      "langUzbek": "Uzbek",
-      "langEnglish": "English",
-      "langRussian": "Russian",
-      "langTurkish": "Turkish",
-      "recommended": "Recommended",
-      "square": "Square"
-    },
-    "OutputPanel": {
-      "title": "Tool Output",
-      "status": "Meta Tags",
-      "metaTags": "Meta Tags",
-      "fullHtml": "Full HTML",
-      "outputStats": "Generated output",
-      "emptyTitle": "Fill in the data",
-      "emptyDesc": "meta tags will be generated automatically",
-      "downloadTxt": "TXT",
-      "downloadHtml": "HTML",
-      "copyAndEdit": "Copy & Edit",
-      "copySuccess": "✅ Meta tags copied to clipboard!\n\n📝 You can now:\n• Paste in any text editor\n• Edit as needed\n• Use in your HTML file"
-    },
-    "PreviewPanel": {
-      "title": "Social Media Preview",
-      "status": "Preview",
-      "facebook": "Facebook / Open Graph",
-      "twitter": "Twitter Card",
-      "facebookPreview": "Facebook Preview",
-      "twitterCard": "Twitter Card",
-      "telegramPreview": "Telegram Preview",
-      "linkedinPreview": "LinkedIn Preview",
-      "whatsappPreview": "WhatsApp Preview"
-    },
-    "ValidationPanel": {
-      "title": "Smart Validation",
-      "status": "SEO Analysis",
-      "seoScore": "SEO Score",
-      "metaOptimization": "Meta tag optimization",
-      "excellent": "Excellent",
-      "good": "Good",
-      "needsWork": "Needs work",
-      "validationChecks": "Validation Checks",
-      "titleLength": "Title Length",
-      "descriptionLength": "Description Length",
-      "imageUrl": "Image URL",
-      "pageUrl": "Page URL",
-      "titleRequired": "Title required",
-      "descriptionRequired": "Description required",
-      "secureHttpsImage": "Secure HTTPS image",
-      "secureHttpsUrl": "Secure HTTPS URL",
-      "perfectLength": "Perfect length",
-      "tooLong": "Too long",
-      "tooShort": "Too short",
-      "useHttps": "Use HTTPS for better security",
-      "invalidFormat": "Invalid URL format",
-      "quickTips": "💡 Quick Tips",
-      "tip1": "• Title: 30-60 characters for optimal display",
-      "tip2": "• Description: 120-160 characters for best results",
-      "tip3": "• Image: Use 1200x630px for perfect social sharing",
-      "tip4": "• Always use HTTPS URLs for better security"
-    },
-    "InfoSection": {
-      "title": "Why is Open Graph Meta important?",
-      "usagePlacesTitle": "Main usage areas:",
-      "professionalTipsTitle": "Professional tips:",
-      "noteTitle": "Note:",
-      "noteText": "When meta tags are properly configured, your site looks professional and trustworthy on social media, which helps attract more customers.",
-      "usagePlaces": {
-        "social": "Social media: Beautiful preview on Facebook, LinkedIn, WhatsApp",
-        "twitter": "Twitter Cards: Professional appearance on Twitter",
-        "seo": "SEO improvement: Detailed information for search engines",
-        "ctr": "Click rate: More clicks through attractive preview",
-        "brand": "Brand identity: Consistent appearance for your brand",
-        "impression": "Professional impression: Positive opinion about your site"
-      },
-      "tips": {
-        "tip1": "Title should not exceed 70 characters (optimal 50-60)",
-        "tip2": "Description should not exceed 200 characters (optimal 150-160)",
-        "tip3": "Image should be 1200x630 pixels in size",
-        "tip4": "Create unique meta tags for each page",
-        "tip5": "Test preview on different platforms"
-      },
-      "metaTypes": {
-        "openGraphTitle": "Open Graph",
-        "openGraphDesc": "Basic meta tags for platforms like Facebook, LinkedIn and WhatsApp",
-        "twitterTitle": "Twitter Cards",
-        "twitterDesc": "Special formats for beautiful and professional appearance on Twitter",
-        "seoTitle": "SEO Meta",
-        "seoDesc": "Optimized tags for Google and other search engines",
-        "schemaTitle": "Schema.org",
-        "schemaDesc": "Semantic web standards for structured data"
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "whatIsOg": {
+          "question": "What is Open Graph, and do I need it?",
+          "answer": "Open Graph is the set of meta tags that decide which title, description and image appear when your page is shared on social media. Without them the platform picks its own text and image off the page, which is how a card ends up showing your navigation menu or a random picture. If your links get shared on Telegram or anywhere social, you need them."
+        },
+        "notUpdating": {
+          "question": "I updated the tags but the card is still the old one. Why?",
+          "answer": "Almost always caching. Platforms store what they read the first time they fetch your page — Facebook and LinkedIn keep it for a long while, and Telegram caches on its own servers. The fix is to re-scrape the URL in the Facebook Sharing Debugger or the LinkedIn Post Inspector. For Telegram, testing with a changed query string such as ?v=2 is the usual workaround."
+        },
+        "imageSize": {
+          "question": "What image should og:image point at?",
+          "answer": "1200 × 630 pixels, a 1.91:1 ratio — every large card is designed around it. Platforms drop images with an edge below 200 pixels entirely. Most important of all: the URL must be absolute. A relative path like /og.png does not work, because the crawler resolves it against its own domain, and that is the number-one reason a card has no picture. This tool loads your image in your browser and measures the real dimensions."
+        },
+        "twitterNeeded": {
+          "question": "If I have og: tags, do I also need twitter: tags?",
+          "answer": "Mostly no. X falls back to the og: tags for the title, description and image, so repeating them only creates a second copy to keep in sync. The two that genuinely do something are twitter:card, which decides whether the card is large or small, and twitter:site, which attributes it to your account — which is exactly what this tool writes."
+        },
+        "nextjs": {
+          "question": "Where do these tags go in a Next.js project?",
+          "answer": "In the App Router you do not write meta tags by hand — you export a metadata object from page.tsx or layout.tsx and Next renders the tags for you. Pick the “Next.js” shape and the output is that object, ready to paste into the file. For the Pages Router or a plain HTML site, take the “HTML” shape and put it in the page's head section."
+        }
       }
     }
   }

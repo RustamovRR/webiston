@@ -2,80 +2,121 @@
   "UrlEncoderPage": {
     "ToolHeader": {
       "title": "URL Kodlash va Dekodlash",
-      "description": "URL manzillarini xavfsiz formatga kodlash va dekodlash uchun professional vosita"
+      "description": "Havoladagi %20, %3A kabi belgilarni odam o'qiydigan holatga keltiring — yoki aksincha. So'rov parametrlari alohida ajratib ko'rsatiladi."
     },
-    "ControlPanel": {
+    "ControlBar": {
+      "direction": "Yo'nalish",
       "encode": "Kodlash",
       "decode": "Dekodlash",
-      "fileUpload": "Fayl yuklash",
-      "sampleUrl": "Namuna URL",
+      "scope": "Nimani",
+      "scopes": {
+        "value": "Qiymat",
+        "whole": "To'liq URL"
+      },
+      "upload": "Fayl",
+      "sample": "Namuna",
       "clear": "Tozalash",
-      "download": "Yuklab olish"
+      "download": "Yuklab olish",
+      "auto": "Avto",
+      "resolved": "Avto: {mode}",
+      "resolvedEncode": "kodlanmoqda",
+      "resolvedDecode": "ochilmoqda"
     },
     "Panel": {
-      "plainTextInput": "Oddiy Matn Kirish",
-      "encodedUrlInput": "Kodlangan URL Kirish",
-      "encodedUrlResult": "Kodlangan URL Natija",
-      "decodedUrlResult": "Dekodlangan Natija",
-      "encodePlaceholder": "Kodlamoqchi bo'lgan matnni kiriting yoki fayl yuklang...",
-      "decodePlaceholder": "Dekodlamoqchi bo'lgan URL matnni kiriting...",
-      "readyToEncode": "Kodlashga tayyor",
-      "readyToDecode": "Dekodlashga tayyor",
-      "encodedUrlWillAppear": "Kodlangan URL bu yerda ko'rinadi...",
-      "decodedTextWillAppear": "Dekodlangan matn bu yerda ko'rinadi...",
-      "enterTextOrUpload": "Matn kiriting yoki fayl yuklang",
-      "conversionError": "Konvertatsiya Xatoligi",
-      "switchMode": "Rejimni almashtirish",
-      "fileSize": "Hajm:",
-      "validUrl": "To'g'ri URL",
-      "urlStructure": "URL Tuzilishi:"
+      "plainInput": "Oddiy matn",
+      "encodedInput": "Kodlangan matn",
+      "encodedResult": "Kodlangan natija",
+      "decodedResult": "Ochilgan natija",
+      "encodePlaceholder": "URL yoki parametr qiymatini kiriting…",
+      "decodePlaceholder": "Kodlangan URL yoki so'rov satrini qo'ying…",
+      "encodedWillAppear": "Kodlangan natija shu yerda ko'rinadi",
+      "decodedWillAppear": "Ochilgan natija shu yerda ko'rinadi",
+      "enterUrlOrUpload": "URL kiriting yoki fayl yuklang",
+      "switchMode": "Yo'nalishni almashtirish",
+      "inputLength": "Kirish:",
+      "outputLength": "Natija:"
     },
-    "Info": {
-      "title": "URL Encoding haqida ma'lumot",
-      "whatIsUrlEncoding": {
-        "title": "URL Encoding nima?",
-        "description": "URL Encoding (Percent Encoding) - URL larda maxsus ma'noga ega bo'lgan belgilarni xavfsiz formatga o'girish usuli. Har bir belgi % va ikkita hex raqam bilan almashtiriladi."
-      },
-      "features": {
-        "title": "Asosiy xususiyatlari",
-        "feature1": "• Maxsus belgilarni %XX formatiga o'giradi",
-        "feature2": "• URL larni xavfsiz uzatish uchun moslashtiradi",
-        "feature3": "• Bo'shliq va ASCII bo'lmagan belgilarni qo'llab-quvvatlaydi",
-        "feature4": "• Veb ilovalar uchun standart"
-      },
-      "usage": {
-        "title": "Qachon kerak?",
-        "usage1": "• URL da bo'shliq va maxsus belgilar ishlatganda",
-        "usage2": "• Query parametrlarida &, ?, = ishlatganda",
-        "usage3": "• Form ma'lumotlarini yuborishda",
-        "usage4": "• API so'rovlarida xavfsizlik uchun"
-      },
-      "formatExample": {
-        "title": "URL encoding misollari",
-        "spacesAndSymbols": "Bo'shliq va maxsus belgilar",
-        "queryParameters": "Query parametrlari",
-        "plainText": "Asl holati:",
-        "encodedUrl": "Kodlangan:"
-      }
+    "file": {
+      "dropHere": "Faylni shu yerga tashlang",
+      "accepts": "TXT · JSON"
     },
-    "Errors": {
-      "textTooLong": "Matn juda uzun (maksimal 1MB)",
-      "conversionError": "Konvertatsiya xatoligi",
-      "invalidUrlFormat": "Noto'g'ri URL kodlash formati. Percent encoding to'g'riligini tekshiring.",
-      "decodeError": "URL dekodlashda xatolik. Format to'g'riligini tekshiring.",
-      "encodeError": "URL kodlashda xatolik yuz berdi.",
-      "fileSizeError": "Fayl hajmi 10MB dan kichik bo'lishi kerak.",
-      "fileTypeError": "Faqat matn fayllarni yuklash mumkin.",
-      "fileReadError": "Faylni o'qishda xatolik yuz berdi.",
-      "fileUploadError": "Faylni yuklashda xatolik yuz berdi.",
-      "downloadError": "Faylni yuklab olishda xatolik yuz berdi."
+    "Download": {
+      "encode": "url-kodlangan",
+      "decode": "url-ochilgan"
     },
     "Samples": {
-      "simpleUrl": "Oddiy URL",
-      "complexUrl": "Murakkab URL",
-      "queryString": "Qidiruv so'rovi",
-      "emailQuery": "Email havolasi",
-      "socialShare": "Ijtimoiy tarmoq"
+      "link": "Oddiy havola",
+      "spaces": "Bo'sh joyli URL",
+      "query": "So'rov satri (form)",
+      "mailto": "mailto parametrlar bilan",
+      "nested": "URL ichida URL"
+    },
+    "Breakdown": {
+      "title": "URL tarkibi",
+      "protocol": "Protokol",
+      "host": "Host",
+      "path": "Yo'l",
+      "hash": "Fragment",
+      "params": "{count} ta parametr",
+      "emptyValue": "qiymatsiz"
+    },
+    "Errors": {
+      "malformed": "Kodlash noto'g'ri: yolg'iz % belgisi yoki % dan keyin ikkita o'n oltilik raqam yo'q.",
+      "tooLong": "Matn juda uzun. URL bir megabaytdan oshmaydi.",
+      "tooLarge": "Fayl juda katta. Chegara — 1 MB.",
+      "unsupported": "Bu fayl turi qo'llab-quvvatlanmaydi. Faqat .txt va .json.",
+      "unreadable": "Faylni o'qib bo'lmadi."
+    },
+    "reference": {
+      "title": "URL kodlash qanday ishlaydi",
+      "intro": "URL faqat cheklangan belgilar to'plamidan iborat bo'lishi mumkin. Qolgani foiz belgisi va ikkita o'n oltilik raqam bilan yoziladi: bo'sh joy — %20, kirill harfi esa bir necha baytga aylanadi. Muhimi — qaysi belgilar tuzilmani tashkil qiladi va shuning uchun tegilmasligi kerak.",
+      "scopes": {
+        "value": {
+          "title": "Qiymat (encodeURIComponent)",
+          "body": "Bitta parametr qiymati yoki yo'l bo'lagi uchun. Ajratuvchi belgilar — : / ? # & = — ham kodlanadi, chunki bu yerda ular matn, tuzilma emas. Formalar standarti bo'lgani uchun bo'sh joy + bo'lishi ham mumkin.",
+          "example": "hello world → hello%20world"
+        },
+        "whole": {
+          "title": "To'liq URL (encodeURI)",
+          "body": "Butun manzil uchun. Tuzilmani tashkil qiluvchi belgilar o'z joyida qoladi, faqat noto'g'ri belgilar — masalan bo'sh joy — kodlanadi. Havolangizdagi bo'sh joyni tuzatmoqchi bo'lsangiz, shu kerak.",
+          "example": "https://a.uz/q?s=hello world → https://a.uz/q?s=hello%20world"
+        }
+      },
+      "table": {
+        "title": "Qaysi belgi qachon o'zgaradi",
+        "char": "Belgi",
+        "asValue": "Qiymat sifatida",
+        "asWhole": "To'liq URL sifatida",
+        "space": "bo'sh joy",
+        "note": "Farq aynan shu jadvalda: qiymat rejimida ajratuvchilar kodlanadi, to'liq URL rejimida esa saqlanadi. Shuning uchun to'liq URL ustidan qiymat kodlashni ishlatish havolani buzadi — u faqat boshqa URL ichiga joylashtirilsa to'g'ri bo'ladi."
+      }
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "difference": {
+          "question": "Qiymat va To'liq URL rejimlari nima bilan farq qiladi?",
+          "answer": "Bu ikki xil standart. Qiymat rejimi (encodeURIComponent) : / ? # & = belgilarini ham kodlaydi — bitta parametr qiymati yoki yo'l bo'lagi uchun to'g'ri. To'liq URL rejimi (encodeURI) ularni saqlaydi va faqat noto'g'ri belgilarni kodlaydi. To'liq havolaga qiymat rejimini qo'llasangiz, https://... o'rniga https%3A%2F%2F... chiqadi — bu havola ishlamaydi, u faqat boshqa URL ichiga qiymat sifatida solinsa ma'noga ega."
+        },
+        "plus": {
+          "question": "Nega + belgisi ba'zan bo'sh joyga aylanadi?",
+          "answer": "Forma ma'lumotlari (application/x-www-form-urlencoded) bo'sh joyni + bilan yozadi. Shuning uchun Qiymat rejimida dekodlashda + bo'sh joyga aylantiriladi — brauzer manzil satridan nusxa olingan so'rov satrlari aynan shunday. Haqiqiy plyus belgisi kerak bo'lsa, u %2B bo'lib kodlanadi. To'liq URL rejimida esa + tegilmaydi, chunki yo'lda u oddiy belgi."
+        },
+        "when": {
+          "question": "Qachon URL kodlash kerak?",
+          "answer": "Har qanday qiymat URL ichiga qo'yilganda: qidiruv so'rovi, email manzili, boshqa havola, foydalanuvchi kiritgan matn. Kodlanmagan & yoki = parametrlar chegarasini buzadi, bo'sh joy esa havolani ba'zi joylarda kesib qo'yadi. Bu shifrlash emas — hech narsani yashirmaydi, faqat matnni URL tuzilmasidan ajratadi."
+        },
+        "privacy": {
+          "question": "Ma'lumotim serverga yuboriladimi?",
+          "answer": "Yo'q. Kodlash ham, dekodlash ham, URL tahlili ham brauzeringizda bajariladi. Sahifa yuklangandan keyin bu asbob hech qanday tarmoq so'rovi yubormaydi, shuning uchun tokenli havolalar bilan ham xavfsiz ishlatiladi."
+        }
+      }
+    },
+    "Notice": {
+      "doubleEncoded": "Natijada hali ham % belgilari bor: bu manzil ikki marta kodlangan ko'rinadi.",
+      "decodeAgain": "Yana bir marta ochish",
+      "unchangedDecode": "Bu matnda ochiladigan narsa yo'q — u allaqachon oddiy holatda.",
+      "unchangedEncode": "Bu matnda kodlanishi kerak bo'lgan belgi yo'q — u o'zgarishsiz qoldi."
     }
   }
 }

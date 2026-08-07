@@ -1,373 +1,55 @@
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
+ * React equivalent; every payload here is a constant or an i18n string, and
+ * `jsonLd()` escapes `<` so a value can never close the script element. */
 import type { Metadata } from "next"
-import { QrGenerator } from "@/modules/tools"
+import { setRequestLocale } from "next-intl/server"
 
-// Locale-based metadata generation
+import { Faq } from "@/components/shared/Faq"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { faqPageSchema, withLocale } from "@/lib/seo"
+// Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
+// modules and every one of them is `'use client'`.
+import { QrGenerator } from "@/modules/tools/QrGenerator"
+import {
+  applicationSchema,
+  generateBreadcrumbSchema,
+  getFaqItems,
+  getQrGeneratorMetadata
+} from "@/modules/tools/QrGenerator/seo"
 
-export const metadata: Metadata = {
-  title: "QR Kod Yaratish - Bepul QR Kod Generator Onlayn | Webiston",
-  description:
-    "QR kod yaratish uchun eng yaxshi bepul vosita. URL, matn, kontakt, WiFi, SMS uchun QR kodlar yarating. Tez, oson va professional QR generator.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "qr kod yaratish",
-    "qr kod generator",
-    "qr kod generatori",
-    "qr kod yasash",
-    "qr kod qilish",
-    "qr kod online",
-    "bepul qr kod",
-    "qr kod bepul",
-    "qr kod vositasi",
-    "qr kod tool",
-    "qr kod yaratuvchi",
-    "qr kod maker",
-    "qr kod creator",
-    "onlayn qr kod",
-    "qr kod scanner",
-    "qr kod reader",
-    "qr kod dekoder",
-    "qr kod encoder",
-    "tez qr kod",
-    "oson qr kod",
-    "professional qr kod",
-    "o'zbek qr kod",
-    "uzbek qr kod",
+// Only this tool's namespace reaches the client, plus the shared
+// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+const TOOL_NAMESPACE = "QrGeneratorPage"
 
-    // Ingliz tilida
-    "qr code generator",
-    "qr code generator online",
-    "free qr code generator",
-    "qr code maker",
-    "qr code creator",
-    "online qr generator",
-    "qr generator free",
-    "create qr code",
-    "generate qr code",
-    "qr code builder",
-    "qr code tool",
-    "custom qr code",
-    "bulk qr code generator",
-    "batch qr code",
-    "professional qr code",
-    "business qr code",
-    "marketing qr code",
-    "dynamic qr code",
-    "static qr code",
-    "high quality qr code",
-    "vector qr code",
-    "svg qr code",
-    "png qr code",
-    "jpg qr code",
-
-    // Rus tilida
-    "qr код генератор",
-    "генератор qr кода",
-    "создать qr код",
-    "qr код онлайн",
-    "бесплатный qr код",
-    "qr код бесплатно",
-    "генератор qr кодов",
-    "создание qr кода",
-    "qr код maker",
-    "qr код creator",
-    "qr код инструмент",
-    "qr код сервис",
-    "быстрый qr код",
-    "простой qr код",
-    "профессиональный qr код",
-    "qr код для бизнеса",
-    "qr код для сайта",
-    "qr код для wifi",
-    "qr код для контактов",
-    "qr код для sms",
-    "qr код высокого качества",
-
-    // Specific use cases
-    "url qr kod",
-    "website qr kod",
-    "link qr kod",
-    "matn qr kod",
-    "text qr kod",
-    "wifi qr kod",
-    "wifi password qr kod",
-    "kontakt qr kod",
-    "contact qr kod",
-    "vcard qr kod",
-    "sms qr kod",
-    "email qr kod",
-    "telefon qr kod",
-    "phone qr kod",
-    "location qr kod",
-    "map qr kod",
-    "event qr kod",
-    "calendar qr kod",
-
-    // Long-tail keywords
-    "qr kod yaratish va ulardan foydalanish",
-    "professional qr kod generator free online",
-    "создать qr код бесплатно онлайн высокого качества",
-    "webiston qr tools",
-    "o'zbek qr generator professional",
-    "uzbek qr code generator online free",
-    "bulk qr code generator for business",
-    "custom qr code with logo generator"
-  ],
-  openGraph: {
-    title: "QR Kod Yaratish - Bepul QR Kod Generator | Webiston",
-    description:
-      "Eng yaxshi bepul QR kod generator. URL, matn, kontakt, WiFi uchun professional QR kodlar yarating. Tez, oson va xavfsiz.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools/qr-generator",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png", // Using existing logo for now
-        width: 1200,
-        height: 630,
-        alt: "QR Kod Generator - Bepul QR Kod Yaratish Vositasi",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "QR Kod Yaratish - Bepul QR Generator",
-    description:
-      "Professional QR kod generator. URL, matn, kontakt, WiFi uchun QR kodlar yarating. Bepul va tez!",
-    images: ["https://webiston.uz/logo.png"] // Using existing logo for now
-  },
-  alternates: {
-    canonical: "https://webiston.uz/tools/qr-generator",
-    languages: {
-      uz: "https://webiston.uz/tools/qr-generator",
-      en: "https://webiston.uz/en/tools/qr-generator",
-      "x-default": "https://webiston.uz/tools/qr-generator"
-    }
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
+/**
+ * `<` inside a JSON string can close the surrounding `<script>` element. Every
+ * value here is a constant or an i18n string, so there is no injection path
+ * today; escaping removes the class of problem rather than the instance.
+ */
+function jsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c")
 }
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": ["WebApplication", "SoftwareApplication"],
-  name: "QR Kod Generator - Bepul QR Kod Yaratish",
-  alternateName: ["QR Code Generator", "QR Kod Yaratish", "QR Generator"],
-  description:
-    "Professional QR kod yaratish vositasi. URL, matn, kontakt, WiFi, SMS uchun bepul QR kodlar yarating.",
-  url: "https://webiston.uz/tools/qr-generator",
-  sameAs: [
-    "https://webiston.uz/en/tools/qr-generator",
-    "https://webiston.uz/tools/qr-generator"
-  ],
-  applicationCategory: ["UtilityApplication", "ProductivityApplication"],
-  operatingSystem: ["Windows", "macOS", "Linux", "Android", "iOS"],
-  browserRequirements: "Requires JavaScript. Requires HTML5.",
-  permissions: "browser",
-  isAccessibleForFree: true,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    validFrom: "2024-01-01"
-  },
-  author: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: "https://webiston.uz/logo.png",
-    sameAs: ["https://github.com/webiston", "https://x.com/webiston_uz"]
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://webiston.uz/logo.png",
-      width: 512,
-      height: 512
-    }
-  },
-  featureList: [
-    "URL QR kod yaratish",
-    "Matn QR kod yaratish",
-    "Kontakt QR kod yaratish",
-    "WiFi QR kod yaratish",
-    "SMS QR kod yaratish",
-    "Email QR kod yaratish",
-    "Telefon QR kod yaratish",
-    "Turli o'lchamlar",
-    "Xato tuzatish darajalari",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Yuklab olish imkoniyati"
-  ],
-  // screenshot: 'https://webiston.uz/images/tools/qr-generator-screenshot.png', // TODO: Add screenshot
-  softwareVersion: "2.0",
-  datePublished: "2024-01-01",
-  dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
-  keywords: "qr kod yaratish, qr generator, bepul qr kod, online qr generator",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "1250",
-    bestRating: "5",
-    worstRating: "1"
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: "Foydalanuvchi"
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: "5",
-        bestRating: "5"
-      },
-      reviewBody:
-        "Juda oson va tez QR kod yaratish imkoniyati. Professional va bepul!"
-    }
-  ]
-}
-
-// FAQ Schema for better SERP features (locale-based)
-function generateFAQSchema(locale: string = "uz") {
-  const faqData = {
-    uz: {
-      questions: [
-        {
-          question: "QR kod qanday yaratiladi?",
-          answer:
-            "QR kod yaratish uchun bizning bepul vositamizdan foydalaning. URL, matn yoki kontakt ma'lumotlarini kiriting va QR kod avtomatik yaratiladi."
-        },
-        {
-          question: "QR kod bepulmi?",
-          answer:
-            "Ha, bizning QR kod generator to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi."
-        },
-        {
-          question: "QR kod qanday formatda yuklab olish mumkin?",
-          answer:
-            "QR kodlarni PNG, JPG formatlarida yuklab olish mumkin. Turli o'lchamlarda ham mavjud."
-        },
-        {
-          question: "WiFi QR kod qanday yaratiladi?",
-          answer:
-            "WiFi QR kod yaratish uchun tarmoq nomi (SSID) va parolni kiriting. QR kod avtomatik yaratiladi."
-        }
-      ]
-    },
-    en: {
-      questions: [
-        {
-          question: "How to create a QR code?",
-          answer:
-            "Use our free QR code generator. Enter URL, text or contact information and QR code will be generated automatically."
-        },
-        {
-          question: "Is QR code generator free?",
-          answer:
-            "Yes, our QR code generator is completely free. No limitations or payments required."
-        },
-        {
-          question: "What formats can I download QR code?",
-          answer:
-            "You can download QR codes in PNG, JPG formats. Various sizes are also available."
-        },
-        {
-          question: "How to create WiFi QR code?",
-          answer:
-            "Enter network name (SSID) and password to create WiFi QR code. It will connect automatically when scanned."
-        }
-      ]
-    }
-  }
-
-  const currentFAQ = faqData[locale as keyof typeof faqData] || faqData.uz
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: currentFAQ.questions.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer
-      }
-    }))
-  }
-}
-
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar",
-      qrGenerator: "QR Kod Generator"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools",
-      qrGenerator: "QR Code Generator"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: current.qrGenerator,
-        item: `${baseUrl}/tools/qr-generator`
-      }
-    ]
-  }
+/**
+ * The metadata is per-locale now.
+ *
+ * It used to be one hardcoded Uzbek object, so this route — the site's second
+ * most-visited tool — served `/en` and `/ru` a title and description in a
+ * language those visitors had not asked for. `withLocale` puts the canonical,
+ * the hreflang set and the share card on top.
+ */
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  setRequestLocale(locale)
+  return withLocale(
+    getQrGeneratorMetadata(locale),
+    locale,
+    "/tools/qr-generator"
+  )
 }
 
 export default async function QrGeneratorPage({
@@ -376,32 +58,43 @@ export default async function QrGeneratorPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = (await params) || { locale: "uz" }
+  setRequestLocale(locale)
 
-  // Generate locale-specific schemas
-  const faqSchema = generateFAQSchema(locale)
-  const breadcrumbSchema = generateBreadcrumbSchema(locale)
+  // One array, two consumers: the schema below and the visible section at the
+  // bottom. They cannot describe different pages.
+  const faqItems = getFaqItems(locale)
 
   return (
     <>
       {/* Main Application Schema */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(applicationSchema) }}
       />
 
       {/* FAQ Schema for rich snippets */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(faqPageSchema(faqItems)) }}
       />
 
       {/* Breadcrumb Schema */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(generateBreadcrumbSchema(locale))
+        }}
       />
 
-      <QrGenerator />
+      {/* `locale` is load-bearing: without it LocaleMessages falls back to
+          `getLocale()`, which returns "uz" on /en/tools/*. */}
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <QrGenerator />
+      </LocaleMessages>
+
+      {/* Server-rendered sibling of the client island: the answers reach the
+          HTML, which is what the schema above has always claimed. */}
+      <Faq locale={locale} items={faqItems} />
     </>
   )
 }

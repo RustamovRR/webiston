@@ -1,139 +1,142 @@
 "use client"
 
-import { FileText } from "lucide-react"
+/**
+ * QR code generator.
+ *
+ * Preview-first: the code is the answer, so it holds the right-hand column and
+ * stays there while the controls scroll. Measured on the version this
+ * replaces, the code itself sat at y=1671 — 2.3 screens below the fold on a
+ * 720px screen.
+ *
+ * The content-type tab strip is deliberately NOT here yet. It used to change
+ * one caption and nothing else, so a visitor who pressed "WiFi" got the same
+ * empty text box and still had to hand-write `WIFI:T:WPA;S:…;P:…;;`. It comes
+ * back with real forms behind it, or not at all.
+ */
+
+import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
+import { Button } from "@webiston/ui/primitives/button"
+import { Textarea } from "@webiston/ui/primitives/textarea"
+import { X } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { ToolHeader, DualTextPanel } from "@/components/shared"
-import { ControlPanel, QrDisplay, InfoSection } from "./components"
-import CollapsibleCustomizationPanel from "./components/CollapsibleCustomizationPanel"
+
+import { ToolCard } from "@/components/shared/ToolCard"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+
+import { QrPreview, StylePanel, WifiFields } from "./components"
 import { useQrGenerator } from "./hooks/useQrGenerator"
+import type { QrInputMode } from "./stores/qrDraftStore"
 
 const QrGenerator = () => {
-  const t = useTranslations("QrGeneratorPage.ToolHeader")
-  const tInput = useTranslations("QrGeneratorPage.InputPanel")
-  const tResults = useTranslations("QrGeneratorPage.ResultsPanel")
+  const t = useTranslations("QrGeneratorPage")
   const {
-    inputText,
-    qrUrl,
-    customQrUrl,
-    qrSize,
-    errorLevel,
-    isGenerating,
-    stats,
-    groupedPresets,
-    availableSizes,
-    errorLevels,
-    customization,
-    setInputText,
-    setQrSize,
-    setErrorLevel,
-    setCustomization,
-    handlePresetSelect,
-    handleClear,
-    downloadQr,
-    handleFileUpload,
-    detectInputType
-  } = useQrGenerator({
-    onSuccess: (message) => console.log(message),
-    onError: (error) => console.error(error)
-  })
-
-  const handleFileUploadChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      handleFileUpload(file)
-    }
-  }
-
-  const inputType = detectInputType(inputText)
-  const canDownload = !!customQrUrl
-
-  // Status component
-  const statusComponent =
-    inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-        {tInput("status")}
-      </span>
-    ) : null
-
-  // Target empty state
-  const targetEmptyState = (
-    <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500">
-        <FileText size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">{tResults("emptyTitle")}</p>
-        <p className="mt-2 text-xs opacity-75">
-          {tResults("emptyDescription")}
-        </p>
-      </div>
-    </div>
-  )
+    value,
+    setValue,
+    mode,
+    setMode,
+    wifi,
+    updateWifi,
+    style,
+    updateStyle,
+    reset,
+    document,
+    download,
+    isExporting,
+    exportError,
+    hasCode,
+    detectedType,
+    scan
+  } = useQrGenerator()
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t("title")} description={t("description")} />
-
-      <ControlPanel
-        qrSize={qrSize}
-        errorLevel={errorLevel}
-        isGenerating={isGenerating}
-        availableSizes={availableSizes}
-        errorLevels={errorLevels}
-        groupedPresets={groupedPresets}
-        canDownload={canDownload}
-        inputText={inputText}
-        onSizeChange={setQrSize}
-        onErrorLevelChange={setErrorLevel}
-        onPresetSelect={handlePresetSelect}
-        onFileUpload={handleFileUploadChange}
-        onClear={handleClear}
-        onDownload={downloadQr}
+    <div className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8">
+      <ToolHeader
+        title={t("ToolHeader.title")}
+        description={t("ToolHeader.description")}
       />
 
-      <DualTextPanel
-        sourceText={inputText}
-        convertedText={
-          customQrUrl
-            ? `${tResults("success")}\n\n${tResults("originalText")}\n${inputText.length > 100 ? inputText.substring(0, 100) + "..." : inputText}\n\n${tResults("size")} ${qrSize}x${qrSize} pixels\n${tResults("errorCorrection")} ${errorLevel}\n${tResults("type")} ${inputType}\n\n${tResults("note")}`
-            : ""
-        }
-        sourceLabel={tInput("title")}
-        targetLabel={tResults("title")}
-        onSourceChange={setInputText}
-        sourcePlaceholder={tInput("placeholder")}
-        onClear={handleClear}
-        showSwapButton={false}
-        isProcessing={isGenerating}
-        variant="terminal"
-        statusComponent={statusComponent}
-        targetEmptyState={targetEmptyState}
-        showShadow={true}
-      />
+      {/* Three cells, placed explicitly, because the reading order differs
+          per breakpoint. Stacked on a phone it has to be input → CODE →
+          controls: measured before this, the code sat at y=1805 on a 375x812
+          screen — 2.2 screens below the input — because the whole style panel
+          came first. Side by side it is input over controls on the left, with
+          the code holding the right column across both rows. */}
+      <div className="grid items-start gap-6 lg:grid-cols-[1fr_420px]">
+        <div className="lg:col-start-1 lg:row-start-1">
+          <ToolCard
+            tone="muted"
+            title={t("InputPanel.title")}
+            actions={
+              hasCode && (
+                <>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    {t(`detected.${detectedType}`)}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={reset}
+                    aria-label={t("ControlPanel.clear")}
+                  >
+                    <X aria-hidden="true" />
+                  </Button>
+                </>
+              )
+            }
+            bodyClassName="p-0"
+          >
+            <div className="space-y-4 p-5">
+              {/* Two modes, not five. URL, text, phone and SMS all live
+                  happily in the free box; WiFi is the one format nobody can
+                  hand-write (reserved-character escaping), so it alone earns
+                  fields. The old five-tab strip that changed only a caption
+                  is exactly what this is not. */}
+              <SegmentedControl<QrInputMode>
+                label={t("InputPanel.mode.label")}
+                value={mode}
+                onChange={setMode}
+                options={[
+                  { value: "text", label: t("InputPanel.mode.text") },
+                  { value: "wifi", label: t("InputPanel.mode.wifi") }
+                ]}
+              />
+              {mode === "text" ? (
+                <Textarea
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                  placeholder={t("InputPanel.placeholder")}
+                  aria-label={t("InputPanel.title")}
+                  rows={4}
+                  className="resize-y font-mono text-sm"
+                />
+              ) : (
+                <WifiFields wifi={wifi} onChange={updateWifi} />
+              )}
+            </div>
+          </ToolCard>
+        </div>
 
-      <CollapsibleCustomizationPanel
-        customization={customization}
-        onCustomizationChange={setCustomization}
-        isValid={!!inputText.trim()}
-        qrUrl={qrUrl}
-        inputText={inputText}
-      />
+        {/* `self-stretch` is what makes the sticky card inside actually stick:
+            `items-start` collapses this cell to its content height, and an
+            element with no travel in its container never moves. */}
+        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch">
+          <QrPreview
+            document={document}
+            scan={scan}
+            isExporting={isExporting}
+            exportError={exportError}
+            onDownload={download}
+          />
+        </div>
 
-      <QrDisplay
-        qrUrl={customQrUrl}
-        qrSize={qrSize}
-        errorLevel={errorLevel}
-        inputType={inputType}
-        inputText={inputText}
-        customization={customization}
-        stats={stats}
-        onDownload={downloadQr}
-      />
-
-      <InfoSection />
+        <div className="lg:col-start-1 lg:row-start-2">
+          <StylePanel style={style} onChange={updateStyle} />
+        </div>
+      </div>
     </div>
   )
 }
 
 export default QrGenerator
+export { QrGenerator }

@@ -2,106 +2,186 @@
   "ColorConverterPage": {
     "ToolHeader": {
       "title": "Rang O'giruvchi va Palette Generator",
-      "description": "HEX, RGB, HSL formatlar orasida rang konvertatsiyasi va palette generatsiya vositasi"
-    },
-    "ControlPanel": {
-      "paletteType": "Palette turi:",
-      "monochromatic": "Monoxromatik",
-      "analogous": "Analogik",
-      "complementary": "Komplementar",
-      "randomColor": "Tasodifiy rang",
-      "downloadPalette": "Palette yuklab olish"
+      "description": "HEX, RGB, HSL, OKLCH formatlar orasida konvertatsiya, WCAG kontrast tekshiruvi va palette generatsiyasi"
     },
     "ColorInput": {
       "title": "Rang Tanlash",
-      "color": "Rang:",
       "colorPicker": "Rang tanlash",
-      "colorInfo": "Rang ma'lumotlari",
-      "colorName": "Rang nomi",
-      "presetColors": "Tayyor ranglar:",
+      "pickFromScreen": "Ekrandan rang olish",
+      "random": "Tasodifiy",
+      "presetColors": "Tayyor ranglar",
       "validFormat": "To'g'ri format",
       "invalidFormat": "Noto'g'ri format",
-      "format": "Format",
-      "length": "Uzunlik",
-      "valid": "Yaroqli",
-      "opacity": "Shaffoflik"
+      "opacity": "Shaffoflik",
+      "processedLocally": "Brauzerda hisoblanadi",
+      "copyLink": "Havolani nusxalash",
+      "linkCopied": "Nusxalandi",
+      "copied": "Nusxalandi",
+      "placeholder": "#0d5a6b, rgb(13 90 107), oklch(0.433 0.073 217), teal…"
     },
     "ColorFormats": {
-      "title": "Formatlar va Ma'lumotlar",
-      "formats": "Formatlar",
-      "characters": "Belgilar",
-      "enterValidColor": "To'g'ri HEX rang kiriting...",
+      "title": "Bu rang",
+      "otherSpaces": "Boshqa rang fazolari",
+      "enterValidColor": "To'g'ri rang kiriting...",
       "formatsWillAppear": "Rang formatlar bu yerda ko'rinadi",
       "hexDescription": "Web dasturlashda eng keng tarqalgan",
       "rgbDescription": "Monitor va ekranlar uchun",
       "hslDescription": "Inson uchun tushunarli",
-      "rgbaDescription": "Alpha kanal bilan RGB",
-      "hslaDescription": "Alpha kanal bilan HSL",
       "labDescription": "CIE Lab rang maydoni",
       "lchDescription": "Lightness, Chroma, Hue",
       "oklabDescription": "Zamonaviy perceptual rang maydoni",
-      "oklchDescription": "OKLab ning silindr koordinatalari"
+      "oklchDescription": "Tailwind v4 va CSS uchun standart"
+    },
+    "Workbench": {
+      "title": "Qurish",
+      "views": {
+        "scale": "Shkala 50–950",
+        "palette": "Palitra",
+        "gradient": "Gradient",
+        "saved": "Saqlangan"
+      }
+    },
+    "Contrast": {
+      "title": "Kontrast (WCAG)",
+      "onWhite": "Oq fonda",
+      "onBlack": "Qora fonda",
+      "customBackdrop": "Tanlangan fonda",
+      "sample": "Aa Namuna matn",
+      "aa": "AA (4.5:1)",
+      "aaa": "AAA (7:1)",
+      "aaLarge": "AA katta (3:1)",
+      "nonText": "Ikonka/chegara (3:1)",
+      "largeTextNote": "Katta matn — 24px oddiy yoki 18.66px qalin va undan yuqori.",
+      "repairLead": "AA o'tmadi. O'zingizning shkalangizdagi eng yaqin mos qadam:",
+      "otherBackdrop": "Boshqa fon bilan solishtirish",
+      "recommendation": "Bu rang ustida {text} eng yaxshi o'qiladi:",
+      "whiteText": "oq matn",
+      "blackText": "qora matn",
+      "empty": "Kontrastni ko'rish uchun to'g'ri rang kiriting"
     },
     "ColorPalette": {
-      "monochromatic": "Monoxromatik palette",
-      "analogous": "Analogik palette",
-      "complementary": "Komplementar palette",
-      "clickToCopy": "Rangni nusxalash uchun bosing"
+      "monochromatic": "Monoxromatik",
+      "analogous": "Analogik",
+      "complementary": "Komplementar"
     },
     "TailwindShades": {
-      "title": "Tailwind rang soyalari",
-      "exportOptions": "Export variantlari:",
-      "noValidColor": "To'g'ri rang kiriting"
+      "readability": "Oq matn {white} dan yuqorida AA o'tadi, qora matn {black} gacha.",
+      "readabilityNone": "Bu shkalada AA o'tadigan qadam yo'q."
+    },
+    "Export": {
+      "target": "Qayerga",
+      "notation": "Yozuv",
+      "tokenName": "Token nomi",
+      "copy": "Nusxalash",
+      "download": "Yuklab olish",
+      "targets": {
+        "css": "CSS o'zgaruvchilari",
+        "tailwind": "Tailwind v4 @theme",
+        "scss": "SCSS"
+      },
+      "notations": {
+        "hex": "HEX",
+        "oklch": "OKLCH"
+      }
     },
     "ColorHistory": {
-      "title": "Rang Tarixi va Sevimlilar",
       "history": "Tarix",
       "favorites": "Sevimlilar",
       "clearHistory": "Tarixni tozalash",
       "clearFavorites": "Sevimlilarni tozalash",
       "noHistory": "Hali tarix yo'q",
-      "noFavorites": "Hali sevimli ranglar yo'q"
+      "noFavorites": "Hali sevimli ranglar yo'q",
+      "addFavorite": "Sevimlilarga qo'shish",
+      "removeFavorite": "Sevimlilardan olib tashlash"
     },
     "GradientGenerator": {
-      "title": "Gradient Generator",
-      "type": "Turi:",
-      "direction": "Yo'nalish:",
-      "actions": "Amallar:",
+      "type": "Turi",
+      "direction": "Yo'nalish",
       "random": "Tasodifiy",
-      "colorStops": "Rang nuqtalari:",
+      "colorStops": "Rang nuqtalari",
       "addColor": "Rang qo'shish",
-      "exportOptions": "Export variantlari:",
-      "noValidColor": "To'g'ri rang kiriting"
-    },
-    "Info": {
-      "examples": {
-        "title": "Rang Format Misollari",
-        "hex": "HEX Formatlar",
-        "rgb": "RGB Formatlar",
-        "hsl": "HSL Formatlar"
+      "types": {
+        "linear": "Chiziqli",
+        "radial": "Radial",
+        "conic": "Konus"
       },
-      "about": {
-        "title": "Rang formatlar haqida ma'lumot",
+      "stopColor": "{index}-nuqta rangi",
+      "stopPosition": "{index}-nuqta joylashuvi, foizda",
+      "removeColor": "Rangni olib tashlash"
+    },
+    "reference": {
+      "title": "Rang formatlari — ma'lumotnoma",
+      "intro": "Har bir format bir xil rangni boshqacha yozadi. Quyidagi jadvalda bitta rang — #0d5a6b — yettala yozuvda ko'rsatilgan, shuning uchun qatorlarni bevosita solishtirish mumkin.",
+      "columns": {
+        "format": "Format",
+        "syntax": "CSS sintaksisi",
+        "example": "Misol",
+        "purpose": "Qachon ishlatiladi"
+      },
+      "rows": {
         "hex": {
-          "title": "HEX Format",
-          "desc1": "Web dasturlashda eng keng tarqalgan",
-          "desc2": "#RRGGBB formatida (6 ta belgi)",
-          "desc3": "CSS da bevosita ishlatiladi",
-          "desc4": "16 lik sanoq tizimida"
+          "name": "HEX",
+          "syntax": "#RRGGBB[AA]",
+          "example": "#0d5a6b",
+          "purpose": "Web'da eng keng tarqalgan yozuv. Har bir kanal 16 lik sanoq tizimida ikki belgi bilan beriladi; sakkiz belgili shakl oxirgi juftlikda shaffoflikni tashiydi. Qisqa va nusxalash oson, lekin raqamlarga qarab rangni tasavvur qilish qiyin."
         },
         "rgb": {
-          "title": "RGB Format",
-          "desc1": "Red, Green, Blue qiymatlari",
-          "desc2": "0-255 oralig'ida har bir kanal",
-          "desc3": "Monitor va ekranlar uchun",
-          "desc4": "JavaScript da keng ishlatiladi"
+          "name": "RGB",
+          "syntax": "rgb(R G B [/ A])",
+          "example": "rgb(13 90 107)",
+          "purpose": "Ekran fizikasiga eng yaqin yozuv: qizil, yashil va ko'k nurning miqdori 0–255 oralig'ida. JavaScript'da rang bilan hisob-kitob qilganda odatda shu shakl ishlatiladi. Zamonaviy sintaksisda kanallar probel bilan ajratiladi, shaffoflik esa qiya chiziqdan keyin keladi."
         },
         "hsl": {
-          "title": "HSL Format",
-          "desc1": "Hue, Saturation, Lightness",
-          "desc2": "Inson uchun tushunarli",
-          "desc3": "CSS3 da qo'llab-quvvatlanadi",
-          "desc4": "Rang moslamalari uchun qulay"
+          "name": "HSL",
+          "syntax": "hsl(H S% L% [/ A])",
+          "example": "hsl(191 78% 24%)",
+          "purpose": "Rang tovushi (0–360°), to'yinganlik va yorqinlik. Inson o'ylash tarzi bilan mos keladi, shuning uchun rangni qo'lda tuzatish uchun qulay: yorqinlikni oshirsangiz rang oqaradi, kamaytirsangiz to'qlashadi. Kamchiligi — bir xil yorqinlik turli rang tovushlarida turlicha ko'rinadi."
+        },
+        "oklch": {
+          "name": "OKLCH",
+          "syntax": "oklch(L C H [/ A])",
+          "example": "oklch(0.433 0.073 217)",
+          "purpose": "2026-yilda dizayn tizimlari uchun standart. HSL'dan farqi shundaki, yorqinlik idrok bo'yicha bir tekis: bir xil L qiymatidagi sariq va ko'k ko'zga ham bir xil yorqinlikda ko'rinadi. Tailwind v4 o'zining rang palitrasini aynan shu yozuvda yozgan, shuning uchun token eksporti uchun eng to'g'ri tanlov."
+        },
+        "oklab": {
+          "name": "OKLab",
+          "syntax": "oklab(L a b [/ A])",
+          "example": "oklab(0.433 -0.058 -0.045)",
+          "purpose": "OKLCH ning to'g'ri burchakli koordinatalari: L — yorqinlik, a va b — yashil↔qizil va ko'k↔sariq o'qlari. Ikki rang orasidagi idrok masofasini o'lchash uchun ishlatiladi — masalan, shu asbob rangga eng yaqin nomni aynan shu fazoda topadi."
+        },
+        "lch": {
+          "name": "LCH",
+          "syntax": "lch(L% C H [/ A])",
+          "example": "lch(35% 22 227)",
+          "purpose": "CIE Lab ning silindrik shakli. OKLCH dan oldingi avlod: g'oyasi bir xil, ammo ba'zi rang tovushlarida yorqinlik bir tekis chiqmaydi. Eski dizayn tizimlari va bosmaxona ish oqimlarida hali uchraydi."
+        },
+        "lab": {
+          "name": "Lab",
+          "syntax": "lab(L% a b [/ A])",
+          "example": "lab(35% -15 -16)",
+          "purpose": "1976-yilda qabul qilingan CIE Lab fazosi — qurilmadan mustaqil, ya'ni bir xil qiymat har qanday ekranda bir xil rangni bildiradi. Ranglarni qiyoslash va rang boshqaruvi tizimlarida asosiy ish fazosi bo'lib qoladi."
+        }
+      },
+      "worked": "HEX o'girish qo'lda ham bajariladi: #0d5a6b dagi 0d juftligi 0×16 + 13 = 13 ga, 5a → 5×16 + 10 = 90 ga, 6b → 6×16 + 11 = 107 ga teng. Natija — rgb(13 90 107)."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "formats": {
+          "question": "Qaysi rang formatlarini qo'llab-quvvatlaydi?",
+          "answer": "HEX (3, 4, 6 va 8 xonali), RGB, HSL, Lab, LCH, OKLab, OKLCH hamda CSS rang nomlari. Zamonaviy CSS Color 4 sintaksisi ham o'qiladi — masalan, rgb(255 0 0 / 50%) yoki hsl(200deg 50% 40%). CMYK qo'llab-quvvatlanmaydi: u bosmaxona profiliga bog'liq va brauzerda aniq hisoblab bo'lmaydi."
+        },
+        "contrast": {
+          "question": "WCAG kontrast tekshiruvi nimani ko'rsatadi?",
+          "answer": "Tanlangan rangning oq va qora fonga nisbatan kontrast nisbatini hisoblaydi. WCAG 2.1 bo'yicha oddiy matn uchun AA — 4.5:1, AAA — 7:1, katta matn uchun 3:1, ikonka va chegaralar uchun ham 3:1 talab qilinadi. Rang shaffof bo'lsa, avval fon bilan aralashtirilib, keyin o'lchanadi. AA o'tmasa, asbob sizning o'z shkalangizdagi eng yaqin mos qadamni taklif qiladi."
+        },
+        "privacy": {
+          "question": "Ranglarim serverga yuboriladimi?",
+          "answer": "Yo'q. Barcha konvertatsiya va hisob-kitob brauzeringizda bajariladi. Rang tarixi va sevimlilar faqat sizning qurilmangizdagi localStorage'da saqlanadi va uni istalgan vaqtda tozalashingiz mumkin."
+        },
+        "export": {
+          "question": "Natijani loyihamga qanday ko'chiraman?",
+          "answer": "Shkalani CSS o'zgaruvchilari, Tailwind v4 @theme bloki yoki SCSS o'zgaruvchilari sifatida, HEX yoki OKLCH yozuvida eksport qilish mumkin. Token nomini o'zingiz belgilaysiz, natija nusxalashdan oldin ekranda to'liq ko'rinadi. Gradient uchun tayyor CSS va Tailwind klassi beriladi."
         }
       }
     }

@@ -1,13 +1,58 @@
 import "./globals.css"
-import { Metadata } from "next"
-import Script from "next/script"
-import dynamic from "next/dynamic"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
+import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
-import NextTopLoader from "nextjs-toploader"
+import { ogCardUrl } from "@/lib/seo"
 
-const inter = Inter({ subsets: ["latin"] })
+// `cyrillic` is required, not optional: the product ships Cyrillic Uzbek
+// (the transliteration tool and book content both render it). With a latin-only
+// subset those glyphs fell back to a system font mid-paragraph.
+// Exposed as a CSS variable so `--font-sans` in globals.css owns the cascade —
+// see the token block there.
+const inter = Inter({
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  display: "swap",
+  variable: "--font-inter"
+})
+
+/**
+ * The colour the mobile browser paints its own chrome with.
+ *
+ * A `<meta content>` is not CSS: it cannot read a custom property, and there
+ * is no runtime hook to make it token-driven. So these are the sRGB values of
+ * `--background` from `src/styles/tokens.css` (`:182` light, `:252` dark),
+ * kept in one named constant with each key pointing at its token — the same
+ * documented exception `OG_BRAND` takes in `src/app/api/og/route.tsx`.
+ *
+ * It tracks `--background`, NOT the brand colour. The job of `theme-color` is
+ * to make the browser's bar disappear into the page; a teal bar above a white
+ * page reads as a rendering bug, not as branding.
+ */
+export const BROWSER_CHROME = {
+  light: "#ffffff", // --background light — oklch(1 0 0)
+  dark: "#070b0c" // --background dark  — oklch(0.145 0.008 217)
+} as const
+
+/**
+ * `themeColor` lives on the viewport export, not on metadata.
+ *
+ * Next 16 warns when it is found on `metadata`
+ * (`resolve-metadata.js:298-303`) — but the warning is keyed to the property
+ * name, so the previous `other: { "theme-color": … }` slipped past it through
+ * a blind `Object.assign` (`:274`) and shipped a black chrome tint nobody
+ * chose. It was one of THREE declared theme colours: black here, white in
+ * `public/site.webmanifest`, and Tailwind's `blue-500` — not a brand hue at
+ * all — in `src/app/manifest.ts`. All three are now this one pair.
+ */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: BROWSER_CHROME.light },
+    { media: "(prefers-color-scheme: dark)", color: BROWSER_CHROME.dark }
+  ]
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://webiston.uz"),
@@ -177,7 +222,7 @@ export const metadata: Metadata = {
     countryName: "Uzbekistan",
     images: [
       {
-        url: "/logo.png",
+        url: ogCardUrl("Webiston", ""),
         width: 1200,
         height: 630,
         alt: "Webiston - O'zbek Dasturchilari uchun Professional Platforma",
@@ -186,8 +231,7 @@ export const metadata: Metadata = {
     ]
   },
   other: {
-    "msapplication-TileColor": "#000000",
-    "theme-color": "#000000"
+    "msapplication-TileColor": "#000000"
   },
   twitter: {
     card: "summary_large_image",
@@ -196,16 +240,15 @@ export const metadata: Metadata = {
     title: "Webiston - O'zbek Dasturchilari uchun Professional Platforma",
     description:
       "O'zbek dasturchilari uchun keng qamrovli xizmatlar. Dasturlash kitoblari, foydali vositalar va professional resurslar.",
-    images: ["/logo.png"]
+    images: [ogCardUrl("Webiston", "")]
   },
-  alternates: {
-    canonical: "https://webiston.uz",
-    languages: {
-      uz: "https://webiston.uz",
-      en: "https://webiston.uz/en",
-      "x-default": "https://webiston.uz"
-    }
-  },
+  // No site-wide `alternates` here on purpose.
+  //
+  // A root-level `canonical: "https://webiston.uz"` is inherited by every page
+  // that does not set its own — which is how 229 book chapters ended up
+  // declaring themselves duplicates of the homepage. Each route now owns its
+  // canonical (`localeAlternates` for localised pages, an explicit one for
+  // `/books/**`), and a page that forgets simply gets none, which is safe.
   robots: {
     index: true,
     follow: true,
@@ -217,20 +260,24 @@ export const metadata: Metadata = {
       "max-snippet": -1
     }
   },
-  icons: {
-    icon: [
-      { type: "image/png", url: "/favicon-32x32.png", sizes: "32x32" },
-      { type: "image/png", url: "/favicon-16x16.png", sizes: "16x16" },
-      { type: "image/x-icon", url: "/favicon.ico", sizes: "48x48" }
-    ],
-    shortcut: "/favicon.ico",
-    apple: {
-      sizes: "180x180",
-      url: "/apple-touch-icon.png",
-      href: "/apple-touch-icon.png"
-    }
-  },
-  manifest: "/site.webmanifest",
+  // NO `icons` KEY HERE — deliberately, and it must stay that way.
+  //
+  // Next resolves file-convention icons (`src/app/icon.svg`, `favicon.ico`,
+  // `apple-icon.png`) behind an `if (!resolvedMetadata.icons)` guard —
+  // `next/dist/lib/metadata/resolve-metadata.js:812`. Setting this key from ANY
+  // layout or page makes that guard false and **every convention icon in the
+  // tree is silently discarded**: no error, no warning, just a document with no
+  // favicon. That is why the icons are not declared here.
+  //
+  // What the convention buys over a hand-written list: Next appends a content
+  // hash to each URL, so a redrawn mark invalidates the browser's separate,
+  // very long-lived favicon cache by itself. Hand-written URLs need a manual
+  // `?v=2` that someone has to remember.
+  //
+  // `manifest` is absent for a related reason: `src/app/manifest.ts` already
+  // wins. `mergeStaticMetadata` assigns the discovered manifest AFTER the
+  // metadata export is merged (`resolve-metadata.js:160`, called at `:311`), so
+  // a `manifest:` value here is overwritten before it reaches the document.
   referrer: "origin-when-cross-origin",
   formatDetection: {
     email: false,
@@ -337,7 +384,10 @@ const websiteSchema = {
     },
     "query-input": "required name=search_term_string"
   },
-  inLanguage: ["uz", "en"],
+  // Kept in step with `LOCALES` in `src/i18n/locales.ts`. It said `["uz","en"]`
+  // for the whole of the Russian launch — the site advertising that it does
+  // not serve a language it does serve.
+  inLanguage: ["uz", "en", "ru"],
   audience: {
     "@type": "Audience",
     audienceType:
@@ -406,8 +456,25 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body className={inter.className}>
-        <NextTopLoader color="#3b82f6" height={2} showSpinner={false} />
+      {/* .variable (not .className) — it defines --font-inter, which
+          --font-sans consumes; `font-sans` is applied on body in globals.css.
+
+          suppressHydrationWarning: browser extensions stamp attributes onto
+          <body> before React hydrates — `cz-shortcut-listen` (ColorZilla),
+          `bis_register`, `__processed_<uuid>__` — and React reports every one
+          as a server/client mismatch. The flag applies to ONE element only,
+          so the one already on <html> does not cover <body>. It suppresses
+          the attribute diff on this element, not on anything inside it. */}
+      <body className={inter.variable} suppressHydrationWarning>
+        {/* `var(--primary)`, not `#3b82f6`. That hex is Tailwind's `blue-500`
+            and it is NOT our brand hue (217°) — the one piece of chrome that
+            appears on every single navigation was the one piece painted in
+            someone else's blue.
+            The library injects `background:${color}` and
+            `box-shadow: 0 0 10px ${color}, 0 0 5px ${color}` into a <style>
+            tag, so a custom property resolves normally and the bar now follows
+            the token through both schemes with no second value to maintain. */}
+        <NextTopLoader color="var(--primary)" height={2} showSpinner={false} />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

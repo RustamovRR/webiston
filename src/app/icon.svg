@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Webiston">
+  <title>Webiston</title>
+  <!--
+    The Terminal mark, and a faithful reproduction of the header badge in
+    src/components/shared/Header/Logo.tsx rather than a redrawing of it.
+
+    (Token names appear here WITHOUT their leading dashes: two hyphens in a row
+    are illegal inside an XML comment and an SVG is parsed as XML. The CSS
+    below is element content, so it spells them normally.)
+
+    EVERY NUMBER IS DERIVED, NOT CHOSEN. The header badge is `size-9` = 36px and
+    this viewBox is 32 units, so k = 32/36 = 0.88889 and each Tailwind value is
+    multiplied by it:
+
+      rounded-[10px]                  10px  ->  8.89   corner radius
+      size-1.25       (accent pixel)   5px  ->  4.44   pixel size
+      rounded-[1.5px] (accent pixel) 1.5px  ->  1.33   pixel radius
+      border + top-1.25 / right-1.25   6px  ->  5.33   pixel inset from the
+                                                       OUTER edge - `absolute`
+                                                       offsets are measured from
+                                                       the padding box, so the
+                                                       1px border is part of it
+      text-xl         (the letter)    20px  -> 17.78   font size
+
+    An earlier version of this file had 7.5 / 4 / 1.2 / 3 in those slots -
+    numbers invented during a first sketch and never checked against the
+    component. The accent pixel ended up jammed into the corner against the
+    border. If you change the header, re-derive these; do not nudge them.
+
+    THE LETTER IS INTER'S OWN OUTLINE. The path below is glyph 984 of
+    Inter-Bold.ttf (v4.1, unitsPerEm 2048), extracted from the real font and
+    expressed in em units with its origin at the ink box's top-left, then placed
+    by the transform. It is not a drawing of a `w`.
+      Why extracted at all: a <text> element in an SVG used as an image resolves
+      fonts against whatever is installed on the viewer's machine. Inter is not
+      a system font, so `font-family="Inter"` would silently fall back to a
+      different typeface on every OS.
+      Why not hand-drawn: it was, twice, and both attempts read as a zigzag
+      rather than a letter. A stroked polyline has one width everywhere, so its
+      joins spike; a hand-built outline gets the counters wrong. There is no
+      substitute for the type designer's control points.
+      Inter is licensed under the SIL Open Font License, which expressly permits
+      embedding and use in a logo. SF Pro and Helvetica do not - Apple's licence
+      covers designing interfaces for Apple platforms, not shipping their glyph
+      outlines inside someone else's mark.
+
+    Vertical placement reproduces the browser's own layout, so the letter sits
+    exactly where the header puts it: the flex box centres a `leading-none` line
+    box on the badge, and Inter's hhea ascender (1984) and descender (-494) put
+    the baseline at 22.47, which sets the ink top at 12.76. That is ~1.6 units
+    below the optical centre. It is not a mistake and it is not worth "fixing"
+    here alone - it is what `items-center` does with these metrics, and the icon
+    matching the header matters more than the icon being optically perfect.
+
+    ONE DELIBERATE DEVIATION: the border is 1.3 units, not the 0.89 that 1px
+    scales to. At 0.89 the border is 0.44 device px at 16x16 and disappears,
+    taking the badge's only edge with it - the plate is near-black, so on a dark
+    browser chrome there would be nothing to see. 1.3 reads at 16px and is
+    indistinguishable from the header at any size a human compares them at.
+
+    The DEFAULT branch is the DARK badge, which is backwards from the usual
+    light-first convention and deliberate: Safari only gained SVG favicon
+    support in 26.0 and honours no media query inside one, so the default is
+    what a large share of viewers get permanently. A near-black badge reads well
+    on a light tab strip and holds its shape on a dark one via the border; a
+    near-white badge on light chrome would have only that border to show.
+  -->
+  <style>
+    .plate { fill: #141819 }                    /* card            dark */
+    .tint  { stop-color: #40bedc }              /* primary         dark */
+    .edge  { stroke: rgb(255 255 255 / 34%) }   /* border-strong   dark */
+    .glyph { fill: #fafafa }                    /* foreground      dark */
+    .pixel { fill: #40bedc }                    /* primary         dark */
+
+    @media (prefers-color-scheme: light) {
+      .plate { fill: #f7fbfc }                  /* card            light */
+      .tint  { stop-color: #0a6c80 }            /* primary         light */
+      .edge  { stroke: #899395 }                /* border-strong   light */
+      .glyph { fill: #11191b }                  /* foreground      light */
+      .pixel { fill: #0a6c80 }                  /* primary         light */
+    }
+  </style>
+
+  <!-- `bg-gradient-to-br from-primary/30 via-card to-card` — the tint is gone
+       by the midpoint, so the badge is card everywhere but the top-left. -->
+  <linearGradient id="tint" x1="0" y1="0" x2="1" y2="1">
+    <stop class="tint" offset="0" stop-opacity="0.3" />
+    <stop class="tint" offset="0.5" stop-opacity="0" />
+  </linearGradient>
+
+  <rect class="plate" width="32" height="32" rx="8.89" />
+  <rect width="32" height="32" rx="8.89" fill="url(#tint)" />
+  <rect
+    class="edge"
+    x="0.65"
+    y="0.65"
+    width="30.7"
+    height="30.7"
+    rx="8.24"
+    fill="none"
+    stroke-width="1.3"
+  />
+
+  <!-- Inter Bold `w`, glyph 984. Ink box is 0.8198 x 0.5459 em; at 17.78 units
+       that is 14.58 x 9.71, so x = 16 - 14.58/2 = 8.71 centres it. -->
+  <g class="glyph" transform="translate(8.71 12.76) scale(17.78)">
+    <path
+      d="M0.1611 0.5459 L0 0 L0.1538 0 L0.2012 0.2017 Q0.2109 0.2471 0.2227 0.2993 Q0.2344 0.3516 0.2456 0.4126 Q0.2568 0.353 0.2693 0.3005 Q0.2817 0.248 0.293 0.2017 L0.3428 0 L0.4775 0 L0.5264 0.2017 Q0.5366 0.248 0.5491 0.3003 Q0.5615 0.3525 0.5732 0.4131 Q0.5835 0.3525 0.5947 0.3003 Q0.606 0.248 0.6167 0.2017 L0.6641 0 L0.8198 0 L0.6577 0.5459 L0.5088 0.5459 L0.4482 0.3354 Q0.438 0.3003 0.4285 0.2563 Q0.4189 0.2124 0.4092 0.1694 Q0.3999 0.2124 0.3901 0.2566 Q0.3804 0.3008 0.3706 0.3354 L0.3101 0.5459 L0.1611 0.5459 Z"
+    />
+  </g>
+
+  <!-- The cursor pixel. -->
+  <rect class="pixel" x="22.23" y="5.33" width="4.44" height="4.44" rx="1.33" />
+</svg>

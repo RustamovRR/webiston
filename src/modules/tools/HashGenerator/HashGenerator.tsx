@@ -1,194 +1,195 @@
 "use client"
 
-import { useState } from "react"
+import { Fingerprint, Info } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { Hash, Upload } from "lucide-react"
 
-// Shared Components
-import { ToolHeader } from "@/components/shared/ToolHeader"
+import { DropZone } from "@/components/shared/DropZone"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { ToolHeader } from "@/components/shared/ToolHeader"
 
-// Local Components
-import {
-  ControlPanel,
-  AlgorithmSelector,
-  DetailedResults,
-  InfoSection
-} from "./components"
-
-// Utils & Hooks
+import { ControlBar } from "./components/ControlBar"
+import { DigestList } from "./components/DigestList"
+import { FileCard } from "./components/FileCard"
+import { VerifyField } from "./components/VerifyField"
 import { useHashGenerator } from "./hooks/useHashGenerator"
 
+/**
+ * Hash generator and checksum verifier.
+ *
+ * Same shape as latin-cyrillic, the Base64 converter and the URL encoder: a
+ * toolbar, then one `DualTextPanel`. The right-hand panel holds one row per
+ * algorithm instead of a block of text, because this tool is one input and
+ * five answers.
+ */
 const HashGenerator = () => {
   const t = useTranslations("HashGeneratorPage")
-  const [activeTab, setActiveTab] = useState<"text" | "file">("text")
-
   const {
-    inputText,
-    selectedAlgorithms,
-    hashResults,
-    isGenerating,
-    availableAlgorithms,
-    sampleTexts,
-    setInputText,
-    toggleAlgorithm,
-    handleClear,
-    handleFileUpload,
-    downloadHashes,
-    downloadAsJson,
-    getAlgorithmInfo
-  } = useHashGenerator({
-    onSuccess: (message) => console.log(message),
-    onError: (error) => console.error(error)
-  })
+    text,
+    setText,
+    file,
+    clearFile,
+    format,
+    setFormat,
+    expected,
+    setExpected,
+    hmacEnabled,
+    setHmacEnabled,
+    hmacKey,
+    setHmacKey,
+    outputs,
+    byteCount,
+    needsHmacKey,
+    isHashing,
+    isReading,
+    verdict,
+    fileError,
+    samples,
+    loadSample,
+    readFile,
+    clear,
+    asText,
+    download,
+    canDownload
+  } = useHashGenerator()
 
-  const handleFileUploadChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      handleFileUpload(file)
-      setActiveTab("text")
+  /**
+   * The suite's two keys, scoped by a containment check so an Escape pressed
+   * inside the portalled sample dropdown cannot wipe the visitor's input.
+   */
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!event.currentTarget.contains(event.target as Node)) return
+
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      if (!asText) return
+      event.preventDefault()
+      void navigator.clipboard.writeText(asText).catch(() => {})
+      return
+    }
+    if (event.key === "Escape" && (text || file)) {
+      event.preventDefault()
+      clear()
     }
   }
 
-  const canDownload = hashResults.length > 0
-  const hashOutputText =
-    hashResults.length > 0
-      ? hashResults
-          .map((result) => `${result.algorithm}: ${result.hash}`)
-          .join("\n\n")
-      : ""
-
-  // Status component
-  const statusComponent =
-    inputText.length > 0 ? (
-      <span className="flex items-center gap-1 text-xs text-blue-500 dark:text-blue-400">
-        <div className="h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"></div>
-        {t("InputPanel.readyToHash") || "Hash yaratishga tayyor"}
-      </span>
-    ) : null
-
-  // Target empty state
-  const targetEmptyState = (
-    <div className="flex h-full items-center justify-center p-8 text-center">
-      <div className="text-zinc-500 dark:text-zinc-400">
-        <Hash size={48} className="mx-auto mb-4 opacity-50" />
-        <p className="text-sm">
-          {t("ResultsPanel.noResults") ||
-            "Hash natijalari bu yerda ko'rsatiladi"}
-        </p>
-        <p className="mt-2 text-xs opacity-75">
-          {t("ResultsPanel.instruction") || "Matn kiriting va algoritm tanlang"}
-        </p>
-      </div>
-    </div>
-  )
-
-  // Target footer component
-  const targetFooterComponent =
-    hashResults.length > 0 ? (
-      <div className="text-xs text-zinc-500 dark:text-zinc-400">
-        <span>{t("ResultsPanel.hashCount") || "Hash soni"}:</span>{" "}
-        <span className="text-zinc-700 dark:text-zinc-300">
-          {hashResults.length}
-        </span>
-      </div>
-    ) : null
-
-  // Custom source content for file upload
-  const customSourceContent =
-    activeTab === "file" ? (
-      <div className="flex h-full items-center justify-center">
-        <label className="flex cursor-pointer flex-col items-center gap-4 rounded-lg border-2 border-dashed border-zinc-300 p-8 transition-colors hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500">
-          <Upload size={48} className="text-zinc-400 dark:text-zinc-500" />
-          <div className="text-center">
-            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              {t("InputPanel.selectFile") || "Faylni tanlang"}
-            </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-500">
-              {t("InputPanel.supportedFormats") ||
-                "TXT, JSON, CSV, MD, XML, LOG (10MB gacha)"}
-            </p>
-          </div>
-          <input
-            type="file"
-            accept=".txt,.json,.csv,.md,.xml,.log"
-            onChange={handleFileUploadChange}
-            className="hidden"
-          />
-        </label>
-      </div>
-    ) : undefined
-
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
+    <div
+      className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8"
+      onKeyDown={handleKeyDown}
+    >
       <ToolHeader
-        title={t("ToolHeader.title") || "Hash Generator"}
-        description={
-          t("ToolHeader.description") ||
-          "MD5, SHA256, SHA512 va boshqa kriptografik hash algoritmlar bilan ma'lumotlarni hash qilish"
-        }
+        title={t("ToolHeader.title")}
+        description={t("ToolHeader.description")}
       />
 
-      {/* Control Panel */}
-      <ControlPanel
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isGenerating={isGenerating}
+      <ControlBar
+        hmacEnabled={hmacEnabled}
+        onHmacEnabledChange={setHmacEnabled}
+        hmacKey={hmacKey}
+        onHmacKeyChange={setHmacKey}
+        format={format}
+        onFormatChange={setFormat}
+        isBusy={isReading}
+        onFile={readFile}
+        samples={samples}
+        onSample={loadSample}
+        onClear={clear}
         canDownload={canDownload}
-        sampleTexts={sampleTexts}
-        onFileUpload={handleFileUploadChange}
-        onSampleSelect={setInputText}
-        onClear={handleClear}
-        onDownloadTxt={downloadHashes}
-        onDownloadJson={downloadAsJson}
+        onDownload={download}
       />
 
-      {/* Algorithm Selection */}
-      <AlgorithmSelector
-        availableAlgorithms={availableAlgorithms}
-        selectedAlgorithms={selectedAlgorithms}
-        onToggleAlgorithm={toggleAlgorithm}
-        getAlgorithmInfo={getAlgorithmInfo}
-      />
+      {fileError && (
+        <p
+          role="alert"
+          className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-destructive text-sm"
+        >
+          {fileError}
+        </p>
+      )}
 
-      {/* Dual Text Panel */}
-      <DualTextPanel
-        sourceText={inputText}
-        convertedText={hashOutputText}
-        sourcePlaceholder={
-          t("InputPanel.textPlaceholder") ||
-          "Hash qilmoqchi bo'lgan matnni kiriting..."
-        }
-        sourceLabel={
-          activeTab === "text"
-            ? t("InputPanel.textInput") || "Matn Kirish"
-            : t("InputPanel.fileInput") || "Fayl Hash Kirish"
-        }
-        targetLabel={t("ResultsPanel.title") || "Hash Natijalari"}
-        onSourceChange={setInputText}
-        onClear={handleClear}
-        showSwapButton={false}
-        showShadow={true}
-        statusComponent={statusComponent}
-        targetEmptyState={targetEmptyState}
-        targetFooterComponent={targetFooterComponent}
-        customSourceContent={customSourceContent}
-      />
+      <DropZone
+        onFile={readFile}
+        label={t("file.dropHere")}
+        hint={t("file.accepts")}
+      >
+        <div className="space-y-6">
+          <DualTextPanel
+            sourceText={text}
+            convertedText={asText}
+            sourcePlaceholder={t("panel.placeholder")}
+            sourceLabel={file ? t("panel.fileSource") : t("panel.textSource")}
+            targetLabel={
+              hmacEnabled ? t("panel.hmacResults") : t("panel.results")
+            }
+            onSourceChange={setText}
+            onClear={clear}
+            showSwapButton={false}
+            showShadow={true}
+            /* Reading a file only. `DualTextPanel` disables its textarea while
+               processing, and text hashing finishes in well under a
+               millisecond — wiring it in here took focus away on every
+               character typed and flashed "processing" in the result panel. */
+            isProcessing={isReading || (isHashing && file !== null)}
+            statusComponent={
+              byteCount > 0 ? (
+                <span className="text-muted-foreground text-xs tabular-nums">
+                  {/* Bytes, not characters. The digest is over bytes, so
+                      `Oʻzbekiston` is 12 of them and not the 11 characters
+                      `.length` reports. */}
+                  {t("panel.bytes", { count: byteCount })}
+                </span>
+              ) : null
+            }
+            customSourceContent={
+              file ? <FileCard file={file} onRemove={clearFile} /> : undefined
+            }
+            customTargetContent={
+              outputs.length > 0 ? (
+                <DigestList
+                  outputs={outputs}
+                  format={format}
+                  matched={verdict?.kind === "match" ? verdict.algorithm : null}
+                />
+              ) : undefined
+            }
+            targetEmptyState={
+              <div className="flex h-full items-center justify-center p-8 text-center">
+                <div className="text-muted-foreground">
+                  <Fingerprint
+                    size={44}
+                    className="mx-auto opacity-40"
+                    aria-hidden="true"
+                  />
+                  <p className="mt-3 text-sm">
+                    {needsHmacKey ? t("panel.needsKey") : t("panel.willAppear")}
+                  </p>
+                  <p className="mt-1 text-xs opacity-75">
+                    {needsHmacKey ? t("panel.needsKeyHint") : t("panel.hint")}
+                  </p>
+                </div>
+              </div>
+            }
+          />
 
-      {/* Detailed Results */}
-      <div className="mt-6">
-        <DetailedResults
-          hashResults={hashResults}
-          getAlgorithmInfo={getAlgorithmInfo}
-        />
-      </div>
+          {/* Web Crypto has no MD5, so there is no HMAC-MD5 row to show. Said
+              out loud, because an algorithm silently disappearing from a list
+              of five reads as a bug. */}
+          {hmacEnabled && (
+            <p className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 text-muted-foreground text-sm">
+              <Info size={15} aria-hidden="true" className="shrink-0" />
+              {t("panel.noHmacMd5")}
+            </p>
+          )}
 
-      {/* Info Section */}
-      <InfoSection />
+          <VerifyField
+            value={expected}
+            onChange={setExpected}
+            verdict={verdict}
+          />
+        </div>
+      </DropZone>
     </div>
   )
 }
 
 export default HashGenerator
+export { HashGenerator }

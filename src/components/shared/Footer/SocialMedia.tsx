@@ -1,8 +1,6 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import Image from "next/image"
-import Link from "next/link"
 import { useIsMounted } from "usehooks-ts"
 import { socialLinks } from "@/constants"
 
@@ -10,7 +8,7 @@ const SocialMedia = () => {
   const { theme } = useTheme()
   const isMounted = useIsMounted()
 
-  const icons = [
+  const _icons = [
     {
       link: "https://linkedin.com",
       darkIcon: "/linkedin-dark.svg",
@@ -50,7 +48,7 @@ const SocialMedia = () => {
           title={label}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-current transition-colors hover:text-gray-900 dark:hover:text-gray-100"
+          className="flex items-center gap-1 text-current transition-colors hover:text-foreground"
         >
           {icon}
         </a>

@@ -1,166 +1,97 @@
 {
   "CameraRecorderPage": {
-    "ToolHeader": {
-      "title": "Camera Recorder",
-      "description": "Test your camera, record videos and take screenshots"
+    "title": "Camera test",
+    "description": "Find out whether your webcam works — see the live picture, learn the resolution it really delivers, take a still or record a clip. The video stays on this device.",
+    "gate": {
+      "title": "Test your camera"
     },
-    "ControlPanel": {
-      "title": "Camera Settings",
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive"
+    "toolbar": {
+      "mirror": "Mirror",
+      "micOn": "Sound on",
+      "micOff": "Sound off",
+      "torch": "Torch",
+      "zoom": "Zoom",
+      "stop": "Stop"
+    },
+    "stage": {
+      "title": "Live picture",
+      "fps": "{value} fps",
+      "snapshot": "Take a still",
+      "record": "Record video",
+      "stopRecording": "Finish recording",
+      "pause": "Pause",
+      "resume": "Resume"
+    },
+    "quality": {
+      "title": "Quality",
+      "negotiated": "The camera could not produce the requested size and returned the closest it supports. The Actual row below is what the stream really is.",
+      "presets": {
+        "sd": "480p",
+        "hd": "720p",
+        "fhd": "1080p",
+        "uhd": "4K"
       },
-      "camera": {
-        "label": "Camera:",
-        "placeholder": "Select camera",
-        "refresh": "Refresh"
+      "rows": {
+        "requested": "Requested",
+        "actual": "Actual",
+        "frameRate": "Frame rate",
+        "facingMode": "Facing"
       },
-      "quality": {
-        "label": "Quality:",
-        "hd": "HD (1280×720)",
-        "fhd": "Full HD (1920×1080)",
-        "sd": "SD (640×480)"
-      },
-      "buttons": {
-        "startCamera": "Start Camera",
-        "stopCamera": "Stop Camera"
+      "copyReport": "Copy report",
+      "reportTitle": "Camera diagnostics",
+      "reportDevice": "Device",
+      "reportDeviceLabel": "Camera",
+      "reportEnvironment": "Environment"
+    },
+    "values": {
+      "unavailable": "not reported",
+      "facing": {
+        "user": "Front camera",
+        "environment": "Rear camera",
+        "left": "Left camera",
+        "right": "Right camera"
       }
     },
-    "VideoPreview": {
-      "title": "Camera Preview",
-      "status": {
-        "live": "Live",
-        "off": "Off",
-        "recording": "REC"
-      },
-      "placeholder": {
-        "title": "Click the button above to start camera",
-        "subtitle": "You need to grant permission first"
-      },
-      "controls": {
-        "screenshot": "Screenshot",
-        "startRecording": "Start Recording",
-        "stopRecording": "Stop Recording"
-      }
-    },
-    "StatusPanel": {
-      "status": {
-        "label": "Status",
-        "recording": "Recording",
-        "stopping": "Stopping",
-        "stopped": "Stopped",
-        "idle": "Ready",
-        "acquiring_media": "Acquiring media"
-      },
-      "quality": {
-        "label": "Quality"
-      },
-      "duration": {
-        "label": "Duration"
-      },
-      "camera": {
-        "label": "Camera",
-        "selected": "Selected camera"
-      },
-      "recording": {
-        "format": "Recording to WebM format with audio",
-        "quality": "Quality:"
-      }
-    },
-    "MediaPanel": {
-      "title": "Captured Media",
-      "fileCount": "files",
-      "empty": {
-        "title": "No media captured yet",
-        "subtitle": "Take a screenshot or record a video"
-      },
-      "stats": {
-        "screenshots": "Screenshots:",
-        "videos": "Videos:"
-      },
-      "actions": {
-        "preview": "Preview",
-        "download": "Download",
-        "delete": "Delete"
-      },
-      "screenshot": "Screenshot",
-      "video": "Video"
-    },
-    "InfoSection": {
-      "title": "Information",
-      "status": "Help",
-      "useCases": {
-        "title": "Main use cases:",
-        "contentCreation": {
-          "title": "Content Creation:",
-          "description": "For blogs, video content and social media"
-        },
-        "documentation": {
-          "title": "Documentation:",
-          "description": "Video documentation for projects and processes"
-        },
-        "education": {
-          "title": "Education:",
-          "description": "Creating educational and teaching materials"
-        },
-        "testing": {
-          "title": "Testing:",
-          "description": "Testing camera and microphone functionality"
-        },
-        "qualityControl": {
-          "title": "Quality Control:",
-          "description": "Evaluating video quality on different devices"
-        }
-      },
-      "tips": {
-        "title": "Professional tips:",
-        "lighting": "Record videos in good lighting conditions",
-        "microphone": "Sit closer to the camera for better microphone proximity",
-        "quality": "Choose HD or Full HD quality, but consider internet speed",
-        "screenshot": "Pause the video before taking a screenshot",
-        "storage": "Upload large files to cloud storage"
-      },
-      "note": {
-        "title": "Note:",
-        "content": "Video and audio files are automatically saved in WebM format. This format is well supported in modern browsers and offers high quality with small file size."
-      }
-    },
-    "Errors": {
-      "cameraAccess": "Camera access permission denied",
-      "noCamera": "No camera found",
-      "recordingFailed": "Video recording failed",
-      "screenshotFailed": "Screenshot capture failed",
-      "unsupportedBrowser": "Browser not supported"
-    },
-    "MediaPreviewModal": {
+    "gallery": {
+      "title": "Captures",
+      "empty": "Nothing captured yet. Press Take a still or Record video above.",
+      "clearAll": "Delete all",
       "download": "Download",
-      "screenshotPreview": "Screenshot Preview",
-      "videoPreview": "Video Preview",
-      "failedToLoad": "Failed to load image",
-      "loadingVideo": "Loading video...",
-      "failedToLoadVideo": "Failed to load video"
+      "delete": "Delete",
+      "snapshotAlt": "Still frame from the camera, {time}",
+      "limit": "The last {count} captures are kept, in this browser's memory only — closing the page discards them."
     },
-    "Hook": {
-      "messages": {
-        "recordingStarted": "Video and audio recording started",
-        "recordingSaved": "Video and audio saved successfully",
-        "cameraDeviceLabel": "Camera",
-        "camerasFound": "cameras found",
-        "cameraAccessDenied": "Camera device access denied or not available",
-        "cameraStarted": "Camera started",
-        "cameraStartError": "Error starting camera",
-        "cameraStopped": "Camera stopped",
-        "screenshotRequired": "Camera must be active to take screenshot",
-        "screenshotTaken": "Screenshot taken successfully",
-        "screenshotError": "Error taking screenshot",
-        "screenshotDownloaded": "Screenshot downloaded",
-        "videoDownloaded": "Video downloaded",
-        "screenshotDeleted": "Screenshot deleted",
-        "videoDeleted": "Video deleted",
-        "camerasRefreshing": "Refreshing cameras...",
-        "camerasRefreshed": "Cameras refreshed successfully",
-        "camerasRefreshError": "Error refreshing cameras",
-        "recordingDownloaded": "Video downloaded"
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "noPicture": {
+          "question": "I allowed access but the picture is black — what happened?",
+          "answer": "Many laptops have a physical shutter over the camera or a kill switch on the side, and the browser cannot see either: the stream opens normally and every frame arrives black. On some machines a camera held by another application behaves the same way. Try a different camera from the list above as well."
+        },
+        "privacy": {
+          "question": "Is my video sent anywhere?",
+          "answer": "No. The video never leaves your browser: stills are drawn to a canvas inside the page, and recordings are made by the browser's own MediaRecorder. No frame, image or clip is uploaded, and no analytics on this site touches them."
+        },
+        "permissionBlocked": {
+          "question": "I refused the permission by accident — how do I undo it?",
+          "answer": "The browser remembers that answer for the site and will not ask again. Click the lock or settings icon in the address bar, find the Camera entry and set it to Allow, then reload. In Chrome the same setting lives under Settings → Privacy and security → Site settings → Camera."
+        },
+        "deviceBusy": {
+          "question": "It says the device is busy — why?",
+          "answer": "Another application is holding the camera. On most systems only one application can open it at a time, so close Zoom, Google Meet, Telegram or OBS completely — closing the window is often not enough, because the application keeps running in the background."
+        },
+        "resolution": {
+          "question": "Why do Requested and Actual differ?",
+          "answer": "A resolution constraint is a request, not an instruction. Ask a 720p webcam for 4K and it does not fail — it returns the closest size it can produce. That is why both values are shown side by side: asking for the highest setting and reading the Actual row is the simplest way to discover what your camera can really do."
+        },
+        "mirror": {
+          "question": "Does the mirror setting affect the saved file?",
+          "answer": "Yes, deliberately. Most webcam tools flip the picture on screen but not in the file, so the still you save is not the one you framed and any text in the shot reads backwards. Here what is on screen is what lands in the file."
+        },
+        "recordings": {
+          "question": "Where are my captures stored?",
+          "answer": "Only in the memory of the open page. The last 12 stay in the list and older ones are discarded automatically. Press download to keep one: stills save as PNG, and clips save in whatever container your browser supports — usually WebM, or MP4 on Safari."
+        }
       }
     }
   }

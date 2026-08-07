@@ -2,3 +2,80 @@ packages:
   - "packages/*"
   - "apps/*"
   - "apps/extensions/*"
+
+# ---------------------------------------------------------------------------
+# One React type definition for the whole workspace
+#
+# The root asked for `@types/react@^19.2.18` and the extension for `^19.2.17`,
+# so pnpm installed BOTH and resolved every Radix peer twice
+# (`@radix-ui+react-slot@1.3.3_@types+react@19.2.17` AND `…19.2.18`).
+# `packages/ui` does not declare `@types/react` itself, so it linked whichever
+# copy pnpm handed it — and the moment that was not the one `tsc` loaded from
+# the root, every `asChild` component failed with:
+#
+#   Type 'VoidOrUndefinedOnly' is not assignable to type 'VoidOrUndefinedOnly'.
+#   Two different types with this name exist, but they are unrelated.
+#
+# Nothing in the source was wrong; the graph was. An override is the fix
+# because the duplication comes from peer resolution, not from a direct
+# dependency any one package could bump.
+# ---------------------------------------------------------------------------
+overrides:
+  '@types/react': '19.2.18'
+  '@types/react-dom': '19.2.4'
+  # GHSA-g7r4-m6w7-qqqr — arbitrary file read via esbuild's own `--serve` dev
+  # server on Windows. Patched in 0.28.1; every dependent here is a
+  # devDependency (tsup, vite, vitest, wxt) so nothing shipped is affected.
+  #
+  # This is an override rather than a version bump because tsup@8.5.1 — the
+  # LATEST release — still hard-pins `esbuild: ^0.27.0`, so there is no upstream
+  # path to a patched version. Verified safe: with this in place the
+  # `@webiston/transliteration` bundles tsup emits are byte-identical to the
+  # 0.27.7 output (sha256 compared), and the full gate passes.
+  #
+  # Revisit when tsup widens its range — then this entry can go.
+  esbuild: '^0.28.1'
+
+# ---------------------------------------------------------------------------
+# Post-install scripts
+#
+# pnpm 11 does not run a dependency's install scripts unless it is listed here,
+# and it FAILS the install if any are left undecided. A postinstall script runs
+# arbitrary code on your machine, so each one is an explicit decision.
+#
+# `true`  = we need the native binary this script fetches/builds.
+# `false` = unused here, or it has a working pure-JS fallback.
+# ---------------------------------------------------------------------------
+allowBuilds:
+  # Native bundler binary. Required: tsup (packages/transliteration) and vitest
+  # both execute it — without it, packages:build and pnpm test fail.
+  esbuild: true
+  # Native transform binary pulled in by tsup.
+  '@swc/core': true
+  # Downloads the lefthook binary that backs .git/hooks. Without it every git
+  # hook silently no-ops — which is the failure mode we already fixed once.
+  lefthook: true
+  # Next's image optimizer. next.config.ts sets images.unoptimized: true, so
+  # nothing calls it. Skipping avoids a large platform-specific download.
+  sharp: false
+  # Native file watcher with a pure-JS fallback; only used by dev watch modes.
+  '@parcel/watcher': false
+  # Less preprocessor, a transitive optional of vite. This project styles with
+  # Tailwind v4 + PostCSS only — there is no .less file in the repo.
+  less: false
+
+# ---------------------------------------------------------------------------
+# Supply-chain policy
+#
+# pnpm 11 refuses to install packages published within the last 24 hours — the
+# window in which a compromised-maintainer attack is usually caught and the bad
+# version unpublished. It is a good default and we keep it. It is stated
+# explicitly here so the behaviour is identical on every pnpm version instead of
+# depending on whichever version a contributor or CI happens to run.
+#
+# See `packageManager` in package.json — that pins pnpm itself. Before it
+# existed, a local pnpm 10 and a corepack pnpm 11 disagreed about this policy,
+# and the result was an install loop that looked like a broken node_modules.
+# ---------------------------------------------------------------------------
+minimumReleaseAge: 1440
+

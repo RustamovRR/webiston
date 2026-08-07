@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { AudioStats } from "../hooks/useMicrophoneTest"
+import type { AudioStats } from "../hooks/useMicrophoneTest"
 
 interface AudioVisualizerProps {
   audioStats: AudioStats
@@ -69,7 +69,7 @@ export function AudioVisualizer({
 
   return (
     <div
-      className={`rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800 ${className}`}
+      className={`rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700  ${className}`}
     >
       <canvas
         ref={canvasRef}
@@ -79,10 +79,10 @@ export function AudioVisualizer({
 
       {/* Audio level display */}
       <div className="mt-2 flex items-center justify-between text-sm">
-        <span className="text-zinc-600 dark:text-zinc-400">
+        <span className="text-muted-foreground">
           Level: {Math.round(audioStats.level)}%
         </span>
-        <span className="text-zinc-600 dark:text-zinc-400">
+        <span className="text-muted-foreground">
           Peak: {Math.round(audioStats.peak)}%
         </span>
       </div>

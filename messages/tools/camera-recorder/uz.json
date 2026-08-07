@@ -1,166 +1,97 @@
 {
   "CameraRecorderPage": {
-    "ToolHeader": {
-      "title": "Kamera Yozuvchi",
-      "description": "Kamerangizni sinab ko'ring, video yozing va screenshot oling"
+    "title": "Kamera testi",
+    "description": "Veb-kamerangiz ishlayaptimi — jonli tasvirni ko'ring, haqiqiy o'lchamni bilib oling, kadr oling yoki video yozing. Tasvir shu qurilmada qoladi.",
+    "gate": {
+      "title": "Kamerani sinash"
     },
-    "ControlPanel": {
-      "title": "Kamera Sozlamalari",
-      "status": {
-        "active": "Faol",
-        "inactive": "Nofaol"
+    "toolbar": {
+      "mirror": "Ko'zgu",
+      "micOn": "Ovoz yoqilgan",
+      "micOff": "Ovoz o'chirilgan",
+      "torch": "Chiroq",
+      "zoom": "Yaqinlashtirish",
+      "stop": "To'xtatish"
+    },
+    "stage": {
+      "title": "Jonli tasvir",
+      "fps": "{value} fps",
+      "snapshot": "Kadr olish",
+      "record": "Video yozish",
+      "stopRecording": "Yozishni tugatish",
+      "pause": "Pauza",
+      "resume": "Davom ettirish"
+    },
+    "quality": {
+      "title": "Sifat",
+      "negotiated": "Kamera so'ralgan o'lchamni bera olmadi va o'zi qo'llay oladigan eng yaqin variantni qaytardi. Pastdagi «Haqiqiy» qatori — oqimning rostdan ham qanday ekani.",
+      "presets": {
+        "sd": "480p",
+        "hd": "720p",
+        "fhd": "1080p",
+        "uhd": "4K"
       },
-      "camera": {
-        "label": "Kamera:",
-        "placeholder": "Kamera tanlang",
-        "refresh": "Yangilash"
+      "rows": {
+        "requested": "So'ralgan",
+        "actual": "Haqiqiy",
+        "frameRate": "Kadr chastotasi",
+        "facingMode": "Kamera yo'nalishi"
       },
-      "quality": {
-        "label": "Sifat:",
-        "hd": "HD (1280×720)",
-        "fhd": "Full HD (1920×1080)",
-        "sd": "SD (640×480)"
-      },
-      "buttons": {
-        "startCamera": "Kamerani Yoqish",
-        "stopCamera": "Kamerani O'chirish"
+      "copyReport": "Hisobotni nusxalash",
+      "reportTitle": "Kamera diagnostikasi",
+      "reportDevice": "Qurilma",
+      "reportDeviceLabel": "Kamera",
+      "reportEnvironment": "Muhit"
+    },
+    "values": {
+      "unavailable": "ma'lumot yo'q",
+      "facing": {
+        "user": "Old kamera",
+        "environment": "Orqa kamera",
+        "left": "Chap kamera",
+        "right": "O'ng kamera"
       }
     },
-    "VideoPreview": {
-      "title": "Kamera Ko'rinishi",
-      "status": {
-        "live": "Live",
-        "off": "Off",
-        "recording": "REC"
-      },
-      "placeholder": {
-        "title": "Kamerani yoqish uchun yuqoridagi tugmani bosing",
-        "subtitle": "Avval ruxsat berishingiz kerak"
-      },
-      "controls": {
-        "screenshot": "Screenshot",
-        "startRecording": "Yozishni Boshlash",
-        "stopRecording": "Yozishni To'xtatish"
-      }
-    },
-    "StatusPanel": {
-      "status": {
-        "label": "Status",
-        "recording": "Yozib olinmoqda",
-        "stopping": "To'xtatilmoqda",
-        "stopped": "To'xtatildi",
-        "idle": "Tayyor",
-        "acquiring_media": "Media olinmoqda"
-      },
-      "quality": {
-        "label": "Sifat"
-      },
-      "duration": {
-        "label": "Vaqt"
-      },
-      "camera": {
-        "label": "Kamera",
-        "selected": "Tanlangan kamera"
-      },
-      "recording": {
-        "format": "Recording to WebM format with audio",
-        "quality": "Quality:"
-      }
-    },
-    "MediaPanel": {
-      "title": "Saqlangan Media",
-      "fileCount": "ta fayl",
-      "empty": {
-        "title": "Hali hech qanday media saqlanmagan",
-        "subtitle": "Screenshot yoki video oling"
-      },
-      "stats": {
-        "screenshots": "Screenshotlar:",
-        "videos": "Videolar:"
-      },
-      "actions": {
-        "preview": "Ko'rish",
-        "download": "Yuklab olish",
-        "delete": "O'chirish"
-      },
-      "screenshot": "Screenshot",
-      "video": "Video"
-    },
-    "InfoSection": {
-      "title": "Ma'lumot",
-      "status": "Yordam",
-      "useCases": {
-        "title": "Asosiy foydalanish joylari:",
-        "contentCreation": {
-          "title": "Kontent Yaratish:",
-          "description": "Blog, video kontent va ijtimoiy media uchun"
-        },
-        "documentation": {
-          "title": "Hujjatlashtirish:",
-          "description": "Layihalar va jarayonlar uchun video hujjatlar"
-        },
-        "education": {
-          "title": "Ta'lim:",
-          "description": "Ta'lim va o'qitish materiallari yaratish"
-        },
-        "testing": {
-          "title": "Sinov:",
-          "description": "Kamera va mikrofon funksionalligini tekshirish"
-        },
-        "qualityControl": {
-          "title": "Sifat Nazorati:",
-          "description": "Turli qurilmalarda video sifatini baholash"
-        }
-      },
-      "tips": {
-        "title": "Professional maslahatlar:",
-        "lighting": "Yaxshi yorug'lik sharoitida video yozing",
-        "microphone": "Mikrofon yaqin bo'lishi uchun kameraga yaqinroq o'tiring",
-        "quality": "HD yoki Full HD sifatni tanlang, lekin internet tezligini hisobga oling",
-        "screenshot": "Screenshot olishdan oldin video ni pauza qiling",
-        "storage": "Katta fayllarni cloud storage'ga yuklang"
-      },
-      "note": {
-        "title": "Eslatma:",
-        "content": "Video va audio fayllar avtomatik WebM formatida saqlanadi. Bu format zamonaviy brauzerlarda yaxshi qo'llab-quvvatlanadi va yuqori sifat bilan kichik hajmga ega."
-      }
-    },
-    "Errors": {
-      "cameraAccess": "Kameraga kirish ruxsati berilmadi",
-      "noCamera": "Kamera topilmadi",
-      "recordingFailed": "Video yozishda xatolik yuz berdi",
-      "screenshotFailed": "Screenshot olishda xatolik yuz berdi",
-      "unsupportedBrowser": "Brauzer qo'llab-quvvatlanmaydi"
-    },
-    "MediaPreviewModal": {
+    "gallery": {
+      "title": "Olingan fayllar",
+      "empty": "Hali hech narsa olinmagan. Yuqoridagi «Kadr olish» yoki «Video yozish» tugmasini bosing.",
+      "clearAll": "Hammasini o'chirish",
       "download": "Yuklab olish",
-      "screenshotPreview": "Screenshot Ko'rinishi",
-      "videoPreview": "Video Ko'rinishi",
-      "failedToLoad": "Rasm yuklanmadi",
-      "loadingVideo": "Video yuklanmoqda...",
-      "failedToLoadVideo": "Video yuklanmadi"
+      "delete": "O'chirish",
+      "snapshotAlt": "Kameradan olingan kadr, {time}",
+      "limit": "Oxirgi {count} ta fayl saqlanadi va faqat shu brauzer xotirasida turadi — sahifani yopsangiz o'chib ketadi."
     },
-    "Hook": {
-      "messages": {
-        "recordingStarted": "Video va ovoz yozib olish boshlandi",
-        "recordingSaved": "Video va ovoz muvaffaqiyatli saqlandi",
-        "cameraDeviceLabel": "Kamera",
-        "camerasFound": "ta kamera topildi",
-        "cameraAccessDenied": "Kamera qurilmalariga kirish rad etildi yoki mavjud emas",
-        "cameraStarted": "Kamera ishga tushirildi",
-        "cameraStartError": "Kamerani ishga tushirishda xatolik yuz berdi",
-        "cameraStopped": "Kamera to'xtatildi",
-        "screenshotRequired": "Screenshot olish uchun kamera yoqilgan bo'lishi kerak",
-        "screenshotTaken": "Screenshot muvaffaqiyatli olindi",
-        "screenshotError": "Screenshot olishda xatolik yuz berdi",
-        "screenshotDownloaded": "Screenshot yuklab olindi",
-        "videoDownloaded": "Video yuklab olindi",
-        "screenshotDeleted": "Screenshot o'chirildi",
-        "videoDeleted": "Video o'chirildi",
-        "camerasRefreshing": "Kameralar yangilanmoqda...",
-        "camerasRefreshed": "Kameralar muvaffaqiyatli yangilandi",
-        "camerasRefreshError": "Kameralar yangilashda xatolik yuz berdi",
-        "recordingDownloaded": "Video yuklab olindi"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "noPicture": {
+          "question": "Ruxsat berdim, lekin tasvir qora — nima bo'ldi?",
+          "answer": "Ko'p noutbuklarda kameraning ustida jismoniy pardasi yoki yon tomonida o'chirish tugmasi bo'ladi; brauzer buni ko'rmaydi va oqim ochiladi, faqat qora kadr keladi. Shuningdek, ba'zi qurilmalarda kamerani boshqa dastur ushlab turgan bo'lsa, tasvir kelmasligi mumkin. Yuqoridagi ro'yxatdan boshqa kamerani tanlab ham sinab ko'ring."
+        },
+        "privacy": {
+          "question": "Videom qayergadir yuboriladimi?",
+          "answer": "Yo'q. Tasvir brauzeringizdan chiqmaydi: kadr olish sahifa ichidagi canvas orqali bajariladi, yozib olish esa brauzerning o'z MediaRecorder'i bilan. Hech qanday kadr, rasm yoki video serverga jo'natilmaydi va bu sahifadagi hech qanday tahlil xizmati ularga tegmaydi."
+        },
+        "permissionBlocked": {
+          "question": "Ruxsatni tasodifan rad etdim, endi qanday tiklayman?",
+          "answer": "Brauzer bu javobni sayt uchun eslab qoladi va qayta so'ramaydi. Manzil qatoridagi qulf yoki sozlama belgisini bosing, «Kamera» bandini toping va «Ruxsat» ga o'zgartiring, so'ng sahifani yangilang. Chrome'da bu Sozlamalar → Maxfiylik va xavfsizlik → Sayt sozlamalari → Kamera bo'limida ham bor."
+        },
+        "deviceBusy": {
+          "question": "«Qurilma band» degan xato chiqdi — nega?",
+          "answer": "Kamerani boshqa dastur egallab turibdi. Ko'p tizimlarda kamerani bir vaqtda faqat bitta dastur ochishi mumkin, shuning uchun Zoom, Google Meet, Telegram yoki OBS kabi dasturlarni to'liq yoping — oynani yopish yetarli bo'lmasligi mumkin, chunki dastur fonda ishlashda davom etadi."
+        },
+        "resolution": {
+          "question": "Nega so'ralgan va haqiqiy o'lcham har xil?",
+          "answer": "Kameraga o'lcham so'rovi buyruq emas, iltimos. 720p kameradan 4K so'rasangiz, u xatolik bermaydi — o'zi bera oladigan eng yaqin o'lchamni qaytaradi. Shuning uchun ikkala qiymat yonma-yon ko'rsatiladi: eng yuqori sifatni so'rab, «Haqiqiy» qatoriga qarash — kameraning haqiqiy imkoniyatini bilishning eng oson yo'li."
+        },
+        "mirror": {
+          "question": "Ko'zgu rejimi faylga ham ta'sir qiladimi?",
+          "answer": "Ha, va bu ataylab shunday. Ko'pchilik veb-kamera vositalari tasvirni ekranda ag'daradi, lekin faylni ag'darmaydi — natijada saqlangan kadr ko'rganingizdan boshqacha chiqadi va yozuvdagi matn teskari o'qiladi. Bu yerda ekranda nima ko'rinsa, faylda ham xuddi shu bo'ladi."
+        },
+        "recordings": {
+          "question": "Fayllarim qayerda saqlanadi?",
+          "answer": "Ular faqat ochiq turgan sahifa xotirasida turadi. Oxirgi 12 tasi ro'yxatda qoladi, undan eskilari avtomatik o'chiriladi. Saqlab qolish uchun yuklab olish tugmasini bosing: kadrlar PNG, videolar esa brauzeringiz qo'llaydigan formatda (odatda WebM, Safari'da MP4) tushadi."
+        }
       }
     }
   }

@@ -6,7 +6,17 @@ export {
   NON_TRANSLITERATABLE_WORDS,
   UZBEK_SUFFIXES
 } from "./constants"
-export { detectScript, isLatinText } from "./detect-script"
+// Types
+export type { DirectionPreference } from "./converter"
+// Conversion policy — which direction, and the one call that runs it
+export {
+  convert,
+  convertWithPreference,
+  findPreservedTerms,
+  oppositeDirection,
+  resolveDirection
+} from "./converter"
+export { detectScript, isCyrillicDominant, isLatinText } from "./detect-script"
 // Helpers (advanced usage)
 export {
   isCyrillicVowel,
@@ -17,8 +27,13 @@ export {
   normalizeApostrophes,
   preserveCase
 } from "./helpers"
+export {
+  MAX_USER_TERM_LENGTH,
+  MAX_USER_TERMS,
+  normaliseUserTerms
+} from "./protection"
+export type { ConversionOptions } from "./transliterate"
 export { isCyrillicText, toCyrillic, toLatin } from "./transliterate"
-// Types
 export type {
   CharacterMapping,
   DigraphMapping,

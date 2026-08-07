@@ -1,292 +1,239 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
 
-// Sample URL data constants
-export const SAMPLE_URL_DATA = {
-  SIMPLE_URL: "https://webiston.uz/tools/url-encoder",
-  COMPLEX_URL:
-    "https://webiston.uz/search?q=hello world&category=tools&lang=uz",
-  QUERY_STRING: "name=Ali Valiyev&age=25&city=Toshkent&email=ali@webiston.uz",
-  EMAIL_QUERY:
-    "mailto:info@webiston.uz?subject=Savolim bor&body=Assalomu alaykum",
-  SOCIAL_SHARE:
-    "https://facebook.com/sharer/sharer.php?u=https://webiston.uz&t=Foydali veb tools"
-}
+import { analyzeUrl } from "@/lib/utils"
 
-type ConversionMode = "encode" | "decode"
+import {
+  MAX_FILE_BYTES,
+  SAMPLE_KEYS,
+  SAMPLE_VALUES,
+  SUPPORTED_FILE_TYPES
+} from "../constants"
+import { useUrlDraftStore } from "../stores/urlDraftStore"
+import type { FileFailure, UrlSample } from "../types"
+import {
+  convert,
+  detectMode,
+  detectScope,
+  isStillEncoded,
+  readQuery
+} from "../utils/urlCodec"
 
-interface UrlInfo {
-  isValidUrl: boolean
-  protocol?: string
-  hostname?: string
-  pathname?: string
-  search?: string
-  hash?: string
-}
+/**
+ * The encoder's state and everything derived from it.
+ *
+ * The FIRST rebuild fixed the maths and got the product wrong: it turned the
+ * value/whole-URL distinction into a decision the visitor had to take before
+ * the tool would answer, which meant four combinations to understand and one
+ * of them — decoding text that was never encoded — returns the input unchanged
+ * and reads as "this tool does nothing". Reported, and correctly.
+ *
+ * So the tool decides and says what it decided. `preference` is `auto` by
+ * default and `resolvedMode` is published so the UI can show the resolution,
+ * which is the same call latin-cyrillic made with its "Avto" direction.
+ *
+ * Removed in the first rebuild and still gone: three `alert()` calls, a
+ * `throw` inside `reader.onerror` (async — the `try/catch` never saw it), a
+ * private `analyzeUrl` beside the one `lib/utils` exports, word and line
+ * counts of a string that has neither, and two file limits that disagreed 10x.
+ */
 
-interface UrlResult {
-  output: string
-  error: string
-  isValid: boolean
-  urlInfo?: UrlInfo
-}
-
-const analyzeUrl = (urlString: string): UrlInfo => {
-  try {
-    const url = new URL(urlString)
-    return {
-      isValidUrl: true,
-      protocol: url.protocol,
-      hostname: url.hostname,
-      pathname: url.pathname,
-      search: url.search,
-      hash: url.hash
-    }
-  } catch {
-    return { isValidUrl: false }
-  }
-}
-
-export const useUrlEncoder = () => {
-  const tErrors = useTranslations("UrlEncoderPage.Errors")
+export function useUrlEncoder() {
+  const t = useTranslations("UrlEncoderPage")
   const tSamples = useTranslations("UrlEncoderPage.Samples")
-  const [inputText, setInputText] = useState("")
-  const [mode, setMode] = useState<ConversionMode>("encode")
-  const [isProcessing, setIsProcessing] = useState(false)
 
-  // Dynamic samples based on current mode
-  const samples = useMemo(
-    () => [
-      {
-        key: "SIMPLE_URL",
-        label: tSamples("simpleUrl"),
-        value: SAMPLE_URL_DATA.SIMPLE_URL
-      },
-      {
-        key: "COMPLEX_URL",
-        label: tSamples("complexUrl"),
-        value: SAMPLE_URL_DATA.COMPLEX_URL
-      },
-      {
-        key: "QUERY_STRING",
-        label: tSamples("queryString"),
-        value: SAMPLE_URL_DATA.QUERY_STRING
-      },
-      {
-        key: "EMAIL_QUERY",
-        label: tSamples("emailQuery"),
-        value: SAMPLE_URL_DATA.EMAIL_QUERY
-      },
-      {
-        key: "SOCIAL_SHARE",
-        label: tSamples("socialShare"),
-        value: SAMPLE_URL_DATA.SOCIAL_SHARE
-      }
-    ],
+  const input = useUrlDraftStore((state) => state.input)
+  const setInput = useUrlDraftStore((state) => state.setInput)
+  const preference = useUrlDraftStore((state) => state.preference)
+  const setPreference = useUrlDraftStore((state) => state.setPreference)
+  const scopeOverride = useUrlDraftStore((state) => state.scopeOverride)
+  const setScopeOverride = useUrlDraftStore((state) => state.setScopeOverride)
+
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [fileError, setFileError] = useState<FileFailure | null>(null)
+
+  const samples = useMemo<UrlSample[]>(
+    () =>
+      SAMPLE_KEYS.map((key) => ({
+        key,
+        label: tSamples(key),
+        value: SAMPLE_VALUES[key]
+      })),
     [tSamples]
   )
 
-  const result = useMemo((): UrlResult => {
-    if (!inputText.trim()) {
-      return { output: "", error: "", isValid: false }
+  const mode = preference === "auto" ? detectMode(input) : preference
+
+  /**
+   * Decoding never asks. `decodeURIComponent` plus `+`-as-space is what every
+   * decoder does and what a person pasting a link expects; the `decodeURI`
+   * variant, which preserves `%26`, is a specialist need and offering it as an
+   * equal choice was half of what made the first version confusing.
+   *
+   * ENCODING genuinely has two answers, so that is the only place the control
+   * appears — pre-set to whichever the input looks like.
+   */
+  const scope =
+    mode === "decode" ? "value" : (scopeOverride ?? detectScope(input))
+
+  const result = useMemo(() => {
+    if (!input.trim()) return { output: "", error: "" }
+    const converted = convert(input, mode, scope)
+    return converted.ok
+      ? { output: converted.output, error: "" }
+      : { output: "", error: t(`Errors.${converted.reason}`) }
+  }, [input, mode, scope, t])
+
+  /**
+   * The two things the visitor most needs told, and neither was said before.
+   *
+   * `unchanged` is the state from the bug report: decoding something that was
+   * never encoded returns it verbatim, which looks broken unless the page says
+   * "there was nothing to decode".
+   *
+   * `doubleEncoded` is the `%2520` case — a URL that went through an encoder
+   * twice, usually a redirect parameter or a proxy. The output still looks
+   * like gibberish and nothing explains why, so it is the single hardest thing
+   * for a person to work out unaided.
+   */
+  const notice = (() => {
+    if (!input.trim() || result.error) return null
+    if (result.output === input) {
+      // Direction-specific wording. Encoding `hello` also returns it verbatim,
+      // and "there was nothing to decode" is the wrong sentence for that.
+      return mode === "decode"
+        ? ("unchangedDecode" as const)
+        : ("unchangedEncode" as const)
     }
+    if (mode === "decode" && isStillEncoded(result.output)) {
+      return "doubleEncoded" as const
+    }
+    return null
+  })()
 
-    // Check text length limit (1MB)
-    if (inputText.length > 1024 * 1024) {
-      return {
-        output: "",
-        error: tErrors("textTooLong"),
-        isValid: false
+  /**
+   * The structure is read from whichever side is still ENCODED.
+   *
+   * That is not a detail: a value containing `%26` is one parameter, and
+   * `URLSearchParams` over the decoded text would see two. Parsing the encoded
+   * form and decoding each value afterwards is the only order that keeps the
+   * parameter count true.
+   */
+  const breakdown = useMemo(() => {
+    // Both sides are candidates, encoded side first. Reading only the output
+    // lost the panel entirely as soon as the scope was overridden to `value`,
+    // because `https%3A%2F%2F…` is not a URL — even though the INPUT still
+    // was one.
+    const candidates =
+      mode === "decode" ? [input, result.output] : [result.output, input]
+
+    for (const candidate of candidates) {
+      const trimmed = candidate.trim()
+      if (!trimmed) continue
+      const info = analyzeUrl(trimmed)
+      if (info?.isValidUrl) {
+        return { ...info, query: readQuery(info.search ?? "") }
       }
     }
+    return null
+  }, [mode, input, result.output])
 
-    try {
-      let output: string
-      let urlInfo: UrlInfo | undefined = undefined
+  /** The arrow takes the result back as input and pins the opposite direction. */
+  const swap = useCallback(() => {
+    if (!result.output) return
+    setPreference(mode === "encode" ? "decode" : "encode")
+    setScopeOverride(null)
+    setInput(result.output)
+  }, [mode, result.output, setPreference, setScopeOverride, setInput])
 
-      if (mode === "encode") {
-        output = encodeURIComponent(inputText)
-      } else {
-        output = decodeURIComponent(inputText)
+  /** Offered when the output is still escaped — one click, no explanation. */
+  const decodeAgain = useCallback(() => {
+    if (!result.output) return
+    setPreference("decode")
+    setInput(result.output)
+  }, [result.output, setPreference, setInput])
 
-        // Analyze decoded URL if it looks like a URL
-        if (output.startsWith("http") || output.startsWith("mailto:")) {
-          urlInfo = analyzeUrl(output)
-        }
+  const clear = useCallback(() => {
+    setInput("")
+    setScopeOverride(null)
+    setFileError(null)
+  }, [setInput, setScopeOverride])
+
+  const loadSample = useCallback(
+    (value: string) => {
+      setInput(value)
+      setScopeOverride(null)
+      setFileError(null)
+    },
+    [setInput, setScopeOverride]
+  )
+
+  const readFile = useCallback(
+    async (file: File) => {
+      setFileError(null)
+
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError("tooLarge")
+        return
+      }
+      if (
+        !SUPPORTED_FILE_TYPES.includes(file.type) &&
+        !/\.(txt|json)$/i.test(file.name)
+      ) {
+        setFileError("unsupported")
+        return
       }
 
-      return {
-        output,
-        error: "",
-        isValid: true,
-        urlInfo
-      }
-    } catch (error) {
-      let errorMessage = tErrors("conversionError")
-
-      if (mode === "decode") {
-        if (error instanceof URIError) {
-          errorMessage = tErrors("invalidUrlFormat")
-        } else {
-          errorMessage = tErrors("decodeError")
-        }
-      } else {
-        errorMessage = tErrors("encodeError")
-      }
-
-      return { output: "", error: errorMessage, isValid: false }
-    }
-  }, [inputText, mode])
-
-  const handleModeSwitch = useCallback(() => {
-    const newMode: ConversionMode = mode === "encode" ? "decode" : "encode"
-
-    if (inputText.trim()) {
-      // Try to convert current input to use as input for the opposite mode
-      try {
-        let newInput = inputText
-
-        if (mode === "encode") {
-          // Current mode is encode, switching to decode
-          // Use the encoded result as input for decode mode
-          const encoded = encodeURIComponent(inputText)
-          newInput = encoded
-        } else {
-          // Current mode is decode, switching to encode
-          // Try to decode current input
-          try {
-            const decoded = decodeURIComponent(inputText)
-            newInput = decoded
-          } catch (error) {
-            // If decoding fails, keep current input
-          }
-        }
-
-        setMode(newMode)
-        setInputText(newInput)
-      } catch (error) {
-        // If conversion fails, just switch mode and keep current input
-        setMode(newMode)
-      }
-    } else {
-      // If no input text, just switch mode
-      setMode(newMode)
-    }
-  }, [mode, inputText])
-
-  const handleClear = useCallback(() => {
-    setInputText("")
-  }, [])
-
-  const loadSampleText = useCallback((sample: string) => {
-    setInputText(sample)
-  }, [])
-
-  const handleFileUpload = useCallback(
-    async (file: File): Promise<void> => {
       setIsProcessing(true)
-
       try {
-        // File size validation (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(tErrors("fileSizeError"))
-        }
-
-        // File type validation
-        const validTypes = ["text/plain", "application/json", "text/json"]
-        if (
-          !validTypes.includes(file.type) &&
-          !file.name.endsWith(".txt") &&
-          !file.name.endsWith(".json")
-        ) {
-          throw new Error(tErrors("fileTypeError"))
-        }
-
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const content = e.target?.result as string
-          if (content.length > 1024 * 1024) {
-            alert(tErrors("textTooLong"))
-          } else {
-            setInputText(content)
-          }
-          setIsProcessing(false)
-        }
-        reader.onerror = () => {
-          throw new Error(tErrors("fileReadError"))
-        }
-        reader.readAsText(file)
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : tErrors("fileUploadError")
-        alert(errorMessage)
+        setInput((await file.text()).trim())
+      } catch {
+        setFileError("unreadable")
+      } finally {
         setIsProcessing(false)
       }
     },
-    [tErrors]
+    [setInput]
   )
 
-  const downloadResult = useCallback(() => {
-    if (!result.isValid || !result.output) return
-
-    try {
-      const blob = new Blob([result.output], {
-        type: "text/plain; charset=utf-8"
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `url-${mode === "encode" ? "encoded" : "decoded"}-${Date.now()}.txt`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      alert(tErrors("downloadError"))
-    }
-  }, [result, mode, tErrors])
-
-  const canDownload = Boolean(result.output && result.isValid)
-
-  const inputStats = useMemo(
-    () => ({
-      characters: inputText.length,
-      words: inputText.split(/\s+/).filter((word) => word.length > 0).length,
-      lines: inputText.split("\n").length
-    }),
-    [inputText]
-  )
-
-  const outputStats = useMemo(
-    () => ({
-      characters: result.output.length,
-      words: result.output.split(/\s+/).filter((word) => word.length > 0)
-        .length,
-      lines: result.output.split("\n").length
-    }),
-    [result.output]
-  )
+  const download = useCallback(() => {
+    if (!result.output) return
+    const blob = new Blob([result.output], {
+      type: "text/plain; charset=utf-8"
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${t(`Download.${mode}`)}.txt`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }, [result.output, mode, t])
 
   return {
-    // State
-    inputText,
-    setInputText,
+    input,
+    setInput,
+    preference,
+    setPreference,
+    /** What `preference` actually resolved to — shown, never hidden. */
     mode,
-    setMode,
+    scope,
+    setScopeOverride,
     isProcessing,
     result,
-    // Actions
-    handleModeSwitch,
-    handleClear,
-    handleFileUpload,
-    downloadResult,
-    loadSampleText,
-    // Computed
-    canDownload,
-    inputStats,
-    outputStats,
-    samples
+    notice,
+    breakdown,
+    fileError: fileError ? t(`Errors.${fileError}`) : "",
+    samples,
+    loadSample,
+    swap,
+    decodeAgain,
+    clear,
+    readFile,
+    download,
+    canDownload: Boolean(result.output)
   }
 }

@@ -1,83 +1,125 @@
 "use client"
 
-import { Copy, Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ToolHeader, StatsDisplay } from "@/components/shared"
-import { DualTextPanel } from "@/components/shared/DualTextPanel"
-import { ConfigPanel, InfoSection, HelpSection } from "./components"
-import { useLoremIpsum } from "./hooks/useLoremIpsum"
+import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
 
-export default function LoremIpsumPage() {
-  const t = useTranslations("LoremIpsumPage.ToolHeader")
-  const tPanel = useTranslations("LoremIpsumPage.MainPanel")
+import { ToolCard } from "@/components/shared/ToolCard"
+import { ToolHeader } from "@/components/shared/ToolHeader"
+
+import { ControlBar } from "./components/ControlBar"
+import { LoremOutput } from "./components/LoremOutput"
+import { useLoremIpsum } from "./hooks/useLoremIpsum"
+
+/**
+ * Lorem ipsum generator.
+ *
+ * One weight, not four: the text is the whole product, so it gets the page.
+ * What this replaces put a config card, a stats strip, a two-panel layout
+ * whose right half was a stat sheet rendered as text, an info card and a help
+ * card on one screen — five things competing with the paragraph the visitor
+ * came for.
+ */
+const LoremIpsum = () => {
+  const t = useTranslations("LoremIpsumPage")
+  const tOutput = useTranslations("LoremIpsumPage.output")
 
   const {
-    generatedText,
-    copied,
-    settings,
-    textInfo,
-    alternativeTexts,
-    textStats,
-    generateText,
-    clearText,
-    loadSample,
-    updateSettings,
-    handleCopy,
-    downloadText
+    unit,
+    amount,
+    bank,
+    format,
+    startWithLorem,
+    output,
+    stats,
+    hasText,
+    setUnit,
+    setAmount,
+    setBank,
+    setFormat,
+    setStartWithLorem,
+    generate,
+    clear,
+    download
   } = useLoremIpsum()
 
+  /**
+   * The suite's two keys, scoped by a containment check so an Escape pressed
+   * inside a portalled control cannot wipe the panel behind it.
+   */
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!event.currentTarget.contains(event.target as Node)) return
+
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      if (!output) return
+      event.preventDefault()
+      void navigator.clipboard.writeText(output).catch(() => {})
+      return
+    }
+    if (event.key === "Escape" && hasText) {
+      event.preventDefault()
+      clear()
+    }
+  }
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6">
-      <ToolHeader title={t("title")} description={t("description")} />
-
-      <ConfigPanel
-        settings={settings}
-        alternativeTexts={alternativeTexts}
-        generatedText={generatedText}
-        copied={copied}
-        generateText={generateText}
-        loadSample={loadSample}
-        updateSettings={updateSettings}
-        handleCopy={handleCopy}
-        downloadText={downloadText}
-        clearText={clearText}
+    <div
+      className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8"
+      onKeyDown={handleKeyDown}
+    >
+      <ToolHeader
+        title={t("ToolHeader.title")}
+        description={t("ToolHeader.description")}
       />
 
-      {/* Stats Display */}
-      {generatedText && <StatsDisplay stats={textStats} className="mb-6" />}
+      <ControlBar
+        unit={unit}
+        onUnitChange={setUnit}
+        amount={amount}
+        onAmountChange={setAmount}
+        bank={bank}
+        onBankChange={setBank}
+        format={format}
+        onFormatChange={setFormat}
+        startWithLorem={startWithLorem}
+        onStartWithLoremChange={setStartWithLorem}
+        onGenerate={generate}
+        onClear={clear}
+        canExport={hasText}
+        onDownload={download}
+      />
 
-      {/* Main Panel */}
-      <DualTextPanel
-        sourceText={generatedText}
-        convertedText={textInfo}
-        sourcePlaceholder={tPanel("sourcePlaceholder")}
-        sourceLabel={tPanel("sourceLabel")}
-        targetLabel={tPanel("targetLabel")}
-        onSourceChange={(text) => {
-          // Allow manual editing if needed
-        }}
-        variant="terminal"
-        showSwapButton={false}
-        showClearButton={false}
-        statusComponent={
-          generatedText && (
-            <div className="flex items-center gap-2">
-              <Button onClick={handleCopy} variant="ghost" size="sm">
-                {copied ? (
-                  <Check size={16} className="text-green-500" />
-                ) : (
-                  <Copy size={16} />
-                )}
-              </Button>
-            </div>
-          )
+      {/* Named for what it holds, not for which list produced it: a panel
+          titled "Bacon" says nothing about the region it labels, and the bank
+          is already visible in the toolbar above. */}
+      <ToolCard
+        title={tOutput("title")}
+        actions={
+          hasText ? (
+            <>
+              {/* Three measured facts, not a stat sheet in a panel of its
+                  own. Bytes are shown because the byte mode makes the number
+                  the point. */}
+              <span className="text-muted-foreground text-xs tabular-nums">
+                {tOutput("stats", {
+                  words: stats.words,
+                  characters: stats.characters,
+                  bytes: stats.bytes
+                })}
+              </span>
+              <CopyButton
+                text={output}
+                variant="outline"
+                label={tOutput("copy")}
+              />
+            </>
+          ) : undefined
         }
-      />
-
-      <InfoSection alternativeTexts={alternativeTexts} />
-
-      <HelpSection />
+      >
+        <LoremOutput text={output} format={format} />
+      </ToolCard>
     </div>
   )
 }
+
+export default LoremIpsum
+export { LoremIpsum }

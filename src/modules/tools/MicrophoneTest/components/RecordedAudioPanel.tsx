@@ -1,11 +1,11 @@
 "use client"
 
-import { Volume2, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
+import { Trash2, Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Button } from "@/components/ui/button"
+import type { RecordedAudio } from "../hooks/useMicrophoneTest"
 import { AudioGridItem } from "./AudioGridItem"
-import { RecordedAudio } from "../hooks/useMicrophoneTest"
 
 interface RecordedAudioPanelProps {
   recordedAudios: RecordedAudio[]
@@ -25,22 +25,22 @@ export function RecordedAudioPanel({
   const t = useTranslations("MicrophoneTestPage.RecordedAudioPanel")
 
   return (
-    <div className="flex h-[600px] max-h-[600px] flex-col rounded-xl border border-zinc-200 bg-white/80 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+    <div className="flex h-[600px] max-h-[600px] flex-col rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-red-500"></div>
             <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
             <div className="h-3 w-3 rounded-full bg-green-500"></div>
           </div>
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm font-medium text-foreground">
             {t("title")}
           </span>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-            <span className="text-xs text-zinc-500 dark:text-zinc-500">
+            <span className="text-xs text-muted-foreground">
               {recordedAudios.length} {t("fileCount")}
             </span>
           </div>
@@ -49,7 +49,7 @@ export function RecordedAudioPanel({
               onClick={onClearAll}
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-xs text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300"
+              className="h-7 px-2 text-xs text-destructive hover:text-destructive"
             >
               <Trash2 className="mr-1 h-3 w-3" />
               {t("buttons.clearAll")}
@@ -65,12 +65,12 @@ export function RecordedAudioPanel({
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex h-64 items-center justify-center text-zinc-500 dark:text-zinc-400"
+                className="flex h-64 items-center justify-center text-muted-foreground"
               >
                 <div className="text-center">
                   <Volume2 className="mx-auto mb-4 h-16 w-16 opacity-50" />
                   <p className="text-lg font-medium">{t("empty.title")}</p>
-                  <p className="mt-2 text-sm text-zinc-400 dark:text-zinc-500">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {t("empty.subtitle")}
                   </p>
                 </div>
@@ -95,22 +95,20 @@ export function RecordedAudioPanel({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4 rounded-lg bg-zinc-100/50 p-3 dark:bg-zinc-800/50"
+          className="mt-4 rounded-lg bg-muted/50 p-3"
         >
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-zinc-500 dark:text-zinc-400">
+              <span className="text-muted-foreground">
                 {t("stats.totalAudios")}:
               </span>
-              <span className="ml-2 text-blue-600 dark:text-blue-400">
-                {recordedAudios.length}
-              </span>
+              <span className="ml-2 text-info">{recordedAudios.length}</span>
             </div>
             <div>
-              <span className="text-zinc-500 dark:text-zinc-400">
+              <span className="text-muted-foreground">
                 {t("stats.totalSize")}:
               </span>
-              <span className="ml-2 text-green-600 dark:text-green-400">
+              <span className="ml-2 text-success">
                 {Math.round(
                   recordedAudios.reduce((acc, audio) => acc + audio.size, 0) /
                     1024

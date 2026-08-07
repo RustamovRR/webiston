@@ -20,18 +20,14 @@ export default {
         'revert'    // Reverting a previous commit
       ]
     ],
-    // Subject length
-    'subject-max-length': [2, 'always', 96],
-    'subject-min-length': [2, 'always', 3],
-    // Subject format
-    'subject-case': [2, 'always', 'lower-case'],
-    'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    // Type format
-    'type-case': [2, 'always', 'lower-case'],
-    'type-empty': [2, 'never'],
-    // Header format
-    'header-max-length': [2, 'always', 100]
+    "subject-max-length": [2, "always", 256],
+    "subject-min-length": [2, "always", 3],
+    'subject-case': [0], // 0 means disable. It allows writing subjects with capital letters.
+    "subject-empty": [2, "never"],
+    "subject-full-stop": [0],
+    "type-case": [2, "always", "lower-case"],
+    "type-empty": [2, "never"],
+    "header-max-length": [2, "always", 267],
   },
   // Custom messages
   helpUrl: 'https://www.conventionalcommits.org/',

@@ -1,0 +1,87 @@
+{
+  "JsonFormatterPage": {
+    "ToolHeader": {
+      "title": "Форматтер и валидатор JSON",
+      "description": "Инструмент для форматирования, проверки и оптимизации данных JSON"
+    },
+    "ControlPanel": {
+      "actions": "Действия:",
+      "fileUpload": "Загрузить файл",
+      "sampleJson": "Пример",
+      "clear": "Очистить",
+      "indentation": "Отступ:",
+      "lineNumbers": "№ строк",
+      "showLineNumbers": "Показать номера строк",
+      "hideLineNumbers": "Скрыть номера строк",
+      "minified": "Сжатый",
+      "formatted": "Форматированный",
+      "minifiedView": "Сжатый вид",
+      "formattedView": "Форматированный вид",
+      "download": "Скачать",
+      "viewMode": "Вид",
+      "tab": "Таб",
+      "tree": "Дерево"
+    },
+    "Panel": {
+      "sourceLabel": "Ввод JSON",
+      "targetLabelFormatted": "Форматированный JSON",
+      "targetLabelMinified": "Сжатый JSON",
+      "sourcePlaceholder": "Введите данные JSON здесь или загрузите файл...",
+      "validFormat": "Формат корректен",
+      "errorExists": "Есть ошибка",
+      "emptyStateTitle": "Здесь появится форматированный JSON...",
+      "emptyStateDescription": "Введите JSON или загрузите файл",
+      "errorTitle": "Ошибка формата JSON",
+      "fileSize": "Размер:",
+      "errorPosition": "строка {line}, столбец {column}",
+      "targetLabelTree": "Дерево JSON",
+      "stats": "{keys} ключей · {depth} уровней"
+    },
+    "Info": {
+      "title": "О формате JSON",
+      "whatIsJson": {
+        "title": "Что такое JSON?",
+        "description": "JSON (JavaScript Object Notation) — лёгкий и читаемый формат хранения и передачи данных. Он широко используется в современных веб-приложениях и API."
+      },
+      "features": {
+        "title": "Основные особенности",
+        "feature1": "• Читаемый человеком формат",
+        "feature2": "• Стандарт, не зависящий от языка",
+        "feature3": "• Небольшой объём и быстрая обработка",
+        "feature4": "• Широкая поддержка"
+      },
+      "usage": {
+        "title": "Где применяется",
+        "usage1": "• Ответы и запросы API",
+        "usage2": "• Файлы конфигурации",
+        "usage3": "• Выгрузки из баз данных",
+        "usage4": "• Передача данных в веб-приложениях"
+      },
+      "formatExample": {
+        "title": "Примеры формата JSON",
+        "simpleObject": "Простой объект",
+        "nestedObject": "Вложенный объект",
+        "simpleJson": "{\n  \"name\": \"John\",\n  \"age\": 30,\n  \"city\": \"New York\"\n}",
+        "nestedJson": "{\n  \"person\": {\n    \"name\": \"John\",\n    \"contacts\": {\n      \"email\": \"john@example.com\",\n      \"phone\": \"+1234567890\"\n    }\n  },\n  \"isActive\": true\n}"
+      }
+    },
+    "Errors": {
+      "invalidJsonFormat": "Некорректный формат JSON",
+      "unexpectedToken": "Неожиданный символ. Проверьте формат JSON.",
+      "unexpectedEnd": "JSON не завершён. Проверьте скобки или кавычки.",
+      "propertyName": "Имя свойства должно быть в двойных кавычках.",
+      "unexpectedString": "Неожиданная строка. Проверьте запятые или скобки.",
+      "jsonError": "Ошибка JSON:",
+      "fileTypeError": "Можно загружать только файлы JSON или TXT.",
+      "fileSizeError": "Размер файла должен быть меньше 10 МБ.",
+      "fileReadError": "При чтении файла произошла ошибка.",
+      "missingComma": "Не хватает запятой или закрывающей скобки.",
+      "missingColon": "После имени свойства не хватает двоеточия (:)."
+    },
+    "Tree": {
+      "keys": "{count} ключей",
+      "items": "{count} элементов",
+      "showMore": "Показать ещё {count} (осталось {remaining})"
+    }
+  }
+}

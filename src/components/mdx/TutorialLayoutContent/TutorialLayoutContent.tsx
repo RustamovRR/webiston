@@ -1,5 +1,8 @@
 "use client"
 
+import Link from "next/link"
+import { useParams } from "next/navigation"
+import type React from "react"
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -15,17 +18,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib"
-import { type TutorialNavigation } from "@/lib/mdx"
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  PanelsTopLeft,
-  PanelTop
-} from "lucide-react"
-import React from "react"
+import type { TutorialNavigation } from "@/lib/mdx"
 
 interface BreadcrumbItemType {
   title: string

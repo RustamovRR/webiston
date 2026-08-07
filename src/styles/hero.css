@@ -1,0 +1,974 @@
+/* Homepage composition — the hero backdrop and the scroll-reveal used by the
+   book/tool sections.
+
+   Replaces `background-pattern.css`, which carried 180 lines of animated dashed
+   lines copied from nextjs.org. Four measured reasons that motif went:
+
+   1. It animated to a DISPLACED resting position (`translateY(100%)`,
+      `opacity: .3`), so the layout you saw at rest was wherever the lines
+      drifted to — an accident, not a composition.
+   2. Positions were hardcoded percentages (`left: 15/35/65/85%`) unrelated to
+      the content grid, so a dashed line ran straight through the headline.
+   3. ~4s of motion (2s delay + 2s duration) still moving long after the reader
+      had started reading, with no reduced-motion guard anywhere on the site.
+   4. `rgba(0,0,0,.2)` / `rgba(255,255,255,.5)` — raw colour, outside the token
+      system, needing a `.dark` override for every rule.
+
+   The replacement keeps motion but changes its role. The old lines were a
+   4-second EVENT you waited out. Here the grid drifts continuously at ~1.3px/s
+   — slow enough that it never competes with reading, present enough that the
+   page feels alive — and the only timed motion is a ~0.6s content entrance.
+   Decoration recedes; the motion budget belongs to the words.
+
+   No JS anywhere in this file: the homepage is a Server Component and one of the
+   prerendered routes. framer-motion would force `'use client'` on a page whose
+   animation needs are entirely declarative, and the header fade below would
+   otherwise need a scroll listener. */
+
+/* ---------------------------------------------------------------------------
+   Motion primitives
+   --------------------------------------------------------------------------- */
+
+/* `translate3d` + `opacity` only — both composited, so this never triggers
+   layout or paint. Anything animating `top`/`height`/`margin` would. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The easing below is the whole character of the motion: a fast start that
+   settles without bouncing. `linear` and `ease-in-out` both read as cheap at
+   this duration.
+
+   Hero entrance — a single staggered pass, ~0.6s, driven by `--i` on each child.
+   Guarded by `no-preference` rather than fought with a `reduce` override, so the
+   default for a reduced-motion user is simply "no animation": every element is
+   already at its final state and nothing has to be undone. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    /* `backwards` holds the `from` state through the delay so a late child does
+       not flash at full opacity before its turn.
+       0.8s / 110ms stagger — the first pass (0.6s / 80ms) finished in under a
+       second and read as a blink rather than an arrival. */
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+}
+
+/* Scroll reveal for the sections below the fold.
+   Native scroll-driven animation — no IntersectionObserver, no React state, no
+   re-render per element. The nesting is load-bearing: the hidden `from` state
+   only ever applies when the browser BOTH supports the timeline AND the user
+   accepts motion. Put it outside these guards and an unsupported browser would
+   hide the content permanently, which is the classic way scroll-reveal breaks. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      /* `backwards`, NEVER `both`: a fill-forwards animation keeps applying
+         its final transform at animation priority forever, which overrides
+         the hover transition — every card's lift was dead until this. The
+         `to` keyframe equals the natural state, so releasing is seamless. */
+      animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      animation-timeline: view();
+      /* Finish well before the element reaches the middle of the screen —
+         reveals that are still running when you read them feel sluggish. */
+      animation-range: entry 5% cover 20%;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero backdrop — static, token-driven, no `.dark` override needed
+   --------------------------------------------------------------------------- */
+
+/* Layout constants the hero and the site header MUST agree on. `--header-height`
+   is consumed by Header.tsx too (via `h-(--header-height)`), so the backdrop can
+   never drift out of sync with the bar it reaches behind — which is what a
+   hardcoded `4rem` in two files eventually does.
+   `--hero-tile` is the grid pitch; the drift keyframe below derives its distance
+   from it so the seamless loop cannot be broken by changing the tile size. */
+:root {
+  --header-height: 4rem;
+  /* The reading column's measure, and the reason collapsing the book sidebar no
+     longer re-wraps the prose.
+
+     With the sidebar OPEN, the content column measures 864px at the 1536px
+     container cap (1536 − 64 padding − 288 sidebar − 256 rail − 16 gutter − 48
+     reading gutter). Pinning the measure to exactly that means closing the
+     sidebar cannot widen the text at all — the extra space becomes margin, the
+     line breaks never move, and a width animation that used to reflow every
+     paragraph on every frame now just slides the column.
+     It is also simply better typography: 1,152px of prose (the old collapsed
+     width) is roughly 150 characters per line, about double the readable
+     maximum. */
+  --reading-measure: 54rem;
+  /* The grid pitch. Was 4rem, which at 64px/cell read as graph paper rather than
+     structure. nextjs.org — the reference this hero grew out of — spaces its
+     lines ~500px apart: a handful of deliberate architectural rules, not a mesh.
+     `clamp` keeps the cells generous on a wide screen without collapsing to two
+     lines on a phone. The drift keyframe derives its distance from this value,
+     so the seamless loop survives any change here. */
+  --hero-tile: clamp(7rem, 10vw, 14rem);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+/* The backdrop is a real element, not a pseudo-element, for two reasons:
+
+   1. It must extend UPWARD behind the sticky site header. The hero's own top
+      edge sits at document y = --header-height, so a backdrop pinned to
+      `inset: 0` starts exactly where the header ends — which is what produced
+      the hard horizontal seam: flat dark above the line, tinted below it.
+   2. The mask has to stay still while the grid inside it moves. `transform` on
+      an element moves its mask with it, so a drifting masked pseudo-element
+      would drag its own fade-out across the screen. Mask on the parent, motion
+      on the child, and the fade stays anchored. */
+.hero-backdrop {
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  /* Reach up behind the header so the light is continuous across it. */
+  top: calc(-1 * var(--header-height));
+  bottom: 0;
+  overflow: hidden;
+  /* Fades everything to nothing before it reaches an edge. Unmasked, the grid
+     collides with the viewport border and the hero reads as a spreadsheet. */
+  /* Fades everything out before it reaches an edge — including the TOP, which is
+     the part that matters for the header. Centred at 55% rather than 42% and
+     starting its falloff early, so the strip behind the header carries almost no
+     decoration and therefore nothing for the header to fail to match. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 62% at 50% 55%,
+    #000 15%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 62% at 50% 55%,
+    #000 15%,
+    transparent 78%
+  );
+}
+
+/* The grid itself. Oversized on every side so that when it drifts, no edge of
+   the tiling is ever exposed inside the masked window. */
+.hero-grid {
+  position: absolute;
+  inset: calc(-2 * var(--hero-tile));
+  background-image:
+    linear-gradient(to right, var(--hero-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hero-line) 1px, transparent 1px);
+  background-size: var(--hero-tile) var(--hero-tile);
+}
+
+/* The drift. Translating by EXACTLY one tile makes the loop seamless — at 100%
+   the pattern is pixel-identical to 0%, so `infinite` has no visible restart.
+   Any other distance would jump.
+
+   `transform` only, so this runs on the compositor and never repaints. The
+   obvious alternative — animating `background-position` — repaints the whole
+   layer every frame, which is the usual reason "animated grid" backgrounds
+   burn battery. 48s per tile is ~1.3px/s: readable as flow, never as movement
+   competing with the text. */
+@keyframes grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(
+      calc(-1 * var(--hero-tile)),
+      calc(-1 * var(--hero-tile)),
+      0
+    );
+  }
+}
+
+/* The load-in. This is what the original `background-pattern.css` was reaching
+   for and got wrong: it animated the lines to a DISPLACED final position. Here
+   the grid simply resolves into place; the bright draw-in is the flash layers. */
+@keyframes grid-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Two animations, no conflict: `grid-in` drives opacity, `grid-drift` drives
+   transform. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-grid {
+    animation:
+      grid-in 1.6s ease-out both,
+      grid-drift 48s linear infinite;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Rain — light falling along the grid's vertical lines
+   --------------------------------------------------------------------------
+
+   Replaces the diagonal beam sweep. Both lit the grid lines; keeping the two
+   together meant two systems doing the same job on the same surface, which is
+   how backgrounds tip into noise. The rain won because it is directional in a
+   way that matches the composition (columns falling behind a left-aligned
+   headline) and it is CONTINUOUS ambience rather than a 16s event you wait for.
+
+   Same registration trick as the beam it replaces: the container lives inside
+   `.hero-grid`, so it inherits the drift transform, and its mask shows only
+   vertical-line pixels — a streak can never light anything but a line. The
+   streaks are 3px wide against a 1px line: 1px of grace either side so
+   sub-pixel drift never lets a streak slip off its column.
+
+   `left` values are whole multiples of `--hero-tile`, which is what keeps each
+   streak ON a line — the grid's tiling starts at the container origin, so every
+   line sits at k × tile. */
+.hero-rain {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(to right, #000 1px, transparent 1px);
+  mask-image: linear-gradient(to right, #000 1px, transparent 1px);
+  -webkit-mask-size: var(--hero-tile) 100%;
+  mask-size: var(--hero-tile) 100%;
+}
+
+.hero-streak {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 34%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in oklab, var(--brand-400) 75%, transparent) 55%,
+    transparent
+  );
+  /* Hidden until the animation runs — a static bright dash stuck mid-column
+     would read as a rendering artifact, so reduced-motion sees no rain at all. */
+  opacity: 0;
+}
+
+.hero-streak:nth-child(1) {
+  left: calc(3 * var(--hero-tile));
+}
+
+.hero-streak:nth-child(2) {
+  left: calc(7 * var(--hero-tile));
+}
+
+.hero-streak:nth-child(3) {
+  left: calc(11 * var(--hero-tile));
+}
+
+/* From fully above the container to fully below it. Periods are deliberately
+   co-prime-ish (9.5/13/16.5) so the three streaks never fall in visible
+   unison — synchronized rain reads as a loop, desynchronized rain reads as
+   weather. `linear`, because light does not ease. */
+@keyframes rain-fall {
+  from {
+    opacity: 1;
+    transform: translate3d(0, -110%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 340%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-streak:nth-child(1) {
+    animation: rain-fall 9.5s linear infinite;
+  }
+
+  .hero-streak:nth-child(2) {
+    animation: rain-fall 13s linear 3.2s infinite;
+  }
+
+  .hero-streak:nth-child(3) {
+    animation: rain-fall 16.5s linear 6.8s infinite;
+  }
+}
+
+/* Brand light — a slow "aurora" rather than a wash pinned to the top edge.
+
+   The previous version anchored two gradients at `top: 0`, which is precisely
+   what made the header look detached: the header sits over that exact strip, so
+   it was the one band of the page WITHOUT the tint, and no amount of
+   translucency on the bar could match a colour it did not have. Moving the light
+   down to sit behind the headline leaves the top strip plain `--background`,
+   which the header already is.
+
+   Two soft radial blobs on slightly different periods. Both are pure
+   `radial-gradient` — no `filter: blur()`, which would cost a full-layer
+   re-blur; a gradient is soft by construction and free.
+
+   Kept deliberately faint (10%/8%): `--brand-500` is a saturated cyan-teal
+   (`#17A3BF`), and anything stronger over near-black stops reading as light and
+   starts reading as a stain — the exact failure of the first attempt. */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-aurora::before,
+.hero-aurora::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+.hero-aurora::before {
+  width: 70%;
+  height: 55%;
+  left: 8%;
+  top: 18%;
+  background: radial-gradient(
+    closest-side circle,
+    color-mix(in oklab, var(--brand-500) 10%, transparent),
+    transparent
+  );
+}
+
+.hero-aurora::after {
+  width: 55%;
+  height: 45%;
+  right: 6%;
+  top: 34%;
+  background: radial-gradient(
+    closest-side circle,
+    color-mix(in oklab, var(--brand-400) 8%, transparent),
+    transparent
+  );
+}
+
+/* Different periods and directions so the two never lock into a visible rhythm.
+   `transform` only — composited, no repaint. The scale component is what keeps
+   it from reading as two sliding circles. */
+/* ±12% travel on 26s/38s periods — the first pass (±6% over 34s) was ~4px a
+   second of drift, which read as a static stain. This is slow enough to stay
+   ambient but fast enough that ten seconds of looking shows the light alive. */
+@keyframes aurora-a {
+  0%,
+  100% {
+    transform: translate3d(-12%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10%, -8%, 0) scale(1.2);
+  }
+}
+
+@keyframes aurora-b {
+  0%,
+  100% {
+    transform: translate3d(8%, 5%, 0) scale(1.12);
+  }
+  50% {
+    transform: translate3d(-10%, -6%, 0) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-aurora::before {
+    animation: aurora-a 26s ease-in-out infinite;
+  }
+
+  .hero-aurora::after {
+    animation: aurora-b 38s ease-in-out infinite;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Site header — why there is NO scroll animation here
+   ---------------------------------------------------------------------------
+
+   The obvious fix for the seam was a scroll-driven fade: header transparent at
+   the top so the hero's light reads continuously, gaining its surface as you
+   scroll. It was implemented and REJECTED after measuring it.
+
+   `animation-timeline: scroll()` reported `timelineProgress: 0%` at scrollY 0,
+   16, 32, 48, 64 AND 200 — the timeline never advanced, because `scroll()`
+   resolves to the nearest scrollable ancestor and `base.css` makes `body`/`html`
+   a `min-height: 100vh` flex column, so the scroller it latched onto has no
+   scrollable overflow of its own. With `both` fill that pins the header at the
+   `from` keyframe permanently: transparent forever, with page content sliding
+   under unreadable navigation.
+
+   That failure mode is strictly worse than the cosmetic seam it was fixing, and
+   the fallback direction is wrong — an inert timeline should fail toward "solid
+   and readable", never toward "invisible". Rather than pin the timeline to
+   `scroll(root block)` and depend on a feature whose failure mode is broken
+   navigation, the seam is solved in the header's own styling instead: a frosted
+   translucent bar (see Header.tsx). The hero's light passes through it at every
+   scroll position, with no timeline, no JS, and nothing to fall back from. */
+
+/* ---------------------------------------------------------------------------
+   Retained from background-pattern.css
+   --------------------------------------------------------------------------- */
+
+/* Still consumed by LanguageSelector.tsx:19 — the only survivor of that file. */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer {
+    animation: none;
+  }
+}
+
+/* The header's hairline is the last visible edge between it and the hero. On
+   every other route it is a useful divider between the bar and scrolling
+   content; on the homepage it is the seam. `:has()` scopes the removal to pages
+   that actually carry a `.hero`, with no JS and no scroll state — the frosted
+   blur still separates the bar from content once anything scrolls under it. */
+body:has(.hero) [data-site-header] {
+  border-bottom-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Load-in flash — the "lines arrive bright, then settle to grey" pass
+   --------------------------------------------------------------------------
+
+   Two throwaway layers, verticals and horizontals, each a copy of the grid in a
+   bright brand tint that fades to nothing. Splitting the axes and offsetting
+   them by 160ms is what produces the read of *parallel* lines sweeping in
+   rather than a single global flicker.
+
+   They live inside `.hero-grid`, so they inherit its drift and origin and stay
+   registered to the real lines. They also inherit `grid-in`'s opacity ramp,
+   which is fine — both are fading in at once.
+
+   `opacity: 0` is the BASE state and the animation is declared only under
+   `no-preference`. So a reduced-motion user gets no flash at all, with nothing
+   to override — a bright pulse across the viewport is precisely what 2.3.3 is
+   about.
+   -------------------------------------------------------------------------- */
+.hero-flash-v,
+.hero-flash-h {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* Brighter than the first attempt at 65%: the scrim below dims the middle of the
+   viewport deliberately, so the arrival has to be strong enough to read THROUGH
+   it or the whole effect is invisible where the eye actually is. */
+.hero-flash-v {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--brand-400) 90%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: var(--hero-tile) 100%;
+  /* Vertical lines grow DOWNWARD from the top edge. */
+  transform-origin: top;
+}
+
+.hero-flash-h {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--brand-400) 90%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 100% var(--hero-tile);
+  /* Horizontal lines grow RIGHTWARD from the left edge. */
+  transform-origin: left;
+}
+
+/* The lines DRAW themselves in — they do not simply fade up.
+
+   The previous version only ramped opacity, which is why a refresh looked like
+   the grid "was just there": a 400ms fade on a 1px line is not an event the eye
+   registers. Scaling is what makes it read as drawing.
+
+   Why `scale` is safe on a repeating gradient: vertical lines are uniform along
+   Y, so `scaleY` never moves their X positions — they stay registered to the
+   real grid while growing. Same for `scaleX` on the horizontals. And because
+   this is `transform`, it stays on the compositor; a mask wipe would repaint
+   every frame.
+
+   The scale finishes at 55% and the bright layer then fades out over the
+   remaining 45%, handing off to the resting grey grid underneath. */
+@keyframes draw-down {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes draw-right {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  8% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+/* The 180ms offset is the whole point: the verticals land, then the horizontals
+   cross them. Simultaneous, it is one flicker; staggered, it reads as a grid
+   being constructed. `ease-out` so the lines decelerate into place. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-flash-v {
+    animation: draw-down 2.1s ease-out both;
+  }
+
+  .hero-flash-h {
+    animation: draw-right 2.1s ease-out 0.18s both;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Scrim — the decoration recedes where the words are
+   --------------------------------------------------------------------------
+
+   The beam is genuinely BEHIND the text: `elementsFromPoint` at the headline's
+   centre returns the `h1` first. But z-order is not the same as legibility — a
+   lit line passing directly behind a headline still competes with it, and reads
+   as crossing over.
+
+   This is the standard fix, and it is why nextjs.org keeps its rules faint and
+   away from the text: pull the backdrop's energy down over the content area.
+   Built from `--background` so it darkens in dark mode and lightens in light
+   mode with no second rule.
+
+   Paint order is load-bearing and comes from DOM order, not z-index: grid and
+   beam are dimmed by this, and `.hero-aurora` sits AFTER it so the brand glow
+   behind the headline survives. Putting the scrim last would flatten the glow
+   too.
+   -------------------------------------------------------------------------- */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 42% 36% at 50% 47%,
+    color-mix(in oklab, var(--background) 88%, transparent) 0%,
+    color-mix(in oklab, var(--background) 55%, transparent) 45%,
+    transparent 74%
+  );
+}
+
+/* On the two-column layout the words live in the LEFT half, so a centred scrim
+   was dimming the empty middle while the headline sat over live grid. Track
+   the text column; the palette on the right brings its own opaque surface. */
+@media (min-width: 1024px) {
+  .hero-scrim {
+    background: radial-gradient(
+      ellipse 38% 42% at 27% 45%,
+      color-mix(in oklab, var(--background) 88%, transparent) 0%,
+      color-mix(in oklab, var(--background) 55%, transparent) 48%,
+      transparent 76%
+    );
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero accent — the animated gradient on the headline's key words
+   --------------------------------------------------------------------------
+
+   A slow pan across a brand-hued ramp. The band is wider than the text
+   (`background-size: 220%`) so the eye sees hue drifting, never a hard edge
+   crossing a glyph. `background-position` is not compositor-driven, but the
+   painted area is two words — measured in the profiler as sub-millisecond
+   paints — and the alternative (a transformed pseudo-element behind
+   `background-clip: text`) costs far more complexity than it buys here. */
+.hero-accent {
+  background-image: linear-gradient(
+    100deg,
+    var(--primary),
+    color-mix(in oklab, var(--primary) 55%, var(--foreground)),
+    var(--primary)
+  );
+  background-size: 220% 100%;
+  background-position: 0% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@keyframes accent-pan {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-accent {
+    animation: accent-pan 7s ease-in-out infinite alternate;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero palette — the ⌘K still on the right of the hero
+   --------------------------------------------------------------------------
+
+   The palette runs a LOOP: types a query, shows its results, deletes, types
+   the next, and repeats — three queries on one master period (21s, a 7s third
+   each). Everything below is driven by that clock, still with zero JS.
+
+   The query spans are stacked in one grid cell and share ONE keyframe track —
+   each later span simply starts 7s later. `fill-mode: both` holds a span at
+   width 0 through its delay, so exactly one query is ever visible.
+
+   Every query is chosen to be 5 characters ("react" / "yarat" / "o'gir", en:
+   "gener" / "conve") so a single `steps(5)` cadence serves every segment. A
+   different-length query still works — the width target comes from `--chars` —
+   but its keystroke rhythm would subtly drift from the step count.
+
+   Typing with no JS: `overflow: hidden` on a `ch`-width inline-block. 1ch is
+   one glyph ONLY in a monospace face — the query line is `font-mono` for this
+   reason, not for looks.
+
+   REDUCED MOTION is the base state, not an override: the first query fully
+   typed with its results visible, the other two at zero. The animations exist
+   only inside the `no-preference` block, so a reduced-motion user gets a
+   finished, static palette with nothing to undo. */
+.hero-type-line {
+  display: grid;
+}
+
+.hero-type-line > span {
+  grid-area: 1 / 1;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+}
+
+.hero-type-line > span:first-child {
+  width: calc(var(--chars) * 1ch);
+}
+
+/* THREE queries on one 21s clock — each span owns a 7s third and they share
+   ONE keyframe track, entered 7s apart. `fill: both` holds a span at width 0
+   through its delay, so exactly one query is ever visible. Adding a fourth
+   query is: one more child, one more delay rule, and duration 28s. */
+/* TYPING IS UNEVEN ON PURPOSE. The first version used one `steps(5)` segment —
+   five characters at a metronomic 180ms each, which is precisely the rhythm no
+   human hand produces; it read as a screen recording of a robot. Each keyframe
+   below is one keystroke, placed by hand: 115 / 168 / 105 / 252 / 262 ms —
+   a quick burst, a hesitation, a finish. `step-end` holds the width until the
+   next "keystroke" lands, so characters appear discretely, not by sliding.
+
+   DELETION stays even and fast, also on purpose: people do not delete
+   letter-by-thoughtful-letter, they hold backspace — and key repeat IS a
+   metronome. Uneven typing + even deleting is what typing actually looks like. */
+@keyframes type-cycle {
+  0% {
+    width: 0;
+    animation-timing-function: step-end;
+  }
+  0.55% {
+    width: 1ch;
+    animation-timing-function: step-end;
+  }
+  1.35% {
+    width: 2ch;
+    animation-timing-function: step-end;
+  }
+  1.85% {
+    width: 3ch;
+    animation-timing-function: step-end;
+  }
+  3.05% {
+    width: 4ch;
+    animation-timing-function: step-end;
+  }
+  4.3% {
+    width: calc(var(--chars) * 1ch);
+    animation-timing-function: linear;
+  }
+  28.6% {
+    width: calc(var(--chars) * 1ch);
+    animation-timing-function: steps(5);
+  }
+  32.9% {
+    width: 0;
+    animation-timing-function: linear;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-type-line > span {
+    animation: type-cycle 21s infinite both;
+  }
+
+  .hero-type-line > span:nth-child(2) {
+    animation-delay: 7s;
+  }
+
+  .hero-type-line > span:nth-child(3) {
+    animation-delay: 14s;
+  }
+}
+
+/* The caret: soft infinite blink. Phase 9 made the caret FINITE (four blinks)
+   on the argument that a permanent hard blink is a distraction — that argument
+   assumed a static palette. The palette is now a continuously running demo, so
+   a dead caret next to live typing would read as broken; the compromise is a
+   low-contrast fade (1 ↔ 0.15) instead of the reference's hard on/off, and
+   reduced-motion still gets no blink at all. */
+.hero-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 1px;
+  background: var(--primary);
+  /* `align-self: center`, because the caret is a FLEX ITEM inside the
+     `items-baseline` query line — `vertical-align` does nothing on flex items,
+     which is why the first fix (1.05em / -0.15em) never took: baseline
+     alignment glued the caret's BOTTOM to the text baseline, hanging the whole
+     bar above it. Measured before: centre 2.7px above the search icon's,
+     5.5px short of the descender zone — the "floating high" the owner saw.
+     Centred in the line box it matches the icon's centre and spans the text
+     the way a native input caret does. */
+  align-self: center;
+}
+
+/* The caret KNOWS when it is typing. A real caret blinks only while idle —
+   every keystroke resets the blink timer, so during typing it burns steady.
+   The free-running 1.1s blink ignored that and blinked straight through the
+   keystrokes, which is a tell no real input field produces.
+
+   7s period, because 21s / 3 queries means every third is identical: solid
+   through the typing window (0–13%), four soft breaths while the visitor
+   reads the results, solid again through the delete window (86–100%) — key
+   repeat is activity too. Still the soft 1 ↔ 0.15 fade, never a hard on/off. */
+@keyframes caret {
+  0%,
+  14% {
+    opacity: 1;
+  }
+  19% {
+    opacity: 0.15;
+  }
+  27% {
+    opacity: 1;
+  }
+  37% {
+    opacity: 0.15;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.15;
+  }
+  63% {
+    opacity: 1;
+  }
+  73% {
+    opacity: 0.15;
+  }
+  81%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-caret {
+    animation: caret 7s ease-in-out infinite;
+  }
+}
+
+/* Result sets crossfade on the same 21s clock: visible while their query is
+   typed, gone while the others are. Stacked; all three sets hold 3 rows so the
+   tallest-child sizing never shifts the card's height mid-loop. */
+.hero-results {
+  display: grid;
+}
+
+.hero-results > * {
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-results > :first-child {
+  opacity: 1;
+}
+
+/* Results WAIT for the query. The previous track started its fade at 0% — the
+   same instant the first character lands — so the answers were ~70% visible
+   before the question was finished, which no real search does. Held at zero
+   until typing completes (4.3%), then a ~0.6s fade: type → a beat → results.
+   That beat is the debounce every actual search box has, played back. */
+@keyframes results-cycle {
+  0%,
+  4.5% {
+    opacity: 0;
+  }
+  7.5% {
+    opacity: 1;
+  }
+  29.5% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-results > * {
+    animation: results-cycle 21s infinite both;
+  }
+
+  .hero-results > :nth-child(2) {
+    animation-delay: 7s;
+  }
+
+  .hero-results > :nth-child(3) {
+    animation-delay: 14s;
+  }
+}
+
+/* Result rows keep a one-shot entrance on first load, staggered per row. After
+   the first cycle the set-level crossfade owns visibility. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-prow {
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(1.35s + var(--i, 0) * 90ms);
+  }
+}
+
+/* The whole palette breathes: a slow ±6px float, the one idea kept from the
+   reference's `wbFloat`. Period deliberately off every other clock on the page
+   (9s vs 7/14/21/48) so nothing ever locks into step. `transform` only. */
+@keyframes palette-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-palette {
+    animation: palette-float 9s ease-in-out infinite;
+  }
+}
+
+/* Print: scroll-driven timelines never tick on paper, and `backwards` fill
+   would hold every unrevealed card at opacity 0 — a blank page instead of the
+   chapter list. (Found via an environment whose timelines never ticked: the
+   content simply does not exist there. Print is the real-world case of that.) */
+@media print {
+  .reveal,
+  .rise,
+  /* `.grid-rise` is `backwards`-filled too, so it had the same failure mode:
+     printing /tools or a book's table of contents produced empty card frames. */
+  .grid-rise {
+    animation: none !important;
+  }
+}
+
+/* Grid entrance for many items — `.rise`'s 110ms stagger is right for a hero's
+   six elements but would take 1.9s across 17 tool cards. 35ms keeps the
+   sequence readable and lands the whole grid inside ~0.9s.
+   Used by /tools, where the key changes on filter so the pass replays. */
+@media (prefers-reduced-motion: no-preference) {
+  .grid-rise {
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+}
+
+/* Search dialog's loading dots — a bounce on the same stagger idiom as
+   `.grid-rise`. Only motion in the dialog; the entrance itself is Radix's. */
+@keyframes search-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translate3d(0, 0, 0);
+  }
+  40% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .search-dot {
+    animation: search-dot 1.2s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 140ms);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Theme switch — one quiet cross-fade instead of 1,600 colour fades
+   --------------------------------------------------------------------------- */
+
+/* `Providers.tsx` sets next-themes' `disableTransitionOnChange`, which injects
+   `* { transition: none !important }` for the duration of a theme swap. That is
+   the right call on a token-driven site — without it every element carrying
+   `transition-colors` would animate its own colour at once and the page would
+   smear through an intermediate state — but it also means no CSS transition can
+   ever animate the switch itself. That is why the icon cross-fade before this,
+   and the framer-motion version before that, were both instant.
+
+   The View Transitions API sidesteps it: the browser snapshots the old page,
+   paints the new one, and cross-fades BETWEEN the two snapshots. One composited
+   animation, no per-element transitions, so the flag above stays on.
+
+   A plain fade, deliberately. The first attempt wiped a `clip-path` circle out
+   from the button across the whole viewport; the owner called it gaudy and was
+   right — a colour scheme is a preference, not an event, and a full-screen
+   reveal announces it far louder than it deserves. All that is left here is a
+   duration: the browser's own default is 250ms, which drags on something this
+   ordinary. */
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme-revealing]::view-transition-old(root),
+  html[data-theme-revealing]::view-transition-new(root) {
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
+  }
+}

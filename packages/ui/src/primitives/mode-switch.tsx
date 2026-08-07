@@ -1,7 +1,7 @@
-import React from "react"
-import { Button } from "./button"
+import type React from "react"
+import { TOOL_COLORS, UI_PATTERNS } from "../constants/ui-patterns"
 import { cn } from "../utils/cn"
-import { TOOL_COLORS, UI_PATTERNS } from "@/constants/ui-constants"
+import { Button } from "./button"
 
 interface ModeSwitchOption {
   value: string
@@ -53,9 +53,9 @@ export const ModeSwitch: React.FC<ModeSwitchProps> = ({
                 ? cn(
                     UI_PATTERNS.SWITCH_BUTTON_ACTIVE,
                     `bg-gradient-to-r ${colors.primary}`,
-                    "hover:from-blue-600 hover:to-indigo-700" // Dynamic hover will be added
+                    colors.primaryHover
                   )
-                : cn(UI_PATTERNS.SWITCH_BUTTON_INACTIVE, "hover:bg-zinc-700/50")
+                : cn(UI_PATTERNS.SWITCH_BUTTON_INACTIVE, "hover:bg-accent")
             )}
             style={
               isActive
@@ -80,7 +80,7 @@ export const ModeSwitch: React.FC<ModeSwitchProps> = ({
                 <span
                   className={cn(
                     "transition-colors",
-                    isActive ? "text-white" : "text-zinc-400"
+                    isActive ? "text-white" : "text-muted-foreground"
                   )}
                 >
                   {option.icon}
@@ -89,7 +89,7 @@ export const ModeSwitch: React.FC<ModeSwitchProps> = ({
               <span
                 className={cn(
                   "font-medium transition-colors",
-                  isActive ? "text-white" : "text-zinc-300"
+                  isActive ? "text-white" : "text-muted-foreground"
                 )}
               >
                 {option.label}

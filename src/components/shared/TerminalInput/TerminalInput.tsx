@@ -57,36 +57,40 @@ export interface TerminalInputProps {
   dynamicOpacity?: number
 }
 
+// Each variant was previously a light/dark PAIR of hardcoded palette classes
+// (8 classes per variant, 40 in total). Semantic status tokens carry their own
+// light/dark values, so an opacity modifier is all that is needed and there is
+// no `dark:` variant anywhere in this file.
 const variantStyles = {
   default: {
-    border: "border-zinc-200 dark:border-zinc-800/30",
-    bg: "bg-white/80 dark:bg-zinc-900/60",
-    header: "bg-zinc-100/50 dark:bg-zinc-800/50",
-    footer: "bg-zinc-100/30 dark:bg-zinc-800/30"
+    border: "border-border",
+    bg: "bg-card/80",
+    header: "bg-muted/50",
+    footer: "bg-muted/30"
   },
   success: {
-    border: "border-green-200 dark:border-green-800/30",
-    bg: "bg-green-50/80 dark:bg-green-900/10",
-    header: "bg-green-100/50 dark:bg-green-800/20",
-    footer: "bg-green-100/30 dark:bg-green-800/10"
+    border: "border-success/30",
+    bg: "bg-success/5",
+    header: "bg-success/15",
+    footer: "bg-success/10"
   },
   warning: {
-    border: "border-amber-200 dark:border-amber-800/30",
-    bg: "bg-amber-50/80 dark:bg-amber-900/10",
-    header: "bg-amber-100/50 dark:bg-amber-800/20",
-    footer: "bg-amber-100/30 dark:bg-amber-800/10"
+    border: "border-warning/30",
+    bg: "bg-warning/5",
+    header: "bg-warning/15",
+    footer: "bg-warning/10"
   },
   error: {
-    border: "border-red-200 dark:border-red-800/30",
-    bg: "bg-red-50/80 dark:bg-red-900/10",
-    header: "bg-red-100/50 dark:bg-red-800/20",
-    footer: "bg-red-100/30 dark:bg-red-800/10"
+    border: "border-destructive/30",
+    bg: "bg-destructive/5",
+    header: "bg-destructive/15",
+    footer: "bg-destructive/10"
   },
   info: {
-    border: "border-blue-200 dark:border-blue-800/30",
-    bg: "bg-blue-50/80 dark:bg-blue-900/10",
-    header: "bg-blue-100/50 dark:bg-blue-800/20",
-    footer: "bg-blue-100/30 dark:bg-blue-800/10"
+    border: "border-info/30",
+    bg: "bg-info/5",
+    header: "bg-info/15",
+    footer: "bg-info/10"
   },
   dynamic: {
     border: "",
@@ -184,7 +188,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
                 onClick={action.onClick}
                 variant="ghost"
                 size="sm"
-                className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="text-muted-foreground hover:text-foreground"
                 title={action.tooltip || tCommon("clear")}
                 disabled={action.disabled || disabled || loading}
               >
@@ -202,7 +206,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         onClick={action.onClick}
         variant="ghost"
         size="sm"
-        className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+        className="text-muted-foreground hover:text-foreground"
         title={action.tooltip}
         disabled={action.disabled || disabled || loading}
       >
@@ -225,7 +229,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
       {/* Header */}
       <div
         className={cn(
-          "flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800",
+          "flex items-center justify-between border-b border-border px-4 py-3",
           styles.header,
           headerClassName
         )}
@@ -246,13 +250,9 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
           </div>
 
           <div className="ml-2">
-            <span className="text-lg font-medium text-zinc-900 dark:text-zinc-100">
-              {title}
-            </span>
+            <span className="text-lg font-medium text-foreground">{title}</span>
             {subtitle && (
-              <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                {subtitle}
-              </div>
+              <div className="text-xs text-muted-foreground">{subtitle}</div>
             )}
           </div>
         </div>
@@ -285,7 +285,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
           customContent
         ) : readOnly ? (
           <div className="p-4">
-            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-zinc-900 dark:text-zinc-100">
+            <pre className="font-mono text-sm break-all whitespace-pre-wrap text-foreground">
               {value}
             </pre>
           </div>
@@ -294,7 +294,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
-            className="h-full resize-none border-0 bg-transparent font-mono text-sm text-zinc-900 placeholder-zinc-500 focus-visible:ring-0 dark:text-zinc-100 dark:placeholder-zinc-500"
+            className="h-full resize-none border-0 bg-transparent font-mono text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
             disabled={disabled || loading}
             style={{
               minHeight,
@@ -304,8 +304,8 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         )}
 
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-zinc-900/50">
-            <div className="text-sm text-zinc-500 dark:text-zinc-400">
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+            <div className="text-sm text-muted-foreground">
               {tCommon("processing")}
             </div>
           </div>
@@ -318,7 +318,7 @@ export const TerminalInput: React.FC<TerminalInputProps> = ({
         (statsPosition === "footer" || statsPosition === "both") && (
           <div
             className={cn(
-              "flex items-center justify-end border-t border-zinc-200 px-4 py-3 dark:border-zinc-800",
+              "flex items-center justify-end border-t border-border px-4 py-3",
               styles.footer
             )}
           >

@@ -9,4 +9,4 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/dialog"

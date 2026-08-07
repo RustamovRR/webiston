@@ -1,94 +1,29 @@
-// UI Design Constants for consistency across tools
+// UI design constants for consistency across tools.
+//
+// TOOL_COLORS and UI_PATTERNS are OWNED BY @webiston/ui (packages/ui is their
+// primary consumer — a package may never import app code via `@/`). They are
+// re-exported here so existing app call sites keep working; there is exactly one
+// definition. See docs/adr/0004 and initiatives/code-structure.md.
+//
+// The DEEP path matters, and it is the whole reason this comment exists.
+// `from "@webiston/ui"` pulls the package's root barrel, and a barrel drags
+// every CLIENT module it re-exports into the importing route's client reference
+// manifest. This file is reached from `@/constants` → `Footer` → every page,
+// so two colour constants were putting `aurora-text`, `code-highlight`,
+// `gradient-tabs`, `number-ticker`, `select`, `typing-animation` and
+// `BaseModal` on all 226 prerendered book chapters. Measured, not theorised.
+export { TOOL_COLORS, UI_PATTERNS } from "@webiston/ui/constants/ui-patterns"
 
-// Color themes for different tool categories with beautiful shimmer-like gradients
-export const TOOL_COLORS = {
-  CONVERTERS: {
-    primary: "from-indigo-500 via-purple-500 to-cyan-500",
-    primaryHover: "from-indigo-600 via-purple-600 to-cyan-600",
-    accent: "indigo-500",
-    accentHover: "indigo-600",
-    light: "indigo-400",
-    border: "border-indigo-500",
-    bg: "bg-indigo-600/20",
-    text: "text-indigo-300",
-    // Shimmer-specific gradients
-    shimmerBg: "linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4)",
-    shimmerGlow: "from-indigo-500/20 via-purple-500/20 to-cyan-500/20"
-  },
-  GENERATORS: {
-    primary: "from-emerald-500 via-teal-500 to-blue-500",
-    primaryHover: "from-emerald-600 via-teal-600 to-blue-600",
-    accent: "emerald-500",
-    accentHover: "emerald-600",
-    light: "emerald-400",
-    border: "border-emerald-500",
-    bg: "bg-emerald-600/20",
-    text: "text-emerald-300",
-    // Shimmer-specific gradients
-    shimmerBg: "linear-gradient(135deg, #10b981, #14b8a6, #3b82f6)",
-    shimmerGlow: "from-emerald-500/20 via-teal-500/20 to-blue-500/20"
-  },
-  UTILITIES: {
-    primary: "from-violet-500 via-pink-500 to-orange-500",
-    primaryHover: "from-violet-600 via-pink-600 to-orange-600",
-    accent: "violet-500",
-    accentHover: "violet-600",
-    light: "violet-400",
-    border: "border-violet-500",
-    bg: "bg-violet-600/20",
-    text: "text-violet-300",
-    // Shimmer-specific gradients
-    shimmerBg: "linear-gradient(135deg, #8b5cf6, #ec4899, #f97316)",
-    shimmerGlow: "from-violet-500/20 via-pink-500/20 to-orange-500/20"
-  }
-}
+import { TOOL_COLORS } from "@webiston/ui/constants/ui-patterns"
 
-// Component design patterns
-export const UI_PATTERNS = {
-  // Panel styles
-  GLASS_PANEL:
-    "rounded-xl bg-zinc-900/80 backdrop-blur-sm border border-zinc-800/50 shadow-2xl",
-  CONTROL_PANEL:
-    "rounded-lg bg-zinc-900/60 p-4 backdrop-blur-sm border border-zinc-800/30",
-
-  // Input/Output panels
-  INPUT_PANEL: {
-    container:
-      "flex flex-col rounded-xl bg-zinc-900/80 shadow-xl backdrop-blur-sm border border-zinc-800/50",
-    header:
-      "flex h-14 items-center justify-between border-b border-zinc-800 px-4 bg-zinc-800/50",
-    content: "relative flex-grow",
-    footer:
-      "flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3"
-  },
-
-  // Terminal-style panels (with macOS dots)
-  TERMINAL_PANEL: {
-    container:
-      "flex flex-col rounded-xl bg-zinc-900/80 shadow-2xl backdrop-blur-sm border border-zinc-800/50",
-    header:
-      "flex h-16 items-center justify-between border-b border-zinc-800 px-4 bg-zinc-800/50",
-    dots: "flex items-center gap-2",
-    content: "relative flex-grow",
-    footer:
-      "flex justify-between border-t border-zinc-800 bg-zinc-800/30 px-4 py-3"
-  },
-
-  // Switch button styles
-  SWITCH_CONTAINER:
-    "flex rounded-lg dark:bg-zinc-800/50 p-1 border dark:border-zinc-700/50",
-  SWITCH_BUTTON_ACTIVE:
-    "bg-gradient-to-r text-white shadow-lg transform scale-105",
-  SWITCH_BUTTON_INACTIVE:
-    "text-zinc-300 hover:text-zinc-100 hover:bg-zinc-700/50",
-
-  // Sample button styles
-  SAMPLE_BUTTON_ACTIVE: "text-xs transition-all transform hover:scale-105",
-  SAMPLE_BUTTON_INACTIVE:
-    "border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600"
-}
-
-// Tool-specific color mappings
+// Tool-specific color mappings.
+//
+// DOCUMENTED EXCEPTION: TOOL_COLORS are per-category accent *gradients* — a
+// deliberate visual system that distinguishes converters from generators from
+// utilities. Flattening them to semantic tokens would erase that distinction,
+// which is a product decision, not a cleanup. The design spec allows brand and
+// decorative colour precisely when it lives in a named constant like this one.
+// See docs/reference/design-system.md § chart/viz/brand exception.
 export const TOOL_COLOR_MAP = {
   "base64-converter": TOOL_COLORS.CONVERTERS,
   "json-formatter": TOOL_COLORS.CONVERTERS,
@@ -114,17 +49,22 @@ export const TOOL_COLOR_MAP = {
   "website-status": TOOL_COLORS.UTILITIES
 }
 
-// Common text styles
+// Common text styles — SEMANTIC TOKENS ONLY.
+//
+// These were dark-only (`text-zinc-100` / `text-zinc-400` / `text-zinc-500`) and
+// are consumed by 5 call sites, so body text rendered at ~2.6:1 on a light card —
+// a WCAG failure on every tool that used them. Semantic tokens are verified at
+// ≥4.5:1 on BOTH surfaces in BOTH schemes: run `pnpm contrast`.
 export const TEXT_STYLES = {
-  TITLE: "text-xl font-bold text-zinc-100",
-  SUBTITLE: "text-lg font-semibold text-zinc-100",
-  BODY: "text-sm text-zinc-400 leading-relaxed",
-  CAPTION: "text-xs text-zinc-500",
-  ERROR: "text-sm text-red-300 font-mono",
-  SUCCESS: "text-sm text-green-300"
+  TITLE: "text-xl font-bold text-foreground",
+  SUBTITLE: "text-lg font-semibold text-foreground",
+  BODY: "text-sm text-muted-foreground leading-relaxed",
+  CAPTION: "text-xs text-muted-foreground",
+  ERROR: "text-sm text-destructive font-mono",
+  SUCCESS: "text-sm text-success"
 }
 
-// Common animations
+// Common animations (no colour — nothing to tokenise)
 export const ANIMATIONS = {
   BUTTON_HOVER:
     "transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
@@ -133,7 +73,12 @@ export const ANIMATIONS = {
   PULSE: "animate-pulse"
 }
 
-// macOS-style window dots
+// macOS-style window dots.
+//
+// DOCUMENTED EXCEPTION: these are a literal skeuomorphic reference — macOS
+// traffic lights ARE red/yellow/green. Mapping them to destructive/warning/success
+// would be semantically wrong (they signal nothing) and would change colour with
+// the brand. They stay as fixed palette values, in this named constant.
 export const MACOS_DOTS = [
   { color: "bg-red-500/80", hover: "hover:bg-red-500" },
   { color: "bg-yellow-500/80", hover: "hover:bg-yellow-500" },
@@ -146,4 +91,44 @@ export const getToolColor = (toolId: string) => {
     TOOL_COLOR_MAP[toolId as keyof typeof TOOL_COLOR_MAP] ||
     TOOL_COLORS.CONVERTERS
   )
+}
+
+/**
+ * Per-CATEGORY accent classes for tool cards and filter chips.
+ *
+ * Colour here is DATA, not decoration — it encodes which category a tool
+ * belongs to, so the icon chip and the filter chip agree at a glance. That is
+ * the documented exception in `design-system.md`: categorical/chart colour in a
+ * named constant rather than inline.
+ *
+ * Built on `--chart-1..4`, which already exist in `tokens.css` with separate
+ * light/dark values, so these need no `dark:` variants. Deliberately FOUR hues
+ * (one per category), not seventeen: `TOOLS_LIST[].color` used to carry an
+ * ad-hoc per-tool palette — 17 raw Tailwind classes including blue three times
+ * — which was colourful but meaningless.
+ */
+export const CATEGORY_ACCENTS: Record<string, { chip: string; icon: string }> =
+  {
+    converters: {
+      chip: "border-chart-1 bg-chart-1/15 font-medium text-chart-1",
+      icon: "bg-chart-1/12 text-chart-1"
+    },
+    generators: {
+      chip: "border-chart-2 bg-chart-2/15 font-medium text-chart-2",
+      icon: "bg-chart-2/12 text-chart-2"
+    },
+    analyzers: {
+      chip: "border-chart-3 bg-chart-3/15 font-medium text-chart-3",
+      icon: "bg-chart-3/12 text-chart-3"
+    },
+    utilities: {
+      chip: "border-chart-4 bg-chart-4/15 font-medium text-chart-4",
+      icon: "bg-chart-4/12 text-chart-4"
+    }
+  }
+
+/** Fallback for the "all" chip and any unmapped category. */
+export const CATEGORY_ACCENT_NEUTRAL = {
+  chip: "border-primary bg-primary/15 font-medium text-primary",
+  icon: "bg-primary/12 text-primary"
 }

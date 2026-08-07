@@ -1,108 +1,95 @@
 {
   "DeviceInfoPage": {
     "ToolHeader": {
-      "title": "Qurilma Ma'lumotlari",
-      "description": "Brauzer, qurilma va operatsion tizim haqida batafsil ma'lumot oling"
+      "title": "Qurilma ma'lumotlari",
+      "description": "Ochgan saytingiz siz haqingizda ruxsat so'ramasdan biladigan hamma narsa: brauzer, tizim, ekran, tarmoq va hatto qaysi mavzuni afzal ko'rishingiz. Hech narsa serverga yuborilmaydi — o'qish ham, ko'rsatish ham brauzeringizda."
     },
-    "ControlPanel": {
-      "title": "Tool Boshqaruv",
-      "status": "Tayyor",
-      "deviceInfoTitle": "Qurilma ma'lumotlari",
-      "deviceInfoDesc": "Joriy brauzer va qurilma haqida batafsil ma'lumot",
-      "refreshButton": "Yangilash",
-      "copyAllButton": "Nusxalash",
-      "copiedAll": "Nusxalandi!",
-      "downloadButton": "JSON",
-      "loadingTitle": "Ma'lumotlar yuklanmoqda...",
-      "loadingDesc": "Iltimos kuting..."
+    "controls": {
+      "refresh": "Yangilash",
+      "download": "JSON saqlash",
+      "copyReport": "Hisobot sifatida (Markdown)",
+      "copy": "Nusxalash",
+      "copied": "Nusxalandi",
+      "copyJson": "JSON sifatida"
     },
-    "BrowserInfo": {
-      "title": "Brauzer Ma'lumotlari",
-      "status": "Brauzer",
-      "browserName": "Brauzer nomi",
-      "version": "Versiya",
-      "userAgent": "User Agent"
+    "copyGroup": "Bo'limni nusxalash",
+    "groups": {
+      "browser": "Brauzer",
+      "system": "Tizim",
+      "display": "Ekran va oyna",
+      "device": "Qurilma",
+      "network": "Tarmoq",
+      "preferences": "Afzalliklar"
     },
-    "SystemInfo": {
-      "title": "Tizim Ma'lumotlari",
-      "status": "Tizim",
-      "platform": "Platforma",
-      "language": "Asosiy til",
-      "timezone": "Vaqt zonasi",
-      "onlineStatus": "Onlayn holati",
-      "online": "Onlayn",
-      "offline": "Oflayn",
-      "cookieEnabled": "Cookie yoqilgan",
+    "rows": {
+      "name": "Nomi va versiyasi",
+      "engine": "Dvigatel",
+      "source": "Manba",
+      "userAgent": "User-Agent",
+      "os": "Operatsion tizim",
+      "architecture": "Arxitektura",
+      "model": "Model",
+      "timezone": "Vaqt mintaqasi",
+      "language": "Til",
+      "languages": "Tillar ro'yxati",
+      "cookies": "Cookie yoqilgan",
+      "screen": "Ekran",
+      "viewport": "Oyna (viewport)",
+      "pixelRatio": "Piksel zichligi",
+      "colorDepth": "Rang chuqurligi",
+      "orientation": "Orientatsiya",
+      "kind": "Turi",
+      "touchPoints": "Sensorli nuqtalar",
+      "cores": "Protsessor yadrolari",
+      "memory": "Xotira",
+      "online": "Ulangan",
+      "effectiveType": "Ulanish sifati",
+      "downlink": "Taxminiy tezlik",
+      "rtt": "Javob vaqti",
+      "saveData": "Trafikni tejash",
+      "colorScheme": "Mavzu",
+      "reducedMotion": "Harakat kamaytirilgan",
+      "contrast": "Kontrast",
+      "forcedColors": "Majburiy ranglar",
+      "visualViewport": "Ko'rinadigan maydon",
+      "safeArea": "Xavfsiz zona (T/O/P/CH)",
+      "doNotTrack": "Do Not Track",
+      "globalPrivacyControl": "Global Privacy Control"
+    },
+    "values": {
       "yes": "Ha",
       "no": "Yo'q",
-      "supportedLanguages": "Qo'llab-quvvatlanadigan tillar"
+      "unavailable": "brauzer bermaydi",
+      "portrait": "Bo'yiga",
+      "landscape": "Eniga"
     },
-    "ScreenInfo": {
-      "title": "Ekran Ma'lumotlari",
-      "status": "Ekran",
-      "screenSize": "Ekran o'lchami",
-      "availableSize": "Mavjud o'lcham",
-      "colorDepth": "Rang chuqurligi",
-      "pixelRatio": "Piksel nisbati",
-      "orientation": "Yo'nalish"
+    "privacy": {
+      "title": "Bu sahifa aslida nimani ko'rsatmoqda",
+      "body": "Yuqoridagi qiymatlarning hech biri uchun sizdan ruxsat so'ralmadi — istalgan sayt ularni jimgina o'qiy oladi. Alohida olganda ular zararsiz, lekin birga qo'shilganda kamdan-kam takrorlanadigan «barmoq izi» hosil qiladi: ekran o'lchami, vaqt mintaqasi, tillar ro'yxati, yadrolar soni va mavzu tanlovingiz. Shuning uchun cookie'larni o'chirish yoki yashirin rejim kuzatuvni to'liq to'xtatmaydi. Bu ma'lumotlar shu sahifadan chiqmaydi: hammasi brauzeringizda o'qiladi va shu yerda qoladi."
     },
-    "DeviceInfo": {
-      "title": "Qurilma Xususiyatlari",
-      "status": "Qurilma",
-      "deviceType": "Qurilma turi",
-      "touchScreen": "Sensorli ekran",
-      "touchSupported": "Qo'llab-quvvatlaydi",
-      "touchNotSupported": "Qo'llab-quvvatlamaydi",
-      "maxTouchPoints": "Maksimal sensor nuqtalar",
-      "mobileDevice": "Mobil qurilma",
-      "yes": "Ha",
-      "no": "Yo'q"
-    },
-    "ConnectionInfo": {
-      "title": "Internet Ulanishi",
-      "status": "Ulanish",
-      "connectionType": "Ulanish turi",
-      "speed": "Tezlik (Mbps)",
-      "latency": "Kechikish (ms)",
-      "dataSaver": "Ma'lumot tejash rejimi",
-      "enabled": "Yoqilgan",
-      "disabled": "O'chirilgan"
-    },
-    "InfoSection": {
-      "title": "Qurilma ma'lumotlari haqida",
-      "status": "Ma'lumot",
-      "usagePlacesTitle": "Asosiy foydalanish joylari:",
-      "professionalTipsTitle": "Professional maslahatlar:",
-      "noteTitle": "Maslahat:",
-      "noteText": "Bu ma'lumotlarni JSON formatida yuklab olib, veb analitika va ishlash samaradorligi monitoringi uchun ishlatib ko'ring.",
-      "usagePlaces": {
-        "webDev": {
-          "title": "Veb ishlab chiqish:",
-          "desc": "Moslashuvchan dizayn uchun ekran o'lchamlari"
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "fingerprint": {
+          "question": "«Barmoq izi» nima va bu sahifa unga aloqadormi?",
+          "answer": "Barmoq izi — brauzeringizni cookie'siz taniy oladigan belgilar to'plami. Alohida olganda ekran o'lchami ham, vaqt mintaqasi ham hech narsa demaydi; lekin o'nlab shunday qiymat birga qo'shilganda millionlab foydalanuvchi orasidan aynan sizni ajratib olish mumkin bo'ladi. Bu sahifa aynan shu qiymatlarni ko'rsatadi, lekin ularni hech qayerga yubormaydi — maqsadi kuzatish emas, kuzatuv qanday ishlashini ko'rsatish."
         },
-        "browserTesting": {
-          "title": "Brauzerni testlash:",
-          "desc": "Turli brauzerlarda muvofiqlikni tekshirish"
+        "uaFrozen": {
+          "question": "Brauzer versiyasi nega to'liq emas?",
+          "answer": "Chrome 2022-yildan beri User-Agent satridagi versiyani «muzlatib» qo'ygan: hamma uchun kichik raqamlar 0.0.0 bo'lib ko'rinadi, chunki aynan o'sha aniq raqam barmoq izining kuchli qismi edi. Haqiqiy versiyani endi User-Agent Client Hints beradi, va bu sahifa avval o'shani so'raydi. «Manba» qatori qaysi yo'l ishlaganini aytadi: hints — aniq qiymat, ua — muzlatilgan satrdan olingan taxmin."
         },
-        "performance": {
-          "title": "Ishlash samaradorligi:",
-          "desc": "Qurilma imkoniyatlariga qarab optimallashtirish"
+        "whyMissing": {
+          "question": "Nega ba'zi qatorlarda «brauzer bermaydi» yozilgan?",
+          "answer": "Chunki bu ma'lumotlarning bir qismini faqat Chromium asosidagi brauzerlar beradi. Xotira hajmi, ulanish sifati va Client Hints Firefox va Safari'da umuman yo'q — ular buni ataylab qo'llab-quvvatlamaydi, aynan barmoq izini kamaytirish uchun. Bunday qatorlarni yashirmadik: nima yo'qligi ham javob."
         },
-        "analytics": {
-          "title": "Analitika:",
-          "desc": "Foydalanuvchi qurilmalari statistikasi"
+        "screenVsViewport": {
+          "question": "Ekran va oyna o'lchami nega har xil?",
+          "answer": "Ekran — monitoringizning to'liq o'lchami, oyna esa sahifa chizilayotgan maydon: brauzer paneli, yon panellar va scrollbar ayirib tashlangan. CSS media so'rovlari aynan oyna o'lchamiga qaraydi, shuning uchun moslashuvchan dizaynni sinashda kerakli raqam — ikkinchisi. Oynani kattalashtirib ko'ring: yuqoridagi qiymat darhol o'zgaradi."
         },
-        "support": {
-          "title": "Qo'llab-quvvatlash:",
-          "desc": "Texnik qo'llab-quvvatlash va xatoliklarni topish uchun (debug)"
+        "accuracy": {
+          "question": "Bu ma'lumotlarga qanchalik ishonsa bo'ladi?",
+          "answer": "Qurilma turi va operatsion tizim taxmin — ular User-Agent satriga asoslanadi, uni esa o'zgartirish mumkin va ko'p brauzerlar ataylab o'zgartiradi ham. Masalan iPad o'zini Mac deb tanishtiradi, shuning uchun bu yerda sensorli nuqtalar soni ham hisobga olinadi. Ekran, oyna, tillar va afzalliklar esa taxmin emas — ular brauzerdan to'g'ridan-to'g'ri o'qiladi."
         }
-      },
-      "tips": {
-        "tip1": "Foydalanuvchi agenti (User-Agent) maʼlumotlarini server tomonida aniqlash uchun qoʻllang.",
-        "tip2": "Ekran oʻlchamini moslashuvchan (responsive) dizaynning nazorat nuqtalari (breakpoint) uchun tahlil qiling.",
-        "tip3": "Qurilma xotirasi va protsessor yadrolari sonini samaradorlikni sozlash (performance tuning) uchun hisobga oling.",
-        "tip4": "Ulanish turini (masalan, 4G, Wi-Fi) kechiktirilgan yuklash (lazy loading) strategiyasida inobatga oling.",
-        "tip5": "Sensorli ekran (touch) imkoniyatini 'mobile-first' yondashuvidagi dizaynni optimallashtirish uchun tekshiring."
       }
     }
   }

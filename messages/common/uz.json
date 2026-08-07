@@ -5,8 +5,23 @@
       "description": "Dasturlashni o'rganish uchun zamonaviy platforma. O'zbek va ingliz tillarida React bo'yicha yuqori sifatli, bepul kurslar va dasturchilar uchun foydali vositalar.",
       "keywords": "bepul kurslar, dasturlash, React, JavaScript, dasturchi vositalari, kod o'rganish, o'zbek IT, bepul ta'lim, дастурлаш, бесплатные курсы"
     },
-    "title": "Veb texnologiyalar dunyosiga teran nigoh",
-    "description": "Webiston — zamonaviy veb texnologiyalar bo'yicha bepul ta'lim va dasturchilar uchun foydali vositalar to'plami. Bilim olish va rivojlanish uchun barcha kerakli resurslar bir joyda.",
+    "titleLead": "Veb texnologiyalar dunyosiga",
+    "titleAccent": "teran nigoh",
+    "description": "Bepul, yuqori sifatli kitoblar va dasturchilar uchun kundalik vositalar — React, JavaScript va sun'iy intellektgacha. Bilim olish uchun barcha resurslar bir joyda.",
+    "eyebrowBadge": "Yangi",
+    "eyebrowText": "AI Engineering kitobi — o'zbek tilida",
+    "palette": {
+      "label": "Kitoblar",
+      "hints": "↑↓ tanlash · ⏎ ochish · esc yopish",
+      "labelTools": "Vositalar",
+      "queryTools": "yarat",
+      "queryConverters": "o'gir"
+    },
+    "stats": {
+      "chapters": "bo'lim",
+      "books": "kitob",
+      "tools": "vosita"
+    },
     "startLearning": "O'rganishni boshlash",
     "usefulTools": "Foydali vositalar",
     "reactSectionTitle": "Fluent React",
@@ -15,7 +30,11 @@
     "toolsSectionDescription": "Har bir dasturchining kundalik ishini osonlashtiradigan qulay onlayn vositalar to'plami.",
     "jsSectionTitle": "JavaScript: To'liq qo'llanma",
     "jsSectionDescription": "JavaScript bo‘yicha klassik asarning to‘liq o‘zbekcha tarjimasi. Tilning poydevoridan boshlab, eng ilg‘or xususiyatlarigacha — barchasi bitta qo‘llanmada",
-    "aiSectionDescription": "SI muhandisligi bo‘yicha keng qamrovli qo‘llanma. Asosiy modellardan tortib prompt muhandisligi, baholash metodologiyalari va zamonaviy SI texnologiyalarigacha — barchasini professional darajada o‘zlashtiring. Bu qo‘llanma sizga sun’iy intellekt bilan qurish uchun to‘liq va ishonchli manba bo‘lib xizmat qiladi"
+    "aiSectionDescription": "SI muhandisligi bo‘yicha keng qamrovli qo‘llanma. Asosiy modellardan tortib prompt muhandisligi, baholash metodologiyalari va zamonaviy SI texnologiyalarigacha — barchasini professional darajada o‘zlashtiring. Bu qo‘llanma sizga sun’iy intellekt bilan qurish uchun to‘liq va ishonchli manba bo‘lib xizmat qiladi",
+    "sectionBooks": "Kitoblar",
+    "sectionTools": "Foydali vositalar",
+    "allChapters": "Barcha bo'limlar",
+    "allTools": "Barcha vositalar"
   },
   "Metadata": {
     "description": "Webiston - Veb texnologiyalar, React, Next.js, JavaScript bo'yicha chuqur bilimlar va amaliy qo'llanmalar. Dasturlashni biz bilan o'rganing.",
@@ -23,7 +42,22 @@
   },
   "Header": {
     "books": "Kitoblar",
-    "tools": "Foydali Vositalar"
+    "tools": "Foydali Vositalar",
+    "language": "Tilni tanlash",
+    "current": "hozirgi til",
+    "languageHint": "Til almashganda shu sahifada qolasiz.",
+    "allBooks": "Barcha kitoblar",
+    "allBooksDescription": "Uchala kitobning to'liq ro'yxati va bo'limlari.",
+    "bookDescriptions": {
+      "ai-engineering": "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
+      "javascript-definitive-guide": "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
+      "fluent-react": "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar."
+    },
+    "menu": "Menyu",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Menyuni yopish",
+    "chapters": "Kitob bo'limlari",
+    "browse": "Sahifalar"
   },
   "Common": {
     "stats": {
@@ -34,7 +68,89 @@
     "processing": "Ishlanmoqda...",
     "resultWillAppear": "Natija shu yerda ko'rinadi.",
     "backToTools": "Orqaga qaytish",
-    "clear": "Tozalash"
+    "clear": "Tozalash",
+    "error": "Xatolik",
+    "toggleTheme": "Mavzuni o'zgartirish",
+    "enterData": "Ma'lumot kiriting",
+    "loading": "Yuklanmoqda...",
+    "faqTitle": "Ko'p so'raladigan savollar",
+    "media": {
+      "kind": {
+        "camera": "kamera",
+        "microphone": "mikrofon"
+      },
+      "prompt": {
+        "camera": {
+          "title": "Kamerangizni shu yerda sinab ko'ring",
+          "body": "Tugmani bosganingizda brauzer kameraga ruxsat so'raydi. Tasvir faqat shu qurilmada qoladi — hech qanday kadr yoki yozuv serverga yuborilmaydi.",
+          "action": "Kamerani yoqish"
+        },
+        "microphone": {
+          "title": "Mikrofoningizni shu yerda sinab ko'ring",
+          "body": "Tugmani bosganingizda brauzer mikrofonga ruxsat so'raydi. Ovoz faqat shu qurilmada qoladi — hech narsa serverga yuborilmaydi.",
+          "action": "Mikrofonni yoqish"
+        }
+      },
+      "starting": "So'ralmoqda...",
+      "retry": "Qayta urinish",
+      "alreadyAllowed": "Bu sayt uchun ruxsat allaqachon berilgan",
+      "willAsk": "Brauzer ruxsat so'raydi — bu bizning emas, brauzerning oynasi",
+      "stayedOnPrevious": "Avvalgi qurilmada qoldingiz.",
+      "failure": {
+        "denied": {
+          "title": "Ruxsat berilmadi",
+          "advice": "Brauzer {kind}ga kirishni bloklagan. Manzil qatoridagi qulf belgisini bosing, {kind} uchun ruxsatni «Ruxsat» ga o'zgartiring va sahifani yangilang."
+        },
+        "notFound": {
+          "title": "Qurilma topilmadi",
+          "advice": "Bu kompyuterda ishlaydigan {kind} ko'rinmayapti. Agar u tashqi qurilma bo'lsa, ulanishini tekshiring — ulaganingizdan keyin ro'yxat o'zi yangilanadi."
+        },
+        "inUse": {
+          "title": "Qurilma band",
+          "advice": "{kind} boshqa dastur tomonidan ishlatilmoqda. Zoom, Meet yoki Telegram kabi dasturlarni yoping va qayta urinib ko'ring."
+        },
+        "constraints": {
+          "title": "Bu sozlama qurilmaga to'g'ri kelmadi",
+          "advice": "Tanlangan {kind} so'ralgan sifatni qo'llab-quvvatlamaydi. Pastroq sifatni yoki boshqa qurilmani tanlang."
+        },
+        "insecureContext": {
+          "title": "Xavfsiz ulanish kerak",
+          "advice": "Brauzerlar {kind}ga faqat HTTPS orqali ruxsat beradi. Sahifani https:// manzilidan oching."
+        },
+        "unsupported": {
+          "title": "Brauzer qo'llab-quvvatlamaydi",
+          "advice": "Bu brauzerda {kind}ga kirish uchun kerakli API yo'q. Chrome, Edge, Firefox yoki Safari'ning yangi versiyasida oching."
+        },
+        "unknown": {
+          "title": "Qurilmani ochib bo'lmadi",
+          "advice": "Brauzer sababini aytmadi. Sahifani yangilab, qayta urinib ko'ring; muammo qolsa, boshqa {kind}ni tanlang."
+        }
+      },
+      "deviceLabel": {
+        "camera": "Kamera",
+        "microphone": "Mikrofon"
+      },
+      "unnamedDevice": {
+        "camera": "Kamera {index}",
+        "microphone": "Mikrofon {index}"
+      }
+    },
+    "zoomIn": "Rasmni kattalashtirish",
+    "zoomOut": "Rasmni yopish"
+  },
+  "Search": {
+    "title": "Sayt bo'yicha qidiruv",
+    "placeholder": "Qidirish...",
+    "dialogPlaceholder": "Mavzular va kodlar orasidan qidiring...",
+    "loading": "Qidirilmoqda...",
+    "initialHint": "Qidiruv orqali kerakli mavzuni tezda toping.",
+    "noResultsTitle": "Natijalar topilmadi",
+    "noResultsHint": "Ushbu \"{query}\" bo'yicha natija topilmadi. Boshqa so'z bilan urinib ko'ring.",
+    "contentType": {
+      "article": "maqola",
+      "topic": "mavzu"
+    },
+    "hints": "↑↓ tanlash · ⏎ ochish · esc yopish"
   },
   "Filters": {
     "allTools": "Barcha vositalar",
@@ -48,6 +164,8 @@
     "utilities": "Yordamchilar"
   },
   "Footer": {
-    "allRightsReserved": "Barcha huquqlar himoyalangan."
+    "allRightsReserved": "Barcha huquqlar himoyalangan.",
+    "tagline": "Zamonaviy veb texnologiyalar bo'yicha bepul kitoblar va dasturchilar uchun kundalik vositalar — o'zbek tilida.",
+    "allTools": "Barcha vositalar"
   }
 }

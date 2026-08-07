@@ -1,164 +1,123 @@
 {
   "MicrophoneTestPage": {
-    "ToolHeader": {
-      "title": "Microphone Test",
-      "description": "Test your microphone, record audio and evaluate quality"
+    "title": "Microphone test",
+    "description": "Find out whether your microphone works — watch the level, hear yourself, record a clip and play it back. The audio stays on this device.",
+    "gate": {
+      "title": "Test your microphone"
     },
-    "ControlPanel": {
-      "title": "Audio Settings",
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive"
-      },
-      "microphone": {
-        "label": "Microphone:",
-        "placeholder": "Select microphone"
-      },
-      "quality": {
-        "label": "Quality:",
-        "excellent": "Excellent",
-        "good": "Good",
-        "average": "Average",
-        "poor": "Poor"
-      },
-      "buttons": {
-        "refresh": "Refresh",
-        "startMicrophone": "Start Microphone",
-        "stopMicrophone": "Stop Microphone"
-      }
+    "toolbar": {
+      "monitor": "Hear myself",
+      "stop": "Stop",
+      "monitorWarning": "Put headphones on. Through speakers the microphone picks up its own output and you get a feedback howl."
     },
-    "AudioPreviewPanel": {
-      "title": "Audio Visualization",
-      "status": {
-        "live": "Live",
-        "off": "Off"
-      },
-      "buttons": {
-        "startRecording": "Start Recording",
-        "stopRecording": "Stop Recording"
-      },
-      "audioInfo": {
-        "title": "Audio Information",
-        "sampleRate": "Sample Rate",
-        "channels": "Channels",
-        "echoCancellation": "Echo Cancellation",
-        "noiseSuppression": "Noise Suppression",
-        "enabled": "Enabled",
-        "disabled": "Disabled"
-      }
+    "listen": {
+      "title": "Live signal",
+      "waveform": "Waveform",
+      "spectrum": "Spectrum",
+      "viewLabel": "View",
+      "silentHint": "No signal for several seconds. Check for a mute switch on the microphone or the keyboard, raise the input level in your system settings, or pick a different microphone from the list above.",
+      "record": "Record",
+      "recordHint": "Talk for a few seconds, then listen back.",
+      "recordUnavailable": "This browser cannot record audio.",
+      "stopRecording": "Finish recording",
+      "pause": "Pause",
+      "resume": "Resume",
+      "paused": "paused"
     },
-    "RecordedAudioPanel": {
-      "title": "Recorded Audios",
-      "fileCount": "files",
-      "empty": {
-        "title": "No audio recorded yet",
-        "subtitle": "Turn on microphone and record audio"
-      },
-      "stats": {
-        "totalAudios": "Total audios",
-        "totalSize": "Total size"
-      },
-      "actions": {
-        "preview": "Play",
-        "download": "Download",
-        "delete": "Delete"
-      },
-      "buttons": {
-        "clearAll": "Clear all"
-      }
+    "meter": {
+      "label": "Input level",
+      "silent": "Silent",
+      "dbfs": "{value} dBFS",
+      "peak": "Peak:",
+      "clipping": "Too loud — the sound is being damaged",
+      "inRange": "Level looks good",
+      "target": "Aim for -18 to -12 dBFS"
     },
-    "InfoSection": {
-      "title": "Information",
-      "status": "Help",
-      "useCases": {
-        "title": "Main use cases:",
-        "contentCreation": {
-          "title": "Content Creation:",
-          "description": "For YouTube, blogs and social media"
+    "scope": {
+      "waveform": "Audio waveform",
+      "spectrum": "Frequency spectrum"
+    },
+    "processing": {
+      "title": "Browser processing",
+      "intro": "Your browser runs three filters on the microphone. They help on calls, but they change how you sound — switch them off and hear the difference.",
+      "restartNote": "Each change reopens the microphone, because a browser only applies these to a new stream. The table below shows what was actually applied, not what was requested.",
+      "rows": {
+        "sampleRate": "Sample rate",
+        "channelCount": "Channels",
+        "echoCancellation": "Echo cancellation",
+        "noiseSuppression": "Noise suppression",
+        "autoGainControl": "Automatic gain"
+      },
+      "copyReport": "Copy report",
+      "reportTitle": "Microphone diagnostics",
+      "reportDevice": "Device",
+      "reportDeviceLabel": "Microphone",
+      "reportRequested": "Requested processing",
+      "reportEnvironment": "Environment"
+    },
+    "values": {
+      "unavailable": "not reported",
+      "mono": "Mono",
+      "stereo": "Stereo",
+      "applied": "Applied",
+      "notApplied": "Not applied"
+    },
+    "recordings": {
+      "title": "Recordings",
+      "empty": "Nothing recorded yet. Press Record above.",
+      "clearAll": "Delete all",
+      "download": "Download",
+      "delete": "Delete",
+      "limit": "The last {count} recordings are kept, in this browser's memory only — closing the page discards them."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "noSound": {
+          "question": "The level meter does not move — what now?",
+          "answer": "It is almost always one of three things. A hardware mute: many USB microphones and laptop keyboards have their own mute switch, and the browser cannot see it. The wrong device: try another entry in the list above, because systems tend to make the most recently connected device the default. Or the input level in your operating system's sound settings has been turned down to zero."
         },
-        "podcasting": {
-          "title": "Podcasting:",
-          "description": "Professional podcast recording and audio quality"
+        "speakers": {
+          "question": "My microphone works but they still cannot hear me — why?",
+          "answer": "When that happens the fault is usually your output or the call application's own setting. Run the speaker test above first: if you hear no tone, your system is sending audio to the wrong device — an HDMI monitor, or a Bluetooth headset that has drifted out of range. If you do hear the tone and the level meter on this page moves, your microphone is genuinely fine — check the microphone selection and the mute button inside Zoom or Meet, because those are configured separately from the browser."
         },
-        "streaming": {
-          "title": "Live Streaming:",
-          "description": "Live broadcasts and video conferencing"
+        "privacy": {
+          "question": "Is my audio sent anywhere?",
+          "answer": "No. Every measurement and every recording happens inside your browser; no audio is uploaded. Recordings live in temporary in-memory URLs and disappear when you close the page. No analytics service on this site touches the audio."
         },
-        "voiceOver": {
-          "title": "Voice-over:",
-          "description": "Voice translation and narration"
+        "permissionBlocked": {
+          "question": "I refused the permission by accident — how do I undo it?",
+          "answer": "The browser remembers that answer for the site, so it will not ask again. Click the lock or settings icon in the address bar, find the Microphone entry and set it to Allow, then reload. In Chrome the same setting lives under Settings → Privacy and security → Site settings → Microphone."
         },
-        "remoteWork": {
-          "title": "Remote Work:",
-          "description": "Online meetings and conferences"
+        "deviceBusy": {
+          "question": "It says the device is busy — why?",
+          "answer": "Another application is holding the microphone. On some systems only one application can open it at a time, so close Zoom, Google Meet, Telegram or OBS completely — closing the window is often not enough, because the application keeps running in the background."
+        },
+        "processing": {
+          "question": "What does turning off echo and noise suppression do?",
+          "answer": "Browsers switch on three filters by default: echo cancellation, noise suppression and automatic gain. They are built for calls, and they can strip the top end off your voice and push the level up during silences. Recording with them off tells you what your microphone actually sounds like — which is what matters for a podcast or any real recording."
+        },
+        "goodLevel": {
+          "question": "What counts as a good level?",
+          "answer": "While you are speaking, the average should sit in the green band between -18 and -12 dBFS, and the peak should never touch 0. Those numbers are the recording industry's: quieter and a call application amplifies you along with your room; louder and the loudest moments are clipped flat and the sound is damaged. That is why the peak gets its own marker."
+        },
+        "recordings": {
+          "question": "Where are my recordings stored?",
+          "answer": "Only in the memory of the open page. The last 10 stay in the list and older ones are discarded automatically. Press download to keep one — it saves to your computer as WebM, or whichever container your browser supports."
         }
-      },
-      "tips": {
-        "title": "Professional tips:",
-        "distance": "Speak 15-20 cm away from microphone",
-        "environment": "Record audio in quiet environment",
-        "level": "Keep audio level in 40-70% range",
-        "quality": "Choose HD quality, but consider internet speed",
-        "testing": "Test microphone quality before recording"
-      },
-      "note": {
-        "title": "Note:",
-        "content": "Audio files are automatically saved in WebM/Opus format. This format is well supported in modern browsers and offers high quality with small file size."
       }
     },
-    "SampleMicrophones": {
-      "title": "Microphone Types",
-      "standard": {
-        "name": "Standard Microphone",
-        "description": "Basic audio input device",
-        "tip": "Try your computer's built-in microphone"
+    "speakers": {
+      "title": "Speaker and headphone test",
+      "intro": "The fault may be your output, not your microphone. This test needs no permission — press a button and check whether you hear the tone. Left and right separately, because one dead channel is a very common fault.",
+      "channels": {
+        "left": "Left",
+        "both": "Both",
+        "right": "Right"
       },
-      "usb": {
-        "name": "USB Microphone",
-        "description": "External USB audio device",
-        "tip": "For high-quality audio recording"
-      },
-      "bluetooth": {
-        "name": "Bluetooth Headset",
-        "description": "Wireless audio device",
-        "tip": "Audio input via Bluetooth connection"
-      }
-    },
-    "Errors": {
-      "microphoneAccess": "Microphone access permission denied",
-      "noMicrophone": "No microphone found",
-      "recordingFailed": "Audio recording failed",
-      "unsupportedBrowser": "Browser not supported"
-    },
-    "AudioPreviewModal": {
-      "title": "Audio Preview",
-      "download": "Download"
-    },
-    "Loading": {
-      "text": "Loading microphone test..."
-    },
-    "Hook": {
-      "messages": {
-        "devicesFound": "audio devices found",
-        "deviceAccessDenied": "Microphone device access denied",
-        "microphoneStarted": "Microphone started",
-        "microphoneStartError": "Error starting microphone",
-        "microphoneStopped": "Microphone stopped",
-        "recordingStarted": "Audio recording started",
-        "recordingError": "Error recording audio",
-        "audioRecorded": "Audio recorded",
-        "audioDownloaded": "Audio downloaded",
-        "audioDeleted": "Audio deleted",
-        "allAudiosDeleted": "All audios deleted",
-        "deviceLabel": "Microphone",
-        "qualityExcellent": "Excellent",
-        "qualityGood": "Good",
-        "qualityAverage": "Average",
-        "qualityPoor": "Poor",
-        "statsAudioLevel": "Audio Level",
-        "statsRecorded": "Recorded",
-        "statsDuration": "Duration"
-      }
+      "playing": "Playing a tone on the {channel} channel…",
+      "volumeNote": "The tone is deliberately quiet, but check your volume first if you are wearing headphones.",
+      "unsupported": "This browser cannot play the test tone."
     }
   }
 }

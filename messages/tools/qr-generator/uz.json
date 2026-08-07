@@ -54,7 +54,20 @@
     "InputPanel": {
       "title": "QR Kod Kirish",
       "placeholder": "QR kod uchun matn kiriting...\n\nMisol:\n• URL: https://webiston.uz\n• Email: info@webiston.uz\n• Telefon: +998901234567\n• WiFi: WIFI:T:WPA;S:MyNetwork;P:password;;\n• Matn: Salom dunyo!",
-      "status": "QR yaratishga tayyor"
+      "status": "QR yaratishga tayyor",
+      "mode": {
+        "label": "Kirish turi",
+        "text": "Matn / havola",
+        "wifi": "WiFi"
+      },
+      "wifi": {
+        "ssid": "Tarmoq nomi (SSID)",
+        "ssidPlaceholder": "Masalan: Uyim_5G",
+        "password": "Parol",
+        "security": "Xavfsizlik turi",
+        "open": "Ochiq",
+        "hidden": "Yashirin tarmoq"
+      }
     },
     "ResultsPanel": {
       "title": "QR Kod Ma'lumotlari",
@@ -250,6 +263,122 @@
       "fileReadError": "Faylni o'qishda xatolik yuz berdi",
       "fileUploadSuccess": "Fayl muvaffaqiyatli yuklandi",
       "downloadSuccess": "QR kod muvaffaqiyatli yuklab olindi"
+    },
+    "preview": {
+      "title": "QR kod",
+      "empty": "Matn kiriting — kod shu yerda paydo bo'ladi.",
+      "vectorHint": "SVG — bosma uchun, cheksiz kattalashadi",
+      "lowContrast": "Ranglar kontrasti past ({ratio}:1). Bunday kod chop etilganda yoki xira yorug'likda skanerlanmasligi mumkin.",
+      "inverted": "Kod fondan och rangda. Ko'p skanerlar QR kodni qorong'i-ochiq tartibida qidiradi — ranglarni almashtiring.",
+      "modules": "{count}×{count} modul",
+      "exportFailed": "Faylni yaratib bo'lmadi. Qayta urinib ko'ring.",
+      "lowContrastSevere": "Kontrast juda past ({ratio}:1). Bu kod ko'p telefonlarda umuman skanerlanmaydi — kod rangini quyuqroq qiling."
+    },
+    "style": {
+      "foreground": "Kod rangi",
+      "background": "Fon rangi",
+      "gradientTo": "Gradient ikkinchi rangi",
+      "addGradient": "Gradient qo'shish",
+      "shapes": "Shakllar",
+      "dots": "Nuqta shakli",
+      "cornerSquare": "Burchak ramkasi",
+      "cornerDot": "Burchak markazi",
+      "logo": "Logo",
+      "uploadLogo": "Logo yuklash",
+      "removeLogo": "O'chirish",
+      "logoSize": "Logo o'lchami — {percent}%",
+      "logoNote": "Logo modullarning bir qismini yopadi, shuning uchun xato tuzatish darajasi avtomatik ravishda eng yuqorisiga (H) ko'tarildi.",
+      "logoUnreadable": "Bu faylni rasm sifatida o'qib bo'lmadi. PNG, JPG, SVG yoki WEBP tanlang.",
+      "cornerRadius": "Burchak yumaloqligi — {percent}%",
+      "frame": "Ramka",
+      "frameLabel": "Ramka yozuvi",
+      "advanced": "Qo'shimcha",
+      "quietZone": "Oq hoshiya — {modules} modul",
+      "quietZoneWarning": "Standart {standard} modul talab qiladi. Bundan kam bo'lsa kod topilmay qolishi mumkin.",
+      "gradient": {
+        "linear": "Chiziqli",
+        "radial": "Radial"
+      },
+      "frameStyle": "Ramka turi"
+    },
+    "detected": {
+      "empty": "bo'sh",
+      "url": "havola",
+      "email": "email",
+      "phone": "telefon",
+      "sms": "SMS",
+      "wifi": "WiFi",
+      "vcard": "kontakt",
+      "location": "joylashuv",
+      "text": "matn"
+    },
+    "shapeNames": {
+      "module": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "dots": "Nuqta",
+        "fluid": "Oquvchi",
+        "fluid-soft": "Yumshoq oquvchi",
+        "classy": "Nafis",
+        "classy-rounded": "Nafis yumaloq",
+        "vertical": "Vertikal chiziq",
+        "horizontal": "Gorizontal chiziq",
+        "diamond-soft": "Romb",
+        "leaf": "Barg",
+        "arch": "Ravoq",
+        "mosaic": "Mozaika",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak"
+      },
+      "eyeFrame": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "circle": "Doira",
+        "leaf": "Barg",
+        "leaf-mirrored": "Teskari barg",
+        "cushion": "Yostiq",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak"
+      },
+      "eyeBall": {
+        "square": "Kvadrat",
+        "rounded": "Yumaloq",
+        "extra-rounded": "Juda yumaloq",
+        "circle": "Doira",
+        "leaf": "Barg",
+        "leaf-mirrored": "Teskari barg",
+        "diamond-soft": "Romb",
+        "bevel": "Qirrali",
+        "sharp": "O'tkir burchak",
+        "bars-v": "Vertikal chiziqlar",
+        "bars-h": "Gorizontal chiziqlar",
+        "dot-grid": "To'rt nuqta"
+      },
+      "frame": {
+        "none": "Ramkasiz",
+        "outline": "Chiziqli",
+        "card": "Kartochka",
+        "label-bottom": "Pastda yozuv",
+        "label-top": "Tepada yozuv",
+        "solid": "To'ldirilgan",
+        "brackets": "Burchak belgilari"
+      }
+    },
+    "presets": {
+      "title": "Tayyor uslublar",
+      "hint": "Bir bosishda",
+      "names": {
+        "classic": "Klassik",
+        "modern": "Zamonaviy",
+        "soft": "Yumshoq",
+        "dotted": "Nuqtali",
+        "elegant": "Nafis",
+        "tech": "Texnologik",
+        "brand": "Brend",
+        "mosaic": "Mozaika"
+      }
     }
   }
 }

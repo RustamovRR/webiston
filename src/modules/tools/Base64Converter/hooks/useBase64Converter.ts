@@ -1,339 +1,248 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useMemo, useState } from "react"
+import {
+  byteLength,
+  decodeBase64,
+  encodeBase64,
+  encodeBytes
+} from "@/lib/utils"
+import {
+  MAX_FILE_BYTES,
+  SAMPLE_KEYS,
+  SAMPLE_TEXTS,
+  SUPPORTED_IMAGE_TYPES,
+  SUPPORTED_TEXT_TYPES
+} from "../constants"
+import { useBase64DraftStore } from "../stores/base64DraftStore"
+import type { Base64Sample, FileFailure } from "../types"
 
-// Sample Base64 data constants
-export const SAMPLE_BASE64_DATA = {
-  UZBEK_GREETING: "Assalomu alaykum, Webiston!",
-  JSON_SAMPLE: '{"ism": "Ali", "yosh": 25, "shahar": "Toshkent"}',
-  URL_SAMPLE: "https://webiston.uz/tools/base64-converter",
-  EMAIL_SAMPLE: "info@webiston.uz"
-}
+/**
+ * The converter's state and everything derived from it.
+ *
+ * What the rewrite removed, each a defect and not tidiness:
+ *
+ * - **`alert()`, three times.** The same finding already closed in the JSON
+ *   formatter: a modal that blocks the page to say a file was too big. Errors
+ *   are values now, rendered inline with `role="alert"`.
+ * - **Five hardcoded Uzbek sentences and an Uzbek download filename**, inside
+ *   a hook, next to a translator that was already in scope. On /en the tool
+ *   answered in Uzbek.
+ * - **`throw` inside `reader.onerror`.** That callback runs asynchronously, so
+ *   the surrounding `try/catch` never saw it: the throw escaped unhandled and
+ *   `setIsProcessing(false)` never ran, leaving the tool stuck on "processing"
+ *   until a reload. `FileReader` is gone entirely — `File` has promise-based
+ *   `.text()` and `.arrayBuffer()`.
+ * - **Images were encoded twice.** `readAsDataURL` yields base64 already; the
+ *   handler stripped the `data:` prefix and put THAT in the input box, which
+ *   the encode step then encoded again. The output was base64 of base64.
+ */
 
-// Base64 encoded versions of sample data
-export const SAMPLE_BASE64_ENCODED = {
-  UZBEK_GREETING: "QXNzYWxvbXUgYWxheWt1bSwgV2ViaXN0b24h",
-  JSON_SAMPLE:
-    "eyJpc20iOiAiQWxpIiwgInlvc2giOiAyNSwgInNoYWhhciI6ICJUb3Noa2VudCJ9",
-  URL_SAMPLE: "aHR0cHM6Ly93ZWJpc3Rvbi51ei90b29scy9iYXNlNjQtY29udmVydGVy",
-  EMAIL_SAMPLE: "aW5mb0B3ZWJpc3Rvbi51eg=="
-}
+/**
+ * The source is text the visitor typed, or a file they dropped in.
+ *
+ * Modelling it explicitly is what fixes the double encode. An image has no
+ * text form, so it cannot live in the input box — it is a source whose encoded
+ * value IS the answer, computed once from the real bytes.
+ */
+type Source =
+  | { kind: "text" }
+  | { kind: "file"; name: string; encoded: string; bytes: number }
 
-type ConversionMode = "encode" | "decode"
-
-interface Base64Result {
-  output: string
-  error: string
-  isValid: boolean
-}
-
-export const useBase64Converter = () => {
-  const tErrors = useTranslations("Base64ConverterPage.Errors")
+export function useBase64Converter() {
+  const t = useTranslations("Base64ConverterPage")
   const tSamples = useTranslations("Base64ConverterPage.Samples")
-  const [inputText, setInputText] = useState("")
-  const [mode, setMode] = useState<ConversionMode>("encode")
+
+  const input = useBase64DraftStore((state) => state.input)
+  const setInputText = useBase64DraftStore((state) => state.setInput)
+  const mode = useBase64DraftStore((state) => state.mode)
+  const setMode = useBase64DraftStore((state) => state.setMode)
+  const urlSafe = useBase64DraftStore((state) => state.urlSafe)
+  const setUrlSafe = useBase64DraftStore((state) => state.setUrlSafe)
+
   const [isProcessing, setIsProcessing] = useState(false)
+  const [fileError, setFileError] = useState<FileFailure | null>(null)
+  const [source, setSource] = useState<Source>({ kind: "text" })
 
-  // Dynamic samples based on current mode
-  const samples = useMemo(() => {
+  /** Typing always returns the source to text — the file is no longer what is being converted. */
+  const setInput = useCallback(
+    (value: string) => {
+      setInputText(value)
+      setSource({ kind: "text" })
+      setFileError(null)
+    },
+    [setInputText]
+  )
+
+  /**
+   * Samples in the direction currently being worked in. The encoded halves are
+   * DERIVED — they used to be a parallel hand-written table of four base64
+   * strings, which is a table that can disagree with itself.
+   */
+  const samples = useMemo<Base64Sample[]>(
+    () =>
+      SAMPLE_KEYS.map((key) => ({
+        key,
+        label: tSamples(key),
+        value:
+          mode === "encode"
+            ? SAMPLE_TEXTS[key]
+            : encodeBase64(SAMPLE_TEXTS[key])
+      })),
+    [mode, tSamples]
+  )
+
+  /**
+   * Both byte counts live HERE and not in the view.
+   *
+   * The first version called `byteLength(result.output)` inside the render, so
+   * every unrelated re-render ran a full `TextEncoder` pass over an output that
+   * can be 13 MB. Encoded output is pure ASCII, so its byte count is just its
+   * length — no pass needed at all in the direction where the string is
+   * biggest.
+   */
+  const result = useMemo(() => {
+    const empty = { output: "", error: "", bytes: 0, outputBytes: 0 }
+
+    if (source.kind === "file") {
+      return {
+        output: source.encoded,
+        error: "",
+        bytes: source.bytes,
+        outputBytes: source.encoded.length
+      }
+    }
+
+    if (!input.trim()) return empty
+
     if (mode === "encode") {
-      return [
-        {
-          key: "UZBEK_GREETING",
-          label: tSamples("uzbekGreeting"),
-          value: SAMPLE_BASE64_DATA.UZBEK_GREETING
-        },
-        {
-          key: "JSON_SAMPLE",
-          label: tSamples("jsonSample"),
-          value: SAMPLE_BASE64_DATA.JSON_SAMPLE
-        },
-        {
-          key: "URL_SAMPLE",
-          label: tSamples("urlSample"),
-          value: SAMPLE_BASE64_DATA.URL_SAMPLE
-        },
-        {
-          key: "EMAIL_SAMPLE",
-          label: tSamples("emailSample"),
-          value: SAMPLE_BASE64_DATA.EMAIL_SAMPLE
-        }
-      ]
-    } else {
-      return [
-        {
-          key: "UZBEK_GREETING",
-          label: tSamples("base64Text"),
-          value: SAMPLE_BASE64_ENCODED.UZBEK_GREETING
-        },
-        {
-          key: "JSON_SAMPLE",
-          label: tSamples("base64Json"),
-          value: SAMPLE_BASE64_ENCODED.JSON_SAMPLE
-        },
-        {
-          key: "URL_SAMPLE",
-          label: tSamples("base64Url"),
-          value: SAMPLE_BASE64_ENCODED.URL_SAMPLE
-        },
-        {
-          key: "EMAIL_SAMPLE",
-          label: tSamples("base64Email"),
-          value: SAMPLE_BASE64_ENCODED.EMAIL_SAMPLE
-        }
-      ]
-    }
-  }, [mode, tSamples])
-
-  const result = useMemo((): Base64Result => {
-    if (!inputText.trim()) {
-      return { output: "", error: "", isValid: false }
-    }
-
-    try {
-      if (mode === "encode") {
-        const encoded = btoa(unescape(encodeURIComponent(inputText)))
-        return { output: encoded, error: "", isValid: true }
-      } else {
-        // Decode mode
-        // First validate Base64 format
-        const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
-        if (!base64Regex.test(inputText.replace(/\s/g, ""))) {
-          return {
-            output: "",
-            error: tErrors("invalidBase64Format"),
-            isValid: false
-          }
-        }
-
-        const decoded = decodeURIComponent(
-          escape(atob(inputText.replace(/\s/g, "")))
-        )
-        return { output: decoded, error: "", isValid: true }
-      }
-    } catch (error) {
-      let errorMessage = tErrors("conversionError")
-
-      if (mode === "decode") {
-        if (
-          error instanceof DOMException &&
-          error.name === "InvalidCharacterError"
-        ) {
-          errorMessage = tErrors("invalidBase64Text")
-        } else {
-          errorMessage = tErrors("base64DecodeError")
-        }
-      } else {
-        errorMessage = tErrors("textEncodeError")
-      }
-
-      return { output: "", error: errorMessage, isValid: false }
-    }
-  }, [inputText, mode, tErrors])
-
-  const handleModeSwitch = useCallback(() => {
-    const newMode: ConversionMode = mode === "encode" ? "decode" : "encode"
-    setMode(newMode)
-
-    // Sample mapping for both directions
-    const sampleMapping = [
-      {
-        key: "UZBEK_GREETING",
-        plain: SAMPLE_BASE64_DATA.UZBEK_GREETING,
-        encoded: SAMPLE_BASE64_ENCODED.UZBEK_GREETING
-      },
-      {
-        key: "JSON_SAMPLE",
-        plain: SAMPLE_BASE64_DATA.JSON_SAMPLE,
-        encoded: SAMPLE_BASE64_ENCODED.JSON_SAMPLE
-      },
-      {
-        key: "URL_SAMPLE",
-        plain: SAMPLE_BASE64_DATA.URL_SAMPLE,
-        encoded: SAMPLE_BASE64_ENCODED.URL_SAMPLE
-      },
-      {
-        key: "EMAIL_SAMPLE",
-        plain: SAMPLE_BASE64_DATA.EMAIL_SAMPLE,
-        encoded: SAMPLE_BASE64_ENCODED.EMAIL_SAMPLE
-      }
-    ]
-
-    // Check if current input matches any sample
-    const matchingSample = sampleMapping.find((sample) =>
-      mode === "encode"
-        ? sample.plain === inputText
-        : sample.encoded === inputText
-    )
-
-    if (matchingSample) {
-      // Switch to corresponding sample in new mode
-      setInputText(
-        newMode === "encode" ? matchingSample.plain : matchingSample.encoded
-      )
-    } else if (result.output && result.isValid) {
-      // If we have valid output, use it as input for the opposite mode
-      setInputText(result.output)
-    } else if (inputText.trim()) {
-      // If we have input text but no valid output, try to convert it anyway
-      // This handles cases where user has invalid input but we still want to swap
-      try {
-        if (mode === "encode") {
-          // Current mode is encode, switching to decode
-          // Try to decode current input if it looks like Base64
-          const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
-          if (base64Regex.test(inputText.replace(/\s/g, ""))) {
-            const decoded = decodeURIComponent(
-              escape(atob(inputText.replace(/\s/g, "")))
-            )
-            setInputText(decoded)
-          }
-          // If not valid Base64, keep current input
-        } else {
-          // Current mode is decode, switching to encode
-          // Encode current input
-          const encoded = btoa(unescape(encodeURIComponent(inputText)))
-          setInputText(encoded)
-        }
-      } catch (error) {
-        // If conversion fails, keep current input
-        // User will see the error in the new mode
+      const output = encodeBase64(input, urlSafe)
+      return {
+        output,
+        error: "",
+        bytes: byteLength(input),
+        outputBytes: output.length
       }
     }
-    // If no input text, do nothing (keep empty)
-  }, [mode, result, inputText])
 
-  const handleClear = useCallback(() => {
-    setInputText("")
-  }, [])
+    const decoded = decodeBase64(input)
+    return decoded.ok
+      ? {
+          output: decoded.text,
+          error: "",
+          bytes: byteLength(input),
+          outputBytes: decoded.byteCount
+        }
+      : { ...empty, error: t(`Errors.${decoded.reason}`) }
+  }, [source, input, mode, urlSafe, t])
 
-  const loadSampleText = useCallback((sample: string) => {
-    setInputText(sample)
-  }, [])
+  /**
+   * Two controls, two different jobs.
+   *
+   * `setMode` picks a direction and leaves the text alone. `switchMode` — the
+   * arrow between the panels — takes the RESULT back as input and flips.
+   * The first version wired the direction control to `switchMode` and ignored
+   * the value it was handed, which is the exact defect it had just removed
+   * from `GradientTabs`: correct only while there are exactly two options, and
+   * it made choosing a direction silently rewrite the visitor's input.
+   */
+  const switchMode = useCallback(() => {
+    setMode(mode === "encode" ? "decode" : "encode")
+    if (result.output) setInput(result.output)
+    else setSource({ kind: "text" })
+  }, [mode, result.output, setMode, setInput])
 
-  const handleFileUpload = useCallback(
-    async (file: File): Promise<void> => {
+  const clear = useCallback(() => {
+    setInput("")
+  }, [setInput])
+
+  const readFile = useCallback(
+    async (file: File) => {
+      setFileError(null)
+
+      if (file.size > MAX_FILE_BYTES) {
+        setFileError("tooLarge")
+        return
+      }
+
+      const isText = SUPPORTED_TEXT_TYPES.includes(file.type)
+      const isImage = SUPPORTED_IMAGE_TYPES.includes(file.type)
+
+      // Decoding an image is not a thing; encoding one is the only case where
+      // the source is not text at all.
+      if (!(isText || (mode === "encode" && isImage))) {
+        setFileError("unsupported")
+        return
+      }
+
       setIsProcessing(true)
-
       try {
-        // File size validation (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(tErrors("fileSizeError"))
-        }
-
-        // File type validation
-        const validTextTypes = ["text/plain", "application/json", "text/json"]
-        const validImageTypes = [
-          "image/jpeg",
-          "image/png",
-          "image/gif",
-          "image/webp"
-        ]
-
-        if (
-          mode === "encode" &&
-          [...validTextTypes, ...validImageTypes].includes(file.type)
-        ) {
-          if (validImageTypes.includes(file.type)) {
-            // Handle image files for encoding to base64
-            const reader = new FileReader()
-            reader.onload = (e) => {
-              const result = e.target?.result as string
-              const base64 = result.split(",")[1] // Remove data:image/...;base64, prefix
-              setInputText(base64)
-              setIsProcessing(false)
-            }
-            reader.onerror = () => {
-              throw new Error(tErrors("imageReadError"))
-            }
-            reader.readAsDataURL(file)
-          } else {
-            // Handle text files
-            const reader = new FileReader()
-            reader.onload = (e) => {
-              const content = e.target?.result as string
-              setInputText(content)
-              setIsProcessing(false)
-            }
-            reader.onerror = () => {
-              throw new Error(tErrors("fileReadError"))
-            }
-            reader.readAsText(file)
-          }
-        } else if (mode === "decode" && validTextTypes.includes(file.type)) {
-          // For decode mode, only accept text files
-          const reader = new FileReader()
-          reader.onload = (e) => {
-            const content = e.target?.result as string
-            setInputText(content)
-            setIsProcessing(false)
-          }
-          reader.onerror = () => {
-            throw new Error("Fayl mazmunini o'qishda xatolik yuz berdi.")
-          }
-          reader.readAsText(file)
+        if (isImage) {
+          const bytes = new Uint8Array(await file.arrayBuffer())
+          setInputText("")
+          setSource({
+            kind: "file",
+            name: file.name,
+            // A DATA URI, not the bare payload. Nobody encodes a PNG to admire
+            // the base64 — they encode it to inline it in CSS or an `<img>`,
+            // and the prefix is the half of that string a person cannot guess.
+            // The decoder strips the prefix, so the round trip still works.
+            encoded: `data:${file.type};base64,${encodeBytes(bytes)}`,
+            bytes: bytes.length
+          })
         } else {
-          throw new Error(
-            mode === "encode"
-              ? "Faqat matn va rasm fayllarni yuklash mumkin."
-              : "Dekodlash uchun faqat matn fayllarni yuklash mumkin."
-          )
+          setInput(await file.text())
         }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Faylni yuklashda xatolik yuz berdi."
-        alert(errorMessage)
+      } catch {
+        setFileError("unreadable")
+      } finally {
+        // `finally`, so the tool cannot get stuck on "processing" — which is
+        // exactly what the old `throw`-inside-`onerror` did.
         setIsProcessing(false)
       }
     },
-    [mode]
+    [mode, setInput, setInputText]
   )
 
-  const downloadResult = useCallback(() => {
-    if (!result.isValid || !result.output) return
-
-    try {
-      const blob = new Blob([result.output], {
-        type: "text/plain; charset=utf-8"
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `base64-${mode === "encode" ? "kodlangan" : "dekodlangan"}-${Date.now()}.txt`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      alert("Faylni yuklab olishda xatolik yuz berdi.")
-    }
-  }, [result, mode])
-
-  const canDownload = Boolean(result.output && result.isValid)
-
-  const acceptedFileTypes =
-    mode === "encode" ? ".txt,.json,image/*" : ".txt,.json"
+  const download = useCallback(() => {
+    if (!result.output) return
+    const blob = new Blob([result.output], {
+      type: "text/plain; charset=utf-8"
+    })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    // Translated: the filename was hardcoded Uzbek on both locales.
+    link.download = `${t(`Download.${mode}`)}.txt`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }, [result.output, mode, t])
 
   return {
-    // State
-    inputText,
-    setInputText,
+    input,
+    setInput,
     mode,
     setMode,
+    urlSafe,
+    setUrlSafe,
     isProcessing,
     result,
-    // Actions
-    handleModeSwitch,
-    handleClear,
-    handleFileUpload,
-    downloadResult,
-    loadSampleText,
-    // Computed
-    canDownload,
-    acceptedFileTypes,
+    /** Set when the source is an uploaded image rather than typed text. */
+    fileName: source.kind === "file" ? source.name : "",
+    fileError: fileError ? t(`Errors.${fileError}`) : "",
+    switchMode,
+    clear,
+    loadSample: setInput,
+    readFile,
+    download,
+    canDownload: Boolean(result.output),
+    acceptedFileTypes:
+      mode === "encode"
+        ? [...SUPPORTED_TEXT_TYPES, ...SUPPORTED_IMAGE_TYPES].join(",")
+        : SUPPORTED_TEXT_TYPES.join(","),
     samples
   }
 }

@@ -1,108 +1,95 @@
 {
   "DeviceInfoPage": {
     "ToolHeader": {
-      "title": "Device Information",
-      "description": "Get detailed information about your browser, device and operating system"
+      "title": "Device info",
+      "description": "Everything the site you just opened knows about you without asking: browser, system, screen, network, even which theme you prefer. Nothing is sent to a server — it is read in your browser and stays there."
     },
-    "ControlPanel": {
-      "title": "Tool Control",
-      "status": "Ready",
-      "deviceInfoTitle": "Device information",
-      "deviceInfoDesc": "Detailed information about current browser and device",
-      "refreshButton": "Refresh",
-      "copyAllButton": "Copy All",
-      "copiedAll": "Copied!",
-      "downloadButton": "JSON",
-      "loadingTitle": "Loading data...",
-      "loadingDesc": "Please wait..."
+    "controls": {
+      "refresh": "Refresh",
+      "download": "Save JSON",
+      "copyReport": "As a report (Markdown)",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyJson": "As JSON"
     },
-    "BrowserInfo": {
-      "title": "Browser Information",
-      "status": "Browser",
-      "browserName": "Browser name",
-      "version": "Version",
-      "userAgent": "User Agent"
+    "copyGroup": "Copy this group",
+    "groups": {
+      "browser": "Browser",
+      "system": "System",
+      "display": "Display and window",
+      "device": "Device",
+      "network": "Network",
+      "preferences": "Preferences"
     },
-    "SystemInfo": {
-      "title": "System Information",
-      "status": "System",
-      "platform": "Platform",
-      "language": "Primary language",
-      "timezone": "Timezone",
-      "onlineStatus": "Online status",
+    "rows": {
+      "name": "Name and version",
+      "engine": "Engine",
+      "source": "Source",
+      "userAgent": "User-Agent",
+      "os": "Operating system",
+      "architecture": "Architecture",
+      "model": "Model",
+      "timezone": "Time zone",
+      "language": "Language",
+      "languages": "Language list",
+      "cookies": "Cookies enabled",
+      "screen": "Screen",
+      "viewport": "Window (viewport)",
+      "pixelRatio": "Pixel ratio",
+      "colorDepth": "Colour depth",
+      "orientation": "Orientation",
+      "kind": "Type",
+      "touchPoints": "Touch points",
+      "cores": "CPU cores",
+      "memory": "Memory",
       "online": "Online",
-      "offline": "Offline",
-      "cookieEnabled": "Cookies enabled",
+      "effectiveType": "Connection quality",
+      "downlink": "Estimated speed",
+      "rtt": "Round-trip time",
+      "saveData": "Data saver",
+      "colorScheme": "Theme",
+      "reducedMotion": "Reduced motion",
+      "contrast": "Contrast",
+      "forcedColors": "Forced colours",
+      "visualViewport": "Visible area",
+      "safeArea": "Safe area (T/R/B/L)",
+      "doNotTrack": "Do Not Track",
+      "globalPrivacyControl": "Global Privacy Control"
+    },
+    "values": {
       "yes": "Yes",
       "no": "No",
-      "supportedLanguages": "Supported languages"
+      "unavailable": "not reported",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
     },
-    "ScreenInfo": {
-      "title": "Screen Information",
-      "status": "Screen",
-      "screenSize": "Screen size",
-      "availableSize": "Available size",
-      "colorDepth": "Color depth",
-      "pixelRatio": "Pixel ratio",
-      "orientation": "Orientation"
+    "privacy": {
+      "title": "What this page is actually showing you",
+      "body": "You were not asked for permission for a single value above — any site can read all of them silently. On their own they are harmless, but combined they form a fingerprint that is rarely shared by two people: screen size, time zone, language list, core count and your theme preference. That is why clearing cookies or opening a private window does not stop tracking on its own. None of this data leaves the page: it is read in your browser and stays there."
     },
-    "DeviceInfo": {
-      "title": "Device Features",
-      "status": "Device",
-      "deviceType": "Device type",
-      "touchScreen": "Touch screen",
-      "touchSupported": "Supported",
-      "touchNotSupported": "Not supported",
-      "maxTouchPoints": "Max touch points",
-      "mobileDevice": "Mobile device",
-      "yes": "Yes",
-      "no": "No"
-    },
-    "ConnectionInfo": {
-      "title": "Internet Connection",
-      "status": "Connection",
-      "connectionType": "Connection type",
-      "speed": "Speed (Mbps)",
-      "latency": "Latency (ms)",
-      "dataSaver": "Data saver mode",
-      "enabled": "Enabled",
-      "disabled": "Disabled"
-    },
-    "InfoSection": {
-      "title": "About Device Information",
-      "status": "Information",
-      "usagePlacesTitle": "Main usage areas:",
-      "professionalTipsTitle": "Professional tips:",
-      "noteTitle": "Tip:",
-      "noteText": "Download this information in JSON format and use it for web analytics and performance monitoring.",
-      "usagePlaces": {
-        "webDev": {
-          "title": "Web Development:",
-          "desc": "Screen dimensions for responsive design"
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "fingerprint": {
+          "question": "What is a fingerprint, and is this page part of it?",
+          "answer": "A fingerprint is the set of signals that lets a site recognise your browser with no cookie at all. Screen size says nothing on its own, and neither does a time zone — but a few dozen such values together can single you out among millions. This page shows exactly those values and sends none of them anywhere: the point is to show you how the technique works, not to use it."
         },
-        "browserTesting": {
-          "title": "Browser Testing:",
-          "desc": "Check compatibility across different browsers"
+        "uaFrozen": {
+          "question": "Why is the browser version incomplete?",
+          "answer": "Chrome froze the version in its User-Agent string in 2022 — the minor numbers read 0.0.0 for everyone, because that precise number was one of the strongest fingerprinting signals. The real version now comes from User-Agent Client Hints, which this page asks for first. The “Source” row tells you which one answered: hints means the exact value, ua means it was parsed out of the frozen string."
         },
-        "performance": {
-          "title": "Performance:",
-          "desc": "Optimize based on device capabilities"
+        "whyMissing": {
+          "question": "Why do some rows say “not reported”?",
+          "answer": "Because parts of this are Chromium-only. Device memory, connection quality and Client Hints do not exist in Firefox or Safari, which decline to implement them precisely to reduce fingerprinting. Those rows are kept rather than hidden: what your browser refuses to say is an answer too."
         },
-        "analytics": {
-          "title": "Analytics:",
-          "desc": "User device statistics"
+        "screenVsViewport": {
+          "question": "Why are the screen and window sizes different?",
+          "answer": "The screen is your whole monitor. The window is the area the page is actually drawn in, with the browser chrome, any sidebars and the scrollbar taken off. CSS media queries measure the second one, so that is the number to design against. Resize the window and watch the value above change immediately."
         },
-        "support": {
-          "title": "Support:",
-          "desc": "Technical support and debugging"
+        "accuracy": {
+          "question": "How much of this can I trust?",
+          "answer": "The device type and operating system are inferences drawn from the User-Agent string, which can be changed and often is. An iPad, for instance, presents itself as a Mac — which is why the touch-point count is taken into account here. The screen, window, languages and preferences are not inferences: they are read directly from the browser."
         }
-      },
-      "tips": {
-        "tip1": "Use User Agent information for server-side detection",
-        "tip2": "Analyze screen resolution for responsive breakpoints",
-        "tip3": "Use device memory and CPU cores for performance tuning",
-        "tip4": "Consider connection type for lazy loading strategy",
-        "tip5": "Check touch support for mobile-first design"
       }
     }
   }

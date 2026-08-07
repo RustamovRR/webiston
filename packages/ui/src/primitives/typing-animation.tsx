@@ -1,6 +1,9 @@
 "use client"
 
-import { type MotionProps, motion } from "motion/react"
+// `framer-motion`, not `motion/react`: `motion` is a thin re-export whose only
+// dependency IS `framer-motion`, and this file was the single import of it in
+// the repo against 22 of the other. One name for one library.
+import { type MotionProps, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { cn } from "../utils/cn"
 

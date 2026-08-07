@@ -3,9 +3,17 @@
 # ===================
 # Dependencies
 # ===================
+# All node_modules directories (root and nested)
 node_modules/
+**/node_modules/
+
+# Package manager files
 .pnp
 .pnp.js
+.yarn/install-state.gz
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
 .yarn/install-state.gz
 
 # ===================
@@ -15,43 +23,91 @@ node_modules/
 .next/
 out/
 
-# Package builds
-packages/*/dist/
+# Package builds (all dist/build directories)
+dist/
+build/
+**/dist/
+**/build/
 
 # Extension builds
-apps/extensions/*/.output/
-apps/extensions/*/.wxt/
-
-# General
-build/
-dist/
+.output/
+.wxt/
+**/.output/
+**/.wxt/
 
 # ===================
 # Testing
 # ===================
 coverage/
+**/coverage/
+.nyc_output/
 
 # ===================
 # Cache
 # ===================
 .turbo/
 .cache/
+**/.cache/
 *.tsbuildinfo
+**/*.tsbuildinfo
+.eslintcache
 
 # ===================
 # Environment
 # ===================
 .env
 .env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # ===================
 # IDE & OS
 # ===================
+# macOS
 .DS_Store
-*.pem
+**/.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# IDEs
 .idea/
+# Personal editor state is ignored, but shared project config is committed:
+# settings.json pins Biome as the formatter for everyone on the repo.
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 *.swp
 *.swo
+*.swn
+*.bak
+*.tmp
+*.temp
+*.log
+*.sublime-project
+*.sublime-workspace
+
+# ===================
+# Certificates & Keys
+# ===================
+*.pem
+*.key
+*.cert
+*.crt
 
 # ===================
 # Debug logs
@@ -60,6 +116,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
 # ===================
 # Vercel
@@ -70,3 +127,9 @@ pnpm-debug.log*
 # TypeScript
 # ===================
 next-env.d.ts
+
+# ===================
+# Misc
+# ===================
+*.orig
+.history/

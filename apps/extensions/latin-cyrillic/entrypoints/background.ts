@@ -1,4 +1,4 @@
-import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
+import { convertWithPreference } from "@webiston/transliteration"
 
 export default defineBackground(() => {
   // Extension o'rnatilganda yoki yangilanganda context menu yaratish
@@ -33,29 +33,33 @@ export default defineBackground(() => {
     const text = info.selectionText
     let result: string
 
+    // One policy, shared with the popup, the in-page popover and the web tool.
     switch (info.menuItemId) {
       case "convert-selection":
-        result = isCyrillicText(text) ? toLatin(text) : toCyrillic(text)
+        result = convertWithPreference(text, "auto").text
         break
       case "convert-to-cyrillic":
-        result = toCyrillic(text)
+        result = convertWithPreference(text, "latin-to-cyrillic").text
         break
       case "convert-to-latin":
-        result = toLatin(text)
+        result = convertWithPreference(text, "cyrillic-to-latin").text
         break
       default:
         return
     }
 
-    // Content script'ga natijani yuborish
+    // The content script writes the result into the selection when it can and
+    // falls back to the clipboard when it cannot. This listener existed on
+    // the sending side only — content.ts handled CONVERT_SELECTION and
+    // nothing else, so every context-menu click was a no-op.
     try {
       await browser.tabs.sendMessage(tab.id, {
         type: "REPLACE_SELECTION",
         text: result
       })
     } catch {
-      // Content script yuklanmagan bo'lsa, clipboard'ga nusxalash
-      console.log("Content script not ready, copying to clipboard")
+      // No content script on this page (chrome:// pages, the web store).
+      console.warn("Content script unavailable; conversion not delivered")
     }
   })
 

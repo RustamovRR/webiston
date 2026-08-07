@@ -127,6 +127,9 @@ export const COLOR_NAMES: Record<string, string> = {
   pink: "#ffc0cb",
   plum: "#dda0dd",
   powderblue: "#b0e0e6",
+  // The one CSS named colour this list was missing — added to the spec in
+  // 2014, so `rebeccapurple` is legal CSS that the converter used to reject.
+  rebeccapurple: "#663399",
   rosybrown: "#bc8f8f",
   royalblue: "#4169e1",
   saddlebrown: "#8b4513",

@@ -1,9 +1,23 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
-import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
+import {
+  convertWithPreference,
+  type DirectionPreference,
+  oppositeDirection,
+  resolveDirection
+} from "@webiston/transliteration"
+import {
+  SegmentedControl,
+  type SegmentedOption
+} from "@webiston/ui/composites/SegmentedControl"
 import { useCallback, useEffect, useState } from "react"
 
-type Direction = "auto" | "to-cyrillic" | "to-latin"
 type Theme = "light" | "dark" | "system"
+
+/** The same three choices, in the same order, as the web tool. */
+const DIRECTION_OPTIONS: SegmentedOption<DirectionPreference>[] = [
+  { value: "auto", label: "Avto" },
+  { value: "latin-to-cyrillic", label: "→ Кирилл" },
+  { value: "cyrillic-to-latin", label: "→ Lotin" }
+]
 
 // Icons
 function SunIcon() {
@@ -138,17 +152,32 @@ function CursorIcon() {
   )
 }
 
+/**
+ * The manifest binds Command+Shift+L on macOS and Ctrl+Shift+L elsewhere
+ * (wxt.config.ts) — the footer hint must show the binding THIS machine has,
+ * not the Mac one to everyone.
+ */
+const SHORTCUT_LABEL = /mac/i.test(navigator.platform)
+  ? "⌘+Shift+L"
+  : "Ctrl+Shift+L"
+
 export default function App() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
-  const [direction, setDirection] = useState<Direction>("auto")
+  // The same three-state preference the web tool and the in-page popover use.
+  const [direction, setDirection] = useState<DirectionPreference>("auto")
   const [copied, setCopied] = useState(false)
   const [floatingEnabled, setFloatingEnabled] = useState(true)
   const [theme, setTheme] = useState<Theme>("system")
 
-  // Load settings
+  // Load settings.
+  //
+  // `browser`, not `chrome`: the background script and the content script both
+  // use WXT's cross-browser `browser` namespace and only this file reached for
+  // the Chrome global — which is untyped here, so these three lines were the
+  // extension's only type errors and would have to be rewritten for Firefox.
   useEffect(() => {
-    chrome.storage.local
+    browser.storage.local
       .get(["quickConvertEnabled", "theme"])
       .then((result) => {
         setFloatingEnabled(result.quickConvertEnabled !== false)
@@ -156,42 +185,40 @@ export default function App() {
       })
   }, [])
 
+  // One definition of "is it dark right now". There were two — one inside the
+  // effect and one near the render — and only the second one guarded against
+  // `window` being undefined.
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches)
+
   // Apply theme
   useEffect(() => {
-    const root = document.documentElement
-    const isDark =
-      theme === "dark" ||
-      (theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-
-    root.classList.toggle("dark", isDark)
-    chrome.storage.local.set({ theme })
-  }, [theme])
+    document.documentElement.classList.toggle("dark", isDark)
+    browser.storage.local.set({ theme })
+  }, [theme, isDark])
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"))
+    // Resolve "system" before flipping. Without this the first click on a
+    // light-mode machine went "system" → "light", which is what was already
+    // showing — the button appeared dead until you pressed it twice.
+    setTheme(() => (isDark ? "light" : "dark"))
   }
 
   const toggleFloating = async () => {
     const newValue = !floatingEnabled
     setFloatingEnabled(newValue)
-    await chrome.storage.local.set({ quickConvertEnabled: newValue })
+    await browser.storage.local.set({ quickConvertEnabled: newValue })
   }
 
-  const convert = useCallback((text: string, dir: Direction) => {
+  const convert = useCallback((text: string, dir: DirectionPreference) => {
     if (!text.trim()) {
       setOutput("")
       return
     }
-    let result: string
-    if (dir === "auto") {
-      result = isCyrillicText(text) ? toLatin(text) : toCyrillic(text)
-    } else if (dir === "to-cyrillic") {
-      result = toCyrillic(text)
-    } else {
-      result = toLatin(text)
-    }
-    setOutput(result)
+    setOutput(convertWithPreference(text, dir).text)
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -200,7 +227,7 @@ export default function App() {
     convert(text, direction)
   }
 
-  const handleDirectionChange = (dir: Direction) => {
+  const handleDirectionChange = (dir: DirectionPreference) => {
     setDirection(dir)
     convert(input, dir)
   }
@@ -212,21 +239,25 @@ export default function App() {
     setTimeout(() => setCopied(false), 1500)
   }
 
+  /**
+   * Swap moves the result into the input and turns the conversion around.
+   *
+   * It used to exchange the two boxes without reconverting, which left the
+   * output pane showing a value that was not a conversion of the input — the
+   * web tool and this popup disagreed about what the same button did.
+   */
   const handleSwap = () => {
+    if (!output) return
+    const next = oppositeDirection(resolveDirection(input, direction))
+    setDirection(next)
     setInput(output)
-    setOutput(input)
+    convert(output, next)
   }
 
   const handleClear = () => {
     setInput("")
     setOutput("")
   }
-
-  const isDark =
-    theme === "dark" ||
-    (theme === "system" &&
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
 
   return (
     <div
@@ -236,9 +267,9 @@ export default function App() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-sky-400 to-sky-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-white"
+              className="w-5 h-5 text-primary-foreground"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -256,7 +287,7 @@ export default function App() {
               href="https://webiston.uz/tools/latin-cyrillic"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] hover:text-sky-500 transition-colors"
+              className="text-[11px] hover:text-primary transition-colors"
               style={{ color: "var(--muted-foreground)" }}
             >
               webiston.uz
@@ -316,35 +347,18 @@ export default function App() {
         </button>
       </div>
 
-      {/* Direction Selector */}
-      <div
-        className="flex gap-1 mb-4 p-1 rounded-xl"
-        style={{ background: "var(--muted)" }}
-      >
-        {[
-          { value: "auto", label: "Avto" },
-          { value: "to-cyrillic", label: "→ Кирилл" },
-          { value: "to-latin", label: "→ Lotin" }
-        ].map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() => handleDirectionChange(opt.value as Direction)}
-            className="flex-1 py-2 px-3 text-xs font-medium rounded-lg transition-all duration-200"
-            style={{
-              background:
-                direction === opt.value ? "var(--background)" : "transparent",
-              color:
-                direction === opt.value
-                  ? "var(--foreground)"
-                  : "var(--muted-foreground)",
-              boxShadow:
-                direction === opt.value ? "0 1px 3px rgba(0,0,0,0.08)" : "none"
-            }}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
+      {/* Direction Selector — the SAME control the web tool uses.
+          The hand-rolled version here put the highlight on the active option
+          itself, so there was nothing to animate between and the selection
+          jumped from tab to tab. It also had no radio semantics and no
+          keyboard support. Both surfaces now share one implementation. */}
+      <SegmentedControl
+        className="mb-4 w-full"
+        label="Konvertatsiya yo'nalishi"
+        options={DIRECTION_OPTIONS}
+        value={direction}
+        onChange={handleDirectionChange}
+      />
 
       {/* Input Panel */}
       <div className="mb-3">
@@ -384,7 +398,7 @@ export default function App() {
         <button
           onClick={handleSwap}
           disabled={!output}
-          className="p-2.5 rounded-full border transition-all duration-200 hover:border-sky-500 hover:text-sky-500 disabled:opacity-30 disabled:hover:border-current disabled:hover:text-current"
+          className="p-2.5 rounded-full border transition-all duration-200 hover:border-ring hover:text-primary disabled:opacity-30 disabled:hover:border-current disabled:hover:text-current"
           style={{
             color: "var(--muted-foreground)",
             borderColor: "var(--border)",
@@ -408,11 +422,9 @@ export default function App() {
           {output && (
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200"
-              style={{
-                background: copied ? "rgba(16, 185, 129, 0.1)" : "transparent",
-                color: copied ? "#10b981" : "var(--muted-foreground)"
-              }}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                copied ? "bg-success/10 text-success" : "text-muted-foreground"
+              }`}
               title="Nusxalash"
             >
               {copied ? <CheckIcon /> : <CopyIcon />}
@@ -424,14 +436,9 @@ export default function App() {
           value={output}
           readOnly
           placeholder="Natija shu yerda ko'rinadi..."
-          className="w-full h-28 p-3.5 text-sm rounded-xl resize-none"
-          style={{
-            background: output ? "rgba(14, 165, 233, 0.05)" : "var(--muted)",
-            border: output
-              ? "1px solid rgba(14, 165, 233, 0.2)"
-              : "1px solid var(--border)",
-            color: "var(--foreground)"
-          }}
+          className={`w-full h-28 p-3.5 text-sm rounded-xl resize-none border text-foreground ${
+            output ? "bg-primary/5 border-primary/25" : "bg-muted border-border"
+          }`}
         />
       </div>
 
@@ -446,7 +453,7 @@ export default function App() {
             className="px-1.5 py-0.5 rounded text-[10px] font-mono"
             style={{ background: "var(--muted)" }}
           >
-            ⌘+Shift+L
+            {SHORTCUT_LABEL}
           </kbd>{" "}
           tanlangan matnni konvertatsiya
         </p>

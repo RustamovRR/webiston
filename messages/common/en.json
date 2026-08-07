@@ -5,8 +5,23 @@
       "description": "A modern platform for learning programming. High-quality, free courses on React and useful tools for developers in Uzbek and English.",
       "keywords": "free courses, programming, React, JavaScript, developer tools, learn to code, Uzbek IT, free education"
     },
-    "title": "A deep dive into the world of web technologies",
-    "description": "Webiston — free education and useful tools for modern web technologies. All the resources you need for learning and development in one place.",
+    "titleLead": "A deep dive into the world of",
+    "titleAccent": "web technologies",
+    "description": "Free, high-quality books and everyday tools for developers — from React and JavaScript to artificial intelligence. Everything you need to learn, in one place.",
+    "eyebrowBadge": "New",
+    "eyebrowText": "The AI Engineering book — in Uzbek",
+    "palette": {
+      "label": "Books",
+      "hints": "↑↓ select · ⏎ open · esc close",
+      "labelTools": "Tools",
+      "queryTools": "gener",
+      "queryConverters": "conve"
+    },
+    "stats": {
+      "chapters": "chapters",
+      "books": "books",
+      "tools": "tools"
+    },
     "startLearning": "Start Learning",
     "usefulTools": "Useful Tools",
     "reactSectionTitle": "Fluent React",
@@ -15,7 +30,11 @@
     "toolsSectionDescription": "A collection of handy online tools to make every developer's daily tasks easier.",
     "jsSectionTitle": "JavaScript: The Definitive Guide",
     "jsSectionDescription": "The complete Uzbek translation of the classic masterpiece on JavaScript. From the foundational principles to the most advanced features—everything you need in a single guide.",
-    "aiSectionDescription": "A comprehensive guide to AI engineering. Master fundamental models, prompt engineering, evaluation methodologies, and modern AI technologies at a professional level—your complete resource for building with AI."
+    "aiSectionDescription": "A comprehensive guide to AI engineering. Master fundamental models, prompt engineering, evaluation methodologies, and modern AI technologies at a professional level—your complete resource for building with AI.",
+    "sectionBooks": "Books",
+    "sectionTools": "Useful tools",
+    "allChapters": "All chapters",
+    "allTools": "All tools"
   },
   "Metadata": {
     "description": "Webiston - In-depth knowledge and practical guides on Web Technologies, React, Next.js, JavaScript. Learn programming with us.",
@@ -23,7 +42,22 @@
   },
   "Header": {
     "books": "Books",
-    "tools": "Useful Tools"
+    "tools": "Useful Tools",
+    "language": "Choose a language",
+    "current": "current language",
+    "languageHint": "Switching keeps you on this page.",
+    "allBooks": "All books",
+    "allBooksDescription": "The full list of all three books and their chapters.",
+    "bookDescriptions": {
+      "ai-engineering": "A complete guide to building with AI, in depth.",
+      "javascript-definitive-guide": "The definitive guide to JavaScript, translated in full.",
+      "fluent-react": "Advanced React knowledge and the patterns behind it."
+    },
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "chapters": "Chapters",
+    "browse": "Browse"
   },
   "Common": {
     "stats": {
@@ -34,7 +68,89 @@
     "processing": "Processing...",
     "resultWillAppear": "Result will appear here.",
     "backToTools": "Back to Tools",
-    "clear": "Clear"
+    "clear": "Clear",
+    "error": "Error",
+    "toggleTheme": "Toggle theme",
+    "enterData": "Enter some data",
+    "loading": "Loading...",
+    "faqTitle": "Frequently asked questions",
+    "media": {
+      "kind": {
+        "camera": "camera",
+        "microphone": "microphone"
+      },
+      "prompt": {
+        "camera": {
+          "title": "Test your camera here",
+          "body": "Pressing the button asks your browser for camera access. The video stays on this device — no frame or recording is ever sent to a server.",
+          "action": "Turn on the camera"
+        },
+        "microphone": {
+          "title": "Test your microphone here",
+          "body": "Pressing the button asks your browser for microphone access. The audio stays on this device — nothing is sent to a server.",
+          "action": "Turn on the microphone"
+        }
+      },
+      "starting": "Requesting...",
+      "retry": "Try again",
+      "alreadyAllowed": "This site is already allowed",
+      "willAsk": "Your browser will ask — that dialog is the browser's, not ours",
+      "stayedOnPrevious": "You are still on the previous device.",
+      "failure": {
+        "denied": {
+          "title": "Permission was refused",
+          "advice": "Your browser is blocking {kind} access. Click the lock icon in the address bar, set {kind} to Allow, and reload the page."
+        },
+        "notFound": {
+          "title": "No device found",
+          "advice": "There is no working {kind} on this computer. If it is an external device, check that it is plugged in — the list updates by itself once it is."
+        },
+        "inUse": {
+          "title": "The device is busy",
+          "advice": "Another application is holding the {kind}. Close Zoom, Meet, Telegram or whatever else has it open, then try again."
+        },
+        "constraints": {
+          "title": "The device cannot do that",
+          "advice": "The selected {kind} does not support the quality that was requested. Pick a lower setting or a different device."
+        },
+        "insecureContext": {
+          "title": "A secure connection is required",
+          "advice": "Browsers only grant {kind} access over HTTPS. Open this page from an https:// address."
+        },
+        "unsupported": {
+          "title": "This browser cannot do it",
+          "advice": "This browser has no API for {kind} access. Open the page in a current Chrome, Edge, Firefox or Safari."
+        },
+        "unknown": {
+          "title": "The device could not be opened",
+          "advice": "The browser did not say why. Reload and try again; if it persists, select a different {kind}."
+        }
+      },
+      "deviceLabel": {
+        "camera": "Camera",
+        "microphone": "Microphone"
+      },
+      "unnamedDevice": {
+        "camera": "Camera {index}",
+        "microphone": "Microphone {index}"
+      }
+    },
+    "zoomIn": "Zoom image in",
+    "zoomOut": "Close image"
+  },
+  "Search": {
+    "title": "Search the site",
+    "placeholder": "Search...",
+    "dialogPlaceholder": "Search across topics and code...",
+    "loading": "Searching...",
+    "initialHint": "Use search to find the topic you need, fast.",
+    "noResultsTitle": "No results found",
+    "noResultsHint": "Nothing matched \"{query}\". Try a different word.",
+    "contentType": {
+      "article": "article",
+      "topic": "topic"
+    },
+    "hints": "↑↓ select · ⏎ open · esc close"
   },
   "Filters": {
     "allTools": "All Tools",
@@ -48,6 +164,8 @@
     "utilities": "Utilities"
   },
   "Footer": {
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "tagline": "Free books on modern web technologies and everyday developer tools — in Uzbek.",
+    "allTools": "All tools"
   }
 }

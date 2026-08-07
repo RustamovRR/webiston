@@ -34,6 +34,17 @@ export interface ToolCategory {
   tools: Tool[]
 }
 
+/**
+ * The tools, in the order they are shown.
+ *
+ * The rule is "how likely is someone to arrive looking for this", descending —
+ * so the list stops being arbitrary:
+ *
+ * 1. The two the owner's analytics actually show traffic for.
+ * 2. Tools a visitor comes to the site FOR — a formatter, a password, a colour.
+ * 3. Tools a visitor happens to use once — what screen am I on, what is my IP,
+ *    does my microphone work. Useful, but nobody searches for them twice.
+ */
 export const TOOLS_LIST: Tool[] = [
   {
     tKey: "latinCyrillic",
@@ -60,18 +71,26 @@ export const TOOLS_LIST: Tool[] = [
     audience: "developer"
   },
   {
+    tKey: "passwordGenerator",
+    href: "/tools/password-generator",
+    icon: Lock,
+    color: "bg-cyan-500/20",
+    category: "generators",
+    audience: "general"
+  },
+  {
+    tKey: "colorConverter",
+    href: "/tools/color-converter",
+    icon: Palette,
+    color: "bg-pink-500/20",
+    category: "converters",
+    audience: "general"
+  },
+  {
     tKey: "base64Converter",
     href: "/tools/base64-converter",
     icon: Hash,
     color: "bg-purple-500/20",
-    category: "converters",
-    audience: "developer"
-  },
-  {
-    tKey: "urlEncoder",
-    href: "/tools/url-encoder",
-    icon: Link,
-    color: "bg-orange-500/20",
     category: "converters",
     audience: "developer"
   },
@@ -84,12 +103,12 @@ export const TOOLS_LIST: Tool[] = [
     audience: "developer"
   },
   {
-    tKey: "colorConverter",
-    href: "/tools/color-converter",
-    icon: Palette,
-    color: "bg-pink-500/20",
+    tKey: "urlEncoder",
+    href: "/tools/url-encoder",
+    icon: Link,
+    color: "bg-orange-500/20",
     category: "converters",
-    audience: "general"
+    audience: "developer"
   },
   {
     tKey: "hashGenerator",
@@ -108,10 +127,18 @@ export const TOOLS_LIST: Tool[] = [
     audience: "developer"
   },
   {
-    tKey: "passwordGenerator",
-    href: "/tools/password-generator",
-    icon: Lock,
-    color: "bg-cyan-500/20",
+    tKey: "ogMetaGenerator",
+    href: "/tools/og-meta-generator",
+    icon: Share2,
+    color: "bg-blue-500/20",
+    category: "generators",
+    audience: "developer"
+  },
+  {
+    tKey: "loremIpsum",
+    href: "/tools/lorem-ipsum",
+    icon: FileType,
+    color: "bg-gray-500/20",
     category: "generators",
     audience: "general"
   },
@@ -124,14 +151,6 @@ export const TOOLS_LIST: Tool[] = [
     audience: "general"
   },
   {
-    tKey: "ogMetaGenerator",
-    href: "/tools/og-meta-generator",
-    icon: Share2,
-    color: "bg-blue-500/20",
-    category: "generators",
-    audience: "developer"
-  },
-  {
     tKey: "screenResolution",
     href: "/tools/screen-resolution",
     icon: Ruler,
@@ -139,15 +158,6 @@ export const TOOLS_LIST: Tool[] = [
     category: "analyzers",
     audience: "general"
   },
-  {
-    tKey: "loremIpsum",
-    href: "/tools/lorem-ipsum",
-    icon: FileType,
-    color: "bg-gray-500/20",
-    category: "generators",
-    audience: "general"
-  },
-
   {
     tKey: "ipInfo",
     href: "/tools/ip-info",
@@ -172,6 +182,8 @@ export const TOOLS_LIST: Tool[] = [
     category: "utilities",
     audience: "general"
   }
+  // The four parked tools stay commented here, not deleted: a `__` route
+  // folder is a deliberate parking, not dead code. See the backlog.
   // {
   //   tKey: 'keycodeInfo',
   //   href: '/tools/keycode-info',

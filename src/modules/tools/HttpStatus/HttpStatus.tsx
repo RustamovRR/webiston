@@ -1,29 +1,25 @@
 "use client"
 
-import React from "react"
 import { motion } from "framer-motion"
 import {
-  Search,
+  BookOpen,
   Filter,
   Globe,
-  Code,
   Info,
-  BookOpen,
-  Zap,
-  Shield,
   RefreshCw,
-  Server
+  Search,
+  Server,
+  Shield,
+  Zap
 } from "lucide-react"
-
+// Shared Components
+import { SectionTitle, StatsDisplay, ToolHeader } from "@/components/shared"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 // UI Components
 import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { CodeHighlight } from "@/components/ui/code-highlight"
-
-// Shared Components
-import { ToolHeader, SectionTitle, StatsDisplay } from "@/components/shared"
+import { Input } from "@/components/ui/input"
 
 // Utils & Hooks
 import { useHttpStatus } from "./hooks/useHttpStatus"
@@ -113,10 +109,12 @@ const HttpStatus = () => {
                 </div>
                 <div className="space-y-2">
                   {categories.map((category) => (
-                    <div
+                    <button
                       key={category.value}
+                      type="button"
+                      aria-pressed={selectedCategory === category.value}
                       onClick={() => handleCategoryChange(category.value)}
-                      className={`group relative cursor-pointer overflow-hidden rounded-lg border transition-all duration-300 ${
+                      className={`group relative w-full cursor-pointer overflow-hidden rounded-lg border text-left transition-all duration-300 ${
                         selectedCategory === category.value
                           ? "border-blue-500 bg-blue-600/20 shadow-lg shadow-blue-500/20"
                           : "border-zinc-700 bg-zinc-800/30 hover:border-zinc-600 hover:bg-zinc-700/50"
@@ -166,7 +164,7 @@ const HttpStatus = () => {
                           }}
                         />
                       )}
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

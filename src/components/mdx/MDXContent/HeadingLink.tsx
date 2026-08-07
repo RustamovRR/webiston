@@ -1,6 +1,6 @@
-import React from "react"
-import Link from "next/link"
 import { LinkIcon } from "lucide-react"
+import Link from "next/link"
+import type React from "react"
 
 interface HeadingLinkProps {
   id?: string
@@ -37,8 +37,10 @@ export default function HeadingLink({
         className="flex cursor-pointer items-center gap-2 no-underline"
       >
         <span>{children}</span>
+        {/* Four palette classes and two `dark:` variants became one token pair:
+            `text-muted-foreground` → `hover:text-foreground`. */}
         <LinkIcon
-          className={`${iconSizes[level]} text-slate-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-100`}
+          className={`${iconSizes[level]} text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100 hover:text-foreground`}
         />
       </Link>
     </Tag>

@@ -1,78 +1,20 @@
 /**
- * File upload/download types
+ * File import/export types
  */
 
-// Supported file types
-export type SupportedFileType = "txt" | "pdf" | "docx"
-
-// File processing status
-export type FileProcessingStatus =
+/** Where the import/export pipeline is right now. */
+export type FileImportStatus =
   | "idle"
   | "reading"
-  | "processing"
-  | "success"
+  | "exporting"
+  | "done"
   | "error"
 
-// File upload result
-export interface FileUploadResult {
-  success: boolean
-  text: string
-  fileName: string
-  fileSize: number
-  error?: string
-}
-
-// Download format options
+/** Formats we can write. TXT and DOCX both carry Cyrillic without help. */
 export type DownloadFormat = "txt" | "docx"
 
-// Processing progress info
-export interface ProcessingProgress {
-  current: number
-  total: number
+/** `statusKey` is an i18n key under `file.progress`, never a literal. */
+export interface ImportProgress {
   percentage: number
-  statusKey: string // i18n key instead of hardcoded text
-}
-
-// Text chunk for large files
-export interface TextChunk {
-  id: number
-  text: string
-  charCount: number
-  label: string
-}
-
-// File upload hook return type
-export interface UseFileTransliterateResult {
-  // State
-  isProcessing: boolean
-  status: FileProcessingStatus
-  progress: ProcessingProgress
-  error: string | null
-  fileName: string | null
-  chunks: TextChunk[]
-  selectedChunkId: number | null
-  hasMultipleChunks: boolean
-
-  // Actions
-  uploadFile: (file: File) => Promise<string | null>
-  downloadAsText: (text: string, fileName?: string) => void
-  downloadAsDocx: (text: string, fileName?: string) => Promise<void>
-  downloadAllChunks: (
-    chunks: TextChunk[],
-    format: DownloadFormat
-  ) => Promise<void>
-  downloadCurrent: (
-    text: string,
-    format: DownloadFormat,
-    isAll?: boolean
-  ) => Promise<void>
-  selectChunk: (chunkId: number | null) => void
-  reset: () => void
-
-  // Drag & drop
-  isDragging: boolean
-  handleDragEnter: (e: React.DragEvent) => void
-  handleDragLeave: (e: React.DragEvent) => void
-  handleDragOver: (e: React.DragEvent) => void
-  handleDrop: (e: React.DragEvent) => Promise<void>
+  statusKey: string
 }

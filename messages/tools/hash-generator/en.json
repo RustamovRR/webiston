@@ -2,72 +2,123 @@
   "HashGeneratorPage": {
     "ToolHeader": {
       "title": "Hash Generator",
-      "description": "Generate cryptographic hashes using MD5, SHA256, SHA512 and other hash algorithms"
+      "description": "Get the SHA-256, SHA-512 or MD5 fingerprint of any text or file — and check a download against the checksum its publisher listed, right here. Everything runs in your browser; nothing is uploaded."
     },
-    "ControlPanel": {
-      "textHash": "Text Hash",
-      "fileHash": "File Hash",
-      "uploadFile": "Upload File",
-      "sampleHash": "Sample Hash",
+    "controls": {
+      "mode": "Mode",
+      "modes": {
+        "hash": "Hash",
+        "hmac": "HMAC"
+      },
+      "format": "Format",
+      "formats": {
+        "hex": "Hex",
+        "base64": "Base64"
+      },
+      "upload": "File",
+      "sample": "Sample",
       "clear": "Clear",
-      "downloadTxt": "Download TXT",
-      "downloadJson": "Download JSON"
+      "download": "Save",
+      "hmacKey": "Secret key",
+      "hmacKeyPlaceholder": "webhook signing secret",
+      "hmacKeyHint": "The key never leaves your browser and is not stored."
     },
-    "AlgorithmSelector": {
-      "title": "Hash Algorithms"
+    "samples": {
+      "greeting": "Plain text",
+      "uzbek": "Non-ASCII text",
+      "payload": "Webhook payload"
     },
-    "InputPanel": {
-      "textInput": "Text Input",
-      "fileInput": "File Hash Input",
-      "readyToHash": "Ready to hash",
-      "textPlaceholder": "Enter text you want to hash...",
-      "selectFile": "Select file",
-      "supportedFormats": "TXT, JSON, CSV, MD, XML, LOG (up to 10MB)",
-      "processing": "Processing..."
+    "panel": {
+      "placeholder": "Type the text to hash, or drop a file anywhere on this tool...",
+      "textSource": "Text",
+      "fileSource": "File",
+      "results": "Hashes",
+      "hmacResults": "HMAC results",
+      "bytes": "{count, plural, one {# byte} other {# bytes}}",
+      "willAppear": "Results will appear here",
+      "hint": "Type some text or drop a file",
+      "needsKey": "Enter a secret key",
+      "needsKeyHint": "HMAC cannot be computed without one",
+      "noHmacMd5": "There is no HMAC-MD5 row: the browser's Web Crypto API does not implement MD5 at all."
     },
-    "ResultsPanel": {
-      "title": "Hash Results",
-      "noResults": "Hash results will appear here",
-      "instruction": "Enter text and select algorithm",
-      "hashCount": "Hash count"
+    "results": {
+      "copy": "Copy",
+      "bits": "{bits} bit",
+      "broken": "broken",
+      "matched": "matched"
     },
-    "DetailedResults": {
-      "title": "Detailed Hash Results",
-      "characters": "characters"
+    "verify": {
+      "title": "Compare a checksum",
+      "hint": "Paste the checksum from the page you downloaded from — the whole line works too. The algorithm is worked out for you.",
+      "placeholder": "65a8e27d8879283831b664bd8b7f0ad4  or  sha256:e3b0c442...",
+      "match": "Match — {algorithm}",
+      "mismatch": "No match. That is a {algorithm} checksum, and this input hashes to something else.",
+      "unknown": "That does not look like a checksum we recognise. Check its length — a copy-paste often drops part of it."
     },
-    "Info": {
-      "securityLevels": {
-        "title": "Security Levels",
-        "deprecated": "Deprecated",
-        "weak": "Weak",
-        "secure": "Secure",
-        "verysecure": "Very Secure"
+    "file": {
+      "dropHere": "Drop the file here",
+      "accepts": "Any file · up to 20 MB",
+      "hashingBytes": "Hashing the file's bytes — the result is the same one sha256sum gives you.",
+      "remove": "Remove"
+    },
+    "errors": {
+      "tooLarge": "That file is over 20 MB. For something this big, sha256sum in a terminal is faster.",
+      "unreadable": "The file could not be read."
+    },
+    "reference": {
+      "title": "The algorithms, and what each is for",
+      "intro": "A hash is a fixed-length fingerprint of data of any size. The same bytes always produce the same result, and changing a single byte changes the result completely — which is what makes it the right way to check that data arrived intact.",
+      "broken": "broken",
+      "table": {
+        "algorithm": "Algorithm",
+        "bits": "Bits",
+        "length": "Hex length",
+        "use": "What for",
+        "chars": "{count, plural, one {# char} other {# chars}}"
       },
-      "recommendations": {
-        "deprecated": "Don't use - deprecated",
-        "weak": "Weak - legacy only",
-        "secure": "Recommended",
-        "recommended": "Best choice"
+      "algorithms": {
+        "sha256": "The default choice. File checksums, git commits, API signatures — almost everything uses this.",
+        "sha512": "As sound as SHA-256, and often faster on 64-bit processors.",
+        "sha384": "What browsers expect for Subresource Integrity (SRI) attributes.",
+        "sha1": "A working collision was published in 2017. Legacy interop only, such as git object IDs.",
+        "md5": "Broken since 2004. Kept only for checking an MD5 an older download still publishes."
       },
-      "descriptions": {
-        "deprecated": "Weak, demo only",
-        "weak": "Weak, legacy use",
-        "secure": "Secure, can be used",
-        "recommended": "Most secure, recommended"
-      },
-      "useCases": {
-        "title": "Use Cases",
-        "passwords": "Password hashing",
-        "integrity": "File integrity",
-        "signatures": "Digital signatures",
-        "blockchain": "Blockchain"
-      },
-      "notes": {
-        "title": "Important Notes",
-        "irreversible": "Hash functions are irreversible",
-        "deterministic": "Same input → same hash",
-        "avalanche": "Small change → completely different hash",
-        "recommendation": "Use SHA256+ algorithms"
+      "topics": {
+        "verify": {
+          "title": "Checking a download",
+          "body": "If the site published the file's SHA-256, drop the file here and paste the published line into the field above. If they disagree, the file was corrupted in transit — or it is not the file you were promised.",
+          "example": "sha256sum ubuntu-24.04.iso"
+        },
+        "passwords": {
+          "title": "Not for passwords",
+          "body": "SHA-256 is built to be fast, which is exactly what someone brute-forcing a password wants. Passwords need a function that is deliberately slow: bcrypt, scrypt or Argon2. This tool does not offer them, because a password hash computed in a browser is not a safe one anyway.",
+          "example": "bcrypt · scrypt · Argon2id"
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "verify": {
+          "question": "How do I check that a download was not corrupted?",
+          "answer": "Drop the file onto this page, then paste the checksum the site published into the \"Compare a checksum\" field. The tool identifies the algorithm from the checksum's length and tells you whether it matches. Bare hex, sha256sum output, BSD shasum output and the sha256:... form are all understood."
+        },
+        "passwords": {
+          "question": "Can I hash passwords with SHA-256?",
+          "answer": "No. SHA-256 and SHA-512 are designed to be fast, which means a modern GPU tries billions of candidates a second. Passwords need a deliberately slow function — bcrypt, scrypt or Argon2id. Do not put anything from this tool into a password database."
+        },
+        "md5": {
+          "question": "Why are MD5 and SHA-1 marked \"broken\"?",
+          "answer": "For both, there is a known way to construct two different files with the same hash: 2004 for MD5, 2017 for SHA-1 (SHAttered). That means neither can answer \"has this file been tampered with\" any more. They are here only so you can check a value some older system still publishes."
+        },
+        "hmac": {
+          "question": "What is HMAC and when do I need it?",
+          "answer": "HMAC is a hash computed with a secret key. Services like Stripe, GitHub and Telegram sign their webhook requests this way — only someone holding the key can produce the right signature. To check that an incoming request really came from them, put the payload and your signing secret in here and compare the result with the signature header."
+        },
+        "privacy": {
+          "question": "Are my files and my key uploaded anywhere?",
+          "answer": "No. Everything is computed in your browser through the Web Crypto API — the file, the text and the HMAC key are never sent anywhere and never stored. Close the page and it is all gone."
+        }
       }
     }
   }

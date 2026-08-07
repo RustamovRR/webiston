@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react"
 import { useTranslations } from "next-intl"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 export interface AudioDevice {
   deviceId: string
@@ -100,7 +100,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       const permissionStream = await navigator.mediaDevices.getUserMedia({
         audio: true
       })
-      permissionStream.getTracks().forEach((track) => track.stop())
+      permissionStream.getTracks().forEach((track) => {
+        track.stop()
+      })
 
       const devices = await navigator.mediaDevices.enumerateDevices()
       const audioInputs = devices
@@ -119,7 +121,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
           // Limit to reasonable length
           if (label.length > 35) {
-            label = label.substring(0, 32) + "..."
+            label = `${label.substring(0, 32)}...`
           }
 
           return {
@@ -140,7 +142,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error getting audio devices:", err)
     }
-  }, [onSuccess, onError, selectedDevice])
+  }, [onSuccess, onError, selectedDevice, t])
 
   // Stop listening
   const stopListening = useCallback(() => {
@@ -152,7 +154,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
     // Stop all tracks
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop()
+      })
       streamRef.current = null
     }
 
@@ -178,7 +182,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     })
 
     onSuccess?.(t("microphoneStopped"))
-  }, [isRecording, onSuccess])
+  }, [isRecording, onSuccess, t])
 
   // Start listening to microphone
   const startListening = useCallback(async () => {
@@ -222,7 +226,9 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       const info: AudioInfo = {
         sampleRate: settings.sampleRate || 44100,
         channelCount: settings.channelCount || 2,
-        echoCancellation: settings.echoCancellation || false,
+        // Spec allows echoCancellation to report a mode string ("all",
+        // "remote-only") instead of `true`; any reported mode means it is on.
+        echoCancellation: Boolean(settings.echoCancellation),
         noiseSuppression: settings.noiseSuppression || false,
         autoGainControl: settings.autoGainControl || false
       }
@@ -239,7 +245,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
       onError?.(errorMessage)
       console.error("Error starting microphone:", err)
     }
-  }, [selectedDevice, onSuccess, onError])
+  }, [selectedDevice, onSuccess, onError, t])
 
   // Effect to start/stop audio analysis based on listening state
   useEffect(() => {
@@ -402,7 +408,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
       onSuccess?.(t("audioDownloaded"))
     },
-    [onSuccess]
+    [onSuccess, t]
   )
 
   // Delete audio
@@ -418,7 +424,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
 
       onSuccess?.(t("audioDeleted"))
     },
-    [onSuccess]
+    [onSuccess, t]
   )
 
   // Clear all recordings
@@ -429,7 +435,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     setRecordedAudios([])
 
     onSuccess?.(t("allAudiosDeleted"))
-  }, [recordedAudios, onSuccess])
+  }, [recordedAudios, onSuccess, t])
 
   // Preview audio
   const openPreview = useCallback((audio: RecordedAudio) => {
@@ -441,12 +447,6 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
   }, [])
 
   // Format duration
-  const formatDuration = useCallback((seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }, [])
-
   // Get audio quality rating
   const getAudioQuality = useCallback(
     (level: number) => {
@@ -478,7 +478,7 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     return () => {
       stopListening()
     }
-  }, [])
+  }, [getAudioDevices, stopListening])
 
   return {
     // State
@@ -508,7 +508,6 @@ export const useMicrophoneTest = (options: UseMicrophoneTestOptions = {}) => {
     closePreview,
 
     // Utilities
-    formatDuration,
     getAudioQuality,
     getStats
   }

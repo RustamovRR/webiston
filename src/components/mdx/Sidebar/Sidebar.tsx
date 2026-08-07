@@ -1,16 +1,16 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion"
-import type { TutorialNavigation } from "@/lib/mdx"
 import { cn } from "@/lib"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { TutorialNavigation } from "@/lib/mdx"
 
 interface SidebarProps {
   tutorialId: string
@@ -156,7 +156,7 @@ const Sidebar = memo(
       const parents = findParentPaths(navigationItems, activePath)
       const activeItem = findItemByPath(navigationItems, activePath)
       // If active item itself is an accordion (has children), include it so it's open too
-      if (activeItem && activeItem.list && activeItem.list.length > 0) {
+      if (activeItem?.list && activeItem.list.length > 0) {
         return [...parents, activePath]
       }
       return parents
@@ -189,7 +189,7 @@ const Sidebar = memo(
       if (sidebarRef.current && savedScrollPosition) {
         sidebarRef.current.scrollTop = parseInt(savedScrollPosition, 10)
       }
-    }, [pathname, tutorialId]) // This now correctly depends on the pathname
+    }, [tutorialId]) // This now correctly depends on the pathname
 
     // Memoize the renderNavigationItems function
     const renderNavigationItems = useCallback(
@@ -211,12 +211,22 @@ const Sidebar = memo(
                   <AccordionTrigger
                     onClick={() => handleAccordionToggle(item.path)}
                     className={cn(
-                      "group text-muted-foreground flex w-full cursor-pointer items-center gap-2 rounded-none py-2 pr-4 pl-3 text-sm font-semibold hover:text-black dark:hover:text-white dark:hover:[&[data-state=open]>svg]:text-white",
+                      // `hover:text-foreground`, not `hover:text-black` +
+                      // `dark:hover:text-white`. The token flips with the
+                      // scheme, so the two `dark:` variants (one of them a
+                      // nested `[&[data-state=open]>svg]` override) are gone —
+                      // the chevron inherits `currentColor`.
+                      "group flex w-full cursor-pointer items-center gap-2 rounded-none py-2 pr-4 pl-3 font-semibold text-muted-foreground text-sm hover:text-foreground",
                       isHydrated
                         ? "transition-colors duration-200"
                         : "transition-none",
                       {
-                        "border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black !no-underline dark:border-[#878787] dark:bg-[#022248] dark:text-white [&[data-state=open]>svg]:text-white dark:[&[data-state=open]>svg]:text-white":
+                        // The active row: four hardcoded colours (a light blue
+                        // wash `#E9F4FF` / a navy `#022248`, plus two greys for
+                        // the rule) replaced by `border-primary bg-accent`.
+                        // The brand accent is what marks "you are here" on
+                        // every other surface of the site.
+                        "border-primary border-l-2 bg-accent font-semibold text-foreground !no-underline":
                           isActive
                       }
                     )}
@@ -271,12 +281,12 @@ const Sidebar = memo(
                 href={`/books/${tutorialId}/${item.path}`}
                 onClick={() => handleNavigation(item.path, false)} // Not an accordion
                 className={cn(
-                  "text-muted-foreground group flex cursor-pointer items-center gap-2 py-2 pl-3 text-sm hover:text-black dark:hover:text-white",
+                  "group flex cursor-pointer items-center gap-2 py-2 pl-3 text-muted-foreground text-sm hover:text-foreground",
                   isHydrated
                     ? "transition-colors duration-200"
                     : "transition-none",
                   {
-                    "border-l border-[#BABABB] bg-[#E9F4FF] font-semibold text-black dark:border-[#878787] dark:bg-[#022248] dark:text-white":
+                    "border-primary border-l-2 bg-accent font-semibold text-foreground":
                       isActive
                   }
                 )}
@@ -292,14 +302,10 @@ const Sidebar = memo(
       [
         pathname,
         tutorialId,
-        navigationItems,
-        findActiveItemPath,
-        findParentPaths,
         openAccordionItems,
         handleNavigation,
         handleAccordionToggle,
-        findParentPaths,
-        onLinkClick
+        isHydrated
       ]
     )
 

@@ -1,2 +1,4 @@
-export { default as InfoSection } from "./InfoSection"
-export { default as ControlPanel } from "./ControlPanel"
+export { ControlBar } from "./ControlBar"
+export { UrlBreakdown } from "./UrlBreakdown"
+export { UrlFaq } from "./UrlFaq"
+export { UrlReference } from "./UrlReference"

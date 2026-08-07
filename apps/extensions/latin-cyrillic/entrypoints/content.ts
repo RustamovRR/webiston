@@ -1,4 +1,44 @@
-import { isCyrillicText, toCyrillic, toLatin } from "@webiston/transliteration"
+import {
+  convert,
+  convertWithPreference,
+  type DirectionPreference,
+  resolveDirection
+} from "@webiston/transliteration"
+
+/**
+ * The site's design tokens, copied from `src/styles/tokens.css` exactly the
+ * way the popup's `style.css` copies them (see the note there — one shared
+ * token file under packages/ui is the tracked fix for the drift risk). The
+ * popover used to be the old sky palette while the popup and the site had
+ * moved to the flag teal at hue 217 — two surfaces of one extension wearing
+ * two different brands.
+ */
+const TOKENS = {
+  light: {
+    bg: "oklch(0.985 0.004 217)",
+    fg: "oklch(0.205 0.012 217)",
+    muted: "oklch(0.965 0.005 217)",
+    mutedFg: "oklch(0.505 0.012 217)",
+    border: "oklch(0.905 0.008 217)",
+    inputBg: "oklch(0.98 0.004 217)",
+    primary: "oklch(0.49 0.085 217)",
+    primaryHover: "oklch(0.41 0.071 217)",
+    primaryFg: "oklch(0.985 0 0)",
+    success: "oklch(0.542 0.142 150)"
+  },
+  dark: {
+    bg: "oklch(0.205 0.006 217)",
+    fg: "oklch(0.985 0 0)",
+    muted: "oklch(0.269 0.008 217)",
+    mutedFg: "oklch(0.72 0.02 217)",
+    border: "oklch(1 0 0 / 12%)",
+    inputBg: "oklch(1 0 0 / 16%)",
+    primary: "oklch(0.745 0.115 217)",
+    primaryHover: "oklch(0.66 0.114 217)",
+    primaryFg: "oklch(0.205 0 0)",
+    success: "oklch(0.8 0.175 150)"
+  }
+} as const
 
 // State
 let triggerIcon: HTMLElement | null = null
@@ -8,6 +48,16 @@ let isEnabled = true
 let selectedText = ""
 let selectionRect: DOMRect | null = null
 let currentTheme: "light" | "dark" = "light"
+/**
+ * The Range the user selected, kept so "Almashtirish" can write into it.
+ *
+ * The button existed, was labelled Replace, carried a pencil icon — and its
+ * body copied to the clipboard and closed the popover, exactly like the Copy
+ * button next to it. Nothing was ever replaced.
+ */
+let selectionRange: Range | null = null
+/** The popover's direction control; "auto" until the user picks a side. */
+let popoverPreference: DirectionPreference = "auto"
 
 export default defineContentScript({
   matches: ["<all_urls>"],
@@ -35,23 +85,58 @@ export default defineContentScript({
     // Selection event
     document.addEventListener("mouseup", handleMouseUp)
     document.addEventListener("mousedown", handleClickOutside)
-    document.addEventListener("scroll", cleanup, true)
+    // Capture-phase, so scrolls anywhere on the page close the popover —
+    // EXCEPT scrolls born inside it. Shadow DOM retargets those to the host,
+    // and without the guard scrolling the popover's own textarea killed the
+    // popover mid-read.
+    document.addEventListener(
+      "scroll",
+      (event) => {
+        const host = document.getElementById("webiston-ext-host")
+        if (host && event.target instanceof Node && host.contains(event.target))
+          return
+        cleanup()
+      },
+      true
+    )
+    // Escape dismisses whatever is showing, like every other popover.
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && (popover || triggerIcon)) cleanup()
+    })
 
     // Keyboard shortcut handler
     browser.runtime.onMessage.addListener(
       (
-        message: { type: string },
+        message: { type: string; text?: string },
         _sender: unknown,
         sendResponse: (response: { success: boolean }) => void
       ) => {
         if (message.type === "CONVERT_SELECTION") {
           const sel = window.getSelection()?.toString().trim()
           if (sel) {
-            const result = isCyrillicText(sel) ? toLatin(sel) : toCyrillic(sel)
-            navigator.clipboard.writeText(result)
+            navigator.clipboard.writeText(
+              convertWithPreference(sel, "auto").text
+            )
+            showToast("Nusxalandi")
           }
           sendResponse({ success: true })
+          return true
         }
+
+        // background.ts has sent this for every context-menu click since the
+        // menus were added; nothing listened for it, so all three entries
+        // computed a conversion and threw it away. They work now: write into
+        // the selection when it is editable, fall back to the clipboard when
+        // it is not — and SAY which happened. Silent success on a read-only
+        // page is indistinguishable from a broken menu item.
+        if (message.type === "REPLACE_SELECTION" && message.text) {
+          const replaced = replaceSelectionWith(message.text)
+          if (!replaced) navigator.clipboard.writeText(message.text)
+          showToast(replaced ? "Almashtirildi" : "Nusxalandi")
+          sendResponse({ success: true })
+          return true
+        }
+
         return true
       }
     )
@@ -94,6 +179,9 @@ function handleMouseUp(e: MouseEvent) {
     if (!range) return
 
     selectionRect = range.getBoundingClientRect()
+    // Cloned: the live Range is invalidated the moment the user clicks the
+    // trigger icon, which is the click that collapses the selection.
+    selectionRange = range.cloneRange()
     showTriggerIcon()
   }, 10)
 }
@@ -183,10 +271,13 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     shadowRoot.appendChild(styles)
   }
 
-  const isCyrillic = isCyrillicText(selectedText)
-  const converted = isCyrillic
-    ? toLatin(selectedText)
-    : toCyrillic(selectedText)
+  // The popover opens in "auto" and reports which way auto went, so the two
+  // direction buttons show the real state rather than a guess of their own.
+  const { text: converted, direction } = convertWithPreference(
+    selectedText,
+    "auto"
+  )
+  const isCyrillic = direction === "cyrillic-to-latin"
 
   popover = document.createElement("div")
   popover.className = `wc-popover ${currentTheme === "dark" ? "dark" : ""}`
@@ -318,14 +409,20 @@ function handleInputChange(e: Event) {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  const isCyrillic = isCyrillicText(text)
-  const converted = isCyrillic ? toLatin(text) : toCyrillic(text)
-  outputEl.value = converted
+  // Honour the direction the user picked. Typing used to reset it silently:
+  // the button stayed highlighted while the output flipped back to auto.
+  const direction = resolveDirection(text, popoverPreference)
+  outputEl.value = convert(text, direction)
+  paintDirectionLabels(direction)
+}
 
+/** Keep the two panel captions honest about which way the text is going. */
+function paintDirectionLabels(direction: string) {
+  const toCyr = direction === "latin-to-cyrillic"
   const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
   const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
-  if (inputLabel) inputLabel.textContent = isCyrillic ? "Кирилл" : "Lotin"
-  if (outputLabel) outputLabel.textContent = isCyrillic ? "Lotin" : "Кирилл"
+  if (inputLabel) inputLabel.textContent = toCyr ? "Lotin" : "Кирилл"
+  if (outputLabel) outputLabel.textContent = toCyr ? "Кирилл" : "Lotin"
 }
 
 function copyOutput(button: HTMLElement) {
@@ -372,24 +469,63 @@ function changeDirection(action: string) {
   ) as HTMLTextAreaElement
   if (!inputEl || !outputEl) return
 
-  const text = inputEl.value
-  const converted = action === "to-latin" ? toLatin(text) : toCyrillic(text)
-  outputEl.value = converted
+  popoverPreference =
+    action === "to-latin" ? "cyrillic-to-latin" : "latin-to-cyrillic"
+
+  outputEl.value = convert(inputEl.value, popoverPreference)
 
   popover?.querySelectorAll(".wc-dir-btn").forEach((btn) => {
     const btnEl = btn as HTMLButtonElement
     btn.classList.toggle("active", btnEl.dataset.action === action)
   })
 
-  const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
-  const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
-  if (action === "to-latin") {
-    if (inputLabel) inputLabel.textContent = "Кирилл"
-    if (outputLabel) outputLabel.textContent = "Lotin"
-  } else {
-    if (inputLabel) inputLabel.textContent = "Lotin"
-    if (outputLabel) outputLabel.textContent = "Кирилл"
+  paintDirectionLabels(popoverPreference)
+}
+
+/**
+ * Write `text` over the user's selection.
+ *
+ * Two paths, because the DOM has two: a form field has `selectionStart`/`End`
+ * and a value, everything else has a Range. Returns false when there is
+ * nothing writable — a selection inside ordinary page text is not editable,
+ * and pretending otherwise is what the old Replace button did.
+ */
+function replaceSelectionWith(text: string): boolean {
+  const active = document.activeElement
+  if (
+    active instanceof HTMLTextAreaElement ||
+    (active instanceof HTMLInputElement && active.selectionStart !== null)
+  ) {
+    const start = active.selectionStart ?? 0
+    const end = active.selectionEnd ?? start
+    active.setRangeText(text, start, end, "end")
+    // React and every other controlled-input framework listens for this.
+    active.dispatchEvent(new Event("input", { bubbles: true }))
+    return true
   }
+
+  // Prefer what is selected RIGHT NOW. `selectionRange` is a clone taken when
+  // the trigger icon appeared, which the context-menu path never goes through
+  // — and by the time the popover's Replace is clicked the live selection may
+  // have moved. Fall back to the clone only when there is no live one.
+  const live = window.getSelection()
+  const range =
+    live && live.rangeCount > 0 && !live.isCollapsed
+      ? live.getRangeAt(0)
+      : selectionRange
+  if (!range) return false
+
+  const host = range.commonAncestorContainer
+  const element =
+    host.nodeType === Node.ELEMENT_NODE ? (host as Element) : host.parentElement
+  if (!element?.closest('[contenteditable="true"], [contenteditable=""]')) {
+    return false
+  }
+
+  range.deleteContents()
+  range.insertNode(document.createTextNode(text))
+  element.dispatchEvent(new Event("input", { bubbles: true }))
+  return true
 }
 
 function replaceOriginal() {
@@ -398,9 +534,62 @@ function replaceOriginal() {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  const newText = outputEl.value
-  navigator.clipboard.writeText(newText)
+  // Replace where we can, copy where we cannot — and say which happened
+  // rather than looking identical either way.
+  const replaced = replaceSelectionWith(outputEl.value)
+  if (!replaced) navigator.clipboard.writeText(outputEl.value)
   cleanup()
+  showToast(replaced ? "Almashtirildi" : "Nusxalandi")
+}
+
+/**
+ * A small transient confirmation, in its own host so `cleanup()` — which
+ * removes the popover host — cannot take an active toast down with it.
+ * This is the only feedback the context menu and the keyboard shortcut have:
+ * both act on pages where nothing else visibly changes.
+ */
+function showToast(message: string) {
+  document.getElementById("webiston-ext-toast")?.remove()
+  const host = document.createElement("div")
+  host.id = "webiston-ext-toast"
+  const root = host.attachShadow({ mode: "closed" })
+  const style = document.createElement("style")
+  style.textContent = `
+    .wc-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2147483647;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid ${TOKENS.light.border};
+      background: ${TOKENS.light.bg};
+      color: ${TOKENS.light.fg};
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      animation: wcToast 1.8s ease forwards;
+    }
+    @media (prefers-color-scheme: dark) {
+      .wc-toast {
+        border-color: ${TOKENS.dark.border};
+        background: ${TOKENS.dark.bg};
+        color: ${TOKENS.dark.fg};
+      }
+    }
+    @keyframes wcToast {
+      0% { opacity: 0; transform: translateX(-50%) translateY(6px); }
+      10%, 82% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(0); }
+    }
+  `
+  const pill = document.createElement("div")
+  pill.className = "wc-toast"
+  pill.textContent = message
+  root.append(style, pill)
+  document.body.appendChild(host)
+  setTimeout(() => host.remove(), 1900)
 }
 
 function cleanup() {
@@ -409,6 +598,8 @@ function cleanup() {
   triggerIcon = null
   popover = null
   shadowRoot = null
+  selectionRange = null
+  popoverPreference = "auto"
 }
 
 function escapeHtml(text: string): string {
@@ -424,17 +615,18 @@ function escapeHtml(text: string): string {
 // ============================================
 function getStyles(): string {
   return `
-    /* CSS Variables */
+    /* CSS Variables — the site's tokens, from the TOKENS table above. */
     :host {
-      --bg: #ffffff;
-      --fg: #0a0a0a;
-      --muted: #f5f5f5;
-      --muted-fg: #737373;
-      --border: #e5e5e5;
-      --input-bg: #fafafa;
-      --primary: #0ea5e9;
-      --primary-hover: #0284c7;
-      --success: #10b981;
+      --bg: ${TOKENS.light.bg};
+      --fg: ${TOKENS.light.fg};
+      --muted: ${TOKENS.light.muted};
+      --muted-fg: ${TOKENS.light.mutedFg};
+      --border: ${TOKENS.light.border};
+      --input-bg: ${TOKENS.light.inputBg};
+      --primary: ${TOKENS.light.primary};
+      --primary-hover: ${TOKENS.light.primaryHover};
+      --primary-fg: ${TOKENS.light.primaryFg};
+      --success: ${TOKENS.light.success};
       --radius: 12px;
     }
 
@@ -446,19 +638,20 @@ function getStyles(): string {
       height: 32px;
       border: none;
       border-radius: 10px;
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
+      background: var(--primary);
+      color: var(--primary-fg);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4), 0 0 0 1px rgba(255,255,255,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255,255,255,0.1);
       animation: wcPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
     }
     .wc-trigger:hover {
       transform: scale(1.1);
-      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.5);
+      background: var(--primary-hover);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
     }
     .wc-trigger:active {
       transform: scale(0.95);
@@ -487,12 +680,16 @@ function getStyles(): string {
       overflow: hidden;
     }
     .wc-popover.dark {
-      --bg: #0a0a0a;
-      --fg: #fafafa;
-      --muted: #1a1a1a;
-      --muted-fg: #a3a3a3;
-      --border: #262626;
-      --input-bg: #171717;
+      --bg: ${TOKENS.dark.bg};
+      --fg: ${TOKENS.dark.fg};
+      --muted: ${TOKENS.dark.muted};
+      --muted-fg: ${TOKENS.dark.mutedFg};
+      --border: ${TOKENS.dark.border};
+      --input-bg: ${TOKENS.dark.inputBg};
+      --primary: ${TOKENS.dark.primary};
+      --primary-hover: ${TOKENS.dark.primaryHover};
+      --primary-fg: ${TOKENS.dark.primaryFg};
+      --success: ${TOKENS.dark.success};
     }
     @keyframes wcSlide {
       0% { opacity: 0; transform: translateY(-8px) scale(0.96); }
@@ -520,7 +717,7 @@ function getStyles(): string {
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      background: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -528,7 +725,7 @@ function getStyles(): string {
     .wc-logo-icon svg {
       width: 16px;
       height: 16px;
-      color: white;
+      color: var(--primary-fg);
     }
     .wc-close {
       width: 28px;
@@ -614,15 +811,15 @@ function getStyles(): string {
     .wc-textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 14%, transparent);
     }
     .wc-output {
-      background: rgba(14, 165, 233, 0.05);
-      border-color: rgba(14, 165, 233, 0.2);
+      background: color-mix(in oklab, var(--primary) 6%, transparent);
+      border-color: color-mix(in oklab, var(--primary) 24%, transparent);
     }
     .wc-popover.dark .wc-output {
-      background: rgba(14, 165, 233, 0.1);
-      border-color: rgba(14, 165, 233, 0.3);
+      background: color-mix(in oklab, var(--primary) 12%, transparent);
+      border-color: color-mix(in oklab, var(--primary) 32%, transparent);
     }
 
     /* Divider */
@@ -685,7 +882,7 @@ function getStyles(): string {
     .wc-dir-btn.active {
       background: var(--primary);
       border-color: var(--primary);
-      color: white;
+      color: var(--primary-fg);
     }
     .wc-replace {
       display: flex;
@@ -693,8 +890,8 @@ function getStyles(): string {
       gap: 8px;
       padding: 10px 16px;
       border: none;
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: white;
+      background: var(--primary);
+      color: var(--primary-fg);
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
@@ -702,9 +899,9 @@ function getStyles(): string {
       transition: all 0.15s;
     }
     .wc-replace:hover {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
+      background: var(--primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     .wc-replace svg {
       width: 14px;

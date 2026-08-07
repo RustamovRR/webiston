@@ -1,125 +1,50 @@
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
 import type { Metadata } from "next"
+import { setRequestLocale } from "next-intl/server"
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { TOOLS_LIST } from "@/constants"
+import { withLocale } from "@/lib/seo"
 import { ToolsMainPage } from "@/modules/tools"
 
-export const metadata: Metadata = {
-  title: "Bepul Onlayn Vositalar - Professional Developer Tools | Webiston",
-  description:
-    "Eng yaxshi bepul onlayn vositalar to'plami. QR generator, JSON formatter, Base64 converter, URL encoder va boshqa professional developer tools.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "bepul vositalar",
-    "onlayn tools",
-    "developer tools",
-    "dasturchi vositalari",
-    "web tools",
-    "veb vositalar",
-    "utility tools",
-    "foydali vositalar",
-    "programming tools",
-    "dasturlash vositalari",
-    "qr generator",
-    "json formatter",
-    "base64 converter",
-    "url encoder",
-    "password generator",
-    "parol yaratish",
-    "latin kirill",
-    "jwt decoder",
-    "color converter",
-    "rang konverter",
-    "webiston tools",
-    "professional tools",
+import { generateBreadcrumbSchema, getToolsIndexMetadata } from "./seo"
 
-    // Ingliz tilida
-    "free online tools",
-    "developer tools",
-    "web development tools",
-    "programming utilities",
-    "coding tools",
-    "online utilities",
-    "free web tools",
-    "developer utilities",
-    "programming resources",
-    "web developer tools",
-    "online developer tools",
-    "free coding tools",
-    "utility applications",
-    "development resources",
-    "web utilities",
-
-    // Rus tilida
-    "бесплатные онлайн инструменты",
-    "инструменты разработчика",
-    "веб инструменты",
-    "утилиты программирования",
-    "инструменты кодирования",
-    "онлайн утилиты",
-    "бесплатные веб инструменты",
-    "ресурсы разработчика",
-    "программные утилиты",
-
-    // Long-tail keywords
-    "bepul onlayn dasturchi vositalari",
-    "professional web development tools free",
-    "бесплатные профессиональные инструменты разработчика",
-    "webiston developer tools collection",
-    "uzbek developer tools"
-  ],
-  openGraph: {
-    title: "Bepul Onlayn Vositalar - Professional Developer Tools | Webiston",
-    description:
-      "Eng yaxshi bepul onlayn vositalar to'plami. QR generator, JSON formatter, Base64 converter va boshqa professional tools.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Webiston - Bepul Onlayn Vositalar To'plami",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "Bepul Onlayn Vositalar - Professional Tools",
-    description:
-      "Professional developer tools to'plami. QR generator, JSON formatter va boshqa foydali vositalar. Bepul!",
-    images: ["https://webiston.uz/logo.png"]
-  },
-  alternates: {
-    canonical: "https://webiston.uz/tools",
-    languages: {
-      uz: "https://webiston.uz/tools",
-      en: "https://webiston.uz/en/tools",
-      "x-default": "https://webiston.uz/tools"
-    }
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
+/**
+ * English names for the schema, which is locale-independent by design —
+ * `schema.org` entries are read by crawlers, not by visitors, and the URL is
+ * the English slug either way.
+ */
+const TOOL_SCHEMA_NAMES: Record<string, string> = {
+  latinCyrillic: "Latin-Cyrillic Converter",
+  qrGenerator: "QR Code Generator",
+  jsonFormatter: "JSON Formatter",
+  passwordGenerator: "Password Generator",
+  colorConverter: "Color Converter",
+  base64Converter: "Base64 Converter",
+  jwtDecoder: "JWT Decoder",
+  urlEncoder: "URL Encoder",
+  hashGenerator: "Hash Generator",
+  uuidGenerator: "UUID Generator",
+  ogMetaGenerator: "Open Graph Meta Generator",
+  loremIpsum: "Lorem Ipsum Generator",
+  deviceInfo: "Device Info",
+  screenResolution: "Screen Resolution",
+  ipInfo: "IP Info",
+  cameraRecorder: "Camera Recorder",
+  microphoneTest: "Microphone Test"
 }
+
+// `ToolsMainPage` is a CLIENT component and calls four namespaces —
+// `Tools`, `ToolsPage.Main`, `ToolCategories`, `Filters`. Scoping the layout
+// provider to the chrome broke this page until they were named here: it still
+// returned HTTP 200 and still rendered, because next-intl falls back to the key
+// path instead of throwing. Only the browser console showed it.
+const INDEX_NAMESPACES = [
+  "Tools",
+  "ToolsPage",
+  "ToolCategories",
+  "Filters",
+  "Common"
+] as const
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -160,59 +85,31 @@ const structuredData = {
     logo: {
       "@type": "ImageObject",
       url: "https://webiston.uz/logo.png",
-      width: 512,
-      height: 512
+      width: 1120,
+      height: 1120
     }
   },
+  // Derived from the list the page actually renders. Hand-written, it had
+  // drifted into three separate untruths: `numberOfItems: 15` against 17
+  // tools, only 6 of them listed, and an order that contradicted the visible
+  // one (QR first here, latin-cyrillic first on screen). Structured data that
+  // disagrees with the page is the kind of thing Google discounts the whole
+  // block for.
   mainEntity: {
     "@type": "ItemList",
     name: "Developer Tools Collection",
     description: "Professional bepul onlayn vositalar to'plami",
-    numberOfItems: 15,
-    itemListElement: [
-      {
-        "@type": "SoftwareApplication",
-        position: 1,
-        name: "QR Generator",
-        url: "https://webiston.uz/tools/qr-generator",
-        applicationCategory: "UtilityApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 2,
-        name: "Latin-Cyrillic Converter",
-        url: "https://webiston.uz/tools/latin-cyrillic",
-        applicationCategory: "UtilityApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 3,
-        name: "JSON Formatter",
-        url: "https://webiston.uz/tools/json-formatter",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 4,
-        name: "Base64 Converter",
-        url: "https://webiston.uz/tools/base64-converter",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 5,
-        name: "URL Encoder",
-        url: "https://webiston.uz/tools/url-encoder",
-        applicationCategory: "DeveloperApplication"
-      },
-      {
-        "@type": "SoftwareApplication",
-        position: 6,
-        name: "JWT Decoder",
-        url: "https://webiston.uz/tools/jwt-decoder",
-        applicationCategory: "SecurityApplication"
-      }
-    ]
+    numberOfItems: TOOLS_LIST.length,
+    itemListElement: TOOLS_LIST.map((tool, index) => ({
+      "@type": "SoftwareApplication",
+      position: index + 1,
+      name: TOOL_SCHEMA_NAMES[tool.tKey] ?? tool.tKey,
+      url: `https://webiston.uz${tool.href}`,
+      applicationCategory:
+        tool.audience === "developer"
+          ? "DeveloperApplication"
+          : "UtilityApplication"
+    }))
   },
   potentialAction: {
     "@type": "SearchAction",
@@ -222,15 +119,8 @@ const structuredData = {
   softwareVersion: "2.0",
   datePublished: "2024-01-01",
   dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
-  keywords: "bepul vositalar, developer tools, onlayn tools, webiston",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "15000",
-    bestRating: "5",
-    worstRating: "1"
-  }
+  inLanguage: ["uz", "en", "ru"],
+  keywords: "bepul vositalar, developer tools, onlayn tools, webiston"
 }
 
 // FAQ Schema for better SERP features (locale-based)
@@ -302,50 +192,13 @@ function generateFAQSchema(locale: string = "uz") {
   }
 }
 
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      }
-    ]
-  }
-}
-
 export default async function ToolsPage({
   params
 }: {
   params: Promise<{ locale: string }>
 }) {
   const { locale } = (await params) || { locale: "uz" }
+  setRequestLocale(locale)
 
   // Generate locale-specific schemas
   const faqSchema = generateFAQSchema(locale)
@@ -371,7 +224,19 @@ export default async function ToolsPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <ToolsMainPage />
+      <LocaleMessages namespaces={INDEX_NAMESPACES}>
+        <ToolsMainPage />
+      </LocaleMessages>
     </>
   )
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  setRequestLocale(locale)
+  return withLocale(getToolsIndexMetadata(locale), locale, "/tools")
 }

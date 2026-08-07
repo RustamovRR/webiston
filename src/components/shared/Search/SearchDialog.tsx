@@ -1,17 +1,17 @@
 "use client"
 
-import { ISearchHit } from "@/types"
 import { useRouter } from "next/navigation"
-import { CustomSearchBox, GroupedHit, NoResults } from "./SearchComponents"
+import { useTranslations } from "next-intl"
+import type { CSSProperties } from "react"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog"
-import { AnimatePresence, motion } from "framer-motion"
-import { FileSearch } from "lucide-react"
 import { useMobileMenuStore } from "@/stores"
+import type { ISearchHit } from "@/types"
+import { CustomSearchBox, GroupedHit, NoResults } from "./SearchComponents"
 
 interface SearchDialogProps {
   open: boolean
@@ -32,10 +32,11 @@ export default function SearchDialog({
   onSearch,
   onClearSearch
 }: SearchDialogProps) {
-  const router = useRouter()
+  const t = useTranslations("Search")
+  const _router = useRouter()
   const closeMobileMenu = useMobileMenuStore((state) => state.close)
 
-  const handleHitClick = (path: string) => {
+  const handleHitClick = (_path: string) => {
     onOpenChange(false) // Close the search dialog
     onClearSearch()
     closeMobileMenu() // Close the mobile menu
@@ -48,71 +49,72 @@ export default function SearchDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[450px] max-h-[90vh] flex-col overflow-hidden p-0 sm:max-w-[600px]">
-        <DialogHeader className="border-b px-4 pt-4 pb-3">
-          <DialogTitle>Sayt bo'yicha qidiruv</DialogTitle>
+      {/* framer-motion removed from this dialog. Radix already animates the
+          content in (via tw-animate-css), and an `AnimatePresence` fade+slide
+          on the inner state ran ON TOP of it — two entrance animations over the
+          same pixels, which is the other half of the flicker the owner saw. The
+          states now swap with no animation of their own; the dialog's single
+          entrance is the only motion. */}
+      <DialogContent className="flex h-[460px] max-h-[85vh] flex-col gap-0 overflow-hidden border-border-strong p-0 sm:max-w-[620px]">
+        <DialogHeader className="border-border border-b px-4 py-3">
+          <DialogTitle className="flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.15em]">
+            <span className="size-[5px] rounded-[1.5px] bg-primary" />
+            <span className="text-foreground">{t("title")}</span>
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="px-4 pt-4">
+        <div className="px-4 pt-4 pb-1">
           <CustomSearchBox value={query} onChange={onSearch} />
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4">
-          <AnimatePresence mode="wait">
-            {showLoading && (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex h-full items-center justify-center text-sm text-gray-500"
-              >
-                Qidirilmoqda...
-              </motion.div>
-            )}
-
-            {showNoResults && (
-              <motion.div
-                key="no-results"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <NoResults query={query} />
-              </motion.div>
-            )}
-
-            {showInitialState && (
-              <motion.div
-                key="initial"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="flex h-full flex-col items-center justify-center text-center"
-              >
-                <FileSearch className="h-10 w-10 text-gray-300 dark:text-gray-700" />
-                <p className="mt-3 text-sm text-gray-500">
-                  Qidiruv orqali kerakli mavzuni tezda toping.
-                </p>
-              </motion.div>
-            )}
-
-            {hasResults && (
-              <motion.div
-                key="results"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                {hits.map((groupedHits, index) => (
-                  <GroupedHit
-                    key={groupedHits[0]?.objectID || index}
-                    hits={groupedHits}
-                    onHitClick={handleHitClick}
+        <div className="flex-1 overflow-y-auto px-3 pb-2">
+          {showLoading && (
+            <div className="flex h-full items-center justify-center gap-2.5 font-mono text-muted-foreground text-xs">
+              {/* Three dots on the grid-rise stagger — a real progress signal
+                  while the 1.07 MB index finishes building, where before there
+                  was only static text. */}
+              <span className="flex gap-1">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="search-dot size-1.5 rounded-full bg-primary"
+                    style={{ "--i": i } as CSSProperties}
                   />
                 ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </span>
+              {t("loading")}
+            </div>
+          )}
+
+          {showNoResults && <NoResults query={query} />}
+
+          {showInitialState && (
+            <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+              {/* Was `FileSearch` at 40% opacity — muddy and shapeless. Now the
+                  ⌘K glyph itself in the brand chip: it names the thing the user
+                  just used, and teaches the shortcut. */}
+              <span className="flex size-11 items-center justify-center rounded-xl bg-primary/12 font-mono text-primary text-sm">
+                ⌘K
+              </span>
+              <p className="mt-3.5 max-w-xs text-muted-foreground text-sm">
+                {t("initialHint")}
+              </p>
+            </div>
+          )}
+
+          {hasResults &&
+            hits.map((groupedHits, index) => (
+              <GroupedHit
+                key={groupedHits[0]?.objectID || index}
+                hits={groupedHits}
+                onHitClick={handleHitClick}
+              />
+            ))}
+        </div>
+
+        {/* Keyboard legend, matching the hero palette's footer. */}
+        <div className="border-border border-t px-4 py-2.5 font-mono text-[10px] text-muted-foreground">
+          {t("hints")}
         </div>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,4 @@
-import { ConversionMode } from "./common"
+import type { ConversionMode } from "./common"
 
 // Tool specific types
 
@@ -47,11 +47,6 @@ export interface UrlInfo {
 
 // Hash Generator
 export type HashAlgorithm = "md5" | "sha1" | "sha256" | "sha512"
-
-export interface HashGeneratorOptions {
-  algorithm: HashAlgorithm
-  encoding?: "hex" | "base64"
-}
 
 // Password Generator
 export interface PasswordOptions {

@@ -1,9 +1,41 @@
 "use client"
 
-// import { useGetTutorialContentPath } from '@/hooks/queries'
-import { cn } from "@/lib"
 import Link from "next/link"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { cn } from "@/lib"
+
+/**
+ * The reading page's right rail — a scroll-spy over the chapter's own headings.
+ *
+ * Client by necessity: it reads the rendered DOM and tracks scroll position.
+ * Everything that did NOT need to be client has been taken out.
+ *
+ * What was removed and why:
+ *
+ * 1. **The click handler.** Every link did `preventDefault()` and then
+ *    `window.scrollTo({ top: element.offsetTop - 100 })`. `offsetTop` is
+ *    measured from the nearest POSITIONED ancestor, and `TutorialLayout`'s root
+ *    is `relative` — measured on a real chapter, a heading's `offsetTop` was
+ *    522 while its true document offset was 587. So the handler landed
+ *    `65 + 100 = 165px` above the target, and the magic `-100` existed to
+ *    paper over the first half of that.
+ *    Meanwhile the headings already carry `scroll-margin-top: 80px` (measured),
+ *    which is exactly what native anchor scrolling honours. Deleting the
+ *    handler makes the browser do it correctly, for free — no JS, no magic
+ *    number, and `history.pushState` comes along for free too.
+ *
+ * 2. **The initial-hash `scrollTo`.** Same wrong arithmetic, plus a 100ms
+ *    `setTimeout` racing the browser's own hash handling. The browser already
+ *    lands on `#id` in prerendered HTML; we only need to know which id is
+ *    active so the rail can highlight it.
+ *
+ * 3. **The per-event DOM query.** The scroll handler re-ran
+ *    `querySelectorAll` + `getBoundingClientRect` on every scroll event. In
+ *    fairness this measured 0.028ms on a 7-heading chapter, so it was never the
+ *    bottleneck it looked like — but there is no reason to re-query a
+ *    prerendered document that cannot change, so it now reads the collected
+ *    list.
+ */
 
 interface Heading {
   id: string
@@ -16,142 +48,224 @@ interface IProps {
   slug: string[]
 }
 
-export default function TableOfContents({ slug }: IProps) {
+/** Where the "you are here" line sits: a heading counts as active once it has
+ *  passed the upper third of the viewport. */
+const ACTIVE_LINE_DIVISOR = 3
+
+/** Breathing room kept above/below the active row inside the rail. */
+const RAIL_SCROLL_PADDING = 32
+
+/**
+ * Keep the highlighted row inside the rail's own scroll box.
+ *
+ * A long chapter has more headings than the rail is tall — 27 on
+ * `2-understanding-foundation-models/modeling`, against a
+ * `max-h-[calc(100vh-8rem)]` box — so once the reader passes the middle of the
+ * page the highlight is somewhere below the fold of a panel that never moves.
+ *
+ * Deliberately NOT `row.scrollIntoView()`: that walks every scrollable ancestor
+ * and would drag the PAGE as well, fighting the reader's own scroll. This
+ * touches one element's `scrollTop` and nothing else, and only when the row has
+ * actually left the box.
+ */
+function keepRowVisible(row: HTMLElement, box: HTMLElement | null) {
+  if (!box) return
+
+  const rowTop =
+    row.getBoundingClientRect().top -
+    box.getBoundingClientRect().top +
+    box.scrollTop
+  const rowBottom = rowTop + row.offsetHeight
+  const viewTop = box.scrollTop
+  const viewBottom = viewTop + box.clientHeight
+
+  let next: number | null = null
+  if (rowTop < viewTop + RAIL_SCROLL_PADDING) {
+    next = rowTop - RAIL_SCROLL_PADDING
+  } else if (rowBottom > viewBottom - RAIL_SCROLL_PADDING) {
+    next = rowBottom - box.clientHeight + RAIL_SCROLL_PADDING
+  }
+  if (next === null) return
+
+  box.scrollTo({
+    top: Math.max(0, next),
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth"
+  })
+}
+
+function collectHeadings(): Heading[] {
+  return (
+    Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "article h2, article h3, article h4"
+      )
+    )
+      // A heading with no `id` cannot be linked to, so it has no business in a
+      // list of links — it used to render as `href="#"`.
+      .filter((element) => element.id)
+      .map((element) => ({
+        id: element.id,
+        text: element.textContent || "",
+        level: Number(element.tagName.charAt(1)),
+        element
+      }))
+  )
+}
+
+/**
+ * The caller passes `key={slug.join("/")}` so this component's state is scoped
+ * to one chapter. The mount-only effect below is correct **only** under that
+ * key — see the note at the call site in `TutorialLayout` for why it is there
+ * even though Next currently remounts this subtree on its own.
+ *
+ * A `key` rather than a `[route]` effect dependency: nothing in the effect body
+ * reads the route, so listing it is a dependency the linter rightly objects to.
+ * `key` says "different instance", which is what is actually meant, and it
+ * resets `activeId` for free.
+ */
+export default function TableOfContents({ slug: _slug }: IProps) {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>("")
+  const listRef = useRef<HTMLUListElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
+  const [marker, setMarker] = useState<{ top: number; height: number } | null>(
+    null
+  )
 
-  // const { contentResponse, isLoading, isFetching } = useGetTutorialContentPath(slug)
+  useEffect(() => {
+    const collected = collectHeadings()
+    setHeadings(collected)
+    // Trust the browser to have scrolled to the hash already; just adopt it as
+    // the initial highlight.
+    setActiveId(window.location.hash.slice(1) || collected[0]?.id || "")
+  }, [])
 
-  // Function to get all headings
-  const getHeadings = useCallback(() => {
-    const elements = Array.from(
-      document.querySelectorAll("article h2, article h3, article h4")
+  // Measure the active row and drive ONE marker to it, rather than giving every
+  // row its own border and toggling colours.
+  //
+  // Three separate defects came out of the per-row version:
+  //   1. `border-l-2` on a `rounded-md` row followed the radius and drew a
+  //      detached ARC — it read as a stray bracket, not an indicator.
+  //   2. Hovering the ACTIVE row greyed its own indicator out, because
+  //      `hover:border-border-strong` and `border-primary` are different
+  //      variants — `tailwind-merge` cannot dedupe across them, and the hover
+  //      rule wins in the cascade. Reported by the owner, and correct.
+  //   3. Changing active row = one element's border appearing and another's
+  //      disappearing. Two colour fades are not movement; it read as a jump.
+  //
+  // One absolutely-positioned bar animating `top`/`height` is a single object
+  // that MOVES, which is what the eye is looking for, and it lines up with the
+  // row exactly however many lines the heading wraps to.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `headings` re-runs the measurement after the list re-renders; its contents are not read here
+  useEffect(() => {
+    const list = listRef.current
+    if (!list || !activeId) {
+      setMarker(null)
+      return
+    }
+    const row = list.querySelector<HTMLElement>(
+      `[data-toc-row="${CSS.escape(activeId)}"]`
     )
-    return elements.map((element) => ({
-      id: element.id,
-      text: element.textContent || "",
-      level: Number(element.tagName.charAt(1)),
-      element: element as HTMLElement
-    }))
-  }, [])
+    // `offsetTop` is safe here precisely because the `ul` is the offset parent
+    // (it is `relative`) — the trap that broke the old scroll handler.
+    setMarker(row ? { top: row.offsetTop, height: row.offsetHeight } : null)
+    if (row) keepRowVisible(row, boxRef.current)
+  }, [activeId, headings])
 
-  // Function to check which heading is currently in view
-  const getActiveHeading = useCallback((headings: Heading[]) => {
-    // Get the middle of the viewport
-    const viewportMiddle = window.innerHeight / 3
+  useEffect(() => {
+    if (headings.length === 0) return
 
-    // Find the first heading that's above the middle of the viewport
-    for (const heading of headings) {
-      const rect = heading.element.getBoundingClientRect()
-      if (rect.top <= viewportMiddle) {
-        continue
+    const update = () => {
+      const line = window.innerHeight / ACTIVE_LINE_DIVISOR
+      let current = headings[0].id
+      for (const heading of headings) {
+        if (heading.element.getBoundingClientRect().top > line) break
+        current = heading.id
       }
-      // Return the previous heading as it's the active one
-      const index = headings.indexOf(heading)
-      return index > 0 ? headings[index - 1].id : headings[0].id
+      setActiveId(current)
     }
 
-    // If we're at the bottom of the page, return the last heading
-    return headings[headings.length - 1]?.id
-  }, [])
-
-  // Update active heading on scroll
-  useEffect(() => {
-    const updateActiveHeading = () => {
-      const currentHeadings = getHeadings()
-      if (currentHeadings.length > 0) {
-        const activeHeadingId = getActiveHeading(currentHeadings)
-        setActiveId(activeHeadingId)
-      }
-    }
-
-    // Initial update
-    updateActiveHeading()
-
-    // Add scroll listener
-    window.addEventListener("scroll", updateActiveHeading, { passive: true })
-    return () => window.removeEventListener("scroll", updateActiveHeading)
-  }, [getActiveHeading, getHeadings])
-
-  // Initial heading setup
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentHeadings = getHeadings()
-      setHeadings(currentHeadings)
-
-      // Check for hash in URL on initial load
-      const hash = window.location.hash.slice(1)
-      if (hash) {
-        setActiveId(hash)
-        const element = document.getElementById(hash)
-        if (element) {
-          // Use scrollIntoView with instant behavior
-          element.scrollIntoView({ behavior: "instant" })
-          // Backup method if scrollIntoView doesn't work as expected
-          window.scrollTo({
-            top: element.offsetTop - 100,
-            behavior: "instant"
-          })
-        }
-      }
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [getHeadings])
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    return () => window.removeEventListener("scroll", update)
+  }, [headings])
 
   if (headings.length === 0) {
     return null
   }
 
   return (
-    <div className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto">
+    <div
+      ref={boxRef}
+      className="scrollbar-custom relative max-h-[calc(100vh-8rem)] min-w-0 overflow-y-auto"
+    >
       <div className="sticky top-0 z-10">
-        <div className="bg-background pb-2 text-sm font-semibold">
-          Ushbu sahifada
+        {/* Same mono/accent kicker the landing page and homepage dividers use,
+            instead of a lone bold sentence. */}
+        <div className="flex items-center gap-2.5 bg-background pb-2 font-mono text-[11px] uppercase tracking-[0.15em]">
+          <span className="size-[5px] shrink-0 rounded-[1.5px] bg-primary" />
+          <span className="text-foreground">Ushbu sahifada</span>
         </div>
-        <div className="from-background pointer-events-none h-2 bg-gradient-to-b to-transparent" />
+        <div className="pointer-events-none h-2 bg-gradient-to-b from-background to-transparent" />
       </div>
-      <ul className="space-y-1 text-sm">
+      {/* `relative` so both bars below position against this list — and so
+          `row.offsetTop` in the effect is measured from here. */}
+      <ul ref={listRef} className="relative text-sm">
+        {/* TRACK and MARKER are two absolutely-positioned bars with IDENTICAL
+            geometry (`left-0 w-0.5 rounded-full`), so the active bar sits dead
+            centre on the rail by construction.
+            The previous version drew the track as the `ul`'s 1px `border-l` and
+            the marker as a 2px bar nudged over it with `-ml-px`. A 2px bar can
+            never be centred on a 1px border without half-pixel maths, which is
+            exactly why it looked like it was hanging off the line. Two elements
+            with the same left/width cannot drift. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 bottom-0 left-0 w-0.5 rounded-full bg-border"
+        />
+        {/* ONE marker for the whole rail: it slides and resizes to the active
+            row rather than each row owning a border that blinks on and off, so
+            changing section reads as movement instead of two colour fades.
+            `motion-reduce` respects the OS setting — the bar still lands in the
+            right place, it just does not travel. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 w-0.5 rounded-full bg-primary transition-all duration-300 ease-out motion-reduce:transition-none"
+          style={{
+            top: marker?.top ?? 0,
+            height: marker?.height ?? 0,
+            opacity: marker ? 1 : 0
+          }}
+        />
         {headings.map((heading) => (
-          <li
-            key={`${heading.id} ${heading.level} ${heading.text}`}
-            className={cn(
-              "group relative overflow-y-auto rounded-md",
-              heading.level === 2 && "font-semibold",
-              heading.level === 3 && "ml-3",
-              heading.level === 4 && "ml-6"
-            )}
-          >
+          <li key={heading.id}>
+            {/* A plain anchor. No `onClick`, no `preventDefault` — see the note
+                at the top of this file. Rows carry NO border of their own now;
+                that is what let `hover:border-*` override the active row's
+                `border-primary` and grey out its own indicator.
+                Indentation is PADDING, not a margin: a margin would push the
+                row off the rail edge and break the line. */}
             <Link
+              data-toc-row={heading.id}
               href={`#${heading.id}`}
               className={cn(
-                "block rounded-r-md px-2 py-1 pr-2 text-sm break-all transition-colors duration-200",
-                "text-muted-foreground dark:text-muted-foreground hover:text-black dark:hover:text-white",
-                activeId === heading.id &&
-                  "font-semibold text-black dark:text-white"
+                "block py-1.5 pr-2 text-sm transition-colors duration-200",
+                "text-muted-foreground hover:text-foreground",
+                heading.level === 2 && "pl-3",
+                heading.level === 3 && "pl-6",
+                heading.level === 4 && "pl-9",
+                activeId === heading.id && "font-medium text-foreground"
               )}
-              style={{
-                wordBreak: "break-word"
-              }}
-              onClick={(e) => {
-                e.preventDefault()
-                const element = document.getElementById(heading.id)
-                if (element) {
-                  // Use instant scroll behavior
-                  window.scrollTo({
-                    top: element.offsetTop - 100,
-                    behavior: "instant"
-                  })
-                  setActiveId(heading.id)
-                  window.history.pushState(null, "", `#${heading.id}`)
-                }
-              }}
+              style={{ wordBreak: "break-word" }}
             >
               {heading.text}
             </Link>
           </li>
         ))}
       </ul>
-      <div className="from-background pointer-events-none sticky right-0 bottom-0 left-0 h-8 bg-gradient-to-t to-transparent" />
+      <div className="pointer-events-none sticky right-0 bottom-0 left-0 h-8 bg-gradient-to-t from-background to-transparent" />
     </div>
   )
 }

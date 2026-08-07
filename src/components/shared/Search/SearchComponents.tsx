@@ -1,9 +1,9 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { ISearchHit } from "@/types"
 import { SearchIcon } from "lucide-react" // Keeping SearchIcon for NoResults
 import Link from "next/link"
+import { useTranslations } from "next-intl"
+import type { ISearchHit } from "@/types"
 
 interface GroupedHitProps {
   hits: ISearchHit[]
@@ -11,34 +11,49 @@ interface GroupedHitProps {
 }
 
 export function GroupedHit({ hits, onHitClick }: GroupedHitProps) {
+  const t = useTranslations("Search")
   const title = hits[0]?.hierarchy.lvl0
 
   return (
-    <div className="rounded-lg py-4">
-      <div className="mb-2 flex items-center gap-2">
-        <h4 className="text-lg font-medium">{title}</h4>
-        <Badge variant="secondary" className="text-xs">
-          {hits[0]?.contentType === "article" ? "maqola" : "mavzu"}
-        </Badge>
+    <div className="pt-3 pb-1">
+      {/* Group heading in the mono/uppercase idiom the homepage dividers and the
+          hero palette both use, instead of an 18px title + a Badge. */}
+      <div className="flex items-center gap-2 px-2 pb-1.5 font-mono text-[10px] uppercase tracking-wider">
+        <span className="text-muted-foreground">{title}</span>
+        <span className="text-muted-foreground/60">
+          ·{" "}
+          {hits[0]?.contentType === "article"
+            ? t("contentType.article")
+            : t("contentType.topic")}
+        </span>
       </div>
 
-      <div className="ml-4 space-y-2">
+      <div className="space-y-0.5">
         {hits.map((hit) => (
           <Link
             key={hit.objectID}
             href={hit.path}
             onClick={() => onHitClick(hit.path)}
-            className="group hover:bg-accent -ml-2 block cursor-pointer rounded p-2 transition-colors"
+            className="group flex cursor-pointer items-start gap-3 rounded-lg px-2 py-2.5 transition-colors duration-200 hover:bg-accent"
           >
-            {hit.hierarchy.lvl1 && (
-              <div className="mb-1 text-sm font-medium text-gray-800 group-hover:text-sky-500 dark:text-gray-200">
-                {hit.hierarchy.lvl1}
-              </div>
-            )}
-            <p
-              className="text-muted-foreground text-sm"
-              dangerouslySetInnerHTML={{ __html: hit.content }}
-            />
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/12 font-mono text-[10px] text-primary">
+              {(hit.hierarchy.lvl1 || title || "?").charAt(0)}
+            </span>
+            <span className="min-w-0 flex-1">
+              {hit.hierarchy.lvl1 && (
+                <span className="block font-medium text-foreground text-sm transition-colors group-hover:text-primary">
+                  {hit.hierarchy.lvl1}
+                </span>
+              )}
+              <span
+                className="mt-0.5 block line-clamp-2 text-muted-foreground text-sm"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: highlight markup comes from our own index builder, not user input
+                dangerouslySetInnerHTML={{ __html: hit.content }}
+              />
+            </span>
+            <span className="mt-1 shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              ⏎
+            </span>
           </Link>
         ))}
       </div>
@@ -51,30 +66,43 @@ interface NoResultsProps {
 }
 
 export function NoResults({ query }: NoResultsProps) {
+  const t = useTranslations("Search")
   if (!query || query.trim().length === 0) {
     return null
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="text-muted-foreground h-12 w-12">
+    <div className="flex flex-col items-center justify-center py-14 text-center">
+      {/* The icon this replaced was lucide's CAMERA path — a camera drawn for
+          "no results". It also had no width/height inside an `h-12 w-12` box, so
+          an unsized inline SVG was left to its 300×150 default and overflowed.
+          This is a magnifier with a slash, sized explicitly, in the same
+          brand-tinted chip the palette rows use. */}
+      <span className="flex size-11 items-center justify-center rounded-xl bg-muted text-muted-foreground">
         <svg
+          aria-hidden="true"
+          focusable="false"
           xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-          <circle cx="12" cy="13" r="3" />
+          <circle cx="11" cy="11" r="7" />
+          <path d="m21 21-4.3-4.3" />
+          <path d="M8.5 8.5l5 5" />
+          <path d="M13.5 8.5l-5 5" />
         </svg>
-      </div>
-      <h2 className="mt-4 text-lg font-semibold">Natijalar topilmadi</h2>
-      <p className="text-muted-foreground mt-2 text-sm">
-        Ushbu &quot;{query}&quot; bo'yicha natija topilmadi. Boshqa so'z bilan
-        urinib ko'ring.
+      </span>
+      <h2 className="mt-4 font-semibold text-base text-foreground">
+        {t("noResultsTitle")}
+      </h2>
+      <p className="mt-1.5 max-w-xs text-muted-foreground text-sm">
+        {t("noResultsHint", { query })}
       </p>
     </div>
   )
@@ -86,16 +114,18 @@ interface CustomSearchBoxProps {
 }
 
 export function CustomSearchBox({ value, onChange }: CustomSearchBoxProps) {
+  const t = useTranslations("Search")
   return (
     <div className="relative">
-      <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+      <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3.5 size-[18px] text-muted-foreground" />
+      {/* `font-mono` so the typed query matches the hero palette's query row —
+          the two are pictures of the same surface and should read alike. */}
       <input
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Mavzular va kodlar orasidan qidiring..."
-        className="h-12 w-full rounded-md bg-[#F2F2F7] px-10 font-medium placeholder:text-gray-500 dark:bg-[#151515] dark:placeholder:text-gray-400"
-        autoFocus
+        placeholder={t("dialogPlaceholder")}
+        className="h-12 w-full rounded-lg border border-border-strong bg-card/60 pr-4 pl-11 font-mono text-sm transition-colors duration-300 placeholder:font-sans placeholder:text-muted-foreground focus-visible:border-input focus-visible:outline-none"
       />
     </div>
   )

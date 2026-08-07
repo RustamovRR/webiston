@@ -1,1 +1,1 @@
-export { Badge, badgeVariants } from "@webiston/ui"
+export { Badge, badgeVariants } from "@webiston/ui/primitives/badge"

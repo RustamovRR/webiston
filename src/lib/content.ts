@@ -23,7 +23,7 @@ export function processContentForVideos(content: string): string {
     const customVideoRegex = /!video\[(.*?)\]\((.*?)\)/g
     processedContent = processedContent.replace(
       customVideoRegex,
-      (match, alt, url) => {
+      (_match, alt, url) => {
         // Convert to standard markdown image with the same URL
         return `![${alt || "Video"}](${url})`
       }

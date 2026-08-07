@@ -5,4 +5,4 @@ export {
   CardFooter,
   CardHeader,
   CardTitle
-} from "@webiston/ui"
+} from "@webiston/ui/primitives/card"
