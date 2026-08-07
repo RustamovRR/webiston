@@ -35,6 +35,14 @@ const COPY = {
     social:
       "Convert HEX, RGB, HSL and OKLCH, check WCAG contrast and generate palettes. Free, and it runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Конвертер цветов — HEX, RGB, HSL и OKLCH",
+    description:
+      "Переводите цвета между HEX, RGB, HSL, Lab, LCH и OKLCH, проверяйте контраст по WCAG и собирайте палитры и шкалы для Tailwind v4. Всё считается в браузере.",
+    social:
+      "Конвертер цветов и генератор палитр: HEX, RGB, HSL, OKLCH, проверка контраста WCAG — бесплатно.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -56,9 +64,11 @@ export const colorConverterMetadata: Metadata = {
 }
 
 export function getColorConverterMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/color-converter" : "/tools/color-converter"
+    locale === "uz"
+      ? "/tools/color-converter"
+      : `/${locale}/tools/color-converter`
 
   return {
     ...colorConverterMetadata,

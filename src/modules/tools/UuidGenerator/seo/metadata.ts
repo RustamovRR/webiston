@@ -28,6 +28,14 @@ const COPY = {
     social:
       "UUID v4, v7 and v1 in bulk, plus an inspector that reads any UUID. Runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Генератор UUID — v4, v7 и v1",
+    description:
+      "Создавайте UUID версий v4, v7 и v1 по одному или до 1000 сразу и разбирайте полученный UUID: версия, вариант и время создания. Значения берутся из криптографического генератора браузера.",
+    social:
+      "Генерируйте UUID v4, v7 и v1 и разбирайте чужие UUID — бесплатно, прямо в браузере.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -49,9 +57,11 @@ export const uuidGeneratorMetadata: Metadata = {
 }
 
 export function getUuidGeneratorMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/uuid-generator" : "/tools/uuid-generator"
+    locale === "uz"
+      ? "/tools/uuid-generator"
+      : `/${locale}/tools/uuid-generator`
 
   return {
     ...uuidGeneratorMetadata,

@@ -27,6 +27,14 @@ const COPY = {
     social:
       "Encode and decode URLs, with separate value and whole-URL modes. Runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Кодирование URL — percent-encoding и разбор ссылок",
+    description:
+      "Переводите %20 и %3A в читаемый вид и обратно, с выбором между кодированием значения и целого URL. Параметры запроса разбираются по одному. Всё в браузере.",
+    social:
+      "Кодируйте и декодируйте URL и разбирайте параметры запроса — бесплатно, в браузере.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -48,8 +56,9 @@ export const urlEncoderMetadata: Metadata = {
 }
 
 export function getUrlEncoderMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
-  const path = locale === "en" ? "/en/tools/url-encoder" : "/tools/url-encoder"
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
+  const path =
+    locale === "uz" ? "/tools/url-encoder" : `/${locale}/tools/url-encoder`
 
   return {
     ...urlEncoderMetadata,

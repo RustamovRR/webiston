@@ -26,6 +26,14 @@ const COPY = {
     social:
       "Open Graph and Twitter meta tags, with a live share-card preview and a real image check. Runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Генератор Open Graph — мета-теги для соцсетей",
+    description:
+      "Посмотрите, как ссылка будет выглядеть в Telegram, X, Facebook и LinkedIn, и заберите готовые теги og: и twitter:. Инструмент измеряет изображение и предупреждает об ошибках.",
+    social:
+      "Создайте мета-теги Open Graph и посмотрите карточку ссылки для Telegram, X и LinkedIn.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -47,9 +55,11 @@ export const ogMetaGeneratorMetadata: Metadata = {
 }
 
 export function getOgMetaGeneratorMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/og-meta-generator" : "/tools/og-meta-generator"
+    locale === "uz"
+      ? "/tools/og-meta-generator"
+      : `/${locale}/tools/og-meta-generator`
 
   return {
     ...ogMetaGeneratorMetadata,

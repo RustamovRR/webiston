@@ -24,6 +24,14 @@ const COPY = {
     social:
       "Your IP address, its location, the network operating it and its ASN — free, no signup.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "IP-адрес — расположение, провайдер и ASN",
+    description:
+      "Куда указывает ваш IP-адрес и кто им управляет: страна, город, провайдер, ASN и часовой пояс. Можно проверить любой адрес IPv4 или IPv6 — запрос идёт через наш сервер, а не из вашего браузера.",
+    social:
+      "Ваш IP-адрес, его расположение, провайдер и номер ASN — бесплатно, без регистрации.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -45,8 +53,8 @@ export const ipInfoMetadata: Metadata = {
 }
 
 export function getIpInfoMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
-  const path = locale === "en" ? "/en/tools/ip-info" : "/tools/ip-info"
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
+  const path = locale === "uz" ? "/tools/ip-info" : `/${locale}/tools/ip-info`
 
   return {
     ...ipInfoMetadata,

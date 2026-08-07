@@ -40,6 +40,14 @@ const COPY = {
     social:
       "Convert Uzbek text between the Latin and Cyrillic alphabets. Free, and it runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Латиница ↔ кириллица — конвертер узбекского текста",
+    description:
+      "Переводите узбекский текст между латиницей и кириллицей. Учитываются сложные места орфографии, ссылки и код остаются нетронутыми, поддерживаются файлы TXT, PDF и DOCX.",
+    social:
+      "Конвертер узбекского текста между латиницей и кириллицей — бесплатно, прямо в браузере.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -49,9 +57,11 @@ const COPY = {
  * already fixes the canonical and the hreflang set; this fixes the words.
  */
 export function getLatinCyrillicMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/latin-cyrillic" : "/tools/latin-cyrillic"
+    locale === "uz"
+      ? "/tools/latin-cyrillic"
+      : `/${locale}/tools/latin-cyrillic`
 
   return {
     ...latinCyrillicMetadata,

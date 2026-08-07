@@ -73,9 +73,9 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider locale={locale} messages={chromeMessages}>
       <div className="flex min-h-screen flex-col">
-        <Header />
+        <Header locale={locale} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer locale={locale} />
       </div>
     </NextIntlClientProvider>
   )

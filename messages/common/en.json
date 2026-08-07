@@ -42,7 +42,17 @@
   },
   "Header": {
     "books": "Books",
-    "tools": "Useful Tools"
+    "tools": "Useful Tools",
+    "language": "Choose a language",
+    "current": "current language",
+    "languageHint": "Switching keeps you on this page.",
+    "allBooks": "All books",
+    "allBooksDescription": "The full list of all three books and their chapters.",
+    "bookDescriptions": {
+      "ai-engineering": "A complete guide to building with AI, in depth.",
+      "javascript-definitive-guide": "The definitive guide to JavaScript, translated in full.",
+      "fluent-react": "Advanced React knowledge and the patterns behind it."
+    }
   },
   "Common": {
     "stats": {

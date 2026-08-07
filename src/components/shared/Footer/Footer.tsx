@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import { BOOK_SECTIONS, socialLinks } from "@/constants"
 import { Link as I18nLink } from "@/i18n/navigation"
 import Logo from "../Header/Logo"
@@ -9,11 +9,13 @@ import Logo from "../Header/Logo"
  * gutter, mono small text for the meta row. Was a single centered row of
  * icons + copyright — no navigation, no identity.
  *
- * Server Component; `useTranslations` is the RSC-safe next-intl API here.
+ * Server Component. `getTranslations({ locale })` rather than
+ * `useTranslations`: the latter resolved the DEFAULT locale here, so the
+ * footer was Uzbek on every `/en` page — the same bug the header carried.
  */
-export default function Footer() {
-  const t = useTranslations("Footer")
-  const tHeader = useTranslations("Header")
+export default async function Footer({ locale }: { locale: string }) {
+  const t = await getTranslations({ locale, namespace: "Footer" })
+  const tHeader = await getTranslations({ locale, namespace: "Header" })
 
   return (
     <footer className="border-border border-t">

@@ -1,6 +1,4 @@
-import Link from "next/link"
-import { useTranslations } from "next-intl"
-import React from "react"
+import { cn } from "@webiston/ui"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,8 +6,15 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger
-} from "@/components/ui/navigation-menu"
-import { cn } from "@/lib"
+} from "@webiston/ui/primitives/navigation-menu"
+import Link from "next/link"
+import { getTranslations } from "next-intl/server"
+
+// `BOOK_SECTIONS` already carries these ids and titles for the homepage.
+// Header is a Server Component, so its `chapters` arrays never reach the
+// client bundle — a second list would only be a second thing to keep in sync.
+import { BOOK_SECTIONS } from "@/constants/navigation"
+
 import LanguageSelector from "../LanguageSelector/LanguageSelector"
 import Search from "../Search"
 import ThemeToggle from "../ThemeToggle"
@@ -18,30 +23,27 @@ import MobileMenuButton from "./MobileMenuButton"
 
 interface HeaderProps {
   showLanguageSelector?: boolean
+  /**
+   * The active locale, passed in explicitly.
+   *
+   * **This is a bug fix, not plumbing.** With `useTranslations` this component
+   * resolved the DEFAULT locale, so `/en` served an entirely Uzbek header —
+   * "Kitoblar", "Foydali Vositalar", the book descriptions, all of it — on
+   * every English page, while the page body beside it was correctly English.
+   * The pages were right because each one calls `setRequestLocale` in its own
+   * body; the layout's call does not reach this far.
+   *
+   * `getTranslations({ locale })` cannot get it wrong: the locale is an
+   * argument rather than something read from ambient request state.
+   */
+  locale: string
 }
 
-export default function Header({ showLanguageSelector = true }: HeaderProps) {
-  const t = useTranslations("Header")
-
-  const books = [
-    {
-      id: "ai-engineering",
-      title: "AI Engineering",
-      description:
-        "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma."
-    },
-    {
-      id: "javascript-definitive-guide",
-      title: "JavaScript The Definitive Guide",
-      description: "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma."
-    },
-    {
-      id: "fluent-react",
-      title: "Fluent React",
-      description:
-        "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar."
-    }
-  ]
+export default async function Header({
+  showLanguageSelector = true,
+  locale
+}: HeaderProps) {
+  const t = await getTranslations({ locale, namespace: "Header" })
 
   return (
     // Frosted, not near-opaque. At `bg-background/95` this bar was effectively
@@ -57,7 +59,7 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
     // the missing 30% of opacity used to do.
     <div
       data-site-header
-      className="sticky top-0 z-50 border-b border-border bg-background/65 backdrop-blur-xl"
+      className="sticky top-0 z-50 border-border border-b bg-background/65 backdrop-blur-xl"
     >
       {/* `h-(--header-height)` rather than `h-16`: hero.css reaches its backdrop
           up behind this bar by exactly this value, and two hardcoded `4rem`s in
@@ -68,25 +70,40 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                {/* No colour on the inner Link: it is a CHILD of the trigger,
-                    so its own `text-*` would win and the trigger's
-                    `hover:text-accent-foreground` would never reach it — which
-                    is exactly what produced grey text on the grey hover
-                    surface. Colour lives on the trigger; the Link inherits. */}
+                {/*
+                  Plain text, NOT a `<Link>`.
+
+                  `NavigationMenuTrigger` renders a `<button>`, and an anchor
+                  inside a button is invalid HTML — the spec forbids interactive
+                  content inside interactive content. Browsers recover from it,
+                  but the two elements fight over the click and over focus, and
+                  a screen reader is told the control is a button whose contents
+                  are a link to somewhere else. The route to /books is the first
+                  item in the menu below, where it is unambiguous.
+                */}
                 <NavigationMenuTrigger className="relative cursor-pointer bg-transparent text-muted-foreground transition-colors duration-300 hover:text-foreground data-[state=open]:text-foreground">
-                  <Link href="/books">{t("books")}</Link>
+                  {t("books")}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid gap-3 p-4 max-md:max-w-[400px] max-md:!p-1 md:w-[500px]">
-                    {books.map((book) => (
+                  <ul className="grid gap-1 p-2 max-md:max-w-[400px] md:w-[500px] md:gap-3 md:p-4">
+                    {BOOK_SECTIONS.map((book) => (
                       <ListItem
                         key={book.id}
                         href={`/books/${book.id}`}
                         title={book.title}
                       >
-                        {book.description}
+                        {/*
+                          Translated, not hardcoded. These three descriptions
+                          were Uzbek string literals in this file, so every
+                          visitor on /en read the Uzbek — in the site's own
+                          navigation, on every page.
+                        */}
+                        {t(`bookDescriptions.${book.id}`)}
                       </ListItem>
                     ))}
+                    <ListItem href="/books" title={t("allBooks")}>
+                      {t("allBooksDescription")}
+                    </ListItem>
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -102,10 +119,18 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
           </NavigationMenu>
         </section>
 
-        <section className="flex items-center space-x-2">
+        <section className="flex items-center gap-2">
           <div className="hidden items-center gap-2 md:flex">
             <Search />
-            {showLanguageSelector && <LanguageSelector />}
+            {showLanguageSelector && (
+              <LanguageSelector
+                labels={{
+                  trigger: t("language"),
+                  current: t("current"),
+                  hint: t("languageHint")
+                }}
+              />
+            )}
             <ThemeToggle />
           </div>
           <div className="md:hidden">
@@ -117,28 +142,36 @@ export default function Header({ showLanguageSelector = true }: HeaderProps) {
   )
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
+/**
+ * One entry in the books menu.
+ *
+ * No `forwardRef`. React 19 passes `ref` as an ordinary prop, so the wrapper
+ * this used to carry — plus the deprecated `React.ElementRef` it was typed
+ * with — is machinery for a version we are two majors past.
+ */
+function ListItem({
+  className,
+  title,
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<"a">) {
   return (
     <li>
       <NavigationMenuLink asChild>
         <a
-          ref={ref}
           className={cn(
-            "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors",
+            "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
           {...props}
         >
-          <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
+          <div className="font-medium text-sm leading-none">{title}</div>
+          <p className="line-clamp-2 text-muted-foreground text-sm leading-snug">
             {children}
           </p>
         </a>
       </NavigationMenuLink>
     </li>
   )
-})
-ListItem.displayName = "ListItem"
+}

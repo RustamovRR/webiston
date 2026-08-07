@@ -26,6 +26,14 @@ const COPY = {
     social:
       "Filler text in Uzbek and classic Latin, with HTML output. Runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Генератор Lorem Ipsum — текст-заполнитель для макета",
+    description:
+      "Текст-заполнитель по абзацам, предложениям, словам или точному числу байт. Кроме классической латыни есть узбекские словари — латиницей и кириллицей.",
+    social:
+      "Генерируйте текст-заполнитель для макетов: латынь, узбекская латиница и кириллица.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -47,8 +55,9 @@ export const loremIpsumMetadata: Metadata = {
 }
 
 export function getLoremIpsumMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
-  const path = locale === "en" ? "/en/tools/lorem-ipsum" : "/tools/lorem-ipsum"
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
+  const path =
+    locale === "uz" ? "/tools/lorem-ipsum" : `/${locale}/tools/lorem-ipsum`
 
   return {
     ...loremIpsumMetadata,

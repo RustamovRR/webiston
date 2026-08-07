@@ -1,0 +1,131 @@
+{
+  "ToolsPage": {
+    "Metadata": {
+      "title": "Инструменты для разработчиков | Webiston",
+      "description": "Коллекция бесплатных и полезных онлайн-инструментов для разработчиков: конвертеры, генераторы, форматтеры и многое другое для повседневных задач.",
+      "keywords": "инструменты разработчика, онлайн-инструменты, бесплатные инструменты, конвертеры, генераторы, форматтер JSON, конвертер Base64, конвертер цветов"
+    },
+    "Main": {
+      "title": "Онлайн-инструменты",
+      "description": "Набор профессиональных инструментов для программирования, дизайна и повседневных задач",
+      "filterByCategory": "Фильтр по категории",
+      "filterByAudience": "Фильтр по аудитории",
+      "searchPlaceholder": "Поиск инструментов...",
+      "resultsFound": "Найдено инструментов: {count}",
+      "noResults": "Инструменты не найдены",
+      "noResultsHint": "Попробуйте изменить фильтр или запрос",
+      "audienceDeveloper": "Разработчикам",
+      "audienceGeneral": "Всем",
+      "totalTools": "Всего инструментов",
+      "categories": "Категории",
+      "generalTools": "Общие инструменты",
+      "developerTools": "Инструменты разработчика"
+    }
+  },
+  "Tools": {
+    "latinCyrillic": {
+      "title": "Латиница ↔ кириллица",
+      "description": "Перевод узбекского текста с латиницы на кириллицу и обратно."
+    },
+    "jsonFormatter": {
+      "title": "Форматтер JSON",
+      "description": "Форматирование и проверка данных JSON.",
+      "keywords": "форматтер JSON, валидатор JSON, красивый JSON, минификатор JSON, парсер JSON, инструмент JSON, JSON formatter, JSON validator"
+    },
+    "base64Converter": {
+      "title": "Конвертер Base64",
+      "description": "Кодирование и декодирование текста и файлов в Base64.",
+      "keywords": "кодировщик Base64, декодер Base64, конвертер Base64, инструмент Base64, Base64 encoder, Base64 decoder"
+    },
+    "urlEncoder": {
+      "title": "Кодирование URL",
+      "description": "Кодирование и декодирование URL-адресов и текста."
+    },
+    "jwtDecoder": {
+      "title": "Декодер JWT",
+      "description": "Расшифровка и разбор токенов JSON Web Token."
+    },
+    "colorConverter": {
+      "title": "Конвертер цветов",
+      "description": "Перевод цветов между форматами HEX, RGB и HSL."
+    },
+    "hashGenerator": {
+      "title": "Генератор хешей",
+      "description": "Вычисление хешей MD5, SHA1, SHA256 и SHA512."
+    },
+    "uuidGenerator": {
+      "title": "Генератор UUID",
+      "description": "Создание уникальных идентификаторов (UUID)."
+    },
+    "qrGenerator": {
+      "title": "Генератор QR-кодов",
+      "description": "Создание QR-кодов для текста и ссылок."
+    },
+    "passwordGenerator": {
+      "title": "Генератор паролей",
+      "description": "Создание надёжных и стойких паролей."
+    },
+    "deviceInfo": {
+      "title": "Сведения об устройстве",
+      "description": "Подробная информация о браузере, устройстве и системе."
+    },
+    "cameraRecorder": {
+      "title": "Проверка камеры",
+      "description": "Проверьте веб-камеру и запишите видео."
+    },
+    "microphoneTest": {
+      "title": "Проверка микрофона",
+      "description": "Проверьте микрофон и запишите звук."
+    },
+    "keycodeInfo": {
+      "title": "Коды клавиш",
+      "description": "Определение keycode для событий JavaScript."
+    },
+    "ogMetaGenerator": {
+      "title": "Генератор Open Graph",
+      "description": "Создание мета-тегов для социальных сетей."
+    },
+    "loremIpsum": {
+      "title": "Генератор Lorem Ipsum",
+      "description": "Генерация текста-заполнителя и абзацев."
+    },
+    "screenResolution": {
+      "title": "Разрешение экрана",
+      "description": "Область просмотра, активная точка останова CSS, плотность пикселей и соотношение сторон"
+    },
+    "userAgentAnalyzer": {
+      "title": "Анализатор User Agent",
+      "description": "Разбор строки User Agent браузера."
+    },
+    "ipInfo": {
+      "title": "Информация об IP",
+      "description": "Расположение IP, провайдер, ASN и часовой пояс"
+    },
+    "websiteStatus": {
+      "title": "Проверка сайта",
+      "description": "Проверка доступности и статуса сайта."
+    },
+    "httpStatus": {
+      "title": "Коды состояния HTTP",
+      "description": "Все коды состояния HTTP и их значения."
+    }
+  },
+  "ToolCategories": {
+    "converters": {
+      "title": "Конвертеры",
+      "description": "Инструменты для перевода данных между форматами."
+    },
+    "generators": {
+      "title": "Генераторы",
+      "description": "Инструменты для генерации данных и кодов."
+    },
+    "analyzers": {
+      "title": "Анализаторы",
+      "description": "Инструменты для разбора и анализа данных."
+    },
+    "utilities": {
+      "title": "Утилиты",
+      "description": "Проверка устройств и другие полезные инструменты."
+    }
+  }
+}

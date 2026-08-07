@@ -24,6 +24,14 @@ const COPY = {
     social:
       "Viewport, breakpoint, pixel ratio and aspect ratio — numbers that update live as you resize.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Разрешение экрана — область просмотра и точки останова",
+    description:
+      "Размер, который на самом деле видит ваш CSS: область просмотра, окно и экран, активная точка останова Tailwind, Bootstrap или MUI, плотность пикселей и соотношение сторон.",
+    social:
+      "Узнайте размер области просмотра, активную точку останова CSS и плотность пикселей.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -45,9 +53,11 @@ export const screenResolutionMetadata: Metadata = {
 }
 
 export function getScreenResolutionMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/screen-resolution" : "/tools/screen-resolution"
+    locale === "uz"
+      ? "/tools/screen-resolution"
+      : `/${locale}/tools/screen-resolution`
 
   return {
     ...screenResolutionMetadata,

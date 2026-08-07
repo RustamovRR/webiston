@@ -42,7 +42,17 @@
   },
   "Header": {
     "books": "Kitoblar",
-    "tools": "Foydali Vositalar"
+    "tools": "Foydali Vositalar",
+    "language": "Tilni tanlash",
+    "current": "hozirgi til",
+    "languageHint": "Til almashganda shu sahifada qolasiz.",
+    "allBooks": "Barcha kitoblar",
+    "allBooksDescription": "Uchala kitobning to'liq ro'yxati va bo'limlari.",
+    "bookDescriptions": {
+      "ai-engineering": "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
+      "javascript-definitive-guide": "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
+      "fluent-react": "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar."
+    }
   },
   "Common": {
     "stats": {

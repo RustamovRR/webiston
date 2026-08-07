@@ -33,6 +33,14 @@ const COPY = {
     social:
       "Encode and decode Base64, including base64url. Everything runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Конвертер Base64 — кодирование и декодирование",
+    description:
+      "Переведите текст или файл в Base64 и обратно. Поддерживается base64url, есть проверка размера и разбор ошибок. Всё считается в браузере — ничего не загружается на сервер.",
+    social:
+      "Кодируйте и декодируйте Base64 бесплатно, прямо в браузере — с поддержкой base64url и файлов.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -54,7 +62,7 @@ export const base64ConverterMetadata: Metadata = {
 }
 
 export function getBase64ConverterMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
     locale === "en" ? "/en/tools/base64-converter" : "/tools/base64-converter"
 

@@ -24,6 +24,14 @@ const COPY = {
     social:
       "Test your microphone free: dBFS level, waveform, spectrum, recording, and browser audio processing you can switch off.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Проверка микрофона — уровень, волна и запись",
+    description:
+      "Работает ли ваш микрофон? Смотрите уровень в dBFS, следите за волной и спектром, услышьте себя и запишите фрагмент. Отключите фильтры браузера и услышьте разницу — всё остаётся на вашем устройстве.",
+    social:
+      "Проверьте микрофон бесплатно: уровень в dBFS, волна, спектр, запись и отключаемые фильтры.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -45,9 +53,11 @@ export const microphoneTestMetadata: Metadata = {
 }
 
 export function getMicrophoneTestMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/microphone-test" : "/tools/microphone-test"
+    locale === "uz"
+      ? "/tools/microphone-test"
+      : `/${locale}/tools/microphone-test`
 
   return {
     ...microphoneTestMetadata,

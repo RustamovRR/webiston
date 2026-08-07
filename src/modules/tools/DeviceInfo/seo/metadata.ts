@@ -24,6 +24,14 @@ const COPY = {
     social:
       "Browser, system, display, network and user preferences — everything a site knows without asking.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Сведения об устройстве — браузер, система и экран",
+    description:
+      "Всё, что сайт узнаёт о вас, ничего не спрашивая: браузер, операционная система, экран, сеть и настройки. Показываем, из чего складывается отпечаток браузера. Данные не покидают страницу.",
+    social:
+      "Что ваш браузер рассказывает о вас каждому сайту — и почему это складывается в отпечаток.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -45,8 +53,9 @@ export const deviceInfoMetadata: Metadata = {
 }
 
 export function getDeviceInfoMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
-  const path = locale === "en" ? "/en/tools/device-info" : "/tools/device-info"
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
+  const path =
+    locale === "uz" ? "/tools/device-info" : `/${locale}/tools/device-info`
 
   return {
     ...deviceInfoMetadata,

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * uz/en message key parity.
+ * Message key parity across every served locale.
  *
  * A key present in one locale and missing in the other is a RUNTIME defect, not
  * a TODO: next-intl throws / renders the raw key path where the string should be.
@@ -20,7 +20,31 @@ import { join } from "node:path"
 
 const ROOT = process.cwd()
 const MESSAGES = join(ROOT, "messages")
-const LOCALES = ["uz", "en"]
+
+/**
+ * The served locales, read from `src/i18n/locales.ts`.
+ *
+ * Parsed rather than hardcoded, because a hardcoded copy here was the FIFTH
+ * one in the repo and the most dangerous: a gate that checks the wrong list
+ * passes while ignoring the thing it exists to check. This is a `.mjs` script
+ * and that file is TypeScript, so a regex is the honest option — and it fails
+ * loudly rather than guessing if the shape ever changes.
+ */
+function servedLocales() {
+  const source = readFileSync(join(ROOT, "src/i18n/locales.ts"), "utf8")
+  const match = source.match(/export const LOCALES = \[([^\]]+)\]/)
+  if (!match) {
+    console.error("✗ Could not read LOCALES from src/i18n/locales.ts.")
+    console.error("  This gate cannot verify a list it cannot find.")
+    process.exit(1)
+  }
+  return match[1]
+    .split(",")
+    .map((part) => part.trim().replace(/["']/g, ""))
+    .filter(Boolean)
+}
+
+const LOCALES = servedLocales()
 
 /** Flatten a nested message object to dotted key paths. */
 function flatten(obj, prefix = "") {
@@ -31,9 +55,18 @@ function flatten(obj, prefix = "") {
   )
 }
 
-/** Every directory that holds a per-locale message file. */
+/**
+ * Every directory that holds per-locale message files.
+ *
+ * A directory with SOME locale files is a bundle with a hole in it, not a
+ * non-bundle. The version this replaces required every locale to be present
+ * before it would look at a directory at all — so adding a locale and
+ * forgetting one bundle made that bundle **silently unchecked**, which is the
+ * precise failure this gate exists to prevent.
+ */
 function bundleDirs(dir, acc = []) {
-  if (LOCALES.every((l) => existsSync(join(dir, `${l}.json`)))) acc.push(dir)
+  const present = LOCALES.filter((l) => existsSync(join(dir, `${l}.json`)))
+  if (present.length > 0) acc.push({ dir, present })
   for (const e of readdirSync(dir, { withFileTypes: true })) {
     if (e.isDirectory()) bundleDirs(join(dir, e.name), acc)
   }
@@ -41,7 +74,7 @@ function bundleDirs(dir, acc = []) {
 }
 
 /** Same reasoning as MIN_SCANNED in token-guardrail.mjs: with zero bundles this
- *  script reports "✓ uz/en parity across 0 message bundles" and exits 0. There
+ *  script reports "✓ parity across 0 message bundles" and exits 0. There
  *  are 19 today; a collapse means discovery broke, not that the strings did. */
 const MIN_BUNDLES = 10
 
@@ -58,14 +91,29 @@ if (bundles.length < MIN_BUNDLES) {
   process.exit(1)
 }
 
-for (const dir of bundles) {
+for (const { dir, present } of bundles) {
+  const rel = dir.replace(`${ROOT}/`, "")
+
+  // A locale with no file at all in a bundle that has others. Reported as its
+  // own failure rather than folded into the key diff, because "you have not
+  // translated this namespace yet" and "you renamed one key" are different
+  // problems with different fixes.
+  const absent = LOCALES.filter((l) => !present.includes(l))
+  if (absent.length > 0) {
+    failures++
+    console.error(`✗ ${rel} — no message file for: ${absent.join(", ")}`)
+    console.error(
+      `  Every served locale needs a bundle; a missing one is a broken page, not a TODO.`
+    )
+    continue
+  }
+
   const sets = Object.fromEntries(
     LOCALES.map((l) => [
       l,
       new Set(flatten(JSON.parse(readFileSync(join(dir, `${l}.json`), "utf8"))))
     ])
   )
-  const rel = dir.replace(`${ROOT}/`, "")
 
   // Missing in a locale that another locale has = a broken string at runtime.
   for (const locale of LOCALES) {
@@ -163,7 +211,7 @@ if (failures) {
 }
 
 console.log(
-  `✓ uz/en parity across ${bundles.length} message bundles — no missing keys.`
+  `✓ ${LOCALES.join("/")} parity across ${bundles.length} message bundles — no missing keys.`
 )
 console.log(
   `✓ all ${required.size} client namespaces are provided (${provided.size} provided in total).`

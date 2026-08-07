@@ -24,6 +24,14 @@ const COPY = {
     social:
       "Test your webcam free: live preview, the resolution and fps it really delivers, stills and recording.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Проверка камеры — тест веб-камеры и запись видео",
+    description:
+      "Работает ли ваша веб-камера? Посмотрите живую картинку, узнайте реальное разрешение и частоту кадров, сделайте кадр или запишите видео. Всё остаётся в браузере.",
+    social:
+      "Проверьте веб-камеру бесплатно: живая картинка, реальные разрешение и fps, кадры и запись видео.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -45,9 +53,11 @@ export const cameraRecorderMetadata: Metadata = {
 }
 
 export function getCameraRecorderMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/camera-recorder" : "/tools/camera-recorder"
+    locale === "uz"
+      ? "/tools/camera-recorder"
+      : `/${locale}/tools/camera-recorder`
 
   return {
     ...cameraRecorderMetadata,

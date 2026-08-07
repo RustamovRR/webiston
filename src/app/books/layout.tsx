@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
 import Footer from "@/components/shared/Footer/Footer"
 import Header from "@/components/shared/Header/Header"
+import { DEFAULT_LOCALE } from "@/i18n/locales"
 import { routing } from "@/i18n/routing"
 
 // `/books/**` sits outside the `[locale]` segment and stays Uzbek-only by
@@ -44,9 +45,13 @@ export default async function BooksLayout({
       messages={clientMessages}
     >
       <div className="flex min-h-screen flex-col">
-        <Header showLanguageSelector={false} />
+        {/* `/books/*` and the 404 live OUTSIDE the `[locale]` segment, so there is
+          no locale to read — they are Uzbek-only routes today. Stating the
+          default here is honest about that; it used to be the accidental
+          result of a resolution bug rather than a decision. */}
+        <Header showLanguageSelector={false} locale={DEFAULT_LOCALE} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer locale={DEFAULT_LOCALE} />
       </div>
     </NextIntlClientProvider>
   )

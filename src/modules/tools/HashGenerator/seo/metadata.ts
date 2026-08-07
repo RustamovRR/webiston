@@ -27,6 +27,14 @@ const COPY = {
     social:
       "SHA-256, SHA-512, MD5 and HMAC, with checksum comparison. Runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Генератор хешей — SHA-256, SHA-512, MD5 и HMAC",
+    description:
+      "Вычислите хеш текста или файла и сверьте загрузку с опубликованной контрольной суммой. Есть HMAC для проверки подписей вебхуков. Всё считается в браузере через Web Crypto.",
+    social:
+      "Считайте SHA-256, SHA-512, MD5 и HMAC и сверяйте контрольные суммы — бесплатно, в браузере.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -48,9 +56,11 @@ export const hashGeneratorMetadata: Metadata = {
 }
 
 export function getHashGeneratorMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
   const path =
-    locale === "en" ? "/en/tools/hash-generator" : "/tools/hash-generator"
+    locale === "uz"
+      ? "/tools/hash-generator"
+      : `/${locale}/tools/hash-generator`
 
   return {
     ...hashGeneratorMetadata,

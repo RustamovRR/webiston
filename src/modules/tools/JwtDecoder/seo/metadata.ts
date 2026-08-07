@@ -30,6 +30,14 @@ const COPY = {
     social:
       "Decode a JWT: header, payload and expiry. Everything runs in your browser.",
     ogLocale: "en_US"
+  },
+  ru: {
+    title: "Декодер JWT — разбор JSON Web Token",
+    description:
+      "Посмотрите, что внутри токена: заголовок, полезная нагрузка, срок действия и алгоритм подписи. Токен не покидает браузер, и подпись здесь намеренно не проверяется.",
+    social:
+      "Разберите JWT в браузере: заголовок, нагрузка и срок действия — токен никуда не отправляется.",
+    ogLocale: "ru_RU"
   }
 } as const
 
@@ -51,8 +59,9 @@ export const jwtDecoderMetadata: Metadata = {
 }
 
 export function getJwtDecoderMetadata(locale: string): Metadata {
-  const copy = locale === "en" ? COPY.en : COPY.uz
-  const path = locale === "en" ? "/en/tools/jwt-decoder" : "/tools/jwt-decoder"
+  const copy = COPY[locale as keyof typeof COPY] ?? COPY.uz
+  const path =
+    locale === "uz" ? "/tools/jwt-decoder" : `/${locale}/tools/jwt-decoder`
 
   return {
     ...jwtDecoderMetadata,
