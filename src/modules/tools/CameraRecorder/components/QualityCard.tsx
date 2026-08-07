@@ -3,9 +3,9 @@
 import { cn } from "@webiston/ui"
 import { CopyButton } from "@webiston/ui/composites/CopyButton"
 import { useTranslations } from "next-intl"
-import { useMemo } from "react"
 
 import { DetailList, type DetailListRow } from "@/components/shared/DetailList"
+import { ToggleChip } from "@/components/shared/ToggleChip"
 import { ToolCard } from "@/components/shared/ToolCard"
 import { environmentReportLines, formatReport } from "@/lib/utils/media"
 
@@ -34,6 +34,8 @@ interface QualityCardProps {
   locked: boolean
   /** Shown in the report, so the reader knows which camera it describes. */
   deviceLabel: string | null
+  /** The stream is being reopened after a settings change. */
+  isBusy: boolean
 }
 
 export function QualityCard({
@@ -42,7 +44,8 @@ export function QualityCard({
   requested,
   actual,
   locked,
-  deviceLabel
+  deviceLabel,
+  isBusy
 }: QualityCardProps) {
   const t = useTranslations("CameraRecorderPage.quality")
   const tValues = useTranslations("CameraRecorderPage.values")
@@ -50,63 +53,45 @@ export function QualityCard({
   const matched =
     actual?.width === requested.width && actual?.height === requested.height
 
-  // Memoised so the report below can depend on it. An array rebuilt every
-  // render is not a dependency — it is a guarantee that whatever depends on it
-  // runs every render too.
-  const rows: DetailListRow[] = useMemo(
-    () => [
-      {
-        key: "requested",
-        label: t("rows.requested"),
-        value: `${requested.width} × ${requested.height}`
-      },
-      {
-        key: "actual",
-        label: t("rows.actual"),
-        value:
-          actual?.width && actual?.height
-            ? `${actual.width} × ${actual.height}`
-            : null
-      },
-      {
-        key: "frameRate",
-        label: t("rows.frameRate"),
-        value: actual?.frameRate ? `${Math.round(actual.frameRate)} fps` : null
-      },
-      {
-        key: "facingMode",
-        label: t("rows.facingMode"),
-        value: actual?.facingMode
-          ? tValues(`facing.${actual.facingMode}`)
+  // Plain values: React Compiler is on, so hand-written memoisation around a
+  // mapped array duplicates what the build already does.
+  const rows: DetailListRow[] = [
+    {
+      key: "requested",
+      label: t("rows.requested"),
+      value: `${requested.width} × ${requested.height}`
+    },
+    {
+      key: "actual",
+      label: t("rows.actual"),
+      value:
+        actual?.width && actual?.height
+          ? `${actual.width} × ${actual.height}`
           : null
-      }
-    ],
-    [requested, actual, t, tValues]
-  )
+    },
+    {
+      key: "frameRate",
+      label: t("rows.frameRate"),
+      value: actual?.frameRate ? `${Math.round(actual.frameRate)} fps` : null
+    },
+    {
+      key: "facingMode",
+      label: t("rows.facingMode"),
+      value: actual?.facingMode ? tValues(`facing.${actual.facingMode}`) : null
+    }
+  ]
 
-  /**
-   * The report — the paste-into-a-support-ticket block.
-   *
-   * `useMemo`, deliberately, and not the `useState` + `useEffect` this started
-   * as. That version listed `rows` as a dependency; `rows` is a fresh array
-   * every render, so the effect ran every render and set state to a value that
-   * never settled. A memo cannot loop — recomputing costs a string, not a
-   * render pass.
-   */
-  const report = useMemo(
-    () =>
-      formatReport(t("reportTitle"), [
-        {
-          heading: t("reportDevice"),
-          lines: [
-            `${t("reportDeviceLabel")}: ${deviceLabel || "—"}`,
-            ...rows.map((row) => `${row.label}: ${row.value ?? "—"}`)
-          ]
-        },
-        { heading: t("reportEnvironment"), lines: environmentReportLines() }
-      ]),
-    [t, rows, deviceLabel]
-  )
+  /** The report — the paste-into-a-support-ticket block. */
+  const report = formatReport(t("reportTitle"), [
+    {
+      heading: t("reportDevice"),
+      lines: [
+        `${t("reportDeviceLabel")}: ${deviceLabel || "—"}`,
+        ...rows.map((row) => `${row.label}: ${row.value ?? "—"}`)
+      ]
+    },
+    { heading: t("reportEnvironment"), lines: environmentReportLines() }
+  ])
 
   return (
     <ToolCard
@@ -118,29 +103,18 @@ export function QualityCard({
     >
       <div className="space-y-3 p-5">
         <div className="flex flex-wrap gap-2">
-          {QUALITY_PRESETS.map((preset) => {
-            const active = preset.id === presetId
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                aria-pressed={active}
-                disabled={locked}
-                onClick={() => {
-                  onPresetChange(preset.id)
-                }}
-                className={cn(
-                  "rounded-lg border px-3 py-1.5 text-sm transition-colors",
-                  "disabled:cursor-not-allowed disabled:opacity-50",
-                  active
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {t(`presets.${preset.id}`)}
-              </button>
-            )
-          })}
+          {QUALITY_PRESETS.map((preset) => (
+            <ToggleChip
+              key={preset.id}
+              pressed={preset.id === presetId}
+              disabled={locked}
+              onToggle={() => {
+                onPresetChange(preset.id)
+              }}
+            >
+              {t(`presets.${preset.id}`)}
+            </ToggleChip>
+          ))}
         </div>
 
         {/* Only when they differ. A permanent note saying "these may differ" is
@@ -152,7 +126,18 @@ export function QualityCard({
         ) : null}
       </div>
 
-      <DetailList rows={rows} emptyLabel={tValues("unavailable")} />
+      {/* Dimmed rather than blanked while the camera reopens: replacing filled
+          rows with "not reported" and refilling them is the flash this used to
+          produce. */}
+      <div
+        aria-busy={isBusy}
+        className={cn(
+          "transition-opacity duration-200 ease-out",
+          isBusy && "opacity-50"
+        )}
+      >
+        <DetailList rows={rows} emptyLabel={tValues("unavailable")} />
+      </div>
     </ToolCard>
   )
 }

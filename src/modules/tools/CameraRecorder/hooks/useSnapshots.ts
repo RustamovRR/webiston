@@ -1,6 +1,6 @@
 "use client"
 
-import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { type RefObject, useEffect, useRef, useState } from "react"
 
 import { timestampedFilename } from "@/lib/utils/media"
 
@@ -34,7 +34,7 @@ export function useSnapshots(
   const snapshotsRef = useRef<Snapshot[]>([])
   snapshotsRef.current = snapshots
 
-  const capture = useCallback(() => {
+  const capture = () => {
     const video = videoRef.current
     // `videoWidth` is 0 until the first frame has arrived; drawing then
     // produces a zero-sized canvas and `toBlob` yields null.
@@ -78,22 +78,22 @@ export function useSnapshots(
       // PNG, not JPEG: a screenshot of a UI or a QR code on screen is exactly
       // the case where JPEG artefacts matter, and this is a developer tool.
     }, "image/png")
-  }, [videoRef, mirrored])
+  }
 
-  const remove = useCallback((id: string) => {
+  const remove = (id: string) => {
     setSnapshots((current) => {
       const target = current.find((item) => item.id === id)
       if (target) URL.revokeObjectURL(target.url)
       return current.filter((item) => item.id !== id)
     })
-  }, [])
+  }
 
-  const clear = useCallback(() => {
+  const clear = () => {
     setSnapshots((current) => {
       for (const item of current) URL.revokeObjectURL(item.url)
       return []
     })
-  }, [])
+  }
 
   useEffect(() => {
     return () => {

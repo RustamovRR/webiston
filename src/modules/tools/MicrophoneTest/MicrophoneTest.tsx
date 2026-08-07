@@ -65,14 +65,26 @@ export function MicrophoneTest() {
             failure={mic.failure}
           />
 
-          <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-            <ListenCard
-              analyserRef={mic.analyserRef}
-              level={mic.level}
-              isLive={mic.isLive}
-              isSilent={mic.isSilent}
-              recorder={recorder}
-            />
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
+            {/* `self-stretch`, then `sticky` on the child — the same pairing
+                the QR tool uses. A grid cell collapses to its content height,
+                and an element with no travel inside its container never
+                sticks. The live signal is what you watch WHILE reading the
+                settings beside it, so it is the panel that should follow. */}
+            <div className="lg:self-stretch">
+              {/* The max-height guard the suite's other sticky panels carry: on a
+                  short laptop window a sticky panel taller than the viewport
+                  can never be scrolled to its own bottom. */}
+              <div className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                <ListenCard
+                  analyserRef={mic.analyserRef}
+                  level={mic.level}
+                  isLive={mic.isLive}
+                  isSilent={mic.isSilent}
+                  recorder={recorder}
+                />
+              </div>
+            </div>
 
             <div className="grid gap-4">
               <ProcessingCard
@@ -83,6 +95,9 @@ export function MicrophoneTest() {
                 // so the switches are held while one is running.
                 disabled={recorder.isRecording}
                 deviceLabel={activeLabel}
+                // A toggle reopens the microphone. The layout no longer moves
+                // while that happens; this is what says it is happening.
+                isBusy={mic.isBusy}
               />
               <SpeakerTestCard />
               <RecordingsCard

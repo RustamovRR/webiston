@@ -45,6 +45,7 @@ export {
   type TerminalInputProps
 } from "./TerminalInput"
 export { default as ThemeToggle } from "./ThemeToggle"
+export { ToggleChip } from "./ToggleChip"
 export { ToolCard } from "./ToolCard"
 export { ToolHeader } from "./ToolHeader"
 export { OutputPanel, TextInputPanel, ToolPanel } from "./ToolPanel"

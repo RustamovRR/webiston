@@ -62,6 +62,15 @@ export function Scope({ analyserRef, mode, idle }: ScopeProps) {
     const draw = () => {
       frame = requestAnimationFrame(draw)
 
+      const analyser = analyserRef.current
+
+      // Checked BEFORE anything is drawn or cleared. Mid-reopen the audio
+      // graph is torn down for a moment while the tool is still live, and
+      // clearing first and returning after would blank the canvas — the
+      // blink this exists to remove. Leaving the last frame up for those few
+      // frames reads as continuity, which is what it is.
+      if (!analyser && !idle) return
+
       // A canvas sized in CSS pixels is blurry on every laptop sold this
       // decade; the backing store has to match the device.
       const ratio = window.devicePixelRatio || 1
@@ -75,7 +84,6 @@ export function Scope({ analyserRef, mode, idle }: ScopeProps) {
       context.setTransform(ratio, 0, 0, ratio, 0, 0)
       context.clearRect(0, 0, width, height)
 
-      const analyser = analyserRef.current
       if (!analyser || idle) {
         // The centre line, so an idle scope reads as "ready" rather than
         // "broken".

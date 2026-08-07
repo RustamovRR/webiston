@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { useMediaAccess } from "@/hooks/useMediaAccess"
 
@@ -46,12 +46,12 @@ export function useCamera() {
   const [torch, setTorch] = useState(false)
   const [zoom, setZoom] = useState<number | null>(null)
 
-  const preset = useMemo(
-    () =>
-      QUALITY_PRESETS.find((item) => item.id === presetId) ??
-      QUALITY_PRESETS[1],
-    [presetId]
-  )
+  // Plain lookups and plain functions throughout this hook. React Compiler is
+  // on for this project, so hand-written `useMemo`/`useCallback` around pure
+  // computation is a second implementation of what the build already does.
+  // They are kept only where identity is part of an effect's contract.
+  const preset =
+    QUALITY_PRESETS.find((item) => item.id === presetId) ?? QUALITY_PRESETS[1]
 
   /**
    * Constraints.
@@ -62,18 +62,17 @@ export function useCamera() {
    * `exact` on `deviceId` fails the moment a device is unplugged between the
    * list being drawn and the button being pressed.
    */
-  const buildConstraints = useCallback(
-    (deviceId: string | null): MediaStreamConstraints => ({
-      video: {
-        ...(deviceId ? { deviceId: { ideal: deviceId } } : {}),
-        width: { ideal: preset.width },
-        height: { ideal: preset.height },
-        frameRate: { ideal: IDEAL_FRAME_RATE }
-      },
-      audio: withAudio
-    }),
-    [preset, withAudio]
-  )
+  const buildConstraints = (
+    deviceId: string | null
+  ): MediaStreamConstraints => ({
+    video: {
+      ...(deviceId ? { deviceId: { ideal: deviceId } } : {}),
+      width: { ideal: preset.width },
+      height: { ideal: preset.height },
+      frameRate: { ideal: IDEAL_FRAME_RATE }
+    },
+    audio: withAudio
+  })
 
   const access = useMediaAccess({ kind: "videoinput", buildConstraints })
   const { stream, isLive, start } = access
@@ -149,43 +148,37 @@ export function useCamera() {
    * on a running track, and reopening the stream to turn a flash on would be
    * a visible black frame for no reason.
    */
-  const applyTorch = useCallback(
-    async (next: boolean) => {
-      const track = stream?.getVideoTracks()[0]
-      if (!track) return
-      try {
-        await track.applyConstraints({
-          advanced: [{ torch: next } as MediaTrackConstraintSet]
-        })
-        setTorch(next)
-      } catch {
-        // A camera that advertised the capability and then refused it is not
-        // worth an error panel; the control simply does not take.
-      }
-    },
-    [stream]
-  )
+  const applyTorch = async (next: boolean) => {
+    const track = stream?.getVideoTracks()[0]
+    if (!track) return
+    try {
+      await track.applyConstraints({
+        advanced: [{ torch: next } as MediaTrackConstraintSet]
+      })
+      setTorch(next)
+    } catch {
+      // A camera that advertised the capability and then refused it is not
+      // worth an error panel; the control simply does not take.
+    }
+  }
 
-  const applyZoom = useCallback(
-    async (next: number) => {
-      const track = stream?.getVideoTracks()[0]
-      if (!track) return
-      setZoom(next)
-      try {
-        await track.applyConstraints({
-          advanced: [{ zoom: next } as MediaTrackConstraintSet]
-        })
-      } catch {
-        // Same: the slider moves, the lens may not.
-      }
-    },
-    [stream]
-  )
+  const applyZoom = async (next: number) => {
+    const track = stream?.getVideoTracks()[0]
+    if (!track) return
+    setZoom(next)
+    try {
+      await track.applyConstraints({
+        advanced: [{ zoom: next } as MediaTrackConstraintSet]
+      })
+    } catch {
+      // Same: the slider moves, the lens may not.
+    }
+  }
 
-  const stop = useCallback(() => {
+  const stop = () => {
     setTorch(false)
     access.stop()
-  }, [access])
+  }
 
   return {
     ...access,

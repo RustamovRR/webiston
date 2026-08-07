@@ -40,6 +40,8 @@ interface CameraStageProps {
     pause: () => void
     resume: () => void
   }
+  /** The stream is being reopened after a settings change. */
+  isBusy: boolean
 }
 
 export function CameraStage({
@@ -47,7 +49,8 @@ export function CameraStage({
   settings,
   mirrored,
   onCapture,
-  recorder
+  recorder,
+  isBusy
 }: CameraStageProps) {
   const t = useTranslations("CameraRecorderPage.stage")
 
@@ -72,6 +75,18 @@ export function CameraStage({
           playsInline
           autoPlay
           className={cn("size-full object-contain", mirrored && "-scale-x-100")}
+        />
+
+        {/* A reopen detaches the stream for a moment, and a bare `<video>` with
+            no source paints black. A short cross-fade over the last frame is
+            the difference between "it is switching" and "it broke". */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-0 bg-background/60 backdrop-blur-[2px]",
+            "transition-opacity duration-200 ease-out",
+            isBusy ? "opacity-100" : "opacity-0"
+          )}
         />
 
         {dimensions ? (
@@ -104,7 +119,7 @@ export function CameraStage({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 border-border border-t p-4">
-        <Button onClick={onCapture} className="gap-2">
+        <Button onClick={onCapture} disabled={isBusy} className="gap-2">
           <Camera aria-hidden="true" className="size-4" />
           {t("snapshot")}
         </Button>
@@ -136,7 +151,7 @@ export function CameraStage({
           <Button
             variant="outline"
             onClick={recorder.start}
-            disabled={!recorder.canRecord}
+            disabled={!recorder.canRecord || isBusy}
             className="gap-2"
           >
             <Circle aria-hidden="true" className="size-4 fill-current" />

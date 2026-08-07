@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { useMediaAccess } from "@/hooks/useMediaAccess"
 import { CLIPPING_DBFS, levelInDbfs, peakInDbfs } from "@/lib/utils/media"
@@ -60,19 +60,23 @@ export function useMicrophone() {
    * Constraints. `deviceId` is `ideal`, not `exact`, on purpose: an `exact`
    * device that has just been unplugged rejects the whole call, and falling
    * back to the default microphone is a better answer than an error panel.
+   *
+   * A plain function: `useMediaAccess` reads it through a ref, so its identity
+   * is never observed. React Compiler is on for this project, and wrapping a
+   * pure computation in `useCallback` here would be a hand-written copy of
+   * what the compiler already does.
    */
-  const buildConstraints = useCallback(
-    (deviceId: string | null): MediaStreamConstraints => ({
-      audio: {
-        ...(deviceId ? { deviceId: { ideal: deviceId } } : {}),
-        echoCancellation: processing.echoCancellation,
-        noiseSuppression: processing.noiseSuppression,
-        autoGainControl: processing.autoGainControl
-      },
-      video: false
-    }),
-    [processing]
-  )
+  const buildConstraints = (
+    deviceId: string | null
+  ): MediaStreamConstraints => ({
+    audio: {
+      ...(deviceId ? { deviceId: { ideal: deviceId } } : {}),
+      echoCancellation: processing.echoCancellation,
+      noiseSuppression: processing.noiseSuppression,
+      autoGainControl: processing.autoGainControl
+    },
+    video: false
+  })
 
   const access = useMediaAccess({
     kind: "audioinput",
@@ -90,7 +94,22 @@ export function useMicrophone() {
    * is the classic way to turn a level meter into a feedback loop.
    */
   useEffect(() => {
-    if (!stream) return
+    /**
+     * Only a real teardown clears the readouts.
+     *
+     * The cleanup below used to reset `settings` and `level`, which is correct
+     * when the microphone is closing and wrong when it is being REPLACED —
+     * changing a processing switch swaps the stream, so every row in the table
+     * blanked to "not reported" and then refilled a moment later. That flash
+     * was half of the reported flicker; the other half was the page unmounting
+     * its whole live branch, fixed in `useMediaAccess`.
+     */
+    if (!stream) {
+      setSettings(null)
+      setLevel(SILENT)
+      setIsSilent(false)
+      return
+    }
 
     const context = new AudioContext()
     contextRef.current = context
@@ -125,9 +144,6 @@ export function useMicrophone() {
       monitorRef.current = null
       contextRef.current = null
       void context.close()
-      setSettings(null)
-      setLevel(SILENT)
-      setIsSilent(false)
     }
   }, [stream])
 
@@ -216,9 +232,9 @@ export function useMicrophone() {
    * everywhere. It is also the only way `getSettings()` afterwards is the truth
    * rather than the request.
    */
-  const updateProcessing = useCallback((next: Partial<ProcessingOptions>) => {
+  const updateProcessing = (next: Partial<ProcessingOptions>) => {
     setProcessing((current) => ({ ...current, ...next }))
-  }, [])
+  }
 
   const processingRef = useRef(processing)
   useEffect(() => {
@@ -227,10 +243,10 @@ export function useMicrophone() {
     if (changed && isLive) void start()
   }, [processing, isLive, start])
 
-  const stop = useCallback(() => {
+  const stop = () => {
     setIsMonitoring(false)
     access.stop()
-  }, [access])
+  }
 
   return {
     ...access,

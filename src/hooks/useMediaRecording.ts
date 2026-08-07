@@ -99,7 +99,7 @@ export function useMediaRecording({
   const canRecord =
     typeof MediaRecorder !== "undefined" && stream !== null && stream.active
 
-  const start = useCallback(() => {
+  const start = () => {
     if (!stream || recorderRef.current) return
 
     let recorder: MediaRecorder
@@ -169,8 +169,13 @@ export function useMediaRecording({
     setIsRecording(true)
     setIsPaused(false)
     setElapsed(0)
-  }, [stream, mimeType, prefix, max])
+  }
 
+  /**
+   * The one function here still wrapped by hand: it is read by the effect
+   * below that watches for the stream disappearing, so its identity is part of
+   * a contract rather than an optimisation. React Compiler covers the rest.
+   */
   const stop = useCallback(() => {
     const recorder = recorderRef.current
     if (!recorder) return
@@ -178,21 +183,21 @@ export function useMediaRecording({
     recorderRef.current = null
   }, [])
 
-  const pause = useCallback(() => {
+  const pause = () => {
     const recorder = recorderRef.current
     if (recorder?.state !== "recording") return
     recorder.pause()
     committedRef.current += performance.now() - segmentStartRef.current
     setIsPaused(true)
-  }, [])
+  }
 
-  const resume = useCallback(() => {
+  const resume = () => {
     const recorder = recorderRef.current
     if (recorder?.state !== "paused") return
     segmentStartRef.current = performance.now()
     recorder.resume()
     setIsPaused(false)
-  }, [])
+  }
 
   /** The elapsed readout. Paused time is excluded, because it is not content. */
   useEffect(() => {
@@ -220,20 +225,20 @@ export function useMediaRecording({
     if (!stream && recorderRef.current) stop()
   }, [stream, stop])
 
-  const remove = useCallback((id: string) => {
+  const remove = (id: string) => {
     setRecordings((current) => {
       const target = current.find((item) => item.id === id)
       if (target) URL.revokeObjectURL(target.url)
       return current.filter((item) => item.id !== id)
     })
-  }, [])
+  }
 
-  const clear = useCallback(() => {
+  const clear = () => {
     setRecordings((current) => {
       for (const item of current) URL.revokeObjectURL(item.url)
       return []
     })
-  }, [])
+  }
 
   /** Everything released on unmount, which is where the old leak lived. */
   useEffect(() => {

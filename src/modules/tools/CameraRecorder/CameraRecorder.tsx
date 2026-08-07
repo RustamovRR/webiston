@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { MediaAccessPanel } from "@/components/shared/MediaAccessPanel"
 import { ToolCard } from "@/components/shared/ToolCard"
@@ -71,10 +71,10 @@ export function CameraRecorder() {
     camera.devices.find((device) => device.deviceId === camera.deviceId)
       ?.label || null
 
-  const clearAll = useCallback(() => {
+  const clearAll = () => {
     snapshots.clear()
     recorder.clear()
-  }, [snapshots, recorder])
+  }
 
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 py-6">
@@ -106,14 +106,27 @@ export function CameraRecorder() {
             failure={camera.failure}
           />
 
-          <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr] lg:items-start">
-            <CameraStage
-              videoRef={videoRef}
-              settings={camera.settings}
-              mirrored={mirrored}
-              onCapture={snapshots.capture}
-              recorder={recorder}
-            />
+          <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+            {/* `self-stretch`, then `sticky` on the child — the same pairing
+                the QR tool uses. A grid cell collapses to its content height,
+                and an element with no travel inside its container never
+                sticks. The preview is what you watch WHILE reading the panels
+                beside it, so it is the one that should follow. */}
+            <div className="lg:self-stretch">
+              {/* The max-height guard the suite's other sticky panels carry: on a
+                  short laptop window a sticky panel taller than the viewport
+                  can never be scrolled to its own bottom. */}
+              <div className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
+                <CameraStage
+                  videoRef={videoRef}
+                  settings={camera.settings}
+                  mirrored={mirrored}
+                  onCapture={snapshots.capture}
+                  recorder={recorder}
+                  isBusy={camera.isBusy}
+                />
+              </div>
+            </div>
 
             <div className="grid gap-4">
               <QualityCard
@@ -121,8 +134,9 @@ export function CameraRecorder() {
                 onPresetChange={camera.setPresetId}
                 requested={camera.preset}
                 actual={camera.settings}
-                locked={recorder.isRecording}
+                locked={recorder.isRecording || camera.isBusy}
                 deviceLabel={activeLabel}
+                isBusy={camera.isBusy}
               />
               <CaptureGallery
                 snapshots={snapshots.snapshots}

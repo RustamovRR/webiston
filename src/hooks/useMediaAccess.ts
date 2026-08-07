@@ -71,6 +71,15 @@ export function useMediaAccess({
   const [failure, setFailure] = useState<MediaFailure | null>(null)
   const [deviceId, setDeviceId] = useState<string | null>(null)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  /**
+   * A request is in flight.
+   *
+   * Separate from `status` on purpose. `status` is what the PAGE is — gate or
+   * live — and reopening a stream must not change that, or the whole live
+   * branch unmounts and rebuilds. This is what the CONTROLS are, so a reopen
+   * can dim a card and disable a switch without moving anything.
+   */
+  const [isBusy, setBusy] = useState(false)
 
   const [permission, setPermission] = usePermissionState(
     kind === "videoinput" ? "camera" : "microphone"
@@ -83,21 +92,30 @@ export function useMediaAccess({
   /** Guards every `setState` that can land after an unmount. */
   const mounted = useRef(true)
 
-  /** Stops and forgets a stream. Safe on one already stopped. */
+  /**
+   * Stops and forgets a stream. Safe on one already stopped.
+   *
+   * One of the two things in this file still wrapped by hand. React Compiler
+   * is on, so `useCallback` around a plain function is normally redundant —
+   * but this and `start` are read by `useEffect` dependency arrays (here and
+   * in the two consuming hooks), where identity is part of the contract rather
+   * than an optimisation. Everything else is a plain function.
+   */
   const releaseStream = useCallback((target: MediaStream | null) => {
     target?.getTracks().forEach((track) => {
       track.stop()
     })
   }, [])
 
-  const stop = useCallback(() => {
+  const stop = () => {
     releaseStream(streamRef.current)
     streamRef.current = null
     if (!mounted.current) return
     setStream(null)
     setStatus("idle")
     setFailure(null)
-  }, [releaseStream])
+    setBusy(false)
+  }
 
   /**
    * Open a device.
@@ -120,7 +138,21 @@ export function useMediaAccess({
       const target = requested !== undefined ? requested : deviceId
       const previous = streamRef.current
 
-      setStatus("starting")
+      /**
+       * **A reopen never leaves `live`.**
+       *
+       * Reported as "the cards flicker and look like they re-render" when a
+       * processing switch was pressed — and they did, completely. Changing a
+       * setting reopens the stream, this set `starting`, `isLive` went false,
+       * and the page's whole live branch unmounted back to the permission gate
+       * for as long as `getUserMedia` took. Every card was destroyed and
+       * rebuilt, the canvas lost its backing store, and the scroll position
+       * jumped. Only a FIRST open has nothing to show yet, so only a first open
+       * changes the page's state; a reopen reports itself through `isBusy` and
+       * the layout stays exactly where it is.
+       */
+      setBusy(true)
+      if (!previous?.active) setStatus("starting")
       setFailure(null)
 
       /**
@@ -137,6 +169,7 @@ export function useMediaAccess({
        */
       const fail = (error: unknown) => {
         if (!mounted.current) return false
+        setBusy(false)
         setFailure(describeMediaFailure(error))
         setStatus(previous?.active ? "live" : "blocked")
         return false
@@ -176,6 +209,7 @@ export function useMediaAccess({
       streamRef.current = opened
       setStream(opened)
       setStatus("live")
+      setBusy(false)
       setPermission("granted")
 
       // The device that actually opened, which is not always the one asked
@@ -192,13 +226,10 @@ export function useMediaAccess({
   )
 
   /** Switch device, restarting the stream only if one is already running. */
-  const select = useCallback(
-    async (next: string) => {
-      setDeviceId(next)
-      if (streamRef.current) await start(next)
-    },
-    [start]
-  )
+  const select = async (next: string) => {
+    setDeviceId(next)
+    if (streamRef.current) await start(next)
+  }
 
   /**
    * The OS taking the device away.
@@ -254,6 +285,7 @@ export function useMediaAccess({
     hasDeviceLabels: hasLabels,
     deviceId,
     stream,
+    isBusy,
     isLive: status === "live",
     start,
     stop,
