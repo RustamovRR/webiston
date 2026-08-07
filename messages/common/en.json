@@ -134,7 +134,9 @@
         "camera": "Camera {index}",
         "microphone": "Microphone {index}"
       }
-    }
+    },
+    "zoomIn": "Zoom image in",
+    "zoomOut": "Close image"
   },
   "Search": {
     "title": "Search the site",

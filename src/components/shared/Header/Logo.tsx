@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { chromeLinkLocale, Link } from "@/i18n/navigation"
 
 /**
  * The "Terminal" mark from the 2026-07 brand exploration ("Webiston.uz UIUX
@@ -20,10 +20,29 @@ import Link from "next/link"
  * concern is void here because the wordmark is `aria-hidden` — assistive tech
  * reads the Link's `aria-label`, never the glyphs.
  */
-export default function Logo() {
+interface LogoProps {
+  /**
+   * The active locale, passed explicitly — exactly as `Header` takes it, and
+   * for the same reason.
+   *
+   * `Link` from `@/i18n/navigation` resolves the prefix from next-intl's
+   * ambient locale, and in the chrome that ambient value is the DEFAULT, not
+   * the request's: `Header` and `Footer` render from `[locale]/layout.tsx`,
+   * whose `setRequestLocale` does not reach this far (the pages are right
+   * because each calls it in its own body). Verified in the built HTML — the
+   * mark linked to `/` on every `/ru` and `/en` page, which made the logo the
+   * single most-clicked way out of your own language.
+   *
+   * Omitted under `/books/**`, which is Uzbek-only and has no locale to carry.
+   */
+  locale?: string
+}
+
+export default function Logo({ locale }: LogoProps) {
   return (
     <Link
       href="/"
+      locale={chromeLinkLocale(locale ?? "")}
       aria-label="Webiston.uz"
       className="group flex items-center gap-2.5"
     >

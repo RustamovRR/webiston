@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { BOOK_SECTIONS, socialLinks } from "@/constants"
-import { Link as I18nLink } from "@/i18n/navigation"
+import { chromeLinkLocale, Link as I18nLink } from "@/i18n/navigation"
 import Logo from "../Header/Logo"
 
 /**
@@ -23,7 +23,7 @@ export default async function Footer({ locale }: { locale: string }) {
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           {/* Identity */}
           <div className="max-w-sm">
-            <Logo />
+            <Logo locale={locale} />
             <p className="mt-4 text-pretty text-muted-foreground text-sm leading-relaxed">
               {t("tagline")}
             </p>
@@ -72,6 +72,7 @@ export default async function Footer({ locale }: { locale: string }) {
                 <li>
                   <I18nLink
                     href="/tools"
+                    locale={chromeLinkLocale(locale)}
                     className="text-foreground/80 text-sm transition-colors hover:text-foreground"
                   >
                     {t("allTools")}

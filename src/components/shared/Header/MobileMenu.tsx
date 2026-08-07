@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib"
 import MobileMenuContent from "./MobileMenuContent"
 import type { MobileMenuLabels, MobileNavBook } from "./mobileMenuTypes"
@@ -27,6 +27,19 @@ export default function MobileMenu({
   // renders nothing.
   const slug = params?.slug
   const tutorialId = (Array.isArray(slug) ? slug[0] : undefined) ?? null
+
+  // Mount the contents on the first open and keep them after that.
+  //
+  // The panel element itself has to stay in the tree for the fade, but its
+  // CONTENTS do not: Search, the language switcher, the theme toggle and a
+  // whole chapter tree were otherwise rendering on every page for a menu most
+  // visitors never open, and subscribing to the navigation store while they
+  // did it. Keeping them mounted after the first open is what makes the second
+  // open instant.
+  const [everOpened, setEverOpened] = useState(false)
+  useEffect(() => {
+    if (isOpen) setEverOpened(true)
+  }, [isOpen])
 
   // Escape closes it. A full-screen panel that traps scroll and cannot be
   // dismissed from the keyboard is the shape a11y audits fail on, and it was
@@ -76,12 +89,14 @@ export default function MobileMenu({
         isOpen ? "opacity-100" : "pointer-events-none opacity-0"
       )}
     >
-      <MobileMenuContent
-        tutorialId={tutorialId}
-        books={books}
-        labels={labels}
-        onClose={onClose}
-      />
+      {everOpened && (
+        <MobileMenuContent
+          tutorialId={tutorialId}
+          books={books}
+          labels={labels}
+          onClose={onClose}
+        />
+      )}
     </div>
   )
 }

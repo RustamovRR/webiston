@@ -9,11 +9,22 @@ import {
 } from "@webiston/ui/primitives/navigation-menu"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
-
 // `BOOK_SECTIONS` already carries these ids and titles for the homepage.
 // Header is a Server Component, so its `chapters` arrays never reach the
 // client bundle — a second list would only be a second thing to keep in sync.
 import { BOOK_SECTIONS } from "@/constants/navigation"
+// Two Links, and the distinction is load-bearing.
+//
+// `Link` (next/link) is for `/books/**`, which is Uzbek-only by design and
+// lives OUTSIDE the `[locale]` segment — prefixing it would produce
+// `/ru/books/...`, which does not exist.
+//
+// `I18nLink` is for everything that DOES have a locale variant. Without it the
+// header sent a Russian reader from `/ru/tools/qr-generator` to `/tools`, an
+// Uzbek page — verified in the built HTML: `/ru` carried two unprefixed
+// `/tools` hrefs against one correct `/ru/tools`. The first link a visitor
+// clicked dropped them out of their own language.
+import { chromeLinkLocale, Link as I18nLink } from "@/i18n/navigation"
 
 import LanguageSelector from "../LanguageSelector/LanguageSelector"
 import Search from "../Search"
@@ -66,7 +77,7 @@ export default async function Header({
           separate files is precisely the pair that drifts. */}
       <div className="mx-auto flex h-(--header-height) w-full max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <section className="flex items-center gap-6">
-          <Logo />
+          <Logo locale={locale} />
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -112,7 +123,9 @@ export default async function Header({
                   asChild
                   className="relative cursor-pointer bg-transparent text-muted-foreground transition-colors duration-300 hover:text-foreground"
                 >
-                  <Link href="/tools">{t("tools")}</Link>
+                  <I18nLink href="/tools" locale={chromeLinkLocale(locale)}>
+                    {t("tools")}
+                  </I18nLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>

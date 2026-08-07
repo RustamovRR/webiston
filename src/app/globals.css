@@ -10,6 +10,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'katex/dist/katex.min.css';
+/* Base styles for the figure zoom. Themed on top in ../styles/content.css —
+   this import must come FIRST so those overrides win on equal specificity. */
+@import 'react-medium-image-zoom/dist/styles.css';
 
 @import '../styles/tokens.css';
 @import '../styles/base.css';

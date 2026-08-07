@@ -134,7 +134,9 @@
         "camera": "Kamera {index}",
         "microphone": "Mikrofon {index}"
       }
-    }
+    },
+    "zoomIn": "Rasmni kattalashtirish",
+    "zoomOut": "Rasmni yopish"
   },
   "Search": {
     "title": "Sayt bo'yicha qidiruv",

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import Sidebar from "@/components/mdx/Sidebar"
+import { Link as I18nLink } from "@/i18n/navigation"
 import { cn } from "@/lib"
 import { useNavigationStore } from "@/stores/navigationStore"
 import LanguageSelector from "../LanguageSelector/LanguageSelector"
@@ -95,7 +96,7 @@ export default function MobileMenuContent({
               </MenuLink>
             </li>
             <li>
-              <MenuLink href="/tools" onClose={onClose}>
+              <MenuLink href="/tools" onClose={onClose} localized>
                 <span className="font-medium">{labels.tools}</span>
               </MenuLink>
             </li>
@@ -127,18 +128,26 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
  * `onClose` on click rather than on route change: Next keeps the layout
  * mounted across a client navigation, so a menu that only closed on unmount
  * would stay open over the page the visitor just asked for.
+ *
+ * `localized` picks the Link. It is opt-IN rather than the default because the
+ * majority of rows here point at `/books/**`, which is Uzbek-only and sits
+ * outside the `[locale]` segment — routing those through the localised Link
+ * would produce `/ru/books/...` and a 404. Only `/tools` has locale variants.
  */
 function MenuLink({
   href,
   onClose,
+  localized = false,
   children
 }: {
   href: string
   onClose: () => void
+  localized?: boolean
   children: React.ReactNode
 }) {
+  const Component = localized ? I18nLink : Link
   return (
-    <Link
+    <Component
       href={href}
       onClick={onClose}
       className={cn(
@@ -148,6 +157,6 @@ function MenuLink({
       )}
     >
       {children}
-    </Link>
+    </Component>
   )
 }
