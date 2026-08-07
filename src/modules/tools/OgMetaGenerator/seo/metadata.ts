@@ -12,7 +12,7 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "Open Graph Generator — Meta Taglar va Ulashish Kartasi",
+    title: "Open Graph — meta taglar generatori",
     description:
       "Sahifangiz Telegram, X, Facebook va LinkedIn'da qanday ko'rinishini shu yerda ko'ring, og: va twitter: taglarini to'g'ri qo'shtirnoq bilan oling. Rasm o'lchami brauzerda tekshiriladi; Next.js metadata shakli ham bor.",
     social:
@@ -20,7 +20,7 @@ const COPY = {
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "Open Graph Generator — Meta Tags and Share Card Preview",
+    title: "Open Graph Meta Tag Generator",
     description:
       "See how your page will look on Telegram, X, Facebook and LinkedIn, and get correctly escaped og: and twitter: tags. The image is measured in your browser, and the Next.js metadata form is one click away.",
     social:

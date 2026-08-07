@@ -52,7 +52,12 @@
       "ai-engineering": "A complete guide to building with AI, in depth.",
       "javascript-definitive-guide": "The definitive guide to JavaScript, translated in full.",
       "fluent-react": "Advanced React knowledge and the patterns behind it."
-    }
+    },
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "chapters": "Chapters",
+    "browse": "Browse"
   },
   "Common": {
     "stats": {

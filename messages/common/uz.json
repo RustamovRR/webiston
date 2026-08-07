@@ -52,7 +52,12 @@
       "ai-engineering": "SI texnologiyalarini chuqur o'rganish uchun to'liq qo'llanma.",
       "javascript-definitive-guide": "JavaScript'ni chuqur o'rganish uchun to'liq qo'llanma.",
       "fluent-react": "React.js bo'yicha chuqurlashtirilgan bilimlar va ilg'or patternlar."
-    }
+    },
+    "menu": "Menyu",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Menyuni yopish",
+    "chapters": "Kitob bo'limlari",
+    "browse": "Sahifalar"
   },
   "Common": {
     "stats": {

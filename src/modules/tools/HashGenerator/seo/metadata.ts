@@ -13,7 +13,7 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "Hash Generator — SHA-256, SHA-512, MD5 va Checksum Tekshirish",
+    title: "Hash generator — SHA-256, SHA-512 va MD5",
     description:
       "Matn yoki faylning SHA-256, SHA-512, SHA-384, SHA-1 va MD5 barmoq izini oling. Yuklab olgan faylingizni e'lon qilingan checksum bilan solishtiring, HMAC imzosini hisoblang. Hammasi brauzeringizda.",
     social:
@@ -21,7 +21,7 @@ const COPY = {
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "Hash Generator — SHA-256, SHA-512, MD5 and Checksum Verify",
+    title: "Hash Generator — SHA-256, SHA-512, MD5",
     description:
       "Get the SHA-256, SHA-512, SHA-384, SHA-1 and MD5 fingerprint of any text or file. Compare a download against its published checksum and compute HMAC signatures. Everything runs in your browser.",
     social:

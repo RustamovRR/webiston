@@ -12,7 +12,7 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "Lorem Ipsum Generator — O'zbekcha va Klassik Namunaviy Matn",
+    title: "Lorem Ipsum — o'zbekcha va klassik matn",
     description:
       "Maket uchun namunaviy matn yarating: abzas, gap, so'z yoki aniq bayt hajmida. Klassik lotincha matndan tashqari o'zbekcha ro'yxat ham bor — dizayn o'zbek matni bilan qanday ko'rinishini oldindan ko'rasiz. HTML shaklida ham olinadi.",
     social:
@@ -20,7 +20,7 @@ const COPY = {
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "Lorem Ipsum Generator — Uzbek and Classic Filler Text",
+    title: "Lorem Ipsum — Uzbek and Classic Text",
     description:
       "Generate filler text by paragraphs, sentences, words or an exact number of bytes. Alongside the classic Latin list there is an Uzbek one, so you can see how a layout holds real Uzbek copy. HTML output included.",
     social:
@@ -28,7 +28,7 @@ const COPY = {
     ogLocale: "en_US"
   },
   ru: {
-    title: "Генератор Lorem Ipsum — текст-заполнитель для макета",
+    title: "Генератор Lorem Ipsum — текст для макета",
     description:
       "Текст-заполнитель по абзацам, предложениям, словам или точному числу байт. Кроме классической латыни есть узбекские словари — латиницей и кириллицей.",
     social:

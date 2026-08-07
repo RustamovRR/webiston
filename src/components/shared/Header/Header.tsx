@@ -133,8 +133,33 @@ export default async function Header({
             )}
             <ThemeToggle />
           </div>
+          {/* Below `md` this is the ONLY route to Search, the language
+              switcher and the theme toggle — the row above them is
+              `hidden md:flex`. Its labels and book list are resolved here, on
+              the server, and passed down; the menu never resolves a locale
+              itself. */}
           <div className="md:hidden">
-            <MobileMenuButton />
+            <MobileMenuButton
+              books={BOOK_SECTIONS.map((book) => ({
+                id: book.id,
+                title: book.title,
+                description: t(`bookDescriptions.${book.id}`)
+              }))}
+              labels={{
+                menu: t("menu"),
+                openMenu: t("openMenu"),
+                closeMenu: t("closeMenu"),
+                chapters: t("chapters"),
+                browse: t("browse"),
+                allBooks: t("allBooks"),
+                tools: t("tools"),
+                language: {
+                  trigger: t("language"),
+                  current: t("current"),
+                  hint: t("languageHint")
+                }
+              }}
+            />
           </div>
         </section>
       </div>

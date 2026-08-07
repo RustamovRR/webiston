@@ -10,7 +10,7 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "Ekran O'lchami — Viewport, Breakpoint va Piksel Zichligi",
+    title: "Ekran o'lchami — viewport va breakpoint",
     description:
       "CSS aynan qaysi o'lchamni ko'radi: viewport, oyna va ekran o'lchamlari, faol Tailwind breakpoint, piksel zichligi va tomonlar nisbati. Oynani cho'zing — raqamlar shu zahoti o'zgaradi.",
     social:
@@ -18,7 +18,7 @@ const COPY = {
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "Screen Resolution — Viewport, Breakpoints and Pixel Ratio",
+    title: "Screen Resolution — Viewport & Breakpoint",
     description:
       "The exact size your CSS sees: viewport, window and screen dimensions, the active Tailwind breakpoint, device pixel ratio and aspect ratio. Drag the window and every number updates live.",
     social:
@@ -26,7 +26,7 @@ const COPY = {
     ogLocale: "en_US"
   },
   ru: {
-    title: "Разрешение экрана — область просмотра и точки останова",
+    title: "Разрешение экрана и точки останова",
     description:
       "Размер, который на самом деле видит ваш CSS: область просмотра, окно и экран, активная точка останова Tailwind, Bootstrap или MUI, плотность пикселей и соотношение сторон.",
     social:
