@@ -1,367 +1,31 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no React equivalent; the payload is a hardcoded schema object */
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
+ * React equivalent; every payload here is a constant or an i18n string, and
+ * `jsonLd()` escapes `<` so a value can never close the script element. */
 import type { Metadata } from "next"
-import { setRequestLocale } from "next-intl/server"
-import { Faq } from "@/components/shared/Faq"
-import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { faqPageSchema, withLocale } from "@/lib/seo"
-import { IpInfo } from "@/modules/tools"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 
-// Only this tool's namespace reaches the client, plus the shared
-// `Common` used by ToolHeader/ToolPanel. See LocaleMessages.
+import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { withLocale } from "@/lib/seo"
+// Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
+// modules and every one of them is `'use client'`.
+import { IpFaq, IpInfo, PrivacyNote } from "@/modules/tools/IpInfo"
+import {
+  applicationSchema,
+  generateBreadcrumbSchema,
+  generateFAQSchema,
+  getIpInfoMetadata
+} from "@/modules/tools/IpInfo/seo"
+
+// Only this tool's namespace reaches the client, plus the shared `Common`.
 const TOOL_NAMESPACE = "IpInfoPage"
 
-const baseMetadata: Metadata = {
-  title: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool",
-  description:
-    "Eng yaxshi bepul IP analyzer. IP manzil, geolokatsiya, ISP va xavfsizlik ma'lumotlarini tahlil qiling. Professional IP lookup va network analysis vositasi.",
-  keywords: [
-    // O'zbek tilida eng ko'p qidirilgan
-    "ip address",
-    "ip ma'lumotlari",
-    "ip manzil",
-    "ip geolocation",
-    "ip lookup",
-    "ip checker",
-    "ip analyzer",
-    "ip tekshirish",
-    "ip tahlil",
-    "mening ip manzilim",
-    "my ip address",
-    "ip location",
-    "ip joylashuv",
-    "geolocation",
-    "geolokatsiya",
-    "isp detection",
-    "isp aniqlash",
-    "ip security",
-    "ip xavfsizlik",
-    "network analysis",
-    "tarmoq tahlili",
-    "bepul ip checker",
-    "onlayn ip lookup",
-    "ip vositasi",
-    "ip tool",
-
-    // Ingliz tilida
-    "ip address lookup",
-    "ip address checker",
-    "ip address analyzer",
-    "ip geolocation tool",
-    "what is my ip",
-    "my ip address",
-    "ip location finder",
-    "ip address tracker",
-    "ip information",
-    "ip details",
-    "geolocation lookup",
-    "ip to location",
-    "isp lookup",
-    "internet provider lookup",
-    "ip security check",
-    "ip threat analysis",
-    "network information",
-    "ip address info",
-    "free ip lookup",
-    "online ip checker",
-    "professional ip tool",
-    "bulk ip lookup",
-    "ip range analyzer",
-    "ip reputation check",
-    "vpn detection",
-    "proxy detection",
-
-    // Rus tilida
-    "ip адрес",
-    "информация об ip",
-    "геолокация ip",
-    "проверка ip адреса",
-    "мой ip адрес",
-    "местоположение ip",
-    "анализ ip адреса",
-    "поиск по ip",
-    "определение провайдера",
-    "безопасность ip",
-    "сетевой анализ",
-    "бесплатная проверка ip",
-    "онлайн ip анализатор",
-    "профессиональный ip инструмент",
-
-    // Long-tail keywords
-    "ip manzil va geolokatsiya ma'lumotlari tahlili",
-    "professional ip address geolocation analyzer free",
-    "анализатор ip адреса с геолокацией онлайн бесплатно",
-    "webiston ip tools",
-    "network security ip analysis tool",
-    "isp provider detection ip lookup online"
-  ],
-  openGraph: {
-    title: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool | Webiston",
-    description:
-      "Eng yaxshi bepul IP analyzer. IP manzil, geolokatsiya, ISP va xavfsizlik ma'lumotlarini tahlil qiling. Professional IP lookup va network analysis vositasi.",
-    type: "website",
-    locale: "uz_UZ",
-    siteName: "Webiston",
-    url: "https://webiston.uz/tools/ip-info",
-    images: [
-      {
-        url: "https://webiston.uz/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool",
-        type: "image/png"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@webiston_uz",
-    creator: "@webiston_uz",
-    title: "IP Ma'lumotlari - Bepul IP Analyzer",
-    description:
-      "Professional IP analyzer. IP manzil, geolokatsiya va ISP ma'lumotlarini tahlil qiling. Bepul!",
-    images: ["https://webiston.uz/logo.png"]
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1
-    }
-  },
-
-  category: "technology",
-  classification: "Tools and Utilities",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false
-  }
-}
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": ["WebApplication", "SoftwareApplication"],
-  name: "IP Ma'lumotlari - Bepul IP Address Geolocation Tool",
-  alternateName: ["IP Analyzer", "IP Lookup Tool", "Geolocation Tool"],
-  description:
-    "Professional IP analyzer. IP manzil, geolokatsiya, ISP va xavfsizlik ma'lumotlarini tahlil qilish uchun bepul vosita.",
-  url: "https://webiston.uz/tools/ip-info",
-  sameAs: [
-    "https://webiston.uz/en/tools/ip-info",
-    "https://webiston.uz/tools/ip-info"
-  ],
-  applicationCategory: ["SecurityApplication", "UtilityApplication"],
-  operatingSystem: ["Windows", "macOS", "Linux", "Android", "iOS"],
-  browserRequirements: "Requires JavaScript. Requires HTML5.",
-  permissions: "browser",
-  isAccessibleForFree: true,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    validFrom: "2024-01-01"
-  },
-  author: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: "https://webiston.uz/logo.png",
-    sameAs: ["https://github.com/webiston", "https://twitter.com/webiston_uz"]
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Webiston",
-    url: "https://webiston.uz",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://webiston.uz/logo.png",
-      width: 1120,
-      height: 1120
-    }
-  },
-  featureList: [
-    "IP manzil aniqlash",
-    "Geolokatsiya ma'lumotlari",
-    "ISP provider aniqlash",
-    "Mamlakat va shahar aniqlash",
-    "Timezone ma'lumotlari",
-    "IP xavfsizlik tahlili",
-    "VPN/Proxy aniqlash",
-    "Network ma'lumotlari",
-    "IP reputation check",
-    "Bulk IP lookup",
-    "IPv4 va IPv6 qo'llab-quvvatlash",
-    "Real-time analysis",
-    "Professional interfeys",
-    "Bepul va cheksiz foydalanish",
-    "Aniq geolokatsiya",
-    "ISP contact ma'lumotlari",
-    "Threat intelligence",
-    "Network security analysis"
-  ],
-  softwareVersion: "2.0",
-  datePublished: "2024-01-01",
-  dateModified: "2025-01-01",
-  inLanguage: ["uz", "en"],
-  keywords: "ip ma'lumotlari, ip geolocation, ip analyzer, bepul ip checker"
-}
-
 /**
- * This route's questions, in both locales.
- *
- * They are returned as DATA rather than as a finished schema: the page
- * renders them AND publishes them, so one array has to feed both. This route
- * published a `FAQPage` and showed no FAQ at all until that changed.
+ * `<` inside a JSON string can close the surrounding `<script>` element. Every
+ * value here is a constant or an i18n string, so there is no injection path
+ * today; escaping removes the class of problem rather than the instance.
  */
-function getFaqItems(locale: string = "uz") {
-  const faqData = {
-    uz: {
-      questions: [
-        {
-          question: "IP ma'lumotlari tool nima va nima uchun kerak?",
-          answer:
-            "IP ma'lumotlari tool - bu IP manzil, geolokatsiya, ISP va xavfsizlik ma'lumotlarini tahlil qilish vositasi. Network xavfsizligi, geolokatsiya aniqlash va texnik tahlil uchun foydali."
-        },
-        {
-          question: "Qanday ma'lumotlarni ko'rish mumkin?",
-          answer:
-            "IP manzil, mamlakat, shahar, ISP provider, timezone, VPN/Proxy aniqlash, network ma'lumotlari va xavfsizlik tahlilini ko'rish mumkin."
-        },
-        {
-          question: "IP analyzer xavfsizmi?",
-          answer:
-            "Ha, bizning IP analyzer to'liq xavfsiz. Barcha ma'lumotlar ommaviy API'lar orqali olinadi va shaxsiy ma'lumotlar saqlanmaydi."
-        },
-        {
-          question: "IP analyzer bepulmi?",
-          answer:
-            "Ha, bizning IP analyzer to'liq bepul. Hech qanday cheklov yoki to'lov talab qilinmaydi."
-        }
-      ]
-    },
-    en: {
-      questions: [
-        {
-          question: "What is IP info tool and why is it needed?",
-          answer:
-            "IP info tool analyzes IP address, geolocation, ISP and security information. Useful for network security, geolocation detection and technical analysis."
-        },
-        {
-          question: "What information can I see?",
-          answer:
-            "You can see IP address, country, city, ISP provider, timezone, VPN/Proxy detection, network information and security analysis."
-        },
-        {
-          question: "Is IP analyzer secure?",
-          answer:
-            "Yes, our IP analyzer is completely secure. All information is obtained through public APIs and personal data is not stored."
-        },
-        {
-          question: "Is IP analyzer free?",
-          answer:
-            "Yes, our IP analyzer is completely free. No limitations or payments required."
-        }
-      ]
-    }
-  }
-
-  return (faqData[locale as keyof typeof faqData] || faqData.uz).questions
-}
-
-// Breadcrumb Schema (locale-based)
-function generateBreadcrumbSchema(locale: string = "uz") {
-  const breadcrumbData = {
-    uz: {
-      home: "Bosh sahifa",
-      tools: "Vositalar",
-      ipInfo: "IP Ma'lumotlari"
-    },
-    en: {
-      home: "Home",
-      tools: "Tools",
-      ipInfo: "IP Information"
-    }
-  }
-
-  const current =
-    breadcrumbData[locale as keyof typeof breadcrumbData] || breadcrumbData.uz
-  const baseUrl =
-    locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: current.home,
-        item: locale === "en" ? "https://webiston.uz/en" : "https://webiston.uz"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: current.tools,
-        item: `${baseUrl}/tools`
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: current.ipInfo,
-        item: `${baseUrl}/tools/ip-info`
-      }
-    ]
-  }
-}
-
-export default async function IpInfoPage({
-  params
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = (await params) || { locale: "uz" }
-  setRequestLocale(locale)
-
-  // Generate locale-specific schemas
-  const faqItems = getFaqItems(locale)
-  const faqSchema = faqPageSchema(faqItems)
-  const breadcrumbSchema = generateBreadcrumbSchema(locale)
-
-  return (
-    <>
-      {/* Main Application Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
-      {/* FAQ Schema for rich snippets */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
-      {/* Breadcrumb Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-
-      <LocaleMessages namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <IpInfo />
-      </LocaleMessages>
-
-      {/* Server-rendered sibling of the client island: the answers reach the
-          HTML, which is what the schema above has always claimed. */}
-      <Faq locale={locale} items={faqItems} />
-    </>
-  )
+function jsonLd(schema: unknown): string {
+  return JSON.stringify(schema).replace(/</g, "\\u003c")
 }
 
 export async function generateMetadata({
@@ -371,5 +35,48 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(baseMetadata, locale, "/tools/ip-info")
+  return withLocale(getIpInfoMetadata(locale), locale, "/tools/ip-info")
+}
+
+export default async function IpInfoPage({
+  params
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  // The FAQ schema reads the same messages `IpFaq` renders, so the structured
+  // data can never describe a page that does not exist.
+  const tFaq = await getTranslations({ locale, namespace: "IpInfoPage.faq" })
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(applicationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(generateFAQSchema(tFaq)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(generateBreadcrumbSchema(locale))
+        }}
+      />
+
+      {/* `locale` is load-bearing: without it LocaleMessages falls back to
+          `getLocale()`, which returns "uz" on /en/tools/*. */}
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <IpInfo />
+      </LocaleMessages>
+      {/* Server Components, siblings of the client island. The privacy note
+          comes FIRST after the data — it is what replaced the fabricated
+          security score, and it is the honest half of this page. */}
+      <PrivacyNote locale={locale} />
+      <IpFaq locale={locale} />
+    </>
+  )
 }

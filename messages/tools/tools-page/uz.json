@@ -99,7 +99,7 @@
     },
     "ipInfo": {
       "title": "IP Ma'lumotlari",
-      "description": "IP manzil va joylashuv ma'lumotlari"
+      "description": "IP joylashuvi, provayder, ASN va vaqt mintaqasi"
     },
     "websiteStatus": {
       "title": "Website Status",

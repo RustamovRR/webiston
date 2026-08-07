@@ -99,7 +99,7 @@
     },
     "ipInfo": {
       "title": "IP Info",
-      "description": "Information about your IP address and location."
+      "description": "IP location, provider, ASN and time zone"
     },
     "websiteStatus": {
       "title": "Website Status Checker",
