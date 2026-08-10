@@ -63,6 +63,4 @@ export default defineBackground(() => {
       }
     }
   })
-
-  console.log("Latin Converter background script loaded")
 })

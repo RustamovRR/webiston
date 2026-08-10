@@ -31,7 +31,9 @@
     "packages:build": "pnpm --filter '@webiston/*' build",
     "tokens": "node scripts/token-guardrail.mjs",
     "contrast": "node scripts/contrast-check.mjs",
-    "i18n": "node scripts/i18n-parity.mjs"
+    "i18n": "node scripts/i18n-parity.mjs",
+    "ext:build:all": "pnpm --filter latin-cyrillic-extension build:all",
+    "ext:zip:all": "pnpm --filter latin-cyrillic-extension zip:all"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

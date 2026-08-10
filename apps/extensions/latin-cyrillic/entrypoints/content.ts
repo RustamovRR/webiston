@@ -87,6 +87,30 @@ let selectionRange: Range | null = null
 /** The popover's direction control; "auto" until the user picks a side. */
 let popoverPreference: DirectionPreference = "auto"
 
+/**
+ * Has the reader moved the panel themselves?
+ *
+ * The one rule that makes dragging worth having: once you put the panel
+ * somewhere, it STAYS there. Before this flag, the scroll handler re-anchored
+ * to the selection on every frame, so a dragged panel would snap back the
+ * instant the page moved — which is worse than not being draggable at all,
+ * because it looks broken rather than fixed.
+ *
+ * Dropped on cleanup, so the next selection starts anchored again.
+ */
+let isPinned = false
+/**
+ * Can the text under the selection be REPLACED, or only copied?
+ *
+ * Captured when the selection is made, not when the button is clicked: by
+ * click time the field has lost focus to the panel, and `document.activeElement`
+ * no longer says what it said. It decides whether the Replace button is
+ * offered at all — see `replaceOriginal`.
+ */
+let selectionEditable = false
+let dragPointerId: number | null = null
+let dragOrigin = { pointerX: 0, pointerY: 0, left: 0, top: 0 }
+
 export default defineContentScript({
   matches: ["<all_urls>"],
   main() {
@@ -201,6 +225,12 @@ function scheduleReanchor() {
 }
 
 function reanchor() {
+  // A panel the reader has placed is theirs; the page moving underneath it is
+  // not a reason to move it.
+  if (isPinned) {
+    clampPopoverIntoView()
+    return
+  }
   if (!selectionRange) return
 
   const rect = selectionRange.getBoundingClientRect()
@@ -223,6 +253,92 @@ function reanchor() {
 }
 
 /**
+ * Is the current selection somewhere we can write back into?
+ *
+ * The same two cases `replaceSelectionWith` handles, asked EARLY: a form
+ * field, or a contenteditable region. Ordinary page prose — an article, a
+ * heading — is neither, and no amount of trying makes it writable.
+ */
+function computeSelectionEditable(range: Range | null): boolean {
+  const active = document.activeElement
+  if (active instanceof HTMLTextAreaElement) return true
+  if (active instanceof HTMLInputElement && active.selectionStart !== null) {
+    return true
+  }
+
+  if (!range) return false
+  const host = range.commonAncestorContainer
+  const element =
+    host.nodeType === Node.ELEMENT_NODE ? (host as Element) : host.parentElement
+  return Boolean(
+    element?.closest('[contenteditable="true"], [contenteditable=""]')
+  )
+}
+
+/**
+ * Drag the panel by its header.
+ *
+ * Pointer Events rather than mouse events, so a trackpad, a touchscreen and a
+ * stylus all work from one code path — and `setPointerCapture` keeps the
+ * stream coming even when the cursor outruns the panel or leaves the window,
+ * which is the usual reason a hand-rolled drag "sticks" halfway.
+ *
+ * Movement writes `left`/`top` directly. A `transform` would composite more
+ * cheaply, but the panel is `position: fixed` and every other piece of code
+ * here reads `left`/`top` — keeping one source of truth for where the panel is
+ * beats saving a layout pass on a 380px box the user is dragging by hand.
+ * The CSS transition is switched OFF for the duration instead; that, not the
+ * property choice, is what makes a dragged panel feel attached to the cursor.
+ */
+function startDrag(event: PointerEvent) {
+  if (!popover) return
+  // Never from a control. The header carries the close button, and a drag that
+  // begins on it would eat the click.
+  if ((event.target as HTMLElement).closest("button")) return
+
+  dragPointerId = event.pointerId
+  dragOrigin = {
+    pointerX: event.clientX,
+    pointerY: event.clientY,
+    left: popover.offsetLeft,
+    top: popover.offsetTop
+  }
+
+  popover.classList.add("dragging")
+  popover.setPointerCapture(event.pointerId)
+  event.preventDefault()
+}
+
+function moveDrag(event: PointerEvent) {
+  if (!popover || event.pointerId !== dragPointerId) return
+
+  popover.style.left = `${dragOrigin.left + (event.clientX - dragOrigin.pointerX)}px`
+  popover.style.top = `${dragOrigin.top + (event.clientY - dragOrigin.pointerY)}px`
+}
+
+function endDrag(event: PointerEvent) {
+  if (!popover || event.pointerId !== dragPointerId) return
+
+  dragPointerId = null
+  isPinned = true
+  popover.classList.remove("dragging")
+  popover.releasePointerCapture(event.pointerId)
+  clampPopoverIntoView()
+}
+
+/** Keep a placed panel reachable when the window changes size. */
+function clampPopoverIntoView() {
+  if (!popover) return
+
+  const MARGIN = 8
+  const maxLeft = window.innerWidth - popover.offsetWidth - MARGIN
+  const maxTop = window.innerHeight - popover.offsetHeight - MARGIN
+
+  popover.style.left = `${Math.max(MARGIN, Math.min(popover.offsetLeft, maxLeft))}px`
+  popover.style.top = `${Math.max(MARGIN, Math.min(popover.offsetTop, maxTop))}px`
+}
+
+/**
  * Open the panel on whatever is selected right now.
  *
  * Shared by the trigger badge and the context menu so the two cannot drift
@@ -237,11 +353,13 @@ function openPopoverForCurrentSelection(): boolean {
   // Read everything BEFORE cleanup, which nulls the module state.
   const rect = range.getBoundingClientRect()
   const clone = range.cloneRange()
+  const editable = computeSelectionEditable(range)
 
   cleanup()
   selectedText = text
   selectionRect = rect
   selectionRange = clone
+  selectionEditable = editable
   showPopoverInPlace(null)
   return true
 }
@@ -285,16 +403,31 @@ function handleMouseUp(e: MouseEvent) {
     // Cloned: the live Range is invalidated the moment the user clicks the
     // trigger icon, which is the click that collapses the selection.
     selectionRange = range.cloneRange()
+    selectionEditable = computeSelectionEditable(range)
     showTriggerIcon()
   }, 10)
 }
 
+/**
+ * An outside click dismisses the TRIGGER BADGE, never the open panel.
+ *
+ * The badge is a transient offer — you selected some text, here is a button,
+ * click anywhere else and the offer is withdrawn. The panel is the opposite:
+ * it holds an editable field the reader may be part-way through, and once
+ * they have dragged it somewhere they have said, explicitly, where they want
+ * it. Closing that on a stray click throws away work for no gain.
+ *
+ * Three ways out remain, all deliberate: the close button, Escape, and
+ * selecting different text — which replaces the panel rather than leaving two.
+ * This is DeepL's model too, and the reason theirs never vanishes mid-read.
+ */
 function handleClickOutside(e: MouseEvent) {
   const target = e.target as Node
   const host = document.getElementById("webiston-ext-host")
 
   if (host?.contains(target)) return
-  if (triggerIcon || popover) cleanup()
+  if (popover) return
+  if (triggerIcon) cleanup()
 }
 
 // ============================================
@@ -432,12 +565,16 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
         <button class="wc-dir-btn ${!isCyrillic ? "active" : ""}" data-action="to-cyrillic">→ Кирилл</button>
         <button class="wc-dir-btn ${isCyrillic ? "active" : ""}" data-action="to-latin">→ Lotin</button>
       </div>
-      <button class="wc-replace" data-action="replace">
+      ${
+        selectionEditable
+          ? `<button class="wc-replace" data-action="replace">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
         </svg>
         Almashtirish
-      </button>
+      </button>`
+          : ""
+      }
     </div>
   `
 
@@ -445,6 +582,17 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
   popover
     .querySelector('[data-type="input"]')
     ?.addEventListener("input", handleInputChange)
+
+  // Drag by the header only. Move and release listen on the POPOVER, not the
+  // header, because pointer capture retargets the stream to the capturing
+  // element — listening on the header would drop every event the moment the
+  // cursor left it, which is most of a drag.
+  popover
+    .querySelector(".wc-header")
+    ?.addEventListener("pointerdown", startDrag as EventListener)
+  popover.addEventListener("pointermove", moveDrag)
+  popover.addEventListener("pointerup", endDrag)
+  popover.addEventListener("pointercancel", endDrag)
 
   // Append BEFORE positioning: an element outside the document has no
   // `offsetHeight`, so positioning first meant the flip decision below could
@@ -715,6 +863,9 @@ function cleanup() {
   }
   const host = document.getElementById("webiston-ext-host")
   host?.remove()
+  isPinned = false
+  dragPointerId = null
+  selectionEditable = false
   triggerIcon = null
   popover = null
   shadowRoot = null
@@ -879,6 +1030,23 @@ function getStyles(): string {
       align-items: center;
       padding: 12px 16px;
       border-bottom: 1px solid var(--border);
+      /* The affordance IS the cursor. A dotted grip would be one more mark
+         competing with the badge for a 380px header, and the header already
+         reads as a title bar. */
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .wc-popover.dragging,
+    .wc-popover.dragging .wc-header {
+      cursor: grabbing;
+    }
+    /* No easing while a hand is on it: a transition on left/top means the
+       panel chases the cursor a beat behind, which reads as lag rather than
+       as smoothness. The entrance animation has long finished by now. */
+    .wc-popover.dragging {
+      transition: none;
+      user-select: none;
     }
     .wc-logo {
       display: flex;

@@ -1,6 +1,6 @@
 {
   "name": "latin-cyrillic-extension",
-  "displayName": "Lotin-Kirill O'giruvchi — Webiston",
+  "displayName": "Lotin-Kirill O'giruvchi \u2014 Webiston",
   "version": "1.0.0",
   "description": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi.",
   "author": "Webiston Team <info@webiston.uz>",
@@ -8,7 +8,13 @@
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "build:edge": "wxt build -b edge",
+    "build:all": "wxt build && wxt build -b firefox && wxt build -b edge",
     "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "zip:edge": "wxt zip -b edge",
+    "zip:all": "wxt zip && wxt zip -b firefox && wxt zip -b edge",
     "clean": "rm -rf .wxt .output"
   },
   "dependencies": {
