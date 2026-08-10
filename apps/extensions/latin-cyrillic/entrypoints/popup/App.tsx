@@ -578,16 +578,28 @@ export default function App() {
         <span aria-hidden="true">↗</span>
       </a>
 
+      {/* Each hint is one wrapping unit.
+          As a single run of text with a "·" between them, the second hint
+          broke between its key and its label at 380px — "⌘+Enter" on one line
+          and "nusxalash" orphaned on the next. Uzbek and Russian are simply
+          longer than the English this was measured in, and the popup has a
+          fixed width, so the row has to wrap SOMEWHERE; wrapping between the
+          two hints is the only break that still reads. The gap replaces the
+          separator, which no longer had a line to sit on. */}
       <footer className="border-border border-t px-5 py-3">
-        <p className="text-center text-[11px] text-muted-foreground">
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
-            {SHORTCUT_LABEL}
-          </kbd>{" "}
-          {t("footerConvert")} ·{" "}
-          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
-            {COPY_SHORTCUT_LABEL}
-          </kbd>{" "}
-          {t("footerCopy")}
+        <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+              {SHORTCUT_LABEL}
+            </kbd>
+            {t("footerConvert")}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+              {COPY_SHORTCUT_LABEL}
+            </kbd>
+            {t("footerCopy")}
+          </span>
         </p>
       </footer>
     </div>

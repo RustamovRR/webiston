@@ -1,5 +1,3 @@
-import { convertWithPreference } from "@webiston/transliteration"
-
 /**
  * One place to read a localised string.
  *
