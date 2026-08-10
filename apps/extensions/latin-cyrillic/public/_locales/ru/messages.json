@@ -1,0 +1,92 @@
+{
+  "extName": {
+    "message": "Латиница ↔ кириллица — Webiston"
+  },
+  "extDescription": {
+    "message": "Переводите узбекский текст с латиницы на кириллицу и обратно. Текст не покидает браузер."
+  },
+  "cmdConvert": {
+    "message": "Преобразовать выделенный текст"
+  },
+  "appName": {
+    "message": "Латиница ↔ кириллица"
+  },
+  "dirAuto": {
+    "message": "Авто"
+  },
+  "dirToCyrillic": {
+    "message": "→ Кириллица"
+  },
+  "dirToLatin": {
+    "message": "→ Латиница"
+  },
+  "themeLight": {
+    "message": "Светлая тема"
+  },
+  "themeDark": {
+    "message": "Тёмная тема"
+  },
+  "quickTitle": {
+    "message": "Быстрое преобразование"
+  },
+  "quickSubtitle": {
+    "message": "Автоматически при выделении"
+  },
+  "sourceLatin": {
+    "message": "Текст на латинице"
+  },
+  "sourceCyrillic": {
+    "message": "Текст на кириллице"
+  },
+  "resultCyrillic": {
+    "message": "Результат на кириллице"
+  },
+  "resultLatin": {
+    "message": "Результат на латинице"
+  },
+  "actionClear": {
+    "message": "Очистить"
+  },
+  "actionCopy": {
+    "message": "Копировать"
+  },
+  "actionCopied": {
+    "message": "Скопировано"
+  },
+  "actionSwap": {
+    "message": "Поменять местами"
+  },
+  "actionReplace": {
+    "message": "Заменить"
+  },
+  "actionClose": {
+    "message": "Закрыть"
+  },
+  "placeholderInput": {
+    "message": "Введите текст..."
+  },
+  "placeholderOutput": {
+    "message": "Здесь появится результат..."
+  },
+  "fullToolLink": {
+    "message": "Загрузка файла, исключения и скачивание"
+  },
+  "footerConvert": {
+    "message": "преобразовать выделенный текст"
+  },
+  "footerCopy": {
+    "message": "копировать"
+  },
+  "triggerTitle": {
+    "message": "Латиница ↔ кириллица"
+  },
+  "toastCopied": {
+    "message": "Скопировано"
+  },
+  "toastReplaced": {
+    "message": "Заменено"
+  },
+  "ctxConvert": {
+    "message": "Преобразовать латиницу ↔ кириллицу"
+  }
+}

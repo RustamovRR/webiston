@@ -12,11 +12,28 @@ import { useCallback, useEffect, useState } from "react"
 
 type Theme = "light" | "dark" | "system"
 
+/**
+ * One place to read a localised string.
+ *
+ * `browser.i18n.getMessage` resolves against `public/_locales/<lang>/` and
+ * returns "" for a key that does not exist — silently, with no warning.
+ *
+ * WXT generates a union of the real keys from those files, so taking
+ * `MessageKey` rather than `string` turns a typo into a COMPILE error instead
+ * of a blank label. Widening it to `string` was the first thing tried here and
+ * `tsc` rejected it, which is the type system doing its job.
+ *
+ * `tests/locales.test.ts` still earns its place: types cannot check that all
+ * three bundles agree, or that a message is non-empty.
+ */
+type MessageKey = Parameters<typeof browser.i18n.getMessage>[0]
+const t = (key: MessageKey) => browser.i18n.getMessage(key)
+
 /** The same three choices, in the same order, as the web tool. */
 const DIRECTION_OPTIONS: SegmentedOption<DirectionPreference>[] = [
-  { value: "auto", label: "Avto" },
-  { value: "latin-to-cyrillic", label: "→ Кирилл" },
-  { value: "cyrillic-to-latin", label: "→ Lotin" }
+  { value: "auto", label: t("dirAuto") },
+  { value: "latin-to-cyrillic", label: t("dirToCyrillic") },
+  { value: "cyrillic-to-latin", label: t("dirToLatin") }
 ]
 
 // Icons
@@ -385,8 +402,8 @@ export default function App() {
   // the popup was the one surface that always said "Lotin → Kirill", even
   // while converting the other way.
   const toCyrillic = resolveDirection(input, direction) === "latin-to-cyrillic"
-  const sourceLabel = toCyrillic ? "Lotin matn" : "Kirill matn"
-  const targetLabel = toCyrillic ? "Kirill natija" : "Lotin natija"
+  const sourceLabel = t(toCyrillic ? "sourceLatin" : "sourceCyrillic")
+  const targetLabel = t(toCyrillic ? "resultCyrillic" : "resultLatin")
 
   return (
     <div className="w-[380px] bg-background text-foreground">
@@ -402,7 +419,7 @@ export default function App() {
                 Converter" — an English name on an Uzbek product, matching
                 nothing the user had just been reading. */}
             <h1 className="font-semibold text-sm leading-tight">
-              Lotin-Kirill O'giruvchi
+              {t("appName")}
             </h1>
             <a
               href="https://webiston.uz/tools/latin-cyrillic"
@@ -419,7 +436,7 @@ export default function App() {
           type="button"
           onClick={toggleTheme}
           className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-          title={isDark ? "Yorug' rejim" : "Qorong'u rejim"}
+          title={t(isDark ? "themeLight" : "themeDark")}
         >
           {isDark ? <SunIcon /> : <MoonIcon />}
         </button>
@@ -438,10 +455,10 @@ export default function App() {
             </span>
             <div>
               <span className="block font-medium text-sm leading-tight">
-                Tezkor konvertatsiya
+                {t("quickTitle")}
               </span>
               <span className="text-[11px] text-muted-foreground">
-                Matn tanlanganda avtomatik
+                {t("quickSubtitle")}
               </span>
             </div>
           </div>
@@ -450,7 +467,7 @@ export default function App() {
             onClick={toggleFloating}
             role="switch"
             aria-checked={floatingEnabled}
-            aria-label="Tezkor konvertatsiya"
+            aria-label={t("quickTitle")}
             className={`relative h-6 w-11 rounded-full transition-colors duration-200 ${
               floatingEnabled ? "bg-primary" : "bg-border-strong"
             }`}
@@ -481,7 +498,7 @@ export default function App() {
             keyboard support. Both surfaces now share one implementation. */}
         <SegmentedControl
           className="w-full"
-          label="Konvertatsiya yo'nalishi"
+          label={t("appName")}
           options={DIRECTION_OPTIONS}
           value={direction}
           onChange={handleDirectionChange}
@@ -495,7 +512,7 @@ export default function App() {
           dotClassName="bg-muted-foreground"
           action={
             input ? (
-              <PanelAction onClick={handleClear} title="Tozalash">
+              <PanelAction onClick={handleClear} title={t("actionClear")}>
                 <CloseIcon />
               </PanelAction>
             ) : null
@@ -505,7 +522,7 @@ export default function App() {
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Matn kiriting..."
+            placeholder={t("placeholderInput")}
             className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
         </Panel>
@@ -517,7 +534,7 @@ export default function App() {
             onClick={handleSwap}
             disabled={!output}
             className="rounded-full border border-border bg-card p-2.5 text-muted-foreground transition-colors hover:border-ring hover:text-primary disabled:pointer-events-none disabled:opacity-30"
-            title="Almashtirish"
+            title={t("actionSwap")}
           >
             <SwapIcon />
           </button>
@@ -529,10 +546,10 @@ export default function App() {
           dotClassName="bg-primary"
           action={
             output ? (
-              <PanelAction onClick={handleCopy} title="Nusxalash">
+              <PanelAction onClick={handleCopy} title={t("actionCopy")}>
                 {copied ? <CheckIcon /> : <CopyIcon />}
                 <span className={copied ? "text-success" : undefined}>
-                  {copied ? "Nusxalandi" : "Nusxalash"}
+                  {t(copied ? "actionCopied" : "actionCopy")}
                 </span>
               </PanelAction>
             ) : null
@@ -542,7 +559,7 @@ export default function App() {
             value={output}
             readOnly
             onKeyDown={handleKeyDown}
-            placeholder="Natija shu yerda ko'rinadi..."
+            placeholder={t("placeholderOutput")}
             className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
         </Panel>
@@ -557,7 +574,7 @@ export default function App() {
         rel="noopener noreferrer"
         className="flex items-center justify-between border-border border-t px-5 py-3 text-muted-foreground text-xs transition-colors hover:bg-accent hover:text-accent-foreground"
       >
-        <span>Fayl yuklash, istisnolar va yuklab olish</span>
+        <span>{t("fullToolLink")}</span>
         <span aria-hidden="true">↗</span>
       </a>
 
@@ -566,11 +583,11 @@ export default function App() {
           <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
             {SHORTCUT_LABEL}
           </kbd>{" "}
-          tanlangan matnni konvertatsiya ·{" "}
+          {t("footerConvert")} ·{" "}
           <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
             {COPY_SHORTCUT_LABEL}
           </kbd>{" "}
-          nusxalash
+          {t("footerCopy")}
         </p>
       </footer>
     </div>

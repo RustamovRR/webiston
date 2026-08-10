@@ -1,0 +1,92 @@
+{
+  "extName": {
+    "message": "Latin–Cyrillic Converter — Webiston"
+  },
+  "extDescription": {
+    "message": "Convert Uzbek text between the Latin and Cyrillic alphabets. The text never leaves your browser."
+  },
+  "cmdConvert": {
+    "message": "Convert the selected text"
+  },
+  "appName": {
+    "message": "Latin–Cyrillic Converter"
+  },
+  "dirAuto": {
+    "message": "Auto"
+  },
+  "dirToCyrillic": {
+    "message": "→ Cyrillic"
+  },
+  "dirToLatin": {
+    "message": "→ Latin"
+  },
+  "themeLight": {
+    "message": "Light mode"
+  },
+  "themeDark": {
+    "message": "Dark mode"
+  },
+  "quickTitle": {
+    "message": "Quick convert"
+  },
+  "quickSubtitle": {
+    "message": "Automatic on selection"
+  },
+  "sourceLatin": {
+    "message": "Latin text"
+  },
+  "sourceCyrillic": {
+    "message": "Cyrillic text"
+  },
+  "resultCyrillic": {
+    "message": "Cyrillic result"
+  },
+  "resultLatin": {
+    "message": "Latin result"
+  },
+  "actionClear": {
+    "message": "Clear"
+  },
+  "actionCopy": {
+    "message": "Copy"
+  },
+  "actionCopied": {
+    "message": "Copied"
+  },
+  "actionSwap": {
+    "message": "Swap"
+  },
+  "actionReplace": {
+    "message": "Replace"
+  },
+  "actionClose": {
+    "message": "Close"
+  },
+  "placeholderInput": {
+    "message": "Enter text..."
+  },
+  "placeholderOutput": {
+    "message": "The result appears here..."
+  },
+  "fullToolLink": {
+    "message": "File upload, exceptions and download"
+  },
+  "footerConvert": {
+    "message": "convert the selected text"
+  },
+  "footerCopy": {
+    "message": "copy"
+  },
+  "triggerTitle": {
+    "message": "Latin ↔ Cyrillic"
+  },
+  "toastCopied": {
+    "message": "Copied"
+  },
+  "toastReplaced": {
+    "message": "Replaced"
+  },
+  "ctxConvert": {
+    "message": "Convert Latin ↔ Cyrillic"
+  }
+}

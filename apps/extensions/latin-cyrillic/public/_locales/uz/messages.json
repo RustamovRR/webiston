@@ -1,0 +1,92 @@
+{
+  "extName": {
+    "message": "Lotin-Kirill O'giruvchi — Webiston"
+  },
+  "extDescription": {
+    "message": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi."
+  },
+  "cmdConvert": {
+    "message": "Tanlangan matnni konvertatsiya qilish"
+  },
+  "appName": {
+    "message": "Lotin-Kirill O'giruvchi"
+  },
+  "dirAuto": {
+    "message": "Avto"
+  },
+  "dirToCyrillic": {
+    "message": "→ Кирилл"
+  },
+  "dirToLatin": {
+    "message": "→ Lotin"
+  },
+  "themeLight": {
+    "message": "Yorug' rejim"
+  },
+  "themeDark": {
+    "message": "Qorong'u rejim"
+  },
+  "quickTitle": {
+    "message": "Tezkor konvertatsiya"
+  },
+  "quickSubtitle": {
+    "message": "Matn tanlanganda avtomatik"
+  },
+  "sourceLatin": {
+    "message": "Lotin matn"
+  },
+  "sourceCyrillic": {
+    "message": "Kirill matn"
+  },
+  "resultCyrillic": {
+    "message": "Kirill natija"
+  },
+  "resultLatin": {
+    "message": "Lotin natija"
+  },
+  "actionClear": {
+    "message": "Tozalash"
+  },
+  "actionCopy": {
+    "message": "Nusxalash"
+  },
+  "actionCopied": {
+    "message": "Nusxalandi"
+  },
+  "actionSwap": {
+    "message": "Almashtirish"
+  },
+  "actionReplace": {
+    "message": "Almashtirish"
+  },
+  "actionClose": {
+    "message": "Yopish"
+  },
+  "placeholderInput": {
+    "message": "Matn kiriting..."
+  },
+  "placeholderOutput": {
+    "message": "Natija shu yerda ko'rinadi..."
+  },
+  "fullToolLink": {
+    "message": "Fayl yuklash, istisnolar va yuklab olish"
+  },
+  "footerConvert": {
+    "message": "tanlangan matnni konvertatsiya"
+  },
+  "footerCopy": {
+    "message": "nusxalash"
+  },
+  "triggerTitle": {
+    "message": "Lotin ↔ Kirill"
+  },
+  "toastCopied": {
+    "message": "Nusxalandi"
+  },
+  "toastReplaced": {
+    "message": "Almashtirildi"
+  },
+  "ctxConvert": {
+    "message": "Lotin ↔ Kirill konvertatsiya"
+  }
+}

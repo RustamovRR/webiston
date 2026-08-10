@@ -23,9 +23,21 @@ export default defineConfig({
     // from the popup's `<title>`, which is why the rename had to happen in
     // `entrypoints/popup/index.html` as well and why the old name survived
     // there for a while after everything else had moved.
-    name: "Lotin-Kirill O'giruvchi — Webiston",
-    description:
-      "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi.",
+    /**
+     * `__MSG_*__` placeholders, resolved from `public/_locales/<lang>/`.
+     *
+     * This is the half of i18n that matters most and the reason we use
+     * Chrome's NATIVE mechanism rather than the site's next-intl: the store
+     * resolves these against the VIEWER's browser language, so the listing
+     * title and description are translated too. Someone searching the Chrome
+     * Web Store for "конвертер кириллицы" cannot find a listing written
+     * entirely in Latin Uzbek — and the listing is the whole funnel.
+     *
+     * `default_locale` is what a viewer with an unsupported language sees.
+     */
+    default_locale: "uz",
+    name: "__MSG_extName__",
+    description: "__MSG_extDescription__",
     permissions: ["activeTab", "contextMenus", "storage", "clipboardWrite"],
     host_permissions: ["<all_urls>"],
     commands: {
@@ -34,7 +46,7 @@ export default defineConfig({
           default: "Ctrl+Shift+L",
           mac: "Command+Shift+L"
         },
-        description: "Tanlangan matnni konvertatsiya qilish"
+        description: "__MSG_cmdConvert__"
       }
     },
     /**

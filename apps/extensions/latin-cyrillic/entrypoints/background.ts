@@ -1,5 +1,22 @@
 import { convertWithPreference } from "@webiston/transliteration"
 
+/**
+ * One place to read a localised string.
+ *
+ * `browser.i18n.getMessage` resolves against `public/_locales/<lang>/` and
+ * returns "" for a key that does not exist — silently, with no warning.
+ *
+ * WXT generates a union of the real keys from those files, so taking
+ * `MessageKey` rather than `string` turns a typo into a COMPILE error instead
+ * of a blank label. Widening it to `string` was the first thing tried here and
+ * `tsc` rejected it, which is the type system doing its job.
+ *
+ * `tests/locales.test.ts` still earns its place: types cannot check that all
+ * three bundles agree, or that a message is non-empty.
+ */
+type MessageKey = Parameters<typeof browser.i18n.getMessage>[0]
+const t = (key: MessageKey) => browser.i18n.getMessage(key)
+
 export default defineBackground(() => {
   // Extension o'rnatilganda yoki yangilanganda context menu yaratish
   /**
@@ -18,7 +35,7 @@ export default defineBackground(() => {
     browser.contextMenus.removeAll().then(() => {
       browser.contextMenus.create({
         id: "convert-selection",
-        title: "Lotin ↔ Kirill konvertatsiya",
+        title: t("ctxConvert"),
         contexts: ["selection"]
       })
     })

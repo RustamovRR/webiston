@@ -68,6 +68,23 @@ const BADGE_HTML = `
     <span class="wc-badge-pixel"></span>
   </span>`
 
+/**
+ * One place to read a localised string.
+ *
+ * `browser.i18n.getMessage` resolves against `public/_locales/<lang>/` and
+ * returns "" for a key that does not exist — silently, with no warning.
+ *
+ * WXT generates a union of the real keys from those files, so taking
+ * `MessageKey` rather than `string` turns a typo into a COMPILE error instead
+ * of a blank label. Widening it to `string` was the first thing tried here and
+ * `tsc` rejected it, which is the type system doing its job.
+ *
+ * `tests/locales.test.ts` still earns its place: types cannot check that all
+ * three bundles agree, or that a message is non-empty.
+ */
+type MessageKey = Parameters<typeof browser.i18n.getMessage>[0]
+const t = (key: MessageKey) => browser.i18n.getMessage(key)
+
 // State
 let triggerIcon: HTMLElement | null = null
 let popover: HTMLElement | null = null
@@ -169,7 +186,7 @@ export default defineContentScript({
             navigator.clipboard.writeText(
               convertWithPreference(sel, "auto").text
             )
-            showToast("Nusxalandi")
+            showToast(t("toastCopied"))
           }
           sendResponse({ success: true })
           return true
@@ -189,7 +206,7 @@ export default defineContentScript({
             navigator.clipboard.writeText(
               convertWithPreference(message.text, "auto").text
             )
-            showToast("Nusxalandi")
+            showToast(t("toastCopied"))
           }
           sendResponse({ success: true })
           return true
@@ -451,7 +468,7 @@ function showTriggerIcon() {
   // reads on a white page and a dark one without a coloured square behind it —
   // which is the same argument `icon.svg` makes for the favicon.
   triggerIcon.innerHTML = BADGE_HTML
-  triggerIcon.title = "Lotin ↔ Kirill"
+  triggerIcon.title = t("triggerTitle")
   triggerIcon.addEventListener("click", handleTriggerClick)
 
   const left = selectionRect.right + 8
@@ -520,9 +537,9 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     <div class="wc-header">
       <div class="wc-logo">
         ${BADGE_HTML}
-        <span>Lotin-Kirill O'giruvchi</span>
+        <span>${t("appName")}</span>
       </div>
-      <button class="wc-close" data-action="close" title="Yopish">
+      <button class="wc-close" data-action="close" title="${t("actionClose")}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
@@ -532,13 +549,13 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     <div class="wc-body">
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${isCyrillic ? "Kirill matn" : "Lotin matn"}</span>
+          <span class="wc-label">${t(isCyrillic ? "sourceCyrillic" : "sourceLatin")}</span>
         </div>
         <textarea class="wc-textarea wc-input" data-type="input" spellcheck="false">${escapeHtml(selectedText)}</textarea>
       </div>
       
       <div class="wc-divider">
-        <button class="wc-swap" data-action="swap" title="Almashtirish">
+        <button class="wc-swap" data-action="swap" title="${t("actionSwap")}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
           </svg>
@@ -547,13 +564,13 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
       
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${isCyrillic ? "Lotin natija" : "Kirill natija"}</span>
-          <button class="wc-copy" data-action="copy" title="Nusxalash">
+          <span class="wc-label">${t(isCyrillic ? "resultLatin" : "resultCyrillic")}</span>
+          <button class="wc-copy" data-action="copy" title="${t("actionCopy")}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect width="14" height="14" x="8" y="8" rx="2"/>
               <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
             </svg>
-            <span>Nusxalash</span>
+            <span>${t("actionCopy")}</span>
           </button>
         </div>
         <textarea class="wc-textarea wc-output" data-type="output" readonly spellcheck="false">${escapeHtml(converted)}</textarea>
@@ -562,8 +579,8 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     
     <div class="wc-footer">
       <div class="wc-direction">
-        <button class="wc-dir-btn ${!isCyrillic ? "active" : ""}" data-action="to-cyrillic">→ Кирилл</button>
-        <button class="wc-dir-btn ${isCyrillic ? "active" : ""}" data-action="to-latin">→ Lotin</button>
+        <button class="wc-dir-btn ${!isCyrillic ? "active" : ""}" data-action="to-cyrillic">${t("dirToCyrillic")}</button>
+        <button class="wc-dir-btn ${isCyrillic ? "active" : ""}" data-action="to-latin">${t("dirToLatin")}</button>
       </div>
       ${
         selectionEditable
@@ -571,7 +588,7 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
         </svg>
-        Almashtirish
+        ${t("actionReplace")}
       </button>`
           : ""
       }
@@ -683,9 +700,10 @@ function paintDirectionLabels(direction: string) {
   const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
   // `textContent` replaces the element's children; the status dot is a
   // `::before` pseudo-element, so it survives this.
-  if (inputLabel) inputLabel.textContent = toCyr ? "Lotin matn" : "Kirill matn"
+  if (inputLabel)
+    inputLabel.textContent = t(toCyr ? "sourceLatin" : "sourceCyrillic")
   if (outputLabel) {
-    outputLabel.textContent = toCyr ? "Kirill natija" : "Lotin natija"
+    outputLabel.textContent = t(toCyr ? "resultCyrillic" : "resultLatin")
   }
 }
 
@@ -700,11 +718,11 @@ function copyOutput(button: HTMLElement) {
   button.classList.add("success")
   const span = button.querySelector("span")
   const originalText = span?.textContent
-  if (span) span.textContent = "Nusxalandi!"
+  if (span) span.textContent = t("actionCopied")
 
   setTimeout(() => {
     button.classList.remove("success")
-    if (span) span.textContent = originalText || "Nusxalash"
+    if (span) span.textContent = originalText || t("actionCopy")
   }, 1500)
 }
 
@@ -803,7 +821,7 @@ function replaceOriginal() {
   const replaced = replaceSelectionWith(outputEl.value)
   if (!replaced) navigator.clipboard.writeText(outputEl.value)
   cleanup()
-  showToast(replaced ? "Almashtirildi" : "Nusxalandi")
+  showToast(t(replaced ? "toastReplaced" : "toastCopied"))
 }
 
 /**
