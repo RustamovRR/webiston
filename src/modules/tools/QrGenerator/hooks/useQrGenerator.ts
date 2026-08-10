@@ -23,10 +23,11 @@ import {
   ERROR_LEVEL_WITH_LOGO,
   RENDER_SIZE
 } from "../constants"
-import { useQrDraftStore } from "../stores/qrDraftStore"
+import { isStyleDirty, useQrDraftStore } from "../stores/qrDraftStore"
 import type { QrDownloadFormat } from "../types"
 import { checkScannability } from "../utils/contrast"
 import { downloadQr } from "../utils/export"
+import { versionForLogo, versionOfSize } from "../utils/logo-fit"
 import { buildMatrix } from "../utils/matrix"
 import { detectInputType } from "../utils/qr-input"
 import { buildDocument, buildQrModel } from "../utils/render"
@@ -43,6 +44,7 @@ export function useQrGenerator() {
   const setMode = useQrDraftStore((state) => state.setMode)
   const updateWifi = useQrDraftStore((state) => state.updateWifi)
   const updateStyle = useQrDraftStore((state) => state.updateStyle)
+  const resetStyle = useQrDraftStore((state) => state.resetStyle)
   const reset = useQrDraftStore((state) => state.reset)
 
   // What actually gets ENCODED. The WiFi form is a compiler for the WIFI:
@@ -55,8 +57,13 @@ export function useQrGenerator() {
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState(false)
 
-  // A logo punches a hole in the data area, and level H is the only one with
-  // enough redundancy to survive it. Derived, not asked.
+  // A logo punches a hole in the data area, so it gets the highest redundancy.
+  // Derived, not asked — but NOT sufficient on its own: this comment used to
+  // stop at "level H survives it", and that is precisely the reasoning that
+  // shipped a broken feature. H protects the data codewords; it does nothing
+  // for the finders, the timing patterns or the format information, which is
+  // what a centred logo actually lands on. The second half of the fix is the
+  // version search below.
   const errorLevel = style.logo ? ERROR_LEVEL_WITH_LOGO : DEFAULT_ERROR_LEVEL
 
   const hasCode = payload.trim().length > 0
@@ -72,10 +79,32 @@ export function useQrGenerator() {
    * changed. Split, a style change costs 26% of what it used to (re-measured:
    * 0.887 ms against 3.409 ms).
    */
-  const matrix = useMemo(
-    () => (hasCode ? buildMatrix(payload, errorLevel) : null),
-    [payload, errorLevel, hasCode]
-  )
+  const matrix = useMemo(() => {
+    if (!hasCode) return null
+
+    const natural = buildMatrix(payload, errorLevel)
+    if (!style.logo) return natural
+
+    // A logo has to clear the finders, the timing patterns, the format
+    // information and the alignment patterns — none of which error correction
+    // protects, at any level. On a short payload there is no central space
+    // that does, so the symbol is grown until there is. See `logo-fit.ts`.
+    const version = versionForLogo(
+      versionOfSize(natural.size),
+      style.quietZone,
+      style.logoSize
+    )
+    if (version === versionOfSize(natural.size)) return natural
+
+    return buildMatrix(payload, errorLevel, version)
+  }, [
+    payload,
+    errorLevel,
+    hasCode,
+    style.logo,
+    style.quietZone,
+    style.logoSize
+  ])
 
   const document = useMemo(() => {
     if (!matrix) return null
@@ -118,6 +147,9 @@ export function useQrGenerator() {
     updateWifi,
     style,
     updateStyle,
+    resetStyle,
+    /** Whether the look differs from the defaults, i.e. whether to offer it. */
+    isStyleDirty: isStyleDirty(style),
     reset,
     document,
     download,

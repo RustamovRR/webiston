@@ -275,6 +275,8 @@
       "lowContrastSevere": "Kontrast juda past ({ratio}:1). Bu kod ko'p telefonlarda umuman skanerlanmaydi — kod rangini quyuqroq qiling."
     },
     "style": {
+      "reset": "Uslubni tiklash",
+      "revert": "Standart rangga qaytarish",
       "foreground": "Kod rangi",
       "background": "Fon rangi",
       "gradientTo": "Gradient ikkinchi rangi",
@@ -287,7 +289,7 @@
       "uploadLogo": "Logo yuklash",
       "removeLogo": "O'chirish",
       "logoSize": "Logo o'lchami — {percent}%",
-      "logoNote": "Logo modullarning bir qismini yopadi, shuning uchun xato tuzatish darajasi avtomatik ravishda eng yuqorisiga (H) ko'tarildi.",
+      "logoNote": "Xato tuzatish eng yuqori darajaga (H) ko'tariladi va logo skaner birinchi o'qiydigan qismlarni yopib qolmasligi uchun kod zarur bo'lganda kattalashtiriladi.",
       "logoUnreadable": "Bu faylni rasm sifatida o'qib bo'lmadi. PNG, JPG, SVG yoki WEBP tanlang.",
       "cornerRadius": "Burchak yumaloqligi — {percent}%",
       "frame": "Ramka",
@@ -295,6 +297,7 @@
       "advanced": "Qo'shimcha",
       "quietZone": "Oq hoshiya — {modules} modul",
       "quietZoneWarning": "Standart {standard} modul talab qiladi. Bundan kam bo'lsa kod topilmay qolishi mumkin.",
+      "quietZoneWide": "Standart {standard} modul talab qiladi. Bundan ko'p bo'lsa hoshiya kodning o'zidan joy oladi: 8 da modullar 4 dagiga qaraganda 15% kichik.",
       "gradient": {
         "linear": "Chiziqli",
         "radial": "Radial"

@@ -9,12 +9,13 @@ import {
 import { Button } from "@webiston/ui/primitives/button"
 import { Input } from "@webiston/ui/primitives/input"
 import { cn } from "@webiston/ui/utils"
-import { ImagePlus, Trash2 } from "lucide-react"
+import { ImagePlus, RotateCcw, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useId, useRef, useState } from "react"
 
 import {
   DEFAULT_GRADIENT_COLOR,
+  DEFAULT_STYLE,
   MAX_FRAME_LABEL_LENGTH,
   MAX_LOGO_SIZE,
   MAX_QUIET_ZONE,
@@ -50,6 +51,10 @@ import { PresetStrip } from "./PresetStrip"
 interface StylePanelProps {
   style: QrStyle
   onChange: (patch: Partial<QrStyle>) => void
+  /** Restore the default look, leaving the payload alone. */
+  onReset: () => void
+  /** Whether anything differs from the defaults — decided by the store. */
+  isDirty: boolean
 }
 
 const SWATCH = 34
@@ -58,12 +63,25 @@ function ColorField({
   label,
   value,
   onChange,
-  onClear
+  onClear,
+  onRevert,
+  revertLabel
 }: {
   label: string
   value: string
   onChange: (value: string) => void
+  /** Remove the colour entirely. Only the gradient stop has one. */
   onClear?: () => void
+  /**
+   * Put THIS colour back to its default, leaving every other setting alone.
+   *
+   * Deliberately not the same control as `onClear`, and not the same icon: a
+   * bin means "this goes away" and a revert arrow means "this goes back". The
+   * panel-wide reset is a third thing again — it undoes shapes, frame and logo
+   * too, which is not what someone who has only mis-picked a red wants.
+   */
+  onRevert?: () => void
+  revertLabel?: string
 }) {
   return (
     <label className="flex items-center gap-3 text-sm">
@@ -80,6 +98,18 @@ function ColorField({
       <span className="font-mono text-muted-foreground text-xs uppercase">
         {value}
       </span>
+      {onRevert && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onRevert}
+          title={revertLabel}
+          aria-label={revertLabel}
+        >
+          <RotateCcw aria-hidden="true" />
+        </Button>
+      )}
       {onClear && (
         <Button type="button" variant="ghost" size="sm" onClick={onClear}>
           <Trash2 aria-hidden="true" />
@@ -165,7 +195,12 @@ const PATCH = [
   [1, 0, 1, 1]
 ]
 
-export function StylePanel({ style, onChange }: StylePanelProps) {
+export function StylePanel({
+  style,
+  onChange,
+  onReset,
+  isDirty
+}: StylePanelProps) {
   const t = useTranslations("QrGeneratorPage.style")
   const tNames = useTranslations("QrGeneratorPage.shapeNames")
   const fileRef = useRef<HTMLInputElement>(null)
@@ -183,20 +218,58 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
 
   return (
     <div className="space-y-5">
+      {/* Conditional, like the input panel's own Clear: a control that can
+          only ever say "already default" is furniture. This is the way back
+          from a palette the visitor stopped liking — before it existed the
+          only reset was the X in the input header, which also emptied the
+          text they had typed. */}
+      {isDirty && (
+        <div className="flex justify-end">
+          <Button type="button" variant="ghost" size="sm" onClick={onReset}>
+            <RotateCcw aria-hidden="true" />
+            {t("reset")}
+          </Button>
+        </div>
+      )}
+
       {/* First, because it is the control that answers "make it look good"
           without asking the visitor to learn the vocabulary below it. */}
       <PresetStrip style={style} onChange={onChange} />
 
       <div className="space-y-3">
+        {/* Each colour carries its own way back. The panel-wide reset above
+            exists too, but reaching for it to undo one bad red also throws
+            away the shapes, the frame and the logo — which is why a visitor
+            who had only changed a colour still had no way back. Offered only
+            when the value actually differs, so the row stays quiet by
+            default. */}
         <ColorField
           label={t("foreground")}
           value={style.foregroundColor}
           onChange={(foregroundColor) => onChange({ foregroundColor })}
+          revertLabel={t("revert")}
+          onRevert={
+            style.foregroundColor === DEFAULT_STYLE.foregroundColor
+              ? undefined
+              : () =>
+                  onChange({
+                    foregroundColor: DEFAULT_STYLE.foregroundColor
+                  })
+          }
         />
         <ColorField
           label={t("background")}
           value={style.backgroundColor}
           onChange={(backgroundColor) => onChange({ backgroundColor })}
+          revertLabel={t("revert")}
+          onRevert={
+            style.backgroundColor === DEFAULT_STYLE.backgroundColor
+              ? undefined
+              : () =>
+                  onChange({
+                    backgroundColor: DEFAULT_STYLE.backgroundColor
+                  })
+          }
         />
         {style.gradientColor ? (
           <>
@@ -514,6 +587,18 @@ export function StylePanel({ style, onChange }: StylePanelProps) {
               {style.quietZone < STANDARD_QUIET_ZONE && (
                 <span className="mt-1 block text-destructive text-xs">
                   {t("quietZoneWarning", { standard: STANDARD_QUIET_ZONE })}
+                </span>
+              )}
+              {/* The other half of the truth, and the half that was missing.
+                  The export box is a fixed edge length, so the margin is taken
+                  OUT of the code: measured on a 37-module symbol at 320 units,
+                  a module is 7.11 wide at quiet zone 4 and 6.04 at 8 — 15%
+                  smaller, for a margin the standard never asked for. With a
+                  shape that already inks less than its cell, that is the
+                  difference between scanning and not. */}
+              {style.quietZone > STANDARD_QUIET_ZONE && (
+                <span className="mt-1 block text-warning text-xs">
+                  {t("quietZoneWide", { standard: STANDARD_QUIET_ZONE })}
                 </span>
               )}
             </label>

@@ -45,6 +45,16 @@ interface QrDraftState {
   setMode: (mode: QrInputMode) => void
   updateWifi: (patch: Partial<WifiConfig>) => void
   updateStyle: (patch: Partial<QrStyle>) => void
+  /**
+   * Put the look back to defaults WITHOUT touching the payload.
+   *
+   * Separate from `reset` because the two are different intentions and the
+   * tool only offered the destructive one: the single Clear button emptied the
+   * text, the WiFi fields and the style together, and it lived in the input
+   * panel's header — so a visitor who had spent a minute on colours had no way
+   * back that did not also delete what they had typed.
+   */
+  resetStyle: () => void
   reset: () => void
 }
 
@@ -59,6 +69,29 @@ export const useQrDraftStore = create<QrDraftState>()((set) => ({
     set((state) => ({ wifi: { ...state.wifi, ...patch } })),
   updateStyle: (patch) =>
     set((state) => ({ style: { ...state.style, ...patch } })),
+  resetStyle: () => set({ style: DEFAULT_STYLE }),
   reset: () =>
     set({ value: "", mode: "text", wifi: DEFAULT_WIFI, style: DEFAULT_STYLE })
 }))
+
+/**
+ * Has the visitor changed the look at all?
+ *
+ * A shallow compare is exactly right: `QrStyle` is flat and every field is a
+ * string, a number or `undefined`. It drives whether the reset control is
+ * offered, so it must be false on a fresh tool or the control is permanent
+ * furniture that does nothing.
+ *
+ * The key set is the UNION of both objects, not `DEFAULT_STYLE`'s. The two
+ * fields a visitor is most likely to change — `logo` and `gradientColor` — are
+ * OPTIONAL and therefore absent from the default, so iterating the default
+ * alone would report "unchanged" for the one who had just uploaded a logo.
+ */
+export function isStyleDirty(style: QrStyle): boolean {
+  const keys = new Set<keyof QrStyle>([
+    ...(Object.keys(DEFAULT_STYLE) as (keyof QrStyle)[]),
+    ...(Object.keys(style) as (keyof QrStyle)[])
+  ])
+
+  return [...keys].some((key) => style[key] !== DEFAULT_STYLE[key])
+}

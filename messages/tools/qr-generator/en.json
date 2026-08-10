@@ -275,6 +275,8 @@
       "lowContrastSevere": "Contrast is far too low ({ratio}:1). Most phones will not scan this at all — darken the code colour."
     },
     "style": {
+      "reset": "Reset style",
+      "revert": "Back to the default colour",
       "foreground": "Code colour",
       "background": "Background",
       "gradientTo": "Gradient second colour",
@@ -287,7 +289,7 @@
       "uploadLogo": "Upload a logo",
       "removeLogo": "Remove",
       "logoSize": "Logo size — {percent}%",
-      "logoNote": "A logo covers part of the modules, so error correction was raised automatically to the highest level (H).",
+      "logoNote": "Error correction is raised to the highest level (H), and the code is enlarged when it has to be, so the logo cannot cover the parts a scanner reads first.",
       "logoUnreadable": "That file could not be read as an image. Choose a PNG, JPG, SVG or WEBP.",
       "cornerRadius": "Corner rounding — {percent}%",
       "frame": "Frame",
@@ -295,6 +297,7 @@
       "advanced": "Advanced",
       "quietZone": "Quiet zone — {modules} modules",
       "quietZoneWarning": "The standard requires {standard} modules. Below that the code can fail to be found at all.",
+      "quietZoneWide": "The standard asks for {standard}. Above that the margin is taken out of the code itself: at 8 the modules are 15% smaller than at 4.",
       "gradient": {
         "linear": "Linear",
         "radial": "Radial"

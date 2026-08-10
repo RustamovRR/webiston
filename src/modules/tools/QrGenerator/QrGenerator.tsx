@@ -39,6 +39,8 @@ const QrGenerator = () => {
     style,
     updateStyle,
     reset,
+    resetStyle,
+    isStyleDirty,
     document,
     download,
     isExporting,
@@ -131,7 +133,12 @@ const QrGenerator = () => {
         </div>
 
         <div className="lg:col-start-1 lg:row-start-2">
-          <StylePanel style={style} onChange={updateStyle} />
+          <StylePanel
+            style={style}
+            onChange={updateStyle}
+            onReset={resetStyle}
+            isDirty={isStyleDirty}
+          />
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
   frameById,
   layoutFrame
 } from "./frames"
+import { logoFootprint } from "./logo-fit"
 import { neighboursOf, type QrMatrix } from "./matrix"
 import { modulePath } from "./shapes"
 
@@ -101,7 +102,7 @@ export function buildQrModel({
   // Modules the logo sits on are dropped rather than painted over. Painting
   // over them leaves the ink visible through a transparent logo and forces the
   // opaque white box the old canvas code drew.
-  const hidden = logoFootprint(size, quietZone, style)
+  const hidden = hiddenByLogo(size, quietZone, style)
 
   const dataSegments: string[] = []
   for (let row = 0; row < size; row++) {
@@ -187,29 +188,21 @@ function gradientId(
 }
 
 /**
- * Which modules the logo covers, with one module of breathing room each side.
+ * Which modules the logo covers.
  *
- * The width is derived from the SAME geometry the logo is drawn with, and that
- * is the whole point of this function's shape. It used to read
- * `size * style.logoSize`, but the logo is sized against `extent` — which
- * spans `size + quietZone * 2` modules — so the two disagreed by exactly the
- * quiet zone. Measured on a 21x21 code at quiet zone 8 and a 22% logo: the
- * image covered 8.14 modules while only 7 were dropped, leaving **5 painted
- * modules underneath it**, and at 30% it was 21. Those modules are data the
- * error correction never budgeted for losing.
+ * The geometry lives in `logo-fit.ts` because two callers need to agree on it:
+ * this one, which stops painting them, and the version search, which decides
+ * whether covering them is survivable at all. Two copies of this arithmetic is
+ * how a code passes its own fit check and still fails a phone camera.
  */
-function logoFootprint(
+function hiddenByLogo(
   size: number,
   quietZone: number,
   style: QrStyle
 ): ((row: number, col: number) => boolean) | null {
   if (!style.logo) return null
 
-  const logoInModules = (size + quietZone * 2) * style.logoSize
-  const covered = Math.ceil(logoInModules) + 2
-  const from = Math.floor((size - covered) / 2)
-  const to = from + covered
-
+  const { from, to } = logoFootprint(size, quietZone, style.logoSize)
   return (row, col) => row >= from && row < to && col >= from && col < to
 }
 
