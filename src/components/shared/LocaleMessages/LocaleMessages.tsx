@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages } from "next-intl/server"
+import { getMessages } from "next-intl/server"
 import type { ReactNode } from "react"
 
 interface LocaleMessagesProps {
@@ -7,19 +7,23 @@ interface LocaleMessagesProps {
    *  `useTranslations` with. A missing one is a runtime error, not a fallback. */
   namespaces: readonly string[]
   /**
-   * The locale from `params`. PASS IT.
+   * The locale from `params`. REQUIRED.
    *
-   * Without it this falls back to `getLocale()`, which is measurably wrong on
-   * this site: on /en/tools/* it returns "uz" even though `params.locale` is
-   * "en", because `setRequestLocale` writes into a React.cache value that
-   * `getRequestConfig` does not read back here. The result is an English route
-   * rendering the Uzbek bundle — verified on the prerendered HTML of
-   * /en/tools/json-formatter as well, so it is not specific to one tool.
+   * Without it this used to fall back to `getLocale()`, which is measurably
+   * wrong on this site: on /en/tools/* it returns "uz" even though
+   * `params.locale` is "en", because `setRequestLocale` writes into a
+   * React.cache value that `getRequestConfig` does not read back here. The
+   * result is an English route rendering the Uzbek bundle.
    *
-   * Optional only so the other tool pages keep building unchanged; each should
-   * start passing it as it is revisited.
+   * It was optional — "each should start passing it as it is revisited" — and
+   * that is exactly how the one route that never got revisited stayed broken:
+   * 17 of 18 call sites passed it, `/tools` did not, and `/ru/tools` and
+   * `/en/tools` both prerendered the Uzbek `<h1>` in production. An optional
+   * prop whose absence is a silent content bug is the wrong shape; required
+   * turns it into a compile error, which is the only kind that cannot be
+   * forgotten.
    */
-  locale?: string
+  locale: string
   children: ReactNode
 }
 
@@ -37,10 +41,9 @@ interface LocaleMessagesProps {
  */
 export async function LocaleMessages({
   namespaces,
-  locale: explicitLocale,
+  locale,
   children
 }: LocaleMessagesProps) {
-  const locale = explicitLocale ?? (await getLocale())
   const messages = await getMessages({ locale })
 
   // Naming a namespace that does not exist is silent otherwise: the provider

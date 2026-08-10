@@ -224,7 +224,7 @@ export default async function ToolsPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <LocaleMessages namespaces={INDEX_NAMESPACES}>
+      <LocaleMessages locale={locale} namespaces={INDEX_NAMESPACES}>
         <ToolsMainPage />
       </LocaleMessages>
     </>

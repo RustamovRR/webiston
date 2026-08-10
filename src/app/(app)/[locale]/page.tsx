@@ -172,8 +172,23 @@ export default async function HomePage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  const tHome = await getTranslations("HomePage")
-  const tTools = await getTranslations("Tools")
+  // The locale is PASSED, not read from the request — the last two ambient
+  // `getTranslations()` calls in the codebase were these, and they are why
+  // `/ru` and `/en` served an Uzbek homepage in production while every other
+  // route was fine.
+  //
+  // `setRequestLocale` writes into a React.cache-scoped value that
+  // `getRequestConfig` does not see from here, so the ambient locale falls
+  // back to the default. `next dev` renders per request and happens to resolve
+  // it correctly, which is exactly why this survived local testing — measured
+  // in the BUILT output instead: `.next/server/app/ru.html` carried the Uzbek
+  // `<h1>` and zero Russian hero strings, while the header (which takes its
+  // locale from the layout) was correctly Russian on the same page.
+  //
+  // `AlphabetTable` carries the same note for the same reason; this is the
+  // established pattern in this repo, not a new one.
+  const tHome = await getTranslations({ locale, namespace: "HomePage" })
+  const tTools = await getTranslations({ locale, namespace: "Tools" })
 
   // Derived at build time from the content tree and the routed tool list, never
   // typed in — a hand-written "226 chapters" is a claim that silently goes stale
