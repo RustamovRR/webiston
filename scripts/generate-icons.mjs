@@ -287,7 +287,24 @@ const TARGETS = [
     file: `apps/extensions/latin-cyrillic/public/icon/${size}.png`,
     size,
     svg: () => markSvg({ size })
-  }))
+  })),
+  /**
+   * The Edge Add-ons store logo.
+   *
+   * Partner Center asks for a 1:1 logo per listing LANGUAGE and recommends
+   * 300x300; the 128 the extension ships clears the minimum but arrives at the
+   * store card already at its limit. Rendered from `icon.svg` at full size
+   * rather than upscaled from the 128, so the plate edge stays a crisp 1px.
+   *
+   * Deliberately OUTSIDE `public/` — everything under there is copied into the
+   * shipped bundle, and a 300px icon no manifest references is dead weight in
+   * the package a reviewer reads.
+   */
+  {
+    file: "apps/extensions/latin-cyrillic/store-assets/logo-300x300.png",
+    size: 300,
+    svg: () => markSvg({ size: 300 })
+  }
 ]
 
 const written = []
