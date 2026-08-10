@@ -119,4 +119,51 @@ describe("extension message bundles", () => {
       }
     }
   })
+
+  /**
+   * No pictographic symbols in anything the MANIFEST exposes.
+   *
+   * The Edge submission was rejected on exactly this: the Russian name read
+   * "Латиница ↔ кириллица" and Partner Center answered "The Name field in
+   * manifest contains an unsupported character at index: 9 for locale: ru".
+   * Chrome had accepted the same package, so nothing local caught it — the
+   * first signal was a failed upload on a store that only checks at submit
+   * time, in one of the two languages nobody here proofreads.
+   *
+   * Both symbol categories, and the distinction cost a round trip: the first
+   * version of this test checked `\p{So}` alone and passed with the arrow
+   * still in place. U+2194 is `Sm` — MATH symbol — not `So`. Arrows, dingbats
+   * and emoji are split across the two, so a guard against one of them is not
+   * a guard at all.
+   *
+   * ASCII is exempt, because `\p{Sm}` also covers `+`, `=`, `<` and `|`, which
+   * are ordinary characters in a product name and were never the problem.
+   * Dashes are `\p{Pd}` and stay legal too: the English name carries an en
+   * dash at index 5, ahead of the arrow the validator stopped on, and Edge
+   * passed straight over it. Punctuation is fine; pictures are not.
+   */
+  it("keeps pictographic symbols out of manifest-facing strings", () => {
+    // Arrange
+    const config = readFileSync(path.join(ROOT, "wxt.config.ts"), "utf8")
+    const placeholders = [...config.matchAll(/__MSG_([a-zA-Z]+)__/g)].map(
+      (match) => match[1]
+    )
+    const isSymbol = (char: string) =>
+      (char.codePointAt(0) ?? 0) > 127 && /[\p{Sm}\p{So}]/u.test(char)
+
+    // Act
+    const offenders: string[] = []
+    for (const [locale, bundle] of bundles) {
+      for (const key of placeholders) {
+        const message = bundle[key]?.message ?? ""
+        const index = [...message].findIndex(isSymbol)
+        if (index !== -1) {
+          offenders.push(`${locale}.${key} index ${index}: ${message[index]}`)
+        }
+      }
+    }
+
+    // Assert
+    expect(offenders).toEqual([])
+  })
 })
