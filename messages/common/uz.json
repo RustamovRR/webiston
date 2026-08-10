@@ -166,6 +166,50 @@
   "Footer": {
     "allRightsReserved": "Barcha huquqlar himoyalangan.",
     "tagline": "Zamonaviy veb texnologiyalar bo'yicha bepul kitoblar va dasturchilar uchun kundalik vositalar — o'zbek tilida.",
-    "allTools": "Barcha vositalar"
+    "allTools": "Barcha vositalar",
+    "privacy": "Maxfiylik"
+  },
+  "PrivacyPage": {
+    "title": "Maxfiylik siyosati",
+    "updated": "Yangilangan",
+    "intro": "Webiston sayti va uning brauzer kengaytmalari foydalanuvchi ma'lumotlarini yig'maydi. Quyida buning nimani anglatishi — va yagona istisno nima ekanligi — aniq yozilgan.",
+    "sections": {
+      "scope": {
+        "title": "Nimani qamrab oladi",
+        "body": "Ushbu siyosat webiston.uz saytiga va Webiston nomi ostida chiqarilgan brauzer kengaytmalariga — jumladan «Lotin-Kirill O'giruvchi» kengaytmasiga — taalluqli."
+      },
+      "data": {
+        "title": "Matningiz qayerda qayta ishlanadi",
+        "body": "Matn o'giruvchi, QR generator, parol generator, hash, Base64, rang va boshqa vositalar butunlay sizning brauzeringizda ishlaydi — kiritgan matningiz, fayllaringiz va parollaringiz serverga yuborilmaydi va saqlanmaydi. Kengaytmadagi o'girish mantig'i tarmoqqa umuman murojaat qilmaydi."
+      },
+      "ipException": {
+        "title": "Bitta istisno: IP ma'lumot vositasi",
+        "body": "O'z IP manzilingizni ko'rsatish uchun tashqi so'rov qilinmaydi — ma'lumot so'rov sarlavhalaridan olinadi. Lekin siz BOSHQA IP manzilni qidirsangiz, o'sha manzil serverimiz orqali ipwho.is yoki freeipapi.com xizmatiga yuboriladi, chunki tarmoq ma'lumotini boshqa yo'l bilan olib bo'lmaydi. Faqat o'sha manzil yuboriladi va natija saqlanmaydi."
+      },
+      "storage": {
+        "title": "Nima saqlanadi",
+        "body": "Kengaytma brauzeringizning lokal xotirasida faqat ikki narsani saqlaydi: tanlagan mavzuingiz (yorug'/qorong'i) va «Tezkor konvertatsiya» yoqilgan-yoqilmaganligi. Bular sizning qurilmangizdan chiqmaydi va kengaytmani o'chirsangiz yo'qoladi."
+      },
+      "permissions": {
+        "title": "Kengaytma ruxsatlari nima uchun",
+        "body": "«Barcha saytlar» ruxsati kerak, chunki kengaytmaning vazifasi — istalgan veb-sahifada siz tanlagan matnni o'girish. U sahifalarni o'qimaydi, kuzatmaydi va hech qayerga yubormaydi; faqat siz tanlagan matn bilan, faqat siz so'raganingizda ishlaydi. Buferga yozish ruxsati «Nusxalash» tugmasi uchun."
+      },
+      "thirdParty": {
+        "title": "Uchinchi tomon xizmatlari",
+        "body": "Kengaytmada hech qanday analitika yoki kuzatuv kodi yo'q. Saytda tashriflar statistikasi uchun Google Analytics va Yandex Metrica ishlatiladi — ular sahifa ko'rishlarini o'lchaydi, vositalarga kiritgan mazmuningizni emas."
+      },
+      "children": {
+        "title": "Bolalar",
+        "body": "Xizmat yosh chegarasi bo'yicha ma'lumot so'ramaydi va umuman shaxsiy ma'lumot yig'maydi."
+      },
+      "changes": {
+        "title": "O'zgarishlar",
+        "body": "Siyosat o'zgarsa, ushbu sahifadagi sana yangilanadi. Ma'lumot yig'ishni boshlash — agar bunday qaror qabul qilinsa — kengaytmaning do'kondagi ma'lumotlar bandida ham aks etadi."
+      },
+      "contact": {
+        "title": "Aloqa",
+        "body": "Savollar bo'yicha: webiston.uz@gmail.com"
+      }
+    }
   }
 }

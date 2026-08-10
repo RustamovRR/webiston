@@ -231,6 +231,7 @@
 <url><loc>https://webiston.uz/books/javascript-definitive-guide/8-functions/summary</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/books/javascript-definitive-guide/preface</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/en/privacy-policy</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/base64-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -251,6 +252,7 @@
 <url><loc>https://webiston.uz/en/tools/uuid-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/icon.svg</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/ru/privacy-policy</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/base64-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>

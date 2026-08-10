@@ -87,7 +87,16 @@ export default async function Footer({ locale }: { locale: string }) {
           <span>
             © {new Date().getFullYear()} Webiston · {t("allRightsReserved")}
           </span>
-          <span>webiston.uz</span>
+          {/* The extension stores fetch this URL to verify the policy exists,
+              and a policy nobody can reach from the site is a policy in name
+              only. `Link` from `@/i18n/navigation` keeps the locale prefix. */}
+          <I18nLink
+            href="/privacy-policy"
+            locale={chromeLinkLocale(locale)}
+            className="transition-colors hover:text-foreground"
+          >
+            {t("privacy")}
+          </I18nLink>
         </div>
       </div>
     </footer>

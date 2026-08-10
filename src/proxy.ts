@@ -36,7 +36,28 @@ export const config = {
      */
     "/(uz|en|ru)/:path*",
 
-    // Enable redirects that add a locale prefix to all tools pages
-    "/tools/:path*"
+    /**
+     * Every UNPREFIXED route that lives under `[locale]`.
+     *
+     * `localePrefix: "as-needed"` means the default locale is served without a
+     * prefix, so `/tools/json-formatter` has to be rewritten to
+     * `/uz/tools/json-formatter` by the middleware. A route missing from this
+     * list is not "unprefixed", it is a **404**: nothing rewrites it and no
+     * file sits at `app/(app)/<route>`.
+     *
+     * That is exactly how `/privacy-policy` shipped broken — the page existed
+     * and prerendered in all three locales, `/uz/privacy-policy` worked, and
+     * the bare URL 404'd. `proxy.test.ts` now derives this list from the
+     * filesystem, so the next route added under `[locale]` fails a test
+     * instead of a visitor.
+     *
+     * A catch-all matcher would remove the problem and is what next-intl
+     * suggests — but `/books/**` sits OUTSIDE `[locale]` on purpose (226
+     * Uzbek-only chapters), and routing it through the locale middleware is
+     * precisely what must not happen. Narrow and enumerated is the price of
+     * that split.
+     */
+    "/tools/:path*",
+    "/privacy-policy"
   ]
 }

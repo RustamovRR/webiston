@@ -1,3 +1,5 @@
+import { readdirSync } from "node:fs"
+import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 import { LOCALES } from "./i18n/locales"
@@ -40,5 +42,39 @@ describe("proxy matcher", () => {
     // routes people arrive at directly from search.
     expect(config.matcher).toContain("/")
     expect(config.matcher).toContain("/tools/:path*")
+  })
+
+  /**
+   * The second silent failure this file exists for.
+   *
+   * `localePrefix: "as-needed"` serves the default locale unprefixed, which
+   * only works because the middleware rewrites `/x` to `/uz/x`. A route under
+   * `[locale]` that nobody added here does not fall back gracefully — it
+   * 404s, while `/uz/x` and `/ru/x` both work, so the build is green, the
+   * prerendered HTML is correct, and only the bare URL is dead. That is what
+   * happened to `/privacy-policy`, and the store submission it exists for
+   * would have failed on a link check.
+   *
+   * Derived from the filesystem rather than restated, so adding a route is
+   * the only thing needed to make this test start guarding it.
+   */
+  it("covers every route directory under [locale]", () => {
+    // Arrange
+    const localeDir = path.join(import.meta.dirname, "app/(app)/[locale]")
+    const routes = readdirSync(localeDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      // Next's private folders are not routed at all.
+      .filter((entry) => !entry.name.startsWith("_"))
+      .map((entry) => entry.name)
+
+    // Act — a rule covers a route if it is the route itself or its subtree.
+    const covered = (route: string) =>
+      config.matcher.some(
+        (rule) => rule === `/${route}` || rule === `/${route}/:path*`
+      )
+
+    // Assert
+    expect(routes.length, "no route directories found").toBeGreaterThan(0)
+    expect(routes.filter((route) => !covered(route))).toEqual([])
   })
 })

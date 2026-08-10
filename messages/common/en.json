@@ -166,6 +166,50 @@
   "Footer": {
     "allRightsReserved": "All rights reserved.",
     "tagline": "Free books on modern web technologies and everyday developer tools — in Uzbek.",
-    "allTools": "All tools"
+    "allTools": "All tools",
+    "privacy": "Privacy"
+  },
+  "PrivacyPage": {
+    "title": "Privacy policy",
+    "updated": "Updated",
+    "intro": "The Webiston site and its browser extensions collect no user data. What that means in practice — and what the single exception is — is set out below.",
+    "sections": {
+      "scope": {
+        "title": "What this covers",
+        "body": "This policy applies to webiston.uz and to the browser extensions published under the Webiston name, including the Latin–Cyrillic Converter."
+      },
+      "data": {
+        "title": "Where your text is processed",
+        "body": "The converter, the QR generator, the password generator, the hash, Base64, colour and other tools run entirely in your browser — the text you enter, your files and your passwords are never sent to a server and never stored. The conversion logic inside the extension makes no network request at all."
+      },
+      "ipException": {
+        "title": "One exception: the IP info tool",
+        "body": "Showing your own IP address requires no outside request — it is read from the request headers. But if you look up a DIFFERENT address, that address is sent through our server to ipwho.is or freeipapi.com, because there is no other way to obtain network data for it. Only that address is sent, and the result is not stored."
+      },
+      "storage": {
+        "title": "What is stored",
+        "body": "The extension keeps exactly two things in your browser's local storage: your theme choice (light or dark) and whether Quick convert is enabled. Neither leaves your device, and both disappear when you remove the extension."
+      },
+      "permissions": {
+        "title": "Why the extension asks for permissions",
+        "body": "The all-sites permission is required because the extension's purpose is to convert text you select on any web page. It does not read, monitor or transmit pages; it acts only on the text you select, only when you ask. The clipboard permission backs the Copy button."
+      },
+      "thirdParty": {
+        "title": "Third-party services",
+        "body": "The extension contains no analytics and no tracking code. The website uses Google Analytics and Yandex Metrica to count visits — they measure page views, not what you type into a tool."
+      },
+      "children": {
+        "title": "Children",
+        "body": "The service does not ask for age information and collects no personal data of any kind."
+      },
+      "changes": {
+        "title": "Changes",
+        "body": "If this policy changes, the date on this page is updated. Any decision to start collecting data would also be reflected in the extension's data-use declaration in each store."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions: webiston.uz@gmail.com"
+      }
+    }
   }
 }
