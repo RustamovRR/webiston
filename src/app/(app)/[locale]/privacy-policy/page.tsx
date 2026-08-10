@@ -88,21 +88,24 @@ export default async function PrivacyPage({
     <div className="mx-auto w-full max-w-[1536px] px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[68ch]">
         <header className="border-border border-b pb-8">
-          {/* `leading-[1.1]` is not a nudge, it is the fix.
-              Tailwind v4 ships `text-5xl` with `--text-5xl--line-height: 1` —
-              a 48px heading whose line box is exactly 48px, so it has ZERO
-              leading and the descenders sit flush against the bottom edge.
-              Any margin below then measures from that edge and reads far
-              smaller than it is, which is why the title looked glued to the
-              paragraph at a nominal 24px gap. */}
-          <h1 className="font-bold text-4xl leading-[1.1] tracking-[-0.03em] sm:text-5xl">
+          {/* The line box has to CONTAIN the font, and 1.1 does not.
+              Measured in the browser: at 48px this face reports an ascent of
+              46 and a descent of 10 — 56px of natural height — so a 52.8px
+              box (leading 1.1) overflows by 3.2px and the descenders of
+              "siyosati" hang into the margin below, eating the gap. Tailwind
+              v4's own default is worse still: `--text-5xl--line-height: 1`,
+              i.e. no leading at all.
+              1.25 clears the tallest of the fallback faces, which matters
+              because the rendered font is NOT the same on every machine —
+              see the note on `--font-sans` in `docs/roadmap/backlog.md`. */}
+          <h1 className="font-bold text-4xl leading-[1.25] tracking-[-0.03em] sm:text-5xl">
             {t("title")}
           </h1>
-          {/* ~0.67x the heading size — the range docs sites settle on for the
-              space under an H1 (Stripe, Vercel, Linear are all 24–36px at
-              this scale). 24px was the bottom of that range measured from a
-              line box with no leading to spare, which is the worst case. */}
-          <p className="mt-8 text-lg text-muted-foreground leading-relaxed">
+          {/* 40px under a 48px heading. The typographic rule is 0.5–0.75x the
+              heading, and this sits at the top of it deliberately: the gap has
+              to read as deliberate on a machine whose system font has taller
+              metrics than the one it was designed on. */}
+          <p className="mt-10 text-lg text-muted-foreground leading-relaxed">
             {t("intro")}
           </p>
           {/* The date closes the header rather than sitting under the title.
