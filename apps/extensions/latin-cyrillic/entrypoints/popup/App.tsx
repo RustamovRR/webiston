@@ -231,13 +231,35 @@ function PanelAction({
 }
 
 /**
+ * The full tool, and the ONLY analytics this extension has.
+ *
+ * The heavy half of the product — file import (.txt/.pdf/.docx), download,
+ * user exceptions, the alphabet table — deliberately lives on the site rather
+ * than in a 380px popup: reviewing a converted .docx here would be miserable,
+ * and a PDF parser would add hundreds of KB to a bundle whose whole appeal is
+ * that it is small.
+ *
+ * The UTM parameters are why there is no tracking code in this extension at
+ * all. Manifest V3's CSP blocks remote scripts, so GA would have to be hand-
+ * rolled over the Measurement Protocol from the service worker — and the
+ * moment it exists, the Chrome Web Store listing has to declare that user
+ * activity is collected, which forfeits the one claim that makes this
+ * extension easy to trust and easy to get reviewed. A tagged link measures
+ * the same thing from the site's own analytics, and costs nothing here.
+ */
+const FULL_TOOL_URL =
+  "https://webiston.uz/tools/latin-cyrillic" +
+  "?utm_source=chrome-extension&utm_medium=popup&utm_campaign=latin-cyrillic"
+
+/**
  * The manifest binds Command+Shift+L on macOS and Ctrl+Shift+L elsewhere
  * (wxt.config.ts) — the footer hint must show the binding THIS machine has,
  * not the Mac one to everyone.
  */
-const SHORTCUT_LABEL = /mac/i.test(navigator.platform)
-  ? "⌘+Shift+L"
-  : "Ctrl+Shift+L"
+const IS_MAC = /mac/i.test(navigator.platform)
+const SHORTCUT_LABEL = IS_MAC ? "⌘+Shift+L" : "Ctrl+Shift+L"
+/** The web tool binds the same pair; the two surfaces must not disagree. */
+const COPY_SHORTCUT_LABEL = IS_MAC ? "⌘+Enter" : "Ctrl+Enter"
 
 export default function App() {
   const [input, setInput] = useState("")
@@ -335,6 +357,26 @@ export default function App() {
   const handleClear = () => {
     setInput("")
     setOutput("")
+  }
+
+  /**
+   * The same two keys the web tool binds, for the same reason it binds them:
+   * the whole interaction is paste → read → copy, and reaching for the mouse
+   * to finish it is the slowest part.
+   *
+   * Scoped to the textareas rather than the document so they cannot fight a
+   * browser shortcut while the popup merely has focus.
+   */
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      event.preventDefault()
+      handleCopy()
+      return
+    }
+    if (event.key === "Escape" && input) {
+      event.preventDefault()
+      handleClear()
+    }
   }
 
   // The captions have to name the alphabets the text is actually going
@@ -462,6 +504,7 @@ export default function App() {
           <textarea
             value={input}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             placeholder="Matn kiriting..."
             className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
@@ -498,19 +541,36 @@ export default function App() {
           <textarea
             value={output}
             readOnly
+            onKeyDown={handleKeyDown}
             placeholder="Natija shu yerda ko'rinadi..."
             className="h-20 w-full resize-none bg-transparent px-3.5 pb-3.5 text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
         </Panel>
       </div>
 
+      {/* The door to the full tool. A plain row, not a promoted card: it is a
+          way out for the minority who need a file, not the thing this popup
+          is for. */}
+      <a
+        href={FULL_TOOL_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between border-border border-t px-5 py-3 text-muted-foreground text-xs transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        <span>Fayl yuklash, istisnolar va yuklab olish</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+
       <footer className="border-border border-t px-5 py-3">
         <p className="text-center text-[11px] text-muted-foreground">
-          Tezkor:{" "}
           <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
             {SHORTCUT_LABEL}
           </kbd>{" "}
-          tanlangan matnni konvertatsiya
+          tanlangan matnni konvertatsiya ·{" "}
+          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+            {COPY_SHORTCUT_LABEL}
+          </kbd>{" "}
+          nusxalash
         </p>
       </footer>
     </div>

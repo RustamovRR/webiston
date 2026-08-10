@@ -2,25 +2,23 @@ import { convertWithPreference } from "@webiston/transliteration"
 
 export default defineBackground(() => {
   // Extension o'rnatilganda yoki yangilanganda context menu yaratish
+  /**
+   * ONE menu item, not three.
+   *
+   * Chrome collapses a single item into the parent row and nests as a submenu
+   * the moment there are two — so three entries bought a submenu the reader
+   * has to open, hover and read before anything happens. DeepL registers one
+   * ("Translate selected text") and that is the whole interaction.
+   *
+   * The three directions have not gone anywhere; they are buttons inside the
+   * panel this opens, where they belong: next to the result they change, with
+   * the current one visibly active. In the menu they were three blind guesses.
+   */
   browser.runtime.onInstalled.addListener(() => {
-    // Avval mavjud menu'larni o'chirish
     browser.contextMenus.removeAll().then(() => {
-      // Context menu yaratish
       browser.contextMenus.create({
         id: "convert-selection",
         title: "Lotin ↔ Kirill konvertatsiya",
-        contexts: ["selection"]
-      })
-
-      browser.contextMenus.create({
-        id: "convert-to-cyrillic",
-        title: "→ Кирилл",
-        contexts: ["selection"]
-      })
-
-      browser.contextMenus.create({
-        id: "convert-to-latin",
-        title: "→ Lotin",
         contexts: ["selection"]
       })
     })
@@ -28,38 +26,22 @@ export default defineBackground(() => {
 
   // Context menu click handler
   browser.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId !== "convert-selection") return
     if (!info.selectionText || !tab?.id) return
 
-    const text = info.selectionText
-    let result: string
-
-    // One policy, shared with the popup, the in-page popover and the web tool.
-    switch (info.menuItemId) {
-      case "convert-selection":
-        result = convertWithPreference(text, "auto").text
-        break
-      case "convert-to-cyrillic":
-        result = convertWithPreference(text, "latin-to-cyrillic").text
-        break
-      case "convert-to-latin":
-        result = convertWithPreference(text, "cyrillic-to-latin").text
-        break
-      default:
-        return
-    }
-
-    // The content script writes the result into the selection when it can and
-    // falls back to the clipboard when it cannot. This listener existed on
-    // the sending side only — content.ts handled CONVERT_SELECTION and
-    // nothing else, so every context-menu click was a no-op.
+    // The BACKGROUND no longer converts. It asks the content script to open
+    // the panel on the live selection, and the panel does the work — one code
+    // path for the badge and the menu, so the two cannot disagree about what
+    // a conversion is. The raw text rides along only as a fallback for the
+    // case where the selection is gone by the time the message lands.
     try {
       await browser.tabs.sendMessage(tab.id, {
-        type: "REPLACE_SELECTION",
-        text: result
+        type: "OPEN_POPOVER",
+        text: info.selectionText
       })
     } catch {
       // No content script on this page (chrome:// pages, the web store).
-      console.warn("Content script unavailable; conversion not delivered")
+      console.warn("Content script unavailable; panel not opened")
     }
   })
 

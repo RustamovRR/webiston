@@ -11,7 +11,11 @@ export default defineConfig({
     include: [
       "src/**/*.test.{ts,tsx}",
       "packages/**/*.test.{ts,tsx}",
-      "packages/**/__tests__/*.{ts,tsx}"
+      "packages/**/__tests__/*.{ts,tsx}",
+      // The extension had no tests at all while being prepared for the Chrome
+      // Web Store. `pnpm typecheck` cannot cover it either (tsconfig.json:27),
+      // so before this line nothing in the repo-wide gate looked at it.
+      "apps/**/*.test.{ts,tsx}"
     ],
     exclude: ["node_modules", ".next", "dist"],
     server: {

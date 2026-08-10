@@ -113,20 +113,20 @@ export default defineContentScript({
     // Selection event
     document.addEventListener("mouseup", handleMouseUp)
     document.addEventListener("mousedown", handleClickOutside)
-    // Capture-phase, so scrolls anywhere on the page close the popover —
-    // EXCEPT scrolls born inside it. Shadow DOM retargets those to the host,
-    // and without the guard scrolling the popover's own textarea killed the
-    // popover mid-read.
-    document.addEventListener(
-      "scroll",
-      (event) => {
-        const host = document.getElementById("webiston-ext-host")
-        if (host && event.target instanceof Node && host.contains(event.target))
-          return
-        cleanup()
-      },
-      true
-    )
+    // Scrolling RE-ANCHORS; it does not dismiss.
+    //
+    // This used to call `cleanup()`, so a single wheel notch destroyed the
+    // panel mid-read — the most common way to lose your work in this
+    // extension. DeepL keeps its panel and lets it travel with the selection,
+    // which is the correct behaviour: a scroll is how you look at the page,
+    // not how you say "cancel".
+    //
+    // Capture phase, because scroll does not bubble from a scrollable
+    // ancestor. Coalesced into one animation frame — a trackpad emits scroll
+    // events far faster than layout can answer, and re-reading a Range's
+    // bounding box per event is what makes a panel stutter.
+    document.addEventListener("scroll", scheduleReanchor, true)
+    window.addEventListener("resize", scheduleReanchor)
     // Escape dismisses whatever is showing, like every other popover.
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && (popover || triggerIcon)) cleanup()
@@ -151,16 +151,22 @@ export default defineContentScript({
           return true
         }
 
-        // background.ts has sent this for every context-menu click since the
-        // menus were added; nothing listened for it, so all three entries
-        // computed a conversion and threw it away. They work now: write into
-        // the selection when it is editable, fall back to the clipboard when
-        // it is not — and SAY which happened. Silent success on a read-only
-        // page is indistinguishable from a broken menu item.
-        if (message.type === "REPLACE_SELECTION" && message.text) {
-          const replaced = replaceSelectionWith(message.text)
-          if (!replaced) navigator.clipboard.writeText(message.text)
-          showToast(replaced ? "Almashtirildi" : "Nusxalandi")
+        // The context menu OPENS THE PANEL. It used to convert silently and
+        // copy, so the menu item produced no visible result — the reader had
+        // no way to know it had worked, could not see the conversion, and
+        // could not change its direction. Clicking the menu and clicking the
+        // trigger badge now do the same thing, which is how DeepL behaves and
+        // the only version a first-time user can understand.
+        if (message.type === "OPEN_POPOVER") {
+          const opened = openPopoverForCurrentSelection()
+          // A right-click can survive the selection being collapsed by the
+          // page. Falling back to the clipboard beats doing nothing at all.
+          if (!opened && message.text) {
+            navigator.clipboard.writeText(
+              convertWithPreference(message.text, "auto").text
+            )
+            showToast("Nusxalandi")
+          }
           sendResponse({ success: true })
           return true
         }
@@ -170,6 +176,75 @@ export default defineContentScript({
     )
   }
 })
+
+/**
+ * Re-read where the selection is now, and move whatever is showing to match.
+ *
+ * The stored `selectionRect` is viewport-relative and was measured once, so it
+ * is wrong the moment anything scrolls. `selectionRange` is a clone that stays
+ * valid as long as its nodes do, which makes it the honest source: ask it for
+ * a fresh box rather than trying to add a scroll delta.
+ *
+ * When the range has been detached — the page re-rendered under us, a common
+ * thing on an app — its box collapses to zero. That is the one case where
+ * dismissing IS right: there is nothing left to anchor to.
+ */
+let reanchorFrame = 0
+
+function scheduleReanchor() {
+  if (!popover && !triggerIcon) return
+  if (reanchorFrame) return
+  reanchorFrame = requestAnimationFrame(() => {
+    reanchorFrame = 0
+    reanchor()
+  })
+}
+
+function reanchor() {
+  if (!selectionRange) return
+
+  const rect = selectionRange.getBoundingClientRect()
+  if (rect.width === 0 && rect.height === 0) {
+    cleanup()
+    return
+  }
+
+  selectionRect = rect
+
+  if (popover) {
+    positionPopover()
+    return
+  }
+
+  if (triggerIcon) {
+    triggerIcon.style.left = `${Math.min(rect.right + 8, window.innerWidth - 44)}px`
+    triggerIcon.style.top = `${Math.max(rect.top + rect.height / 2 - 16, 8)}px`
+  }
+}
+
+/**
+ * Open the panel on whatever is selected right now.
+ *
+ * Shared by the trigger badge and the context menu so the two cannot drift
+ * into behaving differently — which is exactly what had happened.
+ */
+function openPopoverForCurrentSelection(): boolean {
+  const selection = window.getSelection()
+  const text = selection?.toString().trim()
+  if (!text || !selection || selection.rangeCount === 0) return false
+
+  const range = selection.getRangeAt(0)
+  // Read everything BEFORE cleanup, which nulls the module state.
+  const rect = range.getBoundingClientRect()
+  const clone = range.cloneRange()
+
+  cleanup()
+  selectedText = text
+  selectionRect = rect
+  selectionRange = clone
+  showPopoverInPlace(null)
+  return true
+}
 
 function updateTheme(theme: string | undefined) {
   if (theme === "dark") {
@@ -238,7 +313,7 @@ function showTriggerIcon() {
   shadowRoot.appendChild(styles)
 
   triggerIcon = document.createElement("button")
-  triggerIcon.className = "wc-trigger"
+  triggerIcon.className = `wc-trigger ${currentTheme === "dark" ? "dark" : ""}`
   // The badge IS the button. It already carries a plate and an edge, so it
   // reads on a white page and a dark one without a coloured square behind it —
   // which is the same argument `icon.svg` makes for the favicon.
@@ -366,32 +441,46 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     </div>
   `
 
-  positionPopover()
-
   popover.addEventListener("click", handlePopoverClick)
   popover
     .querySelector('[data-type="input"]')
     ?.addEventListener("input", handleInputChange)
 
+  // Append BEFORE positioning: an element outside the document has no
+  // `offsetHeight`, so positioning first meant the flip decision below could
+  // only ever use the hardcoded guess.
   shadowRoot.appendChild(popover)
+  positionPopover()
 }
 
 function positionPopover() {
   if (!popover || !selectionRect) return
 
   const popoverWidth = 380
-  const popoverHeight = 360
+  // Measured, with the old hardcoded 360 kept only as the pre-layout
+  // fallback. The panel is ~444px tall in practice, so a guess 84px short
+  // decided "there is room below" on viewports where there was not, and the
+  // footer buttons ended up under the fold.
+  const popoverHeight = popover.offsetHeight || 360
+  const MARGIN = 16
 
   let left = selectionRect.left + selectionRect.width / 2 - popoverWidth / 2
   let top = selectionRect.bottom + 12
 
-  if (left < 16) left = 16
-  if (left + popoverWidth > window.innerWidth - 16) {
-    left = window.innerWidth - popoverWidth - 16
+  if (left < MARGIN) left = MARGIN
+  if (left + popoverWidth > window.innerWidth - MARGIN) {
+    left = window.innerWidth - popoverWidth - MARGIN
   }
-  if (top + popoverHeight > window.innerHeight - 16) {
+  if (top + popoverHeight > window.innerHeight - MARGIN) {
     top = selectionRect.top - popoverHeight - 12
   }
+  // Flipping above can still land off-screen when the selection sits near the
+  // top, or when the viewport is simply shorter than the panel. Clamp last,
+  // so the panel is always fully reachable rather than half off an edge.
+  top = Math.max(
+    MARGIN,
+    Math.min(top, window.innerHeight - popoverHeight - MARGIN)
+  )
 
   popover.style.left = `${left}px`
   popover.style.top = `${top}px`
@@ -620,6 +709,10 @@ function showToast(message: string) {
 }
 
 function cleanup() {
+  if (reanchorFrame) {
+    cancelAnimationFrame(reanchorFrame)
+    reanchorFrame = 0
+  }
   const host = document.getElementById("webiston-ext-host")
   host?.remove()
   triggerIcon = null
@@ -642,6 +735,22 @@ function escapeHtml(text: string): string {
 // ============================================
 function getStyles(): string {
   return `
+    /* A shadow root inherits NOTHING from the page, including the box-model
+       reset every stylesheet takes for granted. Without this, a textarea at
+       width 100% with 14px of side padding measured 28px WIDER than the panel
+       holding it: the text ran past the panel's right edge and was clipped by
+       the popover's own overflow, which is what "the text is escaping the
+       input" looked like. The height was wrong by the same mechanism — 80px
+       plus 14px of bottom padding is 94px.
+       Safe here in a way it is NOT in the popup's stylesheet: there is no
+       Tailwind in this shadow tree, so there are no layered utilities for an
+       unlayered rule to outrank. */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
     /* CSS Variables — the site's tokens, from the TOKENS table above. */
     :host {
       --base: ${TOKENS.light.base};
@@ -736,7 +845,11 @@ function getStyles(): string {
       animation: wcSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
     }
-    .wc-popover.dark {
+    /* Scoped to .dark alone, NOT to the popover: the trigger badge is a
+       sibling of the popover inside this shadow root, so a selector scoped to
+       the popover left it permanently on the light values. That is why a
+       dark-theme user saw a white badge open a black panel. */
+    .dark {
       --base: ${TOKENS.dark.base};
       --bg: ${TOKENS.dark.bg};
       --fg: ${TOKENS.dark.fg};
