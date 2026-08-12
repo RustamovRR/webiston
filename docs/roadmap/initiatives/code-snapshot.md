@@ -1,8 +1,8 @@
 # Initiative — Code Snapshot (`/tools/code-snapshot`)
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
-execution of an existing spec) · **Status:** `[ ]` not started ·
-**Next:** Phase 0, the font token, because everything downstream depends on it.
+execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
+first item of Phase 2 shipped · **Next:** theme swatches and gradient chips.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -135,9 +135,12 @@ code + lang + theme
         ▼
   layoutSnapshot()      ──►  Layout            (pure — no canvas, no DOM)
         │
-        ├──► paint(ctx, layout, scale = devicePixelRatio)   → what you see
-        └──► paint(ctx, layout, scale = 1 | 2 | 3)          → what you get
+        └──► paint(ctx, layout, scale)   → the preview AND the export,
+                                            one painter, one scale
 ```
+
+A transparent `<textarea>` sits on top of that canvas at the layout's own
+coordinates, so the picture is also the editor — see Phase 2.
 
 **Why not `html2canvas` / `html-to-image`,** which is what most competitors do:
 it re-rasterises the DOM and is famously wrong about webfonts that are not yet
@@ -148,14 +151,16 @@ tokens with their colours; drawing them ourselves removes an entire class of
 Precedent: `QrGenerator/utils/matrix.ts` builds the QR matrix itself rather than
 trusting a library's canvas output, for the same reason.
 
-**Decided 2026-08-11 — the preview is a canvas too, not a DOM render.** The
-first draft of this file had a DOM preview beside a canvas exporter and called
-the drift between them a "risk to mitigate with a test". That is solving a
-problem we can simply not have: one painter, called twice at different scales,
-makes "the preview matches the export" true *by construction* rather than by
-assertion. The price is that the preview is not selectable text — acceptable,
-because the editable surface is the textarea beside it, which is real text and
-carries the accessibility.
+**Decided 2026-08-11 — the preview is a canvas, not a DOM render.** The first
+draft of this file had a DOM preview beside a canvas exporter and called the
+drift between them a "risk to mitigate with a test". That is solving a problem
+we can simply not have: one painter makes "the preview matches the export" true
+*by construction* rather than by assertion.
+
+The stated price was that the preview could not be selectable or editable
+text — and **Phase 2 removed that price** without giving up the painter: the
+textarea moved from beside the canvas to on top of it. What the visitor types
+into and what gets exported are now the same rectangle.
 
 **What makes this testable:** `layoutSnapshot()` takes its text measurements
 through an injected `MeasureText` and returns plain numbers. jsdom ships no
@@ -255,9 +260,28 @@ change advance widths, and **that was measured before committing to it**: in
 JetBrains Mono `w("=>")` as one token is 16.79998779296875 and `w("=") + w(">")`
 is the same to the digit. Monospace keeps the advance, so the caret holds.
 
-- `[ ]` **Editable preview**, sized from `layoutSnapshot` so the DOM and the
-      canvas cannot disagree about dimensions. The left column becomes controls
-      only.
+- `[x]` **Editable preview** — shipped 2026-08-12. A transparent `<textarea>`
+      absolutely positioned at the layout's own `codeX` / first-line `top`,
+      with `lineHeight` in pixels from the same layout. The left column is
+      controls only; the second textarea is gone.
+
+      Verified in the browser rather than assumed:
+
+      | | measured |
+      | --- | --- |
+      | textareas on the page | **1** |
+      | overlay offset vs canvas | x **84**, y **124** — exactly `padding 64 + inset 20` and `+ titlebar 40` |
+      | advance-width drift, DOM vs canvas | **≤ 0.006px** across a 37-character line |
+      | glyphs / caret | `-webkit-text-fill-color: rgba(0,0,0,0)`, `caret-color` = theme foreground |
+
+      Two things the change surfaced. **The editor did not exist before the
+      first paint** — it was gated on `layout`, so a slow grammar download left
+      a box nobody could type into; it now renders immediately and snaps onto
+      the code when the geometry arrives. And **Biome believes a `<canvas>` is
+      both focusable and interactive**: it strips `aria-hidden` on `--write`
+      *silently* and rejects `role="presentation"`. The canvas therefore
+      carries no ARIA at all — which is the behaviour we want anyway — and a
+      test asserts no `img` role is exposed instead of a comment claiming it.
 - `[ ]` **Theme picker as swatches** showing each theme's real background,
       keyword and string colours, read from the loaded theme.
 - `[ ]` **Background presets as gradient chips** — `Yarim tun` means nothing

@@ -2,7 +2,6 @@
 
 import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
-import { Textarea } from "@webiston/ui/primitives/textarea"
 import { Check, Copy, Download, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
@@ -10,7 +9,7 @@ import { useMemo, useState } from "react"
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 
-import { SnapshotPreview, StylePanel } from "./components"
+import { SnapshotEditor, StylePanel } from "./components"
 import {
   type CodeFontId,
   DEFAULT_FONT,
@@ -23,9 +22,11 @@ import { ALL_LANGUAGES } from "./utils/highlight"
 /**
  * Code Snapshot — paste code, get a picture of it.
  *
- * Two columns: the code on the left, the picture on the right. The picture is
- * the answer, so it takes the wider half and stays put while the controls
- * below it scroll — the same reasoning that moved the QR code above the fold.
+ * ONE surface. The picture on the right is also the editor — you type into
+ * the thing you are making, which is what carbon.now.sh, codeimage.dev, ray.so
+ * and snappify all do. The left column is controls only; it used to hold a
+ * plain textarea that nobody looked at after their first paste, and that split
+ * existed for no better reason than a canvas being hard to type into.
  *
  * Fonts arrive as a prop rather than being imported here. `next/font` has to be
  * called from a module the route owns so its `@font-face` rules are scoped to
@@ -77,7 +78,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     scale,
     setScale,
     canvasRef,
-    size,
+    layout,
+    foreground,
     effectiveScale,
     error,
     download,
@@ -126,7 +128,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
       <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
           <ToolCard
-            title={t("input.title")}
+            title={t("style.title")}
             tone="muted"
             actions={
               <Button
@@ -139,17 +141,6 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               </Button>
             }
           >
-            <Textarea
-              value={code}
-              onChange={(event) => setCode(event.target.value)}
-              spellCheck={false}
-              aria-label={t("input.label")}
-              className="h-64 resize-y font-mono text-sm"
-              placeholder={t("input.placeholder")}
-            />
-          </ToolCard>
-
-          <ToolCard title={t("style.title")} tone="muted">
             <StylePanel
               options={options}
               onChange={updateOptions}
@@ -198,18 +189,22 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               </div>
             }
           >
-            <SnapshotPreview
+            <SnapshotEditor
               canvasRef={canvasRef}
-              width={size.width}
-              height={size.height}
-              label={t("preview.label")}
+              layout={layout}
+              code={code}
+              onCodeChange={setCode}
+              fontFamily={fontFamilies[font]}
+              fontSize={options.fontSize}
+              caretColor={foreground}
+              label={t("input.label")}
             />
             <div className="mt-2 space-y-1">
-              {effectiveScale !== null && (
+              {layout && effectiveScale !== null && (
                 <p className="text-muted-foreground text-xs">
                   {t("preview.dimensions", {
-                    width: Math.round(size.width * effectiveScale),
-                    height: Math.round(size.height * effectiveScale)
+                    width: Math.round(layout.width * effectiveScale),
+                    height: Math.round(layout.height * effectiveScale)
                   })}
                 </p>
               )}

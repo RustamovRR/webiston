@@ -33,6 +33,15 @@ export const DOTS_WIDTH =
 /** Traffic-light colours. Brand-illustration exception in `code-rules.md` §11. */
 export const MACOS_DOTS = ["#FF5F57", "#FEBC2E", "#28C840"] as const
 
+/**
+ * What Tab inserts.
+ *
+ * Two spaces, not a tab character: the canvas advances by measured width and
+ * has no tab stops, so a literal \t would draw as one blank of whatever width
+ * the font gives it and the picture would not match any editor.
+ */
+export const INDENT = "  "
+
 /** Opacity applied to lines outside `focusLines`. */
 export const DIMMED_OPACITY = 0.35
 

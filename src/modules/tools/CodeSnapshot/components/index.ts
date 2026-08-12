@@ -1,3 +1,3 @@
 export { SelectField } from "./SelectField"
-export { SnapshotPreview } from "./SnapshotPreview"
+export { SnapshotEditor } from "./SnapshotEditor"
 export { StylePanel } from "./StylePanel"

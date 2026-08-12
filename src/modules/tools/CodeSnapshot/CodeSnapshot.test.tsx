@@ -1,10 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within
-} from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -74,9 +68,15 @@ async function painted(
 /** Every drawn run joined back into one string, for "does it say X" checks. */
 const asText = (texts: DrawnText[]) => texts.map((t) => t.text).join("")
 
+/**
+ * The editor IS the picture: one textarea, overlaid on the canvas.
+ *
+ * The canvas is `aria-hidden` on purpose — it carries no text a screen reader
+ * could use, and the textarea over it holds the accessible name. So it is
+ * queried by element rather than by role; there is no role to query.
+ */
 const codeInput = () => screen.getByRole("textbox", { name: /rasmga/i })
-const preview = () =>
-  screen.getByRole("img", { name: /rasm/i }) as HTMLCanvasElement
+const preview = () => document.querySelector("canvas") as HTMLCanvasElement
 
 /**
  * Radix renders its listbox in a portal, so the options are not inside the
@@ -359,9 +359,19 @@ describe("code snapshot", () => {
     expect(alert.textContent).toBeTruthy()
   }, 20000)
 
-  it("keeps every control reachable by its label", () => {
+  it("offers the editor before the first paint, not after", () => {
+    // Arrange / Act — no `await`: this is the state a visitor is in while a
+    // grammar is still downloading.
+    renderTool()
+
+    // Assert — an empty box you cannot type into is not a loading state.
+    expect(codeInput()).toBeInTheDocument()
+  })
+
+  it("keeps every control reachable by its label", async () => {
     // Arrange / Act
     renderTool()
+    await painted()
 
     // Assert — a canvas is opaque to assistive tech, so the controls beside it
     // carrying real names is the whole accessibility story of this tool.
@@ -377,7 +387,13 @@ describe("code snapshot", () => {
     ]) {
       expect(screen.getByRole("combobox", { name })).toBeInTheDocument()
     }
+    // The picture is not a control, but the surface you type into is — and it
+    // is the same element, so the tool has exactly one focusable editor.
     expect(preview()).toBeInTheDocument()
-    expect(within(preview()).queryByText(/./)).toBeNull()
+    // The canvas exposes no role of its own — the textarea over it is the
+    // named, focusable surface, so there is exactly one editor here and not a
+    // picture competing with it in the accessibility tree.
+    expect(screen.queryByRole("img")).toBeNull()
+    expect(codeInput()).toBeInTheDocument()
   })
 })

@@ -11,7 +11,7 @@ import {
   FALLBACK_BACKGROUND,
   FALLBACK_FOREGROUND
 } from "../constants"
-import type { CodeLine, SnapshotOptions } from "../types"
+import type { CodeLine, Layout, SnapshotOptions } from "../types"
 import { fittingScale } from "../utils/canvas-limits"
 import {
   copySnapshotToClipboard,
@@ -43,8 +43,18 @@ interface UseCodeSnapshot {
   scale: ExportScale
   setScale: (scale: ExportScale) => void
   canvasRef: RefObject<HTMLCanvasElement | null>
-  /** CSS size of the preview, so the page can reserve the right box. */
-  size: { width: number; height: number }
+  /**
+   * The geometry of the picture on screen — null before the first paint.
+   *
+   * The whole `Layout`, not just its size, because the editor overlay has to
+   * sit at `codeX` on the first line's `top` with the layout's own line
+   * height. Handing back a width and a height would make the component
+   * re-derive coordinates the layout already computed, which is exactly how
+   * two sources of truth start.
+   */
+  layout: Layout | null
+  /** The theme's foreground, so the caret belongs to the picture. */
+  foreground: string
   /**
    * The scale actually used, which is not always the one chosen: past the
    * browser's canvas cap the export silently produces nothing, so it is
@@ -80,7 +90,7 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     foreground: FALLBACK_FOREGROUND,
     editorBackground: FALLBACK_BACKGROUND
   })
-  const [size, setSize] = useState({ width: 0, height: 0 })
+  const [layout, setLayout] = useState<Layout | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -163,26 +173,22 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
       .then(() => {
         if (cancelled) return
         const measure = createMeasurer()
-        const layout = layoutSnapshot(lines, options, measure)
+        const next = layoutSnapshot(lines, options, measure)
 
         // Past the browser's per-side canvas cap the picture is silently
         // empty: no throw, no event, and `toBlob` hands back null. Step down
         // to a scale that fits — or, when even 1x does not, stop rather than
         // paint something the visitor cannot download.
-        const usable = fittingScale(layout.width, layout.height, scale)
+        const usable = fittingScale(next.width, next.height, scale)
         setEffectiveScale(usable)
         if (usable === null) {
-          setSize({ width: 0, height: 0 })
+          setLayout(null)
           setError("tooLarge")
           return
         }
 
-        paintSnapshot(canvas, layout, options, colours, usable)
-        setSize((prev) =>
-          prev.width === layout.width && prev.height === layout.height
-            ? prev
-            : { width: layout.width, height: layout.height }
-        )
+        paintSnapshot(canvas, next, options, colours, usable)
+        setLayout(next)
         setError(null)
       })
       // Without this the rejection is unhandled and the preview freezes on
@@ -256,7 +262,8 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     scale,
     setScale,
     canvasRef,
-    size,
+    layout,
+    foreground: colours.foreground,
     effectiveScale,
     error,
     dismissError,
