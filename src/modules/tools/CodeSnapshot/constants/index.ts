@@ -77,6 +77,51 @@ export type ExportScale = (typeof EXPORT_SCALES)[number]
 export const DEFAULT_EXPORT_SCALE: ExportScale = 2
 
 /**
+ * The two formats worth offering, and why the others are not here.
+ *
+ * Measured on a real 1674×2624 export from this tool — a 40-line snippet with
+ * a gradient and a macOS card — by encoding it every way `toBlob` accepts and
+ * decoding each one back to compare with the source pixels:
+ *
+ * | | bytes | pixels changed of 4,392,576 | worst channel delta |
+ * | --- | --- | --- | --- |
+ * | **PNG** | 2,295,644 | **0** | 0 |
+ * | **WebP, quality 1** | **244,422** | 2,184 (0.05%) | **4** |
+ * | WebP, quality 0.92 | 502,592 | 4,243,498 (96.6%) | 167 |
+ * | JPEG, quality 0.92 | 843,905 | 2,847,382 (64.8%) | 249 |
+ *
+ * **WebP at quality 1 is 9.4× smaller than PNG and visually identical** — a
+ * twentieth of one percent of pixels move, by at most 4/255 in one channel.
+ * Chrome switches to its lossless encoder at 1, which is why it beats the
+ * LOWER quality settings on this kind of picture: flat colour and sharp edges
+ * are what lossless compresses well and what lossy destroys.
+ *
+ * **JPEG is not offered.** It has no alpha channel, so the transparent
+ * background would come out black, and it visibly mangles text.
+ *
+ * **AVIF is not offered because the browser cannot make one.**
+ * `canvas.toBlob(cb, "image/avif")` returns a blob of type `image/png` —
+ * measured, not assumed. `toBlob` silently falls back to PNG for any type it
+ * does not encode, which is also why the exporter checks what it got back.
+ */
+export const EXPORT_FORMATS = [
+  { id: "png", mime: "image/png", extension: "png", quality: undefined },
+  { id: "webp", mime: "image/webp", extension: "webp", quality: 1 }
+] as const
+
+export type ExportFormatId = (typeof EXPORT_FORMATS)[number]["id"]
+
+/**
+ * PNG, still.
+ *
+ * WebP is smaller and effectively identical, but PNG is what every tool on
+ * every desktop opens without asking, and a screenshot that will not open is
+ * worth more than nine-tenths of a megabyte. The choice is one click away and
+ * the size difference is stated next to it.
+ */
+export const DEFAULT_EXPORT_FORMAT: ExportFormatId = "png"
+
+/**
  * The four faces, loaded through `next/font/google` on this route only.
  *
  * Each was checked for a `cyrillic` subset against

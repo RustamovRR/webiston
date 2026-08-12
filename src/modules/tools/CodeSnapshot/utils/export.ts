@@ -1,3 +1,9 @@
+import {
+  DEFAULT_EXPORT_FORMAT,
+  EXPORT_FORMATS,
+  type ExportFormatId
+} from "../constants"
+
 /**
  * Getting the picture out of the browser.
  *
@@ -9,17 +15,52 @@
  * failure is something a caller can catch.
  */
 
-/** PNG, because a code snapshot is flat colour and sharp edges. */
-const MIME = "image/png"
+/**
+ * The clipboard is PNG and only PNG.
+ *
+ * `ClipboardItem` is specified around a small set of "mandatory data types",
+ * and `image/png` is the one every engine implements. Writing `image/webp`
+ * throws in Safari and is refused by Firefox, so the format picker deliberately
+ * governs the DOWNLOAD only — copying a picture nobody can paste would be a
+ * worse trade than a larger file.
+ */
+const CLIPBOARD_MIME = "image/png"
 
-function toBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+const formatById = (id: ExportFormatId) =>
+  EXPORT_FORMATS.find((format) => format.id === id) ?? EXPORT_FORMATS[0]
+
+/**
+ * Encode, and verify what actually came back.
+ *
+ * `toBlob` does NOT report an unsupported type — it silently produces a PNG
+ * instead. Measured: `toBlob(cb, "image/avif")` in Chrome hands over a blob of
+ * type `image/png`. Without this check the tool would name that file `.avif`
+ * and hand the visitor something no viewer opens.
+ */
+function encode(
+  canvas: HTMLCanvasElement,
+  id: ExportFormatId
+): Promise<{ blob: Blob; extension: string }> {
+  const format = formatById(id)
+
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      // Null means the browser refused to encode — an over-large canvas is the
-      // usual cause. Rejecting keeps the caller from writing `null` to a file.
-      if (blob) resolve(blob)
-      else reject(new Error("Canvas could not be encoded as PNG"))
-    }, MIME)
+    canvas.toBlob(
+      (blob) => {
+        // Null means the browser refused to encode at all — an over-large
+        // canvas is the usual cause. Rejecting keeps the caller from writing
+        // `null` to a file.
+        if (!blob) {
+          reject(new Error(`Canvas could not be encoded as ${format.mime}`))
+          return
+        }
+        const actual =
+          EXPORT_FORMATS.find((item) => item.mime === blob.type) ??
+          formatById(DEFAULT_EXPORT_FORMAT)
+        resolve({ blob, extension: actual.extension })
+      },
+      format.mime,
+      format.quality
+    )
   })
 }
 
@@ -27,9 +68,11 @@ function toBlob(canvas: HTMLCanvasElement): Promise<Blob> {
  * A filename that says what it is.
  *
  * Falls back to a fixed stem rather than an empty string — `.png` alone is a
- * hidden file on macOS and Linux.
+ * hidden file on macOS and Linux. The extension is supplied by the caller,
+ * which learned it from the blob the browser actually produced rather than
+ * from the one it asked for.
  */
-export function snapshotFileName(title: string): string {
+export function snapshotFileName(title: string, extension = "png"): string {
   const stem = title
     .trim()
     .toLowerCase()
@@ -37,19 +80,20 @@ export function snapshotFileName(title: string): string {
     .replace(/[^a-z0-9]+/gi, "-")
     .replace(/^-+|-+$/g, "")
 
-  return `${stem || "code-snapshot"}.png`
+  return `${stem || "code-snapshot"}.${extension}`
 }
 
 export async function downloadSnapshot(
   canvas: HTMLCanvasElement,
-  fileName: string
+  title: string,
+  formatId: ExportFormatId = DEFAULT_EXPORT_FORMAT
 ): Promise<void> {
-  const blob = await toBlob(canvas)
+  const { blob, extension } = await encode(canvas, formatId)
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
 
   link.href = url
-  link.download = fileName
+  link.download = snapshotFileName(title, extension)
   // Attached before the click, as `QrGenerator/utils/export.ts:77` and three
   // other tools in this repo already do. Firefox has historically ignored a
   // synthetic download click on an anchor that is not in the document, and
@@ -79,6 +123,8 @@ export async function copySnapshotToClipboard(
   }
 
   await navigator.clipboard.write([
-    new ClipboardItem({ [MIME]: toBlob(canvas) })
+    new ClipboardItem({
+      [CLIPBOARD_MIME]: encode(canvas, "png").then(({ blob }) => blob)
+    })
   ])
 }

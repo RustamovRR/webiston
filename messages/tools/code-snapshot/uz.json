@@ -13,6 +13,13 @@
     },
     "style": {
       "title": "Ko'rinish",
+      "presets": "Tayyor uslublar",
+      "presetNames": {
+        "social": "Ijtimoiy tarmoq",
+        "readme": "README uchun",
+        "slide": "Slayd",
+        "minimal": "Minimal"
+      },
       "theme": "Mavzu",
       "themeCount": "{count} ta mavzu",
       "language": "Til",
@@ -54,13 +61,17 @@
       "label": "Kodning tayyor rasmi",
       "scaleLabel": "Rasm o'lchami",
       "dimensions": "{width} × {height} piksel",
-      "scaleReduced": "Bu uzunlikda {wanted}x mumkin emas — {used}x bilan yasaladi."
+      "scaleReduced": "Bu uzunlikda {wanted}x mumkin emas — {used}x bilan yasaladi.",
+      "formatLabel": "Fayl turi",
+      "formatNote": "WebP ~9 barobar kichik, sifati bir xil"
     },
     "actions": {
       "copy": "Nusxalash",
       "copied": "Nusxalandi",
       "download": "Yuklab olish",
-      "reset": "Boshlang'ich holatga qaytarish"
+      "reset": "Boshlang'ich holatga qaytarish",
+      "copyLink": "Havolani nusxalash",
+      "linkCopied": "Havola nusxalandi"
     },
     "errors": {
       "highlight": "Ranglash yuklanmadi. Internetni tekshirib, matnni qayta o'zgartiring.",
@@ -70,7 +81,8 @@
       "format": "Kodni formatlab bo'lmadi — sintaksisda xato bor.",
       "tooBig": "Fayl juda katta — 256 KB gacha bo'lgan fayllar qabul qilinadi.",
       "notText": "Bu matnli fayl emas. Faqat kod fayllarini tashlang.",
-      "unreadable": "Faylni o'qib bo'lmadi."
+      "unreadable": "Faylni o'qib bo'lmadi.",
+      "link": "Havolani nusxalab bo'lmadi."
     }
   }
 }

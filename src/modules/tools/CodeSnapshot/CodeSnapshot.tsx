@@ -2,7 +2,7 @@
 
 import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
-import { Check, Copy, Download, RotateCcw } from "lucide-react"
+import { Check, Copy, Download, Link2, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useMemo, useState } from "react"
 
@@ -12,8 +12,9 @@ import { ToolHeader } from "@/components/shared/ToolHeader"
 import { SnapshotEditor, StylePanel } from "./components"
 import {
   type CodeFontId,
-  DEFAULT_FONT,
+  EXPORT_FORMATS,
   EXPORT_SCALES,
+  type ExportFormatId,
   THEME_PALETTES
 } from "./constants"
 import { useCodeSnapshot } from "./hooks/useCodeSnapshot"
@@ -63,22 +64,27 @@ const POPULAR = [
 
 const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
   const t = useTranslations("CodeSnapshotPage")
-  const [font, setFont] = useState<CodeFontId>(DEFAULT_FONT)
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   const {
     code,
     setCode,
     language,
     setLanguage,
+    font,
+    setFont,
     theme,
     setTheme,
     options,
     updateOptions,
+    applyPreset,
     toggleLineFocus,
     clearLineFocus,
     scale,
     setScale,
+    exportFormat,
+    setExportFormat,
     canvasRef,
     layout,
     foreground,
@@ -93,8 +99,9 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     detected,
     undoDetection,
     dropFile,
+    copyLink,
     reset
-  } = useCodeSnapshot(fontFamilies[font])
+  } = useCodeSnapshot(fontFamilies)
 
   const languages = useMemo(() => {
     const popular = POPULAR.map((id) =>
@@ -112,6 +119,12 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
    * all and the only trace was an unhandled rejection in the console — the
    * exact case this fallback exists for.
    */
+  const handleCopyLink = async () => {
+    if (!(await copyLink())) return
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 1600)
+  }
+
   const handleCopy = async () => {
     if (await copy()) {
       setCopied(true)
@@ -172,6 +185,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               detected={detected}
               onUndoDetection={undoDetection}
               onClearFocus={clearLineFocus}
+              onApplyPreset={applyPreset}
             />
           </ToolCard>
         </div>
@@ -221,17 +235,50 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
                 readout under it is literally the answer to the question the
                 control asks. */}
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <SegmentedControl
-                label={t("preview.scaleLabel")}
-                value={String(scale)}
-                onChange={(value) =>
-                  setScale(Number(value) as (typeof EXPORT_SCALES)[number])
-                }
-                options={EXPORT_SCALES.map((value) => ({
-                  value: String(value),
-                  label: `${value}x`
-                }))}
-              />
+              <div className="flex flex-wrap items-center gap-2">
+                <SegmentedControl
+                  label={t("preview.scaleLabel")}
+                  value={String(scale)}
+                  onChange={(value) =>
+                    setScale(Number(value) as (typeof EXPORT_SCALES)[number])
+                  }
+                  options={EXPORT_SCALES.map((value) => ({
+                    value: String(value),
+                    label: `${value}x`
+                  }))}
+                />
+                {/* PNG or WebP, for the DOWNLOAD only — the clipboard takes
+                  PNG and nothing else in any engine. Measured on a real
+                  1674×2624 export: PNG 2,295,644 bytes against WebP's
+                  244,422, with 0.05% of pixels differing by at most 4/255.
+                  See `constants/index.ts` for the whole table, including why
+                  JPEG and AVIF are absent. */}
+                <SegmentedControl
+                  label={t("preview.formatLabel")}
+                  value={exportFormat}
+                  onChange={(value) => setExportFormat(value as ExportFormatId)}
+                  options={EXPORT_FORMATS.map((format) => ({
+                    value: format.id,
+                    label: format.id.toUpperCase()
+                  }))}
+                />
+                {/* Sharing lives beside the scale, not in the card header:
+                  ToolCard's actions row cannot wrap, and a third button there
+                  is what pushed the page 53px past a 375px viewport before. */}
+                <Button variant="ghost" size="sm" onClick={handleCopyLink}>
+                  {linkCopied ? (
+                    <Check className="size-4" />
+                  ) : (
+                    <Link2 className="size-4" />
+                  )}
+                  {linkCopied ? t("actions.linkCopied") : t("actions.copyLink")}
+                </Button>
+              </div>
+              {exportFormat === "webp" && (
+                <p className="text-muted-foreground text-xs">
+                  {t("preview.formatNote")}
+                </p>
+              )}
               {layout && effectiveScale !== null && (
                 <p className="text-muted-foreground text-xs">
                   {t("preview.dimensions", {

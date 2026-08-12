@@ -3,27 +3,29 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
 
 import {
+  type CodeFontId,
+  DEFAULT_EXPORT_FORMAT,
   DEFAULT_EXPORT_SCALE,
+  DEFAULT_FONT,
   DEFAULT_LANGUAGE,
   DEFAULT_OPTIONS,
   DEFAULT_THEME,
+  type ExportFormatId,
   type ExportScale,
   FALLBACK_BACKGROUND,
   FALLBACK_FOREGROUND
 } from "../constants"
+import { STYLE_PRESETS } from "../constants/presets"
 import type { CodeLine, Layout, SnapshotOptions } from "../types"
 import { fittingScale } from "../utils/canvas-limits"
 import { detectLanguage } from "../utils/detect"
-import {
-  copySnapshotToClipboard,
-  downloadSnapshot,
-  snapshotFileName
-} from "../utils/export"
+import { copySnapshotToClipboard, downloadSnapshot } from "../utils/export"
 import { readDroppedFile } from "../utils/file-drop"
 import { canFormat, formatCode } from "../utils/format"
 import { highlightToLines, resolveLanguage } from "../utils/highlight"
 import { layoutSnapshot } from "../utils/layout"
 import { createMeasurer, paintSnapshot } from "../utils/paint"
+import { decodeSnapshot, encodeSnapshot } from "../utils/share-url"
 
 /**
  * How long the reader may keep typing before we re-tokenise.
@@ -39,15 +41,32 @@ interface UseCodeSnapshot {
   setCode: (code: string) => void
   language: string
   setLanguage: (language: string) => void
+  /**
+   * The chosen face.
+   *
+   * Held HERE rather than in the component because it is part of the shared
+   * state: a link that restores the code, the theme and the padding but not
+   * the font reopens a different picture.
+   */
+  font: CodeFontId
+  setFont: (font: CodeFontId) => void
   theme: string
   setTheme: (theme: string) => void
   options: SnapshotOptions
   updateOptions: (patch: Partial<SnapshotOptions>) => void
+  /** Apply a ready-made look. Never touches the code, language or font. */
+  applyPreset: (id: string) => void
   /** Put a line in or out of the focus set. POSITIONAL, 1-based. */
   toggleLineFocus: (line: number) => void
   clearLineFocus: () => void
   scale: ExportScale
   setScale: (scale: ExportScale) => void
+  /**
+   * The file the DOWNLOAD produces. The clipboard is always PNG — see
+   * `utils/export.ts`; no engine reliably accepts anything else.
+   */
+  exportFormat: ExportFormatId
+  setExportFormat: (format: ExportFormatId) => void
   canvasRef: RefObject<HTMLCanvasElement | null>
   /**
    * The geometry of the picture on screen — null before the first paint.
@@ -91,6 +110,13 @@ interface UseCodeSnapshot {
   undoDetection: () => void
   /** A file dragged onto the editor: its contents, language and name. */
   dropFile: (file: File) => Promise<void>
+  /**
+   * Put a link to this exact picture on the clipboard, and in the address bar.
+   *
+   * False when the clipboard refused — the caller has to say so, because a
+   * share button that silently does nothing is worse than no share button.
+   */
+  copyLink: () => Promise<boolean>
   reset: () => void
 }
 
@@ -100,11 +126,18 @@ const STARTER_CODE = `export function greet(name: string) {
 }
 `
 
-export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
+export function useCodeSnapshot(
+  fontFamilies: Record<CodeFontId, string>
+): UseCodeSnapshot {
   const [code, setCode] = useState(STARTER_CODE)
+  const [font, setFont] = useState<CodeFontId>(DEFAULT_FONT)
+  const fontFamily = fontFamilies[font]
   const [language, setLanguageState] = useState(DEFAULT_LANGUAGE)
   const [theme, setTheme] = useState<string>(DEFAULT_THEME)
   const [scale, setScale] = useState<ExportScale>(DEFAULT_EXPORT_SCALE)
+  const [exportFormat, setExportFormat] = useState<ExportFormatId>(
+    DEFAULT_EXPORT_FORMAT
+  )
   const [options, setOptions] = useState<SnapshotOptions>({
     ...DEFAULT_OPTIONS,
     fontFamily
@@ -233,6 +266,21 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
   }, [])
 
   /**
+   * Apply a ready-made look.
+   *
+   * A patch over the current options rather than a replacement: a preset is a
+   * starting point, and the window title someone typed is not part of the
+   * look. The font is deliberately absent from every preset — see
+   * `constants/presets.ts`.
+   */
+  const applyPreset = useCallback((id: string) => {
+    const preset = STYLE_PRESETS.find((item) => item.id === id)
+    if (!preset) return
+    setTheme(preset.theme)
+    setOptions((current) => ({ ...current, ...preset.patch }))
+  }, [])
+
+  /**
    * Put a line in or out of the focus set.
    *
    * The number is POSITIONAL — first line is 1 — not the number printed in the
@@ -269,13 +317,13 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     const canvas = canvasRef.current
     if (!canvas) return false
     try {
-      await downloadSnapshot(canvas, snapshotFileName(options.title))
+      await downloadSnapshot(canvas, options.title, exportFormat)
       return true
     } catch {
       setError("export")
       return false
     }
-  }, [options.title])
+  }, [options.title, exportFormat])
 
   const copy = useCallback(async () => {
     const canvas = canvasRef.current
@@ -289,6 +337,75 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
   }, [])
 
   const dismissError = useCallback(() => setError(null), [])
+
+  /**
+   * Reopen a shared picture, once, on arrival.
+   *
+   * Read from the HASH: it never reaches the server, so a few thousand
+   * characters of source cannot produce a 414 from an edge nobody can
+   * reproduce locally, and Next's router does not re-render on it.
+   *
+   * A link that does not decode is IGNORED rather than reported. Junk after
+   * the `#` is far more often a stray character in a chat client than a
+   * message worth showing, and the visitor still gets a working tool.
+   */
+  useEffect(() => {
+    const fragment = window.location.hash.slice(1)
+    if (!fragment) return
+
+    let cancelled = false
+    decodeSnapshot(fragment)
+      .then((shared) => {
+        if (!shared || cancelled) return
+        setCode(shared.code)
+        setLanguageState(shared.language)
+        setTheme(shared.theme)
+        setFont(shared.font)
+        setScale(shared.scale)
+        // `fontFamily` is a CSS variable this build generated; it belongs to
+        // the machine, never to the link.
+        setOptions((current) => ({
+          ...shared.options,
+          fontFamily: current.fontFamily
+        }))
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  /**
+   * Build the link, put it on the clipboard, and show it in the address bar.
+   *
+   * Written ON DEMAND, not on every keystroke. A hash that rewrites itself as
+   * you type fills the address bar with noise for a value nobody asked for
+   * yet, and the button has to produce a fresh link anyway.
+   *
+   * `replaceState`, never `pushState`: pressing a copy button is not
+   * navigation, and stacking history entries would turn the back button into
+   * an undo nobody expects.
+   */
+  const copyLink = useCallback(async () => {
+    try {
+      const fragment = await encodeSnapshot({
+        code,
+        language,
+        theme,
+        font,
+        scale,
+        options
+      })
+      const url = `${window.location.origin}${window.location.pathname}#${fragment}`
+      await navigator.clipboard.writeText(url)
+      window.history.replaceState(null, "", `#${fragment}`)
+      return true
+    } catch {
+      setError("link")
+      return false
+    }
+  }, [code, language, theme, font, scale, options])
 
   const [detected, setDetected] = useState<{
     from: string
@@ -410,6 +527,7 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     setLanguageState(DEFAULT_LANGUAGE)
     setTheme(DEFAULT_THEME)
     setScale(DEFAULT_EXPORT_SCALE)
+    setExportFormat(DEFAULT_EXPORT_FORMAT)
     setOptions({ ...DEFAULT_OPTIONS, fontFamily })
   }, [fontFamily])
 
@@ -418,14 +536,19 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     setCode,
     language,
     setLanguage,
+    font,
+    setFont,
     theme,
     setTheme,
     options,
     updateOptions,
+    applyPreset,
     toggleLineFocus,
     clearLineFocus,
     scale,
     setScale,
+    exportFormat,
+    setExportFormat,
     canvasRef,
     layout,
     foreground: colours.foreground,
@@ -441,6 +564,7 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     detected,
     undoDetection,
     dropFile,
+    copyLink,
     reset
   }
 }

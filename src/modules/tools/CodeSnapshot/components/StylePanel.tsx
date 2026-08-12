@@ -14,6 +14,7 @@ import {
   LINE_HEIGHTS,
   PADDINGS
 } from "../constants"
+import { STYLE_PRESETS } from "../constants/presets"
 import type { SnapshotOptions, ThemePalette, WindowFrame } from "../types"
 import { BackgroundPicker } from "./BackgroundPicker"
 import { SelectField } from "./SelectField"
@@ -38,6 +39,7 @@ interface StylePanelProps {
   detected: { from: string; to: string } | null
   onUndoDetection: () => void
   onClearFocus: () => void
+  onApplyPreset: (id: string) => void
 }
 
 const FRAMES: WindowFrame[] = ["macos", "plain", "none"]
@@ -66,7 +68,8 @@ export function StylePanel({
   formatting,
   detected,
   onUndoDetection,
-  onClearFocus
+  onClearFocus,
+  onApplyPreset
 }: StylePanelProps) {
   const t = useTranslations("CodeSnapshotPage.style")
   const titleId = useId()
@@ -88,6 +91,32 @@ export function StylePanel({
 
   return (
     <div className="flex flex-col gap-4">
+      {/* First, because it answers the question a newcomer actually has —
+          "which of these combinations is any good?" — before they meet the
+          grid and the six dropdowns below.
+          Plain text buttons, not swatches: unlike `Yarim tun`, a name like
+          "README uchun" says what it is for, so a chip would add colour
+          without adding meaning. They are buttons, not a radio group: after
+          you change one control the picture is no longer that preset, and a
+          selected state would be lying. */}
+      <fieldset className="min-w-0">
+        <legend className="mb-1.5 text-muted-foreground text-xs">
+          {t("presets")}
+        </legend>
+        <div className="flex flex-wrap gap-2">
+          {STYLE_PRESETS.map((preset) => (
+            <Button
+              key={preset.id}
+              variant="outline"
+              size="sm"
+              onClick={() => onApplyPreset(preset.id)}
+            >
+              {t(`presetNames.${preset.id}`)}
+            </Button>
+          ))}
+        </div>
+      </fieldset>
+
       {/* Theme and background are the two decisions that are made by LOOKING,
           so they get real estate and their own row; everything below is
           refinement and stays in the two-column grid of dropdowns. */}

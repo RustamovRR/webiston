@@ -13,6 +13,13 @@
     },
     "style": {
       "title": "Appearance",
+      "presets": "Ready-made looks",
+      "presetNames": {
+        "social": "Social post",
+        "readme": "For a README",
+        "slide": "Slide",
+        "minimal": "Minimal"
+      },
       "theme": "Theme",
       "themeCount": "{count} themes",
       "language": "Language",
@@ -54,13 +61,17 @@
       "label": "The rendered image of your code",
       "scaleLabel": "Image size",
       "dimensions": "{width} × {height} pixels",
-      "scaleReduced": "{wanted}x is not possible at this length — using {used}x."
+      "scaleReduced": "{wanted}x is not possible at this length — using {used}x.",
+      "formatLabel": "File type",
+      "formatNote": "WebP is ~9× smaller at the same quality"
     },
     "actions": {
       "copy": "Copy",
       "copied": "Copied",
       "download": "Download",
-      "reset": "Reset"
+      "reset": "Reset",
+      "copyLink": "Copy link",
+      "linkCopied": "Link copied"
     },
     "errors": {
       "highlight": "Highlighting failed to load. Check your connection and edit the text again.",
@@ -70,7 +81,8 @@
       "format": "Could not format — the code has a syntax error.",
       "tooBig": "File too large — up to 256 KB is accepted.",
       "notText": "That is not a text file. Drop a source file instead.",
-      "unreadable": "The file could not be read."
+      "unreadable": "The file could not be read.",
+      "link": "The link could not be copied."
     }
   }
 }

@@ -2,8 +2,8 @@
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
 execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
-Phase 2 complete except the ligature toggle · **Next:** Phase 3 — URL state,
-so a link reopens the exact image.
+Phase 2 complete except the ligature toggle; Phase 3 all but done — SVG is
+CUT · **Next:** keyboard shortcuts, surfaced like the extension's footer.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -529,13 +529,120 @@ reading a list. That is the gap to close first, before adding any more options.
 
 ### Phase 3 — `[ ]` Sharing and convenience
 
-- `[ ]` **URL state** — the whole configuration in the query string, so a link
-      reopens the exact image. Carbon has this; ray.so partially.
-- `[ ]` Presets (a few tasteful defaults, not fifty).
-- `[ ]` **SVG export.** Decide first: real `<text>` needs the font embedded as
-      base64 or converted to paths, otherwise it renders with a fallback face on
-      someone else's machine. If that is too costly, drop it — a broken SVG is
-      worse than no SVG.
+- `[x]` **URL state** — shipped 2026-08-12. The whole configuration in a link,
+      so it reopens the exact image.
+
+      **In the HASH, not the query string** — the line above said "query
+      string" and that was wrong. A hash never reaches the server, so no CDN
+      or platform limit applies to it and Next's router does not re-render on
+      it. A few thousand characters of source in a query string is how this
+      ships broken: a 414 from an edge that nobody can reproduce locally.
+
+      **Compressed with the browser's own `CompressionStream`** — zero
+      dependencies. A one-character format marker (`1` packed, `0` plain)
+      means an engine without it still writes a link every other browser can
+      read.
+
+      Measured in the browser on the running page:
+
+      | pasted | link |
+      | --- | --- |
+      | 24 chars | 219 |
+      | 1,849 chars (40 lines) | **610** — 0.33× |
+      | 13,379 chars (200 lines) | **1,695** — 0.13× |
+
+      A 200-line file becomes a 1.7 KB link. `encodeURIComponent` of the same
+      JSON is 2× larger on a short snippet and far worse on a long one, since
+      URL escaping inflates exactly the characters source code is made of.
+
+      Written **on demand**, not on every keystroke: a hash that rewrites
+      itself as you type fills the address bar with noise for a value nobody
+      asked for yet. `replaceState`, never `pushState` — pressing a copy
+      button is not navigation.
+
+      **A link is untrusted input**, and that is where most of the code went.
+      Every field is checked against the set the UI itself offers: a
+      `fontSize` of 40,000 asks for a canvas the browser refuses to allocate,
+      and a `focusLines` of `["x"]` breaks the layout's `Set` arithmetic in a
+      way nobody would trace back to a URL. Eight tests cover junk, missing
+      code, out-of-range numbers, unknown enums, a 500 KB payload and an
+      unbounded title.
+
+      `font` moved from the component into the hook while doing this — it is
+      shared state, and a link that restores the code and the theme but not
+      the face reopens a different picture.
+
+      A flake surfaced and was fixed rather than re-run: the restore test
+      waits on a grammar download, a font load AND several settling paints, so
+      under the full suite's parallel load it was the first to exhaust a 5s
+      budget. It failed twice in a full run and passed alone; its budget is
+      now 15s and says why.
+- `[x]` **Presets** — shipped 2026-08-12. Four, named for where the picture is
+      going: *Ijtimoiy tarmoq*, *README uchun*, *Slayd*, *Minimal*.
+
+      They answer the question a newcomer actually has — "which of these
+      combinations is any good?" — before they meet a 65-swatch grid and six
+      dropdowns.
+
+      **Named for the destination, not the mood**, and that is why they are
+      plain text buttons rather than swatches. `Yarim tun` had to become a
+      gradient chip because the word means nothing; `README uchun` says what
+      it is for, so a chip would add colour without adding meaning.
+
+      **Buttons, not a radio group.** Change one control afterwards and the
+      picture is no longer that preset; a selected state would be lying.
+
+      **They do not set the font.** Theme, background, frame, padding and size
+      are properties of the OUTPUT. The face is a preference someone already
+      expressed, and overwriting it is the one thing a preset has no business
+      doing — pinned by its own test and by a mutation.
+
+      Verified in the browser: *Slayd* took the canvas from 918×304 to
+      **1946×1016** and painted the corner `rgb(30,41,59)` — `#1e293b`
+      exactly; *Minimal* produced **alpha 0** at both the corner and the
+      centre, i.e. a genuinely transparent PNG with no card at all.
+- `[x]` **Export format: PNG or WebP** — shipped 2026-08-12, and it answers
+      the SVG question by replacing it.
+
+      Measured on a real 1674×2624 export from this tool, by encoding it every
+      way `toBlob` accepts and decoding each back to compare with the source:
+
+      | | bytes | pixels changed of 4,392,576 | worst channel delta |
+      | --- | --- | --- | --- |
+      | **PNG** | 2,295,644 | **0** | 0 |
+      | **WebP, quality 1** | **244,422** | 2,184 (0.05%) | **4** |
+      | WebP, quality 0.92 | 502,592 | 4,243,498 (96.6%) | 167 |
+      | JPEG, quality 0.92 | 843,905 | 2,847,382 (64.8%) | 249 |
+
+      **WebP at quality 1 is 9.4× smaller and visually identical.** Chrome
+      switches to its LOSSLESS encoder at 1, which is why it beats the lower
+      quality settings on this content — flat colour and sharp edges are
+      exactly what lossless compresses well and lossy destroys.
+
+      JPEG is absent: no alpha, so a transparent background comes out black,
+      and it visibly mangles text. **AVIF is absent because the browser cannot
+      make one** — `toBlob(cb, "image/avif")` returns a blob of type
+      `image/png`, measured rather than assumed. That silent fallback is also
+      why the exporter names the file after the blob it GOT, not the one it
+      asked for; a mutation proved that check was untested and it now has two.
+
+      **The clipboard stays PNG regardless.** `ClipboardItem` is specified
+      around a small set of mandatory types and `image/png` is the one every
+      engine implements — a WebP on the clipboard is a picture nobody can
+      paste.
+
+      PNG remains the default: it opens everywhere without asking, and the
+      choice is one click away with the size difference stated beside it.
+      Verified in the browser on the starter snippet — PNG **367,269 B** →
+      `code-snapshot.png`, WebP **62,954 B** → `code-snapshot.webp`.
+
+- `[!]` **SVG export — CUT.** The whole point of SVG is that the text stays
+      text. Without the font embedded as base64 it renders with a fallback face
+      on someone else's machine, which breaks the one principle this tool is
+      built on: *the preview IS the export*. Embedding four faces with Latin
+      **and** Cyrillic adds ~100–200 KB to every file — bigger than the PNG it
+      replaces, for less. This file already said "a broken SVG is worse than no
+      SVG"; WebP delivers the size win SVG was wanted for, losslessly.
 - `[ ]` Keyboard shortcuts, matching the extension's `⌘/Ctrl+Enter` idiom.
 
 ### Phase 4 — `[ ]` Polish
@@ -567,5 +674,4 @@ becomes a three-month project instead of a shipped tool.
 
 ## Still open
 
-1. **SVG export** — worth the font-embedding cost, or cut it?
-2. **Watermark default** — off is friendlier, on is free distribution.
+1. **Watermark default** — off is friendlier, on is free distribution.

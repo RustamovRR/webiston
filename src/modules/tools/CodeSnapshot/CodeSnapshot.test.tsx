@@ -54,14 +54,15 @@ function renderTool() {
  * the reset test "passed" a state it had not actually reached.
  */
 async function painted(
-  predicate: (texts: DrawnText[]) => boolean = () => true
+  predicate: (texts: DrawnText[]) => boolean = () => true,
+  timeout = 5000
 ) {
   await waitFor(
     () => {
       expect(canvas.latest().length).toBeGreaterThan(0)
       expect(predicate(canvas.latest())).toBe(true)
     },
-    { timeout: 5000 }
+    { timeout }
   )
   return canvas.latest()
 }
@@ -184,6 +185,12 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+  // jsdom keeps one document for the whole file, so a hash set by a share
+  // test would reopen that picture in every test after it — including the
+  // ones that assert the STARTER snippet is on screen. Cleared here rather
+  // than at the end of each test body, which a failing assertion skips.
+  window.location.hash = ""
 })
 
 describe("code snapshot", () => {
@@ -886,6 +893,193 @@ describe("code snapshot", () => {
     ).toBeNull()
   })
 
+  /**
+   * A link has to reopen the PICTURE, not merely the code.
+   *
+   * The failure this exists for is a restore that sets some state and misses
+   * the rest — the snippet comes back under the default theme, or at the
+   * default size, and the person who was sent it sees something the sender
+   * never made.
+   */
+  it("reopens a shared link with every setting it carried", async () => {
+    // Arrange — a hand-written fragment in the uncompressed format, so the
+    // test does not depend on `CompressionStream` being present in jsdom.
+    window.location.hash = `#0${encodeURIComponent(
+      JSON.stringify({
+        c: "const shared = true",
+        l: "javascript",
+        t: "dracula",
+        f: "geist-mono",
+        s: 24,
+        n: true,
+        ti: "shared.js"
+      })
+    )}`
+
+    // Act — wait for a pass that carries ALL of it. The settings do not
+    // arrive in one paint: the code lands as soon as the grammar resolves,
+    // while the font only reaches the canvas after `document.fonts` settles,
+    // so asserting them against the first matching frame is a race.
+    renderTool()
+    const drawn = await painted(
+      (t) =>
+        asText(t).includes("shared") &&
+        t.some((x) => x.font.includes(FONTS["geist-mono"])) &&
+        t.some((x) => x.text === "shared.js") &&
+        t.some((x) => x.text === "1"),
+      // Longer than the default on purpose: this one waits on a grammar
+      // download, a font load AND several settling paints, so under the full
+      // suite's parallel load it is the first to run out of a 5s budget.
+      // Twice failed that way in a full run and passed alone.
+      15000
+    )
+
+    // Assert — the code, the font, the size, the title and the gutter all
+    // came back, and they came back IN THE PICTURE.
+    expect(asText(drawn)).toContain("shared")
+    expect(drawn.some((t) => t.font.includes(FONTS["geist-mono"]))).toBe(true)
+    expect(drawn.some((t) => t.font.includes("24px"))).toBe(true)
+    expect(drawn.some((t) => t.text === "shared.js")).toBe(true)
+    expect(drawn.some((t) => t.text === "1")).toBe(true)
+    expect(screen.getByRole("combobox", { name: /Til/i }).textContent).toMatch(
+      /JavaScript/i
+    )
+  })
+
+  it("ignores a broken link instead of blanking the tool", async () => {
+    // Arrange — junk after a `#` is far more often a chat client mangling a
+    // URL than a message worth showing.
+    window.location.hash = "#not-a-real-fragment"
+
+    // Act
+    renderTool()
+
+    // Assert — the starter snippet, exactly as if there were no hash at all.
+    const drawn = await painted((t) => asText(t).includes("greet"))
+    expect(asText(drawn)).toContain("greet")
+    expect(screen.queryByRole("alert")).toBeNull()
+  })
+
+  /**
+   * A preset has to move the PICTURE, and move all of it.
+   *
+   * The failure worth catching is one that sets the theme and forgets the
+   * padding, or vice versa — the visitor presses "Slayd" and gets something
+   * that is neither the old look nor the new one.
+   */
+  it("applies a whole look when a preset is pressed", async () => {
+    // Arrange
+    renderTool()
+    const before = await painted()
+    expect(before.every((t) => t.font.includes("14px"))).toBe(true)
+
+    // Act — "Slayd" is 24px on a solid slate sheet with a macOS frame.
+    fireEvent.click(screen.getByRole("button", { name: /^Slayd$/ }))
+
+    // Assert — the size reached the canvas, and so did the background.
+    const after = await painted((t) => t.some((x) => x.font.includes("24px")))
+    expect(after.every((t) => t.font.includes("24px"))).toBe(true)
+    expect(
+      canvas.fills.some((fill) => fill.x === 0 && fill.fillStyle === "#1e293b")
+    ).toBe(true)
+  })
+
+  it("leaves the code, the language and the font alone", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    await chooseOption(/^Shrift$/i, /Geist Mono/i)
+    await painted((t) => t.some((x) => x.font.includes(FONTS["geist-mono"])))
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /^Minimal$/ }))
+
+    // Assert — a preset decides where the picture is GOING, not what is in it
+    // or which face someone already chose. Overwriting the font is the one
+    // thing a preset has no business doing.
+    const after = await painted((t) => asText(t).includes("greet"))
+    expect(after.every((t) => t.font.includes(FONTS["geist-mono"]))).toBe(true)
+    expect(screen.getByRole("combobox", { name: /Til/i }).textContent).toMatch(
+      /TypeScript/i
+    )
+  })
+
+  /**
+   * The format picker governs the DOWNLOAD, and the file has to match.
+   *
+   * The wiring bug worth catching: a picker that changes state and a
+   * `toBlob` still asked for PNG — the visitor picks WebP, gets a 2 MB file
+   * named `.webp` that is really a PNG, and nothing anywhere says so.
+   */
+  it("asks the encoder for the format that was chosen", async () => {
+    // Arrange — record what `toBlob` is asked for. jsdom cannot encode, so
+    // the request itself is the observable.
+    const asked: (string | undefined)[] = []
+    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(((
+      callback: BlobCallback,
+      type?: string
+    ) => {
+      asked.push(type)
+      callback(new Blob(["x"], { type: type ?? "image/png" }))
+    }) as typeof HTMLCanvasElement.prototype.toBlob)
+    renderTool()
+    await painted()
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: "WEBP" }))
+    fireEvent.click(screen.getByRole("button", { name: /^Yuklab olish$/ }))
+
+    // Assert
+    await waitFor(() => {
+      expect(asked).toContain("image/webp")
+    })
+  })
+
+  it("copies to the clipboard as PNG whatever the download format is", async () => {
+    // Arrange — a working clipboard has to be supplied. jsdom has neither
+    // `ClipboardItem` nor `clipboard.write`, so without this the copy button
+    // reports failure and the component falls back to a DOWNLOAD, which
+    // correctly uses the chosen format — and the test would then be watching
+    // the fallback while claiming to watch the clipboard.
+    const written: Record<string, unknown>[] = []
+    vi.stubGlobal(
+      "ClipboardItem",
+      class {
+        constructor(public items: Record<string, unknown>) {
+          written.push(items)
+        }
+      }
+    )
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { write: async () => {} }
+    })
+
+    const asked: (string | undefined)[] = []
+    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(((
+      callback: BlobCallback,
+      type?: string
+    ) => {
+      asked.push(type)
+      callback(new Blob(["x"], { type: type ?? "image/png" }))
+    }) as typeof HTMLCanvasElement.prototype.toBlob)
+    renderTool()
+    await painted()
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: "WEBP" }))
+    fireEvent.click(screen.getByRole("button", { name: /^Nusxalash$/ }))
+
+    // Assert — `ClipboardItem` is specified around a small set of mandatory
+    // types and `image/png` is the one every engine implements. A WebP on the
+    // clipboard is a picture nobody can paste.
+    await waitFor(() => {
+      expect(written.some((item) => "image/png" in item)).toBe(true)
+    })
+    expect(asked).toContain("image/png")
+    expect(asked).not.toContain("image/webp")
+  })
+
   it("offers the editor before the first paint, not after", () => {
     // Arrange / Act — no `await`: this is the state a visitor is in while a
     // grammar is still downloading.
@@ -918,6 +1112,19 @@ describe("code snapshot", () => {
     for (const name of [/Mavzu/i, /Fon/i]) {
       expect(screen.getByRole("group", { name })).toBeInTheDocument()
     }
+    // Every action carries a real, translated name. Queried by the Uzbek
+    // text on purpose: a missing key renders as the literal
+    // "CodeSnapshotPage.actions.copyLink", which this query would not find.
+    // Anchored: "Nusxalash" is also a substring of "Havolani nusxalash", and
+    // an unanchored regex matches both and throws on the ambiguity.
+    for (const action of [
+      /^Nusxalash$/,
+      /^Yuklab olish$/,
+      /^Havolani nusxalash$/
+    ]) {
+      expect(screen.getByRole("button", { name: action })).toBeInTheDocument()
+    }
+
     // The picture is not a control, but the surface you type into is — and it
     // is the same element, so the tool has exactly one focusable editor.
     expect(preview()).toBeInTheDocument()

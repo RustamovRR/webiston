@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { snapshotFileName } from "./export"
+import { downloadSnapshot, snapshotFileName } from "./export"
 
 describe("snapshotFileName", () => {
   it("slugifies the window title", () => {
@@ -36,11 +36,84 @@ describe("snapshotFileName", () => {
     expect(snapshotFileName("***")).toBe("code-snapshot.png")
   })
 
+  /**
+   * The extension is whatever the browser ACTUALLY produced, not what was
+   * asked for. `toBlob` silently falls back to PNG for a type it cannot
+   * encode — measured: `toBlob(cb, "image/avif")` hands back `image/png` —
+   * so a name built from the request would promise a file no viewer opens.
+   */
+  it("takes the extension it is given", () => {
+    // Arrange / Act / Assert
+    expect(snapshotFileName("App.tsx", "webp")).toBe("app.webp")
+    expect(snapshotFileName("", "webp")).toBe("code-snapshot.webp")
+  })
+
   it("does not produce a name that starts with a dot", () => {
     // Arrange
-    const names = ["", "***", "  ", ".ts", "..."].map(snapshotFileName)
+    // A lambda, not a bare reference: `map` passes the INDEX as the second
+    // argument, which `snapshotFileName` now reads as the extension.
+    const names = ["", "***", "  ", ".ts", "..."].map((title) =>
+      snapshotFileName(title)
+    )
 
     // Act / Assert
     for (const name of names) expect(name.startsWith(".")).toBe(false)
+  })
+})
+
+/**
+ * `toBlob` does not report an unsupported type — it silently encodes a PNG
+ * instead. Measured in Chrome: `toBlob(cb, "image/avif")` hands back a blob of
+ * type `image/png`. A filename built from what was ASKED for would then
+ * promise a `.webp` that no viewer opens, and nothing anywhere would say so.
+ */
+describe("downloadSnapshot names the file after what it got back", () => {
+  function captureDownload(producedType: string) {
+    const names: string[] = []
+    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(((
+      callback: BlobCallback
+    ) => {
+      callback(new Blob(["x"], { type: producedType }))
+    }) as typeof HTMLCanvasElement.prototype.toBlob)
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement
+    ) {
+      names.push(this.download)
+    })
+    vi.stubGlobal("URL", {
+      ...URL,
+      createObjectURL: () => "blob:test",
+      revokeObjectURL: () => {}
+    })
+    vi.stubGlobal("requestAnimationFrame", () => 0)
+    return names
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
+  it("uses .webp when the browser really produced WebP", async () => {
+    // Arrange
+    const names = captureDownload("image/webp")
+
+    // Act
+    await downloadSnapshot(document.createElement("canvas"), "App.tsx", "webp")
+
+    // Assert
+    expect(names).toEqual(["app.webp"])
+  })
+
+  it("uses .png when the browser quietly fell back to PNG", async () => {
+    // Arrange — asked for WebP, given a PNG. This is the exact behaviour
+    // AVIF exhibits today, and any engine may do it for WebP tomorrow.
+    const names = captureDownload("image/png")
+
+    // Act
+    await downloadSnapshot(document.createElement("canvas"), "App.tsx", "webp")
+
+    // Assert — the extension follows the FILE, not the request.
+    expect(names).toEqual(["app.png"])
   })
 })
