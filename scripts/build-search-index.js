@@ -2,27 +2,151 @@ const fs = require("node:fs")
 const path = require("node:path")
 const matter = require("gray-matter")
 
+/**
+ * One search document per tool.
+ *
+ * This function replaces a comment. The index shipped with `// Add all other
+ * tools...` where the tools were meant to go, so of 1,078 documents exactly ONE
+ * concerned the tools — the `/tools` directory page — and none of the 21 tools
+ * themselves. Measured against the live index: ⌘K on "parol", "uuid", "jwt" or
+ * "kod rasm" returned **nothing**, and "lotin" returned four book chapters.
+ * The fastest path a returning visitor has to a tool did not reach any tool.
+ *
+ * (There IS a hand-written list of a few tools inside
+ * `src/lib/search/flexsearch.ts`, but it is the FALLBACK for a failed fetch of
+ * this file, so it never runs in practice. Left alone — it is not this
+ * script's to delete — but it is now duplicated data and will drift.)
+ *
+ * Everything here is derived, never re-typed:
+ *
+ * - **which tools exist** — `tools-list.json`, generated from the route folders
+ *   by `update-tools-list.js` in the same `postbuild` step, so a parked or
+ *   deleted route cannot leave a dead search hit behind;
+ * - **what they are called** — the `Tools` namespace the cards already use.
+ *
+ * The `keywords` string in that namespace is already trilingual ("Base64
+ * decoder, кодировщик Base64, …"), so folding it into `tags` makes a Russian or
+ * English query find the tool for free, without translating the index itself.
+ */
+function buildToolDocuments() {
+  const listPath = path.join(process.cwd(), "tools-list.json")
+  const messagesPath = path.join(
+    process.cwd(),
+    "messages",
+    "tools",
+    "tools-page"
+  )
+
+  if (!fs.existsSync(listPath)) {
+    console.warn("⚠️  tools-list.json missing — no tools indexed")
+    return []
+  }
+
+  const slugs = JSON.parse(fs.readFileSync(listPath, "utf8"))
+  const locales = ["uz", "en", "ru"]
+  const byLocale = {}
+  for (const locale of locales) {
+    const file = path.join(messagesPath, `${locale}.json`)
+    byLocale[locale] = fs.existsSync(file)
+      ? (JSON.parse(fs.readFileSync(file, "utf8")).Tools ?? {})
+      : {}
+  }
+
+  // `latin-cyrillic` -> `latinCyrillic`, the key the cards are already stored
+  // under. Derived rather than mapped by hand so a new tool needs no edit here.
+  const toKey = (slug) =>
+    slug.replace(/-([a-z0-9])/g, (_, char) => char.toUpperCase())
+
+  /**
+   * The tool's own SEO keywords, read back out of its prerendered page.
+   *
+   * Only two of the twenty-two `Tools` entries carry a `keywords` string, but
+   * every tool module already maintains a rich trilingual list in its
+   * `seo/keywords.ts` — that is what `<meta name="keywords">` is built from.
+   * This script runs in `postbuild`, after `next build`, so those pages are on
+   * disk: reading them back means the search index and the SEO metadata cannot
+   * disagree, and neither list has to be typed twice.
+   *
+   * Absent (a standalone run with no build) it simply returns nothing and the
+   * tool stays findable by its title and description.
+   */
+  const keywordsFromBuild = (slug) => {
+    const page = path.join(
+      process.cwd(),
+      ".next",
+      "server",
+      "app",
+      "uz",
+      "tools",
+      `${slug}.html`
+    )
+    if (!fs.existsSync(page)) return []
+    const html = fs.readFileSync(page, "utf8")
+    const meta = html.match(/<meta name="keywords" content="([^"]*)"/)
+    if (!meta) return []
+    return meta[1]
+      .replace(/&#x27;|&apos;/g, "'")
+      .replace(/&amp;/g, "&")
+      .split(",")
+      .map((term) => term.trim().toLowerCase())
+      .filter(Boolean)
+  }
+
+  const documents = []
+  for (const slug of slugs) {
+    const key = toKey(slug)
+    const uz = byLocale.uz[key]
+    if (!uz) {
+      // Loud, not silent: a routed tool with no card copy is a tool nobody can
+      // search for, which is the exact defect this function exists to end.
+      console.warn(`⚠️  no "Tools.${key}" copy for /tools/${slug} — not indexed`)
+      continue
+    }
+
+    const tags = new Set([slug, "tools", ...keywordsFromBuild(slug)])
+    for (const locale of locales) {
+      const entry = byLocale[locale][key]
+      if (!entry) continue
+      for (const term of String(entry.keywords ?? "").split(",")) {
+        const trimmed = term.trim().toLowerCase()
+        if (trimmed) tags.add(trimmed)
+      }
+      // The English and Russian NAMES matter as much as the keywords: someone
+      // typing "Color Converter" on the Uzbek site should still land on it.
+      if (locale !== "uz" && entry.title) tags.add(entry.title.toLowerCase())
+    }
+
+    documents.push({
+      id: `tool-${slug}`,
+      title: uz.title,
+      content: uz.description ?? "",
+      url: `/tools/${slug}`,
+      category: "tools",
+      tags: [...tags]
+    })
+  }
+
+  console.log(`   ${documents.length} of ${slugs.length} tools indexed`)
+  return documents
+}
+
 // Build search index at build time
 async function buildSearchIndex() {
   console.log("🔍 Building search index...")
 
   const documents = []
 
-  // Add tools
-  const toolsPages = [
-    {
-      id: "tools",
-      title: "Onlayn Vositalar",
-      content:
-        "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali onlayn vositalar to'plami",
-      url: "/tools",
-      category: "tools",
-      tags: ["tools", "utilities", "json", "url", "base64", "qr", "password"]
-    }
-    // Add all other tools...
-  ]
+  documents.push({
+    id: "tools",
+    title: "Onlayn Vositalar",
+    content:
+      "JSON formatter, URL encoder, Base64 converter, QR generator, Password generator va boshqa foydali onlayn vositalar to'plami",
+    url: "/tools",
+    category: "tools",
+    tags: ["tools", "utilities", "json", "url", "base64", "qr", "password"]
+  })
 
-  documents.push(...toolsPages)
+  documents.push(...buildToolDocuments())
 
   // Process MDX files
   const booksDir = path.join(process.cwd(), "content")
