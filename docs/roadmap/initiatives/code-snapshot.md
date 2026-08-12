@@ -741,6 +741,106 @@ NOT held while typing, and the swatch radios keep their geometry.
 
 ---
 
+## Phase 3c — `[x]` Live typing, and the structure review (2026-08-12)
+
+The owner reported a third thing and asked for a senior review of the module in
+the same breath: *"tez-tez yozsam cursorning o'zi bo'm-bo'sh yuryapti, kod
+ko'ringani yo'q"* — type quickly and the caret travels across an empty line;
+the text only appears once you stop.
+
+### The typing lag was a debounce that could never fire
+
+Measured on the running page before changing anything: **17 keystrokes at 40ms
+apart produced 0 paints.** Not a slow path — no path at all.
+
+Three things stacked, and the first is the whole bug:
+
+| where | what it did |
+| --- | --- |
+| `useCodeSnapshot.ts:277` | a **pure trailing debounce**: every keystroke cleared the pending timer, so steady typing never let it fire |
+| `useCodeSnapshot.ts:345` | every paint re-awaited `document.fonts.load()` ×3 + `ready`, adding a turn of the event loop *after* the timer |
+| `SnapshotEditor.tsx:379` | the textarea's glyphs are transparent, so "the canvas is stale" reads as "my text is invisible" |
+
+**Nothing on that path is async by nature.** `codeToTokens` is synchronous;
+only the engine, the theme and the grammar are fetched, once each. So
+`highlightSync()` tokenises in the caller's own task when all three are in
+memory and returns `null` when they are not, `document.fonts.check()` replaces
+the re-await, and both effects became LAYOUT effects so the whole chain —
+tokenise → `setState` → re-render → paint — lands in the frame the keystroke
+arrived in.
+
+Measured after: **21 keystrokes → 21 paints, every one inside its own task,
+median 2.8ms, worst 7.3ms** — against a 16.7ms frame. The last paint's drawn
+text contains the typed word, so it is the new picture and not merely a
+repaint.
+
+**The size gate is measured, not chosen.** Tokenise + paint by document size:
+40 lines 4.3ms · 200 lines 14.7ms · 800 lines 31.6ms · 2000 lines 60.6ms. A
+frame is 16.7ms, so `LIVE_HIGHLIGHT_MAX_CHARS` is 7,000. Past it the deferred
+path takes over — but as a **debounce with a ceiling**
+(`LIVE_REFRESH_INTERVAL`, 250ms), never the plain trailing one, because the
+plain one is the defect. The arithmetic lives in `utils/schedule.ts` and is
+unit-tested: a background tab clamps every timer to a second, so a browser
+cannot pin this down.
+
+### A fourth defect, found while verifying the third
+
+The fitted box carried `transition-[width,height] duration-200` — and the
+canvas it CLIPS has no transition at all: `paintSnapshot` writes the CSS size
+outright. So the picture snapped to its new width while the clip eased towards
+it, and everything between was cut off. Invisible at one repaint every 120ms;
+**a character vanishing for a fifth of a second** once typing became live.
+Easing a clip whose contents do not ease is hiding, not smoothing. Removed —
+the cross-fade is what softens a change.
+
+### The structure review
+
+`useCodeSnapshot.ts` was **693 lines, 2.3× the 300-line ceiling** in
+`code-rules.md` §7, and doing five jobs. Split into five hooks behind the same
+public interface — the 157 existing tests passed unchanged, which is what made
+the split safe to do at all:
+
+| hook | lines | question it answers |
+| --- | --- | --- |
+| `useSnapshotSettings` | 195 | what has the visitor chosen? |
+| `useSnapshotTokens` | 156 | what colour is each run of code? |
+| `useSnapshotPainter` | 222 | where does it go on the canvas? |
+| `useSnapshotSource` | 174 | where did this code come from? |
+| `useSnapshotSharing` | 134 | how does the picture leave the page? |
+| `useCodeSnapshot` | 202 | composition root, owns only the error slot |
+
+Also: `SnapshotEditor` 388 → 318 (`FocusGutter` + `useFitToBox` extracted),
+and `detect.ts` **392 → 132** by moving its 250-line signature table to
+`constants/language-signatures.ts`, where §14 says a table belongs.
+
+`paint.ts` is 254 against a 250 ceiling and was left alone — four lines of
+comment is not a structural problem.
+
+### A real bug the review found
+
+`POPULAR` in `CodeSnapshot.tsx` listed **`"bash"`, which is a Shiki ALIAS**.
+`bundledLanguagesInfo` keys on the canonical id, so the lookup matched nothing
+and Shell was silently filtered out of the popular group into the alphabetical
+tail of 360 — no error anywhere. Canonical id is `shellscript`. This is the
+third time this exact alias trap has appeared in this tool; it is now a test.
+
+Also hardened: `useFitToBox` computed `clientWidth - NaN` on any engine that
+reports an empty string for an unset padding, and NaN fails the `> 0` test — so
+the fit would silently stop working rather than fail visibly.
+
+### Tests
+
+157 → 171. Every new claim was mutation-tested: disabling `highlightSync`, and
+separately removing the synchronous font branch, each fail exactly the two
+typing tests and nothing else.
+
+**Not verified in this session:** the cross-fade easing and the fitted preview,
+because the Browser pane reports a 0×0 viewport. The fit logic was moved, not
+changed, and is now unit-tested against stubbed measurements; the easing needs
+the owner's own browser.
+
+---
+
 ## Explicitly out of scope
 
 Animation · multi-window comparison · annotations and arrows · accounts ·

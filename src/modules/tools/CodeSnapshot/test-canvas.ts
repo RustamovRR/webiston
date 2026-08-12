@@ -205,10 +205,20 @@ export function installCanvasStub(): CanvasRecording {
     } as unknown as typeof HTMLCanvasElement.prototype.getContext
   )
 
-  // `document.fonts` is absent in jsdom; the hook awaits it before painting.
+  /**
+   * `document.fonts` is absent in jsdom; the painter gates on it.
+   *
+   * `check` reports TRUE on purpose. It is the synchronous question the painter
+   * asks first — "is this face already here?" — and answering yes is what puts
+   * the tests on the same path a real browser takes after its first paint: the
+   * live one, where a keystroke reaches the canvas without a turn of the event
+   * loop in between. Stubbing it false would leave 157 tests exercising a
+   * branch that in practice runs once per session.
+   */
   Object.defineProperty(document, "fonts", {
     configurable: true,
     value: {
+      check: () => true,
       load: () => Promise.resolve([]),
       ready: Promise.resolve()
     }

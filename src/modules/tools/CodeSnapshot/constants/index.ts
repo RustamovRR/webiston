@@ -47,6 +47,52 @@ export const INDENT = "  "
 export const DIMMED_OPACITY = 0.35
 
 /**
+ * How much code still re-highlights in the same task as the keystroke.
+ *
+ * Measured, not chosen. Tokenising this tool's own starter snippet repeated to
+ * length, with the JS RegExp engine, against the paint it feeds:
+ *
+ * | lines | chars | tokenise | paint | total |
+ * | --- | --- | --- | --- | --- |
+ * | 40 | ~1,400 | 1.3ms | 3.0ms | 4.3ms |
+ * | 200 | ~7,000 | 5.1ms | 9.6ms | 14.7ms |
+ * | 800 | ~28,000 | 18.7ms | 12.9ms | 31.6ms |
+ * | 2000 | ~70,000 | 47.1ms | 13.5ms | 60.6ms |
+ *
+ * A frame is 16.7ms, so ~7,000 characters is where a keystroke stops fitting
+ * in one. Past this the deferred path takes over — which is not a fallback to
+ * the old behaviour: see `LIVE_REFRESH_INTERVAL`.
+ *
+ * The ceiling is generous on purpose. A snapshot is a snippet; the browser's
+ * own canvas cap stops the picture at roughly 3,000 lines anyway
+ * (`utils/canvas-limits.ts`), and a document that large is pasted, not typed.
+ */
+export const LIVE_HIGHLIGHT_MAX_CHARS = 7000
+
+/**
+ * How long a burst of typing is allowed to collapse, past the live budget.
+ *
+ * Only reached by documents too big to re-highlight inside a frame. Under the
+ * threshold above there is no timer at all.
+ */
+export const RETOKENISE_DELAY = 120
+
+/**
+ * The longest the picture may lag behind the text, whatever the size.
+ *
+ * A plain trailing debounce is the defect this exists to prevent: every
+ * keystroke clears the pending timer, so someone typing steadily never lets it
+ * fire and the canvas holds the OLD text until they stop. With the glyphs in
+ * the textarea transparent, that reads as a caret moving through an empty line
+ * — which is exactly how this tool shipped, and what the owner reported.
+ *
+ * So the timer also has a ceiling: however fast the keys come, a repaint lands
+ * at least this often. Four a second is visibly live without spending the
+ * whole main thread on a document that costs 60ms a pass.
+ */
+export const LIVE_REFRESH_INTERVAL = 250
+
+/**
  * Ink and paper for the split second before a theme has loaded, and for the
  * tokens a theme declines to colour.
  *
@@ -244,3 +290,35 @@ export const THEME_PALETTES: readonly ThemePalette[] = [
 
 export const DEFAULT_THEME = "github-dark-default"
 export const DEFAULT_LANGUAGE = "typescript"
+
+/**
+ * The grammars people actually reach for, lifted to the top of the picker.
+ *
+ * **Canonical ids only, and that is a real constraint rather than a style
+ * note.** Shiki's registry keys on the canonical id and keeps the aliases in a
+ * separate field, so a lookup by alias finds nothing: `"bash"` sat in this list
+ * from the start and matched no grammar, which silently dropped Shell out of
+ * the popular group and into the alphabetical tail of 360. It is the same trap
+ * that once had the language detector answering with ids the picker could not
+ * select. `CodeSnapshot.test.tsx` fails if another one drifts in.
+ */
+export const POPULAR_LANGUAGES: readonly string[] = [
+  "typescript",
+  "javascript",
+  "tsx",
+  "jsx",
+  "python",
+  "rust",
+  "go",
+  "java",
+  "csharp",
+  "php",
+  "ruby",
+  "sql",
+  "html",
+  "css",
+  "json",
+  "yaml",
+  "shellscript",
+  "markdown"
+]

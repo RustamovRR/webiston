@@ -7,10 +7,12 @@ import type {
   KeyboardEvent,
   RefObject
 } from "react"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { INDENT } from "../constants"
+import { useFitToBox } from "../hooks/useFitToBox"
 import type { Layout } from "../types"
+import { FocusGutter } from "./FocusGutter"
 
 interface SnapshotEditorProps {
   canvasRef: RefObject<HTMLCanvasElement | null>
@@ -87,58 +89,15 @@ export function SnapshotEditor({
   const [dragging, setDragging] = useState(false)
 
   /**
-   * Shrink the picture until all of it is visible. Never enlarge it.
+   * The preview is fitted with a CSS transform, not a smaller canvas.
    *
-   * carbon.now.sh, ray.so and codeimage all fit the preview to the panel, for
-   * the reason this tool needs it too: you are composing a picture, so you
-   * have to be able to see the picture. Before this, the "Slayd" preset drew a
-   * 1175 CSS-px card into a ~900px panel and put the right-hand third behind a
-   * horizontal scrollbar.
-   *
-   * A CSS transform, not a smaller canvas. The backing store stays at export
-   * resolution, so a scaled-down preview is SHARPER rather than softer — and
-   * the textarea and the gutter buttons live inside the same transformed box,
-   * so they scale with it and the caret stays exactly on its glyph. That
-   * alignment is the whole reason this editor works, and it survives for free.
-   *
-   * Only ever downward: blowing a small snapshot up would be soft and would
-   * lie about what the export looks like.
+   * The backing store stays at export resolution, so a scaled-down preview is
+   * SHARPER rather than softer — and the textarea and the gutter buttons live
+   * inside the same transformed box, so they scale with it and the caret stays
+   * exactly on its glyph. That alignment is the whole reason this editor works,
+   * and it survives for free.
    */
-  const boxRef = useRef<HTMLDivElement | null>(null)
-  const [boxWidth, setBoxWidth] = useState(0)
-
-  useLayoutEffect(() => {
-    const box = boxRef.current
-    if (!box) return
-    const observer = new ResizeObserver(([entry]) => {
-      setBoxWidth(entry.contentRect.width)
-    })
-    /**
-     * Seed it synchronously, the SAME way the observer measures.
-     *
-     * Two mistakes were made here in one sitting and both are worth keeping.
-     * The first version seeded from `clientWidth`, which INCLUDES the padding
-     * while `contentRect` excludes it: the two disagreed by 32px and the wrong
-     * one stood until the next resize, so a picture that needed 0.728 was
-     * scaled to 0.761 and still overflowed. The second dropped the seed
-     * entirely and trusted `ResizeObserver` to fire on `observe()` — which it
-     * does, EXCEPT in a hidden tab, where it never delivered at all and the
-     * fit stayed 1. So: seed it, and subtract the padding the same way.
-     */
-    const measure = () => {
-      const style = getComputedStyle(box)
-      const padding =
-        Number.parseFloat(style.paddingLeft) +
-        Number.parseFloat(style.paddingRight)
-      setBoxWidth(Math.max(box.clientWidth - padding, 0))
-    }
-
-    measure()
-    observer.observe(box)
-    return () => observer.disconnect()
-  }, [])
-
-  const fit = layout && boxWidth > 0 ? Math.min(1, boxWidth / layout.width) : 1
+  const { boxRef, fit } = useFitToBox(layout?.width ?? null)
 
   useEffect(() => {
     onFitChange(fit)
@@ -271,7 +230,17 @@ export function SnapshotEditor({
         // picture already comfortably inside the panel. Clipping to the
         // reserved size removes nothing visible: everything in the stage is
         // within the picture's own bounds once scaled.
-        className="mx-auto overflow-hidden transition-[width,height] duration-200 ease-out motion-reduce:transition-none"
+        //
+        // **No size transition here, and that is a correction.** This box
+        // carried `transition-[width,height]` for 200ms of easing — but the
+        // canvas it CLIPS has no such transition: `paintSnapshot` writes its
+        // CSS size outright, in the same task as the backing store. So the
+        // picture snapped to its new width while the clip eased towards it,
+        // and everything between the two was cut off. Harmless at one repaint
+        // every 120ms; a character disappearing for a fifth of a second once
+        // typing became live. Easing a clip whose contents do not ease is not
+        // smoothing, it is hiding. The cross-fade is what softens a change.
+        className="mx-auto overflow-hidden"
         style={
           layout
             ? { width: layout.width * fit, height: layout.height * fit }
@@ -296,44 +265,15 @@ export function SnapshotEditor({
             ref={ghostRef}
             className="pointer-events-none absolute top-0 left-0 opacity-0 transition-opacity duration-200 ease-out motion-reduce:transition-none"
           />
-          {/* One hit area per line number, sized and placed from the layout the
-            painter used — so what you click is exactly what you see.
-            Real `<button>`s, not one click handler over the strip with the
-            line worked out from `offsetY`: that version is mouse-only, and
-            this is the control that ray.so does not have and snappify charges
-            for. The gutter sits LEFT of `codeX`, which is where the textarea
-            starts, so nothing overlaps.
-            Rendered only when the numbers are on — there is nothing to click
-            otherwise, and `gutterWidth` is 0. */}
+          {/* Rendered only when the numbers are on — there is nothing to click
+              otherwise, and `gutterWidth` is 0. */}
           {layout && layout.gutterWidth > 0 && (
-            <div className="pointer-events-none absolute inset-0">
-              {layout.lines.map((line, index) =>
-                line.number === null ? null : (
-                  <button
-                    key={line.number}
-                    type="button"
-                    // POSITIONAL, not the printed number: the layout dims by
-                    // position, and `firstLineNumber` lets a snippet lifted from
-                    // line 340 print 340 while still being line 1.
-                    onClick={() => onToggleLineFocus(index + 1)}
-                    aria-pressed={focusLines.includes(index + 1)}
-                    className="pointer-events-auto absolute cursor-pointer rounded-[3px] hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring"
-                    style={{
-                      left: layout.codeX - layout.gutterWidth,
-                      top: line.top,
-                      width: layout.gutterWidth,
-                      height: layout.lineHeight
-                    }}
-                  >
-                    {/* The number itself is painted on the canvas underneath;
-                      this is the name assistive tech reads. `sr-only` is safe
-                      HERE — it hides text inside a button that has real size,
-                      unlike a focusable element collapsed to a point. */}
-                    <span className="sr-only">{focusLabel(line.number)}</span>
-                  </button>
-                )
-              )}
-            </div>
+            <FocusGutter
+              layout={layout}
+              focusLines={focusLines}
+              onToggle={onToggleLineFocus}
+              label={focusLabel}
+            />
           )}
           <textarea
             value={code}

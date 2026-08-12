@@ -35,6 +35,17 @@ import { toCodeLine, trimTrailingNewline } from "./tokens"
 let highlighter: Promise<HighlighterCore> | null = null
 
 /**
+ * The SAME instance, once it exists, reachable without awaiting.
+ *
+ * A promise cannot be read synchronously; the object it settled on can. Every
+ * keystroke after the first has the engine, the theme and the grammar already
+ * in memory, and `codeToTokens` is itself synchronous — so this slot is what
+ * turns "tokenise" from an await into a function call, and it is the whole
+ * reason `highlightSync` below can exist.
+ */
+let ready: HighlighterCore | null = null
+
+/**
  * The singleton caches the promise — but NEVER a rejected one.
  *
  * `highlighter ??= create…()` on its own memoises failure permanently. The
@@ -52,10 +63,15 @@ function getHighlighter(): Promise<HighlighterCore> {
     engine: createJavaScriptRegexEngine({ forgiving: true }),
     themes: [],
     langs: []
-  }).catch((error) => {
-    highlighter = null
-    throw error
   })
+    .then((instance) => {
+      ready = instance
+      return instance
+    })
+    .catch((error) => {
+      highlighter = null
+      throw error
+    })
   return highlighter
 }
 
@@ -101,6 +117,65 @@ export function resolveLanguage(input: string): string {
   return wanted in bundledLanguages ? wanted : PLAIN
 }
 
+export interface HighlightResult {
+  lines: CodeLine[]
+  foreground: string
+  background: string
+}
+
+function tokenise(
+  shiki: HighlighterCore,
+  code: string,
+  lang: string,
+  theme: string
+): HighlightResult {
+  const result = shiki.codeToTokens(trimTrailingNewline(code), { lang, theme })
+
+  return {
+    lines: result.tokens.map(toCodeLine),
+    foreground: result.fg ?? FALLBACK_FOREGROUND,
+    background: result.bg ?? FALLBACK_BACKGROUND
+  }
+}
+
+/**
+ * Tokenise in the CALLER'S task, or decline.
+ *
+ * This is the editor's hot path and the reason typing feels live. The picture
+ * IS the editor here — the textarea's own glyphs are transparent — so the only
+ * text a visitor can see is the text on the canvas. Anything that defers the
+ * re-tokenise by even a frame shows a caret travelling across a line that has
+ * not appeared yet, and deferring it behind a trailing debounce (which is what
+ * this tool did) shows nothing at all until they stop typing.
+ *
+ * Nothing here is async by nature. `codeToTokens` is synchronous; only the
+ * engine, the theme and the grammar have to be fetched, once each. So: when all
+ * three are in memory, tokenise and return. When they are not — the first
+ * keystroke of a session, or the first use of a newly picked language — return
+ * `null` and let the caller take the awaiting path that loads them.
+ *
+ * A throw is also `null`, deliberately. This runs inside a layout effect, where
+ * an exception would take the render down; the async path will raise the same
+ * failure a moment later with somewhere to report it.
+ */
+export function highlightSync(
+  code: string,
+  language: string,
+  theme: string
+): HighlightResult | null {
+  if (!ready) return null
+
+  const lang = resolveLanguage(language)
+  if (!ready.getLoadedThemes().includes(theme)) return null
+  if (lang !== PLAIN && !ready.getLoadedLanguages().includes(lang)) return null
+
+  try {
+    return tokenise(ready, code, lang, theme)
+  } catch {
+    return null
+  }
+}
+
 /**
  * Tokenise, loading whatever the request needs first.
  *
@@ -113,7 +188,7 @@ export async function highlightToLines(
   code: string,
   language: string,
   theme: string
-): Promise<{ lines: CodeLine[]; foreground: string; background: string }> {
+): Promise<HighlightResult> {
   const shiki = await getHighlighter()
   const lang = resolveLanguage(language)
 
@@ -126,11 +201,5 @@ export async function highlightToLines(
     )
   }
 
-  const result = shiki.codeToTokens(trimTrailingNewline(code), { lang, theme })
-
-  return {
-    lines: result.tokens.map(toCodeLine),
-    foreground: result.fg ?? FALLBACK_FOREGROUND,
-    background: result.bg ?? FALLBACK_BACKGROUND
-  }
+  return tokenise(shiki, code, lang, theme)
 }

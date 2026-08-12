@@ -15,6 +15,7 @@ import {
   EXPORT_FORMATS,
   EXPORT_SCALES,
   type ExportFormatId,
+  POPULAR_LANGUAGES,
   THEME_PALETTES
 } from "./constants"
 import { useCodeSnapshot } from "./hooks/useCodeSnapshot"
@@ -39,28 +40,6 @@ interface CodeSnapshotProps {
   /** `id -> CSS font-family`, supplied by the route that loaded the faces. */
   fontFamilies: Record<CodeFontId, string>
 }
-
-/** Popular grammars first; the rest of the 360 follow alphabetically. */
-const POPULAR = [
-  "typescript",
-  "javascript",
-  "tsx",
-  "jsx",
-  "python",
-  "rust",
-  "go",
-  "java",
-  "csharp",
-  "php",
-  "ruby",
-  "sql",
-  "html",
-  "css",
-  "json",
-  "yaml",
-  "bash",
-  "markdown"
-]
 
 const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
   const t = useTranslations("CodeSnapshotPage")
@@ -108,10 +87,12 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
   } = useCodeSnapshot(fontFamilies)
 
   const languages = useMemo(() => {
-    const popular = POPULAR.map((id) =>
+    const popular = POPULAR_LANGUAGES.map((id) =>
       ALL_LANGUAGES.find((lang) => lang.id === id)
     ).filter((lang) => lang !== undefined)
-    const rest = ALL_LANGUAGES.filter((lang) => !POPULAR.includes(lang.id))
+    const rest = ALL_LANGUAGES.filter(
+      (lang) => !POPULAR_LANGUAGES.includes(lang.id)
+    )
     return [...popular, ...rest]
   }, [])
 

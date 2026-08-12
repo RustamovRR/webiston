@@ -5,13 +5,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import common from "../../../../messages/common/uz.json"
 import messages from "../../../../messages/tools/code-snapshot/uz.json"
 import { CodeSnapshot } from "./CodeSnapshot"
-import { DIMMED_OPACITY, THEME_PALETTES } from "./constants"
+import { DIMMED_OPACITY, POPULAR_LANGUAGES, THEME_PALETTES } from "./constants"
 import {
   type CanvasRecording,
   type DrawnText,
   installCanvasStub
 } from "./test-canvas"
 import { __resetCanvasLimitCache } from "./utils/canvas-limits"
+import { ALL_LANGUAGES } from "./utils/highlight"
 
 /**
  * The tool, driven the way a visitor drives it.
@@ -223,6 +224,59 @@ describe("code snapshot", () => {
   })
 
   /**
+   * The reported defect, and the reason `highlightSync` exists.
+   *
+   * The picture IS the editor — the textarea layered over the canvas has
+   * transparent glyphs — so the canvas is the only place a visitor can read
+   * what they typed. Behind a trailing debounce that meant the caret travelled
+   * across an empty line and the text appeared only once they stopped.
+   *
+   * No `await`, no timer advanced, no `waitFor`: the assertion is that the
+   * glyph is on the canvas by the time the keystroke's own task ends. It fails
+   * the moment anything — a debounce, a promise, a passive effect — is put back
+   * between the two.
+   */
+  it("paints a keystroke in the same task, with nothing to wait for", async () => {
+    // Arrange — the FIRST tokenisation of a session is genuinely asynchronous:
+    // the engine, the theme and the grammar are fetched once each.
+    renderTool()
+    await painted()
+    const passesBefore = canvas.passes.length
+
+    // Act
+    fireEvent.change(codeInput(), { target: { value: "const zebra = 1" } })
+
+    // Assert
+    expect(canvas.passes.length).toBeGreaterThan(passesBefore)
+    expect(asText(canvas.latest())).toContain("zebra")
+  })
+
+  /**
+   * The same defect from the other side: it is not the delay that breaks a
+   * trailing debounce, it is that a steady typist never lets the timer fire at
+   * all. Six characters with no pause between them used to produce ZERO
+   * pictures — measured on the running page, 17 keystrokes and 0 paints.
+   */
+  it("keeps up with a burst of keystrokes instead of waiting for a pause", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    const passesBefore = canvas.passes.length
+
+    // Act
+    const word = "zebra!"
+    for (let index = 1; index <= word.length; index++) {
+      fireEvent.change(codeInput(), {
+        target: { value: `const x = "${word.slice(0, index)}"` }
+      })
+    }
+
+    // Assert — one picture per keystroke, and the last one says what was typed.
+    expect(canvas.passes.length - passesBefore).toBe(word.length)
+    expect(asText(canvas.latest())).toContain(word)
+  })
+
+  /**
    * The wiring bug this exists for: a theme that updates the dropdown and the
    * state but never reaches `codeToTokens`, leaving the picture on the old
    * palette. Colours are the only observable that can tell the difference.
@@ -386,6 +440,26 @@ describe("code snapshot", () => {
     const after = await painted((texts) => texts.length !== colouredRuns)
     expect(after.length).not.toBe(colouredRuns)
     expect(asText(after)).toContain("greet")
+  })
+
+  /**
+   * The alias trap, guarded.
+   *
+   * Shiki keys its registry on the CANONICAL id and keeps aliases in a separate
+   * field, so a lookup by alias finds nothing. `"bash"` sat in the popular list
+   * from the first commit and matched no grammar: Shell was quietly filtered
+   * out and left to the alphabetical tail of 360, with no error anywhere. The
+   * language detector shipped the same defect once, with `bash` and
+   * `dockerfile`. It is cheap to notice and expensive to spot by eye.
+   */
+  it("lists only canonical grammar ids among the popular languages", () => {
+    // Arrange / Act
+    const unmatched = POPULAR_LANGUAGES.filter(
+      (id) => !ALL_LANGUAGES.some((lang) => lang.id === id)
+    )
+
+    // Assert
+    expect(unmatched).toEqual([])
   })
 
   it("draws line numbers only when they are switched on", async () => {
