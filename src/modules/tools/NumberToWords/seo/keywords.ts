@@ -19,7 +19,30 @@ const UZBEK_KEYWORDS = [
   "summa so'z bilan",
   "so'm so'z bilan yozish",
   "hisob-faktura summa so'z bilan",
-  "shartnoma summasi so'z bilan"
+  "shartnoma summasi so'z bilan",
+  // "harf bilan" is how at least as many people phrase it as "so'z bilan" —
+  // the Excel macro this tool replaces was itself named "summani harf
+  // yordamida yozish" on the forums that still rank for these queries.
+  "raqamni harf bilan yozish",
+  "summani harflarda yozish",
+  "pul summasini so'z bilan yozish",
+  "to'lov summasi so'z bilan"
+] as const
+
+/**
+ * Uzbek in CYRILLIC script — its own block, and nobody else's territory.
+ *
+ * The accountants this tool serves are the demographic most likely to type
+ * their query in Cyrillic Uzbek, and no competing page targets that spelling
+ * at all: the same searches that are thin in Latin Uzbek are EMPTY in
+ * Cyrillic. These also feed the site's own ⌘K search index, which folds
+ * keywords into per-tool tags.
+ */
+const UZBEK_CYRILLIC_KEYWORDS = [
+  "суммани сўз билан ёзиш",
+  "рақамни сўз билан ёзиш",
+  "сонни сўз билан ёзиш",
+  "суммани ҳарф билан ёзиш"
 ] as const
 
 const RUSSIAN_KEYWORDS = [
@@ -27,7 +50,10 @@ const RUSSIAN_KEYWORDS = [
   "число прописью",
   "сумма прописью узбекский",
   "сумма прописью на узбекском",
+  "сумма прописью на узбекском языке онлайн",
+  "сумма прописью в сумах",
   "цифры прописью сум",
+  "число прописью на узбекском",
   "перевести число в слова"
 ] as const
 
@@ -42,6 +68,7 @@ const ENGLISH_KEYWORDS = [
 // Not `readonly`: Next's `Metadata["keywords"]` takes a mutable `string[]`.
 export const PRIMARY_KEYWORDS: string[] = [
   ...UZBEK_KEYWORDS,
+  ...UZBEK_CYRILLIC_KEYWORDS,
   ...RUSSIAN_KEYWORDS,
   ...ENGLISH_KEYWORDS
 ]

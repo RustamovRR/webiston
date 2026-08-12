@@ -55,25 +55,20 @@ export const UZBEK_SCALES = [
   "kvadrillion"
 ] as const
 
-/**
- * **Every scale word is counted. `yuz` is not.**
+/*
+ * **Written style counts everything: "bir yuz", "bir ming", "bir million".**
  *
- * 1 560 is "**bir ming** besh yuz oltmish so'm" — settled by the owner against
- * the convention actually used on Uzbek documents, and it overrides the
- * conversational form. In speech "ming so'm" is what people say; on a
- * hisob-faktura the thousands are counted like every other scale, because the
- * written sum has to be unambiguous when read aloud.
+ * Settled by the owner (1 560 → "bir ming besh yuz oltmish so'm") and
+ * confirmed against official usage: Uzbek legislation on lex.uz writes
+ * "bazaviy hisoblash miqdorining **bir yuz ellik** baravari" — the hundred is
+ * counted too. Speech drops the leading "bir" on yuz and ming; documents do
+ * not, because a written sum has to be unambiguous when read back.
  *
- * `yuz` is the exception and stays bare: 100 is "yuz", 1 560 is "bir ming
- * **besh yuz** oltmish" — the hundreds inside a group take their own digit,
- * and a lone hundred takes none. This mirrors Russian document practice, which
- * Uzbek accounting follows: "одна тысяча пятьсот шестьдесят", never "один сто".
- *
- * There is no constant to flip any more: the rule is "count every scale", so
- * `integerToWords` has no special case left. That is the shape a settled
- * decision should have.
+ * There is deliberately no constant to flip. "Count every unit" leaves
+ * `integerToWords` with zero special cases, which is the shape a settled
+ * decision should have — an earlier draft carried a `STANDALONE_SCALE_INDEX`
+ * for the conversational form and it was the only branch in the algorithm.
  */
-export const HUNDRED_STANDS_ALONE = true
 
 /** So'm and its hundredth. Tiyin is out of circulation but still printed. */
 export const CURRENCY_MAJOR = "so'm"

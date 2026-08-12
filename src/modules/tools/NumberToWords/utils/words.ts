@@ -4,7 +4,6 @@ import {
   CURRENCY_MAJOR,
   CURRENCY_MINOR,
   type OutputMode,
-  STANDALONE_SCALE_INDEX,
   UZBEK_HUNDRED,
   UZBEK_SCALES,
   UZBEK_TENS,
@@ -40,8 +39,11 @@ const GROUP_BASE = BigInt(1000)
 /**
  * One group of three digits, 1–999.
  *
- * `100` is `yuz`, not `bir yuz`. A leading `bir` on a native numeral is
- * redundant in Uzbek and reads as a translation from Russian.
+ * `100` is `bir yuz`, with the digit counted. Speech drops the `bir`; the
+ * WRITTEN form — the one on a hisob-faktura, and the one Uzbek law itself
+ * uses ("bir yuz ellik baravari", lex.uz) — keeps it, and this tool writes
+ * documents. The rule is uniform across yuz and every scale word, which is
+ * why this function has no branches on the value being one.
  */
 function groupToWords(group: number): string {
   const parts: string[] = []
@@ -50,8 +52,7 @@ function groupToWords(group: number): string {
   const units = group % 10
 
   if (hundreds > 0) {
-    if (hundreds > 1) parts.push(UZBEK_UNITS[hundreds])
-    parts.push(UZBEK_HUNDRED)
+    parts.push(UZBEK_UNITS[hundreds], UZBEK_HUNDRED)
   }
   if (tens > 0) parts.push(UZBEK_TENS[tens])
   if (units > 0) parts.push(UZBEK_UNITS[units])
@@ -90,15 +91,14 @@ export function integerToWords(value: bigint): string | null {
   if (groups.length > UZBEK_SCALES.length) return null
 
   const parts: string[] = []
-  // High-order first, which is the order they are spoken in.
+  // High-order first, which is the order they are spoken in. Every non-zero
+  // group is fully named — 1 000 is "bir ming", never "ming"; a zero group is
+  // fully SILENT — 1 000 001 is "bir million bir", never "... nol ming bir".
   for (let index = groups.length - 1; index >= 0; index -= 1) {
     const group = groups[index]
     if (group === 0) continue
 
-    // `ming` and below stand alone at one — "ming so'm", never "bir ming
-    // so'm". `million` and up are counted nouns and always take their `bir`.
-    const bare = group === 1 && index === STANDALONE_SCALE_INDEX
-    if (!bare) parts.push(groupToWords(group))
+    parts.push(groupToWords(group))
     if (index > 0) parts.push(UZBEK_SCALES[index])
   }
 

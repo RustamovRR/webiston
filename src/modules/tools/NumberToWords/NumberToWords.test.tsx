@@ -121,13 +121,13 @@ describe("number to words", () => {
     // Arrange
     renderTool()
     type("1000")
-    expect(screen.getByText("Ming so'm")).toBeInTheDocument()
+    expect(screen.getByText("Bir ming so'm")).toBeInTheDocument()
 
     // Act
     fireEvent.click(screen.getByLabelText(/Bosh harf/i))
 
     // Assert
-    expect(screen.getByText("ming so'm")).toBeInTheDocument()
+    expect(screen.getByText("bir ming so'm")).toBeInTheDocument()
   })
 
   it("refuses text instead of naming part of it", () => {
@@ -162,7 +162,7 @@ describe("number to words", () => {
 
     // Assert
     await vi.waitFor(() =>
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith("Минг сўм")
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith("Бир минг сўм")
     )
   })
 

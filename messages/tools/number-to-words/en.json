@@ -38,8 +38,8 @@
           "answer": "Documents in Uzbekistan are kept in both scripts — one office asks for Latin, another for Cyrillic. Giving both at once means not coming back for the second one. The Cyrillic column comes from Webiston's own transliteration library."
         },
         "birMing": {
-          "question": "Why “ming” and not “bir ming”?",
-          "answer": "“Yuz” and “ming” are native Uzbek numerals and take no leading “bir”: 1000 is “ming so'm”. “Million” and “milliard” are borrowed nouns that get counted, so 1,000,000 is “bir million”. The tool follows that distinction."
+          "question": "Why does it write «bir ming» rather than «ming»?",
+          "answer": "Spoken Uzbek drops the leading «bir» — a thousand is just «ming». Written documents count every unit: 1 000 is «bir ming so'm», 100 is «bir yuz so'm». Uzbek legislation itself uses this form («bir yuz ellik baravari» on lex.uz), because a sum on a document has to read back unambiguously."
         },
         "tiyin": {
           "question": "How is the fractional part written?",

@@ -114,16 +114,21 @@ export function parseAmount(input: string): ParseResult {
   const digits = whole.replace(/^0+(?=\d)/, "")
   if (digits.length > MAX_DIGITS) return { ok: false, error: "tooLarge" }
 
+  const integer = BigInt(digits || "0")
+  // Padded, then cut: `.5` is fifty tiyin, not five, and `.5678` is
+  // fifty-six — a third decimal place has no meaning in so'm.
+  const minor = Number(
+    fraction.padEnd(MINOR_DIGITS, "0").slice(0, MINOR_DIGITS) || "0"
+  )
+
   return {
     ok: true,
     amount: {
-      integer: BigInt(digits || "0"),
-      // Padded, then cut: `.5` is fifty tiyin, not five, and `.567` is
-      // fifty-six — a third decimal place has no meaning in so'm.
-      fraction: Number(
-        fraction.padEnd(MINOR_DIGITS, "0").slice(0, MINOR_DIGITS) || "0"
-      ),
-      negative
+      integer,
+      fraction: minor,
+      // `-0` is not an amount. Without this the words come out as "minus nol
+      // so'm", which no document has ever said.
+      negative: negative && (integer > BigInt(0) || minor > 0)
     }
   }
 }

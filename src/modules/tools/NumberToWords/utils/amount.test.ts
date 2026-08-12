@@ -120,6 +120,22 @@ describe("parseAmount", () => {
     })
   })
 
+  it("does not let minus survive on a zero", () => {
+    // Arrange / Act / Assert — "-0" would otherwise come out of the words
+    // function as "minus nol so'm", which no document has ever said. A
+    // negative fraction-only amount is real, though: -0,50 is minus fifty
+    // tiyin.
+    expect(parsed("-0")).toMatchObject({
+      integer: BigInt("0"),
+      negative: false
+    })
+    expect(parsed("-0,00")).toMatchObject({
+      integer: BigInt("0"),
+      negative: false
+    })
+    expect(parsed("-0,50")).toMatchObject({ fraction: 50, negative: true })
+  })
+
   it("drops leading zeros without losing the number", () => {
     // Arrange / Act / Assert
     expect(parsed("007")).toMatchObject({ integer: BigInt("7") })
