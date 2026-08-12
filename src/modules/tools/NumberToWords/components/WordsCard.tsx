@@ -41,8 +41,12 @@ export function WordsCard({
         />
       </div>
       {/* `select-all` so one click takes the whole sum — on a phone, dragging a
-          selection across a long line of words is the part people give up on. */}
-      <p className="select-all text-pretty text-base text-foreground leading-relaxed">
+          selection across a long line of words is the part people give up on.
+          `max-w-[70ch]` is the reading measure: on a 1536px page this card is
+          ~1050px wide, and a sum stretched across all of it reads worse than
+          the same words wrapped at book width. The card keeps its size; only
+          the text stops chasing the edge. */}
+      <p className="max-w-[70ch] select-all text-pretty text-base text-foreground leading-relaxed">
         {words}
       </p>
     </div>

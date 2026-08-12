@@ -113,6 +113,29 @@ half-named sum. Both are stated in the field's own error line.
 
 ## Follow-up pass (2026-08-12, same day)
 
+### UI pass (owner's screenshots)
+
+- **Equal card heights by construction**: `items-start` removed from the grid
+  so both cells stretch, `h-full flex flex-col` on both cards. Measured before:
+  empty 249/178, short 275/306, 18-digit 275/358 — never equal. After: 285/285,
+  311/311, 358/358. Sticky was considered and rejected — the tool fits one
+  viewport, a sticky card has nowhere to travel.
+- **Empty state teaches instead of apologising**: a worked example
+  (`1 250 000,50 → Bir million …`) computed by the REAL pipeline at module
+  scope, so it can never drift from the algorithm. Full-strength
+  `text-muted-foreground` — the `/70` slash-opacity failed AA once already.
+- **Reading measure**: words capped at `max-w-[70ch]`; the card keeps its
+  size, the text stops chasing the edge of a ~1050px panel.
+- **Document form added** — the actual deliverable: `1 250 000,50 (Bir
+  million ikki yuz ellik ming so'm ellik tiyin)`, both scripts, one checkbox.
+  The digits inside it use ORDINARY spaces and an ASCII minus, not the display
+  echo's U+202F/U+2212 — pasted amounts with invisible non-ASCII spaces are
+  what 1C-style validators reject unexplainably. Mutation-proven: the first
+  test matched through `getByText`, whose default normalizer collapses every
+  `\s` INCLUDING U+202F, so it passed with the replace deleted; rewritten
+  against raw `textContent`.
+
+
 - **`bir ming` / `bir yuz` convention settled** — see the decision above.
   55 tool tests → the evaluator battery; FAQ rewritten in all three locales to
   explain the DOCUMENT form instead of the conversational one.

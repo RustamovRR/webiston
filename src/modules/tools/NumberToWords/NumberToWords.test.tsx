@@ -166,6 +166,46 @@ describe("number to words", () => {
     )
   })
 
+  /**
+   * The contract line: digits, then the words in brackets. This string is the
+   * actual deliverable for most visitors — it goes into the hujjat verbatim —
+   * and the digits inside it must be ORDINARY spaces, not the display echo's
+   * U+202F: an invisible non-ASCII space inside a pasted amount is what 1C
+   * and bank-portal validators reject with an unexplainable error.
+   */
+  it("wraps the sum as a document line when asked", () => {
+    // Arrange
+    renderTool()
+    type("1250000,50")
+
+    // Act
+    fireEvent.click(screen.getByLabelText(/Hujjat shakli/i))
+
+    // Assert — on the RAW textContent, not through getByText: the default
+    // normalizer collapses every `\s`, and U+202F is `\s`, so a query string
+    // with ordinary spaces matched the narrow-space output too and a mutation
+    // that dropped the replace survived. `textContent` compares codepoints.
+    const latin = screen.getByText(/\(Bir million/)
+    expect(latin.textContent).toBe(
+      "1 250 000,50 (Bir million ikki yuz ellik ming so'm ellik tiyin)"
+    )
+    expect(latin.textContent).not.toMatch(/[\u202f\u2212]/)
+    expect(screen.getByText(/\(Бир миллион/).textContent).toBe(
+      "1 250 000,50 (Бир миллион икки юз эллик минг сўм эллик тийин)"
+    )
+  })
+
+  it("shows a worked example while the field is empty", () => {
+    // Arrange / Act — the sample is computed by the real pipeline, so this
+    // test breaks if the two ever disagree.
+    renderTool()
+
+    // Assert
+    expect(
+      screen.getByText(/Bir million ikki yuz ellik ming so'm ellik tiyin/)
+    ).toBeInTheDocument()
+  })
+
   it("empties the field when cleared", () => {
     // Arrange
     renderTool()

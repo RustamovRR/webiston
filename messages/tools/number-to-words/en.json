@@ -15,6 +15,7 @@
       "plain": "Plain number"
     },
     "capitalise": "Start with a capital letter",
+    "documentFormat": "Document form — digits (words)",
     "result": {
       "title": "Result",
       "latin": "Latin",

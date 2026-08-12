@@ -13,6 +13,22 @@ import { ToolHeader } from "@/components/shared/ToolHeader"
 import { WordsCard } from "./components"
 import { OUTPUT_MODES, type OutputMode } from "./constants"
 import { useNumberToWords } from "./hooks/useNumberToWords"
+import { parseAmount } from "./utils/amount"
+import { amountToWords, capitalise } from "./utils/words"
+
+/**
+ * The example under the empty state — computed by the REAL pipeline, at module
+ * scope, so it can never drift from what the tool actually produces. A
+ * hand-written sample would have kept saying "ming so'm" after the bir-ming
+ * convention changed; this one updated itself.
+ */
+const SAMPLE_INPUT = "1 250 000,50"
+const SAMPLE_WORDS = (() => {
+  const parsed = parseAmount(SAMPLE_INPUT)
+  if (!parsed.ok) return null
+  const words = amountToWords(parsed.amount, "sum")
+  return words ? capitalise(words.latin) : null
+})()
 
 /**
  * Summani so'z bilan yozish — a sum, spelled out in Uzbek.
@@ -32,6 +48,7 @@ export function NumberToWords() {
   const tCommon = useTranslations("Common")
   const inputId = useId()
   const capsId = useId()
+  const documentId = useId()
 
   const {
     input,
@@ -40,6 +57,8 @@ export function NumberToWords() {
     setMode,
     capitalised,
     setCapitalised,
+    documentFormat,
+    setDocumentFormat,
     state,
     clear
   } = useNumberToWords()
@@ -51,10 +70,19 @@ export function NumberToWords() {
         description={t("ToolHeader.description")}
       />
 
-      <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+      {/* NO `items-start`, deliberately — this is the fix for the two cards
+          never matching in height. A grid cell stretches to its row by
+          default, so with `h-full` on both cards they are equal BY
+          CONSTRUCTION in every state: empty (was 249px against 178px),
+          short sum (275/306) and an 18-digit one (275/358). Sticky was
+          considered instead and it solves nothing here — the whole tool fits
+          one viewport, so there is nowhere for a sticky card to travel. */}
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
         <ToolCard
           title={t("input.title")}
           tone="muted"
+          className="flex h-full flex-col"
+          bodyClassName="flex-1 p-5"
           actions={
             <Button
               variant="ghost"
@@ -134,10 +162,32 @@ export function NumberToWords() {
                 {t("capitalise")}
               </label>
             </div>
+
+            {/* The contract line itself: `1 250 000,50 (Bir million …)`.
+                For most visitors this string IS the deliverable — it gets
+                pasted into the hujjat as-is — and without the toggle they
+                were assembling it by hand from two separate copies. */}
+            <div className="flex items-center gap-2">
+              <input
+                id={documentId}
+                type="checkbox"
+                checked={documentFormat}
+                onChange={(event) => setDocumentFormat(event.target.checked)}
+                className="size-4 accent-primary"
+              />
+              <label htmlFor={documentId} className="text-foreground text-sm">
+                {t("documentFormat")}
+              </label>
+            </div>
           </div>
         </ToolCard>
 
-        <ToolCard title={t("result.title")} tone="primary">
+        <ToolCard
+          title={t("result.title")}
+          tone="primary"
+          className="flex h-full flex-col"
+          bodyClassName="flex flex-1 flex-col p-5"
+        >
           {state.status === "ready" ? (
             <div className="flex flex-col gap-3">
               <WordsCard
@@ -163,9 +213,25 @@ export function NumberToWords() {
               )}
             </div>
           ) : (
-            <p className="py-8 text-center text-muted-foreground text-sm">
-              {t("result.empty")}
-            </p>
+            // Centred in the card the input column sizes, and it TEACHES
+            // instead of apologising: the sample is computed by the real
+            // pipeline at module scope, so it shows exactly what pressing the
+            // keys will produce and can never drift from the algorithm.
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
+              <p className="text-muted-foreground text-sm">
+                {t("result.empty")}
+              </p>
+              {/* Full-strength `text-muted-foreground`, no `/70` — the same
+                  slash-opacity measured 3.08:1 in light mode on the theme
+                  count and failed AA. Size carries the hierarchy instead. */}
+              {SAMPLE_WORDS && (
+                <p className="text-muted-foreground text-xs">
+                  <span className="font-mono tabular-nums">{SAMPLE_INPUT}</span>
+                  {" → "}
+                  {SAMPLE_WORDS}
+                </p>
+              )}
+            </div>
           )}
         </ToolCard>
       </div>
