@@ -129,8 +129,17 @@ export function transliterateLatinToCyrillic(text: string): string {
       continue
     }
 
-    // === SPECIAL CASE: 'e' at word start → 'э' ===
-    if (lowerChar === "e" && isWordBoundary(normalized, i)) {
+    // === SPECIAL CASE: 'e' at word start OR after a vowel → 'э' ===
+    //
+    // Both positions, not just the word start. Uzbek Cyrillic writes аэропорт,
+    // поэма, поэзия, дуэл — every vowel+e seam in the loanword stock takes э.
+    // The word-start-only version produced аеропорт/поема, and it also broke
+    // the round trip: Cyrillic е after a vowel romanises as "ye" (фойе → foye),
+    // so a bare "e" in that position can only ever have come from э.
+    if (
+      lowerChar === "e" &&
+      (isWordBoundary(normalized, i) || isLatinVowel(normalized[i - 1] ?? ""))
+    ) {
       result += preserveCase(char, "э")
       i++
       continue

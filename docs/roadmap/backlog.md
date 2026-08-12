@@ -31,13 +31,12 @@
   Uzbek flag blue `#0099B5`. Ramp fitted to the sRGB gamut; all 32 contrast pairs
   pass WCAG AA in both schemes (`pnpm contrast`).
   → `initiatives/design-system.md`
-- `[!]` **The four parked tools.** `__http-status`, `__keycode-info`,
-  `__user-agent-analyzer`, `__website-status` sit behind `_`-prefixed (private)
-  route folders, so they are unreachable in production — ~3,800 LOC that still
-  builds and still gets linted. Finish them or remove them (removal needs
-  approval). They are also the four worst files for hardcoded colour
-  (122/122/101/83 hits), so the answer decides whether that cleanup is worth
-  doing at all.
+- `[x]` **The four parked tools — DELETED 2026-08-12 on the owner's explicit
+  instruction** ("shular ham kerakmas"). `__http-status`, `__keycode-info`,
+  `__user-agent-analyzer`, `__website-status`: ~3,800 LOC of unrouted modules,
+  their barrel exports, TOOL_COLORS entries and `Tools.*` message keys in all
+  three locales. They were also the four worst files for hardcoded colour —
+  removing them dropped the token-ratchet baseline by 653 hits (frozen at 449).
 - `[!]` **The `/books` i18n story.** 226 chapters live at `src/app/books/`, a
   *sibling* of `(app)/[locale]/` — outside the locale segment, and the middleware
   matcher does not cover them. Uzbek-only forever, or does `/en/books` exist?

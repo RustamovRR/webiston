@@ -29,15 +29,24 @@ that this repo already ships and already tests.
 
 ## The decisions worth writing down
 
-### `ming`, not `bir ming` — and `bir million`, not `million`
+### `bir ming` AND `bir yuz` — settled 2026-08-12, evidence on file
 
-The asymmetry is grammar, not style. `yuz` and `ming` are native Turkic
-numerals and stand alone at one: 1000 is "ming so'm". `million` and `milliard`
-are borrowed nouns that get counted: 1,000,000 is "bir million".
+The first draft shipped the conversational form ("ming so'm") behind a
+`STANDALONE_SCALE_INDEX` constant and asked the owner to confirm. The owner
+overruled it with the document convention — 1 560 is "**bir ming** besh yuz
+oltmish so'm" — and lex.uz settles the hundred the same way: Uzbek law writes
+"bazaviy hisoblash miqdorining **bir yuz ellik** baravari". Written style
+counts EVERY unit; only speech drops the leading "bir".
 
-**This is the one call the owner should confirm** — the accounting convention
-in some offices writes "bir ming". It is a single constant
-(`STANDALONE_SCALE_INDEX`), so flipping it is one line and a test update.
+The constant is gone: "count everything" leaves `integerToWords` with zero
+branches on the value being one, which is the shape a settled decision should
+have.
+
+**Proof, not spot checks.** The test file carries an independent evaluator
+that reads the words BACK into a number — different code shape, so a bug
+cannot cancel out — and the two agree on every value below 100 000 plus a set
+of giants up to 10^18−1. Three mutations (old bare-ming rule, phantom "nol"
+for empty groups, dropped "bir" before yuz) fail 8/4/6 tests respectively.
 
 ### bigint, not number
 
@@ -98,7 +107,28 @@ half-named sum. Both are stated in the field's own error line.
 
 ## Still open
 
-1. **`bir ming` or `ming`** — the owner's call. One constant.
-2. **Russian output** ("сумма прописью" in Russian words) is NOT built. Russian
+1. **Russian output** ("сумма прописью" in Russian words) is NOT built. Russian
    numerals carry gender and case agreement ("одна тысяча"), and half-right
    grammar on a legal document is worse than none. A separate piece of work.
+
+## Follow-up pass (2026-08-12, same day)
+
+- **`bir ming` / `bir yuz` convention settled** — see the decision above.
+  55 tool tests → the evaluator battery; FAQ rewritten in all three locales to
+  explain the DOCUMENT form instead of the conversational one.
+- **`-0` normalised at the parser**: "minus nol so'm" can no longer be
+  produced; a fraction-only negative (−0,50) still keeps its minus.
+- **Keywords widened where the gap actually is**: the "harf bilan" phrasing
+  (the Excel macro this tool replaces was named that way), and a
+  Cyrillic-script Uzbek block ("суммани сўз билан ёзиш") that no competitor
+  targets at all. Verified in the built search index: "summa", "прописью",
+  "суммани сўз" and "harf bilan" all resolve to this tool.
+- **Two transliteration bugs found by this tool's own round-trip test idea**,
+  fixed in `@webiston/transliteration` (336 → 340 package tests):
+  1. Latin `e` after a vowel now yields `э` — aeroport → аэропорт, poema →
+     поэма; the word-start-only rule produced аеропорт and broke the round
+     trip.
+  2. `<code>`/`<pre>` CONTENTS are now protected, not just the tags — a
+     variable `x` was coming back as the Cyrillic homoglyph `х`, identical on
+     screen and broken at runtime. Bounded pattern, per the file's own
+     documented quadratic-backtracking discipline.

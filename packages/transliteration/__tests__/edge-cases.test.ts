@@ -156,3 +156,43 @@ describe("NUMBER+WORD - Numbers with attached words", () => {
     expect(toCyrillic(input)).toBe(expected)
   })
 })
+
+// =============================================================================
+// E AFTER A VOWEL — э, not е
+// =============================================================================
+
+/**
+ * Uzbek Cyrillic writes аэропорт, поэма, поэзия, дуэл: every vowel+e seam in
+ * the loanword stock takes э. The word-start-only rule produced аеропорт and
+ * поема, and it broke the round trip too — Cyrillic е after a vowel romanises
+ * as "ye" (фойе → foye), so a bare Latin "e" in that position can only ever
+ * have come from э.
+ */
+describe("E AFTER VOWEL - Latin e following a vowel becomes э", () => {
+  it.each([
+    ["aeroport", "аэропорт"],
+    ["poema", "поэма"],
+    ["poeziya", "поэзия"],
+    ["duel", "дуэл"],
+    ["aerobika", "аэробика"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+
+  it.each([
+    // After a consonant nothing changes — е as before.
+    ["telefon", "телефон"],
+    ["muzey", "музей"],
+    ["besh", "беш"],
+    // Word start keeps э, as before.
+    ["ekran", "экран"],
+    ["ellik", "эллик"]
+  ])("unaffected: %s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+
+  it("closes the round trip for аэропорт", () => {
+    // Arrange / Act / Assert — used to come back as аеропорт.
+    expect(toCyrillic(toLatin("аэропорт"))).toBe("аэропорт")
+  })
+})

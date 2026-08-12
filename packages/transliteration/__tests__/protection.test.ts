@@ -4,7 +4,12 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { findPreservedTerms, normaliseUserTerms, toCyrillic } from "../src"
+import {
+  findPreservedTerms,
+  normaliseUserTerms,
+  toCyrillic,
+  toLatin
+} from "../src"
 
 // =============================================================================
 // IMM - Protected content (immunity)
@@ -182,5 +187,50 @@ describe("user exception list", () => {
 
     // Assert — 8x the input must not cost anywhere near 8^2 the time
     expect(large).toBeLessThan(Math.max(small * 24, 400))
+  })
+})
+
+// =============================================================================
+// CODE SPAN CONTENTS — protected, not just the tags
+// =============================================================================
+
+/**
+ * The generic tag pattern protects the markup; these protect what is INSIDE.
+ * Transliterating code is silent corruption: a variable `x` becomes the
+ * Cyrillic homoglyph `х` — identical on screen, broken at runtime — which is
+ * the one failure a reader cannot see and a compiler cannot forgive.
+ */
+describe("CODE SPANS - contents survive both directions", () => {
+  it("leaves the code inside <code> alone", () => {
+    // Arrange / Act / Assert — `x` used to come back as Cyrillic х.
+    expect(toCyrillic("<code>const x = 1</code> deb yozing")).toBe(
+      "<code>const x = 1</code> деб ёзинг"
+    )
+  })
+
+  it("keeps the documented CLAUDE.md example true", () => {
+    // Arrange / Act / Assert — the repo's own steering file promises this.
+    expect(toLatin("Салом <code>ҳello</code>")).toBe("Salom <code>ҳello</code>")
+  })
+
+  it("protects a <pre> block with markup inside", () => {
+    // Arrange
+    const input = "<pre><code>if (x) return</code></pre> misolida"
+
+    // Act / Assert
+    expect(toCyrillic(input)).toBe(
+      "<pre><code>if (x) return</code></pre> мисолида"
+    )
+  })
+
+  it("still converts the prose around an UNCLOSED code tag", () => {
+    // Arrange / Act — no closing tag: the span pattern must not eat the rest
+    // of the document; the bare-tag pattern takes the markup and the prose
+    // after it converts normally.
+    const result = toCyrillic("<code>salom matni davom etadi")
+
+    // Assert
+    expect(result).toContain("<code>")
+    expect(result).toContain("давом этади")
   })
 })

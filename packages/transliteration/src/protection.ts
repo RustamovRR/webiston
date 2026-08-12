@@ -166,6 +166,22 @@ function buildBasePattern(): string {
     "```[\\s\\S]*?```",
     // Inline code (single backticks)
     "`[^`]+?`",
+    // <code> and <pre> spans WITH their contents.
+    //
+    // The generic tag pattern below protects only the MARKUP; the text between
+    // these two tags is code, and transliterating it is silent corruption — a
+    // variable `x` becomes the Cyrillic homoglyph `х`, identical on screen and
+    // broken at runtime. Listed before the tag pattern so the whole span wins
+    // over its own opening tag.
+    //
+    // The body is BOUNDED for the same reason the tag pattern is: with
+    // `[\\s\\S]*?` an unclosed <code> re-scans to the end of the input once
+    // per occurrence, which is the exact quadratic freeze documented below.
+    // 2,000 characters covers any inline snippet; longer code arrives in
+    // fenced blocks, which the first pattern already protects unbounded
+    // (they are closed by construction in real markdown).
+    "<code(?:\\s[^<>]{0,400})?>[\\s\\S]{0,2000}?<\\/code>",
+    "<pre(?:\\s[^<>]{0,400})?>[\\s\\S]{0,2000}?<\\/pre>",
     // HTML tags: <tag>, </tag>, <tag attr="value">
     //
     // `[^<>]{0,400}` rather than `[^>]*`: the open-ended version scanned to the
