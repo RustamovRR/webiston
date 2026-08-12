@@ -95,6 +95,32 @@ async function repainted(passesBefore: number) {
   )
 }
 
+/** A snippet the detector is certain about, used to drive the paste tests. */
+const PYTHON = `import os
+from pathlib import Path
+
+def collect(root: str) -> list[str]:
+    found = []
+    for entry in Path(root).iterdir():
+        found.append(str(entry))
+    return found
+`
+
+/**
+ * Paste, the way a browser does it.
+ *
+ * `fireEvent.paste` alone changes nothing about the value — the real browser
+ * inserts the text itself, and jsdom does not. So both halves are driven: the
+ * `paste` event that the detector listens to, and the value change that the
+ * editor would have received from it.
+ */
+function pasteInto(element: HTMLElement, text: string) {
+  fireEvent.paste(element, {
+    clipboardData: { getData: () => text }
+  })
+  fireEvent.change(element, { target: { value: text } })
+}
+
 /**
  * Shiki bundles TWO Dracula themes — "Dracula Theme" and "Dracula Theme Soft".
  * An `/Dracula/i` regex matches both and the query throws on the ambiguity,
@@ -547,6 +573,78 @@ describe("code snapshot", () => {
     // that silently does nothing is the worst available outcome.
     const alert = await screen.findByRole("alert")
     expect(alert.textContent).toMatch(/sintaksis/i)
+  })
+
+  /**
+   * The whole point of the detector: nobody finds one entry in a list of 360.
+   * This drives a real `paste` event rather than calling the util, because the
+   * failure worth catching is the wiring — a detector that runs and whose
+   * answer never reaches the picker or the tokeniser.
+   */
+  it("switches the language to the one it detects in a paste", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    expect(screen.getByRole("combobox", { name: /Til/i }).textContent).toMatch(
+      /TypeScript/i
+    )
+
+    // Act
+    pasteInto(codeInput(), PYTHON)
+
+    // Assert — the picker AND the picture. Python's `def` is a keyword only
+    // under the Python grammar, so a picker that changed without the
+    // tokeniser following would still be a bug.
+    await waitFor(() => {
+      expect(
+        screen.getByRole("combobox", { name: /Til/i }).textContent
+      ).toMatch(/Python/i)
+    })
+    const after = await painted((t) => asText(t).includes("def"))
+    expect(asText(after)).toContain("collect")
+  })
+
+  it("says what it did and lets the visitor undo it", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+
+    // Act
+    pasteInto(codeInput(), PYTHON)
+    const notice = await screen.findByRole("status")
+
+    // Assert — a guess that silently replaces a choice is a guess nobody
+    // trusts, and there would be no way to know why the colours changed.
+    expect(notice.textContent).toMatch(/Python/i)
+    // In the visitor's language, not as a key path. A missing key renders as
+    // the literal "CodeSnapshotPage.style.detected", which the `Python` match
+    // above would happily accept once the interpolation fell through.
+    expect(notice.textContent).not.toMatch(/CodeSnapshotPage\./)
+    expect(notice.textContent).toMatch(/Til aniqlandi/i)
+    fireEvent.click(screen.getByRole("button", { name: /Bekor qilish/i }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole("combobox", { name: /Til/i }).textContent
+      ).toMatch(/TypeScript/i)
+    })
+    expect(screen.queryByRole("status")).toBeNull()
+  })
+
+  it("leaves the language alone when it cannot tell", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+
+    // Act — prose is the most common wrong paste, and a wrong switch is
+    // worse than no switch.
+    pasteInto(codeInput(), "Bu shunchaki matn, hech qanday kod emas aslida.")
+
+    // Assert
+    await painted()
+    expect(screen.getByRole("combobox", { name: /Til/i }).textContent).toMatch(
+      /TypeScript/i
+    )
+    expect(screen.queryByRole("status")).toBeNull()
   })
 
   it("offers the editor before the first paint, not after", () => {

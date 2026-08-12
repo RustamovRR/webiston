@@ -1,6 +1,11 @@
 "use client"
 
-import type { ChangeEvent, KeyboardEvent, RefObject } from "react"
+import type {
+  ChangeEvent,
+  ClipboardEvent,
+  KeyboardEvent,
+  RefObject
+} from "react"
 
 import { INDENT } from "../constants"
 import type { Layout } from "../types"
@@ -16,6 +21,8 @@ interface SnapshotEditorProps {
   /** The theme's own foreground, so the caret belongs to the picture. */
   caretColor: string
   label: string
+  /** Handed the pasted text so the language can be guessed from it. */
+  onPaste: (pasted: string) => void
 }
 
 /**
@@ -52,7 +59,8 @@ export function SnapshotEditor({
   fontFamily,
   fontSize,
   caretColor,
-  label
+  label,
+  onPaste
 }: SnapshotEditorProps) {
   /**
    * Tab indents; it does not leave.
@@ -82,6 +90,19 @@ export function SnapshotEditor({
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) =>
     onCodeChange(event.target.value)
 
+  /**
+   * The paste is reported, not intercepted.
+   *
+   * No `preventDefault`: the browser's own paste handles the selection, the
+   * caret and the undo stack correctly, and re-implementing that to read the
+   * text would trade a working editor for a language guess. The clipboard
+   * text is simply handed up alongside it.
+   */
+  const handlePaste = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    const pasted = event.clipboardData.getData("text")
+    if (pasted) onPaste(pasted)
+  }
+
   return (
     <div className="max-h-[calc(100dvh-14rem)] min-h-[320px] overflow-auto rounded-lg border border-border bg-muted/30 p-4">
       {/* `w-fit`, so the wrapper is exactly the picture and the overlay's
@@ -106,6 +127,7 @@ export function SnapshotEditor({
           value={code}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           spellCheck={false}
           autoComplete="off"
           autoCorrect="off"

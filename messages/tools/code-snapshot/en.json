@@ -17,6 +17,8 @@
       "format": "Format",
       "formatting": "Formatting…",
       "formatUnavailable": "No formatter for this language",
+      "detected": "Language detected: {language}",
+      "undoDetection": "Undo",
       "font": "Font",
       "fontSize": "Font size",
       "lineHeight": "Line height",

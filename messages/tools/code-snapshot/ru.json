@@ -17,6 +17,8 @@
       "format": "Форматировать",
       "formatting": "Форматирование…",
       "formatUnavailable": "Для этого языка форматировщика нет",
+      "detected": "Язык определён: {language}",
+      "undoDetection": "Отменить",
       "font": "Шрифт",
       "fontSize": "Размер шрифта",
       "lineHeight": "Высота строки",

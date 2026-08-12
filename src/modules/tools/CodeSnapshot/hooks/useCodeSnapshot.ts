@@ -13,6 +13,7 @@ import {
 } from "../constants"
 import type { CodeLine, Layout, SnapshotOptions } from "../types"
 import { fittingScale } from "../utils/canvas-limits"
+import { detectLanguage } from "../utils/detect"
 import {
   copySnapshotToClipboard,
   downloadSnapshot,
@@ -73,6 +74,17 @@ interface UseCodeSnapshot {
   formatting: boolean
   /** Whether Prettier has a parser for the chosen language at all. */
   formattable: boolean
+  /** Call with the text of a paste; switches the language when it is sure. */
+  onPaste: (pasted: string) => void
+  /**
+   * The language the last paste changed, and what it changed FROM.
+   *
+   * Present only while the notice is on screen. A detector that silently
+   * replaces a choice the visitor made is a detector nobody trusts, so what
+   * it did is stated and undoable.
+   */
+  detected: { from: string; to: string } | null
+  undoDetection: () => void
   reset: () => void
 }
 
@@ -84,7 +96,7 @@ const STARTER_CODE = `export function greet(name: string) {
 
 export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
   const [code, setCode] = useState(STARTER_CODE)
-  const [language, setLanguage] = useState(DEFAULT_LANGUAGE)
+  const [language, setLanguageState] = useState(DEFAULT_LANGUAGE)
   const [theme, setTheme] = useState<string>(DEFAULT_THEME)
   const [scale, setScale] = useState<ExportScale>(DEFAULT_EXPORT_SCALE)
   const [options, setOptions] = useState<SnapshotOptions>({
@@ -248,6 +260,49 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
 
   const dismissError = useCallback(() => setError(null), [])
 
+  const [detected, setDetected] = useState<{
+    from: string
+    to: string
+  } | null>(null)
+
+  /**
+   * Detect the language of a paste, and only of a paste.
+   *
+   * Not on every keystroke: half-typed code changes its apparent language as
+   * it is written — `def` alone is Python, `def foo` still is, and a picker
+   * that flickers between grammars while you type is unusable. A paste is a
+   * complete thought, which is the only moment the evidence is worth reading.
+   *
+   * `detectLanguage` returns `null` whenever it is unsure, and that is
+   * honoured exactly: no guess, no change, no notice.
+   */
+  const onPaste = useCallback(
+    (pasted: string) => {
+      const guess = detectLanguage(pasted)
+      if (!guess || guess === language) return
+      setDetected({ from: language, to: guess })
+      setLanguageState(guess)
+    },
+    [language]
+  )
+
+  const undoDetection = useCallback(() => {
+    if (detected) setLanguageState(detected.from)
+    setDetected(null)
+  }, [detected])
+
+  /**
+   * A manual choice retires the notice.
+   *
+   * Without this the "detected X — undo" line survives the visitor picking
+   * something else by hand, and its undo would then revert a decision they
+   * made deliberately two clicks ago.
+   */
+  const setLanguage = useCallback((next: string) => {
+    setDetected(null)
+    setLanguageState(next)
+  }, [])
+
   const [formatting, setFormatting] = useState(false)
 
   /**
@@ -279,8 +334,12 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
 
   const reset = useCallback(() => {
     setError(null)
+    setDetected(null)
     setCode(STARTER_CODE)
-    setLanguage(DEFAULT_LANGUAGE)
+    // The raw setter, not the wrapper: the line above has already cleared the
+    // notice, and going through `setLanguage` would put a `useCallback` in
+    // this one's dependency list for no behavioural difference.
+    setLanguageState(DEFAULT_LANGUAGE)
     setTheme(DEFAULT_THEME)
     setScale(DEFAULT_EXPORT_SCALE)
     setOptions({ ...DEFAULT_OPTIONS, fontFamily })
@@ -308,6 +367,9 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     format,
     formatting,
     formattable: canFormat(resolveLanguage(language)),
+    onPaste,
+    detected,
+    undoDetection,
     reset
   }
 }

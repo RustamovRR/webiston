@@ -87,6 +87,9 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     format,
     formatting,
     formattable,
+    onPaste,
+    detected,
+    undoDetection,
     reset
   } = useCodeSnapshot(fontFamilies[font])
 
@@ -163,6 +166,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               onFormat={() => void format()}
               formattable={formattable}
               formatting={formatting}
+              detected={detected}
+              onUndoDetection={undoDetection}
             />
           </ToolCard>
         </div>
@@ -198,6 +203,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               fontSize={options.fontSize}
               caretColor={foreground}
               label={t("input.label")}
+              onPaste={onPaste}
             />
             {/* The scale lives here, beside the pixel size it produces —
                 not in the card header. Two reasons, one of them measured: a

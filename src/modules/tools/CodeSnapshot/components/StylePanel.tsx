@@ -34,6 +34,9 @@ interface StylePanelProps {
   /** False for the 342 grammars Prettier has no parser for. */
   formattable: boolean
   formatting: boolean
+  /** Set for as long as the "language detected" notice should be shown. */
+  detected: { from: string; to: string } | null
+  onUndoDetection: () => void
 }
 
 const FRAMES: WindowFrame[] = ["macos", "plain", "none"]
@@ -59,7 +62,9 @@ export function StylePanel({
   onLanguageChange,
   onFormat,
   formattable,
-  formatting
+  formatting,
+  detected,
+  onUndoDetection
 }: StylePanelProps) {
   const t = useTranslations("CodeSnapshotPage.style")
   const titleId = useId()
@@ -131,6 +136,34 @@ export function StylePanel({
           {formatting ? t("formatting") : t("format")}
         </Button>
       </div>
+
+      {/* What the detector did, and how to undo it.
+          A guess that silently replaces a choice the visitor made is a guess
+          nobody trusts, and they would have no way to know why the colours
+          changed. `role="status"` so it is announced without stealing focus —
+          the visitor is mid-paste, and moving focus out of the editor at that
+          moment would be worse than saying nothing. */}
+      {detected && (
+        <p
+          role="status"
+          className="-mt-2 flex flex-wrap items-center gap-x-2 text-muted-foreground text-xs"
+        >
+          <span>
+            {t("detected", {
+              language:
+                languages.find((item) => item.id === detected.to)?.label ??
+                detected.to
+            })}
+          </span>
+          <button
+            type="button"
+            onClick={onUndoDetection}
+            className="cursor-pointer text-primary underline underline-offset-2"
+          >
+            {t("undoDetection")}
+          </button>
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <SelectField

@@ -2,8 +2,8 @@
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
 execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
-first four items of Phase 2 shipped · **Next:** language auto-detect on paste,
-then drag-and-drop and click-a-line-number to focus.
+first five items of Phase 2 shipped · **Next:** drag a file onto the editor,
+then click-a-line-number to focus.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -359,7 +359,48 @@ is the same to the digit. Monospace keeps the advance, so the caret holds.
       whitespace-only tokens** (that fix predates this), so the picture's
       joined text has no spaces in it at all. The observable is the line
       count, read from distinct baselines.
-- `[ ]` **Language auto-detect on paste** — nobody finds one entry in 360.
+- `[x]` **Language auto-detect on paste** — shipped 2026-08-12. Finding one
+      entry in a list of 360 is the worst moment in this tool, and it happens
+      before anything else does.
+
+      **Scored, not first-match.** A ladder of `if`s gets the common cases
+      right and the interesting ones wrong: `def` is Python *and* Ruby, `func`
+      is Go *and* Swift, `class` is six languages. 21 signatures, each a set of
+      weighted marks; `DECISIVE` is reserved for marks that cannot legally
+      appear in another language on the list.
+
+      **It is allowed to say "I don't know", and that is the design.** A wrong
+      switch silently discards a choice the visitor made. Below the confidence
+      floor, or on a tie, it returns `null` and nothing happens. Probed against
+      14 adversarial inputs — Swift, Kotlin, a stack trace, a `.env` file,
+      TOML, invalid JSON, Uzbek prose, SQL inside a JS string — **zero wrong
+      answers; every one returned `null`.**
+
+      Detection runs on **paste only**, never on keystrokes: half-typed code
+      changes its apparent language as it is written, and a picker that
+      flickers between grammars while you type is unusable.
+
+      What it did is stated and undoable — a `role="status"` line naming the
+      language with an undo, announced without stealing focus from the editor.
+
+      **Three real bugs it found in itself, each fixed and pinned by a test:**
+
+      | Bug | Consequence |
+      | --- | --- |
+      | Two signatures returned `bash` and `dockerfile` — Shiki **aliases**, not canonical ids | The picker's `value` matched no option, so it silently showed an empty box. Canonical: `shellscript`, `docker`. A test now asserts every returnable id survives `resolveLanguage` unchanged |
+      | `\bstd::\w+` scored `DECISIVE` for C++ | **Rust spells it identically.** `use std::collections::HashMap;` made a Rust file come back as C++ — confidently wrong, the one outcome this design exists to avoid. Narrowed to the members C++ owns (`std::cout`, `std::vector`, …) |
+      | The Rust `fn` mark anchored on a bare `fn` | Missed every `pub fn`, which is most of an idiomatic file |
+
+      Two coverage gaps the probe exposed and closed: SCSS came back as `css`
+      (losing `$variable` and `&:hover` colours), and a Vue SFC came back as
+      `jsx` because `</template>` matches the JSX pattern. Also added: an
+      untyped React component, which loses on points to HTML and scores 2 on
+      JavaScript, so the scorer alone said nothing about the single most common
+      paste this tool will see.
+
+      Browser-verified on the running dev server: prose → unchanged, Rust →
+      Rust, SQL → SQL, JSX → JSX, Python → Python with the notice, and undo
+      restoring TypeScript.
 - `[ ]` **Drag a file onto the editor** — code and language in one gesture.
 - `[ ]` **Click a line number to focus it.** `focusLines` already works and is
       tested; it has no UI. snappify charges for this and ray.so lacks it.

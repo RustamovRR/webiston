@@ -17,6 +17,8 @@
       "format": "Formatlash",
       "formatting": "Formatlanmoqda…",
       "formatUnavailable": "Bu til uchun formatlagich yo'q",
+      "detected": "Til aniqlandi: {language}",
+      "undoDetection": "Bekor qilish",
       "font": "Shrift",
       "fontSize": "Shrift o'lchami",
       "lineHeight": "Qator balandligi",
