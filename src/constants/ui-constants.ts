@@ -44,11 +44,8 @@ export const TOOL_COLOR_MAP = {
   "device-info": TOOL_COLORS.UTILITIES,
   "camera-recorder": TOOL_COLORS.UTILITIES,
   "microphone-test": TOOL_COLORS.UTILITIES,
-  "keycode-info": TOOL_COLORS.UTILITIES,
   "screen-resolution": TOOL_COLORS.UTILITIES,
-  "user-agent-analyzer": TOOL_COLORS.UTILITIES,
-  "ip-info": TOOL_COLORS.UTILITIES,
-  "website-status": TOOL_COLORS.UTILITIES
+  "ip-info": TOOL_COLORS.UTILITIES
 }
 
 // Common text styles — SEMANTIC TOKENS ONLY.

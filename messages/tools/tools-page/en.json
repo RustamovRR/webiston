@@ -85,10 +85,6 @@
       "title": "Microphone Test",
       "description": "Test your microphone and record audio."
     },
-    "keycodeInfo": {
-      "title": "Keycode Info",
-      "description": "Identify JavaScript event keycodes."
-    },
     "ogMetaGenerator": {
       "title": "Open Graph Meta Generator",
       "description": "Create meta tags for social media platforms."
@@ -101,21 +97,9 @@
       "title": "Screen Resolution",
       "description": "Viewport, the active CSS breakpoint, pixel ratio and aspect ratio"
     },
-    "userAgentAnalyzer": {
-      "title": "User Agent Analyzer",
-      "description": "Analyze browser User Agent strings."
-    },
     "ipInfo": {
       "title": "IP Info",
       "description": "IP location, provider, ASN and time zone"
-    },
-    "websiteStatus": {
-      "title": "Website Status Checker",
-      "description": "Check the availability and status of a website."
-    },
-    "httpStatus": {
-      "title": "HTTP Status Codes",
-      "description": "All HTTP status codes and their meanings."
     }
   },
   "ToolCategories": {

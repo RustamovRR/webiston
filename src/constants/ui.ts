@@ -24,7 +24,6 @@ export interface Tool {
   tKey: string
   href: string
   icon: any
-  color: string
   category: string
   audience: "general" | "developer"
 }
@@ -52,7 +51,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "latinCyrillic",
     href: "/tools/latin-cyrillic",
     icon: RotateCcw,
-    color: "bg-blue-500/20",
     category: "converters",
     audience: "general"
   },
@@ -66,7 +64,6 @@ export const TOOLS_LIST: Tool[] = [
     // card reads `accentFor(tool.category)`, so every `color` here is dead
     // data the token ratchet still counts. Adding a 23rd raw class to a field
     // nobody reads is not a trade worth making.
-    color: "bg-chart-1/12",
     category: "converters",
     audience: "general"
   },
@@ -74,7 +71,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "qrGenerator",
     href: "/tools/qr-generator",
     icon: QrCode,
-    color: "bg-yellow-500/20",
     category: "generators",
     audience: "general"
   },
@@ -82,7 +78,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "codeSnapshot",
     href: "/tools/code-snapshot",
     icon: Code2,
-    color: "bg-violet-500/20",
     category: "generators",
     audience: "developer"
   },
@@ -90,7 +85,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "jsonFormatter",
     href: "/tools/json-formatter",
     icon: FileText,
-    color: "bg-green-500/20",
     category: "converters",
     audience: "developer"
   },
@@ -98,7 +92,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "passwordGenerator",
     href: "/tools/password-generator",
     icon: Lock,
-    color: "bg-cyan-500/20",
     category: "generators",
     audience: "general"
   },
@@ -106,7 +99,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "colorConverter",
     href: "/tools/color-converter",
     icon: Palette,
-    color: "bg-pink-500/20",
     category: "converters",
     audience: "general"
   },
@@ -114,7 +106,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "base64Converter",
     href: "/tools/base64-converter",
     icon: Hash,
-    color: "bg-purple-500/20",
     category: "converters",
     audience: "developer"
   },
@@ -122,7 +113,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "jwtDecoder",
     href: "/tools/jwt-decoder",
     icon: Key,
-    color: "bg-red-500/20",
     category: "converters",
     audience: "developer"
   },
@@ -130,7 +120,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "urlEncoder",
     href: "/tools/url-encoder",
     icon: Link,
-    color: "bg-orange-500/20",
     category: "converters",
     audience: "developer"
   },
@@ -138,7 +127,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "hashGenerator",
     href: "/tools/hash-generator",
     icon: Hash,
-    color: "bg-indigo-500/20",
     category: "generators",
     audience: "developer"
   },
@@ -146,7 +134,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "uuidGenerator",
     href: "/tools/uuid-generator",
     icon: Shuffle,
-    color: "bg-teal-500/20",
     category: "generators",
     audience: "developer"
   },
@@ -154,7 +141,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "ogMetaGenerator",
     href: "/tools/og-meta-generator",
     icon: Share2,
-    color: "bg-blue-500/20",
     category: "generators",
     audience: "developer"
   },
@@ -162,7 +148,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "loremIpsum",
     href: "/tools/lorem-ipsum",
     icon: FileType,
-    color: "bg-gray-500/20",
     category: "generators",
     audience: "general"
   },
@@ -170,7 +155,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "deviceInfo",
     href: "/tools/device-info",
     icon: Monitor,
-    color: "bg-slate-500/20",
     category: "analyzers",
     audience: "general"
   },
@@ -178,7 +162,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "screenResolution",
     href: "/tools/screen-resolution",
     icon: Ruler,
-    color: "bg-purple-600/20",
     category: "analyzers",
     audience: "general"
   },
@@ -186,7 +169,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "ipInfo",
     href: "/tools/ip-info",
     icon: MapPin,
-    color: "bg-red-600/20",
     category: "analyzers",
     audience: "general"
   },
@@ -194,7 +176,6 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "cameraRecorder",
     href: "/tools/camera-recorder",
     icon: Camera,
-    color: "bg-emerald-500/20",
     category: "utilities",
     audience: "general"
   },
@@ -202,45 +183,9 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "microphoneTest",
     href: "/tools/microphone-test",
     icon: Mic,
-    color: "bg-blue-600/20",
     category: "utilities",
     audience: "general"
   }
-  // The four parked tools stay commented here, not deleted: a `__` route
-  // folder is a deliberate parking, not dead code. See the backlog.
-  // {
-  //   tKey: 'keycodeInfo',
-  //   href: '/tools/keycode-info',
-  //   icon: Keyboard,
-  //   color: 'bg-violet-500/20',
-  //   category: 'utilities',
-  //   audience: 'developer',
-  // },
-
-  // {
-  //   tKey: 'userAgentAnalyzer',
-  //   href: '/tools/user-agent-analyzer',
-  //   icon: User,
-  //   color: 'bg-orange-600/20',
-  //   category: 'analyzers',
-  //   audience: 'developer',
-  // },
-  // {
-  //   tKey: 'websiteStatus',
-  //   href: '/tools/website-status',
-  //   icon: Globe2,
-  //   color: 'bg-green-600/20',
-  //   category: 'analyzers',
-  //   audience: 'developer',
-  // },
-  // {
-  //   tKey: 'httpStatus',
-  //   href: '/tools/http-status',
-  //   icon: Server,
-  //   color: 'bg-slate-600/20',
-  //   category: 'analyzers',
-  //   audience: 'developer',
-  // },
 ]
 
 export const TOOL_CATEGORIES: Omit<ToolCategory, "title" | "description">[] = [

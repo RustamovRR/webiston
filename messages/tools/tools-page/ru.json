@@ -85,10 +85,6 @@
       "title": "Проверка микрофона",
       "description": "Проверьте микрофон и запишите звук."
     },
-    "keycodeInfo": {
-      "title": "Коды клавиш",
-      "description": "Определение keycode для событий JavaScript."
-    },
     "ogMetaGenerator": {
       "title": "Генератор Open Graph",
       "description": "Создание мета-тегов для социальных сетей."
@@ -101,21 +97,9 @@
       "title": "Разрешение экрана",
       "description": "Область просмотра, активная точка останова CSS, плотность пикселей и соотношение сторон"
     },
-    "userAgentAnalyzer": {
-      "title": "Анализатор User Agent",
-      "description": "Разбор строки User Agent браузера."
-    },
     "ipInfo": {
       "title": "Информация об IP",
       "description": "Расположение IP, провайдер, ASN и часовой пояс"
-    },
-    "websiteStatus": {
-      "title": "Проверка сайта",
-      "description": "Проверка доступности и статуса сайта."
-    },
-    "httpStatus": {
-      "title": "Коды состояния HTTP",
-      "description": "Все коды состояния HTTP и их значения."
     }
   },
   "ToolCategories": {

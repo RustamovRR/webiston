@@ -192,10 +192,10 @@ export const DEFAULT_EXPORT_FORMAT: ExportFormatId = "png"
  * list only names them so the picker and the layout agree on the order.
  */
 export const CODE_FONTS = [
-  { id: "jetbrains-mono", label: "JetBrains Mono", ligatures: true },
-  { id: "fira-code", label: "Fira Code", ligatures: true },
-  { id: "geist-mono", label: "Geist Mono", ligatures: false },
-  { id: "ibm-plex-mono", label: "IBM Plex Mono", ligatures: false }
+  { id: "jetbrains-mono", label: "JetBrains Mono" },
+  { id: "fira-code", label: "Fira Code" },
+  { id: "geist-mono", label: "Geist Mono" },
+  { id: "ibm-plex-mono", label: "IBM Plex Mono" }
 ] as const
 
 export type CodeFontId = (typeof CODE_FONTS)[number]["id"]
