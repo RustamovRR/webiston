@@ -31,6 +31,10 @@
       "title": "Summani So'z Bilan Yozish",
       "description": "Raqamni o'zbekcha so'z bilan yozing — lotin va kirill yozuvida"
     },
+    "tilxat": {
+      "title": "Tilxat Yozish",
+      "description": "Qarz tilxatini to'ldiring — summa avtomatik so'z bilan, chop etishga tayyor"
+    },
     "jsonFormatter": {
       "title": "JSON Formatlash",
       "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",

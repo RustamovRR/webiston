@@ -31,6 +31,10 @@
       "title": "Number to Words",
       "description": "Write any amount in Uzbek words — Latin and Cyrillic at once"
     },
+    "tilxat": {
+      "title": "Loan Receipt (Tilxat)",
+      "description": "Fill in an Uzbek loan receipt — the sum in words automatically, ready to print"
+    },
     "jsonFormatter": {
       "title": "JSON Formatter",
       "description": "A tool to format and validate JSON data.",

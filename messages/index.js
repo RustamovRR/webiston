@@ -54,6 +54,9 @@ import qrGeneratorUz from "./tools/qr-generator/uz.json"
 import screenResolutionEn from "./tools/screen-resolution/en.json"
 import screenResolutionRu from "./tools/screen-resolution/ru.json"
 import screenResolutionUz from "./tools/screen-resolution/uz.json"
+import tilxatEn from "./tools/tilxat/en.json"
+import tilxatRu from "./tools/tilxat/ru.json"
+import tilxatUz from "./tools/tilxat/uz.json"
 import toolsPageEn from "./tools/tools-page/en.json"
 import toolsPageRu from "./tools/tools-page/ru.json"
 // Tools
@@ -83,6 +86,7 @@ export const uz = {
   ...qrGeneratorUz,
   ...passwordGeneratorUz,
   ...numberToWordsUz,
+  ...tilxatUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
   ...ipInfoUz,
@@ -107,6 +111,7 @@ export const en = {
   ...qrGeneratorEn,
   ...passwordGeneratorEn,
   ...numberToWordsEn,
+  ...tilxatEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
   ...ipInfoEn,
@@ -131,6 +136,7 @@ export const ru = {
   ...qrGeneratorRu,
   ...passwordGeneratorRu,
   ...numberToWordsRu,
+  ...tilxatRu,
   ...ogMetaGeneratorRu,
   ...loremIpsumRu,
   ...ipInfoRu,

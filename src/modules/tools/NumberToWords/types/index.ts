@@ -1,6 +1,6 @@
+import type { AmountError } from "@/lib/uzbek-number-words/amount"
+import type { SumInWords } from "@/lib/uzbek-number-words/words"
 import type { OutputMode } from "../constants"
-import type { AmountError } from "../utils/amount"
-import type { SumInWords } from "../utils/words"
 
 /**
  * What the tool knows at any moment.

@@ -30,6 +30,7 @@ export const TOOL_COLOR_MAP = {
   "url-encoder": TOOL_COLORS.CONVERTERS,
   "latin-cyrillic": TOOL_COLORS.CONVERTERS,
   "number-to-words": TOOL_COLORS.CONVERTERS,
+  tilxat: TOOL_COLORS.GENERATORS,
   "color-converter": TOOL_COLORS.CONVERTERS,
   "jwt-decoder": TOOL_COLORS.CONVERTERS,
 

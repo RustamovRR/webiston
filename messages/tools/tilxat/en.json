@@ -1,0 +1,89 @@
+{
+  "TilxatPage": {
+    "ToolHeader": {
+      "title": "Uzbek Loan Receipt (Tilxat)",
+      "description": "Fill in a loan receipt — the sum is written out in words automatically, in Latin and Cyrillic script, ready to print."
+    },
+    "form": {
+      "title": "Details",
+      "borrower": {
+        "legend": "Borrower (writes the tilxat)"
+      },
+      "lender": {
+        "legend": "Lender"
+      },
+      "loan": {
+        "legend": "Loan terms"
+      },
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Aliyev Vali Salimovich",
+      "passport": "Passport series and number",
+      "pinfl": "JSHSHIR / PINFL (optional)",
+      "address": "Registration address",
+      "addressPlaceholder": "Tashkent, Chilonzor district, ...",
+      "amount": "Loan amount (in so'm)",
+      "method": "How the money was given",
+      "methods": {
+        "naqd": "In cash",
+        "karta": "By card transfer"
+      },
+      "givenDate": "Date given",
+      "returnDate": "Return deadline",
+      "city": "Place of signing",
+      "cityPlaceholder": "Tashkent",
+      "interestFree": "Interest-free (adds the \"interest-free\" clause)",
+      "witnesses": {
+        "legend": "Witnesses (optional)",
+        "hint": "Witnesses are not required, but they strengthen the document if a dispute arises.",
+        "name": "Witness {number} full name"
+      }
+    },
+    "preview": {
+      "title": "Document",
+      "scriptLabel": "Script",
+      "scripts": {
+        "lotin": "Latin",
+        "kirill": "Кирилл"
+      },
+      "print": "Print",
+      "note": "The signature is always handwritten. The safest form is for the borrower to copy the whole text by hand — handwriting can be verified by an expert. Empty fields print as writing lines, so a blank form can be printed and filled in by hand."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "legal": {
+          "question": "Is a tilxat legally binding?",
+          "answer": "Yes. Under Article 733 of the Civil Code of Uzbekistan, a borrower's receipt means the loan agreement counts as concluded in written form. Above ten times the base calculation amount, written form is mandatory — and a tilxat is exactly what satisfies it. In a dispute, courts accept a tilxat as written evidence (sources: lex.uz, Civil Code Articles 732–733; regional Ministry of Justice guidance)."
+        },
+        "elements": {
+          "question": "What must a tilxat contain?",
+          "answer": "The elements required in legal practice: both parties' full names, passport details and registration addresses; the sum in digits AND in words; the date the money was given and the return deadline; how it was given (cash or card transfer); and the borrower's handwritten signature. This tool lays out every element, and writes the sum in words itself — so it cannot be mistyped."
+        },
+        "handwritten": {
+          "question": "Is a printed tilxat valid, or must it be handwritten?",
+          "answer": "Both are valid, but the signature must always be by hand. Where a dispute is likely, having the borrower copy the whole text by hand is safer — handwriting can be examined by an expert. You can print this tool's output and sign it, or use it as the model to copy by hand."
+        },
+        "notary": {
+          "question": "Does it need to be notarised?",
+          "answer": "No. A tilxat is binding without a notary. You may notarise it if you wish — it strengthens the evidence further — but the law does not require it."
+        },
+        "currency": {
+          "question": "Why is the sum only in so'm?",
+          "answer": "Settlements between individuals in Uzbekistan are made in the national currency — lending in foreign currency conflicts with currency legislation. That is why this tool accepts and writes sums in so'm only."
+        },
+        "privacy": {
+          "question": "Where does my data go?",
+          "answer": "Nowhere. The whole document is composed in your browser: nothing is uploaded, nothing is stored. Close the page and the data is gone."
+        }
+      }
+    },
+    "errors": {
+      "name": "A name can only contain letters",
+      "passport": "A passport is 2 letters and 7 digits: AB 1234567",
+      "pinfl": "JSHSHIR is exactly 14 digits",
+      "address": "An address needs at least one word",
+      "amount": "This does not look like a number — digits only",
+      "dateOrder": "The return date cannot be before the loan date"
+    }
+  }
+}

@@ -6,7 +6,7 @@ import {
   UZBEK_SCALES,
   UZBEK_TENS,
   UZBEK_UNITS
-} from "../constants"
+} from "./constants"
 import { amountToWords, capitalise, integerToWords } from "./words"
 
 /**

@@ -2,6 +2,7 @@ import {
   Camera,
   Code2,
   Coins,
+  FileSignature,
   FileText,
   FileType,
   Globe,
@@ -65,6 +66,13 @@ export const TOOLS_LIST: Tool[] = [
     // data the token ratchet still counts. Adding a 23rd raw class to a field
     // nobody reads is not a trade worth making.
     category: "converters",
+    audience: "general"
+  },
+  {
+    tKey: "tilxat",
+    href: "/tools/tilxat",
+    icon: FileSignature,
+    category: "generators",
     audience: "general"
   },
   {

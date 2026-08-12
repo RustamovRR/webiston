@@ -9,12 +9,11 @@ import { useId } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
-
+import { parseAmount } from "@/lib/uzbek-number-words/amount"
+import { amountToWords, capitalise } from "@/lib/uzbek-number-words/words"
 import { WordsCard } from "./components"
 import { OUTPUT_MODES, type OutputMode } from "./constants"
 import { useNumberToWords } from "./hooks/useNumberToWords"
-import { parseAmount } from "./utils/amount"
-import { amountToWords, capitalise } from "./utils/words"
 
 /**
  * The example under the empty state — computed by the REAL pipeline, at module

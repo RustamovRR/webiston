@@ -1,11 +1,10 @@
 "use client"
 
 import { useCallback, useMemo, useState } from "react"
-
+import { formatAmount, parseAmount } from "@/lib/uzbek-number-words/amount"
+import { amountToWords, capitalise } from "@/lib/uzbek-number-words/words"
 import { DEFAULT_MODE, type OutputMode } from "../constants"
 import type { ConversionState } from "../types"
-import { formatAmount, parseAmount } from "../utils/amount"
-import { amountToWords, capitalise } from "../utils/words"
 
 interface UseNumberToWords {
   input: string

@@ -1,0 +1,89 @@
+{
+  "TilxatPage": {
+    "ToolHeader": {
+      "title": "Tilxat Yozish",
+      "description": "Qarz tilxatini to'ldiring — summa avtomatik so'z bilan yoziladi, hujjat lotin va kirill yozuvida, chop etishga tayyor."
+    },
+    "form": {
+      "title": "Ma'lumotlar",
+      "borrower": {
+        "legend": "Qarz oluvchi (tilxatni yozuvchi)"
+      },
+      "lender": {
+        "legend": "Qarz beruvchi"
+      },
+      "loan": {
+        "legend": "Qarz shartlari"
+      },
+      "fullName": "F.I.Sh. (to'liq)",
+      "fullNamePlaceholder": "Aliyev Vali Salimovich",
+      "passport": "Pasport seriyasi va raqami",
+      "pinfl": "JSHSHIR (ixtiyoriy)",
+      "address": "Yashash manzili",
+      "addressPlaceholder": "Toshkent shahri, Chilonzor tumani, ...",
+      "amount": "Qarz summasi (so'mda)",
+      "method": "Pul qanday berildi",
+      "methods": {
+        "naqd": "Naqd pul bilan",
+        "karta": "Bank kartasiga o'tkazma bilan"
+      },
+      "givenDate": "Berilgan sana",
+      "returnDate": "Qaytarish muddati",
+      "city": "Tuzilgan joy",
+      "cityPlaceholder": "Toshkent shahri",
+      "interestFree": "Qarz foizsiz («Qarz foizsiz berildi» bandi yoziladi)",
+      "witnesses": {
+        "legend": "Guvohlar (ixtiyoriy)",
+        "hint": "Guvohlar shart emas, lekin nizo chiqsa hujjatning isbot kuchini oshiradi.",
+        "name": "{number}-guvoh F.I.Sh."
+      }
+    },
+    "preview": {
+      "title": "Hujjat",
+      "scriptLabel": "Yozuv",
+      "scripts": {
+        "lotin": "Lotin",
+        "kirill": "Кирилл"
+      },
+      "print": "Chop etish",
+      "note": "Imzo har doim qo'lda qo'yiladi. Eng ishonchli shakl — qarz oluvchi butun matnni o'z qo'li bilan ko'chirib yozishi: nizo chiqsa, xatni ekspertiza tekshira oladi. Bo'sh maydonlar chiziq bo'lib chiqadi — shaklni bo'sh holda chop etib, qo'lda to'ldirish ham mumkin."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "legal": {
+          "question": "Tilxat qonuniy kuchga egami?",
+          "answer": "Ha. Fuqarolik kodeksining 733-moddasiga ko'ra, qarz oluvchining tilxati mavjud bo'lsa, qarz shartnomasi yozma shaklda tuzilgan hisoblanadi. Summa bazaviy hisoblash miqdorining o'n baravaridan oshsa, yozma shakl majburiy — tilxat aynan shu talabni bajaradi. Nizo chiqqanda sud tilxatni yozma dalil sifatida qabul qiladi (manba: lex.uz, FK 732–733-moddalar; Adliya vazirligi hududiy boshqarmasi tushuntirishlari)."
+        },
+        "elements": {
+          "question": "Tilxatda nimalar bo'lishi shart?",
+          "answer": "Yuridik amaliyotda talab qilinadigan bandlar: ikkala tomonning F.I.Sh., pasport ma'lumotlari va yashash manzili; summa raqam va so'z bilan; pul berilgan sana va qaytarish muddati; pul qanday berilgani (naqd yoki kartaga o'tkazma); qarz oluvchining o'z qo'li bilan qo'yilgan imzosi. Bu vosita barcha bandlarni shakl bo'yicha joylashtiradi, summani esa so'z bilan o'zi yozadi — xato qilib bo'lmaydi."
+        },
+        "handwritten": {
+          "question": "Chop etilgan tilxat yaroqlimi yoki qo'lda yozish kerakmi?",
+          "answer": "Ikkalasi ham yaroqli, lekin imzo har doim qo'lda qo'yilishi shart. Nizo ehtimoli yuqori bo'lsa, butun matnni qarz oluvchi o'z qo'li bilan ko'chirib yozgani afzal — dastxatni ekspertiza tekshira oladi. Bu vosita chiqargan matnni chop etib imzolash ham, undan qo'lda ko'chirish uchun namuna sifatida foydalanish ham mumkin."
+        },
+        "notary": {
+          "question": "Notarial tasdiqlash shartmi?",
+          "answer": "Yo'q, shart emas — tilxat notariussiz ham kuchga ega. Xohlasangiz, notariusda tasdiqlatishingiz mumkin: bu hujjatning isbot kuchini yanada oshiradi, lekin qonun buni talab qilmaydi."
+        },
+        "currency": {
+          "question": "Nega summa faqat so'mda yoziladi?",
+          "answer": "O'zbekistonda jismoniy shaxslar o'rtasidagi hisob-kitoblar milliy valyutada amalga oshiriladi — chet el valyutasida qarz berish valyuta qonunchiligiga zid keladi. Shuning uchun vosita summani faqat so'mda qabul qiladi va yozadi."
+        },
+        "privacy": {
+          "question": "Kiritgan ma'lumotlarim qayerga boradi?",
+          "answer": "Hech qayerga. Butun hujjat brauzeringizning o'zida tuziladi: serverga hech narsa yuborilmaydi, hech narsa saqlanmaydi. Sahifani yopsangiz, kiritgan ma'lumotlaringiz ham yo'qoladi."
+        }
+      }
+    },
+    "errors": {
+      "name": "Ismda faqat harflar bo'lishi kerak",
+      "passport": "Pasport 2 harf va 7 raqamdan iborat: AB 1234567",
+      "pinfl": "JSHSHIR aynan 14 ta raqam bo'ladi",
+      "address": "Manzilda kamida bitta so'z bo'lishi kerak",
+      "amount": "Bu raqamga o'xshamayapti — faqat son kiriting",
+      "dateOrder": "Qaytarish sanasi berilgan sanadan oldin bo'la olmaydi"
+    }
+  }
+}

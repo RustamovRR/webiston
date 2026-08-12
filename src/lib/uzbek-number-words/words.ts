@@ -1,5 +1,5 @@
 import { toCyrillic } from "@webiston/transliteration"
-
+import type { Amount } from "./amount"
 import {
   CURRENCY_MAJOR,
   CURRENCY_MINOR,
@@ -8,8 +8,7 @@ import {
   UZBEK_SCALES,
   UZBEK_TENS,
   UZBEK_UNITS
-} from "../constants"
-import type { Amount } from "./amount"
+} from "./constants"
 
 /**
  * The sum, in Uzbek words. Both scripts.

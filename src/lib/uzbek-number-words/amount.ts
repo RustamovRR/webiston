@@ -1,4 +1,4 @@
-import { MAX_DIGITS, MINOR_DIGITS } from "../constants"
+import { MAX_DIGITS, MINOR_DIGITS } from "./constants"
 
 /**
  * Reading the number a person actually typed or pasted.
