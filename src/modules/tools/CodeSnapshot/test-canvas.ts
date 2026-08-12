@@ -23,6 +23,15 @@ export interface DrawnText {
   y: number
   fillStyle: string
   font: string
+  /**
+   * `globalAlpha` at the moment of the draw.
+   *
+   * The only observable for line focus. The painter dims a line by setting
+   * alpha, not by changing its colour, so a recording that keeps colours but
+   * drops alpha cannot tell a focused snapshot from an unfocused one — and
+   * "the other lines went dim" is the entire feature.
+   */
+  alpha: number
 }
 
 export interface CanvasRecording {
@@ -79,7 +88,8 @@ export function installCanvasStub(): CanvasRecording {
   function createContext(canvas: HTMLCanvasElement) {
     // Not a colour: every recorded `fillText` is preceded by a real assignment,
     // so this only ever shows up if the painter forgets to set one.
-    const state = { font: "10px sans-serif", fillStyle: "unset" }
+    const state = { font: "10px sans-serif", fillStyle: "unset", alpha: 1 }
+    const stack: (typeof state)[] = []
 
     return {
       canvas,
@@ -97,7 +107,12 @@ export function installCanvasStub(): CanvasRecording {
         // token colours stay readable in the recording.
         if (typeof value === "string") state.fillStyle = value
       },
-      globalAlpha: 1,
+      get globalAlpha() {
+        return state.alpha
+      },
+      set globalAlpha(value: number) {
+        state.alpha = value
+      },
       shadowColor: "",
       shadowBlur: 0,
       shadowOffsetY: 0,
@@ -111,7 +126,14 @@ export function installCanvasStub(): CanvasRecording {
       },
       fillText: (text: string, x: number, y: number) => {
         const pass = recording.passes.at(-1)
-        pass?.push({ text, x, y, fillStyle: state.fillStyle, font: state.font })
+        pass?.push({
+          text,
+          x,
+          y,
+          fillStyle: state.fillStyle,
+          font: state.font,
+          alpha: state.alpha
+        })
       },
       fillRect: (x: number, y: number, width: number, height: number) => {
         recording.fills.push({
@@ -133,8 +155,19 @@ export function installCanvasStub(): CanvasRecording {
       setTransform: () => {
         recording.passes.push([])
       },
-      save: () => {},
-      restore: () => {},
+      // REAL save/restore, not no-ops.
+      //
+      // The painter halves the alpha for a line number inside a save/restore
+      // pair. With no-ops the 0.4 leaked onto every token drawn after it, so
+      // the recording showed the whole snapshot dimmed and any assertion
+      // about focus was measuring the stub instead of the painter.
+      save: () => {
+        stack.push({ ...state })
+      },
+      restore: () => {
+        const previous = stack.pop()
+        if (previous) Object.assign(state, previous)
+      },
       beginPath: () => {},
       closePath: () => {},
       moveTo: () => {},

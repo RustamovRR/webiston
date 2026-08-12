@@ -7,7 +7,9 @@
     "input": {
       "title": "Code",
       "label": "Code to turn into an image",
-      "placeholder": "Paste your code here…"
+      "placeholder": "Paste your code here…",
+      "dropHint": "Drop the file here",
+      "focusLine": "Highlight line {number}"
     },
     "style": {
       "title": "Appearance",
@@ -43,7 +45,9 @@
         "paper": "Paper",
         "none": "Transparent"
       },
-      "titleOnlyMacos": "The title only shows on the macOS window"
+      "titleOnlyMacos": "The title only shows on the macOS window",
+      "focusHint": "Click a line number to highlight it",
+      "clearFocus": "Clear focus ({count})"
     },
     "preview": {
       "title": "Result",
@@ -63,7 +67,10 @@
       "paint": "The picture could not be drawn. Try a shorter snippet.",
       "export": "The image could not be saved — it may be too large.",
       "tooLarge": "This snippet is too long: the browser cannot make an image that big. Shorten it.",
-      "format": "Could not format — the code has a syntax error."
+      "format": "Could not format — the code has a syntax error.",
+      "tooBig": "File too large — up to 256 KB is accepted.",
+      "notText": "That is not a text file. Drop a source file instead.",
+      "unreadable": "The file could not be read."
     }
   }
 }

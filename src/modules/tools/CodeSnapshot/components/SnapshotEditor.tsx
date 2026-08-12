@@ -3,9 +3,11 @@
 import type {
   ChangeEvent,
   ClipboardEvent,
+  DragEvent,
   KeyboardEvent,
   RefObject
 } from "react"
+import { useState } from "react"
 
 import { INDENT } from "../constants"
 import type { Layout } from "../types"
@@ -23,6 +25,15 @@ interface SnapshotEditorProps {
   label: string
   /** Handed the pasted text so the language can be guessed from it. */
   onPaste: (pasted: string) => void
+  /** Handed a file dragged onto the picture. */
+  onDropFile: (file: File) => void
+  /** Shown over the picture while a file is being dragged across it. */
+  dropHint: string
+  /** Positional, 1-based line numbers currently kept at full strength. */
+  focusLines: number[]
+  onToggleLineFocus: (line: number) => void
+  /** `{number}` is the number PRINTED in the gutter, not the position. */
+  focusLabel: (printed: string) => string
 }
 
 /**
@@ -60,8 +71,14 @@ export function SnapshotEditor({
   fontSize,
   caretColor,
   label,
-  onPaste
+  onPaste,
+  onDropFile,
+  dropHint,
+  focusLines,
+  onToggleLineFocus,
+  focusLabel
 }: SnapshotEditorProps) {
+  const [dragging, setDragging] = useState(false)
   /**
    * Tab indents; it does not leave.
    *
@@ -103,8 +120,62 @@ export function SnapshotEditor({
     if (pasted) onPaste(pasted)
   }
 
+  /**
+   * Drag and drop, with the two `preventDefault` calls that make it work.
+   *
+   * `dragOver` must be cancelled or the browser refuses the drop and navigates
+   * to the file instead — the whole page is replaced by the raw source, which
+   * is the classic way this feature ships broken. `drop` is cancelled for the
+   * same reason.
+   *
+   * `dragLeave` fires when the pointer crosses into a CHILD element too, so
+   * the highlight would flicker off as soon as the file passed over the
+   * canvas. `relatedTarget` is where the pointer went; if that is still inside
+   * this box, the drag never left.
+   */
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!event.dataTransfer.types.includes("Files")) return
+    event.preventDefault()
+    setDragging(true)
+  }
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    const next = event.relatedTarget
+    if (next instanceof Node && event.currentTarget.contains(next)) return
+    setDragging(false)
+  }
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setDragging(false)
+    // The first file only. Dropping a folder of source and getting one
+    // arbitrary picture is not a feature anyone asked for.
+    const file = event.dataTransfer.files[0]
+    if (file) onDropFile(file)
+  }
+
   return (
-    <div className="max-h-[calc(100dvh-14rem)] min-h-[320px] overflow-auto rounded-lg border border-border bg-muted/30 p-4">
+    // The drop target is the scroll box, not the canvas: a file has to be
+    // accepted anywhere over the editor, including the margin around a short
+    // snippet. Not focusable and carries no role — dropping is an ALTERNATIVE
+    // to typing, never the only way in, and the textarea inside it is the
+    // real control.
+    // biome-ignore lint/a11y/noStaticElementInteractions: a drop target has no
+    // keyboard equivalent to offer; every path it opens (paste, type, pick a
+    // language) is already reachable from the controls beside it.
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`relative max-h-[calc(100dvh-14rem)] min-h-[320px] overflow-auto rounded-lg border bg-muted/30 p-4 ${
+        dragging ? "border-primary border-dashed" : "border-border"
+      }`}
+    >
+      {dragging && (
+        <p className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/80 font-medium text-foreground text-sm">
+          {dropHint}
+        </p>
+      )}
       {/* `w-fit`, so the wrapper is exactly the picture and the overlay's
           absolute coordinates are the layout's own — no offset arithmetic. */}
       {/* No ARIA on the canvas, deliberately. It has no fallback content and
@@ -123,6 +194,45 @@ export function SnapshotEditor({
           }
           className="block"
         />
+        {/* One hit area per line number, sized and placed from the layout the
+            painter used — so what you click is exactly what you see.
+            Real `<button>`s, not one click handler over the strip with the
+            line worked out from `offsetY`: that version is mouse-only, and
+            this is the control that ray.so does not have and snappify charges
+            for. The gutter sits LEFT of `codeX`, which is where the textarea
+            starts, so nothing overlaps.
+            Rendered only when the numbers are on — there is nothing to click
+            otherwise, and `gutterWidth` is 0. */}
+        {layout && layout.gutterWidth > 0 && (
+          <div className="pointer-events-none absolute inset-0">
+            {layout.lines.map((line, index) =>
+              line.number === null ? null : (
+                <button
+                  key={line.number}
+                  type="button"
+                  // POSITIONAL, not the printed number: the layout dims by
+                  // position, and `firstLineNumber` lets a snippet lifted from
+                  // line 340 print 340 while still being line 1.
+                  onClick={() => onToggleLineFocus(index + 1)}
+                  aria-pressed={focusLines.includes(index + 1)}
+                  className="pointer-events-auto absolute cursor-pointer rounded-[3px] hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring"
+                  style={{
+                    left: layout.codeX - layout.gutterWidth,
+                    top: line.top,
+                    width: layout.gutterWidth,
+                    height: layout.lineHeight
+                  }}
+                >
+                  {/* The number itself is painted on the canvas underneath;
+                      this is the name assistive tech reads. `sr-only` is safe
+                      HERE — it hides text inside a button that has real size,
+                      unlike a focusable element collapsed to a point. */}
+                  <span className="sr-only">{focusLabel(line.number)}</span>
+                </button>
+              )
+            )}
+          </div>
+        )}
         <textarea
           value={code}
           onChange={handleChange}

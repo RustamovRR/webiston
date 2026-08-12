@@ -19,6 +19,7 @@ import {
   downloadSnapshot,
   snapshotFileName
 } from "../utils/export"
+import { readDroppedFile } from "../utils/file-drop"
 import { canFormat, formatCode } from "../utils/format"
 import { highlightToLines, resolveLanguage } from "../utils/highlight"
 import { layoutSnapshot } from "../utils/layout"
@@ -42,6 +43,9 @@ interface UseCodeSnapshot {
   setTheme: (theme: string) => void
   options: SnapshotOptions
   updateOptions: (patch: Partial<SnapshotOptions>) => void
+  /** Put a line in or out of the focus set. POSITIONAL, 1-based. */
+  toggleLineFocus: (line: number) => void
+  clearLineFocus: () => void
   scale: ExportScale
   setScale: (scale: ExportScale) => void
   canvasRef: RefObject<HTMLCanvasElement | null>
@@ -85,6 +89,8 @@ interface UseCodeSnapshot {
    */
   detected: { from: string; to: string } | null
   undoDetection: () => void
+  /** A file dragged onto the editor: its contents, language and name. */
+  dropFile: (file: File) => Promise<void>
   reset: () => void
 }
 
@@ -227,6 +233,30 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
   }, [])
 
   /**
+   * Put a line in or out of the focus set.
+   *
+   * The number is POSITIONAL — first line is 1 — not the number printed in the
+   * gutter. `firstLineNumber` lets a snippet lifted from line 340 say so, and
+   * the layout dims by position (`focus.has(index + 1)`), so the two must not
+   * be confused. The button's label uses the printed number, because that is
+   * what the reader can see.
+   */
+  const toggleLineFocus = useCallback((line: number) => {
+    setOptions((current) => {
+      const next = new Set(current.focusLines)
+      // `delete` reports whether it removed anything, which is the toggle.
+      if (!next.delete(line)) next.add(line)
+      return { ...current, focusLines: [...next].sort((a, b) => a - b) }
+    })
+  }, [])
+
+  const clearLineFocus = useCallback(() => {
+    setOptions((current) =>
+      current.focusLines.length === 0 ? current : { ...current, focusLines: [] }
+    )
+  }, [])
+
+  /**
    * Both exits report success rather than throwing.
    *
    * An `onClick={download}` hands React a promise nobody awaits, so a
@@ -303,6 +333,44 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     setLanguageState(next)
   }, [])
 
+  /**
+   * A dropped file: code, language and window title in one gesture.
+   *
+   * The extension is trusted OVER the content scorer, and the order matters:
+   * a `.rs` file is Rust because its author said so, and no amount of pattern
+   * matching outranks that. `detectLanguage` is the fallback for the cases the
+   * extension cannot answer — a `.txt` holding Python, or a file with no
+   * extension at all.
+   *
+   * The filename also becomes the window title. That is the whole reason
+   * anyone types in that field, and here it is already known.
+   */
+  const dropFile = useCallback(
+    async (file: File) => {
+      let dropped: Awaited<ReturnType<typeof readDroppedFile>>
+      try {
+        dropped = await readDroppedFile(file)
+      } catch (failure) {
+        setError(
+          failure instanceof Error && failure.message
+            ? failure.message
+            : "unreadable"
+        )
+        return
+      }
+
+      const next = dropped.language ?? detectLanguage(dropped.code)
+      setCode(dropped.code)
+      setOptions((current) => ({ ...current, title: dropped.title }))
+      setError(null)
+      if (next && next !== language) {
+        setDetected({ from: language, to: next })
+        setLanguageState(next)
+      }
+    },
+    [language]
+  )
+
   const [formatting, setFormatting] = useState(false)
 
   /**
@@ -354,6 +422,8 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     setTheme,
     options,
     updateOptions,
+    toggleLineFocus,
+    clearLineFocus,
     scale,
     setScale,
     canvasRef,
@@ -370,6 +440,7 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     onPaste,
     detected,
     undoDetection,
+    dropFile,
     reset
   }
 }

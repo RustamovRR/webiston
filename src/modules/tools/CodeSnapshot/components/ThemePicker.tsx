@@ -61,15 +61,27 @@ export function ThemePicker({
           <label
             key={theme.id}
             title={theme.label}
-            className="min-w-0 cursor-pointer"
+            className="relative min-w-0 cursor-pointer"
           >
+            {/* Invisible, but NOT `sr-only`.
+                Tailwind's `sr-only` collapses the input to 1×1px with
+                `clip-path: inset(50%)` — zero visible area. Focus moves to it
+                on click, the browser tries to scroll a zero-area element into
+                view, and the arithmetic runs away: measured on the running
+                page, picking a theme jumped the window **906px** down, and
+                `input.focus()` on its own moved it **1135px**. The same call
+                with `{ preventScroll: true }` moved it 0, which is what named
+                the cause.
+                Covering the swatch at full size instead makes the focused
+                element the box you can already see, so scrolling it into view
+                is a no-op. */}
             <input
               type="radio"
               name={groupName}
               value={theme.id}
               checked={theme.id === value}
               onChange={() => onChange(theme.id)}
-              className="peer sr-only"
+              className="peer absolute inset-0 m-0 h-full w-full cursor-pointer appearance-none opacity-0"
             />
             {/* The ring goes on the wrapper, not the swatch: a border drawn
                 inside the swatch disappears into a theme whose background is

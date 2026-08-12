@@ -63,15 +63,18 @@ export function BackgroundPicker({
           <label
             key={option.id}
             title={option.label}
-            className="min-w-0 cursor-pointer"
+            className="relative min-w-0 cursor-pointer"
           >
+            {/* Full-size and transparent, never `sr-only` — see the comment in
+                `ThemePicker`. A 1×1px focused element makes the browser scroll
+                the window hundreds of pixels trying to reveal it. */}
             <input
               type="radio"
               name={groupName}
               value={option.id}
               checked={option.id === value}
               onChange={() => onChange(option.value)}
-              className="peer sr-only"
+              className="peer absolute inset-0 m-0 h-full w-full cursor-pointer appearance-none opacity-0"
             />
             <span className="block rounded-md p-0.5 ring-1 ring-border transition-shadow peer-checked:ring-2 peer-checked:ring-primary peer-focus-visible:ring-2 peer-focus-visible:ring-ring">
               {/* The transparent preset has no colour to show, so it shows the

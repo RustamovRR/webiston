@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import common from "../../../../messages/common/uz.json"
 import messages from "../../../../messages/tools/code-snapshot/uz.json"
 import { CodeSnapshot } from "./CodeSnapshot"
-import { THEME_PALETTES } from "./constants"
+import { DIMMED_OPACITY, THEME_PALETTES } from "./constants"
 import {
   type CanvasRecording,
   type DrawnText,
@@ -119,6 +119,19 @@ function pasteInto(element: HTMLElement, text: string) {
     clipboardData: { getData: () => text }
   })
   fireEvent.change(element, { target: { value: text } })
+}
+
+/**
+ * Drop a file on the editor's box.
+ *
+ * The target is the scroll box, not the textarea: a file has to be accepted
+ * anywhere over the picture, including the margin around a short snippet. It
+ * is found through the textarea so the test does not hard-code the markup.
+ */
+function dropOnEditor(file: File) {
+  const box = codeInput().closest("div.overflow-auto")
+  if (!box) throw new Error("editor drop target not found")
+  fireEvent.drop(box, { dataTransfer: { files: [file], types: ["Files"] } })
 }
 
 /**
@@ -261,6 +274,47 @@ describe("code snapshot", () => {
     expect(chip?.style.backgroundColor).toBe(hexToRgb(dracula?.bg ?? ""))
   })
 
+  /**
+   * A regression guard for a bug jsdom cannot see.
+   *
+   * Picking a theme used to jump the window **906px** down. The swatches are
+   * native radios styled through a hidden input, and the input was `sr-only` —
+   * Tailwind collapses that to 1×1px with `clip-path: inset(50%)`, so it has
+   * no visible area at all. Clicking moves focus to it, the browser scrolls a
+   * zero-area element into view, and the arithmetic runs away: `input.focus()`
+   * alone moved the page **1135px**, while `focus({ preventScroll: true })`
+   * moved it 0 — which is what named the cause.
+   *
+   * jsdom has no layout, so the scroll itself cannot be asserted here. What
+   * CAN be pinned is the cause: the focusable input has to carry the geometry
+   * of the swatch you can see. Measured after the fix, in a real browser:
+   * page moved **0**, and the scroll box still reveals a swatch below its fold.
+   */
+  it("keeps the swatch radios sized, not collapsed to a point", async () => {
+    // Arrange — the two swatch grids only. `SegmentedControl` in
+    // `@webiston/ui` still uses `sr-only`, and it was checked rather than
+    // assumed: clicking 1x/2x/3x moves the page **0px**. The runaway needs a
+    // tall scroll container to happen in, which the scale control is not, so
+    // there is no defect there to fix and no reason to touch a component 20
+    // other tools render.
+    renderTool()
+    await painted()
+    const swatches = screen
+      .getAllByRole("radio")
+      .filter((radio) =>
+        /Mavzu|Fon/.test(
+          radio.closest("fieldset")?.querySelector("legend")?.textContent ?? ""
+        )
+      )
+
+    // Assert
+    expect(swatches.length).toBeGreaterThan(60)
+    const collapsed = swatches.filter((radio) =>
+      radio.className.split(/\s+/).includes("sr-only")
+    )
+    expect(collapsed).toEqual([])
+  })
+
   it("paints the gradient a background chip stands for", async () => {
     // Arrange
     renderTool()
@@ -383,6 +437,16 @@ describe("code snapshot", () => {
     // Arrange
     renderTool()
     await painted()
+    // Wait for the geometry to SETTLE, not merely for a paint to have
+    // happened. `painted()` returns on the first pass, and an early pass can
+    // still be carrying a smaller layout — reading the CSS width there
+    // captures a number that changes again a tick later, and the test then
+    // compares two different pictures. The settled state is the one where the
+    // backing store is exactly the chosen scale times the CSS size.
+    await waitFor(() => {
+      const css = Number.parseFloat(preview().style.width)
+      expect(preview().width).toBe(Math.round(css * 2))
+    })
     // Both numbers have to be read NOW: the element is reused across renders,
     // so holding a reference and reading `.height` after the act compares 3x
     // against 3x and proves nothing.
@@ -645,6 +709,181 @@ describe("code snapshot", () => {
       /TypeScript/i
     )
     expect(screen.queryByRole("status")).toBeNull()
+  })
+
+  /**
+   * A dropped file answers three questions at once — code, language, and the
+   * filename for the title bar — and the wiring bug worth catching is any one
+   * of them not arriving.
+   */
+  it("takes the code, the language and the title from a dropped file", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+
+    // Act
+    dropOnEditor(
+      new File(['fn main() {\n    println!("salom");\n}'], "greet.rs")
+    )
+
+    // Assert
+    await waitFor(() => {
+      expect(
+        screen.getByRole("combobox", { name: /Til/i }).textContent
+      ).toMatch(/Rust/i)
+    })
+    expect((codeInput() as HTMLTextAreaElement).value).toContain("println!")
+    expect(screen.getByLabelText(/Sarlavha/i)).toHaveValue("greet.rs")
+    const after = await painted((t) => asText(t).includes("println!"))
+    expect(asText(after)).not.toContain("greet(")
+  })
+
+  it("says the picture will take the file while it is being dragged", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    const box = codeInput().closest("div.overflow-auto")
+    if (!box) throw new Error("editor drop target not found")
+
+    // Act
+    fireEvent.dragOver(box, { dataTransfer: { types: ["Files"] } })
+
+    // Assert — a target that accepts a drop has to look like one before the
+    // pointer is released, and it has to say so in the visitor's language.
+    const hint = await screen.findByText(/tashlang/i)
+    expect(hint.textContent).not.toMatch(/CodeSnapshotPage\./)
+
+    // Leaving turns it off.
+    //
+    // NOT tested here: crossing onto a CHILD. `dragleave` also fires when the
+    // pointer moves from the box onto the canvas inside it, and the handler
+    // uses `relatedTarget` to tell the two apart — but jsdom delivers
+    // `relatedTarget` as `undefined` on a synthetic `dragleave` (probed), so
+    // every drag-leave looks identical from in here. That half is verified in
+    // a real browser instead; see the initiative.
+    fireEvent.dragLeave(box, { relatedTarget: document.body })
+    await waitFor(() => {
+      expect(screen.queryByText(/tashlang/i)).toBeNull()
+    })
+  })
+
+  it("refuses a binary file instead of painting garbage", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    const before = (codeInput() as HTMLTextAreaElement).value
+
+    // Act — a PNG renamed `.ts`. `File.type` is empty for most of the
+    // extensions this tool cares about, so the content is what decides.
+    dropOnEditor(new File(["\u0089PNG\u0000\u0000IHDR binary"], "image.ts"))
+
+    // Assert
+    const alert = await screen.findByRole("alert")
+    expect(alert.textContent).toMatch(/matnli fayl emas/i)
+    expect((codeInput() as HTMLTextAreaElement).value).toBe(before)
+  })
+
+  /**
+   * The control ray.so does not have and snappify charges for.
+   *
+   * `focusLines` and the dimming have existed since Phase 1 and were tested
+   * in `layout.test.ts` — with no way to reach them. This is the UI, so the
+   * assertion is on the PICTURE: the lines outside the focus set are drawn at
+   * reduced alpha, which is the whole point.
+   */
+  it("dims the other lines when a line number is clicked", async () => {
+    // Arrange — the gutter only exists when the numbers are on.
+    renderTool()
+    await painted()
+    fireEvent.click(screen.getByLabelText(/Qator raqamlarini/i))
+    await painted((t) => t.some((x) => x.text === "1"))
+
+    const passesBefore = canvas.passes.length
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /2-qatorni/i }))
+
+    // Assert — the PICTURE, read back from the recording. The painter dims by
+    // setting `globalAlpha`, not by changing colours, so alpha is the only
+    // observable that can tell a focused snapshot from an unfocused one.
+    await repainted(passesBefore)
+    const drawn = canvas.latest()
+    // `DIMMED_OPACITY` exactly, not "less than 1": the gutter numbers are
+    // ALWAYS drawn at 0.4 — furniture, not content — so "something is faint"
+    // is true of every snapshot and would prove nothing.
+    expect(drawn.some((t) => t.alpha === DIMMED_OPACITY)).toBe(true)
+    expect(drawn.some((t) => t.alpha === 1)).toBe(true)
+
+    // And the button reports its state to assistive tech.
+    expect(screen.getByRole("button", { name: /2-qatorni/i })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    )
+    expect(screen.getByRole("button", { name: /1-qatorni/i })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    )
+  })
+
+  it("stops dimming when the focus set becomes empty again", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    fireEvent.click(screen.getByLabelText(/Qator raqamlarini/i))
+    await painted((t) => t.some((x) => x.text === "1"))
+    fireEvent.click(screen.getByRole("button", { name: /2-qatorni/i }))
+    await painted((t) => t.some((x) => x.alpha < 1))
+
+    // Act — clicking the same line again removes it.
+    const passesBefore = canvas.passes.length
+    fireEvent.click(screen.getByRole("button", { name: /2-qatorni/i }))
+
+    // Assert — an empty focus set means "no focus", NOT "focus nothing".
+    // Getting that backwards dims the entire snapshot, and `layout.test.ts`
+    // caught it once as a deliberate mutation; this is the same rule reached
+    // through the UI.
+    await repainted(passesBefore)
+    expect(canvas.latest().some((t) => t.alpha === DIMMED_OPACITY)).toBe(false)
+    // The gutter numbers keep their own 0.4; only the FOCUS dimming is gone.
+    expect(canvas.latest().some((t) => t.alpha === 1)).toBe(true)
+  })
+
+  it("offers no line-number targets when the numbers are off", async () => {
+    // Arrange / Act
+    renderTool()
+    await painted()
+
+    // Assert — the gutter has zero width, so a hit area over it would be an
+    // invisible button sitting on the code.
+    expect(screen.queryByRole("button", { name: /qatorni/i })).toBeNull()
+  })
+
+  it("clears the focus set from the panel", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    fireEvent.click(screen.getByLabelText(/Qator raqamlarini/i))
+    await painted((t) => t.some((x) => x.text === "1"))
+    fireEvent.click(screen.getByRole("button", { name: /3-qatorni/i }))
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /3-qatorni/i })
+      ).toHaveAttribute("aria-pressed", "true")
+    })
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /Fokusni tozalash/i }))
+
+    // Assert — an empty focus set means "no focus", NOT "focus nothing";
+    // getting that backwards dims the entire snapshot.
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /3-qatorni/i })
+      ).toHaveAttribute("aria-pressed", "false")
+    })
+    expect(
+      screen.queryByRole("button", { name: /Fokusni tozalash/i })
+    ).toBeNull()
   })
 
   it("offers the editor before the first paint, not after", () => {

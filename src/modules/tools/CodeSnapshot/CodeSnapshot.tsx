@@ -75,6 +75,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     setTheme,
     options,
     updateOptions,
+    toggleLineFocus,
+    clearLineFocus,
     scale,
     setScale,
     canvasRef,
@@ -90,6 +92,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     onPaste,
     detected,
     undoDetection,
+    dropFile,
     reset
   } = useCodeSnapshot(fontFamilies[font])
 
@@ -168,6 +171,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               formatting={formatting}
               detected={detected}
               onUndoDetection={undoDetection}
+              onClearFocus={clearLineFocus}
             />
           </ToolCard>
         </div>
@@ -204,6 +208,11 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               caretColor={foreground}
               label={t("input.label")}
               onPaste={onPaste}
+              onDropFile={(file) => void dropFile(file)}
+              dropHint={t("input.dropHint")}
+              focusLines={options.focusLines}
+              onToggleLineFocus={toggleLineFocus}
+              focusLabel={(number) => t("input.focusLine", { number })}
             />
             {/* The scale lives here, beside the pixel size it produces —
                 not in the card header. Two reasons, one of them measured: a

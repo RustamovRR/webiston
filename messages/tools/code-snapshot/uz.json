@@ -7,7 +7,9 @@
     "input": {
       "title": "Kod",
       "label": "Rasmga aylantiriladigan kod",
-      "placeholder": "Kodingizni shu yerga qo'ying…"
+      "placeholder": "Kodingizni shu yerga qo'ying…",
+      "dropHint": "Faylni shu yerga tashlang",
+      "focusLine": "{number}-qatorni ajratish"
     },
     "style": {
       "title": "Ko'rinish",
@@ -43,7 +45,9 @@
         "paper": "Qog'oz",
         "none": "Shaffof"
       },
-      "titleOnlyMacos": "Sarlavha faqat macOS oynasida ko'rinadi"
+      "titleOnlyMacos": "Sarlavha faqat macOS oynasida ko'rinadi",
+      "focusHint": "Qator raqamini bosib ajratib ko'rsating",
+      "clearFocus": "Fokusni tozalash ({count})"
     },
     "preview": {
       "title": "Natija",
@@ -63,7 +67,10 @@
       "paint": "Rasm chizilmadi. Kodni qisqartirib ko'ring.",
       "export": "Rasmni saqlab bo'lmadi — ehtimol u juda katta.",
       "tooLarge": "Kod juda uzun: brauzer bunchalik katta rasm yasay olmaydi. Qisqartiring.",
-      "format": "Kodni formatlab bo'lmadi — sintaksisda xato bor."
+      "format": "Kodni formatlab bo'lmadi — sintaksisda xato bor.",
+      "tooBig": "Fayl juda katta — 256 KB gacha bo'lgan fayllar qabul qilinadi.",
+      "notText": "Bu matnli fayl emas. Faqat kod fayllarini tashlang.",
+      "unreadable": "Faylni o'qib bo'lmadi."
     }
   }
 }

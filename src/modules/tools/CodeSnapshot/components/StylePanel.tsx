@@ -37,6 +37,7 @@ interface StylePanelProps {
   /** Set for as long as the "language detected" notice should be shown. */
   detected: { from: string; to: string } | null
   onUndoDetection: () => void
+  onClearFocus: () => void
 }
 
 const FRAMES: WindowFrame[] = ["macos", "plain", "none"]
@@ -64,7 +65,8 @@ export function StylePanel({
   formattable,
   formatting,
   detected,
-  onUndoDetection
+  onUndoDetection,
+  onClearFocus
 }: StylePanelProps) {
   const t = useTranslations("CodeSnapshotPage.style")
   const titleId = useId()
@@ -256,6 +258,26 @@ export function StylePanel({
           {t("lineNumbers")}
         </label>
       </div>
+
+      {/* Focus is the control ray.so does not have and snappify charges for,
+          and it is invisible until you know the numbers are clickable — so
+          the hint appears with them. The clear button only exists while there
+          is something to clear; a permanently disabled button teaches
+          nothing. */}
+      {options.showLineNumbers && (
+        <div className="-mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <p className="text-muted-foreground text-xs">{t("focusHint")}</p>
+          {options.focusLines.length > 0 && (
+            <button
+              type="button"
+              onClick={onClearFocus}
+              className="cursor-pointer text-primary text-xs underline underline-offset-2"
+            >
+              {t("clearFocus", { count: options.focusLines.length })}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

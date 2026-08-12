@@ -2,8 +2,8 @@
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
 execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
-first five items of Phase 2 shipped · **Next:** drag a file onto the editor,
-then click-a-line-number to focus.
+Phase 2 complete except the ligature toggle · **Next:** Phase 3 — URL state,
+so a link reopens the exact image.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -401,9 +401,73 @@ is the same to the digit. Monospace keeps the advance, so the caret holds.
       Browser-verified on the running dev server: prose → unchanged, Rust →
       Rust, SQL → SQL, JSX → JSX, Python → Python with the notice, and undo
       restoring TypeScript.
-- `[ ]` **Drag a file onto the editor** — code and language in one gesture.
-- `[ ]` **Click a line number to focus it.** `focusLines` already works and is
-      tested; it has no UI. snappify charges for this and ray.so lacks it.
+- `[x]` **Drag a file onto the editor** — shipped 2026-08-12. Code, language
+      AND the window title in one gesture; the filename is the only reason
+      anyone types in that field, and a drop already knows it.
+
+      **The extension mapping is Shiki's, not ours.** Its alias table already
+      turns `py` into `python`, `rs` into `rust`, `yml` into `yaml`. Checked on
+      disk: of 71 common extensions, **60 resolve through `resolveLanguage`
+      for free**, so the hand map is ten entries instead of seventy — and a
+      test asserts every one of those ten is something Shiki genuinely cannot
+      answer, so the list cannot grow duplicates of Shiki's own table.
+
+      The extension outranks `detect.ts`: a `.rs` file is Rust because its
+      author said so. The scorer is the fallback for what the extension cannot
+      answer — verified in the browser with a `.txt` holding Python, which
+      came back **Python**.
+
+      **Two guards, both content-based:**
+
+      | Guard | Why not the obvious version |
+      | --- | --- |
+      | Binary files rejected on a NUL byte | `File.type` is **empty** for most extensions this tool cares about — `.rs`, `.go`, `.vue` all arrive as `""`. A PNG renamed `.ts` otherwise fills the editor with replacement characters and paints a picture of garbage |
+      | 256 KB cap | Not a round number: past the canvas cap the picture cannot be drawn at ANY scale (`canvas-limits.ts`), which lands near 3,000 lines. Larger files were never going to become an image, and reading one in freezes the tab while the tokeniser walks it |
+
+      Browser-verified on the running dev server: `greet.rs` → Rust + title
+      `greet.rs` + repaint; `notes.txt` holding Python → Python; a PNG renamed
+      `.ts` → refused, code untouched; 300 KB → refused, code untouched.
+
+      **A mutation exposed a real coverage gap and it could not be closed in
+      jsdom.** Removing the `relatedTarget` guard in `dragleave` failed no
+      test. That guard is what stops the highlight blinking off the instant
+      the file crosses onto the canvas — which is most of the box. jsdom
+      delivers `relatedTarget` as `undefined` on a synthetic `dragleave`
+      (probed directly), so every drag-leave looks identical from inside a
+      test. Verified in a real browser instead: crossing onto the canvas keeps
+      the highlight, leaving for the body drops it. The test says so rather
+      than pretending to cover it.
+- `[x]` **Click a line number to focus it** — shipped 2026-08-12. `focusLines`
+      and the dimming have existed since Phase 1 and were pinned by
+      `layout.test.ts`; what was missing was any way to reach them.
+
+      One real `<button>` per line, sized and placed from the same `Layout` the
+      painter used, so what you click is exactly what you see. **Not** a single
+      click handler over the strip with the line worked out from `offsetY`:
+      that version is mouse-only, and this is the control ray.so does not have
+      and snappify charges for. The gutter sits left of `codeX`, which is where
+      the textarea starts, so nothing overlaps. Rendered only when the numbers
+      are on — `gutterWidth` is 0 otherwise, and an invisible button would be
+      sitting on the code.
+
+      The toggle is POSITIONAL, 1-based; the label says the number PRINTED in
+      the gutter. `firstLineNumber` lets a snippet lifted from line 340 print
+      340 while still being line 1, and the layout dims by position.
+
+      Measured in the browser on a real canvas — ink strength per line, focused
+      against dimmed:
+
+      | | focused line | other lines |
+      | --- | --- | --- |
+      | with focus | **634** | 283 · 283 · 53 |
+      | after clearing | 634 | **710** · **710** · 53 |
+
+**Two defects the owner reported or the tests found, both fixed:**
+
+| Defect | Measured |
+| --- | --- |
+| **Picking a theme jumped the window down.** The swatch radios were `sr-only`, which Tailwind collapses to 1×1px with `clip-path: inset(50%)` — zero visible area. Focus lands on it, the browser scrolls a zero-area element into view, and the arithmetic runs away | page moved **906px** on a click, and **1135px** on a bare `input.focus()`; the same call with `{ preventScroll: true }` moved **0**, which named the cause. Fixed by sizing the input to the swatch: page **0**, and the scroll box still reveals a swatch below its fold. `SegmentedControl` in `@webiston/ui` still uses `sr-only` — checked rather than assumed, it moves the page **0px**, because the runaway needs a tall scroll container to happen in |
+| **The canvas stub's `save`/`restore` were no-ops.** The painter halves the alpha for a line number inside a save/restore pair, so the 0.4 leaked onto every token drawn afterwards | Every alpha assertion was measuring the stub instead of the painter. A real stack now backs them, and the focus test asserts `DIMMED_OPACITY` exactly — "something is faint" is true of every snapshot, because the gutter numbers are always at 0.4 |
 - `[ ]` Ligature toggle.
 
 ### Phase 2 notes — the earlier framing, kept
@@ -421,7 +485,42 @@ reading a list. That is the gap to close first, before adding any more options.
 - `[ ]` **Language auto-detect on paste.** Nobody wants to find one entry in a
       list of 360. Shebang, `<?php`, `package main`, `def `, `fn `, `import …
       from` cover most of what people paste; the picker stays for corrections.
-- `[ ]` **Drag a file onto the editor** — code and language in one gesture.
+- `[x]` **Drag a file onto the editor** — shipped 2026-08-12. Code, language
+      AND the window title in one gesture; the filename is the only reason
+      anyone types in that field, and a drop already knows it.
+
+      **The extension mapping is Shiki's, not ours.** Its alias table already
+      turns `py` into `python`, `rs` into `rust`, `yml` into `yaml`. Checked on
+      disk: of 71 common extensions, **60 resolve through `resolveLanguage`
+      for free**, so the hand map is ten entries instead of seventy — and a
+      test asserts every one of those ten is something Shiki genuinely cannot
+      answer, so the list cannot grow duplicates of Shiki's own table.
+
+      The extension outranks `detect.ts`: a `.rs` file is Rust because its
+      author said so. The scorer is the fallback for what the extension cannot
+      answer — verified in the browser with a `.txt` holding Python, which
+      came back **Python**.
+
+      **Two guards, both content-based:**
+
+      | Guard | Why not the obvious version |
+      | --- | --- |
+      | Binary files rejected on a NUL byte | `File.type` is **empty** for most extensions this tool cares about — `.rs`, `.go`, `.vue` all arrive as `""`. A PNG renamed `.ts` otherwise fills the editor with replacement characters and paints a picture of garbage |
+      | 256 KB cap | Not a round number: past the canvas cap the picture cannot be drawn at ANY scale (`canvas-limits.ts`), which lands near 3,000 lines. Larger files were never going to become an image, and reading one in freezes the tab while the tokeniser walks it |
+
+      Browser-verified on the running dev server: `greet.rs` → Rust + title
+      `greet.rs` + repaint; `notes.txt` holding Python → Python; a PNG renamed
+      `.ts` → refused, code untouched; 300 KB → refused, code untouched.
+
+      **A mutation exposed a real coverage gap and it could not be closed in
+      jsdom.** Removing the `relatedTarget` guard in `dragleave` failed no
+      test. That guard is what stops the highlight blinking off the instant
+      the file crosses onto the canvas — which is most of the box. jsdom
+      delivers `relatedTarget` as `undefined` on a synthetic `dragleave`
+      (probed directly), so every drag-leave looks identical from inside a
+      test. Verified in a real browser instead: crossing onto the canvas keeps
+      the highlight, leaving for the body drops it. The test says so rather
+      than pretending to cover it.
 - `[ ]` **Click a line number to focus it.** `focusLines` already exists in the
       types and the layout dims correctly; it has no UI. This is a control
       ray.so does not have at all.
