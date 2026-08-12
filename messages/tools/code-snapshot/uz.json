@@ -1,0 +1,62 @@
+{
+  "CodeSnapshotPage": {
+    "ToolHeader": {
+      "title": "Koddan Rasm Yasash",
+      "description": "Kodingizni chiroyli rasmga aylantiring — 65 ta mavzu, 360 dan ortiq til. Hammasi brauzeringizda, hech qayerga yuborilmaydi."
+    },
+    "input": {
+      "title": "Kod",
+      "label": "Rasmga aylantiriladigan kod",
+      "placeholder": "Kodingizni shu yerga qo'ying…"
+    },
+    "style": {
+      "title": "Ko'rinish",
+      "theme": "Mavzu",
+      "language": "Til",
+      "font": "Shrift",
+      "fontSize": "Shrift o'lchami",
+      "lineHeight": "Qator balandligi",
+      "padding": "Chekka bo'shliq",
+      "frame": "Oyna",
+      "background": "Fon",
+      "windowTitle": "Sarlavha",
+      "titlePlaceholder": "masalan: App.tsx",
+      "lineNumbers": "Qator raqamlarini ko'rsatish",
+      "frames": {
+        "macos": "macOS",
+        "plain": "Oddiy",
+        "none": "Yo'q"
+      },
+      "backgrounds": {
+        "midnight": "Yarim tun",
+        "sunset": "Shafaq",
+        "meadow": "Yaylov",
+        "ocean": "Okean",
+        "ember": "Cho'g'",
+        "slate": "Kulrang",
+        "paper": "Qog'oz",
+        "none": "Shaffof"
+      },
+      "titleOnlyMacos": "Sarlavha faqat macOS oynasida ko'rinadi"
+    },
+    "preview": {
+      "title": "Natija",
+      "label": "Kodning tayyor rasmi",
+      "scaleLabel": "Rasm o'lchami",
+      "dimensions": "{width} × {height} piksel",
+      "scaleReduced": "Bu uzunlikda {wanted}x mumkin emas — {used}x bilan yasaladi."
+    },
+    "actions": {
+      "copy": "Nusxalash",
+      "copied": "Nusxalandi",
+      "download": "Yuklab olish",
+      "reset": "Boshlang'ich holatga qaytarish"
+    },
+    "errors": {
+      "highlight": "Ranglash yuklanmadi. Internetni tekshirib, matnni qayta o'zgartiring.",
+      "paint": "Rasm chizilmadi. Kodni qisqartirib ko'ring.",
+      "export": "Rasmni saqlab bo'lmadi — ehtimol u juda katta.",
+      "tooLarge": "Kod juda uzun: brauzer bunchalik katta rasm yasay olmaydi. Qisqartiring."
+    }
+  }
+}

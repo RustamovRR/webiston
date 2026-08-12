@@ -26,3 +26,22 @@ if (typeof window !== "undefined" && !window.matchMedia) {
       dispatchEvent: () => false
     }) as MediaQueryList
 }
+
+/**
+ * Pointer capture and `scrollIntoView`, which jsdom does not implement.
+ *
+ * Radix's `Select` calls all four while opening its listbox, and an
+ * unimplemented method is a `TypeError`, not a no-op — so without these the
+ * dropdown cannot be opened from a test at all and every control built on it
+ * is untestable. Same category as `ResizeObserver` above: a gap in the
+ * environment, not a detail of ours.
+ */
+if (typeof Element !== "undefined" && !Element.prototype.hasPointerCapture) {
+  Element.prototype.hasPointerCapture = () => false
+  Element.prototype.setPointerCapture = () => {}
+  Element.prototype.releasePointerCapture = () => {}
+}
+
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {}
+}

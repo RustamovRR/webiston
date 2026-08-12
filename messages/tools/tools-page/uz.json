@@ -61,6 +61,10 @@
       "title": "QR Kod Yaratuvchi",
       "description": "Matn va URL lar uchun QR kodlar yaratish"
     },
+    "codeSnapshot": {
+      "title": "Koddan Rasm Yasash",
+      "description": "Kodni chiroyli rasmga aylantirish — 65 mavzu, 360+ til"
+    },
     "passwordGenerator": {
       "title": "Parol Yaratuvchi",
       "description": "Xavfsiz va kuchli parollar yaratish vositasi"

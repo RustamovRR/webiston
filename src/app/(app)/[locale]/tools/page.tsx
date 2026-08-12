@@ -16,6 +16,7 @@ import { generateBreadcrumbSchema, getToolsIndexMetadata } from "./seo"
 const TOOL_SCHEMA_NAMES: Record<string, string> = {
   latinCyrillic: "Latin-Cyrillic Converter",
   qrGenerator: "QR Code Generator",
+  codeSnapshot: "Code to Image",
   jsonFormatter: "JSON Formatter",
   passwordGenerator: "Password Generator",
   colorConverter: "Color Converter",

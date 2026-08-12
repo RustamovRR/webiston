@@ -1,0 +1,62 @@
+{
+  "CodeSnapshotPage": {
+    "ToolHeader": {
+      "title": "Code to Image",
+      "description": "Turn a snippet into a beautiful image — 65 themes, 360+ languages. It all runs in your browser and nothing is uploaded."
+    },
+    "input": {
+      "title": "Code",
+      "label": "Code to turn into an image",
+      "placeholder": "Paste your code here…"
+    },
+    "style": {
+      "title": "Appearance",
+      "theme": "Theme",
+      "language": "Language",
+      "font": "Font",
+      "fontSize": "Font size",
+      "lineHeight": "Line height",
+      "padding": "Padding",
+      "frame": "Window",
+      "background": "Background",
+      "windowTitle": "Title",
+      "titlePlaceholder": "e.g. App.tsx",
+      "lineNumbers": "Show line numbers",
+      "frames": {
+        "macos": "macOS",
+        "plain": "Plain",
+        "none": "None"
+      },
+      "backgrounds": {
+        "midnight": "Midnight",
+        "sunset": "Sunset",
+        "meadow": "Meadow",
+        "ocean": "Ocean",
+        "ember": "Ember",
+        "slate": "Slate",
+        "paper": "Paper",
+        "none": "Transparent"
+      },
+      "titleOnlyMacos": "The title only shows on the macOS window"
+    },
+    "preview": {
+      "title": "Result",
+      "label": "The rendered image of your code",
+      "scaleLabel": "Image size",
+      "dimensions": "{width} × {height} pixels",
+      "scaleReduced": "{wanted}x is not possible at this length — using {used}x."
+    },
+    "actions": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "download": "Download",
+      "reset": "Reset"
+    },
+    "errors": {
+      "highlight": "Highlighting failed to load. Check your connection and edit the text again.",
+      "paint": "The picture could not be drawn. Try a shorter snippet.",
+      "export": "The image could not be saved — it may be too large.",
+      "tooLarge": "This snippet is too long: the browser cannot make an image that big. Shorten it."
+    }
+  }
+}

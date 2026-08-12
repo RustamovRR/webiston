@@ -89,6 +89,11 @@ export const TOOL_CONSTANTS = {
     featured: true,
     premium: false
   },
+  "code-snapshot": {
+    category: "generators",
+    featured: true,
+    premium: false
+  },
   "uuid-generator": {
     category: "generators",
     featured: true,

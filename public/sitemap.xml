@@ -235,6 +235,7 @@
 <url><loc>https://webiston.uz/en/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/base64-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/en/tools/code-snapshot</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/color-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/device-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/hash-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -256,6 +257,7 @@
 <url><loc>https://webiston.uz/ru/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/base64-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/ru/tools/code-snapshot</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/color-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/device-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/hash-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -275,6 +277,7 @@
 <url><loc>https://webiston.uz/tools</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/latin-cyrillic</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/qr-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/tools/code-snapshot</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/json-formatter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/password-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/color-converter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>

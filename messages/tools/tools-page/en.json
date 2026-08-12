@@ -61,6 +61,10 @@
       "title": "QR Code Generator",
       "description": "Generate QR codes for text and URLs."
     },
+    "codeSnapshot": {
+      "title": "Code to Image",
+      "description": "Turn code into a beautiful image — 65 themes, 360+ languages"
+    },
     "passwordGenerator": {
       "title": "Password Generator",
       "description": "A tool to create secure and strong passwords."

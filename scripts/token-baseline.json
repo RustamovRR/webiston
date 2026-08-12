@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-08-07",
-  "total": 1083,
+  "measuredAt": "2026-08-12",
+  "total": 1102,
   "files": {
     "packages/ui/src/constants/ui-patterns.ts": 46,
     "packages/ui/src/primitives/aurora-text.tsx": 4,
@@ -22,7 +22,7 @@
     "src/components/mdx/VideoEmbed/VideoEmbed.tsx": 4,
     "src/constants/color-names.ts": 166,
     "src/constants/ui-constants.ts": 9,
-    "src/constants/ui.ts": 21,
+    "src/constants/ui.ts": 22,
     "src/lib/utils/color-palettes.ts": 10,
     "src/lib/utils/color-spaces.ts": 1,
     "src/modules/tools/CameraRecorder/components/ControlPanel.tsx": 6,
@@ -31,6 +31,7 @@
     "src/modules/tools/CameraRecorder/components/MediaPreviewModal.tsx": 1,
     "src/modules/tools/CameraRecorder/components/StatusPanel.tsx": 7,
     "src/modules/tools/CameraRecorder/components/VideoPreviewPanel.tsx": 9,
+    "src/modules/tools/CodeSnapshot/constants/index.ts": 18,
     "src/modules/tools/ColorConverter/components/ColorControls.tsx": 1,
     "src/modules/tools/ColorConverter/constants/index.ts": 16,
     "src/modules/tools/ColorConverter/hooks/useColorConverter.ts": 2,

@@ -35,6 +35,7 @@ export const TOOL_COLOR_MAP = {
   "hash-generator": TOOL_COLORS.GENERATORS,
   "uuid-generator": TOOL_COLORS.GENERATORS,
   "qr-generator": TOOL_COLORS.GENERATORS,
+  "code-snapshot": TOOL_COLORS.GENERATORS,
   "password-generator": TOOL_COLORS.GENERATORS,
   "og-meta-generator": TOOL_COLORS.GENERATORS,
   "lorem-ipsum": TOOL_COLORS.GENERATORS,

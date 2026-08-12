@@ -1,0 +1,267 @@
+"use client"
+
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
+
+import {
+  DEFAULT_EXPORT_SCALE,
+  DEFAULT_LANGUAGE,
+  DEFAULT_OPTIONS,
+  DEFAULT_THEME,
+  type ExportScale,
+  FALLBACK_BACKGROUND,
+  FALLBACK_FOREGROUND
+} from "../constants"
+import type { CodeLine, SnapshotOptions } from "../types"
+import { fittingScale } from "../utils/canvas-limits"
+import {
+  copySnapshotToClipboard,
+  downloadSnapshot,
+  snapshotFileName
+} from "../utils/export"
+import { highlightToLines } from "../utils/highlight"
+import { layoutSnapshot } from "../utils/layout"
+import { createMeasurer, paintSnapshot } from "../utils/paint"
+
+/**
+ * How long the reader may keep typing before we re-tokenise.
+ *
+ * Shiki's tokeniser is fast but not free, and a grammar's first use also pulls
+ * a chunk over the network. 120ms is under the threshold where an edit stops
+ * feeling live, and it collapses a burst of keystrokes into one pass.
+ */
+const RETOKENISE_DELAY = 120
+
+interface UseCodeSnapshot {
+  code: string
+  setCode: (code: string) => void
+  language: string
+  setLanguage: (language: string) => void
+  theme: string
+  setTheme: (theme: string) => void
+  options: SnapshotOptions
+  updateOptions: (patch: Partial<SnapshotOptions>) => void
+  scale: ExportScale
+  setScale: (scale: ExportScale) => void
+  canvasRef: RefObject<HTMLCanvasElement | null>
+  /** CSS size of the preview, so the page can reserve the right box. */
+  size: { width: number; height: number }
+  /**
+   * The scale actually used, which is not always the one chosen: past the
+   * browser's canvas cap the export silently produces nothing, so it is
+   * stepped down and the UI has to say so.
+   */
+  effectiveScale: ExportScale | null
+  /** Set when something the visitor did could not be completed. */
+  error: string | null
+  dismissError: () => void
+  download: () => Promise<boolean>
+  copy: () => Promise<boolean>
+  reset: () => void
+}
+
+const STARTER_CODE = `export function greet(name: string) {
+  const greeting = \`Assalomu alaykum, \${name}!\`
+  return greeting
+}
+`
+
+export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
+  const [code, setCode] = useState(STARTER_CODE)
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE)
+  const [theme, setTheme] = useState<string>(DEFAULT_THEME)
+  const [scale, setScale] = useState<ExportScale>(DEFAULT_EXPORT_SCALE)
+  const [options, setOptions] = useState<SnapshotOptions>({
+    ...DEFAULT_OPTIONS,
+    fontFamily
+  })
+
+  const [lines, setLines] = useState<CodeLine[]>([])
+  const [colours, setColours] = useState({
+    foreground: FALLBACK_FOREGROUND,
+    editorBackground: FALLBACK_BACKGROUND
+  })
+  const [size, setSize] = useState({ width: 0, height: 0 })
+  const [error, setError] = useState<string | null>(null)
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+
+  // The chosen font has to reach the options, and it arrives from the route as
+  // a CSS variable that is not known when the defaults are declared.
+  useEffect(() => {
+    setOptions((current) =>
+      current.fontFamily === fontFamily ? current : { ...current, fontFamily }
+    )
+  }, [fontFamily])
+
+  /**
+   * Tokenise, debounced, and ignore results that arrive out of order.
+   *
+   * Two edits in flight can settle in either order — a language whose grammar
+   * is already cached resolves immediately, while the previous one is still
+   * fetching. Without the `stale` guard the older tokens win and the canvas
+   * shows the previous snippet, intermittently and only on slow networks.
+   */
+  useEffect(() => {
+    let stale = false
+    const timer = setTimeout(() => {
+      highlightToLines(code, language, theme)
+        .then((result) => {
+          if (stale) return
+          setLines(result.lines)
+          setColours({
+            foreground: result.foreground,
+            editorBackground: result.background
+          })
+          setError(null)
+        })
+        .catch(() => {
+          // The last good tokens stay on screen — a grammar that failed to
+          // download must not blank the picture. But it is SAID, because the
+          // silent version leaves the reader picking a theme and watching
+          // nothing change, with no way to know a retry is what they need.
+          if (!stale) setError("highlight")
+        })
+    }, RETOKENISE_DELAY)
+
+    return () => {
+      stale = true
+      clearTimeout(timer)
+    }
+  }, [code, language, theme])
+
+  /**
+   * Paint whenever anything visible changes — but only once the face is real.
+   *
+   * **Setting `ctx.font` does not download a webfont.** The CSS Font Loading
+   * spec ties fetching to *rendered content*, and a canvas is not content: the
+   * browser silently substitutes the fallback, and since `next/font` ships a
+   * metric-adjusted fallback the result looks almost right, which is worse
+   * than looking wrong. Every measurement and every glyph would come from a
+   * face nobody chose.
+   *
+   * `document.fonts.load()` is the explicit request. All three variants are
+   * asked for, because bold and italic are separate downloads and a comment
+   * that renders italic would otherwise fall back on its own.
+   */
+  const [effectiveScale, setEffectiveScale] = useState<ExportScale | null>(
+    scale
+  )
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !options.fontFamily) return
+
+    let cancelled = false
+    const spec = `${options.fontSize}px ${options.fontFamily}`
+
+    Promise.all([
+      document.fonts.load(spec),
+      document.fonts.load(`700 ${spec}`),
+      document.fonts.load(`italic ${spec}`)
+    ])
+      .then(() => document.fonts.ready)
+      .then(() => {
+        if (cancelled) return
+        const measure = createMeasurer()
+        const layout = layoutSnapshot(lines, options, measure)
+
+        // Past the browser's per-side canvas cap the picture is silently
+        // empty: no throw, no event, and `toBlob` hands back null. Step down
+        // to a scale that fits — or, when even 1x does not, stop rather than
+        // paint something the visitor cannot download.
+        const usable = fittingScale(layout.width, layout.height, scale)
+        setEffectiveScale(usable)
+        if (usable === null) {
+          setSize({ width: 0, height: 0 })
+          setError("tooLarge")
+          return
+        }
+
+        paintSnapshot(canvas, layout, options, colours, usable)
+        setSize((prev) =>
+          prev.width === layout.width && prev.height === layout.height
+            ? prev
+            : { width: layout.width, height: layout.height }
+        )
+        setError(null)
+      })
+      // Without this the rejection is unhandled and the preview freezes on
+      // the last good frame while every control keeps responding — the state
+      // that looks most like "the tool is fine" and least like a failure.
+      .catch(() => {
+        if (!cancelled) setError("paint")
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [lines, options, colours, scale])
+
+  const updateOptions = useCallback((patch: Partial<SnapshotOptions>) => {
+    setOptions((current) => ({ ...current, ...patch }))
+  }, [])
+
+  /**
+   * Both exits report success rather than throwing.
+   *
+   * An `onClick={download}` hands React a promise nobody awaits, so a
+   * rejection from `toBlob` — which is exactly what an oversized canvas
+   * produces — became an unhandled rejection in the console and *nothing at
+   * all* on screen. Returning a boolean is what lets the caller show an error
+   * instead of appearing to work.
+   */
+  const download = useCallback(async () => {
+    const canvas = canvasRef.current
+    if (!canvas) return false
+    try {
+      await downloadSnapshot(canvas, snapshotFileName(options.title))
+      return true
+    } catch {
+      setError("export")
+      return false
+    }
+  }, [options.title])
+
+  const copy = useCallback(async () => {
+    const canvas = canvasRef.current
+    if (!canvas) return false
+    try {
+      await copySnapshotToClipboard(canvas)
+      return true
+    } catch {
+      return false
+    }
+  }, [])
+
+  const dismissError = useCallback(() => setError(null), [])
+
+  const reset = useCallback(() => {
+    setError(null)
+    setCode(STARTER_CODE)
+    setLanguage(DEFAULT_LANGUAGE)
+    setTheme(DEFAULT_THEME)
+    setScale(DEFAULT_EXPORT_SCALE)
+    setOptions({ ...DEFAULT_OPTIONS, fontFamily })
+  }, [fontFamily])
+
+  return {
+    code,
+    setCode,
+    language,
+    setLanguage,
+    theme,
+    setTheme,
+    options,
+    updateOptions,
+    scale,
+    setScale,
+    canvasRef,
+    size,
+    effectiveScale,
+    error,
+    dismissError,
+    download,
+    copy,
+    reset
+  }
+}

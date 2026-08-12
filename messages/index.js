@@ -9,6 +9,9 @@ import base64ConverterUz from "./tools/base64-converter/uz.json"
 import cameraRecorderEn from "./tools/camera-recorder/en.json"
 import cameraRecorderRu from "./tools/camera-recorder/ru.json"
 import cameraRecorderUz from "./tools/camera-recorder/uz.json"
+import codeSnapshotEn from "./tools/code-snapshot/en.json"
+import codeSnapshotRu from "./tools/code-snapshot/ru.json"
+import codeSnapshotUz from "./tools/code-snapshot/uz.json"
 import colorConverterEn from "./tools/color-converter/en.json"
 import colorConverterRu from "./tools/color-converter/ru.json"
 import colorConverterUz from "./tools/color-converter/uz.json"
@@ -73,6 +76,7 @@ export const uz = {
   ...colorConverterUz,
   ...hashGeneratorUz,
   ...uuidGeneratorUz,
+  ...codeSnapshotUz,
   ...qrGeneratorUz,
   ...passwordGeneratorUz,
   ...ogMetaGeneratorUz,
@@ -95,6 +99,7 @@ export const en = {
   ...colorConverterEn,
   ...hashGeneratorEn,
   ...uuidGeneratorEn,
+  ...codeSnapshotEn,
   ...qrGeneratorEn,
   ...passwordGeneratorEn,
   ...ogMetaGeneratorEn,
@@ -117,6 +122,7 @@ export const ru = {
   ...colorConverterRu,
   ...hashGeneratorRu,
   ...uuidGeneratorRu,
+  ...codeSnapshotRu,
   ...qrGeneratorRu,
   ...passwordGeneratorRu,
   ...ogMetaGeneratorRu,

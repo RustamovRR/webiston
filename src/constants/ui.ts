@@ -1,5 +1,6 @@
 import {
   Camera,
+  Code2,
   FileText,
   FileType,
   Globe,
@@ -61,6 +62,14 @@ export const TOOLS_LIST: Tool[] = [
     color: "bg-yellow-500/20",
     category: "generators",
     audience: "general"
+  },
+  {
+    tKey: "codeSnapshot",
+    href: "/tools/code-snapshot",
+    icon: Code2,
+    color: "bg-violet-500/20",
+    category: "generators",
+    audience: "developer"
   },
   {
     tKey: "jsonFormatter",

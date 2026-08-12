@@ -65,6 +65,15 @@ export async function GET() {
         tags: ["qr", "qrcode", "generator", "barcode"]
       },
       {
+        id: "tools-code-snapshot",
+        title: "Code to Image",
+        content:
+          "Koddan chiroyli rasm yasash: 65 ta mavzu, 360 dan ortiq dasturlash tili, PNG eksport. Kod skrinshoti, code screenshot, \u043a\u043e\u0434 \u0432 \u043a\u0430\u0440\u0442\u0438\u043d\u043a\u0443.",
+        url: "/tools/code-snapshot",
+        category: "tools",
+        tags: ["code", "screenshot", "image", "snippet", "png", "kod", "rasm"]
+      },
+      {
         id: "tools-password-generator",
         title: "Password Generator",
         content:

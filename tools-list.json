@@ -1,6 +1,7 @@
 [
   "latin-cyrillic",
   "qr-generator",
+  "code-snapshot",
   "json-formatter",
   "password-generator",
   "color-converter",
