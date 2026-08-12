@@ -178,6 +178,22 @@ export function paintSnapshot(
   canvas.width = Math.ceil(layout.width * scale)
   canvas.height = Math.ceil(layout.height * scale)
 
+  /**
+   * The CSS size is set HERE, in the same task as the backing store.
+   *
+   * It used to come from React, one render later, and the gap was measured on
+   * the running page: choosing a preset set the backing store to 1946px while
+   * the element was still 562.8px wide, and React caught up **2.6ms** after —
+   * long enough to be composited. For that frame the new picture is squeezed
+   * into the old box at a 3.46× ratio instead of 2×, which is the squash the
+   * owner reported as a flicker.
+   *
+   * Two writers for one dimension is the bug; one writer is the fix. The
+   * component no longer sets `style.width`/`style.height` at all.
+   */
+  canvas.style.width = `${layout.width}px`
+  canvas.style.height = `${layout.height}px`
+
   ctx.setTransform(scale, 0, 0, scale, 0, 0)
   ctx.clearRect(0, 0, layout.width, layout.height)
 

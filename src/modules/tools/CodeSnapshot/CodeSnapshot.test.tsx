@@ -1080,6 +1080,73 @@ describe("code snapshot", () => {
     expect(asked).not.toContain("image/webp")
   })
 
+  /**
+   * The picture cross-fades on a style change and NEVER on a keystroke.
+   *
+   * Both halves matter. A canvas cannot transition its contents, so the only
+   * way to ease a repaint is to keep the old bitmap and dissolve it — but
+   * doing that while someone types reads as lag, not polish, and copies a
+   * multi-megapixel bitmap on every debounced keystroke for nothing.
+   */
+  /**
+   * ONE repaint per theme change, never two.
+   *
+   * This is the defect the owner reported as a flicker, and it was measured on
+   * the running page before it was fixed: choosing a preset painted the new
+   * geometry with the PREVIOUS theme's colours, then repainted **278ms** later
+   * when the tokens arrived. Two flashes for one decision.
+   *
+   * The cause was that `theme` is in the paint effect's dependencies, so the
+   * effect fired the moment the theme changed — long before the tokeniser had
+   * produced any colours for it. The tokens now carry the theme they came
+   * from, and the painter refuses to draw until the two agree.
+   */
+  it("repaints once for a theme change, not twice", async () => {
+    // Arrange
+    renderTool()
+    const before = new Set((await painted()).map((t) => t.fillStyle))
+    const passesBefore = canvas.passes.length
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: DRACULA }))
+
+    // Assert — wait for the NEW palette to be on the canvas, then count how
+    // many pictures it took to get there.
+    await painted((texts) => texts.some((t) => !before.has(t.fillStyle)))
+    expect(canvas.passes.length - passesBefore).toBe(1)
+  })
+
+  it("holds the previous frame when the theme changes", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    const before = canvas.copies
+    const passesBefore = canvas.passes.length
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: DRACULA }))
+
+    // Assert
+    await repainted(passesBefore)
+    expect(canvas.copies).toBeGreaterThan(before)
+  })
+
+  it("does not cross-fade while the visitor is typing", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    const before = canvas.copies
+    const passesBefore = canvas.passes.length
+
+    // Act
+    fireEvent.change(codeInput(), { target: { value: "const typed = 1" } })
+
+    // Assert — the character has to appear immediately; a dissolve would put
+    // 200ms of ghost between the keystroke and seeing it.
+    await repainted(passesBefore)
+    expect(canvas.copies).toBe(before)
+  })
+
   it("offers the editor before the first paint, not after", () => {
     // Arrange / Act — no `await`: this is the state a visitor is in while a
     // grammar is still downloading.

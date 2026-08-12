@@ -63,7 +63,8 @@
       "dimensions": "{width} × {height} pixels",
       "scaleReduced": "{wanted}x is not possible at this length — using {used}x.",
       "formatLabel": "File type",
-      "formatNote": "WebP is ~9× smaller at the same quality"
+      "formatNote": "WebP is ~9× smaller at the same quality",
+      "zoom": "Preview: {percent}% · the file is full size"
     },
     "actions": {
       "copy": "Copy",

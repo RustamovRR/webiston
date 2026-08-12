@@ -61,6 +61,8 @@ export interface CanvasRecording {
     fillStyle: string
   }[]
   gradients: number
+  /** How many times the previous frame was copied for the cross-fade. */
+  copies: number
   clear: () => void
 }
 
@@ -78,10 +80,12 @@ export function installCanvasStub(): CanvasRecording {
     latest: () => recording.passes.at(-1) ?? [],
     fills: [],
     gradients: 0,
+    copies: 0,
     clear: () => {
       recording.passes.length = 0
       recording.fills.length = 0
       recording.gradients = 0
+      recording.copies = 0
     }
   }
 
@@ -154,6 +158,14 @@ export function installCanvasStub(): CanvasRecording {
       // that a new picture is starting.
       setTransform: () => {
         recording.passes.push([])
+      },
+      // The cross-fade copies the live canvas into the ghost before a repaint.
+      // Recorded rather than swallowed, so a test can assert that the previous
+      // frame was held — and its ABSENCE from this stub is what once broke
+      // every paint at once: the throw travelled out of the same promise chain
+      // the paint lives in.
+      drawImage: () => {
+        recording.copies += 1
       },
       // REAL save/restore, not no-ops.
       //

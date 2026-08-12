@@ -2,8 +2,8 @@
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
 execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
-Phase 2 complete except the ligature toggle; Phase 3 all but done — SVG is
-CUT · **Next:** keyboard shortcuts, surfaced like the extension's footer.
+Phase 2 complete except the ligature toggle; Phase 3 done, SVG CUT; Phase 3b
+fixed the flicker and the panel fit · **Next:** keyboard shortcuts.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -650,6 +650,94 @@ reading a list. That is the gap to close first, before adding any more options.
 - `[ ]` Drag-and-drop a file into the editor (language from extension).
 - `[ ]` Watermark toggle (`webiston.uz`, off by default).
 - `[ ]` Mobile layout — the controls do not fit a phone as-is.
+
+---
+
+## Phase 3b — `[x]` The flicker, and the panel that did not fit (2026-08-12)
+
+The owner reported two things after using it: the preview panel jumps between
+sizes and scrolls sideways, and **every change flickers "like a re-render"**.
+Both were real. Both were measured on the running page before anything was
+changed.
+
+### The flicker was two separate defects stacked
+
+Instrumenting `canvas.width` and the element's `style` attribute across one
+preset click:
+
+| t (ms) | what happened |
+| --- | --- |
+| 309609.9 | backing store → **1946** while the element was still **562.8px** wide |
+| 309612.5 | **2.6ms later** React caught up and set the CSS size |
+| 309888.4 | the SAME picture painted **again**, 278ms later |
+
+So one click produced: a frame with the new picture squashed into the old box
+at a **3.46× ratio instead of 2×**, and then a second flash when the colours
+finally arrived.
+
+| Cause | Fix | Measured after |
+| --- | --- | --- |
+| **Two writers for one dimension.** The painter set the backing store; React set the CSS size one render later | The painter sets both, in the same task. The component no longer passes `style` to the canvas at all | the two writes are now in one task; nothing can be composited between them |
+| **The paint effect fired on `theme` before any colours existed for it.** `lines` and `colours` were separate states, so a preset painted the new geometry with the PREVIOUS palette, then repainted | Tokens, colours and *the theme they came from* are one state, and the painter refuses to draw while they disagree | **2 paints → 1** |
+
+Two more came out of the same work: the 120ms debounce was being applied to
+theme and language changes as well as typing — it exists to collapse
+keystrokes, and it was 120ms of that 278ms gap. It is now applied only when
+the code actually changed.
+
+### The panel now fits the picture
+
+It did not before: the "Slayd" preset drew a **972.8 CSS-px** card into a
+**708px** panel and put the rest behind a horizontal scrollbar. carbon.now.sh,
+ray.so and codeimage all fit the preview to the panel, and for the reason this
+tool needs it too — you are composing a picture, so you have to see it.
+
+A CSS transform, never a smaller canvas: the backing store stays at export
+resolution, so a scaled preview is *sharper*, and the textarea and gutter
+buttons inside the same transformed box scale with it, so the caret stays on
+its glyph. It only ever scales DOWN.
+
+| preset | picture | scale | rendered | panel |
+| --- | --- | --- | --- | --- |
+| Ijtimoiy | 683.2 | 1 | 683 | 708 |
+| **Slayd** | **972.8** | **0.728** | **708** | **708** |
+| README | 523.2 | 1 | 523 | 708 |
+| Minimal | 458.8 | 1 | 459 | 708 |
+
+Horizontal overflow across all four: **0px**.
+
+### Four traps hit while building it, all measured
+
+| Trap | What it did |
+| --- | --- |
+| **`clientWidth` vs `contentRect.width`** | The seed included the padding, the observer excluded it. They disagreed by 32px and the wrong one stood until the next resize, so a picture needing 0.728 was scaled to 0.761 and still overflowed |
+| **Dropping the seed instead** | `ResizeObserver` does fire on `observe()` — except in a hidden tab, where it never delivered at all and the fit stayed 1. Seed it, measured the same way |
+| **A transform does not change the layout box** | The stage still measured its full unscaled width, so the scroll container kept a horizontal scrollbar for a picture already inside the panel. `overflow-hidden` on the box that reserves the scaled size |
+| **`scrollbar-gutter: stable` is load-bearing** | The fit decides the height, the height decides whether a vertical scrollbar appears, and that changes the width the fit is measured from — an oscillation. Reserving the gutter makes the measurement independent of the content |
+
+### The cross-fade, and the bug it nearly shipped with
+
+A canvas cannot transition its contents — there is no property to ease — so
+the only way to soften a repaint is to keep the previous bitmap and dissolve
+it. **Not on keystrokes:** a character that fades into place reads as lag, and
+copying a multi-megapixel bitmap per keystroke is work for nothing. Only
+discrete changes fade.
+
+Two things it got wrong first:
+
+- **The copy threw and took the picture with it.** `drawImage` was missing
+  from the canvas stub, the throw travelled out of the same promise chain the
+  paint lives in, and **every test in the module failed at once**. A dissolve
+  that fails must simply not dissolve — it is wrapped now, and the stub records
+  the copy so the fade itself is testable.
+- **`requestAnimationFrame` does not run in a background tab.** The nested-rAF
+  trick for committing `opacity: 1` before animating to 0 left the ghost stuck
+  at 1 — a stale frame permanently covering the live canvas, measured. Reading
+  `offsetWidth` forces the same commit synchronously and always lands on 0.
+
+Four tests cover it: one repaint per theme change (a mutation removing the
+token gate makes it 2), the previous frame is held on a theme change, it is
+NOT held while typing, and the swatch radios keep their geometry.
 
 ---
 

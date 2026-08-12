@@ -63,7 +63,8 @@
       "dimensions": "{width} × {height} пикселей",
       "scaleReduced": "{wanted}x недоступен при такой длине — используется {used}x.",
       "formatLabel": "Тип файла",
-      "formatNote": "WebP примерно в 9 раз меньше при том же качестве"
+      "formatNote": "WebP примерно в 9 раз меньше при том же качестве",
+      "zoom": "Просмотр: {percent}% · файл в полном размере"
     },
     "actions": {
       "copy": "Копировать",

@@ -4,7 +4,7 @@ import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
 import { Check, Copy, Download, Link2, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
@@ -66,6 +66,9 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
   const t = useTranslations("CodeSnapshotPage")
   const [copied, setCopied] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  /** The zoom the preview settled on; 1 unless the picture had to shrink. */
+  const [fit, setFit] = useState(1)
+  const handleFitChange = useCallback((next: number) => setFit(next), [])
 
   const {
     code,
@@ -86,6 +89,7 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     exportFormat,
     setExportFormat,
     canvasRef,
+    ghostRef,
     layout,
     foreground,
     effectiveScale,
@@ -227,6 +231,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               focusLines={options.focusLines}
               onToggleLineFocus={toggleLineFocus}
               focusLabel={(number) => t("input.focusLine", { number })}
+              ghostRef={ghostRef}
+              onFitChange={handleFitChange}
             />
             {/* The scale lives here, beside the pixel size it produces —
                 not in the card header. Two reasons, one of them measured: a
@@ -274,6 +280,14 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
                   {linkCopied ? t("actions.linkCopied") : t("actions.copyLink")}
                 </Button>
               </div>
+              {/* Only when it is NOT 1:1. Saying "100%" on every picture is
+                  noise; saying "48%" explains why the text looks small and
+                  reassures that the FILE is full size. */}
+              {fit < 0.999 && (
+                <p className="text-muted-foreground text-xs">
+                  {t("preview.zoom", { percent: Math.round(fit * 100) })}
+                </p>
+              )}
               {exportFormat === "webp" && (
                 <p className="text-muted-foreground text-xs">
                   {t("preview.formatNote")}

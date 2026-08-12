@@ -69,6 +69,15 @@ interface UseCodeSnapshot {
   setExportFormat: (format: ExportFormatId) => void
   canvasRef: RefObject<HTMLCanvasElement | null>
   /**
+   * A second canvas holding the PREVIOUS frame, dissolved over the new one.
+   *
+   * A canvas cannot transition its contents — there is no property to ease —
+   * so the only way to soften a repaint is to keep the old bitmap and fade it
+   * out. Driven from here rather than from the component because the copy has
+   * to be taken BEFORE the new frame is drawn, and this is where that happens.
+   */
+  ghostRef: RefObject<HTMLCanvasElement | null>
+  /**
    * The geometry of the picture on screen — null before the first paint.
    *
    * The whole `Layout`, not just its size, because the editor overlay has to
@@ -143,15 +152,93 @@ export function useCodeSnapshot(
     fontFamily
   })
 
-  const [lines, setLines] = useState<CodeLine[]>([])
-  const [colours, setColours] = useState({
+  /**
+   * Tokens, colours and the theme they came from — in ONE piece of state.
+   *
+   * They used to be two (`lines`, `colours`), which meant the paint effect
+   * could run with a new `options` object and colours from the PREVIOUS theme.
+   * Choosing a preset changes both the theme and the options, so the picture
+   * jumped to the new size in the old colours and then flashed again 278ms
+   * later when the tokens landed — measured on the running page. Carrying the
+   * theme alongside the tokens is what lets the painter refuse the first,
+   * wrong frame.
+   */
+  const [tokens, setTokens] = useState<{
+    lines: CodeLine[]
+    foreground: string
+    editorBackground: string
+    theme: string
+  }>({
+    lines: [],
     foreground: FALLBACK_FOREGROUND,
-    editorBackground: FALLBACK_BACKGROUND
+    editorBackground: FALLBACK_BACKGROUND,
+    theme: DEFAULT_THEME
   })
   const [layout, setLayout] = useState<Layout | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const ghostRef = useRef<HTMLCanvasElement | null>(null)
+
+  /**
+   * Cross-fade the frame that is about to be replaced.
+   *
+   * NOT on every repaint. Typing must feel immediate — a character that
+   * dissolves into place reads as lag, not polish — and copying a 1946×1016
+   * bitmap on every debounced keystroke is real work for no gain. Only the
+   * discrete changes get the dissolve: a theme, a preset, a font, a padding.
+   *
+   * Nothing here goes through React. The ghost is a DOM node whose opacity a
+   * CSS transition owns; setting it to 1 and then to 0 on the next frame is
+   * the whole animation. `prefers-reduced-motion` is honoured by the class on
+   * the element itself.
+   */
+  const holdPreviousFrame = useCallback(() => {
+    const canvas = canvasRef.current
+    const ghost = ghostRef.current
+    if (!canvas || !ghost || canvas.width === 0) return
+
+    const context = ghost.getContext("2d")
+    if (!context) return
+
+    /**
+     * The fade must never be able to take the picture down with it.
+     *
+     * It is decoration; the snapshot is the product. This is not theoretical —
+     * adding the copy broke EVERY paint in the test suite at once, because the
+     * canvas stub had no `drawImage` and the throw propagated out of the same
+     * promise chain the paint lives in. A dissolve that fails should simply
+     * not dissolve.
+     */
+    try {
+      ghost.width = canvas.width
+      ghost.height = canvas.height
+      ghost.style.width = canvas.style.width
+      ghost.style.height = canvas.style.height
+      context.drawImage(canvas, 0, 0)
+    } catch {
+      return
+    }
+
+    /**
+     * Commit the opaque state, then animate away from it — WITHOUT `rAF`.
+     *
+     * A transition needs the browser to have committed `opacity: 1` before it
+     * will animate to 0; setting both in one task is a no-op. The obvious way
+     * to get that commit is a nested `requestAnimationFrame`, and it is a trap:
+     * **rAF does not run in a background tab.** Measured here — the ghost took
+     * opacity 1 and never left it, so a stale frame sat permanently on top of
+     * the live canvas and the picture looked frozen. A decoration that can
+     * hide the product is not a decoration.
+     *
+     * Reading `offsetWidth` forces a synchronous style-and-layout flush, which
+     * commits the 1 whatever the tab is doing. The next line then always
+     * lands on 0, visible transition or not.
+     */
+    ghost.style.opacity = "1"
+    void ghost.offsetWidth
+    ghost.style.opacity = "0"
+  }, [])
 
   // The chosen font has to reach the options, and it arrives from the route as
   // a CSS variable that is not known when the defaults are declared.
@@ -169,27 +256,49 @@ export function useCodeSnapshot(
    * fetching. Without the `stale` guard the older tokens win and the canvas
    * shows the previous snippet, intermittently and only on slow networks.
    */
+  const previousCode = useRef(code)
+  /** True when the pending repaint was caused by typing, so it must not fade. */
+  const typedRef = useRef(false)
+
   useEffect(() => {
+    /**
+     * The debounce is for TYPING, and only for typing.
+     *
+     * Picking a theme or a language is one discrete decision, not a burst, and
+     * making it wait 120ms for a timer that exists to collapse keystrokes just
+     * makes the tool feel slow — it was 120ms of the 278ms gap the owner saw
+     * between a preset landing and the colours catching up.
+     */
+    const typed = previousCode.current !== code
+    previousCode.current = code
+    if (typed) typedRef.current = true
+
     let stale = false
-    const timer = setTimeout(() => {
-      highlightToLines(code, language, theme)
-        .then((result) => {
-          if (stale) return
-          setLines(result.lines)
-          setColours({
-            foreground: result.foreground,
-            editorBackground: result.background
+    const timer = setTimeout(
+      () => {
+        highlightToLines(code, language, theme)
+          .then((result) => {
+            if (stale) return
+            // One update, carrying the theme it was produced under. Two separate
+            // ones let a paint slip between them.
+            setTokens({
+              lines: result.lines,
+              foreground: result.foreground,
+              editorBackground: result.background,
+              theme
+            })
+            setError(null)
           })
-          setError(null)
-        })
-        .catch(() => {
-          // The last good tokens stay on screen — a grammar that failed to
-          // download must not blank the picture. But it is SAID, because the
-          // silent version leaves the reader picking a theme and watching
-          // nothing change, with no way to know a retry is what they need.
-          if (!stale) setError("highlight")
-        })
-    }, RETOKENISE_DELAY)
+          .catch(() => {
+            // The last good tokens stay on screen — a grammar that failed to
+            // download must not blank the picture. But it is SAID, because the
+            // silent version leaves the reader picking a theme and watching
+            // nothing change, with no way to know a retry is what they need.
+            if (!stale) setError("highlight")
+          })
+      },
+      typed ? RETOKENISE_DELAY : 0
+    )
 
     return () => {
       stale = true
@@ -219,6 +328,17 @@ export function useCodeSnapshot(
     const canvas = canvasRef.current
     if (!canvas || !options.fontFamily) return
 
+    /**
+     * Do not paint with colours from a theme nobody has chosen any more.
+     *
+     * The tokens carry the theme they were produced under. While a new theme
+     * is still tokenising they belong to the old one, and painting anyway
+     * produces a frame with the NEW geometry and the OLD palette — the first
+     * of the two flashes measured on a preset change. Holding the last good
+     * picture for those few milliseconds is invisible; the wrong frame is not.
+     */
+    if (tokens.theme !== theme) return
+
     let cancelled = false
     const spec = `${options.fontSize}px ${options.fontFamily}`
 
@@ -231,7 +351,7 @@ export function useCodeSnapshot(
       .then(() => {
         if (cancelled) return
         const measure = createMeasurer()
-        const next = layoutSnapshot(lines, options, measure)
+        const next = layoutSnapshot(tokens.lines, options, measure)
 
         // Past the browser's per-side canvas cap the picture is silently
         // empty: no throw, no event, and `toBlob` hands back null. Step down
@@ -245,7 +365,9 @@ export function useCodeSnapshot(
           return
         }
 
-        paintSnapshot(canvas, next, options, colours, usable)
+        if (!typedRef.current) holdPreviousFrame()
+        typedRef.current = false
+        paintSnapshot(canvas, next, options, tokens, usable)
         setLayout(next)
         setError(null)
       })
@@ -259,7 +381,7 @@ export function useCodeSnapshot(
     return () => {
       cancelled = true
     }
-  }, [lines, options, colours, scale])
+  }, [tokens, theme, options, scale, holdPreviousFrame])
 
   const updateOptions = useCallback((patch: Partial<SnapshotOptions>) => {
     setOptions((current) => ({ ...current, ...patch }))
@@ -550,8 +672,9 @@ export function useCodeSnapshot(
     exportFormat,
     setExportFormat,
     canvasRef,
+    ghostRef,
     layout,
-    foreground: colours.foreground,
+    foreground: tokens.foreground,
     effectiveScale,
     error,
     dismissError,

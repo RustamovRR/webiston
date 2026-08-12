@@ -63,7 +63,8 @@
       "dimensions": "{width} × {height} piksel",
       "scaleReduced": "Bu uzunlikda {wanted}x mumkin emas — {used}x bilan yasaladi.",
       "formatLabel": "Fayl turi",
-      "formatNote": "WebP ~9 barobar kichik, sifati bir xil"
+      "formatNote": "WebP ~9 barobar kichik, sifati bir xil",
+      "zoom": "Ko'rinish: {percent}% · fayl to'liq o'lchamda"
     },
     "actions": {
       "copy": "Nusxalash",
