@@ -69,6 +69,8 @@
     "resultWillAppear": "Result will appear here.",
     "backToTools": "Back to Tools",
     "clear": "Clear",
+    "copy": "Copy",
+    "copied": "Copied",
     "error": "Error",
     "toggleTheme": "Toggle theme",
     "enterData": "Enter some data",

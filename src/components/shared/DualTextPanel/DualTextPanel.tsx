@@ -198,9 +198,23 @@ export function DualTextPanel({
           ) : (
             <div className="flex items-center gap-2">
               {extraHeaderComponent}
+              {/* Labelled, and `outline` rather than `ghost`.
+                  Copying the result is the last step of every tool built on
+                  this panel — it is what the visitor came for — and it was an
+                  icon-only ghost button, the lowest-emphasis treatment in the
+                  system. Most people using these tools are not developers, and
+                  the two-overlapping-squares glyph is a developer convention:
+                  it means nothing outside software. Measured on a phone, the
+                  result of a converted article is 4,012px of text behind a
+                  200px window, so someone who does not recognise the icon
+                  scrolls and hand-selects instead. */}
               <CopyButton
                 text={convertedText}
                 disabled={!convertedText || isLoading}
+                variant="outline"
+                showLabel
+                label={tCommon("copy")}
+                copiedLabel={tCommon("copied")}
               />
             </div>
           )}
@@ -243,8 +257,30 @@ export function DualTextPanel({
               </>
             )
           ) : (
+            /**
+             * The result grows with the text, up to a cap. It used to be
+             * `absolute inset-0`, which pinned it to the panel's MINIMUM
+             * height for ever — measured on a converted article: 3,212px of
+             * text behind a 500px window on a desktop, and **4,012px behind a
+             * 200px window on a phone**, i.e. 95% of the answer hidden and
+             * nineteen swipes inside a porthole to read it.
+             *
+             * `absolute` is kept for everything else — the empty state, the
+             * error, the spinner and the two tools that render their own
+             * target content — because those are centred against the panel and
+             * a flow layout would collapse them.
+             *
+             * Capped, not free: `docs` rule — long output must never set the
+             * page height. Short results still leave both panels on one screen
+             * on a phone, which is why the MINIMUM stays where it was.
+             */
             <div
-              className="absolute inset-0 overflow-y-auto"
+              className={cn(
+                "overflow-y-auto",
+                convertedText && !customTargetContent && !error && !isLoading
+                  ? "max-h-[70vh] lg:max-h-[calc(100dvh-16rem)]"
+                  : "absolute inset-0"
+              )}
               role="region"
               aria-label={targetLabel}
               aria-live="polite"
