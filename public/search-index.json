@@ -44,6 +44,37 @@
     ]
   },
   {
+    "id": "tool-number-to-words",
+    "title": "Summani So'z Bilan Yozish",
+    "content": "Raqamni o'zbekcha so'z bilan yozing — lotin va kirill yozuvida",
+    "url": "/tools/number-to-words",
+    "category": "tools",
+    "tags": [
+      "number-to-words",
+      "tools",
+      "summani so'z bilan yozish",
+      "raqamni so'z bilan yozish",
+      "sonni so'z bilan yozish",
+      "raqamlarni so'zga aylantirish",
+      "summa so'z bilan",
+      "so'm so'z bilan yozish",
+      "hisob-faktura summa so'z bilan",
+      "shartnoma summasi so'z bilan",
+      "сумма прописью",
+      "число прописью",
+      "сумма прописью узбекский",
+      "сумма прописью на узбекском",
+      "цифры прописью сум",
+      "перевести число в слова",
+      "number to words uzbek",
+      "amount in words uzbek",
+      "uzbek number spelling",
+      "sum in words som",
+      "spell out number uzbek",
+      "number to words"
+    ]
+  },
+  {
     "id": "tool-qr-generator",
     "title": "QR Kod Yaratuvchi",
     "content": "Matn va URL lar uchun QR kodlar yaratish",

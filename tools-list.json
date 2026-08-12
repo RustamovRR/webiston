@@ -1,5 +1,6 @@
 [
   "latin-cyrillic",
+  "number-to-words",
   "qr-generator",
   "code-snapshot",
   "json-formatter",

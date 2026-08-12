@@ -1,6 +1,7 @@
 import {
   Camera,
   Code2,
+  Coins,
   FileText,
   FileType,
   Globe,
@@ -52,6 +53,20 @@ export const TOOLS_LIST: Tool[] = [
     href: "/tools/latin-cyrillic",
     icon: RotateCcw,
     color: "bg-blue-500/20",
+    category: "converters",
+    audience: "general"
+  },
+  {
+    tKey: "numberToWords",
+    href: "/tools/number-to-words",
+    icon: Coins,
+    // A TOKEN, not a palette class like the 22 entries above it — and the
+    // value is `chart-1` because that is what `CATEGORY_ACCENTS.converters`
+    // actually paints this card with. The field has no consumer left: the
+    // card reads `accentFor(tool.category)`, so every `color` here is dead
+    // data the token ratchet still counts. Adding a 23rd raw class to a field
+    // nobody reads is not a trade worth making.
+    color: "bg-chart-1/12",
     category: "converters",
     audience: "general"
   },

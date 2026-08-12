@@ -27,6 +27,10 @@
       "title": "Lotin-Kirill O'giruvchi",
       "description": "O'zbek tilidagi matnlarni lotinchadan kirillchaga va aksincha o'giring"
     },
+    "numberToWords": {
+      "title": "Summani So'z Bilan Yozish",
+      "description": "Raqamni o'zbekcha so'z bilan yozing — lotin va kirill yozuvida"
+    },
     "jsonFormatter": {
       "title": "JSON Formatlash",
       "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",

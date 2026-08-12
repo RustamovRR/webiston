@@ -29,6 +29,7 @@ export const TOOL_COLOR_MAP = {
   "json-formatter": TOOL_COLORS.CONVERTERS,
   "url-encoder": TOOL_COLORS.CONVERTERS,
   "latin-cyrillic": TOOL_COLORS.CONVERTERS,
+  "number-to-words": TOOL_COLORS.CONVERTERS,
   "color-converter": TOOL_COLORS.CONVERTERS,
   "jwt-decoder": TOOL_COLORS.CONVERTERS,
 

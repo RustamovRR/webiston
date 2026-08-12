@@ -27,6 +27,10 @@
       "title": "Latin-Cyrillic Converter",
       "description": "Convert texts in Uzbek from Latin to Cyrillic and vice versa."
     },
+    "numberToWords": {
+      "title": "Number to Words",
+      "description": "Write any amount in Uzbek words — Latin and Cyrillic at once"
+    },
     "jsonFormatter": {
       "title": "JSON Formatter",
       "description": "A tool to format and validate JSON data.",

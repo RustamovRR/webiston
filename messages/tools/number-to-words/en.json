@@ -1,0 +1,59 @@
+{
+  "NumberToWordsPage": {
+    "ToolHeader": {
+      "title": "Number to Words in Uzbek",
+      "description": "Write any amount in Uzbek words — Latin and Cyrillic at the same time. Made for invoices and contracts."
+    },
+    "input": {
+      "title": "Number",
+      "label": "Enter the amount",
+      "placeholder": "1 250 000.50"
+    },
+    "mode": {
+      "label": "Output",
+      "sum": "So'm",
+      "plain": "Plain number"
+    },
+    "capitalise": "Start with a capital letter",
+    "result": {
+      "title": "Result",
+      "latin": "Latin",
+      "cyrillic": "Cyrillic",
+      "empty": "Enter a number — the words appear here.",
+      "fractionIgnored": "The fractional part is only spelled out as tiyin in “So'm” mode."
+    },
+    "errors": {
+      "invalid": "That does not look like a number. Use digits, spaces, commas or dots only.",
+      "tooLarge": "That number is too large — up to 18 digits can be named."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "why": {
+          "question": "Why write an amount in words?",
+          "answer": "Invoices, contracts and payment orders carry the amount twice: in digits and in words. The written form cannot be altered afterwards, which protects the document and also catches a typo in the digits."
+        },
+        "scripts": {
+          "question": "Why both Latin and Cyrillic?",
+          "answer": "Documents in Uzbekistan are kept in both scripts — one office asks for Latin, another for Cyrillic. Giving both at once means not coming back for the second one. The Cyrillic column comes from Webiston's own transliteration library."
+        },
+        "birMing": {
+          "question": "Why “ming” and not “bir ming”?",
+          "answer": "“Yuz” and “ming” are native Uzbek numerals and take no leading “bir”: 1000 is “ming so'm”. “Million” and “milliard” are borrowed nouns that get counted, so 1,000,000 is “bir million”. The tool follows that distinction."
+        },
+        "tiyin": {
+          "question": "How is the fractional part written?",
+          "answer": "It is read as tiyin: 1250000.50 becomes “bir million ikki yuz ellik ming so'm ellik tiyin”. A zero tiyin is left out, because carrying “nol tiyin” on every invoice is noise. In plain-number mode the fraction is not spelled out at all — Uzbek reads decimals as fractions with a denominator that changes with the number of places, and getting that subtly wrong on a document is worse than declining it."
+        },
+        "limit": {
+          "question": "What is the largest number it can name?",
+          "answer": "Eighteen digits, up to kvadrillion. Anything larger is refused rather than half-named. The arithmetic runs on exact integers, so a long sum is never rounded."
+        },
+        "privacy": {
+          "question": "Is the amount I type sent anywhere?",
+          "answer": "No. Everything runs in your browser and nothing is exchanged with a server. Close the page and the number is gone."
+        }
+      }
+    }
+  }
+}

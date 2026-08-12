@@ -39,6 +39,9 @@ import loremIpsumUz from "./tools/lorem-ipsum/uz.json"
 import microphoneTestEn from "./tools/microphone-test/en.json"
 import microphoneTestRu from "./tools/microphone-test/ru.json"
 import microphoneTestUz from "./tools/microphone-test/uz.json"
+import numberToWordsEn from "./tools/number-to-words/en.json"
+import numberToWordsRu from "./tools/number-to-words/ru.json"
+import numberToWordsUz from "./tools/number-to-words/uz.json"
 import ogMetaGeneratorEn from "./tools/og-meta-generator/en.json"
 import ogMetaGeneratorRu from "./tools/og-meta-generator/ru.json"
 import ogMetaGeneratorUz from "./tools/og-meta-generator/uz.json"
@@ -79,6 +82,7 @@ export const uz = {
   ...codeSnapshotUz,
   ...qrGeneratorUz,
   ...passwordGeneratorUz,
+  ...numberToWordsUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
   ...ipInfoUz,
@@ -102,6 +106,7 @@ export const en = {
   ...codeSnapshotEn,
   ...qrGeneratorEn,
   ...passwordGeneratorEn,
+  ...numberToWordsEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
   ...ipInfoEn,
@@ -125,6 +130,7 @@ export const ru = {
   ...codeSnapshotRu,
   ...qrGeneratorRu,
   ...passwordGeneratorRu,
+  ...numberToWordsRu,
   ...ogMetaGeneratorRu,
   ...loremIpsumRu,
   ...ipInfoRu,

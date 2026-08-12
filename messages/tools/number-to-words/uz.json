@@ -1,0 +1,59 @@
+{
+  "NumberToWordsPage": {
+    "ToolHeader": {
+      "title": "Summani So'z Bilan Yozish",
+      "description": "Raqamni o'zbekcha so'z bilan yozing — lotin va kirill yozuvida bir vaqtda. Hisob-faktura va shartnomalar uchun."
+    },
+    "input": {
+      "title": "Raqam",
+      "label": "Summani kiriting",
+      "placeholder": "1 250 000,50"
+    },
+    "mode": {
+      "label": "Ko'rinish",
+      "sum": "So'm",
+      "plain": "Oddiy son"
+    },
+    "capitalise": "Bosh harf bilan boshlansin",
+    "result": {
+      "title": "Natija",
+      "latin": "Lotin",
+      "cyrillic": "Kirill",
+      "empty": "Raqam kiriting — natija shu yerda paydo bo'ladi.",
+      "fractionIgnored": "Kasr qism faqat «So'm» rejimida tiyin sifatida yoziladi."
+    },
+    "errors": {
+      "invalid": "Bu raqamga o'xshamayapti. Faqat raqam, probel, vergul yoki nuqta ishlating.",
+      "tooLarge": "Bu son juda katta — 18 xonagacha yoza olamiz."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "why": {
+          "question": "Nega summani so'z bilan yozish kerak?",
+          "answer": "Hisob-faktura, shartnoma va to'lov topshiriqnomasida summa raqam bilan ham, so'z bilan ham yoziladi. So'z bilan yozilgan summani keyinchalik o'zgartirib bo'lmaydi — bu hujjatni himoya qiladi va raqamdagi xatoni ham ko'rsatib beradi."
+        },
+        "scripts": {
+          "question": "Nega lotin va kirill birga chiqadi?",
+          "answer": "O'zbekistonda hujjatlar ikkala yozuvda ham yuritiladi: bir tashkilot lotinda, boshqasi kirillda so'raydi. Ikkalasini birga berish — ikkinchi marta qidirib yurmaslik degani. Kirill varianti Webiston'ning o'z transliteratsiya kutubxonasi orqali hosil qilinadi."
+        },
+        "birMing": {
+          "question": "Nega «bir ming» emas, «ming» deb yoziladi?",
+          "answer": "«Yuz» va «ming» — o'zbek tilining o'z sonlari, ular oldiga «bir» qo'yilmaydi: 1000 — «ming so'm». «Million», «milliard» esa o'zlashgan so'zlar, ular sanaladi: 1 000 000 — «bir million». Shuning uchun vosita ikkalasini har xil yozadi."
+        },
+        "tiyin": {
+          "question": "Tiyin qanday yoziladi?",
+          "answer": "Kasr qism tiyin sifatida o'qiladi: 1250000,50 — «bir million ikki yuz ellik ming so'm ellik tiyin». Tiyin nolga teng bo'lsa yozilmaydi, chunki har bir hujjatda «nol tiyin» ortiqcha. «Oddiy son» rejimida esa kasr qism yozilmaydi — o'zbek tilida kasrni o'qish alohida qoidaga bo'ysunadi va uni noto'g'ri yozgandan ko'ra yozmagan afzal."
+        },
+        "limit": {
+          "question": "Eng katta qanday sonni yoza oladi?",
+          "answer": "18 xonagacha, ya'ni kvadrilliongacha. Undan kattasi uchun vosita xato ko'rsatadi — yarim yozilgan summa berishdan ko'ra to'xtagani xavfsizroq. Hisob aniq butun sonlar bilan bajariladi, shuning uchun uzun summa ham yaxlitlanmaydi."
+        },
+        "privacy": {
+          "question": "Kiritgan summam qayergadir yuboriladimi?",
+          "answer": "Yo'q. Butun hisob brauzeringizda bajariladi, hech qanday server bilan almashinuv yo'q. Sahifani yopsangiz, kiritgan raqamingiz ham yo'qoladi."
+        }
+      }
+    }
+  }
+}
