@@ -38,6 +38,9 @@ interface StylePanelProps {
   /** Set for as long as the "language detected" notice should be shown. */
   detected: { from: string; to: string } | null
   onUndoDetection: () => void
+  /** True while Prettier's input can still be put back. */
+  formatUndoable: boolean
+  onUndoFormat: () => void
   onClearFocus: () => void
   onApplyPreset: (id: string) => void
 }
@@ -68,6 +71,8 @@ export function StylePanel({
   formatting,
   detected,
   onUndoDetection,
+  formatUndoable,
+  onUndoFormat,
   onClearFocus,
   onApplyPreset
 }: StylePanelProps) {
@@ -75,6 +80,7 @@ export function StylePanel({
   const titleId = useId()
   const numbersId = useId()
   const hintId = useId()
+  const firstLineId = useId()
 
   /**
    * The preset the current background came from, or null once it stops
@@ -196,6 +202,28 @@ export function StylePanel({
         </p>
       )}
 
+      {/* Prettier rewrote the whole document, and `Ctrl+Z` cannot bring it
+          back: a controlled textarea receives its new value programmatically,
+          which leaves the browser's undo stack empty — measured, alongside a
+          control case where keyboard input undid correctly. So the way back is
+          offered here, in the same place and the same shape as the detection
+          notice above, and it retires the moment anything else is typed. */}
+      {formatUndoable && (
+        <p
+          role="status"
+          className="-mt-2 flex flex-wrap items-center gap-x-2 text-muted-foreground text-xs"
+        >
+          <span>{t("formatted")}</span>
+          <button
+            type="button"
+            onClick={onUndoFormat}
+            className="cursor-pointer text-primary underline underline-offset-2"
+          >
+            {t("undoFormat")}
+          </button>
+        </p>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <SelectField
           label={t("font")}
@@ -294,17 +322,51 @@ export function StylePanel({
           is something to clear; a permanently disabled button teaches
           nothing. */}
       {options.showLineNumbers && (
-        <div className="-mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="text-muted-foreground text-xs">{t("focusHint")}</p>
-          {options.focusLines.length > 0 && (
-            <button
-              type="button"
-              onClick={onClearFocus}
-              className="cursor-pointer text-primary text-xs underline underline-offset-2"
+        <div className="-mt-2 flex flex-col gap-2">
+          {/* The gutter can start anywhere, which is the whole point of
+              screenshotting line 340 of a file and having it say 340. The
+              layout, the painter and the share link have all supported this
+              from the first commit — there was simply no control, so the field
+              sat in the model, in the URL encoder and in the tests with no way
+              for anyone to reach it. */}
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor={firstLineId}
+              className="text-muted-foreground text-xs"
             >
-              {t("clearFocus", { count: options.focusLines.length })}
-            </button>
-          )}
+              {t("firstLineNumber")}
+            </label>
+            <Input
+              id={firstLineId}
+              type="number"
+              min={1}
+              value={options.firstLineNumber}
+              onChange={(event) =>
+                // A cleared field is `""`, and `Number("")` is 0 — which draws
+                // a gutter starting at zero. Anything that is not a line
+                // number falls back to the first line.
+                onChange({
+                  firstLineNumber: Math.max(
+                    1,
+                    Math.floor(Number(event.target.value)) || 1
+                  )
+                })
+              }
+              className="h-8 w-24"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-muted-foreground text-xs">{t("focusHint")}</p>
+            {options.focusLines.length > 0 && (
+              <button
+                type="button"
+                onClick={onClearFocus}
+                className="cursor-pointer text-primary text-xs underline underline-offset-2"
+              >
+                {t("clearFocus", { count: options.focusLines.length })}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

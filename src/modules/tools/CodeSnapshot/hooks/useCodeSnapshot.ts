@@ -78,6 +78,9 @@ interface UseCodeSnapshot {
   format: () => Promise<boolean>
   formatting: boolean
   formattable: boolean
+  /** True while Prettier's input can still be put back. Retired by any edit. */
+  formatUndoable: boolean
+  undoFormat: () => void
   onPaste: (pasted: string) => void
   detected: { from: string; to: string } | null
   undoDetection: () => void
@@ -155,16 +158,35 @@ export function useCodeSnapshot(
     [clearDetection, setLanguageState]
   )
 
+  /**
+   * The editor's own setter, which also retires the "undo formatting" offer.
+   *
+   * Only the textarea calls this. `format`, `dropFile` and `reset` reach the
+   * raw setter inside their own hooks, so they cannot clear the memory they
+   * just wrote — and the moment the visitor edits by hand, putting Prettier's
+   * input back would silently discard what they typed since.
+   */
+  const { forgetFormat } = source
+  const { setCode: setCodeState } = settings
+  const setCode = useCallback(
+    (next: string) => {
+      forgetFormat()
+      setCodeState(next)
+    },
+    [forgetFormat, setCodeState]
+  )
+
   const { reset: resetSettings } = settings
   const reset = useCallback(() => {
     setError(null)
     clearDetection()
+    forgetFormat()
     resetSettings()
-  }, [clearDetection, resetSettings])
+  }, [clearDetection, forgetFormat, resetSettings])
 
   return {
     code: settings.code,
-    setCode: settings.setCode,
+    setCode,
     language: settings.language,
     setLanguage,
     font: settings.font,
@@ -192,6 +214,8 @@ export function useCodeSnapshot(
     format: source.format,
     formatting: source.formatting,
     formattable: source.formattable,
+    formatUndoable: source.formatUndoable,
+    undoFormat: source.undoFormat,
     onPaste: source.onPaste,
     detected: source.detected,
     undoDetection: source.undoDetection,

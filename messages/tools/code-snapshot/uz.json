@@ -24,6 +24,8 @@
       "themeCount": "{count} ta mavzu",
       "language": "Til",
       "format": "Formatlash",
+      "formatted": "Kod formatlandi.",
+      "undoFormat": "Bekor qilish",
       "formatting": "Formatlanmoqda…",
       "formatUnavailable": "Bu til uchun formatlagich yo'q",
       "detected": "Til aniqlandi: {language}",
@@ -37,6 +39,7 @@
       "windowTitle": "Sarlavha",
       "titlePlaceholder": "masalan: App.tsx",
       "lineNumbers": "Qator raqamlarini ko'rsatish",
+      "firstLineNumber": "Birinchi qator raqami",
       "frames": {
         "macos": "macOS",
         "plain": "Oddiy",

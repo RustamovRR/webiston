@@ -224,6 +224,52 @@ describe("code snapshot", () => {
   })
 
   /**
+   * Tab-indented source, which is most of Go and all of Makefiles.
+   *
+   * A canvas has no tab stops — measured, `measureText("\t")` equals
+   * `measureText(" ")` — so a tab that reaches the paint is ONE space, while
+   * the textarea layered over it advances `tab-size` columns. That is not just
+   * flattened indentation; it puts the caret off its glyph, which is the one
+   * thing this whole editor depends on. `utils/source-text.ts` expands them on
+   * the way in, and this is the test that the wiring is actually there.
+   */
+  it("expands tabs in pasted source instead of drawing them as one space", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+
+    // Act — `gofmt` output, verbatim in shape.
+    pasteInto(
+      codeInput(),
+      "func main() {\n\tif err != nil {\n\t\treturn\n\t}\n}"
+    )
+
+    // Assert — nothing tab-shaped survives into the state the canvas draws.
+    const value = (codeInput() as HTMLTextAreaElement).value
+    expect(value).not.toContain("\t")
+    expect(value.split("\n")[1]).toMatch(/^ {4}if/)
+    expect(value.split("\n")[2]).toMatch(/^ {8}return/)
+  })
+
+  /**
+   * Select-all and delete is something people do in the first ten seconds.
+   */
+  it("survives the editor being emptied", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+
+    // Act
+    fireEvent.change(codeInput(), { target: { value: "" } })
+
+    // Assert — an empty card, no crash, and still typeable.
+    await waitFor(() => expect(canvas.passes.length).toBeGreaterThan(0))
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+    fireEvent.change(codeInput(), { target: { value: "const back = 1" } })
+    expect(asText(canvas.latest())).toContain("back")
+  })
+
+  /**
    * The reported defect, and the reason `highlightSync` exists.
    *
    * The picture IS the editor — the textarea layered over the canvas has
@@ -477,6 +523,51 @@ describe("code snapshot", () => {
     expect(numbers).toEqual(["1", "2", "3", "4"])
   })
 
+  /**
+   * The gutter can start anywhere — the point of screenshotting line 340 of a
+   * file and having it say 340.
+   *
+   * The layout, the painter and the share encoder supported this from the
+   * first commit; there was no CONTROL, so the field sat in the model and in
+   * the URL with nothing able to reach it. This test is the one that would
+   * have caught that, because it drives the control rather than the option.
+   */
+  it("starts the gutter wherever the visitor says", async () => {
+    // Arrange
+    renderTool()
+    await painted()
+    fireEvent.click(screen.getByLabelText(/Qator raqamlarini/i))
+    await painted((texts) => texts.some((t) => t.text === "1"))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/Birinchi qator raqami/i), {
+      target: { value: "340" }
+    })
+
+    // Assert
+    const after = await painted((texts) => texts.some((t) => t.text === "340"))
+    const numbers = after.filter((t) => /^\d+$/.test(t.text)).map((t) => t.text)
+    expect(numbers).toEqual(["340", "341", "342", "343"])
+  })
+
+  it("never numbers a gutter from zero", async () => {
+    // Arrange — clearing a number input reports `""`, and `Number("")` is 0.
+    renderTool()
+    await painted()
+    fireEvent.click(screen.getByLabelText(/Qator raqamlarini/i))
+    await painted((texts) => texts.some((t) => t.text === "1"))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/Birinchi qator raqami/i), {
+      target: { value: "" }
+    })
+
+    // Assert — the first line is line 1, not line 0.
+    const after = await painted()
+    const numbers = after.filter((t) => /^\d+$/.test(t.text)).map((t) => t.text)
+    expect(numbers[0]).toBe("1")
+  })
+
   it("changes the font size in the drawn font string", async () => {
     // Arrange
     renderTool()
@@ -686,6 +777,96 @@ describe("code snapshot", () => {
     expect((codeInput() as HTMLTextAreaElement).value).toBe(
       "const x = 1;\nconst y = 2;"
     )
+  })
+
+  /**
+   * Formatting is the only action here whose RESULT cannot be predicted before
+   * pressing it, and it rewrites the whole document — so it is the one that
+   * needs a way back.
+   *
+   * `Ctrl+Z` is not that way. Measured in a real browser: text inserted the way
+   * a keyboard inserts it undoes correctly, and a programmatic replacement —
+   * which is exactly what a controlled React textarea receives — leaves the
+   * undo stack with nothing in it.
+   */
+  it("puts the code back when the formatting is undone", async () => {
+    // Arrange
+    const original = "const x=1;const y=2"
+    renderTool()
+    await painted()
+    fireEvent.change(codeInput(), { target: { value: original } })
+    await painted((t) => lineCount(t) === 1)
+    fireEvent.click(screen.getByRole("button", { name: /Formatlash/i }))
+    await painted((t) => lineCount(t) === 2)
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /Bekor qilish/i }))
+
+    // Assert — the editor AND the picture, because putting the text back
+    // without repainting is the version of this bug worth catching.
+    expect((codeInput() as HTMLTextAreaElement).value).toBe(original)
+    await painted((t) => lineCount(t) === 1)
+  })
+
+  it("retires the offer once the visitor edits by hand", async () => {
+    // Arrange — restoring Prettier's input after further typing would silently
+    // discard everything written since.
+    renderTool()
+    await painted()
+    fireEvent.change(codeInput(), { target: { value: "const x=1;const y=2" } })
+    await painted((t) => lineCount(t) === 1)
+    fireEvent.click(screen.getByRole("button", { name: /Formatlash/i }))
+    await painted((t) => lineCount(t) === 2)
+    expect(screen.getByRole("button", { name: /Bekor qilish/i })).toBeVisible()
+
+    // Act
+    fireEvent.change(codeInput(), { target: { value: "const z = 3" } })
+
+    // Assert
+    expect(
+      screen.queryByRole("button", { name: /Bekor qilish/i })
+    ).not.toBeInTheDocument()
+  })
+
+  /**
+   * An undo button for a no-op is noise, so nothing is remembered when
+   * Prettier hands back what it was given.
+   *
+   * The waiting here is deliberate and was earned: the obvious version —
+   * click, then `waitFor` that the button is absent — passes on the first tick,
+   * BEFORE the formatter has finished, and a mutation proved it: removing the
+   * "did anything change?" guard entirely left the test green. `formatting`
+   * disables the button synchronously on click and re-enables it when the work
+   * is done, so that is the signal to wait on.
+   */
+  it("offers nothing to undo when formatting changed nothing", async () => {
+    // Arrange — format once, so the offer is genuinely on screen and the code
+    // is now Prettier's own output.
+    renderTool()
+    await painted()
+    fireEvent.change(codeInput(), { target: { value: "const x=1" } })
+    await painted((t) => asText(t).includes("1"))
+    // `/Formatla/`, not `/Formatlash/`: the button relabels itself to
+    // "Formatlanmoqda…" while the plugin chunks load, and the busy state is
+    // exactly the moment this test needs to hold on to it.
+    const button = () => screen.getByRole("button", { name: /Formatla/i })
+    fireEvent.click(button())
+    await waitFor(() => expect(button()).toBeEnabled())
+    const settled = (codeInput() as HTMLTextAreaElement).value
+    expect(
+      screen.getByRole("button", { name: /Bekor qilish/i })
+    ).toBeInTheDocument()
+
+    // Act — format the formatted text. Nothing can change.
+    fireEvent.click(button())
+    expect(button()).toBeDisabled()
+    await waitFor(() => expect(button()).toBeEnabled())
+
+    // Assert — the offer is RETIRED, not left pointing at identical text.
+    expect((codeInput() as HTMLTextAreaElement).value).toBe(settled)
+    expect(
+      screen.queryByRole("button", { name: /Bekor qilish/i })
+    ).not.toBeInTheDocument()
   })
 
   it("disables the button for a language Prettier cannot parse", async () => {

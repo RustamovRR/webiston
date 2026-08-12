@@ -841,6 +841,164 @@ the owner's own browser.
 
 ---
 
+## Phase 3d — `[x]` Second review pass (2026-08-12)
+
+Four findings, all verified in the browser before being touched.
+
+### `firstLineNumber` was built, tested, shareable — and unreachable
+
+The field was in `SnapshotOptions`, in `DEFAULT_OPTIONS`, in `layoutSnapshot`
+(which sizes the gutter from the LAST number for exactly this reason), in the
+share encoder as `fn`, and in the layout tests. **There was no control.** A
+feature 90% built and 0% reachable is worse than one that does not exist: it
+costs bytes in every link and lines in every test.
+
+Wired to a number input beside the line-numbers checkbox, with a floor —
+clearing a `type="number"` field reports `""` and `Number("")` is 0, which
+draws a gutter starting at line zero.
+
+### Prettier was irreversible, and `Ctrl+Z` cannot help
+
+Measured with a control case, which is what makes it a finding rather than a
+guess:
+
+| how the text arrived | did `undo` restore it? |
+| --- | --- |
+| `execCommand("insertText")` — the way a keyboard inserts it | **yes** |
+| programmatic `value` setter — what a controlled React textarea gets | **no** |
+
+So every action that replaces the document — format, dropped file, reset —
+leaves the browser's undo stack empty. Formatting is the one whose RESULT
+cannot be predicted before pressing, so it is the one that got a way back: the
+pre-format text is kept for one step and offered in the same shape as the
+language-detection notice beside it, retiring the moment anything is typed.
+Drop and reset are deliberate gestures with a visible cause; a general undo
+history is a different, much larger feature.
+
+### The ligature toggle is CUT, not deferred
+
+Probed on a real 2D context in Chrome:
+
+```
+fontVariantLigatures: false     fontFeatureSettings: false
+fontKerning: true               letterSpacing: true
+```
+
+**Canvas 2D has no way to turn ligatures off.** `textRendering` exists but is a
+hint and also changes kerning. The Phase 2 item was never implementable, and
+the `ligatures` field on `CODE_FONTS` has no consumer — flagged for the owner
+rather than deleted (`CLAUDE.md`: deletions need evidence AND approval).
+
+### The download leaked its blob in a background tab
+
+`URL.revokeObjectURL` was deferred with `requestAnimationFrame`, which does not
+run in a background tab — press download, switch tabs, and a multi-megabyte
+blob is held for the life of the page. The same trap already cost this module a
+stuck cross-fade ghost. A timer fires whatever the tab is doing.
+
+### A test that asserted nothing
+
+The first version of "offers nothing to undo when formatting changed nothing"
+passed with the guard REMOVED. `waitFor(() => expect(x).not.toBeInTheDocument())`
+succeeds on its first tick — before the formatter has finished — so it was
+measuring an empty document, not a decision. Rewritten to wait on the busy
+state of the button, which flips synchronously on click. Every other new test
+was mutation-proven the same way.
+
+171 → 176 tests.
+
+**Not verified in the browser:** the two new controls. The owner's dev server
+was down by then, and this session does not start it.
+
+---
+
+## Phase 3e — `[x]` SEO audit, scale headroom, tabs (2026-08-12)
+
+### SEO — audited against the PRERENDERED HTML, not the source
+
+Reading `generateMetadata` proves intent; reading `.next/server/app/*/tools/
+code-snapshot.html` proves what ships.
+
+| | uz | en | ru |
+| --- | --- | --- | --- |
+| `<title>` | 55 | 53 | 51 chars — all under Google's ~60 cut |
+| description | **185 → 147** | 151 | 158 |
+| `<h1>` | unique, keyword-bearing, one per locale | | |
+| `<h2>` | 3, including the FAQ | | |
+| visible words | 457 | 500 | 451 |
+
+Present and correct: `canonical`, four `hreflang` (uz/en/ru/**x-default**),
+`og:image` with width and height plus `twitter:image` — both pointing at
+`/api/og`, which is a real route — `og:url` per locale, and five JSON-LD
+graphs (`SoftwareApplication`, `WebApplication`, `BreadcrumbList`, `FAQPage`,
+`offers`). Three sitemap entries, present in `tools-list.json`. No
+`aggregateRating`, correctly — inventing one is against Google's guidelines.
+
+**One defect.** The Uzbek description was **185 characters** and Google cuts at
+roughly 155–160, so the part being thrown away was *"Bepul, ro'yxatdan
+o'tishsiz"* — the single claim that separates this from carbon.now.sh and ray.so
+in a result list. Rewritten to 147; the font count went instead, because nobody
+searches for it and it is on the page anyway.
+
+### "Does a long file come out blurry at 3x?" — no, and here are the numbers
+
+Run against the real `layoutSnapshot` + `fittingScale` at the defaults (14px,
+1.6, 64px padding):
+
+| engine (cap) | 3x | 2x | 1x |
+| --- | --- | --- | --- |
+| Chrome (65,535px) | **983 lines** | 1,479 | 2,969 |
+| Firefox (32,767px) | 487 | 735 | 1,479 |
+| iOS Safari (16,384px) | 238 | 362 | 735 |
+
+One line can be **2,580 characters** at 14px and still export at 3x (3,010 at
+12px, 1,500 at 24px).
+
+**Nothing is ever upscaled.** The backing store is `layout × scale` and the
+painter draws into it natively, so the exported file cannot be soft. What can
+happen is a SMALLER scale than the one asked for, past the engine's cap — and
+that is announced (`preview.scaleReduced`). On iOS above 735 lines there is no
+scale that fits at all, and the tool says so rather than downloading a blank.
+
+### Two real bugs: tabs, and the caret they move
+
+Measured on a real 2D context:
+
+```
+measureText("\t") = 9.6328125    measureText(" ") = 9.6328125
+measureText("\r") = 9.6328125    fontFeatureSettings: false
+```
+
+**A canvas has no tab stops.** The text preparation algorithm converts every
+space character — tab and carriage return included — to a single U+0020 before
+anything is measured. So:
+
+1. **Indentation collapses.** `gofmt` emits tabs and has no option not to; so
+   do Makefiles and much of C. Eight levels of nesting drew as eight spaces.
+2. **The caret leaves its glyph** — the serious one. The textarea over the
+   canvas honours `tab-size`, which this editor sets to `INDENT.length` (2),
+   so the DOM advanced a tab by two columns while the canvas advanced it by
+   one. The 0.006px alignment this whole editor is built on was off by a
+   character per tab.
+
+Fixed by expanding on the way IN, never at paint time — that is what keeps the
+two surfaces looking at identical text. `normaliseSource` expands to real tab
+STOPS (`"a\tb"` is `a` + 3 spaces + `b`, not 4) and folds CRLF/CR to LF, and
+every writer funnels through one `setCode` in `useSnapshotSettings`. It returns
+the same reference when there is nothing to change, so an ordinary keystroke
+costs two scans and no re-render.
+
+### Degenerate inputs, probed
+
+empty · one empty line · whitespace only · tabs · emoji · Cyrillic · RTL · 200
+blank lines — none throw, all lay out. A single 50,000-character token produces
+a 420,168px card and correctly resolves to `tooLarge` rather than a blank
+download.
+
+176 → 185 tests. The tab fix is mutation-proven end to end.
+
+---
+
 ## Explicitly out of scope
 
 Animation · multi-window comparison · annotations and arrows · accounts ·

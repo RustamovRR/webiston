@@ -24,6 +24,8 @@
       "themeCount": "{count} themes",
       "language": "Language",
       "format": "Format",
+      "formatted": "Code formatted.",
+      "undoFormat": "Undo",
       "formatting": "Formatting…",
       "formatUnavailable": "No formatter for this language",
       "detected": "Language detected: {language}",
@@ -37,6 +39,7 @@
       "windowTitle": "Title",
       "titlePlaceholder": "e.g. App.tsx",
       "lineNumbers": "Show line numbers",
+      "firstLineNumber": "First line number",
       "frames": {
         "macos": "macOS",
         "plain": "Plain",

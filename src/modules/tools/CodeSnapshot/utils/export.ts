@@ -26,6 +26,16 @@ import {
  */
 const CLIPBOARD_MIME = "image/png"
 
+/**
+ * How long the object URL is kept alive after the click.
+ *
+ * Long enough for any engine to have started reading it, short enough that the
+ * blob is not held for the session. It is a grace period, not a guess at how
+ * fast a disk is — the browser has already taken the URL by the time the click
+ * handler returns.
+ */
+const REVOKE_DELAY = 1000
+
 const formatById = (id: ExportFormatId) =>
   EXPORT_FORMATS.find((format) => format.id === id) ?? EXPORT_FORMATS[0]
 
@@ -102,9 +112,19 @@ export async function downloadSnapshot(
   link.click()
   link.remove()
 
-  // Released on the next frame, not immediately: revoking synchronously can
-  // beat the browser to reading the URL and produce a zero-byte download.
-  requestAnimationFrame(() => URL.revokeObjectURL(url))
+  /**
+   * Released on a TIMER, not on the next animation frame.
+   *
+   * Revoking synchronously can beat the browser to reading the URL and produce
+   * a zero-byte download, so it has to be deferred — but `requestAnimationFrame`
+   * does not run in a background tab, and pressing download and immediately
+   * switching tabs is an ordinary thing to do. The callback would simply never
+   * fire, and a multi-megabyte blob would stay alive for the life of the page.
+   *
+   * The same trap cost this module a stuck cross-fade ghost; a timer fires
+   * whatever the tab is doing.
+   */
+  setTimeout(() => URL.revokeObjectURL(url), REVOKE_DELAY)
 }
 
 /**

@@ -52,6 +52,19 @@ interface UseSnapshotSource {
   formatting: boolean
   /** Whether Prettier has a parser for the chosen language at all. */
   formattable: boolean
+  /**
+   * True while the code Prettier replaced can still be put back.
+   *
+   * Formatting is the one action here whose RESULT you cannot predict before
+   * pressing it, and it rewrites the whole document — so it is also the one
+   * that needs a way back. `Ctrl+Z` is not that way: measured in the browser,
+   * text inserted by the keyboard undoes, and a programmatic replacement (which
+   * is what a controlled React textarea does) leaves the undo stack empty.
+   */
+  formatUndoable: boolean
+  undoFormat: () => void
+  /** Retire the offer — the visitor has moved on. */
+  forgetFormat: () => void
 }
 
 export function useSnapshotSource({
@@ -67,6 +80,15 @@ export function useSnapshotSource({
     to: string
   } | null>(null)
   const [formatting, setFormatting] = useState(false)
+  /**
+   * The document as it stood immediately before Prettier rewrote it.
+   *
+   * A single step, not a stack: the offer lives until the visitor's next edit
+   * and then retires, exactly like the language-detection notice beside it.
+   * A general undo history is a different feature and a much larger one — this
+   * covers the one action whose outcome nobody can predict in advance.
+   */
+  const [beforeFormat, setBeforeFormat] = useState<string | null>(null)
 
   /**
    * Detect the language of a paste, and only of a paste.
@@ -150,7 +172,12 @@ export function useSnapshotSource({
     if (!canFormat(lang)) return false
     setFormatting(true)
     try {
-      setCode(await formatCode(code, lang))
+      const formatted = await formatCode(code, lang)
+      // Kept only on SUCCESS, and only when something actually changed —
+      // offering to undo a no-op is noise, and offering to undo a failure
+      // would restore code that was never replaced.
+      setBeforeFormat(formatted === code ? null : code)
+      setCode(formatted)
       onError(null)
       return true
     } catch {
@@ -161,6 +188,13 @@ export function useSnapshotSource({
     }
   }, [code, language, setCode, onError])
 
+  const undoFormat = useCallback(() => {
+    if (beforeFormat !== null) setCode(beforeFormat)
+    setBeforeFormat(null)
+  }, [beforeFormat, setCode])
+
+  const forgetFormat = useCallback(() => setBeforeFormat(null), [])
+
   return {
     detected,
     undoDetection,
@@ -169,6 +203,9 @@ export function useSnapshotSource({
     dropFile,
     format,
     formatting,
-    formattable: canFormat(resolveLanguage(language))
+    formattable: canFormat(resolveLanguage(language)),
+    formatUndoable: beforeFormat !== null,
+    undoFormat,
+    forgetFormat
   }
 }

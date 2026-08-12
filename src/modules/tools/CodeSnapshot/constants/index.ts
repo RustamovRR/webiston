@@ -43,6 +43,20 @@ export const MACOS_DOTS = ["#FF5F57", "#FEBC2E", "#28C840"] as const
  */
 export const INDENT = "  "
 
+/**
+ * How wide a tab character already IN the source is drawn.
+ *
+ * Not the same number as `INDENT`, and deliberately so: that one is what the
+ * Tab key TYPES, this one is how a tab someone else wrote is DISPLAYED. Four
+ * is what VS Code shows by default and what most readers picture when they
+ * look at a Go or C file, and it is narrow enough that eight levels of nesting
+ * still fit a card people will actually look at.
+ *
+ * `utils/source-text.ts` expands them on the way in — a canvas has no tab
+ * stops at all, so a tab that survives to paint time is one space.
+ */
+export const TAB_WIDTH = 4
+
 /** Opacity applied to lines outside `focusLines`. */
 export const DIMMED_OPACITY = 0.35
 

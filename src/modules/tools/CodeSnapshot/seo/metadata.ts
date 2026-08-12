@@ -26,8 +26,13 @@ const BASE_URL = "https://webiston.uz"
 const COPY = {
   uz: {
     title: "Koddan Rasm Yasash — Chiroyli Kod Skrinshoti",
+    // 185 characters before this, and Google cuts a description at roughly
+    // 155–160 — so the part that was being thrown away was "Bepul, ro'yxatdan
+    // o'tishsiz", the one claim that separates this from carbon.now.sh and
+    // ray.so in a result list. The font count went instead: nobody searches
+    // for it, and it is on the page.
     description:
-      "Kodingizni chiroyli rasmga aylantiring: 65 ta mavzu, 360 dan ortiq dasturlash tili, 4 xil shrift. PNG'ni 1x, 2x yoki 3x'da yuklab oling. Bepul, ro'yxatdan o'tishsiz.",
+      "Kodingizni chiroyli rasmga aylantiring: 65 ta mavzu, 360 dan ortiq dasturlash tili, PNG 1x-3x. Bepul, ro'yxatdan o'tishsiz, hech narsa yuklanmaydi.",
     social:
       "Kodingizdan chiroyli rasm yasang — 65 mavzu, 360 til, bepul va ro'yxatdan o'tishsiz.",
     ogLocale: "uz_UZ"

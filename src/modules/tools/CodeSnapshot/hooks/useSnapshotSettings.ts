@@ -22,6 +22,7 @@ import {
 import { STYLE_PRESETS } from "../constants/presets"
 import type { SnapshotOptions } from "../types"
 import type { SharedSnapshot } from "../utils/share-url"
+import { normaliseSource } from "../utils/source-text"
 
 /**
  * Everything the visitor has chosen, and nothing else.
@@ -82,7 +83,25 @@ export interface SnapshotSettings {
 export function useSnapshotSettings(
   fontFamilies: Record<CodeFontId, string>
 ): SnapshotSettings {
-  const [code, setCode] = useState(STARTER_CODE)
+  const [code, setCodeState] = useState(STARTER_CODE)
+
+  /**
+   * The ONE way code enters this tool, and it normalises on the way in.
+   *
+   * Typing, pasting, dropping a file, Prettier and a shared link all end up
+   * here, which is the point: a tab that reaches the state is a tab the canvas
+   * draws as a single space while the textarea over it advances two columns,
+   * and the caret is off its glyph from there on. See `utils/source-text.ts`
+   * for the measurement.
+   *
+   * `normaliseSource` returns the same reference when there is nothing to
+   * change, so the ordinary keystroke costs two scans and no re-render.
+   */
+  const setCode = useCallback<Dispatch<SetStateAction<string>>>((value) => {
+    setCodeState((current) =>
+      normaliseSource(typeof value === "function" ? value(current) : value)
+    )
+  }, [])
   const [font, setFont] = useState<CodeFontId>(DEFAULT_FONT)
   const fontFamily = fontFamilies[font]
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE)
@@ -147,19 +166,22 @@ export function useSnapshotSettings(
     )
   }, [])
 
-  const restore = useCallback((shared: RestorableSettings) => {
-    setCode(shared.code)
-    setLanguage(shared.language)
-    setTheme(shared.theme)
-    setFont(shared.font)
-    setScale(shared.scale)
-    // `fontFamily` is a CSS variable this build generated; it belongs to the
-    // machine, never to the link.
-    setOptions((current) => ({
-      ...shared.options,
-      fontFamily: current.fontFamily
-    }))
-  }, [])
+  const restore = useCallback(
+    (shared: RestorableSettings) => {
+      setCode(shared.code)
+      setLanguage(shared.language)
+      setTheme(shared.theme)
+      setFont(shared.font)
+      setScale(shared.scale)
+      // `fontFamily` is a CSS variable this build generated; it belongs to the
+      // machine, never to the link.
+      setOptions((current) => ({
+        ...shared.options,
+        fontFamily: current.fontFamily
+      }))
+    },
+    [setCode]
+  )
 
   const reset = useCallback(() => {
     setCode(STARTER_CODE)
@@ -168,7 +190,7 @@ export function useSnapshotSettings(
     setScale(DEFAULT_EXPORT_SCALE)
     setExportFormat(DEFAULT_EXPORT_FORMAT)
     setOptions({ ...DEFAULT_OPTIONS, fontFamily })
-  }, [fontFamily])
+  }, [fontFamily, setCode])
 
   return {
     code,

@@ -24,6 +24,8 @@
       "themeCount": "{count} тем",
       "language": "Язык",
       "format": "Форматировать",
+      "formatted": "Код отформатирован.",
+      "undoFormat": "Отменить",
       "formatting": "Форматирование…",
       "formatUnavailable": "Для этого языка форматировщика нет",
       "detected": "Язык определён: {language}",
@@ -37,6 +39,7 @@
       "windowTitle": "Заголовок",
       "titlePlaceholder": "например: App.tsx",
       "lineNumbers": "Показывать номера строк",
+      "firstLineNumber": "Номер первой строки",
       "frames": {
         "macos": "macOS",
         "plain": "Простое",

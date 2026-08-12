@@ -78,6 +78,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     format,
     formatting,
     formattable,
+    formatUndoable,
+    undoFormat,
     onPaste,
     detected,
     undoDetection,
@@ -169,6 +171,8 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               formatting={formatting}
               detected={detected}
               onUndoDetection={undoDetection}
+              formatUndoable={formatUndoable}
+              onUndoFormat={undoFormat}
               onClearFocus={clearLineFocus}
               onApplyPreset={applyPreset}
             />
