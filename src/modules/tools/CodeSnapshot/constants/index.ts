@@ -1,4 +1,5 @@
-import type { Background, SnapshotOptions } from "../types"
+import type { Background, SnapshotOptions, ThemePalette } from "../types"
+import palette from "./theme-palette.json"
 
 /**
  * Geometry of the window chrome.
@@ -148,34 +149,53 @@ export const DEFAULT_OPTIONS: SnapshotOptions = {
 }
 
 /**
- * Themes offered in the picker.
+ * The themes people actually name, first in the picker.
  *
- * Shiki 4.4.2 bundles 65. All 65 are selectable, but this ordered subset is
- * what the picker shows first — the ones people actually name. `isDark` drives
- * the title-bar contrast and the default background pairing.
+ * Ids only. The label and the colours come from the generated palette below —
+ * an earlier version carried its own labels here and they had already drifted
+ * ("Dracula" against Shiki's "Dracula Theme", "SynthWave '84" against
+ * "Synthwave '84"), which is what a second source of truth always costs.
  */
-export const FEATURED_THEMES = [
-  { id: "github-dark-default", label: "GitHub Dark", isDark: true },
-  { id: "github-light-default", label: "GitHub Light", isDark: false },
-  { id: "catppuccin-mocha", label: "Catppuccin Mocha", isDark: true },
-  { id: "catppuccin-latte", label: "Catppuccin Latte", isDark: false },
-  { id: "dracula", label: "Dracula", isDark: true },
-  { id: "tokyo-night", label: "Tokyo Night", isDark: true },
-  { id: "one-dark-pro", label: "One Dark Pro", isDark: true },
-  { id: "vitesse-dark", label: "Vitesse Dark", isDark: true },
-  { id: "vitesse-light", label: "Vitesse Light", isDark: false },
-  { id: "rose-pine", label: "Rosé Pine", isDark: true },
-  { id: "kanagawa-wave", label: "Kanagawa Wave", isDark: true },
-  { id: "everforest-dark", label: "Everforest Dark", isDark: true },
-  { id: "nord", label: "Nord", isDark: true },
-  { id: "monokai", label: "Monokai", isDark: true },
-  { id: "night-owl", label: "Night Owl", isDark: true },
-  { id: "synthwave-84", label: "SynthWave '84", isDark: true },
-  { id: "vesper", label: "Vesper", isDark: true },
-  { id: "poimandres", label: "Poimandres", isDark: true },
-  { id: "ayu-dark", label: "Ayu Dark", isDark: true },
-  { id: "gruvbox-dark-medium", label: "Gruvbox Dark", isDark: true }
-] as const
+const FEATURED_THEME_IDS = [
+  "github-dark-default",
+  "github-light-default",
+  "catppuccin-mocha",
+  "catppuccin-latte",
+  "dracula",
+  "tokyo-night",
+  "one-dark-pro",
+  "vitesse-dark",
+  "vitesse-light",
+  "rose-pine",
+  "kanagawa-wave",
+  "everforest-dark",
+  "nord",
+  "monokai",
+  "night-owl",
+  "synthwave-84",
+  "vesper",
+  "poimandres",
+  "ayu-dark",
+  "gruvbox-dark-medium"
+]
+
+/**
+ * All 65 bundled themes with their real colours, featured ones first.
+ *
+ * ~16 KB of generated JSON — the whole reason the swatches are affordable. The
+ * alternative is importing 65 theme modules at ~16–24 KB each just to draw a
+ * coloured rectangle, which would undo the lazy loading in `utils/highlight.ts`
+ * that the rest of this tool is built around.
+ *
+ * Regenerate with `pnpm themes` after a Shiki upgrade; `pnpm themes --check`
+ * fails the gate when the two have drifted apart.
+ */
+export const THEME_PALETTES: readonly ThemePalette[] = [
+  ...FEATURED_THEME_IDS.map((id) =>
+    palette.themes.find((theme) => theme.id === id)
+  ).filter((theme) => theme !== undefined),
+  ...palette.themes.filter((theme) => !FEATURED_THEME_IDS.includes(theme.id))
+]
 
 export const DEFAULT_THEME = "github-dark-default"
 export const DEFAULT_LANGUAGE = "typescript"

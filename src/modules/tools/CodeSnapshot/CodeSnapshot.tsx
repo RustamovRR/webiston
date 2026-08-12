@@ -14,7 +14,7 @@ import {
   type CodeFontId,
   DEFAULT_FONT,
   EXPORT_SCALES,
-  FEATURED_THEMES
+  THEME_PALETTES
 } from "./constants"
 import { useCodeSnapshot } from "./hooks/useCodeSnapshot"
 import { ALL_LANGUAGES } from "./utils/highlight"
@@ -84,6 +84,9 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
     error,
     download,
     copy,
+    format,
+    formatting,
+    formattable,
     reset
   } = useCodeSnapshot(fontFamilies[font])
 
@@ -125,8 +128,13 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
           cell collapsed to its content height never moves. Both halves of that
           pairing are load-bearing; `QrGenerator.tsx:122` learned the same
           thing. */}
+      {/* `min-w-0` on BOTH cells, not just the wide one. A grid item's
+          automatic minimum size is its min-content width, and the picture is
+          as wide as the code — so below `lg`, where the track is `auto`, a
+          long line pushed the whole page sideways. Measured on a 375px
+          viewport: document scrollWidth 655 → 428 from this alone. */}
       <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <ToolCard
             title={t("style.title")}
             tone="muted"
@@ -146,34 +154,26 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               onChange={updateOptions}
               font={font}
               onFontChange={setFont}
-              themes={FEATURED_THEMES}
+              themes={THEME_PALETTES}
               theme={theme}
               onThemeChange={setTheme}
               languages={languages}
               language={language}
               onLanguageChange={setLanguage}
+              onFormat={() => void format()}
+              formattable={formattable}
+              formatting={formatting}
             />
           </ToolCard>
         </div>
 
-        <div className="lg:self-stretch">
+        <div className="min-w-0 lg:self-stretch">
           <ToolCard
             className="lg:sticky lg:top-20"
             title={t("preview.title")}
             tone="primary"
             actions={
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <SegmentedControl
-                  label={t("preview.scaleLabel")}
-                  value={String(scale)}
-                  onChange={(value) =>
-                    setScale(Number(value) as (typeof EXPORT_SCALES)[number])
-                  }
-                  options={EXPORT_SCALES.map((value) => ({
-                    value: String(value),
-                    label: `${value}x`
-                  }))}
-                />
                 <Button variant="outline" size="sm" onClick={handleCopy}>
                   {copied ? (
                     <Check className="size-4" />
@@ -199,7 +199,24 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
               caretColor={foreground}
               label={t("input.label")}
             />
-            <div className="mt-2 space-y-1">
+            {/* The scale lives here, beside the pixel size it produces —
+                not in the card header. Two reasons, one of them measured: a
+                third control in ToolCard's `shrink-0` actions row cannot wrap,
+                so it held the page 53px wider than a 375px viewport; and the
+                readout under it is literally the answer to the question the
+                control asks. */}
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+              <SegmentedControl
+                label={t("preview.scaleLabel")}
+                value={String(scale)}
+                onChange={(value) =>
+                  setScale(Number(value) as (typeof EXPORT_SCALES)[number])
+                }
+                options={EXPORT_SCALES.map((value) => ({
+                  value: String(value),
+                  label: `${value}x`
+                }))}
+              />
               {layout && effectiveScale !== null && (
                 <p className="text-muted-foreground text-xs">
                   {t("preview.dimensions", {
@@ -208,6 +225,9 @@ const CodeSnapshot = ({ fontFamilies }: CodeSnapshotProps) => {
                   })}
                 </p>
               )}
+            </div>
+
+            <div className="mt-2 space-y-1">
               {/* The chosen scale is not always the one used: past the
                   browser's canvas cap the export is silently blank, so it is
                   stepped down — and saying so is the difference between a

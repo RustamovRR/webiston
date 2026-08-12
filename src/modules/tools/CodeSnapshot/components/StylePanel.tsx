@@ -1,6 +1,8 @@
 "use client"
 
+import { Button } from "@webiston/ui/primitives/button"
 import { Input } from "@webiston/ui/primitives/input"
+import { Wand2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useId } from "react"
 
@@ -12,20 +14,26 @@ import {
   LINE_HEIGHTS,
   PADDINGS
 } from "../constants"
-import type { SnapshotOptions, WindowFrame } from "../types"
+import type { SnapshotOptions, ThemePalette, WindowFrame } from "../types"
+import { BackgroundPicker } from "./BackgroundPicker"
 import { SelectField } from "./SelectField"
+import { ThemePicker } from "./ThemePicker"
 
 interface StylePanelProps {
   options: SnapshotOptions
   onChange: (patch: Partial<SnapshotOptions>) => void
   font: CodeFontId
   onFontChange: (font: CodeFontId) => void
-  themes: readonly { id: string; label: string }[]
+  themes: readonly ThemePalette[]
   theme: string
   onThemeChange: (theme: string) => void
   languages: readonly { id: string; label: string }[]
   language: string
   onLanguageChange: (language: string) => void
+  onFormat: () => void
+  /** False for the 342 grammars Prettier has no parser for. */
+  formattable: boolean
+  formatting: boolean
 }
 
 const FRAMES: WindowFrame[] = ["macos", "plain", "none"]
@@ -48,34 +56,83 @@ export function StylePanel({
   onThemeChange,
   languages,
   language,
-  onLanguageChange
+  onLanguageChange,
+  onFormat,
+  formattable,
+  formatting
 }: StylePanelProps) {
   const t = useTranslations("CodeSnapshotPage.style")
   const titleId = useId()
   const numbersId = useId()
   const hintId = useId()
 
+  /**
+   * The preset the current background came from, or null once it stops
+   * matching one. Compared on the colours rather than tracked as its own piece
+   * of state — the background IS the option, and a second field holding "which
+   * chip" is a second source of truth that a URL-restored value would break.
+   */
+  const activeBackground =
+    BACKGROUND_PRESETS.find(
+      (preset) =>
+        preset.value.from === options.background.from &&
+        preset.value.to === options.background.to
+    )?.id ?? null
+
   return (
     <div className="flex flex-col gap-4">
+      {/* Theme and background are the two decisions that are made by LOOKING,
+          so they get real estate and their own row; everything below is
+          refinement and stays in the two-column grid of dropdowns. */}
+      <ThemePicker
+        label={t("theme")}
+        hint={t("themeCount", { count: themes.length })}
+        themes={themes}
+        value={theme}
+        onChange={onThemeChange}
+      />
+
+      <BackgroundPicker
+        label={t("background")}
+        value={activeBackground}
+        onChange={(background) => onChange({ background })}
+        options={BACKGROUND_PRESETS.map((preset) => ({
+          id: preset.id,
+          label: t(`backgrounds.${preset.id}`),
+          value: preset.value
+        }))}
+      />
+
+      {/* Language and Format sit together because the button's availability
+          is a fact ABOUT the language: Prettier parses 18 of Shiki's 360
+          grammars. Disabled rather than hidden — a control that vanishes as
+          you scroll a dropdown is harder to understand than one that is
+          visibly unavailable, and `title` says why. */}
+      <div className="flex items-end gap-2">
+        <div className="min-w-0 flex-1">
+          <SelectField
+            label={t("language")}
+            value={language}
+            onChange={onLanguageChange}
+            options={languages.map((item) => ({
+              value: item.id,
+              label: item.label
+            }))}
+          />
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onFormat}
+          disabled={!formattable || formatting}
+          title={formattable ? undefined : t("formatUnavailable")}
+        >
+          <Wand2 className="size-4" />
+          {formatting ? t("formatting") : t("format")}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-2 gap-3">
-        <SelectField
-          label={t("theme")}
-          value={theme}
-          onChange={onThemeChange}
-          options={themes.map((item) => ({
-            value: item.id,
-            label: item.label
-          }))}
-        />
-        <SelectField
-          label={t("language")}
-          value={language}
-          onChange={onLanguageChange}
-          options={languages.map((item) => ({
-            value: item.id,
-            label: item.label
-          }))}
-        />
         <SelectField
           label={t("font")}
           value={font}
@@ -119,24 +176,6 @@ export function StylePanel({
           options={FRAMES.map((value) => ({
             value,
             label: t(`frames.${value}`)
-          }))}
-        />
-        <SelectField
-          label={t("background")}
-          value={
-            BACKGROUND_PRESETS.find(
-              (preset) =>
-                preset.value.from === options.background.from &&
-                preset.value.to === options.background.to
-            )?.id ?? BACKGROUND_PRESETS[0].id
-          }
-          onChange={(value) => {
-            const preset = BACKGROUND_PRESETS.find((item) => item.id === value)
-            if (preset) onChange({ background: preset.value })
-          }}
-          options={BACKGROUND_PRESETS.map((preset) => ({
-            value: preset.id,
-            label: t(`backgrounds.${preset.id}`)
           }))}
         />
       </div>

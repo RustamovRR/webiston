@@ -2,7 +2,8 @@
 
 **Spec:** this file (no `reference/` doc — this is a product initiative, not the
 execution of an existing spec) · **Status:** `[~]` Phases 0, 1, 1b and the
-first item of Phase 2 shipped · **Next:** theme swatches and gradient chips.
+first four items of Phase 2 shipped · **Next:** language auto-detect on paste,
+then drag-and-drop and click-a-line-number to focus.
 
 > A code-to-image tool: paste code, get a shareable picture of it. The owner
 > asked for "more features than the competition, modern themes, many languages,
@@ -282,15 +283,82 @@ is the same to the digit. Monospace keeps the advance, so the caret holds.
       *silently* and rejects `role="presentation"`. The canvas therefore
       carries no ARIA at all — which is the behaviour we want anyway — and a
       test asserts no `img` role is exposed instead of a comment claiming it.
-- `[ ]` **Theme picker as swatches** showing each theme's real background,
-      keyword and string colours, read from the loaded theme.
-- `[ ]` **Background presets as gradient chips** — `Yarim tun` means nothing
-      as text.
-- `[ ]` **Format the code.** Prettier v3 standalone runs in the browser:
-      `prettier/standalone` plus `prettier/plugins/*`, dynamically imported on
-      click so the page never pays for it. `estree` is mandatory alongside
-      babel/typescript. Note this is **parity, not advantage** — ray.so ships a
-      Format Code button today. Disable it for languages with no parser.
+- `[x]` **Theme picker as swatches** — shipped 2026-08-12. All 65 themes as
+      miniatures of themselves: the theme's `editor.background` with bars in
+      its own keyword, identifier, string and comment colours.
+
+      **The colours are generated, not hand-copied.**
+      `scripts/theme-palette.mjs` (`pnpm themes`) highlights a fixed snippet
+      with the same `codeToTokens` call `paint.ts` draws from and reads the
+      colours off the result, so a swatch cannot disagree with the picture it
+      previews. `pnpm themes --check` fails when the file and the installed
+      Shiki have drifted.
+
+      | | measured |
+      | --- | --- |
+      | palette payload | **2,885 B gzipped** (16,690 raw) |
+      | the alternative — importing all 65 theme modules | **1,466,389 B raw** |
+      | swatch colours matching the generated palette | **325 / 325** (65 × 5), read out of the live DOM |
+      | card pixel vs swatch, after picking Dracula | both exactly `rgb(40,42,54)` |
+      | keyboard | `ArrowRight` moves selection AND repaints — native radios, no roving-tabindex code |
+
+      Hand-written labels were the first thing to go: they had already drifted
+      from Shiki's own ("Dracula" vs `Dracula Theme`, "SynthWave '84" vs
+      `Synthwave '84`). `FEATURED_THEMES` is now `FEATURED_THEME_IDS` — order
+      only — and the label comes from the generated file.
+- `[x]` **Background presets as gradient chips** — shipped 2026-08-12.
+      Verified against real canvas pixels rather than by eye: `Shafaq`
+      `rgba(248,113,24,255)`, `Qog'oz` `rgba(248,250,252,255)`, `Yarim tun`
+      `rgba(16,24,43,255)`, and `Shaffof` **`rgba(0,0,0,0)`** — genuinely
+      transparent, not a white sheet.
+
+      A mutation exposed a weak test here and it is worth keeping: the first
+      version counted `createLinearGradient` calls, and deleting the
+      `kind === "none"` early return survived it — correctly, because that path
+      then fills with `transparent`, which is a no-op. The requirement was
+      never "do not call fillRect"; it is "nothing OPAQUE covers the canvas".
+      The stub now records `fillStyle` alongside each rectangle and the test
+      asserts on the colour.
+
+**Two defects found while verifying, both fixed, neither review-visible:**
+
+| Defect | Measured |
+| --- | --- |
+| **The page scrolled sideways below `lg`.** A grid item's automatic minimum size is its min-content width, and the picture is as wide as the code — so on a phone the whole document was wider than the screen. `min-w-0` on both cells, and the 1x/2x/3x control moved out of ToolCard's `shrink-0` actions row to sit beside the pixel readout it produces | document scrollWidth on a 375px viewport: **655 → 428 → 375** |
+| `text-muted-foreground/70` on the theme count | **3.08:1** against the card in light mode — below AA for small text. The plain token is **5.88:1**; the `ml-2` gap already did the separating |
+- `[x]` **Format the code** — shipped 2026-08-12. `prettier@3.9.6`, standalone
+      build, plugins dynamically imported per language on click.
+
+      **`babel-ts`, not the `typescript` plugin.** Both parse TS and TSX; the
+      dedicated plugin is **213 KB gzipped against babel's 82 KB**, and TS/TSX
+      is the most common thing anyone will format here. Verified on generics
+      and JSX before the recipe table was written.
+
+      | | measured |
+      | --- | --- |
+      | Prettier code in the route's INITIAL payload | **0 bytes** — the prerendered HTML references no plugin chunk |
+      | fetched on the first press, TypeScript | exactly **3**: standalone, estree, babel |
+      | fetched for any other language | none of the other five plugins — proof the split is per-language, not all-or-nothing |
+      | languages with a parser | **18 of Shiki's 360** |
+
+      Browser-verified end to end: `const   x={a:1,…};function  f<T>(v:T){…}`
+      over two lines became five correctly formatted ones, generics intact,
+      and the canvas grew to match. A syntax error raises the alert and leaves
+      the code untouched.
+
+      The button is **disabled, not hidden**, for the other 342 — a control
+      that vanishes as you scroll a 360-entry dropdown is harder to understand
+      than one that is visibly unavailable — and it sits beside the language
+      picker because its availability is a fact about the language.
+
+      Three mutations, each caught by exactly one test: `canFormat` always
+      true, the parse error swallowed, and `format` returning its input.
+
+      One test bug worth recording: the first version searched the drawn text
+      for `"const x = 1"` and timed out. **The painter refuses to draw
+      whitespace-only tokens** (that fix predates this), so the picture's
+      joined text has no spaces in it at all. The observable is the line
+      count, read from distinct baselines.
 - `[ ]` **Language auto-detect on paste** — nobody finds one entry in 360.
 - `[ ]` **Drag a file onto the editor** — code and language in one gesture.
 - `[ ]` **Click a line number to focus it.** `focusLines` already works and is

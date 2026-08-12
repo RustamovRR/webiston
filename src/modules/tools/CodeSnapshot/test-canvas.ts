@@ -38,7 +38,19 @@ export interface CanvasRecording {
   passes: DrawnText[][]
   /** The picture currently on the canvas: the most recent complete pass. */
   latest: () => DrawnText[]
-  fills: { x: number; y: number; width: number; height: number }[]
+  /**
+   * `fillStyle` is recorded alongside the rectangle, and it is the field that
+   * matters: whether the background sheet is PAINTED is not the question a
+   * transparent export asks — `fillRect` with `transparent` is a no-op — the
+   * question is whether anything OPAQUE covers the canvas.
+   */
+  fills: {
+    x: number
+    y: number
+    width: number
+    height: number
+    fillStyle: string
+  }[]
   gradients: number
   clear: () => void
 }
@@ -102,7 +114,13 @@ export function installCanvasStub(): CanvasRecording {
         pass?.push({ text, x, y, fillStyle: state.fillStyle, font: state.font })
       },
       fillRect: (x: number, y: number, width: number, height: number) => {
-        recording.fills.push({ x, y, width, height })
+        recording.fills.push({
+          x,
+          y,
+          width,
+          height,
+          fillStyle: state.fillStyle
+        })
       },
       // Deliberately absent from this stub: `getImageData`. `canvas-limits.ts`
       // probes the engine by drawing at the far edge and reading the pixel

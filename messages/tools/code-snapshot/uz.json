@@ -12,7 +12,11 @@
     "style": {
       "title": "Ko'rinish",
       "theme": "Mavzu",
+      "themeCount": "{count} ta mavzu",
       "language": "Til",
+      "format": "Formatlash",
+      "formatting": "Formatlanmoqda…",
+      "formatUnavailable": "Bu til uchun formatlagich yo'q",
       "font": "Shrift",
       "fontSize": "Shrift o'lchami",
       "lineHeight": "Qator balandligi",
@@ -56,7 +60,8 @@
       "highlight": "Ranglash yuklanmadi. Internetni tekshirib, matnni qayta o'zgartiring.",
       "paint": "Rasm chizilmadi. Kodni qisqartirib ko'ring.",
       "export": "Rasmni saqlab bo'lmadi — ehtimol u juda katta.",
-      "tooLarge": "Kod juda uzun: brauzer bunchalik katta rasm yasay olmaydi. Qisqartiring."
+      "tooLarge": "Kod juda uzun: brauzer bunchalik katta rasm yasay olmaydi. Qisqartiring.",
+      "format": "Kodni formatlab bo'lmadi — sintaksisda xato bor."
     }
   }
 }

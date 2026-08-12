@@ -12,7 +12,11 @@
     "style": {
       "title": "Appearance",
       "theme": "Theme",
+      "themeCount": "{count} themes",
       "language": "Language",
+      "format": "Format",
+      "formatting": "Formatting…",
+      "formatUnavailable": "No formatter for this language",
       "font": "Font",
       "fontSize": "Font size",
       "lineHeight": "Line height",
@@ -56,7 +60,8 @@
       "highlight": "Highlighting failed to load. Check your connection and edit the text again.",
       "paint": "The picture could not be drawn. Try a shorter snippet.",
       "export": "The image could not be saved — it may be too large.",
-      "tooLarge": "This snippet is too long: the browser cannot make an image that big. Shorten it."
+      "tooLarge": "This snippet is too long: the browser cannot make an image that big. Shorten it.",
+      "format": "Could not format — the code has a syntax error."
     }
   }
 }

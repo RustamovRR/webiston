@@ -18,7 +18,8 @@ import {
   downloadSnapshot,
   snapshotFileName
 } from "../utils/export"
-import { highlightToLines } from "../utils/highlight"
+import { canFormat, formatCode } from "../utils/format"
+import { highlightToLines, resolveLanguage } from "../utils/highlight"
 import { layoutSnapshot } from "../utils/layout"
 import { createMeasurer, paintSnapshot } from "../utils/paint"
 
@@ -66,6 +67,12 @@ interface UseCodeSnapshot {
   dismissError: () => void
   download: () => Promise<boolean>
   copy: () => Promise<boolean>
+  /** Prettier, on the current code. False when it could not parse. */
+  format: () => Promise<boolean>
+  /** True while the plugin chunks are downloading — the first press is slow. */
+  formatting: boolean
+  /** Whether Prettier has a parser for the chosen language at all. */
+  formattable: boolean
   reset: () => void
 }
 
@@ -241,6 +248,35 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
 
   const dismissError = useCallback(() => setError(null), [])
 
+  const [formatting, setFormatting] = useState(false)
+
+  /**
+   * Format the code in place.
+   *
+   * The language is resolved first: the picker hands over canonical ids, but
+   * URL state and paste-detection will not, and `canFormat("ts")` is false
+   * while `canFormat("typescript")` is true — a silently dead button.
+   *
+   * A parse failure is REPORTED, not swallowed. Half-pasted code is the normal
+   * state of a snippet, so "this does not parse" is the single most useful
+   * thing this button can say when it cannot do its job.
+   */
+  const format = useCallback(async () => {
+    const lang = resolveLanguage(language)
+    if (!canFormat(lang)) return false
+    setFormatting(true)
+    try {
+      setCode(await formatCode(code, lang))
+      setError(null)
+      return true
+    } catch {
+      setError("format")
+      return false
+    } finally {
+      setFormatting(false)
+    }
+  }, [code, language])
+
   const reset = useCallback(() => {
     setError(null)
     setCode(STARTER_CODE)
@@ -269,6 +305,9 @@ export function useCodeSnapshot(fontFamily: string): UseCodeSnapshot {
     dismissError,
     download,
     copy,
+    format,
+    formatting,
+    formattable: canFormat(resolveLanguage(language)),
     reset
   }
 }
