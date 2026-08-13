@@ -5,8 +5,6 @@
       "description": "Fill in a loan receipt — the sum is written out in words automatically, in Latin and Cyrillic script, ready to print."
     },
     "form": {
-      "title": "Details",
-      "sample": "Sample",
       "borrower": {
         "legend": "Borrower (writes the tilxat)"
       },
@@ -40,14 +38,6 @@
       }
     },
     "preview": {
-      "title": "Document",
-      "scriptLabel": "Script",
-      "scripts": {
-        "lotin": "Latin",
-        "kirill": "Кирилл"
-      },
-      "print": "Print",
-      "docx": "Word (.docx)",
       "note": "The signature is always handwritten. The safest form is for the borrower to copy the whole text by hand — handwriting can be verified by an expert. Empty fields print as writing lines, so a blank form can be printed and filled in by hand."
     },
     "faq": {

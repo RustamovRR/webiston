@@ -116,7 +116,7 @@
       "promissory note uzbekistan",
       "tilxat template",
       "loan receipt (tilxat)",
-      "расписка о займе"
+      "расписка о займе (тилхат)"
     ]
   },
   {
@@ -721,6 +721,40 @@
       "ovoz yozish onlayn",
       "bepul mikrofon sinovi",
       "проверка микрофона"
+    ]
+  },
+  {
+    "id": "tool-ishdan-boshash-arizasi",
+    "title": "Ishdan Bo'shash Arizasi",
+    "content": "Arizani to'ldiring — oxirgi ish kuni qonun bo'yicha o'zi hisoblanadi",
+    "url": "/tools/ishdan-boshash-arizasi",
+    "category": "tools",
+    "tags": [
+      "ishdan-boshash-arizasi",
+      "tools",
+      "ishdan bo'shash arizasi",
+      "ishdan bo'shash arizasi namunasi",
+      "ariza namunasi",
+      "ish haqida ariza namunasi",
+      "o'z xohishiga ko'ra ishdan bo'shash arizasi",
+      "ishdan bo'shatish arizasi qanday yoziladi",
+      "ariza shakli",
+      "ishdan ketish arizasi",
+      "mehnat shartnomasini bekor qilish arizasi",
+      "ишдан бўшаш аризаси",
+      "ариза намунаси",
+      "ишдан бўшаш аризаси намунаси",
+      "ариза шакли",
+      "заявление на увольнение узбекистан",
+      "заявление об увольнении образец",
+      "заявление по собственному желанию образец",
+      "увольнение по собственному желанию узбекистан",
+      "как написать заявление на увольнение",
+      "resignation letter uzbekistan",
+      "resignation letter template uzbek",
+      "two weeks notice uzbekistan",
+      "resignation letter (ariza)",
+      "заявление на увольнение"
     ]
   },
   {

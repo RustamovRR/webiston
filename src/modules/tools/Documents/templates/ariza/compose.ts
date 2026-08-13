@@ -1,0 +1,175 @@
+import { BLANK, BLANK_SHORT } from "../../constants"
+import type {
+  DocumentBlock,
+  DocumentErrors,
+  DocumentSegment
+} from "../../types"
+import {
+  addCalendarDays,
+  addCalendarMonths,
+  formatUzbekDate,
+  initialsOf,
+  isDateOrderValid
+} from "../../utils/dates"
+import {
+  blank,
+  block,
+  field,
+  plainText,
+  toCyrillicBlocks,
+  tpl,
+  val
+} from "../../utils/segments"
+import { isValidAddress, isValidName } from "../../utils/validate"
+import { type ArizaData, NOTICE_CATEGORIES } from "./constants"
+
+/**
+ * The earliest day the employee may lawfully be released — MK 160.
+ *
+ * This is the tool's whole contribution over a downloaded .doc: a template
+ * cannot count fourteen calendar days from the day you fill it in, and a wrong
+ * date is the commonest reason an ariza comes back for rewriting.
+ */
+export function earliestRelease(
+  applicationDate: string,
+  category: ArizaData["category"]
+): string {
+  const rule =
+    NOTICE_CATEGORIES.find((entry) => entry.id === category) ??
+    NOTICE_CATEGORIES[0]
+
+  return rule.unit === "month"
+    ? addCalendarMonths(applicationDate, rule.amount)
+    : addCalendarDays(applicationDate, rule.amount)
+}
+
+/**
+ * The release date that goes on the paper.
+ *
+ * An empty field is not an empty line here: it means "the earliest lawful
+ * day", so the document is correct before the visitor has thought about it.
+ * A date they DID type wins, even an early one — MK 160 §8 makes early release
+ * lawful in named circumstances, and the form says so rather than refusing.
+ */
+export function effectiveRelease(data: ArizaData): string {
+  return (
+    data.releaseDate || earliestRelease(data.applicationDate, data.category)
+  )
+}
+
+function dateField(iso: string): DocumentSegment {
+  const formatted = formatUzbekDate(iso)
+  return formatted ? val(formatted) : blank(BLANK_SHORT)
+}
+
+/**
+ * The ariza, in the shape every Uzbek office expects: the addressee block in
+ * the top right, the heading, one sentence of request, the legal ground, then
+ * the date and the signature.
+ */
+export function composeAriza(data: ArizaData): DocumentBlock[] {
+  const signature = isValidName(data.employeeName)
+    ? initialsOf(data.employeeName)
+    : ""
+
+  const blocks: DocumentBlock[] = [
+    // "Kimga" and "kimdan" — right-aligned, which is why blocks exist at all.
+    block(
+      [
+        field(data.organisation, isValidAddress),
+        tpl(" "),
+        field(data.managerRole, isValidName),
+        tpl("\n"),
+        field(data.managerName, isValidName),
+        tpl("ga")
+      ],
+      "right"
+    ),
+    block(
+      [
+        field(data.position, isValidName),
+        tpl("\n"),
+        field(data.employeeName, isValidName),
+        tpl("dan")
+      ],
+      "right"
+    ),
+    block([
+      tpl("Meni o'z xohishimga ko'ra egallab turgan "),
+      field(data.position, isValidName),
+      tpl(" lavozimidan "),
+      dateField(effectiveRelease(data)),
+      tpl(" kunidan ozod qilishingizni so'rayman.")
+    ])
+  ]
+
+  if (data.reason.trim()) {
+    blocks.push(block([tpl("Sabab: "), val(data.reason.trim()), tpl(".")]))
+  }
+
+  blocks.push(
+    block([
+      tpl("Asos: O'zbekiston Respublikasi Mehnat kodeksining 160-moddasi.")
+    ]),
+    block([dateField(data.applicationDate)]),
+    block(
+      [
+        tpl("______________________ "),
+        signature ? val(signature) : blank(BLANK)
+      ],
+      "right"
+    )
+  )
+
+  return blocks
+}
+
+/** Only FILLED fields can be wrong; an empty one is the blank form. */
+export function validateAriza(data: ArizaData): DocumentErrors {
+  const found: DocumentErrors = {}
+
+  if (data.organisation.trim() && !isValidAddress(data.organisation)) {
+    found.organisation = "organisation"
+  }
+  if (data.managerRole.trim() && !isValidName(data.managerRole)) {
+    found.managerRole = "name"
+  }
+  if (data.managerName.trim() && !isValidName(data.managerName)) {
+    found.managerName = "name"
+  }
+  if (data.employeeName.trim() && !isValidName(data.employeeName)) {
+    found.employeeName = "name"
+  }
+  if (data.position.trim() && !isValidName(data.position)) {
+    found.position = "name"
+  }
+
+  if (data.releaseDate && data.applicationDate) {
+    if (!isDateOrderValid(data.applicationDate, data.releaseDate)) {
+      found.releaseDate = "dateOrder"
+    } else if (
+      !isDateOrderValid(
+        earliestRelease(data.applicationDate, data.category),
+        data.releaseDate
+      )
+    ) {
+      // Not "invalid" — MK 160 §8 makes an earlier date lawful when something
+      // prevents the employee from working on. The message says which.
+      found.releaseDate = "earlyRelease"
+    }
+  }
+
+  return found
+}
+
+/** Both scripts as flat strings — for the tests. */
+export function buildAriza(data: ArizaData): {
+  lotin: string
+  kirill: string
+} {
+  const lotin = composeAriza(data)
+  return {
+    lotin: plainText(lotin, "ARIZA"),
+    kirill: plainText(toCyrillicBlocks(lotin), "АРИЗА")
+  }
+}

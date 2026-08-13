@@ -1,0 +1,25 @@
+{
+  "DocumentsShared": {
+    "form": {
+      "title": "Details",
+      "sample": "Sample"
+    },
+    "preview": {
+      "title": "Document",
+      "scriptLabel": "Script",
+      "scripts": {
+        "lotin": "Latin",
+        "kirill": "Кирилл"
+      },
+      "print": "Print",
+      "docx": "Word (.docx)"
+    },
+    "switcher": {
+      "label": "Choose a document",
+      "items": {
+        "tilxat": "Loan receipt",
+        "ariza": "Resignation letter"
+      }
+    }
+  }
+}

@@ -31,9 +31,17 @@
       "title": "Number to Words",
       "description": "Write any amount in Uzbek words — Latin and Cyrillic at once"
     },
+    "documents": {
+      "title": "Uzbek Document Templates",
+      "description": "Loan receipt and resignation letter — filled in, with the date and sum computed"
+    },
     "tilxat": {
       "title": "Loan Receipt (Tilxat)",
       "description": "Fill in an Uzbek loan receipt — the sum in words automatically, ready to print"
+    },
+    "ishdanBoshashArizasi": {
+      "title": "Resignation Letter (Ariza)",
+      "description": "Fill in the ariza — the last working day counted for you under the Labour Code"
     },
     "jsonFormatter": {
       "title": "JSON Formatter",

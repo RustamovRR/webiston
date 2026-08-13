@@ -30,8 +30,19 @@ if (fs.existsSync(toolsDir)) {
     .map((dirent) => dirent.name)
     .filter((name) => !name.startsWith("__")) // Filter out __ folders
 
-  // Only include tools that have actual folders
-  toolsPages = toolsPages.filter((tool) => existingFolders.includes(tool))
+  // Every routed tool page, not only the ones that earn a CARD.
+  //
+  // These two lists stopped being the same thing when the document family
+  // shipped: tilxat and ishdan-boshash-arizasi are separate routes — each with
+  // its own title, FAQ and keywords, because Uzbek document search is
+  // document-name-specific — behind ONE card, so /tools stays readable. This
+  // file feeds the ⌘K search index, and search has to reach a page whether or
+  // not a card points at it. Intersecting instead of uniting left "ariza"
+  // returning nothing.
+  const routed = existingFolders.filter((name) => !name.startsWith("__"))
+  toolsPages = [...new Set([...toolsPages, ...routed])].filter((tool) =>
+    routed.includes(tool)
+  )
 
   console.log(
     `📁 Found ${existingFolders.length} tool folders (excluding __ folders)`

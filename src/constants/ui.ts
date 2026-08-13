@@ -69,7 +69,11 @@ export const TOOLS_LIST: Tool[] = [
     audience: "general"
   },
   {
-    tKey: "tilxat",
+    // ONE card for the whole document family, not one per document. Routes
+    // and cards are independent: each document keeps its own keyword-exact
+    // URL for search, while /tools stays a list a person can read. The
+    // in-page switcher is how a visitor moves between them.
+    tKey: "documents",
     href: "/tools/tilxat",
     icon: FileSignature,
     category: "generators",

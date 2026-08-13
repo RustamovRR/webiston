@@ -1,0 +1,7 @@
+export { DocumentFaq } from "./components/DocumentFaq"
+export { TemplateSwitcher } from "./components/TemplateSwitcher"
+export { ARIZA_TEMPLATE } from "./templates/ariza"
+export { ArizaTool } from "./templates/ariza/ArizaTool"
+export { TEMPLATE_LINKS } from "./templates/links"
+export { TILXAT_TEMPLATE } from "./templates/tilxat"
+export { TilxatTool } from "./templates/tilxat/TilxatTool"

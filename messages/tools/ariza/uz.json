@@ -1,0 +1,82 @@
+{
+  "ArizaPage": {
+    "ToolHeader": {
+      "title": "Ishdan Bo'shash Arizasi",
+      "description": "Arizani to'ldiring — oxirgi ish kuni Mehnat kodeksining 160-moddasidagi ogohlantirish muddati bo'yicha o'zi hisoblanadi, hujjat lotin va kirill yozuvida."
+    },
+    "form": {
+      "employer": {
+        "legend": "Ariza kimga beriladi"
+      },
+      "employee": {
+        "legend": "Ariza beruvchi"
+      },
+      "terms": {
+        "legend": "Bo'shash shartlari"
+      },
+      "organisation": "Tashkilot nomi",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Rahbar lavozimi",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Rahbar F.I.Sh.",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "F.I.Sh. (to'liq)",
+      "position": "Lavozimingiz",
+      "positionPlaceholder": "dasturchi",
+      "category": "Xodim toifasi",
+      "categoryHint": "Ogohlantirish muddati toifaga qarab farq qiladi (MK 160-modda).",
+      "categories": {
+        "umumiy": "Oddiy xodim — 14 kalendar kun",
+        "rahbar": "Tashkilot rahbari — 2 oy",
+        "orinbosar": "Rahbar o'rinbosari, bosh buxgalter — 1 oy",
+        "mavsumiy": "Mavsumiy yoki vaqtinchalik xodim — 3 kalendar kun",
+        "mikrofirma": "Mikrofirma, YaTT yoki uy xo'jaligi xodimi — 7 kalendar kun"
+      },
+      "applicationDate": "Ariza sanasi",
+      "releaseDate": "Oxirgi ish kuni",
+      "releaseHint": "Bo'sh qoldirsangiz — {date} yoziladi (eng erta qonuniy sana).",
+      "releaseHintEmpty": "Avval ariza sanasini tanlang — muddat o'zi hisoblanadi.",
+      "reason": "Sabab (ixtiyoriy)",
+      "reasonHint": "MK 160-modda 8-qismidagi holat bo'lsa yozing: o'qishga kirish, pensiya, salomatlik va h.k.",
+      "reasonPlaceholder": "o'qishga kirganim sababli"
+    },
+    "preview": {
+      "note": "Imzo har doim qo'lda qo'yiladi. Arizani ikki nusxada tayyorlab, bir nusxasiga kotibiyatning qabul qilgani haqidagi belgisini oldirib qo'ying — nizo chiqsa, ogohlantirish sanasini shu isbotlaydi. Bo'sh maydonlar chiziq bo'lib chiqadi."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "law": {
+          "question": "Qaysi modda asosida ishdan bo'shaladi?",
+          "answer": "O'zbekiston Respublikasi Mehnat kodeksining 160-moddasi — xodimning tashabbusi bilan mehnat shartnomasini bekor qilish. Unga ko'ra xodim muddatsiz mehnat shartnomasini ham, muddatli shartnomani muddatidan oldin ham, ish beruvchini yozma ravishda ogohlantirib bekor qilishi mumkin. Arizada shu modda asos sifatida ko'rsatiladi (manba: lex.uz, Mehnat kodeksi 160-modda; kadrovik.uz va norma.uz tushuntirishlari)."
+        },
+        "notice": {
+          "question": "Necha kun oldin ogohlantirish kerak?",
+          "answer": "Oddiy xodim uchun — 14 kalendar kun. Muddat toifaga qarab farq qiladi: tashkilot rahbari 2 oy, rahbar o'rinbosari va bosh buxgalter 1 oy, mavsumiy va vaqtinchalik xodimlar 3 kalendar kun, mikrofirma, yakka tartibdagi tadbirkor yoki uy xo'jaligi xodimi 7 kalendar kun. Bu vosita siz tanlagan toifaga qarab oxirgi ish kunini o'zi hisoblaydi — ariza qaytib kelishining eng ko'p uchraydigan sababi shu sanadagi xato."
+        },
+        "withdraw": {
+          "question": "Arizani qaytarib olsam bo'ladimi?",
+          "answer": "Ha. Ogohlantirish muddati davomida — oxirgi ish kunigacha — xodim arizasini qaytarib olishga haqli. Bunda mehnat shartnomasi bekor qilinmaydi. Istisno: sizning o'rningizga qonun bo'yicha ishga qabul qilishni rad etib bo'lmaydigan boshqa xodim yozma ravishda taklif qilingan bo'lsa."
+        },
+        "early": {
+          "question": "14 kunni kutmasdan ketsam bo'ladimi?",
+          "answer": "Ikki yo'l bor. Birinchisi — tomonlar kelishuvi: ish beruvchi rozi bo'lsa, muddat qisqartiriladi. Ikkinchisi — Mehnat kodeksining 160-moddasi 8-qismi: ishni davom ettirishga to'sqinlik qiladigan holat bo'lsa (o'qishga kirish, pensiyaga chiqish, saylanadigan lavozimga saylanish va shunga o'xshash hollar), ish beruvchi arizada ko'rsatilgan muddatda bekor qilishi shart. Bunday holatda sababni arizada aniq yozing va tasdiqlovchi hujjatni ilova qiling."
+        },
+        "handwritten": {
+          "question": "Chop etilgan ariza yaroqlimi yoki qo'lda yozish kerakmi?",
+          "answer": "Ikkalasi ham yaroqli — qonun arizaning yozma shaklda bo'lishini talab qiladi, chop etilgani ham yozma shakl hisoblanadi. Imzo esa har doim qo'lda qo'yiladi. Arizani ikki nusxada tayyorlang: bir nusxasiga kotibiyat qabul qilgani haqida belgi qo'ysin — ogohlantirish sanasini keyinchalik aynan shu isbotlaydi."
+        },
+        "privacy": {
+          "question": "Kiritgan ma'lumotlarim qayerga boradi?",
+          "answer": "Hech qayerga. Butun hujjat brauzeringizning o'zida tuziladi: serverga hech narsa yuborilmaydi, hech narsa saqlanmaydi. Sahifani yopsangiz, kiritgan ma'lumotlaringiz ham yo'qoladi."
+        }
+      }
+    },
+    "errors": {
+      "name": "Bu maydonda faqat harflar bo'lishi kerak",
+      "organisation": "Tashkilot nomida kamida bitta so'z bo'lishi kerak",
+      "dateOrder": "Oxirgi ish kuni ariza sanasidan oldin bo'la olmaydi",
+      "earlyRelease": "Bu sana ogohlantirish muddatidan oldin — faqat kelishuv yoki MK 160-modda 8-qismidagi holatda mumkin"
+    }
+  }
+}

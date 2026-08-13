@@ -9,26 +9,21 @@ import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
 // and all of them are `'use client'`.
 import {
+  ARIZA_TEMPLATE,
+  ArizaTool,
   DocumentFaq,
-  TemplateSwitcher,
-  TILXAT_TEMPLATE,
-  TilxatTool
+  TemplateSwitcher
 } from "@/modules/tools/Documents"
 import {
   applicationSchema,
   generateBreadcrumbSchema,
   generateFAQSchema,
-  getTilxatMetadata
-} from "@/modules/tools/Documents/templates/tilxat/seo"
+  getArizaMetadata
+} from "@/modules/tools/Documents/templates/ariza/seo"
 
 // This document's namespace plus the shell's, and the shared `Common`.
-const CLIENT_NAMESPACES = ["TilxatPage", "DocumentsShared", "Common"]
+const CLIENT_NAMESPACES = ["ArizaPage", "DocumentsShared", "Common"]
 
-/**
- * `<` inside a JSON string can close the surrounding `<script>` element. Every
- * value here is a constant or an i18n string, so there is no injection path
- * today; escaping removes the class of problem rather than the instance.
- */
 function jsonLd(schema: unknown): string {
   return JSON.stringify(schema).replace(/</g, "\\u003c")
 }
@@ -40,10 +35,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params
   setRequestLocale(locale)
-  return withLocale(getTilxatMetadata(locale), locale, "/tools/tilxat")
+  return withLocale(
+    getArizaMetadata(locale),
+    locale,
+    "/tools/ishdan-boshash-arizasi"
+  )
 }
 
-export default async function TilxatPage({
+export default async function ArizaPage({
   params
 }: {
   params: Promise<{ locale: string }>
@@ -51,9 +50,7 @@ export default async function TilxatPage({
   const { locale } = await params
   setRequestLocale(locale)
 
-  // The FAQ schema reads the same messages `DocumentFaq` renders, so the
-  // structured data can never describe a page that does not exist.
-  const tFaq = await getTranslations({ locale, namespace: "TilxatPage.faq" })
+  const tFaq = await getTranslations({ locale, namespace: "ArizaPage.faq" })
 
   return (
     <>
@@ -75,15 +72,14 @@ export default async function TilxatPage({
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
       <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
-        <TilxatTool>
-          <TemplateSwitcher locale={locale} current="tilxat" />
-        </TilxatTool>
+        <ArizaTool>
+          <TemplateSwitcher locale={locale} current="ariza" />
+        </ArizaTool>
       </LocaleMessages>
-      {/* Server Component, a sibling of the client island. */}
       <DocumentFaq
         locale={locale}
-        namespace="TilxatPage"
-        keys={TILXAT_TEMPLATE.faqKeys}
+        namespace="ArizaPage"
+        keys={ARIZA_TEMPLATE.faqKeys}
       />
     </>
   )

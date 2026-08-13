@@ -1,0 +1,82 @@
+{
+  "ArizaPage": {
+    "ToolHeader": {
+      "title": "Uzbek Resignation Letter (Ariza)",
+      "description": "Fill in the ariza — the last working day is counted for you from the notice period in Labour Code art. 160, in Latin and Cyrillic script."
+    },
+    "form": {
+      "employer": {
+        "legend": "Addressed to"
+      },
+      "employee": {
+        "legend": "From"
+      },
+      "terms": {
+        "legend": "Terms of leaving"
+      },
+      "organisation": "Organisation",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Manager's title",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Manager's full name",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "Your full name",
+      "position": "Your position",
+      "positionPlaceholder": "dasturchi",
+      "category": "Employee category",
+      "categoryHint": "The notice period depends on the category (Labour Code art. 160).",
+      "categories": {
+        "umumiy": "Ordinary employee — 14 calendar days",
+        "rahbar": "Head of the organisation — 2 months",
+        "orinbosar": "Deputy head, chief accountant — 1 month",
+        "mavsumiy": "Seasonal or temporary employee — 3 calendar days",
+        "mikrofirma": "Micro-firm, sole trader or household employee — 7 calendar days"
+      },
+      "applicationDate": "Date of the application",
+      "releaseDate": "Last working day",
+      "releaseHint": "Leave empty and {date} is used — the earliest lawful day.",
+      "releaseHintEmpty": "Pick the application date first — the period is counted for you.",
+      "reason": "Reason (optional)",
+      "reasonHint": "Fill this in for an art. 160 §8 circumstance: study, retirement, health and so on.",
+      "reasonPlaceholder": "o'qishga kirganim sababli"
+    },
+    "preview": {
+      "note": "The signature is always handwritten. Prepare two copies and have the office mark one as received — that mark is what proves the notice date if anything is disputed. Empty fields print as writing lines."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "law": {
+          "question": "Which article covers resigning?",
+          "answer": "Article 160 of the Labour Code of Uzbekistan — termination at the employee's own initiative. Under it an employee may terminate an open-ended contract, or a fixed-term contract before its end, by notifying the employer in writing. The ariza cites that article as its ground (sources: lex.uz, Labour Code art. 160; guidance from kadrovik.uz and norma.uz)."
+        },
+        "notice": {
+          "question": "How much notice is required?",
+          "answer": "For an ordinary employee, 14 calendar days. The period depends on the category: 2 months for the head of an organisation, 1 month for a deputy head or chief accountant, 3 calendar days for seasonal and temporary employees, and 7 calendar days for micro-firm, sole-trader and household employees. This tool counts the last working day from the category you choose — a wrong date there is the commonest reason an ariza is sent back."
+        },
+        "withdraw": {
+          "question": "Can I withdraw the application?",
+          "answer": "Yes. During the notice period — up to the last working day — the employee may withdraw the application, and the contract is not terminated. The exception is where another employee whose hiring cannot lawfully be refused has already been invited in writing to take the post."
+        },
+        "early": {
+          "question": "Can I leave before the notice period ends?",
+          "answer": "Two ways. By agreement: if the employer consents, the period is shortened. Or under art. 160 §8: where a circumstance prevents the employee from continuing work (admission to study, retirement, election to an elective post and similar cases), the employer must terminate on the date the employee asks for. State the reason in the application and attach the document that confirms it."
+        },
+        "handwritten": {
+          "question": "Is a printed ariza valid, or must it be handwritten?",
+          "answer": "Both are valid — the law requires written form, and printed is written form. The signature is always by hand. Prepare two copies and have the office mark one as received: that mark is what later proves the notice date."
+        },
+        "privacy": {
+          "question": "Where does my data go?",
+          "answer": "Nowhere. The whole document is composed in your browser: nothing is uploaded, nothing is stored. Close the page and the data is gone."
+        }
+      }
+    },
+    "errors": {
+      "name": "This field can only contain letters",
+      "organisation": "The organisation needs at least one word",
+      "dateOrder": "The last working day cannot be before the application date",
+      "earlyRelease": "That date is inside the notice period — only possible by agreement or under art. 160 §8"
+    }
+  }
+}

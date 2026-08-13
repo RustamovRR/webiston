@@ -1,0 +1,78 @@
+/**
+ * What every document on this page shares: the paper, the writing lines, the
+ * calendar and the two scripts. Anything a single document knows — its clauses,
+ * its legal sources, its sample — lives in `../templates/<slug>/constants.ts`.
+ */
+
+/** Uzbek month names, indexed by month number − 1. For "2026-yil 12-avgust". */
+export const UZBEK_MONTHS = [
+  "yanvar",
+  "fevral",
+  "mart",
+  "aprel",
+  "may",
+  "iyun",
+  "iyul",
+  "avgust",
+  "sentabr",
+  "oktabr",
+  "noyabr",
+  "dekabr"
+] as const
+
+/**
+ * What stands in for a field the visitor has not filled yet.
+ *
+ * Long enough to write on by hand: a printed document with blanks IS the blank
+ * form people take to the meeting, so an empty form is a feature, not an error
+ * state — nothing here ever refuses to render.
+ */
+export const BLANK = "______________________"
+/** A shorter rule, for a sum's digits or a passport number. */
+export const BLANK_SHORT = "____________"
+
+/** The two scripts every document renders in. Ids double as message keys. */
+export const DOCUMENT_SCRIPTS = ["lotin", "kirill"] as const
+
+/**
+ * The sheet's own colours and face — the PAPER exception.
+ *
+ * A document is not interface: it must look identical in light and dark mode
+ * and identical to what the printer produces, so semantic tokens — which exist
+ * to flip with the scheme — are exactly wrong here. Same category as the
+ * code-snapshot canvas and the chart palettes (`code-rules.md` §11): named
+ * constants in one place, never inline.
+ */
+export const PAPER = {
+  background: "#ffffff",
+  ink: "#111111",
+  /** Times is what Uzbek official documents are set in; Georgia is the metric-compatible fallback. */
+  fontFamily: "'Times New Roman', Georgia, serif"
+} as const
+
+/**
+ * The same sheet, in Word's units — the .docx half of the PAPER exception.
+ *
+ * Word measures in twips: 1440 to the inch, so A4 (210 × 297 mm) is
+ * 11906 × 16838 and a 20 mm margin is 1134. Font size is in HALF-points, so
+ * 12pt is 24. These are the on-screen sheet's numbers converted once, here,
+ * rather than as magic integers inside the exporter — the screen, the printout
+ * and the .docx have to stay the same document.
+ */
+export const PAPER_DOCX = {
+  /** A4, in twips. */
+  width: 11906,
+  height: 16838,
+  /** 20mm sides and foot, 22mm head — matching the sheet's padding. */
+  margin: 1134,
+  marginTop: 1247,
+  font: "Times New Roman",
+  /** 12pt, in half-points. */
+  fontHalfPoints: 24,
+  /** ~1.85 line height, in 240ths of a line. */
+  lineHeight: 444,
+  /** Space after each paragraph, in twips (~6pt). */
+  paragraphGap: 120,
+  /** The heading's letter-spacing, in twentieths of a point. */
+  headingTracking: 60
+} as const

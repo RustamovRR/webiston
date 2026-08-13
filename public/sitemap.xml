@@ -240,6 +240,7 @@
 <url><loc>https://webiston.uz/en/tools/device-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/hash-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/ip-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/en/tools/ishdan-boshash-arizasi</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/json-formatter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/jwt-decoder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/latin-cyrillic</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -264,6 +265,7 @@
 <url><loc>https://webiston.uz/ru/tools/device-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/hash-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/ip-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/ru/tools/ishdan-boshash-arizasi</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/json-formatter</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/jwt-decoder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/latin-cyrillic</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -299,4 +301,5 @@
 <url><loc>https://webiston.uz/tools/ip-info</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/microphone-test</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/tools/ishdan-boshash-arizasi</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

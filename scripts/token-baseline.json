@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-08-12",
+  "measuredAt": "2026-08-13",
   "total": 451,
   "files": {
     "packages/ui/src/constants/ui-patterns.ts": 46,
@@ -35,6 +35,7 @@
     "src/modules/tools/ColorConverter/constants/index.ts": 16,
     "src/modules/tools/ColorConverter/hooks/useColorConverter.ts": 2,
     "src/modules/tools/ColorConverter/utils/exports.ts": 1,
+    "src/modules/tools/Documents/constants/index.ts": 2,
     "src/modules/tools/MicrophoneTest/components/AudioPreviewModal.tsx": 1,
     "src/modules/tools/MicrophoneTest/components/AudioPreviewPanel.tsx": 8,
     "src/modules/tools/MicrophoneTest/components/AudioVisualizer.tsx": 2,
@@ -44,7 +45,6 @@
     "src/modules/tools/MicrophoneTest/hooks/useMicrophoneTest.ts": 4,
     "src/modules/tools/PasswordGenerator/hooks/usePasswordGenerator.ts": 1,
     "src/modules/tools/QrGenerator/constants/index.ts": 3,
-    "src/modules/tools/QrGenerator/utils/presets.ts": 8,
-    "src/modules/tools/Tilxat/constants/index.ts": 2
+    "src/modules/tools/QrGenerator/utils/presets.ts": 8
   }
 }

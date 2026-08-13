@@ -1,0 +1,25 @@
+{
+  "DocumentsShared": {
+    "form": {
+      "title": "Данные",
+      "sample": "Образец"
+    },
+    "preview": {
+      "title": "Документ",
+      "scriptLabel": "Письмо",
+      "scripts": {
+        "lotin": "Латиница",
+        "kirill": "Кириллица"
+      },
+      "print": "Печать",
+      "docx": "Word (.docx)"
+    },
+    "switcher": {
+      "label": "Выбрать документ",
+      "items": {
+        "tilxat": "Расписка о займе",
+        "ariza": "Заявление на увольнение"
+      }
+    }
+  }
+}

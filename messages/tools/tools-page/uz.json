@@ -31,9 +31,17 @@
       "title": "Summani So'z Bilan Yozish",
       "description": "Raqamni o'zbekcha so'z bilan yozing — lotin va kirill yozuvida"
     },
+    "documents": {
+      "title": "Hujjat Namunalari",
+      "description": "Tilxat va ishdan bo'shash arizasi — to'ldiring, sana va summa o'zi hisoblanadi"
+    },
     "tilxat": {
       "title": "Tilxat Yozish",
       "description": "Qarz tilxatini to'ldiring — summa avtomatik so'z bilan, chop etishga tayyor"
+    },
+    "ishdanBoshashArizasi": {
+      "title": "Ishdan Bo'shash Arizasi",
+      "description": "Arizani to'ldiring — oxirgi ish kuni qonun bo'yicha o'zi hisoblanadi"
     },
     "jsonFormatter": {
       "title": "JSON Formatlash",

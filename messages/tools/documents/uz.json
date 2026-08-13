@@ -1,0 +1,25 @@
+{
+  "DocumentsShared": {
+    "form": {
+      "title": "Ma'lumotlar",
+      "sample": "Namuna"
+    },
+    "preview": {
+      "title": "Hujjat",
+      "scriptLabel": "Yozuv",
+      "scripts": {
+        "lotin": "Lotin",
+        "kirill": "Кирилл"
+      },
+      "print": "Chop etish",
+      "docx": "Word (.docx)"
+    },
+    "switcher": {
+      "label": "Hujjat turini tanlash",
+      "items": {
+        "tilxat": "Tilxat",
+        "ariza": "Ishdan bo'shash arizasi"
+      }
+    }
+  }
+}

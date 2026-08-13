@@ -3,6 +3,9 @@
 import commonEn from "./common/en.json"
 import commonRu from "./common/ru.json"
 import commonUz from "./common/uz.json"
+import arizaEn from "./tools/ariza/en.json"
+import arizaRu from "./tools/ariza/ru.json"
+import arizaUz from "./tools/ariza/uz.json"
 import base64ConverterEn from "./tools/base64-converter/en.json"
 import base64ConverterRu from "./tools/base64-converter/ru.json"
 import base64ConverterUz from "./tools/base64-converter/uz.json"
@@ -18,6 +21,9 @@ import colorConverterUz from "./tools/color-converter/uz.json"
 import deviceInfoEn from "./tools/device-info/en.json"
 import deviceInfoRu from "./tools/device-info/ru.json"
 import deviceInfoUz from "./tools/device-info/uz.json"
+import documentsEn from "./tools/documents/en.json"
+import documentsRu from "./tools/documents/ru.json"
+import documentsUz from "./tools/documents/uz.json"
 import hashGeneratorEn from "./tools/hash-generator/en.json"
 import hashGeneratorRu from "./tools/hash-generator/ru.json"
 import hashGeneratorUz from "./tools/hash-generator/uz.json"
@@ -87,6 +93,8 @@ export const uz = {
   ...passwordGeneratorUz,
   ...numberToWordsUz,
   ...tilxatUz,
+  ...arizaUz,
+  ...documentsUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
   ...ipInfoUz,
@@ -112,6 +120,8 @@ export const en = {
   ...passwordGeneratorEn,
   ...numberToWordsEn,
   ...tilxatEn,
+  ...arizaEn,
+  ...documentsEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
   ...ipInfoEn,
@@ -137,6 +147,8 @@ export const ru = {
   ...passwordGeneratorRu,
   ...numberToWordsRu,
   ...tilxatRu,
+  ...arizaRu,
+  ...documentsRu,
   ...ogMetaGeneratorRu,
   ...loremIpsumRu,
   ...ipInfoRu,
