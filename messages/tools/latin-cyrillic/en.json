@@ -110,6 +110,16 @@
           "answer": "Links, email addresses, file names, code snippets and product names such as React or GitHub are preserved on purpose — they lose their meaning when written in Cyrillic."
         }
       }
+    },
+    "extension": {
+      "title": "Install it in your browser",
+      "description": "Stop coming back to this page — select text on any site and convert it right there.",
+      "features": {
+        "select": "A button appears next to the selection",
+        "shortcut": "⌘/Ctrl + Shift + L copies instantly",
+        "privacy": "Your text never leaves the browser"
+      },
+      "cta": "Add to Chrome — free"
     }
   }
 }

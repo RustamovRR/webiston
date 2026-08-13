@@ -1,3 +1,4 @@
+export { ExtensionCallout } from "./components/ExtensionCallout"
 // Public API for LatinCyrillic module
 
 // Static sections — Server Components. Imported from their own files rather

@@ -1,7 +1,7 @@
 {
   "name": "latin-cyrillic-extension",
   "displayName": "Lotin-Kirill O'giruvchi \u2014 Webiston",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi.",
   "author": "Webiston Team <info@webiston.uz>",
   "type": "module",

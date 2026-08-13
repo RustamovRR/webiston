@@ -7,5 +7,6 @@
 export { DirectionTabs } from "./DirectionTabs"
 export { DownloadMenu } from "./DownloadMenu"
 export { ExceptionsDialog } from "./ExceptionsDialog"
+export { ExtensionCallout } from "./ExtensionCallout"
 export { PreservedTerms } from "./PreservedTerms"
 export { SourceEmptyActions } from "./SourceEmptyActions"

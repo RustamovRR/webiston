@@ -14,6 +14,7 @@ import { withLocale } from "@/lib/seo"
 import {
   AlphabetTable,
   ConverterFaq,
+  ExtensionCallout,
   LatinCyrillicPage as LatinCyrillic
 } from "@/modules/tools/LatinCyrillic"
 import {
@@ -97,6 +98,9 @@ export default async function LatinCyrillicPage({
       </LocaleMessages>
 
       <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">
+        {/* Between the tool and the reference material: the person who has
+          just converted something is the one who would rather not come back. */}
+        <ExtensionCallout locale={locale} />
         <AlphabetTable locale={locale} />
         <ConverterFaq locale={locale} />
       </div>

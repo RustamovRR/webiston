@@ -110,6 +110,16 @@
           "answer": "Havolalar, elektron pochta manzillari, fayl nomlari, kod bo'laklari va React yoki GitHub kabi mahsulot nomlari ataylab o'zgarishsiz qoldiriladi — ular kirillchada ma'nosini yo'qotadi."
         }
       }
+    },
+    "extension": {
+      "title": "Brauzeringizga o'rnating",
+      "description": "Har safar bu sahifaga qaytmang — istalgan saytda matnni belgilang va o'sha yerning o'zida o'giring.",
+      "features": {
+        "select": "Belgilangan matn yonida tugma chiqadi",
+        "shortcut": "⌘/Ctrl + Shift + L — darhol nusxalash",
+        "privacy": "Matn brauzeringizdan chiqmaydi"
+      },
+      "cta": "Chrome'ga qo'shish — bepul"
     }
   }
 }

@@ -100,3 +100,16 @@ export const FAQ_KEYS = [
 ] as const
 
 export type FaqKey = (typeof FAQ_KEYS)[number]
+
+/**
+ * The published Chrome extension.
+ *
+ * Tool-scoped for now, per §14: this page is its only consumer. It moves to
+ * `src/constants/` the moment a second one appears — the footer is the likely
+ * candidate.
+ */
+export const EXTENSION_STORE_URL =
+  "https://chromewebstore.google.com/detail/lotin-kirill-ogiruvchi-%E2%80%94/inbahpclopinhpfodmfnambafebgopbp"
+
+/** The three claims the callout makes. Each is something the extension does. */
+export const EXTENSION_FEATURE_KEYS = ["select", "shortcut", "privacy"] as const
