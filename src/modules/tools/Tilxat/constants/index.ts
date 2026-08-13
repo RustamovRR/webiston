@@ -67,6 +67,36 @@ export const PAPER = {
   fontFamily: "'Times New Roman', Georgia, serif"
 } as const
 
+/** Latin, no spaces: this filename travels through mail and Telegram. */
+export const DOCX_FILE_NAME = "tilxat"
+
+/**
+ * The same sheet, in Word's units — the .docx EXCEPTION, alongside `PAPER`.
+ *
+ * Word measures in twips: 1440 to the inch, so A4 (210 × 297 mm) is
+ * 11906 × 16838 and a 20 mm margin is 1134. Font size is in HALF-points, so
+ * 12pt is 24. These are the on-screen sheet's numbers converted once, here,
+ * rather than as magic integers inside the exporter — the screen, the
+ * printout and the .docx have to stay the same document.
+ */
+export const PAPER_DOCX = {
+  /** A4, in twips. */
+  width: 11906,
+  height: 16838,
+  /** 20mm sides and foot, 22mm head — matching the sheet's padding. */
+  margin: 1134,
+  marginTop: 1247,
+  font: "Times New Roman",
+  /** 12pt, in half-points. */
+  fontHalfPoints: 24,
+  /** ~1.85 line height, in 240ths of a line. */
+  lineHeight: 444,
+  /** Space after each paragraph, in twips (~6pt). */
+  paragraphGap: 120,
+  /** The heading's letter-spacing, in twentieths of a point. */
+  headingTracking: 60
+} as const
+
 /** The questions on the page, in the order they are asked. Read by the FAQ component AND the FAQPage schema. */
 export const FAQ_KEYS = [
   "legal",

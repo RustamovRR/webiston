@@ -5,6 +5,7 @@ export {
   encodeBase64,
   encodeBytes
 } from "./base64"
+export { saveBlob } from "./download"
 export { formatDuration, formatFileSize } from "./format"
 // Text utilities
 

@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import { parseAmount } from "@/lib/uzbek-number-words/amount"
 
-import { buildSampleTilxat, EMPTY_TILXAT } from "../constants"
+import { buildSampleTilxat, DOCX_FILE_NAME, EMPTY_TILXAT } from "../constants"
 import type { TilxatData, TilxatParty, TilxatScript } from "../types"
 import { composeTilxat, plainText, type TilxatSegment } from "../utils/document"
 import {
@@ -68,6 +68,10 @@ interface UseTilxat {
   errors: TilxatErrors
   copy: () => Promise<boolean>
   print: () => void
+  /** Save the sheet as a .docx. Resolves false if the export failed. */
+  downloadDocx: () => Promise<boolean>
+  /** True while the ~500 kB `docx` chunk is loading. */
+  isExporting: boolean
   /** Fills every field with a worked example, dated from today. */
   loadSample: () => void
   reset: () => void
@@ -85,6 +89,7 @@ export function useTilxat(): UseTilxat {
     structuredClone(EMPTY_TILXAT)
   )
   const [script, setScript] = useState<TilxatScript>("lotin")
+  const [isExporting, setExporting] = useState(false)
 
   const composition = useMemo(() => composeTilxat(data), [data])
   const segments = script === "lotin" ? composition.lotin : composition.kirill
@@ -194,6 +199,20 @@ export function useTilxat(): UseTilxat {
     window.print()
   }, [])
 
+  const downloadDocx = useCallback(async () => {
+    setExporting(true)
+    try {
+      const { downloadTilxatDocx } = await import("../utils/docx")
+      await downloadTilxatDocx(segments, heading, DOCX_FILE_NAME)
+      return true
+    } catch (error) {
+      console.error("Tilxat DOCX export failed:", error)
+      return false
+    } finally {
+      setExporting(false)
+    }
+  }, [segments, heading])
+
   /** Read the clock HERE, on the click — never at module scope. */
   const loadSample = useCallback(() => {
     setData(buildSampleTilxat(new Date()))
@@ -217,6 +236,8 @@ export function useTilxat(): UseTilxat {
     errors,
     copy,
     print,
+    downloadDocx,
+    isExporting,
     loadSample,
     reset
   }

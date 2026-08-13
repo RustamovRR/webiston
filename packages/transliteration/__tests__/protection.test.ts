@@ -234,3 +234,67 @@ describe("CODE SPANS - contents survive both directions", () => {
     expect(result).toContain("давом этади")
   })
 })
+
+// =============================================================================
+// The protection layer over-reaching into ORDINARY Uzbek prose.
+//
+// Both classes below were found in real traffic (Yandex Metrica session
+// replays, 2026-08-13), and both hurt Uzbek writers, not only the foreign
+// visitors whose text surfaced them. The failure mode is the worst kind: a few
+// words silently stay in Latin in the middle of a converted sentence, with no
+// error and no obvious cause.
+// =============================================================================
+
+describe("A backtick typed as an Uzbek apostrophe is not a code fence", () => {
+  it("converts a sentence written with ` instead of '", () => {
+    // Arrange — the backtick is in APOSTROPHE_VARIANTS precisely because
+    // people type it for o'/g'. Two of them used to pair up as inline code
+    // and freeze everything between: "о`zbek tili g`алаба қозонди".
+    const withBacktick = toCyrillic("o`zbek tili g`alaba qozondi")
+
+    // Act
+    const withApostrophe = toCyrillic("o'zbek tili g'alaba qozondi")
+
+    // Assert — the two spellings are the same sentence, so they convert the
+    // same way. Asserting the PAIR, not a literal, is what makes this a real
+    // test: it cannot pass by freezing both.
+    expect(withBacktick).toBe(withApostrophe)
+    expect(withBacktick).toBe("ўзбек тили ғалаба қозонди")
+  })
+
+  it("still protects a genuine inline code span", () => {
+    // Arrange / Act / Assert — opened after a space, which is where markdown
+    // opens one and where an Uzbek letter never is.
+    expect(toCyrillic("Kod: `const x = 1`")).toBe("Код: `const x = 1`")
+    expect(toCyrillic("salom `dunyo` qalaysan")).toBe("салом `dunyo` қалайсан")
+  })
+})
+
+describe("A missing space after a full stop is not a file name", () => {
+  it.each([
+    ["Bugun keldim.Ertaga ketaman", "Бугун келдим.Эртага кетаман"],
+    ["Toshkent shahri.Chilonzor tumani", "Тошкент шаҳри.Чилонзор тумани"],
+    // The Macedonian address that surfaced it: a long lowercase word after
+    // the dot is no more an extension than a Capitalised one.
+    ["bul.Partizanski ODREDI", "бул.Партизански ОДРЕДИ"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+
+  it("still protects real file names, hosts and ALL-CAPS extensions", () => {
+    // Arrange / Act / Assert — the reason the rule is a pair (short extension
+    // AND not a Capitalised word) rather than either half alone.
+    expect(toCyrillic("config.json faylini oching")).toBe(
+      "config.json файлини очинг"
+    )
+    expect(toCyrillic("rasm.PNG va backup_v2.tar.gz")).toBe(
+      "rasm.PNG ва backup_v2.tar.gz"
+    )
+    expect(toCyrillic("info@webiston.uz ga yozing")).toBe(
+      "info@webiston.uz га ёзинг"
+    )
+    expect(toCyrillic("https://webiston.uz saytiga kiring")).toBe(
+      "https://webiston.uz сайтига киринг"
+    )
+  })
+})

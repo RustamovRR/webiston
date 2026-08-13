@@ -60,6 +60,54 @@ function startsInsideUzbekLetter(text: string, offset: number): boolean {
 }
 
 /**
+ * Is this backtick an Uzbek apostrophe rather than an inline-code fence?
+ *
+ * The backtick is in APOSTROPHE_VARIANTS — `normalizeApostrophes` folds it to
+ * `'` — because a large share of people typing Uzbek reach for it for `o'` and
+ * `g'`. That makes the inline-code pattern actively dangerous: two of them in
+ * one sentence pair up and everything between is frozen. Measured before this:
+ *
+ *   "o`zbek tili g`alaba qozondi" → "о`zbek tili g`алаба қозонди"
+ *
+ * — four words silently left in Latin, in the middle of an ordinary sentence.
+ *
+ * The discriminator is what precedes the opening backtick. Markdown opens a
+ * code span after a space or punctuation; an Uzbek letter opens `o'`/`g'`.
+ * A leading-edge test, not a lookbehind, for the reason documented below:
+ * this file must not build a regex Safari 16.3 cannot compile.
+ */
+function startsAsUzbekApostrophe(
+  text: string,
+  offset: number,
+  match: string
+): boolean {
+  if (!match.startsWith("`")) return false
+  const previous = text[offset - 1]
+  return previous !== undefined && /[a-zA-ZЀ-ӿ]/.test(previous)
+}
+
+/** The bare `name.ext` shape, and a dot followed by a Capitalised word. */
+const FILENAME_SHAPE = /^[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9]{1,5})+$/
+const SENTENCE_SEAM = /\.[A-Z][a-z]/
+
+/**
+ * Is this `word.Word` a missing space after a full stop rather than a file?
+ *
+ * The commonest typo in Uzbek typing, and it used to freeze both words:
+ * "Toshkent shahri.Chilonzor tumani" came back with `shahri.Chilonzor` still
+ * in Latin. A Capitalised word after the dot is a new sentence; ALL-CAPS is
+ * not, so `rasm.PNG` stays protected.
+ *
+ * Both regexes are their own, WITHOUT the `i` flag the shared pattern carries
+ * — case is the entire signal here. Gated on `FILENAME_SHAPE` so it can only
+ * ever reject that one branch: a URL or an <a href> containing `.Do` is a
+ * different match and must stay protected.
+ */
+function isSentenceSeam(match: string): boolean {
+  return FILENAME_SHAPE.test(match) && SENTENCE_SEAM.test(match)
+}
+
+/**
  * Uzbek suffixes only attach to entries this long or longer.
  *
  * The suffix expansion is what turns a 3-letter entry into a common Uzbek
@@ -199,8 +247,24 @@ function buildBasePattern(): string {
     // Non-capturing: with no capture groups anywhere in this regex the replace
     // callback signature is a fixed (match, offset, string).
     "\\b(?:https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*",
-    // File names with extensions (config.json, backup_v2.tar.gz)
-    "\\b[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9]+)+\\b",
+    // File names and hosts with extensions (config.json, backup_v2.tar.gz,
+    // webiston.uz)
+    //
+    // Two bounds, both from real traffic. Unbounded, this pattern claims any
+    // `word.word` — and the single commonest typo in Uzbek is a missing space
+    // after a full stop, so "Bugun keldim.Ertaga ketaman" came back as
+    // "Бугун keldim.Ertaga кетаман": two words frozen mid-sentence with no
+    // hint why. A Macedonian visitor's "bul.Partizanski" was the same shape.
+    //
+    //   {1,5}   — real extensions are short (json, jpeg, html, gz, uz).
+    //             "keldim.Ertaga" and "bul.Partizanski" are not.
+    //
+    // The second bound — a Capitalised word after the dot is the next SENTENCE
+    // — lives in `isSentenceSeam` and NOT here, because this pattern compiles
+    // with the `i` flag: under it `[A-Z][a-z]` matches any two letters, so an
+    // inline `(?![A-Z][a-z])` would reject `.json` too. Caught by the tests
+    // that already cover `config.json` and `backup_v2.tar.gz`.
+    "\\b[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9]{1,5})+\\b",
     // Technical terms with hyphen+number at END (COVID-19, v2.3, NOT Tez-tibbiy)
     "\\b[A-Za-z]+-\\d+(?:\\.\\d+)*\\b",
     // HTML heading tags (h1-h6)
@@ -295,6 +359,8 @@ export function protectContent(
     regex,
     (match: string, offset: number) => {
       if (startsInsideUzbekLetter(safeText, offset)) return match
+      if (startsAsUzbekApostrophe(safeText, offset, match)) return match
+      if (isSentenceSeam(match)) return match
 
       const index = protectedParts.length
       protectedParts.push(match)

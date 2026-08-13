@@ -2,7 +2,14 @@
 
 import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
-import { Check, Copy, FileText, Printer, RotateCcw } from "lucide-react"
+import {
+  Check,
+  Copy,
+  Download,
+  FileText,
+  Printer,
+  RotateCcw
+} from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 
@@ -44,6 +51,8 @@ export function Tilxat() {
     errors,
     copy,
     print,
+    downloadDocx,
+    isExporting,
     loadSample,
     reset
   } = useTilxat()
@@ -132,6 +141,19 @@ export function Tilxat() {
                     <Copy className="size-4" aria-hidden="true" />
                   )}
                   {copied ? tCommon("copied") : tCommon("copy")}
+                </Button>
+                {/* Printing serves the person who signs on the spot. Everyone
+                    else mails it or hands it to an accountant, and .docx is
+                    what that person opens. The library is a dynamic import,
+                    so only this click pays for it. */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadDocx}
+                  disabled={isExporting}
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  {isExporting ? tCommon("loading") : t("preview.docx")}
                 </Button>
                 <Button size="sm" onClick={print}>
                   <Printer className="size-4" aria-hidden="true" />

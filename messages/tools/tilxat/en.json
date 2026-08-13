@@ -47,6 +47,7 @@
         "kirill": "Кирилл"
       },
       "print": "Print",
+      "docx": "Word (.docx)",
       "note": "The signature is always handwritten. The safest form is for the borrower to copy the whole text by hand — handwriting can be verified by an expert. Empty fields print as writing lines, so a blank form can be printed and filled in by hand."
     },
     "faq": {

@@ -15,6 +15,8 @@
 
 import { useEffect, useRef, useState } from "react"
 
+import { saveBlob } from "@/lib/utils"
+
 import {
   MAX_FILE_SIZE,
   MAX_FILE_SIZE_MB,
@@ -56,20 +58,6 @@ function normalizeText(text: string): string {
 /** `hujjat.docx` → `hujjat`. Only the real extension, never a suffix we added. */
 function stripExtension(fileName: string): string {
   return fileName.replace(/\.(txt|pdf|docx)$/i, "")
-}
-
-function saveBlob(blob: Blob, fileName: string) {
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = fileName
-  // Appended before clicking and revoked on the next frame: Firefox ignores a
-  // click on a detached anchor, and revoking in the same tick can cancel the
-  // download before the browser has read the blob.
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  requestAnimationFrame(() => URL.revokeObjectURL(url))
 }
 
 export function useFileImport(onText: (text: string) => void) {
