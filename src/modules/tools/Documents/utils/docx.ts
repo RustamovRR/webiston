@@ -21,7 +21,6 @@ import { blockText } from "./segments"
  */
 export async function downloadDocumentDocx(
   blocks: DocumentBlock[],
-  heading: string,
   fileName: string
 ): Promise<void> {
   const { AlignmentType, Document, Packer, Paragraph, TextRun } = await import(
@@ -37,11 +36,29 @@ export async function downloadDocumentDocx(
   const paragraph = (
     text: string,
     align: keyof typeof alignment,
-    isHeading = false
+    {
+      indent = false,
+      isHeading = false,
+      halfWidth = false,
+      spaceBefore = false
+    } = {}
   ) =>
     new Paragraph({
       alignment: alignment[align],
-      spacing: { after: PAPER_DOCX.paragraphGap, line: PAPER_DOCX.lineHeight },
+      spacing: {
+        after: PAPER_DOCX.paragraphGap,
+        line: PAPER_DOCX.lineHeight,
+        ...(isHeading ? { after: PAPER_DOCX.headingGap } : {}),
+        ...(spaceBefore ? { before: PAPER_DOCX.headingGap } : {})
+      },
+      // Word's own indents, so the .docx opens with the abzas — and the
+      // addressee column — already applied rather than the reader doing it by
+      // hand. The two never combine: prose is never in the column.
+      ...(indent
+        ? { indent: { firstLine: PAPER_DOCX.firstLineIndent } }
+        : halfWidth
+          ? { indent: { left: PAPER_DOCX.headerColumnIndent } }
+          : {}),
       children: [
         new TextRun({
           text,
@@ -69,16 +86,24 @@ export async function downloadDocumentDocx(
             }
           }
         },
-        children: [
-          paragraph(heading, "center", true),
-          // One Word paragraph per line, so a multi-line block (the witness
-          // list) keeps its line breaks and its alignment.
-          ...blocks.flatMap((entry) =>
-            blockText(entry)
-              .split("\n")
-              .map((line) => paragraph(line, entry.align ?? "left"))
-          )
-        ]
+        // One Word paragraph per line, so a multi-line block (the witness
+        // list) keeps its line breaks and its alignment.
+        children: blocks.flatMap((entry, index) =>
+          blockText(entry)
+            .split("\n")
+            .map((line) =>
+              paragraph(
+                line,
+                entry.heading ? "center" : (entry.align ?? "left"),
+                {
+                  indent: Boolean(entry.indent),
+                  halfWidth: entry.width === "half",
+                  isHeading: Boolean(entry.heading),
+                  spaceBefore: Boolean(entry.heading) && index > 0
+                }
+              )
+            )
+        )
       }
     ]
   })

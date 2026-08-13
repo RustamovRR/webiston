@@ -20,7 +20,6 @@ interface UseDocument<TData> {
   blocks: DocumentBlock[]
   /** The same document flattened — what copy and the .docx get. */
   text: string
-  heading: string
   errors: DocumentErrors
   copy: () => Promise<boolean>
   print: () => void
@@ -51,8 +50,7 @@ export function useDocument<TData>(
     () => (script === "lotin" ? latin : toCyrillicBlocks(latin)),
     [latin, script]
   )
-  const heading = template.headings[script]
-  const text = useMemo(() => plainText(blocks, heading), [blocks, heading])
+  const text = useMemo(() => plainText(blocks), [blocks])
   const errors = useMemo(() => template.validate(data), [template, data])
 
   const update = useCallback((patch: (current: TData) => TData) => {
@@ -91,7 +89,7 @@ export function useDocument<TData>(
     setExporting(true)
     try {
       const { downloadDocumentDocx } = await import("../utils/docx")
-      await downloadDocumentDocx(blocks, heading, template.fileName)
+      await downloadDocumentDocx(blocks, template.fileName)
       return true
     } catch (error) {
       console.error("DOCX export failed:", error)
@@ -99,7 +97,7 @@ export function useDocument<TData>(
     } finally {
       setExporting(false)
     }
-  }, [blocks, heading, template.fileName])
+  }, [blocks, template.fileName])
 
   /** Read the clock HERE, on the click — never at module scope. */
   const loadSample = useCallback(() => {
@@ -117,7 +115,6 @@ export function useDocument<TData>(
     setScript,
     blocks,
     text,
-    heading,
     errors,
     copy,
     print,

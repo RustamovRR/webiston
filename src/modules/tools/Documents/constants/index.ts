@@ -74,5 +74,18 @@ export const PAPER_DOCX = {
   /** Space after each paragraph, in twips (~6pt). */
   paragraphGap: 120,
   /** The heading's letter-spacing, in twentieths of a point. */
-  headingTracking: 60
+  headingTracking: 60,
+  /** Space under the heading — the sheet's 64px, in twips. */
+  headingGap: 960,
+  /** The abzas: 1.25 cm, in twips (1.25 / 2.54 × 1440). */
+  firstLineIndent: 709,
+  /**
+   * Left indent for the addressee column, in twips.
+   *
+   * The text width is 11906 − 1134 − 1134 = 9638 twips; the sheet gives that
+   * column 58% of it, so the paragraph starts 42% in. Without this the .docx
+   * would right-align the block across the whole page and stop matching the
+   * screen and the printout — three documents instead of one.
+   */
+  headerColumnIndent: 4048
 } as const

@@ -92,33 +92,43 @@ export function composeTilxat(data: TilxatData): DocumentBlock[] {
     : ""
 
   const blocks: DocumentBlock[] = [
-    block([
-      tpl("Men, "),
-      field(data.borrower.fullName, isValidName),
-      tpl(", pasport "),
-      ...passportSegments(data.borrower),
-      tpl(", "),
-      field(data.borrower.address, isValidAddress),
-      tpl(" manzilida yashovchi, "),
-      field(data.lender.fullName, isValidName),
-      tpl(" (pasport "),
-      ...passportSegments(data.lender),
-      tpl(", "),
-      field(data.lender.address, isValidAddress),
-      tpl(" manzilida yashovchi)dan "),
-      dateField(data.givenDate),
-      tpl(` kuni ${method} `),
-      ...sumSegments(data.amount),
-      tpl(" miqdorida pul mablag'ini qarzga oldim.")
-    ]),
-    block([
-      tpl("Mazkur summani "),
-      dateField(data.returnDate),
-      tpl(
-        "gacha to'liq qaytarib berish majburiyatini o'z zimmamga olaman." +
-          (data.interestFree ? " Qarz foizsiz berildi." : "")
-      )
-    ]),
+    // A tilxat opens with its title; an ariza puts the addressee column above
+    // it. That disagreement is why the title is a block a composer places,
+    // not a fixed slot in the sheet.
+    block([tpl("TILXAT")], { heading: true }),
+    block(
+      [
+        tpl("Men, "),
+        field(data.borrower.fullName, isValidName),
+        tpl(", pasport "),
+        ...passportSegments(data.borrower),
+        tpl(", "),
+        field(data.borrower.address, isValidAddress),
+        tpl(" manzilida yashovchi, "),
+        field(data.lender.fullName, isValidName),
+        tpl(" (pasport "),
+        ...passportSegments(data.lender),
+        tpl(", "),
+        field(data.lender.address, isValidAddress),
+        tpl(" manzilida yashovchi)dan "),
+        dateField(data.givenDate),
+        tpl(` kuni ${method} `),
+        ...sumSegments(data.amount),
+        tpl(" miqdorida pul mablag'ini qarzga oldim.")
+      ],
+      { indent: true }
+    ),
+    block(
+      [
+        tpl("Mazkur summani "),
+        dateField(data.returnDate),
+        tpl(
+          "gacha to'liq qaytarib berish majburiyatini o'z zimmamga olaman." +
+            (data.interestFree ? " Qarz foizsiz berildi." : "")
+        )
+      ],
+      { indent: true }
+    ),
     block([
       field(data.city, isValidAddress),
       tpl(", "),
@@ -203,7 +213,9 @@ export function buildTilxat(data: TilxatData): {
 } {
   const lotin = composeTilxat(data)
   return {
-    lotin: plainText(lotin, "TILXAT"),
-    kirill: plainText(toCyrillicBlocks(lotin), "ТИЛХАТ")
+    lotin: plainText(lotin),
+    // "TILXAT" is an ordinary template segment, so the title converts with
+    // the rest of the document — no second copy of it in a config object.
+    kirill: plainText(toCyrillicBlocks(lotin))
   }
 }

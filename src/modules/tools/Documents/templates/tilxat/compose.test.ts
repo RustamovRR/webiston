@@ -213,6 +213,23 @@ describe("buildTilxat", () => {
     expect(buildTilxat(FULL).lotin).not.toContain("JSHSHIR")
   })
 
+  it("indents the two prose paragraphs and nothing else", () => {
+    // Arrange / Act — the abzas separates paragraphs in an Uzbek document;
+    // the place line, the signature and the witness list are not prose.
+    const blocks = composeTilxat({
+      ...FULL,
+      witnesses: ["Toshmatov Eshmat Akramovich", ""]
+    })
+
+    // Assert — by CONTENT, not by position: the title is a block too, so an
+    // index-based assertion would break the next time the shape changes.
+    const indented = blocks
+      .filter((entry) => entry.indent)
+      .map((entry) => entry.segments[0].text)
+    expect(indented).toEqual(["Men, ", "Mazkur summani "])
+    expect(blocks.find((entry) => entry.heading)?.indent).toBeUndefined()
+  })
+
   it("marks exactly the visitor's values as value segments", () => {
     // Arrange / Act — what the preview bolds.
     const values = composeTilxat(FULL)

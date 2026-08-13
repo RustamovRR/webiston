@@ -59,7 +59,6 @@ export function Documents<TData>({
     script,
     setScript,
     blocks,
-    heading,
     errors,
     copy,
     print,
@@ -170,7 +169,7 @@ export function Documents<TData>({
               </div>
             }
           >
-            <DocumentSheet blocks={blocks} heading={heading} />
+            <DocumentSheet blocks={blocks} />
             {/* The one habit no generator can enforce: the document is signed
                 by hand. Said next to the print button that tempts otherwise. */}
             <p className="text-muted-foreground text-xs">{t("preview.note")}</p>

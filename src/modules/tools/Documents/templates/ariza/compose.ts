@@ -73,7 +73,17 @@ export function composeAriza(data: ArizaData): DocumentBlock[] {
     : ""
 
   const blocks: DocumentBlock[] = [
-    // "Kimga" and "kimdan" — right-aligned, which is why blocks exist at all.
+    /**
+     * "Kimga" and "kimdan" — the addressee column, right-aligned in the top
+     * right of the page. This is why blocks exist at all: alignment belongs to
+     * a paragraph, and a flat segment list could not express it.
+     *
+     * `width: "half"` rather than full-width right alignment, because a long
+     * organisation name has to WRAP inside its column the way it does on
+     * paper; right-aligned across the whole page it would run under the
+     * heading. The wrapping is the answer to "what if the job title is
+     * longer" — nothing is positioned by hand, so any length works.
+     */
     block(
       [
         field(data.organisation, isValidAddress),
@@ -83,41 +93,57 @@ export function composeAriza(data: ArizaData): DocumentBlock[] {
         field(data.managerName, isValidName),
         tpl("ga")
       ],
-      "right"
+      { align: "right", width: "half" }
     ),
+    // The sender is ONE line — "dasturchi Karimov Salim Anvarovichdan" — not
+    // a title stranded above a name. A short job title left an orphan word on
+    // its own line, which is exactly what an ariza header does not look like.
     block(
       [
         field(data.position, isValidName),
-        tpl("\n"),
+        tpl(" "),
         field(data.employeeName, isValidName),
         tpl("dan")
       ],
-      "right"
+      { align: "right", width: "half" }
     ),
-    block([
-      tpl("Meni o'z xohishimga ko'ra egallab turgan "),
-      field(data.position, isValidName),
-      tpl(" lavozimidan "),
-      dateField(effectiveRelease(data)),
-      tpl(" kunidan ozod qilishingizni so'rayman.")
-    ])
+    // The title comes AFTER the addressee column — that is the shape of an
+    // ariza, and getting it the other way round is the first thing an office
+    // notices. A tilxat is the opposite, which is why neither the sheet nor
+    // the shell decides this.
+    block([tpl("ARIZA")], { heading: true }),
+    block(
+      [
+        tpl("Meni o'z xohishimga ko'ra egallab turgan "),
+        field(data.position, isValidName),
+        tpl(" lavozimidan "),
+        dateField(effectiveRelease(data)),
+        tpl(" kunidan ozod qilishingizni so'rayman.")
+      ],
+      { indent: true }
+    )
   ]
 
   if (data.reason.trim()) {
-    blocks.push(block([tpl("Sabab: "), val(data.reason.trim()), tpl(".")]))
+    blocks.push(
+      block([tpl("Sabab: "), val(data.reason.trim()), tpl(".")], {
+        indent: true
+      })
+    )
   }
 
   blocks.push(
-    block([
-      tpl("Asos: O'zbekiston Respublikasi Mehnat kodeksining 160-moddasi.")
-    ]),
+    block(
+      [tpl("Asos: O'zbekiston Respublikasi Mehnat kodeksining 160-moddasi.")],
+      { indent: true }
+    ),
     block([dateField(data.applicationDate)]),
     block(
       [
         tpl("______________________ "),
         signature ? val(signature) : blank(BLANK)
       ],
-      "right"
+      { align: "right" }
     )
   )
 
@@ -169,7 +195,7 @@ export function buildAriza(data: ArizaData): {
 } {
   const lotin = composeAriza(data)
   return {
-    lotin: plainText(lotin, "ARIZA"),
-    kirill: plainText(toCyrillicBlocks(lotin), "АРИЗА")
+    lotin: plainText(lotin),
+    kirill: plainText(toCyrillicBlocks(lotin))
   }
 }

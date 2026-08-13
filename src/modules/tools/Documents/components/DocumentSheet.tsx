@@ -8,8 +8,6 @@ import type { DocumentBlock } from "../types"
 interface DocumentSheetProps {
   /** The document in the chosen script. `value` segments render bold. */
   blocks: DocumentBlock[]
-  /** The centred heading above the prose — "TILXAT", "ARIZA", … */
-  heading: string
 }
 
 /**
@@ -40,7 +38,7 @@ const ALIGNMENT = {
  * area. `visibility`, not `display` — hiding an ancestor with `display: none`
  * would take the sheet down with it.
  */
-export function DocumentSheet({ blocks, heading }: DocumentSheetProps) {
+export function DocumentSheet({ blocks }: DocumentSheetProps) {
   return (
     <>
       <style>{`
@@ -82,9 +80,6 @@ export function DocumentSheet({ blocks, heading }: DocumentSheetProps) {
           fontFamily: PAPER.fontFamily
         }}
       >
-        <p className="mb-12 text-center font-bold text-xl tracking-[0.35em]">
-          {heading}
-        </p>
         <div className="select-all text-[16px] leading-[1.85]">
           {blocks.map((entry, blockIndex) => (
             <p
@@ -94,7 +89,17 @@ export function DocumentSheet({ blocks, heading }: DocumentSheetProps) {
               key={blockIndex}
               className={cn(
                 "mb-5 whitespace-pre-wrap last:mb-0",
-                ALIGNMENT[entry.align ?? "left"]
+                ALIGNMENT[entry.align ?? "left"],
+                // The title: centred, spaced, and — when a document opens
+                // with something else above it, as an ariza does — pushed
+                // clear of that block too.
+                entry.heading &&
+                  "mb-16 text-center font-bold text-xl tracking-[0.35em]",
+                entry.heading && blockIndex > 0 && "mt-10",
+                // The abzas: 1.25cm on the first line, the way an Uzbek
+                // official document starts a paragraph. Running prose only.
+                entry.indent && "indent-[1.25cm]",
+                entry.width === "half" && "ml-auto w-[58%]"
               )}
             >
               {entry.segments.map((segment, index) =>

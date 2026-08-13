@@ -18,7 +18,6 @@ export const ARIZA_TEMPLATE: DocumentTemplate<ArizaData> = {
   buildSample: buildSampleAriza,
   compose: composeAriza,
   validate: validateAriza,
-  headings: { lotin: "ARIZA", kirill: "АРИЗА" },
   faqKeys: ARIZA_FAQ_KEYS,
   Fields: ArizaFields
 }

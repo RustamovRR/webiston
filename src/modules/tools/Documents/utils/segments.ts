@@ -41,11 +41,11 @@ export function field(
   return trimmed && valid(trimmed) ? val(trimmed) : blank(line)
 }
 
-/** One paragraph. `align` defaults to the sheet's justified body. */
+/** One paragraph. Options default to the sheet's justified, unindented body. */
 export const block = (
   segments: DocumentSegment[],
-  align?: DocumentBlock["align"]
-): DocumentBlock => (align ? { segments, align } : { segments })
+  options: Omit<DocumentBlock, "segments"> = {}
+): DocumentBlock => ({ segments, ...options })
 
 /** The Cyrillic document, segment by segment. */
 export function toCyrillicBlocks(blocks: DocumentBlock[]): DocumentBlock[] {
@@ -65,11 +65,12 @@ export function blockText(entry: DocumentBlock): string {
 }
 
 /**
- * The copyable text: the heading, then one blank line between paragraphs.
+ * The copyable text: one blank line between paragraphs.
  *
  * This is what the clipboard and the tests see, so the blank line between
  * blocks is part of the document's definition rather than a rendering detail.
+ * The title is one of the blocks, so it needs no special case here.
  */
-export function plainText(blocks: DocumentBlock[], heading: string): string {
-  return `${heading}\n\n${blocks.map(blockText).join("\n\n")}`
+export function plainText(blocks: DocumentBlock[]): string {
+  return blocks.map(blockText).join("\n\n")
 }

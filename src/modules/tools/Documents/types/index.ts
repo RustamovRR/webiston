@@ -41,6 +41,32 @@ export interface DocumentSegment {
 export interface DocumentBlock {
   segments: DocumentSegment[]
   align?: "left" | "center" | "right"
+  /**
+   * First-line indent — the ABZAS.
+   *
+   * How an Uzbek official document separates paragraphs: 1.25 cm on the first
+   * line, not a blank line between them. Only running prose takes it; a date
+   * line, a signature line or an addressee block does not.
+   */
+  indent?: boolean
+  /**
+   * The document's centred title — "TILXAT", "ARIZA".
+   *
+   * A BLOCK rather than a fixed slot above the body, because the two
+   * documents disagree about where it goes: a tilxat opens with it, while an
+   * ariza puts the addressee column first and the title under it. It is also
+   * why the title needs no config entry — "ARIZA" transliterates to "АРИЗА"
+   * like any other template segment.
+   */
+  heading?: boolean
+  /**
+   * Confine the block to the right half of the page.
+   *
+   * The ariza's "kimga / kimdan" header sits in a column there, which is also
+   * what makes a long organisation name wrap instead of running the full page
+   * width.
+   */
+  width?: "half"
 }
 
 export type DocumentScript = (typeof DOCUMENT_SCRIPTS)[number]
@@ -86,7 +112,6 @@ export interface DocumentTemplate<TData> {
   buildSample: (now: Date) => TData
   compose: (data: TData) => DocumentBlock[]
   validate: (data: TData) => DocumentErrors
-  headings: Record<DocumentScript, string>
   faqKeys: readonly string[]
   Fields: ComponentType<DocumentFieldsProps<TData>>
 }

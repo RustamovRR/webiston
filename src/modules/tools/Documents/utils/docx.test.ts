@@ -45,7 +45,7 @@ describe("downloadTilxatDocx", () => {
     const blocks = composeTilxat(buildSampleTilxat(new Date(2026, 7, 12)))
 
     // Act
-    await downloadDocumentDocx(blocks, "TILXAT", "tilxat")
+    await downloadDocumentDocx(blocks, "tilxat")
 
     // Assert — named correctly, and genuinely a Word file (ZIP magic "PK").
     expect(saved?.name).toBe("tilxat.docx")
@@ -70,7 +70,7 @@ describe("downloadTilxatDocx", () => {
     })
 
     // Act
-    await downloadDocumentDocx(blocks, "TILXAT", "tilxat")
+    await downloadDocumentDocx(blocks, "tilxat")
 
     // Assert
     expect(saved?.blob.size).toBeGreaterThan(1000)

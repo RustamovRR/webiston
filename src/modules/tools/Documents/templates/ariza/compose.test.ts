@@ -96,6 +96,23 @@ describe("buildAriza", () => {
     expect(lotin).toContain("Karimov S.A.")
   })
 
+  it("puts the title AFTER the addressee column, the way an ariza reads", () => {
+    // Arrange / Act — the first thing an office notices. A tilxat opens with
+    // its title; an ariza opens with who it is addressed to.
+    const blocks = composeAriza(FULL)
+    const titleAt = blocks.findIndex((entry) => entry.heading)
+
+    // Assert
+    expect(titleAt).toBe(2)
+    expect(blocks.slice(0, 2).every((entry) => entry.width === "half")).toBe(
+      true
+    )
+    // And it reads that way in the flat text the clipboard gets.
+    const lines = buildAriza(FULL).lotin.split("\n").filter(Boolean)
+    expect(lines[0]).toContain("«Webiston» MChJ direktori")
+    expect(lines[3]).toBe("ARIZA")
+  })
+
   it("puts the addressee block on the right, where an ariza puts it", () => {
     // Arrange / Act — the reason blocks exist at all: alignment belongs to a
     // paragraph, and a segment list could not express it.
@@ -105,6 +122,38 @@ describe("buildAriza", () => {
     expect(blocks.filter((entry) => entry.align === "right")).toHaveLength(3)
     expect(blocks[0].align).toBe("right")
     expect(blocks[2].align).toBeUndefined()
+  })
+
+  it("keeps the sender on ONE line, whatever the job title's length", () => {
+    // Arrange / Act — a short title used to be stranded on a line of its own
+    // above the name, which is not what an ariza header looks like.
+    const short = buildAriza({ ...FULL, position: "kotib" }).lotin
+    const long = buildAriza({
+      ...FULL,
+      position: "axborot xavfsizligi bo'yicha yetakchi mutaxassis"
+    }).lotin
+
+    // Assert — one line in both cases; the column wraps it, nothing is
+    // positioned by hand.
+    expect(short).toContain("kotib Karimov Salim Anvarovichdan")
+    expect(long).toContain(
+      "axborot xavfsizligi bo'yicha yetakchi mutaxassis Karimov Salim Anvarovichdan"
+    )
+  })
+
+  it("indents the prose and nothing else", () => {
+    // Arrange / Act — the abzas is how an Uzbek document separates
+    // paragraphs; a date line or a signature line never takes one.
+    const blocks = composeAriza({ ...FULL, reason: "pensiyaga chiqishim" })
+
+    // Assert
+    const indented = blocks.filter((entry) => entry.indent)
+    const chrome = blocks.filter((entry) => !entry.indent)
+    expect(indented).toHaveLength(3)
+    expect(indented.every((entry) => entry.align === undefined)).toBe(true)
+    // The addressee column and the signature are chrome, not prose.
+    expect(chrome.filter((entry) => entry.align === "right")).toHaveLength(3)
+    expect(blocks.filter((entry) => entry.width === "half")).toHaveLength(2)
   })
 
   it("adds the reason clause only when a reason is given", () => {

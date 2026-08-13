@@ -18,7 +18,6 @@ export const TILXAT_TEMPLATE: DocumentTemplate<TilxatData> = {
   buildSample: buildSampleTilxat,
   compose: composeTilxat,
   validate: validateTilxat,
-  headings: { lotin: "TILXAT", kirill: "ТИЛХАТ" },
   faqKeys: TILXAT_FAQ_KEYS,
   Fields: TilxatFields
 }
