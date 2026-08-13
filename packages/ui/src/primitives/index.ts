@@ -72,6 +72,12 @@ export {
 } from "./navigation-menu"
 export { NumberTicker } from "./number-ticker"
 export {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger
+} from "./popover"
+export {
   Select,
   SelectContent,
   SelectGroup,

@@ -1,6 +1,14 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi
+} from "vitest"
 
 import common from "../../../../../../messages/common/uz.json"
 import shared from "../../../../../../messages/tools/documents/uz.json"
@@ -26,12 +34,56 @@ function renderTool() {
   )
 }
 
+/**
+ * Drive the real date picker: open the popover, click the day.
+ *
+ * The forms stopped using `<input type="date">`, so a `fireEvent.change` on
+ * the field no longer means anything — and that is the point of asserting
+ * through the control the visitor actually operates. The clock is frozen so
+ * the calendar always opens on the month these tests talk about.
+ */
+function pickDay(field: HTMLElement, day: number) {
+  fireEvent.click(field)
+  const grid = screen.getByRole("grid")
+  const cell = within(grid)
+    .getAllByRole("button")
+    .find((button) => button.textContent?.trim() === String(day))
+  if (!cell) throw new Error(`Day ${day} is not offered by the calendar`)
+  fireEvent.click(cell)
+}
+
+/**
+ * Is that day offered at all? A disabled day cannot be chosen by anyone.
+ *
+ * Closes the popover on the way out, so two checks in a row do not toggle it
+ * shut and then look for a calendar that is no longer mounted.
+ */
+function dayIsOffered(field: HTMLElement, day: number) {
+  fireEvent.click(field)
+  const grid = screen.getByRole("grid")
+  const cell = within(grid)
+    .getAllByRole("button")
+    .find((button) => button.textContent?.trim() === String(day))
+  const offered = Boolean(cell && !cell.hasAttribute("disabled"))
+  fireEvent.keyDown(grid, { key: "Escape" })
+  return offered
+}
+
 const sheet = () => document.getElementById("document-sheet") as HTMLElement
 
 beforeEach(() => {
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue(undefined) }
   })
+})
+
+beforeAll(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  vi.setSystemTime(new Date(2026, 7, 13))
+})
+
+afterAll(() => {
+  vi.useRealTimers()
 })
 
 describe("tilxat", () => {
@@ -243,20 +295,31 @@ describe("tilxat", () => {
     expect(bold.join(" ")).not.toContain("manzilida yashovchi")
   })
 
-  it("refuses a return date before the loan date", () => {
-    // Arrange
+  it("does not even OFFER a return date before the loan date", () => {
+    // Arrange — the picker enforces the rule the error message used to
+    // report after the fact, which is the stronger place for it.
     renderTool()
-    fireEvent.change(screen.getByLabelText(/Berilgan sana/i), {
-      target: { value: "2026-08-12" }
-    })
+    pickDay(screen.getByLabelText(/Berilgan sana/i), 12)
 
-    // Act
-    fireEvent.change(screen.getByLabelText(/Qaytarish muddati/i), {
-      target: { value: "2026-08-11" }
-    })
+    // Act / Assert
+    const returnField = screen.getByLabelText(/Qaytarish muddati/i)
+    expect(dayIsOffered(returnField, 11)).toBe(false)
+    expect(dayIsOffered(returnField, 20)).toBe(true)
+  })
 
-    // Assert
-    expect(screen.getByRole("alert")).toHaveTextContent(/oldin bo'la olmaydi/i)
+  it("writes both dates onto the sheet in the document's own format", () => {
+    // Arrange / Act
+    renderTool()
+    pickDay(screen.getByLabelText(/Berilgan sana/i), 12)
+    pickDay(screen.getByLabelText(/Qaytarish muddati/i), 20)
+
+    // Assert — and the trigger reads the same way the paper does, rather
+    // than the browser's "12/08/2026".
+    expect(sheet().textContent).toContain("2026-yil 12-avgust")
+    expect(sheet().textContent).toContain("2026-yil 20-avgustgacha")
+    expect(screen.getByLabelText(/Berilgan sana/i)).toHaveTextContent(
+      "2026-yil 12-avgust"
+    )
   })
 
   it("carries a valid JSHSHIR onto the paper and flags a short one", () => {

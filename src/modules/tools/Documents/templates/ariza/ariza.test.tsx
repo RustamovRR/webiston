@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import { NextIntlClientProvider } from "next-intl"
-import { describe, expect, it } from "vitest"
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest"
 
 import common from "../../../../../../messages/common/uz.json"
 import messages from "../../../../../../messages/tools/ariza/uz.json"
@@ -26,7 +26,34 @@ function renderTool() {
   )
 }
 
+/**
+ * Drive the real date picker: open the popover, click the day.
+ *
+ * The forms stopped using `<input type="date">`, so a `fireEvent.change` on
+ * the field no longer means anything — and that is the point of asserting
+ * through the control the visitor actually operates. The clock is frozen so
+ * the calendar always opens on the month these tests talk about.
+ */
+function pickDay(field: HTMLElement, day: number) {
+  fireEvent.click(field)
+  const grid = screen.getByRole("grid")
+  const cell = within(grid)
+    .getAllByRole("button")
+    .find((button) => button.textContent?.trim() === String(day))
+  if (!cell) throw new Error(`Day ${day} is not offered by the calendar`)
+  fireEvent.click(cell)
+}
+
 const sheet = () => document.getElementById("document-sheet") as HTMLElement
+
+beforeAll(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  vi.setSystemTime(new Date(2026, 7, 13))
+})
+
+afterAll(() => {
+  vi.useRealTimers()
+})
 
 describe("ariza", () => {
   it("starts as a printable blank form, not an error", () => {
@@ -45,9 +72,7 @@ describe("ariza", () => {
     renderTool()
 
     // Act — only the application date; the release field stays empty.
-    fireEvent.change(screen.getByLabelText(/Ariza sanasi/i), {
-      target: { value: "2026-08-13" }
-    })
+    pickDay(screen.getByLabelText(/Ariza sanasi/i), 13)
 
     // Assert — fourteen calendar days, on the paper, unprompted.
     expect(sheet().textContent).toContain("2026-yil 27-avgust kunidan")
@@ -56,9 +81,7 @@ describe("ariza", () => {
   it("re-counts when the employee category changes", () => {
     // Arrange
     renderTool()
-    fireEvent.change(screen.getByLabelText(/Ariza sanasi/i), {
-      target: { value: "2026-08-13" }
-    })
+    pickDay(screen.getByLabelText(/Ariza sanasi/i), 13)
     expect(sheet().textContent).toContain("27-avgust")
 
     // Act — a head of organisation owes two months, not two weeks.
@@ -73,14 +96,11 @@ describe("ariza", () => {
   it("flags a release date inside the notice period without refusing it", () => {
     // Arrange
     renderTool()
-    fireEvent.change(screen.getByLabelText(/Ariza sanasi/i), {
-      target: { value: "2026-08-13" }
-    })
+    pickDay(screen.getByLabelText(/Ariza sanasi/i), 13)
 
-    // Act — a week's notice.
-    fireEvent.change(screen.getByLabelText(/Oxirgi ish kuni/i), {
-      target: { value: "2026-08-20" }
-    })
+    // Act — a week's notice: after the application date, so the calendar
+    // allows it; inside the notice period, so the form flags it.
+    pickDay(screen.getByLabelText(/Oxirgi ish kuni/i), 20)
 
     // Assert — the message names the two lawful routes; the date still prints,
     // because MK 160 §8 makes it possible and the visitor chose it.

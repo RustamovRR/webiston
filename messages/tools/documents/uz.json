@@ -2,7 +2,8 @@
   "DocumentsShared": {
     "form": {
       "title": "Ma'lumotlar",
-      "sample": "Namuna"
+      "sample": "Namuna",
+      "datePlaceholder": "Sanani tanlang"
     },
     "preview": {
       "title": "Hujjat",

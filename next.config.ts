@@ -84,6 +84,40 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  /**
+   * Keep Vercel's own hostnames out of the search index.
+   *
+   * The project answers on SIX hostnames — webiston.uz, www.webiston.uz and
+   * four `*.vercel.app` aliases — and every one of them served the complete
+   * site. Yandex indexed one of them: a search for "сумма прописью онлайн на
+   * узбекском" returned
+   * `webiston-git-main-rustamovrrs-projects.vercel.app/tools/number-to-words`
+   * instead of the real domain. That is not a cosmetic problem — it is the
+   * canonical domain competing against a copy of itself, and the copy winning.
+   *
+   * `X-Robots-Tag` rather than a redirect, deliberately: redirecting
+   * `*.vercel.app` to webiston.uz would also kill the preview deployments the
+   * owner checks work on. Rather than "any host that is not webiston.uz",
+   * which would also catch localhost and any future custom domain, this
+   * matches Vercel's hostnames precisely.
+   *
+   * `noindex` removes the page from the index; `nofollow` stops the copy's
+   * internal links from being crawled as a second site. Both Google and
+   * Yandex honour the header. Already-indexed URLs still need removing by
+   * hand in Yandex Webmaster / Search Console — a header only stops the next
+   * crawl, it does not retract the last one.
+   */
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: '.*\\.vercel\\.app' }],
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+    ]
+  },
   async redirects() {
     return [
       {

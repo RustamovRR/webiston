@@ -1,5 +1,6 @@
 "use client"
 
+import { DatePicker } from "@webiston/ui/composites/DatePicker"
 import { Input } from "@webiston/ui/primitives/input"
 import {
   Select,
@@ -8,12 +9,12 @@ import {
   SelectTrigger,
   SelectValue
 } from "@webiston/ui/primitives/select"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "../../components/Field"
 import type { DocumentFieldsProps } from "../../types"
-import { formatUzbekDate } from "../../utils/dates"
+import { calendarLocale, documentDate } from "../../utils/locale"
 import { earliestRelease } from "./compose"
 import {
   type ArizaData,
@@ -36,6 +37,8 @@ export function ArizaFields({
   update
 }: DocumentFieldsProps<ArizaData>) {
   const t = useTranslations("ArizaPage.form")
+  const tShared = useTranslations("DocumentsShared.form")
+  const locale = useLocale()
   const tErrors = useTranslations("ArizaPage.errors")
   const id = useId()
 
@@ -45,7 +48,7 @@ export function ArizaFields({
     update((current) => ({ ...current, [key]: value }))
 
   const earliest = earliestRelease(data.applicationDate, data.category)
-  const earliestLabel = formatUzbekDate(earliest)
+  const earliestLabel = earliest ? documentDate(earliest) : null
 
   return (
     <div className="flex flex-col gap-5">
@@ -155,13 +158,13 @@ export function ArizaFields({
 
         <div className="grid grid-cols-2 gap-3">
           <Field id={`${id}-application`} label={t("applicationDate")}>
-            <Input
+            <DatePicker
               id={`${id}-application`}
-              type="date"
               value={data.applicationDate}
-              onChange={(event) =>
-                setField("applicationDate", event.target.value)
-              }
+              onChange={(value) => setField("applicationDate", value)}
+              placeholder={tShared("datePlaceholder")}
+              format={documentDate}
+              localeCode={calendarLocale(locale)}
             />
           </Field>
           <Field
@@ -174,12 +177,14 @@ export function ArizaFields({
                 : t("releaseHintEmpty")
             }
           >
-            <Input
+            <DatePicker
               id={`${id}-release`}
-              type="date"
               value={data.releaseDate}
+              onChange={(value) => setField("releaseDate", value)}
+              placeholder={tShared("datePlaceholder")}
+              format={documentDate}
+              localeCode={calendarLocale(locale)}
               min={data.applicationDate || undefined}
-              onChange={(event) => setField("releaseDate", event.target.value)}
               aria-invalid={Boolean(errors.releaseDate)}
             />
           </Field>

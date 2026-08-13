@@ -2,7 +2,8 @@
   "DocumentsShared": {
     "form": {
       "title": "Details",
-      "sample": "Sample"
+      "sample": "Sample",
+      "datePlaceholder": "Pick a date"
     },
     "preview": {
       "title": "Document",

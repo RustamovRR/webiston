@@ -1,5 +1,6 @@
 "use client"
 
+import { DatePicker } from "@webiston/ui/composites/DatePicker"
 import { Input } from "@webiston/ui/primitives/input"
 import {
   Select,
@@ -8,11 +9,12 @@ import {
   SelectTrigger,
   SelectValue
 } from "@webiston/ui/primitives/select"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "../../components/Field"
 import type { DocumentFieldsProps } from "../../types"
+import { calendarLocale, documentDate } from "../../utils/locale"
 import { maskAmount, maskPassport, maskPinfl } from "../../utils/mask"
 import { normalisePassport } from "../../utils/validate"
 import {
@@ -39,6 +41,8 @@ export function TilxatFields({
   update
 }: DocumentFieldsProps<TilxatData>) {
   const t = useTranslations("TilxatPage.form")
+  const tShared = useTranslations("DocumentsShared.form")
+  const locale = useLocale()
   const tErrors = useTranslations("TilxatPage.errors")
   const id = useId()
 
@@ -186,11 +190,13 @@ export function TilxatFields({
 
         <div className="grid grid-cols-2 gap-3">
           <Field id={`${id}-given`} label={t("givenDate")}>
-            <Input
+            <DatePicker
               id={`${id}-given`}
-              type="date"
               value={data.givenDate}
-              onChange={(event) => setField("givenDate", event.target.value)}
+              onChange={(value) => setField("givenDate", value)}
+              placeholder={tShared("datePlaceholder")}
+              format={documentDate}
+              localeCode={calendarLocale(locale)}
             />
           </Field>
           <Field
@@ -198,14 +204,17 @@ export function TilxatFields({
             label={t("returnDate")}
             error={messageFor(errors.returnDate)}
           >
-            <Input
+            {/* The calendar cannot even OFFER a day before the loan date;
+                the cross-field error stays for a value that arrives another
+                way (the sample, a paste, a restored form). */}
+            <DatePicker
               id={`${id}-return`}
-              type="date"
               value={data.returnDate}
-              // The browser greys out the impossible days; the cross-field
-              // error covers the visitor who types the date instead.
+              onChange={(value) => setField("returnDate", value)}
+              placeholder={tShared("datePlaceholder")}
+              format={documentDate}
+              localeCode={calendarLocale(locale)}
               min={data.givenDate || undefined}
-              onChange={(event) => setField("returnDate", event.target.value)}
               aria-invalid={Boolean(errors.returnDate)}
             />
           </Field>
