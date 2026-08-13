@@ -86,23 +86,20 @@ export function composeAriza(data: ArizaData): DocumentBlock[] {
      */
     block(
       [
-        field(data.organisation, isValidAddress),
+        field(data.organisation, isValidAddress, BLANK_SHORT),
         tpl(" "),
-        field(data.managerRole, isValidName),
+        field(data.managerRole, isValidName, BLANK_SHORT),
         tpl("\n"),
-        field(data.managerName, isValidName),
-        tpl("ga")
-      ],
-      { align: "right", width: "half" }
-    ),
-    // The sender is ONE line — "dasturchi Karimov Salim Anvarovichdan" — not
-    // a title stranded above a name. A short job title left an orphan word on
-    // its own line, which is exactly what an ariza header does not look like.
-    block(
-      [
-        field(data.position, isValidName),
+        field(data.managerName, isValidName, BLANK_SHORT),
+        tpl("ga\n"),
+        // The sender is ONE line — "dasturchi Karimov Salim Anvarovichdan" —
+        // and it lives in the SAME block as the addressee. Two blocks put a
+        // paragraph gap between them and the line read as detached from the
+        // header it belongs to. Short writing lines here because the column
+        // is 58% of the page and full-length blanks wrapped.
+        field(data.position, isValidName, BLANK_SHORT),
         tpl(" "),
-        field(data.employeeName, isValidName),
+        field(data.employeeName, isValidName, BLANK_SHORT),
         tpl("dan")
       ],
       { align: "right", width: "half" }

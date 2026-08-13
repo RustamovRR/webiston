@@ -2,7 +2,7 @@
 
 import { cn } from "@webiston/ui"
 
-import { PAPER } from "../constants"
+import { PAPER, SHEET } from "../constants"
 import type { DocumentBlock } from "../types"
 
 interface DocumentSheetProps {
@@ -88,19 +88,29 @@ export function DocumentSheet({ blocks }: DocumentSheetProps) {
               // there is no identity to key on beyond position.
               key={blockIndex}
               className={cn(
-                "mb-5 whitespace-pre-wrap last:mb-0",
-                ALIGNMENT[entry.align ?? "left"],
-                // The title: centred, spaced, and — when a document opens
-                // with something else above it, as an ariza does — pushed
-                // clear of that block too.
-                entry.heading &&
-                  "mb-16 text-center font-bold text-xl tracking-[0.35em]",
-                entry.heading && blockIndex > 0 && "mt-10",
-                // The abzas: 1.25cm on the first line, the way an Uzbek
-                // official document starts a paragraph. Running prose only.
-                entry.indent && "indent-[1.25cm]",
-                entry.width === "half" && "ml-auto w-[58%]"
+                "whitespace-pre-wrap",
+                entry.heading
+                  ? "text-center font-bold text-xl leading-tight tracking-[0.35em]"
+                  : ALIGNMENT[entry.align ?? "left"]
               )}
+              // Geometry as inline style, never as utility classes — see
+              // `SHEET`. A paragraph's indent and a column's offset are paper
+              // measurements, and they have to hold whether or not a class
+              // that appears in one file made it into the generated CSS.
+              style={{
+                marginBottom: entry.heading
+                  ? SHEET.headingGapAfter
+                  : entry.indent
+                    ? SHEET.indentedGap
+                    : SHEET.paragraphGap,
+                ...(entry.heading && blockIndex > 0
+                  ? { marginTop: SHEET.headingGapBefore }
+                  : {}),
+                ...(entry.indent ? { textIndent: SHEET.firstLineIndent } : {}),
+                ...(entry.width === "half"
+                  ? { paddingLeft: SHEET.columnOffset }
+                  : {})
+              }}
             >
               {entry.segments.map((segment, index) =>
                 segment.kind === "value" ? (

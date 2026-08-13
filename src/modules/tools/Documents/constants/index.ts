@@ -51,6 +51,40 @@ export const PAPER = {
 } as const
 
 /**
+ * The sheet's GEOMETRY — applied as inline styles, not utility classes.
+ *
+ * The same exception as `PAPER`, for a sharper reason. These values were
+ * Tailwind utilities (`ml-auto`, `mt-10`, `mb-16`, `w-[58%]`) and the owner's
+ * browser rendered the document with several of them missing while others
+ * applied — the addressee column sat on the left, the title had no space
+ * around it. A document's measurements must not depend on whether a content
+ * scan happened to pick up a class that appears in exactly one file.
+ *
+ * They are also the numbers the .docx export converts to twips, so keeping
+ * them in one block is what makes the screen, the printout and the Word file
+ * the same document rather than three that drift apart.
+ */
+export const SHEET = {
+  /** The abzas: how an Uzbek document starts a paragraph. */
+  firstLineIndent: "1.25cm",
+  /** Where the ariza's addressee column begins, as a share of the text width. */
+  columnOffset: "42%",
+  /**
+   * Between INDENTED paragraphs — nearly nothing.
+   *
+   * The abzas is what separates them; adding a gap on top of it makes every
+   * paragraph look like its own section, which is what the owner saw.
+   */
+  indentedGap: "6px",
+  /** Between the lines a document ends with — place, date, signature. */
+  paragraphGap: "18px",
+  /** Above a title that is not the first thing on the page. */
+  headingGapBefore: "28px",
+  /** Between a title and the text under it. */
+  headingGapAfter: "36px"
+} as const
+
+/**
  * The same sheet, in Word's units — the .docx half of the PAPER exception.
  *
  * Word measures in twips: 1440 to the inch, so A4 (210 × 297 mm) is
@@ -71,12 +105,12 @@ export const PAPER_DOCX = {
   fontHalfPoints: 24,
   /** ~1.85 line height, in 240ths of a line. */
   lineHeight: 444,
-  /** Space after each paragraph, in twips (~6pt). */
-  paragraphGap: 120,
+  /** Space after each paragraph, in twips (~5pt) — the abzas separates prose. */
+  paragraphGap: 100,
   /** The heading's letter-spacing, in twentieths of a point. */
   headingTracking: 60,
-  /** Space under the heading — the sheet's 64px, in twips. */
-  headingGap: 960,
+  /** Space under the heading — the sheet's 36px, in twips. */
+  headingGap: 540,
   /** The abzas: 1.25 cm, in twips (1.25 / 2.54 × 1440). */
   firstLineIndent: 709,
   /**

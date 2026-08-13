@@ -103,10 +103,8 @@ describe("buildAriza", () => {
     const titleAt = blocks.findIndex((entry) => entry.heading)
 
     // Assert
-    expect(titleAt).toBe(2)
-    expect(blocks.slice(0, 2).every((entry) => entry.width === "half")).toBe(
-      true
-    )
+    expect(titleAt).toBe(1)
+    expect(blocks[0].width).toBe("half")
     // And it reads that way in the flat text the clipboard gets.
     const lines = buildAriza(FULL).lotin.split("\n").filter(Boolean)
     expect(lines[0]).toContain("«Webiston» MChJ direktori")
@@ -118,10 +116,14 @@ describe("buildAriza", () => {
     // paragraph, and a segment list could not express it.
     const blocks = composeAriza(FULL)
 
-    // Assert — the two header blocks and the signature, and nothing else.
-    expect(blocks.filter((entry) => entry.align === "right")).toHaveLength(3)
+    // Assert — the addressee column and the signature, and nothing else.
+    expect(blocks.filter((entry) => entry.align === "right")).toHaveLength(2)
     expect(blocks[0].align).toBe("right")
-    expect(blocks[2].align).toBeUndefined()
+    // Addressee and sender are ONE block: two would put a paragraph gap
+    // between them and the sender line reads as detached from the header.
+    expect(blocks[0].segments.map((seg) => seg.text).join("")).toContain(
+      "ga\ndasturchi"
+    )
   })
 
   it("keeps the sender on ONE line, whatever the job title's length", () => {
@@ -152,8 +154,8 @@ describe("buildAriza", () => {
     expect(indented).toHaveLength(3)
     expect(indented.every((entry) => entry.align === undefined)).toBe(true)
     // The addressee column and the signature are chrome, not prose.
-    expect(chrome.filter((entry) => entry.align === "right")).toHaveLength(3)
-    expect(blocks.filter((entry) => entry.width === "half")).toHaveLength(2)
+    expect(chrome.filter((entry) => entry.align === "right")).toHaveLength(2)
+    expect(blocks.filter((entry) => entry.width === "half")).toHaveLength(1)
   })
 
   it("adds the reason clause only when a reason is given", () => {
