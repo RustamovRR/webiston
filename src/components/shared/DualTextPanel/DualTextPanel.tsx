@@ -138,7 +138,18 @@ export function DualTextPanel({
           isTerminal
             ? "border border-border bg-card/80 backdrop-blur-sm"
             : "bg-muted/80",
-          showShadow && "shadow-2xl"
+          // `shadow-2xl` was Tailwind's HEAVIEST shadow — the elevation a
+          // modal or a floating palette earns, on a section that sits in the
+          // page flow. In light mode the two panels read as 3D boxes lifted
+          // off the page, and anything placed under them (the extension
+          // callout) looked stuck to the bottom of a floating object.
+          //
+          // Nothing else inline on this site is elevated at all: the FAQ and
+          // the alphabet table are `border border-border bg-card`, flat.
+          // `shadow-sm` keeps the prop meaningful — the panel is still the
+          // focus of the page — without leaving the plane. Four tools use it:
+          // latin-cyrillic, base64-converter, hash-generator, url-encoder.
+          showShadow && "shadow-sm"
         )}
       >
         {/* Header */}

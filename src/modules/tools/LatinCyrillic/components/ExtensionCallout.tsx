@@ -22,8 +22,10 @@ export async function ExtensionCallout({ locale }: { locale: string }) {
 
   return (
     // No width or horizontal padding of its own: the route already wraps this
-    // section in the page container, and repeating it inset the card.
-    <section className="mb-8">
+    // section in the page container, and repeating it inset the card. The top
+    // margin is what separates it from the converter — without it the card
+    // reads as part of the tool rather than as an aside about it.
+    <section>
       <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
           <Puzzle className="size-5" aria-hidden="true" />
