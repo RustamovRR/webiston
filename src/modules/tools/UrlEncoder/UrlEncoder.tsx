@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
-import { ArrowLeftRight, Info, Link2 } from "lucide-react"
+import { Info, Link2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { DropZone } from "@/components/shared/DropZone"
@@ -134,7 +134,6 @@ const UrlEncoder = () => {
             onSourceChange={setInput}
             onSwap={swap}
             onClear={clear}
-            swapIcon={<ArrowLeftRight size={20} />}
             swapButtonTitle={t("Panel.switchMode")}
             showSwapButton={true}
             showShadow={true}

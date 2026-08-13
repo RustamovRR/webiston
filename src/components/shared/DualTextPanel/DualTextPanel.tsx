@@ -353,17 +353,26 @@ export function DualTextPanel({
               onClick={onSwap}
               variant="outline"
               size="icon"
-              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90 disabled:cursor-not-allowed disabled:opacity-40"
+              // `text-muted-foreground` belongs on the BUTTON, not on the
+              // fallback icon it used to sit on.
+              //
+              // With it on the icon, a caller that passed its own `swapIcon`
+              // silently lost the colour and inherited the one `ShimmerButton`
+              // hardcodes — a raw palette grey meant for dark surfaces, nearly
+              // invisible on a light page. base64-converter and url-encoder
+              // did exactly that and looked permanently disabled in light
+              // mode; latin-cyrillic, which passes no icon, was fine. Same
+              // component, opposite result, decided by a prop that has nothing
+              // to do with colour.
+              className="h-12 w-12 rounded-full border-2 border-border bg-card/90! text-muted-foreground shadow-xl backdrop-blur-sm hover:border-ring hover:bg-muted/90 disabled:cursor-not-allowed disabled:opacity-40"
               title={swapButtonTitle}
               disabled={isLoading || !convertedText}
               aria-label={swapButtonTitle || "Swap"}
             >
               {swapIcon || (
-                <ArrowLeftRight
-                  size={20}
-                  className="text-muted-foreground"
-                  aria-hidden="true"
-                />
+                // No colour class: the button owns it, so a custom
+                // `swapIcon` and this default look identical.
+                <ArrowLeftRight size={20} aria-hidden="true" />
               )}
             </ShimmerButton>
           </div>

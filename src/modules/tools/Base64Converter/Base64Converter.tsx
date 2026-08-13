@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeftRight, FileText } from "lucide-react"
+import { FileText } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { DropZone } from "@/components/shared/DropZone"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
@@ -130,7 +130,6 @@ const Base64Converter = () => {
           onSourceChange={setInput}
           onSwap={switchMode}
           onClear={clear}
-          swapIcon={<ArrowLeftRight size={20} />}
           swapButtonTitle={t("Panel.switchMode")}
           showSwapButton={true}
           showShadow={true}
