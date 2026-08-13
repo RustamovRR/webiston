@@ -2,7 +2,7 @@
 
 import { SegmentedControl } from "@webiston/ui/composites/SegmentedControl"
 import { Button } from "@webiston/ui/primitives/button"
-import { Check, Copy, Printer, RotateCcw } from "lucide-react"
+import { Check, Copy, FileText, Printer, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 
@@ -44,6 +44,7 @@ export function Tilxat() {
     errors,
     copy,
     print,
+    loadSample,
     reset
   } = useTilxat()
 
@@ -74,14 +75,24 @@ export function Tilxat() {
           title={t("form.title")}
           tone="muted"
           actions={
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={reset}
-              aria-label={tCommon("clear")}
-            >
-              <RotateCcw className="size-4" aria-hidden="true" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* "Tilxat namunasi" is what people search for — so the tool
+                  should be able to SHOW one. Sixteen empty fields teach
+                  nothing about the finished document; a worked example does,
+                  and every field stays editable from there. */}
+              <Button variant="outline" size="sm" onClick={loadSample}>
+                <FileText className="size-4" aria-hidden="true" />
+                {t("form.sample")}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={reset}
+                aria-label={tCommon("clear")}
+              >
+                <RotateCcw className="size-4" aria-hidden="true" />
+              </Button>
+            </div>
           }
         >
           <TilxatForm
@@ -99,7 +110,10 @@ export function Tilxat() {
             title={t("preview.title")}
             tone="primary"
             className="lg:sticky lg:top-20"
-            bodyClassName="flex flex-col gap-4 p-5"
+            // A full A4 sheet is taller than the viewport, and a sticky card
+            // taller than the screen hides its own bottom. The sheet scrolls
+            // inside the card instead of setting the page height.
+            bodyClassName="flex flex-col gap-4 p-5 lg:max-h-[calc(100dvh-9rem)] lg:overflow-y-auto"
             actions={
               <div className="flex flex-wrap items-center justify-end gap-2">
                 <SegmentedControl

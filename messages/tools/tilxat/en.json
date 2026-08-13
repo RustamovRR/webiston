@@ -6,6 +6,7 @@
     },
     "form": {
       "title": "Details",
+      "sample": "Sample",
       "borrower": {
         "legend": "Borrower (writes the tilxat)"
       },
@@ -83,6 +84,7 @@
       "pinfl": "JSHSHIR is exactly 14 digits",
       "address": "An address needs at least one word",
       "amount": "This does not look like a number — digits only",
+      "amountTooLarge": "That sum is too large — up to 18 digits",
       "dateOrder": "The return date cannot be before the loan date"
     }
   }

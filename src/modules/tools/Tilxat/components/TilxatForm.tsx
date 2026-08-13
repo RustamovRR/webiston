@@ -14,6 +14,7 @@ import { useId } from "react"
 import { PAYMENT_METHODS } from "../constants"
 import type { TilxatErrors } from "../hooks/useTilxat"
 import type { PaymentMethod, TilxatData, TilxatParty } from "../types"
+import { maskAmount, maskPassport, maskPinfl } from "../utils/mask"
 import { normalisePassport } from "../utils/validate"
 
 interface TilxatFormProps {
@@ -112,15 +113,22 @@ export function TilxatForm({
         label={t("passport")}
         error={messageFor(errors[`${role}.passport`])}
       >
+        {/* Masked on every keystroke: the field can only ever hold a legal
+            prefix of "AB 1234567", so "asdfasdfad" is impossible rather than
+            merely reported. `normalisePassport` on blur still settles the
+            written form for anything pasted whole. */}
         <Input
           id={`${id}-${role}-passport`}
           value={data[role].passport}
-          onChange={(event) => onParty(role, "passport", event.target.value)}
+          onChange={(event) =>
+            onParty(role, "passport", maskPassport(event.target.value))
+          }
           onBlur={(event) =>
             onParty(role, "passport", normalisePassport(event.target.value))
           }
           placeholder="AB 1234567"
           maxLength={10}
+          className="font-mono"
           aria-invalid={Boolean(errors[`${role}.passport`])}
           autoComplete="off"
         />
@@ -133,7 +141,9 @@ export function TilxatForm({
         <Input
           id={`${id}-${role}-pinfl`}
           value={data[role].pinfl}
-          onChange={(event) => onParty(role, "pinfl", event.target.value)}
+          onChange={(event) =>
+            onParty(role, "pinfl", maskPinfl(event.target.value))
+          }
           placeholder="30412900123456"
           inputMode="numeric"
           maxLength={14}
@@ -176,7 +186,9 @@ export function TilxatForm({
           <Input
             id={`${id}-amount`}
             value={data.amount}
-            onChange={(event) => onField("amount", event.target.value)}
+            onChange={(event) =>
+              onField("amount", maskAmount(event.target.value))
+            }
             inputMode="decimal"
             placeholder="5 000 000"
             className="font-mono"

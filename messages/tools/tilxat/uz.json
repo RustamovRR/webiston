@@ -6,6 +6,7 @@
     },
     "form": {
       "title": "Ma'lumotlar",
+      "sample": "Namuna",
       "borrower": {
         "legend": "Qarz oluvchi (tilxatni yozuvchi)"
       },
@@ -83,6 +84,7 @@
       "pinfl": "JSHSHIR aynan 14 ta raqam bo'ladi",
       "address": "Manzilda kamida bitta so'z bo'lishi kerak",
       "amount": "Bu raqamga o'xshamayapti — faqat son kiriting",
+      "amountTooLarge": "Summa juda katta — 18 xonagacha bo'lishi mumkin",
       "dateOrder": "Qaytarish sanasi berilgan sanadan oldin bo'la olmaydi"
     }
   }

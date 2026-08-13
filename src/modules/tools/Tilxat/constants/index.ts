@@ -77,6 +77,64 @@ export const FAQ_KEYS = [
   "privacy"
 ] as const
 
+/** How long the sample loan runs — three months, a plausible personal term. */
+const SAMPLE_MONTHS = 3
+
+/** A local ISO day. `toISOString()` is UTC and shifts the date in UTC+5. */
+const isoDate = (date: Date) =>
+  [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-")
+
+/**
+ * A completed tilxat, for the "Namuna" button.
+ *
+ * A blank form of sixteen fields does not tell a first-time visitor what a
+ * finished tilxat LOOKS like — which is the whole reason people search
+ * "tilxat namunasi" in the first place. So the sample fills every field,
+ * including the optional ones, and the visitor edits from there.
+ *
+ * The people are invented but internally consistent, because a sample that
+ * contradicts itself teaches the wrong shape: the JSHSHIRs carry the gender
+ * and birth-date digits that match the names (3 = male / 4 = female born last
+ * century, then DDMMYYYY, then the serial), and the passports are in the two
+ * letters + seven digits the validator enforces.
+ *
+ * `now` is passed in — like `JwtDecoder`'s `buildSamples` — so the dates are
+ * always in the future, and so nothing reads the clock at module scope where
+ * the server and the browser would disagree.
+ */
+export const buildSampleTilxat = (now: Date) => ({
+  borrower: {
+    fullName: "Aliyev Vali Salimovich",
+    passport: "AB 1234567",
+    pinfl: "31205199012345",
+    address:
+      "Toshkent shahri, Chilonzor tumani, Bunyodkor shoh ko'chasi, 12-uy, 45-xonadon"
+  },
+  lender: {
+    fullName: "Karimova Nodira Anvarovna",
+    passport: "AC 7654321",
+    pinfl: "40803198554321",
+    address:
+      "Toshkent shahri, Yunusobod tumani, Amir Temur shoh ko'chasi, 108-uy, 12-xonadon"
+  },
+  amount: "15 000 000",
+  method: "naqd" as const,
+  interestFree: true,
+  city: "Toshkent shahri",
+  givenDate: isoDate(now),
+  returnDate: isoDate(
+    new Date(now.getFullYear(), now.getMonth() + SAMPLE_MONTHS, now.getDate())
+  ),
+  witnesses: [
+    "Toshmatov Eshmat Akramovich",
+    "Yo'ldosheva Zilola Baxtiyorovna"
+  ] as [string, string]
+})
+
 /**
  * A fresh form. The hook `structuredClone`s it into state, so the shared
  * default itself is never handed to React — no freeze needed, no aliasing.

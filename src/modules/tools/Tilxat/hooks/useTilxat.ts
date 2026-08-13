@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import { parseAmount } from "@/lib/uzbek-number-words/amount"
 
-import { EMPTY_TILXAT } from "../constants"
+import { buildSampleTilxat, EMPTY_TILXAT } from "../constants"
 import type { TilxatData, TilxatParty, TilxatScript } from "../types"
 import { composeTilxat, plainText, type TilxatSegment } from "../utils/document"
 import {
@@ -68,6 +68,8 @@ interface UseTilxat {
   errors: TilxatErrors
   copy: () => Promise<boolean>
   print: () => void
+  /** Fills every field with a worked example, dated from today. */
+  loadSample: () => void
   reset: () => void
 }
 
@@ -108,8 +110,14 @@ export function useTilxat(): UseTilxat {
     party("borrower", data.borrower)
     party("lender", data.lender)
 
-    if (data.amount.trim() && !parseAmount(data.amount).ok) {
-      found.amount = "amount"
+    if (data.amount.trim()) {
+      const parsed = parseAmount(data.amount)
+      if (!parsed.ok) {
+        // "Too large" and "not a number" are different mistakes and deserve
+        // different sentences — "faqat son kiriting" is nonsense advice to
+        // someone who typed nothing but digits.
+        found.amount = parsed.error === "tooLarge" ? "amountTooLarge" : "amount"
+      }
     }
     if (data.city.trim() && !isValidAddress(data.city)) {
       found.city = "address"
@@ -186,6 +194,11 @@ export function useTilxat(): UseTilxat {
     window.print()
   }, [])
 
+  /** Read the clock HERE, on the click — never at module scope. */
+  const loadSample = useCallback(() => {
+    setData(buildSampleTilxat(new Date()))
+  }, [])
+
   const reset = useCallback(() => {
     setData(structuredClone(EMPTY_TILXAT))
   }, [])
@@ -204,6 +217,7 @@ export function useTilxat(): UseTilxat {
     errors,
     copy,
     print,
+    loadSample,
     reset
   }
 }

@@ -92,15 +92,18 @@ describe("tilxat", () => {
   it("flags an amount it cannot read and blanks the sheet's sum", () => {
     // Arrange
     renderTool()
+    const amount = screen.getByLabelText(/Qarz summasi/i)
 
-    // Act
-    fireEvent.change(screen.getByLabelText(/Qarz summasi/i), {
-      target: { value: "besh million" }
-    })
-
-    // Assert — the form says so, the paper never guesses.
-    expect(screen.getByRole("alert")).toHaveTextContent(/faqat son/i)
+    // Act / Assert — words never reach the field at all now.
+    fireEvent.change(amount, { target: { value: "besh million" } })
+    expect(amount).toHaveValue("")
     expect(sheet().textContent).not.toContain("besh million) so'm")
+
+    // Act / Assert — digits DO reach it, and a sum past 18 places gets its
+    // own sentence rather than being told to "enter digits only".
+    fireEvent.change(amount, { target: { value: "12345678901234567890" } })
+    expect(screen.getByRole("alert")).toHaveTextContent(/juda katta/i)
+    expect(sheet().textContent).not.toContain("1234567890")
   })
 
   it("adds the witness block only when a witness is named", () => {
@@ -138,22 +141,69 @@ describe("tilxat", () => {
   })
 
   /**
-   * The screenshot case, end to end: garbage in the passport field shows a
-   * red error under the input AND never reaches the paper.
+   * The screenshot case, at the keystroke rather than at the error line: the
+   * field cannot HOLD garbage, so there is nothing to report and nothing that
+   * could reach the paper.
    */
-  it("keeps a garbage passport off the sheet and says why", () => {
+  it("makes a garbage passport impossible to type at all", () => {
     // Arrange
     renderTool()
+    const field = screen.getAllByLabelText(/Pasport seriyasi va raqami/i)[0]
 
-    // Act — verbatim from the owner's screenshot.
+    // Act / Assert — verbatim from the owner's two screenshots.
+    fireEvent.change(field, { target: { value: "asdfasdfad" } })
+    expect(field).toHaveValue("AS")
+
+    fireEvent.change(field, { target: { value: "aa12341234123412341234" } })
+    expect(field).toHaveValue("AA 1234123")
+    expect(sheet().textContent).not.toContain("1234123412")
+  })
+
+  it("still blanks a half-typed passport on the sheet", () => {
+    // Arrange — the mask permits legal PREFIXES; only a whole one prints.
+    renderTool()
+
+    // Act
     fireEvent.change(
       screen.getAllByLabelText(/Pasport seriyasi va raqami/i)[0],
-      { target: { value: "aa12341234123412341234" } }
+      { target: { value: "ab123" } }
     )
 
     // Assert
-    expect(screen.getByRole("alert")).toHaveTextContent(/2 harf va 7 raqam/i)
-    expect(sheet().textContent).not.toContain("aa1234")
+    expect(sheet().textContent).not.toContain("AB 123")
+    expect(sheet().textContent).toContain("pasport ____")
+  })
+
+  it("caps JSHSHIR at fourteen digits and refuses letters outright", () => {
+    // Arrange
+    renderTool()
+    const field = screen.getAllByLabelText(/JSHSHIR/i)[0]
+
+    // Act / Assert — the owner's screenshot typed words into this field.
+    fireEvent.change(field, { target: { value: "qwefqwefqwefqw" } })
+    expect(field).toHaveValue("")
+
+    fireEvent.change(field, { target: { value: "304129001234567890" } })
+    expect(field).toHaveValue("30412900123456")
+  })
+
+  /**
+   * Bold is a proof-reading aid for the SCREEN. Paper wants one weight — an
+   * official document that bolds only the filled-in parts announces itself as
+   * generated.
+   */
+  it("drops the bold when the sheet is printed", () => {
+    // Arrange / Act
+    renderTool()
+    const printCss = [...document.querySelectorAll("style")]
+      .map((style) => style.textContent ?? "")
+      .find((css) => css.includes("tilxat-print"))
+
+    // Assert
+    expect(printCss).toContain("@media print")
+    expect(printCss).toMatch(
+      /body\.tilxat-print #tilxat-sheet strong\s*\{\s*font-weight:\s*400/
+    )
   })
 
   it("normalises a passport when the field is left", () => {
@@ -217,6 +267,21 @@ describe("tilxat", () => {
     fireEvent.change(field, { target: { value: "3041290" } })
     expect(screen.getByRole("alert")).toHaveTextContent(/14 ta raqam/i)
     expect(sheet().textContent).not.toContain("JSHSHIR")
+  })
+
+  it("fills a finished, error-free document from the sample button", () => {
+    // Arrange
+    renderTool()
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+
+    // Assert — a worked example, and the tool's own validation accepts it.
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+    expect(sheet().textContent).toContain("Aliyev Vali Salimovich")
+    expect(sheet().textContent).toContain("AB 1234567")
+    expect(sheet().textContent).toContain("o'n besh million) so'm")
+    expect(sheet().textContent).toContain("Guvohlar:")
   })
 
   it("clears the whole form at once", () => {

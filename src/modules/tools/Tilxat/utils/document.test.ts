@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 
+import { buildSampleTilxat } from "../constants"
 import type { TilxatData } from "../types"
 import {
   buildTilxat,
@@ -261,5 +262,35 @@ describe("initialsOf", () => {
     // missing value looks like on paper.
     expect(initialsOf("Aliyev")).toBe("Aliyev")
     expect(initialsOf("  ")).toBe("")
+  })
+})
+
+describe("buildSampleTilxat", () => {
+  /**
+   * The sample is what a first-time visitor judges the tool by, so it must
+   * survive the tool's OWN validation — a passport or JSHSHIR that renders as
+   * a writing line would advertise the form as broken.
+   */
+  it("fills every field with something the builder accepts", () => {
+    // Arrange / Act
+    const { lotin } = composeTilxat(buildSampleTilxat(new Date(2026, 7, 12)))
+
+    // Assert — not one `blank` segment left anywhere on the paper.
+    expect(lotin.filter((segment) => segment.kind === "blank")).toEqual([])
+  })
+
+  it("dates the sample from today, returning in the future", () => {
+    // Arrange
+    // Local constructor, not an ISO string: `new Date("2026-08-12")` is UTC
+    // midnight and lands on the 11th in any negative offset.
+    const now = new Date(2026, 7, 12)
+
+    // Act
+    const sample = buildSampleTilxat(now)
+
+    // Assert — a sample loan already overdue teaches the wrong thing.
+    expect(sample.givenDate).toBe("2026-08-12")
+    expect(sample.returnDate > sample.givenDate).toBe(true)
+    expect(formatUzbekDate(sample.returnDate)).not.toBeNull()
   })
 })
