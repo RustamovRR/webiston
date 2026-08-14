@@ -12,7 +12,7 @@ const COPY = {
   uz: {
     title: "Qurilma Ma'lumotlari — Brauzer, Ekran va Tarmoq",
     description:
-      "Brauzeringiz, operatsion tizimingiz, ekraningiz va tarmog'ingiz haqida sayt ko'ra oladigan hamma narsa — ruxsat so'ramasdan. Aynan shu ma'lumotlar birgalikda «barmoq izi» hosil qiladi; sahifa buni ochiq aytadi.",
+      "Sayt ruxsat so'ramasdan siz haqingizda ko'radigan hamma narsa: brauzer, tizim, ekran, tarmoq. Shular birgalikda «barmoq izi» hosil qiladi.",
     social:
       "Brauzer, tizim, ekran, tarmoq va foydalanuvchi afzalliklari — sayt sizdan so'ramasdan biladigan hamma narsa.",
     ogLocale: "uz_UZ"
@@ -20,7 +20,7 @@ const COPY = {
   en: {
     title: "Device Info — Browser, Screen and Network",
     description:
-      "Everything a website can read about your browser, system, screen and network without asking permission. Those same values combine into a fingerprint, and this page says so plainly.",
+      "Everything a site can read without asking: browser, system, screen and network. The same values form your fingerprint — said plainly.",
     social:
       "Browser, system, display, network and user preferences — everything a site knows without asking.",
     ogLocale: "en_US"
@@ -28,7 +28,7 @@ const COPY = {
   ru: {
     title: "Сведения об устройстве — браузер, система и экран",
     description:
-      "Всё, что сайт узнаёт о вас, ничего не спрашивая: браузер, операционная система, экран, сеть и настройки. Показываем, из чего складывается отпечаток браузера. Данные не покидают страницу.",
+      "Всё, что сайт узнаёт без разрешения: браузер, система, экран, сеть. Из этих значений складывается отпечаток. Данные не уходят со страницы.",
     social:
       "Что ваш браузер рассказывает о вас каждому сайту — и почему это складывается в отпечаток.",
     ogLocale: "ru_RU"

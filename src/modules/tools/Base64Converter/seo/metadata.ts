@@ -21,7 +21,7 @@ const COPY = {
   uz: {
     title: "Base64 Konverter — kodlash va dekodlash",
     description:
-      "Matn va fayllarni Base64 ga o'giring yoki qaytaring. base64url qo'llab-quvvatlanadi, natija bayt hisobida ko'rsatiladi, hammasi brauzeringizda hisoblanadi. Bepul va ro'yxatdan o'tishsiz.",
+      "Matn va fayllarni Base64 ga o'giring yoki qaytaring. base64url qo'llanadi, hajm bayt hisobida ko'rsatiladi. Hammasi brauzeringizda.",
     social:
       "Matn va fayllarni Base64 ga o'girish va qaytarish. base64url ham bor, hamma narsa brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -29,7 +29,7 @@ const COPY = {
   en: {
     title: "Base64 Converter — encode and decode",
     description:
-      "Convert text and files to Base64 and back. base64url is supported, sizes are reported in real bytes, and everything runs in your browser. Free, no account needed.",
+      "Convert text and files to Base64 and back. base64url supported, sizes in real bytes, everything in your browser. Free, no account.",
     social:
       "Encode and decode Base64, including base64url. Everything runs in your browser.",
     ogLocale: "en_US"
@@ -37,7 +37,7 @@ const COPY = {
   ru: {
     title: "Конвертер Base64 — кодирование и декодирование",
     description:
-      "Переведите текст или файл в Base64 и обратно. Поддерживается base64url, есть проверка размера и разбор ошибок. Всё считается в браузере — ничего не загружается на сервер.",
+      "Переведите текст или файл в Base64 и обратно. Поддерживается base64url, есть разбор ошибок. Всё считается в браузере.",
     social:
       "Кодируйте и декодируйте Base64 бесплатно, прямо в браузере — с поддержкой base64url и файлов.",
     ogLocale: "ru_RU"

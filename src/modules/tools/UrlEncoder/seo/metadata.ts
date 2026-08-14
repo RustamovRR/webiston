@@ -15,7 +15,7 @@ const COPY = {
   uz: {
     title: "URL Kodlash va Dekodlash",
     description:
-      "Havoladagi %20, %3A kabi belgilarni odam o'qiydigan holatga keltiring — yoki aksincha. So'rov parametrlari alohida ajratib ko'rsatiladi, ikki marta kodlangan havolalar aniqlanadi. Hammasi brauzeringizda.",
+      "%20 va %3A kabi belgilarni o'qiladigan holatga keltiring yoki aksincha. So'rov parametrlari alohida ko'rsatiladi. Hammasi brauzeringizda.",
     social:
       "URL kodlash va ochish — qiymat va to'liq URL rejimlari bilan. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -23,7 +23,7 @@ const COPY = {
   en: {
     title: "URL Encode and Decode",
     description:
-      "Turn the %20 and %3A in a link back into something readable — or the other way round. Query parameters are broken out one by one, and double-encoded links are spotted for you. Everything runs in your browser.",
+      "Turn %20 and %3A back into readable text — or the other way round. Query parameters broken out one by one, double encoding spotted.",
     social:
       "Encode and decode URLs, with separate value and whole-URL modes. Runs in your browser.",
     ogLocale: "en_US"

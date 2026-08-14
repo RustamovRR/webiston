@@ -16,7 +16,7 @@ const COPY = {
   uz: {
     title: "UUID Generator — v4, v7, v1 va UUID Tekshiruvchi",
     description:
-      "UUID v4, v7 (vaqt bo'yicha tartiblanadigan) va v1 qiymatlarini bittadan yoki 1000 tagacha yarating. Qo'lingizdagi UUID'ning versiyasi va yaratilgan vaqtini aniqlang. Hammasi brauzeringizda.",
+      "UUID v4, v7 va v1 — bittadan yoki 1000 tagacha. Qo'lingizdagi UUID versiyasi va vaqtini aniqlang. Hammasi brauzeringizda.",
     social:
       "UUID v4, v7 va v1 — 1000 tagacha, hamda UUID tahlilchisi. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -24,7 +24,7 @@ const COPY = {
   en: {
     title: "UUID Generator — v4, v7, v1 and UUID Inspector",
     description:
-      "Generate UUID v4, v7 (time-ordered) and v1 values, one at a time or up to 1000 at once. Paste a UUID you were handed and read back its version and creation time. Everything runs in your browser.",
+      "Generate UUID v4, v7 (time-ordered) and v1, up to 1000 at once. Paste a UUID to read its version and creation time. In your browser.",
     social:
       "UUID v4, v7 and v1 in bulk, plus an inspector that reads any UUID. Runs in your browser.",
     ogLocale: "en_US"
@@ -32,7 +32,7 @@ const COPY = {
   ru: {
     title: "Генератор UUID — v4, v7 и v1",
     description:
-      "Создавайте UUID версий v4, v7 и v1 по одному или до 1000 сразу и разбирайте полученный UUID: версия, вариант и время создания. Значения берутся из криптографического генератора браузера.",
+      "UUID v4, v7 и v1 — по одному или до 1000 сразу. Разбор готового UUID: версия, вариант, время создания. Всё в браузере.",
     social:
       "Генерируйте UUID v4, v7 и v1 и разбирайте чужие UUID — бесплатно, прямо в браузере.",
     ogLocale: "ru_RU"

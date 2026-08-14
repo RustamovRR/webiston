@@ -23,7 +23,7 @@ const COPY = {
   uz: {
     title: "Rang O'giruvchi va Palette Generator",
     description:
-      "HEX, RGB, HSL, Lab va OKLCH formatlar orasida rang o'giring, WCAG kontrastini tekshiring va 50–950 rang shkalasi bilan palette yarating. Bepul, ro'yxatdan o'tishsiz, brauzerda ishlaydi.",
+      "HEX, RGB, HSL, Lab va OKLCH orasida rang o'giring, WCAG kontrastini tekshiring, 50–950 shkala bilan palitra yarating. Hammasi brauzerda.",
     social:
       "HEX, RGB, HSL va OKLCH o'girish, WCAG kontrast tekshiruvi va palette generatsiyasi. Bepul va brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -31,7 +31,7 @@ const COPY = {
   en: {
     title: "Color Converter and Palette Generator",
     description:
-      "Convert colors between HEX, RGB, HSL, Lab and OKLCH, check WCAG contrast, and generate palettes with a 50–950 shade scale. Free, no account, runs in your browser.",
+      "Convert colors between HEX, RGB, HSL, Lab and OKLCH, check WCAG contrast, and build palettes with a 50–950 shade scale. Runs in your browser.",
     social:
       "Convert HEX, RGB, HSL and OKLCH, check WCAG contrast and generate palettes. Free, and it runs in your browser.",
     ogLocale: "en_US"

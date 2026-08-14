@@ -18,7 +18,7 @@ const COPY = {
   uz: {
     title: "JWT Dekoder — token ichida nima bor",
     description:
-      "JSON Web Token'ni ochib ko'ring: header, payload, standart da'volar va muddati. Token brauzeringizdan chiqmaydi; imzo tekshirilmaydi va buning sababi sahifada tushuntirilgan.",
+      "JWT ichini ochib ko'ring: header, payload, da'volar va muddati. Token brauzeringizdan chiqmaydi; imzo nega tekshirilmasligi tushuntirilgan.",
     social:
       "JWT'ni oching: header, payload va muddati. Hammasi brauzeringizda.",
     ogLocale: "uz_UZ"
@@ -26,7 +26,7 @@ const COPY = {
   en: {
     title: "JWT Decoder — see what is inside a token",
     description:
-      "Open a JSON Web Token: header, payload, registered claims and expiry. The token never leaves your browser, and the page explains why signatures are not verified here.",
+      "Open a JSON Web Token: header, payload, claims and expiry. The token never leaves your browser; why signatures are not verified is explained.",
     social:
       "Decode a JWT: header, payload and expiry. Everything runs in your browser.",
     ogLocale: "en_US"
@@ -34,7 +34,7 @@ const COPY = {
   ru: {
     title: "Декодер JWT — разбор JSON Web Token",
     description:
-      "Посмотрите, что внутри токена: заголовок, полезная нагрузка, срок действия и алгоритм подписи. Токен не покидает браузер, и подпись здесь намеренно не проверяется.",
+      "Что внутри JWT: заголовок, полезная нагрузка, срок действия и алгоритм. Токен не покидает браузер, подпись намеренно не проверяется.",
     social:
       "Разберите JWT в браузере: заголовок, нагрузка и срок действия — токен никуда не отправляется.",
     ogLocale: "ru_RU"

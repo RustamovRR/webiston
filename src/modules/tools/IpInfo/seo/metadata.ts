@@ -12,7 +12,7 @@ const COPY = {
   uz: {
     title: "IP Manzil — Joylashuv, Provayder va ASN",
     description:
-      "IP manzilingiz qayerga ishora qiladi va uni kim boshqaradi: davlat, shahar, provayder, ASN va vaqt mintaqasi. Istalgan IPv4 yoki IPv6 manzilni ham tekshiring — so'rov brauzeringizdan emas, o'z serverimizdan yuboriladi.",
+      "IP manzilingiz qayerga ishora qiladi: davlat, shahar, provayder, ASN, vaqt mintaqasi. Istalgan IPv4/IPv6 ni tekshiring — so'rov o'z serverimizdan.",
     social:
       "IP manzilingiz, joylashuvi, provayderi va ASN raqami — bepul, ro'yxatdan o'tmasdan.",
     ogLocale: "uz_UZ"
@@ -20,7 +20,7 @@ const COPY = {
   en: {
     title: "IP Address — Location, ISP and ASN",
     description:
-      "Where your IP address points and who runs it: country, city, ISP, ASN and time zone. Look up any IPv4 or IPv6 address too — the request goes through our own server, not from your browser to a third party.",
+      "Where your IP points: country, city, ISP, ASN and time zone. Look up any IPv4 or IPv6 — the request goes through our server, not your browser.",
     social:
       "Your IP address, its location, the network operating it and its ASN — free, no signup.",
     ogLocale: "en_US"
@@ -28,7 +28,7 @@ const COPY = {
   ru: {
     title: "IP-адрес — расположение, провайдер и ASN",
     description:
-      "Куда указывает ваш IP-адрес и кто им управляет: страна, город, провайдер, ASN и часовой пояс. Можно проверить любой адрес IPv4 или IPv6 — запрос идёт через наш сервер, а не из вашего браузера.",
+      "Куда указывает ваш IP: страна, город, провайдер, ASN, часовой пояс. Проверьте любой IPv4/IPv6 — запрос идёт через наш сервер.",
     social:
       "Ваш IP-адрес, его расположение, провайдер и номер ASN — бесплатно, без регистрации.",
     ogLocale: "ru_RU"

@@ -14,7 +14,7 @@ const COPY = {
   uz: {
     title: "Lorem Ipsum — o'zbekcha va klassik matn",
     description:
-      "Maket uchun namunaviy matn yarating: abzas, gap, so'z yoki aniq bayt hajmida. Klassik lotincha matndan tashqari o'zbekcha ro'yxat ham bor — dizayn o'zbek matni bilan qanday ko'rinishini oldindan ko'rasiz. HTML shaklida ham olinadi.",
+      "Abzas, gap, so'z yoki aniq bayt hajmida namunaviy matn. Lotinchadan tashqari o'zbekcha lug'at ham bor — dizayn o'zbek matni bilan sinaladi.",
     social:
       "Namunaviy matn generatori: o'zbekcha va klassik lotincha, HTML shakli bilan. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -22,7 +22,7 @@ const COPY = {
   en: {
     title: "Lorem Ipsum — Uzbek and Classic Text",
     description:
-      "Generate filler text by paragraphs, sentences, words or an exact number of bytes. Alongside the classic Latin list there is an Uzbek one, so you can see how a layout holds real Uzbek copy. HTML output included.",
+      "Filler text by paragraphs, sentences, words or exact bytes. Includes an Uzbek word list, so a layout can be tested with real Uzbek copy.",
     social:
       "Filler text in Uzbek and classic Latin, with HTML output. Runs in your browser.",
     ogLocale: "en_US"

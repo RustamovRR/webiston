@@ -12,7 +12,7 @@ const COPY = {
   uz: {
     title: "Mikrofon Testi — Daraja, To'lqin va Yozib Olish",
     description:
-      "Mikrofoningiz ishlayaptimi? Ovoz darajasini dBFS'da ko'ring, to'lqin va spektrni kuzating, o'zingizni eshiting va yozib olib tinglang. Brauzer qo'llaydigan shovqin bostirish va aks-sado filtrlarini o'chirib, farqni eshitib ko'ring — hammasi qurilmangizda qoladi.",
+      "Mikrofoningiz ishlayaptimi? dBFS daraja, to'lqin va spektr, yozib olib tinglash. Shovqin filtrlarini o'chirib solishtiring — hammasi qurilmangizda.",
     social:
       "Mikrofoningizni bepul sinang: dBFS darajasi, to'lqin, spektr, yozib olish va brauzer filtrlarini o'chirish.",
     ogLocale: "uz_UZ"
@@ -20,7 +20,7 @@ const COPY = {
   en: {
     title: "Microphone Test — Level, Waveform and Recording",
     description:
-      "Is your microphone working? See the level in dBFS, watch the waveform and spectrum, hear yourself live, and record a clip to play back. Turn the browser's noise suppression and echo cancellation off and hear the difference — everything stays on your device.",
+      "Is your microphone working? Level in dBFS, waveform and spectrum, record and play back. Toggle noise suppression off — all on your device.",
     social:
       "Test your microphone free: dBFS level, waveform, spectrum, recording, and browser audio processing you can switch off.",
     ogLocale: "en_US"
@@ -28,7 +28,7 @@ const COPY = {
   ru: {
     title: "Проверка микрофона — уровень, волна и запись",
     description:
-      "Работает ли ваш микрофон? Смотрите уровень в dBFS, следите за волной и спектром, услышьте себя и запишите фрагмент. Отключите фильтры браузера и услышьте разницу — всё остаётся на вашем устройстве.",
+      "Работает ли микрофон? Уровень в dBFS, волна и спектр, запись и прослушивание. Отключите фильтры и услышьте разницу — всё на устройстве.",
     social:
       "Проверьте микрофон бесплатно: уровень в dBFS, волна, спектр, запись и отключаемые фильтры.",
     ogLocale: "ru_RU"

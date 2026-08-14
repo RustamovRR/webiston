@@ -12,7 +12,7 @@ const COPY = {
   uz: {
     title: "Ekran o'lchami — viewport va breakpoint",
     description:
-      "CSS aynan qaysi o'lchamni ko'radi: viewport, oyna va ekran o'lchamlari, faol Tailwind breakpoint, piksel zichligi va tomonlar nisbati. Oynani cho'zing — raqamlar shu zahoti o'zgaradi.",
+      "CSS ko'radigan aniq o'lcham: viewport, oyna, ekran, faol Tailwind breakpoint, piksel zichligi. Oynani cho'zing — raqamlar jonli o'zgaradi.",
     social:
       "Viewport, breakpoint, piksel zichligi va tomonlar nisbati — oynani cho'zganingizda jonli o'zgaradigan raqamlar.",
     ogLocale: "uz_UZ"
@@ -20,7 +20,7 @@ const COPY = {
   en: {
     title: "Screen Resolution — Viewport & Breakpoint",
     description:
-      "The exact size your CSS sees: viewport, window and screen dimensions, the active Tailwind breakpoint, device pixel ratio and aspect ratio. Drag the window and every number updates live.",
+      "The exact size your CSS sees: viewport, window, screen, active Tailwind breakpoint and pixel ratio. Drag the window — numbers update live.",
     social:
       "Viewport, breakpoint, pixel ratio and aspect ratio — numbers that update live as you resize.",
     ogLocale: "en_US"
@@ -28,7 +28,7 @@ const COPY = {
   ru: {
     title: "Разрешение экрана и точки останова",
     description:
-      "Размер, который на самом деле видит ваш CSS: область просмотра, окно и экран, активная точка останова Tailwind, Bootstrap или MUI, плотность пикселей и соотношение сторон.",
+      "Размер, который видит ваш CSS: окно, экран, активный брейкпоинт Tailwind, Bootstrap или MUI, плотность пикселей. Всё обновляется вживую.",
     social:
       "Узнайте размер области просмотра, активную точку останова CSS и плотность пикселей.",
     ogLocale: "ru_RU"

@@ -14,7 +14,7 @@ const COPY = {
   uz: {
     title: "Open Graph — meta taglar generatori",
     description:
-      "Sahifangiz Telegram, X, Facebook va LinkedIn'da qanday ko'rinishini shu yerda ko'ring, og: va twitter: taglarini to'g'ri qo'shtirnoq bilan oling. Rasm o'lchami brauzerda tekshiriladi; Next.js metadata shakli ham bor.",
+      "Sahifangiz Telegram, X, Facebook va LinkedIn'da qanday ko'rinishini ko'ring, tayyor og: va twitter: taglarni oling. Rasm brauzerda tekshiriladi.",
     social:
       "Open Graph va Twitter meta taglari, jonli ulashish kartasi va rasm tekshiruvi bilan. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -22,7 +22,7 @@ const COPY = {
   en: {
     title: "Open Graph Meta Tag Generator",
     description:
-      "See how your page will look on Telegram, X, Facebook and LinkedIn, and get correctly escaped og: and twitter: tags. The image is measured in your browser, and the Next.js metadata form is one click away.",
+      "See how your page looks on Telegram, X, Facebook and LinkedIn, and copy correctly escaped og: and twitter: tags. Next.js form included.",
     social:
       "Open Graph and Twitter meta tags, with a live share-card preview and a real image check. Runs in your browser.",
     ogLocale: "en_US"
@@ -30,7 +30,7 @@ const COPY = {
   ru: {
     title: "Генератор Open Graph — мета-теги для соцсетей",
     description:
-      "Посмотрите, как ссылка будет выглядеть в Telegram, X, Facebook и LinkedIn, и заберите готовые теги og: и twitter:. Инструмент измеряет изображение и предупреждает об ошибках.",
+      "Как ссылка выглядит в Telegram, X, Facebook и LinkedIn — и готовые теги og: и twitter:. Изображение проверяется в браузере.",
     social:
       "Создайте мета-теги Open Graph и посмотрите карточку ссылки для Telegram, X и LinkedIn.",
     ogLocale: "ru_RU"

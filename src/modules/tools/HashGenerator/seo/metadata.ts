@@ -15,7 +15,7 @@ const COPY = {
   uz: {
     title: "Hash generator — SHA-256, SHA-512 va MD5",
     description:
-      "Matn yoki faylning SHA-256, SHA-512, SHA-384, SHA-1 va MD5 barmoq izini oling. Yuklab olgan faylingizni e'lon qilingan checksum bilan solishtiring, HMAC imzosini hisoblang. Hammasi brauzeringizda.",
+      "Matn yoki faylning SHA-256, SHA-512, SHA-1, MD5 xeshini oling, faylni e'lon qilingan checksum bilan solishtiring, HMAC hisoblang. Brauzerda.",
     social:
       "SHA-256, SHA-512, MD5 hash va HMAC — checksum solishtirish bilan. Brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -23,7 +23,7 @@ const COPY = {
   en: {
     title: "Hash Generator — SHA-256, SHA-512, MD5",
     description:
-      "Get the SHA-256, SHA-512, SHA-384, SHA-1 and MD5 fingerprint of any text or file. Compare a download against its published checksum and compute HMAC signatures. Everything runs in your browser.",
+      "SHA-256, SHA-512, SHA-1 and MD5 for any text or file. Compare a download against its checksum, compute HMAC. Everything in your browser.",
     social:
       "SHA-256, SHA-512, MD5 and HMAC, with checksum comparison. Runs in your browser.",
     ogLocale: "en_US"
@@ -31,7 +31,7 @@ const COPY = {
   ru: {
     title: "Генератор хешей — SHA-256, SHA-512, MD5 и HMAC",
     description:
-      "Вычислите хеш текста или файла и сверьте загрузку с опубликованной контрольной суммой. Есть HMAC для проверки подписей вебхуков. Всё считается в браузере через Web Crypto.",
+      "Хеш текста или файла: SHA-256, SHA-512, SHA-1, MD5. Сверьте загрузку с контрольной суммой, есть HMAC. Всё в браузере.",
     social:
       "Считайте SHA-256, SHA-512, MD5 и HMAC и сверяйте контрольные суммы — бесплатно, в браузере.",
     ogLocale: "ru_RU"

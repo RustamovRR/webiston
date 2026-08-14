@@ -28,7 +28,7 @@ const COPY = {
   uz: {
     title: "Lotin-Kirill O'giruvchi",
     description:
-      "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. TXT, PDF va DOCX fayllarni qo'llab-quvvatlaydi. Bepul, ro'yxatdan o'tishsiz, matn brauzeringizdan chiqmaydi.",
+      "O'zbek matnini lotin va kirill yozuvi orasida o'giring. TXT, PDF va DOCX fayllar ham. Bepul, matn brauzeringizdan chiqmaydi.",
     social:
       "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -44,7 +44,7 @@ const COPY = {
   ru: {
     title: "Латиница ↔ кириллица — узбекский текст",
     description:
-      "Переводите узбекский текст между латиницей и кириллицей. Учитываются сложные места орфографии, ссылки и код остаются нетронутыми, поддерживаются файлы TXT, PDF и DOCX.",
+      "Переводите узбекский текст между латиницей и кириллицей. Сложная орфография учитывается, поддерживаются файлы TXT, PDF и DOCX.",
     social:
       "Конвертер узбекского текста между латиницей и кириллицей — бесплатно, прямо в браузере.",
     ogLocale: "ru_RU"

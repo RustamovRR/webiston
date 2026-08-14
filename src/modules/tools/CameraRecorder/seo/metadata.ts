@@ -12,7 +12,7 @@ const COPY = {
   uz: {
     title: "Kamera Testi — Veb-kamerani Sinash va Yozib Olish",
     description:
-      "Veb-kamerangiz ishlayaptimi? Jonli tasvirni ko'ring, haqiqiy o'lchamni va kadr chastotasini bilib oling, kadr oling yoki video yozing. Kamera qanday sifat bera olishini so'rab tekshiradi — hamma narsa brauzeringizda qoladi.",
+      "Veb-kamerangiz ishlayaptimi? Jonli tasvir, haqiqiy o'lcham va kadr chastotasi, suratga olish va video yozish. Hammasi brauzeringizda qoladi.",
     social:
       "Veb-kamerangizni bepul sinang: jonli tasvir, haqiqiy o'lcham va fps, kadr olish va video yozish.",
     ogLocale: "uz_UZ"
@@ -20,7 +20,7 @@ const COPY = {
   en: {
     title: "Camera Test — Check Your Webcam and Record",
     description:
-      "Is your webcam working? See the live picture, find out the real resolution and frame rate it delivers, take a still or record a clip. It asks the camera for more than it has to discover its ceiling — and everything stays in your browser.",
+      "Is your webcam working? Live picture, the real resolution and frame rate, stills and clips. Everything stays in your browser.",
     social:
       "Test your webcam free: live preview, the resolution and fps it really delivers, stills and recording.",
     ogLocale: "en_US"
@@ -28,7 +28,7 @@ const COPY = {
   ru: {
     title: "Проверка камеры — тест веб-камеры и запись видео",
     description:
-      "Работает ли ваша веб-камера? Посмотрите живую картинку, узнайте реальное разрешение и частоту кадров, сделайте кадр или запишите видео. Всё остаётся в браузере.",
+      "Работает ли веб-камера? Живая картинка, реальное разрешение и частота кадров, кадр или видео. Всё остаётся в браузере.",
     social:
       "Проверьте веб-камеру бесплатно: живая картинка, реальные разрешение и fps, кадры и запись видео.",
     ogLocale: "ru_RU"
