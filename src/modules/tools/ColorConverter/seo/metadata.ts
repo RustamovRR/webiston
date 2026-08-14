@@ -21,7 +21,10 @@ const BASE_URL = "https://webiston.uz"
 
 const COPY = {
   uz: {
-    title: "Rang O'giruvchi va Palette Generator",
+    // "Rang tanlagich" is what people search («google rang tanlagich»: 160
+    // impressions at position 4.9 and ZERO clicks — the word was missing from
+    // the title). The claim is real: ColorControls.tsx:107 is the picker.
+    title: "Rang Tanlagich, O'giruvchi va Palette Generator",
     description:
       "HEX, RGB, HSL, Lab va OKLCH orasida rang o'giring, WCAG kontrastini tekshiring, 50–950 shkala bilan palitra yarating. Hammasi brauzerda.",
     social:

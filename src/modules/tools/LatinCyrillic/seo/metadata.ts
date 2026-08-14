@@ -26,15 +26,22 @@ const BASE_URL = "https://webiston.uz"
  */
 const COPY = {
   uz: {
-    title: "Lotin-Kirill O'giruvchi",
+    // The Cyrillic half is not decoration. GSC (2026-08): «лотин кирилл» had
+    // 899 impressions at 0.3% CTR, «лотин крил» 648 at 1.1% — Cyrillic-typing
+    // Uzbeks saw a Latin-only title in the SERP and read it as not for them.
+    // ~2,500 monthly Cyrillic impressions ride on this one line.
+    title: "Lotin-Kirill O'giruvchi — Лотин-Кирилл Ўгирувчи",
     description:
-      "O'zbek matnini lotin va kirill yozuvi orasida o'giring. TXT, PDF va DOCX fayllar ham. Bepul, matn brauzeringizdan chiqmaydi.",
+      "O'zbek matnini lotin va kirill yozuvi orasida o'giring. TXT, PDF va DOCX fayllar ham. Кириллдан лотинга ва аксинча — bepul, brauzerda.",
     social:
       "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
   },
   en: {
-    title: "Latin-Cyrillic Converter",
+    // "Uzbek" is a filter, not a keyword: "latin to cyrillic" (1,057 impr,
+    // 0.8% CTR) is mostly people wanting RUSSIAN transliteration. Naming the
+    // language keeps the clicks that convert and loses only the wrong ones.
+    title: "Uzbek Latin-Cyrillic Converter",
     description:
       "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports TXT, PDF and DOCX files. Free, no account, and your text never leaves the browser.",
     social:

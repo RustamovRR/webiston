@@ -108,6 +108,9 @@ ehthumbs_vista.db
 *.key
 *.cert
 *.crt
+# Service-account JSON keys (Google Search Console API). A .json key would not
+# be caught by *.key, and committing one hands over the account.
+.secrets/
 
 # ===================
 # Debug logs

@@ -34,7 +34,10 @@ const COPY = {
   uz: {
     // 61 chars rendered with the " | Webiston" template on top. "Xavfsiz" is
     // the word the description carries anyway.
-    title: "Parol Generator — Kuchli parol yaratish",
+    // "Parol yaratish" FIRST — it is the phrase people actually type (GSC:
+    // «parollar» 533 impr / 0.4% CTR, «parol» 399 / 0.3%, while «login parol
+    // yaratish» clicked at 9.1%): lead with the words that match the query.
+    title: "Parol Yaratish — Kuchli Parol Generatori",
     description:
       "Kuchli va tasodifiy parol yarating: uzunlik, harflar, raqamlar va belgilarni o'zingiz tanlaysiz. Parol brauzeringizda yaratiladi va hech qayerga yuborilmaydi.",
     social:
