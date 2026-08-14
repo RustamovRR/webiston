@@ -75,6 +75,7 @@
     "errors": {
       "name": "This field can only contain letters",
       "organisation": "The organisation needs at least one word",
+      "text": "The reason needs at least one word",
       "dateOrder": "The last working day cannot be before the application date",
       "earlyRelease": "That date is inside the notice period — only possible by agreement or under art. 160 §8"
     }

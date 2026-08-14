@@ -7,14 +7,11 @@ import type {
   DocumentErrors,
   DocumentSegment
 } from "../../types"
-import {
-  formatUzbekDate,
-  initialsOf,
-  isDateOrderValid
-} from "../../utils/dates"
+import { initialsOf, isDateOrderValid } from "../../utils/dates"
 import {
   blank,
   block,
+  dateField,
   field,
   plainText,
   toCyrillicBlocks,
@@ -29,12 +26,6 @@ import {
   normalisePassport
 } from "../../utils/validate"
 import { PAYMENT_METHODS, type TilxatData, type TilxatParty } from "./constants"
-
-/** A date field, or the short writing line that stands in for it. */
-function dateField(iso: string): DocumentSegment {
-  const formatted = formatUzbekDate(iso)
-  return formatted ? val(formatted) : blank(BLANK_SHORT)
-}
 
 /**
  * The sum, the way a document carries it: digits, then words in brackets.

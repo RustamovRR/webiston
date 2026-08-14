@@ -19,7 +19,8 @@
       "label": "Choose a document",
       "items": {
         "tilxat": "Loan receipt",
-        "ariza": "Resignation letter"
+        "ariza": "Resignation letter",
+        "tushuntirish": "Explanatory note"
       }
     }
   }

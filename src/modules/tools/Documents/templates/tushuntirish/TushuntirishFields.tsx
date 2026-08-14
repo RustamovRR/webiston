@@ -9,46 +9,42 @@ import {
   SelectTrigger,
   SelectValue
 } from "@webiston/ui/primitives/select"
+import { Textarea } from "@webiston/ui/primitives/textarea"
 import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "../../components/Field"
 import type { DocumentFieldsProps } from "../../types"
 import { calendarLocale, documentDate } from "../../utils/locale"
-import { earliestRelease } from "./compose"
-import {
-  type ArizaData,
-  NOTICE_CATEGORIES,
-  type NoticeCategory
-} from "./constants"
+import { STANCES, type Stance, type TushuntirishData } from "./constants"
 
 /**
- * The ariza's fields, in the order the finished document reads them: who it
- * goes to, who it is from, then the terms of leaving.
+ * The note's fields, in the order the finished document reads them: who it
+ * goes to, who it is from, then what happened and what the writer says about
+ * it.
  *
- * The one field that is not a plain input is the release date. It is OPTIONAL,
- * and left empty the document uses the earliest lawful day — so the hint under
- * it shows that day, computed from the notice period the chosen category owes
- * under MK 160. That hint is the tool; everything else is a form.
+ * The field that is not a plain input is the STANCE — the closing position.
+ * It sits last because it is the conclusion, and it is a select rather than
+ * free text because the three sentences are the ones that hold up: people
+ * copy a template that admits everything without noticing they had a choice.
  */
-export function ArizaFields({
+export function TushuntirishFields({
   data,
   errors,
   update
-}: DocumentFieldsProps<ArizaData>) {
-  const t = useTranslations("ArizaPage.form")
+}: DocumentFieldsProps<TushuntirishData>) {
+  const t = useTranslations("TushuntirishPage.form")
   const tShared = useTranslations("DocumentsShared.form")
   const locale = useLocale()
-  const tErrors = useTranslations("ArizaPage.errors")
+  const tErrors = useTranslations("TushuntirishPage.errors")
   const id = useId()
 
   const messageFor = (key?: string) => (key ? tErrors(key) : undefined)
 
-  const setField = <K extends keyof ArizaData>(key: K, value: ArizaData[K]) =>
-    update((current) => ({ ...current, [key]: value }))
-
-  const earliest = earliestRelease(data.applicationDate, data.category)
-  const earliestLabel = earliest ? documentDate(earliest) : null
+  const setField = <K extends keyof TushuntirishData>(
+    key: K,
+    value: TushuntirishData[K]
+  ) => update((current) => ({ ...current, [key]: value }))
 
   return (
     <div className="flex flex-col gap-5">
@@ -128,82 +124,87 @@ export function ArizaFields({
         </Field>
       </FieldSet>
 
-      <FieldSet legend={t("terms.legend")}>
-        <Field
-          id={`${id}-category`}
-          label={t("category")}
-          hint={t("categoryHint")}
-        >
-          {/* The notice period is not one number. MK 160 gives five, by the
-              kind of employee, and picking the wrong one is how an ariza comes
-              back for rewriting. */}
-          <Select
-            value={data.category}
-            onValueChange={(value) =>
-              setField("category", value as NoticeCategory)
-            }
-          >
-            <SelectTrigger id={`${id}-category`} className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {NOTICE_CATEGORIES.map((entry) => (
-                <SelectItem key={entry.id} value={entry.id}>
-                  {t(`categories.${entry.id}`)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-
+      <FieldSet legend={t("incident.legend")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field id={`${id}-application`} label={t("applicationDate")}>
+          <Field id={`${id}-incident-date`} label={t("incidentDate")}>
             <DatePicker
-              id={`${id}-application`}
-              value={data.applicationDate}
-              onChange={(value) => setField("applicationDate", value)}
+              id={`${id}-incident-date`}
+              value={data.incidentDate}
+              onChange={(value) => setField("incidentDate", value)}
               placeholder={tShared("datePlaceholder")}
               format={documentDate}
               localeCode={calendarLocale(locale)}
             />
           </Field>
           <Field
-            id={`${id}-release`}
-            label={t("releaseDate")}
-            error={messageFor(errors.releaseDate)}
-            hint={
-              earliestLabel
-                ? t("releaseHint", { date: earliestLabel })
-                : t("releaseHintEmpty")
-            }
+            id={`${id}-document-date`}
+            label={t("documentDate")}
+            error={messageFor(errors.documentDate)}
+            hint={t("documentDateHint")}
           >
             <DatePicker
-              id={`${id}-release`}
-              value={data.releaseDate}
-              onChange={(value) => setField("releaseDate", value)}
+              id={`${id}-document-date`}
+              value={data.documentDate}
+              onChange={(value) => setField("documentDate", value)}
               placeholder={tShared("datePlaceholder")}
               format={documentDate}
               localeCode={calendarLocale(locale)}
-              min={data.applicationDate || undefined}
-              aria-invalid={Boolean(errors.releaseDate)}
+              min={data.incidentDate || undefined}
+              aria-invalid={Boolean(errors.documentDate)}
             />
           </Field>
         </div>
 
         <Field
-          id={`${id}-reason`}
-          label={t("reason")}
-          hint={t("reasonHint")}
-          error={messageFor(errors.reason)}
+          id={`${id}-subject`}
+          label={t("subject")}
+          hint={t("subjectHint")}
+          error={messageFor(errors.subject)}
         >
           <Input
-            id={`${id}-reason`}
-            value={data.reason}
-            onChange={(event) => setField("reason", event.target.value)}
-            placeholder={t("reasonPlaceholder")}
-            aria-invalid={Boolean(errors.reason)}
+            id={`${id}-subject`}
+            value={data.subject}
+            onChange={(event) => setField("subject", event.target.value)}
+            placeholder={t("subjectPlaceholder")}
+            aria-invalid={Boolean(errors.subject)}
             autoComplete="off"
           />
+        </Field>
+
+        <Field
+          id={`${id}-explanation`}
+          label={t("explanation")}
+          hint={t("explanationHint")}
+          error={messageFor(errors.explanation)}
+        >
+          {/* A textarea, not an input: this is the field the document is FOR,
+              and a new line here becomes a new paragraph on the paper. */}
+          <Textarea
+            id={`${id}-explanation`}
+            value={data.explanation}
+            onChange={(event) => setField("explanation", event.target.value)}
+            placeholder={t("explanationPlaceholder")}
+            aria-invalid={Boolean(errors.explanation)}
+            rows={6}
+          />
+        </Field>
+
+        <Field id={`${id}-stance`} label={t("stance")} hint={t("stanceHint")}>
+          <Select
+            value={data.stance}
+            onValueChange={(value) => setField("stance", value as Stance)}
+          >
+            <SelectTrigger id={`${id}-stance`} className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STANCES.map((entry) => (
+                <SelectItem key={entry.id} value={entry.id}>
+                  {t(`stances.${entry.id}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
       </FieldSet>
     </div>

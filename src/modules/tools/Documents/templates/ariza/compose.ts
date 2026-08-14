@@ -1,19 +1,15 @@
 import { BLANK, BLANK_SHORT } from "../../constants"
-import type {
-  DocumentBlock,
-  DocumentErrors,
-  DocumentSegment
-} from "../../types"
+import type { DocumentBlock, DocumentErrors } from "../../types"
 import {
   addCalendarDays,
   addCalendarMonths,
-  formatUzbekDate,
   initialsOf,
   isDateOrderValid
 } from "../../utils/dates"
 import {
   blank,
   block,
+  dateField,
   field,
   plainText,
   toCyrillicBlocks,
@@ -55,11 +51,6 @@ export function effectiveRelease(data: ArizaData): string {
   return (
     data.releaseDate || earliestRelease(data.applicationDate, data.category)
   )
-}
-
-function dateField(iso: string): DocumentSegment {
-  const formatted = formatUzbekDate(iso)
-  return formatted ? val(formatted) : blank(BLANK_SHORT)
 }
 
 /**
@@ -121,7 +112,12 @@ export function composeAriza(data: ArizaData): DocumentBlock[] {
     )
   ]
 
-  if (data.reason.trim()) {
+  // Only a reason with words in it earns a line. An unvalidated `val()` here
+  // put "12341234" on a paper someone signs — the exact defect validation was
+  // added to this family for, missed on the one field that is optional. Not a
+  // writing line either: "Sabab: ______." is a sentence that says nothing, and
+  // the clause is omitted from a blank form on purpose.
+  if (data.reason.trim() && isValidAddress(data.reason)) {
     blocks.push(
       block([tpl("Sabab: "), val(data.reason.trim()), tpl(".")], {
         indent: true
@@ -165,6 +161,11 @@ export function validateAriza(data: ArizaData): DocumentErrors {
   }
   if (data.position.trim() && !isValidName(data.position)) {
     found.position = "name"
+  }
+  // Free prose, so the check is only the digits-ONLY guard — a reason can
+  // legitimately contain numbers ("2-kursga o'qishga kirganim sababli").
+  if (data.reason.trim() && !isValidAddress(data.reason)) {
+    found.reason = "text"
   }
 
   if (data.releaseDate && data.applicationDate) {

@@ -1,0 +1,82 @@
+{
+  "TushuntirishPage": {
+    "ToolHeader": {
+      "title": "Tushuntirish Xati",
+      "description": "Ish joyiga beriladigan tushuntirish xatini to'ldiring — yakuniy jumlani o'zingiz tanlaysiz, hujjat lotin va kirill yozuvida."
+    },
+    "form": {
+      "employer": {
+        "legend": "Xat kimga beriladi"
+      },
+      "employee": {
+        "legend": "Xat beruvchi"
+      },
+      "incident": {
+        "legend": "Holat va izoh"
+      },
+      "organisation": "Tashkilot nomi",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Rahbar lavozimi",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Rahbar F.I.Sh.",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "F.I.Sh. (to'liq)",
+      "position": "Lavozimingiz",
+      "positionPlaceholder": "dasturchi",
+      "incidentDate": "Holat sanasi",
+      "documentDate": "Xat sanasi",
+      "documentDateHint": "Xat holatdan keyin yoziladi — sana undan oldin bo'la olmaydi.",
+      "subject": "Nima yuz berdi",
+      "subjectHint": "Jumla «... yuzasidan quyidagilarni ma'lum qilaman» deb davom etadi, shunga moslab yozing.",
+      "subjectPlaceholder": "ish kunining boshlanishiga 40 daqiqa kechikib kelganim",
+      "explanation": "Izoh — nima uchun shunday bo'ldi",
+      "explanationHint": "Enter bosilgan joy hujjatda yangi abzas bo'ladi. Faktni yozing: sana, vaqt, kim bilan bog'langansiz.",
+      "explanationPlaceholder": "O'sha kuni ertalab yo'lda yo'l-transport hodisasi yuz berdi va jamoat transporti to'xtab qoldi...",
+      "stance": "Xat qanday tugaydi",
+      "stanceHint": "Bu — xatning huquqiy jihatdan eng muhim qismi. Tan olingan ayb keyinchalik dalil bo'lib xizmat qiladi.",
+      "stances": {
+        "qisman": "Holatni tan olaman, lekin uzrli sabab bo'lgan",
+        "tan": "Aybimni to'liq tan olaman",
+        "rad": "Intizomni buzganim yo'q deb hisoblayman"
+      }
+    },
+    "preview": {
+      "note": "Imzo har doim qo'lda qo'yiladi. Xatni ikki nusxada tayyorlab, bir nusxasiga kotibiyatning qabul qilgani haqidagi belgisini oldirib qo'ying. Yozganingizni yuborishdan oldin qayta o'qing: tan olingan ayb keyinchalik sizga qarshi dalil bo'ladi. Bo'sh maydonlar chiziq bo'lib chiqadi."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "law": {
+          "question": "Tushuntirish xati qaysi modda asosida so'raladi?",
+          "answer": "O'zbekiston Respublikasi Mehnat kodeksining 313-moddasi — intizomiy jazo choralarini qo'llash tartibi. Unga ko'ra ish beruvchi intizomiy jazo qo'llashdan oldin xodimdan yozma tushuntirish talab qilishi shart. Ya'ni bu xat sizdan bejiz so'ralmayapti: usiz qo'llangan jazo tartib buzilishi bilan qo'llangan hisoblanadi (manba: lex.uz, Mehnat kodeksi 313-modda; toshkent-vil.adliya.uz va yuristpro.uz tushuntirishlari)."
+        },
+        "deadline": {
+          "question": "Necha kun ichida yozib berishim kerak?",
+          "answer": "Mehnat kodeksi tushuntirish xati uchun aniq muddat belgilamagan — «uch kun» degani ko'p uchraydigan amaliyot, qonun talabi emas. Ish beruvchi oqilona muddat beradi va ko'pincha uni yozma talabnomada ko'rsatadi. Agar muddat berilgan bo'lsa, o'shanga rioya qiling; berilmagan bo'lsa, kechiktirmang — kechikish ham alohida masala qilib ko'rsatilishi mumkin."
+        },
+        "refuse": {
+          "question": "Umuman yozmasam bo'ladimi?",
+          "answer": "Bo'ladi, lekin bu jazoni to'xtatmaydi. Xodim tushuntirish berishdan bosh tortsa, ish beruvchi buni guvohlar ishtirokida dalolatnoma bilan rasmiylashtiradi va jazo o'sha dalolatnoma asosida qo'llanaveradi. Amalda yozmaslik yutqazishning eng oson yo'li: sizning versiyangiz hech qayerda qolmaydi, ishda faqat ish beruvchining bayoni bo'ladi."
+        },
+        "deny": {
+          "question": "Aybimni tan olmasam nima bo'ladi?",
+          "answer": "Bu sizning haqqingiz. Agar xatda intizomni buzmaganingizni yozsangiz, ish beruvchi jazoni faqat sizning tan olishingizga tayanib qo'llay olmaydi — qo'shimcha dalil to'plashi, tekshiruv dalolatnomasi yoki xizmat xati bilan rasmiylashtirishi kerak bo'ladi. Nizo sudga yetsa, aynan shu hujjatlar ko'riladi. Shu sababli bu vositada xatning yakuniy jumlasi tanlanadigan qilib qo'yilgan: internetdagi tayyor namunalarning deyarli barchasi aybni tan oladigan bitta jumla bilan tugaydi."
+        },
+        "content": {
+          "question": "Xatda nima yozilishi kerak?",
+          "answer": "To'rt narsa: kimga yozilayotgani (rahbar va tashkilot), nima yuz bergani (aniq sana va vaqt bilan), nima sababdan yuz bergani, va sizning xulosangiz. Faktni yozing — «kechikdim» emas, «soat 9:40 da yetib keldim, chunki...». Sababni tasdiqlovchi hujjat bo'lsa (tibbiy ma'lumotnoma, chipta, xabar), xatga ilova qiling va matnda shuni eslatib o'ting. Baholash va his-tuyg'u yozmang: xat qisqa va quruq bo'lgani yaxshi."
+        },
+        "privacy": {
+          "question": "Kiritgan ma'lumotlarim qayerga boradi?",
+          "answer": "Hech qayerga. Butun hujjat brauzeringizning o'zida tuziladi: serverga hech narsa yuborilmaydi, hech narsa saqlanmaydi. Sahifani yopsangiz, kiritgan ma'lumotlaringiz ham yo'qoladi."
+        }
+      }
+    },
+    "errors": {
+      "name": "Bu maydonda faqat harflar bo'lishi kerak",
+      "organisation": "Tashkilot nomida kamida bitta so'z bo'lishi kerak",
+      "text": "Bu maydonda kamida bitta so'z bo'lishi kerak",
+      "dateOrder": "Xat sanasi holat sanasidan oldin bo'la olmaydi"
+    }
+  }
+}

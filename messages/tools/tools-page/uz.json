@@ -33,7 +33,7 @@
     },
     "documents": {
       "title": "Hujjat Namunalari",
-      "description": "Tilxat va ishdan bo'shash arizasi — to'ldiring, sana va summa o'zi hisoblanadi"
+      "description": "Tilxat, ariza va tushuntirish xati — to'ldiring, sana va summa o'zi hisoblanadi"
     },
     "tilxat": {
       "title": "Tilxat Yozish",
@@ -42,6 +42,10 @@
     "ishdanBoshashArizasi": {
       "title": "Ishdan Bo'shash Arizasi",
       "description": "Arizani to'ldiring — oxirgi ish kuni qonun bo'yicha o'zi hisoblanadi"
+    },
+    "tushuntirishXati": {
+      "title": "Tushuntirish Xati",
+      "description": "Ish joyiga tushuntirish xati — yakuniy jumlani o'zingiz tanlaysiz"
     },
     "jsonFormatter": {
       "title": "JSON Formatlash",

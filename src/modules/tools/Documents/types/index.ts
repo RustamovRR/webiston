@@ -47,6 +47,12 @@ export interface DocumentBlock {
    * How an Uzbek official document separates paragraphs: 1.25 cm on the first
    * line, not a blank line between them. Only running prose takes it; a date
    * line, a signature line or an addressee block does not.
+   *
+   * **An indented block must never contain "\n".** The sheet applies this as
+   * CSS `text-indent`, which reaches the first visual line only, while the
+   * .docx exporter splits a block on "\n" and indents every resulting Word
+   * paragraph — so a multi-line indented block prints one way on screen and
+   * another way in Word. Emit one block per line instead.
    */
   indent?: boolean
   /**

@@ -252,6 +252,7 @@
 <url><loc>https://webiston.uz/en/tools/qr-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/screen-resolution</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/tilxat</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/en/tools/tushuntirish-xati</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/url-encoder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/en/tools/uuid-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/icon.svg</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -277,6 +278,7 @@
 <url><loc>https://webiston.uz/ru/tools/qr-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/screen-resolution</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/tilxat</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/ru/tools/tushuntirish-xati</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/url-encoder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/ru/tools/uuid-generator</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
@@ -302,4 +304,5 @@
 <url><loc>https://webiston.uz/tools/camera-recorder</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/microphone-test</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://webiston.uz/tools/ishdan-boshash-arizasi</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://webiston.uz/tools/tushuntirish-xati</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

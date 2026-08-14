@@ -75,6 +75,7 @@
     "errors": {
       "name": "Bu maydonda faqat harflar bo'lishi kerak",
       "organisation": "Tashkilot nomida kamida bitta so'z bo'lishi kerak",
+      "text": "Sabab matnida kamida bitta so'z bo'lishi kerak",
       "dateOrder": "Oxirgi ish kuni ariza sanasidan oldin bo'la olmaydi",
       "earlyRelease": "Bu sana ogohlantirish muddatidan oldin — faqat kelishuv yoki MK 160-modda 8-qismidagi holatda mumkin"
     }

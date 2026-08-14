@@ -171,6 +171,28 @@ describe("buildAriza", () => {
     expect(withReason).toContain("Sabab: o'qishga kirganim sababli.")
   })
 
+  it("keeps a reason with no words in it off the paper", () => {
+    // Arrange / Act — the optional field was the one that skipped validation
+    // entirely, so "12341234" printed on a document someone signs.
+    const { lotin } = buildAriza({ ...FULL, reason: "12341234" })
+
+    // Assert — the clause is omitted rather than printed as an empty
+    // "Sabab: ______.", which is a sentence that says nothing.
+    expect(lotin).not.toContain("12341234")
+    expect(lotin).not.toContain("Sabab:")
+  })
+
+  it("keeps a reason that legitimately contains digits", () => {
+    // Arrange / Act — the guard is digits-ONLY, not digit-free.
+    const { lotin } = buildAriza({
+      ...FULL,
+      reason: "2-kursga o'qishga kirganim sababli"
+    })
+
+    // Assert
+    expect(lotin).toContain("Sabab: 2-kursga o'qishga kirganim sababli.")
+  })
+
   it("renders a fillable blank form rather than refusing an empty field", () => {
     // Arrange — nothing filled: the state every visitor starts in, and the
     // printable blank form some of them actually want.
@@ -223,6 +245,17 @@ describe("validateAriza", () => {
 
     // Assert
     expect(errors.releaseDate).toBe("dateOrder")
+  })
+
+  it("tells the visitor WHY a reason was dropped instead of dropping it silently", () => {
+    // Arrange / Act — a field that quietly vanishes from the document is worse
+    // than one that prints garbage.
+    expect(validateAriza({ ...FULL, reason: "12341234" }).reason).toBe("text")
+
+    // Assert — and prose with digits in it is not an error.
+    expect(
+      validateAriza({ ...FULL, reason: "2-kursga o'qishga kirganim" }).reason
+    ).toBeUndefined()
   })
 
   it("accepts the earliest lawful day and anything after it", () => {

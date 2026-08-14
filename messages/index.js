@@ -67,6 +67,9 @@ import toolsPageEn from "./tools/tools-page/en.json"
 import toolsPageRu from "./tools/tools-page/ru.json"
 // Tools
 import toolsPageUz from "./tools/tools-page/uz.json"
+import tushuntirishEn from "./tools/tushuntirish/en.json"
+import tushuntirishRu from "./tools/tushuntirish/ru.json"
+import tushuntirishUz from "./tools/tushuntirish/uz.json"
 import urlEncoderEn from "./tools/url-encoder/en.json"
 import urlEncoderRu from "./tools/url-encoder/ru.json"
 import urlEncoderUz from "./tools/url-encoder/uz.json"
@@ -94,6 +97,7 @@ export const uz = {
   ...numberToWordsUz,
   ...tilxatUz,
   ...arizaUz,
+  ...tushuntirishUz,
   ...documentsUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
@@ -121,6 +125,7 @@ export const en = {
   ...numberToWordsEn,
   ...tilxatEn,
   ...arizaEn,
+  ...tushuntirishEn,
   ...documentsEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
@@ -148,6 +153,7 @@ export const ru = {
   ...numberToWordsRu,
   ...tilxatRu,
   ...arizaRu,
+  ...tushuntirishRu,
   ...documentsRu,
   ...ogMetaGeneratorRu,
   ...loremIpsumRu,

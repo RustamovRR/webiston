@@ -19,7 +19,8 @@
       "label": "Hujjat turini tanlash",
       "items": {
         "tilxat": "Tilxat",
-        "ariza": "Ishdan bo'shash arizasi"
+        "ariza": "Ishdan bo'shash arizasi",
+        "tushuntirish": "Tushuntirish xati"
       }
     }
   }

@@ -1,7 +1,8 @@
 import { toCyrillic } from "@webiston/transliteration"
 
-import { BLANK } from "../constants"
+import { BLANK, BLANK_SHORT } from "../constants"
 import type { DocumentBlock, DocumentSegment } from "../types"
+import { formatUzbekDate } from "./dates"
 
 /**
  * The vocabulary every composer writes in.
@@ -39,6 +40,19 @@ export function field(
 ): DocumentSegment {
   const trimmed = value.trim()
   return trimmed && valid(trimmed) ? val(trimmed) : blank(line)
+}
+
+/**
+ * A date the way a document writes it, or the short line that stands in.
+ *
+ * Lived as a private copy in each composer until the third one wanted it —
+ * which is when a shared helper stops being speculation. Deliberately its own
+ * function rather than `field(iso, isIsoDate)`: the value that reaches the
+ * paper is not the value the form holds, and that reformatting is the point.
+ */
+export function dateField(iso: string): DocumentSegment {
+  const formatted = formatUzbekDate(iso)
+  return formatted ? val(formatted) : blank(BLANK_SHORT)
 }
 
 /** One paragraph. Options default to the sheet's justified, unindented body. */

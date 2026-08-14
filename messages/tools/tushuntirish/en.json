@@ -1,0 +1,82 @@
+{
+  "TushuntirishPage": {
+    "ToolHeader": {
+      "title": "Explanatory Note (Tushuntirish Xati)",
+      "description": "Fill in the written explanation an Uzbek employer asks for — you choose how it closes. Latin and Cyrillic."
+    },
+    "form": {
+      "employer": {
+        "legend": "Who the note goes to"
+      },
+      "employee": {
+        "legend": "Who it is from"
+      },
+      "incident": {
+        "legend": "What happened"
+      },
+      "organisation": "Organisation",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Manager's role",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Manager's full name",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "Your full name",
+      "position": "Your position",
+      "positionPlaceholder": "dasturchi",
+      "incidentDate": "Date of the incident",
+      "documentDate": "Date of the note",
+      "documentDateHint": "The note is written after the incident — it cannot be dated earlier.",
+      "subject": "What happened",
+      "subjectHint": "The sentence continues «... yuzasidan quyidagilarni ma'lum qilaman», so word it to fit.",
+      "subjectPlaceholder": "ish kunining boshlanishiga 40 daqiqa kechikib kelganim",
+      "explanation": "Explanation — why it happened",
+      "explanationHint": "Each new line becomes a new paragraph. Stick to facts: date, time, who you contacted.",
+      "explanationPlaceholder": "O'sha kuni ertalab yo'lda yo'l-transport hodisasi yuz berdi va jamoat transporti to'xtab qoldi...",
+      "stance": "How the note ends",
+      "stanceHint": "The part that carries legal weight. An admission becomes evidence against you later.",
+      "stances": {
+        "qisman": "I admit it happened, but there was good cause",
+        "tan": "I fully admit fault",
+        "rad": "I do not consider that I breached discipline"
+      }
+    },
+    "preview": {
+      "note": "The signature is always added by hand. Prepare two copies and have the office mark one as received. Re-read what you wrote before handing it in: an admission becomes evidence against you. Empty fields print as writing lines."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "law": {
+          "question": "Which article requires an explanatory note?",
+          "answer": "Article 313 of the Labour Code of Uzbekistan — the procedure for applying disciplinary measures. It obliges the employer to demand a written explanation from the employee BEFORE applying a sanction. So the note is not being asked for arbitrarily: a sanction imposed without it is imposed in breach of procedure (sources: lex.uz, Labour Code art. 313; explanations by toshkent-vil.adliya.uz and yuristpro.uz)."
+        },
+        "deadline": {
+          "question": "How long do I have to write it?",
+          "answer": "The Labour Code sets no fixed deadline for the explanatory note — the widely quoted «three days» is common practice, not a statutory requirement. The employer sets a reasonable period, usually stating it in the written request. If you were given a period, keep to it; if you were not, do not delay — the delay itself can be treated as a separate matter."
+        },
+        "refuse": {
+          "question": "Can I simply refuse to write one?",
+          "answer": "You can, but it will not stop the sanction. If an employee refuses to give an explanation, the employer records the refusal in a statement drawn up with witnesses, and the sanction proceeds on the basis of that statement. In practice refusing is the easiest way to lose: your version of events exists nowhere, and the file contains only the employer's account."
+        },
+        "deny": {
+          "question": "What if I do not admit fault?",
+          "answer": "That is your right. If the note states that you did not breach discipline, the employer cannot rest the sanction on your own admission — it has to gather further evidence and formalise it in an inspection statement or a memorandum. If the dispute reaches a court, those are the documents that get examined. That is why the closing sentence is a choice in this tool: almost every ready-made template online ends with one that admits fault."
+        },
+        "content": {
+          "question": "What has to be in the note?",
+          "answer": "Four things: who it is addressed to (manager and organisation), what happened (with an exact date and time), why it happened, and your conclusion. Write facts — not «I was late» but «I arrived at 9:40 because...». If you have supporting documents (a medical certificate, a ticket, a message), attach them and mention them in the text. Leave out judgement and emotion: a short, dry note is the good kind."
+        },
+        "privacy": {
+          "question": "Where does the data I enter go?",
+          "answer": "Nowhere. The whole document is built inside your browser: nothing is sent to a server and nothing is stored. Close the page and what you typed is gone."
+        }
+      }
+    },
+    "errors": {
+      "name": "This field may contain letters only",
+      "organisation": "The organisation name needs at least one word",
+      "text": "This field needs at least one word",
+      "dateOrder": "The note cannot be dated before the incident"
+    }
+  }
+}

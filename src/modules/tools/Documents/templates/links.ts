@@ -13,7 +13,8 @@
  */
 export const TEMPLATE_LINKS = [
   { slug: "tilxat", href: "/tools/tilxat" },
-  { slug: "ariza", href: "/tools/ishdan-boshash-arizasi" }
+  { slug: "ariza", href: "/tools/ishdan-boshash-arizasi" },
+  { slug: "tushuntirish", href: "/tools/tushuntirish-xati" }
 ] as const
 
 export type TemplateSlug = (typeof TEMPLATE_LINKS)[number]["slug"]
