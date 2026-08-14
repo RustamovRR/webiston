@@ -13,7 +13,7 @@ import { Textarea } from "@webiston/ui/primitives/textarea"
 import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
-import { Field, FieldSet } from "../../components/Field"
+import { Field, FieldSet } from "@/components/shared/Field"
 import type { DocumentFieldsProps } from "../../types"
 import { calendarLocale, documentDate } from "../../utils/locale"
 import { STANCES, type Stance, type TushuntirishData } from "./constants"

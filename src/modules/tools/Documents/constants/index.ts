@@ -4,22 +4,6 @@
  * its legal sources, its sample — lives in `../templates/<slug>/constants.ts`.
  */
 
-/** Uzbek month names, indexed by month number − 1. For "2026-yil 12-avgust". */
-export const UZBEK_MONTHS = [
-  "yanvar",
-  "fevral",
-  "mart",
-  "aprel",
-  "may",
-  "iyun",
-  "iyul",
-  "avgust",
-  "sentabr",
-  "oktabr",
-  "noyabr",
-  "dekabr"
-] as const
-
 /**
  * What stands in for a field the visitor has not filled yet.
  *

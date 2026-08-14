@@ -12,7 +12,7 @@ import {
 import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
-import { Field, FieldSet } from "../../components/Field"
+import { Field, FieldSet } from "@/components/shared/Field"
 import type { DocumentFieldsProps } from "../../types"
 import { calendarLocale, documentDate } from "../../utils/locale"
 import { earliestRelease } from "./compose"

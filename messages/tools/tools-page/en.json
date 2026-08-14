@@ -47,6 +47,10 @@
       "title": "Explanatory Note",
       "description": "A workplace explanatory note — and you choose how it ends"
     },
+    "rezyume": {
+      "title": "Resume Builder",
+      "description": "Build a CV for the Uzbek job market and print it — no account needed"
+    },
     "jsonFormatter": {
       "title": "JSON Formatter",
       "description": "A tool to format and validate JSON data.",

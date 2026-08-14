@@ -1,4 +1,4 @@
-import { UZBEK_MONTHS } from "../constants"
+import { UZBEK_MONTHS } from "@/constants/uzbek"
 
 /** "2026-08-12" → "2026-yil 12-avgust"; anything else → null. */
 export function formatUzbekDate(iso: string): string | null {

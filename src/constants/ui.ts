@@ -7,6 +7,7 @@ import {
   FileType,
   Globe,
   Hash,
+  IdCard,
   Key,
   Link,
   Lock,
@@ -76,6 +77,16 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "documents",
     href: "/tools/tilxat",
     icon: FileSignature,
+    category: "generators",
+    audience: "general"
+  },
+  {
+    // Its own card, NOT part of the documents switcher: a tilxat and an ariza
+    // are one errand, a CV is a different one — and "rezyume" is a head term
+    // that deserves its own entry on /tools.
+    tKey: "rezyume",
+    href: "/tools/rezyume",
+    icon: IdCard,
     category: "generators",
     audience: "general"
   },

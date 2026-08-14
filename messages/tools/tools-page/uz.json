@@ -47,6 +47,10 @@
       "title": "Tushuntirish Xati",
       "description": "Ish joyiga tushuntirish xati — yakuniy jumlani o'zingiz tanlaysiz"
     },
+    "rezyume": {
+      "title": "Rezyume Yaratish",
+      "description": "Rezyumeni to'ldiring va chop eting — lotin va kirill, ro'yxatdan o'tishsiz"
+    },
     "jsonFormatter": {
       "title": "JSON Formatlash",
       "description": "JSON ma'lumotlarni formatlash va tasdiqlash vositasi",

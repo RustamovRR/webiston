@@ -12,9 +12,13 @@ interface FieldProps {
 }
 
 /**
- * One labelled input with its error line — the unit every document form is
- * built from, so the error never renders in a different place on a different
- * page.
+ * One labelled input with its error line — the unit every form on this site
+ * is built from, so the error never renders in a different place on a
+ * different page.
+ *
+ * Lived inside the Documents module until the resume builder became its
+ * fourth consumer; promoted here per the §14 rule rather than copied a
+ * fourth time. Byte-identical to what it replaced.
  */
 export function Field({ id, label, error, hint, children }: FieldProps) {
   return (

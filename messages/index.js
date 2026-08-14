@@ -57,6 +57,9 @@ import passwordGeneratorUz from "./tools/password-generator/uz.json"
 import qrGeneratorEn from "./tools/qr-generator/en.json"
 import qrGeneratorRu from "./tools/qr-generator/ru.json"
 import qrGeneratorUz from "./tools/qr-generator/uz.json"
+import rezyumeEn from "./tools/rezyume/en.json"
+import rezyumeRu from "./tools/rezyume/ru.json"
+import rezyumeUz from "./tools/rezyume/uz.json"
 import screenResolutionEn from "./tools/screen-resolution/en.json"
 import screenResolutionRu from "./tools/screen-resolution/ru.json"
 import screenResolutionUz from "./tools/screen-resolution/uz.json"
@@ -98,6 +101,7 @@ export const uz = {
   ...tilxatUz,
   ...arizaUz,
   ...tushuntirishUz,
+  ...rezyumeUz,
   ...documentsUz,
   ...ogMetaGeneratorUz,
   ...loremIpsumUz,
@@ -126,6 +130,7 @@ export const en = {
   ...tilxatEn,
   ...arizaEn,
   ...tushuntirishEn,
+  ...rezyumeEn,
   ...documentsEn,
   ...ogMetaGeneratorEn,
   ...loremIpsumEn,
@@ -154,6 +159,7 @@ export const ru = {
   ...tilxatRu,
   ...arizaRu,
   ...tushuntirishRu,
+  ...rezyumeRu,
   ...documentsRu,
   ...ogMetaGeneratorRu,
   ...loremIpsumRu,

@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-08-13",
-  "total": 451,
+  "measuredAt": "2026-08-14",
+  "total": 458,
   "files": {
     "packages/ui/src/constants/ui-patterns.ts": 46,
     "packages/ui/src/primitives/aurora-text.tsx": 4,
@@ -45,6 +45,7 @@
     "src/modules/tools/MicrophoneTest/hooks/useMicrophoneTest.ts": 4,
     "src/modules/tools/PasswordGenerator/hooks/usePasswordGenerator.ts": 1,
     "src/modules/tools/QrGenerator/constants/index.ts": 3,
-    "src/modules/tools/QrGenerator/utils/presets.ts": 8
+    "src/modules/tools/QrGenerator/utils/presets.ts": 8,
+    "src/modules/tools/ResumeBuilder/constants/index.ts": 7
   }
 }
