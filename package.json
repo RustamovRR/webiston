@@ -35,6 +35,7 @@
     "contrast": "node scripts/contrast-check.mjs",
     "i18n": "node scripts/i18n-parity.mjs",
     "indexnow": "node scripts/indexnow.mjs",
+    "metrica": "node --env-file=.env scripts/metrica.mjs",
     "ext:build:all": "pnpm --filter latin-cyrillic-extension build:all",
     "ext:zip:all": "pnpm --filter latin-cyrillic-extension zip:all"
   },
