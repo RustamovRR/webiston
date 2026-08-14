@@ -149,6 +149,32 @@ describe("tushuntirish xati", () => {
     expect(sheet().textContent).toContain("дастурчи")
   })
 
+  it("prints under the document's own name, then puts the page title back", () => {
+    // Arrange — the SEO title is right for a search result and wrong on top of
+    // a document someone signs; it is also what "Save as PDF" offers as the
+    // filename.
+    const pageTitle = "Tushuntirish Xati Namunasi — To'ldiring | Webiston"
+    document.title = pageTitle
+    window.print = vi.fn()
+    renderTool()
+
+    // Act
+    fireEvent.click(screen.getByRole("button", { name: /Chop etish/i }))
+
+    // Assert — the same stem the .docx uses, so both files come out named
+    // alike, and the print stylesheet is armed.
+    expect(window.print).toHaveBeenCalled()
+    expect(document.title).toBe("tushuntirish-xati")
+    expect(document.body).toHaveClass("document-print")
+
+    // Act — the dialog closes. Restored on `afterprint`, never earlier.
+    window.dispatchEvent(new Event("afterprint"))
+
+    // Assert
+    expect(document.title).toBe(pageTitle)
+    expect(document.body).not.toHaveClass("document-print")
+  })
+
   it("fills a finished, error-free document from the sample button", () => {
     // Arrange
     renderTool()

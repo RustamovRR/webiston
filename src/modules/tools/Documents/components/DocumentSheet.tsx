@@ -43,19 +43,76 @@ export function DocumentSheet({ blocks }: DocumentSheetProps) {
     <>
       <style>{`
         @media print {
-          body.document-print * { visibility: hidden; }
-          body.document-print #document-sheet,
-          body.document-print #document-sheet * { visibility: visible; }
+          /*
+           * Two mutually exclusive paths, because the good one needs \`:has()\`
+           * and a document tool may never print a BLANK page: without the
+           * guard, a browser that drops the invalid \`:has()\` rule would still
+           * apply the \`display: none\` hammer and print nothing at all.
+           */
+          @supports selector(:has(*)) {
+            /* Hide the page by REMOVING its boxes, then bring back only the
+               sheet and the chain of ancestors that contains it.
+               \`display\`, not \`visibility\`: a hidden box still occupies space,
+               and that space was generating page after page of blankness.
+               \`:has()\` is what reaches the ancestor chain without the sheet
+               having to be a direct child of <body>. */
+            body.document-print * { display: none !important; }
+            body.document-print :has(#document-sheet) {
+              display: block !important;
+              /* The preview card scrolls inside itself on screen. Left alone,
+                 that clips the printout to one card's worth of document. */
+              max-height: none !important;
+              overflow: visible !important;
+              position: static !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              width: auto !important;
+              max-width: none !important;
+              border: 0 !important;
+              background: none !important;
+            }
+            body.document-print #document-sheet { display: block !important; }
+            body.document-print #document-sheet * { display: revert !important; }
+            body.document-print #document-sheet {
+              /* NORMAL FLOW — never \`position: fixed\`. A fixed box is painted
+                 on EVERY printed page and cannot paginate: measured with
+                 Chrome --print-to-pdf, a one-page document came out as 6
+                 identical pages, and a long one was split and repeated
+                 instead of continuing onto page 2. In flow: 1 page, and 4
+                 correctly paginated ones for the long document. */
+              margin: 0 !important;
+              width: auto !important;
+              max-width: none !important;
+              /* @page owns the margin; screen padding would double it — and
+                 @page's margin is what gives EVERY page its edge, which
+                 element padding could only give the first and the last. */
+              padding: 0 !important;
+              min-height: 0 !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+            }
+          }
+
+          @supports not selector(:has(*)) {
+            /* The old path, kept only as a floor: the sheet is painted over a
+               hidden page, so it repeats on every sheet of a multi-page
+               document. Wrong, but readable — and never blank. */
+            body.document-print * { visibility: hidden; }
+            body.document-print #document-sheet,
+            body.document-print #document-sheet * { visibility: visible; }
+            body.document-print #document-sheet {
+              position: fixed;
+              inset: 0;
+              width: 100%;
+              max-width: none;
+              padding: 0;
+              min-height: 0;
+              box-shadow: none;
+              border-radius: 0;
+            }
+          }
+
           body.document-print #document-sheet {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            max-width: none;
-            /* @page owns the margin; the screen padding would double it. */
-            padding: 0;
-            min-height: 0;
-            box-shadow: none;
-            border-radius: 0;
             font-size: 12pt;
             line-height: 1.8;
           }
@@ -63,7 +120,14 @@ export function DocumentSheet({ blocks }: DocumentSheetProps) {
              form they just filled. On paper it is wrong: an Uzbek official
              document sets its whole body in one weight, and bolding only the
              filled-in parts announces "this came out of a generator". */
-          body.document-print #document-sheet strong { font-weight: 400; }
+          body.document-print #document-sheet strong { font-weight: 400 !important; }
+          /* 20mm on every page. The browser draws its own date/URL header
+             INTO this band, and the only CSS lever that would suppress it is
+             \`margin: 0\` — which would leave the middle pages of a multi-page
+             document with no margin at all, inside the printer's unprintable
+             area. Correct paper beats cosmetics the reader can switch off in
+             one click ("Headers and footers" in the print dialog); the .docx
+             export never had them. */
           @page { size: A4; margin: 20mm; }
         }
       `}</style>
