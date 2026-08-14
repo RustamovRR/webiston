@@ -52,6 +52,7 @@ export function HistoryFields({
             <RowShell
               key={entry.id}
               title={t("experience.row")}
+              summary={[entry.role, entry.company].filter(Boolean).join(" · ")}
               index={index}
               count={data.experience.length}
               onMove={(by) => moveRow("experience", index, by)}
@@ -161,6 +162,9 @@ export function HistoryFields({
             <RowShell
               key={entry.id}
               title={t("education.row")}
+              summary={[entry.institution, entry.field]
+                .filter(Boolean)
+                .join(" · ")}
               index={index}
               count={data.education.length}
               onMove={(by) => moveRow("education", index, by)}
@@ -247,6 +251,7 @@ export function HistoryFields({
             <RowShell
               key={entry.id}
               title={t("languages.row")}
+              summary={[entry.name, entry.level].filter(Boolean).join(" — ")}
               index={index}
               count={data.languages.length}
               onMove={(by) => moveRow("languages", index, by)}

@@ -161,6 +161,32 @@ with the research sources.
   where the new document-language control reused `form.language`, already
   taken by the languages-row field label — renamed to `docLanguage`, and the
   original restored after an over-eager cleanup dropped it.
+- [x] **P3b** Owner UX review — **done 2026-08-14.** Five reports, one of them
+  a real data-loss-shaped bug. **(1) The preview silently CUT a long summary**
+  while the printout showed two pages: `overflow-hidden`, added in P2 to clip
+  Zamonaviy's sidebar to the rounded corner, was clipping the DOCUMENT.
+  Removed — the sheet grows and the card scrolls, so what you see is what
+  prints. **(2) Page-break guides**: a hairline every 297mm behind the text,
+  hidden in print (on paper the page genuinely ends there). Every competitor
+  hides the second-page decision until the print dialog. **(3) Chevrons meant
+  the wrong thing** — the owner clicked them expecting collapse and got a row
+  swap. Reordering is now ARROWS; the chevron means only collapse. **(4) Rows
+  are collapsible**, and collapsed they still say WHICH job they are (role ·
+  company) — four open jobs was ~1,600px of scrolling. The whole caption is
+  the target, not the 16px icon. Answering the owner's question directly: no
+  modal. The live preview IS the product, and a modal would hide the thing the
+  form exists to change. **(5) Phone mask** — `maskPhone` added to the mask
+  module, which was PROMOTED to `src/lib/utils/mask.ts` (consumer outside
+  Documents). No `@react-input/mask` dependency: the module's own docblock
+  already recorded why, and the rule holds at four formats. The mask formats
+  but never INVENTS a country code — that restraint is what makes it
+  backspaceable, the classic trap; the `+998 ` prefill lives in the component,
+  where one backspace removes it. **13 new component tests + 7 mask tests**,
+  each locking a reported behaviour: collapse-not-reorder, arrows reorder the
+  SHEET, delete removes the row asked for (the stable-id bug), Cyrillic
+  converts the name but never the email, headings follow the DOCUMENT
+  language, the draft survives a remount, a long summary is not clipped.
+  **1,862 tests / 101 files**; gate all 0.
 - [ ] **P4** FAQ with the local-format research + tests
 - [ ] **P5** Review pass: design-system-reviewer + code-reviewer agents,
   measure bundle, gate, ship

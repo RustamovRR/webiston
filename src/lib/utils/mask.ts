@@ -8,10 +8,14 @@
  * only ever HOLD a legal prefix of the format.
  *
  * Written here rather than pulled in: `react-input-mask` and `cleave.js` are
- * both unmaintained, `imask` is ~10 kB gzipped, and shadcn/ui has no masked
- * input (Radix has no input primitive at all). Two fixed formats do not earn a
- * dependency — but they do earn a named, tested module, so the third document
- * form has something to import instead of a fourth hand-rolled regex.
+ * both unmaintained, `imask` is ~10 kB gzipped, `@react-input/mask` is another
+ * runtime dependency for four format rules, and shadcn/ui has no masked input
+ * (Radix has no input primitive at all). A handful of fixed formats do not
+ * earn a dependency — but they do earn a named, tested module, so the next
+ * form has something to import instead of another hand-rolled regex.
+ *
+ * Promoted out of the Documents module when the resume builder's phone field
+ * became a consumer outside it.
  *
  * All three are IDEMPOTENT — `mask(mask(x)) === mask(x)` — which is what makes
  * them safe in a controlled `onChange`: re-masking a value React already holds
@@ -55,3 +59,44 @@ export function maskAmount(input: string): string {
 
 /** Longer than any so'm figure a person writes — a paste guard, not a rule. */
 const MAX_AMOUNT_CHARS = 24
+
+/**
+ * A phone number, in the shape an Uzbek document writes it:
+ * `+998 90 123 45 67`.
+ *
+ * The mask FORMATS but never INVENTS. It does not silently prepend 998 the
+ * moment a digit appears, and that restraint is what makes deletion work: a
+ * mask that re-adds the country code cannot be backspaced past, which is the
+ * classic trap of hand-rolled phone fields. The prefill lives in the input
+ * component instead, where it belongs — a convenience the visitor can undo.
+ *
+ * A foreign number is grouped, not corrected: a CV is not the place to tell
+ * someone their own country's format is wrong.
+ */
+export function maskPhone(input: string): string {
+  const hasPlus = input.trimStart().startsWith("+")
+  const digits = input.replace(/\D/g, "")
+  if (!digits) return hasPlus ? "+" : ""
+
+  if (digits.startsWith("998")) {
+    // 9 national digits — the whole of an Uzbek mobile number.
+    const rest = digits.slice(3, 12)
+    const groups = [
+      rest.slice(0, 2),
+      rest.slice(2, 5),
+      rest.slice(5, 7),
+      rest.slice(7, 9)
+    ].filter(Boolean)
+    return ["+998", ...groups].join(" ")
+  }
+
+  const rest = digits.slice(0, 15)
+  const groups = [
+    rest.slice(0, 2),
+    rest.slice(2, 5),
+    rest.slice(5, 7),
+    rest.slice(7, 9),
+    rest.slice(9)
+  ].filter(Boolean)
+  return (hasPlus ? "+" : "") + groups.join(" ")
+}

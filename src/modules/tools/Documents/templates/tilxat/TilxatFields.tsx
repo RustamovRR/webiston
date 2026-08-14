@@ -13,9 +13,9 @@ import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "@/components/shared/Field"
+import { maskAmount, maskPassport, maskPinfl } from "@/lib/utils"
 import type { DocumentFieldsProps } from "../../types"
 import { calendarLocale, documentDate } from "../../utils/locale"
-import { maskAmount, maskPassport, maskPinfl } from "../../utils/mask"
 import { normalisePassport } from "../../utils/validate"
 import {
   PAYMENT_METHODS,

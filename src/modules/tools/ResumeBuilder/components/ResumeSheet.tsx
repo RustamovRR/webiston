@@ -3,7 +3,7 @@
 import { cn } from "@webiston/ui"
 import { useTranslations } from "next-intl"
 
-import { RESUME_PAPER } from "../constants"
+import { PAGE_GUIDE, RESUME_PAPER } from "../constants"
 import type { ResumeData } from "../types"
 import { isBlank } from "../utils/format"
 import { sheetLabels, viewOf } from "../utils/script"
@@ -65,6 +65,9 @@ export function ResumeSheet({ data }: { data: ResumeData }) {
             /* Lists lose their marker under \`display: revert\` on the <ul>;
                restore the one thing the CV actually needs back. */
             body.resume-print #resume-sheet ul { list-style: disc !important; }
+            /* The page-break guide is a PREVIEW aid. On paper the page
+               genuinely ends there, so a printed hairline would be a lie. */
+            body.resume-print #resume-sheet { background-image: none !important; }
           }
           @supports not selector(:has(*)) {
             body.resume-print * { visibility: hidden; }
@@ -91,11 +94,23 @@ export function ResumeSheet({ data }: { data: ResumeData }) {
       <div
         id="resume-sheet"
         className={cn(
-          "mx-auto w-full max-w-[210mm] overflow-hidden rounded-md shadow-md lg:min-h-[297mm]",
+          // NO `overflow-hidden`. It was added to clip Zamonaviy's sidebar to
+          // the rounded corner and it silently CUT the document instead: a
+          // long summary simply vanished below the fold while the printout
+          // showed two pages. The sheet grows with its content and the card
+          // around it scrolls — what you see is what prints.
+          "relative mx-auto w-full max-w-[210mm] rounded-md shadow-md lg:min-h-[297mm]",
           data.template === "klassik" && "p-[10mm] sm:p-[14mm] lg:p-[15mm]"
         )}
         style={{
           background: RESUME_PAPER.background,
+          // Where the printer will cut. A CV that spills onto a second page
+          // is a real decision the visitor has to make, and every competitor
+          // hides it until the print dialog. Repeating gradient: a hairline
+          // every 297mm, drawn behind the text and hidden when printing —
+          // the paper itself already ends there.
+          backgroundImage: PAGE_GUIDE,
+          backgroundSize: "100% 297mm",
           color: RESUME_PAPER.ink,
           fontFamily:
             data.template === "klassik"

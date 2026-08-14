@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "@/components/shared/Field"
+import { maskPhone } from "@/lib/utils"
 
 import type { useResume } from "../hooks/useResume"
 import { monthLabel } from "../utils/format"
@@ -77,8 +78,17 @@ export function IdentityFields({
               id={`${id}-phone`}
               value={data.contact.phone}
               onChange={(event) =>
-                setNested("contact", "phone", event.target.value)
+                // Masked on every keystroke, so the field can only ever hold
+                // a legal prefix — the same rule the document forms follow.
+                setNested("contact", "phone", maskPhone(event.target.value))
               }
+              onFocus={() => {
+                // The country code as a CONVENIENCE, not as part of the mask:
+                // put here, one backspace removes it. Baked into `maskPhone`
+                // it would be un-deletable, which is the classic phone-field
+                // trap.
+                if (!data.contact.phone) setNested("contact", "phone", "+998 ")
+              }}
               placeholder="+998 90 123 45 67"
               autoComplete="tel"
               inputMode="tel"

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { maskAmount, maskPassport, maskPinfl } from "./mask"
+import { maskAmount, maskPassport, maskPhone, maskPinfl } from "./mask"
 
 /**
  * The masks exist because the owner typed "asdfasdfad" into a passport field
@@ -56,5 +56,54 @@ describe("maskAmount", () => {
     expect(maskAmount("5 000 000 so'm")).toBe("5 000 000 ")
     expect(maskAmount("15000000,50")).toBe("15000000,50")
     expect(maskAmount("besh million")).toBe("")
+  })
+})
+
+describe("maskPhone", () => {
+  it("formats an Uzbek number the way a document writes it", () => {
+    // Arrange / Act / Assert
+    expect(maskPhone("998901234567")).toBe("+998 90 123 45 67")
+    expect(maskPhone("+998901234567")).toBe("+998 90 123 45 67")
+  })
+
+  it("formats progressively as the digits arrive", () => {
+    // Arrange / Act / Assert — the field only ever holds a legal prefix.
+    expect(maskPhone("+998 9")).toBe("+998 9")
+    expect(maskPhone("+998 90")).toBe("+998 90")
+    expect(maskPhone("+998 901")).toBe("+998 90 1")
+    expect(maskPhone("+998 9012345")).toBe("+998 90 123 45")
+  })
+
+  it("can be backspaced all the way to empty", () => {
+    // Arrange / Act / Assert — the trap this mask exists to avoid: a mask
+    // that re-adds "+998" cannot be deleted past, and the visitor is stuck.
+    expect(maskPhone("+998 9")).toBe("+998 9")
+    expect(maskPhone("+998 ")).toBe("+998")
+    expect(maskPhone("+99")).toBe("+99")
+    expect(maskPhone("+")).toBe("+")
+    expect(maskPhone("")).toBe("")
+  })
+
+  it("never invents a country code", () => {
+    // Arrange / Act / Assert — typing a bare local number stays bare until
+    // the visitor says otherwise.
+    expect(maskPhone("901234567")).toBe("90 123 45 67")
+  })
+
+  it("groups a foreign number instead of correcting it", () => {
+    // Arrange / Act / Assert
+    expect(maskPhone("+15551234567")).toBe("+15 551 23 45 67")
+  })
+
+  it("caps an Uzbek number at nine national digits", () => {
+    // Arrange / Act / Assert
+    expect(maskPhone("+9989012345678888")).toBe("+998 90 123 45 67")
+  })
+
+  it("is idempotent", () => {
+    // Arrange / Act / Assert — what makes it safe in a controlled onChange.
+    for (const value of ["+998 90 123 45 67", "+998", "", "90 123 45 67"]) {
+      expect(maskPhone(maskPhone(value))).toBe(maskPhone(value))
+    }
   })
 })

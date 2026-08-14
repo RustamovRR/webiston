@@ -165,3 +165,13 @@ export const buildSampleResume = (): ResumeData => ({
  */
 export const DOCUMENT_LANGUAGES = ["uz", "ru", "en"] as const
 export const DOCUMENT_SCRIPTS = ["lotin", "kirill"] as const
+
+/**
+ * The page-break hairline drawn across the preview every A4.
+ *
+ * Part of the PAPER exception: it is an artefact of the sheet, not interface
+ * chrome, so it must not flip with the site theme. Hidden in print — the
+ * paper genuinely ends there, so a printed line would be a lie.
+ */
+export const PAGE_GUIDE =
+  "repeating-linear-gradient(to bottom, transparent 0, transparent calc(297mm - 1px), rgba(17,17,17,0.18) calc(297mm - 1px), rgba(17,17,17,0.18) 297mm)"
