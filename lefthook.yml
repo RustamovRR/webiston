@@ -8,9 +8,15 @@
 #
 #   pre-commit  ~0.1s  Biome — format + lint + organize imports, STAGED only
 #   commit-msg  ~1s    commitlint — Conventional Commits
-#   pre-push    ~2s    tsc + vitest + package build, in parallel
+#   pre-push    ~5s    tsc + RELATED vitest + package build, in parallel
 #
 # Measured 2026-07-29: typecheck 0.40s · test 1.57s · biome --staged 0.07s.
+# Re-measured 2026-08-14: the FULL suite had grown to ~38s at 1,842 test files
+# — which is exactly the "gets bypassed" territory this header warns about. CI
+# (.github/workflows/ci.yml) runs the full suite on every push to dev/main, so
+# pre-push now runs `vitest related` scoped to the files the push actually
+# changes (scripts/pre-push-tests.sh): ~0s for a docs-only push, ~3-5s for a
+# typical code push, the full suite only when vitest's own config changed.
 # If a hook ever takes minutes, it is broken — not working hard.
 #
 # ONE linter, not two. Biome does formatting AND linting AND import sorting in
@@ -73,6 +79,10 @@ commit-msg:
 
 pre-push:
   parallel: true
+  # Stream each job's output as it runs. With `output` trimmed to summaries, a
+  # long job otherwise shows a silent banner for its whole duration — which
+  # reads as "hung", and a hook that reads as hung gets bypassed.
+  follow: true
   jobs:
     - name: typecheck
       run: pnpm typecheck
@@ -82,7 +92,10 @@ pre-push:
       fail_text: "tsc failed. Fix the type errors, or push with --no-verify if it is an emergency."
 
     - name: test
-      run: pnpm test
+      # Only the tests that can SEE this push's changes, via the import graph
+      # (vitest related). The full suite belongs to CI, which runs it on every
+      # push to dev/main — see the header for the measured reasoning.
+      run: sh scripts/pre-push-tests.sh
       timeout: "180s"
       fail_text: "Tests failed. Fix them, or push with --no-verify if it is an emergency."
 
