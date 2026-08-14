@@ -33,6 +33,8 @@
         "qizil": "Qizil",
         "binafsha": "Binafsha"
       },
+      "accentCustom": "O'z rangingiz",
+      "accentContrast": "Bu rang oq qog'ozda kam o'qiladi — quyuqrog'ini tanlang.",
       "photo": "Surat",
       "photoHint": "Ixtiyoriy. O'zbekistonda odatda rasmiy surat qo'yiladi. Surat ham faqat qurilmangizda qoladi.",
       "photoAdd": "Surat qo'shish",
@@ -77,6 +79,7 @@
       "summaryHint": "2–3 gap: tajribangiz, kuchli tomoningiz, nimani bilasiz.",
       "summaryPlaceholder": "Chakana savdoda 4 yillik tajribaga ega mutaxassis...",
       "phone": "Telefon",
+      "phoneHint": "Boshqa davlat raqami uchun «+» bilan boshlab yozing.",
       "email": "Email",
       "city": "Shahar",
       "cityPlaceholder": "Toshkent shahri",

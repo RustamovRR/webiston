@@ -33,6 +33,8 @@
         "qizil": "Red",
         "binafsha": "Purple"
       },
+      "accentCustom": "Custom colour",
+      "accentContrast": "This colour reads poorly on white paper — pick a darker one.",
       "photo": "Photo",
       "photoHint": "Optional. Uzbek CVs usually carry a formal headshot. It stays on your device too.",
       "photoAdd": "Add a photo",
@@ -77,6 +79,7 @@
       "summaryHint": "Two or three sentences: experience, strengths, what you know.",
       "summaryPlaceholder": "Sales specialist with four years in retail...",
       "phone": "Phone",
+      "phoneHint": "For another country, start with «+».",
       "email": "Email",
       "city": "City",
       "cityPlaceholder": "Tashkent",

@@ -7,20 +7,19 @@ import { useTranslations } from "next-intl"
 import { useId, useRef, useState } from "react"
 
 import { Field, FieldSet } from "@/components/shared/Field"
+import { contrastRatio, hexToRgb, isValidHex } from "@/lib/utils"
 
 import {
+  ACCENT_MIN_CONTRAST,
   ACCENTS,
+  DEFAULT_ACCENT,
   DOCUMENT_LANGUAGES,
   DOCUMENT_SCRIPTS,
+  RESUME_PAPER,
   TEMPLATES
 } from "../constants"
 import type { useResume } from "../hooks/useResume"
-import type {
-  AccentId,
-  DocumentLanguage,
-  DocumentScript,
-  TemplateId
-} from "../types"
+import type { DocumentLanguage, DocumentScript, TemplateId } from "../types"
 import { preparePhoto } from "../utils/photo"
 
 /**
@@ -40,6 +39,16 @@ export function DesignFields({
   const id = useId()
   const fileInput = useRef<HTMLInputElement>(null)
   const [photoError, setPhotoError] = useState<string>()
+
+  // Same guard the sheet applies, for the same reason: `accent` is a free hex
+  // and an older draft holds a preset id. `<input type="color">` silently
+  // snaps an unparseable value to black, which would look like a bug.
+  const accent = isValidHex(data.accent) ? data.accent : DEFAULT_ACCENT
+  const isPreset = ACCENTS.some((entry) => entry.value === accent)
+  const paper = hexToRgb(RESUME_PAPER.background)
+  const picked = hexToRgb(accent)
+  const accentReadable =
+    !paper || !picked || contrastRatio(picked, paper) >= ACCENT_MIN_CONTRAST
 
   const handlePhoto = async (file: File | undefined) => {
     if (!file) return
@@ -115,24 +124,57 @@ export function DesignFields({
           <div
             role="group"
             aria-label={t("accent")}
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap items-center gap-2"
           >
             {ACCENTS.map((entry) => (
               <button
                 key={entry.id}
                 type="button"
-                onClick={() => set("accent", entry.id as AccentId)}
+                onClick={() => set("accent", entry.value)}
                 aria-label={t(`accents.${entry.id}`)}
-                aria-pressed={data.accent === entry.id}
+                aria-pressed={data.accent === entry.value}
                 className={
-                  data.accent === entry.id
+                  data.accent === entry.value
                     ? "size-7 rounded-full ring-2 ring-ring ring-offset-2 ring-offset-background transition-transform"
                     : "size-7 rounded-full transition-transform hover:scale-110"
                 }
                 style={{ background: entry.value }}
               />
             ))}
+
+            {/* The native swatch IS the control — the same call the QR tool
+                made: a bundled colour wheel would be another dependency and a
+                worse wheel than the OS already ships. It sits AFTER the
+                presets because five curated colours answer the question for
+                most people in one click, and this is for the visitor whose
+                answer is a specific one. */}
+            <label
+              className={
+                isPreset
+                  ? "size-7 cursor-pointer overflow-hidden rounded-full border border-border transition-transform hover:scale-110"
+                  : "size-7 cursor-pointer overflow-hidden rounded-full ring-2 ring-ring ring-offset-2 ring-offset-background"
+              }
+              style={{ background: accent }}
+            >
+              <span className="sr-only">{t("accentCustom")}</span>
+              <input
+                type="color"
+                value={accent}
+                onChange={(event) => set("accent", event.target.value)}
+                // Sized past the swatch and pushed off-centre so the OS
+                // renders its own preview outside the clip — what shows is
+                // the round swatch, what opens is the system picker.
+                className="size-12 -translate-x-2 -translate-y-2 cursor-pointer border-0 bg-transparent p-0"
+              />
+            </label>
           </div>
+
+          {/* States the problem instead of overruling the choice. The accent
+              prints the name and every section heading, so a pale one is not
+              a taste question — it is a CV a recruiter skims past. */}
+          {!accentReadable && (
+            <p className="text-destructive text-xs">{t("accentContrast")}</p>
+          )}
         </div>
       )}
 

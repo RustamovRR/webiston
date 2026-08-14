@@ -99,8 +99,21 @@ export function ResumeSheet({ data }: { data: ResumeData }) {
           // long summary simply vanished below the fold while the printout
           // showed two pages. The sheet grows with its content and the card
           // around it scrolls — what you see is what prints.
-          "relative mx-auto w-full max-w-[210mm] rounded-md shadow-md lg:min-h-[297mm]",
-          data.template === "klassik" && "p-[10mm] sm:p-[14mm] lg:p-[15mm]"
+          //
+          // `shrink-0` is load-bearing and cost a second round of the same
+          // bug. This is a flex item in the preview card's scrolling column,
+          // and an explicit `min-height` REPLACES the automatic `min-height:
+          // auto` that normally stops a flex item shrinking below its content.
+          // So the sheet obediently shrank to exactly 297mm while its content
+          // measured 1,288px + padding, and everything past the fold rendered
+          // OUTSIDE the white paper, dark text on the dark card.
+          "relative mx-auto w-full max-w-[210mm] shrink-0 rounded-md shadow-md lg:min-h-[297mm]",
+          // Klassik owns its margins here; Zamonaviy's sidebar has to reach
+          // the paper's edges, so it takes the sheet as a flex column instead
+          // and stretches the tint the full height even on a half-empty page.
+          data.template === "zamonaviy"
+            ? "flex flex-col"
+            : "p-[10mm] sm:p-[14mm] lg:p-[15mm]"
         )}
         style={{
           background: RESUME_PAPER.background,

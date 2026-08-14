@@ -30,6 +30,8 @@ export type DocumentLanguage = "uz" | "ru" | "en"
  * Meaningless for `ru`/`en`, and the control hides itself there.
  */
 export type DocumentScript = "lotin" | "kirill"
+
+/** The id of one SUGGESTED accent — a message key, not the stored value. */
 export type AccentId = (typeof ACCENTS)[number]["id"]
 
 /**
@@ -78,8 +80,16 @@ export interface ResumeData {
   language: DocumentLanguage
   /** Uzbek only; `ru`/`en` documents ignore it. */
   script: DocumentScript
-  /** Zamonaviy's one restrained colour. Klassik ignores it. */
-  accent: AccentId
+  /**
+   * Zamonaviy's one restrained colour, as a `#rrggbb`. Klassik ignores it.
+   *
+   * The HEX and not a preset id: the five swatches seed this field, the OS
+   * colour wheel writes it directly, and the sheet needs a value either way.
+   * Storing an id and a separate "custom" colour would be two fields that can
+   * disagree. Anything that is not a valid hex — an older draft, a hand-edited
+   * localStorage — falls back to `DEFAULT_ACCENT` at render.
+   */
+  accent: string
   /** dataURL, held in memory/localStorage only — never uploaded anywhere. */
   photo: string
   fullName: string

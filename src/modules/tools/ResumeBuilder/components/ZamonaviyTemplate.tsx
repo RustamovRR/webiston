@@ -1,6 +1,8 @@
 "use client"
 
-import { ACCENTS, RESUME_PAPER } from "../constants"
+import { isValidHex } from "@/lib/utils"
+
+import { DEFAULT_ACCENT, RESUME_PAPER } from "../constants"
 import type { SheetLabels } from "../constants/labels"
 import type { ResumeData } from "../types"
 import { bulletLines, monthLabel, periodLabel } from "../utils/format"
@@ -27,8 +29,11 @@ export function ZamonaviyTemplate({
   data: ResumeData
   labels: SheetLabels
 }) {
-  const accent =
-    ACCENTS.find((entry) => entry.id === data.accent)?.value ?? ACCENTS[0].value
+  // Guarded rather than trusted: `accent` is a free hex now, and a draft
+  // written before that change holds a preset ID. `color: "kok"` is not an
+  // error the browser reports — it silently inherits, and the template loses
+  // the one colour it has. One check covers both that and a corrupt draft.
+  const accent = isValidHex(data.accent) ? data.accent : DEFAULT_ACCENT
 
   const contacts = [
     data.contact.phone,
@@ -48,7 +53,10 @@ export function ZamonaviyTemplate({
 
   return (
     <div
-      className="flex min-h-full gap-0 text-[14px] leading-[1.55]"
+      // `grow`, not `flex-1`: the sheet is a flex column with a 297mm MINIMUM,
+      // so this has to fill a short page (or the sidebar tint stops mid-paper)
+      // without a `flex-basis: 0` that would fight a long one.
+      className="flex grow gap-0 text-[14px] leading-[1.55]"
       style={{ fontFamily: RESUME_PAPER.sansFamily }}
     >
       {/* Sidebar. `print-color-adjust` asks the browser to keep the tint; it

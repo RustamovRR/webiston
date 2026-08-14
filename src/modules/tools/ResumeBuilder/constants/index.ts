@@ -7,18 +7,27 @@ import type { ResumeData } from "../types"
  * message keys and CSS discriminators.
  */
 export const TEMPLATES = [
-  /** An'anaviy bir ustun — state orgs, traditional employers. Georgia. */
+  /** An'anaviy bir ustun — state orgs, traditional employers. Serif. */
   { id: "klassik" },
   /** Ikki ustunli sidebar — hh.uz office roles. Sans + one accent. */
   { id: "zamonaviy" }
 ] as const
 
 /**
- * Zamonaviy's accent palette — the §11 documented exception (like the chart
+ * Zamonaviy's suggested accents — the §11 documented exception (like the chart
  * palettes): a CV is paper, its colours must not flip with the site theme,
  * so these are literal values in ONE named constant, never inline.
  *
- * Five, all dark enough to carry white text and print legibly in grayscale.
+ * PRESETS, not the whole choice: `data.accent` holds a hex, and the picker
+ * next to these five opens the OS colour wheel. Five curated swatches answer
+ * "I just want it to look right" in one click; the wheel answers "our company
+ * colour is this exact green", which is a real thing people ask a CV to do.
+ * The guard against a neon-yellow heading is not a locked palette — it is the
+ * contrast readout the picker shows, which states the problem instead of
+ * quietly overruling the choice.
+ *
+ * All five are dark enough to carry the headings on white and to survive a
+ * grayscale printer.
  */
 export const ACCENTS = [
   { id: "kok", value: "#1e5a8a" },
@@ -28,12 +37,38 @@ export const ACCENTS = [
   { id: "binafsha", value: "#4c1d95" }
 ] as const
 
+/** What an unset — or unreadable — accent falls back to. */
+export const DEFAULT_ACCENT = ACCENTS[0].value
+
+/**
+ * The ratio an accent must clear against the paper to be used as TEXT.
+ *
+ * WCAG AA for body text. The section headings are 11–12px, so the large-text
+ * allowance (3:1) does not apply to them, and a CV that a tired recruiter
+ * cannot skim has failed at the only job it has.
+ */
+export const ACCENT_MIN_CONTRAST = 4.5
+
 /** The sheet: A4 geometry shared by both templates. Same PAPER exception. */
 export const RESUME_PAPER = {
   background: "#ffffff",
   ink: "#111111",
-  /** Klassik's face; docx-safe (Georgia ships with Windows and macOS). */
-  serifFamily: "Georgia, 'Times New Roman', serif",
+  /**
+   * Klassik's face — and the reason it is NOT Georgia any more.
+   *
+   * Georgia's figures are OLDSTYLE: 3, 4, 5, 7 and 9 hang below the baseline
+   * and 0, 1, 2 sit at x-height. Beautiful in running prose, wrong on a CV,
+   * where the numbers are a phone number and a set of dates and they read as
+   * broken type — which is exactly how it was reported. `font-variant-numeric:
+   * lining-nums` does NOT fix it: rendered side by side, the default, the
+   * `lining-nums` and the `'lnum' 1` lines are pixel-identical, because plain
+   * Georgia carries no lining set to switch to. So the face changes instead.
+   *
+   * Charter (macOS) → Cambria (Windows, since Vista — a system font, not an
+   * Office one) → Times New Roman (everywhere). All three are book serifs with
+   * lining figures, and the fallback is never reached before a real serif is.
+   */
+  serifFamily: "Charter, Cambria, 'Times New Roman', Times, serif",
   /** Zamonaviy's face on screen; the docx export writes Calibri. */
   sansFamily: "-apple-system, 'Segoe UI', Calibri, Helvetica, Arial, sans-serif"
 } as const
@@ -61,7 +96,7 @@ export const EMPTY_RESUME: ResumeData = {
   template: "klassik",
   language: "uz",
   script: "lotin",
-  accent: "kok",
+  accent: DEFAULT_ACCENT,
   photo: "",
   fullName: "",
   role: "",
@@ -92,7 +127,7 @@ export const buildSampleResume = (): ResumeData => ({
   template: "klassik",
   language: "uz",
   script: "lotin",
-  accent: "kok",
+  accent: DEFAULT_ACCENT,
   photo: "",
   fullName: "Karimova Nilufar Anvarovna",
   role: "Savdo bo'limi mutaxassisi",

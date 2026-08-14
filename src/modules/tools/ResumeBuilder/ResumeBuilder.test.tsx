@@ -69,6 +69,65 @@ describe("resume builder", () => {
     expect(sheet().textContent).toContain("+998 90 123 45 67")
   })
 
+  it("gives the country code BACK when the field is cleared in place", () => {
+    // Arrange — the reported bug: select-all + Delete took "+998" with the
+    // number and nothing brought it back.
+    renderTool()
+    const phone = screen.getByLabelText("Telefon")
+    fireEvent.focus(phone)
+    expect(phone).toHaveValue("+998 ")
+    fireEvent.change(phone, { target: { value: "998901234567" } })
+
+    // Act
+    fireEvent.change(phone, { target: { value: "" } })
+
+    // Assert
+    expect(phone).toHaveValue("+998 ")
+  })
+
+  it("prints no bare country code for a field nobody filled in", () => {
+    // Arrange — the other half of the same rule: what is offered on focus
+    // must not survive as a phone number on the paper.
+    renderTool()
+    const phone = screen.getByLabelText("Telefon")
+    fireEvent.focus(phone)
+
+    // Act
+    fireEvent.blur(phone)
+
+    // Assert
+    expect(phone).toHaveValue("")
+    expect(sheet().textContent).not.toContain("+998")
+  })
+
+  it("finishes a bare national number when the visitor leaves the field", () => {
+    // Arrange
+    renderTool()
+    const phone = screen.getByLabelText("Telefon")
+
+    // Act — nine digits, no country code.
+    fireEvent.change(phone, { target: { value: "901234567" } })
+    fireEvent.blur(phone)
+
+    // Assert
+    expect(phone).toHaveValue("+998 90 123 45 67")
+  })
+
+  it("leaves a foreign number in its own country's grouping", () => {
+    // Arrange — the Uzbek 2-3-2-2 shape is wrong everywhere else, and this
+    // is the one line of a CV whose job is being called back.
+    renderTool()
+    const phone = screen.getByLabelText("Telefon")
+
+    // Act
+    fireEvent.change(phone, { target: { value: "+44 20 7946 0958" } })
+    fireEvent.blur(phone)
+
+    // Assert
+    expect(phone).toHaveValue("+44 20 7946 0958")
+    expect(sheet().textContent).toContain("+44 20 7946 0958")
+  })
+
   it("adds a row, and the row is open so it can be typed into", () => {
     // Arrange
     renderTool()
@@ -212,6 +271,26 @@ describe("resume builder", () => {
     const paper = sheet()
     expect(paper.textContent).toContain(long.trim())
     expect(paper.className).not.toContain("overflow-hidden")
+    // The second half of the same bug, and jsdom has no layout to catch it:
+    // the sheet is a flex item in the preview's scrolling column, and its
+    // explicit `min-height` REPLACES the automatic minimum that stops a flex
+    // item shrinking below its content. Measured in a real browser, the sheet
+    // sat at exactly 1,123px while its content needed 1,401px, and everything
+    // past that rendered outside the white paper.
+    expect(paper.className).toContain("shrink-0")
+  })
+
+  it("sets a serif whose figures sit on the baseline", () => {
+    // Arrange / Act — Georgia's OLDSTYLE figures made a phone number and a
+    // set of dates look like broken type, and `font-variant-numeric:
+    // lining-nums` does not fix it: plain Georgia has no lining set to switch
+    // to, so the three variants render pixel-identically.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+
+    // Assert
+    expect(sheet().style.fontFamily).not.toContain("Georgia")
+    expect(sheet().style.fontFamily).toContain("Charter")
   })
 })
 
@@ -238,5 +317,66 @@ describe("resume sheet, per template", () => {
 
     fireEvent.click(screen.getByRole("radio", { name: "Zamonaviy" }))
     expect(screen.getByLabelText("Ko'k")).toBeInTheDocument()
+  })
+
+  it("paints the sheet with a colour picked outside the five presets", () => {
+    // Arrange
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+    fireEvent.click(screen.getByRole("radio", { name: "Zamonaviy" }))
+    fireEvent.change(screen.getByLabelText(/F\.I\.Sh/), {
+      target: { value: "Karimova Nilufar" }
+    })
+
+    // Act — the native swatch, the same control the QR tool uses.
+    fireEvent.change(screen.getByLabelText("O'z rangingiz"), {
+      target: { value: "#0f766e" }
+    })
+
+    // Assert — the name carries the accent, so the sheet proves it landed.
+    const heading = within(sheet()).getByRole("heading", { level: 1 })
+    expect(heading).toHaveStyle({ color: "#0f766e" })
+    // And no preset claims to be selected any more.
+    expect(screen.getByLabelText("Ko'k")).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    )
+  })
+
+  it("says so when a picked colour is too pale to read on paper", () => {
+    // Arrange — the guard is a stated problem, not a locked palette: the
+    // accent prints every section heading, and a pale one is a CV a
+    // recruiter's eye slides straight past.
+    renderTool()
+    fireEvent.click(screen.getByRole("radio", { name: "Zamonaviy" }))
+    const custom = screen.getByLabelText("O'z rangingiz")
+    expect(screen.queryByText(/kam o'qiladi/)).not.toBeInTheDocument()
+
+    // Act
+    fireEvent.change(custom, { target: { value: "#ffe066" } })
+
+    // Assert
+    expect(screen.getByText(/kam o'qiladi/)).toBeInTheDocument()
+
+    // …and it goes away again once the colour can carry text.
+    fireEvent.change(custom, { target: { value: "#0f766e" } })
+    expect(screen.queryByText(/kam o'qiladi/)).not.toBeInTheDocument()
+  })
+
+  it("falls back to a readable accent when a draft holds an old preset id", () => {
+    // Arrange — `accent` used to store "kok"; `color: kok` is not an error
+    // the browser reports, it silently inherits and the template loses its
+    // only colour.
+    localStorage.setItem(
+      "webiston:rezyume:v1",
+      JSON.stringify({ template: "zamonaviy", accent: "kok", fullName: "Test" })
+    )
+
+    // Act
+    renderTool()
+
+    // Assert
+    const heading = within(sheet()).getByRole("heading", { level: 1 })
+    expect(heading).toHaveStyle({ color: "#1e5a8a" })
   })
 })

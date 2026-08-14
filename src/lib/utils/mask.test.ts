@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest"
 
-import { maskAmount, maskPassport, maskPhone, maskPinfl } from "./mask"
+import {
+  maskAmount,
+  maskPassport,
+  maskPhone,
+  maskPinfl,
+  settlePhone,
+  UZ_DIAL_PREFIX
+} from "./mask"
 
 /**
  * The masks exist because the owner typed "asdfasdfad" into a passport field
@@ -84,15 +91,27 @@ describe("maskPhone", () => {
     expect(maskPhone("")).toBe("")
   })
 
-  it("never invents a country code", () => {
-    // Arrange / Act / Assert — typing a bare local number stays bare until
-    // the visitor says otherwise.
-    expect(maskPhone("901234567")).toBe("90 123 45 67")
+  it("never invents a country code mid-typing", () => {
+    // Arrange / Act / Assert — a bare local number stays bare until the
+    // visitor says otherwise, or until `settlePhone` finishes it on blur.
+    expect(maskPhone("901234567")).toBe("901234567")
   })
 
-  it("groups a foreign number instead of correcting it", () => {
+  it("leaves a foreign number the way its own country writes it", () => {
+    // Arrange / Act / Assert — the Uzbek 2-3-2-2 grouping is right for +998
+    // and WRONG everywhere else; imposing it corrupted the one line a CV
+    // exists to be reached on.
+    expect(maskPhone("+1 555 123 4567")).toBe("+1 555 123 4567")
+    expect(maskPhone("+44 20 7946 0958")).toBe("+44 20 7946 0958")
+    expect(maskPhone("+7 (495) 123-45-67")).toBe("+7 (495) 123-45-67")
+  })
+
+  it("still refuses what could never be part of a number", () => {
     // Arrange / Act / Assert
-    expect(maskPhone("+15551234567")).toBe("+15 551 23 45 67")
+    expect(maskPhone("+44 20 telefon")).toBe("+44 20 ")
+    expect(maskPhone("asdfasdfad")).toBe("")
+    // A country code leads or it is a typo.
+    expect(maskPhone("+44+20")).toBe("+4420")
   })
 
   it("caps an Uzbek number at nine national digits", () => {
@@ -102,8 +121,45 @@ describe("maskPhone", () => {
 
   it("is idempotent", () => {
     // Arrange / Act / Assert — what makes it safe in a controlled onChange.
-    for (const value of ["+998 90 123 45 67", "+998", "", "90 123 45 67"]) {
+    const values = [
+      "+998 90 123 45 67",
+      "+998",
+      "",
+      "901234567",
+      "+44 20 7946 0958"
+    ]
+    for (const value of values) {
       expect(maskPhone(maskPhone(value))).toBe(maskPhone(value))
     }
+  })
+})
+
+describe("settlePhone", () => {
+  it("drops a country code the visitor never filled in", () => {
+    // Arrange / Act / Assert — the field OFFERS "+998 " on focus, so tabbing
+    // through it must not print a bare "+998" on the CV as a phone number.
+    expect(settlePhone(UZ_DIAL_PREFIX)).toBe("")
+    expect(settlePhone("+998")).toBe("")
+    expect(settlePhone("")).toBe("")
+  })
+
+  it("completes a bare national number", () => {
+    // Arrange / Act / Assert — nine digits with no country code is an Uzbek
+    // mobile in every realistic case. Guessing on BLUR cannot fight the
+    // caret the way guessing mid-keystroke would.
+    expect(settlePhone("901234567")).toBe("+998 90 123 45 67")
+    expect(settlePhone("90 123 45 67")).toBe("+998 90 123 45 67")
+  })
+
+  it("leaves a foreign number and a finished Uzbek one alone", () => {
+    // Arrange / Act / Assert
+    expect(settlePhone("+44 20 7946 0958")).toBe("+44 20 7946 0958")
+    expect(settlePhone("+998 90 123 45 67")).toBe("+998 90 123 45 67")
+  })
+
+  it("does not complete a number that is not nine digits long", () => {
+    // Arrange / Act / Assert — a half-typed number stays half-typed rather
+    // than being decorated into something that looks complete.
+    expect(settlePhone("9012")).toBe("9012")
   })
 })

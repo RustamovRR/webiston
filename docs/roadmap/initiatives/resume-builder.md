@@ -187,6 +187,45 @@ with the research sources.
   converts the name but never the email, headings follow the DOCUMENT
   language, the draft survives a remount, a long summary is not clipped.
   **1,862 tests / 101 files**; gate all 0.
+- [x] **P3c** Owner UX review, round two — **done 2026-08-14.** Four reports,
+  and the first was the SAME bug in a second costume. **(1) The sheet was still
+  being cut**, now on both templates. Removing `overflow-hidden` in P3b fixed
+  the clipping; it did not fix the SHRINKING. The sheet is a flex item in the
+  preview's scrolling column, and an explicit `min-height` REPLACES the
+  automatic `min-height: auto` that normally stops a flex item collapsing below
+  its content — so `lg:min-h-[297mm]` was not a floor, it was a licence to
+  shrink to exactly one page. Measured in the browser: sheet 1,123px, content
+  1,401px, and the 278px difference rendered outside the white paper as dark
+  text on the dark card. `shrink-0` fixes it (re-measured: 1,401px, no
+  overflow). Zamonaviy got the matching fix — the sheet is a flex column and
+  the template `grow`s, so the sidebar tint reaches the foot of a half-empty
+  page instead of stopping where its own content ends. **(2) The figures were
+  Georgia's OLDSTYLE set** — 3/4/5/7/9 hang below the baseline, 0/1/2 sit at
+  x-height — which is why a phone number and a row of dates read as broken
+  type. `font-variant-numeric: lining-nums` does NOT fix it: rendered side by
+  side at 4×, the default, the `lining-nums` and the `'lnum' 1` lines are
+  pixel-identical, because plain Georgia carries no lining set to switch to.
+  The face changed instead: Charter (macOS) → Cambria (Windows system font) →
+  Times New Roman, all lining, no webfont byte. The .docx now follows the
+  template too — Cambria for Klassik, Calibri for Zamonaviy — so the download
+  looks like the preview it came from. **(3) The accent is a free colour now.**
+  `data.accent` holds a hex rather than a preset id (one field, not an id plus
+  a "custom" value that can disagree), the five curated swatches seed it, and
+  the native `<input type="color">` sits after them — the same call the QR tool
+  made about not shipping a colour wheel. The guard against an unreadable
+  heading is a stated CONTRAST verdict (WCAG AA against the paper, reusing
+  `contrastRatio`), not a locked palette. Old drafts holding `"kok"` fall back
+  at render: `color: kok` is not an error the browser reports, it silently
+  inherits. **(4) The phone mask, twice wrong.** The `+998` vanished on
+  select-all-delete and never came back — now the field re-offers it whenever
+  it is emptied while focused, and `settlePhone` takes a lone `+998` back off
+  on blur so a skipped field prints nothing. Blur also completes a bare
+  nine-digit number, which is the one moment guessing cannot fight the caret.
+  And the answer to "UZ only or any country": strict for +998, HANDS-OFF for
+  everything else — the old code imposed the Uzbek 2-3-2-2 grouping on foreign
+  numbers, turning `+1 555 123 4567` into `+15 551 23 45 67`, which a test of
+  mine had locked in as correct. **13 new tests** (8 component, 5 mask);
+  **1,875 / 101 files**; gate all 0.
 - [ ] **P4** FAQ with the local-format research + tests
 - [ ] **P5** Review pass: design-system-reviewer + code-reviewer agents,
   measure bundle, gate, ship

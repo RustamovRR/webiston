@@ -25,7 +25,14 @@ const PAPER = {
   width: 11906,
   height: 16838,
   margin: 850,
-  font: "Calibri",
+  /**
+   * Word's own pair, so the download looks like the preview it came from:
+   * Cambria for „Klassik" (serif), Calibri for „Zamonaviy" (sans). Both ship
+   * with Word on Windows and macOS, so the recipient sees the chosen face
+   * rather than a substitution.
+   */
+  serifFont: "Cambria",
+  sansFont: "Calibri",
   /** Half-points. */
   size: 21,
   nameSize: 40,
@@ -47,6 +54,8 @@ export async function downloadResumeDocx(
     TextRun
   } = await import("docx")
 
+  const font = data.template === "klassik" ? PAPER.serifFont : PAPER.sansFont
+
   // `size` is widened to `number` on purpose: `PAPER` is `as const`, so an
   // inferred default would pin every call site to the literal 21.
   const text = (
@@ -58,7 +67,7 @@ export async function downloadResumeDocx(
       bold: options.bold ?? false,
       italics: options.italics ?? false,
       size: options.size ?? PAPER.size,
-      font: PAPER.font
+      font
     })
 
   const line = (value: string, options?: Parameters<typeof text>[1]) =>

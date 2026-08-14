@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "@/components/shared/Field"
-import { maskPhone } from "@/lib/utils"
+import { maskPhone, settlePhone, UZ_DIAL_PREFIX } from "@/lib/utils"
 
 import type { useResume } from "../hooks/useResume"
 import { monthLabel } from "../utils/format"
@@ -73,22 +73,32 @@ export function IdentityFields({
 
       <FieldSet legend={t("contact.legend")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field id={`${id}-phone`} label={t("phone")}>
+          <Field id={`${id}-phone`} label={t("phone")} hint={t("phoneHint")}>
             <Input
               id={`${id}-phone`}
               value={data.contact.phone}
-              onChange={(event) =>
+              onChange={(event) => {
                 // Masked on every keystroke, so the field can only ever hold
                 // a legal prefix — the same rule the document forms follow.
-                setNested("contact", "phone", maskPhone(event.target.value))
-              }
-              onFocus={() => {
-                // The country code as a CONVENIENCE, not as part of the mask:
-                // put here, one backspace removes it. Baked into `maskPhone`
-                // it would be un-deletable, which is the classic phone-field
-                // trap.
-                if (!data.contact.phone) setNested("contact", "phone", "+998 ")
+                const next = maskPhone(event.target.value)
+                // Emptied while the caret is still in the field — select-all
+                // then Delete is how people clear an input — so the country
+                // code comes BACK rather than leaving them to retype it. This
+                // was reported: the prefix vanished with the number and never
+                // returned. It is not a trap, because it is undone two ways:
+                // blur drops a lone `+998`, and typing `+` over a selection
+                // never produces an empty value, so a foreign number replaces
+                // it in one keystroke.
+                setNested("contact", "phone", next || UZ_DIAL_PREFIX)
               }}
+              onFocus={() => {
+                if (!data.contact.phone) {
+                  setNested("contact", "phone", UZ_DIAL_PREFIX)
+                }
+              }}
+              onBlur={(event) =>
+                setNested("contact", "phone", settlePhone(event.target.value))
+              }
               placeholder="+998 90 123 45 67"
               autoComplete="tel"
               inputMode="tel"

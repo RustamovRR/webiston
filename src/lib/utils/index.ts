@@ -9,7 +9,14 @@ export { saveBlob } from "./download"
 export { formatDuration, formatFileSize } from "./format"
 export type { DownscaleOptions, ImageError, ImageResult } from "./image"
 export { downscaleImage, toDataUrl } from "./image"
-export { maskAmount, maskPassport, maskPhone, maskPinfl } from "./mask"
+export {
+  maskAmount,
+  maskPassport,
+  maskPhone,
+  maskPinfl,
+  settlePhone,
+  UZ_DIAL_PREFIX
+} from "./mask"
 export { printWithTitle } from "./print"
 // Text utilities
 
