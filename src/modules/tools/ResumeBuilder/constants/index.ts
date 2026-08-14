@@ -38,6 +38,24 @@ export const RESUME_PAPER = {
   sansFamily: "-apple-system, 'Segoe UI', Calibri, Helvetica, Arial, sans-serif"
 } as const
 
+/**
+ * How a repeating row enters and leaves.
+ *
+ * One named block rather than four copies of the same props inline, so every
+ * section of this form moves identically. Short and small: 180ms with a 4px
+ * rise reads as the row settling into place; anything longer starts to feel
+ * like waiting, on a form where someone may add ten rows in a row.
+ *
+ * `height: 0` on exit is what makes the rows below slide up instead of
+ * snapping — the collapse and the fade run together.
+ */
+export const ROW_MOTION = {
+  initial: { opacity: 0, height: 0, y: -4 },
+  animate: { opacity: 1, height: "auto", y: 0 },
+  exit: { opacity: 0, height: 0, y: -4 },
+  transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] }
+} as const
+
 /** A fresh form. Template and accent carry defaults; everything else empty. */
 export const EMPTY_RESUME: ResumeData = {
   template: "klassik",
@@ -50,8 +68,7 @@ export const EMPTY_RESUME: ResumeData = {
     email: "",
     city: "",
     telegram: "",
-    linkedin: "",
-    website: ""
+    linkedin: ""
   },
   personal: { birthDate: "", maritalStatus: "" },
   summary: "",
@@ -80,8 +97,7 @@ export const buildSampleResume = (): ResumeData => ({
     email: "nilufar.karimova@example.com",
     city: "Toshkent shahri",
     telegram: "@nilufar_karimova",
-    linkedin: "",
-    website: ""
+    linkedin: ""
   },
   personal: { birthDate: "1999-04-12", maritalStatus: "" },
   summary:
@@ -90,6 +106,7 @@ export const buildSampleResume = (): ResumeData => ({
     "1C hamda CRM tizimlarida ishlayman.",
   experience: [
     {
+      id: "sample-exp-1",
       company: "«Texnomart» MChJ",
       role: "Katta savdo maslahatchisi",
       from: "2024-03",
@@ -101,6 +118,7 @@ export const buildSampleResume = (): ResumeData => ({
         "Mijozlar shikoyatlarini hal qilish tartibini joriy qildim."
     },
     {
+      id: "sample-exp-2",
       company: "«Havas» supermarketlar tarmog'i",
       role: "Savdo maslahatchisi",
       from: "2021-06",
@@ -113,6 +131,7 @@ export const buildSampleResume = (): ResumeData => ({
   ],
   education: [
     {
+      id: "sample-edu-1",
       institution: "Toshkent davlat iqtisodiyot universiteti",
       field: "Marketing (bakalavr)",
       from: "2017-09",
@@ -127,8 +146,8 @@ export const buildSampleResume = (): ResumeData => ({
     "Muzokara olib borish"
   ],
   languages: [
-    { name: "O'zbek", level: "ona tili" },
-    { name: "Rus", level: "erkin" },
-    { name: "Ingliz", level: "B1" }
+    { id: "sample-lang-1", name: "O'zbek", level: "ona tili" },
+    { id: "sample-lang-2", name: "Rus", level: "erkin" },
+    { id: "sample-lang-3", name: "Ingliz", level: "B1" }
   ]
 })

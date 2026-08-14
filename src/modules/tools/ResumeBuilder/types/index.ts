@@ -13,8 +13,21 @@ import type { ACCENTS, TEMPLATES } from "../constants"
 export type TemplateId = (typeof TEMPLATES)[number]["id"]
 export type AccentId = (typeof ACCENTS)[number]["id"]
 
+/**
+ * Every repeating row carries a stable id.
+ *
+ * Not cosmetic: the rows are reorderable and removable, so an array INDEX is
+ * not an identity — deleting the middle of three makes React reuse the wrong
+ * DOM node, and `AnimatePresence` then plays the exit animation on a row that
+ * is staying. The id is the fix for both, and it is why no `key={index}`
+ * suppression appears anywhere in this module.
+ */
+export interface RowId {
+  id: string
+}
+
 /** One job. `current` renders "hozirgacha" instead of an end date. */
-export interface ExperienceEntry {
+export interface ExperienceEntry extends RowId {
   company: string
   role: string
   /** ISO yyyy-mm; the sheet prints "2024-yil maydan". */
@@ -25,7 +38,7 @@ export interface ExperienceEntry {
   description: string
 }
 
-export interface EducationEntry {
+export interface EducationEntry extends RowId {
   institution: string
   field: string
   from: string
@@ -35,7 +48,7 @@ export interface EducationEntry {
 /** "O'zbek — ona tili", "Rus — erkin", "Ingliz — B1". Level is free text:
  * the local convention mixes CEFR codes and words, and a rigid enum would
  * reject half of real usage. */
-export interface LanguageEntry {
+export interface LanguageEntry extends RowId {
   name: string
   level: string
 }
@@ -55,7 +68,6 @@ export interface ResumeData {
     city: string
     telegram: string
     linkedin: string
-    website: string
   }
   /**
    * The local-convention block. Research (resumeflex, G-P hiring guides) and

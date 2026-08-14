@@ -8,13 +8,30 @@
       "title": "Ma'lumotlar",
       "sample": "Namuna",
       "storage": "Kiritganlaringiz faqat shu qurilmada saqlanadi — serverga hech narsa yuborilmaydi. Sahifani yopib qaytsangiz, ish joyida turadi.",
-      "basics": { "legend": "Asosiy ma'lumot" },
-      "contact": { "legend": "Bog'lanish" },
-      "personal": { "legend": "Qo'shimcha (ixtiyoriy)" },
-      "experience": { "legend": "Ish tajribasi", "row": "Ish joyi" },
-      "education": { "legend": "Ta'lim", "row": "O'quv yurti" },
-      "skills": { "legend": "Ko'nikmalar" },
-      "languages": { "legend": "Tillar", "row": "Til" },
+      "basics": {
+        "legend": "Asosiy ma'lumot"
+      },
+      "contact": {
+        "legend": "Bog'lanish"
+      },
+      "personal": {
+        "legend": "Qo'shimcha (ixtiyoriy)"
+      },
+      "experience": {
+        "legend": "Ish tajribasi",
+        "row": "Ish joyi"
+      },
+      "education": {
+        "legend": "Ta'lim",
+        "row": "O'quv yurti"
+      },
+      "skills": {
+        "legend": "Ko'nikmalar"
+      },
+      "languages": {
+        "legend": "Tillar",
+        "row": "Til"
+      },
       "fullName": "F.I.Sh. (to'liq)",
       "fullNamePlaceholder": "Karimova Nilufar Anvarovna",
       "role": "Qaysi lavozimga",
@@ -39,6 +56,7 @@
       "companyPlaceholder": "«Texnomart» MChJ",
       "from": "Boshlangan",
       "to": "Tugagan",
+      "monthPlaceholder": "Oyni tanlang",
       "current": "Hozir shu yerda ishlayman",
       "achievements": "Nima qildingiz",
       "achievementsHint": "Har qatorga bittadan. Raqam bo'lsa yozing — «rejani 112% bajardim» «mas'ul edim» dan kuchli.",

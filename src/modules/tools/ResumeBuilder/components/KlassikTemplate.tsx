@@ -27,8 +27,7 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
     data.contact.email,
     data.contact.city,
     data.contact.telegram,
-    data.contact.linkedin,
-    data.contact.website
+    data.contact.linkedin
   ]
     .map((value) => value.trim())
     .filter(Boolean)
@@ -84,11 +83,8 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
 
       {data.experience.length > 0 && (
         <Section title={t("experience")}>
-          {data.experience.map((entry, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: rows are an
-            // order-stable projection of the form's own array; position IS
-            // the identity here.
-            <article key={index} className="mt-3 first:mt-0">
+          {data.experience.map((entry) => (
+            <article key={entry.id} className="mt-3 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="font-bold">{entry.role || entry.company}</h3>
                 <span className="shrink-0 text-[13px]">
@@ -117,9 +113,8 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
 
       {data.education.length > 0 && (
         <Section title={t("education")}>
-          {data.education.map((entry, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: same projection.
-            <article key={index} className="mt-2 first:mt-0">
+          {data.education.map((entry) => (
+            <article key={entry.id} className="mt-2 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="font-bold">{entry.institution}</h3>
                 <span className="shrink-0 text-[13px]">

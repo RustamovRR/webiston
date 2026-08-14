@@ -8,13 +8,30 @@
       "title": "Details",
       "sample": "Sample",
       "storage": "What you type is kept on this device only — nothing is sent to a server. Close the page and come back: your draft is still here.",
-      "basics": { "legend": "Basics" },
-      "contact": { "legend": "Contact" },
-      "personal": { "legend": "Extra (optional)" },
-      "experience": { "legend": "Work experience", "row": "Job" },
-      "education": { "legend": "Education", "row": "School" },
-      "skills": { "legend": "Skills" },
-      "languages": { "legend": "Languages", "row": "Language" },
+      "basics": {
+        "legend": "Basics"
+      },
+      "contact": {
+        "legend": "Contact"
+      },
+      "personal": {
+        "legend": "Extra (optional)"
+      },
+      "experience": {
+        "legend": "Work experience",
+        "row": "Job"
+      },
+      "education": {
+        "legend": "Education",
+        "row": "School"
+      },
+      "skills": {
+        "legend": "Skills"
+      },
+      "languages": {
+        "legend": "Languages",
+        "row": "Language"
+      },
       "fullName": "Full name",
       "fullNamePlaceholder": "Karimova Nilufar Anvarovna",
       "role": "Target role",
@@ -39,6 +56,7 @@
       "companyPlaceholder": "«Texnomart» MChJ",
       "from": "From",
       "to": "To",
+      "monthPlaceholder": "Pick a month",
       "current": "I work here now",
       "achievements": "What you did",
       "achievementsHint": "One per line. Use numbers where you have them — «hit 112% of target» beats «responsible for sales».",

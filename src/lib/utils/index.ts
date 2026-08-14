@@ -7,6 +7,7 @@ export {
 } from "./base64"
 export { saveBlob } from "./download"
 export { formatDuration, formatFileSize } from "./format"
+export { printWithTitle } from "./print"
 // Text utilities
 
 // Color contrast utilities

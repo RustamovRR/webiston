@@ -1,17 +1,26 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
+import { AnimatePresence, motion } from "framer-motion"
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
+import { ROW_MOTION } from "../constants"
+
 /**
- * The chrome around one row of a repeating section.
+ * The chrome around one row of a repeating section, and its motion.
  *
  * Reordering is a first-class control, not a nicety: a CV is read top-down
  * and recency is the whole convention, so "I added last year's job second"
- * has to be fixable without retyping it. Buttons rather than drag: this form
+ * has to be fixable without retyping it. Buttons rather than drag — this form
  * is filled on a phone as often as a laptop, and drag-and-drop on touch is
  * the interaction people fail at.
+ *
+ * The row animates in and out, and `layout` makes the rows BELOW a removed
+ * one slide up instead of jumping. That only works because rows carry a
+ * stable `id` (see `types/index.ts`): keyed by array index, `AnimatePresence`
+ * would fade out whichever row happened to land on that index — usually not
+ * the one the visitor deleted.
  */
 export function RowShell({
   title,
@@ -31,7 +40,14 @@ export function RowShell({
   const t = useTranslations("ResumePage.form")
 
   return (
-    <fieldset className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card/40 p-3">
+    <motion.fieldset
+      layout="position"
+      initial={ROW_MOTION.initial}
+      animate={ROW_MOTION.animate}
+      exit={ROW_MOTION.exit}
+      transition={ROW_MOTION.transition}
+      className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-card/40 p-3"
+    >
       <legend className="sr-only">{`${title} ${index + 1}`}</legend>
       <div className="flex items-center justify-between gap-2">
         <span className="font-medium text-muted-foreground text-xs">
@@ -61,7 +77,7 @@ export function RowShell({
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 text-muted-foreground hover:text-destructive"
+            className="size-7 text-muted-foreground transition-colors hover:text-destructive"
             onClick={onRemove}
             aria-label={t("remove")}
           >
@@ -70,6 +86,21 @@ export function RowShell({
         </div>
       </div>
       {children}
-    </fieldset>
+    </motion.fieldset>
+  )
+}
+
+/**
+ * The list wrapper every repeating section shares.
+ *
+ * `AnimatePresence` has to sit OUTSIDE the rows it animates — a row cannot
+ * announce its own exit after React has already unmounted it — so this owns
+ * the boundary and each section just hands it children.
+ */
+export function RowList({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <AnimatePresence initial={false}>{children}</AnimatePresence>
+    </div>
   )
 }

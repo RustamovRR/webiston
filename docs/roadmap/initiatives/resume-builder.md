@@ -97,6 +97,26 @@ with the research sources.
   **Two promotions on the way** (§14, at the consumer that justified them):
   `Field`/`FieldSet` → `src/components/shared/Field` (4th consumer),
   `UZBEK_MONTHS` → `src/constants/uzbek.ts` (2nd tool).
+- [x] **P1b** Owner review pass — **done 2026-08-14.** The native
+  `<input type="month">` was a straight regression of a settled rule ("every
+  control is the suite's"), caught by the owner. Fixed properly rather than
+  patched: **`MonthPicker`** now lives in `@webiston/ui/composites` — Popover +
+  Button + a 12-cell grid + `Intl` month names, same API shape as `DatePicker`
+  (ISO in/out, `format`, bounds). A separate component, not a mode on
+  `DatePicker`: answering "which month did you start?" by clicking the 1st of
+  a month on a day grid is a click nobody should make. Measured after: the
+  resume page pulls **no `react-day-picker` chunk** (17 chunks vs base64's 16).
+  **Rows now animate** — `framer-motion` `AnimatePresence` + `layout`, the
+  repo's existing pattern, with the timing in one `ROW_MOTION` constant so all
+  four sections move identically. That only became correct after rows gained a
+  stable `id`: keyed by array index, `AnimatePresence` fades out whichever row
+  lands on that index, not the deleted one — so the id fixed the animation AND
+  removed every `noArrayIndexKey` suppression from the module. Also swept out,
+  in the same pass: the dead `restored` flag on the hook's public interface,
+  the `contact.website` field no input ever rendered, a module-scope
+  `new Date()` (the SSR clock trap the document family already recorded), and
+  the print logic duplicated from `useDocument` → promoted to
+  `src/lib/utils/print.ts` (`printWithTitle`) at its second consumer.
 - [ ] **P2** Zamonaviy template + switcher + photo upload + accent palette
 - [ ] **P3** `.docx` export (Klassik first), lotin↔kirill toggle, ru/en
   document headings

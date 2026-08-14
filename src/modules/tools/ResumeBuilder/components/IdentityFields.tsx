@@ -1,13 +1,15 @@
 "use client"
 
+import { MonthPicker } from "@webiston/ui/composites/MonthPicker"
 import { Input } from "@webiston/ui/primitives/input"
 import { Textarea } from "@webiston/ui/primitives/textarea"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useId } from "react"
 
 import { Field, FieldSet } from "@/components/shared/Field"
 
 import type { useResume } from "../hooks/useResume"
+import { monthLabel } from "../utils/format"
 
 /**
  * Who the CV is about: name, target role, how to reach them, and the summary.
@@ -24,7 +26,13 @@ export function IdentityFields({
   setNested
 }: Pick<ReturnType<typeof useResume>, "data" | "set" | "setNested">) {
   const t = useTranslations("ResumePage.form")
+  const locale = useLocale()
   const id = useId()
+
+  // Read on render, never at module scope: a module-level `new Date()` is
+  // evaluated once during SSR and can disagree with the client across a month
+  // boundary — the trap the document family wrote down after hitting it.
+  const thisMonth = new Date().toISOString().slice(0, 7)
 
   return (
     <>
@@ -133,15 +141,19 @@ export function IdentityFields({
             label={t("birthDate")}
             hint={t("birthDateHint")}
           >
-            {/* A month input, not a full date picker: the sheet prints
-                "1999-yil aprel" and the exact day is nobody's business. */}
-            <Input
+            {/* The suite's own control, and month precision: the sheet
+                prints "1999-yil aprel" and the exact day is nobody's
+                business on a CV. */}
+            <MonthPicker
               id={`${id}-birth`}
-              type="month"
               value={data.personal.birthDate.slice(0, 7)}
-              onChange={(event) =>
-                setNested("personal", "birthDate", `${event.target.value}-01`)
+              onChange={(value) =>
+                setNested("personal", "birthDate", value ? `${value}-01` : "")
               }
+              placeholder={t("monthPlaceholder")}
+              format={monthLabel}
+              locale={locale}
+              max={thisMonth}
             />
           </Field>
           <Field id={`${id}-marital`} label={t("maritalStatus")}>

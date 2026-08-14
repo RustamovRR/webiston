@@ -7,6 +7,7 @@ import { useCallback } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
+import { printWithTitle } from "@/lib/utils"
 
 import { HistoryFields } from "./components/HistoryFields"
 import { IdentityFields } from "./components/IdentityFields"
@@ -27,26 +28,8 @@ export function ResumeBuilder() {
   const tCommon = useTranslations("Common")
   const resume = useResume()
 
-  /**
-   * Print through the page, scoped by a body class — and swap the title
-   * first, because the browser prints `document.title` in its header band and
-   * offers it as the "Save as PDF" filename. The document family learned this
-   * the expensive way; here the payoff is a file called `rezyume.pdf`.
-   */
-  const print = useCallback(() => {
-    const pageTitle = document.title
-    document.title = "rezyume"
-    document.body.classList.add("resume-print")
-    window.addEventListener(
-      "afterprint",
-      () => {
-        document.body.classList.remove("resume-print")
-        document.title = pageTitle
-      },
-      { once: true }
-    )
-    window.print()
-  }, [])
+  /** Print the sheet alone; the PDF saves as `rezyume.pdf`. */
+  const print = useCallback(() => printWithTitle("resume-print", "rezyume"), [])
 
   return (
     <div className="mx-auto w-full max-w-[1536px] px-4 pb-6 sm:px-6 lg:px-8">

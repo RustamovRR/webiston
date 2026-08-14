@@ -16,6 +16,10 @@ export { CopyButton } from "./CopyButton"
 // among them. Import the deep path instead:
 //
 //   import { DatePicker } from "@webiston/ui/composites/DatePicker"
+//
+// `MonthPicker` costs nothing extra — it is Popover + Button + `Intl` — but it
+// is kept on the same deep-import footing so the two date controls are reached
+// the same way and nobody has to remember which is which.
 export type { FaqAccordionProps, FaqEntry } from "./FaqAccordion"
 export { FaqAccordion } from "./FaqAccordion"
 export { default as InfoCard } from "./InfoCard"

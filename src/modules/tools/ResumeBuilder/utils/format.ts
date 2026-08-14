@@ -51,6 +51,7 @@ export function bulletLines(description: string): string[] {
  */
 export function isBlank(data: ResumeData): boolean {
   return (
+    !data.photo &&
     !data.fullName.trim() &&
     !data.role.trim() &&
     !data.summary.trim() &&

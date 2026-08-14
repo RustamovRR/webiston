@@ -7,7 +7,8 @@ import type {
   EducationEntry,
   ExperienceEntry,
   LanguageEntry,
-  ResumeData
+  ResumeData,
+  RowId
 } from "../types"
 
 /**
@@ -17,22 +18,42 @@ import type {
  */
 const STORAGE_KEY = "webiston:rezyume:v1"
 
-/** A blank row for each repeating section. */
-export const EMPTY_EXPERIENCE: ExperienceEntry = {
+/**
+ * A row id. `crypto.randomUUID` needs a secure context, which localhost and
+ * https both are — but a stale http preview is neither, and a resume form
+ * that throws there would be a silly way to lose a bug report.
+ */
+let fallbackId = 0
+const rowId = () =>
+  globalThis.crypto?.randomUUID?.() ?? `row-${Date.now()}-${fallbackId++}`
+
+/** A blank row for each repeating section. Called, not shared: each needs
+ * its own id, and a shared object literal would hand out the same one. */
+const blankExperience = (): ExperienceEntry => ({
+  id: rowId(),
   company: "",
   role: "",
   from: "",
   to: "",
   current: false,
   description: ""
-}
-export const EMPTY_EDUCATION: EducationEntry = {
+})
+const blankEducation = (): EducationEntry => ({
+  id: rowId(),
   institution: "",
   field: "",
   from: "",
   to: ""
-}
-export const EMPTY_LANGUAGE: LanguageEntry = { name: "", level: "" }
+})
+const blankLanguage = (): LanguageEntry => ({
+  id: rowId(),
+  name: "",
+  level: ""
+})
+
+/** Give every restored row an id, keeping the one it already had. */
+const withIds = <T extends Partial<RowId>>(rows: T[] | undefined) =>
+  (rows ?? []).map((row) => ({ ...row, id: row.id || rowId() }))
 
 /**
  * Merge a stored draft over the empty shape.
@@ -52,10 +73,12 @@ function restore(): ResumeData | null {
       ...stored,
       contact: { ...EMPTY_RESUME.contact, ...stored.contact },
       personal: { ...EMPTY_RESUME.personal, ...stored.personal },
-      experience: stored.experience ?? [],
-      education: stored.education ?? [],
+      // `withIds` backfills drafts written before rows carried one — without
+      // it every restored row would key on `undefined` and collapse into one.
+      experience: withIds(stored.experience),
+      education: withIds(stored.education),
       skills: stored.skills ?? [],
-      languages: stored.languages ?? []
+      languages: withIds(stored.languages)
     }
   } catch {
     // A corrupt draft is not worth an error screen — start clean.
@@ -85,16 +108,14 @@ interface UseResume {
   moveRow: (section: RepeatingSection, index: number, by: -1 | 1) => void
   loadSample: () => void
   reset: () => void
-  /** False until the stored draft has been read — the sheet waits for it. */
-  restored: boolean
 }
 
 type RepeatingSection = "experience" | "education" | "languages"
 
-const BLANK_ROW: Record<RepeatingSection, unknown> = {
-  experience: EMPTY_EXPERIENCE,
-  education: EMPTY_EDUCATION,
-  languages: EMPTY_LANGUAGE
+const BLANK_ROW: Record<RepeatingSection, () => RowId> = {
+  experience: blankExperience,
+  education: blankEducation,
+  languages: blankLanguage
 }
 
 /**
@@ -171,10 +192,7 @@ export function useResume(): UseResume {
   const addRow = useCallback((section: RepeatingSection) => {
     setData((current) => ({
       ...current,
-      [section]: [
-        ...current[section],
-        structuredClone(BLANK_ROW[section]) as never
-      ]
+      [section]: [...current[section], BLANK_ROW[section]() as never]
     }))
   }, [])
 
@@ -211,7 +229,6 @@ export function useResume(): UseResume {
     removeRow,
     moveRow,
     loadSample,
-    reset,
-    restored
+    reset
   }
 }
