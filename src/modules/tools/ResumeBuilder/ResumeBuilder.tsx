@@ -1,18 +1,20 @@
 "use client"
 
 import { Button } from "@webiston/ui/primitives/button"
-import { FileText, Printer, RotateCcw } from "lucide-react"
+import { Download, FileText, Printer, RotateCcw } from "lucide-react"
 import { useTranslations } from "next-intl"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 
 import { ToolCard } from "@/components/shared/ToolCard"
 import { ToolHeader } from "@/components/shared/ToolHeader"
 import { printWithTitle } from "@/lib/utils"
 
+import { DesignFields } from "./components/DesignFields"
 import { HistoryFields } from "./components/HistoryFields"
 import { IdentityFields } from "./components/IdentityFields"
 import { ResumeSheet } from "./components/ResumeSheet"
 import { useResume } from "./hooks/useResume"
+import { sheetLabels } from "./utils/script"
 
 /**
  * The resume builder.
@@ -28,8 +30,26 @@ export function ResumeBuilder() {
   const tCommon = useTranslations("Common")
   const resume = useResume()
 
+  const [isExporting, setExporting] = useState(false)
+
   /** Print the sheet alone; the PDF saves as `rezyume.pdf`. */
   const print = useCallback(() => printWithTitle("resume-print", "rezyume"), [])
+
+  /**
+   * The .docx, loaded on the click. hh.uz and most local employers ask for a
+   * Word file, and unlike the PDF it can be edited and re-uploaded.
+   */
+  const downloadDocx = useCallback(async () => {
+    setExporting(true)
+    try {
+      const { downloadResumeDocx } = await import("./utils/docx")
+      await downloadResumeDocx(resume.data, sheetLabels(resume.data), "rezyume")
+    } catch (error) {
+      console.error("DOCX export failed:", error)
+    } finally {
+      setExporting(false)
+    }
+  }, [resume.data])
 
   return (
     <div className="mx-auto w-full max-w-[1536px] px-4 pb-6 sm:px-6 lg:px-8">
@@ -60,6 +80,7 @@ export function ResumeBuilder() {
           }
         >
           <div className="flex flex-col gap-5">
+            <DesignFields data={resume.data} set={resume.set} />
             <IdentityFields
               data={resume.data}
               set={resume.set}
@@ -87,6 +108,15 @@ export function ResumeBuilder() {
             bodyClassName="flex flex-col gap-4 p-5 lg:max-h-[calc(100dvh-9rem)] lg:overflow-y-auto"
             actions={
               <div className="flex flex-wrap items-center justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadDocx}
+                  disabled={isExporting}
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  {isExporting ? tCommon("loading") : t("preview.docx")}
+                </Button>
                 <Button size="sm" onClick={print}>
                   <Printer className="size-4" aria-hidden="true" />
                   {t("preview.print")}

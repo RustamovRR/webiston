@@ -5,6 +5,42 @@
       "description": "Rezyumeni to'ldiring va chop eting — hammasi brauzeringizda, ro'yxatdan o'tishsiz."
     },
     "form": {
+      "design": {
+        "legend": "Ko'rinish"
+      },
+      "template": "Shablon",
+      "templates": {
+        "klassik": "Klassik",
+        "zamonaviy": "Zamonaviy"
+      },
+      "docLanguage": "Hujjat tili",
+      "languageHint": "Varaqdagi sarlavhalar tili. Sayt tilidan mustaqil.",
+      "docLanguages": {
+        "uz": "O'zbekcha",
+        "ru": "Ruscha",
+        "en": "Inglizcha"
+      },
+      "script": "Yozuv",
+      "scripts": {
+        "lotin": "Lotin",
+        "kirill": "Кирилл"
+      },
+      "accent": "Rang",
+      "accents": {
+        "kok": "Ko'k",
+        "toq": "To'q kulrang",
+        "yashil": "Yashil",
+        "qizil": "Qizil",
+        "binafsha": "Binafsha"
+      },
+      "photo": "Surat",
+      "photoHint": "Ixtiyoriy. O'zbekistonda odatda rasmiy surat qo'yiladi. Surat ham faqat qurilmangizda qoladi.",
+      "photoAdd": "Surat qo'shish",
+      "photoReplace": "Almashtirish",
+      "photoError": {
+        "notAnImage": "Bu rasm fayli emas",
+        "unreadable": "Rasmni o'qib bo'lmadi"
+      },
       "title": "Ma'lumotlar",
       "sample": "Namuna",
       "storage": "Kiritganlaringiz faqat shu qurilmada saqlanadi — serverga hech narsa yuborilmaydi. Sahifani yopib qaytsangiz, ish joyida turadi.",
@@ -81,7 +117,8 @@
     },
     "preview": {
       "title": "Rezyume",
-      "print": "Chop etish"
+      "print": "Chop etish",
+      "docx": "Word (.docx)"
     },
     "sheet": {
       "empty": "Chapdagi maydonlarni to'ldiring — rezyume shu yerda paydo bo'ladi. Yoki «Namuna» tugmasini bosib tayyorini ko'ring.",
@@ -91,7 +128,9 @@
       "skills": "Ko'nikmalar",
       "languages": "Tillar",
       "birthDate": "Tug'ilgan sana",
-      "present": "hozirgacha"
+      "present": "hozirgacha",
+      "contact": "Bog'lanish",
+      "personal": "Qo'shimcha"
     }
   }
 }

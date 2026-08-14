@@ -7,6 +7,8 @@ export {
 } from "./base64"
 export { saveBlob } from "./download"
 export { formatDuration, formatFileSize } from "./format"
+export type { DownscaleOptions, ImageError, ImageResult } from "./image"
+export { downscaleImage, toDataUrl } from "./image"
 export { printWithTitle } from "./print"
 // Text utilities
 

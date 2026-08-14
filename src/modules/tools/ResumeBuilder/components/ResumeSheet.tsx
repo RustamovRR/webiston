@@ -1,11 +1,14 @@
 "use client"
 
+import { cn } from "@webiston/ui"
 import { useTranslations } from "next-intl"
 
 import { RESUME_PAPER } from "../constants"
 import type { ResumeData } from "../types"
 import { isBlank } from "../utils/format"
+import { sheetLabels, viewOf } from "../utils/script"
 import { KlassikTemplate } from "./KlassikTemplate"
+import { ZamonaviyTemplate } from "./ZamonaviyTemplate"
 
 /**
  * The A4 sheet. What you see is what the printer and the .docx produce.
@@ -24,6 +27,11 @@ import { KlassikTemplate } from "./KlassikTemplate"
  */
 export function ResumeSheet({ data }: { data: ResumeData }) {
   const t = useTranslations("ResumePage.sheet")
+
+  // The script is a LENS: the draft keeps what was typed, and Cyrillic is
+  // derived at render, so toggling back and forth can never corrupt anything.
+  const view = viewOf(data)
+  const labels = sheetLabels(data)
 
   return (
     <>
@@ -78,22 +86,32 @@ export function ResumeSheet({ data }: { data: ResumeData }) {
         }
       `}</style>
 
+      {/* Zamonaviy's sidebar has to reach the paper's edges, so the PADDING
+          belongs to the template, not the sheet. Klassik keeps it here. */}
       <div
         id="resume-sheet"
-        className="mx-auto w-full max-w-[210mm] rounded-md p-[10mm] shadow-md sm:p-[14mm] lg:min-h-[297mm] lg:p-[15mm]"
+        className={cn(
+          "mx-auto w-full max-w-[210mm] overflow-hidden rounded-md shadow-md lg:min-h-[297mm]",
+          data.template === "klassik" && "p-[10mm] sm:p-[14mm] lg:p-[15mm]"
+        )}
         style={{
           background: RESUME_PAPER.background,
           color: RESUME_PAPER.ink,
-          fontFamily: RESUME_PAPER.serifFamily
+          fontFamily:
+            data.template === "klassik"
+              ? RESUME_PAPER.serifFamily
+              : RESUME_PAPER.sansFamily
         }}
       >
         {isBlank(data) ? (
           // An A4 page of placeholder text teaches nothing. One line does.
-          <p className="py-16 text-center text-[15px] italic opacity-50">
+          <p className="p-[15mm] py-16 text-center text-[15px] italic opacity-50">
             {t("empty")}
           </p>
+        ) : data.template === "zamonaviy" ? (
+          <ZamonaviyTemplate data={view} labels={labels} />
         ) : (
-          <KlassikTemplate data={data} />
+          <KlassikTemplate data={view} labels={labels} />
         )}
       </div>
     </>

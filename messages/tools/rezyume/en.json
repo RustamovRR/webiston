@@ -5,6 +5,42 @@
       "description": "Fill in your CV and print it — everything stays in your browser, no account needed."
     },
     "form": {
+      "design": {
+        "legend": "Appearance"
+      },
+      "template": "Template",
+      "templates": {
+        "klassik": "Classic",
+        "zamonaviy": "Modern"
+      },
+      "docLanguage": "Document language",
+      "languageHint": "The language of the printed headings. Independent of the site.",
+      "docLanguages": {
+        "uz": "Uzbek",
+        "ru": "Russian",
+        "en": "English"
+      },
+      "script": "Script",
+      "scripts": {
+        "lotin": "Latin",
+        "kirill": "Кирилл"
+      },
+      "accent": "Colour",
+      "accents": {
+        "kok": "Blue",
+        "toq": "Charcoal",
+        "yashil": "Green",
+        "qizil": "Red",
+        "binafsha": "Purple"
+      },
+      "photo": "Photo",
+      "photoHint": "Optional. Uzbek CVs usually carry a formal headshot. It stays on your device too.",
+      "photoAdd": "Add a photo",
+      "photoReplace": "Replace",
+      "photoError": {
+        "notAnImage": "That is not an image file",
+        "unreadable": "The image could not be read"
+      },
       "title": "Details",
       "sample": "Sample",
       "storage": "What you type is kept on this device only — nothing is sent to a server. Close the page and come back: your draft is still here.",
@@ -81,7 +117,8 @@
     },
     "preview": {
       "title": "Resume",
-      "print": "Print"
+      "print": "Print",
+      "docx": "Word (.docx)"
     },
     "sheet": {
       "empty": "Fill in the fields on the left and your CV appears here. Or press «Sample» to see a finished one.",
@@ -91,7 +128,9 @@
       "skills": "Skills",
       "languages": "Languages",
       "birthDate": "Born",
-      "present": "present"
+      "present": "present",
+      "contact": "Contact",
+      "personal": "Details"
     }
   }
 }

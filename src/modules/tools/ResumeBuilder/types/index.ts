@@ -11,6 +11,25 @@ import type { ACCENTS, TEMPLATES } from "../constants"
  */
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"]
+
+/**
+ * The language of the PAPER — independent of the interface locale.
+ *
+ * A Russian-reading visitor in Tashkent may well be writing an Uzbek CV for a
+ * state organisation. Tying the sheet's headings to the site's locale would
+ * make that impossible, so the document carries its own language.
+ */
+export type DocumentLanguage = "uz" | "ru" | "en"
+
+/**
+ * Which script an UZBEK document is written in.
+ *
+ * The weapon no competitor has: «лотин кирилл» is a live search family (GSC:
+ * 899 impressions on one query alone), so the audience that types Cyrillic is
+ * real — and no resume builder anywhere offers them their own alphabet.
+ * Meaningless for `ru`/`en`, and the control hides itself there.
+ */
+export type DocumentScript = "lotin" | "kirill"
 export type AccentId = (typeof ACCENTS)[number]["id"]
 
 /**
@@ -55,6 +74,10 @@ export interface LanguageEntry extends RowId {
 
 export interface ResumeData {
   template: TemplateId
+  /** Language of the printed headings. Independent of the site locale. */
+  language: DocumentLanguage
+  /** Uzbek only; `ru`/`en` documents ignore it. */
+  script: DocumentScript
   /** Zamonaviy's one restrained colour. Klassik ignores it. */
   accent: AccentId
   /** dataURL, held in memory/localStorage only — never uploaded anywhere. */

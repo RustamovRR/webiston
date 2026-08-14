@@ -1,7 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-
+import type { SheetLabels } from "../constants/labels"
 import type { ResumeData } from "../types"
 import { bulletLines, monthLabel, periodLabel } from "../utils/format"
 
@@ -18,9 +17,13 @@ import { bulletLines, monthLabel, periodLabel } from "../utils/format"
  * Every heading comes from the DOCUMENT's language, not the interface's:
  * a visitor reading the site in Russian may well be writing an Uzbek CV.
  */
-export function KlassikTemplate({ data }: { data: ResumeData }) {
-  const t = useTranslations("ResumePage.sheet")
-
+export function KlassikTemplate({
+  data,
+  labels
+}: {
+  data: ResumeData
+  labels: SheetLabels
+}) {
   const hasPersonal = data.personal.birthDate || data.personal.maritalStatus
   const contactLine = [
     data.contact.phone,
@@ -55,7 +58,7 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
             <p className="mt-1 text-[13px]">
               {[
                 data.personal.birthDate &&
-                  `${t("birthDate")}: ${monthLabel(data.personal.birthDate.slice(0, 7))}`,
+                  `${labels.birthDate}: ${monthLabel(data.personal.birthDate.slice(0, 7))}`,
                 data.personal.maritalStatus.trim()
               ]
                 .filter(Boolean)
@@ -76,13 +79,13 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
       </header>
 
       {data.summary.trim() && (
-        <Section title={t("summary")}>
+        <Section title={labels.summary}>
           <p className="text-justify">{data.summary}</p>
         </Section>
       )}
 
       {data.experience.length > 0 && (
-        <Section title={t("experience")}>
+        <Section title={labels.experience}>
           {data.experience.map((entry) => (
             <article key={entry.id} className="mt-3 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
@@ -92,7 +95,7 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
                     entry.from,
                     entry.to,
                     entry.current,
-                    t("present")
+                    labels.present
                   )}
                 </span>
               </div>
@@ -112,7 +115,7 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
       )}
 
       {data.education.length > 0 && (
-        <Section title={t("education")}>
+        <Section title={labels.education}>
           {data.education.map((entry) => (
             <article key={entry.id} className="mt-2 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
@@ -130,13 +133,13 @@ export function KlassikTemplate({ data }: { data: ResumeData }) {
       )}
 
       {data.skills.length > 0 && (
-        <Section title={t("skills")}>
+        <Section title={labels.skills}>
           <p>{data.skills.join("  ·  ")}</p>
         </Section>
       )}
 
       {data.languages.length > 0 && (
-        <Section title={t("languages")}>
+        <Section title={labels.languages}>
           <p>
             {data.languages
               .map((entry) =>

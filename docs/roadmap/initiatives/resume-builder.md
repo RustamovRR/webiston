@@ -117,9 +117,50 @@ with the research sources.
   `new Date()` (the SSR clock trap the document family already recorded), and
   the print logic duplicated from `useDocument` → promoted to
   `src/lib/utils/print.ts` (`printWithTitle`) at its second consumer.
-- [ ] **P2** Zamonaviy template + switcher + photo upload + accent palette
-- [ ] **P3** `.docx` export (Klassik first), lotin↔kirill toggle, ru/en
-  document headings
+- [x] **P2** — **done 2026-08-14.** „Zamonaviy" (34% tinted sidebar carrying
+  contact/skills/languages, main column for summary/experience/education, one
+  accent from `ACCENTS`), the `SegmentedControl` switcher, the 5-colour accent
+  picker (shown only for Zamonaviy — a control that paints nothing teaches
+  distrust), and photo upload. `DesignFields` sits FIRST in the form: the
+  choice reframes everything under it, and one click proves the tool does
+  something. The sheet now owns padding only for Klassik — Zamonaviy's sidebar
+  has to reach the paper edge — and switches font family with the template.
+  **Photo compression is load-bearing, not polish:** the draft lives in
+  `localStorage` (~5 MB for the whole origin) and a phone photo is 3–8 MB
+  before base64 adds a third, so storing the original would make every save
+  throw and silently cost the visitor their afternoon. Downscaled to 480px /
+  JPEG 0.82 (~40 kB) — and the canvas work was PROMOTED to
+  `src/lib/utils/image.ts` (`downscaleImage`) at its second consumer, with
+  QrGenerator's `prepareLogo` reduced to the two options that make it a logo
+  rather than a photo (PNG for transparency, pass-through when already small).
+  **One a11y bug caught in the same pass:** the template and accent controls
+  were wrapped in `Field`, whose `<label htmlFor>` pointed at an id neither
+  control accepts — a label labelling nothing. Both now name themselves
+  (`SegmentedControl`'s legend, `role="group"`), with a plain caption span.
+- [x] **P3** — **done 2026-08-14.** Three things, and the middle one is the
+  moat. **(1) `.docx`** — double dynamic import like the document family
+  (verified: the library is in no chunk the page loads initially). Deliberately
+  ONE single-column layout for both templates: a Word two-column table fights
+  every reflow the recipient's Word does, and the `.docx` exists to be edited
+  and re-uploaded, while Zamonaviy's colour is a screen/print concern served by
+  the PDF path. **(2) Document LANGUAGE, independent of the site locale** — a
+  Russian-reading visitor in Tashkent writing an Uzbek CV is a real person that
+  `useTranslations` cannot serve, since it only knows the request locale. So
+  the sheet's headings moved OUT of `messages/` into `constants/labels.ts`:
+  they are document content, exactly like the document family's prose in
+  `compose.ts`. Both templates now take `labels` as a prop and no longer touch
+  next-intl. **(3) Lotin↔kirill** — `toCyrillicResume` applied as a LENS at
+  render, never to the stored draft, so toggling cannot corrupt anything. The
+  passport lesson in a new costume: emails, URLs, phones and Telegram handles
+  are SHIELDED — «нилуфар.каримова@еxампле.cом» is not a harder-to-read
+  address, it is one that does not exist, on a document whose whole purpose is
+  being contacted. Uzbek-only, and the control hides itself for ru/en.
+  **Two bugs caught in the pass:** the token ratchet flagged a literal
+  `#ffffff` in the sidebar's `color-mix` — fixed by mixing against
+  `RESUME_PAPER.background` rather than forced; and a message-key COLLISION,
+  where the new document-language control reused `form.language`, already
+  taken by the languages-row field label — renamed to `docLanguage`, and the
+  original restored after an over-eager cleanup dropped it.
 - [ ] **P4** FAQ with the local-format research + tests
 - [ ] **P5** Review pass: design-system-reviewer + code-reviewer agents,
   measure bundle, gate, ship

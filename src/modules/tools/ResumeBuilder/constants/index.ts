@@ -59,6 +59,8 @@ export const ROW_MOTION = {
 /** A fresh form. Template and accent carry defaults; everything else empty. */
 export const EMPTY_RESUME: ResumeData = {
   template: "klassik",
+  language: "uz",
+  script: "lotin",
   accent: "kok",
   photo: "",
   fullName: "",
@@ -88,6 +90,8 @@ export const EMPTY_RESUME: ResumeData = {
  */
 export const buildSampleResume = (): ResumeData => ({
   template: "klassik",
+  language: "uz",
+  script: "lotin",
   accent: "kok",
   photo: "",
   fullName: "Karimova Nilufar Anvarovna",
@@ -151,3 +155,13 @@ export const buildSampleResume = (): ResumeData => ({
     { id: "sample-lang-3", name: "Ingliz", level: "B1" }
   ]
 })
+
+/**
+ * The three languages a CV can be PRINTED in, and the two scripts Uzbek has.
+ *
+ * Ordered the way the audience needs them: Uzbek first because that is who
+ * this tool is for, Russian second because the local business language is
+ * Russian in a large share of offices.
+ */
+export const DOCUMENT_LANGUAGES = ["uz", "ru", "en"] as const
+export const DOCUMENT_SCRIPTS = ["lotin", "kirill"] as const
