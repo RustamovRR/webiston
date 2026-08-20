@@ -119,7 +119,11 @@
         "shortcut": "⌘/Ctrl + Shift + L copies instantly",
         "privacy": "Your text never leaves the browser"
       },
-      "cta": "Add to Chrome — free"
+      "stores": {
+        "chrome": "Add to Chrome",
+        "firefox": "Add to Firefox"
+      },
+      "storesNote": "Both are free. The Chrome store also works in Edge, Brave and Opera."
     }
   }
 }

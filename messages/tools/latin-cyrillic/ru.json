@@ -119,7 +119,11 @@
         "shortcut": "⌘/Ctrl + Shift + L — мгновенное копирование",
         "privacy": "Текст не покидает ваш браузер"
       },
-      "cta": "Установить в Chrome — бесплатно"
+      "stores": {
+        "chrome": "Установить в Chrome",
+        "firefox": "Установить в Firefox"
+      },
+      "storesNote": "Оба расширения бесплатны. Магазин Chrome работает также в Edge, Brave и Opera."
     }
   }
 }

@@ -119,7 +119,11 @@
         "shortcut": "⌘/Ctrl + Shift + L — darhol nusxalash",
         "privacy": "Matn brauzeringizdan chiqmaydi"
       },
-      "cta": "Chrome'ga qo'shish — bepul"
+      "stores": {
+        "chrome": "Chrome'ga qo'shish",
+        "firefox": "Firefox'ga qo'shish"
+      },
+      "storesNote": "Ikkalasi ham bepul. Chrome do'koni Edge, Brave va Opera brauzerlarida ham ishlaydi."
     }
   }
 }
