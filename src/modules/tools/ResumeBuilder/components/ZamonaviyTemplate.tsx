@@ -56,7 +56,10 @@ export function ZamonaviyTemplate({
       // `grow`, not `flex-1`: the sheet is a flex column with a 297mm MINIMUM,
       // so this has to fill a short page (or the sidebar tint stops mid-paper)
       // without a `flex-basis: 0` that would fight a long one.
-      className="flex grow gap-0 text-[14px] leading-[1.55]"
+      // `break-words` on the root: `overflow-wrap` inherits, and the sidebar
+      // is only 34% of the paper, so it is where a long unbreakable token
+      // does the most damage. See KlassikTemplate.
+      className="flex grow gap-0 break-words text-[14px] leading-[1.55]"
       style={{ fontFamily: RESUME_PAPER.sansFamily }}
     >
       {/* Sidebar. `print-color-adjust` asks the browser to keep the tint; it
@@ -151,7 +154,7 @@ export function ZamonaviyTemplate({
             {data.experience.map((entry) => (
               <article key={entry.id} className="mt-3 first:mt-0">
                 <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-semibold">
+                  <h3 className="min-w-0 font-semibold">
                     {entry.role || entry.company}
                   </h3>
                   <span className="shrink-0 text-[12px] opacity-70">
@@ -168,8 +171,10 @@ export function ZamonaviyTemplate({
                 )}
                 {bulletLines(entry.description).length > 0 && (
                   <ul className="mt-1 list-disc pl-4">
-                    {bulletLines(entry.description).map((line) => (
-                      <li key={line}>{line}</li>
+                    {/* See KlassikTemplate: the row id plus the position, so
+                        two identical bullets are not a duplicate key. */}
+                    {bulletLines(entry.description).map((line, at) => (
+                      <li key={`${entry.id}-${at}`}>{line}</li>
                     ))}
                   </ul>
                 )}
@@ -183,7 +188,7 @@ export function ZamonaviyTemplate({
             {data.education.map((entry) => (
               <article key={entry.id} className="mt-2 first:mt-0">
                 <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-semibold">{entry.institution}</h3>
+                  <h3 className="min-w-0 font-semibold">{entry.institution}</h3>
                   <span className="shrink-0 text-[12px] opacity-70">
                     {periodLabel(entry.from, entry.to, false, "")}
                   </span>

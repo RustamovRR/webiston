@@ -226,6 +226,64 @@ with the research sources.
   numbers, turning `+1 555 123 4567` into `+15 551 23 45 67`, which a test of
   mine had locked in as correct. **13 new tests** (8 component, 5 mask);
   **1,875 / 101 files**; gate all 0.
+- [x] **P3d** Pre-ship audit — **done 2026-08-14.** Asked "what is still wrong,
+  and do we need template #3?". Three bugs found and fixed, three gaps recorded
+  rather than guessed at. **Fixed: (1) the `.docx` ignored the script toggle.**
+  `ResumeBuilder.tsx` passed `sheetLabels(data)` — which converts — alongside
+  raw `data`, so a Cyrillic CV downloaded as Cyrillic headings over Latin
+  content. Half-converted is worse than either, on the one feature no
+  competitor has. Now `viewOf(data)`, locked by a test that also checks the
+  email is still shielded. **(2) The print CSS had no break rules at all** —
+  grep returned nothing — so a two-page CV could strand a job title at the foot
+  of page one with its bullets on page two. `break-inside: avoid` on articles
+  and list items, `break-after: avoid` on headings, outside the `@supports`
+  blocks so both paths get them; verified the browser PARSED both rules rather
+  than dropping them, which is the failure mode this file has hit before.
+  **(3) Two identical bullet lines were a duplicate React key** (`key={line}`)
+  — now the row id plus position, which needed no `noArrayIndexKey`
+  suppression. **Also: the PDF path was invisible.** It exists and is the best
+  one available — the print dialog's "Save as PDF" is written by the same
+  engine that painted the preview, so the text is real and ATS-parseable, where
+  a bundled jsPDF/html2canvas would rasterise it and pdf-lib would mean a THIRD
+  renderer to keep in sync. The problem was only that the button said "Chop
+  etish" and nothing on the page said the word PDF; renamed "PDF / Chop etish"
+  in all three locales. **1,877 tests / 101 files; gate all 0.**
+- [x] **P3e-1** Mobile pane switch — **done 2026-08-14.** Measured at 375px
+  before: form card 3,372px, paper starting at 3,723px — ~2,635px of scrolling
+  before a millimetre of it was visible, i.e. on a phone the tool had no
+  preview. P3b's "no modal, the live preview IS the product" was true on a
+  desktop and false on a phone. A `SegmentedControl` (Ma'lumotlar / Rezyume),
+  sticky under the site header at `top-(--header-height)` — reading the same
+  token the header uses, since two hardcoded 4rems in two files is the pair
+  that drifts — and `lg:hidden`, because above `lg` both panes are already on
+  screen. A switch and not a modal: a modal hides the form the moment you look
+  at the result. Document height on the form pane 5,271px → 2,729px.
+  **Panes are hidden, never unmounted** — the sheet keeps its state and, the
+  part that would have been a silent bug, the print stylesheet can still reach
+  `#resume-sheet`, since `:has(#resume-sheet)` sets `display: block !important`
+  on every ancestor and `!important` beats the `hidden` class.
+  **`scrollIntoView` on the strip was the first attempt and was a no-op** — a
+  stuck element is by definition already in view, and switching at 1,540px left
+  the paper's top 1,132px above the viewport. `window.scrollTo({top: 0})`
+  instead; re-measured, the paper now lands 408px into the viewport.
+  **Verified by PRINTING, not by reasoning** — this module has produced six
+  identical pages once already by trusting print CSS. Driven over CDP at a
+  375px mobile viewport with the FORM pane active (sheet `display: none` on
+  screen): **1 page, A4 594.96×841.92pt, full CV, no form controls leaked** —
+  and `pdftotext` reads every word, which is also the proof that this PDF path
+  is ATS-parseable where a rasterising jsPDF would not be. A second run with a
+  long summary: **2 pages, and page 2 OPENS with the job title** rather than
+  stranding it at the foot of page 1 — the new `break-inside` rules doing
+  exactly their job. All five sections present across both pages.
+- [ ] **P3e-2** The two gaps that remain:
+  - **No density control.** P3b drew the page-break guide and so raised the
+    "this is two pages" question without giving any lever to answer it.
+    Three steps (Keng / Odatiy / Ixcham) over font size and leading, applied
+    to both templates and the docx.
+  - **ATS guidance.** Zamonaviy's two-column PDF is the classic parser
+    failure; the `.docx` is already single-column by design, so the safe path
+    exists and nothing tells the visitor which file to send where. Belongs in
+    the P4 FAQ, with hh.uz checked rather than assumed.
 - [ ] **P4** FAQ with the local-format research + tests
 - [ ] **P5** Review pass: design-system-reviewer + code-reviewer agents,
   measure bundle, gate, ship

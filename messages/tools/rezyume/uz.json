@@ -4,6 +4,7 @@
       "title": "Rezyume Yaratish",
       "description": "Rezyumeni to'ldiring va chop eting — hammasi brauzeringizda, ro'yxatdan o'tishsiz."
     },
+    "pane": "Bo'lim",
     "form": {
       "design": {
         "legend": "Ko'rinish"
@@ -120,7 +121,7 @@
     },
     "preview": {
       "title": "Rezyume",
-      "print": "Chop etish",
+      "print": "PDF / Chop etish",
       "docx": "Word (.docx)"
     },
     "sheet": {
@@ -134,6 +135,43 @@
       "present": "hozirgacha",
       "contact": "Bog'lanish",
       "personal": "Qo'shimcha"
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "photo": {
+          "question": "Rezyumega surat qo'yish kerakmi?",
+          "answer": "O'zbekistonda ko'p ish beruvchilar suratni kutadi — ayniqsa davlat tashkilotlari va mijoz bilan ishlaydigan lavozimlarda. Lekin bu qonuniy talab emas. Xalqaro kompaniyaga yoki chet elga yuborayotgan bo'lsangiz, suratsiz yuborgan ma'qul: ko'p davlatlarda u so'ralmaydi. Shuning uchun bu yerda surat ixtiyoriy — qo'ymasangiz, rezyumeda umuman joy egallamaydi."
+        },
+        "language": {
+          "question": "Rezyumeni qaysi tilda yozish kerak?",
+          "answer": "E'lon qaysi tilda bo'lsa, o'sha tilda. Davlat tashkilotlari uchun o'zbekcha; Toshkentdagi ko'p xususiy ofislarda ish yuritish ruscha; xalqaro kompaniya yoki IT yo'nalishida inglizcha. Bu vosita uchala tilda ham chiqaradi, va hujjat tili sayt tilidan mustaqil — saytni ruscha o'qib, rezyumeni o'zbekcha yozishingiz mumkin."
+        },
+        "script": {
+          "question": "Lotin yoki kirill yozuvida yozaymi?",
+          "answer": "Rezyumeni kim o'qishiga qarab. Yosh HR mutaxassislari va xususiy kompaniyalar odatda lotin yozuvini kutadi; katta yoshdagi rahbarlar va ba'zi idoralar uchun kirill hamon qulayroq. Ikkilansangiz — lotin. Bu yerda bir tugma butun hujjatni almashtiradi, elektron pochta, telefon va havolalar esa o'girilmasdan qoladi."
+        },
+        "length": {
+          "question": "Rezyume necha sahifa bo'lishi kerak?",
+          "answer": "Bitta sahifa — ko'pchilik uchun to'g'ri javob. Ikkinchi sahifa faqat tajriba ko'p bo'lganda oqlanadi. Ko'rib turgan varaqda ingichka chiziq sahifa qayerda tugashini ko'rsatadi: chiziqdan oshib ketsangiz, eng eski ish joyini qisqartiring yoki qisqacha qismini ixchamlang."
+        },
+        "personal": {
+          "question": "Tug'ilgan sana va oilaviy holatni yozish shartmi?",
+          "answer": "Shart emas. O'zbekistonda bu odat bo'lib qolgan va ko'p ish beruvchilar ko'rishni kutadi, lekin talab emas. Ikkala maydon ham ixtiyoriy — bo'sh qoldirsangiz, tayyor rezyumeda bu qatorlar chiqmaydi."
+        },
+        "fileFormat": {
+          "question": "PDF yoki Word — qaysi birini yuborish kerak?",
+          "answer": "Odamga to'g'ridan-to'g'ri yuborayotgan bo'lsangiz (pochta, Telegram) — PDF: u qanday ko'rinsa, ochilganda ham shunday turadi. Ish e'lonlari saytiga yuklayotgan bo'lsangiz — .docx: bunday tizimlar faylni o'qib, maydonlarga ajratadi. Shu sababli bu yerdagi .docx bir ustunli chiqariladi — ikki ustunli maketni avtomatik o'qiydigan tizimlar ko'pincha aralashtirib yuboradi."
+        },
+        "noExperience": {
+          "question": "Ish tajribam yo'q. Nima yozaman?",
+          "answer": "Tajriba faqat rasmiy ish degani emas. Amaliyot, kurs loyihalari, ko'ngilli faoliyat, oilaviy biznesga yordam, freelance buyurtmalar — hammasi hisoblanadi. Ta'lim, ko'nikmalar va tillarni oldinga qo'ying, qisqacha qismida esa nimani o'rgangan va nimani qila olishingizni aniq yozing."
+        },
+        "privacy": {
+          "question": "Kiritgan ma'lumotlarim qayerda saqlanadi?",
+          "answer": "Faqat shu qurilmada. Rezyume brauzeringizda tuziladi va serverga yuborilmaydi. Qoralama brauzer xotirasida qoladi, shuning uchun sahifani yopib qaytsangiz ish joyida turadi. Surat ham hech qayerga yuklanmaydi. Ro'yxatdan o'tish talab qilinmaydi."
+        }
+      }
     }
   }
 }

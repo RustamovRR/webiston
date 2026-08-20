@@ -4,6 +4,7 @@
       "title": "Resume Builder",
       "description": "Fill in your CV and print it — everything stays in your browser, no account needed."
     },
+    "pane": "Section",
     "form": {
       "design": {
         "legend": "Appearance"
@@ -120,7 +121,7 @@
     },
     "preview": {
       "title": "Resume",
-      "print": "Print",
+      "print": "PDF / Print",
       "docx": "Word (.docx)"
     },
     "sheet": {
@@ -134,6 +135,43 @@
       "present": "present",
       "contact": "Contact",
       "personal": "Details"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "photo": {
+          "question": "Should a CV include a photo?",
+          "answer": "In Uzbekistan many employers expect one, especially state organisations and customer-facing roles. It is a convention, not a legal requirement. If you are applying to an international company or abroad, leave it out — in many countries it is not asked for. The photo is optional here, and leaving it empty costs no space on the page."
+        },
+        "language": {
+          "question": "Which language should the CV be in?",
+          "answer": "The language of the job posting. Uzbek for state organisations; Russian is the working language of many private offices in Tashkent; English for international companies and IT. This tool produces all three, and the document language is independent of the site language — you can read the site in Russian and write the CV in Uzbek."
+        },
+        "script": {
+          "question": "Latin or Cyrillic script?",
+          "answer": "It depends on who will read it. Younger HR staff and private companies usually expect Latin; older managers and some government offices still find Cyrillic easier. When in doubt, use Latin. One button switches the whole document here, while e-mail, phone and links stay untransliterated."
+        },
+        "length": {
+          "question": "How long should a CV be?",
+          "answer": "One page is the right answer for most people. A second page is only justified by substantial experience. A hairline on the sheet shows where the page ends: if your text crosses it, trim the oldest role or tighten the summary."
+        },
+        "personal": {
+          "question": "Do I have to give a birth date and marital status?",
+          "answer": "No. It is a settled local convention in Uzbekistan and many employers expect to see it, but it is not required. Both fields are optional — left blank, those lines do not appear on the finished CV."
+        },
+        "fileFormat": {
+          "question": "Should I send a PDF or a Word file?",
+          "answer": "Sending it to a person directly (e-mail, Telegram) — PDF: it opens exactly as it looks here. Uploading to a job board — .docx: those systems read the file and split it into fields. That is why the .docx here is exported as a single column — automated parsers often scramble a two-column layout."
+        },
+        "noExperience": {
+          "question": "I have no work experience. What do I write?",
+          "answer": "Experience is not only formal employment. Internships, coursework projects, volunteering, helping in a family business, freelance jobs — all of it counts. Put education, skills and languages first, and use the summary to say concretely what you have learned and what you can do."
+        },
+        "privacy": {
+          "question": "Where is the information I type stored?",
+          "answer": "On this device only. The CV is assembled in your browser and never sent to a server. The draft stays in browser storage, so closing the page and coming back keeps your work. The photo is not uploaded anywhere either. No signup is required."
+        }
+      }
     }
   }
 }

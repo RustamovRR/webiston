@@ -47,7 +47,12 @@ export function ToolCard({
       aria-labelledby={titleId}
       className={cn("rounded-xl border border-border bg-card", className)}
     >
-      <div className="flex min-h-[52px] items-center justify-between gap-3 border-border border-b px-5 py-3">
+      {/* `flex-wrap`: the actions are `shrink-0`, so when they do not fit the
+          title is what gives — measured on a 375px phone, "Rezyume" next to a
+          .docx and a print button rendered as "R…". A header that wraps to two
+          lines costs ~36px; a card whose name is one letter costs the name.
+          Nothing moves at any width where the row already fit. */}
+      <div className="flex min-h-[52px] flex-wrap items-center justify-between gap-3 border-border border-b px-5 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
           <span
             aria-hidden="true"
@@ -64,7 +69,15 @@ export function ToolCard({
           </h2>
         </div>
         {actions && (
-          <div className="flex shrink-0 items-center gap-2">{actions}</div>
+          // NOT `shrink-0`. It pinned this row at max-content, so an inner
+          // `flex-wrap` could never engage and the buttons simply ran off the
+          // page: measured at 320px, two export buttons came to 289px in a
+          // 320px viewport and gave the whole document 6px of horizontal
+          // scroll. Wrapping instead of overflowing is right at every width —
+          // above the point where the row fits, nothing about this moves.
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            {actions}
+          </div>
         )}
       </div>
 

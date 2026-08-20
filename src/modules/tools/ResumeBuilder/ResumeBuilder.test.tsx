@@ -226,6 +226,47 @@ describe("resume builder", () => {
     expect(text).toContain("+998 90 123 45 67")
   })
 
+  it("hands the .docx the SAME script the preview shows", async () => {
+    // Arrange — the bug: the headings went through `sheetLabels`, which
+    // converts, while the content was passed raw. A Cyrillic document
+    // downloaded with Cyrillic headings over Latin text.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+    fireEvent.click(screen.getByRole("radio", { name: "Кирилл" }))
+
+    const { viewOf, sheetLabels } = await import("./utils/script")
+    const stored = JSON.parse(
+      localStorage.getItem("webiston:rezyume:v1") ?? "{}"
+    )
+
+    // Act — exactly what the download button passes on.
+    const exported = viewOf(stored)
+    const labels = sheetLabels(stored)
+
+    // Assert — both halves in one alphabet, contacts still shielded.
+    expect(exported.fullName).toBe("Каримова Нилуфар Анваровна")
+    expect(labels.experience).toBe("Иш тажрибаси")
+    expect(exported.contact.email).toBe("nilufar.karimova@example.com")
+  })
+
+  it("gives two identical bullets two different keys", () => {
+    // Arrange — `key={line}` made repeated wording a DUPLICATE KEY, which is
+    // undefined reconciliation, not a duplicate row.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /Ish joyi qo'shish/ }))
+
+    // Act
+    fireEvent.change(screen.getByLabelText(/Nima qildingiz/), {
+      target: { value: "Bir xil qator.\nBir xil qator.\nUchinchi." }
+    })
+
+    // Assert — both survive to the paper.
+    const bullets = within(sheet())
+      .getAllByRole("listitem")
+      .map((item) => item.textContent)
+    expect(bullets.filter((text) => text === "Bir xil qator.")).toHaveLength(2)
+  })
+
   it("prints the headings in the DOCUMENT's language, not the site's", () => {
     // Arrange — the interface is Uzbek throughout this file.
     renderTool()
@@ -272,12 +313,14 @@ describe("resume builder", () => {
     expect(paper.textContent).toContain(long.trim())
     expect(paper.className).not.toContain("overflow-hidden")
     // The second half of the same bug, and jsdom has no layout to catch it:
-    // the sheet is a flex item in the preview's scrolling column, and its
-    // explicit `min-height` REPLACES the automatic minimum that stops a flex
+    // the FLEX ITEM in the preview's scrolling column carries an explicit
+    // `min-height`, which REPLACES the automatic minimum that stops a flex
     // item shrinking below its content. Measured in a real browser, the sheet
     // sat at exactly 1,123px while its content needed 1,401px, and everything
-    // past that rendered outside the white paper.
-    expect(paper.className).toContain("shrink-0")
+    // past that rendered outside the white paper. The flex item is the
+    // `@container` box the zoom measures against, so `shrink-0` lives there.
+    expect(paper.parentElement?.className).toContain("shrink-0")
+    expect(paper.parentElement?.className).toContain("@container")
   })
 
   it("sets a serif whose figures sit on the baseline", () => {
@@ -291,6 +334,63 @@ describe("resume builder", () => {
     // Assert
     expect(sheet().style.fontFamily).not.toContain("Georgia")
     expect(sheet().style.fontFamily).toContain("Charter")
+  })
+})
+
+describe("message keys", () => {
+  it("never renders a raw key path in place of a string", () => {
+    // Arrange — this shipped: `t("skills")` resolved to an OBJECT, because
+    // `skills.legend` is nested under it, so next-intl threw INSUFFICIENT_PATH
+    // and printed the literal "ResumePage.form.skills" into the form. It was
+    // on screen in a bug report screenshot for a whole session before anyone
+    // read it as text rather than as a label.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+
+    // Act — walk the whole tool, every branch that renders its own copy.
+    fireEvent.click(screen.getByRole("radio", { name: "Zamonaviy" }))
+    fireEvent.click(screen.getByRole("button", { name: /Ish joyi qo'shish/ }))
+    fireEvent.click(screen.getByRole("button", { name: /Til qo'shish/ }))
+    fireEvent.click(
+      screen.getByRole("button", { name: /O'quv yurti qo'shish/ })
+    )
+
+    // Assert
+    expect(document.body.textContent).not.toMatch(/ResumePage\.|Common\./)
+  })
+})
+
+describe("narrow-screen pane switch", () => {
+  it("keeps the sheet MOUNTED while the form pane is showing", () => {
+    // Arrange — hidden, never unmounted. Unmounting would throw away the
+    // sheet's layout on every switch and, worse, take `#resume-sheet` out of
+    // the document, which is the only thing the print stylesheet reaches for.
+    renderTool()
+    fireEvent.click(screen.getByRole("button", { name: /namuna/i }))
+
+    // Act — the form pane is the default.
+    const formTab = screen.getByRole("radio", { name: "Ma'lumotlar" })
+
+    // Assert
+    expect(formTab).toBeChecked()
+    expect(sheet()).toBeInTheDocument()
+    expect(sheet().textContent).toContain("Karimova Nilufar Anvarovna")
+  })
+
+  it("switches panes without touching the draft", () => {
+    // Arrange
+    renderTool()
+    fireEvent.change(screen.getByLabelText(/F\.I\.Sh/), {
+      target: { value: "Test Foydalanuvchi" }
+    })
+
+    // Act
+    fireEvent.click(screen.getByRole("radio", { name: "Rezyume" }))
+
+    // Assert — the paper is the pane now, and the form kept every word.
+    expect(screen.getByRole("radio", { name: "Rezyume" })).toBeChecked()
+    expect(sheet().textContent).toContain("Test Foydalanuvchi")
+    expect(screen.getByLabelText(/F\.I\.Sh/)).toHaveValue("Test Foydalanuvchi")
   })
 })
 

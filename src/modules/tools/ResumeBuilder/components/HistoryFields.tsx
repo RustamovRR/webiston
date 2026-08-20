@@ -234,15 +234,21 @@ export function HistoryFields({
         />
       </FieldSet>
 
+      {/* No `Field` here, and that is the fix for a bug that shipped VISIBLY:
+          `t("skills")` resolved to an object (`skills.legend` is nested), so
+          next-intl threw INSUFFICIENT_PATH and the form rendered the literal
+          text "ResumePage.form.skills" as this field's label. Even correct it
+          was noise — one control in a section whose legend already names it —
+          so the label moved onto the input as its accessible name. */}
       <FieldSet legend={t("skills.legend")}>
-        <Field id={`${id}-skills`} label={t("skills")} hint={t("skillsHint")}>
-          <TagInput
-            id={`${id}-skills`}
-            values={data.skills}
-            onChange={(values) => set("skills", values)}
-            placeholder={t("skillsPlaceholder")}
-          />
-        </Field>
+        <TagInput
+          id={`${id}-skills`}
+          label={t("skills.legend")}
+          values={data.skills}
+          onChange={(values) => set("skills", values)}
+          placeholder={t("skillsPlaceholder")}
+        />
+        <p className="text-muted-foreground text-xs">{t("skillsHint")}</p>
       </FieldSet>
 
       <FieldSet legend={t("languages.legend")}>

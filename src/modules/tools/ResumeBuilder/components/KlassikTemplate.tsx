@@ -36,7 +36,13 @@ export function KlassikTemplate({
     .filter(Boolean)
 
   return (
-    <div className="text-[15px] leading-[1.6]">
+    // `break-words` on the ROOT, because `overflow-wrap` INHERITS — one class
+    // instead of fifteen. Real Uzbek institution names, a long study e-mail
+    // and a pasted LinkedIn URL are single unbreakable tokens, and the sweep
+    // measured them pushing up to 326px past the paper's right edge at every
+    // viewport, not only on phones. A CV that prints its own e-mail off the
+    // page is worse than one that hyphenates it.
+    <div className="break-words text-[15px] leading-[1.6]">
       {/* Header: name and target role carry the page; the photo is optional
           and sits top-right, which is where an Uzbek employer looks for it. */}
       <header className="flex items-start justify-between gap-6">
@@ -89,7 +95,9 @@ export function KlassikTemplate({
           {data.experience.map((entry) => (
             <article key={entry.id} className="mt-3 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
-                <h3 className="font-bold">{entry.role || entry.company}</h3>
+                <h3 className="min-w-0 font-bold">
+                  {entry.role || entry.company}
+                </h3>
                 <span className="shrink-0 text-[13px]">
                   {periodLabel(
                     entry.from,
@@ -104,8 +112,11 @@ export function KlassikTemplate({
               )}
               {bulletLines(entry.description).length > 0 && (
                 <ul className="mt-1 list-disc pl-5">
-                  {bulletLines(entry.description).map((line) => (
-                    <li key={line}>{line}</li>
+                  {/* Keyed on the ROW plus the position, not on the text: two
+                      bullets that read the same are a duplicate key, not a
+                      duplicate row, and React's warning for that is earned. */}
+                  {bulletLines(entry.description).map((line, at) => (
+                    <li key={`${entry.id}-${at}`}>{line}</li>
                   ))}
                 </ul>
               )}
@@ -119,7 +130,7 @@ export function KlassikTemplate({
           {data.education.map((entry) => (
             <article key={entry.id} className="mt-2 first:mt-0">
               <div className="flex items-baseline justify-between gap-4">
-                <h3 className="font-bold">{entry.institution}</h3>
+                <h3 className="min-w-0 font-bold">{entry.institution}</h3>
                 <span className="shrink-0 text-[13px]">
                   {periodLabel(entry.from, entry.to, false, "")}
                 </span>

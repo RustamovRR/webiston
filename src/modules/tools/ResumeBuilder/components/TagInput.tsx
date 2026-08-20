@@ -16,11 +16,21 @@ import { useState } from "react"
  */
 export function TagInput({
   id,
+  label,
   values,
   onChange,
   placeholder
 }: {
   id: string
+  /**
+   * The input's accessible name.
+   *
+   * Here rather than a `Field` wrapper because this control is the ONLY thing
+   * in its section: a visible `<label>` under a `<legend>` that says the same
+   * word is noise, but an input with no name at all is a control a screen
+   * reader announces as "edit text".
+   */
+  label: string
   values: string[]
   onChange: (values: string[]) => void
   placeholder?: string
@@ -61,6 +71,7 @@ export function TagInput({
       )}
       <Input
         id={id}
+        aria-label={label}
         value={draft}
         placeholder={placeholder}
         autoComplete="off"
