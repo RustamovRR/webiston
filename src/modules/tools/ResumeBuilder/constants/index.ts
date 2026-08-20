@@ -210,3 +210,29 @@ export const DOCUMENT_SCRIPTS = ["lotin", "kirill"] as const
  */
 export const PAGE_GUIDE =
   "repeating-linear-gradient(to bottom, transparent 0, transparent calc(297mm - 1px), rgba(17,17,17,0.18) calc(297mm - 1px), rgba(17,17,17,0.18) 297mm)"
+
+/**
+ * The questions this tool answers below the form.
+ *
+ * Not decoration and not filler: 18 of the 21 tools here publish a FAQ, and
+ * the resume builder was one of the three without one — the single largest
+ * on-page SEO gap it had, because these questions ARE the search queries.
+ * "rezyumega surat kerakmi" is typed, not browsed.
+ *
+ * The route publishes `FAQPage` structured data from the same message keys
+ * this list renders, so the rich result can never describe an answer the page
+ * does not contain — Google treats that as a violation, and rightly.
+ *
+ * Ordered by what stops someone finishing a CV, not by what is easiest to
+ * answer: the photo and the language decision come before formatting trivia.
+ */
+export const FAQ_KEYS = [
+  "photo",
+  "language",
+  "script",
+  "length",
+  "personal",
+  "fileFormat",
+  "noExperience",
+  "privacy"
+] as const

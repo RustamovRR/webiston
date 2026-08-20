@@ -275,6 +275,48 @@ with the research sources.
   long summary: **2 pages, and page 2 OPENS with the job title** rather than
   stranding it at the foot of page 1 — the new `break-inside` rules doing
   exactly their job. All five sections present across both pages.
+- [x] **P3f** Responsive regression sweep — **done 2026-08-14.** Driven over
+  CDP: 10 viewports (320 → 2560, including 1023/1024 either side of `lg`) ×
+  6 content states (empty, sample, long, pathological, Zamonaviy-pathological,
+  Cyrillic) = 60 measured combinations, each probed for page-level horizontal
+  scroll, a clipped sheet, and any descendant whose box lands outside the white
+  paper. **Baseline: 23 of 60 failed.** Two distinct bugs underneath.
+  **(1) A long unbreakable token escaped the paper at EVERY width** — up to
+  326px past the right edge at 1024–1440, not a phone problem. Real inputs do
+  this: a long institution name, a study e-mail, a pasted LinkedIn URL. The
+  flex row holding a job title and its date range had a `shrink-0` period and
+  a title with the default `min-width: auto`, so neither could give. Fixed with
+  `break-words` on each template ROOT — `overflow-wrap` inherits, so one class
+  covers fifteen places — plus `min-w-0` on the four headings that share a row
+  with a date.
+  **(2) The A4 preview REFLOWED on a phone instead of scaling.** At 375px the
+  sheet was 301px wide carrying 15px text, so a job title and its dates could
+  not share a line — the sample overflowed by 20px, before any pathological
+  input. A 246px-wide "page" answers a different question than the one a CV
+  preview exists to answer. Now the sheet keeps its true 210mm and the whole
+  thing is zoomed to the card: `zoom: min(1, calc(100cqw / 210mm))` against an
+  `@container` wrapper, screen-only and behind `@supports` so a browser without
+  zoom or container units keeps the old fluid sheet rather than a 794px box in
+  a 340px card. Zoom rather than `transform: scale()` because zoom takes part
+  in layout. Measured after: 0.31 at 320px, 0.379 at 375, 0.854 at 768, 1 at
+  1440+, and the paper holds a 0.707 aspect — exact A4 — at every width. This
+  also let `min-h-[297mm]` drop its `lg:` prefix, so a phone finally previews a
+  whole PAGE.
+  **Result: 0 of 20 worst-case combinations fail on the PRODUCTION build**,
+  with the preview pane verified genuinely active at each narrow width.
+  Three more found on the way: the ToolCard header truncated its own title to
+  "R…" at 375px (`flex-wrap`), its `shrink-0` actions row then gave a 320px
+  viewport 6px of horizontal scroll — caused by my own longer "PDF / Chop
+  etish" label — and `t("skills")` resolved to an OBJECT, so next-intl threw
+  INSUFFICIENT_PATH and the form had been rendering the literal string
+  "ResumePage.form.skills" as a label, visible in a screenshot for a whole
+  session before anyone read it as text. A repo-wide scan found no second
+  instance, and a test now fails if any raw key path reaches the DOM.
+  **26 resume tests, 1,880 total; gate all 0.**
+  *Process note: the suite failed once mid-sweep and passed on a clean re-run
+  (5× in a row after) — three heavy jobs were sharing the machine, transform
+  time 6,785s. And an hour of "the harness is lying" was a stale `next start`
+  holding the port from an older build and serving 500s; the harness was fine.*
 - [ ] **P3e-2** The two gaps that remain:
   - **No density control.** P3b drew the page-break guide and so raised the
     "this is two pages" question without giving any lever to answer it.
@@ -284,7 +326,28 @@ with the research sources.
     failure; the `.docx` is already single-column by design, so the safe path
     exists and nothing tells the visitor which file to send where. Belongs in
     the P4 FAQ, with hh.uz checked rather than assumed.
-- [ ] **P4** FAQ with the local-format research + tests
+- [x] **P4** FAQ + structured data — **done 2026-08-20.** 18 of the 21 tools
+  publish a FAQ and this one was among the three without: the largest on-page
+  SEO gap it had, because these questions ARE the queries — "rezyumega surat
+  kerakmi" is typed, not browsed. Eight questions in uz/ru/en, ordered by what
+  stops someone FINISHING a CV rather than by what is easy to answer: photo,
+  language, script, length, birth date/marital status, PDF-vs-Word, no
+  experience, privacy. The PDF-vs-Word answer is where the ATS guidance landed:
+  a person gets the PDF, a job board gets the `.docx`, and the reason the
+  `.docx` exports single-column is stated rather than left as an internal
+  decision. Claims stay at the level the evidence supports — "many employers
+  expect a photo, it is a convention not a legal requirement" — with no
+  invented statistics. Built on the suite's existing shape (`FAQ_KEYS` →
+  `ResumeFaq` server component → `generateFAQSchema` from the SAME keys), so
+  the `FAQPage` rich result can never describe an answer the page does not
+  contain. **Verified in the built HTML: 5 JSON-LD blocks, FAQPage with 8
+  questions, and all 8 present as visible text.** Also fixed in the pass: the
+  `featureList` was written at P1 and still advertised a tool with no docx, no
+  second template and no script toggle — three phases of shipped work the
+  structured data was hiding. **3 new tests** (FAQ copy exists in all three
+  locales — `pnpm i18n` proves the locales agree with each other, only this
+  proves they agree with the CODE; schema covers every key; featureList names
+  what ships). 1,883 tests / 102 files; gate all 0.
 - [ ] **P5** Review pass: design-system-reviewer + code-reviewer agents,
   measure bundle, gate, ship
 

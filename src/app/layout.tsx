@@ -5,7 +5,7 @@ import Script from "next/script"
 import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
-import { ogCardUrl } from "@/lib/seo"
+import { ogCardUrl, SITE_URL } from "@/lib/seo"
 
 // `cyrillic` is required, not optional: the product ships Cyrillic Uzbek
 // (the transliteration tool and book content both render it). With a latin-only
@@ -441,6 +441,30 @@ export default async function RootLayout({
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
   const isDevelopment = process.env.NODE_ENV === "development"
 
+  /**
+   * Analytics record the production host and nothing else.
+   *
+   * `NODE_ENV` alone was never the right gate: `next start` sets it to
+   * "production", so every local production run and every Vercel preview
+   * deployment reported into the live counters. Measured before this landed —
+   * 38 of 1,303 Metrica visits in one 30-day window came from localhost, and
+   * `/tools/rezyume` showed 24 visits while it was still a 404 in production.
+   * A metric you have to mentally subtract noise from is a metric you stop
+   * trusting.
+   *
+   * The check is CLIENT-side deliberately. Reading the request host on the
+   * server would opt this layout — and therefore every page under it — into
+   * dynamic rendering, which is a real cost on a static content site to solve
+   * a reporting problem.
+   *
+   * gtag.js is still fetched off-host; with no `config` call it measures
+   * nothing, and one inert request on a preview URL does not justify
+   * restructuring the loader.
+   */
+  const onProductionHost = `location.hostname === ${JSON.stringify(
+    new URL(SITE_URL).hostname
+  )}`
+
   return (
     <html lang="uz" dir="ltr" suppressHydrationWarning>
       <head>
@@ -498,10 +522,12 @@ export default async function RootLayout({
               strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${GA_ID}');
+                  if (${onProductionHost}) {
+                    window.dataLayer = window.dataLayer || [];
+                    window.gtag = function(){ window.dataLayer.push(arguments); };
+                    gtag('js', new Date());
+                    gtag('config', '${GA_ID}');
+                  }
                 `
               }}
             />
@@ -516,18 +542,20 @@ export default async function RootLayout({
               strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
-                  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                  m[i].l=1*new Date();
-                  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-                  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-                  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+                  if (${onProductionHost}) {
+                    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                    m[i].l=1*new Date();
+                    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+                    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-                  ym(${YM_ID}, "init", {
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true
-                  });
+                    ym(${YM_ID}, "init", {
+                      clickmap:true,
+                      trackLinks:true,
+                      accurateTrackBounce:true,
+                      webvisor:true
+                    });
+                  }
                 `
               }}
             />
