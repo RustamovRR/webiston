@@ -26,7 +26,19 @@ import { createSign } from "node:crypto"
 import { readFileSync } from "node:fs"
 
 const KEY_FILE = process.env.GOOGLE_SERVICE_ACCOUNT_FILE
-const DAYS = Number(process.argv[2] ?? 28)
+const ARGS = process.argv.slice(2)
+
+/**
+ * `--diff` compares this window with the one immediately before it.
+ *
+ * The standing tables answer "what is happening"; only a period-over-period
+ * diff answers "what CHANGED", which is the question actually asked each time
+ * this is run. It lives here rather than in a second script because the JWT
+ * dance above is the only expensive part and there is no reason to have two
+ * copies of it.
+ */
+const DIFF = ARGS.includes("--diff")
+const DAYS = Number(ARGS.find((a) => !a.startsWith("--")) ?? 28)
 const SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 
 if (!KEY_FILE) {
@@ -101,14 +113,19 @@ const day = (offset) =>
   new Date(Date.now() - offset * 86400000).toISOString().slice(0, 10)
 
 /** One Search Analytics query. GSC data lags ~2 days, hence the end offset. */
-async function query({ dimensions = [], rowLimit = 25 } = {}) {
+async function query({
+  dimensions = [],
+  rowLimit = 25,
+  startDate = day(DAYS),
+  endDate = day(2)
+} = {}) {
   const url = `https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(site.siteUrl)}/searchAnalytics/query`
   const res = await fetch(url, {
     method: "POST",
     headers: { ...auth, "Content-Type": "application/json" },
     body: JSON.stringify({
-      startDate: day(DAYS),
-      endDate: day(2),
+      startDate,
+      endDate,
       dimensions,
       rowLimit
     })
@@ -181,3 +198,70 @@ const near = (await query({ dimensions: ["query"], rowLimit: 200 }))
 table("⚠ Ko'rsatiladi, lekin bosilmaydi — sarlavha muammosi", near)
 
 console.log("")
+
+if (DIFF) {
+  const CUR = { startDate: day(DAYS + 2), endDate: day(2) }
+  const PREV = { startDate: day(DAYS * 2 + 2), endDate: day(DAYS + 3) }
+
+  const totalsFor = async (window) =>
+    (await query({ ...window, rowLimit: 1 }))[0] ?? {
+      clicks: 0,
+      impressions: 0,
+      ctr: 0,
+      position: 0
+    }
+  const [now, before] = [await totalsFor(CUR), await totalsFor(PREV)]
+
+  const delta = (a, b) => {
+    const sign = a - b >= 0 ? "+" : ""
+    const rel = b ? `, ${(((a - b) / b) * 100).toFixed(0)}%` : ""
+    return `${b} → ${a}  (${sign}${a - b}${rel})`
+  }
+
+  console.log(
+    `\n── Oldingi davr bilan solishtirish ───────────────────────────────`
+  )
+  console.log(
+    `   ${PREV.startDate}..${PREV.endDate}  →  ${CUR.startDate}..${CUR.endDate}\n`
+  )
+  console.log(`   Bosish        ${delta(now.clicks, before.clicks)}`)
+  console.log(`   Ko'rsatilish  ${delta(now.impressions, before.impressions)}`)
+  console.log(`   CTR           ${pct(before.ctr)} → ${pct(now.ctr)}`)
+  console.log(
+    `   Pozitsiya     ${before.position.toFixed(1)} → ${now.position.toFixed(1)}`
+  )
+
+  /** Movers, by clicks gained or lost. A page or query that did not exist in
+   *  the earlier window shows as 0 → n, which is how a newly indexed page
+   *  announces itself. */
+  for (const dimension of ["page", "query"]) {
+    const [a, b] = await Promise.all([
+      query({ ...CUR, dimensions: [dimension], rowLimit: 500 }),
+      query({ ...PREV, dimensions: [dimension], rowLimit: 500 })
+    ])
+    const prev = new Map(b.map((row) => [row.keys[0], row]))
+    const rows = [...new Set([...a.map((r) => r.keys[0]), ...prev.keys()])].map(
+      (key) => {
+        const cur = a.find((r) => r.keys[0] === key) ?? {
+          clicks: 0,
+          impressions: 0
+        }
+        const old = prev.get(key) ?? { clicks: 0, impressions: 0 }
+        return {
+          key: key.replace("https://webiston.uz", ""),
+          gained: cur.clicks - old.clicks,
+          line: `${String(old.clicks).padStart(4)}→${String(cur.clicks).padStart(4)} bosish · ${String(old.impressions).padStart(6)}→${String(cur.impressions).padStart(6)} ko'rsat`
+        }
+      }
+    )
+    const show = (title, list) => {
+      console.log(`\n   ${title}`)
+      for (const row of list)
+        console.log(`     ${pad(row.key, 42)} ${row.line}`)
+    }
+    const sorted = [...rows].sort((x, y) => y.gained - x.gained)
+    show(`${dimension} — o'sish`, sorted.slice(0, 8))
+    show(`${dimension} — pasayish`, sorted.slice(-5).reverse())
+  }
+  console.log("")
+}

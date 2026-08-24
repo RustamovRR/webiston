@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
  * React equivalent; every payload here is a constant or an i18n string, and
  * `jsonLd()` escapes `<` so a value can never close the script element. */
+
 import type { Metadata } from "next"
 import {
   Fira_Code,
@@ -9,9 +10,9 @@ import {
   JetBrains_Mono
 } from "next/font/google"
 import { setRequestLocale } from "next-intl/server"
-
 import { Faq } from "@/components/shared/Faq"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { RelatedTools } from "@/components/shared/RelatedTools"
 import { faqPageSchema, withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
 // and all of them are `'use client'`.
@@ -132,6 +133,7 @@ export default async function CodeSnapshotPage({
       </LocaleMessages>
 
       <Faq locale={locale} items={faqItems} />
+      <RelatedTools locale={locale} href="/tools/code-snapshot" />
     </>
   )
 }

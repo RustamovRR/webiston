@@ -77,8 +77,10 @@ Logic lives in `hooks/`, `utils/`, `stores/`, `constants/`.
 
 ## 4. Server-first — `'use client'` is a cost
 
-This is an SEO-critical content site. **101 of 208 `.tsx` files in `src/` are
-`'use client'` today (49%)** — that is the number to drive down, not up.
+This is an SEO-critical content site. **158 of 296 `.tsx` files in `src/` are
+`'use client'` today (53%)** — the number to drive down, not up, and the one
+metric here that has moved the WRONG way as tools were added.
+Re-measure: `grep -rl "'use client'" src --include='*.tsx' | wc -l`.
 
 - Put `'use client'` on the **smallest leaf** that needs interactivity. Never on
   a `page.tsx` or `layout.tsx` unless there is no alternative.
@@ -94,8 +96,9 @@ This is an SEO-critical content site. **101 of 208 `.tsx` files in `src/` are
 
 - **No `any`** — use `unknown` + narrowing, or generics.
   ⚠️ `noExplicitAny` is currently **`"off"`** in `biome.json` and there are
-  **69 `any`s in `src/`**. The rule is real; the enforcement is not yet. Do not
-  add to the pile — see `docs/roadmap/backlog.md`.
+  **42 `any`s in `src/`** (down from 69). The rule is real; the enforcement is
+  not yet. Do not add to the pile — see `docs/roadmap/backlog.md`.
+  Re-measure: `grep -rEo ':\s*any\b|as any' src --include='*.ts*' | wc -l`.
 - **No type assertions** (`as Foo`) unless unavoidable — add a comment saying why.
 - **Strict mode** is on (`tsconfig.json` `strict: true`).
   ⚠️ `noUnusedLocals` / `noUnusedParameters` are **not** enabled, despite older
@@ -128,7 +131,7 @@ This is an SEO-critical content site. **101 of 208 `.tsx` files in `src/` are
 | Hooks      | 50–150  | 300        | Split by responsibility |
 | Utils      | 50–150  | 250        | Separate files         |
 
-⚠️ **47 of 422 `.ts`/`.tsx` files exceed 350 lines today; 9 exceed 500.** These
+⚠️ **22 of 862 `.ts`/`.tsx` files exceed 350 lines today; 6 exceed 500.** These
 are triggers to look when you are already in the file — not a mandate to start a
 splitting campaign. Split what you touch.
 
@@ -212,8 +215,10 @@ Full spec: **`design-system.md`**. The hard rules:
   only: `bg-background`, `bg-card`, `text-foreground`, `text-muted-foreground`,
   `border-border`, `bg-primary`, `text-destructive`.
 - **A `dark:` variant on a color utility is a smell.** If the token is right,
-  dark mode is automatic. 1,963 `dark:` variants exist today because colors are
-  hardcoded per class — every one of them is maintenance you pay twice.
+  dark mode is automatic. **33** `dark:` variants remain, down from 1,963 —
+  the migration is essentially finished, so a NEW one is a regression rather
+  than one more item on a pile. Re-measure:
+  `grep -ro 'dark:' src --include='*.tsx' --include='*.css' | wc -l`.
 - Never fork a `@webiston/ui` component to restyle it — change the token.
 - Chart/viz/brand-illustration colors are the documented exception; they belong
   in a named constant, not inline.
@@ -265,8 +270,10 @@ describe("toLatin", () => {
 `src/lib/` utils. Medium — stores, complex components. Low — presentational
 components. Full spec: `testing-strategy.md`.
 
-⚠️ Coverage today is **6 test files, all in `packages/transliteration`**. The
-entire `src/` tree has zero tests. `pnpm test` runs `vitest run` across both.
+⚠️ Coverage today is **94 test files, 84 of them in `src/`** — the "src/ has
+zero tests" line this file carried for months is long dead. `pnpm test` runs
+`vitest run` across the whole workspace.
+Re-measure: `find src packages -name '*.test.ts*' | grep -v node_modules | wc -l`.
 
 ---
 

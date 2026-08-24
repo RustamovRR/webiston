@@ -122,8 +122,9 @@ that dilutes every instruction. Rationale + the "when to add a 5th" rule:
 - **pnpm only.**
 - **Token-driven styling** — no raw hex, no Tailwind palette classes
   (`bg-slate-200`, `text-blue-500`, …) in components; semantic tokens only
-  (`bg-card`, `text-muted-foreground`). Today the codebase is **96% in
-  violation** — that is the active initiative, not a reason to add more.
+  (`bg-card`, `text-muted-foreground`). The migration that made this an
+  initiative is **largely done** — `dark:` variants are down from 1,963 to 33.
+  `pnpm tokens` holds the line with a ratchet that only ever moves downward.
   See `docs/reference/design-system.md`.
 - **Named exports only** (no `export *`). Default exports only for Next.js
   `page.tsx` / `layout.tsx`.
@@ -149,6 +150,10 @@ pnpm lint           # oxlint src/ packages/ apps/
 pnpm typecheck      # tsc --noEmit  (⚠ excludes apps/extensions — tsconfig.json:27)
 pnpm test           # vitest run
 pnpm ext:dev        # Chrome extension dev (WXT)
+
+pnpm gsc            # Search Console: this window's tables
+pnpm gsc:diff       # …plus what CHANGED vs the previous window
+pnpm metrica        # Yandex Metrica: visits, sources, search phrases
 ```
 
 ```ts

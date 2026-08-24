@@ -38,7 +38,8 @@
     "metrica": "node --env-file=.env scripts/metrica.mjs",
     "gsc": "node --env-file=.env scripts/gsc.mjs",
     "ext:build:all": "pnpm --filter latin-cyrillic-extension build:all",
-    "ext:zip:all": "pnpm --filter latin-cyrillic-extension zip:all"
+    "ext:zip:all": "pnpm --filter latin-cyrillic-extension zip:all",
+    "gsc:diff": "node --env-file=.env scripts/gsc.mjs --diff"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",

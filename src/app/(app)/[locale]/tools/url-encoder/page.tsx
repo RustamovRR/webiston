@@ -1,10 +1,11 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
  * React equivalent; every payload here is a constant or an i18n string, and
  * `jsonLd()` escapes `<` so a value can never close the script element. */
+
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
 // modules and every one of them is `'use client'`.
@@ -78,6 +79,7 @@ export default async function UrlEncoderPage({
       {/* Server Components, siblings of the client island. */}
       <UrlReference locale={locale} />
       <UrlFaq locale={locale} />
+      <RelatedTools locale={locale} href="/tools/url-encoder" />
     </>
   )
 }

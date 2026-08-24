@@ -1,10 +1,11 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
  * React equivalent; every payload here is a constant, and `jsonLd()` escapes
  * `<` so a value can never close the script element. */
+
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
-
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
 // and all of them are `'use client'`.
@@ -72,6 +73,7 @@ export default async function RezyumePage({
           reads and the questions the audience actually types. It needs no
           interactivity, so it costs the page no client JavaScript. */}
       <ResumeFaq locale={locale} />
+      <RelatedTools locale={locale} href="/tools/rezyume" />
     </>
   )
 }

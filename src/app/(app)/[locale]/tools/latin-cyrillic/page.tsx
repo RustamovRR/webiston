@@ -1,9 +1,11 @@
 /** biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD has no
  * React equivalent; every payload here is a constant or an i18n string, and
  * `jsonLd()` escapes `<` so a value can never close the script element. */
+
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
 // modules, and every one of them is `'use client'` — so importing through it
@@ -101,6 +103,13 @@ export default async function LatinCyrillicPage({
         {/* Between the tool and the reference material: the person who has
           just converted something is the one who would rather not come back. */}
         <ExtensionCallout locale={locale} />
+        {/* Already inside the route's own container, so it takes the
+            override rather than nesting a second `max-w` + `px`. */}
+        <RelatedTools
+          locale={locale}
+          href="/tools/latin-cyrillic"
+          className="pt-10"
+        />
         <AlphabetTable locale={locale} />
         <ConverterFaq locale={locale} />
       </div>
