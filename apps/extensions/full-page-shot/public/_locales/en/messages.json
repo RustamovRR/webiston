@@ -1,0 +1,81 @@
+{
+  "extName": {
+    "message": "Full Page Screenshot — Webiston"
+  },
+  "extDescription": {
+    "message": "Capture the whole page as one image — no scrolling, no blank bands. The image never leaves your browser."
+  },
+  "actionTitle": {
+    "message": "Capture the full page"
+  },
+  "cmdCapture": {
+    "message": "Capture the full page"
+  },
+  "errDevtoolsOpen": {
+    "message": "DevTools is open — close it and try again. The browser allows only one debugger at a time."
+  },
+  "errRestricted": {
+    "message": "This page is protected by the browser itself (chrome://, the extension store and similar). It works on ordinary sites."
+  },
+  "errNoTab": {
+    "message": "No active tab found."
+  },
+  "errGeneric": {
+    "message": "The capture failed. Reload the page and try again."
+  },
+  "viewerLoading": {
+    "message": "Preparing the image…"
+  },
+  "viewerExpired": {
+    "message": "This image is no longer available. A capture is held in memory only and never written to disk — take the screenshot again."
+  },
+  "downloadPng": {
+    "message": "Download PNG"
+  },
+  "downloadJpeg": {
+    "message": "Download JPEG"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "copied": {
+    "message": "Copied"
+  },
+  "clamped": {
+    "message": "The page is taller than the browser can put in one image: $CAPTURED$ px captured, full height $TOTAL$ px.",
+    "placeholders": {
+      "captured": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "progWaking": {
+    "message": "Preparing the page…"
+  },
+  "progLoading": {
+    "message": "Loading images…"
+  },
+  "someImagesPending": {
+    "message": "$COUNT$ images did not finish loading — reload the page and try again.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errJpegTooLarge": {
+    "message": "This image is too large for JPEG — save it as PNG."
+  },
+  "downloadPdf": {
+    "message": "Download PDF"
+  },
+  "preparing": {
+    "message": "Preparing…"
+  },
+  "errPdfFailed": {
+    "message": "Could not build the PDF — the image is too large. Save it as PNG instead."
+  }
+}

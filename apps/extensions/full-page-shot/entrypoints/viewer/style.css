@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Tailwind only scans this extension's own tree, so a class used solely inside
+   a shared component never reaches the stylesheet. Scoped to the components
+   actually imported here, not all of packages/ui/src — the whole tree costs
+   several times the CSS. Add a line when the viewer adopts another. */
+@source "../../../../../packages/ui/src/primitives/button.tsx";
+
+/* One token file for both extensions. See packages/ui/styles/tokens.css. */
+@import "@webiston/ui/styles/tokens.css";
+
+/* NO `* { margin: 0; padding: 0 }`.
+ *
+ * Tailwind v4 puts utilities in `@layer utilities`, and an UNLAYERED rule
+ * outranks any layered one however specific — so that reset beats `.p-5` and
+ * every other spacing class. The sibling extension shipped with exactly that
+ * bug and its stylesheet still carries the note. Preflight already sets
+ * `box-sizing: border-box` and zeroes the margins browsers add, and it does so
+ * in `@layer base`, which utilities may override. That is the difference.
+ */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* The captured page is a document, not decoration: a light checkerboard makes
+   a screenshot with transparent regions (a PNG of a page with no background)
+   readable instead of invisible against the panel. */
+.shot-canvas {
+  background-color: #f4f4f5;
+  background-image:
+    linear-gradient(45deg, #e4e4e7 25%, transparent 25%),
+    linear-gradient(-45deg, #e4e4e7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e4e4e7 75%),
+    linear-gradient(-45deg, transparent 75%, #e4e4e7 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}

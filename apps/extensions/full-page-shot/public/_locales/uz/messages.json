@@ -1,0 +1,81 @@
+{
+  "extName": {
+    "message": "To'liq Sahifa Skrinshoti — Webiston"
+  },
+  "extDescription": {
+    "message": "Butun sahifani bitta rasmga oling — scroll qilmasdan, bo'sh joysiz. Rasm brauzeringizdan chiqmaydi."
+  },
+  "actionTitle": {
+    "message": "To'liq sahifani suratga olish"
+  },
+  "cmdCapture": {
+    "message": "To'liq sahifani suratga olish"
+  },
+  "errDevtoolsOpen": {
+    "message": "DevTools ochiq — uni yopib, qaytadan urinib ko'ring. Brauzer bir vaqtda bitta debuggerga ruxsat beradi."
+  },
+  "errRestricted": {
+    "message": "Bu sahifani brauzerning o'zi himoyalagan (chrome://, kengaytmalar do'koni va shunga o'xshashlar). Oddiy sayt sahifasida ishlaydi."
+  },
+  "errNoTab": {
+    "message": "Faol varaq topilmadi."
+  },
+  "errGeneric": {
+    "message": "Suratga olib bo'lmadi. Sahifani yangilab, qaytadan urinib ko'ring."
+  },
+  "viewerLoading": {
+    "message": "Rasm tayyorlanmoqda…"
+  },
+  "viewerExpired": {
+    "message": "Bu rasm endi mavjud emas. Skrinshot xotirada vaqtincha saqlanadi va diskka yozilmaydi — sahifani qaytadan suratga oling."
+  },
+  "downloadPng": {
+    "message": "PNG yuklab olish"
+  },
+  "downloadJpeg": {
+    "message": "JPEG yuklab olish"
+  },
+  "copy": {
+    "message": "Nusxalash"
+  },
+  "copied": {
+    "message": "Nusxalandi"
+  },
+  "clamped": {
+    "message": "Sahifa brauzer bitta rasmga sig'dira oladiganidan uzun: $CAPTURED$ px olindi, sahifaning to'liq balandligi $TOTAL$ px.",
+    "placeholders": {
+      "captured": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "progWaking": {
+    "message": "Sahifa tayyorlanmoqda…"
+  },
+  "progLoading": {
+    "message": "Rasmlar yuklanmoqda…"
+  },
+  "someImagesPending": {
+    "message": "$COUNT$ ta rasm ulgurmadi — sahifani yangilab qayta urinib ko'ring.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errJpegTooLarge": {
+    "message": "Bu rasm JPEG uchun juda katta — PNG sifatida saqlang."
+  },
+  "downloadPdf": {
+    "message": "PDF yuklab olish"
+  },
+  "preparing": {
+    "message": "Tayyorlanmoqda…"
+  },
+  "errPdfFailed": {
+    "message": "PDF tayyorlab bo'lmadi — rasm juda katta. PNG sifatida saqlang."
+  }
+}

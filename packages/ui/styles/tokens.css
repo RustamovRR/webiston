@@ -1,0 +1,117 @@
+/**
+ * The design tokens, in the one place both extensions can reach.
+ *
+ * `packages/ui` already declared `"./styles/*"` in its exports before this
+ * file existed — the intent was recorded, the file was not. It is here now
+ * because the alternative was a SECOND verbatim copy of the same 60 lines in
+ * a second extension, and the copy that already existed carries a comment
+ * admitting "this file is still a COPY, and a copy drifts".
+ *
+ * The values are the site's, from `src/styles/tokens.css`. The site itself
+ * still keeps its own copy: it consumes these through its global stylesheet
+ * and moving that is a change to the app's CSS entry, tracked separately in
+ * `docs/roadmap/active.md`. Extensions were the cheap half and this is it.
+ *
+ * Consumed with `@import "@webiston/ui/styles/tokens.css"` after
+ * `@import "tailwindcss"` — the `@theme inline` block at the bottom is what
+ * makes `bg-primary` and `text-muted-foreground` exist at all.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   Design tokens.
+
+   The values below are the SITE's values, copied from src/styles/tokens.css.
+   They used to be a different palette entirely — `--primary: #0ea5e9`, a sky
+   blue, against the site's teal `oklch(0.745 0.115 217)` — so the extension
+   and the page it links to did not look like the same product.
+
+   This file is still a COPY, and a copy drifts. The real fix is one token file
+   under packages/ui that both surfaces import; `packages/*` is the only thing
+   an extension is allowed to reach, and `@webiston/ui` already exports
+   "./styles/*". That refactor touches the site's global CSS, so it is tracked
+   separately rather than folded in here — see docs/roadmap/active.md.
+   ========================================================================== */
+
+:root {
+  /* LAYER 1: primitives — scheme-independent, never used by a component */
+  --brand-100: oklch(0.945 0.03 217);
+  --brand-200: oklch(0.895 0.058 217);
+  --brand-400: oklch(0.745 0.115 217);
+  --brand-500: oklch(0.66 0.114 217);
+  --brand-700: oklch(0.49 0.085 217);
+  --brand-800: oklch(0.41 0.071 217);
+
+  --radius: 0.625rem;
+
+  /* LAYER 2: semantic (light) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0.012 217);
+  --card: oklch(0.985 0.004 217);
+  --card-foreground: var(--foreground);
+
+  --primary: var(--brand-700);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --muted: oklch(0.965 0.005 217);
+  --muted-foreground: oklch(0.505 0.012 217);
+  --accent: var(--brand-100);
+  --accent-foreground: var(--brand-800);
+
+  --border: oklch(0.905 0.008 217);
+  --border-strong: oklch(0.655 0.012 217);
+  --input: oklch(0.98 0.004 217);
+  --ring: var(--brand-500);
+  --destructive: oklch(0.545 0.19 27);
+  --success: oklch(0.542 0.142 150);
+}
+
+.dark {
+  /* Only LAYER 2 is remapped — that is what makes a correct token need no
+     `dark:` variant. */
+  --background: oklch(0.145 0.008 217);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0.006 217);
+  --card-foreground: var(--foreground);
+
+  --primary: var(--brand-400);
+  --primary-foreground: oklch(0.205 0 0);
+
+  --muted: oklch(0.269 0.008 217);
+  --muted-foreground: oklch(0.72 0.02 217);
+  --accent: oklch(0.29 0.02 217);
+  --accent-foreground: var(--brand-200);
+
+  --border: oklch(1 0 0 / 12%);
+  --border-strong: oklch(1 0 0 / 34%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: var(--brand-500);
+  --destructive: oklch(0.65 0.19 27);
+  --success: oklch(0.8 0.175 150);
+}
+
+/* Bind the tokens to Tailwind's colour names.
+   Without this block `bg-primary` and `text-muted-foreground` simply do not
+   exist here, which is why every element in the popup carried an inline
+   `style={{ background: "var(--primary)" }}` — and why no shared component
+   from @webiston/ui could be dropped in without arriving unstyled. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --radius-lg: var(--radius);
+}
