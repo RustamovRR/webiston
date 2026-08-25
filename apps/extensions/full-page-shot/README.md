@@ -41,12 +41,46 @@ O'lchangan (`lazy` test sahifasida, viewport 900×700):
 | Naive | 3 / 8 | 1 / 8 |
 | Bu pipeline | **8 / 8** | **8 / 8** |
 
+## Cheklov: ichki panelda scroll qiladigan sahifalar
+
+Gmail, Slack, ko'p dashboard va admin panellar hujjatga `overflow: hidden`
+qo'yib, ichkaridagi elementni scroll qiladi. `captureBeyondViewport` HUJJATNI
+render qiladi, panelning tashqarisiga chiqqan qismi esa ta'rifi bo'yicha
+kesilgan — ya'ni bunday sahifada to'liq surat **texnik jihatdan** olinmaydi.
+
+Biz panelni topamiz va uni aylantiramiz (shunda lazy kontenti yuklanadi),
+lekin suratni ko'rinadigan qism bilan cheklaymiz va viewer'da **buni aytamiz**.
+Sahifaning `overflow` ini majburan ochib yuborish surat uchun qulay bo'lardi,
+lekin bu — yuqoridagi `vh` falokati bilan bir xil sinf: begona layoutni
+suratga tushishi uchun o'zgartirish.
+
+O'lchangan (40 ta lazy rasmli app sahifa): oldin hujjat 1200×800, rasmlar
+**4/40**, ustiga 4 269ms behuda kutish. Endi **40/40**, 899ms.
+
+## Nima uchun surat doim sahifa boshidan olinadi
+
+`captureBeyondViewport` `position: fixed` va `sticky` bloklarni hujjat
+boshidan emas, **joriy scroll pozitsiyasidan** chizadi. Ya'ni sahifaning
+400px pastida turib bosilsa, saytning header'i va ikkala sidebar'i rasmda
+400px pastda qolib ketadi, ustida esa bo'sh joy — webiston.uz'ning o'zida
+o'lchangan.
+
+Shuning uchun uyg'otish bosqichi sahifa **boshida** tugaydi, foydalanuvchining
+pozitsiyasi esa hisobotda qaytariladi va **suratdan keyin** tiklanadi.
+15 000px dan uzun sahifa bo'laklarga bo'linganda ham fixed header faqat
+birinchi bo'lakda chiqadi — o'lchangan.
+
 ## Uzun sahifada nima ko'rinadi
 
-Sahifaning ustida yopiq shadow root ichida progress ko'rsatiladi: **haqiqiy**
-progress — avval scroll pozitsiyasi, keyin yuklangan rasm / jami rasm. Ostida
-sahifa xiralashtiriladi (scrim), chunki viewport-o'lchamdagi sakrashlar
-xiralashtirilmasa nosozlikdek ko'rinadi.
+Sahifa **butunlay** o'z fon rangi bilan yopiladi va o'rtasida progress
+kartochkasi turadi: **haqiqiy** progress — avval scroll pozitsiyasi, keyin
+yuklangan rasm / jami rasm.
+
+Yarim shaffof qilib ko'rilgan: 97% da ham och sahifada matn o'qilib turadi, va
+ellik marta sakraydigan arvoh baribir flicker. Amplitudaning 3% i bezovtalikning
+3% i emas. To'liq yopiq qoplama qotib qolsa sahifa butunlay berkilib qolardi,
+shuning uchun overlay `finally` dan tashqari o'zini 15 soniyada o'chiradigan
+taymer ham olib yuradi.
 
 Overlay suratdan **oldin** o'zini o'chiradi — aks holda skrinshotning ichiga
 tushardi. Undan keyingi bosqichni badge oladi: juda uzun sahifa bo'laklarga

@@ -30,13 +30,15 @@ export const OVERLAY = {
   /**
    * The veil over the page while it is being walked.
    *
-   * Not decoration: the walk jumps the page a viewport at a time, and
-   * jump-cut content reads as a glitch. Dimming it makes the same motion read
-   * as a deliberate busy state instead. Deliberately a flat colour and not a
-   * `backdrop-filter` — a blur repaints the whole viewport on every one of
-   * those jumps, which would cost the thing it is trying to make feel fast.
+   * The scrim takes the PAGE'S OWN background colour at run time — this is
+   * only what it falls back to, and white is what a browser paints for a
+   * document that declares no background of its own.
+   *
+   * Deliberately a flat colour and not a `backdrop-filter`: a blur repaints
+   * the whole viewport on every one of those jumps, and it would still show
+   * the motion, just smeared.
    */
-  scrim: "rgba(9,9,11,.55)",
+  scrimFallback: "#ffffff",
   /** Near-black, not pure: pure black on a white page reads as a hole. */
   background: "#111111",
   foreground: "#ffffff",

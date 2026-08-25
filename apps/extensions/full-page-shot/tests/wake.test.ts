@@ -77,7 +77,7 @@ describe("WAKE_SCRIPT", () => {
 
     // Assert
     expect(script).toMatch(/\.s\{position:absolute;inset:0/)
-    expect(script).toContain("host.remove()")
+    expect(script).toContain("host?.remove()")
   })
 
   it("never leaves its overlay behind for the camera", () => {
@@ -88,17 +88,80 @@ describe("WAKE_SCRIPT", () => {
 
     // Assert
     expect(source).toContain("} finally {")
-    expect(source).toContain("host.remove()")
+    expect(source).toContain("host?.remove()")
   })
 
-  it("restores the visitor's scroll position", () => {
-    // Arrange / Act — a screenshot tool that leaves someone 40,000px down
-    // their own page has broken the page to photograph it.
+  it("ends at the top of the document and hands back where the visitor was", () => {
+    // Arrange / Act — MEASURED on webiston.uz: `captureBeyondViewport` paints
+    // fixed and sticky boxes at the CURRENT scroll offset, so a capture taken
+    // at the visitor's offset strands the site header and both sidebars that
+    // far down the image. The position comes back in the report instead, for
+    // the caller to restore after the shutter.
     const source = WAKE_SCRIPT(labels)
 
     // Assert
     expect(source).toContain("const startedAt = window.scrollY")
-    expect(source).toContain("jump(startedAt)")
+    // A panel is the opposite case: the window never moved, so the visitor's
+    // own position is the one worth showing and there is nothing to restore.
+    expect(source).toContain("jump(panel ? startedAt : 0)")
+    expect(source).toContain("startedAt: panel ? 0 : startedAt")
+  })
+
+  it("covers the page opaquely while it walks", () => {
+    // Arrange / Act — a translucent scrim still shows the jumps; measured at
+    // 97%, body text on a light page stayed legible.
+    const source = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(source).not.toContain("opacity:.9")
+    expect(source).toContain("style.background = pageBackground")
+  })
+
+  it("walks the panel when the DOCUMENT is not what scrolls", () => {
+    // Arrange / Act — Gmail, Slack and most dashboards put `overflow: hidden`
+    // on the document. Measured on a page of that shape before this existed:
+    // 36 of 40 images never started loading and the capture burned the whole
+    // 4-second image deadline waiting for them. After: 40 of 40, 894ms.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(script).toContain("findScroller")
+    expect(script).toContain("panel.scrollTop = y")
+    expect(script).toContain("innerScroll: !!panel")
+  })
+
+  it("never changes a computed style to make the page photograph better", () => {
+    // Arrange / Act — forcing `overflow: visible` on somebody's app shell
+    // would make an inner-scroll page capture in full, and is the same class
+    // of change as the viewport override that broke every `vh` unit.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert — the ONE style this script writes is `scroll-behavior`, and it
+    // puts that back.
+    const writes =
+      script.match(/\.style\.(setProperty|removeProperty)\(\s*"([^"]+)"/g) ?? []
+    for (const write of writes) expect(write).toContain("scroll-behavior")
+  })
+
+  it("finishes the bar and fades before it removes the cover", () => {
+    // Arrange / Act — a progress bar that vanishes at 82% reads as a failure,
+    // and a hard cut back to the page is the part that still felt abrupt.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert — and the fade is AWAITED, so the overlay is out of the DOM
+    // before the shutter rather than caught half-transparent inside the shot.
+    expect(script).toContain('host.style.opacity = "0"')
+    expect(script).toMatch(/setTimeout\(r, \d+\)\)\n\s*\}\n\s*\/\/ Always/)
+  })
+
+  it("gives the opaque overlay a dead-man switch", () => {
+    // Arrange / Act — `finally` covers every ordinary path, but a full-screen
+    // cover that outlived the capture would leave a blank page with no way
+    // out, so it also takes itself down on a timer.
+    const source = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(source).toMatch(/setTimeout\(\(\) => host\?\.remove\(\), \d+\)/)
   })
 
   it("never touches the viewport size", () => {

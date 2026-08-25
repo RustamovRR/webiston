@@ -1,6 +1,6 @@
 import { CaptureError, send, type Target, withDebugger } from "./cdp"
 import { type CaptureBudget, planCapture } from "./limits"
-import { WAKE_SCRIPT, type WakeReport } from "./wake"
+import { SCROLL_TO, WAKE_SCRIPT, type WakeReport } from "./wake"
 
 /**
  * The capture pipeline, and the reason this extension exists.
@@ -20,8 +20,6 @@ import { WAKE_SCRIPT, type WakeReport } from "./wake"
  * it as tall as the document and that broke `vh` units on every page that uses
  * them — see `wake.ts` for the measurements.
  */
-
-const REFLOW_SETTLE_MS = 200
 
 export type Format = "png" | "jpeg"
 
@@ -43,6 +41,11 @@ export interface CaptureResult {
   requestedHeight: number
   /** Images that had still not loaded when the deadline passed. */
   pendingImages: number
+  /**
+   * The page scrolls inside a panel rather than as a document, so the image
+   * is the visible area and cannot be more than that.
+   */
+  innerScroll: boolean
 }
 
 interface LayoutMetrics {
@@ -99,9 +102,14 @@ export async function captureFullPage(
         returnByValue: true
       }
     )
-    // Images that arrived change layout: a page that reserved no space for
-    // them grows here, and measuring before the reflow cuts the footer off.
-    await new Promise((resolve) => setTimeout(resolve, REFLOW_SETTLE_MS))
+    // Belt. The wake ends at the top of the document because
+    // `captureBeyondViewport` paints fixed and sticky boxes at the scroll
+    // offset — but a wake that threw returns no report and leaves the page
+    // wherever it stopped, and a capture from there is the exact defect this
+    // is guarding against. Costs one evaluate on a path that is already free.
+    await send(target, "Runtime.evaluate", { expression: SCROLL_TO(0) }).catch(
+      () => {}
+    )
 
     const settled = await metrics(target)
     const budget = planCapture(
@@ -135,6 +143,20 @@ export async function captureFullPage(
       )
     }
 
+    // The visitor gets their scroll position back HERE, not in the wake.
+    // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
+    // scroll offset is, so the capture has to happen at the top of the
+    // document — measured on webiston.uz, restoring first stranded the site
+    // header and both sidebars 400px down the image. Best-effort: if the tab
+    // navigated away mid-capture there is nothing left to put back, and that
+    // must not turn a good screenshot into an error.
+    const startedAt = wake.result?.value?.startedAt ?? 0
+    if (startedAt > 0) {
+      await send(target, "Runtime.evaluate", {
+        expression: SCROLL_TO(startedAt)
+      }).catch(() => {})
+    }
+
     let dataUrl: string
     if (parts.length === 1 && parts[0]) {
       dataUrl = `data:image/${format};base64,${parts[0]}`
@@ -149,7 +171,8 @@ export async function captureFullPage(
       height: Math.round(budget.height * scale),
       clamped: budget.clamped,
       requestedHeight: budget.requestedHeight,
-      pendingImages: wake.result?.value?.pending ?? 0
+      pendingImages: wake.result?.value?.pending ?? 0,
+      innerScroll: wake.result?.value?.innerScroll ?? false
     }
   })
 }

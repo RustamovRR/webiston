@@ -23,7 +23,10 @@ const PDF_QUALITY = 0.94
 export function fileName(title: string, extension: string): string {
   const cleaned = title
     .toLowerCase()
-    .replace(/['`’]/g, "")
+    // Uzbek Latin writes o' and g' with U+02BB / U+02BC as often as with a
+    // plain apostrophe, and a title like "Toʻliq" was becoming "to-liq"
+    // instead of "toliq" because those two were not on the list.
+    .replace(/['`‘’ʻʼ]/g, "")
     .replace(/[^a-z0-9Ѐ-ӿ]+/g, "-")
     .replace(/^-+|-+$/g, "")
   const now = new Date()

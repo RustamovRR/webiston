@@ -11,6 +11,7 @@ interface Shot {
   clamped: boolean
   requestedHeight: number
   pendingImages: number
+  innerScroll: boolean
   title: string
 }
 
@@ -75,6 +76,12 @@ export function App() {
           return
         }
         saveBlob(out, fileName(state.shot.title, kind))
+      } catch {
+        // `createImageBitmap` THROWS on an image past the decoder's limits
+        // rather than returning null, and a 65,000px capture can reach it.
+        // Without this the button simply re-enabled and said nothing, which
+        // reads as "the extension is broken" — the PNG is still right there.
+        setNotice(t(kind === "pdf" ? "errPdfFailed" : "errJpegTooLarge"))
       } finally {
         setBusy(undefined)
       }
@@ -189,6 +196,16 @@ export function App() {
         // cost it a picture. The user is the one who knows if it mattered.
         <p className="border-border border-b bg-muted px-5 py-2 text-muted-foreground text-xs">
           {t("someImagesPending", String(shot.pendingImages))}
+        </p>
+      )}
+
+      {shot.innerScroll && (
+        // Not an error and not hidden. This page scrolls a panel, not the
+        // document, so `captureBeyondViewport` has nothing beyond the
+        // viewport to render — the honest answer is a correct picture of what
+        // was on screen plus the reason it stops there.
+        <p className="border-border border-b bg-muted px-5 py-2 text-muted-foreground text-xs">
+          {t("innerScroll")}
         </p>
       )}
 
