@@ -27,26 +27,11 @@ export const BADGE = {
 } as const
 
 export const OVERLAY = {
-  /**
-   * The veil over the page while it is being walked.
-   *
-   * The scrim takes the PAGE'S OWN background colour at run time — this is
-   * only what it falls back to, and white is what a browser paints for a
-   * document that declares no background of its own.
-   *
-   * Deliberately a flat colour and not a `backdrop-filter`: a blur repaints
-   * the whole viewport on every one of those jumps, and it would still show
-   * the motion, just smeared.
-   */
-  scrimFallback: "#ffffff",
   /** Near-black, not pure: pure black on a white page reads as a hole. */
   background: "#111111",
   foreground: "#ffffff",
   /** `--brand-400`, the site's `--primary` in dark mode. */
   accent: "#4cc4e0",
-  track: "rgba(255,255,255,.22)",
-  /** Separates the pill from a page whose own header is already near-black. */
-  hairline: "rgba(255,255,255,.14)",
   shadow: "0 8px 30px rgba(0,0,0,.35)"
 } as const
 

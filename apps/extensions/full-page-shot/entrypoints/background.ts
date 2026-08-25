@@ -113,12 +113,6 @@ async function toast(tabId: number, text: string): Promise<void> {
 function capture(tabId: number): Promise<CaptureResult> {
   return captureFullPage(tabId, {
     format: "png",
-    // The overlay lives in the page, so its copy has to travel there.
-    labels: {
-      waking: i18n("progWaking"),
-      loading: i18n("progLoading"),
-      building: i18n("progBuilding")
-    },
     /**
      * The badge, NOT the overlay, carries the capture phase — a badge is
      * browser chrome and cannot end up inside the screenshot, and by this

@@ -106,6 +106,18 @@ const REFLOW_SETTLE_MS = 200
  */
 const FADE_OUT_MS = 160
 
+/** The whole indicator: a four-pixel line across the top of the viewport. */
+const BAR_PX = 4
+
+/**
+ * How much of the image has to be re-taken to remove the bar from it.
+ *
+ * The bar is 4 CSS px at the very top, so 8 covers it with room for the
+ * device-pixel rounding. It used to be a whole viewport, because the
+ * indicator used to be a cover.
+ */
+export const BAR_PATCH_PX = 8
+
 /** The overlay's own dead-man switch. Comfortably longer than the slowest
  *  real capture (walk + image deadline), so it never fires in normal use. */
 const WATCHDOG_MS = 15_000
@@ -132,59 +144,34 @@ export const SHOT_CONTROL = {
   show: `window.${CONTROL}?.show()`,
   abort: `window.${CONTROL}?.abort()`,
   done: `window.${CONTROL}?.done()`,
-  set: (label: string, ratio: number) =>
-    `window.${CONTROL}?.set(${JSON.stringify(label)}, ${ratio})`
+  set: (ratio: number) => `window.${CONTROL}?.set(${ratio})`
 } as const
 
 /**
- * THE OVERLAY, and why it is opaque.
+ * THE PROGRESS BAR, and why it is only a bar.
  *
- * The walk moves the page a viewport at a time. Reported by the owner and
- * true: jump-cut content reads as a glitch, and no amount of "but it is fast"
- * changes that — 50 steps is 50 visible jumps. Smoothing them out is not an
- * option either, because smooth means slow: a 36,000px page at a legible
- * scroll speed would take several seconds.
+ * This started as a pill, became an opaque cover over the whole page, and the
+ * owner was right to reject both. The cover hid the scroll, but a cover has
+ * to leave the screen for the shutter — a `position: fixed` box is composited
+ * into a `captureBeyondViewport` image — so it blinked, and a full-page
+ * black-out that blinks is far uglier than a page that simply scrolls.
  *
- * So the page is not made to move nicely; it is made not to be seen moving.
- * The scrim takes the PAGE'S OWN background colour, fully opaque — so what
- * the visitor sees is their own page going momentarily blank with a progress
- * card on it, not a black panel flashing over their site. It falls back to
- * white, the colour a browser paints for a document that declares none.
+ * So: the page scrolls, visibly, the way every other tool does it, and the
+ * only thing on screen is a four-pixel line across the top. It never covers
+ * anything, so it never has to be gone for long, and the patch that removes
+ * it from the picture is eight pixels tall instead of a whole viewport.
  *
- * Opaque and not 97%: measured at 97% on a light page, the body text and the
- * headings were still legible ghosts, and a ghost that jumps fifty times is
- * still a flicker. Three per cent of the amplitude is not three per cent of
- * the annoyance.
+ * No label and no card on purpose. The moving page is what tells you it is
+ * working; the line is what tells you how far along it is.
  *
- * A cover this complete has a failure mode a translucent one does not — if it
- * ever outlived the capture the visitor would be staring at a blank page with
- * no way to clear it. `finally` handles every ordinary path; the watchdog
- * handles the ones that are not paths at all.
- *
- * Two rules inside the injected stylesheet carry more weight than they look.
- * `.p` gets a hairline BORDER because plenty of sites have a near-black sticky
- * header; a near-black card over one disappears completely. And it stacks the
- * label ABOVE the bar rather than beside it — side by side, the Uzbek label
- * ate the row and left the bar 37 measured pixels wide.
- *
- * `.f` gets `display: block` because these are `<span>`s, and `width` does not
- * apply to an inline box. Without it the bar sets `width: 50%` and renders
- * zero pixels of fill — honest progress that nobody can see. Measured:
- * `fillPct: "50%"`, `fillPx: 0`.
- *
- * The host is sized in PIXELS rather than pinned to all four insets.
+ * The host is sized in PIXELS rather than pinned to insets:
  * `captureBeyondViewport` renders with the viewport blown up to the whole
- * clip, and `inset: 0` would grow with it and cover the entire screenshot.
- * One viewport tall, it covers exactly the band the patch capture replaces —
- * which is what lets the cover stay up through the shutter.
+ * clip, and `inset: 0` would grow with it.
  *
  * Nothing in the injected string may contain a backtick: it is built from a
  * template literal, and one inside a CSS comment terminates it.
  */
-export const WAKE_SCRIPT = (labels: {
-  waking: string
-  loading: string
-}) => `(async () => {
+export const WAKE_SCRIPT = () => `(async () => {
   const HOST_ID = "__webiston_shot_progress__"
   document.getElementById(HOST_ID)?.remove()
 
@@ -226,60 +213,31 @@ export const WAKE_SCRIPT = (labels: {
   const viewOf = () => (panel ? panel.clientHeight : window.innerHeight)
   const posOf = () => (panel ? panel.scrollTop : window.scrollY)
 
-  const opaque = (value) =>
-    value && value !== "transparent" && !/rgba\\(0, 0, 0, 0\\)/.test(value)
-  const pageBackground =
-    [document.body, doc]
-      .filter(Boolean)
-      .map((node) => getComputedStyle(node).backgroundColor)
-      .find(opaque) || ${JSON.stringify(OVERLAY.scrimFallback)}
-
   let host = null
   let paint = () => {}
   let show = () => {}
   const mountOverlay = () => {
-    // A shadow root: the page's own CSS cannot reach in and restyle this, and
-    // nothing here leaks out onto the page.
     host = document.createElement("div")
     host.id = HOST_ID
-    // Height in PIXELS, not inset 0 — see the note on WAKE_SCRIPT.
     host.style.cssText =
       "all:initial;position:fixed;top:0;left:0;width:100%;height:" +
-      window.innerHeight +
-      "px;z-index:2147483647;transition:opacity ${FADE_OUT_MS}ms ease"
+      ${BAR_PX} +
+      "px;z-index:2147483647;pointer-events:none"
     const root = host.attachShadow({ mode: "closed" })
-    root.innerHTML = \`
-      <style>
-        @keyframes in{from{opacity:0;transform:translate(-50%,-46%)}
-                      to{opacity:1;transform:translate(-50%,-50%)}}
-        .s{position:absolute;inset:0}
-        .p{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-           font:500 13px/1.3 system-ui,-apple-system,sans-serif;color:${OVERLAY.foreground};
-           background:${OVERLAY.background};border-radius:12px;padding:11px 14px;display:flex;
-           flex-direction:column;align-items:stretch;gap:9px;box-shadow:${OVERLAY.shadow};
-           width:260px;border:1px solid ${OVERLAY.hairline};
-           animation:in .18s cubic-bezier(.16,1,.3,1)}
-        .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .b{height:4px;border-radius:2px;background:${OVERLAY.track};overflow:hidden}
-        .f{display:block;height:100%;width:0%;background:${OVERLAY.accent};
-           transition:width .15s linear}
-      </style>
-      <div class="s"></div>
-      <div class="p"><span class="t"></span><span class="b"><span class="f"></span></span></div>\`
-    root.querySelector(".s").style.background = pageBackground
+    root.innerHTML =
+      '<style>.f{position:absolute;left:0;top:0;bottom:0;width:0%;' +
+      'background:${OVERLAY.accent};transition:width .2s ease}</style>' +
+      '<div class="f"></div>'
     document.documentElement.append(host)
-    // Belt for an opaque cover: whatever happens to the promise below — a
-    // detached debugger, a service worker killed mid-capture — this overlay
-    // takes itself down. Far longer than any real capture, short enough that
-    // nobody would go looking for a reload button first.
+    // Belt: whatever happens to the promise below, this line takes itself
+    // down. A four-pixel bar left behind is small, but it is still ours.
     setTimeout(() => host?.remove(), ${WATCHDOG_MS})
-    const text = root.querySelector(".t")
     const fill = root.querySelector(".f")
-    paint = (label, ratio) => {
-      text.textContent = label
-      fill.style.width = Math.round(Math.max(0, Math.min(1, ratio)) * 100) + "%"
+    paint = (ratio) => {
+      fill.style.width =
+        Math.round(Math.max(0, Math.min(1, ratio)) * 100) + "%"
     }
-    show = (label, ratio) => paint(label, ratio * ${WAKE_SPAN})
+    show = (ratio) => paint(ratio * ${WAKE_SPAN})
   }
 
   const drop = () => {
@@ -325,7 +283,7 @@ export const WAKE_SCRIPT = (labels: {
       for (let y = 0; y < total && steps < ${MAX_STEPS}; y += step) {
         jump(y)
         steps++
-        show(${JSON.stringify(labels.waking)}, y / total)
+        show(y / total)
         await beat()
         total = Math.max(total, totalOf())
       }
@@ -339,10 +297,7 @@ export const WAKE_SCRIPT = (labels: {
     const totalImages = images().length
     const deadline = Date.now() + ${IMAGE_DEADLINE_MS}
     while (pendingNow() > 0 && Date.now() < deadline) {
-      show(
-        ${JSON.stringify(labels.loading)},
-        totalImages ? (totalImages - pendingNow()) / totalImages : 1
-      )
+      show(totalImages ? (totalImages - pendingNow()) / totalImages : 1)
       await new Promise((r) => setTimeout(r, 100))
     }
 
@@ -396,12 +351,14 @@ export const WAKE_SCRIPT = (labels: {
       window[${JSON.stringify(CONTROL)}] = {
         hide() { if (host) host.style.display = "none" },
         show() { if (host) host.style.display = "" },
-        set(label, ratio) { paint(label, ratio) },
+        set(ratio) { paint(ratio) },
         abort() { drop() },
         async done() {
           if (host) {
             host.style.display = ""
-            host.style.opacity = "0"
+            paint(1)
+            // A beat at 100% so the line is seen to finish rather than to
+            // disappear at 90-something.
             await new Promise((r) => setTimeout(r, ${FADE_OUT_MS}))
           }
           drop()

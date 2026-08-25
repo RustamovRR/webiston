@@ -1,6 +1,12 @@
 import { CaptureError, send, type Target, withDebugger } from "./cdp"
 import { type CaptureBudget, planCapture } from "./limits"
-import { SCROLL_TO, SHOT_CONTROL, WAKE_SCRIPT, type WakeReport } from "./wake"
+import {
+  BAR_PATCH_PX,
+  SCROLL_TO,
+  SHOT_CONTROL,
+  WAKE_SCRIPT,
+  type WakeReport
+} from "./wake"
 
 /**
  * The capture pipeline, and the reason this extension exists.
@@ -98,12 +104,10 @@ export async function captureFullPage(
   {
     format = "png",
     scale = 1,
-    labels,
     onProgress
   }: {
     format?: Format
     scale?: number
-    labels: { waking: string; loading: string; building: string }
     onProgress?: (progress: Progress) => void
   }
 ): Promise<CaptureResult> {
@@ -117,7 +121,7 @@ export async function captureFullPage(
         target,
         "Runtime.evaluate",
         {
-          expression: WAKE_SCRIPT(labels),
+          expression: WAKE_SCRIPT(),
           awaitPromise: true,
           returnByValue: true
         }
@@ -163,7 +167,6 @@ export async function captureFullPage(
         await evaluate(
           target,
           SHOT_CONTROL.set(
-            labels.building,
             SHUTTER_START +
               (SHUTTER_END - SHUTTER_START) *
                 (index / Math.max(1, budget.tiles.length))
@@ -190,9 +193,8 @@ export async function captureFullPage(
        *
        * This is why the progress bar no longer breaks in two. A cover cannot
        * be both on screen and absent from a capture of the same pixels, so
-       * the interruption is squeezed down to a single viewport-sized capture
-       * instead of the whole shutter — and while it IS up, it also hides the
-       * viewport reflow that `captureBeyondViewport` causes.
+       * the interruption is squeezed down to one EIGHT-PIXEL capture — small
+       * enough that the line appearing to skip a frame is the whole cost.
        */
       let patch: string | undefined
       if (covered && viewport > 0) {
@@ -201,7 +203,7 @@ export async function captureFullPage(
           x: 0,
           y: 0,
           width: budget.width,
-          height: Math.min(viewport, budget.height),
+          height: Math.min(BAR_PATCH_PX, budget.height),
           scale
         })
         await evaluate(target, SHOT_CONTROL.show)
@@ -226,17 +228,14 @@ export async function captureFullPage(
         dataUrl = `data:image/${format};base64,${parts[0]}`
       } else {
         onProgress?.({ phase: "stitching" })
-        await evaluate(
-          target,
-          SHOT_CONTROL.set(labels.building, ASSEMBLY_START)
-        )
+        await evaluate(target, SHOT_CONTROL.set(ASSEMBLY_START))
         dataUrl = await stitch(parts, budget, format, patch)
       }
 
       // Full, then gone — in that order, and awaited, so the visitor sees the
       // bar complete rather than vanish mid-way. The viewer tab opens next, by
       // which time there is an image in it.
-      await evaluate(target, SHOT_CONTROL.set(labels.building, 1))
+      await evaluate(target, SHOT_CONTROL.set(1))
       await evaluate(target, SHOT_CONTROL.done)
 
       return {

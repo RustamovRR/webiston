@@ -139,55 +139,27 @@ tushardi. Undan keyingi bosqichni badge oladi: juda uzun sahifa bo'laklarga
 bo'linsa, badge `2/5` deb turadi. Badge — brauzer chromesi, u hech qachon
 rasmga tushmaydi.
 
-## Yopqich zatvor paytida ham ekranda qoladi
+## Sahifada nima ko'rinadi
 
-Sahifadagi yopqich `position: fixed`, ya'ni u suratning ichiga tushadi. Shu
-sababli u zatvor paytida yo'qolishi kerak edi — va o'sha ~1 soniyalik uzilish
-progress'ni ikkiga bo'lib, ikkita alohida amaliyotdek ko'rsatardi.
+Sahifa **scroll bo'ladi**, ko'rinadigan holda — yashirilmaydi, qoraytirilmaydi.
+Ustida yagona narsa: viewport tepasidan o'tgan **4 piksellik chiziq**, u
+progressni ko'rsatadi. Yozuv ham, kartochka ham yo'q: sahifaning harakati
+"ishlayapti" deydi, chiziq esa "qanchasi qoldi" deydi.
 
-Endi yopqich **rasmdan** olib tashlanadi, ekrandan emas: u zatvor davomida
-turaveradi, keyin **bir marta** ~120ms ga tushirilib, faqat tepadagi bitta
-ekran alohida olinadi va yig'ishda ustiga qo'yiladi.
+Bu uchinchi urinish, va avvalgi ikkitasi noto'g'ri edi. Yopqich (butun
+sahifani berkitadigan qatlam) scroll'ni yashirardi — lekin `position: fixed`
+qatlam suratning ichiga tushadi, ya'ni u zatvor paytida ekrandan ketishi
+kerak. Ketganda esa progress ikkiga bo'linib, ikkita alohida oynadek
+ko'rinardi. Pilpillaydigan to'liq qoraytirish oddiy scroll'dan xunukroq.
 
-Buning uchun yopqich balandligi `inset: 0` emas, **piksel** bilan beriladi:
-`captureBeyondViewport` viewport'ni butun klip o'lchamiga kengaytiradi, va
-to'rt tomonga qadalgan quti u bilan birga o'sib, butun suratni yopib
-qo'yardi.
+Chiziq suratga tushmasligi uchun u **rasmdan** olib tashlanadi, ekrandan
+emas: zatvor davomida turaveradi, keyin bir marta tushirilib **tepadagi 8
+piksel** alohida olinadi va yig'ishda ustiga qo'yiladi. O'lchangan uzilish —
+**32ms**, ya'ni bir kadr.
 
-Yon foyda: yopqich turgani uchun `captureBeyondViewport` keltirib chiqaradigan
-**qayta-joylashuv (flicker) ham ko'rinmaydi** — u yopqich ostida o'tadi.
-
-O'lchangan (haqiqiy sahifa): 2 klip 969ms **yopqich ustida**, uzilish esa
-atigi **121ms**. Rasmning tepasi tekshirildi — yopqich unda yo'q.
-
-## Nima uchun bitta flicker ko'rinadi
-
-`captureBeyondViewport` butun hujjatni bir marta chizish uchun renderer'ning
-sirtini vaqtincha sahifa balandligiga kengaytiradi va qaytaradi. Bu — surat
-olinayotgan lahza, va u sahifada bitta qayta-joylashuv bo'lib ko'rinadi.
-Uni yopqich bilan berkitib bo'lmaydi: yopqich `position: fixed` bo'lgani
-uchun aynan o'sha suratning ichiga tushardi.
-
-## Progress butun amaliyotni ko'rsatadi
-
-Uyg'otish — ishning hammasi emas. Undan keyin zatvor (klip olish) va yig'ish
-(55 megapiksel canvas + ~7 MB PNG) qoladi. Progress bar shu paytgacha faqat
-uyg'otishni o'lchab, 100% ga to'lib **yo'qolardi** — keyin esa yana bir necha
-soniya kutish. Bu progress UX'idagi eng yomon naqsh: "tayyor" deb aytib,
-keyin kuttirish.
-
-Endi bar butun amaliyotni bo'lib oladi: uyg'otish **0–60%**, zatvor
-**60–90%**, yig'ish **90–100%**. Yopqich zatvor lahzasida `display:none`
-bilan yashiriladi (u `position: fixed`, aks holda suratning ichiga tushardi)
-va darhol qaytadi. Varaq esa **eng oxirida**, rasm qo'lda bo'lganda ochiladi.
-
-O'lchangan hayot davri (haqiqiy sahifa): uyg'otish 4 486ms → yashirin → 2 klip
-1 174ms → qaytdi → yig'ish → `done()`. Jami **5 833ms**, va bar shuning
-hammasida turadi.
-
-Varaqni zatvorda ochish sinab ko'rilgan va **qaytarilgan**: u kutishni
-"preparing image…" deb yozilgan varaqqa ko'chirardi, ya'ni o'sha kutish,
-boshqa kiyimda.
+O'lchangan (haqiqiy sahifa): to'ldirish 55 → 202 → 384 → 720px, 4px
+balandlikda; 2 klip 1 142ms chiziq **ustida**; rasmning tepasi tekshirildi —
+chiziq unda yo'q.
 
 ## Formatlar
 
