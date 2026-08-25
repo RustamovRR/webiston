@@ -49,6 +49,12 @@ export interface WakeReport {
    * `planCapture`.
    */
   viewport: number
+  /**
+   * A cover is on screen and will be in the top viewport of the picture, so
+   * the caller owes the image a patch. False on a short page, which is walked
+   * and covered by nothing.
+   */
+  covered: boolean
 }
 
 /**
@@ -166,6 +172,12 @@ export const SHOT_CONTROL = {
  * zero pixels of fill — honest progress that nobody can see. Measured:
  * `fillPct: "50%"`, `fillPx: 0`.
  *
+ * The host is sized in PIXELS rather than pinned to all four insets.
+ * `captureBeyondViewport` renders with the viewport blown up to the whole
+ * clip, and `inset: 0` would grow with it and cover the entire screenshot.
+ * One viewport tall, it covers exactly the band the patch capture replaces —
+ * which is what lets the cover stay up through the shutter.
+ *
  * Nothing in the injected string may contain a backtick: it is built from a
  * template literal, and one inside a CSS comment terminates it.
  */
@@ -230,8 +242,11 @@ export const WAKE_SCRIPT = (labels: {
     // nothing here leaks out onto the page.
     host = document.createElement("div")
     host.id = HOST_ID
+    // Height in PIXELS, not inset 0 — see the note on WAKE_SCRIPT.
     host.style.cssText =
-      "all:initial;position:fixed;inset:0;z-index:2147483647;transition:opacity ${FADE_OUT_MS}ms ease"
+      "all:initial;position:fixed;top:0;left:0;width:100%;height:" +
+      window.innerHeight +
+      "px;z-index:2147483647;transition:opacity ${FADE_OUT_MS}ms ease"
     const root = host.attachShadow({ mode: "closed" })
     root.innerHTML = \`
       <style>
@@ -360,7 +375,8 @@ export const WAKE_SCRIPT = (labels: {
       startedAt: panel ? 0 : startedAt,
       innerScroll: !!panel,
       dpr: window.devicePixelRatio || 1,
-      viewport: window.innerHeight
+      viewport: window.innerHeight,
+      covered: !!host
     }
   } finally {
     // The page's own scroll behaviour goes back either way — we borrowed it.

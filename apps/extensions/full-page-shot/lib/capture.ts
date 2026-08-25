@@ -137,11 +137,13 @@ export async function captureFullPage(
       // DPR-2 browser. Every limit in `limits.ts` is a device-pixel limit, so
       // the plan has to be made in the same units the file will be measured in.
       const deviceScale = (wake.result?.value?.dpr ?? 1) * scale
+      const viewport = wake.result?.value?.viewport ?? 0
+      const covered = wake.result?.value?.covered ?? false
       const budget = planCapture(
         Math.ceil(settled.cssContentSize.width),
         Math.ceil(settled.cssContentSize.height),
         deviceScale,
-        wake.result?.value?.viewport ?? 0
+        viewport
       )
       if (budget.tiles.length === 0) {
         throw new CaptureError("capture-failed", "The page measured 0px tall.")
@@ -151,13 +153,6 @@ export async function captureFullPage(
       // width of the page by up to 15,000px tall; firing five of those at once
       // is how a long capture turns into an out-of-memory failure on exactly
       // the pages that need tiling in the first place.
-      // The overlay comes DOWN for the shutter and goes back up straight after.
-      // A `position: fixed` box is composited into a `captureBeyondViewport`
-      // image, so it cannot be on screen while the picture is taken — but it
-      // can be there for everything either side of it, which is what stops the
-      // bar from claiming the job is finished when it is not.
-      await evaluate(target, SHOT_CONTROL.hide)
-
       const parts: string[] = []
       for (const [index, tile] of budget.tiles.entries()) {
         onProgress?.({
@@ -186,7 +181,31 @@ export async function captureFullPage(
         )
       }
 
-      await evaluate(target, SHOT_CONTROL.show)
+      /**
+       * The cover stayed up through the shutter, so it is now painted across
+       * the top viewport of the first tile. It comes out of the PICTURE
+       * rather than off the screen: one small clip of that band with the
+       * cover momentarily down, pasted over the top when the tiles are
+       * joined.
+       *
+       * This is why the progress bar no longer breaks in two. A cover cannot
+       * be both on screen and absent from a capture of the same pixels, so
+       * the interruption is squeezed down to a single viewport-sized capture
+       * instead of the whole shutter — and while it IS up, it also hides the
+       * viewport reflow that `captureBeyondViewport` causes.
+       */
+      let patch: string | undefined
+      if (covered && viewport > 0) {
+        await evaluate(target, SHOT_CONTROL.hide)
+        patch = await captureTile(target, format, {
+          x: 0,
+          y: 0,
+          width: budget.width,
+          height: Math.min(viewport, budget.height),
+          scale
+        })
+        await evaluate(target, SHOT_CONTROL.show)
+      }
 
       // The visitor gets their scroll position back HERE, not in the wake.
       // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
@@ -203,7 +222,7 @@ export async function captureFullPage(
       }
 
       let dataUrl: string
-      if (parts.length === 1 && parts[0]) {
+      if (parts.length === 1 && parts[0] && !patch) {
         dataUrl = `data:image/${format};base64,${parts[0]}`
       } else {
         onProgress?.({ phase: "stitching" })
@@ -211,7 +230,7 @@ export async function captureFullPage(
           target,
           SHOT_CONTROL.set(labels.building, ASSEMBLY_START)
         )
-        dataUrl = await stitch(parts, budget, format)
+        dataUrl = await stitch(parts, budget, format, patch)
       }
 
       // Full, then gone — in that order, and awaited, so the visitor sees the
@@ -250,7 +269,8 @@ export async function captureFullPage(
 async function stitch(
   tiles: string[],
   budget: CaptureBudget,
-  format: Format
+  format: Format,
+  patch?: string
 ): Promise<string> {
   // DEVICE pixels. The tiles come back at the tab's device pixel ratio, so a
   // canvas sized in CSS pixels is half the size the bitmaps are drawn at —
@@ -287,6 +307,14 @@ async function stitch(
       bitmap.width,
       keep
     )
+    bitmap.close()
+  }
+
+  // Last, and over the top: the band the progress cover was standing in.
+  if (patch) {
+    const response = await fetch(`data:image/${format};base64,${patch}`)
+    const bitmap = await createImageBitmap(await response.blob())
+    context.drawImage(bitmap, 0, 0)
     bitmap.close()
   }
 

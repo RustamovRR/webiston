@@ -158,6 +158,27 @@ describe("WAKE_SCRIPT", () => {
     expect(script).toContain("if (!ok) {")
   })
 
+  it("sizes the cover in pixels so it cannot grow with the clip", () => {
+    // Arrange / Act — `captureBeyondViewport` renders with the viewport blown
+    // up to the whole clip. A box pinned to all four insets would grow with
+    // it and cover the entire screenshot instead of one viewport.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(script).not.toMatch(/position:fixed;inset:0/)
+    expect(script).toContain("window.innerHeight")
+  })
+
+  it("tells the caller a cover is standing in the picture", () => {
+    // Arrange / Act — the cover now stays up through the shutter, so the top
+    // viewport of the image has to be replaced by a patch capture. That only
+    // happens if the wake says there is something to patch.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(script).toContain("covered: !!host")
+  })
+
   it("keeps the wake inside its own share of the bar", () => {
     // Arrange / Act — the wake is not the whole operation, so it must not
     // paint the whole bar.

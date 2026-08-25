@@ -139,6 +139,27 @@ tushardi. Undan keyingi bosqichni badge oladi: juda uzun sahifa bo'laklarga
 bo'linsa, badge `2/5` deb turadi. Badge — brauzer chromesi, u hech qachon
 rasmga tushmaydi.
 
+## Yopqich zatvor paytida ham ekranda qoladi
+
+Sahifadagi yopqich `position: fixed`, ya'ni u suratning ichiga tushadi. Shu
+sababli u zatvor paytida yo'qolishi kerak edi — va o'sha ~1 soniyalik uzilish
+progress'ni ikkiga bo'lib, ikkita alohida amaliyotdek ko'rsatardi.
+
+Endi yopqich **rasmdan** olib tashlanadi, ekrandan emas: u zatvor davomida
+turaveradi, keyin **bir marta** ~120ms ga tushirilib, faqat tepadagi bitta
+ekran alohida olinadi va yig'ishda ustiga qo'yiladi.
+
+Buning uchun yopqich balandligi `inset: 0` emas, **piksel** bilan beriladi:
+`captureBeyondViewport` viewport'ni butun klip o'lchamiga kengaytiradi, va
+to'rt tomonga qadalgan quti u bilan birga o'sib, butun suratni yopib
+qo'yardi.
+
+Yon foyda: yopqich turgani uchun `captureBeyondViewport` keltirib chiqaradigan
+**qayta-joylashuv (flicker) ham ko'rinmaydi** — u yopqich ostida o'tadi.
+
+O'lchangan (haqiqiy sahifa): 2 klip 969ms **yopqich ustida**, uzilish esa
+atigi **121ms**. Rasmning tepasi tekshirildi — yopqich unda yo'q.
+
 ## Nima uchun bitta flicker ko'rinadi
 
 `captureBeyondViewport` butun hujjatni bir marta chizish uchun renderer'ning
