@@ -80,5 +80,8 @@
   },
   "innerScroll": {
     "message": "Bu sahifa hujjat emas, ichki panel ichida scroll qiladi (Gmail, dashboard va shunga o'xshash ilovalar). Brauzer bunday panelning ko'rinmaydigan qismini render qila olmaydi, shuning uchun faqat ko'ringan qism olindi."
+  },
+  "progBuilding": {
+    "message": "Rasm yig'ilmoqda…"
   }
 }

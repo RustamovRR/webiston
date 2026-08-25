@@ -143,15 +143,28 @@ describe("WAKE_SCRIPT", () => {
     for (const write of writes) expect(write).toContain("scroll-behavior")
   })
 
-  it("finishes the bar and fades before it removes the cover", () => {
-    // Arrange / Act — a progress bar that vanishes at 82% reads as a failure,
-    // and a hard cut back to the page is the part that still felt abrupt.
+  it("hands the caller a controller instead of tearing itself down", () => {
+    // Arrange / Act — reported by the owner: a bar that fills, disappears,
+    // and is then followed by several more seconds of work says "done" and
+    // then makes you wait. The shutter and the assembly are the rest of the
+    // job, so the overlay outlives the wake and the capture drives it.
     const script = WAKE_SCRIPT(labels)
 
-    // Assert — and the fade is AWAITED, so the overlay is out of the DOM
-    // before the shutter rather than caught half-transparent inside the shot.
-    expect(script).toContain('host.style.opacity = "0"')
-    expect(script).toMatch(/setTimeout\(r, \d+\)\)\n\s*\}\n\s*\/\/ Always/)
+    // Assert
+    expect(script).toContain("hide()")
+    expect(script).toContain("async done()")
+    expect(script).toContain("abort()")
+    // …and a failed wake still takes it down itself.
+    expect(script).toContain("if (!ok) {")
+  })
+
+  it("keeps the wake inside its own share of the bar", () => {
+    // Arrange / Act — the wake is not the whole operation, so it must not
+    // paint the whole bar.
+    const script = WAKE_SCRIPT(labels)
+
+    // Assert
+    expect(script).toMatch(/paint\(label, ratio \* 0?\.\d+\)/)
   })
 
   it("gives the opaque overlay a dead-man switch", () => {

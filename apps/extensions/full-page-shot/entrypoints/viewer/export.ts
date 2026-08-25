@@ -1,6 +1,12 @@
 import type { Format } from "../../lib/capture"
 import { JPEG_MATTE } from "../../lib/paint"
-import { buildPdf, type PdfImage, sliceHeightPx } from "../../lib/pdf"
+import {
+  BREAK_WINDOW,
+  buildPdf,
+  findQuietRow,
+  type PdfImage,
+  sliceHeightPx
+} from "../../lib/pdf"
 
 /**
  * Turning the one captured PNG into whatever the visitor asked for.
@@ -86,9 +92,41 @@ export async function toPdf(blob: Blob): Promise<Blob | null> {
 
   const slice = sliceHeightPx(bitmap.width)
   const pages: PdfImage[] = []
+
+  /**
+   * Where this page should end: the ideal cut, pulled back to the quietest
+   * row within the window so the break lands between lines rather than
+   * through one. The last page always ends at the bottom of the image.
+   */
+  const probe = document.createElement("canvas")
+  const probeContext = probe.getContext("2d", { willReadFrequently: true })
+  const breakAt = (top: number): number => {
+    const ideal = top + slice
+    if (ideal >= bitmap.height) return bitmap.height
+    const band = Math.max(1, Math.round(slice * BREAK_WINDOW))
+    if (!probeContext) return ideal
+    probe.width = bitmap.width
+    probe.height = band
+    probeContext.drawImage(
+      bitmap,
+      0,
+      ideal - band,
+      bitmap.width,
+      band,
+      0,
+      0,
+      bitmap.width,
+      band
+    )
+    const { data } = probeContext.getImageData(0, 0, probe.width, band)
+    return ideal - band + findQuietRow(data, probe.width, band) + 1
+  }
+
   try {
-    for (let top = 0; top < bitmap.height; top += slice) {
-      const height = Math.min(slice, bitmap.height - top)
+    let top = 0
+    while (top < bitmap.height) {
+      const bottom = breakAt(top)
+      const height = bottom - top
       // Assigning the size RESETS the context, so the matte is painted after
       // it and not before — JPEG has no alpha, and an unpainted transparent
       // region comes out black.
@@ -116,6 +154,7 @@ export async function toPdf(blob: Blob): Promise<Blob | null> {
         widthPx: canvas.width,
         heightPx: height
       })
+      top = bottom
     }
   } finally {
     bitmap.close()

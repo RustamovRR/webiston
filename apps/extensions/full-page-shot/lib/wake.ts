@@ -37,6 +37,18 @@ export interface WakeReport {
    * be the visible area, and the viewer says so.
    */
   innerScroll: boolean
+  /**
+   * `window.devicePixelRatio`. Every ceiling in `limits.ts` is a DEVICE-pixel
+   * ceiling and the renderer applies this ratio on its own, so the plan is
+   * wrong by exactly this factor without it — on a Retina display, by 2x.
+   */
+  dpr: number
+  /**
+   * `innerHeight`. The plan needs it because a clip that starts at 0 AND
+   * reaches the document end renders its final viewport wrong — see
+   * `planCapture`.
+   */
+  viewport: number
 }
 
 /**
@@ -91,6 +103,32 @@ const FADE_OUT_MS = 160
 /** The overlay's own dead-man switch. Comfortably longer than the slowest
  *  real capture (walk + image deadline), so it never fires in normal use. */
 const WATCHDOG_MS = 15_000
+
+/**
+ * The share of the bar the wake is allowed to fill.
+ *
+ * Reported by the owner and correct: a bar that reaches 100%, disappears, and
+ * is then followed by several more seconds of work is the worst progress
+ * pattern there is — it says "done" and then makes you wait. The shutter and
+ * the assembly are the other 40%, and the caller drives them through the
+ * control object below.
+ */
+const WAKE_SPAN = 0.6
+
+/** The page-side handle the capture keeps hold of. Namespaced, and deleted
+ *  when the overlay goes. */
+const CONTROL = "__webiston_shot_control__"
+
+/** Drive the overlay from outside the page. `hide` for the shutter — a
+ *  `position: fixed` overlay would otherwise be composited INTO the image. */
+export const SHOT_CONTROL = {
+  hide: `window.${CONTROL}?.hide()`,
+  show: `window.${CONTROL}?.show()`,
+  abort: `window.${CONTROL}?.abort()`,
+  done: `window.${CONTROL}?.done()`,
+  set: (label: string, ratio: number) =>
+    `window.${CONTROL}?.set(${JSON.stringify(label)}, ${ratio})`
+} as const
 
 /**
  * THE OVERLAY, and why it is opaque.
@@ -185,6 +223,7 @@ export const WAKE_SCRIPT = (labels: {
       .find(opaque) || ${JSON.stringify(OVERLAY.scrimFallback)}
 
   let host = null
+  let paint = () => {}
   let show = () => {}
   const mountOverlay = () => {
     // A shadow root: the page's own CSS cannot reach in and restyle this, and
@@ -221,10 +260,17 @@ export const WAKE_SCRIPT = (labels: {
     setTimeout(() => host?.remove(), ${WATCHDOG_MS})
     const text = root.querySelector(".t")
     const fill = root.querySelector(".f")
-    show = (label, ratio) => {
+    paint = (label, ratio) => {
       text.textContent = label
       fill.style.width = Math.round(Math.max(0, Math.min(1, ratio)) * 100) + "%"
     }
+    show = (label, ratio) => paint(label, ratio * ${WAKE_SPAN})
+  }
+
+  const drop = () => {
+    host?.remove()
+    host = null
+    delete window[${JSON.stringify(CONTROL)}]
   }
 
   // Frame-synced, but never longer than a fixed cap: rAF stops being delivered
@@ -312,7 +358,9 @@ export const WAKE_SCRIPT = (labels: {
       scrolledPx: totalOf(),
       steps,
       startedAt: panel ? 0 : startedAt,
-      innerScroll: !!panel
+      innerScroll: !!panel,
+      dpr: window.devicePixelRatio || 1,
+      viewport: window.innerHeight
     }
   } finally {
     // The page's own scroll behaviour goes back either way — we borrowed it.
@@ -321,17 +369,28 @@ export const WAKE_SCRIPT = (labels: {
     } else {
       doc.style.removeProperty("scroll-behavior")
     }
-    if (host) {
-      if (ok) {
-        // Finish the bar before dissolving it: a progress bar that vanishes
-        // at 82% reads as something having gone wrong.
-        show(${JSON.stringify(labels.loading)}, 1)
-        host.style.opacity = "0"
-        await new Promise((r) => setTimeout(r, ${FADE_OUT_MS}))
+    if (!ok) {
+      drop()
+    } else if (host) {
+      // The overlay STAYS. The capture is not over — the shutter and the
+      // assembly are still to come, and the visitor should watch one
+      // operation finish rather than be told it already did. The caller hides
+      // it for the shutter (a fixed box would be composited into the image),
+      // shows it again for the assembly, and calls \`done\` at the end.
+      window[${JSON.stringify(CONTROL)}] = {
+        hide() { if (host) host.style.display = "none" },
+        show() { if (host) host.style.display = "" },
+        set(label, ratio) { paint(label, ratio) },
+        abort() { drop() },
+        async done() {
+          if (host) {
+            host.style.display = ""
+            host.style.opacity = "0"
+            await new Promise((r) => setTimeout(r, ${FADE_OUT_MS}))
+          }
+          drop()
+        }
       }
-      // Always, and before this resolves: an overlay still in the DOM when
-      // the shutter opens is composited INTO the screenshot.
-      host.remove()
     }
   }
 })()`

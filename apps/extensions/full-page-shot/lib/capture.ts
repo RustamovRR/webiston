@@ -1,6 +1,6 @@
 import { CaptureError, send, type Target, withDebugger } from "./cdp"
 import { type CaptureBudget, planCapture } from "./limits"
-import { SCROLL_TO, WAKE_SCRIPT, type WakeReport } from "./wake"
+import { SCROLL_TO, SHOT_CONTROL, WAKE_SCRIPT, type WakeReport } from "./wake"
 
 /**
  * The capture pipeline, and the reason this extension exists.
@@ -55,6 +55,25 @@ interface LayoutMetrics {
 const metrics = (target: Target) =>
   send<LayoutMetrics>(target, "Page.getLayoutMetrics")
 
+/**
+ * How the bar is divided. The wake owns 0–0.6 and paints its own share; these
+ * are what the shutter and the assembly are worth.
+ *
+ * They are estimates of TIME, not of work done, because that is what a
+ * progress bar is for. Measured on a 9,000px page: wake ~2s, two clips ~0.9s,
+ * stitch and encode ~0.6s.
+ */
+const SHUTTER_START = 0.6
+const SHUTTER_END = 0.9
+const ASSEMBLY_START = 0.9
+
+/** Driving the overlay must never be able to fail a capture: the picture is
+ *  worth more than the progress bar, and the page may have navigated. */
+const evaluate = (target: Target, expression: string) =>
+  send(target, "Runtime.evaluate", { expression, awaitPromise: true }).catch(
+    () => undefined
+  )
+
 async function captureTile(
   target: Target,
   format: Format,
@@ -84,95 +103,140 @@ export async function captureFullPage(
   }: {
     format?: Format
     scale?: number
-    labels: { waking: string; loading: string }
+    labels: { waking: string; loading: string; building: string }
     onProgress?: (progress: Progress) => void
   }
 ): Promise<CaptureResult> {
   return withDebugger({ tabId }, async () => {
     const target = { tabId }
     await send(target, "Page.enable")
-
-    onProgress?.({ phase: "waking" })
-    const wake = await send<{ result?: { value?: WakeReport } }>(
-      target,
-      "Runtime.evaluate",
-      {
-        expression: WAKE_SCRIPT(labels),
-        awaitPromise: true,
-        returnByValue: true
-      }
-    )
-    // Belt. The wake ends at the top of the document because
-    // `captureBeyondViewport` paints fixed and sticky boxes at the scroll
-    // offset — but a wake that threw returns no report and leaves the page
-    // wherever it stopped, and a capture from there is the exact defect this
-    // is guarding against. Costs one evaluate on a path that is already free.
-    await send(target, "Runtime.evaluate", { expression: SCROLL_TO(0) }).catch(
-      () => {}
-    )
-
-    const settled = await metrics(target)
-    const budget = planCapture(
-      Math.ceil(settled.cssContentSize.width),
-      Math.ceil(settled.cssContentSize.height),
-      scale
-    )
-    if (budget.tiles.length === 0) {
-      throw new CaptureError("capture-failed", "The page measured 0px tall.")
-    }
-
-    // SEQUENTIAL, not `Promise.all`. Each call allocates a bitmap the full
-    // width of the page by up to 15,000px tall; firing five of those at once
-    // is how a long capture turns into an out-of-memory failure on exactly
-    // the pages that need tiling in the first place.
-    const parts: string[] = []
-    for (const [index, tile] of budget.tiles.entries()) {
-      onProgress?.({
-        phase: "capturing",
-        tile: index + 1,
-        tiles: budget.tiles.length
-      })
-      parts.push(
-        await captureTile(target, format, {
-          x: 0,
-          y: tile.y,
-          width: budget.width,
-          height: tile.height,
-          scale
-        })
+    // Whatever happens from here, the page does not keep the cover.
+    try {
+      onProgress?.({ phase: "waking" })
+      const wake = await send<{ result?: { value?: WakeReport } }>(
+        target,
+        "Runtime.evaluate",
+        {
+          expression: WAKE_SCRIPT(labels),
+          awaitPromise: true,
+          returnByValue: true
+        }
       )
-    }
-
-    // The visitor gets their scroll position back HERE, not in the wake.
-    // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
-    // scroll offset is, so the capture has to happen at the top of the
-    // document — measured on webiston.uz, restoring first stranded the site
-    // header and both sidebars 400px down the image. Best-effort: if the tab
-    // navigated away mid-capture there is nothing left to put back, and that
-    // must not turn a good screenshot into an error.
-    const startedAt = wake.result?.value?.startedAt ?? 0
-    if (startedAt > 0) {
+      // Belt. The wake ends at the top of the document because
+      // `captureBeyondViewport` paints fixed and sticky boxes at the scroll
+      // offset — but a wake that threw returns no report and leaves the page
+      // wherever it stopped, and a capture from there is the exact defect this
+      // is guarding against. Costs one evaluate on a path that is already free.
       await send(target, "Runtime.evaluate", {
-        expression: SCROLL_TO(startedAt)
+        expression: SCROLL_TO(0)
       }).catch(() => {})
-    }
 
-    let dataUrl: string
-    if (parts.length === 1 && parts[0]) {
-      dataUrl = `data:image/${format};base64,${parts[0]}`
-    } else {
-      onProgress?.({ phase: "stitching" })
-      dataUrl = await stitch(parts, budget, format, scale)
-    }
+      const settled = await metrics(target)
+      // The renderer applies the tab's device pixel ratio ON TOP of `clip.scale`
+      // — measured: a 1512x8000 CSS clip at scale 1 came back 3024x16000 on a
+      // DPR-2 browser. Every limit in `limits.ts` is a device-pixel limit, so
+      // the plan has to be made in the same units the file will be measured in.
+      const deviceScale = (wake.result?.value?.dpr ?? 1) * scale
+      const budget = planCapture(
+        Math.ceil(settled.cssContentSize.width),
+        Math.ceil(settled.cssContentSize.height),
+        deviceScale,
+        wake.result?.value?.viewport ?? 0
+      )
+      if (budget.tiles.length === 0) {
+        throw new CaptureError("capture-failed", "The page measured 0px tall.")
+      }
 
-    return {
-      dataUrl,
-      width: Math.round(budget.width * scale),
-      height: Math.round(budget.height * scale),
-      clamped: budget.clamped,
-      requestedHeight: budget.requestedHeight,
-      pendingImages: wake.result?.value?.pending ?? 0,
-      innerScroll: wake.result?.value?.innerScroll ?? false
+      // SEQUENTIAL, not `Promise.all`. Each call allocates a bitmap the full
+      // width of the page by up to 15,000px tall; firing five of those at once
+      // is how a long capture turns into an out-of-memory failure on exactly
+      // the pages that need tiling in the first place.
+      // The overlay comes DOWN for the shutter and goes back up straight after.
+      // A `position: fixed` box is composited into a `captureBeyondViewport`
+      // image, so it cannot be on screen while the picture is taken — but it
+      // can be there for everything either side of it, which is what stops the
+      // bar from claiming the job is finished when it is not.
+      await evaluate(target, SHOT_CONTROL.hide)
+
+      const parts: string[] = []
+      for (const [index, tile] of budget.tiles.entries()) {
+        onProgress?.({
+          phase: "capturing",
+          tile: index + 1,
+          tiles: budget.tiles.length
+        })
+        await evaluate(
+          target,
+          SHOT_CONTROL.set(
+            labels.building,
+            SHUTTER_START +
+              (SHUTTER_END - SHUTTER_START) *
+                (index / Math.max(1, budget.tiles.length))
+          )
+        )
+        parts.push(
+          await captureTile(target, format, {
+            x: 0,
+            // The lead-in is captured and discarded — see `Tile.lead`.
+            y: tile.y - tile.lead,
+            width: budget.width,
+            height: tile.height + tile.lead,
+            scale
+          })
+        )
+      }
+
+      await evaluate(target, SHOT_CONTROL.show)
+
+      // The visitor gets their scroll position back HERE, not in the wake.
+      // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
+      // scroll offset is, so the capture has to happen at the top of the
+      // document — measured on webiston.uz, restoring first stranded the site
+      // header and both sidebars 400px down the image. Best-effort: if the tab
+      // navigated away mid-capture there is nothing left to put back, and that
+      // must not turn a good screenshot into an error.
+      const startedAt = wake.result?.value?.startedAt ?? 0
+      if (startedAt > 0) {
+        await send(target, "Runtime.evaluate", {
+          expression: SCROLL_TO(startedAt)
+        }).catch(() => {})
+      }
+
+      let dataUrl: string
+      if (parts.length === 1 && parts[0]) {
+        dataUrl = `data:image/${format};base64,${parts[0]}`
+      } else {
+        onProgress?.({ phase: "stitching" })
+        await evaluate(
+          target,
+          SHOT_CONTROL.set(labels.building, ASSEMBLY_START)
+        )
+        dataUrl = await stitch(parts, budget, format)
+      }
+
+      // Full, then gone — in that order, and awaited, so the visitor sees the
+      // bar complete rather than vanish mid-way. The viewer tab opens next, by
+      // which time there is an image in it.
+      await evaluate(target, SHOT_CONTROL.set(labels.building, 1))
+      await evaluate(target, SHOT_CONTROL.done)
+
+      return {
+        dataUrl,
+        // What the FILE measures, not what the page measured. The viewer used to
+        // print the CSS numbers here and so reported a 3024x6806 screenshot as
+        // "1512x3403" — half of everything, on every Retina machine.
+        width: budget.deviceWidth,
+        height: budget.deviceHeight,
+        clamped: budget.clamped,
+        requestedHeight: Math.round(
+          budget.requestedHeight * budget.deviceScale
+        ),
+        pendingImages: wake.result?.value?.pending ?? 0,
+        innerScroll: wake.result?.value?.innerScroll ?? false
+      }
+    } finally {
+      // `done` already removed it on the happy path; this is the throw.
+      await evaluate(target, SHOT_CONTROL.abort)
     }
   })
 }
@@ -186,13 +250,12 @@ export async function captureFullPage(
 async function stitch(
   tiles: string[],
   budget: CaptureBudget,
-  format: Format,
-  scale: number
+  format: Format
 ): Promise<string> {
-  const canvas = new OffscreenCanvas(
-    Math.round(budget.width * scale),
-    Math.round(budget.height * scale)
-  )
+  // DEVICE pixels. The tiles come back at the tab's device pixel ratio, so a
+  // canvas sized in CSS pixels is half the size the bitmaps are drawn at —
+  // which is what every multi-tile capture on a Retina display used to hit.
+  const canvas = new OffscreenCanvas(budget.deviceWidth, budget.deviceHeight)
   const context = canvas.getContext("2d")
   if (!context) {
     throw new CaptureError("capture-failed", "No 2D context for stitching.")
@@ -209,7 +272,21 @@ async function stitch(
     if (!data) continue
     const response = await fetch(`data:image/${format};base64,${data}`)
     const bitmap = await createImageBitmap(await response.blob())
-    context.drawImage(bitmap, 0, Math.round(tile.y * scale))
+    // Source rect, not a bare draw: the top `lead` rows of this bitmap hold
+    // the sticky boxes stamped at the clip's origin and must not be kept.
+    const skip = Math.round(tile.lead * budget.deviceScale)
+    const keep = Math.round(tile.height * budget.deviceScale)
+    context.drawImage(
+      bitmap,
+      0,
+      skip,
+      bitmap.width,
+      keep,
+      0,
+      Math.round(tile.y * budget.deviceScale),
+      bitmap.width,
+      keep
+    )
     bitmap.close()
   }
 

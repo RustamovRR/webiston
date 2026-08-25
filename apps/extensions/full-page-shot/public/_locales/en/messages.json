@@ -80,5 +80,8 @@
   },
   "innerScroll": {
     "message": "This page scrolls inside a panel rather than as a document (Gmail, dashboards and similar apps). The browser cannot render the part of such a panel that is off screen, so only the visible area was captured."
+  },
+  "progBuilding": {
+    "message": "Assembling the image…"
   }
 }

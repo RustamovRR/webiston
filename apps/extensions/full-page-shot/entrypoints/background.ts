@@ -103,6 +103,42 @@ async function toast(tabId: number, text: string): Promise<void> {
   }
 }
 
+/**
+ * One capture, with the viewer opened at the shutter rather than at the end.
+ *
+ * Always PNG: it is lossless, and the viewer derives a JPEG or a PDF from it
+ * on demand. Capturing twice through the debugger to offer a second format
+ * would double the time the banner is on screen for no gain.
+ */
+function capture(tabId: number): Promise<CaptureResult> {
+  return captureFullPage(tabId, {
+    format: "png",
+    // The overlay lives in the page, so its copy has to travel there.
+    labels: {
+      waking: i18n("progWaking"),
+      loading: i18n("progLoading"),
+      building: i18n("progBuilding")
+    },
+    /**
+     * The badge, NOT the overlay, carries the capture phase — a badge is
+     * browser chrome and cannot end up inside the screenshot, and by this
+     * point the overlay has already removed itself for that exact reason.
+     * "2/5" is a real tile count, not a timer pretending to be progress.
+     */
+    onProgress: (progress) => {
+      if (
+        progress.phase === "capturing" &&
+        progress.tiles &&
+        progress.tiles > 1
+      ) {
+        void badge(`${progress.tile}/${progress.tiles}`)
+      } else if (progress.phase === "stitching") {
+        void badge("↓")
+      }
+    }
+  })
+}
+
 async function run(tab: Browser.tabs.Tab): Promise<void> {
   if (busy) return
   if (typeof tab.id !== "number") return
@@ -116,38 +152,19 @@ async function run(tab: Browser.tabs.Tab): Promise<void> {
   busy = true
   await badge("…")
   try {
-    // Always PNG: it is lossless, and the viewer derives a JPEG on demand.
-    // Capturing twice through the debugger to offer a second format would
-    // double the time the banner is on screen for no gain.
-    const result = await captureFullPage(tab.id, {
-      format: "png",
-      // The overlay lives in the page, so its copy has to travel there.
-      labels: { waking: i18n("progWaking"), loading: i18n("progLoading") },
-      /**
-       * The badge, NOT the overlay, carries the capture phase — a badge is
-       * browser chrome and cannot end up inside the screenshot, and by this
-       * point the overlay has already removed itself for that exact reason.
-       * "2/5" is a real tile count, not a timer pretending to be progress.
-       */
-      onProgress: (progress) => {
-        if (
-          progress.phase === "capturing" &&
-          progress.tiles &&
-          progress.tiles > 1
-        ) {
-          void badge(`${progress.tile}/${progress.tiles}`)
-        } else if (progress.phase === "stitching") {
-          void badge("↓")
-        }
-      }
-    })
+    const shotId = crypto.randomUUID()
+    const result = await capture(tab.id)
 
-    const id = crypto.randomUUID()
-    results.set(id, { ...result, title: tab.title ?? "screenshot" })
-    setTimeout(() => results.delete(id), RESULT_TTL_MS)
-
+    results.set(shotId, { ...result, title: tab.title ?? "screenshot" })
+    setTimeout(() => results.delete(shotId), RESULT_TTL_MS)
+    // Opened LAST, with the image already in hand.
+    //
+    // Opening it at the shutter was tried and reverted: it moved the wait
+    // into a tab that said "preparing", which is the same wait wearing a
+    // different hat. The visitor watches ONE operation finish, on the page
+    // they were looking at, and the tab that follows is ready.
     await browser.tabs.create({
-      url: browser.runtime.getURL(`/viewer.html?id=${id}`),
+      url: browser.runtime.getURL(`/viewer.html?id=${shotId}`),
       index: tab.index + 1
     })
     await badge("")

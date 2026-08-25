@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest"
 
-import { A4, buildPdf, pageCount, sliceHeightPx } from "../lib/pdf"
+import {
+  A4,
+  buildPdf,
+  findQuietRow,
+  pageCount,
+  sliceHeightPx
+} from "../lib/pdf"
 
 /**
  * A PDF is a byte format with self-referential offsets: a reader seeks to the
@@ -140,5 +146,53 @@ describe("pagination", () => {
 
     // Act / Assert
     expect(pageCount(1200, slice * 3 + 1)).toBe(4)
+  })
+})
+
+describe("findQuietRow", () => {
+  /** Build a band where one row is flat and the rest carry "text". */
+  const band = (width: number, height: number, quiet: number) => {
+    const px = new Uint8ClampedArray(width * height * 4)
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const at = (y * width + x) * 4
+        // Every row but `quiet` alternates ink and paper — a line of text.
+        const ink = y !== quiet && x % 8 < 4
+        px[at] = px[at + 1] = px[at + 2] = ink ? 10 : 250
+        px[at + 3] = 255
+      }
+    }
+    return px
+  }
+
+  it("finds the one row that is not text", () => {
+    // Arrange
+    const width = 64
+    const height = 20
+
+    // Act / Assert — a cut here lands between lines instead of through one.
+    expect(findQuietRow(band(width, height, 7), width, height)).toBe(7)
+  })
+
+  it("keeps the page as full as it can when the whole band is blank", () => {
+    // Arrange — all rows tie, so the cut should stay at the bottom of the
+    // window rather than jumping to the top and shortening the page.
+    const width = 64
+    const height = 12
+    const blank = new Uint8ClampedArray(width * height * 4).fill(255)
+
+    // Act / Assert
+    expect(findQuietRow(blank, width, height)).toBe(height - 1)
+  })
+
+  it("never reaches outside the band it was given", () => {
+    // Arrange / Act
+    const width = 40
+    const height = 9
+    const row = findQuietRow(band(width, height, 0), width, height)
+
+    // Assert
+    expect(row).toBeGreaterThanOrEqual(0)
+    expect(row).toBeLessThan(height)
   })
 })

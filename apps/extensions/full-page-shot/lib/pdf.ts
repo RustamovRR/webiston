@@ -152,6 +152,65 @@ export function buildPdf(images: PdfImage[]): Uint8Array<ArrayBuffer> {
   return out.concat()
 }
 
+/**
+ * How far back a page break may be pulled to land in white space.
+ *
+ * A screenshot sliced at a fixed interval cuts through whatever happens to be
+ * at that height — usually the middle of a line of text, which is the one
+ * thing that makes a paginated screenshot look machine-made. Pulling the cut
+ * up to the quietest row nearby costs a little white space at the bottom of
+ * some pages and buys a break that reads as deliberate.
+ *
+ * 12% of a page: enough to clear a paragraph, small enough that a page is
+ * never conspicuously short, and it only ever moves the cut EARLIER so no
+ * page can overflow its sheet.
+ */
+export const BREAK_WINDOW = 0.12
+
+/**
+ * The quietest row in a band — the one with the smallest spread between its
+ * lightest and darkest pixel.
+ *
+ * A row of body text swings from the page background to the ink colour; a row
+ * of margin barely moves. Range beats an average here because an average
+ * cannot tell "uniform grey" from "black and white in equal measure".
+ *
+ * Ties go to the LAST row, so an all-white band cuts at the bottom of the
+ * window and the page stays as full as it can.
+ */
+export function findQuietRow(
+  pixels: Uint8ClampedArray,
+  width: number,
+  height: number
+): number {
+  let bestRow = height - 1
+  let bestRange = Number.POSITIVE_INFINITY
+  for (let y = 0; y < height; y++) {
+    let min = 255
+    let max = 0
+    const row = y * width * 4
+    // Every fourth pixel: text is never one pixel wide at these resolutions,
+    // and the sampling makes this cheap enough to run per page break.
+    for (let x = 0; x < width; x += 4) {
+      const at = row + x * 4
+      // `noUncheckedIndexedAccess` is on: a typed array still widens to
+      // `| undefined` here, and the fallback costs nothing.
+      const r = pixels[at] ?? 0
+      const g = pixels[at + 1] ?? 0
+      const b = pixels[at + 2] ?? 0
+      const l = (r * 3 + g * 6 + b) / 10
+      if (l < min) min = l
+      if (l > max) max = l
+    }
+    const range = max - min
+    if (range <= bestRange) {
+      bestRange = range
+      bestRow = y
+    }
+  }
+  return bestRow
+}
+
 /** How tall one A4 slice is, in the source image's own pixels. */
 export function sliceHeightPx(imageWidthPx: number): number {
   return Math.max(1, Math.floor(imageWidthPx * (A4.height / A4.width)))
