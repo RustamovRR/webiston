@@ -30,8 +30,6 @@ export const OVERLAY = {
   /** Near-black, not pure: pure black on a white page reads as a hole. */
   background: "#111111",
   foreground: "#ffffff",
-  /** `--brand-400`, the site's `--primary` in dark mode. */
-  accent: "#4cc4e0",
   shadow: "0 8px 30px rgba(0,0,0,.35)"
 } as const
 

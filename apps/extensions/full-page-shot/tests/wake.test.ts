@@ -24,6 +24,32 @@ describe("WAKE_SCRIPT", () => {
     expect(script).not.toContain("${")
   })
 
+  it("draws nothing on the page at all", () => {
+    // Arrange / Act — three designs were tried on top of the page (a pill, an
+    // opaque cover, a 4px line) and the owner rejected all three. Anything
+    // this script renders is `position: fixed`, so it is composited into a
+    // `captureBeyondViewport` image and has to blink off for the shutter.
+    // Progress belongs in the toolbar badge, which cannot be captured.
+    const script = WAKE_SCRIPT()
+
+    // Assert
+    expect(script).not.toContain("attachShadow")
+    expect(script).not.toContain("position:fixed")
+    expect(script).not.toContain("createElement")
+  })
+
+  it("writes exactly one style on the page, and puts it back", () => {
+    // Arrange / Act — forcing anything else would be the class of change that
+    // made every `vh` unit wrong.
+    const script = WAKE_SCRIPT()
+
+    // Assert
+    const writes =
+      script.match(/\.style\.(setProperty|removeProperty)\(\s*"([^"]+)"/g) ?? []
+    expect(writes.length).toBeGreaterThan(0)
+    for (const write of writes) expect(write).toContain("scroll-behavior")
+  })
+
   it("parses as JavaScript", () => {
     // Arrange
     const script = WAKE_SCRIPT()
@@ -44,17 +70,6 @@ describe("WAKE_SCRIPT", () => {
     expect(script).toContain(
       'setProperty("scroll-behavior", "auto", "important")'
     )
-  })
-
-  it("never leaves its overlay behind for the camera", () => {
-    // Arrange — the overlay is injected into the page, so if it outlived the
-    // wake phase it would be composited INTO the screenshot. `finally` is the
-    // only guarantee that survives a throw halfway through the scroll.
-    const source = WAKE_SCRIPT()
-
-    // Assert
-    expect(source).toContain("} finally {")
-    expect(source).toContain("host?.remove()")
   })
 
   it("ends at the top of the document and hands back where the visitor was", () => {
@@ -97,52 +112,6 @@ describe("WAKE_SCRIPT", () => {
     const writes =
       script.match(/\.style\.(setProperty|removeProperty)\(\s*"([^"]+)"/g) ?? []
     for (const write of writes) expect(write).toContain("scroll-behavior")
-  })
-
-  it("hands the caller a controller instead of tearing itself down", () => {
-    // Arrange / Act — reported by the owner: a bar that fills, disappears,
-    // and is then followed by several more seconds of work says "done" and
-    // then makes you wait. The shutter and the assembly are the rest of the
-    // job, so the overlay outlives the wake and the capture drives it.
-    const script = WAKE_SCRIPT()
-
-    // Assert
-    expect(script).toContain("hide()")
-    expect(script).toContain("async done()")
-    expect(script).toContain("abort()")
-    // …and a failed wake still takes it down itself.
-    expect(script).toContain("if (!ok) {")
-  })
-
-  it("is a four-pixel line, not a cover over the page", () => {
-    // Arrange / Act — the owner rejected the cover twice and was right both
-    // times: a full-page black-out has to leave the screen for the shutter,
-    // and a black-out that blinks is uglier than a page that simply scrolls.
-    const script = WAKE_SCRIPT()
-
-    // Assert
-    expect(script).not.toContain("inset:0")
-    expect(script).toContain("pointer-events:none")
-    expect(script).toContain("window.innerHeight")
-  })
-
-  it("tells the caller the bar is standing in the picture", () => {
-    // Arrange / Act — the bar stays up through the shutter, so the top of the
-    // image has to be replaced by a patch capture.
-    const script = WAKE_SCRIPT()
-
-    // Assert
-    expect(script).toContain("covered: !!host")
-  })
-
-  it("gives the opaque overlay a dead-man switch", () => {
-    // Arrange / Act — `finally` covers every ordinary path, but a full-screen
-    // cover that outlived the capture would leave a blank page with no way
-    // out, so it also takes itself down on a timer.
-    const source = WAKE_SCRIPT()
-
-    // Assert
-    expect(source).toMatch(/setTimeout\(\(\) => host\?\.remove\(\), \d+\)/)
   })
 
   it("never touches the viewport size", () => {

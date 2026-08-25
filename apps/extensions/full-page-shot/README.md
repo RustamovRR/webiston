@@ -141,25 +141,20 @@ rasmga tushmaydi.
 
 ## Sahifada nima ko'rinadi
 
-Sahifa **scroll bo'ladi**, ko'rinadigan holda — yashirilmaydi, qoraytirilmaydi.
-Ustida yagona narsa: viewport tepasidan o'tgan **4 piksellik chiziq**, u
-progressni ko'rsatadi. Yozuv ham, kartochka ham yo'q: sahifaning harakati
-"ishlayapti" deydi, chiziq esa "qanchasi qoldi" deydi.
+**Hech narsa.** Sahifa scroll bo'ladi, ko'rinadigan holda, boshqa kengaytmalar
+qanday qilsa shunday. Ustiga hech qanday qatlam qo'yilmaydi.
 
-Bu uchinchi urinish, va avvalgi ikkitasi noto'g'ri edi. Yopqich (butun
-sahifani berkitadigan qatlam) scroll'ni yashirardi — lekin `position: fixed`
-qatlam suratning ichiga tushadi, ya'ni u zatvor paytida ekrandan ketishi
-kerak. Ketganda esa progress ikkiga bo'linib, ikkita alohida oynadek
-ko'rinardi. Pilpillaydigan to'liq qoraytirish oddiy scroll'dan xunukroq.
+Sabab oddiy: bu skript sahifaga nima chizsa ham u `position: fixed` bo'ladi,
+`captureBeyondViewport` esa fixed bloklarni suratning ichiga qo'shadi. Ya'ni
+har qanday ko'rsatkich zatvor paytida ekrandan ketishi shart — va pilpillaydigan
+ko'rsatkich oddiy scroll'dan xunukroq. Uchta variant sinaldi (pill, to'liq
+yopqich, 4px chiziq) va uchalasi ham shu sababdan rad etildi.
 
-Chiziq suratga tushmasligi uchun u **rasmdan** olib tashlanadi, ekrandan
-emas: zatvor davomida turaveradi, keyin bir marta tushirilib **tepadagi 8
-piksel** alohida olinadi va yig'ishda ustiga qo'yiladi. O'lchangan uzilish —
-**32ms**, ya'ni bir kadr.
+Progress **brauzer ikonkasining badge'ida**: `…`, keyin uzun sahifada `1/2`,
+`2/2`, keyin `↓`. Badge — brauzer chromesi, u hech qachon suratga tushmaydi.
 
-O'lchangan (haqiqiy sahifa): to'ldirish 55 → 202 → 384 → 720px, 4px
-balandlikda; 2 klip 1 142ms chiziq **ustida**; rasmning tepasi tekshirildi —
-chiziq unda yo'q.
+Skript sahifada **bitta** stilni o'zgartiradi — `scroll-behavior` — va uni
+qaytaradi. Boshqa hech narsaga tegmaydi.
 
 ## Formatlar
 

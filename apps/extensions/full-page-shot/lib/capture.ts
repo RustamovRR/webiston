@@ -1,12 +1,6 @@
 import { CaptureError, send, type Target, withDebugger } from "./cdp"
 import { type CaptureBudget, planCapture } from "./limits"
-import {
-  BAR_PATCH_PX,
-  SCROLL_TO,
-  SHOT_CONTROL,
-  WAKE_SCRIPT,
-  type WakeReport
-} from "./wake"
+import { SCROLL_TO, WAKE_SCRIPT, type WakeReport } from "./wake"
 
 /**
  * The capture pipeline, and the reason this extension exists.
@@ -73,13 +67,6 @@ const SHUTTER_START = 0.6
 const SHUTTER_END = 0.9
 const ASSEMBLY_START = 0.9
 
-/** Driving the overlay must never be able to fail a capture: the picture is
- *  worth more than the progress bar, and the page may have navigated. */
-const evaluate = (target: Target, expression: string) =>
-  send(target, "Runtime.evaluate", { expression, awaitPromise: true }).catch(
-    () => undefined
-  )
-
 async function captureTile(
   target: Target,
   format: Format,
@@ -114,147 +101,98 @@ export async function captureFullPage(
   return withDebugger({ tabId }, async () => {
     const target = { tabId }
     await send(target, "Page.enable")
-    // Whatever happens from here, the page does not keep the cover.
-    try {
-      onProgress?.({ phase: "waking" })
-      const wake = await send<{ result?: { value?: WakeReport } }>(
-        target,
-        "Runtime.evaluate",
-        {
-          expression: WAKE_SCRIPT(),
-          awaitPromise: true,
-          returnByValue: true
-        }
-      )
-      // Belt. The wake ends at the top of the document because
-      // `captureBeyondViewport` paints fixed and sticky boxes at the scroll
-      // offset — but a wake that threw returns no report and leaves the page
-      // wherever it stopped, and a capture from there is the exact defect this
-      // is guarding against. Costs one evaluate on a path that is already free.
-      await send(target, "Runtime.evaluate", {
-        expression: SCROLL_TO(0)
-      }).catch(() => {})
-
-      const settled = await metrics(target)
-      // The renderer applies the tab's device pixel ratio ON TOP of `clip.scale`
-      // — measured: a 1512x8000 CSS clip at scale 1 came back 3024x16000 on a
-      // DPR-2 browser. Every limit in `limits.ts` is a device-pixel limit, so
-      // the plan has to be made in the same units the file will be measured in.
-      const deviceScale = (wake.result?.value?.dpr ?? 1) * scale
-      const viewport = wake.result?.value?.viewport ?? 0
-      const covered = wake.result?.value?.covered ?? false
-      const budget = planCapture(
-        Math.ceil(settled.cssContentSize.width),
-        Math.ceil(settled.cssContentSize.height),
-        deviceScale,
-        viewport
-      )
-      if (budget.tiles.length === 0) {
-        throw new CaptureError("capture-failed", "The page measured 0px tall.")
+    onProgress?.({ phase: "waking" })
+    const wake = await send<{ result?: { value?: WakeReport } }>(
+      target,
+      "Runtime.evaluate",
+      {
+        expression: WAKE_SCRIPT(),
+        awaitPromise: true,
+        returnByValue: true
       }
+    )
+    // Belt. The wake ends at the top of the document because
+    // `captureBeyondViewport` paints fixed and sticky boxes at the scroll
+    // offset — but a wake that threw returns no report and leaves the page
+    // wherever it stopped, and a capture from there is the exact defect this
+    // is guarding against. Costs one evaluate on a path that is already free.
+    await send(target, "Runtime.evaluate", {
+      expression: SCROLL_TO(0)
+    }).catch(() => {})
 
-      // SEQUENTIAL, not `Promise.all`. Each call allocates a bitmap the full
-      // width of the page by up to 15,000px tall; firing five of those at once
-      // is how a long capture turns into an out-of-memory failure on exactly
-      // the pages that need tiling in the first place.
-      const parts: string[] = []
-      for (const [index, tile] of budget.tiles.entries()) {
-        onProgress?.({
-          phase: "capturing",
-          tile: index + 1,
-          tiles: budget.tiles.length
-        })
-        await evaluate(
-          target,
-          SHOT_CONTROL.set(
-            SHUTTER_START +
-              (SHUTTER_END - SHUTTER_START) *
-                (index / Math.max(1, budget.tiles.length))
-          )
-        )
-        parts.push(
-          await captureTile(target, format, {
-            x: 0,
-            // The lead-in is captured and discarded — see `Tile.lead`.
-            y: tile.y - tile.lead,
-            width: budget.width,
-            height: tile.height + tile.lead,
-            scale
-          })
-        )
-      }
+    const settled = await metrics(target)
+    // The renderer applies the tab's device pixel ratio ON TOP of `clip.scale`
+    // — measured: a 1512x8000 CSS clip at scale 1 came back 3024x16000 on a
+    // DPR-2 browser. Every limit in `limits.ts` is a device-pixel limit, so
+    // the plan has to be made in the same units the file will be measured in.
+    const deviceScale = (wake.result?.value?.dpr ?? 1) * scale
+    const viewport = wake.result?.value?.viewport ?? 0
+    const budget = planCapture(
+      Math.ceil(settled.cssContentSize.width),
+      Math.ceil(settled.cssContentSize.height),
+      deviceScale,
+      viewport
+    )
+    if (budget.tiles.length === 0) {
+      throw new CaptureError("capture-failed", "The page measured 0px tall.")
+    }
 
-      /**
-       * The cover stayed up through the shutter, so it is now painted across
-       * the top viewport of the first tile. It comes out of the PICTURE
-       * rather than off the screen: one small clip of that band with the
-       * cover momentarily down, pasted over the top when the tiles are
-       * joined.
-       *
-       * This is why the progress bar no longer breaks in two. A cover cannot
-       * be both on screen and absent from a capture of the same pixels, so
-       * the interruption is squeezed down to one EIGHT-PIXEL capture — small
-       * enough that the line appearing to skip a frame is the whole cost.
-       */
-      let patch: string | undefined
-      if (covered && viewport > 0) {
-        await evaluate(target, SHOT_CONTROL.hide)
-        patch = await captureTile(target, format, {
+    // SEQUENTIAL, not `Promise.all`. Each call allocates a bitmap the full
+    // width of the page by up to 15,000px tall; firing five of those at once
+    // is how a long capture turns into an out-of-memory failure on exactly
+    // the pages that need tiling in the first place.
+    const parts: string[] = []
+    for (const [index, tile] of budget.tiles.entries()) {
+      onProgress?.({
+        phase: "capturing",
+        tile: index + 1,
+        tiles: budget.tiles.length
+      })
+      parts.push(
+        await captureTile(target, format, {
           x: 0,
-          y: 0,
+          // The lead-in is captured and discarded — see `Tile.lead`.
+          y: tile.y - tile.lead,
           width: budget.width,
-          height: Math.min(BAR_PATCH_PX, budget.height),
+          height: tile.height + tile.lead,
           scale
         })
-        await evaluate(target, SHOT_CONTROL.show)
-      }
+      )
+    }
 
-      // The visitor gets their scroll position back HERE, not in the wake.
-      // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
-      // scroll offset is, so the capture has to happen at the top of the
-      // document — measured on webiston.uz, restoring first stranded the site
-      // header and both sidebars 400px down the image. Best-effort: if the tab
-      // navigated away mid-capture there is nothing left to put back, and that
-      // must not turn a good screenshot into an error.
-      const startedAt = wake.result?.value?.startedAt ?? 0
-      if (startedAt > 0) {
-        await send(target, "Runtime.evaluate", {
-          expression: SCROLL_TO(startedAt)
-        }).catch(() => {})
-      }
+    // The visitor gets their scroll position back HERE, not in the wake.
+    // `captureBeyondViewport` paints fixed and sticky boxes at whatever the
+    // scroll offset is, so the capture has to happen at the top of the
+    // document — measured on webiston.uz, restoring first stranded the site
+    // header and both sidebars 400px down the image. Best-effort: if the tab
+    // navigated away mid-capture there is nothing left to put back, and that
+    // must not turn a good screenshot into an error.
+    const startedAt = wake.result?.value?.startedAt ?? 0
+    if (startedAt > 0) {
+      await send(target, "Runtime.evaluate", {
+        expression: SCROLL_TO(startedAt)
+      }).catch(() => {})
+    }
 
-      let dataUrl: string
-      if (parts.length === 1 && parts[0] && !patch) {
-        dataUrl = `data:image/${format};base64,${parts[0]}`
-      } else {
-        onProgress?.({ phase: "stitching" })
-        await evaluate(target, SHOT_CONTROL.set(ASSEMBLY_START))
-        dataUrl = await stitch(parts, budget, format, patch)
-      }
+    let dataUrl: string
+    if (parts.length === 1 && parts[0]) {
+      dataUrl = `data:image/${format};base64,${parts[0]}`
+    } else {
+      onProgress?.({ phase: "stitching" })
+      dataUrl = await stitch(parts, budget, format)
+    }
 
-      // Full, then gone — in that order, and awaited, so the visitor sees the
-      // bar complete rather than vanish mid-way. The viewer tab opens next, by
-      // which time there is an image in it.
-      await evaluate(target, SHOT_CONTROL.set(1))
-      await evaluate(target, SHOT_CONTROL.done)
-
-      return {
-        dataUrl,
-        // What the FILE measures, not what the page measured. The viewer used to
-        // print the CSS numbers here and so reported a 3024x6806 screenshot as
-        // "1512x3403" — half of everything, on every Retina machine.
-        width: budget.deviceWidth,
-        height: budget.deviceHeight,
-        clamped: budget.clamped,
-        requestedHeight: Math.round(
-          budget.requestedHeight * budget.deviceScale
-        ),
-        pendingImages: wake.result?.value?.pending ?? 0,
-        innerScroll: wake.result?.value?.innerScroll ?? false
-      }
-    } finally {
-      // `done` already removed it on the happy path; this is the throw.
-      await evaluate(target, SHOT_CONTROL.abort)
+    return {
+      dataUrl,
+      // What the FILE measures, not what the page measured. The viewer used to
+      // print the CSS numbers here and so reported a 3024x6806 screenshot as
+      // "1512x3403" — half of everything, on every Retina machine.
+      width: budget.deviceWidth,
+      height: budget.deviceHeight,
+      clamped: budget.clamped,
+      requestedHeight: Math.round(budget.requestedHeight * budget.deviceScale),
+      pendingImages: wake.result?.value?.pending ?? 0,
+      innerScroll: wake.result?.value?.innerScroll ?? false
     }
   })
 }
