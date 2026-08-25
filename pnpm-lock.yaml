@@ -216,49 +216,6 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@opentelemetry/api@1.9.0)(@types/node@26.1.2)(jsdom@30.0.1)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0))
 
-  apps/extensions/full-page-shot:
-    dependencies:
-      '@webiston/ui':
-        specifier: workspace:*
-        version: link:../../../packages/ui
-      react:
-        specifier: ^19.2.8
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.2.8
-        version: 19.2.8(react@19.2.8)
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0))
-      '@types/chrome':
-        specifier: ^0.1.34
-        version: 0.1.43
-      '@types/react':
-        specifier: 19.2.18
-        version: 19.2.18
-      '@types/react-dom':
-        specifier: 19.2.4
-        version: 19.2.4(@types/react@19.2.18)
-      '@vitejs/plugin-react':
-        specifier: ^6.0.4
-        version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0))
-      '@wxt-dev/module-react':
-        specifier: ^1.2.2
-        version: 1.2.2(babel-plugin-react-compiler@1.0.0)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0))(wxt@0.21.2(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.3)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0)))
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-      vite:
-        specifier: ^8.1.5
-        version: 8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0)
-      wxt:
-        specifier: ^0.21.2
-        version: 0.21.2(esbuild@0.28.1)(rolldown@1.1.5)(rollup@4.62.3)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.5.1)(sass@1.97.2)(yaml@2.9.0))
-
   apps/extensions/latin-cyrillic:
     dependencies:
       '@webiston/transliteration':
@@ -2276,9 +2233,6 @@ packages:
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
-
-  '@types/chrome@0.1.43':
-    resolution: {integrity: sha512-ukH/HhmR6ht+UTX3PLUWJxgJ/RQcK2Foj4lBzsF24SIWsXgqhGuXqjd8FFuwioPP7d/JUKLM4g8GZxw3F4HTcA==}
 
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
@@ -6550,11 +6504,6 @@ snapshots:
     dependencies:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
-
-  '@types/chrome@0.1.43':
-    dependencies:
-      '@types/filesystem': 0.0.36
-      '@types/har-format': 1.2.16
 
   '@types/debug@4.1.13':
     dependencies:
