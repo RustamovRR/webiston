@@ -170,7 +170,8 @@
     "allRightsReserved": "Barcha huquqlar himoyalangan.",
     "tagline": "Zamonaviy veb texnologiyalar bo'yicha bepul kitoblar va dasturchilar uchun kundalik vositalar — o'zbek tilida.",
     "allTools": "Barcha vositalar",
-    "privacy": "Maxfiylik"
+    "privacy": "Maxfiylik",
+    "extension": "Brauzer kengaytmasi"
   },
   "PrivacyPage": {
     "title": "Maxfiylik siyosati",
@@ -214,5 +215,67 @@
         "body": "Savollar bo'yicha: webiston.uz@gmail.com"
       }
     }
+  },
+  "ExtensionPage": {
+    "metaTitle": "Lotin-Kirill dasturi — Лотин-Кирилл дастури",
+    "metaDescription": "Brauzer kengaytmasi: istalgan saytda matnni belgilab lotin va kirill orasida o'giring. Ctrl+Shift+L, kontekst menyu, internetsiz ishlaydi. Chrome va Firefox uchun bepul.",
+    "h1": "Lotin-Kirill O'giruvchi — brauzer kengaytmasi",
+    "tagline": "Saytga qaytmang. Istalgan sahifada matnni belgilang va o'sha yerning o'zida lotin bilan kirill orasida o'giring.",
+    "stores": {
+      "chrome": "Chrome'ga qo'shish",
+      "firefox": "Firefox'ga qo'shish"
+    },
+    "storesNote": "Ikkalasi ham bepul. Chrome do'koni Edge, Brave, Opera va Vivaldi'da ham ishlaydi.",
+    "screenshotAlt": "Kengaytmaning popup oynasi: tepada lotincha matn, pastda kirillcha natija",
+    "featuresTitle": "Nima qiladi",
+    "features": {
+      "select": {
+        "title": "Belgilang va o'giring",
+        "body": "Istalgan saytda matnni belgilang — yonida tugma chiqadi. O'ng tugma menyusida ham bor."
+      },
+      "shortcut": {
+        "title": "Ctrl + Shift + L",
+        "body": "Belgilangan matnni o'girib, darhol nusxalaydi. macOS'da ⌘ + Shift + L."
+      },
+      "privacy": {
+        "title": "Matn brauzerdan chiqmaydi",
+        "body": "O'girish qurilmangizning o'zida bajariladi. Hech qanday serverga so'rov yuborilmaydi."
+      }
+    },
+    "stepsTitle": "Uch qadamda",
+    "steps": {
+      "install": "Brauzeringizning do'konidan o'rnating — hisob kerak emas.",
+      "select": "Istalgan sahifada o'girmoqchi bo'lgan matnni belgilang.",
+      "convert": "Chiqqan tugmani bosing yoki Ctrl + Shift + L bosing. Natija nusxalanadi."
+    },
+    "webTitle": "O'rnatmoqchi emasmisiz?",
+    "webBody": "Onlayn o'giruvchi hech narsa o'rnatmasdan ishlaydi — va u TXT, PDF hamda DOCX fayllarni ham o'giradi, buni kengaytma qilmaydi.",
+    "webCta": "Onlayn o'giruvchiga o'tish",
+    "faqTitle": "Savollar",
+    "faq": {
+      "price": {
+        "q": "Pullikmi?",
+        "a": "Yo'q. Bepul, reklamasiz, hisob talab qilinmaydi."
+      },
+      "browsers": {
+        "q": "Qaysi brauzerlarda ishlaydi?",
+        "a": "Chrome, Edge, Brave, Opera va Vivaldi — Chrome do'konidan o'rnatiladi. Firefox uchun alohida versiyasi bor."
+      },
+      "offline": {
+        "q": "Internetsiz ishlaydimi?",
+        "a": "Ha. O'girish qoidalari kengaytmaning ichida, u tarmoqqa umuman murojaat qilmaydi."
+      },
+      "privacy": {
+        "q": "Matnim qayerga boradi?",
+        "a": "Hech qayerga. Kengaytma hech qanday serverga so'rov yubormaydi va yozganingizni saqlamaydi."
+      },
+      "files": {
+        "q": "Word yoki PDF faylni o'giradimi?",
+        "a": "Kengaytma yo'q — u sahifadagi matn uchun. Fayllarni saytdagi onlayn o'giruvchi o'giradi: TXT, PDF va DOCX."
+      }
+    },
+    "demoTitle": "Natija shunday chiqadi",
+    "demoLatin": "Lotin",
+    "demoCyrillic": "Kirill"
   }
 }

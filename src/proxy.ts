@@ -58,6 +58,7 @@ export const config = {
      * that split.
      */
     "/tools/:path*",
-    "/privacy-policy"
+    "/privacy-policy",
+    "/kengaytma"
   ]
 }

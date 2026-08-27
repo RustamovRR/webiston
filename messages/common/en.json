@@ -170,7 +170,8 @@
     "allRightsReserved": "All rights reserved.",
     "tagline": "Free books on modern web technologies and everyday developer tools — in Uzbek.",
     "allTools": "All tools",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "extension": "Browser extension"
   },
   "PrivacyPage": {
     "title": "Privacy policy",
@@ -214,5 +215,67 @@
         "body": "Questions: webiston.uz@gmail.com"
       }
     }
+  },
+  "ExtensionPage": {
+    "metaTitle": "Uzbek Latin-Cyrillic Browser Extension",
+    "metaDescription": "Select text on any site and convert it between the Uzbek Latin and Cyrillic alphabets. Ctrl+Shift+L, context menu, works offline. Free for Chrome and Firefox.",
+    "h1": "Uzbek Latin-Cyrillic Converter — browser extension",
+    "tagline": "Stop coming back to the site. Select text on any page and convert it between Latin and Cyrillic right where it is.",
+    "stores": {
+      "chrome": "Add to Chrome",
+      "firefox": "Add to Firefox"
+    },
+    "storesNote": "Both are free. The Chrome store also serves Edge, Brave, Opera and Vivaldi.",
+    "screenshotAlt": "The extension popup: Latin text on top, the Cyrillic result below",
+    "featuresTitle": "What it does",
+    "features": {
+      "select": {
+        "title": "Select and convert",
+        "body": "Select text on any site and a button appears beside it. It is in the right-click menu too."
+      },
+      "shortcut": {
+        "title": "Ctrl + Shift + L",
+        "body": "Converts the selection and copies it straight away. ⌘ + Shift + L on macOS."
+      },
+      "privacy": {
+        "title": "Your text stays in the browser",
+        "body": "The conversion runs on your own device. No request is sent to any server."
+      }
+    },
+    "stepsTitle": "Three steps",
+    "steps": {
+      "install": "Install it from your browser's store — no account needed.",
+      "select": "Select the text you want to convert, on any page.",
+      "convert": "Click the button that appears, or press Ctrl + Shift + L. The result is copied."
+    },
+    "webTitle": "Would rather not install anything?",
+    "webBody": "The online converter needs nothing installed — and it also converts TXT, PDF and DOCX files, which the extension does not.",
+    "webCta": "Open the online converter",
+    "faqTitle": "Questions",
+    "faq": {
+      "price": {
+        "q": "Does it cost anything?",
+        "a": "No. It is free, has no ads and asks for no account."
+      },
+      "browsers": {
+        "q": "Which browsers does it work in?",
+        "a": "Chrome, Edge, Brave, Opera and Vivaldi install it from the Chrome store. There is a separate build for Firefox."
+      },
+      "offline": {
+        "q": "Does it work offline?",
+        "a": "Yes. The conversion rules ship inside the extension and it never touches the network."
+      },
+      "privacy": {
+        "q": "Where does my text go?",
+        "a": "Nowhere. The extension sends no request to any server and stores nothing you type."
+      },
+      "files": {
+        "q": "Can it convert a Word or PDF file?",
+        "a": "The extension cannot — it works on text in a page. The online converter on the site handles files: TXT, PDF and DOCX."
+      }
+    },
+    "demoTitle": "What the result looks like",
+    "demoLatin": "Latin",
+    "demoCyrillic": "Cyrillic"
   }
 }

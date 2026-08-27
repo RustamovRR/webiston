@@ -101,35 +101,6 @@ export const FAQ_KEYS = [
 
 export type FaqKey = (typeof FAQ_KEYS)[number]
 
-/**
- * Where the extension is published — now two stores, not one.
- *
- * A LIST rather than the single URL it used to be, and both entries render on
- * the server for every visitor. No user-agent sniffing, deliberately:
- *
- * - This is the site's second-biggest search page. A link injected after
- *   client-side detection is a link Googlebot — which crawls as Chrome —
- *   never sees, so the Firefox listing would get no signal at all.
- * - Detecting on the SERVER means reading `headers()`, which opts this page
- *   out of static rendering. That is a real cost to solve a labelling problem.
- * - The Chrome Web Store also serves Edge, Brave, Opera and Vivaldi, so the
- *   store is the honest unit here, not the browser. Sniffing for "Chrome"
- *   would mislabel four browsers that install from it perfectly well.
- * - Links get shared, and people use one browser at work and another at home.
- *
- * Tool-scoped per §14: this page is still the only consumer. It moves to
- * `src/constants/` at the second one — the footer is the likely candidate.
- */
-export const EXTENSION_STORES = [
-  {
-    id: "chrome",
-    url: "https://chromewebstore.google.com/detail/lotin-kirill-ogiruvchi-%E2%80%94/inbahpclopinhpfodmfnambafebgopbp"
-  },
-  {
-    id: "firefox",
-    url: "https://addons.mozilla.org/en-US/firefox/addon/lotin-kirill-ogiruvchi/"
-  }
-] as const
-
-/** The three claims the callout makes. Each is something the extension does. */
-export const EXTENSION_FEATURE_KEYS = ["select", "shortcut", "privacy"] as const
+/* `EXTENSION_STORES` and `EXTENSION_FEATURE_KEYS` moved to
+ * `src/constants/extension.ts` when `/kengaytma` became their second
+ * consumer — the promotion this file predicted. §14. */

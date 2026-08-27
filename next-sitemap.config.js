@@ -60,9 +60,23 @@ module.exports = {
     const locales = ['', 'en', 'ru']
     const toolsPages = require('./tools-list.json')
 
+    // Pages that sit at the LOCALE ROOT rather than under /tools, and so are
+    // reached by neither the tools loop nor the three static adds above.
+    //
+    // They need enumerating for exactly the reason the comment above gives:
+    // the `/en` and `/ru` copies are prerendered and auto-discovered, but the
+    // unprefixed uz URL is served through the middleware and appears in no
+    // manifest. Verified 2026-08-26 — the sitemap carried /en/privacy-policy
+    // and /ru/privacy-policy while https://webiston.uz/privacy-policy was
+    // simply absent, and /kengaytma would have shipped with the same hole.
+    const localeRootPages = ['kengaytma', 'privacy-policy']
+
     for (const locale of locales) {
       await add(`/${locale}`)
       await add(`/${locale}/tools`)
+      for (const page of localeRootPages) {
+        await add(`/${locale}/${page}`)
+      }
       for (const tool of toolsPages) {
         await add(`/${locale}/tools/${tool}`)
       }
