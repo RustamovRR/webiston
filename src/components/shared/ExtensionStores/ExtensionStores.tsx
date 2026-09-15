@@ -6,7 +6,7 @@ import { EXTENSION_STORES } from "@/constants/extension"
  * The two store buttons, and the one piece of cleverness behind them.
  *
  * Extracted at the second consumer — the converter page's callout and
- * `/kengaytma` — because the DETECTION is the part that would rot if it were
+ * `/extension` — because the DETECTION is the part that would rot if it were
  * copied. The markup around it is small enough that duplicating it would have
  * been fine; a Firefox rule that gets fixed in one file and not the other
  * would not be.

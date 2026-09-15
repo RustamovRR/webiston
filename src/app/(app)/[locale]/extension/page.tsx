@@ -40,7 +40,7 @@ import { localeUrl, SITE_URL, withLocale } from "@/lib/seo"
  * both lose.
  */
 
-const PATH = "/kengaytma"
+const PATH = "/extension"
 
 /** `<` inside a JSON string can close the surrounding `<script>` element. */
 function jsonLd(schema: unknown): string {

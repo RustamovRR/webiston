@@ -102,5 +102,5 @@ export const FAQ_KEYS = [
 export type FaqKey = (typeof FAQ_KEYS)[number]
 
 /* `EXTENSION_STORES` and `EXTENSION_FEATURE_KEYS` moved to
- * `src/constants/extension.ts` when `/kengaytma` became their second
+ * `src/constants/extension.ts` when `/extension` became their second
  * consumer — the promotion this file predicted. §14. */

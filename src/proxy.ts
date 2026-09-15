@@ -59,6 +59,6 @@ export const config = {
      */
     "/tools/:path*",
     "/privacy-policy",
-    "/kengaytma"
+    "/extension"
   ]
 }

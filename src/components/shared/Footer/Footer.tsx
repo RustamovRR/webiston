@@ -78,12 +78,12 @@ export default async function Footer({ locale }: { locale: string }) {
                     {t("allTools")}
                   </I18nLink>
                 </li>
-                {/* The one internal link into `/kengaytma`. A page Google can
+                {/* The one internal link into `/extension`. A page Google can
                     only reach from one callout deep inside another page is a
                     page it crawls late and ranks accordingly. */}
                 <li>
                   <I18nLink
-                    href="/kengaytma"
+                    href="/extension"
                     locale={chromeLinkLocale(locale)}
                     className="text-foreground/80 text-sm transition-colors hover:text-foreground"
                   >

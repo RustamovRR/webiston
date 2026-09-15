@@ -4,7 +4,7 @@
  *
  * Promoted here from `modules/tools/LatinCyrillic/constants` at its SECOND
  * consumer, exactly as that file said it would be: the converter page's
- * callout was the first, `/kengaytma` is the second. §14.
+ * callout was the first, `/extension` is the second. §14.
  */
 
 /**

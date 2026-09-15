@@ -68,8 +68,8 @@ module.exports = {
     // unprefixed uz URL is served through the middleware and appears in no
     // manifest. Verified 2026-08-26 — the sitemap carried /en/privacy-policy
     // and /ru/privacy-policy while https://webiston.uz/privacy-policy was
-    // simply absent, and /kengaytma would have shipped with the same hole.
-    const localeRootPages = ['kengaytma', 'privacy-policy']
+    // simply absent, and /extension would have shipped with the same hole.
+    const localeRootPages = ['extension', 'privacy-policy']
 
     for (const locale of locales) {
       await add(`/${locale}`)
