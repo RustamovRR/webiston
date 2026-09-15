@@ -1,28 +1,17 @@
-/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: one constant
- * defined in this file, built from nothing but literals. */
 import { EXTENSION_STORES } from "@/constants/extension"
 
 /**
  * The two store buttons, and the one piece of cleverness behind them.
  *
  * Extracted at the second consumer — the converter page's callout and
- * `/extension` — because the DETECTION is the part that would rot if it were
- * copied. The markup around it is small enough that duplicating it would have
- * been fine; a Firefox rule that gets fixed in one file and not the other
- * would not be.
+ * `/extension` — because the EMPHASIS RULE is the part that would rot if it
+ * were copied. The markup around it is small enough that duplicating it would
+ * have been fine; a Firefox rule that gets fixed in one file and not the
+ * other would not be.
  *
  * A Server Component: two links and a static string, so it costs the client
  * bundle nothing and Googlebot sees the finished HTML.
  */
-
-/**
- * Firefox is the only engine here that needs naming: everything else that can
- * install this extension — Chrome, Edge, Brave, Opera, Vivaldi — installs it
- * from the Chrome Web Store, which is the default state. `Firefox/<digit>`
- * also matches the forks (LibreWolf, Waterfox) and correctly MISSES Firefox
- * on iOS (`FxiOS`), which cannot install add-ons at all.
- */
-const BROWSER_FLAG = `try{if(/\\bFirefox\\/\\d/.test(navigator.userAgent))document.documentElement.dataset.browser="firefox"}catch(e){}`
 
 /**
  * The emphasis swap, in CSS rather than in the markup.
@@ -70,9 +59,8 @@ export function ExtensionStores({
 }: ExtensionStoresProps) {
   return (
     <>
-      {/* Before the buttons in source order, so the flag is already set by the
-          time the parser reaches them — no flash of the wrong emphasis. */}
-      <script dangerouslySetInnerHTML={{ __html: BROWSER_FLAG }} />
+      {/* The `data-browser` flag these rules read is set on <html> by the root
+          layout — see `BROWSER_FLAG` for why it is not set here. */}
       <style>{STORE_EMPHASIS}</style>
       <div className={className}>
         {EXTENSION_STORES.map((store, index) => (

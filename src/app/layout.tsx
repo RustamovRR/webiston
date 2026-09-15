@@ -5,6 +5,7 @@ import Script from "next/script"
 import NextTopLoader from "nextjs-toploader"
 import { Toaster } from "sonner"
 import { ThemeProvider } from "@/components/shared/Providers"
+import { BROWSER_FLAG } from "@/constants/extension"
 import { ogCardUrl, SITE_URL } from "@/lib/seo"
 
 // `cyrillic` is required, not optional: the product ships Cyrillic Uzbek
@@ -479,6 +480,15 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
+        {/* Which browser this is, as a data attribute on <html> for CSS to
+            read — the extension store buttons pick which one looks primary
+            from it. HERE and not next to those buttons, because an inline
+            script only runs when the HTML parser meets it: rendered inside a
+            page, it ran on a full load and silently did nothing on a client
+            navigation (the language switcher is `router.replace`), and React
+            warned about it on every such navigation. <html> is the one element
+            that survives every navigation, so a flag set on it once holds. */}
+        <script dangerouslySetInnerHTML={{ __html: BROWSER_FLAG }} />
       </head>
       {/* .variable (not .className) — it defines --font-inter, which
           --font-sans consumes; `font-sans` is applied on body in globals.css.

@@ -58,5 +58,17 @@ export const EXTENSION_FAQ_KEYS = [
 export const EXTENSION_DEMO_SENTENCE =
   "Toshkent shahridagi bogʻlar va togʻ manzaralari — juda chiroyli."
 
+/**
+ * Firefox is the only engine that needs naming: everything else that can
+ * install the extension — Chrome, Edge, Brave, Opera, Vivaldi — installs it
+ * from the Chrome Web Store, which is the default state. `Firefox/<digit>`
+ * also matches the forks (LibreWolf, Waterfox) and correctly MISSES Firefox
+ * on iOS (`FxiOS`), which cannot install add-ons at all.
+ *
+ * Rendered by the ROOT layout, in <head>, as a blocking inline script — see
+ * the note there for why it cannot live next to the buttons that read it.
+ */
+export const BROWSER_FLAG = `try{if(/\\bFirefox\\/\\d/.test(navigator.userAgent))document.documentElement.dataset.browser="firefox"}catch(e){}`
+
 /** The converter this extension is the installable half of. */
 export const EXTENSION_TOOL_PATH = "/tools/latin-cyrillic"
