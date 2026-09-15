@@ -42,6 +42,16 @@ import { localeUrl, SITE_URL, withLocale } from "@/lib/seo"
 
 const PATH = "/extension"
 
+/**
+ * Picks the hero's `src` from the theme class, and keeps picking it.
+ *
+ * Runs as a blocking inline script placed right AFTER the <img>, so
+ * `previousElementSibling` is the image and the parser has not gone further:
+ * the src lands before the first paint, and no `src` ever appears in the HTML
+ * for the preload scanner to fetch on its own.
+ */
+const HERO_SRC = `(function(){var i=document.currentScript.previousElementSibling,h=document.documentElement,p=function(){i.src=h.classList.contains("dark")?i.dataset.dark:i.dataset.light};p();new MutationObserver(p).observe(h,{attributes:true,attributeFilter:["class"]})})()`
+
 /** `<` inside a JSON string can close the surrounding `<script>` element. */
 function jsonLd(schema: unknown): string {
   return JSON.stringify(schema).replace(/</g, "\\u003c")
@@ -163,6 +173,44 @@ export default async function ExtensionPage({
               {t("storesNote")}
             </p>
           </header>
+
+          {/* The product, photographed — not drawn. `scripts/store-screenshots.mjs
+              --landing` side-loads the real built extension into a real
+              Chrome, makes a real selection on a page of this site, and
+              captures the panel at 2x, per locale, so an Uzbek visitor sees an
+              Uzbek panel. 1600px is 2x of this column; each file is ~100 KB
+              and `images.unoptimized` means that is exactly what ships.
+
+              ONE <img>, not a light/dark pair. The pair was tried and measured
+              on a throttled 4 Mbps line: two lazy images fetch only the visible
+              one but make the hero — the LCP element — land at 3.2s; marking
+              the dark one `priority` brought dark visitors to 1.3s and pushed
+              light visitors to 3.5s, because the preload fetched a dark image
+              they never see. The theme is a CLASS next-themes sets before
+              first paint, not a media query, so <picture> cannot pick either.
+              So: no `src` in the HTML — the preload scanner has nothing to
+              fetch — and the script directly after chooses it from the class
+              while the parser is still here. One fetch, the right one, eager.
+              The observer keeps it right if the theme is toggled later, and
+              only then does the other file download. Plain <img> because
+              `next/image` needs the src at render time and this one does not
+              exist until the browser decides. */}
+          <figure className="mt-10 overflow-hidden rounded-lg border border-border bg-card">
+            {/* biome-ignore lint/performance/noImgElement: the src is chosen client-side from the theme class, see above */}
+            <img
+              data-light={`/extension/panel-${locale}-light.webp`}
+              data-dark={`/extension/panel-${locale}-dark.webp`}
+              alt={t("screenshotAlt")}
+              width={1600}
+              height={880}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="block w-full"
+              suppressHydrationWarning
+            />
+            <script dangerouslySetInnerHTML={{ __html: HERO_SRC }} />
+          </figure>
 
           {/* Not a screenshot, and deliberately so: this is the real engine
               run at build time on a sentence that carries the hard cases —

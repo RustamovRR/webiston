@@ -226,7 +226,7 @@
       "firefox": "Add to Firefox"
     },
     "storesNote": "Both are free. The Chrome store also serves Edge, Brave, Opera and Vivaldi.",
-    "screenshotAlt": "The extension popup: Latin text on top, the Cyrillic result below",
+    "screenshotAlt": "The extension panel open over a page: the selected Latin text and its Cyrillic result",
     "featuresTitle": "What it does",
     "features": {
       "select": {

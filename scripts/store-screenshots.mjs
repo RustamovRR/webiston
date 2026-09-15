@@ -20,6 +20,17 @@
  *   node scripts/store-screenshots.mjs --locale ru
  *
  * Output: apps/extensions/latin-cyrillic/.output/store/<locale>/
+ *
+ * `--landing` takes a different thing from the same capture: the in-page panel
+ * shot, raw, at 2x, with NO caption band — for the hero of `/extension`, where
+ * the page's own text does the captioning and an English band baked into the
+ * pixels would be wrong on the Uzbek and Russian pages. Light and dark, one
+ * per locale, downscaled once to 2x of the column they sit in and written as
+ * WebP straight into the site's `public/`, which is the only place Next
+ * serves from. `images.unoptimized` is on, so the bytes here ARE the bytes a
+ * visitor downloads.
+ *
+ *   node scripts/store-screenshots.mjs --landing --locale uz
  */
 
 import { spawn } from "node:child_process"
@@ -68,6 +79,15 @@ const BAND = 96
 const VIEWPORT = { width: SHOT.width, height: SHOT.height - BAND }
 const SCALE = 2
 const PORT = 9333
+
+/**
+ * The landing hero. Its column is `max-w-[80ch]` ≈ 800px, so 1600 is exactly
+ * 2x of what a Retina visitor's screen asks for — anything wider is bytes for
+ * nothing, anything narrower goes soft on the display it was made for.
+ */
+const LANDING_DIR = path.join(ROOT, "public/extension")
+const LANDING_WIDTH = 1600
+const LANDING_QUALITY = 82
 
 /**
  * A page of the owner's own site, in Uzbek prose.
@@ -596,6 +616,7 @@ function tileHtml({ locale, width, height, iconDataUri, marquee }) {
 
 const localeArg = process.argv.indexOf("--locale")
 const locale = localeArg === -1 ? "uz" : process.argv[localeArg + 1]
+const landing = process.argv.includes("--landing")
 if (!CAPTIONS[locale]) {
   console.error(`unknown locale "${locale}" — expected uz | en | ru`)
   process.exit(1)
@@ -609,6 +630,9 @@ if (!fs.existsSync(path.join(EXT_DIR, "manifest.json"))) {
 const outDir = path.join(OUT_ROOT, locale)
 fs.mkdirSync(outDir, { recursive: true })
 
+/** Thrown to leave the store-asset block early; caught right below it. */
+const LANDING_DONE = Symbol("landing done")
+
 const iconDataUri = `data:image/png;base64,${fs
   .readFileSync(path.join(EXT_DIR, "icon/128.png"))
   .toString("base64")}`
@@ -618,6 +642,23 @@ const chrome = await launchChrome(CHROME_LANG[locale], stagedExt)
 const written = []
 
 try {
+  if (landing) {
+    fs.mkdirSync(LANDING_DIR, { recursive: true })
+    for (const dark of [false, true]) {
+      const theme = dark ? "dark" : "light"
+      process.stdout.write(`  panel-${locale}-${theme} … `)
+      const raw = await shotSelection({ dark, openPanel: true })
+      const file = path.join(LANDING_DIR, `panel-${locale}-${theme}.webp`)
+      await sharp(raw)
+        .resize({ width: LANDING_WIDTH })
+        .webp({ quality: LANDING_QUALITY })
+        .toFile(file)
+      written.push(file)
+      console.log("ok")
+    }
+    throw LANDING_DONE
+  }
+
   const captions = CAPTIONS[locale]
   const uri = (buffer) => `data:image/png;base64,${buffer.toString("base64")}`
 
@@ -704,12 +745,14 @@ try {
     written.push(file)
     console.log("ok")
   }
+} catch (error) {
+  if (error !== LANDING_DONE) throw error
 } finally {
   chrome.stop()
   fs.rmSync(stagedExt, { recursive: true, force: true })
 }
 
-console.log(`\n${written.length} assets → ${outDir}`)
+console.log(`\n${written.length} assets → ${landing ? LANDING_DIR : outDir}`)
 for (const file of written) {
   const { width, height, channels } = await sharp(file).metadata()
   console.log(`  ${path.basename(file)}  ${width}x${height}  ${channels}ch`)
