@@ -15,7 +15,7 @@ import { TEMPLATE_LINKS } from "../templates/links"
  * FAQ — and this row is how a visitor who landed on the wrong one gets to the
  * right one without going back to /tools.
  *
- * A Server Component: it renders three links and reads no state, so it costs
+ * A Server Component: it renders a row of links and reads no state, so it costs
  * the client bundle nothing and is crawlable as ordinary markup.
  */
 export async function TemplateSwitcher({

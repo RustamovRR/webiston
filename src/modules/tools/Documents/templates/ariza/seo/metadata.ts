@@ -10,10 +10,17 @@ import { PRIMARY_KEYWORDS } from "./keywords"
  * The differentiator here is one thing and it is put first: the last working
  * day is COUNTED for you. Every competing result is an article about the
  * fourteen days or a .doc you still have to do the arithmetic in.
+ *
+ * "Word va PDF" replaced "To'ldiring" in the title on 2026-09-24: Search
+ * Console showed «ishdan bo'shash haqida ariza namunasi pdf» at position 9.3
+ * with zero clicks while this page's impressions fell 527 → 150 in a
+ * fortnight — the searcher wants a FILE, the .docx export and print-to-PDF
+ * are both here, and the old title did not say so. The Russian title took
+ * «об увольнении», the form the /ru page's own queries use.
  */
 const COPY = {
   uz: {
-    title: "Ishdan Bo'shash Arizasi Namunasi — To'ldiring",
+    title: "Ishdan Bo'shash Arizasi Namunasi — Word va PDF",
     description:
       "Ariza namunasini to'ldiring: oxirgi ish kuni MK 160-moddasi bo'yicha o'zi hisoblanadi, lotin va kirill yozuvida, chop etishga tayyor.",
     social:
@@ -29,7 +36,7 @@ const COPY = {
     ogLocale: "en_US"
   },
   ru: {
-    title: "Заявление на увольнение — образец с расчётом",
+    title: "Заявление об увольнении — образец, Word и PDF",
     description:
       "Заполните заявление об увольнении: последний рабочий день считается сам по ст. 160 ТК, латиница и кириллица, готово к печати.",
     social:

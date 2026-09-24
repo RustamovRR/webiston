@@ -1,0 +1,99 @@
+{
+  "TatilPage": {
+    "ToolHeader": {
+      "title": "Leave Application (Ta'til Arizasi)",
+      "description": "Fill in an Uzbek leave application — the last day of the leave is counted for you with public holidays excluded, and the document comes out in Latin and Cyrillic."
+    },
+    "form": {
+      "employer": {
+        "legend": "Addressed to"
+      },
+      "employee": {
+        "legend": "From"
+      },
+      "terms": {
+        "legend": "Leave"
+      },
+      "organisation": "Organisation name",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Manager's title",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Manager's full name",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "Your full name",
+      "position": "Your position",
+      "positionPlaceholder": "dasturchi",
+      "kind": "Type of leave",
+      "kindHint": "Annual leave is your paid legal right; from the second working year it follows the leave schedule (art. 228). Unpaid leave is granted by agreement with the employer.",
+      "kinds": {
+        "yillik": "Annual leave (paid)",
+        "haqsiz": "Unpaid leave (at your own expense)"
+      },
+      "startDate": "First day",
+      "days": "Calendar days",
+      "daysHint": "At least 21 days (Labour Code art. 217). If split, one part must be at least 14 days.",
+      "daysHintUnpaid": "Set by agreement, but no more than 3 months in total within 12 months (art. 241).",
+      "period": "Last day of leave: {end}.",
+      "periodEmpty": "Enter the first day and the number of days — the end date is counted for you.",
+      "periodHolidays": "{count, plural, one {A public holiday falls within the leave ({list}) — it is not counted, so the leave runs 1 day longer (art. 221).} other {# public holidays fall within the leave ({list}) — they are not counted, so the leave runs # days longer (art. 221).}}",
+      "periodUnknownHayit": "The Eid dates for {year} have not all been announced yet, so the application says \"from … for N calendar days\" instead of printing an end date.",
+      "holidays": {
+        "yangiYil": "New Year",
+        "xotinQizlar": "Women's Day",
+        "navruz": "Navruz",
+        "xotira": "Day of Remembrance and Honour",
+        "mustaqillik": "Independence Day",
+        "oqituvchi": "Teachers' and Mentors' Day",
+        "konstitutsiya": "Constitution Day",
+        "rozaHayit": "Eid al-Fitr",
+        "qurbonHayit": "Eid al-Adha"
+      },
+      "reason": "Reason (optional)",
+      "reasonHint": "Unpaid leave is granted by agreement, so stating a reason is customary.",
+      "reasonPlaceholder": "oilaviy sharoit",
+      "applicationDate": "Application date",
+      "periodTentative": "Estimated last day: {end}."
+    },
+    "preview": {
+      "note": "Always sign by hand. Print two copies and have the reception office mark one as received. Empty fields print as blank lines."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "law": {
+          "question": "How long is annual leave in Uzbekistan?",
+          "answer": "At least 21 calendar days — Article 217 of the Labour Code of the Republic of Uzbekistan. Employees under 18 and employees with a group I or II disability get 30 calendar days. Employees of state authority and national executive bodies, teachers and some other categories have longer leave set by law, and an employment or collective agreement may grant more — write the length that applies to you (source: lex.uz, Labour Code arts. 217, 218)."
+        },
+        "holidays": {
+          "question": "What if a public holiday falls within my leave?",
+          "answer": "It is not counted, and the leave runs one day longer for each one. Article 221 of the Labour Code: non-working public holidays that fall within annual leave are not counted when determining its length. The holidays are listed in Article 208: 1 January, 8 March, 21 March, 9 May, 1 September, 1 October, 8 December, and the first day of Eid al-Fitr and of Eid al-Adha. Extra days off moved by presidential decree are not holidays and do count toward the leave. This tool counts the end date by exactly this rule."
+        },
+        "split": {
+          "question": "Can I split my leave?",
+          "answer": "Yes, by agreement with the employer. Under Article 231 of the Labour Code, when leave is split one of the parts must be at least 14 calendar days. So 21 days can be taken as 14 + 7, but not as 7 + 7 + 7. Each part usually gets its own application."
+        },
+        "firstYear": {
+          "question": "What if I have worked there less than six months?",
+          "answer": "The right to leave for the first working year arises after six months of continuous work with that employer (Labour Code art. 227). The parties may agree to grant it earlier. Employees under 18, employees with a group I or II disability, working students (to match their exams) and the other categories listed in Article 227 are granted it at their request before six months."
+        },
+        "unpaid": {
+          "question": "How do I take unpaid leave?",
+          "answer": "By written application, by agreement with the employer — this is \"leave without pay\" (Labour Code art. 241). Its length is agreed, but must not exceed three months in total within any twelve-month period; during quarantine or a state of emergency the ceiling rises to six months. Some categories are entitled to it (art. 242): for example, employees with a group I or II disability, and one parent raising two or more children under twelve (or a child with a disability under sixteen) — up to 14 calendar days a year; and also to one parent, guardian, grandparent or other relative actually caring for a child aged two to three. Choose this type and you can add a reason to the application."
+        },
+        "privacy": {
+          "question": "Where does the data I enter go?",
+          "answer": "Nowhere. The whole document is built in your browser: nothing is sent to a server and nothing is stored. Close the page and what you typed is gone."
+        }
+      }
+    },
+    "errors": {
+      "name": "This field may contain letters only",
+      "organisation": "The organisation name needs at least one word",
+      "text": "The reason needs at least one word",
+      "days": "The number of days must be a whole number from 1 to 365",
+      "shortPart": "Leave shorter than 14 days is only possible as part of a split leave in which one part is at least 14 days (art. 231)",
+      "unpaidLimit": "By agreement, unpaid leave is capped at 3 months in total within 12 months (art. 241), except where the law provides otherwise (arts. 241, 242)",
+      "dateOrder": "The leave cannot start before the application date"
+    }
+  }
+}

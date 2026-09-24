@@ -63,6 +63,9 @@ import rezyumeUz from "./tools/rezyume/uz.json"
 import screenResolutionEn from "./tools/screen-resolution/en.json"
 import screenResolutionRu from "./tools/screen-resolution/ru.json"
 import screenResolutionUz from "./tools/screen-resolution/uz.json"
+import tatilEn from "./tools/tatil/en.json"
+import tatilRu from "./tools/tatil/ru.json"
+import tatilUz from "./tools/tatil/uz.json"
 import tilxatEn from "./tools/tilxat/en.json"
 import tilxatRu from "./tools/tilxat/ru.json"
 import tilxatUz from "./tools/tilxat/uz.json"
@@ -100,6 +103,7 @@ export const uz = {
   ...numberToWordsUz,
   ...tilxatUz,
   ...arizaUz,
+  ...tatilUz,
   ...tushuntirishUz,
   ...rezyumeUz,
   ...documentsUz,
@@ -129,6 +133,7 @@ export const en = {
   ...numberToWordsEn,
   ...tilxatEn,
   ...arizaEn,
+  ...tatilEn,
   ...tushuntirishEn,
   ...rezyumeEn,
   ...documentsEn,
@@ -158,6 +163,7 @@ export const ru = {
   ...numberToWordsRu,
   ...tilxatRu,
   ...arizaRu,
+  ...tatilRu,
   ...tushuntirishRu,
   ...rezyumeRu,
   ...documentsRu,

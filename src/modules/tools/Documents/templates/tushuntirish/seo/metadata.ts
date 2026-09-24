@@ -10,10 +10,15 @@ import { PRIMARY_KEYWORDS } from "./keywords"
  * The differentiator is put first, and it is not "a template": it is that the
  * note can END three different ways. Every competing result hands over one
  * fixed wording that admits the act.
+ *
+ * "Word va PDF" replaced "To'ldiring" in the title on 2026-09-24: Search
+ * Console showed «tushuntirish xati namuna word» at position 4.9 with 30
+ * impressions and zero clicks, and «…pdf» the same — a snippet gap, not a
+ * ranking one, since the .docx export and print-to-PDF both exist.
  */
 const COPY = {
   uz: {
-    title: "Tushuntirish Xati Namunasi — To'ldiring",
+    title: "Tushuntirish Xati Namunasi — Word va PDF",
     description:
       "Tushuntirish xatini to'ldiring: aybni tan olish yoki rad etish — yakuniy jumlani o'zingiz tanlaysiz. Lotin va kirill, chop etish va Word.",
     social:

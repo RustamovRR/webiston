@@ -1,0 +1,99 @@
+{
+  "TatilPage": {
+    "ToolHeader": {
+      "title": "Ta'til Arizasi",
+      "description": "Mehnat ta'tili arizasini to'ldiring — ta'tilning tugash sanasi bayram kunlarini hisobga olib o'zi hisoblanadi, hujjat lotin va kirill yozuvida."
+    },
+    "form": {
+      "employer": {
+        "legend": "Ariza kimga beriladi"
+      },
+      "employee": {
+        "legend": "Ariza beruvchi"
+      },
+      "terms": {
+        "legend": "Ta'til"
+      },
+      "organisation": "Tashkilot nomi",
+      "organisationPlaceholder": "«Webiston» MChJ",
+      "managerRole": "Rahbar lavozimi",
+      "managerRolePlaceholder": "direktori",
+      "managerName": "Rahbar F.I.Sh.",
+      "namePlaceholder": "Aliyev Anvar Alisherovich",
+      "employeeName": "F.I.Sh. (to'liq)",
+      "position": "Lavozimingiz",
+      "positionPlaceholder": "dasturchi",
+      "kind": "Ta'til turi",
+      "kindHint": "Yillik mehnat ta'tili — qonuniy huquqingiz, unga haq to'lanadi; ikkinchi ish yilidan boshlab u ta'tillar jadvali bo'yicha beriladi (MK 228-modda). O'z hisobidan ta'til esa ish beruvchi bilan kelishib beriladi.",
+      "kinds": {
+        "yillik": "Yillik mehnat ta'tili (haq to'lanadi)",
+        "haqsiz": "O'z hisobidan — ish haqi saqlanmaydigan ta'til"
+      },
+      "startDate": "Boshlanish sanasi",
+      "days": "Necha kalendar kun",
+      "daysHint": "Kamida 21 kun (MK 217-modda). Bo'lib olinsa, bir qismi kamida 14 kun.",
+      "daysHintUnpaid": "Muddati kelishuv bilan belgilanadi, lekin 12 oy ichida jami 3 oydan oshmasligi kerak (MK 241-modda).",
+      "period": "Ta'tilning oxirgi kuni: {end}.",
+      "periodEmpty": "Boshlanish sanasini va kunlar sonini kiriting — tugash sanasi o'zi hisoblanadi.",
+      "periodHolidays": "{count, plural, one {Ta'tilga bayram kuni to'g'ri keladi ({list}) — u ta'til kunlariga kirmaydi, shuning uchun ta'til 1 kunga uzayadi (MK 221-modda).} other {Ta'tilga # ta bayram kuni to'g'ri keladi ({list}) — ular ta'til kunlariga kirmaydi, shuning uchun ta'til # kunga uzayadi (MK 221-modda).}}",
+      "periodUnknownHayit": "{year}-yil uchun hayit sanalari hali to'liq e'lon qilinmagan, shuning uchun arizada tugash sanasi o'rniga «…dan boshlab N kalendar kun» deb yoziladi.",
+      "holidays": {
+        "yangiYil": "Yangi yil",
+        "xotinQizlar": "Xotin-qizlar kuni",
+        "navruz": "Navro'z bayrami",
+        "xotira": "Xotira va qadrlash kuni",
+        "mustaqillik": "Mustaqillik kuni",
+        "oqituvchi": "O'qituvchi va murabbiylar kuni",
+        "konstitutsiya": "Konstitutsiya kuni",
+        "rozaHayit": "Ro'za hayit",
+        "qurbonHayit": "Qurbon hayit"
+      },
+      "reason": "Sabab (ixtiyoriy)",
+      "reasonHint": "O'z hisobidan ta'til kelishuv bilan beriladi, shuning uchun arizada sababni ko'rsatish odatiy hol.",
+      "reasonPlaceholder": "oilaviy sharoit",
+      "applicationDate": "Ariza sanasi",
+      "periodTentative": "Taxminiy oxirgi kun: {end}."
+    },
+    "preview": {
+      "note": "Imzo har doim qo'lda qo'yiladi. Arizani ikki nusxada tayyorlab, bir nusxasiga kotibiyatning qabul qilgani haqidagi belgisini oldirib qo'ying. Bo'sh maydonlar chiziq bo'lib chiqadi."
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "law": {
+          "question": "Yillik mehnat ta'tili necha kun bo'ladi?",
+          "answer": "Kamida 21 kalendar kun — O'zbekiston Respublikasi Mehnat kodeksining 217-moddasi. 18 yoshga to'lmaganlar va I, II guruh nogironligi bo'lgan xodimlar uchun — 30 kalendar kun. Davlat hokimiyati va respublika ijro etuvchi hokimiyat organlari xodimlari, pedagoglar va boshqa ayrim toifalar uchun qonunchilikda uzoqroq muddat belgilangan, mehnat yoki jamoa shartnomasida ham uzoqroq ta'til ko'rsatilgan bo'lishi mumkin — arizaga o'zingizga tegishli muddatni yozing (manba: lex.uz, Mehnat kodeksi 217, 218-moddalar)."
+        },
+        "holidays": {
+          "question": "Ta'tilga bayram kuni to'g'ri kelsa nima bo'ladi?",
+          "answer": "Bayram kuni ta'til kunlariga kirmaydi: har bir bayram kuni uchun ta'til bir kunga uzayadi. Mehnat kodeksining 221-moddasi: «Har yilgi mehnat ta'tili davriga to'g'ri keladigan ishlanmaydigan bayram kunlari mehnat ta'tillarining davomiyligini belgilashda hisobga olinmaydi». Bayram kunlari 208-moddada sanab o'tilgan: 1-yanvar, 8-mart, 21-mart, 9-may, 1-sentabr, 1-oktabr, 8-dekabr, Ro'za hayit va Qurbon hayitning birinchi kuni. Prezident farmoni bilan ko'chiriladigan qo'shimcha dam olish kunlari esa bayram emas — ular ta'til muddatiga kiradi. Bu vosita tugash sanasini shu qoida bo'yicha o'zi hisoblaydi."
+        },
+        "split": {
+          "question": "Ta'tilni bo'lib olsam bo'ladimi?",
+          "answer": "Ha, ish beruvchi bilan kelishib. Mehnat kodeksining 231-moddasiga ko'ra, ta'til qismlarga bo'linganda qismlardan biri kamida 14 kalendar kun bo'lishi kerak. Masalan, 21 kunni 14 + 7 qilib olish mumkin, 7 + 7 + 7 esa mumkin emas. Odatda har bir qism uchun alohida ariza yoziladi."
+        },
+        "firstYear": {
+          "question": "Ishga kirganimga olti oy bo'lmagan bo'lsa-chi?",
+          "answer": "Birinchi ish yili uchun ta'tilga chiqish huquqi shu ish beruvchida olti oy uzluksiz ishlagandan keyin paydo bo'ladi (Mehnat kodeksi 227-modda). Tomonlar kelishsa, ta'til olti oydan oldin ham berilishi mumkin. 18 yoshga to'lmaganlar, I va II guruh nogironligi bo'lgan xodimlar, ishlab o'qiyotganlar (imtihon vaqtiga) va 227-moddada sanab o'tilgan boshqa toifalarga esa olti oy o'tmasdan ham o'z xohishiga ko'ra beriladi."
+        },
+        "unpaid": {
+          "question": "O'z hisobidan ta'til qanday olinadi?",
+          "answer": "Yozma ariza bilan, ish beruvchi bilan kelishib — bu «ish haqi saqlanmaydigan ta'til» (Mehnat kodeksi 241-modda). Uning muddati kelishuvga ko'ra belgilanadi, lekin o'n ikki oylik davr ichida jami uch oydan oshmasligi kerak; karantin yoki favqulodda holat davrida bu chegara olti oygacha kengayadi. Ayrim toifalarga u majburiy beriladi (242-modda): masalan, I va II guruh nogironligi bo'lgan xodimlarga, o'n ikki yoshgacha bo'lgan ikki va undan ortiq bolani yoki o'n olti yoshga to'lmagan nogironligi bo'lgan bolani tarbiyalayotgan ota-onadan biriga — yiliga 14 kalendar kungacha; shuningdek, ikki yoshdan uch yoshgacha bo'lgan bolani amalda parvarish qilayotgan ota-onadan biriga, vasiyga, buvi, bobo yoki boshqa qarindoshga. Bu turni tanlasangiz, arizaga sababni ham yozish mumkin."
+        },
+        "privacy": {
+          "question": "Kiritgan ma'lumotlarim qayerga boradi?",
+          "answer": "Hech qayerga. Butun hujjat brauzeringizning o'zida tuziladi: serverga hech narsa yuborilmaydi, hech narsa saqlanmaydi. Sahifani yopsangiz, kiritgan ma'lumotlaringiz ham yo'qoladi."
+        }
+      }
+    },
+    "errors": {
+      "name": "Bu maydonda faqat harflar bo'lishi kerak",
+      "organisation": "Tashkilot nomida kamida bitta so'z bo'lishi kerak",
+      "text": "Sabab matnida kamida bitta so'z bo'lishi kerak",
+      "days": "Kunlar soni 1 dan 365 gacha butun son bo'lishi kerak",
+      "shortPart": "14 kundan qisqa ta'til faqat bo'lib olinganda mumkin — qismlaridan biri kamida 14 kun bo'lsa (MK 231-modda)",
+      "unpaidLimit": "Kelishuv bo'yicha o'z hisobidan ta'til 12 oy ichida jami 3 oydan oshmaydi (MK 241-modda) — qonunda nazarda tutilgan hollar bundan mustasno (MK 241, 242-moddalar)",
+      "dateOrder": "Ta'tilning boshlanishi ariza sanasidan oldin bo'la olmaydi"
+    }
+  }
+}

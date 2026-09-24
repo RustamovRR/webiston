@@ -33,7 +33,7 @@
     },
     "documents": {
       "title": "Uzbek Document Templates",
-      "description": "Loan receipt, resignation letter and explanatory note — filled in, dates computed"
+      "description": "Loan receipt, resignation and leave applications, explanatory note — dates computed"
     },
     "tilxat": {
       "title": "Loan Receipt (Tilxat)",
@@ -42,6 +42,10 @@
     "ishdanBoshashArizasi": {
       "title": "Resignation Letter (Ariza)",
       "description": "Fill in the ariza — the last working day counted for you under the Labour Code"
+    },
+    "tatilArizasi": {
+      "title": "Leave Application (Ta'til Arizasi)",
+      "description": "An Uzbek leave application — the end date counted, public holidays excluded"
     },
     "tushuntirishXati": {
       "title": "Explanatory Note",

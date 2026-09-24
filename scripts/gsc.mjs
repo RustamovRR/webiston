@@ -38,7 +38,20 @@ const ARGS = process.argv.slice(2)
  * copies of it.
  */
 const DIFF = ARGS.includes("--diff")
-const DAYS = Number(ARGS.find((a) => !a.startsWith("--")) ?? 28)
+/**
+ * `--find <regex>` answers the question the standing tables cannot: "is
+ * there demand for something we have NOT built?" Google records an impression
+ * whenever a page of ours appears for a query — even at position 60, for a
+ * document we only mention in passing — so the long tail carries queries for
+ * things that do not exist yet. The top-40 table never reaches them.
+ *
+ *   pnpm gsc 28 --find "ishonchnoma|shartnoma|ma.lumotnoma"
+ */
+const findAt = ARGS.indexOf("--find")
+const FIND = findAt === -1 ? null : new RegExp(ARGS[findAt + 1] ?? ".", "i")
+const DAYS = Number(
+  ARGS.find((a, i) => !a.startsWith("--") && ARGS[i - 1] !== "--find") ?? 28
+)
 const SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 
 if (!KEY_FILE) {
@@ -174,6 +187,27 @@ if (totals) {
   console.log(`   Ko'rsatilish  ${totals.impressions}`)
   console.log(`   CTR           ${pct(totals.ctr)}`)
   console.log(`   O'rtacha poz. ${totals.position.toFixed(1)}`)
+}
+
+if (FIND) {
+  // Query AND page, so a hit says which of our pages Google is reaching for.
+  // 5,000 rows is far past this site's long tail (the API allows 25,000).
+  const hits = (await query({ dimensions: ["query", "page"], rowLimit: 5000 }))
+    .filter((row) => FIND.test(row.keys[0]))
+    .sort((a, b) => b.impressions - a.impressions)
+  console.log(
+    `\n── --find ${FIND} · ${hits.length} ta so'rov ───────────────────────────────`
+  )
+  console.log(
+    `   ${pad("so'rov", 44)} ${pad("bosish", 6)} ${pad("ko'rsat", 7)} ${pad("CTR", 6)} ${pad("poz", 5)} sahifa`
+  )
+  for (const row of hits.slice(0, 60)) {
+    const page = row.keys[1].replace(/^https?:\/\/[^/]+/, "")
+    console.log(
+      `   ${pad(row.keys[0], 44)} ${pad(row.clicks, 6)} ${pad(row.impressions, 7)} ${pad(pct(row.ctr), 6)} ${pad(row.position.toFixed(1), 5)} ${page}`
+    )
+  }
+  process.exit(0)
 }
 
 table(
