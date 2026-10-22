@@ -111,3 +111,5 @@ relevance - aloqadorlik
 AI-powered - SI'ga asoslangan
 biases - noxolislik
 weights - og'irliklar
+tutuq mark - tutuq belgisi (ʼ, U+02BC; ru: знак тутук)
+New Latin (the 2027 alphabet) - yangi lotin, yangi alifbo (ru: новая латиница)

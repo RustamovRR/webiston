@@ -8,7 +8,39 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-10-02 — **measurement checkpoint; the 09-24 package is
+_Last updated: 2026-10-22 — **new-alphabet converter built:
+`/tools/yangi-alifbo`.** Law OʻRQ-1184 was signed and published 21.10.2026 and
+takes effect **22.04.2027** (art. 4) — not on the 21st. The engine lives in
+`@webiston/transliteration` (`toUzbekScript`, `detectUzbekScript`,
+`LATIN_2027_LETTERS`), so `toCyrillic` — the converter AND the extension — now
+reads ş/ç/ö/ğ too; code points read from the law's own lex.uz HTML (ş U+015F,
+never ș U+0219). Four reviews; fixed a regression of mine (a brand with a 2027
+suffix lost its protection) and older engine bugs found on the way: с+ҳ → s'h
+(1995 rules §17), no ъ after ў (§32), a closing single quote read as ь
+('Salom' → 'Саломь), tsh → цҳ, Chrome unprotected — plus /en and /ru homepages
+linking every tool card to the Uzbek page. **Then unified: one converter, two
+front doors** — `/tools/yangi-alifbo` renders the Latin-Cyrillic converter
+(files, exceptions, shortcuts) with its own H1/table/FAQ; the switch is Avto |
+Кирилл | Lotin | Yangi lotin on both pages, each remembering its own choice
+(`DEFAULT_PREFERENCE`, store v3→v4 migration). Arrows hidden below `sm` so the
+four fit a 360px phone (uz 292 / ru 296px). Review fixes: Cyrillic-dominant
+text into the 1995 Latin is `toLatin` again (Erdoğan stayed Erdoğan before
+and does again), a stored switch value is whitelisted on read, swap no longer
+no-ops when the text is already in the target, ru hint "в латиницу". SEO pass
+before deploy: yangi-alifbo had no Cyrillic Google reads («янги алифбо» lived
+only in `<meta keywords>`) — now in title, description and lede; H2 "Yangi
+o'zbek alifbosi (2027)"; the full 28-letter alphabet from art. 1; anchors say
+"yangi alifbo". `content-i18n.md` rewritten (it still said "no ru"). Gate 0,
+**2,279 tests / 108 files**, full suite 3/3. Committed and pushed to `main`
+by request.
+Metrics same day: the doc package lifted once Google recrawled it 10-02
+(tushuntirish 0.6 → 3.6–4.9 clicks/day, ariza 0.1 → 1.6–2.1); tatil and
+`/extension` still unknown to Google. **Owner:** deploy, then GSC Request
+indexing + `pnpm indexnow` for the new URLs. **Re-check lex.uz after
+~2026-12-21** (Cabinet programme, spelling rules — §17's s'h is one decision in
+`latin-2027.ts`)._
+
+_Previously, 2026-10-02 — **measurement checkpoint; the 09-24 package is
 UNMEASURED, not failed.** URL Inspection: `/tools/tatil-arizasi` and
 `/extension` are "Discovered – currently not indexed" (never crawled; sitemap
 fetched 09-24, 0 errors); ariza and tushuntirish last crawled **08-14**, so

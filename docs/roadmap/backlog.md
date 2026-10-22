@@ -106,6 +106,21 @@
   `ConverterFaq`, plus an FAQ entry (which lands in the existing `FAQPage`
   schema for free). Store URL goes in `src/constants/`, not inline.
 
+- `[ ]` **Converter: hydration mismatch for a visitor with a pinned switch.**
+  `LatinCyrillic/stores/transliterationStore.ts` persists with no
+  `skipHydration`, so localStorage hydrates synchronously at module load: the
+  client's first render uses the stored choice, the server rendered the route
+  default — checked radio and panel labels differ, React recovers with a
+  client re-render. Pre-existing (a pinned "cyrillic-to-latin" did it too),
+  now on two routes since `/tools/yangi-alifbo` shares the converter. Fix:
+  `skipHydration` + `persist.rehydrate()` in an effect, or mount-gate the
+  stored choice. Found in review 2026-10-22.
+- `[ ]` **Extension: no new-alphabet target.** The popup, popover and context
+  menu read ş/ç/ğ/ö (via `toCyrillic`) but cannot convert INTO the 2027
+  alphabet; the extension promo on `/tools/latin-cyrillic` says "stop coming
+  back to this page", which misleads a new-alphabet visitor. Extend the
+  popup's preference to `"auto" | UzbekScript` the way the web switch did.
+
 - `[x]` **Namespace coverage is now gated — 2026-07-30.** `pnpm i18n` grew a
   second check: every namespace a Client Component calls must be provided by some
   provider. It would have caught the `/tools` regression that survived a
