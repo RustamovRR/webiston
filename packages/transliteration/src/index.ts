@@ -16,7 +16,12 @@ export {
   oppositeDirection,
   resolveDirection
 } from "./converter"
-export { detectScript, isCyrillicDominant, isLatinText } from "./detect-script"
+export {
+  detectScript,
+  detectUzbekScript,
+  isCyrillicDominant,
+  isLatinText
+} from "./detect-script"
 // Helpers (advanced usage)
 export {
   isCyrillicVowel,
@@ -27,18 +32,31 @@ export {
   normalizeApostrophes,
   preserveCase
 } from "./helpers"
+// The 2027 alphabet (Law OʻRQ-1184) — the letters, for anything that renders them
+export type { Latin2027Letter } from "./mappings"
+export {
+  LATIN_2027_LETTERS,
+  LATIN_2027_LOOKALIKES,
+  TUTUQ_BELGISI
+} from "./mappings"
 export {
   MAX_USER_TERM_LENGTH,
   MAX_USER_TERMS,
   normaliseUserTerms
 } from "./protection"
 export type { ConversionOptions } from "./transliterate"
-export { isCyrillicText, toCyrillic, toLatin } from "./transliterate"
+export {
+  isCyrillicText,
+  toCyrillic,
+  toLatin,
+  toUzbekScript
+} from "./transliterate"
 export type {
   CharacterMapping,
   DigraphMapping,
   ScriptType,
   TransliterationDirection,
   TransliterationMode,
-  TransliterationOptions
+  TransliterationOptions,
+  UzbekScript
 } from "./types"

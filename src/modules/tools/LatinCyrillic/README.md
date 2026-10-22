@@ -1,7 +1,19 @@
 # LatinCyrillic
 
-The Latin ↔ Cyrillic converter at `/tools/latin-cyrillic`. The site's
-most-visited page.
+The Uzbek alphabet converter — Latin, Cyrillic and the 2027 Latin (Law
+OʻRQ-1184). The site's most-visited tool, and the client island of TWO routes:
+
+| Route | Answers the search | Opens on |
+| ----- | ------------------ | -------- |
+| `/tools/latin-cyrillic` | "lotin kirill" | Avto |
+| `/tools/yangi-alifbo` | "yangi alifbo", "ş harfi" | → Yangi lotin |
+
+One tool, two front doors. Each route brings its own heading (passed in as
+props), its own reference table and FAQ; the converter is identical, so
+neither visitor is sent to the other page to finish the job. Each route
+remembers its own switch position; the draft text is shared, so it survives
+following the link between them. `DEFAULT_PREFERENCE` in `constants/` is the
+one place that names both.
 
 ## Where the logic lives
 
@@ -24,9 +36,12 @@ convertWithPreference(text, preference) // both of the above, in one step
 oppositeDirection(direction)            // for the swap control
 ```
 
-`preference` is `"auto" | "latin-to-cyrillic" | "cyrillic-to-latin"`. Under
-`"auto"` the text decides, on every change — there is no paste heuristic and no
-memory of the previous answer.
+The extension still speaks in those directions. This page has moved one step
+further: its switch holds `"auto" | UzbekScript` — a destination, not a
+direction — and converts with `toUzbekScript`, which reads all three
+alphabets in any mix. Under `"auto"` the text decides on every change, by the
+same rule `resolveDirection` uses (Cyrillic-dominant → Latin, else Cyrillic).
+The new alphabet is never an auto result; it is always picked.
 
 ## Structure
 
@@ -35,17 +50,17 @@ LatinCyrillic/
 ├── components/
 │   ├── AlphabetTable.tsx    # SERVER — the Latin↔Cyrillic reference table
 │   ├── ConverterFaq.tsx     # SERVER — the visible FAQ (same keys as the schema)
-│   ├── DirectionTabs.tsx    # Avto / → Кирилл / → Lotin
+│   ├── DirectionTabs.tsx    # Avto / → Кирилл / → Lotin / → Yangi lotin
 │   ├── DownloadMenu.tsx     # TXT · DOCX
 │   ├── DropZone.tsx         # drop a file anywhere on the tool
 │   ├── SourceEmptyActions.tsx
 │   └── index.ts             # CLIENT components only — see the note in it
 ├── constants/               # sample text, file limits, the alphabet data
 ├── hooks/
-│   ├── useLatinCyrillic.ts  # text + direction + result
+│   ├── useLatinCyrillic.ts  # text + target alphabet + result
 │   └── useFileImport.ts     # TXT/PDF/DOCX in, TXT/DOCX out
 ├── seo/                     # metadata + JSON-LD (FAQ reads the i18n messages)
-├── stores/                  # one persisted value: the direction preference
+├── stores/                  # persisted: switch position per route + exceptions
 ├── LatinCyrillic.tsx        # the client island
 └── index.ts
 ```

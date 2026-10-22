@@ -76,6 +76,19 @@ export const DEFAULT_LOCALE: Locale = "uz"
 /** `(uz|en)` — the alternation `proxy.ts` needs, built rather than retyped. */
 export const LOCALE_PATTERN = LOCALES.join("|")
 
+/**
+ * `path` as a link from a page in `locale`. The default locale is served
+ * unprefixed (`localePrefix: "as-needed"`, routing.ts) and `/uz/x` is a 307,
+ * so it gets the bare path; every other locale gets its prefix.
+ *
+ * For Server Components, which cannot use next-intl's `Link`: its locale
+ * comes from `getLocale()`, and that answers "uz" on /en outside the
+ * request-scoped provider (see `AlphabetTable`).
+ */
+export function localePath(locale: string, path: string): string {
+  return locale === DEFAULT_LOCALE ? path : `/${locale}${path}`
+}
+
 export function localeInfo(code: string): LocaleInfo {
   return CATALOGUE[code] ?? CATALOGUE[DEFAULT_LOCALE]
 }

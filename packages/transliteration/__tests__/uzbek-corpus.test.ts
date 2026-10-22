@@ -65,6 +65,33 @@ describe("ts is ц in loanwords and two letters at a stem/suffix seam", () => {
   })
 })
 
+describe("t + sh is т + ш, never ц + ҳ", () => {
+  // Greedy ts → ц took the t AND the s, leaving a bare h: adabiyotshunos came
+  // out адабиёцҳунос. Uzbek has no цҳ, so ts before h is always t + sh.
+  it.each([
+    ["adabiyotshunos", "адабиётшунос"],
+    ["Adabiyotshunoslik", "Адабиётшунослик"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+})
+
+describe("toCyrillic reads the 2027 letters however they were typed", () => {
+  it.each([
+    ["s\u0327ahar", "s + combining cedilla"],
+    ["\u0219ahar", "U+0219, comma below"]
+  ])("%s (%s) → шаҳар", (input) => {
+    expect(toCyrillic(input)).toBe("шаҳар")
+  })
+
+  it("leaves a product name with a 2027 suffix protected", () => {
+    // Was "Телеграмъгача": the suffix stopped at ç and the brand lost its
+    // protection with it.
+    expect(toCyrillic("Telegram'ga\u00E7a")).toBe("Telegram'ga\u00E7a")
+    expect(toCyrillic("React\u00E7ilar")).toBe("React\u00E7ilar")
+  })
+})
+
 describe("morpheme boundaries: n + g is not always нг", () => {
   it.each([
     ["yangi", "янги"],
@@ -109,6 +136,118 @@ describe("tutuq belgisi is ъ after a consonant as well as a vowel", () => {
   })
 })
 
+describe("с + ҳ is two sounds, so the tutuq goes between them (rules §17)", () => {
+  // Cabinet resolution 339 (1995), §17: "Sh harflari ikki tovushni ifodalasa,
+  // ular orasiga ʼ tutuq belgisi qoʻyiladi: Isʼhoq, asʼhob kabi." Without the
+  // mark the name came back from Latin as "Ишоқ" — a different word.
+  it.each([
+    ["Исҳоқ", "Is'hoq"],
+    ["асҳоб", "as'hob"],
+    ["ИСҲОҚ", "IS'HOQ"]
+  ])("%s → %s", (input, expected) => {
+    expect(toLatin(input)).toBe(expected)
+  })
+
+  it("round-trips back to с + ҳ", () => {
+    expect(toCyrillic(toLatin("Исҳоқ"))).toBe("Исҳоқ")
+  })
+
+  it("leaves ш + ҳ alone — that sh is one letter", () => {
+    expect(toLatin("Машҳура")).toBe("Mashhura")
+  })
+})
+
+describe("no tutuq after oʻ, even where Cyrillic writes ъ (rules §32)", () => {
+  // §32.1: "moʻjiza, moʻtadil, moʻtabar kabi soʻzlarda oʻ unlisi choʻziqroq
+  // aytilsa ham, tutuq belgisi qoʻyilmaydi". The engine used to emit both
+  // marks — "mo''jiza" — and the stray one survived into Cyrillic as
+  // "мў'жиза", an apostrophe in the middle of a Cyrillic word.
+  it.each([
+    ["мўъжиза", "mo'jiza"],
+    ["мўътабар", "mo'tabar"],
+    ["мўътадил", "mo'tadil"]
+  ])("%s → %s", (input, expected) => {
+    expect(toLatin(input)).toBe(expected)
+  })
+
+  it("leaves no apostrophe in the Cyrillic on the way back", () => {
+    // The ъ itself cannot come back: Latin spells мўъжиза and a hypothetical
+    // мўжиза the same way. Same asymmetry as funksiya/функция — the
+    // orthography carries no trace of it.
+    expect(toCyrillic(toLatin("мўъжиза"))).toBe("мўжиза")
+  })
+})
+
+// =============================================================================
+// SINGLE QUOTES — a quotation mark, not the Russian soft sign
+// =============================================================================
+
+describe("single quotes stay quotation marks", () => {
+  // An apostrophe after a letter at the end of a word is the Russian soft
+  // sign (ochen' → очень), so every CLOSING single quote became ь:
+  // 'Salom' dedi → 'Саломь деди. A quote cannot be told from ь by itself —
+  // only by the opening quote before it, which neither alphabet ever writes
+  // at the start of a word.
+  it.each([
+    ["'Salom' dedi", "'Салом' деди"],
+    ["U 'yaxshi' dedi", "У 'яхши' деди"],
+    ["\u2018Salom\u2019 dedi", "'Салом' деди"],
+    ["('Salom')", "('Салом')"],
+    ["'Salom!' dedi", "'Салом!' деди"],
+    // A quoted product name: the opening quote is followed by a placeholder,
+    // not a letter, and still opens the quote.
+    ["'React kutubxonasi' dedi", "'React кутубхонаси' деди"],
+    // o' and g' before the closing quote are o and g: word-final ў does not
+    // occur in Uzbek, and pedagog/katalog/dialog end in a plain g.
+    ["'kino' so'zi", "'кино' сўзи"],
+    ["'pedagog' so'zi", "'педагог' сўзи"]
+  ])("%s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+
+  it.each([
+    // g' inside the quote is still ғ — the quote closes later.
+    ["'Bu tog' baland' dedi", "'Бу тоғ баланд' деди"],
+    // …and when the closing mark comes straight after g', both are kept.
+    ["'Tog' va bog'' dedi", "'Тоғ ва боғ' деди"],
+    // The cases the soft-sign rule exists for, and the Uzbek ones beside it.
+    ["ochen'", "очень"],
+    ["tog'", "тоғ"],
+    ["san'at", "санъат"],
+    ["'React'", "'React'"]
+  ])("still: %s → %s", (input, expected) => {
+    expect(toCyrillic(input)).toBe(expected)
+  })
+
+  it("keeps each judgement inside its own sentence", () => {
+    // Found by typing a paragraph into the page, after every one-line test
+    // had passed: the look-ahead for pedagog' ran on to the NEXT sentence,
+    // took ochen' for the closing quote, and got both words wrong —
+    // 'педагоғ … Очен'. A paragraph is one line; a quotation is not.
+    expect(
+      toCyrillic(
+        "U 'yaxshi' dedi. 'Bu tog' baland' va 'pedagog' so'zi. Ochen' xorosho."
+      )
+    ).toBe("У 'яхши' деди. 'Бу тоғ баланд' ва 'педагог' сўзи. Очень хорошо.")
+    expect(toCyrillic("'pedagog' so'zi. Bog' katta.")).toBe(
+      "'педагог' сўзи. Боғ катта."
+    )
+    // A quote nobody closed ends with its sentence too.
+    expect(toCyrillic("U 'yaxshi dedi. Ochen' xorosho.")).toBe(
+      "У 'яхши деди. Очень хорошо."
+    )
+  })
+
+  it("closes on a quote mark that follows punctuation", () => {
+    expect(toCyrillic("'Bu tog' baland!' dedi")).toBe("'Бу тоғ баланд!' деди")
+  })
+
+  it("does not carry an unclosed quote onto the next line", () => {
+    // A quote left open must not turn the next line's ochen' into a quote.
+    expect(toCyrillic("'Salom\nochen'")).toBe("'Салом\nочень")
+  })
+})
+
 // =============================================================================
 // PROTECTION — must not swallow ordinary Uzbek
 // =============================================================================
@@ -139,7 +278,11 @@ describe("protection leaves ordinary Uzbek alone", () => {
     ["format", "формат"],
     ["super", "супер"],
     ["start", "старт"],
-    ["virus", "вирус"]
+    ["virus", "вирус"],
+    // Browser names that are ALSO Uzbek words, kept out of the brand list on
+    // purpose: safar + i ("his journey") and the art form.
+    ["safari", "сафари"],
+    ["opera", "опера"]
   ])("%s → %s", (input, expected) => {
     expect(toCyrillic(input)).toBe(expected)
   })
@@ -169,6 +312,9 @@ describe("protection still holds for things that must not be converted", () => {
       "https://webiston.uz сайтига киринг"
     ],
     ["email: info@webiston.uz", "email: info@webiston.uz"],
+    // Was "Google Чроме": no browser was on the list at all.
+    ["Google Chrome orqali", "Google Chrome орқали"],
+    ["Firefox'da oching", "Firefox'da очинг"],
     // A quoted product name is still protected — the o'/g' guard is narrow
     // enough not to catch an ordinary apostrophe used as a quote.
     ["'React' kutubxonasi", "'React' кутубхонаси"],
@@ -266,6 +412,25 @@ describe("masking survives hostile input", () => {
 
     // Assert — linear means ~8x, quadratic means ~64x. 20x leaves room for a
     // noisy CI box without letting the quadratic version through.
+    expect(largeMs).toBeLessThan(Math.max(smallMs, 1) * 20)
+  })
+
+  it("stays linear on a long quotation full of word-final g'", () => {
+    // Arrange — inside an open quote every word-final g' looks ahead for a
+    // later closing mark; the look-ahead must stop at the next one, not scan
+    // the rest of the line each time.
+    const small = `'${"tog' bog' ".repeat(3000)}`
+    const large = `'${"tog' bog' ".repeat(24000)}` // 8x the characters
+
+    // Act
+    let started = performance.now()
+    toCyrillic(small)
+    const smallMs = performance.now() - started
+    started = performance.now()
+    toCyrillic(large)
+    const largeMs = performance.now() - started
+
+    // Assert — linear is ~8x, quadratic ~64x
     expect(largeMs).toBeLessThan(Math.max(smallMs, 1) * 20)
   })
 

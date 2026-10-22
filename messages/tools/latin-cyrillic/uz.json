@@ -2,7 +2,7 @@
   "LatinCyrillicPage": {
     "ToolHeader": {
       "title": "Lotin-Kirill O'giruvchi",
-      "description": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi."
+      "description": "O'zbek matnini lotinchadan kirillchaga va aksincha, shuningdek yangi alifboga (ş, ç, ğ, ö) o'giring. Matn brauzeringizdan chiqmaydi."
     },
     "clear": "Tozalash",
     "swapDirection": "Yo'nalishni almashtirish",
@@ -10,6 +10,7 @@
     "targetResult": "{targetLang} natija",
     "latin": "Lotin",
     "cyrillic": "Kirill",
+    "latin2027": "Yangi lotin",
     "inputPlaceholderLatin": "Matn kiriting yoki fayl tashlang...",
     "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
     "copied": "Nusxalandi!",
@@ -36,9 +37,10 @@
     "direction": {
       "label": "O'girish yo'nalishi",
       "auto": "Avto",
-      "toCyrillic": "→ Кирилл",
-      "toLatin": "→ Lotin",
-      "resolved": "{target} tomon"
+      "toCyrillic": "Кирилл",
+      "toLatin": "Lotin",
+      "toLatin2027": "Yangi lotin",
+      "resolved": "{target}ga"
     },
     "empty": {
       "paste": "Nusxadan qo'yish",
@@ -68,8 +70,10 @@
     },
     "table": {
       "kicker": "ALIFBO",
-      "title": "Lotin — Kirill harflar jadvali",
+      "title": "O'zbek lotin va kirill alifbosi jadvali",
       "description": "O'zbek lotin alifbosining 29 harfi va ularning kirillcha muqobili. Bir xil o'qilmaydigan qatorlar izohlangan.",
+      "newAlphabet": "2027-yil 22-apreldan alifbo o'zgaradi: G' → Ğ, O' → Ö, Sh → Ş, Ch → Ç. Matnni yangi alifboga o'girish uchun yuqoridan «Yangi lotin»ni tanlang.",
+      "newAlphabetLink": "Yangi alifbo: harflar va qonun haqida batafsil →",
       "latin": "Lotin",
       "cyrillic": "Kirill",
       "note": "Izoh",
@@ -88,6 +92,10 @@
         "howToUse": {
           "question": "O'giruvchidan qanday foydalanaman?",
           "answer": "Matnni chap oynaga qo'ying — natija o'ng tomonda darhol paydo bo'ladi, tugma bosish shart emas. Yo'nalish avtomatik aniqlanadi; kerak bo'lsa «Avto» o'rniga kerakli yo'nalishni tanlang."
+        },
+        "newAlphabet": {
+          "question": "Yangi alifboga (ş, ç, ğ, ö) ham o'giradimi?",
+          "answer": "Ha. Yuqoridan «Yangi lotin»ni tanlang: lotin yoki kirill yozuvidagi matn 2027-yil 22-apreldan kuchga kiradigan yangi alifboga o'giriladi — sh → ş, ch → ç, g' → ğ, o' → ö. «Lotin» esa yangi alifbodagi matnni 1995-yilgi lotin alifbosiga qaytaradi. «Avto» faqat lotin va kirill o'rtasida o'giradi: yangi alifboni o'zingiz tanlaysiz."
         },
         "isFree": {
           "question": "Bepulmi? Ro'yxatdan o'tish kerakmi?",
@@ -123,7 +131,8 @@
         "chrome": "Chrome'ga qo'shish",
         "firefox": "Firefox'ga qo'shish"
       },
-      "storesNote": "Ikkalasi ham bepul. Chrome do'koni Edge, Brave va Opera brauzerlarida ham ishlaydi."
+      "storesNote": "Ikkalasi ham bepul. Chrome do'koni Edge, Brave va Opera brauzerlarida ham ishlaydi.",
+      "more": "Batafsil →"
     }
   }
 }

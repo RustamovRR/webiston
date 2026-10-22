@@ -1,0 +1,65 @@
+{
+  "NewAlphabetPage": {
+    "ToolHeader": {
+      "title": "New Uzbek Alphabet Converter",
+      "description": "Convert text to the 2027 Uzbek Latin alphabet: sh → ş, ch → ç, g' → ğ, o' → ö — or from it back to the old Latin and Cyrillic. Your text never leaves the browser."
+    },
+    "letters": {
+      "kicker": "LAW O'RQ-1184",
+      "title": "The new Uzbek alphabet (2027): what changes",
+      "description": "The alphabet becomes 28 letters and the tutuq mark, instead of 26 letters and 3 letter combinations. Every other letter stays as it is. Click a new letter to copy it.",
+      "old": "Old",
+      "new": "New",
+      "cyrillic": "Cyrillic",
+      "copy": "Copy {glyph}",
+      "notes": {
+        "full": "The new alphabet — 28 letters and the tutuq mark: A B D E F G Ğ H I J K L M N O Ö P Q R S Ş Ç T U V X Y Z ʼ",
+        "ng": "Ng leaves the alphabet as a letter combination, but words are still written with n and g: yangi, köngil, dengiz.",
+        "tutuq": "The tutuq (the apostrophe mark) stays, in the same shape: ʼ (U+02BC) — maʼno, sanʼat.",
+        "noC": "No C is added: ts stays two letters — informatsiya.",
+        "lookalike": "Do not confuse ş with ș (U+0219, comma below): they look the same but are different letters to a computer. This tool corrects ș automatically, along with ǵ and ŏ from the 2019 and 2021 drafts."
+      }
+    },
+    "law": {
+      "title": "Dates",
+      "signed": "Signed and published",
+      "signedValue": "21 October 2026",
+      "inForce": "Takes effect",
+      "inForceValue": "22 April 2027",
+      "programme": "Implementation programme",
+      "programmeValue": "To be approved by the Cabinet of Ministers within two months",
+      "spelling": "Spelling rules",
+      "spellingValue": "New ones not yet published — the 1995 rules apply",
+      "source": "Text of the law — lex.uz"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "whenInForce": {
+          "question": "When does the new alphabet take effect?",
+          "answer": "On 22 April 2027. Law O'RQ-1184 was signed and officially published on 21 October 2026; under Article 4 it takes effect six months after official publication. Until then the 1995 Latin alphabet remains in force."
+        },
+        "whatChanged": {
+          "question": "What changes in the alphabet?",
+          "answer": "Two letters change shape: G'g' → Ğğ, O'o' → Öö. Two letter combinations become single letters: Sh sh → Şş, Ch ch → Çç. The Ng combination leaves the alphabet, but words are still written with n and g. The tutuq mark (ʼ) stays. The result is 28 letters and one tutuq mark. No C is added."
+        },
+        "unicode": {
+          "question": "What are the Unicode code points of Ş, Ç, Ğ and Ö?",
+          "answer": "In the official text of the law on lex.uz: Ş U+015E and ş U+015F, Ç U+00C7 and ç U+00E7, Ğ U+011E and ğ U+011F, Ö U+00D6 and ö U+00F6; the tutuq is ʼ U+02BC. A common mistake is typing the Romanian ș (U+0219) for ş: they look the same, but to a search engine or a spell-checker they are different letters."
+        },
+        "howToType": {
+          "question": "How do I type the new letters?",
+          "answer": "No official Uzbek keyboard layout has been published yet (as of October 2026). The easiest way is to type as usual with o', g', sh and ch, then convert the text on this page. If you need a single letter, copy it from the table above in one click."
+        },
+        "oldDocuments": {
+          "question": "Do documents and banknotes in the old alphabet stay valid?",
+          "answer": "Yes. Under Article 2 of the law, documents issued in the old letters before it takes effect, the national currency and securities remain valid and in circulation. The symbols and other attributes of state bodies and organisations, the relief of the State Emblem on their buildings, signs and plates with the names of geographic features, and other items set by the Cabinet of Ministers stay in use until they wear out or until the deadline in the implementation programme."
+        },
+        "accuracy": {
+          "question": "How accurate is the conversion? What about words like Isʼhoq?",
+          "answer": "Letters are replaced according to the table in the law. New spelling rules have not been adopted yet, so the 1995 rules apply: where s and h are two separate sounds, the tutuq stays between them — Isʼhoq, asʼhob. Links, e-mail addresses, code and product names (Chrome, GitHub) are left unchanged. This is not an official government tool; it will be updated when the new spelling rules are published."
+        }
+      }
+    }
+  }
+}

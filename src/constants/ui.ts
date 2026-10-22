@@ -1,5 +1,6 @@
 import {
   Camera,
+  CaseSensitive,
   Code2,
   Coins,
   FileSignature,
@@ -38,6 +39,13 @@ export interface ToolCategory {
 }
 
 /**
+ * The new-alphabet converter's route, for the pages that link to it by name.
+ * TOOLS_LIST below repeats it as a literal on purpose:
+ * `scripts/update-tools-list.js` reads that file with a regex, not an import.
+ */
+export const NEW_ALPHABET_PATH = "/tools/yangi-alifbo"
+
+/**
  * The tools, in the order they are shown.
  *
  * The rule is "how likely is someone to arrive looking for this", descending —
@@ -53,6 +61,18 @@ export const TOOLS_LIST: Tool[] = [
     tKey: "latinCyrillic",
     href: "/tools/latin-cyrillic",
     icon: RotateCcw,
+    category: "converters",
+    audience: "general"
+  },
+  {
+    // Its own card, not a mode of the converter above: "yangi alifbo" is a
+    // different search and a different errand. Placed straight after it so
+    // that, sharing its category and audience, it is the FIRST related tool
+    // the Latin-Cyrillic page offers — the site's most-crawled page is how a
+    // new URL gets found.
+    tKey: "yangiAlifbo",
+    href: "/tools/yangi-alifbo",
+    icon: CaseSensitive,
     category: "converters",
     audience: "general"
   },

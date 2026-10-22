@@ -19,6 +19,7 @@ import {
   REACT_CHAPTERS,
   TOOLS_LIST
 } from "@/constants"
+import { localePath } from "@/i18n/locales"
 import {
   getAllTutorialPaths,
   getAllTutorials,
@@ -424,7 +425,15 @@ export default async function HomePage({
                     <ArrowRightIcon />
                   </span>
                 </ButtonLink>
-                <ButtonLink href="/tools" variant="outline" className="group">
+                {/* Localised here and rendered by plain next/link, for the
+                    reason ToolsSection gives: the i18n Link prerendered /en
+                    and /ru with the Uzbek `/tools`. */}
+                <ButtonLink
+                  isNextLink
+                  href={localePath(locale, "/tools")}
+                  variant="outline"
+                  className="group"
+                >
                   {tHome("usefulTools")}
                   <span className="ml-2 transition-transform duration-300 ease-out group-hover:scale-110">
                     <ToolsIcon className="h-4 w-4" />
@@ -515,13 +524,13 @@ export default async function HomePage({
           tools={TOOLS_LIST.slice(0, 7).map((tool) => ({
             title: tTools(`${tool.tKey}.title`),
             description: tTools(`${tool.tKey}.description`),
-            href: tool.href,
+            href: localePath(locale, tool.href),
             category: tool.category,
             icon: <tool.icon className="size-4" />
           }))}
           moreLabel={tHome("allTools")}
           moreMeta={`${TOOLS_LIST.length} ${tHome("stats.tools")}`}
-          toolsHref="/tools"
+          toolsHref={localePath(locale, "/tools")}
         />
       </div>
     </>

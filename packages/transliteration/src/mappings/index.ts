@@ -1,5 +1,12 @@
 // Barrel export for all character mappings
 
+export type { Latin2027Letter } from "./latin-2027"
+export {
+  LATIN_2027_LETTER_CHARS,
+  LATIN_2027_LETTERS,
+  LATIN_2027_LOOKALIKES,
+  TUTUQ_BELGISI
+} from "./latin-2027"
 export {
   getRussianTimeNameInUzbek,
   isRussianTimeName,

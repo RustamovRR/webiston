@@ -72,3 +72,6 @@ export const BROWSER_FLAG = `try{if(/\\bFirefox\\/\\d/.test(navigator.userAgent)
 
 /** The converter this extension is the installable half of. */
 export const EXTENSION_TOOL_PATH = "/tools/latin-cyrillic"
+
+/** The extension's own landing page, linked from that converter. */
+export const EXTENSION_PAGE_PATH = "/extension"

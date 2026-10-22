@@ -3,8 +3,9 @@
  * Detects whether text is Latin, Cyrillic, or mixed
  */
 
+import { hasLatin2027Letter, normaliseLatin2027 } from "./latin-2027"
 import { protectContent } from "./protection"
-import type { ScriptType } from "./types"
+import type { ScriptType, UzbekScript } from "./types"
 
 // Unicode ranges for script detection
 const CYRILLIC_RANGE = /[\u0400-\u04FF]/
@@ -56,6 +57,25 @@ export function isCyrillicDominant(text: string): boolean {
   const { latin, cyrillic } = countScripts(text)
 
   return cyrillic > 0 && cyrillic >= latin
+}
+
+/**
+ * Which of the three Uzbek alphabets is this text in?
+ *
+ * One 2027 letter outside a protected span is enough for "latin-2027": a
+ * half-converted document is a new-alphabet document with leftovers, and
+ * converting it to the new alphabet is a no-op on everything already done.
+ * The spans are masked for the reason `countScripts` gives — a link is not
+ * evidence of which alphabet the prose is in.
+ */
+export function detectUzbekScript(text: string): UzbekScript {
+  if (isCyrillicDominant(text)) return "cyrillic"
+
+  // Mask first, then correct look-alikes — the order `toUzbekScript` uses.
+  const { maskedText } = protectContent(text)
+  return hasLatin2027Letter(normaliseLatin2027(maskedText))
+    ? "latin-2027"
+    : "latin"
 }
 
 // Uzbek-specific Cyrillic characters

@@ -11,10 +11,12 @@ import {
   normalizeApostrophes,
   preserveCase
 } from "./helpers"
+import { newLatinToOld, normaliseLatin2027 } from "./latin-2027"
 import {
   UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS,
   UZBEK_LATIN_TO_CYRILLIC_SINGLE
 } from "./mappings"
+import { findQuoteMarks } from "./quotes"
 
 const LONGEST_S_SUFFIX = S_INITIAL_SUFFIXES.reduce(
   (longest, suffix) => Math.max(longest, suffix.length),
@@ -56,7 +58,19 @@ function isTsMorphemeSeam(text: string, index: number): boolean {
  * Uses greedy matching for digraphs (sh, ch, ng, etc.)
  */
 export function transliterateLatinToCyrillic(text: string): string {
-  const normalized = normalizeApostrophes(text)
+  // Both Latin alphabets in, one Cyrillic out. ö/ğ/ş/ç are spelled back into
+  // o'/g'/sh/ch first, so every rule below — yo' vs yo, ng', the tutuq — runs
+  // on the spelling it was written for. Text from after 22.04.2027 needs no
+  // mode switch, and neither does a document that uses both alphabets.
+  // Typed shapes of the new letters too — s + U+0327, the Romanian ș — so
+  // this tool, the extension and the new-alphabet page read them alike. Safe
+  // here: protected spans are already placeholders by the time text arrives.
+  const normalized = normalizeApostrophes(
+    newLatinToOld(normaliseLatin2027(text))
+  )
+  // Decided up front, over the whole text: whether an apostrophe closes a
+  // quote depends on what comes before it AND after it on the line.
+  const quoteMarks = findQuoteMarks(normalized)
   let result = ""
   let i = 0
 
@@ -146,7 +160,8 @@ export function transliterateLatinToCyrillic(text: string): string {
     }
 
     // === DIGRAPHS with apostrophe ===
-    if (lowerTwo === "g'" || lowerTwo === "o'") {
+    // Unless that apostrophe closes a quote: 'kino' is кино, not кинў.
+    if ((lowerTwo === "g'" || lowerTwo === "o'") && !quoteMarks.has(i + 1)) {
       const cyrillic = UZBEK_LATIN_TO_CYRILLIC_DIGRAPHS[lowerTwo]
       result += preserveCase(char, cyrillic)
       i += 2
@@ -168,7 +183,15 @@ export function transliterateLatinToCyrillic(text: string): string {
     // '-tsiya' family: informatsiya came out as 'информатсия' instead of
     // 'информация', and the same for operatsiya, konstitutsiya, stantsiya,
     // delegatsiya, revolyutsiya — hundreds of everyday words.
-    if (lowerTwo === "ts" && !isTsMorphemeSeam(normalized, i)) {
+    //
+    // Nor before h: Uzbek has no цҳ, so "tsh" is always t + sh. Greedy ц took
+    // the s from the sh — adabiyotshunos came out "адабиёцҳунос" — and the
+    // 2027 spelling, adabiyotşunos, reaches this point spelled the same way.
+    if (
+      lowerTwo === "ts" &&
+      normalized[i + 2]?.toLowerCase() !== "h" &&
+      !isTsMorphemeSeam(normalized, i)
+    ) {
       if (isUpperCase(char) && isUpperCase(nextChar)) {
         result += "Ц"
       } else {
@@ -192,6 +215,15 @@ export function transliterateLatinToCyrillic(text: string): string {
 
     // === APOSTROPHE handling ===
     if (char === "'") {
+      // A quotation mark — see `findQuoteMarks`. Ahead of every rule below,
+      // because each of them reads the apostrophe as a sign on the letter
+      // before it, and the closing quote of 'Salom' used to come out as ь.
+      if (quoteMarks.has(i)) {
+        result += "'"
+        i++
+        continue
+      }
+
       const prevChar = i > 0 ? normalized[i - 1].toLowerCase() : ""
       const nextCharLower = nextChar.toLowerCase()
 

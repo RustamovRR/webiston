@@ -175,9 +175,26 @@ export function transliterateCyrillicToLatin(text: string): string {
       continue
     }
 
+    // === с + ҳ: two sounds, so the tutuq goes between them ===
+    //
+    // 1995 rules §17: "Sh harflari ikki tovushni ifodalasa, ular orasiga ʼ
+    // tutuq belgisi qoʻyiladi: Isʼhoq, asʼhob kabi." Without the mark the
+    // Latin reads as ш — Исҳоқ came out "Ishoq", went back to Cyrillic as
+    // "Ишоқ" (a different name), and to the 2027 alphabet as "Işoq".
+    if (lowerChar === "с" && lowerNext === "ҳ") {
+      result += `${preserveCase(char, "s")}'`
+      i++
+      continue
+    }
+
     // === HARD SIGN (ъ) handling - used in both Uzbek and Russian ===
     if (lowerChar === "ъ") {
-      result += "'"
+      // Except straight after ў. 1995 rules §32.1: "moʻjiza, moʻtadil,
+      // moʻtabar kabi soʻzlarda ... tutuq belgisi qoʻyilmaydi" — the Cyrillic
+      // ъ there has no Latin counterpart. Emitting it gave "mo''jiza", and the
+      // stray mark survived the trip back as "мў'жиза": an ASCII apostrophe in
+      // the middle of a Cyrillic word.
+      if (text[i - 1]?.toLowerCase() !== "ў") result += "'"
       i++
       continue
     }

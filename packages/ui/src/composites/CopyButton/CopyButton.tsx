@@ -35,6 +35,12 @@ interface CopyButtonProps {
   showLabel?: boolean
   /** Replaces the label while the confirmation is showing. */
   copiedLabel?: string
+  /**
+   * The accessible name, when the visible label alone is not a sentence — a
+   * button showing just "Ğ" should still be announced as "Copy Ğ". Defaults
+   * to `label`. Keep the visible text inside it (WCAG 2.5.3, label in name).
+   */
+  ariaLabel?: string
 }
 
 export function CopyButton({
@@ -46,7 +52,8 @@ export function CopyButton({
   onCopy,
   label = "Nusxalash",
   showLabel = false,
-  copiedLabel
+  copiedLabel,
+  ariaLabel
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
   const [_, copy] = useCopyToClipboard()
@@ -71,7 +78,7 @@ export function CopyButton({
       size={size}
       variant={variant}
       className={`${className} cursor-pointer transition-colors`}
-      aria-label={label}
+      aria-label={ariaLabel ?? label}
     >
       {copied ? (
         <Check size={18} className="text-success" aria-hidden="true" />

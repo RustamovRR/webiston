@@ -1,5 +1,9 @@
 import { cn } from "@webiston/ui/utils"
+import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+
+import { NEW_ALPHABET_PATH } from "@/constants/ui"
+import { localePath } from "@/i18n/locales"
 
 import { ALPHABET_ROWS, type AlphabetRow, COMPOUND_ROWS } from "../constants"
 
@@ -73,6 +77,17 @@ export async function AlphabetTable({ locale }: { locale: string }) {
         </h2>
         <p className="mt-2 max-w-2xl text-pretty text-muted-foreground leading-relaxed">
           {t("description")}
+        </p>
+        {/* The reader of an alphabet table is the one who will want to know
+            the alphabet is changing. One sentence and a link, not a banner. */}
+        <p className="mt-3 max-w-2xl text-pretty text-muted-foreground text-sm leading-relaxed">
+          {t("newAlphabet")}{" "}
+          <Link
+            href={localePath(locale, NEW_ALPHABET_PATH)}
+            className="rounded-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t("newAlphabetLink")}
+          </Link>
         </p>
       </div>
 

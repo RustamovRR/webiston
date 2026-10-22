@@ -1,8 +1,13 @@
 import { Puzzle } from "lucide-react"
+import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { ExtensionStores } from "@/components/shared/ExtensionStores"
-import { EXTENSION_FEATURE_KEYS } from "@/constants/extension"
+import {
+  EXTENSION_FEATURE_KEYS,
+  EXTENSION_PAGE_PATH
+} from "@/constants/extension"
+import { localePath } from "@/i18n/locales"
 
 /**
  * The extension, offered at the moment it makes sense.
@@ -71,7 +76,16 @@ export async function ExtensionCallout({ locale }: { locale: string }) {
               ))}
             </ul>
             <p className="mt-3 text-muted-foreground text-xs">
-              {t("storesNote")}
+              {t("storesNote")}{" "}
+              {/* The extension page's only links were the footer and its
+                  own stores; this is the site's most-crawled page, and the
+                  person reading this card is the one it was written for. */}
+              <Link
+                href={localePath(locale, EXTENSION_PAGE_PATH)}
+                className="rounded-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("more")}
+              </Link>
             </p>
           </div>
 

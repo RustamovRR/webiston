@@ -4,8 +4,13 @@
  */
 
 import { NON_TRANSLITERATABLE_WORDS, UZBEK_SUFFIXES } from "./constants"
+import {
+  LATIN_2027_LETTER_CHARS,
+  LATIN_2027_LETTERS,
+  LATIN_2027_LOOKALIKES
+} from "./mappings"
 
-const PLACEHOLDER_PREFIX = "\u0000"
+export const PLACEHOLDER_PREFIX = "\u0000"
 const PLACEHOLDER_SUFFIX = "\u0000"
 
 /**
@@ -30,6 +35,43 @@ function createPlaceholder(index: number): string {
 
 /** Every apostrophe shape, for the o'/g' test below. */
 const APOSTROPHES = "'‘’ʻʼʿˈ′ʹ´`"
+
+/**
+ * The 2027 letters, plus the look-alikes typed for them. Protection runs on
+ * the text AS TYPED — look-alikes are corrected after masking, so a link's
+ * own ș is never touched — which means both shapes have to count here.
+ */
+const LATIN_2027_EDGE =
+  LATIN_2027_LETTER_CHARS +
+  LATIN_2027_LOOKALIKES.map(([lookalike]) => lookalike).join("")
+
+/** Any combining accent — s + U+0327 is a typed ş before normalisation. */
+const COMBINING_MARK = /\p{M}/u
+
+/** What a suffix may be spelled with, in either Latin alphabet. */
+const SUFFIX_LETTERS = `a-zA-Z${LATIN_2027_EDGE}`
+
+/**
+ * The suffix list in both alphabets: -chi and -çi, -chilar and -çilar.
+ *
+ * Without the 2027 forms the suffix branches stopped at the first new letter
+ * and the edge check below then dropped the whole match, so the PRODUCT NAME
+ * lost its protection: Telegram'gaça came out "Телеграмъгача".
+ */
+const SUFFIXES = [
+  ...new Set(
+    UZBEK_SUFFIXES.flatMap((suffix) => [
+      suffix,
+      LATIN_2027_LETTERS.reduce(
+        (spelled, letter) => spelled.split(letter.old).join(letter.lower),
+        suffix as string
+      )
+    ])
+  )
+]
+
+/** The trailing guard: a protected word never runs on into a letter. */
+const NOT_A_WORD_CHAR = `(?![\\w${LATIN_2027_EDGE}])`
 
 /**
  * Does the match at `offset` start in the middle of an Uzbek letter?
@@ -57,6 +99,28 @@ function startsInsideUzbekLetter(text: string, offset: number): boolean {
     beforeThat !== undefined &&
     "ogOG".includes(beforeThat)
   )
+}
+
+/**
+ * Does the match touch one of the 2027 letters — ş, ç, ö, ğ — on either side?
+ *
+ * The leak `startsInsideUzbekLetter` closes, from the other alphabet. `\b`
+ * and `\w` are ASCII-only, so to the regex ö is punctuation and "körsa" is
+ * three tokens — k · ö · rsa — the last of them a protected cipher name.
+ * Measured before this: "körsa" froze `rsa` and "öram" froze `ram`, so the
+ * Cyrillic came back "кўrsa". A protected term never has a letter glued to
+ * either edge, so either edge is enough to reject the match.
+ */
+function touchesLatin2027Letter(
+  text: string,
+  offset: number,
+  length: number
+): boolean {
+  const isLatin2027 = (char: string | undefined) =>
+    char !== undefined &&
+    (LATIN_2027_EDGE.includes(char) || COMBINING_MARK.test(char))
+
+  return isLatin2027(text[offset - 1]) || isLatin2027(text[offset + length])
 }
 
 /**
@@ -125,7 +189,7 @@ function buildProtectedWordsPattern(): string {
   const byLengthDesc = (a: string, b: string) => b.length - a.length
   const all = [...NON_TRANSLITERATABLE_WORDS].sort(byLengthDesc)
   const suffixable = all.filter((w) => w.length >= SUFFIXABLE_MIN_LENGTH)
-  const plainSuffix = `(?:${UZBEK_SUFFIXES.join("|")})`
+  const plainSuffix = `(?:${SUFFIXES.join("|")})`
 
   // Uzbek attaches suffixes to foreign words through an apostrophe —
   // Google'da, React'ni, GitHub'dan, TikTok'gacha, LLM'larni. Anything after
@@ -139,7 +203,7 @@ function buildProtectedWordsPattern(): string {
   // would eat `buni`); an apostrophe seam is strong evidence on its own, and
   // the one Uzbek construction that looks like it — o'/g' — is rejected before
   // it gets here.
-  const apostropheSuffix = `[${APOSTROPHES}][a-zA-Z]+`
+  const apostropheSuffix = `[${APOSTROPHES}][${SUFFIX_LETTERS}]+`
 
   // Suffixed form first: alternation is ordered, so `reactda` must get the
   // chance to match `react` + `da` before the bare `react` branch takes it and
@@ -173,7 +237,7 @@ function buildProtectedWordsPattern(): string {
     "\\b(?:" +
     `(?:${suffixable.join("|")})${plainSuffix}(?:${apostropheSuffix})?` +
     `|(?:${all.join("|")})(?:${apostropheSuffix})?` +
-    ")(?!\\w)"
+    `)${NOT_A_WORD_CHAR}`
   )
 }
 
@@ -195,15 +259,15 @@ function buildUserWordsPattern(terms: readonly string[]): string {
     .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .sort((a, b) => b.length - a.length)
 
-  const plainSuffix = `(?:${UZBEK_SUFFIXES.join("|")})`
-  const apostropheSuffix = `[${APOSTROPHES}][a-zA-Z]+`
+  const plainSuffix = `(?:${SUFFIXES.join("|")})`
+  const apostropheSuffix = `[${APOSTROPHES}][${SUFFIX_LETTERS}]+`
   const alternatives = escaped.join("|")
 
   return (
     "\\b(?:" +
     `(?:${alternatives})${plainSuffix}(?:${apostropheSuffix})?` +
     `|(?:${alternatives})(?:${apostropheSuffix})?` +
-    ")(?!\\w)"
+    `)${NOT_A_WORD_CHAR}`
   )
 }
 
@@ -359,6 +423,7 @@ export function protectContent(
     regex,
     (match: string, offset: number) => {
       if (startsInsideUzbekLetter(safeText, offset)) return match
+      if (touchesLatin2027Letter(safeText, offset, match.length)) return match
       if (startsAsUzbekApostrophe(safeText, offset, match)) return match
       if (isSentenceSeam(match)) return match
 

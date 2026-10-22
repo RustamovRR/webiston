@@ -4,5 +4,6 @@ export type {
   ScriptType,
   TransliterationDirection,
   TransliterationMode,
-  TransliterationOptions
+  TransliterationOptions,
+  UzbekScript
 } from "./transliteration"

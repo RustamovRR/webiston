@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { relatedTools } from "@/constants/related-tools"
+import { localePath } from "@/i18n/locales"
 
 /**
  * "Other tools you might want" — the block every tool page was missing.
@@ -38,7 +39,6 @@ export async function RelatedTools({
 
   const t = await getTranslations({ locale, namespace: "Common" })
   const tTools = await getTranslations({ locale, namespace: "Tools" })
-  const prefix = locale === "uz" ? "" : `/${locale}`
 
   return (
     <section
@@ -54,7 +54,7 @@ export async function RelatedTools({
         {tools.map((tool) => (
           <li key={tool.href}>
             <Link
-              href={`${prefix}${tool.href}`}
+              href={localePath(locale, tool.href)}
               className="group flex h-full min-w-0 flex-col gap-1 rounded-lg border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-accent/40"
             >
               <span className="flex items-center gap-1.5 font-medium text-foreground text-sm">

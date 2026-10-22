@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { localeInfo } from "@/i18n/locales"
+import { localeInfo, localePath } from "@/i18n/locales"
 import { routing } from "@/i18n/routing"
 
 /** Canonical origin. Also `metadataBase` in `src/app/layout.tsx`. */
@@ -24,10 +24,9 @@ const ogLocale = (locale: string) => localeInfo(locale).ogLocale
  * locale's URL tells Google the page is a duplicate and drops it.
  */
 export function localeUrl(locale: string, path: string): string {
-  const suffix = path === "/" ? "" : path
-  return locale === routing.defaultLocale
-    ? `${SITE_URL}${suffix}`
-    : `${SITE_URL}/${locale}${suffix}`
+  // The prefix rule itself lives in `localePath`, shared with the in-page
+  // links; this adds the origin, and maps the root to "" so /en is not /en/.
+  return `${SITE_URL}${localePath(locale, path === "/" ? "" : path)}`
 }
 
 /**

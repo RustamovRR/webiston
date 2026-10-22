@@ -62,6 +62,7 @@ export const applicationSchema = {
   featureList: [
     "Lotin → Kirill o'girish",
     "Kirill → Lotin o'girish",
+    "Yangi o'zbek alifbosiga (2027: ş, ç, ğ, ö) o'girish va undan qaytarish",
     "Yo'nalishni avtomatik aniqlash",
     "TXT, PDF va DOCX fayldan matn o'qish",
     "Natijani TXT yoki DOCX ko'rinishida saqlash",

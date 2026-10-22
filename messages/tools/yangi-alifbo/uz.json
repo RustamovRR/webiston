@@ -1,0 +1,65 @@
+{
+  "NewAlphabetPage": {
+    "ToolHeader": {
+      "title": "Yangi Alifboga O'girish",
+      "description": "Matnni 2027-yilgi yangi o'zbek alifbosiga o'giring: sh → ş, ch → ç, g' → ğ, o' → ö — yoki undan eski lotin va kirillga qaytaring. Кирилл ёзувидаги матнни ҳам янги алифбога ўгиради. Matn brauzeringizdan chiqmaydi."
+    },
+    "letters": {
+      "kicker": "O'RQ-1184-SON QONUN",
+      "title": "Yangi o'zbek alifbosi (2027): nima o'zgaradi",
+      "description": "Alifbo 26 ta harf va 3 ta harf birikmasi o'rniga 28 ta harf va 1 ta tutuq belgisidan iborat bo'ladi. Qolgan harflar o'zgarmaydi. Yangi harfni nusxalash uchun ustiga bosing.",
+      "old": "Eski",
+      "new": "Yangi",
+      "cyrillic": "Kirill",
+      "copy": "{glyph} harfini nusxalash",
+      "notes": {
+        "full": "Yangi alifbo — 28 ta harf va tutuq belgisi: A B D E F G Ğ H I J K L M N O Ö P Q R S Ş Ç T U V X Y Z ʼ",
+        "ng": "Ng harf birikmasi alifbodan chiqariladi, lekin so'zlar avvalgidek n va g bilan yoziladi: yangi, köngil, dengiz.",
+        "tutuq": "Tutuq belgisi qoladi va shakli o'zgarmaydi: ʼ (U+02BC) — maʼno, sanʼat.",
+        "noC": "C harfi qo'shilmaydi: ts ikki harf bo'lib qoladi — informatsiya.",
+        "lookalike": "ş ni ș (U+0219, ostida vergul) bilan adashtirmang: ko'rinishi bir xil, lekin kompyuter uchun boshqa harf. Bu vosita ș ni, shuningdek 2019 va 2021-yilgi loyihalardagi ǵ va ŏ ni avtomatik to'g'rilaydi."
+      }
+    },
+    "law": {
+      "title": "Sanalar",
+      "signed": "Imzolandi va e'lon qilindi",
+      "signedValue": "2026-yil 21-oktabr",
+      "inForce": "Kuchga kiradi",
+      "inForceValue": "2027-yil 22-aprel",
+      "programme": "Ijro dasturi",
+      "programmeValue": "Vazirlar Mahkamasi ikki oy muddatda tasdiqlaydi",
+      "spelling": "Imlo qoidalari",
+      "spellingValue": "Yangilari hali e'lon qilinmagan — 1995-yilgi qoidalar amalda",
+      "source": "Qonun matni — lex.uz"
+    },
+    "faq": {
+      "title": "Ko'p so'raladigan savollar",
+      "items": {
+        "whenInForce": {
+          "question": "Yangi alifbo qachondan kuchga kiradi?",
+          "answer": "2027-yil 22-apreldan. O'RQ-1184-son qonun 2026-yil 21-oktabrda imzolanib, rasmiy e'lon qilingan; 4-moddaga ko'ra u rasmiy e'lon qilingan kundan olti oy o'tgach kuchga kiradi. Shu kungacha 1995-yilgi lotin alifbosi amalda."
+        },
+        "whatChanged": {
+          "question": "Alifboda nima o'zgaradi?",
+          "answer": "Ikki harfning shakli o'zgaradi: G'g' → Ğğ, O'o' → Öö. Ikki harf birikmasi bitta harfga aylanadi: Sh sh → Şş, Ch ch → Çç. Ng harf birikmasi alifbodan chiqariladi, ammo so'zlar avvalgidek n va g bilan yoziladi. Tutuq belgisi (ʼ) qoladi. Natijada alifbo 28 ta harf va 1 ta tutuq belgisidan iborat bo'ladi. C harfi qo'shilmaydi."
+        },
+        "unicode": {
+          "question": "Ş, Ç, Ğ, Ö harflarining Unicode kodlari qanday?",
+          "answer": "Qonunning lex.uz'dagi rasmiy matnida: Ş U+015E va ş U+015F, Ç U+00C7 va ç U+00E7, Ğ U+011E va ğ U+011F, Ö U+00D6 va ö U+00F6; tutuq belgisi — ʼ U+02BC. Keng tarqalgan xato — ş o'rniga rumincha ș (U+0219) yozish: ular ko'zga bir xil, lekin qidiruv tizimi va imlo tekshiruvchi uchun boshqa-boshqa harf."
+        },
+        "howToType": {
+          "question": "Yangi harflarni klaviaturada qanday teraman?",
+          "answer": "Rasmiy o'zbek klaviatura tartibi hozircha (2026-yil oktabr) e'lon qilinmagan. Eng oson yo'li — odatdagidek o', g', sh, ch bilan yozib, matnni shu sahifada o'girish. Bitta harf kerak bo'lsa, yuqoridagi jadvaldan bir bosishda nusxalang."
+        },
+        "oldDocuments": {
+          "question": "Eski alifbodagi hujjatlar va pullar amal qiladimi?",
+          "answer": "Ha. Qonunning 2-moddasiga ko'ra, u kuchga kirgunga qadar eski harflar bilan rasmiylashtirilgan hujjatlar, milliy valyuta va qimmatli qog'ozlar amal qilishda va muomalada qolaveradi. Davlat organlari va tashkilotlarining ramziy belgilari va boshqa atributlari, binolaridagi davlat gerbining bo'rtma tasviri, geografik obyektlar nomi yozilgan peshlavha va ko'rsatkichlar hamda Vazirlar Mahkamasi belgilaydigan boshqa ashyolar yaroqsiz holga kelguniga yoki ijro dasturida belgilangan muddatgacha ishlatiladi."
+        },
+        "accuracy": {
+          "question": "O'girish qanchalik aniq? Isʼhoq kabi so'zlar-chi?",
+          "answer": "Harflar qonundagi jadval bo'yicha almashtiriladi. Yangi imlo qoidalari hali qabul qilinmagan, shuning uchun 1995-yilgi qoidalar amal qiladi: s va h alohida tovush bo'lsa, ular orasida tutuq qoladi — Isʼhoq, asʼhob. Havolalar, elektron pochta, kod va mahsulot nomlari (Chrome, GitHub) o'zgarishsiz qoladi. Bu rasmiy davlat vositasi emas; yangi imlo qoidalari e'lon qilinganda yangilanadi."
+        }
+      }
+    }
+  }
+}

@@ -82,6 +82,9 @@ import urlEncoderUz from "./tools/url-encoder/uz.json"
 import uuidGeneratorEn from "./tools/uuid-generator/en.json"
 import uuidGeneratorRu from "./tools/uuid-generator/ru.json"
 import uuidGeneratorUz from "./tools/uuid-generator/uz.json"
+import yangiAlifboEn from "./tools/yangi-alifbo/en.json"
+import yangiAlifboRu from "./tools/yangi-alifbo/ru.json"
+import yangiAlifboUz from "./tools/yangi-alifbo/uz.json"
 
 // Merge all translations
 export const uz = {
@@ -94,6 +97,7 @@ export const uz = {
   ...base64ConverterUz,
   ...jwtDecoderUz,
   ...latinCyrillicUz,
+  ...yangiAlifboUz,
   ...colorConverterUz,
   ...hashGeneratorUz,
   ...uuidGeneratorUz,
@@ -124,6 +128,7 @@ export const en = {
   ...base64ConverterEn,
   ...jwtDecoderEn,
   ...latinCyrillicEn,
+  ...yangiAlifboEn,
   ...colorConverterEn,
   ...hashGeneratorEn,
   ...uuidGeneratorEn,
@@ -154,6 +159,7 @@ export const ru = {
   ...base64ConverterRu,
   ...jwtDecoderRu,
   ...latinCyrillicRu,
+  ...yangiAlifboRu,
   ...colorConverterRu,
   ...hashGeneratorRu,
   ...uuidGeneratorRu,

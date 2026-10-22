@@ -8,7 +8,22 @@
 > `initiatives/`; completed initiatives move to `../archive/`. If an entry here
 > needs more than 3 lines, it belongs in an initiative file.
 
-_Last updated: 2026-09-24 — **document template #4 built: `/tools/tatil-arizasi`**
+_Last updated: 2026-10-02 — **measurement checkpoint; the 09-24 package is
+UNMEASURED, not failed.** URL Inspection: `/tools/tatil-arizasi` and
+`/extension` are "Discovered – currently not indexed" (never crawled; sitemap
+fetched 09-24, 0 errors); ariza and tushuntirish last crawled **08-14**, so
+Google has not seen their "Word va PDF" titles. Owner action: GSC → URL
+Inspection → Request indexing for those four. What DID move: GSC 14d clicks
+792 → 1,284 (+62%); Metrica 30d 1,447 → 2,457 visits (+70%), search 925 →
+1,939, bounce 31.8 → 25.8%. **ip-info recovered by itself** (6 → 94 clicks /
+14d) — the "wait" call held. uz `/tools/number-to-words` back with its own
+canonical (0 → ~450 impressions/week). QR generator position 6.5 → 4.3, now
+the #3 page. Tilxat impressions fell back to the August baseline after 09-24
+with position steady at ~4 — seasonal demand, not the deploy (Google last saw
+the page 09-23). Re-check crawl dates 2026-10-09; measure the package two weeks
+after its pages are crawled._
+
+_Previously, 2026-09-24 — **document template #4 built: `/tools/tatil-arizasi`**
 (annual + unpaid leave), the one the 2026-08-14 strategy named next. Its
 contribution is the END DATE: MK 221 excludes MK 208 holidays from annual
 leave, so 21 days from 24 September run to 15 October, not the 14th — settled

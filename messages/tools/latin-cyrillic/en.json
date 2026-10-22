@@ -2,7 +2,7 @@
   "LatinCyrillicPage": {
     "ToolHeader": {
       "title": "Latin-Cyrillic Converter",
-      "description": "Convert Uzbek text between the Latin and Cyrillic alphabets. Your text never leaves the browser."
+      "description": "Convert Uzbek text between the Latin and Cyrillic alphabets, or into the new alphabet (ş, ç, ğ, ö). Your text never leaves the browser."
     },
     "clear": "Clear",
     "swapDirection": "Swap direction",
@@ -10,6 +10,7 @@
     "targetResult": "{targetLang} result",
     "latin": "Latin",
     "cyrillic": "Cyrillic",
+    "latin2027": "New Latin",
     "inputPlaceholderLatin": "Type or drop a file...",
     "inputPlaceholderCyrillic": "Матн киритинг ёки файл ташланг...",
     "copied": "Copied!",
@@ -36,8 +37,9 @@
     "direction": {
       "label": "Conversion direction",
       "auto": "Auto",
-      "toCyrillic": "→ Кирилл",
-      "toLatin": "→ Latin",
+      "toCyrillic": "Кирилл",
+      "toLatin": "Latin",
+      "toLatin2027": "New Latin",
       "resolved": "to {target}"
     },
     "empty": {
@@ -68,8 +70,10 @@
     },
     "table": {
       "kicker": "ALPHABET",
-      "title": "Latin — Cyrillic letter table",
+      "title": "Uzbek Latin and Cyrillic alphabet table",
       "description": "All 29 letters of the Uzbek Latin alphabet with their Cyrillic counterparts. Rows that do not map one-to-one are annotated.",
+      "newAlphabet": "From 22 April 2027 the alphabet changes: G' → Ğ, O' → Ö, Sh → Ş, Ch → Ç. To convert text into it, pick “New Latin” above.",
+      "newAlphabetLink": "The new Uzbek alphabet: letters and the law →",
       "latin": "Latin",
       "cyrillic": "Cyrillic",
       "note": "Note",
@@ -79,7 +83,7 @@
         "hx": "H is ҳ, X is х — two different letters in Cyrillic",
         "sh": "Two letters, one sound",
         "ts": "Ц only in loanwords: informatsiya → информация. In words like “ketsin” it stays т + с",
-        "apostrophe": "The tutuq belgisi: san'at → санъат"
+        "apostrophe": "The tutuq mark: san'at → санъат"
       }
     },
     "faq": {
@@ -89,13 +93,17 @@
           "question": "How do I use the converter?",
           "answer": "Paste your text into the left panel — the result appears on the right immediately, with no button to press. The direction is detected automatically; switch from “Auto” to a fixed direction whenever you need to."
         },
+        "newAlphabet": {
+          "question": "Can I convert text to the new alphabet (ş, ç, ğ, ö)?",
+          "answer": "Yes. Pick “New Latin” above: Latin or Cyrillic text is converted into the alphabet that takes effect on 22 April 2027 — sh → ş, ch → ç, g' → ğ, o' → ö. “Latin” turns new-alphabet text back into the 1995 Latin alphabet. “Auto” only switches between Latin and Cyrillic: the new alphabet is always your choice."
+        },
         "isFree": {
           "question": "Is it free? Do I need an account?",
           "answer": "It is completely free, with no account and no limits."
         },
         "accuracy": {
           "question": "How accurate is the conversion?",
-          "answer": "The converter handles the hard parts of Uzbek orthography: the sh + ch boundary (ishchi → ишчи), the tutuq belgisi (san'at → санъат), the -tsiya suffix (informatsiya → информация) and word-initial e → э. Links, email addresses, code and technical terms are left untouched. Even so, it is worth checking rare foreign names by eye."
+          "answer": "The converter handles the hard parts of Uzbek orthography: the sh + ch boundary (ishchi → ишчи), the tutuq mark (san'at → санъат), the -tsiya suffix (informatsiya → информация) and word-initial e → э. Links, email addresses, code and technical terms are left untouched. Even so, it is worth checking rare foreign names by eye."
         },
         "files": {
           "question": "Can I convert a file?",
@@ -123,7 +131,8 @@
         "chrome": "Add to Chrome",
         "firefox": "Add to Firefox"
       },
-      "storesNote": "Both are free. The Chrome store also works in Edge, Brave and Opera."
+      "storesNote": "Both are free. The Chrome store also works in Edge, Brave and Opera.",
+      "more": "Learn more →"
     }
   }
 }

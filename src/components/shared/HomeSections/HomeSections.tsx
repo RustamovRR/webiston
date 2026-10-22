@@ -221,6 +221,13 @@ export interface ToolCardData {
   icon: ReactNode
 }
 
+/**
+ * Every href here arrives ALREADY localised (`localePath`), and renders through
+ * plain `next/link`. The i18n `Link` took its locale from `getLocale()`, which
+ * answers "uz" on the server under /en — so the prerendered /en and /ru
+ * homepages linked all eight cards to the Uzbek pages, and that HTML is what a
+ * crawler follows.
+ */
 interface ToolsSectionProps {
   /** Already sliced to 7 — the grid is sized for 7 + MoreCard. */
   tools: ToolCardData[]
@@ -238,7 +245,7 @@ export const ToolsSection: FC<ToolsSectionProps> = ({
   <section className="mx-auto mt-14 w-full max-w-[1536px]">
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {tools.map((tool, i) => (
-        <I18nLink
+        <Link
           key={tool.href}
           href={tool.href}
           className={`reveal ${cardBase}`}
@@ -256,9 +263,9 @@ export const ToolsSection: FC<ToolsSectionProps> = ({
           <span className="mt-3 font-mono text-[11px] text-muted-foreground">
             {tool.category}
           </span>
-        </I18nLink>
+        </Link>
       ))}
-      <MoreCard label={moreLabel} meta={moreMeta} href={toolsHref} />
+      <MoreCard isNextLink label={moreLabel} meta={moreMeta} href={toolsHref} />
     </div>
   </section>
 )

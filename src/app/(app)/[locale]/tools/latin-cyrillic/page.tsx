@@ -70,6 +70,10 @@ export default async function LatinCyrillicPage({
     locale,
     namespace: "LatinCyrillicPage.faq"
   })
+  const tHeader = await getTranslations({
+    locale,
+    namespace: "LatinCyrillicPage.ToolHeader"
+  })
 
   return (
     <>
@@ -96,7 +100,11 @@ export default async function LatinCyrillicPage({
           FAQ are Server Components rendered as siblings, so the static two
           thirds of this page cost no JavaScript. */}
       <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <LatinCyrillic />
+        <LatinCyrillic
+          page="latin-cyrillic"
+          title={tHeader("title")}
+          description={tHeader("description")}
+        />
       </LocaleMessages>
 
       <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">

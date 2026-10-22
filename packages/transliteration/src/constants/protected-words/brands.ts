@@ -16,6 +16,11 @@ export const BRANDS_AND_PLATFORMS = [
   "tiktok",
   "snapchat",
   "pinterest",
+  // Browsers. Safari and Opera are absent on purpose: "safari" is safar + i
+  // ("his journey") and "opera" is the art form — both ordinary Uzbek.
+  "chrome",
+  "chromium",
+  "firefox",
   // Dev Platforms
   "github",
   "gitlab",

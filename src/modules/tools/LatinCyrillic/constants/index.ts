@@ -1,6 +1,47 @@
+import type { UzbekScript } from "@webiston/transliteration"
+
+import type { ScriptPreference } from "../types"
+
 /**
  * LatinCyrillic module constants
  */
+
+/**
+ * The routes this converter is the tool on, and where each one's switch opens.
+ *
+ * One converter, two front doors. /tools/latin-cyrillic answers the search
+ * "lotin kirill", /tools/yangi-alifbo the search "yangi alifbo" — and both
+ * offer every alphabet, so neither visitor is sent to the other page to finish
+ * the job. Only the first position differs: the new-alphabet page opens on the
+ * new alphabet because that is what its visitor came for. Each route
+ * remembers its own last choice, so picking "→ Yangi lotin" on one does not
+ * change how the other opens.
+ */
+export const DEFAULT_PREFERENCE = {
+  "latin-cyrillic": "auto",
+  "yangi-alifbo": "latin-2027"
+} as const satisfies Record<string, ScriptPreference>
+
+export type ConverterPage = keyof typeof DEFAULT_PREFERENCE
+
+/**
+ * Every position the alphabet switch has, in the order it shows them. Also
+ * the whitelist a stored preference is checked against: localStorage outlives
+ * deploys, and a value this build does not know must not reach the engine.
+ */
+export const SCRIPT_PREFERENCES: readonly ScriptPreference[] = [
+  "auto",
+  "cyrillic",
+  "latin",
+  "latin-2027"
+]
+
+/** The message key that names each alphabet: `latin-2027` is not a key. */
+export const SCRIPT_LABEL_KEY: Record<UzbekScript, string> = {
+  latin: "latin",
+  "latin-2027": "latin2027",
+  cyrillic: "cyrillic"
+}
 
 /**
  * The one sample, offered inline in the empty source panel.
@@ -92,6 +133,7 @@ export const COMPOUND_ROWS: readonly AlphabetRow[] = [
 /** i18n keys under `faq.items`, rendered visibly AND as FAQPage structured data. */
 export const FAQ_KEYS = [
   "howToUse",
+  "newAlphabet",
   "isFree",
   "accuracy",
   "files",

@@ -1,13 +1,17 @@
 "use client"
 
 /**
- * Latin ↔ Cyrillic converter.
+ * The Uzbek alphabet converter: Latin, Cyrillic, and the 2027 Latin.
  *
- * The client island. Everything static on this route — the alphabet table, the
- * FAQ, the JSON-LD — is rendered by `page.tsx` as a Server Component sibling,
- * so none of it costs the user any JavaScript.
+ * The client island of TWO routes — /tools/latin-cyrillic and
+ * /tools/yangi-alifbo. Each brings its own heading and its own reference
+ * material; the tool is the same, so a visitor on either page can convert into
+ * any alphabet without being sent to the other one. Everything static — the
+ * tables, the FAQs, the JSON-LD — is rendered by each `page.tsx` as a Server
+ * Component sibling, so none of it costs the user any JavaScript.
  */
 
+import type { UzbekScript } from "@webiston/transliteration"
 import { ProgressBar } from "@webiston/ui/composites/ProgressBar"
 import { Button } from "@webiston/ui/primitives/button"
 import { BookLock, Paperclip, X } from "lucide-react"
@@ -24,11 +28,29 @@ import {
   PreservedTerms,
   SourceEmptyActions
 } from "./components"
-import { SAMPLE_TEXT, SUPPORTED_EXTENSIONS } from "./constants"
+import {
+  type ConverterPage,
+  SAMPLE_TEXT,
+  SCRIPT_LABEL_KEY,
+  SUPPORTED_EXTENSIONS
+} from "./constants"
 import { useFileImport, useLatinCyrillic } from "./hooks"
 import type { DownloadFormat } from "./types"
 
-export function LatinCyrillicPage() {
+interface LatinCyrillicPageProps {
+  /** Which route this is. It decides where the alphabet switch opens. */
+  page: ConverterPage
+  /** The route's own heading and lede — each front door answers its own
+   *  search. Resolved on the server, so the route ships no extra namespace. */
+  title: string
+  description: string
+}
+
+export function LatinCyrillicPage({
+  page,
+  title,
+  description
+}: LatinCyrillicPageProps) {
   const t = useTranslations("LatinCyrillicPage")
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -36,7 +58,8 @@ export function LatinCyrillicPage() {
     sourceText,
     convertedText,
     preference,
-    direction,
+    target,
+    sourceScript,
     preservedTerms,
     exceptions,
     addException,
@@ -46,13 +69,13 @@ export function LatinCyrillicPage() {
     setSourceText,
     swap,
     clear
-  } = useLatinCyrillic()
+  } = useLatinCyrillic(page)
 
   const file = useFileImport(setSourceText)
 
-  const isLatinSource = direction === "latin-to-cyrillic"
-  const sourceLang = isLatinSource ? t("latin") : t("cyrillic")
-  const targetLang = isLatinSource ? t("cyrillic") : t("latin")
+  const scriptName = (script: UzbekScript) => t(SCRIPT_LABEL_KEY[script])
+  const sourceLang = scriptName(sourceScript)
+  const targetLang = scriptName(target)
 
   // The keyboard copy has to acknowledge itself. A silent shortcut is
   // indistinguishable from a shortcut that is not bound.
@@ -106,10 +129,7 @@ export function LatinCyrillicPage() {
       className="mx-auto w-full max-w-[1536px] px-4 py-6 sm:px-6 lg:px-8"
       onKeyDown={handleKeyDown}
     >
-      <ToolHeader
-        title={t("ToolHeader.title")}
-        description={t("ToolHeader.description")}
-      />
+      <ToolHeader title={title} description={description} />
 
       {/* A toolbar, not a card.
           The card treatment put a bordered box around two groups that are not
@@ -124,7 +144,9 @@ export function LatinCyrillicPage() {
           onChange={setPreference}
           resolvedHint={
             sourceText
-              ? t("direction.resolved", { target: targetLang })
+              ? // `script` lets a locale inflect the name: Russian needs
+                // "в латиницу", not the nominative "в латиница".
+                t("direction.resolved", { target: targetLang, script: target })
               : undefined
           }
         />
@@ -224,9 +246,9 @@ export function LatinCyrillicPage() {
           sourceText={sourceText}
           convertedText={convertedText}
           sourcePlaceholder={
-            isLatinSource
-              ? t("inputPlaceholderLatin")
-              : t("inputPlaceholderCyrillic")
+            sourceScript === "cyrillic"
+              ? t("inputPlaceholderCyrillic")
+              : t("inputPlaceholderLatin")
           }
           sourceLabel={t("sourceInput", { sourceLang })}
           targetLabel={t("targetResult", { targetLang })}

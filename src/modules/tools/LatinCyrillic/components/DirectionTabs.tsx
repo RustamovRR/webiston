@@ -1,40 +1,39 @@
 "use client"
 
-import type { DirectionPreference } from "@webiston/transliteration"
 import {
   SegmentedControl,
   type SegmentedOption
 } from "@webiston/ui/composites/SegmentedControl"
 import { useTranslations } from "next-intl"
 
+import { SCRIPT_PREFERENCES } from "../constants"
+import type { ScriptPreference } from "../types"
+
 /**
- * Auto / → Cyrillic / → Latin.
+ * Avto / → Кирилл / → Lotin / → Yangi lotin.
  *
- * Three options, not two. The old control offered only the two directions and
- * guessed between them behind the user's back; "Avto" makes the guess a
- * visible, overridable choice — and it is the model the extension popup has
- * always used, so the two surfaces finally agree.
+ * "Avto" makes the Latin ↔ Cyrillic guess a visible, overridable choice — the
+ * model the extension popup has always used. The other three are
+ * destinations, not directions: the engine reads any of the three alphabets,
+ * so there is never a "from" to set. The new alphabet is one more destination
+ * in the SAME control rather than a second switch beside it — one question,
+ * "into which alphabet?", gets one answer.
  *
  * The control itself is `SegmentedControl` from `@webiston/ui`, which is where
  * the sliding indicator and the radio-group semantics live. This file is only
- * the three labels and the hint.
+ * the labels and the hint.
  */
 
-const OPTION_VALUES: readonly DirectionPreference[] = [
-  "auto",
-  "latin-to-cyrillic",
-  "cyrillic-to-latin"
-]
-
-const LABEL_KEY: Record<DirectionPreference, string> = {
+const LABEL_KEY: Record<ScriptPreference, string> = {
   auto: "direction.auto",
-  "latin-to-cyrillic": "direction.toCyrillic",
-  "cyrillic-to-latin": "direction.toLatin"
+  cyrillic: "direction.toCyrillic",
+  latin: "direction.toLatin",
+  "latin-2027": "direction.toLatin2027"
 }
 
 interface DirectionTabsProps {
-  value: DirectionPreference
-  onChange: (value: DirectionPreference) => void
+  value: ScriptPreference
+  onChange: (value: ScriptPreference) => void
   /** What "auto" currently resolves to, shown so the guess is never hidden. */
   resolvedHint?: string
 }
@@ -46,8 +45,28 @@ export function DirectionTabs({
 }: DirectionTabsProps) {
   const t = useTranslations("LatinCyrillicPage")
 
-  const options: SegmentedOption<DirectionPreference>[] = OPTION_VALUES.map(
-    (option) => ({ value: option, label: t(LABEL_KEY[option]) })
+  // The arrow is drawn, not translated, and only from `sm` up. Four options
+  // with arrows measured 342px in Uzbek and 386px in Russian against the
+  // 328px a 360px phone leaves inside the gutter — the page scrolled
+  // sideways. At 16px an arrow, dropping them is what makes all four fit
+  // (uz 292px, en 290px, ru 296px) without shrinking the control every other
+  // tool shares. `aria-hidden`, so the accessible name is the same at every
+  // width: the legend already says these are directions.
+  const options: SegmentedOption<ScriptPreference>[] = SCRIPT_PREFERENCES.map(
+    (option) => ({
+      value: option,
+      label:
+        option === "auto" ? (
+          t(LABEL_KEY[option])
+        ) : (
+          <>
+            <span aria-hidden="true" className="max-sm:hidden">
+              →{" "}
+            </span>
+            {t(LABEL_KEY[option])}
+          </>
+        )
+    })
   )
 
   return (
