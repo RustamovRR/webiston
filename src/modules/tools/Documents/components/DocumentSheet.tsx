@@ -137,7 +137,8 @@ export function DocumentSheet({ blocks }: DocumentSheetProps) {
           actually uses — 20mm sides, 22mm head. */}
       <div
         id="document-sheet"
-        className="mx-auto w-full max-w-[210mm] rounded-md p-[12mm] shadow-md sm:p-[16mm] lg:min-h-[297mm] lg:px-[20mm] lg:py-[22mm]"
+        data-clarity-mask="True"
+        className="mx-auto w-full max-w-[210mm] rounded-md p-[12mm] shadow-md sm:p-[16mm] lg:min-h-[297mm] lg:px-[20mm] lg:py-[22mm] ym-hide-content"
         style={{
           background: PAPER.background,
           color: PAPER.ink,

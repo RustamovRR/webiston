@@ -93,7 +93,10 @@ export function SocialPreview({
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border-strong bg-muted/30">
+      <div
+        data-clarity-mask="True"
+        className="overflow-hidden rounded-xl border border-border-strong bg-muted/30 ym-hide-content"
+      >
         <div
           className={
             isLarge ? "" : "flex items-stretch gap-0 divide-x divide-border"

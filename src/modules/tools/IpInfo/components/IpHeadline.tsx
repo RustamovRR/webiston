@@ -44,7 +44,10 @@ export function IpHeadline({ data, isLoading }: IpHeadlineProps) {
         />
       }
     >
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <div
+        data-clarity-mask="True"
+        className="flex flex-wrap items-baseline gap-x-3 gap-y-1 ym-hide-content"
+      >
         <span className="break-all font-mono text-3xl text-foreground sm:text-4xl">
           {data?.ip ?? PENDING}
         </span>
@@ -78,7 +81,10 @@ function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
       <dt className="text-muted-foreground text-xs">{label}</dt>
-      <dd className="mt-0.5 wrap-break-word font-mono text-foreground text-sm">
+      <dd
+        data-clarity-mask="True"
+        className="mt-0.5 wrap-break-word font-mono text-foreground text-sm ym-hide-content"
+      >
         {value}
       </dd>
     </div>

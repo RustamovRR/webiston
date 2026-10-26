@@ -66,7 +66,10 @@ export function CaptureGallery({
           {t("empty")}
         </p>
       ) : (
-        <div className="max-h-[30rem] divide-y divide-border overflow-y-auto">
+        <div
+          data-clarity-mask="True"
+          className="max-h-[30rem] divide-y divide-border overflow-y-auto ym-hide-content"
+        >
           {recordings.map((recording) => (
             <div key={recording.id} className="space-y-2 px-5 py-3">
               <Meta

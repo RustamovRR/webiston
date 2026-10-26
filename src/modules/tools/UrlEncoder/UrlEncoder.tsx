@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl"
 
 import { DropZone } from "@/components/shared/DropZone"
 import { DualTextPanel } from "@/components/shared/DualTextPanel"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { ToolHeader } from "@/components/shared/ToolHeader"
-
 import { ControlBar } from "./components/ControlBar"
 import { UrlBreakdown } from "./components/UrlBreakdown"
 import { useUrlEncoder } from "./hooks/useUrlEncoder"
@@ -201,13 +201,15 @@ const UrlEncoder = () => {
           {/* Only when the text really parses as a URL — the tool never
               guesses that something is one. */}
           {breakdown && (
-            <UrlBreakdown
-              protocol={breakdown.protocol}
-              hostname={breakdown.hostname}
-              pathname={breakdown.pathname}
-              hash={breakdown.hash}
-              query={breakdown.query}
-            />
+            <PrivateContent>
+              <UrlBreakdown
+                protocol={breakdown.protocol}
+                hostname={breakdown.hostname}
+                pathname={breakdown.pathname}
+                hash={breakdown.hash}
+                query={breakdown.query}
+              />
+            </PrivateContent>
           )}
         </div>
       </DropZone>

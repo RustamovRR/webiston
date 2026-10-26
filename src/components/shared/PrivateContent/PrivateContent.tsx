@@ -1,28 +1,39 @@
+import { cn } from "@webiston/ui"
 import type { ReactNode } from "react"
 
 /**
- * What a visitor types, pastes, uploads or generates in a tool — kept out of
- * session replay.
+ * A result that holds a visitor's data, kept out of session replay.
  *
- * Every tool page promises the text never leaves the browser, and a replay
- * recorder is the one script on the page that would break that promise
- * without anyone noticing: Microsoft Clarity masks `<input>` and `<textarea>`
- * on its own, but a result rendered as text — a converted paragraph, a decoded
- * JWT, a generated password, an application letter with the writer's name in
- * it — is recorded verbatim unless an ancestor carries `data-clarity-mask`.
- * Masking happens in the browser, before anything is sent.
+ * Both recorders on the site skip form FIELDS on their own — Clarity masks
+ * every `<input>` and `<textarea>`, and Yandex Session Replay records a field
+ * only when it is marked `ym-record-keys` ("Record all fields" is off on the
+ * counter). A result rendered as TEXT is another matter: a decoded JWT, a
+ * generated password, an application letter with the writer's name in it is
+ * ordinary DOM, and both record it verbatim. This hides it from both, in the
+ * browser, before anything is sent:
  *
- * Wrapped around a route's whole client island rather than each output, so a
- * new output inside an existing tool is covered without anyone remembering
- * to. `PrivateContent.test.ts` holds every tool route to it. The static chrome
- * inside the island (`ToolHeader`) opts back out with `data-clarity-unmask`;
- * the FAQ and tables outside it are never masked.
+ * - `data-clarity-mask` — Clarity replaces the text with placeholder blocks.
+ * - `ym-hide-content` — Yandex Session Replay leaves the element out.
  *
- * A plain block `<div>`: on all 25 tool routes the island's parent is the
- * tools layout's block `<main className="min-h-screen py-8">` (checked
- * 2026-10-26), so a wrapper changes no layout. Inside a flex or grid parent
- * it would become the item instead of the island — check before reusing.
+ * Wrap the RESULT, not the tool. Masking a whole tool island hid every button
+ * and label as well, and a recording nobody can read is worth nothing
+ * (tried 2026-10-26, rolled back the same day). `DualTextPanel` applies the
+ * same two attributes itself, so tools built on it need nothing extra.
+ *
+ * Renders a `<div>` by default; pass `as="span"` inside inline content.
  */
-export function PrivateContent({ children }: { children: ReactNode }) {
-  return <div data-clarity-mask="True">{children}</div>
+export function PrivateContent({
+  children,
+  as: Tag = "div",
+  className
+}: {
+  children: ReactNode
+  as?: "div" | "span"
+  className?: string
+}) {
+  return (
+    <Tag data-clarity-mask="True" className={cn("ym-hide-content", className)}>
+      {children}
+    </Tag>
+  )
 }

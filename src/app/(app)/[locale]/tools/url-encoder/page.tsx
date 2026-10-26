@@ -5,7 +5,6 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -74,11 +73,9 @@ export default async function UrlEncoderPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
-      <PrivateContent>
-        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-          <UrlEncoder />
-        </LocaleMessages>
-      </PrivateContent>
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <UrlEncoder />
+      </LocaleMessages>
       {/* Server Components, siblings of the client island. */}
       <UrlReference locale={locale} />
       <UrlFaq locale={locale} />

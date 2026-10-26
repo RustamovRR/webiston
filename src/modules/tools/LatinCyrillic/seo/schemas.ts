@@ -67,7 +67,7 @@ export const applicationSchema = {
     "TXT, PDF va DOCX fayldan matn o'qish",
     "Natijani TXT yoki DOCX ko'rinishida saqlash",
     "Havola, e-pochta, kod va texnik atamalarni saqlab qolish",
-    "Matn brauzerdan chiqmaydi"
+    "O'girish brauzerda bajariladi"
   ],
   inLanguage: ["uz", "en", "ru"]
 }

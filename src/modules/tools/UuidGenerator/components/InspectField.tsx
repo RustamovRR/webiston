@@ -75,7 +75,8 @@ export function InspectField({
           // `status`, not `alert`: a half-pasted UUID is not an emergency, and
           // an assertive region would interrupt on every keystroke.
           role="status"
-          className="mt-3"
+          data-clarity-mask="True"
+          className="mt-3 ym-hide-content"
         >
           {verdict === null ? (
             <p className="flex items-center gap-2 text-muted-foreground text-sm">

@@ -191,7 +191,8 @@ export function DesignFields({
             <img
               src={data.photo}
               alt=""
-              className="size-14 rounded-md border border-border object-cover"
+              data-clarity-mask="True"
+              className="size-14 rounded-md border border-border object-cover ym-hide-content"
             />
           )}
           <input

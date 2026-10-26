@@ -74,7 +74,10 @@ export function RowShell({
             }`}
             aria-hidden="true"
           />
-          <span className="min-w-0 truncate font-medium text-muted-foreground text-xs">
+          <span
+            data-clarity-mask="True"
+            className="min-w-0 truncate font-medium text-muted-foreground text-xs ym-hide-content"
+          >
             {summary?.trim() ? summary : `${title} ${index + 1}`}
           </span>
         </button>

@@ -5,7 +5,6 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -88,11 +87,9 @@ export default async function Base64ConverterPage({
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/* — the English page
           then renders the Uzbek UI under an English <title>. */}
-      <PrivateContent>
-        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-          <Base64Converter />
-        </LocaleMessages>
-      </PrivateContent>
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <Base64Converter />
+      </LocaleMessages>
       {/* Server Components, siblings of the client island: static prose costs
           no client JavaScript, and the FAQ answers reach the HTML. */}
       <Base64Reference locale={locale} />

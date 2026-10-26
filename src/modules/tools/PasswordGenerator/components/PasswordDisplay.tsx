@@ -76,7 +76,10 @@ export function PasswordDisplay({
           // `break-all`, or a 64-character draw walks out of the card.
           // Masked shows dots WITHOUT per-class colour — colouring the mask
           // would leak which positions hold digits over a shoulder.
-          <output className="block select-all break-all font-mono text-foreground text-xl leading-relaxed tracking-wide">
+          <output
+            data-clarity-mask="True"
+            className="block select-all break-all font-mono text-foreground text-xl leading-relaxed tracking-wide ym-hide-content"
+          >
             {show
               ? [...password].map((char, index) => (
                   <span

@@ -124,7 +124,10 @@ export function NumberToWords() {
                 // The amount read back in groups of three. This is how a
                 // missing or extra zero gets caught, and it is the only check
                 // available before the sum reaches a document.
-                <p className="font-mono text-muted-foreground text-sm tabular-nums">
+                <p
+                  data-clarity-mask="True"
+                  className="font-mono text-muted-foreground text-sm tabular-nums ym-hide-content"
+                >
                   {state.formatted}
                 </p>
               )}
@@ -188,7 +191,10 @@ export function NumberToWords() {
           bodyClassName="flex flex-1 flex-col p-5"
         >
           {state.status === "ready" ? (
-            <div className="flex flex-col gap-3">
+            <div
+              data-clarity-mask="True"
+              className="flex flex-col gap-3 ym-hide-content"
+            >
               <WordsCard
                 label={t("result.latin")}
                 words={state.words.latin}

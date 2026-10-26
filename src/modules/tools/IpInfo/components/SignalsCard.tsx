@@ -68,7 +68,10 @@ export function SignalsCard({ data }: SignalsCardProps) {
               <dt className="text-foreground text-sm">
                 {t(`items.${signal.key}.label`)}
               </dt>
-              <dd className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-muted-foreground text-xs">
+              <dd
+                data-clarity-mask="True"
+                className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-muted-foreground text-xs ym-hide-content"
+              >
                 <span>
                   {t("browserSide")}: {signal.browser ?? "—"}
                 </span>

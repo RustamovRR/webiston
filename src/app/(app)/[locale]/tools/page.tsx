@@ -146,7 +146,7 @@ function generateFAQSchema(locale: string = "uz") {
         {
           question: "Vositalar xavfsizmi?",
           answer:
-            "Ha, barcha vositalar to'liq xavfsiz. Ma'lumotlar brauzeringizda qayta ishlanadi va hech qayerga yuborilmaydi."
+            "Ha. Ma'lumotlar brauzeringizda qayta ishlanadi va serverga yuborilmaydi. Bitta istisno — lotin-kirill o'giruvchisining maydonlari sessiya yozuvlariga tushadi; batafsil maxfiylik siyosatida."
         },
         {
           question: "Mobil qurilmalarda ishlaydimi?",

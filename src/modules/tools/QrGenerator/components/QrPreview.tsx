@@ -186,7 +186,10 @@ export function QrPreview({
         }
         bodyClassName="p-0"
       >
-        <div className="flex min-h-[380px] items-center justify-center p-6">
+        <div
+          data-clarity-mask="True"
+          className="flex min-h-[380px] items-center justify-center p-6 ym-hide-content"
+        >
           {document ? (
             <QrArtwork doc={document} title={t("title")} />
           ) : (

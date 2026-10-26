@@ -6,7 +6,6 @@ import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
 import { Faq } from "@/components/shared/Faq"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { faqPageSchema, withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -81,11 +80,9 @@ export default async function PasswordGeneratorPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/* and /ru/tools/*. */}
-      <PrivateContent>
-        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-          <PasswordGenerator />
-        </LocaleMessages>
-      </PrivateContent>
+      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+        <PasswordGenerator />
+      </LocaleMessages>
 
       {/* Server-rendered sibling of the client island: the answers reach the
           HTML, which is what the schema above has always claimed. */}

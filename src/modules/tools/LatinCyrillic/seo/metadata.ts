@@ -46,7 +46,7 @@ const COPY = {
     // language keeps the clicks that convert and loses only the wrong ones.
     title: "Uzbek Latin-Cyrillic Converter",
     description:
-      "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports Word, PDF and TXT files. Free, no account, and your text never leaves the browser.",
+      "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports Word, PDF and TXT files. Free, no account, and the conversion runs in your browser.",
     social:
       "Convert Uzbek text between the Latin and Cyrillic alphabets. Free, and it runs in your browser.",
     ogLocale: "en_US"

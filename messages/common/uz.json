@@ -184,7 +184,7 @@
       },
       "data": {
         "title": "Matningiz qayerda qayta ishlanadi",
-        "body": "Matn o'giruvchi, QR generator, parol generator, hash, Base64, rang va boshqa vositalar butunlay sizning brauzeringizda ishlaydi — kiritgan matningiz, fayllaringiz va parollaringiz serverga yuborilmaydi va saqlanmaydi. Kengaytmadagi o'girish mantig'i tarmoqqa umuman murojaat qilmaydi."
+        "body": "QR generator, parol generator, hash, Base64, JWT, hujjat va rezyume vositalari va boshqalar butunlay sizning brauzeringizda ishlaydi — kiritgan matningiz, fayllaringiz va parollaringiz serverga yuborilmaydi va saqlanmaydi. Bitta istisno — lotin-kirill va yangi alifbo o'giruvchisi: u ham brauzerda ishlaydi, lekin uning kiritish va natija maydonlari quyida aytilgan sessiya yozuvlariga tushadi. Kengaytmadagi o'girish mantig'i tarmoqqa umuman murojaat qilmaydi."
       },
       "ipException": {
         "title": "Bitta istisno: IP ma'lumot vositasi",
@@ -200,7 +200,7 @@
       },
       "thirdParty": {
         "title": "Uchinchi tomon xizmatlari",
-        "body": "Kengaytmada hech qanday analitika yoki kuzatuv kodi yo'q. Saytda tashriflar statistikasi uchun Google Analytics va Yandex Metrica, sahifadan qanday foydalanilganini (bosishlar, scroll) ko'rish uchun Microsoft Clarity ishlatiladi. Vositalarga kiritgan, yuklagan yoki ular yaratgan mazmun yozuvdan oldin brauzeringizning o'zida yashiriladi va hech qaysi xizmatga yuborilmaydi."
+        "body": "Kengaytmada hech qanday analitika yoki kuzatuv kodi yo'q. Saytda tashriflar statistikasi uchun Google Analytics, sahifadan qanday foydalanilganini (bosishlar, scroll, sessiya yozuvlari) ko'rish uchun Yandex Metrica va Microsoft Clarity ishlatiladi. Sessiya yozuvlarida maydonlarga kiritilgan matn yashiriladi — faqat lotin-kirill va yangi alifbo o'giruvchisining kiritish va natija maydonlari bundan mustasno: ular Yandex Metrica'ga yoziladi, shunda noto'g'ri o'girilgan so'zlarni topib, tuzatamiz. Boshqa vositalarning natijalari ham yozuvdan oldin brauzerning o'zida yashiriladi."
       },
       "children": {
         "title": "Bolalar",

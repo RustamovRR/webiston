@@ -2,7 +2,7 @@
   "NewAlphabetPage": {
     "ToolHeader": {
       "title": "Yangi Alifboga O'girish",
-      "description": "Matnni 2027-yilgi yangi o'zbek alifbosiga o'giring: sh → ş, ch → ç, g' → ğ, o' → ö — yoki undan eski lotin va kirillga qaytaring. Кирилл ёзувидаги матнни ҳам янги алифбога ўгиради. Matn brauzeringizdan chiqmaydi."
+      "description": "Matnni 2027-yilgi yangi o'zbek alifbosiga o'giring: sh → ş, ch → ç, g' → ğ, o' → ö — yoki undan eski lotin va kirillga qaytaring. Кирилл ёзувидаги матнни ҳам янги алифбога ўгиради. O'girish brauzeringizda bajariladi."
     },
     "letters": {
       "kicker": "O'RQ-1184-SON QONUN",

@@ -132,7 +132,9 @@ export function ResumeSheet({ data }: { data: ResumeData }) {
             belongs to the template, not the sheet. Klassik keeps it here. */}
         <div
           id="resume-sheet"
+          data-clarity-mask="True"
           className={cn(
+            "ym-hide-content",
             // NO `overflow-hidden`. It was added to clip Zamonaviy's sidebar to
             // the rounded corner and it silently CUT the document instead: a
             // long summary simply vanished below the fold while the printout

@@ -2,7 +2,7 @@
   "LatinCyrillicPage": {
     "ToolHeader": {
       "title": "Lotin-Kirill O'giruvchi",
-      "description": "O'zbek matnini lotinchadan kirillchaga va aksincha, shuningdek yangi alifboga (ş, ç, ğ, ö) o'giring. Matn brauzeringizdan chiqmaydi."
+      "description": "O'zbek matnini lotinchadan kirillchaga va aksincha, shuningdek yangi alifboga (ş, ç, ğ, ö) o'giring. O'girish brauzeringizda bajariladi."
     },
     "clear": "Tozalash",
     "swapDirection": "Yo'nalishni almashtirish",
@@ -111,7 +111,7 @@
         },
         "privacy": {
           "question": "Matnim qayerga boradi?",
-          "answer": "Hech qayerga. Butun o'girish brauzeringizda bajariladi — matn ham, yuklangan fayl ham serverga jo'natilmaydi."
+          "answer": "O'girish brauzeringizda bajariladi — matn ham, yuklangan fayl ham bizning serverimizga yuborilmaydi. Biroq noto'g'ri o'girilgan so'zlarni topish uchun Yandex Metrica shu sahifadagi kiritish va natija maydonlarini sessiya yozuvlarida yozib oladi. Shaxsiy yoki maxfiy matnni bu yerga qo'ymang. Batafsil — maxfiylik siyosatida."
         },
         "difference": {
           "question": "Nega ba'zi so'zlar o'girilmay qoladi?",

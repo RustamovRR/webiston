@@ -547,7 +547,13 @@ export default async function RootLayout({
 
         {!isDevelopment && YM_ID && (
           <>
-            {/* Yandex Metrica */}
+            {/* Yandex Metrica. `webvisor:true` with "Record all fields" OFF in
+                the counter (wv_forms: 0): only fields marked `ym-record-keys`
+                are recorded — the Latin-Cyrillic converter's, where seeing the
+                text is how a wrong conversion gets found (owner's decision,
+                2026-10-26). Every other tool's fields and results stay out of
+                it (`DualTextPanel`, `PrivateContent`). Kept out of the inline
+                script below: a comment in there ships in every page's HTML. */}
             <Script
               id="ym-script"
               strategy="lazyOnload"
@@ -564,11 +570,7 @@ export default async function RootLayout({
                       clickmap:true,
                       trackLinks:true,
                       accurateTrackBounce:true,
-                      // Off: session replay is Clarity's job now (below).
-                      // Webvisor recorded form-field contents on this
-                      // counter (wv_forms: 1) — the text people typed into
-                      // tools that promise it never leaves the browser.
-                      webvisor:false
+                      webvisor:true
                     });
                   }
                 `
@@ -589,11 +591,12 @@ export default async function RootLayout({
           </>
         )}
         {!isDevelopment && CLARITY_ID && (
-          // Microsoft Clarity — session replay, heatmaps, rage/dead clicks.
-          // Free with no session cap. Tool islands are masked in the browser
-          // before anything is sent (`PrivateContent`); inputs and textareas
-          // Clarity masks on its own. Same lazy, production-host-only loading
-          // as the two counters above.
+          // Microsoft Clarity — heatmaps, rage/dead clicks, session replay.
+          // Free with no session cap. It masks every input and textarea on its
+          // own (no setting changes that); results rendered as text are
+          // masked where they hold a visitor's data (`DualTextPanel`,
+          // `PrivateContent`). Same lazy, production-host-only loading as the
+          // two counters above.
           <Script
             id="clarity-script"
             strategy="lazyOnload"

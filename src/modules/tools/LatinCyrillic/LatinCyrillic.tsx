@@ -243,6 +243,10 @@ export function LatinCyrillicPage({
         hint={t("file.accepts")}
       >
         <DualTextPanel
+          // The one tool whose text Session Replay may see: the owner reads
+          // recordings to find words the engine converts wrongly. Disclosed
+          // in this tool's FAQ and in the privacy policy.
+          replayVisible
           sourceText={sourceText}
           convertedText={convertedText}
           sourcePlaceholder={

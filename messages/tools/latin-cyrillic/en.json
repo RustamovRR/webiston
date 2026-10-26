@@ -2,7 +2,7 @@
   "LatinCyrillicPage": {
     "ToolHeader": {
       "title": "Latin-Cyrillic Converter",
-      "description": "Convert Uzbek text between the Latin and Cyrillic alphabets, or into the new alphabet (ş, ç, ğ, ö). Your text never leaves the browser."
+      "description": "Convert Uzbek text between the Latin and Cyrillic alphabets, or into the new alphabet (ş, ç, ğ, ö). The conversion runs in your browser."
     },
     "clear": "Clear",
     "swapDirection": "Swap direction",
@@ -111,7 +111,7 @@
         },
         "privacy": {
           "question": "Where does my text go?",
-          "answer": "Nowhere. The whole conversion runs in your browser — neither the text you type nor the file you upload is sent to a server."
+          "answer": "The conversion runs in your browser — neither the text nor an uploaded file is sent to our server. However, to find words the converter gets wrong, Yandex Metrica records this page's input and result fields in its session recordings. Do not paste personal or confidential text here. Details are in the privacy policy."
         },
         "difference": {
           "question": "Why are some words left unconverted?",

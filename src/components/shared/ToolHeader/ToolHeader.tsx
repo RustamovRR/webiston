@@ -16,11 +16,8 @@ export function ToolHeader({
 }: ToolHeaderProps) {
   const t = useTranslations("Common")
 
-  // Unmasked: the tool island around it is hidden from session replay
-  // (`PrivateContent`), and this is the one part of it that is only ever our
-  // own copy — keeping it readable is what tells a recording which tool it is.
   return (
-    <div className="mb-6 sm:mb-8" data-clarity-unmask="true">
+    <div className="mb-6 sm:mb-8">
       <div className="mb-3 sm:mb-4">
         <Button variant="ghost" size="sm" asChild>
           <Link

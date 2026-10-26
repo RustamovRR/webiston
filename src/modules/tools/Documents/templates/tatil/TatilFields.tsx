@@ -178,7 +178,11 @@ export function TatilFields({
         {/* The computed end, in words — live, so changing the start date or
             the length shows its effect before the visitor reaches the paper.
             `aria-live` because it changes in response to input elsewhere. */}
-        <p className="text-muted-foreground text-xs" aria-live="polite">
+        <p
+          data-clarity-mask="True"
+          className="text-muted-foreground text-xs ym-hide-content"
+          aria-live="polite"
+        >
           {/* An unannounced hayit can only move the end LATER, so when one
               may be missing the date is a lower bound — said as "taxminiy",
               never stated as the fact the paper itself declines to print. */}

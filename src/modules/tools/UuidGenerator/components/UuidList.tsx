@@ -43,7 +43,10 @@ export function UuidList({ values }: UuidListProps) {
   if (values.length === 1) {
     return (
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-4">
-        <output className="break-all font-mono text-base text-foreground sm:text-lg">
+        <output
+          data-clarity-mask="True"
+          className="break-all font-mono text-base text-foreground sm:text-lg ym-hide-content"
+        >
           {values[0]}
         </output>
         <CopyButton
@@ -66,7 +69,10 @@ export function UuidList({ values }: UuidListProps) {
     // away with them — so changing your mind about the count means scrolling
     // back up past everything you just generated. A fixed box keeps the whole
     // tool on one screen no matter what number is in the field.
-    <div className="max-h-[26rem] overflow-y-auto overscroll-contain rounded-lg border border-border">
+    <div
+      data-clarity-mask="True"
+      className="max-h-[26rem] overflow-y-auto overscroll-contain rounded-lg border border-border ym-hide-content"
+    >
       <ol className="divide-y divide-border">
         {shown.map((value, index) => (
           <li

@@ -81,7 +81,10 @@ export function LocationMap({ latitude, longitude }: LocationMapProps) {
       className="flex flex-col"
       bodyClassName="flex flex-1 flex-col p-0"
     >
-      <div className="min-h-[18rem] w-full flex-1 overflow-hidden">
+      <div
+        data-clarity-mask="True"
+        className="min-h-[18rem] w-full flex-1 overflow-hidden ym-hide-content"
+      >
         {hasPoint ? (
           <MapContainer
             // Remounting on a new position is deliberate. `MapContainer`

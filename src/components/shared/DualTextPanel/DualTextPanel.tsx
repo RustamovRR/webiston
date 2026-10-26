@@ -54,7 +54,24 @@ interface DualTextPanelProps {
    * paste → read. Honoured on pointer devices only.
    */
   autoFocusSource?: boolean
+  /**
+   * Let session replay see the text. Off by default, and that default is the
+   * point: eight tools share this panel, and most of what goes through them is
+   * someone's data — a JWT, an HMAC key, a password, a JSON payload. Off, the
+   * source field is `ym-disable-keys` and the result is masked for Clarity and
+   * hidden from Yandex Session Replay, in the browser, before upload.
+   *
+   * On only where the owner chose to see the text to find wrong conversions:
+   * the Latin-Cyrillic converter (2026-10-26). The privacy policy says so.
+   */
+  replayVisible?: boolean
 }
+
+/** Attributes that keep a region out of Clarity and Yandex Session Replay. */
+const REPLAY_HIDDEN = {
+  "data-clarity-mask": "True",
+  className: "ym-hide-content"
+} as const
 
 export function DualTextPanel({
   sourceText,
@@ -80,7 +97,8 @@ export function DualTextPanel({
   customSourceContent,
   extraHeaderComponent,
   sourceEmptyState,
-  autoFocusSource = false
+  autoFocusSource = false,
+  replayVisible = false
 }: DualTextPanelProps) {
   const tCommon = useTranslations("Common")
 
@@ -184,7 +202,22 @@ export function DualTextPanel({
 
           {isSource ? (
             <div className="flex items-center gap-1">
-              {statusComponent}
+              {/* A tool's status slot can name the visitor's file. */}
+              {statusComponent && (
+                <span
+                  className={cn(
+                    "contents",
+                    !replayVisible && REPLAY_HIDDEN.className
+                  )}
+                  data-clarity-mask={
+                    replayVisible
+                      ? undefined
+                      : REPLAY_HIDDEN["data-clarity-mask"]
+                  }
+                >
+                  {statusComponent}
+                </span>
+              )}
               <AnimatePresence>
                 {showClearButton && sourceText.length > 0 && (
                   <motion.div
@@ -242,14 +275,29 @@ export function DualTextPanel({
         >
           {isSource ? (
             customSourceContent ? (
-              <div className="absolute inset-0">{customSourceContent}</div>
+              <div
+                className={cn(
+                  "absolute inset-0",
+                  !replayVisible && REPLAY_HIDDEN.className
+                )}
+                data-clarity-mask={
+                  replayVisible ? undefined : REPLAY_HIDDEN["data-clarity-mask"]
+                }
+              >
+                {customSourceContent}
+              </div>
             ) : (
               <>
                 <textarea
                   ref={sourceRef}
                   value={sourceText}
                   onChange={(e) => onSourceChange(e.target.value)}
-                  className="absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
+                  // Field contents reach Session Replay only when marked
+                  // `ym-record-keys` — "Record all fields" is off on the counter.
+                  className={cn(
+                    "absolute inset-0 h-full w-full resize-none border-0 bg-transparent p-4 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-0",
+                    replayVisible ? "ym-record-keys" : "ym-disable-keys"
+                  )}
                   placeholder={sourcePlaceholder}
                   disabled={isLoading}
                   aria-label={sourceLabel}
@@ -290,8 +338,12 @@ export function DualTextPanel({
                 "overflow-y-auto",
                 convertedText && !customTargetContent && !error && !isLoading
                   ? "max-h-[70vh] lg:max-h-[calc(100dvh-16rem)]"
-                  : "absolute inset-0"
+                  : "absolute inset-0",
+                !replayVisible && REPLAY_HIDDEN.className
               )}
+              data-clarity-mask={
+                replayVisible ? undefined : REPLAY_HIDDEN["data-clarity-mask"]
+              }
               role="region"
               aria-label={targetLabel}
               aria-live="polite"
@@ -326,7 +378,15 @@ export function DualTextPanel({
             isTerminal && "bg-muted/30"
           )}
         >
-          <div className="flex items-center">
+          <div
+            className={cn(
+              "flex items-center",
+              !replayVisible && REPLAY_HIDDEN.className
+            )}
+            data-clarity-mask={
+              replayVisible ? undefined : REPLAY_HIDDEN["data-clarity-mask"]
+            }
+          >
             {!isSource && targetFooterComponent}
           </div>
           <StatsDisplay stats={stats} />

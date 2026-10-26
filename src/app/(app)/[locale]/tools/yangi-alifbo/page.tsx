@@ -5,7 +5,6 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
-import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { NEW_ALPHABET_PATH } from "@/constants/ui"
 import { withLocale } from "@/lib/seo"
@@ -89,15 +88,13 @@ export default async function YangiAlifboPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
-      <PrivateContent>
-        <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
-          <Converter
-            page="yangi-alifbo"
-            title={tHeader("title")}
-            description={tHeader("description")}
-          />
-        </LocaleMessages>
-      </PrivateContent>
+      <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
+        <Converter
+          page="yangi-alifbo"
+          title={tHeader("title")}
+          description={tHeader("description")}
+        />
+      </LocaleMessages>
 
       {/* Same order as the Latin-Cyrillic page, so the two siblings read
           alike: the extension, related tools, then the reference table, then

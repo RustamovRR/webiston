@@ -49,7 +49,10 @@ export function TagInput({
   return (
     <div className="flex flex-col gap-2">
       {values.length > 0 && (
-        <ul className="flex flex-wrap gap-1.5">
+        <ul
+          data-clarity-mask="True"
+          className="flex flex-wrap gap-1.5 ym-hide-content"
+        >
           {values.map((value, index) => (
             <li key={value}>
               <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted px-2 py-1 text-foreground text-xs">

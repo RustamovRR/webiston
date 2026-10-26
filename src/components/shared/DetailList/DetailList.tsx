@@ -77,7 +77,9 @@ export function DetailList({
               {row.label}
             </dt>
             <dd
+              data-clarity-mask="True"
               className={cn(
+                "ym-hide-content",
                 "font-mono text-foreground text-sm",
                 ownLine
                   ? // `break-all`, because the values that reach this branch —

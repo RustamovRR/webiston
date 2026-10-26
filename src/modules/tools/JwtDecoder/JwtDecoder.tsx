@@ -91,7 +91,10 @@ const JwtDecoder = () => {
 
           {/* Second in the DOM, so on a phone the verdict lands immediately
               under the field instead of below three JSON blocks. */}
-          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch">
+          <div
+            data-clarity-mask="True"
+            className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-stretch ym-hide-content"
+          >
             <div className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto">
               {decoded ? (
                 <TokenSummary
@@ -118,7 +121,10 @@ const JwtDecoder = () => {
             </div>
           </div>
 
-          <div className="space-y-6 lg:col-start-1 lg:row-start-2">
+          <div
+            data-clarity-mask="True"
+            className="space-y-6 lg:col-start-1 lg:row-start-2 ym-hide-content"
+          >
             {(error || fileError) && (
               <p
                 role="alert"

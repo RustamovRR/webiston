@@ -6,9 +6,8 @@ import { Button } from "@webiston/ui/primitives/button"
 import { CodeHighlight } from "@webiston/ui/primitives/code-highlight"
 import { Download } from "lucide-react"
 import { useTranslations } from "next-intl"
-
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { ToolCard } from "@/components/shared/ToolCard"
-
 import { OUTPUT_FORMATS } from "../constants"
 import type { OutputFormat } from "../types"
 
@@ -83,11 +82,13 @@ export function OutputPanel({
           otherwise, and the whole point of this panel is that you scan it
           before pasting. `typescript` for the Next.js shape, `html` for the
           tags. */}
-      <CodeHighlight
-        code={code}
-        language={format === "next" ? "typescript" : "html"}
-        className="max-h-[26rem] rounded-lg border border-border bg-muted/40 text-xs"
-      />
+      <PrivateContent>
+        <CodeHighlight
+          code={code}
+          language={format === "next" ? "typescript" : "html"}
+          className="max-h-[26rem] rounded-lg border border-border bg-muted/40 text-xs"
+        />
+      </PrivateContent>
     </ToolCard>
   )
 }

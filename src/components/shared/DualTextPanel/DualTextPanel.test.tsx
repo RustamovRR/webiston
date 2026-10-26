@@ -99,4 +99,39 @@ describe("DualTextPanel", () => {
     // Assert
     expect(screen.getByText(common.Common.resultWillAppear)).toBeInTheDocument()
   })
+
+  /**
+   * Session replay. Eight tools share this panel and most of what goes through
+   * them is someone's data, so hidden is the default and only the converter
+   * opts out (`replayVisible`). The attributes ARE the behaviour here: Clarity
+   * and Yandex read them in the browser before recording anything.
+   */
+  describe("session replay", () => {
+    it("hides the source and the result by default", () => {
+      // Arrange / Act
+      renderPanel({ statusComponent: <span>hisobot.txt</span> })
+
+      // Assert
+      const source = screen.getByRole("textbox", { name: "Lotin matn" })
+      const result = screen.getByRole("region", { name: "Kirill natija" })
+      expect(source).toHaveClass("ym-disable-keys")
+      expect(result).toHaveAttribute("data-clarity-mask", "True")
+      expect(result).toHaveClass("ym-hide-content")
+      expect(
+        screen.getByText("hisobot.txt").closest("[data-clarity-mask]")
+      ).not.toBeNull()
+    })
+
+    it("lets the converter's text through when asked", () => {
+      // Arrange / Act
+      renderPanel({ replayVisible: true })
+
+      // Assert
+      const source = screen.getByRole("textbox", { name: "Lotin matn" })
+      const result = screen.getByRole("region", { name: "Kirill natija" })
+      expect(source).toHaveClass("ym-record-keys")
+      expect(result).not.toHaveAttribute("data-clarity-mask")
+      expect(result).not.toHaveClass("ym-hide-content")
+    })
+  })
 })

@@ -59,7 +59,7 @@ export const generateApplicationSchema = (locale: string) => ({
     "Ş, Ç, Ğ, Ö harflarini bir bosishda nusxalash",
     "Rumincha ș kabi o'xshash belgilarni to'g'ri harfga almashtirish",
     "Havola, elektron pochta, kod va mahsulot nomlarini o'zgarishsiz qoldirish",
-    "Matn brauzerdan chiqmaydi"
+    "O'girish brauzerda bajariladi"
   ],
   inLanguage: ["uz", "en", "ru"]
 })

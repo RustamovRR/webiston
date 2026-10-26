@@ -63,11 +63,12 @@ export function DeviceSelect({
       >
         <SelectTrigger
           aria-labelledby={labelId}
-          className="min-w-0 max-w-[22rem] flex-1"
+          data-clarity-mask="True"
+          className="min-w-0 max-w-[22rem] flex-1 ym-hide-content"
         >
           <SelectValue placeholder={t(`deviceLabel.${kind}`)} />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent data-clarity-mask="True" className="ym-hide-content">
           {devices.map((device, index) => (
             <SelectItem key={device.deviceId} value={device.deviceId}>
               {device.label || t(`unnamedDevice.${kind}`, { index: index + 1 })}
