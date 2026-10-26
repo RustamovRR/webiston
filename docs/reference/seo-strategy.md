@@ -165,7 +165,7 @@ Do not claim "client-side privacy" as the wedge — `toolbase.uz` and
 
 | Type | 2026 status | Do we emit it? |
 | ---- | ----------- | -------------- |
-| `BreadcrumbList` | **Live rich result** | Yes, all 17 tools. **Missing on 226 book chapters** — the cheapest win left |
+| `BreadcrumbList` | **Live rich result** | Yes, every tool route. **Missing on 226 book chapters** — the cheapest win left |
 | `Organization`, `WebSite` | Used for the knowledge panel / site name | Yes |
 | `TechArticle` / `Article` | Live | **No** — the entire book library has zero page-level schema |
 | `SoftwareApplication` / `WebApplication` | **No rich result without `aggregateRating`.** A pure semantic hint | Yes, 14 tools, correctly without ratings |
@@ -272,10 +272,10 @@ recommendation of a source.
 | "hreflang has no ranking effect, per Google's docs" | Overstated. `managing-multi-regional-sites` does say geotargeting "can improve your page rankings in the target country". The conclusion survives via the mechanism — no alternate to swap means no effect — but the absolutist sentence is wrong and easy to disprove |
 | "One bad hreflang discards the entire cluster" | Overstated. Google: "you can omit some languages on some pages; Google will still process the ones that point to each other" |
 | "Fabricated `AggregateRating` is live — urgent" | Stale. Removed 2026-07-29; `grep` confirms zero |
-| "`BreadcrumbList` is the schema we're missing" | Already on all 17 tools. True only for the **book chapters** |
+| "`BreadcrumbList` is the schema we're missing" | Already on every tool route. True only for the **book chapters** |
 | "Titles double as `\| Webiston \| Webiston`" | Measured: one suffix. Nested templates do not compound |
 | "`/api/og` breaks on Cyrillic" | No. Next 16.3 bundles `Geist-Regular.ttf` with 134 Cyrillic codepoints including `Ў Қ Ғ Ҳ` |
-| "21 tools" | **17 routed.** Four are parked behind `__` prefixes — not built, not linked, not in the sitemap |
+| "21 tools" | **17 routed** at the time. Four were parked behind `__` prefixes — not built, not linked, not in the sitemap; deleted 2026-08-12. 25 routes ship as of 2026-10-22 |
 | "IndexNow: 5 minutes between resubmissions" | **10 minutes.** Participants: Bing, Yandex, Seznam, Naver, Yep, Amazon. **Not Google** |
 | "Yandex site region is the highest-ROI unclaimed item" | Overstated. Yandex says region is "only one of the factors" and applies to location-dependent queries. `json formatter онлайн` is not one |
 | Vendor stats — "317% citation lift", "2.7× more likely cited with schema" | No sample, no control, recycled across sites. Excluded |

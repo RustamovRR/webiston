@@ -76,6 +76,48 @@ async function renderTool() {
 const panel = (name: RegExp) => screen.getByRole("region", { name })
 
 describe("the first answer", () => {
+  it("does not report a failure before there is an answer", () => {
+    // Arrange — a lookup that never settles, which is also what the server
+    // render looks like: no answer yet.
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise(() => {}))
+    )
+
+    // Act
+    render(
+      <NextIntlClientProvider locale="uz" messages={messages}>
+        <IpInfo />
+      </NextIntlClientProvider>
+    )
+
+    // Assert — pending rows are a dash, not "xizmat bermadi".
+    expect(
+      screen.queryByText(toolMessages.IpInfoPage.values.unavailable)
+    ).not.toBeInTheDocument()
+    expect(
+      within(panel(/^joylashuv$/i)).getAllByText("—").length
+    ).toBeGreaterThan(0)
+  })
+
+  it("still says so when the provider leaves a field out", async () => {
+    // Arrange — the fallback provider answers without the network layer.
+    respondWith = {
+      ok: true,
+      data: { ...ANSWER, asn: null, isp: null, org: null, domain: null }
+    }
+
+    // Act
+    await renderTool()
+
+    // Assert
+    expect(
+      within(panel(/^tarmoq$/i)).getAllByText(
+        toolMessages.IpInfoPage.values.unavailable
+      ).length
+    ).toBeGreaterThan(0)
+  })
+
   it("looks up the visitor's own address without them asking", async () => {
     // Arrange & Act
     await renderTool()

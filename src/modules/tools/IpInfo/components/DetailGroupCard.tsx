@@ -75,7 +75,16 @@ export function DetailGroupCard({
       }
       bodyClassName="p-0"
     >
-      <DetailList rows={rows} emptyLabel={tValues("unavailable")} />
+      {/* "xizmat bermadi" is a verdict on an ANSWER, so it waits for one.
+          Before the first lookup the placeholder rows are not missing, they
+          are pending — and this card is server-rendered, so the old label put
+          seventeen "service failed" lines into the HTML Google reads, as the
+          page's most repeated phrase. The neutral dash is the one `asText`
+          already uses for an empty value. */}
+      <DetailList
+        rows={rows}
+        emptyLabel={group ? tValues("unavailable") : "—"}
+      />
     </ToolCard>
   )
 }

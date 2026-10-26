@@ -1,62 +1,23 @@
-# Translation Files Structure
+# Translation files
 
-Bu papka loyihadagi barcha translation fayllarini o'z ichiga oladi. Fayllar code-splitting prinsipi asosida tashkil etilgan.
-
-## Struktura
+The full spec — locales, namespaces, how a page gets its strings, the
+glossary — is **`docs/reference/content-i18n.md`**. This file is only the map.
 
 ```
 messages/
-├── common/           # Umumiy komponentlar
-│   ├── uz.json      # O'zbek tili
-│   └── en.json      # Ingliz tili
-├── tools/           # Tool-specific translations
-│   ├── tools-page/  # Tools sahifasi
-│   ├── json-formatter/
-│   ├── url-encoder/
-│   ├── base64-converter/
-│   ├── jwt-decoder/
-│   ├── latin-cyrillic/
-│   ├── color-converter/
-│   ├── hash-generator/
-│   ├── uuid-generator/
-│   └── qr-generator/
-├── index.js         # Barcha fayllarni birlashtiruvchi
-└── README.md        # Bu fayl
+├── common/{uz,en,ru}.json          shared shell: HomePage, Header, Common, Footer, …
+├── tools/<folder>/{uz,en,ru}.json  one folder per tool, plus tools-page
+└── index.js                        merges them per locale (object spread)
 ```
 
-## Migration Status
+## Adding a tool's strings
 
-✅ **Completed:**
-
-- `common/` - HomePage, Header, Common, Filters
-- `tools/tools-page/` - ToolsPage, Tools, ToolCategories
-- `tools/json-formatter/` - JsonFormatterPage (to'liq)
-- `tools/url-encoder/` - UrlEncoderPage (to'liq)
-- `tools/base64-converter/` - Base64ConverterPage (to'liq)
-- `tools/jwt-decoder/` - JwtDecoderPage (to'liq)
-- `tools/latin-cyrillic/` - LatinCyrillicPage (to'liq)
-- `tools/color-converter/` - ColorConverterPage (to'liq)
-- `tools/hash-generator/` - HashGeneratorPage (to'liq)
-- `tools/uuid-generator/` - UuidGeneratorPage (to'liq)
-- `tools/qr-generator/` - QrGeneratorPage (to'liq)
-
-## Foydalanish
-
-Translation fayllar `index.js` orqali birlashtirilib, i18n sistemasiga uzatiladi:
-
-```javascript
-import translations from './messages/index.js'
-// translations.uz va translations.en mavjud
-```
-
-## Yangi Tool Qo'shish
-
-1. `tools/` papkasida yangi papka yarating
-2. `uz.json` va `en.json` fayllarini yarating
-3. `index.js` faylida import va merge qiling
-
-## Naming Convention
-
-- Papka nomlari: kebab-case (`json-formatter`)
-- Key nomlari: PascalCase (`JsonFormatterPage`)
-- Nested keys: camelCase (`inputPlaceholder`)
+1. Create `tools/<folder>/uz.json`, `en.json` and `ru.json`. The top-level key is
+   the namespace — `<Tool>Page` by convention (`QrGeneratorPage`), not the
+   folder name.
+2. Import all three in `index.js` and spread them into `uz`, `en` and `ru`.
+   A namespace two files share is overwritten silently — the later one wins.
+3. Name the namespace in the route's `CLIENT_NAMESPACES` (or `TOOL_NAMESPACE`)
+   for `<LocaleMessages>`.
+4. `pnpm i18n` — fails on a key missing from any locale, and on a namespace a
+   Client Component calls that no route provides.

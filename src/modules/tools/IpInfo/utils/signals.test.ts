@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { IpLocation } from "../types"
 import {
@@ -68,6 +68,10 @@ describe("formatOffsetMinutes", () => {
 })
 
 describe("compareSignals", () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it("reports a match when the browser agrees with the address", () => {
     // Arrange / Act
     const signals = compareSignals(TASHKENT, HOME)
@@ -95,7 +99,11 @@ describe("compareSignals", () => {
   })
 
   it("does not cry wolf when two zone names share an offset", () => {
-    // Arrange — Berlin and Paris are both UTC+2 in summer.
+    // Arrange — Berlin and Paris are both UTC+2 in summer. The clock is pinned
+    // to a summer day because the address's offset is derived from its zone
+    // AT THE CURRENT DATE: unpinned, this failed every year from the end of
+    // October to the end of March, when Paris is +01:00.
+    vi.useFakeTimers({ now: new Date("2026-07-15T12:00:00Z") })
     const paris: IpLocation = {
       ...TASHKENT,
       countryCode: "FR",

@@ -74,23 +74,11 @@
 
 ## Standalone items (not part of any initiative)
 
-- `[ ]` **Chrome Web Store submission — three blockers, in this order.**
-  The extension builds, typechecks and now matches the site's design system;
-  what is left is the store, not the code.
-  1. **`_locales/{uz,en,ru}/messages.json`.** Every string in the popup, the
-     popover and the context menu is a hardcoded Uzbek literal today (~25 of
-     them). Use Chrome's NATIVE i18n (`browser.i18n.getMessage`, `default_locale`
-     in the manifest, `__MSG_name__` placeholders) rather than next-intl — it is
-     the only mechanism that also localises the STORE LISTING name and
-     description per viewer, which is the larger half of the benefit. Cannot
-     share `messages/**` with the site: different format, and `apps/*` may not
-     import `src/`.
-  2. **A privacy-policy page.** `/maxfiylik` does not exist; the store requires
-     a URL. The honest content is short — `@webiston/transliteration` is pure TS
-     with zero network calls, and `storage` holds only theme + the quick-convert
-     toggle — but it has to be written and shipped in all three locales.
-  3. **Listing assets.** Icon 128 exists; **1–5 screenshots at 1280×800 or
-     640×400 do not**, and they must be captured from a real browser.
+- `[x]` **Store submission — done.** Live on the Chrome Web Store and
+  addons.mozilla.org (`src/constants/extension.ts` `EXTENSION_STORES`). All
+  three former blockers shipped: native `_locales/{uz,en,ru}/messages.json`
+  (parity held by `tests/locales.test.ts`), `/privacy-policy`, and the
+  listing screenshots in `store-assets/`.
 - `[ ]` **`host_permissions: ["<all_urls>"]` is probably removable**
   (`apps/extensions/latin-cyrillic/wxt.config.ts`). `background.ts` uses
   `contextMenus`, `tabs.query` and `tabs.sendMessage`; content-script injection
@@ -106,15 +94,27 @@
   `ConverterFaq`, plus an FAQ entry (which lands in the existing `FAQPage`
   schema for free). Store URL goes in `src/constants/`, not inline.
 
-- `[ ]` **Converter: hydration mismatch for a visitor with a pinned switch.**
-  `LatinCyrillic/stores/transliterationStore.ts` persists with no
-  `skipHydration`, so localStorage hydrates synchronously at module load: the
-  client's first render uses the stored choice, the server rendered the route
-  default — checked radio and panel labels differ, React recovers with a
-  client re-render. Pre-existing (a pinned "cyrillic-to-latin" did it too),
-  now on two routes since `/tools/yangi-alifbo` shares the converter. Fix:
-  `skipHydration` + `persist.rehydrate()` in an effect, or mount-gate the
-  stored choice. Found in review 2026-10-22.
+- `[x]` **Converter: NO hydration mismatch for a pinned switch — verified
+  2026-10-22, do not "fix" it.** A review claimed the persisted
+  `transliterationStore` makes the first client render differ from the
+  server's. It does not: zustand 5.0.14's `useStore` passes
+  `api.getInitialState()` as `useSyncExternalStore`'s server snapshot, and
+  `persist` sets that to the pre-hydration defaults
+  (`node_modules/zustand/esm/react.mjs:9`, `middleware.mjs:378`), so hydration
+  renders the route default and the stored choice arrives in the next render.
+  Checked in the browser with "Lotin" pinned (server labels "Lotin matn /
+  Kirill natija", client "Kirill matn / Lotin natija"): no hydration error.
+  `skipHydration` would add a step and change nothing.
+- `[~]` **`/tools/ip-info` fell out of Google on 2026-10-03 — fix shipped
+  to dev 2026-10-26, recovery unconfirmed.** 982 impressions (20.09–02.10) →
+  2 (04.10–16.10); it ranked 1.2 for "ip manzil aniqlash". Still "Submitted
+  and indexed" (URL Inspection, crawl 2026-10-21), no deploy near the date,
+  rest of the site +20%. The drop sits inside Google's September 2026 spam
+  update (24.09–08.10). Only page-side signal found: the server HTML said
+  "xizmat bermadi" 17× per locale — every placeholder row of
+  `DetailGroupCard` before the first answer — now a dash. Recheck daily
+  impressions ~2 weeks after the deploy reaches main; if still ~0, the cause
+  is not on the page.
 - `[ ]` **Extension: no new-alphabet target.** The popup, popover and context
   menu read ş/ç/ğ/ö (via `toCyrillic`) but cannot convert INTO the 2027
   alphabet; the extension promo on `/tools/latin-cyrillic` says "stop coming

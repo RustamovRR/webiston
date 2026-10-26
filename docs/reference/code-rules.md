@@ -155,9 +155,10 @@ Every tool in `src/modules/tools/{ToolName}/`:
 
 A tool is reachable only if it has a route in
 `src/app/(app)/[locale]/tools/<slug>/page.tsx`. **A route folder prefixed with
-`_` is a Next.js private folder and is NOT routed** — four tools are parked this
-way today (see `docs/roadmap/backlog.md`). Do not "fix" them by renaming
-without asking; the parking may be deliberate.
+`_` is a Next.js private folder and is NOT routed.** None is parked today — the
+four that were got deleted on the owner's instruction on 2026-08-12 (see
+`docs/roadmap/backlog.md`). If a tool is ever parked this way again, do not
+"fix" it by renaming without asking; the parking may be deliberate.
 
 ---
 
@@ -229,10 +230,11 @@ Full spec: **`design-system.md`**. The hard rules:
 
 - **`uz`, `en`, `ru`.** One source of truth: `LOCALES` in
   `src/i18n/locales.ts`. Adding a locale is adding it there and shipping its
-  `messages/**` bundles — plus the **two places that cannot derive it**:
+  `messages/**` bundles — plus the **three places that cannot derive it**:
   `src/proxy.ts`'s `matcher` alternation (Next parses `config` statically, so a
-  template literal fails the build; `src/proxy.test.ts` fails when it drifts)
-  and `next-sitemap.config.js`.
+  template literal fails the build; `src/proxy.test.ts` fails when it drifts),
+  `next-sitemap.config.js` and `scripts/build-search-index.js` (plain Node; no
+  test catches either).
 - `/books/**` is **Uzbek-only by design** and lives outside `[locale]`. 226
   chapters translated into Uzbek; a `/ru/books` would be Uzbek prose under a
   Russian URL. `inLanguage: "uz"` there is correct, not an oversight.

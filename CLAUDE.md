@@ -57,19 +57,19 @@ polish and perceived craft are part of the spec, not a nice-to-have.
 | ----------------- | ---------------------------- | ------------------------------------------ |
 | Web app           | `src/` (Next.js, App Router) | books + tools + search                     |
 | Books             | `content/` (226 `.mdx`)      | 3 books, translated into Uzbek             |
-| Tools             | `src/modules/tools/` (21)    | client-side developer utilities            |
+| Tools             | `src/modules/tools/` (22)    | 25 routed client-side tools                |
 | Shared UI         | `packages/ui`                | `@webiston/ui` — Shadcn/Radix primitives   |
 | Transliteration   | `packages/transliteration`   | `@webiston/transliteration` — pure TS      |
 | Chrome extension  | `apps/extensions/latin-cyrillic` | WXT, Latin↔Cyrillic converter        |
 
 **Locales: `uz` (default, served unprefixed) + `en` + `ru`.** One source of
 truth: **`src/i18n/locales.ts`** (`LOCALES`). Everything else derives from it —
-`routing.ts`, the switcher, `og:locale`, hreflang, the i18n gate. The two places
+`routing.ts`, the switcher, `og:locale`, hreflang, the i18n gate. The three places
 that cannot derive it are `src/proxy.ts`'s `matcher` (Next parses `config`
-statically, so the alternation is typed by hand and guarded by `proxy.test.ts`)
-and `next-sitemap.config.js`.
+statically, so the alternation is typed by hand and guarded by `proxy.test.ts`),
+`next-sitemap.config.js` and `scripts/build-search-index.js`.
 
-`/ru` covers the shell and the 17 tools only — **`/books/**` is Uzbek-only by
+`/ru` covers the shell and every tool — **`/books/**` is Uzbek-only by
 design** and sits outside the `[locale]` segment.
 
 **Stack:** Next.js 16 (App Router, React Compiler ON) · React 19.2 ·
