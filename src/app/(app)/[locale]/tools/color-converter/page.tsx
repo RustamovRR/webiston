@@ -5,6 +5,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -88,9 +89,11 @@ export default async function ColorConverterPage({
           `getLocale()`, which returns "uz" on /en/tools/* — measured here, the
           English page rendered the Uzbek H1 under an English <title>. See the
           note on the prop. */}
-      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <ColorConverter />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+          <ColorConverter />
+        </LocaleMessages>
+      </PrivateContent>
       {/* Server Components, siblings of the client island: static prose
           costs no client JavaScript, and the FAQ answers reach the HTML. */}
       <FormatReference locale={locale} />

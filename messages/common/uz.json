@@ -200,7 +200,7 @@
       },
       "thirdParty": {
         "title": "Uchinchi tomon xizmatlari",
-        "body": "Kengaytmada hech qanday analitika yoki kuzatuv kodi yo'q. Saytda tashriflar statistikasi uchun Google Analytics va Yandex Metrica ishlatiladi — ular sahifa ko'rishlarini o'lchaydi, vositalarga kiritgan mazmuningizni emas."
+        "body": "Kengaytmada hech qanday analitika yoki kuzatuv kodi yo'q. Saytda tashriflar statistikasi uchun Google Analytics va Yandex Metrica, sahifadan qanday foydalanilganini (bosishlar, scroll) ko'rish uchun Microsoft Clarity ishlatiladi. Vositalarga kiritgan, yuklagan yoki ular yaratgan mazmun yozuvdan oldin brauzeringizning o'zida yashiriladi va hech qaysi xizmatga yuborilmaydi."
       },
       "children": {
         "title": "Bolalar",

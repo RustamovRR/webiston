@@ -440,6 +440,7 @@ export default async function RootLayout({
 }>) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
   const YM_ID = process.env.NEXT_PUBLIC_YM_ID
+  const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID
   const isDevelopment = process.env.NODE_ENV === "development"
 
   /**
@@ -563,7 +564,11 @@ export default async function RootLayout({
                       clickmap:true,
                       trackLinks:true,
                       accurateTrackBounce:true,
-                      webvisor:true
+                      // Off: session replay is Clarity's job now (below).
+                      // Webvisor recorded form-field contents on this
+                      // counter (wv_forms: 1) — the text people typed into
+                      // tools that promise it never leaves the browser.
+                      webvisor:false
                     });
                   }
                 `
@@ -582,6 +587,27 @@ export default async function RootLayout({
               </div>
             </noscript>
           </>
+        )}
+        {!isDevelopment && CLARITY_ID && (
+          // Microsoft Clarity — session replay, heatmaps, rage/dead clicks.
+          // Free with no session cap. Tool islands are masked in the browser
+          // before anything is sent (`PrivateContent`); inputs and textareas
+          // Clarity masks on its own. Same lazy, production-host-only loading
+          // as the two counters above.
+          <Script
+            id="clarity-script"
+            strategy="lazyOnload"
+            dangerouslySetInnerHTML={{
+              __html: `
+                if (${onProductionHost}) {
+                  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                  })(window, document, "clarity", "script", ${JSON.stringify(CLARITY_ID)});
+                }
+              `
+            }}
+          />
         )}
       </body>
     </html>

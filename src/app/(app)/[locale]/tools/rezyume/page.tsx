@@ -5,6 +5,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
@@ -65,9 +66,11 @@ export default async function RezyumePage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
-      <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
-        <ResumeBuilder />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
+          <ResumeBuilder />
+        </LocaleMessages>
+      </PrivateContent>
 
       {/* Below the tool, and a SERVER component: this is the prose Google
           reads and the questions the audience actually types. It needs no

@@ -6,6 +6,7 @@ import type { Metadata } from "next"
 import { setRequestLocale } from "next-intl/server"
 import { Faq } from "@/components/shared/Faq"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { faqPageSchema, withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -80,9 +81,11 @@ export default async function JsonFormatterPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/* and /ru/tools/*. */}
-      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <JsonFormatter />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+          <JsonFormatter />
+        </LocaleMessages>
+      </PrivateContent>
 
       {/* Server-rendered sibling of the client island: the answers reach the
           HTML, which is what the schema above has always claimed. */}

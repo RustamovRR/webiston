@@ -5,6 +5,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
@@ -77,9 +78,11 @@ export default async function NumberToWordsPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
-      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <NumberToWords />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+          <NumberToWords />
+        </LocaleMessages>
+      </PrivateContent>
       {/* Server Component, a sibling of the client island. */}
       <NumberToWordsFaq locale={locale} />
       <RelatedTools locale={locale} href="/tools/number-to-words" />

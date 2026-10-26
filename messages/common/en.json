@@ -200,7 +200,7 @@
       },
       "thirdParty": {
         "title": "Third-party services",
-        "body": "The extension contains no analytics and no tracking code. The website uses Google Analytics and Yandex Metrica to count visits — they measure page views, not what you type into a tool."
+        "body": "The extension contains no analytics and no tracking code. The website uses Google Analytics and Yandex Metrica to count visits, and Microsoft Clarity to see how pages are used (clicks, scrolling). What you type into, upload to or generate with a tool is masked in your browser before anything is recorded, and is never sent to any of these services."
       },
       "children": {
         "title": "Children",

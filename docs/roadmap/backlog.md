@@ -127,6 +127,18 @@
   10-24:** Word/file queries 96 clicks / 2,394 impr / 4.0% CTR / pos 6.3;
   "dastur" queries 69 / 801 / 8.6% / 6.1. Re-measure ~2026-11-21 with
   `pnpm gsc 28 --find "word|ворд|fayl|файл|pdf|dastur|дастур"`.
+- `[~]` **Session replay: Yandex Webvisor → Microsoft Clarity — code done
+  2026-10-26, waiting on the Clarity project ID.** Webvisor recorded
+  form-field CONTENTS on this counter (`wv_forms: 1`, Management API) —
+  text typed into tools that promise it never leaves the browser, and the
+  privacy policy said the opposite. Now: `webvisor:false` in the Metrica
+  init; Clarity loads like GA/YM (lazyOnload, production host only) when
+  `NEXT_PUBLIC_CLARITY_ID` is set; every tool island is wrapped in
+  `PrivateContent` (`data-clarity-mask`, masked in the browser before
+  upload; held by `PrivateContent.test.ts`), `ToolHeader` opts back out;
+  privacy policy names Clarity in all three locales. Owner: turn off
+  Session Replay / "Record all fields" in Metrica until this deploys, add
+  the ID to `.env` and Vercel. Then measure LCP/INP with and without it.
 - `[ ]` **Recheck "yangi alifbo klaviatura" demand ~2026-10-30** —
   19 impr at 21% CTR in the first week. If it grows, add one-tap ş/ç/ğ/ö
   buttons to the converter. `pnpm gsc 7 --find "klaviatura|клавиатура"`.

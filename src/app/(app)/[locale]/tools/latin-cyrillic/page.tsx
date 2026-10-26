@@ -5,6 +5,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports all 21 tool
@@ -99,13 +100,15 @@ export default async function LatinCyrillicPage({
       {/* The client island is only the converter. The alphabet table and the
           FAQ are Server Components rendered as siblings, so the static two
           thirds of this page cost no JavaScript. */}
-      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <LatinCyrillic
-          page="latin-cyrillic"
-          title={tHeader("title")}
-          description={tHeader("description")}
-        />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+          <LatinCyrillic
+            page="latin-cyrillic"
+            title={tHeader("title")}
+            description={tHeader("description")}
+          />
+        </LocaleMessages>
+      </PrivateContent>
 
       <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">
         {/* Between the tool and the reference material: the person who has

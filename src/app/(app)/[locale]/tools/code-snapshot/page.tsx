@@ -12,6 +12,7 @@ import {
 import { setRequestLocale } from "next-intl/server"
 import { Faq } from "@/components/shared/Faq"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { faqPageSchema, withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
@@ -128,9 +129,11 @@ export default async function CodeSnapshotPage({
         }}
       />
 
-      <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
-        <CodeSnapshot fontFamilies={FONT_FAMILIES} />
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={[TOOL_NAMESPACE, "Common"]}>
+          <CodeSnapshot fontFamilies={FONT_FAMILIES} />
+        </LocaleMessages>
+      </PrivateContent>
 
       <Faq locale={locale} items={faqItems} />
       <RelatedTools locale={locale} href="/tools/code-snapshot" />

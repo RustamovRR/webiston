@@ -5,6 +5,7 @@
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { LocaleMessages } from "@/components/shared/LocaleMessages/LocaleMessages"
+import { PrivateContent } from "@/components/shared/PrivateContent"
 import { RelatedTools } from "@/components/shared/RelatedTools"
 import { withLocale } from "@/lib/seo"
 // Deep import, NOT `@/modules/tools`. That barrel re-exports every tool module
@@ -72,11 +73,13 @@ export default async function ArizaPage({
 
       {/* `locale` is load-bearing: without it LocaleMessages falls back to
           `getLocale()`, which returns "uz" on /en/tools/*. */}
-      <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
-        <ArizaTool>
-          <TemplateSwitcher locale={locale} current="ariza" />
-        </ArizaTool>
-      </LocaleMessages>
+      <PrivateContent>
+        <LocaleMessages locale={locale} namespaces={CLIENT_NAMESPACES}>
+          <ArizaTool>
+            <TemplateSwitcher locale={locale} current="ariza" />
+          </ArizaTool>
+        </LocaleMessages>
+      </PrivateContent>
       <DocumentFaq
         locale={locale}
         namespace="ArizaPage"

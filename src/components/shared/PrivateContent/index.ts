@@ -1,0 +1,1 @@
+export { PrivateContent } from "./PrivateContent"

@@ -24,7 +24,7 @@ import { withLocale } from "@/lib/seo"
  * wrong. A date that has to be retyped in three places is a date that will
  * disagree with itself.
  */
-const LAST_UPDATED = "2026-08-10"
+const LAST_UPDATED = "2026-10-26"
 
 /** Rendered in this order; every key exists in all three bundles. */
 const SECTIONS = [
