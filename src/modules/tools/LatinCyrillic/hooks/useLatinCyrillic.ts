@@ -18,17 +18,16 @@
 
 import {
   detectUzbekScript,
+  EXPECTED_SOURCE,
   findPreservedTerms,
-  toUzbekScript,
-  type UzbekScript
+  isScriptPreference,
+  resolveTarget,
+  swapTarget,
+  toUzbekScript
 } from "@webiston/transliteration"
 import { useDebounceValue } from "usehooks-ts"
 
-import {
-  type ConverterPage,
-  DEFAULT_PREFERENCE,
-  SCRIPT_PREFERENCES
-} from "../constants"
+import { type ConverterPage, DEFAULT_PREFERENCE } from "../constants"
 import { useLatinCyrillicDraftStore, useTransliterationStore } from "../stores"
 import type { ScriptPreference } from "../types"
 
@@ -41,40 +40,12 @@ import type { ScriptPreference } from "../types"
  */
 const DEBOUNCE_DELAY = 90
 
-/**
- * What an empty source panel should be labelled with: the alphabet a person
- * converting INTO the target is most likely to type. "→ Lotin" waits for
- * Cyrillic; the other two wait for the 1995 Latin everybody types today.
- */
-const EXPECTED_SOURCE: Record<UzbekScript, UzbekScript> = {
-  cyrillic: "latin",
-  latin: "cyrillic",
-  "latin-2027": "latin"
-}
-
-/**
- * "Auto" is the Latin ↔ Cyrillic flip, by the rule the package's
- * `resolveDirection` uses for the extension: Cyrillic-dominant text goes to
- * the 1995 Latin, everything else to Cyrillic. The new alphabet is never a
- * guess — until the spelling rules and the transition programme are out, it
- * is something a person picks, not something the page decides for them.
- */
-function resolveTarget(
-  preference: ScriptPreference,
-  sourceScript: UzbekScript
-): UzbekScript {
-  if (preference !== "auto") return preference
-  return sourceScript === "cyrillic" ? "latin" : "cyrillic"
-}
-
-/**
- * Only today's options are trusted from storage. zustand runs `migrate` on a
- * version MISMATCH only, so a v4 record holding a value this build does not
- * know — a later deploy's new option, then a rollback — or a `null` map would
- * reach `toUzbekScript` as-is and throw on the first keystroke of every visit.
- */
-const isScriptPreference = (value: unknown): value is ScriptPreference =>
-  SCRIPT_PREFERENCES.some((option) => option === value)
+// `resolveTarget`, `EXPECTED_SOURCE`, `swapTarget` and `isScriptPreference`
+// come from the package, shared with the extension. The last one matters
+// here because zustand runs `migrate` on a version MISMATCH only: a v4 record
+// holding a value this build does not know — a later deploy's new option,
+// then a rollback — or a `null` map would otherwise reach `toUzbekScript`
+// as-is and throw on the first keystroke of every visit.
 
 export function useLatinCyrillic(page: ConverterPage) {
   const preference = useTransliterationStore((s) => {
@@ -125,9 +96,7 @@ export function useLatinCyrillic(page: ConverterPage) {
    */
   const swap = () => {
     if (!convertedText) return
-    setPreference(
-      detectedScript === target ? EXPECTED_SOURCE[target] : detectedScript
-    )
+    setPreference(swapTarget(detectedScript, target))
     setSourceText(convertedText)
   }
 

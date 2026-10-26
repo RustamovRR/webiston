@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Латиница и кириллица — Webiston"
+    "message": "Латиница, кириллица и новый алфавит"
   },
   "extDescription": {
-    "message": "Переводите узбекский текст с латиницы на кириллицу и обратно. Текст не покидает браузер."
+    "message": "Переводите узбекский текст между латиницей, кириллицей и новым алфавитом 2027 года. Текст не покидает браузер."
   },
   "cmdConvert": {
     "message": "Преобразовать выделенный текст"
@@ -15,10 +15,13 @@
     "message": "Авто"
   },
   "dirToCyrillic": {
-    "message": "→ Кириллица"
+    "message": "Кирилл"
   },
   "dirToLatin": {
-    "message": "→ Латиница"
+    "message": "Latin"
+  },
+  "dirToLatin2027": {
+    "message": "Latin 2027"
   },
   "themeLight": {
     "message": "Светлая тема"
@@ -38,11 +41,17 @@
   "sourceCyrillic": {
     "message": "Текст на кириллице"
   },
+  "sourceLatin2027": {
+    "message": "Текст на новой латинице"
+  },
   "resultCyrillic": {
     "message": "Результат на кириллице"
   },
   "resultLatin": {
     "message": "Результат на латинице"
+  },
+  "resultLatin2027": {
+    "message": "Результат на новой латинице"
   },
   "actionClear": {
     "message": "Очистить"

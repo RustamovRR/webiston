@@ -115,12 +115,42 @@
   `DetailGroupCard` before the first answer — now a dash. Recheck daily
   impressions ~2 weeks after the deploy reaches main; if still ~0, the cause
   is not on the page.
-- `[ ]` **Extension: no new-alphabet target.** The popup, popover and context
-  menu read ş/ç/ğ/ö (via `toCyrillic`) but cannot convert INTO the 2027
-  alphabet; the extension promo on `/tools/latin-cyrillic` says "stop coming
-  back to this page", which misleads a new-alphabet visitor. Extend the
-  popup's preference to `"auto" | UzbekScript` the way the web switch did.
-
+- `[~]` **`/tools/latin-cyrillic` sits at ~8 for the head terms — it is a
+  ceiling, not a bug.** Weekly position 7.8–8.6 for 13 straight weeks
+  (GSC, 07-27 → 10-24). The SERP for "lotin kiril" (2026-10-26): an AI
+  Overview that already CITES Webiston, then lotin.uz, kiril-lotin.uz ×2,
+  two "Word makros" videos, uznlp.uz, uzlotin.uz — exact-match domains with
+  years of history. On-page work cannot outrank that; it can win the intents
+  where we already sit at 4–6. Shipped 2026-10-26: "Word" (not "DOCX") in
+  all three descriptions, the file FAQ asks about Word/PDF (lands in the
+  FAQPage schema), the uz extension H2 says "dasturi". **Baseline, 28d to
+  10-24:** Word/file queries 96 clicks / 2,394 impr / 4.0% CTR / pos 6.3;
+  "dastur" queries 69 / 801 / 8.6% / 6.1. Re-measure ~2026-11-21 with
+  `pnpm gsc 28 --find "word|ворд|fayl|файл|pdf|dastur|дастур"`.
+- `[ ]` **Recheck "yangi alifbo klaviatura" demand ~2026-10-30** —
+  19 impr at 21% CTR in the first week. If it grows, add one-tap ş/ç/ğ/ö
+  buttons to the converter. `pnpm gsc 7 --find "klaviatura|клавиатура"`.
+- `[~]` **Extension 1.1.0: new-alphabet target — code, store copy and
+  `/extension` done 2026-10-26; store upload pending (owner).** The switch
+  policy (`ScriptPreference`, `resolveTarget`, `swapTarget`,
+  `EXPECTED_SOURCE`, `convertToScript`) lives in
+  `@webiston/transliteration/src/converter.ts`; the web tool, the popup and
+  the panel import it. The popup stores its choice; the panel and the
+  shortcut open on it via `openingPreference`, which falls back to auto when
+  the selection is already in the stored alphabet (no selection is ever
+  handed back unchanged — `tests/script-preference.test.ts`). Measured at
+  380px: popup switch uz 285 / ru 288 of 340px; panel footer with Replace on
+  one row in all three locales (tightest uz, 9px). Store: new `extName`
+  (≤45, Edge's cap — guarded in `tests/locales.test.ts`), `extDescription`,
+  detailed descriptions in `store/listing.md`, screenshots re-shot. Site:
+  `/extension` copy, demo column, feature + FAQ, landing images re-shot;
+  `ExtensionCallout` names the new alphabet and now renders on
+  `/tools/yangi-alifbo` too. **Deploy the site AFTER the store approves
+  1.1.0** — until then those pages promise a feature the installed version
+  lacks. `/extension` itself was "URL is unknown to Google" on 2026-10-26
+  (sitemap last read 10-22): request indexing after deploy.
+  Follow-up (needs approval): `resolveDirection`, `convertWithPreference`,
+  `oppositeDirection` and `DirectionPreference` have no caller left.
 - `[x]` **Namespace coverage is now gated — 2026-07-30.** `pnpm i18n` grew a
   second check: every namespace a Client Component calls must be provided by some
   provider. It would have caught the `/tools` regression that survived a

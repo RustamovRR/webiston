@@ -14,7 +14,18 @@ module.exports = {
   // /uz, and next-sitemap auto-discovers the prerender manifest. Listing a
   // redirecting URL in a sitemap earns a "Page with redirect" error in Search
   // Console and contradicts the canonical each page declares.
-  exclude: ['/api/*', '/_next/*', '/manifest.webmanifest', '/uz', '/uz/*'],
+  //
+  // The app-router icon files (`src/app/icon.svg`, `apple-icon.png`) are
+  // auto-discovered the same way and were listed as pages until 2026-10-26.
+  exclude: [
+    '/api/*',
+    '/_next/*',
+    '/manifest.webmanifest',
+    '/icon.svg',
+    '/apple-icon.png',
+    '/uz',
+    '/uz/*'
+  ],
 
   // Do NOT stamp <lastmod> with the build time.
   //

@@ -1,14 +1,25 @@
 import {
-  convertWithPreference,
-  type DirectionPreference,
-  oppositeDirection,
-  resolveDirection
+  convertToScript,
+  detectUzbekScript,
+  EXPECTED_SOURCE,
+  resolveTarget,
+  SCRIPT_PREFERENCES,
+  type ScriptPreference,
+  swapTarget
 } from "@webiston/transliteration"
 import {
   SegmentedControl,
   type SegmentedOption
 } from "@webiston/ui/composites/SegmentedControl"
 import { useCallback, useEffect, useState } from "react"
+
+import {
+  loadScriptPreference,
+  OPTION_LABEL_KEY,
+  RESULT_LABEL_KEY,
+  SOURCE_LABEL_KEY,
+  saveScriptPreference
+} from "@/utils/script-preference"
 
 type Theme = "light" | "dark" | "system"
 
@@ -29,12 +40,17 @@ type Theme = "light" | "dark" | "system"
 type MessageKey = Parameters<typeof browser.i18n.getMessage>[0]
 const t = (key: MessageKey) => browser.i18n.getMessage(key)
 
-/** The same three choices, in the same order, as the web tool. */
-const DIRECTION_OPTIONS: SegmentedOption<DirectionPreference>[] = [
-  { value: "auto", label: t("dirAuto") },
-  { value: "latin-to-cyrillic", label: t("dirToCyrillic") },
-  { value: "cyrillic-to-latin", label: t("dirToLatin") }
-]
+/**
+ * The same four choices, in the same order, as the web tool — the 2027
+ * alphabet (Law OʻRQ-1184) is one more destination in the one control, not a
+ * second switch. No arrows: four options with them measured 386px in Russian
+ * on the web, wider than this 380px popup.
+ */
+const SCRIPT_OPTIONS: SegmentedOption<ScriptPreference>[] =
+  SCRIPT_PREFERENCES.map((value) => ({
+    value,
+    label: t(OPTION_LABEL_KEY[value])
+  }))
 
 // Icons
 function SunIcon() {
@@ -281,8 +297,9 @@ const COPY_SHORTCUT_LABEL = IS_MAC ? "⌘+Enter" : "Ctrl+Enter"
 export default function App() {
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")
-  // The same three-state preference the web tool and the in-page popover use.
-  const [direction, setDirection] = useState<DirectionPreference>("auto")
+  // The alphabet switch, remembered: the in-page panel and the shortcut open
+  // on it too — see `utils/script-preference.ts`.
+  const [preference, setPreference] = useState<ScriptPreference>("auto")
   const [copied, setCopied] = useState(false)
   const [floatingEnabled, setFloatingEnabled] = useState(true)
   const [theme, setTheme] = useState<Theme>("system")
@@ -300,6 +317,7 @@ export default function App() {
         setFloatingEnabled(result.quickConvertEnabled !== false)
         if (result.theme) setTheme(result.theme as Theme)
       })
+    loadScriptPreference().then(setPreference)
   }, [])
 
   // One definition of "is it dark right now". There were two — one inside the
@@ -330,23 +348,28 @@ export default function App() {
     await browser.storage.local.set({ quickConvertEnabled: newValue })
   }
 
-  const convert = useCallback((text: string, dir: DirectionPreference) => {
+  const convert = useCallback((text: string, pref: ScriptPreference) => {
     if (!text.trim()) {
       setOutput("")
       return
     }
-    setOutput(convertWithPreference(text, dir).text)
+    setOutput(convertToScript(text, pref).text)
   }, [])
+
+  const pinPreference = (next: ScriptPreference) => {
+    setPreference(next)
+    saveScriptPreference(next)
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value
     setInput(text)
-    convert(text, direction)
+    convert(text, preference)
   }
 
-  const handleDirectionChange = (dir: DirectionPreference) => {
-    setDirection(dir)
-    convert(input, dir)
+  const handlePreferenceChange = (next: ScriptPreference) => {
+    pinPreference(next)
+    convert(input, next)
   }
 
   const handleCopy = async () => {
@@ -356,8 +379,15 @@ export default function App() {
     setTimeout(() => setCopied(false), 1500)
   }
 
+  // Which alphabets the text is between. Detection only, not a second
+  // conversion: this runs on every render and the input can be a whole
+  // imported document.
+  const source = detectUzbekScript(input)
+  const target = resolveTarget(preference, source)
+
   /**
-   * Swap moves the result into the input and turns the conversion around.
+   * Swap moves the result into the input and converts it back to the
+   * alphabet it came from — `swapTarget`, the rule the web tool uses.
    *
    * It used to exchange the two boxes without reconverting, which left the
    * output pane showing a value that was not a conversion of the input — the
@@ -365,8 +395,8 @@ export default function App() {
    */
   const handleSwap = () => {
     if (!output) return
-    const next = oppositeDirection(resolveDirection(input, direction))
-    setDirection(next)
+    const next = swapTarget(source, target)
+    pinPreference(next)
     setInput(output)
     convert(output, next)
   }
@@ -398,12 +428,14 @@ export default function App() {
 
   // The captions have to name the alphabets the text is actually going
   // between, not a fixed pair. The in-page popover already resolves this the
-  // same way (`paintDirectionLabels` in content.ts) and the web tool does too;
+  // same way (`paintTargetState` in content.ts) and the web tool does too;
   // the popup was the one surface that always said "Lotin → Kirill", even
-  // while converting the other way.
-  const toCyrillic = resolveDirection(input, direction) === "latin-to-cyrillic"
-  const sourceLabel = t(toCyrillic ? "sourceLatin" : "sourceCyrillic")
-  const targetLabel = t(toCyrillic ? "resultCyrillic" : "resultLatin")
+  // while converting the other way. An empty input is captioned with the
+  // alphabet the target is usually fed from, as on the web tool.
+  const sourceLabel = t(
+    SOURCE_LABEL_KEY[input ? source : EXPECTED_SOURCE[target]]
+  )
+  const targetLabel = t(RESULT_LABEL_KEY[target])
 
   return (
     <div className="w-[380px] bg-background text-foreground">
@@ -499,9 +531,9 @@ export default function App() {
         <SegmentedControl
           className="w-full"
           label={t("appName")}
-          options={DIRECTION_OPTIONS}
-          value={direction}
-          onChange={handleDirectionChange}
+          options={SCRIPT_OPTIONS}
+          value={preference}
+          onChange={handlePreferenceChange}
         />
 
         {/* Input panel. The label row carries a status dot and the panel's one

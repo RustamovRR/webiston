@@ -106,8 +106,8 @@
           "answer": "O'giruvchi o'zbek imlosining murakkab qoidalarini hisobga oladi: sh + ch chegarasi (ishchi → ишчи), tutuq belgisi (san'at → санъат), -tsiya qo'shimchasi (informatsiya → информация) va so'z boshidagi e → э. Havolalar, elektron pochta, kod va texnik atamalar o'girilmay saqlanadi. Shunga qaramay, kamdan-kam uchraydigan xorijiy nomlarni tekshirib chiqishni tavsiya qilamiz."
         },
         "files": {
-          "question": "Fayl yuklay olamanmi?",
-          "answer": "Ha — TXT, PDF va DOCX. Faylni sahifaning istalgan joyiga tashlang yoki «Fayl» tugmasini bosing. Natijani TXT yoki Word (DOCX) ko'rinishida yuklab olasiz. Fayl hajmi 10 MB gacha."
+          "question": "Word yoki PDF faylni o'gira olamanmi?",
+          "answer": "Ha — Word (DOCX), PDF va TXT. Faylni sahifaning istalgan joyiga tashlang yoki «Fayl» tugmasini bosing. Natijani Word (DOCX) yoki TXT ko'rinishida yuklab olasiz. Fayl hajmi 10 MB gacha."
         },
         "privacy": {
           "question": "Matnim qayerga boradi?",
@@ -120,10 +120,11 @@
       }
     },
     "extension": {
-      "title": "Brauzeringizga o'rnating",
+      "title": "Lotin-kirill dasturini brauzerga o'rnating",
       "description": "Har safar bu sahifaga qaytmang — istalgan saytda matnni belgilang va o'sha yerning o'zida o'giring.",
       "features": {
         "select": "Belgilangan matn yonida tugma chiqadi",
+        "newAlphabet": "Yangi alifbo (ş, ç, ğ, ö) ham",
         "shortcut": "⌘/Ctrl + Shift + L — darhol nusxalash",
         "privacy": "Matn brauzeringizdan chiqmaydi"
       },

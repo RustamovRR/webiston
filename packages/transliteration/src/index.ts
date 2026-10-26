@@ -7,14 +7,20 @@ export {
   UZBEK_SUFFIXES
 } from "./constants"
 // Types
-export type { DirectionPreference } from "./converter"
+export type { DirectionPreference, ScriptPreference } from "./converter"
 // Conversion policy — which direction, and the one call that runs it
 export {
   convert,
+  convertToScript,
   convertWithPreference,
+  EXPECTED_SOURCE,
   findPreservedTerms,
+  isScriptPreference,
   oppositeDirection,
-  resolveDirection
+  resolveDirection,
+  resolveTarget,
+  SCRIPT_PREFERENCES,
+  swapTarget
 } from "./converter"
 export {
   detectScript,

@@ -35,13 +35,19 @@ export const EXTENSION_STORES = [
 ] as const
 
 /** The three claims. Each is something the extension actually does. */
-export const EXTENSION_FEATURE_KEYS = ["select", "shortcut", "privacy"] as const
+export const EXTENSION_FEATURE_KEYS = [
+  "select",
+  "newAlphabet",
+  "shortcut",
+  "privacy"
+] as const
 
 /** The landing page's own sections, rendered in this order. */
 export const EXTENSION_STEP_KEYS = ["install", "select", "convert"] as const
 
 export const EXTENSION_FAQ_KEYS = [
   "price",
+  "newAlphabet",
   "browsers",
   "offline",
   "privacy",

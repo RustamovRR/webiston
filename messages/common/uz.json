@@ -217,10 +217,10 @@
     }
   },
   "ExtensionPage": {
-    "metaTitle": "Lotin-Kirill dasturi — Лотин-Кирилл дастури",
-    "metaDescription": "Brauzer kengaytmasi: istalgan saytda matnni belgilab lotin va kirill orasida o'giring. Ctrl+Shift+L, kontekst menyu, internetsiz ishlaydi. Chrome va Firefox uchun bepul.",
-    "h1": "Lotin-Kirill O'giruvchi — brauzer kengaytmasi",
-    "tagline": "Saytga qaytmang. Istalgan sahifada matnni belgilang va o'sha yerning o'zida lotin bilan kirill orasida o'giring.",
+    "metaTitle": "Lotin-Kirill va Yangi alifbo dasturi — Лотин-Кирилл дастури",
+    "metaDescription": "Brauzer kengaytmasi: istalgan saytda matnni belgilab lotin, kirill va yangi alifbo (ş, ç, ğ, ö) orasida o'giring. Ctrl+Shift+L, internetsiz. Chrome va Firefox uchun bepul.",
+    "h1": "Lotin-Kirill va Yangi alifbo O'giruvchi — brauzer kengaytmasi",
+    "tagline": "Saytga qaytmang. Istalgan sahifada matnni belgilang va o'sha yerning o'zida lotin, kirill yoki 2027-yilgi yangi alifboga o'giring.",
     "stores": {
       "chrome": "Chrome'ga qo'shish",
       "firefox": "Firefox'ga qo'shish"
@@ -232,6 +232,10 @@
       "select": {
         "title": "Belgilang va o'giring",
         "body": "Istalgan saytda matnni belgilang — yonida tugma chiqadi. O'ng tugma menyusida ham bor."
+      },
+      "newAlphabet": {
+        "title": "Yangi alifbo (2027)",
+        "body": "sh → ş, ch → ç, g' → ğ, o' → ö. Popup'da «Yangi lotin»ni tanlang — sahifadagi panel va Ctrl + Shift + L ham shu alifboda ishlaydi."
       },
       "shortcut": {
         "title": "Ctrl + Shift + L",
@@ -257,6 +261,10 @@
         "q": "Pullikmi?",
         "a": "Yo'q. Bepul, reklamasiz, hisob talab qilinmaydi."
       },
+      "newAlphabet": {
+        "q": "Yangi alifboga (ş, ç, ğ, ö) o'giradimi?",
+        "a": "Ha. Popup'da «Yangi lotin»ni tanlang: lotin yoki kirill yozuvidagi matn 2027-yil 22-apreldan kuchga kiradigan yangi alifboga o'giriladi. Tanlov eslab qolinadi, shuning uchun sahifadagi panel va Ctrl + Shift + L ham shu alifboda ishlaydi."
+      },
       "browsers": {
         "q": "Qaysi brauzerlarda ishlaydi?",
         "a": "Chrome, Edge, Brave, Opera va Vivaldi — Chrome do'konidan o'rnatiladi. Firefox uchun alohida versiyasi bor."
@@ -276,6 +284,7 @@
     },
     "demoTitle": "Natija shunday chiqadi",
     "demoLatin": "Lotin",
-    "demoCyrillic": "Kirill"
+    "demoCyrillic": "Kirill",
+    "demoLatin2027": "Yangi lotin"
   }
 }

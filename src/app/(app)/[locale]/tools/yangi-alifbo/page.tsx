@@ -15,7 +15,10 @@ import { withLocale } from "@/lib/seo"
 // to the same tool — its own heading, letter table and FAQ for the search
 // "yangi alifbo" — not a second tool: a visitor here can convert into all
 // three alphabets, with files, exceptions and the keyboard shortcuts.
-import { LatinCyrillicPage as Converter } from "@/modules/tools/LatinCyrillic"
+import {
+  LatinCyrillicPage as Converter,
+  ExtensionCallout
+} from "@/modules/tools/LatinCyrillic"
 import { LetterTable, NewAlphabetFaq } from "@/modules/tools/NewAlphabet"
 import {
   generateApplicationSchema,
@@ -94,8 +97,11 @@ export default async function YangiAlifboPage({
       </LocaleMessages>
 
       {/* Same order as the Latin-Cyrillic page, so the two siblings read
-          alike: related tools, then the reference table, then the FAQ. */}
+          alike: the extension, related tools, then the reference table, then
+          the FAQ. The extension converts into the new alphabet since 1.1.0,
+          so its "stop coming back to this page" is true here too. */}
       <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">
+        <ExtensionCallout locale={locale} />
         <RelatedTools locale={locale} href={PATH} className="pt-10" />
         <LetterTable locale={locale} />
         <NewAlphabetFaq locale={locale} />

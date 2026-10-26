@@ -15,9 +15,12 @@ export default defineConfig({
    * calls this once per target.
    */
   manifest: ({ browser }) => ({
-    // The web tool's own name (`/tools/latin-cyrillic` renders exactly this as
-    // its H1), so the toolbar entry, the context menu and the page a user
-    // arrives from all say one thing. It was "Latin Converter - Webiston".
+    // The STORE name, which is the store's strongest search field: since 1.1.0
+    // it names the 2027 alphabet too ("Lotin-Kirill va Yangi alifbo
+    // O'giruvchi"), and lost "— Webiston" to fit Edge's 45-character cap — the
+    // publisher line under the name says Webiston anyway. The popup header
+    // (`appName`) still matches the web tool's H1. It was "Latin Converter -
+    // Webiston", then "Lotin-Kirill O'giruvchi — Webiston".
     //
     // NOTE: the toolbar TOOLTIP is not this — WXT derives `default_title`
     // from the popup's `<title>`, which is why the rename had to happen in

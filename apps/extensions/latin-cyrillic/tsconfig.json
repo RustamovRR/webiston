@@ -13,5 +13,11 @@
     "noEmit": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"]
   },
-  "include": [".wxt/wxt.d.ts", "entrypoints/**/*", "components/**/*", "*.ts"]
+  "include": [
+    ".wxt/wxt.d.ts",
+    "entrypoints/**/*",
+    "components/**/*",
+    "utils/**/*",
+    "*.ts"
+  ]
 }

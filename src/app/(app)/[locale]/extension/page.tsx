@@ -2,7 +2,7 @@
  * React equivalent; every payload here is a constant or an i18n string, and
  * `jsonLd()` escapes `<` so a value can never close the script element. */
 
-import { toCyrillic } from "@webiston/transliteration"
+import { toCyrillic, toUzbekScript } from "@webiston/transliteration"
 import type { Metadata } from "next"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 
@@ -111,6 +111,9 @@ export default async function ExtensionPage({
     name: t("h1"),
     description: t("metaDescription"),
     applicationCategory: "BrowserApplication",
+    featureList: EXTENSION_FEATURE_KEYS.map((key) =>
+      t(`features.${key}.title`)
+    ),
     operatingSystem: "Chrome, Edge, Firefox, Brave, Opera, Vivaldi",
     url: localeUrl(locale, PATH),
     inLanguage: locale,
@@ -189,7 +192,7 @@ export default async function ExtensionPage({
             <h2 className="font-semibold text-foreground text-xl tracking-[-0.01em]">
               {t("demoTitle")}
             </h2>
-            <div className="mt-4 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+            <div className="mt-4 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
               <div className="bg-card p-5">
                 <p className="font-mono text-muted-foreground text-xs uppercase tracking-wider">
                   {t("demoLatin")}
@@ -206,6 +209,14 @@ export default async function ExtensionPage({
                   {toCyrillic(EXTENSION_DEMO_SENTENCE)}
                 </p>
               </div>
+              <div className="bg-card p-5">
+                <p className="font-mono text-muted-foreground text-xs uppercase tracking-wider">
+                  {t("demoLatin2027")}
+                </p>
+                <p className="mt-2 text-foreground leading-relaxed">
+                  {toUzbekScript(EXTENSION_DEMO_SENTENCE, "latin-2027")}
+                </p>
+              </div>
             </div>
           </section>
 
@@ -213,7 +224,9 @@ export default async function ExtensionPage({
             <h2 className="font-semibold text-foreground text-xl tracking-[-0.01em]">
               {t("featuresTitle")}
             </h2>
-            <ul className="mt-4 grid gap-4 sm:grid-cols-3">
+            {/* Two columns: four claims since 1.1.0, and four in a row of
+                three left one orphan card on its own line. */}
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2">
               {EXTENSION_FEATURE_KEYS.map((key) => (
                 <li
                   key={key}

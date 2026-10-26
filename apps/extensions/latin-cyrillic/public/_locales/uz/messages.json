@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Lotin-Kirill O'giruvchi — Webiston"
+    "message": "Lotin-Kirill va Yangi alifbo O'giruvchi"
   },
   "extDescription": {
-    "message": "O'zbek matnini lotinchadan kirillchaga va aksincha o'giring. Matn brauzeringizdan chiqmaydi."
+    "message": "O'zbek matnini lotin, kirill va yangi alifbo (2027) o'rtasida o'giring. Matn brauzeringizdan chiqmaydi."
   },
   "cmdConvert": {
     "message": "Tanlangan matnni konvertatsiya qilish"
@@ -15,10 +15,13 @@
     "message": "Avto"
   },
   "dirToCyrillic": {
-    "message": "→ Кирилл"
+    "message": "Кирилл"
   },
   "dirToLatin": {
-    "message": "→ Lotin"
+    "message": "Lotin"
+  },
+  "dirToLatin2027": {
+    "message": "Yangi lotin"
   },
   "themeLight": {
     "message": "Yorug' rejim"
@@ -38,11 +41,17 @@
   "sourceCyrillic": {
     "message": "Kirill matn"
   },
+  "sourceLatin2027": {
+    "message": "Yangi lotin matn"
+  },
   "resultCyrillic": {
     "message": "Kirill natija"
   },
   "resultLatin": {
     "message": "Lotin natija"
+  },
+  "resultLatin2027": {
+    "message": "Yangi lotin natija"
   },
   "actionClear": {
     "message": "Tozalash"

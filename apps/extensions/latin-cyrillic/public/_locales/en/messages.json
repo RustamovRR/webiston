@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Latin–Cyrillic Converter — Webiston"
+    "message": "Latin–Cyrillic & New Alphabet Converter"
   },
   "extDescription": {
-    "message": "Convert Uzbek text between the Latin and Cyrillic alphabets. The text never leaves your browser."
+    "message": "Convert Uzbek text between Latin, Cyrillic and the new 2027 alphabet. The text never leaves your browser."
   },
   "cmdConvert": {
     "message": "Convert the selected text"
@@ -15,10 +15,13 @@
     "message": "Auto"
   },
   "dirToCyrillic": {
-    "message": "→ Cyrillic"
+    "message": "Кирилл"
   },
   "dirToLatin": {
-    "message": "→ Latin"
+    "message": "Latin"
+  },
+  "dirToLatin2027": {
+    "message": "New Latin"
   },
   "themeLight": {
     "message": "Light mode"
@@ -38,11 +41,17 @@
   "sourceCyrillic": {
     "message": "Cyrillic text"
   },
+  "sourceLatin2027": {
+    "message": "New Latin text"
+  },
   "resultCyrillic": {
     "message": "Cyrillic result"
   },
   "resultLatin": {
     "message": "Latin result"
+  },
+  "resultLatin2027": {
+    "message": "New Latin result"
   },
   "actionClear": {
     "message": "Clear"

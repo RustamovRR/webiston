@@ -24,17 +24,10 @@ export const DEFAULT_PREFERENCE = {
 
 export type ConverterPage = keyof typeof DEFAULT_PREFERENCE
 
-/**
- * Every position the alphabet switch has, in the order it shows them. Also
- * the whitelist a stored preference is checked against: localStorage outlives
- * deploys, and a value this build does not know must not reach the engine.
- */
-export const SCRIPT_PREFERENCES: readonly ScriptPreference[] = [
-  "auto",
-  "cyrillic",
-  "latin",
-  "latin-2027"
-]
+// The switch's positions and their order live in the package: the extension
+// popup and popover show the same four, and the list doubles as the
+// whitelist a stored preference is checked against.
+export { SCRIPT_PREFERENCES } from "@webiston/transliteration"
 
 /** The message key that names each alphabet: `latin-2027` is not a key. */
 export const SCRIPT_LABEL_KEY: Record<UzbekScript, string> = {

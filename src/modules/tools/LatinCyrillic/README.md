@@ -27,21 +27,23 @@ one place that names both.
 | In-page popover | `apps/extensions/latin-cyrillic/entrypoints/content.ts` |
 | Context menu | `apps/extensions/latin-cyrillic/entrypoints/background.ts` |
 
-The package exposes exactly four things they share:
+Every surface holds the same switch — `"auto" | UzbekScript`, a destination
+rather than a direction — and takes its rules from the package
+(`packages/transliteration/src/converter.ts`):
 
 ```ts
-resolveDirection(text, preference)      // "auto" | direction  →  direction
-convert(text, direction)                // the one call that runs it
-convertWithPreference(text, preference) // both of the above, in one step
-oppositeDirection(direction)            // for the swap control
+SCRIPT_PREFERENCES                       // the four positions, in display order
+isScriptPreference(value)                // whitelist for anything read from storage
+resolveTarget(preference, sourceScript)  // "auto" → the Latin ↔ Cyrillic flip
+swapTarget(source, target)               // where the swap control pins the switch
+EXPECTED_SOURCE[target]                  // caption for an empty source panel
+convertToScript(text, preference)        // detect + resolve + toUzbekScript, in one step
 ```
 
-The extension still speaks in those directions. This page has moved one step
-further: its switch holds `"auto" | UzbekScript` — a destination, not a
-direction — and converts with `toUzbekScript`, which reads all three
-alphabets in any mix. Under `"auto"` the text decides on every change, by the
-same rule `resolveDirection` uses (Cyrillic-dominant → Latin, else Cyrillic).
-The new alphabet is never an auto result; it is always picked.
+Under `"auto"` the text decides on every change: Cyrillic-dominant → Latin,
+else Cyrillic. The new alphabet is never an auto result; it is always picked.
+The extension popup stores its choice (`utils/script-preference.ts`) and the
+in-page panel and the shortcut open on it.
 
 ## Structure
 

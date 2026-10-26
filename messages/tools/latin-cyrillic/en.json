@@ -106,8 +106,8 @@
           "answer": "The converter handles the hard parts of Uzbek orthography: the sh + ch boundary (ishchi → ишчи), the tutuq mark (san'at → санъат), the -tsiya suffix (informatsiya → информация) and word-initial e → э. Links, email addresses, code and technical terms are left untouched. Even so, it is worth checking rare foreign names by eye."
         },
         "files": {
-          "question": "Can I convert a file?",
-          "answer": "Yes — TXT, PDF and DOCX. Drop the file anywhere on the page or use the File button, then download the result as TXT or Word (DOCX). Files up to 10 MB."
+          "question": "Can I convert a Word or PDF file?",
+          "answer": "Yes — Word (DOCX), PDF and TXT. Drop the file anywhere on the page or use the File button, then download the result as Word (DOCX) or TXT. Files up to 10 MB."
         },
         "privacy": {
           "question": "Where does my text go?",
@@ -124,6 +124,7 @@
       "description": "Stop coming back to this page — select text on any site and convert it right there.",
       "features": {
         "select": "A button appears next to the selection",
+        "newAlphabet": "The new alphabet (ş, ç, ğ, ö) too",
         "shortcut": "⌘/Ctrl + Shift + L copies instantly",
         "privacy": "Your text never leaves the browser"
       },

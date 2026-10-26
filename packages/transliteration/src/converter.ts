@@ -21,10 +21,15 @@
  * The extension's model was the right one. It is now the only one.
  */
 
-import { isCyrillicDominant } from "./detect-script"
+import { detectUzbekScript, isCyrillicDominant } from "./detect-script"
 import { protectContent } from "./protection"
-import { type ConversionOptions, toCyrillic, toLatin } from "./transliterate"
-import type { TransliterationDirection } from "./types"
+import {
+  type ConversionOptions,
+  toCyrillic,
+  toLatin,
+  toUzbekScript
+} from "./transliterate"
+import type { TransliterationDirection, UzbekScript } from "./types"
 
 /**
  * What the user asked for, which is not the same as what will happen.
@@ -126,4 +131,88 @@ export function oppositeDirection(
   return direction === "latin-to-cyrillic"
     ? "cyrillic-to-latin"
     : "latin-to-cyrillic"
+}
+
+/**
+ * The same policy, for the three-alphabet switch.
+ *
+ * `DirectionPreference` above is the Latin ↔ Cyrillic pair. The 2027 alphabet
+ * (Law OʻRQ-1184) made the question "into which alphabet?" rather than "which
+ * way?", and the web tool answered it first — in a private copy inside its
+ * hook. The extension is the second surface that needs the answer, so it
+ * lives here now and both import it.
+ */
+export type ScriptPreference = "auto" | UzbekScript
+
+/**
+ * Every position a switch has, in the order the surfaces show them. Also the
+ * whitelist a STORED preference is checked against: localStorage and
+ * `browser.storage` outlive deploys, and a value this build does not know must
+ * not reach the engine.
+ */
+export const SCRIPT_PREFERENCES: readonly ScriptPreference[] = [
+  "auto",
+  "cyrillic",
+  "latin",
+  "latin-2027"
+]
+
+export const isScriptPreference = (value: unknown): value is ScriptPreference =>
+  SCRIPT_PREFERENCES.some((option) => option === value)
+
+/**
+ * "Auto" is the Latin ↔ Cyrillic flip, by the rule `resolveDirection` uses:
+ * Cyrillic text goes to the 1995 Latin, everything else to Cyrillic. The new
+ * alphabet is never a guess — until the spelling rules and the transition
+ * programme are out, it is something a person picks, not something a surface
+ * decides for them.
+ */
+export function resolveTarget(
+  preference: ScriptPreference,
+  source: UzbekScript
+): UzbekScript {
+  if (preference !== "auto") return preference
+  return source === "cyrillic" ? "latin" : "cyrillic"
+}
+
+/**
+ * The alphabet a person converting INTO `target` most likely typed. Names an
+ * empty source panel, and is where swap goes when the text was already in the
+ * target. "→ Lotin" waits for Cyrillic; the other two wait for the 1995 Latin
+ * everybody types today.
+ */
+export const EXPECTED_SOURCE: Record<UzbekScript, UzbekScript> = {
+  cyrillic: "latin",
+  latin: "cyrillic",
+  "latin-2027": "latin"
+}
+
+/**
+ * Where swap pins the switch: back to the alphabet the text came from.
+ *
+ * When the text was ALREADY in the target — "Lotin" pinned over Latin, or a
+ * half-converted document that one ğ makes read as new-alphabet — going back
+ * is the same position and the button would do nothing, so it goes to the
+ * alphabet that target is usually fed from instead.
+ */
+export function swapTarget(
+  source: UzbekScript,
+  target: UzbekScript
+): UzbekScript {
+  return source === target ? EXPECTED_SOURCE[target] : source
+}
+
+/**
+ * Convert into the alphabet a preference names. Returns what the text was
+ * read as and what it went into, so a surface can caption both panels.
+ */
+export function convertToScript(
+  text: string,
+  preference: ScriptPreference,
+  options?: ConversionOptions
+): { text: string; source: UzbekScript; target: UzbekScript } {
+  const source = detectUzbekScript(text)
+  const target = resolveTarget(preference, source)
+
+  return { text: toUzbekScript(text, target, options), source, target }
 }

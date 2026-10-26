@@ -31,8 +31,11 @@ const COPY = {
     // Uzbeks saw a Latin-only title in the SERP and read it as not for them.
     // ~2,500 monthly Cyrillic impressions ride on this one line.
     title: "Lotin-Kirill O'giruvchi — Лотин-Кирилл Ўгирувчи",
+    // "Word", not "DOCX": people search the program's name. The Word/file
+    // queries were 2,394 impressions in 28 days at position 6.3 and 4.0% CTR
+    // (GSC, to 2026-10-24) — the baseline this wording is measured against.
     description:
-      "O'zbek matnini lotin va kirill yozuvi orasida o'giring. TXT, PDF va DOCX fayllar ham. Кириллдан лотинга ва аксинча — bepul, brauzerda.",
+      "O'zbek matnini lotin va kirill yozuvi orasida o'giring. Word, PDF va TXT fayllar ham. Кириллдан лотинга ва аксинча — bepul, brauzerda.",
     social:
       "O'zbek matnini lotin va kirill yozuvlari o'rtasida o'giring. Bepul va brauzerda ishlaydi.",
     ogLocale: "uz_UZ"
@@ -43,7 +46,7 @@ const COPY = {
     // language keeps the clicks that convert and loses only the wrong ones.
     title: "Uzbek Latin-Cyrillic Converter",
     description:
-      "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports TXT, PDF and DOCX files. Free, no account, and your text never leaves the browser.",
+      "Convert Uzbek text between the Latin and Cyrillic alphabets. Supports Word, PDF and TXT files. Free, no account, and your text never leaves the browser.",
     social:
       "Convert Uzbek text between the Latin and Cyrillic alphabets. Free, and it runs in your browser.",
     ogLocale: "en_US"
@@ -51,7 +54,7 @@ const COPY = {
   ru: {
     title: "Латиница ↔ кириллица — узбекский текст",
     description:
-      "Переводите узбекский текст между латиницей и кириллицей. Сложная орфография учитывается, поддерживаются файлы TXT, PDF и DOCX.",
+      "Переводите узбекский текст между латиницей и кириллицей. Сложная орфография учитывается, поддерживаются файлы Word, PDF и TXT.",
     social:
       "Конвертер узбекского текста между латиницей и кириллицей — бесплатно, прямо в браузере.",
     ogLocale: "ru_RU"

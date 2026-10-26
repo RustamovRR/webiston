@@ -1,9 +1,19 @@
 import {
-  convert,
-  convertWithPreference,
-  type DirectionPreference,
-  resolveDirection
+  convertToScript,
+  detectUzbekScript,
+  resolveTarget,
+  type ScriptPreference,
+  swapTarget,
+  type UzbekScript
 } from "@webiston/transliteration"
+
+import {
+  loadScriptPreference,
+  OPTION_LABEL_KEY,
+  openingPreference,
+  RESULT_LABEL_KEY,
+  SOURCE_LABEL_KEY
+} from "@/utils/script-preference"
 
 /**
  * The site's design tokens, copied from `src/styles/tokens.css` exactly the
@@ -101,8 +111,26 @@ let currentTheme: "light" | "dark" = "light"
  * button next to it. Nothing was ever replaced.
  */
 let selectionRange: Range | null = null
-/** The popover's direction control; "auto" until the user picks a side. */
-let popoverPreference: DirectionPreference = "auto"
+/**
+ * The alphabet the popup's switch holds — what every panel and the shortcut
+ * open on. Kept in sync through `storage.onChanged`, so changing it in the
+ * popup reaches tabs that are already open.
+ */
+let pinnedPreference: ScriptPreference = "auto"
+/** This panel's own choice: the pinned one until a button overrides it. */
+let popoverPreference: ScriptPreference = "auto"
+
+/**
+ * The panel's destination buttons. "Avto" is not one of them: the panel opens
+ * on the popup's choice, and auto is that choice's default, so a fourth button
+ * would only ever undo what the reader just pressed — and four do not fit
+ * beside Replace in 380px.
+ */
+const POPOVER_TARGETS: readonly UzbekScript[] = [
+  "cyrillic",
+  "latin",
+  "latin-2027"
+]
 
 /**
  * Has the reader moved the panel themselves?
@@ -138,6 +166,9 @@ export default defineContentScript({
         isEnabled = result.quickConvertEnabled !== false
         updateTheme(result.theme as string)
       })
+    loadScriptPreference().then((preference) => {
+      pinnedPreference = preference
+    })
 
     browser.storage.onChanged.addListener(
       (changes: Record<string, { newValue?: unknown }>) => {
@@ -147,6 +178,11 @@ export default defineContentScript({
         }
         if (changes.theme) {
           updateTheme(changes.theme.newValue as string)
+        }
+        if (changes.scriptPreference) {
+          loadScriptPreference().then((preference) => {
+            pinnedPreference = preference
+          })
         }
       }
     )
@@ -184,7 +220,8 @@ export default defineContentScript({
           const sel = window.getSelection()?.toString().trim()
           if (sel) {
             navigator.clipboard.writeText(
-              convertWithPreference(sel, "auto").text
+              convertToScript(sel, openingPreference(pinnedPreference, sel))
+                .text
             )
             showToast(t("toastCopied"))
           }
@@ -204,7 +241,10 @@ export default defineContentScript({
           // page. Falling back to the clipboard beats doing nothing at all.
           if (!opened && message.text) {
             navigator.clipboard.writeText(
-              convertWithPreference(message.text, "auto").text
+              convertToScript(
+                message.text,
+                openingPreference(pinnedPreference, message.text)
+              ).text
             )
             showToast(t("toastCopied"))
           }
@@ -523,13 +563,14 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     shadowRoot.appendChild(styles)
   }
 
-  // The popover opens in "auto" and reports which way auto went, so the two
-  // direction buttons show the real state rather than a guess of their own.
-  const { text: converted, direction } = convertWithPreference(
-    selectedText,
-    "auto"
-  )
-  const isCyrillic = direction === "cyrillic-to-latin"
+  // The panel opens on the popup's choice and reports where it resolved to,
+  // so the buttons show the real state rather than a guess of their own.
+  popoverPreference = openingPreference(pinnedPreference, selectedText)
+  const {
+    text: converted,
+    source,
+    target
+  } = convertToScript(selectedText, popoverPreference)
 
   popover = document.createElement("div")
   popover.className = `wc-popover ${currentTheme === "dark" ? "dark" : ""}`
@@ -549,7 +590,7 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     <div class="wc-body">
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${t(isCyrillic ? "sourceCyrillic" : "sourceLatin")}</span>
+          <span class="wc-label">${t(SOURCE_LABEL_KEY[source])}</span>
         </div>
         <textarea class="wc-textarea wc-input" data-type="input" spellcheck="false">${escapeHtml(selectedText)}</textarea>
       </div>
@@ -564,7 +605,7 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
       
       <div class="wc-panel">
         <div class="wc-panel-header">
-          <span class="wc-label">${t(isCyrillic ? "resultLatin" : "resultCyrillic")}</span>
+          <span class="wc-label">${t(RESULT_LABEL_KEY[target])}</span>
           <button class="wc-copy" data-action="copy" title="${t("actionCopy")}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect width="14" height="14" x="8" y="8" rx="2"/>
@@ -579,8 +620,10 @@ function showPopoverInPlace(existingHost: HTMLElement | null) {
     
     <div class="wc-footer">
       <div class="wc-direction">
-        <button class="wc-dir-btn ${!isCyrillic ? "active" : ""}" data-action="to-cyrillic">${t("dirToCyrillic")}</button>
-        <button class="wc-dir-btn ${isCyrillic ? "active" : ""}" data-action="to-latin">${t("dirToLatin")}</button>
+        ${POPOVER_TARGETS.map(
+          (option) =>
+            `<button class="wc-dir-btn ${option === target ? "active" : ""}" data-action="set-target" data-target="${option}">${t(OPTION_LABEL_KEY[option])}</button>`
+        ).join("")}
       </div>
       ${
         selectionEditable
@@ -671,9 +714,8 @@ function handlePopoverClick(e: MouseEvent) {
     case "replace":
       replaceOriginal()
       break
-    case "to-cyrillic":
-    case "to-latin":
-      changeDirection(action)
+    case "set-target":
+      changeTarget(button.dataset.target)
       break
   }
 }
@@ -686,25 +728,28 @@ function handleInputChange(e: Event) {
   ) as HTMLTextAreaElement
   if (!outputEl) return
 
-  // Honour the direction the user picked. Typing used to reset it silently:
+  // Honour the alphabet the user picked. Typing used to reset it silently:
   // the button stayed highlighted while the output flipped back to auto.
-  const direction = resolveDirection(text, popoverPreference)
-  outputEl.value = convert(text, direction)
-  paintDirectionLabels(direction)
+  const result = convertToScript(text, popoverPreference)
+  outputEl.value = result.text
+  paintTargetState(result.source, result.target)
 }
 
-/** Keep the two panel captions honest about which way the text is going. */
-function paintDirectionLabels(direction: string) {
-  const toCyr = direction === "latin-to-cyrillic"
+/**
+ * Keep the captions and the active button honest about where the text is
+ * going. Under auto the target moves with the text, so the button can too.
+ */
+function paintTargetState(source: UzbekScript, target: UzbekScript) {
   const inputLabel = popover?.querySelector(".wc-panel:first-child .wc-label")
   const outputLabel = popover?.querySelector(".wc-panel:last-child .wc-label")
   // `textContent` replaces the element's children; the status dot is a
   // `::before` pseudo-element, so it survives this.
-  if (inputLabel)
-    inputLabel.textContent = t(toCyr ? "sourceLatin" : "sourceCyrillic")
-  if (outputLabel) {
-    outputLabel.textContent = t(toCyr ? "resultCyrillic" : "resultLatin")
-  }
+  if (inputLabel) inputLabel.textContent = t(SOURCE_LABEL_KEY[source])
+  if (outputLabel) outputLabel.textContent = t(RESULT_LABEL_KEY[target])
+
+  popover?.querySelectorAll<HTMLButtonElement>(".wc-dir-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.target === target)
+  })
 }
 
 function copyOutput(button: HTMLElement) {
@@ -735,33 +780,28 @@ function swapPanels() {
   ) as HTMLTextAreaElement
   if (!inputEl || !outputEl) return
 
-  const temp = inputEl.value
+  // Back to the alphabet the text came from — `swapTarget`, the rule the
+  // popup and the web tool use. Without pinning it, a panel set to the new
+  // alphabet would convert the new-alphabet result into itself.
+  const source = detectUzbekScript(inputEl.value)
+  popoverPreference = swapTarget(
+    source,
+    resolveTarget(popoverPreference, source)
+  )
   inputEl.value = outputEl.value
-  outputEl.value = temp
 
   inputEl.dispatchEvent(new Event("input"))
 }
 
-function changeDirection(action: string) {
+function changeTarget(target: string | undefined) {
   const inputEl = popover?.querySelector(
     '[data-type="input"]'
   ) as HTMLTextAreaElement
-  const outputEl = popover?.querySelector(
-    '[data-type="output"]'
-  ) as HTMLTextAreaElement
-  if (!inputEl || !outputEl) return
+  const option = POPOVER_TARGETS.find((script) => script === target)
+  if (!inputEl || !option) return
 
-  popoverPreference =
-    action === "to-latin" ? "cyrillic-to-latin" : "latin-to-cyrillic"
-
-  outputEl.value = convert(inputEl.value, popoverPreference)
-
-  popover?.querySelectorAll(".wc-dir-btn").forEach((btn) => {
-    const btnEl = btn as HTMLButtonElement
-    btn.classList.toggle("active", btnEl.dataset.action === action)
-  })
-
-  paintDirectionLabels(popoverPreference)
+  popoverPreference = option
+  inputEl.dispatchEvent(new Event("input"))
 }
 
 /**

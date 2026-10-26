@@ -217,10 +217,10 @@
     }
   },
   "ExtensionPage": {
-    "metaTitle": "Uzbek Latin-Cyrillic Browser Extension",
-    "metaDescription": "Select text on any site and convert it between the Uzbek Latin and Cyrillic alphabets. Ctrl+Shift+L, context menu, works offline. Free for Chrome and Firefox.",
-    "h1": "Uzbek Latin-Cyrillic Converter — browser extension",
-    "tagline": "Stop coming back to the site. Select text on any page and convert it between Latin and Cyrillic right where it is.",
+    "metaTitle": "Uzbek Latin-Cyrillic & New Alphabet Browser Extension",
+    "metaDescription": "Select text on any site and convert it between Uzbek Latin, Cyrillic and the new 2027 alphabet (ş, ç, ğ, ö). Ctrl+Shift+L, works offline. Free for Chrome and Firefox.",
+    "h1": "Uzbek Latin–Cyrillic & New Alphabet Converter — browser extension",
+    "tagline": "Stop coming back to the site. Select text on any page and convert it to Latin, Cyrillic or the new 2027 alphabet right where it is.",
     "stores": {
       "chrome": "Add to Chrome",
       "firefox": "Add to Firefox"
@@ -232,6 +232,10 @@
       "select": {
         "title": "Select and convert",
         "body": "Select text on any site and a button appears beside it. It is in the right-click menu too."
+      },
+      "newAlphabet": {
+        "title": "The new alphabet (2027)",
+        "body": "sh → ş, ch → ç, g' → ğ, o' → ö. Pick “New Latin” in the popup and the in-page panel and Ctrl + Shift + L use it too."
       },
       "shortcut": {
         "title": "Ctrl + Shift + L",
@@ -257,6 +261,10 @@
         "q": "Does it cost anything?",
         "a": "No. It is free, has no ads and asks for no account."
       },
+      "newAlphabet": {
+        "q": "Does it convert into the new alphabet (ş, ç, ğ, ö)?",
+        "a": "Yes. Pick “New Latin” in the popup: Latin or Cyrillic text is converted into the alphabet that takes effect on 22 April 2027. The choice is remembered, so the in-page panel and Ctrl + Shift + L use it as well."
+      },
       "browsers": {
         "q": "Which browsers does it work in?",
         "a": "Chrome, Edge, Brave, Opera and Vivaldi install it from the Chrome store. There is a separate build for Firefox."
@@ -276,6 +284,7 @@
     },
     "demoTitle": "What the result looks like",
     "demoLatin": "Latin",
-    "demoCyrillic": "Cyrillic"
+    "demoCyrillic": "Cyrillic",
+    "demoLatin2027": "New Latin"
   }
 }

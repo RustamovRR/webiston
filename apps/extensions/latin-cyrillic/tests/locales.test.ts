@@ -166,4 +166,30 @@ describe("extension message bundles", () => {
     // Assert
     expect(offenders).toEqual([])
   })
+
+  /**
+   * The stores' length limits, which — like the symbol rule above — are only
+   * checked at upload time. The name is capped by the strictest store: Edge
+   * Add-ons takes 45 characters (AMO 50, Chrome 75). The short description is
+   * the Chrome Web Store summary, 132 characters.
+   */
+  it("fits the strictest store's limits", () => {
+    // Arrange
+    const limits: Record<string, number> = {
+      extName: 45,
+      extDescription: 132
+    }
+
+    // Act
+    const tooLong: string[] = []
+    for (const [locale, bundle] of bundles) {
+      for (const [key, max] of Object.entries(limits)) {
+        const length = [...(bundle[key]?.message ?? "")].length
+        if (length > max) tooLong.push(`${locale}.${key} ${length}/${max}`)
+      }
+    }
+
+    // Assert
+    expect(tooLong).toEqual([])
+  })
 })
