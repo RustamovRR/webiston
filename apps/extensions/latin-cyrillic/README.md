@@ -137,12 +137,25 @@ Theme popup'da o'zgartirilsa, content script'dagi popover ham o'zgaradi (chrome.
 
 ## Publishing
 
-Chrome Web Store'ga yuklash:
-1. `pnpm ext:zip` ni ishga tushiring
-2. [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) ga kiring
-3. "New Item" tugmasini bosing
-4. ZIP faylni yuklang
-5. Ma'lumotlarni to'ldiring va publish qiling
+```bash
+pnpm ext:zip:all   # chrome / edge / firefox zips + the Firefox sources zip
+pnpm ext:store     # store screenshots + promo tiles → .output/store/<locale>/
+                   # (run with --locale en / --locale ru for the other two)
+```
+
+| Store | Dashboard | Upload |
+| ----- | --------- | ------ |
+| Chrome Web Store | https://chrome.google.com/webstore/devconsole | `*-chrome.zip` |
+| Edge Add-ons | https://partner.microsoft.com/dashboard/microsoftedge/overview | `*-edge.zip` |
+| addons.mozilla.org | https://addons.mozilla.org/developers/addons | `*-firefox.zip` + `*-sources.zip` |
+
+- Name and short description ship in the zip (`public/_locales`). The
+  detailed description is pasted per language from `store/listing.md`.
+- Firefox needs the sources zip because the build is minified;
+  `SOURCE-BUILD.md` is the reviewer's recipe (verified: it rebuilds the
+  uploaded package byte for byte).
+- Limits checked by `tests/locales.test.ts`: name ≤ 45 (Edge), short
+  description ≤ 132 (Chrome), no pictographic symbols (Edge).
 
 ## License
 

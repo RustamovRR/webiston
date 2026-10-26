@@ -115,33 +115,49 @@ const CAPTIONS = {
     trigger: "Matnni tanlang — yonida kichik tugma paydo bo'ladi",
     panel: "Lotin ↔ Kirill, sahifadan chiqmasdan",
     dark: "Qorong'i rejim — sahifangiz bilan bir xil",
-    popup: "Brauzer panelidan: yozing yoki qo'ying, darhol o'giriladi",
+    popup: "Yangi alifbo (2027) ham: sh → ş, ch → ç, g' → ğ, o' → ö",
     privacy: "Matn qurilmangizdan chiqmaydi — server ham, hisob ham yo'q"
   },
   en: {
     trigger: "Select any text — a small button appears beside it",
     panel: "Latin ↔ Cyrillic, without leaving the page",
     dark: "Dark mode, matching the page you are reading",
-    popup: "From the toolbar: type or paste, converted as you go",
+    popup: "The new 2027 alphabet too: sh → ş, ch → ç, g' → ğ, o' → ö",
     privacy: "Your text never leaves the device — no server, no account"
   },
   ru: {
     trigger: "Выделите текст — рядом появится кнопка",
     panel: "Латиница ↔ кириллица, не покидая страницу",
     dark: "Тёмная тема — как на самой странице",
-    popup: "Из панели браузера: введите или вставьте — сразу перевод",
+    popup: "И новый алфавит 2027 года: sh → ş, ch → ç, g' → ğ, o' → ö",
     privacy: "Текст не покидает устройство — ни сервера, ни аккаунта"
   }
 }
 
+/** The store name since 1.1.0 — `extName` in `public/_locales`. */
 const NAME = {
-  uz: "Lotin-Kirill O'giruvchi",
-  en: "Latin-Cyrillic Converter",
-  ru: "Латиница-Кириллица"
+  uz: "Lotin-Kirill va Yangi alifbo O'giruvchi",
+  en: "Latin–Cyrillic & New Alphabet Converter",
+  ru: "Латиница, кириллица и новый алфавит"
+}
+
+/** The promo tiles' one line. The name already lists the alphabets, so
+ * this says what you DO with it. */
+const TAGLINE = {
+  uz: "Istalgan sahifada belgilang va o'sha yerda o'giring",
+  en: "Select text on any page and convert it right there",
+  ru: "Выделите текст на любой странице и переведите на месте"
 }
 
 /** The sample is Latin Uzbek in every listing — it is what gets converted. */
 const SAMPLE = "Sun'iy intellekt muhandisligi tez rivojlanmoqda."
+
+/**
+ * The new-alphabet shot's sample. It needs sh, ch, g' and o' — the SAMPLE
+ * above has none of them, so converted into the 2027 alphabet it came back
+ * looking unchanged and the shot showed nothing.
+ */
+const SAMPLE_2027 = "Toshkent bog'lari chiroyli, o'zbek choyi mashhur."
 
 /** Light/dark values lifted from `src/styles/tokens.css`, not re-invented. */
 const THEME = {
@@ -530,9 +546,18 @@ async function shotSelection({ dark, openPanel }) {
   return buffer
 }
 
-async function shotPopup({ dark, extensionUrl }) {
+async function shotPopup({ dark, extensionUrl, preference, sample }) {
   const tab = await openTab({ dark, width: 380, height: 620 })
   await goto(tab.page, extensionUrl)
+
+  // Set the switch EXPLICITLY on every shot: the popup stores its choice
+  // (1.1.0), and the shots share one Chrome profile, so a shot that picked
+  // the new alphabet would otherwise leave the next one on it too.
+  await evaluate(
+    tab.page,
+    `document.querySelector('input[type="radio"][value="${preference}"]').click()`
+  )
+  await sleep(400)
 
   const box = await evaluate(
     tab.page,
@@ -542,7 +567,7 @@ async function shotPopup({ dark, extensionUrl }) {
     })()`
   )
   await click(tab.page, box.x, box.y)
-  await tab.page.send("Input.insertText", { text: SAMPLE })
+  await tab.page.send("Input.insertText", { text: sample })
   await sleep(500)
   // Typing leaves a focus ring on the input, which photographs as a defect
   // rather than as state. Blur it, keep the text.
@@ -604,7 +629,7 @@ function tileHtml({ locale, width, height, iconDataUri, marquee }) {
   <img src="${iconDataUri}" alt="">
   <div>
     <h1>${NAME[locale]}</h1>
-    <p>${CAPTIONS[locale].panel}</p>
+    <p>${TAGLINE[locale]}</p>
     <div class="rule"></div>
   </div>
 </body></html>`
@@ -703,14 +728,19 @@ try {
     console.log("ok")
   }
 
+  // The light popup shot is the one that shows the new alphabet: it is the
+  // surface where the choice is made, and the store has no other way to
+  // show that the extension does more than the Latin ↔ Cyrillic pair.
   const popups = [
-    ["04-popup", captions.popup, "light", false],
-    ["05-privacy", captions.privacy, "dark", true]
+    ["04-popup", captions.popup, "light", false, "latin-2027", SAMPLE_2027],
+    ["05-privacy", captions.privacy, "dark", true, "auto", SAMPLE]
   ]
-  for (const [name, caption, theme, dark] of popups) {
+  for (const [name, caption, theme, dark, preference, sample] of popups) {
     process.stdout.write(`  ${name} … `)
     const { buffer, size } = await shotPopup({
       dark,
+      preference,
+      sample,
       extensionUrl: `chrome-extension://${chrome.id}/popup.html`
     })
     const framed = await renderHtml(

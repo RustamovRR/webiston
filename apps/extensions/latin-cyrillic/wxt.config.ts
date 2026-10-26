@@ -3,6 +3,34 @@ import { defineConfig } from "wxt"
 
 export default defineConfig({
   modules: ["@wxt-dev/module-react"],
+  /**
+   * The sources ZIP addons.mozilla.org asks for, because the build is
+   * minified. Zipped from the REPO root, not this folder: the extension
+   * imports two workspace packages (`@webiston/transliteration`, built with
+   * tsup; `@webiston/ui`, consumed as source), and a reviewer handed only this
+   * folder cannot rebuild what was uploaded. 1.0.0 shipped exactly that
+   * 40 KB, package-less archive. `SOURCE-BUILD.md` is the reviewer's recipe.
+   */
+  zip: {
+    sourcesRoot: "../../..",
+    includeSources: [
+      "apps/extensions/latin-cyrillic/**",
+      "packages/transliteration/**",
+      "packages/ui/**",
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ],
+    excludeSources: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.output/**",
+      "**/.wxt/**",
+      // Listing assets, not code — 1.2 MB of PNGs a reviewer never opens.
+      "apps/extensions/latin-cyrillic/store/**",
+      "apps/extensions/latin-cyrillic/store-assets/**"
+    ]
+  },
   vite: () => ({
     plugins: [tailwindcss()]
   }),
