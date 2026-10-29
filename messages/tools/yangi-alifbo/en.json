@@ -32,6 +32,57 @@
       "spellingValue": "New ones not yet published — the 1995 rules apply",
       "source": "Text of the law — lex.uz"
     },
+    "keyboard": {
+      "kicker": "KEYBOARD",
+      "title": "How to type the new letters",
+      "description": "There is no official Uzbek keyboard layout yet (October 2026). These methods work today and type the exact letters the law uses. Menu names are given as in the English interface.",
+      "easiest": "The easiest way is to type as usual — sh, ch, o', g' — and convert the text on this page. On other sites the <ext>browser extension</ext> does it: pick “New Latin”, select the text and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> (on a Mac <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>) — the converted text is copied. If you need the letter itself:",
+      "platforms": {
+        "windows": {
+          "title": "Windows",
+          "methods": {
+            "emojiPanel": {
+              "title": "Emoji and symbols panel (Windows 11)",
+              "body": "Press <kbd>Win</kbd> + <kbd>.</kbd>, open the Ω section and pick the letter among the Latin letters. Take ş, not ș with a comma below: they are different letters."
+            },
+            "word": {
+              "title": "Word: code, then Alt + X",
+              "body": "Type the letter's code and press <kbd>Alt</kbd> + <kbd>X</kbd> right after it — the code turns into the letter. Works in WordPad too."
+            }
+          }
+        },
+        "mac": {
+          "title": "Mac",
+          "methods": {
+            "extended": {
+              "title": "The “ABC – Extended” layout",
+              "body": "Add it once: System Settings → Keyboard → Text Input → Edit → “+” → English → ABC – Extended. Then press the mark with <kbd>⌥</kbd>, then the letter. For a capital, press the second key with <kbd>Shift</kbd>."
+            },
+            "abc": {
+              "title": "On the plain “ABC” layout",
+              "body": "Two work with no setup: <kbd>⌥</kbd> + <kbd>C</kbd> → ç, <kbd>⌥</kbd> + <kbd>U</kbd>, then <kbd>O</kbd> → ö. ş and ğ need “ABC – Extended”."
+            }
+          }
+        },
+        "phone": {
+          "title": "Phone",
+          "methods": {
+            "turkish": {
+              "title": "Add the Turkish keyboard",
+              "body": "Android (Gboard): Settings → Languages → Add keyboard → Türkçe. iPhone: Settings → General → Keyboard → Keyboards → Add New Keyboard → Türkçe. ğ, ş, ö and ç get keys of their own; switch keyboards with the language key."
+            },
+            "dotless": {
+              "title": "Watch for the two i's",
+              "body": "On the Turkish keyboard the dotless ı sits where i usually is, and the dotted i is next to ş. Uzbek has only the dotted i: a word typed with ı is recognised neither by search engines nor by spell-checkers."
+            }
+          }
+        }
+      },
+      "warning": {
+        "title": "Don't add “Turkish Q” on a computer",
+        "body": "On Windows and on a Mac alike, this layout types the dotless ı on the i key, ö on the comma key and ç on the period key. The key shows a different letter, and the mistake is hard to spot in the text."
+      }
+    },
     "faq": {
       "title": "Frequently asked questions",
       "items": {
@@ -49,7 +100,7 @@
         },
         "howToType": {
           "question": "How do I type the new letters?",
-          "answer": "No official Uzbek keyboard layout has been published yet (as of October 2026). The easiest way is to type as usual with o', g', sh and ch, then convert the text on this page. If you need a single letter, copy it from the table above in one click."
+          "answer": "No official Uzbek keyboard layout has been published yet (as of October 2026). The easiest way is to type as usual with o', g', sh and ch, then convert the text on this page. If you need the letter itself: on a Mac, the “ABC – Extended” layout gives ş with ⌥C, then S; in Word, type 015F, then Alt + X; on a phone, add the Turkish keyboard. Don't add “Turkish Q” on a computer: its i key types the dotless ı. Details are in the “Keyboard” section above."
         },
         "oldDocuments": {
           "question": "Do documents and banknotes in the old alphabet stay valid?",

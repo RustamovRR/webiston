@@ -32,6 +32,57 @@
       "spellingValue": "Yangilari hali e'lon qilinmagan — 1995-yilgi qoidalar amalda",
       "source": "Qonun matni — lex.uz"
     },
+    "keyboard": {
+      "kicker": "KLAVIATURA",
+      "title": "Yangi harflarni klaviaturada qanday yozish",
+      "description": "Rasmiy o'zbek klaviatura tartibi hozircha (2026-yil oktabr) e'lon qilinmagan. Quyidagi usullar hozir ishlaydi va qonundagi aynan o'sha harflarni yozadi. Menyu nomlari inglizcha interfeys bo'yicha berilgan.",
+      "easiest": "Eng oson yo'li — odatdagidek sh, ch, o', g' bilan yozib, matnni shu sahifada o'girish. Boshqa saytlarda buni <ext>brauzer kengaytmasi</ext> qiladi: «Yangi lotin»ni tanlang, matnni belgilang va <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> (Mac'da <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd>) ni bosing — o'girilgan matn nusxalanadi. Harfning o'zini terish kerak bo'lsa:",
+      "platforms": {
+        "windows": {
+          "title": "Windows",
+          "methods": {
+            "emojiPanel": {
+              "title": "Belgilar paneli (Windows 11)",
+              "body": "<kbd>Win</kbd> + <kbd>.</kbd> ni bosing, Ω bo'limini oching va lotin harflari orasidan kerakli harfni tanlang. ş ni oling, ostida vergulli ș ni emas: ular boshqa-boshqa harf."
+            },
+            "word": {
+              "title": "Word: kod va Alt + X",
+              "body": "Harf kodini yozing va darhol <kbd>Alt</kbd> + <kbd>X</kbd> ni bosing — kod harfga aylanadi. WordPad'da ham ishlaydi."
+            }
+          }
+        },
+        "mac": {
+          "title": "Mac",
+          "methods": {
+            "extended": {
+              "title": "«ABC – Extended» tartibi",
+              "body": "Bir marta qo'shing: System Settings → Keyboard → Text Input → Edit → «+» → English → ABC – Extended. Keyin <kbd>⌥</kbd> bilan belgini, so'ng harfni bosing. Bosh harf uchun ikkinchi tugmani <kbd>Shift</kbd> bilan bosing."
+            },
+            "abc": {
+              "title": "Oddiy «ABC» tartibida",
+              "body": "Sozlamasiz ikkitasi ishlaydi: <kbd>⌥</kbd> + <kbd>C</kbd> → ç, <kbd>⌥</kbd> + <kbd>U</kbd>, keyin <kbd>O</kbd> → ö. ş va ğ uchun «ABC – Extended» kerak."
+            }
+          }
+        },
+        "phone": {
+          "title": "Telefon",
+          "methods": {
+            "turkish": {
+              "title": "Turkcha klaviaturani qo'shing",
+              "body": "Android (Gboard): Settings → Languages → Add keyboard → Türkçe. iPhone: Settings → General → Keyboard → Keyboards → Add New Keyboard → Türkçe. ğ, ş, ö va ç alohida tugmalarda; klaviaturani til tugmasi bilan almashtirasiz."
+            },
+            "dotless": {
+              "title": "Ikki xil i dan ehtiyot bo'ling",
+              "body": "Turkcha klaviaturada nuqtasiz ı odatdagi i o'rnida turadi, nuqtali i esa ş ning yonida. O'zbekchada faqat nuqtali i bor: ı bilan yozilgan so'zni qidiruv tizimi ham, imlo tekshiruvchi ham tanimaydi."
+            }
+          }
+        }
+      },
+      "warning": {
+        "title": "Kompyuterga «Turkish Q» tartibini qo'shmang",
+        "body": "Windows'da ham, Mac'da ham bu tartibda i tugmasi nuqtasiz ı ni, vergul tugmasi ö ni, nuqta tugmasi esa ç ni yozadi. Tugmada boshqa harf turadi, xato esa matnda ko'zga tashlanmaydi."
+      }
+    },
     "faq": {
       "title": "Ko'p so'raladigan savollar",
       "items": {
@@ -49,7 +100,7 @@
         },
         "howToType": {
           "question": "Yangi harflarni klaviaturada qanday teraman?",
-          "answer": "Rasmiy o'zbek klaviatura tartibi hozircha (2026-yil oktabr) e'lon qilinmagan. Eng oson yo'li — odatdagidek o', g', sh, ch bilan yozib, matnni shu sahifada o'girish. Bitta harf kerak bo'lsa, yuqoridagi jadvaldan bir bosishda nusxalang."
+          "answer": "Rasmiy o'zbek klaviatura tartibi hozircha (2026-yil oktabr) e'lon qilinmagan. Eng oson yo'li — odatdagidek o', g', sh, ch bilan yozib, matnni shu sahifada o'girish. Harfning o'zi kerak bo'lsa: Mac'da «ABC – Extended» tartibida ⌥C, keyin S → ş; Word'da 015F, keyin Alt + X; telefonda turkcha klaviatura. Kompyuterga «Turkish Q» tartibini qo'shmang: unda i tugmasi nuqtasiz ı ni yozadi. Batafsil — yuqoridagi «Klaviatura» bo'limida."
         },
         "oldDocuments": {
           "question": "Eski alifbodagi hujjatlar va pullar amal qiladimi?",

@@ -38,3 +38,48 @@ export const LAW_FACT_KEYS = [
   "programme",
   "spelling"
 ] as const
+
+/** A key list drawn under a typing method, derived from the letter table. */
+export type KeyboardCodes = "unicode" | "macExtended"
+
+/**
+ * The typing guide: per platform, the methods in the order to try them —
+ * i18n keys under `keyboard.platforms.<id>.methods.<key>`.
+ *
+ * Left out on purpose: Alt + 0231-style codes, which cover only ç and ö and
+ * type whatever the system's code page puts at that number — a page read on
+ * Russian- and Uzbek-locale Windows cannot promise which letter that is. And
+ * the Turkish layout on a computer, which gets a warning instead of a slot.
+ */
+export const KEYBOARD_PLATFORMS: readonly {
+  readonly id: string
+  readonly methods: readonly {
+    readonly key: string
+    readonly codes?: KeyboardCodes
+  }[]
+}[] = [
+  {
+    id: "windows",
+    methods: [{ key: "emojiPanel" }, { key: "word", codes: "unicode" }]
+  },
+  {
+    id: "mac",
+    methods: [{ key: "extended", codes: "macExtended" }, { key: "abc" }]
+  },
+  { id: "phone", methods: [{ key: "turkish" }, { key: "dotless" }] }
+]
+
+/**
+ * ABC – Extended's dead keys per new letter, keyed by the 1995 spelling;
+ * Shift on the second key gives the capital. Read from the layout itself
+ * (UCKeyTranslate on macOS, 2026-10-29), not from a cheat sheet: ⌥C then S is
+ * U+015F, ⌥B then G is U+011F — the law's code points, not look-alikes.
+ */
+export const MAC_EXTENDED_KEYS: Readonly<
+  Record<string, readonly [string, string]>
+> = {
+  "g'": ["⌥B", "G"],
+  "o'": ["⌥U", "O"],
+  sh: ["⌥C", "S"],
+  ch: ["⌥C", "C"]
+}

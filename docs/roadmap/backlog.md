@@ -142,9 +142,19 @@
   recorder skips `<img src>`, SVG paths (QR) and canvas inside a masked
   element; whether URLs with drafts (OG generator `?…`, CodeSnapshot `#…`)
   are recorded — check one real recording of each after deploy.
-- `[ ]` **Recheck "yangi alifbo klaviatura" demand ~2026-10-30** —
-  19 impr at 21% CTR in the first week. If it grows, add one-tap ş/ç/ğ/ö
-  buttons to the converter. `pnpm gsc 7 --find "klaviatura|клавиатура"`.
+- `[x]` **"yangi alifbo klaviatura" demand → typing guide, 2026-10-29** —
+  19 impr in week one, 122 in the 7 days to 10-29 ("klaviatura" 51 at 23.5%
+  CTR, "klaviaturada" 71). Shipped `NewAlphabet/components/KeyboardGuide.tsx`
+  (`#klaviatura` on /tools/yangi-alifbo, uz/en/ru) + FAQ `howToType`. Mac
+  keys read from the layouts with UCKeyTranslate; Alt codes left out (code
+  page dependent). Insert-buttons in the converter NOT built: the converter
+  already turns sh into ş and the letter table copies. Recheck position and
+  CTR ~2026-11-12: `pnpm gsc 7 --find "klaviatura|klavyatura"`.
+- `[ ]` **Decide: normalise dotless ı → i in `normaliseLatin2027`?** —
+  "Turkish Q" (Windows and Mac) types ı on the i key, and the engine passes
+  it through (`LATIN_2027_LOOKALIKES` has ș/ǵ/ŏ only). Cost: Turkish names
+  quoted in Uzbek (Kılıçdaroğlu) would lose the ı — the same trade-off that
+  kept ó out. Owner's call.
 - `[~]` **Extension 1.1.0: new-alphabet target — code, store copy and
   `/extension` done 2026-10-26; store upload pending (owner).** The switch
   policy (`ScriptPreference`, `resolveTarget`, `swapTarget`,
