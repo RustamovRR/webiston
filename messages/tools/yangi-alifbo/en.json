@@ -4,6 +4,12 @@
       "title": "New Uzbek Alphabet Converter",
       "description": "Convert text to the 2027 Uzbek Latin alphabet: sh → ş, ch → ç, g' → ğ, o' → ö — or from it back to the old Latin and Cyrillic. The conversion runs in your browser."
     },
+    "organisations": {
+      "title": "Is your organisation switching to the new alphabet?",
+      "description": "We convert your website, documents and forms to the new alphabet in one go.",
+      "hint": "Tell us on Telegram what needs converting — a website, documents or both — and roughly how much.",
+      "cta": "Message us on Telegram"
+    },
     "letters": {
       "kicker": "LAW O'RQ-1184",
       "title": "The new Uzbek alphabet (2027): what changes",

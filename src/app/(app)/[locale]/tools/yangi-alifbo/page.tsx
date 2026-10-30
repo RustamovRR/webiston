@@ -22,7 +22,8 @@ import {
 import {
   KeyboardGuide,
   LetterTable,
-  NewAlphabetFaq
+  NewAlphabetFaq,
+  OrganisationsCallout
 } from "@/modules/tools/NewAlphabet"
 import {
   generateApplicationSchema,
@@ -103,11 +104,13 @@ export default async function YangiAlifboPage({
       {/* Same order as the Latin-Cyrillic page, so the two siblings read
           alike: the extension, related tools, then the reference table, then
           the FAQ. The extension converts into the new alphabet since 1.1.0,
-          so its "stop coming back to this page" is true here too. The
-          keyboard guide follows the table: the letters, then how to type
-          them. */}
+          so its "stop coming back to this page" is true here too. Only this
+          page adds the offer to organisations under it — the deadline is the
+          new alphabet's, not Cyrillic's. The keyboard guide follows the
+          table: the letters, then how to type them. */}
       <div className="mx-auto w-full max-w-[1536px] px-4 pb-16 sm:px-6 lg:px-8">
         <ExtensionCallout locale={locale} />
+        <OrganisationsCallout locale={locale} />
         <RelatedTools locale={locale} href={PATH} className="pt-10" />
         <LetterTable locale={locale} />
         <KeyboardGuide locale={locale} />

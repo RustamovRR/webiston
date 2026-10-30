@@ -154,10 +154,14 @@ export const JAVASCRIPT_CHAPTERS = [
   }
 ]
 
+/** The Telegram channel — the footer's link and the new-alphabet page's
+ * direct-messages link (`?direct`) both start here. */
+export const TELEGRAM_CHANNEL_URL = "https://t.me/webiston_uz"
+
 export const socialLinks = [
   {
     id: 1,
-    href: "https://t.me/webiston_uz",
+    href: TELEGRAM_CHANNEL_URL,
     icon: <TelegramIcon />,
     label: "Telegram"
   },

@@ -6,3 +6,4 @@
 export { KeyboardGuide } from "./components/KeyboardGuide"
 export { LetterTable } from "./components/LetterTable"
 export { NewAlphabetFaq } from "./components/NewAlphabetFaq"
+export { OrganisationsCallout } from "./components/OrganisationsCallout"

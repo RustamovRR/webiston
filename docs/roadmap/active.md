@@ -536,6 +536,11 @@ integration + 2 for the tool, driven through the rendered UI).
 
 ## In progress
 
+- `[~]` **Organisations offer on `/tools/yangi-alifbo` — a 2-week demand test.**
+  `OrganisationsCallout` under the extension card links to the channel's DMs
+  (`ORGANISATIONS_CONTACT_URL`, `t.me/webiston_uz?direct`). Read it 14 days
+  after the deploy reaches `main`: Metrica → external links (the `?direct` URL)
+  and the DMs actually received. No requests → delete the card.
 - `[x]` **SEO Phases 1–2 shipped.** Fabricated `aggregateRating` + invented
   reviews deleted from 18 files; canonical/hreflang made locale-correct via a new
   `src/lib/seo.ts` (`withLocale`), so `/en` and all 229 book pages stop pointing
