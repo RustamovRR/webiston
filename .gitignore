@@ -136,3 +136,7 @@ next-env.d.ts
 # ===================
 *.orig
 .history/
+
+# Local sales reports from `pnpm alifbo-check` — other organisations' sites,
+# never committed (the repo is public)
+reports/

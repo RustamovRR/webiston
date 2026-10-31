@@ -37,6 +37,7 @@
     "indexnow": "node scripts/indexnow.mjs",
     "metrica": "node --env-file=.env scripts/metrica.mjs",
     "gsc": "node --env-file=.env scripts/gsc.mjs",
+    "alifbo-check": "node scripts/alifbo-check.mjs",
     "ext:build:all": "pnpm --filter latin-cyrillic-extension build:all",
     "ext:zip:all": "pnpm --filter latin-cyrillic-extension zip:all",
     "gsc:diff": "node --env-file=.env scripts/gsc.mjs --diff"

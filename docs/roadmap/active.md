@@ -536,11 +536,23 @@ integration + 2 for the tool, driven through the rendered UI).
 
 ## In progress
 
-- `[~]` **Organisations offer on `/tools/yangi-alifbo` — a 2-week demand test.**
-  `OrganisationsCallout` under the extension card links to the channel's DMs
-  (`ORGANISATIONS_CONTACT_URL`, `t.me/webiston_uz?direct`). Read it 14 days
-  after the deploy reaches `main`: Metrica → external links (the `?direct` URL)
-  and the DMs actually received. No requests → delete the card.
+- `[!]` **Organisations offer on `/tools/yangi-alifbo` — pulled 2026-10-31.**
+  Shipped in `4f24272`, reverted a day later: webiston is on Vercel **Hobby**,
+  and Vercel's fair-use rules count "advertising the sale of a product or
+  service" as commercial use, which Hobby forbids (donations are fine). The
+  offer moves off the site: outbound with a local report script instead. Bring
+  the card back (`git revert` of the revert) only together with **Pro**, once a
+  first organisation has paid. Day 0 result: 1 DM, a personal how-to, not an
+  organisation.
+- `[!]` **Stopped 2026-10-31 by the owner:** an organisation will have an
+  employee paste text into a free converter rather than pay. The script stays
+  (harmless, local) unless he asks for it gone.
+  **`pnpm alifbo-check` — the offer's sales tool, local only.**
+  `scripts/alifbo-check.mjs` + `alifbo-report.mjs`: home page → words that
+  change, per-letter counts, sitemap page count, 3 before/after lines → a
+  4:5 PNG in `reports/alifbo/` (gitignored). Brand names with an inner capital
+  are preserved. Next: 40 private organisations → 20 reports sent; ≥3 replies
+  in 3 days = continue, 0 after 40 = stop.
 - `[x]` **SEO Phases 1–2 shipped.** Fabricated `aggregateRating` + invented
   reviews deleted from 18 files; canonical/hreflang made locale-correct via a new
   `src/lib/seo.ts` (`withLocale`), so `/en` and all 229 book pages stop pointing

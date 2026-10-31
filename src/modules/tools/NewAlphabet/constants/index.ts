@@ -2,8 +2,6 @@
  * NewAlphabet module constants.
  */
 
-import { TELEGRAM_CHANNEL_URL } from "@/constants/navigation"
-
 /**
  * The law, as published on lex.uz. Cited from the letter table and the FAQ;
  * one constant so the link cannot drift between them.
@@ -85,12 +83,3 @@ export const MAC_EXTENDED_KEYS: Readonly<
   sh: ["⌥C", "S"],
   ch: ["⌥C", "C"]
 }
-
-/**
- * Where an organisation's request lands: the channel's direct messages.
- * Telegram's monoforum link (`?direct`, core.telegram.org/api/links) takes no
- * `text` parameter, so the card itself says what to write. Metrica's
- * `trackLinks` counts the click as an outbound link, and the suffix keeps it
- * apart from the footer's link to the same channel.
- */
-export const ORGANISATIONS_CONTACT_URL = `${TELEGRAM_CHANNEL_URL}?direct`
